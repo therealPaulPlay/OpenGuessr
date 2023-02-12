@@ -1,5 +1,7 @@
 /* Streetview */
 
+import locationListFromFile from "./JS/loclist.js";
+
 const listOfLocations = 
 [
     //add another with , "ID"
