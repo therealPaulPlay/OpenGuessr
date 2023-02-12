@@ -6,5 +6,5 @@ const locationListFromFile =
 ];
 
 function test() {
-    
+    console.log("test");
 }
