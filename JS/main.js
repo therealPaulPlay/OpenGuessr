@@ -1,9 +1,9 @@
-import "/JS/mainAsynced.js";
+import * as A from "/JS/mainAsynced.js";
 
 var guessIndex;
 var lastGuessIndex = null;
 var mapToLoad = "";
-var listOfLocations = List.name; 
+var listOfLocations = A.locList; 
 var currentGuessLAT = 0;
 var currentGuessLONG = 0;
 
