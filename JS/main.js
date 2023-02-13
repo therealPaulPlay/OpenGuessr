@@ -5,10 +5,9 @@ var listOfLocations;
 fetch('../JSON/locList.json').then(response => {
     return response.json();
 })
-.then(response => response.json())
-.then(response => listOfLocations = new Map(Object.entries(JSON.parse(response.json))));
+.then(response => listOfLocations = new Map(Object.entries(JSON.parse(response))));
 
-console.log(map);
+
 
 /*
 const listOfLocations = 
