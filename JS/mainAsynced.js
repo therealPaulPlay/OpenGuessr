@@ -15,20 +15,4 @@ var mapToLoad;
 var currentGuessLAT = 0;
 var currentGuessLONG = 0;
 
-generateNewLocation();
-
-function generateNewLocation() {
-
-    do {
-        guessIndex = Math.floor(Math.random()*listOfLocations.length);
-    } while (lastGuessIndex == guessIndex);
-
-    console.log(guessIndex);
-
-    lastGuessIndex = guessIndex;
-
-    mapToLoad = listOfLocations[guessIndex];
-    //currentGuessLAT = listOfLocations[guessIndex+1];             //save target latitude in var (from array)
-    //currentGuessLONG = listOfLocations[guessIndex+2];            //save target longitude in var (from array)
-    reloadIframe();
-}
+getLocationVarsAndPass(guessIndex, lastGuessIndex, mapToLoad, listOfLocations);

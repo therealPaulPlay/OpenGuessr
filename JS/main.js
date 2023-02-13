@@ -1,3 +1,22 @@
+var guessIndex;
+var lastGuessIndex = null;
+var mapToLoad;
+const listOfLocations; 
+var currentGuessLAT = 0;
+var currentGuessLONG = 0;
+
+function reloadIframe() {
+    document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
+    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
+}
+
+function getLocationVarsAndPass(gIndex, lastGindex, mapID, list) {
+    guessIndex = gIndex;
+    lastGuessIndex = lastGindex;
+    mapToLoad = mapID;
+    listOfLocations = list;
+}
+
 function generateNewLocation() {
 
     do {
@@ -12,11 +31,6 @@ function generateNewLocation() {
     //currentGuessLAT = listOfLocations[guessIndex+1];             //save target latitude in var (from array)
     //currentGuessLONG = listOfLocations[guessIndex+2];            //save target longitude in var (from array)
     reloadIframe();
-}
-
-function reloadIframe() {
-    document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
-    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
 }
 
 function transitionToStart() {
@@ -84,7 +98,6 @@ function compareDistances(distance) {
     enableResultScreen(resultAsString, extraMsg);
 }
 
-
 function setMapToTargetPosition(key, playersLat, playersLong) {
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15); //starting position
@@ -133,4 +146,3 @@ function enableResultScreen(resultString, extraMessage) {
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
 }
-
