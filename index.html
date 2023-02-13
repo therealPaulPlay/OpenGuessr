@@ -38,8 +38,10 @@
             <script type="module">
                 import {reloadIframe, generateNewLocation} from "/JS/main.js";
 
-                document.getElementById("resetButtonSVG").addEventListener("click", reloadIframe());
-                document.getElementById("logo").addEventListener("click", generateNewLocation());
+                resetBTN = document.getElementById("resetButtonSVG");
+                resetBTN.addEventListener("click", reloadIframe());
+                logoBTN = document.getElementById("logo");
+                logoBTN.addEventListener("click", generateNewLocation());
             </script>
             <!--bottom toolbar with reset button-->
             <div class="BottomBar">
