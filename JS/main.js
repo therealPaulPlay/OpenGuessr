@@ -37,11 +37,15 @@ function generateNewLocation() {
 
     lastGuessIndex = guessIndex;
 
-
-    /*
-    mapToLoad = listOfLocations[0][guessIndex];
-    currentGuessLAT = listOfLocations[1][guessIndex][0][0];             //save target latitude in var (from array)
-    currentGuessLONG = listOfLocations[1][guessIndex][1][0];            //save target longitude in var (from array)*/
+    if (guessIndex == 0) {
+        mapToLoad = listOfLocations[guessIndex];
+    }
+    else {
+        mapToLoad = listOfLocations[guessIndex+3];
+    }
+    mapToLoad = listOfLocations[guessIndex];
+    currentGuessLAT = listOfLocations[guessIndex+1];             //save target latitude in var (from array)
+    currentGuessLONG = listOfLocations[guessIndex+2];            //save target longitude in var (from array)
     reloadIframe();
 }
 
