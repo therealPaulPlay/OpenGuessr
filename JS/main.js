@@ -26,6 +26,9 @@ var currentGuessLONG;
 generateNewLocation();
 
 function generateNewLocation() {
+    console.log(listOfLocations);
+
+
     do {
         guessIndex = Math.floor(Math.random()*listOfLocations[0].length);
     } while (lastGuessIndex == guessIndex);
