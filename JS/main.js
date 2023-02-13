@@ -5,9 +5,9 @@
 fetch('../JSON/locList.json').then(response => {
     return response.json();
 })
-.then(date => console.log(data));
+.then(response => console.log(JSON.stringify(response)));
 
-/*
+
 const listOfLocations = 
 [
     //add another with , "ID"
@@ -15,7 +15,7 @@ const listOfLocations =
     //add another with "[[LAT],[LONG]], "
     [[[48.2663934],[16.4485618]], [[48.1294301],[14.8078931]] ,[[46.9578485],[7.4406567]], [[43.7758559],[-79.3437756]], [[48.1995556],[16.3680908]], 
     [[46.9578485],[7.4406567]], [[48.1864604],[16.3505445]]]
-];*/
+];
 
 var lastGuessIndex = null;
 var guessIndex;
