@@ -1,13 +1,16 @@
 /* Streetview */
 
 
-
 fetch('../JSON/locList.json').then(response => {
     return response.json();
 })
-.then(response => console.log(JSON.stringify(response)));
+.then(response => {
+    const listOfLocations = new Map(Object.entries(JSON.parse(response.json)));
+});
 
+console.log(map)
 
+/*
 const listOfLocations = 
 [
     //add another with , "ID"
@@ -16,6 +19,7 @@ const listOfLocations =
     [[[48.2663934],[16.4485618]], [[48.1294301],[14.8078931]] ,[[46.9578485],[7.4406567]], [[43.7758559],[-79.3437756]], [[48.1995556],[16.3680908]], 
     [[46.9578485],[7.4406567]], [[48.1864604],[16.3505445]]]
 ];
+*/
 
 var lastGuessIndex = null;
 var guessIndex;
