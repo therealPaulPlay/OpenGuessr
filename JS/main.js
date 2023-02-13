@@ -25,7 +25,7 @@ var currentGuessLONG;
 generateNewLocation();
 
 function generateNewLocation() {
-    console.log(listOfLocations[0]);
+    console.log(listOfLocations[0][0]);
 
 
     do {
