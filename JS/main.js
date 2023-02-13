@@ -5,13 +5,16 @@ var listOfLocations;
 var currentGuessLAT = 0;
 var currentGuessLONG = 0;
 
+function setListOfLocs(locationList) {
+    mapToLoad = locationList;
+}
 
 function reloadIframe() {
     document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
     window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
 }
 
-function doTheSameAsIframe() {
+function reloadIFrameIngame() {
     document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
     window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
 }
