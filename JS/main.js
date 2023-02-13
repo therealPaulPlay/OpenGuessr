@@ -1,9 +1,6 @@
 /* Streetview */
 
-async function getJSON() {
-    const response = await fetch('../JSON/locList.json');
-}
-
+const response = await fetch('../JSON/locList.json');
 var jsonResponse = await response.json();
 
 const listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
