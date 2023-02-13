@@ -17,7 +17,11 @@ var listOfLocations;
 fetch('../JSON/locList.json')
   .then(response => response.json())
   .then(data => { listOfLocations = data; })
-  .then(() => { console.log(listOfLocations); });
+  .then(() => setListOfLocs(data));
+
+function setListOfLocs(data){
+    listOfLocations = data;
+}
 
 console.log(listOfLocations);
 
