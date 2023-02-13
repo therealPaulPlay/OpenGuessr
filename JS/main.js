@@ -1,9 +1,7 @@
 /* Streetview */
 
-import locations from './JSON/locList.json';
 
-console.log(locations);
-
+/* old way
 const listOfLocations = 
 [
     //add another with , "ID"
@@ -12,8 +10,17 @@ const listOfLocations =
     [[[48.2663934],[16.4485618]], [[48.1294301],[14.8078931]] ,[[46.9578485],[7.4406567]], [[43.7758559],[-79.3437756]], [[48.1995556],[16.3680908]], 
     [[46.9578485],[7.4406567]], [[48.1864604],[16.3505445]]]
 ];
+*/
+
+var listOfLocations;
+
+fetch('../JSON/locList.json')
+  .then(response => response.json())
+  .then(data => { listOfLocations = JSON.parse(data); })
+  .then(() => { console.log(listOfLocations); });
 
 
+  console.log(listOfLocations);
 
 var lastGuessIndex = null;
 var guessIndex;
@@ -30,9 +37,12 @@ function generateNewLocation() {
 
     lastGuessIndex = guessIndex;
 
+    mapToLoad = listOfLocations.get(0);
+
+    /*
     mapToLoad = listOfLocations[0][guessIndex];
     currentGuessLAT = listOfLocations[1][guessIndex][0][0];             //save target latitude in var (from array)
-    currentGuessLONG = listOfLocations[1][guessIndex][1][0];            //save target longitude in var (from array)
+    currentGuessLONG = listOfLocations[1][guessIndex][1][0];            //save target longitude in var (from array)*/
     reloadIframe();
 }
 
