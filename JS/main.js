@@ -14,13 +14,9 @@ const listOfLocations =
 
 var listOfLocations;
 
-fetch('../JSON/locList.json')
-  .then(response => response.json())
-  .then(data => { listOfLocations = JSON.parse(data); })
-  .then(() => { console.log(listOfLocations); });
-
-
-  console.log(listOfLocations);
+const response = await fetch('../JSON/locList.json');
+const json = await response.json();
+console.log(json);
 
 var lastGuessIndex = null;
 var guessIndex;
@@ -36,6 +32,9 @@ function generateNewLocation() {
     } while (lastGuessIndex == guessIndex);
 
     lastGuessIndex = guessIndex;
+
+    console.log(json);
+
 
     mapToLoad = listOfLocations.get(0);
 
