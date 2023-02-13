@@ -45,10 +45,6 @@ function transitionToStart() {
     }, 200);
 }
 
-function loadFromHTML(listArray) {
-    listOfLocations = listArray;
-}
-
 var veryCloseDistances;
 var closeDistances;
 var farDistances;
