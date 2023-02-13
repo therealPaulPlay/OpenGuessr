@@ -17,6 +17,7 @@ var jsonResponse = await response.json();
 
 const listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
 
+console.log(listOfLocations);
 
 var lastGuessIndex = null;
 var guessIndex;
@@ -24,10 +25,9 @@ var mapToLoad;
 var currentGuessLAT;
 var currentGuessLONG;
 
-generateNewLocation();
+//generateNewLocation();
 
 function generateNewLocation() {
-    console.log(listOfLocations);
 
 
     do {
