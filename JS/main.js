@@ -1,11 +1,12 @@
 /* Streetview */
 
+var listOfLocations;
 
 fetch('../JSON/locList.json').then(response => {
     return response.json();
 })
 .then(response => {
-    const listOfLocations = new Map(Object.entries(JSON.parse(response.json)));
+    listOfLocations = new Map(Object.entries(JSON.parse(response.json)));
 });
 
 console.log(map)
