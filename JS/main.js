@@ -13,7 +13,8 @@ const listOfLocations =
 */
 
 const response = await fetch('../JSON/locList.json');
-var listOfLocations = await JSON.stringify(response.json());
+var listOfLocations = await response.json();
+listOfLocations = JSON.stringify(listOfLocations);
 
 var lastGuessIndex = null;
 var guessIndex;
