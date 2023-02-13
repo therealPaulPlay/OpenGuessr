@@ -10,8 +10,21 @@ const listOfLocations =
     [[46.9578485],[7.4406567]], [[48.1864604],[16.3505445]]]
 ];
 
-const response = await fetch("../JSON/loclist.json");
-console.log(response);
+var test;
+
+async function fetchJSON() {
+    const response = await fetch("../JSON/loclist.json");
+    console.log(response);
+    const jsonImport = await response.json();
+    return jsonImport;
+}
+
+fetchJSON().then(jsonImport => {
+    jsonImport;
+});
+
+console.log(jsonImport);
+
 
 var lastGuessIndex = null;
 var guessIndex;
