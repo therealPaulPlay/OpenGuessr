@@ -8,7 +8,7 @@ var mapToLoad;
 var currentGuessLAT = 0;
 var currentGuessLONG = 0;
 
-async function fetchJSON(generateNewLocation, startInitialization) {
+function fetchJSON(generateNewLocation, startInitialization) {
     const response = await fetch('../JSON/locList.json');
     jsonResponse = await response.json();
 
