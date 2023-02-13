@@ -20,7 +20,7 @@ fetch('../JSON/locList.json')
   //.then(() => { console.log(listOfLocations); });
 
 console.log(listOfLocations);
-console.log(listOfLocations);
+console.log(typeof(listOfLocations));
 console.log(listOfLocations[1]);
 console.log(listOfLocations);
 console.log(listOfLocations[1][1]);
