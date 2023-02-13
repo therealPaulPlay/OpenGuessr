@@ -25,14 +25,15 @@ var mapToLoad;
 var currentGuessLAT;
 var currentGuessLONG;
 
-//generateNewLocation();
+generateNewLocation();
 
 function generateNewLocation() {
 
-
     do {
-        guessIndex = Math.floor(Math.random()*listOfLocations[0].length);
+        guessIndex = Math.floor(Math.random()*(listOfLocations.length)/3);
     } while (lastGuessIndex == guessIndex);
+
+    console.log(guessIndex);
 
     lastGuessIndex = guessIndex;
 
