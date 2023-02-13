@@ -2,6 +2,11 @@
 
 var jsonResponse;
 var listOfLocations;
+var lastGuessIndex = null;
+var guessIndex;
+var mapToLoad;
+var currentGuessLAT = 0;
+var currentGuessLONG = 0;
 
 async function fetchJSON(generateNewLocation) {
     const response = await fetch('../JSON/locList.json');
@@ -10,12 +15,6 @@ async function fetchJSON(generateNewLocation) {
     listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
     generateNewLocation();
 }
-
-var lastGuessIndex = null;
-var guessIndex;
-var mapToLoad;
-var currentGuessLAT = 0;
-var currentGuessLONG = 0;
 
 function generateNewLocation() {
 
@@ -31,20 +30,6 @@ function generateNewLocation() {
     //currentGuessLAT = listOfLocations[guessIndex+1];             //save target latitude in var (from array)
     //currentGuessLONG = listOfLocations[guessIndex+2];            //save target longitude in var (from array)
     reloadIframe();
-}
-
-function reloadIframe() {
-    document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
-    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
-}
-
-function transitionToStart() {
-    document.getElementById("BeforeOverlay").style.opacity = 0;
-    document.getElementById("BeforeOverlay").style.visibility = "visible";
-    document.getElementById("BeforeOverlay").style.opacity = 100;
-    window.setTimeout(() => {
-        window.location.reload();
-    }, 200);
 }
 
 var veryCloseDistances;
@@ -103,7 +88,6 @@ function compareDistances(distance) {
     enableResultScreen(resultAsString, extraMsg);
 }
 
-
 function setMapToTargetPosition(key, playersLat, playersLong) {
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15); //starting position
@@ -151,4 +135,18 @@ function enableResultScreen(resultString, extraMessage) {
 
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
+}
+
+function reloadIframe() {
+    document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
+    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
+}
+
+function transitionToStart() {
+    document.getElementById("BeforeOverlay").style.opacity = 0;
+    document.getElementById("BeforeOverlay").style.visibility = "visible";
+    document.getElementById("BeforeOverlay").style.opacity = 100;
+    window.setTimeout(() => {
+        window.location.reload();
+    }, 200);
 }
