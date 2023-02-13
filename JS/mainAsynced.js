@@ -1,4 +1,4 @@
-import "main.js";
+import "./JS/main.js";
 
 /* Streetview */
 
