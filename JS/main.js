@@ -10,15 +10,7 @@ function reloadIframe() {
     window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
 }
 
-function getLocationVarsAndPass(gIndex, lastGindex, mapID, list) {
-    guessIndex = gIndex;
-    lastGuessIndex = lastGindex;
-    mapToLoad = mapID;
-    listOfLocations = list;
-}
-
 function generateNewLocation() {
-
     do {
         guessIndex = Math.floor(Math.random()*listOfLocations.length);
     } while (lastGuessIndex == guessIndex);
@@ -31,6 +23,13 @@ function generateNewLocation() {
     //currentGuessLAT = listOfLocations[guessIndex+1];             //save target latitude in var (from array)
     //currentGuessLONG = listOfLocations[guessIndex+2];            //save target longitude in var (from array)
     reloadIframe();
+}
+
+function getLocationVarsAndPass(gIndex, lastGindex, mapID, list) {
+    guessIndex = gIndex;
+    lastGuessIndex = lastGindex;
+    mapToLoad = mapID;
+    listOfLocations = list;
 }
 
 function transitionToStart() {

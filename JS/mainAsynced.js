@@ -5,7 +5,7 @@ import "/JS/main.js";
 const response = await fetch('../JSON/locList.json');
 var jsonResponse = await response.json();
 
-const listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
+var listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
 
 console.log(listOfLocations);
 
