@@ -1,5 +1,8 @@
 /* Streetview */
 
+import locations from '../JSON/locList.json' assert {type: 'json'};
+
+console.log(locations);
 
 const listOfLocations = 
 [
@@ -10,20 +13,6 @@ const listOfLocations =
     [[46.9578485],[7.4406567]], [[48.1864604],[16.3505445]]]
 ];
 
-var test;
-
-async function fetchJSON() {
-    const response = await fetch("../JSON/loclist.json");
-    console.log(response);
-    const jsonImport = await response.json();
-    return jsonImport;
-}
-
-fetchJSON().then(jsonImport => {
-    jsonImport;
-});
-
-console.log(jsonImport);
 
 
 var lastGuessIndex = null;
