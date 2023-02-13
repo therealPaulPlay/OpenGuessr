@@ -18,7 +18,7 @@ var jsonResponse = await response.json();
 
 const jsonResponseAsArray = Object.entries(jsonResponse);
 
-const result = jsonResponseAsArray[0].map(i => Object.values(i)).flat()
+const result = jsonResponseAsArray[0][0].map(i => Object.values(i)).flat()
 
 const listOfLocations = jsonResponseAsArray[0][1];
 
