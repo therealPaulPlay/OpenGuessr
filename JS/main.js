@@ -1,6 +1,6 @@
 /* Streetview */
 
-import locations from '../JSON/locList.json';
+import locations from './JSON/locList.json';
 
 console.log(locations);
 
