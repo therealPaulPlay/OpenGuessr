@@ -15,9 +15,8 @@ const listOfLocations =
 const response = await fetch('../JSON/locList.json');
 var jsonResponse = await response.json();
 
-console.log(jsonResponse);
 
-const result = jsonResponseAsArray.map(i => Object.values(i)).flat()
+const result = jsonResponse[0].map(i => Object.values(i)).flat()
 
 const listOfLocations = jsonResponseAsArray[0][1];
 
