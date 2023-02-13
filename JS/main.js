@@ -29,7 +29,7 @@ function generateNewLocation() {
         mapToLoad = listOfLocations[guessIndex];
     }
     else {
-        mapToLoad = listOfLocations[guessIndex+3];
+        mapToLoad = listOfLocations[guessIndex+2];
     }
     mapToLoad = listOfLocations[guessIndex];
     currentGuessLAT = listOfLocations[guessIndex+1];             //save target latitude in var (from array)
