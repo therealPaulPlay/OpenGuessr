@@ -3,7 +3,7 @@
 var jsonResponse;
 var listOfLocations;
 
-function fetchJSON(generateNewLocation) {
+async function fetchJSON(generateNewLocation) {
     const response = await fetch('../JSON/locList.json');
     jsonResponse = await response.json();
 
