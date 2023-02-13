@@ -15,7 +15,10 @@ const listOfLocations =
 const response = await fetch('../JSON/locList.json');
 var jsonResponse = await response.json();
 
-const jsonResponseAsArray = Object.values(jsonResponse).flat();
+console.log(jsonResponse)
+
+
+const jsonResponseAsArray = Object.entries(jsonResponse).flat();
 
 console.log(jsonResponseAsArray);
 
