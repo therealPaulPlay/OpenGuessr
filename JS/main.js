@@ -1,21 +1,18 @@
 /* Streetview */
 
-var jsonResponse;
-var listOfLocations;
 var lastGuessIndex = null;
 var guessIndex;
 var mapToLoad;
 var currentGuessLAT = 0;
 var currentGuessLONG = 0;
 
-function fetchJSON(generateNewLocation, startInitialization) {
-    const response = await fetch('../JSON/locList.json');
-    jsonResponse = await response.json();
+const response = await fetch('../JSON/locList.json');
+const jsonResponse = await response.json();
 
-    listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
-    generateNewLocation();
-    startInitialization();
-}
+const listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
+generateNewLocation();
+startInitialization();
+
 
 function generateNewLocation() {
 
