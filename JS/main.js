@@ -16,6 +16,10 @@ const response = await fetch('../JSON/locList.json');
 var jsonResponse = await response.json();
 const jsonResponseAsArray = Object.entries(jsonResponse);
 
+for (let index = 0; index < jsonResponseAsArray.length; index++) {
+    console.log(jsonResponseAsArray[index]);
+}
+
 const listOfLocations = jsonResponseAsArray[0][1];
 
 var lastGuessIndex = null;
