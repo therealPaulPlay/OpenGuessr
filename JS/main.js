@@ -14,7 +14,9 @@ const listOfLocations =
 
 const response = await fetch('../JSON/locList.json');
 var jsonResponse = await response.json();
-const listOfLocations = Object.entries(jsonResponse);
+const jsonResponseAsArray = Object.entries(jsonResponse);
+
+const listOfLocations = jsonResponseAsArray[0][1];
 
 var lastGuessIndex = null;
 var guessIndex;
@@ -25,7 +27,7 @@ var currentGuessLONG;
 generateNewLocation();
 
 function generateNewLocation() {
-    console.log(listOfLocations[0][1]);
+    console.log(listOfLocations[0]);
 
 
     do {
