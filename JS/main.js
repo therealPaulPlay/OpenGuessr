@@ -3,11 +3,9 @@ import "/JS/mainAsynced.js";
 var guessIndex;
 var lastGuessIndex = null;
 var mapToLoad = "";
-var listOfLocations; 
+var listOfLocations = locList; 
 var currentGuessLAT = 0;
 var currentGuessLONG = 0;
-
-
 
 function setListOfLocs(locationList) {
     mapToLoad = locationList;
