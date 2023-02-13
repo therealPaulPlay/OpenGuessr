@@ -1,9 +1,13 @@
+import "/JS/mainAsynced.js";
+
 var guessIndex;
 var lastGuessIndex = null;
 var mapToLoad = "";
 var listOfLocations; 
 var currentGuessLAT = 0;
 var currentGuessLONG = 0;
+
+
 
 function setListOfLocs(locationList) {
     mapToLoad = locationList;
@@ -34,13 +38,6 @@ function generateNewLocation() {
     //currentGuessLAT = listOfLocations[guessIndex+1];             //save target latitude in var (from array)
     //currentGuessLONG = listOfLocations[guessIndex+2];            //save target longitude in var (from array)
     reloadIframe();
-}
-
-function getLocationVarsAndPass(gIndex, lastGindex, mapID, list) {
-    guessIndex = gIndex;
-    lastGuessIndex = lastGindex;
-    mapToLoad = mapID;
-    listOfLocations = list;
 }
 
 function transitionToStart() {
