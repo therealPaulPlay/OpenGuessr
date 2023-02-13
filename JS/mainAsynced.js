@@ -1,3 +1,5 @@
+import "main.js";
+
 /* Streetview */
 
 const response = await fetch('../JSON/locList.json');
@@ -29,9 +31,4 @@ function generateNewLocation() {
     //currentGuessLAT = listOfLocations[guessIndex+1];             //save target latitude in var (from array)
     //currentGuessLONG = listOfLocations[guessIndex+2];            //save target longitude in var (from array)
     reloadIframe();
-}
-
-function reloadIframe() {
-    document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
-    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
 }

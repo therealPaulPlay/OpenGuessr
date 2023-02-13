@@ -1,5 +1,3 @@
-import {listOfLocations} from "mainAsynced.js";
-
 function generateNewLocation() {
 
     do {
