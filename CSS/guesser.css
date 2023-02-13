@@ -36,6 +36,7 @@ html * {
 /* Icon */
 
 #logo {
+    cursor: pointer;
     pointer-events: auto;
     color: transparent;
     background-color: transparent;
@@ -99,6 +100,7 @@ html * {
 /* Buttons */
 
 #resetButtonSVG {
+    cursor: pointer;
     transition: all 250ms;
     margin-left: 22px;
     margin-bottom: 15px;
@@ -114,6 +116,7 @@ html * {
 }
 
 #confirmButton {
+    cursor: pointer;
     transition: all 250ms;
     position: absolute;
     right: 20px;
@@ -171,8 +174,8 @@ html * {
 }
 
 #nextRound a{
+    cursor: pointer;
     transition: all 250ms;
-
     display: block;
     opacity: 100%;
     text-decoration: none;
