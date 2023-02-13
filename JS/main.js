@@ -19,6 +19,7 @@ fetch('../JSON/locList.json')
   .then(data => { listOfLocations = data; })
   .then(() => { console.log(listOfLocations); });
 
+console.log(listOfLocations);
 
 var lastGuessIndex = null;
 var guessIndex;
