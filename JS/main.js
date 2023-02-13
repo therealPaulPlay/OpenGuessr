@@ -175,9 +175,9 @@ function startInitialization(){
 
     map.on('click', onMapClick);
 
-    resetBTN = document.getElementById("resetButtonSVG");
+    var resetBTN = document.getElementById("resetButtonSVG");
     resetBTN.addEventListener("click", reloadIframe);
-    logoBTN = document.getElementById("logo");
+    var logoBTN = document.getElementById("logo");
     logoBTN.addEventListener("click", generateNewLocation);
 }
 
