@@ -16,5 +16,3 @@ var currentGuessLAT = 0;
 var currentGuessLONG = 0;
 
 getLocationVarsAndPass(guessIndex, lastGuessIndex, mapToLoad, listOfLocations);
-
-transitionToStart();
