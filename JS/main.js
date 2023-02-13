@@ -25,7 +25,7 @@ var currentGuessLONG;
 generateNewLocation();
 
 function generateNewLocation() {
-    console.log(listOfLocations);
+    console.log(listOfLocations[0]);
 
 
     do {
@@ -34,10 +34,6 @@ function generateNewLocation() {
 
     lastGuessIndex = guessIndex;
 
-    console.log(listOfLocations);
-
-
-    mapToLoad = listOfLocations.get(0);
 
     /*
     mapToLoad = listOfLocations[0][guessIndex];
