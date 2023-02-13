@@ -16,14 +16,9 @@ var listOfLocations;
 
 fetch('../JSON/locList.json')
   .then(response => response.json())
-  .then(data => { listOfLocations = data; });
-  //.then(() => { console.log(listOfLocations); });
+  .then(data => { listOfLocations = data; })
+  .then(() => { console.log(listOfLocations); });
 
-console.log(listOfLocations);
-console.log(typeof(listOfLocations));
-console.log(listOfLocations[1]);
-console.log(listOfLocations);
-console.log(listOfLocations[1][1]);
 
 var lastGuessIndex = null;
 var guessIndex;
