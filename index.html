@@ -36,6 +36,8 @@
             <!--map-->
             <div id="map"></div>
             <script type="module">
+                import {reloadIframe, generateNewLocation} from "JS/main.js";
+
                 document.getElementById("resetButtonSVG").addEventListener("click", reloadIframe());
                 document.getElementById("logo").addEventListener("click", generateNewLocation());
             </script>
