@@ -7,6 +7,8 @@ var currentGuessLONG = 0;
 
 function setListOfLocs(locationList) {
     mapToLoad = locationList;
+    console.log(mapToLoad);
+    console.log("got here");
 }
 
 function reloadIframe() {
