@@ -150,6 +150,11 @@ function transitionToStart() {
 }
 
 function startInitialization(){
+    resetBTN = document.getElementById("resetButtonSVG");
+    resetBTN.addEventListener("click", reloadIframe());
+    logoBTN = document.getElementById("logo");
+    logoBTN.addEventListener("click", generateNewLocation());
+
     const key = 'QADiAuIEfpISv0PGS7Ju';
     const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
     L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
