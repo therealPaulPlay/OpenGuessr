@@ -173,23 +173,25 @@ function startInitialization(){
     var lat;
     var long;
 
-    function onMapClick(e) {
-        if (marker) {
-            map.removeLayer(marker);
-        }
-        lat = e.latlng.lat;
-        long = e.latlng.lng;
-
-        marker = new L.Marker([lat, long], {icon: redIcon});
-
-        markerPosition = marker.getLatLng();
-        marker.addTo(map);
-    }
-
     map.on('click', onMapClick);
 
     var resetBTN = document.getElementById("resetButtonSVG");
     resetBTN.addEventListener("click", reloadIframe);
     var logoBTN = document.getElementById("logo");
     logoBTN.addEventListener("click", generateNewLocation);
+    var confirmBTN = document.getElementById("confirmButton");
+    confirmBTN.addEventListener("click", calculateDistances(markerPosition.lat, markerPosition.lng), setMapToTargetPosition(key, lat, long));
+}
+
+function onMapClick(e) {
+    if (marker) {
+        map.removeLayer(marker);
+    }
+    lat = e.latlng.lat;
+    long = e.latlng.lng;
+
+    marker = new L.Marker([lat, long], {icon: redIcon});
+
+    markerPosition = marker.getLatLng();
+    marker.addTo(map);
 }
