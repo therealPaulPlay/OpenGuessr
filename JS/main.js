@@ -1,29 +1,24 @@
-import * as A from "/JS/mainAsynced.js";
+/* Streetview */
 
-var guessIndex;
+var jsonResponse;
+var listOfLocations;
+
+function fetchJSON(generateNewLocation) {
+    const response = await fetch('../JSON/locList.json');
+    jsonResponse = await response.json();
+
+    listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
+    generateNewLocation();
+}
+
 var lastGuessIndex = null;
-var mapToLoad = "";
-var listOfLocations = A.locList; 
+var guessIndex;
+var mapToLoad;
 var currentGuessLAT = 0;
 var currentGuessLONG = 0;
 
-function setListOfLocs(locationList) {
-    mapToLoad = locationList;
-    console.log(mapToLoad);
-    console.log("got here");
-}
-
-function reloadIframe() {
-    document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
-    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
-}
-
-function reloadIFrameIngame() {
-    document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
-    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
-}
-
 function generateNewLocation() {
+
     do {
         guessIndex = Math.floor(Math.random()*listOfLocations.length);
     } while (lastGuessIndex == guessIndex);
@@ -36,6 +31,11 @@ function generateNewLocation() {
     //currentGuessLAT = listOfLocations[guessIndex+1];             //save target latitude in var (from array)
     //currentGuessLONG = listOfLocations[guessIndex+2];            //save target longitude in var (from array)
     reloadIframe();
+}
+
+function reloadIframe() {
+    document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
+    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
 }
 
 function transitionToStart() {
@@ -102,6 +102,7 @@ function compareDistances(distance) {
 
     enableResultScreen(resultAsString, extraMsg);
 }
+
 
 function setMapToTargetPosition(key, playersLat, playersLong) {
     resMap = document.getElementById("resultMap");
