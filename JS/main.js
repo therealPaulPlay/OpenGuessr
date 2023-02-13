@@ -1,4 +1,4 @@
-import "mainAsynced.js";
+import {listOfLocations} from "mainAsynced.js";
 
 function generateNewLocation() {
 
@@ -135,3 +135,4 @@ function enableResultScreen(resultString, extraMessage) {
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
 }
+
