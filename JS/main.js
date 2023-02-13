@@ -1,7 +1,7 @@
 var guessIndex;
 var lastGuessIndex = null;
 var mapToLoad;
-const listOfLocations; 
+var listOfLocations; 
 var currentGuessLAT = 0;
 var currentGuessLONG = 0;
 
