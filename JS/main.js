@@ -175,8 +175,9 @@ function startInitialization(){
 
     document.getElementById("resetButtonSVG").addEventListener("click", reloadIframe());
 
-    document.getElementById("icon").addEventListener("click", generateNewLocation());
+    document.getElementById("logo").addEventListener("click", generateNewLocation());
 
+    map.on('click', onMapClick);
 }
 
 function onMapClick(e) {
@@ -192,4 +193,4 @@ function onMapClick(e) {
     marker.addTo(map);
 }
 
-map.on('click', onMapClick);
+
