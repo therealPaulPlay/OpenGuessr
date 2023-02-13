@@ -173,10 +173,6 @@ function startInitialization(){
     var lat;
     var long;
 
-    document.getElementById("resetButtonSVG").addEventListener("click", reloadIframe());
-
-    document.getElementById("logo").addEventListener("click", generateNewLocation());
-
     map.on('click', onMapClick);
 }
 
