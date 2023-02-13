@@ -48,26 +48,6 @@
                 popupAnchor: [1, -34],
                 shadowSize: [41, 41]
             });
-
-            var marker = new L.Marker([0, 0]);
-            var markerPosition = marker.getLatLng();
-            var lat;
-            var long;
-
-            function onMapClick(e) {
-                if (marker) {
-                    map.removeLayer(marker);
-                }
-                lat = e.latlng.lat;
-                long = e.latlng.lng;
-
-                marker = new L.Marker([lat, long], {icon: redIcon});
-
-                markerPosition = marker.getLatLng();
-                marker.addTo(map);
-            }
-
-            map.on('click', onMapClick);
         </script>
         <!--streetview-->
         <div class="MainDiv">
