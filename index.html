@@ -77,10 +77,11 @@
             </script>
             <!--bottom toolbar with reset button-->
             <div class="BottomBar">
-                <img id="resetButtonSVG" src="IMG/reset.svg" onclick="reloadIframe(); clicked()">
+                <img id="resetButtonSVG" src="IMG/reset.svg" onclick="callReload()">
                 <img id="confirmButton" src="IMG/confirm.svg" onclick="calculateDistances(markerPosition.lat, markerPosition.lng);setMapToTargetPosition(key, lat, long)">
             </div>
             <!--load main script-->
+            <script type="javascript" src="JS/reloadStreetView.js"></script>
             <script type="module" src="JS/main.js"></script>
         </div>
     </body>

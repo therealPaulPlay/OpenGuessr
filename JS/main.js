@@ -150,7 +150,3 @@ function enableResultScreen(resultString, extraMessage) {
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
 }
-
-function clicked() {
-    console.log("clicked!");
-}
