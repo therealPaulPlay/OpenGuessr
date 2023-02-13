@@ -5,6 +5,8 @@ var listOfLocations;
 var currentGuessLAT = 0;
 var currentGuessLONG = 0;
 
+reloadIframe();
+
 function reloadIframe() {
     document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
     window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
