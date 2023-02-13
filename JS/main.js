@@ -174,7 +174,12 @@ function startInitialization(){
     var marker = new L.Marker([0, 0]);
     var markerPosition = marker.getLatLng();
     var lat;
-    var long
+    var long;
+
+    document.getElementById("resetButtonSVG").addEventListener("click", reloadIframe());
+
+    document.getElementById("icon").addEventListener("click", generateNewLocation());
+
 }
 
 function onMapClick(e) {
