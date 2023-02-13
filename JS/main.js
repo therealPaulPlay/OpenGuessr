@@ -10,8 +10,8 @@ console.log(listOfLocations);
 var lastGuessIndex = null;
 var guessIndex;
 var mapToLoad;
-var currentGuessLAT;
-var currentGuessLONG;
+var currentGuessLAT = 0;
+var currentGuessLONG = 0;
 
 generateNewLocation();
 
