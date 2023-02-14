@@ -1,8 +1,6 @@
 /* Streetview */
 import "../JS/loadMap.js";
 
-import markerPosition from "../JS/loadMap.js";
-
 var lastGuessIndex = null;
 var guessIndex;
 var mapToLoad;
@@ -156,6 +154,6 @@ function startInitialization(){
     var logoBTN = document.getElementById("logo");
     logoBTN.addEventListener("click", generateNewLocation);
     var confirmBTN = document.getElementById("confirmButton");
-    confirmBTN.addEventListener("click", calculateDistances(markerPosition.lat, markerPosition.lng), setMapToTargetPosition(key, lat, long));
+    confirmBTN.addEventListener("click", setMapToTargetPosition(key, lat, long));
 }
 
