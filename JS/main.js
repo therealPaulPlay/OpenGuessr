@@ -34,6 +34,7 @@ var veryCloseDistances;
 var closeDistances;
 var farDistances;
 var resMap;
+var extraMsg;
 
 /* Map functions */
 
@@ -52,10 +53,6 @@ function calculateDistances(mapsLat, mapsLong) {
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
     var d = R * c; // Distance in km
 
-    veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Let me guess; you have an A in geography?", "wow."]
-    closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!"];
-    farDistances = ["It was a good guess.", "You'll get it next time!", "atleast it was on the correct planet, right?"];
-
     compareDistances(d);
 }
   
@@ -66,6 +63,10 @@ function deg2rad(deg) {
 function compareDistances(distance) {
     var finalResult;
     var resultAsString;
+
+    veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Let me guess; you have an A in geography?", "wow."]
+    closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!"];
+    farDistances = ["It was a good guess.", "You'll get it next time!", "atleast it was on the correct planet, right?"];
 
     if(distance < 7 && !(distance<1)) {
         extraMsg = closeDistances[Math.floor(Math.random()*closeDistances.length)];
