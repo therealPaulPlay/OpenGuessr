@@ -84,7 +84,7 @@ function compareDistances(distance) {
         resultAsString = finalResult+" km";
     }
 
-    //enableResultScreen(resultAsString, extraMsg);
+    enableResultScreen(resultAsString, extraMsg);
 }
 
 function setMapToTargetPosition(key, playersLat, playersLong) {
@@ -156,6 +156,5 @@ function startInitialization(){
     var logoBTN = document.getElementById("logo");
     logoBTN.addEventListener("click", generateNewLocation);
     var confirmBTN = document.getElementById("confirmButton");
-
 }
 

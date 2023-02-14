@@ -100,6 +100,8 @@
                 map.on('click', onMapClick);
     
                 var confirmBTN = document.getElementById("confirmButton");
+                confirmBTN.addEventListener("click", setMapToTargetPosition.bind(key, lat, long));
+                confirmBTN.addEventListener("click", calculateDistances.bind(markerPosition.lat, markerPosition.lng));
             </script>
             <!--load main script-->
             <script type="module" src="JS/main.js"></script>
