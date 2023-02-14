@@ -75,12 +75,12 @@ function compareDistances(distance) {
         extraMsg = farDistances[Math.floor(Math.random()*farDistances.length)];
     }
     if (distance < 1) {
-        finalResult = Math.round(d*1000);
+        finalResult = Math.round(distance*1000);
         resultAsString = finalResult+" m";
         extraMsg = veryCloseDistances[Math.floor(Math.random()*veryCloseDistances.length)];
     }
     else {
-        finalResult = Math.round(d * 10) / 10;
+        finalResult = Math.round(distance * 10) / 10;
         resultAsString = finalResult+" km";
     }
 
