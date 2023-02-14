@@ -1,9 +1,5 @@
 const key = 'QADiAuIEfpISv0PGS7Ju';
-if (map) {
-    map.off();
-    map.remove();
-}
-var map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
+const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
 L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
     tileSize: 512,
     zoomOffset: -1,
