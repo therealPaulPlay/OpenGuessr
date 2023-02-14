@@ -174,7 +174,7 @@ function startInitialization(){
     var lat;
     var long;
 
-    function onMapClick(e) {
+    function onMapClick(e, lat, long, marker, markerPosition) {
         if (marker) {
             map.removeLayer(marker);
         }
@@ -187,7 +187,7 @@ function startInitialization(){
         marker.addTo(map);
     }
 
-    map.on('click', onMapClick);
+    map.on('click', onMapClick(e, lat, long, marker, markerPosition));
 
     var resetBTN = document.getElementById("resetButtonSVG");
     resetBTN.addEventListener("click", reloadIframe);
