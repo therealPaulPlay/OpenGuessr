@@ -1,4 +1,5 @@
 /* Streetview */
+import "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js";
 
 var lastGuessIndex = null;
 var guessIndex;
