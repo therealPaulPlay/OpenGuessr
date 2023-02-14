@@ -21,6 +21,14 @@ var markerPosition = marker.getLatLng();
 var lat;
 var long;
 
+var exportVariables = {
+    markerX: marker,
+    markPos: null,
+    keyX: key,
+    latX: lat,
+    longX: long
+};
+
 function onMapClick(e) {
 
     if (marker) {
@@ -33,6 +41,10 @@ function onMapClick(e) {
 
     markerPosition = marker.getLatLng();
     marker.addTo(map);
+    exportVariables.markerX = marker;
+    exportVariables.markPos = markerPosition;
 }
 
 map.on('click', onMapClick);
+
+export { exportVariables };
