@@ -154,6 +154,6 @@ function startInitialization(){
     var logoBTN = document.getElementById("logo");
     logoBTN.addEventListener("click", generateNewLocation);
     var confirmBTN = document.getElementById("confirmButton");
-    confirmBTN.addEventListener("click", calculateDistances(mapsLat, mapsLong), setMapToTargetPosition(key, playerLat, playersLong));
+    confirmBTN.addEventListener("click", calculateDistances(markerPosition.lat, markerPosition.lng), setMapToTargetPosition(key, lat, long));
 }
 
