@@ -20,8 +20,6 @@ function generateNewLocation() {
         guessIndex = Math.floor(Math.random()*listOfLocations.length);
     } while (lastGuessIndex == guessIndex);
 
-    console.log(guessIndex);
-
     lastGuessIndex = guessIndex;
 
     mapToLoad = listOfLocations[guessIndex];

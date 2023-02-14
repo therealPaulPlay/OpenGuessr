@@ -96,12 +96,20 @@
                     markerPosition = marker.getLatLng();
                     marker.addTo(map);
                 }
+
+                function callSetMapToTargetPosition() {
+                    setMapToTargetPosition(key, lat, long);
+                }
+
+                function callCalculateDistances() {
+                    calculateDistances.bind(markerPosition.lat, markerPosition.lng);
+                }
     
                 map.on('click', onMapClick);
     
                 var confirmBTN = document.getElementById("confirmButton");
-                confirmBTN.addEventListener("click", setMapToTargetPosition.bind(key, lat, long));
-                confirmBTN.addEventListener("click", calculateDistances.bind(markerPosition.lat, markerPosition.lng));
+                confirmBTN.addEventListener("click", callSetMapToTargetPosition);
+                confirmBTN.addEventListener("click", callCalculateDistances);
             </script>
             <!--load main script-->
             <script type="module" src="JS/main.js"></script>
