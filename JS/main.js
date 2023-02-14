@@ -38,10 +38,10 @@ var resMap;
 /* Map functions */
 
 function calculateDistances(mapsLat, mapsLong) {
-    lat1 = mapsLat;
-    lon1 = mapsLong;
-    lat2 = currentGuessLAT;
-    lon2 = currentGuessLONG;
+    var lat1 = mapsLat;
+    var lon1 = mapsLong;
+    var lat2 = currentGuessLAT;
+    var lon2 = currentGuessLONG;
     var R = 6371; // Radius of the earth in km
     var dLat = deg2rad(lat2-lat1);  // deg2rad below
     var dLon = deg2rad(lon2-lon1); 
