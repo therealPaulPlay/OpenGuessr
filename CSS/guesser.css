@@ -134,6 +134,7 @@ html * {
 
 /* GameOver content */
 
+/*
 #EndOverlay {
     overflow: hidden;
     color: #EEE;
@@ -202,7 +203,7 @@ html * {
     color: transparent;
     background-color: transparent;
     border: 0;
-}
+}*/
 
 
 #BeforeOverlay {
