@@ -1,5 +1,5 @@
 /* Streetview */
-import "https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js";
+import "../leaflet/leaflet.js";
 
 var lastGuessIndex = null;
 var guessIndex;
@@ -13,7 +13,6 @@ const jsonResponse = await response.json();
 const listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
 generateNewLocation();
 startInitialization();
-
 
 function generateNewLocation() {
 
