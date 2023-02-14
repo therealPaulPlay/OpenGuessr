@@ -157,5 +157,6 @@ function startInitialization(){
     logoBTN.addEventListener("click", generateNewLocation);
     var confirmBTN = document.getElementById("confirmButton");
     confirmBTN.addEventListener("click", calculateDistances(markerPosition.lat, markerPosition.lng));
+    confirmBTN.addEventListener("click", setMapToTargetPosition(key, lat, long));
 }
 
