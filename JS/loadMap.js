@@ -21,13 +21,14 @@ var markerPosition = marker.getLatLng();
 var lat;
 var long;
 
+/*
 var exportVariables = {
     markerX: marker,
     markPos: null,
     keyX: key,
     latX: lat,
     longX: long
-};
+};*/
 
 function onMapClick(e) {
 
@@ -41,10 +42,15 @@ function onMapClick(e) {
 
     markerPosition = marker.getLatLng();
     marker.addTo(map);
+    /*
     exportVariables.markerX = marker;
-    exportVariables.markPos = markerPosition;
+    exportVariables.markPos = markerPosition;*/
 }
 
 map.on('click', onMapClick);
 
-export { exportVariables };
+var confirmBTN = document.getElementById("confirmButton");
+confirmBTN.addEventListener("click", calculateDistances(markerPosition.lat, markerPosition.lng), setMapToTargetPosition(key, lat, long));
+
+
+//export { exportVariables };
