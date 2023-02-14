@@ -1,3 +1,4 @@
+map.off();
 map.remove();
 
 const key = 'QADiAuIEfpISv0PGS7Ju';
