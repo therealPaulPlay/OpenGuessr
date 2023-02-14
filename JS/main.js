@@ -1,6 +1,8 @@
 /* Streetview */
 import "../JS/loadMap.js";
 
+import markerPosition from "../JS/loadMap.js";
+
 var lastGuessIndex = null;
 var guessIndex;
 var mapToLoad;
