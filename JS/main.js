@@ -50,7 +50,7 @@ function calculateDistances(mapsLat, mapsLong) {
       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
       Math.sin(dLon/2) * Math.sin(dLon/2); 
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    d = R * c; // Distance in km
+    var d = R * c; // Distance in km
 
     veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Let me guess; you have an A in geography?", "wow."]
     closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!"];
