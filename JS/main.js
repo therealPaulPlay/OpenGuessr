@@ -151,6 +151,11 @@ function transitionToStart() {
 }
 
 function startInitialization(){
+    var markerPosition = window.markerPosition;
+    var key = window.key;
+    var lat = window.lat;
+    var long = window.long;
+
     var resetBTN = document.getElementById("resetButtonSVG");
     resetBTN.addEventListener("click", reloadIframe);
     var logoBTN = document.getElementById("logo");
