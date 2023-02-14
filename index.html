@@ -50,6 +50,28 @@
                 shadowSize: [41, 41]
             });
             */
+            const mapObj = document.getElementById("map");
+
+            var marker = new L.Marker([0, 0]);
+            var markerPosition = marker.getLatLng();
+            var lat;
+            var long;
+
+            function onMapClick(e, lat, long, marker, markerPosition) {
+
+                if (marker) {
+                    mapObj.removeLayer(marker);
+                }
+                lat = e.latlng.lat;
+                long = e.latlng.lng;
+            
+                marker = new L.Marker([lat, long], {icon: redIcon});
+            
+                markerPosition = marker.getLatLng();
+                marker.addTo(mapObj);
+            }
+
+            mapObj.on('click', onMapClick);
         </script>
         <!--streetview-->
         <div class="MainDiv">

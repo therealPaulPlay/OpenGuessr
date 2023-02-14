@@ -169,27 +169,6 @@ function startInitialization(){
         shadowSize: [41, 41]
     });
 
-    var marker = new L.Marker([0, 0]);
-    var markerPosition = marker.getLatLng();
-    var lat;
-    var long;
-
-    function onMapClick(e, lat, long, marker, markerPosition) {
-
-        if (marker) {
-            map.removeLayer(marker);
-        }
-        lat = e.latlng.lat;
-        long = e.latlng.lng;
-    
-        marker = new L.Marker([lat, long], {icon: redIcon});
-    
-        markerPosition = marker.getLatLng();
-        marker.addTo(map);
-    }
-
-    map.on('click', onMapClick);
-
     var resetBTN = document.getElementById("resetButtonSVG");
     resetBTN.addEventListener("click", reloadIframe);
     var logoBTN = document.getElementById("logo");
