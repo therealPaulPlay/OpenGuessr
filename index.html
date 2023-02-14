@@ -40,26 +40,7 @@
                 <img id="resetButtonSVG" src="IMG/reset.svg">
                 <img id="confirmButton" src="IMG/confirm.svg">
             </div>
-            <script>
-                /*
-                const key = 'QADiAuIEfpISv0PGS7Ju';
-                const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
-                L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
-                    tileSize: 512,
-                    zoomOffset: -1,
-                    minZoom: 1,
-                    //attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
-                    crossOrigin: true
-                }).addTo(map);
-    
-                var redIcon = new L.Icon({
-                    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                    iconSize: [25, 41],
-                    iconAnchor: [12, 41],
-                    popupAnchor: [1, -34],
-                    shadowSize: [41, 41]
-                });
-                */
+            <script>/*
                 const key = 'QADiAuIEfpISv0PGS7Ju';
                 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
                 L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
@@ -96,27 +77,11 @@
                     markerPosition = marker.getLatLng();
                     marker.addTo(map);
                 }
-
-                function callSetMapToTargetPosition() {
-                    setMapToTargetPosition(key, lat, long);
-                }
-
-                function callCalculateDistances() {
-                    calculateDistances.bind(markerPosition.lat, markerPosition.lng);
-                }
     
-                map.on('click', onMapClick);
-
-                const confBTN = document.getElementById("confirmButton");
-
-                confBTN.on('click', callSetMapToTargetPosition);
-                confBTN.on('click', callCalculateDistances);
-    
-                var confirmBTN = document.getElementById("confirmButton");
-                confirmBTN.addEventListener("click", callSetMapToTargetPosition);
-                confirmBTN.addEventListener("click", callCalculateDistances);
+                map.on('click', onMapClick);*/
             </script>
             <!--load main script-->
+            <script  src="JS/loadMap.js"></script>
             <script type="module" src="JS/main.js"></script>
         </div>
     </body>

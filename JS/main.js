@@ -1,5 +1,5 @@
 /* Streetview */
-import "../leaflet/leaflet.js";
+import "../JS/loadMap.js";
 
 var lastGuessIndex = null;
 var guessIndex;
@@ -154,5 +154,6 @@ function startInitialization(){
     var logoBTN = document.getElementById("logo");
     logoBTN.addEventListener("click", generateNewLocation);
     var confirmBTN = document.getElementById("confirmButton");
+    confirmBTN.addEventListener("click", calculateDistances(mapsLat, mapsLong), setMapToTargetPosition(key, playerLat, playersLong));
 }
 
