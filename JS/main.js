@@ -155,5 +155,7 @@ function startInitialization(){
     resetBTN.addEventListener("click", reloadIframe);
     var logoBTN = document.getElementById("logo");
     logoBTN.addEventListener("click", generateNewLocation);
+    var confirmBTN = document.getElementById("confirmButton");
+    confirmBTN.addEventListener("click", calculateDistances(markerPosition.lat, markerPosition.lng));
 }
 
