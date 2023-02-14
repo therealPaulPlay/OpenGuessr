@@ -35,6 +35,11 @@
             <iframe id="GuesserWindow" src="https://www.google.com/maps/embed?pb=!4v1676316391332!6m8!1m7!1s-F0-n2PVoUNu8NPn2HG1Aw!2m2!1d3.012222359652991!2d101.4514473096548!3f147!4f5!5f0.8160813932612223" width="1920" height="1080" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>         
             <!--map-->
             <div id="map"></div>
+            <!--bottom toolbar with reset button-->
+            <div class="BottomBar">
+                <img id="resetButtonSVG" src="IMG/reset.svg">
+                <img id="confirmButton" src="IMG/confirm.svg">
+            </div>
             <script>
                 /*
                 const key = 'QADiAuIEfpISv0PGS7Ju';
@@ -78,7 +83,7 @@
                 var lat;
                 var long;
     
-                function onMapClick(e, lat, long, marker, markerPosition) {
+                function onMapClick(e) {
     
                     if (marker) {
                         map.removeLayer(marker);
@@ -97,13 +102,7 @@
                 var confirmBTN = document.getElementById("confirmButton");
                 confirmBTN.addEventListener("click", calculateDistances(markerPosition.lat, markerPosition.lng), setMapToTargetPosition(key, lat, long));
             </script>
-            <!--bottom toolbar with reset button-->
-            <div class="BottomBar">
-                <img id="resetButtonSVG" src="IMG/reset.svg">
-                <img id="confirmButton" src="IMG/confirm.svg">
-            </div>
             <!--load main script-->
-            <!--<script type="module" src="JS/mainAsynced.js"></script>-->
             <script type="module" src="JS/main.js"></script>
         </div>
     </body>
