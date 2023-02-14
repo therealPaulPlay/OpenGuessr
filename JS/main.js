@@ -3,8 +3,8 @@
 var lastGuessIndex = null;
 var guessIndex;
 var mapToLoad;
-var currentGuessLAT = 0;
-var currentGuessLONG = 0;
+var currentGuessLAT = 40;
+var currentGuessLONG = 40;
 
 const response = await fetch('../JSON/locList.json');
 const jsonResponse = await response.json();
@@ -84,7 +84,7 @@ function compareDistances(distance) {
         resultAsString = finalResult+" km";
     }
 
-    enableResultScreen(resultAsString, extraMsg);
+    //enableResultScreen(resultAsString, extraMsg);
 }
 
 function setMapToTargetPosition(key, playersLat, playersLong) {
