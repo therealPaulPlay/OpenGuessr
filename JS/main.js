@@ -3,13 +3,23 @@ var guessIndex;
 var mapToLoad;
 var currentGuessLAT = 40;
 var currentGuessLONG = 40;
+var currentGuessLatLng;
 
 const response = await fetch('../JSON/locList.json');
 const jsonResponse = await response.json();
 
 const listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
+
 generateNewLocation();
 startInitialization();
+
+function URLtoLatLng(url) {
+    this.lat = url.replace(/^.+!3d(.+)!4d.+$/, '$1');
+    this.lng = url.replace(/^.+!4d(.+)!6e.+$/, '$1');
+    console.log(this.lng);
+    console.log(this.lat);
+    return this;
+}
 
 function generateNewLocation() {
 
@@ -19,9 +29,13 @@ function generateNewLocation() {
 
     lastGuessIndex = guessIndex;
 
-    mapToLoad = listOfLocations[guessIndex];
-    //currentGuessLAT = listOfLocations[guessIndex+1];             //save target latitude in var (from array)
-    //currentGuessLONG = listOfLocations[guessIndex+2];            //save target longitude in var (from array)
+    mapToLoad = listOfLocationsAllLinks[guessIndex];
+
+    currentGuessLatLng = URLtoLatLng(mapToLoad);
+
+    currentGuessLAT = currentGuessLatLng.lat;             //save target latitude in var (from array)
+    currentGuessLONG = currentGuessLatLng.lng;            //save target longitude in var (from array)
+
     reloadIframe();
 }
 
