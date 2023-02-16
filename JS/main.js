@@ -29,7 +29,7 @@ function generateNewLocation() {
     var currentGuessLngArray = [];
 
     if (mapToLoad.length > 114) {
-        for (let i = 93; i < mapToLoad.length; i++) {
+        for (let i = 93; i < mapToLoad.length; i++) {              //cut away unnecessary parts of link to get latitude
             if (mapToLoad[i] != "!") {
                 currentGuessLatArray[i] = mapToLoad[i];
             }
@@ -37,7 +37,7 @@ function generateNewLocation() {
                 break;
             }
         }
-        for (let j = 113; j < mapToLoad.length; j++) {
+        for (let j = 113; j < mapToLoad.length; j++) {              //cut away unnecessary parts of link to get longitude
             if (mapToLoad[j] != "!") {
                 currentGuessLngArray[j] = mapToLoad[j];
             }
@@ -53,7 +53,7 @@ function generateNewLocation() {
     if (currentGuessLatArray[0] < 0 || currentGuessLatArray[0] > 9 || currentGuessLatArray[0] != "-") {
         currentGuessLatArray.shift();
     }
-    currentGuessLatArray.splice(currentGuessLatArray.length, -7);
+    currentGuessLatArray.splice(currentGuessLatArray.length, -12);
     currentGuessLngArray.splice(currentGuessLngArray.length, -7);
 
     currentGuessLAT = currentGuessLatArray.join('');
