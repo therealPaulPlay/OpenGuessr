@@ -29,7 +29,7 @@ function generateNewLocation() {
 
     lastGuessIndex = guessIndex;
 
-    mapToLoad = listOfLocationsAllLinks[guessIndex];
+    mapToLoad = listOfLocations[guessIndex];
 
     currentGuessLatLng = URLtoLatLng(mapToLoad);
 
