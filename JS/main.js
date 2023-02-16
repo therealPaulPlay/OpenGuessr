@@ -28,26 +28,32 @@ function generateNewLocation() {
     var currentGuessLatArray = [];
     var currentGuessLngArray = [];
 
-    if (mapToLoad.length > 95) {
+
+    if (mapToLoad.length > 114) {
         for (let i = 93; i < mapToLoad.length; i++) {
             if (mapToLoad[i] != "!") {
                 currentGuessLatArray[i] = mapToLoad[i];
             }
             else {
+                if (currentGuessLatArray[0] < 0 || currentGuessLatArray[0] > 9 || currentGuessLatArray[0] != "-") {
+                    currentGuessLatArray.shift();
+                }
                 break;
             }
         }
-    }
-
-    if (mapToLoad.length > 114) {
-        for (let i = 113; i < mapToLoad.length; i++) {
+        for (let j = 113; j < mapToLoad.length; j++) {
             if (mapToLoad[i] != "!") {
                 currentGuessLngArray[i] = mapToLoad[i];
             }
             else {
+                if (currentGuessLngArray[0] < 0 || currentGuessLngArray[0] > 9 || currentGuessLngArray[0] != "-") {
+                    currentGuessLngArray.shift();
+                }
                 break;
             }
         }
+        currentGuessLatArray.splice(currentGuessLatArray.length, -7);
+        currentGuessLngArray.splice(currentGuessLngArray.length, -7);
     }
 
     currentGuessLAT = currentGuessLatArray.join('');
