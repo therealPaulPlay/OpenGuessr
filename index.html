@@ -36,6 +36,7 @@
             <!--map-->
             <div id="map"></div>
             <script>
+                //this is so we don't get a duplicate map declaration. Simply removes the old one.
                 var map = L.map('map');
                 map.off();
                 map.remove();

@@ -4,39 +4,37 @@ var mapToLoad;
 var currentGuessLAT = 40;
 var currentGuessLONG = 40;
 
+//reading in JSON
+
 const response = await fetch('../JSON/locList.json');
 const jsonResponse = await response.json();
 
 const listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
 
-generateNewLocation();
-startInitialization();
+generateNewLocation();                                                      //call start functions after JSON is loaded
+enableClickListeners();
 
 function generateNewLocation() {
     do {
-        guessIndex = Math.floor(Math.random()*listOfLocations.length);
+        guessIndex = Math.floor(Math.random()*listOfLocations.length);      //calculating random location
     } while (lastGuessIndex == guessIndex);
 
-    lastGuessIndex = guessIndex;
+    lastGuessIndex = guessIndex;                                            //setting last Index
 
-    mapToLoad = listOfLocations[guessIndex];
+    mapToLoad = listOfLocations[guessIndex];                                //declares which map is being loaded
 
-    /*
-    currentGuessLAT = mapToLoad.replace(/^.+!3d(.+)!4d.+$/, '$1');             //save target latitude in var (from array)
-    currentGuessLONG = mapToLoad.replace(/^.+!4d(.+)!6e.+$/, '$1');            //save target longitude in var (from array)*/
+    var currentGuessLatArray = [];                                          //creation of 2 arrays that temporarily store
+    var currentGuessLngArray = [];                                          //lat and long values taken from link
 
-    var currentGuessLatArray = [];
-    var currentGuessLngArray = [];
-
-    var secondIndex = 0;
+    var secondIndex = 0;                                                    //declares where longitudes start
 
     if (mapToLoad.length > 140) {
-        for (let i = 93; i < mapToLoad.length; i++) {              //cut away unnecessary parts of link to get latitude
+        for (let i = 93; i < mapToLoad.length; i++) {                       //cut away unnecessary parts of link to get latitude
             if (mapToLoad[i] != "!") {
                 currentGuessLatArray[i] = mapToLoad[i];
             }
             else {
-                secondIndex = i+3;
+                secondIndex = i+3;                                          //declares where the longitudes are starting
                 break;
             }
         }
@@ -57,19 +55,15 @@ function generateNewLocation() {
         currentGuessLatArray.shift();           //remove first index if it isnt showing it being negative or a longer number
     }
 
-    for (let k = 0; k < 7; k++) {
+    for (let k = 0; k < 7; k++) {               //removes last 7 objects, could do with splice but I found this to be more understandable
         currentGuessLatArray.pop();     
         currentGuessLngArray.pop();     
     }
 
-    currentGuessLAT = currentGuessLatArray.join('');
+    currentGuessLAT = currentGuessLatArray.join('');        //saves lats and longs in seperate variables
     currentGuessLONG = currentGuessLngArray.join('');
 
-    console.log(mapToLoad);
-    console.log(currentGuessLAT);
-    console.log(currentGuessLONG);
-
-    reloadIframe();
+    reloadIframe();                                         //now the map is generated, the iFrame is being reloaded.
 }
 
 var veryCloseDistances;
@@ -81,6 +75,7 @@ var extraMsg;
 /* Map functions */
 
 export function calculateDistances(mapsLat, mapsLong) {
+    //calculates distance between set point and actual point.
     var lat1 = mapsLat;
     var lon1 = mapsLong;
     var lat2 = currentGuessLAT;
@@ -95,7 +90,7 @@ export function calculateDistances(mapsLat, mapsLong) {
     var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
     var d = R * c; // Distance in km
 
-    compareDistances(d);
+    compareDistances(d);    
 }
   
 function deg2rad(deg) {
@@ -103,6 +98,7 @@ function deg2rad(deg) {
 }
 
 function compareDistances(distance) {
+    //compares how big the distance is and enables result screen with a message.
 
     var finalResult;
     var resultAsString;
@@ -131,6 +127,8 @@ function compareDistances(distance) {
 }
 
 export function setMapToTargetPosition(key, playersLat, playersLong) {
+    //this makes it so the map in the result screen is focused on the center between the point
+    //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15); //starting position
     L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
@@ -152,6 +150,8 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
     var latlng = L.latLng(currentGuessLAT, currentGuessLONG);
     L.marker(latlng, {icon: redIcon}).addTo(resMap);
 
+    //used to create the line between the points
+
     var curLatLng = new L.LatLng(currentGuessLAT, currentGuessLONG);
     var playerLatLng = new L.LatLng(playersLat, playersLong);
     var polyList = [curLatLng, playerLatLng];
@@ -165,6 +165,8 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
 }
 
 function enableResultScreen(resultString, extraMessage) {
+    //enables the result screen.
+
     document.getElementById("map").style.visibility = "hidden";
     document.getElementById("EndOverlay").style.visibility = "visible";
     document.getElementById("EndOverlay").zIndex = "12";
@@ -180,11 +182,15 @@ function enableResultScreen(resultString, extraMessage) {
 }
 
 function reloadIframe() {
+    //reloads the iFrame and sets the position of the camera back to it's origin.
+
     document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
     window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
 }
 
 function transitionToStart() {
+    //fancy function to make a fade in to prevent the flashing of the iframe.
+
     document.getElementById("BeforeOverlay").style.opacity = 0;
     document.getElementById("BeforeOverlay").style.visibility = "visible";
     document.getElementById("BeforeOverlay").style.opacity = 100;
@@ -193,7 +199,9 @@ function transitionToStart() {
     }, 200);
 }
 
-function startInitialization(){
+function enableClickListeners(){
+    //adding click listeners
+
     var resetBTN = document.getElementById("resetButtonSVG");
     resetBTN.addEventListener("click", reloadIframe);
     var logoBTN = document.getElementById("logo");

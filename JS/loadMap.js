@@ -2,6 +2,8 @@ import "../JS/main.js";
 import { setMapToTargetPosition } from "./main.js";
 import { calculateDistances } from "./main.js";
 
+//initializes map (check out leaflet for more information)
+
 const key = 'QADiAuIEfpISv0PGS7Ju';
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
 L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
@@ -26,6 +28,8 @@ var lat;
 var long;
 
 function onMapClick(e) {
+    //creates markers wherever the user clicks and if it clicks to another position,
+    //delete the old one and also save the position in latitudes and longitudes
 
     if (marker) {
         map.removeLayer(marker);
@@ -41,11 +45,14 @@ function onMapClick(e) {
 
 map.on('click', onMapClick);
 
+
+//click listener to make the confirm button work
 var confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
 
 
 export function confirmButtonClicks() {
+    //calls functions since you can't pass parameters from a function outside of the file.
     calculateDistances(markerPosition.lat, markerPosition.lng);
     setMapToTargetPosition(key, lat, long);
 }
