@@ -37,9 +37,6 @@ function onMapClick(e) {
 
     markerPosition = marker.getLatLng();
     marker.addTo(map);
-    /*
-    exportVariables.markerX = marker;
-    exportVariables.markPos = markerPosition;*/
 }
 
 map.on('click', onMapClick);
