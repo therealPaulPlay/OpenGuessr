@@ -29,7 +29,7 @@ function generateNewLocation() {
     var currentGuessLngArray = [];
 
     if (mapToLoad.length > 95) {
-        for (let i = 94; i < mapToLoad.length; i++) {
+        for (let i = 93; i < mapToLoad.length; i++) {
             if (mapToLoad[i] != "!") {
                 currentGuessLatArray[i] = mapToLoad[i];
             }
@@ -39,8 +39,8 @@ function generateNewLocation() {
         }
     }
 
-    if (mapToLoad.length > 113) {
-        for (let i = 112; i < mapToLoad.length; i++) {
+    if (mapToLoad.length > 114) {
+        for (let i = 113; i < mapToLoad.length; i++) {
             if (mapToLoad[i] != "!") {
                 currentGuessLngArray[i] = mapToLoad[i];
             }
