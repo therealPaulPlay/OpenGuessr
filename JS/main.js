@@ -36,7 +36,7 @@ function generateNewLocation() {
                 currentGuessLatArray[i] = mapToLoad[i];
             }
             else {
-                secondIndex = i+2;
+                secondIndex = i+3;
                 break;
             }
         }
