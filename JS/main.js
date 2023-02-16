@@ -54,6 +54,11 @@ function generateNewLocation() {
         currentGuessLatArray.shift();           //remove first index if it isnt showing it being negative or a longer number
     }
 
+    for (let k = 0; k < 7; k++) {
+        currentGuessLatArray.pop();     
+        currentGuessLngArray.pop();     
+    }
+    
     currentGuessLAT = currentGuessLatArray.join('');
     currentGuessLONG = currentGuessLngArray.join('');
 
