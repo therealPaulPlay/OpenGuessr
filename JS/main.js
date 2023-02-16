@@ -120,6 +120,7 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
 }
 
 function enableResultScreen(resultString, extraMessage) {
+    console.log("enableResScrn");
     document.getElementById("map").style.visibility = "hidden";
     document.getElementById("EndOverlay").style.visibility = "visible";
     document.getElementById("EndOverlay").zIndex = "12";
