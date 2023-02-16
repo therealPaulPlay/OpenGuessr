@@ -14,7 +14,7 @@ generateNewLocation();
 startInitialization();
 
 function URLtoLatLng(url) {
-    var tempVar;
+    let tempVar;
     tempVar.lat = url.replace(/^.+!3d(.+)!4d.+$/, '$1');
     console.log(tempVar.lat);
     tempVar.lng = url.replace(/^.+!4d(.+)!6e.+$/, '$1');
