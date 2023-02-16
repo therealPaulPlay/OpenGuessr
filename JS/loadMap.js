@@ -51,7 +51,7 @@ function onMapClick(e) {
 
 map.on('click', onMapClick);
 
-var confirmBTN = document.getElementById("confirmButton");
+let confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", calculateDistances(markerPosition.lat, markerPosition.lng), setMapToTargetPosition(key, lat, long));
 
 
