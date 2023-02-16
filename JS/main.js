@@ -25,17 +25,36 @@ function generateNewLocation() {
     currentGuessLAT = mapToLoad.replace(/^.+!3d(.+)!4d.+$/, '$1');             //save target latitude in var (from array)
     currentGuessLONG = mapToLoad.replace(/^.+!4d(.+)!6e.+$/, '$1');            //save target longitude in var (from array)*/
 
-    var currentGuessLatLng = [];
+    var currentGuessLatArray = [];
+    var currentGuessLngArray = [];
 
-    if (mapToLoad.length > 94) {
+    if (mapToLoad.length > 95) {
         for (let i = 94; i < mapToLoad.length; i++) {
-            currentGuessLatLng[i] = mapToLoad[i];
+            if (mapToLoad[i] != "!") {
+                currentGuessLatArray[i] = mapToLoad[i];
+            }
+            else {
+                break;
+            }
         }
     }
 
-    currentGuessLatLng = currentGuessLatLng.join('');
+    if (mapToLoad.length > 113) {
+        for (let i = 112; i < mapToLoad.length; i++) {
+            if (mapToLoad[i] != "!") {
+                currentGuessLngArray[i] = mapToLoad[i];
+            }
+            else {
+                break;
+            }
+        }
+    }
 
-    console.log(currentGuessLatLng);
+    currentGuessLAT = currentGuessLatArray.join('');
+    currentGuessLONG = currentGuessLngArray.join('');
+
+    console.log(currentGuessLAT);
+    console.log(currentGuessLONG);
 
     reloadIframe();
 }
