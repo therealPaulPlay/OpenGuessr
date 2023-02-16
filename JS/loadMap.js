@@ -46,7 +46,6 @@ confirmBTN.addEventListener("click", confirmButtonClicks);
 
 
 export function confirmButtonClicks() {
-    console.log("confirmed button click.");
     calculateDistances(markerPosition.lat, markerPosition.lng);
     setMapToTargetPosition(key, lat, long);
 }
