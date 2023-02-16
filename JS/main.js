@@ -25,7 +25,7 @@ function generateNewLocation() {
     currentGuessLAT = mapToLoad.replace(/^.+!3d(.+)!4d.+$/, '$1');             //save target latitude in var (from array)
     currentGuessLONG = mapToLoad.replace(/^.+!4d(.+)!6e.+$/, '$1');            //save target longitude in var (from array)*/
 
-    var currentGuessLatLng;
+    var currentGuessLatLng = [];
 
     if (mapToLoad.length > 94) {
         for (let i = 92; i < mapToLoad.length; i++) {
