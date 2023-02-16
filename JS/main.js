@@ -14,11 +14,8 @@ generateNewLocation();
 startInitialization();
 
 function URLtoLatLng(url) {
-    this.lat = url.replace(/^.+!3d(.+)!4d.+$/, '$1');
-    this.lng = url.replace(/^.+!4d(.+)!6e.+$/, '$1');
-    console.log(this.lng);
-    console.log(this.lat);
-    return this;
+    currentGuessLatLng.lat = url.replace(/^.+!3d(.+)!4d.+$/, '$1');
+    currentGuessLatLng.lng = url.replace(/^.+!4d(.+)!6e.+$/, '$1');
 }
 
 function generateNewLocation() {
@@ -31,7 +28,7 @@ function generateNewLocation() {
 
     mapToLoad = listOfLocations[guessIndex];
 
-    currentGuessLatLng = URLtoLatLng(mapToLoad);
+    URLtoLatLng();
 
     currentGuessLAT = currentGuessLatLng.lat;             //save target latitude in var (from array)
     currentGuessLONG = currentGuessLatLng.lng;            //save target longitude in var (from array)
