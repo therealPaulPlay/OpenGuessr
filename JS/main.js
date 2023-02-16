@@ -32,6 +32,9 @@ function generateNewLocation() {
         }
     }
 
+    console.log(currentGuessLAT);
+    console.log(currentGuessLONG);
+
     reloadIframe();
 }
 
