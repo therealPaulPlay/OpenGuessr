@@ -28,16 +28,19 @@ function generateNewLocation() {
     var currentGuessLatArray = [];
     var currentGuessLngArray = [];
 
-    if (mapToLoad.length > 114) {
+    var secondIndex = 0;
+
+    if (mapToLoad.length > 140) {
         for (let i = 93; i < mapToLoad.length; i++) {              //cut away unnecessary parts of link to get latitude
             if (mapToLoad[i] != "!") {
                 currentGuessLatArray[i] = mapToLoad[i];
             }
             else {
+                secondIndex = i+2;
                 break;
             }
         }
-        for (let j = 113; j < mapToLoad.length; j++) {              //cut away unnecessary parts of link to get longitude
+        for (let j = secondIndex; j < mapToLoad.length; j++) {              //cut away unnecessary parts of link to get longitude
             if (mapToLoad[j] != "!") {
                 currentGuessLngArray[j] = mapToLoad[j];
             }
