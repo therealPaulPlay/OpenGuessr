@@ -47,10 +47,10 @@ function generateNewLocation() {
         }
     }
 
-    if (currentGuessLngArray[0] != "-" || currentGuessLngArray[0] < 0 || currentGuessLngArray[0] > 9) {
+    if (!(currentGuessLngArray[0] == "-" || currentGuessLngArray[0] > 0 && currentGuessLngArray[0] <= 9)) {
         currentGuessLngArray.shift();           //remove first index if it isnt showing it being negative or a longer number
     }
-    if (currentGuessLatArray[0] != "-" || currentGuessLatArray[0] < 0 || currentGuessLatArray[0] > 9) {
+    if (!(currentGuessLatArray[0] == "-" || currentGuessLatArray[0] > 0 && currentGuessLatArray[0] <= 9)) {
         currentGuessLatArray.shift();           //remove first index if it isnt showing it being negative or a longer number
     }
 
@@ -58,7 +58,7 @@ function generateNewLocation() {
         currentGuessLatArray.pop();     
         currentGuessLngArray.pop();     
     }
-    
+
     currentGuessLAT = currentGuessLatArray.join('');
     currentGuessLONG = currentGuessLngArray.join('');
 
