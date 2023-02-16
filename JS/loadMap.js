@@ -1,4 +1,6 @@
 import "../JS/main.js";
+import { setMapToTargetPosition } from "./main.js";
+import { calculateDistances } from "./main.js";
 
 const key = 'QADiAuIEfpISv0PGS7Ju';
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
@@ -41,9 +43,12 @@ function onMapClick(e) {
 }
 
 map.on('click', onMapClick);
-
-document.getElementById("confirmButton").onclick(window.calculateDistances(markerPosition.lat, markerPosition.lng), window.setMapToTargetPosition(key, lat, long));
-
 /*
 var confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", calculateDistances(markerPosition.lat, markerPosition.lng), setMapToTargetPosition(key, lat, long));*/
+
+
+export function confirmButtonClicks() {
+    calculateDistances(markerPosition.lat, markerPosition.lng);
+    setMapToTargetPosition(key, lat, long);
+}
