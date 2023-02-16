@@ -28,7 +28,7 @@ function generateNewLocation() {
 
     mapToLoad = listOfLocations[guessIndex];
 
-    URLtoLatLng();
+    URLtoLatLng(mapToLoad);
 
     currentGuessLAT = currentGuessLatLng.lat;             //save target latitude in var (from array)
     currentGuessLONG = currentGuessLatLng.lng;            //save target longitude in var (from array)
