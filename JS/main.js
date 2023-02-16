@@ -34,6 +34,9 @@ function generateNewLocation() {
     currentGuessLAT = currentGuessLatLng.lat;             //save target latitude in var (from array)
     currentGuessLONG = currentGuessLatLng.lng;            //save target longitude in var (from array)
 
+    console.log(currentGuessLAT);
+    console.log(currentGuessLONG);
+
     reloadIframe();
 }
 
