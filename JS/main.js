@@ -13,14 +13,6 @@ const listOfLocations = Object.values(jsonResponse).flat().map(i => Object.value
 generateNewLocation();
 startInitialization();
 
-function URLtoLatLng(url) {
-    let tempVar;
-    tempVar.lat = url.replace(/^.+!3d(.+)!4d.+$/, '$1');
-    console.log(tempVar.lat);
-    tempVar.lng = url.replace(/^.+!4d(.+)!6e.+$/, '$1');
-    console.log(tempVar.lng);
-    return tempVar;
-}
 
 function generateNewLocation() {
 
@@ -32,12 +24,8 @@ function generateNewLocation() {
 
     mapToLoad = listOfLocations[guessIndex];
 
-    currentGuessLatLng = new URLtoLatLng(mapToLoad);
-
-    console.log(currentGuessLatLng.lat);
-
-    currentGuessLAT = currentGuessLatLng.lat;             //save target latitude in var (from array)
-    currentGuessLONG = currentGuessLatLng.lng;            //save target longitude in var (from array)
+    currentGuessLAT = mapToLoad.replace(/^.+!3d(.+)!4d.+$/, '$1');             //save target latitude in var (from array)
+    currentGuessLONG = mapToLoad.replace(/^.+!4d(.+)!6e.+$/, '$1');            //save target longitude in var (from array)
 
     console.log(currentGuessLAT);
     console.log(currentGuessLONG);
