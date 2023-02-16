@@ -36,7 +36,7 @@ var extraMsg;
 
 /* Map functions */
 
-function calculateDistances(mapsLat, mapsLong) {
+export function calculateDistances(mapsLat, mapsLong) {
     var lat1 = mapsLat;
     var lon1 = mapsLong;
     var lat2 = currentGuessLAT;
@@ -85,7 +85,7 @@ function compareDistances(distance) {
     enableResultScreen(resultAsString, extraMsg);
 }
 
-function setMapToTargetPosition(key, playersLat, playersLong) {
+export function setMapToTargetPosition(key, playersLat, playersLong) {
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15); //starting position
     L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
