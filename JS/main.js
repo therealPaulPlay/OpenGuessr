@@ -14,11 +14,12 @@ generateNewLocation();
 startInitialization();
 
 function URLtoLatLng(url) {
-    this.lat = url.replace(/^.+!3d(.+)!4d.+$/, '$1');
-    console.log(this.lat);
-    this.lng = url.replace(/^.+!4d(.+)!6e.+$/, '$1');
-    console.log(this.lng);
-    return this;
+    var tempVar;
+    tempVar.lat = url.replace(/^.+!3d(.+)!4d.+$/, '$1');
+    console.log(tempVar.lat);
+    tempVar.lng = url.replace(/^.+!4d(.+)!6e.+$/, '$1');
+    console.log(tempVar.lng);
+    return tempVar;
 }
 
 function generateNewLocation() {
