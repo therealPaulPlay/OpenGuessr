@@ -42,8 +42,8 @@ function generateNewLocation() {
             }
         }
         for (let j = 113; j < mapToLoad.length; j++) {
-            if (mapToLoad[i] != "!") {
-                currentGuessLngArray[i] = mapToLoad[i];
+            if (mapToLoad[j] != "!") {
+                currentGuessLngArray[j] = mapToLoad[j];
             }
             else {
                 if (currentGuessLngArray[0] < 0 || currentGuessLngArray[0] > 9 || currentGuessLngArray[0] != "-") {
