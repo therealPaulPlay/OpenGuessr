@@ -53,6 +53,7 @@ function generateNewLocation() {
     currentGuessLAT = currentGuessLatArray.join('');
     currentGuessLONG = currentGuessLngArray.join('');
 
+    console.log(mapToLoad);
     console.log(currentGuessLAT);
     console.log(currentGuessLONG);
 
