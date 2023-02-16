@@ -28,16 +28,12 @@ function generateNewLocation() {
     var currentGuessLatArray = [];
     var currentGuessLngArray = [];
 
-
     if (mapToLoad.length > 114) {
         for (let i = 93; i < mapToLoad.length; i++) {
             if (mapToLoad[i] != "!") {
                 currentGuessLatArray[i] = mapToLoad[i];
             }
             else {
-                if (currentGuessLatArray[0] < 0 || currentGuessLatArray[0] > 9 || currentGuessLatArray[0] != "-") {
-                    currentGuessLatArray.shift();
-                }
                 break;
             }
         }
@@ -46,15 +42,19 @@ function generateNewLocation() {
                 currentGuessLngArray[j] = mapToLoad[j];
             }
             else {
-                if (currentGuessLngArray[0] < 0 || currentGuessLngArray[0] > 9 || currentGuessLngArray[0] != "-") {
-                    currentGuessLngArray.shift();
-                }
                 break;
             }
         }
-        currentGuessLatArray.splice(currentGuessLatArray.length, -7);
-        currentGuessLngArray.splice(currentGuessLngArray.length, -7);
     }
+
+    if (currentGuessLngArray[0] < 0 || currentGuessLngArray[0] > 9 || currentGuessLngArray[0] != "-") {
+        currentGuessLngArray.shift();
+    }
+    if (currentGuessLatArray[0] < 0 || currentGuessLatArray[0] > 9 || currentGuessLatArray[0] != "-") {
+        currentGuessLatArray.shift();
+    }
+    currentGuessLatArray.splice(currentGuessLatArray.length, -7);
+    currentGuessLngArray.splice(currentGuessLngArray.length, -7);
 
     currentGuessLAT = currentGuessLatArray.join('');
     currentGuessLONG = currentGuessLngArray.join('');
