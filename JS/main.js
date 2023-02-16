@@ -48,13 +48,14 @@ function generateNewLocation() {
     }
 
     if (currentGuessLngArray[0] < 0 || currentGuessLngArray[0] > 9 || currentGuessLngArray[0] != "-") {
-        currentGuessLngArray.shift();
+        currentGuessLngArray.shift();           //remove first index if it isnt showing it being negative or a longer number
     }
     if (currentGuessLatArray[0] < 0 || currentGuessLatArray[0] > 9 || currentGuessLatArray[0] != "-") {
-        currentGuessLatArray.shift();
+        currentGuessLatArray.shift();           //remove first index if it isnt showing it being negative or a longer number
     }
-    currentGuessLatArray.splice(currentGuessLatArray.length, -12);
-    currentGuessLngArray.splice(currentGuessLngArray.length, -7);
+
+    currentGuessLatArray.splice(currentGuessLatArray.length-1, -12);
+    currentGuessLngArray.splice(currentGuessLngArray.length-1, -7);
 
     currentGuessLAT = currentGuessLatArray.join('');
     currentGuessLONG = currentGuessLngArray.join('');
