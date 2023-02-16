@@ -1,5 +1,3 @@
-import "../JS/main.js";
-
 const key = 'QADiAuIEfpISv0PGS7Ju';
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
 L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
@@ -23,15 +21,6 @@ var markerPosition = marker.getLatLng();
 var lat;
 var long;
 
-/*
-var exportVariables = {
-    markerX: marker,
-    markPos: null,
-    keyX: key,
-    latX: lat,
-    longX: long
-};*/
-
 function onMapClick(e) {
 
     if (marker) {
@@ -51,8 +40,5 @@ function onMapClick(e) {
 
 map.on('click', onMapClick);
 
-let confirmBTN = document.getElementById("confirmButton");
-confirmBTN.addEventListener("click", calculateDistances(markerPosition.lat, markerPosition.lng), setMapToTargetPosition(key, lat, long));
-
-
-//export { exportVariables };
+var confirmBTN = document.getElementById("confirmButton");
+confirmBTN.addEventListener("click", window.calculateDistances(markerPosition.lat, markerPosition.lng), window.setMapToTargetPosition(key, lat, long));
