@@ -43,12 +43,13 @@ function onMapClick(e) {
 }
 
 map.on('click', onMapClick);
-/*
+
 var confirmBTN = document.getElementById("confirmButton");
-confirmBTN.addEventListener("click", calculateDistances(markerPosition.lat, markerPosition.lng), setMapToTargetPosition(key, lat, long));*/
+confirmBTN.addEventListener("click", confirmButtonClicks);
 
 
 export function confirmButtonClicks() {
+    console.log("confirmed button click.");
     calculateDistances(markerPosition.lat, markerPosition.lng);
     setMapToTargetPosition(key, lat, long);
 }
