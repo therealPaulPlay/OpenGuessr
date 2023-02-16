@@ -25,15 +25,17 @@ function generateNewLocation() {
     currentGuessLAT = mapToLoad.replace(/^.+!3d(.+)!4d.+$/, '$1');             //save target latitude in var (from array)
     currentGuessLONG = mapToLoad.replace(/^.+!4d(.+)!6e.+$/, '$1');            //save target longitude in var (from array)*/
 
+    var currentGuessLatLng;
+
     if (mapToLoad.length > 94) {
         for (let i = 92; i < mapToLoad.length; i++) {
-            currentGuessLAT[i] = currentGuessLAT[i];
-            currentGuessLONG[i] = currentGuessLONG[i];
+            currentGuessLatLng[i] = currentGuessLAT[i];
         }
     }
 
-    console.log(currentGuessLAT);
-    console.log(currentGuessLONG);
+    currentGuessLatLng = currentGuessLatLng.join('');
+
+    console.log(currentGuessLatLng);
 
     reloadIframe();
 }
