@@ -28,7 +28,7 @@ function generateNewLocation() {
     var currentGuessLatLng = [];
 
     if (mapToLoad.length > 94) {
-        for (let i = 92; i < mapToLoad.length; i++) {
+        for (let i = 94; i < mapToLoad.length; i++) {
             currentGuessLatLng[i] = mapToLoad[i];
         }
     }
