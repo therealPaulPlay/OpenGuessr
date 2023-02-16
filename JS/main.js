@@ -49,18 +49,9 @@ function generateNewLocation() {
 
     if (currentGuessLngArray[0] != "-" || currentGuessLngArray[0] < 0 || currentGuessLngArray[0] > 9) {
         currentGuessLngArray.shift();           //remove first index if it isnt showing it being negative or a longer number
-        currentGuessLngArray.splice(10);
-    }
-    else {
-    currentGuessLngArray.splice(currentGuessLngArray.length-1, -12);
-
     }
     if (currentGuessLatArray[0] != "-" || currentGuessLatArray[0] < 0 || currentGuessLatArray[0] > 9) {
         currentGuessLatArray.shift();           //remove first index if it isnt showing it being negative or a longer number
-        currentGuessLatArray.splice(10);
-    }
-    else {
-        currentGuessLatArray.splice(currentGuessLatArray.length-1, -7);
     }
 
     currentGuessLAT = currentGuessLatArray.join('');
