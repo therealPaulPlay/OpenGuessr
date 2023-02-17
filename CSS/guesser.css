@@ -67,6 +67,9 @@ html * {
     height: 100%;
     border: none;
 }
+#TransparentHeader {
+    visibility: hidden;
+}
 
 #map {
     cursor: crosshair;
