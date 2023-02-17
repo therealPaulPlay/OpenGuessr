@@ -85,12 +85,11 @@ html * {
     position: absolute;
 }
 
-/*
 #map:hover {
     transition: all 250ms;
     width: 60%;
     height: 80%;
-}*/
+}
 
 /*
 #fullScreen a{

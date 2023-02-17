@@ -54,8 +54,6 @@ confirmBTN.addEventListener("click", confirmButtonClicks);
 
 
 function onMapHover(e) {
-    document.getElementById("map").setAttribute("style", "width:80%");
-    document.getElementById("map").setAttribute("style", "height:70%");
     map.invalidateSize();
 }
 
