@@ -77,8 +77,8 @@ html * {
     margin-right: 10px;
     margin-bottom: 10px;
     z-index: 10;
-    height: 1080px;
-    width: 1920px;
+    height: 400px;
+    width: 500px;
     border-radius: 10px;
     box-shadow: 0px 2px 8px #05060ab0;
     position: absolute;

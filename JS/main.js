@@ -13,7 +13,6 @@ const listOfLocations = Object.values(jsonResponse).flat().map(i => Object.value
 
 generateNewLocation();                                                      //call start functions after JSON is loaded
 enableClickListeners();
-resizeMapAtStart();
 
 function generateNewLocation() {
     do {
@@ -211,7 +210,3 @@ function enableClickListeners(){
     confirmBTN.addEventListener("click", transitionToStart);
 }
 
-function resizeMapAtStart() {
-    document.getElementById("map").style.width = 500;
-    document.getElementById("map").style.height = 400;
-}
