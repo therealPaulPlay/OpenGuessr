@@ -212,5 +212,6 @@ function enableClickListeners(){
 }
 
 function resizeMapAtStart() {
-    
+    document.getElementById("map").style.width = 500;
+    document.getElementById("map").style.height = 400;
 }
