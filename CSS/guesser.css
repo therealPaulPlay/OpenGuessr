@@ -69,6 +69,7 @@ html * {
 }
 
 #map {
+    cursor: crosshair;
     overflow: hidden;
     transition: all 250ms;
     position: absolute;
@@ -77,18 +78,19 @@ html * {
     margin-right: 10px;
     margin-bottom: 10px;
     width: 30%;
-    height: 50%;
+    height: 40%;
     z-index: 10; 
     border-radius: 10px;
     box-shadow: 0px 2px 8px #05060ab0;
     position: absolute;
 }
 
+/*
 #map:hover {
     transition: all 250ms;
     width: 60%;
     height: 80%;
-}
+}*/
 
 /*
 #fullScreen a{
