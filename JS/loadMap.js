@@ -46,11 +46,18 @@ function onMapClick(e) {
 map.on('click', onMapClick);
 //map.on('mouseover', onMapHover);
 
-map.addEventListener("mouseover", map.invalidateSize());
+map.addEventListener("mouseover", onMapHover);
 
 //click listener to make the confirm button work
 var confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
+
+
+function onMapHover(e) {
+    document.getElementById("map").style.width = 800;
+    document.getElementById("map").style.height = 700;
+    map.invalidateSize();
+}
 
 export function confirmButtonClicks() {
     //calls functions since you can't pass parameters from a function outside of the file.
