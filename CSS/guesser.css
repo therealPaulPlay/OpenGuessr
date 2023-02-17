@@ -186,8 +186,8 @@ html * {
     display: inline-block;
     margin-top: 45px;
     z-index: 10;
-    height: 430px;
-    width: 700px;
+    height: 40%;
+    width: 36.4%;
     border-radius: 10px;
     box-shadow: 0px 2px 8px #05060ab0;
 }
@@ -204,7 +204,7 @@ html * {
     padding-bottom: 10px;
     font-size: 40pt;
     color: #EEE;
-    width: 300px;
+    width: 16%;
     background-color: #05060ab0;
     border-radius: 5px;
     margin-top:10%;
