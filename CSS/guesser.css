@@ -79,6 +79,9 @@ html * {
     z-index: 10;
     height: 400px;
     width: 500px;
+    /*
+    height: 1920px;
+    width: 1080px;*/
     border-radius: 10px;
     box-shadow: 0px 2px 8px #05060ab0;
     position: absolute;
