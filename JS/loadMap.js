@@ -44,8 +44,9 @@ function onMapClick(e) {
 }
 
 map.on('click', onMapClick);
-map.on('mouseover', onMapHover);
+//map.on('mouseover', onMapHover);
 
+map.addEventListener("mouseover", onMapHover);
 
 //click listener to make the confirm button work
 var confirmBTN = document.getElementById("confirmButton");
