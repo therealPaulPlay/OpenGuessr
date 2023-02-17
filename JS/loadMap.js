@@ -50,6 +50,20 @@ map.on('click', onMapClick);
 var confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
 
+/*
+var fullScreenButton = document.getElementById("fullScreen");
+fullScreenButton.addEventListener("click", resizeMap(true));
+
+function resizeMap(toFullScreen) {
+    if (toFullScreen) {
+        document.getElementById("map").style.width = 1920;
+        document.getElementById("map").style.height = 1080;
+    }
+    else {
+        document.getElementById("map").style.width = 500;
+        document.getElementById("map").style.height = 400;
+    }
+}*/
 
 export function confirmButtonClicks() {
     //calls functions since you can't pass parameters from a function outside of the file.

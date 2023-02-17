@@ -34,7 +34,9 @@
         <div class="MainDiv">
             <iframe id="GuesserWindow" src="https://www.google.com/maps/embed?pb=!4v1676316391332!6m8!1m7!1s-F0-n2PVoUNu8NPn2HG1Aw!2m2!1d3.012222359652991!2d101.4514473096548!3f147!4f5!5f0.8160813932612223" width="1920" height="1080" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>         
             <!--map-->
-            <div id="map"></div>
+            <div id="map">
+                <button id="fullScreen"><a>F</a></button>
+            </div>
             <script>
                 //this is so we don't get a duplicate map declaration. Simply removes the old one.
                 var map = L.map('map');
