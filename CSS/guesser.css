@@ -69,7 +69,7 @@ html * {
 }
 
 #map {
-    background-color: transparent;
+    background-color: #85caf9;
     transition: all 250ms;
     position: absolute;
     bottom: 0;

@@ -45,7 +45,6 @@ function onMapClick(e) {
 
 map.on('click', onMapClick);
 
-
 //click listener to make the confirm button work
 var confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
