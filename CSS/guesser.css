@@ -86,8 +86,8 @@ html * {
 
 #map:hover {
     transition: all 250ms;
-    width: 600px;
-    height: 700px;
+    width: 60%;
+    height: 80%;
 }
 
 /*
