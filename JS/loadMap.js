@@ -6,7 +6,7 @@ import { calculateDistances } from "./main.js";
 
 const key = 'QADiAuIEfpISv0PGS7Ju';
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
-L.tileLayer(`https://api.maptiler.com/maps/streets-v2/512/{z}/{x}/{y}@2x.png?key=${key}`,{ //style URL
+L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
     tileSize: 512,
     zoomOffset: -1,
     minZoom: 1,
