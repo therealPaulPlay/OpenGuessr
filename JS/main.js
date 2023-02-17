@@ -107,13 +107,13 @@ function compareDistances(distance) {
     closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!"];
     farDistances = ["It was a good guess.", "You'll get it next time!", "atleast it was on the correct planet, right?"];
 
-    if(distance < 7 && !(distance<1)) {
+    if(distance < 20 && !(distance<1)) {
         extraMsg = closeDistances[Math.floor(Math.random()*closeDistances.length)];
     }
     else {
         extraMsg = farDistances[Math.floor(Math.random()*farDistances.length)];
     }
-    if (distance < 1) {
+    if (distance < 5) {
         finalResult = Math.round(distance*1000);
         resultAsString = finalResult+" m";
         extraMsg = veryCloseDistances[Math.floor(Math.random()*veryCloseDistances.length)];
