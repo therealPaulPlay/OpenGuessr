@@ -88,11 +88,12 @@ html * {
     position: absolute;
 }
 
+/*
 #map:hover {
     transition: all 250ms;
     width: 60%;
     height: 80%;
-}
+}*/
 
 /*
 #fullScreen a{
@@ -186,8 +187,8 @@ html * {
     display: inline-block;
     margin-top: 45px;
     z-index: 10;
-    height: 40%;
-    width: 36.4%;
+    height: 430px;
+    width: 700px;
     border-radius: 10px;
     box-shadow: 0px 2px 8px #05060ab0;
 }
@@ -204,7 +205,7 @@ html * {
     padding-bottom: 10px;
     font-size: 40pt;
     color: #EEE;
-    width: 16%;
+    width: 300px;
     background-color: #05060ab0;
     border-radius: 5px;
     margin-top:10%;
