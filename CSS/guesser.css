@@ -69,6 +69,7 @@ html * {
 }
 
 #map {
+    background-color: transparent;
     transition: all 250ms;
     position: absolute;
     bottom: 0;
@@ -85,8 +86,8 @@ html * {
 
 #map:hover {
     transition: all 250ms;
-    width: 1000px;
-    height: 900px;
+    width: 600px;
+    height: 700px;
 }
 
 /*
