@@ -72,7 +72,6 @@ html * {
 }
 
 #map {
-    background-color: #f8f1d5;
     cursor: crosshair;
     transition: all 250ms;
     position: absolute;
@@ -183,7 +182,6 @@ html * {
     font-size: 27pt;
 }
 
-
 #resultMap {
     margin: auto;
     position: absolute;
@@ -199,6 +197,7 @@ html * {
 }
 
 #nextRound a{
+    position: absolute;
     cursor: pointer;
     transition: all 250ms;
     display: block;
@@ -214,6 +213,9 @@ html * {
     background-color: #05060ab0;
     border-radius: 5px;
     margin-top:10%;
+    bottom: 5%;
+    left: 25%;
+    right: 25%;
 }
 
 #nextRound a:hover {
