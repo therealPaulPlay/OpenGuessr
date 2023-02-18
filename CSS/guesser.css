@@ -73,7 +73,6 @@ html * {
 
 #map {
     cursor: crosshair;
-    overflow: hidden;
     transition: all 250ms;
     position: absolute;
     bottom: 0;
