@@ -259,12 +259,12 @@ html * {
         left: 20%;
         right: 20%;
         height: 30%;
-        width: 60%;
+        width: 80%;
     }
     #nextRound a {
         text-align: center;
-        left: 15%;
-        right: 15%;
+        left: 0%;
+        right: 0%;
         font-size: 20pt;
         width: 80%;
     }
