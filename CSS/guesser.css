@@ -245,7 +245,7 @@ html * {
 /* mobile only styling */
 
 @media all and (max-width: 479px){
-    #EndOverlay {
+    html * {
         overflow: hidden;
     }
 
@@ -258,10 +258,14 @@ html * {
     }
 
     #resultMap {
+        left: 20%;
+        right: 20%;
         height: 30%;
         width: 60%;
     }
     #nextRound a {
+        left: 15%;
+        right: 15%;
         font-size: 20pt;
         width: 80%;
     }
