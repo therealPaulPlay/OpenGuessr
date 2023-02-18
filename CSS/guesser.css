@@ -241,3 +241,19 @@ html * {
     height: 100%;
     z-index: 12;
 }
+
+/* improving the look on mobile */
+
+@media all and (max-width: 479px){
+    #TextDiv {
+        font-size: 30pt;
+    }
+
+    #resultMap {
+        height: 30%;
+        width: 60%;
+    }
+    #nextRound a {
+        font-size: 30pt;
+    }
+}
