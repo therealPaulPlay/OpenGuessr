@@ -189,9 +189,9 @@ html * {
     width: 700px;
     */
     margin: auto;
-    position: static;
-    left: auto;
-    right: auto;
+    position: absolute;
+    left: 0;
+    top: 40%;
     display: inline-block;
     margin-top: 45px;
     z-index: 10;
