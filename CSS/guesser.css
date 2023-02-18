@@ -190,8 +190,8 @@ html * {
     */
     margin: auto;
     position: absolute;
-    left: 0;
-    top: 40%;
+    left: 50%;
+    right: 50%;
     display: inline-block;
     margin-top: 45px;
     z-index: 10;
