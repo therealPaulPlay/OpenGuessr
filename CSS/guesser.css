@@ -184,6 +184,7 @@ html * {
 }
 
 #resultMap {
+    background-color: #000;
     display: inline-block;
     margin-top: 45px;
     z-index: 10;
