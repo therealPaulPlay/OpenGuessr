@@ -191,8 +191,8 @@ html * {
     display: inline-block;
     margin-top: 45px;
     z-index: 10;
-    height: 50%;
-    width: 45%;
+    height: 40%;
+    width: 40%;
     border-radius: 10px;
     box-shadow: 0px 2px 8px #05060ab0;
 }
