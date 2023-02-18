@@ -103,9 +103,9 @@ function compareDistances(distance) {
     var finalResult;
     var resultAsString;
 
-    veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Let me guess; you have an A in geography?", "wow."]
+    veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Let me guess; you have an A in geography?", "Wow."]
     closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!"];
-    farDistances = ["It was a good guess.", "You'll get it next time!", "atleast it was on the correct planet, right?"];
+    farDistances = ["It was a good guess.", "You'll get it next time!", "At least it was on the correct planet, right?"];
 
     if(distance < 20 && !(distance<1)) {
         extraMsg = closeDistances[Math.floor(Math.random()*closeDistances.length)];
