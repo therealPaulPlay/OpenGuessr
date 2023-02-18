@@ -182,6 +182,10 @@ html * {
     font-size: 27pt;
 }
 
+#TextDiv {
+    text-align: center;
+}
+
 #resultMap {
     position: fixed;
     background-color: #000;
