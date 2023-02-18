@@ -242,15 +242,15 @@ html * {
     z-index: 12;
 }
 
-/* improving the look on mobile */
+/* mobile only styling */
 
 @media all and (max-width: 479px){
     #TextDiv {
-        font-size: 20pt;
+        font-size: 25pt;
     }
 
     #motivationText {
-        font-size: 15pt;
+        font-size: 20pt;
     }
 
     #resultMap {
@@ -259,5 +259,6 @@ html * {
     }
     #nextRound a {
         font-size: 20pt;
+        width: 20%;
     }
 }
