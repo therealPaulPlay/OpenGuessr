@@ -184,10 +184,6 @@ html * {
 
 
 #resultMap {
-    /*
-    height: 430px;
-    width: 700px;
-    */
     margin: auto;
     position: absolute;
     left: 25%;
@@ -197,11 +193,9 @@ html * {
     z-index: 10;
     height: 50%;
     width: 45%;
-
     border-radius: 10px;
     box-shadow: 0px 2px 8px #05060ab0;
 }
-/*
 
 #nextRound a{
     cursor: pointer;
@@ -232,7 +226,7 @@ html * {
     color: transparent;
     background-color: transparent;
     border: 0;
-}*/
+}
 
 #BeforeOverlay {
     opacity: 100%;
