@@ -72,7 +72,7 @@ html * {
 }
 
 #map {
-    background-color: #151627;
+    background-color: #f8f1d5;
     cursor: crosshair;
     transition: all 250ms;
     position: absolute;
