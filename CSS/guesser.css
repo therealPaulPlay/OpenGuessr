@@ -256,16 +256,16 @@ html * {
     }
 
     #resultMap {
-        left: 20%;
-        right: 20%;
+        left: 10%;
+        right: 10%;
         height: 30%;
         width: 80%;
     }
     #nextRound a {
         text-align: center;
-        left: 0%;
-        right: 0%;
+        left: 5%;
+        right: 5%;
         font-size: 20pt;
-        width: 80%;
+        width: 60%;
     }
 }
