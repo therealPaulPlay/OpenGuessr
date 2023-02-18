@@ -245,7 +245,6 @@ html * {
 /* mobile only styling */
 
 @media all and (max-width: 479px){
-
     #TextDiv {
         margin-top: 100px;
         font-size: 25pt;
@@ -256,6 +255,7 @@ html * {
     }
 
     #resultMap {
+        margin-top: 15px;
         left: 10%;
         right: 10%;
         height: 30%;
