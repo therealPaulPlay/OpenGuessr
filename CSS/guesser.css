@@ -245,6 +245,10 @@ html * {
 /* mobile only styling */
 
 @media all and (max-width: 479px){
+    #EndOverlay {
+        overflow: hidden;
+    }
+
     #TextDiv {
         font-size: 25pt;
     }
@@ -259,6 +263,6 @@ html * {
     }
     #nextRound a {
         font-size: 20pt;
-        width: 20%;
+        width: 80%;
     }
 }
