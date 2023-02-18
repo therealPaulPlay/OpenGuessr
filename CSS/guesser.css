@@ -185,7 +185,7 @@ html * {
 
 #resultMap {
     margin: auto;
-    position: absolute;
+    position: relative;
     left: auto;
     right: auto;
     background-color: #000;
