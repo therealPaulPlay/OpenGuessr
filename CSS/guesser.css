@@ -183,7 +183,7 @@ html * {
 }
 
 #resultMap {
-    position: absolute;
+    position: relative;
     background-color: #000;
     display: inline-block;
     margin-top: 45px;
