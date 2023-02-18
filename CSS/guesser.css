@@ -197,6 +197,7 @@ html * {
 }
 
 #nextRound a{
+    z-index: 15;
     position: absolute;
     cursor: pointer;
     transition: all 250ms;
@@ -214,7 +215,7 @@ html * {
     border-radius: 5px;
     margin-top:10%;
     bottom: 5%;
-    left: 25%;
+    left: 50%;
     right: 25%;
 }
 
