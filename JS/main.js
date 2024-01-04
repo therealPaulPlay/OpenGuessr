@@ -131,13 +131,14 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15); //starting position
-    L.tileLayer(`https://api.maptiler.com/maps/streets-v2/{z}/{x}/{y}.png?key=${key}`,{ //style URL
-        tileSize: 512,
+    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+        tileSize: 256,
         zoomOffset: -1,
         minZoom: 1,
-        attribution: "\u003ca href=\"https://www.maptiler.com/copyright/\" target=\"_blank\"\u003e\u0026copy; MapTiler\u003c/a\u003e \u003ca href=\"https://www.openstreetmap.org/copyright\" target=\"_blank\"\u003e\u0026copy; OpenStreetMap contributors\u003c/a\u003e",
-        crossOrigin: true
-    }).addTo(resMap);
+        attribution: 'http://www.openstreetmap.org/copyright',
+        retina: '@2x',
+        detectRetina: true
+    }).addTo(map);
 
     var redIcon = new L.Icon({
         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
