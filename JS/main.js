@@ -150,14 +150,7 @@ var redIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-    //this places the "correct" marker that actually reflects the target location
-    destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: redIcon});
-    destinationMarker.addTo(resMap);
-    
-    console.log(destinationMarker.getLatLng());
-
     //used to create the line between the points
-
     var curLatLng = new L.LatLng(currentGuessLAT, currentGuessLONG);
     var playerLatLng = new L.LatLng(playersLat, playersLong);
     var polyList = [curLatLng, playerLatLng];
@@ -166,10 +159,18 @@ var redIcon = new L.Icon({
     
     var polygon = L.polygon(polyList, {color: '#05060ab0', weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
     
+    //this places the Player Marker (where the player thinks the location is)
     playerMarker = new L.Marker(playerLatLng, {icon: redIcon})
     playerMarker.addTo(resMap);
 
     resMap.fitBounds(pointList);
+
+    //this places the "correct" marker that actually reflects the target location
+    destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: redIcon});
+    destinationMarker.addTo(resMap);
+        
+    console.log(destinationMarker.getLatLng());
+    console.log(playerMarker.getLatLng())
 }
 
 function enableResultScreen(resultString, extraMessage) {
