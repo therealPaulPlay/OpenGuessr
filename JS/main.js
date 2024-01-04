@@ -166,8 +166,8 @@ var redIcon = new L.Icon({
     
     var polygon = L.polygon(polyList, {color: '#05060ab0', weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
     
-   playerMarker = new L.Marker(playerLatLng, {icon: redIcon})
-   playerMarker.addTo(resMap);
+    playerMarker = new L.Marker(playerLatLng, {icon: redIcon})
+    playerMarker.addTo(resMap);
 
     resMap.fitBounds(pointList);
 }
