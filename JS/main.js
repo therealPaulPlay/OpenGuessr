@@ -150,8 +150,8 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
     });
 
     //this places the "correct" marker that actually reflects the target location
-    var latlng = L.latLng(currentGuessLAT, currentGuessLONG);
-    L.marker(latlng, {icon: redIcon}).addTo(resMap);
+    destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: redIcon});
+    destinationMarker.addTo(map);
     
     console.log(latlng);
 
