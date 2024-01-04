@@ -142,16 +142,16 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
     attribution: 'http://www.openstreetmap.org/copyright'
 }).addTo(resMap);
 
-    var redIcon = new L.Icon({
-        iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-        iconSize: [25, 41],
-        iconAnchor: [12, 41],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
-    });
+var redIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
 
     //this places the "correct" marker that actually reflects the target location
-    destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: redIcon});
+    destinationMarker = new L.Marker([currentGuessLONG, currentGuessLAT], {icon: redIcon});
     destinationMarker.addTo(map);
     
     console.log(destinationMarker.getLatLng());
@@ -162,12 +162,12 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
     var playerLatLng = new L.LatLng(playersLat, playersLong);
     var polyList = [curLatLng, playerLatLng];
     var pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
-
-    resMap.fitBounds(pointList);
     
     var polygon = L.polygon(polyList, {color: '#05060ab0', weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
     
     L.marker(playerLatLng, {icon: redIcon}).addTo(resMap);
+
+    resMap.fitBounds(pointList);
 }
 
 function enableResultScreen(resultString, extraMessage) {
