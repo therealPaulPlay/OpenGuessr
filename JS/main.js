@@ -151,7 +151,7 @@ var redIcon = new L.Icon({
 });
 
     //this places the "correct" marker that actually reflects the target location
-    destinationMarker = new L.Marker([currentGuessLONG, currentGuessLAT], {icon: redIcon});
+    destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: redIcon});
     destinationMarker.addTo(map);
     
     console.log(destinationMarker.getLatLng());
