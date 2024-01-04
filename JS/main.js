@@ -136,7 +136,7 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15); //starting position
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    tileSize: 256,
+    tileSize: 512,
     zoomOffset: -1,
     minZoom: 1,
     attribution: 'http://www.openstreetmap.org/copyright'
