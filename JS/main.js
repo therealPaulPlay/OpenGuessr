@@ -169,8 +169,8 @@ var redIcon = new L.Icon({
     destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: redIcon});
     destinationMarker.addTo(resMap);
         
-    console.log(destinationMarker.getLatLng());
-    console.log(playerMarker.getLatLng());
+    console.log("Desination Marker: "+ destinationMarker.getLatLng());
+    console.log("Player Marker: "+ playerMarker.getLatLng());
 }
 
 function enableResultScreen(resultString, extraMessage) {
