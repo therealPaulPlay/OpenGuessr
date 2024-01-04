@@ -8,7 +8,7 @@ const key = 'QADiAuIEfpISv0PGS7Ju';
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    tileSize: 1024,
+    tileSize: 256,
     zoomOffset: -1,
     minZoom: 1,
     attribution: 'http://www.openstreetmap.org/copyright',
