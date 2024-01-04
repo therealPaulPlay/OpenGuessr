@@ -73,6 +73,7 @@ var closeDistances;
 var farDistances;
 var resMap;
 var extraMsg;
+var destinationMarker;
 
 /* Map functions */
 
