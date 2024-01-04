@@ -11,9 +11,7 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     tileSize: 256,
     zoomOffset: -1,
     minZoom: 1,
-    attribution: 'http://www.openstreetmap.org/copyright',
-    retina: '@2x',
-    detectRetina: true
+    attribution: 'http://www.openstreetmap.org/copyright'
 }).addTo(map);
 
 var redIcon = new L.Icon({
@@ -36,6 +34,7 @@ function onMapClick(e) {
     if (marker) {
         map.removeLayer(marker);
     }
+    //sets the variables from the USER input (this is the one that the user has placed)
     lat = e.latlng.lat;
     long = e.latlng.lng;
 

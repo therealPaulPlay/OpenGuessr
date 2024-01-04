@@ -60,6 +60,8 @@ function generateNewLocation() {
         currentGuessLngArray.pop();     
     }
 
+    //These two are the variables that reflect where the location actually is!
+
     currentGuessLAT = currentGuessLatArray.join('');        //saves lats and longs in seperate variables
     currentGuessLONG = currentGuessLngArray.join('');
 
@@ -136,9 +138,7 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
     tileSize: 256,
     zoomOffset: -1,
     minZoom: 1,
-    attribution: 'http://www.openstreetmap.org/copyright',
-    retina: '@2x',
-    detectRetina: true
+    attribution: 'http://www.openstreetmap.org/copyright'
 }).addTo(resMap);
 
     var redIcon = new L.Icon({
@@ -149,8 +149,11 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
         shadowSize: [41, 41]
     });
 
+    //this places the "correct" marker that actually reflects the target location
     var latlng = L.latLng(currentGuessLAT, currentGuessLONG);
     L.marker(latlng, {icon: redIcon}).addTo(resMap);
+    
+    console.log(latlng);
 
     //used to create the line between the points
 
