@@ -12,7 +12,6 @@ L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     zoomOffset: -1,
     minZoom: 1,
     attribution: 'http://www.openstreetmap.org/copyright',
-    crossOrigin: true,
     retina: '@2x',
     detectRetina: true
 }).addTo(map);
