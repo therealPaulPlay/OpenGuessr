@@ -153,7 +153,7 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
     destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: redIcon});
     destinationMarker.addTo(map);
     
-    console.log(latlng);
+    console.log(destinationMarker.getLatLng());
 
     //used to create the line between the points
 
