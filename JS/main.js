@@ -131,12 +131,15 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15); //starting position
+
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        tileSize: 512,
-        zoomOffset: -1,
-        minZoom: 1,
-        attribution: 'http://www.openstreetmap.org/copyright'
-    }).addTo(map);
+    tileSize: 256,
+    zoomOffset: -1,
+    minZoom: 1,
+    attribution: 'http://www.openstreetmap.org/copyright',
+    retina: '@2x',
+    detectRetina: true
+}).addTo(resMap);
 
     var redIcon = new L.Icon({
         iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
