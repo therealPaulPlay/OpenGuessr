@@ -170,7 +170,7 @@ var redIcon = new L.Icon({
     destinationMarker.addTo(resMap);
         
     console.log(destinationMarker.getLatLng());
-    console.log(playerMarker.getLatLng())
+    console.log(playerMarker.getLatLng());
 }
 
 function enableResultScreen(resultString, extraMessage) {
