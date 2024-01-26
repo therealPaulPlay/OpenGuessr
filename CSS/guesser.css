@@ -248,7 +248,7 @@ html * {
     transition: all 250ms;
     margin-bottom: 15px;
     margin-top: 13px;
-    margin-right: 25px;
+    margin-right: 1em;
     border-radius: 5px;
     user-select: none;
     -webkit-user-select: none;
