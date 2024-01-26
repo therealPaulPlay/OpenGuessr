@@ -275,7 +275,7 @@ button {
 
 /* mobile only styling */
 
-@media all and (max-width: 479px){
+@media all and (max-width: 600px) and (orientation:portrait) {
     #TextDiv {
         margin-top: 100px;
         font-size: 25pt;
@@ -298,5 +298,11 @@ button {
         right: 5%;
         font-size: 20pt;
         width: 60%;
+    }
+    #map {
+        width: 96.5%;
+    }
+    #GuesserWindow {
+        height: 100%;
     }
 }
