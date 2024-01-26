@@ -1,0 +1,24 @@
+{
+  "name": "openguessr",
+  "version": "0.5.0",
+  "description": "The free geography guessing game with unlimited free play!",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ColaniYT/OpenGuessr.git"
+  },
+  "keywords": [
+    "OpenGuessr",
+    "GeoGuessr",
+    "Geography"
+  ],
+  "author": "Colani, PaulPlay",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ColaniYT/OpenGuessr/issues"
+  },
+  "homepage": "https://github.com/ColaniYT/OpenGuessr#readme"
+}
