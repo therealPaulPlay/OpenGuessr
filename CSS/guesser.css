@@ -304,4 +304,7 @@ button {
     #GuesserWindow {
         height: 100%;
     }
+    #socialsButton {
+        visibility: hidden;
+    }
 }
