@@ -206,6 +206,10 @@ function transitionToStart() {
     }, 200);
 }
 
+function goToReddit() {
+    window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus();
+}
+
 function enableClickListeners(){
     //adding click listeners
 
@@ -215,5 +219,7 @@ function enableClickListeners(){
     logoBTN.addEventListener("click", generateNewLocation);
     var confirmBTN = document.getElementById("nextRound");
     confirmBTN.addEventListener("click", transitionToStart);
+    let socialRedditButton = document.getElementById("socialsButton");
+    socialRedditButton.addEventListener("click", goToReddit);
 }
 
