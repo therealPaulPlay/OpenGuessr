@@ -237,6 +237,7 @@ html * {
 #socialsButton {
     float: right;
     cursor: pointer;
+    width: fit-content;
     font-size: 20px;
     font-weight: 500;
     line-height: 20px;
@@ -300,7 +301,7 @@ button {
         width: 60%;
     }
     #map {
-        width: 96.5%;
+        width: 95%;
     }
     #GuesserWindow {
         height: 100%;
