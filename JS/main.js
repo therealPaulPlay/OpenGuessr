@@ -136,8 +136,8 @@ export function setMapToTargetPosition(key, playersLat, playersLong) {
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15); //starting position
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-
-    attribution: 'http://www.openstreetmap.org/copyright'
+    attribution: 'http://www.openstreetmap.org/copyright',
+    detectRetina: true
 }).addTo(resMap);
 
 var redIcon = new L.Icon({

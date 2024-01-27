@@ -9,7 +9,8 @@ const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting posit
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     
-    attribution: 'http://www.openstreetmap.org/copyright'
+    attribution: 'http://www.openstreetmap.org/copyright',
+    detectRetina: true
 }).addTo(map);
 
 var redIcon = new L.Icon({
