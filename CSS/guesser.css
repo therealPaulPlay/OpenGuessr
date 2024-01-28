@@ -72,6 +72,7 @@ html * {
 }
 
 #map {
+    opacity: 50%;
     cursor: crosshair;
     transition: all 250ms;
     position: absolute;
@@ -85,6 +86,13 @@ html * {
     border-radius: 10px;
     box-shadow: 0px 2px 8px #05060ab0;
     position: absolute;
+}
+
+#map:hover {
+    transition: none;
+    opacity: 100%;
+    width: 60%;
+    height: 80%;
 }
 
 

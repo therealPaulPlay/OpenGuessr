@@ -9,8 +9,7 @@ const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting posit
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     
-    attribution: 'http://www.openstreetmap.org/copyright',
-    detectRetina: true
+    attribution: 'http://www.openstreetmap.org/copyright'
 }).addTo(map);
 
 var redIcon = new L.Icon({
@@ -44,16 +43,18 @@ function onMapClick(e) {
 }
 
 map.on('click', onMapClick);
-//map.on('mouseover', onMapHover);
+map.on('mouseover', onMapHover);
+map.on('mouseout', onMapHover);
 
 map.addEventListener("mouseover", onMapHover);
+map.addEventListener("mouseout", onMapHover);
 
 //click listener to make the confirm button work
 var confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
 
 
-function onMapHover(e) {
+function onMapHover() {
     map.invalidateSize();
 }
 
