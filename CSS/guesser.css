@@ -224,7 +224,6 @@ html * {
 }
 
 #nextRound a:hover {
-    font-size: 35pt;
     transition: all 750ms;
     color: #05060ab0;
     background-color: #EEE;
