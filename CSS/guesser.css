@@ -91,9 +91,13 @@ html * {
 #map:hover {
     transition: none;
     opacity: 100%;
-    width: 60%;
-    height: 80%;
 }
+@media (orientation: landscape) {
+    #map:hover {
+        width: 60%;
+        height: 80%;
+    }
+  }
 
 
 /*#map:hover {
