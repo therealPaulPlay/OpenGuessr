@@ -8,9 +8,11 @@ const key = 'QADiAuIEfpISv0PGS7Ju';
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    
-    attribution: 'http://www.openstreetmap.org/copyright'
+    attribution: 'http://www.openstreetmap.org/copyright',
+    noWrap: true
 }).addTo(map);
+
+map.setZoom(3);
 
 var redIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
