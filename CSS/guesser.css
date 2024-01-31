@@ -245,7 +245,7 @@ html * {
     z-index: 12;
 }
 
-#socialsButton {
+.menuButton {
     float: right;
     cursor: pointer;
     width: fit-content;
@@ -268,7 +268,7 @@ html * {
     
 }
 
-#socialsButton:hover {
+.menuButton:hover {
     filter:brightness(70%);
     transition: all 250ms;
 }

@@ -7,7 +7,31 @@ import { calculateDistances } from "./main.js";
 const key = 'QADiAuIEfpISv0PGS7Ju';
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+let mapProvider = ["https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png"]
+let providerIndex = 0;
+let tempProviderIndexFromStorage = localStorage.getItem("providerIndex");
+
+if (tempProviderIndexFromStorage != null) {
+    providerIndex = tempProviderIndexFromStorage;
+}
+changeLanguageButtonLabel();
+
+function changeLanguageButtonLabel () {
+       document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex == 0 ? "Regional": "German"}`
+}
+
+function changeLanguage () {
+    if (providerIndex == 0) {
+        providerIndex = 1;
+    }
+    else {
+        providerIndex = 0;
+    }
+    localStorage.setItem("providerIndex", providerIndex);
+    window.location.reload(true);
+}
+
+L.tileLayer(mapProvider[providerIndex], {
     attribution: 'http://www.openstreetmap.org/copyright',
     noWrap: true
 }).addTo(map);
@@ -54,6 +78,10 @@ map.addEventListener("mouseout", onMapHover);
 //click listener to make the confirm button work
 var confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
+
+//toggle languages
+let languageBTN = document.getElementById("languageButton");
+languageBTN.addEventListener("click", changeLanguage);
 
 
 function onMapHover() {
