@@ -1,5 +1,6 @@
 var lastGuessIndex = null;
 var guessIndex;
+//this is the new default maptoload which displays a proper error message instead of a random street view that we have picked
 var mapToLoad = "/loader.html";
 var currentGuessLAT = 40;
 var currentGuessLONG = 40;
@@ -147,6 +148,14 @@ var redIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
+var greenIcon = new L.Icon({
+    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+    iconSize: [25, 41],
+    iconAnchor: [12, 41],
+    popupAnchor: [1, -34],
+    shadowSize: [41, 41]
+});
+
     //used to create the line between the points
     var curLatLng = new L.LatLng(currentGuessLAT, currentGuessLONG);
     var playerLatLng = new L.LatLng(playersLat, playersLong);
@@ -163,7 +172,7 @@ var redIcon = new L.Icon({
     resMap.fitBounds(pointList);
 
     //this places the "correct" marker that actually reflects the target location
-    destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: redIcon});
+    destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: greenIcon});
     destinationMarker.addTo(resMap);
         
     console.log("Desination Marker: "+ destinationMarker.getLatLng());
@@ -192,6 +201,7 @@ function reloadIframe() {
 
     document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
     window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
+    console.log("new iframe link loaded")
 }
 
 function transitionToStart() {
