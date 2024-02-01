@@ -185,6 +185,7 @@ function enableResultScreen(resultString, extraMessage) {
     document.getElementById("map").style.visibility = "hidden";
     document.getElementById("EndOverlay").style.visibility = "visible";
     document.getElementById("EndOverlay").zIndex = "12";
+    document.getElementById("nextRound").zIndex = "15";
     document.getElementById("EndOverlay").style.opacity = "100";
 
     document.getElementById("confirmButton").style.visibility = "hidden";
@@ -194,6 +195,7 @@ function enableResultScreen(resultString, extraMessage) {
 
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
+    document.getElementById("BottomBar").style.visibility = "hidden";
 }
 
 function reloadIframe() {
@@ -224,10 +226,13 @@ function enableClickListeners(){
 
     var resetBTN = document.getElementById("resetButtonSVG");
     resetBTN.addEventListener("click", reloadIframe);
+   
     var logoBTN = document.getElementById("logo");
     logoBTN.addEventListener("click", generateNewLocation);
+  
     var confirmBTN = document.getElementById("nextRound");
     confirmBTN.addEventListener("click", transitionToStart);
+   
     let socialRedditButton = document.getElementById("socialsButton");
     socialRedditButton.addEventListener("click", goToReddit);
 }
