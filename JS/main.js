@@ -1,6 +1,6 @@
 var lastGuessIndex = null;
 var guessIndex;
-var mapToLoad;
+var mapToLoad = "/loader.html";
 var currentGuessLAT = 40;
 var currentGuessLONG = 40;
 

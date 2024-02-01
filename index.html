@@ -6,13 +6,13 @@
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
         <script src="https://unpkg.com/mathjs@11.5.1/lib/browser/math.js"></script>
-        <title>OpenGuessr - free geoguessr alternative</title>
         <link rel="stylesheet" href="CSS/guesser.css">
+        <title>OpenGuessr - free geoguessr alternative</title>
 
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
-        <link rel="manifest" href="/site.webmanifest">
+        <link rel="apple-touch-icon" sizes="180x180" href="/IMG/apple-touch-icon.png">
+        <link rel="icon" type="image/png" sizes="32x32" href="/IMG/favicon-32x32.png">
+        <link rel="icon" type="image/png" sizes="16x16" href="/IMG/favicon-16x16.png">
+        <link rel="manifest" href="/IMG/site.webmanifest">
         <meta name="msapplication-TileColor" content="#da532c">
         <meta name="theme-color" content="#ffffff">
 
@@ -43,7 +43,7 @@
         </div>
         <!--streetview-->
         <div class="MainDiv">
-            <iframe id="GuesserWindow" src="https://www.google.com/maps/embed?pb=!4v1676316391332!6m8!1m7!1s-F0-n2PVoUNu8NPn2HG1Aw!2m2!1d3.012222359652991!2d101.4514473096548!3f147!4f5!5f0.8160813932612223" width="1920" height="1080" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>         
+            <iframe id="GuesserWindow" src="/loader.html"></iframe>         
             <!--map-->
             <div id="map">
                 <button id="fullScreen"><a>F</a></button>
@@ -57,7 +57,7 @@
             <!--bottom toolbar with reset button-->
             <div class="BottomBar">
                 <img id="resetButtonSVG" src="IMG/reset.svg">
-                <img id="confirmButton" src="IMG/confirm.svg">
+                <button id="confirmButton">Guess</button>
             </div>
             <!--load main script-->
             <script type="module" src="JS/loadMap.js"></script>

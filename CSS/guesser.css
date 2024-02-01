@@ -33,8 +33,6 @@ html * {
     border-radius: 3px;
 }
 
-/* Icon */
-
 #logo {
     cursor: pointer;
     pointer-events: auto;
@@ -43,7 +41,7 @@ html * {
 }
 
 #icon {
-    margin-top: 5px;
+    margin-top: 4.5px;
     margin-left: 5px;
     width: 18em;
 }
@@ -75,11 +73,10 @@ html * {
     opacity: 50%;
     cursor: crosshair;
     transition: all 250ms;
-    position: absolute;
     bottom: 0;
     right: 0;
     margin-right: 10px;
-    margin-bottom: 10px;
+    margin-bottom: 75px;
     width: 30%;
     height: 40%;
     z-index: 10; 
@@ -99,13 +96,6 @@ html * {
     }
   }
 
-
-/*#map:hover {
-    transition: all 250ms;
-    width: 60%;
-    height: 80%;
-} 
-*/
 
 .BottomBar {
     position: absolute;
@@ -142,12 +132,18 @@ html * {
     cursor: pointer;
     transition: all 250ms;
     position: absolute;
-    right: 20px;
+    font-size: 30px;
+    margin-right: 10px;
+    right: 0px;
     z-index: 11;
     margin-bottom: 15px;
-    width: 50px;
-    border-radius: 50%;
+    width: 30%;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    border-radius: 25px;
     box-shadow: 0px 2px 8px #05060ab0;
+    color: white;
+    background-color: red;
 }
 
 #confirmButton:hover {
