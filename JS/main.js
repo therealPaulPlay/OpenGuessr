@@ -186,12 +186,12 @@ function enableResultScreen(resultString, extraMessage) {
     document.getElementById("EndOverlay").style.visibility = "visible";
     document.getElementById("EndOverlay").zIndex = "12";
     document.getElementById("nextRound").zIndex = "15";
-    document.getElementById("EndOverlay").style.opacity = "100";
+    document.getElementById("EndOverlay").style.opacity = "100%";
 
     document.getElementById("confirmButton").style.visibility = "hidden";
     document.getElementById("resetButtonSVG").style.visibility = "hidden";
 
-    document.getElementById("logo").setAttribute("pointer-events", "none");
+    document.getElementById("logo").style.pointerEvents = "none";;
 
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;

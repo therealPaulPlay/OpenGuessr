@@ -16,8 +16,23 @@ if (tempProviderIndexFromStorage != null) {
 }
 changeLanguageButtonLabel();
 
+//indicate whether a guess has been made and the button can be used
+let hasGuessed = false;
+setConfirmButtonState();
+
 function changeLanguageButtonLabel () {
        document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex == 0 ? "Regional": "German"}`
+}
+
+function setConfirmButtonState() {
+    if (hasGuessed) {
+        document.getElementById("confirmButton").style.backgroundColor = "red";
+        document.getElementById("confirmButton").style.pointerEvents = "auto";
+    }
+    else {
+        document.getElementById("confirmButton").style.backgroundColor = "#282828";
+        document.getElementById("confirmButton").style.pointerEvents = "none";
+    }
 }
 
 function changeLanguage () {
@@ -54,6 +69,9 @@ var long;
 function onMapClick(e) {
     //creates markers wherever the user clicks and if it clicks to another position,
     //delete the old one and also save the position in latitudes and longitudes
+
+    hasGuessed = true;
+    setConfirmButtonState();
 
     if (marker) {
         map.removeLayer(marker);
