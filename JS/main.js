@@ -1,5 +1,6 @@
 var lastGuessIndex = null;
 var guessIndex;
+
 //this is the new default maptoload which displays a proper error message instead of a random street view that we have picked
 var mapToLoad = "/loader.html";
 var currentGuessLAT = 40;
@@ -179,8 +180,8 @@ var greenIcon = new L.Icon({
     console.log("Player Marker: "+ playerMarker.getLatLng());
 }
 
+//enables the result screen.
 function enableResultScreen(resultString, extraMessage) {
-    //enables the result screen.
 
     document.getElementById("map").style.visibility = "hidden";
     document.getElementById("EndOverlay").style.visibility = "visible";
@@ -217,10 +218,13 @@ function transitionToStart() {
     }, 200);
 }
 
+//Navbar Buttons
 function goToReddit() {
     window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus();
 }
 
+
+//Mouse and keyboard inputs
 function enableClickListeners(){
     //adding click listeners
 
@@ -236,4 +240,3 @@ function enableClickListeners(){
     let socialRedditButton = document.getElementById("socialsButton");
     socialRedditButton.addEventListener("click", goToReddit);
 }
-
