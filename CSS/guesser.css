@@ -33,6 +33,35 @@ html * {
     border-radius: 3px;
 }
 
+.extendedNavbar {
+    display: flex;
+    justify-content: left;
+    padding-left: 30px;
+    padding-right: 30px;
+    top: 70px;
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height 0.3s ease;
+    position: absolute;
+    right: 20px;
+    width: auto;
+    min-width: 20rem;
+    background-color: #32345c;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+    border-bottom-left-radius: 10px;
+    border-bottom-right-radius: 10px;
+    box-shadow: 0px 2px 5px #05060ab0;
+    z-index: 13;
+}
+
+.extendedNavbar.expanded {
+    /* Adjust max-height as needed */
+    max-height: 200px;
+    /* Use height: auto to fit content */
+    height: auto;
+}
+
 #logo {
     cursor: pointer;
     pointer-events: auto;
@@ -268,8 +297,61 @@ html * {
 }
 
 .menuButton:hover {
-    transition: all 250ms;
     filter: brightness(70%);
+}
+
+.floatingButton {
+    position: fixed;
+    top: 80px; 
+    right: 20px; 
+    z-index: 20; 
+    cursor: pointer;
+    width: fit-content;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 20px;
+    padding: 15px 35px;
+    text-align: center;
+    transition: top 0.1s ease;
+    white-space: nowrap;
+    border-radius: 5px;
+    user-select: none;
+    -webkit-user-select: none;
+    color: black;
+    background-color: white;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    opacity: 90%;
+}
+
+.floatingButton:hover {
+    filter: brightness(70%);
+}
+
+.category {
+    cursor: pointer;
+    width: fit-content;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 20px;
+    padding: 10px 12px;
+    text-align: center;
+    transition: all 200ms;
+    white-space: nowrap;
+    transition: all 250ms;
+    margin-bottom: 15px;
+    margin-top: 13px;
+    margin-right: 1em;
+    border-radius: 5px;
+    user-select: none;
+    -webkit-user-select: none;
+    color: black;
+    background-color: white;
+    
+}
+
+.category:hover {
+    background-color: #ff0808;
+    color: white;
 }
 
 button {

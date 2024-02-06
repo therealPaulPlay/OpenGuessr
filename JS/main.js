@@ -223,6 +223,25 @@ function goToReddit() {
     window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus();
 }
 
+//Unfold the second navbar for categories
+var extendedNavbar = document.getElementById("extendedNavbar");
+var categoryButton = document.getElementById("categoryButton");
+
+categoryButton.addEventListener("click", function() {
+    // Toggle the visibility of the extended navbar
+    if (extendedNavbar.classList.contains("expanded")) {
+        setTimeout(function() {
+            categoryButton.style.top = "80px";
+        }, 110); // Delay the button animation by 110ms so that it smoothly retracts with the navbar
+        extendedNavbar.classList.remove("expanded");
+        categoryButton.innerText = "Map Categories ▼";
+    } else {
+        categoryButton.style.top = "150px";
+        extendedNavbar.classList.add("expanded");
+        categoryButton.innerText = "Map Categories ▲";
+    }
+});
+
 
 //Mouse and keyboard inputs
 function enableClickListeners(){
