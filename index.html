@@ -20,6 +20,16 @@
 
 
     </head> 
+    <!-- Google Integration für Nutzerzahlen etc. -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DXD64B7ZDX"></script>
+    <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-DXD64B7ZDX');
+    </script>
+
     <body>
         <!--this is the navbar-->
         <div class="Banner">
@@ -66,6 +76,9 @@
             <div id="BottomBar" class="BottomBar">
                 <img id="resetButtonSVG" src="IMG/reset.svg">
                 <button id="confirmButton">Guess</button>
+                <div footer id="footer">
+                    <p></p>
+                </div>
             </div>
             <!--load main script-->
             <script type="module" src="JS/loadMap.js"></script>
