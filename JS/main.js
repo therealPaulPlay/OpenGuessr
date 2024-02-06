@@ -7,7 +7,6 @@ var currentGuessLAT = 40;
 var currentGuessLONG = 40;
 
 //reading in JSON
-
 const response = await fetch('../JSON/locList.json');
 const jsonResponse = await response.json();
 
@@ -225,27 +224,45 @@ function goToReddit() {
 
 //Unfold the second navbar for categories
 var extendedNavbar = document.getElementById("extendedNavbar");
-var categoryButton = document.getElementById("categoryButton");
+var categoryMenuButton = document.getElementById("categoryMenuButton");
 
-categoryButton.addEventListener("click", function() {
+categoryMenuButton.addEventListener("click", function() {
     // Toggle the visibility of the extended navbar
     if (extendedNavbar.classList.contains("expanded")) {
         setTimeout(function() {
             categoryButton.style.top = "80px";
         }, 110); // Delay the button animation by 110ms so that it smoothly retracts with the navbar
         extendedNavbar.classList.remove("expanded");
-        categoryButton.innerText = "Map Categories ▼";
+        categoryMenuButton.innerText = "Map Categories ▼";
     } else {
-        categoryButton.style.top = "150px";
+        categoryMenuButton.style.top = "150px";
         extendedNavbar.classList.add("expanded");
-        categoryButton.innerText = "Map Categories ▲";
+        categoryMenuButton.innerText = "Map Categories ▲";
     }
 });
 
+function changeCategory(category) {
+    //disable all
+    standardCategoryButton.classList.add("categoryDisabled");
+    capitalCategoryButton.classList.remove("categoryDisabled");
+    famousCategoryButton.classList.remove("categoryDisabled");
+   //enable the correct one
+    switch (category) {
+    case "standard":
+        standardCategoryButton.classList.remove("categoryDisabled");
+        break;
+    case "capital":
+        capitalCategoryButton.classList.remove("categoryDisabled");
+        break;
+    case "famous":
+        famousCategoryButton.classList.remove("categoryDisabled");
+        break;
+    }
+}
 
-//Mouse and keyboard inputs
+
+//Mouse and Touch inputs
 function enableClickListeners(){
-    //adding click listeners
 
     var resetBTN = document.getElementById("resetButtonSVG");
     resetBTN.addEventListener("click", reloadIframe);
@@ -258,4 +275,14 @@ function enableClickListeners(){
    
     let socialRedditButton = document.getElementById("socialsButton");
     socialRedditButton.addEventListener("click", goToReddit);
+    
+    // category buttons
+    let standardCategoryButton = document.getElementById("standardCategory");
+    standardCategoryButton.addEventListener("click", changeCategory("standard"));
+
+    let capitalCategoryButton = document.getElementById("capitalCategory");
+    capitalCategoryButton.addEventListener("click", changeCategory("capital"));
+
+    let famousCategoryButton = document.getElementById("famousCategory");
+    famousCategoryButton.addEventListener("click", changeCategory("famous"));
 }
