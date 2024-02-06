@@ -1,3 +1,4 @@
+console.log("main.js loaded");
 var lastGuessIndex = null;
 var guessIndex;
 
@@ -6,13 +7,56 @@ var mapToLoad = "/loader.html";
 var currentGuessLAT = 40;
 var currentGuessLONG = 40;
 
+//get the map category and read json accordingly!
+let mapCategory = "standard";
+
+//category buttons - this has to be on top because these variables are needed below
+//note to myself: ALWAYS double check the IDs! It breaks everything if they are wrong (like literally everything)
+let standardCategoryButton = document.getElementById("standardCategory");
+standardCategoryButton.addEventListener("click", function() {
+changeCategory("standard");
+});
+
+let capitalCategoryButton = document.getElementById("capitalCategory");
+capitalCategoryButton.addEventListener("click", function() {
+changeCategory("capital");
+});
+
+let famousCategoryButton = document.getElementById("famousCategory");
+famousCategoryButton.addEventListener("click", function() {
+changeCategory("famous");
+});
+
+//load the map category initially
+loadMapCategory();
+
+//change the category in the UI
+changeCategory(mapCategory);
+
+//loads the mapCategory from LocalStorage
+function loadMapCategory() {
+    let tempSelectedCategory = localStorage.getItem("selectedCategory");
+
+    if (tempSelectedCategory != null) {
+        mapCategory = tempSelectedCategory;
+    }
+
+}
+
 //reading in JSON
-const response = await fetch('../JSON/locList.json');
-const jsonResponse = await response.json();
+let listOfLocations;
+let jsonResponse;
 
-const listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
+async function loadLocationJsonAndGenerateLocation() {
+let response = await fetch("../JSON/" + mapCategory + "Locations.json");
+jsonResponse = await response.json();
 
-generateNewLocation();                                                      //call start functions after JSON is loaded
+listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
+
+generateNewLocation();    
+}            
+
+//call start functions after JSON is loaded
 enableClickListeners();
 
 function generateNewLocation() {
@@ -230,7 +274,7 @@ categoryMenuButton.addEventListener("click", function() {
     // Toggle the visibility of the extended navbar
     if (extendedNavbar.classList.contains("expanded")) {
         setTimeout(function() {
-            categoryButton.style.top = "80px";
+            categoryMenuButton.style.top = "80px";
         }, 110); // Delay the button animation by 110ms so that it smoothly retracts with the navbar
         extendedNavbar.classList.remove("expanded");
         categoryMenuButton.innerText = "Map Categories ▼";
@@ -244,8 +288,8 @@ categoryMenuButton.addEventListener("click", function() {
 function changeCategory(category) {
     //disable all
     standardCategoryButton.classList.add("categoryDisabled");
-    capitalCategoryButton.classList.remove("categoryDisabled");
-    famousCategoryButton.classList.remove("categoryDisabled");
+    capitalCategoryButton.classList.add("categoryDisabled");
+    famousCategoryButton.classList.add("categoryDisabled");
    //enable the correct one
     switch (category) {
     case "standard":
@@ -258,6 +302,13 @@ function changeCategory(category) {
         famousCategoryButton.classList.remove("categoryDisabled");
         break;
     }
+
+    if(mapCategory != category) {
+    mapCategory = category;
+    localStorage.setItem("selectedCategory", category);
+    }
+
+    loadLocationJsonAndGenerateLocation();
 }
 
 
@@ -276,13 +327,6 @@ function enableClickListeners(){
     let socialRedditButton = document.getElementById("socialsButton");
     socialRedditButton.addEventListener("click", goToReddit);
     
-    // category buttons
-    let standardCategoryButton = document.getElementById("standardCategory");
-    standardCategoryButton.addEventListener("click", changeCategory("standard"));
-
-    let capitalCategoryButton = document.getElementById("capitalCategory");
-    capitalCategoryButton.addEventListener("click", changeCategory("capital"));
-
-    let famousCategoryButton = document.getElementById("famousCategory");
-    famousCategoryButton.addEventListener("click", changeCategory("famous"));
 }
+
+ 
