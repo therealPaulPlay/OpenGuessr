@@ -399,4 +399,7 @@ button {
     .menuButton {
         visibility: hidden;
     }
+    .floatingButton {
+        visibility: hidden;
+    }
 }
