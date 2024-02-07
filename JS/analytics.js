@@ -21,8 +21,7 @@ if (localStorage.getItem("consentMode") === null) {
     else {
         gtag("consent","default", JSON.parse(localStorage.getItem("consentMode")));
         
-        //hide cookie banner
-        document.getElementById("cookieBanner").style.visibility = "hidden";
+        hideCookieBanner();
     }
 
 //enable the config - this will now show accurate usage numbers like the current player amount or the average time spent in the game
@@ -52,7 +51,7 @@ function allowAnalytics() {
     console.log("Cookies accepted");
 
      //hide cookie banner
-     document.getElementById("cookieBanner").style.visibility = "hidden";
+     hideCookieBanner();
 }
 
 function denyAnalytics() {
@@ -68,5 +67,10 @@ function denyAnalytics() {
     console.log("Cookies denied");
 
     //hide cookie banner
+    hideCookieBanner();
+}
+
+function hideCookieBanner(){
     document.getElementById("cookieBanner").style.visibility = "hidden";
+    
 }

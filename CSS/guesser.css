@@ -214,6 +214,7 @@ html * {
     gap: 20px;
     align-content: vertical;
     vertical-align: center;
+    max-width: 500px;
 }
 
 .cookieButton {
@@ -225,8 +226,6 @@ html * {
     line-height: 20px;
     padding: 20px 15px;
     text-align: center;
-    transition: all 200ms;
-    transition: all 250ms;
     margin-bottom: 15px;
     margin-top: 20px;
     margin-right: 1em;
@@ -244,6 +243,10 @@ html * {
 
 #cookiesAccept {
     background-color: lightgreen;
+}
+
+#cookiesDeny {
+    opacity: 80%;
 }
 
 /* GameOver content */
