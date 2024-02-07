@@ -333,7 +333,6 @@ function enableClickListeners(){
 
     let privacyButton = document.getElementById("privacyButton");
     privacyButton.addEventListener("click", goToLegal);
-    
 }
 
  

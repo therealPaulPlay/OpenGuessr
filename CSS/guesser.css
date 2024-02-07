@@ -192,6 +192,60 @@ html * {
     opacity: 70%;
 }
 
+#cookieBanner {
+    left: 20px;
+    width: fit-content;
+    background-color: #282828;
+    padding-top: 25px;
+    padding-bottom: 10px;
+    padding-left: 25px;
+    padding-right: 25px;
+    z-index: 20;
+    margin-bottom: 10px;
+    margin-right: 10px;
+    bottom: 100px;
+    position: absolute;
+    border-radius: 10px;
+    box-shadow: 0px 2px 8px #05060ab0;
+    font-size: 30px;
+    color: white;
+    display: float;
+    justify-content: space-around;
+    gap: 20px;
+    align-content: vertical;
+    vertical-align: center;
+}
+
+.cookieButton {
+    float: right;
+    cursor: pointer;
+    width: fit-content;
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 20px;
+    padding: 20px 15px;
+    text-align: center;
+    transition: all 200ms;
+    transition: all 250ms;
+    margin-bottom: 15px;
+    margin-top: 20px;
+    margin-right: 1em;
+    border-radius: 5px;
+    user-select: none;
+    -webkit-user-select: none;
+    color: black;
+    background-color: white;
+    
+}
+
+.cookieButton:hover {
+    filter: brightness(70%);
+}
+
+#cookiesAccept {
+    background-color: lightgreen;
+}
+
 /* GameOver content */
 
 #EndOverlay {

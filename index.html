@@ -21,14 +21,7 @@
 
     </head> 
     <!-- Google Integration für Nutzerzahlen etc. -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-DXD64B7ZDX"></script>
-    <script>
-    window.dataLayer = window.dataLayer || [];
-    function gtag(){dataLayer.push(arguments);}
-    gtag('js', new Date());
-
-    gtag('config', 'G-DXD64B7ZDX');
-    </script>
+    <script type="module" src="JS/analytics.js"></script>
 
     <body>
         <!--this is the navbar-->
@@ -72,7 +65,13 @@
                 map.off();
                 map.remove();
             </script>
-            <!--bottom toolbar with reset button-->
+            <!-- diy cookie banner -->
+            <div id="cookieBanner">
+                <p>Our website uses cookies to enhance your experience.</p>
+                <button class="cookieButton" id="cookiesAccept" type="button">Accept</button>
+                <button class="cookieButton" id="cookiesDeny" type="button">Deny</button>
+            </div>
+                        <!--bottom toolbar with reset button-->
             <div id="BottomBar" class="BottomBar">
                 <img id="resetButtonSVG" src="IMG/reset.svg">
                 <button class="roundButtons" id="confirmButton">Guess</button>
