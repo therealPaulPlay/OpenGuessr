@@ -332,7 +332,7 @@ function enableClickListeners(){
     socialRedditButton.addEventListener("click", goToReddit);
 
     let privacyButton = document.getElementById("privacyButton");
-    socialRedditButton.addEventListener("click", goToLegal);
+    privacyButton.addEventListener("click", goToLegal);
     
 }
 
