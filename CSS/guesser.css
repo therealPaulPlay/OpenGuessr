@@ -215,6 +215,7 @@ html * {
     align-content: vertical;
     vertical-align: center;
     max-width: 500px;
+    visibility: hidden;
 }
 
 .cookieButton {
