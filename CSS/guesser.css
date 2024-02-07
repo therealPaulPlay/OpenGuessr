@@ -180,7 +180,7 @@ html * {
 #confirmButton {
     width: 30%;
     right: 0px;
-    background-color: red;
+    background-color: #ff0808;
 }
 
 #privacyButton {
