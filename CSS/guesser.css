@@ -157,27 +157,39 @@ html * {
     transition: all 250ms;
 }
 
-#confirmButton {
+.roundButtons {
     cursor: pointer;
     transition: all 250ms;
     position: absolute;
     font-size: 30px;
     margin-right: 10px;
-    right: 0px;
     z-index: 11;
     margin-bottom: 15px;
-    width: 30%;
     padding-top: 5px;
     padding-bottom: 5px;
     border-radius: 25px;
     box-shadow: 0px 2px 8px #05060ab0;
     color: white;
+}
+
+.roundButtons:hover {
+    filter:brightness(70%);
+    transition: all 250ms;
+}
+
+#confirmButton {
+    width: 30%;
+    right: 0px;
     background-color: red;
 }
 
-#confirmButton:hover {
-    filter:brightness(70%);
-    transition: all 250ms;
+#privacyButton {
+    left: 100px;
+    width: fit-content;
+    background-color: #282828;
+    padding-left: 25px;
+    padding-right: 25px;
+    opacity: 70%;
 }
 
 /* GameOver content */

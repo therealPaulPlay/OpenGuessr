@@ -266,6 +266,10 @@ function goToReddit() {
     window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus();
 }
 
+function goToLegal() {
+    window.location.href = "/legal.html";
+}
+
 //Unfold the second navbar for categories
 var extendedNavbar = document.getElementById("extendedNavbar");
 var categoryMenuButton = document.getElementById("categoryMenuButton");
@@ -326,6 +330,9 @@ function enableClickListeners(){
    
     let socialRedditButton = document.getElementById("socialsButton");
     socialRedditButton.addEventListener("click", goToReddit);
+
+    let privacyButton = document.getElementById("privacyButton");
+    socialRedditButton.addEventListener("click", goToLegal);
     
 }
 
