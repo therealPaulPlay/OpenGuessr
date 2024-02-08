@@ -1,4 +1,3 @@
-console.log("main.js loaded");
 let lastGuessIndex = null;
 let guessIndex;
 
@@ -8,23 +7,24 @@ let currentGuessLAT = 40;
 let currentGuessLONG = 40;
 
 //get the map category and read json accordingly!
+//TODO switch to enum
 let mapCategory = "standard";
 
 //category buttons - this has to be on top because these variables are needed below
 //note to myself: ALWAYS double check the IDs! It breaks everything if they are wrong (like literally everything)
-let standardCategoryButton = document.getElementById("standardCategory");
+const standardCategoryButton = document.getElementById("standardCategory");
 standardCategoryButton.addEventListener("click", function() {
-changeCategory("standard");
+    changeCategory("standard");
 });
 
-let capitalCategoryButton = document.getElementById("capitalCategory");
+const capitalCategoryButton = document.getElementById("capitalCategory");
 capitalCategoryButton.addEventListener("click", function() {
-changeCategory("capital");
+    changeCategory("capitals");
 });
 
-let famousCategoryButton = document.getElementById("famousCategory");
+const famousCategoryButton = document.getElementById("famousCategory");
 famousCategoryButton.addEventListener("click", function() {
-changeCategory("famous");
+    changeCategory("famous");
 });
 
 //load the map category initially
@@ -37,26 +37,22 @@ changeCategory(mapCategory);
 function loadMapCategory() {
     let tempSelectedCategory = localStorage.getItem("selectedCategory");
 
-    if (tempSelectedCategory != null) {
+    if (tempSelectedCategory != null)
         mapCategory = tempSelectedCategory;
-    }
-
 }
 
-//reading in JSON
 let listOfLocations;
 let jsonResponse;
 
 async function loadLocationJsonAndGenerateLocation() {
-let response = await fetch("../JSON/" + mapCategory + "Locations.json");
-jsonResponse = await response.json();
-
-listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
-
-generateNewLocation();    
+    let response = await fetch("../JSON/" + mapCategory + "Locations.json");
+    jsonResponse = await response.json();
+    
+    listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
+    
+    generateNewLocation();    
 }            
 
-//call start functions after JSON is loaded
 enableClickListeners();
 
 function generateNewLocation() {
@@ -174,7 +170,7 @@ function compareDistances(distance) {
     enableResultScreen(resultAsString, extraMsg);
 }
 
-export function setMapToTargetPosition(key, playersLat, playersLong) {
+export function setMapToTargetPosition(playersLat, playersLong) {
     //this makes it so the map in the result screen is focused on the center between the point
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
@@ -241,7 +237,6 @@ function reloadIframe() {
 
     document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
     window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
-    console.log("new iframe link loaded")
 }
 
 function transitionToStart() {
@@ -288,31 +283,30 @@ function changeCategory(category) {
     standardCategoryButton.classList.add("categoryDisabled");
     capitalCategoryButton.classList.add("categoryDisabled");
     famousCategoryButton.classList.add("categoryDisabled");
+    
    //enable the correct one
     switch (category) {
-    case "standard":
-        standardCategoryButton.classList.remove("categoryDisabled");
-        break;
-    case "capital":
-        capitalCategoryButton.classList.remove("categoryDisabled");
-        break;
-    case "famous":
-        famousCategoryButton.classList.remove("categoryDisabled");
-        break;
+        case "standard":
+            standardCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case "capitals":
+            capitalCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case "famous":
+            famousCategoryButton.classList.remove("categoryDisabled");
+            break;
     }
 
     if(mapCategory !== category) {
-    mapCategory = category;
-    localStorage.setItem("selectedCategory", category);
+        mapCategory = category;
+        localStorage.setItem("selectedCategory", category);
     }
 
     loadLocationJsonAndGenerateLocation().then();
 }
 
 
-//Mouse and Touch inputs
 function enableClickListeners(){
-
     let resetBTN = document.getElementById("resetButtonSVG");
     resetBTN.addEventListener("click", reloadIframe);
    
@@ -328,5 +322,3 @@ function enableClickListeners(){
     let privacyButton = document.getElementById("privacyButton");
     privacyButton.addEventListener("click", goToLegal);
 }
-
- 

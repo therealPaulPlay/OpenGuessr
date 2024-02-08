@@ -4,10 +4,11 @@ import { calculateDistances } from "./main.js";
 
 //initializes map (check out leaflet for more information)
 
-const key = 'QADiAuIEfpISv0PGS7Ju';
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
 
 let mapProvider = ["https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png"]
+
+//TODO switch to enum
 let providerIndex = 0;
 let tempProviderIndexFromStorage = localStorage.getItem("providerIndex");
 
@@ -109,5 +110,5 @@ function onMapHover() {
 export function confirmButtonClicks() {
     //calls functions since you can't pass parameters from a function outside of the file.
     calculateDistances(markerPosition.lat, markerPosition.lng);
-    setMapToTargetPosition(key, lat, long);
+    setMapToTargetPosition(lat, long);
 }
