@@ -1,5 +1,4 @@
-console.log("GA4 script loaded");
-var imported = document.createElement('script');
+const imported = document.createElement('script');
 imported.src = 'https://www.googletagmanager.com/gtag/js?id=G-DXD64B7ZDX';
 document.head.appendChild(imported);
 
@@ -48,7 +47,6 @@ function allowAnalytics() {
     }
     gtag("consent","update", consentMode);
     localStorage.setItem("consentMode", JSON.stringify(consentMode));
-    console.log("Cookies accepted");
 
      //hide cookie banner
      hideCookieBanner();
@@ -64,7 +62,6 @@ function denyAnalytics() {
     }
     gtag("consent","update", consentMode);
     localStorage.setItem("consentMode", JSON.stringify(consentMode));
-    console.log("Cookies denied");
 
     //hide cookie banner
     hideCookieBanner();

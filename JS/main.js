@@ -1,30 +1,36 @@
-console.log("main.js loaded");
-var lastGuessIndex = null;
-var guessIndex;
+let lastGuessIndex = null;
+let guessIndex;
 
-//this is the new default maptoload which displays a proper error message instead of a random street view that we have picked
-var mapToLoad = "/loader.html";
-var currentGuessLAT = 40;
-var currentGuessLONG = 40;
+//this is the new default mapToLoad which displays a proper error message instead of a random street view that we have picked
+let mapToLoad = "/loader.html";
+let currentGuessLAT = 40;
+let currentGuessLONG = 40;
 
 //get the map category and read json accordingly!
-let mapCategory = "standard";
+
+const Category = {
+    STANDARD: "standard",
+    CAPITAL: "capital",
+    FAMOUS: "famous"
+}
+
+let mapCategory = Category.STANDARD;
 
 //category buttons - this has to be on top because these variables are needed below
 //note to myself: ALWAYS double check the IDs! It breaks everything if they are wrong (like literally everything)
-let standardCategoryButton = document.getElementById("standardCategory");
+const standardCategoryButton = document.getElementById("standardCategory");
 standardCategoryButton.addEventListener("click", function() {
-changeCategory("standard");
+    changeCategory(Category.STANDARD);
 });
 
-let capitalCategoryButton = document.getElementById("capitalCategory");
+const capitalCategoryButton = document.getElementById("capitalCategory");
 capitalCategoryButton.addEventListener("click", function() {
-changeCategory("capital");
+    changeCategory(Category.CAPITAL);
 });
 
-let famousCategoryButton = document.getElementById("famousCategory");
+const famousCategoryButton = document.getElementById("famousCategory");
 famousCategoryButton.addEventListener("click", function() {
-changeCategory("famous");
+    changeCategory(Category.FAMOUS);
 });
 
 //load the map category initially
@@ -37,45 +43,41 @@ changeCategory(mapCategory);
 function loadMapCategory() {
     let tempSelectedCategory = localStorage.getItem("selectedCategory");
 
-    if (tempSelectedCategory != null) {
+    if (tempSelectedCategory != null)
         mapCategory = tempSelectedCategory;
-    }
-
 }
 
-//reading in JSON
 let listOfLocations;
 let jsonResponse;
 
 async function loadLocationJsonAndGenerateLocation() {
-let response = await fetch("../JSON/" + mapCategory + "Locations.json");
-jsonResponse = await response.json();
-
-listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
-
-generateNewLocation();    
+    let response = await fetch("../JSON/" + mapCategory + "Locations.json");
+    jsonResponse = await response.json();
+    
+    listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
+    
+    generateNewLocation();    
 }            
 
-//call start functions after JSON is loaded
 enableClickListeners();
 
 function generateNewLocation() {
     do {
         guessIndex = Math.floor(Math.random()*listOfLocations.length);      //calculating random location
-    } while (lastGuessIndex == guessIndex);
+    } while (lastGuessIndex === guessIndex);
 
     lastGuessIndex = guessIndex;                                            //setting last Index
 
     mapToLoad = listOfLocations[guessIndex];                                //declares which map is being loaded
 
-    var currentGuessLatArray = [];                                          //creation of 2 arrays that temporarily store
-    var currentGuessLngArray = [];                                          //lat and long values taken from link
+    let currentGuessLatArray = [];                                          //creation of 2 arrays that temporarily store
+    let currentGuessLngArray = [];                                          //lat and long values taken from link
 
-    var secondIndex = 0;                                                    //declares where longitudes start
+    let secondIndex = 0;                                                    //declares where longitudes start
 
     if (mapToLoad.length > 140) {
         for (let i = 93; i < mapToLoad.length; i++) {                       //cut away unnecessary parts of link to get latitude
-            if (mapToLoad[i] != "!") {
+            if (mapToLoad[i] !== "!") {
                 currentGuessLatArray[i] = mapToLoad[i];
             }
             else {
@@ -84,7 +86,7 @@ function generateNewLocation() {
             }
         }
         for (let j = secondIndex; j < mapToLoad.length; j++) {              //cut away unnecessary parts of link to get longitude
-            if (mapToLoad[j] != "!") {
+            if (mapToLoad[j] !== "!") {
                 currentGuessLngArray[j] = mapToLoad[j];
             }
             else {
@@ -93,11 +95,11 @@ function generateNewLocation() {
         }
     }
 
-    if (!(currentGuessLngArray[0] == "-" || currentGuessLngArray[0] > 0 && currentGuessLngArray[0] <= 9)) {
-        currentGuessLngArray.shift();           //remove first index if it isnt showing it being negative or a longer number
+    if (!(currentGuessLngArray[0] === "-" || currentGuessLngArray[0] > 0 && currentGuessLngArray[0] <= 9)) {
+        currentGuessLngArray.shift();           //remove first index if it isn't showing it being negative or a longer number
     }
-    if (!(currentGuessLatArray[0] == "-" || currentGuessLatArray[0] > 0 && currentGuessLatArray[0] <= 9)) {
-        currentGuessLatArray.shift();           //remove first index if it isnt showing it being negative or a longer number
+    if (!(currentGuessLatArray[0] === "-" || currentGuessLatArray[0] > 0 && currentGuessLatArray[0] <= 9)) {
+        currentGuessLatArray.shift();           //remove first index if it isn't showing it being negative or a longer number
     }
 
     for (let k = 0; k < 7; k++) {               //removes last 7 objects, could do with splice but I found this to be more understandable
@@ -107,36 +109,36 @@ function generateNewLocation() {
 
     //These two are the variables that reflect where the location actually is!
 
-    currentGuessLAT = currentGuessLatArray.join('');        //saves lats and longs in seperate variables
+    currentGuessLAT = currentGuessLatArray.join('');        //saves lats and longs in separate variables
     currentGuessLONG = currentGuessLngArray.join('');
 
     reloadIframe();                                         //now the map is generated, the iFrame is being reloaded.
 }
 
-var veryCloseDistances;
-var closeDistances;
-var farDistances;
-var resMap;
-var extraMsg;
-var destinationMarker;
+let veryCloseDistances;
+let closeDistances;
+let farDistances;
+let resMap;
+let extraMsg;
+let destinationMarker;
 
 /* Map functions */
 
 export function calculateDistances(mapsLat, mapsLong) {
     //calculates distance between set point and actual point.
-    var lat1 = mapsLat;
-    var lon1 = mapsLong;
-    var lat2 = currentGuessLAT;
-    var lon2 = currentGuessLONG;
-    var R = 6371; // Radius of the earth in km
-    var dLat = deg2rad(lat2-lat1);  // deg2rad below
-    var dLon = deg2rad(lon2-lon1); 
-    var a = 
+    let lat1 = mapsLat;
+    let lon1 = mapsLong;
+    let lat2 = currentGuessLAT;
+    let lon2 = currentGuessLONG;
+    let R = 6371; // Radius of the earth in km
+    let dLat = deg2rad(lat2-lat1);  // deg2rad below
+    let dLon = deg2rad(lon2-lon1); 
+    let a = 
       Math.sin(dLat/2) * Math.sin(dLat/2) +
       Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
       Math.sin(dLon/2) * Math.sin(dLon/2); 
-    var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    var d = R * c; // Distance in km
+    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
+    let d = R * c; // Distance in km
 
     compareDistances(d);    
 }
@@ -148,8 +150,8 @@ function deg2rad(deg) {
 function compareDistances(distance) {
     //compares how big the distance is and enables result screen with a message.
 
-    var finalResult;
-    var resultAsString;
+    let finalResult;
+    let resultAsString;
 
     veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Let me guess; you have an A in geography?", "Wow."]
     closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!"];
@@ -174,17 +176,17 @@ function compareDistances(distance) {
     enableResultScreen(resultAsString, extraMsg);
 }
 
-export function setMapToTargetPosition(key, playersLat, playersLong) {
+export function setMapToTargetPosition(playersLat, playersLong) {
     //this makes it so the map in the result screen is focused on the center between the point
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15); //starting position
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'http://www.openstreetmap.org/copyright'
+    attribution: 'https://www.openstreetmap.org/copyright'
 }).addTo(resMap);
 
-var redIcon = new L.Icon({
+const redIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -192,7 +194,7 @@ var redIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-var greenIcon = new L.Icon({
+const greenIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -201,26 +203,22 @@ var greenIcon = new L.Icon({
 });
 
     //used to create the line between the points
-    var curLatLng = new L.LatLng(currentGuessLAT, currentGuessLONG);
-    var playerLatLng = new L.LatLng(playersLat, playersLong);
-    var polyList = [curLatLng, playerLatLng];
-    var pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
-    var playerMarker;
-    
-    var polygon = L.polygon(polyList, {color: '#05060ab0', weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
+    let curLatLng = new L.LatLng(currentGuessLAT, currentGuessLONG);
+    let playerLatLng = new L.LatLng(playersLat, playersLong);
+    let polyList = [curLatLng, playerLatLng];
+    let pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
+    let playerMarker;
     
     //this places the Player Marker (where the player thinks the location is)
     playerMarker = new L.Marker(playerLatLng, {icon: redIcon})
     playerMarker.addTo(resMap);
+    const polygon = L.polygon(polyList, {color: '#05060ab0', weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
 
     resMap.fitBounds(pointList);
 
     //this places the "correct" marker that actually reflects the target location
     destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: greenIcon});
     destinationMarker.addTo(resMap);
-        
-    console.log("Desination Marker: "+ destinationMarker.getLatLng());
-    console.log("Player Marker: "+ playerMarker.getLatLng());
 }
 
 //enables the result screen.
@@ -235,7 +233,7 @@ function enableResultScreen(resultString, extraMessage) {
     document.getElementById("confirmButton").style.visibility = "hidden";
     document.getElementById("resetButtonSVG").style.visibility = "hidden";
 
-    document.getElementById("logo").style.pointerEvents = "none";;
+    document.getElementById("logo").style.pointerEvents = "none";
 
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
@@ -246,16 +244,15 @@ function reloadIframe() {
     //reloads the iFrame and sets the position of the camera back to it's origin.
 
     document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
-    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = 0; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
-    console.log("new iframe link loaded")
+    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
 }
 
 function transitionToStart() {
     //fancy function to make a fade in to prevent the flashing of the iframe.
 
-    document.getElementById("BeforeOverlay").style.opacity = 0;
+    document.getElementById("BeforeOverlay").style.opacity = "0";
     document.getElementById("BeforeOverlay").style.visibility = "visible";
-    document.getElementById("BeforeOverlay").style.opacity = 100;
+    document.getElementById("BeforeOverlay").style.opacity = "100";
     window.setTimeout(() => {
         window.location.reload();
     }, 200);
@@ -271,8 +268,8 @@ function goToLegal() {
 }
 
 //Unfold the second navbar for categories
-var extendedNavbar = document.getElementById("extendedNavbar");
-var categoryMenuButton = document.getElementById("categoryMenuButton");
+let extendedNavbar = document.getElementById("extendedNavbar");
+let categoryMenuButton = document.getElementById("categoryMenuButton");
 
 categoryMenuButton.addEventListener("click", function() {
     // Toggle the visibility of the extended navbar
@@ -294,38 +291,37 @@ function changeCategory(category) {
     standardCategoryButton.classList.add("categoryDisabled");
     capitalCategoryButton.classList.add("categoryDisabled");
     famousCategoryButton.classList.add("categoryDisabled");
+    
    //enable the correct one
     switch (category) {
-    case "standard":
-        standardCategoryButton.classList.remove("categoryDisabled");
-        break;
-    case "capital":
-        capitalCategoryButton.classList.remove("categoryDisabled");
-        break;
-    case "famous":
-        famousCategoryButton.classList.remove("categoryDisabled");
-        break;
+        case Category.STANDARD:
+            standardCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.CAPITAL:
+            capitalCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.FAMOUS:
+            famousCategoryButton.classList.remove("categoryDisabled");
+            break;
     }
 
-    if(mapCategory != category) {
-    mapCategory = category;
-    localStorage.setItem("selectedCategory", category);
+    if(mapCategory !== category) {
+        mapCategory = category;
+        localStorage.setItem("selectedCategory", category);
     }
 
-    loadLocationJsonAndGenerateLocation();
+    loadLocationJsonAndGenerateLocation().then();
 }
 
 
-//Mouse and Touch inputs
 function enableClickListeners(){
-
-    var resetBTN = document.getElementById("resetButtonSVG");
+    let resetBTN = document.getElementById("resetButtonSVG");
     resetBTN.addEventListener("click", reloadIframe);
    
-    var logoBTN = document.getElementById("logo");
+    let logoBTN = document.getElementById("logo");
     logoBTN.addEventListener("click", generateNewLocation);
   
-    var confirmBTN = document.getElementById("nextRound");
+    let confirmBTN = document.getElementById("nextRound");
     confirmBTN.addEventListener("click", transitionToStart);
    
     let socialRedditButton = document.getElementById("socialsButton");
@@ -334,5 +330,3 @@ function enableClickListeners(){
     let privacyButton = document.getElementById("privacyButton");
     privacyButton.addEventListener("click", goToLegal);
 }
-
- 

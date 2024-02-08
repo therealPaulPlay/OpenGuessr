@@ -2,18 +2,24 @@ import "../JS/main.js";
 import { setMapToTargetPosition } from "./main.js";
 import { calculateDistances } from "./main.js";
 
+const Provider = {
+    REGIONAL: 0,
+    GERMAN: 1
+}
+
 //initializes map (check out leaflet for more information)
 
-const key = 'QADiAuIEfpISv0PGS7Ju';
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
 
 let mapProvider = ["https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png"]
-let providerIndex = 0;
-let tempProviderIndexFromStorage = localStorage.getItem("providerIndex");
 
-if (tempProviderIndexFromStorage != null) {
-    providerIndex = tempProviderIndexFromStorage;
-}
+//TODO switch to enum
+let providerIndex = Provider.REGIONAL;
+let storedProviderIndex = localStorage.getItem("providerIndex");
+
+if (storedProviderIndex != null)
+    providerIndex = storedProviderIndex;
+
 changeLanguageButtonLabel();
 
 //indicate whether a guess has been made and the button can be used
@@ -21,7 +27,7 @@ let hasGuessed = false;
 setConfirmButtonState();
 
 function changeLanguageButtonLabel () {
-       document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex == 0 ? "Regional": "German"}`
+       document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex === Provider.REGIONAL ? "Regional": "German"}`
 }
 
 function setConfirmButtonState() {
@@ -36,24 +42,24 @@ function setConfirmButtonState() {
 }
 
 function changeLanguage () {
-    if (providerIndex == 0) {
-        providerIndex = 1;
+    if (providerIndex === Provider.REGIONAL) {
+        providerIndex = Provider.GERMAN;
     }
     else {
-        providerIndex = 0;
+        providerIndex = Provider.REGIONAL;
     }
     localStorage.setItem("providerIndex", providerIndex);
-    window.location.reload(true);
+    window.location.reload();
 }
 
 L.tileLayer(mapProvider[providerIndex], {
-    attribution: 'http://www.openstreetmap.org/copyright',
+    attribution: 'https://www.openstreetmap.org/copyright',
     noWrap: true
 }).addTo(map);
 
 map.setZoom(3);
 
-var redIcon = new L.Icon({
+const redIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -61,10 +67,10 @@ var redIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-var marker = new L.Marker([0, 0]);
-var markerPosition = marker.getLatLng();
-var lat;
-var long;
+let marker = new L.Marker([0, 0]);
+let markerPosition = marker.getLatLng();
+let lat;
+let long;
 
 function onMapClick(e) {
     //creates markers wherever the user clicks and if it clicks to another position,
@@ -94,11 +100,11 @@ map.addEventListener("mouseover", onMapHover);
 map.addEventListener("mouseout", onMapHover);
 
 //click listener to make the confirm button work
-var confirmBTN = document.getElementById("confirmButton");
+const confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
 
 //toggle languages
-let languageBTN = document.getElementById("languageButton");
+const languageBTN = document.getElementById("languageButton");
 languageBTN.addEventListener("click", changeLanguage);
 
 
@@ -109,5 +115,5 @@ function onMapHover() {
 export function confirmButtonClicks() {
     //calls functions since you can't pass parameters from a function outside of the file.
     calculateDistances(markerPosition.lat, markerPosition.lng);
-    setMapToTargetPosition(key, lat, long);
+    setMapToTargetPosition(lat, long);
 }
