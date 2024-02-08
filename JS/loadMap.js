@@ -21,7 +21,7 @@ let hasGuessed = false;
 setConfirmButtonState();
 
 function changeLanguageButtonLabel () {
-       document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex == 0 ? "Regional": "German"}`
+       document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex === 0 ? "Regional": "German"}`
 }
 
 function setConfirmButtonState() {
@@ -36,24 +36,24 @@ function setConfirmButtonState() {
 }
 
 function changeLanguage () {
-    if (providerIndex == 0) {
+    if (providerIndex === 0) {
         providerIndex = 1;
     }
     else {
         providerIndex = 0;
     }
     localStorage.setItem("providerIndex", providerIndex);
-    window.location.reload(true);
+    window.location.reload();
 }
 
 L.tileLayer(mapProvider[providerIndex], {
-    attribution: 'http://www.openstreetmap.org/copyright',
+    attribution: 'https://www.openstreetmap.org/copyright',
     noWrap: true
 }).addTo(map);
 
 map.setZoom(3);
 
-var redIcon = new L.Icon({
+const redIcon = new L.Icon({
     iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
     iconSize: [25, 41],
     iconAnchor: [12, 41],
@@ -61,10 +61,10 @@ var redIcon = new L.Icon({
     shadowSize: [41, 41]
 });
 
-var marker = new L.Marker([0, 0]);
-var markerPosition = marker.getLatLng();
-var lat;
-var long;
+let marker = new L.Marker([0, 0]);
+let markerPosition = marker.getLatLng();
+let lat;
+let long;
 
 function onMapClick(e) {
     //creates markers wherever the user clicks and if it clicks to another position,
@@ -94,11 +94,11 @@ map.addEventListener("mouseover", onMapHover);
 map.addEventListener("mouseout", onMapHover);
 
 //click listener to make the confirm button work
-var confirmBTN = document.getElementById("confirmButton");
+const confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
 
 //toggle languages
-let languageBTN = document.getElementById("languageButton");
+const languageBTN = document.getElementById("languageButton");
 languageBTN.addEventListener("click", changeLanguage);
 
 

@@ -1,12 +1,12 @@
 <!DOCTYPE HTML>
-<html>
+<html lang="en-US">
     <head>
         <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
         <meta name="description" content="Free geoguessr alternative with unlimited free play - improve your geography skills by guessing the location on google street view.">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
         <script src="https://unpkg.com/mathjs@11.5.1/lib/browser/math.js"></script>
-        <link rel="stylesheet" href="CSS/guesser.css">
+        <link rel="stylesheet" href="/CSS/guesser.css">
         <title>OpenGuessr - free geoguessr alternative</title>
 
 
@@ -21,12 +21,12 @@
 
     </head> 
     <!-- Google Integration for user count etc. i hope it works oof -->
-    <script type="module" src="JS/analytics.js"></script>
+    <script type="module" src="/JS/analytics.js"></script>
 
     <body>
         <!--this is the navbar-->
         <div class="Banner">
-            <a id="logo"><img id="icon" src="IMG/openguessr.svg"></a>
+            <a id="logo"><img id="icon" src="/IMG/openguessr.svg" alt="openguessr logo"></a>
             <button class="menuButton" id="socialsButton" type="button">Join our Subreddit</button>
             <button class="menuButton" id="languageButton" type="button">Toggle language</button>
             <br><br>
@@ -61,7 +61,7 @@
             </div>
             <script>
                 //this is so we don't get a duplicate map declaration. Simply removes the old one.
-                var map = L.map('map');
+                const map = L.map('map');
                 map.off();
                 map.remove();
             </script>
@@ -73,13 +73,13 @@
             </div>
                         <!--bottom toolbar with reset button-->
             <div id="BottomBar" class="BottomBar">
-                <img id="resetButtonSVG" src="IMG/reset.svg">
+                <img id="resetButtonSVG" src="/IMG/reset.svg" alt="Return to start position">
                 <button class="roundButtons" id="confirmButton">Guess</button>
                 <button class="roundButtons" id="privacyButton">Privacy</button>
             </div>
             <!--load main script-->
-            <script type="module" src="JS/loadMap.js"></script>
-            <script type="module" src="JS/main.js"></script>
+            <script type="module" src="/JS/loadMap.js"></script>
+            <script type="module" src="/JS/main.js"></script>
             <h1 id="TransparentHeader">Openguessr free geoguessr geoguesser alternative open source geography geographie Geotastic world map google maps google streetview rainbolt geographie spiel videospiel guess which country karte rate welches land kostenlos gratis more than 5 minutes unlimited free play unendlich freies spiel nicht zahlen without subscription pro</h1>
         </div>
     </body>

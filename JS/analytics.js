@@ -1,5 +1,5 @@
 console.log("GA4 script loaded");
-var imported = document.createElement('script');
+const imported = document.createElement('script');
 imported.src = 'https://www.googletagmanager.com/gtag/js?id=G-DXD64B7ZDX';
 document.head.appendChild(imported);
 
