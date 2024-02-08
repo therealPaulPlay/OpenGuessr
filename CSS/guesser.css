@@ -271,12 +271,13 @@ html * {
     z-index: 1;
 }
 
+/* This is for the result screen */
 #TextDiv {
     margin-left: 50px;
     margin-right: 50px;
     margin-top: 150px;
     color: #EEE;
-    font-size: 40pt;
+    font-size: 50pt;
 }
 
 #motivationText {
