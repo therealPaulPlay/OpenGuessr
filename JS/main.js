@@ -7,24 +7,30 @@ let currentGuessLAT = 40;
 let currentGuessLONG = 40;
 
 //get the map category and read json accordingly!
-//TODO switch to enum
-let mapCategory = "standard";
+
+const Category = {
+    STANDARD: "standard",
+    CAPITAL: "capital",
+    FAMOUS: "famous"
+}
+
+let mapCategory = Category.STANDARD;
 
 //category buttons - this has to be on top because these variables are needed below
 //note to myself: ALWAYS double check the IDs! It breaks everything if they are wrong (like literally everything)
 const standardCategoryButton = document.getElementById("standardCategory");
 standardCategoryButton.addEventListener("click", function() {
-    changeCategory("standard");
+    changeCategory(Category.STANDARD);
 });
 
 const capitalCategoryButton = document.getElementById("capitalCategory");
 capitalCategoryButton.addEventListener("click", function() {
-    changeCategory("capitals");
+    changeCategory(Category.CAPITAL);
 });
 
 const famousCategoryButton = document.getElementById("famousCategory");
 famousCategoryButton.addEventListener("click", function() {
-    changeCategory("famous");
+    changeCategory(Category.FAMOUS);
 });
 
 //load the map category initially
@@ -288,13 +294,13 @@ function changeCategory(category) {
     
    //enable the correct one
     switch (category) {
-        case "standard":
+        case Category.STANDARD:
             standardCategoryButton.classList.remove("categoryDisabled");
             break;
-        case "capitals":
+        case Category.CAPITAL:
             capitalCategoryButton.classList.remove("categoryDisabled");
             break;
-        case "famous":
+        case Category.FAMOUS:
             famousCategoryButton.classList.remove("categoryDisabled");
             break;
     }
