@@ -8,15 +8,9 @@
     src: url('../FONTS/sofia-sans-bold.ttf');
 }
 
-@font-face {
-    font-family: Figtree;
-    src: url('../FONTS/figtree-variable.ttf');
-}
-
 html * {
-    font-family: Figtree, Futura, Sofia-Sans, sans-serif;
+    font-family: Futura, Sofia-Sans, sans-serif;
     margin: 0;
-    font-weight: 600;
 }
 
 /* Top Banner */
@@ -312,7 +306,7 @@ html * {
     display: inline-block;
     opacity: 100%;
     padding: 10px 50px;
-    font-size: 30pt;
+    font-size: 35pt;
     color: #EEE;
     width: fit-content;
     background-color: #05060ab0;
@@ -354,7 +348,7 @@ html * {
     float: right;
     cursor: pointer;
     width: fit-content;
-    font-size: 18px;
+    font-size: 22px;
     line-height: 20px;
     padding: 10px 12px;
     text-align: center;
@@ -389,8 +383,7 @@ html * {
     z-index: 20; 
     cursor: pointer;
     width: fit-content;
-    font-size: 18px;
-    font-weight: 600;
+    font-size: 22px;
     line-height: 20px;
     padding: 15px 35px;
     text-align: center;
@@ -418,7 +411,7 @@ html * {
 .category {
     cursor: pointer;
     width: fit-content;
-    font-size: 16px;
+    font-size: 20px;
     line-height: 20px;
     padding: 10px 12px;
     text-align: center;
