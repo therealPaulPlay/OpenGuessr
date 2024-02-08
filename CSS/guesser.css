@@ -4,13 +4,19 @@
 }
 
 @font-face {
-    font-family: Poppins;
-    src: url('../FONTS/poppins_medium.ttf');
+    font-family: Sofia-Sans;
+    src: url('../FONTS/sofia-sans-bold.ttf');
+}
+
+@font-face {
+    font-family: Figtree;
+    src: url('../FONTS/figtree-variable.ttf');
 }
 
 html * {
-    font-family: Futura, Poppins, sans-serif;
+    font-family: Figtree, Futura, Sofia-Sans, sans-serif;
     margin: 0;
+    font-weight: 600;
 }
 
 /* Top Banner */
@@ -198,6 +204,7 @@ html * {
     padding-left: 25px;
     padding-right: 25px;
     opacity: 70%;
+    font-size: 18px;
 }
 
 #cookieBanner {
@@ -301,11 +308,11 @@ html * {
     z-index: 15;
     position: absolute;
     cursor: pointer;
-    transition: all 250ms;
+    transition: all 250ms ease;
     display: inline-block;
     opacity: 100%;
     padding: 10px 50px;
-    font-size: 40pt;
+    font-size: 30pt;
     color: #EEE;
     width: fit-content;
     background-color: #05060ab0;
@@ -319,6 +326,7 @@ html * {
 #nextRound a:hover {
     color: #05060ab0;
     background-color: #EEE;
+    scale: 1.03;
 }
 
 #TextDiv button {
@@ -346,8 +354,7 @@ html * {
     float: right;
     cursor: pointer;
     width: fit-content;
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 18px;
     line-height: 20px;
     padding: 10px 12px;
     text-align: center;
@@ -382,8 +389,8 @@ html * {
     z-index: 20; 
     cursor: pointer;
     width: fit-content;
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 18px;
+    font-weight: 600;
     line-height: 20px;
     padding: 15px 35px;
     text-align: center;
@@ -411,8 +418,7 @@ html * {
 .category {
     cursor: pointer;
     width: fit-content;
-    font-size: 20px;
-    font-weight: 500;
+    font-size: 16px;
     line-height: 20px;
     padding: 10px 12px;
     text-align: center;
@@ -430,8 +436,7 @@ html * {
 }
 
 .category:hover {
-    background-color: #cecece;
-    color: white;
+   scale: 1.05;
 }
 
 button {

@@ -27,7 +27,7 @@ let hasGuessed = false;
 setConfirmButtonState();
 
 function changeLanguageButtonLabel () {
-       document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex === Provider.REGIONAL ? "Regional": "German"}`
+       document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex == Provider.REGIONAL ? "Regional": "German"}`
 }
 
 function setConfirmButtonState() {
@@ -42,7 +42,7 @@ function setConfirmButtonState() {
 }
 
 function changeLanguage () {
-    if (providerIndex === Provider.REGIONAL) {
+    if (providerIndex == Provider.REGIONAL) {
         providerIndex = Provider.GERMAN;
     }
     else {
