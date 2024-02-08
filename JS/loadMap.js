@@ -2,6 +2,11 @@ import "../JS/main.js";
 import { setMapToTargetPosition } from "./main.js";
 import { calculateDistances } from "./main.js";
 
+const Provider = {
+    REGIONAL: 0,
+    GERMAN: 1
+}
+
 //initializes map (check out leaflet for more information)
 
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
@@ -9,12 +14,12 @@ const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting posit
 let mapProvider = ["https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png"]
 
 //TODO switch to enum
-let providerIndex = 0;
-let tempProviderIndexFromStorage = localStorage.getItem("providerIndex");
+let providerIndex = Provider.REGIONAL;
+let storedProviderIndex = localStorage.getItem("providerIndex");
 
-if (tempProviderIndexFromStorage != null) {
-    providerIndex = tempProviderIndexFromStorage;
-}
+if (storedProviderIndex != null)
+    providerIndex = storedProviderIndex;
+
 changeLanguageButtonLabel();
 
 //indicate whether a guess has been made and the button can be used
@@ -22,7 +27,7 @@ let hasGuessed = false;
 setConfirmButtonState();
 
 function changeLanguageButtonLabel () {
-       document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex === 0 ? "Regional": "German"}`
+       document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex === Provider.REGIONAL ? "Regional": "German"}`
 }
 
 function setConfirmButtonState() {
@@ -37,11 +42,11 @@ function setConfirmButtonState() {
 }
 
 function changeLanguage () {
-    if (providerIndex === 0) {
-        providerIndex = 1;
+    if (providerIndex === Provider.REGIONAL) {
+        providerIndex = Provider.GERMAN;
     }
     else {
-        providerIndex = 0;
+        providerIndex = Provider.REGIONAL;
     }
     localStorage.setItem("providerIndex", providerIndex);
     window.location.reload();
