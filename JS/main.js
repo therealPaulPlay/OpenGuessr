@@ -199,12 +199,14 @@ const greenIcon = new L.Icon({
     //used to create the line between the points
     let curLatLng = new L.LatLng(currentGuessLAT, currentGuessLONG);
     let playerLatLng = new L.LatLng(playersLat, playersLong);
+    let polyList = [curLatLng, playerLatLng];
     let pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
     let playerMarker;
     
     //this places the Player Marker (where the player thinks the location is)
     playerMarker = new L.Marker(playerLatLng, {icon: redIcon})
     playerMarker.addTo(resMap);
+    const polygon = L.polygon(polyList, {color: '#05060ab0', weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
 
     resMap.fitBounds(pointList);
 
