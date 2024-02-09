@@ -110,14 +110,13 @@ map.on('mouseover', onMapHover);
 map.on('mouseout', onMapHover);
 
 //ensure map tile loading on mobile
-map.on('touchstart', onMapHover);
-map.on('gesturestart', onMapHover);
+map.on('touchmove', onMapHover);
 
 map.addEventListener("mouseover", onMapHover);
 map.addEventListener("mouseout", onMapHover);
-map.addEventListener("touchstart", onMapHover);
-//safari only
-map.addEventListener("gesturestart", onMapHover);
+
+map.addEventListener("touchmove", onMapHover);
+
 
 //click listener to make the confirm button work
 const confirmBTN = document.getElementById("confirmButton");
