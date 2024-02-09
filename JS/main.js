@@ -1,3 +1,5 @@
+import { resetMap } from './loadMap.js';
+
 let lastGuessIndex = null;
 let guessIndex;
 
@@ -41,10 +43,10 @@ changeCategory(mapCategory);
 
 //loads the mapCategory from LocalStorage
 function loadMapCategory() {
-    let tempSelectedCategory = localStorage.getItem("selectedCategory");
+    let storedSelectedCategory = localStorage.getItem("selectedCategory");
 
-    if (tempSelectedCategory != null)
-        mapCategory = tempSelectedCategory;
+    if (storedSelectedCategory != null)
+        mapCategory = storedSelectedCategory;
 }
 
 let listOfLocations;
@@ -62,6 +64,8 @@ async function loadLocationJsonAndGenerateLocation() {
 enableClickListeners();
 
 function generateNewLocation() {
+    resetMap();
+
     do {
         guessIndex = Math.floor(Math.random()*listOfLocations.length);      //calculating random location
     } while (lastGuessIndex === guessIndex);
@@ -118,7 +122,6 @@ function generateNewLocation() {
 let veryCloseDistances;
 let closeDistances;
 let farDistances;
-let resMap;
 let extraMsg;
 let destinationMarker;
 
@@ -176,11 +179,19 @@ function compareDistances(distance) {
     enableResultScreen(resultAsString, extraMsg);
 }
 
+let resMap;
+
 export function setMapToTargetPosition(playersLat, playersLong) {
+   //this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
+    if (resMap && resMap.remove) {
+        resMap.off();
+        resMap.remove();
+      }
+
     //this makes it so the map in the result screen is focused on the center between the point
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
-    resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15); //starting position
+    resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15);
 
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'https://www.openstreetmap.org/copyright'
@@ -224,20 +235,25 @@ const greenIcon = new L.Icon({
 //enables the result screen.
 function enableResultScreen(resultString, extraMessage) {
 
-    document.getElementById("map").style.visibility = "hidden";
-    document.getElementById("EndOverlay").style.visibility = "visible";
-    document.getElementById("EndOverlay").zIndex = "12";
-    document.getElementById("nextRound").zIndex = "15";
     document.getElementById("EndOverlay").style.opacity = "100%";
+    document.getElementById("EndOverlay").style.visibility = "visible";
 
-    document.getElementById("confirmButton").style.visibility = "hidden";
-    document.getElementById("resetButtonSVG").style.visibility = "hidden";
+    document.getElementById("BottomBar").style.visibility = "hidden";
+    document.getElementById("map").style.visibility = "hidden";
 
     document.getElementById("logo").style.pointerEvents = "none";
 
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
-    document.getElementById("BottomBar").style.visibility = "hidden";
+}
+
+function disableResultScreen() {
+    document.getElementById("EndOverlay").style.opacity = "0%";
+    setTimeout(document.getElementById("EndOverlay").style.visibility = "hidden", 200)
+
+    document.getElementById("BottomBar").style.visibility = "visible";
+    document.getElementById("map").style.visibility = "visible";
+    document.getElementById("logo").style.pointerEvents = "auto";
 }
 
 function reloadIframe() {
@@ -253,9 +269,10 @@ function transitionToStart() {
     document.getElementById("BeforeOverlay").style.opacity = "0";
     document.getElementById("BeforeOverlay").style.visibility = "visible";
     document.getElementById("BeforeOverlay").style.opacity = "100";
-    window.setTimeout(() => {
-        window.location.reload();
-    }, 200);
+    generateNewLocation(); 
+    
+    //Fade the result screen out when the streetview is loaded to prevent flashing
+    setTimeout(disableResultScreen, 200);
 }
 
 //Navbar Buttons
@@ -321,8 +338,8 @@ function enableClickListeners(){
     let logoBTN = document.getElementById("logo");
     logoBTN.addEventListener("click", generateNewLocation);
   
-    let confirmBTN = document.getElementById("nextRound");
-    confirmBTN.addEventListener("click", transitionToStart);
+    let nextRound = document.getElementById("nextRound");
+    nextRound.addEventListener("click", transitionToStart);
    
     let socialRedditButton = document.getElementById("socialsButton");
     socialRedditButton.addEventListener("click", goToReddit);

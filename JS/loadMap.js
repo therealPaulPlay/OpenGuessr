@@ -26,6 +26,14 @@ changeLanguageButtonLabel();
 let hasGuessed = false;
 setConfirmButtonState();
 
+//reset the map - used in main.js for going to the next round. 
+export function resetMap() {
+    map.removeLayer(marker);
+    map.setZoom(3);
+    hasGuessed = false;
+    setConfirmButtonState();
+}
+
 function changeLanguageButtonLabel () {
        document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex == Provider.REGIONAL ? "Regional": "German"}`
 }
@@ -97,11 +105,14 @@ function onMapClick(e) {
 }
 
 map.on('click', onMapClick);
+
 map.on('mouseover', onMapHover);
 map.on('mouseout', onMapHover);
+map.on('touchstart', onMapHover);
 
 map.addEventListener("mouseover", onMapHover);
 map.addEventListener("mouseout", onMapHover);
+map.addEventListener("touchstart", onMapHover);
 
 //click listener to make the confirm button work
 const confirmBTN = document.getElementById("confirmButton");
