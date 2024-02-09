@@ -474,13 +474,10 @@ button {
         font-size: 20pt;
         width: 60%;
     }
+    
     #map {
         width: 95%;
-        height: 17.5%;
-    }
-
-    #map:hover {
-        height: 60%;
+        height: 30%;
     }
 
     #GuesserWindow {

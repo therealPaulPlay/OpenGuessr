@@ -109,13 +109,8 @@ map.on('click', onMapClick);
 map.on('mouseover', onMapHover);
 map.on('mouseout', onMapHover);
 
-//ensure map tile loading on mobile
-map.on('touchmove', onMapHover);
-
 map.addEventListener("mouseover", onMapHover);
 map.addEventListener("mouseout", onMapHover);
-
-map.addEventListener("touchmove", onMapHover);
 
 
 //click listener to make the confirm button work
