@@ -33,10 +33,14 @@ function changeLanguageButtonLabel () {
 function setConfirmButtonState() {
     if (hasGuessed) {
         document.getElementById("confirmButton").style.backgroundColor = "red";
+        document.getElementById("confirmButton").style.color = "white";
+        document.getElementById("confirmButton").style.opacity = "100%"
         document.getElementById("confirmButton").style.pointerEvents = "auto";
     }
     else {
-        document.getElementById("confirmButton").style.backgroundColor = "#282828";
+        document.getElementById("confirmButton").style.backgroundColor = "white";
+        document.getElementById("confirmButton").style.color = "black";
+        document.getElementById("confirmButton").style.opacity = "90%"
         document.getElementById("confirmButton").style.pointerEvents = "none";
     }
 }
