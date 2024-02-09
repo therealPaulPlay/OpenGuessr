@@ -108,6 +108,8 @@ map.on('click', onMapClick);
 
 map.on('mouseover', onMapHover);
 map.on('mouseout', onMapHover);
+
+//ensure map tile loading on mobile
 map.on('touchstart', onMapHover);
 
 map.addEventListener("mouseover", onMapHover);
