@@ -25,7 +25,7 @@ html * {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: rgba(42, 44, 71, 0.8);
+    background-color: rgba(42, 44, 71, 0.9);
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px); 
     box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
@@ -51,7 +51,7 @@ html * {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #3d3e649d;
+    background-color: #5859819d;
     box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
     border-radius: 7px;
     padding-left: 2px;
@@ -69,7 +69,7 @@ html * {
 }
 
 .loginArea {
-    background: rgba(3, 3, 3, 0.2);
+    background: #3d3e64;
     border-radius: 5px;
     padding: 5px;
 }
@@ -132,7 +132,6 @@ html * {
 #signupButton {
     background-color: #ff0808;
     color: white;
-    box-shadow: 0 0 5px rgba(255, 8, 8, 0.5);
 }
 
 #loginButton {
