@@ -19,7 +19,7 @@ html * {
     width: 100%;
     height: 83px;
     position: absolute;
-    z-index: 13;
+    z-index: 14;
     top: 0px;
     left: 0;
     display: flex;
@@ -76,6 +76,8 @@ html * {
     box-sizing: border-box;
     align-items: center;
     gap: 5px;
+    /* curently disabled in the commit */
+    display: none;
 }
 
 .loginArea {
@@ -149,6 +151,7 @@ html * {
     opacity: 80%;
 }
 
+/* category bar */
 .extendedNavbar {
     display: flex;
     justify-content: left;
@@ -167,7 +170,7 @@ html * {
     box-shadow: 0 2px 5px #05060ab0;
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px); 
-    z-index: 12;
+    z-index: 13;
 }
 
 .extendedNavbar.expanded {
@@ -186,7 +189,7 @@ html * {
 
 #icon {
     margin-top: 6px;
-    margin-left: 5px;
+    margin-left: 10px;
     width: 18em;
 }
 
@@ -604,6 +607,10 @@ button {
         font-size: 20pt;
     }
 
+    .accountBar {
+        display: none;
+    }
+
     #resultMap {
         margin-top: 15px;
         left: 10%;
@@ -627,8 +634,8 @@ button {
     #GuesserWindow {
         height: 100%;
     }
-    .menuButton {
-        visibility: hidden;
+    .bannerRight {
+        display: none;
     }
     .floatingButton {
         visibility: hidden;
