@@ -3,7 +3,6 @@ export function errorPopup(title, description, errorCode) {
     document.getElementById("popup-title").innerHTML = `<strong>Alert: </strong> ${title}`;
     document.getElementById("popup-description").innerHTML = `<p>${errorCode}</p><p>${description}</p>`;
     document.getElementById("popup-content").style.display = 'flex';
-    console.log(`Error with error message: ${errorCode}`);
   }
 
   function closePopup() {
