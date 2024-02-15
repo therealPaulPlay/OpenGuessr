@@ -17,47 +17,57 @@ html * {
 
 .Banner {
     width: 100%;
-    height: 70px;
+    height: 83px;
     position: absolute;
     z-index: 13;
-    top: 0;
+    top: 0px;
     left: 0;
     display: flex;
     justify-content: space-between;
-    align-items: center;
-    background-color: rgba(42, 44, 71, 0.9);
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px); 
-    box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
+    align-items: top;
     /* temporary solution for stacking menu items on very small displays */
     overflow: hidden;
 }
 
-.Banner a {
-    width: 110px;
-    color: #222;
-    text-decoration: none;
-    background-color: #EEE;
-    font-size: 16px;
-    padding: 8px;
-    border-radius: 3px;
+.bannerItem {
+    background-color: rgba(42, 44, 71, 0.9);
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+    box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
+    width: fit-content;
+    align-items: center;
+    height: 75px;
+}
+
+.bannerLeft {
+    border-bottom-right-radius: 10px;
+    padding-right: 30px;
+    padding-left: 10px;
+}
+
+.bannerRight {
+    border-bottom-left-radius: 10px;
+    padding-left: 11px;
+    padding-right: 30px;
+    margin-left: auto;
 }
 
 .leftNavbarButtons {
-    margin-left: auto;
+    align-items: center;
+    margin-top: 2px;
 }
 
 .accountBar {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #5859819d;
+    background-color: #585981d0;
     box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
-    border-radius: 7px;
+    border-radius: 10px;
     padding-left: 2px;
     padding-top: 5px;
     padding-bottom: 5px;
-    margin-top: 5px;
+    margin-top: 15px;
     margin-bottom: 5px;
     height: 75%;
     width: fit-content;
@@ -70,8 +80,9 @@ html * {
 
 .loginArea {
     background: #3d3e64;
-    border-radius: 5px;
+    border-radius: 8px;
     padding: 5px;
+    margin-right: 6px;
 }
 
 .profile {
@@ -143,12 +154,12 @@ html * {
     justify-content: left;
     padding-left: 30px;
     padding-right: 15px;
-    top: 70px;
+    top: 75px;
     max-height: 0;
     overflow: hidden;
     transition: max-height 0.3s ease;
     position: absolute;
-    right: 20px;
+    right: 10px;
     width: auto;
     min-width: 15rem;
     background-color: rgba(50, 52, 92, 0.8);
@@ -156,7 +167,7 @@ html * {
     box-shadow: 0 2px 5px #05060ab0;
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px); 
-    z-index: 13;
+    z-index: 12;
 }
 
 .extendedNavbar.expanded {
@@ -174,7 +185,7 @@ html * {
 }
 
 #icon {
-    margin-top: 4.5px;
+    margin-top: 6px;
     margin-left: 5px;
     width: 18em;
 }
@@ -451,12 +462,12 @@ html * {
     font-size: 22px;
     line-height: 20px;
     padding: 10px 12px;
-    text-align: center;
     white-space: nowrap;
     transition: all 250ms;
     margin-bottom: 15px;
     margin-top: 13px;
-    margin-right: 1em;
+    margin-right: 0.5em;
+    margin-left: 0.5em;
     border-radius: 5px;
     user-select: none;
     -webkit-user-select: none;
@@ -477,7 +488,7 @@ html * {
 
 .floatingButton {
     position: fixed;
-    top: 80px; 
+    top: 85px; 
     right: 20px; 
     z-index: 20; 
     cursor: pointer;

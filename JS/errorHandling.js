@@ -14,4 +14,4 @@ export function errorPopup(title, description, errorCode) {
 let closeButton = document.getElementById("popupClose");
 closeButton.addEventListener("click", closePopup);
 
-errorPopup("Streetview link is invalid","Link: thisisasuperlongcrazyaflinkanditwillfillthewholepopupupyeahletsgoanditisuglytooyikes", "Testerror description");
+errorPopup("Streetview link is invalid","Link: https://errorsareawesome.saidnooneever.ml", "Testerror description");

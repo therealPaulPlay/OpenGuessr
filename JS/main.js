@@ -299,12 +299,12 @@ categoryMenuButton.addEventListener("click", function() {
     // Toggle the visibility of the extended navbar
     if (extendedNavbar.classList.contains("expanded")) {
         setTimeout(function() {
-            categoryMenuButton.style.top = "80px";
+            categoryMenuButton.style.top = "85px";
         }, 110); // Delay the button animation by 110ms so that it smoothly retracts with the navbar
         extendedNavbar.classList.remove("expanded");
         categoryMenuButton.innerText = "Map Categories ▼";
     } else {
-        categoryMenuButton.style.top = "150px";
+        categoryMenuButton.style.top = "155px";
         extendedNavbar.classList.add("expanded");
         categoryMenuButton.innerText = "Map Categories ▲";
     }
