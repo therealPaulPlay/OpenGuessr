@@ -351,8 +351,7 @@ html * {
     -webkit-user-select: none;
     color: black;
     background-color: white;
-    transition: all 250ms ease;
-    
+    /* don't add transition here - delays the button click */
 }
 
 .cookieButton:hover {
