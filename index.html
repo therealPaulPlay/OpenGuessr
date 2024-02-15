@@ -9,7 +9,6 @@
         <link rel="stylesheet" href="/CSS/guesser.css">
         <title>OpenGuessr - free geoguessr alternative</title>
 
-
         <link rel="icon" href="/favicon.ico">
         <link rel="apple-touch-icon" sizes="180x180" href="/IMG/apple-touch-icon.png">
         <link rel="icon" type="image/png" sizes="32x32" href="/IMG/favicon-32x32.png">
@@ -26,9 +25,28 @@
     <body>
         <!--this is the navbar-->
         <div class="Banner">
+            <div class="bannerItem bannerLeft">
             <a id="logo"><img id="icon" src="/IMG/openguessr.svg" alt="openguessr logo"></a>
-            <button class="menuButton" id="socialsButton" type="button">Join our Subreddit</button>
-            <button class="menuButton" id="languageButton" type="button">Toggle language</button>
+            </div>
+                <div class="accountBar">
+                    <div class="profileInfo">
+                        <h2 id="accountName">Guest</h2>
+                        <div class="level">
+                            <div class="progress"></div>
+                            <span>Level 1</span>
+                        </div>
+                    </div>
+                <div class="loginArea">
+                    <button class="accountButton" id="loginButton" type="button">Login</button>
+                    <button class="accountButton" id="signupButton" type="button">Sign up</button>
+                </div>
+            </div>
+        <div class="bannerItem bannerRight">
+            <div class="leftNavbarButtons">
+                <button class="menuButton" id="socialsButton" type="button">Join our Subreddit</button>
+                <button class="menuButton" id="languageButton" type="button">Toggle language</button>
+            </div>
+        </div>
             <br><br>
         </div>
         <div class="extendedNavbar" id="extendedNavbar">
@@ -37,10 +55,20 @@
             <button class="category" id="capitalCategory" type="button">Capital Cities</button>
             <button class="category" id="famousCategory" type="button">Famous Places</button>
         </div>
+
+        <!-- Category switch displayer -->
         <button class="floatingButton" id="categoryMenuButton" type="button">Map Categories ▼</button>       
         <div id="BeforeOverlay">
             <br>
         </div>
+       <!-- This is an overlay used to display error messages -->
+       <div class="popup-content" id="popup-content">
+        <div id="popup-title" class="popup-title"></div>
+        <div id="popup-description" class="popup-description"></div>
+        <button id="popupClose" class="cookieButton close">Close and reload</button>
+      </div>
+      
+        <!-- Result screen -->
         <div id="EndOverlay">
             <div id="TextDiv">
                 <p id="distanceText"></p>
@@ -71,7 +99,7 @@
                 <button class="cookieButton" id="cookiesAccept" type="button">Accept😄</button>
                 <button class="cookieButton" id="cookiesDeny" type="button">Deny😓</button>
             </div>
-                        <!--bottom toolbar with reset button-->
+            <!--bottom toolbar with reset button-->
             <div id="BottomBar" class="BottomBar">
                 <img id="resetButtonSVG" src="/IMG/reset.svg" alt="Return to start position">
                 <button class="roundButtons" id="confirmButton">Guess</button>
@@ -80,6 +108,7 @@
             <!--load main script-->
             <script type="module" src="/JS/loadMap.js"></script>
             <script type="module" src="/JS/main.js"></script>
+            <script type="module" src="/JS/errorHandling.js"></script>
             <h1 id="TransparentHeader">Openguessr free geoguessr geoguesser alternative open source geography geographie Geotastic world map google maps google streetview rainbolt geographie spiel videospiel guess which country karte rate welches land kostenlos gratis more than 5 minutes unlimited free play unendlich freies spiel nicht zahlen without subscription pro</h1>
         </div>
     </body>

@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <!-- We currently don't want this site to show up on google -->
+    <meta name="robots" content="noindex">
+    <link rel="icon" href="/favicon.ico">
+    <script type="module" src="/JS/signup.js"></script>
+    <title>Login / Signup</title>
+<style>
+
+    @font-face {
+    font-family: Futura;
+    src: url('../FONTS/futura_medium_condensed_bt.ttf');
+    }
+
+    h1, h2, h3 {
+        font-weight: 400;
+    }
+
+    p {
+        color: white;
+    }
+
+    body {
+        margin: 0;
+        padding: 0;
+        font-family: Futura, Arial, sans-serif;
+        font-size: 20px;
+        font-weight: 400;
+        background-color: #07071e;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        /* removes everything that is not in visible screen area, this way, it is no longer scrollable */
+        overflow: hidden;
+    }
+
+    #center {
+        display: flex;
+        width: 100%;
+        justify-content: center;
+    }
+
+    #title {
+        color: rgba(42, 44, 71, 1);
+        font-size: 24px;
+        background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 5px;
+        padding: 5px;
+        width: 75%;
+    }
+
+    .logo {
+        margin: auto;
+        width: 275px;
+        height: auto;
+    }
+
+    .container {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        background-color: rgba(255, 255, 255, 0.3);
+        border-radius: 10px;
+        padding: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+        width: 300px;
+        text-align: center;
+        backdrop-filter: blur(1000px);
+        transition: all 250ms ease;
+    }
+
+    button {
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 5px;
+    }
+
+    .primaryButton {
+        transition: all 250ms ease;
+        background-color: #ff0808;
+        color: white;
+        cursor: pointer;
+        width: fit-content;
+        font-size: 22px;
+        font-family: Futura;
+        padding: 5px 15px;
+        text-align: center;
+        white-space: nowrap;
+        transition: all 250ms;
+        margin: 2.5px;
+        border-radius: 5px;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .primaryButton:hover {
+    filter: brightness(70%);
+    }
+
+    .orb {
+        position: absolute;
+        width: 400px;
+        height: 400px;
+        border-radius: 50%;
+        background-color: rgba(255, 59, 48, 0.2); /* Red-ish color with decreased opacity */
+        filter: blur(1000px); /* Blurry effect */
+        -webkit-filter: blur(1000px); /* Safari compatibility */
+        animation: floatOrb 15s infinite alternate; /* Floating animation */
+        opacity: 0.05; 
+        z-index: -1; /* Ensure orbs are below other content */
+    }
+
+    @keyframes floatOrb {
+    0% {
+      transform: translateY(0) translateX(0);
+      opacity: 0.05;
+    }
+    50% {
+      transform: translateY(-200px) translateX(200px);
+      opacity: 0.025;
+    }
+    100% {
+      transform: translateY(0) translateX(-200px);
+      opacity: 0.05;
+    }
+  }
+
+    .secondaryButton {
+        transition: all 250ms ease;
+        background-color: white;
+        color: black;
+        cursor: pointer;
+        width: fit-content;
+        font-size: 20px;
+        font-family: Futura;
+        padding: 5px 15px;
+        text-align: center;
+        white-space: nowrap;
+        transition: all 250ms;
+        margin: 2.5px;
+        margin-left: 10px;
+        border-radius: 5px;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .secondaryButton:hover {
+    filter: brightness(70%);
+    }
+
+
+    input {
+        color: white;
+        background: rgba(42, 44, 71, 1);
+        border-radius: 5px;
+        font-size: 18px;
+        padding: 15px;
+        outline: none;
+        box-shadow: none;
+        border: none;
+        font-family: Futura;
+    }
+
+    textarea:focus, input:focus{
+    outline: none;
+}
+
+</style>
+</head>
+<body>
+<div class="container">
+    <img class="logo" src="https://openguessr.netlify.app/IMG/openguessr.svg" alt="OpenGuessr Logo">
+    <div id="loginForm">
+        <div id="center">
+        <h3 id="title">Login</h3>
+        </div>
+        <form>
+            <input type="text" placeholder="Username" required><br><br>
+            <input type="password" placeholder="Password" required><br><br>
+            <button type="submit" class="primaryButton">Login</button>
+        </form>
+        <p>Don't have an account?  <button id="loginSwitch" class="secondaryButton">Sign up</button></p>
+    </div>
+    <div id="signupForm" style="display: none;">
+        <div id="center">
+        <h3 id="title">Sign up</h3>
+        </div>
+        <form></form>
+            <input type="text" placeholder="Username" required><br><br>
+            <input type="email" placeholder="Email" required><br><br>
+            <input type="password" placeholder="Password" required><br><br>
+            <button type="submit" class="primaryButton">Sign Up</button>
+        </form>
+        <p>Already have an account?  <button id="loginSwitchBack" class="secondaryButton">Login</button></p>
+    </div>
+</div>
+</body>
+</html>

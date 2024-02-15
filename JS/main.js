@@ -1,4 +1,5 @@
 import { resetMap } from './loadMap.js';
+import { errorPopup } from "./errorHandling.js";
 
 let lastGuessIndex = null;
 let guessIndex;
@@ -112,11 +113,17 @@ function generateNewLocation() {
     }
 
     //These two are the variables that reflect where the location actually is!
-
     currentGuessLAT = currentGuessLatArray.join('');        //saves lats and longs in separate variables
     currentGuessLONG = currentGuessLngArray.join('');
 
+    validateCoordinates();
     reloadIframe();                                         //now the map is generated, the iFrame is being reloaded.
+}
+
+function validateCoordinates () {
+    if (isNaN(currentGuessLAT) || isNaN(currentGuessLONG)) {
+        errorPopup("Wrong coordinates from link", "The coordinates from this streetview are invalid.", "Link: " + mapToLoad)
+    }
 }
 
 let veryCloseDistances;
@@ -292,12 +299,12 @@ categoryMenuButton.addEventListener("click", function() {
     // Toggle the visibility of the extended navbar
     if (extendedNavbar.classList.contains("expanded")) {
         setTimeout(function() {
-            categoryMenuButton.style.top = "80px";
+            categoryMenuButton.style.top = "85px";
         }, 110); // Delay the button animation by 110ms so that it smoothly retracts with the navbar
         extendedNavbar.classList.remove("expanded");
         categoryMenuButton.innerText = "Map Categories ▼";
     } else {
-        categoryMenuButton.style.top = "150px";
+        categoryMenuButton.style.top = "155px";
         extendedNavbar.classList.add("expanded");
         categoryMenuButton.innerText = "Map Categories ▲";
     }
