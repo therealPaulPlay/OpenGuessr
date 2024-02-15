@@ -1,4 +1,5 @@
 import { resetMap } from './loadMap.js';
+import { errorPopup } from "./errorHandling.js";
 
 let lastGuessIndex = null;
 let guessIndex;
@@ -112,11 +113,17 @@ function generateNewLocation() {
     }
 
     //These two are the variables that reflect where the location actually is!
-
     currentGuessLAT = currentGuessLatArray.join('');        //saves lats and longs in separate variables
     currentGuessLONG = currentGuessLngArray.join('');
 
+    validateCoordinates();
     reloadIframe();                                         //now the map is generated, the iFrame is being reloaded.
+}
+
+function validateCoordinates () {
+    if (isNaN(currentGuessLAT) || isNaN(currentGuessLONG)) {
+        errorPopup("Wrong coordinates from link", "The coordinates from this streetview are invalid.", "Link: " + mapToLoad)
+    }
 }
 
 let veryCloseDistances;

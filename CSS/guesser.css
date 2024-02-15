@@ -337,6 +337,7 @@ html * {
     -webkit-user-select: none;
     color: black;
     background-color: white;
+    transition: all 250ms ease;
     
 }
 
@@ -540,7 +541,43 @@ button {
 	outline: inherit;
 }
 
-/* mobile only styling */
+.popup-content {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: #282828;
+    width: fit-content; 
+    font-size: 30px;
+    max-width: 90%; 
+    padding: 25px 25px 10px;
+    border-radius: 10px;
+    text-align: center;
+    z-index: 9999; 
+    box-sizing: border-box; 
+    overflow: hidden;
+    box-shadow: 0 2px 8px #05060ab0;
+    color: white;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+  }
+
+  .popup-title {
+    margin-bottom: 15px;
+  }
+
+  .popup-description {
+    word-wrap: break-word;
+  }
+  
+  .close {
+    float: none;
+    width: 100%;
+  }
+
+/* mobile only styling - the mobile version is very minimalistic */
 
 @media all and (orientation:portrait) {
     .BottomBar {
