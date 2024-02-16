@@ -26,6 +26,7 @@ module.exports = {
         use: 'ts-loader'
       },
       {
+        //in case we want to handle css via webpack in the future
         test: /\.css$/i,
         use: ["style-loader", "css-loader"]
       }

@@ -21,7 +21,7 @@ function signout() {
     logtoClient.signOut("http://localhost:3000");
 }
 
-//this code should be placed in the /callback route - i have no idea what that is
+//this code should be placed in the /callback route - i have no idea what that is, but thats the reason as for why the callback is not working
 try {
     await logtoClient.handleSignInCallback(window.location.href);
     console.log(await logtoClient.isAuthenticated()); // true

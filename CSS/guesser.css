@@ -74,7 +74,6 @@ html * {
     display: flex;
     justify-content: center;
     box-sizing: border-box;
-    align-items: center;
     gap: 5px;
 }
 
@@ -131,18 +130,12 @@ html * {
     border-radius: 5px;
     user-select: none;
     -webkit-user-select: none;
-    color: black;
-    background-color: white;
-    
+    background-color: #ff0808;
+    color: white;
 }
 
 .accountButton:hover {
     filter: brightness(70%);
-}
-
-#signupButton {
-    background-color: #ff0808;
-    color: white;
 }
 
 #loginButton {
