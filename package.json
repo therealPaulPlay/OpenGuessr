@@ -4,7 +4,8 @@
   "description": "The free geography guessing game with unlimited free play!",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "webpack --mode production"
   },
   "repository": {
     "type": "git",
@@ -23,6 +24,7 @@
   "homepage": "https://github.com/ColaniYT/OpenGuessr#readme",
   "dependencies": {
     "@logto/browser": "^2.2.2",
-    "webpack": "^5.90.2"
+    "url": "^0.11.3",
+    "vite": "^5.1.3"
   }
 }
