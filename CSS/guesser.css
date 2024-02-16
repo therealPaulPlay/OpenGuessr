@@ -76,8 +76,6 @@ html * {
     box-sizing: border-box;
     align-items: center;
     gap: 5px;
-    /* curently disabled in the commit */
-    display: none;
 }
 
 .loginArea {
