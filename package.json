@@ -20,5 +20,9 @@
   "bugs": {
     "url": "https://github.com/ColaniYT/OpenGuessr/issues"
   },
-  "homepage": "https://github.com/ColaniYT/OpenGuessr#readme"
+  "homepage": "https://github.com/ColaniYT/OpenGuessr#readme",
+  "dependencies": {
+    "@logto/browser": "^2.2.2",
+    "vite": "^5.1.3"
+  }
 }
