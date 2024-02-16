@@ -256,7 +256,7 @@ function enableResultScreen(resultString, extraMessage) {
 
 function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
-    setTimeout(document.getElementById("EndOverlay").style.visibility = "hidden", 200)
+    document.getElementById("EndOverlay").style.visibility = "hidden";
 
     document.getElementById("BottomBar").style.visibility = "visible";
     document.getElementById("map").style.visibility = "visible";
