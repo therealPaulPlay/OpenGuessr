@@ -5,17 +5,26 @@ let loginSwitchBack = document.getElementById("loginButton");
 loginSwitchBack.addEventListener("click", login);
 
 const logtoClient = new LogtoClient({
-    endpoint: 'https://jh8qv6.logto.app/',
-    appId: 'qjoomd9umtfhwk33mkyev',
-});
 
+    endpoint: 'https://jh8qv6.logto.app/',
+    appId: '3d46yzci0ettygtpr5vbw',
+  });
+
+//localhost:3000 callback url is only for testing. We need to properly configure a callback site
 function login() {
-    console.log('test');
-    logtoClient.signIn('https://jh8qv6.logto.app/callback').then(result => {
+    logtoClient.signIn("http://localhost:3000/callback").then(result => {
         console.log(result);
     })
 }
 
-console.log(logtoClient);
+function signout() {
+    logtoClient.signOut("http://localhost:3000");
+}
 
-//login(); - currently redirects to the login page but displays an error 
+//this code should be placed in the /callback route - i have no idea what that is
+try {
+    await logtoClient.handleSignInCallback(window.location.href);
+    console.log(await logtoClient.isAuthenticated()); // true
+  } catch {
+    // Handle error
+  }
