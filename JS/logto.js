@@ -1,8 +1,16 @@
 //IMPORTANT: ANY changes here affect nothing if you don't run "npm run build" - this file is never being loaded in except in the bundled.js, so you need to do that. 
 import LogtoClient from '@logto/browser';
 
-let loginSwitchBack = document.getElementById("loginButton");
-loginSwitchBack.addEventListener("click", login);
+//this URL is being used for the site and callback (with /callback attached). It should only be localhost for testing
+let logtoURL = "http://localhost:3000";
+
+let loginButton = document.getElementById("loginButton");
+loginButton.addEventListener("click", login);
+
+let logoutButton = document.getElementById("logoutButton");
+logoutButton.addEventListener("click", signout);
+
+
 
 const logtoClient = new LogtoClient({
 
@@ -10,21 +18,21 @@ const logtoClient = new LogtoClient({
     appId: '3d46yzci0ettygtpr5vbw',
   });
 
-//localhost:3000 callback url is only for testing. We need to properly configure a callback site
 function login() {
-    logtoClient.signIn("http://localhost:3000/callback").then(result => {
+    logtoClient.signIn(logtoURL+"/callback").then(result => {
         console.log(result);
     })
 }
 
 function signout() {
-    logtoClient.signOut("http://localhost:3000");
+    logtoClient.signOut(logtoURL);
 }
 
-//this code should be placed in the /callback route - i have no idea what that is, but thats the reason as for why the callback is not working
-try {
-    await logtoClient.handleSignInCallback(window.location.href);
-    console.log(await logtoClient.isAuthenticated()); // true
-  } catch {
-    // Handle error
-  }
+export async function callbackHandling () {
+    try {
+        await logtoClient.handleSignInCallback(window.location.href);
+        console.log(await logtoClient.isAuthenticated()); // true - need to route back to the homepage here somehow
+    } catch {
+        // Handle error
+    }
+}

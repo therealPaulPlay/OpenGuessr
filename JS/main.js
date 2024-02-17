@@ -122,7 +122,7 @@ function generateNewLocation() {
 
 function validateCoordinates () {
     if (isNaN(currentGuessLAT) || isNaN(currentGuessLONG)) {
-        errorPopup("Wrong coordinates from link", "The coordinates from this streetview are invalid.", "Link: " + mapToLoad)
+        errorPopup("Wrong coordinates from link", "The coordinates from this streetview are invalid.", "Link: " + mapToLoad);
     }
 }
 

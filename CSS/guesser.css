@@ -134,6 +134,11 @@ html * {
     color: white;
 }
 
+#logoutButton {
+    background-color: #ffffff;
+    color: black;
+}
+
 .accountButton:hover {
     filter: brightness(70%);
 }
