@@ -10,6 +10,8 @@ loginButton.addEventListener("click", login);
 let logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener("click", signout);
 
+//default doesn't show the signout button
+logoutButton.style.display = "none";
 
 
 const logtoClient = new LogtoClient({
@@ -18,8 +20,10 @@ const logtoClient = new LogtoClient({
     appId: '3d46yzci0ettygtpr5vbw',
   });
 
+
+// we don't specify the callback url here because we aren't using routing
 function login() {
-    logtoClient.signIn(logtoURL+"/callback").then(result => {
+    logtoClient.signIn(logtoURL).then(result => {
         console.log(result);
     })
 }
@@ -28,11 +32,22 @@ function signout() {
     logtoClient.signOut(logtoURL);
 }
 
-export async function callbackHandling () {
+
+//works without routing, we just use the main page as the callback page and handle it here. Probably not the most secure, however, we still have a unique uri that is being attached by logto (so idk)
+async function handleCallback () {
     try {
         await logtoClient.handleSignInCallback(window.location.href);
-        console.log(await logtoClient.isAuthenticated()); // true - need to route back to the homepage here somehow
-    } catch {
+        if (await logtoClient.isAuthenticated()) {
+            changeUItoSignedIn();
+        }
+      } catch {
         // Handle error
-    }
+      }
+}
+
+handleCallback();
+
+function changeUItoSignedIn () {
+    logoutButton.style.display = "block";
+    loginButton.style.display = "none";
 }
