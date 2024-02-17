@@ -1,5 +1,6 @@
 const path = require("path");
 
+//most npm plugins can now be installed without altering anything here! Only make changes if webpack throws errors. 
 module.exports = {
   entry: {
     entry: "./JS/logto.js"
@@ -15,6 +16,7 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
+          //babel loader is needed for ES6 syntax
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env']
@@ -22,6 +24,7 @@ module.exports = {
         }
       },
       {
+        //typescript handler, needed for logto
         test: /\.ts$/,
         use: 'ts-loader'
       },

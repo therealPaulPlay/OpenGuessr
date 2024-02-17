@@ -1,20 +1,8 @@
 //IMPORTANT: ANY changes here affect nothing if you don't run "npm run build" - this file is never being loaded in except in the bundled.js, so you need to do that. 
 import LogtoClient from '@logto/browser';
 
-//this URL is being used for the site and callback (with /callback attached). It should only be localhost for testing
+//Localhost URL for testing ONLY!! Production will be our domain (already configured in admin console, only need to change it here)
 let logtoURL = "http://localhost:3000";
-
-let loginButton = document.getElementById("loginButton");
-loginButton.addEventListener("click", login);
-
-let logoutButton = document.getElementById("logoutButton");
-logoutButton.addEventListener("click", signout);
-
-let displayAccountName = document.getElementById("accountName");
-
-//default doesn't show the signout button
-logoutButton.style.display = "none";
-
 
 const logtoClient = new LogtoClient({
 
@@ -23,7 +11,6 @@ const logtoClient = new LogtoClient({
   });
 
 
-// we don't specify the callback url here because we aren't using routing
 function login() {
     logtoClient.signIn(logtoURL).then(result => {
         console.log(result);
@@ -39,20 +26,92 @@ function signout() {
 async function handleCallback () {
     try {
         await logtoClient.handleSignInCallback(window.location.href);
-        if (await logtoClient.isAuthenticated()) {
-            changeUItoSignedIn();
+        if (await logtoClient.isAuthenticated()) { //wait until the signin was successful
+            checkSigninStatusAndLoadUserInfo();
             console.log("signed in!");
         }
       } catch {
-        // Handle error (we do nothing if there is an error because this code is flawless)
       }
 }
 
 handleCallback();
 
+
+
+
+//Profile UI -------------------------------------------------------------------------------------------------------------
+
+let loginButton = document.getElementById("loginButton");
+loginButton.addEventListener("click", login);
+
+let logoutButton = document.getElementById("logoutButton");
+logoutButton.addEventListener("click", signout);
+
+let displayAccountName = document.getElementById("accountName");
+
+let userInfoJson;
+
+logoutButton.style.display = "none"; //logout button is hidden by default
+
+//part of checkSigninStatusAndLoadUserInfo
 async function changeUItoSignedIn () {
     logoutButton.style.display = "block";
     loginButton.style.display = "none";
-    //displayAccountName.innerHTML = get the name
-    logtoClient.fetchUserInfo().then((res) => console.log(res)); //this logs the json object, we need to somehow get the email address from this or sth like that cuz with the email login we don't get a username (maybe we can require a username on the login page?)
+    logtoClient.fetchUserInfo().then((res) => {userInfoJson = res; displayUserInfo()}); //this saves the json object here
 }
+
+//part of checkSigninStatusAndLoadUserInfo
+function displayUserInfo () {
+    console.log(userInfoJson);
+    displayAccountName.innerHTML = userInfoJson["sub"]; //sub is the unique user identifier
+    if (userInfoJson["username"] != null) {
+        displayAccountName.innerHTML = userInfoJson["username"];
+    }
+}
+
+
+let profileInfo = document.getElementById("profileInfo");
+
+checkSigninStatusAndLoadUserInfo(); //adjust the UI to the signin status and load user info on website load
+
+async function checkSigninStatusAndLoadUserInfo () {
+    if (await logtoClient.isAuthenticated()) {
+        profileInfo.classList.remove("notSignedIn");
+        changeUItoSignedIn();
+    }
+    else {
+        profileInfo.classList.add("notSignedIn");
+    }
+}
+
+
+
+
+
+
+//XP bar loading function -------------------------------------------------------------------------------------------------
+
+let levelXPbar = document.getElementById("progressBar");
+let levelText = document.getElementById("levelText");
+
+function setUserXP(xp) {
+    const baseXP = 5000;
+    const xpIncreaseRate = 1.1; // xp needed to level up increases per level
+    
+    // Calculate the level based on an exponential growth of required XP
+    let templevel = 1;
+    let requiredXP = baseXP;
+    
+    while (xp >= requiredXP) {
+        xp -= requiredXP;
+        templevel++;
+        requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
+    }
+    
+    // Update the UI with the calculated level and XP progress
+    levelText.innerHTML = "Level " + templevel;
+    levelXPbar.style.width = (xp / requiredXP) * 100 + "%"; 
+}
+
+//this is just for testing, the actual XP number has to be retrieved from the json file and set by the backend.
+setUserXP(55000);

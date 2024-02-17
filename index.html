@@ -1,7 +1,7 @@
 <!DOCTYPE HTML>
 <html lang="en-US">
     <head>
-        <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+        <meta name="viewport" content="initial-scale=1, maximum-scale=1 ,user-scalable=no" />
         <meta name="description" content="Free geoguessr alternative with unlimited free play - improve your geography skills by guessing the location on google street view.">
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
         <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
@@ -29,11 +29,13 @@
             <a id="logo"><img id="icon" src="/IMG/openguessr.svg" alt="openguessr logo"></a>
             </div>
                 <div class="accountBar">
-                    <div class="profileInfo">
+                    <div class="profileInfo notSignedIn" id="profileInfo">
                         <h2 id="accountName">Guest</h2>
-                        <div class="level">
-                            <div class="progress"></div>
-                            <span>Level 1</span>
+                        <div class="level" id="levelDisplay">
+                            <div class="progress">
+                                <div class="progressBar" id="progressBar"></div>
+                            </div>
+                            <span id="levelText">Level 1</span>
                         </div>
                     </div>
                 <div class="loginArea">
@@ -43,8 +45,8 @@
             </div>
         <div class="bannerItem bannerRight">
             <div class="leftNavbarButtons">
-                <button class="menuButton" id="socialsButton" type="button">Join our Subreddit</button>
                 <button class="menuButton" id="languageButton" type="button">Toggle language</button>
+                <button class="menuButton" id="socialsButton" type="button">Join our Subreddit</button>
             </div>
         </div>
             <br><br>

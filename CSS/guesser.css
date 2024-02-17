@@ -25,7 +25,6 @@ html * {
     display: flex;
     justify-content: space-between;
     align-items: top;
-    /* temporary solution for stacking menu items on very small displays */
     overflow: hidden;
 }
 
@@ -34,7 +33,6 @@ html * {
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px); 
     box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
-    width: fit-content;
     align-items: center;
     height: 75px;
 }
@@ -93,6 +91,10 @@ html * {
     margin-left: 20px; 
 }
 
+.notSignedIn {
+    opacity: 50%;
+}
+
 .level {
     display: flex;
     align-items: center;
@@ -116,6 +118,8 @@ html * {
     height: 100%;
     border-radius: 5px; 
     background-color: #00cc00; 
+    width: 0%;
+    transition: width 250ms ease; /* smoothly animate the bar */
 }
 
 .accountButton {
@@ -454,13 +458,11 @@ html * {
 }
 
 .menuButton {
-    float: right;
     cursor: pointer;
     width: fit-content;
     font-size: 22px;
     line-height: 20px;
     padding: 10px 12px;
-    white-space: nowrap;
     transition: all 250ms;
     margin-bottom: 15px;
     margin-top: 13px;
@@ -497,19 +499,18 @@ html * {
     text-align: center;
     transition: top 0.1s ease, background-color 0.2s ease;
     white-space: nowrap;
-    border-radius: 5px;
+    border-radius: 10px;
     user-select: none;
     -webkit-user-select: none;
-    color: black;
-    background-color: white;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    opacity: 90%;
+    color: white;
+    background-color: rgba(50, 52, 92, 0.8);
+    box-shadow: 0 2px 5px #05060ab0;
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px);
 }
 
 .floatingButton:hover {
-    background-color: rgb(188, 188, 188);
+    background-color: rgba(9, 12, 27, 0.8)
 }
 
 .categoryDisabled {
@@ -588,7 +589,7 @@ button {
 
 /* mobile only styling - the mobile version is very minimalistic */
 
-@media all and (orientation:portrait) {
+@media all and (orientation: portrait), all and (min-zoom: 2) {
     .BottomBar {
     background-image: linear-gradient(transparent,rgba(153, 153, 153, 0.965) 60%);
     }
