@@ -10,6 +10,8 @@ loginButton.addEventListener("click", login);
 let logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener("click", signout);
 
+let displayAccountName = document.getElementById("accountName");
+
 //default doesn't show the signout button
 logoutButton.style.display = "none";
 
@@ -39,15 +41,18 @@ async function handleCallback () {
         await logtoClient.handleSignInCallback(window.location.href);
         if (await logtoClient.isAuthenticated()) {
             changeUItoSignedIn();
+            console.log("signed in!");
         }
       } catch {
-        // Handle error
+        // Handle error (we do nothing if there is an error because this code is flawless)
       }
 }
 
 handleCallback();
 
-function changeUItoSignedIn () {
+async function changeUItoSignedIn () {
     logoutButton.style.display = "block";
     loginButton.style.display = "none";
+    //displayAccountName.innerHTML = get the name
+    logtoClient.fetchUserInfo().then((res) => console.log(res)); //this logs the json object, we need to somehow get the email address from this or sth like that cuz with the email login we don't get a username (maybe we can require a username on the login page?)
 }
