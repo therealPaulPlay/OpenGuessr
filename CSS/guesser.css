@@ -138,6 +138,61 @@ html * {
     color: white;
 }
 
+.white {
+    color: black;
+    background-color: white;
+}
+
+.profileWindow {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 30%; 
+    font-size: 30px;
+    padding: 25px 25px 10px;
+    border-radius: 10px;
+    text-align: left;
+    z-index: 999; 
+    overflow: hidden;
+    background-color: rgba(42, 44, 71, 0.9);
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
+    box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
+    color: white;
+    justify-content: center;
+    align-content: center;
+    flex-direction: column;
+  }
+
+  .edit-icon {
+    margin-right: 5px;
+    width: 20px; 
+    height: 20px; 
+  }
+
+  .accountClose {
+    float: right;
+    margin-top: 30px;
+    margin-bottom: 10px;
+    font-size: 20px;
+    font-weight: 500;
+    padding: 10px 35px;
+  }
+
+  #blackBackground {
+    overflow: hidden;
+    visibility: hidden;
+    opacity: 70%;
+    background-color: #1e1e1ef8;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    transition: opacity 250ms ease;
+    z-index: 12;
+  }
+
 #logoutButton {
     background-color: #ffffff;
     color: black;
@@ -301,6 +356,8 @@ html * {
     right: 0;
     background-color: #ff0808;
     box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
 }
 
 #privacyButton {

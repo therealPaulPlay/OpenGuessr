@@ -32,7 +32,7 @@ async function handleCallback () {
             console.log("signed in!");
         }
       } catch {
-        
+
       }
 }
 
@@ -41,7 +41,7 @@ handleCallback();
 
 
 
-//Profile UI -------------------------------------------------------------------------------------------------------------
+//Account UI -------------------------------------------------------------------------------------------------------------
 
 let loginButton = document.getElementById("loginButton");
 loginButton.addEventListener("click", login);
@@ -49,16 +49,21 @@ loginButton.addEventListener("click", login);
 let logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener("click", signout);
 
+let profileButton = document.getElementById("profileButton");
+profileButton.addEventListener("click", viewProfile);
+
 let displayAccountName = document.getElementById("accountName");
 
 let userInfoJson;
 
-logoutButton.style.display = "none"; //logout button is hidden by default
+logoutButton.style.display = "none"; //logout and profile button are hidden by default (default = not logged in)
+profileButton.style.display = "none";
 
 //part of checkSigninStatusAndLoadUserInfo
 async function changeUItoSignedIn () {
-    logoutButton.style.display = "block";
+    logoutButton.style.display = "inline-block";
     loginButton.style.display = "none";
+    profileButton.style.display = "inline-block";
     logtoClient.fetchUserInfo().then((res) => {userInfoJson = res; displayUserInfo()}); //this saves the json object here
 }
 
@@ -117,3 +122,27 @@ function setUserXP(xp) {
 
 //this is just for testing, the actual XP number has to be retrieved from the json file and set by the backend.
 setUserXP(55000);
+
+
+
+//Profile Window ---------------------------------------------------------------------------------------------
+
+let profileClose = document.getElementById("profileClose");
+profileClose.addEventListener("click", closeProfile);
+
+let profileWindow = document.getElementById("profileWindow");
+
+let profileName = document.getElementById("profileViewName");
+
+function viewProfile () {
+    profileWindow.style.display = "block";
+    document.getElementById("blackBackground").style.visibility = "visible";
+    profileName.innerHTML = userInfoJson["username"];
+    displayAccountName.innerHTML = userInfoJson["username"] == null ? userInfoJson["sub"] : userInfoJson["username"];
+
+}
+
+function closeProfile() {
+    profileWindow.style.display = "none";
+    document.getElementById("blackBackground").style.visibility = "hidden";
+}

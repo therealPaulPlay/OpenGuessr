@@ -40,6 +40,7 @@
                     </div>
                 <div class="loginArea">
                     <button class="accountButton" id="loginButton" type="button">Login / Sign up</button>
+                    <button class="accountButton" id="profileButton" type="button">Profile</button>
                     <button class="accountButton" id="logoutButton" type="button">Logout</button>
                 </div>
             </div>
@@ -69,7 +70,19 @@
         <div id="popup-description" class="popup-description"></div>
         <button id="popupClose" class="cookieButton close">Close and reload</button>
       </div>
-      
+       <!-- Profile window -->
+       <div id="profileWindow" class = "profileWindow">
+        <div id="popup-title" class="popup-title">
+            <h1 id="profileViewName">Username</h1>  
+            <button class="accountButton white">
+                <img src="/IMG/edit-icon.png" alt="Edit Icon" class="edit-icon">
+                Edit
+              </button> <br>
+        </div>
+        <h2>User Stats: </h2>
+        <p> Statistics will be added soon. Be open to new features!</p>
+        <button id="profileClose" class="accountButton white accountClose">Done</button>
+      </div>
         <!-- Result screen -->
         <div id="EndOverlay">
             <div id="TextDiv">
@@ -83,6 +96,7 @@
             <br>
             <br>
         </div>
+        <div id="blackBackground"></div>
         <!--streetview-->
         <div class="MainDiv">
             <iframe id="GuesserWindow" src="/loader.html"></iframe>         
