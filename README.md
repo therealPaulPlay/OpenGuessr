@@ -8,7 +8,7 @@ To do so, run `npm install` in the repository.
 
 Webpack is currently configured to use logto.js
 as the entry point. This means that all dependencies
-will be tried to be resolved from there. Therefore,
+will be resolved from there. Therefore,
 make sure to import libraries [found in node-modolues]
 in this file rather than somewhere else. 
 
