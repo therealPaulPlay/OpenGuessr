@@ -13,7 +13,7 @@ make sure to import libraries [found in node-modolues]
 in this file rather than somewhere else. 
 
 Running `npm run build` is currently configured
-(in the package.lock file) to build with webpack and
+(in the package.json file) to build with webpack and
 create a bundle.js file which includes all nedded 
 node modules as well as logto.js. This file is being
 loaded into the html.
