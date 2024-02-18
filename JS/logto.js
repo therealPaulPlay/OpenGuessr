@@ -32,7 +32,7 @@ async function handleCallback () {
             console.log("signed in!");
         }
       } catch {
-        errorPopup("Login failed", "Retry logging in, consider using a different browser or clear your website data.", "Logto error - login failed.")
+        
       }
 }
 
