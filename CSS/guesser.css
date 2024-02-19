@@ -136,6 +136,7 @@ html * {
     -webkit-user-select: none;
     background-color: #ff0808;
     color: white;
+    opacity: 100%;
 }
 
 #usernameInput {
