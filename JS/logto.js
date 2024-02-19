@@ -70,10 +70,8 @@ async function changeUItoSignedIn () {
 //part of checkSigninStatusAndLoadUserInfo
 function displayUserInfo () {
     console.log(userInfoJson);
-    displayAccountName.innerHTML = userInfoJson["sub"]; //sub is the unique user identifier
-    if (userInfoJson["username"] != null) {
-        displayAccountName.innerHTML = userInfoJson["username"];
-    }
+    displayAccountName.innerHTML = userInfoJson["username"] == null ? userInfoJson["sub"] : userInfoJson["username"]; //sub is the unique user identifier
+    profileName.innerHTML =  userInfoJson["username"] == null ? userInfoJson["sub"] : userInfoJson["username"];
 }
 
 
@@ -143,8 +141,7 @@ document.getElementById("confirmUsername").addEventListener("click", changeUsern
 function viewProfile () {
     profileWindow.style.display = "block";
     document.getElementById("blackBackground").style.visibility = "visible";
-    profileName.innerHTML = userInfoJson["username"];
-    displayAccountName.innerHTML = userInfoJson["username"] == null ? userInfoJson["sub"] : userInfoJson["username"];
+    profileName.innerHTML =  userInfoJson["username"] == null ? userInfoJson["sub"] : userInfoJson["username"];
 
 }
 
@@ -172,6 +169,6 @@ function changeUsername () {
     console.log("username change requested. New name: "+newUsername);
     toggleUsernameView();
     if (newUsername != "") {
-        //change username via API / Backend
+        //change username via API / Backend + fetch new username + then run displayUserInfo() to update in UI
     }
 }
