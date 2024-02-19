@@ -129,7 +129,7 @@ html * {
     padding: 5px 15px;
     text-align: center;
     white-space: nowrap;
-    transition: all 250ms;
+    transition: filter 250ms ease;
     margin: 2.5px;
     border-radius: 5px;
     user-select: none;
@@ -145,10 +145,6 @@ html * {
     outline: none;
     border: none;
     user-select: none;
-}
-
-#confirmUsername {
-    transition: none;
 }
 
 .white {
@@ -419,6 +415,7 @@ html * {
     border-radius: 5px;
     user-select: none;
     -webkit-user-select: none;
+    transition: filter 250ms ease;
     color: black;
     background-color: white;
     /* don't add transition here - delays the button click */
