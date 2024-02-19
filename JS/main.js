@@ -199,7 +199,6 @@ export function setMapToTargetPosition(playersLat, playersLong) {
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15);
-
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: 'https://www.openstreetmap.org/copyright'
 }).addTo(resMap);
@@ -232,11 +231,17 @@ const greenIcon = new L.Icon({
     playerMarker.addTo(resMap);
     const polygon = L.polygon(polyList, {color: '#05060ab0', weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
 
-    resMap.fitBounds(pointList);
+    resMap.fitBounds(pointList, {padding: [150,250]});
 
     //this places the "correct" marker that actually reflects the target location
     destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: greenIcon});
     destinationMarker.addTo(resMap);
+
+    setTimeout(flyToDestination, 1000)
+}
+
+function flyToDestination() {
+    resMap.flyTo([currentGuessLAT, currentGuessLONG], resMap.getZoom() + 4);
 }
 
 //enables the result screen.

@@ -146,6 +146,7 @@ html * {
     outline: none;
     border: none;
     user-select: none;
+    width: 35%;
 }
 
 .white {
@@ -294,6 +295,7 @@ html * {
     border-radius: 10px;
     box-shadow: 0 2px 8px #05060ab0;
     position: absolute;
+    background: #aad3e0;
 }
 
 #map:hover {
@@ -448,52 +450,70 @@ html * {
 #TextDiv {
     margin-left: 50px;
     margin-right: 50px;
-    margin-top: 150px;
+    margin-top: 20px;
     color: #EEE;
-    font-size: 50pt;
+    font-size: 40px;
+    height: 100%;
+}
+
+#endBottomBar {
+    position: absolute;
+    width: 100%;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content;
+    z-index: 12;
+    background-color: rgba(42, 44, 71, 0.8);
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px); 
 }
 
 #motivationText {
     color: #CCC;
-    margin-top: 25px;
-    font-size: 27pt;
+    margin-top: 15px;
+    font-size: 25px;
 }
 
 #resultMap {
-    position: absolute;
-    left: 25%;
-    right: 25%;
     display: inline-block;
-    margin: 45px auto auto;
+    margin: 0px auto auto;
     z-index: 10;
-    height: 43%;
-    width: 40%;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px #05060ab0;
+    height: 100%;
+    width: 100%;
+    display: flex;
+    align-items: top;
+    background: #aad3e0;
+}
+
+#topShadow {
+    background-image: linear-gradient(#232535f8, transparent);
+    height: 15px;
+    z-index: 1000;
+    width: 100%;
+    opacity: 30%;
 }
 
 #nextRound a {
     z-index: 15;
-    position: absolute;
     cursor: pointer;
     transition: all 250ms ease;
     display: inline-block;
     opacity: 100%;
-    padding: 10px 50px;
-    font-size: 35pt;
-    color: #EEE;
+    padding: 10px 30px;
+    font-size: 35px;
+    color: black;
     width: fit-content;
-    background-color: #05060ab0;
+    background-color: white;
     border-radius: 5px;
-    margin: auto;
-    bottom: 2.5%;
-    left: 25%;
-    right: 25%;
+    margin: 20px 20px;
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
 }
 
 #nextRound a:hover {
-    color: #05060ab0;
-    background-color: #EEE;
     scale: 1.03;
 }
 
@@ -652,7 +672,7 @@ button {
   @media (orientation: landscape) and (min-width: 1250px) {
     #map:hover {
         width: 60%;
-        height: 80%;
+        height: 65%;
     }
   }
   /* phones in landscape*/
@@ -672,7 +692,6 @@ button {
 @media all and (orientation: portrait), all and (max-width: 1250px) {
 
     #TextDiv {
-        margin-top: 100px;
         font-size: 25pt;
     }
 
@@ -684,21 +703,6 @@ button {
         display: none;
     }
 
-    #resultMap {
-        margin-top: 15px;
-        left: 10%;
-        right: 10%;
-        height: 30%;
-        width: 80%;
-    }
-    #nextRound a {
-        text-align: center;
-        left: 5%;
-        right: 5%;
-        font-size: 20pt;
-        width: 60%;
-    }
-
     #GuesserWindow {
         height: 100%;
     }
@@ -707,6 +711,10 @@ button {
     }
     .floatingButton {
         visibility: hidden;
+    }
+    #nextRound a {
+        position: relative;
+        right: 0;
     }
 }
 
