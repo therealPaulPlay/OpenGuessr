@@ -137,8 +137,8 @@ let profileName = document.getElementById("profileViewName");
 document.getElementById("usernameInput").style.visibility = "hidden";
 document.getElementById("confirmUsername").style.visibility = "hidden";
 
-let editUsername = document.getElementById("editUsername");
-editUsername.addEventListener("click", toggleUsernameView);
+document.getElementById("editUsername").addEventListener("click", toggleUsernameView);
+document.getElementById("confirmUsername").addEventListener("click", changeUsername);
 
 function viewProfile () {
     profileWindow.style.display = "block";
@@ -161,5 +161,17 @@ function toggleUsernameView() {
     else {
         document.getElementById("usernameInput").style.visibility = "hidden";
         document.getElementById("confirmUsername").style.visibility = "hidden";
+        document.getElementById("usernameInput").value = ""; //reset the username input box
+    }
+}
+
+let newUsername;
+
+function changeUsername () {
+    newUsername = document.getElementById("usernameInput").value;
+    console.log("username change requested. New name: "+newUsername);
+    toggleUsernameView();
+    if (newUsername != "") {
+        //change username via API / Backend
     }
 }
