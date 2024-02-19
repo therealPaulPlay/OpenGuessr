@@ -138,6 +138,19 @@ html * {
     color: white;
 }
 
+#usernameInput {
+    padding: 5px 15px;
+    font-size: 22px;
+    border-radius: 5px;
+    outline: none;
+    border: none;
+    user-select: none;
+}
+
+#confirmUsername {
+    transition: none;
+}
+
 .white {
     color: black;
     background-color: white;

@@ -134,6 +134,12 @@ let profileWindow = document.getElementById("profileWindow");
 
 let profileName = document.getElementById("profileViewName");
 
+document.getElementById("usernameInput").style.visibility = "hidden";
+document.getElementById("confirmUsername").style.visibility = "hidden";
+
+let editUsername = document.getElementById("editUsername");
+editUsername.addEventListener("click", toggleUsernameView);
+
 function viewProfile () {
     profileWindow.style.display = "block";
     document.getElementById("blackBackground").style.visibility = "visible";
@@ -145,4 +151,15 @@ function viewProfile () {
 function closeProfile() {
     profileWindow.style.display = "none";
     document.getElementById("blackBackground").style.visibility = "hidden";
+}
+
+function toggleUsernameView() {
+    if (document.getElementById("usernameInput").style.visibility == "hidden") {
+        document.getElementById("usernameInput").style.visibility = "visible";
+        document.getElementById("confirmUsername").style.visibility = "visible";
+    }
+    else {
+        document.getElementById("usernameInput").style.visibility = "hidden";
+        document.getElementById("confirmUsername").style.visibility = "hidden";
+    }
 }

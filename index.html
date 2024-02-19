@@ -74,10 +74,12 @@
        <div id="profileWindow" class = "profileWindow">
         <div id="popup-title" class="popup-title">
             <h1 id="profileViewName">Username</h1>  
-            <button class="accountButton white">
-                <img src="/IMG/edit-icon.png" alt="Edit Icon" class="edit-icon">
+            <button class="accountButton white" id="editUsername">
+                <img src="/IMG/edit-icon.png" alt = "Edit Icon" class = "edit-icon">
                 Edit
-              </button> <br>
+              </button> <input type="text" id="usernameInput" placeholder="New username" maxlength="12"></input>
+              <button class="accountButton" id="confirmUsername">Confirm</button>
+              <br>
         </div>
         <h2>User Stats: </h2>
         <p> Statistics will be added soon. Be open to new features!</p>
