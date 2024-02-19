@@ -300,13 +300,6 @@ html * {
     transition: none;
     opacity: 100%;
 }
-@media (orientation: landscape) {
-    #map:hover {
-        width: 60%;
-        height: 80%;
-    }
-  }
-
 
 .BottomBar {
     position: absolute;
@@ -655,12 +648,28 @@ button {
     width: 100%;
   }
 
-/* mobile only styling - the mobile version is very minimalistic */
-
-@media all and (orientation: portrait), all and (min-zoom: 2) {
-    .BottomBar {
-    background-image: linear-gradient(transparent,rgba(153, 153, 153, 0.965) 60%);
+/* laptops and big screens */
+  @media (orientation: landscape) and (min-width: 1250px) {
+    #map:hover {
+        width: 60%;
+        height: 80%;
     }
+  }
+  /* phones in landscape*/
+  @media (orientation: landscape) and (max-width: 1250px) {
+    #map {
+        width: 40%;
+        height: 50%;
+    }
+
+    #confirmButton {
+        width: 40%;
+    }
+  }
+
+
+/* phones / mobile */
+@media all and (orientation: portrait), all and (max-width: 1250px) {
 
     #TextDiv {
         margin-top: 100px;
@@ -689,11 +698,6 @@ button {
         font-size: 20pt;
         width: 60%;
     }
-    
-    #map {
-        width: 95%;
-        height: 30%;
-    }
 
     #GuesserWindow {
         height: 100%;
@@ -704,4 +708,18 @@ button {
     .floatingButton {
         visibility: hidden;
     }
+}
+
+/* big screens in portrait, like vertical monitors */
+@media all and (orientation: portrait) {
+
+    #map {
+        width: 95%;
+        height: 30%;
+    }
+
+    .BottomBar {
+        background-image: linear-gradient(transparent,rgba(153, 153, 153, 0.965) 60%);
+        }
+
 }
