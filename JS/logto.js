@@ -126,9 +126,11 @@ export function loadResultScreenXP(distance) {
     let currentXP = 12000; //TODO fetch user XP here
 
     XPbarResource.classList.remove("XPbarAnimate");
-    XPbarResource.style.width = uiSetUserXP(currentXP) * 100 +  "%"; //set bar to current XP initially
-   
+    XPbarResource.style.width = uiSetUserXP(currentXP) * 100 +  "%"; //set bar to current XP initially + this function sets the level text
+
     let earnedXP = Math.round(5000 * ((0.998036) ** distance));
+
+    setUserXP(currentXP + earnedXP); //save XP, this is the last step!
 
     setTimeout(function() {
         if (uiSetUserXP(currentXP + earnedXP) <= 1) {
@@ -141,9 +143,7 @@ export function loadResultScreenXP(distance) {
             XPbarResource.style.width = (1 - uiSetUserXP(currentXP + earnedXP)) * 100 +  "%";
         }
         resultLevelText.innerHTML = "+" + earnedXP + " XP / " + resultLevelText.innerHTML;
-    }, 500);
-
-    setUserXP(currentXP + earnedXP);
+    }, 10);
 
 }
 
