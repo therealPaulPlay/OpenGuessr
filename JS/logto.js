@@ -1,8 +1,7 @@
 //IMPORTANT: ANY changes here affect nothing if you don't run "npm run build" - this file is never being loaded in except in the bundled.js, so you need to do that. 
 import LogtoClient from '@logto/browser';
-import { errorPopup } from "./errorHandling.js";
 
-//Localhost URL for testing ONLY!! Production will be our domain (already configured in admin console, only need to change it here)
+//TODO Localhost URL for testing ONLY!! Production will be our domain (already configured in admin console, only need to change it here)
 let logtoURL = "http://localhost:3000";
 
 const logtoClient = new LogtoClient({
@@ -96,10 +95,12 @@ async function checkSigninStatusAndLoadUserInfo () {
 
 //XP bar loading function -------------------------------------------------------------------------------------------------
 
-let levelXPbar = document.getElementById("progressBar");
-let levelText = document.getElementById("levelText");
+let resultLevelText = document.getElementById("endScreenLevel");
 
-function setUserXP(xp) {
+function uiSetUserXP(xp) {
+    let levelXPbar = document.getElementById("progressBar");
+    let levelText = document.getElementById("levelText");
+
     const baseXP = 5000;
     const xpIncreaseRate = 1.1; // xp needed to level up increases per level
     
@@ -115,12 +116,44 @@ function setUserXP(xp) {
     
     // Update the UI with the calculated level and XP progress
     levelText.innerHTML = "Level " + templevel;
+    resultLevelText.innerHTML = "Level " + templevel;
     levelXPbar.style.width = (xp / requiredXP) * 100 + "%"; 
+    return (xp / requiredXP);
 }
 
-//this is just for testing, the actual XP number has to be retrieved from the json file and set by the backend.
-setUserXP(55000);
+export function loadResultScreenXP(distance) {
+    let XPbarResource = document.getElementById("endScreenXPbarResource");
+    let currentXP = 12000; //TODO fetch user XP here
 
+    XPbarResource.classList.remove("XPbarAnimate");
+    XPbarResource.style.width = uiSetUserXP(currentXP) * 100 +  "%"; //set bar to current XP initially
+   
+    let earnedXP = Math.round(5000 * ((0.998036) ** distance));
+
+    setTimeout(function() {
+        if (uiSetUserXP(currentXP + earnedXP) <= 1) {
+            XPbarResource.classList.add("XPbarAnimate");
+            XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP) * 100 +  "%";
+        }
+        else {
+            XPbarResource.style.width = 0; //make progress bar restart at 0 if player levels up (otherwise it would decrease visually - currently not appearing smoothly TODO)
+            XPbarResource.classList.add("XPbarAnimate");
+            XPbarResource.style.width = (1 - uiSetUserXP(currentXP + earnedXP)) * 100 +  "%";
+        }
+        resultLevelText.innerHTML = "+" + earnedXP + " XP / " + resultLevelText.innerHTML;
+    }, 500);
+
+    setUserXP(currentXP + earnedXP);
+
+}
+
+//TODO this is just for testing, the actual XP number has to be retrieved from the json file and set by the backend.
+uiSetUserXP(12000);
+
+function setUserXP(xp) {
+    //TODO make API call to save XP to the users account's custom data
+    console.log(xp);
+}
 
 
 //Profile Window ---------------------------------------------------------------------------------------------
@@ -169,6 +202,6 @@ function changeUsername () {
     console.log("username change requested. New name: "+newUsername);
     toggleUsernameView();
     if (newUsername != "") {
-        //change username via API / Backend + fetch new username + then run displayUserInfo() to update in UI
+        //TODO change username via API / Backend + fetch new username + then run displayUserInfo() to update in UI
     }
 }

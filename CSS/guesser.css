@@ -122,6 +122,41 @@ html * {
     transition: width 250ms ease; /* smoothly animate the bar */
 }
 
+#XParea {
+    width: 80%; 
+    height: 30px;
+    margin: auto;
+    display: flex;
+    align-items: center;
+}
+
+#endScreenXPbar {
+    width: 65%;
+    height: 15px;
+    background-color: #ccc; 
+    border-radius: 15px;
+}
+
+.XPbarResource {
+    height: 100%;
+    border-radius: 15px; 
+    background-color: #00cc00; 
+    width: 0%;
+}
+
+.XPbarAnimate {
+    transition: width 1000ms ease; 
+}
+
+#endScreenLevel {
+    font-size: 22px;
+    width: auto;
+    margin-left: auto;
+    vertical-align: middle;
+    text-align: center;
+    padding-left: 10px;
+}
+
 .accountButton {
     cursor: pointer;
     width: fit-content;

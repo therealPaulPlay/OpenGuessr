@@ -3,7 +3,7 @@ const path = require("path");
 //most npm plugins can now be installed without altering anything here! Only make changes if webpack throws errors. 
 module.exports = {
   entry: {
-    entry: "./JS/logto.js"
+    entry: ["./JS/logto.js", "./JS/main.js"]
   },
   output: {
     path: path.resolve(__dirname, "build/"),

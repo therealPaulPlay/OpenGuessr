@@ -28,7 +28,7 @@
     <!--this is the navbar-->
     <div class="Banner">
         <div class="bannerItem bannerLeft">
-            <a id="logo"><img id="icon" src="/IMG/openguessr.svg" alt="openguessr logo"></a>
+            <a id="logo" alt="openguessr logo"><img id="icon" src="/IMG/openguessr.svg" alt="openguessr logo"></a>
         </div>
         <div class="accountBar">
             <div class="profileInfo notSignedIn" id="profileInfo">
@@ -77,7 +77,7 @@
         <div id="popup-title" class="popup-title">
             <h1 id="profileViewName">Username</h1>
             <button class="accountButton white" id="editUsername">
-                <img src="/IMG/edit-icon.png" alt="Edit Icon" class="edit-icon">
+                <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
                 Edit
             </button> <input type="text" id="usernameInput" placeholder="New username" maxlength="12"></input>
             <button class="accountButton" id="confirmUsername">Confirm</button>
@@ -98,6 +98,12 @@
             <p id="distanceText"></p>
             <p id="motivationText"></p>
             <br>
+            <div id="XParea">
+            <div id="endScreenXPbar">
+                <div class="XPbarResource" id="endScreenXPbarResource"></div>
+            </div>
+            <p id="endScreenLevel">Level 0</p>
+        </div>
             <button id="nextRound"><a>next round →</a></button>
         </div>
         </div>
@@ -132,9 +138,8 @@
         </div>
         <!--load main script-->
         <script type="module" src="/JS/loadMap.js"></script>
-        <script type="module" src="/JS/main.js"></script>
         <script type="module" src="/JS/errorHandling.js"></script>
-        <!-- load bundled js (that includes logto.js) with webpack -->
+        <!-- load bundled js (that includes logto.js & main.js) with webpack -->
         <script type="text/javascript" src="/build/bundled.js"></script>
         <h1 id="TransparentHeader">Openguessr free geoguessr geoguesser alternative open source geography geographie
             Geotastic world map google maps google streetview rainbolt geographie spiel videospiel guess which country

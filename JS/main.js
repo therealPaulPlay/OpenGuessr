@@ -1,5 +1,7 @@
 import { resetMap } from './loadMap.js';
 import { errorPopup } from "./errorHandling.js";
+import { loadResultScreenXP } from "./logto.js";
+//IMPORTANT: Main.js is now part of the bundled.js (webpack) using functions from logto.js/bundled.js otherwise causes issues
 
 let lastGuessIndex = null;
 let guessIndex;
@@ -150,7 +152,8 @@ export function calculateDistances(mapsLat, mapsLong) {
     let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
     let d = R * c; // Distance in km
 
-    compareDistances(d);    
+    compareDistances(d);   
+    loadResultScreenXP(d);
 }
   
 function deg2rad(deg) {
