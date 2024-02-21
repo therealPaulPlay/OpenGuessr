@@ -295,10 +295,10 @@ function reloadIframe(initialLoad) {
 
 function transitionToStart() {
     //fancy function to make a fade in to prevent the flashing of the iframe.
-
     document.getElementById("BeforeOverlay").style.opacity = "0";
     document.getElementById("BeforeOverlay").style.visibility = "visible";
     document.getElementById("BeforeOverlay").style.opacity = "100";
+    resMap.stop(); //stop the flying animation
     generateNewLocation(); 
     
     //Fade the result screen out when the streetview is loaded to prevent flashing
