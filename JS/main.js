@@ -66,7 +66,7 @@ async function loadLocationJsonAndGenerateLocation() {
 
 enableClickListeners();
 
-function generateNewLocation() {
+function generateNewLocation(logoClick) {
     resetMap();
 
     do {
@@ -119,7 +119,11 @@ function generateNewLocation() {
     currentGuessLONG = currentGuessLngArray.join('');
 
     validateCoordinates();
-    reloadIframe();                                         //now the map is generated, the iFrame is being reloaded.
+    if (logoClick) {
+        reloadIframe(true);   
+    } else {
+        reloadIframe(false)
+    }//now the map is generated, the iFrame is being reloaded.
 }
 
 function validateCoordinates () {
@@ -244,7 +248,10 @@ const greenIcon = new L.Icon({
 }
 
 function flyToDestination() {
-    resMap.flyTo([currentGuessLAT, currentGuessLONG], resMap.getZoom() + 4);
+    resMap.flyTo([currentGuessLAT, currentGuessLONG], resMap.getZoom() + 4, {
+        animate: true, 
+        duration: 2
+    });
 }
 
 //enables the result screen.
@@ -271,11 +278,19 @@ function disableResultScreen() {
     document.getElementById("logo").style.pointerEvents = "auto";
 }
 
-function reloadIframe() {
-    //reloads the iFrame and sets the position of the camera back to it's origin.
-
-    document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
-    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
+function reloadIframe(initialLoad) {
+    if (!initialLoad) {
+         //reloads the iFrame and sets the position of the camera back to it's origin.
+        document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
+        window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
+    }
+    else {
+        document.getElementById("BeforeOverlay").style.opacity = "100";
+        document.getElementById("BeforeOverlay").style.visibility = "visible";
+        document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
+        window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 400);
+    }
+   
 }
 
 function transitionToStart() {
@@ -348,10 +363,10 @@ function changeCategory(category) {
 
 function enableClickListeners(){
     let resetBTN = document.getElementById("resetButtonSVG");
-    resetBTN.addEventListener("click", reloadIframe);
+    resetBTN.addEventListener("click", function() {reloadIframe(true)});
    
     let logoBTN = document.getElementById("logo");
-    logoBTN.addEventListener("click", generateNewLocation);
+    logoBTN.addEventListener("click", function() {generateNewLocation(true)});
   
     let nextRound = document.getElementById("nextRound");
     nextRound.addEventListener("click", transitionToStart);
