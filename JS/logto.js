@@ -1,5 +1,5 @@
 //IMPORTANT: ANY changes here affect nothing if you don't run "npm run build" - this file is never being loaded in except in the bundled.js, so you need to do that. 
-import LogtoClient from '@logto/browser';
+import LogtoClient from "@logto/browser";
 
 //TODO Localhost URL for testing ONLY!! Production will be our domain (already configured in admin console, only need to change it here)
 let logtoURL = "http://localhost:3000";

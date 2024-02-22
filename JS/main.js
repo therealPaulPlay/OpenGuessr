@@ -58,8 +58,7 @@ let jsonResponse;
 async function loadLocationJsonAndGenerateLocation() {
     let response = await fetch("../JSON/" + mapCategory + "Locations.json");
     jsonResponse = await response.json();
-    
-    listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
+    listOfLocations = jsonResponse;
     
     generateNewLocation();    
 }            
@@ -73,62 +72,24 @@ function generateNewLocation(logoClick) {
         guessIndex = Math.floor(Math.random()*listOfLocations.length);      //calculating random location
     } while (lastGuessIndex === guessIndex);
 
-    lastGuessIndex = guessIndex;                                            //setting last Index
-
-    mapToLoad = listOfLocations[guessIndex];                                //declares which map is being loaded
-
-    let currentGuessLatArray = [];                                          //creation of 2 arrays that temporarily store
-    let currentGuessLngArray = [];                                          //lat and long values taken from link
-
-    let secondIndex = 0;                                                    //declares where longitudes start
-
-    if (mapToLoad.length > 140) {
-        for (let i = 93; i < mapToLoad.length; i++) {                       //cut away unnecessary parts of link to get latitude
-            if (mapToLoad[i] !== "!") {
-                currentGuessLatArray[i] = mapToLoad[i];
-            }
-            else {
-                secondIndex = i+3;                                          //declares where the longitudes are starting
-                break;
-            }
-        }
-        for (let j = secondIndex; j < mapToLoad.length; j++) {              //cut away unnecessary parts of link to get longitude
-            if (mapToLoad[j] !== "!") {
-                currentGuessLngArray[j] = mapToLoad[j];
-            }
-            else {
-                break;
-            }
-        }
-    }
-
-    if (!(currentGuessLngArray[0] === "-" || currentGuessLngArray[0] > 0 && currentGuessLngArray[0] <= 9)) {
-        currentGuessLngArray.shift();           //remove first index if it isn't showing it being negative or a longer number
-    }
-    if (!(currentGuessLatArray[0] === "-" || currentGuessLatArray[0] > 0 && currentGuessLatArray[0] <= 9)) {
-        currentGuessLatArray.shift();           //remove first index if it isn't showing it being negative or a longer number
-    }
-
-    for (let k = 0; k < 7; k++) {               //removes last 7 objects, could do with splice but I found this to be more understandable
-        currentGuessLatArray.pop();     
-        currentGuessLngArray.pop();     
-    }
+    lastGuessIndex = guessIndex; //setting last Index
 
     //These two are the variables that reflect where the location actually is!
-    currentGuessLAT = currentGuessLatArray.join('');        //saves lats and longs in separate variables
-    currentGuessLONG = currentGuessLngArray.join('');
+    currentGuessLAT = listOfLocations[guessIndex][0]; //saves lats and longs in separate variables
+    currentGuessLONG = listOfLocations[guessIndex][1];
 
     validateCoordinates();
     if (logoClick) {
         reloadIframe(true);   
     } else {
         reloadIframe(false)
-    }//now the map is generated, the iFrame is being reloaded.
+    }
+    //now the map is generated, the iFrame is being reloaded.
 }
 
 function validateCoordinates () {
     if (isNaN(currentGuessLAT) || isNaN(currentGuessLONG)) {
-        errorPopup("Wrong coordinates from link", "The coordinates from this streetview are invalid.", "Link: " + mapToLoad);
+        errorPopup("Wrong coordinates from Array", "The coordinates from this streetview are invalid.", "Lat: "+currentGuessLAT+" Long: "+currentGuessLONG+".");
     }
 }
 
@@ -279,15 +240,18 @@ function disableResultScreen() {
 }
 
 function reloadIframe(initialLoad) {
+    let loadingLink;
+    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+currentGuessLAT+","+currentGuessLONG+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0"; //API key (last part of URL) is only valid for the embed API and only for the openguessr & locahost:3000 domains.
+    
     if (!initialLoad) {
          //reloads the iFrame and sets the position of the camera back to it's origin.
-        document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
+        document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
         window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
     }
     else {
         document.getElementById("BeforeOverlay").style.opacity = "100";
         document.getElementById("BeforeOverlay").style.visibility = "visible";
-        document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
+        document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
         window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 400);
     }
    
