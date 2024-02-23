@@ -139,6 +139,7 @@ html * {
     height: 15px;
     background-color: #ccc; 
     border-radius: 15px;
+    transition: none;
 }
 
 .XPbarResource {
@@ -146,6 +147,7 @@ html * {
     border-radius: 15px; 
     background-color: #00cc00; 
     width: 0%;
+    transition: none;
 }
 
 .XPbarAnimate {
@@ -250,10 +252,6 @@ html * {
 
 .accountButton:hover {
     filter: brightness(70%);
-}
-
-#loginButton {
-    opacity: 80%;
 }
 
 /* category bar */
@@ -673,6 +671,10 @@ html * {
 
 .category:hover {
    scale: 1.05;
+}
+
+.accountLock {
+    pointer-events: none;
 }
 
 .accountExclusive {

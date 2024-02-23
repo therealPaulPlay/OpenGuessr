@@ -215,12 +215,21 @@ const greenIcon = new L.Icon({
 
 function flyToDestination() {
     if (document.getElementById("EndOverlay").style.opacity == "1") {
-    resMap.flyTo([currentGuessLAT, currentGuessLONG], resMap.getZoom() + 4, {
+    resMap.flyTo([currentGuessLAT, currentGuessLONG], clamp(resMap.getZoom() + 4,0,18), {
         animate: true, 
         duration: 2
      });
     }
 }
+
+//clamp function 
+function clamp(num, min, max) {
+    return num <= min 
+      ? min 
+      : num >= max 
+        ? max 
+        : num
+  }
 
 //enables the result screen.
 function enableResultScreen(resultString, extraMessage) {

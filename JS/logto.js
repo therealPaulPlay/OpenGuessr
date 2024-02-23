@@ -63,6 +63,7 @@ async function changeUItoSignedIn () {
     logoutButton.style.display = "inline-block";
     loginButton.style.display = "none";
     profileButton.style.display = "inline-block";
+    enableExclusiveCategories();
     logtoClient.fetchUserInfo().then((res) => {userInfoJson = res; displayUserInfo()}); //this saves the json object here
 }
 
@@ -88,7 +89,13 @@ async function checkSigninStatusAndLoadUserInfo () {
     }
 }
 
-
+function enableExclusiveCategories() {
+    let accountLocked = document.getElementsByClassName("accountLock");
+    for (let i = 0; i < accountLocked.length; i++) {
+        accountLocked[i].classList.remove("accountLock");
+    }
+    document.getElementById("categoryExclusiveText").innerHTML = "You can now choose these categories:";
+}
 
 
 
@@ -123,7 +130,7 @@ function uiSetUserXP(xp) {
 
 export function loadResultScreenXP(distance) {
     let XPbarResource = document.getElementById("endScreenXPbarResource");
-    let currentXP = 12000; //TODO fetch user XP here
+    let currentXP = 15000; //TODO fetch user XP here
 
     XPbarResource.classList.remove("XPbarAnimate");
     XPbarResource.style.width = uiSetUserXP(currentXP) * 100 +  "%"; //set bar to current XP initially + this function sets the level text
@@ -148,7 +155,7 @@ export function loadResultScreenXP(distance) {
 }
 
 //TODO this is just for testing, the actual XP number has to be retrieved from the json file and set by the backend.
-uiSetUserXP(12000);
+uiSetUserXP(15000);
 
 function setUserXP(xp) {
     //TODO make API call to save XP to the users account's custom data
@@ -199,7 +206,7 @@ let newUsername;
 
 function changeUsername () {
     newUsername = document.getElementById("usernameInput").value;
-    console.log("username change requested. New name: "+newUsername);
+    console.log("username change requested. New name: " + newUsername);
     toggleUsernameView();
     if (newUsername != "") {
         //TODO change username via API / Backend + fetch new username + then run displayUserInfo() to update in UI
