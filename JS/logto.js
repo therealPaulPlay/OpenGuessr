@@ -103,17 +103,15 @@ function enableExclusiveCategories() {
 //XP bar loading function -------------------------------------------------------------------------------------------------
 
 let resultLevelText = document.getElementById("endScreenLevel");
+let requiredXP;
 
 function uiSetUserXP(xp) {
-    let levelXPbar = document.getElementById("progressBar");
-    let levelText = document.getElementById("levelText");
-
     const baseXP = 5000;
     const xpIncreaseRate = 1.1; // xp needed to level up increases per level
     
     // Calculate the level based on an exponential growth of required XP
     let templevel = 1;
-    let requiredXP = baseXP;
+    requiredXP = baseXP;
     
     while (xp >= requiredXP) {
         xp -= requiredXP;
@@ -121,37 +119,55 @@ function uiSetUserXP(xp) {
         requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
     }
     
+    let levelXPbar = document.getElementById("progressBar");
+    let levelText = document.getElementById("levelText");
+    
     // Update the UI with the calculated level and XP progress
     levelText.innerHTML = "Level " + templevel;
     resultLevelText.innerHTML = "Level " + templevel;
     levelXPbar.style.width = (xp / requiredXP) * 100 + "%"; 
+
     return (xp / requiredXP);
 }
 
-export function loadResultScreenXP(distance) {
+function willCauseLevelUpgrade(xp, newXP) {
+    const baseXP = 5000;
+    const xpIncreaseRate = 1.1;
+    
+    let templevel = 1;
+    requiredXP = baseXP;
+    
+    while (xp >= requiredXP) {
+        xp -= requiredXP;
+        templevel++;
+        requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
+    }
+    
+    return ((xp + newXP) / requiredXP);
+}
+
+export function loadResultScreenXP(distance) { //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
+   
     let currentXP = 15000; //TODO fetch user XP here
-
-    XPbarResource.classList.remove("XPbarAnimate");
-    XPbarResource.style.width = uiSetUserXP(currentXP) * 100 +  "%"; //set bar to current XP initially + this function sets the level text
-
     let earnedXP = Math.round(5000 * ((0.998036) ** distance));
 
-    setUserXP(currentXP + earnedXP); //save XP, this is the last step!
+    XPbarResource.classList.remove("XPbarAnimate");
+    
+    if ((willCauseLevelUpgrade(currentXP, earnedXP)) > 1) { 
+        XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
+    }
+    else {
+        XPbarResource.style.width = uiSetUserXP(currentXP) * 100 + "%";
+    }
 
+
+    setUserXP(currentXP + earnedXP); //save XP, this is the last step!
     setTimeout(function() {
-        if (uiSetUserXP(currentXP + earnedXP) <= 1) {
-            XPbarResource.classList.add("XPbarAnimate");
-            XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP) * 100 +  "%";
-        }
-        else {
-            XPbarResource.style.width = 0; //make progress bar restart at 0 if player levels up (otherwise it would decrease visually - currently not appearing smoothly TODO)
-            XPbarResource.classList.add("XPbarAnimate");
-            XPbarResource.style.width = (1 - uiSetUserXP(currentXP + earnedXP)) * 100 +  "%";
-        }
+        XPbarResource.classList.add("XPbarAnimate");
+        XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP) * 100 + "%";
         resultLevelText.innerHTML = "+" + earnedXP + " XP / " + resultLevelText.innerHTML;
     }, 10);
-
 }
 
 //TODO this is just for testing, the actual XP number has to be retrieved from the json file and set by the backend.
