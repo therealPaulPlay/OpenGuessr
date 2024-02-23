@@ -61,11 +61,19 @@ let listOfLocations;
 let jsonResponse;
 
 async function loadLocationJsonAndGenerateLocation() {
-    let response = await fetch("../JSON/" + mapCategory + "Locations.json");
-    jsonResponse = await response.json();
-    listOfLocations = jsonResponse;
+    try {
+        let response = await fetch("../JSON/" + mapCategory + "Locations.json");
+        if (!response.ok) {
+            throw new Error("JSON fetch failed."); //this will execute the "catch" code now
+        }
+        
+        jsonResponse = await response.json();
+    } catch {
+        errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.");
+    }
     
-    generateNewLocation(true);    
+    listOfLocations = jsonResponse;
+    generateNewLocation(true);
 }            
 
 enableClickListeners();
@@ -248,7 +256,7 @@ function enableResultScreen(resultString, extraMessage) {
 
 function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
-    setTimeout(document.getElementById("EndOverlay").style.visibility = "hidden", 200)
+    setTimeout(function() {document.getElementById("EndOverlay").style.visibility = "hidden"}, 200)
 
     document.getElementById("BottomBar").style.visibility = "visible";
     document.getElementById("map").style.visibility = "visible";

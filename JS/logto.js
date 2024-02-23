@@ -69,7 +69,6 @@ async function changeUItoSignedIn () {
 
 //part of checkSigninStatusAndLoadUserInfo
 function displayUserInfo () {
-    console.log(userInfoJson);
     displayAccountName.innerHTML = userInfoJson["username"] == null ? userInfoJson["sub"] : userInfoJson["username"]; //sub is the unique user identifier
     profileName.innerHTML =  userInfoJson["username"] == null ? userInfoJson["sub"] : userInfoJson["username"];
 }
@@ -175,7 +174,6 @@ uiSetUserXP(15000);
 
 function setUserXP(xp) {
     //TODO make API call to save XP to the users account's custom data
-    console.log(xp);
 }
 
 
