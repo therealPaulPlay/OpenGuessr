@@ -7,7 +7,6 @@ let lastGuessIndex = null;
 let guessIndex;
 
 //this is the new default mapToLoad which displays a proper error message instead of a random street view that we have picked
-let mapToLoad = "/loader.html";
 let currentGuessLAT = 40;
 let currentGuessLONG = 40;
 
@@ -16,7 +15,8 @@ let currentGuessLONG = 40;
 const Category = {
     STANDARD: "standard",
     CAPITAL: "capital",
-    FAMOUS: "famous"
+    FAMOUS: "famous",
+    USA: "usa"
 }
 
 let mapCategory = Category.STANDARD;
@@ -36,6 +36,11 @@ capitalCategoryButton.addEventListener("click", function() {
 const famousCategoryButton = document.getElementById("famousCategory");
 famousCategoryButton.addEventListener("click", function() {
     changeCategory(Category.FAMOUS);
+});
+
+const usaCategoryButton = document.getElementById("usaCategory");
+usaCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.USA);
 });
 
 //load the map category initially
@@ -60,12 +65,12 @@ async function loadLocationJsonAndGenerateLocation() {
     jsonResponse = await response.json();
     listOfLocations = jsonResponse;
     
-    generateNewLocation();    
+    generateNewLocation(true);    
 }            
 
 enableClickListeners();
 
-function generateNewLocation(logoClick) {
+function generateNewLocation(initialLoad) {
     resetMap();
 
     do {
@@ -79,7 +84,7 @@ function generateNewLocation(logoClick) {
     currentGuessLONG = listOfLocations[guessIndex][1];
 
     validateCoordinates();
-    if (logoClick) {
+    if (initialLoad) {
         reloadIframe(true);   
     } else {
         reloadIframe(false)
@@ -209,10 +214,12 @@ const greenIcon = new L.Icon({
 }
 
 function flyToDestination() {
+    if (document.getElementById("EndOverlay").style.opacity == "1") {
     resMap.flyTo([currentGuessLAT, currentGuessLONG], resMap.getZoom() + 4, {
         animate: true, 
         duration: 2
-    });
+     });
+    }
 }
 
 //enables the result screen.
@@ -239,12 +246,12 @@ function disableResultScreen() {
     document.getElementById("logo").style.pointerEvents = "auto";
 }
 
-function reloadIframe(initialLoad) {
+function reloadIframe(notInitialLoad) {
     let loadingLink;
     loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+currentGuessLAT+","+currentGuessLONG+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0"; //API key (last part of URL) is only valid for the embed API and only for the openguessr & locahost:3000 domains.
     
-    if (!initialLoad) {
-         //reloads the iFrame and sets the position of the camera back to it's origin.
+    if (!notInitialLoad) {
+         //if it is the inital load - reloads the iFrame and sets the position of the camera back to it's origin.
         document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
         window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
     }
@@ -263,7 +270,8 @@ function transitionToStart() {
     document.getElementById("BeforeOverlay").style.visibility = "visible";
     document.getElementById("BeforeOverlay").style.opacity = "100";
     resMap.stop(); //stop the flying animation
-    generateNewLocation(); 
+    setTimeout(function() {resMap.stop()}, 200)
+    generateNewLocation(true); 
     
     //Fade the result screen out when the streetview is loaded to prevent flashing
     setTimeout(disableResultScreen, 200);
@@ -291,7 +299,7 @@ categoryMenuButton.addEventListener("click", function() {
         extendedNavbar.classList.remove("expanded");
         categoryMenuButton.innerText = "Map Categories ▼";
     } else {
-        categoryMenuButton.style.top = "155px";
+        categoryMenuButton.style.top = "270px";
         extendedNavbar.classList.add("expanded");
         categoryMenuButton.innerText = "Map Categories ▲";
     }
@@ -302,6 +310,7 @@ function changeCategory(category) {
     standardCategoryButton.classList.add("categoryDisabled");
     capitalCategoryButton.classList.add("categoryDisabled");
     famousCategoryButton.classList.add("categoryDisabled");
+    usaCategoryButton.classList.add("categoryDisabled");
     
    //enable the correct one
     switch (category) {
@@ -313,6 +322,9 @@ function changeCategory(category) {
             break;
         case Category.FAMOUS:
             famousCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.USA:
+            usaCategoryButton.classList.remove("categoryDisabled");
             break;
     }
 
