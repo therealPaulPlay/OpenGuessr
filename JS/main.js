@@ -16,7 +16,8 @@ const Category = {
     STANDARD: "standard",
     CAPITAL: "capital",
     FAMOUS: "famous",
-    USA: "usa"
+    USA: "usa",
+    GERMANY: "germany"
 }
 
 let mapCategory = Category.STANDARD;
@@ -41,6 +42,12 @@ famousCategoryButton.addEventListener("click", function() {
 const usaCategoryButton = document.getElementById("usaCategory");
 usaCategoryButton.addEventListener("click", function() {
     changeCategory(Category.USA);
+});
+
+
+const germanyCategoryButton = document.getElementById("germanyCategory");
+germanyCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.GERMANY);
 });
 
 //load the map category initially
@@ -328,6 +335,7 @@ function changeCategory(category) {
     capitalCategoryButton.classList.add("categoryDisabled");
     famousCategoryButton.classList.add("categoryDisabled");
     usaCategoryButton.classList.add("categoryDisabled");
+    germanyCategoryButton.classList.add("categoryDisabled");
     
    //enable the correct one
     switch (category) {
@@ -342,6 +350,9 @@ function changeCategory(category) {
             break;
         case Category.USA:
             usaCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.GERMANY:
+            germanyCategoryButton.classList.remove("categoryDisabled");
             break;
     }
 

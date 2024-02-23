@@ -53,16 +53,25 @@ profileButton.addEventListener("click", viewProfile);
 
 let displayAccountName = document.getElementById("accountName");
 
+let XPbarNoAccount = document.getElementById("XPbarNoAccount");
+
+
+let XParea = document.getElementById("XParea");
+
 let userInfoJson;
 
 logoutButton.style.display = "none"; //logout and profile button are hidden by default (default = not logged in)
 profileButton.style.display = "none";
+XParea.style.display = "none";
+XPbarNoAccount.style.display = "block";
 
 //part of checkSigninStatusAndLoadUserInfo
 async function changeUItoSignedIn () {
     logoutButton.style.display = "inline-block";
     loginButton.style.display = "none";
     profileButton.style.display = "inline-block";
+    XPbarNoAccount.style.display = "none";
+    XParea.style.display = "flex";
     enableExclusiveCategories();
     logtoClient.fetchUserInfo().then((res) => {userInfoJson = res; displayUserInfo()}); //this saves the json object here
 }
@@ -90,10 +99,13 @@ async function checkSigninStatusAndLoadUserInfo () {
 
 function enableExclusiveCategories() {
     let accountLocked = document.getElementsByClassName("accountLock");
-    for (let i = 0; i < accountLocked.length; i++) {
-        accountLocked[i].classList.remove("accountLock");
+    let accountLockedArray = Array.from(accountLocked); // Convert to array
+    
+    for (let i = 0; i < accountLockedArray.length; i++) {
+        accountLockedArray[i].classList.remove("accountLock");
     }
-    document.getElementById("categoryExclusiveText").innerHTML = "You can now choose these categories:";
+    
+    document.getElementById("categoryExclusiveText").innerHTML = "You can now select these categories:";
 }
 
 
