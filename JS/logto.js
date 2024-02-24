@@ -1,26 +1,25 @@
 //IMPORTANT: ANY changes here affect nothing if you don't run "npm run build" - this file is never being loaded in except in the bundled.js, so you need to do that. 
 import LogtoClient from "@logto/browser";
+import { errorPopup } from "./errorHandling.js";
 
 //TODO Localhost URL for testing ONLY!! Production will be our domain (already configured in admin console, only need to change it here)
 let logtoURL = "http://localhost:3000";
+const logtoEndpoint = 'https://jh8qv6.logto.app/'
 
 const logtoClient = new LogtoClient({
-
-    endpoint: 'https://jh8qv6.logto.app/',
+    endpoint: logtoEndpoint,
     appId: '3d46yzci0ettygtpr5vbw',
   });
 
-
 function login() {
-    logtoClient.signIn(logtoURL).then(result => {
-        console.log(result);
-    })
+    logtoClient.signIn(logtoURL);
 }
 
 function signout() {
     logtoClient.signOut(logtoURL);
 }
 
+let bearerToken;
 
 //works without routing, we just use the main page as the callback page and handle it here. Probably not the most secure, however, we still have a unique uri that is being attached by logto (so idk)
 async function handleCallback () {
@@ -37,9 +36,6 @@ async function handleCallback () {
 
 handleCallback();
 
-
-
-
 //Account UI -------------------------------------------------------------------------------------------------------------
 
 let loginButton = document.getElementById("loginButton");
@@ -53,25 +49,16 @@ profileButton.addEventListener("click", viewProfile);
 
 let displayAccountName = document.getElementById("accountName");
 
-let XPbarNoAccount = document.getElementById("XPbarNoAccount");
-
-
-let XParea = document.getElementById("XParea");
-
 let userInfoJson;
 
 logoutButton.style.display = "none"; //logout and profile button are hidden by default (default = not logged in)
 profileButton.style.display = "none";
-XParea.style.display = "none";
-XPbarNoAccount.style.display = "block";
 
 //part of checkSigninStatusAndLoadUserInfo
 async function changeUItoSignedIn () {
     logoutButton.style.display = "inline-block";
     loginButton.style.display = "none";
     profileButton.style.display = "inline-block";
-    XPbarNoAccount.style.display = "none";
-    XParea.style.display = "flex";
     enableExclusiveCategories();
     logtoClient.fetchUserInfo().then((res) => {userInfoJson = res; displayUserInfo()}); //this saves the json object here
 }
@@ -81,7 +68,6 @@ function displayUserInfo () {
     displayAccountName.innerHTML = userInfoJson["username"] == null ? userInfoJson["sub"] : userInfoJson["username"]; //sub is the unique user identifier
     profileName.innerHTML =  userInfoJson["username"] == null ? userInfoJson["sub"] : userInfoJson["username"];
 }
-
 
 let profileInfo = document.getElementById("profileInfo");
 
@@ -99,17 +85,11 @@ async function checkSigninStatusAndLoadUserInfo () {
 
 function enableExclusiveCategories() {
     let accountLocked = document.getElementsByClassName("accountLock");
-    let accountLockedArray = Array.from(accountLocked); // Convert to array
-    
-    for (let i = 0; i < accountLockedArray.length; i++) {
-        accountLockedArray[i].classList.remove("accountLock");
+    for (let i = 0; i < accountLocked.length; i++) {
+        accountLocked[i].classList.remove("accountLock");
     }
-    
-    document.getElementById("categoryExclusiveText").innerHTML = "You can now select these categories:";
+    document.getElementById("categoryExclusiveText").innerHTML = "You can now choose these categories:";
 }
-
-
-
 
 //XP bar loading function -------------------------------------------------------------------------------------------------
 
@@ -186,6 +166,7 @@ uiSetUserXP(15000);
 
 function setUserXP(xp) {
     //TODO make API call to save XP to the users account's custom data
+    console.log(xp);
 }
 
 
@@ -202,7 +183,7 @@ document.getElementById("usernameInput").style.visibility = "hidden";
 document.getElementById("confirmUsername").style.visibility = "hidden";
 
 document.getElementById("editUsername").addEventListener("click", toggleUsernameView);
-document.getElementById("confirmUsername").addEventListener("click", changeUsername);
+document.getElementById("confirmUsername").addEventListener("click", updateUsername);
 
 function viewProfile () {
     profileWindow.style.display = "block";
@@ -228,13 +209,53 @@ function toggleUsernameView() {
     }
 }
 
-let newUsername;
+let newUsername = "";
+let playerXP = 0.0;
 
-function changeUsername () {
-    newUsername = document.getElementById("usernameInput").value;
-    console.log("username change requested. New name: " + newUsername);
-    toggleUsernameView();
-    if (newUsername != "") {
-        //TODO change username via API / Backend + fetch new username + then run displayUserInfo() to update in UI
+
+function updateUsername() {
+  let requestUrl = `${logtoEndpoint}api/users/${userInfoJson["sub"]}`;
+  newUsername = document.getElementById("usernameInput").value;
+  toggleUsernameView();
+
+  bearerToken = logtoClient.getAccessToken();
+
+  if (newUsername != null) {
+    const options = {
+          method: 'PATCH',
+          crossDomain: true,
+          mode: 'cors',
+          headers: {
+              'Authorization': `Bearer ${bearerToken}`,
+              'Content-Type': 'application/json'
+          },
+          body: JSON.stringify({
+              "username": newUsername,
+              "customData": {
+                 "xp": playerXP
+              }
+          })
     }
+
+    fetch(requestUrl, options)
+      .then(response => {
+        console.log(response);
+        if (!response.ok) {
+          errorPopup(
+            "Username change failed", 
+            "The username could not be changed due to an unknown error",
+            "401");
+        } else {
+          console.log(response);
+          return response.json();
+        }
+    })
+    .catch(error => {
+      console.log(error);
+      errorPopup(
+        "Username change failed", 
+        "The username could not be changed due to an unknown error",
+        error);
+    })
+  }
 }
