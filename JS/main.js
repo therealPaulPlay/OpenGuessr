@@ -17,7 +17,13 @@ const Category = {
     CAPITAL: "capital",
     FAMOUS: "famous",
     USA: "usa",
-    GERMANY: "germany"
+    GERMANY: "germany",
+    UK: "uk",
+    FRANCE: "france",
+    SPAIN: "spain",
+    POLAND: "poland",
+    CANADA: "canada",
+    SWEDEN: "sweden"
 }
 
 let mapCategory = Category.STANDARD;
@@ -48,6 +54,36 @@ usaCategoryButton.addEventListener("click", function() {
 const germanyCategoryButton = document.getElementById("germanyCategory");
 germanyCategoryButton.addEventListener("click", function() {
     changeCategory(Category.GERMANY);
+});
+
+const ukCategoryButton = document.getElementById("ukCategory");
+ukCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.UK);
+});
+
+const franceCategoryButton = document.getElementById("franceCategory");
+franceCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.FRANCE);
+});
+
+const spainCategoryButton = document.getElementById("spainCategory");
+spainCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.SPAIN);
+});
+
+const polandCategoryButton = document.getElementById("polandCategory");
+polandCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.POLAND);
+});
+
+const canadaCategoryButton = document.getElementById("canadaCategory");
+canadaCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.CANADA);
+});
+
+const swedenCategoryButton = document.getElementById("swedenCategory");
+swedenCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.SWEDEN);
 });
 
 //load the map category initially
@@ -319,11 +355,12 @@ categoryMenuButton.addEventListener("click", function() {
     if (extendedNavbar.classList.contains("expanded")) {
         setTimeout(function() {
             categoryMenuButton.style.top = "85px";
+            extendedNavbar.scrollTop = 0;
         }, 110); // Delay the button animation by 110ms so that it smoothly retracts with the navbar
         extendedNavbar.classList.remove("expanded");
         categoryMenuButton.innerText = "Map Categories ▼";
     } else {
-        categoryMenuButton.style.top = "270px";
+        categoryMenuButton.style.top = "395px";
         extendedNavbar.classList.add("expanded");
         categoryMenuButton.innerText = "Map Categories ▲";
     }
@@ -336,6 +373,12 @@ function changeCategory(category) {
     famousCategoryButton.classList.add("categoryDisabled");
     usaCategoryButton.classList.add("categoryDisabled");
     germanyCategoryButton.classList.add("categoryDisabled");
+    ukCategoryButton.classList.add("categoryDisabled");
+    franceCategoryButton.classList.add("categoryDisabled");
+    spainCategoryButton.classList.add("categoryDisabled");
+    polandCategoryButton.classList.add("categoryDisabled");
+    canadaCategoryButton.classList.add("categoryDisabled");
+    swedenCategoryButton.classList.add("categoryDisabled");
     
    //enable the correct one
     switch (category) {
@@ -353,6 +396,24 @@ function changeCategory(category) {
             break;
         case Category.GERMANY:
             germanyCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.UK:
+            ukCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.FRANCE:
+            franceCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.SPAIN:
+            spainCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.POLAND:
+            polandCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.CANADA:
+            canadaCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.SWEDEN:
+            swedenCategoryButton.classList.remove("categoryDisabled");
             break;
     }
 

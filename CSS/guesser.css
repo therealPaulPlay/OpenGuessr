@@ -271,28 +271,29 @@ html * {
 /* category bar */
 .extendedNavbar {
     display: block;
-    justify-content: left;
+    text-align: center;
     padding-left: 30px;
-    padding-right: 15px;
+    padding-right: 10px;
     top: 75px;
     max-height: 0;
-    overflow: hidden;
     transition: max-height 0.3s ease;
     position: absolute;
     right: 10px;
     width: auto;
     min-width: 15rem;
+    max-width: 23rem;
     background-color: rgba(50, 52, 92, 0.8);
     border-radius: 0 0 10px 10px;
     box-shadow: 0 2px 5px #05060ab0;
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px); 
     z-index: 13;
+    overflow: auto;
 }
 
 .extendedNavbar.expanded {
     /* Adjust max-height as needed */
-    max-height: 200px;
+    max-height: 350px;
     /* Use height: auto to fit content */
     height: auto;
 }
@@ -680,7 +681,6 @@ html * {
     -webkit-user-select: none;
     color: black;
     background-color: white;
-    
 }
 
 .category:hover {
