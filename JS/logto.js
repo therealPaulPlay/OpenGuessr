@@ -1,8 +1,7 @@
 //IMPORTANT: ANY changes here affect nothing if you don't run "npm run build" - this file is never being loaded in except in the bundled.js, so you need to do that. 
-import LogtoClient from "@logto/browser";
-import { errorPopup } from "./errorHandling.js";
+import LogtoClient from "@logto/browser"; //npm package (requires webpack)
 
-//TODO Localhost URL for testing ONLY!! Production will be our domain (already configured in admin console, only need to change it here)
+//Localhost URL is for testing only
 let logtoURL = "http://localhost:3000";
 const logtoEndpoint = 'https://jh8qv6.logto.app/'
 
@@ -11,17 +10,16 @@ const logtoClient = new LogtoClient({
     appId: '3d46yzci0ettygtpr5vbw',
   });
 
+//login - working
 function login() {
     logtoClient.signIn(logtoURL);
 }
-
+//sign out - working
 function signout() {
     logtoClient.signOut(logtoURL);
 }
 
-let bearerToken;
-
-//works without routing, we just use the main page as the callback page and handle it here. Probably not the most secure, however, we still have a unique uri that is being attached by logto (so idk)
+//needed for login - working
 async function handleCallback () {
     try {
         await logtoClient.handleSignInCallback(window.location.href);
@@ -34,9 +32,9 @@ async function handleCallback () {
       }
 }
 
-handleCallback();
+handleCallback(); //always handle the callback on start of this file
 
-//Account UI -------------------------------------------------------------------------------------------------------------
+//Account UI (working) -------------------------------------------------------------------------------------------------------------
 
 let loginButton = document.getElementById("loginButton");
 loginButton.addEventListener("click", login);
@@ -140,7 +138,7 @@ function willCauseLevelUpgrade(xp, newXP) {
 export function loadResultScreenXP(distance) { //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
    
-    let currentXP = 15000; //TODO fetch user XP here
+    let currentXP = 15000; //TODO fetch user XP here! currentXP should be set to the user's XP
     let earnedXP = Math.round(5000 * ((0.998036) ** distance));
 
     XPbarResource.classList.remove("XPbarAnimate");
@@ -161,11 +159,11 @@ export function loadResultScreenXP(distance) { //Checks whether or not the extra
     }, 10);
 }
 
-//TODO this is just for testing, the actual XP number has to be retrieved from the json file and set by the backend.
+//TODO the actual XP number has to be retrieved from the user (and set by the backend)
 uiSetUserXP(15000);
 
 function setUserXP(xp) {
-    //TODO make API call to save XP to the users account's custom data
+    //TODO make API call to save XP to the users account's custom data (with backend)
     console.log(xp);
 }
 
@@ -209,8 +207,11 @@ function toggleUsernameView() {
     }
 }
 
-let newUsername = "";
+//The code below was an attempt to make setting user data work in the frontend, but this is a bad practice. 
+
+/*let newUsername = "";
 let playerXP = 0.0;
+let bearerToken;
 
 
 function updateUsername() {
@@ -258,4 +259,4 @@ function updateUsername() {
         error);
     })
   }
-}
+} */
