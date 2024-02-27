@@ -3,7 +3,7 @@ import LogtoClient from "@logto/browser"; //npm package (requires webpack)
 
 //Localhost URL is for testing only
 let logtoURL = "http://localhost:3000";
-const logtoEndpoint = 'https://jh8qv6.logto.app/'
+let logtoEndpoint = "https://jh8qv6.logto.app/";
 
 const logtoClient = new LogtoClient({
     endpoint: logtoEndpoint,
@@ -47,16 +47,23 @@ profileButton.addEventListener("click", viewProfile);
 
 let displayAccountName = document.getElementById("accountName");
 
+
+let XPbarNoAccount = document.getElementById("XPbarNoAccount");
+let XParea = document.getElementById("XParea");
+
 let userInfoJson;
 
 logoutButton.style.display = "none"; //logout and profile button are hidden by default (default = not logged in)
 profileButton.style.display = "none";
+XParea.style.display = "none";
 
 //part of checkSigninStatusAndLoadUserInfo
 async function changeUItoSignedIn () {
     logoutButton.style.display = "inline-block";
     loginButton.style.display = "none";
     profileButton.style.display = "inline-block";
+    XPbarNoAccount.style.display = "none";
+    XParea.style.display = "flex";
     enableExclusiveCategories();
     logtoClient.fetchUserInfo().then((res) => {userInfoJson = res; displayUserInfo()}); //this saves the json object here
 }
@@ -83,10 +90,12 @@ async function checkSigninStatusAndLoadUserInfo () {
 
 function enableExclusiveCategories() {
     let accountLocked = document.getElementsByClassName("accountLock");
-    for (let i = 0; i < accountLocked.length; i++) {
-        accountLocked[i].classList.remove("accountLock");
+    let accountLockedArray = Array.from(accountLocked); // Convert to array
+    for (let i = 0; i < accountLockedArray.length; i++) {
+        accountLockedArray[i].classList.remove("accountLock");
     }
-    document.getElementById("categoryExclusiveText").innerHTML = "You can now choose these categories:";
+
+        document.getElementById("categoryExclusiveText").innerHTML = "You can now select these categories:";
 }
 
 //XP bar loading function -------------------------------------------------------------------------------------------------
@@ -135,28 +144,32 @@ function willCauseLevelUpgrade(xp, newXP) {
     return ((xp + newXP) / requiredXP);
 }
 
-export function loadResultScreenXP(distance) { //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
-    let XPbarResource = document.getElementById("endScreenXPbarResource");
-   
-    let currentXP = 15000; //TODO fetch user XP here! currentXP should be set to the user's XP
-    let earnedXP = Math.round(5000 * ((0.998036) ** distance));
+export async function loadResultScreenXP(distance) {
 
-    XPbarResource.classList.remove("XPbarAnimate");
-    
-    if ((willCauseLevelUpgrade(currentXP, earnedXP)) > 1) { 
-        XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
+    if (await logtoClient.isAuthenticated()) {
+        //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
+        let XPbarResource = document.getElementById("endScreenXPbarResource");
+
+        let currentXP = 15000; //TODO fetch user XP here! currentXP should be set to the user's XP
+        let earnedXP = Math.round(5000 * ((0.998036) ** distance));
+
+        XPbarResource.classList.remove("XPbarAnimate");
+
+        if ((willCauseLevelUpgrade(currentXP, earnedXP)) > 1) {
+            XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
+        }
+        else {
+            XPbarResource.style.width = uiSetUserXP(currentXP) * 100 + "%";
+        }
+
+
+        setUserXP(currentXP + earnedXP); //save XP, this is the last step!
+        setTimeout(function () {
+            XPbarResource.classList.add("XPbarAnimate");
+            XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP) * 100 + "%";
+            resultLevelText.innerHTML = "+" + earnedXP + " XP / " + resultLevelText.innerHTML;
+        }, 10);
     }
-    else {
-        XPbarResource.style.width = uiSetUserXP(currentXP) * 100 + "%";
-    }
-
-
-    setUserXP(currentXP + earnedXP); //save XP, this is the last step!
-    setTimeout(function() {
-        XPbarResource.classList.add("XPbarAnimate");
-        XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP) * 100 + "%";
-        resultLevelText.innerHTML = "+" + earnedXP + " XP / " + resultLevelText.innerHTML;
-    }, 10);
 }
 
 //TODO the actual XP number has to be retrieved from the user (and set by the backend)
@@ -207,13 +220,19 @@ function toggleUsernameView() {
     }
 }
 
-function updateUsername() {
-    //nothing rn
+function updateUsername () {
+    newUsername = document.getElementById("usernameInput").value;
+    console.log("username change requested. New name: " + newUsername);
+    toggleUsernameView();
+    if (newUsername != "") {
+        //TODO change username via API / Backend + fetch new username + then run displayUserInfo() to update in UI
+    }
 }
 
 //The code below was an attempt to make setting user data work in the frontend, but this is a bad practice. 
 
-/*let newUsername = "";
+/*
+let newUsername = "";
 let playerXP = 0.0;
 let bearerToken;
 
@@ -263,4 +282,5 @@ function updateUsername() {
         error);
     })
   }
-} */
+} 
+*/
