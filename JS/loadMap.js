@@ -3,9 +3,9 @@ import { setMapToTargetPosition } from "./main.js";
 import { calculateDistances } from "./main.js";
 
 const Provider = {
-    ENGLISH: 0,
-    GERMAN: 1,
-    REGIONAL: 2
+    ENGLISH: "0",
+    GERMAN: "1",
+    REGIONAL: "2",
 }
 
 //initializes map (check out leaflet for more information)
@@ -20,6 +20,8 @@ let storedProviderIndex = localStorage.getItem("providerIndex");
 
 if (storedProviderIndex != null)
     providerIndex = storedProviderIndex;
+
+loadMap();
 
 changeLanguageButtonLabel();
 
@@ -77,13 +79,30 @@ function changeLanguage () {
         providerIndex = Provider.ENGLISH;
     }
     localStorage.setItem("providerIndex", providerIndex);
-    window.location.reload();
+    
+    changeLanguageButtonLabel();
+    resetGuessMap();
+    
+    /* window.location.reload(); */
 }
 
-L.tileLayer(mapProvider[providerIndex], {
-    attribution: 'https://www.openstreetmap.org/copyright',
-    noWrap: true
-}).addTo(map);
+let osmLayer;
+
+function loadMap() {
+  osmLayer = L.tileLayer(mapProvider[providerIndex], {
+      attribution: 'https://www.openstreetmap.org/copyright',
+      noWrap: true
+  }).addTo(map);
+}
+
+function destroyMap() {
+  map.removeLayer(osmLayer);
+}
+
+function resetGuessMap() {
+  destroyMap();
+  loadMap();
+}
 
 map.setZoom(3);
 
