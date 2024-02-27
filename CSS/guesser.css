@@ -63,27 +63,27 @@ html * {
     position: absolute;
     left: 50%;
     transform: translateX(-50%);
-    background-color: #585981d0;
+    background-color: rgba(50, 52, 92, 0.5);
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
     border-radius: 10px;
     padding-left: 2px;
-    padding-top: 5px;
-    padding-bottom: 5px;
     margin-top: 15px;
     margin-bottom: 5px;
-    height: 75%;
+    height: 60px;
     width: fit-content;
     display: flex;
     justify-content: center;
-    box-sizing: border-box;
+    align-items: center;
     gap: 5px;
 }
 
 .loginArea {
-    background: #3d3e64;
+    background-color: rgba(35, 36, 65, 0.65);
     border-radius: 8px;
     padding: 5px;
-    margin-right: 6px;
+    margin-right: 4px;
 }
 
 .profile {
@@ -132,6 +132,7 @@ html * {
     margin: auto;
     display: flex;
     align-items: center;
+    margin-top: 20px;
 }
 
 #endScreenXPbar {
@@ -519,7 +520,7 @@ html * {
     margin-top: 20px;
     color: #EEE;
     font-size: 40px;
-    height: 100%;
+    height: fit-content;
 }
 
 #endBottomBar {
@@ -538,7 +539,7 @@ html * {
 
 #motivationText {
     color: #CCC;
-    margin-top: 15px;
+    margin-top: 10px;
     font-size: 25px;
 }
 
