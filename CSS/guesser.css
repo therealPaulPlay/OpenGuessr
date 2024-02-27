@@ -289,7 +289,7 @@ html * {
     backdrop-filter: blur(10px); 
     -webkit-backdrop-filter: blur(10px); 
     z-index: 13;
-    overflow: auto;
+    overflow: hidden;
 }
 
 .extendedNavbar.expanded {
