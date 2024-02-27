@@ -3,16 +3,16 @@ import { setMapToTargetPosition } from "./main.js";
 import { calculateDistances } from "./main.js";
 
 const Provider = {
-    REGIONAL: 0,
+    ENGLISH: 0,
     GERMAN: 1,
-    ENGLISH: 2
+    REGIONAL: 2
 }
 
 //initializes map (check out leaflet for more information)
 
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
 
-let mapProvider = ["https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"]
+let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"]
 
 //TODO switch to enum
 let providerIndex = Provider.REGIONAL;
@@ -37,13 +37,16 @@ export function resetMap() {
 
 function changeLanguageButtonLabel () {
        switch (providerIndex) {
-        case "0": document.getElementById("languageButton").innerHTML = "Map language: Regional";
+        case "0": document.getElementById("languageButton").innerHTML = "Map language: English";
         break;
 
         case "1": document.getElementById("languageButton").innerHTML = "Map language: German";
         break; 
 
-        case "2": document.getElementById("languageButton").innerHTML = "Map language: English";
+        case "2": document.getElementById("languageButton").innerHTML = "Map language: Regional";
+        break;
+
+        default: document.getElementById("languageButton").innerHTML = "Map language: English";
         break;
        }
 }
@@ -64,14 +67,14 @@ function setConfirmButtonState() {
 }
 
 function changeLanguage () {
-    if (providerIndex == Provider.REGIONAL) {
+    if (providerIndex == Provider.ENGLISH) {
         providerIndex = Provider.GERMAN;
     }
     else if (providerIndex == Provider.GERMAN) {
-        providerIndex = Provider.ENGLISH
+        providerIndex = Provider.REGIONAL;
     }
     else {
-        providerIndex = Provider.REGIONAL
+        providerIndex = Provider.ENGLISH;
     }
     localStorage.setItem("providerIndex", providerIndex);
     window.location.reload();
