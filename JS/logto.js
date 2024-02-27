@@ -207,6 +207,10 @@ function toggleUsernameView() {
     }
 }
 
+function updateUsername() {
+    //nothing rn
+}
+
 //The code below was an attempt to make setting user data work in the frontend, but this is a bad practice. 
 
 /*let newUsername = "";

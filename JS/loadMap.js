@@ -4,14 +4,15 @@ import { calculateDistances } from "./main.js";
 
 const Provider = {
     REGIONAL: 0,
-    GERMAN: 1
+    GERMAN: 1,
+    ENGLISH: 2
 }
 
 //initializes map (check out leaflet for more information)
 
 const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
 
-let mapProvider = ["https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png"]
+let mapProvider = ["https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"]
 
 //TODO switch to enum
 let providerIndex = Provider.REGIONAL;
@@ -35,7 +36,16 @@ export function resetMap() {
 }
 
 function changeLanguageButtonLabel () {
-       document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex == Provider.REGIONAL ? "Regional": "German"}`
+       switch (providerIndex) {
+        case "0": document.getElementById("languageButton").innerHTML = "Map language: Regional";
+        break;
+
+        case "1": document.getElementById("languageButton").innerHTML = "Map language: German";
+        break; 
+
+        case "2": document.getElementById("languageButton").innerHTML = "Map language: English";
+        break;
+       }
 }
 
 function setConfirmButtonState() {
@@ -57,8 +67,11 @@ function changeLanguage () {
     if (providerIndex == Provider.REGIONAL) {
         providerIndex = Provider.GERMAN;
     }
+    else if (providerIndex == Provider.GERMAN) {
+        providerIndex = Provider.ENGLISH
+    }
     else {
-        providerIndex = Provider.REGIONAL;
+        providerIndex = Provider.REGIONAL
     }
     localStorage.setItem("providerIndex", providerIndex);
     window.location.reload();
