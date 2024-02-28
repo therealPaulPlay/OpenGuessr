@@ -16,8 +16,9 @@ let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x
 let providerIndex = Provider.REGIONAL;
 let storedProviderIndex = localStorage.getItem("providerIndex");
 
-if (storedProviderIndex != null)
+if (storedProviderIndex != null) {
     providerIndex = storedProviderIndex;
+}
 
 loadMap();
 
