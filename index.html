@@ -15,7 +15,7 @@
     <link rel="apple-touch-icon" sizes="180x180" href="/IMG/apple-touch-icon.png">
     <link rel="icon" type="image/png" sizes="32x32" href="/IMG/favicon-32x32.png">
     <link rel="icon" type="image/png" sizes="16x16" href="/IMG/favicon-16x16.png">
-    <link rel="manifest" href="/site.webmanifest">
+    <link rel="manifest" href="/IMG/site.webmanifest">
     <meta name="msapplication-TileColor" content="#da532c">
     <meta name="theme-color" content="#ffffff">
 
@@ -125,14 +125,7 @@
     <div class="MainDiv">
         <iframe id="GuesserWindow" referrerpolicy="no-referrer-when-downgrade" frameborder="0" allow="accelerometer" style="border:0" src="/loader.html"></iframe>
         <!--map-->
-        <div id="map">
-        </div>
-        <script>
-            //this is so we don't get a duplicate map declaration. Simply removes the old one.
-            const map = L.map('map');
-            map.off();
-            map.remove();
-        </script>
+        <div id="map"></div>
         <!-- diy cookie banner -->
         <div id="cookieBanner">
             <p>OpenGuessr uses cookies to improve your experience. We only collect very little data and keep it safe.
@@ -149,7 +142,7 @@
         <!--load main script-->
         <script type="module" src="/JS/loadMap.js"></script>
         <script type="module" src="/JS/errorHandling.js"></script>
-        <!-- load bundled js (that includes logto.js & main.js) with webpack -->
+        <!-- load bundled js (that includes accountLogic.js & main.js) with webpack -->
         <script type="text/javascript" src="/build/bundled.js"></script>
         <h1 id="TransparentHeader">Openguessr free geoguessr geoguesser alternative open source geography geographie
             Geotastic world map google maps google streetview rainbolt geographie spiel videospiel guess which country

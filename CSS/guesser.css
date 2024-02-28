@@ -274,8 +274,8 @@ html * {
 .extendedNavbar {
     display: block;
     text-align: center;
-    padding-left: 30px;
-    padding-right: 10px;
+    padding-left: 25px;
+    padding-right: 5px;
     top: 75px;
     max-height: 0;
     transition: max-height 0.3s ease;

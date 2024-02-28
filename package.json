@@ -23,7 +23,6 @@
   },
   "homepage": "https://github.com/ColaniYT/OpenGuessr#readme",
   "dependencies": {
-    "@logto/browser": "^2.2.2",
     "css-loader": "^6.10.0",
     "path": "^0.12.7",
     "style-loader": "^3.3.4"

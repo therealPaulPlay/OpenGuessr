@@ -1,6 +1,6 @@
 import { resetMap } from './loadMap.js';
 import { errorPopup } from "./errorHandling.js";
-import { loadResultScreenXP } from "./logto.js";
+import { loadResultScreenXP } from "./accountLogic.js";
 //IMPORTANT: Main.js is now part of the bundled.js (webpack) using functions from logto.js/bundled.js otherwise causes issues
 
 let lastGuessIndex = null;
@@ -350,19 +350,23 @@ function goToLegal() {
 let extendedNavbar = document.getElementById("extendedNavbar");
 let categoryMenuButton = document.getElementById("categoryMenuButton");
 
+let categoriesExpanded = false;
+
 categoryMenuButton.addEventListener("click", function() {
     // Toggle the visibility of the extended navbar
-    if (extendedNavbar.classList.contains("expanded")) {
-        setTimeout(function() {
-            categoryMenuButton.style.top = "85px";
-            extendedNavbar.scrollTop = 0;
-        }, 110); // Delay the button animation by 110ms so that it smoothly retracts with the navbar
-        extendedNavbar.classList.remove("expanded");
-        categoryMenuButton.innerText = "Map Categories ▼";
-    } else {
+    if (!categoriesExpanded) {
         categoryMenuButton.style.top = "395px";
         extendedNavbar.classList.add("expanded");
         categoryMenuButton.innerText = "Map Categories ▲";
+        categoriesExpanded = true;
+    } else {
+        setTimeout(function() {
+            categoryMenuButton.style.top = "85px";
+            extendedNavbar.scrollTop = 0;
+        }, 75); 
+        extendedNavbar.classList.remove("expanded");
+        categoryMenuButton.innerText = "Map Categories ▼";
+        categoriesExpanded = false;
     }
 });
 

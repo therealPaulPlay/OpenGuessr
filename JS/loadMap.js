@@ -1,4 +1,3 @@
-import "../JS/main.js";
 import { setMapToTargetPosition } from "./main.js";
 import { calculateDistances } from "./main.js";
 
@@ -9,8 +8,7 @@ const Provider = {
 }
 
 //initializes map (check out leaflet for more information)
-
-const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
+let map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
 
 let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"]
 
