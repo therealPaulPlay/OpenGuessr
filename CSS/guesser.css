@@ -30,7 +30,6 @@ html * {
     display: flex;
     justify-content: space-between;
     align-items: top;
-    overflow: hidden;
 }
 
 .bannerItem {
@@ -82,9 +81,9 @@ html * {
 
 .loginArea {
     background-color: rgba(35, 36, 65, 0.65);
-    border-radius: 8px;
-    padding: 5px;
-    margin-right: 4px;
+    border-radius: 9px;
+    padding: 3px;
+    margin-right: 5px;
 }
 
 .profile {
@@ -93,7 +92,7 @@ html * {
 }
 
 .profileInfo {
-    margin-left: 20px; 
+    margin-left: 10px; 
 }
 
 .notSignedIn {
@@ -103,7 +102,7 @@ html * {
 .level {
     display: flex;
     align-items: center;
-    margin-right: 20px;
+    margin-right: 10px;
     color: white;
 }
 
@@ -758,7 +757,7 @@ button {
         height: 65%;
     }
   }
-  /* phones in landscape*/
+  /* phones in landscape, Tablets / Ipads */
   @media (orientation: landscape) and (max-width: 1250px) {
     #map {
         width: 40%;
@@ -782,22 +781,35 @@ button {
         font-size: 20pt;
     }
 
+    #GuesserWindow {
+        height: 100%;
+    }
+
+    #nextRound a {
+        position: relative;
+        right: 0;
+    }
+
+    .accountBar {
+        margin-top: 85px;
+        left: 165px;
+        border-bottom-left-radius: 0px;
+        border-top-left-radius: 0px;
+    }
+}
+
+/* Small phones, mobile */
+@media all and (orientation: portrait), all and (max-width: 1000px) {
+    .bannerRight {
+        display: none;
+    }
+    
     .accountBar {
         display: none;
     }
 
-    #GuesserWindow {
-        height: 100%;
-    }
-    .bannerRight {
-        display: none;
-    }
     .floatingButton {
         visibility: hidden;
-    }
-    #nextRound a {
-        position: relative;
-        right: 0;
     }
 }
 
