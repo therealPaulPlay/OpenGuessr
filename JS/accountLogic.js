@@ -24,7 +24,6 @@ profileButton.addEventListener("click", viewProfile);
 
 let displayAccountName = document.getElementById("accountName");
 
-
 let XPbarNoAccount = document.getElementById("XPbarNoAccount");
 let XParea = document.getElementById("XParea");
 
@@ -45,6 +44,8 @@ async function changeUItoSignedIn () {
     //TODO get Account information here to display user info
     displayUserInfo();
 }
+
+let profileName = document.getElementById("profileViewName");
 
 //part of checkSigninStatusAndLoadUserInfo
 function displayUserInfo () {
@@ -167,7 +168,6 @@ profileClose.addEventListener("click", closeProfile);
 
 let profileWindow = document.getElementById("profileWindow");
 
-let profileName = document.getElementById("profileViewName");
 
 document.getElementById("usernameInput").style.visibility = "hidden";
 document.getElementById("confirmUsername").style.visibility = "hidden";
