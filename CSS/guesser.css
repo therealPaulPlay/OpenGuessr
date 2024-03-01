@@ -1,280 +1,281 @@
 @font-face {
-    font-family: Futura;
-    src: url('../FONTS/futura_medium_condensed_bt.ttf');
+  font-family: Futura;
+  src: url('../FONTS/futura_medium_condensed_bt.ttf');
 }
 
 @font-face {
-    font-family: Barlow;
-    src: url('../FONTS/BarlowCondensed-Medium.ttf');
+  font-family: Barlow;
+  src: url('../FONTS/BarlowCondensed-Medium.ttf');
 }
 
 
 html * {
-    font-family: Barlow, Futura, sans-serif;
-    margin: 0;
+  font-family: Barlow, Futura, sans-serif;
+  margin: 0;
 }
 
 :root {
-    --brand-color:#ff0808;
+  --brand-color: #ff0808;
 }
 
 /* Top Banner */
 
 .Banner {
-    width: 100%;
-    height: 83px;
-    position: absolute;
-    z-index: 14;
-    top: 0px;
-    left: 0;
-    display: flex;
-    justify-content: space-between;
-    align-items: top;
+  width: 100%;
+  height: 83px;
+  position: absolute;
+  z-index: 14;
+  top: 0px;
+  left: 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: top;
 }
 
 .bannerItem {
-    background-color: rgba(42, 44, 71, 0.9);
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px); 
-    box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
-    align-items: center;
-    height: 75px;
+  background-color: rgba(42, 44, 71, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7);
+  align-items: center;
+  height: 75px;
 }
 
 .bannerLeft {
-    border-bottom-right-radius: 10px;
-    padding-right: 30px;
-    padding-left: 10px;
+  border-bottom-right-radius: 10px;
+  padding-right: 30px;
+  padding-left: 10px;
 }
 
 .bannerRight {
-    border-bottom-left-radius: 10px;
-    padding-left: 15px;
-    padding-right: 30px;
-    margin-left: auto;
+  border-bottom-left-radius: 10px;
+  padding-left: 15px;
+  padding-right: 30px;
+  margin-left: auto;
 }
 
 .leftNavbarButtons {
-    align-items: center;
-    margin-top: 2px;
+  align-items: center;
+  margin-top: 2px;
 }
 
 .accountBar {
-    position: absolute;
-    left: 50%;
-    transform: translateX(-50%);
-    background-color: rgba(50, 52, 92, 0.5);
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
-    border-radius: 10px;
-    padding-left: 2px;
-    margin-top: 15px;
-    margin-bottom: 5px;
-    height: 60px;
-    width: fit-content;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(50, 52, 92, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7);
+  border-radius: 10px;
+  padding-left: 2px;
+  margin-top: 15px;
+  margin-bottom: 5px;
+  height: 60px;
+  width: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 }
 
 .loginArea {
-    background-color: rgba(35, 36, 65, 0.65);
-    border-radius: 9px;
-    padding: 3px;
-    margin-right: 5px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
+  background-color: rgba(35, 36, 65, 0.65);
+  border-radius: 9px;
+  padding: 3px;
+  margin-right: 5px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
 }
 
 .profile {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
 }
 
 .profileInfo {
-    margin-left: 10px; 
+  margin-left: 10px;
 }
 
 .notSignedIn {
-    opacity: 50%;
+  opacity: 50%;
 }
 
 .level {
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-    color: white;
+  display: flex;
+  align-items: center;
+  margin-right: 10px;
+  color: white;
 }
 
 #accountName {
-    color: white;
+  color: white;
 }
 
 .progress {
-    width: 100px; 
-    height: 10px;
-    background-color: #ccc; 
-    border-radius: 5px;
-    margin-right: 10px; 
+  width: 100px;
+  height: 10px;
+  background-color: #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
 }
 
 .progressBar {
-    height: 100%;
-    border-radius: 5px; 
-    background-color: #00cc00; 
-    width: 0%;
-    transition: width 250ms ease; /* smoothly animate the bar */
+  height: 100%;
+  border-radius: 5px;
+  background-color: #00cc00;
+  width: 0%;
+  transition: width 250ms ease;
+  /* smoothly animate the bar */
 }
 
 #XParea {
-    width: 80%; 
-    height: 30px;
-    margin: auto;
-    display: flex;
-    align-items: center;
-    margin-top: 20px;
+  width: 80%;
+  height: 30px;
+  margin: auto;
+  display: flex;
+  align-items: center;
+  margin-top: 20px;
 }
 
 #endScreenXPbar {
-    width: 65%;
-    height: 15px;
-    background-color: #ccc; 
-    border-radius: 15px;
-    transition: none;
+  width: 65%;
+  height: 15px;
+  background-color: #ccc;
+  border-radius: 15px;
+  transition: none;
 }
 
 #XPbarNoAccount {
-    display: block;
-    font-size: 25px;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.2);
-    padding-top: 5px;
-    padding-bottom: 5px;
-    border-radius: 5px;
-    margin-left: 15%;
-    margin-right: 15%;
-    margin-top: 15px;
+  display: block;
+  font-size: 25px;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
+  margin-left: 15%;
+  margin-right: 15%;
+  margin-top: 15px;
 }
 
 .XPbarResource {
-    height: 100%;
-    border-radius: 15px; 
-    background-color: #00cc00; 
-    width: 0%;
-    transition: none;
+  height: 100%;
+  border-radius: 15px;
+  background-color: #00cc00;
+  width: 0%;
+  transition: none;
 }
 
 .XPbarAnimate {
-    transition: width 1000ms ease; 
+  transition: width 1000ms ease;
 }
 
 #endScreenLevel {
-    font-size: 22px;
-    width: auto;
-    margin-left: auto;
-    vertical-align: middle;
-    text-align: center;
-    padding-left: 10px;
+  font-size: 22px;
+  width: auto;
+  margin-left: auto;
+  vertical-align: middle;
+  text-align: center;
+  padding-left: 10px;
 }
 
 .accountButton {
-    cursor: pointer;
-    height: 37px;
-    width: fit-content;
-    font-size: 22px;
-    padding: 5px 15px;
-    text-align: center;
-    white-space: nowrap;
-    transition: filter 250ms ease;
-    margin: 2.5px;
-    border-radius: 5px;
-    user-select: none;
-    -webkit-user-select: none;
-    background-color: var(--brand-color);
-    color: white;
-    opacity: 100%;
+  cursor: pointer;
+  height: 37px;
+  width: fit-content;
+  font-size: 22px;
+  padding: 5px 15px;
+  text-align: center;
+  white-space: nowrap;
+  transition: filter 250ms ease;
+  margin: 2.5px;
+  border-radius: 5px;
+  user-select: none;
+  -webkit-user-select: none;
+  background-color: var(--brand-color);
+  color: white;
+  opacity: 100%;
 }
 
 #profileClose {
-    min-height: 50px;
+  min-height: 50px;
 }
 
 #usernameInput {
-    padding: 5px 15px;
-    font-size: 22px;
-    border-radius: 5px;
-    outline: none;
-    border: none;
-    user-select: none;
-    width: 35%;
+  padding: 5px 15px;
+  font-size: 22px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  user-select: none;
+  width: 35%;
 }
 
 .white {
-    color: black;
-    background-color: white;
+  color: black;
+  background-color: white;
 }
 
 .profileWindow {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 30%; 
-    font-size: 30px;
-    padding: 25px 25px 10px;
-    border-radius: 10px;
-    text-align: left;
-    z-index: 999; 
-    overflow: hidden;
-    background-color: rgba(42, 44, 71, 0.9);
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px); 
-    box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
-    color: white;
-    justify-content: center;
-    align-content: center;
-    flex-direction: column;
-  }
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 30%;
+  font-size: 30px;
+  padding: 25px 25px 10px;
+  border-radius: 10px;
+  text-align: left;
+  z-index: 999;
+  overflow: hidden;
+  background-color: rgba(42, 44, 71, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7);
+  color: white;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
 
-  .edit-icon {
-    margin-right: 5px;
-    width: 20px; 
-    height: 20px; 
-  }
+.edit-icon {
+  margin-right: 5px;
+  width: 20px;
+  height: 20px;
+}
 
-  .accountClose {
-    float: right;
-    margin-top: 30px;
-    margin-bottom: 10px;
-    font-size: 20px;
-    font-weight: 500;
-    padding: 10px 35px;
-  }
+.accountClose {
+  float: right;
+  margin-top: 30px;
+  margin-bottom: 10px;
+  font-size: 20px;
+  font-weight: 500;
+  padding: 10px 35px;
+}
 
-  #blackBackground {
-    overflow: hidden;
-    visibility: hidden;
-    opacity: 70%;
-    background-color: #1e1e1ef8;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    transition: opacity 250ms ease;
-    z-index: 12;
-  }
+#blackBackground {
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 70%;
+  background-color: #1e1e1ef8;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  transition: opacity 250ms ease;
+  z-index: 12;
+}
 
 #logoutButton {
-    background-color: #ffffff;
-    color: black;
-    margin-left: 1px;
-    max-height: 37px;
+  background-color: #ffffff;
+  color: black;
+  margin-left: 1px;
+  max-height: 37px;
 }
 
 #logoutImage {
@@ -285,562 +286,565 @@ html * {
 }
 
 .accountButton:hover {
-    filter: brightness(70%);
+  filter: brightness(70%);
 }
 
 /* category bar */
 .extendedNavbar {
-    display: block;
-    text-align: center;
-    padding-left: 25px;
-    padding-right: 5px;
-    top: 75px;
-    max-height: 0;
-    transition: max-height 0.3s ease;
-    position: absolute;
-    right: 10px;
-    width: auto;
-    min-width: 15rem;
-    max-width: 25rem;
-    background-color: rgba(50, 52, 92, 0.8);
-    border-radius: 0 0 10px 10px;
-    box-shadow: 0 2px 5px #05060ab0;
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px); 
-    z-index: 13;
-    overflow: hidden;
+  display: block;
+  text-align: center;
+  padding-left: 25px;
+  padding-right: 5px;
+  top: 75px;
+  max-height: 0;
+  transition: max-height 0.3s ease;
+  position: absolute;
+  right: 10px;
+  width: auto;
+  min-width: 15rem;
+  max-width: 25rem;
+  background-color: rgba(50, 52, 92, 0.8);
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 2px 5px #05060ab0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  z-index: 13;
+  overflow: hidden;
 }
 
 .extendedNavbar.expanded {
-    /* Adjust max-height as needed */
-    max-height: 350px;
-    /* Use height: auto to fit content */
-    height: auto;
+  /* Adjust max-height as needed */
+  max-height: 350px;
+  /* Use height: auto to fit content */
+  height: auto;
 }
 
 .categoriesNote {
-    display: block;
-    font-size: 22px;
-    color: white;
-    padding: 10px;
-    text-align: center;
-    margin-left: 0px;
-    margin-right: 20px;
-    background-color: rgba(0, 0, 0, 0.2);
-    padding-top: 5px;
-    padding-bottom: 5px;
-    border-radius: 5px;
+  display: block;
+  font-size: 22px;
+  color: white;
+  padding: 10px;
+  text-align: center;
+  margin-left: 0px;
+  margin-right: 20px;
+  background-color: rgba(0, 0, 0, 0.2);
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 5px;
 }
 
 #logo {
-    cursor: pointer;
-    pointer-events: auto;
-    color: transparent;
-    background-color: transparent;
+  cursor: pointer;
+  pointer-events: auto;
+  color: transparent;
+  background-color: transparent;
 }
 
 #icon {
-    margin-top: 6px;
-    margin-left: 10px;
-    width: 18em;
+  margin-top: 6px;
+  margin-left: 10px;
+  width: 18em;
 }
 
 /* Main content */
 
 #GuesserWindow {
-    transition: all 250ms;
-    background-color: #000;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: 100%;
-    border: none;
+  transition: all 250ms;
+  background-color: #000;
+  -moz-user-select: none;
+  -webkit-user-select: none;
+  user-select: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
 }
 
 #TransparentHeader {
-    visibility: hidden;
+  visibility: hidden;
 }
 
 #map {
-    opacity: 75%;
-    cursor: crosshair;
-    transition: all 250ms ease;
-    bottom: 0;
-    right: 0;
-    margin-right: 10px;
-    margin-bottom: 75px;
-    width: 30%;
-    height: 30%;
-    z-index: 10; 
-    border-radius: 10px;
-    box-shadow: 0 2px 8px #05060ab0;
-    position: absolute;
-    background: #bfd4da;
+  opacity: 75%;
+  cursor: crosshair;
+  transition: all 250ms ease;
+  bottom: 0;
+  right: 0;
+  margin-right: 10px;
+  margin-bottom: 75px;
+  width: 30%;
+  height: 30%;
+  z-index: 10;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #05060ab0;
+  position: absolute;
+  background: #bfd4da;
 }
 
 #map:hover {
-    transition: none;
-    opacity: 100%;
+  transition: none;
+  opacity: 100%;
 }
 
 .BottomBar {
-    position: absolute;
-    z-index: 10;
-    bottom: 0;
-    width: 100%;
-    display: flex; 
-    align-items: center;
+  position: absolute;
+  z-index: 10;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  align-items: center;
 }
 
-.BottomBar p{
-    text-align: center;
-    font-size: 14pt;
-    color: #EEE;
+.BottomBar p {
+  text-align: center;
+  font-size: 14pt;
+  color: #EEE;
 }
 
 /* Buttons */
 
 #resetButtonSVG {
-    cursor: pointer;
-    transition: all 250ms ease;
-    margin-left: 22px;
-    margin-bottom: 15px;
-    width: 50px;
-    border-radius: 50%;
-    box-shadow: 0 2px 8px #05060ab0;
-    z-index: 11;
+  cursor: pointer;
+  transition: all 250ms ease;
+  margin-left: 22px;
+  margin-bottom: 15px;
+  width: 50px;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px #05060ab0;
+  z-index: 11;
 }
 
 #resetButtonSVG:hover {
-    filter:brightness(70%);
-    transition: all 250ms;
+  filter: brightness(70%);
+  transition: all 250ms;
 }
 
 .roundButtons {
-    cursor: pointer;
-    transition: all 250ms;
-    position: absolute;
-    font-size: 30px;
-    margin-right: 10px;
-    z-index: 11;
-    margin-bottom: 15px;
-    padding-top: 5px;
-    padding-bottom: 5px;
-    border-radius: 25px;
-    box-shadow: 0 2px 8px #05060ab0;
-    color: white;
+  cursor: pointer;
+  transition: all 250ms;
+  position: absolute;
+  font-size: 30px;
+  margin-right: 10px;
+  z-index: 11;
+  margin-bottom: 15px;
+  padding-top: 5px;
+  padding-bottom: 5px;
+  border-radius: 25px;
+  box-shadow: 0 2px 8px #05060ab0;
+  color: white;
 }
 
 .roundButtons:hover {
-    filter:brightness(70%);
-    transition: all 250ms;
+  filter: brightness(70%);
+  transition: all 250ms;
 }
 
 #confirmButton {
-    width: 30%;
-    right: 0;
-    background-color: var(--brand-color);
-    box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.8);
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px); 
+  width: 30%;
+  right: 0;
+  background-color: var(--brand-color);
+  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 #privacyButton {
-    left: 100px;
-    width: fit-content;
-    background-color: #282828;
-    padding-left: 25px;
-    padding-right: 25px;
-    opacity: 70%;
-    font-size: 18px;
+  left: 100px;
+  width: fit-content;
+  background-color: #282828;
+  padding-left: 25px;
+  padding-right: 25px;
+  opacity: 70%;
+  font-size: 18px;
 }
 
 #cookieBanner {
-    left: 20px;
-    width: fit-content;
-    background-color: #282828;
-    padding: 25px 25px 10px;
-    z-index: 20;
-    margin-bottom: 10px;
-    margin-right: 10px;
-    bottom: 100px;
-    position: absolute;
-    border-radius: 10px;
-    box-shadow: 0 2px 8px #05060ab0;
-    font-size: 30px;
-    color: white;
-    justify-content: space-around;
-    gap: 20px;
-    vertical-align: center;
-    max-width: 500px;
-    visibility: hidden;
+  left: 20px;
+  width: fit-content;
+  background-color: #282828;
+  padding: 25px 25px 10px;
+  z-index: 20;
+  margin-bottom: 10px;
+  margin-right: 10px;
+  bottom: 100px;
+  position: absolute;
+  border-radius: 10px;
+  box-shadow: 0 2px 8px #05060ab0;
+  font-size: 30px;
+  color: white;
+  justify-content: space-around;
+  gap: 20px;
+  vertical-align: center;
+  max-width: 500px;
+  visibility: hidden;
 }
 
 .cookieButton {
-    float: right;
-    cursor: pointer;
-    width: fit-content;
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 20px;
-    padding: 20px 15px;
-    text-align: center;
-    margin-bottom: 15px;
-    margin-top: 20px;
-    margin-right: 1em;
-    border-radius: 5px;
-    user-select: none;
-    -webkit-user-select: none;
-    transition: filter 250ms ease;
-    color: black;
-    background-color: white;
-    /* don't add transition here - delays the button click */
+  float: right;
+  cursor: pointer;
+  width: fit-content;
+  font-size: 20px;
+  font-weight: 500;
+  line-height: 20px;
+  padding: 20px 15px;
+  text-align: center;
+  margin-bottom: 15px;
+  margin-top: 20px;
+  margin-right: 1em;
+  border-radius: 5px;
+  user-select: none;
+  -webkit-user-select: none;
+  transition: filter 250ms ease;
+  color: black;
+  background-color: white;
+  /* don't add transition here - delays the button click */
 }
 
 .cookieButton:hover {
-    filter: brightness(70%);
+  filter: brightness(70%);
 }
 
 #cookiesAccept {
-    background-color: lightgreen;
+  background-color: lightgreen;
 }
 
 #cookiesDeny {
-    opacity: 60%;
+  opacity: 60%;
 }
 
 /* GameOver content */
 
 #EndOverlay {
-    overflow: hidden;
-    color: #EEE;
-    text-align: center;
-    font-size: 40pt;
-    visibility: hidden;
-    opacity: 0;
-    transition: all 500ms;
-    background-color: #232535f8;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 12;
+  overflow: hidden;
+  color: #EEE;
+  text-align: center;
+  font-size: 40pt;
+  visibility: hidden;
+  opacity: 0;
+  transition: all 500ms;
+  background-color: #232535f8;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 12;
 }
 
 /* This is for the result screen */
 #TextDiv {
-    margin-left: 50px;
-    margin-right: 50px;
-    margin-top: 20px;
-    color: #EEE;
-    font-size: 40px;
-    height: fit-content;
+  margin-left: 50px;
+  margin-right: 50px;
+  margin-top: 20px;
+  color: #EEE;
+  font-size: 40px;
+  height: fit-content;
 }
 
 #endBottomBar {
-    position: absolute;
-    width: 100%;
-    bottom: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: fit-content;
-    z-index: 12;
-    background-color: rgba(42, 44, 71, 0.8);
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px); 
+  position: absolute;
+  width: 100%;
+  bottom: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: fit-content;
+  z-index: 12;
+  background-color: rgba(42, 44, 71, 0.8);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 #motivationText {
-    color: #CCC;
-    margin-top: 10px;
-    font-size: 25px;
+  color: #CCC;
+  margin-top: 10px;
+  font-size: 25px;
 }
 
 #resultMap {
-    display: inline-block;
-    margin: 0px auto auto;
-    z-index: 10;
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: top;
-    background: #aad3e0;
+  display: inline-block;
+  margin: 0px auto auto;
+  z-index: 10;
+  height: 100%;
+  width: 100%;
+  display: flex;
+  align-items: top;
+  background: #aad3e0;
 }
 
 #topShadow {
-    background-image: linear-gradient(#232535f8, transparent);
-    height: 15px;
-    z-index: 1000;
-    width: 100%;
-    opacity: 30%;
+  background-image: linear-gradient(#232535f8, transparent);
+  height: 15px;
+  z-index: 1000;
+  width: 100%;
+  opacity: 30%;
 }
 
 #nextRound a {
-    z-index: 15;
-    cursor: pointer;
-    transition: all 250ms ease;
-    display: inline-block;
-    opacity: 100%;
-    padding: 10px 30px;
-    font-size: 30px;
-    color: black;
-    width: fit-content;
-    background-color: white;
-    border-radius: 5px;
-    margin: 20px 20px;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
+  z-index: 15;
+  cursor: pointer;
+  transition: all 250ms ease;
+  display: inline-block;
+  opacity: 100%;
+  padding: 10px 30px;
+  font-size: 30px;
+  color: black;
+  width: fit-content;
+  background-color: white;
+  border-radius: 5px;
+  margin: 20px 20px;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
 }
 
 #nextRound a:hover {
-    scale: 1.03;
+  scale: 1.03;
 }
 
 #TextDiv button {
-    color: transparent;
-    background-color: transparent;
-    border: 0;
+  color: transparent;
+  background-color: transparent;
+  border: 0;
 }
 
 #BeforeOverlay {
-    opacity: 100%;
-    background-color: #0a0b0f;
-    transition: all 250ms;
-    position: absolute;
-    width: 100%;
-    height: 100%;
-    z-index: 11;
+  opacity: 100%;
+  background-color: #0a0b0f;
+  transition: all 250ms;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 11;
 }
 
 #socialsButton {
-    background-color: #d45f24;
-    color: white;
+  background-color: #d45f24;
+  color: white;
 }
 
 .menuButton {
-    cursor: pointer;
-    width: fit-content;
-    font-size: 22px;
-    line-height: 20px;
-    padding: 10px 12px;
-    transition: all 250ms;
-    margin-bottom: 15px;
-    margin-top: 13px;
-    margin-right: 0.5em;
-    margin-left: 0.5em;
-    border-radius: 5px;
-    user-select: none;
-    -webkit-user-select: none;
-    color: white;
-    background-color: #3d3e64;
-    box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7); 
+  cursor: pointer;
+  width: fit-content;
+  font-size: 22px;
+  line-height: 20px;
+  padding: 10px 12px;
+  transition: all 250ms;
+  margin-bottom: 15px;
+  margin-top: 13px;
+  margin-right: 0.5em;
+  margin-left: 0.5em;
+  border-radius: 5px;
+  user-select: none;
+  -webkit-user-select: none;
+  color: white;
+  background-color: #3d3e64;
+  box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7);
 }
 
 .menuButton:hover {
-    filter: brightness(70%);
+  filter: brightness(70%);
 }
 
 #socialsButton:hover {
-    box-shadow: 0 0 25px rgba(255, 90, 8, 0.5);
-    filter: brightness(100%);
-    transform: scale(1.05);
+  box-shadow: 0 0 25px rgba(255, 90, 8, 0.5);
+  filter: brightness(100%);
+  transform: scale(1.05);
 }
 
 .floatingButton {
-    position: fixed;
-    top: 85px; 
-    right: 20px; 
-    z-index: 20; 
-    cursor: pointer;
-    width: fit-content;
-    font-size: 22px;
-    line-height: 20px;
-    padding: 15px 35px;
-    text-align: center;
-    transition: top 0.1s ease, background-color 0.2s ease;
-    white-space: nowrap;
-    border-radius: 10px;
-    user-select: none;
-    -webkit-user-select: none;
-    color: white;
-    background-color: rgba(50, 52, 92, 0.8);
-    box-shadow: 0 2px 5px #05060ab0;
-    backdrop-filter: blur(10px); 
-    -webkit-backdrop-filter: blur(10px);
+  position: fixed;
+  top: 85px;
+  right: 20px;
+  z-index: 20;
+  cursor: pointer;
+  width: fit-content;
+  font-size: 22px;
+  line-height: 20px;
+  padding: 15px 35px;
+  text-align: center;
+  transition: top 0.1s ease, background-color 0.2s ease;
+  white-space: nowrap;
+  border-radius: 10px;
+  user-select: none;
+  -webkit-user-select: none;
+  color: white;
+  background-color: rgba(50, 52, 92, 0.8);
+  box-shadow: 0 2px 5px #05060ab0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .floatingButton:hover {
-    background-color: rgba(9, 12, 27, 0.8)
+  background-color: rgba(9, 12, 27, 0.8)
 }
 
 .categoryDisabled {
-    filter: brightness(65%);
+  filter: brightness(65%);
 }
 
 .category {
-    cursor: pointer;
-    width: fit-content;
-    font-size: 20px;
-    line-height: 20px;
-    padding: 10px 12px;
-    text-align: center;
-    white-space: nowrap;
-    transition: all 250ms ease;
-    margin-bottom: 15px;
-    margin-top: 13px;
-    margin-right: 1em;
-    border-radius: 5px;
-    user-select: none;
-    -webkit-user-select: none;
-    color: black;
-    background-color: white;
+  cursor: pointer;
+  width: fit-content;
+  font-size: 20px;
+  line-height: 20px;
+  padding: 10px 12px;
+  text-align: center;
+  white-space: nowrap;
+  transition: all 250ms ease;
+  margin-bottom: 15px;
+  margin-top: 13px;
+  margin-right: 1em;
+  border-radius: 5px;
+  user-select: none;
+  -webkit-user-select: none;
+  color: black;
+  background-color: white;
 }
 
 .category:hover {
-   scale: 1.05;
+  scale: 1.05;
 }
 
 .accountLock {
-    pointer-events: none;
+  pointer-events: none;
 }
 
 .accountExclusive {
-    background: linear-gradient(0.60turn, white, #ffcaca);
+  background: linear-gradient(0.60turn, white, #ffcaca);
 }
 
 .categoryUpcoming {
-    opacity: 80%;
-    background-color: rgba(0, 0, 0, 0.15);
-    font-style: italic;
-    color: white;
+  opacity: 80%;
+  background-color: rgba(0, 0, 0, 0.15);
+  font-style: italic;
+  color: white;
 }
 
 button {
-	background: none;
-	color: inherit;
-	border: none;
-	padding: 0;
-	font: inherit;
-	cursor: pointer;
-	outline: inherit;
+  background: none;
+  color: inherit;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  outline: inherit;
 }
 
 .popup-content {
-    display: none;
-    position: fixed;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    background-color: #282828;
-    width: fit-content; 
-    font-size: 30px;
-    max-width: 90%; 
-    padding: 25px 25px 10px;
-    border-radius: 10px;
-    text-align: center;
-    z-index: 9999; 
-    box-sizing: border-box; 
-    overflow: hidden;
-    box-shadow: 0 2px 8px #05060ab0;
-    color: white;
-    justify-content: center;
-    align-content: center;
-    flex-direction: column;
-  }
+  display: none;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #282828;
+  width: fit-content;
+  font-size: 30px;
+  max-width: 90%;
+  padding: 25px 25px 10px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 9999;
+  box-sizing: border-box;
+  overflow: hidden;
+  box-shadow: 0 2px 8px #05060ab0;
+  color: white;
+  justify-content: center;
+  align-content: center;
+  flex-direction: column;
+}
 
-  .popup-title {
-    margin-bottom: 15px;
-  }
+.popup-title {
+  margin-bottom: 15px;
+}
 
-  .popup-description {
-    word-wrap: break-word;
-  }
-  
-  .close {
-    float: none;
-    width: 100%;
-  }
+.popup-description {
+  word-wrap: break-word;
+}
+
+.close {
+  float: none;
+  width: 100%;
+}
 
 /* laptops and big screens */
-  @media (orientation: landscape) and (min-width: 1250px) {
-    #map:hover {
-        width: 60%;
-        height: 65%;
-    }
+@media (orientation: landscape) and (min-width: 1250px) {
+  #map:hover {
+    width: 60%;
+    height: 65%;
   }
-  /* phones in landscape, Tablets / Ipads */
-  @media (orientation: landscape) and (max-width: 1250px) {
-    #map {
-        width: 40%;
-        height: 50%;
-    }
+}
 
-    #confirmButton {
-        width: 40%;
-    }
+/* phones in landscape, Tablets / Ipads */
+@media (orientation: landscape) and (max-width: 1250px) {
+  #map {
+    width: 40%;
+    height: 50%;
   }
+
+  #confirmButton {
+    width: 40%;
+  }
+}
 
 
 /* phones / mobile */
-@media all and (orientation: portrait), all and (max-width: 1250px) {
+@media all and (orientation: portrait),
+all and (max-width: 1250px) {
 
-    #TextDiv {
-        font-size: 25pt;
-    }
+  #TextDiv {
+    font-size: 25pt;
+  }
 
-    #motivationText {
-        font-size: 20pt;
-    }
+  #motivationText {
+    font-size: 20pt;
+  }
 
-    #GuesserWindow {
-        height: 100%;
-    }
+  #GuesserWindow {
+    height: 100%;
+  }
 
-    #nextRound a {
-        position: relative;
-        right: 0;
-    }
+  #nextRound a {
+    position: relative;
+    right: 0;
+  }
 
-    .accountBar {
-        margin-top: 85px;
-        left: 165px;
-        border-bottom-left-radius: 0px;
-        border-top-left-radius: 0px;
-    }
+  .accountBar {
+    margin-top: 85px;
+    left: 165px;
+    border-bottom-left-radius: 0px;
+    border-top-left-radius: 0px;
+  }
 }
 
 /* Small phones, mobile */
-@media all and (orientation: portrait), all and (max-width: 1000px) {
-    .bannerRight {
-        display: none;
-    }
-    
-    .accountBar {
-        display: none;
-    }
+@media all and (orientation: portrait),
+all and (max-width: 1000px) {
+  .bannerRight {
+    display: none;
+  }
 
-    .floatingButton {
-        visibility: hidden;
-    }
+  .accountBar {
+    display: none;
+  }
+
+  .floatingButton {
+    visibility: hidden;
+  }
 }
 
 /* big screens in portrait, like vertical monitors */
 @media all and (orientation: portrait) {
 
-    #map {
-        width: 95%;
-        height: 30%;
-    }
+  #map {
+    width: 95%;
+    height: 30%;
+  }
 
-    .BottomBar {
-        background-image: linear-gradient(transparent,rgba(153, 153, 153, 0.965) 60%);
-        }
+  .BottomBar {
+    background-image: linear-gradient(transparent, rgba(153, 153, 153, 0.965) 60%);
+  }
 
 }
