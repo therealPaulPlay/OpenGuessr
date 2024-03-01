@@ -84,6 +84,10 @@ html * {
     border-radius: 9px;
     padding: 3px;
     margin-right: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
 }
 
 .profile {
@@ -181,6 +185,7 @@ html * {
 
 .accountButton {
     cursor: pointer;
+    height: 37px;
     width: fit-content;
     font-size: 22px;
     padding: 5px 15px;
@@ -265,6 +270,14 @@ html * {
     background-color: #ffffff;
     color: black;
     margin-left: 1px;
+    max-height: 37px;
+}
+
+#logoutImage {
+  width: 25px;
+  height: auto;
+  margin-left: 2px;
+  margin-top: 1px;
 }
 
 .accountButton:hover {
