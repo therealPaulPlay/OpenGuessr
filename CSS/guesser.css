@@ -201,6 +201,10 @@ html * {
     opacity: 100%;
 }
 
+#profileClose {
+    min-height: 50px;
+}
+
 #usernameInput {
     padding: 5px 15px;
     font-size: 22px;
