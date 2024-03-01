@@ -1,6 +1,6 @@
 //Custom signup (WIP) -------------------------------------------------------------------------------------------------------------------
 
-let isAuthenticated = false; //true if user is logged in 
+let isAuthenticated = true; //true if user is logged in 
 
 //these are being accessed from index.html
 let loginButton = document.getElementById("loginButton");

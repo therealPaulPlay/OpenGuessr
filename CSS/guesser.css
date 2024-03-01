@@ -264,6 +264,7 @@ html * {
 #logoutButton {
     background-color: #ffffff;
     color: black;
+    margin-left: 1px;
 }
 
 .accountButton:hover {
