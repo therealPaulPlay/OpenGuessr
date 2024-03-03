@@ -24,11 +24,15 @@ loginSwitchBack.addEventListener("click", toggleForm);
 let loginEmail = document.getElementById("login_email");
 let loginPassword = document.getElementById("login_password");
 
-let loginButtonSingupPage = document.getElementById("login"); 
-loginButtonSingupPage.addEventListener("click", function() {loginUser(loginEmail.value, loginPassword.value)});
+let signupEmail = document.getElementById("signup_email");
+let signupPassword = document.getElementById("signup_password");
+let signupUsername = document.getElementById("signup_username");
+
+let loginButtonSignupPage = document.getElementById("login"); 
+loginButtonSignupPage.addEventListener("click", function() {loginUser(loginEmail.value, loginPassword.value)});
 
 let signupButtonSignupPage = document.getElementById("signup"); 
-signupButtonSignupPage.addEventListener("click", signup);
+signupButtonSignupPage.addEventListener("click", function() {registerUser(signupUsername.value, signupEmail.value, signupPassword.value)});
 
 const backendURL = "http://127.0.0.1:8080/api";
 const loginEndpoint = backendURL&"/users/login";
@@ -67,11 +71,36 @@ async function loginUser(email, password) {
     }
   }
 
-function signup() {
-    //signup logic, if success, go back to main page
-    window.location.href = "/index.html";
-    console.log("signed up");
-}
+  async function registerUser(userName, email, password) {
+    try {
+      // Define the request body
+      const requestBody = {
+        userName: userName,
+        email: email,
+        password: password
+      };
+  
+      // Make the POST request using Fetch API
+      const response = await fetch(registrationEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+  
+      // Check if the response is successful
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Registration successful:', data);
+        window.href = "/index.html";
+      } else {
+        console.error('Registration failed:', response.status);
+      }
+    } catch (error) {
+      console.error('Error occurred during registration:', error);
+    }
+  }
 
 //Error Messages ------------------------------------
 
