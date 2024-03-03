@@ -41,7 +41,6 @@ const userUpdateEndpoint = `${backendURL}/users/update`;
 const userGetEndpoint =  `${backendURL}/users`;
 
 async function loginUser(email, password) {
-    console.log(loginEndpoint);
     try {
       const requestBody = {
         email: email,
