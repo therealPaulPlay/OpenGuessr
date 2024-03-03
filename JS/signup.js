@@ -22,16 +22,16 @@ loginSwitchBack.addEventListener("click", toggleForm);
 //Signup and login ----------------------------------------------------------------------------------------------------------
 
 let loginButtonSingupPage = document.getElementById("login"); 
-loginButtonSingupPage.addEventListener("click", login);
+loginButtonSingupPage.addEventListener("click", function() {loginUser(document.getElementById("login_email").value, document.getElementById("login_password").value)});
 
 let signupButtonSignupPage = document.getElementById("signup"); 
 signupButtonSignupPage.addEventListener("click", signup);
 
-const backendURL = "http://127.0.0.1:8080";
-const loginEndpoint = backendURL&"/api/users/login";
-const registrationEndpoint = backendURL&"/api/users/register"; 
-const userUpdateEndpoint = backendURL&"/api/users/update";
-const userGetEndpoint =  backendURL&"/api/users/";
+const backendURL = "http://127.0.0.1:8080/api";
+const loginEndpoint = backendURL&"/users/login";
+const registrationEndpoint = backendURL&"/users/register"; 
+const userUpdateEndpoint = backendURL&"/users/update";
+const userGetEndpoint =  backendURL&"/users/";
 
 async function loginUser(email, password) {
     try {
@@ -53,6 +53,7 @@ async function loginUser(email, password) {
       if (response.ok) {
         const data = await response.json();
         console.log('Login successful:', data);
+        window.href = "/index.html";
         //implement response save
       } else {
   
