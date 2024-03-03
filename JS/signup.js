@@ -21,8 +21,11 @@ loginSwitchBack.addEventListener("click", toggleForm);
 
 //Signup and login ----------------------------------------------------------------------------------------------------------
 
+let loginEmail = document.getElementById("login_email");
+let loginPassword = document.getElementById("login_password");
+
 let loginButtonSingupPage = document.getElementById("login"); 
-loginButtonSingupPage.addEventListener("click", function() {loginUser(document.getElementById("login_email").value, document.getElementById("login_password").value)});
+loginButtonSingupPage.addEventListener("click", function() {loginUser(loginEmail.value, loginPassword.value)});
 
 let signupButtonSignupPage = document.getElementById("signup"); 
 signupButtonSignupPage.addEventListener("click", signup);
