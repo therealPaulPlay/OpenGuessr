@@ -60,7 +60,7 @@ async function loginUser(email, password) {
       if (response.ok) {
         const data = await response.json();
         console.log('Login successful:', data);
-        window.href = "/index.html";
+        window.location.href = "/index.html";
         //implement response save
       } else {
   
