@@ -115,6 +115,11 @@
         z-index: -1; /* Ensure orbs are below other content */
     }
 
+    #errorMessage {
+        color: red;
+        display: none;
+    }
+
     @keyframes floatOrb {
     0% {
       transform: translateY(0) translateX(0);
@@ -202,6 +207,7 @@
             <button id="loginSwitchBack" class="secondaryButton">Login</button>
         </p>
     </div>
+    <p id="errorMessage"> This is an error message box. </p>
 </div>
 </body>
 <script>

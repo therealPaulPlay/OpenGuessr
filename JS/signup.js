@@ -38,3 +38,12 @@ function signup() {
     window.location.href = "/index.html";
     console.log("signed up");
 }
+
+//Error Messages ------------------------------------
+
+let errorMessage = document.getElementById("errorMessage");
+
+function displayError(error) {
+    errorMessage.innerHTML = error;
+    errorMessage.style.display = "inline";
+}
