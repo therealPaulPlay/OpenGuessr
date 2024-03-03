@@ -27,11 +27,41 @@ loginButtonSingupPage.addEventListener("click", login);
 let signupButtonSignupPage = document.getElementById("signup"); 
 signupButtonSignupPage.addEventListener("click", signup);
 
-function login() {
-    //login logic, if success, go back to main page
-    window.location.href = "/index.html";
-    console.log("logged in");
-}
+const backendURL = "http://127.0.0.1:8080";
+const loginEndpoint = backendURL&"/api/users/login";
+const registrationEndpoint = backendURL&"/api/users/register"; 
+const userUpdateEndpoint = backendURL&"/api/users/update";
+const userGetEndpoint =  backendURL&"/api/users/";
+
+async function loginUser(email, password) {
+    try {
+      const requestBody = {
+        email: email,
+        password: password
+      };
+  
+      // Make the POST request using Fetch API
+      const response = await fetch(loginEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestBody)
+      });
+  
+      // Check if the response is successful
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Login successful:', data);
+        //implement response save
+      } else {
+  
+        console.error('Login failed:', response.status);
+      }
+    } catch (error) {
+      console.error('Error occurred during login:', error);
+    }
+  }
 
 function signup() {
     //signup logic, if success, go back to main page
