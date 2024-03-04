@@ -2,6 +2,56 @@
 
 let isAuthenticated = false; //true if user is logged in 
 
+checkAuthenticationStatus();
+
+function checkAuthenticationStatus() {
+    let bearerToken = localStorage.getItem("bearer");
+    
+    if (bearerToken != null && bearerToken != "") {
+        if (isTokenExpired(bearerToken)) {
+            isAuthenticated = false;
+            console.log("User logged out due to token expiration.");
+        }
+        else {
+            isAuthenticated = true;
+        }
+    }
+    else {
+        isAuthenticated = false;
+    }
+
+    checkSigninStatusAndLoadUserInfo(); //set UI accordingly
+}
+
+
+/* this should decode the token and return expired (true/false) - only works if the token is not encrypted,
+otherwise we will need a jwt token verifier (with public key) */
+function isTokenExpired(token) {
+    const base64Url = token.split(".")[1];
+    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+    const jsonPayload = decodeURIComponent(
+      atob(base64)
+        .split("")
+        .map(function (c) {
+          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+        })
+        .join("")
+    );
+    
+    try {    
+    const { exp } = JSON.parse(jsonPayload);
+    const expired = Date.now() >= exp * 1000;
+    return expired;
+    }
+
+    catch {
+        console.error("Parsing the JWT token failed.");
+        expired = false;
+        return expired;
+    }
+
+  }
+
 //these are being accessed from index.html
 let loginButton = document.getElementById("loginButton");
 loginButton.addEventListener("click", goTologin);
@@ -10,7 +60,8 @@ let logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener("click", signout);
 
 function signout() {
-    //API call to log out user
+    localStorage.setItem("bearer", ""); //reset bearer token
+    window.location.reload(); //reload website, so that UI etc. will be reset and all the loaded values aren't still showing
 }
 
 function goTologin() {
@@ -34,6 +85,7 @@ logoutButton.style.display = "none";
 profileButton.style.display = "none";
 XParea.style.display = "none";
 
+//part of checkSigninStatusAndLoadUserInfo
 async function changeUItoSignedIn () {
     logoutButton.style.display = "inline-block";
     loginButton.style.display = "none";
@@ -55,8 +107,7 @@ function displayUserInfo () {
 
 let profileInfo = document.getElementById("profileInfo");
 
-checkSigninStatusAndLoadUserInfo(); //adjust the UI to the signin status and load user info on website load
-
+//adjust the UI to the signin status and load user info on website load
 async function checkSigninStatusAndLoadUserInfo () {
     if (isAuthenticated) {
         profileInfo.classList.remove("notSignedIn");
@@ -209,59 +260,3 @@ function updateUsername () {
         //TODO change username via API / Backend + fetch new username + then run displayUserInfo() to update in UI
     }
 }
-
-//The code below was an attempt to make setting user data work in the frontend
-
-/*
-let newUsername = "";
-let playerXP = 0.0;
-let bearerToken;
-
-
-function updateUsername() {
-  let requestUrl = `${logtoEndpoint}api/users/${userInfoJson["sub"]}`;
-  newUsername = document.getElementById("usernameInput").value;
-  toggleUsernameView();
-
-  bearerToken = logtoClient.getAccessToken();
-
-  if (newUsername != null) {
-    const options = {
-          method: 'PATCH',
-          crossDomain: true,
-          mode: 'cors',
-          headers: {
-              'Authorization': `Bearer ${bearerToken}`,
-              'Content-Type': 'application/json'
-          },
-          body: JSON.stringify({
-              "username": newUsername,
-              "customData": {
-                 "xp": playerXP
-              }
-          })
-    }
-
-    fetch(requestUrl, options)
-      .then(response => {
-        console.log(response);
-        if (!response.ok) {
-          errorPopup(
-            "Username change failed", 
-            "The username could not be changed due to an unknown error",
-            "401");
-        } else {
-          console.log(response);
-          return response.json();
-        }
-    })
-    .catch(error => {
-      console.log(error);
-      errorPopup(
-        "Username change failed", 
-        "The username could not be changed due to an unknown error",
-        error);
-    })
-  }
-} 
-*/

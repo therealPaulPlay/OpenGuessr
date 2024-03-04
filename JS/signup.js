@@ -67,9 +67,11 @@ async function loginUser(email, password) {
     } else {
 
       console.error('Login failed:', response.status);
+      displayError("Login failed: " + response.status);
     }
   } catch (error) {
     console.error('Error occurred during login:', error);
+    displayError("Error occured during login: " + error);
   }
 }
 
@@ -95,12 +97,14 @@ async function registerUser(userName, email, password) {
     if (response.ok) {
       const data = await response.json();
       console.log('Registration successful:', data);
-      window.href = "/index.html";
+      toggleForm(); //switch to login form after successful registration
     } else {
       console.error('Registration failed:', response.status);
+      displayError("Registration failed: " + response.status);
     }
   } catch (error) {
     console.error('Error occurred during registration:', error);
+    displayError("Error occured during registration: " + error);
   }
 }
 
@@ -110,7 +114,7 @@ async function getUser(id, bearer) {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        /* 'Authorization': `Bearer ${bearer}` */
+        'Authorization': `Bearer ${bearer}`
       },
     });
 
@@ -121,9 +125,11 @@ async function getUser(id, bearer) {
       saveUserData(data);
     } else {
       console.error('Fetch failed:', response.status);
+      displayError("Fetch failed:" + response.status);
     }
   } catch (error) {
     console.error('Error occurred while fetching the user:', error);
+    displayError("Error occured while fetching user: " + error)
   }
 }
 
@@ -133,6 +139,7 @@ function saveUserData(data) {
   localStorage.setItem("username", userData['userName']);
 }
 
+//executed after successful login
 async function saveBearerToken(data) {
   let bearerToken = data['access_token'];
   await getUser(9, bearerToken);
