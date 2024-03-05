@@ -1,6 +1,33 @@
-import {backendURL, loginEndpoint, registrationEndpoint, userUpdateEndpoint, userGetEndpoint} from "./signup.js";
+//import {backendURL, loginEndpoint, registrationEndpoint, userUpdateEndpoint, userGetEndpoint} from "./signup.js";
 
 let profileInfo = document.getElementById("profileInfo");
+
+let loginButton = document.getElementById("loginButton");
+loginButton.addEventListener("click", goTologin);
+
+let logoutButton = document.getElementById("logoutButton");
+logoutButton.addEventListener("click", signout);
+
+let profileButton = document.getElementById("profileButton");
+profileButton.addEventListener("click", viewProfile);
+
+let displayAccountName = document.getElementById("accountName");
+
+let XPbarNoAccount = document.getElementById("XPbarNoAccount");
+let XParea = document.getElementById("XParea");
+
+let profileClose = document.getElementById("profileClose");
+profileClose.addEventListener("click", closeProfile);
+
+let profileWindow = document.getElementById("profileWindow");
+
+document.getElementById("usernameInput").style.visibility = "hidden";
+document.getElementById("confirmUsername").style.visibility = "hidden";
+
+document.getElementById("editUsername").addEventListener("click", toggleUsernameView);
+document.getElementById("confirmUsername").addEventListener("click", updateUsername);
+
+let resultLevelText = document.getElementById("endScreenLevel");
 
 //Custom signup (WIP) -------------------------------------------------------------------------------------------------------------------
 
@@ -56,12 +83,7 @@ function isTokenExpired(token) {
 
   }
 
-//these are being accessed from index.html
-let loginButton = document.getElementById("loginButton");
-loginButton.addEventListener("click", goTologin);
-
-let logoutButton = document.getElementById("logoutButton");
-logoutButton.addEventListener("click", signout);
+//these are being accessed from index.htm
 
 function signout() {
     localStorage.setItem("bearer", ""); //reset bearer token
@@ -73,14 +95,6 @@ function goTologin() {
 }
 
 //Account UI (working) -------------------------------------------------------------------------------------------------------------
-
-let profileButton = document.getElementById("profileButton");
-profileButton.addEventListener("click", viewProfile);
-
-let displayAccountName = document.getElementById("accountName");
-
-let XPbarNoAccount = document.getElementById("XPbarNoAccount");
-let XParea = document.getElementById("XParea");
 
 let username = "Guest";
 
@@ -131,8 +145,6 @@ function enableExclusiveCategories() {
 }
 
 //XP bar loading function -------------------------------------------------------------------------------------------------
-
-let resultLevelText = document.getElementById("endScreenLevel");
 let requiredXP;
 
 function uiSetUserXP(xp) {
@@ -215,18 +227,6 @@ function setUserXP(xp) {
 
 
 //Profile Window ---------------------------------------------------------------------------------------------
-
-let profileClose = document.getElementById("profileClose");
-profileClose.addEventListener("click", closeProfile);
-
-let profileWindow = document.getElementById("profileWindow");
-
-
-document.getElementById("usernameInput").style.visibility = "hidden";
-document.getElementById("confirmUsername").style.visibility = "hidden";
-
-document.getElementById("editUsername").addEventListener("click", toggleUsernameView);
-document.getElementById("confirmUsername").addEventListener("click", updateUsername);
 
 function viewProfile () {
     profileWindow.style.display = "block";

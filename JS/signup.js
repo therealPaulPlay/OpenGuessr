@@ -1,3 +1,16 @@
+let loginSwitch = document.getElementById("loginSwitch");
+loginSwitch.addEventListener("click", toggleForm);
+
+let loginSwitchBack = document.getElementById("loginSwitchBack");
+loginSwitchBack.addEventListener("click", toggleForm);
+
+let loginEmail = document.getElementById("login_email");
+let loginPassword = document.getElementById("login_password");
+
+let signupEmail = document.getElementById("signup_email");
+let signupPassword = document.getElementById("signup_password");
+let signupUsername = document.getElementById("signup_username");
+
 //toggle between login and signup ---------------------------------------------------------------------------------------------
 function toggleForm() {
   let loginForm = document.getElementById("loginForm");
@@ -12,21 +25,8 @@ function toggleForm() {
   }
 }
 
-let loginSwitch = document.getElementById("loginSwitch");
-loginSwitch.addEventListener("click", toggleForm);
-
-let loginSwitchBack = document.getElementById("loginSwitchBack");
-loginSwitchBack.addEventListener("click", toggleForm);
-
 
 //Signup and login ----------------------------------------------------------------------------------------------------------
-
-let loginEmail = document.getElementById("login_email");
-let loginPassword = document.getElementById("login_password");
-
-let signupEmail = document.getElementById("signup_email");
-let signupPassword = document.getElementById("signup_password");
-let signupUsername = document.getElementById("signup_username");
 
 let loginButtonSignupPage = document.getElementById("login");
 loginButtonSignupPage.addEventListener("click", function() { loginUser(loginEmail.value, loginPassword.value) });
@@ -34,11 +34,11 @@ loginButtonSignupPage.addEventListener("click", function() { loginUser(loginEmai
 let signupButtonSignupPage = document.getElementById("signup");
 signupButtonSignupPage.addEventListener("click", function() { registerUser(signupUsername.value, signupEmail.value, signupPassword.value) });
 
-export const backendURL = "http://localhost:8080/api";
-export const loginEndpoint = `${backendURL}/users/login`;
-export const registrationEndpoint = `${backendURL}/users/register`;
-export const userUpdateEndpoint = `${backendURL}/users/update`;
-export const userGetEndpoint = `${backendURL}/users`;
+const backendURL = "http://localhost:8080/api";
+const loginEndpoint = `${backendURL}/users/login`;
+const registrationEndpoint = `${backendURL}/users/register`;
+const userUpdateEndpoint = `${backendURL}/users/update`;
+const userGetEndpoint = `${backendURL}/users`;
 
 async function loginUser(email, password) {
   try {
