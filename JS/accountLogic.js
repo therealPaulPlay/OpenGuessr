@@ -1,4 +1,5 @@
 //import {backendURL, loginEndpoint, registrationEndpoint, userUpdateEndpoint, userGetEndpoint} from "./signup.js";
+let profileName = document.getElementById("profileViewName");
 
 let profileInfo = document.getElementById("profileInfo");
 
@@ -21,6 +22,11 @@ profileClose.addEventListener("click", closeProfile);
 
 let profileWindow = document.getElementById("profileWindow");
 
+//default is not logged in, so these are all disabled
+logoutButton.style.display = "none";
+profileButton.style.display = "none";
+XParea.style.display = "none";
+
 document.getElementById("usernameInput").style.visibility = "hidden";
 document.getElementById("confirmUsername").style.visibility = "hidden";
 
@@ -36,229 +42,225 @@ let isAuthenticated = false; //true if user is logged in
 checkAuthenticationStatus();
 
 function checkAuthenticationStatus() {
-    let bearerToken = localStorage.getItem("bearer");
-    
-    if (bearerToken != null && bearerToken != "") {
-        if (isTokenExpired(bearerToken)) {
-            isAuthenticated = false;
-            console.log("User logged out due to token expiration.");
-        }
-        else {
-            isAuthenticated = true;
-        }
+  let bearerToken = localStorage.getItem("bearer");
+
+  if (bearerToken != null && bearerToken != "") {
+    if (isTokenExpired(bearerToken)) {
+      isAuthenticated = false;
+      console.log("User logged out due to token expiration.");
     }
     else {
-        isAuthenticated = false;
+      isAuthenticated = true;
     }
+  }
+  else {
+    isAuthenticated = false;
+  }
 
-    checkSigninStatusAndLoadUserInfo(); //set UI accordingly
+  checkSigninStatusAndLoadUserInfo(); //set UI accordingly
 }
 
 
 /* this should decode the token and return expired (true/false) - only works if the token is not encrypted,
 otherwise we will need a jwt token verifier (with public key) */
 function isTokenExpired(token) {
-    const base64Url = token.split(".")[1];
-    const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-    const jsonPayload = decodeURIComponent(
-      atob(base64)
-        .split("")
-        .map(function (c) {
-          return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-        })
-        .join("")
-    );
-    
-    try {    
+  const base64Url = token.split(".")[1];
+  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
+  const jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split("")
+      .map(function(c) {
+        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
+      })
+      .join("")
+  );
+
+  try {
     const { exp } = JSON.parse(jsonPayload);
     const expired = Date.now() >= exp * 1000;
     return expired;
-    }
-
-    catch {
-        console.error("Parsing the JWT token failed.");
-        expired = false;
-        return expired;
-    }
-
   }
+
+  catch {
+    console.error("Parsing the JWT token failed.");
+    expired = false;
+    return expired;
+  }
+
+}
 
 //these are being accessed from index.htm
 
 function signout() {
-    localStorage.setItem("bearer", ""); //reset bearer token
-    window.location.reload(); //reload website, so that UI etc. will be reset and all the loaded values aren't still showing
+  localStorage.setItem("bearer", ""); //reset bearer token
+  window.location.reload(); //reload website, so that UI etc. will be reset and all the loaded values aren't still showing
 }
 
 function goTologin() {
-    window.location.href = "/signup.html";
+  window.location.href = "/signup.html";
 }
 
 //Account UI (working) -------------------------------------------------------------------------------------------------------------
 
-let username = "Guest";
-
-//default is not logged in, so these are all disabled
-logoutButton.style.display = "none";
-profileButton.style.display = "none";
-XParea.style.display = "none";
-
 //part of checkSigninStatusAndLoadUserInfo
-async function changeUItoSignedIn () {
-    logoutButton.style.display = "inline-block";
-    loginButton.style.display = "none";
-    profileButton.style.display = "inline-block";
-    XPbarNoAccount.style.display = "none";
-    XParea.style.display = "flex";
-    enableExclusiveCategories();
-    //TODO get Account information here to display user info
-    displayUserInfo();
+async function changeUItoSignedIn() {
+  logoutButton.style.display = "inline-block";
+  loginButton.style.display = "none";
+  profileButton.style.display = "inline-block";
+  XPbarNoAccount.style.display = "none";
+  XParea.style.display = "flex";
+  enableExclusiveCategories();
+  //TODO get Account information here to display user info
+  displayUserInfo();
 }
 
-let profileName = document.getElementById("profileViewName");
+let username;
 
 //part of checkSigninStatusAndLoadUserInfo
-function displayUserInfo () {
-    displayAccountName.innerHTML = username;
-    profileName.innerHTML = username;
+function displayUserInfo() {
+  username = localStorage.getItem("username");
+  displayAccountName.innerHTML = username;
+  profileName.innerHTML = username;
 }
 
 //adjust the UI to the signin status and load user info on website load
-async function checkSigninStatusAndLoadUserInfo () {
-    if (isAuthenticated) {
-        profileInfo.classList.remove("notSignedIn");
-        changeUItoSignedIn();
-    }
-    else {
-        profileInfo.classList.add("notSignedIn");
-    }
+async function checkSigninStatusAndLoadUserInfo() {
+  if (isAuthenticated) {
+    profileInfo.classList.remove("notSignedIn");
+    changeUItoSignedIn();
+  }
+  else {
+    profileInfo.classList.add("notSignedIn");
+  }
 }
 
 function enableExclusiveCategories() {
-    let accountLocked = document.getElementsByClassName("accountLock");
-    let accountLockedArray = Array.from(accountLocked); // Convert to array
-    for (let i = 0; i < accountLockedArray.length; i++) {
-        accountLockedArray[i].classList.remove("accountLock");
-    }
+  let accountLocked = document.getElementsByClassName("accountLock");
+  let accountLockedArray = Array.from(accountLocked); // Convert to array
+  for (let i = 0; i < accountLockedArray.length; i++) {
+    accountLockedArray[i].classList.remove("accountLock");
+  }
 
-        document.getElementById("categoryExclusiveText").innerHTML = "You can now select these categories:";
+  document.getElementById("categoryExclusiveText").innerHTML = "You can now select these categories:";
 }
 
 //XP bar loading function -------------------------------------------------------------------------------------------------
 let requiredXP;
 
 function uiSetUserXP(xp) {
-    const baseXP = 5000;
-    const xpIncreaseRate = 1.1; // xp needed to level up increases per level
-    
-    // Calculate the level based on an exponential growth of required XP
-    let templevel = 1;
-    requiredXP = baseXP;
-    
-    while (xp >= requiredXP) {
-        xp -= requiredXP;
-        templevel++;
-        requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
-    }
-    
-    let levelXPbar = document.getElementById("progressBar");
-    let levelText = document.getElementById("levelText");
-    
-    // Update the UI with the calculated level and XP progress
-    levelText.innerHTML = "Level " + templevel;
-    resultLevelText.innerHTML = "Level " + templevel;
-    levelXPbar.style.width = (xp / requiredXP) * 100 + "%"; 
+  const baseXP = 5000;
+  const xpIncreaseRate = 1.1; // xp needed to level up increases per level
 
-    return (xp / requiredXP);
+  // Calculate the level based on an exponential growth of required XP
+  let templevel = 1;
+  requiredXP = baseXP;
+
+  while (xp >= requiredXP) {
+    xp -= requiredXP;
+    templevel++;
+    requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
+  }
+
+  let levelXPbar = document.getElementById("progressBar");
+  let levelText = document.getElementById("levelText");
+
+  // Update the UI with the calculated level and XP progress
+  levelText.innerHTML = "Level " + templevel;
+  resultLevelText.innerHTML = "Level " + templevel;
+  levelXPbar.style.width = (xp / requiredXP) * 100 + "%";
+
+  return (xp / requiredXP);
 }
 
 function willCauseLevelUpgrade(xp, newXP) {
-    const baseXP = 5000;
-    const xpIncreaseRate = 1.1;
-    
-    let templevel = 1;
-    requiredXP = baseXP;
-    
-    while (xp >= requiredXP) {
-        xp -= requiredXP;
-        templevel++;
-        requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
-    }
-    
-    return ((xp + newXP) / requiredXP);
+  const baseXP = 5000;
+  const xpIncreaseRate = 1.1;
+
+  let templevel = 1;
+  requiredXP = baseXP;
+
+  while (xp >= requiredXP) {
+    xp -= requiredXP;
+    templevel++;
+    requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
+  }
+
+  return ((xp + newXP) / requiredXP);
 }
 
 export async function loadResultScreenXP(distance) {
 
-    if (isAuthenticated) {
-        //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
-        let XPbarResource = document.getElementById("endScreenXPbarResource");
+  if (isAuthenticated) {
+    //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
+    let XPbarResource = document.getElementById("endScreenXPbarResource");
 
-        let currentXP = 15000; //TODO fetch user XP here! currentXP should be set to the user's XP
-        
-        let earnedXP = Math.round(5000 * ((0.998036) ** distance));
+    let currentXP = 15000; //TODO fetch user XP here! currentXP should be set to the user's XP
 
-        XPbarResource.classList.remove("XPbarAnimate");
+    let earnedXP = Math.round(5000 * ((0.998036) ** distance));
 
-        if ((willCauseLevelUpgrade(currentXP, earnedXP)) > 1) {
-            XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
-        }
-        else {
-            XPbarResource.style.width = uiSetUserXP(currentXP) * 100 + "%";
-        }
+    XPbarResource.classList.remove("XPbarAnimate");
 
-
-        setUserXP(currentXP + earnedXP); //save XP, this is the last step!
-        setTimeout(function () {
-            XPbarResource.classList.add("XPbarAnimate");
-            XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP) * 100 + "%";
-            resultLevelText.innerHTML = "+" + earnedXP + " XP / " + resultLevelText.innerHTML;
-        }, 10);
+    if ((willCauseLevelUpgrade(currentXP, earnedXP)) > 1) {
+      XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
     }
+    else {
+      XPbarResource.style.width = uiSetUserXP(currentXP) * 100 + "%";
+    }
+
+
+    setUserXP(currentXP + earnedXP); //save XP, this is the last step!
+    setTimeout(function() {
+      XPbarResource.classList.add("XPbarAnimate");
+      XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP) * 100 + "%";
+      resultLevelText.innerHTML = "+" + earnedXP + " XP / " + resultLevelText.innerHTML;
+    }, 10);
+  }
 }
 
 //TODO the actual XP number has to be retrieved from the user (and set by the backend)
 uiSetUserXP(15000);
 
 function setUserXP(xp) {
-    //TODO make API call to save XP to the users account's custom data (with backend)
-    console.log(xp);
+  //TODO make API call to save XP to the users account's custom data (with backend)
+  console.log(xp);
 }
 
 
 //Profile Window ---------------------------------------------------------------------------------------------
 
-function viewProfile () {
-    profileWindow.style.display = "block";
-    document.getElementById("blackBackground").style.visibility = "visible";
-    profileName.innerHTML =  username;
+function viewProfile() {
+  username = localStorage.getItem("username");
+  profileWindow.style.display = "block";
+  document.getElementById("blackBackground").style.visibility = "visible";
+  profileName.innerHTML = username;
 
 }
 
 function closeProfile() {
-    profileWindow.style.display = "none";
-    document.getElementById("blackBackground").style.visibility = "hidden";
+  profileWindow.style.display = "none";
+  document.getElementById("blackBackground").style.visibility = "hidden";
 }
 
 function toggleUsernameView() {
-    if (document.getElementById("usernameInput").style.visibility == "hidden") {
-        document.getElementById("usernameInput").style.visibility = "visible";
-        document.getElementById("confirmUsername").style.visibility = "visible";
-    }
-    else {
-        document.getElementById("usernameInput").style.visibility = "hidden";
-        document.getElementById("confirmUsername").style.visibility = "hidden";
-        document.getElementById("usernameInput").value = ""; 
-    }
+  if (document.getElementById("usernameInput").style.visibility == "hidden") {
+    document.getElementById("usernameInput").style.visibility = "visible";
+    document.getElementById("confirmUsername").style.visibility = "visible";
+  }
+  else {
+    document.getElementById("usernameInput").style.visibility = "hidden";
+    document.getElementById("confirmUsername").style.visibility = "hidden";
+    document.getElementById("usernameInput").value = "";
+  }
 }
 
 let newUsername;
 
-function updateUsername () {
-    newUsername = document.getElementById("usernameInput").value;
-    console.log("username change requested. New name: " + newUsername);
-    toggleUsernameView();
-    if (newUsername != "") {
-        //TODO change username via API / Backend + fetch new username + then run displayUserInfo() to update in UI
-    }
+function updateUsername() {
+  newUsername = document.getElementById("usernameInput").value;
+  console.log("username change requested. New name: " + newUsername);
+  toggleUsernameView();
+  if (newUsername != "") {
+    //TODO change username via API / Backend + fetch new username + then run displayUserInfo() to update in UI
+  }
 }
+
