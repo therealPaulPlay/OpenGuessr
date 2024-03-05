@@ -1,4 +1,5 @@
-//import {backendURL, loginEndpoint, registrationEndpoint, userUpdateEndpoint, userGetEndpoint} from "./signup.js";
+import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
+
 let profileName = document.getElementById("profileViewName");
 
 let profileInfo = document.getElementById("profileInfo");
@@ -31,7 +32,7 @@ document.getElementById("usernameInput").style.visibility = "hidden";
 document.getElementById("confirmUsername").style.visibility = "hidden";
 
 document.getElementById("editUsername").addEventListener("click", toggleUsernameView);
-document.getElementById("confirmUsername").addEventListener("click", updateUsername);
+document.getElementById("confirmUsername").addEventListener("click", updateProfileUsername);
 
 let resultLevelText = document.getElementById("endScreenLevel");
 
@@ -110,7 +111,6 @@ async function changeUItoSignedIn() {
   XPbarNoAccount.style.display = "none";
   XParea.style.display = "flex";
   enableExclusiveCategories();
-  //TODO get Account information here to display user info
   displayUserInfo();
 }
 
@@ -118,6 +118,7 @@ let username;
 
 //part of checkSigninStatusAndLoadUserInfo
 function displayUserInfo() {
+  uiSetUserXP(localStorage.getItem("experience"));
   username = localStorage.getItem("username");
   displayAccountName.innerHTML = username;
   profileName.innerHTML = username;
@@ -194,8 +195,7 @@ export async function loadResultScreenXP(distance) {
     //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
 
-    let currentXP = 15000; //TODO fetch user XP here! currentXP should be set to the user's XP
-
+    let currentXP = localStorage.getItem("experience");
     let earnedXP = Math.round(5000 * ((0.998036) ** distance));
 
     XPbarResource.classList.remove("XPbarAnimate");
@@ -217,12 +217,8 @@ export async function loadResultScreenXP(distance) {
   }
 }
 
-//TODO the actual XP number has to be retrieved from the user (and set by the backend)
-uiSetUserXP(15000);
-
 function setUserXP(xp) {
-  //TODO make API call to save XP to the users account's custom data (with backend)
-  console.log(xp);
+  updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp);
 }
 
 
@@ -255,12 +251,16 @@ function toggleUsernameView() {
 
 let newUsername;
 
-function updateUsername() {
+//TODO reload username in main.js
+
+async function updateProfileUsername() {
   newUsername = document.getElementById("usernameInput").value;
   console.log("username change requested. New name: " + newUsername);
   toggleUsernameView();
   if (newUsername != "") {
-    //TODO change username via API / Backend + fetch new username + then run displayUserInfo() to update in UI
+  await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername).then(() => {
+        profileName.innerHTML = localStorage.getItem("username");
+      });
   }
 }
 

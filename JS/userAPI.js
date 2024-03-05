@@ -97,6 +97,67 @@ export async function getUser(id, bearer, htmlElement) {
   }
 }
 
+export async function updateExperience(token, id, experience) {
+  try {
+    const requestBody = {
+      id: id,
+      experience: experience
+    };
+
+    // Make the PUT request using Fetch API
+    const response = await fetch(userUpdateEndpoint, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      console.log('User update successful:', data);
+    } else {
+      console.error('User update failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred during user update:', error);
+  }
+}
+
+export async function updateUsername(token, id, requestedUsername) {
+  try {
+
+    const requestBody = {
+      id: id,
+      userName: requestedUsername
+    }
+    
+    // Make the PUT request using Fetch API
+    const response = await fetch(userUpdateEndpoint, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem("username", data['user']['userName']);
+      console.log('User update successful:', data);
+    } else {
+      console.error('User update failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred during user update:', error);
+  }
+}
+
+
 //executed after successful login
 async function saveUserData(data) {
   localStorage.setItem("bearer", data['access_token']);
