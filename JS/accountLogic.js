@@ -1,3 +1,7 @@
+import {backendURL, loginEndpoint, registrationEndpoint, userUpdateEndpoint, userGetEndpoint} from "./signup.js";
+
+let profileInfo = document.getElementById("profileInfo");
+
 //Custom signup (WIP) -------------------------------------------------------------------------------------------------------------------
 
 let isAuthenticated = false; //true if user is logged in 
@@ -104,8 +108,6 @@ function displayUserInfo () {
     displayAccountName.innerHTML = username;
     profileName.innerHTML = username;
 }
-
-let profileInfo = document.getElementById("profileInfo");
 
 //adjust the UI to the signin status and load user info on website load
 async function checkSigninStatusAndLoadUserInfo () {

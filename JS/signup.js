@@ -34,11 +34,11 @@ loginButtonSignupPage.addEventListener("click", function() { loginUser(loginEmai
 let signupButtonSignupPage = document.getElementById("signup");
 signupButtonSignupPage.addEventListener("click", function() { registerUser(signupUsername.value, signupEmail.value, signupPassword.value) });
 
-const backendURL = "http://localhost:8080/api";
-const loginEndpoint = `${backendURL}/users/login`;
-const registrationEndpoint = `${backendURL}/users/register`;
-const userUpdateEndpoint = `${backendURL}/users/update`;
-const userGetEndpoint = `${backendURL}/users`;
+export const backendURL = "http://localhost:8080/api";
+export const loginEndpoint = `${backendURL}/users/login`;
+export const registrationEndpoint = `${backendURL}/users/register`;
+export const userUpdateEndpoint = `${backendURL}/users/update`;
+export const userGetEndpoint = `${backendURL}/users`;
 
 async function loginUser(email, password) {
   try {
