@@ -60,7 +60,7 @@ async function loginUser(email, password) {
     if (response.ok) {
       const data = await response.json();
       console.log('Login successful:', data);
-      await saveBearerToken(data);
+      await saveUserData(data);
 
       window.location.href = "/index.html";
       //implement response save
@@ -133,17 +133,12 @@ async function getUser(id, bearer) {
   }
 }
 
-function saveUserData(data) {
-  let userData = data['user'];
-  localStorage.setItem("exp", userData['experience']);
-  localStorage.setItem("username", userData['userName']);
-}
-
 //executed after successful login
-async function saveBearerToken(data) {
-  let bearerToken = data['access_token'];
-  await getUser(9, bearerToken);
-  localStorage.setItem("bearer", bearerToken);
+async function saveUserData(data) {
+  localStorage.setItem("bearer", data['access_token']);
+  localStorage.setItem("id", data['id']);
+  localStorage.setItem("username", data['username']);
+  localStorage.setItem("experience", data['experience']);
 }
 
 //Error Messages ------------------------------------
