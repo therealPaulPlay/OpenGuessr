@@ -86,6 +86,29 @@ export async function getUser(token, id) {
     if (response.ok) {
       const data = await response.json();
       console.log(data);
+      await saveUserData(data);
+    } else {
+      console.error('Fetch failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching the user:', error);
+  }
+}
+
+export async function updatePassword(token, id) {
+  try {
+    const response = await fetch(`${userGetEndpoint}/${id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      console.log(data);
       saveUserData(data);
     } else {
       console.error('Fetch failed:', response.status);
