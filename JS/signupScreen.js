@@ -4,6 +4,7 @@ import { loginUser, registerUser } from "./userAPI.js"
 function toggleForm() {
   let loginForm = document.getElementById("loginForm");
   let signupForm = document.getElementById("signupForm");
+  signupStage = 1;
 
   if (loginForm.style.display == "none") {
     loginForm.style.display = "block";
@@ -19,6 +20,21 @@ loginSwitch.addEventListener("click", toggleForm);
 
 let loginSwitchBack = document.getElementById("loginSwitchBack");
 loginSwitchBack.addEventListener("click", toggleForm);
+
+let signupStage = 1;
+
+setSignupStage();
+
+function setSignupStage() {
+  document.getElementById("signup").innerHTML = "Signup (" + signupStage + "/2)";
+  if (signupStage == 2){
+    document.getElementById("signup_area").style.display = "none";
+    document.getElementById("captcha").style.display = "block";
+} else {
+  document.getElementById("signup_area").style.display = "visible";
+  document.getElementById("captcha").style.display = "none";
+}
+}
 
 
 //Signup and login ----------------------------------------------------------------------------------------------------------
@@ -36,5 +52,12 @@ let loginButtonSignupPage = document.getElementById("login");
 loginButtonSignupPage.addEventListener("click", function() { loginUser(loginEmail.value, loginPassword.value, errorMessage) });
 
 let signupButtonSignupPage = document.getElementById("signup");
-signupButtonSignupPage.addEventListener("click", function() { registerUser(signupUsername.value, signupEmail.value, signupPassword.value, errorMessage) });
+signupButtonSignupPage.addEventListener("click", function() { 
+  if (signupStage == 2) {
+  registerUser(signupUsername.value, signupEmail.value, signupPassword.value, errorMessage) }
+  else {
+    signupStage = 2;
+    setSignupStage();
+  }
+  });
 

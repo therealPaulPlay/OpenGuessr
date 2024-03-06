@@ -116,6 +116,26 @@
         z-index: -1; /* Ensure orbs are below other content */
     }
 
+    #captchaQuestion {
+        color: black;
+        background-color: rgba(255, 255, 255, 0.8);
+
+    }
+
+    #captchaHeader {
+        padding: 10px;
+        padding-bottom: 15px;
+        margin: 0;
+        margin-bottom: 30px;
+        text-wrap: wrap;
+        font-size: 24px;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-radius: 5px;
+        color: rgba(42, 44, 71, 1);
+        margin-left: 34px;
+        margin-right: 34px;
+    }
+
     #errorMessage {
         color: red;
         display: none;
@@ -199,10 +219,16 @@
         <h3 id="title">Sign up</h3>
         </div>
         <div>
+            <div id="signup_area">
             <input id="signup_username" type="text" placeholder="Username" required><br><br>
             <input id="signup_email" type="email" placeholder="Email" required><br><br>
             <input id="signup_password" type="password" placeholder="Password" required><br><br>
-            <button id="signup" class="primaryButton">Sign Up</button>
+            </div>
+            <div id="captcha">
+            <h2 id="captchaHeader">Captcha: How many people live on Mars?</h2>
+            <input id="captchaQuestion" type="text" placeholder="think of the answer..." required><br><br>
+            </div>
+            <button id="signup" class="primaryButton">Sign Up (1/2)</button>
         </div>
         <p>Already have an account?  
             <button id="loginSwitchBack" class="secondaryButton">Login</button>
