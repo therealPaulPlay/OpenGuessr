@@ -85,8 +85,7 @@ export async function getUser(token, id) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
-      await saveUserData(data);
+      await saveUserData(data['user']);
     } else {
       console.error('Fetch failed:', response.status);
     }
@@ -108,7 +107,6 @@ export async function updatePassword(token, id) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      console.log(data);
       saveUserData(data);
     } else {
       console.error('Fetch failed:', response.status);
@@ -124,7 +122,6 @@ export async function updateExperience(token, id, experience) {
       id: id,
       experience: experience
     };
-
     // Make the PUT request using Fetch API
     const response = await fetch(userUpdateEndpoint, {
       method: 'PUT',
@@ -134,10 +131,11 @@ export async function updateExperience(token, id, experience) {
       },
       body: JSON.stringify(requestBody)
     });
-
+    
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
+      localStorage.setItem("experience", data['user']['experience']);
       console.log('User update successful:', data);
     } else {
       console.error('User update failed:', response.status);
@@ -154,7 +152,7 @@ export async function updateUsername(token, id, requestedUsername) {
       id: id,
       userName: requestedUsername
     }
-    
+
     // Make the PUT request using Fetch API
     const response = await fetch(userUpdateEndpoint, {
       method: 'PUT',
@@ -181,16 +179,18 @@ export async function updateUsername(token, id, requestedUsername) {
 
 //executed after successful login
 async function saveUserData(data) {
-  localStorage.setItem("bearer", data['access_token']);
-  localStorage.setItem("id", data['id']);
-  localStorage.setItem("username", data['username']);
+  if (data['access_token'] && data['id']) {
+    localStorage.setItem("bearer", data['access_token']);
+    localStorage.setItem("id", data['id']);
+  } 
+  localStorage.setItem("username", data['userName']);
   localStorage.setItem("experience", data['experience']);
 }
 
 export function displayError(error, htmlElement) {
   if (htmlElement != null) {
-  htmlElement.innerHTML = error;
-  htmlElement.style.display = "inline";
+    htmlElement.innerHTML = error;
+    htmlElement.style.display = "inline";
   } else {
     //error will be displayed anyway - see functions above
     console.log("No element for displaying the error passed as an argument.");
