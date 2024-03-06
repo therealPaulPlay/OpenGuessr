@@ -167,6 +167,11 @@ async function saveUserData(data) {
 }
 
 export function displayError(error, htmlElement) {
+  if (htmlElement != null) {
   htmlElement.innerHTML = error;
   htmlElement.style.display = "inline";
+  } else {
+    console.log("No element for displaying the error passed as an argument.");
+    console.error(error);
+  }
 }
