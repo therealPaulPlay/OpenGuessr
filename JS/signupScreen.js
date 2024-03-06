@@ -1,4 +1,4 @@
-import { loginUser, registerUser } from "./userAPI.js"
+import { displayError, loginUser, registerUser } from "./userAPI.js"
 
 //toggle between login and signup ---------------------------------------------------------------------------------------------
 function toggleForm() {
@@ -21,6 +21,11 @@ loginSwitch.addEventListener("click", toggleForm);
 let loginSwitchBack = document.getElementById("loginSwitchBack");
 loginSwitchBack.addEventListener("click", toggleForm);
 
+document.getElementById("back").addEventListener("click", function() {
+  signupStage = 1;
+  setSignupStage();
+})
+
 let signupStage = 1;
 
 setSignupStage();
@@ -30,10 +35,48 @@ function setSignupStage() {
   if (signupStage == 2){
     document.getElementById("signup_area").style.display = "none";
     document.getElementById("captcha").style.display = "block";
+    document.getElementById("back").style.display = "inline";
+    randomQuestion();
 } else {
-  document.getElementById("signup_area").style.display = "visible";
+  document.getElementById("signup_area").style.display = "block";
   document.getElementById("captcha").style.display = "none";
+  document.getElementById("back").style.display = "none";
 }
+}
+
+function checkEmptyFields(isSignup) {
+  if (isSignup) {
+  if (document.getElementById("signup_username").value != "" && document.getElementById("signup_email").value != "" && document.getElementById("signup_password").value != "" ) {
+    return true; 
+  } else {displayError("Please fill out all fields.", errorMessage); return false;}
+} else {
+  if (document.getElementById("login_email").value != "" && document.getElementById("login_password").value != "") {
+    return true; 
+  } else {displayError("Please fill out all fields.", errorMessage); return false;}
+}
+}
+
+let questions = [["How many people live on Mars?", "0"], ["How many people live on earth (in Billion)?", "8"], 
+["How many legs does a typical dog have?", "4"], ["How many sides does a square have?", "4"], ["How many days make up one week?", "7"], ["How many poles does Earth have?", "2"],
+["How many hemispheres does Earth have?", "2"], ["How many moons does Earth have? ", "1"], ["How many years make up half a decade?", "5"],
+["How many sides does a hexagon have?", "6"]];
+
+let randomQuestionIndex;
+
+function randomQuestion() {
+  randomQuestionIndex = Math.floor(Math.random() * 10);
+  document.getElementById("captchaHeader").innerHTML = questions[randomQuestionIndex][0];
+  
+}
+
+function validateQuestion() {
+  if (document.getElementById("captchaQuestion").value == questions[randomQuestionIndex][1]) {
+  return true;
+  } else {
+    displayError("Answer incorrect :( Try again.", errorMessage);
+    randomQuestion();
+    return false;
+  }
 }
 
 
@@ -49,15 +92,20 @@ let signupUsername = document.getElementById("signup_username");
 let errorMessage = document.getElementById("errorMessage");
 
 let loginButtonSignupPage = document.getElementById("login");
-loginButtonSignupPage.addEventListener("click", function() { loginUser(loginEmail.value, loginPassword.value, errorMessage) });
+loginButtonSignupPage.addEventListener("click", function() { 
+  if (checkEmptyFields(false)) {
+  loginUser(loginEmail.value, loginPassword.value, errorMessage)
+}});
 
 let signupButtonSignupPage = document.getElementById("signup");
 signupButtonSignupPage.addEventListener("click", function() { 
-  if (signupStage == 2) {
+  if (signupStage == 2 && validateQuestion()) {
   registerUser(signupUsername.value, signupEmail.value, signupPassword.value, errorMessage) }
   else {
+    if (checkEmptyFields(true)) {
     signupStage = 2;
     setSignupStage();
+    }
   }
   });
 
