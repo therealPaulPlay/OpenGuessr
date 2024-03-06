@@ -346,6 +346,30 @@ html * {
   width: 18em;
 }
 
+#innerMainDiv {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+}
+
+#ad {
+  height: 10%;
+  max-height: 200px;
+  min-height: 100px;
+  margin-top: auto;
+  margin-right: auto;
+  margin-left: auto;
+  width: 98.5%;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  z-index: 2;
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
 /* Main content */
 
 #GuesserWindow {
@@ -362,26 +386,25 @@ html * {
   width: 100%;
   height: 100%;
   border: none;
+  z-index: 0;
 }
 
 #TransparentHeader {
-  visibility: hidden;
+  display: none;
 }
 
 #map {
   opacity: 75%;
   cursor: crosshair;
   transition: all 250ms ease;
-  bottom: 0;
-  right: 0;
   margin-right: 10px;
-  margin-bottom: 75px;
+  margin-bottom: 20px;
+  margin-top: auto;
   width: 30%;
   height: 30%;
   z-index: 10;
   border-radius: 10px;
   box-shadow: 0 2px 8px #05060ab0;
-  position: absolute;
   background: #bfd4da;
 }
 
@@ -390,10 +413,16 @@ html * {
   opacity: 100%;
 }
 
+.MainDiv {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end; 
+  justify-content: center;
+}
+
 .BottomBar {
-  position: absolute;
   z-index: 10;
-  bottom: 0;
   width: 100%;
   display: flex;
   align-items: center;
@@ -544,9 +573,7 @@ html * {
 }
 
 #endBottomBar {
-  position: absolute;
   width: 100%;
-  bottom: 0;
   display: flex;
   justify-content: center;
   align-items: center;
