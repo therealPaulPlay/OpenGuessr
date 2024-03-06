@@ -48,7 +48,6 @@ function checkAuthenticationStatus() {
   if (bearerToken != null && bearerToken != "") {
     if (isTokenExpired(bearerToken)) {
       isAuthenticated = false;
-      console.log("User logged out due to token expiration.");
     }
     else {
       isAuthenticated = true;
@@ -57,7 +56,6 @@ function checkAuthenticationStatus() {
   else {
     isAuthenticated = false;
   }
-
   checkSigninStatusAndLoadUserInfo(); //set UI accordingly
 }
 
@@ -83,7 +81,6 @@ function isTokenExpired(token) {
   }
 
   catch {
-    console.error("Parsing the JWT token failed.");
     expired = false;
     return expired;
   }
@@ -199,7 +196,7 @@ export async function loadResultScreenXP(distance) {
     //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
 
-    let currentXP = localStorage.getItem("experience");
+    let currentXP = Number(localStorage.getItem("experience"));
     let earnedXP = Math.round(5000 * ((0.998036) ** distance));
 
     XPbarResource.classList.remove("XPbarAnimate");
@@ -257,7 +254,6 @@ let newUsername;
 
 async function updateProfileUsername() {
   newUsername = document.getElementById("usernameInput").value;
-  console.log("username change requested. New name: " + newUsername);
   toggleUsernameView();
   if (newUsername != "") {
   await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername).then(() => {
