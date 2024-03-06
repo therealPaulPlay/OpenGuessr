@@ -21,6 +21,7 @@ loginSwitch.addEventListener("click", toggleForm);
 let loginSwitchBack = document.getElementById("loginSwitchBack");
 loginSwitchBack.addEventListener("click", toggleForm);
 
+//back button on signup screen (return to form from captcha)
 document.getElementById("back").addEventListener("click", function() {
   signupStage = 1;
   setSignupStage();
@@ -30,29 +31,38 @@ let signupStage = 1;
 
 setSignupStage();
 
+//switch between captcha and form
 function setSignupStage() {
   document.getElementById("signup").innerHTML = "Signup (" + signupStage + "/2)";
   if (signupStage == 2){
     document.getElementById("signup_area").style.display = "none";
     document.getElementById("captcha").style.display = "block";
     document.getElementById("back").style.display = "inline";
+    document.getElementById("title2").innerHTML = "Captcha";
     randomQuestion();
 } else {
   document.getElementById("signup_area").style.display = "block";
   document.getElementById("captcha").style.display = "none";
   document.getElementById("back").style.display = "none";
+  document.getElementById("title2").innerHTML = "Signup";
 }
 }
 
+function validateEmail(email) {
+  var re = /\S+@\S+\.\S+/;
+  return re.test(email);
+}
+
+//check fields + validate email address structure
 function checkEmptyFields(isSignup) {
   if (isSignup) {
-  if (document.getElementById("signup_username").value != "" && document.getElementById("signup_email").value != "" && document.getElementById("signup_password").value != "" ) {
+  if (document.getElementById("signup_username").value != "" && document.getElementById("signup_password").value != "" && validateEmail(document.getElementById("signup_email").value)) {
     return true; 
-  } else {displayError("Please fill out all fields.", errorMessage); return false;}
+  } else {displayError("Please check our input.", errorMessage); return false;}
 } else {
-  if (document.getElementById("login_email").value != "" && document.getElementById("login_password").value != "") {
+  if (validateEmail(document.getElementById("login_email").value) && document.getElementById("login_password").value != "") {
     return true; 
-  } else {displayError("Please fill out all fields.", errorMessage); return false;}
+  } else {displayError("Please check your input.", errorMessage); return false;}
 }
 }
 
@@ -69,6 +79,7 @@ function randomQuestion() {
   
 }
 
+//validate answer to captcha question
 function validateQuestion() {
   if (document.getElementById("captchaQuestion").value == questions[randomQuestionIndex][1]) {
   return true;
