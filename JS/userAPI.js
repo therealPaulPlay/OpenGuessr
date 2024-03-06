@@ -72,13 +72,13 @@ export async function registerUser(userName, email, password, htmlElement) {
   }
 }
 
-export async function getUser(id, bearer, htmlElement) {
+export async function getUser(token, id) {
   try {
     const response = await fetch(`${userGetEndpoint}/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${bearer}`
+        'Authorization': `Bearer ${token}`
       },
     });
 
@@ -89,11 +89,9 @@ export async function getUser(id, bearer, htmlElement) {
       saveUserData(data);
     } else {
       console.error('Fetch failed:', response.status);
-      displayError("Fetch failed:" + response.status, htmlElement);
     }
   } catch (error) {
     console.error('Error occurred while fetching the user:', error);
-    displayError("Error occured while fetching user: " + error, htmlElement);
   }
 }
 
@@ -171,7 +169,7 @@ export function displayError(error, htmlElement) {
   htmlElement.innerHTML = error;
   htmlElement.style.display = "inline";
   } else {
+    //error will be displayed anyway - see functions above
     console.log("No element for displaying the error passed as an argument.");
-    console.error(error);
   }
 }

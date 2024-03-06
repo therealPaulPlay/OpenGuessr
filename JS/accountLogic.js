@@ -128,6 +128,10 @@ function displayUserInfo() {
 async function checkSigninStatusAndLoadUserInfo() {
   if (isAuthenticated) {
     profileInfo.classList.remove("notSignedIn");
+    //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
+    await getUser(localStorage.getItem("bearer"), localStorage.getItem("id")).then(() => {
+          displayUserInfo();
+        });
     changeUItoSignedIn();
   }
   else {
@@ -251,15 +255,14 @@ function toggleUsernameView() {
 
 let newUsername;
 
-//TODO reload username in main.js
-
 async function updateProfileUsername() {
   newUsername = document.getElementById("usernameInput").value;
   console.log("username change requested. New name: " + newUsername);
   toggleUsernameView();
   if (newUsername != "") {
   await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername).then(() => {
-        profileName.innerHTML = localStorage.getItem("username");
+    //updateUsername saves the new name in localstorage
+        displayUserInfo();
       });
   }
 }
