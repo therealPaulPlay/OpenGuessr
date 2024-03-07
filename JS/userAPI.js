@@ -1,4 +1,4 @@
-export const backendURL = "http://localhost:8080/api";
+export const backendURL = "http://62.171.134.159:8080/api";
 export const loginEndpoint = `${backendURL}/users/login`;
 export const registrationEndpoint = `${backendURL}/users/register`;
 export const userUpdateEndpoint = `${backendURL}/users/update`;
