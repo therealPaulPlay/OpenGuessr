@@ -364,22 +364,6 @@ html * {
   flex-direction: column;
 }
 
-#ad {
-  height: 10%;
-  max-height: 200px;
-  min-height: 100px;
-  margin-top: auto;
-  margin-right: auto;
-  margin-left: auto;
-  width: 98.5%;
-  border-radius: 5px;
-  margin-bottom: 15px;
-  z-index: 2;
-  background-color: rgba(255, 255, 255, 0.3);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-}
-
 /* Main content */
 
 #GuesserWindow {
@@ -413,6 +397,7 @@ html * {
   width: 30%;
   height: 30%;
   z-index: 10;
+  opacity: 95%;
   border-radius: 10px;
   background: #bfd4da;
   box-shadow: 0 2px 20px rgba(71, 71, 71, 0.5);
@@ -448,6 +433,14 @@ html * {
   -webkit-backdrop-filter: blur(10px);
 }
 
+#adBar {
+  flex-grow: 1;
+  text-align: center;
+  height: 90%;
+  margin-right: 15px;
+  margin-left: 5px;
+  border: dashed rgba(255, 255, 255, 0.5);
+}
 /* Buttons */
 
 #resetButtonSVG {
@@ -472,6 +465,7 @@ html * {
   padding-right: 10px;
   margin-right: 10px;
   margin-left: 10px;
+  z-index: 11;
   color: white;
 }
 
@@ -815,9 +809,6 @@ button {
     width: 60%;
     height: 65%;
   }
-  #ad {
-    display: none;
-  }
 }
 
 /* phones in landscape, Tablets / Ipads */
@@ -825,10 +816,7 @@ button {
   #map {
     width: 40%;
     height: 50%;
-  }
-
-  #ad {
-    display: none;
+    opacity: 80%;
   }
 }
 
@@ -854,15 +842,15 @@ all and (max-width: 1250px) {
     right: 0;
   }
 
+  #map {
+  opacity: 80%;
+  }
+
   .accountBar {
     margin-top: 85px;
     left: 165px;
     border-bottom-left-radius: 0px;
     border-top-left-radius: 0px;
-  }
-
-  #ad {
-    display: block;
   }
 }
 
