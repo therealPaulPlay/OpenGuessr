@@ -422,16 +422,20 @@ html * {
 }
 
 .BottomBar {
-  z-index: 10;
-  width: 100%;
+  height: 10%;
   display: flex;
   align-items: center;
-}
-
-.BottomBar p {
-  text-align: center;
-  font-size: 14pt;
-  color: #EEE;
+  justify-content: left;
+  margin: auto;
+  max-height: 200px;
+  min-height: 100px;
+  width: 98.5%;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 /* Buttons */
@@ -439,56 +443,46 @@ html * {
 #resetButtonSVG {
   cursor: pointer;
   transition: all 250ms ease;
-  margin-left: 22px;
-  margin-bottom: 15px;
+  background-color: var(--brand-color);
   width: 50px;
-  border-radius: 50%;
-  box-shadow: 0 2px 8px #05060ab0;
+  margin-left: 15px;
   z-index: 11;
 }
 
-#resetButtonSVG:hover {
-  filter: brightness(70%);
-  transition: all 250ms;
-}
-
-.roundButtons {
+.BottomBarItem {
   cursor: pointer;
-  transition: all 250ms;
-  position: absolute;
+  transition: all 250ms ease;
+  border-radius: 5px;
   font-size: 30px;
+  height: 65%;
+  user-select: none;
+  -webkit-user-select: none;
+  padding-left: 10px;
+  padding-right: 10px;
   margin-right: 10px;
-  z-index: 11;
-  margin-bottom: 15px;
-  padding-top: 5px;
-  padding-bottom: 5px;
-  border-radius: 25px;
-  box-shadow: 0 2px 8px #05060ab0;
+  margin-left: 10px;
   color: white;
 }
 
-.roundButtons:hover {
+.BottomBarItem:hover {
   filter: brightness(70%);
   transition: all 250ms;
 }
 
 #confirmButton {
-  width: 30%;
-  right: 0;
+  width: 15%;
+  margin-right: 15px;
+  margin-left: auto;
   background-color: var(--brand-color);
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.8);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
 }
 
 #privacyButton {
-  left: 100px;
   width: fit-content;
   background-color: #282828;
   padding-left: 25px;
   padding-right: 25px;
+  font-size: 20px;
   opacity: 70%;
-  font-size: 18px;
 }
 
 #cookieBanner {
@@ -802,6 +796,9 @@ button {
     width: 60%;
     height: 65%;
   }
+  #ad {
+    display: none;
+  }
 }
 
 /* phones in landscape, Tablets / Ipads */
@@ -813,6 +810,10 @@ button {
 
   #confirmButton {
     width: 40%;
+  }
+
+  #ad {
+    display: none;
   }
 }
 
@@ -844,6 +845,10 @@ all and (max-width: 1250px) {
     border-bottom-left-radius: 0px;
     border-top-left-radius: 0px;
   }
+
+  #ad {
+    display: block;
+  }
 }
 
 /* Small phones, mobile */
@@ -859,6 +864,10 @@ all and (max-width: 1000px) {
 
   .floatingButton {
     visibility: hidden;
+  }
+
+  #ad {
+    display: block;
   }
 }
 
