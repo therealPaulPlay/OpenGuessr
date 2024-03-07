@@ -224,7 +224,6 @@ export function setMapToTargetPosition(playersLat, playersLong) {
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15);
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'https://www.openstreetmap.org/copyright'
 }).addTo(resMap);
 
 const redIcon = new L.Icon({
@@ -288,9 +287,6 @@ function enableResultScreen(resultString, extraMessage) {
     document.getElementById("EndOverlay").style.opacity = "100%";
     document.getElementById("EndOverlay").style.visibility = "visible";
 
-    document.getElementById("BottomBar").style.visibility = "hidden";
-    document.getElementById("map").style.visibility = "hidden";
-
     document.getElementById("logo").style.pointerEvents = "none";
 
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
@@ -300,9 +296,6 @@ function enableResultScreen(resultString, extraMessage) {
 function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
     setTimeout(function() {document.getElementById("EndOverlay").style.visibility = "hidden"}, 200)
-
-    document.getElementById("BottomBar").style.visibility = "visible";
-    document.getElementById("map").style.visibility = "visible";
     document.getElementById("logo").style.pointerEvents = "auto";
 }
 

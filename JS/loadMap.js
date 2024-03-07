@@ -8,7 +8,7 @@ const Provider = {
 }
 
 //initializes map (check out leaflet for more information)
-let map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
+let map = L.map('map', {zoomControl: false}).setView([40.321160, 10.252812], 1.5); //starting position
 
 let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"]
 
@@ -90,7 +90,7 @@ let osmLayer;
 function loadMap() {
   osmLayer = L.tileLayer(mapProvider[providerIndex], {
       attribution: 'https://www.openstreetmap.org/copyright',
-      noWrap: true
+      noWrap: true,
   }).addTo(map);
 }
 

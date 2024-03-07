@@ -63,7 +63,7 @@ html * {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(59, 60, 92, 0.5);
+  background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
@@ -88,6 +88,16 @@ html * {
   flex-direction: row;
   align-items: center;
   justify-content: center;
+}
+
+#bottomShadow {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  z-index: 3;
+  height: 200px;
+  background-image: linear-gradient(0.50turn, transparent, rgb(255, 255, 255));
+  opacity: 30%;
 }
 
 .profile {
@@ -394,7 +404,6 @@ html * {
 }
 
 #map {
-  opacity: 95%;
   cursor: crosshair;
   transition: all 250ms ease;
   margin-left: 0.75%;
@@ -434,7 +443,7 @@ html * {
   border-radius: 10px;
   margin-bottom: 10px;
   z-index: 10;
-  background-color: rgba(7, 12, 21, 0.4);
+  background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -468,7 +477,7 @@ html * {
 
 .BottomBarItem:hover {
   filter: brightness(70%);
-  transition: all 250ms;
+  transition: filter 250ms;
 }
 
 #confirmButton {
@@ -482,7 +491,7 @@ html * {
 
 #privacyButton {
   width: fit-content;
-  background-color: rgba(119, 119, 124, 0.3);
+  background-color: rgba(168, 168, 187, 0.3);
   padding-left: 25px;
   padding-right: 25px;
   font-size: 20px;
@@ -553,7 +562,7 @@ html * {
   font-size: 40pt;
   visibility: hidden;
   opacity: 0;
-  transition: all 500ms;
+  transition: all 500ms ease;
   background-color: #232535f8;
   position: absolute;
   width: 100%;
@@ -572,13 +581,18 @@ html * {
 }
 
 #endBottomBar {
-  width: 100%;
+  position: sticky;
+  bottom: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   height: fit-content;
   z-index: 12;
-  background-color: rgba(42, 44, 71, 0.8);
+  width: 98.5%;
+  border-radius: 10px;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -621,6 +635,7 @@ html * {
   background-color: white;
   border-radius: 5px;
   margin: 20px 20px;
+  margin-bottom: 19px;
   position: absolute;
   bottom: 5px;
   right: 5px;
