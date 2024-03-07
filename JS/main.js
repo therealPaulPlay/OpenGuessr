@@ -301,7 +301,7 @@ function disableResultScreen() {
 
 function reloadIframe(notInitialLoad) {
     let loadingLink;
-    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+currentGuessLAT+","+currentGuessLONG+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0"; //API key (last part of URL) is only valid for the embed API and only for the openguessr & locahost:3000 domains.
+    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+currentGuessLAT+","+currentGuessLONG+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0&fov=90"; //API key (last part of URL) is only valid for the embed API and only for the openguessr & locahost:3000 domains.
     
     if (!notInitialLoad) {
          //if it is the inital load - reloads the iFrame and sets the position of the camera back to it's origin.
