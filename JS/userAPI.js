@@ -61,7 +61,7 @@ export async function registerUser(userName, email, password, htmlElement) {
     if (response.ok) {
       const data = await response.json();
       console.log('Registration successful:', data);
-      toggleForm(); //switch to login form after successful registration
+      window.location.reload();
     } else {
       console.error('Registration failed:', response.status);
       displayError("Registration failed: " + response.status, htmlElement);
