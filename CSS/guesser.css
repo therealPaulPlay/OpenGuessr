@@ -63,10 +63,9 @@ html * {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
-  background-color: rgba(50, 52, 92, 0.5);
+  background-color: rgba(7, 12, 21, 0.3);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 2px 5px rgba(5, 6, 10, 0.7);
   border-radius: 10px;
   padding-left: 2px;
   margin-top: 15px;
@@ -80,7 +79,7 @@ html * {
 }
 
 .loginArea {
-  background-color: rgba(35, 36, 65, 0.65);
+  background-color: rgba(7, 12, 21, 0.35);
   border-radius: 9px;
   padding: 3px;
   margin-right: 5px;
@@ -303,7 +302,7 @@ html * {
   width: auto;
   min-width: 15rem;
   max-width: 25rem;
-  background-color: rgba(50, 52, 92, 0.8);
+  background-color: rgba(42, 44, 71, 0.9);
   border-radius: 0 0 10px 10px;
   box-shadow: 0 2px 5px #05060ab0;
   backdrop-filter: blur(10px);
@@ -394,17 +393,16 @@ html * {
 }
 
 #map {
-  opacity: 75%;
+  opacity: 95%;
   cursor: crosshair;
   transition: all 250ms ease;
-  margin-right: 10px;
-  margin-bottom: 20px;
+  margin-right: 12px;
+  margin-bottom: 10px;
   margin-top: auto;
-  width: 30%;
+  width: 25%;
   height: 30%;
   z-index: 10;
   border-radius: 10px;
-  box-shadow: 0 2px 8px #05060ab0;
   background: #bfd4da;
 }
 
@@ -430,10 +428,10 @@ html * {
   max-height: 200px;
   min-height: 100px;
   width: 98.5%;
-  border-radius: 5px;
+  border-radius: 10px;
   margin-bottom: 10px;
   z-index: 10;
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(7, 12, 21, 0.3);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -445,7 +443,7 @@ html * {
   transition: all 250ms ease;
   background-color: var(--brand-color);
   width: 50px;
-  margin-left: 15px;
+  margin-left: 17.5px;
   z-index: 11;
 }
 
@@ -470,19 +468,21 @@ html * {
 }
 
 #confirmButton {
-  width: 15%;
-  margin-right: 15px;
+  width: fit-content;
+  padding-left: 30px;
+  padding-right: 30px;
+  margin-right: 17.5px;
   margin-left: auto;
   background-color: var(--brand-color);
 }
 
 #privacyButton {
   width: fit-content;
-  background-color: #282828;
+  background-color: rgb(30, 31, 45);
   padding-left: 25px;
   padding-right: 25px;
   font-size: 20px;
-  opacity: 70%;
+  opacity: 50%;
 }
 
 #cookieBanner {
@@ -692,7 +692,7 @@ html * {
   user-select: none;
   -webkit-user-select: none;
   color: white;
-  background-color: rgba(50, 52, 92, 0.8);
+  background-color: rgba(61, 62, 100, 0.9);
   box-shadow: 0 2px 5px #05060ab0;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -808,10 +808,6 @@ button {
     height: 50%;
   }
 
-  #confirmButton {
-    width: 40%;
-  }
-
   #ad {
     display: none;
   }
@@ -877,10 +873,6 @@ all and (max-width: 1000px) {
   #map {
     width: 95%;
     height: 30%;
-  }
-
-  .BottomBar {
-    background-image: linear-gradient(transparent, rgba(153, 153, 153, 0.965) 60%);
   }
 
 }
