@@ -439,7 +439,7 @@ html * {
   height: 90%;
   margin-right: 15px;
   margin-left: 5px;
-  border: dashed rgba(255, 255, 255, 0.5);
+  /*border: dashed rgba(255, 255, 255, 0.5);*/
 }
 /* Buttons */
 
