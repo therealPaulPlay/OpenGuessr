@@ -440,6 +440,7 @@ function enableClickListeners(){
     privacyButton.addEventListener("click", goToLegal);
 }
 
-//close error popup
+/*close error popup - this needs to be here because in errorHandling.js it causes errors as functions from that script
+are being used on the signup screen*/
 let closeButton = document.getElementById("popupClose");
 closeButton.addEventListener("click", closePopup);
