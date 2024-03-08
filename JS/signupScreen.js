@@ -145,3 +145,30 @@ document.addEventListener(
   false
 );
 
+//Google Analytics 4 -------------------------------------------------------------------------
+const imported = document.createElement('script');
+imported.src = 'https://www.googletagmanager.com/gtag/js?id=G-DXD64B7ZDX';
+document.head.appendChild(imported);
+
+window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+
+if (localStorage.getItem("consentMode") === null) {
+  //default - everything is denied, no data will be collected
+      gtag("consent", "default", {
+          "ad-storage": "denied",
+          "analytics_storage": "denied",
+          "personalization_storage": "denied",
+          "functionality_storage": "denied",
+          "security_storage": "denied",
+      })
+  }
+  else {
+      gtag("consent","default", JSON.parse(localStorage.getItem("consentMode")));
+  }
+
+
+gtag('js', new Date());
+
+gtag('config', 'G-DXD64B7ZDX');
+
