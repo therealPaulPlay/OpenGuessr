@@ -282,6 +282,8 @@ function clamp(num, min, max) {
   }
 
 //enables the result screen.
+let resultScreenEnabled = false;
+
 function enableResultScreen(resultString, extraMessage) {
 
     document.getElementById("EndOverlay").style.opacity = "100%";
@@ -291,12 +293,16 @@ function enableResultScreen(resultString, extraMessage) {
 
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
+
+    resultScreenEnabled = true;
 }
 
 function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
     setTimeout(function() {document.getElementById("EndOverlay").style.visibility = "hidden"}, 200)
     document.getElementById("logo").style.pointerEvents = "auto";
+    
+    resultScreenEnabled = false;
 }
 
 function reloadIframe(notInitialLoad) {
@@ -439,6 +445,20 @@ function enableClickListeners(){
     let privacyButton = document.getElementById("privacyButton");
     privacyButton.addEventListener("click", goToLegal);
 }
+
+//keyboard controls
+document.addEventListener(
+    "keyup",
+    (event) => {
+      const keyName = event.key;
+  
+      // Will go to next round when pressing the spacebar.
+      if (keyName === " " && resultScreenEnabled) {
+        transitionToStart();
+      }
+    },
+    false
+  );
 
 /*close error popup - this needs to be here because in errorHandling.js it causes errors as functions from that script
 are being used on the signup screen*/

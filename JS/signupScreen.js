@@ -1,9 +1,10 @@
 import { displayError, loginUser, registerUser } from "./userAPI.js"
 
 //toggle between login and signup ---------------------------------------------------------------------------------------------
+let loginForm = document.getElementById("loginForm");
+let signupForm = document.getElementById("signupForm");
+
 function toggleForm() {
-  let loginForm = document.getElementById("loginForm");
-  let signupForm = document.getElementById("signupForm");
   signupStage = 1;
 
   if (loginForm.style.display == "none") {
@@ -103,20 +104,44 @@ let signupUsername = document.getElementById("signup_username");
 let errorMessage = document.getElementById("errorMessage");
 
 let loginButtonSignupPage = document.getElementById("login");
-loginButtonSignupPage.addEventListener("click", function() { 
-  if (checkEmptyFields(false)) {
-  loginUser(loginEmail.value, loginPassword.value, "signup")
-}});
+loginButtonSignupPage.addEventListener("click", logInAction);
 
 let signupButtonSignupPage = document.getElementById("signup");
-signupButtonSignupPage.addEventListener("click", function() { 
-  if (signupStage == 2 && validateQuestion()) {
-  registerUser(signupUsername.value, signupEmail.value, signupPassword.value, "signup") }
-  else {
-    if (checkEmptyFields(true)) {
-    signupStage = 2;
-    setSignupStage();
+signupButtonSignupPage.addEventListener("click", signUpAction);
+
+
+//this is the function that runs when the user click on signup or presses enter.
+  function signUpAction() {
+    if (signupStage == 2 && validateQuestion()) {
+      registerUser(signupUsername.value, signupEmail.value, signupPassword.value, "signup") }
+      else {
+        if (checkEmptyFields(true)) {
+        signupStage = 2;
+        setSignupStage();
+        }
+      }
+  }
+
+  //this is the function that runs when the user click on login or presses enter.
+  function logInAction() {
+    if (checkEmptyFields(false)) {
+      loginUser(loginEmail.value, loginPassword.value, "signup");
     }
   }
-  });
+
+//keyboard controls / enter --> next step
+document.addEventListener(
+  "keyup",
+  (event) => {
+    const keyName = event.key;
+
+    // Will go to the next step when pressing Enter.
+    if (keyName === "Enter" && loginForm.style.display != "none") {
+      logInAction();
+    } else if (keyName === "Enter" && signupForm.style.display != "none") {
+      signUpAction();
+    }
+  },
+  false
+);
 
