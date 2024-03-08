@@ -446,20 +446,6 @@ function enableClickListeners(){
     privacyButton.addEventListener("click", goToLegal);
 }
 
-//keyboard controls
-document.addEventListener(
-    "keyup",
-    (event) => {
-      const keyName = event.key;
-  
-      // Will go to next round when pressing the spacebar.
-      if (keyName === " " && resultScreenEnabled) {
-        transitionToStart();
-      }
-    },
-    false
-  );
-
 /*close error popup - this needs to be here because in errorHandling.js it causes errors as functions from that script
 are being used on the signup screen*/
 let closeButton = document.getElementById("popupClose");
