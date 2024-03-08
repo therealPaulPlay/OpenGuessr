@@ -1,10 +1,12 @@
+import { errorPopup } from "./errorHandling.js";
+
 export const backendURL = "http://62.171.134.159:8080/api";
 export const loginEndpoint = `${backendURL}/users/login`;
 export const registrationEndpoint = `${backendURL}/users/register`;
 export const userUpdateEndpoint = `${backendURL}/users/update`;
 export const userGetEndpoint = `${backendURL}/users`;
 
-export async function loginUser(email, password, htmlElement) {
+export async function loginUser(email, password, errorSource) {
   try {
     const requestBody = {
       email: email,
@@ -23,7 +25,6 @@ export async function loginUser(email, password, htmlElement) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      console.log('Login successful:', data);
       await saveUserData(data);
 
       window.location.href = "/index.html";
@@ -31,15 +32,15 @@ export async function loginUser(email, password, htmlElement) {
     } else {
 
       console.error('Login failed:', response.status);
-      displayError("Login failed: " + response.status, htmlElement);
+      displayError("Login failed: " + response.status, errorSource);
     }
   } catch (error) {
     console.error('Error occurred during login:', error);
-    displayError("Error occured during login: " + error, htmlElement);
+    displayError("Error occured during login: " + error, errorSource);
   }
 }
 
-export async function registerUser(userName, email, password, htmlElement) {
+export async function registerUser(userName, email, password, errorSource) {
   try {
     // Define the request body
     const requestBody = {
@@ -60,19 +61,18 @@ export async function registerUser(userName, email, password, htmlElement) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      console.log('Registration successful:', data);
       window.location.reload();
     } else {
       console.error('Registration failed:', response.status);
-      displayError("Registration failed: " + response.status, htmlElement);
+      displayError("Registration failed: " + response.status, errorSource);
     }
   } catch (error) {
     console.error('Error occurred during registration:', error);
-    displayError("Error occured during registration: " + error, htmlElement);
+    displayError("Error occured during registration: " + error, errorSource);
   }
 }
 
-export async function getUser(token, id) {
+export async function getUser(token, id, errorSource) {
   try {
     const response = await fetch(`${userGetEndpoint}/${id}`, {
       method: 'GET',
@@ -88,13 +88,15 @@ export async function getUser(token, id) {
       await saveUserData(data['user']);
     } else {
       console.error('Fetch failed:', response.status);
+      displayError("Fetch failed: " + response.status, errorSource);
     }
   } catch (error) {
     console.error('Error occurred while fetching the user:', error);
+    displayError("Error occurred while fetching the user: " + error, errorSource);
   }
 }
 
-export async function updatePassword(token, id) {
+export async function updatePassword(token, id, errorSource) {
   try {
     const response = await fetch(`${userGetEndpoint}/${id}`, {
       method: 'GET',
@@ -110,13 +112,15 @@ export async function updatePassword(token, id) {
       saveUserData(data);
     } else {
       console.error('Fetch failed:', response.status);
+      displayError("Fetch failed: " + response.status, errorSource);
     }
   } catch (error) {
     console.error('Error occurred while fetching the user:', error);
+    displayError("Error occured while fetching the user: " + error, errorSource);
   }
 }
 
-export async function updateExperience(token, id, experience) {
+export async function updateExperience(token, id, experience, errorSource) {
   try {
     const requestBody = {
       id: id,
@@ -136,16 +140,17 @@ export async function updateExperience(token, id, experience) {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem("experience", data['user']['experience']);
-      console.log('User update successful:', data);
     } else {
       console.error('User update failed:', response.status);
+      displayError("User update failed: " + response.status, errorSource);
     }
   } catch (error) {
     console.error('Error occurred during user update:', error);
+    displayError("Error occured during user update: " + error, errorSource);
   }
 }
 
-export async function updateUsername(token, id, requestedUsername) {
+export async function updateUsername(token, id, requestedUsername, errorSource) {
   try {
 
     const requestBody = {
@@ -167,12 +172,13 @@ export async function updateUsername(token, id, requestedUsername) {
     if (response.ok) {
       const data = await response.json();
       localStorage.setItem("username", data['user']['userName']);
-      console.log('User update successful:', data);
     } else {
       console.error('User update failed:', response.status);
+      displayError("User update failed " + response.status, errorSource);
     }
   } catch (error) {
     console.error('Error occurred during user update:', error);
+    displayError("Error occured during user update " + error, errorSource);
   }
 }
 
@@ -187,12 +193,14 @@ async function saveUserData(data) {
   localStorage.setItem("experience", data['experience']);
 }
 
-export function displayError(error, htmlElement) {
-  if (htmlElement != null) {
-    htmlElement.innerHTML = error;
-    htmlElement.style.display = "inline";
+export function displayError(error, source) {
+  if (source == "signup") {
+    errorMessage.innerHTML = error;
+    errorMessage.style.display = "inline";
+  } else if (source == "index") {
+    errorPopup("User API Error", "The User API reports an error. Please consider signing out and logging in again to resolve the issue.", error, false)
   } else {
-    //error will be displayed anyway - see functions above
-    console.log("No element for displaying the error passed as an argument.");
+        //error will be displayed anyway - see functions above
+        console.log("No element for displaying the error passed as an argument.");
   }
 }

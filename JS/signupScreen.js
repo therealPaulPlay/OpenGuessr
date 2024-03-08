@@ -58,11 +58,11 @@ function checkEmptyFields(isSignup) {
   if (isSignup) {
   if (document.getElementById("signup_username").value != "" && document.getElementById("signup_password").value != "" && validateEmail(document.getElementById("signup_email").value)) {
     return true; 
-  } else {displayError("Please check our input.", errorMessage); return false;}
+  } else {displayError("Please check our input.", "signup"); return false;}
 } else {
   if (validateEmail(document.getElementById("login_email").value) && document.getElementById("login_password").value != "") {
     return true; 
-  } else {displayError("Please check your input.", errorMessage); return false;}
+  } else {displayError("Please check your input.", "signup"); return false;}
 }
 }
 
@@ -84,7 +84,7 @@ function validateQuestion() {
   if (document.getElementById("captchaQuestion").value == questions[randomQuestionIndex][1]) {
   return true;
   } else {
-    displayError("Answer incorrect :( Try again.", errorMessage);
+    displayError("Answer incorrect :( Try again.", "signup");
     randomQuestion();
     return false;
   }
@@ -105,13 +105,13 @@ let errorMessage = document.getElementById("errorMessage");
 let loginButtonSignupPage = document.getElementById("login");
 loginButtonSignupPage.addEventListener("click", function() { 
   if (checkEmptyFields(false)) {
-  loginUser(loginEmail.value, loginPassword.value, errorMessage)
+  loginUser(loginEmail.value, loginPassword.value, "signup")
 }});
 
 let signupButtonSignupPage = document.getElementById("signup");
 signupButtonSignupPage.addEventListener("click", function() { 
   if (signupStage == 2 && validateQuestion()) {
-  registerUser(signupUsername.value, signupEmail.value, signupPassword.value, errorMessage) }
+  registerUser(signupUsername.value, signupEmail.value, signupPassword.value, "signup") }
   else {
     if (checkEmptyFields(true)) {
     signupStage = 2;

@@ -278,7 +278,7 @@ html * {
   width: 100%;
   height: 100%;
   transition: opacity 250ms ease;
-  z-index: 12;
+  z-index: 15;
 }
 
 #logoutButton {
@@ -417,13 +417,13 @@ html * {
 }
 
 .BottomBar {
-  height: 10%;
+  height: 95px;
+  min-height: 95px;
+  max-height: 95px;
   display: flex;
   align-items: center;
   justify-content: left;
   margin: auto;
-  max-height: 200px;
-  min-height: 100px;
   width: 98.5%;
   border-radius: 10px;
   margin-bottom: 10px;
@@ -705,6 +705,7 @@ html * {
   user-select: none;
   -webkit-user-select: none;
   color: white;
+  z-index: 14;
   background-color: rgba(42, 44, 71, 0.9);
   box-shadow: 0 2px 20px rgba(25, 29, 45, 0.5);
   backdrop-filter: blur(10px);

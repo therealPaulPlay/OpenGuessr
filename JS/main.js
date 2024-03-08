@@ -1,5 +1,5 @@
 import { resetMap } from './loadMap.js';
-import { errorPopup } from "./errorHandling.js";
+import { errorPopup, closePopup } from "./errorHandling.js";
 import { loadResultScreenXP } from "./accountLogic.js";
 //IMPORTANT: Main.js is now part of the bundled.js (webpack) using functions from logto.js/bundled.js otherwise causes issues
 
@@ -112,7 +112,7 @@ async function loadLocationJsonAndGenerateLocation() {
         
         jsonResponse = await response.json();
     } catch {
-        errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.");
+        errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
     }
     
     listOfLocations = jsonResponse;
@@ -145,7 +145,7 @@ function generateNewLocation(initialLoad) {
 
 function validateCoordinates () {
     if (isNaN(currentGuessLAT) || isNaN(currentGuessLONG)) {
-        errorPopup("Wrong coordinates from Array", "The coordinates from this streetview are invalid.", "Lat: "+currentGuessLAT+" Long: "+currentGuessLONG+".");
+        errorPopup("Wrong coordinates from Array", "The coordinates from this streetview are invalid.", "Lat: "+currentGuessLAT+" Long: "+currentGuessLONG+".", true);
     }
 }
 
@@ -439,3 +439,7 @@ function enableClickListeners(){
     let privacyButton = document.getElementById("privacyButton");
     privacyButton.addEventListener("click", goToLegal);
 }
+
+//close error popup
+let closeButton = document.getElementById("popupClose");
+closeButton.addEventListener("click", closePopup);

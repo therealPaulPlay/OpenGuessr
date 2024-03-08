@@ -126,7 +126,7 @@ async function checkSigninStatusAndLoadUserInfo() {
   if (isAuthenticated) {
     profileInfo.classList.remove("notSignedIn");
     //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
-    await getUser(localStorage.getItem("bearer"), localStorage.getItem("id")).then(() => {
+    await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then(() => {
           displayUserInfo();
         });
     changeUItoSignedIn();
@@ -219,7 +219,7 @@ export async function loadResultScreenXP(distance) {
 }
 
 function setUserXP(xp) {
-  updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp);
+  updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp, "index");
 }
 
 
@@ -256,7 +256,7 @@ async function updateProfileUsername() {
   newUsername = document.getElementById("usernameInput").value;
   toggleUsernameView();
   if (newUsername != "") {
-  await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername).then(() => {
+  await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername, "index").then(() => {
     //updateUsername saves the new name in localstorage
         displayUserInfo();
       });
