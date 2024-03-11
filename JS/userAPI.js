@@ -219,7 +219,7 @@ export function displayError(error, source) {
 export function displaySuccess() {
   errorMessage.innerHTML = "Registration successful! Please log in.";
   errorMessage.style.display = "inline";
-  errorMessage.style.color = "green";
+  errorMessage.style.color = "#64c681";
 
 }
 
