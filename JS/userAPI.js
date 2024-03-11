@@ -195,8 +195,17 @@ async function saveUserData(data) {
 
 export function displayError(error, source) {
   if (source == "signup") {
+    //special cases
+    if (error.includes("400")) {
+      error = "Wrong credentials.";
+    }
+    if (error.includes("409")) {
+      error = "User with this email or username already exists.";
+    }
+    
     errorMessage.innerHTML = error;
     errorMessage.style.display = "inline";
+    
   } else if (source == "index") {
     errorPopup("User API Error", "The User API reports an error. Please consider signing out and logging in again to resolve the issue.", error, false)
   } else {
