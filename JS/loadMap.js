@@ -12,8 +12,8 @@ let map = L.map('map', {zoomControl: false}).setView([40.321160, 10.252812], 1.5
 
 let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"]
 
-//TODO switch to enum
-let providerIndex = Provider.REGIONAL;
+//English should be the new default!
+let providerIndex = Provider.ENGLISH;
 let storedProviderIndex = localStorage.getItem("providerIndex");
 
 if (storedProviderIndex != null) {
