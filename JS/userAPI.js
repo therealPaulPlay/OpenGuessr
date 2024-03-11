@@ -61,7 +61,7 @@ export async function registerUser(userName, email, password, errorSource) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      localStorage.setItem("RegistrationSuccessful", "success");
+      localStorage.setItem("RegistrationSuccess", "success");
       window.location.reload();
     } else {
       console.error('Registration failed:', response.status);
