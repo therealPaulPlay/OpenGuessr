@@ -1,24 +1,26 @@
-import "../JS/main.js";
 import { setMapToTargetPosition } from "./main.js";
 import { calculateDistances } from "./main.js";
 
 const Provider = {
-    REGIONAL: 0,
-    GERMAN: 1
+    ENGLISH: "0",
+    GERMAN: "1",
+    REGIONAL: "2",
 }
 
 //initializes map (check out leaflet for more information)
+let map = L.map('map', {zoomControl: false}).setView([40.321160, 10.252812], 1.5); //starting position
 
-const map = L.map('map').setView([35.321160, -40.252812], 1.5); //starting position
-
-let mapProvider = ["https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png"]
+let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"]
 
 //TODO switch to enum
 let providerIndex = Provider.REGIONAL;
 let storedProviderIndex = localStorage.getItem("providerIndex");
 
-if (storedProviderIndex != null)
+if (storedProviderIndex != null) {
     providerIndex = storedProviderIndex;
+}
+
+loadMap();
 
 changeLanguageButtonLabel();
 
@@ -35,7 +37,19 @@ export function resetMap() {
 }
 
 function changeLanguageButtonLabel () {
-       document.getElementById("languageButton").innerHTML = `Map language: ${providerIndex == Provider.REGIONAL ? "Regional": "German"}`
+       switch (providerIndex) {
+        case "0": document.getElementById("languageButton").innerHTML = "Map language: English";
+        break;
+
+        case "1": document.getElementById("languageButton").innerHTML = "Map language: German";
+        break; 
+
+        case "2": document.getElementById("languageButton").innerHTML = "Map language: Regional";
+        break;
+
+        default: document.getElementById("languageButton").innerHTML = "Map language: English";
+        break;
+       }
 }
 
 function setConfirmButtonState() {
@@ -54,27 +68,47 @@ function setConfirmButtonState() {
 }
 
 function changeLanguage () {
-    if (providerIndex == Provider.REGIONAL) {
+    if (providerIndex == Provider.ENGLISH) {
         providerIndex = Provider.GERMAN;
     }
-    else {
+    else if (providerIndex == Provider.GERMAN) {
         providerIndex = Provider.REGIONAL;
     }
+    else {
+        providerIndex = Provider.ENGLISH;
+    }
     localStorage.setItem("providerIndex", providerIndex);
-    window.location.reload();
+    
+    changeLanguageButtonLabel();
+    resetGuessMap();
+    
+    /* window.location.reload(); */
 }
 
-L.tileLayer(mapProvider[providerIndex], {
-    attribution: 'https://www.openstreetmap.org/copyright',
-    noWrap: true
-}).addTo(map);
+let osmLayer;
+
+function loadMap() {
+  osmLayer = L.tileLayer(mapProvider[providerIndex], {
+      attribution: 'https://www.openstreetmap.org/copyright',
+      noWrap: true,
+  }).addTo(map);
+}
+
+function destroyMap() {
+  map.removeLayer(osmLayer);
+}
+
+function resetGuessMap() {
+  destroyMap();
+  loadMap();
+}
 
 map.setZoom(3);
 
 const redIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
+    iconUrl: './IMG/your_marker.png',
+    iconSize: [40, 40],
+    iconAnchor: [20, 38],
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });

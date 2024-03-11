@@ -6,11 +6,11 @@ After cloning the repo, make sure you have
 installed all of the required npm packages.
 To do so, run `npm install` in the repository.
 
-Webpack is currently configured to use logto.js
-as the entry point. This means that all dependencies
+Webpack is currently configured to use accountLogic.js, loadMap.js as well as main.js
+as the entry points. This means that all dependencies
 will be resolved from there. Therefore,
-make sure to import libraries [found in node-modolues]
-in this file rather than somewhere else. 
+make sure to import libraries [found in node_modules]
+in these files rather than somewhere else.
 
 Running `npm run build` is currently configured
 (in the package.json file) to build with webpack and

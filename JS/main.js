@@ -1,11 +1,12 @@
 import { resetMap } from './loadMap.js';
-import { errorPopup } from "./errorHandling.js";
+import { errorPopup, closePopup } from "./errorHandling.js";
+import { loadResultScreenXP } from "./accountLogic.js";
+//IMPORTANT: Main.js is now part of the bundled.js (webpack) using functions from logto.js/bundled.js otherwise causes issues
 
 let lastGuessIndex = null;
 let guessIndex;
 
 //this is the new default mapToLoad which displays a proper error message instead of a random street view that we have picked
-let mapToLoad = "/loader.html";
 let currentGuessLAT = 40;
 let currentGuessLONG = 40;
 
@@ -14,7 +15,15 @@ let currentGuessLONG = 40;
 const Category = {
     STANDARD: "standard",
     CAPITAL: "capital",
-    FAMOUS: "famous"
+    FAMOUS: "famous",
+    USA: "usa",
+    GERMANY: "germany",
+    UK: "uk",
+    FRANCE: "france",
+    SPAIN: "spain",
+    POLAND: "poland",
+    CANADA: "canada",
+    SWEDEN: "sweden"
 }
 
 let mapCategory = Category.STANDARD;
@@ -36,6 +45,47 @@ famousCategoryButton.addEventListener("click", function() {
     changeCategory(Category.FAMOUS);
 });
 
+const usaCategoryButton = document.getElementById("usaCategory");
+usaCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.USA);
+});
+
+
+const germanyCategoryButton = document.getElementById("germanyCategory");
+germanyCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.GERMANY);
+});
+
+const ukCategoryButton = document.getElementById("ukCategory");
+ukCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.UK);
+});
+
+const franceCategoryButton = document.getElementById("franceCategory");
+franceCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.FRANCE);
+});
+
+const spainCategoryButton = document.getElementById("spainCategory");
+spainCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.SPAIN);
+});
+
+const polandCategoryButton = document.getElementById("polandCategory");
+polandCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.POLAND);
+});
+
+const canadaCategoryButton = document.getElementById("canadaCategory");
+canadaCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.CANADA);
+});
+
+const swedenCategoryButton = document.getElementById("swedenCategory");
+swedenCategoryButton.addEventListener("click", function() {
+    changeCategory(Category.SWEDEN);
+});
+
 //load the map category initially
 loadMapCategory();
 
@@ -54,75 +104,48 @@ let listOfLocations;
 let jsonResponse;
 
 async function loadLocationJsonAndGenerateLocation() {
-    let response = await fetch("../JSON/" + mapCategory + "Locations.json");
-    jsonResponse = await response.json();
+    try {
+        let response = await fetch("../JSON/" + mapCategory + "Locations.json");
+        if (!response.ok) {
+            throw new Error("JSON fetch failed."); //this will execute the "catch" code now
+        }
+        
+        jsonResponse = await response.json();
+    } catch {
+        errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
+    }
     
-    listOfLocations = Object.values(jsonResponse).flat().map(i => Object.values(i)).flat();
-    
-    generateNewLocation();    
+    listOfLocations = jsonResponse;
+    generateNewLocation(true);
 }            
 
 enableClickListeners();
 
-function generateNewLocation() {
+function generateNewLocation(initialLoad) {
     resetMap();
 
     do {
         guessIndex = Math.floor(Math.random()*listOfLocations.length);      //calculating random location
     } while (lastGuessIndex === guessIndex);
 
-    lastGuessIndex = guessIndex;                                            //setting last Index
-
-    mapToLoad = listOfLocations[guessIndex];                                //declares which map is being loaded
-
-    let currentGuessLatArray = [];                                          //creation of 2 arrays that temporarily store
-    let currentGuessLngArray = [];                                          //lat and long values taken from link
-
-    let secondIndex = 0;                                                    //declares where longitudes start
-
-    if (mapToLoad.length > 140) {
-        for (let i = 93; i < mapToLoad.length; i++) {                       //cut away unnecessary parts of link to get latitude
-            if (mapToLoad[i] !== "!") {
-                currentGuessLatArray[i] = mapToLoad[i];
-            }
-            else {
-                secondIndex = i+3;                                          //declares where the longitudes are starting
-                break;
-            }
-        }
-        for (let j = secondIndex; j < mapToLoad.length; j++) {              //cut away unnecessary parts of link to get longitude
-            if (mapToLoad[j] !== "!") {
-                currentGuessLngArray[j] = mapToLoad[j];
-            }
-            else {
-                break;
-            }
-        }
-    }
-
-    if (!(currentGuessLngArray[0] === "-" || currentGuessLngArray[0] > 0 && currentGuessLngArray[0] <= 9)) {
-        currentGuessLngArray.shift();           //remove first index if it isn't showing it being negative or a longer number
-    }
-    if (!(currentGuessLatArray[0] === "-" || currentGuessLatArray[0] > 0 && currentGuessLatArray[0] <= 9)) {
-        currentGuessLatArray.shift();           //remove first index if it isn't showing it being negative or a longer number
-    }
-
-    for (let k = 0; k < 7; k++) {               //removes last 7 objects, could do with splice but I found this to be more understandable
-        currentGuessLatArray.pop();     
-        currentGuessLngArray.pop();     
-    }
+    lastGuessIndex = guessIndex; //setting last Index
 
     //These two are the variables that reflect where the location actually is!
-    currentGuessLAT = currentGuessLatArray.join('');        //saves lats and longs in separate variables
-    currentGuessLONG = currentGuessLngArray.join('');
+    currentGuessLAT = listOfLocations[guessIndex][0]; //saves lats and longs in separate variables
+    currentGuessLONG = listOfLocations[guessIndex][1];
 
     validateCoordinates();
-    reloadIframe();                                         //now the map is generated, the iFrame is being reloaded.
+    if (initialLoad) {
+        reloadIframe(true);   
+    } else {
+        reloadIframe(false)
+    }
+    //now the map is generated, the iFrame is being reloaded.
 }
 
 function validateCoordinates () {
     if (isNaN(currentGuessLAT) || isNaN(currentGuessLONG)) {
-        errorPopup("Wrong coordinates from link", "The coordinates from this streetview are invalid.", "Link: " + mapToLoad)
+        errorPopup("Wrong coordinates from Array", "The coordinates from this streetview are invalid.", "Lat: "+currentGuessLAT+" Long: "+currentGuessLONG+".", true);
     }
 }
 
@@ -150,7 +173,8 @@ export function calculateDistances(mapsLat, mapsLong) {
     let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
     let d = R * c; // Distance in km
 
-    compareDistances(d);    
+    compareDistances(d);   
+    loadResultScreenXP(d);
 }
   
 function deg2rad(deg) {
@@ -165,9 +189,9 @@ function compareDistances(distance) {
 
     veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Let me guess; you have an A in geography?", "Wow."]
     closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!"];
-    farDistances = ["It was a good guess.", "You'll get it next time!", "At least it was on the correct planet, right?"];
+    farDistances = ["It was a good guess.", "You'll get it next time!", "At least it was on the correct planet, right?", "Not bad, not great."];
 
-    if(distance < 20 && !(distance<1)) {
+    if(distance < 100 && !(distance<5)) {
         extraMsg = closeDistances[Math.floor(Math.random()*closeDistances.length)];
     }
     else {
@@ -199,23 +223,21 @@ export function setMapToTargetPosition(playersLat, playersLong) {
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15);
-
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: 'https://www.openstreetmap.org/copyright'
 }).addTo(resMap);
 
 const redIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
+    iconUrl: './IMG/your_marker.png',
+    iconSize: [40, 40],
+    iconAnchor: [20, 38],
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });
 
 const greenIcon = new L.Icon({
-    iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-    iconSize: [25, 41],
-    iconAnchor: [12, 41],
+    iconUrl: './IMG/result_marker.png',
+    iconSize: [40, 40],
+    iconAnchor: [20, 38],
     popupAnchor: [1, -34],
     shadowSize: [41, 41]
 });
@@ -232,51 +254,83 @@ const greenIcon = new L.Icon({
     playerMarker.addTo(resMap);
     const polygon = L.polygon(polyList, {color: '#05060ab0', weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
 
-    resMap.fitBounds(pointList);
+    resMap.fitBounds(pointList, {padding: [150,250]});
 
     //this places the "correct" marker that actually reflects the target location
     destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: greenIcon});
     destinationMarker.addTo(resMap);
+
+    setTimeout(flyToDestination, 1000)
 }
 
+function flyToDestination() {
+    if (document.getElementById("EndOverlay").style.opacity == "1") {
+    resMap.flyTo([currentGuessLAT, currentGuessLONG], clamp(resMap.getZoom() + 4,0,18), {
+        animate: true, 
+        duration: 2
+     });
+    }
+}
+
+//clamp function 
+function clamp(num, min, max) {
+    return num <= min 
+      ? min 
+      : num >= max 
+        ? max 
+        : num
+  }
+
 //enables the result screen.
+let resultScreenEnabled = false;
+
 function enableResultScreen(resultString, extraMessage) {
 
     document.getElementById("EndOverlay").style.opacity = "100%";
     document.getElementById("EndOverlay").style.visibility = "visible";
 
-    document.getElementById("BottomBar").style.visibility = "hidden";
-    document.getElementById("map").style.visibility = "hidden";
-
     document.getElementById("logo").style.pointerEvents = "none";
 
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
+
+    resultScreenEnabled = true;
 }
 
 function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
-    document.getElementById("EndOverlay").style.visibility = "hidden";
-
-    document.getElementById("BottomBar").style.visibility = "visible";
-    document.getElementById("map").style.visibility = "visible";
+    setTimeout(function() {document.getElementById("EndOverlay").style.visibility = "hidden"}, 200)
     document.getElementById("logo").style.pointerEvents = "auto";
+    
+    resultScreenEnabled = false;
 }
 
-function reloadIframe() {
-    //reloads the iFrame and sets the position of the camera back to it's origin.
-
-    document.getElementById("GuesserWindow").setAttribute("src", mapToLoad);
-    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
+function reloadIframe(notInitialLoad) {
+    let loadingLink;
+    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+currentGuessLAT+","+currentGuessLONG+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0&fov=90"; //API key (last part of URL) is only valid for the embed API and only for the openguessr & locahost:3000 domains.
+    
+    if (!notInitialLoad) {
+         //if it is the inital load - reloads the iFrame and sets the position of the camera back to it's origin.
+        document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
+        window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
+    }
+    else {
+        document.getElementById("BeforeOverlay").style.opacity = "100";
+        document.getElementById("BeforeOverlay").style.visibility = "visible";
+        document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
+        window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 400);
+    }
+   
 }
 
 function transitionToStart() {
     //fancy function to make a fade in to prevent the flashing of the iframe.
-
     document.getElementById("BeforeOverlay").style.opacity = "0";
     document.getElementById("BeforeOverlay").style.visibility = "visible";
     document.getElementById("BeforeOverlay").style.opacity = "100";
-    generateNewLocation(); 
+    resMap.stop(); //stop the flying animation
+    setTimeout(function() {resMap.stop()}, 200)
+    generateNewLocation(true); 
     
     //Fade the result screen out when the streetview is loaded to prevent flashing
     setTimeout(disableResultScreen, 200);
@@ -295,18 +349,23 @@ function goToLegal() {
 let extendedNavbar = document.getElementById("extendedNavbar");
 let categoryMenuButton = document.getElementById("categoryMenuButton");
 
+let categoriesExpanded = false;
+
 categoryMenuButton.addEventListener("click", function() {
     // Toggle the visibility of the extended navbar
-    if (extendedNavbar.classList.contains("expanded")) {
-        setTimeout(function() {
-            categoryMenuButton.style.top = "85px";
-        }, 110); // Delay the button animation by 110ms so that it smoothly retracts with the navbar
-        extendedNavbar.classList.remove("expanded");
-        categoryMenuButton.innerText = "Map Categories ▼";
-    } else {
-        categoryMenuButton.style.top = "155px";
+    if (!categoriesExpanded) {
+        categoryMenuButton.style.top = "395px";
         extendedNavbar.classList.add("expanded");
         categoryMenuButton.innerText = "Map Categories ▲";
+        categoriesExpanded = true;
+    } else {
+        setTimeout(function() {
+            categoryMenuButton.style.top = "85px";
+            extendedNavbar.scrollTop = 0;
+        }, 75); 
+        extendedNavbar.classList.remove("expanded");
+        categoryMenuButton.innerText = "Map Categories ▼";
+        categoriesExpanded = false;
     }
 });
 
@@ -315,6 +374,14 @@ function changeCategory(category) {
     standardCategoryButton.classList.add("categoryDisabled");
     capitalCategoryButton.classList.add("categoryDisabled");
     famousCategoryButton.classList.add("categoryDisabled");
+    usaCategoryButton.classList.add("categoryDisabled");
+    germanyCategoryButton.classList.add("categoryDisabled");
+    ukCategoryButton.classList.add("categoryDisabled");
+    franceCategoryButton.classList.add("categoryDisabled");
+    spainCategoryButton.classList.add("categoryDisabled");
+    polandCategoryButton.classList.add("categoryDisabled");
+    canadaCategoryButton.classList.add("categoryDisabled");
+    swedenCategoryButton.classList.add("categoryDisabled");
     
    //enable the correct one
     switch (category) {
@@ -326,6 +393,30 @@ function changeCategory(category) {
             break;
         case Category.FAMOUS:
             famousCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.USA:
+            usaCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.GERMANY:
+            germanyCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.UK:
+            ukCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.FRANCE:
+            franceCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.SPAIN:
+            spainCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.POLAND:
+            polandCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.CANADA:
+            canadaCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.SWEDEN:
+            swedenCategoryButton.classList.remove("categoryDisabled");
             break;
     }
 
@@ -340,10 +431,10 @@ function changeCategory(category) {
 
 function enableClickListeners(){
     let resetBTN = document.getElementById("resetButtonSVG");
-    resetBTN.addEventListener("click", reloadIframe);
+    resetBTN.addEventListener("click", function() {reloadIframe(true)});
    
     let logoBTN = document.getElementById("logo");
-    logoBTN.addEventListener("click", generateNewLocation);
+    logoBTN.addEventListener("click", function() {generateNewLocation(true)});
   
     let nextRound = document.getElementById("nextRound");
     nextRound.addEventListener("click", transitionToStart);
@@ -354,3 +445,8 @@ function enableClickListeners(){
     let privacyButton = document.getElementById("privacyButton");
     privacyButton.addEventListener("click", goToLegal);
 }
+
+/*close error popup - this needs to be here because in errorHandling.js it causes errors as functions from that script
+are being used on the signup screen*/
+let closeButton = document.getElementById("popupClose");
+closeButton.addEventListener("click", closePopup);
