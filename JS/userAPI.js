@@ -61,6 +61,7 @@ export async function registerUser(userName, email, password, errorSource) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
+      localStorage.setItem("RegistrationSuccessful", "success");
       window.location.reload();
     } else {
       console.error('Registration failed:', response.status);
@@ -205,11 +206,24 @@ export function displayError(error, source) {
     
     errorMessage.innerHTML = error;
     errorMessage.style.display = "inline";
-    
+    errorMessage.style.color = "red";
+
   } else if (source == "index") {
     errorPopup("User API Error", "The User API reports an error. Please consider signing out and logging in again to resolve the issue.", error, false)
   } else {
         //error will be displayed anyway - see functions above
         console.log("No element for displaying the error passed as an argument.");
   }
+}
+
+export function displaySuccess() {
+  errorMessage.innerHTML = "Registration successful! Please log in.";
+  errorMessage.style.display = "inline";
+  errorMessage.style.color = "green";
+
+}
+
+if (localStorage.getItem("RegistrationSuccess") == "success") {
+  displaySuccess();
+  localStorage.removeItem("RegistrationSuccess");
 }
