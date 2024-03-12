@@ -1,17 +1,19 @@
+/*these imports are being handled and performed by Webpack. Note that errorHandling.js is still being included
+for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
+of the bundled main.js. */
+
 import { resetMap } from './loadMap.js';
 import { errorPopup, closePopup } from "./errorHandling.js";
 import { loadResultScreenXP } from "./accountLogic.js";
-//IMPORTANT: Main.js is now part of the bundled.js (webpack) using functions from logto.js/bundled.js otherwise causes issues
 
 let lastGuessIndex = null;
 let guessIndex;
 
-//this is the new default mapToLoad which displays a proper error message instead of a random street view that we have picked
+//default guess coords
 let currentGuessLAT = 40;
 let currentGuessLONG = 40;
 
 //get the map category and read json accordingly!
-
 const Category = {
     STANDARD: "standard",
     CAPITAL: "capital",
@@ -29,7 +31,7 @@ const Category = {
 let mapCategory = Category.STANDARD;
 
 //category buttons - this has to be on top because these variables are needed below
-//note to myself: ALWAYS double check the IDs! It breaks everything if they are wrong (like literally everything)
+//note to myself: Wrong IDs break everything
 const standardCategoryButton = document.getElementById("standardCategory");
 standardCategoryButton.addEventListener("click", function() {
     changeCategory(Category.STANDARD);
@@ -105,7 +107,7 @@ let jsonResponse;
 
 async function loadLocationJsonAndGenerateLocation() {
     try {
-        let response = await fetch("../JSON/" + mapCategory + "Locations.json");
+        let response = await fetch("./JSON/" + mapCategory + "Locations.json");
         if (!response.ok) {
             throw new Error("JSON fetch failed."); //this will execute the "catch" code now
         }
@@ -131,16 +133,16 @@ function generateNewLocation(initialLoad) {
     lastGuessIndex = guessIndex; //setting last Index
 
     //These two are the variables that reflect where the location actually is!
-    currentGuessLAT = listOfLocations[guessIndex][0]; //saves lats and longs in separate variables
+    currentGuessLAT = listOfLocations[guessIndex][0];
     currentGuessLONG = listOfLocations[guessIndex][1];
 
+    //now the map is generated, the iFrame is being reloaded.
     validateCoordinates();
     if (initialLoad) {
         reloadIframe(true);   
     } else {
         reloadIframe(false)
     }
-    //now the map is generated, the iFrame is being reloaded.
 }
 
 function validateCoordinates () {
@@ -383,7 +385,7 @@ function changeCategory(category) {
     canadaCategoryButton.classList.add("categoryDisabled");
     swedenCategoryButton.classList.add("categoryDisabled");
     
-   //enable the correct one
+   //then enable the correct one
     switch (category) {
         case Category.STANDARD:
             standardCategoryButton.classList.remove("categoryDisabled");

@@ -1,5 +1,5 @@
 const imported = document.createElement('script');
-imported.src = 'https://www.googletagmanager.com/gtag/js?id=G-DXD64B7ZDX';
+imported.src = "https://www.googletagmanager.com/gtag/js?id=G-DXD64B7ZDX";
 document.head.appendChild(imported);
 
 window.dataLayer = window.dataLayer || [];

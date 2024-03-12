@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <link rel="icon" href="favicon.ico">
+    <script type="module" src="userAPI.js"></script>
+    <script type="module" src="signupScreen.js"></script>
+    <title>Login / Signup</title>
+    <style>
+        @font-face {
+            font-family: Barlow;
+            src: url('/FONTS/BarlowCondensed-Medium.ttf');
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 400;
+        }
+
+        p {
+            color: white;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Barlow, Futura, Arial, sans-serif;
+            font-size: 20px;
+            font-weight: 400;
+            background-color: #07071e;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            /* removes everything that is not in visible screen area, this way, it is no longer scrollable */
+            overflow: hidden;
+        }
+
+        #center {
+            display: flex;
+            width: 100%;
+            justify-content: center;
+        }
+
+        #title1,
+        #title2 {
+            color: rgba(42, 44, 71, 1);
+            font-size: 24px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border-radius: 5px;
+            padding: 5px;
+            width: 75%;
+        }
+
+        .logo {
+            margin: auto;
+            width: 275px;
+            height: auto;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.3);
+            width: 300px;
+            text-align: center;
+            backdrop-filter: blur(1000px);
+            transition: all 250ms ease;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+
+        .primaryButton {
+            transition: all 250ms ease;
+            background-color: #ff0808;
+            color: white;
+            cursor: pointer;
+            width: fit-content;
+            font-size: 22px;
+            font-family: Barlow;
+            padding: 5px 15px;
+            text-align: center;
+            white-space: nowrap;
+            transition: all 250ms;
+            margin: 2.5px;
+            border-radius: 5px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .primaryButton:hover {
+            filter: brightness(70%);
+        }
+
+        .orb {
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            border-radius: 50%;
+            background-color: rgba(255, 59, 48, 0.2);
+            /* Red-ish color with decreased opacity */
+            filter: blur(1000px);
+            /* Blurry effect */
+            -webkit-filter: blur(1000px);
+            /* Safari compatibility */
+            animation: floatOrb 15s infinite alternate;
+            /* Floating animation */
+            opacity: 0.05;
+            z-index: -1;
+            /* Ensure orbs are below other content */
+        }
+
+        #captchaQuestion {
+            color: black;
+            background-color: rgba(255, 255, 255, 0.8);
+            width: 30%;
+            text-align: center;
+        }
+
+        #captchaHeader {
+            padding: 10px;
+            padding-bottom: 15px;
+            margin: 0;
+            margin-bottom: 30px;
+            text-wrap: wrap;
+            font-size: 24px;
+            background-color: rgba(255, 255, 255, 0.9);
+            border-radius: 5px;
+            color: rgba(42, 44, 71, 1);
+            margin-left: 34px;
+            margin-right: 34px;
+        }
+
+        #errorMessage {
+            color: red;
+            display: none;
+        }
+
+        @keyframes floatOrb {
+            0% {
+                transform: translateY(0) translateX(0);
+                opacity: 0.05;
+            }
+
+            50% {
+                transform: translateY(-200px) translateX(200px);
+                opacity: 0.025;
+            }
+
+            100% {
+                transform: translateY(0) translateX(-200px);
+                opacity: 0.05;
+            }
+        }
+
+        .secondaryButton {
+            transition: all 250ms ease;
+            background-color: white;
+            color: black;
+            cursor: pointer;
+            width: fit-content;
+            font-size: 20px;
+            font-family: Barlow;
+            padding: 5px 15px;
+            text-align: center;
+            white-space: nowrap;
+            transition: all 250ms;
+            margin: 2.5px;
+            margin-left: 10px;
+            border-radius: 5px;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        #back {
+            background-color: white;
+            color: black;
+        }
+
+        .secondaryButton:hover {
+            filter: brightness(70%);
+        }
+
+        a:link {
+            color: #FFFFFF;
+        }
+
+        a:visited {
+            color: #FFFFFF;
+        }
+
+        a:hover {
+            color: #FFFFFF;
+        }
+
+        #privacyNotice {
+            opacity: 50%;
+            margin-bottom: 0;
+        }
+
+        input {
+            color: white;
+            background: rgba(42, 44, 71, 1);
+            border-radius: 5px;
+            font-size: 18px;
+            padding: 15px;
+            outline: none;
+            box-shadow: none;
+            border: none;
+            font-family: Barlow;
+        }
+
+        textarea:focus,
+        input:focus {
+            outline: none;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <img class="logo" src="/IMG/openguessr.svg" alt="OpenGuessr Logo">
+        <div id="loginForm">
+            <div id="center">
+                <h3 id="title1">Login</h3>
+            </div>
+            <div>
+                <input id="login_email" type="email" placeholder="Email"><br><br>
+                <input id="login_password" type="password" placeholder="Password"><br><br>
+                <button id="login" class="primaryButton">Login</button>
+            </div>
+            <p>Don't have an account?
+                <button id="loginSwitch" class="secondaryButton">Sign up</button>
+            </p>
+        </div>
+        <div id="signupForm" style="display: none;">
+            <div id="center">
+                <h3 id="title2">Sign up</h3>
+            </div>
+            <div>
+                <div id="signup_area">
+                    <input id="signup_username" type="text" placeholder="Username"><br><br>
+                    <input id="signup_email" type="email" placeholder="Email"><br><br>
+                    <input id="signup_password" type="password" placeholder="Password"><br><br>
+                </div>
+                <div id="captcha">
+                    <h2 id="captchaHeader">Can you answer the default question?</h2>
+                    <input id="captchaQuestion" type="number" min="0" max="10" placeholder="0 - 10"><br><br>
+                </div>
+                <button id="back" class="primaryButton">back</button>
+                <button id="signup" class="primaryButton">Sign Up (1/2)</button>
+            </div>
+            <p>Already have an account?
+                <button id="loginSwitchBack" class="secondaryButton">Login</button>
+            </p>
+            <p id="privacyNotice">Our <a href="/legal.html">privacy policy</a> applies.</p>
+        </div>
+        <p id="errorMessage"> This is an error message box. </p>
+    </div>
+</body>
+<script>
+    //background orbs
+    document.addEventListener('DOMContentLoaded', function () {
+        const orbsContainer = document.createElement('div');
+        orbsContainer.classList.add('orbs');
+        document.body.appendChild(orbsContainer);
+
+        const numOfOrbs = 10;
+        const colors = ['#ff3b30'];
+
+        for (let i = 0; i < numOfOrbs; i++) {
+            const orb = document.createElement('div');
+            orb.classList.add('orb');
+            orb.style.top = `${Math.random() * 100}vh`;
+            orb.style.left = `${Math.random() * 100}vw`;
+            orb.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            orbsContainer.appendChild(orb);
+
+            let randomSize = Math.random() * 750 + 250
+            orb.style.width = randomSize + "px";
+            orb.style.height = randomSize + "px";
+
+            // Randomize animation duration and delay
+            orb.style.animationDuration = `${Math.random() * 10 + 5}s`;
+            orb.style.animationDelay = `${Math.random() * 5}s`;
+        }
+    });
+</script>
+
+</html>
