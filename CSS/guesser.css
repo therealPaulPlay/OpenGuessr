@@ -409,7 +409,7 @@ html * {
 }
 
 .MainDiv {
-  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: flex-end; 
