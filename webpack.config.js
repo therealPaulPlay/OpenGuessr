@@ -1,14 +1,18 @@
 const path = require("path");
+const CopyWebpackPlugin = require('copy-webpack-plugin'); //this allows us to just copy certain files over to build folder (like jsons)
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 
 //most npm plugins can now be installed without altering anything here! Only make changes if webpack throws errors. 
 module.exports = {
   entry: {
-    entry: ["./JS/accountLogic.js", "./JS/loadMap.js", "./JS/main.js"]
+    //separate bundles for each of these
+    analytics: "./JS/analytics.js",
+    main: "./JS/main.js",
   },
   output: {
     path: path.resolve(__dirname, "build/"),
     publicPath: "/",
-    filename: "bundled.js"
+    filename: "[name].js",
   },
   module: {
     rules: [
@@ -16,7 +20,7 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          //babel loader is needed for ES6 syntax
+          //babel loader is needed for ES6 syntax such as .include()
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env']
@@ -24,15 +28,32 @@ module.exports = {
         }
       },
       {
-        //typescript handler, needed for logto
+        //typescript handler
         test: /\.ts$/,
         use: 'ts-loader'
-      },
-      {
-        //in case we want to handle css via webpack in the future
-        test: /\.css$/i,
-        use: ["style-loader", "css-loader"]
       }
     ]
-  }
+  },
+  plugins: [
+    new CleanWebpackPlugin(),
+    new CopyWebpackPlugin({
+      patterns: [
+        // Copies files/folders over to build.
+        { from: "./CSS", to: "./CSS" },
+        { from: "./FONTS", to: "./FONTS" },
+        { from: "./IMG", to: "./IMG" },
+        { from: "./JSON", to: "./JSON" },
+        //html files (must be at root in build folder)
+        { from: "./HTML", to: "./" },
+        //additional files that have to be root
+        { from: "favicon.ico", to: "./" },
+        { from: "netlify.toml", to: "./" },
+        //due to dom call dependencies these JS files will not be bundled up (see readme.md)
+        { from: "./JS/errorHandling.js", to: "./" },
+        { from: "./JS/signupScreen.js", to: "./" },
+        { from: "./JS/userAPI.js", to: "./" },
+
+      ],
+    }),
+  ],
 };
