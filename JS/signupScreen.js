@@ -170,5 +170,8 @@ if (localStorage.getItem("consentMode") === null) {
 
 gtag('js', new Date());
 
-gtag('config', 'G-DXD64B7ZDX');
+gtag('config', 'G-DXD64B7ZDX', {
+	cookie_domain: location.hostname,
+	cookie_flags: "SameSite=None;Secure",
+});
 

@@ -26,11 +26,13 @@ if (localStorage.getItem("consentMode") === null) {
 //enable the config - this will now show accurate usage numbers like the current player amount or the average time spent in the game
 gtag('js', new Date());
 
-gtag('config', 'G-DXD64B7ZDX');
+gtag('config', 'G-DXD64B7ZDX', {
+	cookie_domain: location.hostname,
+	cookie_flags: "SameSite=None; Secure",
+});
 
 
-//my diy cookie banner LMAO i hope it is working cuz google docs are insanely bad ngl and even include buggy code
-//I literally used chatGPT to research this cuz i didnt want to PAY for some sketchy cooky banner
+//my diy cookie banner 
 let cookiesAccept = document.getElementById("cookiesAccept");
 cookiesAccept.addEventListener("click", allowAnalytics);
 
