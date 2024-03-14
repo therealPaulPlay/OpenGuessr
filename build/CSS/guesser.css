@@ -488,8 +488,8 @@ html * {
 
 @media (max-width: 700px) {
   #googleAds {
-  width: 0%;
-  visibility: hidden;
+  width: 0;
+  display: none;
   }
 }
 
