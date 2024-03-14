@@ -161,7 +161,7 @@ function onMapHover() {
 }
 
 export function confirmButtonClicks() {
-    //calls functions since you can't pass parameters from a function outside of the file.
+    //calls functions since you can't pass parameters from a function outside of the file. Note: you can, with export variables
     calculateDistances(markerPosition.lat, markerPosition.lng);
     setMapToTargetPosition(lat, long);
 }

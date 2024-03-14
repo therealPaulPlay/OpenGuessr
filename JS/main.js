@@ -9,6 +9,8 @@ import { loadResultScreenXP } from "./accountLogic.js";
 let lastGuessIndex = null;
 let guessIndex;
 
+let resultScreenEnabled = false;
+
 //default guess coords
 let currentGuessLAT = 40;
 let currentGuessLONG = 40;
@@ -176,7 +178,6 @@ export function calculateDistances(mapsLat, mapsLong) {
     let d = R * c; // Distance in km
 
     compareDistances(d);   
-    loadResultScreenXP(d);
 }
   
 function deg2rad(deg) {
@@ -186,6 +187,9 @@ function deg2rad(deg) {
 function compareDistances(distance) {
     //compares how big the distance is and enables result screen with a message.
 
+    if (!resultScreenEnabled) {
+        console.log(resultScreenEnabled);
+   
     let finalResult;
     let resultAsString;
 
@@ -208,8 +212,10 @@ function compareDistances(distance) {
         finalResult = Math.round(distance * 10) / 10;
         resultAsString = finalResult+" km";
     }
-
+    
+    loadResultScreenXP(distance);
     enableResultScreen(resultAsString, extraMsg);
+    }
 }
 
 let resMap;
@@ -284,10 +290,7 @@ function clamp(num, min, max) {
   }
 
 //enables the result screen.
-let resultScreenEnabled = false;
-
 function enableResultScreen(resultString, extraMessage) {
-
     document.getElementById("EndOverlay").style.opacity = "100%";
     document.getElementById("EndOverlay").style.visibility = "visible";
 
