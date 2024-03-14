@@ -3,20 +3,21 @@
 
 <head>
   <meta name="viewport" content="initial-scale=1, maximum-scale=1 ,user-scalable=no" />
-  <meta name="description" content="Free geoguessr alternative with unlimited free play - improve your geography skills by guessing the location on google street view.">
+  <meta name="description"
+    content="Free geoguessr alternative with unlimited free play - improve your geography skills by guessing the location on google street view.">
   <meta name="google-adsense-account" content="ca-pub-6043448920153809">
-  
+
   <!-- Files from other sources (Leaflet, Math.js)-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
   <script src="https://unpkg.com/mathjs@11.5.1/lib/browser/math.js"></script>
-  
+
   <!-- guesser css -->
   <link rel="stylesheet" href="/CSS/guesser.css">
-  
+
   <!-- Non-bundled js files -->
   <script type="module" src="analytics.js"></script>
-  
+
   <title>OpenGuessr - free geoguessr alternative</title>
 
   <link rel="icon" href="favicon.ico">
@@ -34,7 +35,8 @@
   <!--this is the navbar-->
   <div class="Banner">
     <div class="bannerItem bannerLeft">
-      <a id="logo" alt="openguessr logo"><img id="icon" src="/IMG/openguessr.svg" alt="OpenGuessr logo - the free geography location-guessing game"></a>
+      <a id="logo" alt="openguessr logo"><img id="icon" src="/IMG/openguessr.svg"
+          alt="OpenGuessr logo - the free geography location-guessing game"></a>
     </div>
     <div class="accountBar">
       <div class="profileInfo notSignedIn" id="profileInfo">
@@ -151,17 +153,26 @@
     </div>
     <!--bottom toolbar with reset button-->
     <div id="BottomBar" class="BottomBar">
-      <!-- BottomBarAd -->
       <img class="BottomBarItem" id="resetButtonSVG" src="/IMG/reset.svg" alt="Return to start position">
       <button class="BottomBarItem" id="privacyButton">Legal</button>
-      <div id="adBar">
-        <!-- ads soon -->
-      </div>
       <button class="BottomBarItem" id="confirmButton">Guess</button>
     </div>
     <div id="bottomShadow"></div>
   </div>
+  <div align="center" id="googleAds">
+    <!-- adsense -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6043448920153809"
+      crossorigin="anonymous"></script>
+    
+      <!-- BottomBar Adsense -->
+    <ins class="adsbygoogle" style="display:inline-block;width:728px;height:90px"
+      data-ad-client="ca-pub-6043448920153809" data-ad-slot="8031976568"></ins>
+  </div>
+  <script>
+    (adsbygoogle = window.adsbygoogle || []).push({});
+  </script>
   <!-- Main.js, bundled. Currently we are not using any import/export statements in here as it is all being bundled togehter but I made it type=module in case we use imports outside of the bundle in the future -->
   <script type="module" src="main.js"></script>
 </body>
+
 </html>

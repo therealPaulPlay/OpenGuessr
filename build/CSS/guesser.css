@@ -417,9 +417,9 @@ html * {
 }
 
 .BottomBar {
-  height: 95px;
-  min-height: 95px;
-  max-height: 95px;
+  height: 105px;
+  min-height: 105px;
+  max-height: 105px;
   display: flex;
   align-items: center;
   justify-content: left;
@@ -433,14 +433,50 @@ html * {
   -webkit-backdrop-filter: blur(10px);
 }
 
-#adBar {
+/* #adBar {
   flex-grow: 1;
   text-align: center;
   height: 90%;
   margin-right: 15px;
   margin-left: 5px;
-  /*border: dashed rgba(255, 255, 255, 0.5);*/
+  border: dashed rgba(255, 255, 255, 0.5);
+} */
+
+#googleAds {
+  position: sticky;
+  bottom: 15px;
+  left: 0px; 
+  right: 0px; 
+  margin-left: auto; 
+  margin-right: auto; 
+  width: 60%;
+  max-height: 92px;
+  height: 90px;
+  padding: 0;
+  z-index: 11;
+  border: dashed rgba(255, 255, 255, 0.5);
+
 }
+
+@media (max-width: 1070px) {
+  #googleAds {
+  width: 50%;
+  }
+}
+
+@media (max-width: 900px) {
+  #googleAds {
+  width: 40%;
+  }
+}
+
+@media (max-width: 700px) {
+  #googleAds {
+  width: 0%;
+  visibility: hidden;
+  }
+}
+
 /* Buttons */
 
 #resetButtonSVG {
@@ -465,7 +501,7 @@ html * {
   padding-right: 10px;
   margin-right: 10px;
   margin-left: 10px;
-  z-index: 11;
+  z-index: 12;
   color: white;
 }
 
