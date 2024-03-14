@@ -417,9 +417,9 @@ html * {
 }
 
 .BottomBar {
-  height: 105px;
-  min-height: 105px;
-  max-height: 105px;
+  height: 95px;
+  min-height: 95px;
+  max-height: 95px;
   display: flex;
   align-items: center;
   justify-content: left;
@@ -444,7 +444,7 @@ html * {
 
 #googleAds {
   position: sticky;
-  bottom: 15px;
+  bottom: 12.5px;
   left: 0px; 
   right: 0px; 
   margin-left: auto; 
@@ -458,15 +458,30 @@ html * {
 
 }
 
+/* the actual google ads bar that should be styled too according to google */
+.adsbygoogle {
+  width: 728px;
+  height: 90px
+}
+
 @media (max-width: 1070px) {
   #googleAds {
   width: 50%;
+  }
+
+  .adsbygoogle {
+    width: 468px;
+    height: 60px
   }
 }
 
 @media (max-width: 900px) {
   #googleAds {
   width: 40%;
+  }
+  .adsbygoogle {
+    width: 320px;
+    height: 50px
   }
 }
 
