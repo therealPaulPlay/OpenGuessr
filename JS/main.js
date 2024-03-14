@@ -188,7 +188,6 @@ function compareDistances(distance) {
     //compares how big the distance is and enables result screen with a message.
 
     if (!resultScreenEnabled) {
-        console.log(resultScreenEnabled);
    
     let finalResult;
     let resultAsString;
