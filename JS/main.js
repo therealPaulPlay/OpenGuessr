@@ -454,3 +454,16 @@ function enableClickListeners(){
 are being used on the signup screen*/
 let closeButton = document.getElementById("popupClose");
 closeButton.addEventListener("click", closePopup);
+
+//toggle Map button
+let toggleMapButton = document.getElementById("floatingMapButton");
+
+toggleMapButton.addEventListener("click", toggleMap);
+
+function toggleMap() {
+    if (document.getElementById("map").style.visibility == "hidden") {
+        document.getElementById("map").style.visibility = "visible";
+    } else {
+        document.getElementById("map").style.visibility = "hidden";
+    }
+}
