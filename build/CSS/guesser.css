@@ -389,7 +389,7 @@ html * {
 
 #map {
   cursor: crosshair;
-  transition: opacity, height, max-height 250ms ease;
+  transition: all 250ms ease;
   margin-left: 0.75%;
   margin-right: 0.75%;
   margin-bottom: 10px;
