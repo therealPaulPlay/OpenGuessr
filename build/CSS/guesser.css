@@ -525,18 +525,24 @@ html * {
   margin-top: auto;
   display: none;
   margin-bottom: 7px;
-  margin-right: 5px;
+  margin-right: 4px;
   z-index: 11;
   font-size: 25px;
   padding: 15px;
-  padding-left: 20px;
-  padding-right: 20px;
+  padding-left: 25px;
+  padding-right: 25px;
   border-radius: 10px;
+  transition: filter 250ms ease;
   user-select: none;
   -webkit-user-select: none;
   color: white;
-  background-color: rgba(42, 44, 71, 0.9);
-  box-shadow: 0 2px 20px rgba(5, 6, 10, 0.5);
+  background-color: hsla(236, 25%, 20%, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#floatingMapButton:hover {
+    filter: brightness(70%);
 }
 
 .BottomBarItem:hover {
@@ -953,7 +959,7 @@ all and (max-width: 1000px) {
 
   #map {
     width: 98.5%;
-    height: 30%;
+    height: 40%;
   }
 
   #floatingMapButton {
