@@ -467,3 +467,20 @@ function toggleMap() {
         document.getElementById("map").style.maxHeight = "0%";
     }
 }
+
+//toggle Sidebar 
+let sideBarExpanded = false;
+
+document.getElementById("floatingSideButton").addEventListener("click", toggleSidebar);
+
+function toggleSidebar()  {
+    if (!sideBarExpanded) {
+        document.getElementById("sideBar").style.maxWidth = "100%";
+        sideBarExpanded = true;
+        document.getElementById("floatingSideButton").innerHTML = "Social Bar ◀";
+    } else {
+        document.getElementById("sideBar").style.maxWidth = "0";
+        sideBarExpanded = false;
+        document.getElementById("floatingSideButton").innerHTML = "Social Bar ▶︎";
+    }
+}

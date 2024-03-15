@@ -230,6 +230,7 @@ function viewProfile() {
   profileWindow.style.display = "block";
   document.getElementById("blackBackground").style.visibility = "visible";
   profileName.innerHTML = username;
+  document.getElementById("statisticExperience").innerHTML = "Total experience: " + Number(localStorage.getItem("experience")).toLocaleString();
 
 }
 

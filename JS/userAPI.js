@@ -87,6 +87,7 @@ export async function getUser(token, id, errorSource) {
     if (response.ok) {
       const data = await response.json();
       await saveUserData(data['user']);
+  
     } else {
       console.error('Fetch failed:', response.status);
       displayError("Fetch failed: " + response.status, errorSource);
