@@ -461,9 +461,9 @@ let toggleMapButton = document.getElementById("floatingMapButton");
 toggleMapButton.addEventListener("click", toggleMap);
 
 function toggleMap() {
-    if (document.getElementById("map").style.visibility == "hidden") {
-        document.getElementById("map").style.visibility = "visible";
+    if (document.getElementById("map").style.maxHeight <= "10%") {
+        document.getElementById("map").style.maxHeight = "100%";
     } else {
-        document.getElementById("map").style.visibility = "hidden";
+        document.getElementById("map").style.maxHeight = "0%";
     }
 }
