@@ -189,7 +189,7 @@
     <div class="center">
         <div class="yourContainer">
             <div class="rankedItem">
-                <p id="yourRank"></p>
+                <p id="yourRank">You: </p>
                 <p id="yourName" class="middle">Loading name</p>
                 <p id="yourExperience"></p>
             </div>
@@ -213,6 +213,11 @@
         dontLoadStats = true;
     }
 
+    //get experience from localstorage in case it isn't being returned by the request
+    if (localStorage.getItem("experience") != null && !dontLoadStats) {
+        document.getElementById("yourExperience").innerHTML = Number(localStorage.getItem("experience")).toLocaleString()
+    }
+
     document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" })
 
     // Function to add a new ranked item to the leaderboard
@@ -221,6 +226,7 @@
         const rankedItem = document.createElement('div');
         rankedItem.classList.add('rankedItem');
 
+        //draw outline around your rank (if it is on the leaderboard)
         if (name == yourUsername && !dontLoadStats) {
             rankedItem.classList.add('yourItem');
         }
@@ -252,6 +258,7 @@
             let userName = user.userName;
             let experience = user.experience;
 
+            //This would be for loading the players stats from the response (in case they are included)
             if (userName == yourUsername && !dontLoadStats) {
                 document.getElementById("yourExperience").innerHTML = Number(experience).toLocaleString();
                 document.getElementById("yourRank").innerHTML = "#" + (i + 1);
