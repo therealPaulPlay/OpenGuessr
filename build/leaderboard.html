@@ -39,7 +39,7 @@
             margin: 0;
         }
 
-        #center {
+        .center {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -101,7 +101,23 @@
             filter: brightness(0.7);
         }
 
-        #container {
+        .container {
+            position: absolute;
+            top: 300px;
+            padding: 5px;
+            padding-left: 15px;
+            padding-right: 15px;
+            width: 80vw;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            margin-bottom: 100px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            text-align: center;
+        }
+
+        .yourContainer {
             position: absolute;
             top: 150px;
             padding: 5px;
@@ -111,7 +127,7 @@
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-            margin-bottom: 100px;
+            margin-bottom: 20px;
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             text-align: center;
@@ -149,6 +165,10 @@
             background-color: #5e3d3d;
         }
 
+        .yourItem {
+            border: solid 5px white;
+        }
+
         @media all and (orientation: portrait) {
             #navbarTitle {
                 font-size: 35px;
@@ -166,15 +186,32 @@
         <button id="backButton">← Back</button>
         <h1 id="navbarTitle">Leaderboard</h1>
     </div>
-    <div id="center">
-        <div id="container">
+    <div class="center">
+        <div class="yourContainer">
+            <div class="rankedItem">
+                <p id="yourRank"></p>
+                <p id="yourName" class="middle">Loading name</p>
+                <p id="yourExperience"></p>
+            </div>
         </div>
+        <div id="container" class="container"></div>
     </div>
     </div>
 
 </body>
 <script type="module">
     import { getAllUsers } from "./userAPI.js";
+
+    //load the username of the player
+    let yourUsername = localStorage.getItem("username") != null ? localStorage.getItem("username") : "Not authenticated";
+    document.getElementById("yourName").innerHTML = yourUsername;
+
+    let dontLoadStats = false;
+
+    //dont load the stats if the user is not signed in 
+    if (localStorage.getItem("username") == null) {
+        dontLoadStats = true;
+    }
 
     document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" })
 
@@ -183,6 +220,10 @@
         const container = document.getElementById('container');
         const rankedItem = document.createElement('div');
         rankedItem.classList.add('rankedItem');
+
+        if (name == yourUsername && !dontLoadStats) {
+            rankedItem.classList.add('yourItem');
+        }
 
         switch (rank) {
             case 1: rankedItem.classList.add('gold');
@@ -210,9 +251,17 @@
             let user = userData[i];
             let userName = user.userName;
             let experience = user.experience;
+
+            if (userName == yourUsername && !dontLoadStats) {
+                document.getElementById("yourExperience").innerHTML = Number(experience).toLocaleString();
+                document.getElementById("yourRank").innerHTML = "#" + (i + 1);
+            }
+
             experience = Number(experience).toLocaleString();
 
+            if (i < 100) {
             addRankedItem(i + 1, userName, experience);
+            }
         }
 
         document.body.style.height = document.documentElement.scrollHeight + 100 + 'px';
