@@ -29,13 +29,17 @@
         }
 
         body {
-            margin: 0;
-            padding: 0;
             font-family: Barlow, Futura, Arial, sans-serif;
             font-size: 20px;
             font-weight: 400;
-            height: fit-content;
+            height: 100%;
+            overflow-y: auto;
             background-color: #07071e;
+            padding: 0;
+            margin: 0;
+        }
+
+        #center {
             display: flex;
             justify-content: center;
             align-items: center;
@@ -105,9 +109,9 @@
             padding-right: 15px;
             width: 80vw;
             max-width: 800px;
-            height: fit-content;
             margin-left: auto;
             margin-right: auto;
+            margin-bottom: 100px;
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 20px;
             text-align: center;
@@ -162,7 +166,9 @@
         <button id="backButton">← Back</button>
         <h1 id="navbarTitle">Leaderboard</h1>
     </div>
-    <div id="container">
+    <div id="center">
+        <div id="container">
+        </div>
     </div>
     </div>
 
@@ -177,6 +183,16 @@
         const container = document.getElementById('container');
         const rankedItem = document.createElement('div');
         rankedItem.classList.add('rankedItem');
+
+        switch (rank) {
+            case 1: rankedItem.classList.add('gold');
+                break;
+            case 2: rankedItem.classList.add('silver');
+                break;
+            case 3: rankedItem.classList.add('bronze');
+                break;
+        }
+
         rankedItem.innerHTML = `
                 <p>#${rank}</p>
                 <p class="middle">${name}</p>
@@ -185,11 +201,25 @@
         container.appendChild(rankedItem);
     }
 
+    async function loadLeaderboard() {
+        // Await the promise returned by getAllUsers()
+        let userData = await getAllUsers();
 
+        // Iterate through the array once userData is available
+        for (var i = 0; i < userData.length; i++) {
+            let user = userData[i];
+            let userName = user.userName;
+            let experience = user.experience;
+            experience = Number(experience).toLocaleString();
 
-    // Example usage:
-    // Add a new ranked item with rank #2, name "NewPlayer", and 500 XP
-    addRankedItem(1, 'NewPlayer', '500.000');
+            addRankedItem(i + 1, userName, experience);
+        }
+
+        document.body.style.height = document.documentElement.scrollHeight + 100 + 'px';
+    }
+
+    loadLeaderboard();
+
 </script>
 
 </html>

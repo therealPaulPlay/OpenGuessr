@@ -477,11 +477,11 @@ function toggleSidebar()  {
     if (!socialBarExpanded) {
         document.getElementById("socialBar").style.maxHeight = "1000px";
         socialBarExpanded = true;
-        document.getElementById("floatingSocialButton").innerHTML = "Social Bar ▲";
+        document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▲";
     } else {
         document.getElementById("socialBar").style.maxHeight = "0";
         socialBarExpanded = false;
-        document.getElementById("floatingSocialButton").innerHTML = "Social Bar ▼";
+        document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▼";
     }
 }
 
