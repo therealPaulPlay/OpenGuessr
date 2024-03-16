@@ -98,6 +98,28 @@ export async function getUser(token, id, errorSource) {
   }
 }
 
+export async function getAllUsers() {
+  try {
+    const response = await fetch(`${userGetEndpoint}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+  
+    } else {
+      console.error('Fetch failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching the user:', error);
+  }
+}
+
 export async function updatePassword(token, id, errorSource) {
   try {
     const response = await fetch(`${userGetEndpoint}/${id}`, {

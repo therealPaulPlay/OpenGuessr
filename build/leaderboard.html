@@ -6,6 +6,7 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
     <link rel="icon" href="favicon.ico">
     <title>Leaderboard - OpenGuessr</title>
+    <script type="module" src="userAPI.js"></script>
     <style>
         @font-face {
             font-family: Barlow;
@@ -153,7 +154,6 @@
                 font-size: 20px;
             }
         }
-
     </style>
 </head>
 
@@ -163,31 +163,33 @@
         <h1 id="navbarTitle">Leaderboard</h1>
     </div>
     <div id="container">
-        <div class="rankedItem gold">
-            <p>#1</p>
-            <p class="middle">TheBestPlayer</p>
-            <p>1.000.000 XP</p>
-        </div>
-        <div class="rankedItem silver">
-            <p>#2</p>
-            <p class="middle">TheBestPlayer</p>
-            <p>1.000.000 XP</p>
-        </div>
-        <div class="rankedItem bronze">
-            <p>#3</p>
-            <p class="middle">TheBestPlayer</p>
-            <p>1.000.000 XP</p>
-        </div>
-        <div class="rankedItem">
-            <p>#4</p>
-            <p class="middle">TheBestPlayer</p>
-            <p>1.000.000 XP</p>
-        </div>
+    </div>
     </div>
 
 </body>
 <script>
+    import { getAllUsers } from "./userAPI.js";
+
     document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" })
+
+    // Function to add a new ranked item to the leaderboard
+    function addRankedItem(rank, name, xp) {
+        const container = document.getElementById('container');
+        const rankedItem = document.createElement('div');
+        rankedItem.classList.add('rankedItem');
+        rankedItem.innerHTML = `
+                <p>#${rank}</p>
+                <p class="middle">${name}</p>
+                <p>${xp} XP</p>
+            `;
+        container.appendChild(rankedItem);
+    }
+
+
+
+    // Example usage:
+    // Add a new ranked item with rank #2, name "NewPlayer", and 500 XP
+    addRankedItem(1, 'NewPlayer', '500.000');
 </script>
 
 </html>
