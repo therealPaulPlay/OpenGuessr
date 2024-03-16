@@ -469,18 +469,24 @@ function toggleMap() {
 }
 
 //toggle Sidebar 
-let sideBarExpanded = false;
+let socialBarExpanded = false;
 
-document.getElementById("floatingSideButton").addEventListener("click", toggleSidebar);
+document.getElementById("floatingSocialButton").addEventListener("click", toggleSidebar);
 
 function toggleSidebar()  {
-    if (!sideBarExpanded) {
-        document.getElementById("sideBar").style.maxWidth = "100%";
-        sideBarExpanded = true;
-        document.getElementById("floatingSideButton").innerHTML = "Social Bar ◀";
+    if (!socialBarExpanded) {
+        document.getElementById("socialBar").style.maxHeight = "1000px";
+        socialBarExpanded = true;
+        document.getElementById("floatingSocialButton").innerHTML = "Social Bar ▲";
     } else {
-        document.getElementById("sideBar").style.maxWidth = "0";
-        sideBarExpanded = false;
-        document.getElementById("floatingSideButton").innerHTML = "Social Bar ▶︎";
+        document.getElementById("socialBar").style.maxHeight = "0";
+        socialBarExpanded = false;
+        document.getElementById("floatingSocialButton").innerHTML = "Social Bar ▼";
     }
+}
+
+document.getElementById("leaderboardButton").addEventListener("click", goToLeaderboard);
+
+function goToLeaderboard() {
+    window.location.href = "/leaderboard.html";
 }

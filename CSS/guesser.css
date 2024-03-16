@@ -59,10 +59,16 @@ html * {
   margin-top: 2px;
 }
 
-.accountBar {
+#socialArea {
   position: absolute;
   left: 50%;
   transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.accountBar {
   background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -70,7 +76,6 @@ html * {
   border-radius: 10px;
   padding-left: 2px;
   margin-top: 15px;
-  margin-bottom: 5px;
   height: 60px;
   width: fit-content;
   display: flex;
@@ -866,75 +871,65 @@ button {
   outline: inherit;
 }
 
-#floatingSideButton {
+#floatingSocialButton {
   cursor: pointer;
   width: fit-content;
-  margin-top: auto;
-  margin-bottom: auto;
-  height: 200px;
+  margin-left: auto;
+  margin-right: auto;
   font-size: 22px;
-  padding: 10px 10px;
+  padding: 5px 20px;
   text-align: center;
-  transition: all 0.2s ease;
   border-radius: 10px;
-  border-bottom-left-radius: 0;
   border-top-left-radius: 0;
+  border-top-right-radius: 0;
   user-select: none;
+  transition: none;
   -webkit-user-select: none;
   color: white;
-  z-index: 12;
   background-color: rgba(42, 44, 71, 0.9);
   box-shadow: 0 2px 20px rgba(25, 29, 45, 0.5);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  writing-mode: vertical-rl;
-
 }
 
-#floatingSideButton:hover {
+#floatingSocialButton:hover {
   filter: brightness(0.7);
 }
 
-.sideBarIcons {
+.socialBarIcons {
   width: 20px;
   height: auto;
   margin-left: 2px;
   margin-bottom: -2px;
 }
 
-#sideArea {
-  position: absolute;
-  top: auto;
-  bottom: auto;
-  left: 0;
-  display: flex;
-  justify-content: left;
-  height: fit-content;
-}
-
-#sideBar {
-  height: 40dvh;
+#socialBar {
+  margin-left: auto;
+  margin-right: auto;
+  padding-right: 5px;
+  padding-left: 5px;
   border-radius: 10px;
-  border-bottom-left-radius: 0;
   border-top-left-radius: 0;
-  left: 0;
-  transition: all 250ms ease;
-  width: fit-content;
+  border-top-right-radius: 0;
   background-color: rgba(42, 44, 71, 0.9);
+  box-shadow: 0 2px 20px rgba(25, 29, 45, 0.5);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 2px 20px rgba(5, 6, 10, 0.5);
-  z-index: 12;
   overflow: hidden;
-  max-width: 0;
+  max-height: 0;
+  transition: all 250ms ease;
 }
 
-.sideBarButton {
-  height: 50px;
+.socialBarButton {
+  color: black;
+  background-color: white;
   white-space: nowrap;
+  margin: 15px;
+  padding-left: 35px;
+  padding-right: 35px;
 }
 
-.sideBarButton:hover {
+.socialBarButton:hover {
   filter: brightness(0.7);
 }
 
@@ -1013,9 +1008,22 @@ all and (max-width: 1250px) {
     right: 0;
   }
 
-  .accountBar {
+  #socialArea {
     margin-top: 85px;
     left: 165px;
+  }
+
+  #floatingSocialButton {
+    margin-left: 0;
+    border-bottom-left-radius: 0px;
+  }
+
+  #socialBar {
+    margin-left: 0;
+    border-bottom-left-radius: 0px;
+  }
+
+  .accountBar {
     border-bottom-left-radius: 0px;
     border-top-left-radius: 0px;
   }
@@ -1028,7 +1036,7 @@ all and (max-width: 1000px) {
     display: none;
   }
 
-  .accountBar {
+  #socialArea {
     display: none;
   }
 
