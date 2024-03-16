@@ -886,7 +886,7 @@ button {
   transition: none;
   -webkit-user-select: none;
   color: white;
-  background-color: rgba(42, 44, 71, 0.9);
+  background-color: rgba(42, 44, 71, 0.85);
   box-shadow: 0 2px 20px rgba(25, 29, 45, 0.5);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
