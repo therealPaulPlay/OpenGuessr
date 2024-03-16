@@ -197,9 +197,18 @@ export async function loadResultScreenXP(distance) {
     let XPbarResource = document.getElementById("endScreenXPbarResource");
 
     let currentXP = Number(localStorage.getItem("experience"));
-    let earnedXP = Math.round(5000 * ((0.998036) ** distance));
 
-    XPbarResource.classList.remove("XPbarAnimate");
+    let selectedCategory = localStorage.getItem("selectedCategory");
+
+    let earnedXP;
+
+    if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "famous" || selectedCategory == "capital") {
+        earnedXP = Math.round(5000 * ((0.998036) ** distance)); 
+    } else {
+      earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
+    }
+
+      XPbarResource.classList.remove("XPbarAnimate");
 
     if ((willCauseLevelUpgrade(currentXP, earnedXP)) > 1) {
       XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
