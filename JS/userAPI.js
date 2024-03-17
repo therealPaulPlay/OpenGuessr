@@ -87,6 +87,7 @@ export async function getUser(token, id, errorSource) {
     if (response.ok) {
       const data = await response.json();
       await saveUserData(data['user']);
+  
     } else {
       console.error('Fetch failed:', response.status);
       displayError("Fetch failed: " + response.status, errorSource);
@@ -94,6 +95,28 @@ export async function getUser(token, id, errorSource) {
   } catch (error) {
     console.error('Error occurred while fetching the user:', error);
     displayError("Error occurred while fetching the user: " + error, errorSource);
+  }
+}
+
+export async function getAllUsers() {
+  try {
+    const response = await fetch(`${userGetEndpoint}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+  
+    } else {
+      console.error('Fetch failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching the user:', error);
   }
 }
 

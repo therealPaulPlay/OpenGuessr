@@ -38,23 +38,31 @@
       <a id="logo" alt="openguessr logo"><img id="icon" src="/IMG/openguessr.svg"
           alt="OpenGuessr logo - the free geography location-guessing game"></a>
     </div>
-    <div class="accountBar">
-      <div class="profileInfo notSignedIn" id="profileInfo">
-        <h2 id="accountName">Guest</h2>
-        <div class="level" id="levelDisplay">
-          <div class="progress">
-            <div class="progressBar" id="progressBar"></div>
+    <div id="socialArea">
+      <div class="accountBar">
+        <div class="profileInfo notSignedIn" id="profileInfo">
+          <h2 id="accountName">Guest</h2>
+          <div class="level" id="levelDisplay">
+            <div class="progress">
+              <div class="progressBar" id="progressBar"></div>
+            </div>
+            <span id="levelText">Level 1</span>
           </div>
-          <span id="levelText">Level 1</span>
+        </div>
+        <div class="loginArea">
+          <button class="accountButton" id="loginButton" type="button" alt="log in">Login / Sign up</button>
+          <button class="accountButton" id="profileButton" type="button" alt="go to profile">Profile</button>
+          <button class="accountButton" id="logoutButton" type="button" alt="log out">
+            <img id="logoutImage" src="/IMG/signout.png" alt="Log out of your OpenGuessr account.">
+          </button>
         </div>
       </div>
-      <div class="loginArea">
-        <button class="accountButton" id="loginButton" type="button" alt="log in">Login / Sign up</button>
-        <button class="accountButton" id="profileButton" type="button" alt="go to profile">Profile</button>
-        <button class="accountButton" id="logoutButton" type="button" alt="log out">
-          <img id="logoutImage" src="/IMG/signout.png" alt="Log out of your OpenGuessr account.">
+      <div id="socialBar">
+        <button id="leaderboardButton" class="accountButton socialBarButton">Leaderboard
+          <img class="socialBarIcons" src="/IMG/leaderboard_icon.png" alt="Leaderboard for OpenGuessr">
         </button>
       </div>
+      <button id="floatingSocialButton">Social Menu ▼</button>
     </div>
     <div class="bannerItem bannerRight">
       <div class="leftNavbarButtons">
@@ -104,7 +112,7 @@
       <br>
     </div>
     <h2>User Stats: </h2>
-    <p> Statistics will be added soon. Be open to new features!</p>
+    <p id="statisticExperience"> Total experience: not set.</p>
     <button id="profileClose" class="accountButton white accountClose">Close</button>
   </div>
   <!-- Result screen -->
@@ -159,10 +167,10 @@
     <!-- adsense -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6043448920153809"
       crossorigin="anonymous"></script>
-    
-      <!-- BottomBar Adsense -->
-    <ins class="adsbygoogle" style="display:inline-block;"
-      data-ad-client="ca-pub-6043448920153809" data-ad-slot="8031976568"></ins>
+
+    <!-- BottomBar Adsense -->
+    <ins class="adsbygoogle" style="display:inline-block;" data-ad-client="ca-pub-6043448920153809"
+      data-ad-slot="8031976568"></ins>
   </div>
   <script>
     (adsbygoogle = window.adsbygoogle || []).push({});

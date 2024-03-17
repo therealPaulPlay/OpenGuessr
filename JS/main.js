@@ -458,12 +458,39 @@ closeButton.addEventListener("click", closePopup);
 //toggle Map button
 let toggleMapButton = document.getElementById("floatingMapButton");
 
+let mapExpanded = true;
+
 toggleMapButton.addEventListener("click", toggleMap);
 
 function toggleMap() {
-    if (document.getElementById("map").style.maxHeight <= "10%") {
+    if (!mapExpanded) {
         document.getElementById("map").style.maxHeight = "100%";
+        mapExpanded = true;
     } else {
         document.getElementById("map").style.maxHeight = "0%";
+        mapExpanded = false;
     }
+}
+
+//toggle Sidebar 
+let socialBarExpanded = false;
+
+document.getElementById("floatingSocialButton").addEventListener("click", toggleSidebar);
+
+function toggleSidebar()  {
+    if (!socialBarExpanded) {
+        document.getElementById("socialBar").style.maxHeight = "1000px";
+        socialBarExpanded = true;
+        document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▲";
+    } else {
+        document.getElementById("socialBar").style.maxHeight = "0";
+        socialBarExpanded = false;
+        document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▼";
+    }
+}
+
+document.getElementById("leaderboardButton").addEventListener("click", goToLeaderboard);
+
+function goToLeaderboard() {
+    window.location.href = "/leaderboard.html";
 }
