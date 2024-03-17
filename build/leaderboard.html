@@ -146,6 +146,8 @@
             padding: 0;
             padding-left: 30px;
             padding-right: 30px;
+            white-space: nowrap;
+            overflow: hidden;
         }
 
         .middle {
@@ -167,6 +169,12 @@
 
         .yourItem {
             border: solid 5px white;
+        }
+
+        .maxlength {
+            max-width: 40%;
+            text-overflow: none; 
+            overflow: hidden;
         }
 
         @media all and (orientation: portrait) {
@@ -241,9 +249,9 @@
         }
 
         rankedItem.innerHTML = `
-                <p>#${rank}</p>
-                <p class="middle">${name}</p>
-                <p>${xp} XP</p>
+                <p class="maxlength">#${rank}</p>
+                <p class="middle maxlength">${name}</p>
+                <p class="maxlength">${xp} XP</p>
             `;
         container.appendChild(rankedItem);
     }

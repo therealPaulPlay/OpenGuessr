@@ -458,13 +458,17 @@ closeButton.addEventListener("click", closePopup);
 //toggle Map button
 let toggleMapButton = document.getElementById("floatingMapButton");
 
+let mapExpanded = true;
+
 toggleMapButton.addEventListener("click", toggleMap);
 
 function toggleMap() {
-    if (document.getElementById("map").style.maxHeight <= "10%") {
+    if (!mapExpanded) {
         document.getElementById("map").style.maxHeight = "100%";
+        mapExpanded = true;
     } else {
         document.getElementById("map").style.maxHeight = "0%";
+        mapExpanded = false;
     }
 }
 
