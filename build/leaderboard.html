@@ -211,7 +211,7 @@
     import { getAllUsers } from "./userAPI.js";
 
     //load the username of the player
-    let yourUsername = localStorage.getItem("username") != null ? localStorage.getItem("username") : "Not authenticated";
+    let yourUsername = localStorage.getItem("username") != null ? localStorage.getItem("username") : "Not signed in";
     document.getElementById("yourName").innerHTML = yourUsername;
 
     let dontLoadStats = false;
