@@ -352,19 +352,20 @@ function goToLegal() {
 //Unfold the second navbar for categories
 let extendedNavbar = document.getElementById("extendedNavbar");
 let categoryMenuButton = document.getElementById("categoryMenuButton");
+let floatingCategoryArea = document.getElementById("floatingCategoryArea");
 
 let categoriesExpanded = false;
 
 categoryMenuButton.addEventListener("click", function() {
     // Toggle the visibility of the extended navbar
     if (!categoriesExpanded) {
-        categoryMenuButton.style.top = "395px";
+        floatingCategoryArea.style.top = "395px";
         extendedNavbar.classList.add("expanded");
         categoryMenuButton.innerText = "Map Categories ▲";
         categoriesExpanded = true;
     } else {
         setTimeout(function() {
-            categoryMenuButton.style.top = "85px";
+            floatingCategoryArea.style.top = "85px";
             extendedNavbar.scrollTop = 0;
         }, 75); 
         extendedNavbar.classList.remove("expanded");
@@ -494,3 +495,24 @@ document.getElementById("leaderboardButton").addEventListener("click", goToLeade
 function goToLeaderboard() {
     window.location.href = "/leaderboard.html";
 }
+
+//help / how to play window
+
+let helpButton = document.getElementById("helpButton");
+helpButton.addEventListener("click", toggleHelpWindow)
+
+let helpWindow = document.getElementById("helpWindow");
+
+let helpClose = document.getElementById("helpClose");
+helpClose.addEventListener("click", toggleHelpWindow);
+
+function toggleHelpWindow() {
+    if (helpWindow.style.display == "block") {
+        helpWindow.style.display = "none";
+        document.getElementById("blackBackground").style.visibility = "hidden";
+    } else {
+        helpWindow.style.display = "block";
+        document.getElementById("blackBackground").style.visibility = "visible";
+    }
+}
+
