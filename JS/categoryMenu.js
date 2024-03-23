@@ -1,4 +1,5 @@
-import { loadLocationJSON, generateNewLocation } from "./main.js";
+import { generateNewLocation } from "./main.js";
+import { loadLocationJSON } from "./locationGeneration.js";
 
 //Defined Categories ------------------------------------------------------------------------
 const Category = {
@@ -113,7 +114,7 @@ function changeCategory(category) {
     if (mapCategory != "standard") {
         loadLocationJSON(mapCategory); //this also generates a new location
     } else {
-        generateNewLocation("SDK", true)
+        generateNewLocation("SDK")
     }
 
 }

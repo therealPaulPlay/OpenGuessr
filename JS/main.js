@@ -3,7 +3,6 @@ for signupScreen.js only. LoadMap and AccountLogic are both not being included i
 of the bundled main.js. */
 
 import { resetMap, getMapSource } from './miniMap.js';
-import { errorPopup} from "./errorHandling.js";
 import { loadResultScreenXP } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
@@ -12,36 +11,14 @@ import { getLocationCoordinates } from './locationGeneration.js';
 let currentStreetviewLat = 0;
 let currentStreetviewLong = 0;
 
-let listOfLocations;
-let jsonResponse;
-
-
-//Load location JSON files ----------------------------------------------------------------------------------------------
-export async function loadLocationJSON(jsonName) {
-    try {
-        let response = await fetch("./JSON/" + jsonName + "Locations.json");
-        if (!response.ok) {
-            throw new Error("JSON fetch failed.");
-        }
-        
-        jsonResponse = await response.json();
-        listOfLocations = jsonResponse;
-        
-        generateNewLocation("JSON", true);
-    } catch (error) {
-        errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
-        console.error(error); 
-    }
-}
-
 //Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
 
-export async function generateNewLocation(type, initialLoad) {
+export async function generateNewLocation(type) {
     resetMap();
-    let newLocationArray
+    let newLocationArray;
 
     if (type == "JSON") {
-        newLocationArray = getLocationCoordinates("JSON");
+        newLocationArray = await getLocationCoordinates("JSON");
     } else {
         newLocationArray = await getLocationCoordinates("SDK");
     }
@@ -52,13 +29,9 @@ export async function generateNewLocation(type, initialLoad) {
     } catch {
         console.error("The coordinates to load the iframe from are not defined. " + "Lat: " + currentStreetviewLat + " Long: " + currentStreetviewLong);
     }
+    
+    loadIframe(currentStreetviewLat, currentStreetviewLong);  
 
-
-    if (initialLoad) {
-        loadIframe(currentStreetviewLat, currentStreetviewLong, true);   
-    } else {
-        loadIframe(currentStreetviewLat, currentStreetviewLong, false)
-    }
 }
 
 //Calculate distance to the target destination on result screen & display motivational message ---------------------------------------------------------------------
@@ -200,22 +173,26 @@ function clamp(num, min, max) {
 //Load the Main StreetView Iframe -------------------------------------------------------------------------------------------------------------
 let loadingLink = "/loader.html";
 
-export function loadIframe(lat, long, notInitialLoad) {
-
+export function loadIframe(lat, long) {
     loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+lat+","+long+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0&fov=90"; //API key (last part of URL)
     
-    if (!notInitialLoad) {
-         //if it is the inital load - reloads the iFrame and sets the position of the camera back to it's origin.
-        document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
-        window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
-    }
-    else {
-        document.getElementById("BeforeOverlay").style.opacity = "100";
-        document.getElementById("BeforeOverlay").style.visibility = "visible";
-        document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
-        window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 400);
-    }
-   
+    // Reference to the iframe
+    const iframe = document.getElementById("GuesserWindow");
+
+    // Define a function to handle iframe load event
+    const handleLoad = () => {
+        setTimeout(function() {
+            const beforeOverlay = document.getElementById("BeforeOverlay");
+            beforeOverlay.style.opacity = "0";
+            beforeOverlay.style.visibility = "hidden";
+        }, 200);
+    };
+
+    //add new load listener and delete old one - on load: fade out overlay
+    iframe.removeEventListener('load', handleLoad);
+    iframe.addEventListener('load', handleLoad);
+
+    iframe.setAttribute("src", loadingLink);
 }
 
 export function reloadIframe() {

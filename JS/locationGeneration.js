@@ -1,4 +1,11 @@
+import { errorPopup } from "./errorHandling.js";
+import { generateNewLocation } from "./main.js";
+
 export async function getLocationCoordinates(type) {
+    //show loading screen
+    document.getElementById("BeforeOverlay").style.opacity = "100";
+    document.getElementById("BeforeOverlay").style.visibility = "visible";
+
     if (type == "JSON") {
         return getCoordsFromJSON();
     } else {
@@ -7,10 +14,34 @@ export async function getLocationCoordinates(type) {
 }
 
 
-//Get Location from JSON (Legacy/Custom Map creation method) ---------------------------------------------------------------------------------
+//Get Location from JSON (Legacy/Custom Map creation method) ----------------------------------------------------------------------------------------------------
+let listOfLocations;
+let jsonResponse;
+
+
+//Load location JSON files
+export async function loadLocationJSON(jsonName) {
+    try {
+        let response = await fetch("./JSON/" + jsonName + "Locations.json");
+        if (!response.ok) {
+            throw new Error("JSON fetch failed.");
+        }
+        
+        jsonResponse = await response.json();
+        listOfLocations = jsonResponse;
+        
+        generateNewLocation("JSON");
+
+    } catch (error) {
+        errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
+        console.error(error); 
+    }
+}
+
 let lastGuessIndex = null;
 let guessIndex;
 
+//This will be called in main.js when a new location is bein generated
 function getCoordsFromJSON() {
     do {
         guessIndex = Math.floor(Math.random()*listOfLocations.length); 
@@ -18,8 +49,10 @@ function getCoordsFromJSON() {
     
     lastGuessIndex = guessIndex;
 
-    let resultLocationsArray = [listOfLocations[guessIndex][0], listOfLocations[guessIndex][1]];
+    const resultLat = listOfLocations[guessIndex][0];
+    const resultLong = listOfLocations[guessIndex][1];
 
+    let resultLocationsArray = [resultLat, resultLong];
     return resultLocationsArray;
 }
 
@@ -31,7 +64,7 @@ import { Loader } from "@googlemaps/js-api-loader";
 // not using any apiKey!
 const loader = new Loader({
     version: "weekly",
-    libraries: ["maps", "streetView", "core"]
+    libraries: ["streetView"]
 });
 
 let streetViewService;
@@ -100,6 +133,7 @@ async function getCoordsFromGoogle(retryCount = 0) {
                 return await getCoordsFromGoogle(retryCount + 1);
             } else {
                 console.error("Maximum retry limit reached.");
+                errorPopup("No location found.", "Reload the page or switch to a different category", "Google SDK failed to find a location", false);
                 return null;
             }
         } else {
