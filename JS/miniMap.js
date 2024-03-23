@@ -1,4 +1,4 @@
-import { setMapToTargetPosition } from "./main.js";
+import { loadResultMap } from "./main.js";
 import { calculateDistances } from "./main.js";
 
 const Provider = {
@@ -147,7 +147,7 @@ map.on('click', onMapClick);
 map.on('mouseover', onMapHover);
 map.on('mouseout', onMapHover);
 
-//click listener to make the confirm button work
+//click listener for confirm button
 const confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
 
@@ -161,7 +161,6 @@ function onMapHover() {
 }
 
 export function confirmButtonClicks() {
-    //calls functions since you can't pass parameters from a function outside of the file. Note: you can, with export variables
     calculateDistances(markerPosition.lat, markerPosition.lng);
-    setMapToTargetPosition(lat, long);
+    loadResultMap(lat, long);
 }

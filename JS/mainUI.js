@@ -1,7 +1,7 @@
 import { closePopup } from "./errorHandling.js";
 import { generateNewLocation, resMap, reloadIframe } from "./main.js";
 
-//How to play Window ---------------------------------------------------------------------------------------
+//How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
 helpButton.addEventListener("click", toggleHelpWindow)
 
@@ -60,16 +60,13 @@ function toggleMap() {
     }
 }
 
-//Popup Window (Account info and How to play window) ------------------------------------------------------------
+//Universal Popup Window (Account info and How to play window) ------------------------------------------------------------
 let closeButton = document.getElementById("popupClose");
 closeButton.addEventListener("click", closePopup);
 
-//Various links in the navbar ----------------------------------------------------------------------------------------
+//Various buttons and links ------------------------------------------------------------------------------------------------
 let resetBTN = document.getElementById("resetButtonSVG");
 resetBTN.addEventListener("click", function () { reloadIframe() });
-
-let logoBTN = document.getElementById("logo");
-logoBTN.addEventListener("click", function () { generateNewLocation(true) });
 
 let nextRound = document.getElementById("nextRound");
 nextRound.addEventListener("click", transitionToStart);
@@ -100,8 +97,6 @@ export function enableResultScreen(resultString, extraMessage) {
     document.getElementById("EndOverlay").style.opacity = "100%";
     document.getElementById("EndOverlay").style.visibility = "visible";
 
-    document.getElementById("logo").style.pointerEvents = "none";
-
     document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
 
@@ -111,7 +106,6 @@ export function enableResultScreen(resultString, extraMessage) {
 function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
     setTimeout(function() {document.getElementById("EndOverlay").style.visibility = "hidden"}, 200)
-    document.getElementById("logo").style.pointerEvents = "auto";
     
     resultScreenEnabled = false;
 }

@@ -368,8 +368,6 @@ li {
 }
 
 #logo {
-  cursor: pointer;
-  pointer-events: auto;
   color: transparent;
   background-color: transparent;
 }

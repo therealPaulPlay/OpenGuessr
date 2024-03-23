@@ -6,13 +6,11 @@ import { resetMap, getMapSource } from './miniMap.js';
 import { errorPopup} from "./errorHandling.js";
 import { loadResultScreenXP } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
+import { getLocationCoordinates } from './locationGeneration.js';
 
-let lastGuessIndex = null;
-let guessIndex;
-
-//default guess coords
-let currentGuessLAT = 40;
-let currentGuessLONG = 40;
+//default coords of the location
+let currentStreetviewLat = 0;
+let currentStreetviewLong = 0;
 
 let listOfLocations;
 let jsonResponse;
@@ -29,31 +27,37 @@ export async function loadLocationJSON(jsonName) {
         jsonResponse = await response.json();
         listOfLocations = jsonResponse;
         
-        generateNewLocation(true);
+        generateNewLocation("JSON", true);
     } catch (error) {
         errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
-        console.error(error); // Log the error for debugging purposes
+        console.error(error); 
     }
 }
 
-//Load new location ---------------------------------------------------------------------------------------------------
-export function generateNewLocation(initialLoad) {
+//Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
+
+export async function generateNewLocation(type, initialLoad) {
     resetMap();
+    let newLocationArray
 
-    do {
-        guessIndex = Math.floor(Math.random()*listOfLocations.length);      //calculating random location
-    } while (lastGuessIndex === guessIndex);
+    if (type == "JSON") {
+        newLocationArray = getLocationCoordinates("JSON");
+    } else {
+        newLocationArray = await getLocationCoordinates("SDK");
+    }
 
-    lastGuessIndex = guessIndex; //setting last Index
+    try {
+        currentStreetviewLat = newLocationArray[0];
+        currentStreetviewLong = newLocationArray[1];
+    } catch {
+        console.error("The coordinates to load the iframe from are not defined. " + "Lat: " + currentStreetviewLat + " Long: " + currentStreetviewLong);
+    }
 
-    //These two are the variables that reflect where the location actually is!
-    currentGuessLAT = listOfLocations[guessIndex][0];
-    currentGuessLONG = listOfLocations[guessIndex][1];
 
     if (initialLoad) {
-        loadIframe(currentGuessLAT, currentGuessLONG, true);   
+        loadIframe(currentStreetviewLat, currentStreetviewLong, true);   
     } else {
-        loadIframe(currentGuessLAT, currentGuessLONG, false)
+        loadIframe(currentStreetviewLat, currentStreetviewLong, false)
     }
 }
 
@@ -67,8 +71,8 @@ let destinationMarker;
 export function calculateDistances(mapsLat, mapsLong) {
     let lat1 = mapsLat;
     let lon1 = mapsLong;
-    let lat2 = currentGuessLAT;
-    let lon2 = currentGuessLONG;
+    let lat2 = currentStreetviewLat;
+    let lon2 = currentStreetviewLong;
     let R = 6371; // Radius of the earth in km
     let dLat = deg2rad(lat2-lat1);  // deg2rad below
     let dLon = deg2rad(lon2-lon1); 
@@ -123,7 +127,7 @@ function compareDistances(distance) {
 
 export let resMap;
 
-export function setMapToTargetPosition(playersLat, playersLong) {
+export function loadResultMap(playersLat, playersLong) {
    //this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
     if (resMap && resMap.remove) {
         resMap.off();
@@ -133,7 +137,7 @@ export function setMapToTargetPosition(playersLat, playersLong) {
     //this makes it so the map in the result screen is focused on the center between the point
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
-    resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15);
+    resMap = L.map('resultMap').setView([currentStreetviewLat, currentStreetviewLong], 15);
     L.tileLayer(getMapSource(), {
 }).addTo(resMap);
 
@@ -154,7 +158,7 @@ const greenIcon = new L.Icon({
 });
 
     //used to create the line between the points
-    let curLatLng = new L.LatLng(currentGuessLAT, currentGuessLONG);
+    let curLatLng = new L.LatLng(currentStreetviewLat, currentStreetviewLong);
     let playerLatLng = new L.LatLng(playersLat, playersLong);
     let polyList = [curLatLng, playerLatLng];
     let pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
@@ -168,7 +172,7 @@ const greenIcon = new L.Icon({
     resMap.fitBounds(pointList, {padding: [150,250]});
 
     //this places the "correct" marker that actually reflects the target location
-    destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: greenIcon});
+    destinationMarker = new L.Marker([currentStreetviewLat, currentStreetviewLong], {icon: greenIcon});
     destinationMarker.addTo(resMap);
 
     setTimeout(flyToDestination, 1000)
@@ -176,7 +180,7 @@ const greenIcon = new L.Icon({
 
 function flyToDestination() {
     if (document.getElementById("EndOverlay").style.opacity == "1") {
-    resMap.flyTo([currentGuessLAT, currentGuessLONG], clamp(resMap.getZoom() + 4,0,18), {
+    resMap.flyTo([currentStreetviewLat, currentStreetviewLong], clamp(resMap.getZoom() + 4,0,18), {
         animate: true, 
         duration: 2
      });
@@ -194,7 +198,7 @@ function clamp(num, min, max) {
 
 
 //Load the Main StreetView Iframe -------------------------------------------------------------------------------------------------------------
-let loadingLink = "/loader.html"
+let loadingLink = "/loader.html";
 
 export function loadIframe(lat, long, notInitialLoad) {
 

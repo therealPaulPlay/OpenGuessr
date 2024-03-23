@@ -109,13 +109,16 @@ function changeCategory(category) {
         localStorage.setItem("selectedCategory", category);
     }
 
-    loadLocationJSON(mapCategory);
+    //pick between json and maps api loading depending on the category type
+    if (mapCategory != "standard") {
+        loadLocationJSON(mapCategory); //this also generates a new location
+    } else {
+        generateNewLocation("SDK", true)
+    }
+
 }
 
 //Load the map category using localstorage ----------------------------------------------------------------
-
-loadMapCategory();
-changeCategory(mapCategory);
 
 function loadMapCategory() {
     let storedSelectedCategory = localStorage.getItem("selectedCategory");
@@ -123,3 +126,6 @@ function loadMapCategory() {
     if (storedSelectedCategory != null)
         mapCategory = storedSelectedCategory;
 }
+
+loadMapCategory();
+changeCategory(mapCategory);
