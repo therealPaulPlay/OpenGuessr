@@ -2,130 +2,42 @@
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
 
-import { resetMap, getMapSource } from './loadMap.js';
-import { errorPopup, closePopup } from "./errorHandling.js";
+import { resetMap, getMapSource } from './miniMap.js';
+import { errorPopup} from "./errorHandling.js";
 import { loadResultScreenXP } from "./accountLogic.js";
+import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 
 let lastGuessIndex = null;
 let guessIndex;
-
-let resultScreenEnabled = false;
 
 //default guess coords
 let currentGuessLAT = 40;
 let currentGuessLONG = 40;
 
-//get the map category and read json accordingly!
-const Category = {
-    STANDARD: "standard",
-    CAPITAL: "capital",
-    FAMOUS: "famous",
-    USA: "usa",
-    GERMANY: "germany",
-    UK: "uk",
-    FRANCE: "france",
-    SPAIN: "spain",
-    POLAND: "poland",
-    CANADA: "canada",
-    SWEDEN: "sweden"
-}
-
-let mapCategory = Category.STANDARD;
-
-//category buttons - this has to be on top because these variables are needed below
-//note to myself: Wrong IDs break everything
-const standardCategoryButton = document.getElementById("standardCategory");
-standardCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.STANDARD);
-});
-
-const capitalCategoryButton = document.getElementById("capitalCategory");
-capitalCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.CAPITAL);
-});
-
-const famousCategoryButton = document.getElementById("famousCategory");
-famousCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.FAMOUS);
-});
-
-const usaCategoryButton = document.getElementById("usaCategory");
-usaCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.USA);
-});
-
-
-const germanyCategoryButton = document.getElementById("germanyCategory");
-germanyCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.GERMANY);
-});
-
-const ukCategoryButton = document.getElementById("ukCategory");
-ukCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.UK);
-});
-
-const franceCategoryButton = document.getElementById("franceCategory");
-franceCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.FRANCE);
-});
-
-const spainCategoryButton = document.getElementById("spainCategory");
-spainCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.SPAIN);
-});
-
-const polandCategoryButton = document.getElementById("polandCategory");
-polandCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.POLAND);
-});
-
-const canadaCategoryButton = document.getElementById("canadaCategory");
-canadaCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.CANADA);
-});
-
-const swedenCategoryButton = document.getElementById("swedenCategory");
-swedenCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.SWEDEN);
-});
-
-//load the map category initially
-loadMapCategory();
-
-//change the category in the UI
-changeCategory(mapCategory);
-
-//loads the mapCategory from LocalStorage
-function loadMapCategory() {
-    let storedSelectedCategory = localStorage.getItem("selectedCategory");
-
-    if (storedSelectedCategory != null)
-        mapCategory = storedSelectedCategory;
-}
-
 let listOfLocations;
 let jsonResponse;
 
-async function loadLocationJsonAndGenerateLocation() {
+
+//Load location JSON files ----------------------------------------------------------------------------------------------
+export async function loadLocationJSON(jsonName) {
     try {
-        let response = await fetch("./JSON/" + mapCategory + "Locations.json");
+        let response = await fetch("./JSON/" + jsonName + "Locations.json");
         if (!response.ok) {
-            throw new Error("JSON fetch failed."); //this will execute the "catch" code now
+            throw new Error("JSON fetch failed.");
         }
         
         jsonResponse = await response.json();
-    } catch {
+        listOfLocations = jsonResponse;
+        
+        generateNewLocation(true);
+    } catch (error) {
         errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
+        console.error(error); // Log the error for debugging purposes
     }
-    
-    listOfLocations = jsonResponse;
-    generateNewLocation(true);
-}            
+}
 
-enableClickListeners();
-
-function generateNewLocation(initialLoad) {
+//Load new location ---------------------------------------------------------------------------------------------------
+export function generateNewLocation(initialLoad) {
     resetMap();
 
     do {
@@ -138,31 +50,21 @@ function generateNewLocation(initialLoad) {
     currentGuessLAT = listOfLocations[guessIndex][0];
     currentGuessLONG = listOfLocations[guessIndex][1];
 
-    //now the map is generated, the iFrame is being reloaded.
-    validateCoordinates();
     if (initialLoad) {
-        reloadIframe(true);   
+        loadIframe(currentGuessLAT, currentGuessLONG, true);   
     } else {
-        reloadIframe(false)
+        loadIframe(currentGuessLAT, currentGuessLONG, false)
     }
 }
 
-function validateCoordinates () {
-    if (isNaN(currentGuessLAT) || isNaN(currentGuessLONG)) {
-        errorPopup("Wrong coordinates from Array", "The coordinates from this streetview are invalid.", "Lat: "+currentGuessLAT+" Long: "+currentGuessLONG+".", true);
-    }
-}
-
+//Calculate distance to the target destination on result screen & display motivational message ---------------------------------------------------------------------
 let veryCloseDistances;
 let closeDistances;
 let farDistances;
 let extraMsg;
 let destinationMarker;
 
-/* Map functions */
-
 export function calculateDistances(mapsLat, mapsLong) {
-    //calculates distance between set point and actual point.
     let lat1 = mapsLat;
     let lon1 = mapsLong;
     let lat2 = currentGuessLAT;
@@ -217,7 +119,9 @@ function compareDistances(distance) {
     }
 }
 
-let resMap;
+//Load result Map (resMap) ------------------------------------------------------------------------------------------------
+
+export let resMap;
 
 export function setMapToTargetPosition(playersLat, playersLong) {
    //this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
@@ -288,30 +192,13 @@ function clamp(num, min, max) {
         : num
   }
 
-//enables the result screen.
-function enableResultScreen(resultString, extraMessage) {
-    document.getElementById("EndOverlay").style.opacity = "100%";
-    document.getElementById("EndOverlay").style.visibility = "visible";
 
-    document.getElementById("logo").style.pointerEvents = "none";
+//Load the Main StreetView Iframe -------------------------------------------------------------------------------------------------------------
+let loadingLink = "/loader.html"
 
-    document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
-    document.getElementById("motivationText").innerText = extraMessage;
+export function loadIframe(lat, long, notInitialLoad) {
 
-    resultScreenEnabled = true;
-}
-
-function disableResultScreen() {
-    document.getElementById("EndOverlay").style.opacity = "0%";
-    setTimeout(function() {document.getElementById("EndOverlay").style.visibility = "hidden"}, 200)
-    document.getElementById("logo").style.pointerEvents = "auto";
-    
-    resultScreenEnabled = false;
-}
-
-function reloadIframe(notInitialLoad) {
-    let loadingLink;
-    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+currentGuessLAT+","+currentGuessLONG+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0&fov=90"; //API key (last part of URL) is only valid for the embed API and only for the openguessr & locahost:3000 domains.
+    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+lat+","+long+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0&fov=90"; //API key (last part of URL)
     
     if (!notInitialLoad) {
          //if it is the inital load - reloads the iFrame and sets the position of the camera back to it's origin.
@@ -327,192 +214,11 @@ function reloadIframe(notInitialLoad) {
    
 }
 
-function transitionToStart() {
-    //fancy function to make a fade in to prevent the flashing of the iframe.
-    document.getElementById("BeforeOverlay").style.opacity = "0";
-    document.getElementById("BeforeOverlay").style.visibility = "visible";
+export function reloadIframe() {
     document.getElementById("BeforeOverlay").style.opacity = "100";
-    resMap.stop(); //stop the flying animation
-    setTimeout(function() {resMap.stop()}, 200)
-    generateNewLocation(true); 
-    
-    //Fade the result screen out when the streetview is loaded to prevent flashing
-    setTimeout(disableResultScreen, 200);
-}
+    document.getElementById("BeforeOverlay").style.visibility = "visible";
+    document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
+    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 400);
 
-//Navbar Buttons
-function goToReddit() {
-    window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus();
-}
-
-function goToLegal() {
-    window.location.href = "/legal.html";
-}
-
-//Unfold the second navbar for categories
-let extendedNavbar = document.getElementById("extendedNavbar");
-let categoryMenuButton = document.getElementById("categoryMenuButton");
-let floatingCategoryArea = document.getElementById("floatingCategoryArea");
-
-let categoriesExpanded = false;
-
-categoryMenuButton.addEventListener("click", function() {
-    // Toggle the visibility of the extended navbar
-    if (!categoriesExpanded) {
-        floatingCategoryArea.style.top = "395px";
-        extendedNavbar.classList.add("expanded");
-        categoryMenuButton.innerText = "Map Categories ▲";
-        categoriesExpanded = true;
-    } else {
-        setTimeout(function() {
-            floatingCategoryArea.style.top = "85px";
-            extendedNavbar.scrollTop = 0;
-        }, 75); 
-        extendedNavbar.classList.remove("expanded");
-        categoryMenuButton.innerText = "Map Categories ▼";
-        categoriesExpanded = false;
-    }
-});
-
-function changeCategory(category) {
-    //disable all
-    standardCategoryButton.classList.add("categoryDisabled");
-    capitalCategoryButton.classList.add("categoryDisabled");
-    famousCategoryButton.classList.add("categoryDisabled");
-    usaCategoryButton.classList.add("categoryDisabled");
-    germanyCategoryButton.classList.add("categoryDisabled");
-    ukCategoryButton.classList.add("categoryDisabled");
-    franceCategoryButton.classList.add("categoryDisabled");
-    spainCategoryButton.classList.add("categoryDisabled");
-    polandCategoryButton.classList.add("categoryDisabled");
-    canadaCategoryButton.classList.add("categoryDisabled");
-    swedenCategoryButton.classList.add("categoryDisabled");
-    
-   //then enable the correct one
-    switch (category) {
-        case Category.STANDARD:
-            standardCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.CAPITAL:
-            capitalCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.FAMOUS:
-            famousCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.USA:
-            usaCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.GERMANY:
-            germanyCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.UK:
-            ukCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.FRANCE:
-            franceCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.SPAIN:
-            spainCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.POLAND:
-            polandCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.CANADA:
-            canadaCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.SWEDEN:
-            swedenCategoryButton.classList.remove("categoryDisabled");
-            break;
-    }
-
-    if(mapCategory !== category) {
-        mapCategory = category;
-        localStorage.setItem("selectedCategory", category);
-    }
-
-    loadLocationJsonAndGenerateLocation().then();
-}
-
-
-function enableClickListeners(){
-    let resetBTN = document.getElementById("resetButtonSVG");
-    resetBTN.addEventListener("click", function() {reloadIframe(true)});
-   
-    let logoBTN = document.getElementById("logo");
-    logoBTN.addEventListener("click", function() {generateNewLocation(true)});
-  
-    let nextRound = document.getElementById("nextRound");
-    nextRound.addEventListener("click", transitionToStart);
-   
-    let socialRedditButton = document.getElementById("socialsButton");
-    socialRedditButton.addEventListener("click", goToReddit);
-
-    let privacyButton = document.getElementById("privacyButton");
-    privacyButton.addEventListener("click", goToLegal);
-}
-
-/*close error popup - this needs to be here because in errorHandling.js it causes errors as functions from that script
-are being used on the signup screen*/
-let closeButton = document.getElementById("popupClose");
-closeButton.addEventListener("click", closePopup);
-
-//toggle Map button
-let toggleMapButton = document.getElementById("floatingMapButton");
-
-let mapExpanded = true;
-
-toggleMapButton.addEventListener("click", toggleMap);
-
-function toggleMap() {
-    if (!mapExpanded) {
-        document.getElementById("map").style.maxHeight = "100%";
-        mapExpanded = true;
-    } else {
-        document.getElementById("map").style.maxHeight = "0%";
-        mapExpanded = false;
-    }
-}
-
-//toggle Sidebar 
-let socialBarExpanded = false;
-
-document.getElementById("floatingSocialButton").addEventListener("click", toggleSidebar);
-
-function toggleSidebar()  {
-    if (!socialBarExpanded) {
-        document.getElementById("socialBar").style.maxHeight = "1000px";
-        socialBarExpanded = true;
-        document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▲";
-    } else {
-        document.getElementById("socialBar").style.maxHeight = "0";
-        socialBarExpanded = false;
-        document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▼";
-    }
-}
-
-document.getElementById("leaderboardButton").addEventListener("click", goToLeaderboard);
-
-function goToLeaderboard() {
-    window.location.href = "/leaderboard.html";
-}
-
-//help / how to play window
-
-let helpButton = document.getElementById("helpButton");
-helpButton.addEventListener("click", toggleHelpWindow)
-
-let helpWindow = document.getElementById("helpWindow");
-
-let helpClose = document.getElementById("helpClose");
-helpClose.addEventListener("click", toggleHelpWindow);
-
-function toggleHelpWindow() {
-    if (helpWindow.style.display == "block") {
-        helpWindow.style.display = "none";
-        document.getElementById("blackBackground").style.visibility = "hidden";
-    } else {
-        helpWindow.style.display = "block";
-        document.getElementById("blackBackground").style.visibility = "visible";
-    }
 }
 

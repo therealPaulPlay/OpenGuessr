@@ -32,7 +32,7 @@ changeLanguageButtonLabel();
 let hasGuessed = false;
 setConfirmButtonState();
 
-//reset the map - used in main.js for going to the next round. 
+//reset the map - used for going to the next round. 
 export function resetMap() {
     map.removeLayer(marker);
     map.setZoom(3);
@@ -146,10 +146,6 @@ map.on('click', onMapClick);
 
 map.on('mouseover', onMapHover);
 map.on('mouseout', onMapHover);
-
-map.addEventListener("mouseover", onMapHover);
-map.addEventListener("mouseout", onMapHover);
-
 
 //click listener to make the confirm button work
 const confirmBTN = document.getElementById("confirmButton");
