@@ -100,6 +100,10 @@ function goTologin() {
 
 //Account UI (working) -------------------------------------------------------------------------------------------------------------
 
+XPbarNoAccount.addEventListener("click", function() {
+  window.location.href = "/signup.html";
+})
+
 //part of checkSigninStatusAndLoadUserInfo
 async function changeUItoSignedIn() {
   logoutButton.style.display = "inline-block";

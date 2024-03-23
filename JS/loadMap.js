@@ -20,6 +20,10 @@ if (storedProviderIndex != null) {
     providerIndex = storedProviderIndex;
 }
 
+export function getMapSource() {
+    return mapProvider[providerIndex];
+}
+
 loadMap();
 
 changeLanguageButtonLabel();

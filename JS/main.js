@@ -2,7 +2,7 @@
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
 
-import { resetMap } from './loadMap.js';
+import { resetMap, getMapSource } from './loadMap.js';
 import { errorPopup, closePopup } from "./errorHandling.js";
 import { loadResultScreenXP } from "./accountLogic.js";
 
@@ -230,7 +230,7 @@ export function setMapToTargetPosition(playersLat, playersLong) {
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15);
-    L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    L.tileLayer(getMapSource(), {
 }).addTo(resMap);
 
 const redIcon = new L.Icon({
