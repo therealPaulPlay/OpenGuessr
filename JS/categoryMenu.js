@@ -47,7 +47,7 @@ attachClickListener("swedenCategory", Category.SWEDEN);
 function attachClickListener(buttonId, category) {
     const button = document.getElementById(buttonId);
     if (button) {
-        button.addEventListener("click", function() {
+        button.addEventListener("click", function () {
             changeCategory(category);
         });
     } else {
@@ -110,13 +110,19 @@ function changeCategory(category) {
         localStorage.setItem("selectedCategory", category);
     }
 
-    //pick between json and maps api loading depending on the category type
-    if (mapCategory != "standard") {
-        loadLocationJSON(mapCategory); //this also generates a new location
-    } else {
+    selectGenerationParameters();
+
+}
+
+//Select Map Generation Parameters ------------------------------------------------------------------------
+export function selectGenerationParameters() {
+      //pick between json and maps api loading depending on the category type
+      if (mapCategory != "standard") {
+        loadLocationJSON(mapCategory);
+        }
+      else {
         generateNewLocation("SDK")
     }
-
 }
 
 //Load the map category using localstorage ----------------------------------------------------------------
