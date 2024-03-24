@@ -47,7 +47,7 @@ attachClickListener("swedenCategory", Category.SWEDEN);
 function attachClickListener(buttonId, category) {
     const button = document.getElementById(buttonId);
     if (button) {
-        button.addEventListener("click", function() {
+        button.addEventListener("click", function () {
             changeCategory(category);
         });
     } else {
@@ -116,7 +116,6 @@ function changeCategory(category) {
     } else {
         generateNewLocation("SDK");
     }
-
 }
 
 //Load the map category using localstorage ----------------------------------------------------------------
