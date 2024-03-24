@@ -1,5 +1,5 @@
 import { closePopup } from "./errorHandling.js";
-import { resMap, reloadIframe, generateNewLocation } from "./main.js";
+import { reloadIframe } from "./main.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -68,27 +68,12 @@ closeButton.addEventListener("click", closePopup);
 let resetBTN = document.getElementById("resetButtonSVG");
 resetBTN.addEventListener("click", function () { reloadIframe() });
 
-let nextRound = document.getElementById("nextRound");
-nextRound.addEventListener("click", transitionToStart);
-
 let socialRedditButton = document.getElementById("socialsButton");
 socialRedditButton.addEventListener("click", function() {window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus()});
 
 let privacyButton = document.getElementById("privacyButton");
 privacyButton.addEventListener("click", function() {window.location.href = "/legal.html"});
 
-//Smooth fade between iframe loading  ---------------------------------------------------------------------------------------------
-export function transitionToStart() {
-
-    document.getElementById("BeforeOverlay").style.opacity = "0";
-    document.getElementById("BeforeOverlay").style.visibility = "visible";
-    document.getElementById("BeforeOverlay").style.opacity = "100";
-    resMap.stop(); //stop the flying animation
-    setTimeout(function() {resMap.stop()}, 200)
-    generateNewLocation();
-
-    setTimeout(disableResultScreen, 200);
-}
 
 //Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
@@ -103,7 +88,7 @@ export function enableResultScreen(resultString, extraMessage) {
     resultScreenEnabled = true;
 }
 
-function disableResultScreen() {
+export function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
     setTimeout(function() {document.getElementById("EndOverlay").style.visibility = "hidden"}, 200)
     
