@@ -101,8 +101,6 @@ let signupEmail = document.getElementById("signup_email");
 let signupPassword = document.getElementById("signup_password");
 let signupUsername = document.getElementById("signup_username");
 
-let errorMessage = document.getElementById("errorMessage");
-
 let loginButtonSignupPage = document.getElementById("login");
 loginButtonSignupPage.addEventListener("click", logInAction);
 

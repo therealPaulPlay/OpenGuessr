@@ -263,7 +263,7 @@
 
     async function loadLeaderboard() {
         // Await the promise returned by getAllUsers()
-        let userData = await getAllUsers();
+        let userData = await getAllUsers();  
 
         // Iterate through the array once userData is available
         for (var i = 0; i < userData.length; i++) {
@@ -274,7 +274,7 @@
             //This would be for loading the players stats from the response (in case they are included)
             if (userName == yourUsername && !dontLoadStats) {
                 document.getElementById("yourExperience").innerHTML = Number(experience).toLocaleString();
-                document.getElementById("yourRank").innerHTML = "#" + (i + 1);
+                document.getElementById("yourRank").innerHTML = "#" + (userData[i]["position"]);
             }
 
             experience = Number(experience).toLocaleString();
