@@ -1,6 +1,5 @@
-import { selectGenerationParameters } from "./categoryMenu.js";
 import { closePopup } from "./errorHandling.js";
-import { resMap, reloadIframe } from "./main.js";
+import { resMap, reloadIframe, generateNewLocation } from "./main.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -86,7 +85,7 @@ export function transitionToStart() {
     document.getElementById("BeforeOverlay").style.opacity = "100";
     resMap.stop(); //stop the flying animation
     setTimeout(function() {resMap.stop()}, 200)
-    selectGenerationParameters();
+    generateNewLocation();
 
     setTimeout(disableResultScreen, 200);
 }

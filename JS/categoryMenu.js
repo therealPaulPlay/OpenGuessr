@@ -105,6 +105,7 @@ function changeCategory(category) {
             break;
     }
 
+    //refresh category if needed
     if (mapCategory !== category) {
         mapCategory = category;
         localStorage.setItem("selectedCategory", category);
@@ -129,3 +130,4 @@ function loadMapCategory() {
 
 loadMapCategory();
 changeCategory(mapCategory);
+
