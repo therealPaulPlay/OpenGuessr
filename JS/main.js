@@ -2,171 +2,50 @@
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
 
-import { resetMap, getMapSource } from './loadMap.js';
-import { errorPopup, closePopup } from "./errorHandling.js";
+import { resetMap, getMapSource } from './miniMap.js';
 import { loadResultScreenXP } from "./accountLogic.js";
+import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
+import { getLocationCoordinates } from './locationGeneration.js';
 
-let lastGuessIndex = null;
-let guessIndex;
+//default coords of the location
+let currentStreetviewLat = 0;
+let currentStreetviewLong = 0;
 
-let resultScreenEnabled = false;
+//Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
 
-//default guess coords
-let currentGuessLAT = 40;
-let currentGuessLONG = 40;
+export async function generateNewLocation(type) {
+    resetMap();
+    let newLocationArray;
 
-//get the map category and read json accordingly!
-const Category = {
-    STANDARD: "standard",
-    CAPITAL: "capital",
-    FAMOUS: "famous",
-    USA: "usa",
-    GERMANY: "germany",
-    UK: "uk",
-    FRANCE: "france",
-    SPAIN: "spain",
-    POLAND: "poland",
-    CANADA: "canada",
-    SWEDEN: "sweden"
-}
+    if (type == "JSON") {
+        newLocationArray = await getLocationCoordinates("JSON");
+    } else {
+        newLocationArray = await getLocationCoordinates("SDK");
+    }
 
-let mapCategory = Category.STANDARD;
-
-//category buttons - this has to be on top because these variables are needed below
-//note to myself: Wrong IDs break everything
-const standardCategoryButton = document.getElementById("standardCategory");
-standardCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.STANDARD);
-});
-
-const capitalCategoryButton = document.getElementById("capitalCategory");
-capitalCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.CAPITAL);
-});
-
-const famousCategoryButton = document.getElementById("famousCategory");
-famousCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.FAMOUS);
-});
-
-const usaCategoryButton = document.getElementById("usaCategory");
-usaCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.USA);
-});
-
-
-const germanyCategoryButton = document.getElementById("germanyCategory");
-germanyCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.GERMANY);
-});
-
-const ukCategoryButton = document.getElementById("ukCategory");
-ukCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.UK);
-});
-
-const franceCategoryButton = document.getElementById("franceCategory");
-franceCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.FRANCE);
-});
-
-const spainCategoryButton = document.getElementById("spainCategory");
-spainCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.SPAIN);
-});
-
-const polandCategoryButton = document.getElementById("polandCategory");
-polandCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.POLAND);
-});
-
-const canadaCategoryButton = document.getElementById("canadaCategory");
-canadaCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.CANADA);
-});
-
-const swedenCategoryButton = document.getElementById("swedenCategory");
-swedenCategoryButton.addEventListener("click", function() {
-    changeCategory(Category.SWEDEN);
-});
-
-//load the map category initially
-loadMapCategory();
-
-//change the category in the UI
-changeCategory(mapCategory);
-
-//loads the mapCategory from LocalStorage
-function loadMapCategory() {
-    let storedSelectedCategory = localStorage.getItem("selectedCategory");
-
-    if (storedSelectedCategory != null)
-        mapCategory = storedSelectedCategory;
-}
-
-let listOfLocations;
-let jsonResponse;
-
-async function loadLocationJsonAndGenerateLocation() {
     try {
-        let response = await fetch("./JSON/" + mapCategory + "Locations.json");
-        if (!response.ok) {
-            throw new Error("JSON fetch failed."); //this will execute the "catch" code now
-        }
-        
-        jsonResponse = await response.json();
+        currentStreetviewLat = newLocationArray[0];
+        currentStreetviewLong = newLocationArray[1];
     } catch {
-        errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
+        console.error("The coordinates to load the iframe from are not defined. " + "Lat: " + currentStreetviewLat + " Long: " + currentStreetviewLong);
     }
     
-    listOfLocations = jsonResponse;
-    generateNewLocation(true);
-}            
+    loadIframe(currentStreetviewLat, currentStreetviewLong);  
 
-enableClickListeners();
-
-function generateNewLocation(initialLoad) {
-    resetMap();
-
-    do {
-        guessIndex = Math.floor(Math.random()*listOfLocations.length);      //calculating random location
-    } while (lastGuessIndex === guessIndex);
-
-    lastGuessIndex = guessIndex; //setting last Index
-
-    //These two are the variables that reflect where the location actually is!
-    currentGuessLAT = listOfLocations[guessIndex][0];
-    currentGuessLONG = listOfLocations[guessIndex][1];
-
-    //now the map is generated, the iFrame is being reloaded.
-    validateCoordinates();
-    if (initialLoad) {
-        reloadIframe(true);   
-    } else {
-        reloadIframe(false)
-    }
 }
 
-function validateCoordinates () {
-    if (isNaN(currentGuessLAT) || isNaN(currentGuessLONG)) {
-        errorPopup("Wrong coordinates from Array", "The coordinates from this streetview are invalid.", "Lat: "+currentGuessLAT+" Long: "+currentGuessLONG+".", true);
-    }
-}
-
+//Calculate distance to the target destination on result screen & display motivational message ---------------------------------------------------------------------
 let veryCloseDistances;
 let closeDistances;
 let farDistances;
 let extraMsg;
 let destinationMarker;
 
-/* Map functions */
-
 export function calculateDistances(mapsLat, mapsLong) {
-    //calculates distance between set point and actual point.
     let lat1 = mapsLat;
     let lon1 = mapsLong;
-    let lat2 = currentGuessLAT;
-    let lon2 = currentGuessLONG;
+    let lat2 = currentStreetviewLat;
+    let lon2 = currentStreetviewLong;
     let R = 6371; // Radius of the earth in km
     let dLat = deg2rad(lat2-lat1);  // deg2rad below
     let dLon = deg2rad(lon2-lon1); 
@@ -217,9 +96,11 @@ function compareDistances(distance) {
     }
 }
 
-let resMap;
+//Load result Map (resMap) ------------------------------------------------------------------------------------------------
 
-export function setMapToTargetPosition(playersLat, playersLong) {
+export let resMap;
+
+export function loadResultMap(playersLat, playersLong) {
    //this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
     if (resMap && resMap.remove) {
         resMap.off();
@@ -229,7 +110,7 @@ export function setMapToTargetPosition(playersLat, playersLong) {
     //this makes it so the map in the result screen is focused on the center between the point
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
-    resMap = L.map('resultMap').setView([currentGuessLAT, currentGuessLONG], 15);
+    resMap = L.map('resultMap').setView([currentStreetviewLat, currentStreetviewLong], 15);
     L.tileLayer(getMapSource(), {
 }).addTo(resMap);
 
@@ -250,7 +131,7 @@ const greenIcon = new L.Icon({
 });
 
     //used to create the line between the points
-    let curLatLng = new L.LatLng(currentGuessLAT, currentGuessLONG);
+    let curLatLng = new L.LatLng(currentStreetviewLat, currentStreetviewLong);
     let playerLatLng = new L.LatLng(playersLat, playersLong);
     let polyList = [curLatLng, playerLatLng];
     let pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
@@ -264,7 +145,7 @@ const greenIcon = new L.Icon({
     resMap.fitBounds(pointList, {padding: [150,250]});
 
     //this places the "correct" marker that actually reflects the target location
-    destinationMarker = new L.Marker([currentGuessLAT, currentGuessLONG], {icon: greenIcon});
+    destinationMarker = new L.Marker([currentStreetviewLat, currentStreetviewLong], {icon: greenIcon});
     destinationMarker.addTo(resMap);
 
     setTimeout(flyToDestination, 1000)
@@ -272,7 +153,7 @@ const greenIcon = new L.Icon({
 
 function flyToDestination() {
     if (document.getElementById("EndOverlay").style.opacity == "1") {
-    resMap.flyTo([currentGuessLAT, currentGuessLONG], clamp(resMap.getZoom() + 4,0,18), {
+    resMap.flyTo([currentStreetviewLat, currentStreetviewLong], clamp(resMap.getZoom() + 4,0,18), {
         animate: true, 
         duration: 2
      });
@@ -288,231 +169,37 @@ function clamp(num, min, max) {
         : num
   }
 
-//enables the result screen.
-function enableResultScreen(resultString, extraMessage) {
-    document.getElementById("EndOverlay").style.opacity = "100%";
-    document.getElementById("EndOverlay").style.visibility = "visible";
 
-    document.getElementById("logo").style.pointerEvents = "none";
+//Load the Main StreetView Iframe -------------------------------------------------------------------------------------------------------------
+let loadingLink = "/loader.html";
 
-    document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
-    document.getElementById("motivationText").innerText = extraMessage;
-
-    resultScreenEnabled = true;
-}
-
-function disableResultScreen() {
-    document.getElementById("EndOverlay").style.opacity = "0%";
-    setTimeout(function() {document.getElementById("EndOverlay").style.visibility = "hidden"}, 200)
-    document.getElementById("logo").style.pointerEvents = "auto";
+export function loadIframe(lat, long) {
+    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+lat+","+long+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0&fov=90"; //API key (last part of URL)
     
-    resultScreenEnabled = false;
-}
+    // Reference to the iframe
+    const iframe = document.getElementById("GuesserWindow");
 
-function reloadIframe(notInitialLoad) {
-    let loadingLink;
-    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+currentGuessLAT+","+currentGuessLONG+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0&fov=90"; //API key (last part of URL) is only valid for the embed API and only for the openguessr & locahost:3000 domains.
-    
-    if (!notInitialLoad) {
-         //if it is the inital load - reloads the iFrame and sets the position of the camera back to it's origin.
-        document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
-        window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 200);
-    }
-    else {
-        document.getElementById("BeforeOverlay").style.opacity = "100";
-        document.getElementById("BeforeOverlay").style.visibility = "visible";
-        document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
-        window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 400);
-    }
-   
-}
-
-function transitionToStart() {
-    //fancy function to make a fade in to prevent the flashing of the iframe.
-    document.getElementById("BeforeOverlay").style.opacity = "0";
-    document.getElementById("BeforeOverlay").style.visibility = "visible";
-    document.getElementById("BeforeOverlay").style.opacity = "100";
-    resMap.stop(); //stop the flying animation
-    setTimeout(function() {resMap.stop()}, 200)
-    generateNewLocation(true); 
-    
-    //Fade the result screen out when the streetview is loaded to prevent flashing
-    setTimeout(disableResultScreen, 200);
-}
-
-//Navbar Buttons
-function goToReddit() {
-    window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus();
-}
-
-function goToLegal() {
-    window.location.href = "/legal.html";
-}
-
-//Unfold the second navbar for categories
-let extendedNavbar = document.getElementById("extendedNavbar");
-let categoryMenuButton = document.getElementById("categoryMenuButton");
-let floatingCategoryArea = document.getElementById("floatingCategoryArea");
-
-let categoriesExpanded = false;
-
-categoryMenuButton.addEventListener("click", function() {
-    // Toggle the visibility of the extended navbar
-    if (!categoriesExpanded) {
-        floatingCategoryArea.style.top = "395px";
-        extendedNavbar.classList.add("expanded");
-        categoryMenuButton.innerText = "Map Categories ▲";
-        categoriesExpanded = true;
-    } else {
+    // Define a function to handle iframe load event
+    const handleLoad = () => {
         setTimeout(function() {
-            floatingCategoryArea.style.top = "85px";
-            extendedNavbar.scrollTop = 0;
-        }, 75); 
-        extendedNavbar.classList.remove("expanded");
-        categoryMenuButton.innerText = "Map Categories ▼";
-        categoriesExpanded = false;
-    }
-});
+            const beforeOverlay = document.getElementById("BeforeOverlay");
+            beforeOverlay.style.opacity = "0";
+            beforeOverlay.style.visibility = "hidden";
+        }, 200);
+    };
 
-function changeCategory(category) {
-    //disable all
-    standardCategoryButton.classList.add("categoryDisabled");
-    capitalCategoryButton.classList.add("categoryDisabled");
-    famousCategoryButton.classList.add("categoryDisabled");
-    usaCategoryButton.classList.add("categoryDisabled");
-    germanyCategoryButton.classList.add("categoryDisabled");
-    ukCategoryButton.classList.add("categoryDisabled");
-    franceCategoryButton.classList.add("categoryDisabled");
-    spainCategoryButton.classList.add("categoryDisabled");
-    polandCategoryButton.classList.add("categoryDisabled");
-    canadaCategoryButton.classList.add("categoryDisabled");
-    swedenCategoryButton.classList.add("categoryDisabled");
-    
-   //then enable the correct one
-    switch (category) {
-        case Category.STANDARD:
-            standardCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.CAPITAL:
-            capitalCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.FAMOUS:
-            famousCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.USA:
-            usaCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.GERMANY:
-            germanyCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.UK:
-            ukCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.FRANCE:
-            franceCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.SPAIN:
-            spainCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.POLAND:
-            polandCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.CANADA:
-            canadaCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.SWEDEN:
-            swedenCategoryButton.classList.remove("categoryDisabled");
-            break;
-    }
+    //add new load listener and delete old one - on load: fade out overlay
+    iframe.removeEventListener('load', handleLoad);
+    iframe.addEventListener('load', handleLoad);
 
-    if(mapCategory !== category) {
-        mapCategory = category;
-        localStorage.setItem("selectedCategory", category);
-    }
-
-    loadLocationJsonAndGenerateLocation().then();
+    iframe.setAttribute("src", loadingLink);
 }
 
+export function reloadIframe() {
+    document.getElementById("BeforeOverlay").style.opacity = "100";
+    document.getElementById("BeforeOverlay").style.visibility = "visible";
+    document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
+    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 400);
 
-function enableClickListeners(){
-    let resetBTN = document.getElementById("resetButtonSVG");
-    resetBTN.addEventListener("click", function() {reloadIframe(true)});
-   
-    let logoBTN = document.getElementById("logo");
-    logoBTN.addEventListener("click", function() {generateNewLocation(true)});
-  
-    let nextRound = document.getElementById("nextRound");
-    nextRound.addEventListener("click", transitionToStart);
-   
-    let socialRedditButton = document.getElementById("socialsButton");
-    socialRedditButton.addEventListener("click", goToReddit);
-
-    let privacyButton = document.getElementById("privacyButton");
-    privacyButton.addEventListener("click", goToLegal);
-}
-
-/*close error popup - this needs to be here because in errorHandling.js it causes errors as functions from that script
-are being used on the signup screen*/
-let closeButton = document.getElementById("popupClose");
-closeButton.addEventListener("click", closePopup);
-
-//toggle Map button
-let toggleMapButton = document.getElementById("floatingMapButton");
-
-let mapExpanded = true;
-
-toggleMapButton.addEventListener("click", toggleMap);
-
-function toggleMap() {
-    if (!mapExpanded) {
-        document.getElementById("map").style.maxHeight = "100%";
-        mapExpanded = true;
-    } else {
-        document.getElementById("map").style.maxHeight = "0%";
-        mapExpanded = false;
-    }
-}
-
-//toggle Sidebar 
-let socialBarExpanded = false;
-
-document.getElementById("floatingSocialButton").addEventListener("click", toggleSidebar);
-
-function toggleSidebar()  {
-    if (!socialBarExpanded) {
-        document.getElementById("socialBar").style.maxHeight = "1000px";
-        socialBarExpanded = true;
-        document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▲";
-    } else {
-        document.getElementById("socialBar").style.maxHeight = "0";
-        socialBarExpanded = false;
-        document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▼";
-    }
-}
-
-document.getElementById("leaderboardButton").addEventListener("click", goToLeaderboard);
-
-function goToLeaderboard() {
-    window.location.href = "/leaderboard.html";
-}
-
-//help / how to play window
-
-let helpButton = document.getElementById("helpButton");
-helpButton.addEventListener("click", toggleHelpWindow)
-
-let helpWindow = document.getElementById("helpWindow");
-
-let helpClose = document.getElementById("helpClose");
-helpClose.addEventListener("click", toggleHelpWindow);
-
-function toggleHelpWindow() {
-    if (helpWindow.style.display == "block") {
-        helpWindow.style.display = "none";
-        document.getElementById("blackBackground").style.visibility = "hidden";
-    } else {
-        helpWindow.style.display = "block";
-        document.getElementById("blackBackground").style.visibility = "visible";
-    }
 }
 
