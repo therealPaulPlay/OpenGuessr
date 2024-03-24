@@ -114,7 +114,7 @@ function changeCategory(category) {
     if (mapCategory != "standard") {
         loadLocationJSON(mapCategory); //this also generates a new location
     } else {
-        generateNewLocation("SDK")
+        generateNewLocation("SDK");
     }
 
 }
