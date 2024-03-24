@@ -90,7 +90,10 @@ function isTokenExpired(token) {
 //these are being accessed from index.htm
 
 function signout() {
-  localStorage.setItem("bearer", ""); //reset bearer token
+  localStorage.removeItem("bearer"); //reset bearer token
+  localStorage.removeItem("id");
+  localStorage.removeItem("username");
+  localStorage.removeItem("experience");
   window.location.reload(); //reload website, so that UI etc. will be reset and all the loaded values aren't still showing
 }
 
