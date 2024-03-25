@@ -178,7 +178,7 @@ function uiSetUserXP(xp) {
   resultLevelText.innerHTML = "Level " + templevel;
   levelXPbar.style.width = (xp / requiredXP) * 100 + "%";
 
-  return (xp / requiredXP);
+  return {fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp};
 }
 
 function willCauseLevelUpgrade(xp, newXP) {
@@ -221,14 +221,14 @@ export async function loadResultScreenXP(distance) {
       XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
     }
     else {
-      XPbarResource.style.width = uiSetUserXP(currentXP) * 100 + "%";
+      XPbarResource.style.width = uiSetUserXP(currentXP).fraction * 100 + "%";
     }
 
 
     setUserXP(currentXP + earnedXP); //save XP, this is the last step!
     setTimeout(function() {
       XPbarResource.classList.add("XPbarAnimate");
-      XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP) * 100 + "%";
+      XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP).fraction * 100 + "%";
       resultLevelText.innerHTML = "+" + earnedXP + " XP / " + resultLevelText.innerHTML;
     }, 10);
   }
@@ -247,6 +247,7 @@ function viewProfile() {
   document.getElementById("blackBackground").style.visibility = "visible";
   profileName.innerHTML = username;
   document.getElementById("statisticExperience").innerHTML = "Total experience: " + Number(localStorage.getItem("experience")).toLocaleString();
+  document.getElementById("statisticUpgradeExperience").innerHTML = "Required for next level: " + uiSetUserXP(Number(localStorage.getItem("experience"))).requiredForLevelUpgrade.toLocaleString();
 
 }
 
