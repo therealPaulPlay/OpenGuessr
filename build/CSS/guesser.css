@@ -52,7 +52,7 @@ h1, h2, h3 {
 .bannerRight {
   border-bottom-left-radius: 10px;
   padding-left: 15px;
-  padding-right: 30px;
+  padding-right: 15px;
   margin-left: auto;
 }
 
@@ -790,8 +790,13 @@ li {
   opacity: 0.6;
 }
 
-#socialsButton {
+#redditButton {
   background-color: #d45f24;
+  color: white;
+}
+
+#discordButton {
+  background-color: #8134e4;
   color: white;
 }
 
@@ -800,12 +805,12 @@ li {
   width: fit-content;
   font-size: 22px;
   line-height: 20px;
-  padding: 10px 12px;
+  padding: 10px 14px;
   transition: all 250ms;
   margin-bottom: 15px;
   margin-top: 13px;
-  margin-right: 0.5em;
-  margin-left: 0.5em;
+  margin-right: 0.25em;
+  margin-left: 0.25em;
   border-radius: 5px;
   user-select: none;
   -webkit-user-select: none;
@@ -817,8 +822,14 @@ li {
   filter: brightness(90%);
 }
 
-#socialsButton:hover {
+#redditButton:hover {
   box-shadow: 0 0 25px rgba(255, 90, 8, 0.5);
+  filter: brightness(100%);
+  transform: scale(1.05);
+}
+
+#discordButton:hover {
+  box-shadow: 0 0 25px rgba(132, 85, 240, 0.5);
   filter: brightness(100%);
   transform: scale(1.05);
 }

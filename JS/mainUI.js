@@ -68,12 +68,14 @@ closeButton.addEventListener("click", closePopup);
 let resetBTN = document.getElementById("resetButtonSVG");
 resetBTN.addEventListener("click", function () { reloadIframe() });
 
-let socialRedditButton = document.getElementById("socialsButton");
+let socialRedditButton = document.getElementById("redditButton");
 socialRedditButton.addEventListener("click", function() {window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus()});
+
+let socialDiscordButton = document.getElementById("discordButton");
+socialDiscordButton.addEventListener("click", function() {window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus()});
 
 let privacyButton = document.getElementById("privacyButton");
 privacyButton.addEventListener("click", function() {window.location.href = "/legal.html"});
-
 
 //Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
