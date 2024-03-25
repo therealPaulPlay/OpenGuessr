@@ -52,7 +52,7 @@ h1, h2, h3 {
 .bannerRight {
   border-bottom-left-radius: 10px;
   padding-left: 15px;
-  padding-right: 15px;
+  padding-right: 10px;
   margin-left: auto;
 }
 
@@ -805,6 +805,7 @@ li {
   width: fit-content;
   font-size: 22px;
   line-height: 20px;
+  vertical-align: middle;
   padding: 10px 14px;
   transition: all 250ms;
   margin-bottom: 15px;
@@ -820,6 +821,13 @@ li {
 
 .menuButton:hover {
   filter: brightness(90%);
+}
+
+.socialIcon {
+  width: 20px;
+  height: auto;
+  padding: 0px;
+  margin: 0;
 }
 
 #redditButton:hover {
