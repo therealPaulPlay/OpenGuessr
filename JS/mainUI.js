@@ -1,5 +1,6 @@
 import { closePopup } from "./errorHandling.js";
 import { reloadIframe } from "./main.js";
+import { setUserXP, uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -121,3 +122,38 @@ categoryMenuButton.addEventListener("click", function() {
     }
 });
 
+//Social / Discord Join Popup -----------------------------------------------------------------------------------------------------
+
+let socialWindow = document.getElementById("socialWindow");
+
+function showSocialPopup() {
+    socialWindow.style.display = "block";
+    document.getElementById("blackBackground").style.visibility = "visible";
+}
+
+function closeSocialPopup() {
+    socialWindow.style.display = "none";
+    document.getElementById("blackBackground").style.visibility = "hidden";
+    localStorage.setItem("discordPopup", "true");
+}
+
+export function socialPopupProbability() {
+    if (isAuthenticated && localStorage.getItem("discordPopup") == null) {
+        const randomNumber = Math.floor(Math.random() * 3);
+
+        if (randomNumber === 0) {
+            showSocialPopup();
+        }
+    }
+}
+
+document.getElementById("socialPopupClose").addEventListener("click", closeSocialPopup);
+
+document.getElementById("socialPopupJoin").addEventListener("click", function() {
+    window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus();
+    setTimeout(async function() {
+        closeSocialPopup();
+        await setUserXP(Number(localStorage.getItem("experience")) + 7500);
+        uiSetUserXP(localStorage.getItem("experience"));
+    }, 200)
+});
