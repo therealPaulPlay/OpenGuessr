@@ -67,7 +67,7 @@
     <div class="bannerItem bannerRight">
       <div class="leftNavbarButtons">
         <button class="menuButton" id="languageButton" type="button">Toggle language</button>
-        <button class="menuButton" id="discordButton" type="button">Discord
+        <button class="discordButton menuButton" id="discordButton" type="button">Discord
           <img src="./IMG/discord.png" class="socialIcon" id="discordIcon">
         </button>
         <button class="menuButton" id="redditButton" type="button">Reddit
@@ -97,7 +97,7 @@
   <!-- Category switch displayer -->
   <div id="floatingCategoryArea">
     <button class="floatingButton" id="categoryMenuButton" type="button">Map Categories ▼</button>
-    <button id ="helpButton" type="button">?</button>
+    <button id="helpButton" type="button">?</button>
   </div>
   <div id="BeforeOverlay">
     <img src="/IMG/spinner.gif" alt="Loading new streetview" id="spinner">
@@ -109,46 +109,62 @@
     <div id="popup-description" class="popup-description"></div>
     <button id="popupClose" class="cookieButton close">Close and reload</button>
   </div>
-  <!-- New profile window -->
-  <div id="profileWindow" class="uiWindow">
-    <div id="popup-title" class="popup-title">
-      <h1 id="profileViewName">Username</h1>
-      <button class="accountButton white" id="editUsername">
-        <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
-        Edit
-      </button> <input type="text" id="usernameInput" placeholder="New username" maxlength="12"></input>
-      <button class="accountButton" id="confirmUsername">Confirm</button>
-      <br>
+  <div id="popupHolder">
+    <!-- New profile window -->
+    <div id="profileWindow" class="uiWindow">
+      <div id="popup-title" class="popup-title">
+        <h1 id="profileViewName">Username</h1>
+        <button class="accountButton white" id="editUsername">
+          <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
+          Edit
+        </button> <input type="text" id="usernameInput" placeholder="New username" maxlength="12"></input>
+        <button class="accountButton" id="confirmUsername">Confirm</button>
+        <br>
+      </div>
+      <h2>User Stats: </h2>
+      <p id="statisticExperience"> Total experience: not set.</p>
+      <p id="statisticUpgradeExperience"> Required for next level: not set.</p>
+      <button id="profileClose" class="accountButton white accountClose">Close</button>
     </div>
-    <h2>User Stats: </h2>
-    <p id="statisticExperience"> Total experience: not set.</p>
-    <p id="statisticUpgradeExperience"> Required for next level: not set.</p>
-    <button id="profileClose" class="accountButton white accountClose">Close</button>
-  </div>
-  <!-- Help / How to Play Popup -->
-  <div id="helpWindow" class="uiWindow">
-    <div id="popup-title" class="popup-title">
-      <h1 id="profileViewName">How to play</h1>
+    <!-- Help / How to Play Popup -->
+    <div id="helpWindow" class="uiWindow">
+      <div id="popup-title" class="popup-title">
+        <h1 id="profileViewName">How to play</h1>
+      </div>
+      <ul>
+        <li>
+          <h3>🔍 Look at the Street View image</h3>
+          <p>Study the image carefully. Use the navigation controls to explore the surroundings.</p>
+        </li>
+        <li>
+          <h3>🌟 Make your guess</h3>
+          <p>Pinpoint your location on the world map. Be precise for higher scores!</p>
+        </li>
+        <li>
+          <h3>🎯 Get as close as you can</h3>
+          <p>Compare your guess with the actual location when revealed.</p>
+        </li>
+        <li>
+          <h3>👍 Challenge your friends</h3>
+          <p>Compete against friends to see who can guess the most accurate locations.</p>
+        </li>
+      </ul>
+      <button id="helpClose" class="accountButton white accountClose">Let's go!</button>
     </div>
-    <ul>
-      <li>
-        <h3>🔍 Look at the Street View image</h3>
-        <p>Study the image carefully. Use the navigation controls to explore the surroundings.</p>
-      </li>
-      <li>
-        <h3>🌟 Make your guess</h3>
-        <p>Pinpoint your location on the world map. Be precise for higher scores!</p>
-      </li>
-      <li>
-        <h3>🎯 Get as close as you can</h3>
-        <p>Compare your guess with the actual location when revealed.</p>
-      </li>
-      <li>
-        <h3>👍 Challenge your friends</h3>
-        <p>Compete against friends to see who can guess the most accurate locations.</p>
-      </li>
-    </ul>
-    <button id="helpClose" class="accountButton white accountClose">Let's go!</button>
+    <!-- Discord Popup -->
+    <div id="socialWindow" class="uiWindow">
+      <div id="popup-title" class="popup-title">
+        <h1 id="socialHeader">Join the community</h1>
+      </div>
+      <p>Join now and get <span class="highlight">7,500 XP</span> in return!</p>
+      <iframe id="discordWidget" src="https://discord.com/widget?id=1221841177863651499&theme=dark" width="350"
+        height="500" allowtransparency="true" frameborder="0"
+        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+      <button id="socialPopupClose" class="accountButton white accountClose">Close</button>
+      <button id="socialPopupJoin" class="discordButton accountButton accountClose">Join
+        <img src="./IMG/discord.png" class="socialIcon">
+      </button>
+    </div>
   </div>
   <!-- Result screen -->
   <div id="EndOverlay">
@@ -199,19 +215,9 @@
     <div id="bottomShadow"></div>
   </div>
   <div align="center" id="googleAds">
-    <!-- adsense -->
-    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-6043448920153809"
-      crossorigin="anonymous"></script>
-
-    <!-- BottomBar Adsense -->
-    <ins class="adsbygoogle" style="display:inline-block;" data-ad-client="ca-pub-6043448920153809"
-      data-ad-slot="8031976568"></ins>
-  </div>
-  <script>
-    (adsbygoogle = window.adsbygoogle || []).push({});
-  </script>
-  <!-- Main.js, bundled. Currently we are not using any import/export statements in here as it is all being bundled togehter but I made it type=module in case we use imports outside of the bundle in the future -->
-  <script type="module" src="main.js"></script>
+    <!-- google ads temporarily removed -->
+    <!-- Main.js, bundled. Currently we are not using any import/export statements in here as it is all being bundled togehter but I made it type=module in case we use imports outside of the bundle in the future -->
+    <script type="module" src="main.js"></script>
 </body>
 
 </html>

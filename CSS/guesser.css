@@ -210,7 +210,7 @@ h1, h2, h3 {
   padding: 5px 15px;
   text-align: center;
   white-space: nowrap;
-  transition: filter 250ms ease;
+  transition: filter 250ms ease, box-shadow 250ms ease;
   margin: 2.5px;
   border-radius: 5px;
   user-select: none;
@@ -220,7 +220,7 @@ h1, h2, h3 {
   opacity: 100%;
 }
 
-#profileClose, #helpClose {
+#profileClose, #helpClose, #socialPopupClose, #socialPopupJoin {
   min-height: 50px;
 }
 
@@ -248,12 +248,19 @@ li {
   background-color: white;
 }
 
+#popupHolder {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .uiWindow {
-  display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  display: none; /* used with block */
   width: 45%;
   max-height: 80%;
   font-size: 25px;
@@ -268,9 +275,33 @@ li {
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 40px rgba(5, 6, 10, 0.7);
   color: white;
-  justify-content: center;
-  align-content: center;
-  flex-direction: column;
+}
+
+#socialWindow {
+  width: 40%;
+  min-width: 300px;
+  max-width: 600px;
+}
+
+#socialPopupClose {
+  float: left;
+}
+
+#socialPopupJoin {
+  background-color: #8e44f0;
+}
+
+#discordWidget {
+  margin-top: 30px;
+  margin-bottom: 30px;
+  height: 100%;
+  width: 100%;
+  min-height: 300px;
+}
+
+.highlight {
+  color: rgb(198, 255, 198);
+  text-shadow: 0 0 10px #00cc00;;
 }
 
 #profileWindow {
@@ -790,16 +821,6 @@ li {
   opacity: 0.6;
 }
 
-#redditButton {
-  background-color: #d45f24;
-  color: white;
-}
-
-#discordButton {
-  background-color: #8134e4;
-  color: white;
-}
-
 .menuButton {
   cursor: pointer;
   width: fit-content;
@@ -823,6 +844,25 @@ li {
   filter: brightness(90%);
 }
 
+.discordButton {
+  background-color: #8134e4;
+  color: white;
+}
+
+.discordButton:hover {
+  box-shadow: 0 0 25px rgba(130, 87, 232, 0.7);
+  filter: brightness(100%);
+}
+
+#discordButton:hover {
+  transform: scale(1.05);
+}
+
+#redditButton {
+  background-color: #d45f24;
+  color: white;
+}
+
 .socialIcon {
   width: 20px;
   height: auto;
@@ -832,12 +872,6 @@ li {
 
 #redditButton:hover {
   box-shadow: 0 0 25px rgba(255, 90, 8, 0.5);
-  filter: brightness(100%);
-  transform: scale(1.05);
-}
-
-#discordButton:hover {
-  box-shadow: 0 0 25px rgba(132, 85, 240, 0.5);
   filter: brightness(100%);
   transform: scale(1.05);
 }
@@ -1014,7 +1048,6 @@ button {
   position: fixed;
   top: 50%;
   left: 50%;
-  transform: translate(-50%, -50%);
   background-color: #282828;
   width: fit-content;
   font-size: 30px;

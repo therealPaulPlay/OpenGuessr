@@ -1,6 +1,6 @@
 import { loadLocationJSON } from "./locationGeneration.js";
 import { resMap, generateNewLocation } from "./main.js";
-import { disableResultScreen } from "./mainUI.js";
+import { disableResultScreen, socialPopupProbability } from "./mainUI.js";
 
 //Defined Categories ------------------------------------------------------------------------
 const Category = {
@@ -151,5 +151,6 @@ export function transitionToStart() {
     checkGenerationTypeAndGenerate();
 
     setTimeout(disableResultScreen, 200);
+    setTimeout(socialPopupProbability, 650);
 }
 

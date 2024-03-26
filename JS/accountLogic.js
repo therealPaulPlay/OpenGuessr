@@ -38,7 +38,7 @@ let resultLevelText = document.getElementById("endScreenLevel");
 
 //Custom signup (WIP) -------------------------------------------------------------------------------------------------------------------
 
-let isAuthenticated = false; //true if user is logged in 
+export let isAuthenticated = false; //true if user is logged in 
 
 checkAuthenticationStatus();
 
@@ -156,7 +156,7 @@ function enableExclusiveCategories() {
 //XP bar loading function -------------------------------------------------------------------------------------------------
 let requiredXP;
 
-function uiSetUserXP(xp) {
+export function uiSetUserXP(xp) {
   const baseXP = 5000;
   const xpIncreaseRate = 1.1; // xp needed to level up increases per level
 
@@ -225,7 +225,8 @@ export async function loadResultScreenXP(distance) {
     }
 
 
-    setUserXP(currentXP + earnedXP); //save XP, this is the last step!
+    setUserXP(currentXP + earnedXP); //save XP, this is the last step! This function is async, but we don't await it as we set the XP to be currentXP + earnedXP in the ui anyway
+
     setTimeout(function() {
       XPbarResource.classList.add("XPbarAnimate");
       XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP).fraction * 100 + "%";
@@ -234,8 +235,13 @@ export async function loadResultScreenXP(distance) {
   }
 }
 
-function setUserXP(xp) {
-  updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp, "index");
+export async function setUserXP(xp) {
+  try {
+    await updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp, "index");
+  } catch(error) {
+    console.error("Error setting User XP in accountLogic.js: " + error);
+  }
+
 }
 
 
