@@ -1,6 +1,7 @@
 import { loadLocationJSON } from "./locationGeneration.js";
 import { resMap, generateNewLocation } from "./main.js";
 import { disableResultScreen, socialPopupProbability } from "./mainUI.js";
+import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion } from "./dailyChallenge.js";
 
 //Defined Categories ------------------------------------------------------------------------
 const Category = {
@@ -123,11 +124,20 @@ function changeCategory(category) {
 }
 
 function checkGenerationTypeAndGenerate() {
+    setDailyChallengeUI(false);
     //pick between json and maps api loading depending on the category type
     if (mapCategory != "standard" && mapCategory != "daily") {
         loadLocationJSON(mapCategory); //this also generates a new location
-    } else if (mapCategory != "standard") {
-        generateNewLocation("DAILY");
+    } else if (mapCategory == "daily") {
+        if (checkDailyChallengeCompletion() == "available") {
+            setDailyChallengeUI(true);
+            generateNewLocation("DAILY");
+        } else {
+            localStorage.setItem("selectedCategory", "standard"); //reset category to standard, so that user returns to working game
+            console.log("Daily Challenge already completed for today! Redirecting to daily leaderboard...");
+            window.location.href = "/dailyLeaderboard.html";
+        }
+
     } else if (mapCategory == "standard") {
         generateNewLocation("SDK");
     } else {
@@ -154,14 +164,17 @@ nextRound.addEventListener("click", transitionToStart);
 
 export function transitionToStart() {
 
-    document.getElementById("BeforeOverlay").style.opacity = "0";
-    document.getElementById("BeforeOverlay").style.visibility = "visible";
-    document.getElementById("BeforeOverlay").style.opacity = "100";
-    resMap.stop(); //stop the flying animation
-    setTimeout(function () { resMap.stop() }, 200)
-    checkGenerationTypeAndGenerate();
-
-    setTimeout(disableResultScreen, 200);
-    setTimeout(socialPopupProbability, 650);
+    if (!dailyChallengeUIEnabled) {
+        document.getElementById("BeforeOverlay").style.opacity = "0";
+        document.getElementById("BeforeOverlay").style.visibility = "visible";
+        document.getElementById("BeforeOverlay").style.opacity = "100";
+        resMap.stop(); //stop the flying animation
+        setTimeout(function () { resMap.stop() }, 200)
+        checkGenerationTypeAndGenerate();
+    
+        setTimeout(disableResultScreen, 200);
+        setTimeout(socialPopupProbability, 650);
+    } else {
+        dailyChallengeEnd();
+    }
 }
-

@@ -157,3 +157,4 @@ document.getElementById("socialPopupJoin").addEventListener("click", function() 
         uiSetUserXP(localStorage.getItem("experience"));
     }, 200)
 });
+

@@ -39,7 +39,6 @@ h1, h2, h3 {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(5, 6, 10, 0.5);
-  align-items: center;
   height: 75px;
 }
 
@@ -460,6 +459,35 @@ li {
 #map:hover {
   transition: none;
   opacity: 100%;
+}
+
+#mapModeIndicator {
+  background-color: hsla(236, 25%, 20%, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  height: 50px;
+  margin-left: auto;
+  margin-right: 0.75%;
+  width: 30%;
+  z-index: 10;
+  border-radius: 10px;
+  display: none; /* set to flex in code when needed */
+  align-items: center;
+  justify-content: flex-start;
+  color: white;
+  font-size: 25px;
+  margin-bottom: 10px;
+  transition: width 250ms ease;
+}
+
+.mapModeText {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.modeTextRight {
+  margin-left: auto;
+  margin-right: 25px;
 }
 
 .MainDiv {
@@ -1094,6 +1122,9 @@ button {
     height: 50%;
     opacity: 80%;
   }
+  #mapModeIndicator {
+    width: 40%;
+  }
 }
 
 
@@ -1164,10 +1195,13 @@ all and (max-width: 1000px) {
     margin-top: 0;
   }
 
-
   #map {
     opacity: 100%;
     }
+
+  #mapModeIndicator {
+    width: 98.5%;
+  }
 
   #floatingMapButton {
     display: block;

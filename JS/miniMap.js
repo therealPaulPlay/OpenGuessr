@@ -1,5 +1,5 @@
-import { loadResultMap } from "./main.js";
-import { calculateDistances } from "./main.js";
+import { loadResultMap, calculateDistances } from "./main.js";
+import { dailyChallengeUIEnabled, dailyChallengeTimer, saveDailyChallengeCompletion } from "./dailyChallenge.js"
 
 const Provider = {
     ENGLISH: "0",
@@ -161,6 +161,21 @@ function onMapHover() {
 }
 
 export function confirmButtonClicks() {
+
+    if (dailyChallengeUIEnabled) {
+        document.getElementById("nextRoundText").innerHTML = "see results →";
+        
+        try {
+            dailyChallengeTimer.stopTimer();
+        } catch (error) {
+            console.log("timer already stopped.");
+        }
+        
+        saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
+    } else {
+        document.getElementById("nextRoundText").innerHTML = "next round →";
+    }
+
     calculateDistances(markerPosition.lat, markerPosition.lng);
     loadResultMap(lat, long);
 }

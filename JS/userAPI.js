@@ -101,12 +101,9 @@ export async function getUser(token, id, errorSource) {
 export async function getAllUsers() {
   try {
     let id = localStorage.getItem("id")
-    console.log(id);
     let leaderboardEndpoint = userGetEndpoint+"/leaderboard";
     if (id != null && id != 0 && id != undefined)
       leaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
-
-    console.log()
     const response = await fetch(`${leaderboardEndpoint}`, {
       method: 'GET',
       headers: {

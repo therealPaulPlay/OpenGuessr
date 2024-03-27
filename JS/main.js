@@ -6,6 +6,7 @@ import { resetMap, getMapSource } from './miniMap.js';
 import { loadResultScreenXP } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
+import { dailyChallengeCheckTimer } from "./dailyChallenge.js";
 
 //default coords of the location
 let currentStreetviewLat = 0;
@@ -17,14 +18,10 @@ export async function generateNewLocation(type) {
     resetMap();
     let newLocationArray;
 
-    if (type == "JSON") {
-        newLocationArray = await getLocationCoordinates("JSON");
-    } else if (type == "SDK") {
-        newLocationArray = await getLocationCoordinates("SDK");
-    } else if (type == "DAILY") {
-       newLocationArray = await getLocationCoordinates("DAILY");
-    } else {
-        console.error("Incorrect Location type set in main.js");
+    try {
+        newLocationArray = await getLocationCoordinates(type);
+    } catch (error) {
+        console.error("Invalid location generation type in main.js / generateNewLocation. Error: " + error);
     }
 
     try {
@@ -185,6 +182,8 @@ export function loadIframe(lat, long) {
 
     // Define a function to handle iframe load event
     const handleLoad = () => {
+        dailyChallengeCheckTimer(); //check if daily challenge is active and start timer
+        
         setTimeout(function() {
             const beforeOverlay = document.getElementById("BeforeOverlay");
             beforeOverlay.style.opacity = "0";
