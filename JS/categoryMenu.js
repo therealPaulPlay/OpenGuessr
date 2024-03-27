@@ -124,10 +124,14 @@ function changeCategory(category) {
 
 function checkGenerationTypeAndGenerate() {
     //pick between json and maps api loading depending on the category type
-    if (mapCategory != "standard") {
+    if (mapCategory != "standard" && mapCategory != "daily") {
         loadLocationJSON(mapCategory); //this also generates a new location
-    } else {
+    } else if (mapCategory != "standard") {
+        generateNewLocation("DAILY");
+    } else if (mapCategory == "standard") {
         generateNewLocation("SDK");
+    } else {
+        console.error("Incorrect mapCategory set in cateGoryMenu.js under checkGenerationTypeAndGenerate.")
     }
 }
 

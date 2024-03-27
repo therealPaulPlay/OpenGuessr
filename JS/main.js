@@ -19,8 +19,12 @@ export async function generateNewLocation(type) {
 
     if (type == "JSON") {
         newLocationArray = await getLocationCoordinates("JSON");
-    } else {
+    } else if (type == "SDK") {
         newLocationArray = await getLocationCoordinates("SDK");
+    } else if (type == "DAILY") {
+       newLocationArray = await getLocationCoordinates("DAILY");
+    } else {
+        console.error("Incorrect Location type set in main.js");
     }
 
     try {
