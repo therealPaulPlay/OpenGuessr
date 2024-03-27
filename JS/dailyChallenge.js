@@ -83,12 +83,6 @@ function dailyChallengeTimerExpired() {
     confirmButtonClicks(); //if the timer expires and the player hasn't guessed yet, the guess function will be evoked.
 }
 
-// Example of how to use getRemainingTime function
-/* setTimeout(function() {
-    var remainingTime = getRemainingTime();
-    console.log("Remaining time:", remainingTime);
-}, 5000); // Get the remaining time after 5 seconds */
-
 //Daily Challenge end -------------------------------------------------------------------------------------------------------------------------------------
 export function dailyChallengeEnd() {
     localStorage.setItem("selectedCategory", "standard"); //reset category to standard, so that if user returns after daily challenge it doesn't restart daily challenge

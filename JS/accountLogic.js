@@ -1,5 +1,5 @@
 import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
-import { setDailyChallengeExperienceResult } from "./dailyChallenge";
+import { setDailyChallengeExperienceResult, dailyChallengeTimer } from "./dailyChallenge";
 
 let profileName = document.getElementById("profileViewName");
 
@@ -216,7 +216,11 @@ export async function loadResultScreenXP(distance) {
       earnedXP = Math.round(5000 * ((0.998036) ** distance));
     }
     else if (selectedCategory == "daily") {
-      earnedXP = Math.round(5000 * ((0.998036) ** distance)); //Function has to be adjusted to time...
+      let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
+
+      let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
+      earnedXP = Math.round(5000 * ((0.998036) ** distance)  * timeFactor);
+      
       setDailyChallengeExperienceResult(earnedXP);
     } else {
       earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)

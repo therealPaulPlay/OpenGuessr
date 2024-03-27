@@ -6,7 +6,7 @@ import { resetMap, getMapSource } from './miniMap.js';
 import { loadResultScreenXP } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
-import { dailyChallengeCheckTimer } from "./dailyChallenge.js";
+import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer } from "./dailyChallenge.js";
 
 //default coords of the location
 let currentStreetviewLat = 0;
@@ -90,6 +90,10 @@ function compareDistances(distance) {
     else {
         finalResult = Math.round(distance * 10) / 10;
         resultAsString = finalResult+" km";
+    }
+
+    if (dailyChallengeUIEnabled) {
+        extraMsg = "You took " + (120 - dailyChallengeTimer.getRemainingTime()) + "s to guess. The time is part of the XP calculation." //show timer data in extra message on result screen for daily challenge
     }
     
     loadResultScreenXP(distance);
