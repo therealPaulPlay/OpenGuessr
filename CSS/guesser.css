@@ -964,6 +964,10 @@ li {
   background: linear-gradient(0.60turn, white, #ffcaca);
 }
 
+#dailyCategory {
+  background: linear-gradient(0.60turn, white, #caf5ff);
+}
+
 .categoryUpcoming {
   opacity: 80%;
   background-color: rgba(0, 0, 0, 0.15);
@@ -1045,9 +1049,6 @@ button {
 
 .popup-content {
   display: none;
-  position: fixed;
-  top: 50%;
-  left: 50%;
   background-color: #282828;
   width: fit-content;
   font-size: 30px;

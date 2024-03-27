@@ -14,7 +14,8 @@ const Category = {
     SPAIN: "spain",
     POLAND: "poland",
     CANADA: "canada",
-    SWEDEN: "sweden"
+    SWEDEN: "sweden",
+    DAILY: "daily"
 }
 
 export let mapCategory = Category.STANDARD; //default category
@@ -31,6 +32,7 @@ const spainCategoryButton = document.getElementById("spainCategory");
 const polandCategoryButton = document.getElementById("polandCategory");
 const canadaCategoryButton = document.getElementById("canadaCategory");
 const swedenCategoryButton = document.getElementById("swedenCategory");
+const dailyCategoryButton = document.getElementById("dailyCategory");
 
 attachClickListener("standardCategory", Category.STANDARD);
 attachClickListener("capitalCategory", Category.CAPITAL);
@@ -43,6 +45,7 @@ attachClickListener("spainCategory", Category.SPAIN);
 attachClickListener("polandCategory", Category.POLAND);
 attachClickListener("canadaCategory", Category.CANADA);
 attachClickListener("swedenCategory", Category.SWEDEN);
+attachClickListener("dailyCategory", Category.DAILY);
 
 // Attach event listeners using the function
 function attachClickListener(buttonId, category) {
@@ -69,6 +72,7 @@ function changeCategory(category) {
     polandCategoryButton.classList.add("categoryDisabled");
     canadaCategoryButton.classList.add("categoryDisabled");
     swedenCategoryButton.classList.add("categoryDisabled");
+    dailyCategoryButton.classList.add("categoryDisabled");
 
     switch (category) {
         case Category.STANDARD:
@@ -103,6 +107,9 @@ function changeCategory(category) {
             break;
         case Category.SWEDEN:
             swedenCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.DAILY:
+            dailyCategoryButton.classList.remove("categoryDisabled");
             break;
     }
 
