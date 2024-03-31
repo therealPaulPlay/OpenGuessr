@@ -445,7 +445,7 @@ li {
   margin-left: 0.75%;
   margin-right: 0.75%;
   margin-bottom: 10px;
-  margin-top: auto;
+  margin-top: 5px;
   width: 30%;
   height: 30%;
   max-height: 100%;
@@ -459,6 +459,22 @@ li {
 #map:hover {
   transition: none;
   opacity: 100%;
+}
+
+#revealCompass {
+  margin-top: auto;
+  margin-left: auto;
+  color: rgb(54, 54, 54);
+  margin-right: 0.75%;
+  padding-right: 10px;
+  padding-left: 10px;
+  border-radius: 10px;
+  height: 25px;
+  font-size: 17px;
+  background-color: rgba(244, 244, 244, 0.7);
+  transition: all 250ms ease;
+  box-shadow: 0 2px 20px rgba(71, 71, 71, 0.5);
+  z-index: 10;
 }
 
 #mapModeIndicator {
@@ -1193,11 +1209,12 @@ all and (max-width: 1000px) {
     width: 98.5%;
     height: 45%;
     margin-top: 0;
+    opacity: 100%;
   }
 
-  #map {
-    opacity: 100%;
-    }
+  #revealCompass {
+    display: none;
+  }
 
   #mapModeIndicator {
     width: 98.5%;

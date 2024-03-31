@@ -158,3 +158,31 @@ document.getElementById("socialPopupJoin").addEventListener("click", function() 
     }, 200)
 });
 
+//reveal compass -------------------------------------------------------------------------------------
+let revealCompass = document.getElementById("revealCompass");
+revealCompass.addEventListener("click", toggleMapOffset);
+
+let mapOffset = false;
+
+function toggleMapOffset() {
+    if (mapOffset) {
+        document.getElementById("map").style.marginRight = "0.75%";
+        revealCompass.style.marginRight = "0.75%";
+        revealCompass.innerHTML = "reveal compass";
+        mapOffset = false;
+    } else {
+        document.getElementById("map").style.marginRight = "65px";
+        revealCompass.style.marginRight = "65px";
+        revealCompass.innerHTML = "hide compass";
+        mapOffset = true;
+    }
+}
+
+//switch UI toggles back to standard on window resize ----------------------------------------------
+
+window.addEventListener("resize", (event) => {
+    mapOffset = true; 
+    toggleMapOffset(); 
+    mapExpanded = false;
+    toggleMap();
+});
