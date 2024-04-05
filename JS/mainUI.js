@@ -107,7 +107,8 @@ let categoriesExpanded = false;
 
 categoryMenuButton.addEventListener("click", function() {
     if (!categoriesExpanded) {
-        floatingCategoryArea.style.top = "395px";
+        floatingCategoryArea.style.top = "360px";
+        document.getElementById("extendedNavbarContent").scrollTop = "0";
         extendedNavbar.classList.add("expanded");
         categoryMenuButton.innerText = "Map Categories ▲";
         categoriesExpanded = true;
