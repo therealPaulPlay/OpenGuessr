@@ -14,7 +14,10 @@ const Category = {
     SPAIN: "spain",
     POLAND: "poland",
     CANADA: "canada",
-    SWEDEN: "sweden"
+    SWEDEN: "sweden",
+    INDIA: "india",
+    MEXICO: "mexico",
+    ITALY: "italy"
 }
 
 export let mapCategory = Category.STANDARD; //default category
@@ -31,6 +34,9 @@ const spainCategoryButton = document.getElementById("spainCategory");
 const polandCategoryButton = document.getElementById("polandCategory");
 const canadaCategoryButton = document.getElementById("canadaCategory");
 const swedenCategoryButton = document.getElementById("swedenCategory");
+const indiaCategoryButton = document.getElementById("indiaCategory");
+const mexicoCategoryButton = document.getElementById("mexicoCategory");
+const italyCategoryButton = document.getElementById("italyCategory");
 
 attachClickListener("standardCategory", Category.STANDARD);
 attachClickListener("capitalCategory", Category.CAPITAL);
@@ -43,6 +49,9 @@ attachClickListener("spainCategory", Category.SPAIN);
 attachClickListener("polandCategory", Category.POLAND);
 attachClickListener("canadaCategory", Category.CANADA);
 attachClickListener("swedenCategory", Category.SWEDEN);
+attachClickListener("indiaCategory", Category.INDIA);
+attachClickListener("mexicoCategory", Category.MEXICO);
+attachClickListener("italyCategory", Category.ITALY);
 
 // Attach event listeners using the function
 function attachClickListener(buttonId, category) {
@@ -69,6 +78,9 @@ function changeCategory(category) {
     polandCategoryButton.classList.add("categoryDisabled");
     canadaCategoryButton.classList.add("categoryDisabled");
     swedenCategoryButton.classList.add("categoryDisabled");
+    indiaCategoryButton.classList.add("categoryDisabled");
+    mexicoCategoryButton.classList.add("categoryDisabled");
+    italyCategoryButton.classList.add("categoryDisabled");
 
     switch (category) {
         case Category.STANDARD:
@@ -103,6 +115,15 @@ function changeCategory(category) {
             break;
         case Category.SWEDEN:
             swedenCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.INDIA:
+            indiaCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.MEXICO:
+            mexicoCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.ITALY:
+            italyCategoryButton.classList.remove("categoryDisabled");
             break;
     }
 

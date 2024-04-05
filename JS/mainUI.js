@@ -109,13 +109,14 @@ categoryMenuButton.addEventListener("click", function() {
     if (!categoriesExpanded) {
         floatingCategoryArea.style.top = "360px";
         document.getElementById("extendedNavbarContent").scrollTop = "0";
+        document.getElementById("extendedNavbarGradient").style.display = "block";
         extendedNavbar.classList.add("expanded");
         categoryMenuButton.innerText = "Map Categories ▲";
         categoriesExpanded = true;
     } else {
         setTimeout(function() {
             floatingCategoryArea.style.top = "85px";
-            extendedNavbar.scrollTop = 0;
+            document.getElementById("extendedNavbarGradient").style.display = "none";
         }, 75); 
         extendedNavbar.classList.remove("expanded");
         categoryMenuButton.innerText = "Map Categories ▼";
