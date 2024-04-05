@@ -136,6 +136,7 @@ function changeCategory(category) {
             break;
         case Category.UKRAINE:
             ukraineCategoryButton.classList.remove("categoryDisabled");
+            break;
         case Category.DAILY:
             dailyCategoryButton.classList.remove("categoryDisabled");
             break;
