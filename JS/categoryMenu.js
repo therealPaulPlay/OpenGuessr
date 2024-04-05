@@ -16,6 +16,10 @@ const Category = {
     POLAND: "poland",
     CANADA: "canada",
     SWEDEN: "sweden",
+    INDIA: "india",
+    MEXICO: "mexico",
+    ITALY: "italy",
+    UKRAINE: "ukraine",
     DAILY: "daily"
 }
 
@@ -33,6 +37,10 @@ const spainCategoryButton = document.getElementById("spainCategory");
 const polandCategoryButton = document.getElementById("polandCategory");
 const canadaCategoryButton = document.getElementById("canadaCategory");
 const swedenCategoryButton = document.getElementById("swedenCategory");
+const indiaCategoryButton = document.getElementById("indiaCategory");
+const mexicoCategoryButton = document.getElementById("mexicoCategory");
+const italyCategoryButton = document.getElementById("italyCategory");
+const ukraineCategoryButton = document.getElementById("ukraineCategory");
 const dailyCategoryButton = document.getElementById("dailyCategory");
 
 attachClickListener("standardCategory", Category.STANDARD);
@@ -46,6 +54,10 @@ attachClickListener("spainCategory", Category.SPAIN);
 attachClickListener("polandCategory", Category.POLAND);
 attachClickListener("canadaCategory", Category.CANADA);
 attachClickListener("swedenCategory", Category.SWEDEN);
+attachClickListener("indiaCategory", Category.INDIA);
+attachClickListener("mexicoCategory", Category.MEXICO);
+attachClickListener("italyCategory", Category.ITALY);
+attachClickListener("ukraineCategory", Category.UKRAINE);
 attachClickListener("dailyCategory", Category.DAILY);
 
 // Attach event listeners using the function
@@ -73,6 +85,10 @@ function changeCategory(category) {
     polandCategoryButton.classList.add("categoryDisabled");
     canadaCategoryButton.classList.add("categoryDisabled");
     swedenCategoryButton.classList.add("categoryDisabled");
+    indiaCategoryButton.classList.add("categoryDisabled");
+    mexicoCategoryButton.classList.add("categoryDisabled");
+    italyCategoryButton.classList.add("categoryDisabled");
+    ukraineCategoryButton.classList.add("categoryDisabled");
     dailyCategoryButton.classList.add("categoryDisabled");
 
     switch (category) {
@@ -109,6 +125,17 @@ function changeCategory(category) {
         case Category.SWEDEN:
             swedenCategoryButton.classList.remove("categoryDisabled");
             break;
+        case Category.INDIA:
+            indiaCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.MEXICO:
+            mexicoCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.ITALY:
+            italyCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.UKRAINE:
+            ukraineCategoryButton.classList.remove("categoryDisabled");
         case Category.DAILY:
             dailyCategoryButton.classList.remove("categoryDisabled");
             break;
