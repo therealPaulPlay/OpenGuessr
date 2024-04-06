@@ -237,6 +237,10 @@ h1, h2, h3 {
   opacity: 100%;
 }
 
+#profileButton, #logoutButton {
+  display: none;
+}
+
 #profileClose, #helpClose, #socialPopupClose, #socialPopupJoin {
   min-height: 50px;
 }
