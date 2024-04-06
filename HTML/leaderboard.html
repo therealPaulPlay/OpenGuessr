@@ -173,7 +173,7 @@
 
         .maxlength {
             max-width: 40%;
-            text-overflow: none; 
+            text-overflow: none;
             overflow: hidden;
         }
 
@@ -233,9 +233,10 @@
 
     document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" })
 
+    let container = document.getElementById('container');
+
     // Function to add a new ranked item to the leaderboard
     function addRankedItem(rank, name, xp) {
-        const container = document.getElementById('container');
         const rankedItem = document.createElement('div');
         rankedItem.classList.add('rankedItem');
 
@@ -263,24 +264,28 @@
 
     async function loadLeaderboard() {
         // Await the promise returned by getAllUsers()
-        let userData = await getAllUsers();  
+        let userData = await getAllUsers();
 
-        // Iterate through the array once userData is available
-        for (var i = 0; i < userData.length; i++) {
-            let user = userData[i];
-            let userName = user.userName;
-            let experience = user.experience;
+        if (userData == undefined) {
+            container.innerHTML = "<p>An error occured while loading the leaderboard.</p>";
+        } else {
+            // Iterate through the array once userData is available
+            for (var i = 0; i < userData.length; i++) {
+                let user = userData[i];
+                let userName = user.userName;
+                let experience = user.experience;
 
-            //This would be for loading the players stats from the response (in case they are included)
-            if (userName == yourUsername && !dontLoadStats) {
-                document.getElementById("yourExperience").innerHTML = Number(experience).toLocaleString();
-                document.getElementById("yourRank").innerHTML = "#" + (userData[i]["position"]);
-            }
+                //This would be for loading the players stats from the response (in case they are included)
+                if (userName == yourUsername && !dontLoadStats) {
+                    document.getElementById("yourExperience").innerHTML = Number(experience).toLocaleString();
+                    document.getElementById("yourRank").innerHTML = "#" + (userData[i]["position"]);
+                }
 
-            experience = Number(experience).toLocaleString();
+                experience = Number(experience).toLocaleString();
 
-            if (i < 100) {
-            addRankedItem(i + 1, userName, experience);
+                if (i < 100) {
+                    addRankedItem(i + 1, userName, experience);
+                }
             }
         }
 

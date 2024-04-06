@@ -230,6 +230,9 @@ export function displayError(error, source) {
     if (error.includes("409")) {
       error = "User with this email or username already exists.";
     }
+    if (error.includes("406")) {
+      error = "Please choose a different username.";
+    }
     
     errorMessage.innerHTML = error;
     errorMessage.style.display = "inline";

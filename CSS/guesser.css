@@ -126,8 +126,26 @@ h1, h2, h3 {
   color: white;
 }
 
+#accountNameArea {
+  max-width: 165.5px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 #accountName {
   color: white;
+  display: inline-block;
+  width: fit-content;
+}
+
+.scroll {
+  animation: scrollText 5s ease-in-out infinite alternate; 
+}
+
+/* Animation for scrolling */
+@keyframes scrollText {
+  0% { transform: translateX(5px); }
+  100% { transform: translateX(calc(-100% + 155px)); } /* Adjusted animation */
 }
 
 .progress {
@@ -1077,11 +1095,14 @@ button {
 }
 
 #socialBar {
+  display: flex;
+  justify-content: center;
   margin-left: auto;
   margin-right: auto;
   padding-right: 5px;
   padding-left: 5px;
   border-radius: 10px;
+  flex-direction: column;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   background-color: rgba(42, 44, 71, 0.9);
@@ -1094,16 +1115,21 @@ button {
 }
 
 .socialBarButton {
+  width: auto;
   color: black;
   background-color: white;
   white-space: nowrap;
-  margin: 15px;
+  margin: 5px;
   padding-left: 35px;
   padding-right: 35px;
 }
 
 .socialBarButton:hover {
   filter: brightness(0.7);
+}
+
+.placeholder {
+  height: 5px;
 }
 
 .popup-content {
