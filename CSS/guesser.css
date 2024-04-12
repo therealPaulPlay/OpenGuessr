@@ -357,6 +357,37 @@ li {
   z-index: 15;
 }
 
+#hardModeFade {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  transition: opacity 500ms ease;
+  opacity: 0;
+  overflow: hidden;
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  pointer-events: none;
+  user-select: none;
+}
+
+#hardModeFade h1 {
+  font-size: 75px;
+  text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
+}
+
+#hardModeFade p {
+  font-size: 30px;
+  text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+}
+
 #logoutButton {
   background-color: #ffffff;
   color: black;
@@ -1049,6 +1080,14 @@ li {
   background: linear-gradient(0.60turn, white, #caf5ff);
 }
 
+#hardCategory {
+  background: linear-gradient(0.60turn, rgb(235, 205, 191), #d47171);
+}
+
+.dailyChallengeDisabled {
+  display: none;
+}
+
 .categoryUpcoming {
   opacity: 80%;
   background-color: rgba(0, 0, 0, 0.15);
@@ -1245,6 +1284,14 @@ all and (max-width: 1000px) {
 
   #floatingCategoryArea {
     visibility: hidden;
+  }
+
+  #hardModeFade h1 {
+    font-size: 45px;
+  }
+  
+  #hardModeFade p {
+    font-size: 25px;
   }
 }
 

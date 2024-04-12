@@ -212,7 +212,7 @@ export async function loadResultScreenXP(distance) {
 
     let earnedXP;
 
-    if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "famous" || selectedCategory == "capital") {
+    if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "famous" || selectedCategory == "capital" || selectedCategory == "hard") {
       earnedXP = Math.round(5000 * ((0.998036) ** distance));
     }
     else if (selectedCategory == "daily") {

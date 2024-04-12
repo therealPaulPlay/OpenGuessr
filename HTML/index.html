@@ -63,7 +63,7 @@
         <button id="leaderboardButton" class="accountButton socialBarButton">Leaderboard
           <img class="socialBarIcons" src="/IMG/leaderboard_icon.png" alt="Leaderboard for OpenGuessr">
         </button>
-        <button id="dailyLeaderboardButton" class="accountButton socialBarButton">Daily Challenge
+        <button id="dailyLeaderboardButton" class="accountButton socialBarButton dailyChallengeDisabled">Daily Challenge
           <img class="socialBarIcons" src="/IMG/daily_icon.png" alt="Leaderboard for OpenGuessr">
         </button>
         <div class="placeholder"></div>
@@ -91,7 +91,8 @@
     <button class="category" id="capitalCategory" type="button">Capital Cities</button>
     <button class="category" id="famousCategory" type="button">Famous Places</button>
     <p class="categoriesNote" id="categoryExclusiveText"> Sign up to unlock for free: </p>
-    <button class="category accountExclusive accountLock" id="dailyCategory" type="button">The Daily Challenge</button>
+    <button class="category accountExclusive accountLock dailyChallengeDisabled" id="dailyCategory" type="button">The Daily Challenge</button>
+    <button class="category accountExclusive accountLock" id="hardCategory" type="button">Extra Hard</button>
     <button class="category accountExclusive accountLock" id="usaCategory" type="button">USA</button>
     <button class="category accountExclusive accountLock" id="germanyCategory" type="button">Germany</button>
     <button class="category accountExclusive accountLock" id="ukCategory" type="button">United Kingdom</button>
@@ -205,6 +206,10 @@
     <br>
   </div>
   <div id="blackBackground"></div>
+  <div id="hardModeFade">
+    <h1>The time is up!</h1>
+    <p>Please take your guess.</p>
+  </div>
   <!--streetview-->
   <div class="MainDiv">
     <div id="innerMainDiv">

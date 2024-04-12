@@ -7,6 +7,7 @@ import { loadResultScreenXP } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
 import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer } from "./dailyChallenge.js";
+import { checkHardModeTimeout } from './hardMode.js';
 
 //default coords of the location
 let currentStreetviewLat = 0;
@@ -187,6 +188,7 @@ export function loadIframe(lat, long) {
     // Define a function to handle iframe load event
     const handleLoad = () => {
         dailyChallengeCheckTimer(); //check if daily challenge is active and start timer
+        checkHardModeTimeout(); //Check if the user is playing hard mode + apply changes if yes
         
         setTimeout(function() {
             const beforeOverlay = document.getElementById("BeforeOverlay");
