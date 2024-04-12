@@ -1,5 +1,6 @@
 import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
 import { setDailyChallengeExperienceResult, dailyChallengeTimer } from "./dailyChallenge";
+import { checkTextLength } from "./mainUI";
 
 let profileName = document.getElementById("profileViewName");
 
@@ -127,6 +128,7 @@ function displayUserInfo() {
   username = localStorage.getItem("username");
   displayAccountName.innerHTML = username;
   profileName.innerHTML = username;
+  checkTextLength();
 }
 
 //adjust the UI to the signin status and load user info on website load
@@ -219,8 +221,8 @@ export async function loadResultScreenXP(distance) {
       let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
 
       let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
-      earnedXP = Math.round(5000 * ((0.998036) ** distance)  * timeFactor);
-      
+      earnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
+
       setDailyChallengeExperienceResult(earnedXP);
     } else {
       earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
@@ -239,7 +241,7 @@ export async function loadResultScreenXP(distance) {
       setUserXP(currentXP + earnedXP); //save XP, this is the last step! This function is async, but we don't await it as we set the XP to be currentXP + earnedXP in the ui anyway
     }
 
-    setTimeout(function() {
+    setTimeout(function () {
       XPbarResource.classList.add("XPbarAnimate");
       XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP).fraction * 100 + "%";
       resultLevelText.innerHTML = "+" + earnedXP + " XP / " + resultLevelText.innerHTML;
@@ -304,57 +306,69 @@ async function updateProfileUsername() {
 
 //Pin selection -------------------------------------------------------------------------------------------------------
 
-document.addEventListener("DOMContentLoaded", function() {
-  // Function to handle pin selection
-  function selectPin(index) {
-    // Check if the pin is locked
-    const pinLock = document.querySelectorAll('.pinHolder')[index].querySelector('.pinLock');
-    if (pinLock.style.display === 'none' || pinLock.style.display === '') {
+export let selectedPinIndex = 0;
+
+// Function to handle pin selection
+function selectPin(index) {
+  // Check if the pinHolder and pinLock exist
+  const pinHolders = document.querySelectorAll('.pinHolder');
+  if (pinHolders.length > index) {
+    const pinLock = pinHolders[index].querySelector('.pinLock');
+    if (pinLock && (pinLock.style.display === 'none' || pinLock.style.display === '')) {
       // Remove selectedPin class from all pinHolder buttons
-      document.querySelectorAll('.pinHolder').forEach(function(btn) {
+      document.querySelectorAll('.pinHolder').forEach(function (btn) {
         btn.classList.remove('selectedPin');
       });
 
       // Add selectedPin class to the clicked pinHolder button
-      document.querySelectorAll('.pinHolder')[index].classList.add('selectedPin');
+      pinHolders[index].classList.add('selectedPin');
 
-      // Set selectedPin index to localStorage
-      localStorage.setItem('selectedPin', index);
-    }
-  }
-  
-  // Function to load selected pin from localStorage
-  function loadSelectedPin() {
-    const selectedIndex = localStorage.getItem('selectedPin');
-    if (selectedIndex !== null) {
-      selectPin(parseInt(selectedIndex));
-    } else {
-      selectedIndex = 0;
-    }
-  }
-  
-  // Function to update pinLocks based on XP
-  function updatePinLocks(xpAmount) {
-    const pinLocks = document.querySelectorAll('.pinLock');
-    pinLocks.forEach(function(lock, index) {
-      const lockXP = parseInt(lock.querySelector('.pinLockText').textContent.replace(/,/g, ''));
-      if (xpAmount >= lockXP) {
-        lock.style.display = "none"; // Hide pinLock if XP is enough
-      } else {
-        lock.style.display = "flex"; // Show pinLock if XP is not enough
+      if (index != null || typeof(index) == "number") {
+        // Set selectedPin index to localStorage
+        selectedPinIndex = index;
+        localStorage.setItem("selectedPin", index);
       }
-    });
+    }
   }
-  
-  // Add click event listener to pinHolder buttons
-  document.querySelectorAll('.pinHolder').forEach(function(btn, index) {
-    btn.addEventListener('click', function() {
-      selectPin(index); // Call selectPin function on button click
-    });
+}
+
+
+// Function to load selected pin from localStorage
+function loadSelectedPin() {
+  selectedPinIndex = parseInt(localStorage.getItem('selectedPin'));
+
+  if (isNaN(selectedPinIndex) || selectedPinIndex == undefined || selectedPinIndex > 5 || selectedPinIndex == null) {
+    selectedPinIndex = 0;
+  }
+
+  selectPin(selectedPinIndex);
+}
+
+// Function to update pinLocks based on XP
+function updatePinLocks(xpAmount) {
+
+  const pinLocks = document.querySelectorAll('.pinLock');
+  pinLocks.forEach(function (lock) {
+    const lockXP = parseInt(lock.querySelector('.pinLockText').textContent.replace(/,/g, ''));
+    if (xpAmount >= lockXP) {
+      lock.style.display = "none"; // Hide pinLock if XP is enough
+    } else {
+      lock.style.display = "flex"; // Show pinLock if XP is not enough
+    }
   });
-  
+}
+
+// Add click event listener to pinHolder buttons
+document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
+  btn.addEventListener('click', function () {
+    selectPin(index); // Call selectPin function on button click
+  });
+});
+
+
+document.addEventListener("DOMContentLoaded", function () {
   // Load selected pin when the page loads
   loadSelectedPin();
-
   updatePinLocks(localStorage.getItem("experience"));
+
 });

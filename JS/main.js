@@ -3,7 +3,7 @@ for signupScreen.js only. LoadMap and AccountLogic are both not being included i
 of the bundled main.js. */
 
 import { resetMap, getMapSource } from './miniMap.js';
-import { loadResultScreenXP } from "./accountLogic.js";
+import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
 import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer } from "./dailyChallenge.js";
@@ -121,7 +121,7 @@ export function loadResultMap(playersLat, playersLong) {
 }).addTo(resMap);
 
 const redIcon = new L.Icon({
-    iconUrl: './IMG/your_marker.png',
+    iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
     iconSize: [40, 40],
     iconAnchor: [20, 38],
     popupAnchor: [1, -34],

@@ -199,7 +199,7 @@ window.addEventListener("resize", (event) => {
 const accountName = document.getElementById('accountName');
 
 // Check if the text length exceeds the threshold
-function checkTextLength() {
+export function checkTextLength() {
   const textLength = accountName.textContent.length;
   
   if (textLength > 20) {
@@ -212,9 +212,6 @@ function checkTextLength() {
 // Check for text length initially and when the text changes
 window.addEventListener('DOMContentLoaded', checkTextLength); // Check on page load
 window.addEventListener('input', checkTextLength); // Check when text changes
-
-// Optional: Trigger overflow check after a delay in case content changes dynamically
-setTimeout(checkTextLength, 5000);
 
 
 

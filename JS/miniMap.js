@@ -1,5 +1,6 @@
 import { loadResultMap, calculateDistances } from "./main.js";
 import { dailyChallengeUIEnabled, dailyChallengeTimer, saveDailyChallengeCompletion } from "./dailyChallenge.js"
+import { selectedPinIndex } from "./accountLogic.js";
 
 const Provider = {
     ENGLISH: "0",
@@ -109,14 +110,6 @@ function resetGuessMap() {
 
 map.setZoom(3);
 
-const redIcon = new L.Icon({
-    iconUrl: './IMG/your_marker.png',
-    iconSize: [40, 40],
-    iconAnchor: [20, 38],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
-
 let marker = new L.Marker([0, 0]);
 let markerPosition = marker.getLatLng();
 let lat;
@@ -135,6 +128,14 @@ function onMapClick(e) {
     //sets the variables from the USER input (this is the one that the user has placed)
     lat = e.latlng.lat;
     long = e.latlng.lng;
+
+    const redIcon = new L.Icon({
+        iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
+        iconSize: [40, 40],
+        iconAnchor: [20, 38],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
 
     marker = new L.Marker([lat, long], {icon: redIcon});
 
