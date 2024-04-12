@@ -101,9 +101,12 @@ export async function getUser(token, id, errorSource) {
 export async function getAllUsers() {
   try {
     let id = localStorage.getItem("id")
+    console.log(id);
     let leaderboardEndpoint = userGetEndpoint+"/leaderboard";
     if (id != null && id != 0 && id != undefined)
       leaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
+
+    console.log()
     const response = await fetch(`${leaderboardEndpoint}`, {
       method: 'GET',
       headers: {
@@ -149,36 +152,32 @@ export async function updatePassword(token, id, errorSource) {
 }
 
 export async function updateExperience(token, id, experience, errorSource) {
-  if (Number(experience) > 0) {
-    try {
-      const requestBody = {
-        id: id,
-        experience: experience
-      };
-      // Make the PUT request using Fetch API
-      const response = await fetch(userUpdateEndpoint, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify(requestBody)
-      });
-
-      // Check if the response is successful
-      if (response.ok) {
-        const data = await response.json();
-        localStorage.setItem("experience", data['user']['experience']);
-      } else {
-        console.error('User update failed:', response.status);
-        displayError("User update failed: " + response.status, errorSource);
-      }
-    } catch (error) {
-      console.error('Error occurred during user update:', error);
-      displayError("Error occured during user update: " + error, errorSource);
+  try {
+    const requestBody = {
+      id: id,
+      experience: experience
+    };
+    // Make the PUT request using Fetch API
+    const response = await fetch(userUpdateEndpoint, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(requestBody)
+    });
+    
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      localStorage.setItem("experience", data['user']['experience']);
+    } else {
+      console.error('User update failed:', response.status);
+      displayError("User update failed: " + response.status, errorSource);
     }
-  } else {
-    console.log("User XP not updated. 0 XP to add.");
+  } catch (error) {
+    console.error('Error occurred during user update:', error);
+    displayError("Error occured during user update: " + error, errorSource);
   }
 }
 
@@ -233,9 +232,6 @@ export function displayError(error, source) {
     }
     if (error.includes("409")) {
       error = "User with this email or username already exists.";
-    }
-    if (error.includes("406")) {
-      error = "Please choose a different username.";
     }
     
     errorMessage.innerHTML = error;
