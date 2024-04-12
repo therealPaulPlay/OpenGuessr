@@ -87,7 +87,7 @@ export async function getUser(token, id, errorSource) {
     if (response.ok) {
       const data = await response.json();
       await saveUserData(data['user']);
-  
+
     } else {
       console.error('Fetch failed:', response.status);
       displayError("Fetch failed: " + response.status, errorSource);
@@ -102,7 +102,7 @@ export async function getAllUsers() {
   try {
     let id = localStorage.getItem("id")
     console.log(id);
-    let leaderboardEndpoint = userGetEndpoint+"/leaderboard";
+    let leaderboardEndpoint = userGetEndpoint + "/leaderboard";
     if (id != null && id != 0 && id != undefined)
       leaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
 
@@ -118,7 +118,7 @@ export async function getAllUsers() {
     if (response.ok) {
       const data = await response.json();
       return data;
-  
+
     } else {
       console.error('Fetch failed:', response.status);
     }
@@ -152,32 +152,36 @@ export async function updatePassword(token, id, errorSource) {
 }
 
 export async function updateExperience(token, id, experience, errorSource) {
-  try {
-    const requestBody = {
-      id: id,
-      experience: experience
-    };
-    // Make the PUT request using Fetch API
-    const response = await fetch(userUpdateEndpoint, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(requestBody)
-    });
-    
-    // Check if the response is successful
-    if (response.ok) {
-      const data = await response.json();
-      localStorage.setItem("experience", data['user']['experience']);
-    } else {
-      console.error('User update failed:', response.status);
-      displayError("User update failed: " + response.status, errorSource);
+  if (Number(experience) > 0) {
+    try {
+      const requestBody = {
+        id: id,
+        experience: experience
+      };
+      // Make the PUT request using Fetch API
+      const response = await fetch(userUpdateEndpoint, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(requestBody)
+      });
+
+      // Check if the response is successful
+      if (response.ok) {
+        const data = await response.json();
+        localStorage.setItem("experience", data['user']['experience']);
+      } else {
+        console.error('User update failed:', response.status);
+        displayError("User update failed: " + response.status, errorSource);
+      }
+    } catch (error) {
+      console.error('Error occurred during user update:', error);
+      displayError("Error occured during user update: " + error, errorSource);
     }
-  } catch (error) {
-    console.error('Error occurred during user update:', error);
-    displayError("Error occured during user update: " + error, errorSource);
+  } else {
+    console.log("User XP not updated. 0 XP to add.");
   }
 }
 
@@ -219,7 +223,7 @@ async function saveUserData(data) {
   if (data['access_token'] && data['id']) {
     localStorage.setItem("bearer", data['access_token']);
     localStorage.setItem("id", data['id']);
-  } 
+  }
   localStorage.setItem("username", data['userName']);
   localStorage.setItem("experience", data['experience']);
 }
@@ -233,7 +237,7 @@ export function displayError(error, source) {
     if (error.includes("409")) {
       error = "User with this email or username already exists.";
     }
-    
+
     errorMessage.innerHTML = error;
     errorMessage.style.display = "inline";
     errorMessage.style.color = "red";
@@ -241,8 +245,8 @@ export function displayError(error, source) {
   } else if (source == "index") {
     errorPopup("User API Error", "The User API reports an error. Please consider signing out and logging in again to resolve the issue.", error, false)
   } else {
-        //error will be displayed anyway - see functions above
-        console.log("No element for displaying the error passed as an argument.");
+    //error will be displayed anyway - see functions above
+    console.log("No element for displaying the error passed as an argument.");
   }
 }
 
