@@ -235,8 +235,9 @@ export async function loadResultScreenXP(distance) {
       XPbarResource.style.width = uiSetUserXP(currentXP).fraction * 100 + "%";
     }
 
-
-    setUserXP(currentXP + earnedXP); //save XP, this is the last step! This function is async, but we don't await it as we set the XP to be currentXP + earnedXP in the ui anyway
+    if (earnedXP > 0) {
+      setUserXP(currentXP + earnedXP); //save XP, this is the last step! This function is async, but we don't await it as we set the XP to be currentXP + earnedXP in the ui anyway
+    }
 
     setTimeout(function () {
       XPbarResource.classList.add("XPbarAnimate");
