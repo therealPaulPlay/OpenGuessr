@@ -163,7 +163,7 @@ function onMapHover() {
 export function confirmButtonClicks() {
 
     if (dailyChallengeUIEnabled) {
-        document.getElementById("nextRoundText").innerHTML = "see results →";
+        document.getElementById("nextRoundText").innerHTML = "See results →";
         
         try {
             dailyChallengeTimer.stopTimer();
@@ -173,7 +173,7 @@ export function confirmButtonClicks() {
         
         saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
     } else {
-        document.getElementById("nextRoundText").innerHTML = "next round →";
+        document.getElementById("nextRoundText").innerHTML = "Next round →";
     }
 
     calculateDistances(markerPosition.lat, markerPosition.lng);

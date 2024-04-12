@@ -268,6 +268,7 @@ function viewProfile() {
   profileName.innerHTML = username;
   document.getElementById("statisticExperience").innerHTML = "Total experience: " + Number(localStorage.getItem("experience")).toLocaleString();
   document.getElementById("statisticUpgradeExperience").innerHTML = "Required for next level: " + uiSetUserXP(Number(localStorage.getItem("experience"))).requiredForLevelUpgrade.toLocaleString();
+  updatePinLocks(localStorage.getItem("experience"));
 
 }
 
@@ -301,3 +302,59 @@ async function updateProfileUsername() {
   }
 }
 
+//Pin selection -------------------------------------------------------------------------------------------------------
+
+document.addEventListener("DOMContentLoaded", function() {
+  // Function to handle pin selection
+  function selectPin(index) {
+    // Check if the pin is locked
+    const pinLock = document.querySelectorAll('.pinHolder')[index].querySelector('.pinLock');
+    if (pinLock.style.display === 'none' || pinLock.style.display === '') {
+      // Remove selectedPin class from all pinHolder buttons
+      document.querySelectorAll('.pinHolder').forEach(function(btn) {
+        btn.classList.remove('selectedPin');
+      });
+
+      // Add selectedPin class to the clicked pinHolder button
+      document.querySelectorAll('.pinHolder')[index].classList.add('selectedPin');
+
+      // Set selectedPin index to localStorage
+      localStorage.setItem('selectedPin', index);
+    }
+  }
+  
+  // Function to load selected pin from localStorage
+  function loadSelectedPin() {
+    const selectedIndex = localStorage.getItem('selectedPin');
+    if (selectedIndex !== null) {
+      selectPin(parseInt(selectedIndex));
+    } else {
+      selectedIndex = 0;
+    }
+  }
+  
+  // Function to update pinLocks based on XP
+  function updatePinLocks(xpAmount) {
+    const pinLocks = document.querySelectorAll('.pinLock');
+    pinLocks.forEach(function(lock, index) {
+      const lockXP = parseInt(lock.querySelector('.pinLockText').textContent.replace(/,/g, ''));
+      if (xpAmount >= lockXP) {
+        lock.style.display = "none"; // Hide pinLock if XP is enough
+      } else {
+        lock.style.display = "flex"; // Show pinLock if XP is not enough
+      }
+    });
+  }
+  
+  // Add click event listener to pinHolder buttons
+  document.querySelectorAll('.pinHolder').forEach(function(btn, index) {
+    btn.addEventListener('click', function() {
+      selectPin(index); // Call selectPin function on button click
+    });
+  });
+  
+  // Load selected pin when the page loads
+  loadSelectedPin();
+
+  updatePinLocks(localStorage.getItem("experience"));
+});
