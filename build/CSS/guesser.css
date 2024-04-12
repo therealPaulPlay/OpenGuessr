@@ -727,6 +727,28 @@ li {
     filter: brightness(70%);
 }
 
+#endScreenOpenLocation {
+  margin-top: auto;
+  margin-left: 0.75%;
+  margin-right: auto;
+  margin-bottom: 10px;
+  z-index: 11;
+  font-size: 25px;
+  padding: 10px;
+  border-radius: 10px;
+  transition: filter 250ms ease;
+  user-select: none;
+  -webkit-user-select: none;
+  color: white;
+  background-color: hsla(236, 25%, 20%, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#endScreenOpenLocation:hover {
+  filter: brightness(70%);
+}
+
 
 #toggleMapImage {
   width: 35px;
@@ -836,20 +858,27 @@ li {
 }
 
 #endBottomBar {
-  position: sticky;
-  bottom: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   height: fit-content;
-  z-index: 12;
   width: 98.5%;
   border-radius: 10px;
-  margin-left: auto;
-  margin-right: auto;
   background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+
+#endBottomArea {
+  position: sticky;
+  width: 100%;
+  z-index: 12;
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 10px;
+  flex-direction: column;
 }
 
 #motivationText {

@@ -175,6 +175,14 @@ function clamp(num, min, max) {
         : num
   }
 
+//Open map locations on google maps --------------------------------------------------------------------------------------------------
+
+document.getElementById("endScreenOpenLocation").addEventListener("click", openLocationOnMap);
+
+function openLocationOnMap() {
+    window.open("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + currentStreetviewLat + "," + currentStreetviewLong,'_blank').focus()
+}
+
 
 //Load the Main StreetView Iframe -------------------------------------------------------------------------------------------------------------
 let loadingLink = "/loader.html";
