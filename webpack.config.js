@@ -7,7 +7,7 @@ module.exports = {
   entry: {
     //separate bundles for each of these
     analytics: "./JS/analytics.js",
-    main: ["./JS/main.js", "./JS/mainUI.js", "./JS/locationGeneration.js", "./JS/categoryMenu.js"],
+    main: ["./JS/main.js", "./JS/mainUI.js", "./JS/locationGeneration.js", "./JS/categoryMenu.js", "./JS/dailyChallenge.js"],
   },
   output: {
     path: path.resolve(__dirname, "build/"),

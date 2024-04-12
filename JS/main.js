@@ -6,6 +6,7 @@ import { resetMap, getMapSource } from './miniMap.js';
 import { loadResultScreenXP } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
+import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer } from "./dailyChallenge.js";
 
 //default coords of the location
 let currentStreetviewLat = 0;
@@ -17,10 +18,10 @@ export async function generateNewLocation(type) {
     resetMap();
     let newLocationArray;
 
-    if (type == "JSON") {
-        newLocationArray = await getLocationCoordinates("JSON");
-    } else {
-        newLocationArray = await getLocationCoordinates("SDK");
+    try {
+        newLocationArray = await getLocationCoordinates(type);
+    } catch (error) {
+        console.error("Invalid location generation type in main.js / generateNewLocation. Error: " + error);
     }
 
     try {
@@ -89,6 +90,10 @@ function compareDistances(distance) {
     else {
         finalResult = Math.round(distance * 10) / 10;
         resultAsString = finalResult+" km";
+    }
+
+    if (dailyChallengeUIEnabled) {
+        extraMsg = "You took " + (120 - dailyChallengeTimer.getRemainingTime()) + "s to guess. The time is part of the XP calculation." //show timer data in extra message on result screen for daily challenge
     }
     
     loadResultScreenXP(distance);
@@ -181,6 +186,8 @@ export function loadIframe(lat, long) {
 
     // Define a function to handle iframe load event
     const handleLoad = () => {
+        dailyChallengeCheckTimer(); //check if daily challenge is active and start timer
+        
         setTimeout(function() {
             const beforeOverlay = document.getElementById("BeforeOverlay");
             beforeOverlay.style.opacity = "0";

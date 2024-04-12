@@ -1,4 +1,5 @@
 import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
+import { setDailyChallengeExperienceResult, dailyChallengeTimer } from "./dailyChallenge";
 
 let profileName = document.getElementById("profileViewName");
 
@@ -68,7 +69,7 @@ function isTokenExpired(token) {
   const jsonPayload = decodeURIComponent(
     atob(base64)
       .split("")
-      .map(function(c) {
+      .map(function (c) {
         return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
       })
       .join("")
@@ -103,7 +104,7 @@ function goTologin() {
 
 //Account UI (working) -------------------------------------------------------------------------------------------------------------
 
-XPbarNoAccount.addEventListener("click", function() {
+XPbarNoAccount.addEventListener("click", function () {
   window.location.href = "/signup.html";
 })
 
@@ -134,8 +135,8 @@ async function checkSigninStatusAndLoadUserInfo() {
     profileInfo.classList.remove("notSignedIn");
     //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
     await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then(() => {
-          displayUserInfo();
-        });
+      displayUserInfo();
+    });
     changeUItoSignedIn();
   }
   else {
@@ -178,7 +179,7 @@ export function uiSetUserXP(xp) {
   resultLevelText.innerHTML = "Level " + templevel;
   levelXPbar.style.width = (xp / requiredXP) * 100 + "%";
 
-  return {fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp};
+  return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp };
 }
 
 function willCauseLevelUpgrade(xp, newXP) {
@@ -197,6 +198,8 @@ function willCauseLevelUpgrade(xp, newXP) {
   return ((xp + newXP) / requiredXP);
 }
 
+//Calculate XP gain for each round ---------------------------------------------------------------------------------------
+
 export async function loadResultScreenXP(distance) {
 
   if (isAuthenticated) {
@@ -210,12 +213,20 @@ export async function loadResultScreenXP(distance) {
     let earnedXP;
 
     if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "famous" || selectedCategory == "capital") {
-        earnedXP = Math.round(5000 * ((0.998036) ** distance)); 
+      earnedXP = Math.round(5000 * ((0.998036) ** distance));
+    }
+    else if (selectedCategory == "daily") {
+      let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
+
+      let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
+      earnedXP = Math.round(5000 * ((0.998036) ** distance)  * timeFactor);
+      
+      setDailyChallengeExperienceResult(earnedXP);
     } else {
       earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
     }
 
-      XPbarResource.classList.remove("XPbarAnimate");
+    XPbarResource.classList.remove("XPbarAnimate");
 
     if ((willCauseLevelUpgrade(currentXP, earnedXP)) > 1) {
       XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
@@ -236,10 +247,12 @@ export async function loadResultScreenXP(distance) {
   }
 }
 
+//Save / Set user XP ----------------------------------------------------------------------------------------------
+
 export async function setUserXP(xp) {
   try {
     await updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp, "index");
-  } catch(error) {
+  } catch (error) {
     console.error("Error setting User XP in accountLogic.js: " + error);
   }
 
@@ -281,10 +294,10 @@ async function updateProfileUsername() {
   newUsername = document.getElementById("usernameInput").value;
   toggleUsernameView();
   if (newUsername != "") {
-  await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername, "index").then(() => {
-    //updateUsername saves the new name in localstorage
-        displayUserInfo();
-      });
+    await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername, "index").then(() => {
+      //updateUsername saves the new name in localstorage
+      displayUserInfo();
+    });
   }
 }
 

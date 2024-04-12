@@ -39,7 +39,6 @@ h1, h2, h3 {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(5, 6, 10, 0.5);
-  align-items: center;
   height: 75px;
 }
 
@@ -127,8 +126,26 @@ h1, h2, h3 {
   color: white;
 }
 
+#accountNameArea {
+  max-width: 165.5px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 #accountName {
   color: white;
+  display: inline-block;
+  width: fit-content;
+}
+
+.scroll {
+  animation: scrollText 5s ease-in-out infinite alternate; 
+}
+
+/* Animation for scrolling */
+@keyframes scrollText {
+  0% { transform: translateX(5px); }
+  100% { transform: translateX(calc(-100% + 155px)); } /* Adjusted animation */
 }
 
 .progress {
@@ -495,6 +512,35 @@ li {
   transition: all 250ms ease;
   box-shadow: 0 2px 20px rgba(71, 71, 71, 0.5);
   z-index: 10;
+}
+
+#mapModeIndicator {
+  background-color: hsla(236, 25%, 20%, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  height: 50px;
+  margin-left: auto;
+  margin-right: 0.75%;
+  width: 30%;
+  z-index: 10;
+  border-radius: 10px;
+  display: none; /* set to flex in code when needed */
+  align-items: center;
+  justify-content: flex-start;
+  color: white;
+  font-size: 25px;
+  margin-bottom: 10px;
+  transition: width 250ms ease;
+}
+
+.mapModeText {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.modeTextRight {
+  margin-left: auto;
+  margin-right: 25px;
 }
 
 .MainDiv {
@@ -999,6 +1045,10 @@ li {
   background: linear-gradient(0.60turn, white, #ffcaca);
 }
 
+#dailyCategory {
+  background: linear-gradient(0.60turn, white, #caf5ff);
+}
+
 .categoryUpcoming {
   opacity: 80%;
   background-color: rgba(0, 0, 0, 0.15);
@@ -1049,11 +1099,14 @@ button {
 }
 
 #socialBar {
+  display: flex;
+  justify-content: center;
   margin-left: auto;
   margin-right: auto;
   padding-right: 5px;
   padding-left: 5px;
   border-radius: 10px;
+  flex-direction: column;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   background-color: rgba(42, 44, 71, 0.9);
@@ -1066,16 +1119,21 @@ button {
 }
 
 .socialBarButton {
+  width: auto;
   color: black;
   background-color: white;
   white-space: nowrap;
-  margin: 15px;
+  margin: 5px;
   padding-left: 35px;
   padding-right: 35px;
 }
 
 .socialBarButton:hover {
   filter: brightness(0.7);
+}
+
+.placeholder {
+  height: 5px;
 }
 
 .popup-content {
@@ -1125,6 +1183,9 @@ button {
     width: 40%;
     height: 50%;
     opacity: 80%;
+  }
+  #mapModeIndicator {
+    width: 40%;
   }
 }
 
@@ -1201,6 +1262,9 @@ all and (max-width: 1000px) {
     display: none;
   }
 
+  #mapModeIndicator {
+    width: 98.5%;
+  }
 
   #floatingMapButton {
     display: block;
