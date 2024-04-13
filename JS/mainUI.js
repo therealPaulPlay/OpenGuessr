@@ -39,9 +39,14 @@ function toggleSidebar() {
 }
 
 document.getElementById("leaderboardButton").addEventListener("click", goToLeaderboard);
+document.getElementById("dailyLeaderboardButton").addEventListener("click", goToDailyLeaderboard);
 
 function goToLeaderboard() {
     window.location.href = "/leaderboard.html";
+}
+
+function goToDailyLeaderboard() {
+    window.location.href = "/dailyLeaderboard.html";
 }
 
 //Toggle Map on mobile devices ---------------------------------------------------------------------------------------
@@ -107,14 +112,16 @@ let categoriesExpanded = false;
 
 categoryMenuButton.addEventListener("click", function() {
     if (!categoriesExpanded) {
-        floatingCategoryArea.style.top = "395px";
+        floatingCategoryArea.style.top = "360px";
+        document.getElementById("extendedNavbarContent").scrollTop = "0";
+        document.getElementById("extendedNavbarGradient").style.display = "block";
         extendedNavbar.classList.add("expanded");
         categoryMenuButton.innerText = "Map Categories ▲";
         categoriesExpanded = true;
     } else {
         setTimeout(function() {
             floatingCategoryArea.style.top = "85px";
-            extendedNavbar.scrollTop = 0;
+            document.getElementById("extendedNavbarGradient").style.display = "none";
         }, 75); 
         extendedNavbar.classList.remove("expanded");
         categoryMenuButton.innerText = "Map Categories ▼";
@@ -157,3 +164,56 @@ document.getElementById("socialPopupJoin").addEventListener("click", function() 
         uiSetUserXP(localStorage.getItem("experience"));
     }, 200)
 });
+
+//reveal compass -------------------------------------------------------------------------------------
+let revealCompass = document.getElementById("revealCompass");
+revealCompass.addEventListener("click", toggleMapOffset);
+
+let mapOffset = false;
+
+function toggleMapOffset() {
+    if (mapOffset) {
+        document.getElementById("map").style.marginRight = "0.75%";
+        revealCompass.style.marginRight = "0.75%";
+        revealCompass.innerHTML = "reveal compass";
+        mapOffset = false;
+    } else {
+        document.getElementById("map").style.marginRight = "65px";
+        revealCompass.style.marginRight = "65px";
+        revealCompass.innerHTML = "hide compass";
+        mapOffset = true;
+    }
+}
+
+//switch UI toggles back to standard on window resize ----------------------------------------------
+
+window.addEventListener("resize", (event) => {
+    mapOffset = true; 
+    toggleMapOffset(); 
+    mapExpanded = false;
+    toggleMap();
+});
+
+//Username UI endless scroll --------------------------------------------------------------------------------------------------
+// Get the elements
+const accountName = document.getElementById('accountName');
+
+// Check if the text length exceeds the threshold
+export function checkTextLength() {
+  const textLength = accountName.textContent.length;
+  
+  if (textLength > 20) {
+    accountName.classList.add('scroll');
+  } else {
+    accountName.classList.remove('scroll');
+  }
+}
+
+// Check for text length initially and when the text changes
+window.addEventListener('DOMContentLoaded', checkTextLength); // Check on page load
+window.addEventListener('input', checkTextLength); // Check when text changes
+
+
+
+
+

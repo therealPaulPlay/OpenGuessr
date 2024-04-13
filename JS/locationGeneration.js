@@ -8,8 +8,12 @@ export async function getLocationCoordinates(type) {
 
     if (type == "JSON") {
         return getCoordsFromJSON();
-    } else {
+    } else if (type == "SDK" && type != "DAILY") {
         return await getCoordsFromGoogle();
+    } else if (type == "DAILY") {
+        return await getCoordsFromServerDaily();
+    } else {
+        console.error("Incorrect Location type set in locationGeneration.js");
     }
 }
 
@@ -152,4 +156,11 @@ function getRandomSphericalCoordinates() {
     const lng = (180 / Math.PI) * lngRadians;
     
     return { lat, lng };
+}
+
+//Get coords from Server for Daily Challenge -----------------------------------------------------------------------------------------------------------------------
+
+async function getCoordsFromServerDaily() {
+    let resultLocationsArray =  ["50.52451706", "-57.404247"]; //TODO: implement actual location fetching via the backend
+    return resultLocationsArray;
 }
