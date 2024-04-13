@@ -1,6 +1,8 @@
 import { loadLocationJSON } from "./locationGeneration.js";
 import { resMap, generateNewLocation } from "./main.js";
 import { disableResultScreen, socialPopupProbability } from "./mainUI.js";
+import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion } from "./dailyChallenge.js";
+import { setHardMode } from "./hardMode.js";
 
 //Defined Categories ------------------------------------------------------------------------
 const Category = {
@@ -18,7 +20,9 @@ const Category = {
     INDIA: "india",
     MEXICO: "mexico",
     ITALY: "italy",
-    UKRAINE: "ukraine"
+    UKRAINE: "ukraine",
+    DAILY: "daily",
+    HARD: "hard"
 }
 
 export let mapCategory = Category.STANDARD; //default category
@@ -39,6 +43,8 @@ const indiaCategoryButton = document.getElementById("indiaCategory");
 const mexicoCategoryButton = document.getElementById("mexicoCategory");
 const italyCategoryButton = document.getElementById("italyCategory");
 const ukraineCategoryButton = document.getElementById("ukraineCategory");
+const dailyCategoryButton = document.getElementById("dailyCategory");
+const hardCategoryButton = document.getElementById("hardCategory");
 
 attachClickListener("standardCategory", Category.STANDARD);
 attachClickListener("capitalCategory", Category.CAPITAL);
@@ -55,6 +61,8 @@ attachClickListener("indiaCategory", Category.INDIA);
 attachClickListener("mexicoCategory", Category.MEXICO);
 attachClickListener("italyCategory", Category.ITALY);
 attachClickListener("ukraineCategory", Category.UKRAINE);
+attachClickListener("dailyCategory", Category.DAILY);
+attachClickListener("hardCategory", Category.HARD);
 
 // Attach event listeners using the function
 function attachClickListener(buttonId, category) {
@@ -85,6 +93,8 @@ function changeCategory(category) {
     mexicoCategoryButton.classList.add("categoryDisabled");
     italyCategoryButton.classList.add("categoryDisabled");
     ukraineCategoryButton.classList.add("categoryDisabled");
+    dailyCategoryButton.classList.add("categoryDisabled");
+    hardCategoryButton.classList.add("categoryDisabled");
 
     switch (category) {
         case Category.STANDARD:
@@ -132,6 +142,12 @@ function changeCategory(category) {
         case Category.UKRAINE:
             ukraineCategoryButton.classList.remove("categoryDisabled");
             break;
+        case Category.DAILY:
+            dailyCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.HARD:
+            hardCategoryButton.classList.remove("categoryDisabled");
+            break;
     }
 
     //refresh category if needed
@@ -144,11 +160,29 @@ function changeCategory(category) {
 }
 
 function checkGenerationTypeAndGenerate() {
+    setDailyChallengeUI(false);
+    setHardMode(false);
+
     //pick between json and maps api loading depending on the category type
-    if (mapCategory != "standard") {
+    if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard") {
         loadLocationJSON(mapCategory); //this also generates a new location
-    } else {
+    } else if (mapCategory == "daily") {
+        if (checkDailyChallengeCompletion() == "available") {
+            setDailyChallengeUI(true);
+            generateNewLocation("DAILY");
+        } else {
+            localStorage.setItem("selectedCategory", "standard"); //reset category to standard, so that user returns to working game
+            console.log("Daily Challenge already completed for today! Redirecting to daily leaderboard...");
+            window.location.href = "/dailyLeaderboard.html";
+        }
+
+    } else if (mapCategory == "standard") {
         generateNewLocation("SDK");
+    } else if (mapCategory == "hard") {
+        setHardMode(true);
+        loadLocationJSON(mapCategory);
+    } else {
+        console.error("Incorrect mapCategory set in cateGoryMenu.js under checkGenerationTypeAndGenerate.")
     }
 }
 
@@ -171,14 +205,17 @@ nextRound.addEventListener("click", transitionToStart);
 
 export function transitionToStart() {
 
-    document.getElementById("BeforeOverlay").style.opacity = "0";
-    document.getElementById("BeforeOverlay").style.visibility = "visible";
-    document.getElementById("BeforeOverlay").style.opacity = "100";
-    resMap.stop(); //stop the flying animation
-    setTimeout(function () { resMap.stop() }, 200)
-    checkGenerationTypeAndGenerate();
-
-    setTimeout(disableResultScreen, 200);
-    setTimeout(socialPopupProbability, 650);
+    if (!dailyChallengeUIEnabled) {
+        document.getElementById("BeforeOverlay").style.opacity = "0";
+        document.getElementById("BeforeOverlay").style.visibility = "visible";
+        document.getElementById("BeforeOverlay").style.opacity = "100";
+        resMap.stop(); //stop the flying animation
+        setTimeout(function () { resMap.stop() }, 200)
+        checkGenerationTypeAndGenerate();
+    
+        setTimeout(disableResultScreen, 200);
+        setTimeout(socialPopupProbability, 650);
+    } else {
+        dailyChallengeEnd();
+    }
 }
-

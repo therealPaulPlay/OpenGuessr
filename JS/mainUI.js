@@ -39,9 +39,14 @@ function toggleSidebar() {
 }
 
 document.getElementById("leaderboardButton").addEventListener("click", goToLeaderboard);
+document.getElementById("dailyLeaderboardButton").addEventListener("click", goToDailyLeaderboard);
 
 function goToLeaderboard() {
     window.location.href = "/leaderboard.html";
+}
+
+function goToDailyLeaderboard() {
+    window.location.href = "/dailyLeaderboard.html";
 }
 
 //Toggle Map on mobile devices ---------------------------------------------------------------------------------------
@@ -188,3 +193,27 @@ window.addEventListener("resize", (event) => {
     mapExpanded = false;
     toggleMap();
 });
+
+//Username UI endless scroll --------------------------------------------------------------------------------------------------
+// Get the elements
+const accountName = document.getElementById('accountName');
+
+// Check if the text length exceeds the threshold
+export function checkTextLength() {
+  const textLength = accountName.textContent.length;
+  
+  if (textLength > 20) {
+    accountName.classList.add('scroll');
+  } else {
+    accountName.classList.remove('scroll');
+  }
+}
+
+// Check for text length initially and when the text changes
+window.addEventListener('DOMContentLoaded', checkTextLength); // Check on page load
+window.addEventListener('input', checkTextLength); // Check when text changes
+
+
+
+
+

@@ -40,7 +40,9 @@
     <div id="socialArea">
       <div class="accountBar">
         <div class="profileInfo notSignedIn" id="profileInfo">
-          <h2 id="accountName">Guest</h2>
+          <div id="accountNameArea">
+            <h2 id="accountName">Guest</h2>
+          </div>
           <div class="level" id="levelDisplay">
             <div class="progress">
               <div class="progressBar" id="progressBar"></div>
@@ -57,9 +59,14 @@
         </div>
       </div>
       <div id="socialBar">
+        <div class="placeholder"></div>
         <button id="leaderboardButton" class="accountButton socialBarButton">Leaderboard
           <img class="socialBarIcons" src="/IMG/leaderboard_icon.png" alt="Leaderboard for OpenGuessr">
         </button>
+        <button id="dailyLeaderboardButton" class="accountButton socialBarButton dailyChallengeDisabled">Daily Challenge
+          <img class="socialBarIcons" src="/IMG/daily_icon.png" alt="Leaderboard for OpenGuessr">
+        </button>
+        <div class="placeholder"></div>
       </div>
       <button id="floatingSocialButton">Social Menu ▼</button>
     </div>
@@ -79,26 +86,29 @@
   <div class="extendedNavbar" id="extendedNavbar">
     <div id="extendedNavbarGradient"></div>
     <div id="extendedNavbarContent">
-    <!-- This is the extended navbar for selecting categories etc. -->
-    <button class="category" id="standardCategory" type="button">Standard</button>
-    <button class="category" id="capitalCategory" type="button">Capital Cities</button>
-    <button class="category" id="famousCategory" type="button">Famous Places</button>
-    <p class="categoriesNote" id="categoryExclusiveText"> Sign up to unlock for free: </p>
-    <button class="category accountExclusive accountLock" id="usaCategory" type="button">USA</button>
-    <button class="category accountExclusive accountLock" id="germanyCategory" type="button">Germany</button>
-    <button class="category accountExclusive accountLock" id="ukCategory" type="button">United Kingdom</button>
-    <button class="category accountExclusive accountLock" id="franceCategory" type="button">France</button>
-    <button class="category accountExclusive accountLock" id="spainCategory" type="button">Spain</button>
-    <button class="category accountExclusive accountLock" id="polandCategory" type="button">Poland</button>
-    <button class="category accountExclusive accountLock" id="canadaCategory" type="button">Canada</button>
-    <button class="category accountExclusive accountLock" id="swedenCategory" type="button">Sweden</button>
-    <button class="category accountExclusive accountLock" id="indiaCategory" type="button">India</button>
-    <button class="category accountExclusive accountLock" id="mexicoCategory" type="button">Mexico</button>
-    <button class="category accountExclusive accountLock" id="italyCategory" type="button">Italy</button>
-    <button class="category accountExclusive accountLock" id="ukraineCategory" type="button">Ukraine</button>
-    <button class="category categoryUpcoming" id="newCategory" type="button">More soon!</button>
-    <br><br>
-  </div>
+      <!-- This is the extended navbar for selecting categories etc. -->
+      <button class="category" id="standardCategory" type="button">Standard</button>
+      <button class="category" id="capitalCategory" type="button">Capital Cities</button>
+      <button class="category" id="famousCategory" type="button">Famous Places</button>
+      <p class="categoriesNote" id="categoryExclusiveText"> Sign up to unlock for free: </p>
+      <button class="category accountExclusive accountLock dailyChallengeDisabled" id="dailyCategory" type="button">The
+        Daily Challenge</button>
+      <button class="category accountExclusive accountLock" id="hardCategory" type="button">One Second</button>
+      <button class="category accountExclusive accountLock" id="usaCategory" type="button">USA</button>
+      <button class="category accountExclusive accountLock" id="germanyCategory" type="button">Germany</button>
+      <button class="category accountExclusive accountLock" id="ukCategory" type="button">United Kingdom</button>
+      <button class="category accountExclusive accountLock" id="franceCategory" type="button">France</button>
+      <button class="category accountExclusive accountLock" id="spainCategory" type="button">Spain</button>
+      <button class="category accountExclusive accountLock" id="polandCategory" type="button">Poland</button>
+      <button class="category accountExclusive accountLock" id="canadaCategory" type="button">Canada</button>
+      <button class="category accountExclusive accountLock" id="swedenCategory" type="button">Sweden</button>
+      <button class="category accountExclusive accountLock" id="indiaCategory" type="button">India</button>
+      <button class="category accountExclusive accountLock" id="mexicoCategory" type="button">Mexico</button>
+      <button class="category accountExclusive accountLock" id="italyCategory" type="button">Italy</button>
+      <button class="category accountExclusive accountLock" id="ukraineCategory" type="button">Ukraine</button>
+      <button class="category categoryUpcoming" id="newCategory" type="button">More soon!</button>
+      <br><br>
+    </div>
   </div>
 
   <!-- Category switch displayer -->
@@ -127,6 +137,45 @@
         </button> <input type="text" id="usernameInput" placeholder="New username" maxlength="12"></input>
         <button class="accountButton" id="confirmUsername">Confirm</button>
         <br>
+      </div>
+      <h2>Pin Style: </h2>
+      <div id="pinSelector">
+        <button class="pinHolder selectedPin">
+          <div class="pinLock">
+            <p class="pinLockText">0 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker0.png">
+        </button>
+        <button class="pinHolder">
+          <div class="pinLock">
+            <p class="pinLockText">5,000 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker1.png">
+        </button>
+        <button class="pinHolder">
+          <div class="pinLock">
+            <p class="pinLockText">30,000 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker2.png">
+        </button>
+        <button class="pinHolder">
+          <div class="pinLock">
+            <p class="pinLockText">100,000 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker3.png">
+        </button>
+        <button class="pinHolder">
+          <div class="pinLock">
+            <p class="pinLockText">500,000 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker4.png">
+        </button>
+        <button class="pinHolder">
+          <div class="pinLock">
+            <p class="pinLockText">5,000,000 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker5.png">
+        </button>
       </div>
       <h2>User Stats: </h2>
       <p id="statisticExperience"> Total experience: not set.</p>
@@ -179,24 +228,31 @@
       <div id="topShadow">
       </div>
     </div>
-    <div id="endBottomBar">
-      <div id="TextDiv">
-        <p id="distanceText"></p>
-        <p id="motivationText"></p>
-        <div id="XParea">
-          <div id="endScreenXPbar">
-            <div class="XPbarResource" id="endScreenXPbarResource"></div>
+    <div id="endBottomArea">
+      <button type="button" id="endScreenOpenLocation">Open streetview ⤴</button>
+      <div id="endBottomBar">
+        <div id="TextDiv">
+          <p id="distanceText"></p>
+          <p id="motivationText"></p>
+          <div id="XParea">
+            <div id="endScreenXPbar">
+              <div class="XPbarResource" id="endScreenXPbarResource"></div>
+            </div>
+            <p id="endScreenLevel">Level 0</p>
           </div>
-          <p id="endScreenLevel">Level 0</p>
+          <p id="XPbarNoAccount">Sign up to see & save your points!</p>
+          <button id="nextRound"><a id="nextRoundText">Next round →</a></button>
         </div>
-        <p id="XPbarNoAccount">Sign up to see & save your points!</p>
-        <button id="nextRound"><a>next round →</a></button>
       </div>
     </div>
     <br>
     <br>
   </div>
   <div id="blackBackground"></div>
+  <div id="hardModeFade">
+    <h1 id="hardModeTitle">Default hardmode title</h1>
+    <p id="hardModeSubtitle">Default hardmode subtitle</p>
+  </div>
   <!--streetview-->
   <div class="MainDiv">
     <div id="innerMainDiv">
@@ -208,6 +264,10 @@
       </button>
       <button id="revealCompass">reveal compass</button>
       <div id="map"></div>
+      <div id="mapModeIndicator">
+        <p class="mapModeText">Daily Challenge</p>
+        <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
+      </div>
       <h1 id="TransparentHeader">Openguessr free geoguessr geoguesser alternative open source geography geographie
         Geotastic world map google maps google streetview rainbolt travel geographie education spiel videospiel guess
         which country

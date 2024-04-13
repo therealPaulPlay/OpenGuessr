@@ -39,7 +39,6 @@ h1, h2, h3 {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(5, 6, 10, 0.5);
-  align-items: center;
   height: 75px;
 }
 
@@ -127,8 +126,96 @@ h1, h2, h3 {
   color: white;
 }
 
+#pinSelector {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  max-width: 100%;
+  margin: 10px;
+  width: fit-content;
+  margin-left: 0;
+  background-color: rgba(30, 31, 44, 0.5);
+  border-radius: 10px;
+  gap: 10px;
+  border: solid 10px transparent;
+  box-sizing: border-box;
+  flex-wrap: wrap
+}
+
+.pinHolder {
+  position: relative; 
+  box-sizing: border-box;
+  height: 80px;
+  width: 80px;
+  min-height: 80px;
+  min-width: 80px;
+  border-radius: 7px;
+  background-color: rgba(174, 174, 174, 0.25);
+  display: flex;
+  flex-direction: column; 
+  justify-content: center; 
+  transition: scale 250ms ease, filter 250ms ease;
+}
+
+.pinHolder:hover {
+  scale: 1.03;
+  filter: brightness(1.3);
+}
+
+.pinSelectIcon {
+  position: absolute; 
+  top: 50%; 
+  left: 50%; 
+  transform: translate(-50%, -50%); 
+  height: 40px;
+  width: auto;
+  z-index: 1; 
+}
+
+.selectedPin {
+  border: solid 4px white;
+}
+
+.pinLock {
+  border-radius: 7px;
+  background-color: rgba(67, 67, 67, 0.5);
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 2;
+}
+
+.pinLockText {
+  font-size: 20px;
+  margin: 2px;
+  color: white;
+  line-height: 0.9;
+  text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.50);
+}
+
+
+#accountNameArea {
+  max-width: 165.5px;
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 #accountName {
   color: white;
+  display: inline-block;
+  width: fit-content;
+}
+
+.scroll {
+  animation: scrollText 5s ease-in-out infinite alternate; 
+}
+
+/* Animation for scrolling */
+@keyframes scrollText {
+  0% { transform: translateX(5px); }
+  100% { transform: translateX(calc(-100% + 155px)); } /* Adjusted animation */
 }
 
 .progress {
@@ -266,6 +353,7 @@ li {
 .uiWindow {
   display: none; /* used with block */
   width: 45%;
+  min-width: 300px;
   max-height: 80%;
   font-size: 25px;
   padding: 25px 25px 10px;
@@ -309,8 +397,8 @@ li {
 }
 
 #profileWindow {
-  width: 30%;
   font-size: 30px;
+  max-width: 800px;
 }
 
 .edit-icon {
@@ -338,6 +426,37 @@ li {
   height: 100%;
   transition: opacity 250ms ease;
   z-index: 15;
+}
+
+#hardModeFade {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  transition: opacity 500ms ease;
+  opacity: 0;
+  overflow: hidden;
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  background-color: rgba(0, 0, 0, 0.2);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  pointer-events: none;
+  user-select: none;
+}
+
+#hardModeFade h1 {
+  font-size: 75px;
+  text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
+}
+
+#hardModeFade p {
+  font-size: 30px;
+  text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 }
 
 #logoutButton {
@@ -497,6 +616,35 @@ li {
   z-index: 10;
 }
 
+#mapModeIndicator {
+  background-color: hsla(236, 25%, 20%, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  height: 50px;
+  margin-left: auto;
+  margin-right: 0.75%;
+  width: 30%;
+  z-index: 10;
+  border-radius: 10px;
+  display: none; /* set to flex in code when needed */
+  align-items: center;
+  justify-content: flex-start;
+  color: white;
+  font-size: 25px;
+  margin-bottom: 10px;
+  transition: width 250ms ease;
+}
+
+.mapModeText {
+  margin-left: 15px;
+  margin-right: 15px;
+}
+
+.modeTextRight {
+  margin-left: auto;
+  margin-right: 25px;
+}
+
 .MainDiv {
   height: 100dvh;
   display: flex;
@@ -650,6 +798,28 @@ li {
     filter: brightness(70%);
 }
 
+#endScreenOpenLocation {
+  margin-top: auto;
+  margin-left: 0.75%;
+  margin-right: auto;
+  margin-bottom: 10px;
+  z-index: 11;
+  font-size: 25px;
+  padding: 10px;
+  border-radius: 10px;
+  transition: filter 250ms ease;
+  user-select: none;
+  -webkit-user-select: none;
+  color: white;
+  background-color: hsla(236, 25%, 20%, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+#endScreenOpenLocation:hover {
+  filter: brightness(70%);
+}
+
 
 #toggleMapImage {
   width: 35px;
@@ -759,20 +929,27 @@ li {
 }
 
 #endBottomBar {
-  position: sticky;
-  bottom: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
   height: fit-content;
-  z-index: 12;
   width: 98.5%;
   border-radius: 10px;
-  margin-left: auto;
-  margin-right: auto;
   background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+}
+
+#endBottomArea {
+  position: sticky;
+  width: 100%;
+  z-index: 12;
+  height: fit-content;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  bottom: 10px;
+  flex-direction: column;
 }
 
 #motivationText {
@@ -999,6 +1176,18 @@ li {
   background: linear-gradient(0.60turn, white, #ffcaca);
 }
 
+#dailyCategory {
+  background: linear-gradient(0.60turn, white, #caf5ff);
+}
+
+#hardCategory {
+  background: linear-gradient(0.60turn, white, #fff4ca);
+}
+
+.dailyChallengeDisabled {
+  display: none;
+}
+
 .categoryUpcoming {
   opacity: 80%;
   background-color: rgba(0, 0, 0, 0.15);
@@ -1049,11 +1238,14 @@ button {
 }
 
 #socialBar {
+  display: flex;
+  justify-content: center;
   margin-left: auto;
   margin-right: auto;
   padding-right: 5px;
   padding-left: 5px;
   border-radius: 10px;
+  flex-direction: column;
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   background-color: rgba(42, 44, 71, 0.9);
@@ -1066,16 +1258,21 @@ button {
 }
 
 .socialBarButton {
+  width: auto;
   color: black;
   background-color: white;
   white-space: nowrap;
-  margin: 15px;
+  margin: 5px;
   padding-left: 35px;
   padding-right: 35px;
 }
 
 .socialBarButton:hover {
   filter: brightness(0.7);
+}
+
+.placeholder {
+  height: 5px;
 }
 
 .popup-content {
@@ -1125,6 +1322,9 @@ button {
     width: 40%;
     height: 50%;
     opacity: 80%;
+  }
+  #mapModeIndicator {
+    width: 40%;
   }
 }
 
@@ -1185,6 +1385,14 @@ all and (max-width: 1000px) {
   #floatingCategoryArea {
     visibility: hidden;
   }
+
+  #hardModeFade h1 {
+    font-size: 45px;
+  }
+  
+  #hardModeFade p {
+    font-size: 25px;
+  }
 }
 
 /* big screens in portrait, like vertical monitors */
@@ -1201,6 +1409,9 @@ all and (max-width: 1000px) {
     display: none;
   }
 
+  #mapModeIndicator {
+    width: 98.5%;
+  }
 
   #floatingMapButton {
     display: block;

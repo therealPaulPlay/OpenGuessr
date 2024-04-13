@@ -3,9 +3,11 @@ for signupScreen.js only. LoadMap and AccountLogic are both not being included i
 of the bundled main.js. */
 
 import { resetMap, getMapSource } from './miniMap.js';
-import { loadResultScreenXP } from "./accountLogic.js";
+import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
+import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer } from "./dailyChallenge.js";
+import { checkHardModeTimeout } from './hardMode.js';
 
 //default coords of the location
 let currentStreetviewLat = 0;
@@ -17,10 +19,10 @@ export async function generateNewLocation(type) {
     resetMap();
     let newLocationArray;
 
-    if (type == "JSON") {
-        newLocationArray = await getLocationCoordinates("JSON");
-    } else {
-        newLocationArray = await getLocationCoordinates("SDK");
+    try {
+        newLocationArray = await getLocationCoordinates(type);
+    } catch (error) {
+        console.error("Invalid location generation type in main.js / generateNewLocation. Error: " + error);
     }
 
     try {
@@ -90,6 +92,10 @@ function compareDistances(distance) {
         finalResult = Math.round(distance * 10) / 10;
         resultAsString = finalResult+" km";
     }
+
+    if (dailyChallengeUIEnabled) {
+        extraMsg = "You took " + (120 - dailyChallengeTimer.getRemainingTime()) + "s to guess. The time is part of the XP calculation." //show timer data in extra message on result screen for daily challenge
+    }
     
     loadResultScreenXP(distance);
     enableResultScreen(resultAsString, extraMsg);
@@ -115,7 +121,7 @@ export function loadResultMap(playersLat, playersLong) {
 }).addTo(resMap);
 
 const redIcon = new L.Icon({
-    iconUrl: './IMG/your_marker.png',
+    iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
     iconSize: [40, 40],
     iconAnchor: [20, 38],
     popupAnchor: [1, -34],
@@ -169,6 +175,13 @@ function clamp(num, min, max) {
         : num
   }
 
+//Open map locations on google maps --------------------------------------------------------------------------------------------------
+
+document.getElementById("endScreenOpenLocation").addEventListener("click", openLocationOnMap);
+
+function openLocationOnMap() {
+    window.open("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + currentStreetviewLat + "," + currentStreetviewLong,'_blank').focus();
+}
 
 //Load the Main StreetView Iframe -------------------------------------------------------------------------------------------------------------
 let loadingLink = "/loader.html";
@@ -181,6 +194,9 @@ export function loadIframe(lat, long) {
 
     // Define a function to handle iframe load event
     const handleLoad = () => {
+        dailyChallengeCheckTimer(); //check if daily challenge is active and start timer
+        checkHardModeTimeout(); //Check if the user is playing hard mode + apply changes if yes
+        
         setTimeout(function() {
             const beforeOverlay = document.getElementById("BeforeOverlay");
             beforeOverlay.style.opacity = "0";
