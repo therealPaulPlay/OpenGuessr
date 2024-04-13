@@ -806,6 +806,8 @@ li {
   z-index: 11;
   font-size: 25px;
   padding: 10px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   border-radius: 10px;
   transition: filter 250ms ease;
   user-select: none;
