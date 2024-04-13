@@ -4,23 +4,26 @@ let hardModeFade = document.getElementById("hardModeFade");
 
 export function setHardMode(enabled) {
     hardMode = enabled;
-
     hardModeFade.style.visibility = hardMode ? "visible" : "hidden";
 }
 
 let hardModeTitle = document.getElementById("hardModeTitle");
 let hardModeSubtitle = document.getElementById("hardModeSubtitle");
+let resetButton = document.getElementById("resetButtonSVG");
 let startHardModePromise;
 
 export function checkHardModeTimeout() {
     hardModeFade.style.opacity = "0";
     hardModeFade.style.pointerEvents = "none";
+    resetButton.style.pointerEvents = "auto";
+    resetButton.style.opacity = "1";
     
     if (hardMode) {
         startHardModePromise = new Promise((resolve, reject) => {
             hardModeFade.style.opacity = "100%";
             hardModeFade.style.pointerEvents = "auto";
-
+            resetButton.style.pointerEvents = "none";
+            resetButton.style.opacity = "0.25";
             hardModeSubtitle.innerText = "Get ready...";
             hardModeTitle.innerText = "Starting...";
 
