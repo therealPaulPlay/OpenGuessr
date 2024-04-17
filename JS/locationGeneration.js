@@ -30,27 +30,27 @@ export async function loadLocationJSON(jsonName) {
         if (!response.ok) {
             throw new Error("JSON fetch failed.");
         }
-        
+
         jsonResponse = await response.json();
         listOfLocations = jsonResponse;
-        
+
         generateNewLocation("JSON");
 
     } catch (error) {
         errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
-        console.error(error); 
+        console.error(error);
     }
 }
 
 let lastGuessIndex = null;
 let guessIndex;
 
-//This will be called in main.js when a new location is bein generated
+//This will be called in main.js when a new location is being generated
 function getCoordsFromJSON() {
     do {
-        guessIndex = Math.floor(Math.random()*listOfLocations.length); 
+        guessIndex = Math.floor(Math.random() * listOfLocations.length);
     } while (lastGuessIndex === guessIndex);
-    
+
     lastGuessIndex = guessIndex;
 
     const resultLat = listOfLocations[guessIndex][0];
@@ -64,6 +64,7 @@ function getCoordsFromJSON() {
 //Get Locations from google maps js API (new method - unlimited locations) -------------------------------------------------------------------------------
 
 import { Loader } from "@googlemaps/js-api-loader";
+import { getDailyChallengeIndex } from "./userAPI.js";
 
 // not using any apiKey!
 const loader = new Loader({
@@ -109,7 +110,7 @@ async function getLocationData(latitude, longitude, radius) {
         }, (data, status) => {
             if (status === "OK") {
                 const location = data.location.latLng;
-                
+
                 const resultLat = location.lat();
                 const resultLng = location.lng();
                 const resultLocationsArray = [resultLat, resultLng];
@@ -149,18 +150,44 @@ async function getCoordsFromGoogle(retryCount = 0) {
 
 function getRandomSphericalCoordinates() {
     const latRadians = Math.acos(2 * Math.random() - 1) - Math.PI / 2;
-    
+
     const lngRadians = 2 * Math.PI * Math.random() - Math.PI;
-    
+
     const lat = (180 / Math.PI) * latRadians;
     const lng = (180 / Math.PI) * lngRadians;
-    
+
     return { lat, lng };
 }
 
 //Get coords from Server for Daily Challenge -----------------------------------------------------------------------------------------------------------------------
 
 async function getCoordsFromServerDaily() {
-    let resultLocationsArray =  ["50.52451706", "-57.404247"]; //TODO: implement actual location fetching via the backend
-    return resultLocationsArray;
+    //Load location JSON files
+    try {
+        let response = await fetch("./JSON/dailyLocations.json");
+
+        jsonResponse = await response.json();
+        listOfLocations = jsonResponse;
+
+    } catch (error) {
+        errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
+        console.error(error);
+    }
+
+    try {
+        let dailyChallengeCoordinatesIndex = await getDailyChallengeIndex(listOfLocations.length);
+
+        const resultLat = listOfLocations[dailyChallengeCoordinatesIndex][0];
+        const resultLong = listOfLocations[dailyChallengeCoordinatesIndex][1];
+    
+        resultLocationsArray = [resultLat, resultLong];
+    
+    
+        return resultLocationsArray;
+    } catch(error) {
+        errorPopup("Challenge API Error", "There was an error fetching the daily challenge location", "Challenge Fetch failed.", true);
+        console.error(error);
+        
+        return null;
+    }
 }

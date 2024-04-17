@@ -5,6 +5,7 @@ export const loginEndpoint = `${backendURL}/users/login`;
 export const registrationEndpoint = `${backendURL}/users/register`;
 export const userUpdateEndpoint = `${backendURL}/users/update`;
 export const userGetEndpoint = `${backendURL}/users`;
+export const challengesEndpoint = `${backendURL}/challenges`;
 
 export async function loginUser(email, password, errorSource) {
   try {
@@ -101,12 +102,10 @@ export async function getUser(token, id, errorSource) {
 export async function getAllUsers() {
   try {
     let id = localStorage.getItem("id")
-    console.log(id);
     let leaderboardEndpoint = userGetEndpoint + "/leaderboard";
     if (id != null && id != 0 && id != undefined)
       leaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
 
-    console.log()
     const response = await fetch(`${leaderboardEndpoint}`, {
       method: 'GET',
       headers: {
@@ -256,4 +255,27 @@ export function displaySuccess() {
 if (localStorage.getItem("RegistrationSuccess") == "success") {
   displaySuccess();
   localStorage.removeItem("RegistrationSuccess");
+}
+
+export async function getDailyChallengeIndex(jsonLength) {
+  try {
+    let dailyChallengeLocation = challengesEndpoint + "/locations";
+
+    const response = await fetch(`${dailyChallengeLocation}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: jsonLength
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+
+    } else {
+      console.error('Fetch failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred while getting the daily challenge index:', error);
+  }
 }

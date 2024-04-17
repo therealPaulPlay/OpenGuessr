@@ -6,6 +6,8 @@ export function errorPopup(title, description, errorCode, reload) {
     document.getElementById("blackBackground").style.visibility = "visible";
     if (!reload) {
       document.getElementById("popupClose").innerHTML = "Close";
+    } else {
+      document.getElementById("popupClose").innerHTML = "Reload";
     }
   }
 
@@ -13,6 +15,7 @@ export function errorPopup(title, description, errorCode, reload) {
     document.getElementById("popup-content").style.display = 'none';
     document.getElementById("blackBackground").style.visibility = "hidden";
     if (document.getElementById("popupClose").innerHTML != "Close") {
+    localStorage.setItem("selectedCategory", "standard");
     location.reload(); 
     }
   }
