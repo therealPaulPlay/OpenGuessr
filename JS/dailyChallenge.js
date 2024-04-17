@@ -1,12 +1,12 @@
 import { confirmButtonClicks } from "./miniMap";
+import { setDailyChallengeScore } from "./userAPI"
 
 export let dailyChallengeUIEnabled = false;
 export let dailyChallengeTimer;
 
-//Set Daily challenge Experience (the result) ------------------------------------------------------------
+//Set Daily challenge Experience (the result) ----------------------------------------------------------------
 export function setDailyChallengeExperienceResult(result) {
-    //TODO! Has to be implemented with user API - setUserDailyChallengeResult(result) or something
-    console.log("POST request set user result of daily challenge (todo) + Result: " + result);
+    setDailyChallengeScore(localStorage.getItem("bearer"), localStorage.getItem("id"), result, "index");
 }
 
 //Daily Challenge UI ------------------------------------------------------------------------------------------

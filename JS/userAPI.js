@@ -7,6 +7,7 @@ export const userUpdateEndpoint = `${backendURL}/users/update`;
 export const userGetEndpoint = `${backendURL}/users`;
 export const challengesEndpoint = `${backendURL}/challenges`;
 
+//Login and registration -----------------------------------------------------------------------------------
 export async function loginUser(email, password, errorSource) {
   try {
     const requestBody = {
@@ -32,8 +33,8 @@ export async function loginUser(email, password, errorSource) {
       //implement response save
     } else {
 
-      console.error('Login failed:', response.status);
-      displayError("Login failed: " + response.status, errorSource);
+      console.error('Login failed (Network):', response.status);
+      displayError("Login failed (Network): " + response.status, errorSource);
     }
   } catch (error) {
     console.error('Error occurred during login:', error);
@@ -65,8 +66,8 @@ export async function registerUser(userName, email, password, errorSource) {
       localStorage.setItem("RegistrationSuccess", "success");
       window.location.reload();
     } else {
-      console.error('Registration failed:', response.status);
-      displayError("Registration failed: " + response.status, errorSource);
+      console.error('Registration failed (Network):', response.status);
+      displayError("Registration failed (Network): " + response.status, errorSource);
     }
   } catch (error) {
     console.error('Error occurred during registration:', error);
@@ -74,6 +75,7 @@ export async function registerUser(userName, email, password, errorSource) {
   }
 }
 
+//Get and Set game-related user info -----------------------------------------------------------------------------
 export async function getUser(token, id, errorSource) {
   try {
     const response = await fetch(`${userGetEndpoint}/${id}`, {
@@ -126,30 +128,6 @@ export async function getAllUsers() {
   }
 }
 
-export async function updatePassword(token, id, errorSource) {
-  try {
-    const response = await fetch(`${userGetEndpoint}/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-    });
-
-    // Check if the response is successful
-    if (response.ok) {
-      const data = await response.json();
-      saveUserData(data);
-    } else {
-      console.error('Fetch failed:', response.status);
-      displayError("Fetch failed: " + response.status, errorSource);
-    }
-  } catch (error) {
-    console.error('Error occurred while fetching the user:', error);
-    displayError("Error occured while fetching the user: " + error, errorSource);
-  }
-}
-
 export async function updateExperience(token, id, experience, errorSource) {
   try {
     const requestBody = {
@@ -171,8 +149,8 @@ export async function updateExperience(token, id, experience, errorSource) {
       const data = await response.json();
       localStorage.setItem("experience", data['user']['experience']);
     } else {
-      console.error('User update failed:', response.status);
-      displayError("User update failed: " + response.status, errorSource);
+      console.error('User update failed (Network):', response.status);
+      displayError("User update failed (Network): " + response.status, errorSource);
     }
   } catch (error) {
     console.error('Error occurred during user update:', error);
@@ -203,15 +181,14 @@ export async function updateUsername(token, id, requestedUsername, errorSource) 
       const data = await response.json();
       localStorage.setItem("username", data['user']['userName']);
     } else {
-      console.error('User update failed:', response.status);
-      displayError("User update failed " + response.status, errorSource);
+      console.error('User update failed (Network):', response.status);
+      displayError("User update failed (Network)" + response.status, errorSource);
     }
   } catch (error) {
     console.error('Error occurred during user update:', error);
     displayError("Error occured during user update " + error, errorSource);
   }
 }
-
 
 //executed after successful login
 async function saveUserData(data) {
@@ -223,6 +200,90 @@ async function saveUserData(data) {
   localStorage.setItem("experience", data['experience']);
 }
 
+//Daily Challenge ------------------------------------------------------------------------------------------
+
+export async function getDailyChallengeIndex(jsonLength) {
+  try {
+    let dailyChallengeLocation = challengesEndpoint + "/daily";
+
+    const response = await fetch(`${dailyChallengeLocation}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: jsonLength
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+
+    } else {
+      console.error('Fetch failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred while getting the daily challenge index:', error);
+  }
+}
+
+export async function setDailyChallengeScore(token, id, score, errorSource) {
+  try {
+    const requestBody = {
+      id: id,
+      lastChallengePoints: score
+    }
+
+    // Make the PUT request using Fetch API
+    const response = await fetch(userUpdateEndpoint, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+    } else {
+      console.error('User update failed (Network):', response.status);
+      displayError("User update failed (Network) " + response.status, errorSource);
+    }
+  } catch (error) {
+    console.error('Error occurred during user update (Daily Challenge Score):', error);
+    displayError("Could not set daily challenge score (already played?) Error: " + error, errorSource);
+  }
+}
+
+export async function getDailyLeaderboard() {
+  try {
+    let id = localStorage.getItem("id");
+   
+    let dailyLeaderboardEndpoint = challengesEndpoint + "/daily/leaderboard";
+    if (id != null && id != 0 && id != undefined)
+      dailyLeaderboardEndpoint = `${dailyLeaderboardEndpoint}/${id}`;
+
+    const response = await fetch(`${dailyLeaderboardEndpoint}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+
+    } else {
+      console.error('Fetch failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching the user:', error);
+  }
+}
+
+//Error catching ----------------------------------------------------------------------------------------
 export function displayError(error, source) {
   if (source == "signup") {
     //special cases
@@ -257,25 +318,3 @@ if (localStorage.getItem("RegistrationSuccess") == "success") {
   localStorage.removeItem("RegistrationSuccess");
 }
 
-export async function getDailyChallengeIndex(jsonLength) {
-  try {
-    let dailyChallengeLocation = challengesEndpoint + "/locations";
-
-    const response = await fetch(`${dailyChallengeLocation}`, {
-      method: 'PUT',
-      headers: { 'Content-Type': 'application/json' },
-      body: jsonLength
-    });
-
-    // Check if the response is successful
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-
-    } else {
-      console.error('Fetch failed:', response.status);
-    }
-  } catch (error) {
-    console.error('Error occurred while getting the daily challenge index:', error);
-  }
-}
