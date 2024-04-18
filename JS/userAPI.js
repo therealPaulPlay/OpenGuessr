@@ -160,7 +160,7 @@ export async function updateExperience(token, id, experience, errorSource) {
     
     const experienceEndpoint = userUpdateEndpoint + "/experience";
     // Make the PUT request using Fetch API
-    const response = await fetch(userUpdateEndpoint, {
+    const response = await fetch(experienceEndpoint, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
