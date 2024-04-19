@@ -311,8 +311,12 @@ h1, h2, h3 {
   display: none;
 }
 
-#profileClose, #helpClose, #socialPopupClose, #socialPopupJoin, #multiplayerSelectorClose {
+#profileClose, #helpClose, #socialPopupClose, #socialPopupJoin, #multiplayerSelectorClose, #multiplayerSelectorBack {
   min-height: 50px;
+}
+
+#multiplayerSelectorBack {
+  opacity: 0.5;
 }
 
 ul {
@@ -354,6 +358,7 @@ li {
   display: none; /* used with block */
   width: 45%;
   min-width: 300px;
+  max-width: 600px;
   max-height: 80%;
   font-size: 25px;
   padding: 25px 25px 10px;
@@ -415,6 +420,103 @@ li {
   margin-bottom: 10px;
   margin-top: 20px;
   flex-wrap: wrap;
+}
+
+.multiplayerJoinAlign {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 30px;
+  width: fit-content;
+  min-width: 65%;
+  margin-left: auto;
+  margin-right: auto;
+  flex-wrap: wrap;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.multiplayerCreationArea {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 5px;
+  margin: 10px;
+}
+
+#multiplayerHost {
+  padding: 0 20px;
+  margin: 0;
+}
+
+.multiplayerHostSubmitArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.multiplayerInput {
+  padding: 5px 15px;
+  font-size: 22px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  user-select: none;
+  width: 65%;
+  min-width: 65%;
+  flex-grow: 1;
+}
+
+.ticker {
+  display: flex;
+  gap: 10px;
+  border-radius: 10px;
+  justify-content: left;
+  padding: 5px;
+  width: fit-content;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.multiplayerHostSettings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  gap: 2px;
+  background-color: rgba(30, 31, 44, 0.5);
+  border-radius: 10px;
+  padding: 5px;
+  padding-top: 10px;
+}
+
+.tickerText {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: 20px;
+}
+
+.multiplayerInputInfo {
+  font-size: 17px;
+  padding: 0;
+  color: lightgrey;
+  width: 70%;
+}
+
+#multiplayerJoin {
+  width: 35%;
+  margin-bottom: 10px;
 }
 
 .infoNote {

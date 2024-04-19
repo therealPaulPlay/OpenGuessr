@@ -229,20 +229,56 @@
       <div class="popup-title">
         <h1>Multiplayer</h1>
       </div>
-      <div class="multiplayerHorizontalAlign">
-        <div class="groupPartyButtons">
-          <button id="multiplayerSelectJoin" class="accountButton multiplayerSelect">Join</button>
-          <button id="multiplayerSelectHost" class="accountButton multiplayerSelect">Host</button>
+      <div id="multiplayerWindowMain">
+        <div class="multiplayerHorizontalAlign">
+          <div class="groupPartyButtons">
+            <button id="multiplayerSelectJoin" class="accountButton multiplayerSelect">Join</button>
+            <button id="multiplayerSelectHost" class="accountButton multiplayerSelect">Host</button>
+          </div>
+          <div class="groupPartyButtons">
+            <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect modeComingSoon">Duels coming
+              soon!</button>
+          </div>
         </div>
-        <div class="groupPartyButtons">
-          <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect modeComingSoon">Duels coming soon!</button>
+        <div class="infoNote">
+          <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+          <p id="multiplayerSelectorInfotext">Hover over the modes to learn more.</p>
         </div>
       </div>
-      <div class="infoNote">
-        <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
-        <p id="multiplayerSelectorInfotext">Hover over the modes to learn more.</p>
-    </div>
-    <button id="multiplayerSelectorClose" class="accountButton white accountClose">Close</button>
+      <div id="multiplayerWindowJoin" style="display: none;">
+        <div class="multiplayerJoinAlign">
+          <p id="multiplayerJoinInfo" class="multiplayerInputInfo">Enter the roomcode.</p>
+          <input type="number" class="multiplayerInput" placeholder="Roomcode">
+          <button id="multiplayerJoin" class="accountButton">Join</button>
+        </div>
+      </div>
+      <div id="multiplayerWindowHost" style="display: none;">
+        <div class="multiplayerCreationArea">
+          <div class="multiplayerHostSettings">
+            <div>
+              <p>Rounds:</p>
+              <div class="ticker">
+                <button class="accountButton white">-</button>
+                <p class="tickerText">3</p>
+                <button class="accountButton white">+</button>
+              </div>
+            </div>
+            <div>
+              <p>Round Length:</p>
+              <div class="ticker">
+                <button class="accountButton white">-</button>
+                <p class="tickerText">2 min</p>
+                <button class="accountButton white">+</button>
+              </div>
+            </div>
+          </div>
+          <div class="multiplayerHostSubmitArea">
+            <button id="multiplayerHost" class="accountButton">Create room</button>
+          </div>
+        </div>
+      </div>
+      <button id="multiplayerSelectorClose" class="accountButton white accountClose">Close</button>
+      <button id="multiplayerSelectorBack" class="accountButton white accountClose" stlye="display: none">Back</button>
     </div>
   </div>
   <!-- Result screen -->
