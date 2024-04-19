@@ -20,12 +20,4 @@ export function errorPopup(title, description, errorCode, reload) {
     }
   }
 
-// When the user clicks anywhere outside of the modal, close it
-window.onclick = function(event) {
-  if (event.target == document.getElementById("blackBackground")) {
-    closePopup();
-  }
-} 
-
-
 //errorPopup("Streetview link is invalid","Link: https://errorsareawesome.saidnooneever.ml", "Testerror description", false);
