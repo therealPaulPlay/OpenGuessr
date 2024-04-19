@@ -254,23 +254,28 @@
       </div>
       <div id="multiplayerWindowHost" style="display: none;">
         <div class="multiplayerCreationArea">
-          <div class="multiplayerHostSettings">
+          <div id="roomCreationSettings" class="multiplayerHostSettings">
             <div>
               <p>Rounds:</p>
               <div class="ticker">
-                <button class="accountButton white">-</button>
-                <p class="tickerText">3</p>
-                <button class="accountButton white">+</button>
+                <button id="roundMinus" class="accountButton white">-</button>
+                <p id="roundAmountText" class="tickerText">3</p>
+                <button id="roundPlus" class="accountButton white">+</button>
               </div>
             </div>
             <div>
               <p>Round Length:</p>
               <div class="ticker">
-                <button class="accountButton white">-</button>
-                <p class="tickerText">2 min</p>
-                <button class="accountButton white">+</button>
+                <button id="lengthMinus" class="accountButton white">-</button>
+                <p id="roundLengthText" class="tickerText">2</p>
+                <p class="tickerNote"> sec</p>
+                <button id="lengthPlus" class="accountButton white">+</button>
               </div>
             </div>
+          </div>
+          <div id="hostCodeArea" class="multiplayerHostCodeArea">
+            <h1 id="roomCodeDisplay">CODE</h1>
+            <p id="joinCounter">Players joined: 1</p>
           </div>
           <div class="multiplayerHostSubmitArea">
             <button id="multiplayerHost" class="accountButton">Create room</button>

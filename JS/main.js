@@ -167,7 +167,7 @@ function flyToDestination() {
 }
 
 //clamp function 
-function clamp(num, min, max) {
+export function clamp(num, min, max) {
     return num <= min 
       ? min 
       : num >= max 

@@ -1,4 +1,6 @@
-//Multiplayer UI -----------------------------------------------------------------------------------------
+import { clamp } from "./main.js";
+
+//Multiplayer-----------------------------------------------------------------------------------------
 
 //Global UI --------------------------------------------------------------------------------------------
 let socialMenuMultiplayerButton = document.getElementById("multiplayerButton");
@@ -7,6 +9,19 @@ let multiplayerSelectionScreen = document.getElementById("multiplayerSelectionWi
 let multiplayerSelectJoin = document.getElementById("multiplayerSelectJoin");
 let multiplayerSelectHost = document.getElementById("multiplayerSelectHost");
 let multiplayerSelectDuels = document.getElementById("multiplayerSelectDuels");
+
+let joinInfoText = document.getElementById("multiplayerJoinInfo");
+let multiplayerJoin = document.getElementById("multiplayerJoin"); //button with join functionality
+let multiplayerHost = document.getElementById("multiplayerHost"); //button that creates a room
+
+//host settings
+let roundPlus = document.getElementById("roundPlus");
+let roundMinus = document.getElementById("roundMinus");
+let roundAmountText = document.getElementById("roundAmountText");
+
+let lengthPlus = document.getElementById("lengthPlus");
+let lengthMinus = document.getElementById("lengthMinus");
+let roundLengthText = document.getElementById("roundLengthText");
 
 socialMenuMultiplayerButton.addEventListener("click", toggleMultiplayerSelector);
 document.getElementById("multiplayerSelectorClose").addEventListener("click", toggleMultiplayerSelector);
@@ -56,6 +71,9 @@ function changeMultiplayerSelectorInfotext (hoveredButton) {
 }
 
 //Pages ---------------------------------------------------------------------------------------
+let hostCodeArea = document.getElementById("hostCodeArea");
+let roomCreationSettings = document.getElementById("roomCreationSettings");
+
 multiplayerSelectJoin.addEventListener("click", () => { setMultiplayerWindowSelection("join");})
 multiplayerSelectHost.addEventListener("click", () => { setMultiplayerWindowSelection("host");})
 
@@ -70,7 +88,12 @@ function setMultiplayerWindowSelection(window) {
     multiplayerWindowMain.style.display = "none";
     multiplayerWindowJoin.style.display = "none";
     multiplayerWindowHost.style.display = "none";
-    multiplayerSelectorBack.style.display = "none"; 
+    multiplayerSelectorBack.style.display = "none";
+    hostCodeArea.style.display = "none";
+    roomCreationSettings.style.display = "flex";
+    multiplayerHost.textContent = "Create room";
+    roundLengthText.textContent = "120";
+    roundAmountText.textContent = "3";
 
     if (window == "main") {
         multiplayerWindowMain.style.display = "block";
@@ -84,12 +107,54 @@ function setMultiplayerWindowSelection(window) {
 }
 
 //Join page ----------------------------------------------------------------------------------------------
-let joinInfoText = document.getElementById("multiplayerJoinInfo");
-let multiplayerJoin = document.getElementById("multiplayerJoin"); //button with join functionality
+
+multiplayerJoin.addEventListener("click", joinRoom)
 
 function setJoinInfoText(text) {
     joinInfoText.innerText = text; //this function is used to display things like "Invalid Roomcode" etc.
 }
 
 //Host page ------------------------------------------------------------------------------------------------
-let multiplayerHost = document.getElementById("multiplayerHost"); //button that creates a room
+multiplayerHost.addEventListener("click", createRoom);
+
+function showHostCodeArea (roomcode) {
+    hostCodeArea.style.display = "flex";
+    roomCreationSettings.style.display = "none";
+    document.getElementById("roomCodeDisplay").textContent = roomcode;
+}
+
+roundPlus.addEventListener("click", () =>  {hostRoundAmount(1); })
+roundMinus.addEventListener("click", () =>  {hostRoundAmount(-1); })
+
+function hostRoundAmount(changeAmount) {
+    let currentRoundAmount = Number(roundAmountText.textContent);
+    roundAmountText.textContent = clamp((currentRoundAmount + changeAmount), 1, 10);
+}
+
+lengthPlus.addEventListener("click", () =>  {hostLengthAmount(10); })
+lengthMinus.addEventListener("click", () =>  {hostLengthAmount(-10); })
+
+function hostLengthAmount(changeAmount) {
+    let currentLengthAmount = Number(roundLengthText.textContent);
+    roundLengthText.textContent = clamp((currentLengthAmount + changeAmount), 10, 300);
+}
+
+//LOGIC ---------------------------------------------------------------------------------------------------
+
+function createRoom(rounds, length) {
+    if (multiplayerHost.textContent != "Start") {
+        //TODO implement room creation here
+        
+        showHostCodeArea("Code: 1234");
+        multiplayerHost.textContent = "Start";
+    } else {
+        //TODO start the round here
+    }
+
+}
+
+function joinRoom() {
+    //TODO implement room join logic here
+
+    console.log("join?");
+}

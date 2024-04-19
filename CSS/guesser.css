@@ -497,6 +497,23 @@ li {
   padding-top: 10px;
 }
 
+.multiplayerHostCodeArea {
+  display: none;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  background-color: rgba(30, 31, 44, 0.5);
+  border-radius: 10px;
+  padding: 15px;
+  padding-top: 10px;
+  flex-direction: column;
+}
+
+#roomCodeDisplay {
+  margin: 15px;
+  font-size: 40px;
+}
+
 .tickerText {
   background-color: rgba(255, 255, 255, 0.2);
   padding: 5px;
@@ -504,6 +521,11 @@ li {
   padding-right: 10px;
   text-align: center;
   border-radius: 10px;
+  font-size: 20px;
+  min-width: 50px;
+}
+
+.tickerNote {
   font-size: 20px;
 }
 
