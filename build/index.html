@@ -66,7 +66,7 @@
         <button id="dailyLeaderboardButton" class="accountButton socialBarButton">Daily Challenge
           <img class="socialBarIcons" src="/IMG/daily_icon.png" alt="Leaderboard for OpenGuessr">
         </button>
-        <button id="multiplayer" class="accountButton socialBarButton">Multiplayer
+        <button id="multiplayerButton" class="accountButton socialBarButton">Multiplayer
           <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
         </button>
         <div class="placeholder"></div>
@@ -223,6 +223,26 @@
       <button id="socialPopupJoin" class="discordButton accountButton accountClose">Join
         <img src="./IMG/discord.png" class="socialIcon">
       </button>
+    </div>
+    <!-- Multiplayer window -->
+    <div id="multiplayerSelectionWindow" class="uiWindow">
+      <div class="popup-title">
+        <h1>Multiplayer</h1>
+      </div>
+      <div class="multiplayerHorizontalAlign">
+        <div class="groupPartyButtons">
+          <button id="multiplayerSelectJoin" class="accountButton multiplayerSelect">Join</button>
+          <button id="multiplayerSelectHost" class="accountButton multiplayerSelect">Host</button>
+        </div>
+        <div class="groupPartyButtons">
+          <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect modeComingSoon">Duels coming soon!</button>
+        </div>
+      </div>
+      <div class="infoNote">
+        <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+        <p id="multiplayerSelectorInfotext">Hover over the modes to learn more.</p>
+    </div>
+    <button id="multiplayerSelectorClose" class="accountButton white accountClose">Close</button>
     </div>
   </div>
   <!-- Result screen -->
