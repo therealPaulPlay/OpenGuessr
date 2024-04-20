@@ -534,6 +534,7 @@ li {
   padding: 0;
   color: lightgrey;
   width: 70%;
+  overflow: hidden;
 }
 
 #multiplayerJoin {

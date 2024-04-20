@@ -8,6 +8,7 @@
 
   <!-- Files from other sources (Leaflet, Math.js)-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
   <script src="https://unpkg.com/mathjs@11.5.1/lib/browser/math.js"></script>
 
@@ -248,7 +249,7 @@
       <div id="multiplayerWindowJoin" style="display: none;">
         <div class="multiplayerJoinAlign">
           <p id="multiplayerJoinInfo" class="multiplayerInputInfo">Enter the roomcode.</p>
-          <input type="number" class="multiplayerInput" placeholder="Roomcode">
+          <input id="roomCodeInput" type="text" class="multiplayerInput" placeholder="Roomcode">
           <button id="multiplayerJoin" class="accountButton">Join</button>
         </div>
       </div>
