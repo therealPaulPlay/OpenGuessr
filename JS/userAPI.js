@@ -253,7 +253,7 @@ export async function setDailyChallengeScore(token, id, score, errorSource) {
     }
   } catch (error) {
     console.error('Error occurred during user update (Daily Challenge Score):', error);
-    displayError("Could not set daily challenge score (already played?) Error: " + error, errorSource);
+    displayError("Could not set daily challenge score (already played?)" + error, errorSource);
   }
 }
 

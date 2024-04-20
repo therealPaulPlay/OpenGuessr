@@ -6,8 +6,9 @@ import { resetMap, getMapSource } from './miniMap.js';
 import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
-import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer } from "./dailyChallenge.js";
+import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, globalTimer } from "./dailyChallenge.js";
 import { checkHardModeTimeout } from './hardMode.js';
+import { multiplayer } from './multiplayer.js';
 
 //default coords of the location
 let currentStreetviewLat = 0;
@@ -94,7 +95,7 @@ function compareDistances(distance) {
     }
 
     if (dailyChallengeUIEnabled) {
-        extraMsg = "You took " + (120 - dailyChallengeTimer.getRemainingTime()) + "s to guess. The time is part of the XP calculation." //show timer data in extra message on result screen for daily challenge
+        extraMsg = "You took " + (120 - globalTimer.getRemainingTime()) + "s to guess. The time is part of the XP calculation." //show timer data in extra message on result screen for daily challenge
     }
     
     loadResultScreenXP(distance);

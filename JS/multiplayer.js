@@ -1,5 +1,7 @@
 import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
+import { toggleCategoryMenu, toggleSocialbar } from "./mainUI.js";
+import { globalTimer } from "./dailyChallenge.js";
 
 //Global UI --------------------------------------------------------------------------------------------
 let socialMenuMultiplayerButton = document.getElementById("multiplayerButton");
@@ -23,7 +25,10 @@ let lengthMinus = document.getElementById("lengthMinus");
 let roundLengthText = document.getElementById("roundLengthText");
 
 socialMenuMultiplayerButton.addEventListener("click", toggleMultiplayerSelector);
-document.getElementById("multiplayerSelectorClose").addEventListener("click", toggleMultiplayerSelector);
+document.getElementById("multiplayerSelectorClose").addEventListener("click", function () {
+    toggleMultiplayerSelector();
+    disconnectAllPeersAndCloseRoom(); //also close the room when closing the window manually
+});
 
 multiplayerSelectJoin.addEventListener("mouseover", () => { changeMultiplayerSelectorInfotext("join"); })
 multiplayerSelectHost.addEventListener("mouseover", () => { changeMultiplayerSelectorInfotext("host"); })
@@ -35,16 +40,21 @@ multiplayerSelectDuels.addEventListener("mouseout", () => { changeMultiplayerSel
 let multiPlayerWindowOpen = false;
 
 function toggleMultiplayerSelector() {
-    if (multiPlayerWindowOpen) {
-        multiplayerSelectionScreen.style.display = "none";
-        document.getElementById("blackBackground").style.visibility = "hidden";
-    } else {
-        multiplayerSelectionScreen.style.display = "block";
-        document.getElementById("blackBackground").style.visibility = "visible";
-        setMultiplayerWindowSelection("main");
-    }
+    if (localStorage.getItem("id") != null) {
+        if (multiPlayerWindowOpen) {
+            multiplayerSelectionScreen.style.display = "none";
+            document.getElementById("blackBackground").style.visibility = "hidden";
+        } else {
+            multiplayerSelectionScreen.style.display = "block";
+            document.getElementById("blackBackground").style.visibility = "visible";
+            setMultiplayerWindowSelection("main");
+            toggleSocialbar();
+        }
 
-    multiPlayerWindowOpen = !multiPlayerWindowOpen;
+        multiPlayerWindowOpen = !multiPlayerWindowOpen;
+    } else {
+        window.location.href = "/signup.html"
+    }
 }
 
 function changeMultiplayerSelectorInfotext(hoveredButton) {
@@ -93,9 +103,14 @@ function setMultiplayerWindowSelection(window) {
     multiplayerHost.textContent = "Create room";
     roundLengthText.textContent = "120";
     roundAmountText.textContent = "3";
+    document.getElementById("roomCodeInput").value = "";
+    setJoinCounter(0);
+    setJoinInfoText("Enter the roomcode.");
+    setJoinButtonState();
 
     if (window == "main") {
         multiplayerWindowMain.style.display = "block";
+        disconnectAllPeersAndCloseRoom();
     } else if (window == "join") {
         multiplayerWindowJoin.style.display = "block";
         multiplayerSelectorBack.style.display = "block";
@@ -111,6 +126,18 @@ multiplayerJoin.addEventListener("click", joinRoom)
 
 function setJoinInfoText(text) {
     joinInfoText.innerText = text; //this function is used to display things like "Invalid Roomcode" etc.
+}
+
+document.getElementById("roomCodeInput").addEventListener("input", setJoinButtonState);
+
+function setJoinButtonState() {
+    if (document.getElementById("roomCodeInput").value != "") {
+        multiplayerJoin.style.opacity = "1";
+        multiplayerJoin.style.pointerEvents = "auto";
+    } else {
+        multiplayerJoin.style.opacity = "0.5";
+        multiplayerJoin.style.pointerEvents = "none";
+    }
 }
 
 //Host page ------------------------------------------------------------------------------------------------
@@ -138,21 +165,86 @@ function hostLengthAmount(changeAmount) {
     roundLengthText.textContent = clamp((currentLengthAmount + changeAmount), 10, 300);
 }
 
-// Multiplayer Setup ---------------------------------------------------------------------------------------
-var peer = new Peer();
+function setJoinCounter(playerAmount) {
+    document.getElementById("joinCounter").textContent = "Players joined: " + (playerAmount + 1);
+    if (multiplayerHost.textContent == "Start" && playerAmount == 0) {
+        multiplayerHost.style.opacity = "0.5";
+        multiplayerHost.style.pointerEvents = "none";
+    } else {
+        multiplayerHost.style.opacity = "1";
+        multiplayerHost.style.pointerEvents = "auto";
+    }
+}
+
+//Game Ui ------------------------------------------------------------------------------------------------------------------------
+export let multiplayer = false;
+
+function setMultiplayerUI() {
+    toggleCategoryMenu(true);
+    let categoryButton = document.getElementById("categoryMenuButton");
+    let floatingSocialButton = document.getElementById("floatingSocialButton");
+
+    if (multiplayer) {
+        categoryButton.style.opacity = "0.5";
+        categoryButton.style.pointerEvents = "none";
+        floatingSocialButton.style.opacity = "0.5";
+        floatingSocialButton.style.pointerEvents = "none";
+        document.getElementById("mapModeIndicator").style.display = "flex";
+        document.getElementById("multiplayerLeave").style.display = "block";
+        document.getElementById("mapModeText").textContent = "Multiplayer";
+    } else {
+        categoryButton.style.opacity = "1";
+        categoryButton.style.pointerEvents = "auto";
+        floatingSocialButton.style.opacity = "1";
+        floatingSocialButton.style.pointerEvents = "auto";
+        document.getElementById("mapModeIndicator").style.display = "none";
+    }
+}
+
+export function multiplayerStartTimer() {
+    if (multiplayer) {
+        globalTimer = startTimer(120, multiplayerTimerExpired);
+    }
+}
+
+export function multiplayerTimerExpired() {
+    confirmButtonClicks(); //if the timer expires and the player hasn't guessed yet, the guess function will be evoked.
+}
+
+// Multiplayer Setup (IF player has an id! ) ---------------------------------------------------------------------------------------
+var peer;
+let connectedClientsCount = 0;
+
+function generateRandomCode(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let code = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        code += characters.charAt(randomIndex);
+    }
+    return code;
+}
+if (localStorage.getItem("id") != null) {
+    let unqiueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
+    peer = new Peer(unqiueUserID);
+}
 
 // Logic ------------------------------------------------------------------------------------------------
 var conn; // the connection data
 let peerId;
+let isHost = false;
 
+//Host Logic ----------------------------------------------------------------------------------------------
 if (peer) {
     peer.on('open', function (id) {
         peerId = id;
-        console.log('My peer ID is: ' + id);
 
         // Set up event listener for incoming connections (HOST LOGIC)
         peer.on('connection', function (incomingConn) {
             console.log('Incoming connection from peer:', incomingConn.peer);
+
+            connectedClientsCount++;
+            setJoinCounter(connectedClientsCount);
 
             // Event listener for when the connection is open
             incomingConn.on('open', function () {
@@ -166,6 +258,12 @@ if (peer) {
                 // Send messages
                 incomingConn.send('Hello from host!');
             });
+
+            //Peer disconnects
+            incomingConn.on('close', function () {
+                connectedClientsCount--;
+                setJoinCounter(connectedClientsCount);
+            })
         });
     });
 } else {
@@ -173,15 +271,39 @@ if (peer) {
 }
 
 function createRoom(rounds, length) {
+    isHost = true;
+
     if (multiplayerHost.textContent != "Start") {
-        showHostCodeArea("Code: " + peerId);
+        showHostCodeArea("Code: " + peerId.replace("openguessr_", ""));
         multiplayerHost.textContent = "Start";
+        setJoinCounter(0);
     } else {
-        // TODO: start the round here
+        multiplayer = true;
+        setMultiplayerUI();
+        toggleMultiplayerSelector();
     }
 }
 
+// Function to disconnect all peers and close the room
+function disconnectAllPeersAndCloseRoom() {
+    if (isHost) {
+        if (peer) {
+            for (let peerId in peer.connections) {
+                peer.connections[peerId].forEach(function (connection) {
+                    connection.close();
+                });
+            }
+        }
+    }
+
+    connectedClientsCount = 0;
+    setJoinCounter(connectedClientsCount);
+}
+
+//Peer Logic -----------------------------------------------------------------------------------------------------------------
 function joinRoom() {
+    isHost = false;
+
     setJoinInfoText("Attempting join...");
 
     const options = {
@@ -190,38 +312,82 @@ function joinRoom() {
         }
     };
 
-    try {
-        conn = peer.connect(document.getElementById("roomCodeInput").value, options);
+    document.getElementById("roomCodeInput").value
+    conn = peer.connect("openguessr_" + document.getElementById("roomCodeInput").value, options);
 
-        // Event listener for when the connection is open
-        conn.on('open', function () {
-            setJoinInfoText("Joined!");
+    // Event listener for when the connection is open
+    conn.on('open', function () {
+        setJoinInfoText("Joined!");
+        multiplayer = true;
+        setMultiplayerUI();
+        toggleMultiplayerSelector();
 
-            // Receive messages
-            conn.on('data', function (data) {
-                console.log('Received', data);
-            });
-
-            // Send messages
-            conn.send('Hello!');
+        // Receive messages
+        conn.on('data', function (data) {
+            console.log('Received', data);
         });
-    } catch (error) {
-        setJoinInfoText("Invalid: " + error);
-        console.error("Error occurred during room join: " + error);
-    }
+
+        // Send messages
+        conn.send('Hello!');
+    });
+
+    // Event listener for Connection closed
+    conn.on('close', function () {
+        multiplayer = false;
+        setMultiplayerUI();
+
+        errorPopup("Disconnected from room", "You have left the round.", "User disconnected", false);
+    });
 }
 
 // Error states (disconnected, closed etc.) --------------------------------------------------------------------------------------------------
-peer.on('disconnected', function () {
-    peer.reconnect();
-    console.log("Disconnected from signalling server. Attempting to reconnect...");
-});
+if (peer) {
+    peer.on('disconnected', function () {
+        peer.reconnect();
+        console.log("Disconnected from signalling server. Attempting to reconnect...");
+    });
 
-peer.on('error', function (err) {
-    console.error("PeerJS Error: " + err);
-    errorPopup("Multiplayer error", "Fatal multiplayer error. Please reload if you want to use multiplayer.", err.type, false);
-});
+    peer.on('error', function (err) {
+        console.error("PeerJS Error: " + err);
 
-peer.on('close', function () {
-    errorPopup("Multiplayer connection closed", "Your multiplayer connection was closed.", "Error: Connection Closed", false);
-});
+        if (multiplayer) {
+            if (err.type != "network") {
+                errorPopup("Multiplayer error", "Fatal multiplayer error. Please reload if you want to use multiplayer.", err.type, true);
+            } else {
+                errorPopup("Disconnected from round.", "You have left the multiplayer round due to network issues. Check your and the host's connection.", err.type, false);
+            }
+
+            multiplayer = false;
+            setMultiplayerUI();
+        } else {
+            setJoinInfoText("Failed to join.");
+        }
+
+    });
+
+    peer.on('close', function () {
+        errorPopup("Multiplayer connection closed", "Your multiplayer connection was closed.", "Error: Connection Closed", false);
+        if (multiplayer) {
+            multiplayer = false;
+            setMultiplayerUI();
+        }
+    });
+}
+
+//Multiplayer leave ----------------------------------------------------------------------------------
+let leaveButton = document.getElementById("multiplayerLeave");
+
+leaveButton.addEventListener("click", leaveMultiplayerRound);
+
+function leaveMultiplayerRound() {
+    if (isHost) {
+        disconnectAllPeersAndCloseRoom();
+    } else {
+        if (conn) {
+            conn.close();
+        }
+    }
+
+    multiplayer = false;
+    setMultiplayerUI();
+}

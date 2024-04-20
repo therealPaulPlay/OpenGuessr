@@ -343,7 +343,7 @@ li {
   background-color: white;
 }
 
-#popupHolder {
+.popupHolder {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -540,6 +540,15 @@ li {
 #multiplayerJoin {
   width: 35%;
   margin-bottom: 10px;
+  transition: opacity 250ms ease, filter 250ms ease;
+}
+
+#multiplayerLeave {
+  display: none;
+  margin: 0;
+  padding-inline: 10px;
+  line-height: 0.9;
+  margin-left: 6px;
 }
 
 .infoNote {

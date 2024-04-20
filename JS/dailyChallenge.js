@@ -1,8 +1,9 @@
 import { confirmButtonClicks } from "./miniMap";
 import { setDailyChallengeScore } from "./userAPI"
+import { multiplayerTimerExpired } from "./multiplayer";
 
 export let dailyChallengeUIEnabled = false;
-export let dailyChallengeTimer;
+export let globalTimer;
 
 //Set Daily challenge Experience (the result) ----------------------------------------------------------------
 export function setDailyChallengeExperienceResult(result) {
@@ -15,14 +16,10 @@ export function setDailyChallengeUI(enable) {
 
     if (enable) {
         document.getElementById("mapModeIndicator").style.display = "flex";
-        document.getElementById("mapTimer").textContent = "02" + ":" + "00"; //reset the timer visually - the actual timer starts after the load of the map
+        document.getElementById("mapModeText").textContent = "Daily Challenge";
+        document.getElementById("multiplayerLeave").display = "none";
     } else {
         document.getElementById("mapModeIndicator").style.display = "none";
-        try {
-            dailyChallengeTimer.stopTimer();
-        } catch {
-        /*console.log("No timer to stop.");*/
-        }
     }
 }
 
@@ -75,7 +72,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
 
 export function dailyChallengeCheckTimer() {
     if (dailyChallengeUIEnabled) {
-        dailyChallengeTimer = startTimer(120, dailyChallengeTimerExpired);
+        globalTimer = startTimer(120, dailyChallengeTimerExpired);
     }
 }
 

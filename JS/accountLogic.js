@@ -1,5 +1,5 @@
 import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
-import { setDailyChallengeExperienceResult, dailyChallengeTimer } from "./dailyChallenge";
+import { setDailyChallengeExperienceResult, globalTimer } from "./dailyChallenge";
 import { checkTextLength } from "./mainUI";
 
 let profileName = document.getElementById("profileViewName");
@@ -218,7 +218,7 @@ export async function loadResultScreenXP(distance) {
       earnedXP = Math.round(5000 * ((0.998036) ** distance));
     }
     else if (selectedCategory == "daily") {
-      let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
+      let timeUsedInSeconds = 120 - globalTimer.getRemainingTime();
 
       let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
       earnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);

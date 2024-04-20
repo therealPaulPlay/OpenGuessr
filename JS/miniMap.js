@@ -1,5 +1,5 @@
 import { loadResultMap, calculateDistances } from "./main.js";
-import { dailyChallengeUIEnabled, dailyChallengeTimer, saveDailyChallengeCompletion } from "./dailyChallenge.js"
+import { dailyChallengeUIEnabled, globalTimer, saveDailyChallengeCompletion } from "./dailyChallenge.js"
 import { selectedPinIndex } from "./accountLogic.js";
 
 const Provider = {
@@ -167,7 +167,7 @@ export function confirmButtonClicks() {
         document.getElementById("nextRoundText").innerHTML = "See results →";
         
         try {
-            dailyChallengeTimer.stopTimer();
+            globalTimer.stopTimer();
         } catch (error) {
             console.log("timer already stopped.");
         }

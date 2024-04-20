@@ -1,7 +1,7 @@
 //This is being used to better catch and analyze streetview errors. (and any future error messages that could be related to an account system etc.)
 export function errorPopup(title, description, errorCode, reload) {
     document.getElementById("popup-title").innerHTML = `<strong>Alert: </strong> ${title}`;
-    document.getElementById("popup-description").innerHTML = `<p>${description}</p><p>${errorCode}</p>`;
+    document.getElementById("popup-description").innerHTML = `<p>${description}</p><p>Code: ${errorCode}</p>`;
     document.getElementById("popup-content").style.display = 'flex';
     document.getElementById("blackBackground").style.visibility = "visible";
     if (!reload) {

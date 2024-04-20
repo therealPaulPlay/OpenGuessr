@@ -184,10 +184,8 @@ async function getCoordsFromServerDaily() {
     
     
         return resultLocationsArray;
-    } catch(error) {
+    } catch {
         errorPopup("Challenge API Error", "There was an error fetching the daily challenge location", "Challenge Fetch failed.", true);
-        console.error(error);
-        
         return null;
     }
 }
