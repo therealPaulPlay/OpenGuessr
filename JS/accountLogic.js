@@ -181,7 +181,7 @@ export function uiSetUserXP(xp) {
   resultLevelText.innerHTML = "Level " + templevel;
   levelXPbar.style.width = (xp / requiredXP) * 100 + "%";
 
-  return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp };
+  return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
 }
 
 function willCauseLevelUpgrade(xp, newXP) {

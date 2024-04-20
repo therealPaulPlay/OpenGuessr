@@ -3,7 +3,7 @@ import { resMap, generateNewLocation } from "./main.js";
 import { disableResultScreen, socialPopupProbability } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, globalTimer } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
-import { multiplayer } from "./multiplayer.js";
+import { multiplayer, showMultiplayerOverlay } from "./multiplayer.js";
 
 //Defined Categories ------------------------------------------------------------------------
 const Category = {
@@ -170,6 +170,7 @@ function checkGenerationTypeAndGenerate() {
     if (!multiplayer) {
         //If multiplayer is disabled
         setDailyChallengeUI(false);
+        showMultiplayerOverlay(false);
 
         //pick between json and maps api loading depending on the category type
         if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard") {

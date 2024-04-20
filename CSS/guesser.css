@@ -644,6 +644,26 @@ li {
   user-select: none;
 }
 
+#multiplayerFade {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  transition: opacity 250ms ease;
+  opacity: 0;
+  overflow: hidden;
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  pointer-events: none;
+  user-select: none;
+}
+
 #hardModeFade h1 {
   font-size: 75px;
   text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
@@ -653,6 +673,54 @@ li {
 #hardModeFade p {
   font-size: 30px;
   text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+}
+
+#multiplayerFade h1 {
+  font-size: 50px;
+  text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
+}
+
+#multiplayerFade p, #multiplayerTable p {
+  font-size: 30px;
+  text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+}
+
+#multiplayerTable {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  width: 50%;
+  min-width: 350px;
+  max-width: 750px;
+  font-size: 25px;
+  max-height: 500px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.multiplayerOverlayEntry {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.multiplayerEntryPlayerInfo {
+  display: flex;
+  justify-content: space-between;
+  gap: 50px;
+  padding: 10px 20px;
+}
+
+.multiplayerEntryPlayerName {
+  flex: 1;
+}
+
+.multiplayerEntryPlayerScore {
+  margin-left: 10px;
 }
 
 #logoutButton {
