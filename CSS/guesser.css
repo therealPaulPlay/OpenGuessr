@@ -509,6 +509,14 @@ li {
   flex-direction: column;
 }
 
+#endMultiplayerRoundButton {
+  min-width: 150px;
+  min-height: 50px;
+  font-size: 25px;
+  display: none;
+  margin-top: 20px;
+}
+
 #roomCodeDisplay {
   margin: 15px;
   font-size: 40px;

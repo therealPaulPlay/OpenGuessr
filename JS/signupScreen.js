@@ -143,6 +143,23 @@ document.addEventListener(
   false
 );
 
+//Toggle password field visability ------------
+document.querySelector('.toggle-password').addEventListener('click', function() {
+  const passwordInput = document.getElementById('signup_password');
+  const icon = this;
+
+  if (passwordInput.type === 'password') {
+      passwordInput.type = 'text';
+      icon.classList.remove('hide-eye');
+      icon.classList.add('show-eye');
+  } else {
+      passwordInput.type = 'password';
+      icon.classList.remove('show-eye');
+      icon.classList.add('hide-eye');
+  }
+});
+
+
 //Google Analytics 4 (simplified implementation) -------------------------------------------------------------------------
 window ['gtag_enable_tcf_support'] = true;
 

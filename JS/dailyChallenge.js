@@ -19,7 +19,7 @@ export function setDailyChallengeUI(enable) {
     if (enable) {
         document.getElementById("mapModeIndicator").style.display = "flex";
         document.getElementById("mapModeText").textContent = "Daily Challenge";
-        document.getElementById("multiplayerLeave").display = "none";
+        document.getElementById("multiplayerLeave").style.display = "none";
     } else {
         document.getElementById("mapModeIndicator").style.display = "none";
     }
