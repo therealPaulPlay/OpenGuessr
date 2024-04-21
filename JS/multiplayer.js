@@ -651,7 +651,7 @@ export function showMultiplayerOverlay(show, title, array) {
                 <div class="multiplayerOverlayEntry">
                     <div class="multiplayerEntryPlayerInfo">
                         <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level})</div>
-                        <div class="multiplayerEntryPlayerScore">Score: ${score}</div>
+                        <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
                     </div>
                 </div>
             `;
