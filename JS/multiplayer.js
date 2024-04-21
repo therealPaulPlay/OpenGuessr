@@ -218,10 +218,33 @@ export function multiplayerTimerExpired() {
 function endMultiplayerRound() {
     if (isHost) {
         sendMessageToAll("roundOver");
+        document.getElementById("nextRound").style.opacity = "0.5";
+        document.getElementById("nextRound").style.pointerEvents = "none";
+        document.getElementById("nextRoundText").innerHTML = "Wait before skipping... →";
+        setTimeout(function () {
+            document.getElementById("nextRoundText").innerHTML = "Skip →";
+            document.getElementById("nextRound").style.opacity = "1";
+            document.getElementById("nextRound").style.pointerEvents = "auto";
+        }, 2000)
+    } else {
+        //if i'ts not the host, hide the next round button!
+        document.getElementById("nextRound").style.opacity = "0.5";
+        document.getElementById("nextRound").style.pointerEvents = "none";
+        document.getElementById("nextRoundText").innerHTML = "Waiting for host... →";
     }
 
     calculateDistances(markerPosition.lat, markerPosition.lng);
     loadResultMap(mapMarkerLat, mapMarkerLong);
+    try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer
+
+    setTimeout(function () {
+        roundIndex++;
+
+        if (roundIndex > roundAmount) {
+            roundIndex = roundAmount;
+            //TODO End multiplayer session
+        }
+    })
 }
 
 let totalRequiredGuesses = 0;
@@ -231,6 +254,22 @@ export function multiplayerHasGuessed() {
 
     if (totalRequiredGuesses <= 0) {
         endMultiplayerRound();
+    }
+}
+
+export function showMultiplayerRoundResults() {
+    sendMessageToAll("showPlayersArrayAfterRound", connectedPeers);
+    showMultiplayerOverlay(true, "Results from round " + roundIndex, connectedPeers); //also load the results on the host's side
+}
+
+export function updatePeerDataScore(peerId, addScore) {
+    const peerIndex = connectedPeers.findIndex(peer => peer[0] === peerId);
+                
+    if (peerIndex != -1) {
+        const currentScore = connectedPeers[peerIndex][3];
+        const newScore = currentScore + addScore;
+
+        connectedPeers[peerIndex][3] = newScore;
     }
 }
 
@@ -258,9 +297,9 @@ if (localStorage.getItem("id") != null) {
 
 // Logic ------------------------------------------------------------------------------------------------
 var conn; // the connection data
-let peerId;
+export let peerId; //host peer id
 export let isHost = false;
-let connectedPeers = [];
+export let connectedPeers = [];
 
 function removeConnectedPeerById(peerId) {
     // Find the index of the entry with the given ID
@@ -274,7 +313,7 @@ function removeConnectedPeerById(peerId) {
 
 //Host Logic ----------------------------------------------------------------------------------------------
 
-let multiplayerRoundStarted = false; // host only
+let multiplayerFirstRoundPlayed = false; // host only
 
 if (peer) {
     peer.on('open', function (id) {
@@ -302,7 +341,7 @@ if (peer) {
                 // Send messages
                 incomingConn.send(welcomeMessage);
 
-                if (!multiplayerRoundStarted) {
+                if (!multiplayerFirstRoundPlayed) {
                     sendMessageToAll("showPlayersArray", connectedPeers); //send it to peer
                     showMultiplayerOverlay(true, "Waiting...", connectedPeers); //also show it for host
                 }
@@ -311,8 +350,12 @@ if (peer) {
 
             // Receive messages
             incomingConn.on('data', function (data) {
-                if (data == "guessed") {
+                if (data.type == "guessed") {
                     multiplayerHasGuessed();
+                }
+
+                if (data.type == "score") {
+                    updatePeerDataScore(incomingConn.peer, data.content);
                 }
             });
 
@@ -322,7 +365,7 @@ if (peer) {
                 setJoinCounter(connectedClientsCount);
                 removeConnectedPeerById(incomingConn.peerId);
 
-                if (!multiplayerRoundStarted) {
+                if (!multiplayerFirstRoundPlayed) {
                     sendMessageToAll("showPlayersArray", connectedPeers);
                     showMultiplayerOverlay(true, "Waiting...", connectedPeers);
                 }
@@ -335,12 +378,12 @@ if (peer) {
 
 function createRoom() {
     isHost = true;
-    multiplayerRoundStarted = false;
+    multiplayerFirstRoundPlayed = false;
 
     if (multiplayerHost.textContent != "Start") {
         showHostCodeArea("Roomcode: " + peerId.replace("openguessr_", ""));
         multiplayerHost.textContent = "Start";
-        connectedPeers.push([null, localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0]);
+        connectedPeers.push([peerId, localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0]);
         showMultiplayerOverlay(true, "Waiting...", connectedPeers);
         setJoinCounter(0); //greys out the start button too
 
@@ -356,18 +399,22 @@ function createRoom() {
     }
 }
 
+//Start the first / next round
 export function startMultiplayerRound(latitude, longitude) {
-    if (multiplayerRoundStarted == false) {
+    if (multiplayerFirstRoundPlayed == false) {
         toggleMultiplayerSelector();
-        multiplayerRoundStarted = true;
+        multiplayerFirstRoundPlayed = true;
 
+        sendMessageToAll("start", [latitude, longitude]);
+        multiplayerOverlayCountdown();
+    } else {
         sendMessageToAll("start", [latitude, longitude]);
         multiplayerOverlayCountdown();
     }
 }
 
 //Function to send a message from host to all peers
-function sendMessageToAll(type, message) {
+export function sendMessageToAll(type, message) {
     connectedPeers.forEach(function (peerInfo) {
         const peerId = peerInfo[0]; // Peer ID is the first element in each peerInfo array
         if (peerId) { // Ensure peerId is defined
@@ -423,7 +470,6 @@ function joinRoom() {
         multiplayer = true;
         setMultiplayerUI();
         toggleMultiplayerSelector();
-
     });
 
     // Receive messages
@@ -431,7 +477,11 @@ function joinRoom() {
         console.log('Received', data);
 
         if (data.type === "showPlayersArray") {
-            showMultiplayerOverlay(true, "Waiting...", data.content);
+            showMultiplayerOverlay(true, "Starting soon...", data.content);
+        }
+
+        if (data.type === "showPlayersArrayAfterRound") {
+            showMultiplayerOverlay(true, "Results from round " + roundIndex, data.content);
         }
 
         if (data.type === "start") {
@@ -453,6 +503,10 @@ function joinRoom() {
         if (data.type === "roundOver") {
             endMultiplayerRound();
         }
+
+        if (data.type === "closeResultScreen") {
+            transitionToStart();
+        }
     });
 
     // Event listener for Connection closed
@@ -462,9 +516,18 @@ function joinRoom() {
     });
 }
 
-export function peerSendsHost(message) {
-    // Send initial message
-    conn.send(message);
+export function peerSendsHost(type, message) {
+    try {
+        conn.send({
+            type: type,
+            content: message
+        });
+
+    } catch (error) {
+        errorPopup("Error sending message", "Couldn't send message to host.", "Host unreachable");
+        console.error("Error messaging host: " + error);
+    }
+
 }
 
 // Error states (disconnected, closed etc.) --------------------------------------------------------------------------------------------------
@@ -517,9 +580,13 @@ function leaveMultiplayerRound() {
     setMultiplayerUI();
     showMultiplayerOverlay(false);
     roundIndex = 1;
+
+    //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";
     document.getElementById("map").style.pointerEvents = "auto";
     document.getElementById("map").style.visibility = "visible";
+    document.getElementById("nextRound").style.opacity = "1";
+    document.getElementById("nextRound").style.pointerEvents = "auto";
     try { multiplayerTimer.stopTimer(); } catch { }; //has to be in try catch
 }
 
@@ -576,6 +643,8 @@ function multiplayerOverlayCountdown() {
         } else {
             clearInterval(countdownInterval); // Stop the countdown
             showMultiplayerOverlay(false); //hide the overlay --> round starts
+            document.getElementById("map").style.pointerEvents = "auto"; //re-enable the map
+            document.getElementById("confirmButton").textContent = "Guess";
             multiplayerTimer = startTimer(roundLength, multiplayerTimerExpired); //Start the timer
             document.getElementById("mapModeText").textContent = "Multiplayer (Round: " + roundIndex + "/" + roundAmount + ")";
             totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host

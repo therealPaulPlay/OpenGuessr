@@ -2,6 +2,7 @@ import { updateUsername as updateUsername, getUser, updateExperience } from "./u
 import { setDailyChallengeExperienceResult } from "./dailyChallenge";
 import { dailyChallengeTimer } from './dailyChallenge.js';
 import { checkTextLength } from "./mainUI";
+import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore } from "./multiplayer.js";
 
 let profileName = document.getElementById("profileViewName");
 
@@ -205,7 +206,7 @@ function willCauseLevelUpgrade(xp, newXP) {
 
 export async function loadResultScreenXP(distance) {
 
-  if (isAuthenticated) {
+  if (isAuthenticated || multiplayer) {
     //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
 
@@ -215,20 +216,35 @@ export async function loadResultScreenXP(distance) {
 
     let earnedXP;
 
-    if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "famous" || selectedCategory == "capital" || selectedCategory == "hard") {
-      earnedXP = Math.round(5000 * ((0.998036) ** distance));
-    }
-    else if (selectedCategory == "daily") {
-      let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
-
-      let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
-      earnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
-
-      setDailyChallengeExperienceResult(earnedXP);
+    //XP calculation formulas -------------------------------------------------
+    if (!multiplayer) {
+      if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "famous" || selectedCategory == "capital" || selectedCategory == "hard") {
+        earnedXP = Math.round(5000 * ((0.998036) ** distance));
+      }
+      else if (selectedCategory == "daily") {
+        let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
+  
+        let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
+        earnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
+        setDailyChallengeExperienceResult(earnedXP);
+  
+      } else {
+        earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
+      }
     } else {
-      earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
+      //always use the standard formula for multiplayer 
+      earnedXP = Math.round(5000 * ((0.998036) ** distance));
+     
+      if (isHost) {
+        updatePeerDataScore(peerId, earnedXP);
+      } else {
+        peerSendsHost("score", earnedXP);
+      }
+
     }
 
+
+    //apply XP visually and server-wise ----------------------------------
     XPbarResource.classList.remove("XPbarAnimate");
 
     if ((willCauseLevelUpgrade(currentXP, earnedXP)) > 1) {

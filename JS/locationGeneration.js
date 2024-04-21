@@ -183,8 +183,7 @@ async function getCoordsFromServerDaily() {
         const resultLat = listOfLocations[dailyChallengeCoordinatesIndex][0];
         const resultLong = listOfLocations[dailyChallengeCoordinatesIndex][1];
     
-        resultLocationsArray = [resultLat, resultLong];
-    
+        let resultLocationsArray = [resultLat, resultLong];
     
         return resultLocationsArray;
     } catch {

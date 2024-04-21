@@ -3,7 +3,7 @@ import { resMap, generateNewLocation } from "./main.js";
 import { disableResultScreen, socialPopupProbability } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
-import { multiplayer, showMultiplayerOverlay, isHost } from "./multiplayer.js";
+import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults } from "./multiplayer.js";
 
 //Defined Categories ------------------------------------------------------------------------
 const Category = {
@@ -244,6 +244,13 @@ export function transitionToStart() {
 
         setTimeout(disableResultScreen, 200);
         setTimeout(socialPopupProbability, 650);
+        
+        //notify peers that the next round has begun
+        if (isHost && multiplayer) {
+            sendMessageToAll("closeResultScreen");
+            showMultiplayerRoundResults();
+        }
+
     } else {
         dailyChallengeEnd();
     }
