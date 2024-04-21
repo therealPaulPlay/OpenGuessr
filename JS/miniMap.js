@@ -1,6 +1,7 @@
 import { loadResultMap, calculateDistances } from "./main.js";
-import { dailyChallengeUIEnabled, globalTimer, saveDailyChallengeCompletion } from "./dailyChallenge.js"
+import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
+import { isHost, multiplayer, multiplayerHasGuessed, peerSendsHost } from "./multiplayer.js";
 
 const Provider = {
     ENGLISH: "0",
@@ -111,9 +112,9 @@ function resetGuessMap() {
 map.setZoom(3);
 
 let marker = new L.Marker([0, 0]);
-let markerPosition = marker.getLatLng();
-let lat;
-let long;
+export let markerPosition = marker.getLatLng();
+export let mapMarkerLat;
+export let mapMarkerLong;
 
 function onMapClick(e) {
     //creates markers wherever the user clicks and if it clicks to another position,
@@ -126,8 +127,8 @@ function onMapClick(e) {
         map.removeLayer(marker);
     }
     //sets the variables from the USER input (this is the one that the user has placed)
-    lat = e.latlng.lat;
-    long = e.latlng.lng;
+    mapMarkerLat = e.latlng.lat;
+    mapMarkerLong = e.latlng.lng;
 
     const redIcon = new L.Icon({
         iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
@@ -137,7 +138,7 @@ function onMapClick(e) {
         shadowSize: [41, 41]
     });
 
-    marker = new L.Marker([lat, long], {icon: redIcon});
+    marker = new L.Marker([mapMarkerLat, mapMarkerLong], {icon: redIcon});
 
     markerPosition = marker.getLatLng();
     marker.addTo(map);
@@ -167,7 +168,7 @@ export function confirmButtonClicks() {
         document.getElementById("nextRoundText").innerHTML = "See results →";
         
         try {
-            globalTimer.stopTimer();
+            dailyChallengeTimer.stopTimer();
         } catch (error) {
             console.log("timer already stopped.");
         }
@@ -177,6 +178,19 @@ export function confirmButtonClicks() {
         document.getElementById("nextRoundText").innerHTML = "Next round →";
     }
 
-    calculateDistances(markerPosition.lat, markerPosition.lng);
-    loadResultMap(lat, long);
+    if (!multiplayer) {
+        calculateDistances(markerPosition.lat, markerPosition.lng);
+        loadResultMap(mapMarkerLat, mapMarkerLong);
+    } else {
+        document.getElementById("confirmButton").textContent = "Waiting...";
+        document.getElementById("confirmButton").style.opacity = "0.5";
+        document.getElementById("confirmButton").style.pointerEvents = "none";
+        document.getElementById("map").style.pointerEvents = "none";
+        
+        if (isHost) {
+            multiplayerHasGuessed();
+        } else {
+            peerSendsHost("guessed");
+        }
+    }
 }

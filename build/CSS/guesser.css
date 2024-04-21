@@ -688,13 +688,13 @@ li {
 
 #multiplayerTable {
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  justify-content: safe center;
+  align-items: safe flex-start; /* Stretch items to full height */
   width: 50%;
   min-width: 350px;
   max-width: 750px;
   font-size: 25px;
-  max-height: 500px;
+  max-height: 350px;
   overflow-x: hidden;
   overflow-y: auto;
   flex-direction: column;

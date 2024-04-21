@@ -1,9 +1,9 @@
 import { loadLocationJSON } from "./locationGeneration.js";
 import { resMap, generateNewLocation } from "./main.js";
 import { disableResultScreen, socialPopupProbability } from "./mainUI.js";
-import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, globalTimer } from "./dailyChallenge.js";
+import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
-import { multiplayer, showMultiplayerOverlay } from "./multiplayer.js";
+import { multiplayer, showMultiplayerOverlay, isHost } from "./multiplayer.js";
 
 //Defined Categories ------------------------------------------------------------------------
 const Category = {
@@ -162,8 +162,8 @@ function changeCategory(category) {
 
 //Check categories and initiate location generation  ---------------------------------------------------------------------------------------------------------------
 
-function checkGenerationTypeAndGenerate() {
-    try { globalTimer.stopTimer(); } catch { }; //has to be in try catch
+export function checkGenerationTypeAndGenerate() {
+    try { dailyChallengeTimer.stopTimer(); } catch { }; //has to be in try catch
     setHardMode(false);
     document.getElementById("mapTimer").textContent = "00" + ":" + "00"; //reset the timer visually
 
@@ -194,15 +194,23 @@ function checkGenerationTypeAndGenerate() {
         }
     } else {
         //If multiplayer is enabled
-
-        if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard") {
-            loadLocationJSON(mapCategory); //this also generates a new location
-        } else if (mapCategory == "standard") {
-            generateNewLocation("SDK");
-        } else {
-            //if the map category is an unsupported multiplayer category, such as daily or hard, switch to standard
-            changeCategory("standard"); //this will re-run checkGenerationTypeAndGenerate
+        try {
+            if (isHost) {
+                if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard") {
+                    loadLocationJSON(mapCategory); //this also generates a new location
+                } else if (mapCategory == "standard") {
+                    generateNewLocation("SDK");
+                } else {
+                    //if the map category is an unsupported multiplayer category, such as daily or hard, switch to standard
+                    changeCategory("standard"); //this will re-run checkGenerationTypeAndGenerate
+                }
+            } else {
+                generateNewLocation("FROMHOST");
+            }
+        } catch (error) {
+            console.error("Error loading multiplayer location in categoryMenu.js Error: ", error)
         }
+
     }
 
 }

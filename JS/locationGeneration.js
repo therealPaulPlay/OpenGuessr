@@ -1,5 +1,6 @@
 import { errorPopup } from "./errorHandling.js";
 import { generateNewLocation } from "./main.js";
+import { coordsFromHost } from "./multiplayer.js";
 
 export async function getLocationCoordinates(type) {
     //show loading screen
@@ -12,6 +13,8 @@ export async function getLocationCoordinates(type) {
         return await getCoordsFromGoogle();
     } else if (type == "DAILY") {
         return await getCoordsFromServerDaily();
+    } else if (type == "FROMHOST") {
+        return coordsFromHost;
     } else {
         console.error("Incorrect Location type set in locationGeneration.js");
     }
