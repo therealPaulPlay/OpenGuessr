@@ -272,7 +272,7 @@
 
 </body>
 <script type="module">
-    import { getAllUsers } from "./userAPI.js";
+    import { getDailyLeaderboard } from "./userAPI.js";
 
     //set the title to the current date
     const currentDate = new Date();
@@ -317,34 +317,34 @@
         rankedItem.innerHTML = `
                 <p class="maxlength">#${rank}</p>
                 <p class="middle maxlength">${name}</p>
-                <p class="maxlength">${xp} XP</p>
+                <p class="maxlength">${xp} Pts.</p>
             `;
         container.appendChild(rankedItem);
     }
 
     async function loadLeaderboard() {
-        // Await the promise returned by getAllUsers()
-        let userData = await getAllUsers();
+        // Await the promise returned by getDailyLeaderboard()
+        let userData = await getDailyLeaderboard();
 
         if (userData == undefined) {
-            container.innerHTML = "<p>An error occured while loading the leaderboard.</p>";
+            container.innerHTML = "<p>An error occured while loading the challenge leaderboard.</p>";
         } else {
             // Iterate through the array once userData is available
-            for (var i = 0; i < userData.length; i++) {
+            for (var i = 0; i < userData.length - 1; i++) {
                 let user = userData[i];
                 let userName = user.userName;
-                let experience = user.experience;
+                let lastChallengePoints = user.lastChallengePoints;
 
                 //This would be for loading the players stats from the response (in case they are included)
                 if (userName == yourUsername && !dontLoadStats) {
-                    document.getElementById("yourExperience").innerHTML = Number(experience).toLocaleString();
+                    document.getElementById("yourExperience").innerHTML = Number(lastChallengePoints).toLocaleString();
                     document.getElementById("yourRank").innerHTML = "#" + (userData[i]["position"]);
                 }
 
-                experience = Number(experience).toLocaleString();
+                lastChallengePoints = Number(lastChallengePoints).toLocaleString();
 
                 if (i < 100) {
-                    addRankedItem(i + 1, userName, experience);
+                    addRankedItem(i + 1, userName, lastChallengePoints);
                 }
             }
         }

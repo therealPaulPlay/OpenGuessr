@@ -8,6 +8,7 @@
 
   <!-- Files from other sources (Leaflet, Math.js)-->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
   <script src="https://unpkg.com/mathjs@11.5.1/lib/browser/math.js"></script>
 
@@ -63,8 +64,11 @@
         <button id="leaderboardButton" class="accountButton socialBarButton">Leaderboard
           <img class="socialBarIcons" src="/IMG/leaderboard_icon.png" alt="Leaderboard for OpenGuessr">
         </button>
-        <button id="dailyLeaderboardButton" class="accountButton socialBarButton dailyChallengeDisabled">Daily Challenge
+        <button id="dailyLeaderboardButton" class="accountButton socialBarButton">Daily Challenge
           <img class="socialBarIcons" src="/IMG/daily_icon.png" alt="Leaderboard for OpenGuessr">
+        </button>
+        <button id="multiplayerButton" class="accountButton socialBarButton">Multiplayer
+          <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
         </button>
         <div class="placeholder"></div>
       </div>
@@ -91,7 +95,7 @@
       <button class="category" id="capitalCategory" type="button">Capital Cities</button>
       <button class="category" id="famousCategory" type="button">Famous Places</button>
       <p class="categoriesNote" id="categoryExclusiveText"> Sign up to unlock for free: </p>
-      <button class="category accountExclusive accountLock dailyChallengeDisabled" id="dailyCategory" type="button">The
+      <button class="category accountExclusive accountLock" id="dailyCategory" type="button">The
         Daily Challenge</button>
       <button class="category accountExclusive accountLock" id="hardCategory" type="button">One Second</button>
       <button class="category accountExclusive accountLock" id="usaCategory" type="button">USA</button>
@@ -120,13 +124,16 @@
     <img src="/IMG/spinner.gif" alt="Loading new streetview" id="spinner">
     <p id="loadingText">Loading...</p>
   </div>
-  <div id="popupHolder">
+  <div class="popupHolder">
     <!-- This is an overlay used to display error messages -->
     <div class="popup-content" id="popup-content">
       <div id="popup-title" class="popup-title"></div>
       <div id="popup-description" class="popup-description"></div>
       <button id="popupClose" class="cookieButton close">Close and reload</button>
     </div>
+  </div>
+
+  <div class="popupHolder">
     <!-- New profile window -->
     <div id="profileWindow" class="uiWindow">
       <div id="popup-title" class="popup-title">
@@ -221,6 +228,68 @@
         <img src="./IMG/discord.png" class="socialIcon">
       </button>
     </div>
+    <!-- Multiplayer window -->
+    <div id="multiplayerSelectionWindow" class="uiWindow">
+      <div class="popup-title">
+        <h1>Multiplayer</h1>
+      </div>
+      <div id="multiplayerWindowMain">
+        <div class="multiplayerHorizontalAlign">
+          <div class="groupPartyButtons">
+            <button id="multiplayerSelectJoin" class="accountButton multiplayerSelect">Join</button>
+            <button id="multiplayerSelectHost" class="accountButton multiplayerSelect">Host</button>
+          </div>
+          <div class="groupPartyButtons">
+            <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect modeComingSoon">Duels coming
+              soon!</button>
+          </div>
+        </div>
+        <div class="infoNote">
+          <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+          <p id="multiplayerSelectorInfotext">Hover over the modes to learn more.</p>
+        </div>
+      </div>
+      <div id="multiplayerWindowJoin" style="display: none;">
+        <div class="multiplayerJoinAlign">
+          <p id="multiplayerJoinInfo" class="multiplayerInputInfo">Enter the roomcode.</p>
+          <input id="roomCodeInput" type="text" class="multiplayerInput" placeholder="Roomcode">
+          <button id="multiplayerJoin" class="accountButton">Join</button>
+        </div>
+      </div>
+      <div id="multiplayerWindowHost" style="display: none;">
+        <div class="multiplayerCreationArea">
+          <div id="roomCreationSettings" class="multiplayerHostSettings">
+            <div>
+              <p>Rounds:</p>
+              <div class="ticker">
+                <button id="roundMinus" class="accountButton white">-</button>
+                <p id="roundAmountText" class="tickerText">3</p>
+                <button id="roundPlus" class="accountButton white">+</button>
+              </div>
+            </div>
+            <div>
+              <p>Round Length:</p>
+              <div class="ticker">
+                <button id="lengthMinus" class="accountButton white">-</button>
+                <p id="roundLengthText" class="tickerText">2</p>
+                <p class="tickerNote"> sec</p>
+                <button id="lengthPlus" class="accountButton white">+</button>
+              </div>
+            </div>
+          </div>
+          <div id="hostCodeArea" class="multiplayerHostCodeArea">
+            <h1 id="roomCodeDisplay">Roomcode (error, please reload)</h1>
+            <p id="joinCounter">Players joined: 0</p>
+          </div>
+          <div class="multiplayerHostSubmitArea">
+            <button id="multiplayerHost" class="accountButton">Create room</button>
+          </div>
+        </div>
+      </div>
+      <button id="multiplayerSelectorClose" class="accountButton white accountClose">Close</button>
+      <button id="multiplayerSelectorBack" class="accountButton white accountClose" stlye="display: none">Back</button>
+    </div>
+  </div>
   </div>
   <!-- Result screen -->
   <div id="EndOverlay">
@@ -253,6 +322,11 @@
     <h1 id="hardModeTitle">Default hardmode title</h1>
     <p id="hardModeSubtitle">Default hardmode subtitle</p>
   </div>
+  <div id="multiplayerFade">
+    <h1 id="multiplayerTitle">Multiplayer Default title</h1>
+    <div id="multiplayerTable"></div>
+    <button id="endMultiplayerRoundButton" class="accountButton">End round</button>
+  </div>
   <!--streetview-->
   <div class="MainDiv">
     <div id="innerMainDiv">
@@ -265,7 +339,8 @@
       <button id="revealCompass">reveal compass</button>
       <div id="map"></div>
       <div id="mapModeIndicator">
-        <p class="mapModeText">Daily Challenge</p>
+        <button id="multiplayerLeave" class="accountButton accountClose">Leave Round</button>
+        <p id="mapModeText" class="mapModeText">Daily Challenge</p>
         <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
       </div>
       <h1 id="TransparentHeader">Openguessr free geoguessr geoguesser alternative open source geography geographie
