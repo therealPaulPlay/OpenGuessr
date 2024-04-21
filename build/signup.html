@@ -222,6 +222,29 @@
         input:focus {
             outline: none;
         }
+
+        .password-container {
+            position: relative;
+            margin-bottom: 20px;
+        }
+        .toggle-password {
+            position: absolute;
+            right: -10px;
+            top: 50%;
+            transform: translateY(-50%);
+            cursor: pointer;
+            width: 30px;
+            height: auto;
+            opacity: 0.75;
+        }
+
+        .toggle-password.hide-eye {
+            content: url('/IMG/eyeclosed.png');
+        }
+
+        .toggle-password.show-eye {
+            content: url('/IMG/eyeopen.png');
+        }
     </style>
 </head>
 
@@ -249,7 +272,10 @@
                 <div id="signup_area">
                     <input id="signup_username" type="text" placeholder="Username"><br><br>
                     <input id="signup_email" type="email" placeholder="Email"><br><br>
-                    <input id="signup_password" type="password" placeholder="Password"><br><br>
+                    <div class="password-container">
+                        <input id="signup_password" type="password" placeholder="Password">
+                        <img class="toggle-password" src="/IMG/eyeclosed.png" alt="Show Password">
+                    </div>
                 </div>
                 <div id="captcha">
                     <h2 id="captchaHeader">Can you answer the default question?</h2>

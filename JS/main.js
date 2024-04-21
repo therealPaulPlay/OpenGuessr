@@ -6,8 +6,9 @@ import { resetMap, getMapSource } from './miniMap.js';
 import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
-import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer } from "./dailyChallenge.js";
+import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer} from "./dailyChallenge.js";
 import { checkHardModeTimeout } from './hardMode.js';
+import { multiplayer, startMultiplayerRound, isHost } from './multiplayer.js';
 
 //default coords of the location
 let currentStreetviewLat = 0;
@@ -32,7 +33,11 @@ export async function generateNewLocation(type) {
         console.error("The coordinates to load the iframe from are not defined. " + "Lat: " + currentStreetviewLat + " Long: " + currentStreetviewLong);
     }
     
-    loadIframe(currentStreetviewLat, currentStreetviewLong);  
+    loadIframe(currentStreetviewLat, currentStreetviewLong);
+    
+    if (multiplayer && isHost) {
+        startMultiplayerRound(currentStreetviewLat, currentStreetviewLong);
+    }
 
 }
 
@@ -107,6 +112,12 @@ function compareDistances(distance) {
 export let resMap;
 
 export function loadResultMap(playersLat, playersLong) {
+    
+    //default values in case no guess was made
+    if (playersLat == null || playersLat == undefined) {
+        playersLat = 0;
+        playersLong = 0;
+    }
    //this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
     if (resMap && resMap.remove) {
         resMap.off();
@@ -167,7 +178,7 @@ function flyToDestination() {
 }
 
 //clamp function 
-function clamp(num, min, max) {
+export function clamp(num, min, max) {
     return num <= min 
       ? min 
       : num >= max 

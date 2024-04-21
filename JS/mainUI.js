@@ -24,9 +24,9 @@ function toggleHelpWindow() {
 //Social Menu and Leaderboard link --------------------------------------------------------------------------
 let socialBarExpanded = false;
 
-document.getElementById("floatingSocialButton").addEventListener("click", toggleSidebar);
+document.getElementById("floatingSocialButton").addEventListener("click", toggleSocialbar);
 
-function toggleSidebar() {
+export function toggleSocialbar() {
     if (!socialBarExpanded) {
         document.getElementById("socialBar").style.maxHeight = "1000px";
         socialBarExpanded = true;
@@ -111,6 +111,13 @@ let floatingCategoryArea = document.getElementById("floatingCategoryArea");
 let categoriesExpanded = false;
 
 categoryMenuButton.addEventListener("click", function() {
+    toggleCategoryMenu(false)});
+
+export function toggleCategoryMenu(alwaysClose) {
+    if (alwaysClose) {
+        categoriesExpanded = true;
+    }
+
     if (!categoriesExpanded) {
         floatingCategoryArea.style.top = "360px";
         document.getElementById("extendedNavbarContent").scrollTop = "0";
@@ -127,7 +134,7 @@ categoryMenuButton.addEventListener("click", function() {
         categoryMenuButton.innerText = "Map Categories ▼";
         categoriesExpanded = false;
     }
-});
+}
 
 //Social / Discord Join Popup -----------------------------------------------------------------------------------------------------
 
@@ -174,11 +181,13 @@ let mapOffset = false;
 function toggleMapOffset() {
     if (mapOffset) {
         document.getElementById("map").style.marginRight = "0.75%";
+        document.getElementById("mapModeIndicator").style.marginRight = "0.75%";
         revealCompass.style.marginRight = "0.75%";
         revealCompass.innerHTML = "reveal compass";
         mapOffset = false;
     } else {
         document.getElementById("map").style.marginRight = "65px";
+        document.getElementById("mapModeIndicator").style.marginRight = "65px";
         revealCompass.style.marginRight = "65px";
         revealCompass.innerHTML = "hide compass";
         mapOffset = true;
