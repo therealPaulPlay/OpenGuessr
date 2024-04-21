@@ -181,11 +181,13 @@ let mapOffset = false;
 function toggleMapOffset() {
     if (mapOffset) {
         document.getElementById("map").style.marginRight = "0.75%";
+        document.getElementById("mapModeIndicator").style.marginRight = "0.75%";
         revealCompass.style.marginRight = "0.75%";
         revealCompass.innerHTML = "reveal compass";
         mapOffset = false;
     } else {
         document.getElementById("map").style.marginRight = "65px";
+        document.getElementById("mapModeIndicator").style.marginRight = "65px";
         revealCompass.style.marginRight = "65px";
         revealCompass.innerHTML = "hide compass";
         mapOffset = true;

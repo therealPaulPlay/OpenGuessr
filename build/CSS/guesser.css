@@ -908,7 +908,7 @@ li {
   color: white;
   font-size: 25px;
   margin-bottom: 10px;
-  transition: width 250ms ease;
+  transition: width 250ms ease, margin 250ms ease;
 }
 
 .mapModeText {
