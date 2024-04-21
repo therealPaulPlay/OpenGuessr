@@ -609,6 +609,7 @@ export function startMultiplayerRound(latitude, longitude) {
         document.getElementById("map").style.visibility = "visible";
         document.getElementById("nextRound").style.opacity = "1";
         document.getElementById("nextRound").style.pointerEvents = "auto";
+        document.getElementById("nextRoundText").textContent = "Next round →";
         endMultiplayerRoundButton.style.display = "none";
         try { multiplayerTimer.stopTimer(); } catch { }; //has to be in try catch
     }
