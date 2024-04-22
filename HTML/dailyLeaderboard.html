@@ -340,6 +340,10 @@
 
                     document.getElementById("yourExperience").innerHTML = Number(lastChallengePoints).toLocaleString();
                     document.getElementById("yourRank").innerHTML = "#" + (userData[userData.length-1]["position"]);
+                    
+                    if (document.getElementById("yourRank").innerHTML = "#null") {
+                        document.getElementById("yourRank").innerHTML = "#norank";
+                    }
                 }
 
                 lastChallengePoints = Number(lastChallengePoints).toLocaleString();

@@ -857,7 +857,6 @@ li {
 
 #map {
   cursor: crosshair;
-  transition: all 250ms ease;
   margin-left: 0.75%;
   margin-right: 0.75%;
   margin-bottom: 10px;
@@ -870,6 +869,7 @@ li {
   border-radius: 10px;
   background: #bfd4da;
   box-shadow: 0 2px 20px rgba(71, 71, 71, 0.5);
+  transition: height 250ms ease, width 250ms ease, opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
 }
 
 .leaflet-bottom, .leaflet-control-attribution {
@@ -892,7 +892,7 @@ li {
   height: 25px;
   font-size: 17px;
   background-color: rgba(244, 244, 244, 0.7);
-  transition: all 250ms ease;
+  transition: margin 250ms ease, filter 250ms ease, opacity 250ms ease;
   box-shadow: 0 2px 20px rgba(71, 71, 71, 0.5);
   z-index: 10;
 }
@@ -1118,6 +1118,7 @@ li {
   margin-right: 24px;
   margin-left: auto;
   background-color: var(--brand-color);
+  transition: background-color 250ms ease, color 250ms ease, filter 250ms ease;
 }
 
 #privacyButton {

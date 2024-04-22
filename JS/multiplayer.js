@@ -2,9 +2,9 @@ import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, toggleSocialbar } from "./mainUI.js";
 import { startTimer } from "./timer";
-import { uiSetUserXP } from "./accountLogic.js";
+import { uiSetUserXP, selectedPinIndex } from "./accountLogic.js";
 import { checkGenerationTypeAndGenerate, transitionToStart } from "./categoryMenu.js";
-import { markerPosition, mapMarkerLat, mapMarkerLong } from "./miniMap.js";
+import { confirmButtonClicks, mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { calculateDistances, loadResultMap } from "./main.js";
 
 //Global UI --------------------------------------------------------------------------------------------
@@ -209,43 +209,78 @@ function setMultiplayerUI() {
     }
 }
 
+//if the timer expires for peers or host
 export function multiplayerTimerExpired() {
-    //when the timer expires (of the host), go to the result screen
+    confirmButtonClicks(); //only do this if the player actually hasnt guessed yet...
+
+    //when the timer expires, but a peer doesn't respond by executing confirmButtonCliks --> still end the round after 1000ms
     if (isHost) {
-        endMultiplayerRound();
+        setTimeout(function () {
+            endMultiplayerRound();
+        }, 5000);
     }
 }
 
+let roundEnded = false;
+
 function endMultiplayerRound() {
-    if (isHost) {
-        sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
-        document.getElementById("nextRound").style.opacity = "0.5";
-        document.getElementById("nextRound").style.pointerEvents = "none";
-        document.getElementById("nextRoundText").innerHTML = "Wait before skipping... →";
-        setTimeout(function () {
-            document.getElementById("nextRoundText").innerHTML = "Skip →";
-            document.getElementById("nextRound").style.opacity = "1";
-            document.getElementById("nextRound").style.pointerEvents = "auto";
-        }, 2000)
+    if (!roundEnded) {
+        if (isHost) {
+            sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
+            document.getElementById("nextRound").style.opacity = "0.5";
+            document.getElementById("nextRound").style.pointerEvents = "none";
+            document.getElementById("nextRoundText").innerHTML = "Wait before skipping... →";
+            setTimeout(function () {
+                document.getElementById("nextRoundText").innerHTML = "Skip →";
+                document.getElementById("nextRound").style.opacity = "1";
+                document.getElementById("nextRound").style.pointerEvents = "auto";
+            }, 2000)
+        } else {
+            //if i'ts not the host, hide the next round button!
+            document.getElementById("nextRound").style.opacity = "0.5";
+            document.getElementById("nextRound").style.pointerEvents = "none";
+            document.getElementById("nextRoundText").innerHTML = "Waiting for host... →";
+        }
+
+        calculateDistances(mapMarkerLat, mapMarkerLong);
+        loadResultMap(mapMarkerLat, mapMarkerLong);
+        try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer
+        roundEnded = true;
     } else {
-        //if i'ts not the host, hide the next round button!
-        document.getElementById("nextRound").style.opacity = "0.5";
-        document.getElementById("nextRound").style.pointerEvents = "none";
-        document.getElementById("nextRoundText").innerHTML = "Waiting for host... →";
+        console.warn("Multiplayer round already ended!");
+    }
+}
+
+let multiplayerHasAlreadyGuessed = false;
+
+export function multiplayerStateToGuessed() {
+    if (isHost) {
+        if (!multiplayerHasAlreadyGuessed) {
+            multiplayerGuessesLocationsArray.push([mapMarkerLat, mapMarkerLong, selectedPinIndex]); //add the hosts guess to the guesses
+            multiplayerHasGuessed(); //after that, add one to the guesses (and maybe go to result screen if all guesses are there)
+        }
+    } else {
+        if (!multiplayerHasAlreadyGuessed) {
+            peerSendsHost("guessed", {
+                lat: mapMarkerLat,
+                long: mapMarkerLong,
+                style: selectedPinIndex
+            });
+        }
     }
 
-    calculateDistances(markerPosition.lat, markerPosition.lng);
-    loadResultMap(mapMarkerLat, mapMarkerLong);
-    try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer
+    multiplayerHasAlreadyGuessed = true;
 }
 
 let totalRequiredGuesses = 0;
 
 export function multiplayerHasGuessed() {
-    totalRequiredGuesses--;
+    if (multiplayer) {
+        totalRequiredGuesses--;
 
-    if (totalRequiredGuesses <= 0) {
-        endMultiplayerRound();
+        if (totalRequiredGuesses <= 0) {
+            endMultiplayerRound();
+        }
     }
 }
 
@@ -355,9 +390,13 @@ if (peer) {
                     setJoinCounter(connectedClientsCount);
                     removeConnectedPeerById(incomingConn.peerId);
 
+                    //if peer disconnects pre-game, update the waiting screen
                     if (!multiplayerFirstRoundPlayed) {
                         sendMessageToAll("showPlayersArray", connectedPeers);
                         showMultiplayerOverlay(true, "Waiting...", connectedPeers);
+                    } else {
+                        //if already in round, count it as a guess (so that the others don't have to wait)
+                        multiplayerHasGuessed();
                     }
                 })
             } else {
@@ -589,6 +628,7 @@ let leaveButton = document.getElementById("multiplayerLeave");
 leaveButton.addEventListener("click", leaveMultiplayerRound);
 
 function leaveMultiplayerRound() {
+    //important! first step is disabling multiplayer
     if (multiplayer) {
         multiplayer = false;
         checkGenerationTypeAndGenerate();
@@ -601,7 +641,7 @@ function leaveMultiplayerRound() {
             conn.close();
         }
     }
-
+    try { multiplayerTimer.stopTimer(); } catch { }; //has to be in try catch
     multiplayer = false;
     setMultiplayerUI();
     showMultiplayerOverlay(false);
@@ -610,16 +650,19 @@ function leaveMultiplayerRound() {
     roomLocked = false;
     multiplayerGuessesLocationsArray = [];
     connectedPeers = [];
+    roundEnded = false;
+    multiplayerHasAlreadyGuessed = false;
 
     //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";
+    document.getElementById("confirmButton").style.pointerEvents = "auto";
+    document.getElementById("confirmButton").style.visibility = "visible";
     document.getElementById("map").style.pointerEvents = "auto";
     document.getElementById("map").style.visibility = "visible";
     document.getElementById("nextRound").style.opacity = "1";
     document.getElementById("nextRound").style.pointerEvents = "auto";
     document.getElementById("nextRoundText").textContent = "Next round →";
     endMultiplayerRoundButton.style.display = "none";
-    try { multiplayerTimer.stopTimer(); } catch { }; //has to be in try catch
 }
 
 //Streetview Overlay UI -------------------------------------------------------------------------------------------------------------------
@@ -666,15 +709,14 @@ export function showMultiplayerOverlay(show, title, array) {
         });
 
         document.getElementById("multiplayerTable").innerHTML = body;
-        document.getElementById("confirmButton").style.opacity = "0";
+        document.getElementById("confirmButton").style.visibility = "hidden";
         document.getElementById("confirmButton").style.pointerEvents = "none";
         document.getElementById("map").style.visibility = "hidden";
         document.getElementById("revealCompass").style.visibility = "hidden";
     } else {
         document.getElementById("multiplayerFade").style.opacity = "0";
         document.getElementById("multiplayerFade").style.pointerEvents = "none";
-        document.getElementById("confirmButton").style.opacity = "1";
-        document.getElementById("confirmButton").style.pointerEvents = "auto";
+        document.getElementById("confirmButton").style.visibility = "visible";
         document.getElementById("map").style.visibility = "visible";
         document.getElementById("revealCompass").style.visibility = "visible";
     }
@@ -682,7 +724,11 @@ export function showMultiplayerOverlay(show, title, array) {
 
 let multiplayerTimer;
 
+//this starts the round visually and code-wise for all peers (also host, but host also starts with startMultiplayerRound() )
 function multiplayerOverlayCountdown() {
+    roundEnded = false;
+    multiplayerHasAlreadyGuessed = false;
+
     const multiplayerTitle = document.getElementById("multiplayerTitle");
     let countdown = 3;
 

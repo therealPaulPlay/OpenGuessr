@@ -1,15 +1,16 @@
 import { loadResultMap, calculateDistances } from "./main.js";
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
-import { isHost, multiplayer, multiplayerHasGuessed, peerSendsHost, multiplayerGuessesLocationsArray } from "./multiplayer.js";
+import { multiplayer, multiplayerStateToGuessed} from "./multiplayer.js";
 
+
+//Initialize the map with correct provider --------------------------------------------------------------------
 const Provider = {
     ENGLISH: "0",
     GERMAN: "1",
     REGIONAL: "2",
 }
 
-//initializes map (check out leaflet for more information)
 let map = L.map('map', {zoomControl: false}).setView([40.321160, 10.252812], 1.5); //starting position
 
 let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"]
@@ -27,7 +28,6 @@ export function getMapSource() {
 }
 
 loadMap();
-
 changeLanguageButtonLabel();
 
 //indicate whether a guess has been made and the button can be used
@@ -60,6 +60,7 @@ function changeLanguageButtonLabel () {
        }
 }
 
+//Set state of the confirm ("guess") button ------------------------------------------------------------------
 function setConfirmButtonState() {
     if (hasGuessed) {
         document.getElementById("confirmButton").style.backgroundColor = "red";
@@ -75,6 +76,7 @@ function setConfirmButtonState() {
     }
 }
 
+//Change map provider / language ---------------------------------------------------------------------
 function changeLanguage () {
     if (providerIndex == Provider.ENGLISH) {
         providerIndex = Provider.GERMAN;
@@ -89,10 +91,10 @@ function changeLanguage () {
     
     changeLanguageButtonLabel();
     resetGuessMap();
-    
-    /* window.location.reload(); */
 }
 
+
+//Universal map functions --------------------------------------------------------------------
 let osmLayer;
 
 function loadMap() {
@@ -114,9 +116,11 @@ function resetGuessMap() {
 map.setZoom(3);
 
 let marker = new L.Marker([0, 0]);
-export let markerPosition = marker.getLatLng();
-export let mapMarkerLat;
-export let mapMarkerLong;
+
+
+//Placing the marker on the map ------------------------------------------------------------------------
+export let mapMarkerLat = 0;
+export let mapMarkerLong = 0;
 
 function onMapClick(e) {
     //creates markers wherever the user clicks and if it clicks to another position,
@@ -141,16 +145,10 @@ function onMapClick(e) {
     });
 
     marker = new L.Marker([mapMarkerLat, mapMarkerLong], {icon: redIcon});
-
-    markerPosition = marker.getLatLng();
     marker.addTo(map);
 }
 
-map.on('click', onMapClick);
-
-map.on('mouseover', onMapHover);
-map.on('mouseout', onMapHover);
-
+//event listeners -----------------------------------------------------------------
 //click listener for confirm button
 const confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
@@ -159,11 +157,17 @@ confirmBTN.addEventListener("click", confirmButtonClicks);
 const languageBTN = document.getElementById("languageButton");
 languageBTN.addEventListener("click", changeLanguage);
 
+//Reset map scaling when the user "enlarges" it --------------------------------------------------------------
+map.on('click', onMapClick);
+
+map.on('mouseover', onMapHover);
+map.on('mouseout', onMapHover);
 
 function onMapHover() {
     map.invalidateSize();
 }
 
+//Guess / Confirm function ----------------------------------------------------------------------------------
 export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
 
@@ -182,24 +186,17 @@ export function confirmButtonClicks() {
     }
 
     if (!multiplayer) {
-        calculateDistances(markerPosition.lat, markerPosition.lng);
+        calculateDistances(mapMarkerLat, mapMarkerLong);
         loadResultMap(mapMarkerLat, mapMarkerLong);
     } else {
         document.getElementById("confirmButton").textContent = "Waiting...";
         document.getElementById("confirmButton").style.opacity = "0.5";
         document.getElementById("confirmButton").style.pointerEvents = "none";
         document.getElementById("map").style.pointerEvents = "none";
-        
-        if (isHost) {
-            multiplayerGuessesLocationsArray.push([mapMarkerLat, mapMarkerLong, selectedPinIndex]); //add the hosts guess to the guesses
-            multiplayerHasGuessed(); //after that, add one to the guesses (and maybe go to result screen if all guesses are there)
-        } else {
-            peerSendsHost("guessed", {
-                lat: mapMarkerLat,
-                long: mapMarkerLong,
-                style: selectedPinIndex
-            });
-        }
+        document.getElementById("map").style.visibility = "hidden";
+        document.getElementById("revealCompass").style.visibility = "hidden";
+
+        multiplayerStateToGuessed();
     }
 }
 
