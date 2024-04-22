@@ -337,8 +337,9 @@
 
                 //This would be for loading the players stats from the response (in case they are included)
                 if (userName == yourUsername && !dontLoadStats) {
-                    document.getElementById("yourExperience").innerHTML = Number(lastChallengePoints).toLocaleString() + " Pts.";
-                    document.getElementById("yourRank").innerHTML = "#" + (userData[i]["position"]);
+
+                    document.getElementById("yourExperience").innerHTML = Number(lastChallengePoints).toLocaleString();
+                    document.getElementById("yourRank").innerHTML = "#" + (userData[i+1]["position"]);
                 }
 
                 lastChallengePoints = Number(lastChallengePoints).toLocaleString();
