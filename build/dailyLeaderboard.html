@@ -339,7 +339,7 @@
                 if (userName == yourUsername && !dontLoadStats) {
 
                     document.getElementById("yourExperience").innerHTML = Number(lastChallengePoints).toLocaleString();
-                    document.getElementById("yourRank").innerHTML = "#" + (userData[i+1]["position"]);
+                    document.getElementById("yourRank").innerHTML = "#" + (userData[userData.length-1]["position"]);
                 }
 
                 lastChallengePoints = Number(lastChallengePoints).toLocaleString();
