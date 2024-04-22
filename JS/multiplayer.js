@@ -218,7 +218,7 @@ export function multiplayerTimerExpired() {
 
 function endMultiplayerRound() {
     if (isHost) {
-        sendMessageToAll("roundOver");
+        sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
         document.getElementById("nextRound").style.opacity = "0.5";
         document.getElementById("nextRound").style.pointerEvents = "none";
         document.getElementById("nextRoundText").innerHTML = "Wait before skipping... →";
@@ -304,7 +304,7 @@ function removeConnectedPeerById(peerId) {
 }
 
 //Host Logic ----------------------------------------------------------------------------------------------
-
+export let multiplayerGuessesLocationsArray = [];
 let multiplayerFirstRoundPlayed = false; // for host and peers! peers use this to see whether they should incrase the round index
 
 if (peer) {
@@ -340,6 +340,7 @@ if (peer) {
                 // Receive messages
                 incomingConn.on('data', function (data) {
                     if (data.type == "guessed") {
+                        multiplayerGuessesLocationsArray.push([data.content.lat, data.content.long, data.content.style]);
                         multiplayerHasGuessed();
                     }
 
@@ -386,17 +387,21 @@ function createRoom() {
         roundAmount = roundAmountText.textContent;
         roundLength = roundLengthText.textContent;
     } else {
-        //start the round (from host)
-        multiplayerHost.textContent = "Loading Location...";
-        multiplayer = true;
-        setMultiplayerUI();
-        checkGenerationTypeAndGenerate();
-        roomLocked = true;
+        if (connectedClientsCount != 0) {
+            //start the round (from host)
+            multiplayerHost.textContent = "Loading Location...";
+            multiplayer = true;
+            setMultiplayerUI();
+            checkGenerationTypeAndGenerate();
+            roomLocked = true;
+        }
     }
 }
 
 //Start the first / next round
 export function startMultiplayerRound(latitude, longitude) {
+    multiplayerGuessesLocationsArray = []; //reset previous stored guesses from peers
+
     if (multiplayerFirstRoundPlayed == false) {
         toggleMultiplayerSelector();
         multiplayerFirstRoundPlayed = true;
@@ -515,6 +520,7 @@ function joinRoom() {
         }
 
         if (data.type === "roundOver") {
+            multiplayerGuessesLocationsArray = data.content;
             endMultiplayerRound();
         }
 
@@ -564,7 +570,7 @@ if (peer) {
 
             leaveMultiplayerRound();
         } else {
-            setJoinInfoText("Failed to join.");
+            setJoinInfoText("Failed to join. Error: " + err);
         }
 
     });
@@ -602,6 +608,8 @@ function leaveMultiplayerRound() {
     roundIndex = 1;
     multiplayerFirstRoundPlayed = false;
     roomLocked = false;
+    multiplayerGuessesLocationsArray = [];
+    connectedPeers = [];
 
     //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";

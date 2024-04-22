@@ -63,7 +63,7 @@ function checkEmptyFields(isSignup) {
 } else {
   if (validateEmail(document.getElementById("login_email").value) && document.getElementById("login_password").value != "") {
     return true; 
-  } else {displayError("Please check your input.", "signup"); return false;}
+  } else {displayError("Please check your input. The first field should contain a valid email address!", "signup"); return false;}
 }
 }
 

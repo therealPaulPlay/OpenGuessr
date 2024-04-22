@@ -1,7 +1,7 @@
 import { loadResultMap, calculateDistances } from "./main.js";
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
-import { isHost, multiplayer, multiplayerHasGuessed, peerSendsHost } from "./multiplayer.js";
+import { isHost, multiplayer, multiplayerHasGuessed, peerSendsHost, multiplayerGuessesLocationsArray } from "./multiplayer.js";
 
 const Provider = {
     ENGLISH: "0",
@@ -38,6 +38,8 @@ setConfirmButtonState();
 export function resetMap() {
     map.removeLayer(marker);
     map.setZoom(3);
+    
+    //reset the guess button as well
     hasGuessed = false;
     setConfirmButtonState();
 }
@@ -163,6 +165,7 @@ function onMapHover() {
 }
 
 export function confirmButtonClicks() {
+    confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
 
     if (dailyChallengeUIEnabled) {
         document.getElementById("nextRoundText").innerHTML = "See results →";
@@ -188,9 +191,15 @@ export function confirmButtonClicks() {
         document.getElementById("map").style.pointerEvents = "none";
         
         if (isHost) {
-            multiplayerHasGuessed();
+            multiplayerGuessesLocationsArray.push([mapMarkerLat, mapMarkerLong, selectedPinIndex]); //add the hosts guess to the guesses
+            multiplayerHasGuessed(); //after that, add one to the guesses (and maybe go to result screen if all guesses are there)
         } else {
-            peerSendsHost("guessed");
+            peerSendsHost("guessed", {
+                lat: mapMarkerLat,
+                long: mapMarkerLong,
+                style: selectedPinIndex
+            });
         }
     }
 }
+

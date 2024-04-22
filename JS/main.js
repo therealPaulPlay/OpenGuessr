@@ -8,7 +8,7 @@ import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
 import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer} from "./dailyChallenge.js";
 import { checkHardModeTimeout } from './hardMode.js';
-import { multiplayer, startMultiplayerRound, isHost } from './multiplayer.js';
+import { multiplayer, startMultiplayerRound, isHost, multiplayerGuessesLocationsArray } from './multiplayer.js';
 
 //default coords of the location
 let currentStreetviewLat = 0;
@@ -156,8 +156,52 @@ const greenIcon = new L.Icon({
     
     //this places the Player Marker (where the player thinks the location is)
     playerMarker = new L.Marker(playerLatLng, {icon: redIcon})
+
     playerMarker.addTo(resMap);
+    
+    //this draws the line to the goal
     const polygon = L.polygon(polyList, {color: '#05060ab0', weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
+    
+    //pins of other players
+    if (multiplayer) {
+        multiplayerGuessesLocationsArray.forEach(function(element) {
+            let newMarkerLat = element[0];
+            let newMarkerLong = element[1];
+            let newMarkerPinIndex = element[2];
+
+            //checks for edge cases
+            if (newMarkerLat == null || newMarkerLong == null ) {
+                newMarkerLat = 0;
+                newMarkerLong = 0;
+            }
+
+            if (newMarkerPinIndex == null) {
+                newMarkerPinIndex = 0;
+                console.error("Provided maker pin index form peer is null");
+            }
+
+            //only place the multiplayer marker if it isn't your marker!
+            if (newMarkerLat != playersLat || newMarkerLong != playersLong) {
+                let newMultiplayerIcon = new L.Icon({
+                    iconUrl: "./IMG/your_marker" + newMarkerPinIndex + ".png",
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 38],
+                    popupAnchor: [1, -34],
+                    shadowSize: [41, 41]
+                });
+    
+                let multiplayerLatLng = new L.LatLng(newMarkerLat, newMarkerLong);
+                
+                let multiplayerMarker = new L.Marker(multiplayerLatLng, {icon: newMultiplayerIcon});
+                multiplayerMarker.setOpacity(0.5);
+                multiplayerMarker.addTo(resMap);
+    
+                let multiplayerPolyList = [curLatLng, multiplayerLatLng]; //takes the cur lat lng from the guess (the destination) + the current guess from other player
+                const multiplayerPolygon = L.polygon(multiplayerPolyList, {color: "#28282a80", weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
+            }
+        });
+    }
+
 
     resMap.fitBounds(pointList, {padding: [150,250]});
 
@@ -165,7 +209,7 @@ const greenIcon = new L.Icon({
     destinationMarker = new L.Marker([currentStreetviewLat, currentStreetviewLong], {icon: greenIcon});
     destinationMarker.addTo(resMap);
 
-    setTimeout(flyToDestination, 1000)
+    setTimeout(flyToDestination, 1000);
 }
 
 function flyToDestination() {
