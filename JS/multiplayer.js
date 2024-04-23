@@ -319,7 +319,12 @@ function generateRandomCode(length) {
 }
 if (localStorage.getItem("id") != null) {
     let unqiueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
-    peer = new Peer(unqiueUserID);
+    peer = new Peer(unqiueUserID, {
+        config: {'iceServers': [
+          { url: 'stun:stun.l.google.com:19302' },
+          { url: 'turns:freestun.tel:5350', username: 'free', credential: 'free' }
+        ]} 
+      });
 }
 
 // Logic ------------------------------------------------------------------------------------------------
