@@ -405,7 +405,7 @@ if (peer) {
         });
     });
 } else {
-    console.error('PeerJS initialization failed.');
+    console.warn("PeerJS not initialized -> user not logged in!");
 }
 
 let roomLocked = false;
