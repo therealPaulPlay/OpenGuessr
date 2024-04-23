@@ -609,7 +609,7 @@ if (peer) {
 
             leaveMultiplayerRound();
         } else {
-            setJoinInfoText("Failed to join. Error: " + err);
+            setJoinInfoText("Failed to join.");
         }
 
     });
