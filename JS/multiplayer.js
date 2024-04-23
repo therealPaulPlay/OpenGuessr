@@ -322,7 +322,7 @@ if (localStorage.getItem("id") != null) {
     peer = new Peer(unqiueUserID, {
         config: {'iceServers': [
           { url: 'stun:stun.l.google.com:19302' },
-          { url: 'turns:freestun.net:5350', username: 'free', credential: 'free' }
+          { url: 'turn:freestun.net:3479', username: 'free', credential: 'free' }
         ]} 
       });
 }
