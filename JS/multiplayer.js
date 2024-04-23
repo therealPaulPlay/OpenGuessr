@@ -512,7 +512,7 @@ function joinRoom() {
 
     setTimeout(() => {
         setJoinInfoText("Cannot join.");
-    }, 1000);
+    }, 2000);
 
     const options = {
         metadata: {
