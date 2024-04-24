@@ -33,11 +33,11 @@ export async function loginUser(email, password, errorSource) {
       //implement response save
     } else {
 
-      console.error('Login failed (Network):', response.status);
-      displayError("Login failed (Network): " + response.status, errorSource);
+      console.error('Login failed:', response.status);
+      displayError("Login failed: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred during login:', error);
+    console.error('Error occurred during login: ', error);
     displayError("Error occured during login: " + error, errorSource);
   }
 }
@@ -66,11 +66,11 @@ export async function registerUser(userName, email, password, errorSource) {
       localStorage.setItem("RegistrationSuccess", "success");
       window.location.reload();
     } else {
-      console.error('Registration failed (Network):', response.status);
-      displayError("Registration failed (Network): " + response.status, errorSource);
+      console.error('Registration failed: ', response.status);
+      displayError("Registration failed: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred during registration:', error);
+    console.error('Error occurred during registration: ', error);
     displayError("Error occured during registration: " + error, errorSource);
   }
 }
@@ -96,7 +96,7 @@ export async function getUser(token, id, errorSource) {
       displayError("Fetch failed: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred while fetching the user:', error);
+    console.error('Error occurred while fetching the user: ', error);
     displayError("Error occurred while fetching the user: " + error, errorSource);
   }
 }
@@ -124,7 +124,7 @@ export async function getAllUsers() {
       console.error('Fetch failed:', response.status);
     }
   } catch (error) {
-    console.error('Error occurred while fetching the user:', error);
+    console.error('Error occurred while fetching the user: ', error);
   }
 }
 
@@ -151,11 +151,11 @@ export async function updateExperience(token, id, experience, errorSource) {
       const data = await response.json();
       localStorage.setItem("experience", data['user']['experience']);
     } else {
-      console.error('User update failed (Network):', response.status);
-      displayError("User update failed (Network): " + response.status, errorSource);
+      console.error('User update failed:', response.status);
+      displayError("User update failed: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred during user update:', error);
+    console.error('Error occurred during user update: ', error);
     displayError("Error occured during user update: " + error, errorSource);
   }
 }
@@ -183,11 +183,11 @@ export async function updateUsername(token, id, requestedUsername, errorSource) 
       const data = await response.json();
       localStorage.setItem("username", data['user']['userName']);
     } else {
-      console.error('User update failed (Network):', response.status);
-      displayError("User update failed (Network)" + response.status, errorSource);
+      console.error('User update failed: ', response.status);
+      displayError("User update failed: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred during user update:', error);
+    console.error('Error occurred during user update: ', error);
     displayError("Error occured during user update " + error, errorSource);
   }
 }
@@ -223,7 +223,7 @@ export async function getDailyChallengeIndex(jsonLength) {
       console.error('Fetch failed:', response.status);
     }
   } catch (error) {
-    console.error('Error occurred while getting the daily challenge index:', error);
+    console.error('Error occurred while getting the daily challenge index: ', error);
   }
 }
 
@@ -248,12 +248,12 @@ export async function setDailyChallengeScore(token, id, score, errorSource) {
     if (response.ok) {
       const data = await response.json();
     } else {
-      console.error('User update failed (Network):', response.status);
-      displayError("User update failed (Network) " + response.status, errorSource);
+      console.error('User update failed:', response.status);
+      displayError("User update failed: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred during user update (Daily Challenge Score):', error);
-    displayError("Could not set daily challenge score (already played?)" + error, errorSource);
+    console.error('Error occurred during user update (Daily Challenge Score): ', error);
+    displayError("Could not set daily challenge score (already played?) " + error, errorSource);
   }
 }
 
@@ -281,7 +281,7 @@ export async function getDailyLeaderboard() {
       console.error('Fetch failed:', response.status);
     }
   } catch (error) {
-    console.error('Error occurred while fetching the user:', error);
+    console.error('Error occurred while fetching the user: ', error);
   }
 }
 
