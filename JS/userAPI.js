@@ -247,13 +247,14 @@ export async function setDailyChallengeScore(token, id, score, errorSource) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
+
     } else {
       console.error('User update failed:', response.status);
-      displayError("User update failed: " + response.status, errorSource);
+      displayError("Daily Challenge already played? Error: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred during user update (Daily Challenge Score): ', error);
-    displayError("Could not set daily challenge score (already played?) " + error, errorSource);
+    console.error('Error occured while trying to set daily challenge score: ', error);
+    displayError("Error occured while trying to set daily challenge score: " + error, errorSource);
   }
 }
 
