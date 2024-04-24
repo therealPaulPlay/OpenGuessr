@@ -330,7 +330,7 @@
             container.innerHTML = "<p>An error occured while loading the challenge leaderboard.</p>";
         } else {
             // Iterate through the array once userData is available
-            for (var i = 0; i < userData.length - 1; i++) {
+            for (let i = 0; i < userData.length - 1; i++) {
                 let user = userData[i];
                 let userName = user.userName;
                 let lastChallengePoints = user.lastChallengePoints;
@@ -339,7 +339,7 @@
                 if (userName == yourUsername && !dontLoadStats) {
 
                     document.getElementById("yourExperience").innerHTML = Number(lastChallengePoints).toLocaleString() + " Pts.";
-                    document.getElementById("yourRank").innerHTML = "#" + (userData[userData.length-1]["position"]);
+                    document.getElementById("yourRank").innerHTML = "#" + (user.position);
                     
                     if (document.getElementById("yourRank").innerHTML = "#null") {
                         document.getElementById("yourRank").innerHTML = "#norank";
