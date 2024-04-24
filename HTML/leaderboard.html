@@ -228,10 +228,10 @@
 
     //get experience from localstorage in case it isn't being returned by the request
     if (localStorage.getItem("experience") != null && !dontLoadStats) {
-        document.getElementById("yourExperience").innerHTML = Number(localStorage.getItem("experience")).toLocaleString()
+        document.getElementById("yourExperience").innerHTML = Number(localStorage.getItem("experience")).toLocaleString() + " XP";
     }
 
-    document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" })
+    document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" });
 
     let container = document.getElementById('container');
 
@@ -277,7 +277,7 @@
 
                 //This would be for loading the players stats from the response (in case they are included)
                 if (userName == yourUsername && !dontLoadStats) {
-                    document.getElementById("yourExperience").innerHTML = Number(experience).toLocaleString();
+                    document.getElementById("yourExperience").innerHTML = Number(experience).toLocaleString() + " XP";
                     document.getElementById("yourRank").innerHTML = "#" + (userData[i]["position"]);
                 }
 
