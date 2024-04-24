@@ -742,6 +742,7 @@ function multiplayerOverlayCountdown() {
             showMultiplayerOverlay(false); //hide the overlay --> round starts
             document.getElementById("map").style.pointerEvents = "auto"; //re-enable the map
             document.getElementById("confirmButton").textContent = "Guess";
+            try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
             multiplayerTimer = startTimer(roundLength, multiplayerTimerExpired); //Start the timer
             document.getElementById("mapModeText").textContent = "Multiplayer (Round: " + roundIndex + "/" + roundAmount + ")";
             totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host
