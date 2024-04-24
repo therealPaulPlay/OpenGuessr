@@ -510,10 +510,6 @@ function joinRoom() {
 
     setJoinInfoText("Attempting join...");
 
-    setTimeout(() => {
-        setJoinInfoText("Cannot join.");
-    }, 2000);
-
     const options = {
         metadata: {
             username: localStorage.getItem("username"),
