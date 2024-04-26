@@ -218,7 +218,7 @@ export async function loadResultScreenXP(distance) {
 
     //XP calculation formulas -------------------------------------------------
     if (!multiplayer) {
-      if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "famous" || selectedCategory == "capital" || selectedCategory == "hard") {
+      if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "capital" || selectedCategory == "hard") {
         earnedXP = Math.round(5000 * ((0.998036) ** distance));
       }
       else if (selectedCategory == "daily") {
@@ -228,6 +228,9 @@ export async function loadResultScreenXP(distance) {
         earnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
         setDailyChallengeExperienceResult(earnedXP);
   
+      } else if (selectedCategory == "famous") {
+        earnedXP = Math.round(1000 * ((0.998036) ** distance));
+
       } else {
         earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
       }
