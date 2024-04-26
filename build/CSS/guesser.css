@@ -1610,6 +1610,10 @@ button {
   #mapModeIndicator {
     width: 40%;
   }
+
+  #mapModeIndicator {
+    font-size: 20px;
+  }
 }
 
 
