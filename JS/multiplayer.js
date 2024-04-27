@@ -438,11 +438,12 @@ if (peer) {
     console.warn("PeerJS not initialized -> user not logged in!");
 }
 
-let roomLocked = false;
+let roomLocked = true;
 
 function createRoom() {
     isHost = true;
     multiplayerFirstRoundPlayed = false;
+    roomLocked = false;
 
     if (multiplayerHost.textContent != "Start") {
         showHostCodeArea("Roomcode: " + peerId.replace("openguessr_", ""));
@@ -674,7 +675,7 @@ function leaveMultiplayerRound() {
     showMultiplayerOverlay(false);
     roundIndex = 1;
     multiplayerFirstRoundPlayed = false;
-    roomLocked = false;
+    roomLocked = true;
     multiplayerGuessesLocationsArray = [];
     connectedPeers = [];
     roundEnded = false;
