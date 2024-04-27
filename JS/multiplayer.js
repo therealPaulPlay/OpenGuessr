@@ -20,6 +20,7 @@ let multiplayerSelectDuels = document.getElementById("multiplayerSelectDuels");
 let joinInfoText = document.getElementById("multiplayerJoinInfo");
 let multiplayerJoin = document.getElementById("multiplayerJoin"); //button with join functionality
 let multiplayerHost = document.getElementById("multiplayerHost"); //button that creates a room
+let nmpzBackground = document.getElementById("nmpzBackground");
 
 //host settings
 let roundPlus = document.getElementById("roundPlus");
@@ -95,6 +96,7 @@ multiplayerSelectHost.addEventListener("click", () => { setMultiplayerWindowSele
 let multiplayerWindowMain = document.getElementById("multiplayerWindowMain");
 let multiplayerWindowJoin = document.getElementById("multiplayerWindowJoin");
 let multiplayerWindowHost = document.getElementById("multiplayerWindowHost");
+let toggleRestrictions = document.getElementById("toggleRestrictions");
 
 let multiplayerSelectorBack = document.getElementById("multiplayerSelectorBack");
 multiplayerSelectorBack.addEventListener("click", function () { setMultiplayerWindowSelection("main") });
@@ -109,9 +111,13 @@ function setMultiplayerWindowSelection(window) {
     multiplayerHost.textContent = "Create room";
     roundLengthText.textContent = "120";
     roundAmountText.textContent = "3";
+    toggleRestrictions.textContent = "Standard";
     document.getElementById("roomCodeInput").value = "";
+    multiplayerRestriction = "standard";
     setJoinCounter(0);
     setJoinInfoText("Enter the roomcode.");
+    document.getElementById("roomCreationModes").style.display = "flex";
+    multiplayerRestriction = "standard";
     setJoinButtonState();
     leaveMultiplayerRound(); //leave round and disconnect all peers if you are the host
 
@@ -154,6 +160,7 @@ function showHostCodeArea(roomcode) {
     hostCodeArea.style.display = "flex";
     roomCreationSettings.style.display = "none";
     document.getElementById("roomCodeDisplay").textContent = roomcode;
+    document.getElementById("roomCreationModes").style.display = "none";
 }
 
 roundPlus.addEventListener("click", () => { hostRoundAmount(1); })
@@ -182,6 +189,22 @@ function setJoinCounter(playerAmount) {
         multiplayerHost.style.pointerEvents = "auto";
     }
 }
+
+toggleRestrictions.addEventListener("click", toggleMultiplayerRestriction);
+
+let multiplayerRestriction = "standard";
+
+function toggleMultiplayerRestriction() {
+    if (toggleRestrictions.textContent == "Standard") {
+        toggleRestrictions.textContent = "No move (NMPZ)";
+        multiplayerRestriction = "nmpz";
+    } else {
+        toggleRestrictions.textContent = "Standard";
+        multiplayerRestriction = "standard";
+    }
+}
+
+
 
 //Game Ui ------------------------------------------------------------------------------------------------------------------------
 export let multiplayer = false;
@@ -364,7 +387,9 @@ if (peer) {
                         type: "roundInfo",
                         content: {
                             roundAmount: roundAmount,
-                            roundLength: roundLength
+                            roundLength: roundLength,
+                            multiplayerRestriction: multiplayerRestriction
+
                         }
                     }
                     // Send messages
@@ -557,6 +582,7 @@ function joinRoom() {
         if (data.type === "roundInfo") {
             roundAmount = data.content.roundAmount;
             roundLength = data.content.roundLength;
+            multiplayerRestriction = data.content.multiplayerRestriction;
         }
 
         if (data.type === "roundOver") {
@@ -653,6 +679,7 @@ function leaveMultiplayerRound() {
     connectedPeers = [];
     roundEnded = false;
     multiplayerHasAlreadyGuessed = false;
+    multiplayerRestriction = "standard";
 
     //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";
@@ -664,6 +691,7 @@ function leaveMultiplayerRound() {
     document.getElementById("nextRound").style.pointerEvents = "auto";
     document.getElementById("nextRoundText").textContent = "Next round →";
     endMultiplayerRoundButton.style.display = "none";
+    nmpzBackground.style.pointerEvents = "none";
 }
 
 //Streetview Overlay UI -------------------------------------------------------------------------------------------------------------------
@@ -745,7 +773,15 @@ function multiplayerOverlayCountdown() {
             try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
             multiplayerTimer = startTimer(roundLength, multiplayerTimerExpired); //Start the timer
             document.getElementById("mapModeText").textContent = "Multiplayer (Round: " + roundIndex + "/" + roundAmount + ")";
+            if (multiplayerRestriction == "nmpz") {
+                document.getElementById("mapModeText").textContent += " (NMPZ)";
+            }
             totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host
+            if (multiplayerRestriction == "nmpz") {
+                nmpzBackground.style.pointerEvents = "auto";
+            } else {
+                nmpzBackground.style.pointerEvents = "none";
+            }
         }
     }, 1000);
 }
