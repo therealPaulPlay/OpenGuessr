@@ -1,7 +1,7 @@
 import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
 import { setDailyChallengeExperienceResult } from "./dailyChallenge";
 import { dailyChallengeTimer } from './dailyChallenge.js';
-import { checkTextLength } from "./mainUI";
+import { checkTextLength, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore } from "./multiplayer.js";
 
 let profileName = document.getElementById("profileViewName");
@@ -11,11 +11,23 @@ let profileInfo = document.getElementById("profileInfo");
 let loginButton = document.getElementById("loginButton");
 loginButton.addEventListener("click", goTologin);
 
+let mobileLoginButton = document.getElementById("mobileLoginButton");
+mobileLoginButton.addEventListener("click", goTologin);
+
 let logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener("click", signout);
 
+let mobileLogoutButton = document.getElementById("mobileLogoutButton");
+mobileLogoutButton.addEventListener("click", signout);
+
 let profileButton = document.getElementById("profileButton");
 profileButton.addEventListener("click", viewProfile);
+
+let mobileProfileButton = document.getElementById("mobileProfileButton");
+mobileProfileButton.addEventListener("click", function() {
+  toggleMobileMenu();
+  viewProfile();
+});
 
 let displayAccountName = document.getElementById("accountName");
 
@@ -30,6 +42,8 @@ let profileWindow = document.getElementById("profileWindow");
 //default is not logged in, so these are all disabled
 logoutButton.style.display = "none";
 profileButton.style.display = "none";
+mobileLogoutButton.style.display = "none";
+mobileProfileButton.style.display = "none";
 XParea.style.display = "none";
 
 document.getElementById("usernameInput").style.visibility = "hidden";
@@ -116,6 +130,9 @@ async function changeUItoSignedIn() {
   logoutButton.style.display = "inline-block";
   loginButton.style.display = "none";
   profileButton.style.display = "inline-block";
+  mobileLogoutButton.style.display = "inline-block";
+  mobileLoginButton.style.display = "none";
+  mobileProfileButton.style.display = "inline-block";
   XPbarNoAccount.style.display = "none";
   XParea.style.display = "flex";
   enableExclusiveCategories();

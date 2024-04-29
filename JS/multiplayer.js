@@ -32,6 +32,7 @@ let lengthMinus = document.getElementById("lengthMinus");
 let roundLengthText = document.getElementById("roundLengthText");
 
 socialMenuMultiplayerButton.addEventListener("click", toggleMultiplayerSelector);
+
 document.getElementById("multiplayerSelectorClose").addEventListener("click", function () {
     leaveMultiplayerRound(); //leave round and if you are the host, also disconnect all peers
     toggleMultiplayerSelector();
@@ -46,7 +47,7 @@ multiplayerSelectDuels.addEventListener("mouseout", () => { changeMultiplayerSel
 
 let multiPlayerWindowOpen = false;
 
-function toggleMultiplayerSelector() {
+export function toggleMultiplayerSelector() {
     if (localStorage.getItem("id") != null) {
         if (multiPlayerWindowOpen) {
             multiplayerSelectionScreen.style.display = "none";
@@ -70,7 +71,7 @@ function changeMultiplayerSelectorInfotext(hoveredButton) {
 
     switch (hoveredButton) {
         case "join":
-            infoTextContent = "Join a room with a roomcode.";
+            infoTextContent = "Join a room hosted by another player with a roomcode.";
             break;
         case "host":
             infoTextContent = "Create a new room and share the roomcode.";
@@ -79,7 +80,7 @@ function changeMultiplayerSelectorInfotext(hoveredButton) {
             infoTextContent = "Duels will be launched with a future update.";
             break;
         default:
-            infoTextContent = "Hover over the modes to learn more.";
+            infoTextContent = "Hover over the modes to learn more about them.";
             break;
     }
 

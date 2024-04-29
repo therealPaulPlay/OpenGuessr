@@ -337,7 +337,7 @@ li {
   outline: none;
   border: none;
   user-select: none;
-  width: 35%;
+  width: 20%;
 }
 
 .white {
@@ -361,7 +361,7 @@ li {
   width: 45%;
   min-width: 300px;
   max-width: 600px;
-  max-height: 80%;
+  max-height: 90%;
   font-size: 25px;
   padding: 25px 25px 10px;
   border-radius: 10px;
@@ -1579,14 +1579,14 @@ button {
   display: flex;
   width: 100%;
   justify-content: center;
+  align-items: flex-start;
   height: fit-content;
   overflow: hidden;
+  flex-wrap: wrap;
 }
 
-#mobileMenuOptions {
+.mobileMenuOptions {
   display: flex;
-  margin-left: auto;
-  margin-right: auto;
   width: fit-content;
   height: fit-content;
   justify-content: center;
@@ -1598,6 +1598,23 @@ button {
   flex-direction: column;
   overflow-x: hidden;
   overflow-y: auto;
+}
+
+#privacyNotice {
+  font-size: 20px;
+  opacity: 50%;
+}
+
+#privacyNotice a:link {
+  color: #FFFFFF;
+}
+
+#privacyNotice a:visited {
+  color: #FFFFFF;
+}
+
+#privacyNotice a:hover {
+  color: #FFFFFF;
 }
 
 .socialBarButton {
@@ -1622,6 +1639,29 @@ button {
   min-width: 250px;
   width: 250px;
   height: 50px;
+}
+
+#mobileLoginButton, #mobileProfileButton {
+  background-color: var(--brand-color);
+  color: white;
+}
+
+#mobileLogoutButton, #mobileProfileButton {
+  display: none;
+}
+
+#mobileAccountUI {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  overflow: hidden;
+}
+
+#mobileProfileButton, #mobileLogoutButton {
+  min-width: 0;
+  flex-grow: 1;
+  width: 120px;
+  padding-inline: 10px;
 }
 
 .popup-content {
@@ -1710,6 +1750,10 @@ all and (max-width: 1250px) {
     left: 165px;
   }
 
+  #privacyButton {
+    display: none;
+  }
+
   #floatingSocialButton {
     margin-left: 0;
     border-bottom-left-radius: 0px;
@@ -1759,6 +1803,39 @@ all and (max-width: 1000px) {
 
   #mobileMenu {
     display: block;
+  }
+
+  #profileClose {
+    margin-top: 5px;
+  }
+
+  #pinSelector {
+    justify-content: space-around;
+  }
+
+  #icon {
+    width: 250px;
+    height: auto;
+    margin-top: 10px;
+  }
+
+  .extendedNavbar {
+    right: 0px;
+    left: 0px;
+    width: 100%;
+  }
+
+  #extendedNavbarContent {
+    margin-left: 0;
+  }
+
+  .category {
+    margin-right: 0.5em;
+    margin-left: 5px;
+  }
+
+  .categoriesNote {
+    margin-inline: 10px;
   }
 }
 

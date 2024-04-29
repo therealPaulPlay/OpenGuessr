@@ -1,6 +1,7 @@
 import { closePopup } from "./errorHandling.js";
 import { reloadIframe } from "./main.js";
 import { setUserXP, uiSetUserXP, isAuthenticated } from "./accountLogic.js";
+import { toggleMultiplayerSelector } from "./multiplayer.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -231,7 +232,7 @@ mobileMenuButton.addEventListener("click", toggleMobileMenu);
 
 let mobileWindowOpen = false;
 
-function toggleMobileMenu() {
+export function toggleMobileMenu() {
     mobileWindowOpen = !mobileWindowOpen;
 
     if (mobileWindowOpen) {
@@ -245,4 +246,19 @@ function toggleMobileMenu() {
 
 document.getElementById("mobilePopupClose").addEventListener("click", toggleMobileMenu);
 
+document.getElementById("mobileLeaderboardButton").addEventListener("click", goToLeaderboard);
+document.getElementById("mobileDailyLeaderboardButton").addEventListener("click", goToDailyLeaderboard);
+document.getElementById("mobileMultiplayerButton").addEventListener("click", function() {
+    toggleMobileMenu();
+    toggleMultiplayerSelector();
+});
+
+document.getElementById("mobileCategoryButton").addEventListener("click", function() {
+    toggleMobileMenu();
+    toggleCategoryMenu();
+
+    if (mapExpanded) {
+        toggleMap();
+    }
+})
 

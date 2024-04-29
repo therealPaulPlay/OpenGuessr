@@ -1,6 +1,6 @@
 import { loadLocationJSON } from "./locationGeneration.js";
 import { resMap, generateNewLocation } from "./main.js";
-import { disableResultScreen, socialPopupProbability } from "./mainUI.js";
+import { disableResultScreen, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults } from "./multiplayer.js";
@@ -184,6 +184,10 @@ function changeCategory(category) {
         mapCategory = category;
         localStorage.setItem("selectedCategory", category);
     }
+
+    setTimeout(() => {
+        toggleCategoryMenu(true);
+    }, 300);
 
     checkGenerationTypeAndGenerate();
 }
