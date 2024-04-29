@@ -37,6 +37,9 @@
     <div class="bannerItem bannerLeft">
       <a id="logo" alt="openguessr logo"><img id="icon" src="/IMG/openguessr.svg"
           alt="OpenGuessr logo - the free geography location-guessing game"></a>
+      <button id="mobileMenu" class="menuButton">
+        <img src="/IMG/mobile-menu.png" id="mobileMenuIcon" class="socialIcon">
+      </button>
     </div>
     <div id="socialArea">
       <div class="accountBar">
@@ -92,7 +95,7 @@
     <div id="extendedNavbarContent">
       <!-- This is the extended navbar for selecting categories etc. -->
       <button class="category" id="standardCategory" type="button">Standard</button>
-      <button class="category" id="capitalCategory" type="button">Capital Cities</button>
+      <button class="category" id="capitalCategory" type="button">Capitals</button>
       <button class="category" id="famousCategory" type="button">Famous Places</button>
       <p class="categoriesNote" id="categoryExclusiveText"> Sign up to unlock for free: </p>
       <button class="category accountExclusive accountLock" id="dailyCategory" type="button">The
@@ -147,7 +150,6 @@
           Edit
         </button> <input type="text" id="usernameInput" placeholder="New username" maxlength="12"></input>
         <button class="accountButton" id="confirmUsername">Confirm</button>
-        <br>
       </div>
       <h2>Pin Style: </h2>
       <div id="pinSelector">
@@ -232,6 +234,38 @@
         <img src="./IMG/discord.png" class="socialIcon">
       </button>
     </div>
+    <!-- Mobile UI Popup -->
+    <div id="mobileWindow" class="uiWindow">
+      <div id="popup-title" class="popup-title">
+        <h1 id="mobileHeader">Menu</h1>
+      </div>
+      <div id="mobileMenuContent">
+        <div class ="mobileMenuOptions">
+          <div id="mobileAccountUI">
+            <button id="mobileLoginButton" class="fixedMobileuiWidth accountButton socialBarButton">Login / Sign up</button>
+            <button id="mobileProfileButton" class="fixedMobileuiWidth accountButton socialBarButton">Profile</button>
+            <button id="mobileLogoutButton" class="fixedMobileuiWidth accountButton socialBarButton">Sign out</button>
+          </div>
+        </div>
+        <div class="mobileMenuOptions">
+          <button id="mobileCategoryButton" class="fixedMobileuiWidth accountButton socialBarButton">Change Category</button>
+        </div>
+        <div class="mobileMenuOptions">
+          <button id="mobileLeaderboardButton" class="fixedMobileuiWidth accountButton socialBarButton">Leaderboard
+            <img class="socialBarIcons" src="/IMG/leaderboard_icon.png" alt="Leaderboard for OpenGuessr">
+          </button>
+          <button id="mobileDailyLeaderboardButton" class="fixedMobileuiWidth accountButton socialBarButton">Daily Challenge
+            <img class="socialBarIcons" src="/IMG/daily_icon.png" alt="Leaderboard for OpenGuessr">
+          </button>
+          <button id="mobileMultiplayerButton" class="fixedMobileuiWidth accountButton socialBarButton">Multiplayer
+            <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
+          </button>
+        </div>
+        <p id="privacyNotice">Our <a href="/legal.html">privacy policy</a> applies.</p>
+      </div>
+      <button id="mobilePopupClose" class="accountButton white accountClose">Close</button>
+      </button>
+    </div>
     <!-- Multiplayer window -->
     <div id="multiplayerSelectionWindow" class="uiWindow">
       <div class="popup-title">
@@ -250,7 +284,7 @@
         </div>
         <div class="infoNote">
           <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
-          <p id="multiplayerSelectorInfotext">Hover over the modes to learn more.</p>
+          <p id="multiplayerSelectorInfotext">Hover over the modes to learn more about them.</p>
         </div>
       </div>
       <div id="multiplayerWindowJoin" style="display: none;">

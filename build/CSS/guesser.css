@@ -43,6 +43,8 @@ h1, h2, h3 {
 }
 
 .bannerLeft {
+  display: flex;
+  justify-content: space-between;
   border-bottom-right-radius: 10px;
   padding-right: 30px;
   padding-left: 10px;
@@ -311,7 +313,7 @@ h1, h2, h3 {
   display: none;
 }
 
-#profileClose, #helpClose, #socialPopupClose, #socialPopupJoin, #multiplayerSelectorClose, #multiplayerSelectorBack {
+#profileClose, #helpClose, #socialPopupClose, #socialPopupJoin, #multiplayerSelectorClose, #multiplayerSelectorBack, #mobilePopupClose {
   min-height: 50px;
 }
 
@@ -335,7 +337,7 @@ li {
   outline: none;
   border: none;
   user-select: none;
-  width: 35%;
+  width: 20%;
 }
 
 .white {
@@ -359,7 +361,7 @@ li {
   width: 45%;
   min-width: 300px;
   max-width: 600px;
-  max-height: 80%;
+  max-height: 90%;
   font-size: 25px;
   padding: 25px 25px 10px;
   border-radius: 10px;
@@ -1559,6 +1561,65 @@ button {
   transition: all 250ms ease;
 }
 
+#mobileMenu {
+  display: none;
+  margin-left: 0;
+  padding: 0;
+  padding-inline: 10px;
+}
+
+#mobileMenuIcon {
+  width: 40px;
+  height: auto;
+  margin: 0;
+}
+
+#mobileMenuContent {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+  height: fit-content;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+#mobileWindow {
+  max-width: 400px;
+}
+
+.mobileMenuOptions {
+  display: flex;
+  width: fit-content;
+  height: fit-content;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 5px;
+  margin: 10px;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#privacyNotice {
+  font-size: 20px;
+  opacity: 50%;
+}
+
+#privacyNotice a:link {
+  color: #FFFFFF;
+}
+
+#privacyNotice a:visited {
+  color: #FFFFFF;
+}
+
+#privacyNotice a:hover {
+  color: #FFFFFF;
+}
+
 .socialBarButton {
   width: auto;
   color: black;
@@ -1575,6 +1636,35 @@ button {
 
 .placeholder {
   height: 5px;
+}
+
+.fixedMobileuiWidth {
+  min-width: 250px;
+  width: 250px;
+  height: 50px;
+}
+
+#mobileLoginButton, #mobileProfileButton {
+  background-color: var(--brand-color);
+  color: white;
+}
+
+#mobileLogoutButton, #mobileProfileButton {
+  display: none;
+}
+
+#mobileAccountUI {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  overflow: hidden;
+}
+
+#mobileProfileButton, #mobileLogoutButton {
+  min-width: 0;
+  flex-grow: 1;
+  width: 120px;
+  padding-inline: 10px;
 }
 
 .popup-content {
@@ -1608,6 +1698,13 @@ button {
 .close {
   float: none;
   width: 100%;
+}
+
+/* all very narrow screens */
+@media (max-width: 700px) {
+  #pinSelector {
+    justify-content: space-around;
+  }
 }
 
 /* laptops and big screens */
@@ -1646,7 +1743,11 @@ all and (max-width: 1250px) {
   }
 
   #motivationText {
-    font-size: 20pt;
+    font-size: 18pt;
+  }
+
+  #endScreenLevel {
+    font-size: 20px;
   }
 
   #GuesserWindow {
@@ -1661,6 +1762,10 @@ all and (max-width: 1250px) {
   #socialArea {
     margin-top: 85px;
     left: 165px;
+  }
+
+  #privacyButton {
+    display: none;
   }
 
   #floatingSocialButton {
@@ -1679,7 +1784,7 @@ all and (max-width: 1250px) {
   }
 }
 
-/* Small phones, mobile */
+/* Small phones, mobile as well as all portrait screens */
 @media all and (orientation: portrait),
 all and (max-width: 1000px) {
   .bannerRight {
@@ -1700,6 +1805,47 @@ all and (max-width: 1000px) {
   
   #hardModeFade p {
     font-size: 25px;
+  }
+
+  .bannerLeft {
+    border-radius: 0;
+    width: 100%;
+    margin: 0;
+    padding-left: 5px;
+    padding-right: 10px;
+  }
+
+  #mobileMenu {
+    display: block;
+  }
+
+  #profileClose {
+    margin-top: 5px;
+  }
+
+  #icon {
+    width: 250px;
+    height: auto;
+    margin-top: 10px;
+  }
+
+  .extendedNavbar {
+    right: 0px;
+    left: 0px;
+    width: 100%;
+  }
+
+  #extendedNavbarContent {
+    margin-left: 0;
+  }
+
+  .category {
+    margin-right: 0.5em;
+    margin-left: 5px;
+  }
+
+  .categoriesNote {
+    margin-inline: 10px;
   }
 }
 
