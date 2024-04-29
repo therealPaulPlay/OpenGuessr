@@ -23,7 +23,7 @@ function toggleHelpWindow() {
 }
 
 //Social Menu and Leaderboard link --------------------------------------------------------------------------
-let socialBarExpanded = false;
+export let socialBarExpanded = false;
 
 document.getElementById("floatingSocialButton").addEventListener("click", toggleSocialbar);
 

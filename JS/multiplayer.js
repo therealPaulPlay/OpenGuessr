@@ -1,6 +1,6 @@
 import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile } from "./mainUI.js";
+import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socialBarExpanded } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex } from "./accountLogic.js";
 import { checkGenerationTypeAndGenerate, transitionToStart } from "./categoryMenu.js";
@@ -58,7 +58,9 @@ export function toggleMultiplayerSelector() {
             multiplayerSelectionScreen.style.display = "block";
             document.getElementById("blackBackground").style.visibility = "visible";
             setMultiplayerWindowSelection("main");
-            toggleSocialbar();
+            if (socialBarExpanded) {
+                toggleSocialbar();
+            }
         }
 
         multiPlayerWindowOpen = !multiPlayerWindowOpen;

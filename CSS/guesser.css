@@ -1585,6 +1585,10 @@ button {
   flex-wrap: wrap;
 }
 
+#mobileWindow {
+  max-width: 400px;
+}
+
 .mobileMenuOptions {
   display: flex;
   width: fit-content;
