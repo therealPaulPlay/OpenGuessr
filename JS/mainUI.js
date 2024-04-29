@@ -67,6 +67,22 @@ function toggleMap() {
     }
 }
 
+export function shrinkMapIfMobile() {
+    if (window.innerHeight > window.innerWidth && mapExpanded) {
+        toggleMap();
+    }
+}
+
+export function hideToggleMapButtonIfMobile(hide) {
+    if (window.innerHeight > window.innerWidth) {
+        if (hide) {
+            toggleMapButton.style.visibility = "hidden";
+        } else {
+            toggleMapButton.style.visibility = "visible";
+        }
+    }
+}
+
 //Universal Popup Window (Account info and How to play window) ------------------------------------------------------------
 let closeButton = document.getElementById("popupClose");
 closeButton.addEventListener("click", closePopup);

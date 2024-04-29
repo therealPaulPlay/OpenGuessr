@@ -1697,6 +1697,13 @@ button {
   width: 100%;
 }
 
+/* all very narrow screens */
+@media (max-width: 700px) {
+  #pinSelector {
+    justify-content: space-around;
+  }
+}
+
 /* laptops and big screens */
 @media (orientation: landscape) and (min-width: 1250px) {
   #map:hover {
@@ -1733,7 +1740,11 @@ all and (max-width: 1250px) {
   }
 
   #motivationText {
-    font-size: 20pt;
+    font-size: 18pt;
+  }
+
+  #endScreenLevel {
+    font-size: 20px;
   }
 
   #GuesserWindow {
@@ -1807,10 +1818,6 @@ all and (max-width: 1000px) {
 
   #profileClose {
     margin-top: 5px;
-  }
-
-  #pinSelector {
-    justify-content: space-around;
   }
 
   #icon {

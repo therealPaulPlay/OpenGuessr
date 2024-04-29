@@ -1,6 +1,6 @@
 import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, toggleSocialbar } from "./mainUI.js";
+import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex } from "./accountLogic.js";
 import { checkGenerationTypeAndGenerate, transitionToStart } from "./categoryMenu.js";
@@ -12,6 +12,8 @@ export let coordsFromHost = [];
 
 let socialMenuMultiplayerButton = document.getElementById("multiplayerButton");
 let multiplayerSelectionScreen = document.getElementById("multiplayerSelectionWindow");
+
+let mobileMenuButton = document.getElementById("mobileMenu");
 
 let multiplayerSelectJoin = document.getElementById("multiplayerSelectJoin");
 let multiplayerSelectHost = document.getElementById("multiplayerSelectHost");
@@ -223,6 +225,8 @@ function setMultiplayerUI() {
         document.getElementById("mapModeIndicator").style.display = "flex";
         document.getElementById("multiplayerLeave").style.display = "block";
         document.getElementById("mapModeText").textContent = "Multiplayer";
+        mobileMenuButton.style.opacity = "0.5";
+        mobileMenuButton.style.pointerEvents = "none";
     } else {
         categoryButton.style.opacity = "1";
         categoryButton.style.pointerEvents = "auto";
@@ -230,6 +234,8 @@ function setMultiplayerUI() {
         floatingSocialButton.style.pointerEvents = "auto";
         document.getElementById("mapModeIndicator").style.display = "none";
         document.getElementById("multiplayerLeave").style.display = "none";
+        mobileMenuButton.style.opacity = "1";
+        mobileMenuButton.style.pointerEvents = "auto";
     }
 }
 
@@ -689,6 +695,7 @@ function leaveMultiplayerRound() {
     document.getElementById("confirmButton").style.visibility = "visible";
     document.getElementById("map").style.pointerEvents = "auto";
     document.getElementById("map").style.visibility = "visible";
+    hideToggleMapButtonIfMobile(false);
     document.getElementById("nextRound").style.opacity = "1";
     document.getElementById("nextRound").style.pointerEvents = "auto";
     document.getElementById("nextRoundText").textContent = "Next round →";
@@ -743,12 +750,14 @@ export function showMultiplayerOverlay(show, title, array) {
         document.getElementById("confirmButton").style.visibility = "hidden";
         document.getElementById("confirmButton").style.pointerEvents = "none";
         document.getElementById("map").style.visibility = "hidden";
+        hideToggleMapButtonIfMobile(true);
         document.getElementById("revealCompass").style.visibility = "hidden";
     } else {
         document.getElementById("multiplayerFade").style.opacity = "0";
         document.getElementById("multiplayerFade").style.pointerEvents = "none";
         document.getElementById("confirmButton").style.visibility = "visible";
         document.getElementById("map").style.visibility = "visible";
+        hideToggleMapButtonIfMobile(false);
         document.getElementById("revealCompass").style.visibility = "visible";
     }
 }

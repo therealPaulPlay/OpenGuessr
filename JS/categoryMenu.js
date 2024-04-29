@@ -1,6 +1,6 @@
 import { loadLocationJSON } from "./locationGeneration.js";
 import { resMap, generateNewLocation } from "./main.js";
-import { disableResultScreen, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
+import { disableResultScreen, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults } from "./multiplayer.js";
@@ -282,6 +282,8 @@ export function transitionToStart() {
             sendMessageToAll("closeResultScreen");
             showMultiplayerRoundResults();
         }
+
+        shrinkMapIfMobile();
 
     } else {
         dailyChallengeEnd();
