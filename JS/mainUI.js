@@ -223,6 +223,26 @@ window.addEventListener('DOMContentLoaded', checkTextLength); // Check on page l
 window.addEventListener('input', checkTextLength); // Check when text changes
 
 
+//Mobile UI Menu -----------------------------------------------------------------------------------------
+let mobileWindow = document.getElementById("mobileWindow");
+let mobileMenuButton = document.getElementById("mobileMenu");
 
+mobileMenuButton.addEventListener("click", toggleMobileMenu);
+
+let mobileWindowOpen = false;
+
+function toggleMobileMenu() {
+    mobileWindowOpen = !mobileWindowOpen;
+
+    if (mobileWindowOpen) {
+        mobileWindow.style.display = "block";
+        document.getElementById("blackBackground").style.visibility = "visible";
+    } else {
+        mobileWindow.style.display = "none";
+        document.getElementById("blackBackground").style.visibility = "hidden";
+    }
+}
+
+document.getElementById("mobilePopupClose").addEventListener("click", toggleMobileMenu);
 
 

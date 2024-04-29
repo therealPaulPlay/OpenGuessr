@@ -43,6 +43,8 @@ h1, h2, h3 {
 }
 
 .bannerLeft {
+  display: flex;
+  justify-content: space-between;
   border-bottom-right-radius: 10px;
   padding-right: 30px;
   padding-left: 10px;
@@ -311,7 +313,7 @@ h1, h2, h3 {
   display: none;
 }
 
-#profileClose, #helpClose, #socialPopupClose, #socialPopupJoin, #multiplayerSelectorClose, #multiplayerSelectorBack {
+#profileClose, #helpClose, #socialPopupClose, #socialPopupJoin, #multiplayerSelectorClose, #multiplayerSelectorBack, #mobilePopupClose {
   min-height: 50px;
 }
 
@@ -1560,6 +1562,44 @@ button {
   transition: all 250ms ease;
 }
 
+#mobileMenu {
+  display: none;
+  margin-left: 0;
+  padding: 0;
+  padding-inline: 10px;
+}
+
+#mobileMenuIcon {
+  width: 40px;
+  height: auto;
+  margin: 0;
+}
+
+#mobileMenuContent {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  height: fit-content;
+  overflow: hidden;
+}
+
+#mobileMenuOptions {
+  display: flex;
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+  height: fit-content;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 5px;
+  margin: 10px;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
 .socialBarButton {
   width: auto;
   color: black;
@@ -1576,6 +1616,12 @@ button {
 
 .placeholder {
   height: 5px;
+}
+
+.fixedMobileuiWidth {
+  min-width: 250px;
+  width: 250px;
+  height: 50px;
 }
 
 .popup-content {
@@ -1680,7 +1726,7 @@ all and (max-width: 1250px) {
   }
 }
 
-/* Small phones, mobile */
+/* Small phones, mobile as well as all portrait screens */
 @media all and (orientation: portrait),
 all and (max-width: 1000px) {
   .bannerRight {
@@ -1701,6 +1747,18 @@ all and (max-width: 1000px) {
   
   #hardModeFade p {
     font-size: 25px;
+  }
+
+  .bannerLeft {
+    border-radius: 0;
+    width: 100%;
+    margin: 0;
+    padding-left: 5px;
+    padding-right: 10px;
+  }
+
+  #mobileMenu {
+    display: block;
   }
 }
 
