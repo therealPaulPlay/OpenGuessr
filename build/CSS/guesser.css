@@ -979,7 +979,7 @@ li {
   border: dashed rgba(255, 255, 255, 0.5);
 } */
 
-#googleAds {
+#leaderboardAds {
   position: absolute;
   bottom: 12.5px;
   left: 0px; 
@@ -991,7 +991,7 @@ li {
   height: 90px;
   padding: 0;
   z-index: 11;
-  /*border: dashed rgba(255, 255, 255, 0.5);*/
+  border: dashed rgba(255, 255, 255, 0.5);
 
 }
 
@@ -1002,7 +1002,7 @@ li {
 }
 
 @media (max-width: 1070px) {
-  #googleAds {
+  #leaderboardAds {
   width: 50%;
   }
 
@@ -1013,7 +1013,7 @@ li {
 }
 
 @media (max-width: 900px) {
-  #googleAds {
+  #leaderboardAds {
   width: 40%;
   }
   
@@ -1024,14 +1024,14 @@ li {
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
-  #googleAds {
+  #leaderboardAds {
   width: 0;
   display: none;
   }
 }
 
 @media (orientation: portrait) and (max-width: 700px) {
-  #googleAds {
+  #leaderboardAds {
     width: 320px;
     height: 50px
   }
