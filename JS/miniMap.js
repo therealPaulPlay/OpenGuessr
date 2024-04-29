@@ -2,6 +2,7 @@ import { loadResultMap, calculateDistances } from "./main.js";
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed} from "./multiplayer.js";
+import { hideToggleMapButtonIfMobile } from "./mainUI.js";
 
 
 //Initialize the map with correct provider --------------------------------------------------------------------
@@ -194,6 +195,7 @@ export function confirmButtonClicks() {
         document.getElementById("confirmButton").style.pointerEvents = "none";
         document.getElementById("map").style.pointerEvents = "none";
         document.getElementById("map").style.visibility = "hidden";
+        hideToggleMapButtonIfMobile(true);
         document.getElementById("revealCompass").style.visibility = "hidden";
 
         multiplayerStateToGuessed();
