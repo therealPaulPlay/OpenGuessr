@@ -981,18 +981,17 @@ li {
 
 #leaderboardAds {
   position: absolute;
-  bottom: 12.5px;
+  bottom: 10px;
   left: 0px; 
   right: 0px; 
   margin-left: auto; 
   margin-right: auto; 
   width: 60%;
-  max-height: 92px;
+  max-height: 91px;
   height: 90px;
   padding: 0;
   z-index: 11;
   border: dashed rgba(255, 255, 255, 0.5);
-
 }
 
 /* the actual google ads bar that should be styled too according to google */
