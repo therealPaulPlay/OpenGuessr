@@ -1095,10 +1095,6 @@ li {
   -webkit-backdrop-filter: blur(10px);
 }
 
-#floatingMapButton:hover {
-    filter: brightness(70%);
-}
-
 #endScreenOpenLocation {
   margin-top: auto;
   margin-left: 0.75%;
