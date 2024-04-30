@@ -909,10 +909,10 @@ li {
   margin-right: 0.75%;
   padding-right: 10px;
   padding-left: 10px;
-  border-radius: 10px;
+  border-radius: 7px;
   height: 25px;
   font-size: 17px;
-  background-color: rgba(244, 244, 244, 0.7);
+  background-color: rgba(255, 255, 255, 0.9);
   transition: margin 250ms ease, filter 250ms ease, opacity 250ms ease;
   box-shadow: 0 2px 20px rgba(71, 71, 71, 0.5);
   z-index: 10;
