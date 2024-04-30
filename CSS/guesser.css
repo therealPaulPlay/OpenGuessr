@@ -972,14 +972,14 @@ li {
   -webkit-backdrop-filter: blur(10px);
 }
 
-#footerAds {
+#bottomFooterAds {
   position: absolute;
   bottom: 10px;
   left: 0px; 
   right: 0px; 
   margin-left: auto; 
   margin-right: auto; 
-  width: 60%;
+  width: 728px;
   max-height: 92px;
   height: 90px;
   padding: 0;
@@ -990,42 +990,32 @@ li {
 /* the actual google ads bar that should be styled too according to google */
 .adScaling {
   width: 728px;
-  height: 90px
+  height: 90px;
 }
 
-@media (max-width: 1200px) {
-  #footerAds {
-  width: 50%;
+@media (max-width: 1075px) {
+  #bottomFooterAds {
+  width: 320px;
+  height: 50px;
   }
 
-  .adScaling {
-    width: 320x;
-    height: 50px
-  }
-}
-
-@media (max-width: 900px) {
-  #footerAds {
-  width: 40%;
-  }
-  
   .adScaling {
     width: 320px;
-    height: 50px
+    height: 50px;
   }
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
-  #footerAds {
+  #bottomFooterAds {
   width: 0;
   display: none;
   }
 }
 
 @media (orientation: portrait) and (max-width: 700px) {
-  #footerAds {
+  #bottomFooterAds {
     width: 320px;
-    height: 50px
+    height: 50px;
   }
 
   .BottomBar {
@@ -1751,10 +1741,6 @@ all and (max-width: 1250px) {
     left: 165px;
   }
 
-  #privacyButton {
-    display: none;
-  }
-
   #floatingSocialButton {
     margin-left: 0;
     border-bottom-left-radius: 0px;
@@ -1804,6 +1790,10 @@ all and (max-width: 1000px) {
 
   #mobileMenu {
     display: block;
+  }
+
+  #privacyButton {
+    display: none;
   }
 
   #profileClose {
