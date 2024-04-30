@@ -18,6 +18,9 @@
   <!-- Non-bundled js files -->
   <script type="module" src="analytics.js"></script>
 
+  <!-- venatus ad script -->
+  <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript" data-site-id="660fad7bb673231986638f83" data-mode="scan" async></script>
+
   <title>OpenGuessr - free geoguessr alternative</title>
 
   <link rel="icon" href="favicon.ico">
@@ -401,7 +404,8 @@
     <div id="bottomShadow"></div>
   </div>
   <div align="center" id="leaderboardAds">
-    <!-- google ads temporarily removed -->
+    <div class="vm-placement adScaling" data-id="662edc44cf5c49162f52b30e" style="display:none"></div>
+  </div>
     <!-- Main.js, bundled. Currently we are not using any import/export statements in here as it is all being bundled togehter but I made it type=module in case we use imports outside of the bundle in the future -->
     <script type="module" src="main.js"></script>
 </body>

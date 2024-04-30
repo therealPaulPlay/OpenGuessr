@@ -989,7 +989,7 @@ li {
   margin-left: auto; 
   margin-right: auto; 
   width: 60%;
-  max-height: 91px;
+  max-height: 92px;
   height: 90px;
   padding: 0;
   z-index: 11;
@@ -997,17 +997,17 @@ li {
 }
 
 /* the actual google ads bar that should be styled too according to google */
-.adsbygoogle {
+.adScaling {
   width: 728px;
   height: 90px
 }
 
-@media (max-width: 1070px) {
+@media (max-width: 1200px) {
   #leaderboardAds {
   width: 50%;
   }
 
-  .adsbygoogle {
+  .adScaling {
     width: 468px;
     height: 60px
   }
@@ -1018,7 +1018,7 @@ li {
   width: 40%;
   }
   
-  .adsbygoogle {
+  .adScaling {
     width: 320px;
     height: 50px
   }
