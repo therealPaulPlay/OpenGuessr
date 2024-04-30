@@ -972,16 +972,7 @@ li {
   -webkit-backdrop-filter: blur(10px);
 }
 
-/* #adBar {
-  flex-grow: 1;
-  text-align: center;
-  height: 90%;
-  margin-right: 15px;
-  margin-left: 5px;
-  border: dashed rgba(255, 255, 255, 0.5);
-} */
-
-#leaderboardAds {
+#footerAds {
   position: absolute;
   bottom: 10px;
   left: 0px; 
@@ -1003,18 +994,18 @@ li {
 }
 
 @media (max-width: 1200px) {
-  #leaderboardAds {
+  #footerAds {
   width: 50%;
   }
 
   .adScaling {
-    width: 468px;
-    height: 60px
+    width: 320x;
+    height: 50px
   }
 }
 
 @media (max-width: 900px) {
-  #leaderboardAds {
+  #footerAds {
   width: 40%;
   }
   
@@ -1025,14 +1016,14 @@ li {
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
-  #leaderboardAds {
+  #footerAds {
   width: 0;
   display: none;
   }
 }
 
 @media (orientation: portrait) and (max-width: 700px) {
-  #leaderboardAds {
+  #footerAds {
     width: 320px;
     height: 50px
   }
