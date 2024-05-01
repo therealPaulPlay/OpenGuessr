@@ -10,12 +10,12 @@ const Provider = {
     ENGLISH: "0",
     GERMAN: "1",
     REGIONAL: "2",
-    SATELLITE: "3",
+    TOPOGRAPHIC: "3",
 }
 
 let map = L.map('map', {zoomControl: false}).setView([40.321160, 10.252812], 1.5); //starting position
 
-let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg"]
+let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://{s}.tile.opentopomap.org/{z}/{x}/{y}.png"]
 
 //English should be the new default!
 let providerIndex = Provider.ENGLISH;
@@ -58,7 +58,7 @@ function changeLanguageButtonLabel () {
         case "2": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Regional`;
         break;
 
-        case "3": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Satellite`;
+        case "3": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Topographic`;
         break;
 
         default: document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
@@ -92,7 +92,7 @@ function changeLanguage () {
         providerIndex = Provider.REGIONAL;
         break;
       case Provider.REGIONAL:
-        providerIndex = Provider.SATELLITE;
+        providerIndex = Provider.TOPOGRAPHIC;
         break;
       default:
         providerIndex = Provider.ENGLISH;
