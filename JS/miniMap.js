@@ -109,7 +109,7 @@ let osmLayer;
 
 function loadMap() {
   osmLayer = L.tileLayer(mapProvider[providerIndex], {
-      attribution: '© Stadia Maps, CARTO & OpenStreetMap',
+      attribution: '© CARTO © OpenStreetMap © OpenTopoMap',
       noWrap: true,
   }).addTo(map);
 }
