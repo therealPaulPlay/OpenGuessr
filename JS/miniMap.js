@@ -46,17 +46,18 @@ export function resetMap() {
 }
 
 function changeLanguageButtonLabel () {
+       let mapTypeBaseText = "Map Type:";
        switch (providerIndex) {
-        case "0": document.getElementById("languageButton").innerHTML = "Map language: English";
+        case "0": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
         break;
 
-        case "1": document.getElementById("languageButton").innerHTML = "Map language: German";
+        case "1": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} German`;
         break; 
 
-        case "2": document.getElementById("languageButton").innerHTML = "Map language: Regional";
+        case "2": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Regional`;
         break;
 
-        default: document.getElementById("languageButton").innerHTML = "Map language: English";
+        default: document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
         break;
        }
 }
