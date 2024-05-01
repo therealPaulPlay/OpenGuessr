@@ -10,12 +10,12 @@ const Provider = {
     ENGLISH: "0",
     GERMAN: "1",
     REGIONAL: "2",
-    SATELLITE: "3",
+    TOPOGRAPHIC: "3",
 }
 
 let map = L.map('map', {zoomControl: false}).setView([40.321160, 10.252812], 1.5); //starting position
 
-let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg"]
+let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web/default/WEBMERCATOR/{z}/{y}/{x}.png"]
 
 //English should be the new default!
 let providerIndex = Provider.ENGLISH;
@@ -58,7 +58,7 @@ function changeLanguageButtonLabel () {
         case "2": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Regional`;
         break;
 
-        case "3": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Satellite`;
+        case "3": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Topographic`;
         break;
 
         default: document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
@@ -92,7 +92,7 @@ function changeLanguage () {
         providerIndex = Provider.REGIONAL;
         break;
       case Provider.REGIONAL:
-        providerIndex = Provider.SATELLITE;
+        providerIndex = Provider.TOPOGRAPHIC;
         break;
       default:
         providerIndex = Provider.ENGLISH;
@@ -109,7 +109,7 @@ let osmLayer;
 
 function loadMap() {
   osmLayer = L.tileLayer(mapProvider[providerIndex], {
-      attribution: '© Stadia Maps, CARTO & OpenStreetMap',
+      attribution: '© CARTO © OpenStreetMap © Geodatenzentrum',
       noWrap: true,
   }).addTo(map);
 }
@@ -182,7 +182,7 @@ export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
 
     if (dailyChallengeUIEnabled) {
-        document.getElementById("nextRoundText").innerHTML = "See results →";
+        document.getElementById("nextRound").innerHTML = "See results →";
         
         try {
             dailyChallengeTimer.stopTimer();
@@ -192,7 +192,7 @@ export function confirmButtonClicks() {
         
         saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
     } else {
-        document.getElementById("nextRoundText").innerHTML = "Next round →";
+        document.getElementById("nextRound").innerHTML = "Next round →";
     }
 
     if (!multiplayer) {
