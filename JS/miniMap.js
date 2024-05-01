@@ -10,11 +10,12 @@ const Provider = {
     ENGLISH: "0",
     GERMAN: "1",
     REGIONAL: "2",
+    SATELLITE: "3",
 }
 
 let map = L.map('map', {zoomControl: false}).setView([40.321160, 10.252812], 1.5); //starting position
 
-let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"]
+let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg"]
 
 //English should be the new default!
 let providerIndex = Provider.ENGLISH;
@@ -57,6 +58,9 @@ function changeLanguageButtonLabel () {
         case "2": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Regional`;
         break;
 
+        case "3": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Satellite`;
+        break;
+
         default: document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
         break;
        }
@@ -80,15 +84,19 @@ function setConfirmButtonState() {
 
 //Change map provider / language ---------------------------------------------------------------------
 function changeLanguage () {
-    if (providerIndex == Provider.ENGLISH) {
+   switch (providerIndex) {
+      case Provider.ENGLISH:
         providerIndex = Provider.GERMAN;
-    }
-    else if (providerIndex == Provider.GERMAN) {
+        break;
+      case Provider.GERMAN:
         providerIndex = Provider.REGIONAL;
-    }
-    else {
+        break;
+      case Provider.REGIONAL:
+        providerIndex = Provider.SATELLITE;
+        break;
+      default:
         providerIndex = Provider.ENGLISH;
-    }
+    } 
     localStorage.setItem("providerIndex", providerIndex);
     
     changeLanguageButtonLabel();
@@ -101,7 +109,7 @@ let osmLayer;
 
 function loadMap() {
   osmLayer = L.tileLayer(mapProvider[providerIndex], {
-      attribution: '© CARTO & OpenStreetMap',
+      attribution: '© Stadia Maps, CARTO & OpenStreetMap',
       noWrap: true,
   }).addTo(map);
 }
