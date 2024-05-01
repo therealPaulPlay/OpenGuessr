@@ -10,11 +10,12 @@ const Provider = {
     ENGLISH: "0",
     GERMAN: "1",
     REGIONAL: "2",
+    TOPOGRAPHIC: "3",
 }
 
 let map = L.map('map', {zoomControl: false}).setView([40.321160, 10.252812], 1.5); //starting position
 
-let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"]
+let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web/default/WEBMERCATOR/{z}/{y}/{x}.png"]
 
 //English should be the new default!
 let providerIndex = Provider.ENGLISH;
@@ -46,17 +47,21 @@ export function resetMap() {
 }
 
 function changeLanguageButtonLabel () {
+       let mapTypeBaseText = "Map Type:";
        switch (providerIndex) {
-        case "0": document.getElementById("languageButton").innerHTML = "Map language: English";
+        case "0": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
         break;
 
-        case "1": document.getElementById("languageButton").innerHTML = "Map language: German";
+        case "1": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} German`;
         break; 
 
-        case "2": document.getElementById("languageButton").innerHTML = "Map language: Regional";
+        case "2": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Regional`;
         break;
 
-        default: document.getElementById("languageButton").innerHTML = "Map language: English";
+        case "3": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Topographic`;
+        break;
+
+        default: document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
         break;
        }
 }
@@ -79,15 +84,19 @@ function setConfirmButtonState() {
 
 //Change map provider / language ---------------------------------------------------------------------
 function changeLanguage () {
-    if (providerIndex == Provider.ENGLISH) {
+   switch (providerIndex) {
+      case Provider.ENGLISH:
         providerIndex = Provider.GERMAN;
-    }
-    else if (providerIndex == Provider.GERMAN) {
+        break;
+      case Provider.GERMAN:
         providerIndex = Provider.REGIONAL;
-    }
-    else {
+        break;
+      case Provider.REGIONAL:
+        providerIndex = Provider.TOPOGRAPHIC;
+        break;
+      default:
         providerIndex = Provider.ENGLISH;
-    }
+    } 
     localStorage.setItem("providerIndex", providerIndex);
     
     changeLanguageButtonLabel();
@@ -100,7 +109,7 @@ let osmLayer;
 
 function loadMap() {
   osmLayer = L.tileLayer(mapProvider[providerIndex], {
-      attribution: 'https://www.openstreetmap.org/copyright',
+      attribution: '© CARTO © OpenStreetMap © Geodatenzentrum',
       noWrap: true,
   }).addTo(map);
 }
@@ -173,7 +182,7 @@ export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
 
     if (dailyChallengeUIEnabled) {
-        document.getElementById("nextRoundText").innerHTML = "See results →";
+        document.getElementById("nextRound").innerHTML = "See results →";
         
         try {
             dailyChallengeTimer.stopTimer();
@@ -183,7 +192,7 @@ export function confirmButtonClicks() {
         
         saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
     } else {
-        document.getElementById("nextRoundText").innerHTML = "Next round →";
+        document.getElementById("nextRound").innerHTML = "Next round →";
     }
 
     if (!multiplayer) {
