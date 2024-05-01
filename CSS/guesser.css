@@ -1221,9 +1221,7 @@ li {
 
 /* This is for the result screen */
 #TextDiv {
-  margin-left: 50px;
-  margin-right: 50px;
-  margin-top: 20px;
+  margin: 20px 50px;
   color: #EEE;
   font-size: 40px;
   height: fit-content;
@@ -1278,10 +1276,10 @@ li {
   opacity: 30%;
 }
 
-#nextRound a {
+#nextRound {
   z-index: 15;
   cursor: pointer;
-  transition: all 250ms ease;
+  transition: filter 250ms ease, scale 250ms ease, opacity 250ms ease;
   display: inline-block;
   opacity: 100%;
   padding: 10px 30px;
@@ -1297,17 +1295,10 @@ li {
   right: 5px;
   user-select: none;
   -webkit-user-select: none;
-  -webkit-tap-highlight-color: transparent;
 }
 
-#nextRound a:hover {
+#nextRound:hover {
   scale: 1.03;
-}
-
-#TextDiv button {
-  color: transparent;
-  background-color: transparent;
-  border: 0;
 }
 
 #BeforeOverlay {
@@ -1754,9 +1745,10 @@ all and (max-width: 1250px) {
     height: 100%;
   }
 
-  #nextRound a {
+  #nextRound {
     position: relative;
     right: 0;
+    margin-bottom: 0;
   }
 
   #socialArea {

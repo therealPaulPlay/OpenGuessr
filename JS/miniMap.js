@@ -182,7 +182,7 @@ export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
 
     if (dailyChallengeUIEnabled) {
-        document.getElementById("nextRoundText").innerHTML = "See results →";
+        document.getElementById("nextRound").innerHTML = "See results →";
         
         try {
             dailyChallengeTimer.stopTimer();
@@ -192,7 +192,7 @@ export function confirmButtonClicks() {
         
         saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
     } else {
-        document.getElementById("nextRoundText").innerHTML = "Next round →";
+        document.getElementById("nextRound").innerHTML = "Next round →";
     }
 
     if (!multiplayer) {
