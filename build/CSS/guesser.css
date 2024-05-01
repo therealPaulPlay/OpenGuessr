@@ -1518,7 +1518,7 @@ button {
   border-top-left-radius: 0;
   border-top-right-radius: 0;
   user-select: none;
-  transition: none;
+  transition: filter 250ms ease, margin 250ms ease;
   -webkit-user-select: none;
   color: white;
   background-color: rgba(42, 44, 71, 0.85);
@@ -1579,10 +1579,6 @@ button {
   height: fit-content;
   overflow: hidden;
   flex-wrap: wrap;
-}
-
-#mobileWindow {
-  max-width: 400px;
 }
 
 .mobileMenuOptions {
@@ -1690,6 +1686,13 @@ button {
 
 .popup-description {
   word-wrap: break-word;
+}
+
+#mobileWindow {
+  max-width: 400px;
+  transition: opacity 150ms ease, scale 150ms ease;
+  opacity: 0;
+  scale: 0.95;
 }
 
 .close {

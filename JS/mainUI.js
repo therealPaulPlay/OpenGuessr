@@ -253,8 +253,16 @@ export function toggleMobileMenu() {
 
     if (mobileWindowOpen) {
         mobileWindow.style.display = "block";
+       
+        setTimeout(() => {
+            mobileWindow.style.opacity = "1";
+            mobileWindow.style.scale = "1";
+        }, 10);
+
         document.getElementById("blackBackground").style.visibility = "visible";
     } else {
+        mobileWindow.style.opacity = "0";
+        mobileWindow.style.scale = "0.95";
         mobileWindow.style.display = "none";
         document.getElementById("blackBackground").style.visibility = "hidden";
     }
@@ -272,9 +280,5 @@ document.getElementById("mobileMultiplayerButton").addEventListener("click", fun
 document.getElementById("mobileCategoryButton").addEventListener("click", function() {
     toggleMobileMenu();
     toggleCategoryMenu();
-
-    if (mapExpanded) {
-        toggleMap();
-    }
 })
 
