@@ -100,7 +100,7 @@ let osmLayer;
 
 function loadMap() {
   osmLayer = L.tileLayer(mapProvider[providerIndex], {
-      attribution: 'https://www.openstreetmap.org/copyright',
+      attribution: '© CARTO & OpenStreetMap',
       noWrap: true,
   }).addTo(map);
 }
