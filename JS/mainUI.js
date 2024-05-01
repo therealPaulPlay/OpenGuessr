@@ -257,7 +257,7 @@ export function toggleMobileMenu() {
         setTimeout(() => {
             mobileWindow.style.opacity = "1";
             mobileWindow.style.scale = "1";
-        }, 10);
+        }, 50);
 
         document.getElementById("blackBackground").style.visibility = "visible";
     } else {
@@ -280,5 +280,6 @@ document.getElementById("mobileMultiplayerButton").addEventListener("click", fun
 document.getElementById("mobileCategoryButton").addEventListener("click", function() {
     toggleMobileMenu();
     toggleCategoryMenu();
-})
+    shrinkMapIfMobile();
+});
 

@@ -785,7 +785,7 @@ li {
   transition: max-height 0.3s ease;
   position: absolute;
   right: 10px;
-  width: 440px;
+  width: 415px;
   background-color: rgba(42, 44, 71, 0.9);
   border-radius: 0 0 10px 10px;
   box-shadow: 0 2px 20px rgba(5, 6, 10, 0.7);
