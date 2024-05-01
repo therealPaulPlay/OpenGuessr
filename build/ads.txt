@@ -4,7 +4,7 @@ managerdomain=venatus.com
 venatus.com, 660fac9850e90801e258af1b, DIRECT
 
 
-#V 28.03.2024 VH
+#V 23.04.2024 VH
 
 
 #                                                  .                        
@@ -26,6 +26,7 @@ pubmatic.com, 159110, RESELLER, 5d62403b186f2ace                              # 
 rubiconproject.com, 16414, RESELLER, 0bfd66d529a55807                         # Adagio_0_6 
 lijit.com, 367236, RESELLER, fafdf38b16bf6b2b                                 # Adagio_0_6 
 amxrtb.com, 105199358, DIRECT                                                 # AdaptMX_1_6&7
+amxrtb.com, 105199778, DIRECT                                                 # AdaptMX_Ozone
 indexexchange.com, 191503, RESELLER                                           # AdaptMX_1_6&7
 appnexus.com, 12290, RESELLER                                                 # AdaptMX_1_6&7
 pubmatic.com, 158355, RESELLER, 5d62403b186f2ace                              # AdaptMX_1_6&7
@@ -79,11 +80,6 @@ rubiconproject.com,  13762, RESELLER, 0bfd66d529a55807                        # 
 media.net, 8CU8ARTF8, DIRECT                                                  # Media.net 
 Media.net, 8CU5786QK, DIRECT                                                  # Media.net
 themediagrid.com, LTW57M, DIRECT, 35d5010d7789b49d                            # MediaGrid_2_6&7
-minutemedia.com, 01gerz6y43ck, RESELLER                                       # MinuteMedia_0_6
-pubmatic.com, 161683, RESELLER, 5d62403b186f2ace                              # MinuteMedia_0_6
-appnexus.com, 8381, RESELLER                                                  # MinuteMedia_0_6
-triplelift.com, 6030, RESELLER, 6c33edb13117fd86                              # MinuteMedia_0_6
-33across.com, 0013300001jlr99AAA, RESELLER, bbea06d9c4d2853c                  # MinuteMedia_0_6
 ogury.com, 086233d2-e8a8-44fc-907b-f0752e1c85de, DIRECT                       # Ogury_0_6
 appnexus.com, 11470, RESELLER                                                 # Ogury_0_6
 openx.com, 537144009, RESELLER, 6a698e2ec38604c6                              # OpenX_0_6
@@ -128,6 +124,7 @@ smartadserver.com, 4016, DIRECT                                               # 
 smartadserver.com, 4074, DIRECT                                               # Smart AdServer_0&1&2_6&7
 sonobi.com, 116da9d98c, DIRECT, d1a215d9eb5aee9e                              # Sonobi_0_6&7
 sonobi.com, e017850301, DIRECT, d1a215d9eb5aee9e                              # Sonobi_4_7
+sonobi.com, dc5f975b54, RESELLER, d1a215d9eb5aee9e                            # Sonobi_TAM
 sovrn.com, 237754, DIRECT, fafdf38b16bf6b2b                                   # Sovrn_0&1&2_6&7
 lijit.com, 237754, DIRECT, fafdf38b16bf6b2b                                   # Sovrn_0&1&2_6&7
 lijit.com, 237754-eb, DIRECT, fafdf38b16bf6b2b                                # Sovrn_1_6&7
@@ -138,9 +135,6 @@ triplelift.com, 6059-EB, DIRECT, 6c33edb13117fd86                             # 
 video.unrulymedia.com, 985572675, DIRECT                                      # Unruly_0&2_7
 video.unrulymedia.com, 985572675, RESELLER                                    # Unruly_0&2_7
 sharethrough.com, 6qlnf8SY, RESELLER, d53b998a7bd4ecd2                        # Unruly
-vidazoo.com, 655c85dc63ceeb606a0f365f, DIRECT, b6ada874b4d7d0b2               # Vidazoo
-pubmatic.com, 159988, RESELLER, 5d62403b186f2ace                              # Vidazoo
-rubiconproject.com, 17130, RESELLER, 0bfd66d529a55807                         # Vidazoo
 pubmatic.com, 156512, DIRECT                                                  # Wunderkind
 indexexchange.com, 183753, DIRECT                                             # Wunderkind
 wunderkind.co, 6438, DIRECT                                                   # Wunderkind

@@ -1,17 +1,21 @@
 import { loadResultMap, calculateDistances } from "./main.js";
-import { dailyChallengeUIEnabled, dailyChallengeTimer, saveDailyChallengeCompletion } from "./dailyChallenge.js"
+import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
+import { multiplayer, multiplayerStateToGuessed} from "./multiplayer.js";
+import { hideToggleMapButtonIfMobile } from "./mainUI.js";
 
+
+//Initialize the map with correct provider --------------------------------------------------------------------
 const Provider = {
     ENGLISH: "0",
     GERMAN: "1",
     REGIONAL: "2",
+    SATELLITE: "3",
 }
 
-//initializes map (check out leaflet for more information)
 let map = L.map('map', {zoomControl: false}).setView([40.321160, 10.252812], 1.5); //starting position
 
-let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png"]
+let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tiles.stadiamaps.com/tiles/alidade_satellite/{z}/{x}/{y}{r}.jpg"]
 
 //English should be the new default!
 let providerIndex = Provider.ENGLISH;
@@ -26,7 +30,6 @@ export function getMapSource() {
 }
 
 loadMap();
-
 changeLanguageButtonLabel();
 
 //indicate whether a guess has been made and the button can be used
@@ -37,26 +40,33 @@ setConfirmButtonState();
 export function resetMap() {
     map.removeLayer(marker);
     map.setZoom(3);
+    
+    //reset the guess button as well
     hasGuessed = false;
     setConfirmButtonState();
 }
 
 function changeLanguageButtonLabel () {
+       let mapTypeBaseText = "Map Type:";
        switch (providerIndex) {
-        case "0": document.getElementById("languageButton").innerHTML = "Map language: English";
+        case "0": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
         break;
 
-        case "1": document.getElementById("languageButton").innerHTML = "Map language: German";
+        case "1": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} German`;
         break; 
 
-        case "2": document.getElementById("languageButton").innerHTML = "Map language: Regional";
+        case "2": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Regional`;
         break;
 
-        default: document.getElementById("languageButton").innerHTML = "Map language: English";
+        case "3": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Satellite`;
+        break;
+
+        default: document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
         break;
        }
 }
 
+//Set state of the confirm ("guess") button ------------------------------------------------------------------
 function setConfirmButtonState() {
     if (hasGuessed) {
         document.getElementById("confirmButton").style.backgroundColor = "red";
@@ -72,29 +82,34 @@ function setConfirmButtonState() {
     }
 }
 
+//Change map provider / language ---------------------------------------------------------------------
 function changeLanguage () {
-    if (providerIndex == Provider.ENGLISH) {
+   switch (providerIndex) {
+      case Provider.ENGLISH:
         providerIndex = Provider.GERMAN;
-    }
-    else if (providerIndex == Provider.GERMAN) {
+        break;
+      case Provider.GERMAN:
         providerIndex = Provider.REGIONAL;
-    }
-    else {
+        break;
+      case Provider.REGIONAL:
+        providerIndex = Provider.SATELLITE;
+        break;
+      default:
         providerIndex = Provider.ENGLISH;
-    }
+    } 
     localStorage.setItem("providerIndex", providerIndex);
     
     changeLanguageButtonLabel();
     resetGuessMap();
-    
-    /* window.location.reload(); */
 }
 
+
+//Universal map functions --------------------------------------------------------------------
 let osmLayer;
 
 function loadMap() {
   osmLayer = L.tileLayer(mapProvider[providerIndex], {
-      attribution: 'https://www.openstreetmap.org/copyright',
+      attribution: '© Stadia Maps, CARTO & OpenStreetMap',
       noWrap: true,
   }).addTo(map);
 }
@@ -111,9 +126,11 @@ function resetGuessMap() {
 map.setZoom(3);
 
 let marker = new L.Marker([0, 0]);
-let markerPosition = marker.getLatLng();
-let lat;
-let long;
+
+
+//Placing the marker on the map ------------------------------------------------------------------------
+export let mapMarkerLat = 0;
+export let mapMarkerLong = 0;
 
 function onMapClick(e) {
     //creates markers wherever the user clicks and if it clicks to another position,
@@ -126,8 +143,8 @@ function onMapClick(e) {
         map.removeLayer(marker);
     }
     //sets the variables from the USER input (this is the one that the user has placed)
-    lat = e.latlng.lat;
-    long = e.latlng.lng;
+    mapMarkerLat = e.latlng.lat;
+    mapMarkerLong = e.latlng.lng;
 
     const redIcon = new L.Icon({
         iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
@@ -137,17 +154,11 @@ function onMapClick(e) {
         shadowSize: [41, 41]
     });
 
-    marker = new L.Marker([lat, long], {icon: redIcon});
-
-    markerPosition = marker.getLatLng();
+    marker = new L.Marker([mapMarkerLat, mapMarkerLong], {icon: redIcon});
     marker.addTo(map);
 }
 
-map.on('click', onMapClick);
-
-map.on('mouseover', onMapHover);
-map.on('mouseout', onMapHover);
-
+//event listeners -----------------------------------------------------------------
 //click listener for confirm button
 const confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
@@ -156,12 +167,19 @@ confirmBTN.addEventListener("click", confirmButtonClicks);
 const languageBTN = document.getElementById("languageButton");
 languageBTN.addEventListener("click", changeLanguage);
 
+//Reset map scaling when the user "enlarges" it --------------------------------------------------------------
+map.on('click', onMapClick);
+
+map.on('mouseover', onMapHover);
+map.on('mouseout', onMapHover);
 
 function onMapHover() {
     map.invalidateSize();
 }
 
+//Guess / Confirm function ----------------------------------------------------------------------------------
 export function confirmButtonClicks() {
+    confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
 
     if (dailyChallengeUIEnabled) {
         document.getElementById("nextRoundText").innerHTML = "See results →";
@@ -177,6 +195,19 @@ export function confirmButtonClicks() {
         document.getElementById("nextRoundText").innerHTML = "Next round →";
     }
 
-    calculateDistances(markerPosition.lat, markerPosition.lng);
-    loadResultMap(lat, long);
+    if (!multiplayer) {
+        calculateDistances(mapMarkerLat, mapMarkerLong);
+        loadResultMap(mapMarkerLat, mapMarkerLong);
+    } else {
+        document.getElementById("confirmButton").textContent = "Waiting...";
+        document.getElementById("confirmButton").style.opacity = "0.5";
+        document.getElementById("confirmButton").style.pointerEvents = "none";
+        document.getElementById("map").style.pointerEvents = "none";
+        document.getElementById("map").style.visibility = "hidden";
+        hideToggleMapButtonIfMobile(true);
+        document.getElementById("revealCompass").style.visibility = "hidden";
+
+        multiplayerStateToGuessed();
+    }
 }
+

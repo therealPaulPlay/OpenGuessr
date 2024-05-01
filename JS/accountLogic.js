@@ -1,6 +1,8 @@
 import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
-import { setDailyChallengeExperienceResult, dailyChallengeTimer } from "./dailyChallenge";
-import { checkTextLength } from "./mainUI";
+import { setDailyChallengeExperienceResult } from "./dailyChallenge";
+import { dailyChallengeTimer } from './dailyChallenge.js';
+import { checkTextLength, toggleMobileMenu } from "./mainUI";
+import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore } from "./multiplayer.js";
 
 let profileName = document.getElementById("profileViewName");
 
@@ -9,11 +11,23 @@ let profileInfo = document.getElementById("profileInfo");
 let loginButton = document.getElementById("loginButton");
 loginButton.addEventListener("click", goTologin);
 
+let mobileLoginButton = document.getElementById("mobileLoginButton");
+mobileLoginButton.addEventListener("click", goTologin);
+
 let logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener("click", signout);
 
+let mobileLogoutButton = document.getElementById("mobileLogoutButton");
+mobileLogoutButton.addEventListener("click", signout);
+
 let profileButton = document.getElementById("profileButton");
 profileButton.addEventListener("click", viewProfile);
+
+let mobileProfileButton = document.getElementById("mobileProfileButton");
+mobileProfileButton.addEventListener("click", function() {
+  toggleMobileMenu();
+  viewProfile();
+});
 
 let displayAccountName = document.getElementById("accountName");
 
@@ -28,6 +42,8 @@ let profileWindow = document.getElementById("profileWindow");
 //default is not logged in, so these are all disabled
 logoutButton.style.display = "none";
 profileButton.style.display = "none";
+mobileLogoutButton.style.display = "none";
+mobileProfileButton.style.display = "none";
 XParea.style.display = "none";
 
 document.getElementById("usernameInput").style.visibility = "hidden";
@@ -114,6 +130,9 @@ async function changeUItoSignedIn() {
   logoutButton.style.display = "inline-block";
   loginButton.style.display = "none";
   profileButton.style.display = "inline-block";
+  mobileLogoutButton.style.display = "inline-block";
+  mobileLoginButton.style.display = "none";
+  mobileProfileButton.style.display = "inline-block";
   XPbarNoAccount.style.display = "none";
   XParea.style.display = "flex";
   enableExclusiveCategories();
@@ -181,7 +200,7 @@ export function uiSetUserXP(xp) {
   resultLevelText.innerHTML = "Level " + templevel;
   levelXPbar.style.width = (xp / requiredXP) * 100 + "%";
 
-  return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp };
+  return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
 }
 
 function willCauseLevelUpgrade(xp, newXP) {
@@ -204,7 +223,7 @@ function willCauseLevelUpgrade(xp, newXP) {
 
 export async function loadResultScreenXP(distance) {
 
-  if (isAuthenticated) {
+  if (isAuthenticated || multiplayer) {
     //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
 
@@ -214,20 +233,38 @@ export async function loadResultScreenXP(distance) {
 
     let earnedXP;
 
-    if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "famous" || selectedCategory == "capital" || selectedCategory == "hard") {
-      earnedXP = Math.round(5000 * ((0.998036) ** distance));
-    }
-    else if (selectedCategory == "daily") {
-      let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
+    //XP calculation formulas -------------------------------------------------
+    if (!multiplayer) {
+      if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "capital" || selectedCategory == "hard") {
+        earnedXP = Math.round(5000 * ((0.998036) ** distance));
+      }
+      else if (selectedCategory == "daily") {
+        let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
+  
+        let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
+        earnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
+        setDailyChallengeExperienceResult(earnedXP);
+  
+      } else if (selectedCategory == "famous") {
+        earnedXP = Math.round(1000 * ((0.998036) ** distance));
 
-      let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
-      earnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
-
-      setDailyChallengeExperienceResult(earnedXP);
+      } else {
+        earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
+      }
     } else {
-      earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
+      //always use the standard formula for multiplayer 
+      earnedXP = Math.round(5000 * ((0.998036) ** distance));
+     
+      if (isHost) {
+        updatePeerDataScore(peerId, earnedXP);
+      } else {
+        peerSendsHost("score", earnedXP);
+      }
+
     }
 
+
+    //apply XP visually and server-wise ----------------------------------
     XPbarResource.classList.remove("XPbarAnimate");
 
     if ((willCauseLevelUpgrade(currentXP, earnedXP)) > 1) {

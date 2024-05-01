@@ -1,6 +1,7 @@
 import { closePopup } from "./errorHandling.js";
 import { reloadIframe } from "./main.js";
 import { setUserXP, uiSetUserXP, isAuthenticated } from "./accountLogic.js";
+import { toggleMultiplayerSelector } from "./multiplayer.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -22,11 +23,11 @@ function toggleHelpWindow() {
 }
 
 //Social Menu and Leaderboard link --------------------------------------------------------------------------
-let socialBarExpanded = false;
+export let socialBarExpanded = false;
 
-document.getElementById("floatingSocialButton").addEventListener("click", toggleSidebar);
+document.getElementById("floatingSocialButton").addEventListener("click", toggleSocialbar);
 
-function toggleSidebar() {
+export function toggleSocialbar() {
     if (!socialBarExpanded) {
         document.getElementById("socialBar").style.maxHeight = "1000px";
         socialBarExpanded = true;
@@ -63,6 +64,22 @@ function toggleMap() {
     } else {
         document.getElementById("map").style.maxHeight = "0%";
         mapExpanded = false;
+    }
+}
+
+export function shrinkMapIfMobile() {
+    if (window.innerHeight > window.innerWidth && mapExpanded) {
+        toggleMap();
+    }
+}
+
+export function hideToggleMapButtonIfMobile(hide) {
+    if (window.innerHeight > window.innerWidth) {
+        if (hide) {
+            toggleMapButton.style.visibility = "hidden";
+        } else {
+            toggleMapButton.style.visibility = "visible";
+        }
     }
 }
 
@@ -111,6 +128,13 @@ let floatingCategoryArea = document.getElementById("floatingCategoryArea");
 let categoriesExpanded = false;
 
 categoryMenuButton.addEventListener("click", function() {
+    toggleCategoryMenu(false)});
+
+export function toggleCategoryMenu(alwaysClose) {
+    if (alwaysClose) {
+        categoriesExpanded = true;
+    }
+
     if (!categoriesExpanded) {
         floatingCategoryArea.style.top = "360px";
         document.getElementById("extendedNavbarContent").scrollTop = "0";
@@ -127,7 +151,7 @@ categoryMenuButton.addEventListener("click", function() {
         categoryMenuButton.innerText = "Map Categories ▼";
         categoriesExpanded = false;
     }
-});
+}
 
 //Social / Discord Join Popup -----------------------------------------------------------------------------------------------------
 
@@ -174,11 +198,13 @@ let mapOffset = false;
 function toggleMapOffset() {
     if (mapOffset) {
         document.getElementById("map").style.marginRight = "0.75%";
+        document.getElementById("mapModeIndicator").style.marginRight = "0.75%";
         revealCompass.style.marginRight = "0.75%";
         revealCompass.innerHTML = "reveal compass";
         mapOffset = false;
     } else {
         document.getElementById("map").style.marginRight = "65px";
+        document.getElementById("mapModeIndicator").style.marginRight = "65px";
         revealCompass.style.marginRight = "65px";
         revealCompass.innerHTML = "hide compass";
         mapOffset = true;
@@ -214,6 +240,41 @@ window.addEventListener('DOMContentLoaded', checkTextLength); // Check on page l
 window.addEventListener('input', checkTextLength); // Check when text changes
 
 
+//Mobile UI Menu -----------------------------------------------------------------------------------------
+let mobileWindow = document.getElementById("mobileWindow");
+let mobileMenuButton = document.getElementById("mobileMenu");
 
+mobileMenuButton.addEventListener("click", toggleMobileMenu);
 
+let mobileWindowOpen = false;
+
+export function toggleMobileMenu() {
+    mobileWindowOpen = !mobileWindowOpen;
+
+    if (mobileWindowOpen) {
+        mobileWindow.style.display = "block";
+        document.getElementById("blackBackground").style.visibility = "visible";
+    } else {
+        mobileWindow.style.display = "none";
+        document.getElementById("blackBackground").style.visibility = "hidden";
+    }
+}
+
+document.getElementById("mobilePopupClose").addEventListener("click", toggleMobileMenu);
+
+document.getElementById("mobileLeaderboardButton").addEventListener("click", goToLeaderboard);
+document.getElementById("mobileDailyLeaderboardButton").addEventListener("click", goToDailyLeaderboard);
+document.getElementById("mobileMultiplayerButton").addEventListener("click", function() {
+    toggleMobileMenu();
+    toggleMultiplayerSelector();
+});
+
+document.getElementById("mobileCategoryButton").addEventListener("click", function() {
+    toggleMobileMenu();
+    toggleCategoryMenu();
+
+    if (mapExpanded) {
+        toggleMap();
+    }
+})
 

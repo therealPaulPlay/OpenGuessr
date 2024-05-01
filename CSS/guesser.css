@@ -43,6 +43,8 @@ h1, h2, h3 {
 }
 
 .bannerLeft {
+  display: flex;
+  justify-content: space-between;
   border-bottom-right-radius: 10px;
   padding-right: 30px;
   padding-left: 10px;
@@ -311,8 +313,12 @@ h1, h2, h3 {
   display: none;
 }
 
-#profileClose, #helpClose, #socialPopupClose, #socialPopupJoin {
+#profileClose, #helpClose, #socialPopupClose, #socialPopupJoin, #multiplayerSelectorClose, #multiplayerSelectorBack, #mobilePopupClose {
   min-height: 50px;
+}
+
+#multiplayerSelectorBack {
+  opacity: 0.5;
 }
 
 ul {
@@ -331,7 +337,7 @@ li {
   outline: none;
   border: none;
   user-select: none;
-  width: 35%;
+  width: 20%;
 }
 
 .white {
@@ -339,7 +345,7 @@ li {
   background-color: white;
 }
 
-#popupHolder {
+.popupHolder {
   position: absolute;
   top: 0;
   bottom: 0;
@@ -354,7 +360,8 @@ li {
   display: none; /* used with block */
   width: 45%;
   min-width: 300px;
-  max-height: 80%;
+  max-width: 600px;
+  max-height: 90%;
   font-size: 25px;
   padding: 25px 25px 10px;
   border-radius: 10px;
@@ -407,6 +414,215 @@ li {
   height: 20px;
 }
 
+.multiplayerHorizontalAlign {
+  display: flex;
+  gap: 10px;
+  justify-content: space-around;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 20px;
+  flex-wrap: wrap;
+}
+
+.multiplayerJoinAlign {
+  display: flex;
+  gap: 10px;
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 30px;
+  width: fit-content;
+  min-width: 65%;
+  margin-left: auto;
+  margin-right: auto;
+  flex-wrap: wrap;
+  flex-direction: column;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.multiplayerCreationArea {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 5px;
+  margin: 10px;
+}
+
+#multiplayerHost {
+  padding: 0 20px;
+  margin: 0;
+}
+
+.multiplayerHostSubmitArea {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 10px;
+}
+
+.multiplayerInput {
+  padding: 5px 15px;
+  font-size: 22px;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  user-select: none;
+  width: 65%;
+  min-width: 65%;
+  flex-grow: 1;
+}
+
+.ticker {
+  display: flex;
+  gap: 10px;
+  border-radius: 10px;
+  justify-content: left;
+  padding: 5px;
+  width: fit-content;
+  align-items: center;
+  margin-bottom: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.multiplayerHostSettings {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  gap: 2px;
+  background-color: rgba(30, 31, 44, 0.5);
+  border-radius: 10px;
+  padding: 5px;
+  padding-top: 10px;
+}
+
+.multiplayerHostCodeArea {
+  display: none;
+  flex-wrap: wrap;
+  justify-content: space-around;
+  align-items: center;
+  background-color: rgba(30, 31, 44, 0.5);
+  border-radius: 10px;
+  padding: 15px;
+  padding-top: 10px;
+  flex-direction: column;
+}
+
+#endMultiplayerRoundButton {
+  min-width: 150px;
+  min-height: 50px;
+  font-size: 25px;
+  display: none;
+  margin-top: 20px;
+}
+
+#roomCodeDisplay {
+  margin: 15px;
+  font-size: 40px;
+}
+
+#roomCreationModes {
+  margin-top: 5px;
+  padding-top: 10px;
+  padding-bottom: 10px;
+}
+
+.tickerText {
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 5px;
+  padding-left: 10px;
+  padding-right: 10px;
+  text-align: center;
+  border-radius: 10px;
+  font-size: 20px;
+  min-width: 50px;
+}
+
+.tickerNote {
+  font-size: 20px;
+}
+
+.multiplayerInputInfo {
+  font-size: 17px;
+  padding: 0;
+  color: lightgrey;
+  width: 70%;
+  overflow: hidden;
+}
+
+#toggleRestrictions {
+  min-width: 170px;
+}
+
+#multiplayerJoin {
+  width: 35%;
+  margin-bottom: 10px;
+  transition: opacity 250ms ease, filter 250ms ease;
+}
+
+#multiplayerLeave {
+  display: none;
+  margin: 0;
+  padding-inline: 10px;
+  line-height: 0.9;
+  margin-left: 6px;
+}
+
+.infoNote {
+  margin: 10px;
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+}
+
+.infoNote p {
+  padding: 5px;
+  padding-left: 20px;
+  padding-right: 15px;
+  padding-bottom: 15px;
+  opacity: 75%;
+  font-size: 20px;
+  max-height: 50px;
+  overflow-y: auto;
+}
+
+#infoNoteIcon {
+  margin-top: 15px;
+  margin-left: 15px;
+  width: 30px;
+  height: auto;
+  opacity: 50%;
+}
+
+.groupPartyButtons {
+  display: flex;
+  gap: 5px;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  border-radius: 10px;
+  flex-grow: 1.5;
+}
+
+.modeComingSoon {
+  opacity: 50%;
+  font-style: italic;
+}
+
+.multiplayerSelect {
+  height: 50px;
+  width: auto;
+  color: black;
+  background-color: white;
+  flex-grow: 1;
+}
+
 .accountClose {
   float: right;
   margin-top: 30px;
@@ -426,6 +642,15 @@ li {
   height: 100%;
   transition: opacity 250ms ease;
   z-index: 15;
+}
+
+#nmpzBackground {
+  position: absolute;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
 }
 
 #hardModeFade {
@@ -448,15 +673,88 @@ li {
   user-select: none;
 }
 
+#multiplayerFade {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  z-index: 1;
+  transition: opacity 250ms ease;
+  opacity: 0;
+  overflow: hidden;
+  backdrop-filter: blur(50px);
+  -webkit-backdrop-filter: blur(50px);
+  background-color: rgba(0, 0, 0, 0.4);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  pointer-events: none;
+  user-select: none;
+}
+
 #hardModeFade h1 {
   font-size: 75px;
   text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
   margin-bottom: 20px;
 }
 
+#multiplayerTitle {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
 #hardModeFade p {
   font-size: 30px;
   text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+}
+
+#multiplayerFade h1 {
+  font-size: 50px;
+  text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+  margin-bottom: 20px;
+}
+
+#multiplayerFade p, #multiplayerTable p {
+  font-size: 30px;
+  text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+}
+
+#multiplayerTable {
+  display: flex;
+  justify-content: safe center;
+  align-items: safe flex-start; /* Stretch items to full height */
+  width: 50%;
+  min-width: 350px;
+  max-width: 750px;
+  font-size: 25px;
+  max-height: 350px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  flex-direction: column;
+  gap: 5px;
+}
+
+.multiplayerOverlayEntry {
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 5px;
+  margin-bottom: 5px;
+  width: 100%;
+}
+
+.multiplayerEntryPlayerInfo {
+  display: flex;
+  justify-content: space-between;
+  gap: 50px;
+  padding: 10px 20px;
+}
+
+.multiplayerEntryPlayerName {
+  flex: 1;
+}
+
+.multiplayerEntryPlayerScore {
+  margin-left: 10px;
 }
 
 #logoutButton {
@@ -580,7 +878,6 @@ li {
 
 #map {
   cursor: crosshair;
-  transition: all 250ms ease;
   margin-left: 0.75%;
   margin-right: 0.75%;
   margin-bottom: 10px;
@@ -593,6 +890,11 @@ li {
   border-radius: 10px;
   background: #bfd4da;
   box-shadow: 0 2px 20px rgba(71, 71, 71, 0.5);
+  transition: height 250ms ease, width 250ms ease, opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
+}
+
+.leaflet-bottom, .leaflet-control-attribution {
+  pointer-events: none;
 }
 
 #map:hover {
@@ -611,7 +913,7 @@ li {
   height: 25px;
   font-size: 17px;
   background-color: rgba(244, 244, 244, 0.7);
-  transition: all 250ms ease;
+  transition: margin 250ms ease, filter 250ms ease, opacity 250ms ease;
   box-shadow: 0 2px 20px rgba(71, 71, 71, 0.5);
   z-index: 10;
 }
@@ -632,7 +934,7 @@ li {
   color: white;
   font-size: 25px;
   margin-bottom: 10px;
-  transition: width 250ms ease;
+  transition: width 250ms ease, margin 250ms ease;
 }
 
 .mapModeText {
@@ -794,10 +1096,6 @@ li {
   -webkit-backdrop-filter: blur(10px);
 }
 
-#floatingMapButton:hover {
-    filter: brightness(70%);
-}
-
 #endScreenOpenLocation {
   margin-top: auto;
   margin-left: 0.75%;
@@ -837,6 +1135,7 @@ li {
   margin-right: 24px;
   margin-left: auto;
   background-color: var(--brand-color);
+  transition: background-color 250ms ease, color 250ms ease, filter 250ms ease;
 }
 
 #privacyButton {
@@ -1259,6 +1558,65 @@ button {
   transition: all 250ms ease;
 }
 
+#mobileMenu {
+  display: none;
+  margin-left: 0;
+  padding: 0;
+  padding-inline: 10px;
+}
+
+#mobileMenuIcon {
+  width: 40px;
+  height: auto;
+  margin: 0;
+}
+
+#mobileMenuContent {
+  display: flex;
+  width: 100%;
+  justify-content: center;
+  align-items: flex-start;
+  height: fit-content;
+  overflow: hidden;
+  flex-wrap: wrap;
+}
+
+#mobileWindow {
+  max-width: 400px;
+}
+
+.mobileMenuOptions {
+  display: flex;
+  width: fit-content;
+  height: fit-content;
+  justify-content: center;
+  align-items: center;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 15px;
+  padding: 5px;
+  margin: 10px;
+  flex-direction: column;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+#privacyNotice {
+  font-size: 20px;
+  opacity: 50%;
+}
+
+#privacyNotice a:link {
+  color: #FFFFFF;
+}
+
+#privacyNotice a:visited {
+  color: #FFFFFF;
+}
+
+#privacyNotice a:hover {
+  color: #FFFFFF;
+}
+
 .socialBarButton {
   width: auto;
   color: black;
@@ -1275,6 +1633,35 @@ button {
 
 .placeholder {
   height: 5px;
+}
+
+.fixedMobileuiWidth {
+  min-width: 250px;
+  width: 250px;
+  height: 50px;
+}
+
+#mobileLoginButton, #mobileProfileButton {
+  background-color: var(--brand-color);
+  color: white;
+}
+
+#mobileLogoutButton, #mobileProfileButton {
+  display: none;
+}
+
+#mobileAccountUI {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  overflow: hidden;
+}
+
+#mobileProfileButton, #mobileLogoutButton {
+  min-width: 0;
+  flex-grow: 1;
+  width: 120px;
+  padding-inline: 10px;
 }
 
 .popup-content {
@@ -1310,11 +1697,24 @@ button {
   width: 100%;
 }
 
+/* all very narrow screens */
+@media (max-width: 700px) {
+  #pinSelector {
+    justify-content: space-around;
+  }
+}
+
 /* laptops and big screens */
 @media (orientation: landscape) and (min-width: 1250px) {
   #map:hover {
     width: 60%;
     height: 65%;
+  }
+}
+
+@media (max-width: 1600px) {
+  #mapModeIndicator {
+    font-size: 20px;
   }
 }
 
@@ -1340,7 +1740,11 @@ all and (max-width: 1250px) {
   }
 
   #motivationText {
-    font-size: 20pt;
+    font-size: 18pt;
+  }
+
+  #endScreenLevel {
+    font-size: 20px;
   }
 
   #GuesserWindow {
@@ -1355,6 +1759,10 @@ all and (max-width: 1250px) {
   #socialArea {
     margin-top: 85px;
     left: 165px;
+  }
+
+  #privacyButton {
+    display: none;
   }
 
   #floatingSocialButton {
@@ -1373,7 +1781,7 @@ all and (max-width: 1250px) {
   }
 }
 
-/* Small phones, mobile */
+/* Small phones, mobile as well as all portrait screens */
 @media all and (orientation: portrait),
 all and (max-width: 1000px) {
   .bannerRight {
@@ -1394,6 +1802,47 @@ all and (max-width: 1000px) {
   
   #hardModeFade p {
     font-size: 25px;
+  }
+
+  .bannerLeft {
+    border-radius: 0;
+    width: 100%;
+    margin: 0;
+    padding-left: 5px;
+    padding-right: 10px;
+  }
+
+  #mobileMenu {
+    display: block;
+  }
+
+  #profileClose {
+    margin-top: 5px;
+  }
+
+  #icon {
+    width: 250px;
+    height: auto;
+    margin-top: 10px;
+  }
+
+  .extendedNavbar {
+    right: 0px;
+    left: 0px;
+    width: 100%;
+  }
+
+  #extendedNavbarContent {
+    margin-left: 0;
+  }
+
+  .category {
+    margin-right: 0.5em;
+    margin-left: 5px;
+  }
+
+  .categoriesNote {
+    margin-inline: 10px;
   }
 }
 

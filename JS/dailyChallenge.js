@@ -1,12 +1,15 @@
 import { confirmButtonClicks } from "./miniMap";
+import { setDailyChallengeScore } from "./userAPI"
+import { startTimer } from "./timer";
 
 export let dailyChallengeUIEnabled = false;
 export let dailyChallengeTimer;
 
-//Set Daily challenge Experience (the result) ------------------------------------------------------------
+
+
+//Set Daily challenge Experience (the result) ----------------------------------------------------------------
 export function setDailyChallengeExperienceResult(result) {
-    //TODO! Has to be implemented with user API - setUserDailyChallengeResult(result) or something
-    console.log("POST request set user result of daily challenge (todo) + Result: " + result);
+    setDailyChallengeScore(localStorage.getItem("bearer"), localStorage.getItem("id"), result, "index");
 }
 
 //Daily Challenge UI ------------------------------------------------------------------------------------------
@@ -15,60 +18,11 @@ export function setDailyChallengeUI(enable) {
 
     if (enable) {
         document.getElementById("mapModeIndicator").style.display = "flex";
-        document.getElementById("mapTimer").textContent = "02" + ":" + "00"; //reset the timer visually - the actual timer starts after the load of the map
+        document.getElementById("mapModeText").textContent = "Daily Challenge";
+        document.getElementById("multiplayerLeave").style.display = "none";
     } else {
         document.getElementById("mapModeIndicator").style.display = "none";
-        try {
-            dailyChallengeTimer.stopTimer();
-        } catch {
-        /*console.log("No timer to stop.");*/
-        }
     }
-}
-
-//UI Timer ---------------------------------------------------------------------------------------------------------------------
-let currentTimerIntervalId; // Global variable to store the current interval ID
-
-export function startTimer(durationInSeconds, onTimerExpired) {
-    clearInterval(currentTimerIntervalId); // Clear previous timer, if any
-
-    let timer = durationInSeconds, minutes, seconds;
-    currentTimerIntervalId = setInterval(function () {
-        minutes = parseInt(timer / 60, 10);
-        seconds = parseInt(timer % 60, 10);
-
-        minutes = minutes < 10 ? "0" + minutes : minutes;
-        seconds = seconds < 10 ? "0" + seconds : seconds;
-
-        document.getElementById("mapTimer").textContent = minutes + ":" + seconds;
-
-        if (--timer < 0) {
-            clearInterval(currentTimerIntervalId); // Stop the interval
-            timerExpired(); // Call the function when timer expires
-        }
-    }, 1000);
-
-    function timerExpired() {
-        if (typeof onTimerExpired === 'function') {
-            onTimerExpired();
-        }
-    }
-
-    // Function to stop the timer
-    function stopTimer() {
-        clearInterval(currentTimerIntervalId);
-    }
-
-    // Function to get the remaining time
-    function getRemainingTime() {
-        return timer;
-    }
-
-    // Return an object with functions for controlling the timer
-    return {
-        getRemainingTime: getRemainingTime,
-        stopTimer: stopTimer
-    };
 }
 
 //Timer implementation for Daily Challenge ------------------------------------------------------------------------------------------------------------------

@@ -5,7 +5,9 @@ export const loginEndpoint = `${backendURL}/users/login`;
 export const registrationEndpoint = `${backendURL}/users/register`;
 export const userUpdateEndpoint = `${backendURL}/users/update`;
 export const userGetEndpoint = `${backendURL}/users`;
+export const challengesEndpoint = `${backendURL}/challenges`;
 
+//Login and registration -----------------------------------------------------------------------------------
 export async function loginUser(email, password, errorSource) {
   try {
     const requestBody = {
@@ -35,7 +37,7 @@ export async function loginUser(email, password, errorSource) {
       displayError("Login failed: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred during login:', error);
+    console.error('Error occurred during login: ', error);
     displayError("Error occured during login: " + error, errorSource);
   }
 }
@@ -64,15 +66,16 @@ export async function registerUser(userName, email, password, errorSource) {
       localStorage.setItem("RegistrationSuccess", "success");
       window.location.reload();
     } else {
-      console.error('Registration failed:', response.status);
+      console.error('Registration failed: ', response.status);
       displayError("Registration failed: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred during registration:', error);
+    console.error('Error occurred during registration: ', error);
     displayError("Error occured during registration: " + error, errorSource);
   }
 }
 
+//Get and Set game-related user info -----------------------------------------------------------------------------
 export async function getUser(token, id, errorSource) {
   try {
     const response = await fetch(`${userGetEndpoint}/${id}`, {
@@ -93,7 +96,7 @@ export async function getUser(token, id, errorSource) {
       displayError("Fetch failed: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred while fetching the user:', error);
+    console.error('Error occurred while fetching the user: ', error);
     displayError("Error occurred while fetching the user: " + error, errorSource);
   }
 }
@@ -101,12 +104,10 @@ export async function getUser(token, id, errorSource) {
 export async function getAllUsers() {
   try {
     let id = localStorage.getItem("id")
-    console.log(id);
     let leaderboardEndpoint = userGetEndpoint + "/leaderboard";
     if (id != null && id != 0 && id != undefined)
       leaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
 
-    console.log()
     const response = await fetch(`${leaderboardEndpoint}`, {
       method: 'GET',
       headers: {
@@ -123,31 +124,7 @@ export async function getAllUsers() {
       console.error('Fetch failed:', response.status);
     }
   } catch (error) {
-    console.error('Error occurred while fetching the user:', error);
-  }
-}
-
-export async function updatePassword(token, id, errorSource) {
-  try {
-    const response = await fetch(`${userGetEndpoint}/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-    });
-
-    // Check if the response is successful
-    if (response.ok) {
-      const data = await response.json();
-      saveUserData(data);
-    } else {
-      console.error('Fetch failed:', response.status);
-      displayError("Fetch failed: " + response.status, errorSource);
-    }
-  } catch (error) {
-    console.error('Error occurred while fetching the user:', error);
-    displayError("Error occured while fetching the user: " + error, errorSource);
+    console.error('Error occurred while fetching the user: ', error);
   }
 }
 
@@ -157,8 +134,10 @@ export async function updateExperience(token, id, experience, errorSource) {
       id: id,
       experience: experience
     };
+
+    const experienceEndpoint = userUpdateEndpoint + "/experience";
     // Make the PUT request using Fetch API
-    const response = await fetch(userUpdateEndpoint, {
+    const response = await fetch(experienceEndpoint, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -176,7 +155,7 @@ export async function updateExperience(token, id, experience, errorSource) {
       displayError("User update failed: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred during user update:', error);
+    console.error('Error occurred during user update: ', error);
     displayError("Error occured during user update: " + error, errorSource);
   }
 }
@@ -204,15 +183,14 @@ export async function updateUsername(token, id, requestedUsername, errorSource) 
       const data = await response.json();
       localStorage.setItem("username", data['user']['userName']);
     } else {
-      console.error('User update failed:', response.status);
-      displayError("User update failed " + response.status, errorSource);
+      console.error('User update failed: ', response.status);
+      displayError("User update failed: " + response.status, errorSource);
     }
   } catch (error) {
-    console.error('Error occurred during user update:', error);
+    console.error('Error occurred during user update: ', error);
     displayError("Error occured during user update " + error, errorSource);
   }
 }
-
 
 //executed after successful login
 async function saveUserData(data) {
@@ -224,6 +202,91 @@ async function saveUserData(data) {
   localStorage.setItem("experience", data['experience']);
 }
 
+//Daily Challenge ------------------------------------------------------------------------------------------
+
+export async function getDailyChallengeIndex(jsonLength) {
+  try {
+    let dailyChallengeLocation = challengesEndpoint + "/daily";
+
+    const response = await fetch(`${dailyChallengeLocation}`, {
+      method: 'PUT',
+      headers: { 'Content-Type': 'application/json' },
+      body: jsonLength
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+
+    } else {
+      console.error('Fetch failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred while getting the daily challenge index: ', error);
+  }
+}
+
+export async function setDailyChallengeScore(token, id, score, errorSource) {
+  try {
+    const requestBody = {
+      id: id,
+      lastChallengePoints: score
+    }
+
+    // Make the PUT request using Fetch API
+    const response = await fetch(userUpdateEndpoint, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+
+    } else {
+      console.error('User update failed:', response.status);
+      displayError("Daily Challenge already played? Error: " + response.status, errorSource);
+    }
+  } catch (error) {
+    console.error('Error occured while trying to set daily challenge score: ', error);
+    displayError("Error occured while trying to set daily challenge score: " + error, errorSource);
+  }
+}
+
+export async function getDailyLeaderboard() {
+  try {
+    let id = localStorage.getItem("id");
+   
+    let dailyLeaderboardEndpoint = challengesEndpoint + "/daily/leaderboard";
+    if (id != null && id != 0 && id != undefined)
+      dailyLeaderboardEndpoint = `${dailyLeaderboardEndpoint}/${id}`;
+
+    const response = await fetch(`${dailyLeaderboardEndpoint}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+
+    } else {
+      console.error('Fetch failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching the user: ', error);
+  }
+}
+
+//Error catching ----------------------------------------------------------------------------------------
 export function displayError(error, source) {
   if (source == "signup") {
     //special cases
@@ -257,3 +320,4 @@ if (localStorage.getItem("RegistrationSuccess") == "success") {
   displaySuccess();
   localStorage.removeItem("RegistrationSuccess");
 }
+
