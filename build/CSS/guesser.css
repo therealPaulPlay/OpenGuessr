@@ -987,11 +987,11 @@ li {
   border: dashed rgba(255, 255, 255, 0.5);
 }
 
-/* the actual google ads bar that should be styled too according to google */
+/* 
 .adScaling {
   width: 970px;
   height: 90px;
-}
+} */
 
 @media (max-width: 1500px) {
   #bottomFooterAds {
@@ -999,10 +999,11 @@ li {
   height: 90px;
   }
 
+  /*
   .adScaling {
     width: 728px;
     height: 90px;
-  }
+  } */
 }
 
 @media (max-width: 1075px) {
@@ -1011,10 +1012,11 @@ li {
   height: 50px;
   }
 
+  /*
   .adScaling {
     width: 320px;
     height: 50px;
-  }
+  } */
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
