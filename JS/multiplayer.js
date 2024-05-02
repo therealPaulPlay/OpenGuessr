@@ -261,9 +261,9 @@ function endMultiplayerRound() {
             sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
-            document.getElementById("nextRoundText").innerHTML = "Wait before skipping... →";
+            document.getElementById("nextRound").innerHTML = "Wait before skipping... →";
             setTimeout(function () {
-                document.getElementById("nextRoundText").innerHTML = "Skip →";
+                document.getElementById("nextRound").innerHTML = "Skip →";
                 document.getElementById("nextRound").style.opacity = "1";
                 document.getElementById("nextRound").style.pointerEvents = "auto";
             }, 2000)
@@ -271,7 +271,7 @@ function endMultiplayerRound() {
             //if i'ts not the host, hide the next round button!
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
-            document.getElementById("nextRoundText").innerHTML = "Waiting for host... →";
+            document.getElementById("nextRound").innerHTML = "Waiting for host... →";
         }
 
         calculateDistances(mapMarkerLat, mapMarkerLong);
@@ -700,7 +700,7 @@ function leaveMultiplayerRound() {
     hideToggleMapButtonIfMobile(false);
     document.getElementById("nextRound").style.opacity = "1";
     document.getElementById("nextRound").style.pointerEvents = "auto";
-    document.getElementById("nextRoundText").textContent = "Next round →";
+    document.getElementById("nextRound").textContent = "Next round →";
     endMultiplayerRoundButton.style.display = "none";
     nmpzBackground.style.pointerEvents = "none";
 }
