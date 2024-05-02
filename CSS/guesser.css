@@ -979,7 +979,7 @@ li {
   right: 0px; 
   margin-left: auto; 
   margin-right: auto; 
-  width: 728px;
+  width: 970px;
   max-height: 92px;
   height: 90px;
   padding: 0;
@@ -989,8 +989,20 @@ li {
 
 /* the actual google ads bar that should be styled too according to google */
 .adScaling {
+  width: 970px;
+  height: 90px;
+}
+
+@media (max-width: 1500px) {
+  #bottomFooterAds {
   width: 728px;
   height: 90px;
+  }
+
+  .adScaling {
+    width: 728px;
+    height: 90px;
+  }
 }
 
 @media (max-width: 1075px) {
