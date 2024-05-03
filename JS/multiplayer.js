@@ -427,6 +427,12 @@ function copyRoomcodeLink() {
         });
 }
 
+function generateFunnyGuestName() {
+    var animals = ["Giraffe", "Ape", "Sloth", "Penguin", "Kangaroo", "Panda", "Zebra", "Llama"];
+    var randomAnimal = animals[Math.floor(Math.random() * animals.length)];
+    return "Guest" + randomAnimal;
+}
+
 // Logic ------------------------------------------------------------------------------------------------
 var conn; // the connection data
 export let peerId; //host peer id
@@ -615,7 +621,7 @@ function joinRoom(code) {
 
     const options = {
         metadata: {
-            username: localStorage.getItem("username") == null ? "Guest" : localStorage.getItem("username"),
+            username: localStorage.getItem("username") == null ? generateFunnyGuestName() : localStorage.getItem("username"),
             level: uiSetUserXP(localStorage.getItem("experience")).level,
             score: 0 //inital score is set to 0
         }
@@ -803,10 +809,22 @@ export function showMultiplayerOverlay(show, title, array) {
 
         let body = '';
 
+        let yourPeerId = peerId;
+
         // Generate HTML for each player
         array.forEach(playerInfo => {
             const [peerId, username, level, score] = playerInfo;
-            body += `
+            if (peerId == yourPeerId) {
+                body += `
+                <div class="multiplayerOverlayEntry yourMultiplayerOverlay">
+                    <div class="multiplayerEntryPlayerInfo">
+                        <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level})</div>
+                        <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
+                    </div>
+                </div>
+            `;
+            } else {
+                body += `
                 <div class="multiplayerOverlayEntry">
                     <div class="multiplayerEntryPlayerInfo">
                         <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level})</div>
@@ -814,6 +832,7 @@ export function showMultiplayerOverlay(show, title, array) {
                     </div>
                 </div>
             `;
+            }
         });
 
         document.getElementById("multiplayerTable").innerHTML = body;
