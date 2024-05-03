@@ -179,6 +179,10 @@ function enableExclusiveCategories() {
 let requiredXP;
 
 export function uiSetUserXP(xp) {
+  if (xp == undefined || xp == null) {
+    xp = 0;
+  }
+
   const baseXP = 5000;
   const xpIncreaseRate = 1.1; // xp needed to level up increases per level
 
@@ -196,9 +200,11 @@ export function uiSetUserXP(xp) {
   let levelText = document.getElementById("levelText");
 
   // Update the UI with the calculated level and XP progress
-  levelText.innerHTML = "Level " + templevel;
-  resultLevelText.innerHTML = "Level " + templevel;
-  levelXPbar.style.width = (xp / requiredXP) * 100 + "%";
+  if (isAuthenticated) {
+    levelText.innerHTML = "Level " + templevel;
+    resultLevelText.innerHTML = "Level " + templevel;
+    levelXPbar.style.width = (xp / requiredXP) * 100 + "%";
+  }
 
   return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
 }
@@ -228,6 +234,10 @@ export async function loadResultScreenXP(distance) {
     let XPbarResource = document.getElementById("endScreenXPbarResource");
 
     let currentXP = Number(localStorage.getItem("experience"));
+    
+    if (currentXP == null) {
+      currentXP = 0;
+    }
 
     let selectedCategory = localStorage.getItem("selectedCategory");
 
@@ -274,7 +284,7 @@ export async function loadResultScreenXP(distance) {
       XPbarResource.style.width = uiSetUserXP(currentXP).fraction * 100 + "%";
     }
 
-    if (earnedXP > 0) {
+    if (earnedXP > 0 && isAuthenticated) {
       setUserXP(currentXP + earnedXP); //save XP, this is the last step! This function is async, but we don't await it as we set the XP to be currentXP + earnedXP in the ui anyway
     }
 

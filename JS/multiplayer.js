@@ -49,8 +49,12 @@ multiplayerSelectDuels.addEventListener("mouseout", () => { changeMultiplayerSel
 
 let multiPlayerWindowOpen = false;
 
-export function toggleMultiplayerSelector() {
-    if (localStorage.getItem("id") != null) {
+export function toggleMultiplayerSelector(alwaysClose) {
+    if (alwaysClose == "close") {
+        multiPlayerWindowOpen = true;
+    }
+
+    if (localStorage.getItem("id") != null || multiplayer) {
         if (multiPlayerWindowOpen) {
             multiplayerSelectionScreen.style.display = "none";
             document.getElementById("blackBackground").style.visibility = "hidden";
@@ -140,7 +144,9 @@ function setMultiplayerWindowSelection(window) {
 
 //Join page ----------------------------------------------------------------------------------------------
 
-multiplayerJoin.addEventListener("click", joinRoom)
+multiplayerJoin.addEventListener("click", () => {
+    joinRoom(removeWhiteSpace(document.getElementById("roomCodeInput").value));
+})
 
 function setJoinInfoText(text) {
     joinInfoText.innerText = text; //this function is used to display things like "Invalid Roomcode" etc.
@@ -349,14 +355,76 @@ function generateRandomCode(length) {
     }
     return code;
 }
+
+let unqiueUserID = 0;
 if (localStorage.getItem("id") != null) {
-    let unqiueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
-    peer = new Peer(unqiueUserID, {
-        config: {'iceServers': [
-          { url: 'stun:stun.l.google.com:19302' },
-          { url: 'turn:freestun.net:3479', username: 'free', credential: 'free' }
-        ]} 
-      });
+    unqiueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
+} else {
+    unqiueUserID = "openguessr_" + "guest_" + generateRandomCode(10);
+}
+
+//set up the peer connection
+peer = new Peer(unqiueUserID, {
+    config: {
+        'iceServers': [
+            { url: 'stun:stun.l.google.com:19302' },
+            { url: 'turn:freestun.net:3479', username: 'free', credential: 'free' }
+        ]
+    }
+});
+
+//Joining via Links (also as a guest!) 
+
+var queryString = window.location.search;
+let joinOnLoadViaLink = false;
+
+// Check if there is a query string
+if (queryString && queryString.length > 1) { // Checking if queryString is not empty
+    // Remove the "?" character from the beginning
+    queryString = queryString.substring(1);
+
+    // Split the query string by "&" in case there are multiple parameters
+    var params = queryString.split('&');
+
+    // Assume the room code is the first parameter
+    var roomCode = params[0];
+
+    // You can then use the room code in your application
+    console.log("Attempting join via Room Code Link:", roomCode);
+    joinOnLoadViaLink = true;
+}
+
+document.addEventListener('DOMContentLoaded', function () {
+    if (joinOnLoadViaLink) {
+
+        peer.on('open', function () {
+            joinRoom(roomCode);
+        });
+
+        joinOnLoadViaLink = false;
+        history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
+    }
+});
+
+let copyRoomcodeLinkButton = document.getElementById("roomcodeLink");
+
+copyRoomcodeLinkButton.addEventListener("click", copyRoomcodeLink);
+
+function copyRoomcodeLink() {
+    navigator.clipboard.writeText(window.location.origin + "/?" + peerId.replace("openguessr_", ""))
+        .then(function () {
+            copyRoomcodeLinkButton.textContent = "Copied!";
+            setTimeout(()=> {
+                copyRoomcodeLinkButton.textContent = "Copy Link";
+            }, 1000);
+        })
+        .catch(function (error) {
+            copyRoomcodeLinkButton.textContent = "Error!";
+            console.error("Copy error: " + error);
+            setTimeout(()=> {
+                copyRoomcodeLinkButton.textContent = "Copy Link";
+            }, 1000);
+        });
 }
 
 // Logic ------------------------------------------------------------------------------------------------
@@ -540,27 +608,27 @@ function removeWhiteSpace(input) {
     return input.replace(/\s/g, '');
 }
 
-function joinRoom() {
+function joinRoom(code) {
     isHost = false;
 
     setJoinInfoText("Attempting join...");
 
     const options = {
         metadata: {
-            username: localStorage.getItem("username"),
+            username: localStorage.getItem("username") == null ? "Guest" : localStorage.getItem("username"),
             level: uiSetUserXP(localStorage.getItem("experience")).level,
             score: 0 //inital score is set to 0
         }
     };
 
-    conn = peer.connect("openguessr_" + removeWhiteSpace(document.getElementById("roomCodeInput").value), options);
+    conn = peer.connect("openguessr_" + code, options);
 
     // Event listener for when the connection is opened
     conn.on('open', function () {
         setJoinInfoText("Joined!");
         multiplayer = true;
         setMultiplayerUI();
-        toggleMultiplayerSelector();
+        toggleMultiplayerSelector("close");
     });
 
     // Receive messages

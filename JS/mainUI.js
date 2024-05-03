@@ -28,14 +28,18 @@ export let socialBarExpanded = false;
 document.getElementById("floatingSocialButton").addEventListener("click", toggleSocialbar);
 
 export function toggleSocialbar() {
-    if (!socialBarExpanded) {
-        document.getElementById("socialBar").style.maxHeight = "1000px";
-        socialBarExpanded = true;
-        document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▲";
-    } else {
-        document.getElementById("socialBar").style.maxHeight = "0";
-        socialBarExpanded = false;
-        document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▼";
+    try {
+        if (!socialBarExpanded) {
+            document.getElementById("socialBar").style.maxHeight = "1000px";
+            socialBarExpanded = true;
+            document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▲";
+        } else {
+            document.getElementById("socialBar").style.maxHeight = "0";
+            socialBarExpanded = false;
+            document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▼";
+        }
+    } catch (error) {
+        console.warn("Socialbar couldn't be closed: ", error);
     }
 }
 
@@ -131,26 +135,31 @@ categoryMenuButton.addEventListener("click", function() {
     toggleCategoryMenu(false)});
 
 export function toggleCategoryMenu(alwaysClose) {
-    if (alwaysClose) {
-        categoriesExpanded = true;
+    try {
+        if (alwaysClose) {
+            categoriesExpanded = true;
+        }
+    
+        if (!categoriesExpanded) {
+            floatingCategoryArea.style.top = "360px";
+            document.getElementById("extendedNavbarContent").scrollTop = "0";
+            document.getElementById("extendedNavbarGradient").style.display = "block";
+            extendedNavbar.classList.add("expanded");
+            categoryMenuButton.innerText = "Map Categories ▲";
+            categoriesExpanded = true;
+        } else {
+            setTimeout(function() {
+                floatingCategoryArea.style.top = "85px";
+                document.getElementById("extendedNavbarGradient").style.display = "none";
+            }, 75); 
+            extendedNavbar.classList.remove("expanded");
+            categoryMenuButton.innerText = "Map Categories ▼";
+            categoriesExpanded = false;
+        }
+    } catch {
+        console.warn("Couldn't toggle category menu");
     }
 
-    if (!categoriesExpanded) {
-        floatingCategoryArea.style.top = "360px";
-        document.getElementById("extendedNavbarContent").scrollTop = "0";
-        document.getElementById("extendedNavbarGradient").style.display = "block";
-        extendedNavbar.classList.add("expanded");
-        categoryMenuButton.innerText = "Map Categories ▲";
-        categoriesExpanded = true;
-    } else {
-        setTimeout(function() {
-            floatingCategoryArea.style.top = "85px";
-            document.getElementById("extendedNavbarGradient").style.display = "none";
-        }, 75); 
-        extendedNavbar.classList.remove("expanded");
-        categoryMenuButton.innerText = "Map Categories ▼";
-        categoriesExpanded = false;
-    }
 }
 
 //Social / Discord Join Popup -----------------------------------------------------------------------------------------------------

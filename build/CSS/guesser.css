@@ -321,6 +321,14 @@ h1, h2, h3 {
   opacity: 0.5;
 }
 
+.copyLinkButton {
+  color: black;
+  background-color: rgba(255, 255, 255, 1);
+  margin: 5px;
+  margin-top: 20px;
+  height: fit-content;
+}
+
 ul {
   list-style-type: none;
   padding: 10px 0;
@@ -909,10 +917,10 @@ li {
   margin-right: 0.75%;
   padding-right: 10px;
   padding-left: 10px;
-  border-radius: 10px;
+  border-radius: 7px;
   height: 25px;
   font-size: 17px;
-  background-color: rgba(244, 244, 244, 0.7);
+  background-color: rgba(255, 255, 255, 0.9);
   transition: margin 250ms ease, filter 250ms ease, opacity 250ms ease;
   box-shadow: 0 2px 20px rgba(71, 71, 71, 0.5);
   z-index: 10;
@@ -972,70 +980,64 @@ li {
   -webkit-backdrop-filter: blur(10px);
 }
 
-/* #adBar {
-  flex-grow: 1;
-  text-align: center;
-  height: 90%;
-  margin-right: 15px;
-  margin-left: 5px;
-  border: dashed rgba(255, 255, 255, 0.5);
-} */
-
-#googleAds {
+#bottomFooterAds {
   position: absolute;
-  bottom: 12.5px;
+  bottom: 10px;
   left: 0px; 
   right: 0px; 
   margin-left: auto; 
   margin-right: auto; 
-  width: 60%;
+  width: 970px;
   max-height: 92px;
   height: 90px;
   padding: 0;
   z-index: 11;
-  /*border: dashed rgba(255, 255, 255, 0.5);*/
-
+  border: dashed rgba(255, 255, 255, 0.5);
 }
 
-/* the actual google ads bar that should be styled too according to google */
-.adsbygoogle {
+/* 
+.adScaling {
+  width: 970px;
+  height: 90px;
+} */
+
+@media (max-width: 1500px) {
+  #bottomFooterAds {
   width: 728px;
-  height: 90px
+  height: 90px;
+  }
+
+  /*
+  .adScaling {
+    width: 728px;
+    height: 90px;
+  } */
 }
 
-@media (max-width: 1070px) {
-  #googleAds {
-  width: 50%;
+@media (max-width: 1175px) {
+  #bottomFooterAds {
+  width: 320px;
+  height: 50px;
   }
 
-  .adsbygoogle {
-    width: 468px;
-    height: 60px
-  }
-}
-
-@media (max-width: 900px) {
-  #googleAds {
-  width: 40%;
-  }
-  
-  .adsbygoogle {
+  /*
+  .adScaling {
     width: 320px;
-    height: 50px
-  }
+    height: 50px;
+  } */
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
-  #googleAds {
+  #bottomFooterAds {
   width: 0;
   display: none;
   }
 }
 
 @media (orientation: portrait) and (max-width: 700px) {
-  #googleAds {
+  #bottomFooterAds {
     width: 320px;
-    height: 50px
+    height: 50px;
   }
 
   .BottomBar {
@@ -1756,10 +1758,6 @@ all and (max-width: 1250px) {
     left: 165px;
   }
 
-  #privacyButton {
-    display: none;
-  }
-
   #floatingSocialButton {
     margin-left: 0;
     border-bottom-left-radius: 0px;
@@ -1809,6 +1807,10 @@ all and (max-width: 1000px) {
 
   #mobileMenu {
     display: block;
+  }
+
+  #privacyButton {
+    display: none;
   }
 
   #profileClose {
