@@ -441,10 +441,10 @@ export let connectedPeers = [];
 
 function removeConnectedPeerById(peerId) {
     // Find the index of the entry with the given ID
-    const index = connectedPeers.findIndex(entry => entry[1] === peerId);
+    const index = connectedPeers.findIndex(entry => entry[0] === peerId);
 
     // If the entry exists in the array, remove it
-    if (index != -1) {
+    if (index !== -1) {
         connectedPeers.splice(index, 1);
     }
 }
@@ -501,7 +501,7 @@ if (peer) {
                 incomingConn.on('close', function () {
                     connectedClientsCount--;
                     setJoinCounter(connectedClientsCount);
-                    removeConnectedPeerById(incomingConn.peerId);
+                    removeConnectedPeerById(incomingConn.peer);
 
                     //if peer disconnects pre-game, update the waiting screen
                     if (!multiplayerFirstRoundPlayed) {
