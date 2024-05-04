@@ -410,7 +410,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     joinRoom(roomCode);
                 });
             } catch (err) {
-                console.error("Tried to join via link with initizalized peer, but there was an exception when joining.")
+                console.error("Tried to join via link with initizalized peer, but there was an exception when joining.");
             }
         } else {
             console.error("Tried to join round via link, but peerjs was not initialized yet.");
@@ -429,7 +429,7 @@ function copyRoomcodeLink() {
     navigator.clipboard.writeText(window.location.origin + "/?" + peerId.replace("openguessr_", ""))
         .then(function () {
             copyRoomcodeLinkButton.textContent = "Copied!";
-            setTimeout(()=> {
+            setTimeout(() => {
                 copyRoomcodeLinkButton.textContent = "Copy Link";
             }, 700);
         })
@@ -732,7 +732,7 @@ if (peer) {
     });
 
     peer.on('error', function (err) {
-        console.error("PeerJS Error: " + err);
+        console.error("PeerJS: " + err);
 
         if (multiplayer) {
             if (err.type != "network") {
