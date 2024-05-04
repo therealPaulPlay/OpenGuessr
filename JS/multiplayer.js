@@ -544,6 +544,10 @@ function createRoom() {
     multiplayerFirstRoundPlayed = false;
     roomLocked = false;
     multiplayerCategory = mapCategory;
+    
+    if (multiplayerCategory == "hard" || multiplayerCategory == "daily") {
+        multiplayerCategory = "standard - auto";
+    }
 
     if (multiplayerHost.textContent != "Start") {
         showHostCodeArea("Roomcode: " + peerId.replace("openguessr_", ""));
