@@ -3,7 +3,7 @@ import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socialBarExpanded } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex } from "./accountLogic.js";
-import { checkGenerationTypeAndGenerate, transitionToStart } from "./categoryMenu.js";
+import { checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { calculateDistances, loadResultMap } from "./main.js";
 
@@ -232,7 +232,8 @@ function setMultiplayerUI() {
         floatingSocialButton.style.pointerEvents = "none";
         document.getElementById("mapModeIndicator").style.display = "flex";
         document.getElementById("multiplayerLeave").style.display = "block";
-        document.getElementById("mapModeText").textContent = "Multiplayer";
+        document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
+
         mobileMenuButton.style.opacity = "0.5";
         mobileMenuButton.style.pointerEvents = "none";
     } else {
@@ -338,6 +339,8 @@ export function updatePeerDataScore(peerId, addScore) {
     }
 }
 
+let multiplayerCategory = "default";
+
 // Multiplayer Setup (IF player has an id! ) ---------------------------------------------------------------------------------------
 var peer;
 let connectedClientsCount = 0;
@@ -357,6 +360,7 @@ function generateRandomCode(length) {
 }
 
 let unqiueUserID = 0;
+
 if (localStorage.getItem("id") != null) {
     unqiueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
 } else {
@@ -364,14 +368,18 @@ if (localStorage.getItem("id") != null) {
 }
 
 //set up the peer connection
-peer = new Peer(unqiueUserID, {
-    config: {
-        'iceServers': [
-            { url: 'stun:stun.l.google.com:19302' },
-            { url: 'turn:freestun.net:3479', username: 'free', credential: 'free' }
-        ]
-    }
-});
+try {
+    peer = new Peer(unqiueUserID, {
+        config: {
+            'iceServers': [
+                { url: 'stun:stun.l.google.com:19302' },
+                { url: 'turn:freestun.net:3479', username: 'free', credential: 'free' }
+            ]
+        }
+    });
+} catch (error) {
+    console.error("Could not inizialize PeerJS: " + error);
+}
 
 //Joining via Links (also as a guest!) 
 
@@ -396,10 +404,17 @@ if (queryString && queryString.length > 1) { // Checking if queryString is not e
 
 document.addEventListener('DOMContentLoaded', function () {
     if (joinOnLoadViaLink) {
-
-        peer.on('open', function () {
-            joinRoom(roomCode);
-        });
+        if (peer) {
+            try {
+                peer.on('open', function () {
+                    joinRoom(roomCode);
+                });
+            } catch (err) {
+                console.error("Tried to join via link with initizalized peer, but there was an exception when joining.");
+            }
+        } else {
+            console.error("Tried to join round via link, but peerjs was not initialized yet.");
+        }
 
         joinOnLoadViaLink = false;
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
@@ -414,17 +429,23 @@ function copyRoomcodeLink() {
     navigator.clipboard.writeText(window.location.origin + "/?" + peerId.replace("openguessr_", ""))
         .then(function () {
             copyRoomcodeLinkButton.textContent = "Copied!";
-            setTimeout(()=> {
+            setTimeout(() => {
                 copyRoomcodeLinkButton.textContent = "Copy Link";
-            }, 1000);
+            }, 700);
         })
         .catch(function (error) {
             copyRoomcodeLinkButton.textContent = "Error!";
             console.error("Copy error: " + error);
-            setTimeout(()=> {
+            setTimeout(() => {
                 copyRoomcodeLinkButton.textContent = "Copy Link";
-            }, 1000);
+            }, 700);
         });
+}
+
+function generateFunnyGuestName() {
+    var animals = ["Giraffe", "Ape", "Sloth", "Penguin", "Kangaroo", "Panda", "Zebra", "Llama"];
+    var randomAnimal = animals[Math.floor(Math.random() * animals.length)];
+    return "Guest" + randomAnimal;
 }
 
 // Logic ------------------------------------------------------------------------------------------------
@@ -435,10 +456,10 @@ export let connectedPeers = [];
 
 function removeConnectedPeerById(peerId) {
     // Find the index of the entry with the given ID
-    const index = connectedPeers.findIndex(entry => entry[1] === peerId);
+    const index = connectedPeers.findIndex(entry => entry[0] === peerId);
 
     // If the entry exists in the array, remove it
-    if (index != -1) {
+    if (index !== -1) {
         connectedPeers.splice(index, 1);
     }
 }
@@ -449,7 +470,7 @@ let multiplayerFirstRoundPlayed = false; // for host and peers! peers use this t
 
 if (peer) {
     peer.on('open', function (id) {
-        peerId = id;
+        peerId = id; //this also triggers for peers, as their connection opens
 
         // Set up event listener for incoming connections (HOST LOGIC)
         peer.on('connection', function (incomingConn) {
@@ -465,7 +486,8 @@ if (peer) {
                         content: {
                             roundAmount: roundAmount,
                             roundLength: roundLength,
-                            multiplayerRestriction: multiplayerRestriction
+                            multiplayerRestriction: multiplayerRestriction,
+                            category: multiplayerCategory
 
                         }
                     }
@@ -495,7 +517,7 @@ if (peer) {
                 incomingConn.on('close', function () {
                     connectedClientsCount--;
                     setJoinCounter(connectedClientsCount);
-                    removeConnectedPeerById(incomingConn.peerId);
+                    removeConnectedPeerById(incomingConn.peer);
 
                     //if peer disconnects pre-game, update the waiting screen
                     if (!multiplayerFirstRoundPlayed) {
@@ -512,7 +534,7 @@ if (peer) {
         });
     });
 } else {
-    console.warn("PeerJS not initialized -> user not logged in!");
+    console.warn("PeerJS not initialized -> Host Logic failed!");
 }
 
 let roomLocked = true;
@@ -521,6 +543,11 @@ function createRoom() {
     isHost = true;
     multiplayerFirstRoundPlayed = false;
     roomLocked = false;
+    multiplayerCategory = mapCategory;
+    
+    if (multiplayerCategory == "hard" || multiplayerCategory == "daily") {
+        multiplayerCategory = "standard - auto";
+    }
 
     if (multiplayerHost.textContent != "Start") {
         showHostCodeArea("Roomcode: " + peerId.replace("openguessr_", ""));
@@ -539,6 +566,7 @@ function createRoom() {
             multiplayerHost.textContent = "Loading Location...";
             multiplayer = true;
             setMultiplayerUI();
+            showMultiplayerOverlay(true, "Ready...", connectedPeers); //only for host, also to set the map category in mode text
             checkGenerationTypeAndGenerate();
             roomLocked = true;
         }
@@ -615,7 +643,7 @@ function joinRoom(code) {
 
     const options = {
         metadata: {
-            username: localStorage.getItem("username") == null ? "Guest" : localStorage.getItem("username"),
+            username: localStorage.getItem("username") == null ? generateFunnyGuestName() : localStorage.getItem("username"),
             level: uiSetUserXP(localStorage.getItem("experience")).level,
             score: 0 //inital score is set to 0
         }
@@ -661,6 +689,7 @@ function joinRoom(code) {
             roundAmount = data.content.roundAmount;
             roundLength = data.content.roundLength;
             multiplayerRestriction = data.content.multiplayerRestriction;
+            multiplayerCategory = data.content.category;
         }
 
         if (data.type === "roundOver") {
@@ -703,7 +732,7 @@ if (peer) {
     });
 
     peer.on('error', function (err) {
-        console.error("PeerJS Error: " + err);
+        console.error("PeerJS: " + err);
 
         if (multiplayer) {
             if (err.type != "network") {
@@ -783,6 +812,11 @@ export function showMultiplayerOverlay(show, title, array) {
         document.getElementById("multiplayerFade").style.pointerEvents = "auto";
         document.getElementById("multiplayerTitle").textContent = title;
 
+        //before the first round has been played, we want to display the host's category
+        if (!multiplayerFirstRoundPlayed) {
+            document.getElementById("mapModeText").textContent = "Multiplayer (Map: " + multiplayerCategory + ")";
+        }
+
         // Sort array by score in descending order
         array.sort((a, b) => b[3] - a[3]);
 
@@ -803,10 +837,22 @@ export function showMultiplayerOverlay(show, title, array) {
 
         let body = '';
 
+        let yourPeerId = peerId;
+
         // Generate HTML for each player
         array.forEach(playerInfo => {
             const [peerId, username, level, score] = playerInfo;
-            body += `
+            if (peerId == yourPeerId) {
+                body += `
+                <div class="multiplayerOverlayEntry yourMultiplayerOverlay">
+                    <div class="multiplayerEntryPlayerInfo">
+                        <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level})</div>
+                        <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
+                    </div>
+                </div>
+            `;
+            } else {
+                body += `
                 <div class="multiplayerOverlayEntry">
                     <div class="multiplayerEntryPlayerInfo">
                         <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level})</div>
@@ -814,6 +860,7 @@ export function showMultiplayerOverlay(show, title, array) {
                     </div>
                 </div>
             `;
+            }
         });
 
         document.getElementById("multiplayerTable").innerHTML = body;
