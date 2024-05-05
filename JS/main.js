@@ -244,14 +244,19 @@ let loadingLink = "/loader.html";
 
 export function loadIframe(lat, long) {
     loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+lat+","+long+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0&fov=90"; //API key (last part of URL)
+    let initialIframeLoad = true;
     
     // Reference to the iframe
     const iframe = document.getElementById("GuesserWindow");
 
     // Define a function to handle iframe load event
     const handleLoad = () => {
-        dailyChallengeCheckTimer(); //check if daily challenge is active and start timer
-        checkHardModeTimeout(); //Check if the user is playing hard mode + apply changes if yes
+        if (initialIframeLoad) {
+            dailyChallengeCheckTimer(); //check if daily challenge is active and start timer
+            checkHardModeTimeout(); //Check if the user is playing hard mode + apply changes if yes
+        }   
+       
+        initialIframeLoad = false;
         
         setTimeout(function() {
             const beforeOverlay = document.getElementById("BeforeOverlay");
