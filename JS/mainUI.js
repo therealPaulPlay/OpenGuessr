@@ -267,7 +267,7 @@ export function toggleMobileMenu() {
         setTimeout(() => {
             mobileWindow.style.opacity = "1";
             mobileWindow.style.scale = "1";
-        }, 100);
+        }, 50);
 
         document.getElementById("blackBackground").style.visibility = "visible";
     } else {
