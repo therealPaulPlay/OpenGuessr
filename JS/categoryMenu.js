@@ -28,7 +28,11 @@ const Category = {
     AUSTRALIA: "australia",
     BRASIL: "brasil",
     DAILY: "daily",
-    HARD: "hard"
+    HARD: "hard",
+    MOUNTAIN: "mountain",
+    INDOOR: "indoor",
+    FINLAND: "finland",
+    ISRAEL: "israel"
 }
 
 export let mapCategory = Category.STANDARD; //default category
@@ -55,6 +59,11 @@ const australiaCategoryButton = document.getElementById("australiaCategory");
 const brasilCategoryButton = document.getElementById("brasilCategory");
 const dailyCategoryButton = document.getElementById("dailyCategory");
 const hardCategoryButton = document.getElementById("hardCategory");
+const mountainCategoryButton = document.getElementById("mountainCategory");
+const indoorCategoryButton = document.getElementById("indoorCategory");
+const finlandCategoryButton = document.getElementById("finlandCategory");
+const israelCategoryButton = document.getElementById("israelCategory");
+
 
 attachClickListener("standardCategory", Category.STANDARD);
 attachClickListener("capitalCategory", Category.CAPITAL);
@@ -77,6 +86,10 @@ attachClickListener("austriaCategory", Category.AUSTRIA);
 attachClickListener("norwayCategory", Category.NORWAY);
 attachClickListener("australiaCategory", Category.AUSTRALIA);
 attachClickListener("brasilCategory", Category.BRASIL);
+attachClickListener("mountainCategory", Category.MOUNTAIN);
+attachClickListener("indoorCategory", Category.INDOOR);
+attachClickListener("finlandCategory", Category.FINLAND);
+attachClickListener("israelCategory", Category.ISRAEL);
 
 // Attach event listeners using the function
 function attachClickListener(buttonId, category) {
@@ -113,6 +126,10 @@ function changeCategory(category) {
     norwayCategoryButton.classList.add("categoryDisabled");
     australiaCategoryButton.classList.add("categoryDisabled");
     brasilCategoryButton.classList.add("categoryDisabled");
+    mountainCategoryButton.classList.add("categoryDisabled");
+    indoorCategoryButton.classList.add("categoryDisabled");
+    finlandCategoryButton.classList.add("categoryDisabled");
+    israelCategoryButton.classList.add("categoryDisabled");
 
     switch (category) {
         case Category.STANDARD:
@@ -177,6 +194,18 @@ function changeCategory(category) {
             break;
         case Category.BRASIL:
             brasilCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.MOUNTAIN:
+            mountainCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.INDOOR:
+            indoorCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.ISRAEL:
+            israelCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.FINLAND:
+            finlandCategoryButton.classList.remove("categoryDisabled");
             break;
     }
 
