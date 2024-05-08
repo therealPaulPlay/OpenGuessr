@@ -1,9 +1,10 @@
 import { loadLocationJSON } from "./locationGeneration.js";
 import { resMap, generateNewLocation } from "./main.js";
 import { disableResultScreen, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
-import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
+import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults } from "./multiplayer.js";
+import { errorPopup } from "./errorHandling.js";
 
 //Defined Categories ------------------------------------------------------------------------
 const Category = {
@@ -227,6 +228,8 @@ export function checkGenerationTypeAndGenerate() {
     } else {
         //If multiplayer is enabled
         try {
+            disableDailyChallengeVariableOnly(); //disable the daily challenge (will be re-enabled by renunning the location gen after leaving)
+
             if (isHost) {
                 if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard") {
                     loadLocationJSON(mapCategory); //this also generates a new location
@@ -235,6 +238,9 @@ export function checkGenerationTypeAndGenerate() {
                 } else {
                     //if the map category is an unsupported multiplayer category, such as daily or hard, switch to standard
                     changeCategory("standard"); //this will re-run checkGenerationTypeAndGenerate
+                    setTimeout(function() {
+                        errorPopup("Unsupported Multiplayer Map", "This map category is not available for multiplayer and was automatically changed to Standard.", "Map unsupported", false);
+                    }, 3500);
                 }
             } else {
                 generateNewLocation("FROMHOST");
