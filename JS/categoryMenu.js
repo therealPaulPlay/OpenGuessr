@@ -1,9 +1,10 @@
 import { loadLocationJSON } from "./locationGeneration.js";
 import { resMap, generateNewLocation } from "./main.js";
 import { disableResultScreen, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
-import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
+import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults } from "./multiplayer.js";
+import { errorPopup } from "./errorHandling.js";
 
 //Defined Categories ------------------------------------------------------------------------
 const Category = {
@@ -27,7 +28,11 @@ const Category = {
     AUSTRALIA: "australia",
     BRASIL: "brasil",
     DAILY: "daily",
-    HARD: "hard"
+    HARD: "hard",
+    MOUNTAIN: "mountain",
+    INDOOR: "indoor",
+    FINLAND: "finland",
+    ISRAEL: "israel"
 }
 
 export let mapCategory = Category.STANDARD; //default category
@@ -54,6 +59,11 @@ const australiaCategoryButton = document.getElementById("australiaCategory");
 const brasilCategoryButton = document.getElementById("brasilCategory");
 const dailyCategoryButton = document.getElementById("dailyCategory");
 const hardCategoryButton = document.getElementById("hardCategory");
+const mountainCategoryButton = document.getElementById("mountainCategory");
+const indoorCategoryButton = document.getElementById("indoorCategory");
+const finlandCategoryButton = document.getElementById("finlandCategory");
+const israelCategoryButton = document.getElementById("israelCategory");
+
 
 attachClickListener("standardCategory", Category.STANDARD);
 attachClickListener("capitalCategory", Category.CAPITAL);
@@ -76,6 +86,10 @@ attachClickListener("austriaCategory", Category.AUSTRIA);
 attachClickListener("norwayCategory", Category.NORWAY);
 attachClickListener("australiaCategory", Category.AUSTRALIA);
 attachClickListener("brasilCategory", Category.BRASIL);
+attachClickListener("mountainCategory", Category.MOUNTAIN);
+attachClickListener("indoorCategory", Category.INDOOR);
+attachClickListener("finlandCategory", Category.FINLAND);
+attachClickListener("israelCategory", Category.ISRAEL);
 
 // Attach event listeners using the function
 function attachClickListener(buttonId, category) {
@@ -112,6 +126,10 @@ function changeCategory(category) {
     norwayCategoryButton.classList.add("categoryDisabled");
     australiaCategoryButton.classList.add("categoryDisabled");
     brasilCategoryButton.classList.add("categoryDisabled");
+    mountainCategoryButton.classList.add("categoryDisabled");
+    indoorCategoryButton.classList.add("categoryDisabled");
+    finlandCategoryButton.classList.add("categoryDisabled");
+    israelCategoryButton.classList.add("categoryDisabled");
 
     switch (category) {
         case Category.STANDARD:
@@ -177,6 +195,18 @@ function changeCategory(category) {
         case Category.BRASIL:
             brasilCategoryButton.classList.remove("categoryDisabled");
             break;
+        case Category.MOUNTAIN:
+            mountainCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.INDOOR:
+            indoorCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.ISRAEL:
+            israelCategoryButton.classList.remove("categoryDisabled");
+            break;
+        case Category.FINLAND:
+            finlandCategoryButton.classList.remove("categoryDisabled");
+            break;
     }
 
     //refresh category if needed
@@ -227,6 +257,8 @@ export function checkGenerationTypeAndGenerate() {
     } else {
         //If multiplayer is enabled
         try {
+            disableDailyChallengeVariableOnly(); //disable the daily challenge (will be re-enabled by renunning the location gen after leaving)
+
             if (isHost) {
                 if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard") {
                     loadLocationJSON(mapCategory); //this also generates a new location
@@ -235,6 +267,9 @@ export function checkGenerationTypeAndGenerate() {
                 } else {
                     //if the map category is an unsupported multiplayer category, such as daily or hard, switch to standard
                     changeCategory("standard"); //this will re-run checkGenerationTypeAndGenerate
+                    setTimeout(function() {
+                        errorPopup("Unsupported Multiplayer Map", "This map category is not available for multiplayer and was automatically changed to Standard.", "Map unsupported", false);
+                    }, 3500);
                 }
             } else {
                 generateNewLocation("FROMHOST");

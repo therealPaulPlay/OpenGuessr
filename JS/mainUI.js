@@ -96,13 +96,13 @@ let resetBTN = document.getElementById("resetButtonSVG");
 resetBTN.addEventListener("click", function () { reloadIframe() });
 
 let socialRedditButton = document.getElementById("redditButton");
-socialRedditButton.addEventListener("click", function() {window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus()});
+socialRedditButton.addEventListener("click", function () { window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus() });
 
 let socialDiscordButton = document.getElementById("discordButton");
-socialDiscordButton.addEventListener("click", function() {window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus()});
+socialDiscordButton.addEventListener("click", function () { window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
 
 let privacyButton = document.getElementById("privacyButton");
-privacyButton.addEventListener("click", function() {window.location.href = "/legal.html"});
+privacyButton.addEventListener("click", function () { window.location.href = "/legal.html" });
 
 //Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
@@ -111,7 +111,7 @@ export function enableResultScreen(resultString, extraMessage) {
     document.getElementById("EndOverlay").style.opacity = "100%";
     document.getElementById("EndOverlay").style.visibility = "visible";
 
-    document.getElementById("distanceText").innerText = "Your guess was "+resultString+" away from the target.";
+    document.getElementById("distanceText").innerText = "Your guess was " + resultString + " away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
 
     resultScreenEnabled = true;
@@ -119,8 +119,8 @@ export function enableResultScreen(resultString, extraMessage) {
 
 export function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
-    setTimeout(function() {document.getElementById("EndOverlay").style.visibility = "hidden"}, 200)
-    
+    setTimeout(function () { document.getElementById("EndOverlay").style.visibility = "hidden" }, 200)
+
     resultScreenEnabled = false;
 }
 
@@ -131,15 +131,16 @@ let floatingCategoryArea = document.getElementById("floatingCategoryArea");
 
 let categoriesExpanded = false;
 
-categoryMenuButton.addEventListener("click", function() {
-    toggleCategoryMenu(false)});
+categoryMenuButton.addEventListener("click", function () {
+    toggleCategoryMenu(false)
+});
 
 export function toggleCategoryMenu(alwaysClose) {
     try {
         if (alwaysClose) {
             categoriesExpanded = true;
         }
-    
+
         if (!categoriesExpanded) {
             floatingCategoryArea.style.top = "360px";
             document.getElementById("extendedNavbarContent").scrollTop = "0";
@@ -148,10 +149,10 @@ export function toggleCategoryMenu(alwaysClose) {
             categoryMenuButton.innerText = "Map Categories ▲";
             categoriesExpanded = true;
         } else {
-            setTimeout(function() {
+            setTimeout(function () {
                 floatingCategoryArea.style.top = "85px";
                 document.getElementById("extendedNavbarGradient").style.display = "none";
-            }, 75); 
+            }, 75);
             extendedNavbar.classList.remove("expanded");
             categoryMenuButton.innerText = "Map Categories ▼";
             categoriesExpanded = false;
@@ -189,9 +190,9 @@ export function socialPopupProbability() {
 
 document.getElementById("socialPopupClose").addEventListener("click", closeSocialPopup);
 
-document.getElementById("socialPopupJoin").addEventListener("click", function() {
+document.getElementById("socialPopupJoin").addEventListener("click", function () {
     window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus();
-    setTimeout(async function() {
+    setTimeout(async function () {
         closeSocialPopup();
         await setUserXP(Number(localStorage.getItem("experience")) + 7500);
         uiSetUserXP(localStorage.getItem("experience"));
@@ -223,8 +224,8 @@ function toggleMapOffset() {
 //switch UI toggles back to standard on window resize ----------------------------------------------
 
 window.addEventListener("resize", (event) => {
-    mapOffset = true; 
-    toggleMapOffset(); 
+    mapOffset = true;
+    toggleMapOffset();
     mapExpanded = false;
     toggleMap();
 });
@@ -235,13 +236,13 @@ const accountName = document.getElementById('accountName');
 
 // Check if the text length exceeds the threshold
 export function checkTextLength() {
-  const textLength = accountName.textContent.length;
-  
-  if (textLength > 20) {
-    accountName.classList.add('scroll');
-  } else {
-    accountName.classList.remove('scroll');
-  }
+    const textLength = accountName.textContent.length;
+
+    if (textLength > 20) {
+        accountName.classList.add('scroll');
+    } else {
+        accountName.classList.remove('scroll');
+    }
 }
 
 // Check for text length initially and when the text changes
@@ -262,7 +263,7 @@ export function toggleMobileMenu() {
 
     if (mobileWindowOpen) {
         mobileWindow.style.display = "block";
-       
+
         setTimeout(() => {
             mobileWindow.style.opacity = "1";
             mobileWindow.style.scale = "1";
@@ -281,14 +282,52 @@ document.getElementById("mobilePopupClose").addEventListener("click", toggleMobi
 
 document.getElementById("mobileLeaderboardButton").addEventListener("click", goToLeaderboard);
 document.getElementById("mobileDailyLeaderboardButton").addEventListener("click", goToDailyLeaderboard);
-document.getElementById("mobileMultiplayerButton").addEventListener("click", function() {
+document.getElementById("mobileMultiplayerButton").addEventListener("click", function () {
     toggleMobileMenu();
     toggleMultiplayerSelector();
 });
 
-document.getElementById("mobileCategoryButton").addEventListener("click", function() {
+document.getElementById("mobileCategoryButton").addEventListener("click", function () {
     toggleMobileMenu();
     toggleCategoryMenu();
     shrinkMapIfMobile();
 });
 
+//Community Category Credits UI ----------------------------------------------------------------------------
+function addCommunityCreditTag() {
+    let communityCategories = document.getElementsByClassName("communityMap");
+    let communityCategoriesArray = Array.from(communityCategories); // Convert to array
+    for (let i = 0; i < communityCategoriesArray.length; i++) {
+        let infoButtonId = communityCategoriesArray[i].id + "Info";
+        communityCategoriesArray[i].innerHTML += `<img class="specialCategoryInfo" id="${infoButtonId}" src="/IMG/info_icon.png">`;
+    }
+
+    //Event Listeners and text for credit popups for community maps
+    document.getElementById("mountainCategoryInfo").addEventListener("click", (event) => {
+        event.stopPropagation();
+        openCreditWindow("Mountains by Blockween", "Whether you like big and spiky or small and smooth mountains, Blockween's map satisfys the needs of even the most fanatic mountain enthusiasts.<br><br>This map is not only suitable for those who crave the thrill of reaching new heights in real life, but also gamers who want to impress their relatives with a half-true story about their amazing hiking trip. Either way, get your hiking boots ready!")
+    });
+    document.getElementById("indoorCategoryInfo").addEventListener("click", (event) => {
+        event.stopPropagation();
+        openCreditWindow("Indoor by Zander", "Rather than getting caught himself, our favourite fish definitely caught my eye with this amazing map. Most of our community prefers the inside world in real life, so why not create a map that perfectly suits the needs of these gamers?<br><br> Usually, people who participate in outdoor activities were able to use some of their knowledge for playing OpenGuessr, but this new map turns the tables.")
+    });
+}
+
+window.addEventListener('DOMContentLoaded', addCommunityCreditTag);
+
+let creditWindow = document.getElementById("creditWindow");
+
+function openCreditWindow(title, description) {
+    if (title != undefined) {
+        document.getElementById("creditPopupTitle").innerHTML = title;
+        document.getElementById("creditPopupText").innerHTML = description;
+    }
+
+    creditWindow.style.display = "block";
+    document.getElementById("blackBackground").style.visibility = "visible";
+}
+
+document.getElementById("creditWindowClose").addEventListener("click", () => {
+    creditWindow.style.display = "none";
+    document.getElementById("blackBackground").style.visibility = "hidden";
+})

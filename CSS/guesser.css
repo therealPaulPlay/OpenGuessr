@@ -313,12 +313,21 @@ h1, h2, h3 {
   display: none;
 }
 
-#profileClose, #helpClose, #socialPopupClose, #socialPopupJoin, #multiplayerSelectorClose, #multiplayerSelectorBack, #mobilePopupClose {
+#profileClose, #helpClose, #socialPopupClose, #socialPopupJoin, #multiplayerSelectorClose, #multiplayerSelectorBack, #mobilePopupClose, #creditWindowClose {
   min-height: 50px;
 }
 
 #multiplayerSelectorBack {
   opacity: 0.5;
+}
+
+#creditHeadingSmall {
+  margin-bottom: 12px;
+  font-size: 23px;
+}
+
+#creditPopupTitle {
+  margin-bottom: 35px;
 }
 
 .copyLinkButton {
@@ -1466,12 +1475,18 @@ li {
   scale: 1.05;
 }
 
-.accountLock {
-  pointer-events: none;
-}
-
 .accountExclusive {
   background: linear-gradient(0.60turn, white, #ffcaca);
+}
+
+.communityMap {
+  background: linear-gradient(0.60turn, white, #ebcaff);
+  padding-top: 3px;
+  padding-bottom: 3px;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 40px;
 }
 
 #dailyCategory {
@@ -1486,11 +1501,30 @@ li {
   display: none;
 }
 
+.specialCategoryInfo {
+  width: 25px;
+  height: auto;
+  filter: invert();
+  margin: 3px;
+  margin-left: 5px;
+  transition: opacity 250ms ease;
+}
+
+.specialCategoryInfo:hover {
+  opacity: 50%;
+}
+
 .categoryUpcoming {
-  opacity: 80%;
-  background-color: rgba(0, 0, 0, 0.15);
+  opacity: 50%;
+  width: 80%;
+  background-color: transparent;
   font-style: italic;
   color: white;
+}
+
+.accountLock {
+  pointer-events: none;
+  opacity: 60%;
 }
 
 button {

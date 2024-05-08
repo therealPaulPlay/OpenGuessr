@@ -25,6 +25,10 @@ export function setDailyChallengeUI(enable) {
     }
 }
 
+export function disableDailyChallengeVariableOnly() {
+    dailyChallengeUIEnabled = false;
+}
+
 //Timer implementation for Daily Challenge ------------------------------------------------------------------------------------------------------------------
 
 export function dailyChallengeCheckTimer() {
