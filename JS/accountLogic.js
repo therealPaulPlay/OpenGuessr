@@ -255,9 +255,12 @@ export async function loadResultScreenXP(distance) {
         earnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
         setDailyChallengeExperienceResult(earnedXP);
   
-      } else if (selectedCategory == "famous") {
+      } else if (selectedCategory == "famous" || selectedCategory == "indoor" || selectedCategory == "mountain") {
         earnedXP = Math.round(1000 * ((0.998036) ** distance));
 
+      } else if (selectedCategory == "israel" || selectedCategory == "austria") { //very small countries, more reduced xp
+        earnedXP = Math.round(5000 * ((0.978036) ** distance)) 
+        
       } else {
         earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
       }
