@@ -919,8 +919,8 @@ li {
 }
 
 #map:hover {
-  transition: none;
   opacity: 100%;
+  transition: height 100ms ease, width 100ms ease;
 }
 
 #revealCompass {
