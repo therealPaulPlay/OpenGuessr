@@ -170,11 +170,22 @@ languageBTN.addEventListener("click", changeLanguage);
 //Reset map scaling when the user "enlarges" it --------------------------------------------------------------
 map.on('click', onMapClick);
 
-map.on('mouseover', onMapHover);
-map.on('mouseout', onMapHover);
+let useLegacyMouseOver = false;
+
+//this is for legacy browsers that do not support resizeObservers
+if (useLegacyMouseOver) {
+    map.on('mouseover', onMapHover);
+    map.on('mouseout', onMapHover);
+}
 
 function onMapHover() {
     map.invalidateSize();
+}
+try {
+    new ResizeObserver(onMapHover).observe(document.getElementById("map"));
+} catch (error) {
+    console.error("Resize oberser unsupported. Err: " + error);
+    useLegacyMouseOver = true;
 }
 
 //Guess / Confirm function ----------------------------------------------------------------------------------
