@@ -305,11 +305,27 @@ function addCommunityCreditTag() {
     //Event Listeners and text for credit popups for community maps
     document.getElementById("mountainCategoryInfo").addEventListener("click", (event) => {
         event.stopPropagation();
-        openCreditWindow("Mountains by Blockween", "Whether you like big and spiky or small and smooth mountains, Blockween's map satisfys the needs of even the most fanatic mountain enthusiasts.<br><br>This map is not only suitable for those who crave the thrill of reaching new heights in real life, but also gamers who want to impress their relatives with a half-true story about their amazing hiking trip. Either way, get your hiking boots ready!")
+        openCreditWindow("Mountains by Blockween", "Whether you like big and spiky or small and smooth mountains, Blockween's map satisfys the needs of even the most fanatic mountain enthusiasts.<br><br>This map is not only suitable for those who crave the thrill of reaching new heights in real life, but also gamers who want to impress their relatives with a half-true story about their amazing hiking trip. Either way, get your hiking boots ready!");
     });
+
     document.getElementById("indoorCategoryInfo").addEventListener("click", (event) => {
         event.stopPropagation();
-        openCreditWindow("Indoor by Zander", "Rather than getting caught himself, our favourite fish definitely caught my eye with this amazing map. Most of our community prefers the inside world in real life, so why not create a map that perfectly suits the needs of these gamers?<br><br> Usually, people who participate in outdoor activities were able to use some of their knowledge for playing OpenGuessr, but this new map turns the tables.")
+        openCreditWindow("Indoor by Zander", "Rather than getting caught himself, our favourite fish definitely caught my eye with this amazing map. Most of our community prefers the inside world in real life, so why not create a map that perfectly suits the needs of these gamers?<br><br> Usually, people who participate in outdoor activities were able to use some of their knowledge for playing OpenGuessr, but this new map turns the tables.");
+    });
+
+    document.getElementById("stadiumCategoryInfo").addEventListener("click", (event) => {
+        event.stopPropagation();
+        openCreditWindow("Stadiums by Falip", "Falip introduced himself to the discord server with this amazing  stadium map. It includes a huge variety of stadium locations, satisfying even the most diehard sports fans. Can you name them all?");
+    });
+
+    document.getElementById("whetherspoonCategoryInfo").addEventListener("click", (event) => {
+        event.stopPropagation();
+        openCreditWindow("Whetherspoons by Jdawg", "It doesn't matter whether it's a Whetherspoon located in the center of London or at the edge of Norwhich, chances are, Jdawg has seen it - at least digitally. It's still unknown where his affinity for british pubs is coming from, but I for sure hope it isn't a sign of an alcohol addiction.");
+    });
+
+    document.getElementById("skyscraperCategoryInfo").addEventListener("click", (event) => {
+        event.stopPropagation();
+        openCreditWindow("Skyscrapers by QwidziT", "Do you remember how obsessed you were with mega structures when you were a kid? No matter the age, everybody loves tall shiny buildings – skyscrapers – and this map is full of these magnificent beauties. Furthermore, this map is perfectly suited towards beginners, as you'll always have a tall navigational aid. ");
     });
 }
 
