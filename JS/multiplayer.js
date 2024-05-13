@@ -231,6 +231,7 @@ function setMultiplayerUI() {
         floatingSocialButton.style.opacity = "0.5";
         floatingSocialButton.style.pointerEvents = "none";
         document.getElementById("mapModeIndicator").style.display = "flex";
+        document.getElementById("multiplayerChat").style.display = "flex";
         document.getElementById("multiplayerLeave").style.display = "block";
         document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
 
@@ -242,6 +243,7 @@ function setMultiplayerUI() {
         floatingSocialButton.style.opacity = "1";
         floatingSocialButton.style.pointerEvents = "auto";
         document.getElementById("mapModeIndicator").style.display = "none";
+        document.getElementById("multiplayerChat").style.display = "none";
         document.getElementById("multiplayerLeave").style.display = "none";
         mobileMenuButton.style.opacity = "1";
         mobileMenuButton.style.pointerEvents = "auto";
@@ -293,6 +295,14 @@ function endMultiplayerRound() {
 let multiplayerHasAlreadyGuessed = false;
 
 export function multiplayerStateToGuessed() {
+    if (!multiplayerHasAlreadyGuessed) {
+        if (localStorage.getItem("username") != null) {
+            distributeChat("System: " + localStorage.getItem("username") + " guessed.");
+        } else {
+            distributeChat("System: " + savedGuestName + " guessed.");
+        }
+    }
+
     if (isHost) {
         if (!multiplayerHasAlreadyGuessed) {
             multiplayerGuessesLocationsArray.push([mapMarkerLat, mapMarkerLong, selectedPinIndex]); //add the hosts guess to the guesses
@@ -445,8 +455,11 @@ function copyRoomcodeLink() {
 function generateFunnyGuestName() {
     var animals = ["Giraffe", "Ape", "Sloth", "Penguin", "Kangaroo", "Panda", "Zebra", "Llama"];
     var randomAnimal = animals[Math.floor(Math.random() * animals.length)];
-    return "Guest" + randomAnimal;
+    savedGuestName = "Guest" + randomAnimal;
+    return savedGuestName;
 }
+
+let savedGuestName = "none set";
 
 // Logic ------------------------------------------------------------------------------------------------
 var conn; // the connection data
@@ -461,6 +474,89 @@ function removeConnectedPeerById(peerId) {
     // If the entry exists in the array, remove it
     if (index !== -1) {
         connectedPeers.splice(index, 1);
+    }
+}
+
+//Chat -----------------------------------------------------------------------------------------------------
+let chatBox = document.getElementById("multiplayerMessageBox");
+
+function resetChat() {
+    chatBox.textContent = "";
+}
+
+//mainly for peers if they receive a message
+async function addToChat(text) {
+    try {
+        const res = await fetch('https://vector.profanity.dev', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ message: text }),
+        });
+
+        const profanityCheckData = await res.json();
+
+        if (profanityCheckData.isProfanity == true) {
+            addTextToChat("System: Censored Profanity");
+        } else {
+            addTextToChat(text);
+        }
+
+    } catch (err) {
+        console.error("Error with the profanity check api: " + err);
+        addTextToChat(text); //if the api fails to check, add chat anyway
+    }
+}
+
+//this is only used in the above function
+function addTextToChat(text) {
+    const sanitizedText = sanitizeHTML(text); // Call a function to sanitize HTML
+    chatBox.innerHTML += "<br>";
+    if (sanitizedText.startsWith("System:")) {
+        chatBox.innerHTML += `<span style="color: #c1c1c1;">${sanitizedText}</span>`;
+    } else {
+        chatBox.innerHTML += sanitizedText;
+    }
+    document.getElementById("multiplayerChatMessages").scrollTop = document.getElementById("multiplayerChatMessages").scrollHeight;
+}
+
+function sanitizeHTML(text) {
+    return text.replace(/<[^>]*>?/gm, ''); //strip it of any malicious html (security)
+}
+
+//for peers and hosts, this is how you send messages
+export function distributeChat(text) {
+    try {
+        if (isHost) {
+            addToChat(text);
+            sendMessageToAll("chat", text);
+        } else {
+            peerSendsHost("chat", text); //don't add it to the chat yet - the msg will be sent to the host, the host will then send it to all peers which will add it to chat
+        }
+    } catch (error) {
+        console.error("Error sending multiplayer message: " + error);
+    }
+}
+
+let chatInput = document.getElementById("multiplayerMessageInput");
+let chatSendButton = document.getElementById("multiplayerSendButton");
+
+chatSendButton.addEventListener("click", manuallySendChat);
+
+chatInput.addEventListener("keydown", function (event) {
+    if (document.activeElement === chatInput && event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        manuallySendChat();
+    }
+});
+
+function manuallySendChat() {
+    if (chatInput.value != "") {
+        if (localStorage.getItem("username") != null) {
+            distributeChat(localStorage.getItem("username") + ": " + chatInput.value);
+        } else {
+            distributeChat(savedGuestName + ": " + chatInput.value);
+        }
+        chatInput.value = "";
     }
 }
 
@@ -493,6 +589,7 @@ if (peer) {
                     }
                     // Send messages
                     incomingConn.send(welcomeMessage);
+                    distributeChat("System: " + incomingConn.metadata.username + " joined.");
 
                     if (!multiplayerFirstRoundPlayed) {
                         sendMessageToAll("showPlayersArray", connectedPeers); //send it to peer
@@ -511,6 +608,10 @@ if (peer) {
                     if (data.type == "score") {
                         updatePeerDataScore(incomingConn.peer, data.content);
                     }
+
+                    if (data.type == "chat") {
+                        distributeChat(data.content);
+                    }
                 });
 
                 //Peer disconnects
@@ -518,6 +619,7 @@ if (peer) {
                     connectedClientsCount--;
                     setJoinCounter(connectedClientsCount);
                     removeConnectedPeerById(incomingConn.peer);
+                    distributeChat("System: " + incomingConn.metadata.username + " left.");
 
                     //if peer disconnects pre-game, update the waiting screen
                     if (!multiplayerFirstRoundPlayed) {
@@ -544,7 +646,7 @@ function createRoom() {
     multiplayerFirstRoundPlayed = false;
     roomLocked = false;
     multiplayerCategory = mapCategory;
-    
+
     if (multiplayerCategory == "hard" || multiplayerCategory == "daily") {
         multiplayerCategory = "standard - auto";
     }
@@ -594,6 +696,8 @@ export function startMultiplayerRound(latitude, longitude) {
             }, 1500)
         }
     }
+
+    distributeChat("System: Starting Round " + roundIndex);
 }
 
 //Function to send a message from host to all peers
@@ -697,6 +801,10 @@ function joinRoom(code) {
             endMultiplayerRound();
         }
 
+        if (data.type === "chat") {
+            addToChat(data.content);
+        }
+
         if (data.type === "closeResultScreen") {
             transitionToStart();
         }
@@ -787,6 +895,7 @@ function leaveMultiplayerRound() {
     roundEnded = false;
     multiplayerHasAlreadyGuessed = false;
     multiplayerRestriction = "standard";
+    resetChat();
 
     //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";

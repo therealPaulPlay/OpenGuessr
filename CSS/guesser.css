@@ -106,6 +106,7 @@ h1, h2, h3 {
   height: 200px;
   background-image: linear-gradient(0.50turn, transparent, rgb(255, 255, 255));
   opacity: 30%;
+  pointer-events: none;
 }
 
 .profile {
@@ -947,15 +948,94 @@ li {
   margin-left: auto;
   margin-right: 0.75%;
   width: 30%;
-  z-index: 10;
   border-radius: 10px;
   display: none; /* set to flex in code when needed */
   align-items: center;
   justify-content: flex-start;
   color: white;
   font-size: 25px;
-  margin-bottom: 10px;
   transition: width 250ms ease, margin 250ms ease;
+  pointer-events: auto;
+}
+
+#multiplayerChat {
+  width: 300px;
+  height: 20%;
+  min-height: 150px;
+  border-radius: 10px;
+  overflow: hidden;
+  position: absolute;
+  left: 0.75%;
+  bottom: 115px;
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  background-color: hsla(236, 25%, 20%, 0.5);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
+  font-size: 20px;
+  z-index: 10;
+  visibility: visible;
+}
+
+#bottomMultiplayerChatArea {
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+}
+
+#multiplayerChatMessages {
+  height: 100%;
+  width: 100%;
+  overflow-y: scroll;
+  display: flex;
+  flex-direction: column;
+  margin-top: 5px;
+}
+
+#multiplayerMessageBox {
+  color: white;
+  margin: 10px;
+  line-height: 1.7;
+}
+
+#multiplayerSendButton {
+  height: 42px;
+  margin: 5px;
+  margin-left: 5px;
+}
+
+#multiplayerMessageBox {
+  margin-top: auto;
+}
+
+#multiplayerMessageInput {
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 20px;
+  height: 21px;
+  overflow: scroll;
+  text-wrap: wrap;
+  flex-grow: 1;
+  margin: 5px;
+  margin-right: 0px;
+}
+
+#multiplayerMessageInput:focus, #multiplayerMessageInput:hover {
+  outline: none;
+}
+
+#extendedBottomBar {
+  pointer-events: none;
+  height: fit-content;
+  width: 100%;
+  margin-bottom: 10px;
+  z-index: 10;
+  display: flex;
+  justify-content: space-around;
 }
 
 .mapModeText {
@@ -1765,7 +1845,7 @@ button {
 }
 
 
-/* phones / mobile */
+/* phones / mobile but also narrow devices like ipads */
 @media all and (orientation: portrait),
 all and (max-width: 1250px) {
 
@@ -1859,6 +1939,10 @@ all and (max-width: 1000px) {
     width: 250px;
     height: auto;
     margin-top: 10px;
+  }
+
+  #multiplayerChat {
+    visibility: hidden;
   }
 
   .extendedNavbar {

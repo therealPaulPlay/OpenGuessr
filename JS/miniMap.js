@@ -1,7 +1,7 @@
 import { loadResultMap, calculateDistances } from "./main.js";
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
-import { multiplayer, multiplayerStateToGuessed} from "./multiplayer.js";
+import { multiplayer, multiplayerStateToGuessed } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile } from "./mainUI.js";
 
 
@@ -13,7 +13,7 @@ const Provider = {
     TOPOGRAPHIC: "3",
 }
 
-let map = L.map('map', {zoomControl: false}).setView([40.321160, 10.252812], 1.5); //starting position
+let map = L.map('map', { zoomControl: false }).setView([40.321160, 10.252812], 1.5); //starting position
 
 let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web/default/WEBMERCATOR/{z}/{y}/{x}.png"]
 
@@ -40,30 +40,30 @@ setConfirmButtonState();
 export function resetMap() {
     map.removeLayer(marker);
     map.setZoom(3);
-    
+
     //reset the guess button as well
     hasGuessed = false;
     setConfirmButtonState();
 }
 
-function changeLanguageButtonLabel () {
-       let mapTypeBaseText = "Map Type:";
-       switch (providerIndex) {
+function changeLanguageButtonLabel() {
+    let mapTypeBaseText = "Map Type:";
+    switch (providerIndex) {
         case "0": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
-        break;
+            break;
 
         case "1": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} German`;
-        break; 
+            break;
 
         case "2": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Regional`;
-        break;
+            break;
 
         case "3": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Topographic`;
-        break;
+            break;
 
         default: document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
-        break;
-       }
+            break;
+    }
 }
 
 //Set state of the confirm ("guess") button ------------------------------------------------------------------
@@ -83,22 +83,22 @@ function setConfirmButtonState() {
 }
 
 //Change map provider / language ---------------------------------------------------------------------
-function changeLanguage () {
-   switch (providerIndex) {
-      case Provider.ENGLISH:
-        providerIndex = Provider.GERMAN;
-        break;
-      case Provider.GERMAN:
-        providerIndex = Provider.REGIONAL;
-        break;
-      case Provider.REGIONAL:
-        providerIndex = Provider.TOPOGRAPHIC;
-        break;
-      default:
-        providerIndex = Provider.ENGLISH;
-    } 
+function changeLanguage() {
+    switch (providerIndex) {
+        case Provider.ENGLISH:
+            providerIndex = Provider.GERMAN;
+            break;
+        case Provider.GERMAN:
+            providerIndex = Provider.REGIONAL;
+            break;
+        case Provider.REGIONAL:
+            providerIndex = Provider.TOPOGRAPHIC;
+            break;
+        default:
+            providerIndex = Provider.ENGLISH;
+    }
     localStorage.setItem("providerIndex", providerIndex);
-    
+
     changeLanguageButtonLabel();
     resetGuessMap();
 }
@@ -108,19 +108,19 @@ function changeLanguage () {
 let osmLayer;
 
 function loadMap() {
-  osmLayer = L.tileLayer(mapProvider[providerIndex], {
-      attribution: '© CARTO © OpenStreetMap © Geodatenzentrum',
-      noWrap: true,
-  }).addTo(map);
+    osmLayer = L.tileLayer(mapProvider[providerIndex], {
+        attribution: '© CARTO © OpenStreetMap © Geodatenzentrum',
+        noWrap: true,
+    }).addTo(map);
 }
 
 function destroyMap() {
-  map.removeLayer(osmLayer);
+    map.removeLayer(osmLayer);
 }
 
 function resetGuessMap() {
-  destroyMap();
-  loadMap();
+    destroyMap();
+    loadMap();
 }
 
 map.setZoom(3);
@@ -154,7 +154,7 @@ function onMapClick(e) {
         shadowSize: [41, 41]
     });
 
-    marker = new L.Marker([mapMarkerLat, mapMarkerLong], {icon: redIcon});
+    marker = new L.Marker([mapMarkerLat, mapMarkerLong], { icon: redIcon });
     marker.addTo(map);
 }
 
@@ -190,35 +190,45 @@ try {
 
 //Guess / Confirm function ----------------------------------------------------------------------------------
 export function confirmButtonClicks() {
-    confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
+    if (confirmBTN.style.pointerEvents == "auto") {
+        confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
 
-    if (dailyChallengeUIEnabled) {
-        document.getElementById("nextRound").innerHTML = "See results →";
-        
-        try {
-            dailyChallengeTimer.stopTimer();
-        } catch (error) {
-            console.log("timer already stopped.");
+        if (dailyChallengeUIEnabled) {
+            document.getElementById("nextRound").innerHTML = "See results →";
+
+            try {
+                dailyChallengeTimer.stopTimer();
+            } catch (error) {
+                console.log("timer already stopped.");
+            }
+
+            saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
+        } else {
+            document.getElementById("nextRound").innerHTML = "Next round →";
         }
-        
-        saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
-    } else {
-        document.getElementById("nextRound").innerHTML = "Next round →";
-    }
 
-    if (!multiplayer) {
-        calculateDistances(mapMarkerLat, mapMarkerLong);
-        loadResultMap(mapMarkerLat, mapMarkerLong);
-    } else {
-        document.getElementById("confirmButton").textContent = "Waiting...";
-        document.getElementById("confirmButton").style.opacity = "0.5";
-        document.getElementById("confirmButton").style.pointerEvents = "none";
-        document.getElementById("map").style.pointerEvents = "none";
-        document.getElementById("map").style.visibility = "hidden";
-        hideToggleMapButtonIfMobile(true);
-        document.getElementById("revealCompass").style.visibility = "hidden";
+        if (!multiplayer) {
+            calculateDistances(mapMarkerLat, mapMarkerLong);
+            loadResultMap(mapMarkerLat, mapMarkerLong);
+        } else {
+            document.getElementById("confirmButton").textContent = "Waiting...";
+            document.getElementById("confirmButton").style.opacity = "0.5";
+            document.getElementById("confirmButton").style.pointerEvents = "none";
+            document.getElementById("map").style.pointerEvents = "none";
+            document.getElementById("map").style.visibility = "hidden";
+            hideToggleMapButtonIfMobile(true);
+            document.getElementById("revealCompass").style.visibility = "hidden";
 
-        multiplayerStateToGuessed();
+            multiplayerStateToGuessed();
+        }
+    } else {
+        console.warn("Cannot click on confirm button - pointer events is none.")
     }
 }
 
+//Confirm Button with Spacebar and a few checks
+document.getElementById("map").addEventListener("keydown", function (event) {
+    if (event.key === " ") {
+        confirmButtonClicks();
+    }
+});
