@@ -101,6 +101,8 @@ socialRedditButton.addEventListener("click", function () { window.open("https://
 let socialDiscordButton = document.getElementById("discordButton");
 socialDiscordButton.addEventListener("click", function () { window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
 
+document.getElementById("categoryNew").addEventListener("click", function () { window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
+
 let privacyButton = document.getElementById("privacyButton");
 privacyButton.addEventListener("click", function () { window.location.href = "/legal.html" });
 
