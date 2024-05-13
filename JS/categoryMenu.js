@@ -36,6 +36,7 @@ const Category = {
     INDOOR: "indoor",
     FINLAND: "finland",
     ISRAEL: "israel",
+    CZECHIA: "czechia",
     STADIUM: "stadium",
     WHETHERSPOON: "whetherspoon",
     SKYSCRAPER: "skyscraper"
