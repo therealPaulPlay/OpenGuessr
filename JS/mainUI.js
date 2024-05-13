@@ -349,3 +349,13 @@ document.getElementById("creditWindowClose").addEventListener("click", () => {
     creditWindow.style.display = "none";
     document.getElementById("blackBackground").style.visibility = "hidden";
 })
+
+//Prevent automatic "last button press" with space bar or enter key ------------------------------------------------------------------
+document.addEventListener('keydown', function(event) {
+    var tag = event.target.tagName.toLowerCase();
+    if (event.key === 'Enter' || event.key === ' ') {
+      if (tag === 'button') {
+        event.preventDefault();
+      }
+    }
+  });

@@ -41,7 +41,7 @@ const Category = {
     SKYSCRAPER: "skyscraper"
 };
 
-let mapCategory = Category.STANDARD; // Default category
+export let mapCategory = Category.STANDARD; // Default category
 
 // Attach event listeners dynamically
 for (const category in Category) {

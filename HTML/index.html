@@ -129,11 +129,11 @@
         type="button">Mountains</button>
       <button class="category accountExclusive accountLock communityMap" id="indoorCategory"
         type="button">Indoor</button>
-        <button class="category accountExclusive accountLock communityMap" id="stadiumCategory"
+      <button class="category accountExclusive accountLock communityMap" id="stadiumCategory"
         type="button">Stadiums</button>
-        <button class="category accountExclusive accountLock communityMap" id="whetherspoonCategory"
+      <button class="category accountExclusive accountLock communityMap" id="whetherspoonCategory"
         type="button">Whetherspoons</button>
-        <button class="category accountExclusive accountLock communityMap" id="skyscraperCategory"
+      <button class="category accountExclusive accountLock communityMap" id="skyscraperCategory"
         type="button">Skyscrapers</button>
       <button class="category categoryUpcoming" id="categoryNew" type="button">Submit maps via discord!</button>
       <br><br>
@@ -413,10 +413,21 @@
       </button>
       <button id="revealCompass">reveal compass</button>
       <div id="map"></div>
-      <div id="mapModeIndicator">
-        <button id="multiplayerLeave" class="accountButton accountClose">Leave Round</button>
-        <p id="mapModeText" class="mapModeText">Daily Challenge</p>
-        <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
+      <div id="extendedBottomBar">
+        <div id="mapModeIndicator">
+          <button id="multiplayerLeave" class="accountButton accountClose">Leave Round</button>
+          <p id="mapModeText" class="mapModeText">Daily Challenge</p>
+          <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
+        </div>
+      </div>
+      <div id="multiplayerChat">
+        <div id="multiplayerChatMessages">
+          <p id="multiplayerMessageBox"></p>
+        </div>
+        <div id="bottomMultiplayerChatArea"> 
+          <input maxlength="100" type="text" id="multiplayerMessageInput" placeholder="Type your message...">
+          <button id="multiplayerSendButton" class="accountButton">Send</button>
+        </div>
       </div>
       <h1 id="TransparentHeader">Openguessr free geoguessr geoguesser alternative open source geography geographie
         Geotastic world map google maps google streetview rainbolt travel geographie education spiel videospiel guess
