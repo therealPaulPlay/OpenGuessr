@@ -6,7 +6,7 @@ import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
 
-//Defined Categories ------------------------------------------------------------------------
+//Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 const Category = {
     STANDARD: "standard",
     CAPITAL: "capital",
@@ -27,189 +27,54 @@ const Category = {
     NORWAY: "norway",
     AUSTRALIA: "australia",
     BRASIL: "brasil",
+    RUSSIA: "russia",
+    SLOVAKIA: "slovakia",
+    ROMANIA: "romania",
     DAILY: "daily",
     HARD: "hard",
     MOUNTAIN: "mountain",
     INDOOR: "indoor",
     FINLAND: "finland",
-    ISRAEL: "israel"
-}
+    ISRAEL: "israel",
+    CZECHIA: "czechia",
+    STADIUM: "stadium",
+    WHETHERSPOON: "whetherspoon",
+    SKYSCRAPER: "skyscraper"
+};
 
-export let mapCategory = Category.STANDARD; //default category
+export let mapCategory = Category.STANDARD; // Default category
 
-//Category Button click listeners -------------------------------------------------------------
-const standardCategoryButton = document.getElementById("standardCategory");
-const capitalCategoryButton = document.getElementById("capitalCategory");
-const famousCategoryButton = document.getElementById("famousCategory");
-const usaCategoryButton = document.getElementById("usaCategory");
-const germanyCategoryButton = document.getElementById("germanyCategory");
-const ukCategoryButton = document.getElementById("ukCategory");
-const franceCategoryButton = document.getElementById("franceCategory");
-const spainCategoryButton = document.getElementById("spainCategory");
-const polandCategoryButton = document.getElementById("polandCategory");
-const canadaCategoryButton = document.getElementById("canadaCategory");
-const swedenCategoryButton = document.getElementById("swedenCategory");
-const indiaCategoryButton = document.getElementById("indiaCategory");
-const mexicoCategoryButton = document.getElementById("mexicoCategory");
-const italyCategoryButton = document.getElementById("italyCategory");
-const ukraineCategoryButton = document.getElementById("ukraineCategory");
-const austriaCategoryButton = document.getElementById("austriaCategory");
-const norwayCategoryButton = document.getElementById("norwayCategory");
-const australiaCategoryButton = document.getElementById("australiaCategory");
-const brasilCategoryButton = document.getElementById("brasilCategory");
-const dailyCategoryButton = document.getElementById("dailyCategory");
-const hardCategoryButton = document.getElementById("hardCategory");
-const mountainCategoryButton = document.getElementById("mountainCategory");
-const indoorCategoryButton = document.getElementById("indoorCategory");
-const finlandCategoryButton = document.getElementById("finlandCategory");
-const israelCategoryButton = document.getElementById("israelCategory");
-
-
-attachClickListener("standardCategory", Category.STANDARD);
-attachClickListener("capitalCategory", Category.CAPITAL);
-attachClickListener("famousCategory", Category.FAMOUS);
-attachClickListener("usaCategory", Category.USA);
-attachClickListener("germanyCategory", Category.GERMANY);
-attachClickListener("ukCategory", Category.UK);
-attachClickListener("franceCategory", Category.FRANCE);
-attachClickListener("spainCategory", Category.SPAIN);
-attachClickListener("polandCategory", Category.POLAND);
-attachClickListener("canadaCategory", Category.CANADA);
-attachClickListener("swedenCategory", Category.SWEDEN);
-attachClickListener("indiaCategory", Category.INDIA);
-attachClickListener("mexicoCategory", Category.MEXICO);
-attachClickListener("italyCategory", Category.ITALY);
-attachClickListener("ukraineCategory", Category.UKRAINE);
-attachClickListener("dailyCategory", Category.DAILY);
-attachClickListener("hardCategory", Category.HARD);
-attachClickListener("austriaCategory", Category.AUSTRIA);
-attachClickListener("norwayCategory", Category.NORWAY);
-attachClickListener("australiaCategory", Category.AUSTRALIA);
-attachClickListener("brasilCategory", Category.BRASIL);
-attachClickListener("mountainCategory", Category.MOUNTAIN);
-attachClickListener("indoorCategory", Category.INDOOR);
-attachClickListener("finlandCategory", Category.FINLAND);
-attachClickListener("israelCategory", Category.ISRAEL);
-
-// Attach event listeners using the function
-function attachClickListener(buttonId, category) {
-    const button = document.getElementById(buttonId);
+// Attach event listeners dynamically
+for (const category in Category) {
+    const button = document.getElementById(`${category.toLowerCase()}Category`);
     if (button) {
-        button.addEventListener("click", function () {
-            changeCategory(category);
-        });
+        button.addEventListener("click", createCategoryChangeListener(Category[category]));
     } else {
-        console.warn(`Element with ID "${buttonId}" not found. Click listener not attached.`);
+        console.warn(`Element with ID "${category.toLowerCase()}Category" not found. Click listener not attached.`);
     }
 }
 
-//Change Category in the UI --------------------------------------------------------------------
-function changeCategory(category) {
-    standardCategoryButton.classList.add("categoryDisabled");
-    capitalCategoryButton.classList.add("categoryDisabled");
-    famousCategoryButton.classList.add("categoryDisabled");
-    usaCategoryButton.classList.add("categoryDisabled");
-    germanyCategoryButton.classList.add("categoryDisabled");
-    ukCategoryButton.classList.add("categoryDisabled");
-    franceCategoryButton.classList.add("categoryDisabled");
-    spainCategoryButton.classList.add("categoryDisabled");
-    polandCategoryButton.classList.add("categoryDisabled");
-    canadaCategoryButton.classList.add("categoryDisabled");
-    swedenCategoryButton.classList.add("categoryDisabled");
-    indiaCategoryButton.classList.add("categoryDisabled");
-    mexicoCategoryButton.classList.add("categoryDisabled");
-    italyCategoryButton.classList.add("categoryDisabled");
-    ukraineCategoryButton.classList.add("categoryDisabled");
-    dailyCategoryButton.classList.add("categoryDisabled");
-    hardCategoryButton.classList.add("categoryDisabled");
-    austriaCategoryButton.classList.add("categoryDisabled");
-    norwayCategoryButton.classList.add("categoryDisabled");
-    australiaCategoryButton.classList.add("categoryDisabled");
-    brasilCategoryButton.classList.add("categoryDisabled");
-    mountainCategoryButton.classList.add("categoryDisabled");
-    indoorCategoryButton.classList.add("categoryDisabled");
-    finlandCategoryButton.classList.add("categoryDisabled");
-    israelCategoryButton.classList.add("categoryDisabled");
+// Function to create a closure for each category button listener
+function createCategoryChangeListener(category) {
+    return function() {
+        changeCategory(category);
+    };
+}
 
-    switch (category) {
-        case Category.STANDARD:
-            standardCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.CAPITAL:
-            capitalCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.FAMOUS:
-            famousCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.USA:
-            usaCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.GERMANY:
-            germanyCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.UK:
-            ukCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.FRANCE:
-            franceCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.SPAIN:
-            spainCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.POLAND:
-            polandCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.CANADA:
-            canadaCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.SWEDEN:
-            swedenCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.INDIA:
-            indiaCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.MEXICO:
-            mexicoCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.ITALY:
-            italyCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.UKRAINE:
-            ukraineCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.DAILY:
-            dailyCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.HARD:
-            hardCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.AUSTRIA:
-            austriaCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.NORWAY:
-            norwayCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.AUSTRALIA:
-            australiaCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.BRASIL:
-            brasilCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.MOUNTAIN:
-            mountainCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.INDOOR:
-            indoorCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.ISRAEL:
-            israelCategoryButton.classList.remove("categoryDisabled");
-            break;
-        case Category.FINLAND:
-            finlandCategoryButton.classList.remove("categoryDisabled");
-            break;
+function changeCategory(category) {
+    // Disable all category buttons
+    const categoryButtons = document.querySelectorAll("[id$='Category']");
+    categoryButtons.forEach(button => button.classList.add("categoryDisabled"));
+
+    // Enable the clicked category button
+    const clickedButton = document.getElementById(`${category.toLowerCase()}Category`);
+    if (clickedButton) {
+        clickedButton.classList.remove("categoryDisabled");
+    } else {
+        console.warn(`Element with ID "${category.toLowerCase()}Category" not found.`);
     }
 
-    //refresh category if needed
+    // Refresh category if needed
     if (mapCategory !== category) {
         mapCategory = category;
         localStorage.setItem("selectedCategory", category);
@@ -221,6 +86,8 @@ function changeCategory(category) {
 
     checkGenerationTypeAndGenerate();
 }
+
+
 
 //Check categories and initiate location generation  ---------------------------------------------------------------------------------------------------------------
 
