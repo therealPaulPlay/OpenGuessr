@@ -699,7 +699,7 @@ async function deleteRoomCodeFromMatchmakingServer() {
         });
     
         if (!response.ok) {
-          console.error("Failed sending the Room Code to the server: " + response.status);
+          console.warn("Failed deleting the Room Code from the server: " + response.status);
           setDuelFindStatus("Error deleting roomcode from server: " + error);
         }
 
@@ -909,7 +909,7 @@ function disconnectAllPeersAndCloseRoom() {
                 });
             }
         }
-        
+
         if(matchmakingActive) {
             deleteRoomCodeFromMatchmakingServer();
         }
