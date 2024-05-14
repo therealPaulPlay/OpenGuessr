@@ -178,7 +178,9 @@ function setJoinButtonState() {
 }
 
 //Host page ------------------------------------------------------------------------------------------------
-multiplayerHost.addEventListener("click", createRoom);
+multiplayerHost.addEventListener("click", () => {
+    createRoom(roundAmountText.textContent, roundLengthText.textContent);
+});
 
 function showHostCodeArea(roomcode) {
     hostCodeArea.style.display = "flex";
@@ -608,7 +610,7 @@ async function attemptDuelJoin(index) {
         });
 
         if (response.ok) {
-            receivedRoomcode = await response.json();
+            receivedRoomCode = await response.json();
         } else {
             console.error('Error fetching room code:', response.status);
             setDuelFindStatus("Bad Get Request response");
@@ -626,8 +628,8 @@ async function attemptDuelJoin(index) {
     if (receivedRoomCode != "none" && receivedRoomCode != "default") {
         joinRoom(receivedRoomCode); //duel find status will be set in this function as well
     } else if (receivedRoomCode == "none"){
-        //TODO: post request send out room code
-        createRoom(); //this doesn't work yet - needs to be adjusted TODO + auto skip for result screen + remove roomcode if disconnected OR round started
+        sendRoomCodeToMatchmakingServer();
+        setupMultiplayerRoom(5, 60); //+ auto skip for result screen
     }
 }
 
@@ -640,6 +642,71 @@ function findNextDuel() {
         matchmakingActive = false;
         setRetryButtonState();
     }
+}
+
+async function sendRoomCodeToMatchmakingServer() {
+    try {
+        const requestBody = {
+          id: localStorage.getItem("id")
+        }
+
+        const response = await fetch("https://api.openguessr.com/api/rooms/" + peerId.replace("openguessr_", ""), {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ` + localStorage.getItem("bearer")
+          },
+          body: JSON.stringify(requestBody)
+        });
+    
+        if (response.ok) {
+            setTimeout(() => {
+                if (matchmakingActive) {
+                    matchmakingActive = false;
+                    setRetryButtonState();
+                    leaveMultiplayerRound();
+                }
+            }, 10000); //After 10 seconds, as the room code is now expired, leave the multiplayer round and show the retry button
+
+        } else {
+            console.error("Failed sending the Room Code to the server: " + response.status);
+            setDuelFindStatus("Error sending roomcode to server: " + error);
+            matchmakingActive = false;
+            setRetryButtonState();
+        }
+
+      } catch (error) {
+        console.error('Failed making a post request to the server: ', error);
+        setDuelFindStatus("Error making a request to server: " + error);
+        matchmakingActive = false;
+        setRetryButtonState();
+      }
+}
+
+async function deleteRoomCodeFromMatchmakingServer() {
+    try {
+        const requestBody = {
+          id: localStorage.getItem("id")
+        }
+
+        const response = await fetch("https://api.openguessr.com/api/rooms/" + peerId.replace("openguessr_", ""), {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ` + localStorage.getItem("bearer")
+          },
+          body: JSON.stringify(requestBody)
+        });
+    
+        if (!response.ok) {
+          console.error("Failed sending the Room Code to the server: " + response.status);
+          setDuelFindStatus("Error deleting roomcode from server: " + error);
+        }
+
+      } catch (error) {
+        console.error('Failed making a delete request to the server: ', error);
+        setDuelFindStatus("Error making a request to server: " + error);
+      }
 }
 
 retryDuelFind.addEventListener("click", attemptDuelJoin); //Retry button will trigger the attempt join function
@@ -669,6 +736,13 @@ if (peer) {
                 connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score]);
                 connectedClientsCount++;
                 setJoinCounter(connectedClientsCount);
+
+                //if duels matchmaking is active, immediately start the round and close the room on the first connection
+                if(matchmakingActive) {
+                    roomLocked = true;
+                    deleteRoomCodeFromMatchmakingServer();
+                    startMultiplayerRound(); //also sets matchmakingActive to false
+                }
 
                 // Event listener for when the connection is open
                 incomingConn.on('open', function () {
@@ -735,37 +809,50 @@ if (peer) {
 
 let roomLocked = true;
 
-function createRoom() {
+function createRoom(AmountOfRounds, LengthOfRounds) {
+    if (multiplayerHost.textContent != "Start") {
+        setupMultiplayerRoom(AmountOfRounds, LengthOfRounds);
+        showHostCodeArea("Roomcode: " + peerId.replace("openguessr_", ""));
+        multiplayerHost.textContent = "Start";
+        setJoinCounter(0); //greys out the start button too
+    } else {
+        StartRoom();
+    }
+}
+
+function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
+    setDuelFindStatus("Room created");
     isHost = true;
     multiplayerFirstRoundPlayed = false;
     roomLocked = false;
     multiplayerCategory = mapCategory;
+    roomLocked = false;
 
     if (multiplayerCategory == "hard" || multiplayerCategory == "daily") {
         multiplayerCategory = "standard - auto";
     }
 
-    if (multiplayerHost.textContent != "Start") {
-        showHostCodeArea("Roomcode: " + peerId.replace("openguessr_", ""));
-        multiplayerHost.textContent = "Start";
-        connectedPeers.push([peerId, localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0]);
-        showMultiplayerOverlay(true, "Waiting...", connectedPeers);
-        setJoinCounter(0); //greys out the start button too
-        roomLocked = false;
+    connectedPeers.push([peerId, localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0]); //add yourself (host) to the overview
+    showMultiplayerOverlay(true, "Waiting...", connectedPeers);
 
-        //set round and length parameters
-        roundAmount = roundAmountText.textContent;
-        roundLength = roundLengthText.textContent;
+    //set round and length parameters
+    roundAmount = AmountOfRounds;
+    roundLength = LengthOfRounds;
+}
+
+function StartRoom() {
+    if (connectedClientsCount != 0) {
+        //start the round (from host)
+        multiplayerHost.textContent = "Loading Location...";
+        setDuelFindStatus("Starting! Loading location...");
+        multiplayer = true;
+        setMultiplayerUI();
+        showMultiplayerOverlay(true, "Ready...", connectedPeers); //only for host, also to set the map category in mode text
+        checkGenerationTypeAndGenerate();
+        roomLocked = true;
+        matchmakingActive = false;
     } else {
-        if (connectedClientsCount != 0) {
-            //start the round (from host)
-            multiplayerHost.textContent = "Loading Location...";
-            multiplayer = true;
-            setMultiplayerUI();
-            showMultiplayerOverlay(true, "Ready...", connectedPeers); //only for host, also to set the map category in mode text
-            checkGenerationTypeAndGenerate();
-            roomLocked = true;
-        }
+        console.error("No players have joined - cannot start multiplayer room.");
     }
 }
 
@@ -821,6 +908,10 @@ function disconnectAllPeersAndCloseRoom() {
                     connection.close();
                 });
             }
+        }
+        
+        if(matchmakingActive) {
+            deleteRoomCodeFromMatchmakingServer();
         }
     }
 
@@ -905,6 +996,10 @@ function joinRoom(code) {
         if (data.type === "closeResultScreen") {
             transitionToStart();
         }
+
+        if (data.type === "locked") {
+            setJoinInfoText("Room locked!");
+        }
     });
 
     // Event listener for Connection closed
@@ -950,13 +1045,17 @@ if (peer) {
             setJoinInfoText("Failed to join.");
         }
 
-        if(matchmakingActive) {
-            if (err.type == "peer_unavailable") {
+        if (matchmakingActive) {
+            if (err.type == "peer_unavailable" && !isHost) {
                 findNextDuel();
             } else {
                 setDuelFindStatus("Please try again. Error: " + err.type);
                 matchmakingActive = false;
                 setRetryButtonState();
+            }
+
+            if (isHost) {
+                deleteRoomCodeFromMatchmakingServer(); //the retry button will also appear as seen above
             }
         }
 
@@ -989,6 +1088,7 @@ function leaveMultiplayerRound() {
             conn.close();
         }
     }
+
     try { multiplayerTimer.stopTimer(); } catch { }; //has to be in try catch
     multiplayer = false;
     setMultiplayerUI();
