@@ -10,13 +10,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
-  <script src="https://unpkg.com/mathjs@11.5.1/lib/browser/math.js"></script>
 
   <!-- guesser css  & other stylesheets-->
   <link rel="stylesheet" href="/CSS/guesser.css">
 
   <!-- Non-bundled js files -->
-  <script type="module" src="analytics.js"></script>
+  <script type="module" src="analytics.js" async></script>
 
   <!-- venatus ad script -->
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript" data-site-id="660fad7bb673231986638f83" data-mode="scan" async></script>
@@ -255,7 +254,7 @@
         <h1 id="socialHeader">Join the community</h1>
       </div>
       <p>Join now and get <span class="highlight">7,500 XP</span> in return!</p>
-      <iframe id="discordWidget" src="https://discord.com/widget?id=1221841177863651499&theme=dark" width="350"
+      <iframe id="discordWidget" width="350"
         height="500" allowtransparency="true" frameborder="0"
         sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
       <button id="socialPopupClose" class="accountButton white accountClose">Close</button>
@@ -448,7 +447,7 @@
   </div>
   <!-- custom venatus scaling script -->
   <script type="module" src="venatusCustom.js"></script>
-  <!-- Main.js, bundled -->
+  <!-- Main.js, bundled. We use imports and exports so it has to be a module. Loading this async breaks the multiplayer join via link -->
   <script type="module" src="main.js"></script>
 </body>
 </html>

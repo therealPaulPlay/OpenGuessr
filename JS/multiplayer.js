@@ -486,24 +486,19 @@ function resetChat() {
 
 //mainly for peers if they receive a message
 async function addToChat(text) {
-    try {
-        const res = await fetch('https://vector.profanity.dev', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ message: text }),
-        });
+    const profanityList = [
+        "hate ", "idiot", "fuck", "asshole", "suck ass", "nigg", "pussy", "kill y", "cock", "bastard", "suck"
+    ];
 
-        const profanityCheckData = await res.json();
+    function containsProfanity(text) {
+        const lowerCaseText = text.toLowerCase();
+        return profanityList.some(word => lowerCaseText.includes(word));
+    }
 
-        if (profanityCheckData.isProfanity == true) {
-            addTextToChat("System: Censored Profanity");
-        } else {
-            addTextToChat(text);
-        }
-
-    } catch (err) {
-        console.error("Error with the profanity check api: " + err);
-        addTextToChat(text); //if the api fails to check, add chat anyway
+    if (containsProfanity(text)) {
+        addTextToChat("System: Censored Profanity");
+    } else {
+        addTextToChat(text);
     }
 }
 

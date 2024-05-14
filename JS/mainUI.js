@@ -170,6 +170,7 @@ export function toggleCategoryMenu(alwaysClose) {
 let socialWindow = document.getElementById("socialWindow");
 
 function showSocialPopup() {
+    document.getElementById("discordWidget").setAttribute("src", "https://discord.com/widget?id=1221841177863651499&theme=dark");
     socialWindow.style.display = "block";
     document.getElementById("blackBackground").style.visibility = "visible";
 }
