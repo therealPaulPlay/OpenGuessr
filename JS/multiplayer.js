@@ -33,6 +33,9 @@ let lengthPlus = document.getElementById("lengthPlus");
 let lengthMinus = document.getElementById("lengthMinus");
 let roundLengthText = document.getElementById("roundLengthText");
 
+//Duels
+let retryDuelFind = document.getElementById("multiplayerDuelRetry");
+
 socialMenuMultiplayerButton.addEventListener("click", toggleMultiplayerSelector);
 
 document.getElementById("multiplayerSelectorClose").addEventListener("click", function () {
@@ -85,7 +88,7 @@ function changeMultiplayerSelectorInfotext(hoveredButton) {
             infoTextContent = "Create a new room and share the roomcode.";
             break;
         case "duels":
-            infoTextContent = "Duels will be launched with a future update.";
+            infoTextContent = "Automatically play against other online players.";
             break;
         default:
             infoTextContent = "Hover over the modes to learn more about them.";
@@ -101,10 +104,12 @@ let roomCreationSettings = document.getElementById("roomCreationSettings");
 
 multiplayerSelectJoin.addEventListener("click", () => { setMultiplayerWindowSelection("join"); })
 multiplayerSelectHost.addEventListener("click", () => { setMultiplayerWindowSelection("host"); })
+multiplayerSelectDuels.addEventListener("click", () => { setMultiplayerWindowSelection("duel"); })
 
 let multiplayerWindowMain = document.getElementById("multiplayerWindowMain");
 let multiplayerWindowJoin = document.getElementById("multiplayerWindowJoin");
 let multiplayerWindowHost = document.getElementById("multiplayerWindowHost");
+let multiplayerWindowDuel = document.getElementById("multiplayerWindowDuel");
 let toggleRestrictions = document.getElementById("toggleRestrictions");
 
 let multiplayerSelectorBack = document.getElementById("multiplayerSelectorBack");
@@ -114,15 +119,19 @@ function setMultiplayerWindowSelection(window) {
     multiplayerWindowMain.style.display = "none";
     multiplayerWindowJoin.style.display = "none";
     multiplayerWindowHost.style.display = "none";
+    multiplayerWindowDuel.style.display = "none";
     multiplayerSelectorBack.style.display = "none";
     hostCodeArea.style.display = "none";
     roomCreationSettings.style.display = "flex";
     multiplayerHost.textContent = "Create room";
     roundLengthText.textContent = "120";
     roundAmountText.textContent = "3";
+    retryDuelFind.style.pointerEvents = "none";
+    retryDuelFind.style.opacity = "0.5";
     toggleRestrictions.textContent = "Standard";
     document.getElementById("roomCodeInput").value = "";
     multiplayerRestriction = "standard";
+    setDuelFindStatus("Initializing...");
     setJoinCounter(0);
     setJoinInfoText("Enter the roomcode.");
     document.getElementById("roomCreationModes").style.display = "flex";
@@ -136,9 +145,13 @@ function setMultiplayerWindowSelection(window) {
     } else if (window == "join") {
         multiplayerWindowJoin.style.display = "block";
         multiplayerSelectorBack.style.display = "block";
-    } else if (window = "host") {
+    } else if (window == "host") {
         multiplayerWindowHost.style.display = "block";
         multiplayerSelectorBack.style.display = "block";
+    } else if (window == "duel") {
+        multiplayerWindowDuel.style.display = "block";
+        multiplayerSelectorBack.style.display = "block";
+        findDuel();
     }
 }
 
@@ -555,6 +568,93 @@ function manuallySendChat() {
     }
 }
 
+//Find Duel Logic ------------------------------------------------------------------------------------------
+
+let roomIndex = 0;
+let matchmakingActive = false;
+
+//set info text
+let multiplayerDuelInfo = document.getElementById("multiplayerDuelInfo");
+function setDuelFindStatus(text) {
+    multiplayerDuelInfo.textContent = text;
+}
+
+//this initiates the find duel system
+async function findDuel() {
+    roomIndex = 0; //reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
+    matchmakingActive = true;
+    setRetryButtonState();
+    setDuelFindStatus("Starting...");
+    attemptDuelJoin(roomIndex);
+}
+
+//This function attempts to get a room code from the server and to join the room
+async function attemptDuelJoin(index) {
+    if (index == 0) {
+        setDuelFindStatus("Requesting roomcode...");
+    } else {
+        setDuelFindStatus("Requesting new roomcode...");
+    }
+    let receivedRoomCode = "default";
+
+    //Get Roomcode from server
+    try {
+        const response = await fetch("https://api.openguessr.com/api/rooms/" + index, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ` + localStorage.getItem("bearer")
+            }
+        });
+
+        if (response.ok) {
+            receivedRoomcode = await response.json();
+        } else {
+            console.error('Error fetching room code:', response.status);
+            setDuelFindStatus("Bad Get Request response");
+            findNextDuel(); //as this could be a temporary thing, try again
+        }
+
+    } catch (error) {
+        console.error('Error occurred when trying to fetch room code: ', error);
+        setDuelFindStatus("Couldn't send get request");
+        matchmakingActive = false; //if there is no sever response, stop the matchmaking process
+        setRetryButtonState();
+    }
+
+    //Attempt to join if there is a code, otherwise create room
+    if (receivedRoomCode != "none" && receivedRoomCode != "default") {
+        joinRoom(receivedRoomCode); //duel find status will be set in this function as well
+    } else if (receivedRoomCode == "none"){
+        //TODO: post request send out room code
+        createRoom(); //this doesn't work yet - needs to be adjusted TODO + auto skip for result screen + remove roomcode if disconnected OR round started
+    }
+}
+
+//This occurs when the peer connect returns an error like peer_unavailable (means = doesn't exist)
+function findNextDuel() {
+    if (roomIndex < 10) {
+        roomIndex++;
+        attemptDuelJoin(roomIndex);
+    } else {
+        matchmakingActive = false;
+        setRetryButtonState();
+    }
+}
+
+retryDuelFind.addEventListener("click", attemptDuelJoin); //Retry button will trigger the attempt join function
+
+//enable / disable the retry button depending on whether it is currently trying to join/host or not
+function setRetryButtonState () {
+    if (matchmakingActive) {
+        retryDuelFind.style.pointerEvents = "none";
+        retryDuelFind.style.opacity = "0.5";
+    } else {
+        retryDuelFind.style.pointerEvents = "auto";
+        retryDuelFind.style.opacity = "1";
+    }
+}
+
 //Host Logic ----------------------------------------------------------------------------------------------
 export let multiplayerGuessesLocationsArray = [];
 let multiplayerFirstRoundPlayed = false; // for host and peers! peers use this to see whether they should incrase the round index
@@ -579,7 +679,6 @@ if (peer) {
                             roundLength: roundLength,
                             multiplayerRestriction: multiplayerRestriction,
                             category: multiplayerCategory
-
                         }
                     }
                     // Send messages
@@ -739,6 +838,7 @@ function joinRoom(code) {
     isHost = false;
 
     setJoinInfoText("Attempting join...");
+    setDuelFindStatus("Attempting join...");
 
     const options = {
         metadata: {
@@ -753,9 +853,11 @@ function joinRoom(code) {
     // Event listener for when the connection is opened
     conn.on('open', function () {
         setJoinInfoText("Joined!");
+        setDuelFindStatus("Joined!");
         multiplayer = true;
         setMultiplayerUI();
         toggleMultiplayerSelector("close");
+        matchmakingActive = false;
     });
 
     // Receive messages
@@ -803,7 +905,6 @@ function joinRoom(code) {
         if (data.type === "closeResultScreen") {
             transitionToStart();
         }
-
     });
 
     // Event listener for Connection closed
@@ -849,6 +950,16 @@ if (peer) {
             setJoinInfoText("Failed to join.");
         }
 
+        if(matchmakingActive) {
+            if (err.type == "peer_unavailable") {
+                findNextDuel();
+            } else {
+                setDuelFindStatus("Please try again. Error: " + err.type);
+                matchmakingActive = false;
+                setRetryButtonState();
+            }
+        }
+
     });
 
     peer.on('close', function () {
@@ -891,6 +1002,7 @@ function leaveMultiplayerRound() {
     multiplayerHasAlreadyGuessed = false;
     multiplayerRestriction = "standard";
     resetChat();
+    matchmakingActive = false;
 
     //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";

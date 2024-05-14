@@ -32,11 +32,11 @@ export function toggleSocialbar() {
         if (!socialBarExpanded) {
             document.getElementById("socialBar").style.maxHeight = "1000px";
             socialBarExpanded = true;
-            document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▲";
+            document.getElementById("floatingSocialButton").innerHTML = "Multiplayer Menu ▲";
         } else {
             document.getElementById("socialBar").style.maxHeight = "0";
             socialBarExpanded = false;
-            document.getElementById("floatingSocialButton").innerHTML = "Social Menu ▼";
+            document.getElementById("floatingSocialButton").innerHTML = "Multiplayer Menu ▼";
         }
     } catch (error) {
         console.warn("Socialbar couldn't be closed: ", error);
