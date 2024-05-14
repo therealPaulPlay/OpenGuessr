@@ -49,30 +49,17 @@ let extraMsg;
 let destinationMarker;
 
 export function calculateDistances(mapsLat, mapsLong) {
-    let lat1 = mapsLat;
-    let lon1 = mapsLong;
-    let lat2 = currentStreetviewLat;
-    let lon2 = currentStreetviewLong;
-    let R = 6371; // Radius of the earth in km
-    let dLat = deg2rad(lat2-lat1);  // deg2rad below
-    let dLon = deg2rad(lon2-lon1); 
-    let a = 
-      Math.sin(dLat/2) * Math.sin(dLat/2) +
-      Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) * 
-      Math.sin(dLon/2) * Math.sin(dLon/2); 
-    let c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a)); 
-    let d = R * c; // Distance in km
+    const guessCoords = new L.LatLng(mapsLat, mapsLong);
+    const destinationCoords = new L.LatLng(currentStreetviewLat, currentStreetviewLong)
 
-    compareDistances(d);   
+    let distance = guessCoords.distanceTo(destinationCoords) / 1000;
+
+    compareDistances(distance);   
 }
   
-function deg2rad(deg) {
-    return deg * (Math.PI/180);
-}
 
 function compareDistances(distance) {
     //compares how big the distance is and enables result screen with a message.
-
     if (!resultScreenEnabled) {
    
     let finalResult;
@@ -82,19 +69,24 @@ function compareDistances(distance) {
     closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!"];
     farDistances = ["It was a good guess.", "You'll get it next time!", "At least it was on the correct planet, right?", "Not bad, not great."];
 
+    //motivational quotes
     if(distance < 100 && !(distance<5)) {
         extraMsg = closeDistances[Math.floor(Math.random()*closeDistances.length)];
     }
     else {
         extraMsg = farDistances[Math.floor(Math.random()*farDistances.length)];
     }
+
+    //distance number formatting (km or m)
     if (distance < 5) {
         finalResult = Math.round(distance*1000);
+        finalResult = finalResult.toLocaleString();
         resultAsString = finalResult+" m";
         extraMsg = veryCloseDistances[Math.floor(Math.random()*veryCloseDistances.length)];
     }
     else {
         finalResult = Math.round(distance * 10) / 10;
+        finalResult = finalResult.toLocaleString();
         resultAsString = finalResult+" km";
     }
 

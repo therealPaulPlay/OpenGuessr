@@ -302,7 +302,7 @@ function addCommunityCreditTag() {
     let communityCategoriesArray = Array.from(communityCategories); // Convert to array
     for (let i = 0; i < communityCategoriesArray.length; i++) {
         let infoButtonId = communityCategoriesArray[i].id + "Info";
-        communityCategoriesArray[i].innerHTML += `<img class="specialCategoryInfo" id="${infoButtonId}" src="/IMG/info_icon.png">`;
+        communityCategoriesArray[i].innerHTML += `<img class="specialCategoryInfo" id="${infoButtonId}" alt="community category info" src="/IMG/info_icon.png">`;
     }
 
     //Event Listeners and text for credit popups for community maps
