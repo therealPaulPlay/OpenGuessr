@@ -10,13 +10,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
-  <script src="https://unpkg.com/mathjs@11.5.1/lib/browser/math.js"></script>
 
   <!-- guesser css  & other stylesheets-->
   <link rel="stylesheet" href="/CSS/guesser.css">
 
   <!-- Non-bundled js files -->
-  <script type="module" src="analytics.js"></script>
+  <script type="module" src="analytics.js" async></script>
 
   <!-- venatus ad script -->
   <!-- venatus script temporarily removed here -->
@@ -447,7 +446,7 @@
   <div align="center" id="bottomFooterAds">
     <!-- venatus tag temporarily removed here -->
   </div>
-  <!-- Main.js, bundled. Currently we are not using any import/export statements in here as it is all being bundled together but I made it type=module in case we use imports outside of the bundle in the future -->
+  <!-- Main.js, bundled. We use imports and exports so it has to be a module. Loading this async breaks the multiplayer join via link -->
   <script type="module" src="main.js"></script>
 </body>
 
