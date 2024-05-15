@@ -123,6 +123,10 @@ function setMultiplayerWindowSelection(window) {
     multiplayerWindowHost.style.display = "none";
     multiplayerWindowDuel.style.display = "none";
     multiplayerSelectorBack.style.display = "none";
+    multiplayerSelectorBack.style.opacity= "0.5";
+    multiplayerSelectorClose.style.opacity = "1";
+    multiplayerSelectorBack.style.pointerEvents= "auto";
+    multiplayerSelectorClose.style.pointerEvents = "auto";
     hostCodeArea.style.display = "none";
     roomCreationSettings.style.display = "flex";
     multiplayerHost.textContent = "Create room";
@@ -637,8 +641,10 @@ async function attemptDuelJoin(index) {
         joinRoom(receivedRoomCode); //duel find status will be set in this function as well
     } else if (receivedRoomCode == null){
         //create room & hide close + back button for the time
-        multiplayerSelectorBack.style.display = "none";
-        multiplayerSelectorClose.style.display = "none";
+        multiplayerSelectorBack.style.opacity= "0.2";
+        multiplayerSelectorClose.style.opacity = "0.2";
+        multiplayerSelectorBack.style.pointerEvents= "none";
+        multiplayerSelectorClose.style.pointerEvents = "none";
         try {
             changeCategory("standard");
         } catch (e) {
@@ -736,8 +742,10 @@ function setRetryButtonState () {
     } else {
         retryDuelFind.style.pointerEvents = "auto";
         retryDuelFind.style.opacity = "1";
-        multiplayerSelectorBack.style.display = "block";
-        multiplayerSelectorClose.style.display = "block";
+        multiplayerSelectorBack.style.opacity= "0.5";
+        multiplayerSelectorClose.style.opacity = "1";
+        multiplayerSelectorBack.style.pointerEvents= "auto";
+        multiplayerSelectorClose.style.pointerEvents = "auto";
     }
 }
 
@@ -842,7 +850,7 @@ function createRoom(AmountOfRounds, LengthOfRounds) {
 }
 
 function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
-    setDuelFindStatus("Room created. Waiting.. (10s max.)");
+    setDuelFindStatus("Room created. Please wait (10s max.)");
     isHost = true;
     multiplayerFirstRoundPlayed = false;
     multiplayerCategory = mapCategory;
