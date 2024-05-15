@@ -633,9 +633,9 @@ async function attemptDuelJoin(index) {
     }
 
     //Attempt to join if there is a code, otherwise create room
-    if (receivedRoomCode != "none" && receivedRoomCode != "default") {
+    if (receivedRoomCode != null && receivedRoomCode != "default") {
         joinRoom(receivedRoomCode); //duel find status will be set in this function as well
-    } else if (receivedRoomCode == "none"){
+    } else if (receivedRoomCode == null){
         //create room & hide close + back button for the time
         multiplayerSelectorBack.style.display = "none";
         multiplayerSelectorClose.style.display = "none";
