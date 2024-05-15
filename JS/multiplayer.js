@@ -760,7 +760,7 @@ if (peer) {
                 if(matchmakingActive) {
                     roomLocked = true;
                     deleteRoomCodeFromMatchmakingServer();
-                    setTimeout(startMultiplayerRound, 1000);
+                    StartRoom();
                 }
 
                 // Event listener for when the connection is open
