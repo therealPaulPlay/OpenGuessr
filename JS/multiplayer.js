@@ -901,13 +901,12 @@ export function startMultiplayerRound(latitude, longitude) {
         //check if session isn't over
         if (roundIndex <= roundAmount) {
             setTimeout(() => {
+                distributeChat("System: Starting Round " + roundIndex);
                 sendMessageToAll("start", [latitude, longitude]); //for peers
                 multiplayerOverlayCountdown(); //for host
             }, 1500)
         }
     }
-
-    distributeChat("System: Starting Round " + roundIndex);
 }
 
 //Function to send a message from host to all peers
