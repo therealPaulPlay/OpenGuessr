@@ -687,7 +687,7 @@ async function sendRoomCodeToMatchmakingServer() {
                     setDuelFindStatus("No match found. Please retry");
                     matchmakingActive = false;
                     setRetryButtonState();
-                    /*leaveMultiplayerRound();*/
+                    leaveMultiplayerRound();
                 }
             }, 10000); //After 10 seconds, as the room code is now expired, leave the multiplayer round and show the retry button
 
@@ -930,7 +930,7 @@ export function sendMessageToAll(type, message) {
 // Function to disconnect all peers and close the room
 function disconnectAllPeersAndCloseRoom() {
     if (isHost) {
-        if (peer) {
+        if (peer && connectedClientsCount != 0) {
             try {
                 for (let peerId in peer.connections) {
                     peer.connections[peerId].forEach(function (connection) {
@@ -1132,11 +1132,12 @@ function leaveMultiplayerRound() {
     }
 
     if (isHost) {
-        disconnectAllPeersAndCloseRoom();
+        disconnectAllPeersAndCloseRoom(); //only does this if there are clients connected (connectedClientsCount != 0)
     } else {
         if (conn) {
             try {
                 conn.close();
+                console.log("closed");
             } catch (error) {
                 console.error("Error when closing connection in multiplayer js: " + error);
             }
