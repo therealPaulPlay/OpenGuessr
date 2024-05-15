@@ -617,7 +617,8 @@ async function attemptDuelJoin(index) {
         });
 
         if (response.ok) {
-            receivedRoomCode = response;
+            receivedRoomCode = await response.json();
+            receivedRoomCode = receivedRoomCode.code;
         } else {
             console.error('Error fetching room code:', response.status);
             setDuelFindStatus("Bad Get Request response: " + response.status);
@@ -634,7 +635,6 @@ async function attemptDuelJoin(index) {
     //Attempt to join if there is a code, otherwise create room
     if (receivedRoomCode != "none" && receivedRoomCode != "default") {
         joinRoom(receivedRoomCode); //duel find status will be set in this function as well
-        console.log(receivedRoomCode);
     } else if (receivedRoomCode == "none"){
         //create room & hide close + back button for the time
         multiplayerSelectorBack.style.display = "none";
