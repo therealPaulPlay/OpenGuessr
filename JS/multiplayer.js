@@ -19,6 +19,8 @@ let multiplayerSelectJoin = document.getElementById("multiplayerSelectJoin");
 let multiplayerSelectHost = document.getElementById("multiplayerSelectHost");
 let multiplayerSelectDuels = document.getElementById("multiplayerSelectDuels");
 
+let multiplayerSelectorClose = document.getElementById("multiplayerSelectorClose");
+
 let joinInfoText = document.getElementById("multiplayerJoinInfo");
 let multiplayerJoin = document.getElementById("multiplayerJoin"); //button with join functionality
 let multiplayerHost = document.getElementById("multiplayerHost"); //button that creates a room
@@ -38,7 +40,7 @@ let retryDuelFind = document.getElementById("multiplayerDuelRetry");
 
 socialMenuMultiplayerButton.addEventListener("click", toggleMultiplayerSelector);
 
-document.getElementById("multiplayerSelectorClose").addEventListener("click", function () {
+multiplayerSelectorClose.addEventListener("click", function () {
     leaveMultiplayerRound(); //leave round and if you are the host, also disconnect all peers
     toggleMultiplayerSelector();
 });
@@ -633,6 +635,9 @@ async function attemptDuelJoin(index) {
     if (receivedRoomCode != "none" && receivedRoomCode != "default") {
         joinRoom(receivedRoomCode); //duel find status will be set in this function as well
     } else if (receivedRoomCode == "none"){
+        //create room & hide close + back button for the time
+        multiplayerSelectorBack.style.display = "none";
+        multiplayerSelectorClose.style.display = "none";
         sendRoomCodeToMatchmakingServer();
         setupMultiplayerRoom(5, 60); //+ auto skip for result screen
     }
@@ -724,6 +729,8 @@ function setRetryButtonState () {
     } else {
         retryDuelFind.style.pointerEvents = "auto";
         retryDuelFind.style.opacity = "1";
+        multiplayerSelectorBack.style.display = "block";
+        multiplayerSelectorClose.style.display = "block";
     }
 }
 
@@ -828,7 +835,7 @@ function createRoom(AmountOfRounds, LengthOfRounds) {
 }
 
 function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
-    setDuelFindStatus("Room created");
+    setDuelFindStatus("Room created. Waiting.. (10s max.)");
     isHost = true;
     multiplayerFirstRoundPlayed = false;
     roomLocked = false;
