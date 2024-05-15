@@ -1,6 +1,6 @@
 //Sample code from the venatus discord group modified for our use case
 try {
-    window.top.vm_add = window.top.vm_add || [];
+    window.top.__vm_add = window.top.__vm_add || [];
     
     (function (success) {
         if (window.document.readyState !== "loading") {
