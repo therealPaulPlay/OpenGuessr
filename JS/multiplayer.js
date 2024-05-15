@@ -752,7 +752,7 @@ if (peer) {
                 // Event listener for when the connection is open
                 incomingConn.on('open', function () {
                     const welcomeMessage = {
-                        type: "roundInfo",
+                        type: "initialize",
                         content: {
                             roundAmount: roundAmount,
                             roundLength: roundLength,
@@ -804,7 +804,9 @@ if (peer) {
                     }
                 })
             } else {
-                incomingConn.close(); // Close the connection if room is locked (= the round has alr started)
+                setTimeout(() => {
+                    incomingConn.close(); // Close the connection if room is locked (= the round has alr started)
+                }, 1000);
             }
         });
     });
@@ -948,16 +950,24 @@ function joinRoom(code) {
 
     // Event listener for when the connection is opened
     conn.on('open', function () {
-        setJoinInfoText("Joined!");
-        setDuelFindStatus("Joined!");
-        multiplayer = true;
-        setMultiplayerUI();
-        toggleMultiplayerSelector("close");
-        matchmakingActive = false;
     });
 
     // Receive messages
     conn.on('data', function (data) {
+        
+        if (data.type === "initialize") {
+            setJoinInfoText("Joined!");
+            setDuelFindStatus("Joined!");
+            multiplayer = true;
+            setMultiplayerUI();
+            toggleMultiplayerSelector("close");
+            matchmakingActive = false;
+            roundAmount = data.content.roundAmount;
+            roundLength = data.content.roundLength;
+            multiplayerRestriction = data.content.multiplayerRestriction;
+            multiplayerCategory = data.content.category;
+        }
+
         if (data.type === "showPlayersArray") {
             showMultiplayerOverlay(true, "Starting soon...", data.content);
         }
@@ -982,13 +992,6 @@ function joinRoom(code) {
             multiplayerOverlayCountdown();
         }
 
-        if (data.type === "roundInfo") {
-            roundAmount = data.content.roundAmount;
-            roundLength = data.content.roundLength;
-            multiplayerRestriction = data.content.multiplayerRestriction;
-            multiplayerCategory = data.content.category;
-        }
-
         if (data.type === "roundOver") {
             multiplayerGuessesLocationsArray = data.content;
             endMultiplayerRound();
@@ -1009,8 +1012,20 @@ function joinRoom(code) {
 
     // Event listener for Connection closed
     conn.on('close', function () {
-        leaveMultiplayerRound();
-        errorPopup("Disconnected from room", "", "User disconnected", false);
+        //if you get disconnected mid round
+        if (multiplayer) {
+            leaveMultiplayerRound();
+            errorPopup("Disconnected from room", "", "User disconnected", false);
+        }
+        //if you try to join a room that is locked
+        if (!multiplayer) {
+            setJoinInfoText("Room locked - round ongoing");
+
+            if (matchmakingActive) {
+                setDuelFindStatus("Room locked - round ongoing");
+                findNextDuel();
+            }
+        }
     });
 }
 
