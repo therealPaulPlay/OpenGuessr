@@ -760,7 +760,7 @@ if (peer) {
                 if(matchmakingActive) {
                     roomLocked = true;
                     deleteRoomCodeFromMatchmakingServer();
-                    startMultiplayerRound(); //also sets matchmakingActive to false
+                    setTimeout(startMultiplayerRound, 1000);
                 }
 
                 // Event listener for when the connection is open
@@ -845,7 +845,6 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     setDuelFindStatus("Room created. Waiting.. (10s max.)");
     isHost = true;
     multiplayerFirstRoundPlayed = false;
-    roomLocked = false;
     multiplayerCategory = mapCategory;
     roomLocked = false;
 
