@@ -1157,6 +1157,7 @@ function leaveMultiplayerRound() {
     multiplayerRestriction = "standard";
     resetChat();
     matchmakingActive = false;
+    isHost = false;
 
     //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";
