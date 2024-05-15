@@ -1138,7 +1138,6 @@ function leaveMultiplayerRound() {
         if (conn) {
             try {
                 conn.close();
-                console.log("closed");
             } catch (error) {
                 console.error("Error when closing connection in multiplayer js: " + error);
             }
@@ -1213,6 +1212,12 @@ export function showMultiplayerOverlay(show, title, array) {
 
         let yourPeerId = peerId;
 
+        //this shows that Christopher and I are the developers =)
+        let devstring = "";
+        if (Number(localStorage.getItem("id")) < 3) {
+            devstring = ", Dev";
+        }
+
         // Generate HTML for each player
         array.forEach(playerInfo => {
             const [peerId, username, level, score] = playerInfo;
@@ -1220,7 +1225,7 @@ export function showMultiplayerOverlay(show, title, array) {
                 body += `
                 <div class="multiplayerOverlayEntry yourMultiplayerOverlay">
                     <div class="multiplayerEntryPlayerInfo">
-                        <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level})</div>
+                        <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level}${devstring})</div>
                         <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
                     </div>
                 </div>
@@ -1229,7 +1234,7 @@ export function showMultiplayerOverlay(show, title, array) {
                 body += `
                 <div class="multiplayerOverlayEntry">
                     <div class="multiplayerEntryPlayerInfo">
-                        <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level})</div>
+                        <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level}${devstring})</div>
                         <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
                     </div>
                 </div>
