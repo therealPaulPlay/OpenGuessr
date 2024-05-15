@@ -278,6 +278,7 @@ export function multiplayerTimerExpired() {
 }
 
 let roundEnded = false;
+export let autoSkipResult;
 
 function endMultiplayerRound() {
     if (!roundEnded) {
@@ -286,11 +287,15 @@ function endMultiplayerRound() {
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
             document.getElementById("nextRound").innerHTML = "Wait before skipping... →";
+            //After 2 seconds, enable the skip functionality
             setTimeout(function () {
                 document.getElementById("nextRound").innerHTML = "Skip →";
                 document.getElementById("nextRound").style.opacity = "1";
                 document.getElementById("nextRound").style.pointerEvents = "auto";
             }, 2000)
+            //After 10 seconds, skip automatically to not let peers wait too long
+            autoSkipResult = setTimeout(transitionToStart, 10000);
+
         } else {
             //if i'ts not the host, hide the next round button!
             document.getElementById("nextRound").style.opacity = "0.5";
