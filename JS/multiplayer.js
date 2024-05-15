@@ -850,7 +850,7 @@ function createRoom(AmountOfRounds, LengthOfRounds) {
 }
 
 function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
-    setDuelFindStatus("Room created. Please wait (10s max.)");
+    setDuelFindStatus("Room created. Please wait <10s");
     isHost = true;
     multiplayerFirstRoundPlayed = false;
     multiplayerCategory = mapCategory;

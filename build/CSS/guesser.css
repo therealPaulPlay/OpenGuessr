@@ -468,6 +468,7 @@ li {
   color: white;
   min-height: 60px;
   margin-top: 10px;
+  max-width: 400px;
 }
 
 .newSocialMenuTag {
