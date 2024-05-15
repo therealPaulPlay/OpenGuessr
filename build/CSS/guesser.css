@@ -982,6 +982,26 @@ li {
   pointer-events: auto;
 }
 
+@keyframes textFade {
+  0% { color: white; }
+  50% { color: red; }
+  100% { color: white; }
+}
+
+@keyframes divFade {
+  0% { background-color: hsla(236, 25%, 20%, 0.7); }
+  50% { background-color: hsla(298, 25%, 20%, 0.7); }
+  100% { background-color: hsla(236, 25%, 20%, 0.7); }
+}
+
+#mapTimer.fading {
+  animation: textFade 1s infinite;
+}
+
+#mapModeIndicator.fading {
+  animation: divFade 1s infinite;
+}
+
 #multiplayerChat {
   width: 300px;
   height: 20%;
