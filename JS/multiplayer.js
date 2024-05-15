@@ -724,7 +724,7 @@ async function deleteRoomCodeFromMatchmakingServer() {
       }
 }
 
-retryDuelFind.addEventListener("click", attemptDuelJoin); //Retry button will trigger the attempt join function
+retryDuelFind.addEventListener("click", findDuel); //Retry button will trigger the attempt join function
 
 //enable / disable the retry button depending on whether it is currently trying to join/host or not
 function setRetryButtonState () {
