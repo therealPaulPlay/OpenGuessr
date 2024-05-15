@@ -931,10 +931,14 @@ export function sendMessageToAll(type, message) {
 function disconnectAllPeersAndCloseRoom() {
     if (isHost) {
         if (peer) {
-            for (let peerId in peer.connections) {
-                peer.connections[peerId].forEach(function (connection) {
-                    connection.close();
-                });
+            try {
+                for (let peerId in peer.connections) {
+                    peer.connections[peerId].forEach(function (connection) {
+                        connection.close();
+                    });
+                }
+            } catch (error) {
+                console.error("Error disconnecting all peers in multiplayer js: " + error);
             }
         }
 
@@ -1131,7 +1135,11 @@ function leaveMultiplayerRound() {
         disconnectAllPeersAndCloseRoom();
     } else {
         if (conn) {
-            conn.close();
+            try {
+                conn.close();
+            } catch (error) {
+                console.error("Error when closing connection in multiplayer js: " + error);
+            }
         }
     }
 
