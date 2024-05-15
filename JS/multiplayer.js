@@ -620,7 +620,7 @@ async function attemptDuelJoin(index) {
             receivedRoomCode = await response.json();
         } else {
             console.error('Error fetching room code:', response.status);
-            setDuelFindStatus("Bad Get Request response");
+            setDuelFindStatus("Bad Get Request response: " + response.status);
             findNextDuel(); //as this could be a temporary thing, try again
         }
 
@@ -685,7 +685,7 @@ async function sendRoomCodeToMatchmakingServer() {
 
         } else {
             console.error("Failed sending the Room Code to the server: " + response.status);
-            setDuelFindStatus("Error sending roomcode to server: " + error);
+            setDuelFindStatus("Error sending roomcode to server: " + response.status);
             matchmakingActive = false;
             setRetryButtonState();
         }
@@ -715,7 +715,7 @@ async function deleteRoomCodeFromMatchmakingServer() {
     
         if (!response.ok) {
           console.warn("Failed deleting the Room Code from the server: " + response.status);
-          setDuelFindStatus("Error deleting roomcode from server: " + error);
+          setDuelFindStatus("Error deleting roomcode from server: " + response.status);
         }
 
       } catch (error) {
