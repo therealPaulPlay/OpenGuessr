@@ -409,26 +409,10 @@ try {
         config: {
             'iceServers': [
                 { url: 'stun:stun.l.google.com:19302' },
-                {
-                    url: "turn:global.relay.metered.ca:80",
-                    username: "bc3c7a997690c705e23a0a22",
-                    credential: "byQvrQK/GeolB6E8",
-                },
-                {
-                    url: "turn:global.relay.metered.ca:80?transport=tcp",
-                    username: "bc3c7a997690c705e23a0a22",
-                    credential: "byQvrQK/GeolB6E8",
-                },
-                {
-                    url: "turn:global.relay.metered.ca:443",
-                    username: "bc3c7a997690c705e23a0a22",
-                    credential: "byQvrQK/GeolB6E8",
-                },
-                {
-                    url: "turns:global.relay.metered.ca:443?transport=tcp",
-                    username: "bc3c7a997690c705e23a0a22",
-                    credential: "byQvrQK/GeolB6E8",
-                },
+                { urls: "turn:global.relay.metered.ca:80", username: "bc3c7a997690c705e23a0a22", credential: "byQvrQK/GeolB6E8",},
+                { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "bc3c7a997690c705e23a0a22", credential: "byQvrQK/GeolB6E8",},
+                { urls: "turn:global.relay.metered.ca:443", username: "bc3c7a997690c705e23a0a22", credential: "byQvrQK/GeolB6E8",},
+                { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "bc3c7a997690c705e23a0a22", credential: "byQvrQK/GeolB6E8",},
             ]
         }
     });
