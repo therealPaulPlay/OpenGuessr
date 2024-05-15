@@ -1161,11 +1161,12 @@ export function showMultiplayerOverlay(show, title, array) {
             let winningUsername = winningPlayerData[1];
 
             document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
+            endMultiplayerRoundButton.style.display = "block";
 
             if (isHost) {
-                endMultiplayerRoundButton.style.display = "block";
+                endMultiplayerRoundButton.textContent = "End Round";
             } else {
-                endMultiplayerRoundButton.style.display = "none";
+                endMultiplayerRoundButton.textContent = "Leave Round";
             }
         } else {
             endMultiplayerRoundButton.style.display = "none";
