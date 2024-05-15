@@ -460,6 +460,32 @@ li {
   border-radius: 10px;
 }
 
+.multiplayerDuelStatus {
+  text-align: center;
+  width: 100%;
+  text-wrap: wrap;
+  font-size: 30px;
+  color: white;
+  min-height: 60px;
+  margin-top: 10px;
+  max-width: 400px;
+}
+
+.newSocialMenuTag {
+  font-size: 18px;
+  color: white;
+  background-color: var(--brand-color);
+  border-radius: 3px;
+  padding-inline: 3px;
+  margin-left: 10px;
+  vertical-align: 2px;
+}
+
+#multiplayerSelectDuels {
+  background-color: var(--brand-color);
+  color: white;
+}
+
 .multiplayerCreationArea {
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 15px;
@@ -958,6 +984,26 @@ li {
   pointer-events: auto;
 }
 
+@keyframes textFade {
+  0% { color: white; }
+  50% { color: red; }
+  100% { color: white; }
+}
+
+@keyframes divFade {
+  0% { background-color: hsla(236, 25%, 20%, 0.7); }
+  50% { background-color: hsla(298, 25%, 20%, 0.7); }
+  100% { background-color: hsla(236, 25%, 20%, 0.7); }
+}
+
+#mapTimer.fading {
+  animation: textFade 1s infinite;
+}
+
+#mapModeIndicator.fading {
+  animation: divFade 1s infinite;
+}
+
 #multiplayerChat {
   width: 300px;
   height: 20%;
@@ -1361,7 +1407,7 @@ li {
   width: 100%;
   display: flex;
   align-items: top;
-  background: #aad3e0;
+  background: #d5e8eb;
 }
 
 #topShadow {

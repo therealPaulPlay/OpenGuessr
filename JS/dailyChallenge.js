@@ -1,6 +1,7 @@
 import { confirmButtonClicks } from "./miniMap";
 import { setDailyChallengeScore } from "./userAPI"
 import { startTimer } from "./timer";
+import { toggleCategoryMenu } from "./mainUI";
 
 export let dailyChallengeUIEnabled = false;
 export let dailyChallengeTimer;
@@ -15,13 +16,19 @@ export function setDailyChallengeExperienceResult(result) {
 //Daily Challenge UI ------------------------------------------------------------------------------------------
 export function setDailyChallengeUI(enable) {
     dailyChallengeUIEnabled = enable ? true : false;
+    toggleCategoryMenu(true);
+    let floatingSocialButton = document.getElementById("floatingSocialButton");
 
     if (enable) {
         document.getElementById("mapModeIndicator").style.display = "flex";
         document.getElementById("mapModeText").textContent = "Daily Challenge";
         document.getElementById("multiplayerLeave").style.display = "none";
+        floatingSocialButton.style.opacity = "0.5";
+        floatingSocialButton.style.pointerEvents = "none";
     } else {
         document.getElementById("mapModeIndicator").style.display = "none";
+        floatingSocialButton.style.opacity = "1";
+        floatingSocialButton.style.pointerEvents = "auto";
     }
 }
 

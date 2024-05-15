@@ -190,45 +190,45 @@ try {
 
 //Guess / Confirm function ----------------------------------------------------------------------------------
 export function confirmButtonClicks() {
-    if (confirmBTN.style.pointerEvents == "auto") {
-        confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
+    confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
 
-        if (dailyChallengeUIEnabled) {
-            document.getElementById("nextRound").innerHTML = "See results →";
+    if (dailyChallengeUIEnabled) {
+        document.getElementById("nextRound").innerHTML = "See results →";
 
-            try {
-                dailyChallengeTimer.stopTimer();
-            } catch (error) {
-                console.log("timer already stopped.");
-            }
-
-            saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
-        } else {
-            document.getElementById("nextRound").innerHTML = "Next round →";
+        try {
+            dailyChallengeTimer.stopTimer();
+        } catch (error) {
+            console.log("timer already stopped.");
         }
 
-        if (!multiplayer) {
-            calculateDistances(mapMarkerLat, mapMarkerLong);
-            loadResultMap(mapMarkerLat, mapMarkerLong);
-        } else {
-            document.getElementById("confirmButton").textContent = "Waiting...";
-            document.getElementById("confirmButton").style.opacity = "0.5";
-            document.getElementById("confirmButton").style.pointerEvents = "none";
-            document.getElementById("map").style.pointerEvents = "none";
-            document.getElementById("map").style.visibility = "hidden";
-            hideToggleMapButtonIfMobile(true);
-            document.getElementById("revealCompass").style.visibility = "hidden";
-
-            multiplayerStateToGuessed();
-        }
+        saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
     } else {
-        console.warn("Cannot click on confirm button - pointer events is none.")
+        document.getElementById("nextRound").innerHTML = "Next round →";
+    }
+
+    if (!multiplayer) {
+        calculateDistances(mapMarkerLat, mapMarkerLong);
+        loadResultMap(mapMarkerLat, mapMarkerLong);
+    } else {
+        document.getElementById("confirmButton").textContent = "Waiting...";
+        document.getElementById("confirmButton").style.opacity = "0.5";
+        document.getElementById("confirmButton").style.pointerEvents = "none";
+        document.getElementById("map").style.pointerEvents = "none";
+        document.getElementById("map").style.visibility = "hidden";
+        hideToggleMapButtonIfMobile(true);
+        document.getElementById("revealCompass").style.visibility = "hidden";
+
+        multiplayerStateToGuessed();
     }
 }
 
 //Confirm Button with Spacebar and a few checks
 document.getElementById("map").addEventListener("keydown", function (event) {
     if (event.key === " ") {
-        confirmButtonClicks();
+        if (confirmBTN.style.pointerEvents == "auto") {
+            confirmButtonClicks();
+        } else {
+            console.warn("Cannot click on confirm button - pointer events is none.");
+        }
     }
 });

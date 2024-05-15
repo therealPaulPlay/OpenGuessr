@@ -40,7 +40,7 @@
       <a id="logo" alt="openguessr logo"><img id="icon" src="/IMG/openguessr.svg"
           alt="OpenGuessr logo - the free geography location-guessing game"></a>
       <button id="mobileMenu" class="menuButton">
-        <img src="/IMG/mobile-menu.png" id="mobileMenuIcon" class="socialIcon">
+        <img src="/IMG/mobile-menu.png" alt="mobile main menu" id="mobileMenuIcon" class="socialIcon">
       </button>
     </div>
     <div id="socialArea">
@@ -73,11 +73,11 @@
           <img class="socialBarIcons" src="/IMG/daily_icon.png" alt="Leaderboard for OpenGuessr">
         </button>
         <button id="multiplayerButton" class="accountButton socialBarButton">Multiplayer
-          <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
+          <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu"><span class="newSocialMenuTag">New</span>
         </button>
         <div class="placeholder"></div>
       </div>
-      <button id="floatingSocialButton">Social Menu ▼</button>
+      <button id="floatingSocialButton">Multiplayer Menu ▼</button>
     </div>
     <div class="bannerItem bannerRight">
       <div class="leftNavbarButtons">
@@ -132,9 +132,11 @@
       <button class="category accountExclusive accountLock communityMap" id="stadiumCategory"
         type="button">Stadiums</button>
       <button class="category accountExclusive accountLock communityMap" id="whetherspoonCategory"
-        type="button">Whetherspoons</button>
+        type="button">Wetherspoons</button>
       <button class="category accountExclusive accountLock communityMap" id="skyscraperCategory"
         type="button">Skyscrapers</button>
+      <button class="category accountExclusive accountLock communityMap" id="racetrackCategory"
+        type="button">Racetracks</button>
       <button class="category categoryUpcoming" id="categoryNew" type="button">Submit maps via discord!</button>
       <br><br>
     </div>
@@ -309,8 +311,7 @@
             <button id="multiplayerSelectHost" class="accountButton multiplayerSelect">Host</button>
           </div>
           <div class="groupPartyButtons">
-            <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect modeComingSoon">Duels coming
-              soon!</button>
+            <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect">Find Duel</button>
           </div>
         </div>
         <div class="infoNote">
@@ -358,6 +359,12 @@
           <div class="multiplayerHostSubmitArea">
             <button id="multiplayerHost" class="accountButton">Create room</button>
           </div>
+        </div>
+      </div>
+      <div id="multiplayerWindowDuel" style="display: none;">
+        <div class="multiplayerJoinAlign">
+          <p id="multiplayerDuelInfo" class="multiplayerDuelStatus">Status OK</p>
+          <button id="multiplayerDuelRetry" class="accountButton">Try Again</button>
         </div>
       </div>
       <button id="multiplayerSelectorClose" class="accountButton white accountClose">Close</button>
