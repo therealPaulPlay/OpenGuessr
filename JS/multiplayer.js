@@ -687,7 +687,7 @@ async function sendRoomCodeToMatchmakingServer() {
                     setDuelFindStatus("No match found. Please retry");
                     matchmakingActive = false;
                     setRetryButtonState();
-                    leaveMultiplayerRound();
+                    /*leaveMultiplayerRound();*/
                 }
             }, 10000); //After 10 seconds, as the room code is now expired, leave the multiplayer round and show the retry button
 
