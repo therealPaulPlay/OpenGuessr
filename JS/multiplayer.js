@@ -678,6 +678,7 @@ async function sendRoomCodeToMatchmakingServer() {
         if (response.ok) {
             setTimeout(() => {
                 if (matchmakingActive) {
+                    setDuelFindStatus("No match found. Please retry");
                     matchmakingActive = false;
                     setRetryButtonState();
                     leaveMultiplayerRound();
