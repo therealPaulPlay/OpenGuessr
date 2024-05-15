@@ -405,7 +405,7 @@ try {
         config: {
             'iceServers': [
                 { url: 'stun:stun.l.google.com:19302' },
-                { url: 'turn:freestun.net:3479', username: 'free', credential: 'free' }
+                { url: 'turn:relay1.expressturn.com:3478', username: 'ef1UDUILFJLZW4Z79M', credential: 'S2Haraluwx2IjS1f' }
             ]
         }
     });
@@ -925,6 +925,7 @@ function disconnectAllPeersAndCloseRoom() {
         }
 
         if(matchmakingActive) {
+            //as this is apparent in leaveMultplayerRound, it is good too
             deleteRoomCodeFromMatchmakingServer();
         }
     }
@@ -1092,6 +1093,10 @@ if (peer) {
         errorPopup("Multiplayer connection closed", "Your multiplayer connection was closed.", "Error: Connection Closed", false);
         if (multiplayer) {
             leaveMultiplayerRound();
+        }
+
+        if (isHost && matchmakingActive) {
+            deleteRoomCodeFromMatchmakingServer(); //this happens when you close the tab / leave or refresh the page
         }
     });
 }
