@@ -255,7 +255,7 @@ export async function loadResultScreenXP(distance) {
         earnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
         setDailyChallengeExperienceResult(earnedXP);
   
-      } else if (selectedCategory == "famous" || selectedCategory == "indoor" || selectedCategory == "mountain" || selectedCategory == "whetherspoon" || selectedCategory == "skyscraper" || selectedCategory == "stadium") {
+      } else if (selectedCategory == "famous" || selectedCategory == "indoor" || selectedCategory == "mountain" || selectedCategory == "whetherspoon" || selectedCategory == "skyscraper" || selectedCategory == "stadium" || selectedCategory == "racetrack") {
         earnedXP = Math.round(1000 * ((0.998036) ** distance));
 
       } else if (selectedCategory == "israel" || selectedCategory == "austria" || selectedCategory == "slovakia" || selectedCategory == "czechia") { //very small countries, more reduced xp

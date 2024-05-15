@@ -3,7 +3,7 @@ import { resMap, generateNewLocation } from "./main.js";
 import { disableResultScreen, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
-import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults } from "./multiplayer.js";
+import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
@@ -39,7 +39,8 @@ const Category = {
     CZECHIA: "czechia",
     STADIUM: "stadium",
     WHETHERSPOON: "whetherspoon",
-    SKYSCRAPER: "skyscraper"
+    SKYSCRAPER: "skyscraper",
+    RACETRACK: "racetrack"
 };
 
 export let mapCategory = Category.STANDARD; // Default category
@@ -61,7 +62,7 @@ function createCategoryChangeListener(category) {
     };
 }
 
-function changeCategory(category) {
+export function changeCategory(category) {
     // Disable all category buttons
     const categoryButtons = document.querySelectorAll("[id$='Category']");
     categoryButtons.forEach(button => button.classList.add("categoryDisabled"));
@@ -181,6 +182,7 @@ export function transitionToStart() {
         
         //notify peers that the next round has begun
         if (isHost && multiplayer) {
+            clearTimeout(autoSkipResult);
             sendMessageToAll("closeResultScreen");
             showMultiplayerRoundResults();
         }
