@@ -469,6 +469,16 @@ li {
   min-height: 80px;
 }
 
+.newSocialMenuTag {
+  font-size: 18px;
+  color: white;
+  background-color: var(--brand-color);
+  border-radius: 3px;
+  padding-inline: 3px;
+  margin-left: 10px;
+  vertical-align: 2px;
+}
+
 #multiplayerSelectDuels {
   background-color: var(--brand-color);
   color: white;
