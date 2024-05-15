@@ -61,7 +61,7 @@ function createCategoryChangeListener(category) {
     };
 }
 
-function changeCategory(category) {
+export function changeCategory(category) {
     // Disable all category buttons
     const categoryButtons = document.querySelectorAll("[id$='Category']");
     categoryButtons.forEach(button => button.classList.add("categoryDisabled"));

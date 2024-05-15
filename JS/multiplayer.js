@@ -3,7 +3,7 @@ import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socialBarExpanded } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex } from "./accountLogic.js";
-import { checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
+import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { calculateDistances, loadResultMap } from "./main.js";
 
@@ -638,6 +638,11 @@ async function attemptDuelJoin(index) {
         //create room & hide close + back button for the time
         multiplayerSelectorBack.style.display = "none";
         multiplayerSelectorClose.style.display = "none";
+        try {
+            changeCategory("standard");
+        } catch (e) {
+            console.error("Error changing category to standard for multiplayer duels. Error: " + e);
+        }
         sendRoomCodeToMatchmakingServer();
         setupMultiplayerRoom(5, 60); //+ auto skip for result screen
     }
