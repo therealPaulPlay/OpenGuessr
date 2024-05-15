@@ -1079,7 +1079,7 @@ if (peer) {
         }
 
         if (matchmakingActive) {
-            if (err.type == "peer_unavailable" && !isHost) {
+            if (err.type == "peer-unavailable" && !isHost) {
                 findNextDuel();
             } else {
                 setDuelFindStatus("Please try again. Error: " + err.type);
