@@ -617,7 +617,7 @@ async function attemptDuelJoin(index) {
         });
 
         if (response.ok) {
-            receivedRoomCode = await response.json();
+            receivedRoomCode = response;
         } else {
             console.error('Error fetching room code:', response.status);
             setDuelFindStatus("Bad Get Request response: " + response.status);
