@@ -330,6 +330,11 @@ function addCommunityCreditTag() {
         event.stopPropagation();
         openCreditWindow("Skyscrapers by QwidziT", "Do you remember how obsessed you were with mega structures when you were a kid? No matter the age, everybody loves tall shiny buildings – skyscrapers – and this map is full of these magnificent beauties. Furthermore, this map is perfectly suited towards beginners, as you'll always have a tall navigational aid. ");
     });
+
+    document.getElementById("racetrackCategoryInfo").addEventListener("click", (event) => {
+        event.stopPropagation();
+        openCreditWindow("Racetracks by Magnus1stCool", "Magnus is the ultimate racing aficionado. Not a single race escapes his keen eye - he can name them all off the top of his head. His collection of circuits is a testament to his passion, meticulously curated, presumably even without the need for google searches. ");
+    });
 }
 
 window.addEventListener('DOMContentLoaded', addCommunityCreditTag);
