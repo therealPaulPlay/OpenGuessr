@@ -123,9 +123,9 @@ function setMultiplayerWindowSelection(window) {
     multiplayerWindowHost.style.display = "none";
     multiplayerWindowDuel.style.display = "none";
     multiplayerSelectorBack.style.display = "none";
-    multiplayerSelectorBack.style.opacity= "0.5";
+    multiplayerSelectorBack.style.opacity = "0.5";
     multiplayerSelectorClose.style.opacity = "1";
-    multiplayerSelectorBack.style.pointerEvents= "auto";
+    multiplayerSelectorBack.style.pointerEvents = "auto";
     multiplayerSelectorClose.style.pointerEvents = "auto";
     hostCodeArea.style.display = "none";
     roomCreationSettings.style.display = "flex";
@@ -639,11 +639,11 @@ async function attemptDuelJoin(index) {
     //Attempt to join if there is a code, otherwise create room
     if (receivedRoomCode != null && receivedRoomCode != "default") {
         joinRoom(receivedRoomCode); //duel find status will be set in this function as well
-    } else if (receivedRoomCode == null){
+    } else if (receivedRoomCode == null) {
         //create room & hide close + back button for the time
-        multiplayerSelectorBack.style.opacity= "0.2";
+        multiplayerSelectorBack.style.opacity = "0.2";
         multiplayerSelectorClose.style.opacity = "0.2";
-        multiplayerSelectorBack.style.pointerEvents= "none";
+        multiplayerSelectorBack.style.pointerEvents = "none";
         multiplayerSelectorClose.style.pointerEvents = "none";
         try {
             changeCategory("standard");
@@ -669,18 +669,18 @@ function findNextDuel() {
 async function sendRoomCodeToMatchmakingServer() {
     try {
         const requestBody = {
-          id: localStorage.getItem("id")
+            id: localStorage.getItem("id")
         }
 
         const response = await fetch("https://api.openguessr.com/api/rooms/" + peerId.replace("openguessr_", ""), {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ` + localStorage.getItem("bearer")
-          },
-          body: JSON.stringify(requestBody)
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ` + localStorage.getItem("bearer")
+            },
+            body: JSON.stringify(requestBody)
         });
-    
+
         if (response.ok) {
             setTimeout(() => {
                 if (matchmakingActive) {
@@ -699,53 +699,53 @@ async function sendRoomCodeToMatchmakingServer() {
             setRetryButtonState();
         }
 
-      } catch (error) {
+    } catch (error) {
         console.error('Failed making a post request to the server: ', error);
         setDuelFindStatus("Error making a request to server: " + error);
         matchmakingActive = false;
         setRetryButtonState();
-      }
+    }
 }
 
 async function deleteRoomCodeFromMatchmakingServer() {
     try {
         const requestBody = {
-          id: localStorage.getItem("id")
+            id: localStorage.getItem("id")
         }
 
         const response = await fetch("https://api.openguessr.com/api/rooms/" + peerId.replace("openguessr_", ""), {
-          method: 'DELETE',
-          headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ` + localStorage.getItem("bearer")
-          },
-          body: JSON.stringify(requestBody)
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ` + localStorage.getItem("bearer")
+            },
+            body: JSON.stringify(requestBody)
         });
-    
+
         if (!response.ok) {
-          console.warn("Failed deleting the Room Code from the server: " + response.status);
-          setDuelFindStatus("Error deleting roomcode from server: " + response.status);
+            console.warn("Failed deleting the Room Code from the server: " + response.status);
+            setDuelFindStatus("Error deleting roomcode from server: " + response.status);
         }
 
-      } catch (error) {
+    } catch (error) {
         console.error('Failed making a delete request to the server: ', error);
         setDuelFindStatus("Error making a request to server: " + error);
-      }
+    }
 }
 
 retryDuelFind.addEventListener("click", findDuel); //Retry button will trigger the attempt join function
 
 //enable / disable the retry button depending on whether it is currently trying to join/host or not
-function setRetryButtonState () {
+function setRetryButtonState() {
     if (matchmakingActive) {
         retryDuelFind.style.pointerEvents = "none";
         retryDuelFind.style.opacity = "0.5";
     } else {
         retryDuelFind.style.pointerEvents = "auto";
         retryDuelFind.style.opacity = "1";
-        multiplayerSelectorBack.style.opacity= "0.5";
+        multiplayerSelectorBack.style.opacity = "0.5";
         multiplayerSelectorClose.style.opacity = "1";
-        multiplayerSelectorBack.style.pointerEvents= "auto";
+        multiplayerSelectorBack.style.pointerEvents = "auto";
         multiplayerSelectorClose.style.pointerEvents = "auto";
     }
 }
@@ -766,7 +766,7 @@ if (peer) {
                 setJoinCounter(connectedClientsCount);
 
                 //if duels matchmaking is active, immediately start the round and close the room on the first connection
-                if(matchmakingActive) {
+                if (matchmakingActive) {
                     roomLocked = true;
                     deleteRoomCodeFromMatchmakingServer();
                     StartRoom();
@@ -943,7 +943,7 @@ function disconnectAllPeersAndCloseRoom() {
             }
         }
 
-        if(matchmakingActive) {
+        if (matchmakingActive) {
             //as this is apparent in leaveMultplayerRound, it is good too
             deleteRoomCodeFromMatchmakingServer();
         }
@@ -981,7 +981,7 @@ function joinRoom(code) {
 
     // Receive messages
     conn.on('data', function (data) {
-        
+
         if (data.type === "initialize") {
             setJoinInfoText("Joined!");
             setDuelFindStatus("Joined!");
@@ -1212,15 +1212,16 @@ export function showMultiplayerOverlay(show, title, array) {
 
         let yourPeerId = peerId;
 
-        //this shows that Christopher and I are the developers =)
-        let devstring = "";
-        if (Number(localStorage.getItem("id")) < 3) {
-            devstring = ", Dev";
-        }
-
         // Generate HTML for each player
         array.forEach(playerInfo => {
             const [peerId, username, level, score] = playerInfo;
+
+            //this shows that Christopher and I are the developers =)
+            let devstring = "";
+            if (username == "PaulPlay" || username == "Colani") {
+                devstring = ", Dev";
+            }
+
             if (peerId == yourPeerId) {
                 body += `
                 <div class="multiplayerOverlayEntry yourMultiplayerOverlay">
