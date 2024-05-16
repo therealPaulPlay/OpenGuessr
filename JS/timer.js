@@ -41,6 +41,8 @@ export function startTimer(durationInSeconds, onTimerExpired) {
     // Function to stop the timer
     function stopTimer() {
         clearInterval(currentTimerIntervalId);
+        mapTimer.classList.remove("fading");
+        mapModeIndicator.classList.remove("fading");
     }
 
     // Function to get the remaining time
