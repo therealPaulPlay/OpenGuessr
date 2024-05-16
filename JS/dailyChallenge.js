@@ -1,4 +1,4 @@
-import { confirmButtonClicks } from "./miniMap";
+import { confirmButtonClicks, justPlayedDailyChallenge } from "./miniMap";
 import { setDailyChallengeScore } from "./userAPI"
 import { startTimer } from "./timer";
 import { toggleCategoryMenu } from "./mainUI";
@@ -50,6 +50,7 @@ function dailyChallengeTimerExpired() {
 
 //Daily Challenge end -------------------------------------------------------------------------------------------------------------------------------------
 export function dailyChallengeEnd() {
+    justPlayedDailyChallenge = false;
     localStorage.setItem("selectedCategory", "standard"); //reset category to standard, so that if user returns after daily challenge it doesn't restart daily challenge
     window.location.href = "/dailyLeaderboard.html";
 }

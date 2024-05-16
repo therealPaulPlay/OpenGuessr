@@ -189,11 +189,14 @@ try {
 }
 
 //Guess / Confirm function ----------------------------------------------------------------------------------
+export let justPlayedDailyChallenge = false;
+
 export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
 
     if (dailyChallengeUIEnabled) {
         document.getElementById("nextRound").innerHTML = "See results →";
+        justPlayedDailyChallenge = true;
 
         try {
             dailyChallengeTimer.stopTimer();

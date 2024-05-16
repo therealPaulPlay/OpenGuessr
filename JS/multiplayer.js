@@ -408,8 +408,9 @@ try {
     peer = new Peer(unqiueUserID, {
         config: {
             'iceServers': [
-                { url: 'stun:stun.l.google.com:19302' },
-                { url: 'turn:relay1.expressturn.com:3478', username: 'ef1UDUILFJLZW4Z79M', credential: 'S2Haraluwx2IjS1f' }
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: "turn:freestun.net:3479", username: "free", credential: "free"},
+                { urls: "turns:freestun.net:5350", username: "free", credential: "free"}
             ]
         }
     });
@@ -590,6 +591,15 @@ let matchmakingActive = false;
 let multiplayerDuelInfo = document.getElementById("multiplayerDuelInfo");
 function setDuelFindStatus(text) {
     multiplayerDuelInfo.textContent = text;
+    try {
+        if (text.toLowerCase().includes("wait")) {
+            multiplayerDuelInfo.classList.add("loading");
+        } else {
+            multiplayerDuelInfo.classList.remove("loading");
+        }
+    } catch (error) {
+        console.error("Failed to animate loading text in multiplayer js: " + error);
+    }
 }
 
 //this initiates the find duel system
