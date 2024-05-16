@@ -775,15 +775,15 @@ if (peer) {
                 connectedClientsCount++;
                 setJoinCounter(connectedClientsCount);
 
-                //if duels matchmaking is active, immediately start the round and close the room on the first connection
+                //instantly delete the code from the server on the first connection
                 if (matchmakingActive) {
+                    roomLocked = true;
                     deleteRoomCodeFromMatchmakingServer();
-                    StartRoom(); //this also locks the room
                 }
 
                 // Event listener for when the connection is open
                 incomingConn.on('open', function () {
-                    const welcomeMessage = {
+                    const initialMessage = {
                         type: "initialize",
                         content: {
                             roundAmount: roundAmount,
@@ -793,13 +793,18 @@ if (peer) {
                         }
                     }
                     // Send messages
-                    incomingConn.send(welcomeMessage);
+                    incomingConn.send(initialMessage);
                     distributeChat("System: " + incomingConn.metadata.username + " joined.");
 
                     //the first round played is just to be sure, in case a client disconnects and reconnects for example it shouldn't resend that
                     if (!multiplayerFirstRoundPlayed) {
                         sendMessageToAll("showPlayersArray", connectedPeers); //send it to peer
                         showMultiplayerOverlay(true, "Waiting...", connectedPeers); //also show it for host
+                    }
+
+                    //if duels matchmaking is active, immediately start the round and close the room on the first connection
+                    if (matchmakingActive) {
+                        StartRoom(); //this also locks the room
                     }
                 });
 
@@ -889,6 +894,7 @@ function StartRoom() {
         multiplayer = true;
         setMultiplayerUI();
         showMultiplayerOverlay(true, "Ready...", connectedPeers); //only for host, also to set the map category in mode text
+        sendMessageToAll("showPlayersArray", connectedPeers); //this is for the peers (the same thing as showMultiplayerOverlay for host)
         checkGenerationTypeAndGenerate();
         roomLocked = true;
         matchmakingActive = false;
@@ -900,6 +906,7 @@ function StartRoom() {
 //Start the first / next round
 export function startMultiplayerRound(latitude, longitude) {
     multiplayerGuessesLocationsArray = []; //reset previous stored guesses from peers
+    totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host (this is being set here as well as after the countdown)
 
     if (multiplayerFirstRoundPlayed == false) {
         toggleMultiplayerSelector();
@@ -972,6 +979,7 @@ function removeWhiteSpace(input) {
 
 function joinRoom(code) {
     isHost = false;
+    multiplayerFirstRoundPlayed = false;
 
     setJoinInfoText("Attempting join...");
     setDuelFindStatus("Attempting join...");
@@ -988,6 +996,8 @@ function joinRoom(code) {
 
     // Event listener for when the connection is opened
     conn.on('open', function () {
+        setJoinInfoText("Connection opened...");
+        setDuelFindStatus("Connection opened...");
     });
 
     // Receive messages
