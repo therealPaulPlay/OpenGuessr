@@ -775,6 +775,12 @@ if (peer) {
                 connectedClientsCount++;
                 setJoinCounter(connectedClientsCount);
 
+                //if duels matchmaking is active, immediately start the round and close the room on the first connection
+                if (matchmakingActive) {
+                    deleteRoomCodeFromMatchmakingServer();
+                    StartRoom(); //this also locks the room
+                }
+
                 // Event listener for when the connection is open
                 incomingConn.on('open', function () {
                     const welcomeMessage = {
@@ -794,13 +800,6 @@ if (peer) {
                     if (!multiplayerFirstRoundPlayed) {
                         sendMessageToAll("showPlayersArray", connectedPeers); //send it to peer
                         showMultiplayerOverlay(true, "Waiting...", connectedPeers); //also show it for host
-                    }
-
-                    //if duels matchmaking is active, immediately start the round and close the room on the first connection
-                    if (matchmakingActive) {
-                        roomLocked = true;
-                        deleteRoomCodeFromMatchmakingServer();
-                        StartRoom();
                     }
                 });
 
