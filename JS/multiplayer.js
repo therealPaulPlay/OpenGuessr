@@ -164,6 +164,9 @@ function setMultiplayerWindowSelection(window) {
 //Join page ----------------------------------------------------------------------------------------------
 
 multiplayerJoin.addEventListener("click", () => {
+    //disable join button for 1s to prevent spamming from causing issues
+    multiplayerJoin.style.pointerEvents = "none";
+    multiplayerJoin.style.opacity = "0.5";
     joinRoom(removeWhiteSpace(document.getElementById("roomCodeInput").value));
 })
 
@@ -1055,6 +1058,7 @@ function joinRoom(code) {
 
         if (data.type === "locked") {
             setJoinInfoText("Room locked!");
+            setJoinButtonState();
         }
     });
 
@@ -1068,6 +1072,7 @@ function joinRoom(code) {
         //if you try to join a room that is locked
         if (!multiplayer) {
             setJoinInfoText("Room locked - round ongoing");
+            setJoinButtonState();
 
             if (matchmakingActive) {
                 setDuelFindStatus("Room locked - round ongoing");
@@ -1111,6 +1116,7 @@ if (peer) {
             leaveMultiplayerRound();
         } else {
             setJoinInfoText("Failed to join.");
+            setJoinButtonState();
         }
 
         if (matchmakingActive) {
