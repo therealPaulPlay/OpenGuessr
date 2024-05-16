@@ -16,6 +16,9 @@ jobs:
     - name: Install SSH client
       run: sudo apt-get install -y openssh-client
 
+    - name: Create SSH directory and known_hosts file
+      run: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
+
     - name: Add known hosts
       run: ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
