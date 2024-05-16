@@ -409,8 +409,8 @@ try {
         config: {
             'iceServers': [
                 { urls: 'stun:stun.l.google.com:19302' },
-                { urls: "turn:freestun.net:3479", username: "free", credential: "free"},
-                { urls: "turns:freestun.net:5350", username: "free", credential: "free"}
+                { urls: "turn:freestun.net:3479", username: "free", credential: "free" },
+                { urls: "turns:freestun.net:5350", username: "free", credential: "free" }
             ]
         }
     });
@@ -660,8 +660,8 @@ async function attemptDuelJoin(index) {
         } catch (e) {
             console.error("Error changing category to standard for multiplayer duels. Error: " + e);
         }
-        sendRoomCodeToMatchmakingServer();
         setupMultiplayerRoom(5, 60); //+ auto skip for result screen
+        sendRoomCodeToMatchmakingServer();
     }
 }
 
@@ -775,13 +775,6 @@ if (peer) {
                 connectedClientsCount++;
                 setJoinCounter(connectedClientsCount);
 
-                //if duels matchmaking is active, immediately start the round and close the room on the first connection
-                if (matchmakingActive) {
-                    roomLocked = true;
-                    deleteRoomCodeFromMatchmakingServer();
-                    StartRoom();
-                }
-
                 // Event listener for when the connection is open
                 incomingConn.on('open', function () {
                     const welcomeMessage = {
@@ -797,9 +790,17 @@ if (peer) {
                     incomingConn.send(welcomeMessage);
                     distributeChat("System: " + incomingConn.metadata.username + " joined.");
 
+                    //the first round played is just to be sure, in case a client disconnects and reconnects for example it shouldn't resend that
                     if (!multiplayerFirstRoundPlayed) {
                         sendMessageToAll("showPlayersArray", connectedPeers); //send it to peer
                         showMultiplayerOverlay(true, "Waiting...", connectedPeers); //also show it for host
+                    }
+
+                    //if duels matchmaking is active, immediately start the round and close the room on the first connection
+                    if (matchmakingActive) {
+                        roomLocked = true;
+                        deleteRoomCodeFromMatchmakingServer();
+                        StartRoom();
                     }
                 });
 
@@ -865,7 +866,6 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     isHost = true;
     multiplayerFirstRoundPlayed = false;
     multiplayerCategory = mapCategory;
-    roomLocked = false;
 
     if (multiplayerCategory == "hard" || multiplayerCategory == "daily") {
         multiplayerCategory = "standard - auto";
@@ -877,6 +877,9 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     //set round and length parameters
     roundAmount = AmountOfRounds;
     roundLength = LengthOfRounds;
+
+    //unlock room
+    roomLocked = false;
 }
 
 function StartRoom() {
