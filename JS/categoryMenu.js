@@ -5,6 +5,7 @@ import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkD
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
+import { justPlayedDailyChallenge } from "./miniMap.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 const Category = {
@@ -169,7 +170,7 @@ nextRound.addEventListener("click", transitionToStart);
 
 export function transitionToStart() {
 
-    if (!dailyChallengeUIEnabled) {
+    if (!justPlayedDailyChallenge) { //justPlayedDailyChallenge is true when user has clicked "guess" button & dailyChallengeUIEnabled == true
         document.getElementById("BeforeOverlay").style.opacity = "0";
         document.getElementById("BeforeOverlay").style.visibility = "visible";
         document.getElementById("BeforeOverlay").style.opacity = "100";

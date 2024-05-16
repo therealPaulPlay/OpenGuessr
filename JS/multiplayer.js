@@ -408,11 +408,9 @@ try {
     peer = new Peer(unqiueUserID, {
         config: {
             'iceServers': [
-                { url: 'stun:stun.l.google.com:19302' },
-                { urls: "turn:global.relay.metered.ca:80", username: "bc3c7a997690c705e23a0a22", credential: "byQvrQK/GeolB6E8",},
-                { urls: "turn:global.relay.metered.ca:80?transport=tcp", username: "bc3c7a997690c705e23a0a22", credential: "byQvrQK/GeolB6E8",},
-                { urls: "turn:global.relay.metered.ca:443", username: "bc3c7a997690c705e23a0a22", credential: "byQvrQK/GeolB6E8",},
-                { urls: "turns:global.relay.metered.ca:443?transport=tcp", username: "bc3c7a997690c705e23a0a22", credential: "byQvrQK/GeolB6E8",},
+                { urls: 'stun:stun.l.google.com:19302' },
+                { urls: "turn:freestun.net:3479", username: "free", credential: "free"},
+                { urls: "turns:freestun.net:5350", username: "free", credential: "free"}
             ]
         }
     });
@@ -593,6 +591,15 @@ let matchmakingActive = false;
 let multiplayerDuelInfo = document.getElementById("multiplayerDuelInfo");
 function setDuelFindStatus(text) {
     multiplayerDuelInfo.textContent = text;
+    try {
+        if (text.toLowerCase().includes("wait")) {
+            multiplayerDuelInfo.classList.add("loading");
+        } else {
+            multiplayerDuelInfo.classList.remove("loading");
+        }
+    } catch (error) {
+        console.error("Failed to animate loading text in multiplayer js: " + error);
+    }
 }
 
 //this initiates the find duel system
