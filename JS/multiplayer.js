@@ -900,6 +900,7 @@ function StartRoom() {
 //Start the first / next round
 export function startMultiplayerRound(latitude, longitude) {
     multiplayerGuessesLocationsArray = []; //reset previous stored guesses from peers
+    totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host (this is being set here as well as after the countdown)
 
     if (multiplayerFirstRoundPlayed == false) {
         toggleMultiplayerSelector();
