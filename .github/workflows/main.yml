@@ -39,4 +39,4 @@ jobs:
     - name: Deployment
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
-        scp * ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:openguessr/frontend
+        scp -r -i ~/.ssh/id_rsa * ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:openguessr/frontend
