@@ -17,20 +17,17 @@ jobs:
       uses: actions/setup-node@v2
       with:
         node-version: '20.11.1'
-
-    - name: Install Dependencies
-      run: npm install
-
-    - name: Build
-      run: npm run build
       
-    - name: Setup SSH
-      run: |
-        mkdir -p ~/.ssh
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-        ssh-keyscan ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-
-    - name: Copy file via SCP
-      run: |
-        scp ${{ secrets.USERNAME }}@${{ secrets.SERVER_HOST }}:openguessr/frontend ../*
+    - name: Deploy using ssh
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: 22
+        script: |
+          cd /var/www/OpenGuessr
+          git pull origin main
+          git status
+          npm install --only=prod
+          npm run build
