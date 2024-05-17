@@ -23,16 +23,6 @@ jobs:
   
       - name: Build
         run: npm run build
-
-      - name: Stage build artifacts
-        run: git add .
-
-      - name: Commit and push changes
-        run: |
-          git config --global user.email "build.openguessr.com"
-          git config --global user.name "OpenGuessr"
-          git commit -m "Build artifacts"
-          git push origin main
     
       - name: install ssh keys
         run: |
@@ -41,7 +31,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
       - name: connect & pull changes
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && export NVM_DIR=~/.nvm source ~/.nvm/nvm.sh npm --help && npm install && npm run build && git pull && exit"
 
       - name: cleanup ssh
         run: rm -rf ~/.ssh
