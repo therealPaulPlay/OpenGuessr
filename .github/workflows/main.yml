@@ -24,11 +24,13 @@ jobs:
       - name: Build
         run: npm run build
 
+      - name: Stage build artifacts
+        run: git add .
+
       - name: Commit and push changes
         run: |
           git config --global user.email "build.openguessr.com"
           git config --global user.name "OpenGuessr"
-          git add .
           git commit -m "Build artifacts"
           git push origin main
     
