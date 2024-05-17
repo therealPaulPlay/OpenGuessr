@@ -23,15 +23,14 @@ jobs:
 
     - name: Build
       run: npm run build
-
-    - name: Deploy to Server
-      uses: pierrickdelrieu/scp-action@0.1.1
-      with:
-        host: ${{ secrets.SSH_HOST }}
-        ssh_port: ${{ secrets.SSH_PORT }}
-        ssh_username: ${{ secrets.SSH_USERNAME }}
-        ssh_key: ${{ secrets.SSH_PRIVATE_KEY }}
-        source_dir: ${{ secrets.SOURCE_FOLDER }}
-        destination_dir: ${{ secrets.DESTINATION_FOLDER }}
-        rm: true
       
+    - name: Setup SSH
+      run: |
+        mkdir -p ~/.ssh
+        echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+        chmod 600 ~/.ssh/id_rsa
+        ssh-keyscan remote.host.com >> ~/.ssh/known_hosts
+
+    - name: Copy file via SCP
+      run: |
+        scp ${{ secrets.USERNAME }}@${{ secrets.SERVER_HOST }}:openguessr/frontend *
