@@ -10,13 +10,21 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
+      
+    
       - name: install ssh keys
         run: |
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: connect, pull changes, npm install and npm build
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && npm install && npm run build && exit"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} 
+             "cd ${{ secrets.WORK_DIR }}"
+             "git checkout ${{ secrets.MAIN_BRANCH }}"
+             "git pull"
+             "npm install"
+             "npm run build"
+             "exit"
               
-      - name: cleanup ssh
-        run: rm -rf ~/.ssh
+      #- name: cleanup ssh
+        #run: rm -rf ~/.ssh
