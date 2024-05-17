@@ -33,4 +33,4 @@ jobs:
 
     - name: Copy file via SCP
       run: |
-        scp ${{ secrets.USERNAME }}@${{ secrets.SERVER_HOST }}:openguessr/frontend *
+        scp ${{ secrets.USERNAME }}@${{ secrets.SERVER_HOST }}:openguessr/frontend ../*
