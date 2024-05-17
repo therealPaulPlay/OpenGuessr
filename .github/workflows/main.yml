@@ -1,4 +1,4 @@
-name: Deploy to Apache Server
+name: Deploy Frontend
 
 on:
   push:
@@ -10,33 +10,28 @@ jobs:
     runs-on: ubuntu-20.04
 
     steps:
-    - name: Checkout repository
-      uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
 
-    - name: Install SSH client
-      run: sudo apt-get install -y openssh-client
+      #- name: Install Node.js and npm
+        #uses: actions/setup-node@v2
+        #with:
+          #node-version: '20.11.1'
+  
+      #- name: Install Dependencies
+        #run: npm install
+  
+      #- name: Build
+        #run: npm run build
+    
+      - name: install ssh keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
-    - name: Create SSH directory and known_hosts file
-      run: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
+      - name: connect & pull changes
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
 
-    - name: Add known hosts
-      run: ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-
-    - name: Configure SSH key
-      run: echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa && chmod 600 ~/.ssh/id_rsa
-
-    - name: Install Node.js and npm
-      uses: actions/setup-node@v2
-      with:
-        node-version: '20.11.1'
-
-    - name: Install Dependencies
-      run: npm install
-
-    - name: Build
-      run: npm run build
-
-    - name: Deployment
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: |
-        scp -r -i ~/.ssh/id_rsa * ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:openguessr/frontend
+      - name: cleanup ssh
+        run: rm -rf ~/.ssh
