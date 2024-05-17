@@ -25,7 +25,7 @@ jobs:
       run: npm run build
 
     - name: Deploy to Server
-      uses: pierrickdelrieu/scp-action@v0.1.1
+      uses: pierrickdelrieu/scp-action@0.1.1
       with:
         host: ${{ secrets.SSH_HOST }}
         ssh_port: ${{ secrets.SSH_PORT }}
