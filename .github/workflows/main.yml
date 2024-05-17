@@ -18,7 +18,7 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
       - name: connect, pull changes, npm install and npm build
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }}" && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && nvm install --latest-npm && npm install && npm run build && exit
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} && "cd ${{ secrets.WORK_DIR }}" && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && npm install && npm run build && exit
 
       #- name: cleanup ssh
         #run: rm -rf ~/.ssh
