@@ -18,6 +18,7 @@ let currentStreetviewLong = 0;
 
 export async function generateNewLocation(type) {
     resetMap();
+    
     let newLocationArray;
 
     try {
