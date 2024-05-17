@@ -22,13 +22,16 @@ jobs:
     - name: Add known hosts
       run: ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
 
+    - name: Verify Known Hosts
+      run: cat ~/.ssh/known_hosts
+
     - name: Configure SSH key
       run: |
         echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
         chmod 600 ~/.ssh/id_rsa
 
-    - name: Test SSH Connection
-      run: ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} 'echo "SSH connection successful"'
+    - name: Debug SSH Connection
+      run: ssh -v -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} 'echo "SSH connection successful"'
 
     - name: Install Node.js and npm
       uses: actions/setup-node@v2
@@ -44,4 +47,4 @@ jobs:
     - name: Deployment
       if: github.event_name == 'push' && github.ref == 'refs/heads/main'
       run: |
-        scp -r -i ~/.ssh/id_rsa * ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:openguessr/frontend
+        scp -r -i ~/.ssh/id_rsa -o StrictHostKeyChecking=no * ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:openguessr/frontend
