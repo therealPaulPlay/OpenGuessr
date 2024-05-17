@@ -1,4 +1,3 @@
-import { loadLocationJSON } from "./locationGeneration.js";
 import { resMap, generateNewLocation } from "./main.js";
 import { disableResultScreen, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
@@ -58,7 +57,7 @@ for (const category in Category) {
 
 // Function to create a closure for each category button listener
 function createCategoryChangeListener(category) {
-    return function() {
+    return function () {
         changeCategory(category);
     };
 }
@@ -105,7 +104,7 @@ export function checkGenerationTypeAndGenerate() {
 
         //pick between json and maps api loading depending on the category type
         if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard") {
-            loadLocationJSON(mapCategory); //this also generates a new location
+            generateNewLocation("JSON");
         } else if (mapCategory == "daily") {
             if (checkDailyChallengeCompletion() == "available") {
                 setDailyChallengeUI(true);
@@ -119,7 +118,7 @@ export function checkGenerationTypeAndGenerate() {
             generateNewLocation("SDK");
         } else if (mapCategory == "hard") {
             setHardMode(true);
-            loadLocationJSON(mapCategory);
+            generateNewLocation("JSON");
         } else {
             console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
         }
@@ -130,13 +129,13 @@ export function checkGenerationTypeAndGenerate() {
 
             if (isHost) {
                 if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard") {
-                    loadLocationJSON(mapCategory); //this also generates a new location
+                    generateNewLocation("JSON");
                 } else if (mapCategory == "standard") {
                     generateNewLocation("SDK");
                 } else {
                     //if the map category is an unsupported multiplayer category, such as daily or hard, switch to standard
                     changeCategory("standard"); //this will re-run checkGenerationTypeAndGenerate
-                    setTimeout(function() {
+                    setTimeout(function () {
                         errorPopup("Unsupported Multiplayer Map", "This map category is not available for multiplayer and was automatically changed to Standard.", "Map unsupported", false);
                     }, 3500);
                 }
@@ -180,7 +179,7 @@ export function transitionToStart() {
 
         setTimeout(disableResultScreen, 200);
         setTimeout(socialPopupProbability, 650);
-        
+
         //notify peers that the next round has begun
         if (isHost && multiplayer) {
             clearTimeout(autoSkipResult);

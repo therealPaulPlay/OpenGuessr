@@ -1,14 +1,19 @@
 import { errorPopup } from "./errorHandling.js";
 import { generateNewLocation } from "./main.js";
 import { coordsFromHost } from "./multiplayer.js";
+import { mapCategory } from "./categoryMenu.js";
+import { Loader } from "@googlemaps/js-api-loader";
+import { getDailyChallengeIndex } from "./userAPI.js";
 
+//This is THE function to GET LOCATIONS (all others here are NOT export)
 export async function getLocationCoordinates(type) {
+
     //show loading screen
     document.getElementById("BeforeOverlay").style.opacity = "100";
     document.getElementById("BeforeOverlay").style.visibility = "visible";
 
     if (type == "JSON") {
-        return getCoordsFromJSON();
+        try { return await getCoordsFromJSON(); } catch (err) { console.error("Error generating from JSON in locationGeneration.js: " + err); }
     } else if (type == "SDK" && type != "DAILY") {
         return await getCoordsFromGoogle();
     } else if (type == "DAILY") {
@@ -22,52 +27,76 @@ export async function getLocationCoordinates(type) {
 
 
 //Get Location from JSON (Legacy/Custom Map creation method) ----------------------------------------------------------------------------------------------------
-let listOfLocations;
+let listOfLocations = [];
 let jsonResponse;
+let lastGuessesIndexes = []; //to prevent repetition
+let currentlyLoadedJson;
 
 
 //Load location JSON files
-export async function loadLocationJSON(jsonName) {
-    try {
-        let response = await fetch("./JSON/" + jsonName + "Locations.json");
-        if (!response.ok) {
-            throw new Error("JSON fetch failed.");
+async function loadLocationJSON(jsonName) {
+    if (currentlyLoadedJson != jsonName) {
+        try {
+            let response = await fetch("./JSON/" + jsonName + "Locations.json");
+
+            if (!response.ok) {
+                throw new Error("JSON fetch failed.");
+            }
+
+            jsonResponse = await response.json();
+            currentlyLoadedJson = jsonName; //set currently loaded json to the new one
+            lastGuessesIndexes = []; //reset previously played indexes
+            listOfLocations = jsonResponse;
+
+        } catch (error) {
+            errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
+            console.error(error);
         }
-
-        jsonResponse = await response.json();
-        listOfLocations = jsonResponse;
-
-        generateNewLocation("JSON");
-
-    } catch (error) {
-        errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
-        console.error(error);
     }
 }
 
-let lastGuessIndex = null;
 let guessIndex;
 
 //This will be called in main.js when a new location is being generated
-function getCoordsFromJSON() {
-    do {
-        guessIndex = Math.floor(Math.random() * listOfLocations.length);
-    } while (lastGuessIndex === guessIndex);
+async function getCoordsFromJSON() {
 
-    lastGuessIndex = guessIndex;
+    let resultLocationsArray;
 
-    const resultLat = listOfLocations[guessIndex][0];
-    const resultLong = listOfLocations[guessIndex][1];
+    if (currentlyLoadedJson != mapCategory) {
+        await loadLocationJSON(mapCategory);
+    }
 
-    let resultLocationsArray = [resultLat, resultLong];
+    try {
+
+        //to prevent a crashes if the json has too few locations
+        if (listOfLocations.length < 15) {
+            lastGuessesIndexes = [];
+            console.warn("Loaded json has too few locations!");
+        }
+
+        do {
+            guessIndex = Math.floor(Math.random() * listOfLocations.length);
+        } while (lastGuessesIndexes.includes(guessIndex));
+
+        lastGuessesIndexes.unshift(guessIndex); //add guessIndex at the front of the array
+
+        if (lastGuessesIndexes.length > 10) {
+            lastGuessesIndexes.pop(); //if the array is longer than 10, pop the last entry out
+        }
+
+        const resultLat = listOfLocations[guessIndex][0];
+        const resultLong = listOfLocations[guessIndex][1];
+
+        resultLocationsArray = [resultLat, resultLong];
+    } catch (error) {
+        console.error("Error in locationGeneration.js during JSON Gen: " + error);
+    }
+
     return resultLocationsArray;
 }
 
 
 //Get Locations from google maps js API (new method - unlimited locations) -------------------------------------------------------------------------------
-
-import { Loader } from "@googlemaps/js-api-loader";
-import { getDailyChallengeIndex } from "./userAPI.js";
 
 // not using any apiKey!
 const loader = new Loader({
@@ -182,9 +211,9 @@ async function getCoordsFromServerDaily() {
 
         const resultLat = listOfLocations[dailyChallengeCoordinatesIndex][0];
         const resultLong = listOfLocations[dailyChallengeCoordinatesIndex][1];
-    
+
         let resultLocationsArray = [resultLat, resultLong];
-    
+
         return resultLocationsArray;
     } catch {
         errorPopup("Challenge API Error", "There was an error fetching the daily challenge location", "Challenge Fetch failed.", true);
