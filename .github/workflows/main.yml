@@ -23,6 +23,12 @@ jobs:
   
       - name: Build
         run: npm run build
+
+      - name: Commit and push changes
+        run: |
+          git add .
+          git commit -m "Build artifacts"
+          git push origin main
     
       - name: install ssh keys
         run: |
