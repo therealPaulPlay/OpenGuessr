@@ -12,17 +12,17 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v2
+
+      #- name: Install Node.js and npm
+        #uses: actions/setup-node@v2
+        #with:
+          #node-version: '20.11.1'
   
-      - name: Install Node.js and npm
-        uses: actions/setup-node@v2
-        with:
-          node-version: '20.11.1'
+      #- name: Install Dependencies
+        #run: npm install
   
-      - name: Install Dependencies
-        run: npm install
-  
-      - name: Build
-        run: npm run build
+      #- name: Build
+        #run: npm run build
     
       - name: install ssh keys
         run: |
@@ -31,7 +31,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
       - name: connect & pull changes
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && export NVM_DIR=~/.nvm source ~/.nvm/nvm.sh npm --help && npm install && npm run build && git pull && exit"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
 
       - name: cleanup ssh
         run: rm -rf ~/.ssh
