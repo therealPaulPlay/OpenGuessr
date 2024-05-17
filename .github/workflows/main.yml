@@ -23,6 +23,14 @@ jobs:
   
       - name: Build
         run: npm run build
+
+      - name: Commit and push changes
+        run: |
+          git config --global user.email "build.openguessr.com"
+          git config --global user.name "OpenGuessr"
+          git add .
+          git commit -m "Build artifacts"
+          git push origin main
     
       - name: install ssh keys
         run: |
@@ -30,12 +38,6 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
-      - name: Commit and push changes
-        run: |
-          git add .
-          git commit -m "Build artifacts"
-          git push origin main
-          
       - name: connect & pull changes
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
 
