@@ -25,12 +25,13 @@ jobs:
       run: npm run build
 
     - name: Deploy to Server
-      uses: appleboy/ssh-action@v0.1.7
+      uses: pierrickdelrieu/scp-action@v0.1.0
       with:
         host: ${{ secrets.SSH_HOST }}
-        username: ${{ secrets.SSH_USERNAME }}
-        key: ${{ secrets.SSH_PRIVATE_KEY }}
-        port: ${{ secrets.SSH_PORT }}
-        script: |
-          mkdir -p /path/to/deployment/directory
-          rsync -avz --delete-after ./dist/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/openguessr/frontend
+        ssh_port: ${{ secrets.SSH_PORT }}
+        ssh_username: ${{ secrets.SSH_USERNAME }}
+        ssh_key: ${{ secrets.SSH_PRIVATE_KEY }}
+        source_dir: ${{ secrets.SOURCE_FOLDER }}
+        destination_dir: ${{ secrets.DESTINATION_FOLDER }}
+        rm: true
+      
