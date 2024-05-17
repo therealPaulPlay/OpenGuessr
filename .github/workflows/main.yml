@@ -22,9 +22,7 @@ jobs:
         run: rm -rf ~/.ssh
 
       - name: npm install
-        run: |
-          cd /var/www/OpenGuessr
-          npm install
+        run: npm install
 
       - name: npm build
         run: npm run build
