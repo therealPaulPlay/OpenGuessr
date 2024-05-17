@@ -16,10 +16,10 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
-      - name: Set up Node.js 22.2
+      - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '22.2'
+          node-version: '20.11.1'
 
       - name: Install dependencies
         run: npm install
