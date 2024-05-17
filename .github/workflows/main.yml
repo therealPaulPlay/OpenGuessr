@@ -22,11 +22,11 @@ jobs:
       - name: connect and pull changes
         run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
       
-      - name: cleanup
+      - name: cleanup ssh
         run: rm -rf ~/.ssh
 
       - name: npm install
-        run: npm install --only=prod
+        run: npm install
 
       - name: npm build
         run: npm run build
