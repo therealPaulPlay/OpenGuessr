@@ -32,6 +32,5 @@ jobs:
         key: ${{ secrets.SSH_PRIVATE_KEY }}
         port: ${{ secrets.SSH_PORT }}
         script: |
-          mkdir -p openguessr/frontend
-          rsync -avz --delete-after ./dist/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:openguessr/frontend
-          # Additional commands to restart your server or other deployment steps
+          mkdir -p /path/to/deployment/directory
+          rsync -avz --delete-after ./dist/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:/openguessr/frontend
