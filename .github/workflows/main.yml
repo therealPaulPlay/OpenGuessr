@@ -13,23 +13,6 @@ jobs:
     - name: Checkout repository
       uses: actions/checkout@v2
 
-    - name: Install SSH client
-      run: sudo apt-get install -y openssh-client
-
-    - name: Create SSH directory and known_hosts file
-      run: mkdir -p ~/.ssh && touch ~/.ssh/known_hosts
-
-    - name: Add known hosts
-      run: ssh-keyscan -H ${{ secrets.SERVER_HOST }} >> ~/.ssh/known_hosts
-
-    - name: Configure SSH key
-      run: |
-        echo "${{ secrets.SSH_PRIVATE_KEY }}" | tr -d '\r' > ~/.ssh/id_rsa
-        chmod 600 ~/.ssh/id_rsa
-
-    - name: Test SSH Connection
-      run: ssh -i ~/.ssh/id_rsa ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }} 'echo "SSH connection successful"'
-
     - name: Install Node.js and npm
       uses: actions/setup-node@v2
       with:
@@ -41,7 +24,14 @@ jobs:
     - name: Build
       run: npm run build
 
-    - name: Deployment
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: |
-        scp ~/.ssh/id_rsa * ${{ secrets.SERVER_USERNAME }}@${{ secrets.SERVER_HOST }}:openguessr/frontend
+    - name: Deploy to Server
+      uses: appleboy/ssh-action@v0.1.7
+      with:
+        host: ${{ secrets.SSH_HOST }}
+        username: ${{ secrets.SSH_USERNAME }}
+        key: ${{ secrets.SSH_PRIVATE_KEY }}
+        port: ${{ secrets.SSH_PORT }}
+        script: |
+          mkdir -p openguessr/frontend
+          rsync -avz --delete-after ./dist/ ${{ secrets.SSH_USERNAME }}@${{ secrets.SSH_HOST }}:openguessr/frontend
+          # Additional commands to restart your server or other deployment steps
