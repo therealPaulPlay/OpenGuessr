@@ -29,7 +29,7 @@
       margin: 0;
       font-family: Barlow, Futura, sans-serif;
       color: white;
-      background-color: #000000;
+      background-color: rgb(4, 4, 15);
     }
 
     body {
@@ -42,6 +42,8 @@
 
     h1 {
       font-size: 70px;
+      font-weight: 500;
+      word-wrap: break-word;
     }
 
     p {
@@ -58,7 +60,6 @@
       color: white;
     }
 
-
     .returnButton {
       cursor: pointer;
       width: fit-content;
@@ -74,7 +75,7 @@
       color: white;
       opacity: 100%;
       margin-top: 200px;
-      box-shadow: 0 0 50px #ff0808AA;
+      box-shadow: 0 0 100px #ff08088a;
     }
 
     .returnButton:hover {
@@ -90,13 +91,27 @@
         font-size: 25px;
       }
     }
+
+    @media(max-width: 500px) {
+      h1 {
+        font-size: 35px;
+      }
+
+      p {
+        font-size: 15px;
+      }
+
+      .returnButton {
+        font-size: 15px;
+      }
+    }
   </style>
 </head>
 
 <body>
   <h1>404 - Page not found.</h1>
   <p>The page you requested does not exist under this domain.</p>
-  <a class="returnButton" href="/">← Return to OpenGuessr</a>
+  <a class="returnButton" href="/">Return to OpenGuessr</a>
 </body>
 
 </html>
