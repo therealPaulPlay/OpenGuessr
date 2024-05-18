@@ -1156,6 +1156,7 @@ li {
   #bottomFooterAds {
   width: 320px;
   height: 50px;
+  bottom: 32px;
   }
 }
 
@@ -1170,6 +1171,7 @@ li {
   #bottomFooterAds {
     width: 320px;
     height: 50px;
+    bottom: 12px;
   }
 
   .BottomBar {
