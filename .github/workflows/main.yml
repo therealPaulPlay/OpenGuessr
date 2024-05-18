@@ -31,7 +31,7 @@ jobs:
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
       - name: connect & pull changes
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && git fetch --prune && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
+        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && rm -rf build && git checkout ${{ secrets.MAIN_BRANCH }} && git pull && exit"
 
       - name: cleanup ssh
         run: rm -rf ~/.ssh
