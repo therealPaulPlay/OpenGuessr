@@ -26,15 +26,15 @@
     }
 
     html * {
+      overflow: hidden;
       margin: 0;
       font-family: Barlow, Futura, sans-serif;
       color: white;
       background-color: rgb(4, 4, 15);
     }
 
-    body {
+    #page-content {
       height: 100vh;
-      overflow-y: hidden;
       display: flex;
       flex-direction: column;
       justify-content: center;
@@ -110,9 +110,11 @@
 </head>
 
 <body>
-  <h1>404 - Page not found.</h1>
-  <p>The page you requested does not exist under this domain.</p>
-  <a class="returnButton" href="/">Return to OpenGuessr</a>
+  <div id="page-content">
+    <h1>404 - Page not found.</h1>
+    <p>The page you requested does not exist under this domain.</p>
+    <a class="returnButton" href="/">Return to OpenGuessr</a>
+  </div>
 </body>
 
 </html>
