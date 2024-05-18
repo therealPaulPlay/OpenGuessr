@@ -958,7 +958,7 @@ li {
 
 #map:hover {
   opacity: 100%;
-  transition: height 100ms ease, width 100ms ease;
+  transition: height 100ms ease, width 100ms ease, opacity 100ms ease;
 }
 
 #revealCompass {
@@ -1878,7 +1878,7 @@ button {
   #map {
     width: 40%;
     height: 50%;
-    opacity: 80%;
+    opacity: 70%;
   }
   #mapModeIndicator {
     width: 40%;
