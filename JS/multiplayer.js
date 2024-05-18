@@ -774,18 +774,28 @@ if (peer) {
         // Set up event listener for incoming connections (HOST LOGIC)
         peer.on('connection', function (incomingConn) {
             if (!roomLocked) {
-                connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score]);
-                connectedClientsCount++;
-                setJoinCounter(connectedClientsCount);
 
-                //instantly delete the code from the server on the first connection
+                //instantly lock the room on the first connection
                 if (matchmakingActive) {
                     roomLocked = true;
-                    deleteRoomCodeFromMatchmakingServer();
                 }
+
+                let brokenConnectionTimeout = setTimeout(() => {
+                    // Unlock the room & disconnect non-working peer if connection fails to open within 2 seconds
+                    if (!incomingConn.open) {
+                        roomLocked = false;
+                        incomingConn.close();
+                        distributeChat("System: " + incomingConn.metadata.username + " kicked (no response from peer).");
+                    }
+                }, 2000);
 
                 // Event listener for when the connection is open
                 incomingConn.on('open', function () {
+                    connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score]);
+                    connectedClientsCount++;
+                    setJoinCounter(connectedClientsCount);
+                    clearInterval(brokenConnectionTimeout); //stop the broken-connection kick timer
+
                     const initialMessage = {
                         type: "initialize",
                         content: {
@@ -805,8 +815,9 @@ if (peer) {
                         showMultiplayerOverlay(true, "Waiting...", connectedPeers); //also show it for host
                     }
 
-                    //if duels matchmaking is active, immediately start the round and close the room on the first connection
+                    //if duels matchmaking is active, immediately start the round on the first OPEN connection
                     if (matchmakingActive) {
+                        deleteRoomCodeFromMatchmakingServer(); //delete roomcode from server
                         StartRoom(); //this also locks the room
                     }
                 });
