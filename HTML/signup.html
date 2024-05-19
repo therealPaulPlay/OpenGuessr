@@ -106,16 +106,31 @@
             filter: brightness(70%);
         }
 
+
         .orb {
             position: absolute;
-            width: 400px;
-            height: 400px;
+            width: 1500px;
+            height: 1200px;
             border-radius: 50%;
-            background-color: rgba(255, 59, 48, 0.2);
-            filter: blur(1000px);
-            animation: floatOrb 15s infinite alternate;
-            opacity: 0.05;
+            background-color: rgba(255, 59, 48, 0.15);
+            /* Red-ish color with decreased opacity */
+            filter: blur(1500px);
+            /* Blurry effect */
+            -webkit-filter: blur(1500px);
+            /* Safari compatibility */
             z-index: -1;
+            /* Ensure orbs are below other content */
+            top: 20%;
+            overflow: hidden;
+            right: 10%
+        }
+
+        #secondOrb {
+            position: absolute;
+            width: 900px;
+            height: 1100px;
+            bottom: 20%;
+            left: 10%;
         }
 
         #captchaQuestion {
@@ -227,6 +242,7 @@
             position: relative;
             margin-bottom: 20px;
         }
+
         .toggle-password {
             position: absolute;
             right: -10px;
@@ -291,34 +307,7 @@
         </div>
         <p id="errorMessage"> This is an error message box. </p>
     </div>
+    <div class="orb"></div>
+    <div id="secondOrb" class="orb"></div>
 </body>
-<script>
-    //background orbs
-    document.addEventListener('DOMContentLoaded', function () {
-        const orbsContainer = document.createElement('div');
-        orbsContainer.classList.add('orbs');
-        document.body.appendChild(orbsContainer);
-
-        const numOfOrbs = 10;
-        const colors = ['#ff3b30'];
-
-        for (let i = 0; i < numOfOrbs; i++) {
-            const orb = document.createElement('div');
-            orb.classList.add('orb');
-            orb.style.top = `${Math.random() * 100}vh`;
-            orb.style.left = `${Math.random() * 100}vw`;
-            orb.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            orbsContainer.appendChild(orb);
-
-            let randomSize = Math.random() * 750 + 250
-            orb.style.width = randomSize + "px";
-            orb.style.height = randomSize + "px";
-
-            // Randomize animation duration and delay
-            orb.style.animationDuration = `${Math.random() * 10 + 5}s`;
-            orb.style.animationDelay = `${Math.random() * 5}s`;
-        }
-    });
-</script>
-
 </html>
