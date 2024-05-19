@@ -51,7 +51,7 @@ function dailyChallengeTimerExpired() {
 //Daily Challenge end -------------------------------------------------------------------------------------------------------------------------------------
 export function dailyChallengeEnd() {
     localStorage.setItem("selectedCategory", "standard"); //reset category to standard, so that if user returns after daily challenge it doesn't restart daily challenge
-    window.location.href = "/dailyLeaderboard.html";
+    window.location.href = "/dailyleaderboard.html";
 }
 
 //Time system (the challenge should only be available once a day) -----------------------------------------------------------------------------------------
