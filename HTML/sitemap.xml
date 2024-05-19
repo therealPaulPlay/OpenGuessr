@@ -6,27 +6,27 @@
             http://www.sitemaps.org/schemas/sitemap/0.9/sitemap.xsd">
 
 <url>
-  <loc>https://openguessr.netlify.app/</loc>
+  <loc>https://openguessr.com</loc>
   <lastmod>2024-05-15T18:14:17+00:00</lastmod>
   <priority>1.00</priority>
 </url>
 <url>
-  <loc>https://openguessr.netlify.app/legal</loc>
+  <loc>https://openguessr.com/legal</loc>
   <lastmod>2024-05-15T18:14:17+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://openguessr.netlify.app/loader</loc>
+  <loc>https://openguessr.com/loader</loc>
   <lastmod>2024-05-15T18:14:17+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://openguessr.netlify.app/leaderboard</loc>
+  <loc>https://openguessr.com/leaderboard</loc>
   <lastmod>2024-05-15T18:14:17+00:00</lastmod>
   <priority>0.80</priority>
 </url>
 <url>
-  <loc>https://openguessr.netlify.app/dailyleaderboard</loc>
+  <loc>https://openguessr.com/dailyleaderboard</loc>
   <lastmod>2024-05-15T18:14:17+00:00</lastmod>
   <priority>0.80</priority>
 </url>
