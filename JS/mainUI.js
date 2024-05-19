@@ -51,7 +51,7 @@ function goToLeaderboard() {
 }
 
 function goToDailyLeaderboard() {
-    window.location.href = "/dailyLeaderboard.html";
+    window.location.href = "/dailyleaderboard.html";
 }
 
 //Toggle Map on mobile devices ---------------------------------------------------------------------------------------

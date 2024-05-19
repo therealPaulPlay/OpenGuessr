@@ -111,7 +111,7 @@ export function checkGenerationTypeAndGenerate() {
                 generateNewLocation("DAILY");
             } else {
                 localStorage.setItem("selectedCategory", "standard");
-                window.location.href = "/dailyLeaderboard.html";
+                window.location.href = "/dailyleaderboard.html";
             }
 
         } else if (mapCategory == "standard") {
