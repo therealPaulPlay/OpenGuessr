@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <!--this is the default link for the streetview loader, if this appears, there was an error in loading the streetview-->
+
 <head>
     <title>Streetview failed to load</title>
     <meta name="viewport" content="initial-scale=1,maximum-scale=1" />
@@ -8,23 +9,44 @@
 
 
 <body>
-<h1>The streetview failed to load. <br> Please try reloading the page or click on the red reload symbol.</h1>
+    <div>
+        <h1>The streetview failed to load. </h1>
+    </div>
 </body>
 
 <style>
     @font-face {
-    font-family: Futura;
-    src: url('/FONTS/futura_medium_condensed_bt.ttf');
-}
-body {
-    background-color: rgb(22, 22, 22);
-}
+        font-family: Barlow;
+        src: url('../FONTS/BarlowCondensed-Medium.ttf');
+    }
+
+    body {
+        background-color: rgb(4, 4, 15);
+        height: 100vh;
+    }
+
     h1 {
         text-align: center;
-        Font-family: Futura;
-        position: absolute;
-        top: 40%;
-        width: 100%;
-        color: grey;
+        Font-family: Barlow;
+        width: 70%;
+        color: #686161;
+        font-weight: 500;
+    }
+
+    div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100%;
+    }
+
+    @media (orientation: portrait) {
+        div {
+            align-items: baseline;
+        }
+
+        h1 {
+            margin-top: 200px;
+        }
     }
 </style>
