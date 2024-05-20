@@ -257,7 +257,7 @@ export async function loadResultScreenXP(distance) {
         setDailyChallengeExperienceResult(earnedXP);
 
       } else if (selectedCategory == "country") {
-        earnedXP = checkIfGuessWasCorrect() ? 1000 : 100;
+        earnedXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
       } else if (selectedCategory == "famous" || selectedCategory == "indoor" || selectedCategory == "mountain" || selectedCategory == "whetherspoon" || selectedCategory == "skyscraper" || selectedCategory == "stadium" || selectedCategory == "racetrack" || selectedCategory == "brutalism" || selectedCategory == "abandoned") {
         earnedXP = Math.round(1000 * ((0.998036) ** distance));
