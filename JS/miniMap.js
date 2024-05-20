@@ -33,7 +33,7 @@ loadMap();
 changeLanguageButtonLabel();
 
 //indicate whether a guess has been made and the button can be used
-let hasGuessed = false;
+export let hasGuessed = false;
 setConfirmButtonState();
 
 //reset the map - used for going to the next round. 
@@ -67,7 +67,7 @@ function changeLanguageButtonLabel() {
 }
 
 //Set state of the confirm ("guess") button ------------------------------------------------------------------
-function setConfirmButtonState() {
+export function setConfirmButtonState() {
     if (hasGuessed) {
         document.getElementById("confirmButton").style.backgroundColor = "red";
         document.getElementById("confirmButton").style.color = "white";
@@ -80,6 +80,11 @@ function setConfirmButtonState() {
         document.getElementById("confirmButton").style.opacity = "90%"
         document.getElementById("confirmButton").style.pointerEvents = "none";
     }
+}
+
+export function setConfirmButtonEnabled() {
+    hasGuessed = true;
+    setConfirmButtonState();
 }
 
 //Change map provider / language ---------------------------------------------------------------------

@@ -754,6 +754,10 @@ li {
   text-align: center;
 }
 
+.selectedCountry {
+  border: solid 4px white;
+}
+
 .countryGuesserFlag {
   font-size: 50px;
   margin-bottom: auto;

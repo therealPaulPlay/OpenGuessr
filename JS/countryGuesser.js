@@ -1,8 +1,11 @@
 //Gamemode where you guess the country (not on the map)
 import { hideToggleMapButtonIfMobile } from "./mainUI";
+import { setConfirmButtonEnabled } from "./miniMap";
 
 export let countryGuesserMode = false;
-let selectedCountryGuesserCountry = null; //this will be set in locationGeneration.js
+let selectedCountryGuesserCountry = null; //this will be set in locationGeneration.js and is the country
+let selectedCountryGuessIndex = null; //this is the field the user has selected in the UI 
+let correctCountryField = null; // 1-6
 
 
 export function setCountryGuesserMode(enabled) {
@@ -29,11 +32,19 @@ export function setCountryGuesserMode(enabled) {
     }
 }
 
+export function checkIfGuessWasCorrect() {
+    if (correctCountryField == selectedCountryGuessIndex) {
+        return true;
+    } else {
+        return false;
+    }
+}
+
 export function setCountryGuesserCountry(country) {
     // Function to execute the main logic after DOM content is loaded
     function executeAfterDOMLoaded() {
-        selectedCountryGuesserCountry = country;
-        console.log(country); //This can be "South Africa", "United States", "India" and so on. Data was received by Nominatium API (which cannot be used in prod)
+        selectedCountryGuesserCountry = country; //This can be "South Africa", "United States", "India" and so on. Data was received by Nominatium API (which cannot be used in prod)
+        clearSelection();
         try {
             if (countryGuesserMode) {
                 for (let i = 1; i <= 6; i++) {
@@ -42,9 +53,30 @@ export function setCountryGuesserCountry(country) {
 
                     let randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
 
-                    countryItem.textContent = Object.keys(countryEmojis)[randomCountryIndex];
-                    countryFlag.textContent = countryEmojis[Object.keys(countryEmojis)[randomCountryIndex]];
+                    const countryName = Object.keys(countryEmojis)[randomCountryIndex];
+
+                    countryItem.textContent = countryName;
+                    countryFlag.textContent = countryEmojis[countryName];
+
+                    if (countryName.length > 17) {
+                        countryItem.textContent = countryName.slice(0, 14) + "...";
+                    }
                 }
+
+                //now make one of them the actual answer (1-6)
+                correctCountryField = Math.floor(Math.random() * 6) + 1;
+                let countryItem = document.getElementById("countryTag" + correctCountryField);
+                let countryFlag = document.getElementById("countryFlag" + correctCountryField);
+
+                const countryName = selectedCountryGuesserCountry;
+
+                countryItem.textContent = countryName;
+                countryFlag.textContent = countryEmojis[countryName];
+
+                if (countryName.length > 17) {
+                    countryItem.textContent = countryName.slice(0, 14) + "...";
+                }
+
             }
         } catch (error) {
             console.error("Error generating random category options in countryGuesser.js: " + error);
@@ -61,10 +93,27 @@ export function setCountryGuesserCountry(country) {
     }
 }
 
+//UI selection --------------------------------------------------------------------------------------------------------
+const countryGuesserHolders = document.querySelectorAll('.countryGuesserHolder');
 
-function getCountryEmoji(countryName) {
-    return countryEmojis[countryName] || "X";
-}
+countryGuesserHolders.forEach((holder, index) => {
+  holder.addEventListener('click', () => {
+    countryGuesserHolders.forEach(h => h.classList.remove('selectedCountry'));
+
+    holder.classList.add('selectedCountry');
+    
+    selectedCountryGuessIndex = index + 1;
+
+    setConfirmButtonEnabled();
+  });
+});
+
+function clearSelection() {
+    countryGuesserHolders.forEach(h => h.classList.remove('selectedCountry'));
+    selectedCountryGuessIndex = null;
+  }
+
+//Country emojis --------------------------------------------------------------------------------------------------------
 
 const countryEmojis = {
     "Andorra": "🇦🇩",
@@ -290,7 +339,7 @@ const countryEmojis = {
     "Ukraine": "🇺🇦",
     "Uganda": "🇺🇬",
     "United States Minor Outlying Islands": "🇺🇲",
-    "United States of America": "🇺🇸",
+    "United States": "🇺🇸",
     "Uruguay": "🇺🇾",
     "Uzbekistan": "🇺🇿",
     "Vatican City": "🇻🇦",
