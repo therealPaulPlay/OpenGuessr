@@ -6,10 +6,10 @@ import { resetMap, getMapSource } from './miniMap.js';
 import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
-import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer} from "./dailyChallenge.js";
+import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer } from "./dailyChallenge.js";
 import { checkHardModeTimeout } from './hardMode.js';
 import { multiplayer, startMultiplayerRound, isHost, multiplayerGuessesLocationsArray } from './multiplayer.js';
-import { countryGuesserMode, selectedCountryGuesserCountry, setCountryGuesserCountry } from './countryGuesser.js';
+import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } from './countryGuesser.js';
 
 //default coords of the location
 let currentStreetviewLat = 0;
@@ -19,7 +19,7 @@ let currentStreetviewLong = 0;
 
 export async function generateNewLocation(type) {
     resetMap();
-    
+
     let newLocationArray;
 
     try {
@@ -31,17 +31,17 @@ export async function generateNewLocation(type) {
     try {
         currentStreetviewLat = newLocationArray[0];
         currentStreetviewLong = newLocationArray[1];
-       
-        if (countryGuesserMode) {
+
+        if (countryGuesserMode && !multiplayer) {
             setCountryGuesserCountry(newLocationArray[2]);
         }
-        
+
     } catch {
         console.error("The coordinates to load the iframe from are not defined. " + "Lat: " + currentStreetviewLat + " Long: " + currentStreetviewLong);
     }
-    
+
     loadIframe(currentStreetviewLat, currentStreetviewLong);
-    
+
     if (multiplayer && isHost) {
         startMultiplayerRound(currentStreetviewLat, currentStreetviewLong);
     }
@@ -61,48 +61,56 @@ export function calculateDistances(mapsLat, mapsLong) {
 
     let distance = guessCoords.distanceTo(destinationCoords) / 1000;
 
-    compareDistances(distance);   
+    compareDistances(distance);
 }
-  
+
 
 function compareDistances(distance) {
     //compares how big the distance is and enables result screen with a message.
     if (!resultScreenEnabled) {
-   
-    let finalResult;
-    let resultAsString;
 
-    veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Let me guess; you have an A in geography?", "Wow."]
-    closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!"];
-    farDistances = ["It was a good guess.", "You'll get it next time!", "At least it was on the correct planet, right?", "Not bad, not great."];
+        let finalResult;
+        let resultAsString;
 
-    //motivational quotes
-    if(distance < 100 && !(distance<5)) {
-        extraMsg = closeDistances[Math.floor(Math.random()*closeDistances.length)];
-    }
-    else {
-        extraMsg = farDistances[Math.floor(Math.random()*farDistances.length)];
-    }
+        veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Let me guess; you have an A in geography?", "Wow."]
+        closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!"];
+        farDistances = ["It was a good guess.", "You'll get it next time!", "At least it was on the correct planet, right?", "Not bad, not great."];
 
-    //distance number formatting (km or m)
-    if (distance < 5) {
-        finalResult = Math.round(distance*1000);
-        finalResult = finalResult.toLocaleString();
-        resultAsString = finalResult+" m";
-        extraMsg = veryCloseDistances[Math.floor(Math.random()*veryCloseDistances.length)];
-    }
-    else {
-        finalResult = Math.round(distance * 10) / 10;
-        finalResult = finalResult.toLocaleString();
-        resultAsString = finalResult+" km";
-    }
+        //motivational quotes
+        if (distance < 100 && !(distance < 5)) {
+            extraMsg = closeDistances[Math.floor(Math.random() * closeDistances.length)];
+        }
+        else {
+            extraMsg = farDistances[Math.floor(Math.random() * farDistances.length)];
+        }
 
-    if (dailyChallengeUIEnabled) {
-        extraMsg = "You took " + (120 - dailyChallengeTimer.getRemainingTime()) + "s to guess. The time is part of the XP calculation." //show timer data in extra message on result screen for daily challenge
-    }
-    
-    loadResultScreenXP(distance);
-    enableResultScreen(resultAsString, extraMsg);
+        //distance number formatting (km or m)
+        if (distance < 5) {
+            finalResult = Math.round(distance * 1000);
+            finalResult = finalResult.toLocaleString();
+            resultAsString = finalResult + " m";
+            extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
+        }
+        else {
+            finalResult = Math.round(distance * 10) / 10;
+            finalResult = finalResult.toLocaleString();
+            resultAsString = finalResult + " km";
+        }
+
+        if (dailyChallengeUIEnabled) {
+            extraMsg = "You took " + (120 - dailyChallengeTimer.getRemainingTime()) + "s to guess. The time is part of the XP calculation." //show timer data in extra message on result screen for daily challenge
+        }
+
+        if (countryGuesserMode && !multiplayer) {
+            if (checkIfGuessWasCorrect()) {
+                extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
+            } else {
+                extraMsg = farDistances[Math.floor(Math.random() * farDistances.length)];
+            }
+        }
+
+        loadResultScreenXP(distance);
+        enableResultScreen(resultAsString, extraMsg);
     }
 }
 
@@ -111,66 +119,75 @@ function compareDistances(distance) {
 export let resMap;
 
 export function loadResultMap(playersLat, playersLong) {
-    
-    //default values in case there was an error in multiplayer
+
+    //default values in case there was an error / not defined
     if (playersLat == null || playersLat == undefined) {
         playersLat = 0;
         playersLong = 0;
     }
 
-   //this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
+    //this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
     if (resMap && resMap.remove) {
         resMap.off();
         resMap.remove();
-      }
+    }
 
     //this makes it so the map in the result screen is focused on the center between the point
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentStreetviewLat, currentStreetviewLong], 15);
     L.tileLayer(getMapSource(), {
-}).addTo(resMap);
+    }).addTo(resMap);
 
-const redIcon = new L.Icon({
-    iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
-    iconSize: [40, 40],
-    iconAnchor: [20, 38],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+    resMap.setZoom(3); //set default zoom
 
-const greenIcon = new L.Icon({
-    iconUrl: './IMG/result_marker.png',
-    iconSize: [40, 40],
-    iconAnchor: [20, 38],
-    popupAnchor: [1, -34],
-    shadowSize: [41, 41]
-});
+    const redIcon = new L.Icon({
+        iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
+        iconSize: [40, 40],
+        iconAnchor: [20, 38],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
+
+    const greenIcon = new L.Icon({
+        iconUrl: './IMG/result_marker.png',
+        iconSize: [40, 40],
+        iconAnchor: [20, 38],
+        popupAnchor: [1, -34],
+        shadowSize: [41, 41]
+    });
 
     //used to create the line between the points
     let curLatLng = new L.LatLng(currentStreetviewLat, currentStreetviewLong);
-    let playerLatLng = new L.LatLng(playersLat, playersLong);
-    let polyList = [curLatLng, playerLatLng];
-    let pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
+    let pointList = null;
+    let playerLatLng;
+    let polyList;
     let playerMarker;
-    
-    //this places the Player Marker (where the player thinks the location is)
-    playerMarker = new L.Marker(playerLatLng, {icon: redIcon})
 
-    playerMarker.addTo(resMap);
-    
-    //this draws the line to the goal
-    const polygon = L.polygon(polyList, {color: '#05060ab0', weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
-    
+    if (!countryGuesserMode || multiplayer) {
+        playerLatLng = new L.LatLng(playersLat, playersLong);
+        polyList = [curLatLng, playerLatLng];
+        pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
+        playerMarker;
+
+        //this places the Player Marker (where the player thinks the location is)
+        playerMarker = new L.Marker(playerLatLng, { icon: redIcon })
+
+        playerMarker.addTo(resMap);
+
+        //this draws the line to the goal
+        const polygon = L.polygon(polyList, { color: '#05060ab0', weight: '3', dashArray: '10, 10', dashOffset: '-10' }).addTo(resMap);
+    }
+
     //pins of other players
     if (multiplayer) {
-        multiplayerGuessesLocationsArray.forEach(function(element) {
+        multiplayerGuessesLocationsArray.forEach(function (element) {
             let newMarkerLat = element[0];
             let newMarkerLong = element[1];
             let newMarkerPinIndex = element[2];
 
             //checks for edge cases
-            if (newMarkerLat == null || newMarkerLong == null ) {
+            if (newMarkerLat == null || newMarkerLong == null) {
                 newMarkerLat = 0;
                 newMarkerLong = 0;
             }
@@ -189,24 +206,25 @@ const greenIcon = new L.Icon({
                     popupAnchor: [1, -34],
                     shadowSize: [41, 41]
                 });
-    
+
                 let multiplayerLatLng = new L.LatLng(newMarkerLat, newMarkerLong);
-                
-                let multiplayerMarker = new L.Marker(multiplayerLatLng, {icon: newMultiplayerIcon});
+
+                let multiplayerMarker = new L.Marker(multiplayerLatLng, { icon: newMultiplayerIcon });
                 multiplayerMarker.setOpacity(0.5);
                 multiplayerMarker.addTo(resMap);
-    
+
                 let multiplayerPolyList = [curLatLng, multiplayerLatLng]; //takes the cur lat lng from the guess (the destination) + the current guess from other player
-                const multiplayerPolygon = L.polygon(multiplayerPolyList, {color: "#28282a80", weight: '3',  dashArray: '10, 10', dashOffset: '-10'}).addTo(resMap);
+                const multiplayerPolygon = L.polygon(multiplayerPolyList, { color: "#28282a80", weight: '3', dashArray: '10, 10', dashOffset: '-10' }).addTo(resMap);
             }
         });
     }
 
-
-    resMap.fitBounds(pointList, {padding: [150,250]});
+    if (!countryGuesserMode || multiplayer) {
+        resMap.fitBounds(pointList, { padding: [150, 250] });
+    }
 
     //this places the "correct" marker that actually reflects the target location
-    destinationMarker = new L.Marker([currentStreetviewLat, currentStreetviewLong], {icon: greenIcon});
+    destinationMarker = new L.Marker([currentStreetviewLat, currentStreetviewLong], { icon: greenIcon });
     destinationMarker.addTo(resMap);
 
     setTimeout(flyToDestination, 1000);
@@ -214,37 +232,37 @@ const greenIcon = new L.Icon({
 
 function flyToDestination() {
     if (document.getElementById("EndOverlay").style.opacity == "1") {
-    resMap.flyTo([currentStreetviewLat, currentStreetviewLong], clamp(resMap.getZoom() + 4,0,18), {
-        animate: true, 
-        duration: 2
-     });
+        resMap.flyTo([currentStreetviewLat, currentStreetviewLong], clamp(resMap.getZoom() + 4, 0, 18), {
+            animate: true,
+            duration: 2
+        });
     }
 }
 
 //clamp function 
 export function clamp(num, min, max) {
-    return num <= min 
-      ? min 
-      : num >= max 
-        ? max 
-        : num
-  }
+    return num <= min
+        ? min
+        : num >= max
+            ? max
+            : num
+}
 
 //Open map locations on google maps --------------------------------------------------------------------------------------------------
 
 document.getElementById("endScreenOpenLocation").addEventListener("click", openLocationOnMap);
 
 function openLocationOnMap() {
-    window.open("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + currentStreetviewLat + "," + currentStreetviewLong,'_blank').focus();
+    window.open("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + currentStreetviewLat + "," + currentStreetviewLong, '_blank').focus();
 }
 
 //Load the Main StreetView Iframe -------------------------------------------------------------------------------------------------------------
 let loadingLink = "/loader.html";
 
 export function loadIframe(lat, long) {
-    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location="+lat+","+long+"&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0&fov=90"; //API key (last part of URL)
+    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location=" + lat + "," + long + "&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0&fov=90"; //API key (last part of URL)
     let initialIframeLoad = true;
-    
+
     // Reference to the iframe
     const iframe = document.getElementById("GuesserWindow");
 
@@ -253,11 +271,11 @@ export function loadIframe(lat, long) {
         if (initialIframeLoad) {
             dailyChallengeCheckTimer(); //check if daily challenge is active and start timer
             checkHardModeTimeout(); //Check if the user is playing hard mode + apply changes if yes
-        }   
-       
+        }
+
         initialIframeLoad = false;
-        
-        setTimeout(function() {
+
+        setTimeout(function () {
             const beforeOverlay = document.getElementById("BeforeOverlay");
             beforeOverlay.style.opacity = "0";
             beforeOverlay.style.visibility = "hidden";

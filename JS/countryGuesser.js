@@ -1,9 +1,9 @@
 //Gamemode where you guess the country (not on the map)
 import { hideToggleMapButtonIfMobile } from "./mainUI";
-import { setConfirmButtonEnabled } from "./miniMap";
+import { setConfirmButtonEnabled, confirmButtonClicks } from "./miniMap";
 
 export let countryGuesserMode = false;
-let selectedCountryGuesserCountry = null; //this will be set in locationGeneration.js and is the country
+export let selectedCountryGuesserCountry = null; //this will be set in locationGeneration.js and is the country
 let selectedCountryGuessIndex = null; //this is the field the user has selected in the UI 
 let correctCountryField = null; // 1-6
 
@@ -112,6 +112,19 @@ function clearSelection() {
     countryGuesserHolders.forEach(h => h.classList.remove('selectedCountry'));
     selectedCountryGuessIndex = null;
   }
+
+//Spacebar click to guess ---------------------------------------------------------------------------------------------
+
+//Confirm Button with Spacebar and a few checks
+document.getElementById("countryGuesserSelector").addEventListener("keydown", function (event) {
+    if (event.key === " ") {
+        if (document.getElementById("confirmButton").style.pointerEvents == "auto") {
+            confirmButtonClicks();
+        } else {
+            console.warn("Cannot click on confirm button - pointer events is none.");
+        }
+    }
+});
 
 //Country emojis --------------------------------------------------------------------------------------------------------
 

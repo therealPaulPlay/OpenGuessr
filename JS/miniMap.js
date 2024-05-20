@@ -133,7 +133,7 @@ map.setZoom(3);
 let marker = new L.Marker([0, 0]);
 
 
-//Placing the marker on the map ------------------------------------------------------------------------
+//Placing the marker on the minimap ------------------------------------------------------------------------
 export let mapMarkerLat = 0;
 export let mapMarkerLong = 0;
 

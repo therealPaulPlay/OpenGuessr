@@ -2,6 +2,7 @@ import { closePopup } from "./errorHandling.js";
 import { reloadIframe } from "./main.js";
 import { setUserXP, uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { toggleMultiplayerSelector } from "./multiplayer.js";
+import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -115,6 +116,14 @@ export function enableResultScreen(resultString, extraMessage) {
 
     document.getElementById("distanceText").innerText = "Your guess was " + resultString + " away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
+
+    if (countryGuesserMode) {
+        if (checkIfGuessWasCorrect()) {
+            document.getElementById("distanceText").innerText = "That is correct! The location was in " + selectedCountryGuesserCountry + ".";
+        } else {
+            document.getElementById("distanceText").innerText = "Wrong! The correct country would have been " + selectedCountryGuesserCountry + ".";
+        }
+    }
 
     resultScreenEnabled = true;
 }

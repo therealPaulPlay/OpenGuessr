@@ -3,6 +3,7 @@ import { setDailyChallengeExperienceResult } from "./dailyChallenge";
 import { dailyChallengeTimer } from './dailyChallenge.js';
 import { checkTextLength, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore } from "./multiplayer.js";
+import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 
 let profileName = document.getElementById("profileViewName");
 
@@ -24,7 +25,7 @@ let profileButton = document.getElementById("profileButton");
 profileButton.addEventListener("click", viewProfile);
 
 let mobileProfileButton = document.getElementById("mobileProfileButton");
-mobileProfileButton.addEventListener("click", function() {
+mobileProfileButton.addEventListener("click", function () {
   toggleMobileMenu();
   viewProfile();
 });
@@ -234,7 +235,7 @@ export async function loadResultScreenXP(distance) {
     let XPbarResource = document.getElementById("endScreenXPbarResource");
 
     let currentXP = Number(localStorage.getItem("experience"));
-    
+
     if (currentXP == null) {
       currentXP = 0;
     }
@@ -247,27 +248,31 @@ export async function loadResultScreenXP(distance) {
     if (!multiplayer) {
       if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "capital" || selectedCategory == "hard") {
         earnedXP = Math.round(5000 * ((0.998036) ** distance));
-      }
-      else if (selectedCategory == "daily") {
+
+      } else if (selectedCategory == "daily") {
         let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
-  
+
         let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
         earnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
         setDailyChallengeExperienceResult(earnedXP);
-  
+
+      } else if (selectedCategory == "country") {
+        earnedXP = checkIfGuessWasCorrect() ? 1000 : 100;
+
       } else if (selectedCategory == "famous" || selectedCategory == "indoor" || selectedCategory == "mountain" || selectedCategory == "whetherspoon" || selectedCategory == "skyscraper" || selectedCategory == "stadium" || selectedCategory == "racetrack") {
         earnedXP = Math.round(1000 * ((0.998036) ** distance));
 
       } else if (selectedCategory == "israel" || selectedCategory == "austria" || selectedCategory == "slovakia" || selectedCategory == "czechia") { //very small countries, more reduced xp
-        earnedXP = Math.round(5000 * ((0.978036) ** distance)) 
-        
+        earnedXP = Math.round(5000 * ((0.978036) ** distance))
+
       } else {
         earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
       }
+
     } else {
       //always use the standard formula for multiplayer 
       earnedXP = Math.round(5000 * ((0.998036) ** distance));
-     
+
       if (isHost) {
         updatePeerDataScore(peerId, earnedXP);
       } else {
@@ -373,7 +378,7 @@ function selectPin(index) {
       // Add selectedPin class to the clicked pinHolder button
       pinHolders[index].classList.add('selectedPin');
 
-      if (index != null || typeof(index) == "number") {
+      if (index != null || typeof (index) == "number") {
         // Set selectedPin index to localStorage
         selectedPinIndex = index;
         localStorage.setItem("selectedPin", index);
