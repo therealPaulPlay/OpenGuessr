@@ -2,6 +2,7 @@ import { closePopup } from "./errorHandling.js";
 import { reloadIframe } from "./main.js";
 import { setUserXP, uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { toggleMultiplayerSelector } from "./multiplayer.js";
+import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -115,6 +116,14 @@ export function enableResultScreen(resultString, extraMessage) {
 
     document.getElementById("distanceText").innerText = "Your guess was " + resultString + " away from the target.";
     document.getElementById("motivationText").innerText = extraMessage;
+
+    if (countryGuesserMode) {
+        if (checkIfGuessWasCorrect()) {
+            document.getElementById("distanceText").innerText = "That is correct! The location was in " + selectedCountryGuesserCountry + ".";
+        } else {
+            document.getElementById("distanceText").innerText = "Wrong! The correct country would have been " + selectedCountryGuesserCountry + ".";
+        }
+    }
 
     resultScreenEnabled = true;
 }
@@ -334,6 +343,16 @@ function addCommunityCreditTag() {
     document.getElementById("racetrackCategoryInfo").addEventListener("click", (event) => {
         event.stopPropagation();
         openCreditWindow("Racetracks by Magnus1stCool", "Magnus is the ultimate racing aficionado. Not a single race escapes his keen eye - he can name them all off the top of his head. His collection of circuits is a testament to his passion, meticulously curated, presumably even without the need for google searches. ");
+    });
+
+    document.getElementById("brutalismCategoryInfo").addEventListener("click", (event) => {
+        event.stopPropagation();
+        openCreditWindow("Modern Brutalism by Monobani", "Monobani compiled a list of locations featuring modern-brutalist architecture. All of them are curated to have an aesthetic appeal and invite the player to delve into the history that shapes the way we design our public spaces. ");
+    });
+
+    document.getElementById("abandonedCategoryInfo").addEventListener("click", (event) => {
+        event.stopPropagation();
+        openCreditWindow("Abandoned Places by Monobani", "Explore a world of forgotten relics with this map, featuring lost and abandoned structures from across the globe. Each location confines you to a single, eerie space, inviting you to carefully investigate your surroundings and think outside the box to uncover hidden stories. ");
     });
 }
 

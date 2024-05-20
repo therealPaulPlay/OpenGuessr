@@ -259,6 +259,9 @@ function setMultiplayerUI() {
         document.getElementById("multiplayerLeave").style.display = "block";
         document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
 
+        //hide country picker UI
+        document.getElementById("countryGuesserSelector").style.display = "none";
+
         mobileMenuButton.style.opacity = "0.5";
         mobileMenuButton.style.pointerEvents = "none";
     } else {
@@ -302,8 +305,11 @@ function endMultiplayerRound() {
                 document.getElementById("nextRound").style.opacity = "1";
                 document.getElementById("nextRound").style.pointerEvents = "auto";
             }, 2000)
-            //After 10 seconds, skip automatically to not let peers wait too long
-            autoSkipResult = setTimeout(transitionToStart, 10000);
+            
+            //After 10 seconds, skip automatically to not let peers wait too long in Duels
+            if (playingDuels) {
+                autoSkipResult = setTimeout(transitionToStart, 10000);
+            }
 
         } else {
             //if i'ts not the host, hide the next round button!
@@ -589,6 +595,7 @@ function manuallySendChat() {
 
 let roomIndex = 0;
 let matchmakingActive = false;
+let playingDuels = false;
 
 //set info text
 let multiplayerDuelInfo = document.getElementById("multiplayerDuelInfo");
@@ -609,6 +616,7 @@ function setDuelFindStatus(text) {
 async function findDuel() {
     roomIndex = 0; //reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     matchmakingActive = true;
+    playingDuels = true;
     setRetryButtonState();
     setDuelFindStatus("Starting...");
     attemptDuelJoin(roomIndex);
@@ -885,7 +893,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     multiplayerFirstRoundPlayed = false;
     multiplayerCategory = mapCategory;
 
-    if (multiplayerCategory == "hard" || multiplayerCategory == "daily") {
+    if (multiplayerCategory == "hard" || multiplayerCategory == "daily" || multiplayerCategory == "country") {
         multiplayerCategory = "standard - auto";
     }
 
@@ -901,7 +909,6 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
 }
 
 function StartRoom() {
-    if (connectedClientsCount != 0) {
         //start the round (from host)
         multiplayerHost.textContent = "Loading Location...";
         setDuelFindStatus("Starting! Loading location...");
@@ -912,9 +919,24 @@ function StartRoom() {
         checkGenerationTypeAndGenerate();
         roomLocked = true;
         matchmakingActive = false;
-    } else {
-        console.error("No players have joined - cannot start multiplayer room.");
-    }
+}
+
+function multiplayerRematch() {
+    roundEnded = false;
+    multiplayerHasAlreadyGuessed = false;
+    multiplayerFirstRoundPlayed = false;
+    roundIndex = 1;
+    connectedPeers.forEach((element) => {
+        element[3] = 0; //reset scores
+    })
+    sendMessageToAll("rematch");
+    setTimeout(function() {
+        StartRoom()});
+
+    //change the rematch button so signal the change
+    endMultiplayerRematchButton.style.opacity = "0.5";
+    endMultiplayerRematchButton.style.pointerEvents = "none";
+    endMultiplayerRematchButton.textContent = "Loading...";
 }
 
 //Start the first / next round
@@ -923,10 +945,11 @@ export function startMultiplayerRound(latitude, longitude) {
     totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host (this is being set here as well as after the countdown)
 
     if (multiplayerFirstRoundPlayed == false) {
-        toggleMultiplayerSelector();
+        toggleMultiplayerSelector("close");
         multiplayerFirstRoundPlayed = true;
 
         sendMessageToAll("start", [latitude, longitude]);
+        distributeChat("System: Starting Round " + roundIndex);
         multiplayerOverlayCountdown();
     } else {
         roundIndex++;
@@ -1071,6 +1094,13 @@ function joinRoom(code) {
             setJoinInfoText("Room locked!");
             setJoinButtonState();
         }
+
+        if (data.type === "rematch") {
+            roundEnded = false;
+            multiplayerHasAlreadyGuessed = false;
+            multiplayerFirstRoundPlayed = false;
+            roundIndex = 1;
+        }
     });
 
     // Event listener for Connection closed
@@ -1165,9 +1195,11 @@ leaveButton.addEventListener("click", leaveMultiplayerRound);
 
 function leaveMultiplayerRound() {
     //important! first step is disabling multiplayer
+    let wasMultiplayerEnabled = false;
+    
     if (multiplayer) {
         multiplayer = false;
-        checkGenerationTypeAndGenerate();
+        wasMultiplayerEnabled = true;
     }
 
     if (isHost) {
@@ -1197,24 +1229,40 @@ function leaveMultiplayerRound() {
     resetChat();
     matchmakingActive = false;
     isHost = false;
+    playingDuels = false;
 
     //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";
     document.getElementById("confirmButton").style.pointerEvents = "auto";
     document.getElementById("confirmButton").style.visibility = "visible";
     document.getElementById("map").style.pointerEvents = "auto";
-    document.getElementById("map").style.visibility = "visible";
-    hideToggleMapButtonIfMobile(false);
+
+    if (mapCategory != "country") {
+        document.getElementById("map").style.visibility = "visible";
+        hideToggleMapButtonIfMobile(false);
+    }
+
     document.getElementById("nextRound").style.opacity = "1";
     document.getElementById("nextRound").style.pointerEvents = "auto";
     document.getElementById("nextRound").textContent = "Next round →";
     endMultiplayerRoundButton.style.display = "none";
+    endMultiplayerRematchButton.style.display = "none";
+    endMultiplayerRematchButton.style.opacity = "1";
+    endMultiplayerRematchButton.style.pointerEvents = "auto";
+    endMultiplayerRematchButton.textContent = "Play again"
     nmpzBackground.style.pointerEvents = "none";
+
+    if (wasMultiplayerEnabled) {
+        checkGenerationTypeAndGenerate();
+    }
 }
 
 //Streetview Overlay UI -------------------------------------------------------------------------------------------------------------------
 let endMultiplayerRoundButton = document.getElementById("endMultiplayerRoundButton");
+let endMultiplayerRematchButton = document.getElementById("endMultiplayerRematchButton");
+
 endMultiplayerRoundButton.addEventListener("click", leaveMultiplayerRound);
+endMultiplayerRematchButton.addEventListener("click", multiplayerRematch);
 
 export function showMultiplayerOverlay(show, title, array) {
     if (show) {
@@ -1239,11 +1287,19 @@ export function showMultiplayerOverlay(show, title, array) {
 
             if (isHost) {
                 endMultiplayerRoundButton.textContent = "End Round";
+                if (!playingDuels) {
+                    endMultiplayerRematchButton.style.display = "block";
+                    endMultiplayerRematchButton.style.opacity = "1";
+                    endMultiplayerRematchButton.style.pointerEvents = "auto";
+                    endMultiplayerRematchButton.textContent = "Play again";
+                }
+
             } else {
                 endMultiplayerRoundButton.textContent = "Leave Round";
             }
         } else {
             endMultiplayerRoundButton.style.display = "none";
+            endMultiplayerRematchButton.style.display = "none";
         }
 
         let body = '';
@@ -1291,9 +1347,11 @@ export function showMultiplayerOverlay(show, title, array) {
         document.getElementById("multiplayerFade").style.opacity = "0";
         document.getElementById("multiplayerFade").style.pointerEvents = "none";
         document.getElementById("confirmButton").style.visibility = "visible";
-        document.getElementById("map").style.visibility = "visible";
-        hideToggleMapButtonIfMobile(false);
-        document.getElementById("revealCompass").style.visibility = "visible";
+        if (multiplayer || mapCategory != "country") {
+            document.getElementById("map").style.visibility = "visible";
+            hideToggleMapButtonIfMobile(false);
+            document.getElementById("revealCompass").style.visibility = "visible";
+        }
     }
 }
 

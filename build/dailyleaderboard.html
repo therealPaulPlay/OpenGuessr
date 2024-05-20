@@ -348,7 +348,7 @@
 
                 lastChallengePoints = Number(lastChallengePoints).toLocaleString();
 
-                if (i < 100) {
+                if (i < 100 && i < (userData.length - 1)) {
                     addRankedItem(i + 1, userName, lastChallengePoints);
                 }
             }

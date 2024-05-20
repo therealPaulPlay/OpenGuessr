@@ -5,6 +5,7 @@ import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
 import { justPlayedDailyChallenge } from "./miniMap.js";
+import { setCountryGuesserMode } from "./countryGuesser.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 const Category = {
@@ -32,6 +33,7 @@ const Category = {
     ROMANIA: "romania",
     DAILY: "daily",
     HARD: "hard",
+    COUNTRY: "country",
     MOUNTAIN: "mountain",
     INDOOR: "indoor",
     FINLAND: "finland",
@@ -40,7 +42,9 @@ const Category = {
     STADIUM: "stadium",
     WHETHERSPOON: "whetherspoon",
     SKYSCRAPER: "skyscraper",
-    RACETRACK: "racetrack"
+    RACETRACK: "racetrack",
+    ABANDONED: "abandoned",
+    BRUTALISM: "brutalism"
 };
 
 export let mapCategory = Category.STANDARD; // Default category
@@ -94,8 +98,9 @@ export function changeCategory(category) {
 
 export function checkGenerationTypeAndGenerate() {
     try { dailyChallengeTimer.stopTimer(); } catch { }; //has to be in try catch
-    setHardMode(false);
     document.getElementById("mapTimer").textContent = "00" + ":" + "00"; //reset the timer visually
+    setHardMode(false);
+    setCountryGuesserMode(false);
 
     if (!multiplayer) {
         //If multiplayer is disabled
@@ -103,7 +108,7 @@ export function checkGenerationTypeAndGenerate() {
         showMultiplayerOverlay(false);
 
         //pick between json and maps api loading depending on the category type
-        if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard") {
+        if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard" && mapCategory != "country") {
             generateNewLocation("JSON");
         } else if (mapCategory == "daily") {
             if (checkDailyChallengeCompletion() == "available") {
@@ -114,11 +119,17 @@ export function checkGenerationTypeAndGenerate() {
                 window.location.href = "/dailyleaderboard.html";
             }
 
-        } else if (mapCategory == "standard") {
-            generateNewLocation("SDK");
         } else if (mapCategory == "hard") {
             setHardMode(true);
             generateNewLocation("JSON");
+
+        } else if (mapCategory == "country") {
+            setCountryGuesserMode(true);
+            generateNewLocation("JSON");
+
+        } else if (mapCategory == "standard") {
+            generateNewLocation("SDK");
+
         } else {
             console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
         }
@@ -128,7 +139,7 @@ export function checkGenerationTypeAndGenerate() {
             disableDailyChallengeVariableOnly(); //disable the daily challenge (will be re-enabled by renunning the location gen after leaving)
 
             if (isHost) {
-                if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard") {
+                if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard" && mapCategory != "country") {
                     generateNewLocation("JSON");
                 } else if (mapCategory == "standard") {
                     generateNewLocation("SDK");
