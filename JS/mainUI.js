@@ -344,6 +344,16 @@ function addCommunityCreditTag() {
         event.stopPropagation();
         openCreditWindow("Racetracks by Magnus1stCool", "Magnus is the ultimate racing aficionado. Not a single race escapes his keen eye - he can name them all off the top of his head. His collection of circuits is a testament to his passion, meticulously curated, presumably even without the need for google searches. ");
     });
+
+    document.getElementById("brutalismCategoryInfo").addEventListener("click", (event) => {
+        event.stopPropagation();
+        openCreditWindow("Modern Brutalism by Monobani", "Monobani compiled a list of locations featuring modern-brutalist architecture. All of them are curated to have an aesthetic appeal and invite the player to delve into the history that shapes the way we design our public spaces. ");
+    });
+
+    document.getElementById("abandonedCategoryInfo").addEventListener("click", (event) => {
+        event.stopPropagation();
+        openCreditWindow("Abandoned Places by Monobani", "Explore a world of forgotten relics with this map, featuring lost and abandoned structures from across the globe. Each location confines you to a single, eerie space, inviting you to carefully investigate your surroundings and think outside the box to uncover hidden stories. ");
+    });
 }
 
 window.addEventListener('DOMContentLoaded', addCommunityCreditTag);

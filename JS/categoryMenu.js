@@ -42,7 +42,9 @@ const Category = {
     STADIUM: "stadium",
     WHETHERSPOON: "whetherspoon",
     SKYSCRAPER: "skyscraper",
-    RACETRACK: "racetrack"
+    RACETRACK: "racetrack",
+    ABANDONED: "abandoned",
+    BRUTALISM: "brutalism"
 };
 
 export let mapCategory = Category.STANDARD; // Default category

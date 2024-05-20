@@ -259,7 +259,7 @@ export async function loadResultScreenXP(distance) {
       } else if (selectedCategory == "country") {
         earnedXP = checkIfGuessWasCorrect() ? 1000 : 100;
 
-      } else if (selectedCategory == "famous" || selectedCategory == "indoor" || selectedCategory == "mountain" || selectedCategory == "whetherspoon" || selectedCategory == "skyscraper" || selectedCategory == "stadium" || selectedCategory == "racetrack") {
+      } else if (selectedCategory == "famous" || selectedCategory == "indoor" || selectedCategory == "mountain" || selectedCategory == "whetherspoon" || selectedCategory == "skyscraper" || selectedCategory == "stadium" || selectedCategory == "racetrack" || selectedCategory == "brutalism" || selectedCategory == "abandoned") {
         earnedXP = Math.round(1000 * ((0.998036) ** distance));
 
       } else if (selectedCategory == "israel" || selectedCategory == "austria" || selectedCategory == "slovakia" || selectedCategory == "czechia") { //very small countries, more reduced xp
