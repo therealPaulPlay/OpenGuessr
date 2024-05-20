@@ -3,7 +3,8 @@
 
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
-  <meta name="description" content="Free geoguessr alternative with unlimited free play - improve your geography skills by guessing the location on google street view.">
+  <meta name="description"
+    content="Free geoguessr alternative with unlimited free play - improve your geography skills by guessing the location on google street view.">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
   <!-- Files from other sources (Leaflet, Math.js)-->
@@ -73,7 +74,8 @@
           <img class="socialBarIcons" src="/IMG/daily_icon.png" alt="Leaderboard for OpenGuessr">
         </button>
         <button id="multiplayerButton" class="accountButton socialBarButton">Multiplayer
-          <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu"><span class="newSocialMenuTag">New</span>
+          <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu"><span
+            class="newSocialMenuTag">New</span>
         </button>
         <div class="placeholder"></div>
       </div>
@@ -103,6 +105,7 @@
       <button class="category accountExclusive accountLock" id="dailyCategory" type="button">The
         Daily Challenge</button>
       <button class="category accountExclusive accountLock" id="hardCategory" type="button">One Second</button>
+      <button class="category accountExclusive accountLock" id="countryCategory" type="button">Country Guesser</button>
       <button class="category accountExclusive accountLock" id="usaCategory" type="button">USA</button>
       <button class="category accountExclusive accountLock" id="germanyCategory" type="button">Germany</button>
       <button class="category accountExclusive accountLock" id="ukCategory" type="button">UK & Ireland</button>
@@ -131,12 +134,16 @@
         type="button">Indoor</button>
       <button class="category accountExclusive accountLock communityMap" id="stadiumCategory"
         type="button">Stadiums</button>
+      <button class="category accountExclusive accountLock communityMap" id="brutalismCategory"
+        type="button">Modern Brutalism</button>
       <button class="category accountExclusive accountLock communityMap" id="whetherspoonCategory"
         type="button">Wetherspoons</button>
       <button class="category accountExclusive accountLock communityMap" id="skyscraperCategory"
         type="button">Skyscrapers</button>
       <button class="category accountExclusive accountLock communityMap" id="racetrackCategory"
         type="button">Racetracks</button>
+      <button class="category accountExclusive accountLock communityMap" id="abandonedCategory"
+        type="button">Abandoned Places</button>
       <button class="category categoryUpcoming" id="categoryNew" type="button">Submit maps via discord!</button>
       <br><br>
     </div>
@@ -256,9 +263,8 @@
         <h1 id="socialHeader">Join the community</h1>
       </div>
       <p>Join now and get <span class="highlight">7,500 XP</span> in return!</p>
-      <iframe id="discordWidget" title="Discord Widget" width="350"
-        height="500" allowtransparency="true" frameborder="0"
-        sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
+      <iframe id="discordWidget" title="Discord Widget" width="350" height="500" allowtransparency="true"
+        frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
       <button id="socialPopupClose" class="accountButton white accountClose">Close</button>
       <button id="socialPopupJoin" class="discordButton accountButton accountClose">Join
         <img src="./IMG/discord.png" class="socialIcon">
@@ -407,12 +413,13 @@
   <div id="multiplayerFade">
     <h1 id="multiplayerTitle">Multiplayer Default title</h1>
     <div id="multiplayerTable"></div>
+    <button id="endMultiplayerRematchButton" class="accountButton">Play again</button>
     <button id="endMultiplayerRoundButton" class="accountButton">End round</button>
   </div>
   <!--streetview-->
   <div class="MainDiv">
     <div id="innerMainDiv">
-      <iframe id="GuesserWindow" referrerpolicy="no-referrer-when-downgrade" frameborder="0" allow="accelerometer" title="Main Guessing window"
+      <iframe id="GuesserWindow" referrerpolicy="no-referrer-when-downgrade" frameborder="0" allow="accelerometer"
         style="border:0" src="/loader.html"></iframe>
       <!--map-->
       <button id="floatingMapButton">
@@ -420,18 +427,42 @@
       </button>
       <button id="revealCompass">reveal compass</button>
       <div id="map"></div>
-      <div id="extendedBottomBar">
-        <div id="mapModeIndicator">
-          <button id="multiplayerLeave" class="accountButton accountClose">Leave Round</button>
-          <p id="mapModeText" class="mapModeText">Daily Challenge</p>
-          <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
-        </div>
+      <div id="mapModeIndicator">
+        <button id="multiplayerLeave" class="accountButton accountClose">Leave Round</button>
+        <p id="mapModeText" class="mapModeText">Daily Challenge</p>
+        <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
+      </div>
+      <div id="countryGuesserSelector">
+        <button class="countryGuesserHolder">
+          <p id="countryFlag1" class="countryGuesserFlag">🇦🇽</p>
+          <p id="countryTag1" class="countryGuesserTag">Country 1</p>
+        </button>
+        <button class="countryGuesserHolder">
+          <p id="countryFlag2" class="countryGuesserFlag">🇦🇽</p>
+          <p id="countryTag2" class="countryGuesserTag">Country 2</p>
+        </button>
+        <button class="countryGuesserHolder">
+          <p id="countryFlag3" class="countryGuesserFlag">🇦🇽</p>
+          <p id="countryTag3" class="countryGuesserTag">Country 3</p>
+        </button>
+        <button class="countryGuesserHolder">
+          <p id="countryFlag4" class="countryGuesserFlag">🇦🇽</p>
+          <p id="countryTag4" class="countryGuesserTag">Country 4</p>
+        </button>
+        <button class="countryGuesserHolder">
+          <p id="countryFlag5" class="countryGuesserFlag">🇦🇽</p>
+          <p id="countryTag5" class="countryGuesserTag">Country 5</p>
+        </button>
+        <button class="countryGuesserHolder">
+          <p id="countryFlag6" class="countryGuesserFlag">🇦🇽</p>
+          <p id="countryTag6" class="countryGuesserTag">Country 6</p>
+        </button>
       </div>
       <div id="multiplayerChat">
         <div id="multiplayerChatMessages">
           <p id="multiplayerMessageBox"></p>
         </div>
-        <div id="bottomMultiplayerChatArea"> 
+        <div id="bottomMultiplayerChatArea">
           <input maxlength="100" type="text" id="multiplayerMessageInput" placeholder="Type your message...">
           <button id="multiplayerSendButton" class="accountButton">Send</button>
         </div>

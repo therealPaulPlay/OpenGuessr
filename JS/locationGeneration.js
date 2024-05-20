@@ -86,8 +86,9 @@ async function getCoordsFromJSON() {
 
         const resultLat = listOfLocations[guessIndex][0];
         const resultLong = listOfLocations[guessIndex][1];
+        const country = listOfLocations[guessIndex][2]; //only available for certain modes (like country guesser)
 
-        resultLocationsArray = [resultLat, resultLong];
+        resultLocationsArray = [resultLat, resultLong, country];
     } catch (error) {
         console.error("Error in locationGeneration.js during JSON Gen: " + error);
     }
