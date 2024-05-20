@@ -50,8 +50,11 @@ export function setCountryGuesserCountry(country) {
                 for (let i = 1; i <= 6; i++) {
                     let countryItem = document.getElementById("countryTag" + i);
                     let countryFlag = document.getElementById("countryFlag" + i);
-
                     let randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
+
+                    while (Object.keys(countryEmojis)[randomCountryIndex] == selectedCountryGuesserCountry) {
+                        randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
+                    }
 
                     const countryName = Object.keys(countryEmojis)[randomCountryIndex];
 
