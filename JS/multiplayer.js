@@ -259,6 +259,9 @@ function setMultiplayerUI() {
         document.getElementById("multiplayerLeave").style.display = "block";
         document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
 
+        //hide country picker UI
+        document.getElementById("countryGuesserSelector").style.display = "none";
+
         mobileMenuButton.style.opacity = "0.5";
         mobileMenuButton.style.pointerEvents = "none";
     } else {
@@ -1192,9 +1195,11 @@ leaveButton.addEventListener("click", leaveMultiplayerRound);
 
 function leaveMultiplayerRound() {
     //important! first step is disabling multiplayer
+    let wasMultiplayerEnabled = false;
+    
     if (multiplayer) {
         multiplayer = false;
-        checkGenerationTypeAndGenerate();
+        wasMultiplayerEnabled = true;
     }
 
     if (isHost) {
@@ -1211,7 +1216,6 @@ function leaveMultiplayerRound() {
 
     try { multiplayerTimer.stopTimer(); } catch { }; //has to be in try catch
     multiplayer = false;
-    playingDuels = false;
     setMultiplayerUI();
     showMultiplayerOverlay(false);
     roundIndex = 1;
@@ -1225,14 +1229,19 @@ function leaveMultiplayerRound() {
     resetChat();
     matchmakingActive = false;
     isHost = false;
+    playingDuels = false;
 
     //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";
     document.getElementById("confirmButton").style.pointerEvents = "auto";
     document.getElementById("confirmButton").style.visibility = "visible";
     document.getElementById("map").style.pointerEvents = "auto";
-    document.getElementById("map").style.visibility = "visible";
-    hideToggleMapButtonIfMobile(false);
+
+    if (mapCategory != "country") {
+        document.getElementById("map").style.visibility = "visible";
+        hideToggleMapButtonIfMobile(false);
+    }
+
     document.getElementById("nextRound").style.opacity = "1";
     document.getElementById("nextRound").style.pointerEvents = "auto";
     document.getElementById("nextRound").textContent = "Next round →";
@@ -1242,6 +1251,10 @@ function leaveMultiplayerRound() {
     endMultiplayerRematchButton.style.pointerEvents = "auto";
     endMultiplayerRematchButton.textContent = "Play again"
     nmpzBackground.style.pointerEvents = "none";
+
+    if (wasMultiplayerEnabled) {
+        checkGenerationTypeAndGenerate();
+    }
 }
 
 //Streetview Overlay UI -------------------------------------------------------------------------------------------------------------------
@@ -1334,9 +1347,11 @@ export function showMultiplayerOverlay(show, title, array) {
         document.getElementById("multiplayerFade").style.opacity = "0";
         document.getElementById("multiplayerFade").style.pointerEvents = "none";
         document.getElementById("confirmButton").style.visibility = "visible";
-        document.getElementById("map").style.visibility = "visible";
-        hideToggleMapButtonIfMobile(false);
-        document.getElementById("revealCompass").style.visibility = "visible";
+        if (multiplayer || mapCategory != "country") {
+            document.getElementById("map").style.visibility = "visible";
+            hideToggleMapButtonIfMobile(false);
+            document.getElementById("revealCompass").style.visibility = "visible";
+        }
     }
 }
 
