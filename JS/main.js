@@ -9,6 +9,7 @@ import { getLocationCoordinates } from './locationGeneration.js';
 import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer} from "./dailyChallenge.js";
 import { checkHardModeTimeout } from './hardMode.js';
 import { multiplayer, startMultiplayerRound, isHost, multiplayerGuessesLocationsArray } from './multiplayer.js';
+import { countryGuesserMode, selectedCountryGuesserCountry, setCountryGuesserCountry } from './countryGuesser.js';
 
 //default coords of the location
 let currentStreetviewLat = 0;
@@ -30,6 +31,11 @@ export async function generateNewLocation(type) {
     try {
         currentStreetviewLat = newLocationArray[0];
         currentStreetviewLong = newLocationArray[1];
+       
+        if (countryGuesserMode) {
+            setCountryGuesserCountry(newLocationArray[2]);
+        }
+        
     } catch {
         console.error("The coordinates to load the iframe from are not defined. " + "Lat: " + currentStreetviewLat + " Long: " + currentStreetviewLong);
     }
