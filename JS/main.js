@@ -139,7 +139,9 @@ export function loadResultMap(playersLat, playersLong) {
     L.tileLayer(getMapSource(), {
     }).addTo(resMap);
 
-    resMap.setZoom(3); //set default zoom
+    if (countryGuesserMode && !multiplayer) {
+        resMap.setZoom(3); //set default zoom
+    }
 
     const redIcon = new L.Icon({
         iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",

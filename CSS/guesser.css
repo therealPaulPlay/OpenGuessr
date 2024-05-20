@@ -743,8 +743,6 @@ li {
   box-sizing: border-box;
   height: 110px;
   width: 150px;
-  min-height: 110px;
-  min-width: 150px;
   border-radius: 7px;
   background-color: rgba(174, 174, 174, 0.25);
   display: flex;
@@ -2084,6 +2082,27 @@ all and (max-width: 1000px) {
   .categoriesNote {
     margin-inline: 10px;
   }
+
+  .countryGuesserFlag {
+    font-size: 25px;
+
+  }
+  
+  .countryGuesserTag {
+    font-size: 18px;
+  }
+
+  .countryGuesserHolder {
+    height: 75px;
+    width: 31%;
+    border-radius: 7px;
+  }
+
+  #countryGuesserSelector {
+    margin-left: 0.75%;
+    margin-right: 0.75%;
+  }
+
 }
 
 /* big screens in portrait, like vertical monitors */
