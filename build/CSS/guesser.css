@@ -1195,44 +1195,26 @@ li {
   right: 0px; 
   margin-left: auto; 
   margin-right: auto; 
-  width: 970px;
+  width: 728px; /* changed from 970 to 728 */
   max-height: 92px;
   height: 90px;
   padding: 0;
   z-index: 11;
-  /*border: dashed rgba(255, 255, 255, 0.5);*/
 }
-
-/* 
-.adScaling {
-  width: 970px;
-  height: 90px;
-} */
 
 @media (max-width: 1500px) {
   #bottomFooterAds {
   width: 728px;
   height: 90px;
   }
-
-  /*
-  .adScaling {
-    width: 728px;
-    height: 90px;
-  } */
 }
 
 @media (max-width: 1175px) {
   #bottomFooterAds {
   width: 320px;
   height: 50px;
+  bottom: 32px;
   }
-
-  /*
-  .adScaling {
-    width: 320px;
-    height: 50px;
-  } */
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
@@ -1246,6 +1228,7 @@ li {
   #bottomFooterAds {
     width: 320px;
     height: 50px;
+    bottom: 12px;
   }
 
   .BottomBar {
