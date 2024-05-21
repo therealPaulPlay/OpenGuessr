@@ -181,6 +181,7 @@ let nextRound = document.getElementById("nextRound");
 nextRound.addEventListener("click", () => {
     if (resultScreenEnabled) {
         transitionToStart();
+        playSound("basic_button");
     }}
 );
 

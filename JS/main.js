@@ -10,6 +10,7 @@ import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer 
 import { checkHardModeTimeout } from './hardMode.js';
 import { multiplayer, startMultiplayerRound, isHost, multiplayerGuessesLocationsArray } from './multiplayer.js';
 import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } from './countryGuesser.js';
+import { playSound } from './soundManager.js';
 
 //default coords of the location
 let currentStreetviewLat = 0;
@@ -273,6 +274,7 @@ export function clamp(num, min, max) {
 document.getElementById("endScreenOpenLocation").addEventListener("click", openLocationOnMap);
 
 function openLocationOnMap() {
+    playSound("basic_button");
     window.open("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + currentStreetviewLat + "," + currentStreetviewLong, '_blank').focus();
 }
 

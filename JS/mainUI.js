@@ -219,9 +219,13 @@ export function socialPopupProbability() {
     }
 }
 
-document.getElementById("socialPopupClose").addEventListener("click", closeSocialPopup);
+document.getElementById("socialPopupClose").addEventListener("click", () => {
+    closeSocialPopup();
+    playSound("basic_button");
+});
 
 document.getElementById("socialPopupJoin").addEventListener("click", function () {
+    playSound("basic_button");
     window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus();
     setTimeout(async function () {
         closeSocialPopup();
@@ -288,7 +292,10 @@ window.addEventListener('input', checkTextLength); // Check when text changes
 let mobileWindow = document.getElementById("mobileWindow");
 let mobileMenuButton = document.getElementById("mobileMenu");
 
-mobileMenuButton.addEventListener("click", toggleMobileMenu);
+mobileMenuButton.addEventListener("click", () => {
+    toggleMobileMenu();
+    playSound("basic_button");
+});
 
 let mobileWindowOpen = false;
 

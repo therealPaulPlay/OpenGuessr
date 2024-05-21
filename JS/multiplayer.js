@@ -172,6 +172,7 @@ multiplayerJoin.addEventListener("click", () => {
     //disable join button for 1s to prevent spamming from causing issues
     multiplayerJoin.style.pointerEvents = "none";
     multiplayerJoin.style.opacity = "0.5";
+    playSound("start_button");
     joinRoom(removeWhiteSpace(document.getElementById("roomCodeInput").value));
 })
 
@@ -590,7 +591,10 @@ export function distributeChat(text) {
 let chatInput = document.getElementById("multiplayerMessageInput");
 let chatSendButton = document.getElementById("multiplayerSendButton");
 
-chatSendButton.addEventListener("click", manuallySendChat);
+chatSendButton.addEventListener("click", () => {
+    manuallySendChat();
+    playSound("basic_button");
+});
 
 chatInput.addEventListener("keydown", function (event) {
     if (document.activeElement === chatInput && event.key === "Enter" && !event.shiftKey) {
@@ -1292,7 +1296,11 @@ endMultiplayerRoundButton.addEventListener("click", () => {
     leaveMultiplayerRound();
     playSound("leave_round");
 });
-endMultiplayerRematchButton.addEventListener("click", multiplayerRematch);
+endMultiplayerRematchButton.addEventListener("click", () => {
+    multiplayerRematch();
+    playSound("basic_button");
+
+});
 
 export function showMultiplayerOverlay(show, title, array) {
     if (show) {
@@ -1399,6 +1407,7 @@ function multiplayerOverlayCountdown() {
         if (countdown > 0) {
             multiplayerTitle.textContent = `Starting... ${countdown}`;
             countdown--;
+            playSound("match_countdown");
         } else {
             clearInterval(countdownInterval); // Stop the countdown
             showMultiplayerOverlay(false); //hide the overlay --> round starts
@@ -1416,6 +1425,7 @@ function multiplayerOverlayCountdown() {
             } else {
                 nmpzBackground.style.pointerEvents = "none";
             }
+            playSound("match_countdown_start");
         }
     }, 1000);
 }

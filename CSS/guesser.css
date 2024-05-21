@@ -1646,7 +1646,10 @@ li {
   border-radius: 50%;
   border: none;
   cursor: pointer;
+  margin-top: -5px; /* Adjust the vertical alignment */
 }
+
+/* Firefox */
 .slider::-moz-range-thumb {
   width: 20px;
   height: 20px;
