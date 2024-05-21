@@ -6,6 +6,7 @@ import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMult
 import { errorPopup } from "./errorHandling.js";
 import { justPlayedDailyChallenge } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
+import { playSound } from "./soundManager.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 const Category = {
@@ -63,6 +64,7 @@ for (const category in Category) {
 function createCategoryChangeListener(category) {
     return function () {
         changeCategory(category);
+        playSound("button_juicy");
     };
 }
 

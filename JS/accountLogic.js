@@ -388,6 +388,10 @@ function selectPin(index, sound) {
         selectedPinIndex = index;
         localStorage.setItem("selectedPin", index);
       }
+    } else {
+      if (sound) {
+        playSound("pin_locked");
+      }
     }
   }
 }

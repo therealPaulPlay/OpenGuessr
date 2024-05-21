@@ -144,7 +144,7 @@ function onMapClick(e) {
 
     hasGuessed = true;
     setConfirmButtonState();
-    playSound("pin_place", "pin");
+    playSound("pin_drop", "pin");
 
     if (marker) {
         map.removeLayer(marker);
@@ -172,7 +172,10 @@ confirmBTN.addEventListener("click", confirmButtonClicks);
 
 //toggle languages
 const languageBTN = document.getElementById("languageButton");
-languageBTN.addEventListener("click", changeLanguage);
+languageBTN.addEventListener("click", () => {
+    changeLanguage();
+    playSound("selection_change");
+});
 
 //Reset map scaling when the user "enlarges" it --------------------------------------------------------------
 map.on('click', onMapClick);
@@ -200,6 +203,7 @@ export let justPlayedDailyChallenge = false;
 
 export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
+    playSound("confirm");
 
     if (dailyChallengeUIEnabled) {
         document.getElementById("nextRound").innerHTML = "See results →";
