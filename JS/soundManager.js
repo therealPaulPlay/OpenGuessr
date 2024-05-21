@@ -42,11 +42,9 @@ export function stopSound(tag) {
 }
 const volumeSlider = document.getElementById("volumeSlider");
 
-document.addEventListener("DOMContentLoaded", function () {
-    volumeSlider.addEventListener("input", function () {
-        setGlobalVolume(volumeSlider.value);
-        updateSliderBackground();
-    });
+volumeSlider.addEventListener("input", function () {
+    setGlobalVolume(volumeSlider.value);
+    updateSliderBackground();
 });
 
 function updateSliderBackground() {

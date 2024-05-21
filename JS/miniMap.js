@@ -235,7 +235,7 @@ export function confirmButtonClicks() {
 //Confirm Button with Spacebar and a few checks
 document.getElementById("map").addEventListener("keydown", function (event) {
     if (event.key === " ") {
-        if (confirmBTN.style.pointerEvents == "auto") {
+        if (confirmBTN.style.pointerEvents == "auto" && confirmBTN.style.visibility == "visible") {
             confirmButtonClicks();
         } else {
             console.warn("Cannot click on confirm button - pointer events is none.");
