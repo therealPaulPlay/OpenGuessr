@@ -1653,6 +1653,10 @@ li {
   border-radius: 15px;
 }
 
+.slightBottomMargin {
+  margin-bottom: 10px;
+}
+
 #settingsIcon {
   width: 28px;
   height: auto;
