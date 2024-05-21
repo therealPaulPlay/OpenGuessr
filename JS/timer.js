@@ -1,3 +1,5 @@
+import { playSound, stopSound } from "./soundManager";
+
 //UI Timer ---------------------------------------------------------------------------------------------------------------------
 export function startTimer(durationInSeconds, onTimerExpired) {
     let currentTimerIntervalId; // Variable to store the current interval ID
@@ -19,6 +21,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         if (timer < 10) {
             mapTimer.classList.add("fading");
             mapModeIndicator.classList.add("fading");
+            playSound("ticking_timer", "timerSound");
         } else {
             mapTimer.classList.remove("fading");
             mapModeIndicator.classList.remove("fading");
@@ -43,6 +46,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         clearInterval(currentTimerIntervalId);
         mapTimer.classList.remove("fading");
         mapModeIndicator.classList.remove("fading");
+        stopSound("timerSound");
     }
 
     // Function to get the remaining time

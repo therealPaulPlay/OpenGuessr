@@ -3,6 +3,7 @@ import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTi
 import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile } from "./mainUI.js";
+import { playSound } from "./soundManager.js";
 
 
 //Initialize the map with correct provider --------------------------------------------------------------------
@@ -143,6 +144,7 @@ function onMapClick(e) {
 
     hasGuessed = true;
     setConfirmButtonState();
+    playSound("pin_drop", "pin");
 
     if (marker) {
         map.removeLayer(marker);
@@ -170,7 +172,10 @@ confirmBTN.addEventListener("click", confirmButtonClicks);
 
 //toggle languages
 const languageBTN = document.getElementById("languageButton");
-languageBTN.addEventListener("click", changeLanguage);
+languageBTN.addEventListener("click", () => {
+    changeLanguage();
+    playSound("selection_change");
+});
 
 //Reset map scaling when the user "enlarges" it --------------------------------------------------------------
 map.on('click', onMapClick);
@@ -198,6 +203,7 @@ export let justPlayedDailyChallenge = false;
 
 export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
+    playSound("confirm");
 
     if (dailyChallengeUIEnabled) {
         document.getElementById("nextRound").innerHTML = "See results →";
@@ -233,7 +239,7 @@ export function confirmButtonClicks() {
 //Confirm Button with Spacebar and a few checks
 document.getElementById("map").addEventListener("keydown", function (event) {
     if (event.key === " ") {
-        if (confirmBTN.style.pointerEvents == "auto") {
+        if (confirmBTN.style.pointerEvents == "auto" && confirmBTN.style.visibility == "visible") {
             confirmButtonClicks();
         } else {
             console.warn("Cannot click on confirm button - pointer events is none.");
