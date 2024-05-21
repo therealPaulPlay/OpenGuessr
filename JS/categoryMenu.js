@@ -1,11 +1,12 @@
 import { resMap, generateNewLocation } from "./main.js";
-import { disableResultScreen, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
+import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
 import { justPlayedDailyChallenge } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
+import { playSound } from "./soundManager.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 const Category = {
@@ -63,6 +64,7 @@ for (const category in Category) {
 function createCategoryChangeListener(category) {
     return function () {
         changeCategory(category);
+        playSound("button_juicy");
     };
 }
 
@@ -176,31 +178,46 @@ changeCategory(mapCategory);
 
 //Next round / new location -------------------------------------------------------------------------------------
 let nextRound = document.getElementById("nextRound");
-nextRound.addEventListener("click", transitionToStart);
+nextRound.addEventListener("click", () => {
+    if (resultScreenEnabled) {
+        transitionToStart();
+        playSound("basic_button");
+    }}
+);
+
+let alreadyTransitioning = false;
 
 export function transitionToStart() {
+    if (!alreadyTransitioning) {
+        alreadyTransitioning = true;
+        setTimeout(() => {
+            alreadyTransitioning = false;
+        }, 400);
 
-    if (!justPlayedDailyChallenge) { //justPlayedDailyChallenge is true when user has clicked "guess" button & dailyChallengeUIEnabled == true
-        document.getElementById("BeforeOverlay").style.opacity = "0";
-        document.getElementById("BeforeOverlay").style.visibility = "visible";
-        document.getElementById("BeforeOverlay").style.opacity = "100";
-        resMap.stop(); //stop the flying animation
-        setTimeout(function () { resMap.stop() }, 200)
-        checkGenerationTypeAndGenerate();
+        if (!justPlayedDailyChallenge) { //justPlayedDailyChallenge is true when user has clicked "guess" button & dailyChallengeUIEnabled == true
+            document.getElementById("BeforeOverlay").style.opacity = "0";
+            document.getElementById("BeforeOverlay").style.visibility = "visible";
+            document.getElementById("BeforeOverlay").style.opacity = "100";
+            resMap.stop(); //stop the flying animation
+            setTimeout(function () { resMap.stop() }, 200)
+            checkGenerationTypeAndGenerate();
 
-        setTimeout(disableResultScreen, 200);
-        setTimeout(socialPopupProbability, 650);
+            setTimeout(disableResultScreen, 200);
+            setTimeout(socialPopupProbability, 650);
 
-        //notify peers that the next round has begun
-        if (isHost && multiplayer) {
-            clearTimeout(autoSkipResult);
-            sendMessageToAll("closeResultScreen");
-            showMultiplayerRoundResults();
+            //notify peers that the next round has begun
+            if (isHost && multiplayer) {
+                clearTimeout(autoSkipResult);
+                sendMessageToAll("closeResultScreen");
+                showMultiplayerRoundResults();
+            }
+
+            shrinkMapIfMobile();
+
+        } else {
+            dailyChallengeEnd(); //go to the daily leaderboard
         }
-
-        shrinkMapIfMobile();
-
     } else {
-        dailyChallengeEnd();
+        console.warn("CategoryMenu.js: Already transitioning to start!");
     }
 }

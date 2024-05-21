@@ -1,6 +1,7 @@
 //Gamemode where you guess the country (not on the map)
 import { hideToggleMapButtonIfMobile } from "./mainUI";
 import { setConfirmButtonEnabled, confirmButtonClicks } from "./miniMap";
+import { playSound } from "./soundManager";
 
 export let countryGuesserMode = false;
 export let selectedCountryGuesserCountry = null; //this will be set in locationGeneration.js and is the country
@@ -104,6 +105,7 @@ countryGuesserHolders.forEach((holder, index) => {
     countryGuesserHolders.forEach(h => h.classList.remove('selectedCountry'));
 
     holder.classList.add('selectedCountry');
+    playSound("item_select");
     
     selectedCountryGuessIndex = index + 1;
 

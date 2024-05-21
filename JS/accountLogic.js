@@ -4,16 +4,23 @@ import { dailyChallengeTimer } from './dailyChallenge.js';
 import { checkTextLength, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
+import { playSound } from "./soundManager.js";
 
 let profileName = document.getElementById("profileViewName");
 
 let profileInfo = document.getElementById("profileInfo");
 
 let loginButton = document.getElementById("loginButton");
-loginButton.addEventListener("click", goTologin);
+loginButton.addEventListener("click", () => {
+  playSound("basic_button");
+  goTologin();
+});
 
 let mobileLoginButton = document.getElementById("mobileLoginButton");
-mobileLoginButton.addEventListener("click", goTologin);
+mobileLoginButton.addEventListener("click", () => {
+  playSound("basic_button");
+  goTologin();
+});
 
 let logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener("click", signout);
@@ -22,11 +29,15 @@ let mobileLogoutButton = document.getElementById("mobileLogoutButton");
 mobileLogoutButton.addEventListener("click", signout);
 
 let profileButton = document.getElementById("profileButton");
-profileButton.addEventListener("click", viewProfile);
+profileButton.addEventListener("click", () => {
+  viewProfile();
+  playSound("basic_button");
+});
 
 let mobileProfileButton = document.getElementById("mobileProfileButton");
 mobileProfileButton.addEventListener("click", function () {
   toggleMobileMenu();
+  playSound("basic_button");
   viewProfile();
 });
 
@@ -36,7 +47,10 @@ let XPbarNoAccount = document.getElementById("XPbarNoAccount");
 let XParea = document.getElementById("XParea");
 
 let profileClose = document.getElementById("profileClose");
-profileClose.addEventListener("click", closeProfile);
+profileClose.addEventListener("click", () => {
+  closeProfile();
+  playSound("basic_button");
+});
 
 let profileWindow = document.getElementById("profileWindow");
 
@@ -50,8 +64,14 @@ XParea.style.display = "none";
 document.getElementById("usernameInput").style.visibility = "hidden";
 document.getElementById("confirmUsername").style.visibility = "hidden";
 
-document.getElementById("editUsername").addEventListener("click", toggleUsernameView);
-document.getElementById("confirmUsername").addEventListener("click", updateProfileUsername);
+document.getElementById("editUsername").addEventListener("click", () => {
+  toggleUsernameView();
+  playSound("basic_button");
+});
+document.getElementById("confirmUsername").addEventListener("click", () => {
+  updateProfileUsername();
+  playSound("basic_button");
+});
 
 let resultLevelText = document.getElementById("endScreenLevel");
 
@@ -364,7 +384,7 @@ async function updateProfileUsername() {
 export let selectedPinIndex = 0;
 
 // Function to handle pin selection
-function selectPin(index) {
+function selectPin(index, sound) {
   // Check if the pinHolder and pinLock exist
   const pinHolders = document.querySelectorAll('.pinHolder');
   if (pinHolders.length > index) {
@@ -378,10 +398,18 @@ function selectPin(index) {
       // Add selectedPin class to the clicked pinHolder button
       pinHolders[index].classList.add('selectedPin');
 
+      if (sound) {
+        playSound("item_select");
+      }
+
       if (index != null || typeof (index) == "number") {
         // Set selectedPin index to localStorage
         selectedPinIndex = index;
         localStorage.setItem("selectedPin", index);
+      }
+    } else {
+      if (sound) {
+        playSound("pin_locked");
       }
     }
   }
@@ -416,7 +444,7 @@ function updatePinLocks(xpAmount) {
 // Add click event listener to pinHolder buttons
 document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
   btn.addEventListener('click', function () {
-    selectPin(index); // Call selectPin function on button click
+    selectPin(index, true); // Call selectPin function on button click
   });
 });
 
