@@ -6,6 +6,7 @@ import { uiSetUserXP, selectedPinIndex } from "./accountLogic.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { calculateDistances, loadResultMap } from "./main.js";
+import { playSound } from "./soundManager.js";
 
 //Global UI --------------------------------------------------------------------------------------------
 export let coordsFromHost = [];
@@ -198,20 +199,28 @@ function showHostCodeArea(roomcode) {
     document.getElementById("roomCreationModes").style.display = "none";
 }
 
-roundPlus.addEventListener("click", () => { hostRoundAmount(1); })
-roundMinus.addEventListener("click", () => { hostRoundAmount(-1); })
+roundPlus.addEventListener("click", () => { hostRoundAmount(1, true); })
+roundMinus.addEventListener("click", () => { hostRoundAmount(-1, true); })
 
-function hostRoundAmount(changeAmount) {
+function hostRoundAmount(changeAmount, sound) {
     let currentRoundAmount = Number(roundAmountText.textContent);
     roundAmountText.textContent = clamp((currentRoundAmount + changeAmount), 2, 10);
+
+    if (sound) {
+        playSound("change_value");
+    }
 }
 
-lengthPlus.addEventListener("click", () => { hostLengthAmount(10); })
-lengthMinus.addEventListener("click", () => { hostLengthAmount(-10); })
+lengthPlus.addEventListener("click", () => { hostLengthAmount(10, true); })
+lengthMinus.addEventListener("click", () => { hostLengthAmount(-10, true); })
 
-function hostLengthAmount(changeAmount) {
+function hostLengthAmount(changeAmount, sound) {
     let currentLengthAmount = Number(roundLengthText.textContent);
     roundLengthText.textContent = clamp((currentLengthAmount + changeAmount), 10, 300);
+   
+    if (sound) {
+        playSound("change_value");
+    }
 }
 
 function setJoinCounter(playerAmount) {
@@ -1191,7 +1200,10 @@ if (peer) {
 //Multiplayer leave ----------------------------------------------------------------------------------
 let leaveButton = document.getElementById("multiplayerLeave");
 
-leaveButton.addEventListener("click", leaveMultiplayerRound);
+leaveButton.addEventListener("click", () => {
+    leaveMultiplayerRound();
+    playSound("leave_round");
+});
 
 function leaveMultiplayerRound() {
     //important! first step is disabling multiplayer
@@ -1261,7 +1273,10 @@ function leaveMultiplayerRound() {
 let endMultiplayerRoundButton = document.getElementById("endMultiplayerRoundButton");
 let endMultiplayerRematchButton = document.getElementById("endMultiplayerRematchButton");
 
-endMultiplayerRoundButton.addEventListener("click", leaveMultiplayerRound);
+endMultiplayerRoundButton.addEventListener("click", () => {
+    leaveMultiplayerRound();
+    playSound("leave_round");
+});
 endMultiplayerRematchButton.addEventListener("click", multiplayerRematch);
 
 export function showMultiplayerOverlay(show, title, array) {
