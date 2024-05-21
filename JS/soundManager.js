@@ -12,7 +12,7 @@ export function setGlobalVolume(volume) {
     try {
         for (let tag in sounds) {
             if (sounds.hasOwnProperty(tag)) {
-                sounds[tag].volume = globalVolume;
+                sounds[tag].volume = globalVolume * 0.5;
             }
         }
     } catch (error) {
@@ -24,7 +24,7 @@ export function setGlobalVolume(volume) {
 export function playSound(fileName, tag) {
     try {
         let sound = new Audio("./SOUNDS/" + fileName + ".ogg");
-        sound.volume = globalVolume; // Set the sound volume to the global volume
+        sound.volume = globalVolume * 0.5; // Set the sound volume to the global volume
         sound.play();
         sounds[tag] = sound;
     } catch (error) {
