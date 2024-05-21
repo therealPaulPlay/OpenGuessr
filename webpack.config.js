@@ -7,6 +7,7 @@ module.exports = {
   entry: {
     //separate bundles for each of these
     analytics: "./JS/analytics.js",
+    venatusCustom: "./JS/venatusCustom.js",
     main: ["./JS/categoryMenu.js", "./JS/timer.js", "./JS/main.js", "./JS/mainUI.js", "./JS/locationGeneration.js", "./JS/dailyChallenge.js", "./JS/hardMode.js", "./JS/multiplayer.js", "./JS/countryGuesser.js", "./JS/soundManager.js"],
   },
   output: {
