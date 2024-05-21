@@ -28,16 +28,20 @@ export function playSound(fileName, tag) {
         sound.play();
         sounds[tag] = sound;
     } catch (error) {
-        console.error("Error playing sound. " + error);
+        console.error("Error playing sound: " + error);
     }
 }
 
 // Function to stop a sound by tag
 export function stopSound(tag) {
-    if (sounds[tag]) {
-        sounds[tag].pause();
-        sounds[tag].currentTime = 0; // Reset the sound
-        delete sounds[tag];
+    try {
+        if (sounds[tag]) {
+            sounds[tag].pause();
+            sounds[tag].currentTime = 0; // Reset the sound
+            delete sounds[tag];
+        }
+    } catch (error) {
+        console.error("Couldn't stop sound: " + error);
     }
 }
 const volumeSlider = document.getElementById("volumeSlider");

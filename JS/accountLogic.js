@@ -4,6 +4,7 @@ import { dailyChallengeTimer } from './dailyChallenge.js';
 import { checkTextLength, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
+import { playSound } from "./soundManager.js";
 
 let profileName = document.getElementById("profileViewName");
 
@@ -364,7 +365,7 @@ async function updateProfileUsername() {
 export let selectedPinIndex = 0;
 
 // Function to handle pin selection
-function selectPin(index) {
+function selectPin(index, sound) {
   // Check if the pinHolder and pinLock exist
   const pinHolders = document.querySelectorAll('.pinHolder');
   if (pinHolders.length > index) {
@@ -377,6 +378,10 @@ function selectPin(index) {
 
       // Add selectedPin class to the clicked pinHolder button
       pinHolders[index].classList.add('selectedPin');
+
+      if (sound) {
+        playSound("item_select");
+      }
 
       if (index != null || typeof (index) == "number") {
         // Set selectedPin index to localStorage
@@ -416,7 +421,7 @@ function updatePinLocks(xpAmount) {
 // Add click event listener to pinHolder buttons
 document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
   btn.addEventListener('click', function () {
-    selectPin(index); // Call selectPin function on button click
+    selectPin(index, true); // Call selectPin function on button click
   });
 });
 
