@@ -11,10 +11,16 @@ let profileName = document.getElementById("profileViewName");
 let profileInfo = document.getElementById("profileInfo");
 
 let loginButton = document.getElementById("loginButton");
-loginButton.addEventListener("click", goTologin);
+loginButton.addEventListener("click", () => {
+  playSound("basic_button");
+  goTologin();
+});
 
 let mobileLoginButton = document.getElementById("mobileLoginButton");
-mobileLoginButton.addEventListener("click", goTologin);
+mobileLoginButton.addEventListener("click", () => {
+  playSound("basic_button");
+  goTologin();
+});
 
 let logoutButton = document.getElementById("logoutButton");
 logoutButton.addEventListener("click", signout);
@@ -23,11 +29,15 @@ let mobileLogoutButton = document.getElementById("mobileLogoutButton");
 mobileLogoutButton.addEventListener("click", signout);
 
 let profileButton = document.getElementById("profileButton");
-profileButton.addEventListener("click", viewProfile);
+profileButton.addEventListener("click", () => {
+  viewProfile();
+  playSound("basic_button");
+});
 
 let mobileProfileButton = document.getElementById("mobileProfileButton");
 mobileProfileButton.addEventListener("click", function () {
   toggleMobileMenu();
+  playSound("basic_button");
   viewProfile();
 });
 
@@ -37,7 +47,10 @@ let XPbarNoAccount = document.getElementById("XPbarNoAccount");
 let XParea = document.getElementById("XParea");
 
 let profileClose = document.getElementById("profileClose");
-profileClose.addEventListener("click", closeProfile);
+profileClose.addEventListener("click", () => {
+  closeProfile();
+  playSound("basic_button");
+});
 
 let profileWindow = document.getElementById("profileWindow");
 
@@ -51,8 +64,14 @@ XParea.style.display = "none";
 document.getElementById("usernameInput").style.visibility = "hidden";
 document.getElementById("confirmUsername").style.visibility = "hidden";
 
-document.getElementById("editUsername").addEventListener("click", toggleUsernameView);
-document.getElementById("confirmUsername").addEventListener("click", updateProfileUsername);
+document.getElementById("editUsername").addEventListener("click", () => {
+  toggleUsernameView();
+  playSound("basic_button");
+});
+document.getElementById("confirmUsername").addEventListener("click", () => {
+  updateProfileUsername();
+  playSound("basic_button");
+});
 
 let resultLevelText = document.getElementById("endScreenLevel");
 

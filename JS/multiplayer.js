@@ -39,9 +39,13 @@ let roundLengthText = document.getElementById("roundLengthText");
 //Duels
 let retryDuelFind = document.getElementById("multiplayerDuelRetry");
 
-socialMenuMultiplayerButton.addEventListener("click", toggleMultiplayerSelector);
+socialMenuMultiplayerButton.addEventListener("click", () => {
+    toggleMultiplayerSelector();
+    playSound("basic_button");
+});
 
 multiplayerSelectorClose.addEventListener("click", function () {
+    playSound("basic_button");
     leaveMultiplayerRound(); //leave round and if you are the host, also disconnect all peers
     toggleMultiplayerSelector();
 });
@@ -105,9 +109,9 @@ function changeMultiplayerSelectorInfotext(hoveredButton) {
 let hostCodeArea = document.getElementById("hostCodeArea");
 let roomCreationSettings = document.getElementById("roomCreationSettings");
 
-multiplayerSelectJoin.addEventListener("click", () => { setMultiplayerWindowSelection("join"); })
-multiplayerSelectHost.addEventListener("click", () => { setMultiplayerWindowSelection("host"); })
-multiplayerSelectDuels.addEventListener("click", () => { setMultiplayerWindowSelection("duel"); })
+multiplayerSelectJoin.addEventListener("click", () => { playSound("basic_button"); setMultiplayerWindowSelection("join"); })
+multiplayerSelectHost.addEventListener("click", () => { playSound("basic_button"); setMultiplayerWindowSelection("host"); })
+multiplayerSelectDuels.addEventListener("click", () => { playSound("basic_button"); setMultiplayerWindowSelection("duel"); })
 
 let multiplayerWindowMain = document.getElementById("multiplayerWindowMain");
 let multiplayerWindowJoin = document.getElementById("multiplayerWindowJoin");
@@ -116,7 +120,7 @@ let multiplayerWindowDuel = document.getElementById("multiplayerWindowDuel");
 let toggleRestrictions = document.getElementById("toggleRestrictions");
 
 let multiplayerSelectorBack = document.getElementById("multiplayerSelectorBack");
-multiplayerSelectorBack.addEventListener("click", function () { setMultiplayerWindowSelection("main") });
+multiplayerSelectorBack.addEventListener("click", function () { playSound("basic_button"); setMultiplayerWindowSelection("main");});
 
 function setMultiplayerWindowSelection(window) {
     multiplayerWindowMain.style.display = "none";
@@ -234,7 +238,10 @@ function setJoinCounter(playerAmount) {
     }
 }
 
-toggleRestrictions.addEventListener("click", toggleMultiplayerRestriction);
+toggleRestrictions.addEventListener("click", () => {
+    toggleMultiplayerRestriction();
+    playSound("basic_button");
+});
 
 let multiplayerRestriction = "standard";
 
@@ -478,7 +485,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
 let copyRoomcodeLinkButton = document.getElementById("roomcodeLink");
 
-copyRoomcodeLinkButton.addEventListener("click", copyRoomcodeLink);
+copyRoomcodeLinkButton.addEventListener("click", () => {
+    copyRoomcodeLink();
+    playSound("basic_button");
+});
 
 function copyRoomcodeLink() {
     navigator.clipboard.writeText(window.location.origin + "/?" + peerId.replace("openguessr_", ""))
@@ -763,7 +773,10 @@ async function deleteRoomCodeFromMatchmakingServer() {
     }
 }
 
-retryDuelFind.addEventListener("click", findDuel); //Retry button will trigger the attempt join function
+retryDuelFind.addEventListener("click", () => {
+    findDuel();
+    playSound("basic_button");
+}); //Retry button will trigger the attempt join function
 
 //enable / disable the retry button depending on whether it is currently trying to join/host or not
 function setRetryButtonState() {
@@ -891,8 +904,10 @@ function createRoom(AmountOfRounds, LengthOfRounds) {
         showHostCodeArea("Roomcode: " + peerId.replace("openguessr_", ""));
         multiplayerHost.textContent = "Start";
         setJoinCounter(0); //greys out the start button too
+        playSound("basic_button");
     } else {
         StartRoom();
+        playSound("start_button");
     }
 }
 

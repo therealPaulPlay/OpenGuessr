@@ -3,6 +3,7 @@ import { reloadIframe } from "./main.js";
 import { setUserXP, uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
+import { playSound } from "./soundManager.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -14,6 +15,8 @@ let helpClose = document.getElementById("helpClose");
 helpClose.addEventListener("click", toggleHelpWindow);
 
 function toggleHelpWindow() {
+    playSound("basic_button");
+
     if (helpWindow.style.display == "block") {
         helpWindow.style.display = "none";
         document.getElementById("blackBackground").style.visibility = "hidden";
@@ -26,7 +29,10 @@ function toggleHelpWindow() {
 //Social Menu and Leaderboard link --------------------------------------------------------------------------
 export let socialBarExpanded = false;
 
-document.getElementById("floatingSocialButton").addEventListener("click", toggleSocialbar);
+document.getElementById("floatingSocialButton").addEventListener("click", () => {
+    toggleSocialbar();
+    playSound("floating_button");
+});
 
 export function toggleSocialbar() {
     try {
@@ -44,8 +50,14 @@ export function toggleSocialbar() {
     }
 }
 
-document.getElementById("leaderboardButton").addEventListener("click", goToLeaderboard);
-document.getElementById("dailyLeaderboardButton").addEventListener("click", goToDailyLeaderboard);
+document.getElementById("leaderboardButton").addEventListener("click", () => {
+    playSound("basic_button");
+    goToLeaderboard();
+});
+document.getElementById("dailyLeaderboardButton").addEventListener("click", () => {
+    playSound("basic_button");
+    goToDailyLeaderboard();
+});
 
 function goToLeaderboard() {
     window.location.href = "/leaderboard.html";
@@ -60,7 +72,10 @@ let toggleMapButton = document.getElementById("floatingMapButton");
 
 let mapExpanded = true;
 
-toggleMapButton.addEventListener("click", toggleMap);
+toggleMapButton.addEventListener("click", () => {
+    toggleMap();
+    playSound("floating_button");
+});
 
 function toggleMap() {
     if (!mapExpanded) {
@@ -90,22 +105,25 @@ export function hideToggleMapButtonIfMobile(hide) {
 
 //Universal Popup Window (Account info and How to play window) ------------------------------------------------------------
 let closeButton = document.getElementById("popupClose");
-closeButton.addEventListener("click", closePopup);
+closeButton.addEventListener("click", () => {
+    closePopup();
+    playSound("basic_button");
+});
 
 //Various buttons and links ------------------------------------------------------------------------------------------------
 let resetBTN = document.getElementById("resetButtonSVG");
-resetBTN.addEventListener("click", function () { reloadIframe() });
+resetBTN.addEventListener("click", function () { playSound("reload"); reloadIframe(); });
 
 let socialRedditButton = document.getElementById("redditButton");
-socialRedditButton.addEventListener("click", function () { window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus() });
+socialRedditButton.addEventListener("click", function () { playSound("basic_button"); window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus() });
 
 let socialDiscordButton = document.getElementById("discordButton");
-socialDiscordButton.addEventListener("click", function () { window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
+socialDiscordButton.addEventListener("click", function () { playSound("basic_button"); window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
 
-document.getElementById("categoryNew").addEventListener("click", function () { window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
+document.getElementById("categoryNew").addEventListener("click", function () { playSound("basic_button"); window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
 
 let privacyButton = document.getElementById("privacyButton");
-privacyButton.addEventListener("click", function () { window.location.href = "/legal.html" });
+privacyButton.addEventListener("click", function () { playSound("basic_button"); window.location.href = "/legal.html" });
 
 //Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
@@ -143,7 +161,8 @@ let floatingCategoryArea = document.getElementById("floatingCategoryArea");
 let categoriesExpanded = false;
 
 categoryMenuButton.addEventListener("click", function () {
-    toggleCategoryMenu(false)
+    toggleCategoryMenu(false);
+    playSound("floating_button");
 });
 
 export function toggleCategoryMenu(alwaysClose) {
@@ -213,7 +232,10 @@ document.getElementById("socialPopupJoin").addEventListener("click", function ()
 
 //reveal compass -------------------------------------------------------------------------------------
 let revealCompass = document.getElementById("revealCompass");
-revealCompass.addEventListener("click", toggleMapOffset);
+revealCompass.addEventListener("click", () => {
+    toggleMapOffset();
+    playSound("basic_button");
+});
 
 let mapOffset = false;
 
@@ -290,19 +312,30 @@ export function toggleMobileMenu() {
     }
 }
 
-document.getElementById("mobilePopupClose").addEventListener("click", toggleMobileMenu);
+document.getElementById("mobilePopupClose").addEventListener("click", () => {
+    toggleMobileMenu();
+    playSound("basic_button");
+});
 
-document.getElementById("mobileLeaderboardButton").addEventListener("click", goToLeaderboard);
-document.getElementById("mobileDailyLeaderboardButton").addEventListener("click", goToDailyLeaderboard);
+document.getElementById("mobileLeaderboardButton").addEventListener("click", () => {
+    playSound("basic_button");
+    goToLeaderboard();
+});
+document.getElementById("mobileDailyLeaderboardButton").addEventListener("click", () => {
+    playSound("basic_button");
+    goToDailyLeaderboard();
+});
 document.getElementById("mobileMultiplayerButton").addEventListener("click", function () {
     toggleMobileMenu();
     toggleMultiplayerSelector();
+    playSound("basic_button");
 });
 
 document.getElementById("mobileCategoryButton").addEventListener("click", function () {
     toggleMobileMenu();
     toggleCategoryMenu();
     shrinkMapIfMobile();
+    playSound("floating_button");
 });
 
 //Community Category Credits UI ----------------------------------------------------------------------------
@@ -364,6 +397,7 @@ function openCreditWindow(title, description) {
     if (title != undefined) {
         document.getElementById("creditPopupTitle").innerHTML = title;
         document.getElementById("creditPopupText").innerHTML = description;
+        playSound("basic_button");
     }
 
     creditWindow.style.display = "block";
@@ -372,6 +406,7 @@ function openCreditWindow(title, description) {
 
 document.getElementById("creditWindowClose").addEventListener("click", () => {
     creditWindow.style.display = "none";
+    playSound("basic_button");
     document.getElementById("blackBackground").style.visibility = "hidden";
 })
 
@@ -395,6 +430,8 @@ let settingsClose = document.getElementById("settingsClose");
 settingsClose.addEventListener("click", toggleSettingsWindow);
 
 function toggleSettingsWindow() {
+    playSound("basic_button");
+
     if (settingsWindow.style.display == "block") {
         settingsWindow.style.display = "none";
         document.getElementById("blackBackground").style.visibility = "hidden";
@@ -432,10 +469,12 @@ function setDistanceUnitButtons(unit) {
 
 kilometersButton.addEventListener("click", () => {
     setDistanceUnitButtons("kilometers");
+    playSound("basic_button");
     localStorage.setItem("distanceUnit", "kilometers");
 });
 
 milesButton.addEventListener("click", () => {
     setDistanceUnitButtons("miles");
+    playSound("basic_button");
     localStorage.setItem("distanceUnit", "miles");
 });
