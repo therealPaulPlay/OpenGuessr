@@ -7,6 +7,7 @@ let globalVolume = 1.0;
 // Function to set the global volume
 export function setGlobalVolume(volume) {
     globalVolume = Math.max(0, Math.min(volume, 1)); // Ensure the volume is between 0 and 1
+    localStorage.setItem("soundVolume", globalVolume);
     // Update the volume for all currently playing sounds
     try {
         for (let tag in sounds) {
@@ -39,3 +40,23 @@ export function stopSound(tag) {
         delete sounds[tag];
     }
 }
+const volumeSlider = document.getElementById("volumeSlider");
+
+document.addEventListener("DOMContentLoaded", function () {
+    volumeSlider.addEventListener("input", function () {
+        setGlobalVolume(volumeSlider.value);
+        updateSliderBackground();
+    });
+});
+
+function updateSliderBackground() {
+    const value = volumeSlider.value;
+    const percentage = value * 100;
+    volumeSlider.style.background = `linear-gradient(to right, var(--brand-color) 0%, var(--brand-color) ${percentage}%, white ${percentage}%, white 100%)`;
+}
+
+
+let TempLocalstorageSoundVolume = localStorage.getItem("soundVolume") ? localStorage.getItem("soundVolume") : 0.5;
+setGlobalVolume(TempLocalstorageSoundVolume);
+volumeSlider.value = TempLocalstorageSoundVolume;
+updateSliderBackground();

@@ -384,3 +384,58 @@ document.addEventListener('keydown', function(event) {
       }
     }
   });
+
+//Settings - Window ---------------------------------------------------------------------------------------
+let settingsButton = document.getElementById("settingsButton");
+settingsButton.addEventListener("click", toggleSettingsWindow)
+
+let settingsWindow = document.getElementById("settingsWindow");
+
+let settingsClose = document.getElementById("settingsClose");
+settingsClose.addEventListener("click", toggleSettingsWindow);
+
+function toggleSettingsWindow() {
+    if (settingsWindow.style.display == "block") {
+        settingsWindow.style.display = "none";
+        document.getElementById("blackBackground").style.visibility = "hidden";
+    } else {
+        settingsWindow.style.display = "block";
+        document.getElementById("blackBackground").style.visibility = "visible";
+    }
+}
+
+//Unit switch between kilometers and miles
+
+let kilometersButton = document.getElementById("unitSwitchKilometers");
+let milesButton = document.getElementById("unitSwitchMiles");
+export let distanceUnit = "kilometers"; 
+
+const tempStorageDistanceUnit = localStorage.getItem("distanceUnit");
+
+if (tempStorageDistanceUnit != null) {
+    setDistanceUnitButtons(tempStorageDistanceUnit);
+} else {
+    setDistanceUnitButtons("kilometers");
+}
+
+function setDistanceUnitButtons(unit) {
+    if (unit == "miles") {
+        kilometersButton.style.opacity = "0.5";
+        milesButton.style.opacity = "1";
+        distanceUnit = "miles";
+    } else {
+        milesButton.style.opacity = "0.5";
+        kilometersButton.style.opacity = "1";
+        distanceUnit = "kilometers";
+    }
+}
+
+kilometersButton.addEventListener("click", () => {
+    setDistanceUnitButtons("kilometers");
+    localStorage.setItem("distanceUnit", "kilometers");
+});
+
+milesButton.addEventListener("click", () => {
+    setDistanceUnitButtons("miles");
+    localStorage.setItem("distanceUnit", "miles");
+});

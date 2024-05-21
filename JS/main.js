@@ -4,7 +4,7 @@ of the bundled main.js. */
 
 import { resetMap, getMapSource } from './miniMap.js';
 import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
-import { resultScreenEnabled, enableResultScreen } from './mainUI.js';
+import { resultScreenEnabled, enableResultScreen, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
 import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer } from "./dailyChallenge.js";
 import { checkHardModeTimeout } from './hardMode.js';
@@ -87,14 +87,32 @@ function compareDistances(distance) {
         //distance number formatting (km or m)
         if (distance < 5) {
             finalResult = Math.round(distance * 1000);
+            if (distanceUnit == "miles") {
+                finalResult = Math.round(finalResult * 1.09361);
+            }
             finalResult = finalResult.toLocaleString();
-            resultAsString = finalResult + " m";
+
+            if (distanceUnit == "miles") {
+                resultAsString = finalResult + " yards";
+            } else {
+                resultAsString = finalResult + " m";
+            }
+
             extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
         }
         else {
             finalResult = Math.round(distance * 10) / 10;
+            if (distanceUnit == "miles") {
+                finalResult = Math.round(finalResult * 0.621371 * 10) / 10;
+            }
+
             finalResult = finalResult.toLocaleString();
-            resultAsString = finalResult + " km";
+            
+            if (distanceUnit == "miles") {
+                resultAsString = finalResult + " miles";
+            } else {
+                resultAsString = finalResult + " km";
+            }
         }
 
         if (dailyChallengeUIEnabled) {
