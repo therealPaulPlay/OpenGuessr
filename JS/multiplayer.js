@@ -146,7 +146,6 @@ function setMultiplayerWindowSelection(window) {
     setJoinCounter(0);
     setJoinInfoText("Enter the roomcode.");
     document.getElementById("roomCreationModes").style.display = "flex";
-    multiplayerRestriction = "standard";
     setJoinButtonState();
     leaveMultiplayerRound(); //leave round and disconnect all peers if you are the host
 
@@ -246,17 +245,42 @@ toggleRestrictions.addEventListener("click", () => {
 
 let multiplayerRestriction = "standard";
 
+let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
+let currentRestrictionIndex = 0;
+
 function toggleMultiplayerRestriction() {
     if (toggleRestrictions.textContent == "Standard") {
-        toggleRestrictions.textContent = "No move (NMPZ)";
-        multiplayerRestriction = "nmpz";
+        currentRestrictionIndex = 1; // start from the first restriction after standard
     } else {
-        toggleRestrictions.textContent = "Standard";
-        multiplayerRestriction = "standard";
+        currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
     }
+    multiplayerRestriction = restrictions[currentRestrictionIndex];
+
+    // Update the button text
+    switch (multiplayerRestriction) {
+        case "nmpz":
+            toggleRestrictions.textContent = "No move (NMPZ)";
+            break;
+        case "grayscale":
+            toggleRestrictions.textContent = "Grayscale";
+            break;
+        case "invert":
+            toggleRestrictions.textContent = "Invert Colors";
+            break;
+        case "hue":
+            toggleRestrictions.textContent = "Hue Shift";
+            break;
+        case "fade":
+            toggleRestrictions.textContent = "Blink (Fade)";
+            break;
+        case "standard":
+        default:
+            toggleRestrictions.textContent = "Standard";
+            break;
+    }
+
+    setRestriction(multiplayerRestriction);
 }
-
-
 
 //Game Ui ------------------------------------------------------------------------------------------------------------------------
 export let multiplayer = false;
@@ -401,7 +425,7 @@ export function updatePeerDataScore(peerId, addScore) {
     }
 }
 
-let multiplayerCategory = "default";
+export let multiplayerCategory = "standard";
 
 // Multiplayer Setup (IF player has an id! ) ---------------------------------------------------------------------------------------
 var peer;
@@ -922,7 +946,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     multiplayerCategory = mapCategory;
 
     if (multiplayerCategory == "hard" || multiplayerCategory == "daily" || multiplayerCategory == "country") {
-        multiplayerCategory = "standard - auto";
+        multiplayerCategory = "standard";
     }
 
     connectedPeers.push([peerId, localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0]); //add yourself (host) to the overview
@@ -1138,6 +1162,7 @@ function joinRoom(code) {
             leaveMultiplayerRound();
             errorPopup("Disconnected from room", "", "User disconnected", false);
         }
+
         //if you try to join a room that is locked
         if (!multiplayer) {
             setJoinInfoText("Room locked - round ongoing");
@@ -1205,7 +1230,7 @@ if (peer) {
     });
 
     peer.on('close', function () {
-        errorPopup("Multiplayer connection closed", "Your multiplayer connection was closed.", "Error: Connection Closed", false);
+        errorPopup("Multiplayer connection closed", "Your multiplayer connection was permanently closed. Please reload the page.", "Error: Connection Closed", false);
         if (multiplayer) {
             leaveMultiplayerRound();
         }
@@ -1213,7 +1238,9 @@ if (peer) {
         if (isHost && matchmakingActive) {
             deleteRoomCodeFromMatchmakingServer(); //this happens when you close the tab / leave or refresh the page
         }
-    });
+
+        peer.destroy(); //clean up peer
+    }); 
 }
 
 //Multiplayer leave ----------------------------------------------------------------------------------
@@ -1281,7 +1308,7 @@ function leaveMultiplayerRound() {
     endMultiplayerRematchButton.style.opacity = "1";
     endMultiplayerRematchButton.style.pointerEvents = "auto";
     endMultiplayerRematchButton.textContent = "Play again"
-    nmpzBackground.style.pointerEvents = "none";
+    setRestriction("standard");
 
     if (wasMultiplayerEnabled) {
         checkGenerationTypeAndGenerate();
@@ -1416,16 +1443,45 @@ function multiplayerOverlayCountdown() {
             try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
             multiplayerTimer = startTimer(roundLength, multiplayerTimerExpired); //Start the timer
             document.getElementById("mapModeText").textContent = "Multiplayer (Round: " + roundIndex + "/" + roundAmount + ")";
-            if (multiplayerRestriction == "nmpz") {
-                document.getElementById("mapModeText").textContent += " (NMPZ)";
+            if (multiplayerRestriction != "standard" && multiplayerRestriction != undefined) {
+                document.getElementById("mapModeText").textContent += " (" + multiplayerRestriction+ ")";
             }
             totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host
-            if (multiplayerRestriction == "nmpz") {
-                nmpzBackground.style.pointerEvents = "auto";
-            } else {
-                nmpzBackground.style.pointerEvents = "none";
-            }
+            setRestriction(multiplayerRestriction);
             playSound("match_countdown_start");
         }
     }, 1000);
+}
+
+//Set restriction ----------------------------------------------------------------------------------
+
+const guesserWindow = document.getElementById("GuesserWindow");
+
+function setRestriction(restriction) {
+    nmpzBackground.style.pointerEvents = "none";
+    nmpzBackground.style.backgroundColor = "transparent";
+    guesserWindow.style.filter = "none";
+    guesserWindow.style.animation = "none";
+
+    switch (restriction) {
+        case "nmpz": 
+            nmpzBackground.style.pointerEvents = "auto";
+            break;
+        case "grayscale": 
+            guesserWindow.style.filter = "grayscale(100%)";
+            break;
+        case "invert":
+            guesserWindow.style.filter = "invert(100%)";
+            break;
+        case "hue":
+            guesserWindow.style.filter = "hue-rotate(90deg)";
+            break;
+        case "fade":
+            nmpzBackground.style.backgroundColor = "black";
+            nmpzBackground.style.animation = "restrictionFade 2s infinite";
+            break;
+        case "standard":
+        default:
+            break; // no restriction
+    }
 }
