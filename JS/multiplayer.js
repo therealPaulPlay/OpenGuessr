@@ -1138,6 +1138,7 @@ function joinRoom(code) {
             leaveMultiplayerRound();
             errorPopup("Disconnected from room", "", "User disconnected", false);
         }
+
         //if you try to join a room that is locked
         if (!multiplayer) {
             setJoinInfoText("Room locked - round ongoing");
@@ -1205,7 +1206,7 @@ if (peer) {
     });
 
     peer.on('close', function () {
-        errorPopup("Multiplayer connection closed", "Your multiplayer connection was closed.", "Error: Connection Closed", false);
+        errorPopup("Multiplayer connection closed", "Your multiplayer connection was permanently closed. Please reload the page.", "Error: Connection Closed", false);
         if (multiplayer) {
             leaveMultiplayerRound();
         }
@@ -1213,7 +1214,9 @@ if (peer) {
         if (isHost && matchmakingActive) {
             deleteRoomCodeFromMatchmakingServer(); //this happens when you close the tab / leave or refresh the page
         }
-    });
+
+        peer.destroy(); //clean up peer
+    }); 
 }
 
 //Multiplayer leave ----------------------------------------------------------------------------------
