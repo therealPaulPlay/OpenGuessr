@@ -2,7 +2,7 @@ import { updateUsername as updateUsername, getUser, updateExperience } from "./u
 import { setDailyChallengeExperienceResult } from "./dailyChallenge";
 import { dailyChallengeTimer } from './dailyChallenge.js';
 import { checkTextLength, toggleMobileMenu } from "./mainUI";
-import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore } from "./multiplayer.js";
+import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 
@@ -248,6 +248,31 @@ function willCauseLevelUpgrade(xp, newXP) {
 
 //Calculate XP gain for each round ---------------------------------------------------------------------------------------
 
+function calculateXPGain(distance, category) {
+  if (category == null || category == "standard" || category == "capital" || category == "hard") {
+    return Math.round(5000 * ((0.998036) ** distance));
+
+  } else if (category == "daily") {
+    let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
+
+    let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
+    setDailyChallengeExperienceResult(earnedXP);
+    return Math.round(5000 * ((0.998036) ** distance) * timeFactor);
+
+  } else if (category == "country") {
+    return checkIfGuessWasCorrect() ? 1000 : 0;
+
+  } else if (category == "famous" || category == "indoor" || category == "mountain" || category == "whetherspoon" || category == "skyscraper" || category == "stadium" || category == "racetrack" || category == "brutalism" || category == "abandoned") {
+    return Math.round(1000 * ((0.998036) ** distance));
+
+  } else if (category == "israel" || category == "austria" || category == "slovakia" || category == "czechia") { //very small countries, more reduced xp
+    return Math.round(5000 * ((0.978036) ** distance))
+
+  } else {
+    return Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
+  }
+}
+
 export async function loadResultScreenXP(distance) {
 
   if (isAuthenticated || multiplayer) {
@@ -266,32 +291,11 @@ export async function loadResultScreenXP(distance) {
 
     //XP calculation formulas -------------------------------------------------
     if (!multiplayer) {
-      if (selectedCategory == null || selectedCategory == "standard" || selectedCategory == "capital" || selectedCategory == "hard") {
-        earnedXP = Math.round(5000 * ((0.998036) ** distance));
-
-      } else if (selectedCategory == "daily") {
-        let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
-
-        let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
-        earnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
-        setDailyChallengeExperienceResult(earnedXP);
-
-      } else if (selectedCategory == "country") {
-        earnedXP = checkIfGuessWasCorrect() ? 1000 : 0;
-
-      } else if (selectedCategory == "famous" || selectedCategory == "indoor" || selectedCategory == "mountain" || selectedCategory == "whetherspoon" || selectedCategory == "skyscraper" || selectedCategory == "stadium" || selectedCategory == "racetrack" || selectedCategory == "brutalism" || selectedCategory == "abandoned") {
-        earnedXP = Math.round(1000 * ((0.998036) ** distance));
-
-      } else if (selectedCategory == "israel" || selectedCategory == "austria" || selectedCategory == "slovakia" || selectedCategory == "czechia") { //very small countries, more reduced xp
-        earnedXP = Math.round(5000 * ((0.978036) ** distance))
-
-      } else {
-        earnedXP = Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
-      }
+     earnedXP = calculateXPGain(distance, selectedCategory);
 
     } else {
       //always use the standard formula for multiplayer 
-      earnedXP = Math.round(5000 * ((0.998036) ** distance));
+      earnedXP = calculateXPGain(distance, multiplayerCategory);
 
       if (isHost) {
         updatePeerDataScore(peerId, earnedXP);
