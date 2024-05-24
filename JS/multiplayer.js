@@ -401,7 +401,7 @@ export function updatePeerDataScore(peerId, addScore) {
     }
 }
 
-let multiplayerCategory = "default";
+export let multiplayerCategory = "standard";
 
 // Multiplayer Setup (IF player has an id! ) ---------------------------------------------------------------------------------------
 var peer;
@@ -922,7 +922,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     multiplayerCategory = mapCategory;
 
     if (multiplayerCategory == "hard" || multiplayerCategory == "daily" || multiplayerCategory == "country") {
-        multiplayerCategory = "standard - auto";
+        multiplayerCategory = "standard";
     }
 
     connectedPeers.push([peerId, localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0]); //add yourself (host) to the overview
