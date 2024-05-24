@@ -324,6 +324,7 @@ export async function loadResultScreenXP(distance) {
       XPbarResource.classList.add("XPbarAnimate");
       XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP).fraction * 100 + "%";
       resultLevelText.innerHTML = "+" + earnedXP + " XP / " + resultLevelText.innerHTML;
+      animateIncrement(resultLevelText, 0, earnedXP, 1500);
     }, 10);
   }
 }
@@ -459,3 +460,33 @@ document.addEventListener("DOMContentLoaded", function () {
   updatePinLocks(localStorage.getItem("experience"));
 
 });
+
+//Animate currency values to tick up gradually -----------------------------------------------------------------------
+
+function animateIncrement(element, startValue, endValue, duration) {
+  let startTime = null;
+
+  function step(timestamp) {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1); // Progress from 0 to 1
+      const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3); // Ease-out cubic function
+      const currentValue = Math.floor(startValue + (endValue - startValue) * easeOutCubic(progress));
+
+      // Update only the XP part of the text while keeping the rest intact
+      const originalText = element.dataset.originalText;
+      element.innerHTML = originalText.replace(/(\+\d+)\s*(XP)/, `+${currentValue} $2`);
+
+      if (progress < 1) {
+          requestAnimationFrame(step);
+      } else {
+          element.innerHTML = originalText.replace(/(\+\d+)\s*(XP)/, `+${endValue} $2`); // Ensure it ends at the exact endValue
+      }
+  }
+
+  // Store the original text in a data attribute if not already done
+  if (!element.dataset.originalText) {
+      element.dataset.originalText = element.innerHTML;
+  }
+
+  requestAnimationFrame(step);
+}
