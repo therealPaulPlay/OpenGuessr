@@ -382,7 +382,7 @@ function addCommunityCreditTag() {
 
     document.getElementById("racetrackCategoryInfo").addEventListener("click", (event) => {
         event.stopPropagation();
-        openCreditWindow("Racetracks by Magnus1stCool", "Magnus is the ultimate racing aficionado. Not a single race escapes his keen eye - he can name them all off the top of his head. His collection of circuits is a testament to his passion, meticulously curated, presumably even without the need for google searches. ");
+        openCreditWindow("Racetracks by Magnus1stcool", "Magnus is the ultimate racing aficionado. Not a single race escapes his keen eye - he can name them all off the top of his head. His collection of circuits is a testament to his passion, meticulously curated, presumably even without the need for google searches. ");
     });
 
     document.getElementById("brutalismCategoryInfo").addEventListener("click", (event) => {
