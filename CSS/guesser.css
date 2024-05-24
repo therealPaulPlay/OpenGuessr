@@ -247,6 +247,12 @@ h1, h2, h3 {
   margin-top: 20px;
 }
 
+@keyframes XPFade {
+  0% {filter: brightness(1) contrast(1)}
+  50% {filter: brightness(1.75) contrast(0.5)}
+  100% {filter: brightness(1) contrast(1)}
+}
+
 #endScreenXPbar {
   width: 65%;
   height: 15px;
@@ -281,6 +287,7 @@ h1, h2, h3 {
 
 .XPbarAnimate {
   transition: width 1000ms ease;
+  animation: XPFade 1s ease-in-out;
 }
 
 #endScreenLevel {
