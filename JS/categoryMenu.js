@@ -32,6 +32,7 @@ const Category = {
     RUSSIA: "russia",
     SLOVAKIA: "slovakia",
     ROMANIA: "romania",
+    TURKEY: "turkey",
     DAILY: "daily",
     HARD: "hard",
     COUNTRY: "country",
