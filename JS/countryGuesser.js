@@ -14,11 +14,9 @@ export function setCountryGuesserMode(enabled) {
     if (enabled) {
         countryGuesserMode = true;
         //hide map
-        if (!multiplayer) {
-            document.getElementById("map").style.visibility = "hidden";
-            hideToggleMapButtonIfMobile(true);
-            document.getElementById("revealCompass").style.visibility = "hidden";
-        }
+        document.getElementById("map").style.visibility = "hidden";
+        hideToggleMapButtonIfMobile(true);
+        document.getElementById("revealCompass").style.visibility = "hidden";
 
         //show country picker UI
         document.getElementById("countryGuesserSelector").style.display = "flex";
@@ -26,11 +24,9 @@ export function setCountryGuesserMode(enabled) {
     } else {
         countryGuesserMode = false;
         //show map
-        if (!multiplayer) {
-            document.getElementById("map").style.visibility = "visible";
-            hideToggleMapButtonIfMobile(false);
-            document.getElementById("revealCompass").style.visibility = "visible";
-        }
+        document.getElementById("map").style.visibility = "visible";
+        hideToggleMapButtonIfMobile(false);
+        document.getElementById("revealCompass").style.visibility = "visible";
 
         //hide country picker UI
         document.getElementById("countryGuesserSelector").style.display = "none";
