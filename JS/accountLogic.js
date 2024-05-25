@@ -279,6 +279,7 @@ export async function loadResultScreenXP(distance) {
   if (isAuthenticated || multiplayer) {
     //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
+
     let currentXP = Number(localStorage.getItem("experience"));
 
     if (currentXP == null) {
@@ -286,6 +287,7 @@ export async function loadResultScreenXP(distance) {
     }
 
     let selectedCategory = localStorage.getItem("selectedCategory");
+
     let earnedXP;
 
     //XP calculation formulas -------------------------------------------------
@@ -303,6 +305,7 @@ export async function loadResultScreenXP(distance) {
       }
 
     }
+
 
     //apply XP visually and server-wise ----------------------------------
     XPbarResource.classList.remove("XPbarAnimate");
