@@ -256,8 +256,9 @@ function calculateXPGain(distance, category) {
     let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
 
     let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
-    setDailyChallengeExperienceResult(earnedXP);
-    return Math.round(5000 * ((0.998036) ** distance) * timeFactor);
+    let tempEarnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
+    setDailyChallengeExperienceResult(tempEarnedXP);
+    return tempEarnedXP;
 
   } else if (category == "country") {
     return checkIfGuessWasCorrect() ? 1000 : 0;
@@ -278,7 +279,6 @@ export async function loadResultScreenXP(distance) {
   if (isAuthenticated || multiplayer) {
     //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
-
     let currentXP = Number(localStorage.getItem("experience"));
 
     if (currentXP == null) {
@@ -286,7 +286,6 @@ export async function loadResultScreenXP(distance) {
     }
 
     let selectedCategory = localStorage.getItem("selectedCategory");
-
     let earnedXP;
 
     //XP calculation formulas -------------------------------------------------
@@ -304,7 +303,6 @@ export async function loadResultScreenXP(distance) {
       }
 
     }
-
 
     //apply XP visually and server-wise ----------------------------------
     XPbarResource.classList.remove("XPbarAnimate");
