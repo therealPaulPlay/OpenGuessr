@@ -256,8 +256,9 @@ function calculateXPGain(distance, category) {
     let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
 
     let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
-    setDailyChallengeExperienceResult(earnedXP);
-    return Math.round(5000 * ((0.998036) ** distance) * timeFactor);
+    let tempEarnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
+    setDailyChallengeExperienceResult(tempEarnedXP);
+    return tempEarnedXP;
 
   } else if (category == "country") {
     return checkIfGuessWasCorrect() ? 1000 : 0;
