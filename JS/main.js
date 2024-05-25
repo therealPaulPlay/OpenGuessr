@@ -81,8 +81,11 @@ export function calculateDistances(mapsLat, mapsLong) {
 
     let distance = guessCoords.distanceTo(destinationCoords) / 1000;
 
-    const country = getCountryFromCoords(mapsLat, mapsLong);
-    console.log(country);
+    if (getCountryFromCoords(mapsLat, mapsLong) == getCountryFromCoords(currentStreetviewLat, currentStreetviewLong)) {
+        console.log("Correct country!");
+    } else {
+        console.log("Wrong country!");
+    }
 
     compareDistances(distance);
 }

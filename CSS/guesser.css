@@ -239,7 +239,7 @@ h1, h2, h3 {
 }
 
 #XParea {
-  width: 80%;
+  width: 95%;
   height: 30px;
   margin: auto;
   display: flex;
@@ -254,7 +254,7 @@ h1, h2, h3 {
 }
 
 #endScreenXPbar {
-  width: 65%;
+  width: 55%;
   height: 15px;
   background-color: #ccc;
   border-radius: 15px;
@@ -293,10 +293,24 @@ h1, h2, h3 {
 #endScreenLevel {
   font-size: 22px;
   width: auto;
-  margin-left: auto;
+  margin-right: auto;
+  margin-left: 5px;
   vertical-align: middle;
   text-align: center;
   padding-left: 10px;
+}
+
+#endScreenLevelDisplay {
+  font-size: 14px;
+  width: auto;
+  margin-left: auto;
+  vertical-align: middle;
+  text-align: center;
+  padding-inline: 10px;
+  margin-right: 5px;
+  color: white;
+  background-color: #00cc00;
+  border-radius: 100px;
 }
 
 .accountButton {
@@ -1439,7 +1453,7 @@ li {
 
 /* This is for the result screen */
 #TextDiv {
-  margin: 20px 50px;
+  margin: 20px 30px;
   color: #EEE;
   font-size: 40px;
   height: fit-content;

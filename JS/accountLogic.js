@@ -74,6 +74,7 @@ document.getElementById("confirmUsername").addEventListener("click", () => {
 });
 
 let resultLevelText = document.getElementById("endScreenLevel");
+let resultLevelDisplay = document.getElementById("endScreenLevelDisplay");
 
 //Custom signup (WIP) -------------------------------------------------------------------------------------------------------------------
 
@@ -223,8 +224,8 @@ export function uiSetUserXP(xp) {
   // Update the UI with the calculated level and XP progress
   if (isAuthenticated) {
     levelText.innerHTML = "Level " + templevel;
-    resultLevelText.innerHTML = "Level " + templevel;
-    levelXPbar.style.width = (xp / requiredXP) * 100 + "%";
+    resultLevelDisplay.innerHTML = "Lvl. " + templevel;
+    levelXPbar.style.width = Math.max((xp / requiredXP) * 100, 7) + "%";
   }
 
   return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
@@ -314,7 +315,7 @@ export async function loadResultScreenXP(distance) {
       XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
     }
     else {
-      XPbarResource.style.width = uiSetUserXP(currentXP).fraction * 100 + "%";
+      XPbarResource.style.width = Math.max(uiSetUserXP(currentXP).fraction * 100, 4) + "%";
     }
 
     if (earnedXP > 0 && isAuthenticated) {
@@ -323,8 +324,8 @@ export async function loadResultScreenXP(distance) {
 
     setTimeout(function () {
       XPbarResource.classList.add("XPbarAnimate");
-      XPbarResource.style.width = uiSetUserXP(currentXP + earnedXP).fraction * 100 + "%";
-      resultLevelText.innerHTML = "+" + earnedXP + " XP / " + resultLevelText.innerHTML;
+      XPbarResource.style.width = Math.max(uiSetUserXP(currentXP).fraction * 100, 4) + "%";
+      resultLevelText.innerHTML = "+" + earnedXP + " XP";
       animateIncrement(resultLevelText, 0, earnedXP, 1500);
     }, 10);
   }
