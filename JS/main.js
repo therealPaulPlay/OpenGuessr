@@ -16,6 +16,25 @@ import { playSound } from './soundManager.js';
 let currentStreetviewLat = 0;
 let currentStreetviewLong = 0;
 
+//Coordinates to country --------------------------------------------------------------------------
+
+let gridData = null;
+
+async function loadDataset() {
+    const response = await fetch("./JSON/countries.json");
+    gridData = await response.json();
+}
+
+loadDataset();
+
+function getCountryFromCoords(lat, lon) {
+    const gridSize = gridData.grid_size;
+    const latIndex = Math.floor(lat / gridSize);
+    const lonIndex = Math.floor(lon / gridSize);
+    const key = `${latIndex},${lonIndex}`;
+    return gridData.data[key] || "Unknown";
+}
+
 //Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
 
 export async function generateNewLocation(type) {
@@ -61,6 +80,9 @@ export function calculateDistances(mapsLat, mapsLong) {
     const destinationCoords = new L.LatLng(currentStreetviewLat, currentStreetviewLong)
 
     let distance = guessCoords.distanceTo(destinationCoords) / 1000;
+
+    const country = getCountryFromCoords(mapsLat, mapsLong);
+    console.log(country);
 
     compareDistances(distance);
 }
