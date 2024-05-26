@@ -5,6 +5,8 @@ import { checkTextLength, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
+import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
+import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 
 let profileName = document.getElementById("profileViewName");
 
@@ -223,9 +225,9 @@ export function uiSetUserXP(xp) {
 
   // Update the UI with the calculated level and XP progress
   if (isAuthenticated) {
-    levelText.innerHTML = "Level " + templevel;
+    levelText.innerHTML = "Level " + templevel; //account ui level text
     resultLevelDisplay.innerHTML = "Lvl. " + templevel;
-    levelXPbar.style.width = Math.max((xp / requiredXP) * 100, 7) + "%";
+    levelXPbar.style.width = Math.max((xp / requiredXP) * 100, 7) + "%"; //account ui xp bar
   }
 
   return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
@@ -248,10 +250,43 @@ function willCauseLevelUpgrade(xp, newXP) {
 }
 
 //Calculate XP gain for each round ---------------------------------------------------------------------------------------
+let streak = 0;
+let streakDisplay = document.getElementById("streakDisplay");
+let streakText = document.getElementById("endScreenStreakText");
+
+let tempLoadedStreak = localStorage.getItem("streak");
+if (tempLoadedStreak != null) {
+  streak = Number(tempLoadedStreak);
+}
+
+function calculateMultiplyer(streak) {
+  if (streak === 0) {
+    return 1;
+  } else if (streak >= 9) {
+    return 1.5;
+  } else {
+    return Math.round((1 + (streak / 9) * 0.5) * 100) / 100;
+  }
+}
 
 function calculateXPGain(distance, category) {
   if (category == null || category == "standard" || category == "capital" || category == "hard") {
-    return Math.round(5000 * ((0.998036) ** distance));
+
+    if (getCountryFromCoords(mapMarkerLat, mapMarkerLong) == getCountryFromCoords(currentStreetviewLat, currentStreetviewLong)) {
+      streak++;
+    } else {
+      streak = 0; //reset country streak
+    }
+
+    localStorage.setItem("streak", streak);
+
+    const streakMultiplyer = calculateMultiplyer(streak);
+    streakText.textContent = streak + " (" + streakMultiplyer + "x)";
+
+    streakDisplay.style.visibility = "visible";
+    streakDisplay.style.width = "auto";
+
+    return Math.round((5000 * ((0.998036) ** distance)) * streakMultiplyer);
 
   } else if (category == "daily") {
     let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
@@ -291,9 +326,12 @@ export async function loadResultScreenXP(distance) {
 
     let earnedXP;
 
+    streakDisplay.style.visibility = "hidden";
+    streakDisplay.style.width = "0";
+
     //XP calculation formulas -------------------------------------------------
     if (!multiplayer) {
-     earnedXP = calculateXPGain(distance, selectedCategory);
+      earnedXP = calculateXPGain(distance, selectedCategory);
 
     } else {
       //always use the standard formula for multiplayer 
@@ -307,7 +345,6 @@ export async function loadResultScreenXP(distance) {
 
     }
 
-
     //apply XP visually and server-wise ----------------------------------
     XPbarResource.classList.remove("XPbarAnimate");
 
@@ -315,7 +352,7 @@ export async function loadResultScreenXP(distance) {
       XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
     }
     else {
-      XPbarResource.style.width = Math.max(uiSetUserXP(currentXP).fraction * 100, 4) + "%";
+      XPbarResource.style.width = uiSetUserXP(currentXP).fraction * 100 + "%"; //otherwise, set the starting point of the bar to the current xp
     }
 
     if (earnedXP > 0 && isAuthenticated) {
@@ -324,7 +361,7 @@ export async function loadResultScreenXP(distance) {
 
     setTimeout(function () {
       XPbarResource.classList.add("XPbarAnimate");
-      XPbarResource.style.width = Math.max(uiSetUserXP(currentXP).fraction * 100, 4) + "%";
+      XPbarResource.style.width = Math.max(uiSetUserXP(currentXP + earnedXP).fraction * 100, 4) + "%";
       resultLevelText.innerHTML = "+" + earnedXP + " XP";
       animateIncrement(resultLevelText, 0, earnedXP, 1500);
     }, 10);
@@ -469,25 +506,25 @@ function animateIncrement(element, startValue, endValue, duration) {
   let startTime = null;
 
   function step(timestamp) {
-      if (!startTime) startTime = timestamp;
-      const progress = Math.min((timestamp - startTime) / duration, 1); // Progress from 0 to 1
-      const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3); // Ease-out cubic function
-      const currentValue = Math.floor(startValue + (endValue - startValue) * easeOutCubic(progress));
+    if (!startTime) startTime = timestamp;
+    const progress = Math.min((timestamp - startTime) / duration, 1); // Progress from 0 to 1
+    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3); // Ease-out cubic function
+    const currentValue = Math.floor(startValue + (endValue - startValue) * easeOutCubic(progress));
 
-      // Update only the XP part of the text while keeping the rest intact
-      const originalText = element.dataset.originalText;
-      element.innerHTML = originalText.replace(/(\+\d+)\s*(XP)/, `+${currentValue} $2`);
+    // Update only the XP part of the text while keeping the rest intact
+    const originalText = element.dataset.originalText;
+    element.innerHTML = originalText.replace(/(\+\d+)\s*(XP)/, `+${currentValue} $2`);
 
-      if (progress < 1) {
-          requestAnimationFrame(step);
-      } else {
-          element.innerHTML = originalText.replace(/(\+\d+)\s*(XP)/, `+${endValue} $2`); // Ensure it ends at the exact endValue
-      }
+    if (progress < 1) {
+      requestAnimationFrame(step);
+    } else {
+      element.innerHTML = originalText.replace(/(\+\d+)\s*(XP)/, `+${endValue} $2`); // Ensure it ends at the exact endValue
+    }
   }
 
   // Store the original text in a data attribute if not already done
   if (!element.dataset.originalText) {
-      element.dataset.originalText = element.innerHTML;
+    element.dataset.originalText = element.innerHTML;
   }
 
   requestAnimationFrame(step);

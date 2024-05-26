@@ -13,8 +13,8 @@ import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } 
 import { playSound } from './soundManager.js';
 
 //default coords of the location
-let currentStreetviewLat = 0;
-let currentStreetviewLong = 0;
+export let currentStreetviewLat = 0;
+export let currentStreetviewLong = 0;
 
 //Coordinates to country --------------------------------------------------------------------------
 
@@ -27,12 +27,17 @@ async function loadDataset() {
 
 loadDataset();
 
-function getCountryFromCoords(lat, lon) {
-    const gridSize = gridData.grid_size;
-    const latIndex = Math.floor(lat / gridSize);
-    const lonIndex = Math.floor(lon / gridSize);
-    const key = `${latIndex},${lonIndex}`;
-    return gridData.data[key] || "Unknown";
+export function getCountryFromCoords(lat, lon) {
+    try {
+        const gridSize = gridData.grid_size;
+        const latIndex = Math.floor(lat / gridSize);
+        const lonIndex = Math.floor(lon / gridSize);
+        const key = `${latIndex},${lonIndex}`;
+        return gridData.data[key] || "Unknown";
+    } catch (error) {
+        console.error("Error getting country from coords: " + error);
+        return "Uknknown";
+    }
 }
 
 //Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
@@ -80,12 +85,6 @@ export function calculateDistances(mapsLat, mapsLong) {
     const destinationCoords = new L.LatLng(currentStreetviewLat, currentStreetviewLong)
 
     let distance = guessCoords.distanceTo(destinationCoords) / 1000;
-
-    if (getCountryFromCoords(mapsLat, mapsLong) == getCountryFromCoords(currentStreetviewLat, currentStreetviewLong)) {
-        console.log("Correct country!");
-    } else {
-        console.log("Wrong country!");
-    }
 
     compareDistances(distance);
 }

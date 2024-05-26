@@ -286,18 +286,41 @@ h1, h2, h3 {
 }
 
 .XPbarAnimate {
-  transition: width 1000ms ease;
+  transition: width 1s ease;
   animation: XPFade 1s ease-in-out;
 }
 
 #endScreenLevel {
   font-size: 22px;
   width: auto;
-  margin-right: auto;
-  margin-left: 5px;
   vertical-align: middle;
   text-align: center;
   padding-left: 10px;
+  text-wrap: nowrap;
+  min-width: 75px;
+}
+
+#endScreenStreakText {
+  font-size: 20px;
+  vertical-align: middle;
+  text-align: center;
+  color: white;
+  margin-left: 3px;
+  text-wrap: nowrap;
+}
+
+#streakIcon {
+  width: 30px;
+  height: auto;
+}
+
+#streakDisplay {
+  margin-right: auto;
+  margin-left: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
 }
 
 #endScreenLevelDisplay {
@@ -311,6 +334,7 @@ h1, h2, h3 {
   color: white;
   background-color: #00cc00;
   border-radius: 100px;
+  text-wrap: nowrap;
 }
 
 .accountButton {
