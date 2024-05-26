@@ -239,7 +239,7 @@ h1, h2, h3 {
 }
 
 #XParea {
-  width: 80%;
+  width: 95%;
   height: 30px;
   margin: auto;
   display: flex;
@@ -254,7 +254,7 @@ h1, h2, h3 {
 }
 
 #endScreenXPbar {
-  width: 65%;
+  width: 55%;
   height: 15px;
   background-color: #ccc;
   border-radius: 15px;
@@ -286,17 +286,55 @@ h1, h2, h3 {
 }
 
 .XPbarAnimate {
-  transition: width 1000ms ease;
+  transition: width 1s ease;
   animation: XPFade 1s ease-in-out;
 }
 
 #endScreenLevel {
   font-size: 22px;
   width: auto;
-  margin-left: auto;
   vertical-align: middle;
   text-align: center;
   padding-left: 10px;
+  text-wrap: nowrap;
+  min-width: 75px;
+}
+
+#endScreenStreakText {
+  font-size: 20px;
+  vertical-align: middle;
+  text-align: center;
+  color: white;
+  margin-left: 3px;
+  text-wrap: nowrap;
+}
+
+#streakIcon {
+  width: 30px;
+  height: auto;
+}
+
+#streakDisplay {
+  margin-right: auto;
+  margin-left: 10px;
+  position: relative;
+  display: flex;
+  align-items: center;
+  flex-direction: row;
+}
+
+#endScreenLevelDisplay {
+  font-size: 14px;
+  width: auto;
+  margin-left: auto;
+  vertical-align: middle;
+  text-align: center;
+  padding-inline: 10px;
+  margin-right: 5px;
+  color: white;
+  background-color: #00cc00;
+  border-radius: 100px;
+  text-wrap: nowrap;
 }
 
 .accountButton {
@@ -1422,7 +1460,7 @@ li {
 
 /* This is for the result screen */
 #TextDiv {
-  margin: 20px 50px;
+  margin: 20px 30px;
   color: #EEE;
   font-size: 40px;
   height: fit-content;

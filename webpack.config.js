@@ -1,6 +1,8 @@
 const path = require("path");
 const CopyWebpackPlugin = require('copy-webpack-plugin'); //this allows us to just copy certain files over to build folder (like jsons)
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const JsonMinimizerPlugin = require('json-minimizer-webpack-plugin');
 
 //most npm plugins can now be installed without altering anything here! Only make changes if webpack throws errors. 
 module.exports = {
@@ -58,4 +60,13 @@ module.exports = {
       ],
     }),
   ],
+  optimization: {
+    minimize: true,
+    minimizer: [
+      // TerserPlugin for JS minimization
+      new TerserPlugin(),
+      // JsonMinimizerPlugin for JSON minimization
+      new JsonMinimizerPlugin(),
+    ],
+  },
 };
