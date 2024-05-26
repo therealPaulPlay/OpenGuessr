@@ -3,7 +3,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin'); // Copy certain files 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const JsonMinimizerPlugin = require('json-minimizer-webpack-plugin');
-const CompressionPlugin = require('compression-webpack-plugin'); // gzip
 const { WebpackRemoveEmptyScripts } = require('webpack-remove-empty-scripts');
 
 module.exports = {
@@ -42,14 +41,6 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
-    new CompressionPlugin({
-      filename: '[path][base].gz',
-      algorithm: 'gzip',
-      test: /\.json$/, // Target only JSON files for gzip compression
-      threshold: 10240,
-      minRatio: 0.8,
-      deleteOriginalAssets: false,
-    }),
     new CopyWebpackPlugin({
       patterns: [
         // Copies files/folders over to build
