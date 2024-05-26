@@ -11,7 +11,6 @@ import { checkHardModeTimeout } from './hardMode.js';
 import { multiplayer, startMultiplayerRound, isHost, multiplayerGuessesLocationsArray } from './multiplayer.js';
 import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } from './countryGuesser.js';
 import { playSound } from './soundManager.js';
-import L from "leaflet";
 
 //default coords of the location
 export let currentStreetviewLat = 0;
