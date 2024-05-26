@@ -259,7 +259,7 @@ if (tempLoadedStreak != null) {
   streak = Number(tempLoadedStreak);
 }
 
-function calculateMultiplyer(streak) {
+function calculateMultiplier(streak) {
   if (streak === 0) {
     return 1;
   } else if (streak >= 9) {
@@ -280,13 +280,13 @@ function calculateXPGain(distance, category) {
 
     localStorage.setItem("streak", streak);
 
-    const streakMultiplyer = calculateMultiplyer(streak);
-    streakText.textContent = streak + " (" + streakMultiplyer + "x)";
+    const streakMultiplier = calculateMultiplier(streak);
+    streakText.textContent = streak + " (" + streakMultiplier + "x)";
 
     streakDisplay.style.visibility = "visible";
     streakDisplay.style.width = "auto";
 
-    return Math.round((5000 * ((0.998036) ** distance)) * streakMultiplyer);
+    return Math.round((5000 * ((0.998036) ** distance)) * streakMultiplier);
 
   } else if (category == "daily") {
     let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
