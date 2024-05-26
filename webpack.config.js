@@ -9,8 +9,6 @@ module.exports = {
   entry: {
     // Separate bundles for each of these
     analytics: "./JS/analytics.js",
-    errorHandling: "./JS/errorHandling.js",
-    signupScreen: "./JS/signupScreen.js",
     main: ["./JS/categoryMenu.js", "./JS/timer.js", "./JS/main.js", "./JS/mainUI.js", "./JS/locationGeneration.js", "./JS/dailyChallenge.js", "./JS/hardMode.js", "./JS/multiplayer.js", "./JS/countryGuesser.js", "./JS/soundManager.js"],
   },
   output: {
@@ -54,7 +52,9 @@ module.exports = {
         { from: "favicon.ico", to: "./" },
         { from: "netlify.toml", to: "./" },
         //User API js file (not running through webpack because it shouldn't be renamed)
-        { from: "./JS/userAPI.js", to: "./" }
+        { from: "./JS/errorHandling.js", to: "./" },
+        { from: "./JS/signupScreen.js", to: "./" },
+        { from: "./JS/userAPI.js", to: "./" },
       ],
     }),
   ],
