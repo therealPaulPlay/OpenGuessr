@@ -11,7 +11,6 @@ module.exports = {
     analytics: "./JS/analytics.js",
     errorHandling: "./JS/errorHandling.js",
     signupScreen: "./JS/signupScreen.js",
-    userAPI: "./JS/userAPI.js",
     main: ["./JS/categoryMenu.js", "./JS/timer.js", "./JS/main.js", "./JS/mainUI.js", "./JS/locationGeneration.js", "./JS/dailyChallenge.js", "./JS/hardMode.js", "./JS/multiplayer.js", "./JS/countryGuesser.js", "./JS/soundManager.js"],
   },
   output: {
@@ -54,6 +53,8 @@ module.exports = {
         // Additional files that have to be root
         { from: "favicon.ico", to: "./" },
         { from: "netlify.toml", to: "./" },
+        //User API js file (not running through webpack because it shouldn't be renamed)
+        { from: "./JS/userAPI.js", to: "./" }
       ],
     }),
   ],
