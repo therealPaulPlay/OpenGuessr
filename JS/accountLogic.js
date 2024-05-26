@@ -272,19 +272,23 @@ function calculateMultiplier(streak) {
 function calculateXPGain(distance, category) {
   if (category == null || category == "standard" || category == "capital" || category == "hard") {
 
-    if (getCountryFromCoords(mapMarkerLat, mapMarkerLong) == getCountryFromCoords(currentStreetviewLat, currentStreetviewLong)) {
-      streak++;
-    } else {
-      streak = 0; //reset country streak
+    let streakMultiplier = 1;
+    
+    if (!multiplayer) {
+      if (getCountryFromCoords(mapMarkerLat, mapMarkerLong) == getCountryFromCoords(currentStreetviewLat, currentStreetviewLong)) {
+        streak++;
+      } else {
+        streak = 0; //reset country streak
+      }
+  
+      localStorage.setItem("streak", streak);
+  
+      streakMultiplier = calculateMultiplier(streak);
+      streakText.textContent = streak + " (" + streakMultiplier + "x)";
+  
+      streakDisplay.style.visibility = "visible";
+      streakDisplay.style.width = "auto";
     }
-
-    localStorage.setItem("streak", streak);
-
-    const streakMultiplier = calculateMultiplier(streak);
-    streakText.textContent = streak + " (" + streakMultiplier + "x)";
-
-    streakDisplay.style.visibility = "visible";
-    streakDisplay.style.width = "auto";
 
     return Math.round((5000 * ((0.998036) ** distance)) * streakMultiplier);
 
