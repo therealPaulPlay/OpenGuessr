@@ -1,14 +1,17 @@
 const path = require("path");
-const CopyWebpackPlugin = require('copy-webpack-plugin'); //this allows us to just copy certain files over to build folder (like jsons)
+const CopyWebpackPlugin = require('copy-webpack-plugin'); // Copy certain files over to build folder (like jsons)
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const JsonMinimizerPlugin = require('json-minimizer-webpack-plugin');
+const { WebpackRemoveEmptyScripts } = require('webpack-remove-empty-scripts');
 
-//most npm plugins can now be installed without altering anything here! Only make changes if webpack throws errors. 
 module.exports = {
   entry: {
-    //separate bundles for each of these
+    // Separate bundles for each of these
     analytics: "./JS/analytics.js",
+    errorHandling: "./JS/errorHandling.js",
+    signupScreen: "./JS/signupScreen.js",
+    userAPI: "./JS/userAPI.js",
     venatusCustom: "./JS/venatusCustom.js",
     main: ["./JS/categoryMenu.js", "./JS/timer.js", "./JS/main.js", "./JS/mainUI.js", "./JS/locationGeneration.js", "./JS/dailyChallenge.js", "./JS/hardMode.js", "./JS/multiplayer.js", "./JS/countryGuesser.js", "./JS/soundManager.js"],
   },
@@ -23,7 +26,7 @@ module.exports = {
         test: /\.js$/,
         exclude: /node_modules/,
         use: {
-          //babel loader is needed for ES6 syntax such as .include()
+          // Babel loader is needed for ES6 syntax such as .include()
           loader: 'babel-loader',
           options: {
             presets: ['@babel/preset-env']
@@ -31,7 +34,7 @@ module.exports = {
         }
       },
       {
-        //typescript handler
+        // TypeScript handler
         test: /\.ts$/,
         use: 'ts-loader'
       }
@@ -41,22 +44,17 @@ module.exports = {
     new CleanWebpackPlugin(),
     new CopyWebpackPlugin({
       patterns: [
-        // Copies files/folders over to build.
+        // Copies files/folders over to build
         { from: "./CSS", to: "./CSS" },
         { from: "./FONTS", to: "./FONTS" },
         { from: "./IMG", to: "./IMG" },
         { from: "./SOUNDS", to: "./SOUNDS" },
         { from: "./JSON", to: "./JSON" },
-        //html files (must be at root in build folder)
+        // HTML files (must be at root in build folder)
         { from: "./HTML", to: "./" },
-        //additional files that have to be root
+        // Additional files that have to be root
         { from: "favicon.ico", to: "./" },
         { from: "netlify.toml", to: "./" },
-        //due to dom call dependencies these JS files will not be bundled up (see readme.md)
-        { from: "./JS/errorHandling.js", to: "./" },
-        { from: "./JS/signupScreen.js", to: "./" },
-        { from: "./JS/userAPI.js", to: "./" },
-
       ],
     }),
   ],
@@ -64,7 +62,9 @@ module.exports = {
     minimize: true,
     minimizer: [
       // TerserPlugin for JS minimization
-      new TerserPlugin(),
+      new TerserPlugin({
+        extractComments: false, // Prevent generation of license.txt files
+      }),
       // JsonMinimizerPlugin for JSON minimization
       new JsonMinimizerPlugin(),
     ],
