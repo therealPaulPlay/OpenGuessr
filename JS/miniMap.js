@@ -4,7 +4,6 @@ import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
-import L from "leaflet";
 
 
 //Initialize the map with correct provider --------------------------------------------------------------------

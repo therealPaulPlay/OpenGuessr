@@ -54,7 +54,6 @@ module.exports = {
       patterns: [
         // Copies files/folders over to build
         { from: "./CSS", to: "./CSS" },
-        { from: "./node_modules/leaflet/dist/leaflet.css", to: "./CSS" },
         { from: "./FONTS", to: "./FONTS" },
         { from: "./IMG", to: "./IMG" },
         { from: "./SOUNDS", to: "./SOUNDS" },
