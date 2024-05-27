@@ -52,7 +52,7 @@ module.exports = {
         // Additional files that have to be root
         { from: "favicon.ico", to: "./" },
         { from: "netlify.toml", to: "./" },
-        //User API js file (not running through webpack because it shouldn't be renamed)
+        //Other js files (not running through webpack because they shouldn't be renamed)
         { from: "./JS/errorHandling.js", to: "./" },
         { from: "./JS/signupScreen.js", to: "./" },
         { from: "./JS/userAPI.js", to: "./" },
