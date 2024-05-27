@@ -1,11 +1,9 @@
 import { errorPopup } from "./errorHandling.js";
-import { generateNewLocation } from "./main.js";
 import { coordsFromHost } from "./multiplayer.js";
 import { mapCategory } from "./categoryMenu.js";
-import { Loader } from "@googlemaps/js-api-loader";
 import { getDailyChallengeIndex } from "./userAPI.js";
 
-//This is THE function to GET LOCATIONS (all others here are NOT export)
+//This is THE function to GET LOCATIONS (all others here are NOT export
 export async function getLocationCoordinates(type) {
 
     //show loading screen
@@ -13,9 +11,9 @@ export async function getLocationCoordinates(type) {
     document.getElementById("BeforeOverlay").style.visibility = "visible";
 
     if (type == "JSON") {
-        try { return await getCoordsFromJSON(); } catch (err) { console.error("Error generating from JSON in locationGeneration.js: " + err); }
+        return await getCoordsFromJSON(mapCategory);
     } else if (type == "SDK" && type != "DAILY") {
-        return await getCoordsFromGoogle();
+        return await getCoordsFromLocationServer();
     } else if (type == "DAILY") {
         return await getCoordsFromServerDaily();
     } else if (type == "FROMHOST") {
@@ -31,6 +29,8 @@ let listOfLocations = [];
 let jsonResponse;
 let lastGuessesIndexes = []; //to prevent repetition
 let currentlyLoadedJson;
+
+let guessIndex;
 
 
 //Load location JSON files
@@ -55,15 +55,17 @@ async function loadLocationJSON(jsonName) {
     }
 }
 
-let guessIndex;
-
 //This will be called in main.js when a new location is being generated
-async function getCoordsFromJSON() {
+async function getCoordsFromJSON(category) {
 
     let resultLocationsArray;
 
-    if (currentlyLoadedJson != mapCategory) {
-        await loadLocationJSON(mapCategory);
+    if (currentlyLoadedJson != category) {
+        try {
+            await loadLocationJSON(category);
+        } catch (error) {
+            console.error("Error loading location json in getCoordsFromJson in locationGeneration.js: " + error);
+        }
     }
 
     try {
@@ -97,99 +99,78 @@ async function getCoordsFromJSON() {
 }
 
 
-//Get Locations from google maps js API (new method - unlimited locations) -------------------------------------------------------------------------------
+//Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
 
-// not using any apiKey!
-const loader = new Loader({
-    version: "weekly",
-    libraries: ["streetView"]
-});
+let standardLocations = null;
+let lastStandardLocationIndexes = [];
 
-let streetViewService;
-
-// Return a promise that resolves when streetViewService is initialized
-const initStreetViewService = () => {
-    return new Promise((resolve, reject) => {
-        loader.load().then(() => {
-            // Initialize streetViewService
-            streetViewService = new google.maps.StreetViewService();
-            resolve();
-        }).catch(error => {
-            console.error("Error loading Google Maps API:", error);
-            reject(error);
-        });
-    });
-};
-
-initStreetViewService().then(() => {
-    getCoordsFromGoogle();
-});
-
-async function getLocationData(latitude, longitude, radius) {
-    // Wait for streetViewService to be initialized
-    await initStreetViewService();
-
-    if (!streetViewService) {
-        console.error("StreetViewService is not initialized.");
-        return null;
-    }
-
-    return new Promise((resolve, reject) => {
-        streetViewService.getPanorama({
-            location: { lat: latitude, lng: longitude },
-            preference: google.maps.StreetViewPreference.BEST, // Prioritize locations closer to roads and cities
-            radius: radius,
-            sources: [google.maps.StreetViewSource.OUTDOOR]
-        }, (data, status) => {
-            if (status === "OK") {
-                const location = data.location.latLng;
-
-                const resultLat = location.lat();
-                const resultLng = location.lng();
-                const resultLocationsArray = [resultLat, resultLng];
-                resolve(resultLocationsArray);
+async function getCoordsFromLocationServer() {
+    //if the standard locations aren't already loaded
+    if (!standardLocations) {
+        try {
+            let locationEndpoint = "http://localhost/locations"; //temp for testing TODO
+        
+            const response = await fetch(locationEndpoint, {
+              method: 'GET',
+              headers: { 'Content-Type': 'application/json' }
+            });
+        
+            // Check if the response is successful
+            if (response.ok) {
+              const data = await response.json();
+              standardLocations = data.locations; //the array is in locations: {}
+              return await selectLocationFromServer(); //pick one new location for playing
+        
             } else {
-                reject(status);
+                console.error("Location fetch failed. Server returned error:", response.status);
+                return await loadBackupLocations(error);
             }
-        });
-    });
-}
-
-async function getCoordsFromGoogle(retryCount = 0) {
-    // Randomize latitude and longitude coordinates
-    const { lat, lng } = getRandomSphericalCoordinates();
-    const searchRadius = 50000; // Adjust radius as needed
-
-    try {
-        // Attempt to get location data
-        const resultLocationsArray = await getLocationData(lat, lng, searchRadius);
-        return resultLocationsArray;
-    } catch (error) {
-        if (error === "ZERO_RESULTS") {
-            // Retry if ZERO_RESULTS is returned
-            if (retryCount < 1000) {
-                return await getCoordsFromGoogle(retryCount + 1);
-            } else {
-                console.error("Maximum retry limit reached.");
-                errorPopup("No location found.", "Reload the page or switch to a different category", "Google SDK failed to find a location", false);
-                return null;
-            }
-        } else {
-            console.error("Error getting coordinates from Google:", error);
-            return null;
-        }
+          } catch (error) {
+            console.error("Error occurred while fetching locations from server: ", error);
+            return await loadBackupLocations(error);
+          }
     }
 }
 
-function getRandomSphericalCoordinates() {
-    const latRadians = Math.acos(2 * Math.random() - 1) - Math.PI / 2;
+async function selectLocationFromServer() {
+      //now, pick a random location
+      let resultLocationsArray = [];
 
-    const lngRadians = 2 * Math.PI * Math.random() - Math.PI;
+      try {
+  
+          //to prevent a crashes if the json has too few locations
+          if (standardLocations.length < 105) {
+              lastStandardLocationIndexes = [];
+              console.warn("Loaded standard json has too few locations!");
+          }
+  
+          do {
+              guessIndex = Math.floor(Math.random() * standardLocations.length);
+          } while (lastStandardLocationIndexes.includes(guessIndex));
+  
+          lastStandardLocationIndexes.unshift(guessIndex); //add guessIndex at the front of the array
+  
+          if (lastStandardLocationIndexes.length > 100) {
+              lastStandardLocationIndexes.pop(); //if the array is longer than 100, pop the last entry out
+          }
+  
+          const resultLat = standardLocations[guessIndex][0];
+          const resultLong = standardLocations[guessIndex][1];
+          const country = standardLocations[guessIndex][2]; //only available for certain modes (like country guesser)
+  
+          resultLocationsArray = [resultLat, resultLong, country];
+      } catch (error) {
+          console.error("Error in locationGeneration.js Standard Location JSON generation: " + error);
+      }
+  
+      return resultLocationsArray;
+}
 
-    const lat = (180 / Math.PI) * latRadians;
-    const lng = (180 / Math.PI) * lngRadians;
-
-    return { lat, lng };
+//in case the location server does not respond, load the daily locations (just totally random locations) instead
+async function loadBackupLocations(error) {
+    console.log("Loading backup locations.");
+    errorPopup("Location server error", "Loading local backup locations instead. ", "Error: " + error);
+    return await getCoordsFromJSON("daily");
 }
 
 //Get coords from Server for Daily Challenge -----------------------------------------------------------------------------------------------------------------------
