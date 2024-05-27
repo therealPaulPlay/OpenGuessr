@@ -107,8 +107,9 @@ let lastStandardLocationIndexes = [];
 async function getCoordsFromLocationServer() {
     //if the standard locations aren't already loaded
     if (!standardLocations) {
+        console.log("loading locations")
         try {
-            let locationEndpoint = "http://localhost:3000/locations"; //temp for testing TODO
+            let locationEndpoint = "https://locations.openguessr.com/locations"; //for testing, use http://localhost:3000/locations
         
             const response = await fetch(locationEndpoint, {
               method: 'GET',
@@ -129,6 +130,8 @@ async function getCoordsFromLocationServer() {
             console.error("Error occurred while fetching locations from server: ", error);
             return await loadBackupLocations(error);
           }
+    } else {
+        return await selectLocationFromServer(); //just select a location from the server's json file, as it is already loaded
     }
 }
 
