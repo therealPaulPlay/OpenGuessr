@@ -107,7 +107,6 @@ let lastStandardLocationIndexes = [];
 async function getCoordsFromLocationServer() {
     //if the standard locations aren't already loaded
     if (!standardLocations) {
-        console.log("loading locations")
         try {
             let locationEndpoint = "https://locations.openguessr.com/locations"; //for testing, use http://localhost:3000/locations
         
