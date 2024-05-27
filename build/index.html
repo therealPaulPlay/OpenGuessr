@@ -19,7 +19,8 @@
   <script type="module" src="analytics.js" async></script>
 
   <!-- venatus ad script -->
-  <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript" data-site-id="660fad7bb673231986638f83" data-mode="scan" async></script>
+  <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
+    data-site-id="660fad7bb673231986638f83" data-mode="scan" async></script>
 
   <title>OpenGuessr - free geoguessr alternative</title>
 
@@ -404,6 +405,15 @@
     </div>
     <div id="endBottomArea">
       <button type="button" id="endScreenOpenLocation">Open streetview ⤴</button>
+      <div id="endScreenStreakRevive">
+        <div id="popup-title" class="popup-title">
+          <h1 id="streakHeader">Keep streak? </h1>
+        </div>
+        <p id="keepStreakText">Support us by watching an ad and keep your streak of <span id="streakKeepAmount" class="highlight">0</span> !</p>
+        <button id="streakWatchAd" class="streakButton accountButton accountClose">Keep streak
+          <img src="./IMG/streak_icon.png" class="socialIcon">
+        </button>
+      </div>
       <div id="endBottomBar">
         <div id="TextDiv">
           <p id="distanceText"></p>
@@ -414,7 +424,7 @@
               <div class="XPbarResource" id="endScreenXPbarResource"></div>
             </div>
             <p id="endScreenLevel">Default XP</p>
-            <div id="streakDisplay">            
+            <div id="streakDisplay">
               <img id="streakIcon" src="/IMG/streak_icon.png" alt="country streak">
               <p id="endScreenStreakText">7 (x1.1)</p>
             </div>
@@ -511,4 +521,5 @@
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Loading this async breaks the multiplayer join via link -->
   <script type="module" src="main.js"></script>
 </body>
+
 </html>
