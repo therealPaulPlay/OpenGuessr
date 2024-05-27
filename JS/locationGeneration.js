@@ -108,7 +108,7 @@ async function getCoordsFromLocationServer() {
     //if the standard locations aren't already loaded
     if (!standardLocations) {
         try {
-            let locationEndpoint = "http://localhost/locations"; //temp for testing TODO
+            let locationEndpoint = "http://localhost:3000/locations"; //temp for testing TODO
         
             const response = await fetch(locationEndpoint, {
               method: 'GET',
