@@ -216,8 +216,8 @@ document.getElementById("map").addEventListener('mouseenter', handleMapHover);
 document.getElementById("map").addEventListener('mouseleave', handleMapUnhover);
 
 // Touch events
-mapElement.addEventListener('touchstart', handleMapHover);
-mapElement.addEventListener('touchend', handleMapUnhover);
+document.getElementById("map").addEventListener('touchstart', handleMapHover);
+document.getElementById("map").addEventListener('touchend', handleMapUnhover);
 
 
 //Guess / Confirm function ----------------------------------------------------------------------------------
