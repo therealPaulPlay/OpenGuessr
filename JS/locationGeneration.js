@@ -123,7 +123,7 @@ async function getCoordsFromLocationServer() {
         
             } else {
                 console.error("Location fetch failed. Server returned error:", response.status);
-                return await loadBackupLocations(error);
+                return await loadBackupLocations(response.status);
             }
           } catch (error) {
             console.error("Error occurred while fetching locations from server: ", error);
