@@ -1,8 +1,7 @@
-ownerdomain=openguessr.netlify.app
+ownerdomain=openguessr.com
 managerdomain=venatus.com
 
 venatus.com, 660fac9850e90801e258af1b, DIRECT
-
 
 #V 23.04.2024 VH
 
