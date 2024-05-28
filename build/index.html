@@ -455,15 +455,17 @@
       <iframe id="GuesserWindow" referrerpolicy="no-referrer-when-downgrade" frameborder="0" allow="accelerometer"
         style="border:0" src="/loader.html"></iframe>
       <!--map-->
-      <button id="floatingMapButton">
-        <img id="toggleMapImage" src="/IMG/map_icon.png" alt="Toggle the Map for guessing on mobile devices.">
-      </button>
-      <button id="revealCompass">reveal compass</button>
-      <div id="map"></div>
-      <div id="mapModeIndicator">
-        <button id="multiplayerLeave" class="accountButton accountClose">Leave Round</button>
-        <p id="mapModeText" class="mapModeText">Daily Challenge</p>
-        <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
+      <div id="mapHolder" class="regularMapSize">
+        <button id="revealCompass">reveal compass</button>
+        <button id="floatingMapButton">
+          <img id="toggleMapImage" src="/IMG/map_icon.png" alt="Toggle the Map for guessing on mobile devices.">
+        </button>
+        <div id="map"></div>
+        <div id="mapModeIndicator">
+          <button id="multiplayerLeave" class="accountButton accountClose">Leave Round</button>
+          <p id="mapModeText" class="mapModeText">Daily Challenge</p>
+          <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
+        </div>
       </div>
       <div id="countryGuesserSelector">
         <button class="countryGuesserHolder">
