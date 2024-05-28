@@ -309,6 +309,27 @@ h1, h2, h3 {
   text-wrap: nowrap;
 }
 
+#endScreenStreakRevive {
+  margin-top: auto;
+  margin-left: 0.75%;
+  margin-right: auto;
+  margin-bottom: 10px;
+  z-index: 11;
+  font-size: 25px;
+  padding: 30px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+  transition: filter 250ms ease;
+  user-select: none;
+  -webkit-user-select: none;
+  color: white;
+  background-color: hsla(236, 25%, 20%, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: none; /* default hidden */
+}
+
 #streakIcon {
   width: 30px;
   height: auto;
@@ -1234,44 +1255,26 @@ li {
   right: 0px; 
   margin-left: auto; 
   margin-right: auto; 
-  width: 970px;
+  width: 728px; /* changed from 970 to 728 */
   max-height: 92px;
   height: 90px;
   padding: 0;
   z-index: 11;
-  /*border: dashed rgba(255, 255, 255, 0.5);*/
 }
-
-/* 
-.adScaling {
-  width: 970px;
-  height: 90px;
-} */
 
 @media (max-width: 1500px) {
   #bottomFooterAds {
   width: 728px;
   height: 90px;
   }
-
-  /*
-  .adScaling {
-    width: 728px;
-    height: 90px;
-  } */
 }
 
 @media (max-width: 1175px) {
   #bottomFooterAds {
   width: 320px;
   height: 50px;
+  bottom: 32px;
   }
-
-  /*
-  .adScaling {
-    width: 320px;
-    height: 50px;
-  } */
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
@@ -1285,6 +1288,7 @@ li {
   #bottomFooterAds {
     width: 320px;
     height: 50px;
+    bottom: 12px;
   }
 
   .BottomBar {
@@ -1609,6 +1613,17 @@ li {
 
 #discordButton:hover {
   transform: scale(1.05);
+}
+
+.streakButton {
+  background-color: #01a001;
+  color: white;
+  min-height: 50px;
+}
+
+.streakButton:hover {
+  box-shadow: 0 0 25px rgba(15, 248, 15, 0.4);
+  filter: brightness(100%);
 }
 
 #redditButton {
