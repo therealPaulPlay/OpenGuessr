@@ -1204,7 +1204,6 @@ li {
 
 .MainDiv {
   height: 100dvh;
-  min-height: 75vh;
   display: flex;
   flex-direction: column;
   justify-content: center;
