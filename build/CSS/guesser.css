@@ -311,12 +311,12 @@ h1, h2, h3 {
 
 #endScreenStreakRevive {
   margin-top: auto;
-  margin-left: 0.75%;
+  margin-left: 0;
   margin-right: auto;
   margin-bottom: 10px;
   z-index: 11;
   font-size: 25px;
-  padding: 30px;
+  padding: 35px;
   padding-top: 15px;
   padding-bottom: 5px;
   border-radius: 10px;
