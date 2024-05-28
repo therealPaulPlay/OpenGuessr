@@ -1273,6 +1273,7 @@ function leaveMultiplayerRound() {
     }
 
     try { multiplayerTimer.stopTimer(); } catch { }; //has to be in try catch
+    try { clearInterval(countdownInterval); } catch { };
     multiplayer = false;
     setMultiplayerUI();
     showMultiplayerOverlay(false);
@@ -1421,6 +1422,7 @@ export function showMultiplayerOverlay(show, title, array) {
 }
 
 let multiplayerTimer;
+let countdownInterval;
 
 //this starts the round visually and code-wise for all peers (also host, but host also starts with startMultiplayerRound() )
 function multiplayerOverlayCountdown() {
@@ -1430,25 +1432,30 @@ function multiplayerOverlayCountdown() {
     const multiplayerTitle = document.getElementById("multiplayerTitle");
     let countdown = 3;
 
-    const countdownInterval = setInterval(function () {
+    countdownInterval = setInterval(function () {
         if (countdown > 0) {
             multiplayerTitle.textContent = `Starting... ${countdown}`;
             countdown--;
             playSound("match_countdown");
         } else {
             clearInterval(countdownInterval); // Stop the countdown
-            showMultiplayerOverlay(false); //hide the overlay --> round starts
-            document.getElementById("map").style.pointerEvents = "auto"; //re-enable the map
-            document.getElementById("confirmButton").textContent = "Guess";
-            try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
-            multiplayerTimer = startTimer(roundLength, multiplayerTimerExpired); //Start the timer
-            document.getElementById("mapModeText").textContent = "Multiplayer (Round: " + roundIndex + "/" + roundAmount + ")";
-            if (multiplayerRestriction != "standard" && multiplayerRestriction != undefined) {
-                document.getElementById("mapModeText").textContent += " (" + multiplayerRestriction+ ")";
+            if (multiplayer) {
+                showMultiplayerOverlay(false); //hide the overlay --> round starts
+                document.getElementById("map").style.pointerEvents = "auto"; //re-enable the map
+                document.getElementById("confirmButton").textContent = "Guess";
+                
+                try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
+                multiplayerTimer = startTimer(roundLength, multiplayerTimerExpired); //Start the timer
+                document.getElementById("mapModeText").textContent = "Multiplayer (Round: " + roundIndex + "/" + roundAmount + ")";
+                if (multiplayerRestriction != "standard" && multiplayerRestriction != undefined) {
+                    document.getElementById("mapModeText").textContent += " (" + multiplayerRestriction+ ")";
+                }
+                
+                totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host
+                setRestriction(multiplayerRestriction);
+                
+                playSound("match_countdown_start");
             }
-            totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host
-            setRestriction(multiplayerRestriction);
-            playSound("match_countdown_start");
         }
     }, 1000);
 }
