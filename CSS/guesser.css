@@ -2229,7 +2229,7 @@ all and (max-width: 1000px) {
 @media all and (orientation: portrait) {
 
   #mapHolder {
-    height: 45%;
+    height: 65%;
     width: calc(100% - 20px);
   }
 
