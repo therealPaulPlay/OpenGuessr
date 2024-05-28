@@ -198,6 +198,23 @@ try {
     useLegacyMouseOver = true;
 }
 
+// Enlarge map
+const mapHolder = document.getElementById("mapHolder");
+
+function handleMapHover() {
+  if (window.matchMedia("(orientation: landscape) and (min-width: 1250px)").matches) {
+    mapHolder.classList.add("mapHover");
+  }
+}
+
+function handleMapUnhover() {
+  mapHolder.classList.remove("mapHover");
+}
+
+document.getElementById("map").addEventListener('mouseenter', handleMapHover);
+document.getElementById("map").addEventListener('mouseleave', handleMapUnhover);
+
+
 //Guess / Confirm function ----------------------------------------------------------------------------------
 export let justPlayedDailyChallenge = false;
 
