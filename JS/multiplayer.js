@@ -1273,6 +1273,7 @@ function leaveMultiplayerRound() {
     }
 
     try { multiplayerTimer.stopTimer(); } catch { }; //has to be in try catch
+    try { clearInterval(countdownInterval); } catch { };
     multiplayer = false;
     setMultiplayerUI();
     showMultiplayerOverlay(false);

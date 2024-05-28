@@ -211,8 +211,13 @@ function handleMapUnhover() {
   mapHolder.classList.remove("mapHover");
 }
 
+// Mouse events
 document.getElementById("map").addEventListener('mouseenter', handleMapHover);
 document.getElementById("map").addEventListener('mouseleave', handleMapUnhover);
+
+// Touch events
+mapElement.addEventListener('touchstart', handleMapHover);
+mapElement.addEventListener('touchend', handleMapUnhover);
 
 
 //Guess / Confirm function ----------------------------------------------------------------------------------
