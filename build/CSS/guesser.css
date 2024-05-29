@@ -2058,6 +2058,16 @@ button {
   max-height: 100%;
 }
 
+#streakWatchAd {
+  padding: 10px 20px;
+}
+
+#streakAdDismiss {
+  padding: 10px 20px;
+  height: 50px;
+  margin-left: auto;
+}
+
 .regularMapSize {
   width: 30%;
   height: 30%;
@@ -2240,6 +2250,21 @@ all and (max-width: 1000px) {
     margin-inline: 10px;
   }
 
+  #streakHeader {
+    font-size: 30px;
+  }
+
+  #endScreenStreakRevive {
+    padding-top: 10px;
+  }
+
+  #streakWatchAd {
+    margin-top: 20px;
+  }
+
+  #streakAdDismiss {
+    margin-top: 20px;
+  }
 }
 
 /* big screens in portrait, like vertical monitors */
