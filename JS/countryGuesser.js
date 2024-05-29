@@ -53,12 +53,14 @@ export function setCountryGuesserCountry(country) {
         clearSelection();
         try {
             if (countryGuesserMode) {
+                let takenLocations = []; //to avoid duplicates amongst the 6 random / wrong ones (one of them will be replaced by the correct one)
                 for (let i = 1; i <= 6; i++) {
                     let countryItem = document.getElementById("countryTag" + i);
                     let countryFlag = document.getElementById("countryFlag" + i);
                     let randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
 
-                    while (Object.keys(countryEmojis)[randomCountryIndex] == selectedCountryGuesserCountry) {
+                    //avoid duplicates and avoid a random country matching the corect country
+                    while (Object.keys(countryEmojis)[randomCountryIndex] == selectedCountryGuesserCountry || takenLocations.includes(Object.keys(countryEmojis)[randomCountryIndex])) {
                         randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
                     }
 
@@ -66,6 +68,8 @@ export function setCountryGuesserCountry(country) {
 
                     countryItem.textContent = countryName;
                     countryFlag.textContent = countryEmojis[countryName];
+
+                    takenLocations.push(countryName);
 
                     if (countryName.length > 17) {
                         countryItem.textContent = countryName.slice(0, 14) + "...";
