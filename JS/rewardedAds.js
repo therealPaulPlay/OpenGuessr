@@ -6,6 +6,8 @@ import { playSound } from "./soundManager";
 let streakBanner = document.getElementById("endScreenStreakRevive");
 let streakWatchAd = document.getElementById("streakWatchAd");
 let streakText = document.getElementById("keepStreakText");
+let streakAdDismiss = document.getElementById("streakAdDismiss");
+let streakHeader = document.getElementById("streakHeader");
 streakWatchAd.addEventListener("click", showStreakAd);
 
 let formerStreak = 0;
@@ -14,33 +16,53 @@ setTimeout(() => {
     toggleStreakWindow(5); //show streak restore ui for testing
 }, 1000);
 
+streakAdDismiss.addEventListener("click", () => {
+    toggleStreakWindow();
+});
+
 function restoreStreak() {
     streakWatchAd.style.opacity = "0.5";
     streakWatchAd.style.pointerEvents = "none";
+    streakAdDismiss.style.opacity = "1";
+    streakAdDismiss.style.pointerEvents = "auto";
     streakText.innerHTML = `<p>You have restored your streak of <span id="streakKeepAmount" class="highlight">${formerStreak}</span> !</p>`;
+    streakHeader.textContent = "Streak restored!"
     // restore the old streak
 }
 
 function toggleStreakWindow(oldStreak) {
-    formerStreak = oldStreak;
+    if (typeof(oldStreak) == "number") {
+        formerStreak = oldStreak;
+    }
     streakWatchAd.style.opacity = "1";
     streakWatchAd.style.pointerEvents = "auto";
+    streakAdDismiss.style.opacity = "1";
+    streakAdDismiss.style.pointerEvents = "auto";
 
     playSound("basic_button");
 
+    streakHeader.textContent = "Streak lost!"
     streakText.innerHTML = `<p>Support us by watching an ad and keep your streak of <span id="streakKeepAmount" class="highlight">${formerStreak}</span> !</p>`;
 
     if (streakBanner.style.display == "block") {
-        streakBanner.style.display = "none";
+        streakBanner.style.maxHeight = "0px";
+        setTimeout(() => {
+            streakBanner.style.display = "none";
+        }, 250);
     } else {
         streakBanner.style.display = "block";
+        setTimeout(() => {
+            streakBanner.style.maxHeight = "1000px";
+        }, 20);
     }
 }
 
 function showStreakAd() {
-    initializeRewardAd();
     streakWatchAd.style.opacity = "0.5";
     streakWatchAd.style.pointerEvents = "none";
+    streakAdDismiss.style.opacity = "0.5";
+    streakAdDismiss.style.pointerEvents = "none";
+    initializeRewardAd();
     playSound("basic_button");
 }
 
@@ -105,6 +127,8 @@ function dismissRewardedAd(notAvailable) {
 
     streakWatchAd.style.opacity = "1";
     streakWatchAd.style.pointerEvents = "auto"; //restore watch ad buttons
+    streakAdDismiss.style.opacity = "1";
+    streakAdDismiss.style.pointerEvents = "auto";
     try {
         googletag.destroySlots([rewardedSlot]);
     } catch (error) {

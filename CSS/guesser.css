@@ -320,14 +320,17 @@ h1, h2, h3 {
   padding-top: 15px;
   padding-bottom: 5px;
   border-radius: 10px;
-  transition: filter 250ms ease;
+  max-height: 1000px;
+  transition: filter 250ms ease, max-height 250ms ease;
   user-select: none;
   -webkit-user-select: none;
   color: white;
   background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
   display: none; /* default hidden */
+  pointer-events: auto;
 }
 
 #streakIcon {
@@ -1367,6 +1370,7 @@ li {
   background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
 }
 
 #endScreenOpenLocation:hover {
@@ -1494,6 +1498,7 @@ li {
   background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
 }
 
 #endBottomArea {
@@ -1504,6 +1509,7 @@ li {
   bottom: 10px;
   margin-inline: 10px;
   flex-direction: column;
+  pointer-events: none;
 }
 
 #motivationText {
