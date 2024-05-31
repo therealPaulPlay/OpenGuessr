@@ -120,10 +120,10 @@ socialRedditButton.addEventListener("click", function () { playSound("basic_butt
 let socialDiscordButton = document.getElementById("discordButton");
 socialDiscordButton.addEventListener("click", function () { playSound("basic_button"); window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
 
-document.getElementById("categoryNew").addEventListener("click", function () { playSound("basic_button"); window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
-
 let privacyButton = document.getElementById("privacyButton");
 privacyButton.addEventListener("click", function () { playSound("basic_button"); window.location.href = "/legal.html" });
+
+document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); window.location.href = "/maps.html"; });
 
 //Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
@@ -340,78 +340,6 @@ document.getElementById("mobileCategoryButton").addEventListener("click", functi
     shrinkMapIfMobile();
     playSound("floating_button");
 });
-
-//Community Category Credits UI ----------------------------------------------------------------------------
-function addCommunityCreditTag() {
-    let communityCategories = document.getElementsByClassName("communityMap");
-    let communityCategoriesArray = Array.from(communityCategories); // Convert to array
-    for (let i = 0; i < communityCategoriesArray.length; i++) {
-        let infoButtonId = communityCategoriesArray[i].id + "Info";
-        communityCategoriesArray[i].innerHTML += `<img class="specialCategoryInfo" id="${infoButtonId}" alt="community category info" src="/IMG/info_icon.png">`;
-    }
-
-    //Event Listeners and text for credit popups for community maps
-    document.getElementById("mountainCategoryInfo").addEventListener("click", (event) => {
-        event.stopPropagation();
-        openCreditWindow("Mountains by Blockween", "Whether you like big and spiky or small and smooth mountains, Blockween's map satisfys the needs of even the most fanatic mountain enthusiasts.<br><br>This map is not only suitable for those who crave the thrill of reaching new heights in real life, but also gamers who want to impress their relatives with a half-true story about their amazing hiking trip. Either way, get your hiking boots ready!");
-    });
-
-    document.getElementById("indoorCategoryInfo").addEventListener("click", (event) => {
-        event.stopPropagation();
-        openCreditWindow("Indoor by Zander", "Rather than getting caught himself, our favourite fish definitely caught my eye with this amazing map. Most of our community prefers the inside world in real life, so why not create a map that perfectly suits the needs of these gamers?<br><br> Usually, people who participate in outdoor activities were able to use some of their knowledge for playing OpenGuessr, but this new map turns the tables.");
-    });
-
-    document.getElementById("stadiumCategoryInfo").addEventListener("click", (event) => {
-        event.stopPropagation();
-        openCreditWindow("Stadiums by Falip", "Falip introduced himself to the discord server with this amazing  stadium map. It includes a huge variety of stadium locations, satisfying even the most diehard sports fans. Can you name them all?");
-    });
-
-    document.getElementById("whetherspoonCategoryInfo").addEventListener("click", (event) => {
-        event.stopPropagation();
-        openCreditWindow("Whetherspoons by Jdawg", "It doesn't matter whether it's a Whetherspoon located in the center of London or at the edge of Norwhich, chances are, Jdawg has seen it - at least digitally. It's still unknown where his affinity for british pubs is coming from, but I for sure hope it isn't a sign of an alcohol addiction.");
-    });
-
-    document.getElementById("skyscraperCategoryInfo").addEventListener("click", (event) => {
-        event.stopPropagation();
-        openCreditWindow("Skyscrapers by QwidziT", "Do you remember how obsessed you were with mega structures when you were a kid? No matter the age, everybody loves tall shiny buildings – skyscrapers – and this map is full of these magnificent beauties. Furthermore, this map is perfectly suited towards beginners, as you'll always have a tall navigational aid. ");
-    });
-
-    document.getElementById("racetrackCategoryInfo").addEventListener("click", (event) => {
-        event.stopPropagation();
-        openCreditWindow("Racetracks by Magnus1stcool", "Magnus is the ultimate racing aficionado. Not a single race escapes his keen eye - he can name them all off the top of his head. His collection of circuits is a testament to his passion, meticulously curated, presumably even without the need for google searches. ");
-    });
-
-    document.getElementById("brutalismCategoryInfo").addEventListener("click", (event) => {
-        event.stopPropagation();
-        openCreditWindow("Modern Brutalism by Monobani", "Monobani compiled a list of locations featuring modern-brutalist architecture. All of them are curated to have an aesthetic appeal and invite the player to delve into the history that shapes the way we design our public spaces. ");
-    });
-
-    document.getElementById("abandonedCategoryInfo").addEventListener("click", (event) => {
-        event.stopPropagation();
-        openCreditWindow("Abandoned Places by Monobani", "Explore a world of forgotten relics with this map, featuring lost and abandoned structures from across the globe. Each location confines you to a single, eerie space, inviting you to carefully investigate your surroundings and think outside the box to uncover hidden stories. ");
-    });
-}
-
-window.addEventListener('DOMContentLoaded', addCommunityCreditTag);
-
-let creditWindow = document.getElementById("creditWindow");
-
-function openCreditWindow(title, description) {
-    if (title != undefined) {
-        document.getElementById("creditPopupTitle").innerHTML = title;
-        document.getElementById("creditPopupText").innerHTML = description;
-        playSound("basic_button");
-    }
-
-    creditWindow.style.display = "block";
-    document.getElementById("blackBackground").style.visibility = "visible";
-}
-
-document.getElementById("creditWindowClose").addEventListener("click", () => {
-    creditWindow.style.display = "none";
-    playSound("basic_button");
-    document.getElementById("blackBackground").style.visibility = "hidden";
-})
 
 //Prevent automatic "last button press" with space bar or enter key ------------------------------------------------------------------
 document.addEventListener('keydown', function(event) {

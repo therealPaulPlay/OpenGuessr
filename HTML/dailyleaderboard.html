@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
     <link rel="icon" href="favicon.ico">
     <title>Daily Challenge - OpenGuessr</title>
     <script type="module" src="userAPI.js"></script>
@@ -264,7 +264,8 @@
         </div>
         <div class="infoNote">
             <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
-            <p>To play the daily challenge, select the daily challenge category in the "Map Categories" menu on the main screen.</p>
+            <p>To play the daily challenge, select the daily challenge category in the "Map Categories" menu on the main
+                screen.</p>
         </div>
         <div id="container" class="container"></div>
     </div>
@@ -358,6 +359,28 @@
     }
 
     loadLeaderboard();
+
+    //Google Analytics 4 (simplified implementation) -------------------------------------------------------------------------
+    window['gtag_enable_tcf_support'] = true;
+
+    const imported = document.createElement('script');
+    imported.src = "https://www.googletagmanager.com/gtag/js?id=G-DXD64B7ZDX";
+    document.head.appendChild(imported);
+
+    try {
+        window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+
+        gtag('js', new Date());
+
+        gtag('config', 'G-DXD64B7ZDX', {
+            cookie_domain: location.hostname,
+            cookie_flags: "SameSite=None; Secure",
+        });
+    } catch (error) {
+        console.error("Error loading GA4: " + error);
+    }
+
 
 </script>
 

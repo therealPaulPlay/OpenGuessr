@@ -56,6 +56,7 @@ module.exports = {
         { from: "./JS/errorHandling.js", to: "./" },
         { from: "./JS/signupScreen.js", to: "./" },
         { from: "./JS/userAPI.js", to: "./" },
+        { from: "./JS/mapScreen.js", to: "./" },
       ],
     }),
   ],

@@ -9,7 +9,7 @@ import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
-const Category = {
+let Category = {
     STANDARD: "standard",
     CAPITAL: "capital",
     FAMOUS: "famous",
@@ -36,22 +36,73 @@ const Category = {
     DAILY: "daily",
     HARD: "hard",
     COUNTRY: "country",
-    MOUNTAIN: "mountain",
-    INDOOR: "indoor",
     FINLAND: "finland",
     ISRAEL: "israel",
     CZECHIA: "czechia",
-    STADIUM: "stadium",
-    WHETHERSPOON: "whetherspoon",
-    SKYSCRAPER: "skyscraper",
-    RACETRACK: "racetrack",
-    ABANDONED: "abandoned",
-    BRUTALISM: "brutalism"
 };
 
 export let mapCategory = Category.STANDARD; // Default category
 
-// Attach event listeners dynamically
+//Community Categories Generation ----------------------------------------------------------------------------
+function loadCommunityCategories() {
+    try {
+        let mapArray = [];
+        mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
+        
+        //if key doesn't exist yet, add a few default picks
+        if (localStorage.getItem("addedCommunityMaps") == null) {
+            mapArray = ["Indoor", "Airports", "Bridges", "Racetracks", "Modern Brutalism"];
+            localStorage.setItem("addedCommunityMaps", JSON.stringify(mapArray));
+        }
+
+        mapArray.forEach((element) => {
+            let categoryMenu = document.getElementById("communityMapArea");
+            categoryMenu.innerHTML += `<button class="category accountExclusive accountLock communityMap" id="community_${element.toLowerCase()}Category"
+            type="button">${element}</button>`;
+
+            //add to categories
+            Category["COMMUNITY_" + element.toUpperCase()] = "community_" + element.toLowerCase();
+        });
+
+    } catch (error) {
+        console.error("Error loading community maps from localstorage: " + error);
+    }
+
+    addCommunityCreditTag();
+}
+
+
+function addCommunityCreditTag() {
+    let communityCategories = document.getElementsByClassName("communityMap");
+    let communityCategoriesArray = Array.from(communityCategories); // Convert to array
+    for (let i = 0; i < communityCategoriesArray.length; i++) {
+        let removeButtonId = communityCategoriesArray[i].id + "Remove";
+        communityCategoriesArray[i].innerHTML += `<img class="specialCategoryInfo" id="${removeButtonId}" alt="remove category" src="/IMG/delete_icon.png">`;
+        document.getElementById(removeButtonId).addEventListener("click", (event) => {
+            event.stopPropagation();
+            removeSelectedMap(communityCategoriesArray[i].textContent);
+            communityCategoriesArray[i].remove();
+        });
+    }
+}
+
+function removeSelectedMap(name) {
+    try {
+        let mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
+        const index = mapArray.indexOf(name);
+        if (index !== -1) {
+            mapArray.splice(index, 1);
+            localStorage.setItem("addedCommunityMaps", JSON.stringify(mapArray));
+        }
+    } catch (error) {
+        console.error("Error removing community map: " + error);
+    }
+}
+
+loadCommunityCategories();
+
+// Attach event listeners dynamically -------------------------------------------------------------
+
 for (const category in Category) {
     const button = document.getElementById(`${category.toLowerCase()}Category`);
     if (button) {
@@ -111,7 +162,7 @@ export function checkGenerationTypeAndGenerate() {
         showMultiplayerOverlay(false);
 
         //pick between json and maps api loading depending on the category type
-        if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard" && mapCategory != "country") {
+        if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard" && mapCategory != "country" && !mapCategory.includes("community")) {
             generateNewLocation("JSON");
         } else if (mapCategory == "daily") {
             if (checkDailyChallengeCompletion() == "available") {
@@ -132,6 +183,9 @@ export function checkGenerationTypeAndGenerate() {
 
         } else if (mapCategory == "standard") {
             generateNewLocation("SDK");
+
+        } else if (mapCategory.includes("community")) {
+            generateNewLocation("COMMUNITY");
 
         } else {
             console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
