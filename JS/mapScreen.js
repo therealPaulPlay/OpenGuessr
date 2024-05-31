@@ -8,11 +8,11 @@ document.getElementById("uploadButton").addEventListener("click", () => {
 //This will have to be replaced by an API call in the future TODO -----------------------------------------------------
 async function loadCommunityMaps() {
     try {
-        const response = await fetch("./JSON/communityMapMetadata.json");
+        const response = await fetch("./JSON/communityMaps/MapData.json");
         const data = await response.json();
 
         data.communityMaps.forEach(map => {
-            addMap(map.name, map.author, map.favourite, map.description);
+            addMap(map.name, map.author, map.favourite, map.author, map.description);
         });
     } catch (error) {
         console.error("Error loading community maps: " + error);
@@ -20,7 +20,7 @@ async function loadCommunityMaps() {
 }
 
 //Load the map elements one by one ----------------------------------------------------------------------
-function addMap(name, creator, fav, description) {
+function addMap(name, creator, fav, author, description) {
     let container = fav ? "featured-map" : "community-maps";
 
     let mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
@@ -52,9 +52,9 @@ function addMap(name, creator, fav, description) {
     const descArea = document.createElement("div");
     descArea.classList.add("map-desc");
     const descIcon = document.createElement("span");
-    descIcon.textContent = "Info";
+    descIcon.textContent = "About";
     descArea.addEventListener("click", () => {
-        showDescriptionWindow(name, description);
+        showDescriptionWindow(name, author, description);
     });
 
     const addButton = document.createElement("button");
@@ -64,21 +64,18 @@ function addMap(name, creator, fav, description) {
     }
 
     if (mapArray.includes(name)) {
-        addButton.textContent = "-";
-        addButton.classList.add("map-added");
+        addButton.innerHTML = `<img src="./IMG/heart_icon.png" alt="add map" class="heart-icon">`;
     } else {
-        addButton.textContent = "+";
+        addButton.innerHTML = `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`;
     }
 
     addButton.addEventListener("click", () => {
-        if (addButton.textContent == "+") {
+        if (addButton.innerHTML == `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`) {
             addSelectedMap(name);
-            addButton.textContent = "-";
-            addButton.classList.add("map-added");
+            addButton.innerHTML = `<img src="./IMG/heart_icon.png" alt="add map" class="heart-icon">`;
         } else {
             removeSelectedMap(name);
-            addButton.textContent = "+";
-            addButton.classList.remove("map-added");
+            addButton.innerHTML = addButton.innerHTML = `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`;
         }
     });
 
@@ -116,9 +113,10 @@ function removeSelectedMap(name) {
     }
 }
 
-function showDescriptionWindow(title, desc) {
+function showDescriptionWindow(title, author, desc) {
     document.getElementById("descriptionPopup").style.display = "flex";
     document.getElementById("descHeader").textContent = title;
+    document.getElementById("descAuthor").textContent = "by " + author;
     document.getElementById("descText").textContent = desc;
 }
 
