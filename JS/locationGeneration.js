@@ -17,7 +17,9 @@ export async function getLocationCoordinates(type) {
     } else if (type == "DAILY") {
         return await getCoordsFromServerDaily();
     } else if (type == "FROMHOST") {
-        return coordsFromHost;
+        return coordsFromHost; 
+    } else if (type == "COMMUNITY") {
+        return await getCommunityMapCoordinates();
     } else {
         console.error("Incorrect Location type set in locationGeneration.js");
     }
@@ -37,7 +39,13 @@ let guessIndex;
 async function loadLocationJSON(jsonName) {
     if (currentlyLoadedJson != jsonName) {
         try {
-            let response = await fetch("./JSON/" + jsonName + "Locations.json");
+            let response = null;
+
+            if (jsonName.includes("community_")) {
+                response = await fetch("./JSON/communityMaps/" + jsonName.replace("community_", "").replace(" ", "") + "Locations.json");
+            } else {
+                response = await fetch("./JSON/" + jsonName + "Locations.json");
+            }
 
             if (!response.ok) {
                 throw new Error("JSON fetch failed.");
@@ -49,7 +57,9 @@ async function loadLocationJSON(jsonName) {
             listOfLocations = jsonResponse;
 
         } catch (error) {
-            errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
+            //choose standard and instantly reload (if categories get renamed / get deleted-> this happens)
+            localStorage.setItem("selectedCategory", "standard");
+            window.location.reload();
             console.error(error);
         }
     }
@@ -203,4 +213,11 @@ async function getCoordsFromServerDaily() {
         errorPopup("Challenge API Error", "There was an error fetching the daily challenge location", "Challenge Fetch failed.", true);
         return null;
     }
+}
+
+//Get community map coordinates ---------------------------------------------------------------------------
+
+async function getCommunityMapCoordinates() {
+    //Json files could later be fetched from a server here
+    return await getCoordsFromJSON(mapCategory);
 }

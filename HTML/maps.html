@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <link rel="icon" href="favicon.ico">
+    <title>Maps - OpenGuessr</title>
+    <script type="module" src="userAPI.js"></script>
+    <style>
+        @font-face {
+            font-family: Barlow;
+            src: url('/FONTS/BarlowCondensed-Medium.ttf');
+        }
+
+        :root {
+            --brand-color: #ff0808;
+        }
+
+        h1,
+        h2,
+        h3 {
+            font-weight: 400;
+        }
+
+        p {
+            color: white;
+            font-size: 25px;
+            margin: 0;
+            margin-top: auto;
+            margin-bottom: auto;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Barlow, Futura, Arial, sans-serif;
+            font-size: 20px;
+            font-weight: 400;
+            height: 100%;
+            overflow-y: auto;
+            background-color: #07071e;
+            padding: 0;
+            margin: 0;
+        }
+
+        .center {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        button {
+            color: inherit;
+            height: inherit;
+            border: none;
+            padding: 0;
+            font: inherit;
+            cursor: pointer;
+            outline: inherit;
+        }
+
+        #navbar {
+            position: fixed;
+            z-index: 100;
+            width: 100%;
+            align-items: center;
+            top: 0;
+            display: flex;
+            justify-content: space-around;
+            height: 100px;
+            background-color: rgba(42, 44, 71, 0.9);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            box-shadow: 0 2px 20px rgba(5, 6, 10, 0.5);
+        }
+
+        .standardButton {
+            cursor: pointer;
+            width: fit-content;
+            font-size: 22px;
+            padding: 10px 20px;
+            min-height: 35px;
+            text-align: center;
+            white-space: nowrap;
+            transition: filter 250ms ease, box-shadow 250ms ease;
+            margin: 2.5px;
+            border-radius: 5px;
+            user-select: none;
+            -webkit-user-select: none;
+            background-color: white;
+            color: black;
+            opacity: 100%;
+        }
+
+        .standardButton:hover {
+            filter: brightness(0.7);
+        }
+
+        #navbarTitle {
+            position: absolute;
+            left: 50%;
+            margin: auto;
+            font-size: 50px;
+            transform: translateX(-50%);
+            color: white;
+        }
+
+        .backButton {
+            cursor: pointer;
+            transition: all 250ms ease;
+            font-family: Barlow, Futura, Sans-Serif;
+            opacity: 100%;
+            padding: 10px 20px;
+            font-size: 25px;
+            color: black;
+            width: fit-content;
+            height: fit-content;
+            background-color: white;
+            border-radius: 10px;
+            margin: 20px 20px;
+            margin-right: auto;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .backButton:hover {
+            filter: brightness(0.7);
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: calc(100% - 60px);
+            max-width: 1200px;
+            margin: 0 auto;
+            margin-bottom: 100px;
+            border-radius: 20px;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding-top: 0;
+            margin-top: 150px;
+        }
+
+        .sub-container {
+            width: calc(100% - 50px);
+            background-color: #4d4163;
+            border-radius: 9px;
+            padding: 20px 10px;
+            margin-bottom: 40px;
+            margin-top: 15px;
+        }
+
+        .header {
+            text-align: center;
+            font-size: 40px;
+            color: white;
+            margin-bottom: 30px;
+            margin-top: 10px;
+        }
+
+        .map-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 12px;
+            padding: 10px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: background-color 250ms ease;
+            max-width: 300px;
+        }
+
+        .map-item:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .ourFavourites {
+            background-color: rgb(141, 111, 158);
+        }
+
+        .ourFavourites:hover {
+            background-color: rgb(157, 126, 175);
+        }
+
+        .map-info {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .map-name {
+            font-size: 22px;
+            white-space: nowrap;
+            max-width: 160px;
+            overflow: hidden;
+        }
+
+        .map-author {
+            font-size: 18px;
+            color: rgba(255, 255, 255, 0.5);
+            overflow: hidden;
+            max-width: 110px;
+            white-space: nowrap;
+        }
+
+        .map-desc {
+            display: flex;
+            align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 5px 7px;
+            margin-left: auto;
+            cursor: pointer;
+            user-select: none;
+            transition: background-color 250ms ease;
+        }
+
+        .map-desc:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .map-desc span {
+            margin-inline: 5px;
+        }
+
+        .map-container {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        .add-button {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            padding: 5px 7px;
+            cursor: pointer;
+            user-select: none;
+            margin-left: 10px;
+            font-size: 25px;
+            width: 35px;
+            line-height: 0.9;
+            transition: background-color 250ms ease;
+        }
+
+        .fav-add-button {
+            color: black;
+            background-color: rgba(235, 169, 169, 0.2);
+        }
+
+        .heart-icon {
+            width: 22px;
+            height: auto;
+            vertical-align: -1px;
+        }
+
+        #uploadButton {
+            margin-left: auto;
+            margin-right: 20px;
+            display: none; /* Can be added later */
+        }
+
+        .add-button:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .primaryButtonHighlight {
+            background-color: var(--brand-color);
+            color: white;
+        }
+
+        #community-maps {
+            width: calc(100% - 80px);
+            margin-bottom: 50px;
+            padding-inline: 20px;
+        }
+
+        .uiWindow {
+            display: block;
+            width: 45%;
+            min-width: 300px;
+            max-width: 600px;
+            max-height: 90%;
+            font-size: 25px;
+            padding: 25px 25px 10px;
+            border-radius: 10px;
+            text-align: left;
+            z-index: 999;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background-color: #333343;
+            box-shadow: 0 2px 40px rgba(5, 6, 10, 0.7);
+            color: white;
+        }
+
+        .popupHolder {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(12, 12, 12, 0.75);
+            z-index: 100;
+        }
+
+        .closeButton {
+            margin-top: 40px;
+            float: right;
+            margin-right: -10px;
+        }
+        
+        #descHeader {
+            margin-top: 10px;
+            margin-bottom: -2px;
+        }
+
+        #descAuthor {
+            margin-bottom: 30px;
+            font-size: 30px;
+        }
+
+        #descriptionPopup {
+            display: none;
+        }
+
+        @media all and (orientation: portrait),
+        all and (max-width: 800px) {
+            #navbarTitle {
+                font-size: 27px;
+            }
+
+            .main-container {
+                width: calc(100% - 20px);
+            }
+
+            #backButton {
+                font-size: 20px;
+                padding: 10px 10px;
+            }
+
+            #uploadButton {
+                font-size: 20px;
+                padding: 10px 10px;
+            }
+
+            p {
+                font-size: 20px;
+            }
+
+            .header {
+                font-size: 27px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav id="navbar">
+        <button id="backButton" class="backButton">← Back</button>
+        <h1 id="navbarTitle">Community Maps</h1>
+        <button id="uploadButton" class="backButton primaryButtonHighlight">+ Upload</button>
+    </nav>
+    <div id="descriptionPopup" class="popupHolder">
+        <div id="description" class="uiWindow">
+            <h1 id="descHeader">Default map</h1>
+            <p id="descAuthor">by Paul</p>
+            <p id="descText">This is a wonderful description of the default map. It features big default locations and small default
+                locations. Wow.</p>
+            <button id="descClose" class="standardButton closeButton">close</button>
+        </div>
+    </div>
+    <div class="main-container">
+        <div class="sub-container">
+            <h2 class="header">Spotlight:</h2>
+            <div id="featured-map" class="map-container">
+                <!-- Featured maps will be injected here -->
+            </div>
+        </div>
+        <h2 class="header">All Community Maps:</h2>
+        <div id="community-maps" class="map-container">
+            <!-- Community maps will be injected here -->
+            <p id="errorMessage">Error loading community maps.</p>
+        </div>
+    </div>
+
+    <script src="mapScreen.js" type="module"></script>
+</body>
+
+</html>
