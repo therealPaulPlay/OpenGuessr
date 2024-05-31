@@ -120,10 +120,10 @@ socialRedditButton.addEventListener("click", function () { playSound("basic_butt
 let socialDiscordButton = document.getElementById("discordButton");
 socialDiscordButton.addEventListener("click", function () { playSound("basic_button"); window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
 
-document.getElementById("categoryNew").addEventListener("click", function () { playSound("basic_button"); window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
-
 let privacyButton = document.getElementById("privacyButton");
 privacyButton.addEventListener("click", function () { playSound("basic_button"); window.location.href = "/legal.html" });
+
+document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); window.location.href = "/maps.html"; });
 
 //Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;

@@ -142,10 +142,10 @@
         }
 
         .sub-container {
-            width: calc(100% - 30px);
+            width: calc(100% - 50px);
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 9px;
-            padding: 20px 0;
+            padding: 20px 10px;
             margin-bottom: 40px;
             margin-top: 15px;
         }
@@ -162,15 +162,18 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            background-color: rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.2);
             color: white;
-            border-radius: 8px;
+            border-radius: 12px;
             padding: 10px;
             width: 100%;
             box-sizing: border-box;
             transition: transform 0.2s ease-in-out;
-            max-width: 250px;
-            border: 3px solid rgba(255,255,255,0.2)
+            max-width: 265px;
+        }
+
+        .ourFavourites {
+            background-color: rgba(255, 178, 178, 0.2);
         }
 
         .map-item:hover {
@@ -185,12 +188,8 @@
 
         .map-name {
             font-weight: bold;
-            background-image: linear-gradient(0.60turn, white, #ebcaff);
-            -webkit-background-clip: text;
-            background-clip: text;
-            -webkit-text-fill-color: transparent;
             white-space: nowrap;
-            max-width: 120px;
+            max-width: 130px;
             overflow: hidden;
         }
 
@@ -199,13 +198,24 @@
             color: rgb(230, 230, 230);
         }
 
-        .map-stars {
+        .map-desc {
             display: flex;
             align-items: center;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 5px 7px;
+            margin-left: auto;
+            cursor: pointer;
+            user-select: none;
+            transition: filter 250ms ease;
         }
 
-        .map-stars span {
-            margin-left: 5px;
+        .map-desc:hover {
+            filter: brightness(0.7);
+        }
+
+        .map-desc span {
+            margin-inline: 5px;
         }
 
         .map-container {
@@ -216,15 +226,24 @@
             flex-wrap: wrap;
         }
 
-        .star-button {
-            background-color: var(--brand-color);
-            color: white;
+        .add-button {
+            background-color: white;
+            color: black;
             border: none;
             border-radius: 5px;
             padding: 5px 10px;
             cursor: pointer;
-            margin-left: 20px;
-            transition: background-color 0.3s;
+            user-select: none;
+            margin-left: 10px;
+            font-size: 25px;
+            width: 35px;
+            line-height: 0.9;
+            transition: filter 250ms ease;
+        }
+
+        .fav-add-button {
+            color: black;
+            background-color: #eba9a9;
         }
 
         #uploadButton {
@@ -232,8 +251,8 @@
             margin-right: 20px;
         }
 
-        .star-button:hover {
-            background-color: #e00707;
+        .add-button:hover {
+            filter: brightness(0.7);
         }
 
         .primaryButtonHighlight {
@@ -244,9 +263,29 @@
         #community-maps {
             width: 100%;
             margin-bottom: 50px;
+            padding-inline: 10px;
         }
 
-        @media all and (orientation: portrait) {
+        .uiWindow {
+            display: none;
+            /* used with block */
+            width: 45%;
+            min-width: 300px;
+            max-width: 600px;
+            max-height: 90%;
+            font-size: 25px;
+            padding: 25px 25px 10px;
+            border-radius: 10px;
+            text-align: left;
+            z-index: 999;
+            overflow-x: hidden;
+            overflow-y: auto;
+            background-color: rgba(52, 55, 94, 1);
+            box-shadow: 0 2px 40px rgba(5, 6, 10, 0.7);
+            color: white;
+        }
+
+        @media all and (orientation: portrait), all and (max-width: 800px) {
             #navbarTitle {
                 font-size: 30px;
             }
@@ -291,66 +330,7 @@
         </div>
     </div>
 
-    <script>
-        document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" });
-        
-        document.getElementById('uploadButton').addEventListener('click', () => {
-            // Logic to open upload window or modal
-            alert('Upload window opened');
-        });
-
-        function addMap(containerId, mapId, name, creator, stars) {
-            const mapItem = document.createElement('div');
-            mapItem.classList.add('map-item');
-
-            const mapInfo = document.createElement('div');
-            mapInfo.classList.add('map-info');
-
-            const mapName = document.createElement('div');
-            mapName.classList.add('map-name');
-            mapName.textContent = name;
-
-            const mapAuthor = document.createElement('div');
-            mapAuthor.classList.add('map-author');
-            mapAuthor.textContent = `by ${creator}`;
-
-            mapInfo.appendChild(mapName);
-            mapInfo.appendChild(mapAuthor);
-
-            const mapStars = document.createElement('div');
-            mapStars.classList.add('map-stars');
-            const starIcon = document.createElement('span');
-            starIcon.textContent = '⭐';
-            const starCount = document.createElement('span');
-            starCount.textContent = stars;
-
-            const starButton = document.createElement('button');
-            starButton.classList.add('star-button');
-            starButton.textContent = 'Star';
-            starButton.addEventListener('click', () => {
-                // Logic to handle starring the map
-                alert(`You starred the map: ${name}`);
-            });
-
-            mapStars.appendChild(starIcon);
-            mapStars.appendChild(starCount);
-
-            mapItem.appendChild(mapInfo);
-            mapItem.appendChild(mapStars);
-            mapItem.appendChild(starButton);
-
-            document.getElementById(containerId).appendChild(mapItem);
-        }
-
-        // Example of adding featured maps
-        addMap('featured-map', 1, 'Beautiful Scenery', 'User123', 5);
-        addMap('featured-map', 2, 'Historical Sites', 'User456', 3);
-
-        // Example of adding community maps
-        addMap('community-maps', 3, 'City Lights', 'User789', 7);
-        addMap('community-maps', 4, 'Mountain Trails', 'User321', 4);
-        addMap('community-maps', 5, 'Ocean Views', 'User654', 6);
-    </script>
+    <script src="mapScreen.js" type="module"></script>
 </body>
 
 </html>
