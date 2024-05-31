@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="initial-scale=1,maximum-scale=1" />
     <link rel="icon" href="favicon.ico">
-    <title>Community Maps - OpenGuessr</title>
+    <title>Maps - OpenGuessr</title>
     <script type="module" src="userAPI.js"></script>
     <style>
         @font-face {
@@ -171,7 +171,7 @@
             transition: background-color 0.3s ease-in-out;
             max-width: 265px;
         }
-        
+
         .map-item:hover {
             background-color: rgba(255, 255, 255, 0.3);
         }
@@ -193,7 +193,7 @@
         .map-name {
             font-weight: bold;
             white-space: nowrap;
-            max-width: 130px;
+            max-width: 140px;
             overflow: hidden;
         }
 
@@ -261,6 +261,9 @@
         #uploadButton {
             margin-left: auto;
             margin-right: 20px;
+            font-style: italic;
+            pointer-events: none;
+            opacity: 50%;
         }
 
         .add-button:hover {
@@ -279,8 +282,7 @@
         }
 
         .uiWindow {
-            display: none;
-            /* used with block */
+            display: block;
             width: 45%;
             min-width: 300px;
             max-width: 600px;
@@ -292,14 +294,42 @@
             z-index: 999;
             overflow-x: hidden;
             overflow-y: auto;
-            background-color: rgba(52, 55, 94, 1);
+            background-color: rgb(60, 60, 71);
             box-shadow: 0 2px 40px rgba(5, 6, 10, 0.7);
             color: white;
         }
 
-        @media all and (orientation: portrait), all and (max-width: 800px) {
+        .popupHolder {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            right: 0;
+            left: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+
+        .closeButton {
+            margin-top: 25px;
+            float: right;
+            margin-right: -10px;
+        }
+        
+        #descHeader {
+            margin-top: 10px;
+        }
+
+        #descriptionPopup {
+            display: none;
+        }
+
+        @media all and (orientation: portrait),
+        all and (max-width: 800px) {
             #navbarTitle {
-                font-size: 30px;
+                font-size: 27px;
             }
 
             #backButton {
@@ -327,11 +357,19 @@
     <nav id="navbar">
         <button id="backButton" class="backButton">← Back</button>
         <h1 id="navbarTitle">Community Maps</h1>
-        <button id="uploadButton" class="backButton primaryButtonHighlight">+ Upload</button>
+        <button id="uploadButton" class="backButton primaryButtonHighlight">+ Add (soon)</button>
     </nav>
+    <div id="descriptionPopup" class="popupHolder">
+        <div id="description" class="uiWindow">
+            <h1 id="descHeader">Default map</h1>
+            <p id="descText">This is a wonderful description of the default map. It features big default locations and small default
+                locations. Wow.</p>
+            <button id="descClose" class="standardButton closeButton">close</button>
+        </div>
+    </div>
     <div class="main-container">
         <div class="sub-container">
-            <h2 class="header">Our Favourites:</h2>
+            <h2 class="header">Map Spotlight:</h2>
             <div id="featured-map" class="map-container">
                 <!-- Featured maps will be injected here -->
             </div>

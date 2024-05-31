@@ -5,11 +5,25 @@ document.getElementById("uploadButton").addEventListener("click", () => {
     alert("Upload window opened");
 });
 
-function addMap(containerId, name, creator, fav) {
-    let mapArray = localStorage.getItem("addedCommunityMaps");
-    if (!mapArray) {
-        mapArray = [];
+//This will have to be replaced by an API call in the future TODO -----------------------------------------------------
+async function loadCommunityMaps() {
+    try {
+        const response = await fetch("./JSON/communityMapMetadata.json");
+        const data = await response.json();
+
+        data.communityMaps.forEach(map => {
+            addMap(map.name, map.author, map.favourite, map.description);
+        });
+    } catch (error) {
+        console.error("Error loading community maps: " + error);
     }
+}
+
+//Load the map elements one by one ----------------------------------------------------------------------
+function addMap(name, creator, fav, description) {
+    let container = fav ? "featured-map" : "community-maps";
+
+    let mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 
     if (document.getElementById("errorMessage")) {
         document.getElementById("errorMessage").remove();
@@ -18,7 +32,7 @@ function addMap(containerId, name, creator, fav) {
     const mapItem = document.createElement("div");
     mapItem.classList.add("map-item");
     if (fav) {
-        mapItem.classList.add("ourFavourites")
+        mapItem.classList.add("ourFavourites");
     }
 
     const mapInfo = document.createElement("div");
@@ -35,13 +49,12 @@ function addMap(containerId, name, creator, fav) {
     mapInfo.appendChild(mapName);
     mapInfo.appendChild(mapAuthor);
 
-    const mapStars = document.createElement("div");
-    mapStars.classList.add("map-desc");
+    const descArea = document.createElement("div");
+    descArea.classList.add("map-desc");
     const descIcon = document.createElement("span");
     descIcon.textContent = "Info";
-    descIcon.addEventListener("click", () => {
-        // Logic to handle starring the map
-        alert(`Description for: ${name}`);
+    descArea.addEventListener("click", () => {
+        showDescriptionWindow(name, description);
     });
 
     const addButton = document.createElement("button");
@@ -58,7 +71,6 @@ function addMap(containerId, name, creator, fav) {
     }
 
     addButton.addEventListener("click", () => {
-        // Logic to handle starring the map
         if (addButton.textContent == "+") {
             addSelectedMap(name);
             addButton.textContent = "-";
@@ -70,53 +82,49 @@ function addMap(containerId, name, creator, fav) {
         }
     });
 
-    mapStars.appendChild(descIcon);
+    descArea.appendChild(descIcon);
 
     mapItem.appendChild(mapInfo);
-    mapItem.appendChild(mapStars);
+    mapItem.appendChild(descArea);
     mapItem.appendChild(addButton);
 
-    document.getElementById(containerId).appendChild(mapItem);
+    document.getElementById(container).appendChild(mapItem);
 }
 
-// Example of adding featured maps
-addMap("featured-map", "Beautiful Scenery", "User123", true);
-addMap("featured-map", "Historical Sites", "User456", true);
-
-// Example of adding community maps
-addMap("community-maps", "City Lights", "User789", false);
-addMap("community-maps", "Mountain Trails", "User321", false);
-addMap("community-maps", "Ocean Views", "User654", false);
-
-
-//selected maps are being stored in localstorage and use an array as the format ["mapName", "mapName2"..]
 function addSelectedMap(name) {
     try {
-        let mapArray = [];
-        const tempArrayfromStorage = JSON.parse(localStorage.getItem("addedCommunityMaps"));
-        if (Array.isArray(tempArrayfromStorage)) {
-            mapArray = tempArrayfromStorage;
+        let mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
+        if (!mapArray.includes(name)) {
+            mapArray.push(name);
+            localStorage.setItem("addedCommunityMaps", JSON.stringify(mapArray));
         }
-        mapArray.push(name);
-        localStorage.setItem("addedCommunityMaps", JSON.stringify(mapArray));
     } catch (error) {
-        console.error("Error adding community map in mapScreen.js: " + error);
+        console.error("Error adding community map: " + error);
     }
 }
 
 function removeSelectedMap(name) {
     try {
-        let mapArray = [];
-        const tempArrayfromStorage = JSON.parse(localStorage.getItem("addedCommunityMaps"));
-        if (Array.isArray(tempArrayfromStorage)) {
-            mapArray = tempArrayfromStorage;
-        }
+        let mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
         const index = mapArray.indexOf(name);
         if (index !== -1) {
             mapArray.splice(index, 1);
+            localStorage.setItem("addedCommunityMaps", JSON.stringify(mapArray));
         }
-        localStorage.setItem("addedCommunityMaps", JSON.stringify(mapArray));
     } catch (error) {
-        console.error("Error removing community map in mapScreen.js: " + error);
+        console.error("Error removing community map: " + error);
     }
 }
+
+function showDescriptionWindow(title, desc) {
+    document.getElementById("descriptionPopup").style.display = "flex";
+    document.getElementById("descHeader").textContent = title;
+    document.getElementById("descText").textContent = desc;
+}
+
+document.getElementById("descClose").addEventListener("click", () => {
+    document.getElementById("descriptionPopup").style.display = "none";
+});
+
+// Load community maps on page load
+loadCommunityMaps();
