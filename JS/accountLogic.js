@@ -303,7 +303,7 @@ function calculateXPGain(distance, category) {
   } else if (category == "country") {
     return checkIfGuessWasCorrect() ? 1000 : 0;
 
-  } else if (category == "famous" || category == "indoor" || category == "mountain" || category == "whetherspoon" || category == "skyscraper" || category == "stadium" || category == "racetrack" || category == "brutalism" || category == "abandoned") {
+  } else if (category.includes("community")) {
     return Math.round(1000 * ((0.998036) ** distance));
 
   } else if (category == "israel" || category == "austria" || category == "slovakia" || category == "czechia") { //very small countries, more reduced xp
