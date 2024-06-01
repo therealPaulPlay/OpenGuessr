@@ -35,6 +35,10 @@ function addMap(name, creator, fav, author, description) {
         mapItem.classList.add("ourFavourites");
     }
 
+    mapItem.addEventListener("click", () => {
+        instantPlayPopup(name);
+    });
+
     const mapInfo = document.createElement("div");
     mapInfo.classList.add("map-info");
 
@@ -53,7 +57,8 @@ function addMap(name, creator, fav, author, description) {
     descArea.classList.add("map-desc");
     const descIcon = document.createElement("span");
     descIcon.textContent = "About";
-    descArea.addEventListener("click", () => {
+    descArea.addEventListener("click", (event) => {
+        event.stopPropagation();
         showDescriptionWindow(name, author, description);
     });
 
@@ -69,7 +74,8 @@ function addMap(name, creator, fav, author, description) {
         addButton.innerHTML = `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`;
     }
 
-    addButton.addEventListener("click", () => {
+    addButton.addEventListener("click", (event) => {
+        event.stopPropagation();
         if (addButton.innerHTML == `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`) {
             addSelectedMap(name);
             addButton.innerHTML = `<img src="./IMG/heart_icon.png" alt="add map" class="heart-icon">`;
@@ -122,6 +128,22 @@ function showDescriptionWindow(title, author, desc) {
 
 document.getElementById("descClose").addEventListener("click", () => {
     document.getElementById("descriptionPopup").style.display = "none";
+});
+
+function instantPlayPopup(mapName) {
+    document.getElementById("instantPlayPopup").style.display = "flex";
+    document.getElementById("instantPlayHeader").textContent = "Play " + mapName + "?";
+
+    document.getElementById("instantPlayConfirm").addEventListener("click", () => {
+        localStorage.setItem("selectedCategory", "community_" + mapName.toLowerCase()); 
+        /* category variable names are always lowercase and have community_ in front of them, if they are community maps */
+        addSelectedMap(mapName);
+        window.location.href = "/";
+    });
+}
+
+document.getElementById("instantPlayClose").addEventListener("click", () => {
+    document.getElementById("instantPlayPopup").style.display = "none";
 });
 
 // Load community maps on page load
