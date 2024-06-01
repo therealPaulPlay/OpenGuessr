@@ -115,12 +115,12 @@ for (const category in Category) {
 // Function to create a closure for each category button listener
 function createCategoryChangeListener(category) {
     return function () {
-        changeCategory(category);
+        changeCategory(category, true);
         playSound("button_juicy");
     };
 }
 
-export function changeCategory(category) {
+export function changeCategory(category, regenerate) {
     // Disable all category buttons
     const categoryButtons = document.querySelectorAll("[id$='Category']");
     categoryButtons.forEach(button => button.classList.add("categoryDisabled"));
@@ -143,7 +143,9 @@ export function changeCategory(category) {
         toggleCategoryMenu(true);
     }, 300);
 
-    checkGenerationTypeAndGenerate();
+    if (regenerate) {
+        checkGenerationTypeAndGenerate();
+    }
 }
 
 
@@ -202,7 +204,7 @@ export function checkGenerationTypeAndGenerate() {
                     generateNewLocation("SDK");
                 } else {
                     //if the map category is an unsupported multiplayer category, such as daily or hard, switch to standard
-                    changeCategory("standard"); //this will re-run checkGenerationTypeAndGenerate
+                    changeCategory("standard", true); //this will re-run checkGenerationTypeAndGenerate
                     setTimeout(function () {
                         errorPopup("Unsupported Multiplayer Map", "This map category is not available for multiplayer and was automatically changed to Standard.", "Map unsupported", false);
                     }, 3500);
@@ -228,7 +230,7 @@ function loadMapCategory() {
 }
 
 loadMapCategory();
-changeCategory(mapCategory);
+changeCategory(mapCategory, true);
 
 
 //Next round / new location -------------------------------------------------------------------------------------
