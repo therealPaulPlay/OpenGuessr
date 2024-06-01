@@ -134,7 +134,6 @@
             width: calc(100% - 60px);
             max-width: 1200px;
             margin: 0 auto;
-            margin-bottom: 100px;
             border-radius: 20px;
             background-color: rgba(255, 255, 255, 0.1);
             padding-top: 0;
@@ -170,6 +169,8 @@
             box-sizing: border-box;
             transition: background-color 250ms ease;
             max-width: 300px;
+            user-select: none;
+            cursor: pointer;
         }
 
         .map-item:hover {
@@ -262,7 +263,8 @@
         #uploadButton {
             margin-left: auto;
             margin-right: 20px;
-            display: none; /* Can be added later */
+            display: none;
+            /* Can be added later */
         }
 
         .add-button:hover {
@@ -316,7 +318,16 @@
             float: right;
             margin-right: -10px;
         }
-        
+
+        .playButton {
+            margin-top: 40px;
+            float: right;
+            margin-right: -10px;
+            margin-left: 20px;
+            background-color: rgb(151, 94, 184);
+            color: white;
+        }
+
         #descHeader {
             margin-top: 10px;
             margin-bottom: -2px;
@@ -329,6 +340,38 @@
 
         #descriptionPopup {
             display: none;
+        }
+
+
+        a:link {
+            color: #FFFFFF;
+        }
+
+        a:visited {
+            color: #FFFFFF;
+        }
+
+        a:hover {
+            color: #FFFFFF;
+        }
+
+        #submissionInfo {
+            margin-bottom: 50px;
+            opacity: 50%;
+            font-size: 22px;
+            width: 100%;
+            text-align: center;
+        }
+
+        #instantPlayPopup {
+            display: none;
+        }
+
+        #bottomGlow {
+            width: 100%;
+            height: 250px;
+            display: flex;
+            background: linear-gradient(transparent, rgba(141, 111, 158, 0.1));
         }
 
         @media all and (orientation: portrait),
@@ -356,7 +399,7 @@
             }
 
             .header {
-                font-size: 27px;
+                font-size: 30px;
             }
         }
     </style>
@@ -372,9 +415,18 @@
         <div id="description" class="uiWindow">
             <h1 id="descHeader">Default map</h1>
             <p id="descAuthor">by Paul</p>
-            <p id="descText">This is a wonderful description of the default map. It features big default locations and small default
+            <p id="descText">This is a wonderful description of the default map. It features big default locations and
+                small default
                 locations. Wow.</p>
             <button id="descClose" class="standardButton closeButton">close</button>
+        </div>
+    </div>
+    <div id="instantPlayPopup" class="popupHolder">
+        <div id="description" class="uiWindow">
+            <h1 id="instantPlayHeader">Default map</h1>
+            <p id="instantPlayText">This will add the map to your favorites and start the game immediately. Continue?</p>
+            <button id="instantPlayConfirm" class="standardButton playButton">Play</button>
+            <button id="instantPlayClose" class="standardButton closeButton">close</button>
         </div>
     </div>
     <div class="main-container">
@@ -390,7 +442,9 @@
             <p id="errorMessage">Loading... Please wait.</p>
         </div>
     </div>
-
+    <div id="bottomGlow">
+        <p id="submissionInfo">Submit maps in our <a href="https://discord.gg/CSc3MbDrZ8">discord server</a>!</p>
+    </div>
     <script src="mapScreen.js" type="module"></script>
 </body>
 
