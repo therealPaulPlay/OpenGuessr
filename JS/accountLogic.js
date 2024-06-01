@@ -136,6 +136,7 @@ function signout() {
   localStorage.removeItem("id");
   localStorage.removeItem("username");
   localStorage.removeItem("experience");
+  localStorage.removeItem("selectedPin"); //also reset selected pin, as that is xp-based
   window.location.reload(); //reload website, so that UI etc. will be reset and all the loaded values aren't still showing
 }
 
