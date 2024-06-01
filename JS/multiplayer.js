@@ -714,7 +714,7 @@ async function attemptDuelJoin(index) {
         multiplayerSelectorBack.style.pointerEvents = "none";
         multiplayerSelectorClose.style.pointerEvents = "none";
         try {
-            changeCategory("standard");
+            changeCategory("standard", false); //this will only change the category and not generate! (to prevent skip of first round)
         } catch (e) {
             console.error("Error changing category to standard for multiplayer duels. Error: " + e);
         }
