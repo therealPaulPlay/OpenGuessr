@@ -304,14 +304,14 @@ function calculateXPGain(distance, category) {
   } else if (category == "country") {
     return checkIfGuessWasCorrect() ? 1000 : 0;
 
-  } else if (category.includes("community")) {
-    return Math.round(1000 * ((0.998036) ** distance));
+  } else if (category.includes("community") || category == "famous") {
+    return Math.round(1500 * ((0.998036) ** distance)); //up to 1500 XP for community maps & famous places -> they are easier to memorize
 
   } else if (category == "israel" || category == "austria" || category == "slovakia" || category == "czechia") { //very small countries, more reduced xp
-    return Math.round(5000 * ((0.978036) ** distance))
+    return Math.round(5000 * ((0.978036) ** distance));
 
   } else {
-    return Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
+    return Math.round(5000 * ((0.988036) ** distance));//reduced XP for bad guesses in country locations (for better balance)
   }
 }
 
