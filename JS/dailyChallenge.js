@@ -25,10 +25,12 @@ export function setDailyChallengeUI(enable) {
         document.getElementById("multiplayerLeave").style.display = "none";
         floatingSocialButton.style.opacity = "0.5";
         floatingSocialButton.style.pointerEvents = "none";
+        document.getElementById("revealCompass").style.marginBottom = "-21px";
     } else {
         document.getElementById("mapModeIndicator").style.display = "none";
         floatingSocialButton.style.opacity = "1";
         floatingSocialButton.style.pointerEvents = "auto";
+        document.getElementById("revealCompass").style.marginBottom = "-25px";
     }
 }
 
