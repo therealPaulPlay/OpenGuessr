@@ -176,7 +176,7 @@ export function toggleCategoryMenu(alwaysClose) {
             document.getElementById("extendedNavbarContent").scrollTop = "0";
             document.getElementById("extendedNavbarGradient").style.display = "block";
             extendedNavbar.classList.add("expanded");
-            categoryMenuButton.innerText = "Map Categories ▲";
+            categoryMenuButton.innerText = "Maps ▲";
             categoriesExpanded = true;
         } else {
             setTimeout(function () {
@@ -184,7 +184,7 @@ export function toggleCategoryMenu(alwaysClose) {
                 document.getElementById("extendedNavbarGradient").style.display = "none";
             }, 75);
             extendedNavbar.classList.remove("expanded");
-            categoryMenuButton.innerText = "Map Categories ▼";
+            categoryMenuButton.innerText = "Maps ▼";
             categoriesExpanded = false;
         }
     } catch {
