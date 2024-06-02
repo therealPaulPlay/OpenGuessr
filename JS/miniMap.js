@@ -208,12 +208,15 @@ function handleMapHover() {
 }
 
 function handleMapUnhover() {
-  mapHolder.classList.remove("mapHover");
+    if (!document.getElementById("revealCompass").matches(':hover')) {
+        mapHolder.classList.remove("mapHover");
+    }
 }
 
 // Mouse events
 document.getElementById("map").addEventListener('mouseenter', handleMapHover);
 document.getElementById("map").addEventListener('mouseleave', handleMapUnhover);
+document.getElementById("revealCompass").addEventListener('mouseleave', handleMapUnhover);
 
 // Touch events
 document.getElementById("map").addEventListener('touchstart', handleMapHover);
