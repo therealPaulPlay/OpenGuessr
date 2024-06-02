@@ -361,7 +361,7 @@ const countryEmojis = {
     "Turkey": "🇹🇷",
     "Trinidad and Tobago": "🇹🇹",
     "Tuvalu": "🇹🇻",
-    "Taiwan, Republic of China": "🇹🇼",
+    "Taiwan": "🇹🇼",
     "Tanzania": "🇹🇿",
     "Ukraine": "🇺🇦",
     "Uganda": "🇺🇬",
