@@ -244,6 +244,13 @@ nextRound.addEventListener("click", () => {
     }}
 );
 
+document.addEventListener("keydown", function(event) {
+    if (event.key === " " && isElementClickable(document.getElementById("nextRound")) && resultScreenEnabled) {
+        transitionToStart();
+        playSound("basic_button");
+    }
+});
+
 let alreadyTransitioning = false;
 
 export function transitionToStart() {
@@ -279,4 +286,24 @@ export function transitionToStart() {
     } else {
         console.warn("CategoryMenu.js: Already transitioning to start!");
     }
+}
+
+//check if next round button would be clickable
+function isElementClickable(element) {
+    return element && element.offsetParent !== null &&
+           getComputedStyle(element).visibility !== 'hidden' &&
+           (() => {
+               let el = element;
+               while (el) {
+                   if (getComputedStyle(el).pointerEvents === 'none') {
+                       return false;
+                   }
+                   el = el.parentElement;
+               }
+               const rect = element.getBoundingClientRect();
+               const centerX = rect.left + rect.width / 2;
+               const centerY = rect.top + rect.height / 2;
+               const topElement = document.elementFromPoint(centerX, centerY);
+               return topElement === element || element.contains(topElement);
+           })();
 }
