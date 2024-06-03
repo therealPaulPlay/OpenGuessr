@@ -374,6 +374,10 @@
             background: linear-gradient(transparent, rgba(141, 111, 158, 0.1));
         }
 
+        #minScreenHeight {
+            min-height: calc(100vh - 400px);
+        }
+
         @media all and (orientation: portrait),
         all and (max-width: 800px) {
             #navbarTitle {
@@ -429,17 +433,19 @@
             <button id="instantPlayClose" class="standardButton closeButton">close</button>
         </div>
     </div>
-    <div class="main-container">
-        <div class="sub-container">
-            <h2 class="header">Spotlight:</h2>
-            <div id="featured-map" class="map-container">
-                <!-- Featured maps will be injected here -->
+    <div id="minScreenHeight">
+        <div class="main-container">
+            <div class="sub-container">
+                <h2 class="header">Spotlight:</h2>
+                <div id="featured-map" class="map-container">
+                    <!-- Featured maps will be injected here -->
+                </div>
             </div>
-        </div>
-        <h2 class="header">All Community Maps:</h2>
-        <div id="community-maps" class="map-container">
-            <!-- Community maps will be injected here -->
-            <p id="errorMessage">Loading... Please wait.</p>
+            <h2 class="header">All Community Maps:</h2>
+            <div id="community-maps" class="map-container">
+                <!-- Community maps will be injected here -->
+                <p id="errorMessage">Loading... Please wait.</p>
+            </div>
         </div>
     </div>
     <div id="bottomGlow">
