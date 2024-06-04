@@ -1,5 +1,5 @@
 import { resMap, generateNewLocation } from "./main.js";
-import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
+import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
@@ -284,24 +284,4 @@ export function transitionToStart() {
     } else {
         console.warn("CategoryMenu.js: Already transitioning to start!");
     }
-}
-
-//check if next round button would be clickable
-function isElementClickable(element) {
-    return element && element.offsetParent !== null &&
-           getComputedStyle(element).visibility !== 'hidden' &&
-           (() => {
-               let el = element;
-               while (el) {
-                   if (getComputedStyle(el).pointerEvents === 'none') {
-                       return false;
-                   }
-                   el = el.parentElement;
-               }
-               const rect = element.getBoundingClientRect();
-               const centerX = rect.left + rect.width / 2;
-               const centerY = rect.top + rect.height / 2;
-               const topElement = document.elementFromPoint(centerX, centerY);
-               return topElement === element || element.contains(topElement);
-           })();
 }

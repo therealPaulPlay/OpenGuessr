@@ -1296,7 +1296,6 @@ function leaveMultiplayerRound() {
     document.getElementById("confirmButton").textContent = "Guess";
     document.getElementById("confirmButton").style.pointerEvents = "auto";
     document.getElementById("confirmButton").style.visibility = "visible";
-    document.getElementById("map").style.pointerEvents = "auto";
 
     if (mapCategory != "country") {
         document.getElementById("map").style.visibility = "visible";
@@ -1443,7 +1442,6 @@ function multiplayerOverlayCountdown() {
             clearInterval(countdownInterval); // Stop the countdown
             if (multiplayer) {
                 showMultiplayerOverlay(false); //hide the overlay --> round starts
-                document.getElementById("map").style.pointerEvents = "auto"; //re-enable the map
                 document.getElementById("confirmButton").textContent = "Guess";
                 
                 try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)

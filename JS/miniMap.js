@@ -2,7 +2,7 @@ import { loadResultMap, calculateDistances } from "./main.js";
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed } from "./multiplayer.js";
-import { hideToggleMapButtonIfMobile } from "./mainUI.js";
+import { hideToggleMapButtonIfMobile, isElementClickable } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 
 // Initialize the map with correct provider
@@ -58,7 +58,7 @@ export function resetMap() {
 }
 
 function changeMapTypeButtonLabel() {
-    let mapTypeBaseText = "Map Type:";
+    let mapTypeBaseText = "Minimap:";
     document.getElementById("mapTypeButton").innerHTML =
         `${mapTypeBaseText} ${mapType.charAt(0).toUpperCase() + mapType.slice(1)}`;
 }
@@ -226,7 +226,6 @@ export function confirmButtonClicks() {
         document.getElementById("confirmButton").textContent = "Waiting...";
         document.getElementById("confirmButton").style.opacity = "0.5";
         document.getElementById("confirmButton").style.pointerEvents = "none";
-        document.getElementById("map").style.pointerEvents = "none";
         document.getElementById("map").style.visibility = "hidden";
         hideToggleMapButtonIfMobile(true);
         document.getElementById("revealCompass").style.visibility = "hidden";
@@ -236,12 +235,13 @@ export function confirmButtonClicks() {
 }
 
 // Confirm Button with Spacebar and a few checks
-document.getElementById("map").addEventListener("keydown", function (event) {
+document.addEventListener("keydown", function (event) {
     if (event.key === " ") {
-        if (confirmBTN.style.pointerEvents == "auto" && confirmBTN.style.visibility == "visible") {
+        if (confirmBTN.style.pointerEvents == "auto" && confirmBTN.style.visibility == "visible" && isElementClickable(document.getElementById("map"))) {
             confirmButtonClicks();
         } else {
             console.warn("Cannot click on confirm button - pointer events is none.");
         }
     }
 });
+

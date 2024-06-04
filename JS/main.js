@@ -89,13 +89,13 @@ let farDistances;
 let extraMsg;
 let destinationMarker;
 
+//Haversine formula, takes spherical nature of planet into account
 export function calculateDistances(mapsLat, mapsLong) {
-
-    const R = 6371; // Radius of the Earth in kilometers
-    const lat1 = mapsLat * Math.PI / 180; // Convert degrees to radians
-    const lat2 = mapsLong * Math.PI / 180;
-    const lon1 = currentStreetviewLat * Math.PI / 180;
-    const lon2 = currentStreetviewLong * Math.PI / 180;
+    const R = 6371; // Radius of the Earth in km
+    const lat1 = currentStreetviewLat * Math.PI / 180; // Convert degrees to radians
+    const lon1 = currentStreetviewLong * Math.PI / 180;
+    const lat2 = mapsLat * Math.PI / 180;
+    const lon2 = mapsLong * Math.PI / 180;
 
     const dLat = lat2 - lat1;
     const dLon = lon2 - lon1;
@@ -110,7 +110,6 @@ export function calculateDistances(mapsLat, mapsLong) {
 
     compareDistances(distance);
 }
-
 
 function compareDistances(distance) {
     //compares how big the distance is and enables result screen with a message.
@@ -306,8 +305,6 @@ export function loadResultMap(playersLat, playersLong) {
 
         // Set the region to center between the markers and include both
         let region;
-
-        console.log("Center Lat:", centerLat, "Center Long:", centerLong);
 
         try {
             region = new mapkit.CoordinateRegion(
