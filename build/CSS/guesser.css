@@ -1066,8 +1066,8 @@ li {
   transition: opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
 }
 
-.leaflet-bottom, .leaflet-control-attribution {
-  pointer-events: none;
+.mk-map-view {
+  border-radius: 10px;
 }
 
 #map:hover {
@@ -1527,7 +1527,6 @@ map::selection {
   z-index: 10;
   height: 100%;
   width: 100%;
-  display: flex;
   align-items: top;
   background: #d5e8eb;
 }
@@ -1538,6 +1537,8 @@ map::selection {
   z-index: 1000;
   width: 100%;
   opacity: 30%;
+  position: absolute;
+  top: 0;
 }
 
 #nextRound {

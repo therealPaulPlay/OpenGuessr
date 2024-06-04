@@ -264,8 +264,6 @@ export function transitionToStart() {
             document.getElementById("BeforeOverlay").style.opacity = "0";
             document.getElementById("BeforeOverlay").style.visibility = "visible";
             document.getElementById("BeforeOverlay").style.opacity = "100";
-            resMap.stop(); //stop the flying animation
-            setTimeout(function () { resMap.stop() }, 200)
             checkGenerationTypeAndGenerate();
 
             setTimeout(disableResultScreen, 200);
