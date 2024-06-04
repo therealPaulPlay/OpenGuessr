@@ -244,7 +244,7 @@ nextRound.addEventListener("click", () => {
     }}
 );
 
-document.addEventListener("keydown", function(event) {
+window.addEventListener("keydown", function(event) {
     if (event.key === " " && isElementClickable(document.getElementById("nextRound")) && resultScreenEnabled) {
         transitionToStart();
         playSound("basic_button");

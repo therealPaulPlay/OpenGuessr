@@ -1186,7 +1186,10 @@ export function peerSendsHost(type, message) {
         });
 
     } catch (error) {
-        errorPopup("Error sending message", "Couldn't send message to host.", "Host unreachable");
+        if (multiplayer) {
+            errorPopup("Error sending message", "Couldn't send message to host.", "Host unreachable");
+        }
+        
         console.error("Error messaging host: " + error);
     }
 

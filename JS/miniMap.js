@@ -15,7 +15,7 @@ let marker;
 let map;
 
 export let mapsJWTToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY2OEo1WkhOVDcifQ.eyJvcmlnaW4iOlsiaHR0cHM6Ly9vcGVuZ3Vlc3NyLmNvbSIsImh0dHBzOi8vZGV2Lm9wZW5ndWVzc3IuY29tIiwiaHR0cDovL2xvY2FsaG9zdDozMDAwIiwiaHR0cHM6Ly9vZy12ZW5hdHVzLXRlc3QubmV0bGlmeS5hcHAiLCJodHRwczovL29wZW5ndWVzc3IubmV0bGlmeS5hcHAiXSwiaWF0IjoxNzE3NTM2OTcyLCJleHAiOjE3NDkwNzI5NzIsImlzcyI6IjRVUTUzTUJTSkwifQ.wm1K1wol6VYfEx0lT31MeQ8YeEqFjqqO2kUtWs0qekW0hZQ39oAYt8A6XkyD0DhteW34vLTMdzIj8uWh-Y8_hw";
-export let colorArray = ["#fc1c1c", "#fc851e", "#f002c0", "#11c8d9", "#9f55fa", "#deb602"]; //pin colors (red, orange, pink...)
+export let colorArray = ["#fc1c1c", "#fc851e", "#f002c0", "#11c8d9", "#9f55fa", "#cca700"]; //pin colors (red, orange, pink...)
 
 function initializeMap() {
     mapkit.init({
@@ -107,6 +107,7 @@ function loadMap() {
         new mapkit.CoordinateSpan(180, 360) // Whole world visible
     );
 
+    //Add event listener for map click here! Only allowed after initialization
     map.element.addEventListener("click", function (event) {
         if (event.target.parentNode !== map.element) {
             return;
@@ -235,7 +236,7 @@ export function confirmButtonClicks() {
 }
 
 // Confirm Button with Spacebar and a few checks
-document.addEventListener("keydown", function (event) {
+window.addEventListener("keydown", function (event) {
     if (event.key === " ") {
         if (confirmBTN.style.pointerEvents == "auto" && confirmBTN.style.visibility == "visible" && isElementClickable(document.getElementById("map"))) {
             confirmButtonClicks();
