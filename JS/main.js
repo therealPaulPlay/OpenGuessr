@@ -2,7 +2,7 @@
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
 
-import { resetMap, getMapSource, mapsJWTToken } from './miniMap.js';
+import { resetMap, getMapSource, mapsJWTToken, colorArray } from './miniMap.js';
 import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
@@ -189,6 +189,9 @@ mapkit.init({
     language: "en-US" // can only be changed on page load / initialization
 });
 
+map.showsZoomControl = false;
+map.showsMapTypeControl = false;
+
 // Create the map object outside of the function
 export let resMap = new mapkit.Map("resultMap");
 
@@ -221,8 +224,14 @@ export function loadResultMap(playersLat, playersLong) {
 
     // this places the "correct" marker that actually reflects the target location
     try {
-        destinationMarker = new mapkit.MarkerAnnotation(curLatLng, { color: "#008000" });
+
+        destinationMarker = new mapkit.MarkerAnnotation(curLatLng, {
+            color: "white",
+            glyphColor: "#18d95b",
+            glyphImage: { 1: `./IMG/result_marker.png` },
+        });
         resMap.addAnnotation(destinationMarker);
+
     } catch (error) {
         console.error("Error placing the destination marker: " + error);
     }
@@ -232,7 +241,13 @@ export function loadResultMap(playersLat, playersLong) {
         polyList = [curLatLng, playerLatLng];
 
         // this places the Player Marker (where the player thinks the location is)
-        const playerMarker = new mapkit.MarkerAnnotation(playerLatLng, { color: "#FF0000" });
+
+        const playerMarker = new mapkit.MarkerAnnotation(playerLatLng, {
+            color: "white",
+            glyphColor: colorArray[selectedPinIndex],
+            glyphImage: { 1: `./IMG/apple_your_marker${selectedPinIndex}.png` },
+        });
+
         resMap.addAnnotation(playerMarker);
         // this draws the line to the goal
         const polyline = new mapkit.PolylineOverlay(polyList);
@@ -260,7 +275,11 @@ export function loadResultMap(playersLat, playersLong) {
             // only place the multiplayer marker if it isn't your marker!
             if (newMarkerLat != playersLat || newMarkerLong != playersLong) {
                 const multiplayerLatLng = new mapkit.Coordinate(Number(newMarkerLat), Number(newMarkerLong));
-                const multiplayerMarker = new mapkit.MarkerAnnotation(multiplayerLatLng, { color: "#FFA500" });
+                const multiplayerMarker = new mapkit.MarkerAnnotation(multiplayerLatLng, {
+                    color: "#e3e3e3",
+                    glyphColor: colorArray[newMarkerPinIndex],
+                    glyphImage: { 1: `./IMG/apple_your_marker${newMarkerPinIndex}.png` },
+                });
                 resMap.addAnnotation(multiplayerMarker);
                 const multiplayerPolyList = [curLatLng, multiplayerLatLng]; // takes the cur lat lng from the guess (the destination) + the current guess from other player
                 const multiplayerPolyline = new mapkit.PolylineOverlay(multiplayerPolyList);

@@ -14,8 +14,8 @@ const MapType = {
 let marker;
 let map;
 
-export let mapsJWTToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY2OEo1WkhOVDcifQ.eyJpYXQiOjE3MTc1MTQ2NDYsImV4cCI6MTc0OTA1MDY0NiwiaXNzIjoiNFVRNTNNQlNKTCJ9.JbVLlottm9RmnJ_1jgx-Hc2qcwsGLARpO-PqbMAmnuYYQBkXBLuFrT1s1uMmHIXxNeoWOOFf847cC3nKRjFGiw";
-
+export let mapsJWTToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY2OEo1WkhOVDcifQ.eyJvcmlnaW4iOlsiaHR0cHM6Ly9vcGVuZ3Vlc3NyLmNvbSIsImh0dHBzOi8vZGV2Lm9wZW5ndWVzc3IuY29tIiwiaHR0cDovL2xvY2FsaG9zdDozMDAwIiwiaHR0cHM6Ly9vZy12ZW5hdHVzLXRlc3QubmV0bGlmeS5hcHAiLCJodHRwczovL29wZW5ndWVzc3IubmV0bGlmeS5hcHAiXSwiaWF0IjoxNzE3NTM2OTcyLCJleHAiOjE3NDkwNzI5NzIsImlzcyI6IjRVUTUzTUJTSkwifQ.wm1K1wol6VYfEx0lT31MeQ8YeEqFjqqO2kUtWs0qekW0hZQ39oAYt8A6XkyD0DhteW34vLTMdzIj8uWh-Y8_hw";
+export let colorArray = ["#fc1c1c", "#fc851e", "#f002c0", "#11c8d9", "#9f55fa", "#deb602"]; //pin colors (red, orange, pink...)
 
 function initializeMap() {
     mapkit.init({
@@ -26,6 +26,10 @@ function initializeMap() {
     });
 
     map = new mapkit.Map("map");
+
+    map.showsZoomControl = false;
+    map.showsMapTypeControl = false;
+    //hiding the compass does not work, even though it lists that option in the docs
 }
 
 // Load map type from local storage or set default
@@ -91,6 +95,9 @@ function changeMapType() {
 function loadMap() {
     if (!map) {
         initializeMap(); // Load map with correct type
+    } else {
+        map.destroy();
+        initializeMap();
     }
 
     map.mapType = mapType;
@@ -140,12 +147,10 @@ function onMapClick(coordinate) {
     mapMarkerLat = coordinate.latitude;
     mapMarkerLong = coordinate.longitude;
 
-    let colorArray = ["red", "orange", "pink", "blue", "violet", "yellow"];
-
     marker = new mapkit.MarkerAnnotation(coordinate, {
         color: "white",
         glyphColor: colorArray[selectedPinIndex],
-        glyphImage: { 1: `./IMG/your_marker${selectedPinIndex}.png` },
+        glyphImage: { 1: `./IMG/apple_your_marker${selectedPinIndex}.png` },
     });
 
     map.addAnnotation(marker);
@@ -210,13 +215,13 @@ export function confirmButtonClicks() {
 
     if (!multiplayer) {
         calculateDistances(mapMarkerLat, mapMarkerLong);
-        
+
         try {
             loadResultMap(mapMarkerLat, mapMarkerLong);
         } catch (error) {
             console.error("Error in confirmButton Clicks when trying to load the result map: " + error);
         }
-        
+
     } else {
         document.getElementById("confirmButton").textContent = "Waiting...";
         document.getElementById("confirmButton").style.opacity = "0.5";
