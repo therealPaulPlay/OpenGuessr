@@ -16,7 +16,7 @@ const Provider = {
 
 let map = L.map('map', { zoomControl: false }).setView([40.321160, 10.252812], 1.5); //starting position
 
-let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web/default/WEBMERCATOR/{z}/{y}/{x}.png"]
+let mapProvider = ["https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web/default/WEBMERCATOR/{z}/{y}/{x}.png"]
 
 //English should be the new default!
 let providerIndex = Provider.ENGLISH;
@@ -193,7 +193,7 @@ function onMapHover() {
 }
 
 try {
-    new ResizeObserver(onMapHover).observe(document.getElementById("mapHolder"));
+    new ResizeObserver(onMapHover).observe(document.getElementById("map"));
 } catch (error) {
     console.error("Resize oberser unsupported. Err: " + error);
     useLegacyMouseOver = true;
