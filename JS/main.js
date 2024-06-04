@@ -287,25 +287,42 @@ export function loadResultMap(playersLat, playersLong) {
         });
     }
 
-    if (!countryGuesserMode || multiplayer) {
+    if (countryGuesserMode) {
+        //only center the destination marker, there is no player marker
+        try {
+            resMap.region = new mapkit.CoordinateRegion(
+                new mapkit.Coordinate(currentStreetviewLat - 8, currentStreetviewLong), // -8 to move the view up sligthly for phones
+                new mapkit.CoordinateSpan(50, 50)
+            );
+        } catch (e) {
+            console.error("Error creating region for country guessr in main.js: " + e);
+        }
+    }
 
+    if (!countryGuesserMode || multiplayer) {
         // Calculate the center coordinate between the guess marker and the destination marker
         const centerLat = (currentStreetviewLat + playersLat) / 2;
         const centerLong = (currentStreetviewLong + playersLong) / 2;
-
+    
         // Calculate the span to include both markers on the map
-        const spanLat = Math.abs(currentStreetviewLat - playersLat) * 2.5; // Adjust the multiplier for desired zoom level
-        const spanLong = Math.abs(currentStreetviewLong - playersLong) * 2.5; // Adjust the multiplier for desired zoom level
-
+        const spanLat = Math.abs(currentStreetviewLat - playersLat) * 3; // Adjust padding as needed
+        const spanLong = Math.abs(currentStreetviewLong - playersLong) * 3; 
+    
         // Calculate the distance between the two points
         const distance = Math.sqrt(Math.pow((currentStreetviewLat - playersLat), 2) + Math.pow((currentStreetviewLong - playersLong), 2));
-
-        // Use a formula to calculate the zoom level based on the distance
-        const zoomLevel = Math.log2(window.innerWidth * 0.5 / distance);
-
-        // Set the region to center between the markers and include both
+    
+        const minDistance = 0;
+        const maxDistance = 5000; // Maximum distance for zooming (5000km)
+        const minZoomLevel = 0;
+        const maxZoomLevel = 10; 
+        const zoomScaleFactor = 200;
+    
+        // Calculate the zoom level with scaling
+        let zoomLevel = minZoomLevel + (maxZoomLevel - minZoomLevel) * (distance - minDistance) / (maxDistance - minDistance);
+        zoomLevel *= zoomScaleFactor;
+    
         let region;
-
+    
         try {
             region = new mapkit.CoordinateRegion(
                 new mapkit.Coordinate(centerLat, centerLong),
@@ -315,10 +332,10 @@ export function loadResultMap(playersLat, playersLong) {
             console.error("Error creating region in main.js: " + e);
             console.log(centerLat + " and long: " + centerLong);
         }
-
+    
         // Set the initial region without animation
         resMap.region = region;
-
+    
         // Animate to the result marker with a slight zoom in after a delay
         setTimeout(() => {
             const resultRegion = new mapkit.CoordinateRegion(
@@ -327,7 +344,7 @@ export function loadResultMap(playersLat, playersLong) {
             );
             resMap.setRegionAnimated(resultRegion, true);
         }, 1500);
-    }
+    }         
 }
 
 //Open map locations on google maps --------------------------------------------------------------------------------------------------
