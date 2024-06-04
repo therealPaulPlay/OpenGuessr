@@ -1074,6 +1074,10 @@ li {
   opacity: 100%;
 }
 
+map::selection {
+  outline: none;
+}
+
 #revealCompass {
   margin-left: auto;
   margin-bottom: -25px;

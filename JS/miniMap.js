@@ -191,8 +191,9 @@ if (useLegacyMouseOver) {
 function onMapHover() {
     map.invalidateSize();
 }
+
 try {
-    new ResizeObserver(onMapHover).observe(document.getElementById("map"));
+    new ResizeObserver(onMapHover).observe(document.getElementById("mapHolder"));
 } catch (error) {
     console.error("Resize oberser unsupported. Err: " + error);
     useLegacyMouseOver = true;
