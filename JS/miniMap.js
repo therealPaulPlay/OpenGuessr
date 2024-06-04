@@ -193,7 +193,7 @@ function onMapHover() {
 }
 
 try {
-    new ResizeObserver(onMapHover).observe(document.getElementById("mapHolder"));
+    new ResizeObserver(onMapHover).observe(document.getElementById("map"));
 } catch (error) {
     console.error("Resize oberser unsupported. Err: " + error);
     useLegacyMouseOver = true;
