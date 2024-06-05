@@ -212,6 +212,7 @@ export function loadResultMap(playersLat, playersLong) {
     // Clear markers and polylines, set type
     clearMap();
     setResultMapType();
+    playSound("confirm"); // result sound
 
     try { clearInterval(animateMap)} catch(error) { console.warn("Couldn't clear interval in main.js: " + error)};
     let curLatLng;
