@@ -188,11 +188,12 @@ mapkit.init({
     language: "en-US" // can only be changed on page load / initialization
 });
 
-map.showsZoomControl = false;
-map.showsMapTypeControl = false;
-
 // Create the map object outside of the function
 export let resMap = new mapkit.Map("resultMap");
+
+resMap.showsZoomControl = false;
+resMap.showsMapTypeControl = false;
+resMap._allowWheelToZoom = true;
 
 // Function to clear markers and polylines
 function clearMap() {
