@@ -197,7 +197,7 @@ function enableExclusiveCategories() {
     accountLockedArray[i].classList.remove("accountLock");
   }
 
-  document.getElementById("categoryExclusiveText").innerHTML = "You can now select these categories:";
+  document.getElementById("categoryExclusiveText").innerHTML = "You can now select these maps:";
 }
 
 //XP bar loading function -------------------------------------------------------------------------------------------------
