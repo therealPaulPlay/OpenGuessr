@@ -26,35 +26,39 @@ function restoreStreak() {
     streakAdDismiss.style.opacity = "1";
     streakAdDismiss.style.pointerEvents = "auto";
     streakText.innerHTML = `<p>You have restored your streak of <span id="streakKeepAmount" class="highlight">${formerStreak}</span> !</p>`;
-    streakHeader.textContent = "Streak restored!"
+    streakHeader.textContent = "Streak restored!";
     // restore the old streak
 }
 
 function toggleStreakWindow(oldStreak) {
-    if (typeof(oldStreak) == "number") {
+    if (typeof (oldStreak) == "number") {
         formerStreak = oldStreak;
     }
-    streakWatchAd.style.opacity = "1";
-    streakWatchAd.style.pointerEvents = "auto";
-    streakAdDismiss.style.opacity = "1";
-    streakAdDismiss.style.pointerEvents = "auto";
 
     playSound("basic_button");
-
-    streakHeader.textContent = "Streak lost!"
-    streakText.innerHTML = `<p>Support us by watching an ad and keep your streak of <span id="streakKeepAmount" class="highlight">${formerStreak}</span> !</p>`;
 
     if (streakBanner.style.display == "block") {
         streakBanner.style.maxHeight = "0px";
         setTimeout(() => {
             streakBanner.style.display = "none";
+            resetStreakWindow();
         }, 250);
     } else {
         streakBanner.style.display = "block";
         setTimeout(() => {
             streakBanner.style.maxHeight = "1000px";
+            resetStreakWindow();
         }, 20);
     }
+}
+
+function resetStreakWindow() {
+    streakWatchAd.style.opacity = "1";
+    streakWatchAd.style.pointerEvents = "auto";
+    streakAdDismiss.style.opacity = "1";
+    streakAdDismiss.style.pointerEvents = "auto";
+    streakHeader.textContent = "Streak lost!"
+    streakText.innerHTML = `<p>Support us by watching an ad and keep your streak of <span id="streakKeepAmount" class="highlight">${formerStreak}</span> !</p>`;
 }
 
 function showStreakAd() {
@@ -74,12 +78,14 @@ try {
     console.error("Google tag cannot be assigned: " + error);
 }
 
+let rewardClaimed = false;
 var rewardedSlot;
 var adLoadTimeout;
 
 function initializeRewardAd() {
     // Set a timeout to handle the scenario where no ad is returned in 10 seconds.
     adLoadTimeout = setTimeout(handleNoAdReturned, 10000);
+    rewardClaimed = false;
 
     function handleNoAdReturned() {
         dismissRewardedAd(true);
@@ -90,25 +96,29 @@ function initializeRewardAd() {
         googletag.cmd.push(function () {
             rewardedSlot = googletag.defineOutOfPageSlot(
                 // Venatus will supply separate line below as this is a demo tag
+                // actual tag: /21726375739,23114577746/ca-video-pub-5781531207509232-tag/openguessr.com_Rewarded_Video
                 '/21726375739,23114577746/ca-video-pub-5781531207509232-tag/openguessr.com_Rewarded_Video',
                 googletag.enums.OutOfPageFormat.REWARDED);
-    
+
             if (rewardedSlot) {
                 rewardedSlot.addService(googletag.pubads());
-    
+
                 googletag.pubads().addEventListener('rewardedSlotReady', function (event) {
                     clearTimeout(adLoadTimeout);  // Clear the timeout when an ad is ready
                     event.makeRewardedVisible();
                 });
-    
+
                 googletag.pubads().addEventListener('rewardedSlotClosed', () => {
-                    dismissRewardedAd(false)
+                    setTimeout(() => {
+                        dismissRewardedAd(false);
+                    }, 350);
                 });
-    
+
                 googletag.pubads().addEventListener('rewardedSlotGranted', function (event) {
+                    rewardClaimed = true;
                     restoreStreak();
                 });
-    
+
                 googletag.enableServices();
                 googletag.display(rewardedSlot);
             }
@@ -121,14 +131,26 @@ function initializeRewardAd() {
 function dismissRewardedAd(notAvailable) {
     if (notAvailable) {
         errorPopup("No ad available. ", "Please try again later", "No ads");
+        streakWatchAd.style.opacity = "1";
+        streakWatchAd.style.pointerEvents = "auto"; //restore watch ad buttons
+        streakAdDismiss.style.opacity = "1";
+        streakAdDismiss.style.pointerEvents = "auto";
     } else {
-        errorPopup("Ad dismissed", "Video ad dismissed. ", "Ad dismissed");
+        if (!rewardClaimed) {
+            errorPopup("Ad dismissed", "Video ad dismissed. ", "Ad dismissed");
+            streakWatchAd.style.opacity = "1";
+            streakWatchAd.style.pointerEvents = "auto"; //restore watch ad buttons
+            streakAdDismiss.style.opacity = "1";
+            streakAdDismiss.style.pointerEvents = "auto";
+        } else {
+            streakHeader.style.color = "#00cf22";
+
+            setTimeout(() => {
+                streakHeader.style.color = "white";
+            }, 700);
+        }
     }
 
-    streakWatchAd.style.opacity = "1";
-    streakWatchAd.style.pointerEvents = "auto"; //restore watch ad buttons
-    streakAdDismiss.style.opacity = "1";
-    streakAdDismiss.style.pointerEvents = "auto";
     try {
         googletag.destroySlots([rewardedSlot]);
     } catch (error) {

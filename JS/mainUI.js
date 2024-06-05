@@ -413,20 +413,31 @@ milesButton.addEventListener("click", () => {
 //Check if element is clickable ----------------------------------------------------------
 
 export function isElementClickable(element) {
-    return element && element.offsetParent !== null &&
-           getComputedStyle(element).visibility !== 'hidden' &&
-           (() => {
-               let el = element;
-               while (el) {
-                   if (getComputedStyle(el).pointerEvents === 'none') {
-                       return false;
-                   }
-                   el = el.parentElement;
-               }
-               const rect = element.getBoundingClientRect();
-               const centerX = rect.left + rect.width / 2;
-               const centerY = rect.top + rect.height / 2;
-               const topElement = document.elementFromPoint(centerX, centerY);
-               return topElement === element || element.contains(topElement);
-           })();
+    if (!element || element.offsetParent === null || getComputedStyle(element).visibility === 'hidden') {
+        return false;
+    }
+
+    const rect = element.getBoundingClientRect();
+    const centerX = rect.left + rect.width / 2;
+    const centerY = rect.top + rect.height / 2;
+    const topElement = document.elementFromPoint(centerX, centerY);
+    
+    // Check if the element or any of its closer parents have pointer-events set to 'auto'
+    let el = element;
+    let closestPointerEventsNoneParent = null;
+    while (el) {
+        if (getComputedStyle(el).pointerEvents === 'none') {
+            closestPointerEventsNoneParent = el;
+        } else if (getComputedStyle(el).pointerEvents === 'auto') {
+            closestPointerEventsNoneParent = null;
+        }
+        el = el.parentElement;
+    }
+
+    // If there's a closer parent with pointer-events: none, the element is not clickable
+    if (closestPointerEventsNoneParent) {
+        return false;
+    }
+
+    return topElement === element || element.contains(topElement);
 }

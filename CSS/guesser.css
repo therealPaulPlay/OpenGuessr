@@ -1977,6 +1977,10 @@ button {
   overflow-y: auto;
 }
 
+#streakHeader {
+  transition: color 350ms ease;
+}
+
 #privacyNotice {
   font-size: 20px;
   opacity: 50%;
