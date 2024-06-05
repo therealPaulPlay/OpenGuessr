@@ -200,10 +200,13 @@ function clearMap() {
     resMap.overlays.forEach(overlay => resMap.removeOverlay(overlay));
 }
 
+export let animateMap;
+
 // Load the result map
 export function loadResultMap(playersLat, playersLong) {
     // Clear markers and polylines
     clearMap();
+    try { clearInterval(animateMap)} catch(error) { console.warn("Couldn't clear interval in main.js: " + error)};
     let curLatLng;
 
     // default values in case there was an error / not defined
@@ -337,7 +340,7 @@ export function loadResultMap(playersLat, playersLong) {
         resMap.region = region;
     
         // Animate to the result marker with a slight zoom in after a delay
-        setTimeout(() => {
+        animateMap = setTimeout(() => {
             const resultRegion = new mapkit.CoordinateRegion(
                 new mapkit.Coordinate(currentStreetviewLat, currentStreetviewLong),
                 new mapkit.CoordinateSpan(zoomLevel, zoomLevel)

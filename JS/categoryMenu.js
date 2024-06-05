@@ -1,4 +1,4 @@
-import { resMap, generateNewLocation } from "./main.js";
+import { generateNewLocation, animateMap } from "./main.js";
 import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
@@ -264,6 +264,7 @@ export function transitionToStart() {
             document.getElementById("BeforeOverlay").style.opacity = "0";
             document.getElementById("BeforeOverlay").style.visibility = "visible";
             document.getElementById("BeforeOverlay").style.opacity = "100";
+            try { clearInterval(animateMap)} catch(error) { console.warn("Couldn't clear interval in categoryMenu.js: " + error)};
             checkGenerationTypeAndGenerate();
 
             setTimeout(disableResultScreen, 200);

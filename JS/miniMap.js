@@ -47,6 +47,7 @@ export function resetMap() {
     if (marker) {
         map.removeAnnotation(marker);
     }
+
     map.region = new mapkit.CoordinateRegion(
         new mapkit.Coordinate(48, 28), // Centered around the equator and Greenwich
         new mapkit.CoordinateSpan(180, 180) // Whole world visible
@@ -88,7 +89,7 @@ function changeMapType() {
     mapType = mapType === MapType.STANDARD ? MapType.SATELLITE : MapType.STANDARD;
     localStorage.setItem("selectedMapType", mapType);
     changeMapTypeButtonLabel();
-    resetGuessMap();
+    loadMap();
 }
 
 // Universal map functions
@@ -107,7 +108,7 @@ function loadMap() {
         new mapkit.CoordinateSpan(180, 360) // Whole world visible
     );
 
-    //Add event listener for map click here! Only allowed after initialization
+    //Add event listener for map click here
     map.element.addEventListener("click", function (event) {
         if (event.target.parentNode !== map.element) {
             return;
@@ -116,14 +117,6 @@ function loadMap() {
         var coordinate = map.convertPointOnPageToCoordinate(domPoint);
         onMapClick(coordinate);
     });
-}
-
-
-function resetGuessMap() {
-    if (marker) {
-        map.removeAnnotation(marker);
-    }
-    loadMap();
 }
 
 // Set initial zoom level
