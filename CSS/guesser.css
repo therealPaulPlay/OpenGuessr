@@ -309,6 +309,30 @@ h1, h2, h3 {
   text-wrap: nowrap;
 }
 
+#endScreenStreakRevive {
+  margin-top: auto;
+  margin-left: 0;
+  margin-right: auto;
+  margin-bottom: 10px;
+  z-index: 11;
+  font-size: 25px;
+  padding: 35px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+  max-height: 1000px;
+  transition: filter 250ms ease, max-height 250ms ease;
+  user-select: none;
+  -webkit-user-select: none;
+  color: white;
+  background-color: hsla(236, 25%, 20%, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+  display: none; /* default hidden */
+  pointer-events: auto;
+}
+
 #streakIcon {
   width: 30px;
   height: auto;
@@ -1249,44 +1273,26 @@ map::selection {
   right: 0px; 
   margin-left: auto; 
   margin-right: auto; 
-  width: 970px;
+  width: 728px; /* changed from 970 to 728 */
   max-height: 92px;
   height: 90px;
   padding: 0;
   z-index: 11;
-  /*border: dashed rgba(255, 255, 255, 0.5);*/
 }
-
-/* 
-.adScaling {
-  width: 970px;
-  height: 90px;
-} */
 
 @media (max-width: 1500px) {
   #bottomFooterAds {
   width: 728px;
   height: 90px;
   }
-
-  /*
-  .adScaling {
-    width: 728px;
-    height: 90px;
-  } */
 }
 
 @media (max-width: 1175px) {
   #bottomFooterAds {
   width: 320px;
   height: 50px;
+  bottom: 32px;
   }
-
-  /*
-  .adScaling {
-    width: 320px;
-    height: 50px;
-  } */
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
@@ -1300,6 +1306,7 @@ map::selection {
   #bottomFooterAds {
     width: 320px;
     height: 50px;
+    bottom: 12px;
   }
 
   .BottomBar {
@@ -1376,6 +1383,7 @@ map::selection {
   background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
 }
 
 #endScreenOpenLocation:hover {
@@ -1503,6 +1511,7 @@ map::selection {
   background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
 }
 
 #endBottomArea {
@@ -1513,6 +1522,7 @@ map::selection {
   bottom: 10px;
   margin-inline: 10px;
   flex-direction: column;
+  pointer-events: none;
 }
 
 #motivationText {
@@ -1625,6 +1635,17 @@ map::selection {
 
 #discordButton:hover {
   transform: scale(1.05);
+}
+
+.streakButton {
+  background-color: #01a001;
+  color: white;
+  min-height: 50px;
+}
+
+.streakButton:hover {
+  box-shadow: 0 0 25px rgba(15, 248, 15, 0.4);
+  filter: brightness(100%);
 }
 
 #redditButton {
@@ -2066,6 +2087,17 @@ button {
   max-height: 100%;
 }
 
+#streakWatchAd {
+  padding: 10px 20px;
+}
+
+#streakAdDismiss {
+  padding: 10px 20px;
+  height: 50px;
+  margin-left: auto;
+  margin-right: 10px;
+}
+
 .regularMapSize {
   width: 30%;
   height: 30%;
@@ -2248,6 +2280,21 @@ all and (max-width: 1000px) {
     margin-inline: 10px;
   }
 
+  #streakHeader {
+    font-size: 30px;
+  }
+
+  #endScreenStreakRevive {
+    padding-top: 10px;
+  }
+
+  #streakWatchAd {
+    margin-top: 20px;
+  }
+
+  #streakAdDismiss {
+    margin-top: 20px;
+  }
 }
 
 /* big screens in portrait, like vertical monitors */
