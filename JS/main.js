@@ -2,7 +2,7 @@
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
 
-import { resetMap, getMapSource, mapsJWTToken, colorArray } from './miniMap.js';
+import { resetMap, getMapType, mapsJWTToken, colorArray } from './miniMap.js';
 import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
@@ -201,12 +201,18 @@ function clearMap() {
     resMap.overlays.forEach(overlay => resMap.removeOverlay(overlay));
 }
 
+export function setResultMapType() {
+    resMap.mapType = getMapType();
+}
+
 export let animateMap;
 
 // Load the result map
 export function loadResultMap(playersLat, playersLong) {
-    // Clear markers and polylines
+    // Clear markers and polylines, set type
     clearMap();
+    setResultMapType();
+
     try { clearInterval(animateMap)} catch(error) { console.warn("Couldn't clear interval in main.js: " + error)};
     let curLatLng;
 

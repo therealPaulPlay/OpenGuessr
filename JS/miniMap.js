@@ -1,4 +1,4 @@
-import { loadResultMap, calculateDistances } from "./main.js";
+import { loadResultMap, calculateDistances, setResultMapType } from "./main.js";
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed } from "./multiplayer.js";
@@ -6,7 +6,7 @@ import { hideToggleMapButtonIfMobile, isElementClickable } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 
 // Initialize the map with correct provider
-const MapType = {
+export const MapType = {
     STANDARD: mapkit.Map.MapTypes.Standard,
     SATELLITE: mapkit.Map.MapTypes.Satellite,
     HYBRID: mapkit.Map.MapTypes.Hybrid,
@@ -47,6 +47,11 @@ changeMapTypeButtonLabel();
 export let hasGuessed = false;
 setConfirmButtonState();
 
+// for map loading in main js
+export function getMapType() {
+    return mapType;
+}
+
 // reset the map - executed when generating new location (reset for next round)
 export function resetMap() {
     if (marker) {
@@ -64,7 +69,7 @@ export function resetMap() {
 }
 
 function changeMapTypeButtonLabel() {
-    let mapTypeBaseText = "Minimap:";
+    let mapTypeBaseText = "Map:";
     document.getElementById("mapTypeButton").innerHTML =
         `${mapTypeBaseText} ${mapType.charAt(0).toUpperCase() + mapType.slice(1)}`;
 }
@@ -108,6 +113,7 @@ function changeMapType() {
     localStorage.setItem("selectedMapType", mapType);
     changeMapTypeButtonLabel();
     loadMap();
+    setResultMapType();
 }
 
 // Universal map functions
