@@ -29,6 +29,9 @@ function initializeMap() {
 
     map.showsZoomControl = false;
     map.showsMapTypeControl = false;
+    map._allowWheelToZoom = true;
+
+
     //hiding the compass does not work, even though it lists that option in the docs
 }
 
