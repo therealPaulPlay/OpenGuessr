@@ -136,6 +136,7 @@ function signout() {
   localStorage.removeItem("id");
   localStorage.removeItem("username");
   localStorage.removeItem("experience");
+  localStorage.removeItem("selectedPin"); //also reset selected pin, as that is xp-based
   window.location.reload(); //reload website, so that UI etc. will be reset and all the loaded values aren't still showing
 }
 
@@ -303,14 +304,14 @@ function calculateXPGain(distance, category) {
   } else if (category == "country") {
     return checkIfGuessWasCorrect() ? 1000 : 0;
 
-  } else if (category == "famous" || category == "indoor" || category == "mountain" || category == "whetherspoon" || category == "skyscraper" || category == "stadium" || category == "racetrack" || category == "brutalism" || category == "abandoned") {
-    return Math.round(1000 * ((0.998036) ** distance));
+  } else if (category.includes("community") || category == "famous") {
+    return Math.round(1500 * ((0.998036) ** distance)); //up to 1500 XP for community maps & famous places -> they are easier to memorize
 
   } else if (category == "israel" || category == "austria" || category == "slovakia" || category == "czechia") { //very small countries, more reduced xp
-    return Math.round(5000 * ((0.978036) ** distance))
+    return Math.round(5000 * ((0.978036) ** distance));
 
   } else {
-    return Math.round(5000 * ((0.988036) ** distance)) //reduced XP for bad guesses in country locations (for better balance)
+    return Math.round(5000 * ((0.988036) ** distance));//reduced XP for bad guesses in country locations (for better balance)
   }
 }
 

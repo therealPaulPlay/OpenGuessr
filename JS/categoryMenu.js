@@ -1,5 +1,5 @@
-import { resMap, generateNewLocation } from "./main.js";
-import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
+import { generateNewLocation, animateMap } from "./main.js";
+import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
@@ -39,6 +39,8 @@ let Category = {
     FINLAND: "finland",
     ISRAEL: "israel",
     CZECHIA: "czechia",
+    JAPAN: "japan",
+    INDONESIA: "indonesia"
 };
 
 export let mapCategory = Category.STANDARD; // Default category
@@ -115,12 +117,12 @@ for (const category in Category) {
 // Function to create a closure for each category button listener
 function createCategoryChangeListener(category) {
     return function () {
-        changeCategory(category);
+        changeCategory(category, true);
         playSound("button_juicy");
     };
 }
 
-export function changeCategory(category) {
+export function changeCategory(category, regenerate) {
     // Disable all category buttons
     const categoryButtons = document.querySelectorAll("[id$='Category']");
     categoryButtons.forEach(button => button.classList.add("categoryDisabled"));
@@ -143,7 +145,9 @@ export function changeCategory(category) {
         toggleCategoryMenu(true);
     }, 300);
 
-    checkGenerationTypeAndGenerate();
+    if (regenerate) {
+        checkGenerationTypeAndGenerate();
+    }
 }
 
 
@@ -202,7 +206,7 @@ export function checkGenerationTypeAndGenerate() {
                     generateNewLocation("SDK");
                 } else {
                     //if the map category is an unsupported multiplayer category, such as daily or hard, switch to standard
-                    changeCategory("standard"); //this will re-run checkGenerationTypeAndGenerate
+                    changeCategory("standard", true); //this will re-run checkGenerationTypeAndGenerate
                     setTimeout(function () {
                         errorPopup("Unsupported Multiplayer Map", "This map category is not available for multiplayer and was automatically changed to Standard.", "Map unsupported", false);
                     }, 3500);
@@ -228,7 +232,7 @@ function loadMapCategory() {
 }
 
 loadMapCategory();
-changeCategory(mapCategory);
+changeCategory(mapCategory, true);
 
 
 //Next round / new location -------------------------------------------------------------------------------------
@@ -239,6 +243,13 @@ nextRound.addEventListener("click", () => {
         playSound("basic_button");
     }}
 );
+
+window.addEventListener("keydown", function(event) {
+    if (event.key === " " && isElementClickable(document.getElementById("nextRound")) && resultScreenEnabled) {
+        transitionToStart();
+        playSound("basic_button");
+    }
+});
 
 let alreadyTransitioning = false;
 
@@ -253,8 +264,7 @@ export function transitionToStart() {
             document.getElementById("BeforeOverlay").style.opacity = "0";
             document.getElementById("BeforeOverlay").style.visibility = "visible";
             document.getElementById("BeforeOverlay").style.opacity = "100";
-            resMap.stop(); //stop the flying animation
-            setTimeout(function () { resMap.stop() }, 200)
+            try { clearInterval(animateMap)} catch(error) { console.warn("Couldn't clear interval in categoryMenu.js: " + error)};
             checkGenerationTypeAndGenerate();
 
             setTimeout(disableResultScreen, 200);

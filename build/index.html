@@ -2,15 +2,15 @@
 <html lang="en-US">
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
   <meta name="description"
     content="Free geoguessr alternative with unlimited free play - improve your geography skills by guessing the location on google street view.">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-  <!-- Files from other sources (Leaflet, Math.js)-->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
+  <!-- Files from other sources (PeerJS, MapKit, Math.js) -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
+  <!-- apple mapkit -->
+  <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script>
 
   <!-- guesser css  & other stylesheets-->
   <link rel="stylesheet" href="/CSS/guesser.css">
@@ -84,7 +84,7 @@
     </div>
     <div class="bannerItem bannerRight">
       <div class="leftNavbarButtons">
-        <button class="menuButton" id="languageButton" type="button">Toggle language</button>
+        <button class="menuButton" id="mapTypeButton" type="button">Toggle language</button>
         <button class="discordButton menuButton" id="discordButton" type="button">Discord
           <img src="./IMG/discord.png" class="socialIcon" id="discordIcon">
         </button>
@@ -111,13 +111,15 @@
       <button class="category accountExclusive accountLock" id="austriaCategory" type="button">Austria</button>
       <button class="category accountExclusive accountLock" id="brasilCategory" type="button">Brasil</button>
       <button class="category accountExclusive accountLock" id="canadaCategory" type="button">Canada</button>
-      <button class="category accountExclusive accountLock" id="czechiaCategory" type="button">Czechia</button>
+      <button class="category accountExclusive accountLock" id="czechiaCategory" type="button">Czech Republic</button>
       <button class="category accountExclusive accountLock" id="finlandCategory" type="button">Finland</button>
       <button class="category accountExclusive accountLock" id="franceCategory" type="button">France</button>
       <button class="category accountExclusive accountLock" id="germanyCategory" type="button">Germany</button>
       <button class="category accountExclusive accountLock" id="indiaCategory" type="button">India</button>
+      <button class="category accountExclusive accountLock" id="indonesiaCategory" type="button">Indonesia</button>
       <button class="category accountExclusive accountLock" id="israelCategory" type="button">Israel</button>
       <button class="category accountExclusive accountLock" id="italyCategory" type="button">Italy</button>
+      <button class="category accountExclusive accountLock" id="japanCategory" type="button">Japan</button>
       <button class="category accountExclusive accountLock" id="mexicoCategory" type="button">Mexico</button>
       <button class="category accountExclusive accountLock" id="norwayCategory" type="button">Norway</button>
       <button class="category accountExclusive accountLock" id="polandCategory" type="button">Poland</button>
@@ -129,7 +131,7 @@
       <button class="category accountExclusive accountLock" id="turkeyCategory" type="button">Turkey</button>
       <button class="category accountExclusive accountLock" id="ukCategory" type="button">UK & Ireland</button>
       <button class="category accountExclusive accountLock" id="ukraineCategory" type="button">Ukraine</button>
-      <button class="category accountExclusive accountLock" id="usaCategory" type="button">USA</button> 
+      <button class="category accountExclusive accountLock" id="usaCategory" type="button">United States</button> 
       <p class="categoriesNote" id="communityMapsNote"> Community Maps: </p>
       <div id="communityMapArea">
         <!-- auto generated in categoryMenu.js -->
@@ -143,7 +145,7 @@
 
   <!-- Category switch displayer -->
   <div id="floatingCategoryArea">
-    <button class="floatingButton" id="categoryMenuButton" type="button">Map Categories ▼</button>
+    <button class="floatingButton" id="categoryMenuButton" type="button">Maps ▼</button>
     <button class="smallFloatingButton" id="settingsButton" type="button">
       <img src="/IMG/settings_icon.png" alt="settings" id="settingsIcon">
     </button>

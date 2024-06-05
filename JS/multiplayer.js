@@ -298,6 +298,7 @@ function setMultiplayerUI() {
         document.getElementById("mapModeIndicator").style.display = "flex";
         document.getElementById("multiplayerChat").style.display = "flex";
         document.getElementById("multiplayerLeave").style.display = "block";
+        document.getElementById("revealCompass").style.marginBottom = "-21px";
         document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
 
         //hide country picker UI
@@ -313,6 +314,7 @@ function setMultiplayerUI() {
         document.getElementById("mapModeIndicator").style.display = "none";
         document.getElementById("multiplayerChat").style.display = "none";
         document.getElementById("multiplayerLeave").style.display = "none";
+        document.getElementById("revealCompass").style.marginBottom = "-25px";
         mobileMenuButton.style.opacity = "1";
         mobileMenuButton.style.pointerEvents = "auto";
     }
@@ -714,7 +716,7 @@ async function attemptDuelJoin(index) {
         multiplayerSelectorBack.style.pointerEvents = "none";
         multiplayerSelectorClose.style.pointerEvents = "none";
         try {
-            changeCategory("standard");
+            changeCategory("standard", false); //this will only change the category and not generate! (to prevent skip of first round)
         } catch (e) {
             console.error("Error changing category to standard for multiplayer duels. Error: " + e);
         }
@@ -1184,7 +1186,10 @@ export function peerSendsHost(type, message) {
         });
 
     } catch (error) {
-        errorPopup("Error sending message", "Couldn't send message to host.", "Host unreachable");
+        if (multiplayer) {
+            errorPopup("Error sending message", "Couldn't send message to host.", "Host unreachable");
+        }
+        
         console.error("Error messaging host: " + error);
     }
 
@@ -1294,7 +1299,6 @@ function leaveMultiplayerRound() {
     document.getElementById("confirmButton").textContent = "Guess";
     document.getElementById("confirmButton").style.pointerEvents = "auto";
     document.getElementById("confirmButton").style.visibility = "visible";
-    document.getElementById("map").style.pointerEvents = "auto";
 
     if (mapCategory != "country") {
         document.getElementById("map").style.visibility = "visible";
@@ -1441,7 +1445,6 @@ function multiplayerOverlayCountdown() {
             clearInterval(countdownInterval); // Stop the countdown
             if (multiplayer) {
                 showMultiplayerOverlay(false); //hide the overlay --> round starts
-                document.getElementById("map").style.pointerEvents = "auto"; //re-enable the map
                 document.getElementById("confirmButton").textContent = "Guess";
                 
                 try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)

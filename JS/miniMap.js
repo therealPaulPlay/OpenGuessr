@@ -2,83 +2,79 @@ import { loadResultMap, calculateDistances } from "./main.js";
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed } from "./multiplayer.js";
-import { hideToggleMapButtonIfMobile } from "./mainUI.js";
+import { hideToggleMapButtonIfMobile, isElementClickable } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 
+// Initialize the map with correct provider
+const MapType = {
+    STANDARD: "standard",
+    SATELLITE: "satellite",
+};
 
-//Initialize the map with correct provider --------------------------------------------------------------------
-const Provider = {
-    ENGLISH: "0",
-    GERMAN: "1",
-    REGIONAL: "2",
-    TOPOGRAPHIC: "3",
+let marker;
+let map;
+
+export let mapsJWTToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY2OEo1WkhOVDcifQ.eyJvcmlnaW4iOlsiaHR0cHM6Ly9vcGVuZ3Vlc3NyLmNvbSIsImh0dHBzOi8vZGV2Lm9wZW5ndWVzc3IuY29tIiwiaHR0cDovL2xvY2FsaG9zdDozMDAwIiwiaHR0cHM6Ly9vZy12ZW5hdHVzLXRlc3QubmV0bGlmeS5hcHAiLCJodHRwczovL29wZW5ndWVzc3IubmV0bGlmeS5hcHAiXSwiaWF0IjoxNzE3NTM2OTcyLCJleHAiOjE3NDkwNzI5NzIsImlzcyI6IjRVUTUzTUJTSkwifQ.wm1K1wol6VYfEx0lT31MeQ8YeEqFjqqO2kUtWs0qekW0hZQ39oAYt8A6XkyD0DhteW34vLTMdzIj8uWh-Y8_hw";
+export let colorArray = ["#fc1c1c", "#fc851e", "#f002c0", "#11c8d9", "#9f55fa", "#cca700"]; //pin colors (red, orange, pink...)
+
+function initializeMap() {
+    mapkit.init({
+        authorizationCallback: function (done) {
+            done(mapsJWTToken);
+        },
+        language: "en-US" //can only be changed on page load / initialization
+    });
+
+    map = new mapkit.Map("map");
+
+    map.showsZoomControl = false;
+    map.showsMapTypeControl = false;
+    //hiding the compass does not work, even though it lists that option in the docs
 }
 
-let map = L.map('map', { zoomControl: false }).setView([40.321160, 10.252812], 1.5); //starting position
-
-let mapProvider = ["https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png", "https://tile.openstreetmap.de/{z}/{x}/{y}.png", "https://tile.openstreetmap.org/{z}/{x}/{y}.png", "https://sgx.geodatenzentrum.de/wmts_topplus_open/tile/1.0.0/web/default/WEBMERCATOR/{z}/{y}/{x}.png"]
-
-//English should be the new default!
-let providerIndex = Provider.ENGLISH;
-let storedProviderIndex = localStorage.getItem("providerIndex");
-
-if (storedProviderIndex != null) {
-    providerIndex = storedProviderIndex;
-}
-
-export function getMapSource() {
-    return mapProvider[providerIndex];
-}
+// Load map type from local storage or set default
+let storedMapType = localStorage.getItem("selectedMapType");
+let mapType = storedMapType || MapType.STANDARD;
 
 loadMap();
-changeLanguageButtonLabel();
+changeMapTypeButtonLabel();
 
-//indicate whether a guess has been made and the button can be used
 export let hasGuessed = false;
 setConfirmButtonState();
 
-//reset the map - used for going to the next round. 
+// reset the map - used for going to the next round.
 export function resetMap() {
-    map.removeLayer(marker);
-    map.setZoom(3);
+    if (marker) {
+        map.removeAnnotation(marker);
+    }
 
-    //reset the guess button as well
+    map.region = new mapkit.CoordinateRegion(
+        new mapkit.Coordinate(48, 28), // Centered around the equator and Greenwich
+        new mapkit.CoordinateSpan(180, 180) // Whole world visible
+    );
+
+    // reset the guess button as well
     hasGuessed = false;
     setConfirmButtonState();
 }
 
-function changeLanguageButtonLabel() {
-    let mapTypeBaseText = "Map Type:";
-    switch (providerIndex) {
-        case "0": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
-            break;
-
-        case "1": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} German`;
-            break;
-
-        case "2": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Regional`;
-            break;
-
-        case "3": document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} Topographic`;
-            break;
-
-        default: document.getElementById("languageButton").innerHTML = `${mapTypeBaseText} English`;
-            break;
-    }
+function changeMapTypeButtonLabel() {
+    let mapTypeBaseText = "Minimap:";
+    document.getElementById("mapTypeButton").innerHTML =
+        `${mapTypeBaseText} ${mapType.charAt(0).toUpperCase() + mapType.slice(1)}`;
 }
 
-//Set state of the confirm ("guess") button ------------------------------------------------------------------
+// Set state of the confirm ("guess") button
 export function setConfirmButtonState() {
     if (hasGuessed) {
         document.getElementById("confirmButton").style.backgroundColor = "red";
         document.getElementById("confirmButton").style.color = "white";
-        document.getElementById("confirmButton").style.opacity = "100%"
+        document.getElementById("confirmButton").style.opacity = "100%";
         document.getElementById("confirmButton").style.pointerEvents = "auto";
-    }
-    else {
+    } else {
         document.getElementById("confirmButton").style.backgroundColor = "white";
         document.getElementById("confirmButton").style.color = "black";
-        document.getElementById("confirmButton").style.opacity = "90%"
+        document.getElementById("confirmButton").style.opacity = "90%";
         document.getElementById("confirmButton").style.pointerEvents = "none";
     }
 }
@@ -88,143 +84,112 @@ export function setConfirmButtonEnabled() {
     setConfirmButtonState();
 }
 
-//Change map provider / language ---------------------------------------------------------------------
-function changeLanguage() {
-    switch (providerIndex) {
-        case Provider.ENGLISH:
-            providerIndex = Provider.GERMAN;
-            break;
-        case Provider.GERMAN:
-            providerIndex = Provider.REGIONAL;
-            break;
-        case Provider.REGIONAL:
-            providerIndex = Provider.TOPOGRAPHIC;
-            break;
-        default:
-            providerIndex = Provider.ENGLISH;
-    }
-    localStorage.setItem("providerIndex", providerIndex);
-
-    changeLanguageButtonLabel();
-    resetGuessMap();
-}
-
-
-//Universal map functions --------------------------------------------------------------------
-let osmLayer;
-
-function loadMap() {
-    osmLayer = L.tileLayer(mapProvider[providerIndex], {
-        attribution: '© CARTO © OpenStreetMap © Geodatenzentrum',
-        noWrap: true,
-    }).addTo(map);
-}
-
-function destroyMap() {
-    map.removeLayer(osmLayer);
-}
-
-function resetGuessMap() {
-    destroyMap();
+// Change map type
+function changeMapType() {
+    mapType = mapType === MapType.STANDARD ? MapType.SATELLITE : MapType.STANDARD;
+    localStorage.setItem("selectedMapType", mapType);
+    changeMapTypeButtonLabel();
     loadMap();
 }
 
-map.setZoom(3);
+// Universal map functions
+function loadMap() {
+    if (!map) {
+        initializeMap(); // Load map with correct type
+    } else {
+        map.destroy();
+        initializeMap();
+    }
 
-let marker = new L.Marker([0, 0]);
+    map.mapType = mapType;
 
+    map.region = new mapkit.CoordinateRegion(
+        new mapkit.Coordinate(48, 28), // Centered around the equator and Greenwich
+        new mapkit.CoordinateSpan(180, 360) // Whole world visible
+    );
 
-//Placing the marker on the minimap ------------------------------------------------------------------------
+    //Add event listener for map click here
+    map.element.addEventListener("click", function (event) {
+        if (event.target.parentNode !== map.element) {
+            return;
+        }
+        var domPoint = new DOMPoint(event.pageX, event.pageY);
+        var coordinate = map.convertPointOnPageToCoordinate(domPoint);
+        onMapClick(coordinate);
+    });
+}
+
+// Set initial zoom level
+map.region = new mapkit.CoordinateRegion(
+    new mapkit.Coordinate(0, 0), // Centered around the equator and Greenwich
+    new mapkit.CoordinateSpan(180, 360) // Whole world visible
+);
+
 export let mapMarkerLat = 0;
 export let mapMarkerLong = 0;
 
-function onMapClick(e) {
-    //creates markers wherever the user clicks and if it clicks to another position,
-    //delete the old one and also save the position in latitudes and longitudes
-
+function onMapClick(coordinate) {
     hasGuessed = true;
     setConfirmButtonState();
     playSound("pin_drop", "pin");
 
     if (marker) {
-        map.removeLayer(marker);
+        map.removeAnnotation(marker);
     }
-    //sets the variables from the USER input (this is the one that the user has placed)
-    mapMarkerLat = e.latlng.lat;
-    mapMarkerLong = e.latlng.lng;
 
-    const redIcon = new L.Icon({
-        iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
-        iconSize: [40, 40],
-        iconAnchor: [20, 38],
-        popupAnchor: [1, -34],
-        shadowSize: [41, 41]
+    // sets the variables from the USER input (this is the one that the user has placed)
+    mapMarkerLat = coordinate.latitude;
+    mapMarkerLong = coordinate.longitude;
+
+    marker = new mapkit.MarkerAnnotation(coordinate, {
+        color: "white",
+        glyphColor: colorArray[selectedPinIndex],
+        glyphImage: { 1: `./IMG/apple_your_marker${selectedPinIndex}.png` },
     });
 
-    marker = new L.Marker([mapMarkerLat, mapMarkerLong], { icon: redIcon });
-    marker.addTo(map);
+    map.addAnnotation(marker);
 }
 
-//event listeners -----------------------------------------------------------------
-//click listener for confirm button
+// event listeners
 const confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
 
-//toggle languages
-const languageBTN = document.getElementById("languageButton");
-languageBTN.addEventListener("click", () => {
-    changeLanguage();
+// toggle map types
+const mapTypeBTN = document.getElementById("mapTypeButton");
+mapTypeBTN.addEventListener("click", () => {
+    changeMapType();
     playSound("selection_change");
 });
-
-//Reset map scaling when the user "enlarges" it --------------------------------------------------------------
-map.on('click', onMapClick);
-
-let useLegacyMouseOver = false;
-
-//this is for legacy browsers that do not support resizeObservers
-if (useLegacyMouseOver) {
-    map.on('mouseover', onMapHover);
-    map.on('mouseout', onMapHover);
-}
-
-function onMapHover() {
-    map.invalidateSize();
-}
-try {
-    new ResizeObserver(onMapHover).observe(document.getElementById("map"));
-} catch (error) {
-    console.error("Resize oberser unsupported. Err: " + error);
-    useLegacyMouseOver = true;
-}
 
 // Enlarge map
 const mapHolder = document.getElementById("mapHolder");
 
 function handleMapHover() {
-  if (window.matchMedia("(orientation: landscape) and (min-width: 1250px)").matches) {
-    mapHolder.classList.add("mapHover");
-  }
+    if (window.matchMedia("(orientation: landscape) and (min-width: 1250px)").matches) {
+        mapHolder.classList.add("mapHover");
+    }
 }
 
 function handleMapUnhover() {
-  mapHolder.classList.remove("mapHover");
+    if (!document.getElementById("revealCompass").matches(':hover')) {
+        mapHolder.classList.remove("mapHover");
+    }
 }
 
 // Mouse events
 document.getElementById("map").addEventListener('mouseenter', handleMapHover);
 document.getElementById("map").addEventListener('mouseleave', handleMapUnhover);
+document.getElementById("revealCompass").addEventListener('mouseleave', handleMapUnhover);
 
 // Touch events
 document.getElementById("map").addEventListener('touchstart', handleMapHover);
 document.getElementById("map").addEventListener('touchend', handleMapUnhover);
 
-
-//Guess / Confirm function ----------------------------------------------------------------------------------
+// Guess / Confirm function
 export let justPlayedDailyChallenge = false;
 
 export function confirmButtonClicks() {
-    confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
+    confirmBTN.style.pointerEvents = "none"; // disable the button (will be re-enabled by setConfirmButtonState)
     playSound("confirm");
 
     if (dailyChallengeUIEnabled) {
@@ -237,19 +202,24 @@ export function confirmButtonClicks() {
             console.log("timer already stopped.");
         }
 
-        saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
+        saveDailyChallengeCompletion(); // set the daily challenge as completed for today (also saves the curr utc date for checking)
     } else {
         document.getElementById("nextRound").innerHTML = "Next round →";
     }
 
     if (!multiplayer) {
         calculateDistances(mapMarkerLat, mapMarkerLong);
-        loadResultMap(mapMarkerLat, mapMarkerLong);
+
+        try {
+            loadResultMap(mapMarkerLat, mapMarkerLong);
+        } catch (error) {
+            console.error("Error in confirmButton Clicks when trying to load the result map: " + error);
+        }
+
     } else {
         document.getElementById("confirmButton").textContent = "Waiting...";
         document.getElementById("confirmButton").style.opacity = "0.5";
         document.getElementById("confirmButton").style.pointerEvents = "none";
-        document.getElementById("map").style.pointerEvents = "none";
         document.getElementById("map").style.visibility = "hidden";
         hideToggleMapButtonIfMobile(true);
         document.getElementById("revealCompass").style.visibility = "hidden";
@@ -258,13 +228,14 @@ export function confirmButtonClicks() {
     }
 }
 
-//Confirm Button with Spacebar and a few checks
-document.getElementById("map").addEventListener("keydown", function (event) {
+// Confirm Button with Spacebar and a few checks
+window.addEventListener("keydown", function (event) {
     if (event.key === " ") {
-        if (confirmBTN.style.pointerEvents == "auto" && confirmBTN.style.visibility == "visible") {
+        if (confirmBTN.style.pointerEvents == "auto" && confirmBTN.style.visibility == "visible" && isElementClickable(document.getElementById("map"))) {
             confirmButtonClicks();
         } else {
             console.warn("Cannot click on confirm button - pointer events is none.");
         }
     }
 });
+

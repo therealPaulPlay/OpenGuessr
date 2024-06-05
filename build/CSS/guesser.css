@@ -1081,7 +1081,7 @@ li {
   cursor: crosshair;
   width: 100%;
   height: 100%;
-  z-index: 10;
+  z-index: 9;
   opacity: 95%;
   border-radius: 10px;
   max-height: 100%;
@@ -1090,27 +1090,33 @@ li {
   transition: opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
 }
 
-.leaflet-bottom, .leaflet-control-attribution {
-  pointer-events: none;
+.mk-map-view {
+  border-radius: 10px;
 }
 
 #map:hover {
   opacity: 100%;
 }
 
+map::selection {
+  outline: none;
+}
+
 #revealCompass {
   margin-left: auto;
-  margin-bottom: 5px;
+  margin-bottom: -25px;
   color: rgb(54, 54, 54);
   padding-right: 10px;
   padding-left: 10px;
   border-radius: 7px;
+  border-top-left-radius: 0;
+  border-bottom-right-radius: 0;
   height: 25px;
   font-size: 17px;
   background-color: rgba(255, 255, 255, 0.9);
   transition: margin 250ms ease, filter 250ms ease, opacity 250ms ease;
-  box-shadow: 0 2px 20px rgba(71, 71, 71, 0.5);
   z-index: 10;
+  box-shadow: 0px 2px 3px rgba(0,0,0,0.2);
 }
 
 #mapModeIndicator {
@@ -1531,7 +1537,6 @@ li {
   z-index: 10;
   height: 100%;
   width: 100%;
-  display: flex;
   align-items: top;
   background: #d5e8eb;
 }
@@ -1542,6 +1547,8 @@ li {
   z-index: 1000;
   width: 100%;
   opacity: 30%;
+  position: absolute;
+  top: 0;
 }
 
 #nextRound {
@@ -1755,7 +1762,7 @@ li {
   line-height: 20px;
   border-radius: 10px;
   transition: filter 0.2s ease;
-  padding: 15px 35px;
+  padding: 15px 25px;
   text-align: center;
   white-space: nowrap;
   color: white;
