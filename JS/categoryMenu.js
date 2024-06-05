@@ -1,5 +1,5 @@
-import { resMap, generateNewLocation } from "./main.js";
-import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu } from "./mainUI.js";
+import { generateNewLocation, animateMap } from "./main.js";
+import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
@@ -244,7 +244,7 @@ nextRound.addEventListener("click", () => {
     }}
 );
 
-document.addEventListener("keydown", function(event) {
+window.addEventListener("keydown", function(event) {
     if (event.key === " " && isElementClickable(document.getElementById("nextRound")) && resultScreenEnabled) {
         transitionToStart();
         playSound("basic_button");
@@ -264,8 +264,7 @@ export function transitionToStart() {
             document.getElementById("BeforeOverlay").style.opacity = "0";
             document.getElementById("BeforeOverlay").style.visibility = "visible";
             document.getElementById("BeforeOverlay").style.opacity = "100";
-            resMap.stop(); //stop the flying animation
-            setTimeout(function () { resMap.stop() }, 200)
+            try { clearInterval(animateMap)} catch(error) { console.warn("Couldn't clear interval in categoryMenu.js: " + error)};
             checkGenerationTypeAndGenerate();
 
             setTimeout(disableResultScreen, 200);
@@ -286,24 +285,4 @@ export function transitionToStart() {
     } else {
         console.warn("CategoryMenu.js: Already transitioning to start!");
     }
-}
-
-//check if next round button would be clickable
-function isElementClickable(element) {
-    return element && element.offsetParent !== null &&
-           getComputedStyle(element).visibility !== 'hidden' &&
-           (() => {
-               let el = element;
-               while (el) {
-                   if (getComputedStyle(el).pointerEvents === 'none') {
-                       return false;
-                   }
-                   el = el.parentElement;
-               }
-               const rect = element.getBoundingClientRect();
-               const centerX = rect.left + rect.width / 2;
-               const centerY = rect.top + rect.height / 2;
-               const topElement = document.elementFromPoint(centerX, centerY);
-               return topElement === element || element.contains(topElement);
-           })();
 }

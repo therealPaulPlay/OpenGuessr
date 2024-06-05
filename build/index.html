@@ -7,10 +7,10 @@
     content="Free geoguessr alternative with unlimited free play - improve your geography skills by guessing the location on google street view.">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
-  <!-- Files from other sources (Leaflet, Math.js)-->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
+  <!-- Files from other sources (PeerJS, MapKit, Math.js) -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js"></script>
+  <!-- apple mapkit -->
+  <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script>
 
   <!-- guesser css  & other stylesheets-->
   <link rel="stylesheet" href="/CSS/guesser.css">
@@ -83,7 +83,7 @@
     </div>
     <div class="bannerItem bannerRight">
       <div class="leftNavbarButtons">
-        <button class="menuButton" id="languageButton" type="button">Toggle language</button>
+        <button class="menuButton" id="mapTypeButton" type="button">Toggle language</button>
         <button class="discordButton menuButton" id="discordButton" type="button">Discord
           <img src="./IMG/discord.png" class="socialIcon" id="discordIcon">
         </button>
