@@ -7,8 +7,9 @@ import { playSound } from "./soundManager.js";
 
 // Initialize the map with correct provider
 const MapType = {
-    STANDARD: "standard",
-    SATELLITE: "satellite",
+    STANDARD: mapkit.Map.MapTypes.Standard,
+    SATELLITE: mapkit.Map.MapTypes.Satellite,
+    HYBRID: mapkit.Map.MapTypes.Hybrid,
 };
 
 let marker;
@@ -36,6 +37,9 @@ function initializeMap() {
 // Load map type from local storage or set default
 let storedMapType = localStorage.getItem("selectedMapType");
 let mapType = storedMapType || MapType.STANDARD;
+if (mapType == undefined || mapType == null || mapType == "undefined") {
+    mapType = MapType.STANDARD;
+}
 
 loadMap();
 changeMapTypeButtonLabel();
@@ -43,7 +47,7 @@ changeMapTypeButtonLabel();
 export let hasGuessed = false;
 setConfirmButtonState();
 
-// reset the map - used for going to the next round.
+// reset the map - executed when generating new location (reset for next round)
 export function resetMap() {
     if (marker) {
         map.removeAnnotation(marker);
@@ -87,7 +91,20 @@ export function setConfirmButtonEnabled() {
 
 // Change map type
 function changeMapType() {
-    mapType = mapType === MapType.STANDARD ? MapType.SATELLITE : MapType.STANDARD;
+    switch (mapType) {
+        case MapType.STANDARD:
+            mapType = MapType.SATELLITE;
+            break;
+        case MapType.SATELLITE:
+            mapType = MapType.HYBRID;
+            break;
+        case MapType.HYBRID:
+            mapType = MapType.STANDARD;
+            break;
+        default:
+            mapType = MapType.STANDARD;
+            break;
+    }
     localStorage.setItem("selectedMapType", mapType);
     changeMapTypeButtonLabel();
     loadMap();
@@ -97,27 +114,23 @@ function changeMapType() {
 function loadMap() {
     if (!map) {
         initializeMap(); // Load map with correct type
-    } else {
-        map.destroy();
-        initializeMap();
+        map.region = new mapkit.CoordinateRegion(
+            new mapkit.Coordinate(48, 28), // Centered around the equator and Greenwich
+            new mapkit.CoordinateSpan(180, 360) // Whole world visible
+        );
+
+        //Add event listener for map click here
+        map.element.addEventListener("click", function (event) {
+            if (event.target.parentNode !== map.element) {
+                return;
+            }
+            var domPoint = new DOMPoint(event.pageX, event.pageY);
+            var coordinate = map.convertPointOnPageToCoordinate(domPoint);
+            onMapClick(coordinate);
+        });
     }
 
     map.mapType = mapType;
-
-    map.region = new mapkit.CoordinateRegion(
-        new mapkit.Coordinate(48, 28), // Centered around the equator and Greenwich
-        new mapkit.CoordinateSpan(180, 360) // Whole world visible
-    );
-
-    //Add event listener for map click here
-    map.element.addEventListener("click", function (event) {
-        if (event.target.parentNode !== map.element) {
-            return;
-        }
-        var domPoint = new DOMPoint(event.pageX, event.pageY);
-        var coordinate = map.convertPointOnPageToCoordinate(domPoint);
-        onMapClick(coordinate);
-    });
 }
 
 // Set initial zoom level
