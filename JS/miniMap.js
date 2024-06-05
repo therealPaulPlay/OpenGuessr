@@ -31,7 +31,11 @@ function initializeMap() {
     map.showsZoomControl = false;
     map.showsMapTypeControl = false;
     map._allowWheelToZoom = true;
-    //hiding the compass does not work, even though it lists that option in the docs
+    map.showsCompass = mapkit.FeatureVisibility.Hidden;
+}
+
+export function setPointsOfInterest(enable) {
+    map.showsPointsOfInterest = enable;
 }
 
 // Load map type from local storage or set default

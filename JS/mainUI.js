@@ -4,6 +4,7 @@ import { setUserXP, uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
+import { setPointsOfInterest } from "./miniMap.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -342,14 +343,14 @@ document.getElementById("mobileCategoryButton").addEventListener("click", functi
 });
 
 //Prevent automatic "last button press" with space bar or enter key ------------------------------------------------------------------
-document.addEventListener('keydown', function(event) {
+document.addEventListener('keydown', function (event) {
     var tag = event.target.tagName.toLowerCase();
     if (event.key === 'Enter' || event.key === ' ') {
-      if (tag === 'button') {
-        event.preventDefault();
-      }
+        if (tag === 'button') {
+            event.preventDefault();
+        }
     }
-  });
+});
 
 //Settings - Window ---------------------------------------------------------------------------------------
 let settingsButton = document.getElementById("settingsButton");
@@ -359,6 +360,33 @@ let settingsWindow = document.getElementById("settingsWindow");
 
 let settingsClose = document.getElementById("settingsClose");
 settingsClose.addEventListener("click", toggleSettingsWindow);
+
+let pointsOfInterest = document.getElementById("mapPointsOfInterest");
+pointsOfInterest.addEventListener("click", () => {
+    if (pointsOfInterest.style.opacity == "0.5") {
+        pointsOfInterest.style.opacity = "1";
+        setPointsOfInterest(true);
+        localStorage.setItem("mapInterestPoints", "enabled");
+    } else {
+        pointsOfInterest.style.opacity = "0.5";
+        setPointsOfInterest(false);
+        localStorage.setItem("mapInterestPoints", "disabled");
+    }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    let tempMapPointsOfInterestStorage = localStorage.getItem("mapInterestPoints");
+
+    if (tempMapPointsOfInterestStorage) {
+        if (tempMapPointsOfInterestStorage != "disabled") {
+            pointsOfInterest.style.opacity = "1";
+            setPointsOfInterest(true);
+        } else {
+            pointsOfInterest.style.opacity = "0.5";
+            setPointsOfInterest(false);
+        }
+    }
+});
 
 function toggleSettingsWindow() {
     playSound("basic_button");
@@ -376,7 +404,7 @@ function toggleSettingsWindow() {
 
 let kilometersButton = document.getElementById("unitSwitchKilometers");
 let milesButton = document.getElementById("unitSwitchMiles");
-export let distanceUnit = "kilometers"; 
+export let distanceUnit = "kilometers";
 
 const tempStorageDistanceUnit = localStorage.getItem("distanceUnit");
 
@@ -421,7 +449,7 @@ export function isElementClickable(element) {
     const centerX = rect.left + rect.width / 2;
     const centerY = rect.top + rect.height / 2;
     const topElement = document.elementFromPoint(centerX, centerY);
-    
+
     // Check if the element or any of its closer parents have pointer-events set to 'auto'
     let el = element;
     let closestPointerEventsNoneParent = null;
