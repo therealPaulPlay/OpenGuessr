@@ -69,7 +69,7 @@ export function resetMap() {
 }
 
 function changeMapTypeButtonLabel() {
-    let mapTypeBaseText = "Map:";
+    let mapTypeBaseText = "Minimap:";
     document.getElementById("mapTypeButton").innerHTML =
         `${mapTypeBaseText} ${mapType.charAt(0).toUpperCase() + mapType.slice(1)}`;
 }
