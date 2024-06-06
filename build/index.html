@@ -253,7 +253,9 @@
       <button id="unitSwitchKilometers" class="accountButton white">Metric</button>
       <button id="unitSwitchMiles" class="accountButton white">Imperial</button><br><br>
       <p>SFX Volume:</p>
-      <input type="range" min="0" max="1" step="0.01" value="0.5" class="slider" id="volumeSlider">
+      <input type="range" min="0" max="1" step="0.01" value="0.5" class="slider" id="volumeSlider"><br><br>
+      <p class="slightBottomMargin">Map settings:</p>
+      <button id="mapPointsOfInterest" class="accountButton white">Points of Interest</button>
       <br><br>
       <button id="settingsClose" class="accountButton white accountClose">close</button>
     </div>
@@ -386,7 +388,7 @@
       </div>
     </div>
     <div id="endBottomArea">
-      <button type="button" id="endScreenOpenLocation">Open streetview ⤴</button>
+      <button type="button" id="endScreenOpenLocation">Open streetview <img src="/IMG/streetview_icon.png" alt="Streetview symbol" class="socialIcon" style="vertical-align: -2px"></button>
       <div id="endScreenStreakRevive">
         <div id="popup-title" class="popup-title">
           <h1 id="streakHeader">Streak lost!</h1>
@@ -413,7 +415,7 @@
             </div>
           </div>
           <p id="XPbarNoAccount">Sign up to see & save your points!</p>
-          <button id="nextRound">Next round →</button>
+          <button id="nextRound">Next round ➝</button>
         </div>
       </div>
     </div>

@@ -55,6 +55,7 @@ h1, h2, h3 {
   padding-left: 15px;
   padding-right: 10px;
   margin-left: auto;
+  min-width: 415px;
 }
 
 #mapTypeButton {
@@ -1378,7 +1379,7 @@ map::selection {
   font-size: 25px;
   padding: 10px;
   padding-top: 5px;
-  padding-bottom: 5px;
+  padding-bottom: 7px;
   border-radius: 10px;
   transition: filter 250ms ease;
   user-select: none;
@@ -1610,7 +1611,7 @@ map::selection {
   font-size: 22px;
   line-height: 20px;
   vertical-align: middle;
-  padding: 10px 14px;
+  padding: 10px 12px;
   transition: all 250ms;
   margin-bottom: 15px;
   margin-top: 13px;

@@ -31,7 +31,11 @@ function initializeMap() {
     map.showsZoomControl = false;
     map.showsMapTypeControl = false;
     map._allowWheelToZoom = true;
-    //hiding the compass does not work, even though it lists that option in the docs
+    map.showsCompass = mapkit.FeatureVisibility.Hidden;
+}
+
+export function setPointsOfInterest(enable) {
+    map.showsPointsOfInterest = enable;
 }
 
 // Load map type from local storage or set default
@@ -69,7 +73,7 @@ export function resetMap() {
 }
 
 function changeMapTypeButtonLabel() {
-    let mapTypeBaseText = "Map:";
+    let mapTypeBaseText = "Minimap:";
     document.getElementById("mapTypeButton").innerHTML =
         `${mapTypeBaseText} ${mapType.charAt(0).toUpperCase() + mapType.slice(1)}`;
 }
@@ -210,10 +214,10 @@ export let justPlayedDailyChallenge = false;
 
 export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; // disable the button (will be re-enabled by setConfirmButtonState)
-    playSound("confirm");
+    playSound("basic_button");
 
     if (dailyChallengeUIEnabled) {
-        document.getElementById("nextRound").innerHTML = "See results →";
+        document.getElementById("nextRound").innerHTML = "See results ➝";
         justPlayedDailyChallenge = true;
 
         try {
@@ -224,7 +228,7 @@ export function confirmButtonClicks() {
 
         saveDailyChallengeCompletion(); // set the daily challenge as completed for today (also saves the curr utc date for checking)
     } else {
-        document.getElementById("nextRound").innerHTML = "Next round →";
+        document.getElementById("nextRound").innerHTML = "Next round ➝";
     }
 
     if (!multiplayer) {
