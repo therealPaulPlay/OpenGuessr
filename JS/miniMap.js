@@ -217,7 +217,7 @@ export function confirmButtonClicks() {
     playSound("basic_button");
 
     if (dailyChallengeUIEnabled) {
-        document.getElementById("nextRound").innerHTML = "See results →";
+        document.getElementById("nextRound").innerHTML = "See results ➝";
         justPlayedDailyChallenge = true;
 
         try {
@@ -228,7 +228,7 @@ export function confirmButtonClicks() {
 
         saveDailyChallengeCompletion(); // set the daily challenge as completed for today (also saves the curr utc date for checking)
     } else {
-        document.getElementById("nextRound").innerHTML = "Next round →";
+        document.getElementById("nextRound").innerHTML = "Next round ➝";
     }
 
     if (!multiplayer) {
