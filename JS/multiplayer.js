@@ -341,10 +341,10 @@ function endMultiplayerRound() {
             sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
-            document.getElementById("nextRound").innerHTML = "Wait before skipping... →";
+            document.getElementById("nextRound").innerHTML = "Wait before skipping... ➝";
             //After 2 seconds, enable the skip functionality
             setTimeout(function () {
-                document.getElementById("nextRound").innerHTML = "Skip →";
+                document.getElementById("nextRound").innerHTML = "Skip ➝";
                 document.getElementById("nextRound").style.opacity = "1";
                 document.getElementById("nextRound").style.pointerEvents = "auto";
             }, 2000)
@@ -358,7 +358,7 @@ function endMultiplayerRound() {
             //if i'ts not the host, hide the next round button!
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
-            document.getElementById("nextRound").innerHTML = "Waiting for host... →";
+            document.getElementById("nextRound").innerHTML = "Waiting for host... ➝";
         }
 
         calculateDistances(mapMarkerLat, mapMarkerLong);
