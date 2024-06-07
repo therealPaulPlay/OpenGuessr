@@ -134,7 +134,7 @@ function initializeRewardAd() {
 
 function dismissRewardedAd(notAvailable) {
     if (notAvailable) {
-        errorPopup("No ad available. ", "Please try again later", "No ads");
+        errorPopup("No ad available. ", "Please try again later or disable Ad Blockers", "No ads");
         streakWatchAd.style.opacity = "1";
         streakWatchAd.style.pointerEvents = "auto"; //restore watch ad buttons
         streakAdDismiss.style.opacity = "1";
