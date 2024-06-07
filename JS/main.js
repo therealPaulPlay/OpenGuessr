@@ -180,25 +180,26 @@ function compareDistances(distance) {
 
 //Load result Map (resMap) ------------------------------------------------------------------------------------------------
 
-// Initialize the map outside of the function
-mapkit.init({
-    authorizationCallback: function (done) {
-        done(mapsJWTToken);
-    },
-    language: "en-US" // can only be changed on page load / initialization
-});
-
 // Create the map object outside of the function
-export let resMap = new mapkit.Map("resultMap");
+export let resMap; 
 
-resMap.showsZoomControl = false;
-resMap.showsMapTypeControl = false;
-resMap._allowWheelToZoom = true;
+// called in miniMap.js after initializing mapkit
+export function initializeResMap() {
+    resMap = new mapkit.Map("resultMap");
+
+    resMap.showsZoomControl = false;
+    resMap.showsMapTypeControl = false;
+    resMap._allowWheelToZoom = true;
+}
 
 // Function to clear markers and polylines
 function clearMap() {
-    resMap.annotations.forEach(annotation => resMap.removeAnnotation(annotation));
-    resMap.overlays.forEach(overlay => resMap.removeOverlay(overlay));
+    try {
+        resMap.annotations.forEach(annotation => resMap.removeAnnotation(annotation));
+        resMap.overlays.forEach(overlay => resMap.removeOverlay(overlay));
+    } catch (error) {
+        // doesn't matter, just means that there is nothing to clear
+    }
 }
 
 export function setResultMapType() {

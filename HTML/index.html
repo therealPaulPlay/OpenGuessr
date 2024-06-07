@@ -8,9 +8,9 @@
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 
   <!-- Files from other sources (PeerJS, MapKit, Math.js) -->
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" defer></script>
   <!-- apple mapkit -->
-  <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js"></script>
+  <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
   <link rel="stylesheet" href="/CSS/guesser.css">
@@ -19,7 +19,14 @@
   <script type="module" src="analytics.js" async></script>
 
   <!-- venatus ad script -->
-  <!-- venatus script temporarily removed here -->
+  <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
+    data-site-id="660fad7bb673231986638f83" data-mode="scan" async></script>
+
+  <!-- Main.js, bundled. We use imports and exports so it has to be a module. Loading this async breaks the multiplayer join via link -->
+  <script type="module" src="main.js" defer></script>
+
+  <!-- custom venatus scaling script -->
+  <script type="module" src="venatusCustom.js" defer></script>
 
   <title>OpenGuessr - free geoguessr alternative</title>
 
@@ -130,11 +137,11 @@
       <button class="category accountExclusive accountLock" id="turkeyCategory" type="button">Turkey</button>
       <button class="category accountExclusive accountLock" id="ukCategory" type="button">UK & Ireland</button>
       <button class="category accountExclusive accountLock" id="ukraineCategory" type="button">Ukraine</button>
-      <button class="category accountExclusive accountLock" id="usaCategory" type="button">United States</button> 
+      <button class="category accountExclusive accountLock" id="usaCategory" type="button">United States</button>
       <p class="categoriesNote" id="communityMapsNote"> Community Maps: </p>
       <div id="communityMapArea">
         <!-- auto generated in categoryMenu.js -->
-      </div>   
+      </div>
       <button class="category categoryUpcoming" id="discoverMaps" type="button">Discover all Community Maps
         <img class="discoverIcon" alt="discover more categories" src="/IMG/discover_icon.png">
       </button>
@@ -387,7 +394,19 @@
       </div>
     </div>
     <div id="endBottomArea">
-      <button type="button" id="endScreenOpenLocation">Open streetview <img src="/IMG/streetview_icon.png" alt="Streetview symbol" class="socialIcon" style="vertical-align: -2px"></button>
+      <button type="button" id="endScreenOpenLocation">Open streetview <img src="/IMG/streetview_icon.png"
+          alt="Streetview symbol" class="socialIcon" style="vertical-align: -2px"></button>
+      <div id="endScreenStreakRevive">
+        <div id="popup-title" class="popup-title">
+          <h1 id="streakHeader">Streak lost!</h1>
+        </div>
+        <p id="keepStreakText">Support us by watching an ad and keep your streak of <span id="streakKeepAmount"
+            class="highlight">0</span> !</p>
+        <button id="streakWatchAd" class="streakButton accountButton accountClose">Keep streak
+          <img src="./IMG/streak_icon.png" class="socialIcon">
+        </button>
+        <button id="streakAdDismiss" class="accountButton accountClose white">Close</button>
+      </div>
       <div id="endBottomBar">
         <div id="TextDiv">
           <p id="distanceText"></p>
@@ -398,7 +417,7 @@
               <div class="XPbarResource" id="endScreenXPbarResource"></div>
             </div>
             <p id="endScreenLevel">Default XP</p>
-            <div id="streakDisplay">            
+            <div id="streakDisplay">
               <img id="streakIcon" src="/IMG/streak_icon.png" alt="country streak">
               <p id="endScreenStreakText">7 (x1.1)</p>
             </div>
@@ -477,7 +496,8 @@
         </div>
       </div>
       <h1 id="TransparentHeader">Openguessr free geoguessr geoguesser alternative free open source geography geographie
-        Geotastic world map geoguessr kostenlos google streetview rainbolt zi8gzag travel geographie education spiel videospiel guess
+        Geotastic world map geoguessr kostenlos google streetview rainbolt zi8gzag travel geographie education spiel
+        videospiel guess Multiplayer
         which country multiplayer play with friends
         karte rate welches land more than 5 minutes unlimited free play unendlich freies spiel without
         subscription pro</h1>
@@ -491,10 +511,7 @@
     <div id="bottomShadow"></div>
   </div>
   <div align="center" id="bottomFooterAds">
-    <!-- venatus tag temporarily removed here -->
   </div>
-  <!-- Main.js, bundled. We use imports and exports so it has to be a module. Loading this async breaks the multiplayer join via link -->
-  <script type="module" src="main.js"></script>
 </body>
 
 </html>
