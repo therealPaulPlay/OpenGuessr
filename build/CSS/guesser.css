@@ -2116,13 +2116,13 @@ button {
 
 .regularMapSize {
   width: 30%;
-  height: 30%;
+  height: 25%;
   transition: height 250ms ease, width 250ms ease, opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
 }
 
 .mapHover {
   width: 60%;
-  height: 65%;
+  height: 55%;
   transition: height 100ms ease, width 100ms ease, opacity 100ms ease, max-height 100ms ease, margin 100ms ease;
 }
 
@@ -2148,7 +2148,7 @@ button {
 @media (orientation: landscape) and (max-width: 1250px) {
   #mapHolder {
     width: 40%;
-    height: 50%;
+    height: 40%;
   }
 
   #map {
@@ -2317,7 +2317,7 @@ all and (max-width: 1000px) {
 @media all and (orientation: portrait) {
 
   #mapHolder {
-    height: 65%;
+    height: 50%;
     width: calc(100% - 20px);
   }
 
