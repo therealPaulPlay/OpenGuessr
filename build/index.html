@@ -444,73 +444,71 @@
   </div>
   <!--streetview-->
   <div class="MainDiv">
-    <div id="innerMainDiv">
-      <iframe id="GuesserWindow" referrerpolicy="no-referrer-when-downgrade" frameborder="0" allow="accelerometer"
-        style="border:0" src="/loader.html"></iframe>
-      <!--map-->
-      <div id="mapHolder" class="regularMapSize">
-        <button id="revealCompass">reveal compass</button>
-        <button id="floatingMapButton">
-          <img id="toggleMapImage" src="/IMG/map_icon.png" alt="Toggle the Map for guessing on mobile devices.">
-        </button>
-        <div id="map"></div>
-        <div id="mapModeIndicator">
-          <button id="multiplayerLeave" class="accountButton accountClose">Leave Round</button>
-          <p id="mapModeText" class="mapModeText">Daily Challenge</p>
-          <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
-        </div>
-      </div>
-      <div id="countryGuesserSelector">
-        <button class="countryGuesserHolder">
-          <p id="countryFlag1" class="countryGuesserFlag">🇦🇽</p>
-          <p id="countryTag1" class="countryGuesserTag">Country 1</p>
-        </button>
-        <button class="countryGuesserHolder">
-          <p id="countryFlag2" class="countryGuesserFlag">🇦🇽</p>
-          <p id="countryTag2" class="countryGuesserTag">Country 2</p>
-        </button>
-        <button class="countryGuesserHolder">
-          <p id="countryFlag3" class="countryGuesserFlag">🇦🇽</p>
-          <p id="countryTag3" class="countryGuesserTag">Country 3</p>
-        </button>
-        <button class="countryGuesserHolder">
-          <p id="countryFlag4" class="countryGuesserFlag">🇦🇽</p>
-          <p id="countryTag4" class="countryGuesserTag">Country 4</p>
-        </button>
-        <button class="countryGuesserHolder">
-          <p id="countryFlag5" class="countryGuesserFlag">🇦🇽</p>
-          <p id="countryTag5" class="countryGuesserTag">Country 5</p>
-        </button>
-        <button class="countryGuesserHolder">
-          <p id="countryFlag6" class="countryGuesserFlag">🇦🇽</p>
-          <p id="countryTag6" class="countryGuesserTag">Country 6</p>
-        </button>
-      </div>
-      <div id="multiplayerChat">
-        <div id="multiplayerChatMessages">
-          <p id="multiplayerMessageBox"></p>
-        </div>
-        <div id="bottomMultiplayerChatArea">
-          <input maxlength="100" type="text" id="multiplayerMessageInput" placeholder="Type your message...">
-          <button id="multiplayerSendButton" class="accountButton">Send</button>
-        </div>
-      </div>
-      <h1 id="TransparentHeader">Openguessr free geoguessr geoguesser alternative free open source geography geographie
-        Geotastic world map geoguessr kostenlos google streetview rainbolt zi8gzag travel geographie education spiel
-        videospiel guess Multiplayer
-        which country multiplayer play with friends
-        karte rate welches land more than 5 minutes unlimited free play unendlich freies spiel without
-        subscription pro</h1>
+    <iframe id="GuesserWindow" referrerpolicy="no-referrer-when-downgrade" frameborder="0" allow="accelerometer"
+      style="border:0" src="/loader.html"></iframe>
+    <!-- Country Guessr UI -->
+    <div id="countryGuesserSelector">
+      <button class="countryGuesserHolder">
+        <p id="countryFlag1" class="countryGuesserFlag">🇦🇽</p>
+        <p id="countryTag1" class="countryGuesserTag">Country 1</p>
+      </button>
+      <button class="countryGuesserHolder">
+        <p id="countryFlag2" class="countryGuesserFlag">🇦🇽</p>
+        <p id="countryTag2" class="countryGuesserTag">Country 2</p>
+      </button>
+      <button class="countryGuesserHolder">
+        <p id="countryFlag3" class="countryGuesserFlag">🇦🇽</p>
+        <p id="countryTag3" class="countryGuesserTag">Country 3</p>
+      </button>
+      <button class="countryGuesserHolder">
+        <p id="countryFlag4" class="countryGuesserFlag">🇦🇽</p>
+        <p id="countryTag4" class="countryGuesserTag">Country 4</p>
+      </button>
+      <button class="countryGuesserHolder">
+        <p id="countryFlag5" class="countryGuesserFlag">🇦🇽</p>
+        <p id="countryTag5" class="countryGuesserTag">Country 5</p>
+      </button>
+      <button class="countryGuesserHolder">
+        <p id="countryFlag6" class="countryGuesserFlag">🇦🇽</p>
+        <p id="countryTag6" class="countryGuesserTag">Country 6</p>
+      </button>
     </div>
-    <!--bottom toolbar with reset button-->
-    <div id="BottomBar" class="BottomBar">
-      <img class="BottomBarItem" id="resetButtonSVG" src="/IMG/reset.svg" alt="Return to start position">
-      <button class="BottomBarItem" id="privacyButton">Legal</button>
-      <button class="BottomBarItem" id="confirmButton">Guess</button>
-    </div>
-    <div id="bottomShadow"></div>
+    <h1 id="TransparentHeader">Openguessr free geoguessr geoguesser alternative free open source geography geographie
+      Geotastic world map geoguessr kostenlos google streetview rainbolt zi8gzag travel geographie education spiel
+      videospiel guess Multiplayer which country multiplayer play with friends
+      karte rate welches land more than 5 minutes unlimited free play unendlich freies spiel without
+      subscription pro</h1>
   </div>
-  <div align="center" id="bottomFooterAds">
+  <!--map-->
+  <div id="mapHolder" class="regularMapSize">
+    <button id="revealCompass">reveal compass</button>
+    <button id="floatingMapButton">
+      <img id="toggleMapImage" src="/IMG/map_icon.png" alt="Toggle the Map for guessing on mobile devices.">
+    </button>
+    <div id="map"></div>
+    <div id="mapModeIndicator">
+      <button id="multiplayerLeave" class="accountButton accountClose">Leave Round</button>
+      <p id="mapModeText" class="mapModeText">Daily Challenge</p>
+      <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
+    </div>
+  </div>
+  <div id="multiplayerChat">
+    <div id="multiplayerChatMessages">
+      <p id="multiplayerMessageBox"></p>
+    </div>
+    <div id="bottomMultiplayerChatArea">
+      <input maxlength="100" type="text" id="multiplayerMessageInput" placeholder="Type your message...">
+      <button id="multiplayerSendButton" class="accountButton">Send</button>
+    </div>
+  </div>
+  <!--bottom toolbar with reset button-->
+  <div id="BottomBar" class="BottomBar">
+    <img class="BottomBarItem" id="resetButtonSVG" src="/IMG/reset.svg" alt="Return to start position">
+    <button class="BottomBarItem" id="privacyButton">Legal</button>
+    <button class="BottomBarItem" id="confirmButton">Guess</button>
+  </div>
+  <div id="bottomShadow"></div>
+  <div id="bottomFooterAds">
   </div>
 </body>
 
