@@ -180,7 +180,7 @@ function compareDistances(distance) {
 
 //Load result Map (resMap) ------------------------------------------------------------------------------------------------
 
-// Create the map object outside of the function
+// result Map variable
 export let resMap; 
 
 // called in miniMap.js after initializing mapkit
