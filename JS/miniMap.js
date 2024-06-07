@@ -1,4 +1,4 @@
-import { loadResultMap, calculateDistances, setResultMapType } from "./main.js";
+import { loadResultMap, calculateDistances, setResultMapType, initializeResMap } from "./main.js";
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed } from "./multiplayer.js";
@@ -32,6 +32,8 @@ function initializeMap() {
     map.showsMapTypeControl = false;
     map._allowWheelToZoom = true;
     map.showsCompass = mapkit.FeatureVisibility.Hidden;
+
+    initializeResMap();
 }
 
 export function setPointsOfInterest(enable) {

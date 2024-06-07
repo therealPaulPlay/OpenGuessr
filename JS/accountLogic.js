@@ -7,6 +7,7 @@ import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
+import { toggleStreakWindow } from "./rewardedAds.js";
 
 let profileName = document.getElementById("profileViewName");
 
@@ -270,15 +271,26 @@ function calculateMultiplier(streak) {
   }
 }
 
-function calculateXPGain(distance, category) {
-  if (category == null || category == "standard" || category == "capital" || category == "hard") {
+let streakMultiplier = 1;
 
-    let streakMultiplier = 1;
+export function restoreOldStreak(oldStreak) {
+  streak = oldStreak;
+  localStorage.setItem("streak", streak);
+  streakMultiplier = calculateMultiplier(streak);
+  streakText.textContent = streak + " (" + streakMultiplier + "x)";
+}
+
+function calculateXPGain(distance, category) {
+  if (category == null || category == "standard" || category == "capital" || category == "hard" || category == "famous" || (category && category.includes("community"))) {
     
     if (!multiplayer) {
       if (getCountryFromCoords(mapMarkerLat, mapMarkerLong) == getCountryFromCoords(currentStreetviewLat, currentStreetviewLong)) {
         streak++;
       } else {
+        if (streak >= 2) {
+          toggleStreakWindow(streak, false);
+        }
+
         streak = 0; //reset country streak
       }
   
@@ -291,7 +303,11 @@ function calculateXPGain(distance, category) {
       streakDisplay.style.width = "auto";
     }
 
-    return Math.round((5000 * ((0.998036) ** distance)) * streakMultiplier);
+    if (category != "famous" && !(category && category.includes("community"))) {
+      return Math.round((5000 * ((0.998036) ** distance)) * streakMultiplier);
+    } else {
+      return Math.round((1000 * ((0.998036) ** distance)) * streakMultiplier); //1000 xp for famous and community, with streak up to 1500
+    }
 
   } else if (category == "daily") {
     let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
@@ -303,9 +319,6 @@ function calculateXPGain(distance, category) {
 
   } else if (category == "country") {
     return checkIfGuessWasCorrect() ? 1000 : 0;
-
-  } else if (category.includes("community") || category == "famous") {
-    return Math.round(1500 * ((0.998036) ** distance)); //up to 1500 XP for community maps & famous places -> they are easier to memorize
 
   } else if (category == "israel" || category == "austria" || category == "slovakia" || category == "czechia") { //very small countries, more reduced xp
     return Math.round(5000 * ((0.978036) ** distance));

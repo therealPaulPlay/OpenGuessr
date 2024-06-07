@@ -1,3 +1,4 @@
+import { restoreOldStreak } from "./accountLogic";
 import { errorPopup } from "./errorHandling";
 import { playSound } from "./soundManager";
 
@@ -12,12 +13,8 @@ streakWatchAd.addEventListener("click", showStreakAd);
 
 let formerStreak = 0;
 
-setTimeout(() => {
-    toggleStreakWindow(5); //show streak restore ui for testing
-}, 1000);
-
 streakAdDismiss.addEventListener("click", () => {
-    toggleStreakWindow();
+    toggleStreakWindow(0, false);
 });
 
 function restoreStreak() {
@@ -28,16 +25,17 @@ function restoreStreak() {
     streakText.innerHTML = `<p>You have restored your streak of <span id="streakKeepAmount" class="highlight">${formerStreak}</span> !</p>`;
     streakHeader.textContent = "Streak restored!";
     // restore the old streak
+    restoreOldStreak(formerStreak); //this is in accountLogic.js
 }
 
-function toggleStreakWindow(oldStreak) {
-    if (typeof (oldStreak) == "number") {
+export function toggleStreakWindow(oldStreak, alwaysHide) {
+    if (typeof (oldStreak) == "number" && oldStreak != 0) {
         formerStreak = oldStreak;
     }
 
     playSound("basic_button");
 
-    if (streakBanner.style.display == "block") {
+    if (streakBanner.style.display == "block" || alwaysHide) {
         streakBanner.style.maxHeight = "0px";
         setTimeout(() => {
             streakBanner.style.display = "none";
@@ -72,11 +70,16 @@ function showStreakAd() {
 
 
 //Rewarded video Ad code -------------------------------------------------------------------------------------------------------------------------------------
-try {
-    googletag = window.googletag || { cmd: [] };
-} catch (error) {
-    console.error("Google tag cannot be assigned: " + error);
-}
+//once everything is loaded, load the google tag
+window.onload = () => {
+    setTimeout(() => {
+        try {
+            googletag = window.googletag || { cmd: [] };
+        } catch (error) {
+            console.error("Google tag cannot be assigned: " + error);
+        }
+    }, 250);
+  };
 
 let rewardClaimed = false;
 var rewardedSlot;
@@ -97,6 +100,7 @@ function initializeRewardAd() {
             rewardedSlot = googletag.defineOutOfPageSlot(
                 // Venatus will supply separate line below as this is a demo tag
                 // actual tag: /21726375739,23114577746/ca-video-pub-5781531207509232-tag/openguessr.com_Rewarded_Video
+                // Test tag: /21726375739/ca-video-pub-5781531207509232-tag/Max_Rewarded_Video_Test'
                 '/21726375739,23114577746/ca-video-pub-5781531207509232-tag/openguessr.com_Rewarded_Video',
                 googletag.enums.OutOfPageFormat.REWARDED);
 
