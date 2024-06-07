@@ -21,7 +21,16 @@ export let colorArray = ["#fc1c1c", "#fc851e", "#f002c0", "#11c8d9", "#9f55fa", 
 function initializeMap() {
     mapkit.init({
         authorizationCallback: function (done) {
-            done(mapsJWTToken);
+            fetch("https://token.openguessr.com/getMapkitToken")
+                .then(res => res.json())
+                .then(data => {
+                    let token = data.token;
+                    done(token);
+                })
+                .catch(error => {
+                    console.error("MapKit token fetch failed. Using fallback token: ", error);
+                    done(mapsJWTToken); // Use fallback token
+                });
         },
         language: "en-US" //can only be changed on page load / initialization
     });
