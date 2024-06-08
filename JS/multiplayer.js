@@ -1,6 +1,6 @@
 import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socialBarExpanded } from "./mainUI.js";
+import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socialBarExpanded, disableResultScreen } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex } from "./accountLogic.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
@@ -120,7 +120,7 @@ let multiplayerWindowDuel = document.getElementById("multiplayerWindowDuel");
 let toggleRestrictions = document.getElementById("toggleRestrictions");
 
 let multiplayerSelectorBack = document.getElementById("multiplayerSelectorBack");
-multiplayerSelectorBack.addEventListener("click", function () { playSound("basic_button"); setMultiplayerWindowSelection("main");});
+multiplayerSelectorBack.addEventListener("click", function () { playSound("basic_button"); setMultiplayerWindowSelection("main"); });
 
 function setMultiplayerWindowSelection(window) {
     multiplayerWindowMain.style.display = "none";
@@ -221,7 +221,7 @@ lengthMinus.addEventListener("click", () => { hostLengthAmount(-10, true); })
 function hostLengthAmount(changeAmount, sound) {
     let currentLengthAmount = Number(roundLengthText.textContent);
     roundLengthText.textContent = clamp((currentLengthAmount + changeAmount), 10, 300);
-   
+
     if (sound) {
         playSound("change_value");
     }
@@ -306,6 +306,11 @@ function setMultiplayerUI() {
 
         mobileMenuButton.style.opacity = "0.5";
         mobileMenuButton.style.pointerEvents = "none";
+
+        // disable result screen if it is open (edge case)
+        if (document.getElementById("EndOverlay").style.opacity != "0%") {
+            disableResultScreen();
+        }
     } else {
         categoryButton.style.opacity = "1";
         categoryButton.style.pointerEvents = "auto";
@@ -348,10 +353,10 @@ function endMultiplayerRound() {
                 document.getElementById("nextRound").style.opacity = "1";
                 document.getElementById("nextRound").style.pointerEvents = "auto";
             }, 2000)
-            
+
             //After 10 seconds, skip automatically to not let peers wait too long in Duels
             if (playingDuels) {
-                autoSkipResult = setTimeout(transitionToStart, 10000);
+                autoSkipResult = setTimeout(() => { transitionToStart() }, 10000);
             }
 
         } else {
@@ -963,16 +968,16 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
 }
 
 function StartRoom() {
-        //start the round (from host)
-        multiplayerHost.textContent = "Loading Location...";
-        setDuelFindStatus("Starting! Loading location...");
-        multiplayer = true;
-        setMultiplayerUI();
-        showMultiplayerOverlay(true, "Ready...", connectedPeers); //only for host, also to set the map category in mode text
-        sendMessageToAll("showPlayersArray", connectedPeers); //this is for the peers (the same thing as showMultiplayerOverlay for host)
-        checkGenerationTypeAndGenerate();
-        roomLocked = true;
-        matchmakingActive = false;
+    //start the round (from host)
+    multiplayerHost.textContent = "Loading Location...";
+    setDuelFindStatus("Starting! Loading location...");
+    multiplayer = true;
+    setMultiplayerUI();
+    showMultiplayerOverlay(true, "Ready...", connectedPeers); //only for host, also to set the map category in mode text
+    sendMessageToAll("showPlayersArray", connectedPeers); //this is for the peers (the same thing as showMultiplayerOverlay for host)
+    checkGenerationTypeAndGenerate();
+    roomLocked = true;
+    matchmakingActive = false;
 }
 
 function multiplayerRematch() {
@@ -984,8 +989,9 @@ function multiplayerRematch() {
         element[3] = 0; //reset scores
     })
     sendMessageToAll("rematch");
-    setTimeout(function() {
-        StartRoom()});
+    setTimeout(function () {
+        StartRoom()
+    });
 
     //change the rematch button so signal the change
     endMultiplayerRematchButton.style.opacity = "0.5";
@@ -1189,7 +1195,7 @@ export function peerSendsHost(type, message) {
         if (multiplayer) {
             errorPopup("Error sending message", "Couldn't send message to host.", "Host unreachable");
         }
-        
+
         console.error("Error messaging host: " + error);
     }
 
@@ -1245,7 +1251,7 @@ if (peer) {
         }
 
         peer.destroy(); //clean up peer
-    }); 
+    });
 }
 
 //Multiplayer leave ----------------------------------------------------------------------------------
@@ -1259,7 +1265,7 @@ leaveButton.addEventListener("click", () => {
 function leaveMultiplayerRound() {
     //important! first step is disabling multiplayer
     let wasMultiplayerEnabled = false;
-    
+
     if (multiplayer) {
         multiplayer = false;
         wasMultiplayerEnabled = true;
@@ -1446,17 +1452,17 @@ function multiplayerOverlayCountdown() {
             if (multiplayer) {
                 showMultiplayerOverlay(false); //hide the overlay --> round starts
                 document.getElementById("confirmButton").textContent = "Guess";
-                
+
                 try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
                 multiplayerTimer = startTimer(roundLength, multiplayerTimerExpired); //Start the timer
                 document.getElementById("mapModeText").textContent = "Multiplayer (Round: " + roundIndex + "/" + roundAmount + ")";
                 if (multiplayerRestriction != "standard" && multiplayerRestriction != undefined) {
-                    document.getElementById("mapModeText").textContent += " (" + multiplayerRestriction+ ")";
+                    document.getElementById("mapModeText").textContent += " (" + multiplayerRestriction + ")";
                 }
-                
+
                 totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host
                 setRestriction(multiplayerRestriction);
-                
+
                 playSound("match_countdown_start");
             }
         }
@@ -1474,10 +1480,10 @@ function setRestriction(restriction) {
     guesserWindow.style.animation = "none";
 
     switch (restriction) {
-        case "nmpz": 
+        case "nmpz":
             nmpzBackground.style.pointerEvents = "auto";
             break;
-        case "grayscale": 
+        case "grayscale":
             guesserWindow.style.filter = "grayscale(100%)";
             break;
         case "invert":
