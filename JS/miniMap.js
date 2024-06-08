@@ -141,11 +141,8 @@ function loadMap() {
         );
 
         //Add event listener for map click here
-        map.element.addEventListener("click", function (event) {
-            if (event.target.parentNode !== map.element) {
-                return;
-            }
-            var domPoint = new DOMPoint(event.pageX, event.pageY);
+        map.addEventListener("single-tap", function (event) {
+            var domPoint = event.pointOnPage;
             var coordinate = map.convertPointOnPageToCoordinate(domPoint);
             onMapClick(coordinate);
         });
