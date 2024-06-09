@@ -291,10 +291,16 @@ export function displayError(error, source) {
   if (source == "signup") {
     //special cases
     if (error.includes("400")) {
-      error = "Wrong credentials.";
+      error = "400 - Wrong credentials.";
     }
     if (error.includes("409")) {
-      error = "User with this email or username already exists.";
+      error = "409 - User with this email or username already exists.";
+    }
+    if (error.includes("429")) {
+      error = "429 - Too many requests. Please try again later.";
+    }
+    if (error.includes("500")) {
+      error = "500 - Please try clearing your cache and try different inputs.";
     }
 
     errorMessage.innerHTML = error;
