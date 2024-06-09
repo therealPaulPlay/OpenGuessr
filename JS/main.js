@@ -355,7 +355,7 @@ export function loadResultMap(playersLat, playersLong) {
             // move region up on phones by a bit
             if (window.innerHeight > window.innerWidth) {
                 const regionSpanLat = resMap.region.span.latitudeDelta;
-                resultCenterLat -= 0.02 * regionSpanLat;
+                resultCenterLat -= 0.03 * regionSpanLat;
             }
     
             const resultRegion = new mapkit.CoordinateRegion(
