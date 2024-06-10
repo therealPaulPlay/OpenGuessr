@@ -180,25 +180,26 @@ function compareDistances(distance) {
 
 //Load result Map (resMap) ------------------------------------------------------------------------------------------------
 
-// Initialize the map outside of the function
-mapkit.init({
-    authorizationCallback: function (done) {
-        done(mapsJWTToken);
-    },
-    language: "en-US" // can only be changed on page load / initialization
-});
+// result Map variable
+export let resMap; 
 
-// Create the map object outside of the function
-export let resMap = new mapkit.Map("resultMap");
+// called in miniMap.js after initializing mapkit
+export function initializeResMap() {
+    resMap = new mapkit.Map("resultMap");
 
-resMap.showsZoomControl = false;
-resMap.showsMapTypeControl = false;
-resMap._allowWheelToZoom = true;
+    resMap.showsZoomControl = false;
+    resMap.showsMapTypeControl = false;
+    resMap._allowWheelToZoom = true;
+}
 
 // Function to clear markers and polylines
 function clearMap() {
-    resMap.annotations.forEach(annotation => resMap.removeAnnotation(annotation));
-    resMap.overlays.forEach(overlay => resMap.removeOverlay(overlay));
+    try {
+        resMap.annotations.forEach(annotation => resMap.removeAnnotation(annotation));
+        resMap.overlays.forEach(overlay => resMap.removeOverlay(overlay));
+    } catch (error) {
+        // doesn't matter, just means that there is nothing to clear
+    }
 }
 
 export function setResultMapType() {
@@ -309,7 +310,7 @@ export function loadResultMap(playersLat, playersLong) {
             console.error("Error creating region for country guessr in main.js: " + e);
         }
     }
-
+    
     if (!countryGuesserMode || multiplayer) {
         // Calculate the center coordinate between the guess marker and the destination marker
         const centerLat = (currentStreetviewLat + playersLat) / 2;
@@ -317,7 +318,7 @@ export function loadResultMap(playersLat, playersLong) {
     
         // Calculate the span to include both markers on the map
         const spanLat = Math.abs(currentStreetviewLat - playersLat) * 3; // Adjust padding as needed
-        const spanLong = Math.abs(currentStreetviewLong - playersLong) * 3; 
+        const spanLong = Math.abs(currentStreetviewLong - playersLong) * 3;
     
         // Calculate the distance between the two points
         const distance = Math.sqrt(Math.pow((currentStreetviewLat - playersLat), 2) + Math.pow((currentStreetviewLong - playersLong), 2));
@@ -325,7 +326,7 @@ export function loadResultMap(playersLat, playersLong) {
         const minDistance = 0;
         const maxDistance = 5000; // Maximum distance for zooming (5000km)
         const minZoomLevel = 0;
-        const maxZoomLevel = 10; 
+        const maxZoomLevel = 10;
         const zoomScaleFactor = 200;
     
         // Calculate the zoom level with scaling
@@ -349,14 +350,22 @@ export function loadResultMap(playersLat, playersLong) {
     
         // Animate to the result marker with a slight zoom in after a delay
         animateMap = setTimeout(() => {
+            let resultCenterLat = currentStreetviewLat;
+
+            // move region up on phones by a bit
+            if (window.innerHeight > window.innerWidth) {
+                const regionSpanLat = resMap.region.span.latitudeDelta;
+                resultCenterLat -= 0.03 * regionSpanLat;
+            }
+    
             const resultRegion = new mapkit.CoordinateRegion(
-                new mapkit.Coordinate(currentStreetviewLat, currentStreetviewLong),
+                new mapkit.Coordinate(resultCenterLat, currentStreetviewLong),
                 new mapkit.CoordinateSpan(zoomLevel, zoomLevel)
             );
             resMap.setRegionAnimated(resultRegion, true);
         }, 1500);
-    }         
-}
+    }
+}    
 
 //Open map locations on google maps --------------------------------------------------------------------------------------------------
 

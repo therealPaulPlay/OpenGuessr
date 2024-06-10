@@ -7,6 +7,7 @@ import { errorPopup } from "./errorHandling.js";
 import { justPlayedDailyChallenge } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
+import { toggleStreakWindow } from "./rewardedAds.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 let Category = {
@@ -265,6 +266,7 @@ export function transitionToStart() {
             document.getElementById("BeforeOverlay").style.visibility = "visible";
             document.getElementById("BeforeOverlay").style.opacity = "100";
             try { clearInterval(animateMap)} catch(error) { console.warn("Couldn't clear interval in categoryMenu.js: " + error)};
+            toggleStreakWindow(0, true);
             checkGenerationTypeAndGenerate();
 
             setTimeout(disableResultScreen, 200);

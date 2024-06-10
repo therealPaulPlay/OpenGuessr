@@ -25,7 +25,7 @@ h1, h2, h3 {
 .Banner {
   width: 100%;
   height: 83px;
-  position: absolute;
+  position: fixed;
   z-index: 14;
   top: 0px;
   left: 0;
@@ -68,7 +68,7 @@ h1, h2, h3 {
 }
 
 #socialArea {
-  position: absolute;
+  position: fixed;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
@@ -104,7 +104,7 @@ h1, h2, h3 {
 }
 
 #bottomShadow {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   width: 100%;
   z-index: 3;
@@ -312,6 +312,30 @@ h1, h2, h3 {
   color: white;
   margin-left: 3px;
   text-wrap: nowrap;
+}
+
+#endScreenStreakRevive {
+  margin-top: auto;
+  margin-left: 0;
+  margin-right: auto;
+  margin-bottom: 10px;
+  z-index: 11;
+  font-size: 25px;
+  padding: 35px;
+  padding-top: 15px;
+  padding-bottom: 5px;
+  border-radius: 10px;
+  max-height: 1000px;
+  transition: filter 250ms ease, max-height 250ms ease;
+  user-select: none;
+  -webkit-user-select: none;
+  color: white;
+  background-color: hsla(236, 25%, 20%, 0.7);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  overflow: hidden;
+  display: none; /* default hidden */
+  pointer-events: auto;
 }
 
 #streakIcon {
@@ -616,6 +640,10 @@ li {
   flex-direction: column;
 }
 
+#keepStreakText {
+  max-width: 350px;
+}
+
 #endMultiplayerRoundButton {
   min-width: 150px;
   height: 50px;
@@ -752,7 +780,7 @@ li {
   visibility: hidden;
   opacity: 75%;
   background-color: #1e1e1ef8;
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   transition: opacity 250ms ease;
@@ -760,7 +788,7 @@ li {
 }
 
 #nmpzBackground {
-  position: absolute;
+  position: fixed;
   overflow: hidden;
   width: 100%;
   height: 100%;
@@ -771,7 +799,7 @@ li {
 #hardModeFade {
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   z-index: 1;
   transition: opacity 500ms ease;
   opacity: 0;
@@ -829,7 +857,8 @@ li {
 }
 
 #countryGuesserSelector {
-  margin-bottom: 10px;
+  position: fixed;
+  bottom: 115px;
   margin-inline: auto;
   display: none;
   gap: 8px;
@@ -847,7 +876,7 @@ li {
 #multiplayerFade {
   width: 100%;
   height: 100%;
-  position: absolute;
+  position: fixed;
   z-index: 1;
   transition: opacity 250ms ease;
   opacity: 0;
@@ -958,7 +987,7 @@ li {
   top: 75px;
   max-height: 0;
   transition: max-height 0.3s ease;
-  position: absolute;
+  position: fixed;
   right: 10px;
   width: 415px;
   background-color: rgba(42, 44, 71, 0.9);
@@ -1027,23 +1056,13 @@ li {
   width: 280px;
 }
 
-#innerMainDiv {
-  width: 100%;
-  height: 100%;
-  display: flex;
-  align-items: flex-end;
-  flex-direction: column;
-}
-
-/* Main content */
-
 #GuesserWindow {
   transition: all 250ms;
   background-color: #000;
   -moz-user-select: none;
   -webkit-user-select: none;
   user-select: none;
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   bottom: 0;
@@ -1060,6 +1079,7 @@ li {
 
 #map {
   cursor: crosshair;
+  pointer-events: auto;
   width: 100%;
   height: 100%;
   z-index: 9;
@@ -1086,6 +1106,7 @@ map::selection {
 #revealCompass {
   margin-left: auto;
   margin-bottom: -25px;
+  pointer-events: auto;
   color: rgb(54, 54, 54);
   padding-right: 10px;
   padding-left: 10px;
@@ -1101,6 +1122,7 @@ map::selection {
 }
 
 #mapModeIndicator {
+  pointer-events: auto;
   background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -1146,7 +1168,7 @@ map::selection {
   min-height: 150px;
   border-radius: 10px;
   overflow: hidden;
-  position: absolute;
+  position: fixed;
   left: 10px;
   bottom: 115px;
   display: none;
@@ -1223,13 +1245,14 @@ map::selection {
 }
 
 .MainDiv {
-  height: 100dvh;
   display: flex;
-  flex-direction: column;
   justify-content: center;
 }
 
 .BottomBar {
+  position: fixed;
+  bottom: 10px;
+  width: calc(100% - 20px);
   height: 95px;
   min-height: 95px;
   max-height: 95px;
@@ -1238,7 +1261,6 @@ map::selection {
   justify-content: left;
   margin: auto;
   border-radius: 10px;
-  margin-bottom: 10px;
   margin-inline: 10px;
   flex: 1;
   z-index: 10;
@@ -1248,50 +1270,32 @@ map::selection {
 }
 
 #bottomFooterAds {
-  position: absolute;
+  position: fixed;
   bottom: 12px;
   left: 0px; 
   right: 0px; 
   margin-left: auto; 
   margin-right: auto; 
-  width: 970px;
+  width: 728px; /* changed from 970 to 728 */
   max-height: 92px;
   height: 90px;
   padding: 0;
   z-index: 11;
-  /*border: dashed rgba(255, 255, 255, 0.5);*/
 }
-
-/* 
-.adScaling {
-  width: 970px;
-  height: 90px;
-} */
 
 @media (max-width: 1500px) {
   #bottomFooterAds {
   width: 728px;
   height: 90px;
   }
-
-  /*
-  .adScaling {
-    width: 728px;
-    height: 90px;
-  } */
 }
 
 @media (max-width: 1175px) {
   #bottomFooterAds {
   width: 320px;
   height: 50px;
+  bottom: 32px;
   }
-
-  /*
-  .adScaling {
-    width: 320px;
-    height: 50px;
-  } */
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
@@ -1305,10 +1309,15 @@ map::selection {
   #bottomFooterAds {
     width: 320px;
     height: 50px;
+    bottom: 12px;
   }
 
   .BottomBar {
     padding-bottom: 40px;
+  }
+
+  #mapHolder {
+    bottom: 145px;
   }
 }
 
@@ -1348,6 +1357,7 @@ map::selection {
 #floatingMapButton {
   display: none;
   margin-bottom: 10px;
+  pointer-events: auto;
   margin-top: auto;
   z-index: 10;
   font-size: 25px;
@@ -1381,6 +1391,7 @@ map::selection {
   background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
 }
 
 #endScreenOpenLocation:hover {
@@ -1480,7 +1491,7 @@ map::selection {
   opacity: 0;
   transition: all 500ms ease;
   background-color: #232535f8;
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   z-index: 12;
@@ -1508,6 +1519,7 @@ map::selection {
   background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  pointer-events: auto;
 }
 
 #endBottomArea {
@@ -1518,6 +1530,7 @@ map::selection {
   bottom: 10px;
   margin-inline: 10px;
   flex-direction: column;
+  pointer-events: none;
 }
 
 #motivationText {
@@ -1542,7 +1555,7 @@ map::selection {
   z-index: 1000;
   width: 100%;
   opacity: 30%;
-  position: absolute;
+  position: fixed;
   top: 0;
 }
 
@@ -1557,7 +1570,7 @@ map::selection {
   color: black;
   width: fit-content;
   background-color: white;
-  border-radius: 5px;
+  border-radius: 7px;
   margin: 20px 20px;
   margin-bottom: 19px;
   position: absolute;
@@ -1579,7 +1592,7 @@ map::selection {
   opacity: 100%;
   background-color: #13151c;
   transition: all 250ms;
-  position: absolute;
+  position: fixed;
   width: 100%;
   height: 100%;
   z-index: 11;
@@ -1632,6 +1645,17 @@ map::selection {
   transform: scale(1.05);
 }
 
+.streakButton {
+  background-color: #01a001;
+  color: white;
+  min-height: 50px;
+}
+
+.streakButton:hover {
+  box-shadow: 0 0 25px rgba(15, 248, 15, 0.4);
+  filter: brightness(100%);
+}
+
 #redditButton {
   background-color: #d45f24;
   color: white;
@@ -1651,7 +1675,7 @@ map::selection {
 }
 
 #floatingCategoryArea {
-  position: absolute;
+  position: fixed;
   top: 85px;
   right: 10px;
   z-index: 14;
@@ -1957,6 +1981,10 @@ button {
   overflow-y: auto;
 }
 
+#streakHeader {
+  transition: color 350ms ease;
+}
+
 #privacyNotice {
   font-size: 20px;
   opacity: 50%;
@@ -2062,24 +2090,39 @@ button {
 }
 
 #mapHolder {
-  margin-top: auto;
+  position: fixed;
   display: flex;
+  right: 0;
+  bottom: 105px;
   padding-inline: 10px;
   align-items: flex-end;
   flex-direction: column;
   margin-bottom: 10px;
   max-height: 100%;
+  z-index: 9;
+  pointer-events: none;
+}
+
+#streakWatchAd {
+  padding: 10px 20px;
+}
+
+#streakAdDismiss {
+  padding: 10px 20px;
+  height: 50px;
+  margin-left: auto;
+  margin-right: 10px;
 }
 
 .regularMapSize {
   width: 30%;
-  height: 30%;
+  height: 25%;
   transition: height 250ms ease, width 250ms ease, opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
 }
 
 .mapHover {
   width: 60%;
-  height: 65%;
+  height: 55%;
   transition: height 100ms ease, width 100ms ease, opacity 100ms ease, max-height 100ms ease, margin 100ms ease;
 }
 
@@ -2105,7 +2148,7 @@ button {
 @media (orientation: landscape) and (max-width: 1250px) {
   #mapHolder {
     width: 40%;
-    height: 50%;
+    height: 40%;
   }
 
   #map {
@@ -2253,13 +2296,28 @@ all and (max-width: 1000px) {
     margin-inline: 10px;
   }
 
+  #streakHeader {
+    font-size: 30px;
+  }
+
+  #endScreenStreakRevive {
+    padding-top: 10px;
+  }
+
+  #streakWatchAd {
+    margin-top: 20px;
+  }
+
+  #streakAdDismiss {
+    margin-top: 20px;
+  }
 }
 
 /* big screens in portrait, like vertical monitors */
 @media all and (orientation: portrait) {
 
   #mapHolder {
-    height: 65%;
+    height: 50%;
     width: calc(100% - 20px);
   }
 
@@ -2276,4 +2334,16 @@ all and (max-width: 1000px) {
   }
 
 
+}
+
+/* higher bottom bar because of ad shift */
+@media (orientation: portrait) and (max-width: 700px) {
+
+  #mapHolder {
+    bottom: 145px;
+  }
+
+  #countryGuesserSelector {
+    bottom: 155px;
+  }
 }
