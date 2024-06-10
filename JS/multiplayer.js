@@ -465,9 +465,11 @@ try {
     peer = new Peer(unqiueUserID, {
         config: {
             'iceServers': [
+                { urls: 'stun:fastturn.eu:5349', username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
                 { urls: 'stun:stun.l.google.com:19302' },
+                { urls: "turns:fastturn.eu:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                { urls: "turn:fastturn.eu:3478", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
                 { urls: "turn:freestun.net:3479", username: "free", credential: "free" },
-                { urls: "turns:freestun.net:5350", username: "free", credential: "free" }
             ]
         }
     });
