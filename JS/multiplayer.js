@@ -637,6 +637,12 @@ chatInput.addEventListener("keydown", function (event) {
     }
 });
 
+chatInput.addEventListener('keydown', (event) => {
+    if (event.key === " ") {
+        event.stopPropagation(); 
+    }
+});
+
 function manuallySendChat() {
     if (chatInput.value != "") {
         if (localStorage.getItem("username") != null) {
