@@ -20,9 +20,9 @@ try {
     
             // Update placement attributes based on element width
             if (footerAdsScaler.getBoundingClientRect().width >= 728) {
-                placement.setAttribute("data-id", "662edb31cf5c49162f52b298"); //Desktop Multi-Size leaderboard
+                placement.setAttribute("data-id", "666702f0549bd20a9f2bfab6"); //Desktop Multi-Size leaderboard
             } else {
-                placement.setAttribute("data-id", "662edba67e16dc002af51186"); //Mobile Leaderboard
+                placement.setAttribute("data-id", "66670320549bd20a9f2bfaba"); //Mobile Leaderboard
             }
     
             previousFooterAdsWidth = footerAdsScaler.getBoundingClientRect().width;
