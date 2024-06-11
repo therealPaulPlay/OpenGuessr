@@ -1835,15 +1835,19 @@ map::selection {
 }
 
 #dailyCategory {
-  background: linear-gradient(0.60turn, white, #caf5ff);
+  background: linear-gradient(0.60turn, white, #bbf2ff);
 }
 
 #hardCategory {
-  background: linear-gradient(0.60turn, white, #fff4ca);
+  background: linear-gradient(0.60turn, white, #ffeca6);
 }
 
 #countryCategory {
   background: linear-gradient(0.60turn, white, #d0ffca);
+}
+
+.continentCategory {
+  background: linear-gradient(0.60turn, white, #b4b9e6);
 }
 
 .dailyChallengeDisabled {

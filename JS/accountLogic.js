@@ -280,34 +280,46 @@ export function restoreOldStreak(oldStreak) {
   streakText.textContent = streak + " (" + streakMultiplier + "x)";
 }
 
-function calculateXPGain(distance, category) {
-  if (category == null || category == "standard" || category == "capital" || category == "hard" || category == "famous" || (category && category.includes("community"))) {
-    
-    if (!multiplayer) {
-      if (getCountryFromCoords(mapMarkerLat, mapMarkerLong) == getCountryFromCoords(currentStreetviewLat, currentStreetviewLong)) {
-        streak++;
-      } else {
-        if (streak >= 2) {
-          toggleStreakWindow(streak, false);
-        }
-
-        streak = 0; //reset country streak
-      }
-  
-      localStorage.setItem("streak", streak);
-  
-      streakMultiplier = calculateMultiplier(streak);
-      streakText.textContent = streak + " (" + streakMultiplier + "x)";
-  
-      streakDisplay.style.visibility = "visible";
-      streakDisplay.style.width = "auto";
-    }
-
-    if (category != "famous" && !(category && category.includes("community"))) {
-      return Math.round((5000 * ((0.998036) ** distance)) * streakMultiplier);
+function streakCalculation() {
+  if (!multiplayer) {
+    if (getCountryFromCoords(mapMarkerLat, mapMarkerLong) == getCountryFromCoords(currentStreetviewLat, currentStreetviewLong)) {
+      streak++;
     } else {
-      return Math.round((1000 * ((0.998036) ** distance)) * streakMultiplier); //1000 xp for famous and community, with streak up to 1500
+      if (streak >= 2) {
+        toggleStreakWindow(streak, false);
+      }
+
+      streak = 0; //reset country streak
     }
+
+    localStorage.setItem("streak", streak);
+
+    streakMultiplier = calculateMultiplier(streak);
+    streakText.textContent = streak + " (" + streakMultiplier + "x)";
+
+    streakDisplay.style.visibility = "visible";
+    streakDisplay.style.width = "auto";
+  }
+}
+
+function calculateXPGain(distance, category) {
+  if (category == null || category == "standard" || category == "capital" || category == "hard") {
+
+    streakCalculation();
+    return Math.round((5000 * ((0.998036) ** distance)) * streakMultiplier);
+
+  } else if (category == "europe" || category == "asia" || category == "africa" || category == "oceania" || category == "southamerica") {
+    // not NA as that is literally US 95% of the time, therefore no streak
+    streakCalculation();
+    return Math.round((5000 * ((0.996036) ** distance)) * streakMultiplier); // slightly reduced xp range as continents are smaller than countries
+
+  } else if (category == "famous" || (category && category.includes("community"))) {
+
+    streakCalculation();
+    return Math.round((1500 * ((0.998036) ** distance)) * streakMultiplier); //1000 xp for famous and community, with streak up to 1800sth
+
+  } else if (category == "northamerica") {
+    return Math.round(5000 * ((0.996036) ** distance)); 
 
   } else if (category == "daily") {
     let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();

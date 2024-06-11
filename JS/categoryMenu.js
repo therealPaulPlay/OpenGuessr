@@ -41,7 +41,13 @@ let Category = {
     ISRAEL: "israel",
     CZECHIA: "czechia",
     JAPAN: "japan",
-    INDONESIA: "indonesia"
+    INDONESIA: "indonesia",
+    AFRICA: "africa",
+    SOUTHAMERICA: "southamerica",
+    NORTHAMERICA: "northamerica",
+    ASIA: "asia",
+    EUROPE: "europe",
+    OCEANIA: "oceania"
 };
 
 export let mapCategory = Category.STANDARD; // Default category
