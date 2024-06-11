@@ -271,3 +271,9 @@ window.addEventListener("keydown", function (event) {
     }
 });
 
+const mapContainer = document.getElementById("map");
+
+// Focus the map container when the map is clicked
+mapContainer.addEventListener("click", () => {
+  mapContainer.focus();
+});
