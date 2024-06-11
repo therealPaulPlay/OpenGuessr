@@ -1091,6 +1091,10 @@ li {
   transition: opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
 }
 
+#map:focus {
+  outline: none;
+}
+
 .mk-map-view {
   border-radius: 10px;
 }
