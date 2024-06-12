@@ -6,6 +6,7 @@
 @font-face {
   font-family: Barlow;
   src: url('../FONTS/BarlowCondensed-Medium.ttf');
+  font-display: swap;
 }
 
 
