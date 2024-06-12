@@ -190,6 +190,7 @@ export function initializeResMap() {
     resMap.showsZoomControl = false;
     resMap.showsMapTypeControl = false;
     resMap._allowWheelToZoom = true;
+    resMap.showsCompass = mapkit.FeatureVisibility.Hidden;
 }
 
 // Function to clear markers and polylines
@@ -356,6 +357,9 @@ export function loadResultMap(playersLat, playersLong) {
             if (window.innerHeight > window.innerWidth) {
                 const regionSpanLat = resMap.region.span.latitudeDelta;
                 resultCenterLat -= 0.03 * regionSpanLat;
+            } else {
+                const regionSpanLat = resMap.region.span.latitudeDelta;
+                resultCenterLat -= 0.01 * regionSpanLat;
             }
     
             const resultRegion = new mapkit.CoordinateRegion(

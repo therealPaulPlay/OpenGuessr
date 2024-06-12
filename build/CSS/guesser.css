@@ -6,6 +6,7 @@
 @font-face {
   font-family: Barlow;
   src: url('../FONTS/BarlowCondensed-Medium.ttf');
+  font-display: swap;
 }
 
 
@@ -787,6 +788,19 @@ li {
   z-index: 15;
 }
 
+/* used to improve contrast between category menu + bg */
+#mobileBlackBackground {
+  overflow: hidden;
+  visibility: hidden;
+  opacity: 0;
+  background-color: #1e1e1ef8;
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  transition: opacity 250ms ease;
+  z-index: 11;
+}
+
 #nmpzBackground {
   position: fixed;
   overflow: hidden;
@@ -1086,7 +1100,7 @@ li {
   opacity: 95%;
   border-radius: 10px;
   max-height: 100%;
-  background: #bfd4da;
+  background: #8cd4f6;
   box-shadow: 0 2px 20px rgba(71, 71, 71, 0.5);
   transition: opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
 }
@@ -1547,10 +1561,10 @@ map::selection {
   display: inline-block;
   margin: 0px auto auto;
   z-index: 10;
-  height: 100%;
+  height: calc(100% + 28px);
   width: 100%;
   align-items: top;
-  background: #d5e8eb;
+  background: #8cd4f6;
 }
 
 #topShadow {
