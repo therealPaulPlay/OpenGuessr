@@ -1561,7 +1561,7 @@ map::selection {
   display: inline-block;
   margin: 0px auto auto;
   z-index: 10;
-  height: 100%;
+  height: calc(100% + 28px);
   width: 100%;
   align-items: top;
   background: #8cd4f6;
