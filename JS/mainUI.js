@@ -166,6 +166,12 @@ categoryMenuButton.addEventListener("click", function () {
     playSound("floating_button");
 });
 
+document.getElementById("mobileBlackBackground").addEventListener("click", () => {
+    if (document.getElementById("mobileBlackBackground").style.visibility == "visible") {
+        toggleCategoryMenu(true);
+    }
+})
+
 export function toggleCategoryMenu(alwaysClose) {
     try {
         if (alwaysClose) {
@@ -179,6 +185,10 @@ export function toggleCategoryMenu(alwaysClose) {
             extendedNavbar.classList.add("expanded");
             categoryMenuButton.innerText = "Maps ▲";
             categoriesExpanded = true;
+            if (window.innerHeight > window.innerWidth) {
+                document.getElementById("mobileBlackBackground").style.visibility = "visible";
+                document.getElementById("mobileBlackBackground").style.opacity = "0.75";
+            }
         } else {
             setTimeout(function () {
                 floatingCategoryArea.style.top = "85px";
@@ -187,6 +197,12 @@ export function toggleCategoryMenu(alwaysClose) {
             extendedNavbar.classList.remove("expanded");
             categoryMenuButton.innerText = "Maps ▼";
             categoriesExpanded = false;
+            if (document.getElementById("mobileBlackBackground").style.visibility == "visible") {
+                document.getElementById("mobileBlackBackground").style.opacity = "0";
+                setTimeout(() => {
+                    document.getElementById("mobileBlackBackground").style.visibility = "hidden";
+                }, 250);
+            }
         }
     } catch {
         console.warn("Couldn't toggle category menu");
