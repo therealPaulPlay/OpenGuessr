@@ -388,7 +388,7 @@ export function multiplayerStateToGuessed() {
 
     if (isHost) {
         if (!multiplayerHasAlreadyGuessed) {
-            multiplayerGuessesLocationsArray.push([mapMarkerLat, mapMarkerLong, selectedPinIndex]); //add the hosts guess to the guesses
+            multiplayerGuessesLocationsArray.push([mapMarkerLat, mapMarkerLong, selectedPinIndex, localStorage.getItem("username") != null ? localStorage.getItem("username") : savedGuestName]); //add the hosts guess to the guesses
             multiplayerHasGuessed(); //after that, add one to the guesses (and maybe go to result screen if all guesses are there)
         }
     } else {
@@ -396,7 +396,8 @@ export function multiplayerStateToGuessed() {
             peerSendsHost("guessed", {
                 lat: mapMarkerLat,
                 long: mapMarkerLong,
-                style: selectedPinIndex
+                style: selectedPinIndex,
+                name: localStorage.getItem("username") != null ? localStorage.getItem("username") : savedGuestName
             });
         }
     }
@@ -899,7 +900,7 @@ if (peer) {
                 // Receive messages
                 incomingConn.on('data', function (data) {
                     if (data.type == "guessed") {
-                        multiplayerGuessesLocationsArray.push([data.content.lat, data.content.long, data.content.style]);
+                        multiplayerGuessesLocationsArray.push([data.content.lat, data.content.long, data.content.style, data.content.name]);
                         multiplayerHasGuessed();
                     }
 

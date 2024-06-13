@@ -255,6 +255,7 @@ export function loadResultMap(playersLat, playersLong) {
         // this places the Player Marker (where the player thinks the location is)
 
         const playerMarker = new mapkit.MarkerAnnotation(playerLatLng, {
+            title: multiplayer ? "You" : "",
             color: "white",
             glyphColor: colorArray[selectedPinIndex],
             glyphImage: { 1: `./IMG/apple_your_marker${selectedPinIndex}.png` },
@@ -272,6 +273,7 @@ export function loadResultMap(playersLat, playersLong) {
             let newMarkerLat = element[0];
             let newMarkerLong = element[1];
             let newMarkerPinIndex = element[2];
+            let associatedPlayerName = element[3];
 
             // checks for edge cases
             if (newMarkerLat == null || newMarkerLong == null || isNaN(newMarkerLat)) {
@@ -288,6 +290,7 @@ export function loadResultMap(playersLat, playersLong) {
             if (newMarkerLat != playersLat || newMarkerLong != playersLong) {
                 const multiplayerLatLng = new mapkit.Coordinate(Number(newMarkerLat), Number(newMarkerLong));
                 const multiplayerMarker = new mapkit.MarkerAnnotation(multiplayerLatLng, {
+                    title: associatedPlayerName,
                     color: "#e3e3e3",
                     glyphColor: colorArray[newMarkerPinIndex],
                     glyphImage: { 1: `./IMG/apple_your_marker${newMarkerPinIndex}.png` },
