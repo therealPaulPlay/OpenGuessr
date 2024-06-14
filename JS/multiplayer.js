@@ -187,6 +187,7 @@ multiplayerJoin.addEventListener("click", () => {
 
 function setJoinInfoText(text) {
     joinInfoText.innerText = text; //this function is used to display things like "Invalid Roomcode" etc.
+    document.getElementById("linkjoinStatus").textContent = text; // link join popup for status info
 }
 
 document.getElementById("roomCodeInput").addEventListener("input", setJoinButtonState);
@@ -549,7 +550,7 @@ try {
     console.error("Could not inizialize PeerJS: " + error);
 }
 
-// Joining via Links (also as a guest!) 
+// Joining via Links (also as a guest!) -------------------------------------------------------------------------------------
 
 var queryString = window.location.search;
 let joinOnLoadViaLink = false;
@@ -570,10 +571,26 @@ if (queryString && queryString.length > 1) { // Checking if queryString is not e
     joinOnLoadViaLink = true;
 }
 
+function setLinkjoinPopup(show) {
+    if (show) {
+        document.getElementById("linkjoinWindow").style.display = "block";
+        document.getElementById("blackBackground").style.visibility = "visible";
+    } else {
+        document.getElementById("linkjoinWindow").style.display = "none";
+        document.getElementById("blackBackground").style.visibility = "hidden";
+    }
+}
+
+document.getElementById("linkJoinClose").addEventListener("click", () => {
+    playSound("basic_button");
+    setLinkjoinPopup(false);
+})
+
 document.addEventListener('DOMContentLoaded', function () {
     if (joinOnLoadViaLink) {
         if (peer) {
             try {
+                setLinkjoinPopup(true);
                 peer.on('open', function () {
                     joinRoom(roomCode);
                 });
@@ -1223,6 +1240,7 @@ function joinRoom(code) {
             multiplayer = true;
             setMultiplayerUI();
             toggleMultiplayerSelector("close");
+            setLinkjoinPopup(false);
             matchmakingActive = false;
             roundAmount = data.content.roundAmount;
             roundLength = data.content.roundLength;
