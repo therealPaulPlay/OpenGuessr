@@ -410,8 +410,12 @@ h1, h2, h3 {
   color: black;
   background-color: rgba(255, 255, 255, 1);
   margin: 5px;
-  margin-top: 20px;
   height: fit-content;
+  padding-inline: 10px;
+}
+
+#linkIcon {
+  vertical-align: -1px;
 }
 
 ul {
@@ -582,6 +586,7 @@ li {
 #multiplayerHost {
   padding: 0 20px;
   margin: 0;
+  height: 36.5px;
 }
 
 .multiplayerHostSubmitArea {
@@ -589,6 +594,13 @@ li {
   justify-content: center;
   align-items: center;
   padding: 10px;
+}
+
+#innerSubmitAreaBlock {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
 }
 
 .multiplayerInput {
@@ -668,7 +680,7 @@ li {
   font-size: 40px;
 }
 
-#roomCreationModes {
+.roomCreationModule {
   margin-top: 5px;
   padding-top: 10px;
   padding-bottom: 10px;
@@ -687,6 +699,17 @@ li {
 
 .tickerNote {
   font-size: 20px;
+}
+
+#teamsDisplay {
+  background-color: rgba(255, 255, 255, 0.1);
+  width: calc(100% - 10px);
+  border-radius: 7px;
+  margin-top: 10px;
+}
+
+#teamsDisplayText {
+  padding-inline: 8px;
 }
 
 .multiplayerInputInfo {

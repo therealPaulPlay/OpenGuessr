@@ -1,7 +1,7 @@
 import { loadResultMap, calculateDistances, setResultMapType, initializeResMap } from "./main.js";
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
-import { multiplayer, multiplayerStateToGuessed } from "./multiplayer.js";
+import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile, isElementClickable } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 
@@ -14,6 +14,7 @@ export const MapType = {
 
 let marker;
 let map;
+let multiplayerMiniMarkers = []; // team markers
 
 export let mapsJWTToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY2OEo1WkhOVDcifQ.eyJvcmlnaW4iOlsiaHR0cHM6Ly9vcGVuZ3Vlc3NyLmNvbSIsImh0dHBzOi8vZGV2Lm9wZW5ndWVzc3IuY29tIiwiaHR0cDovL2xvY2FsaG9zdDozMDAwIiwiaHR0cHM6Ly9vZy12ZW5hdHVzLXRlc3QubmV0bGlmeS5hcHAiLCJodHRwczovL29wZW5ndWVzc3IubmV0bGlmeS5hcHAiXSwiaWF0IjoxNzE3NTM2OTcyLCJleHAiOjE3NDkwNzI5NzIsImlzcyI6IjRVUTUzTUJTSkwifQ.wm1K1wol6VYfEx0lT31MeQ8YeEqFjqqO2kUtWs0qekW0hZQ39oAYt8A6XkyD0DhteW34vLTMdzIj8uWh-Y8_hw";
 export let colorArray = ["#fc1c1c", "#fc851e", "#f002c0", "#11c8d9", "#9f55fa", "#cca700"]; //pin colors (red, orange, pink...)
@@ -72,6 +73,11 @@ export function resetMap() {
     if (marker) {
         map.removeAnnotation(marker);
     }
+
+    // clean up multiplayer team markers
+    multiplayerMiniMarkers.forEach(marker => {
+        map.removeAnnotation(marker);
+    });
 
     map.region = new mapkit.CoordinateRegion(
         new mapkit.Coordinate(48, 28), // Centered around the equator and Greenwich
@@ -180,6 +186,71 @@ function onMapClick(coordinate) {
     });
 
     map.addAnnotation(marker);
+    sendTeamMarkers(mapMarkerLat, mapMarkerLong);
+}
+
+export function updateMinimapWithTeamMarkers(markerArray) {
+    // Track existing marker positions
+    let existingMarkerPositions = new Map();
+
+    // Collect positions of current markers
+    multiplayerMiniMarkers.forEach(existingMarker => {
+        const position = existingMarker.coordinate;
+        existingMarkerPositions.set(`${position.latitude},${position.longitude}`, existingMarker);
+    });
+
+    try {
+        // Remove markers that no longer exist in markerArray
+        multiplayerMiniMarkers.forEach(existingMarker => {
+            const position = existingMarker.coordinate;
+            const markerPositionKey = `${position.latitude},${position.longitude}`;
+
+            // Check if current marker exists in the updated markerArray
+            const markerExists = markerArray.some(element => {
+                let miniMarkerLat = element[1];
+                let miniMarkerLong = element[2];
+                return miniMarkerLat == position.latitude && miniMarkerLong == position.longitude;
+            });
+
+            // If marker doesn't exist in markerArray, remove it
+            if (!markerExists) {
+                map.removeAnnotation(existingMarker);
+                multiplayerMiniMarkers = multiplayerMiniMarkers.filter(m => m !== existingMarker);
+                existingMarkerPositions.delete(markerPositionKey);
+            }
+        });
+
+        // Add new markers from markerArray that belong to yourTeam
+        markerArray.forEach(element => {
+            let miniMarkerId = element[0];
+            let miniMarkerLat = element[1];
+            let miniMarkerLong = element[2];
+            let miniMarkerPinIndex = element[3];
+            let miniMarkerTeam = element[4];
+
+            // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
+            // and miniMarkerTeam matches yourTeam
+            if (miniMarkerId != peerId && miniMarkerTeam === yourTeam) {
+                const multiplayerLatLng = new mapkit.Coordinate(Number(miniMarkerLat), Number(miniMarkerLong));
+                const markerPositionKey = `${multiplayerLatLng.latitude},${multiplayerLatLng.longitude}`;
+
+                if (!existingMarkerPositions.has(markerPositionKey)) {
+                    // Marker doesn't exist, create new marker
+                    const newMultiplayerMiniMarker = new mapkit.MarkerAnnotation(multiplayerLatLng, {
+                        color: "#e3e3e3",
+                        glyphColor: colorArray[miniMarkerPinIndex],
+                        glyphImage: { 1: `./IMG/apple_your_marker${miniMarkerPinIndex}.png` },
+                    });
+                    map.addAnnotation(newMultiplayerMiniMarker);
+                    multiplayerMiniMarkers.push(newMultiplayerMiniMarker);
+                    existingMarkerPositions.set(markerPositionKey, newMultiplayerMiniMarker); // Update positions map
+                }
+            }
+        });
+
+    } catch (error) {
+        console.error("Error updating minimap with team markers: " + error);
+    }
 }
 
 // event listeners
@@ -275,5 +346,5 @@ const mapContainer = document.getElementById("map");
 
 // Focus the map container when the map is clicked
 mapContainer.addEventListener("click", () => {
-  mapContainer.focus();
+    mapContainer.focus();
 });

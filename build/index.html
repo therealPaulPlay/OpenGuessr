@@ -367,17 +367,33 @@
               </div>
             </div>
           </div>
-          <div id="roomCreationModes" class="multiplayerHostSettings">
+          <div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
             <p>Restrictions:</p>
             <button id="toggleRestrictions" class="accountButton white">Standard</button>
+          </div>
+          <div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
+            <p>Teams:</p>
+            <div class="ticker">
+              <button id="teamsMinus" class="accountButton white">-</button>
+              <p id="teamAmountText" class="tickerText">no</p>
+              <p class="tickerNote"> teams</p>
+              <button id="teamsPlus" class="accountButton white">+</button>
+            </div>
           </div>
           <div id="hostCodeArea" class="multiplayerHostCodeArea">
             <h1 id="roomCodeDisplay">Roomcode (error, please reload)</h1>
             <p id="joinCounter">Players joined: 0</p>
-            <button id="roomcodeLink" class="copyLinkButton accountButton">Copy Link</button>
+            <div id="teamsDisplay" class="roomCreationModule multiplayerHostSettings">
+              <p id="teamsDisplayText">Nothing to show</p>
+            </div>
           </div>
           <div class="multiplayerHostSubmitArea">
-            <button id="multiplayerHost" class="accountButton">Create room</button>
+            <div id="innerSubmitAreaBlock">
+              <button id="roomcodeLink" class="copyLinkButton accountButton">
+                <img id="linkIcon" class="socialIcon" src="/IMG/link_icon.png" alt="copy link">
+              </button>
+              <button id="multiplayerHost" class="accountButton">Create room</button>
+            </div>
           </div>
         </div>
       </div>
