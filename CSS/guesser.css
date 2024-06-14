@@ -710,6 +710,7 @@ li {
 
 #teamsDisplayText {
   padding-inline: 8px;
+  opacity: 0.5;
 }
 
 .multiplayerInputInfo {
