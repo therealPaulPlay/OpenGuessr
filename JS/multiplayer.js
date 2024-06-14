@@ -4,7 +4,7 @@ import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socia
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex } from "./accountLogic.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
-import { confirmButtonClicks, mapMarkerLat, mapMarkerLong } from "./miniMap.js";
+import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeamMarkers } from "./miniMap.js";
 import { calculateDistances, loadResultMap } from "./main.js";
 import { playSound } from "./soundManager.js";
 
@@ -35,6 +35,10 @@ let roundAmountText = document.getElementById("roundAmountText");
 let lengthPlus = document.getElementById("lengthPlus");
 let lengthMinus = document.getElementById("lengthMinus");
 let roundLengthText = document.getElementById("roundLengthText");
+
+let teamsPlus = document.getElementById("teamsPlus");
+let teamsMinus = document.getElementById("teamsMinus");
+let teamAmountText = document.getElementById("teamAmountText");
 
 //Duels
 let retryDuelFind = document.getElementById("multiplayerDuelRetry");
@@ -108,6 +112,7 @@ function changeMultiplayerSelectorInfotext(hoveredButton) {
 //Pages ---------------------------------------------------------------------------------------
 let hostCodeArea = document.getElementById("hostCodeArea");
 let roomCreationSettings = document.getElementById("roomCreationSettings");
+let teamAmount = 1;
 
 multiplayerSelectJoin.addEventListener("click", () => { playSound("basic_button"); setMultiplayerWindowSelection("join"); })
 multiplayerSelectHost.addEventListener("click", () => { playSound("basic_button"); setMultiplayerWindowSelection("host"); })
@@ -137,6 +142,8 @@ function setMultiplayerWindowSelection(window) {
     multiplayerHost.textContent = "Create room";
     roundLengthText.textContent = "120";
     roundAmountText.textContent = "3";
+    teamAmountText.textContent = "no";
+    teamAmount = 1;
     retryDuelFind.style.pointerEvents = "none";
     retryDuelFind.style.opacity = "0.5";
     toggleRestrictions.textContent = "Standard";
@@ -144,8 +151,11 @@ function setMultiplayerWindowSelection(window) {
     multiplayerRestriction = "standard";
     setDuelFindStatus("Initializing...");
     setJoinCounter(0);
+    document.getElementById("teamsDisplayText").textContent = "Nothing to display";
     setJoinInfoText("Enter the roomcode.");
     document.getElementById("roomCreationModes").style.display = "flex";
+    document.getElementById("roomCreationTeams").style.display = "flex";
+    document.getElementById("roomcodeLink").style.display = "none";
     setJoinButtonState();
     leaveMultiplayerRound(); //leave round and disconnect all peers if you are the host
 
@@ -201,6 +211,8 @@ function showHostCodeArea(roomcode) {
     roomCreationSettings.style.display = "none";
     document.getElementById("roomCodeDisplay").textContent = roomcode;
     document.getElementById("roomCreationModes").style.display = "none";
+    document.getElementById("roomCreationTeams").style.display = "none";
+    document.getElementById("roomcodeLink").style.display = "block";
 }
 
 roundPlus.addEventListener("click", () => { hostRoundAmount(1, true); })
@@ -227,9 +239,21 @@ function hostLengthAmount(changeAmount, sound) {
     }
 }
 
+teamsPlus.addEventListener("click", () => { hostTeamAmount(1, true); });
+teamsMinus.addEventListener("click", () => { hostTeamAmount(-1, true); });
+
+function hostTeamAmount(changeAmount, sound) {
+    teamAmount = clamp((teamAmount + changeAmount), 1, 5);
+    teamAmountText.textContent = teamAmount == 1 ? "no" : teamAmount;
+
+    if (sound) {
+        playSound("change_value");
+    }
+}
+
 function setJoinCounter(playerAmount) {
     document.getElementById("joinCounter").textContent = "Players joined: " + (playerAmount + 1);
-    if (multiplayerHost.textContent == "Start" && playerAmount == 0) {
+    if (multiplayerHost.textContent == "Start" && playerAmount < (teamAmount * 2 - 1)) {
         multiplayerHost.style.opacity = "0.5";
         multiplayerHost.style.pointerEvents = "none";
     } else {
@@ -237,6 +261,53 @@ function setJoinCounter(playerAmount) {
         multiplayerHost.style.pointerEvents = "auto";
     }
 }
+
+function updateTeamDisplay() {
+    const amountOfTeams = teamAmount;
+    let index = 1; // Start index at 1 to ensure teams start from 1
+    let teams = {};
+    let noTeamPlayers = [];
+
+    // Initialize teams array if amountOfTeams is more than 1
+    if (amountOfTeams > 1) {
+        for (let i = 1; i <= amountOfTeams; i++) {
+            teams[i] = [];
+        }
+    }
+
+    // Update team index for connected peers
+    connectedPeers.forEach((element) => {
+        if (amountOfTeams === 1) {
+            // Collect all players for "No team"
+            noTeamPlayers.push(element[1]);
+        } else {
+            // Distribute players in teams starting from team 1
+            const teamIndex = index;
+            teams[teamIndex].push(element[1]);
+            element[4] = teamIndex; // Assuming element[4] is the team index storage
+            index = (index % amountOfTeams) + 1; // Increment index circularly from 1 to amountOfTeams
+        }
+    });
+
+    if (amountOfTeams === 1) {
+        document.getElementById("teamsDisplayText").textContent = "No team: " + noTeamPlayers.join(", ");
+    } else {
+        let teamText = "";
+        for (let i = 1; i <= amountOfTeams; i++) {
+            if (teams[i].length > 0) { // Only display non-empty teams
+                teamText += `Team ${i}: ${teams[i].join(", ")}\n`;
+            }
+        }
+        // Update the innerText property instead of textContent to preserve line breaks
+        document.getElementById("teamsDisplayText").innerText = teamText.trim(); // remove the trailing newline
+    }
+}
+
+function getTeamFromPeerId(id) {
+    const playerArray = connectedPeers.find(item => item[0] === id);
+    return playerArray[4];
+}
+
 
 toggleRestrictions.addEventListener("click", () => {
     toggleMultiplayerRestriction();
@@ -388,7 +459,7 @@ export function multiplayerStateToGuessed() {
 
     if (isHost) {
         if (!multiplayerHasAlreadyGuessed) {
-            multiplayerGuessesLocationsArray.push([mapMarkerLat, mapMarkerLong, selectedPinIndex]); //add the hosts guess to the guesses
+            multiplayerGuessesLocationsArray.push([mapMarkerLat, mapMarkerLong, selectedPinIndex, localStorage.getItem("username") != null ? localStorage.getItem("username") : savedGuestName]); //add the hosts guess to the guesses
             multiplayerHasGuessed(); //after that, add one to the guesses (and maybe go to result screen if all guesses are there)
         }
     } else {
@@ -396,7 +467,8 @@ export function multiplayerStateToGuessed() {
             peerSendsHost("guessed", {
                 lat: mapMarkerLat,
                 long: mapMarkerLong,
-                style: selectedPinIndex
+                style: selectedPinIndex,
+                name: localStorage.getItem("username") != null ? localStorage.getItem("username") : savedGuestName
             });
         }
     }
@@ -527,16 +599,16 @@ copyRoomcodeLinkButton.addEventListener("click", () => {
 function copyRoomcodeLink() {
     navigator.clipboard.writeText(window.location.origin + "/?" + peerId.replace("openguessr_", ""))
         .then(function () {
-            copyRoomcodeLinkButton.textContent = "Copied!";
+            document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
             setTimeout(() => {
-                copyRoomcodeLinkButton.textContent = "Copy Link";
+                document.getElementById("linkIcon").src = "/IMG/link_icon.png";
             }, 700);
         })
         .catch(function (error) {
-            copyRoomcodeLinkButton.textContent = "Error!";
+            document.getElementById("linkIcon").src = "/IMG/link_error_icon.png";
             console.error("Copy error: " + error);
             setTimeout(() => {
-                copyRoomcodeLinkButton.textContent = "Copy Link";
+                document.getElementById("linkIcon").src = "/IMG/link_icon.png";
             }, 700);
         });
 }
@@ -638,7 +710,7 @@ chatInput.addEventListener("keydown", function (event) {
 
 chatInput.addEventListener('keydown', (event) => {
     if (event.key === " ") {
-        event.stopPropagation(); 
+        event.stopPropagation();
     }
 });
 
@@ -839,6 +911,7 @@ function setRetryButtonState() {
 //Host Logic ----------------------------------------------------------------------------------------------
 export let multiplayerGuessesLocationsArray = [];
 let multiplayerFirstRoundPlayed = false; // for host and peers! peers use this to see whether they should incrase the round index
+export let yourTeam = 1;
 
 if (peer) {
     peer.on('open', function (id) {
@@ -864,9 +937,10 @@ if (peer) {
 
                 // Event listener for when the connection is open
                 incomingConn.on('open', function () {
-                    connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score]);
+                    connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1]);
                     connectedClientsCount++;
                     setJoinCounter(connectedClientsCount);
+                    updateTeamDisplay();
                     clearInterval(brokenConnectionTimeout); //stop the broken-connection kick timer
 
                     const initialMessage = {
@@ -874,6 +948,8 @@ if (peer) {
                         content: {
                             roundAmount: roundAmount,
                             roundLength: roundLength,
+                            teamAmount: teamAmount,
+                            team: getTeamFromPeerId(incomingConn.peer),
                             multiplayerRestriction: multiplayerRestriction,
                             category: multiplayerCategory
                         }
@@ -899,7 +975,7 @@ if (peer) {
                 // Receive messages
                 incomingConn.on('data', function (data) {
                     if (data.type == "guessed") {
-                        multiplayerGuessesLocationsArray.push([data.content.lat, data.content.long, data.content.style]);
+                        multiplayerGuessesLocationsArray.push([data.content.lat, data.content.long, data.content.style, data.content.name]);
                         multiplayerHasGuessed();
                     }
 
@@ -910,6 +986,12 @@ if (peer) {
                     if (data.type == "chat") {
                         distributeChat(data.content);
                     }
+
+                    if (data.type == "teamMarkers") {
+                        addReplaceTeamMarkers(data.content.id, data.content.lat, data.content.long, data.content.pin, data.content.team);
+                        sendMessageToAll("teamMarkers", teamMarkerArray);
+                        if (teamAmount > 1) { updateMinimapWithTeamMarkers(teamMarkerArray) };
+                    }
                 });
 
                 //Peer disconnects
@@ -917,6 +999,7 @@ if (peer) {
                     connectedClientsCount--;
                     setJoinCounter(connectedClientsCount);
                     removeConnectedPeerById(incomingConn.peer);
+                    updateTeamDisplay();
                     distributeChat("System: " + incomingConn.metadata.username + " left.");
 
                     //if peer disconnects pre-game, update the waiting screen
@@ -947,6 +1030,7 @@ function createRoom(AmountOfRounds, LengthOfRounds) {
         showHostCodeArea("Roomcode: " + peerId.replace("openguessr_", ""));
         multiplayerHost.textContent = "Start";
         setJoinCounter(0); //greys out the start button too
+        updateTeamDisplay();
         playSound("basic_button");
     } else {
         StartRoom();
@@ -964,7 +1048,8 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
         multiplayerCategory = "standard";
     }
 
-    connectedPeers.push([peerId, localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0]); //add yourself (host) to the overview
+    connectedPeers.push([peerId, localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0, 1]); //add yourself (host) to the overview
+    yourTeam = 1; // Host is always in team 1
     showMultiplayerOverlay(true, "Waiting...", connectedPeers);
 
     //set round and length parameters
@@ -1010,6 +1095,7 @@ function multiplayerRematch() {
 //Start the first / next round
 export function startMultiplayerRound(latitude, longitude) {
     multiplayerGuessesLocationsArray = []; //reset previous stored guesses from peers
+    teamMarkerArray = [];
     totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host (this is being set here as well as after the countdown)
 
     if (multiplayerFirstRoundPlayed == false) {
@@ -1074,7 +1160,30 @@ function disconnectAllPeersAndCloseRoom() {
 
     connectedClientsCount = 0;
     connectedPeers = [];
+    updateTeamDisplay();
     setJoinCounter(connectedClientsCount);
+}
+
+let teamMarkerArray = [];
+
+export function sendTeamMarkers(lat, long) {
+    if (multiplayer) {
+        if (isHost) {
+            addReplaceTeamMarkers(peerId, lat, long, selectedPinIndex, yourTeam);
+            sendMessageToAll("teamMarkers", teamMarkerArray);
+        } else {
+            peerSendsHost("teamMarkers", { id: peerId, lat: lat, long: long, pin: selectedPinIndex, team: yourTeam });
+        }
+    }
+}
+
+function addReplaceTeamMarkers(id, lat, long, pinIndex, team) {
+    const index = teamMarkerArray.findIndex(entry => entry[0] == id);
+    if (index !== -1) {
+        teamMarkerArray.splice(index, 1);
+    }
+
+    teamMarkerArray.push([id, lat, long, pinIndex, team]);
 }
 
 //Peer Logic -----------------------------------------------------------------------------------------------------------------
@@ -1117,8 +1226,10 @@ function joinRoom(code) {
             matchmakingActive = false;
             roundAmount = data.content.roundAmount;
             roundLength = data.content.roundLength;
+            teamAmount = data.content.teamAmount;
             multiplayerRestriction = data.content.multiplayerRestriction;
             multiplayerCategory = data.content.category;
+            yourTeam = data.content.team;
         }
 
         if (data.type === "showPlayersArray") {
@@ -1141,6 +1252,7 @@ function joinRoom(code) {
             }
 
             multiplayerFirstRoundPlayed = true;
+            teamMarkerArray = [];
             checkGenerationTypeAndGenerate();
             multiplayerOverlayCountdown();
         }
@@ -1152,6 +1264,11 @@ function joinRoom(code) {
 
         if (data.type === "chat") {
             addToChat(data.content);
+        }
+
+        if (data.type === "teamMarkers") {
+            teamMarkerArray = data.content;
+            if (teamAmount > 1) { updateMinimapWithTeamMarkers(teamMarkerArray) };
         }
 
         if (data.type === "closeResultScreen") {
@@ -1297,9 +1414,12 @@ function leaveMultiplayerRound() {
     setMultiplayerUI();
     showMultiplayerOverlay(false);
     roundIndex = 1;
+    yourTeam = 1;
     multiplayerFirstRoundPlayed = false;
     roomLocked = true;
     multiplayerGuessesLocationsArray = [];
+    teamMarkerArray = [];
+    updateMinimapWithTeamMarkers(teamMarkerArray); // clean up multiplayer minimap markers
     connectedPeers = [];
     roundEnded = false;
     multiplayerHasAlreadyGuessed = false;
@@ -1345,8 +1465,19 @@ endMultiplayerRoundButton.addEventListener("click", () => {
 endMultiplayerRematchButton.addEventListener("click", () => {
     multiplayerRematch();
     playSound("basic_button");
-
 });
+
+const baseHues = [200, 0, 120, 60, 300]; // Blue, Yellow, Green, Red, Purple
+
+function generateColorForTeam(teamIndex) {
+    const hue = baseHues[(teamIndex - 1) % baseHues.length];
+    return `hsla(${hue}, 87.9%, 64.3%, 0.3)`;
+}
+
+function getTeamColorName(teamIndex) {
+    const colorNames = ["Blue", "Red", "Green", "Yellow", "Purple"];
+    return colorNames[(teamIndex - 1) % colorNames.length];
+}
 
 export function showMultiplayerOverlay(show, title, array) {
     if (show) {
@@ -1354,72 +1485,115 @@ export function showMultiplayerOverlay(show, title, array) {
         document.getElementById("multiplayerFade").style.pointerEvents = "auto";
         document.getElementById("multiplayerTitle").textContent = title;
 
-        //before the first round has been played, we want to display the host's category
         if (!multiplayerFirstRoundPlayed) {
             document.getElementById("mapModeText").textContent = "Multiplayer (Map: " + multiplayerCategory + ")";
         }
 
-        // Sort array by score in descending order
-        array.sort((a, b) => b[3] - a[3]);
-
-        if (roundIndex >= roundAmount) {
-            let winningPlayerData = array[0];
-            let winningUsername = winningPlayerData[1];
-
-            document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
-            endMultiplayerRoundButton.style.display = "block";
-
-            if (isHost) {
-                endMultiplayerRoundButton.textContent = "End Round";
-                if (!playingDuels) {
-                    endMultiplayerRematchButton.style.display = "block";
-                    endMultiplayerRematchButton.style.opacity = "1";
-                    endMultiplayerRematchButton.style.pointerEvents = "auto";
-                    endMultiplayerRematchButton.textContent = "Play again";
-                }
-
-            } else {
-                endMultiplayerRoundButton.textContent = "Leave Round";
-            }
-        } else {
-            endMultiplayerRoundButton.style.display = "none";
-            endMultiplayerRematchButton.style.display = "none";
-        }
-
+        let yourPeerId = peerId;
         let body = '';
 
-        let yourPeerId = peerId;
+        if (teamAmount > 1) {
+            let teams = {};
 
-        // Generate HTML for each player
-        array.forEach(playerInfo => {
-            const [peerId, username, level, score] = playerInfo;
+            array.forEach(playerInfo => {
+                const teamIndex = playerInfo[4];
+                if (!teams[teamIndex]) {
+                    teams[teamIndex] = {
+                        color: generateColorForTeam(teamIndex),
+                        colorName: getTeamColorName(teamIndex),
+                        players: []
+                    };
+                }
+                teams[teamIndex].players.push(playerInfo);
+            });
 
-            //this shows that Christopher and I are the developers =)
-            let devstring = "";
-            if (username == "PaulPlay" || username == "Colani") {
-                devstring = ", Dev";
+            let sortedTeams = Object.keys(teams).sort((a, b) => {
+                const totalExperienceA = teams[a].players.reduce((sum, player) => sum + player[3], 0);
+                const totalExperienceB = teams[b].players.reduce((sum, player) => sum + player[3], 0);
+                return totalExperienceB - totalExperienceA;
+            });
+
+            let winningTeamIndex = sortedTeams[0];
+
+            if (roundIndex >= roundAmount) {
+                let teamColorName = teams[winningTeamIndex].colorName;
+                document.getElementById("multiplayerTitle").textContent = `Team ${teamColorName} won!`;
             }
 
-            if (peerId == yourPeerId) {
-                body += `
-                <div class="multiplayerOverlayEntry yourMultiplayerOverlay">
-                    <div class="multiplayerEntryPlayerInfo">
-                        <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level}${devstring})</div>
-                        <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
-                    </div>
-                </div>
-            `;
-            } else {
-                body += `
-                <div class="multiplayerOverlayEntry">
-                    <div class="multiplayerEntryPlayerInfo">
-                        <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level}${devstring})</div>
-                        <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
-                    </div>
-                </div>
-            `;
+            sortedTeams.forEach(teamIndex => {
+                // Sort players within each team by score (experience)
+                teams[teamIndex].players.sort((a, b) => b[3] - a[3]);
+
+                teams[teamIndex].players.forEach(playerInfo => {
+                    const [peerId, username, level, score] = playerInfo;
+                    let playerColor = teams[teamIndex].color;
+
+                    let devstring = "";
+                    if (username == "PaulPlay" || username == "Colani") {
+                        devstring = ", Dev";
+                    }
+
+                    if (peerId == yourPeerId) {
+                        body += `
+                        <div class="multiplayerOverlayEntry yourMultiplayerOverlay" style="background-image: linear-gradient(90deg, transparent 60%, ${playerColor})">
+                            <div class="multiplayerEntryPlayerInfo">
+                                <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level}${devstring})</div>
+                                <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
+                            </div>
+                        </div>
+                    `;
+                    } else {
+                        body += `
+                        <div class="multiplayerOverlayEntry" style="background-image: linear-gradient(90deg, transparent 60%, ${playerColor})">
+                            <div class="multiplayerEntryPlayerInfo">
+                                <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level}${devstring})</div>
+                                <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
+                            </div>
+                        </div>
+                    `;
+                    }
+                });
+            });
+        } else {
+            array.sort((a, b) => b[3] - a[3]);
+
+            if (roundIndex >= roundAmount) {
+                let winningPlayerData = array[0];
+                let winningUsername = winningPlayerData[1];
+                document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
             }
-        });
+
+            array.forEach(playerInfo => {
+                const [peerId, username, level, score] = playerInfo;
+                let playerColor = '';
+                let yourColor = '';
+
+                let devstring = "";
+                if (username == "PaulPlay" || username == "Colani") {
+                    devstring = ", Dev";
+                }
+
+                if (peerId == yourPeerId) {
+                    body += `
+                    <div class="multiplayerOverlayEntry yourMultiplayerOverlay" style="background-color: ${yourColor}">
+                        <div class="multiplayerEntryPlayerInfo">
+                            <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level}${devstring})</div>
+                            <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+                } else {
+                    body += `
+                    <div class="multiplayerOverlayEntry" style="background-color: ${playerColor}">
+                        <div class="multiplayerEntryPlayerInfo">
+                            <div class="multiplayerEntryPlayerName">${username} (Lvl. ${level}${devstring})</div>
+                            <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
+                        </div>
+                    </div>
+                `;
+                }
+            });
+        }
 
         document.getElementById("multiplayerTable").innerHTML = body;
         document.getElementById("confirmButton").style.visibility = "hidden";
