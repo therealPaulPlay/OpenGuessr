@@ -549,7 +549,7 @@ try {
     console.error("Could not inizialize PeerJS: " + error);
 }
 
-//Joining via Links (also as a guest!) 
+// Joining via Links (also as a guest!) 
 
 var queryString = window.location.search;
 let joinOnLoadViaLink = false;
@@ -1479,6 +1479,29 @@ function getTeamColorName(teamIndex) {
     return colorNames[(teamIndex - 1) % colorNames.length];
 }
 
+function showEndscreenUI(show) {
+    if (show) {
+        endMultiplayerRoundButton.style.display = "block"; // show leave / end button
+
+        if (isHost) {
+            endMultiplayerRoundButton.textContent = "End Round";
+            
+            if (!playingDuels) {
+                endMultiplayerRematchButton.style.display = "block";
+                endMultiplayerRematchButton.style.opacity = "1";
+                endMultiplayerRematchButton.style.pointerEvents = "auto";
+                endMultiplayerRematchButton.textContent = "Play again";
+            }
+    
+        } else {
+            endMultiplayerRoundButton.textContent = "Leave Round";
+        }
+    } else {
+        endMultiplayerRoundButton.style.display = "none";
+        endMultiplayerRematchButton.style.display = "none";
+    }   
+}
+
 export function showMultiplayerOverlay(show, title, array) {
     if (show) {
         document.getElementById("multiplayerFade").style.opacity = "1";
@@ -1495,8 +1518,9 @@ export function showMultiplayerOverlay(show, title, array) {
         if (teamAmount > 1) {
             let teams = {};
 
+            // array in this case is always connected peers
             array.forEach(playerInfo => {
-                const teamIndex = playerInfo[4];
+                const teamIndex = playerInfo[4]; // team id 
                 if (!teams[teamIndex]) {
                     teams[teamIndex] = {
                         color: generateColorForTeam(teamIndex),
@@ -1507,6 +1531,7 @@ export function showMultiplayerOverlay(show, title, array) {
                 teams[teamIndex].players.push(playerInfo);
             });
 
+            // Sort the teams themselves based on total xp
             let sortedTeams = Object.keys(teams).sort((a, b) => {
                 const totalExperienceA = teams[a].players.reduce((sum, player) => sum + player[3], 0);
                 const totalExperienceB = teams[b].players.reduce((sum, player) => sum + player[3], 0);
@@ -1515,9 +1540,13 @@ export function showMultiplayerOverlay(show, title, array) {
 
             let winningTeamIndex = sortedTeams[0];
 
+            // Win state
             if (roundIndex >= roundAmount) {
                 let teamColorName = teams[winningTeamIndex].colorName;
                 document.getElementById("multiplayerTitle").textContent = `Team ${teamColorName} won!`;
+                showEndscreenUI(true);
+            } else {
+                showEndscreenUI(false);
             }
 
             sortedTeams.forEach(teamIndex => {
@@ -1557,10 +1586,14 @@ export function showMultiplayerOverlay(show, title, array) {
         } else {
             array.sort((a, b) => b[3] - a[3]);
 
+            // no teams win state
             if (roundIndex >= roundAmount) {
                 let winningPlayerData = array[0];
                 let winningUsername = winningPlayerData[1];
                 document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
+                showEndscreenUI(true);
+            } else {
+                showEndscreenUI(false);
             }
 
             array.forEach(playerInfo => {
