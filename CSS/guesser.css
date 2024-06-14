@@ -389,7 +389,7 @@ h1, h2, h3 {
   display: none;
 }
 
-#profileClose, #helpClose, #settingsClose, #socialPopupClose, #socialPopupJoin, #multiplayerSelectorClose, #multiplayerSelectorBack, #mobilePopupClose, #creditWindowClose {
+#profileClose, #helpClose, #settingsClose, #socialPopupClose, #linkJoinClose, #socialPopupJoin, #multiplayerSelectorClose, #multiplayerSelectorBack, #mobilePopupClose, #creditWindowClose {
   min-height: 50px;
 }
 
