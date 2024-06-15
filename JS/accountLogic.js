@@ -229,7 +229,7 @@ export function uiSetUserXP(xp) {
   if (isAuthenticated) {
     levelText.innerHTML = "Level " + templevel; //account ui level text
     resultLevelDisplay.innerHTML = "Lvl. " + templevel;
-    levelXPbar.style.width = Math.max((xp / requiredXP) * 100, 7) + "%"; //account ui xp bar
+    levelXPbar.style.width = Math.max((xp / requiredXP) * 100, 12) + "%"; //account ui xp bar
   }
 
   return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
