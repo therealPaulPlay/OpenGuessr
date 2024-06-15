@@ -1293,6 +1293,7 @@ map::selection {
   height: 37px;
   margin: 5px;
   margin-left: 5px;
+  font-size: 20px;
 }
 
 #multiplayerMessageBox {
