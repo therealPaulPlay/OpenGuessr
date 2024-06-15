@@ -181,29 +181,47 @@ export function toggleCategoryMenu(alwaysClose) {
             categoriesExpanded = true;
         }
 
-        let showMobileNavbarControls;
+        let moveTimeouts;
 
         if (!categoriesExpanded) {
-            floatingCategoryArea.style.top = "360px";
-            document.getElementById("extendedNavbarContent").scrollTop = "0";
-            document.getElementById("extendedNavbarGradient").style.display = "block";
-            extendedNavbar.classList.add("expanded");
-            categoryMenuButton.innerText = "Maps ▲";
-            categoriesExpanded = true;
-            if (window.innerHeight > window.innerWidth) {
-                extendedNavbar.classList.add("expandedMobile");
-                document.getElementById("extendedNavbarGradient").style.borderRadius = "0";
-                document.getElementById("mobileExtendedNavbarControls").style.display = "flex";
-                document.getElementById("mobileExtendedNavbarControls").style.opacity = "1";
-            } else {
-                document.getElementById("extendedNavbarGradient").style.borderRadius = "0 0 10px 10px";
-            }
+            clearInterval(moveTimeouts);
+            document.getElementById("upperBannerRight").style.transition = "all 100ms ease";
+            document.getElementById("upperBannerRight").style.minWidth = "415px";
+            document.querySelectorAll('.animateSocialsText').forEach(function(text) {
+                text.style.maxWidth = "200px";
+            });
+            moveTimeouts = setTimeout(() => {
+                floatingCategoryArea.style.top = "360px";
+                document.getElementById("extendedNavbarContent").scrollTop = "0";
+                document.getElementById("extendedNavbarGradient").style.display = "block";
+                extendedNavbar.classList.add("expanded");
+                categoryMenuButton.innerText = "Maps ▲";
+                categoriesExpanded = true;
+                if (window.innerHeight > window.innerWidth) {
+                    extendedNavbar.classList.add("expandedMobile");
+                    document.getElementById("extendedNavbarGradient").style.borderRadius = "0";
+                    document.getElementById("mobileExtendedNavbarControls").style.display = "flex";
+                    document.getElementById("mobileExtendedNavbarControls").style.opacity = "1";
+                } else {
+                    document.getElementById("extendedNavbarGradient").style.borderRadius = "0 0 10px 10px";
+                }
+            }, 100);
         } else {
+            clearInterval(moveTimeouts);
             setTimeout(function () {
                 floatingCategoryArea.style.top = "85px";
                 document.getElementById("extendedNavbarGradient").style.display = "none";
                 document.getElementById("mobileExtendedNavbarControls").style.display = "none";
             }, 75);
+            moveTimeouts = setTimeout(() => {
+                document.getElementById("upperBannerRight").style.transition = "all 250ms ease";
+                document.getElementById("upperBannerRight").style.minWidth = "0px";
+            }, 250)
+            setTimeout(() => {
+                document.querySelectorAll('.animateSocialsText').forEach(function(text) {
+                    text.style.maxWidth = "0px";
+                });
+            }, 150);
             document.getElementById("mobileExtendedNavbarControls").style.opacity = "0";
             extendedNavbar.classList.remove("expanded");
             extendedNavbar.classList.remove("expandedMobile");
