@@ -14,6 +14,7 @@ streakWatchAd.addEventListener("click", showStreakAd);
 let formerStreak = 0;
 
 streakAdDismiss.addEventListener("click", () => {
+    playSound("basic_button");
     toggleStreakWindow(0, false);
 });
 
@@ -32,8 +33,6 @@ export function toggleStreakWindow(oldStreak, alwaysHide) {
     if (typeof (oldStreak) == "number" && oldStreak != 0) {
         formerStreak = oldStreak;
     }
-
-    playSound("basic_button");
 
     if (streakBanner.style.display == "block" || alwaysHide) {
         streakBanner.style.maxHeight = "0px";
