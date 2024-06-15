@@ -1058,6 +1058,8 @@ li {
   max-height: calc(100% - 150px);
   background-color: rgba(42, 44, 71, 1);
   border-radius: 0;
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
   /* Use height: auto to fit content */
   height: auto;
 }
