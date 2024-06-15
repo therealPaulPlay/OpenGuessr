@@ -835,9 +835,7 @@ li {
   justify-content: center;
   margin: auto;
   z-index: 14;
-  background-color: rgba(42, 44, 71, 0.9);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  background-color: rgb(42, 44, 71);
   box-shadow: 0 5px 50px rgb(24, 25, 40);
 }
 
