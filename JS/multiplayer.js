@@ -1527,7 +1527,7 @@ export function showMultiplayerOverlay(show, title, array) {
         document.getElementById("multiplayerTitle").textContent = title;
 
         if (!multiplayerFirstRoundPlayed) {
-            document.getElementById("mapModeText").textContent = "Multiplayer (Map: " + multiplayerCategory + ")";
+            document.getElementById("mapModeText").textContent = "Multiplayer (" + multiplayerCategory + ")";
         }
 
         let yourPeerId = peerId;
