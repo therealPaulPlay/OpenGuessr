@@ -286,8 +286,6 @@ function toggleMapOffset() {
 window.addEventListener("resize", (event) => {
     mapOffset = true;
     toggleMapOffset();
-    mapExpanded = false;
-    toggleMap();
     toggleCategoryMenu(true);
 });
 
