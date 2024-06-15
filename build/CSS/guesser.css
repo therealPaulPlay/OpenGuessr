@@ -1124,7 +1124,7 @@ li {
 
 #GuesserWindow {
   transition: all 250ms;
-  background: #000000;
+  background: #13151c;
   -moz-user-select: none;
   -webkit-user-select: none;
   user-select: none;
