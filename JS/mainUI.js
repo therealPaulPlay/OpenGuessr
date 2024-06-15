@@ -286,6 +286,8 @@ function toggleMapOffset() {
 window.addEventListener("resize", (event) => {
     mapOffset = true;
     toggleMapOffset();
+    mapExpanded = false;
+    toggleMap();
     toggleCategoryMenu(true);
 });
 
@@ -362,7 +364,6 @@ document.getElementById("mobileMultiplayerButton").addEventListener("click", fun
 document.getElementById("mobileCategoryButton").addEventListener("click", function () {
     toggleMobileMenu();
     toggleCategoryMenu();
-    shrinkMapIfMobile();
     playSound("floating_button");
 });
 
