@@ -1044,6 +1044,12 @@ li {
   height: auto;
 }
 
+.extendedNavbar.expandedMobile {
+  max-height: calc(100% - 70px);
+  /* Use height: auto to fit content */
+  height: auto;
+}
+
 #extendedNavbarGradient {
   position: absolute;
   display: none;

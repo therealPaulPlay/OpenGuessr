@@ -76,6 +76,10 @@ let mapExpanded = true;
 toggleMapButton.addEventListener("click", () => {
     toggleMap();
     playSound("floating_button");
+    toggleMapButton.style.filter = "brightness(0.7)";
+    setTimeout(() => {
+        toggleMapButton.style.filter = "brightness(1)";
+    }, 250);
 });
 
 function toggleMap() {
@@ -188,6 +192,7 @@ export function toggleCategoryMenu(alwaysClose) {
             if (window.innerHeight > window.innerWidth) {
                 document.getElementById("mobileBlackBackground").style.visibility = "visible";
                 document.getElementById("mobileBlackBackground").style.opacity = "0.75";
+                extendedNavbar.classList.add("expandedMobile");
             }
         } else {
             setTimeout(function () {
@@ -195,6 +200,7 @@ export function toggleCategoryMenu(alwaysClose) {
                 document.getElementById("extendedNavbarGradient").style.display = "none";
             }, 75);
             extendedNavbar.classList.remove("expanded");
+            extendedNavbar.classList.remove("expandedMobile");
             categoryMenuButton.innerText = "Maps ▼";
             categoriesExpanded = false;
             if (document.getElementById("mobileBlackBackground").style.visibility == "visible") {
