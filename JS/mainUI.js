@@ -314,7 +314,7 @@ const accountName = document.getElementById('accountName');
 export function checkTextLength() {
     const textLength = accountName.textContent.length;
 
-    if (textLength > 20) {
+    if (textLength > 14) {
         accountName.classList.add('scroll');
     } else {
         accountName.classList.remove('scroll');

@@ -211,7 +211,7 @@ h1, h2, h3 {
 
 
 #accountNameArea {
-  max-width: 165.5px;
+  max-width: 140.5px;
   overflow: hidden;
   white-space: nowrap;
 }
@@ -229,11 +229,11 @@ h1, h2, h3 {
 /* Animation for scrolling */
 @keyframes scrollText {
   0% { transform: translateX(5px); }
-  100% { transform: translateX(calc(-100% + 155px)); } /* Adjusted animation */
+  100% { transform: translateX(calc(-100% + 135px)); } /* Adjusted animation */
 }
 
 .progress {
-  width: 100px;
+  width: 75px;
   height: 10px;
   background-color: #ccc;
   border-radius: 5px;
@@ -2269,7 +2269,7 @@ all and (max-width: 1250px) {
 
   #socialArea {
     margin-top: 85px;
-    left: 165px;
+    left: 155px;
   }
 
   #floatingSocialButton {
