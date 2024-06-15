@@ -87,14 +87,16 @@
       </div>
       <button id="floatingSocialButton">Multiplayer Menu ▼</button>
     </div>
-    <div class="bannerItem bannerRight">
+    <div id="upperBannerRight" class="bannerItem bannerRight">
       <div class="leftNavbarButtons">
         <button class="menuButton" id="mapTypeButton" type="button">Toggle language</button>
-        <button class="discordButton menuButton" id="discordButton" type="button">Discord
-          <img src="./IMG/discord.png" alt="Discord Logo" class="socialIcon" id="discordIcon">
+        <button class="discordButton menuButton" id="discordButton" type="button">
+          <span class="animateSocialsText">Discord</span>
+          <img src="./IMG/discord.png" alt="Discord Logo" class="socialIcon shiftIconRight" id="discordIcon">
         </button>
-        <button class="menuButton" id="redditButton" type="button">Reddit
-          <img src="./IMG/reddit.png" alt="Reddit Logo" class="socialIcon">
+        <button class="menuButton" id="redditButton" type="button">
+          <span class="animateSocialsText">Reddit</span>
+          <img src="./IMG/reddit.png" alt="Reddit Logo" class="socialIcon shiftIconRight">
         </button>
       </div>
     </div>
@@ -481,7 +483,7 @@
   <!--streetview-->
   <div class="MainDiv">
     <iframe id="GuesserWindow" referrerpolicy="no-referrer-when-downgrade" frameborder="0" allow="accelerometer"
-      style="border:0" title="Streetview Image" src="/loader.html"></iframe>
+      style="border:0" src="/loader.html"></iframe>
     <!-- Country Guessr UI -->
     <div id="countryGuesserSelector">
       <button class="countryGuesserHolder">
