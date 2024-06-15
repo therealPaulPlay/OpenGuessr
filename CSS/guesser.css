@@ -231,6 +231,16 @@ h1, h2, h3 {
   100% { transform: translateX(calc(-100% + 135px)); } /* Adjusted animation */
 }
 
+.modetextScroll {
+  animation: scrollModeText 5s ease-in-out infinite alternate; 
+}
+
+/* Animation for scrolling */
+@keyframes scrollModeText {
+  0% { transform: translateX(5px); }
+  100% { transform: translateX(calc(-100% + 135px)); } /* Adjusted animation */
+}
+
 .progress {
   width: 75px;
   height: 10px;
@@ -1202,7 +1212,7 @@ map::selection {
   align-items: center;
   justify-content: flex-start;
   color: white;
-  font-size: 25px;
+  font-size: 22px;
   transition: width 250ms ease, margin 250ms ease;
   pointer-events: auto;
   z-index: 10;
@@ -1220,6 +1230,11 @@ map::selection {
   0% { background-color: hsla(236, 25%, 20%, 0.7); }
   50% { background-color: hsla(298, 25%, 20%, 0.7); }
   100% { background-color: hsla(236, 25%, 20%, 0.7); }
+}
+
+#mapTimer {
+  text-align: right;
+  min-width: 40px;
 }
 
 #mapTimer.fading {
@@ -1302,9 +1317,15 @@ map::selection {
 }
 
 .mapModeText {
-  margin-left: 10px;
   white-space: nowrap;
+  width: fit-content;
+}
+
+#mapModeTextContainer {
+  margin-left: 10px;
+  margin-right: 5px;
   overflow: hidden;
+  flex-grow: 1;
 }
 
 .modeTextRight {
@@ -2266,7 +2287,7 @@ all and (max-width: 1250px) {
 
   #socialArea {
     margin-top: 85px;
-    left: 155px;
+    left: 152px;
   }
 
   #floatingSocialButton {
