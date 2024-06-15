@@ -170,17 +170,18 @@ categoryMenuButton.addEventListener("click", function () {
     playSound("floating_button");
 });
 
-document.getElementById("mobileBlackBackground").addEventListener("click", () => {
-    if (document.getElementById("mobileBlackBackground").style.visibility == "visible") {
-        toggleCategoryMenu(true);
-    }
-})
+document.getElementById("mobileCategoriesClose").addEventListener("click", () => {
+    toggleCategoryMenu(true);
+    playSound("basic_button");
+});
 
 export function toggleCategoryMenu(alwaysClose) {
     try {
         if (alwaysClose) {
             categoriesExpanded = true;
         }
+
+        let showMobileNavbarControls;
 
         if (!categoriesExpanded) {
             floatingCategoryArea.style.top = "360px";
@@ -190,25 +191,27 @@ export function toggleCategoryMenu(alwaysClose) {
             categoryMenuButton.innerText = "Maps ▲";
             categoriesExpanded = true;
             if (window.innerHeight > window.innerWidth) {
-                document.getElementById("mobileBlackBackground").style.visibility = "visible";
-                document.getElementById("mobileBlackBackground").style.opacity = "0.75";
                 extendedNavbar.classList.add("expandedMobile");
+                document.getElementById("extendedNavbarGradient").style.borderRadius = "0";
+                document.getElementById("mobileExtendedNavbarControls").style.display = "flex";
+                    showMobileNavbarControls = setTimeout(() => {
+                    document.getElementById("mobileExtendedNavbarControls").style.opacity = "1";
+                }, 230);
+            } else {
+                document.getElementById("extendedNavbarGradient").style.borderRadius = "0 0 10px 10px";
             }
         } else {
             setTimeout(function () {
+                clearInterval(showMobileNavbarControls);
                 floatingCategoryArea.style.top = "85px";
                 document.getElementById("extendedNavbarGradient").style.display = "none";
+                document.getElementById("mobileExtendedNavbarControls").style.display = "none";
             }, 75);
+            document.getElementById("mobileExtendedNavbarControls").style.opacity = "0";
             extendedNavbar.classList.remove("expanded");
             extendedNavbar.classList.remove("expandedMobile");
             categoryMenuButton.innerText = "Maps ▼";
             categoriesExpanded = false;
-            if (document.getElementById("mobileBlackBackground").style.visibility == "visible") {
-                document.getElementById("mobileBlackBackground").style.opacity = "0";
-                setTimeout(() => {
-                    document.getElementById("mobileBlackBackground").style.visibility = "hidden";
-                }, 250);
-            }
         }
     } catch {
         console.warn("Couldn't toggle category menu");
@@ -285,6 +288,7 @@ window.addEventListener("resize", (event) => {
     toggleMapOffset();
     mapExpanded = false;
     toggleMap();
+    toggleCategoryMenu(true);
 });
 
 //Username UI endless scroll --------------------------------------------------------------------------------------------------

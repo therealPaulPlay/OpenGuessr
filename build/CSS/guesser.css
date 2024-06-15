@@ -813,19 +813,6 @@ li {
   z-index: 15;
 }
 
-/* used to improve contrast between category menu + bg */
-#mobileBlackBackground {
-  overflow: hidden;
-  visibility: hidden;
-  opacity: 0;
-  background-color: #1e1e1ef8;
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  transition: opacity 250ms ease;
-  z-index: 11;
-}
-
 #nmpzBackground {
   position: fixed;
   overflow: hidden;
@@ -833,6 +820,31 @@ li {
   height: 100%;
   z-index: 1;
   pointer-events: none;
+}
+
+#mobileExtendedNavbarControls {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  opacity: 0;
+  transition: opacity 150ms ease;
+  width: 100%;
+  height: 75px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  z-index: 14;
+  background-color: rgba(42, 44, 71, 0.9);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 5px 50px rgb(24, 25, 40);
+}
+
+#mobileCategoriesClose {
+  min-width: 130px;
+  width: 130px;
+  height: 40px;
 }
 
 #hardModeFade {
@@ -1045,7 +1057,8 @@ li {
 }
 
 .extendedNavbar.expandedMobile {
-  max-height: calc(100% - 70px);
+  max-height: calc(100% - 150px);
+  border-radius: 0;
   /* Use height: auto to fit content */
   height: auto;
 }
@@ -1389,7 +1402,6 @@ map::selection {
   height: 55%;
   user-select: none;
   -webkit-user-select: none;
-  box-shadow: 0 2px 20px rgba(5, 6, 10, 0.5);
   padding-left: 10px;
   padding-right: 10px;
   margin-right: 10px;
@@ -2318,6 +2330,7 @@ all and (max-width: 1000px) {
 
   #extendedNavbarContent {
     margin-left: 0;
+    padding-inline: 10px;
   }
 
   .category {
