@@ -9,11 +9,13 @@
   font-display: swap;
 }
 
+html {
+  overscroll-behavior: none;
+}
 
 html * {
   font-family: Barlow, Futura, sans-serif;
   margin: 0;
-  overscroll-behavior: none;
 }
 
 :root {
