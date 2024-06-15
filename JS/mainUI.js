@@ -187,25 +187,30 @@ export function toggleCategoryMenu(alwaysClose) {
             clearInterval(moveTimeouts);
             document.getElementById("upperBannerRight").style.transition = "all 100ms ease";
             document.getElementById("upperBannerRight").style.minWidth = "415px";
+            document.getElementById("extendedNavbarContent").scrollTop = "0";
+            
             document.querySelectorAll('.animateSocialsText').forEach(function(text) {
                 text.style.maxWidth = "200px";
             });
+
+            if (window.innerHeight > window.innerWidth) {
+                extendedNavbar.classList.add("expandedMobile");
+                document.getElementById("extendedNavbarGradient").style.display = "block";
+                document.getElementById("extendedNavbarGradient").style.borderRadius = "0";
+                document.getElementById("mobileExtendedNavbarControls").style.display = "flex";
+                document.getElementById("mobileExtendedNavbarControls").style.opacity = "1";
+            } else {
+                document.getElementById("extendedNavbarGradient").style.borderRadius = "0 0 10px 10px";
+            }
+
             moveTimeouts = setTimeout(() => {
                 floatingCategoryArea.style.top = "360px";
-                document.getElementById("extendedNavbarContent").scrollTop = "0";
                 document.getElementById("extendedNavbarGradient").style.display = "block";
                 extendedNavbar.classList.add("expanded");
                 categoryMenuButton.innerText = "Maps ▲";
                 categoriesExpanded = true;
-                if (window.innerHeight > window.innerWidth) {
-                    extendedNavbar.classList.add("expandedMobile");
-                    document.getElementById("extendedNavbarGradient").style.borderRadius = "0";
-                    document.getElementById("mobileExtendedNavbarControls").style.display = "flex";
-                    document.getElementById("mobileExtendedNavbarControls").style.opacity = "1";
-                } else {
-                    document.getElementById("extendedNavbarGradient").style.borderRadius = "0 0 10px 10px";
-                }
             }, 100);
+            
         } else {
             clearInterval(moveTimeouts);
             setTimeout(function () {
