@@ -194,15 +194,12 @@ export function toggleCategoryMenu(alwaysClose) {
                 extendedNavbar.classList.add("expandedMobile");
                 document.getElementById("extendedNavbarGradient").style.borderRadius = "0";
                 document.getElementById("mobileExtendedNavbarControls").style.display = "flex";
-                    showMobileNavbarControls = setTimeout(() => {
-                    document.getElementById("mobileExtendedNavbarControls").style.opacity = "1";
-                }, 230);
+                document.getElementById("mobileExtendedNavbarControls").style.opacity = "1";
             } else {
                 document.getElementById("extendedNavbarGradient").style.borderRadius = "0 0 10px 10px";
             }
         } else {
             setTimeout(function () {
-                clearInterval(showMobileNavbarControls);
                 floatingCategoryArea.style.top = "85px";
                 document.getElementById("extendedNavbarGradient").style.display = "none";
                 document.getElementById("mobileExtendedNavbarControls").style.display = "none";
