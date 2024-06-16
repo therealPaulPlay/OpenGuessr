@@ -14,6 +14,7 @@
 
 html {
   overscroll-behavior: none;
+  background-color: #13151c;
 }
 
 html * {
@@ -22,7 +23,7 @@ html * {
 }
 
 body {
-  background-color: #13151c; /* the safari statusbar takes the color from there */
+  background-color: #13151c;
 }
 
 h1, h2, h3 {
