@@ -8,9 +8,12 @@
   src: url('../FONTS/BarlowCondensed-Medium.ttf');
 }
 
+:root {
+  --brand-color: #ff0808;
+}
+
 html {
   overscroll-behavior: none;
-  background-color: #13151c;
 }
 
 html * {
@@ -18,8 +21,8 @@ html * {
   margin: 0;
 }
 
-:root {
-  --brand-color: #ff0808;
+body {
+  background-color: #13151c; /* the safari statusbar takes the color from there */
 }
 
 h1, h2, h3 {
