@@ -1,111 +1,86 @@
-import { loadResultMap, calculateDistances, setResultMapType, initializeResMap } from "./main.js";
+import { loadResultMap, calculateDistances } from "./main.js";
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile, isElementClickable } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 
-// Initialize the map with correct provider
-export const MapType = {
-    STANDARD: mapkit.Map.MapTypes.Standard,
-    SATELLITE: mapkit.Map.MapTypes.Satellite,
-    HYBRID: mapkit.Map.MapTypes.Hybrid,
-};
 
-let marker;
-let map;
+//Initialize the map with correct provider --------------------------------------------------------------------
+const Provider = {
+    STANDARD: "0",
+    SATELLITE: "1",
+    HYBRID: "2",
+    TERRAIN: "3"
+}
+
+let map = L.map('map', { zoomControl: false }).setView([40.321160, 10.252812], 1.5); //starting position
+
+let mapProvider = ["http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en", "http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&hl=en", "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en", "http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en"];
+
 let multiplayerMiniMarkers = []; // team markers
 
-export let mapsJWTToken = "eyJhbGciOiJFUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IjY2OEo1WkhOVDcifQ.eyJvcmlnaW4iOlsiaHR0cHM6Ly9vcGVuZ3Vlc3NyLmNvbSIsImh0dHBzOi8vZGV2Lm9wZW5ndWVzc3IuY29tIiwiaHR0cDovL2xvY2FsaG9zdDozMDAwIiwiaHR0cHM6Ly9vZy12ZW5hdHVzLXRlc3QubmV0bGlmeS5hcHAiLCJodHRwczovL29wZW5ndWVzc3IubmV0bGlmeS5hcHAiXSwiaWF0IjoxNzE3NTM2OTcyLCJleHAiOjE3NDkwNzI5NzIsImlzcyI6IjRVUTUzTUJTSkwifQ.wm1K1wol6VYfEx0lT31MeQ8YeEqFjqqO2kUtWs0qekW0hZQ39oAYt8A6XkyD0DhteW34vLTMdzIj8uWh-Y8_hw";
-export let colorArray = ["#fc1c1c", "#fc851e", "#f002c0", "#11c8d9", "#9f55fa", "#cca700"]; //pin colors (red, orange, pink...)
+// Standard should be the new default!
+let providerIndex = Provider.STANDARD;
+let storedProviderIndex = localStorage.getItem("providerIndex");
 
-function initializeMap() {
-    mapkit.init({
-        authorizationCallback: function (done) {
-            fetch("https://token.openguessr.com/getMapkitToken")
-                .then(res => res.json())
-                .then(data => {
-                    let token = data.token;
-                    done(token);
-                })
-                .catch(error => {
-                    console.error("MapKit token fetch failed. Using fallback token: ", error);
-                    done(mapsJWTToken); // Use fallback token
-                });
-        },
-        language: "en-US" //can only be changed on page load / initialization
-    });
-
-    map = new mapkit.Map("map");
-
-    map.showsZoomControl = false;
-    map.showsMapTypeControl = false;
-    map._allowWheelToZoom = true;
-    map.showsCompass = mapkit.FeatureVisibility.Hidden;
-
-    initializeResMap();
+if (storedProviderIndex != null) {
+    providerIndex = storedProviderIndex;
 }
 
-export function setPointsOfInterest(enable) {
-    map.showsPointsOfInterest = enable;
-}
-
-// Load map type from local storage or set default
-let storedMapType = localStorage.getItem("selectedMapType");
-let mapType = storedMapType || MapType.STANDARD;
-if (mapType == undefined || mapType == null || mapType == "undefined") {
-    mapType = MapType.STANDARD;
+export function getMapSource() {
+    return mapProvider[providerIndex];
 }
 
 loadMap();
 changeMapTypeButtonLabel();
 
+//indicate whether a guess has been made and the button can be used
 export let hasGuessed = false;
 setConfirmButtonState();
 
-// for map loading in main js
-export function getMapType() {
-    return mapType;
-}
-
-// reset the map - executed when generating new location (reset for next round)
+//reset the map - used for going to the next round. 
 export function resetMap() {
-    if (marker) {
-        map.removeAnnotation(marker);
-    }
+    map.removeLayer(marker);
+    map.setView(new L.LatLng(50, 25), 3);
 
-    // clean up multiplayer team markers
-    multiplayerMiniMarkers.forEach(marker => {
-        map.removeAnnotation(marker);
-    });
-
-    map.region = new mapkit.CoordinateRegion(
-        new mapkit.Coordinate(48, 28), // Centered around the equator and Greenwich
-        new mapkit.CoordinateSpan(180, 180) // Whole world visible
-    );
-
-    // reset the guess button as well
+    //reset the guess button as well
     hasGuessed = false;
     setConfirmButtonState();
 }
 
 function changeMapTypeButtonLabel() {
     let mapTypeBaseText = "Minimap:";
-    document.getElementById("mapTypeButton").innerHTML =
-        `${mapTypeBaseText} ${mapType.charAt(0).toUpperCase() + mapType.slice(1)}`;
+    switch (providerIndex) {
+        case "0": document.getElementById("mapTypeButton").innerHTML = `${mapTypeBaseText} Standard`;
+            break;
+
+        case "1": document.getElementById("mapTypeButton").innerHTML = `${mapTypeBaseText} Satellite`;
+            break;
+
+        case "2": document.getElementById("mapTypeButton").innerHTML = `${mapTypeBaseText} Hybrid`;
+            break;
+
+        case "3": document.getElementById("mapTypeButton").innerHTML = `${mapTypeBaseText} Terrain`;
+            break;
+
+        default: document.getElementById("mapTypeButton").innerHTML = `${mapTypeBaseText} Standard`;
+            break;
+    }
 }
 
-// Set state of the confirm ("guess") button
+//Set state of the confirm ("guess") button ------------------------------------------------------------------
 export function setConfirmButtonState() {
     if (hasGuessed) {
         document.getElementById("confirmButton").style.backgroundColor = "red";
         document.getElementById("confirmButton").style.color = "white";
-        document.getElementById("confirmButton").style.opacity = "100%";
+        document.getElementById("confirmButton").style.opacity = "100%"
         document.getElementById("confirmButton").style.pointerEvents = "auto";
-    } else {
+    }
+    else {
         document.getElementById("confirmButton").style.backgroundColor = "white";
         document.getElementById("confirmButton").style.color = "black";
-        document.getElementById("confirmButton").style.opacity = "90%";
+        document.getElementById("confirmButton").style.opacity = "90%"
         document.getElementById("confirmButton").style.pointerEvents = "none";
     }
 }
@@ -115,77 +90,85 @@ export function setConfirmButtonEnabled() {
     setConfirmButtonState();
 }
 
-// Change map type
+//Change map provider / language ---------------------------------------------------------------------
 function changeMapType() {
-    switch (mapType) {
-        case MapType.STANDARD:
-            mapType = MapType.SATELLITE;
+    switch (providerIndex) {
+        case Provider.STANDARD:
+            providerIndex = Provider.SATELLITE;
             break;
-        case MapType.SATELLITE:
-            mapType = MapType.HYBRID;
+        case Provider.SATELLITE:
+            providerIndex = Provider.HYBRID;
             break;
-        case MapType.HYBRID:
-            mapType = MapType.STANDARD;
+        case Provider.HYBRID:
+            providerIndex = Provider.TERRAIN;
             break;
         default:
-            mapType = MapType.STANDARD;
-            break;
+            providerIndex = Provider.STANDARD;
     }
-    localStorage.setItem("selectedMapType", mapType);
+    localStorage.setItem("providerIndex", providerIndex);
+
     changeMapTypeButtonLabel();
-    loadMap();
-    setResultMapType();
+    resetGuessMap();
 }
 
-// Universal map functions
+
+//Universal map functions --------------------------------------------------------------------
+let dataLayer;
+
 function loadMap() {
-    if (!map) {
-        initializeMap(); // Load map with correct type
-        map.region = new mapkit.CoordinateRegion(
-            new mapkit.Coordinate(48, 28), // Centered around the equator and Greenwich
-            new mapkit.CoordinateSpan(180, 360) // Whole world visible
-        );
-
-        //Add event listener for map click here
-        map.addEventListener("single-tap", function (event) {
-            var domPoint = event.pointOnPage;
-            var coordinate = map.convertPointOnPageToCoordinate(domPoint);
-            onMapClick(coordinate);
-        });
-    }
-
-    map.mapType = mapType;
+    dataLayer = L.tileLayer(mapProvider[providerIndex], {
+        subdomains:['mt0','mt1','mt2','mt3'],
+        maxZoom: 20,
+        minZoom: 1,
+        noWrap: true,
+        fakeRetina: true,
+    }).addTo(map);
 }
 
-// Set initial zoom level
-map.region = new mapkit.CoordinateRegion(
-    new mapkit.Coordinate(0, 0), // Centered around the equator and Greenwich
-    new mapkit.CoordinateSpan(180, 360) // Whole world visible
-);
+function destroyMap() {
+    map.removeLayer(dataLayer);
+}
 
+function resetGuessMap() {
+    destroyMap();
+    loadMap();
+}
+
+map.setZoom(3);
+
+let marker = new L.Marker([0, 0]);
+
+
+//Placing the marker on the minimap ------------------------------------------------------------------------
 export let mapMarkerLat = 0;
 export let mapMarkerLong = 0;
 
-function onMapClick(coordinate) {
+function onMapClick(e) {
+    //creates markers wherever the user clicks and if it clicks to another position,
+    //delete the old one and also save the position in latitudes and longitudes
+
     hasGuessed = true;
     setConfirmButtonState();
     playSound("pin_drop", "pin");
 
     if (marker) {
-        map.removeAnnotation(marker);
+        map.removeLayer(marker);
     }
+    //sets the variables from the USER input (this is the one that the user has placed)
+    mapMarkerLat = e.latlng.lat;
+    mapMarkerLong = e.latlng.lng;
 
-    // sets the variables from the USER input (this is the one that the user has placed)
-    mapMarkerLat = coordinate.latitude;
-    mapMarkerLong = coordinate.longitude;
-
-    marker = new mapkit.MarkerAnnotation(coordinate, {
-        color: "white",
-        glyphColor: colorArray[selectedPinIndex],
-        glyphImage: { 1: `./IMG/apple_your_marker${selectedPinIndex}.png` },
+    const yourIcon = new L.Icon({
+        iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
+        shadowUrl: "./IMG/marker_shadow.png",
+        iconSize: [35, 35],
+        iconAnchor: [17.5, 34],
+        popupAnchor: [1, -34],
+        shadowSize: [37, 37]
     });
 
-    map.addAnnotation(marker);
+    marker = new L.Marker([mapMarkerLat, mapMarkerLong], { icon: yourIcon });
+    marker.addTo(map);
     sendTeamMarkers(mapMarkerLat, mapMarkerLong);
 }
 
@@ -195,26 +178,26 @@ export function updateMinimapWithTeamMarkers(markerArray) {
 
     // Collect positions of current markers
     multiplayerMiniMarkers.forEach(existingMarker => {
-        const position = existingMarker.coordinate;
-        existingMarkerPositions.set(`${position.latitude},${position.longitude}`, existingMarker);
+        const position = existingMarker.getLatLng(); // this does not work
+        existingMarkerPositions.set(`${position.lat},${position.lng}`, existingMarker);
     });
 
     try {
         // Remove markers that no longer exist in markerArray
         multiplayerMiniMarkers.forEach(existingMarker => {
-            const position = existingMarker.coordinate;
-            const markerPositionKey = `${position.latitude},${position.longitude}`;
+            const position = existingMarker.getLatLng();
+            const markerPositionKey = `${position.lat},${position.lng}`;
 
             // Check if current marker exists in the updated markerArray
             const markerExists = markerArray.some(element => {
                 let miniMarkerLat = element[1];
                 let miniMarkerLong = element[2];
-                return miniMarkerLat == position.latitude && miniMarkerLong == position.longitude;
+                return miniMarkerLat == position.lat && miniMarkerLong == position.lng;
             });
 
             // If marker doesn't exist in markerArray, remove it
             if (!markerExists) {
-                map.removeAnnotation(existingMarker);
+                map.removeLayer(existingMarker);
                 multiplayerMiniMarkers = multiplayerMiniMarkers.filter(m => m !== existingMarker);
                 existingMarkerPositions.delete(markerPositionKey);
             }
@@ -231,17 +214,23 @@ export function updateMinimapWithTeamMarkers(markerArray) {
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
             // and miniMarkerTeam matches yourTeam
             if (miniMarkerId != peerId && miniMarkerTeam === yourTeam) {
-                const multiplayerLatLng = new mapkit.Coordinate(Number(miniMarkerLat), Number(miniMarkerLong));
-                const markerPositionKey = `${multiplayerLatLng.latitude},${multiplayerLatLng.longitude}`;
+                const multiplayerLatLng = new L.LatLng(miniMarkerLat, miniMarkerLong);
+                const markerPositionKey = `${multiplayerLatLng.lat},${multiplayerLatLng.lng}`;
 
                 if (!existingMarkerPositions.has(markerPositionKey)) {
                     // Marker doesn't exist, create new marker
-                    const newMultiplayerMiniMarker = new mapkit.MarkerAnnotation(multiplayerLatLng, {
-                        color: "#e3e3e3",
-                        glyphColor: colorArray[miniMarkerPinIndex],
-                        glyphImage: { 1: `./IMG/apple_your_marker${miniMarkerPinIndex}.png` },
+                    let newMultiplayerIcon = new L.Icon({
+                        iconUrl: "./IMG/your_marker" + miniMarkerPinIndex + ".png",
+                        shadowUrl: "./IMG/marker_shadow.png",
+                        iconSize: [35, 35],
+                        iconAnchor: [17.5, 34],
+                        popupAnchor: [1, -34],
+                        shadowSize: [37, 37]
                     });
-                    map.addAnnotation(newMultiplayerMiniMarker);
+
+                    const newMultiplayerMiniMarker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon } );
+                    newMultiplayerMiniMarker.setOpacity(0.5);
+                    newMultiplayerMiniMarker.addTo(map);
                     multiplayerMiniMarkers.push(newMultiplayerMiniMarker);
                     existingMarkerPositions.set(markerPositionKey, newMultiplayerMiniMarker); // Update positions map
                 }
@@ -253,24 +242,48 @@ export function updateMinimapWithTeamMarkers(markerArray) {
     }
 }
 
-// event listeners
+//event listeners -----------------------------------------------------------------
+//click listener for confirm button
+
 const confirmBTN = document.getElementById("confirmButton");
 confirmBTN.addEventListener("click", confirmButtonClicks);
 
-// toggle map types
-const mapTypeBTN = document.getElementById("mapTypeButton");
-mapTypeBTN.addEventListener("click", () => {
+//toggle languages
+const languageBTN = document.getElementById("mapTypeButton");
+languageBTN.addEventListener("click", () => {
     changeMapType();
     playSound("selection_change");
 });
+
+//Reset map scaling when the user "enlarges" it --------------------------------------------------------------
+map.on('click', onMapClick);
+
+let useLegacyMouseOver = false;
+
+//this is for legacy browsers that do not support resizeObservers
+if (useLegacyMouseOver) {
+    map.on('mouseover', onMapHover);
+    map.on('mouseout', onMapHover);
+}
+
+function onMapHover() {
+    map.invalidateSize();
+}
+
+try {
+    new ResizeObserver(onMapHover).observe(document.getElementById("map"));
+} catch (error) {
+    console.error("Resize oberser unsupported. Err: " + error);
+    useLegacyMouseOver = true;
+}
 
 // Enlarge map
 const mapHolder = document.getElementById("mapHolder");
 
 function handleMapHover() {
-    if (window.matchMedia("(orientation: landscape) and (min-width: 1250px)").matches) {
-        mapHolder.classList.add("mapHover");
-    }
+  if (window.matchMedia("(orientation: landscape) and (min-width: 1250px)").matches) {
+    mapHolder.classList.add("mapHover");
+  }
 }
 
 function handleMapUnhover() {
@@ -305,11 +318,12 @@ document.getElementById("revealCompass").addEventListener('mouseleave', handleMa
 document.getElementById("map").addEventListener('touchstart', handleMapHover);
 document.getElementById("map").addEventListener('touchend', handleMapUnhover);
 
-// Guess / Confirm function
+
+//Guess / Confirm function ----------------------------------------------------------------------------------
 export let justPlayedDailyChallenge = false;
 
 export function confirmButtonClicks() {
-    confirmBTN.style.pointerEvents = "none"; // disable the button (will be re-enabled by setConfirmButtonState)
+    confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
     playSound("basic_button");
 
     if (dailyChallengeUIEnabled) {
@@ -322,20 +336,14 @@ export function confirmButtonClicks() {
             console.log("timer already stopped.");
         }
 
-        saveDailyChallengeCompletion(); // set the daily challenge as completed for today (also saves the curr utc date for checking)
+        saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
     } else {
         document.getElementById("nextRound").innerHTML = "Next round ➝";
     }
 
     if (!multiplayer) {
         calculateDistances(mapMarkerLat, mapMarkerLong);
-
-        try {
-            loadResultMap(mapMarkerLat, mapMarkerLong);
-        } catch (error) {
-            console.error("Error in confirmButton Clicks when trying to load the result map: " + error);
-        }
-
+        loadResultMap(mapMarkerLat, mapMarkerLong);
     } else {
         document.getElementById("confirmButton").textContent = "Waiting...";
         document.getElementById("confirmButton").style.opacity = "0.5";
@@ -348,8 +356,8 @@ export function confirmButtonClicks() {
     }
 }
 
-// Confirm Button with Spacebar and a few checks
-window.addEventListener("keydown", function (event) {
+//Confirm Button with Spacebar and a few checks
+document.getElementById("map").addEventListener("keydown", function (event) {
     if (event.key === " ") {
         if (confirmBTN.style.pointerEvents == "auto" && confirmBTN.style.visibility == "visible" && isElementClickable(document.getElementById("map"))) {
             confirmButtonClicks();
@@ -357,11 +365,4 @@ window.addEventListener("keydown", function (event) {
             console.warn("Cannot click on confirm button - pointer events is none.");
         }
     }
-});
-
-const mapContainer = document.getElementById("map");
-
-// Focus the map container when the map is clicked
-mapContainer.addEventListener("click", () => {
-    mapContainer.focus();
 });
