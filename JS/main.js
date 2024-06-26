@@ -1,4 +1,3 @@
-// test
 /*these imports are being handled and performed by Webpack. Note that errorHandling.js is still being included
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
