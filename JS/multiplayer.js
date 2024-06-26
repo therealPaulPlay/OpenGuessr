@@ -183,7 +183,17 @@ multiplayerJoin.addEventListener("click", () => {
     multiplayerJoin.style.opacity = "0.5";
     playSound("start_button");
     joinRoom(removeWhiteSpace(document.getElementById("roomCodeInput").value));
-})
+});
+
+document.getElementById("roomCodeInput").addEventListener("keydown", function (event) {
+    if (document.activeElement === document.getElementById("roomCodeInput") && event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        multiplayerJoin.style.pointerEvents = "none";
+        multiplayerJoin.style.opacity = "0.5";
+        playSound("start_button");
+        joinRoom(removeWhiteSpace(document.getElementById("roomCodeInput").value));
+    }
+});
 
 function setJoinInfoText(text) {
     joinInfoText.innerText = text; //this function is used to display things like "Invalid Roomcode" etc.
@@ -1503,21 +1513,21 @@ function showEndscreenUI(show) {
 
         if (isHost) {
             endMultiplayerRoundButton.textContent = "End Round";
-            
+
             if (!playingDuels) {
                 endMultiplayerRematchButton.style.display = "block";
                 endMultiplayerRematchButton.style.opacity = "1";
                 endMultiplayerRematchButton.style.pointerEvents = "auto";
                 endMultiplayerRematchButton.textContent = "Play again";
             }
-    
+
         } else {
             endMultiplayerRoundButton.textContent = "Leave Round";
         }
     } else {
         endMultiplayerRoundButton.style.display = "none";
         endMultiplayerRematchButton.style.display = "none";
-    }   
+    }
 }
 
 export function showMultiplayerOverlay(show, title, array) {

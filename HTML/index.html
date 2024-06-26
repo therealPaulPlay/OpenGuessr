@@ -256,7 +256,7 @@
       <div id="popup-title" class="popup-title">
         <h1>How to play</h1>
       </div>
-      <ul>
+      <ul class="nolistdots">
         <li>
           <h3>🔍 Look at the Street View image</h3>
           <p>Study the image carefully. Use the navigation controls to explore the surroundings.</p>
@@ -275,6 +275,31 @@
         </li>
       </ul>
       <button id="helpClose" class="accountButton white accountClose">Let's go!</button>
+    </div>
+     <!-- Troubleshooting Guide for Multiplayer -->
+     <div id="troubleshootWindow" class="uiWindow">
+      <div id="popup-title" class="popup-title">
+        <h1>Troubleshooting Guide</h1>
+      </div>
+      <p>
+        OpenGuessr uses a peer2peer connection system via WebRTC Datachannels. Follow these steps to ensure a smooth experience:<br><br>
+      </p>
+      <ul>
+        <li>
+          <p>Disable VPNs or Proxies: Certain VPNs or Proxies, often browser extensions, block WebRTC connections.</p>
+        </li>
+        <li>
+          <p>Disable Firewalls: Some people use firewall apps, have restrictive firewall settings or use wifi routers with strict built-in firewalls that block WebRTC.</p>
+        </li>
+        <li>
+          Check if the TURN servers are online: We use turn servers from fastturn. You can check whether they are online on their <a href="https://fastturn.net/status">website</a>.
+        </li>
+        <li>
+          Check if your browser supports WebRTC: Open chrome://webrtc-internals/ in a Chromium browser or about:webrtc in Firefox.
+        </li>
+      </ul>
+      <p>If multiplayer still does not work after following these steps, consider using a different wifi such as your phone's cellular data hotspot for your internet connection or switch the host.</p>
+      <button id="troubleshootClose" class="accountButton white accountClose">Back</button>
     </div>
     <!-- Settings (Especially for Sounds) -->
     <div id="settingsWindow" class="uiWindow">
@@ -362,12 +387,18 @@
             <button id="multiplayerSelectHost" class="accountButton multiplayerSelect">Host</button>
           </div>
           <div class="groupPartyButtons">
-            <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect">Find Duel</button>
+            <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect">Find Duel<img id="findIcon" class="socialBarIcons" style="margin-left: 5px;" src="/IMG/find_icon.png" alt="Lightning error symbol"></button>
           </div>
         </div>
         <div class="infoNote">
           <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
           <p id="multiplayerSelectorInfotext">Hover over the modes to learn more about them.</p>
+        </div>
+        <div class="infoNote">
+          <div id="troubleshootingArea">
+            <p id="issuesTroubleshootText"> <img id="errorIcon" class="socialBarIcons" src="/IMG/error_icon.png" alt="Lightning error symbol">Having issues?</p>
+            <button class="white accountButton" id="troubleshootGuideButton">Troubleshooting Guide</button>
+          </div>
         </div>
       </div>
       <div id="multiplayerWindowJoin" style="display: none;">
