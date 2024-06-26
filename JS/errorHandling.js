@@ -25,11 +25,15 @@ export function closePopup() {
   }
 }
 
-let checkbox = document.getElementById("hideErrors");
-checkbox.checked = false;
+try {
+  let checkbox = document.getElementById("hideErrors");
+  checkbox.checked = false;
 
-checkbox.addEventListener("change", (e => {
-  showErrors = !e.currentTarget.checked;
-}));
+  checkbox.addEventListener("change", (e => {
+    showErrors = !e.currentTarget.checked;
+  }));
+} catch (err) {
+  console.warn("Error checkbox does not exist on this page");
+}
 
 //errorPopup("Streetview link is invalid","Link: https://errorsareawesome.saidnooneever.ml", "Testerror description", false);
