@@ -1,5 +1,6 @@
 // Hard mode is a time limited mode accessed by the timer icon in the upper right hand corner of the screen.
 
+import { checkGenerationTypeAndGenerate } from "./categoryMenu";
 import { generateNewLocation } from "./main";
 import { playSound } from "./soundManager";
 
@@ -27,6 +28,7 @@ toggleTimoutButton.addEventListener("click", () => {
         hardmodeState = 0;
     }
     setHardmodeTimeout();
+    checkGenerationTypeAndGenerate();
 });
 
 function setHardmodeTimeout() {
@@ -51,7 +53,6 @@ function setHardmodeTimeout() {
             break;
     }
     localStorage.setItem("hardmodeTimeout", hardmodeState);
-    generateNewLocation("SDK");
 }
 
 export function setHardMode(enabled) {

@@ -47,62 +47,50 @@ export function checkIfGuessWasCorrect() {
 }
 
 export function setCountryGuesserCountry(country) {
-    // Function to execute the main logic after DOM content is loaded
-    function executeAfterDOMLoaded() {
-        selectedCountryGuesserCountry = country; //This can be "South Africa", "United States", "India" and so on. Data was received by Nominatium API (which cannot be used in prod)
-        clearSelection();
-        try {
-            if (countryGuesserMode) {
-                let takenLocations = []; //to avoid duplicates amongst the 6 random / wrong ones (one of them will be replaced by the correct one)
-                for (let i = 1; i <= 6; i++) {
-                    let countryItem = document.getElementById("countryTag" + i);
-                    let countryFlag = document.getElementById("countryFlag" + i);
-                    let randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
+    selectedCountryGuesserCountry = country; //This can be "South Africa", "United States", "India" and so on. Data was received by Nominatium API (which cannot be used in prod)
+    clearSelection();
+    try {
+        if (countryGuesserMode) {
+            let takenLocations = []; //to avoid duplicates amongst the 6 random / wrong ones (one of them will be replaced by the correct one)
+            for (let i = 1; i <= 6; i++) {
+                let countryItem = document.getElementById("countryTag" + i);
+                let countryFlag = document.getElementById("countryFlag" + i);
+                let randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
 
-                    //avoid duplicates and avoid a random country matching the corect country
-                    while (Object.keys(countryEmojis)[randomCountryIndex] == selectedCountryGuesserCountry || takenLocations.includes(Object.keys(countryEmojis)[randomCountryIndex])) {
-                        randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
-                    }
-
-                    const countryName = Object.keys(countryEmojis)[randomCountryIndex];
-
-                    countryItem.textContent = countryName;
-                    countryFlag.textContent = countryEmojis[countryName];
-
-                    takenLocations.push(countryName);
-
-                    if (countryName.length > 17) {
-                        countryItem.textContent = countryName.slice(0, 14) + "...";
-                    }
+                //avoid duplicates and avoid a random country matching the corect country
+                while (Object.keys(countryEmojis)[randomCountryIndex] == selectedCountryGuesserCountry || takenLocations.includes(Object.keys(countryEmojis)[randomCountryIndex])) {
+                    randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
                 }
 
-                //now make one of them the actual answer (1-6)
-                correctCountryField = Math.floor(Math.random() * 6) + 1;
-                let countryItem = document.getElementById("countryTag" + correctCountryField);
-                let countryFlag = document.getElementById("countryFlag" + correctCountryField);
-
-                const countryName = selectedCountryGuesserCountry;
+                const countryName = Object.keys(countryEmojis)[randomCountryIndex];
 
                 countryItem.textContent = countryName;
                 countryFlag.textContent = countryEmojis[countryName];
 
+                takenLocations.push(countryName);
+
                 if (countryName.length > 17) {
                     countryItem.textContent = countryName.slice(0, 14) + "...";
                 }
-
             }
-        } catch (error) {
-            console.error("Error generating random category options in countryGuesser.js: " + error);
-        }
-    }
 
-    // Check if DOMContentLoaded event has already fired
-    if (document.readyState === 'loading') {
-        // If DOM content is not yet loaded, wait for it
-        document.addEventListener('DOMContentLoaded', executeAfterDOMLoaded);
-    } else {
-        // If DOM content is already loaded, execute immediately
-        executeAfterDOMLoaded();
+            //now make one of them the actual answer (1-6)
+            correctCountryField = Math.floor(Math.random() * 6) + 1;
+            let countryItem = document.getElementById("countryTag" + correctCountryField);
+            let countryFlag = document.getElementById("countryFlag" + correctCountryField);
+
+            const countryName = selectedCountryGuesserCountry;
+
+            countryItem.textContent = countryName;
+            countryFlag.textContent = countryEmojis[countryName];
+
+            if (countryName.length > 17) {
+                countryItem.textContent = countryName.slice(0, 14) + "...";
+            }
+
+        }
+    } catch (error) {
+        console.error("Error generating random category options in countryGuesser.js: " + error);
     }
 }
 
@@ -110,22 +98,22 @@ export function setCountryGuesserCountry(country) {
 const countryGuesserHolders = document.querySelectorAll('.countryGuesserHolder');
 
 countryGuesserHolders.forEach((holder, index) => {
-  holder.addEventListener('click', () => {
-    countryGuesserHolders.forEach(h => h.classList.remove('selectedCountry'));
+    holder.addEventListener('click', () => {
+        countryGuesserHolders.forEach(h => h.classList.remove('selectedCountry'));
 
-    holder.classList.add('selectedCountry');
-    playSound("item_select");
-    
-    selectedCountryGuessIndex = index + 1;
+        holder.classList.add('selectedCountry');
+        playSound("item_select");
 
-    setConfirmButtonEnabled();
-  });
+        selectedCountryGuessIndex = index + 1;
+
+        setConfirmButtonEnabled();
+    });
 });
 
 function clearSelection() {
     countryGuesserHolders.forEach(h => h.classList.remove('selectedCountry'));
     selectedCountryGuessIndex = null;
-  }
+}
 
 //Spacebar click to guess ---------------------------------------------------------------------------------------------
 
