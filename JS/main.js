@@ -406,7 +406,7 @@ export function loadIframe(lat, long) {
             const beforeOverlay = document.getElementById("BeforeOverlay");
             beforeOverlay.style.opacity = "0";
             beforeOverlay.style.visibility = "hidden";
-        }, 200);
+        }, 300);
     };
 
     //add new load listener and delete old one - on load: fade out overlay
