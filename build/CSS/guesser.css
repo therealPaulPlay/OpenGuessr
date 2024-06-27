@@ -1207,6 +1207,7 @@ map::selection {
   font-size: 17px;
   background-color: rgba(255, 255, 255, 0.9);
   transition: margin 250ms ease, filter 250ms ease, opacity 250ms ease;
+  user-select: none;
   z-index: 10;
 }
 
@@ -1227,6 +1228,7 @@ map::selection {
   pointer-events: auto;
   z-index: 10;
   margin-top: 10px;
+  user-select: none;
   flex-shrink: 0;
 }
 
@@ -1873,6 +1875,16 @@ map::selection {
   vertical-align: -1.5px;
 }
 
+#timerIcon {
+  width: 28px;
+  height: auto;
+  vertical-align: -1.5px;
+}
+
+#timerButton {
+  padding-inline: 13px;
+}
+
 .floatingButton {
   cursor: pointer;
   width: fit-content;
@@ -2225,8 +2237,8 @@ input[type="checkbox"] {
   appearance: none;
   margin: 0;
   color: white;
-  width: 22px;
-  height: 22px;
+  width: 20px;
+  height: 20px;
   border: 0.15em solid white;
   border-radius: 5px;
   transform: translateY(5px);
@@ -2237,8 +2249,8 @@ input[type="checkbox"] {
 
 input[type="checkbox"]::before {
   content: "";
-  width: 15px;
-  height: 15px;
+  width: 12px;
+  height: 12px;
   transform: scale(0);
   box-shadow: inset 20px -10px rgb(255, 255, 255);
   transform-origin: center;
@@ -2258,6 +2270,8 @@ input[type="checkbox"]:focus {
   display: flex;
   vertical-align: center;
   margin-top: 20px;
+  font-size: 22px;
+  opacity: 60%;
 }
 
 .popup-title {
