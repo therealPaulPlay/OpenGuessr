@@ -173,6 +173,33 @@ function compareDistances(distance) {
 
 export let resMap;
 
+let tileLayer;
+
+function setTileLayer() {
+    tileLayer = L.tileLayer(getMapSource(), {
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        maxZoom: 20,
+        minZoom: 2,
+        fakeRetina: true,
+    });
+}
+
+setTileLayer(); // set initial value for tileLayer
+
+export function setResultMapTileLayer() {
+    try {   
+        if (resMap) {
+            resMap.removeLayer(tileLayer);
+    
+            setTileLayer();
+            
+            tileLayer.addTo(resMap);
+        }
+    } catch (e) {
+        console.error("ResMap TileLayer adding error: " + e);
+    }
+}
+
 export function loadResultMap(playersLat, playersLong) {
 
     //default values in case there was an error / not defined
@@ -191,12 +218,7 @@ export function loadResultMap(playersLat, playersLong) {
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap').setView([currentStreetviewLat, currentStreetviewLong], 15);
-    L.tileLayer(getMapSource(), {
-        subdomains:['mt0','mt1','mt2','mt3'],
-        maxZoom: 20,
-        minZoom: 2,
-        fakeRetina: true,
-    }).addTo(resMap);
+    setResultMapTileLayer();
 
     if (countryGuesserMode && !multiplayer) {
         resMap.setZoom(3); //set default zoom
@@ -246,7 +268,8 @@ export function loadResultMap(playersLat, playersLong) {
         playerMarker.addTo(resMap);
 
         //this draws the line to the goal
-        const polygon = L.polygon(polyList, { color: "black", weight: "1", opacity: "0.75"
+        const polygon = L.polygon(polyList, {
+            color: "black", weight: "1", opacity: "0.75"
         }).addTo(resMap);
     }
 
@@ -292,7 +315,8 @@ export function loadResultMap(playersLat, playersLong) {
                 multiplayerMarker.addTo(resMap);
 
                 let multiplayerPolyList = [curLatLng, multiplayerLatLng]; //takes the cur lat lng from the guess (the destination) + the current guess from other player
-                const multiplayerPolygon =  L.polygon(multiplayerPolyList, { color: "black", weight: "1", opacity: "0.25"
+                const multiplayerPolygon = L.polygon(multiplayerPolyList, {
+                    color: "black", weight: "1", opacity: "0.25"
                 }).addTo(resMap);
             }
         });
@@ -319,6 +343,8 @@ function flyToDestination() {
             duration: 1
         };
 
+
+        // move the marker up a notch on phones
         if (window.innerHeight > window.innerWidth) {  // Check if it's a mobile device in portrait mode
             var mapHeight = resMap.getSize().y; // Get the map's height in pixels
             var offset = mapHeight / 25; // Adjust to place the marker slightly above the center (1/4 of the map's height)

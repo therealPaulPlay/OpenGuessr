@@ -1,4 +1,4 @@
-import { loadResultMap, calculateDistances } from "./main.js";
+import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main.js";
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
@@ -109,6 +109,7 @@ function changeMapType() {
 
     changeMapTypeButtonLabel();
     resetGuessMap();
+    setResultMapTileLayer();
 }
 
 
@@ -125,12 +126,8 @@ function loadMap() {
     }).addTo(map);
 }
 
-function destroyMap() {
-    map.removeLayer(dataLayer);
-}
-
 function resetGuessMap() {
-    destroyMap();
+    map.removeLayer(dataLayer);
     loadMap();
 }
 
