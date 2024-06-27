@@ -2,7 +2,7 @@
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
 
-import { resetMap, getMapType, mapsJWTToken, colorArray } from './miniMap.js';
+import { resetMap, getMapSource } from './miniMap.js';
 import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
@@ -15,15 +15,6 @@ import { playSound } from './soundManager.js';
 //default coords of the location
 export let currentStreetviewLat = 0;
 export let currentStreetviewLong = 0;
-
-//clamp function 
-export function clamp(num, min, max) {
-    return num <= min
-        ? min
-        : num >= max
-            ? max
-            : num
-}
 
 //Coordinates to country --------------------------------------------------------------------------
 
@@ -180,94 +171,109 @@ function compareDistances(distance) {
 
 //Load result Map (resMap) ------------------------------------------------------------------------------------------------
 
-// result Map variable
-export let resMap; 
+export let resMap;
 
-// called in miniMap.js after initializing mapkit
-export function initializeResMap() {
-    resMap = new mapkit.Map("resultMap");
+let tileLayer;
 
-    resMap.showsZoomControl = false;
-    resMap.showsMapTypeControl = false;
-    resMap._allowWheelToZoom = true;
-    resMap.showsCompass = mapkit.FeatureVisibility.Hidden;
+function setTileLayer() {
+    tileLayer = L.tileLayer(getMapSource(), {
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        maxZoom: 20,
+        minZoom: 2,
+        fakeRetina: true,
+    });
 }
 
-// Function to clear markers and polylines
-function clearMap() {
-    try {
-        resMap.annotations.forEach(annotation => resMap.removeAnnotation(annotation));
-        resMap.overlays.forEach(overlay => resMap.removeOverlay(overlay));
-    } catch (error) {
-        // doesn't matter, just means that there is nothing to clear
+setTileLayer(); // set initial value for tileLayer
+
+export function setResultMapTileLayer() {
+    try {   
+        if (resMap) {
+            resMap.removeLayer(tileLayer);
+    
+            setTileLayer();
+            
+            tileLayer.addTo(resMap);
+        }
+    } catch (e) {
+        console.error("ResMap TileLayer adding error: " + e);
     }
 }
 
-export function setResultMapType() {
-    resMap.mapType = getMapType();
-}
-
-export let animateMap;
-
-// Load the result map
 export function loadResultMap(playersLat, playersLong) {
-    // Clear markers and polylines, set type
-    clearMap();
-    setResultMapType();
-    playSound("confirm"); // result sound
 
-    try { clearInterval(animateMap)} catch(error) { console.warn("Couldn't clear interval in main.js: " + error)};
-    let curLatLng;
-
-    // default values in case there was an error / not defined
-    if (playersLat == null || playersLat == undefined || isNaN(playersLat)) {
+    //default values in case there was an error / not defined
+    if (playersLat == null || playersLat == undefined) {
         playersLat = 0;
         playersLong = 0;
     }
 
-    try {
-        curLatLng = new mapkit.Coordinate(currentStreetviewLat, currentStreetviewLong);
-    } catch (err) {
-        console.error("Error setting curLatLng: " + err);
+    //this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
+    if (resMap && resMap.remove) {
+        resMap.off();
+        resMap.remove();
     }
 
+    //this makes it so the map in the result screen is focused on the center between the point
+    //and zooming out so both points are visible on the map.
+    resMap = document.getElementById("resultMap");
+    resMap = L.map('resultMap').setView([currentStreetviewLat, currentStreetviewLong], 15);
+    setResultMapTileLayer();
+
+    if (countryGuesserMode && !multiplayer) {
+        resMap.setZoom(3); //set default zoom
+    }
+
+    const yourIcon = new L.Icon({
+        iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
+        shadowUrl: "./IMG/marker_shadow.png",
+        iconSize: [35, 35],
+        iconAnchor: [17.5, 34],
+        popupAnchor: [1, -34],
+        shadowSize: [37, 37]
+    });
+
+    const greenIcon = new L.Icon({
+        iconUrl: './IMG/result_marker.png',
+        shadowUrl: "./IMG/marker_shadow.png",
+        iconSize: [35, 35],
+        iconAnchor: [17.5, 34],
+        popupAnchor: [1, -34],
+        shadowSize: [37, 37]
+    });
+
+    //used to create the line between the points
+    let curLatLng = new L.LatLng(currentStreetviewLat, currentStreetviewLong);
+    let pointList = null;
     let playerLatLng;
     let polyList;
-
-    // this places the "correct" marker that actually reflects the target location
-    try {
-
-        destinationMarker = new mapkit.MarkerAnnotation(curLatLng, {
-            color: "white",
-            glyphColor: "#18d95b",
-            glyphImage: { 1: `./IMG/result_marker.png` },
-        });
-        resMap.addAnnotation(destinationMarker);
-
-    } catch (error) {
-        console.error("Error placing the destination marker: " + error);
-    }
+    let playerMarker;
 
     if (!countryGuesserMode || multiplayer) {
-        playerLatLng = new mapkit.Coordinate(playersLat, playersLong);
+        playerLatLng = new L.LatLng(playersLat, playersLong);
         polyList = [curLatLng, playerLatLng];
+        pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
+        playerMarker;
 
-        // this places the Player Marker (where the player thinks the location is)
+        //this places the Player Marker (where the player thinks the location is)
+        playerMarker = new L.Marker(playerLatLng, { icon: yourIcon });
+        if (multiplayer) {
+            playerMarker.bindTooltip("You",
+                {
+                    permanent: true,
+                    direction: 'right'
+                });
+        }
 
-        const playerMarker = new mapkit.MarkerAnnotation(playerLatLng, {
-            title: multiplayer ? "You" : "",
-            color: "white",
-            glyphColor: colorArray[selectedPinIndex],
-            glyphImage: { 1: `./IMG/apple_your_marker${selectedPinIndex}.png` },
-        });
+        playerMarker.addTo(resMap);
 
-        resMap.addAnnotation(playerMarker);
-        // this draws the line to the goal
-        const polyline = new mapkit.PolylineOverlay(polyList);
-        resMap.addOverlay(polyline);
+        //this draws the line to the goal
+        const polygon = L.polygon(polyList, {
+            color: "black", weight: "1", opacity: "0.75"
+        }).addTo(resMap);
     }
 
-    // pins of other players
+    //pins of other players
     if (multiplayer) {
         multiplayerGuessesLocationsArray.forEach(function (element) {
             let newMarkerLat = element[0];
@@ -275,7 +281,7 @@ export function loadResultMap(playersLat, playersLong) {
             let newMarkerPinIndex = element[2];
             let associatedPlayerName = element[3];
 
-            // checks for edge cases
+            //checks for edge cases
             if (newMarkerLat == null || newMarkerLong == null || isNaN(newMarkerLat)) {
                 newMarkerLat = 0;
                 newMarkerLong = 0;
@@ -286,93 +292,81 @@ export function loadResultMap(playersLat, playersLong) {
                 console.error("Provided maker pin index form peer is null");
             }
 
-            // only place the multiplayer marker if it isn't your marker!
+            //only place the multiplayer marker if it isn't your marker!
             if (newMarkerLat != playersLat || newMarkerLong != playersLong) {
-                const multiplayerLatLng = new mapkit.Coordinate(Number(newMarkerLat), Number(newMarkerLong));
-                const multiplayerMarker = new mapkit.MarkerAnnotation(multiplayerLatLng, {
-                    title: associatedPlayerName,
-                    color: "#e3e3e3",
-                    glyphColor: colorArray[newMarkerPinIndex],
-                    glyphImage: { 1: `./IMG/apple_your_marker${newMarkerPinIndex}.png` },
+                let newMultiplayerIcon = new L.Icon({
+                    iconUrl: "./IMG/your_marker" + newMarkerPinIndex + ".png",
+                    shadowUrl: "./IMG/marker_shadow.png",
+                    iconSize: [35, 35],
+                    iconAnchor: [17.5, 34],
+                    popupAnchor: [1, -34],
+                    shadowSize: [37, 37]
                 });
-                resMap.addAnnotation(multiplayerMarker);
-                const multiplayerPolyList = [curLatLng, multiplayerLatLng]; // takes the cur lat lng from the guess (the destination) + the current guess from other player
-                const multiplayerPolyline = new mapkit.PolylineOverlay(multiplayerPolyList);
-                resMap.addOverlay(multiplayerPolyline);
+
+                let multiplayerLatLng = new L.LatLng(newMarkerLat, newMarkerLong);
+
+                let multiplayerMarker = new L.Marker(multiplayerLatLng, { icon: newMultiplayerIcon });
+                multiplayerMarker.bindTooltip(associatedPlayerName,
+                    {
+                        permanent: true,
+                        direction: 'right'
+                    });
+                multiplayerMarker.setOpacity(0.6);
+                multiplayerMarker.addTo(resMap);
+
+                let multiplayerPolyList = [curLatLng, multiplayerLatLng]; //takes the cur lat lng from the guess (the destination) + the current guess from other player
+                const multiplayerPolygon = L.polygon(multiplayerPolyList, {
+                    color: "black", weight: "1", opacity: "0.25"
+                }).addTo(resMap);
             }
         });
     }
 
-    if (countryGuesserMode) {
-        //only center the destination marker, there is no player marker
-        try {
-            resMap.region = new mapkit.CoordinateRegion(
-                new mapkit.Coordinate(currentStreetviewLat - 8, currentStreetviewLong), // -8 to move the view up sligthly for phones
-                new mapkit.CoordinateSpan(50, 50)
-            );
-        } catch (e) {
-            console.error("Error creating region for country guessr in main.js: " + e);
-        }
-    }
-    
     if (!countryGuesserMode || multiplayer) {
-        // Calculate the center coordinate between the guess marker and the destination marker
-        const centerLat = (currentStreetviewLat + playersLat) / 2;
-        const centerLong = (currentStreetviewLong + playersLong) / 2;
-    
-        // Calculate the span to include both markers on the map
-        const spanLat = Math.abs(currentStreetviewLat - playersLat) * 3; // Adjust padding as needed
-        const spanLong = Math.abs(currentStreetviewLong - playersLong) * 3;
-    
-        // Calculate the distance between the two points
-        const distance = Math.sqrt(Math.pow((currentStreetviewLat - playersLat), 2) + Math.pow((currentStreetviewLong - playersLong), 2));
-    
-        const minDistance = 0;
-        const maxDistance = 5000; // Maximum distance for zooming (5000km)
-        const minZoomLevel = 0;
-        const maxZoomLevel = 10;
-        const zoomScaleFactor = 200;
-    
-        // Calculate the zoom level with scaling
-        let zoomLevel = minZoomLevel + (maxZoomLevel - minZoomLevel) * (distance - minDistance) / (maxDistance - minDistance);
-        zoomLevel *= zoomScaleFactor;
-    
-        let region;
-    
-        try {
-            region = new mapkit.CoordinateRegion(
-                new mapkit.Coordinate(centerLat, centerLong),
-                new mapkit.CoordinateSpan(spanLat, spanLong)
-            );
-        } catch (e) {
-            console.error("Error creating region in main.js: " + e);
-            console.log(centerLat + " and long: " + centerLong);
-        }
-    
-        // Set the initial region without animation
-        resMap.region = region;
-    
-        // Animate to the result marker with a slight zoom in after a delay
-        animateMap = setTimeout(() => {
-            let resultCenterLat = currentStreetviewLat;
-
-            // move region up on phones by a bit
-            if (window.innerHeight > window.innerWidth) {
-                const regionSpanLat = resMap.region.span.latitudeDelta;
-                resultCenterLat -= 0.03 * regionSpanLat;
-            } else {
-                const regionSpanLat = resMap.region.span.latitudeDelta;
-                resultCenterLat -= 0.01 * regionSpanLat;
-            }
-    
-            const resultRegion = new mapkit.CoordinateRegion(
-                new mapkit.Coordinate(resultCenterLat, currentStreetviewLong),
-                new mapkit.CoordinateSpan(zoomLevel, zoomLevel)
-            );
-            resMap.setRegionAnimated(resultRegion, true);
-        }, 1500);
+        resMap.fitBounds(pointList, { padding: [150, 250] });
     }
-}    
+
+    //this places the "correct" marker that actually reflects the target location
+    destinationMarker = new L.Marker([currentStreetviewLat, currentStreetviewLong], { icon: greenIcon });
+    destinationMarker.addTo(resMap);
+
+    setTimeout(flyToDestination, 1500);
+}
+
+function flyToDestination() {
+    if (document.getElementById("EndOverlay").style.opacity == "1") {
+        var lat = currentStreetviewLat;
+        var lng = currentStreetviewLong;
+        var zoom = clamp(resMap.getZoom() + 2, 0, 18);
+        var animate = {
+            animate: true,
+            duration: 1
+        };
+
+
+        // move the marker up a notch on phones
+        if (window.innerHeight > window.innerWidth) {  // Check if it's a mobile device in portrait mode
+            var mapHeight = resMap.getSize().y; // Get the map's height in pixels
+            var offset = mapHeight / 25; // Adjust to place the marker slightly above the center (1/4 of the map's height)
+            var targetPoint = resMap.latLngToContainerPoint([lat, lng]); // Convert the lat/lng to container point
+            targetPoint.y += offset; // Adjust the point to move it slightly up
+            var newLatLng = resMap.containerPointToLatLng(targetPoint); // Convert back to lat/lng
+
+            resMap.flyTo(newLatLng, zoom, animate);
+        } else {
+            resMap.flyTo([lat, lng], zoom, animate);
+        }
+    }
+}
+
+//clamp function 
+export function clamp(num, min, max) {
+    return num <= min
+        ? min
+        : num >= max
+            ? max
+            : num
+}
 
 //Open map locations on google maps --------------------------------------------------------------------------------------------------
 
@@ -423,5 +417,3 @@ export function reloadIframe() {
     window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 400);
 
 }
-
-
