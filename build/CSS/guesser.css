@@ -2581,6 +2581,13 @@ all and (max-width: 1000px) {
     background-color: hsla(236, 25%, 20%, 0.7);
   }
 
+  #mapModeIndicator {
+    background-color: hsla(236, 25%, 20%, 0.7);
+  }
+
+  #countryGuesserSelector {
+    background-color: hsla(236, 25%, 20%, 0.7);
+  }
 
 }
 
