@@ -54,13 +54,6 @@ multiplayerSelectorClose.addEventListener("click", function () {
     toggleMultiplayerSelector();
 });
 
-multiplayerSelectJoin.addEventListener("mouseover", () => { changeMultiplayerSelectorInfotext("join"); })
-multiplayerSelectHost.addEventListener("mouseover", () => { changeMultiplayerSelectorInfotext("host"); })
-multiplayerSelectDuels.addEventListener("mouseover", () => { changeMultiplayerSelectorInfotext("duels"); })
-multiplayerSelectJoin.addEventListener("mouseout", () => { changeMultiplayerSelectorInfotext(); })
-multiplayerSelectHost.addEventListener("mouseout", () => { changeMultiplayerSelectorInfotext(); })
-multiplayerSelectDuels.addEventListener("mouseout", () => { changeMultiplayerSelectorInfotext(); })
-
 let multiPlayerWindowOpen = false;
 
 export function toggleMultiplayerSelector(alwaysClose) {
@@ -85,28 +78,6 @@ export function toggleMultiplayerSelector(alwaysClose) {
     } else {
         window.location.href = "/signup.html"
     }
-}
-
-function changeMultiplayerSelectorInfotext(hoveredButton) {
-    const infoText = document.getElementById("multiplayerSelectorInfotext");
-    let infoTextContent = "Default infotext.";
-
-    switch (hoveredButton) {
-        case "join":
-            infoTextContent = "Join a room hosted by another player with a roomcode.";
-            break;
-        case "host":
-            infoTextContent = "Create a new room and share the roomcode.";
-            break;
-        case "duels":
-            infoTextContent = "Automatically play against other online players.";
-            break;
-        default:
-            infoTextContent = "Hover over the modes to learn more about them.";
-            break;
-    }
-
-    infoText.innerText = infoTextContent;
 }
 
 //Pages ---------------------------------------------------------------------------------------
