@@ -406,33 +406,6 @@ let settingsWindow = document.getElementById("settingsWindow");
 let settingsClose = document.getElementById("settingsClose");
 settingsClose.addEventListener("click", toggleSettingsWindow);
 
-let pointsOfInterest = document.getElementById("mapPointsOfInterest");
-pointsOfInterest.addEventListener("click", () => {
-    if (pointsOfInterest.style.opacity == "0.5") {
-        pointsOfInterest.style.opacity = "1";
-        setPointsOfInterest(true);
-        localStorage.setItem("mapInterestPoints", "enabled");
-    } else {
-        pointsOfInterest.style.opacity = "0.5";
-        setPointsOfInterest(false);
-        localStorage.setItem("mapInterestPoints", "disabled");
-    }
-});
-
-document.addEventListener("DOMContentLoaded", () => {
-    let tempMapPointsOfInterestStorage = localStorage.getItem("mapInterestPoints");
-
-    if (tempMapPointsOfInterestStorage) {
-        if (tempMapPointsOfInterestStorage != "disabled") {
-            pointsOfInterest.style.opacity = "1";
-            setPointsOfInterest(true);
-        } else {
-            pointsOfInterest.style.opacity = "0.5";
-            setPointsOfInterest(false);
-        }
-    }
-});
-
 function toggleSettingsWindow() {
     playSound("basic_button");
 

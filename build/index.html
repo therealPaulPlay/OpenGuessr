@@ -12,7 +12,8 @@
   <!-- Files from other sources (PeerJS, MapKit, Math.js) -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" defer></script>
   <!-- apple mapkit -->
-  <script src="https://cdn.apple-mapkit.com/mk/5.x.x/mapkit.js" defer></script>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
   <link rel="stylesheet" href="/CSS/guesser.css">
@@ -155,7 +156,7 @@
       <button class="category continentCategory accountExclusive accountLock" id="southamericaCategory"
         type="button">South America</button>
       <p class="categoriesNote" id="communityMapsNote"> Community Maps: </p>
-      <div id="communityMapArea">
+      <div id="communityMapArea" class="mapUnavailable">
         <!-- auto generated in categoryMenu.js -->
       </div>
       <button class="category categoryUpcoming" id="discoverMaps" type="button">Discover all Community Maps
@@ -313,9 +314,6 @@
       <button id="unitSwitchMiles" class="accountButton white">Imperial</button><br><br>
       <p>SFX Volume:</p>
       <input type="range" min="0" max="1" step="0.01" value="0.5" class="slider" id="volumeSlider"><br><br>
-      <p class="slightBottomMargin">Map settings:</p>
-      <button id="mapPointsOfInterest" class="accountButton white">Points of Interest</button>
-      <br><br>
       <button id="settingsClose" class="accountButton white accountClose">close</button>
     </div>
     <!-- Discord Popup -->
