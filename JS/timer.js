@@ -22,15 +22,18 @@ export function startTimer(durationInSeconds, onTimerExpired) {
             mapTimer.classList.add("fading");
             mapModeIndicator.classList.add("fading");
             playSound("ticking_timer", "timerSound");
+            document.getElementById("littleTimeVignette").style.opacity = "1";
         } else {
             mapTimer.classList.remove("fading");
             mapModeIndicator.classList.remove("fading");
+            document.getElementById("littleTimeVignette").style.opacity = "0";
         }
 
         if (--timer < 0) {
             clearInterval(currentTimerIntervalId); // Stop the interval
             mapTimer.classList.remove("fading");
             mapModeIndicator.classList.remove("fading");
+            document.getElementById("littleTimeVignette").style.opacity = "0";
             timerExpired(); // Call the function when timer expires
         }
     }, 1000);
@@ -46,6 +49,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         clearInterval(currentTimerIntervalId);
         mapTimer.classList.remove("fading");
         mapModeIndicator.classList.remove("fading");
+        document.getElementById("littleTimeVignette").style.opacity = "0";
         stopSound("timerSound");
     }
 

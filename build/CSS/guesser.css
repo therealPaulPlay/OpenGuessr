@@ -270,7 +270,7 @@ h1, h2, h3 {
   align-items: center;
   margin-top: 20px;
   padding: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(0, 0, 0, 0.1);
   border-radius: 7px;
 }
 
@@ -846,6 +846,18 @@ li {
   pointer-events: none;
 }
 
+#littleTimeVignette {
+  position: fixed;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  box-shadow: 0 0 350px rgba(254, 0, 0, 0.5) inset;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 500ms ease;
+}
+
 #mobileExtendedNavbarControls {
   display: none;
   position: fixed;
@@ -1367,11 +1379,21 @@ map::selection {
   flex: 1;
   z-index: 10;
   background-color: hsla(236, 25%, 20%, 0.5);
+  transition: background-color 250ms ease;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
 
-#bottomFooterAds {
+#adsText {
+  text-align: center;
+  color: white;
+  opacity: 0;
+  font-size: 22px;
+  overflow: hidden;
+  transition: opacity 500ms ease;
+}
+
+.bottomFooterAds {
   position: fixed;
   bottom: 12px;
   left: 0px; 
@@ -1385,15 +1407,22 @@ map::selection {
   z-index: 11;
 }
 
+.bottomFooterAdText {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 10;
+}
+
 @media (max-width: 1500px) {
-  #bottomFooterAds {
+  .bottomFooterAds {
   width: 728px;
   height: 90px;
   }
 }
 
 @media (max-width: 1175px) {
-  #bottomFooterAds {
+  .bottomFooterAds {
   width: 320px;
   height: 50px;
   bottom: 32px;
@@ -1401,14 +1430,14 @@ map::selection {
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
-  #bottomFooterAds {
+  .bottomFooterAds {
   width: 0;
   display: none;
   }
 }
 
 @media (orientation: portrait) and (max-width: 700px) {
-  #bottomFooterAds {
+  .bottomFooterAds {
     width: 320px;
     height: 50px;
     bottom: 12px;
@@ -1470,7 +1499,7 @@ map::selection {
   user-select: none;
   -webkit-user-select: none;
   color: white;
-  background-color: hsla(236, 25%, 20%, 0.5);
+  background-color: hsla(236, 25%, 20%, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -1513,8 +1542,9 @@ map::selection {
   padding-right: 30px;
   margin-right: 24px;
   margin-left: auto;
-  background-color: var(--brand-color);
-  transition: background-color 250ms ease, color 250ms ease, filter 250ms ease;
+  background-color: white;
+  color: black;
+  transition: background-color 250ms ease, color 250ms ease, filter 250ms ease, opacity 250ms ease;
 }
 
 #privacyButton {
@@ -1692,21 +1722,36 @@ map::selection {
   flex-direction: column;
   opacity: 100%;
   background-color: #13151c;
-  transition: all 100ms ease;
+  transition: all 250ms ease;
   position: fixed;
   width: 100%;
   height: 100%;
-  z-index: 11;
+  z-index: 8;
+  box-shadow: 0 0 700px rgba(255, 176, 176, 0.2) inset;
 }
 
 #loadingText {
-  color: rgb(153, 153, 153);
+  color: white;
+  opacity: 0.3;
   font-size: 25px;
   text-align: center;
 }
 
 #spinner {
-  opacity: 0.6;
+  opacity: 0.3;
+  animation: rotation 1.5s infinite linear;
+  width: 100px;
+  height: 100px;
+  margin-bottom: 20px;
+}
+
+@keyframes rotation {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(359deg);
+  }
 }
 
 .menuButton {
@@ -2419,6 +2464,10 @@ all and (max-width: 1000px) {
     display: none;
   }
 
+  #adsText {
+    display: none;
+  }
+
   #floatingCategoryArea {
     visibility: hidden;
   }
@@ -2526,6 +2575,10 @@ all and (max-width: 1000px) {
 
   #floatingMapButton {
     display: block;
+  }
+
+  .BottomBar {
+    background-color: hsla(236, 25%, 20%, 0.7);
   }
 
 
