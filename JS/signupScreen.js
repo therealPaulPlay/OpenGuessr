@@ -39,13 +39,11 @@ function setSignupStage() {
     document.getElementById("signup_area").style.display = "none";
     document.getElementById("captcha").style.display = "block";
     document.getElementById("back").style.display = "inline";
-    document.getElementById("title2").innerHTML = "Captcha";
     randomQuestion();
 } else {
   document.getElementById("signup_area").style.display = "block";
   document.getElementById("captcha").style.display = "none";
   document.getElementById("back").style.display = "none";
-  document.getElementById("title2").innerHTML = "Signup";
 }
 }
 

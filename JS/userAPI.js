@@ -1,6 +1,6 @@
 import { errorPopup } from "./errorHandling.js";
 
-export const backendURL = "https://devapi.openguessr.com/api";
+export const backendURL = "https://api.openguessr.com/api";
 export const loginEndpoint = `${backendURL}/users/login`;
 export const registrationEndpoint = `${backendURL}/users/register`;
 export const userUpdateEndpoint = `${backendURL}/users/update`;

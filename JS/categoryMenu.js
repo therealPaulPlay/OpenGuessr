@@ -35,7 +35,6 @@ let Category = {
     ROMANIA: "romania",
     TURKEY: "turkey",
     DAILY: "daily",
-    HARD: "hard",
     COUNTRY: "country",
     FINLAND: "finland",
     ISRAEL: "israel",
@@ -164,7 +163,6 @@ export function changeCategory(category, regenerate) {
 export function checkGenerationTypeAndGenerate() {
     try { dailyChallengeTimer.stopTimer(); } catch { }; //has to be in try catch
     document.getElementById("mapTimer").textContent = "00" + ":" + "00"; //reset the timer visually
-    setHardMode(false);
     setCountryGuesserMode(false);
 
     if (!multiplayer) {
@@ -173,20 +171,17 @@ export function checkGenerationTypeAndGenerate() {
         showMultiplayerOverlay(false);
 
         //pick between json and maps api loading depending on the category type
-        if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard" && mapCategory != "country" && !mapCategory.includes("community")) {
+        if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "country" && !mapCategory.includes("community")) {
             generateNewLocation("JSON");
         } else if (mapCategory == "daily") {
             if (checkDailyChallengeCompletion() == "available") {
                 setDailyChallengeUI(true);
+                setHardMode(false);
                 generateNewLocation("DAILY");
             } else {
                 localStorage.setItem("selectedCategory", "standard");
                 window.location.href = "/dailyleaderboard.html";
             }
-
-        } else if (mapCategory == "hard") {
-            setHardMode(true);
-            generateNewLocation("JSON");
 
         } else if (mapCategory == "country") {
             setCountryGuesserMode(true);
@@ -205,9 +200,10 @@ export function checkGenerationTypeAndGenerate() {
         //If multiplayer is enabled
         try {
             disableDailyChallengeVariableOnly(); //disable the daily challenge (will be re-enabled by renunning the location gen after leaving)
+            setHardMode(false);
 
             if (isHost) {
-                if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "hard" && mapCategory != "country") {
+                if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "country") {
                     generateNewLocation("JSON");
                 } else if (mapCategory == "standard") {
                     generateNewLocation("SDK");

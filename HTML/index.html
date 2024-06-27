@@ -22,7 +22,8 @@
   <script type="module" src="analytics.js" async></script>
 
   <!-- venatus ad script -->
-  <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript" data-site-id="664453baf2089a039dc08edb" data-mode="scan" async></script>
+  <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
+    data-site-id="664453baf2089a039dc08edb" data-mode="scan" async></script>
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Loading this async breaks the multiplayer join via link -->
   <script type="module" src="main.js" defer></script>
@@ -76,16 +77,17 @@
       </div>
       <div id="socialBar">
         <div class="placeholder"></div>
-        <button id="leaderboardButton" class="accountButton socialBarButton">Leaderboard
-          <img class="socialBarIcons" src="/IMG/leaderboard_icon.png" alt="Leaderboard for OpenGuessr">
-        </button>
-        <button id="dailyLeaderboardButton" class="accountButton socialBarButton">Daily Challenge
-          <img class="socialBarIcons" src="/IMG/daily_icon.png" alt="Leaderboard for OpenGuessr">
-        </button>
         <button id="multiplayerButton" class="accountButton socialBarButton">Multiplayer
-          <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu"><span
-            class="newSocialMenuTag">New</span>
+          <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
         </button>
+        <div class="multiplayerButtonArea">
+          <button id="leaderboardButton" class="accountButton socialBarButton">Leaderboard
+            <img class="socialBarIcons" src="/IMG/leaderboard_icon.png" alt="Leaderboard for OpenGuessr">
+          </button>
+          <button id="dailyLeaderboardButton" class="accountButton socialBarButton">Daily Challenge
+            <img class="socialBarIcons" src="/IMG/daily_icon.png" alt="Leaderboard for OpenGuessr">
+          </button>
+        </div>
         <div class="placeholder"></div>
       </div>
       <button id="floatingSocialButton">Multiplayer Menu ▼</button>
@@ -115,7 +117,6 @@
       <p class="categoriesNote" id="categoryExclusiveText"> Sign up to unlock for free: </p>
       <button class="category accountExclusive accountLock" id="dailyCategory" type="button">The
         Daily Challenge</button>
-      <button class="category accountExclusive accountLock" id="hardCategory" type="button">One Second</button>
       <button class="category accountExclusive accountLock" id="countryCategory" type="button">Country Guesser</button>
       <button class="category accountExclusive accountLock" id="australiaCategory" type="button">Australia</button>
       <button class="category accountExclusive accountLock" id="austriaCategory" type="button">Austria</button>
@@ -142,12 +143,18 @@
       <button class="category accountExclusive accountLock" id="ukCategory" type="button">UK & Ireland</button>
       <button class="category accountExclusive accountLock" id="ukraineCategory" type="button">Ukraine</button>
       <button class="category accountExclusive accountLock" id="usaCategory" type="button">United States</button>
-      <button class="category continentCategory accountExclusive accountLock" id="africaCategory" type="button">Africa</button>
-      <button class="category continentCategory accountExclusive accountLock" id="asiaCategory" type="button">Asia</button>
-      <button class="category continentCategory accountExclusive accountLock" id="europeCategory" type="button">Europe</button>
-      <button class="category continentCategory accountExclusive accountLock" id="northamericaCategory" type="button">North America</button>
-      <button class="category continentCategory accountExclusive accountLock" id="oceaniaCategory" type="button">Oceania</button>
-      <button class="category continentCategory accountExclusive accountLock" id="southamericaCategory" type="button">South America</button>
+      <button class="category continentCategory accountExclusive accountLock" id="africaCategory"
+        type="button">Africa</button>
+      <button class="category continentCategory accountExclusive accountLock" id="asiaCategory"
+        type="button">Asia</button>
+      <button class="category continentCategory accountExclusive accountLock" id="europeCategory"
+        type="button">Europe</button>
+      <button class="category continentCategory accountExclusive accountLock" id="northamericaCategory"
+        type="button">North America</button>
+      <button class="category continentCategory accountExclusive accountLock" id="oceaniaCategory"
+        type="button">Oceania</button>
+      <button class="category continentCategory accountExclusive accountLock" id="southamericaCategory"
+        type="button">South America</button>
       <p class="categoriesNote" id="communityMapsNote"> Community Maps: </p>
       <div id="communityMapArea" class="mapUnavailable">
         <!-- auto generated in categoryMenu.js -->
@@ -167,6 +174,9 @@
   <!-- Category switch displayer -->
   <div id="floatingCategoryArea">
     <button class="floatingButton" id="categoryMenuButton" type="button">Maps ▼</button>
+    <button class="smallFloatingButton" id="timerButton" type="button">
+      <img src="/IMG/timer_icon.png" alt="one or five seconds" id="timerIcon">
+    </button>
     <button class="smallFloatingButton" id="settingsButton" type="button">
       <img src="/IMG/settings_icon.png" alt="settings" id="settingsIcon">
     </button>
@@ -178,9 +188,13 @@
   </div>
   <div class="popupHolder">
     <!-- This is an overlay used to display error messages -->
-    <div class="popup-content" id="popup-content">
+    <div class="uiWindow" id="errorPopup">
       <div id="popup-title" class="popup-title"></div>
       <div id="popup-description" class="popup-description"></div>
+      <div id="errorPopupDisable">
+        <p>Never show again: </p>
+        <input type="checkbox" id="hideErrors" />
+      </div>
       <button id="popupClose" class="cookieButton close">Close and reload</button>
     </div>
   </div>
@@ -245,7 +259,7 @@
       <div id="popup-title" class="popup-title">
         <h1>How to play</h1>
       </div>
-      <ul>
+      <ul class="nolistdots">
         <li>
           <h3>🔍 Look at the Street View image</h3>
           <p>Study the image carefully. Use the navigation controls to explore the surroundings.</p>
@@ -264,6 +278,31 @@
         </li>
       </ul>
       <button id="helpClose" class="accountButton white accountClose">Let's go!</button>
+    </div>
+     <!-- Troubleshooting Guide for Multiplayer -->
+     <div id="troubleshootWindow" class="uiWindow">
+      <div id="popup-title" class="popup-title">
+        <h1>Troubleshooting Guide</h1>
+      </div>
+      <p>
+        OpenGuessr uses a peer2peer connection system via WebRTC Datachannels. Follow these steps to ensure a smooth experience:<br><br>
+      </p>
+      <ul>
+        <li>
+          <p>Disable VPNs or Proxies: Certain VPNs or Proxies, often browser extensions, block WebRTC connections.</p>
+        </li>
+        <li>
+          <p>Disable Firewalls: Some people use firewall apps, have restrictive firewall settings or use wifi routers with strict built-in firewalls that block WebRTC.</p>
+        </li>
+        <li>
+          Check if the TURN servers are online: We use turn servers from fastturn. You can check whether they are online on their <a href="https://fastturn.net/status">website</a>.
+        </li>
+        <li>
+          Check if your browser supports WebRTC: Open chrome://webrtc-internals/ in a Chromium browser or about:webrtc in Firefox.
+        </li>
+      </ul>
+      <p>If multiplayer still does not work after following these steps, consider using a different wifi such as your phone's cellular data hotspot for your internet connection or switch the host.</p>
+      <button id="troubleshootClose" class="accountButton white accountClose">Back</button>
     </div>
     <!-- Settings (Especially for Sounds) -->
     <div id="settingsWindow" class="uiWindow">
@@ -290,15 +329,15 @@
         <img src="./IMG/discord.png" class="socialIcon">
       </button>
     </div>
-      <!-- Linkjoin Popup -->
-      <div id="linkjoinWindow" class="uiWindow">
-        <div id="popup-title" class="popup-title">
-          <h1 id="socialHeader">Joining via Link...</h1>
-        </div>
-        <p id="linkjoinStatus">Status: None set</p>
-        <br>
-        <button id="linkJoinClose" class="accountButton white accountClose">Close</button>
+    <!-- Linkjoin Popup -->
+    <div id="linkjoinWindow" class="uiWindow">
+      <div id="popup-title" class="popup-title">
+        <h1 id="socialHeader">Joining via Link...</h1>
       </div>
+      <p id="linkjoinStatus">Status: None set</p>
+      <br>
+      <button id="linkJoinClose" class="accountButton white accountClose">Close</button>
+    </div>
     <!-- Mobile UI Popup -->
     <div id="mobileWindow" class="uiWindow">
       <div id="popup-title" class="popup-title">
@@ -348,12 +387,18 @@
             <button id="multiplayerSelectHost" class="accountButton multiplayerSelect">Host</button>
           </div>
           <div class="groupPartyButtons">
-            <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect">Find Duel</button>
+            <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect">Find Duel<img id="findIcon" class="socialBarIcons" style="margin-left: 5px;" src="/IMG/find_icon.png" alt="Lightning error symbol"></button>
           </div>
         </div>
         <div class="infoNote">
           <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
           <p id="multiplayerSelectorInfotext">Hover over the modes to learn more about them.</p>
+        </div>
+        <div class="infoNote">
+          <div id="troubleshootingArea">
+            <p id="issuesTroubleshootText"> <img id="errorIcon" class="socialBarIcons" src="/IMG/error_icon.png" alt="Lightning error symbol" style="opacity: 60%;">Having issues?</p>
+            <button class="white accountButton" id="troubleshootGuideButton">Troubleshooting Guide</button>
+          </div>
         </div>
       </div>
       <div id="multiplayerWindowJoin" style="display: none;">
