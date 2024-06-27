@@ -505,3 +505,12 @@ function toggleTroubleshootWindow() {
     }
     troubleshootWindow.style.display = troubleshootWindow.style.display != "block" ? "block" : "none";
 }
+
+// Show advertisement text after some time (if no ads are being served, it is visible) ---------------------------------------------------------------------------------
+
+// display text to encourage disabling ad block after 12s
+document.addEventListener("DOMContentLoaded", () => {
+    setTimeout(() => {
+        document.getElementById("adsText").style.opacity = "0.35";
+    }, 12000);
+})
