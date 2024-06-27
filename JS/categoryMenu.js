@@ -1,6 +1,6 @@
-import { generateNewLocation, animateMap } from "./main.js";
+import { generateNewLocation, resMap} from "./main.js";
 import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable } from "./mainUI.js";
-import { setDailyChallengeUI, dailyChallengeUIEnabled, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
+import { setDailyChallengeUI, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
@@ -267,7 +267,8 @@ export function transitionToStart() {
             document.getElementById("BeforeOverlay").style.opacity = "0";
             document.getElementById("BeforeOverlay").style.visibility = "visible";
             document.getElementById("BeforeOverlay").style.opacity = "100";
-            try { clearInterval(animateMap)} catch(error) { console.warn("Couldn't clear interval in categoryMenu.js: " + error)};
+            resMap.stop(); //stop the flying animation
+            setTimeout(function () { resMap.stop() }, 200)
             toggleStreakWindow(0, true);
             checkGenerationTypeAndGenerate();
 
