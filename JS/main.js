@@ -299,7 +299,7 @@ export function loadResultMap(playersLat, playersLong) {
     }
 
     if (!countryGuesserMode || multiplayer) {
-        resMap.fitBounds(pointList, { padding: [150, 350] });
+        resMap.fitBounds(pointList, { padding: [150, 250] });
     }
 
     //this places the "correct" marker that actually reflects the target location
@@ -311,10 +311,25 @@ export function loadResultMap(playersLat, playersLong) {
 
 function flyToDestination() {
     if (document.getElementById("EndOverlay").style.opacity == "1") {
-        resMap.flyTo([currentStreetviewLat, currentStreetviewLong], clamp(resMap.getZoom() + 2, 0, 18), {
+        var lat = currentStreetviewLat;
+        var lng = currentStreetviewLong;
+        var zoom = clamp(resMap.getZoom() + 2, 0, 18);
+        var animate = {
             animate: true,
             duration: 1
-        });
+        };
+
+        if (window.innerHeight > window.innerWidth) {  // Check if it's a mobile device in portrait mode
+            var mapHeight = resMap.getSize().y; // Get the map's height in pixels
+            var offset = mapHeight / 25; // Adjust to place the marker slightly above the center (1/4 of the map's height)
+            var targetPoint = resMap.latLngToContainerPoint([lat, lng]); // Convert the lat/lng to container point
+            targetPoint.y += offset; // Adjust the point to move it slightly up
+            var newLatLng = resMap.containerPointToLatLng(targetPoint); // Convert back to lat/lng
+
+            resMap.flyTo(newLatLng, zoom, animate);
+        } else {
+            resMap.flyTo([lat, lng], zoom, animate);
+        }
     }
 }
 
