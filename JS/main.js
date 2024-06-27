@@ -180,7 +180,7 @@ function setTileLayer() {
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
         maxZoom: 20,
         minZoom: 2,
-        fakeRetina: true,
+        detectRetina: true,
     });
 }
 
