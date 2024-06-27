@@ -14,6 +14,8 @@ const Provider = {
     TERRAIN: "3"
 }
 
+
+// Leaflet init and Tiles --------------------------------------------------------------------------------------
 let map = L.map('map', { zoomControl: false }).setView([40.321160, 10.252812], 1.5); //starting position
 
 let mapProvider = ["http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en", "http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&hl=en", "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en", "http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en"];
@@ -35,10 +37,6 @@ export function getMapSource() {
 loadMap();
 changeMapTypeButtonLabel();
 
-//indicate whether a guess has been made and the button can be used
-export let hasGuessed = false;
-setConfirmButtonState();
-
 //reset the map - used for going to the next round. 
 export function resetMap() {
     map.removeLayer(marker);
@@ -48,6 +46,28 @@ export function resetMap() {
     hasGuessed = false;
     setConfirmButtonState();
 }
+
+// Leaflet Tile Layer Loading and Resetting --------------------------------------------------------------------
+let dataLayer;
+
+function loadMap() {
+    dataLayer = L.tileLayer(mapProvider[providerIndex], {
+        subdomains:['mt0','mt1','mt2','mt3'],
+        maxZoom: 20,
+        minZoom: 1,
+        noWrap: true,
+        fakeRetina: true,
+    }).addTo(map);
+}
+
+function resetGuessMap() {
+    map.removeLayer(dataLayer);
+    loadMap();
+}
+
+map.setZoom(3);
+
+// Map Type Button Label ----------------------------------------------------------------------------------------
 
 function changeMapTypeButtonLabel() {
     let mapTypeBaseText = "Minimap:";
@@ -70,6 +90,11 @@ function changeMapTypeButtonLabel() {
 }
 
 //Set state of the confirm ("guess") button ------------------------------------------------------------------
+
+//indicate whether a guess has been made and the button can be used
+export let hasGuessed = false;
+setConfirmButtonState();
+
 export function setConfirmButtonState() {
     if (hasGuessed) {
         document.getElementById("confirmButton").style.backgroundColor = "red";
@@ -112,33 +137,11 @@ function changeMapType() {
     setResultMapTileLayer();
 }
 
-
-//Universal map functions --------------------------------------------------------------------
-let dataLayer;
-
-function loadMap() {
-    dataLayer = L.tileLayer(mapProvider[providerIndex], {
-        subdomains:['mt0','mt1','mt2','mt3'],
-        maxZoom: 20,
-        minZoom: 1,
-        noWrap: true,
-        fakeRetina: true,
-    }).addTo(map);
-}
-
-function resetGuessMap() {
-    map.removeLayer(dataLayer);
-    loadMap();
-}
-
-map.setZoom(3);
-
-let marker = new L.Marker([0, 0]);
-
-
 //Placing the marker on the minimap ------------------------------------------------------------------------
 export let mapMarkerLat = 0;
 export let mapMarkerLong = 0;
+
+let marker = new L.Marker([0, 0]); // define initial marker
 
 function onMapClick(e) {
     //creates markers wherever the user clicks and if it clicks to another position,
