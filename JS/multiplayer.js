@@ -183,7 +183,17 @@ multiplayerJoin.addEventListener("click", () => {
     multiplayerJoin.style.opacity = "0.5";
     playSound("start_button");
     joinRoom(removeWhiteSpace(document.getElementById("roomCodeInput").value));
-})
+});
+
+document.getElementById("roomCodeInput").addEventListener("keydown", function (event) {
+    if (document.activeElement === document.getElementById("roomCodeInput") && event.key === "Enter" && !event.shiftKey) {
+        event.preventDefault();
+        multiplayerJoin.style.pointerEvents = "none";
+        multiplayerJoin.style.opacity = "0.5";
+        playSound("start_button");
+        joinRoom(removeWhiteSpace(document.getElementById("roomCodeInput").value));
+    }
+});
 
 function setJoinInfoText(text) {
     joinInfoText.innerText = text; //this function is used to display things like "Invalid Roomcode" etc.
@@ -361,12 +371,15 @@ function setMultiplayerUI() {
     toggleCategoryMenu(true);
     let categoryButton = document.getElementById("categoryMenuButton");
     let floatingSocialButton = document.getElementById("floatingSocialButton");
+    let hardmodeTimerButton = document.getElementById("timerButton");
 
     if (multiplayer) {
         categoryButton.style.opacity = "0.5";
         categoryButton.style.pointerEvents = "none";
         floatingSocialButton.style.opacity = "0.5";
         floatingSocialButton.style.pointerEvents = "none";
+        hardmodeTimerButton.style.opacity = "0.5";
+        hardmodeTimerButton.style.pointerEvents = "none";
         document.getElementById("mapModeIndicator").style.display = "flex";
         document.getElementById("multiplayerChat").style.display = "flex";
         document.getElementById("multiplayerLeave").style.display = "block";
@@ -388,6 +401,8 @@ function setMultiplayerUI() {
         categoryButton.style.pointerEvents = "auto";
         floatingSocialButton.style.opacity = "1";
         floatingSocialButton.style.pointerEvents = "auto";
+        hardmodeTimerButton.style.opacity = "1";
+        hardmodeTimerButton.style.pointerEvents = "auto";
         document.getElementById("mapModeIndicator").style.display = "none";
         document.getElementById("multiplayerChat").style.display = "none";
         document.getElementById("multiplayerLeave").style.display = "none";
@@ -1061,7 +1076,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     multiplayerFirstRoundPlayed = false;
     multiplayerCategory = mapCategory;
 
-    if (multiplayerCategory == "hard" || multiplayerCategory == "daily" || multiplayerCategory == "country") {
+    if (multiplayerCategory == "daily" || multiplayerCategory == "country") {
         multiplayerCategory = "standard";
     }
 
@@ -1311,7 +1326,7 @@ function joinRoom(code) {
         //if you get disconnected mid round
         if (multiplayer) {
             leaveMultiplayerRound();
-            errorPopup("Disconnected from room", "", "User disconnected", false);
+            errorPopup("Disconnected from room", "The connection to the host was closed.", "User disconnected", false);
         }
 
         //if you try to join a room that is locked
@@ -1336,7 +1351,7 @@ export function peerSendsHost(type, message) {
 
     } catch (error) {
         if (multiplayer) {
-            errorPopup("Error sending message", "Couldn't send message to host.", "Host unreachable");
+            errorPopup("Error sending peer2peer message", "Couldn't send message to host.", "Host unreachable");
         }
 
         console.error("Error messaging host: " + error);
@@ -1503,21 +1518,21 @@ function showEndscreenUI(show) {
 
         if (isHost) {
             endMultiplayerRoundButton.textContent = "End Round";
-            
+
             if (!playingDuels) {
                 endMultiplayerRematchButton.style.display = "block";
                 endMultiplayerRematchButton.style.opacity = "1";
                 endMultiplayerRematchButton.style.pointerEvents = "auto";
                 endMultiplayerRematchButton.textContent = "Play again";
             }
-    
+
         } else {
             endMultiplayerRoundButton.textContent = "Leave Round";
         }
     } else {
         endMultiplayerRoundButton.style.display = "none";
         endMultiplayerRematchButton.style.display = "none";
-    }   
+    }
 }
 
 export function showMultiplayerOverlay(show, title, array) {

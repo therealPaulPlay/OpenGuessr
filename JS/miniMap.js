@@ -266,16 +266,20 @@ mapTypeBTN.addEventListener("click", () => {
 
 // Enlarge map
 const mapHolder = document.getElementById("mapHolder");
+let mapResizeTimeout;
 
 function handleMapHover() {
     if (window.matchMedia("(orientation: landscape) and (min-width: 1250px)").matches) {
-        mapHolder.classList.add("mapHover");
+        clearTimeout(mapResizeTimeout);
+        mapHolder.classList.add("mapHover")
     }
 }
 
 function handleMapUnhover() {
     if (!document.getElementById("revealCompass").matches(':hover')) {
-        mapHolder.classList.remove("mapHover");
+        mapResizeTimeout = setTimeout(() => {
+            mapHolder.classList.remove("mapHover")
+        }, 250);
     }
 }
 

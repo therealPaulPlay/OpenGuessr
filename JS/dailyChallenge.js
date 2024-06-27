@@ -18,6 +18,7 @@ export function setDailyChallengeUI(enable) {
     dailyChallengeUIEnabled = enable ? true : false;
     toggleCategoryMenu(true);
     let floatingSocialButton = document.getElementById("floatingSocialButton");
+    let hardmodeTimerButton = document.getElementById("timerButton");
 
     if (enable) {
         document.getElementById("mapModeIndicator").style.display = "flex";
@@ -25,11 +26,15 @@ export function setDailyChallengeUI(enable) {
         document.getElementById("multiplayerLeave").style.display = "none";
         floatingSocialButton.style.opacity = "0.5";
         floatingSocialButton.style.pointerEvents = "none";
+        hardmodeTimerButton.style.opacity = "0.5";
+        hardmodeTimerButton.style.pointerEvents = "none";
         document.getElementById("revealCompass").style.marginBottom = "-21px";
     } else {
         document.getElementById("mapModeIndicator").style.display = "none";
         floatingSocialButton.style.opacity = "1";
         floatingSocialButton.style.pointerEvents = "auto";
+        hardmodeTimerButton.style.opacity = "1";
+        hardmodeTimerButton.style.pointerEvents = "auto";
         document.getElementById("revealCompass").style.marginBottom = "-25px";
     }
 }

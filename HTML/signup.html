@@ -43,12 +43,6 @@
             overflow: hidden;
         }
 
-        #center {
-            display: flex;
-            width: 100%;
-            justify-content: center;
-        }
-
         #title1,
         #title2 {
             color: rgba(42, 44, 71, 1);
@@ -63,6 +57,8 @@
             margin: auto;
             width: 275px;
             height: auto;
+            margin-bottom: 30px;
+            margin-top: 5px;
         }
 
         .container {
@@ -235,6 +231,7 @@
             box-shadow: none;
             border: none;
             font-family: Barlow;
+            width: calc(80% - 20px);
         }
 
         textarea:focus,
@@ -247,9 +244,16 @@
             margin-bottom: 20px;
         }
 
+        .switchFormBox {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            padding: 8px;
+            margin-top: 50px;
+        }
+
         .toggle-password {
             position: absolute;
-            right: -10px;
+            right: -14px;
             top: 50%;
             transform: translateY(-50%);
             cursor: pointer;
@@ -272,22 +276,16 @@
     <div class="container">
         <img class="logo" src="/IMG/openguessr.svg" alt="OpenGuessr Logo">
         <div id="loginForm">
-            <div id="center">
-                <h3 id="title1">Login</h3>
-            </div>
             <div>
                 <input id="login_email" type="email" placeholder="Email"><br><br>
                 <input id="login_password" type="password" placeholder="Password"><br><br>
                 <button id="login" class="primaryButton">Login</button>
             </div>
-            <p>Don't have an account?
+            <p class="switchFormBox">Don't have an account?
                 <button id="loginSwitch" class="secondaryButton">Sign up</button>
             </p>
         </div>
         <div id="signupForm" style="display: none;">
-            <div id="center">
-                <h3 id="title2">Sign up</h3>
-            </div>
             <div>
                 <div id="signup_area">
                     <input id="signup_username" type="text" placeholder="Username"><br><br>
@@ -304,7 +302,7 @@
                 <button id="back" class="primaryButton">back</button>
                 <button id="signup" class="primaryButton">Sign Up (1/2)</button>
             </div>
-            <p>Already have an account?
+            <p class="switchFormBox">Already have an account?
                 <button id="loginSwitchBack" class="secondaryButton">Login</button>
             </p>
             <p id="privacyNotice">Our <a href="/legal.html">privacy policy</a> applies.</p>
