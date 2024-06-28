@@ -154,6 +154,10 @@ document.getElementById("instantPlayClose").addEventListener("click", () => {
     document.getElementById("instantPlayPopup").style.display = "none";
 });
 
+// prevent enter to reload default action in search bar
+document.getElementById("mapSearch").addEventListener("keydown", function(event) { if (event.key === "Enter") event.preventDefault(); });
+
+
 // Initialize search functionality
 function initializeSearch(maps) {
     const searchInput = document.getElementById("mapSearch");
