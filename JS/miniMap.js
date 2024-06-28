@@ -288,7 +288,7 @@ function handleMapHover() {
     }
 }
 
-function handleMapUnhover() {
+export function handleMapUnhover() {
     if (!document.getElementById("revealCompass").matches(':hover')) {
         mapResizeTimeout = setTimeout(() => {
             mapHolder.classList.remove("mapHover")

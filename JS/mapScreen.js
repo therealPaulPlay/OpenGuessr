@@ -14,6 +14,9 @@ async function loadCommunityMaps() {
         data.communityMaps.forEach(map => {
             addMap(map.name, map.author, map.favourite, map.author, map.description);
         });
+
+        // Initialize search functionality
+        initializeSearch(data.communityMaps);
     } catch (error) {
         console.error("Error loading community maps: " + error);
     }
@@ -33,7 +36,12 @@ function addMap(name, creator, fav, author, description) {
     mapItem.classList.add("map-item");
     if (fav) {
         mapItem.classList.add("ourFavourites");
+    } else {
+        mapItem.classList.add("searchableMap");
     }
+
+    mapItem.dataset.name = name.toLowerCase();
+    mapItem.dataset.author = creator.toLowerCase();
 
     mapItem.addEventListener("click", () => {
         instantPlayPopup(name);
@@ -81,7 +89,7 @@ function addMap(name, creator, fav, author, description) {
             addButton.innerHTML = `<img src="./IMG/heart_icon.png" alt="add map" class="heart-icon">`;
         } else {
             removeSelectedMap(name);
-            addButton.innerHTML = addButton.innerHTML = `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`;
+            addButton.innerHTML = `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`;
         }
     });
 
@@ -146,5 +154,37 @@ document.getElementById("instantPlayClose").addEventListener("click", () => {
     document.getElementById("instantPlayPopup").style.display = "none";
 });
 
-// Load community maps on page load
+// prevent enter to reload default action in search bar
+document.getElementById("mapSearch").addEventListener("keydown", function(event) { if (event.key === "Enter") event.preventDefault(); });
+
+
+// Initialize search functionality
+function initializeSearch(maps) {
+    const searchInput = document.getElementById("mapSearch");
+    const nothingFound = document.getElementById("nothingFound");
+
+    searchInput.addEventListener("input", function () {
+        const query = searchInput.value.toLowerCase();
+        let hasVisibleMaps = false;
+
+        document.querySelectorAll(".searchableMap").forEach(map => {
+            const mapName = map.dataset.name;
+            const mapAuthor = map.dataset.author;
+            if (mapName.includes(query) || mapAuthor.includes(query)) {
+                map.style.display = "";
+                hasVisibleMaps = true;
+            } else {
+                map.style.display = "none";
+            }
+        });
+
+        if (hasVisibleMaps) {
+            nothingFound.style.display = "none";
+        } else {
+            nothingFound.style.display = "block";
+        }
+    });
+}
+
+// Load all community maps on page load
 loadCommunityMaps();
