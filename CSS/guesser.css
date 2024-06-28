@@ -2437,7 +2437,7 @@ all and (max-width: 1250px) {
   }
 
   #adsText {
-    display: none;
+    display: none; /* hide ads text as it is too big / noticable on these screens */
   }
 
   #endScreenLevel {
