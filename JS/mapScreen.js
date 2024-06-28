@@ -41,6 +41,7 @@ function addMap(name, creator, fav, author, description) {
     }
 
     mapItem.dataset.name = name.toLowerCase();
+    mapItem.dataset.author = creator.toLowerCase();
 
     mapItem.addEventListener("click", () => {
         instantPlayPopup(name);
@@ -156,17 +157,28 @@ document.getElementById("instantPlayClose").addEventListener("click", () => {
 // Initialize search functionality
 function initializeSearch(maps) {
     const searchInput = document.getElementById("mapSearch");
+    const nothingFound = document.getElementById("nothingFound");
+
     searchInput.addEventListener("input", function () {
         const query = searchInput.value.toLowerCase();
+        let hasVisibleMaps = false;
 
         document.querySelectorAll(".searchableMap").forEach(map => {
             const mapName = map.dataset.name;
-            if (mapName.includes(query)) {
+            const mapAuthor = map.dataset.author;
+            if (mapName.includes(query) || mapAuthor.includes(query)) {
                 map.style.display = "";
+                hasVisibleMaps = true;
             } else {
                 map.style.display = "none";
             }
         });
+
+        if (hasVisibleMaps) {
+            nothingFound.style.display = "none";
+        } else {
+            nothingFound.style.display = "block";
+        }
     });
 }
 
