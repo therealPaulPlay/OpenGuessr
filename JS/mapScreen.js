@@ -186,5 +186,5 @@ function initializeSearch(maps) {
     });
 }
 
-// Load community maps on page load
+// Load all community maps on page load
 loadCommunityMaps();
