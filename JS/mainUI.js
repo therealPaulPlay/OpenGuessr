@@ -511,6 +511,6 @@ function toggleTroubleshootWindow() {
 // display text to encourage disabling ad block after 12s
 document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
-        document.getElementById("adsText").style.opacity = "0.35";
+        document.getElementById("adsText").style.opacity = "0.25";
     }, 12000);
 })
