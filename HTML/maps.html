@@ -362,6 +362,36 @@
             width: 100%;
             text-align: center;
         }
+        
+        #mapSearch {
+            border-radius: 10px;
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            min-width: 180px;
+            width: 25vw;
+            max-width: 500px;
+            transition: background-color 250ms ease;
+            font-size: 22px;
+            min-height: 40px;
+            border: none;
+            font-family: Barlow;
+            padding: 5px;
+            justify-content: center;
+            padding-inline: 10px;
+            margin-bottom: 20px;
+        }
+        
+        search {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+        }
+
+        #mapSearch:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
 
         #instantPlayPopup {
             display: none;
@@ -428,7 +458,8 @@
     <div id="instantPlayPopup" class="popupHolder">
         <div id="description" class="uiWindow">
             <h1 id="instantPlayHeader">Default map</h1>
-            <p id="instantPlayText">This will add the map to your favorites and start the game immediately. Continue?</p>
+            <p id="instantPlayText">This will add the map to your favorites and start the game immediately. Continue?
+            </p>
             <button id="instantPlayConfirm" class="standardButton playButton">Play</button>
             <button id="instantPlayClose" class="standardButton closeButton">close</button>
         </div>
@@ -443,6 +474,11 @@
             </div>
             <h2 class="header">All Community Maps:</h2>
             <div id="community-maps" class="map-container">
+                <search>
+                    <form>
+                        <input id="mapSearch" placeholder="Search Maps...">
+                    </form>
+                </search>
                 <!-- Community maps will be injected here -->
                 <p id="errorMessage">Loading... Please wait.</p>
             </div>

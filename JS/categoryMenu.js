@@ -4,7 +4,7 @@ import { setDailyChallengeUI, dailyChallengeEnd, checkDailyChallengeCompletion, 
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
-import { justPlayedDailyChallenge } from "./miniMap.js";
+import { handleMapUnhover, justPlayedDailyChallenge } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
@@ -271,6 +271,7 @@ export function transitionToStart() {
             setTimeout(function () { resMap.stop() }, 200)
             toggleStreakWindow(0, true);
             checkGenerationTypeAndGenerate();
+            handleMapUnhover();
 
             setTimeout(disableResultScreen, 200);
             setTimeout(socialPopupProbability, 650);

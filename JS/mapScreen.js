@@ -14,6 +14,9 @@ async function loadCommunityMaps() {
         data.communityMaps.forEach(map => {
             addMap(map.name, map.author, map.favourite, map.author, map.description);
         });
+
+        // Initialize search functionality
+        initializeSearch(data.communityMaps);
     } catch (error) {
         console.error("Error loading community maps: " + error);
     }
@@ -33,7 +36,11 @@ function addMap(name, creator, fav, author, description) {
     mapItem.classList.add("map-item");
     if (fav) {
         mapItem.classList.add("ourFavourites");
+    } else {
+        mapItem.classList.add("searchableMap");
     }
+
+    mapItem.dataset.name = name.toLowerCase();
 
     mapItem.addEventListener("click", () => {
         instantPlayPopup(name);
@@ -81,7 +88,7 @@ function addMap(name, creator, fav, author, description) {
             addButton.innerHTML = `<img src="./IMG/heart_icon.png" alt="add map" class="heart-icon">`;
         } else {
             removeSelectedMap(name);
-            addButton.innerHTML = addButton.innerHTML = `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`;
+            addButton.innerHTML = `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`;
         }
     });
 
@@ -145,6 +152,23 @@ function instantPlayPopup(mapName) {
 document.getElementById("instantPlayClose").addEventListener("click", () => {
     document.getElementById("instantPlayPopup").style.display = "none";
 });
+
+// Initialize search functionality
+function initializeSearch(maps) {
+    const searchInput = document.getElementById("mapSearch");
+    searchInput.addEventListener("input", function () {
+        const query = searchInput.value.toLowerCase();
+
+        document.querySelectorAll(".searchableMap").forEach(map => {
+            const mapName = map.dataset.name;
+            if (mapName.includes(query)) {
+                map.style.display = "";
+            } else {
+                map.style.display = "none";
+            }
+        });
+    });
+}
 
 // Load community maps on page load
 loadCommunityMaps();
