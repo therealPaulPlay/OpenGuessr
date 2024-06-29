@@ -324,8 +324,6 @@ function extractCoordinates(text) {
         // Wrap coordinates with the outer object
         const output = JSON.stringify({ locations: coordinates }, null, 2);
 
-        console.log(output);
-
         return output;
     } catch (error) {
         console.error("Error in extractCoordinates: " + error);
