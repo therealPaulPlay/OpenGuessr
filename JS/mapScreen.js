@@ -201,6 +201,19 @@ document.getElementById("uploadButton").addEventListener("click", () => {
     }
 });
 
+document.getElementById("uploadConfirm").addEventListener("click", () => {
+    document.getElementById("uploadConfirmHeader").textContent = "Are you sure?";
+    document.getElementById("uploadConfirmText").textContent = "Submitted maps cannot be edited or deleted! Violating the rules can result in a permanent ban.";
+    document.getElementById("uploadConfirmClose").style.display = "block";
+    document.getElementById("uploadConfirmFinal").style.display = "block";
+    // now show the window
+    document.getElementById("uploadConfirmPopup").style.display = "flex";
+});
+
+document.getElementById("uploadConfirmClose").addEventListener("click", () => {
+    document.getElementById("uploadConfirmPopup").style.display = "none";
+});
+
 
 function openUploadPopup() {
     document.getElementById("uploadPopup").style.display = "flex";
@@ -211,3 +224,103 @@ function openUploadPopup() {
 document.getElementById("uploadClose").addEventListener("click", () => {
     document.getElementById("uploadPopup").style.display = "none";
 });
+
+document.getElementById("uploadConfirmFinal").addEventListener("click", () => {
+    document.getElementById("uploadConfirmClose").style.display = "block";
+    document.getElementById("uploadConfirmFinal").style.display = "none";
+    document.getElementById("uploadConfirmHeader").textContent = "Submitting map...";
+    document.getElementById("uploadConfirmText").textContent = "Waiting for status...";
+    uploadMap();
+});
+
+async function uploadMap() {
+    // if successful, close underlying menu
+    let operationMessage = await submitMap();
+    document.getElementById("uploadConfirmText").textContent = operationMessage;
+    if (operationMessage.includes("success")) {
+        document.getElementById("uploadConfirmHeader").textContent = "Map submitted!";
+    } else {
+        document.getElementById("uploadConfirmHeader").textContent = "Oh no! An error occured";
+    }
+}
+
+async function submitMap() {
+    // Retrieve input values
+    const name = document.getElementById('uploadMapName').value;
+    const description = document.getElementById('uploadMapDescription').value;
+    const mapData = document.getElementById('uploadMapData').value;
+    const author = localStorage.getItem('username');
+    const player_id = localStorage.getItem('id');
+  
+    // Validate inputs
+    if (!name || !description || !mapData || !author || !player_id) {
+      return 'All fields are required.';
+    }
+  
+    // Construct the payload
+    let payload;
+    try {
+        payload = {
+            player_id,
+            name,
+            author,
+            description,
+            mapData: extractCoordinates(mapData) // assuming mapData is a JSON string
+          };
+    } catch (error) {
+        console.error("Error creating payload and extracting coordinates: " + error);
+        return "Your list of streetview links could not be converted to coordinates.";
+    }
+  
+    try {
+      // Send POST request to the server
+      const response = await fetch('https://maps.openguessr.com/maps', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(payload)
+      });
+  
+      // Parse the response
+      const result = await response.json();
+  
+      // Return the success or error message
+      if (response.ok) {
+        document.getElementById("uploadPopup").style.display = "none";
+        return "Map submitted successfully! Thank you so much for contributing.";
+      } else {
+        return result.error || "Failed to submit map.";
+      }
+    } catch (error) {
+      console.error('Error submitting map:', error);
+      return "A network error occurred while submitting the map. Please try again.";
+    }
+  }
+
+
+  // Convert streetview links to json file:
+  function extractCoordinates(text) {
+    try {
+      const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/g;
+      const coordinates = [];
+      let match;
+      
+      while ((match = regex.exec(text)) !== null) {
+        const lat = parseFloat(match[1]);
+        const long = parseFloat(match[2]);
+        coordinates.push([lat, long]);
+      }
+  
+      // Wrap coordinates with the outer object
+      const output = JSON.stringify({ locations: coordinates }, null, 2);
+  
+      console.log(output);
+      
+      return output;
+    } catch (error) {
+      console.error("Error in extractCoordinates: " + error);
+    }
+  }
+  
+  

@@ -451,7 +451,7 @@
         }
 
         .infoNoteBox {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(0, 0, 0, 0.1);
             border-radius: 10px;
             padding: 10px;
             display: flex;
@@ -467,11 +467,19 @@
             flex-direction: column;
         }
 
+        #uploadConfirmPopup {
+            display: none;
+        }
+
         .locationTextbox {
             min-height: 350px;
             font-size: 12px;
             width: 90%;
             padding: 15px;
+        }
+
+        .marginTop {
+            margin-top: 15px;
         }
 
         #infoNoteIcon {
@@ -489,6 +497,10 @@
 
         #uploadWindow {
             max-width: 1000px;
+        }
+
+        #uploadConfirmText {
+            margin-bottom: 50px;
         }
 
         @media all and (orientation: portrait),
@@ -556,34 +568,51 @@
             <h1 id="uploadHeader">Upload Map</h1>
             <div class="infoNoteBox">
                 <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
-                <p id="uploadFirstText">Please keep this in mind before uploading a map:</p>
+                <p id="uploadFirstText">Rules (please read before submitting a map):</p>
                 <ul>
                     <li>You can only upload max. 3 maps per day.</li>
                     <li>Maps must at least have 50 unique locations.</li>
                     <li>Ensure that your map names and author names are familiy-friendly.</li>
                     <li>Pick a descriptive map name (e. g. not "My Map")</li>
-                    <li>Community Maps are not meant for country maps or other maps that can easily be generated. They are meant for special places.</li>
+                    <li>Community Maps are not meant for country maps or other maps that can easily be generated. They
+                        are meant for special places.</li>
                     <li>A maximum of 1000 locations is recommended.</li>
+                    <li>Maps cannot be edited or deleted! Message us on the Discord server if you need to delete one.</li>
                 </ul>
             </div>
             <div id="inputArea">
-                <p>Map name: </p>
-                <input class="uploadInfo" type="text" style="width: 180px" placeholder="Name of your map..."
+                <p class="marginTop">Map name: </p>
+                <input id="uploadMapName" class="uploadInfo" type="text" style="width: 180px" placeholder="Name of your map..."
                     maxlength="17">
                 <p>Map Description: </p>
-                <input class="uploadInfo" type="text" placeholder="Description..." maxlength="300">
-                <p>Locations:</p>
-                <textarea class="uploadInfo locationTextbox" type="text" rows="20"
+                <input id="uploadMapDescription" class="uploadInfo" type="text" placeholder="Description..." maxlength="300">
+                <div class="infoNoteBox">
+                    <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+                    <p id="uploadFirstText">How to add locations:</p>
+                    <ol>
+                        <li>Visit <a href="https://www.google.com/maps/">Google Maps</a> on a desktop computer.</li>
+                        <li>Drag the orange guy onto the map to open a streetview.</li>
+                        <li>Copy the URL from the address bar of your browser into the textbox.</li>
+                    </ol>
+                </div>
+                <p class="marginTop">Locations:</p>
+                <textarea id="uploadMapData" class="uploadInfo locationTextbox" type="text" rows="20"
                     placeholder="https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
 
 https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6!1e1!3m4!1scgVGr1HY1alolDg8gfwrzA!2e0!7i16384!8i8192?coh=205409&entry=ttu
 
-https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu"
-                    maxlength="1000"></textarea>
+https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu" maxlength="100000"></textarea>
             </div>
-
-            <button id="uploadConfirm" class="standardButton playButton">Upload</button>
+            <button id="uploadConfirm" class="standardButton playButton">Submit</button>
             <button id="uploadClose" class="standardButton closeButton">close</button>
+        </div>
+    </div>
+    <div id="uploadConfirmPopup" style="z-index: 101;" class="popupHolder">
+        <div class="uiWindow">
+            <h1 id="uploadConfirmHeader">Are you sure?</h1>
+            <p id="uploadConfirmText">Default text</p>
+            <button id="uploadConfirmFinal" class="standardButton playButton">Yes, submit</button>
+            <button id="uploadConfirmClose" class="standardButton closeButton">close</button>
         </div>
     </div>
     <div id="minScreenHeight">
