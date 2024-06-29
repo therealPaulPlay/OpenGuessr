@@ -210,10 +210,6 @@ document.getElementById("uploadConfirm").addEventListener("click", () => {
     document.getElementById("uploadConfirmPopup").style.display = "flex";
 });
 
-document.getElementById("uploadConfirmClose").addEventListener("click", () => {
-    document.getElementById("uploadConfirmPopup").style.display = "none";
-});
-
 
 function openUploadPopup() {
     document.getElementById("uploadPopup").style.display = "flex";
@@ -223,6 +219,15 @@ function openUploadPopup() {
 
 document.getElementById("uploadClose").addEventListener("click", () => {
     document.getElementById("uploadPopup").style.display = "none";
+});
+
+let mapSubmittedSuccessfully = false;
+
+document.getElementById("uploadConfirmClose").addEventListener("click", () => {
+    document.getElementById("uploadConfirmPopup").style.display = "none";
+    if (mapSubmittedSuccessfully) {
+        window.location.reload();
+    }
 });
 
 document.getElementById("uploadConfirmFinal").addEventListener("click", () => {
@@ -288,6 +293,7 @@ async function submitMap() {
         // Return the success or error message
         if (response.ok) {
             document.getElementById("uploadPopup").style.display = "none";
+            mapSubmittedSuccessfully = true;
             return "Map submitted successfully! Thank you so much for contributing.";
         } else {
             let resultErrors = "";
