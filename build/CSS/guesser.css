@@ -14,6 +14,7 @@
 
 html {
   overscroll-behavior: none;
+  touch-action: manipulation;
 }
 
 html * {
@@ -22,6 +23,7 @@ html * {
 }
 
 body {
+  touch-action: manipulation;
   background-color: #13151c;
 }
 
