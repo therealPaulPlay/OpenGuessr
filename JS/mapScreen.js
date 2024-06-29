@@ -303,7 +303,9 @@ async function submitMap() {
                     resultErrors += " ";
                 });
             } catch (e) {}
-            resultErrors += result.error;
+            if (result.error != undefined || result.error != null) {
+                resultErrors += result.error;
+            }
             console.error("Errors occured during map submission on the server: " + resultErrors);
             return resultErrors || "Failed to submit map.";
         }
