@@ -8,7 +8,7 @@ document.getElementById("uploadButton").addEventListener("click", () => {
 //This will have to be replaced by an API call in the future TODO -----------------------------------------------------
 async function loadCommunityMaps() {
     try {
-        const response = await fetch("./JSON/communityMaps/MapData.json");
+        const response = await fetch("https://maps.openguessr.com/maps");
         const data = await response.json();
 
         data.communityMaps.forEach(map => {
