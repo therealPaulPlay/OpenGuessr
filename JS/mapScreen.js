@@ -204,6 +204,8 @@ document.getElementById("uploadButton").addEventListener("click", () => {
 
 function openUploadPopup() {
     document.getElementById("uploadPopup").style.display = "flex";
+    document.getElementById("uploadWindow").scrollTop = "0";
+    document.getElementById("uploadPopup").scrollTop = "0";
 }
 
 document.getElementById("uploadClose").addEventListener("click", () => {
