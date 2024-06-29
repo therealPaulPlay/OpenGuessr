@@ -10,13 +10,13 @@ async function loadCommunityMaps() {
             data.communityMaps.forEach(map => {
                 addMap(map.name, map.author, map.favourite, map.author, map.description);
             });
-    
+
             // Initialize search functionality
             initializeSearch(data.communityMaps);
         } else {
             console.error("Error loading community maps: " + response.status);
             document.getElementById("errorMessage").textContent = "Error: " + response.status;
-        }   
+        }
 
     } catch (error) {
         console.error("Error loading community maps: " + error);
@@ -145,7 +145,7 @@ function instantPlayPopup(mapName) {
     document.getElementById("instantPlayHeader").textContent = "Play " + mapName + "?";
 
     document.getElementById("instantPlayConfirm").addEventListener("click", () => {
-        localStorage.setItem("selectedCategory", "community_" + mapName.toLowerCase()); 
+        localStorage.setItem("selectedCategory", "community_" + mapName.toLowerCase());
         /* category variable names are always lowercase and have community_ in front of them, if they are community maps */
         addSelectedMap(mapName);
         window.location.href = "/";
@@ -157,7 +157,7 @@ document.getElementById("instantPlayClose").addEventListener("click", () => {
 });
 
 // prevent enter to reload default action in search bar
-document.getElementById("mapSearch").addEventListener("keydown", function(event) { if (event.key === "Enter") event.preventDefault(); });
+document.getElementById("mapSearch").addEventListener("keydown", function (event) { if (event.key === "Enter") event.preventDefault(); });
 
 
 // Initialize search functionality
@@ -251,12 +251,12 @@ async function submitMap() {
     const mapData = document.getElementById('uploadMapData').value;
     const author = localStorage.getItem('username');
     const player_id = localStorage.getItem('id');
-  
+
     // Validate inputs
     if (!name || !description || !mapData || !author || !player_id) {
-      return 'All fields are required.';
+        return 'All fields are required.';
     }
-  
+
     // Construct the payload
     let payload;
     try {
@@ -266,61 +266,69 @@ async function submitMap() {
             author,
             description,
             mapData: extractCoordinates(mapData) // assuming mapData is a JSON string
-          };
+        };
     } catch (error) {
         console.error("Error creating payload and extracting coordinates: " + error);
         return "Your list of streetview links could not be converted to coordinates.";
     }
-  
+
     try {
-      // Send POST request to the server
-      const response = await fetch('https://maps.openguessr.com/maps', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(payload)
-      });
-  
-      // Parse the response
-      const result = await response.json();
-  
-      // Return the success or error message
-      if (response.ok) {
-        document.getElementById("uploadPopup").style.display = "none";
-        return "Map submitted successfully! Thank you so much for contributing.";
-      } else {
-        return result.error || "Failed to submit map.";
-      }
+        // Send POST request to the server
+        const response = await fetch('https://maps.openguessr.com/maps', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        // Parse the response
+        const result = await response.json();
+
+        // Return the success or error message
+        if (response.ok) {
+            document.getElementById("uploadPopup").style.display = "none";
+            return "Map submitted successfully! Thank you so much for contributing.";
+        } else {
+            let resultErrors = "";
+            try {
+                result.errors.forEach((e) => {
+                    resultErrors += e.msg;
+                    resultErrors += " ";
+                });
+            } catch (e) {}
+            resultErrors += result.error;
+            console.error("Errors occured during map submission on the server: " + resultErrors);
+            return resultErrors || "Failed to submit map.";
+        }
     } catch (error) {
-      console.error('Error submitting map:', error);
-      return "A network error occurred while submitting the map. Please try again.";
+        console.error('Error submitting map:', error);
+        return "A network error occurred while submitting the map. Please try again.";
     }
-  }
+}
 
 
-  // Convert streetview links to json file:
-  function extractCoordinates(text) {
+// Convert streetview links to json file:
+function extractCoordinates(text) {
     try {
-      const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/g;
-      const coordinates = [];
-      let match;
-      
-      while ((match = regex.exec(text)) !== null) {
-        const lat = parseFloat(match[1]);
-        const long = parseFloat(match[2]);
-        coordinates.push([lat, long]);
-      }
-  
-      // Wrap coordinates with the outer object
-      const output = JSON.stringify({ locations: coordinates }, null, 2);
-  
-      console.log(output);
-      
-      return output;
+        const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/g;
+        const coordinates = [];
+        let match;
+
+        while ((match = regex.exec(text)) !== null) {
+            const lat = parseFloat(match[1]);
+            const long = parseFloat(match[2]);
+            coordinates.push([lat, long]);
+        }
+
+        // Wrap coordinates with the outer object
+        const output = JSON.stringify({ locations: coordinates }, null, 2);
+
+        console.log(output);
+
+        return output;
     } catch (error) {
-      console.error("Error in extractCoordinates: " + error);
+        console.error("Error in extractCoordinates: " + error);
     }
-  }
-  
-  
+}
+
