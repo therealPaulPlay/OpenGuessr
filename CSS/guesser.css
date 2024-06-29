@@ -1479,7 +1479,7 @@ map::selection {
   cursor: pointer;
   transition: all 250ms ease;
   background-color: var(--brand-color);
-  width: 38px;
+  width: 45px;
   margin-left: 24px;
   z-index: 11;
 }
@@ -1488,7 +1488,7 @@ map::selection {
   cursor: pointer;
   transition: all 250ms ease;
   border-radius: 7px;
-  font-size: 25px;
+  font-size: 30px;
   height: 55%;
   user-select: none;
   -webkit-user-select: none;
@@ -1575,7 +1575,7 @@ map::selection {
   width: fit-content;
   padding-left: 25px;
   padding-right: 25px;
-  font-size: 23px;
+  font-size: 25px;
 }
 
 #cookieBanner {
