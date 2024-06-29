@@ -1,10 +1,5 @@
 document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" });
 
-document.getElementById("uploadButton").addEventListener("click", () => {
-    // Logic to open upload window or modal
-    alert("Upload window opened");
-});
-
 //This will have to be replaced by an API call in the future TODO -----------------------------------------------------
 async function loadCommunityMaps() {
     try {
@@ -195,3 +190,22 @@ function initializeSearch(maps) {
 
 // Load all community maps on page load
 loadCommunityMaps();
+
+// Map uploading --------------------------------------------------------------------------------------------------------------------------------
+
+document.getElementById("uploadButton").addEventListener("click", () => {
+    if (localStorage.getItem("username") != null && localStorage.getItem("id") != null) {
+        openUploadPopup();
+    } else {
+        window.location.href = "/signup.html";
+    }
+});
+
+
+function openUploadPopup() {
+    document.getElementById("uploadPopup").style.display = "flex";
+}
+
+document.getElementById("uploadClose").addEventListener("click", () => {
+    document.getElementById("uploadPopup").style.display = "none";
+});
