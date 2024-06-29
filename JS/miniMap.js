@@ -103,9 +103,7 @@ export function setConfirmButtonState() {
         document.getElementById("confirmButton").style.pointerEvents = "auto";
     }
     else {
-        document.getElementById("confirmButton").style.backgroundColor = "white";
-        document.getElementById("confirmButton").style.color = "black";
-        document.getElementById("confirmButton").style.opacity = "90%"
+        document.getElementById("confirmButton").style.backgroundColor = "rgba(168, 168, 187, 0.3)";
         document.getElementById("confirmButton").style.pointerEvents = "none";
     }
 }

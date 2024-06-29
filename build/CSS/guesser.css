@@ -14,6 +14,7 @@
 
 html {
   overscroll-behavior: none;
+  touch-action: manipulation;
 }
 
 html * {
@@ -22,6 +23,7 @@ html * {
 }
 
 body {
+  touch-action: manipulation;
   background-color: #13151c;
 }
 
@@ -1234,6 +1236,7 @@ map::selection {
   transition: margin 250ms ease, filter 250ms ease, opacity 250ms ease;
   user-select: none;
   z-index: 10;
+  opacity: 0.5;
 }
 
 #mapModeIndicator {
@@ -1476,7 +1479,7 @@ map::selection {
   cursor: pointer;
   transition: all 250ms ease;
   background-color: var(--brand-color);
-  width: 50px;
+  width: 45px;
   margin-left: 24px;
   z-index: 11;
 }
@@ -1495,6 +1498,7 @@ map::selection {
   margin-left: 10px;
   z-index: 12;
   color: white;
+  background-color: rgba(168, 168, 187, 0.3);
 }
 
 .BottomBarItem:hover {
@@ -1559,18 +1563,19 @@ map::selection {
   padding-left: 30px;
   padding-right: 30px;
   margin-right: 24px;
-  margin-left: auto;
-  background-color: white;
-  color: black;
   transition: background-color 250ms ease, color 250ms ease, filter 250ms ease, opacity 250ms ease;
+}
+
+#helpButton {
+  margin-left: auto;
+  width: 55px;
 }
 
 #privacyButton {
   width: fit-content;
-  background-color: rgba(168, 168, 187, 0.3);
   padding-left: 25px;
   padding-right: 25px;
-  font-size: 20px;
+  font-size: 25px;
 }
 
 #cookieBanner {
@@ -1710,14 +1715,12 @@ map::selection {
 
 #nextRound {
   z-index: 15;
-  cursor: pointer;
   transition: filter 250ms ease, scale 250ms ease, opacity 250ms ease;
   display: inline-block;
   opacity: 100%;
   padding: 10px 30px;
   font-size: 30px;
   color: black;
-  width: fit-content;
   background-color: white;
   border-radius: 7px;
   margin: 20px 20px;
@@ -1725,12 +1728,10 @@ map::selection {
   position: absolute;
   bottom: 5px;
   right: 5px;
-  user-select: none;
-  -webkit-user-select: none;
 }
 
 #nextRound:hover {
-  scale: 1.03;
+  filter: brightness(0.7);
 }
 
 #BeforeOverlay {
@@ -2393,6 +2394,9 @@ input[type="checkbox"]:focus {
   height: 55%;
 }
 
+.mapHover #revealCompass {
+  opacity: 1;
+}
 
 /* all very narrow screens */
 @media (max-width: 700px) {
@@ -2421,8 +2425,11 @@ input[type="checkbox"]:focus {
   #map {
     opacity: 50%;
   }
-}
 
+  #revealCompass {
+    opacity: 0.8;
+  }
+}
 
 /* phones / mobile but also narrow devices like ipads */
 @media all and (orientation: portrait),
@@ -2512,6 +2519,14 @@ all and (max-width: 1000px) {
 
   #privacyButton {
     display: none;
+  }
+
+  #helpButton {
+    display: none;
+  }
+
+  #confirmButton {
+    margin-left: auto;
   }
 
   #multiplayerChat {
