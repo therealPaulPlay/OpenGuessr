@@ -11,14 +11,21 @@ async function loadCommunityMaps() {
         const response = await fetch("https://maps.openguessr.com/maps");
         const data = await response.json();
 
-        data.communityMaps.forEach(map => {
-            addMap(map.name, map.author, map.favourite, map.author, map.description);
-        });
+        if (response.ok) {
+            data.communityMaps.forEach(map => {
+                addMap(map.name, map.author, map.favourite, map.author, map.description);
+            });
+    
+            // Initialize search functionality
+            initializeSearch(data.communityMaps);
+        } else {
+            console.error("Error loading community maps: " + response.status);
+            document.getElementById("errorMessage").textContent = "Error: " + response.status;
+        }   
 
-        // Initialize search functionality
-        initializeSearch(data.communityMaps);
     } catch (error) {
         console.error("Error loading community maps: " + error);
+        document.getElementById("errorMessage").textContent = "Error: " + error;
     }
 }
 

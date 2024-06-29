@@ -41,11 +41,7 @@ async function loadLocationJSON(jsonName) {
         try {
             let response = null;
 
-            if (jsonName.includes("community_")) {
-                response = await fetch("./JSON/communityMaps/" + jsonName.replace("community_", "").replace(" ", "") + "Locations.json");
-            } else {
-                response = await fetch("./JSON/" + jsonName + "Locations.json");
-            }
+            response = await fetch("./JSON/" + jsonName + "Locations.json");
 
             if (!response.ok) {
                 throw new Error("JSON fetch failed.");
@@ -168,7 +164,7 @@ async function selectLocationFromServer() {
   
           const resultLat = standardLocations[guessIndex][0];
           const resultLong = standardLocations[guessIndex][1];
-          const country = standardLocations[guessIndex][2]; //only available for certain modes (like country guesser)
+          const country = null;
   
           resultLocationsArray = [resultLat, resultLong, country];
       } catch (error) {
@@ -217,7 +213,66 @@ async function getCoordsFromServerDaily() {
 
 //Get community map coordinates ---------------------------------------------------------------------------
 
+let communityLocations = null;
+
 async function getCommunityMapCoordinates() {
     //Json files could later be fetched from a server here
-    return await getCoordsFromJSON(mapCategory);
+    try {
+        const response = await fetch("https://maps.openguessr.com/maps/" + mapCategory.replace("community_", ""), {
+          method: 'GET',
+          headers: { 'Content-Type': 'application/json' }
+        });
+    
+        // Check if the response is successful
+        if (response.ok) {
+          const data = await response.json();
+          communityLocations = data.map_data.locations; //the array is in locations: {}
+          return await selectLocationFromMapsServer(); //pick one new location for playing
+    
+        } else {
+            console.error("COmmunity map fetch failed. Server returned error:", response.status);
+            errorPopup("Error loading community map", "An error occurd on the maps server.", error, true);
+            return null;
+        }
+      } catch (error) {
+        console.error("Error occurred while fetching map from server: ", error);
+        errorPopup("Error loading community map", "The maps ser can't be reached.", error, true);
+        return null;
+      }
+}
+
+let lastCommunityLocationIndexes = [];
+
+async function selectLocationFromMapsServer() {
+    //now, pick a random location
+    let resultLocationsArray = [];
+
+    try {
+
+        //to prevent a crashes if the json has too few locations
+        if (communityLocations.length < 30) {
+            lastCommunityLocationIndexes = [];
+            console.warn("Loaded standard json has too few locations!");
+        }
+
+        do {
+            guessIndex = Math.floor(Math.random() * communityLocations.length);
+        } while (lastCommunityLocationIndexes.includes(guessIndex));
+
+        lastCommunityLocationIndexes.unshift(guessIndex); //add guessIndex at the front of the array
+
+        if (lastCommunityLocationIndexes.length > 30) {
+            lastCommunityLocationIndexes.pop(); //if the array is longer than 30, pop the last entry out
+        }
+
+        const resultLat = communityLocations[guessIndex][0];
+        const resultLong = communityLocations[guessIndex][1];
+        const country = null;
+
+        resultLocationsArray = [resultLat, resultLong, country];
+    } catch (error) {
+        console.error("Error in locationGeneration.js Standard Location JSON generation: " + error);
+    }
+
+    return resultLocationsArray;
 }
