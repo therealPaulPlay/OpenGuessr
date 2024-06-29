@@ -230,7 +230,7 @@ async function getCommunityMapCoordinates() {
           return await selectLocationFromMapsServer(); //pick one new location for playing
     
         } else {
-            console.error("COmmunity map fetch failed. Server returned error:", response.status);
+            console.error("Community map fetch failed. Server returned error:", response.status);
             errorPopup("Error loading community map", "An error occurd on the maps server.", error, true);
             return null;
         }
