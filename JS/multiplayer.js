@@ -1436,7 +1436,6 @@ function leaveMultiplayerRound() {
     //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";
     document.getElementById("confirmButton").style.pointerEvents = "auto";
-    document.getElementById("confirmButton").style.visibility = "visible";
 
     if (mapCategory != "country") {
         document.getElementById("map").style.visibility = "visible";
@@ -1633,7 +1632,6 @@ export function showMultiplayerOverlay(show, title, array) {
         }
 
         document.getElementById("multiplayerTable").innerHTML = body;
-        document.getElementById("confirmButton").style.visibility = "hidden";
         document.getElementById("confirmButton").style.pointerEvents = "none";
         document.getElementById("map").style.visibility = "hidden";
         hideToggleMapButtonIfMobile(true);
@@ -1641,7 +1639,6 @@ export function showMultiplayerOverlay(show, title, array) {
     } else {
         document.getElementById("multiplayerFade").style.opacity = "0";
         document.getElementById("multiplayerFade").style.pointerEvents = "none";
-        document.getElementById("confirmButton").style.visibility = "visible";
         if (multiplayer || mapCategory != "country") {
             document.getElementById("map").style.visibility = "visible";
             hideToggleMapButtonIfMobile(false);

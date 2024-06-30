@@ -52,7 +52,7 @@ let dataLayer;
 
 function loadMap() {
     dataLayer = L.tileLayer(mapProvider[providerIndex], {
-        subdomains:['mt0','mt1','mt2','mt3'],
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
         maxZoom: 20,
         minZoom: 1,
         noWrap: true,
@@ -92,7 +92,7 @@ function changeMapTypeButtonLabel() {
 //Set state of the confirm ("guess") button ------------------------------------------------------------------
 
 //indicate whether a guess has been made and the button can be used
-export let hasGuessed = false;
+let hasGuessed = false;
 setConfirmButtonState();
 
 export function setConfirmButtonState() {
@@ -226,7 +226,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
                         shadowSize: [37, 37]
                     });
 
-                    const newMultiplayerMiniMarker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon } );
+                    const newMultiplayerMiniMarker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon });
                     newMultiplayerMiniMarker.setOpacity(0.5);
                     newMultiplayerMiniMarker.addTo(map);
                     multiplayerMiniMarkers.push(newMultiplayerMiniMarker);
@@ -348,9 +348,10 @@ export function confirmButtonClicks() {
         loadResultMap(mapMarkerLat, mapMarkerLong);
     } else {
         document.getElementById("confirmButton").textContent = "Waiting...";
-        document.getElementById("confirmButton").style.opacity = "0.5";
         document.getElementById("confirmButton").style.pointerEvents = "none";
         document.getElementById("map").style.visibility = "hidden";
+        hasGuessed = false;
+        setConfirmButtonState();
         hideToggleMapButtonIfMobile(true);
         document.getElementById("revealCompass").style.visibility = "hidden";
 
@@ -361,7 +362,7 @@ export function confirmButtonClicks() {
 //Confirm Button with Spacebar and a few checks
 document.getElementById("map").addEventListener("keydown", function (event) {
     if (event.key === " ") {
-        if (confirmBTN.style.pointerEvents == "auto" && confirmBTN.style.visibility == "visible" && isElementClickable(document.getElementById("map"))) {
+        if (confirmBTN.style.pointerEvents == "auto" && isElementClickable(document.getElementById("map"))) {
             confirmButtonClicks();
         } else {
             console.warn("Cannot click on confirm button - pointer events is none.");
