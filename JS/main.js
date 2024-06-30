@@ -103,6 +103,8 @@ export function calculateDistances(mapsLat, mapsLong) {
 }
 
 function compareDistances(distance) {
+    playSound("confirm");
+    
     //compares how big the distance is and enables result screen with a message.
     if (!resultScreenEnabled) {
 
