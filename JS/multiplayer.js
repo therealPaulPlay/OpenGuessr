@@ -954,6 +954,7 @@ function showTimeReduceOverlay(time, hide) {
         document.getElementById("duelsOverlay").style.opacity = "1";
         document.getElementById("duelsOverlay").style.transform = "scale(1.03)";
         document.getElementById("duelsOverlay").style.filter = "none";
+        playSound("time_reduced");
 
         timeReduceOverlayTimer = setTimeout(() => {
             document.getElementById("duelsOverlay").style.opacity = "0";
