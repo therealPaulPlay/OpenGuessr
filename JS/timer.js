@@ -1,8 +1,9 @@
 import { playSound, stopSound } from "./soundManager";
 
-//UI Timer ---------------------------------------------------------------------------------------------------------------------
+// UI Timer ---------------------------------------------------------------------------------------------------------------------
 export function startTimer(durationInSeconds, onTimerExpired) {
     let currentTimerIntervalId; // Variable to store the current interval ID
+    let isRunning = false; // Flag to indicate if the timer is running
     clearInterval(currentTimerIntervalId); // Clear previous timer, if any
 
     let timer = durationInSeconds, minutes, seconds;
@@ -10,6 +11,8 @@ export function startTimer(durationInSeconds, onTimerExpired) {
     const mapModeIndicator = document.getElementById("mapModeIndicator");
 
     currentTimerIntervalId = setInterval(function () {
+        isRunning = true; // Set flag to true when the timer starts
+
         minutes = parseInt(timer / 60, 10);
         seconds = parseInt(timer % 60, 10);
 
@@ -31,6 +34,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
 
         if (--timer < 0) {
             clearInterval(currentTimerIntervalId); // Stop the interval
+            isRunning = false; // Set flag to false when the timer stops
             mapTimer.classList.remove("fading");
             mapModeIndicator.classList.remove("fading");
             document.getElementById("littleTimeVignette").style.opacity = "0";
@@ -47,6 +51,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
     // Function to stop the timer
     function stopTimer() {
         clearInterval(currentTimerIntervalId);
+        isRunning = false; // Set flag to false when the timer is stopped
         mapTimer.classList.remove("fading");
         mapModeIndicator.classList.remove("fading");
         document.getElementById("littleTimeVignette").style.opacity = "0";
@@ -58,9 +63,15 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         return timer;
     }
 
+    // Function to check if the timer is running
+    function isTimerRunning() {
+        return isRunning;
+    }
+
     // Return an object with functions for controlling the timer
     return {
         getRemainingTime: getRemainingTime,
-        stopTimer: stopTimer
+        stopTimer: stopTimer,
+        isTimerRunning: isTimerRunning // Add this method to check if the timer is running
     };
 }

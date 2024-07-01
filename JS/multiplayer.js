@@ -398,7 +398,8 @@ export function multiplayerTimerExpired() {
     }
 }
 
-let roundEnded = false;
+let roundEnded = false; // for host only! Used to prevent ending the round from the host's side multiple times (error prevention)
+
 export let autoSkipResult;
 
 function endMultiplayerRound() {
@@ -450,8 +451,9 @@ export function multiplayerStateToGuessed() {
     if (isHost) {
         if (!multiplayerHasAlreadyGuessed) {
             multiplayerGuessesLocationsArray.push([mapMarkerLat, mapMarkerLong, selectedPinIndex, localStorage.getItem("username") != null ? localStorage.getItem("username") : savedGuestName]); //add the hosts guess to the guesses
-            multiplayerHasGuessed(); //after that, add one to the guesses (and maybe go to result screen if all guesses are there)
+            multiplayerHasGuessed(); // this substracts one from the total requried guesses (and maybe ends the round)
         }
+
     } else {
         if (!multiplayerHasAlreadyGuessed) {
             peerSendsHost("guessed", {
@@ -464,6 +466,16 @@ export function multiplayerStateToGuessed() {
     }
 
     multiplayerHasAlreadyGuessed = true;
+
+    // Reduce time for the opponent in duels (after setting ..hasGuessed!!)
+    if (playingDuels) {
+        if (isHost) {
+            sendMessageToAll("timeReduce", 15); // 15 seconds
+            showTimeReduceOverlay(15, true); // reduce time for the host too
+        } else {
+            peerSendsHost("timeReduce", 15); // 15 seconds, the host will respond with a time reduce for everyone
+        }
+    }
 }
 
 let totalRequiredGuesses = 0;
@@ -913,6 +925,56 @@ function setRetryButtonState() {
     }
 }
 
+// Duel Guess Time Reduce Overlay & reduce remaining time
+function showTimeReduceOverlay(time, hide) {
+    time = Number(time);
+    
+    let timeReduceOverlayTimer;
+    let disableBlurTimeout;
+
+    clearTimeout(timeReduceOverlayTimer);
+    clearTimeout(disableBlurTimeout);
+
+    if (time != 0) {
+        try {
+            if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > time) {
+                multiplayerTimer.stopTimer();
+                multiplayerTimer = startTimer(time, multiplayerTimerExpired); //Start the timer with new time
+            }
+        } catch (error) {
+            console.warn("Could not set new timer for duels in showTimerReduceOverlay" + error);
+        }
+    }
+
+    if (!hide) {
+        try {
+            if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > time) {
+                document.getElementById("duelsOverlaySubtitle").textContent = `Time reduced to ${time}s.`;
+            } else {
+                document.getElementById("duelsOverlaySubtitle").textContent = "Time remains unaffected.";
+            }
+        } catch (error) {
+            document.getElementById("duelsOverlaySubtitle").textContent = "Time remains unaffected.";
+        }
+
+        document.getElementById("duelsOverlay").style.opacity = "1";
+        document.getElementById("duelsOverlay").style.transform = "scale(1.03)";
+        document.getElementById("duelsOverlay").style.filter = "none";
+
+        timeReduceOverlayTimer = setTimeout(() => {
+            document.getElementById("duelsOverlay").style.opacity = "0";
+            document.getElementById("duelsOverlay").style.transform = "scale(1.0)";
+            document.getElementById("duelsOverlay").style.filter = "blur(5px)";
+        }, 2000);
+
+        disableBlurTimeout = setTimeout(() => {
+            document.getElementById("duelsOverlay").style.filter = "none";
+        }, 3000)
+    } else {
+        document.getElementById("duelsOverlay").style.opacity = "0";
+    }
+}
+
 //Host Logic ----------------------------------------------------------------------------------------------
 export let multiplayerGuessesLocationsArray = [];
 let multiplayerFirstRoundPlayed = false; // for host and peers! peers use this to see whether they should incrase the round index
@@ -996,6 +1058,16 @@ if (peer) {
                         addReplaceTeamMarkers(data.content.id, data.content.lat, data.content.long, data.content.pin, data.content.team);
                         sendMessageToAll("teamMarkers", teamMarkerArray);
                         if (teamAmount > 1) { updateMinimapWithTeamMarkers(teamMarkerArray) };
+                    }
+
+                    if (data.type == "timeReduce") {
+                        sendMessageToAll("timeReduce", data.content); // send time reduce to everyone if one peer has guessed
+
+                        if (!multiplayerHasAlreadyGuessed) {
+                            showTimeReduceOverlay(data.content, false);
+                        } else {
+                            showTimeReduceOverlay(data.content, true); // only show the warning overlay if player has not already guessed
+                        }
                     }
                 });
 
@@ -1292,6 +1364,14 @@ function joinRoom(code) {
             multiplayerFirstRoundPlayed = false;
             roundIndex = 1;
         }
+
+        if (data.type === "timeReduce") {
+            if (!multiplayerHasAlreadyGuessed) {
+                showTimeReduceOverlay(data.content, false);
+            } else {
+                showTimeReduceOverlay(data.content, true); // only show the warning overlay if player has not already guessed
+            }
+        }
     });
 
     // Event listener for Connection closed
@@ -1419,6 +1499,7 @@ function leaveMultiplayerRound() {
     multiplayer = false;
     setMultiplayerUI();
     showMultiplayerOverlay(false);
+    showTimeReduceOverlay(0, true);
     roundIndex = 1;
     yourTeam = 1;
     multiplayerFirstRoundPlayed = false;
@@ -1638,6 +1719,7 @@ export function showMultiplayerOverlay(show, title, array) {
         document.getElementById("map").style.visibility = "hidden";
         hideToggleMapButtonIfMobile(true);
         document.getElementById("revealCompass").style.visibility = "hidden";
+        showTimeReduceOverlay(0, true); // hide = true (in case it somehow overlaps if the result screen is being skipped quickly)
     } else {
         document.getElementById("multiplayerFade").style.opacity = "0";
         document.getElementById("multiplayerFade").style.pointerEvents = "none";
