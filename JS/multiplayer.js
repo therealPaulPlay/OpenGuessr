@@ -1300,7 +1300,7 @@ function joinRoom(code) {
         //if you get disconnected mid round
         if (multiplayer) {
             leaveMultiplayerRound();
-            errorPopup("Disconnected from room", "The connection to the host was closed.", "User disconnected", false);
+            errorPopup("Disconnected from room", "The connection to the host was closed.", "", false, true);
         }
 
         //if you try to join a room that is locked

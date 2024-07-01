@@ -133,14 +133,14 @@ function initializeRewardAd() {
 
 function dismissRewardedAd(notAvailable) {
     if (notAvailable) {
-        errorPopup("No ad available. ", "Please try again later or disable Ad Blockers", "No ads");
+        errorPopup("No ad available. ", "Please try again later or disable Ad Blockers", "No ads", false, false);
         streakWatchAd.style.opacity = "1";
         streakWatchAd.style.pointerEvents = "auto"; //restore watch ad buttons
         streakAdDismiss.style.opacity = "1";
         streakAdDismiss.style.pointerEvents = "auto";
     } else {
         if (!rewardClaimed) {
-            errorPopup("Ad dismissed", "Video ad dismissed. ", "Ad dismissed");
+            errorPopup("Ad dismissed", "Video ad dismissed. ", "", false, true);
             streakWatchAd.style.opacity = "1";
             streakWatchAd.style.pointerEvents = "auto"; //restore watch ad buttons
             streakAdDismiss.style.opacity = "1";
