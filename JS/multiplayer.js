@@ -928,7 +928,7 @@ function setRetryButtonState() {
 // Duel Guess Time Reduce Overlay & reduce remaining time
 function showTimeReduceOverlay(time, hide) {
     time = Number(time);
-    
+
     let timeReduceOverlayTimer;
     let disableBlurTimeout;
 
@@ -940,23 +940,17 @@ function showTimeReduceOverlay(time, hide) {
             if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > time) {
                 multiplayerTimer.stopTimer();
                 multiplayerTimer = startTimer(time, multiplayerTimerExpired); //Start the timer with new time
-            }
-        } catch (error) {
-            console.warn("Could not set new timer for duels in showTimerReduceOverlay" + error);
-        }
-    }
-
-    if (!hide) {
-        try {
-            if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > time) {
                 document.getElementById("duelsOverlaySubtitle").textContent = `Time reduced to ${time}s.`;
             } else {
                 document.getElementById("duelsOverlaySubtitle").textContent = "Time remains unaffected.";
             }
         } catch (error) {
             document.getElementById("duelsOverlaySubtitle").textContent = "Time remains unaffected.";
+            console.warn("Could not set new timer for duels in showTimerReduceOverlay" + error);
         }
+    }
 
+    if (!hide) {
         document.getElementById("duelsOverlay").style.opacity = "1";
         document.getElementById("duelsOverlay").style.transform = "scale(1.03)";
         document.getElementById("duelsOverlay").style.filter = "none";
