@@ -2,12 +2,24 @@
 
 let showErrors = true;
 
-export function errorPopup(title, description, errorCode, reload) {
+export function errorPopup(title, description, errorCode, reload, hideDontShowAgainOption) {
+  if (hideDontShowAgainOption) {
+    document.getElementById("errorPopupDisable").style.display = "none";
+  } else {
+    document.getElementById("errorPopupDisable").style.display = "flex";
+  }
+
   if (showErrors || reload) { // if errors should be shown or it is a critical error that needs a reload, show the popup
     document.getElementById("popup-title").innerHTML = `<h2>${title}</h2>`;
-    document.getElementById("popup-description").innerHTML = `<p class="slightBottomMargin">${description}</p><p class="errorCode">${errorCode}</p>`;
+    document.getElementById("popup-description").innerHTML = `<p class="slightBottomMargin">${description}</p>`;
+   
+    if (errorCode) {
+      document.getElementById("popup-description").innerHTML += `<p class="errorCode">${errorCode}</p>`;
+    }
+
     document.getElementById("errorPopup").style.display = 'flex';
     document.getElementById("blackBackground").style.visibility = "visible";
+
     if (!reload) {
       document.getElementById("popupClose").innerHTML = "Close";
     } else {
