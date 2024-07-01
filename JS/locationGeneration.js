@@ -231,12 +231,12 @@ async function getCommunityMapCoordinates() {
     
         } else {
             console.error("Community map fetch failed. Server returned error:", response.status);
-            errorPopup("Error loading community map", "An error occurd on the maps server.", error, true);
+            errorPopup("Error loading community map", "An error occured on the maps server.", response.status, true);
             return null;
         }
       } catch (error) {
         console.error("Error occurred while fetching map from server: ", error);
-        errorPopup("Error loading community map", "The maps ser can't be reached.", error, true);
+        errorPopup("Error loading community map", "The maps server can't be reached.", error, true);
         return null;
       }
 }
