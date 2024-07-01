@@ -106,6 +106,7 @@ function setMultiplayerWindowSelection(window) {
     multiplayerSelectorBack.style.display = "none";
     multiplayerSelectorBack.style.opacity = "0.5";
     multiplayerSelectorClose.style.opacity = "1";
+    document.getElementById("multiplayerMapDisplay").textContent = mapCategory.replace("community_", "");
     multiplayerSelectorBack.style.pointerEvents = "auto";
     multiplayerSelectorClose.style.pointerEvents = "auto";
     hostCodeArea.style.display = "none";
@@ -126,6 +127,7 @@ function setMultiplayerWindowSelection(window) {
     setJoinInfoText("Enter the roomcode.");
     document.getElementById("roomCreationModes").style.display = "flex";
     document.getElementById("roomCreationTeams").style.display = "flex";
+    document.getElementById("roomCreationMap").style.display = "flex";
     document.getElementById("roomcodeLink").style.display = "none";
     setJoinButtonState();
     leaveMultiplayerRound(); //leave round and disconnect all peers if you are the host
@@ -194,6 +196,7 @@ function showHostCodeArea(roomcode) {
     document.getElementById("roomCodeDisplay").textContent = roomcode;
     document.getElementById("roomCreationModes").style.display = "none";
     document.getElementById("roomCreationTeams").style.display = "none";
+    document.getElementById("roomCreationMap").style.display = "none";
     document.getElementById("roomcodeLink").style.display = "block";
 }
 
@@ -1045,7 +1048,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     setDuelFindStatus("Room created. Please wait <10s");
     isHost = true;
     multiplayerFirstRoundPlayed = false;
-    multiplayerCategory = mapCategory;
+    multiplayerCategory = mapCategory.replace("community_", "");
 
     if (multiplayerCategory == "daily" || multiplayerCategory == "country") {
         multiplayerCategory = "standard";

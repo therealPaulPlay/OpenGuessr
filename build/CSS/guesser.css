@@ -2246,6 +2246,11 @@ a:hover {
   flex-direction: column;
 }
 
+#multiplayerMapDisplay {
+  min-width: 160px;
+  text-align: center;
+}
+
 .placeholder {
   height: 5px;
 }
