@@ -935,6 +935,30 @@ function showTimeReduceOverlay(time, hide) {
     clearTimeout(timeReduceOverlayTimer);
     clearTimeout(disableBlurTimeout);
 
+    if (!hide) {
+        try {
+            if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > 3) { // only show overlay if it the remaining time is above 3s
+                document.getElementById("duelsOverlay").style.opacity = "1";
+                document.getElementById("duelsOverlay").style.transform = "scale(1.03)";
+                document.getElementById("duelsOverlay").style.filter = "none";
+                playSound("time_reduced");
+
+                timeReduceOverlayTimer = setTimeout(() => {
+                    document.getElementById("duelsOverlay").style.opacity = "0";
+                    document.getElementById("duelsOverlay").style.transform = "scale(1.0)";
+                    document.getElementById("duelsOverlay").style.filter = "blur(5px)";
+                }, 2000);
+
+                disableBlurTimeout = setTimeout(() => {
+                    document.getElementById("duelsOverlay").style.filter = "none";
+                }, 3000)
+            }
+        } catch { console.warn("Error showing time reduce overlay: " + error) }
+    
+    } else {
+        document.getElementById("duelsOverlay").style.opacity = "0";
+    }
+
     if (time != 0) {
         try {
             if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > time) {
@@ -948,25 +972,6 @@ function showTimeReduceOverlay(time, hide) {
             document.getElementById("duelsOverlaySubtitle").textContent = "Time error occured.";
             console.warn("Could not set new timer for duels in showTimerReduceOverlay" + error);
         }
-    }
-
-    if (!hide) {
-        document.getElementById("duelsOverlay").style.opacity = "1";
-        document.getElementById("duelsOverlay").style.transform = "scale(1.03)";
-        document.getElementById("duelsOverlay").style.filter = "none";
-        playSound("time_reduced");
-
-        timeReduceOverlayTimer = setTimeout(() => {
-            document.getElementById("duelsOverlay").style.opacity = "0";
-            document.getElementById("duelsOverlay").style.transform = "scale(1.0)";
-            document.getElementById("duelsOverlay").style.filter = "blur(5px)";
-        }, 2000);
-
-        disableBlurTimeout = setTimeout(() => {
-            document.getElementById("duelsOverlay").style.filter = "none";
-        }, 3000)
-    } else {
-        document.getElementById("duelsOverlay").style.opacity = "0";
     }
 }
 
