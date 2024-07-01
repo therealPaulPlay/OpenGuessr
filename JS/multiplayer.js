@@ -945,7 +945,7 @@ function showTimeReduceOverlay(time, hide) {
                 document.getElementById("duelsOverlaySubtitle").textContent = "Time remains unaffected.";
             }
         } catch (error) {
-            document.getElementById("duelsOverlaySubtitle").textContent = "Time remains unaffected.";
+            document.getElementById("duelsOverlaySubtitle").textContent = "Time error occured.";
             console.warn("Could not set new timer for duels in showTimerReduceOverlay" + error);
         }
     }
