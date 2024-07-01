@@ -50,7 +50,7 @@ async function loadLocationJSON(jsonName) {
             jsonResponse = await response.json();
             currentlyLoadedJson = jsonName; //set currently loaded json to the new one
             lastGuessesIndexes = []; //reset previously played indexes
-            listOfLocations = jsonResponse;
+            listOfLocations = jsonResponse.locations;
 
         } catch (error) {
             //choose standard and instantly reload (if categories get renamed / get deleted-> this happens)
