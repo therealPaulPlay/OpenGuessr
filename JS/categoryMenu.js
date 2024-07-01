@@ -203,10 +203,14 @@ export function checkGenerationTypeAndGenerate() {
             setHardMode(false);
 
             if (isHost) {
-                if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "country") {
+                if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "country" && !mapCategory.includes("community")) {
                     generateNewLocation("JSON");
                 } else if (mapCategory == "standard") {
                     generateNewLocation("SDK");
+
+                } else if (mapCategory.includes("community")) {
+                    generateNewLocation("COMMUNITY");
+        
                 } else {
                     //if the map category is an unsupported multiplayer category, such as daily or hard, switch to standard
                     changeCategory("standard", true); //this will re-run checkGenerationTypeAndGenerate
