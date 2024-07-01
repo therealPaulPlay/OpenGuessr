@@ -951,20 +951,24 @@ function showTimeReduceOverlay(time, hide) {
     }
 
     if (!hide) {
-        document.getElementById("duelsOverlay").style.opacity = "1";
-        document.getElementById("duelsOverlay").style.transform = "scale(1.03)";
-        document.getElementById("duelsOverlay").style.filter = "none";
-        playSound("time_reduced");
-
-        timeReduceOverlayTimer = setTimeout(() => {
-            document.getElementById("duelsOverlay").style.opacity = "0";
-            document.getElementById("duelsOverlay").style.transform = "scale(1.0)";
-            document.getElementById("duelsOverlay").style.filter = "blur(5px)";
-        }, 2000);
-
-        disableBlurTimeout = setTimeout(() => {
-            document.getElementById("duelsOverlay").style.filter = "none";
-        }, 3000)
+        try {
+            if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > 3) { // only show overlay if it the remaining time is above 3s
+                document.getElementById("duelsOverlay").style.opacity = "1";
+                document.getElementById("duelsOverlay").style.transform = "scale(1.03)";
+                document.getElementById("duelsOverlay").style.filter = "none";
+                playSound("time_reduced");
+        
+                timeReduceOverlayTimer = setTimeout(() => {
+                    document.getElementById("duelsOverlay").style.opacity = "0";
+                    document.getElementById("duelsOverlay").style.transform = "scale(1.0)";
+                    document.getElementById("duelsOverlay").style.filter = "blur(5px)";
+                }, 2000);
+        
+                disableBlurTimeout = setTimeout(() => {
+                    document.getElementById("duelsOverlay").style.filter = "none";
+                }, 3000)
+            }
+        } catch {}
     } else {
         document.getElementById("duelsOverlay").style.opacity = "0";
     }

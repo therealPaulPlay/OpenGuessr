@@ -189,7 +189,7 @@ async function getCoordsFromServerDaily() {
         let response = await fetch("./JSON/dailyLocations.json");
 
         jsonResponse = await response.json();
-        listOfLocations = jsonResponse;
+        listOfLocations = jsonResponse.locations;
 
     } catch (error) {
         errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
@@ -250,9 +250,9 @@ async function selectLocationFromMapsServer() {
     try {
 
         //to prevent a crashes if the json has too few locations
-        if (communityLocations.length < 30) {
+        if (communityLocations.length < 35) {
             lastCommunityLocationIndexes = [];
-            console.warn("Loaded standard json has too few locations!");
+            console.warn("Loaded community map json has too few locations!");
         }
 
         do {
@@ -271,7 +271,7 @@ async function selectLocationFromMapsServer() {
 
         resultLocationsArray = [resultLat, resultLong, country];
     } catch (error) {
-        console.error("Error in locationGeneration.js Standard Location JSON generation: " + error);
+        console.error("Error in locationGeneration.js Community map location JSON generation: " + error);
     }
 
     return resultLocationsArray;
