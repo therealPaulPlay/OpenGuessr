@@ -1905,7 +1905,7 @@ map::selection {
   padding: 7px 20px;
   border-radius: 10px;
   color: white;
-  transition: filter 250ms ease;
+  transition: filter 250ms ease, opacity 250ms ease;
   background-color: rgba(42, 44, 71, 0.9);
   box-shadow: 0 2px 20px rgba(25, 29, 45, 0.5);
   backdrop-filter: blur(10px);
@@ -1990,7 +1990,7 @@ map::selection {
   font-size: 22px;
   line-height: 20px;
   border-radius: 10px;
-  transition: filter 0.2s ease;
+  transition: filter 250ms ease, opacity 250ms ease;
   padding: 15px 25px;
   text-align: center;
   white-space: nowrap;

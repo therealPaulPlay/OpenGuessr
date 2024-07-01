@@ -968,7 +968,7 @@ function showTimeReduceOverlay(time, hide) {
                     document.getElementById("duelsOverlay").style.filter = "none";
                 }, 3000)
             }
-        } catch {}
+        } catch { console.warn("Error showing time reduce overlay: " + error)}
     } else {
         document.getElementById("duelsOverlay").style.opacity = "0";
     }
