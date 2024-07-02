@@ -219,7 +219,7 @@ export function loadResultMap(playersLat, playersLong) {
     //this makes it so the map in the result screen is focused on the center between the point
     //and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
-    resMap = L.map('resultMap').setView([currentStreetviewLat, currentStreetviewLong], 15);
+    resMap = L.map('resultMap').setView([currentStreetviewLat, currentStreetviewLong], 10);
     setResultMapTileLayer();
 
     if (countryGuesserMode && !multiplayer) {
