@@ -408,7 +408,7 @@ function endMultiplayerRound() {
             sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
-            document.getElementById("nextRound").innerHTML = "Wait before skipping... ➝";
+            document.getElementById("nextRound").innerHTML = "Wait... ➝";
             //After 2 seconds, enable the skip functionality
             setTimeout(function () {
                 document.getElementById("nextRound").innerHTML = "Skip ➝";
