@@ -188,8 +188,8 @@ export function toggleCategoryMenu(alwaysClose) {
             document.getElementById("upperBannerRight").style.transition = "all 100ms ease";
             document.getElementById("upperBannerRight").style.minWidth = "415px";
             document.getElementById("extendedNavbarContent").scrollTop = "0";
-            
-            document.querySelectorAll('.animateSocialsText').forEach(function(text) {
+
+            document.querySelectorAll('.animateSocialsText').forEach(function (text) {
                 text.style.maxWidth = "200px";
             });
 
@@ -210,7 +210,7 @@ export function toggleCategoryMenu(alwaysClose) {
                 categoryMenuButton.innerText = "Maps ▲";
                 categoriesExpanded = true;
             }, 100);
-            
+
         } else {
             clearInterval(moveTimeouts);
             setTimeout(function () {
@@ -223,7 +223,7 @@ export function toggleCategoryMenu(alwaysClose) {
                 document.getElementById("upperBannerRight").style.minWidth = "0px";
             }, 250)
             setTimeout(() => {
-                document.querySelectorAll('.animateSocialsText').forEach(function(text) {
+                document.querySelectorAll('.animateSocialsText').forEach(function (text) {
                     text.style.maxWidth = "0px";
                 });
             }, 150);
@@ -455,6 +455,26 @@ milesButton.addEventListener("click", () => {
     playSound("basic_button");
     localStorage.setItem("distanceUnit", "miles");
 });
+
+let fullscreenButton = document.getElementById("fullscreenButton");
+
+fullscreenButton.addEventListener("click", () => {
+    try {
+        if (!document.fullscreenElement) {
+            if (document.documentElement.requestFullscreen) {
+                document.documentElement.requestFullscreen();
+                document.getElementById("fullscreenText").textContent = "Exit Fullscreen";
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+                document.getElementById("fullscreenText").textContent = "Fullscreen";
+            }
+        }
+    } catch (error) {
+        console.error("Error entering / exiting fullscreen: " + error);
+    }
+})
 
 //Check if element is clickable ----------------------------------------------------------
 

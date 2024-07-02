@@ -12,7 +12,7 @@
   <!-- Files from other sources (PeerJS, MapKit, Math.js) -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" defer></script>
   <!-- apple mapkit -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css"/>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css" />
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
@@ -278,32 +278,37 @@
       </ul>
       <button id="helpClose" class="accountButton white accountClose">Let's go!</button>
     </div>
-     <!-- Troubleshooting Guide for Multiplayer -->
-     <div id="troubleshootWindow" class="uiWindow">
+    <!-- Troubleshooting Guide for Multiplayer -->
+    <div id="troubleshootWindow" class="uiWindow">
       <div id="popup-title" class="popup-title">
         <h1>Troubleshooting Guide</h1>
       </div>
       <p>
-        OpenGuessr uses a peer2peer connection system via WebRTC Datachannels. Follow these steps to ensure a smooth experience:<br><br>
+        OpenGuessr uses a peer2peer connection system via WebRTC Datachannels. Follow these steps to ensure a smooth
+        experience:<br><br>
       </p>
       <ul>
         <li>
           <p>Disable VPNs or Proxies: Certain VPNs or Proxies, often browser extensions, block WebRTC connections.</p>
         </li>
         <li>
-          <p>Disable Firewalls: Some people use firewall apps, have restrictive firewall settings or use wifi routers with strict built-in firewalls that block WebRTC.</p>
+          <p>Disable Firewalls: Some people use firewall apps, have restrictive firewall settings or use wifi routers
+            with strict built-in firewalls that block WebRTC.</p>
         </li>
         <li>
-          Check if the TURN servers are online: We use turn servers from fastturn. You can check whether they are online on their <a href="https://fastturn.net/status">website</a>.
+          Check if the TURN servers are online: We use turn servers from fastturn. You can check whether they are online
+          on their <a href="https://fastturn.net/status">website</a>.
         </li>
         <li>
-          Check if your browser supports WebRTC: Open chrome://webrtc-internals/ in a Chromium browser or about:webrtc in Firefox.
+          Check if your browser supports WebRTC: Open chrome://webrtc-internals/ in a Chromium browser or about:webrtc
+          in Firefox.
         </li>
       </ul>
-      <p>If multiplayer still does not work after following these steps, consider using a different wifi such as your phone's cellular data hotspot for your internet connection or switch the host.</p>
+      <p>If multiplayer still does not work after following these steps, consider using a different wifi such as your
+        phone's cellular data hotspot for your internet connection or switch the host.</p>
       <button id="troubleshootClose" class="accountButton white accountClose">Back</button>
     </div>
-    <!-- Settings (Especially for Sounds) -->
+    <!-- Settings Window (Especially for Sounds) -->
     <div id="settingsWindow" class="uiWindow">
       <div id="popup-title" class="popup-title">
         <h1>Settings</h1>
@@ -313,6 +318,10 @@
       <button id="unitSwitchMiles" class="accountButton white">Imperial</button><br><br>
       <p>SFX Volume:</p>
       <input type="range" min="0" max="1" step="0.01" value="0.5" class="slider" id="volumeSlider"><br><br>
+      <p class="slightBottomMargin">Toggle Fullscreen:</p>
+      <button id="fullscreenButton" class="accountButton white"><img src="/IMG/fullscreen_icon.png"
+          alt="Fullscreen symbol" id="fullscreenIcon" class="socialIcon"><span
+          id="fullscreenText">Fullscreen</span></button><br><br>
       <button id="settingsClose" class="accountButton white accountClose">close</button>
     </div>
     <!-- Discord Popup -->
@@ -386,12 +395,15 @@
             <button id="multiplayerSelectHost" class="accountButton multiplayerSelect">Host</button>
           </div>
           <div class="groupPartyButtons">
-            <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect">Find Duel<img id="findIcon" class="socialBarIcons" style="margin-left: 5px;" src="/IMG/find_icon.png" alt="Lightning error symbol"></button>
+            <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect">Find Duel<img id="findIcon"
+                class="socialBarIcons" style="margin-left: 5px;" src="/IMG/find_icon.png"
+                alt="Lightning error symbol"></button>
           </div>
         </div>
         <div class="infoNote">
           <div id="troubleshootingArea">
-            <p id="issuesTroubleshootText"> <img id="errorIcon" class="socialBarIcons" src="/IMG/error_icon.png" alt="Lightning error symbol" style="opacity: 60%;">Having issues?</p>
+            <p id="issuesTroubleshootText"> <img id="errorIcon" class="socialBarIcons" src="/IMG/error_icon.png"
+                alt="Lightning error symbol" style="opacity: 60%;">Having issues?</p>
             <button class="white accountButton" id="troubleshootGuideButton">Troubleshooting Guide</button>
           </div>
         </div>

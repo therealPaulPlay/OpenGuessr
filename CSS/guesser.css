@@ -1974,6 +1974,13 @@ map::selection {
   vertical-align: -1.5px;
 }
 
+#fullscreenIcon {
+  width: 25px;
+  height: 25px;
+  vertical-align: -5px;
+  margin-right: 5px;
+}
+
 #timerIcon {
   width: 28px;
   height: auto;
