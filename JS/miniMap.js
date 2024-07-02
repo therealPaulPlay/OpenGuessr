@@ -45,25 +45,18 @@ if (storedProviderIndex != null) {
     providerIndex = storedProviderIndex;
 }
 
-export function getMapSource() {
-    const mapTypeId = map.getMapTypeId();
-    const mapTypes = {
-        'roadmap': Provider.STANDARD,
-        'satellite': Provider.SATELLITE,
-        'hybrid': Provider.HYBRID,
-        'terrain': Provider.TERRAIN
-    };
-
-    return mapTypes[mapTypeId];
-}
-
 changeMapTypeButtonLabel();
+
+let addedMarkers = []; // this is needed for this api to delete them again
 
 //reset the map - used for going to the next round. 
 export function resetMap() {
-    map.data.forEach(function (feature) {
-        map.data.remove(feature);
-    });
+
+    for (let i = 0; i < addedMarkers.length; i++) {
+        addedMarkers[i].setMap(null);
+    }
+
+    addedMarkers = []; // Clear the array
 
     map.setCenter({ lat: 50, lng: 25 }); // Example: reset center
     map.setZoom(2);
@@ -142,6 +135,7 @@ function changeMapType() {
             providerIndex = Provider.STANDARD;
             mapType = google.maps.MapTypeId.ROADMAP;
     }
+
     localStorage.setItem("providerIndex", providerIndex);
     map.setMapTypeId(mapType); // Set the map type on the actual map
     changeMapTypeButtonLabel();
@@ -184,8 +178,11 @@ function onMapClick(latLng) {
     marker = new google.maps.Marker({
         position: latLng,
         map: map,
-        icon: yourIcon
+        icon: yourIcon,
+        clickable: false
     });
+
+    addedMarkers.push(marker);
 
     sendTeamMarkers(mapMarkerLat, mapMarkerLong);
 }
@@ -196,26 +193,26 @@ export function updateMinimapWithTeamMarkers(markerArray) {
 
     // Collect positions of current markers
     multiplayerMiniMarkers.forEach(existingMarker => {
-        const position = existingMarker.getLatLng(); // this does not work
-        existingMarkerPositions.set(`${position.lat},${position.lng}`, existingMarker);
+        const position = existingMarker.getPosition();
+        existingMarkerPositions.set(`${position.lat()},${position.lng()}`, existingMarker);
     });
 
     try {
         // Remove markers that no longer exist in markerArray
         multiplayerMiniMarkers.forEach(existingMarker => {
-            const position = existingMarker.getLatLng();
-            const markerPositionKey = `${position.lat},${position.lng}`;
+            const position = existingMarker.getPosition();
+            const markerPositionKey = `${position.lat()},${position.lng()}`;
 
             // Check if current marker exists in the updated markerArray
             const markerExists = markerArray.some(element => {
                 let miniMarkerLat = element[1];
                 let miniMarkerLong = element[2];
-                return miniMarkerLat == position.lat && miniMarkerLong == position.lng;
+                return miniMarkerLat == position.lat() && miniMarkerLong == position.lng();
             });
 
             // If marker doesn't exist in markerArray, remove it
             if (!markerExists) {
-                map.removeLayer(existingMarker);
+                existingMarker.setMap(null);
                 multiplayerMiniMarkers = multiplayerMiniMarkers.filter(m => m !== existingMarker);
                 existingMarkerPositions.delete(markerPositionKey);
             }
@@ -233,26 +230,29 @@ export function updateMinimapWithTeamMarkers(markerArray) {
             // and miniMarkerTeam matches yourTeam
             if (miniMarkerId != peerId && miniMarkerTeam === yourTeam) {
                 const multiplayerLatLng = new google.maps.LatLng(miniMarkerLat, miniMarkerLong);
-                const markerPositionKey = `${multiplayerLatLng.lat},${multiplayerLatLng.lng}`;
+                const markerPositionKey = `${multiplayerLatLng.lat()},${multiplayerLatLng.lng()}`;
 
                 if (!existingMarkerPositions.has(markerPositionKey)) {
                     // Marker doesn't exist, create new marker
                     const newMultiplayerIcon = {
                         url: './IMG/your_marker' + miniMarkerPinIndex + '.png',
-                        size: new google.maps.Size(35, 35),
-                        anchor: new google.maps.Point(17.5, 34),
+                        size: new google.maps.Size(25, 25),
+                        anchor: new google.maps.Point(15, 24),
                         origin: new google.maps.Point(0, 0),
-                        scaledSize: new google.maps.Size(35, 35),
+                        scaledSize: new google.maps.Size(25, 25),
                     };
 
-                    marker = new google.maps.Marker({
+                    let marker = new google.maps.Marker({
                         position: multiplayerLatLng,
                         map: map,
-                        icon: newMultiplayerIcon
+                        icon: newMultiplayerIcon,
+                        clickable: false
                     });
 
-                    multiplayerMiniMarkers.push(newMultiplayerMiniMarker);
-                    existingMarkerPositions.set(markerPositionKey, newMultiplayerMiniMarker); // Update positions map
+                    addedMarkers.push(marker);
+
+                    multiplayerMiniMarkers.push(marker);
+                    existingMarkerPositions.set(markerPositionKey, marker); // Update positions map
                 }
             }
         });
@@ -366,8 +366,6 @@ document.getElementById("map").addEventListener("keydown", function (event) {
     if (event.key === " ") {
         if (confirmBTN.style.pointerEvents == "auto" && isElementClickable(document.getElementById("map"))) {
             confirmButtonClicks();
-        } else {
-            console.warn("Cannot click on confirm button - pointer events is none.");
         }
     }
 });

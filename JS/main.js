@@ -178,7 +178,7 @@ export let resMap;
 let tileLayer;
 
 function setTileLayer() {
-    tileLayer = L.tileLayer(getMapSource(), {
+    tileLayer = L.tileLayer("https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en", {
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
         maxZoom: 20,
         minZoom: 2,
@@ -313,6 +313,7 @@ export function loadResultMap(playersLat, playersLong) {
                         permanent: true,
                         direction: 'right'
                     });
+
                 multiplayerMarker.setOpacity(0.6);
                 multiplayerMarker.addTo(resMap);
 
