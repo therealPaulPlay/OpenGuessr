@@ -463,18 +463,24 @@ fullscreenButton.addEventListener("click", () => {
         if (!document.fullscreenElement) {
             if (document.documentElement.requestFullscreen) {
                 document.documentElement.requestFullscreen();
-                document.getElementById("fullscreenText").textContent = "Exit Fullscreen";
             }
         } else {
             if (document.exitFullscreen) {
                 document.exitFullscreen();
-                document.getElementById("fullscreenText").textContent = "Fullscreen";
             }
         }
     } catch (error) {
         console.error("Error entering / exiting fullscreen: " + error);
     }
-})
+});
+
+document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+        document.getElementById("fullscreenText").textContent = "Fullscreen";
+    } else {
+        document.getElementById("fullscreenText").textContent = "Exit Fullscreen";
+    }
+});
 
 //Check if element is clickable ----------------------------------------------------------
 
