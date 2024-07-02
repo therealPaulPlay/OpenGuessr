@@ -1247,6 +1247,10 @@ li {
   margin-left: 23px;
 }
 
+.leaflet-interactive {
+  cursor: crosshair !important;
+}
+
 #map:hover {
   opacity: 100%;
 }

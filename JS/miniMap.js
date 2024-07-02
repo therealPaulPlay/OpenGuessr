@@ -18,7 +18,7 @@ const Provider = {
 // Leaflet init and Tiles --------------------------------------------------------------------------------------
 let map = L.map('map', { zoomControl: false }).setView([40.321160, 10.252812], 1.5); //starting position
 
-let mapProvider = ["http://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en", "http://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&hl=en", "http://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en", "http://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en"];
+let mapProvider = ["https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en"];
 
 let multiplayerMiniMarkers = []; // team markers
 
@@ -364,8 +364,6 @@ document.getElementById("map").addEventListener("keydown", function (event) {
     if (event.key === " ") {
         if (confirmBTN.style.pointerEvents == "auto" && isElementClickable(document.getElementById("map"))) {
             confirmButtonClicks();
-        } else {
-            console.warn("Cannot click on confirm button - pointer events is none.");
         }
     }
 });
