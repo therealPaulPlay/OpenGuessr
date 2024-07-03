@@ -270,11 +270,11 @@ export function transitionToStart() {
         if (!justPlayedDailyChallenge) { //justPlayedDailyChallenge is true when user has clicked "guess" button & dailyChallengeUIEnabled == true
             document.getElementById("BeforeOverlay").style.visibility = "visible";
             document.getElementById("BeforeOverlay").style.opacity = "100";
-            disableResultScreen();
             toggleStreakWindow(0, true);
             checkGenerationTypeAndGenerate();
             handleMapUnhover();
             resetMap();
+            disableResultScreen();
 
             setTimeout(socialPopupProbability, 650);
 
