@@ -275,7 +275,7 @@ document.getElementById("socialPopupJoin").addEventListener("click", function ()
     window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus();
     setTimeout(async function () {
         closeSocialPopup();
-        await setUserXP(Number(localStorage.getItem("experience")) + 7500);
+        await setUserXP(Number(localStorage.getItem("experience")) + 7500, false);
         uiSetUserXP(localStorage.getItem("experience"));
     }, 200)
 });

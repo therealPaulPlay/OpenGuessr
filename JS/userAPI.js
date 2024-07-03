@@ -1,3 +1,4 @@
+import { reattemptExperienceUpdate } from "./accountLogic.js";
 import { errorPopup } from "./errorHandling.js";
 
 export const backendURL = "https://api.openguessr.com/api";
@@ -128,7 +129,7 @@ export async function getAllUsers() {
   }
 }
 
-export async function updateExperience(token, id, experience, errorSource) {
+export async function updateExperience(token, id, experience, errorSource, secondAttempt) {
   try {
     const requestBody = {
       id: id,
@@ -151,8 +152,12 @@ export async function updateExperience(token, id, experience, errorSource) {
       const data = await response.json();
       localStorage.setItem("experience", data['user']['experience']);
     } else {
-      console.error('User update failed:', response.status);
-      displayError("User update failed: " + response.status, errorSource);
+      if (response.status != 400 || secondAttempt) {
+        console.error('User update failed:', response.status);
+        displayError("User update failed: " + response.status, errorSource);
+      } else {
+        reattemptExperienceUpdate();
+      }
     }
   } catch (error) {
     console.error('Error occurred during user update: ', error);

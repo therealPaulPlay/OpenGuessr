@@ -182,9 +182,8 @@ async function checkSigninStatusAndLoadUserInfo() {
     profileInfo.classList.remove("notSignedIn");
     //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
     await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then(() => {
-      displayUserInfo();
+      changeUItoSignedIn(); // display user info is already being called in here
     });
-    changeUItoSignedIn();
   }
   else {
     profileInfo.classList.add("notSignedIn");
@@ -386,7 +385,7 @@ export async function loadResultScreenXP(distance) {
     }
 
     if (earnedXP > 0 && isAuthenticated) {
-      setUserXP(currentXP + earnedXP); //save XP, this is the last step! This function is async, but we don't await it as we set the XP to be currentXP + earnedXP in the ui anyway
+      setUserXP(currentXP + earnedXP, false); //save XP, this is the last step! This function is async, but we don't await it as we set the XP to be currentXP + earnedXP in the ui anyway
     }
 
     setTimeout(function () {
@@ -400,12 +399,18 @@ export async function loadResultScreenXP(distance) {
 
 //Save / Set user XP ----------------------------------------------------------------------------------------------
 
-export async function setUserXP(xp) {
+export async function setUserXP(xp, secondAttempt) {
   try {
-    await updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp, "index");
+    await updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp, "index", secondAttempt);
   } catch (error) {
     console.error("Error setting User XP in accountLogic.js: " + error);
   }
+
+}
+
+export async function reattemptExperienceUpdate() {
+  await checkSigninStatusAndLoadUserInfo();
+  setUserXP(Number(localStorage.getItem("experience")) + earnedXP, true);
 
 }
 
