@@ -389,6 +389,23 @@
             margin-bottom: 20px;
         }
 
+        #jsonUpload {
+            display: none;
+        }
+
+        #jsonUploadButton {
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-top: 10px;
+            color: white;
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+
+        #jsonFormatInfoSpan {
+            text-decoration: underline;
+            cursor: pointer;
+        }
+
         .uploadInfo {
             border-radius: 10px;
             outline: none;
@@ -491,6 +508,12 @@
             margin-left: -10px;
         }
 
+        pre {
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 15px;
+        }
+
         textarea {
             resize: none;
         }
@@ -501,6 +524,14 @@
 
         #featured-map {
             margin-bottom: 20px;
+        }
+
+        #uploadMapData {
+            margin-bottom: 5px;
+        }
+
+        #jsonInfoPopup {
+            display: none;
         }
 
         #uploadConfirmText {
@@ -581,15 +612,17 @@
                     <li>Community Maps are not meant for country maps or other maps that can easily be generated. They
                         are meant for special places.</li>
                     <li>A maximum of 1000 locations is recommended.</li>
-                    <li>Maps cannot be edited or deleted! Message us on the Discord server if you need to delete one.</li>
+                    <li>Maps cannot be edited or deleted! Message us on the Discord server if you need to delete one.
+                    </li>
                 </ul>
             </div>
             <div id="inputArea">
                 <p class="marginTop">Map name: </p>
-                <input id="uploadMapName" class="uploadInfo" type="text" style="width: 180px" placeholder="Name of your map..."
-                    maxlength="17">
+                <input id="uploadMapName" class="uploadInfo" type="text" style="width: 180px"
+                    placeholder="Name of your map..." maxlength="17">
                 <p>Map Description: </p>
-                <input id="uploadMapDescription" class="uploadInfo" type="text" placeholder="Description..." maxlength="300">
+                <input id="uploadMapDescription" class="uploadInfo" type="text" placeholder="Description..."
+                    maxlength="300">
                 <div class="infoNoteBox">
                     <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
                     <p id="uploadFirstText">How to add locations:</p>
@@ -607,6 +640,12 @@ https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6
 
 https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu" maxlength="100000"></textarea>
             </div>
+            <p>...or upload a .json file with <span id="jsonFormatInfoSpan">this formatting</span>:</p>
+            <button id="jsonUploadButton" class="standardButton">
+                <input type="file" id="jsonUpload" accept="application/json" />
+                <p id="fileName">Pick file</p>
+            </button>
+            <br>
             <button id="uploadConfirm" class="standardButton playButton">Submit</button>
             <button id="uploadClose" class="standardButton closeButton">Close</button>
         </div>
@@ -617,6 +656,29 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
             <p id="uploadConfirmText">Default text</p>
             <button id="uploadConfirmFinal" class="standardButton playButton">Yes, submit</button>
             <button id="uploadConfirmClose" class="standardButton closeButton">Close</button>
+        </div>
+    </div>
+    <div id="jsonInfoPopup" class="popupHolder">
+        <div id="JsonInfoWindow" class="uiWindow">
+            <h1 id="JsonInfoPlayHeader">JSON Format</h1>
+            <p id="jsonFormatTextInfo">OpenGuessr uses a JSON format to load its locations. Here is an example of how that
+                looks like:</p>
+            <br>
+            <div class="infoNoteBox">
+                <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+                <pre>
+{
+    "locations": [
+            [latitude, longitude],
+            [latitude, longitude],
+            [latitude, longitude],
+            ...and so on...
+            [latitude, longitude]
+        ]
+}
+                </pre>
+            </div>
+            <button id="jsonInfoClose" class="standardButton closeButton">Close</button>
         </div>
     </div>
     <div id="minScreenHeight">

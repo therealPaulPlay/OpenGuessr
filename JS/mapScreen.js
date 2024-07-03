@@ -219,6 +219,8 @@ function openUploadPopup() {
 
 document.getElementById("uploadClose").addEventListener("click", () => {
     document.getElementById("uploadPopup").style.display = "none";
+    document.getElementById("jsonUpload").value = "";
+    document.getElementById("fileName").textContent = "Pick file";
 });
 
 let mapSubmittedSuccessfully = false;
@@ -230,12 +232,29 @@ document.getElementById("uploadConfirmClose").addEventListener("click", () => {
     }
 });
 
+document.getElementById("jsonInfoClose").addEventListener("click", () => {
+    document.getElementById("jsonInfoPopup").style.display = "none";
+});
+
+document.getElementById("jsonFormatInfoSpan").addEventListener("click", () => {
+    document.getElementById("jsonInfoPopup").style.display = "flex";
+});
+
 document.getElementById("uploadConfirmFinal").addEventListener("click", () => {
     document.getElementById("uploadConfirmClose").style.display = "block";
     document.getElementById("uploadConfirmFinal").style.display = "none";
     document.getElementById("uploadConfirmHeader").textContent = "Submitting map...";
     document.getElementById("uploadConfirmText").textContent = "Waiting for status...";
     uploadMap();
+});
+
+document.getElementById("jsonUploadButton").addEventListener('click', function() {
+    document.getElementById("jsonUpload").click();
+});
+
+document.getElementById("jsonUpload").addEventListener('change', function() {
+    var fileName = document.getElementById("fileName");
+    fileName.textContent = this.files.length > 0 ? this.files[0].name : "Pick file";
 });
 
 async function uploadMap() {
@@ -250,10 +269,13 @@ async function uploadMap() {
 }
 
 async function submitMap() {
+    let filePicker = document.getElementById("jsonUpload");
+    let inputFromFilepicker = false;
     // Retrieve input values
     const name = document.getElementById('uploadMapName').value;
     const description = document.getElementById('uploadMapDescription').value;
-    const mapData = document.getElementById('uploadMapData').value;
+    const mapData = filePicker.value ? filePicker.files[0] : document.getElementById('uploadMapData').value;
+    inputFromFilepicker = filePicker.value ? true : false;
     const author = localStorage.getItem('username');
     const player_id = localStorage.getItem('id');
 
@@ -270,7 +292,7 @@ async function submitMap() {
             name,
             author,
             description,
-            mapData: extractCoordinates(mapData) // assuming mapData is a JSON string
+            mapData: inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData) // assuming mapData is a JSON string
         };
     } catch (error) {
         console.error("Error creating payload and extracting coordinates: " + error);
@@ -337,4 +359,25 @@ function extractCoordinates(text) {
         console.error("Error in extractCoordinates: " + error);
     }
 }
+
+async function getJsonStringFromFile(file) {
+    return new Promise((resolve, reject) => {
+        let reader = new FileReader();
+        reader.onload = function(e) {
+            const jsonString = e.target.result;
+            try {
+                JSON.parse(jsonString); // Validate JSON format
+                resolve(jsonString);
+            } catch (error) {
+                reject(new Error("Failed to parse JSON: " + error));
+            }
+        };
+        reader.onerror = function(e) {
+            reject(new Error("Failed to read file: " + e));
+        };
+        reader.readAsText(file);
+    });
+}
+
+
 
