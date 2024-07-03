@@ -415,7 +415,8 @@ export async function setUserXP(xp, secondAttempt) {
 
 export async function reattemptExperienceUpdate() {
   try {
-    await checkSigninStatusAndLoadUserInfo();
+    console.warn("Re-attempting XP set due to error 400 (local save behind)")
+    await checkSigninStatusAndLoadUserInfo(); // load new player details again
     setUserXP(Number(localStorage.getItem("experience")) + earnedXP, true);
   } catch (error) {
     console.error("Re-attempting the XP update failed: " + error);
