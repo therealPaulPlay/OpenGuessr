@@ -14,7 +14,6 @@ const Provider = {
     TERRAIN: "3"
 }
 
-
 // Leaflet initialization and Tiles --------------------------------------------------------------------------------------
 let map = L.map('map', { zoomControl: false }).setView([40.321160, 10.252812], 1.5); //starting position
 
