@@ -1,10 +1,10 @@
-import { generateNewLocation, resMap} from "./main.js";
+import { generateNewLocation } from "./main.js";
 import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
-import { handleMapUnhover, justPlayedDailyChallenge } from "./miniMap.js";
+import { handleMapUnhover, justPlayedDailyChallenge, resetMap } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
@@ -267,15 +267,14 @@ export function transitionToStart() {
             alreadyTransitioning = false;
         }, 400);
 
-        if (!justPlayedDailyChallenge) { // justPlayedDailyChallenge is true when user has clicked "guess" button & dailyChallengeUIEnabled == true
+        if (!justPlayedDailyChallenge) { //justPlayedDailyChallenge is true when user has clicked "guess" button & dailyChallengeUIEnabled == true
             document.getElementById("BeforeOverlay").style.visibility = "visible";
             document.getElementById("BeforeOverlay").style.opacity = "100";
-            resMap.stop(); //stop the flying animation
-            setTimeout(function () { resMap.stop() }, 200)
+            disableResultScreen();
             toggleStreakWindow(0, true);
             checkGenerationTypeAndGenerate();
             handleMapUnhover();
-            disableResultScreen();
+            resetMap();
 
             setTimeout(socialPopupProbability, 650);
 
