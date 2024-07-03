@@ -2,7 +2,7 @@ import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main
 import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
-import { hideToggleMapButtonIfMobile, isElementClickable } from "./mainUI.js";
+import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 
 
@@ -17,14 +17,14 @@ const Provider = {
 
 // Leaflet init and Tiles --------------------------------------------------------------------------------------
 
-let map;
+export let map;
 
 async function initMap() {
     const { Map } = await google.maps.importLibrary("maps");
 
     map = new Map(document.getElementById("map"), {
         center: { lat: 50, lng: 25 },
-        zoom: 2,
+        zoom: 3,
         streetViewControl: false, // Hide Street View control
         zoomControl: false,       // Hide zoom control
         fullscreenControl: false, // Hide fullscreen control
@@ -47,10 +47,12 @@ if (storedProviderIndex != null) {
 
 changeMapTypeButtonLabel();
 
-let addedMarkers = []; // this is needed for this api to delete them again
+export let addedMarkers = []; // this is needed for this api to delete them again
 
 //reset the map - used for going to the next round. 
 export function resetMap() {
+    document.getElementById("mapHolder").classList.remove("mapHolderToResult");
+    document.getElementById("map").classList.remove("mapFullOpacity");
 
     for (let i = 0; i < addedMarkers.length; i++) {
         addedMarkers[i].setMap(null);
@@ -58,8 +60,8 @@ export function resetMap() {
 
     addedMarkers = []; // Clear the array
 
-    map.setCenter({ lat: 50, lng: 25 }); // Example: reset center
-    map.setZoom(2);
+    map.setCenter({ lat: 50, lng: 22 }); // reset center
+    map.setZoom(3);
 
     map.overlayMapTypes.clear();
 
@@ -148,7 +150,9 @@ export let mapMarkerLong = 0;
 let marker;
 
 map.addListener('click', function (e) {
-    onMapClick(e.latLng);
+    if (!resultScreenEnabled) {
+        onMapClick(e.latLng);
+    }
 });
 
 function onMapClick(latLng) {
@@ -362,7 +366,7 @@ export function confirmButtonClicks() {
 }
 
 //Confirm Button with Spacebar and a few checks
-document.getElementById("map").addEventListener("keydown", function (event) {
+document.getElementById("map").addEventListener("keyup", function (event) {
     if (event.key === " ") {
         if (confirmBTN.style.pointerEvents == "auto" && isElementClickable(document.getElementById("map"))) {
             confirmButtonClicks();
