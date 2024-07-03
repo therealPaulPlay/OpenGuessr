@@ -385,7 +385,7 @@ export async function loadResultScreenXP(distance) {
     }
 
     if (earnedXP > 0 && isAuthenticated) {
-      setUserXP(currentXP + earnedXP, false); //save XP, this is the last step! This function is async, but we don't await it as we set the XP to be currentXP + earnedXP in the ui anyway
+      setUserXP(currentXP + earnedXP, earnedXP, false); //save XP, this is the last step! This function is async, but we don't await it as we set the XP to be currentXP + earnedXP in the ui anyway
     }
 
     setTimeout(function () {
@@ -399,13 +399,13 @@ export async function loadResultScreenXP(distance) {
 
 //Save / Set user XP ----------------------------------------------------------------------------------------------
 
-export async function setUserXP(xp, secondAttempt) {
+export async function setUserXP(newExp, earnedExp, secondAttempt) {
   let state;
 
   try {
-    state = await updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp, "index", secondAttempt);
-    if (state == "retry") {
-      reattemptExperienceUpdate();
+    state = await updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), newExp, "index", secondAttempt);
+    if (state == "retry" && earnedExp != 0) {
+      reattemptExperienceUpdate(earnedExp);
     }
   } catch (error) {
     console.error("Error setting User XP in accountLogic.js: " + error);
@@ -413,16 +413,15 @@ export async function setUserXP(xp, secondAttempt) {
 
 }
 
-export async function reattemptExperienceUpdate() {
+export async function reattemptExperienceUpdate(earnedExp) {
   try {
     console.warn("Re-attempting XP set due to error 400 (local save behind)")
     await checkSigninStatusAndLoadUserInfo(); // load new player details again
-    setUserXP(Number(localStorage.getItem("experience")) + earnedXP, true);
+    setUserXP(Number(localStorage.getItem("experience")) + earnedExp, 0, true);
   } catch (error) {
     console.error("Re-attempting the XP update failed: " + error);
   }
 }
-
 
 //Profile Window ---------------------------------------------------------------------------------------------
 
