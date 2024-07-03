@@ -409,8 +409,12 @@ export async function setUserXP(xp, secondAttempt) {
 }
 
 export async function reattemptExperienceUpdate() {
-  await checkSigninStatusAndLoadUserInfo();
-  setUserXP(Number(localStorage.getItem("experience")) + earnedXP, true);
+  try {
+    await checkSigninStatusAndLoadUserInfo();
+    setUserXP(Number(localStorage.getItem("experience")) + earnedXP, true);
+  } catch (error) {
+    console.error("Re-attempting the XP update failed: " + error);
+  }
 
 }
 
