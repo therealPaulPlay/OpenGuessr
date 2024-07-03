@@ -6,7 +6,7 @@ import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled } 
 import { playSound } from "./soundManager.js";
 
 
-//Initialize the map with correct provider --------------------------------------------------------------------
+// Initialize the map with correct provider --------------------------------------------------------------------
 const Provider = {
     STANDARD: "0",
     SATELLITE: "1",
