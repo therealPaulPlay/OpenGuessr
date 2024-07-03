@@ -400,10 +400,15 @@ export async function loadResultScreenXP(distance) {
 //Save / Set user XP ----------------------------------------------------------------------------------------------
 
 export async function setUserXP(xp, secondAttempt) {
+  let state;
+
   try {
-    await updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp, "index", secondAttempt);
+    state = await updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp, "index", secondAttempt);
   } catch (error) {
     console.error("Error setting User XP in accountLogic.js: " + error);
+    if (state == "retry") {
+      reattemptExperienceUpdate();
+    }
   }
 
 }
@@ -415,7 +420,6 @@ export async function reattemptExperienceUpdate() {
   } catch (error) {
     console.error("Re-attempting the XP update failed: " + error);
   }
-
 }
 
 

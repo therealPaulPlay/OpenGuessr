@@ -1,4 +1,3 @@
-import { reattemptExperienceUpdate } from "./accountLogic.js";
 import { errorPopup } from "./errorHandling.js";
 
 export const backendURL = "https://api.openguessr.com/api";
@@ -156,7 +155,7 @@ export async function updateExperience(token, id, experience, errorSource, secon
         console.error('User update failed:', response.status);
         displayError("User update failed: " + response.status, errorSource);
       } else {
-        reattemptExperienceUpdate();
+        return "retry";
       }
     }
   } catch (error) {
