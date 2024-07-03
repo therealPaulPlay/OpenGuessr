@@ -118,7 +118,7 @@ function clearSelection() {
 //Spacebar click to guess ---------------------------------------------------------------------------------------------
 
 //Confirm Button with Spacebar and a few checks
-document.getElementById("countryGuesserSelector").addEventListener("keydown", function (event) {
+document.getElementById("countryGuesserSelector").addEventListener("keyup", function (event) {
     if (event.key === " ") {
         if (document.getElementById("confirmButton").style.pointerEvents == "auto") {
             confirmButtonClicks();

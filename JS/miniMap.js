@@ -360,7 +360,7 @@ export function confirmButtonClicks() {
 }
 
 //Confirm Button with Spacebar and a few checks
-document.getElementById("map").addEventListener("keydown", function (event) {
+document.getElementById("map").addEventListener("keyup", function (event) {
     if (event.key === " ") {
         if (confirmBTN.style.pointerEvents == "auto" && isElementClickable(document.getElementById("map"))) {
             confirmButtonClicks();

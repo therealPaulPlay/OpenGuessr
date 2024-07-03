@@ -2,7 +2,7 @@
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
 
-import { resetMap, getMapSource } from './miniMap.js';
+import { resetMap, getMapSource, handleMapUnhover } from './miniMap.js';
 import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
@@ -203,6 +203,9 @@ export function setResultMapTileLayer() {
 }
 
 export function loadResultMap(playersLat, playersLong) {
+    setTimeout(() => {
+        handleMapUnhover();
+    }, 250);
 
     //default values in case there was an error / not defined
     if (playersLat == null || playersLat == undefined) {
