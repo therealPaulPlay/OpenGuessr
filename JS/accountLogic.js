@@ -404,12 +404,11 @@ export async function setUserXP(xp, secondAttempt) {
 
   try {
     state = await updateExperience(localStorage.getItem("bearer"), localStorage.getItem("id"), xp, "index", secondAttempt);
-    console.log(state);
-  } catch (error) {
-    console.error("Error setting User XP in accountLogic.js: " + error);
     if (state == "retry") {
       reattemptExperienceUpdate();
     }
+  } catch (error) {
+    console.error("Error setting User XP in accountLogic.js: " + error);
   }
 
 }
