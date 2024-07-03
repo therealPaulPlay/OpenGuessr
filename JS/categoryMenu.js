@@ -267,8 +267,7 @@ export function transitionToStart() {
             alreadyTransitioning = false;
         }, 400);
 
-        if (!justPlayedDailyChallenge) { //justPlayedDailyChallenge is true when user has clicked "guess" button & dailyChallengeUIEnabled == true
-            document.getElementById("BeforeOverlay").style.opacity = "0";
+        if (!justPlayedDailyChallenge) { // justPlayedDailyChallenge is true when user has clicked "guess" button & dailyChallengeUIEnabled == true
             document.getElementById("BeforeOverlay").style.visibility = "visible";
             document.getElementById("BeforeOverlay").style.opacity = "100";
             resMap.stop(); //stop the flying animation
@@ -276,8 +275,8 @@ export function transitionToStart() {
             toggleStreakWindow(0, true);
             checkGenerationTypeAndGenerate();
             handleMapUnhover();
+            disableResultScreen();
 
-            setTimeout(disableResultScreen, 200);
             setTimeout(socialPopupProbability, 650);
 
             //notify peers that the next round has begun
