@@ -6,7 +6,7 @@ import { hideToggleMapButtonIfMobile, isElementClickable } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 
 
-//Initialize the map with correct provider --------------------------------------------------------------------
+// Initialize the map with correct provider --------------------------------------------------------------------
 const Provider = {
     STANDARD: "0",
     SATELLITE: "1",
@@ -15,7 +15,7 @@ const Provider = {
 }
 
 
-// Leaflet init and Tiles --------------------------------------------------------------------------------------
+// Leaflet initialization and Tiles --------------------------------------------------------------------------------------
 let map = L.map('map', { zoomControl: false }).setView([40.321160, 10.252812], 1.5); //starting position
 
 let mapProvider = ["https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en"];
