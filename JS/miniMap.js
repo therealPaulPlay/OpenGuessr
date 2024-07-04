@@ -55,7 +55,7 @@ function loadMap() {
         maxZoom: 20,
         minZoom: 1,
         noWrap: true,
-        detectRetina: true,
+        fakeRetina: true,
     }).addTo(map);
 }
 
