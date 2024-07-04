@@ -92,8 +92,8 @@ async function getCoordsFromJSON(category) {
             lastGuessesIndexes.pop(); //if the array is longer than 10, pop the last entry out
         }
 
-        const resultLat = listOfLocations[guessIndex][0];
-        const resultLong = listOfLocations[guessIndex][1];
+        const resultLat = Number(listOfLocations[guessIndex][0]);
+        const resultLong = Number(listOfLocations[guessIndex][1]);
         const country = listOfLocations[guessIndex][2]; //only available for certain modes (like country guesser)
 
         resultLocationsArray = [resultLat, resultLong, country];
@@ -162,8 +162,8 @@ async function selectLocationFromServer() {
               lastStandardLocationIndexes.pop(); //if the array is longer than 100, pop the last entry out
           }
   
-          const resultLat = standardLocations[guessIndex][0];
-          const resultLong = standardLocations[guessIndex][1];
+          const resultLat = Number(standardLocations[guessIndex][0]);
+          const resultLong = Number(standardLocations[guessIndex][1]);
           const country = null;
   
           resultLocationsArray = [resultLat, resultLong, country];
@@ -199,10 +199,11 @@ async function getCoordsFromServerDaily() {
     try {
         let dailyChallengeCoordinatesIndex = await getDailyChallengeIndex(listOfLocations.length);
 
-        const resultLat = listOfLocations[dailyChallengeCoordinatesIndex][0];
-        const resultLong = listOfLocations[dailyChallengeCoordinatesIndex][1];
+        const resultLat = Number(listOfLocations[dailyChallengeCoordinatesIndex][0]);
+        const resultLong = Number(listOfLocations[dailyChallengeCoordinatesIndex][1]);
+        const country = null;
 
-        let resultLocationsArray = [resultLat, resultLong];
+        let resultLocationsArray = [resultLat, resultLong, country];
 
         return resultLocationsArray;
     } catch {
@@ -265,8 +266,8 @@ async function selectLocationFromMapsServer() {
             lastCommunityLocationIndexes.pop(); //if the array is longer than 30, pop the last entry out
         }
 
-        const resultLat = communityLocations[guessIndex][0];
-        const resultLong = communityLocations[guessIndex][1];
+        const resultLat = Number(communityLocations[guessIndex][0]);
+        const resultLong = Number(communityLocations[guessIndex][1]);
         const country = null;
 
         resultLocationsArray = [resultLat, resultLong, country];

@@ -7,6 +7,7 @@
     <link rel="icon" href="favicon.ico">
     <title>Maps - OpenGuessr</title>
     <script type="module" src="userAPI.js"></script>
+    <script src="mapScreen.js" type="module" defer></script>
     <style>
         @font-face {
             font-family: Barlow;
@@ -538,6 +539,13 @@
             margin-bottom: 50px;
         }
 
+        #linkIcon {
+            width: 20px;
+            height: 20px;
+            padding: 0;
+            vertical-align: -2px;
+        }
+
         @media all and (orientation: portrait),
         all and (max-width: 800px) {
             #navbarTitle {
@@ -586,7 +594,10 @@
             <p id="descText">This is a wonderful description of the default map. It features big default locations and
                 small default
                 locations. Wow.</p>
-            <button id="descClose" class="standardButton closeButton">Close</button>
+            <button id="descClose" style="background-color: white; color: black;" class="standardButton playButton">Close</button>
+            <button id="mapLink" class="closeButton standardButton">
+                <img id="linkIcon" src="/IMG/link_icon.png" alt="copy link">
+            </button>
         </div>
     </div>
     <div id="instantPlayPopup" class="popupHolder">
@@ -661,7 +672,8 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
     <div id="jsonInfoPopup" class="popupHolder">
         <div id="JsonInfoWindow" class="uiWindow">
             <h1 id="JsonInfoPlayHeader">JSON Format</h1>
-            <p id="jsonFormatTextInfo">OpenGuessr uses a JSON format to load its locations. Here is an example of how that
+            <p id="jsonFormatTextInfo">OpenGuessr uses a JSON format to load its locations. Here is an example of how
+                that
                 looks like:</p>
             <br>
             <div class="infoNoteBox">
@@ -705,7 +717,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
     <div id="bottomGlow">
         <p id="submissionInfo">Need help? Join our <a href="https://discord.gg/CSc3MbDrZ8">discord server</a>!</p>
     </div>
-    <script src="mapScreen.js" type="module"></script>
 </body>
 
 </html>
