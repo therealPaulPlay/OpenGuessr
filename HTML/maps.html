@@ -319,15 +319,10 @@
 
         .closeButton {
             margin-top: 40px;
-            float: right;
-            margin-right: -10px;
         }
 
         .playButton {
             margin-top: 40px;
-            float: right;
-            margin-right: -10px;
-            margin-left: 20px;
             background-color: rgb(151, 94, 184);
             color: white;
         }
@@ -546,6 +541,15 @@
             vertical-align: -2px;
         }
 
+        .buttonBox {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: flex-end;
+            padding-inline: 15px;
+            gap: 5px;
+        }
+
         @media all and (orientation: portrait),
         all and (max-width: 800px) {
             #navbarTitle {
@@ -594,10 +598,13 @@
             <p id="descText">This is a wonderful description of the default map. It features big default locations and
                 small default
                 locations. Wow.</p>
-            <button id="descClose" style="background-color: white; color: black;" class="standardButton playButton">Close</button>
-            <button id="mapLink" class="closeButton standardButton">
-                <img id="linkIcon" src="/IMG/link_icon.png" alt="copy link">
-            </button>
+            <div class="buttonBox">
+                <button id="mapLink" class="closeButton standardButton">
+                    <img id="linkIcon" src="/IMG/link_icon.png" alt="copy link">
+                </button>
+                <button id="descClose" style="background-color: white; color: black;"
+                    class="standardButton playButton">Close</button>
+            </div>
         </div>
     </div>
     <div id="instantPlayPopup" class="popupHolder">
@@ -605,8 +612,10 @@
             <h1 id="instantPlayHeader">Default map</h1>
             <p id="instantPlayText">This will add the map to your favorites and start the game immediately. Continue?
             </p>
-            <button id="instantPlayConfirm" class="standardButton playButton">Play</button>
-            <button id="instantPlayClose" class="standardButton closeButton">Close</button>
+            <div class="buttonBox">
+                <button id="instantPlayClose" class="standardButton closeButton">Close</button>
+                <button id="instantPlayConfirm" class="standardButton playButton">Play</button>
+            </div>
         </div>
     </div>
     <div id="uploadPopup" class="popupHolder">
@@ -656,17 +665,20 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                 <input type="file" id="jsonUpload" accept="application/json" />
                 <p id="fileName">Pick file</p>
             </button>
-            <br>
-            <button id="uploadConfirm" class="standardButton playButton">Submit</button>
-            <button id="uploadClose" class="standardButton closeButton">Close</button>
+            <div class="buttonBox">
+                <button id="uploadClose" class="standardButton closeButton">Close</button>
+                <button id="uploadConfirm" class="standardButton playButton">Submit</button>
+            </div>
         </div>
     </div>
     <div id="uploadConfirmPopup" style="z-index: 101;" class="popupHolder">
         <div class="uiWindow">
             <h1 id="uploadConfirmHeader">Are you sure?</h1>
             <p id="uploadConfirmText">Default text</p>
-            <button id="uploadConfirmFinal" class="standardButton playButton">Yes, submit</button>
-            <button id="uploadConfirmClose" class="standardButton closeButton">Close</button>
+            <div class="buttonBox">
+                <button id="uploadConfirmClose" class="standardButton closeButton">Close</button>
+                <button id="uploadConfirmFinal" class="standardButton playButton">Yes, submit</button>
+            </div>
         </div>
     </div>
     <div id="jsonInfoPopup" class="popupHolder">
@@ -690,7 +702,9 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 }
                 </pre>
             </div>
-            <button id="jsonInfoClose" class="standardButton closeButton">Close</button>
+            <div class="buttonBox">
+                <button id="jsonInfoClose" class="standardButton closeButton">Close</button>
+            </div>
         </div>
     </div>
     <div id="minScreenHeight">
