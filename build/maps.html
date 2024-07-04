@@ -7,6 +7,7 @@
     <link rel="icon" href="favicon.ico">
     <title>Maps - OpenGuessr</title>
     <script type="module" src="userAPI.js"></script>
+    <script src="mapScreen.js" type="module" defer></script>
     <style>
         @font-face {
             font-family: Barlow;
@@ -318,15 +319,10 @@
 
         .closeButton {
             margin-top: 40px;
-            float: right;
-            margin-right: -10px;
         }
 
         .playButton {
             margin-top: 40px;
-            float: right;
-            margin-right: -10px;
-            margin-left: 20px;
             background-color: rgb(151, 94, 184);
             color: white;
         }
@@ -387,6 +383,23 @@
             justify-content: center;
             padding-inline: 10px;
             margin-bottom: 20px;
+        }
+
+        #jsonUpload {
+            display: none;
+        }
+
+        #jsonUploadButton {
+            background-color: rgba(255, 255, 255, 0.1);
+            margin-top: 10px;
+            color: white;
+            padding-top: 2px;
+            padding-bottom: 2px;
+        }
+
+        #jsonFormatInfoSpan {
+            text-decoration: underline;
+            cursor: pointer;
         }
 
         .uploadInfo {
@@ -491,6 +504,12 @@
             margin-left: -10px;
         }
 
+        pre {
+            font-family: monospace;
+            white-space: pre-wrap;
+            font-size: 15px;
+        }
+
         textarea {
             resize: none;
         }
@@ -503,8 +522,32 @@
             margin-bottom: 20px;
         }
 
+        #uploadMapData {
+            margin-bottom: 5px;
+        }
+
+        #jsonInfoPopup {
+            display: none;
+        }
+
         #uploadConfirmText {
             margin-bottom: 50px;
+        }
+
+        #linkIcon {
+            width: 20px;
+            height: 20px;
+            padding: 0;
+            vertical-align: -2px;
+        }
+
+        .buttonBox {
+            display: flex;
+            width: 100%;
+            align-items: center;
+            justify-content: flex-end;
+            padding-inline: 15px;
+            gap: 5px;
         }
 
         @media all and (orientation: portrait),
@@ -555,7 +598,13 @@
             <p id="descText">This is a wonderful description of the default map. It features big default locations and
                 small default
                 locations. Wow.</p>
-            <button id="descClose" class="standardButton closeButton">Close</button>
+            <div class="buttonBox">
+                <button id="mapLink" class="closeButton standardButton">
+                    <img id="linkIcon" src="/IMG/link_icon.png" alt="copy link">
+                </button>
+                <button id="descClose" style="background-color: white; color: black;"
+                    class="standardButton playButton">Close</button>
+            </div>
         </div>
     </div>
     <div id="instantPlayPopup" class="popupHolder">
@@ -563,8 +612,10 @@
             <h1 id="instantPlayHeader">Default map</h1>
             <p id="instantPlayText">This will add the map to your favorites and start the game immediately. Continue?
             </p>
-            <button id="instantPlayConfirm" class="standardButton playButton">Play</button>
-            <button id="instantPlayClose" class="standardButton closeButton">Close</button>
+            <div class="buttonBox">
+                <button id="instantPlayClose" class="standardButton closeButton">Close</button>
+                <button id="instantPlayConfirm" class="standardButton playButton">Play</button>
+            </div>
         </div>
     </div>
     <div id="uploadPopup" class="popupHolder">
@@ -581,15 +632,17 @@
                     <li>Community Maps are not meant for country maps or other maps that can easily be generated. They
                         are meant for special places.</li>
                     <li>A maximum of 1000 locations is recommended.</li>
-                    <li>Maps cannot be edited or deleted! Message us on the Discord server if you need to delete one.</li>
+                    <li>Maps cannot be edited or deleted! Message us on the Discord server if you need to delete one.
+                    </li>
                 </ul>
             </div>
             <div id="inputArea">
                 <p class="marginTop">Map name: </p>
-                <input id="uploadMapName" class="uploadInfo" type="text" style="width: 180px" placeholder="Name of your map..."
-                    maxlength="17">
+                <input id="uploadMapName" class="uploadInfo" type="text" style="width: 180px"
+                    placeholder="Name of your map..." maxlength="17">
                 <p>Map Description: </p>
-                <input id="uploadMapDescription" class="uploadInfo" type="text" placeholder="Description..." maxlength="300">
+                <input id="uploadMapDescription" class="uploadInfo" type="text" placeholder="Description..."
+                    maxlength="300">
                 <div class="infoNoteBox">
                     <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
                     <p id="uploadFirstText">How to add locations:</p>
@@ -607,16 +660,51 @@ https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6
 
 https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu" maxlength="100000"></textarea>
             </div>
-            <button id="uploadConfirm" class="standardButton playButton">Submit</button>
-            <button id="uploadClose" class="standardButton closeButton">Close</button>
+            <p>...or upload a .json file with <span id="jsonFormatInfoSpan">this formatting</span>:</p>
+            <button id="jsonUploadButton" class="standardButton">
+                <input type="file" id="jsonUpload" accept="application/json" />
+                <p id="fileName">Pick file</p>
+            </button>
+            <div class="buttonBox">
+                <button id="uploadClose" class="standardButton closeButton">Close</button>
+                <button id="uploadConfirm" class="standardButton playButton">Submit</button>
+            </div>
         </div>
     </div>
     <div id="uploadConfirmPopup" style="z-index: 101;" class="popupHolder">
         <div class="uiWindow">
             <h1 id="uploadConfirmHeader">Are you sure?</h1>
             <p id="uploadConfirmText">Default text</p>
-            <button id="uploadConfirmFinal" class="standardButton playButton">Yes, submit</button>
-            <button id="uploadConfirmClose" class="standardButton closeButton">Close</button>
+            <div class="buttonBox">
+                <button id="uploadConfirmClose" class="standardButton closeButton">Close</button>
+                <button id="uploadConfirmFinal" class="standardButton playButton">Yes, submit</button>
+            </div>
+        </div>
+    </div>
+    <div id="jsonInfoPopup" class="popupHolder">
+        <div id="JsonInfoWindow" class="uiWindow">
+            <h1 id="JsonInfoPlayHeader">JSON Format</h1>
+            <p id="jsonFormatTextInfo">OpenGuessr uses a JSON format to load its locations. Here is an example of how
+                that
+                looks like:</p>
+            <br>
+            <div class="infoNoteBox">
+                <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+                <pre>
+{
+    "locations": [
+            [latitude, longitude],
+            [latitude, longitude],
+            [latitude, longitude],
+            ...and so on...
+            [latitude, longitude]
+        ]
+}
+                </pre>
+            </div>
+            <div class="buttonBox">
+                <button id="jsonInfoClose" class="standardButton closeButton">Close</button>
+            </div>
         </div>
     </div>
     <div id="minScreenHeight">
@@ -643,7 +731,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
     <div id="bottomGlow">
         <p id="submissionInfo">Need help? Join our <a href="https://discord.gg/CSc3MbDrZ8">discord server</a>!</p>
     </div>
-    <script src="mapScreen.js" type="module"></script>
 </body>
 
 </html>

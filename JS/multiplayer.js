@@ -552,21 +552,11 @@ try {
 
 // Joining via Links (also as a guest!) -------------------------------------------------------------------------------------
 
-var queryString = window.location.search;
+let urlParams = new URLSearchParams(window.location.search);
 let joinOnLoadViaLink = false;
+let roomCode = urlParams.get("join");
 
-// Check if there is a query string
-if (queryString && queryString.length > 1) { // Checking if queryString is not empty
-    // Remove the "?" character from the beginning
-    queryString = queryString.substring(1);
-
-    // Split the query string by "&" in case there are multiple parameters
-    var params = queryString.split('&');
-
-    // Assume the room code is the first parameter
-    var roomCode = params[0];
-
-    // You can then use the room code in your application
+if (roomCode) {
     console.log("Attempting join via Room Code Link:", roomCode);
     joinOnLoadViaLink = true;
 }
@@ -614,7 +604,7 @@ copyRoomcodeLinkButton.addEventListener("click", () => {
 });
 
 function copyRoomcodeLink() {
-    navigator.clipboard.writeText(window.location.origin + "/?" + peerId.replace("openguessr_", ""))
+    navigator.clipboard.writeText(window.location.origin + "/?join=" + peerId.replace("openguessr_", ""))
         .then(function () {
             document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
             setTimeout(() => {
