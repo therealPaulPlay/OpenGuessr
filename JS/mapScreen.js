@@ -13,6 +13,8 @@ async function loadCommunityMaps() {
 
             // Initialize search functionality
             initializeSearch(data.communityMaps);
+
+            checkPlayMapFromLink(data.communityMaps);
         } else {
             console.error("Error loading community maps: " + response.status);
             document.getElementById("errorMessage").textContent = "Error: " + response.status;
@@ -134,6 +136,23 @@ function showDescriptionWindow(title, author, desc) {
     document.getElementById("descHeader").textContent = title;
     document.getElementById("descAuthor").textContent = "by " + author;
     document.getElementById("descText").textContent = desc;
+
+    document.getElementById("mapLink").addEventListener("click", () => {
+        navigator.clipboard.writeText(window.location.origin + "/maps.html?map=" + title)
+        .then(function () {
+            document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
+            setTimeout(() => {
+                document.getElementById("linkIcon").src = "/IMG/link_icon.png";
+            }, 700);
+        })
+        .catch(function (error) {
+            document.getElementById("linkIcon").src = "/IMG/link_error_icon.png";
+            console.error("Copy error: " + error);
+            setTimeout(() => {
+                document.getElementById("linkIcon").src = "/IMG/link_icon.png";
+            }, 700);
+        });
+    });
 }
 
 document.getElementById("descClose").addEventListener("click", () => {
@@ -215,10 +234,12 @@ function openUploadPopup() {
     document.getElementById("uploadPopup").style.display = "flex";
     document.getElementById("uploadWindow").scrollTop = "0";
     document.getElementById("uploadPopup").scrollTop = "0";
+    document.getElementById("jsonUpload").value = ""; // reset filepicker input
 }
 
 document.getElementById("uploadClose").addEventListener("click", () => {
     document.getElementById("uploadPopup").style.display = "none";
+    document.getElementById("fileName").textContent = "Pick file";
 });
 
 let mapSubmittedSuccessfully = false;
@@ -230,12 +251,29 @@ document.getElementById("uploadConfirmClose").addEventListener("click", () => {
     }
 });
 
+document.getElementById("jsonInfoClose").addEventListener("click", () => {
+    document.getElementById("jsonInfoPopup").style.display = "none";
+});
+
+document.getElementById("jsonFormatInfoSpan").addEventListener("click", () => {
+    document.getElementById("jsonInfoPopup").style.display = "flex";
+});
+
 document.getElementById("uploadConfirmFinal").addEventListener("click", () => {
     document.getElementById("uploadConfirmClose").style.display = "block";
     document.getElementById("uploadConfirmFinal").style.display = "none";
     document.getElementById("uploadConfirmHeader").textContent = "Submitting map...";
     document.getElementById("uploadConfirmText").textContent = "Waiting for status...";
     uploadMap();
+});
+
+document.getElementById("jsonUploadButton").addEventListener('click', function () {
+    document.getElementById("jsonUpload").click();
+});
+
+document.getElementById("jsonUpload").addEventListener('change', function () {
+    var fileName = document.getElementById("fileName");
+    fileName.textContent = this.files.length > 0 ? this.files[0].name : "Pick file";
 });
 
 async function uploadMap() {
@@ -250,10 +288,13 @@ async function uploadMap() {
 }
 
 async function submitMap() {
+    let filePicker = document.getElementById("jsonUpload");
+    let inputFromFilepicker = false;
     // Retrieve input values
     const name = document.getElementById('uploadMapName').value;
     const description = document.getElementById('uploadMapDescription').value;
-    const mapData = document.getElementById('uploadMapData').value;
+    const mapData = filePicker.value ? filePicker.files[0] : document.getElementById('uploadMapData').value;
+    inputFromFilepicker = filePicker.value ? true : false;
     const author = localStorage.getItem('username');
     const player_id = localStorage.getItem('id');
 
@@ -270,7 +311,7 @@ async function submitMap() {
             name,
             author,
             description,
-            mapData: extractCoordinates(mapData) // assuming mapData is a JSON string
+            mapData: inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData) // assuming mapData is a JSON string
         };
     } catch (error) {
         console.error("Error creating payload and extracting coordinates: " + error);
@@ -302,7 +343,7 @@ async function submitMap() {
                     resultErrors += e.msg;
                     resultErrors += " ";
                 });
-            } catch (e) {}
+            } catch (e) { }
             if (result.error != undefined || result.error != null) {
                 resultErrors += result.error;
             }
@@ -337,4 +378,45 @@ function extractCoordinates(text) {
         console.error("Error in extractCoordinates: " + error);
     }
 }
+
+async function getJsonStringFromFile(file) {
+    return new Promise((resolve, reject) => {
+        let reader = new FileReader();
+        reader.onload = function (e) {
+            const jsonString = e.target.result;
+            try {
+                JSON.parse(jsonString); // Validate JSON format
+                resolve(jsonString);
+            } catch (error) {
+                reject(new Error("Failed to parse JSON: " + error));
+            }
+        };
+        reader.onerror = function (e) {
+            reject(new Error("Failed to read file: " + e));
+        };
+        reader.readAsText(file);
+    });
+}
+
+// Start maps via links ----------------------------------------------------------------------------------
+
+let urlParams = new URLSearchParams(window.location.search);
+let mapNameFromLink = urlParams.get("map");
+
+function checkPlayMapFromLink(data) {
+    if (mapNameFromLink) {
+        try {
+            if (data.some(item => item.name == mapNameFromLink)) {
+                instantPlayPopup(mapNameFromLink);
+            } else {
+                console.warn("Requested map from link not found.");
+            }
+        } catch (error) {
+            console.error("Error opening instant play popup from link: " + error);
+        }
+
+        history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
+    }
+}
+
 
