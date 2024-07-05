@@ -510,6 +510,11 @@
             font-size: 15px;
         }
 
+        .textEllipsis {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         textarea {
             resize: none;
         }
@@ -594,10 +599,9 @@
     <div id="descriptionPopup" class="popupHolder">
         <div id="description" class="uiWindow">
             <h1 id="descHeader">Default map</h1>
-            <p id="descAuthor">by Paul</p>
-            <p id="descText">This is a wonderful description of the default map. It features big default locations and
-                small default
-                locations. Wow.</p>
+            <p id="descAuthor" class="textEllipsis">by Paul</p>
+            <p id="descText" class="textEllipsis">This is a wonderful description of the default map. It features big default locations and
+                small default locations. Wow.</p>
             <div class="buttonBox">
                 <button id="mapLink" class="closeButton standardButton">
                     <img id="linkIcon" src="/IMG/link_icon.png" alt="copy link">
