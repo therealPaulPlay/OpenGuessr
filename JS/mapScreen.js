@@ -1,6 +1,8 @@
-document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" });
+document.getElementById("backButton").addEventListener("click", function () {
+    window.location.href = "/index.html";
+});
 
-//This will have to be replaced by an API call in the future TODO -----------------------------------------------------
+// This will have to be replaced by an API call in the future TODO -----------------------------------------------------
 async function loadCommunityMaps() {
     try {
         const response = await fetch("https://maps.openguessr.com/maps");
@@ -8,11 +10,12 @@ async function loadCommunityMaps() {
 
         if (response.ok) {
             data.communityMaps.forEach(map => {
-                addMap(map.name, map.author, map.favourite, map.author, map.description);
+                addMap(map.name, map.author, map.favourite, map.author, map.description, map.category);
             });
 
-            // Initialize search functionality
+            // Initialize search and category filtering functionality
             initializeSearch(data.communityMaps);
+            initializeCategoryFiltering(data.communityMaps);
 
             checkPlayMapFromLink(data.communityMaps);
         } else {
@@ -26,14 +29,14 @@ async function loadCommunityMaps() {
     }
 }
 
-//Load the map elements one by one ----------------------------------------------------------------------
-function addMap(name, creator, fav, author, description) {
+// Load the map elements one by one ----------------------------------------------------------------------
+function addMap(name, creator, fav, author, description, category) {
     let container = fav ? "featured-map" : "community-maps";
 
     let mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 
     if (document.getElementById("errorMessage")) {
-        document.getElementById("errorMessage").remove();
+        document.getElementById("errorMessage").style.display = "none";
     }
 
     const mapItem = document.createElement("div");
@@ -46,6 +49,7 @@ function addMap(name, creator, fav, author, description) {
 
     mapItem.dataset.name = name.toLowerCase();
     mapItem.dataset.author = creator.toLowerCase();
+    mapItem.dataset.category = category ? category.toLowerCase() : "null"; // Set to "null" if category is not provided
 
     mapItem.addEventListener("click", () => {
         instantPlayPopup(name);
@@ -139,19 +143,19 @@ function showDescriptionWindow(title, author, desc) {
 
     document.getElementById("mapLink").addEventListener("click", () => {
         navigator.clipboard.writeText(window.location.origin + "/maps.html?map=" + title)
-        .then(function () {
-            document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
-            setTimeout(() => {
-                document.getElementById("linkIcon").src = "/IMG/link_icon.png";
-            }, 700);
-        })
-        .catch(function (error) {
-            document.getElementById("linkIcon").src = "/IMG/link_error_icon.png";
-            console.error("Copy error: " + error);
-            setTimeout(() => {
-                document.getElementById("linkIcon").src = "/IMG/link_icon.png";
-            }, 700);
-        });
+            .then(function () {
+                document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
+                setTimeout(() => {
+                    document.getElementById("linkIcon").src = "/IMG/link_icon.png";
+                }, 700);
+            })
+            .catch(function (error) {
+                document.getElementById("linkIcon").src = "/IMG/link_error_icon.png";
+                console.error("Copy error: " + error);
+                setTimeout(() => {
+                    document.getElementById("linkIcon").src = "/IMG/link_icon.png";
+                }, 700);
+            });
     });
 }
 
@@ -175,39 +179,75 @@ document.getElementById("instantPlayClose").addEventListener("click", () => {
     document.getElementById("instantPlayPopup").style.display = "none";
 });
 
+// Search and categories ------------------------------------------------------------------------
 // prevent enter to reload default action in search bar
 document.getElementById("mapSearch").addEventListener("keydown", function (event) { if (event.key === "Enter") event.preventDefault(); });
 
+document.querySelector(".categoriesBar").addEventListener("wheel", function (event) {
+    event.preventDefault();
+    this.scrollLeft += event.deltaY;
+});
 
 // Initialize search functionality
 function initializeSearch(maps) {
     const searchInput = document.getElementById("mapSearch");
-    const nothingFound = document.getElementById("nothingFound");
 
     searchInput.addEventListener("input", function () {
         const query = searchInput.value.toLowerCase();
-        let hasVisibleMaps = false;
-
-        document.querySelectorAll(".searchableMap").forEach(map => {
-            const mapName = map.dataset.name;
-            const mapAuthor = map.dataset.author;
-            if (mapName.includes(query) || mapAuthor.includes(query)) {
-                map.style.display = "";
-                hasVisibleMaps = true;
-            } else {
-                map.style.display = "none";
-            }
-        });
-
-        if (hasVisibleMaps) {
-            nothingFound.style.display = "none";
-        } else {
-            nothingFound.style.display = "block";
-        }
+        const selectedCategory = document.querySelector(".categoryButton.selected").textContent.toLowerCase();
+        filterMaps(query, selectedCategory);
     });
 }
 
-// Load all community maps on page load
+// Initialize category filtering functionality
+function initializeCategoryFiltering(maps) {
+    let currentSelection = document.querySelector(".categoryButton.standardButton");
+    currentSelection.classList.add("selected");
+
+    // Function to handle button click
+    function handleCategoryButtonClick(event) {
+        if (currentSelection) {
+            currentSelection.classList.remove("selected");
+        }
+
+        event.target.classList.add('selected');
+        currentSelection = event.target;
+        const selectedCategory = currentSelection.textContent.toLowerCase();
+        filterMaps(document.getElementById("mapSearch").value.toLowerCase(), selectedCategory);
+    }
+
+    // Add event listeners to all category buttons
+    const buttons = document.querySelectorAll(".categoryButton");
+    buttons.forEach(button => {
+        button.addEventListener("click", handleCategoryButtonClick);
+    });
+}
+
+// Function to filter maps based on search query and selected category
+function filterMaps(query, category) {
+    const nothingFound = document.getElementById("nothingFound");
+    let hasVisibleMaps = false;
+
+    document.querySelectorAll(".searchableMap").forEach(map => {
+        const mapName = map.dataset.name;
+        const mapAuthor = map.dataset.author;
+        const mapCategory = map.dataset.category;
+
+        // Perform filtering based on query and category
+        if ((mapName.includes(query) || mapAuthor.includes(query)) &&
+            (category === "all" || (category === "null" && !mapCategory) || mapCategory === category)) {
+            map.style.display = "";
+            hasVisibleMaps = true;
+        } else {
+            map.style.display = "none";
+        }
+    });
+
+    // Show/hide "Nothing found" message based on filtered results
+    nothingFound.style.display = hasVisibleMaps ? "none" : "block";
+}
+
+// Call the function to load community maps
 loadCommunityMaps();
 
 // Map uploading --------------------------------------------------------------------------------------------------------------------------------
@@ -297,10 +337,11 @@ async function submitMap() {
     inputFromFilepicker = filePicker.value ? true : false;
     const author = localStorage.getItem('username');
     const player_id = localStorage.getItem('id');
+    const category = document.getElementById("categoryDropdown").value;
 
     // Validate inputs
-    if (!name || !description || !mapData || !author || !player_id) {
-        return 'All fields are required.';
+    if (!name || !description || !mapData || !author || !player_id || category == "none") {
+        return 'All fields and a selected category are required.';
     }
 
     // Construct the payload
@@ -311,7 +352,8 @@ async function submitMap() {
             name,
             author,
             description,
-            mapData: inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData) // assuming mapData is a JSON string
+            mapData: inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData), // assuming mapData is a JSON string
+            category: category
         };
     } catch (error) {
         console.error("Error creating payload and extracting coordinates: " + error);
@@ -418,5 +460,3 @@ function checkPlayMapFromLink(data) {
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
     }
 }
-
-
