@@ -371,18 +371,15 @@
             outline: none;
             background-color: rgba(255, 255, 255, 0.1);
             color: white;
-            min-width: 180px;
-            width: 25vw;
-            max-width: 500px;
+            width: calc(100% - 20px);
+            max-width: 700px;
             transition: background-color 250ms ease;
             font-size: 22px;
             min-height: 40px;
             border: none;
             font-family: Barlow;
             padding: 5px;
-            justify-content: center;
             padding-inline: 10px;
-            margin-bottom: 20px;
         }
 
         #jsonUpload {
@@ -429,9 +426,14 @@
         }
 
         search {
-            width: 100%;
             display: flex;
             justify-content: center;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        search form {
+            width: 100%;
         }
 
         #mapSearch:focus {
@@ -510,6 +512,11 @@
             font-size: 15px;
         }
 
+        .textEllipsis {
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
         textarea {
             resize: none;
         }
@@ -548,6 +555,66 @@
             justify-content: flex-end;
             padding-inline: 15px;
             gap: 5px;
+        }
+
+        .categoriesBar {
+            width: 60%;
+            height: 50px;
+            overflow: hidden;
+            overflow-x: scroll;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding-inline: 5px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            gap: 5px;
+            flex-grow: 2;
+            scrollbar-width: none;
+        }
+
+        .categoryButton {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            max-height: 30px;
+            padding-top: 0;
+            padding-bottom: 0;
+            transition: background-color 250ms ease;
+        }
+
+        .categoryButton:hover {
+            filter: none;
+            background-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .selected {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+
+        .categoriesSearchArea {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            width: 80%;
+            gap: 10px;
+            align-items: center;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .dropdown {
+            margin-bottom: 15px;
+            margin-top: 5px;
+            width: 150px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            min-height: 30px;
+            color: white;
+            border: none;
+            font-size: 22px;
+            font-family: inherit;
+            padding: 5px;
+            cursor: pointer;
         }
 
         @media all and (orientation: portrait),
@@ -594,10 +661,9 @@
     <div id="descriptionPopup" class="popupHolder">
         <div id="description" class="uiWindow">
             <h1 id="descHeader">Default map</h1>
-            <p id="descAuthor">by Paul</p>
-            <p id="descText">This is a wonderful description of the default map. It features big default locations and
-                small default
-                locations. Wow.</p>
+            <p id="descAuthor" class="textEllipsis">by Paul</p>
+            <p id="descText" class="textEllipsis">This is a wonderful description of the default map. It features big default locations and
+                small default locations. Wow.</p>
             <div class="buttonBox">
                 <button id="mapLink" class="closeButton standardButton">
                     <img id="linkIcon" src="/IMG/link_icon.png" alt="copy link">
@@ -628,6 +694,7 @@
                     <li>You can only upload max. 3 maps per day.</li>
                     <li>Maps must at least have 50 unique locations.</li>
                     <li>Ensure that your map names and author names are familiy-friendly.</li>
+                    <li>Keep all details in english.</li>
                     <li>Pick a descriptive map name (e. g. not "My Map")</li>
                     <li>Community Maps are not meant for country maps or other maps that can easily be generated. They
                         are meant for special places.</li>
@@ -640,6 +707,17 @@
                 <p class="marginTop">Map name: </p>
                 <input id="uploadMapName" class="uploadInfo" type="text" style="width: 180px"
                     placeholder="Name of your map..." maxlength="17">
+                <p>Map Category: </p>
+                <select id="categoryDropdown" class="dropdown">
+                    <option value="none">Select one...</option>
+                    <option value="Nature">Nature</option>
+                    <option value="Architecture">Architecture</option>
+                    <option value="Urban">Urban</option>
+                    <option value="Regions">Regions</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Transport">Transport</option>
+                    <option value="Miscellaneous">Miscellaneous</option>
+                  </select>
                 <p>Map Description: </p>
                 <input id="uploadMapDescription" class="uploadInfo" type="text" placeholder="Description..."
                     maxlength="300">
@@ -715,13 +793,25 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                     <!-- Featured maps will be injected here -->
                 </div>
             </div>
-            <h2 class="header">All Community Maps:</h2>
+            <h2 class="header" stlye="margin-bottom: 15px">All Community Maps:</h2>
             <div id="community-maps" class="map-container">
+            <div class="categoriesSearchArea">
+                <div class="categoriesBar">
+                    <button class="categoryButton standardButton">All</button>
+                    <button class="categoryButton standardButton">Nature</button>
+                    <button class="categoryButton standardButton">Architecture</button>
+                    <button class="categoryButton standardButton">Urban</button>
+                    <button class="categoryButton standardButton">Regions</button>
+                    <button class="categoryButton standardButton">Sports</button>
+                    <button class="categoryButton standardButton">Transport</button>
+                    <button class="categoryButton standardButton">Miscellaneous</button>
+                </div>
                 <search>
                     <form>
                         <input id="mapSearch" placeholder="Search Maps...">
                     </form>
                 </search>
+            </div>
                 <!-- Community maps will be injected here -->
                 <p id="errorMessage">Loading... Please wait.</p>
                 <p id="nothingFound" style="opacity: 0.5;">No map matches the search query.</p>
