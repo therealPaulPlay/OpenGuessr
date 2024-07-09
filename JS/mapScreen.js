@@ -2,35 +2,78 @@ document.getElementById("backButton").addEventListener("click", function () {
     window.location.href = "/index.html";
 });
 
-// This will have to be replaced by an API call in the future TODO -----------------------------------------------------
-async function loadCommunityMaps() {
+// Load community maps using the openguessr map api  -----------------------------------------------------
+let currentFetchIndex = 0;
+let lastSearchMode = "index";
+
+let loadMoreCategoryParam = undefined;
+let loadMoreQueryParam = undefined;
+
+let initial 
+
+async function loadCommunityMaps(index, category, query, fav) {
     try {
-        const response = await fetch("https://maps.openguessr.com/maps");
+        document.getElementById("loadMore").style.display = "none";
+        loadMoreCategoryParam = category;
+        loadMoreQueryParam = query;
+
+        // this if block resets the index to 0 if a new loading method is being used
+        if (index == 0 || index == undefined) {
+            document.getElementById("community-maps").innerHTML = "";
+        }
+
+        document.getElementById("nothingFound").style.display = "none";
+
+        let indexAdd = index != undefined ? "index/" + index : "";
+        const categoryAdd = category ? "category/" + category : "";
+        const queryAdd = query ? "search/" + query : "";
+        const favAdd = fav ? "favourites" : "";
+
+        if (category || query) {
+            indexAdd = "/" + index;
+        }
+
+        const response = await fetch("https://maps.openguessr.com/maps/" + categoryAdd + queryAdd + indexAdd + favAdd);
         const data = await response.json();
 
         if (response.ok) {
+
+            if (index != undefined) {
+                currentFetchIndex = index;
+            }
+
+            if (data.communityMaps.length == 50 && !fav) {
+                document.getElementById("loadMore").style.display = "block";
+            }
+            
+            let nothingFound = true;
+
             data.communityMaps.forEach(map => {
-                addMap(map.name, map.author, map.favourite, map.author, map.description, map.category);
+                // fav maps are only being added if fav is defined/true
+                if (!map.favourite || fav) {
+                    addMap(map.name, map.author, map.favourite, map.author, map.description, map.category);
+                    nothingFound = false;
+                }
             });
 
-            // Initialize search and category filtering functionality
-            initializeSearch(data.communityMaps);
-            initializeCategoryFiltering(data.communityMaps);
-
-            checkPlayMapFromLink(data.communityMaps);
+            if (nothingFound && !fav) {
+                document.getElementById("nothingFound").style.display = "block";
+            }
         } else {
             console.error("Error loading community maps: " + response.status);
+            document.getElementById("errorMessage").style.display = "block";
             document.getElementById("errorMessage").textContent = "Error: " + response.status;
         }
 
     } catch (error) {
         console.error("Error loading community maps: " + error);
+        document.getElementById("errorMessage").style.display = "block";
         document.getElementById("errorMessage").textContent = "Error: " + error;
     }
 }
 
 // Load the map elements one by one ----------------------------------------------------------------------
-function addMap(name, creator, fav, author, description, category) {
+function addMap(name, creator, fav, author, description) {
     let container = fav ? "featured-map" : "community-maps";
 
     let mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
@@ -46,10 +89,6 @@ function addMap(name, creator, fav, author, description, category) {
     } else {
         mapItem.classList.add("searchableMap");
     }
-
-    mapItem.dataset.name = name.toLowerCase();
-    mapItem.dataset.author = creator.toLowerCase();
-    mapItem.dataset.category = category ? category.toLowerCase() : "null"; // Set to "null" if category is not provided
 
     mapItem.addEventListener("click", () => {
         instantPlayPopup(name);
@@ -110,6 +149,7 @@ function addMap(name, creator, fav, author, description, category) {
     document.getElementById(container).appendChild(mapItem);
 }
 
+// Like / Dislike
 function addSelectedMap(name) {
     try {
         let mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
@@ -180,75 +220,73 @@ document.getElementById("instantPlayClose").addEventListener("click", () => {
 });
 
 // Search and categories ------------------------------------------------------------------------
-// prevent enter to reload default action in search bar
-document.getElementById("mapSearch").addEventListener("keydown", function (event) { if (event.key === "Enter") event.preventDefault(); });
 
 document.querySelector(".categoriesBar").addEventListener("wheel", function (event) {
     event.preventDefault();
     this.scrollLeft += event.deltaY;
 });
 
-// Initialize search functionality
-function initializeSearch(maps) {
-    const searchInput = document.getElementById("mapSearch");
+let currentSelection = document.getElementById("categoryAll");
 
-    searchInput.addEventListener("input", function () {
-        const query = searchInput.value.toLowerCase();
-        const selectedCategory = document.querySelector(".categoryButton.selected").textContent.toLowerCase();
-        filterMaps(query, selectedCategory);
+// search with enter key
+document.getElementById("mapSearch").addEventListener("keydown", function (event) { 
+    if (event.key === "Enter") {
+        event.preventDefault();
+    }; 
+});
+
+document.getElementById("mapSearch").addEventListener("keyup", function (event) { 
+    if (event.key === "Enter") {
+        startSearch();
+    }; 
+});
+
+document.getElementById("startSearch").addEventListener("click", startSearch);
+
+function startSearch() {
+    let query = document.getElementById("mapSearch").value.toLowerCase();
+    if (query == "") {
+        query = undefined; // so the undefined check works in the load function
+    }
+    currentSelection = document.getElementById("categoryAll");
+    categoryButtons.forEach(button => {
+        button.classList.remove("selected");
     });
+    document.getElementById("categoryAll").classList.add("selected");
+
+    loadCommunityMaps(0, undefined, query);
 }
 
-// Initialize category filtering functionality
-function initializeCategoryFiltering(maps) {
-    let currentSelection = document.querySelector(".categoryButton.standardButton");
-    currentSelection.classList.add("selected");
+// Add event listeners to all category buttons
+const categoryButtons = document.querySelectorAll(".categoryButton");
+categoryButtons.forEach(button => {
+    button.addEventListener("click", handleCategoryButtonClick);
+});
 
-    // Function to handle button click
-    function handleCategoryButtonClick(event) {
-        if (currentSelection) {
-            currentSelection.classList.remove("selected");
-        }
-
-        event.target.classList.add('selected');
-        currentSelection = event.target;
-        const selectedCategory = currentSelection.textContent.toLowerCase();
-        filterMaps(document.getElementById("mapSearch").value.toLowerCase(), selectedCategory);
+function handleCategoryButtonClick(event) {
+    if (currentSelection) {
+        currentSelection.classList.remove("selected");
     }
 
-    // Add event listeners to all category buttons
-    const buttons = document.querySelectorAll(".categoryButton");
-    buttons.forEach(button => {
-        button.addEventListener("click", handleCategoryButtonClick);
-    });
-}
-
-// Function to filter maps based on search query and selected category
-function filterMaps(query, category) {
-    const nothingFound = document.getElementById("nothingFound");
-    let hasVisibleMaps = false;
-
-    document.querySelectorAll(".searchableMap").forEach(map => {
-        const mapName = map.dataset.name;
-        const mapAuthor = map.dataset.author;
-        const mapCategory = map.dataset.category;
-
-        // Perform filtering based on query and category
-        if ((mapName.includes(query) || mapAuthor.includes(query)) &&
-            (category === "all" || (category === "null" && !mapCategory) || mapCategory === category)) {
-            map.style.display = "";
-            hasVisibleMaps = true;
-        } else {
-            map.style.display = "none";
-        }
-    });
-
-    // Show/hide "Nothing found" message based on filtered results
-    nothingFound.style.display = hasVisibleMaps ? "none" : "block";
+    event.target.classList.add("selected");
+    currentSelection = event.target;
+    const selectedCategory = currentSelection.textContent.toLowerCase();
+   
+    if (selectedCategory != "all") {
+        loadCommunityMaps(0, selectedCategory);
+    } else {
+        loadCommunityMaps(0);
+    }
 }
 
 // Call the function to load community maps
-loadCommunityMaps();
+loadCommunityMaps(0);
+loadCommunityMaps(undefined, undefined, undefined, true); // load favourite maps / load spotlight section
+
+// Load more maps
+document.getElementById("loadMore").addEventListener("click", () => {
+    loadCommunityMaps(currentFetchIndex + 50, loadMoreCategoryParam, loadMoreQueryParam);
+})
 
 // Map uploading --------------------------------------------------------------------------------------------------------------------------------
 
@@ -445,18 +483,28 @@ async function getJsonStringFromFile(file) {
 let urlParams = new URLSearchParams(window.location.search);
 let mapNameFromLink = urlParams.get("map");
 
-function checkPlayMapFromLink(data) {
+async function checkPlayMapFromLink() {
+    let didErrorOccur = false;
+
     if (mapNameFromLink) {
         try {
-            if (data.some(item => item.name == mapNameFromLink)) {
-                instantPlayPopup(mapNameFromLink);
-            } else {
-                console.warn("Requested map from link not found.");
+            const response = await fetch("https://maps.openguessr.com/maps/" + mapNameFromLink);
+            const data = await response.json();
+
+            if (!response.ok) {
+                didErrorOccur = true;
             }
+
         } catch (error) {
-            console.error("Error opening instant play popup from link: " + error);
+            didErrorOccur = true;
+        }
+
+        if (!didErrorOccur) {
+            instantPlayPopup(mapNameFromLink);
         }
 
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
     }
 }
+
+checkPlayMapFromLink();
