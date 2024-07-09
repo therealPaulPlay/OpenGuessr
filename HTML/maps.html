@@ -329,6 +329,8 @@
 
         #nothingFound {
             display: none;
+            margin-top: -50px;
+            margin-bottom: 20px;
         }
 
         #descHeader {
@@ -382,6 +384,18 @@
             padding-inline: 10px;
         }
 
+        #startSearch {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            max-width: 30px;
+            min-height: 40px;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
         #jsonUpload {
             display: none;
         }
@@ -430,6 +444,7 @@
             justify-content: center;
             width: 100%;
             max-width: 300px;
+            gap: 5px;
         }
 
         search form {
@@ -559,17 +574,16 @@
 
         .categoriesBar {
             width: 60%;
-            height: 50px;
             overflow: hidden;
             overflow-x: scroll;
             background-color: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
-            padding-inline: 5px;
             display: flex;
             justify-content: flex-start;
             align-items: center;
             gap: 5px;
             flex-grow: 2;
+            border: solid 5px rgb(55, 55, 74);
             scrollbar-width: none;
         }
 
@@ -595,7 +609,8 @@
             display: flex;
             justify-content: space-around;
             flex-wrap: wrap;
-            width: 80%;
+            width: 74%;
+            min-width: 280px;
             gap: 10px;
             align-items: center;
             border-radius: 10px;
@@ -617,10 +632,40 @@
             cursor: pointer;
         }
 
+        select option {
+            background-color: rgb(74, 74, 74);
+            color: white;
+        }
+
+        #loadMore {
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 22px;
+            min-height: 40px;
+            width: 280px;
+            padding: 10px;
+            margin-bottom: 30px;
+            margin-top: -20px;
+        }
+
+        #errorMessage {
+            margin-bottom: 50px;
+        }
+
+        #searchIcon {
+            width: 20px;
+            height: 20px;
+        }
+
         @media all and (orientation: portrait),
         all and (max-width: 800px) {
             #navbarTitle {
                 font-size: 27px;
+            }
+
+            .categoriesSearchArea {
+                width: 50%;
             }
 
             .main-container {
@@ -794,10 +839,9 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                 </div>
             </div>
             <h2 class="header" stlye="margin-bottom: 15px">All Community Maps:</h2>
-            <div id="community-maps" class="map-container">
             <div class="categoriesSearchArea">
                 <div class="categoriesBar">
-                    <button class="categoryButton standardButton">All</button>
+                    <button id="categoryAll" class="selected categoryButton standardButton">All</button>
                     <button class="categoryButton standardButton">Nature</button>
                     <button class="categoryButton standardButton">Architecture</button>
                     <button class="categoryButton standardButton">Urban</button>
@@ -810,12 +854,17 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                     <form>
                         <input id="mapSearch" placeholder="Search Maps...">
                     </form>
+                    <button id="startSearch" class="standardButton">
+                        <img src="/IMG/find_icon.png" alt="start search" id="searchIcon">
+                    </button>
                 </search>
             </div>
+            <div id="community-maps" class="map-container">
                 <!-- Community maps will be injected here -->
-                <p id="errorMessage">Loading... Please wait.</p>
-                <p id="nothingFound" style="opacity: 0.5;">No map matches the search query.</p>
             </div>
+            <p id="errorMessage">Loading... Please wait.</p>
+            <p id="nothingFound" style="opacity: 0.5;">No map matches the search query.</p>
+            <button id="loadMore" class="standardButton">Load more ▼</button>
         </div>
     </div>
     <div id="bottomGlow">
