@@ -2,6 +2,12 @@ document.getElementById("backButton").addEventListener("click", function () {
     window.location.href = "/index.html";
 });
 
+const MAPS_PER_PAGE = 50;
+let allMaps = [];
+let displayedMapsCount = 0;
+
+document.getElementById("loadMore").addEventListener("click", loadMoreMaps);
+
 // This will have to be replaced by an API call in the future TODO -----------------------------------------------------
 async function loadCommunityMaps() {
     try {
@@ -9,15 +15,15 @@ async function loadCommunityMaps() {
         const data = await response.json();
 
         if (response.ok) {
-            data.communityMaps.forEach(map => {
-                addMap(map.name, map.author, map.favourite, map.author, map.description, map.category);
-            });
+            allMaps = data.communityMaps;
+            displayedMapsCount = 0;
+            loadMoreMaps();
 
             // Initialize search and category filtering functionality
-            initializeSearch(data.communityMaps);
-            initializeCategoryFiltering(data.communityMaps);
+            initializeSearch(allMaps);
+            initializeCategoryFiltering(allMaps);
 
-            checkPlayMapFromLink(data.communityMaps);
+            checkPlayMapFromLink(allMaps);
         } else {
             console.error("Error loading community maps: " + response.status);
             document.getElementById("errorMessage").textContent = "Error: " + response.status;
@@ -26,6 +32,27 @@ async function loadCommunityMaps() {
     } catch (error) {
         console.error("Error loading community maps: " + error);
         document.getElementById("errorMessage").textContent = "Error: " + error;
+    }
+}
+
+function loadMoreMaps() {
+    const query = document.getElementById("mapSearch").value.toLowerCase();
+    const selectedCategoryElement = document.querySelector(".categoryButton.selected");
+    const selectedCategory = selectedCategoryElement ? selectedCategoryElement.textContent.toLowerCase() : "all";
+    const filteredMaps = filterMapsArray(allMaps, query, selectedCategory);
+
+    const mapsToShow = filteredMaps.slice(displayedMapsCount, displayedMapsCount + MAPS_PER_PAGE);
+
+    mapsToShow.forEach(map => {
+        addMap(map.name, map.author, map.favourite, map.author, map.description, map.category);
+    });
+
+    displayedMapsCount += MAPS_PER_PAGE;
+
+    if (displayedMapsCount >= filteredMaps.length) {
+        document.getElementById("loadMore").style.display = "none";
+    } else {
+        document.getElementById("loadMore").style.display = "block";
     }
 }
 
@@ -194,7 +221,8 @@ function initializeSearch(maps) {
 
     searchInput.addEventListener("input", function () {
         const query = searchInput.value.toLowerCase();
-        const selectedCategory = document.querySelector(".categoryButton.selected").textContent.toLowerCase();
+        const selectedCategoryElement = document.querySelector(".categoryButton.selected");
+        const selectedCategory = selectedCategoryElement ? selectedCategoryElement.textContent.toLowerCase() : "all";
         filterMaps(query, selectedCategory);
     });
 }
@@ -202,6 +230,10 @@ function initializeSearch(maps) {
 // Initialize category filtering functionality
 function initializeCategoryFiltering(maps) {
     let currentSelection = document.querySelector(".categoryButton.standardButton");
+    if (!currentSelection) {
+        console.error("No standardButton found.");
+        return;
+    }
     currentSelection.classList.add("selected");
 
     // Function to handle button click
@@ -218,36 +250,41 @@ function initializeCategoryFiltering(maps) {
 
     // Add event listeners to all category buttons
     const buttons = document.querySelectorAll(".categoryButton");
-    buttons.forEach(button => {
-        button.addEventListener("click", handleCategoryButtonClick);
+    buttons.forEach(button => button.addEventListener("click", handleCategoryButtonClick));
+}
+
+// Function to filter maps array based on search query and selected category
+function filterMapsArray(maps, query, category) {
+    return maps.filter(map => {
+        const matchesQuery = map.name.toLowerCase().includes(query) || map.author.toLowerCase().includes(query);
+        const matchesCategory = category === "all" || (map.category && map.category.toLowerCase() === category) || (category === "null" && !map.category);
+        return matchesQuery && matchesCategory;
     });
 }
 
 // Function to filter maps based on search query and selected category
 function filterMaps(query, category) {
-    const nothingFound = document.getElementById("nothingFound");
-    let hasVisibleMaps = false;
+    const mapItems = document.querySelectorAll(".map-item.searchableMap");
 
-    document.querySelectorAll(".searchableMap").forEach(map => {
-        const mapName = map.dataset.name;
-        const mapAuthor = map.dataset.author;
-        const mapCategory = map.dataset.category;
+    mapItems.forEach(item => {
+        const matchesQuery = item.dataset.name.includes(query) || item.dataset.author.includes(query);
+        const matchesCategory = category === "all" || item.dataset.category === category || (category === "null" && item.dataset.category === "null");
 
-        // Perform filtering based on query and category
-        if ((mapName.includes(query) || mapAuthor.includes(query)) &&
-            (category === "all" || (category === "null" && !mapCategory) || mapCategory === category)) {
-            map.style.display = "";
-            hasVisibleMaps = true;
+        if (matchesQuery && matchesCategory) {
+            item.style.display = "flex";
         } else {
-            map.style.display = "none";
+            item.style.display = "none";
         }
     });
 
-    // Show/hide "Nothing found" message based on filtered results
-    nothingFound.style.display = hasVisibleMaps ? "none" : "block";
+    const filteredMapsCount = document.querySelectorAll(".map-item.searchableMap[style='display: flex;']").length;
+    if (filteredMapsCount > displayedMapsCount) {
+        document.getElementById("loadMore").style.display = "block";
+    } else {
+        document.getElementById("loadMore").style.display = "none";
+    }
 }
 
-// Call the function to load community maps
 loadCommunityMaps();
 
 // Map uploading --------------------------------------------------------------------------------------------------------------------------------

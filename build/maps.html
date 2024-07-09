@@ -622,6 +622,17 @@
             color: white;
         }
 
+        #loadMore {
+            border-radius: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            font-size: 22px;
+            min-height: 40px;
+            width: 280px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+
         @media all and (orientation: portrait),
         all and (max-width: 800px) {
             #navbarTitle {
@@ -821,6 +832,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                 <p id="errorMessage">Loading... Please wait.</p>
                 <p id="nothingFound" style="opacity: 0.5;">No map matches the search query.</p>
             </div>
+            <button id="loadMore" class="standardButton">Load more ▼</button>
         </div>
     </div>
     <div id="bottomGlow">
