@@ -1924,6 +1924,7 @@ map::selection {
   padding: 7px 20px;
   border-radius: 10px;
   color: white;
+  max-height: 50px;
   transition: filter 250ms ease, opacity 250ms ease;
   background-color: rgba(42, 44, 71, 0.9);
   box-shadow: 0 2px 20px rgba(25, 29, 45, 0.5);
@@ -2011,6 +2012,7 @@ map::selection {
 }
 
 .floatingButton {
+  max-height: 50px;
   cursor: pointer;
   width: fit-content;
   font-size: 22px;
