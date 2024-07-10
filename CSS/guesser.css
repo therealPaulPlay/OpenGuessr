@@ -2091,6 +2091,7 @@ map::selection {
   margin: 3px;
   margin-left: 5px;
   transition: opacity 250ms ease;
+  pointer-events: auto;
 }
 
 .specialCategoryInfo:hover {
