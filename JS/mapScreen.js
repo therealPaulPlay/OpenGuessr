@@ -182,7 +182,7 @@ function showDescriptionWindow(title, author, desc) {
     document.getElementById("descText").textContent = desc;
 
     document.getElementById("mapLink").addEventListener("click", () => {
-        navigator.clipboard.writeText(window.location.origin + "/maps.html?map=" + title)
+        navigator.clipboard.writeText(window.location.origin + "/maps.html?map=" + title.replace(" ", "_"))
             .then(function () {
                 document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
                 setTimeout(() => {
@@ -481,7 +481,7 @@ async function getJsonStringFromFile(file) {
 // Start maps via links ----------------------------------------------------------------------------------
 
 let urlParams = new URLSearchParams(window.location.search);
-let mapNameFromLink = urlParams.get("map");
+let mapNameFromLink = urlParams.get("map").replace("_", " ");
 
 async function checkPlayMapFromLink() {
     let didErrorOccur = false;
