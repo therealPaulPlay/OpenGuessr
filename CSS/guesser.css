@@ -2711,6 +2711,10 @@ all and (max-width: 1000px) {
   display: none !important;
 }
 
+.mapHolderToResult #floatingMapButton {
+  display: none !important;
+}
+
 .mapFullOpacity {
   opacity: 100% !important;
   z-index: 10 !important;
