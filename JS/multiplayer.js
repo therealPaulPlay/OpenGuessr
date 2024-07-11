@@ -408,13 +408,15 @@ function endMultiplayerRound() {
             sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
-            document.getElementById("nextRound").innerHTML = "Wait... ➝";
-            //After 2 seconds, enable the skip functionality
+            //After 2 seconds (or 5 for duels), enable the skip functionality
+            let skipTimeout = playingDuels ? 5000 : 2000;
+            document.getElementById("nextRound").innerHTML = "Wait " + (skipTimeout / 1000) + "s... ➝";
+
             setTimeout(function () {
                 document.getElementById("nextRound").innerHTML = "Skip ➝";
                 document.getElementById("nextRound").style.opacity = "1";
                 document.getElementById("nextRound").style.pointerEvents = "auto";
-            }, 2000)
+            }, skipTimeout)
 
             //After 10 seconds, skip automatically to not let peers wait too long in Duels
             if (playingDuels) {
@@ -944,7 +946,7 @@ function showTimeReduceOverlay(time, hide) {
                 }, 3000)
             }
         } catch { console.warn("Error showing time reduce overlay: " + error) }
-    
+
     } else {
         document.getElementById("duelsOverlay").style.opacity = "0";
     }
