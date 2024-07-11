@@ -40,11 +40,11 @@ export function toggleSocialbar() {
         if (!socialBarExpanded) {
             document.getElementById("socialBar").style.maxHeight = "1000px";
             socialBarExpanded = true;
-            document.getElementById("floatingSocialButton").innerHTML = "Multiplayer Menu ▲";
+            document.getElementById("multiplayerArrow").classList.add("arrowIconRotated");
         } else {
             document.getElementById("socialBar").style.maxHeight = "0";
             socialBarExpanded = false;
-            document.getElementById("floatingSocialButton").innerHTML = "Multiplayer Menu ▼";
+            document.getElementById("multiplayerArrow").classList.remove("arrowIconRotated");
         }
     } catch (error) {
         console.warn("Socialbar couldn't be closed: ", error);
@@ -209,7 +209,7 @@ export function toggleCategoryMenu(alwaysClose) {
                 floatingCategoryArea.style.top = "360px";
                 document.getElementById("extendedNavbarGradient").style.display = "block";
                 extendedNavbar.classList.add("expanded");
-                categoryMenuButton.innerText = "Maps ▲";
+                document.getElementById("mapsArrow").classList.add("arrowIconRotated");
                 categoriesExpanded = true;
             }, 100);
 
@@ -232,7 +232,7 @@ export function toggleCategoryMenu(alwaysClose) {
             document.getElementById("mobileExtendedNavbarControls").style.opacity = "0";
             extendedNavbar.classList.remove("expanded");
             extendedNavbar.classList.remove("expandedMobile");
-            categoryMenuButton.innerText = "Maps ▼";
+            document.getElementById("mapsArrow").classList.remove("arrowIconRotated");
             categoriesExpanded = false;
         }
     } catch {

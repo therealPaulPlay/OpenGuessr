@@ -883,6 +883,18 @@ li {
   height: 40px;
 }
 
+.arrowIcon {
+  width: 25px;
+  height: 25px;
+  vertical-align: -5px;
+  transform: rotate(0deg);
+  transition: transform 250ms ease;
+}
+
+.arrowIconRotated {
+  transform: rotate(180deg);
+}
+
 #hardModeFade {
   width: 100%;
   height: 100%;
@@ -1271,7 +1283,7 @@ map::selection {
   color: rgb(54, 54, 54);
   padding-right: 10px;
   padding-left: 10px;
-  border-radius: 7px;
+  border-radius: 10px;
   border-top-left-radius: 0;
   border-bottom-right-radius: 0;
   height: 25px;
@@ -1281,6 +1293,28 @@ map::selection {
   user-select: none;
   z-index: 10;
   opacity: 0.5;
+}
+
+.mapAttribution {
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+  color: black;
+  padding-right: 10px;
+  padding-left: 10px;
+  font: 400 12px Roboto, Arial, sans-serif;
+  z-index: 10;
+  background-color: rgb(245, 245, 245);
+  opacity: 0.7;
+  border-bottom-right-radius: 10px;
+}
+
+#mapAttributionLogo {
+  background-color: transparent;
+  right: auto;
+  left: 5px;
+  opacity: 1;
+  height: 25px;
 }
 
 #mapModeIndicator {
@@ -1363,6 +1397,7 @@ map::selection {
   width: 100%;
   overflow-y: scroll;
   display: flex;
+  scrollbar-width: none;
   flex-direction: column;
   margin-top: 5px;
 }
@@ -1833,7 +1868,7 @@ map::selection {
 }
 
 .discordButton {
-  background-color: #8134e4;
+  background-color: #8c2aed;
   color: white;
 }
 
@@ -1906,6 +1941,7 @@ map::selection {
   padding: 7px 20px;
   border-radius: 10px;
   color: white;
+  max-height: 50px;
   transition: filter 250ms ease, opacity 250ms ease;
   background-color: rgba(42, 44, 71, 0.9);
   box-shadow: 0 2px 20px rgba(25, 29, 45, 0.5);
@@ -1993,6 +2029,7 @@ map::selection {
 }
 
 .floatingButton {
+  max-height: 50px;
   cursor: pointer;
   width: fit-content;
   font-size: 22px;
@@ -2086,6 +2123,7 @@ map::selection {
   margin: 3px;
   margin-left: 5px;
   transition: opacity 250ms ease;
+  pointer-events: auto;
 }
 
 .specialCategoryInfo:hover {
