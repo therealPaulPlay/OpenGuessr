@@ -153,9 +153,11 @@ export function enableResultScreen(resultString, extraMessage) {
 
 export function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
-    setTimeout(function () { document.getElementById("EndOverlay").style.visibility = "hidden" }, 200)
+    document.getElementById("EndOverlay").style.visibility = "hidden";
 
     resultScreenEnabled = false;
+
+    console.log("yes, disabling result screen");
 }
 
 //Extended Navbar dropdown (Category Selection Area) ------------------------------------------------------------------------------
