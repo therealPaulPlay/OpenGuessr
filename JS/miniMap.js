@@ -59,7 +59,7 @@ export function resetMap() {
 
     addedMarkers = []; // Clear the array
 
-    map.setCenter({ lat: 50, lng: 22 }); // reset center
+    map.panTo({ lat: 50, lng: 22 }); // reset center
     map.setZoom(3);
 
     map.overlayMapTypes.clear();
