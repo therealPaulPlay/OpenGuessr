@@ -153,7 +153,9 @@ export function enableResultScreen(resultString, extraMessage) {
 
 export function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
-    document.getElementById("EndOverlay").style.visibility = "hidden";
+    setTimeout(() => {
+        document.getElementById("EndOverlay").style.visibility = "hidden";
+    }, 250);
 
     resultScreenEnabled = false;
 }

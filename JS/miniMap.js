@@ -29,6 +29,7 @@ async function initMap() {
         fullscreenControl: false, // Hide fullscreen control
         mapTypeControl: false,     // Hide map type control
         draggableCursor: 'crosshair',
+        backgroundColor: "#8ab4f9",
     });
 }
 

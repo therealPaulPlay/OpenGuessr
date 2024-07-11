@@ -1707,6 +1707,7 @@ map::selection {
   display: flex;
   justify-content: center;
   align-items: flex-end;
+  transition: opacity 250ms ease-out;
 }
 
 /* This is for the result screen */
