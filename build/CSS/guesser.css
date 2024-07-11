@@ -1278,7 +1278,7 @@ map::selection {
   color: rgb(54, 54, 54);
   padding-right: 10px;
   padding-left: 10px;
-  border-radius: 7px;
+  border-radius: 10px;
   border-top-left-radius: 0;
   border-bottom-right-radius: 0;
   height: 25px;
@@ -1288,6 +1288,28 @@ map::selection {
   user-select: none;
   z-index: 10;
   opacity: 0.5;
+}
+
+.mapAttribution {
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+  color: black;
+  padding-right: 10px;
+  padding-left: 10px;
+  font: 400 12px Roboto, Arial, sans-serif;
+  z-index: 10;
+  background-color: rgb(245, 245, 245);
+  opacity: 0.7;
+  border-bottom-right-radius: 10px;
+}
+
+#mapAttributionLogo {
+  background-color: transparent;
+  right: auto;
+  left: 5px;
+  opacity: 1;
+  height: 25px;
 }
 
 #mapModeIndicator {
