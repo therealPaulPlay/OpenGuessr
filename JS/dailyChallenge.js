@@ -29,9 +29,6 @@ export function setDailyChallengeUI(enable) {
         hardmodeTimerButton.style.opacity = "0.5";
         hardmodeTimerButton.style.pointerEvents = "none";
         document.getElementById("revealCompass").style.marginBottom = "-21px";
-        document.querySelectorAll(".mapAttribution").forEach((element) => {
-            element.style.bottom = "58px";
-        });
     } else {
         document.getElementById("mapModeIndicator").style.display = "none";
         floatingSocialButton.style.opacity = "1";
@@ -39,9 +36,6 @@ export function setDailyChallengeUI(enable) {
         hardmodeTimerButton.style.opacity = "1";
         hardmodeTimerButton.style.pointerEvents = "auto";
         document.getElementById("revealCompass").style.marginBottom = "-25px";
-        document.querySelectorAll(".mapAttribution").forEach((element) => {
-            element.style.bottom = "0px";
-        });
     }
 }
 
