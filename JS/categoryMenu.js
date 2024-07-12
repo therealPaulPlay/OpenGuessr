@@ -52,8 +52,10 @@ let Category = {
 export let mapCategory = Category.STANDARD; // Default category
 
 //Community Categories Generation ----------------------------------------------------------------------------
-function loadCommunityCategories() {
+export function loadCommunityCategories() {
     try {
+        document.getElementById("communityMapArea").innerHTML = ""; // reset element
+
         let mapArray = [];
         mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
         

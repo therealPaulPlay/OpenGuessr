@@ -1,5 +1,19 @@
+// Back button and iframe communication + check ---------------------------------------------------
+function inIframe() {
+    try {
+        return window.self !== window.top;
+    } catch (e) {
+        return true;
+    }
+}
+
 document.getElementById("backButton").addEventListener("click", function () {
-    window.location.href = "/index.html";
+    if (inIframe()) {
+        window.top.postMessage("close", "*");
+        window.top.postMessage("reloadCommunityMaps", "*");
+    } else {
+        window.location.href = "/index.html";
+    }
 });
 
 // Load community maps using the openguessr map api  -----------------------------------------------------
@@ -211,7 +225,14 @@ function instantPlayPopup(mapName) {
         localStorage.setItem("selectedCategory", "community_" + mapName.toLowerCase());
         /* category variable names are always lowercase and have community_ in front of them, if they are community maps */
         addSelectedMap(mapName);
-        window.location.href = "/";
+
+        if (inIframe()) {
+            window.top.postMessage("close", "*");
+            window.top.postMessage("loadCategory", "*");
+            window.top.postMessage("reloadCommunityMaps", "*");
+        } else {
+            window.location.href = "/";
+        }
     });
 }
 
@@ -481,7 +502,12 @@ async function getJsonStringFromFile(file) {
 // Start maps via links ----------------------------------------------------------------------------------
 
 let urlParams = new URLSearchParams(window.location.search);
-let mapNameFromLink = urlParams.get("map").split("_").join(" "); // remove all underscores
+
+let mapNameFromLink;
+
+try {
+    mapNameFromLink = urlParams.get("map").split("_").join(" "); // remove all underscores
+} catch {}
 
 async function checkPlayMapFromLink() {
     let didErrorOccur = false;

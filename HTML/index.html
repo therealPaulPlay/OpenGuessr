@@ -182,7 +182,7 @@
     </button>
   </div>
   <div id="BeforeOverlay">
-    <img src="/IMG/compass_spinner.png" alt="Loading new streetview" id="spinner">
+    <img src="/IMG/compass_spinner.png" alt="Loading new streetview" id="spinner" class="spinner">
     <p id="loadingText">Loading...</p>
   </div>
   <div class="popupHolder">
@@ -197,7 +197,7 @@
       <button id="popupClose" class="cookieButton close">Close and reload</button>
     </div>
   </div>
-
+  <!-- remaining windows -->
   <div class="popupHolder">
     <!-- New profile window -->
     <div id="profileWindow" class="uiWindow">
@@ -278,6 +278,16 @@
       </ul>
       <button id="helpClose" class="accountButton white accountClose">Let's go!</button>
     </div>
+        <!-- Page Browser for all other OpenGuessr pages to avoid any additional map loads -->
+        <div id="pageBrowserWindow" class="uiWindow">
+          <div id="browserIframeHolder">
+            <div class="absoluteCenter">
+              <img src="/IMG/compass_spinner.png" alt="Loading new streetview" class="spinner" id="pageBrowserLoading">
+            </div>
+            <iframe id="pageBrowserIframe" allowtransparency="true"
+            frameborder="0"></iframe>
+          </div>
+        </div>
     <!-- Troubleshooting Guide for Multiplayer -->
     <div id="troubleshootWindow" class="uiWindow">
       <div id="popup-title" class="popup-title">

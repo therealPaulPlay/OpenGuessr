@@ -215,6 +215,14 @@
 <script type="module">
     import { getAllUsers } from "./userAPI.js";
 
+    function inIframe() {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    }
+
     //load the username of the player
     let yourUsername = localStorage.getItem("username") != null ? localStorage.getItem("username") : "Not signed in";
     document.getElementById("yourName").innerHTML = yourUsername;
@@ -231,7 +239,15 @@
         document.getElementById("yourExperience").innerHTML = Number(localStorage.getItem("experience")).toLocaleString() + " XP";
     }
 
-    document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" });
+    document.getElementById("backButton").addEventListener("click",
+        function () {
+            if (inIframe()) {
+                window.top.postMessage("close", "*");
+            } else {
+                window.location.href = "/index.html";
+            }
+        }
+    );
 
     let container = document.getElementById('container');
 
