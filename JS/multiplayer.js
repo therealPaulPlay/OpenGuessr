@@ -358,6 +358,9 @@ function setMultiplayerUI() {
         document.getElementById("multiplayerChat").style.display = "flex";
         document.getElementById("multiplayerLeave").style.display = "block";
         document.getElementById("revealCompass").style.marginBottom = "-21px";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.bottom = "58px";
+        });
         document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
 
         //hide country picker UI
@@ -381,6 +384,9 @@ function setMultiplayerUI() {
         document.getElementById("multiplayerChat").style.display = "none";
         document.getElementById("multiplayerLeave").style.display = "none";
         document.getElementById("revealCompass").style.marginBottom = "-25px";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.bottom = "0px";
+        });
         mobileMenuButton.style.opacity = "1";
         mobileMenuButton.style.pointerEvents = "auto";
     }
@@ -1111,7 +1117,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     setDuelFindStatus("Room created. Please wait <10s");
     isHost = true;
     multiplayerFirstRoundPlayed = false;
-    multiplayerCategory = mapCategory.replace("community_", "");
+    multiplayerCategory = mapCategory;
 
     if (multiplayerCategory == "daily" || multiplayerCategory == "country") {
         multiplayerCategory = "standard";
@@ -1587,7 +1593,7 @@ export function showMultiplayerOverlay(show, title, array) {
         document.getElementById("multiplayerTitle").textContent = title;
 
         if (!multiplayerFirstRoundPlayed) {
-            document.getElementById("mapModeText").textContent = "Multiplayer (" + multiplayerCategory + ")";
+            document.getElementById("mapModeText").textContent = "Multiplayer (" + multiplayerCategory.replace("community_", "") + ")";
         }
 
         let yourPeerId = peerId;
@@ -1711,6 +1717,9 @@ export function showMultiplayerOverlay(show, title, array) {
         document.getElementById("map").style.visibility = "hidden";
         hideToggleMapButtonIfMobile(true);
         document.getElementById("revealCompass").style.visibility = "hidden";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.visibility = "hidden";
+        });
         showTimeReduceOverlay(0, true); // hide = true (in case it somehow overlaps if the result screen is being skipped quickly)
     } else {
         document.getElementById("multiplayerFade").style.opacity = "0";
@@ -1719,6 +1728,9 @@ export function showMultiplayerOverlay(show, title, array) {
             document.getElementById("map").style.visibility = "visible";
             hideToggleMapButtonIfMobile(false);
             document.getElementById("revealCompass").style.visibility = "visible";
+            document.querySelectorAll(".mapAttribution").forEach((element) => {
+                element.style.visibility = "visible";
+            });
         }
     }
 }

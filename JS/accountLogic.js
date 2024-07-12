@@ -312,13 +312,18 @@ function calculateXPGain(distance, category) {
     streakCalculation();
     return Math.round((5000 * ((0.996036) ** distance)) * streakMultiplier); // slightly reduced xp range as continents are smaller than countries
 
-  } else if (category == "famous" || (category && category.includes("community"))) {
+  } else if (category == "famous") {
 
     streakCalculation();
-    return Math.round((1500 * ((0.998036) ** distance)) * streakMultiplier); //1000 xp for famous and community, with streak up to 1800sth
+    return Math.round((1500 * ((0.998036) ** distance)) * streakMultiplier); //1500 xp for famous, with streak up to 1800sth
+
+  } else if (category && category.includes("community")) {
+
+    streakCalculation();
+    return Math.round((3000 * ((0.994036) ** distance)) * streakMultiplier); //3000 xp for community, with streak slightly more - also adjusted distance function
 
   } else if (category == "northamerica") {
-    return Math.round(5000 * ((0.996036) ** distance)); 
+    return Math.round(5000 * ((0.996036) ** distance));
 
   } else if (category == "daily") {
     let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
