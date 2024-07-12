@@ -1111,7 +1111,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     setDuelFindStatus("Room created. Please wait <10s");
     isHost = true;
     multiplayerFirstRoundPlayed = false;
-    multiplayerCategory = mapCategory.replace("community_", "");
+    multiplayerCategory = mapCategory;
 
     if (multiplayerCategory == "daily" || multiplayerCategory == "country") {
         multiplayerCategory = "standard";
@@ -1587,7 +1587,7 @@ export function showMultiplayerOverlay(show, title, array) {
         document.getElementById("multiplayerTitle").textContent = title;
 
         if (!multiplayerFirstRoundPlayed) {
-            document.getElementById("mapModeText").textContent = "Multiplayer (" + multiplayerCategory + ")";
+            document.getElementById("mapModeText").textContent = "Multiplayer (" + multiplayerCategory.replace("community_", "") + ")";
         }
 
         let yourPeerId = peerId;
