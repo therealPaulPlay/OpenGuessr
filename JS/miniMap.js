@@ -349,6 +349,9 @@ export function confirmButtonClicks() {
         document.getElementById("confirmButton").textContent = "Waiting...";
         document.getElementById("confirmButton").style.pointerEvents = "none";
         document.getElementById("map").style.visibility = "hidden";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.visibility = "hidden";
+        });
         hasGuessed = false;
         setConfirmButtonState();
         hideToggleMapButtonIfMobile(true);
