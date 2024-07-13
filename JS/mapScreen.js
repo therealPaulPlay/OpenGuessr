@@ -11,6 +11,7 @@ document.getElementById("backButton").addEventListener("click", function () {
     if (inIframe()) {
         window.top.postMessage("close", "*");
         window.top.postMessage("reloadCommunityMaps", "*");
+        window.top.postMessage("loadCategory", "*");
     } else {
         window.location.href = "/index.html";
     }
@@ -228,8 +229,8 @@ function instantPlayPopup(mapName) {
 
         if (inIframe()) {
             window.top.postMessage("close", "*");
-            window.top.postMessage("loadCategory", "*");
             window.top.postMessage("reloadCommunityMaps", "*");
+            window.top.postMessage("loadCategory", "*");
         } else {
             window.location.href = "/";
         }

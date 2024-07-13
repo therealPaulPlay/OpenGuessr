@@ -67,7 +67,7 @@ export function loadCommunityCategories() {
 
         mapArray.forEach((element) => {
             let categoryMenu = document.getElementById("communityMapArea");
-            categoryMenu.innerHTML += `<button class="category accountExclusive accountLock communityMap" id="community_${element.toLowerCase()}Category"
+            categoryMenu.innerHTML += `<button class="category communityMap" id="community_${element.toLowerCase()}Category"
             type="button">${element}</button>`;
 
             //add to categories
@@ -110,15 +110,17 @@ function removeSelectedMap(name) {
 }
 
 loadCommunityCategories();
+attachCategoryEventListeners();
 
 // Attach event listeners dynamically -------------------------------------------------------------
-
-for (const category in Category) {
-    const button = document.getElementById(`${category.toLowerCase()}Category`);
-    if (button) {
-        button.addEventListener("click", createCategoryChangeListener(Category[category]));
-    } else {
-        console.warn(`Element with ID "${category.toLowerCase()}Category" not found. Click listener not attached.`);
+export function attachCategoryEventListeners() {
+    for (const category in Category) {
+        const button = document.getElementById(`${category.toLowerCase()}Category`);
+        if (button) {
+            button.addEventListener("click", createCategoryChangeListener(Category[category])); // adding a new event listener of the same type will discard all old ones
+        } else {
+            console.warn(`Element with ID "${category.toLowerCase()}Category" not found. Click listener not attached.`);
+        }
     }
 }
 
@@ -233,7 +235,7 @@ export function checkGenerationTypeAndGenerate() {
 
 //Load the map category using localstorage ---------------------------------------------------------------------
 
-function loadMapCategory() {
+export function loadMapCategory() {
     let storedSelectedCategory = localStorage.getItem("selectedCategory");
 
     if (storedSelectedCategory != null)

@@ -4,7 +4,7 @@ import { setUserXP, uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
-import { changeCategory, loadCommunityCategories } from "./categoryMenu.js";
+import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners } from "./categoryMenu.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -567,6 +567,7 @@ function disablePageBrowser() {
     document.getElementById("blackBackground").style.visibility = "hidden"; 
     pageBrowserWindow.style.display = "none";
     document.getElementById("pageBrowserIframe").style.opacity = "0";
+    document.getElementById("pageBrowserIframe").src = ""; // unload iframe to save performance
 }
 
 window.onmessage = function(e) {
@@ -575,10 +576,12 @@ window.onmessage = function(e) {
             disablePageBrowser();
             break;
         case "loadCategory":
-            changeCategory(localStorage.getItem("selectedCategory"), true);
+            loadMapCategory();
+            changeCategory(mapCategory, true);
             break;
         case "reloadCommunityMaps":
             loadCommunityCategories();
+            attachCategoryEventListeners();
             break;
     }
 };
