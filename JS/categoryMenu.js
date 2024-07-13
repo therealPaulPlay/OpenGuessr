@@ -151,12 +151,11 @@ export function changeCategory(category, regenerate) {
         localStorage.setItem("selectedCategory", category);
     }
 
-    setTimeout(() => {
-        toggleCategoryMenu(true);
-    }, 300);
-
     if (regenerate) {
         checkGenerationTypeAndGenerate();
+        setTimeout(() => {
+            toggleCategoryMenu(true);
+        }, 300);
     }
 }
 

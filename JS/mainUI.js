@@ -575,13 +575,17 @@ window.onmessage = function(e) {
         case "close": 
             disablePageBrowser();
             break;
-        case "loadCategory":
-            loadMapCategory();
-            changeCategory(mapCategory, true);
-            break;
         case "reloadCommunityMaps":
             loadCommunityCategories();
             attachCategoryEventListeners();
+            break;
+        case "loadCategory":
+            loadMapCategory();
+            changeCategory(mapCategory, false);
+            break;
+        case "reloadCategory":
+            loadMapCategory();
+            changeCategory(mapCategory, true);
             break;
     }
 };

@@ -230,7 +230,7 @@ function instantPlayPopup(mapName) {
         if (inIframe()) {
             window.top.postMessage("close", "*");
             window.top.postMessage("reloadCommunityMaps", "*");
-            window.top.postMessage("loadCategory", "*");
+            window.top.postMessage("reloadCategory", "*");
         } else {
             window.location.href = "/";
         }
