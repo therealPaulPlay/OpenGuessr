@@ -1,5 +1,5 @@
 import { generateNewLocation, resMap} from "./main.js";
-import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable } from "./mainUI.js";
+import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
 import { setDailyChallengeUI, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
@@ -183,8 +183,8 @@ export function checkGenerationTypeAndGenerate() {
                 setHardMode(false);
                 generateNewLocation("DAILY");
             } else {
-                localStorage.setItem("selectedCategory", "standard");
-                window.location.href = "/dailyleaderboard.html";
+                changeCategory("standard", true);
+                showPageBrowser("/dailyleaderboard.html");
             }
 
         } else if (mapCategory == "country") {
