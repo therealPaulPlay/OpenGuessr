@@ -56,6 +56,8 @@ multiplayerSelectorClose.addEventListener("click", function () {
 
 let multiPlayerWindowOpen = false;
 
+let uniqueUserID = 0; // used in setup for peerJS as peer id
+
 export function toggleMultiplayerSelector(alwaysClose) {
     if (alwaysClose == "close") {
         multiPlayerWindowOpen = true;
@@ -66,6 +68,9 @@ export function toggleMultiplayerSelector(alwaysClose) {
             multiplayerSelectionScreen.style.display = "none";
             document.getElementById("blackBackground").style.visibility = "hidden";
         } else {
+            if (uniqueUserID.includes("guest")) {
+                setupPeerJS();
+            }
             multiplayerSelectionScreen.style.display = "block";
             document.getElementById("blackBackground").style.visibility = "visible";
             setMultiplayerWindowSelection("main");
@@ -534,29 +539,38 @@ function generateRandomCode(length) {
     return code;
 }
 
-let unqiueUserID = 0;
+function setupPeerJS() {
+    if (localStorage.getItem("id") != null) {
+        uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
+    } else {
+        uniqueUserID = "openguessr_" + "guest_" + generateRandomCode(10);
+    }
+    
+    //set up the peer connection
+    try {
 
-if (localStorage.getItem("id") != null) {
-    unqiueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
-} else {
-    unqiueUserID = "openguessr_" + "guest_" + generateRandomCode(10);
-}
-
-//set up the peer connection
-try {
-    peer = new Peer(unqiueUserID, {
-        config: {
-            'iceServers': [
-                { urls: "stun:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-                { urls: "stun:stun.l.google.com:19302" },
-                { urls: "turns:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-                { urls: "turn:fastturn.pro:3478", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-            ]
+        if (peer) {
+            try {
+                peer.destroy();
+            } catch {}
         }
-    });
-} catch (error) {
-    console.error("Could not inizialize PeerJS: " + error);
+
+        peer = new Peer(uniqueUserID, {
+            config: {
+                'iceServers': [
+                    { urls: "stun:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                    { urls: "stun:stun.l.google.com:19302" },
+                    { urls: "turns:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                    { urls: "turn:fastturn.pro:3478", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                ]
+            }
+        });
+    } catch (error) {
+        console.error("Could not inizialize PeerJS: " + error);
+    }
 }
+
+setupPeerJS();
 
 // Joining via Links (also as a guest!) -------------------------------------------------------------------------------------
 
@@ -980,7 +994,7 @@ export let yourTeam = 1;
 
 if (peer) {
     peer.on('open', function (id) {
-        peerId = id; //this also triggers for peers, as their connection opens
+        peerId = id; // this also triggers for peers, as their connection opens
 
         // Set up event listener for incoming connections (HOST LOGIC)
         peer.on('connection', function (incomingConn) {
