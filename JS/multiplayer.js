@@ -1,6 +1,6 @@
 import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socialBarExpanded, disableResultScreen } from "./mainUI.js";
+import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socialBarExpanded, disableResultScreen, showPageBrowser } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex } from "./accountLogic.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
@@ -76,7 +76,7 @@ export function toggleMultiplayerSelector(alwaysClose) {
 
         multiPlayerWindowOpen = !multiPlayerWindowOpen;
     } else {
-        window.location.href = "/signup.html"
+        showPageBrowser("/signup.html", true);
     }
 }
 
