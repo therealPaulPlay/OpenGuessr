@@ -1,7 +1,7 @@
 import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
 import { setDailyChallengeExperienceResult } from "./dailyChallenge";
 import { dailyChallengeTimer } from './dailyChallenge.js';
-import { checkTextLength, showPageBrowser, toggleMobileMenu } from "./mainUI";
+import { checkTextLength, resultScreenEnabled, showPageBrowser, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
@@ -10,6 +10,8 @@ import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 
 let accountLockedArray;
+
+let lastDistance;
 
 let profileName = document.getElementById("profileViewName");
 
@@ -167,6 +169,10 @@ async function changeUItoSignedIn() {
   XParea.style.display = "flex";
   enableExclusiveCategories();
   displayUserInfo();
+
+  if (resultScreenEnabled) {
+    loadResultScreenXP(lastDistance);
+  }
 }
 
 async function changeUItoSignedOut() {
@@ -375,6 +381,8 @@ function calculateXPGain(distance, category) {
 
 export async function loadResultScreenXP(distance) {
 
+  lastDistance = distance;
+
   if (isAuthenticated || multiplayer) {
     //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
@@ -392,7 +400,7 @@ export async function loadResultScreenXP(distance) {
     streakDisplay.style.visibility = "hidden";
     streakDisplay.style.width = "0";
 
-    //XP calculation formulas -------------------------------------------------
+    // XP calculation formulas -------------------------------------------------
     if (!multiplayer) {
       earnedXP = calculateXPGain(distance, selectedCategory);
 
