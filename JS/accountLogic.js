@@ -13,6 +13,8 @@ let accountLockedArray;
 
 let lastDistance;
 
+lastXPloadingAttemptAborted = false;
+
 let profileName = document.getElementById("profileViewName");
 
 let profileInfo = document.getElementById("profileInfo");
@@ -170,7 +172,8 @@ async function changeUItoSignedIn() {
   enableExclusiveCategories();
   displayUserInfo();
 
-  if (resultScreenEnabled) {
+  
+  if (resultScreenEnabled && lastXPloadingAttemptAborted) {
     loadResultScreenXP(lastDistance);
   }
 }
@@ -383,7 +386,13 @@ export async function loadResultScreenXP(distance) {
 
   lastDistance = distance;
 
+  if (!isAuthenticated && !multiplayer) {
+    lastXPloadingAttemptAborted = true;
+  }
+
   if (isAuthenticated || multiplayer) {
+    lastXPloadingAttemptAborted = false;
+
     //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
 
