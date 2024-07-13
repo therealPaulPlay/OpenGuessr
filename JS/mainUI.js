@@ -85,15 +85,9 @@ toggleMapButton.addEventListener("click", () => {
 function toggleMap() {
     if (!mapExpanded) {
         document.getElementById("map").style.maxHeight = "100%";
-        document.querySelectorAll(".mapAttribution").forEach((element) => {
-            element.style.maxHeight = "2000px";
-        });
         mapExpanded = true;
     } else {
         document.getElementById("map").style.maxHeight = "0%";
-        document.querySelectorAll(".mapAttribution").forEach((element) => {
-            element.style.maxHeight = "0px";
-        });
         mapExpanded = false;
     }
 }
@@ -159,7 +153,9 @@ export function enableResultScreen(resultString, extraMessage) {
 
 export function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
-    setTimeout(function () { document.getElementById("EndOverlay").style.visibility = "hidden" }, 200)
+    setTimeout(() => {
+        document.getElementById("EndOverlay").style.visibility = "hidden";
+    }, 250);
 
     resultScreenEnabled = false;
 }
