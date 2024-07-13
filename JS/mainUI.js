@@ -324,17 +324,18 @@ window.addEventListener("resize", (event) => {
 });
 
 //Username UI endless scroll --------------------------------------------------------------------------------------------------
-// Get the elements
-const accountName = document.getElementById('accountName');
 
 // Check if the text length exceeds the threshold
 export function checkTextLength() {
+    // Get the elements
+    const accountName = document.getElementById("accountName");
+
     const textLength = accountName.textContent.length;
 
     if (textLength > 14) {
-        accountName.classList.add('scroll');
+        accountName.classList.add("scroll");
     } else {
-        accountName.classList.remove('scroll');
+        accountName.classList.remove("scroll");
     }
 }
 
