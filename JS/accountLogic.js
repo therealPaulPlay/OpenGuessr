@@ -167,6 +167,22 @@ async function changeUItoSignedIn() {
   displayUserInfo();
 }
 
+async function changeUItoSignedOut() {
+  logoutButton.style.display = "none";
+  loginButton.style.display = "inline-block";
+  profileButton.style.display = "none";
+  mobileLogoutButton.style.display = "none";
+  mobileLoginButton.style.display = "inline-block";
+  mobileProfileButton.style.display = "none";
+  XPbarNoAccount.style.display = "block";
+  XParea.style.display = "none";
+  disableExlcusiveCategories();
+  displayAccountName.innerHTML = "Guest";
+  profileName.innerHTML = "Guest";
+  checkTextLength();
+  uiSetUserXP(0);
+}
+
 let username;
 
 //part of checkSigninStatusAndLoadUserInfo
@@ -188,18 +204,27 @@ async function checkSigninStatusAndLoadUserInfo() {
     });
   }
   else {
+    changeUItoSignedOut();
     profileInfo.classList.add("notSignedIn");
   }
 }
 
+let accountLockedArray = [];
+
 function enableExclusiveCategories() {
   let accountLocked = document.getElementsByClassName("accountLock");
-  let accountLockedArray = Array.from(accountLocked); // Convert to array
+  accountLockedArray = Array.from(accountLocked); // Convert to array
   for (let i = 0; i < accountLockedArray.length; i++) {
     accountLockedArray[i].classList.remove("accountLock");
   }
 
   document.getElementById("categoryExclusiveText").innerHTML = "You can now select these maps:";
+}
+
+function disableExlcusiveCategories() {
+  for (let i = 0; i < accountLockedArray.length; i++) {
+    accountLockedArray[i].classList.add("accountLock");
+  }
 }
 
 //XP bar loading function -------------------------------------------------------------------------------------------------
