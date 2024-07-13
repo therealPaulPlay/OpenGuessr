@@ -13,7 +13,7 @@ let accountLockedArray;
 
 let lastDistance;
 
-lastXPloadingAttemptAborted = false;
+let lastXPloadingAttemptAborted = false;
 
 let profileName = document.getElementById("profileViewName");
 
@@ -172,7 +172,7 @@ async function changeUItoSignedIn() {
   enableExclusiveCategories();
   displayUserInfo();
 
-  
+
   if (resultScreenEnabled && lastXPloadingAttemptAborted) {
     loadResultScreenXP(lastDistance);
   }
