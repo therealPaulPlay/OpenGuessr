@@ -1,7 +1,8 @@
 import { confirmButtonClicks} from "./miniMap";
 import { setDailyChallengeScore } from "./userAPI"
 import { startTimer } from "./timer";
-import { toggleCategoryMenu } from "./mainUI";
+import { showPageBrowser, toggleCategoryMenu } from "./mainUI";
+import { changeCategory } from "./categoryMenu";
 
 export let dailyChallengeUIEnabled = false;
 export let dailyChallengeTimer;
@@ -63,8 +64,9 @@ function dailyChallengeTimerExpired() {
 
 //Daily Challenge end -------------------------------------------------------------------------------------------------------------------------------------
 export function dailyChallengeEnd() {
-    localStorage.setItem("selectedCategory", "standard"); //reset category to standard, so that if user returns after daily challenge it doesn't restart daily challenge
-    window.location.href = "/dailyleaderboard.html";
+    changeCategory("standard", false); //reset category to standard, so that if user returns after daily challenge it doesn't restart daily challenge
+    showPageBrowser("/dailyleaderboard.html");
+    document.getElementById("nextRound").textContent = "Next round →";
 }
 
 //Time system (the challenge should only be available once a day) -----------------------------------------------------------------------------------------

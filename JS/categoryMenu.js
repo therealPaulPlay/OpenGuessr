@@ -293,7 +293,8 @@ export function transitionToStart() {
             shrinkMapIfMobile();
 
         } else {
-            dailyChallengeEnd(); //go to the daily leaderboard
+            justPlayedDailyChallenge = false;
+            dailyChallengeEnd(); // open daily leaderboard + make skip button normal again
         }
     } else {
         console.warn("CategoryMenu.js: Already transitioning to start!");

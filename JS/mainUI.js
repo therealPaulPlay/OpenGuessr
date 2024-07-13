@@ -553,7 +553,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let pageBrowserWindow = document.getElementById("pageBrowserWindow");
 
-function showPageBrowser(page) {
+export function showPageBrowser(page) {
     document.getElementById("blackBackground").style.visibility = "visible"; 
     document.getElementById("pageBrowserIframe").src = window.location.origin + page;
     pageBrowserWindow.style.display = "block";
