@@ -4,7 +4,7 @@ import { setUserXP, uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
-import { setPointsOfInterest } from "./miniMap.js";
+import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners } from "./categoryMenu.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -61,11 +61,11 @@ document.getElementById("dailyLeaderboardButton").addEventListener("click", () =
 });
 
 function goToLeaderboard() {
-    window.location.href = "/leaderboard.html";
+    showPageBrowser("/leaderboard.html");
 }
 
 function goToDailyLeaderboard() {
-    window.location.href = "/dailyleaderboard.html";
+    showPageBrowser("/dailyleaderboard.html");
 }
 
 //Toggle Map on mobile devices ---------------------------------------------------------------------------------------
@@ -126,9 +126,9 @@ let socialDiscordButton = document.getElementById("discordButton");
 socialDiscordButton.addEventListener("click", function () { playSound("basic_button"); window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
 
 let privacyButton = document.getElementById("privacyButton");
-privacyButton.addEventListener("click", function () { playSound("basic_button"); window.location.href = "/legal.html" });
+privacyButton.addEventListener("click", function () { playSound("basic_button"); showPageBrowser("/legal.html"); });
 
-document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); window.location.href = "/maps.html"; });
+document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html");});
 
 //Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
@@ -371,10 +371,12 @@ document.getElementById("mobilePopupClose").addEventListener("click", () => {
 
 document.getElementById("mobileLeaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
+    toggleMobileMenu();
     goToLeaderboard();
 });
 document.getElementById("mobileDailyLeaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
+    toggleMobileMenu();
     goToDailyLeaderboard();
 });
 document.getElementById("mobileMultiplayerButton").addEventListener("click", function () {
@@ -541,4 +543,45 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         document.getElementById("adsText").style.opacity = "0.25";
     }, 12000);
-})
+});
+
+// In-App page browser -----------------------------------------------------------------------------------
+
+let pageBrowserWindow = document.getElementById("pageBrowserWindow");
+
+export function showPageBrowser(page) {
+    document.getElementById("blackBackground").style.visibility = "visible"; 
+    document.getElementById("pageBrowserIframe").src = window.location.origin + page;
+    pageBrowserWindow.style.display = "block";
+
+    document.getElementById("pageBrowserIframe").onload = function() {
+        this.style.opacity = "1";
+      };
+}
+
+function disablePageBrowser() {
+    document.getElementById("blackBackground").style.visibility = "hidden"; 
+    pageBrowserWindow.style.display = "none";
+    document.getElementById("pageBrowserIframe").style.opacity = "0";
+    document.getElementById("pageBrowserIframe").src = ""; // unload iframe to save performance
+}
+
+window.onmessage = function(e) {
+    switch (e.data) {
+        case "close": 
+            disablePageBrowser();
+            break;
+        case "reloadCommunityMaps":
+            loadCommunityCategories();
+            attachCategoryEventListeners();
+            break;
+        case "loadCategory":
+            loadMapCategory();
+            changeCategory(mapCategory, false);
+            break;
+        case "reloadCategory":
+            loadMapCategory();
+            changeCategory(mapCategory, true);
+            break;
+    }
+};
