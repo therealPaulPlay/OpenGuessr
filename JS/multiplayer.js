@@ -407,6 +407,7 @@ export function multiplayerTimerExpired() {
 }
 
 let roundEnded = false; // for host only! Used to prevent ending the round from the host's side multiple times (error prevention)
+let lateJoinedWaiting = false; // For a peer that late joins and then shouldn't see the result of where he didnt participate.
 
 export let autoSkipResult;
 
@@ -438,8 +439,11 @@ function endMultiplayerRound() {
             document.getElementById("nextRound").innerHTML = "Waiting for host... ➝";
         }
 
-        calculateDistances(mapMarkerLat, mapMarkerLong);
-        loadResultMap(mapMarkerLat, mapMarkerLong);
+        if (!lateJoinedWaiting) {
+            calculateDistances(mapMarkerLat, mapMarkerLong);
+            loadResultMap(mapMarkerLat, mapMarkerLong);
+        }
+
         try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer
         roundEnded = true;
     } else {
@@ -1324,7 +1328,8 @@ function joinRoom(code) {
 
         if (data.type === "lateJoin") {
             multiplayerFirstRoundPlayed = true;
-            showMultiplayerOverlay(true, "Wait for next round...", data.content);
+            lateJoinedWaiting = true;
+            showMultiplayerOverlay(true, "Wait for next round...", data.content, true);
         }
 
         if (data.type === "showPlayersArrayAfterRound") {
@@ -1344,6 +1349,7 @@ function joinRoom(code) {
 
             multiplayerFirstRoundPlayed = true;
             teamMarkerArray = [];
+            lateJoinedWaiting = false;
             checkGenerationTypeAndGenerate();
             multiplayerOverlayCountdown();
         }
@@ -1523,6 +1529,7 @@ function leaveMultiplayerRound() {
     matchmakingActive = false;
     isHost = false;
     playingDuels = false;
+    lateJoinedWaiting = false;
 
     //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";
@@ -1596,7 +1603,7 @@ function showEndscreenUI(show) {
     }
 }
 
-export function showMultiplayerOverlay(show, title, array) {
+export function showMultiplayerOverlay(show, title, array, lateJoin) {
     if (show) {
         document.getElementById("multiplayerFade").style.opacity = "1";
         document.getElementById("multiplayerFade").style.pointerEvents = "auto";
@@ -1681,7 +1688,7 @@ export function showMultiplayerOverlay(show, title, array) {
             array.sort((a, b) => b[3] - a[3]);
 
             // no teams win state
-            if (roundIndex >= roundAmount) {
+            if (roundIndex >= roundAmount && !lateJoin) {
                 let winningPlayerData = array[0];
                 let winningUsername = winningPlayerData[1];
                 document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
