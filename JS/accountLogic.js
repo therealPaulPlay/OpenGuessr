@@ -1,13 +1,19 @@
 import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
 import { setDailyChallengeExperienceResult } from "./dailyChallenge";
 import { dailyChallengeTimer } from './dailyChallenge.js';
-import { checkTextLength, toggleMobileMenu } from "./mainUI";
+import { checkTextLength, resultScreenEnabled, showPageBrowser, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
+
+let accountLockedArray;
+
+let lastDistance;
+
+let lastXPloadingAttemptAborted = false;
 
 let profileName = document.getElementById("profileViewName");
 
@@ -22,6 +28,7 @@ loginButton.addEventListener("click", () => {
 let mobileLoginButton = document.getElementById("mobileLoginButton");
 mobileLoginButton.addEventListener("click", () => {
   playSound("basic_button");
+  toggleMobileMenu();
   goTologin();
 });
 
@@ -79,13 +86,14 @@ document.getElementById("confirmUsername").addEventListener("click", () => {
 let resultLevelText = document.getElementById("endScreenLevel");
 let resultLevelDisplay = document.getElementById("endScreenLevelDisplay");
 
-//Custom signup (WIP) -------------------------------------------------------------------------------------------------------------------
+// Custom signup -------------------------------------------------------------------------------------------------------------------
 
 export let isAuthenticated = false; //true if user is logged in 
 
 checkAuthenticationStatus();
 
-function checkAuthenticationStatus() {
+// Global function that changes everything to logged in or signed out (all other sign-in functions are related to this)
+export function checkAuthenticationStatus() {
   let bearerToken = localStorage.getItem("bearer");
 
   if (bearerToken != null && bearerToken != "") {
@@ -138,17 +146,17 @@ function signout() {
   localStorage.removeItem("username");
   localStorage.removeItem("experience");
   localStorage.removeItem("selectedPin"); //also reset selected pin, as that is xp-based
-  window.location.reload(); //reload website, so that UI etc. will be reset and all the loaded values aren't still showing
+  checkAuthenticationStatus();
 }
 
 function goTologin() {
-  window.location.href = "/signup.html";
+  showPageBrowser("/signup.html", true);
 }
 
 //Account UI (working) -------------------------------------------------------------------------------------------------------------
 
 XPbarNoAccount.addEventListener("click", function () {
-  window.location.href = "/signup.html";
+  goTologin();
 })
 
 //part of checkSigninStatusAndLoadUserInfo
@@ -163,6 +171,27 @@ async function changeUItoSignedIn() {
   XParea.style.display = "flex";
   enableExclusiveCategories();
   displayUserInfo();
+
+
+  if (resultScreenEnabled && lastXPloadingAttemptAborted) {
+    loadResultScreenXP(lastDistance);
+  }
+}
+
+async function changeUItoSignedOut() {
+  logoutButton.style.display = "none";
+  loginButton.style.display = "inline-block";
+  profileButton.style.display = "none";
+  mobileLogoutButton.style.display = "none";
+  mobileLoginButton.style.display = "inline-block";
+  mobileProfileButton.style.display = "none";
+  XPbarNoAccount.style.display = "block";
+  XParea.style.display = "none";
+  disableExlcusiveCategories();
+  displayAccountName.innerHTML = "Guest";
+  profileName.innerHTML = "Guest";
+  checkTextLength();
+  uiSetUserXP(0);
 }
 
 let username;
@@ -186,18 +215,29 @@ async function checkSigninStatusAndLoadUserInfo() {
     });
   }
   else {
+    changeUItoSignedOut();
     profileInfo.classList.add("notSignedIn");
   }
 }
 
 function enableExclusiveCategories() {
   let accountLocked = document.getElementsByClassName("accountLock");
-  let accountLockedArray = Array.from(accountLocked); // Convert to array
+  accountLockedArray = Array.from(accountLocked); // Convert to array
   for (let i = 0; i < accountLockedArray.length; i++) {
     accountLockedArray[i].classList.remove("accountLock");
   }
 
   document.getElementById("categoryExclusiveText").innerHTML = "You can now select these maps:";
+}
+
+function disableExlcusiveCategories() {
+  if (accountLockedArray) {
+    for (let i = 0; i < accountLockedArray.length; i++) {
+      accountLockedArray[i].classList.add("accountLock");
+    }
+  }
+
+  document.getElementById("categoryExclusiveText").innerHTML = " Sign up to unlock for free: ";
 }
 
 //XP bar loading function -------------------------------------------------------------------------------------------------
@@ -225,11 +265,9 @@ export function uiSetUserXP(xp) {
   let levelText = document.getElementById("levelText");
 
   // Update the UI with the calculated level and XP progress
-  if (isAuthenticated) {
-    levelText.innerHTML = "Level " + templevel; //account ui level text
-    resultLevelDisplay.innerHTML = "Lvl. " + templevel;
-    levelXPbar.style.width = Math.max((xp / requiredXP) * 100, 12) + "%"; //account ui xp bar
-  }
+  levelText.innerHTML = "Level " + templevel; //account ui level text
+  resultLevelDisplay.innerHTML = "Lvl. " + templevel;
+  levelXPbar.style.width = xp != 0 ? Math.max((xp / requiredXP) * 100, 12) + "%" : "0%"; //account ui xp bar
 
   return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
 }
@@ -346,7 +384,15 @@ function calculateXPGain(distance, category) {
 
 export async function loadResultScreenXP(distance) {
 
+  lastDistance = distance;
+
+  if (!isAuthenticated && !multiplayer) {
+    lastXPloadingAttemptAborted = true;
+  }
+
   if (isAuthenticated || multiplayer) {
+    lastXPloadingAttemptAborted = false;
+
     //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
 
@@ -363,7 +409,7 @@ export async function loadResultScreenXP(distance) {
     streakDisplay.style.visibility = "hidden";
     streakDisplay.style.width = "0";
 
-    //XP calculation formulas -------------------------------------------------
+    // XP calculation formulas -------------------------------------------------
     if (!multiplayer) {
       earnedXP = calculateXPGain(distance, selectedCategory);
 

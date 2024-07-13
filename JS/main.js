@@ -111,12 +111,12 @@ function compareDistances(distance) {
         let finalResult;
         let resultAsString;
 
-        veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Let me guess; you have an A in geography?", "Wow."]
-        closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!"];
-        farDistances = ["It was a good guess.", "You'll get it next time!", "At least it was on the correct planet, right?", "Not bad, not great."];
+        veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Let me guess; you have an A in geography?", "Wow.", "Time for a screenshot.", "Seriously impressive."];
+        closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!", "Yup, that was impressive.", "That's how it's done!"];
+        farDistances = ["Distance is relative. Relatively big in this case.", "You'll get it next time!", "At least it was on the correct planet, right?", "It could have been worse."];
 
         //motivational quotes
-        if (distance < 100 && !(distance < 5)) {
+        if (distance < 1000 && !(distance < 5)) {
             extraMsg = closeDistances[Math.floor(Math.random() * closeDistances.length)];
         }
         else {

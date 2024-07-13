@@ -1,6 +1,6 @@
 import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socialBarExpanded, disableResultScreen } from "./mainUI.js";
+import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socialBarExpanded, disableResultScreen, showPageBrowser } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex } from "./accountLogic.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
@@ -56,6 +56,8 @@ multiplayerSelectorClose.addEventListener("click", function () {
 
 let multiPlayerWindowOpen = false;
 
+let uniqueUserID = 0; // used in setup for peerJS as peer id
+
 export function toggleMultiplayerSelector(alwaysClose) {
     if (alwaysClose == "close") {
         multiPlayerWindowOpen = true;
@@ -76,7 +78,7 @@ export function toggleMultiplayerSelector(alwaysClose) {
 
         multiPlayerWindowOpen = !multiPlayerWindowOpen;
     } else {
-        window.location.href = "/signup.html"
+        showPageBrowser("/signup.html", true);
     }
 }
 
@@ -405,6 +407,7 @@ export function multiplayerTimerExpired() {
 }
 
 let roundEnded = false; // for host only! Used to prevent ending the round from the host's side multiple times (error prevention)
+let lateJoinedWaiting = false; // For a peer that late joins and then shouldn't see the result of where he didnt participate.
 
 export let autoSkipResult;
 
@@ -436,8 +439,11 @@ function endMultiplayerRound() {
             document.getElementById("nextRound").innerHTML = "Waiting for host... ➝";
         }
 
-        calculateDistances(mapMarkerLat, mapMarkerLong);
-        loadResultMap(mapMarkerLat, mapMarkerLong);
+        if (!lateJoinedWaiting) {
+            calculateDistances(mapMarkerLat, mapMarkerLong);
+            loadResultMap(mapMarkerLat, mapMarkerLong);
+        }
+
         try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer
         roundEnded = true;
     } else {
@@ -534,17 +540,15 @@ function generateRandomCode(length) {
     return code;
 }
 
-let unqiueUserID = 0;
-
 if (localStorage.getItem("id") != null) {
-    unqiueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
+    uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
 } else {
-    unqiueUserID = "openguessr_" + "guest_" + generateRandomCode(10);
+    uniqueUserID = "openguessr_" + "g" + generateRandomCode(7);
 }
 
 //set up the peer connection
 try {
-    peer = new Peer(unqiueUserID, {
+    peer = new Peer(uniqueUserID, {
         config: {
             'iceServers': [
                 { urls: "stun:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
@@ -980,7 +984,7 @@ export let yourTeam = 1;
 
 if (peer) {
     peer.on('open', function (id) {
-        peerId = id; //this also triggers for peers, as their connection opens
+        peerId = id; // this also triggers for peers, as their connection opens
 
         // Set up event listener for incoming connections (HOST LOGIC)
         peer.on('connection', function (incomingConn) {
@@ -1012,6 +1016,7 @@ if (peer) {
                         type: "initialize",
                         content: {
                             roundAmount: roundAmount,
+                            currentRound: roundIndex,
                             roundLength: roundLength,
                             teamAmount: teamAmount,
                             team: getTeamFromPeerId(incomingConn.peer),
@@ -1023,10 +1028,16 @@ if (peer) {
                     incomingConn.send(initialMessage);
                     distributeChat("System: " + incomingConn.metadata.username + " joined.");
 
-                    //the first round played is just to be sure, in case a client disconnects and reconnects for example it shouldn't resend that
+                    // whether the first round has been played & the starting screen should be shown
                     if (!multiplayerFirstRoundPlayed) {
                         sendMessageToAll("showPlayersArray", connectedPeers); //send it to peer
                         showMultiplayerOverlay(true, "Waiting...", connectedPeers); //also show it for host
+                    } else {
+                        const waitingMessage = {
+                            type: "lateJoin",
+                            content: connectedPeers
+                        }
+                        incomingConn.send(waitingMessage);
                     }
 
                     //if duels matchmaking is active, immediately start the round on the first OPEN connection
@@ -1144,7 +1155,9 @@ function StartRoom() {
     showMultiplayerOverlay(true, "Ready...", connectedPeers); //only for host, also to set the map category in mode text
     sendMessageToAll("showPlayersArray", connectedPeers); //this is for the peers (the same thing as showMultiplayerOverlay for host)
     checkGenerationTypeAndGenerate();
-    roomLocked = true;
+    if (playingDuels) {
+        roomLocked = true;
+    }
     matchmakingActive = false;
 }
 
@@ -1306,10 +1319,17 @@ function joinRoom(code) {
             multiplayerRestriction = data.content.multiplayerRestriction;
             multiplayerCategory = data.content.category;
             yourTeam = data.content.team;
+            roundIndex = data.content.currentRound;
         }
 
         if (data.type === "showPlayersArray") {
             showMultiplayerOverlay(true, "Starting soon...", data.content);
+        }
+
+        if (data.type === "lateJoin") {
+            multiplayerFirstRoundPlayed = true;
+            lateJoinedWaiting = true;
+            showMultiplayerOverlay(true, "Wait for next round...", data.content, true);
         }
 
         if (data.type === "showPlayersArrayAfterRound") {
@@ -1329,6 +1349,7 @@ function joinRoom(code) {
 
             multiplayerFirstRoundPlayed = true;
             teamMarkerArray = [];
+            lateJoinedWaiting = false;
             checkGenerationTypeAndGenerate();
             multiplayerOverlayCountdown();
         }
@@ -1349,11 +1370,6 @@ function joinRoom(code) {
 
         if (data.type === "closeResultScreen") {
             transitionToStart();
-        }
-
-        if (data.type === "locked") {
-            setJoinInfoText("Room locked!");
-            setJoinButtonState();
         }
 
         if (data.type === "rematch") {
@@ -1382,11 +1398,11 @@ function joinRoom(code) {
 
         //if you try to join a room that is locked
         if (!multiplayer) {
-            setJoinInfoText("Room locked - round ongoing");
+            setJoinInfoText("Room locked.");
             setJoinButtonState();
 
             if (matchmakingActive) {
-                setDuelFindStatus("Room locked - round ongoing");
+                setDuelFindStatus("Room locked.");
                 findNextDuel();
             }
         }
@@ -1513,6 +1529,7 @@ function leaveMultiplayerRound() {
     matchmakingActive = false;
     isHost = false;
     playingDuels = false;
+    lateJoinedWaiting = false;
 
     //reset UI things
     document.getElementById("confirmButton").textContent = "Guess";
@@ -1586,7 +1603,7 @@ function showEndscreenUI(show) {
     }
 }
 
-export function showMultiplayerOverlay(show, title, array) {
+export function showMultiplayerOverlay(show, title, array, lateJoin) {
     if (show) {
         document.getElementById("multiplayerFade").style.opacity = "1";
         document.getElementById("multiplayerFade").style.pointerEvents = "auto";
@@ -1671,7 +1688,7 @@ export function showMultiplayerOverlay(show, title, array) {
             array.sort((a, b) => b[3] - a[3]);
 
             // no teams win state
-            if (roundIndex >= roundAmount) {
+            if (roundIndex >= roundAmount && !lateJoin) {
                 let winningPlayerData = array[0];
                 let winningUsername = winningPlayerData[1];
                 document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
