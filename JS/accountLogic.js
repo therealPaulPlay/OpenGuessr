@@ -252,11 +252,9 @@ export function uiSetUserXP(xp) {
   let levelText = document.getElementById("levelText");
 
   // Update the UI with the calculated level and XP progress
-  if (isAuthenticated) {
-    levelText.innerHTML = "Level " + templevel; //account ui level text
-    resultLevelDisplay.innerHTML = "Lvl. " + templevel;
-    levelXPbar.style.width = Math.max((xp / requiredXP) * 100, 12) + "%"; //account ui xp bar
-  }
+  levelText.innerHTML = "Level " + templevel; //account ui level text
+  resultLevelDisplay.innerHTML = "Lvl. " + templevel;
+  levelXPbar.style.width = Math.max((xp / requiredXP) * 100, 12) + "%"; //account ui xp bar
 
   return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
 }
