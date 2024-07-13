@@ -1012,6 +1012,7 @@ if (peer) {
                         type: "initialize",
                         content: {
                             roundAmount: roundAmount,
+                            currentRound: roundIndex,
                             roundLength: roundLength,
                             teamAmount: teamAmount,
                             team: getTeamFromPeerId(incomingConn.peer),
@@ -1023,10 +1024,16 @@ if (peer) {
                     incomingConn.send(initialMessage);
                     distributeChat("System: " + incomingConn.metadata.username + " joined.");
 
-                    //the first round played is just to be sure, in case a client disconnects and reconnects for example it shouldn't resend that
+                    // whether the first round has been played & the starting screen should be shown
                     if (!multiplayerFirstRoundPlayed) {
                         sendMessageToAll("showPlayersArray", connectedPeers); //send it to peer
                         showMultiplayerOverlay(true, "Waiting...", connectedPeers); //also show it for host
+                    } else {
+                        const waitingMessage = {
+                            type: "lateJoin",
+                            content: connectedPeers
+                        }
+                        incomingConn.send(waitingMessage);
                     }
 
                     //if duels matchmaking is active, immediately start the round on the first OPEN connection
@@ -1144,7 +1151,9 @@ function StartRoom() {
     showMultiplayerOverlay(true, "Ready...", connectedPeers); //only for host, also to set the map category in mode text
     sendMessageToAll("showPlayersArray", connectedPeers); //this is for the peers (the same thing as showMultiplayerOverlay for host)
     checkGenerationTypeAndGenerate();
-    roomLocked = true;
+    if (playingDuels) {
+        roomLocked = true;
+    }
     matchmakingActive = false;
 }
 
@@ -1306,10 +1315,16 @@ function joinRoom(code) {
             multiplayerRestriction = data.content.multiplayerRestriction;
             multiplayerCategory = data.content.category;
             yourTeam = data.content.team;
+            roundIndex = data.content.currentRound;
         }
 
         if (data.type === "showPlayersArray") {
             showMultiplayerOverlay(true, "Starting soon...", data.content);
+        }
+
+        if (data.type === "lateJoin") {
+            multiplayerFirstRoundPlayed = true;
+            showMultiplayerOverlay(true, "Wait for next round...", data.content);
         }
 
         if (data.type === "showPlayersArrayAfterRound") {
@@ -1351,11 +1366,6 @@ function joinRoom(code) {
             transitionToStart();
         }
 
-        if (data.type === "locked") {
-            setJoinInfoText("Room locked!");
-            setJoinButtonState();
-        }
-
         if (data.type === "rematch") {
             roundEnded = false;
             multiplayerHasAlreadyGuessed = false;
@@ -1382,11 +1392,11 @@ function joinRoom(code) {
 
         //if you try to join a room that is locked
         if (!multiplayer) {
-            setJoinInfoText("Room locked - round ongoing");
+            setJoinInfoText("Room locked.");
             setJoinButtonState();
 
             if (matchmakingActive) {
-                setDuelFindStatus("Room locked - round ongoing");
+                setDuelFindStatus("Room locked.");
                 findNextDuel();
             }
         }
