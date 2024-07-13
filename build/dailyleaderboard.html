@@ -342,6 +342,8 @@
     }
 
     async function loadLeaderboard() {
+        container.innerHTML = "<p>Loading...</p>";
+        
         // Await the promise returned by getDailyLeaderboard()
         let userData = await getDailyLeaderboard();
 

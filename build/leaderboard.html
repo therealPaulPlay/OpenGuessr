@@ -282,6 +282,8 @@
     }
 
     async function loadLeaderboard() {
+        container.innerHTML = "<p>Loading...</p>";
+
         // Await the promise returned by getAllUsers()
         let userData = await getAllUsers();
 
