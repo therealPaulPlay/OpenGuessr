@@ -225,6 +225,7 @@ function disableExlcusiveCategories() {
   for (let i = 0; i < accountLockedArray.length; i++) {
     accountLockedArray[i].classList.add("accountLock");
   }
+  document.getElementById("categoryExclusiveText").innerHTML = " Sign up to unlock for free: ";
 }
 
 //XP bar loading function -------------------------------------------------------------------------------------------------
