@@ -18,7 +18,6 @@ export function errorPopup(title, description, errorCode, reload, hideDontShowAg
     }
 
     document.getElementById("errorPopup").style.display = 'flex';
-    document.getElementById("blackBackground").style.visibility = "visible";
 
     if (!reload) {
       document.getElementById("popupClose").innerHTML = "Close";
@@ -30,7 +29,6 @@ export function errorPopup(title, description, errorCode, reload, hideDontShowAg
 
 export function closePopup() {
   document.getElementById("errorPopup").style.display = 'none';
-  document.getElementById("blackBackground").style.visibility = "hidden";
   if (document.getElementById("popupClose").innerHTML != "Close") {
     localStorage.setItem("selectedCategory", "standard");
     location.reload();

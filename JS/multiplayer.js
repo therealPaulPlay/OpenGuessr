@@ -548,13 +548,6 @@ function setupPeerJS() {
     
     //set up the peer connection
     try {
-
-        if (peer) {
-            try {
-                peer.destroy();
-            } catch {}
-        }
-
         peer = new Peer(uniqueUserID, {
             config: {
                 'iceServers': [
