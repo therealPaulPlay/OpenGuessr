@@ -536,38 +536,27 @@ function generateRandomCode(length) {
     return code;
 }
 
-async function setupPeerJS() {
-
-    if (peer) {
-        await peer.destroy();
-    }
-
-    if (localStorage.getItem("id") != null) {
-        uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
-    } else {
-        uniqueUserID = "openguessr_" + "g_" + generateRandomCode(6);
-    }
-    
-    //set up the peer connection
-    try {
-        peer = new Peer(uniqueUserID, {
-            config: {
-                'iceServers': [
-                    { urls: "stun:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-                    { urls: "stun:stun.l.google.com:19302" },
-                    { urls: "turns:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-                    { urls: "turn:fastturn.pro:3478", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-                ]
-            }
-        });
-    } catch (error) {
-        console.error("Could not inizialize PeerJS: " + error);
-    }
+if (localStorage.getItem("id") != null) {
+    uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
+} else {
+    uniqueUserID = "openguessr_" + "g_" + generateRandomCode(6);
 }
 
-setupPeerJS();
-
-setTimeout(setupPeerJS, 10000);
+//set up the peer connection
+try {
+    peer = new Peer(uniqueUserID, {
+        config: {
+            'iceServers': [
+                { urls: "stun:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                { urls: "stun:stun.l.google.com:19302" },
+                { urls: "turns:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                { urls: "turn:fastturn.pro:3478", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+            ]
+        }
+    });
+} catch (error) {
+    console.error("Could not inizialize PeerJS: " + error);
+}
 
 // Joining via Links (also as a guest!) -------------------------------------------------------------------------------------
 
