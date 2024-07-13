@@ -222,9 +222,12 @@ function enableExclusiveCategories() {
 }
 
 function disableExlcusiveCategories() {
-  for (let i = 0; i < accountLockedArray.length; i++) {
-    accountLockedArray[i].classList.add("accountLock");
+  if (accountLockedArray) {
+    for (let i = 0; i < accountLockedArray.length; i++) {
+      accountLockedArray[i].classList.add("accountLock");
+    }
   }
+
   document.getElementById("categoryExclusiveText").innerHTML = " Sign up to unlock for free: ";
 }
 
@@ -255,7 +258,7 @@ export function uiSetUserXP(xp) {
   // Update the UI with the calculated level and XP progress
   levelText.innerHTML = "Level " + templevel; //account ui level text
   resultLevelDisplay.innerHTML = "Lvl. " + templevel;
-  levelXPbar.style.width = Math.max((xp / requiredXP) * 100, 12) + "%"; //account ui xp bar
+  levelXPbar.style.width = xp != 0 ? Math.max((xp / requiredXP) * 100, 12) + "%" : "0%"; //account ui xp bar
 
   return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
 }
