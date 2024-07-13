@@ -9,6 +9,8 @@ import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } fro
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 
+let accountLockedArray;
+
 let profileName = document.getElementById("profileViewName");
 
 let profileInfo = document.getElementById("profileInfo");
@@ -208,8 +210,6 @@ async function checkSigninStatusAndLoadUserInfo() {
     profileInfo.classList.add("notSignedIn");
   }
 }
-
-let accountLockedArray = [];
 
 function enableExclusiveCategories() {
   let accountLocked = document.getElementsByClassName("accountLock");
