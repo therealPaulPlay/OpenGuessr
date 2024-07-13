@@ -61,10 +61,16 @@ document.getElementById("dailyLeaderboardButton").addEventListener("click", () =
 });
 
 function goToLeaderboard() {
+    if (socialBarExpanded) {
+        toggleSocialbar();
+    }
     showPageBrowser("/leaderboard.html");
 }
 
 function goToDailyLeaderboard() {
+    if (socialBarExpanded) {
+        toggleSocialbar();
+    }
     showPageBrowser("/dailyleaderboard.html");
 }
 
