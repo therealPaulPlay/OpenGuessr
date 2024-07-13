@@ -565,8 +565,9 @@ export function showPageBrowser(page, login) {
     document.getElementById("pageBrowserIframe").src = window.location.origin + page;
 
     if (login) {
-        pageBrowserWindow.style.maxWidth = "600px";
-        pageBrowserWindow.style.maxHeight = "700px";
+        pageBrowserWindow.classList.add("loginIframeWindow");
+    } else {
+        pageBrowserWindow.classList.remove("loginIframeWindow");
     }
 
     pageBrowserWindow.style.display = "block";
