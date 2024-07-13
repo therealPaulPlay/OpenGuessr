@@ -323,6 +323,10 @@ document.getElementById("map").addEventListener('touchend', handleMapUnhover);
 //Guess / Confirm function ----------------------------------------------------------------------------------
 export let justPlayedDailyChallenge = false;
 
+export function dailyChallengeNotJustPlayed() {
+    justPlayedDailyChallenge = false;
+}
+
 export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
     playSound("basic_button");

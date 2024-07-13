@@ -4,7 +4,7 @@ import { setDailyChallengeUI, dailyChallengeEnd, checkDailyChallengeCompletion, 
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
-import { handleMapUnhover, justPlayedDailyChallenge } from "./miniMap.js";
+import { dailyChallengeNotJustPlayed, handleMapUnhover, justPlayedDailyChallenge } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
@@ -293,7 +293,7 @@ export function transitionToStart() {
             shrinkMapIfMobile();
 
         } else {
-            justPlayedDailyChallenge = false;
+            dailyChallengeNotJustPlayed();
             dailyChallengeEnd(); // open daily leaderboard + make skip button normal again
         }
     } else {
