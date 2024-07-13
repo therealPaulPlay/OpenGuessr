@@ -5,7 +5,7 @@
     <title>Legal</title>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
-    
+
     <link rel="icon" href="/favicon.ico">
 </head>
 
@@ -215,7 +215,8 @@
         font-size: 25px;
         color: black;
         width: fit-content;
-        height: fit-content;
+        height: 50px;
+        line-height: 20px;
         background-color: white;
         border-radius: 10px;
         margin: 20px 20px;
@@ -314,5 +315,19 @@
 </style>
 
 <script>
-    document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" });
+    function inIframe() {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    }
+
+    document.getElementById("backButton").addEventListener("click", () => {
+        if (inIframe()) {
+            window.top.postMessage("close", "*");
+        } else {
+            window.location.href = "/index.html";
+        }
+    });
 </script>

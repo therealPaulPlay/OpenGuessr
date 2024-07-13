@@ -88,7 +88,8 @@
             font-size: 25px;
             color: black;
             width: fit-content;
-            height: fit-content;
+            height: 50px;
+            line-height: 20px;
             background-color: white;
             border-radius: 10px;
             margin: 20px 20px;
@@ -276,6 +277,14 @@
 <script type="module">
     import { getDailyLeaderboard } from "./userAPI.js";
 
+    function inIframe() {
+        try {
+            return window.self !== window.top;
+        } catch (e) {
+            return true;
+        }
+    }
+
     //set the title to the current date
     const currentDate = new Date();
     const options = { day: 'numeric', month: 'long', year: 'numeric', timeZone: 'UTC' };
@@ -293,7 +302,13 @@
         dontLoadStats = true;
     }
 
-    document.getElementById("backButton").addEventListener("click", function () { window.location.href = "/index.html" })
+    document.getElementById("backButton").addEventListener("click", () => {
+        if (inIframe()) {
+            window.top.postMessage("close", "*")
+        } else {
+            window.location.href = "/index.html";
+        }
+    });
 
     let container = document.getElementById('container');
 
