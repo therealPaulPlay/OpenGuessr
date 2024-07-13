@@ -68,9 +68,6 @@ export function toggleMultiplayerSelector(alwaysClose) {
             multiplayerSelectionScreen.style.display = "none";
             document.getElementById("blackBackground").style.visibility = "hidden";
         } else {
-            if (uniqueUserID.includes("guest")) {
-                setupPeerJS();
-            }
             multiplayerSelectionScreen.style.display = "block";
             document.getElementById("blackBackground").style.visibility = "visible";
             setMultiplayerWindowSelection("main");
@@ -539,11 +536,16 @@ function generateRandomCode(length) {
     return code;
 }
 
-function setupPeerJS() {
+async function setupPeerJS() {
+
+    if (peer) {
+        await peer.destroy();
+    }
+
     if (localStorage.getItem("id") != null) {
         uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
     } else {
-        uniqueUserID = "openguessr_" + "guest_" + generateRandomCode(10);
+        uniqueUserID = "openguessr_" + "g_" + generateRandomCode(6);
     }
     
     //set up the peer connection
@@ -564,6 +566,8 @@ function setupPeerJS() {
 }
 
 setupPeerJS();
+
+setTimeout(setupPeerJS, 10000);
 
 // Joining via Links (also as a guest!) -------------------------------------------------------------------------------------
 
