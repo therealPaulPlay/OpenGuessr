@@ -539,7 +539,7 @@ function generateRandomCode(length) {
 if (localStorage.getItem("id") != null) {
     uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
 } else {
-    uniqueUserID = "openguessr_" + "g_" + generateRandomCode(6);
+    uniqueUserID = "openguessr_" + "g" + generateRandomCode(7);
 }
 
 //set up the peer connection
