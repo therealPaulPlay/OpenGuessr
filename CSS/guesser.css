@@ -476,6 +476,17 @@ li {
   align-items: center;
 }
 
+.errorBackground {
+  background-color: rgba(30, 30, 30, 0.7);
+  display: none;
+}
+
+.errorPopup {
+  background-color: #282828;
+  z-index: 999;
+  display: block;
+}
+
 .uiWindow {
   display: none; /* used with block */
   width: 45%;
@@ -831,7 +842,7 @@ li {
   overflow: hidden;
   visibility: hidden;
   opacity: 70%;
-  background-color: #1e1e1ef8;
+  background-color: #1e1e1e;
   position: fixed;
   width: 100%;
   height: 100%;
@@ -2342,11 +2353,6 @@ a:hover {
   flex-grow: 1;
   width: 120px;
   padding-inline: 10px;
-}
-
-#errorPopup {
-  background-color: #282828;
-  flex-direction: column;
 }
 
 .errorCode {

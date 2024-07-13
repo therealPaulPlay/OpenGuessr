@@ -7,6 +7,14 @@ export const userUpdateEndpoint = `${backendURL}/users/update`;
 export const userGetEndpoint = `${backendURL}/users`;
 export const challengesEndpoint = `${backendURL}/challenges`;
 
+function inIframe() {
+  try {
+      return window.self !== window.top;
+  } catch (e) {
+      return true;
+  }
+}
+
 //Login and registration -----------------------------------------------------------------------------------
 export async function loginUser(email, password, errorSource) {
   try {
@@ -29,8 +37,12 @@ export async function loginUser(email, password, errorSource) {
       const data = await response.json();
       await saveUserData(data);
 
-      window.location.href = "/index.html";
-      //implement response save
+      if (inIframe()) {
+        window.top.postMessage("close", "*");
+        window.top.postMessage("loadAccountStatus", "*");
+      } else {
+        window.location.href = "/index.html";
+      }
     } else {
 
       console.error('Login failed:', response.status);

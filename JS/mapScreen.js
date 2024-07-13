@@ -160,8 +160,13 @@ function addMap(name, creator, fav, author, description) {
     mapItem.appendChild(mapInfo);
     mapItem.appendChild(descArea);
     mapItem.appendChild(addButton);
+    mapItem.style.opacity = "0";
 
     document.getElementById(container).appendChild(mapItem);
+    mapItem.style.transition = "opacity 250ms ease";
+    setTimeout(() => {
+        mapItem.style.opacity = "1";
+    }, 10);
 }
 
 // Like / Dislike

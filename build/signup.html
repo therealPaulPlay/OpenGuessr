@@ -56,7 +56,7 @@
         .logo {
             margin: auto;
             width: 275px;
-            height: auto;
+            height: 57px;
             margin-bottom: 30px;
             margin-top: 5px;
         }
@@ -73,7 +73,6 @@
             width: 300px;
             text-align: center;
             backdrop-filter: blur(1000px);
-            transition: all 250ms ease;
         }
 
         button {
@@ -85,7 +84,7 @@
         }
 
         .primaryButton {
-            transition: all 250ms ease;
+            transition: filter 250ms ease;
             background-color: #ff0808;
             color: white;
             cursor: pointer;
@@ -95,7 +94,6 @@
             padding: 5px 15px;
             text-align: center;
             white-space: nowrap;
-            transition: all 250ms;
             margin: 2.5px;
             border-radius: 5px;
             user-select: none;
@@ -177,7 +175,7 @@
         }
 
         .secondaryButton {
-            transition: all 250ms ease;
+            transition: filter 250ms ease;
             background-color: white;
             color: black;
             cursor: pointer;
@@ -187,7 +185,6 @@
             padding: 5px 15px;
             text-align: center;
             white-space: nowrap;
-            transition: all 250ms;
             margin: 2.5px;
             margin-left: 10px;
             border-radius: 5px;
@@ -269,45 +266,70 @@
         .toggle-password.show-eye {
             content: url('/IMG/eyeopen.png');
         }
+
+        .wrapper {
+            padding-top: 10px;
+            padding-bottom: 10px;
+        }
+
+        #backButton  {
+            margin: 0;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            border-radius: 7px;
+            width: 100%;
+            min-height: 50px;
+        }
+
+        .containerBottom {
+            margin-top: 10px; 
+            padding: 5px;
+            min-width: 330px;
+        }
     </style>
 </head>
 
 <body>
-    <div class="container">
-        <img class="logo" src="/IMG/openguessr.svg" alt="OpenGuessr Logo">
-        <div id="loginForm">
-            <div>
-                <input id="login_email" type="email" placeholder="Email"><br><br>
-                <input id="login_password" type="password" placeholder="Password"><br><br>
-                <button id="login" class="primaryButton">Login</button>
+    <div class="wrapper">
+        <div class="container">
+            <img class="logo" src="/IMG/openguessr.svg" alt="OpenGuessr Logo">
+            <div id="loginForm">
+                <div>
+                    <input id="login_email" type="email" placeholder="Email"><br><br>
+                    <input id="login_password" type="password" placeholder="Password"><br><br>
+                    <button id="login" class="primaryButton">Login</button>
+                </div>
+                <p class="switchFormBox">Don't have an account?
+                    <button id="loginSwitch" class="secondaryButton">Sign up</button>
+                </p>
             </div>
-            <p class="switchFormBox">Don't have an account?
-                <button id="loginSwitch" class="secondaryButton">Sign up</button>
-            </p>
-        </div>
-        <div id="signupForm" style="display: none;">
-            <div>
-                <div id="signup_area">
-                    <input id="signup_username" type="text" placeholder="Username"><br><br>
-                    <input id="signup_email" type="email" placeholder="Email"><br><br>
-                    <div class="password-container">
-                        <input id="signup_password" type="password" placeholder="Password">
-                        <img class="toggle-password" src="/IMG/eyeclosed.png" alt="Show Password">
+            <div id="signupForm" style="display: none;">
+                <div>
+                    <div id="signup_area">
+                        <input id="signup_username" type="text" placeholder="Username"><br><br>
+                        <input id="signup_email" type="email" placeholder="Email"><br><br>
+                        <div class="password-container">
+                            <input id="signup_password" type="password" placeholder="Password">
+                            <img class="toggle-password" src="/IMG/eyeclosed.png" alt="Show Password">
+                        </div>
                     </div>
+                    <div id="captcha">
+                        <h2 id="captchaHeader">Can you answer the default question?</h2>
+                        <input id="captchaQuestion" type="number" min="0" max="10" placeholder="0 - 10"><br><br>
+                    </div>
+                    <button id="back" class="primaryButton">back</button>
+                    <button id="signup" class="primaryButton">Sign Up (1/2)</button>
                 </div>
-                <div id="captcha">
-                    <h2 id="captchaHeader">Can you answer the default question?</h2>
-                    <input id="captchaQuestion" type="number" min="0" max="10" placeholder="0 - 10"><br><br>
-                </div>
-                <button id="back" class="primaryButton">back</button>
-                <button id="signup" class="primaryButton">Sign Up (1/2)</button>
+                <p class="switchFormBox">Already have an account?
+                    <button id="loginSwitchBack" class="secondaryButton">Login</button>
+                </p>
+                <p id="privacyNotice">Our <a href="/legal.html">privacy policy</a> applies.</p>
             </div>
-            <p class="switchFormBox">Already have an account?
-                <button id="loginSwitchBack" class="secondaryButton">Login</button>
-            </p>
-            <p id="privacyNotice">Our <a href="/legal.html">privacy policy</a> applies.</p>
+            <p id="errorMessage"> This is an error message box. </p>
         </div>
-        <p id="errorMessage"> This is an error message box. </p>
+        <div class="container containerBottom">
+            <button id="backButton" class="secondaryButton">⭠ Return to OpenGuessr</button>
+        </div>
     </div>
     <div class="orb"></div>
     <div id="secondOrb" class="orb"></div>

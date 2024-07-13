@@ -77,6 +77,8 @@
             font-size: 50px;
             transform: translateX(-50%);
             color: white;
+            padding-inline: 20px;
+            text-align: center;
         }
 
         #backButton {
@@ -180,7 +182,7 @@
 
         @media all and (orientation: portrait) {
             #navbarTitle {
-                font-size: 30px;
+                font-size: 27px;
             }
 
             #backButton {
@@ -280,12 +282,16 @@
     }
 
     async function loadLeaderboard() {
+        container.innerHTML = "<p>Loading...</p>";
+
         // Await the promise returned by getAllUsers()
         let userData = await getAllUsers();
 
         if (userData == undefined) {
             container.innerHTML = "<p>An error occured while loading the leaderboard.</p>";
         } else {
+            container.innerHTML = "";
+
             // Iterate through the array once userData is available
             for (var i = 0; i < userData.length; i++) {
                 let user = userData[i];
