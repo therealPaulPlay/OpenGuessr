@@ -1,6 +1,6 @@
 import { closePopup } from "./errorHandling.js";
 import { reloadIframe } from "./main.js";
-import { setUserXP, uiSetUserXP, isAuthenticated } from "./accountLogic.js";
+import { setUserXP, uiSetUserXP, isAuthenticated, checkAuthenticationStatus } from "./accountLogic.js";
 import { toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
@@ -559,9 +559,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
 let pageBrowserWindow = document.getElementById("pageBrowserWindow");
 
-export function showPageBrowser(page) {
+export function showPageBrowser(page, login) {
     document.getElementById("blackBackground").style.visibility = "visible"; 
     document.getElementById("pageBrowserIframe").src = window.location.origin + page;
+
+    if (login) {
+        pageBrowserWindow.style.maxWidth = "600px";
+        pageBrowserWindow.style.maxHeight = "700px";
+    }
+
     pageBrowserWindow.style.display = "block";
 
     document.getElementById("pageBrowserIframe").onload = function() {
@@ -592,6 +598,9 @@ window.onmessage = function(e) {
         case "reloadCategory":
             loadMapCategory();
             changeCategory(mapCategory, true);
+            break;
+        case "loadAccountStatus":
+            checkAuthenticationStatus();
             break;
     }
 };

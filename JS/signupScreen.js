@@ -22,6 +22,24 @@ loginSwitch.addEventListener("click", toggleForm);
 let loginSwitchBack = document.getElementById("loginSwitchBack");
 loginSwitchBack.addEventListener("click", toggleForm);
 
+function inIframe() {
+  try {
+      return window.self !== window.top;
+  } catch (e) {
+      return true;
+  }
+}
+
+document.getElementById("backButton").addEventListener("click",
+  function () {
+      if (inIframe()) {
+          window.top.postMessage("close", "*");
+      } else {
+          window.location.href = "/index.html";
+      }
+  }
+);
+
 //back button on signup screen (return to form from captcha)
 document.getElementById("back").addEventListener("click", function() {
   signupStage = 1;

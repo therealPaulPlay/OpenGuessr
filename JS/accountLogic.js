@@ -1,7 +1,7 @@
 import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
 import { setDailyChallengeExperienceResult } from "./dailyChallenge";
 import { dailyChallengeTimer } from './dailyChallenge.js';
-import { checkTextLength, toggleMobileMenu } from "./mainUI";
+import { checkTextLength, showPageBrowser, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
@@ -22,6 +22,7 @@ loginButton.addEventListener("click", () => {
 let mobileLoginButton = document.getElementById("mobileLoginButton");
 mobileLoginButton.addEventListener("click", () => {
   playSound("basic_button");
+  toggleMobileMenu();
   goTologin();
 });
 
@@ -79,13 +80,14 @@ document.getElementById("confirmUsername").addEventListener("click", () => {
 let resultLevelText = document.getElementById("endScreenLevel");
 let resultLevelDisplay = document.getElementById("endScreenLevelDisplay");
 
-//Custom signup (WIP) -------------------------------------------------------------------------------------------------------------------
+// Custom signup -------------------------------------------------------------------------------------------------------------------
 
 export let isAuthenticated = false; //true if user is logged in 
 
 checkAuthenticationStatus();
 
-function checkAuthenticationStatus() {
+// Global function that changes everything to logged in or signed out (all other sign-in functions are related to this)
+export function checkAuthenticationStatus() {
   let bearerToken = localStorage.getItem("bearer");
 
   if (bearerToken != null && bearerToken != "") {
@@ -142,13 +144,13 @@ function signout() {
 }
 
 function goTologin() {
-  window.location.href = "/signup.html";
+  showPageBrowser("/signup.html", true);
 }
 
 //Account UI (working) -------------------------------------------------------------------------------------------------------------
 
 XPbarNoAccount.addEventListener("click", function () {
-  window.location.href = "/signup.html";
+  goTologin();
 })
 
 //part of checkSigninStatusAndLoadUserInfo
