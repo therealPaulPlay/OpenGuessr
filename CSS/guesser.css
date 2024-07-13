@@ -2494,6 +2494,11 @@ input[type="checkbox"]:focus {
   padding: 5px;
 }
 
+.loginIframeWindow {
+  max-width: 600px !important;
+  max-height: 700px !important;
+}
+
 .regularMapSize {
   width: 22%;
   height: 20%;
