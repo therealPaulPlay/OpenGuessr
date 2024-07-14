@@ -17,7 +17,7 @@ export function errorPopup(title, description, errorCode, reload, hideDontShowAg
       document.getElementById("popup-description").innerHTML += `<p class="errorCode">${errorCode}</p>`;
     }
 
-    document.getElementById("errorPopup").style.display = 'flex';
+    document.getElementById("errorPopup").style.display = "flex";
 
     if (!reload) {
       document.getElementById("popupClose").innerHTML = "Close";
@@ -28,7 +28,7 @@ export function errorPopup(title, description, errorCode, reload, hideDontShowAg
 }
 
 export function closePopup() {
-  document.getElementById("errorPopup").style.display = 'none';
+  document.getElementById("errorPopup").style.display = "none";
   if (document.getElementById("popupClose").innerHTML != "Close") {
     localStorage.setItem("selectedCategory", "standard");
     location.reload();
@@ -46,4 +46,4 @@ try {
   console.warn("Error checkbox does not exist on this page");
 }
 
-//errorPopup("Streetview link is invalid","Link: https://errorsareawesome.saidnooneever.ml", "Testerror description", false);
+errorPopup("Streetview link is invalid","Link: https://errorsareawesome.saidnooneever.ml", "Testerror description", false);
