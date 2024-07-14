@@ -46,4 +46,4 @@ try {
   console.warn("Error checkbox does not exist on this page");
 }
 
-errorPopup("Streetview link is invalid","Link: https://errorsareawesome.saidnooneever.ml", "Testerror description", false);
+// errorPopup("Streetview link is invalid","Link: https://errorsareawesome.saidnooneever.ml", "Testerror description", false);
