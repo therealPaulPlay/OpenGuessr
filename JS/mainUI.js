@@ -56,9 +56,18 @@ document.getElementById("leaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
     goToLeaderboard();
 });
+
 document.getElementById("dailyLeaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
     goToDailyLeaderboard();
+});
+
+document.getElementById("competitionsButton").addEventListener("click", () => {
+    playSound("basic_button");
+    if (socialBarExpanded) {
+        toggleSocialbar();
+    }
+    showPageBrowser("/competitions.html");
 });
 
 function goToLeaderboard() {
@@ -430,6 +439,12 @@ document.getElementById("mobileCategoryButton").addEventListener("click", functi
     toggleMobileMenu();
     toggleCategoryMenu();
     playSound("floating_button");
+});
+
+document.getElementById("mobileCompetitionsButton").addEventListener("click", function () {
+    toggleMobileMenu();
+    playSound("basic_button");
+    showPageBrowser("/competitions.html");
 });
 
 //Prevent automatic "last button press" with space bar or enter key ------------------------------------------------------------------
