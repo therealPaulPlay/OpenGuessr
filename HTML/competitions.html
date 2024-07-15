@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
     <title>Competitions</title>
     <meta charset="UTF-8">
@@ -6,18 +7,6 @@
     <script src="competitionScreen.js" type="module" defer></script>
     <link rel="icon" href="/favicon.ico">
 </head>
-
-<body>
-    <div id="navbar">
-        <button id="backButton">⭠ Back</button>
-        <h1 id="navbarTitle">Competitions</h1>
-    </div>
-    <div class="center">
-       
-    </div>
-    </div>
-
-</body>
 
 <style>
     @font-face {
@@ -34,13 +23,34 @@
         font-weight: 500;
     }
 
-    p {
+    p,
+    li {
         color: white;
         font-size: 25px;
         margin: 0;
         margin-top: auto;
         margin-bottom: auto;
         box-sizing: border-box;
+        text-overflow: ellipsis;
+    }
+
+    li {
+        margin-bottom: 15px;
+        background-color: rgba(255, 141, 141, 0.14);
+        border-radius: 5px;
+        padding: 10px;
+        padding-inline: 20px;
+        padding-inline-end: 30px;
+        min-width: 50%;
+        list-style: none;
+        margin-right: 10px;
+    }
+
+    ul {
+        margin: 0;
+        padding-left: 10px;
+        padding-right: 0;
+        list-style-image: url("/IMG/arrow_icon.png");
     }
 
     body {
@@ -58,6 +68,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        flex-direction: column;
     }
 
     button {
@@ -96,7 +107,7 @@
         text-align: center;
     }
 
-    #backButton {
+    .backButton {
         cursor: pointer;
         transition: filter 250ms ease;
         font-family: Barlow;
@@ -115,41 +126,28 @@
         -webkit-user-select: none;
     }
 
-    #backButton:hover {
+    .backButton:hover {
         filter: brightness(0.7);
     }
-
-    .container {
-        position: absolute;
-        top: 300px;
-        padding: 5px;
-        padding-left: 15px;
-        padding-right: 15px;
-        width: 80vw;
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-        margin-bottom: 100px;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 20px;
-        text-align: center;
-    }
-
 
     h1 {
         text-align: center;
         Font-family: Barlow, Futura, sans-serif;
         color: rgb(255, 255, 255);
-        font-size: 50px;
+        font-size: 45px;
         margin-bottom: 12px;
+        margin-top: 10px;
+        text-overflow: ellipsis;
     }
 
     h2 {
         text-align: left;
         Font-family: Barlow, Futura, sans-serif;
         color: rgb(255, 255, 255);
-        font-size: 35px;
+        font-size: 45px;
         margin-bottom: 10px;
+        margin-top: 5px;
+        text-overflow: ellipsis;
     }
 
     #text {
@@ -176,20 +174,156 @@
         color: #FFFFFF;
     }
 
+    .competitionElement {
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.1);
+        transition: background-color 250ms ease, filter 250ms ease;
+        width: calc(90% - 60px);
+        max-width: 1100px;
+        padding: 30px;
+        overflow: hidden;
+        height: 300px;
+        filter: brightness(1.0);
+        margin-bottom: 20px;
+    }
+
+    .competitionElement:hover {
+        filter: brightness(1.2);
+    }
+
+    .main {
+        margin-top: 175px;
+        margin-bottom: 50px;
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .spacer {
+        height: 30px;
+        width: 100%;
+    }
+
+    .competitionHeader {
+        text-align: left;
+    }
+
+    .explainElement {
+        background-color: rgba(255, 141, 141, 0.15);
+        height: auto;
+        box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
+    }
+
+    .standardButton {
+        cursor: pointer;
+        width: fit-content;
+        font-size: 22px;
+        padding: 10px 20px;
+        min-height: 35px;
+        text-align: center;
+        white-space: nowrap;
+        transition: filter 250ms ease, box-shadow 250ms ease;
+        margin: 2.5px;
+        border-radius: 5px;
+        user-select: none;
+        -webkit-user-select: none;
+        background-color: white;
+        color: black;
+        opacity: 100%;
+    }
+
+    .standardButton:hover {
+        filter: brightness(0.7);
+    }
+
+    #createButton {
+        margin-left: auto;
+        margin-right: 20px;
+        background-color: rgb(204, 41, 41);
+        color: white;
+    }
+
+    .listIcon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+
+    .competitionTitle {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: auto;
+        background-color: rgba(119, 83, 83, 0.15);
+        margin-top: -5px;
+        width: 100%;
+        margin-left: -30px;
+        box-shadow: none;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        filter: none !important;
+    }
+
+    .competitionBox {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: auto;
+        background-color: rgba(255, 141, 141, 0.15);
+        box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
+        filter: none !important;
+    }
+
+    #competitionArea {
+        min-height: 200px;
+    }
+
+    .competitionDesc {
+        border-radius: 5px;
+        background-color: rgba(255, 141, 141, 0.15);
+        padding: 15px;
+    }
+
+    .competitionItem {
+        border-radius: 10px;
+        background-color: rgba(255, 141, 141, 0.15);
+        transition: background-color 250ms ease, filter 250ms ease;
+        width: calc(100% - 40px);
+        padding: 30px;
+        overflow: hidden;
+        height: 300px;
+        filter: brightness(1.0);
+        margin-bottom: 20px;
+    }
+
+    .label {
+        padding: 2px;
+        padding-inline: 10px;
+        width: fit-content;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+    }
+
+    .itemText {
+        margin: 20px;
+    }
+
+    .competitionItem:hover {
+        filter: brightness(1.2);
+    }
+
     @media all and (orientation: portrait) {
         #text {
             width: 80%;
         }
 
         h1 {
-            font-size: 35px;
-        }
-
-        h2 {
             font-size: 30px;
         }
 
-        p {
+        h2 {
+            font-size: 35px;
+        }
+
+        p,
+        li {
             font-size: 22px;
         }
 
@@ -197,9 +331,59 @@
             font-size: 27px;
         }
 
-        #backButton {
+        .backButton {
             font-size: 20px;
             padding: 10px 10px;
         }
     }
 </style>
+
+<body>
+    <div id="navbar">
+        <button id="backButton" class="backButton">⭠ Back</button>
+        <h1 id="navbarTitle">Competitions</h1>
+        <button id="createButton" class="backButton">+ Create</button>
+    </div>
+    <div class="center">
+        <div class="main center">
+            <div class="competitionElement explainElement">
+                <h2 class="competitionHeader">What are Competitions?</h2>
+                <div class="spacer"></div>
+                <ul>
+                    <li>
+                        <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> Competitions are a
+                        new way to compete on leaderboards.
+                    </li>
+                    <li>
+                        <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> They are hosted by
+                        players and go on for a limited time period.
+                    </li>
+                    <li>
+                        <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> There are very
+                        customizable in regards to restrictions, maps and locations.
+                    </li>
+                </ul>
+            </div>
+            <div class="competitionElement competitionBox">
+                <div class="competitionElement competitionTitle">
+                    <h1>Currently ongoing: </h1>
+                </div>
+                <div id="competitionArea" class="center">
+                    <!-- active ompetitions will be inserted here -->
+                     <div class="competitionItem">
+                        <h2>Historic Finds</h2>
+                        <div class="competitionDesc">
+                            <div class="label">
+                                <p>About</p>
+                            </div>
+                            <p class="itemText">Discover a range of historic places in this competition, make sure to make it to the top spot!</p>
+                        </div>
+                     </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>
