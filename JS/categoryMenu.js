@@ -77,8 +77,6 @@ export function loadCommunityCategories() {
     } catch (error) {
         console.error("Error loading community maps from localstorage: " + error);
     }
-
-    addCommunityCreditTag();
 }
 
 
@@ -127,6 +125,8 @@ export function attachCategoryEventListeners() {
             console.warn(`Element with ID "${category.toLowerCase()}Category" not found. Click listener not attached.`);
         }
     }
+
+    addCommunityCreditTag();
 }
 
 // Function to create a closure for each category button listener
