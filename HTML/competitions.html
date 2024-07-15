@@ -36,7 +36,7 @@
 
     li {
         margin-bottom: 15px;
-        background-color: rgba(255, 141, 141, 0.14);
+        background-color: rgba(255, 210, 210, 0.15);
         border-radius: 5px;
         padding: 10px;
         padding-inline: 20px;
@@ -208,7 +208,7 @@
     }
 
     .explainElement {
-        background-color: rgba(255, 141, 141, 0.15);
+        background-color: rgba(251, 204, 204, 0.15);
         height: auto;
         box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
     }
@@ -238,7 +238,7 @@
     #createButton {
         margin-left: auto;
         margin-right: 20px;
-        background-color: rgb(204, 41, 41);
+        background-color: rgb(164, 56, 56);
         color: white;
     }
 
@@ -288,25 +288,66 @@
         width: calc(100% - 40px);
         padding: 30px;
         overflow: hidden;
-        height: 300px;
+        height: fit-content;
         filter: brightness(1.0);
         margin-bottom: 20px;
+        cursor: pointer;
     }
 
     .label {
         padding: 2px;
         padding-inline: 10px;
         width: fit-content;
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(168, 93, 93, 0.5);
         border-radius: 5px;
     }
 
     .itemText {
-        margin: 20px;
+        margin: 10px;
+        margin-inline: 5px;
+        text-overflow: ellipsis;
+        overflow: hidden;
     }
 
     .competitionItem:hover {
         filter: brightness(1.2);
+    }
+
+    .competitonItemHeader {
+        margin-bottom: 0;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-wrap: nowrap;
+    }
+
+    .competitionPropertiesBox {
+        width: 100%;
+        display: flex;
+        justify-content: flex-start;
+        gap: 20px;
+        align-items: center;
+        margin-bottom: 20px;
+        flex-wrap: wrap;
+    }
+
+    .propertyItem {
+        flex-grow: 1;
+        max-width: 200px;
+        border-radius: 5px;
+        background-color: rgba(255, 141, 141, 0.15);
+        padding: 10px;
+    }
+
+    .boxHeader {
+        text-align: left;
+        font-size: 30px;
+        margin-top: 10px;
+    }
+
+    .competitionAuthor {
+        margin-bottom: 30px;
+        padding-left: 2px;
+        color: rgba(249, 216, 216, 0.5);
     }
 
     @media all and (orientation: portrait) {
@@ -325,6 +366,10 @@
         p,
         li {
             font-size: 22px;
+        }
+
+        .boxHeader {
+            font-size: 25px;
         }
 
         #navbarTitle {
@@ -352,7 +397,7 @@
                 <ul>
                     <li>
                         <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> Competitions are a
-                        new way to compete on leaderboards.
+                        fun way to compete on leaderboards.
                     </li>
                     <li>
                         <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> They are hosted by
@@ -366,12 +411,39 @@
             </div>
             <div class="competitionElement competitionBox">
                 <div class="competitionElement competitionTitle">
-                    <h1>Currently ongoing: </h1>
+                    <h2 class="boxHeader">Currently ongoing: </h2>
                 </div>
                 <div id="competitionArea" class="center">
                     <!-- active ompetitions will be inserted here -->
                      <div class="competitionItem">
-                        <h2>Historic Finds</h2>
+                        <h2 class="competitonItemHeader">Historic Finds</h2>
+                        <p class="competitionAuthor">hosted by PaulPlay</p>
+                        <div class="competitionPropertiesBox">
+                            <div class="propertyItem">
+                                <div class="label">
+                                    <p>Players</p>
+                                </div>
+                                <p class="itemText">149 Joined.</p>
+                            </div>
+                            <div class="propertyItem">
+                                <div class="label">
+                                    <p>Restriction</p>
+                                </div>
+                                <p class="itemText">No restriction.</p>
+                            </div>
+                            <div class="propertyItem">
+                                <div class="label">
+                                    <p>Duration</p>
+                                </div>
+                                <p class="itemText">7 Days (3 remaining).</p>
+                            </div>
+                            <div class="propertyItem">
+                                <div class="label">
+                                    <p>Map</p>
+                                </div>
+                                <p class="itemText">Custom selection.</p>
+                            </div>
+                        </div>
                         <div class="competitionDesc">
                             <div class="label">
                                 <p>About</p>
