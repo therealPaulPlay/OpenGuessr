@@ -117,7 +117,12 @@ export function attachCategoryEventListeners() {
     for (const category in Category) {
         const button = document.getElementById(`${category.toLowerCase()}Category`);
         if (button) {
-            button.addEventListener("click", createCategoryChangeListener(Category[category])); // adding a new event listener of the same type will discard all old ones
+            // Remove all event listeners by cloning the element
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
+
+            // Add the new event listener
+            newButton.addEventListener("click", createCategoryChangeListener(Category[category]));
         } else {
             console.warn(`Element with ID "${category.toLowerCase()}Category" not found. Click listener not attached.`);
         }
