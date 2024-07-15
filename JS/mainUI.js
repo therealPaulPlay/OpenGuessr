@@ -42,6 +42,7 @@ export function toggleSocialbar() {
             socialBarExpanded = true;
             document.getElementById("multiplayerArrow").classList.add("arrowIconRotated");
         } else {
+            toggleLeaderboardSection(true);
             document.getElementById("socialBar").style.maxHeight = "0";
             socialBarExpanded = false;
             document.getElementById("multiplayerArrow").classList.remove("arrowIconRotated");
@@ -72,6 +73,35 @@ function goToDailyLeaderboard() {
         toggleSocialbar();
     }
     showPageBrowser("/dailyleaderboard.html");
+}
+
+let leaderboardSectionExpand = document.getElementById("leaderboardsExpandButton");
+let leaderboardSection = document.getElementById("leaderboardDropdown");
+
+leaderboardSectionExpand.addEventListener("click", () => {
+    playSound("basic_button");
+    toggleLeaderboardSection(false);
+});
+
+let leaderboardSectionToggled = false;
+
+function toggleLeaderboardSection(alwaysClose) {
+
+    if (alwaysClose) {
+        leaderboardSectionToggled = true;
+    }
+
+    if (leaderboardSectionToggled) {
+        leaderboardSection.style.maxHeight = "0px";
+        leaderboardSectionExpand.style.borderBottomLeftRadius = "5px";
+        leaderboardSectionExpand.style.borderBottomRightRadius = "5px";
+    } else {
+        leaderboardSection.style.maxHeight = "500px";
+        leaderboardSectionExpand.style.borderBottomLeftRadius = "0px";
+        leaderboardSectionExpand.style.borderBottomRightRadius = "0px";
+    }
+
+    leaderboardSectionToggled = !leaderboardSectionToggled;
 }
 
 //Toggle Map on mobile devices ---------------------------------------------------------------------------------------
