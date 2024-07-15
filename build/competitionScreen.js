@@ -1,0 +1,1 @@
+function inIframe(){try{return window.self!==window.top}catch(e){return!0}}document.getElementById("backButton").addEventListener("click",(()=>{inIframe()?window.top.postMessage("close","*"):window.location.href="/index.html"}));

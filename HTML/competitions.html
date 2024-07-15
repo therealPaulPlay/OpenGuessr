@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+
+<head>
+    <title>Competitions</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+    <script src="competitionScreen.js" type="module" defer></script>
+    <link rel="icon" href="/favicon.ico">
+</head>
+
+<style>
+    @font-face {
+        font-family: Futura;
+        src: url('./FONTS/futura_medium_condensed_bt.ttf');
+    }
+
+    @font-face {
+        font-family: Barlow;
+        src: url('./FONTS/BarlowCondensed-Medium.ttf');
+    }
+
+    * {
+        font-weight: 500;
+    }
+
+    p,
+    li {
+        color: white;
+        font-size: 25px;
+        margin: 0;
+        margin-top: auto;
+        margin-bottom: auto;
+        box-sizing: border-box;
+        text-overflow: ellipsis;
+    }
+
+    li {
+        margin-bottom: 15px;
+        background-color: rgba(255, 141, 141, 0.14);
+        border-radius: 5px;
+        padding: 10px;
+        padding-inline: 20px;
+        padding-inline-end: 30px;
+        min-width: 50%;
+        list-style: none;
+        margin-right: 10px;
+    }
+
+    ul {
+        margin: 0;
+        padding-left: 10px;
+        padding-right: 0;
+        list-style-image: url("/IMG/arrow_icon.png");
+    }
+
+    body {
+        font-family: Barlow, Futura, Arial, sans-serif;
+        font-size: 20px;
+        font-weight: 400;
+        height: 100%;
+        overflow-y: auto;
+        background-color: #07071e;
+        padding: 0;
+        margin: 0;
+    }
+
+    .center {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+    }
+
+    button {
+        color: inherit;
+        height: inherit;
+        border: none;
+        padding: 0;
+        font: inherit;
+        cursor: pointer;
+        outline: inherit;
+    }
+
+    #navbar {
+        position: fixed;
+        z-index: 100;
+        width: 100%;
+        align-items: center;
+        top: 0;
+        display: flex;
+        justify-content: space-around;
+        height: 100px;
+        background-color: rgba(42, 44, 71, 0.9);
+        backdrop-filter: blur(10px);
+        -webkit-backdrop-filter: blur(10px);
+        box-shadow: 0 2px 20px rgba(5, 6, 10, 0.5);
+    }
+
+    #navbarTitle {
+        position: absolute;
+        left: 50%;
+        margin: auto;
+        font-size: 50px;
+        transform: translateX(-50%);
+        color: white;
+        padding-inline: 20px;
+        text-align: center;
+    }
+
+    .backButton {
+        cursor: pointer;
+        transition: filter 250ms ease;
+        font-family: Barlow;
+        opacity: 100%;
+        padding: 10px 20px;
+        font-size: 25px;
+        color: black;
+        width: fit-content;
+        height: 50px;
+        line-height: 20px;
+        background-color: white;
+        border-radius: 10px;
+        margin: 20px 20px;
+        margin-right: auto;
+        user-select: none;
+        -webkit-user-select: none;
+    }
+
+    .backButton:hover {
+        filter: brightness(0.7);
+    }
+
+    h1 {
+        text-align: center;
+        Font-family: Barlow, Futura, sans-serif;
+        color: rgb(255, 255, 255);
+        font-size: 45px;
+        margin-bottom: 12px;
+        margin-top: 10px;
+        text-overflow: ellipsis;
+    }
+
+    h2 {
+        text-align: left;
+        Font-family: Barlow, Futura, sans-serif;
+        color: rgb(255, 255, 255);
+        font-size: 45px;
+        margin-bottom: 10px;
+        margin-top: 5px;
+        text-overflow: ellipsis;
+    }
+
+    #text {
+        width: 75%;
+        max-width: 1150px;
+        padding: 40px 40px;
+    }
+
+    #parent {
+        display: flex;
+        justify-content: center;
+        margin-top: 100px;
+    }
+
+    a:link {
+        color: #FFFFFF;
+    }
+
+    a:visited {
+        color: #FFFFFF;
+    }
+
+    a:hover {
+        color: #FFFFFF;
+    }
+
+    .competitionElement {
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.1);
+        transition: background-color 250ms ease, filter 250ms ease;
+        width: calc(90% - 60px);
+        max-width: 1100px;
+        padding: 30px;
+        overflow: hidden;
+        height: 300px;
+        filter: brightness(1.0);
+        margin-bottom: 20px;
+    }
+
+    .competitionElement:hover {
+        filter: brightness(1.2);
+    }
+
+    .main {
+        margin-top: 175px;
+        margin-bottom: 50px;
+        width: 100%;
+        flex-direction: column;
+    }
+
+    .spacer {
+        height: 30px;
+        width: 100%;
+    }
+
+    .competitionHeader {
+        text-align: left;
+    }
+
+    .explainElement {
+        background-color: rgba(255, 141, 141, 0.15);
+        height: auto;
+        box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
+    }
+
+    .standardButton {
+        cursor: pointer;
+        width: fit-content;
+        font-size: 22px;
+        padding: 10px 20px;
+        min-height: 35px;
+        text-align: center;
+        white-space: nowrap;
+        transition: filter 250ms ease, box-shadow 250ms ease;
+        margin: 2.5px;
+        border-radius: 5px;
+        user-select: none;
+        -webkit-user-select: none;
+        background-color: white;
+        color: black;
+        opacity: 100%;
+    }
+
+    .standardButton:hover {
+        filter: brightness(0.7);
+    }
+
+    #createButton {
+        margin-left: auto;
+        margin-right: 20px;
+        background-color: rgb(204, 41, 41);
+        color: white;
+    }
+
+    .listIcon {
+        width: 20px;
+        height: 20px;
+        margin-right: 10px;
+    }
+
+    .competitionTitle {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: auto;
+        background-color: rgba(119, 83, 83, 0.15);
+        margin-top: -5px;
+        width: 100%;
+        margin-left: -30px;
+        box-shadow: none;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+        filter: none !important;
+    }
+
+    .competitionBox {
+        padding-top: 5px;
+        padding-bottom: 5px;
+        height: auto;
+        background-color: rgba(255, 141, 141, 0.15);
+        box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
+        filter: none !important;
+    }
+
+    #competitionArea {
+        min-height: 200px;
+    }
+
+    .competitionDesc {
+        border-radius: 5px;
+        background-color: rgba(255, 141, 141, 0.15);
+        padding: 15px;
+    }
+
+    .competitionItem {
+        border-radius: 10px;
+        background-color: rgba(255, 141, 141, 0.15);
+        transition: background-color 250ms ease, filter 250ms ease;
+        width: calc(100% - 40px);
+        padding: 30px;
+        overflow: hidden;
+        height: 300px;
+        filter: brightness(1.0);
+        margin-bottom: 20px;
+    }
+
+    .label {
+        padding: 2px;
+        padding-inline: 10px;
+        width: fit-content;
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+    }
+
+    .itemText {
+        margin: 20px;
+    }
+
+    .competitionItem:hover {
+        filter: brightness(1.2);
+    }
+
+    @media all and (orientation: portrait) {
+        #text {
+            width: 80%;
+        }
+
+        h1 {
+            font-size: 30px;
+        }
+
+        h2 {
+            font-size: 35px;
+        }
+
+        p,
+        li {
+            font-size: 22px;
+        }
+
+        #navbarTitle {
+            font-size: 27px;
+        }
+
+        .backButton {
+            font-size: 20px;
+            padding: 10px 10px;
+        }
+    }
+</style>
+
+<body>
+    <div id="navbar">
+        <button id="backButton" class="backButton">⭠ Back</button>
+        <h1 id="navbarTitle">Competitions</h1>
+        <button id="createButton" class="backButton">+ Create</button>
+    </div>
+    <div class="center">
+        <div class="main center">
+            <div class="competitionElement explainElement">
+                <h2 class="competitionHeader">What are Competitions?</h2>
+                <div class="spacer"></div>
+                <ul>
+                    <li>
+                        <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> Competitions are a
+                        new way to compete on leaderboards.
+                    </li>
+                    <li>
+                        <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> They are hosted by
+                        players and go on for a limited time period.
+                    </li>
+                    <li>
+                        <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> There are very
+                        customizable in regards to restrictions, maps and locations.
+                    </li>
+                </ul>
+            </div>
+            <div class="competitionElement competitionBox">
+                <div class="competitionElement competitionTitle">
+                    <h1>Currently ongoing: </h1>
+                </div>
+                <div id="competitionArea" class="center">
+                    <!-- active ompetitions will be inserted here -->
+                     <div class="competitionItem">
+                        <h2>Historic Finds</h2>
+                        <div class="competitionDesc">
+                            <div class="label">
+                                <p>About</p>
+                            </div>
+                            <p class="itemText">Discover a range of historic places in this competition, make sure to make it to the top spot!</p>
+                        </div>
+                     </div>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+
+</body>

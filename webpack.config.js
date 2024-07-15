@@ -57,6 +57,7 @@ module.exports = {
         { from: "./JS/signupScreen.js", to: "./" },
         { from: "./JS/userAPI.js", to: "./" },
         { from: "./JS/mapScreen.js", to: "./" },
+        { from: "./JS/competitionScreen.js", to: "./" },
       ],
     }),
   ],
