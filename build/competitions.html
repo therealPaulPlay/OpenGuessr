@@ -26,7 +26,7 @@
     p,
     li {
         color: white;
-        font-size: 25px;
+        font-size: 22px;
         margin: 0;
         margin-top: auto;
         margin-bottom: auto;
@@ -48,7 +48,7 @@
 
     ul {
         margin: 0;
-        padding-left: 10px;
+        padding-left: 0px;
         padding-right: 0;
         list-style-image: url("/IMG/arrow_icon.png");
     }
@@ -144,7 +144,7 @@
         text-align: left;
         Font-family: Barlow, Futura, sans-serif;
         color: rgb(255, 255, 255);
-        font-size: 45px;
+        font-size: 40px;
         margin-bottom: 10px;
         margin-top: 5px;
         text-overflow: ellipsis;
@@ -180,7 +180,7 @@
         transition: background-color 250ms ease, filter 250ms ease;
         width: calc(90% - 60px);
         max-width: 1100px;
-        padding: 30px;
+        padding: 25px;
         overflow: hidden;
         height: 300px;
         filter: brightness(1.0);
@@ -193,24 +193,26 @@
 
     .main {
         margin-top: 150px;
-        margin-bottom: 50px;
+        margin-bottom: 100px;
         width: 100%;
         flex-direction: column;
     }
 
     .spacer {
-        height: 30px;
+        height: 15px;
         width: 100%;
     }
 
     .competitionHeader {
         text-align: left;
+        font-size: 30px;
     }
 
     .explainElement {
         background-color: rgba(251, 204, 204, 0.15);
         height: auto;
-        box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
+        padding-top: 10px;
+        padding-bottom: 10px;
     }
 
     .standardButton {
@@ -255,7 +257,7 @@
         background-color: rgba(119, 83, 83, 0.15);
         margin-top: -5px;
         width: 100%;
-        margin-left: -30px;
+        margin-left: -25px;
         box-shadow: none;
         border-bottom-left-radius: 0;
         border-bottom-right-radius: 0;
@@ -267,7 +269,6 @@
         padding-bottom: 5px;
         height: auto;
         background-color: rgba(255, 141, 141, 0.15);
-        box-shadow: 0 0 80px rgba(0, 0, 0, 0.3);
         filter: none !important;
     }
 
@@ -278,71 +279,88 @@
     .competitionDesc {
         border-radius: 5px;
         background-color: rgba(255, 141, 141, 0.15);
-        padding: 15px;
+        padding: 10px;
+        font-size: 22px;
     }
 
     .competitionItem {
         border-radius: 10px;
         background-color: rgba(255, 141, 141, 0.15);
         transition: background-color 250ms ease, filter 250ms ease;
-        width: calc(100% - 40px);
-        padding: 30px;
+        width: calc(25% - 60px);
+        flex-grow: 1;
+        min-width: 220px;
+        padding: 20px;
         overflow: hidden;
         height: fit-content;
         filter: brightness(1.0);
-        margin-bottom: 20px;
     }
 
     .label {
         padding: 2px;
         padding-inline: 10px;
         width: fit-content;
-        background-color: rgba(168, 93, 93, 0.5);
+        background-color: rgba(225, 156, 156, 0.2);
         border-radius: 5px;
+        margin-right: 10px;
+    }
+
+    .label p {
+        font-size: 20px;
     }
 
     .itemText {
-        margin: 10px;
+        margin: 6px;
         margin-inline: 5px;
         text-overflow: ellipsis;
         overflow: hidden;
+        font-size: 22px;
     }
 
     .competitionItem:hover {
         filter: brightness(1.2);
     }
 
-    .competitonItemHeader {
+    .competitionItemHeader {
         margin-bottom: 0;
         text-overflow: ellipsis;
         overflow: hidden;
         text-wrap: nowrap;
+        font-size: 35px;
     }
 
     .competitionPropertiesBox {
         width: 100%;
         display: flex;
         justify-content: space-between;
-        gap: 20px;
         align-items: center;
-        margin-bottom: 20px;
+        margin-bottom: 10px;
         flex-wrap: wrap;
+        border-radius: 5px;
+        gap: 10px;
     }
 
     .propertyItem {
         flex-grow: 1;
-        max-width: 500px;
         border-radius: 5px;
-        background-color: rgba(255, 141, 141, 0.15);
-        padding: 10px;
+        padding: 6px;
+        padding-bottom: 0;
+        padding-top: 0;
         overflow: hidden;
         text-overflow: ellipsis;
-        max-height: 80px;
+        max-height: 39px;
+        display: flex;
+        align-items: center;
+        background-color: rgba(255, 141, 141, 0.15);
     }
 
     .boxHeader {
         text-align: left;
         font-size: 30px;
+        margin-top: 10px;
+    }
+
+    .descText {
         margin-top: 10px;
     }
 
@@ -393,10 +411,6 @@
         z-index: 100;
     }
 
-    .competitionButton {
-        min-height: 55px;
-    }
-
     .primaryButton {
         background-color: rgb(181, 63, 63);
     }
@@ -420,11 +434,14 @@
         margin-right: -10px;
     }
 
-    .textLeft {
+    .textHeaderLeft {
         text-align: left;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        text-wrap: nowrap;
     }
 
-    #enterPopup {
+    #enterPopup, #leaderboardPopup {
         display: none;
     }
 
@@ -436,9 +453,82 @@
         background-color: rgba(164, 140, 140, 0.15);
     }
 
+    .expiredLeaderboardColor {
+        background-color: rgba(255, 176, 176, 0.2);
+    }
+
     .closeButton {
         background-color: white;
         color: black;
+    }
+
+    .competitionArea {
+        flex-direction: row;
+        flex-wrap: wrap;
+        gap: 20px;
+        padding-bottom: 20px;
+        justify-content: flex-start;
+    }
+
+    #contentSection {
+        transition: max-height 250ms ease;
+        max-height: 0px;
+    }
+
+    .faqTopSection {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    #toggleFaqButton {
+        background-color: rgba(215, 190, 190, 0.2);
+        margin-right: -10px;
+        min-width: 50px;
+    }
+
+    .errorText {
+        width: 100%;
+        text-align: center;
+    }
+
+    #faqTitle {
+        margin-bottom: 5px;
+    }
+
+    .popupBodyText {
+        margin-top: 30px;
+        font-size: 25px;
+    }
+
+    .rankingDisplay {
+        display: flex;
+        justify-content: center;
+        flex-direction: column;
+        width: calc(100% - 40px);
+        border-radius: 5px;
+        max-height: 50vh;
+        overflow: hidden;
+        overflow-y: auto;
+        padding: 20px;
+        background-color: rgba(255, 190, 190, 0.1);
+        gap: 10px;
+        margin-top: 30px;
+    }
+
+    .rankItem {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 5px;
+        width: calc(100% - 10px);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 5px;
+    }
+
+    .rankYou {
+        background-color: rgba(255, 255, 255, 0.3);
     }
 
     @media all and (orientation: portrait) {
@@ -451,12 +541,12 @@
         }
 
         h2 {
-            font-size: 35px;
+            font-size: 30px;
         }
 
         p,
         li {
-            font-size: 22px;
+            font-size: 20px;
         }
 
         .boxHeader {
@@ -472,8 +562,16 @@
             padding: 10px 10px;
         }
 
+        .competitionItem {
+            flex-grow: 1;
+        }
+
         .competitionButton {
             flex-grow: 1;
+        }
+
+        .competitionHeader {
+            font-size: 25px;
         }
     }
 </style>
@@ -486,8 +584,8 @@
     </div>
     <div id="enterPopup" class="popupHolder">
         <div id="description" class="uiWindow">
-            <h1 id="enterHeader" class="textLeft">Enter DefaultName?</h1>
-            <p id="enterText">This will start the game immediately. You can only enter a competition once.
+            <h1 id="enterHeader" class="textHeaderLeft">Enter DefaultName?</h1>
+            <p id="enterText" class="popupBodyText">This will start the game immediately. You can only enter a competition once.
                 Continue?
             </p>
             <div class="buttonBox popupButtons">
@@ -496,42 +594,63 @@
             </div>
         </div>
     </div>
+    <div id="leaderboardPopup" class="popupHolder">
+        <div id="description" class="uiWindow">
+            <h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for DefaultMap</h1>
+            <div class="rankingDisplay">
+                <div class="rankItem">
+                    <p>#1</p><p>MaxyCrayyz</p><p>13,498 Pts.</p>
+                </div>
+                <div class="rankItem rankYou">
+                    <p>#2</p><p>NoemiSFF</p><p>11,458 Pts.</p>
+                </div>
+                <div class="rankItem">
+                    <p>#2</p><p>Emanuel45</p><p>10,428 Pts.</p>
+                </div>
+            </div>
+            <div class="buttonBox popupButtons">
+                <button id="leaderboardClose" class="standardButton popupButton closeButton">Close</button>
+            </div>
+        </div>
+    </div>
     <div class="center">
         <div class="main center">
             <div class="competitionElement explainElement">
-                <h2 class="competitionHeader">What are Competitions?</h2>
-                <div class="spacer"></div>
-                <ul>
-                    <li>
-                        <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> Competitions are a
-                        fun way to compete on leaderboards.
-                    </li>
-                    <li>
-                        <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> They are hosted by
-                        players and go on for a limited time period.
-                    </li>
-                    <li>
-                        <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> There are very
-                        customizable in regards to restrictions, length and locations.
-                    </li>
-                </ul>
+                <div class="faqTopSection">
+                    <h2 class="competitionHeader" id="faqTitle">What are Competitions?</h2>
+                    <button id="toggleFaqButton" class="standardButton">+</button>
+                </div>
+                <div id="contentSection">
+                    <div class="spacer"></div>
+                    <ul>
+                        <li>
+                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> Competitions are a fun way to compete with others on leaderboards.
+                        </li>
+                        <li>
+                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> They are hosted by players and go on for a limited time period.
+                        </li>
+                        <li>
+                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> There are very customizable in regards to restrictions, length and locations.
+                        </li>
+                    </ul>
+                </div>
             </div>
             <div class="competitionElement competitionBox">
                 <div class="competitionElement competitionTitle">
                     <h2 class="boxHeader">Currently ongoing: </h2>
                 </div>
-                <div id="competitionArea" class="center">
+                <div id="competitionArea" class="center competitionArea">
                     <!-- active ompetitions will be inserted here -->
-                    <p>There currently are no active competitions.</p>
+                    <p class="errorText">There currently are no active competitions.</p>
                 </div>
             </div>
             <div class="competitionElement competitionBox expiredBox">
                 <div class="competitionElement competitionTitle">
                     <h2 class="boxHeader">Recently ended: </h2>
                 </div>
-                <div id="expiredCompetitionArea" class="center">
+                <div id="expiredCompetitionArea" class="center competitionArea">
                     <!-- expired competitions will be inserted here -->
-                     <p>There currently are no expired competitions.</p>
+                     <p class="errorText">There currently are no expired competitions.</p>
                 </div>
             </div>
         </div>
