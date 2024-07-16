@@ -139,19 +139,19 @@ function addMap(name, creator, fav, author, description) {
     }
 
     if (mapArray.includes(name)) {
-        addButton.innerHTML = `<img src="./IMG/heart_icon.png" alt="add map" class="heart-icon">`;
+        addButton.innerHTML = `<img src="./IMG/disselect_icon.png" alt="add map" class="heart-icon">`;
     } else {
-        addButton.innerHTML = `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`;
+        addButton.innerHTML = `<img src="./IMG/select_icon.png" alt="add map" class="heart-icon">`;
     }
 
     addButton.addEventListener("click", (event) => {
         event.stopPropagation();
-        if (addButton.innerHTML == `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`) {
+        if (addButton.innerHTML == `<img src="./IMG/select_icon.png" alt="add map" class="heart-icon">`) {
             addSelectedMap(name);
-            addButton.innerHTML = `<img src="./IMG/heart_icon.png" alt="add map" class="heart-icon">`;
+            addButton.innerHTML = `<img src="./IMG/disselect_icon.png" alt="add map" class="heart-icon">`;
         } else {
             removeSelectedMap(name);
-            addButton.innerHTML = `<img src="./IMG/no_heart_icon.png" alt="add map" class="heart-icon">`;
+            addButton.innerHTML = `<img src="./IMG/select_icon.png" alt="add map" class="heart-icon">`;
         }
     });
 
