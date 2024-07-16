@@ -1764,16 +1764,6 @@ map::selection {
   font-size: 25px;
 }
 
-#topShadow {
-  background-image: linear-gradient(#232535f8, transparent);
-  height: 15px;
-  z-index: 1000;
-  width: 100%;
-  opacity: 30%;
-  position: fixed;
-  top: 0;
-}
-
 #nextRound {
   z-index: 15;
   transition: filter 250ms ease, scale 250ms ease, opacity 250ms ease;
