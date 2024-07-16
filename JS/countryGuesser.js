@@ -18,9 +18,6 @@ export function setCountryGuesserMode(enabled) {
             document.getElementById("map").style.visibility = "hidden";
             hideToggleMapButtonIfMobile(true);
             document.getElementById("revealCompass").style.visibility = "hidden";
-            document.querySelectorAll(".mapAttribution").forEach((element) => {
-                element.style.visibility = "hidden";
-            });
         }
 
         //show country picker UI
@@ -33,9 +30,6 @@ export function setCountryGuesserMode(enabled) {
             document.getElementById("map").style.visibility = "visible";
             hideToggleMapButtonIfMobile(false);
             document.getElementById("revealCompass").style.visibility = "visible";
-            document.querySelectorAll(".mapAttribution").forEach((element) => {
-                element.style.visibility = "visible";
-            });
         }
 
         //hide country picker UI
