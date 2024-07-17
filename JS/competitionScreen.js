@@ -16,11 +16,18 @@ document.getElementById("backButton").addEventListener("click", () => {
 });
 
 // FAQ expand / collapse -------------------------------------------------------------------------
-document.getElementById("toggleFaqButton").addEventListener("click", toggleSection);
+document.getElementById("toggleFaqButton").addEventListener("click", (e) => {
+    toggleSection(e);
+});
+document.getElementById("toggleFaqBar").addEventListener("click", (e) => {
+    toggleSection(e);
+});
 
 let faqToggled = false;
 
-function toggleSection() {
+function toggleSection(e) {
+    e.stopPropagation();
+
     let contentSection = document.getElementById("contentSection");
     let toggleButton = document.getElementById("toggleFaqButton");
 

@@ -272,7 +272,8 @@
         filter: none !important;
     }
 
-    #competitionArea, #expiredCompetitionArea {
+    #competitionArea,
+    #expiredCompetitionArea {
         min-height: 200px;
     }
 
@@ -441,7 +442,8 @@
         text-wrap: nowrap;
     }
 
-    #enterPopup, #leaderboardPopup {
+    #enterPopup,
+    #leaderboardPopup {
         display: none;
     }
 
@@ -504,17 +506,17 @@
 
     .rankingDisplay {
         display: flex;
-        justify-content: center;
+        justify-content: safe center;
         flex-direction: column;
         width: calc(100% - 40px);
         border-radius: 5px;
         max-height: 50vh;
-        overflow: hidden;
         overflow-y: auto;
         padding: 20px;
         background-color: rgba(255, 190, 190, 0.1);
         gap: 10px;
         margin-top: 30px;
+        outline: 5px solid rgba(255, 190, 190, 0.1);
     }
 
     .rankItem {
@@ -529,6 +531,10 @@
 
     .rankYou {
         background-color: rgba(255, 255, 255, 0.3);
+    }
+
+    #toggleFaqBar {
+        cursor: pointer;
     }
 
     @media all and (orientation: portrait) {
@@ -585,7 +591,8 @@
     <div id="enterPopup" class="popupHolder">
         <div id="description" class="uiWindow">
             <h1 id="enterHeader" class="textHeaderLeft">Enter DefaultName?</h1>
-            <p id="enterText" class="popupBodyText">This will start the game immediately. You can only enter a competition once.
+            <p id="enterText" class="popupBodyText">This will start the game immediately. You can only enter a
+                competition once.
                 Continue?
             </p>
             <div class="buttonBox popupButtons">
@@ -599,13 +606,19 @@
             <h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for DefaultMap</h1>
             <div class="rankingDisplay">
                 <div class="rankItem">
-                    <p>#1</p><p>MaxyCrayyz</p><p>13,498 Pts.</p>
+                    <p>#1</p>
+                    <p>MaxyCrayyz</p>
+                    <p>13,498 Pts.</p>
                 </div>
                 <div class="rankItem rankYou">
-                    <p>#2</p><p>NoemiSFF</p><p>11,458 Pts.</p>
+                    <p>#2</p>
+                    <p>NoemiSFF</p>
+                    <p>11,458 Pts.</p>
                 </div>
                 <div class="rankItem">
-                    <p>#2</p><p>Emanuel45</p><p>10,428 Pts.</p>
+                    <p>#2</p>
+                    <p>Emanuel45</p>
+                    <p>10,428 Pts.</p>
                 </div>
             </div>
             <div class="buttonBox popupButtons">
@@ -615,7 +628,7 @@
     </div>
     <div class="center">
         <div class="main center">
-            <div class="competitionElement explainElement">
+            <div id="toggleFaqBar" class="competitionElement explainElement">
                 <div class="faqTopSection">
                     <h2 class="competitionHeader" id="faqTitle">What are Competitions?</h2>
                     <button id="toggleFaqButton" class="standardButton">+</button>
@@ -624,13 +637,16 @@
                     <div class="spacer"></div>
                     <ul>
                         <li>
-                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> Competitions are a fun way to compete with others on leaderboards.
+                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> Competitions
+                            are a fun way to compete with others on leaderboards.
                         </li>
                         <li>
-                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> They are hosted by players and go on for a limited time period.
+                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> They are
+                            hosted by players and go on for a limited time period.
                         </li>
                         <li>
-                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> There are very customizable in regards to restrictions, length and locations.
+                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> There are very
+                            customizable in regards to restrictions, length and locations.
                         </li>
                     </ul>
                 </div>
@@ -650,7 +666,7 @@
                 </div>
                 <div id="expiredCompetitionArea" class="center competitionArea">
                     <!-- expired competitions will be inserted here -->
-                     <p class="errorText">There currently are no expired competitions.</p>
+                    <p class="errorText">There currently are no expired competitions.</p>
                 </div>
             </div>
         </div>
