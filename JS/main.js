@@ -386,7 +386,9 @@ function openLocationOnMap() {
 let loadingLink = "/loader.html";
 
 export function loadIframe(lat, long) {
-    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location=" + lat + "," + long + "&key=AIzaSyDpIxJVFjMHOYsOv14lVN9Imlsh6pYI7z0&fov=90"; //API key (last part of URL)
+    let streetviewAPIKey = "AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs";
+
+    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location=" + lat + "," + long + "&key=" + streetviewAPIKey + "&fov=90"; //API key (last part of URL)
     let initialIframeLoad = true;
 
     // Reference to the iframe
