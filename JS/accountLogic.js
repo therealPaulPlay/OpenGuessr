@@ -99,6 +99,7 @@ export function checkAuthenticationStatus() {
   if (bearerToken != null && bearerToken != "") {
     if (isTokenExpired(bearerToken)) {
       isAuthenticated = false;
+      resetLocalSave();
     }
     else {
       isAuthenticated = true;
@@ -140,12 +141,16 @@ function isTokenExpired(token) {
 
 //these are being accessed from index.htm
 
-function signout() {
-  localStorage.removeItem("bearer"); //reset bearer token
+function resetLocalSave() {
+  localStorage.removeItem("bearer");
   localStorage.removeItem("id");
   localStorage.removeItem("username");
   localStorage.removeItem("experience");
-  localStorage.removeItem("selectedPin"); //also reset selected pin, as that is xp-based
+  localStorage.removeItem("selectedPin");
+}
+
+function signout() {
+  resetLocalSave();
   checkAuthenticationStatus();
 }
 
