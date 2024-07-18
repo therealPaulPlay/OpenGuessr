@@ -224,13 +224,17 @@ function closeConfirmPopup() {
 document.getElementById("uploadConfirm").addEventListener("click", showConfirmPopup);
 document.getElementById("submitConfirmClose").addEventListener("click", closeConfirmPopup);
 
+// submit with all details
 document.getElementById("submitConfirm").addEventListener("click", async () => {
-    let operationMessage = await submitCompetition(localStorage.getItem("bearer"));
+    let operationMessage = await submitCompetition(localStorage.getItem("bearer"), document.getElementById("uploadCompetitionName").textContent, localStorage.getItem("username"), localStorage.getItem("id"),
+        competitionRestriction, convertToSeconds(document.getElementById("uploadCompetitionDuration").textContent),
+        convertToSeconds(document.getElementById("uploadCompetitionRoundLength").textContent), document.getElementById("uploadCompetitionDescription").textContent, extractCoordinates(document.getElementById("uploadLocationData").textContent));
+
     document.getElementById("submitConfirmText").textContent = operationMessage;
     if (operationMessage.includes("success")) {
-        document.getElementById("uploadConfirmHeader").textContent = "Competition created!";
+        document.getElementById("submitConfirmHeader").textContent = "Competition created!";
     } else {
-        document.getElementById("uploadConfirmHeader").textContent = "Oh no! An error occured";
+        document.getElementById("submitConfirmHeader").textContent = "Oh no! An error occured";
     }
 });
 
@@ -269,24 +273,24 @@ function convertToSeconds(input) {
 let toggleRestrictions = document.getElementById("uploadCompetitionRestriction");
 
 toggleRestrictions.addEventListener("click", () => {
-    toggleMultiplayerRestriction();
+    togglecompetitionRestriction();
 });
 
-let multiplayerRestriction = "standard";
+let competitionRestriction = "standard";
 
 let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
 let currentRestrictionIndex = 0;
 
-function toggleMultiplayerRestriction() {
+function togglecompetitionRestriction() {
     if (toggleRestrictions.textContent == "Standard") {
         currentRestrictionIndex = 1; // start from the first restriction after standard
     } else {
         currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
     }
-    multiplayerRestriction = restrictions[currentRestrictionIndex];
+    competitionRestriction = restrictions[currentRestrictionIndex];
 
     // Update the button text
-    switch (multiplayerRestriction) {
+    switch (competitionRestriction) {
         case "nmpz":
             toggleRestrictions.textContent = "No move (NMPZ)";
             break;
@@ -311,6 +315,28 @@ function toggleMultiplayerRestriction() {
 
 // Submission function ------------------------------------------------------------------------------------------------------
 
+// Convert streetview links to json file:
+function extractCoordinates(text) {
+    try {
+        const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/g;
+        const coordinates = [];
+        let match;
+
+        while ((match = regex.exec(text)) !== null) {
+            const lat = parseFloat(match[1]);
+            const long = parseFloat(match[2]);
+            coordinates.push([lat, long]);
+        }
+
+        // Wrap coordinates with the outer object
+        const output = JSON.stringify({ locations: coordinates }, null, 2);
+
+        return output;
+    } catch (error) {
+        console.error("Error in extractCoordinates: " + error);
+    }
+}
+
 async function submitCompetition(token, name, author, authorId, restriction, duration, roundLength, description, rawLocations) {
     try {
         const requestBody = {
@@ -325,7 +351,6 @@ async function submitCompetition(token, name, author, authorId, restriction, dur
         };
 
         const experienceEndpoint = competitionsEndpoint + "/create";
-        // Make the PUT request using Fetch API
         const response = await fetch(experienceEndpoint, {
             method: 'POST',
             headers: {
@@ -335,16 +360,42 @@ async function submitCompetition(token, name, author, authorId, restriction, dur
             body: JSON.stringify(requestBody)
         });
 
-        // Check if the response is successful
         if (response.ok) {
             document.getElementById("uploadPopup").style.display = "none";
             competitionSubmittedSuccessfully = true;
-            return "Map submitted successfully! Thank you so much for contributing.";
+            return "Competition created successfully! Thank you for contributing.";
         } else {
-            console.error('User update failed:', response.status);
+            let responseData = null;
+
+            try {
+                responseData = await response.json();
+            }  catch {}
+            
+            let errorMessages = [];
+
+            if (responseData.error) {
+                errorMessages.push(responseData.error);
+            }
+
+            if (responseData.message) {
+                errorMessages.push(responseData.message);
+            }
+
+            if (responseData.errors && Array.isArray(responseData.errors)) {
+                responseData.errors.forEach(err => {
+                    if (err.msg) {
+                        errorMessages.push(err.msg);
+                    } else {
+                        errorMessages.push(JSON.stringify(err));
+                    }
+                });
+            }
+
+            return errorMessages.join('. ') + '.';
         }
     } catch (error) {
-        console.error('Error occurred during user update: ', error);
-        displayError("Error occured during user update: " + error, errorSource);
+        console.error('Error occurred during competition submission: ', error);
+        return "A network error has occurred.";
     }
 }
+
