@@ -34,7 +34,7 @@
         text-overflow: ellipsis;
     }
 
-    li {
+    .faqItem {
         margin-bottom: 15px;
         background-color: rgba(255, 210, 210, 0.15);
         border-radius: 5px;
@@ -50,7 +50,6 @@
         margin: 0;
         padding-left: 0px;
         padding-right: 0;
-        list-style-image: url("/IMG/arrow_icon.png");
     }
 
     body {
@@ -446,8 +445,12 @@
     }
 
     #enterPopup,
-    #leaderboardPopup {
+    #leaderboardPopup, #uploadPopup, #submitConfirmPopup {
         display: none;
+    }
+
+    #submitConfirmPopup {
+        z-index: 110;
     }
 
     .expiredBox {
@@ -543,6 +546,137 @@
         cursor: pointer;
     }
 
+    .infoNoteBox {
+        background-color: rgba(0, 0, 0, 0.1);
+        border-radius: 10px;
+        padding: 10px;
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+        padding-inline: 30px;
+    }
+
+    #inputArea {
+        padding: 10px;
+        display: flex;
+        justify-content: flex-start;
+        flex-direction: column;
+    }
+
+    .uploadInfo {
+        border-radius: 10px;
+        outline: none;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        width: 75%;
+        font-size: 22px;
+        min-height: 30px;
+        font-family: Barlow;
+        border: none;
+        padding: 5px;
+        padding-inline: 20px;
+        margin-bottom: 20px;
+        margin-top: 10px;
+        transition: background-color 250ms ease;
+    }
+
+    .uploadInfo:focus {
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    input:focus {
+        outline: none;
+        border: none;
+    }
+
+    search {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        max-width: 300px;
+        gap: 10px;
+    }
+
+    #infoNoteIcon {
+        width: 35px;
+        height: 35px;
+        margin-bottom: 20px;
+        margin-top: 7px;
+        opacity: 0.5;
+        margin-left: -10px;
+    }
+
+    pre {
+        font-family: monospace;
+        white-space: pre-wrap;
+        font-size: 15px;
+    }
+
+    search form {
+        width: 100%;
+    }
+    
+    textarea {
+        resize: none;
+    }
+
+    .locationTextbox {
+            min-height: 350px;
+            font-size: 12px;
+            width: 90%;
+            padding: 15px;
+    }
+
+    .helpItem {
+        margin-bottom: 10px;
+    }
+
+    .verticalMarginUl {
+        margin-top: 25px;
+        margin-bottom: 25px;
+        margin-left: 40px;
+    }
+
+    #createWindow {
+        max-width: unset;
+    }
+
+    #uploadHeader {
+        text-align: left;
+        margin-top: 5px;
+        margin-bottom: 30px;
+    }
+
+    #uploadFirstText {
+        font-size: 25px;
+    }
+
+    .metricEnd {
+        margin-left: 10px;
+        margin-top: 19px;
+    }
+
+    .extendedInputBox {
+        display: flex;
+    }
+
+    .marginBottom {
+        margin-bottom: 20px;
+    }
+
+    #uploadCompetitionRestriction {
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        margin-bottom: 20px;
+        margin-top: 10px;
+        border-radius: 10px;
+        min-width: 190px;
+    }
+
+    #uploadCompetitionDescription {
+        max-width: 500px;
+    }
+
     @media all and (orientation: portrait) {
         #text {
             width: 80%;
@@ -607,8 +741,20 @@
             </div>
         </div>
     </div>
+    <div id="submitConfirmPopup" class="popupHolder">
+        <div id="submitConfirmWindow" class="uiWindow">
+            <h1 id="submitConfirmHeader" class="textHeaderLeft">Are you sure?</h1>
+            <p id="submitConfirmText" class="popupBodyText">
+                Submitted competitions cannot be edited or deleted! Violating the rules can result in a permanent ban.
+            </p>
+            <div class="buttonBox popupButtons">
+                <button id="submitConfirmClose" class="standardButton popupButton closeButton">Close</button>
+                <button id="submitConfirm" class="standardButton primaryButton popupButton">Yes, submit</button>
+            </div>
+        </div>
+    </div>
     <div id="leaderboardPopup" class="popupHolder">
-        <div id="description" class="uiWindow">
+        <div id="leaderboardWindow" class="uiWindow">
             <h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for DefaultMap</h1>
             <div class="rankingDisplay">
                 <div class="rankItem">
@@ -632,6 +778,62 @@
             </div>
         </div>
     </div>
+    <div id="uploadPopup" class="popupHolder">
+        <div id="createWindow" class="uiWindow">
+            <h1 id="uploadHeader">Create a Competition</h1>
+            <div class="infoNoteBox">
+                <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+                <p id="uploadFirstText">Information and Rules:</p>
+                <ul class="verticalMarginUl">
+                    <li class="helpItem">Ensure that your competition names and author names are familiy-friendly.</li>
+                    <li class="helpItem">Keep all details in english.</li>
+                    <li class="helpItem">Pick a descriptive competition name (e. g. not "My Competition").</li>
+                    <li class="helpItem">Competitions will be deleted 7 days after they have ended.</li>
+                    <li class="helpItem">Competitions cannot be edited.</li>
+                    <li class="helpItem">The duration must be between 10min and 7d.</li>
+                    <li class="helpItem">The number of locations equals the amount of rounds.</li>
+                </ul>
+            </div>
+            <div id="inputArea">
+                <p class="marginTop">Competition name: </p>
+                <input id="uploadCompetitionName" class="uploadInfo" type="text" style="width: 220px"
+                    placeholder="Name of your competition..." maxlength="30">
+                <p>Competition Description: </p>
+                <input id="uploadCompetitionDescription" class="uploadInfo" type="text" placeholder="Description..."
+                    maxlength="70">
+                <p>Restriction:</p>
+                <button id="uploadCompetitionRestriction" class="standardButton">Standard</button>
+                <p>Round length:</p>
+                <div class="extendedInputBox">
+                    <input id="uploadCompetitionDuration" class="uploadInfo" type="text" style="width: 150px"
+                    placeholder="60" maxlength="30"><p class="metricEnd">sec</p>
+                </div>
+                <p>Duration (use min, h and d):</p>
+                <input id="uploadCompetitionDuration" class="uploadInfo" type="text" style="width: 150px"
+                    placeholder="2d" maxlength="30">
+                <div class="infoNoteBox marginBottom">
+                    <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+                    <p id="uploadFirstText">How to add locations:</p>
+                    <ol>
+                        <li class="helpItem">Visit <a href="https://www.google.com/maps/">Google Maps</a> on a desktop computer.</li>
+                        <li class="helpItem">Drag the orange guy onto the map to open a streetview.</li>
+                        <li class="helpItem">Copy the URL from the address bar of your browser into the textbox.</li>
+                    </ol>
+                </div>
+                <p class="marginTop">Locations (fixed order, max. 20):</p>
+                <textarea id="uploadMapData" class="uploadInfo locationTextbox" type="text" rows="20"
+                    placeholder="https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
+
+https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6!1e1!3m4!1scgVGr1HY1alolDg8gfwrzA!2e0!7i16384!8i8192?coh=205409&entry=ttu
+
+https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu" maxlength="50000"></textarea>
+            </div>
+            <div class="buttonBox">
+                <button id="uploadClose" class="standardButton closeButton">Close</button>
+                <button id="uploadConfirm" class="standardButton primaryButton">Submit</button>
+            </div>
+        </div>
+    </div>
     <div class="center">
         <div class="main center">
             <div id="toggleFaqBar" class="competitionElement explainElement">
@@ -641,16 +843,16 @@
                 </div>
                 <div id="contentSection">
                     <div class="spacer"></div>
-                    <ul>
-                        <li>
+                    <ul style="list-style: none;">
+                        <li class="faqItem">
                             <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> Competitions
                             are a fun way to compete with others on leaderboards.
                         </li>
-                        <li>
+                        <li class="faqItem">
                             <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> They are
                             hosted by players and go on for a limited time period.
                         </li>
-                        <li>
+                        <li class="faqItem">
                             <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> There are very
                             customizable in regards to restrictions, length and locations.
                         </li>
