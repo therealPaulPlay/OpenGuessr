@@ -227,9 +227,9 @@ document.getElementById("submitConfirmClose").addEventListener("click", closeCon
 // submit with all details
 document.getElementById("submitConfirm").addEventListener("click", async () => {
     document.getElementById("submitConfirm").style.display = "none";
-    let operationMessage = await submitCompetition(localStorage.getItem("bearer"), document.getElementById("uploadCompetitionName").textContent, localStorage.getItem("username"), localStorage.getItem("id"),
-        competitionRestriction, convertToSeconds(document.getElementById("uploadCompetitionDuration").textContent),
-        convertToSeconds(document.getElementById("uploadCompetitionRoundLength").textContent), document.getElementById("uploadCompetitionDescription").textContent, extractCoordinates(document.getElementById("uploadLocationData").textContent));
+    let operationMessage = await submitCompetition(localStorage.getItem("bearer"), document.getElementById("uploadCompetitionName").value, localStorage.getItem("username"), localStorage.getItem("id"),
+        competitionRestriction, convertToSeconds(document.getElementById("uploadCompetitionDuration").value),
+        convertToSeconds(document.getElementById("uploadCompetitionRoundLength").value), document.getElementById("uploadCompetitionDescription").value, extractCoordinates(document.getElementById("uploadLocationData").value));
 
     document.getElementById("submitConfirmText").textContent = operationMessage;
     if (operationMessage.includes("success")) {
@@ -343,7 +343,7 @@ async function submitCompetition(token, name, author, authorId, restriction, dur
         const requestBody = {
             name: name,
             author: author,
-            authorId: authorId,
+            id: authorId,
             restriction: restriction,
             duration: duration,
             roundLength: roundLength,
