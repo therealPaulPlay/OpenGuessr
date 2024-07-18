@@ -369,8 +369,7 @@ async function submitCompetition(token, name, author, authorId, restriction, dur
 
             try {
                 responseData = await response.json();
-            }  catch {}
-            
+
             let errorMessages = [];
 
             if (responseData.error) {
@@ -392,6 +391,9 @@ async function submitCompetition(token, name, author, authorId, restriction, dur
             }
 
             return errorMessages.join('. ') + '.';
+        }  catch {
+            return "Error occured on server and response did not include a json response.";
+        }
         }
     } catch (error) {
         console.error('Error occurred during competition submission: ', error);
