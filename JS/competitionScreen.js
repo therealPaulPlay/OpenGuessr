@@ -226,6 +226,7 @@ document.getElementById("submitConfirmClose").addEventListener("click", closeCon
 
 // submit with all details
 document.getElementById("submitConfirm").addEventListener("click", async () => {
+    document.getElementById("submitConfirm").style.display = "none";
     let operationMessage = await submitCompetition(localStorage.getItem("bearer"), document.getElementById("uploadCompetitionName").textContent, localStorage.getItem("username"), localStorage.getItem("id"),
         competitionRestriction, convertToSeconds(document.getElementById("uploadCompetitionDuration").textContent),
         convertToSeconds(document.getElementById("uploadCompetitionRoundLength").textContent), document.getElementById("uploadCompetitionDescription").textContent, extractCoordinates(document.getElementById("uploadLocationData").textContent));
@@ -390,7 +391,7 @@ async function submitCompetition(token, name, author, authorId, restriction, dur
                 });
             }
 
-            return errorMessages.join('. ') + '.';
+            return errorMessages.join(' ');
         }  catch {
             return "Error occured on server and response did not include a json response.";
         }
