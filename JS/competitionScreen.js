@@ -171,6 +171,12 @@ function loadCompetitions() {
     addCompetition(0, "Cool Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
     addCompetition(1, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
     addCompetition(2, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
+    addCompetition(0, "Cool Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
+    addCompetition(1, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
+    addCompetition(2, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
+    addCompetition(0, "Cool Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
+    addCompetition(1, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
+    addCompetition(2, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
     addCompetition(3, "Formerly cool Comp", "Paul", 55, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", true, false);
 }
 

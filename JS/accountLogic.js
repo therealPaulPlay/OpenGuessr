@@ -486,8 +486,8 @@ function viewProfile() {
   profileWindow.style.display = "block";
   document.getElementById("blackBackground").style.visibility = "visible";
   profileName.innerHTML = username;
-  document.getElementById("statisticExperience").innerHTML = "Total experience: " + Number(localStorage.getItem("experience")).toLocaleString();
-  document.getElementById("statisticUpgradeExperience").innerHTML = "Required for next level: " + uiSetUserXP(Number(localStorage.getItem("experience"))).requiredForLevelUpgrade.toLocaleString();
+  document.getElementById("statisticExperience").innerHTML = Number(localStorage.getItem("experience")).toLocaleString();
+  document.getElementById("statisticUpgradeExperience").innerHTML = uiSetUserXP(Number(localStorage.getItem("experience"))).requiredForLevelUpgrade.toLocaleString();
   updatePinLocks(localStorage.getItem("experience"));
 
 }

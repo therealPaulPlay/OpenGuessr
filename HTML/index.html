@@ -85,7 +85,7 @@
         </button>
         <div id="leaderboardDropdown">
           <div class="multiplayerLeaderboardArea">
-            <button id="leaderboardButton" class="accountButton socialBarButton">XP Leaderboard
+            <button id="leaderboardButton" class="accountButton socialBarButton">Experience
               <img class="socialBarIcons" src="/IMG/leaderboard_icon.png" alt="Experience Leaderboard">
             </button>
             <button id="dailyLeaderboardButton" class="accountButton socialBarButton">Daily Challenge
@@ -257,8 +257,14 @@
         </button>
       </div>
       <h3>User Stats: </h3>
-      <p id="statisticExperience"> Total experience: not set.</p>
-      <p id="statisticUpgradeExperience"> Required for next level: not set.</p>
+      <div id="profileStats" class="statisticView">
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">Experience:</p><p id="statisticExperience">not set.</p>
+        </div>
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">..until Level-Up:</p><p id="statisticUpgradeExperience"> not set.</p>
+        </div>
+      </div>
       <button id="profileClose" class="accountButton white accountClose">Close</button>
     </div>
     <!-- Help / How to Play Popup -->
