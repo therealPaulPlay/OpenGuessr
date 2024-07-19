@@ -316,6 +316,7 @@
         text-overflow: ellipsis;
         overflow: hidden;
         font-size: 22px;
+        text-wrap: nowrap;
     }
 
     .competitionItem:hover {
@@ -677,6 +678,10 @@
         max-width: 500px;
     }
 
+    .bottomMarginItem {
+        margin-bottom: 20px;
+    }
+
     @media all and (orientation: portrait) {
         #text {
             width: 80%;
@@ -756,21 +761,21 @@
     <div id="leaderboardPopup" class="popupHolder">
         <div id="leaderboardWindow" class="uiWindow">
             <h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for DefaultMap</h1>
-            <div class="rankingDisplay">
+            <div id="rankingDisplay" class="rankingDisplay">
                 <div class="rankItem">
                     <p>#1</p>
-                    <p>MaxyCrayyz</p>
-                    <p>13,498 Pts.</p>
+                    <p>DefaultUser1</p>
+                    <p>15 Pts.</p>
                 </div>
                 <div class="rankItem rankYou">
                     <p>#2</p>
-                    <p>NoemiSFF</p>
-                    <p>11,458 Pts.</p>
+                    <p>DefaultUser2</p>
+                    <p>10 Pts.</p>
                 </div>
                 <div class="rankItem">
                     <p>#2</p>
-                    <p>Emanuel45</p>
-                    <p>10,428 Pts.</p>
+                    <p>DefaultUser3</p>
+                    <p>5 Pts.</p>
                 </div>
             </div>
             <div class="buttonBox popupButtons">

@@ -49,6 +49,29 @@ function toggleSection(e) {
 let normalAddSuccessful = false;
 let expiredAddSuccessful = false;
 
+function formatDuration(seconds) {
+    if (typeof seconds === 'string') {
+        seconds = parseInt(seconds, 10);
+    }
+
+    if (isNaN(seconds) || seconds < 0) {
+        return "0min";
+    }
+
+    const days = Math.floor(seconds / 86400);
+    seconds %= 86400;
+    const hours = Math.floor(seconds / 3600);
+    seconds %= 3600;
+    const minutes = Math.floor(seconds / 60);
+
+    let result = [];
+    if (days > 0) result.push(`${days}d`);
+    if (hours > 0) result.push(`${hours}h`);
+    if (minutes > 0 || result.length === 0) result.push(`${minutes}min`);
+
+    return result.join(' ');
+}
+
 function addCompetition(id, name, author, playercount, restriction, duration, remainingDuration, locationAmount, roundLength, description, expired, entered) {
     let container = expired ? document.getElementById("expiredCompetitionArea") : document.getElementById("competitionArea");
 
@@ -90,7 +113,7 @@ function addCompetition(id, name, author, playercount, restriction, duration, re
                                 <div class="label${expiredItem}">
                                     <p>Duration</p>
                                 </div>
-                                <p class="itemText">${duration} (${remainingDuration} left)</p>
+                                <p class="itemText">${formatDuration(duration)} (${formatDuration(remainingDuration)} left)</p>
                             </div>
                             <div class="propertyItem${expiredItem}">
                                 <div class="label${expiredItem}">
@@ -145,9 +168,11 @@ function addCompetition(id, name, author, playercount, restriction, duration, re
 
 function openLeaderboard(id, name) {
     document.getElementById("leaderboardPopup").style.display = "flex";
-    document.getElementById("leaderboardHeader").textContent = "Ranking for " + name;
+    document.getElementById("leaderboardHeader").textContent = "Results for " + name;
 
     // load data from endpoint using id here
+    document.getElementById("rankingDisplay").innerHTML = `<p>Loading...</p>`;
+    loadLeaderboardFromServer(id);
 }
 
 function enterCompetitionPopup(id, name) {
@@ -165,24 +190,186 @@ document.getElementById("leaderboardClose").addEventListener("click", () => {
     document.getElementById("leaderboardPopup").style.display = "none";
 });
 
+async function loadLeaderboardFromServer(id) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id") // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
+        };
+
+        const response = await fetch(competitionsEndpoint + "/leaderboard/" + id, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            try {
+                const data = await response.json();
+                document.getElementById("rankingDisplay").innerHTML = "";
+
+                // add yourself at top with margin to others if you have played
+                let youItem = data.userRank;
+               
+                if (youItem) {
+                    let newEntry = document.createElement("div");
+                    newEntry.classList.add("rankItem");
+                    newEntry.classList.add("bottomMarginItem");
+                    newEntry.innerHTML = `
+                        <p>#${youItem.position}</p>
+                        <p>${youItem.userName}</p>
+                        <p>${youItem.score.toLocaleString()} Pts.</p>`;
+
+                    document.getElementById("rankingDisplay").appendChild(newEntry);
+                }
+
+                data.leaderboard.forEach(entry => {
+                    let newEntry = document.createElement("div");
+                    newEntry.classList.add("rankItem");
+                    newEntry.innerHTML = `
+                        <p>#${entry.position}</p>
+                        <p>${entry.userName}</p>
+                        <p>${entry.score.toLocaleString()} Pts.</p>`;
+
+                    if (entry.id == localStorage.getItem("id")) {
+                        newEntry.classList.add("rankYou");
+                    }
+
+                    document.getElementById("rankingDisplay").appendChild(newEntry);
+                });
+
+            } catch (error) {
+                console.error("Error during the competition loading and add process: " + error);
+            }
+
+            if (document.getElementById("rankingDisplay").innerHTML == "") {
+                document.getElementById("rankingDisplay").innerHTML = `<p>No entries yet.</p>`;
+            }
+        } else {
+            let responseData = null;
+
+            try {
+                responseData = await response.json();
+
+                let errorMessages = [];
+
+                if (responseData.error) {
+                    errorMessages.push(responseData.error);
+                }
+
+                if (responseData.message) {
+                    errorMessages.push(responseData.message);
+                }
+
+                if (responseData.errors && Array.isArray(responseData.errors)) {
+                    responseData.errors.forEach(err => {
+                        if (err.msg) {
+                            errorMessages.push(err.msg);
+                        } else {
+                            errorMessages.push(JSON.stringify(err));
+                        }
+                    });
+                }
+
+                document.getElementById("rankingDisplay").innerHTML = `<p>Error: ${errorMessages.join(' ')}</p>`;
+            } catch {
+                document.getElementById("rankingDisplay").innerHTML = `<p>Error: Error did not include json.</p>`;
+            }
+        }
+    } catch (error) {
+        console.error('Error occurred during competition submission: ', error);
+        document.getElementById("rankingDisplay").innerHTML = `<p>Error: ${error}</p>`;
+    }
+}
+
 // load competitions --------------------------------------------------------------------------------------
+let notExpiredIndex = 0;
+let expiredIndex = 0;
 
 function loadCompetitions() {
-    // load from server, id has to be unique
-
-    addCompetition(0, "Cool Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
-    addCompetition(1, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
-    addCompetition(2, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
-    addCompetition(0, "Cool Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
-    addCompetition(1, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
-    addCompetition(2, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
-    addCompetition(0, "Cool Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
-    addCompetition(1, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
-    addCompetition(2, "Swaggy Comp", "Paul", 17, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", false, false);
-    addCompetition(3, "Formerly cool Comp", "Paul", 55, "none", "5d", "2d", "5", "30", "This is a test map that is very insane.", true, false);
+    getCompetitionsFromServer(false); // get initial 10 active comps
+    getCompetitionsFromServer(true); // get initial 10 expired comps
 }
 
 loadCompetitions();
+
+async function getCompetitionsFromServer(expired) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id") // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
+        };
+
+        let Endpoint = null;
+
+        if (!expired) {
+            Endpoint = competitionsEndpoint + "/" + notExpiredIndex;
+        } else {
+            Endpoint = competitionsEndpoint + "/expired/" + expiredIndex;
+        }
+        const response = await fetch(Endpoint, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            try {
+                const data = await response.json();
+                data.competitions.forEach(competition => {
+                    addCompetition(competition.id, competition.name, competition.author, competition.playercount, competition.restriction, competition.duration, competition.remainingDuration, competition.location_amount, competition.round_length, competition.description, competition.expired, competition.entered);
+
+                    if (!expired) {
+                        notExpiredIndex += 10;
+                    } else {
+                        expiredIndex += 10;
+                    }
+                });
+            } catch (error) {
+                console.error("Error during the competition loading and add process: " + error);
+            }
+        } else {
+            let responseData = null;
+
+            try {
+                responseData = await response.json();
+
+                let errorMessages = [];
+
+                if (responseData.error) {
+                    errorMessages.push(responseData.error);
+                }
+
+                if (responseData.message) {
+                    errorMessages.push(responseData.message);
+                }
+
+                if (responseData.errors && Array.isArray(responseData.errors)) {
+                    responseData.errors.forEach(err => {
+                        if (err.msg) {
+                            errorMessages.push(err.msg);
+                        } else {
+                            errorMessages.push(JSON.stringify(err));
+                        }
+                    });
+                }
+
+                document.querySelectorAll(".errorText").forEach((e) => {
+                    e.textContent = "Error: " + errorMessages.join(' ');
+                });
+            } catch {
+                document.querySelectorAll(".errorText").forEach((e) => {
+                    e.textContent = "Error did not include json.";
+                });
+            }
+        }
+    } catch (error) {
+        console.error('Error occurred during competition submission: ', error);
+        return "A network error has occurred.";
+    }
+}
 
 // Create window -------------------------------------------------------------------------------------------
 
@@ -351,8 +538,7 @@ async function submitCompetition(token, name, author, authorId, restriction, dur
             rawLocations: rawLocations
         };
 
-        const experienceEndpoint = competitionsEndpoint + "/create";
-        const response = await fetch(experienceEndpoint, {
+        const response = await fetch(competitionsEndpoint + "/create", {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -371,30 +557,30 @@ async function submitCompetition(token, name, author, authorId, restriction, dur
             try {
                 responseData = await response.json();
 
-            let errorMessages = [];
+                let errorMessages = [];
 
-            if (responseData.error) {
-                errorMessages.push(responseData.error);
+                if (responseData.error) {
+                    errorMessages.push(responseData.error);
+                }
+
+                if (responseData.message) {
+                    errorMessages.push(responseData.message);
+                }
+
+                if (responseData.errors && Array.isArray(responseData.errors)) {
+                    responseData.errors.forEach(err => {
+                        if (err.msg) {
+                            errorMessages.push(err.msg);
+                        } else {
+                            errorMessages.push(JSON.stringify(err));
+                        }
+                    });
+                }
+
+                return errorMessages.join(' ');
+            } catch {
+                return "Error occured on server and response did not include a json response.";
             }
-
-            if (responseData.message) {
-                errorMessages.push(responseData.message);
-            }
-
-            if (responseData.errors && Array.isArray(responseData.errors)) {
-                responseData.errors.forEach(err => {
-                    if (err.msg) {
-                        errorMessages.push(err.msg);
-                    } else {
-                        errorMessages.push(JSON.stringify(err));
-                    }
-                });
-            }
-
-            return errorMessages.join(' ');
-        }  catch {
-            return "Error occured on server and response did not include a json response.";
-        }
         }
     } catch (error) {
         console.error('Error occurred during competition submission: ', error);
