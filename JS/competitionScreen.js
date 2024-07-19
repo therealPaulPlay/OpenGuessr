@@ -206,7 +206,26 @@ async function enterCompetition(id, token) {
         if (response.ok) {
             try {
                 const data = await response.json();
-                console.log(data);
+
+                document.getElementById("enterText").textContent = "Details received from server. Starting...";
+                let activeCompetitionDetails = {
+                    name: data.name,
+                    id: data.id,
+                    roundAmount: data.location_amount,
+                    roundLength: data.round_length,
+                    restriction: data.restriction,
+                    locations: data.locations.locations
+                }
+
+                localStorage.setItem("competition", JSON.stringify(activeCompetitionDetails));
+
+                // go back to main page and start competition
+                if(inIframe()) {
+                    window.top.postMessage("close", "*");
+                    window.top.postMessage("loadCompetition", "*");
+                } else {
+                    window.location.href = "/index.html";
+                }
 
             } catch (error) {
                 console.error("Error parsing competition details: " + error);

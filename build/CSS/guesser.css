@@ -779,14 +779,6 @@ input:focus {
   transition: opacity 250ms ease, filter 250ms ease;
 }
 
-#multiplayerLeave {
-  display: none;
-  margin: 0;
-  padding-inline: 10px;
-  line-height: 0.9;
-  margin-left: 5px;
-}
-
 .infoNote {
   margin: 10px;
   width: 100%;
@@ -2343,6 +2335,14 @@ a:hover {
 
 #competitionsButton {
   margin-top: 10px;
+}
+
+.leaveButton {
+  display: none;
+  margin: 0;
+  padding-inline: 10px;
+  line-height: 0.9;
+  margin-left: 5px;
 }
 
 #troubleshootingArea {

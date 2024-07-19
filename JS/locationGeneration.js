@@ -2,6 +2,7 @@ import { errorPopup } from "./errorHandling.js";
 import { coordsFromHost } from "./multiplayer.js";
 import { mapCategory } from "./categoryMenu.js";
 import { getDailyChallengeIndex } from "./userAPI.js";
+import { competition, currentRound } from "./competitionLogic.js";
 
 //This is THE function to GET LOCATIONS (all others here are NOT export
 export async function getLocationCoordinates(type) {
@@ -12,7 +13,7 @@ export async function getLocationCoordinates(type) {
 
     if (type == "JSON") {
         return await getCoordsFromJSON(mapCategory);
-    } else if (type == "SDK" && type != "DAILY") {
+    } else if (type == "SDK") {
         return await getCoordsFromLocationServer();
     } else if (type == "DAILY") {
         return await getCoordsFromServerDaily();
@@ -20,6 +21,8 @@ export async function getLocationCoordinates(type) {
         return coordsFromHost; 
     } else if (type == "COMMUNITY") {
         return await getCommunityMapCoordinates();
+    } else if (type == "COMPETITION") {
+        return await getCompetitionCoordinates();
     } else {
         console.error("Incorrect Location type set in locationGeneration.js");
     }
@@ -273,6 +276,24 @@ async function selectLocationFromMapsServer() {
         resultLocationsArray = [resultLat, resultLong, country];
     } catch (error) {
         console.error("Error in locationGeneration.js Community map location JSON generation: " + error);
+    }
+
+    return resultLocationsArray;
+}
+
+// get Competition coordinates ---------------------------------------------------------------------------------------------
+
+async function getCompetitionCoordinates() {
+    let resultLocationsArray = [];
+
+    try {
+        const resultLat = competition.locations[currentRound][0];
+        const resultLong = competition.locations[currentRound][1];
+        const country = null;
+    
+        resultLocationsArray = [resultLat, resultLong, country];
+    } catch (error) {
+        console.error("Error in locationGeneration.js in getCompetitionCoordinates: " + error);
     }
 
     return resultLocationsArray;

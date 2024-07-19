@@ -4,6 +4,7 @@ import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile, isElementClickable } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
+import { competitionTimer, playingCompetition } from "./competitionLogic.js";
 
 
 // Initialize the map with correct provider --------------------------------------------------------------------
@@ -338,12 +339,20 @@ export function confirmButtonClicks() {
         try {
             dailyChallengeTimer.stopTimer();
         } catch (error) {
-            console.log("timer already stopped.");
+            console.warn("timer already stopped.");
         }
 
         saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
     } else {
         document.getElementById("nextRound").innerHTML = "Next round ➝";
+    }
+
+    if (playingCompetition) {
+        try {
+            competitionTimer.stopTimer();
+        } catch (e) {
+            console.warn("Competition timer already stopped: " + e);
+        }
     }
 
     if (!multiplayer) {

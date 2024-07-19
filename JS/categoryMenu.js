@@ -8,6 +8,7 @@ import { dailyChallengeNotJustPlayed, handleMapUnhover, justPlayedDailyChallenge
 import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
+import { competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 let Category = {
@@ -168,12 +169,15 @@ export function changeCategory(category, regenerate) {
 
 //Check categories and initiate location generation  ---------------------------------------------------------------------------------------------------------------
 
+loadCompetition(false);
+
 export function checkGenerationTypeAndGenerate() {
     try { dailyChallengeTimer.stopTimer(); } catch { }; //has to be in try catch
+    try { competitionTimer.stopTimer(); } catch { }; //has to be in try catch
     document.getElementById("mapTimer").textContent = "00" + ":" + "00"; //reset the timer visually
     setCountryGuesserMode(false);
 
-    if (!multiplayer) {
+    if (!multiplayer && !playingCompetition) {
         //If multiplayer is disabled
         setDailyChallengeUI(false);
         showMultiplayerOverlay(false);
@@ -204,7 +208,7 @@ export function checkGenerationTypeAndGenerate() {
         } else {
             console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
         }
-    } else {
+    } else if (multiplayer) {
         //If multiplayer is enabled
         try {
             disableDailyChallengeVariableOnly(); //disable the daily challenge (will be re-enabled by renunning the location gen after leaving)
@@ -233,8 +237,11 @@ export function checkGenerationTypeAndGenerate() {
             console.error("Error loading multiplayer location in categoryMenu.js Error: ", error)
         }
 
-    }
-
+    } else if (playingCompetition) {
+        setHardMode(false);
+        /* not disabling daily challenge ui because it is not that different  and would disable ui features that are need here */
+        generateNewLocation("COMPETITION");
+    } 
 }
 
 //Load the map category using localstorage ---------------------------------------------------------------------

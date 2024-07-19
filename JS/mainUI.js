@@ -5,6 +5,7 @@ import { toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners } from "./categoryMenu.js";
+import { loadCompetition } from "./competitionLogic.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -179,7 +180,7 @@ socialDiscordButton.addEventListener("click", function () { playSound("basic_but
 let privacyButton = document.getElementById("privacyButton");
 privacyButton.addEventListener("click", function () { playSound("basic_button"); showPageBrowser("/legal.html"); });
 
-document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html");});
+document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html"); });
 
 //Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
@@ -606,7 +607,7 @@ document.addEventListener("DOMContentLoaded", () => {
 let pageBrowserWindow = document.getElementById("pageBrowserWindow");
 
 export function showPageBrowser(page, login) {
-    document.getElementById("blackBackground").style.visibility = "visible"; 
+    document.getElementById("blackBackground").style.visibility = "visible";
     document.getElementById("pageBrowserIframe").src = window.location.origin + page;
 
     if (login) {
@@ -617,21 +618,21 @@ export function showPageBrowser(page, login) {
 
     pageBrowserWindow.style.display = "block";
 
-    document.getElementById("pageBrowserIframe").onload = function() {
+    document.getElementById("pageBrowserIframe").onload = function () {
         this.style.opacity = "1";
-      };
+    };
 }
 
 function disablePageBrowser() {
-    document.getElementById("blackBackground").style.visibility = "hidden"; 
+    document.getElementById("blackBackground").style.visibility = "hidden";
     pageBrowserWindow.style.display = "none";
     document.getElementById("pageBrowserIframe").style.opacity = "0";
     document.getElementById("pageBrowserIframe").src = ""; // unload iframe to save performance
 }
 
-window.onmessage = function(e) {
+window.onmessage = function (e) {
     switch (e.data) {
-        case "close": 
+        case "close":
             disablePageBrowser();
             break;
         case "reloadCommunityMaps":
@@ -648,6 +649,9 @@ window.onmessage = function(e) {
             break;
         case "loadAccountStatus":
             checkAuthenticationStatus();
+            break;
+        case "loadCompetition":
+            loadCompetition(true);
             break;
     }
 };
