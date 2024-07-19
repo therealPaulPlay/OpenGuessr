@@ -446,7 +446,9 @@
     }
 
     #enterPopup,
-    #leaderboardPopup, #uploadPopup, #submitConfirmPopup {
+    #leaderboardPopup,
+    #uploadPopup,
+    #submitConfirmPopup {
         display: none;
     }
 
@@ -616,16 +618,16 @@
     search form {
         width: 100%;
     }
-    
+
     textarea {
         resize: none;
     }
 
     .locationTextbox {
-            min-height: 350px;
-            font-size: 12px;
-            width: 90%;
-            padding: 15px;
+        min-height: 350px;
+        font-size: 12px;
+        width: 90%;
+        padding: 15px;
     }
 
     .helpItem {
@@ -665,7 +667,7 @@
         margin-bottom: 20px;
     }
 
-    #uploadCompetitionRestriction {
+    .toggleButton {
         background-color: rgba(255, 255, 255, 0.1);
         color: white;
         margin-bottom: 20px;
@@ -679,6 +681,11 @@
     }
 
     .bottomMarginItem {
+        margin-bottom: 20px;
+    }
+
+    #visibilityInfo {
+        margin-top: 20px;
         margin-bottom: 20px;
     }
 
@@ -737,8 +744,7 @@
         <div id="description" class="uiWindow">
             <h1 id="enterHeader" class="textHeaderLeft">Enter DefaultName?</h1>
             <p id="enterText" class="popupBodyText">This will start the game immediately. You can only enter a
-                competition once.
-                Continue?
+                competition once. Continue?
             </p>
             <div class="buttonBox popupButtons">
                 <button id="enterClose" class="standardButton popupButton closeButton">Close</button>
@@ -806,12 +812,20 @@
                 <p>Competition Description: </p>
                 <input id="uploadCompetitionDescription" class="uploadInfo" type="text" placeholder="Description..."
                     maxlength="70">
+                <div class="infoNoteBox marginBottom">
+                    <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+                    <p id="uploadFirstText">Information regarding private competitions:</p>
+                    <p id="visibilityInfo">Competitions are public by default, meaning they appear on the site for everyone. Private competitions can only be accessed via the link, so make sure not to lose it.</p>
+                </div>
+                <p>Visibility:</p>
+                <button id="uploadCompetitionVisibility" class="standardButton toggleButton">Public</button>
                 <p>Restriction:</p>
-                <button id="uploadCompetitionRestriction" class="standardButton">Standard</button>
+                <button id="uploadCompetitionRestriction" class="standardButton toggleButton">Standard</button>
                 <p>Round length:</p>
                 <div class="extendedInputBox">
                     <input id="uploadCompetitionRoundLength" class="uploadInfo" type="text" style="width: 150px"
-                    placeholder="60" maxlength="30"><p class="metricEnd">sec</p>
+                        placeholder="60" maxlength="30">
+                    <p class="metricEnd">sec</p>
                 </div>
                 <p>Duration (use min, h and d):</p>
                 <input id="uploadCompetitionDuration" class="uploadInfo" type="text" style="width: 150px"
@@ -820,8 +834,9 @@
                     <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
                     <p id="uploadFirstText">How to add locations:</p>
                     <ol>
-                        <li class="helpItem">Visit <a href="https://www.google.com/maps/">Google Maps</a> on a desktop computer.</li>
-                        <li class="helpItem">Drag the orange guy onto the map to open a streetview.</li>
+                        <li class="helpItem">Visit <a href="https://www.google.com/maps/">Google Maps</a> on a desktop
+                            computer.</li>
+                        <li class="helpItem">Drag the orange figure onto the map to open a streetview.</li>
                         <li class="helpItem">Copy the URL from the address bar of your browser into the textbox.</li>
                     </ol>
                 </div>
@@ -869,7 +884,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                     <h2 class="boxHeader">Currently ongoing: </h2>
                 </div>
                 <div id="competitionArea" class="center competitionArea">
-                    <!-- active ompetitions will be inserted here -->
+                    <!-- active competitions will be inserted here -->
                     <p class="errorText">There currently are no active competitions.</p>
                 </div>
             </div>

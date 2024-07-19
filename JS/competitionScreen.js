@@ -153,7 +153,11 @@ function addCompetition(id, name, author, playercount, restriction, duration, re
     });
 
     enterButton.addEventListener("click", () => {
-        enterCompetitionPopup(id, name);
+        if (localStorage.getItem("username") != null && localStorage.getItem("id") != null) {
+            enterCompetitionPopup(id, name);
+        } else {
+            window.location.href = "/signup.html";
+        }
     });
 
     if (entered) {
@@ -164,8 +168,89 @@ function addCompetition(id, name, author, playercount, restriction, duration, re
 }
 
 
-// Open leaderboard and enter competition ------------------------------------------------------------------------------------------------------
+// Open leaderboard and Enter competition ------------------------------------------------------------------------------------------------------
 
+let currentEnterID = null;
+
+function enterCompetitionPopup(id, name) {
+    document.getElementById("enterPopup").style.display = "flex";
+    document.getElementById("enterHeader").textContent = "Enter " + name + "?";
+    document.getElementById("enterText").textContent = "This will start the game immediately. You can only enter a competition once. Continue?";
+    currentEnterID = id;
+}
+
+document.getElementById("enterClose").addEventListener("click", () => {
+    document.getElementById("enterPopup").style.display = "none";
+});
+
+document.getElementById("enterConfirm").addEventListener("click", () => {
+    document.getElementById("enterText").textContent = "Requesting competition details from server...";
+    enterCompetition(currentEnterID, localStorage.getItem("bearer"));
+})
+
+async function enterCompetition(id, token) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id") // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
+        };
+
+        const response = await fetch(competitionsEndpoint + "/details/" + id, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            try {
+                const data = await response.json();
+                console.log(data);
+
+            } catch (error) {
+                console.error("Error parsing competition details: " + error);
+            }
+
+        } else {
+            let responseData = null;
+
+            try {
+                responseData = await response.json();
+
+                let errorMessages = [];
+
+                if (responseData.error) {
+                    errorMessages.push(responseData.error);
+                }
+
+                if (responseData.message) {
+                    errorMessages.push(responseData.message);
+                }
+
+                if (responseData.errors && Array.isArray(responseData.errors)) {
+                    responseData.errors.forEach(err => {
+                        if (err.msg) {
+                            errorMessages.push(err.msg);
+                        } else {
+                            errorMessages.push(JSON.stringify(err));
+                        }
+                    });
+                }
+
+                document.getElementById("enterText").textContent = "Error: " + errorMessages.join(' ');
+            } catch {
+                document.getElementById("enterText").textContent = "Error did not include json error string.";
+            }
+        }
+    } catch (error) {
+        console.error('Error occurred during competition details fetch ', error);
+        document.getElementById("enterText").textContent = "Error: " + error;
+    }
+}
+
+
+// Leaderboard ---------------------------
 function openLeaderboard(id, name) {
     document.getElementById("leaderboardPopup").style.display = "flex";
     document.getElementById("leaderboardHeader").textContent = "Results for " + name;
@@ -174,17 +259,6 @@ function openLeaderboard(id, name) {
     document.getElementById("rankingDisplay").innerHTML = `<p>Loading...</p>`;
     loadLeaderboardFromServer(id);
 }
-
-function enterCompetitionPopup(id, name) {
-    document.getElementById("enterPopup").style.display = "flex";
-    document.getElementById("enterHeader").textContent = "Enter " + name + "?";
-
-    // save details in localstorage here, make api call to get locations and other data like restrictions
-}
-
-document.getElementById("enterClose").addEventListener("click", () => {
-    document.getElementById("enterPopup").style.display = "none";
-});
 
 document.getElementById("leaderboardClose").addEventListener("click", () => {
     document.getElementById("leaderboardPopup").style.display = "none";
@@ -211,7 +285,7 @@ async function loadLeaderboardFromServer(id) {
 
                 // add yourself at top with margin to others if you have played
                 let youItem = data.userRank;
-               
+
                 if (youItem) {
                     let newEntry = document.createElement("div");
                     newEntry.classList.add("rankItem");
@@ -295,6 +369,11 @@ function loadCompetitions() {
 loadCompetitions();
 
 async function getCompetitionsFromServer(expired) {
+    // display initial loading message
+    document.querySelectorAll(".errorText").forEach((e) => {
+        e.textContent = "Loading competitions...";
+    });
+
     try {
         const requestBody = {
             id: localStorage.getItem("id") // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
@@ -376,7 +455,11 @@ async function getCompetitionsFromServer(expired) {
 let competitionSubmittedSuccessfully = false;
 
 document.getElementById("createButton").addEventListener("click", () => {
-    openCreateWindow();
+    if (localStorage.getItem("username") != null && localStorage.getItem("id") != null) {
+        openCreateWindow();
+    } else {
+        window.location.href = "/signup.html";
+    }
 });
 
 document.getElementById("uploadClose").addEventListener("click", () => {
@@ -416,7 +499,7 @@ document.getElementById("submitConfirm").addEventListener("click", async () => {
     document.getElementById("submitConfirm").style.display = "none";
     let operationMessage = await submitCompetition(localStorage.getItem("bearer"), document.getElementById("uploadCompetitionName").value, localStorage.getItem("username"), localStorage.getItem("id"),
         competitionRestriction, convertToSeconds(document.getElementById("uploadCompetitionDuration").value),
-        convertToSeconds(document.getElementById("uploadCompetitionRoundLength").value), document.getElementById("uploadCompetitionDescription").value, extractCoordinates(document.getElementById("uploadLocationData").value), false); // last one is private, has to be changed
+        convertToSeconds(document.getElementById("uploadCompetitionRoundLength").value), document.getElementById("uploadCompetitionDescription").value, extractCoordinates(document.getElementById("uploadLocationData").value), competitionPrivate); // last one is private, has to be changed
 
     document.getElementById("submitConfirmText").textContent = operationMessage;
     if (operationMessage.includes("success")) {
@@ -456,13 +539,29 @@ function convertToSeconds(input) {
     }
 }
 
-// Toggle Restrictions ---------------------------------------------------------------------------------------------
+// Toggle Restrictions & Visibility ---------------------------------------------------------------------------------------------
 
 let toggleRestrictions = document.getElementById("uploadCompetitionRestriction");
+let toggleVisibility = document.getElementById("uploadCompetitionVisibility");
 
 toggleRestrictions.addEventListener("click", () => {
     togglecompetitionRestriction();
 });
+
+toggleVisibility.addEventListener("click", toggleCompetitionVisibility);
+
+let competitionPrivate = false;
+
+function toggleCompetitionVisibility() {
+    competitionPrivate = !competitionPrivate;
+
+    if (competitionPrivate) {
+        toggleVisibility.textContent = "Private";
+    } else {
+        toggleVisibility.textContent = "Public";
+    }
+}
+
 
 let competitionRestriction = "standard";
 
