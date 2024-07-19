@@ -8,7 +8,7 @@ import { dailyChallengeNotJustPlayed, handleMapUnhover, justPlayedDailyChallenge
 import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
-import { competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
+import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 let Category = {
@@ -211,7 +211,7 @@ export function checkGenerationTypeAndGenerate() {
     } else if (multiplayer) {
         //If multiplayer is enabled
         try {
-            disableDailyChallengeVariableOnly(); //disable the daily challenge (will be re-enabled by renunning the location gen after leaving)
+            disableDailyChallengeVariableOnly(); //disable the daily challenge (will be re-enabled by rerunning the location gen after leaving)
             setHardMode(false);
 
             if (isHost) {
@@ -238,9 +238,12 @@ export function checkGenerationTypeAndGenerate() {
         }
 
     } else if (playingCompetition) {
-        setHardMode(false);
-        /* not disabling daily challenge ui because it is not that different  and would disable ui features that are need here */
-        generateNewLocation("COMPETITION");
+        if (checkCompetitionRoundStatus()) {
+            setHardMode(false);
+            disableDailyChallengeVariableOnly(); 
+            /* not disabling daily challenge ui because it is not that different to competition ui and would disable ui features that are needed here */
+            generateNewLocation("COMPETITION");
+        }
     } 
 }
 

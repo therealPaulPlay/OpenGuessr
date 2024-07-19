@@ -3,6 +3,7 @@ import { setDailyChallengeScore } from "./userAPI"
 import { startTimer } from "./timer";
 import { showPageBrowser, toggleCategoryMenu } from "./mainUI";
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
+import { playSound } from "./soundManager";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
 
@@ -89,4 +90,35 @@ export function checkStartCompetitionRound() {
 
 function competitionTimerExpired() {
     confirmButtonClicks(); //if the timer expires and the player hasn't guessed yet, the guess function will be evoked.
+}
+
+// Leave logic --------------------------------------------------------------------------------------------------------
+
+let leaveButton = document.getElementById("competitionLeave");
+
+leaveButton.addEventListener("click", () => {
+    playSound("basic_button");
+    leaveCompetition();
+});
+
+function leaveCompetition() {
+    playingCompetition = false;
+    setCompetitionUI(false);
+    checkGenerationTypeAndGenerate();
+
+    // Now, TODO submit result so you cant just play again and again
+
+    // Show the leaderboard
+    showPageBrowser("/competitions.html?leaderboard=" + competition.id);
+}
+
+// Check round status and end if needed ----------------------------------------------------------------------------------
+
+export function checkCompetitionRoundStatus() {
+    if (currentRound == competition.roundAmount) {
+        leaveCompetition();
+        return false;
+    } else {
+        return true;
+    }
 }

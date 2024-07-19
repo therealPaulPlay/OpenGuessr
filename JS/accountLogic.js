@@ -8,6 +8,7 @@ import { playSound } from "./soundManager.js";
 import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
+import { playingCompetition } from "./competitionLogic.js";
 
 let accountLockedArray;
 
@@ -415,10 +416,10 @@ export async function loadResultScreenXP(distance) {
     streakDisplay.style.width = "0";
 
     // XP calculation formulas -------------------------------------------------
-    if (!multiplayer) {
+    if (!multiplayer && !playingCompetition) {
       earnedXP = calculateXPGain(distance, selectedCategory);
 
-    } else {
+    } else if (multiplayer) {
       //always use the standard formula for multiplayer 
       earnedXP = calculateXPGain(distance, multiplayerCategory);
 
@@ -428,6 +429,8 @@ export async function loadResultScreenXP(distance) {
         peerSendsHost("score", earnedXP);
       }
 
+    } else if (playingCompetition) {
+      earnedXP = calculateXPGain(distance, "standard"); // always use standard calculation formula for competitions
     }
 
     //apply XP visually and server-wise ----------------------------------
