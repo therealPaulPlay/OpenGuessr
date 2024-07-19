@@ -308,7 +308,7 @@ async function getCompetitionsFromServer(expired) {
             Endpoint = competitionsEndpoint + "/expired/" + expiredIndex;
         }
         const response = await fetch(Endpoint, {
-            method: 'POST',
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
@@ -416,7 +416,7 @@ document.getElementById("submitConfirm").addEventListener("click", async () => {
     document.getElementById("submitConfirm").style.display = "none";
     let operationMessage = await submitCompetition(localStorage.getItem("bearer"), document.getElementById("uploadCompetitionName").value, localStorage.getItem("username"), localStorage.getItem("id"),
         competitionRestriction, convertToSeconds(document.getElementById("uploadCompetitionDuration").value),
-        convertToSeconds(document.getElementById("uploadCompetitionRoundLength").value), document.getElementById("uploadCompetitionDescription").value, extractCoordinates(document.getElementById("uploadLocationData").value));
+        convertToSeconds(document.getElementById("uploadCompetitionRoundLength").value), document.getElementById("uploadCompetitionDescription").value, extractCoordinates(document.getElementById("uploadLocationData").value), false); // last one is private, has to be changed
 
     document.getElementById("submitConfirmText").textContent = operationMessage;
     if (operationMessage.includes("success")) {
@@ -525,7 +525,7 @@ function extractCoordinates(text) {
     }
 }
 
-async function submitCompetition(token, name, author, authorId, restriction, duration, roundLength, description, rawLocations) {
+async function submitCompetition(token, name, author, authorId, restriction, duration, roundLength, description, rawLocations, private) {
     try {
         const requestBody = {
             name: name,
@@ -535,7 +535,8 @@ async function submitCompetition(token, name, author, authorId, restriction, dur
             duration: duration,
             roundLength: roundLength,
             description: description,
-            rawLocations: rawLocations
+            rawLocations: rawLocations,
+            private: private
         };
 
         const response = await fetch(competitionsEndpoint + "/create", {
