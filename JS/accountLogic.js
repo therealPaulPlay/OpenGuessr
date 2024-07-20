@@ -8,7 +8,7 @@ import { playSound } from "./soundManager.js";
 import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
-import { playingCompetition } from "./competitionLogic.js";
+import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
 
 let accountLockedArray;
 
@@ -439,6 +439,7 @@ export async function loadResultScreenXP(distance) {
 
     } else if (playingCompetition) {
       earnedXP = calculateXPGain(distance, "standard"); // always use standard calculation formula for competitions
+      addResultToCompetitionScore(earnedXP);
     }
 
     //apply XP visually and server-wise ----------------------------------
