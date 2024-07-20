@@ -126,7 +126,7 @@ async function submitCompetitionResult(id, score, token) {
     try {
         const requestBody = {
             username: localStorage.getItem("username"),
-            userId: localStorage.getItem("id"),
+            id: localStorage.getItem("id"),
             score: score
         };
 
