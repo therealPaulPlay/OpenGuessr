@@ -411,6 +411,7 @@ let notExpiredIndex = 0;
 let expiredIndex = 0;
 
 function loadCompetitions() {
+    getCompetitionsFromServer(false, undefined, true); // get daily comp
     getCompetitionsFromServer(false); // get initial 10 active comps
     getCompetitionsFromServer(true); // get initial 10 expired comps
 }
@@ -425,7 +426,7 @@ document.getElementById("loadMoreExpired").addEventListener("click", () => {
     getCompetitionsFromServer(true);
 });
 
-async function getCompetitionsFromServer(expired, search) {
+async function getCompetitionsFromServer(expired, search, daily) {
     // display initial loading message
     document.querySelectorAll(".errorText").forEach((e) => {
         e.textContent = "Loading competitions...";
@@ -449,9 +450,20 @@ async function getCompetitionsFromServer(expired, search) {
             Endpoint = competitionsEndpoint + "/expired/" + expiredIndex;
         }
 
+        // always hide load more bar during loading process
+        if (!expired) {
+            document.getElementById("loadMoreActive").style.display = "none";
+        } else {
+            document.getElementById("loadMoreExpired").style.display = "none";
+        }
+
         // if a search query is passed, use the search endpoint
         if (search) {
             Endpoint = competitionsEndpoint + "/search/" + notExpiredIndex;
+        }
+
+        if (daily) {
+            Endpoint = competitionsEndpoint + "/daily-challenge";
         }
 
         const response = await fetch(Endpoint, {
@@ -481,12 +493,6 @@ async function getCompetitionsFromServer(expired, search) {
                     document.getElementById("loadMoreExpired").style.display = maxAmountLoaded ? "block" : "none";
                 } else {
                     document.getElementById("loadMoreActive").style.display = maxAmountLoaded ? "block" : "none";
-                }
-
-                if (maxAmountLoaded) {
-                    if (expired) {
-                        document.getElementById("loadMoreExpired").style.display = "block";
-                    }
                 }
 
                 if (!expired && document.getElementById("competitionArea").innerHTML == "") {
