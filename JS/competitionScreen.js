@@ -395,7 +395,7 @@ try {
     }
 } catch {}
 
-// load competitions --------------------------------------------------------------------------------------
+// load competitions ----------------------------------------------------------------------------------------------------------------------------
 let notExpiredIndex = 0;
 let expiredIndex = 0;
 
@@ -405,6 +405,14 @@ function loadCompetitions() {
 }
 
 loadCompetitions();
+
+document.getElementById("loadMoreActive").addEventListener("click", () => {
+    getCompetitionsFromServer(false);
+});
+
+document.getElementById("loadMoreExpired").addEventListener("click", () => {
+    getCompetitionsFromServer(true);
+});
 
 async function getCompetitionsFromServer(expired) {
     // display initial loading message
@@ -439,11 +447,25 @@ async function getCompetitionsFromServer(expired) {
                     addCompetition(competition.id, competition.name, competition.author, competition.author_id, competition.playercount, competition.restriction, competition.duration, competition.remainingDuration, competition.location_amount, competition.round_length, competition.description, competition.expired, competition.entered);
 
                     if (!expired) {
-                        notExpiredIndex += 10;
+                        notExpiredIndex += 1;
                     } else {
-                        expiredIndex += 10;
+                        expiredIndex += 1;
                     }
                 });
+
+                let maxAmountLoaded = data.competitions.length == 10;
+
+                if (expired) {
+                    document.getElementById("loadMoreExpired").style.display = maxAmountLoaded ? "block" : "none";
+                } else {
+                    document.getElementById("loadMoreActive").style.display = maxAmountLoaded ? "block" : "none";
+                }
+
+                if (maxAmountLoaded) {
+                    if (expired) {
+                        document.getElementById("loadMoreExpired").style.display = "block";
+                    }
+                }
             } catch (error) {
                 console.error("Error during the competition loading and add process: " + error);
             }

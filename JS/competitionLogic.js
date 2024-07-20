@@ -4,6 +4,7 @@ import { showPageBrowser, toggleCategoryMenu } from "./mainUI";
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
 import { playSound } from "./soundManager";
 import { errorPopup } from "./errorHandling";
+import { setRestriction } from "./multiplayer";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
 
@@ -26,6 +27,7 @@ export function loadCompetition(regenerate) {
         localStorage.removeItem("competition"); // remove localstorage key
         playingCompetition = true;
         setCompetitionUI(true);
+        setRestriction(competition.restriction);
 
         if (regenerate) {
             checkGenerationTypeAndGenerate();
@@ -114,6 +116,7 @@ async function leaveCompetition() {
     playingCompetition = false;
     setCompetitionUI(false);
     checkGenerationTypeAndGenerate();
+    setRestriction("standard");
 
     // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
     await submitCompetitionResult(competition.id, competitionCombinedScore, localStorage.getItem("bearer"));

@@ -598,6 +598,7 @@
         width: 100%;
         max-width: 300px;
         gap: 10px;
+        margin-right: -15px;
     }
 
     #infoNoteIcon {
@@ -687,6 +688,78 @@
     #visibilityInfo {
         margin-top: 20px;
         margin-bottom: 20px;
+    }
+
+    .loadMore {
+        border-radius: 10px;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        font-size: 22px;
+        min-height: 40px;
+        width: 280px;
+        padding: 10px;
+        margin-bottom: 30px;
+        margin-left: calc(50% - 140px);
+        /* centers it */
+        display: none;
+    }
+
+    search {
+        display: flex;
+        justify-content: center;
+        width: 100%;
+        max-width: 300px;
+        gap: 10px;
+    }
+
+    search form {
+        width: 100%;
+    }
+
+    #competitionSearch {
+        border-radius: 10px;
+        outline: none;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        width: calc(100% - 20px);
+        max-width: 700px;
+        transition: background-color 250ms ease;
+        font-size: 22px;
+        min-height: 40px;
+        border: none;
+        font-family: Barlow;
+        padding: 5px;
+        padding-inline: 10px;
+        text-overflow: ellipsis;
+    }
+
+    #competitionSearch:focus {
+        outline: none;
+        background-color: rgba(255, 255, 255, 0.2);
+    }
+
+    #startSearch {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: white;
+        max-width: 30px;
+        min-height: 40px;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    #searchIcon {
+        width: 20px;
+        height: 20px;
+    }
+
+    .flexCompetitionBar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
     }
 
     @media all and (orientation: portrait) {
@@ -815,7 +888,9 @@
                 <div class="infoNoteBox marginBottom">
                     <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
                     <p id="uploadFirstText">Information regarding private competitions:</p>
-                    <p id="visibilityInfo">Competitions are public by default, meaning they appear on the site for everyone. Private competitions can only be accessed via the link, so make sure not to lose it.</p>
+                    <p id="visibilityInfo">Competitions are public by default, meaning they appear on the site for
+                        everyone. Private competitions can only be accessed via the link, so make sure not to lose it.
+                    </p>
                 </div>
                 <p>Visibility:</p>
                 <button id="uploadCompetitionVisibility" class="standardButton toggleButton">Public</button>
@@ -880,13 +955,22 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                 </div>
             </div>
             <div class="competitionElement competitionBox">
-                <div class="competitionElement competitionTitle">
+                <div class="flexCompetitionBar competitionElement competitionTitle">
                     <h2 class="boxHeader">Currently ongoing: </h2>
+                    <search>
+                        <form>
+                            <input id="competitionSearch" placeholder="Search active competitions...">
+                        </form>
+                        <button id="startSearch" class="standardButton">
+                            <img src="/IMG/find_icon.png" alt="start search" id="searchIcon">
+                        </button>
+                    </search>
                 </div>
                 <div id="competitionArea" class="center competitionArea">
                     <!-- active competitions will be inserted here -->
                     <p class="errorText">There currently are no active competitions.</p>
                 </div>
+                <button id="loadMoreActive" class="loadMore standardButton">Show more ▼</button>
             </div>
             <div class="competitionElement competitionBox expiredBox">
                 <div class="competitionElement competitionTitle">
@@ -896,6 +980,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                     <!-- expired competitions will be inserted here -->
                     <p class="errorText">There currently are no expired competitions.</p>
                 </div>
+                <button id="loadMoreExpired" class="loadMore standardButton">Show more ▼</button>
             </div>
         </div>
 

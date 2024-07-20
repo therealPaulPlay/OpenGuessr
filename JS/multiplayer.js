@@ -1795,7 +1795,7 @@ function multiplayerOverlayCountdown() {
 
 const guesserWindow = document.getElementById("GuesserWindow");
 
-function setRestriction(restriction) {
+export function setRestriction(restriction) {
     nmpzBackground.style.pointerEvents = "none";
     nmpzBackground.style.backgroundColor = "transparent";
     guesserWindow.style.filter = "none";
