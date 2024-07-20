@@ -91,7 +91,7 @@ function addCompetition(id, name, author, authorId, playercount, restriction, du
     let expiredLeaderboardButton = expired ? " expiredLeaderboardColor" : "";
 
     let competitionItem = document.createElement("div");
-    competitionItem.className = `competitionItem${expiredItem}`;
+    competitionItem.className = `competitionItem fadeInItem${expiredItem}`;
 
     competitionItem.innerHTML = `
                         <h2 class="competitionItemHeader">${name}</h2>
@@ -169,6 +169,10 @@ function addCompetition(id, name, author, authorId, playercount, restriction, du
         enterButton.style.opacity = "0.5";
         enterButton.textContent = "Hosted by you";
     }
+
+    setTimeout(() => {
+        competitionItem.style.opacity = "1";
+    }, 10);
 }
 
 
@@ -310,15 +314,22 @@ async function loadLeaderboardFromServer(id) {
                 let youItem = data.userRank;
 
                 if (youItem) {
+                    let youBar = document.createElement("div");
+                    youBar.classList.add("youBar");
+                    youBar.classList.add("bottomMarginItem");
+
                     let newEntry = document.createElement("div");
                     newEntry.classList.add("rankItem");
-                    newEntry.classList.add("bottomMarginItem");
                     newEntry.innerHTML = `
                         <p>#${youItem.position}</p>
                         <p>${youItem.userName}</p>
                         <p>${youItem.score.toLocaleString()} Pts.</p>`;
+                    youBar.innerHTML = `
+                        <p class="youLabel">You:</p>
+                    `
+                    youBar.appendChild(newEntry);
 
-                    document.getElementById("rankingDisplay").appendChild(newEntry);
+                    document.getElementById("rankingDisplay").appendChild(youBar);
                 }
 
                 data.leaderboard.forEach(entry => {
@@ -414,16 +425,21 @@ document.getElementById("loadMoreExpired").addEventListener("click", () => {
     getCompetitionsFromServer(true);
 });
 
-async function getCompetitionsFromServer(expired) {
+async function getCompetitionsFromServer(expired, search) {
     // display initial loading message
     document.querySelectorAll(".errorText").forEach((e) => {
         e.textContent = "Loading competitions...";
     });
 
     try {
-        const requestBody = {
+        let requestBody = {
             id: localStorage.getItem("id") // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
         };
+
+        if (search) {
+            requestBody.search = search;
+        }
+        
 
         let Endpoint = null;
 
@@ -432,6 +448,12 @@ async function getCompetitionsFromServer(expired) {
         } else {
             Endpoint = competitionsEndpoint + "/expired/" + expiredIndex;
         }
+
+        // if a search query is passed, use the search endpoint
+        if (search) {
+            Endpoint = competitionsEndpoint + "/search/" + notExpiredIndex;
+        }
+
         const response = await fetch(Endpoint, {
             method: 'PUT',
             headers: {
@@ -466,6 +488,10 @@ async function getCompetitionsFromServer(expired) {
                         document.getElementById("loadMoreExpired").style.display = "block";
                     }
                 }
+
+                if (!expired && document.getElementById("competitionArea").innerHTML == "") {
+                    document.getElementById("competitionArea").innerHTML = `<p class="errorText">Search returned no results.</p>`;
+                }
             } catch (error) {
                 console.error("Error during the competition loading and add process: " + error);
             }
@@ -498,6 +524,7 @@ async function getCompetitionsFromServer(expired) {
                 document.querySelectorAll(".errorText").forEach((e) => {
                     e.textContent = "Error: " + errorMessages.join(' ');
                 });
+
             } catch {
                 document.querySelectorAll(".errorText").forEach((e) => {
                     e.textContent = "Error did not include json.";
@@ -508,6 +535,35 @@ async function getCompetitionsFromServer(expired) {
         console.error('Error occurred during competition submission: ', error);
         return "A network error has occurred.";
     }
+}
+
+// Search Competitions -------------------------------------------------------------------------------------------------
+
+// search with enter key
+document.getElementById("competitionSearch").addEventListener("keydown", function (event) { 
+    if (event.key === "Enter") {
+        event.preventDefault();
+    }; 
+});
+
+document.getElementById("competitionSearch").addEventListener("keyup", function (event) { 
+    if (event.key === "Enter") {
+        startSearch();
+    }; 
+});
+
+document.getElementById("startSearch").addEventListener("click", startSearch);
+
+function startSearch() {
+    let query = document.getElementById("competitionSearch").value.toLowerCase();
+    notExpiredIndex = 0; // reset index if starting new search
+    document.getElementById("competitionArea").innerHTML = ""; // reset html of competition area
+    
+    if (query == "") {
+        query = undefined; // so the undefined check works in the load function
+    }
+
+    getCompetitionsFromServer(false, query);
 }
 
 // Create window -------------------------------------------------------------------------------------------

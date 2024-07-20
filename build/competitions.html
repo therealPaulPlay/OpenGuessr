@@ -286,7 +286,7 @@
     .competitionItem {
         border-radius: 10px;
         background-color: rgba(255, 141, 141, 0.15);
-        transition: background-color 250ms ease, filter 250ms ease;
+        transition: background-color 250ms ease, filter 250ms ease, opacity 250ms ease;
         width: calc(25% - 60px);
         flex-grow: 1;
         min-width: 220px;
@@ -760,6 +760,23 @@
         justify-content: space-between;
         align-items: center;
         gap: 10px;
+    }
+
+    .fadeInItem {
+        opacity: 0;
+    }
+
+    .youBar {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+    }
+
+    .youLabel {
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 5px;
+        padding-inline: 10px;
     }
 
     @media all and (orientation: portrait) {
