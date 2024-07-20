@@ -324,7 +324,7 @@ export function restoreOldStreak(oldStreak) {
 }
 
 function streakCalculation() {
-  if (!multiplayer) {
+  if (!multiplayer && !playingCompetition) {
     if (getCountryFromCoords(mapMarkerLat, mapMarkerLong) == getCountryFromCoords(currentStreetviewLat, currentStreetviewLong)) {
       streak++;
     } else {
@@ -345,26 +345,34 @@ function streakCalculation() {
   }
 }
 
+function getStreakMultiplierAdjustedToGamemode() {
+  if (!multiplayer && !playingCompetition) {
+    return streakMultiplier;
+  } else {
+    return 1;
+  }
+}
+
 function calculateXPGain(distance, category) {
   if (category == null || category == "standard" || category == "capital" || category == "hard") {
 
     streakCalculation();
-    return Math.round((5000 * ((0.998036) ** distance)) * streakMultiplier);
+    return Math.round((5000 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode());
 
   } else if (category == "europe" || category == "asia" || category == "africa" || category == "oceania" || category == "southamerica") {
     // not NA as that is literally US 95% of the time, therefore no streak
     streakCalculation();
-    return Math.round((5000 * ((0.996036) ** distance)) * streakMultiplier); // slightly reduced xp range as continents are smaller than countries
+    return Math.round((5000 * ((0.996036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // slightly reduced xp range as continents are smaller than countries
 
   } else if (category == "famous") {
 
     streakCalculation();
-    return Math.round((1500 * ((0.998036) ** distance)) * streakMultiplier); //1500 xp for famous, with streak up to 1800sth
+    return Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //1500 xp for famous, with streak up to 1800sth
 
   } else if (category && category.includes("community")) {
 
     streakCalculation();
-    return Math.round((3000 * ((0.994036) ** distance)) * streakMultiplier); //3000 xp for community, with streak slightly more - also adjusted distance function
+    return Math.round((3000 * ((0.994036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //3000 xp for community, with streak slightly more - also adjusted distance function
 
   } else if (category == "northamerica") {
     return Math.round(5000 * ((0.996036) ** distance));

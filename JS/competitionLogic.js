@@ -114,9 +114,12 @@ function leaveCompetition() {
 
 // Check round status and end if needed ----------------------------------------------------------------------------------
 
-export function checkCompetitionRoundStatus() {
+export function checkCompetitionRoundStatus(justReturnResult) {
     if (currentRound == competition.roundAmount) {
-        leaveCompetition();
+        if (!justReturnResult) {
+            leaveCompetition();
+        }
+        
         return false;
     } else {
         return true;

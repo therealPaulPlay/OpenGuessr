@@ -4,7 +4,7 @@ import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile, isElementClickable } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
-import { competitionTimer, playingCompetition } from "./competitionLogic.js";
+import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 
 
 // Initialize the map with correct provider --------------------------------------------------------------------
@@ -352,6 +352,12 @@ export function confirmButtonClicks() {
             competitionTimer.stopTimer();
         } catch (e) {
             console.warn("Competition timer already stopped: " + e);
+        }
+
+        if (!checkCompetitionRoundStatus(true)) {
+            document.getElementById("nextRound").innerHTML = "See ranking ➝";
+        } else {
+            document.getElementById("nextRound").innerHTML = "Next round ➝";
         }
     }
 

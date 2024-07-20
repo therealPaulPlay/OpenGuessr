@@ -72,7 +72,7 @@ function formatDuration(seconds) {
     return result.join(' ');
 }
 
-function addCompetition(id, name, author, playercount, restriction, duration, remainingDuration, locationAmount, roundLength, description, expired, entered) {
+function addCompetition(id, name, author, authorId, playercount, restriction, duration, remainingDuration, locationAmount, roundLength, description, expired, entered) {
     let container = expired ? document.getElementById("expiredCompetitionArea") : document.getElementById("competitionArea");
 
     // clean container on load of first competition for each one. 
@@ -149,7 +149,7 @@ function addCompetition(id, name, author, playercount, restriction, duration, re
     const enterButton = document.getElementById("enterButton" + id);
 
     leaderboardButton.addEventListener("click", () => {
-        openLeaderboard(id, name);
+        openLeaderboard(id);
     });
 
     enterButton.addEventListener("click", () => {
@@ -164,6 +164,10 @@ function addCompetition(id, name, author, playercount, restriction, duration, re
         enterButton.style.pointerEvents = "none";
         enterButton.style.opacity = "0.5";
         enterButton.textContent = "Already entered";
+    } else if (authorId == localStorage.getItem("id")) {
+        enterButton.style.pointerEvents = "none";
+        enterButton.style.opacity = "0.5";
+        enterButton.textContent = "Hosted by you";
     }
 }
 
@@ -270,9 +274,9 @@ async function enterCompetition(id, token) {
 
 
 // Leaderboard ---------------------------
-function openLeaderboard(id, name) {
+function openLeaderboard(id) {
     document.getElementById("leaderboardPopup").style.display = "flex";
-    document.getElementById("leaderboardHeader").textContent = "Results for " + name;
+    document.getElementById("leaderboardHeader").textContent = "Results loading...";
 
     // load data from endpoint using id here
     document.getElementById("rankingDisplay").innerHTML = `<p>Loading...</p>`;
@@ -332,6 +336,8 @@ async function loadLeaderboardFromServer(id) {
                     document.getElementById("rankingDisplay").appendChild(newEntry);
                 });
 
+                document.getElementById("leaderboardHeader").textContent = "Results for " + data.name;
+
             } catch (error) {
                 console.error("Error during the competition loading and add process: " + error);
             }
@@ -376,6 +382,19 @@ async function loadLeaderboardFromServer(id) {
     }
 }
 
+// open leaderboard via link
+let urlParams = new URLSearchParams(window.location.search);
+
+let leaderboardIdFromLink;
+
+try {
+    leaderboardIdFromLink = urlParams.get("leaderboard"); // remove all underscores
+    if (leaderboardIdFromLink) {
+        openLeaderboard(leaderboardIdFromLink);
+        history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
+    }
+} catch {}
+
 // load competitions --------------------------------------------------------------------------------------
 let notExpiredIndex = 0;
 let expiredIndex = 0;
@@ -417,7 +436,7 @@ async function getCompetitionsFromServer(expired) {
             try {
                 const data = await response.json();
                 data.competitions.forEach(competition => {
-                    addCompetition(competition.id, competition.name, competition.author, competition.playercount, competition.restriction, competition.duration, competition.remainingDuration, competition.location_amount, competition.round_length, competition.description, competition.expired, competition.entered);
+                    addCompetition(competition.id, competition.name, competition.author, competition.author_id, competition.playercount, competition.restriction, competition.duration, competition.remainingDuration, competition.location_amount, competition.round_length, competition.description, competition.expired, competition.entered);
 
                     if (!expired) {
                         notExpiredIndex += 10;

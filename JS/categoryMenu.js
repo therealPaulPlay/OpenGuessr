@@ -238,7 +238,7 @@ export function checkGenerationTypeAndGenerate() {
         }
 
     } else if (playingCompetition) {
-        if (checkCompetitionRoundStatus()) {
+        if (checkCompetitionRoundStatus(false)) {
             setHardMode(false);
             disableDailyChallengeVariableOnly(); 
             /* not disabling daily challenge ui because it is not that different to competition ui and would disable ui features that are needed here */
