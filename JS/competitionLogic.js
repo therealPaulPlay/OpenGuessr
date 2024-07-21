@@ -1,6 +1,6 @@
 import { confirmButtonClicks } from "./miniMap";
 import { startTimer } from "./timer";
-import { showPageBrowser, toggleCategoryMenu } from "./mainUI";
+import { disableResultScreen, showPageBrowser, toggleCategoryMenu } from "./mainUI";
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
 import { playSound } from "./soundManager";
 import { errorPopup } from "./errorHandling";
@@ -19,6 +19,8 @@ export let competitionTimer;
 // called in category menu before generating so that these values are set before they are needed!
 export function loadCompetition(regenerate) {
     competition = JSON.parse(localStorage.getItem("competition"));
+
+    disableResultScreen(); // in case result screen is enabled
 
     currentRound = 0; // reset round index
     competitionCombinedScore = 0; // reset combined score
@@ -59,6 +61,7 @@ export function setCompetitionUI(enable) {
             document.getElementById("revealCompass").style.marginBottom = "-21px";
         } else {
             document.getElementById("mapModeIndicator").style.display = "none";
+            document.getElementById("competitionLeave").style.display = "none";
 
             categoryButton.style.opacity = "1";
             categoryButton.style.pointerEvents = "auto";
