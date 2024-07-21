@@ -1,13 +1,13 @@
 import { generateNewLocation } from "./main.js";
 import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
-import { setDailyChallengeUI, dailyChallengeEnd, checkDailyChallengeCompletion, dailyChallengeTimer, disableDailyChallengeVariableOnly } from "./dailyChallenge.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
-import { dailyChallengeNotJustPlayed, handleMapUnhover, justPlayedDailyChallenge, resetMap } from "./miniMap.js";
+import { handleMapUnhover, resetMap } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
+import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 let Category = {
@@ -34,7 +34,6 @@ let Category = {
     SLOVAKIA: "slovakia",
     ROMANIA: "romania",
     TURKEY: "turkey",
-    DAILY: "daily",
     COUNTRY: "country",
     FINLAND: "finland",
     ISRAEL: "israel",
@@ -58,7 +57,7 @@ export function loadCommunityCategories() {
 
         let mapArray = [];
         mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
-        
+
         //if key doesn't exist yet, add a few default picks
         if (localStorage.getItem("addedCommunityMaps") == null) {
             mapArray = ["Indoor", "Airports", "Bridges", "Racetracks", "Modern Brutalism"];
@@ -160,7 +159,7 @@ export function changeCategory(category, regenerate) {
         checkGenerationTypeAndGenerate();
         setTimeout(() => {
             toggleCategoryMenu(true);
-        }, 300);
+        }, 200);
     }
 }
 
@@ -168,28 +167,20 @@ export function changeCategory(category, regenerate) {
 
 //Check categories and initiate location generation  ---------------------------------------------------------------------------------------------------------------
 
+loadCompetition(false);
+
 export function checkGenerationTypeAndGenerate() {
-    try { dailyChallengeTimer.stopTimer(); } catch { }; //has to be in try catch
-    document.getElementById("mapTimer").textContent = "00" + ":" + "00"; //reset the timer visually
+    try { competitionTimer.stopTimer(); } catch { }; // has to be in try catch
+    document.getElementById("mapTimer").textContent = "00" + ":" + "00"; // reset the timer visually
     setCountryGuesserMode(false);
 
-    if (!multiplayer) {
+    if (!multiplayer && !playingCompetition) {
         //If multiplayer is disabled
-        setDailyChallengeUI(false);
         showMultiplayerOverlay(false);
 
         //pick between json and maps api loading depending on the category type
-        if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "country" && !mapCategory.includes("community")) {
+        if (mapCategory != "standard" && mapCategory != "country" && !mapCategory.includes("community")) {
             generateNewLocation("JSON");
-        } else if (mapCategory == "daily") {
-            if (checkDailyChallengeCompletion() == "available") {
-                setDailyChallengeUI(true);
-                setHardMode(false);
-                generateNewLocation("DAILY");
-            } else {
-                changeCategory("standard", true);
-                showPageBrowser("/dailyleaderboard.html");
-            }
 
         } else if (mapCategory == "country") {
             setCountryGuesserMode(true);
@@ -204,23 +195,22 @@ export function checkGenerationTypeAndGenerate() {
         } else {
             console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
         }
-    } else {
+    } else if (multiplayer) {
         //If multiplayer is enabled
         try {
-            disableDailyChallengeVariableOnly(); //disable the daily challenge (will be re-enabled by renunning the location gen after leaving)
             setHardMode(false);
 
             if (isHost) {
-                if (mapCategory != "standard" && mapCategory != "daily" && mapCategory != "country" && !mapCategory.includes("community")) {
+                if (mapCategory != "standard" && mapCategory != "country" && !mapCategory.includes("community")) {
                     generateNewLocation("JSON");
                 } else if (mapCategory == "standard") {
                     generateNewLocation("SDK");
 
                 } else if (mapCategory.includes("community")) {
                     generateNewLocation("COMMUNITY");
-        
+
                 } else {
-                    //if the map category is an unsupported multiplayer category, such as daily or hard, switch to standard
+                    //if the map category is an unsupported multiplayer category, such as hard, switch to standard
                     changeCategory("standard", true); //this will re-run checkGenerationTypeAndGenerate
                     setTimeout(function () {
                         errorPopup("Unsupported Multiplayer Map", "This map category is not available for multiplayer and was automatically changed to Standard.", "Map unsupported", false);
@@ -233,8 +223,12 @@ export function checkGenerationTypeAndGenerate() {
             console.error("Error loading multiplayer location in categoryMenu.js Error: ", error)
         }
 
+    } else if (playingCompetition) {
+        if (checkCompetitionRoundStatus(false)) {
+            setHardMode(false);
+            generateNewLocation("COMPETITION");
+        }
     }
-
 }
 
 //Load the map category using localstorage ---------------------------------------------------------------------
@@ -256,10 +250,11 @@ nextRound.addEventListener("click", () => {
     if (resultScreenEnabled) {
         transitionToStart();
         playSound("basic_button");
-    }}
+    }
+}
 );
 
-window.addEventListener("keydown", function(event) {
+window.addEventListener("keydown", function (event) {
     if (event.key === " " && isElementClickable(document.getElementById("nextRound")) && resultScreenEnabled) {
         transitionToStart();
         playSound("basic_button");
@@ -275,30 +270,25 @@ export function transitionToStart() {
             alreadyTransitioning = false;
         }, 400);
 
-        if (!justPlayedDailyChallenge) { //justPlayedDailyChallenge is true when user has clicked "guess" button & dailyChallengeUIEnabled == true
-            document.getElementById("BeforeOverlay").style.visibility = "visible";
-            document.getElementById("BeforeOverlay").style.opacity = "100";
-            toggleStreakWindow(0, true);
-            checkGenerationTypeAndGenerate();
-            handleMapUnhover();
-            resetMap();
-            disableResultScreen();
+        document.getElementById("BeforeOverlay").style.visibility = "visible";
+        document.getElementById("BeforeOverlay").style.opacity = "100";
+        toggleStreakWindow(0, true);
+        checkGenerationTypeAndGenerate();
+        handleMapUnhover();
+        resetMap();
+        disableResultScreen();
 
-            setTimeout(socialPopupProbability, 650);
+        setTimeout(socialPopupProbability, 650);
 
-            //notify peers that the next round has begun
-            if (isHost && multiplayer) {
-                clearTimeout(autoSkipResult);
-                sendMessageToAll("closeResultScreen");
-                showMultiplayerRoundResults();
-            }
-
-            shrinkMapIfMobile();
-
-        } else {
-            dailyChallengeNotJustPlayed();
-            dailyChallengeEnd(); // open daily leaderboard + make skip button normal again
+        //notify peers that the next round has begun
+        if (isHost && multiplayer) {
+            clearTimeout(autoSkipResult);
+            sendMessageToAll("closeResultScreen");
+            showMultiplayerRoundResults();
         }
+
+        shrinkMapIfMobile();
+
     } else {
         console.warn("CategoryMenu.js: Already transitioning to start!");
     }

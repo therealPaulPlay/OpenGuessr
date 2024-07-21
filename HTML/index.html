@@ -2,10 +2,11 @@
 <html lang="en-US">
 
 <head>
-  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
   <meta name="description"
     content="Free geoguessr alternative with unlimited free play - improve your geography skills by guessing the location on google street view.">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  
   <!-- address bar -->
   <meta name="theme-color" content="#07071e">
 
@@ -27,8 +28,8 @@
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
     data-site-id="664453baf2089a039dc08edb" data-mode="scan" async></script>
 
-  <!-- Main.js, bundled. We use imports and exports so it has to be a module. Loading this async breaks the multiplayer linkjoin -->
-  <script type="module" src="main.js" defer></script>
+  <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
+  <script type="module" src="main.js?v=1.0.1" defer></script>
 
   <!-- custom venatus scaling script -->
   <script type="module" src="venatusCustom.js" defer></script>
@@ -79,17 +80,15 @@
       </div>
       <div id="socialBar">
         <div class="placeholder"></div>
-        <button id="multiplayerButton" class="accountButton socialBarButton">Multiplayer
+        <button id="multiplayerButton" class="socialBarBigger accountButton socialBarButton">Multiplayer
           <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
         </button>
-        <div class="multiplayerButtonArea">
-          <button id="leaderboardButton" class="accountButton socialBarButton">Leaderboard
-            <img class="socialBarIcons" src="/IMG/leaderboard_icon.png" alt="Leaderboard for OpenGuessr">
-          </button>
-          <button id="dailyLeaderboardButton" class="accountButton socialBarButton">Daily Challenge
-            <img class="socialBarIcons" src="/IMG/daily_icon.png" alt="Leaderboard for OpenGuessr">
-          </button>
-        </div>
+        <button id="leaderboardButton" class="accountButton socialBarButton">Leaderboard
+          <img class="socialBarIcons" src="/IMG/leaderboards_icon.png" alt="Experience Leaderboard">
+        </button>
+        <button class="accountButton socialBarButton" id="competitionsButton" class="accountButton socialBarButton">Competitions
+          <img class="socialBarIcons" src="/IMG/competitions_icon.png" alt="Competitions symbol">
+        </button>
         <div class="placeholder"></div>
       </div>
       <button id="floatingSocialButton">Multiplayer Menu <img id="multiplayerArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="arrowIcon"></button>
@@ -117,8 +116,7 @@
       <button class="category" id="capitalCategory" type="button">Capitals</button>
       <button class="category" id="famousCategory" type="button">Famous Places</button>
       <p class="categoriesNote" id="categoryExclusiveText"> Sign up to unlock for free: </p>
-      <button class="category countryCategory accountLock" id="dailyCategory" type="button">The
-        Daily Challenge</button>
+      <button class="category countryCategory accountLock" id="dailyCompetition" type="button">Daily Competition</button>
       <button class="category countryCategory accountLock" id="countryCategory" type="button">Country Guesser</button>
       <button class="category countryCategory accountLock" id="australiaCategory" type="button">Australia</button>
       <button class="category countryCategory accountLock" id="austriaCategory" type="button">Austria</button>
@@ -190,11 +188,11 @@
   <div id="errorPopup" class="popupHolder errorBackground">
     <!-- This is an overlay used to display error messages -->
     <div class="errorPopupWindow uiWindow">
-      <div id="popup-title" class="popup-title"></div>
+      <div id="errorTitle" class="popup-title"></div>
       <div id="popup-description" class="popup-description"></div>
       <div id="errorPopupDisable">
         <p>Never show again: </p>
-        <input type="checkbox" id="hideErrors" />
+        <input type="checkbox" id="hideErrors">
       </div>
       <button id="popupClose" class="cookieButton close">Close and reload</button>
     </div>
@@ -203,7 +201,7 @@
   <div class="popupHolder">
     <!-- New profile window -->
     <div id="profileWindow" class="uiWindow">
-      <div id="popup-title" class="popup-title">
+      <div class="popup-title">
         <h1 id="profileViewName">Username</h1>
         <button class="accountButton white" id="editUsername">
           <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
@@ -251,13 +249,19 @@
         </button>
       </div>
       <h3>User Stats: </h3>
-      <p id="statisticExperience"> Total experience: not set.</p>
-      <p id="statisticUpgradeExperience"> Required for next level: not set.</p>
+      <div id="profileStats" class="statisticView">
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">Experience:</p><p id="statisticExperience">not set.</p>
+        </div>
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">Until Level-Up:</p><p id="statisticUpgradeExperience"> not set.</p>
+        </div>
+      </div>
       <button id="profileClose" class="accountButton white accountClose">Close</button>
     </div>
     <!-- Help / How to Play Popup -->
     <div id="helpWindow" class="uiWindow">
-      <div id="popup-title" class="popup-title">
+      <div class="popup-title">
         <h1>How to play</h1>
       </div>
       <ul class="nolistdots">
@@ -292,7 +296,7 @@
         </div>
     <!-- Troubleshooting Guide for Multiplayer -->
     <div id="troubleshootWindow" class="uiWindow">
-      <div id="popup-title" class="popup-title">
+      <div class="popup-title">
         <h1>Troubleshooting Guide</h1>
       </div>
       <p>
@@ -322,7 +326,7 @@
     </div>
     <!-- Settings Window (Especially for Sounds) -->
     <div id="settingsWindow" class="uiWindow">
-      <div id="popup-title" class="popup-title">
+      <div class="popup-title">
         <h1>Settings</h1>
       </div>
       <p class="slightBottomMargin">Unit System:</p>
@@ -338,7 +342,7 @@
     </div>
     <!-- Discord Popup -->
     <div id="socialWindow" class="uiWindow">
-      <div id="popup-title" class="popup-title">
+      <div class="popup-title">
         <h1 id="socialHeader">Join the community</h1>
       </div>
       <p>Join now and get <span class="highlight">7,500 XP</span> in return!</p>
@@ -351,7 +355,7 @@
     </div>
     <!-- Linkjoin Popup -->
     <div id="linkjoinWindow" class="uiWindow">
-      <div id="popup-title" class="popup-title">
+      <div class="popup-title">
         <h1 id="socialHeader">Joining via Link...</h1>
       </div>
       <p id="linkjoinStatus">Status: None set</p>
@@ -360,8 +364,8 @@
     </div>
     <!-- Mobile UI Popup -->
     <div id="mobileWindow" class="uiWindow">
-      <div id="popup-title" class="popup-title">
-        <h1 id="mobileHeader">Menu</h1>
+      <div class="popup-title">
+        <h1 id="mobileMenuHeader">Menu</h1>
       </div>
       <div id="mobileMenuContent">
         <div class="mobileMenuOptions">
@@ -379,15 +383,14 @@
           </button>
         </div>
         <div class="mobileMenuOptions">
-          <button id="mobileLeaderboardButton" class="fixedMobileuiWidth accountButton socialBarButton">Leaderboard
-            <img class="socialBarIcons" src="/IMG/leaderboard_icon.png" alt="Leaderboard for OpenGuessr">
-          </button>
-          <button id="mobileDailyLeaderboardButton" class="fixedMobileuiWidth accountButton socialBarButton">Daily
-            Challenge
-            <img class="socialBarIcons" src="/IMG/daily_icon.png" alt="Leaderboard for OpenGuessr">
-          </button>
           <button id="mobileMultiplayerButton" class="fixedMobileuiWidth accountButton socialBarButton">Multiplayer
             <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
+          </button>
+          <button id="mobileCompetitionsButton" class="fixedMobileuiWidth accountButton socialBarButton">Competitions
+            <img class="socialBarIcons" src="/IMG/competitions_icon.png" alt="Competitions symbol">
+          </button>
+          <button id="mobileLeaderboardButton" class="fixedMobileuiWidth accountButton socialBarButton"> Leaderboard
+            <img class="socialBarIcons" src="/IMG/leaderboards_icon.png" alt="Leaderboard for OpenGuessr">
           </button>
         </div>
         <p id="privacyNotice">Our <a href="/legal.html">privacy policy</a> applies.</p>
@@ -499,7 +502,7 @@
       <button type="button" id="endScreenOpenLocation">Open streetview <img src="/IMG/streetview_icon.png"
           alt="Streetview symbol" class="socialIcon" style="vertical-align: -2px"></button>
       <div id="endScreenStreakRevive">
-        <div id="popup-title" class="popup-title">
+        <div class="popup-title">
           <h1 id="streakHeader">Streak lost!</h1>
         </div>
         <p id="keepStreakText">Support us by watching an ad and keep your streak of <span id="streakKeepAmount"
@@ -592,7 +595,8 @@
     </button>
     <div id="map" tabindex="0"></div>
     <div id="mapModeIndicator">
-      <button id="multiplayerLeave" class="accountButton accountClose">Leave</button>
+      <button id="multiplayerLeave" class="leaveButton accountButton accountClose">Leave</button>
+      <button id="competitionLeave" class="leaveButton accountButton accountClose">Leave</button>
       <div id="mapModeTextContainer">
         <p id="mapModeText" class="mapModeText">Default Mode</p>
       </div>

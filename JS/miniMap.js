@@ -1,9 +1,9 @@
 import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main.js";
-import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
+import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 
 
 // Initialize the map with correct provider --------------------------------------------------------------------
@@ -328,29 +328,25 @@ document.getElementById("map").addEventListener('touchend', handleMapUnhover);
 
 
 //Guess / Confirm function ----------------------------------------------------------------------------------
-export let justPlayedDailyChallenge = false;
-
-export function dailyChallengeNotJustPlayed() {
-    justPlayedDailyChallenge = false;
-}
 
 export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
     playSound("basic_button");
 
-    if (dailyChallengeUIEnabled) {
-        document.getElementById("nextRound").innerHTML = "See results ➝";
-        justPlayedDailyChallenge = true;
+    document.getElementById("nextRound").innerHTML = "Next round ➝";
 
+    if (playingCompetition) {
         try {
-            dailyChallengeTimer.stopTimer();
-        } catch (error) {
-            console.log("timer already stopped.");
+            competitionTimer.stopTimer();
+        } catch (e) {
+            console.warn("Competition timer already stopped: " + e);
         }
 
-        saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
-    } else {
-        document.getElementById("nextRound").innerHTML = "Next round ➝";
+        if (!checkCompetitionRoundStatus(true)) {
+            document.getElementById("nextRound").innerHTML = "See ranking ➝";
+        } else {
+            document.getElementById("nextRound").innerHTML = "Next round ➝";
+        }
     }
 
     if (!multiplayer) {
