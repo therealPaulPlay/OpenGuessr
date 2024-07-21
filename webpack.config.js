@@ -3,7 +3,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin'); // Copy certain files 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const JsonMinimizerPlugin = require('json-minimizer-webpack-plugin');
-const { WebpackRemoveEmptyScripts } = require('webpack-remove-empty-scripts');
 
 module.exports = {
   entry: {
