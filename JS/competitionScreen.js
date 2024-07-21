@@ -72,74 +72,82 @@ function formatDuration(seconds) {
     return result.join(' ');
 }
 
-function addCompetition(id, name, author, authorId, playercount, restriction, duration, remainingDuration, locationAmount, roundLength, description, expired, entered) {
+function addCompetition(id, name, author, authorId, playercount, restriction, duration, remainingDuration, locationAmount, roundLength, description, expired, entered, daily) {
     let container = expired ? document.getElementById("expiredCompetitionArea") : document.getElementById("competitionArea");
 
-    // clean container on load of first competition for each one. 
-    if (!expired && !normalAddSuccessful) {
+    if (daily) {
+        container = document.getElementById("dailyCompetitionArea");
         container.innerHTML = "";
-        normalAddSuccessful = true;
-    }
+    } else {
+        // clean container on load of first competition for each one. 
+        if (!expired && !normalAddSuccessful) {
+            container.innerHTML = "";
+            normalAddSuccessful = true;
+        }
 
-    if (expired && !expiredAddSuccessful) {
-        container.innerHTML = "";
-        expiredAddSuccessful = true;
+        if (expired && !expiredAddSuccessful) {
+            container.innerHTML = "";
+            expiredAddSuccessful = true;
+        }
     }
 
     let displayEnterButton = expired ? "display: none;" : "";
     let expiredItem = expired ? " expiredCompetitionColor" : "";
+    let dailyItem = daily ? " dailyItem" : "";
+    let dailyPrimary = daily ? " dailyPrimary" : "";
+    let dailyLeaderboardButton = daily ? " dailyLeaderboardButton" : "";
     let expiredLeaderboardButton = expired ? " expiredLeaderboardColor" : "";
 
     let competitionItem = document.createElement("div");
-    competitionItem.className = `competitionItem fadeInItem${expiredItem}`;
+    competitionItem.className = `competitionItem fadeInItem${expiredItem}${dailyItem}`;
 
     competitionItem.innerHTML = `
                         <h2 class="competitionItemHeader">${name}</h2>
                         <p class="competitionAuthor">hosted by ${author}</p>
                         <div class="competitionPropertiesBox">
-                            <div class="propertyItem${expiredItem}">
-                                <div class="label${expiredItem}">
+                            <div class="propertyItem${expiredItem}${dailyItem}">
+                                <div class="label${expiredItem}${dailyItem}">
                                     <p>Plays</p>
                                 </div>
                                 <p class="itemText">${playercount}</p>
                             </div>
-                            <div class="propertyItem${expiredItem}">
-                                <div class="label${expiredItem}">
+                            <div class="propertyItem${expiredItem}${dailyItem}">
+                                <div class="label${expiredItem}${dailyItem}">
                                     <p>Restriction</p>
                                 </div>
                                 <p class="itemText">${restriction}</p>
                             </div>
-                            <div class="propertyItem${expiredItem}">
-                                <div class="label${expiredItem}">
+                            <div class="propertyItem${expiredItem}${dailyItem}">
+                                <div class="label${expiredItem}${dailyItem}">
                                     <p>Duration</p>
                                 </div>
                                 <p class="itemText">${formatDuration(duration)} (${formatDuration(remainingDuration)} left)</p>
                             </div>
-                            <div class="propertyItem${expiredItem}">
-                                <div class="label${expiredItem}">
+                            <div class="propertyItem${expiredItem}${dailyItem}">
+                                <div class="label${expiredItem}${dailyItem}">
                                     <p>Rounds</p>
                                 </div>
                                 <p class="itemText">${locationAmount}</p>
                             </div>
-                            <div class="propertyItem${expiredItem}">
-                                <div class="label${expiredItem}">
+                            <div class="propertyItem${expiredItem}${dailyItem}">
+                                <div class="label${expiredItem}${dailyItem}">
                                     <p>Round length</p>
                                 </div>
                                 <p class="itemText">${roundLength}s</p>
                             </div>
                         </div>
-                        <div class="competitionDesc${expiredItem}">
-                            <div class="label${expiredItem}">
+                        <div class="competitionDesc${expiredItem}${dailyItem}">
+                            <div class="label${expiredItem}${dailyItem}">
                                 <p>About</p>
                             </div>
                             <p class="itemText descText">${description}</p>
                         </div>
                         <div class="buttonBox competitionButtonBox">
-                            <button id="leaderboardButton${id}" class="standardButton competitionButton leftButton${expiredLeaderboardButton}">Results
+                            <button id="leaderboardButton${id}" class="standardButton competitionButton leftButton${expiredLeaderboardButton}${dailyLeaderboardButton}">Results
                                 <img class="textIcon invert" src="/IMG/leaderboards_icon.png"
                                     alt="Leaderboards for OpenGuessr">
                             </button>
-                            <button id="enterButton${id}" style="${displayEnterButton}" class="standardButton competitionButton primaryButton">Enter</button>
+                            <button id="enterButton${id}" style="${displayEnterButton}" class="standardButton competitionButton primaryButton${dailyPrimary}">Enter</button>
                         </div>
     `;
 
@@ -228,7 +236,7 @@ async function enterCompetition(id, token) {
                 localStorage.setItem("competition", JSON.stringify(activeCompetitionDetails));
 
                 // go back to main page and start competition
-                if(inIframe()) {
+                if (inIframe()) {
                     window.top.postMessage("close", "*");
                     window.top.postMessage("loadCompetition", "*");
                 } else {
@@ -350,7 +358,7 @@ async function loadLeaderboardFromServer(id) {
                 document.getElementById("leaderboardHeader").textContent = "Results for " + data.name;
 
             } catch (error) {
-                console.error("Error during the competition loading and add process: " + error);
+                console.error("Error during the leaderboard loading and add process: " + error);
             }
 
             if (document.getElementById("rankingDisplay").innerHTML == "") {
@@ -404,7 +412,7 @@ try {
         openLeaderboard(leaderboardIdFromLink);
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
     }
-} catch {}
+} catch { }
 
 // load competitions ----------------------------------------------------------------------------------------------------------------------------
 let notExpiredIndex = 0;
@@ -440,7 +448,7 @@ async function getCompetitionsFromServer(expired, search, daily) {
         if (search) {
             requestBody.search = search;
         }
-        
+
 
         let Endpoint = null;
 
@@ -463,7 +471,7 @@ async function getCompetitionsFromServer(expired, search, daily) {
         }
 
         if (daily) {
-            Endpoint = competitionsEndpoint + "/daily-challenge";
+            Endpoint = competitionsEndpoint + "/daily/daily-competition";
         }
 
         const response = await fetch(Endpoint, {
@@ -478,24 +486,26 @@ async function getCompetitionsFromServer(expired, search, daily) {
             try {
                 const data = await response.json();
                 data.competitions.forEach(competition => {
-                    addCompetition(competition.id, competition.name, competition.author, competition.author_id, competition.playercount, competition.restriction, competition.duration, competition.remainingDuration, competition.location_amount, competition.round_length, competition.description, competition.expired, competition.entered);
+                    addCompetition(competition.id, competition.name, competition.author, competition.author_id, competition.playercount, competition.restriction, competition.duration, competition.remainingDuration, competition.location_amount, competition.round_length, competition.description, competition.expired, competition.entered, daily);
 
-                    if (!expired) {
-                        notExpiredIndex += 1;
-                    } else {
-                        expiredIndex += 1;
+                    if (!daily) {
+                        if (!expired) {
+                            notExpiredIndex += 1;
+                        } else {
+                            expiredIndex += 1;
+                        }
+
+                        let maxAmountLoaded = data.competitions.length == 10;
+
+                        if (expired) {
+                            document.getElementById("loadMoreExpired").style.display = maxAmountLoaded ? "block" : "none";
+                        } else {
+                            document.getElementById("loadMoreActive").style.display = maxAmountLoaded ? "block" : "none";
+                        }
                     }
                 });
 
-                let maxAmountLoaded = data.competitions.length == 10;
-
-                if (expired) {
-                    document.getElementById("loadMoreExpired").style.display = maxAmountLoaded ? "block" : "none";
-                } else {
-                    document.getElementById("loadMoreActive").style.display = maxAmountLoaded ? "block" : "none";
-                }
-
-                if (!expired && document.getElementById("competitionArea").innerHTML == "") {
+                if (search && document.getElementById("competitionArea").innerHTML == "") {
                     document.getElementById("competitionArea").innerHTML = `<p class="errorText">Search returned no results.</p>`;
                 }
             } catch (error) {
@@ -546,16 +556,16 @@ async function getCompetitionsFromServer(expired, search, daily) {
 // Search Competitions -------------------------------------------------------------------------------------------------
 
 // search with enter key
-document.getElementById("competitionSearch").addEventListener("keydown", function (event) { 
+document.getElementById("competitionSearch").addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
-    }; 
+    };
 });
 
-document.getElementById("competitionSearch").addEventListener("keyup", function (event) { 
+document.getElementById("competitionSearch").addEventListener("keyup", function (event) {
     if (event.key === "Enter") {
         startSearch();
-    }; 
+    };
 });
 
 document.getElementById("startSearch").addEventListener("click", startSearch);
@@ -564,7 +574,7 @@ function startSearch() {
     let query = document.getElementById("competitionSearch").value.toLowerCase();
     notExpiredIndex = 0; // reset index if starting new search
     document.getElementById("competitionArea").innerHTML = ""; // reset html of competition area
-    
+
     if (query == "") {
         query = undefined; // so the undefined check works in the load function
     }

@@ -2137,8 +2137,9 @@ map::selection {
   min-height: 40px;
 }
 
-#dailyCategory {
+#dailyCompetition {
   background: linear-gradient(0.60turn, white, #bbf2ff);
+  filter: brightness(65%);
 }
 
 #hardCategory {
@@ -2331,10 +2332,6 @@ a:hover {
 .socialBarBigger {
   padding-top: 10px;
   padding-bottom: 10px;
-}
-
-#competitionsButton {
-  margin-top: 10px;
 }
 
 .leaveButton {

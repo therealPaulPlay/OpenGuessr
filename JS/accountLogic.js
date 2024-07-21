@@ -1,6 +1,4 @@
 import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
-import { setDailyChallengeExperienceResult } from "./dailyChallenge";
-import { dailyChallengeTimer } from './dailyChallenge.js';
 import { checkTextLength, resultScreenEnabled, showPageBrowser, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
@@ -376,14 +374,6 @@ function calculateXPGain(distance, category) {
 
   } else if (category == "northamerica") {
     return Math.round(5000 * ((0.996036) ** distance));
-
-  } else if (category == "daily") {
-    let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
-
-    let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
-    let tempEarnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
-    setDailyChallengeExperienceResult(tempEarnedXP);
-    return tempEarnedXP;
 
   } else if (category == "country") {
     return checkIfGuessWasCorrect() ? 1000 : 0;

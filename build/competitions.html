@@ -779,6 +779,18 @@
         padding-inline: 10px;
     }
 
+    .dailyItem {
+        background-color: rgba(181, 220, 230, 0.15);
+    }
+
+    .dailyPrimary {
+        background-color: rgb(79, 142, 166);
+    }
+
+    .dailyLeaderboardButton {
+        background-color: rgba(147, 207, 225, 0.4);
+    }
+
     @media all and (orientation: portrait) {
         #text {
             width: 80%;
@@ -969,6 +981,15 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                             customizable in regards to restrictions, length and locations.
                         </li>
                     </ul>
+                </div>
+            </div>
+            <div class="competitionElement competitionBox expiredBox">
+                <div class="flexCompetitionBar competitionElement competitionTitle">
+                    <h2 class="boxHeader">Daily Competition: </h2>
+                </div>
+                <div id="dailyCompetitionArea" class="center competitionArea">
+                    <!-- daily competitions will be inserted here -->
+                    <p class="errorText">The daily competition couldn't be loaded.</p>
                 </div>
             </div>
             <div class="competitionElement competitionBox">

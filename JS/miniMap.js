@@ -1,5 +1,4 @@
 import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main.js";
-import { dailyChallengeUIEnabled, saveDailyChallengeCompletion, dailyChallengeTimer } from "./dailyChallenge.js";
 import { selectedPinIndex } from "./accountLogic.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile, isElementClickable } from "./mainUI.js";
@@ -322,30 +321,12 @@ document.getElementById("map").addEventListener('touchend', handleMapUnhover);
 
 
 //Guess / Confirm function ----------------------------------------------------------------------------------
-export let justPlayedDailyChallenge = false;
-
-export function dailyChallengeNotJustPlayed() {
-    justPlayedDailyChallenge = false;
-}
 
 export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
     playSound("basic_button");
 
-    if (dailyChallengeUIEnabled) {
-        document.getElementById("nextRound").innerHTML = "See results ➝";
-        justPlayedDailyChallenge = true;
-
-        try {
-            dailyChallengeTimer.stopTimer();
-        } catch (error) {
-            console.warn("timer already stopped.");
-        }
-
-        saveDailyChallengeCompletion(); //set the daily challenge as completed for today (also saves the curr utc date for checking)
-    } else {
-        document.getElementById("nextRound").innerHTML = "Next round ➝";
-    }
+    document.getElementById("nextRound").innerHTML = "Next round ➝";
 
     if (playingCompetition) {
         try {

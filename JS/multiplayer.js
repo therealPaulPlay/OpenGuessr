@@ -1131,7 +1131,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     multiplayerFirstRoundPlayed = false;
     multiplayerCategory = mapCategory;
 
-    if (multiplayerCategory == "daily" || multiplayerCategory == "country") {
+    if (multiplayerCategory == "country") {
         multiplayerCategory = "standard";
     }
 

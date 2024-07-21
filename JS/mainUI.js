@@ -43,7 +43,6 @@ export function toggleSocialbar() {
             socialBarExpanded = true;
             document.getElementById("multiplayerArrow").classList.add("arrowIconRotated");
         } else {
-            toggleLeaderboardSection(true);
             document.getElementById("socialBar").style.maxHeight = "0";
             socialBarExpanded = false;
             document.getElementById("multiplayerArrow").classList.remove("arrowIconRotated");
@@ -56,11 +55,6 @@ export function toggleSocialbar() {
 document.getElementById("leaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
     goToLeaderboard();
-});
-
-document.getElementById("dailyLeaderboardButton").addEventListener("click", () => {
-    playSound("basic_button");
-    goToDailyLeaderboard();
 });
 
 document.getElementById("competitionsButton").addEventListener("click", () => {
@@ -76,42 +70,6 @@ function goToLeaderboard() {
         toggleSocialbar();
     }
     showPageBrowser("/leaderboard.html");
-}
-
-function goToDailyLeaderboard() {
-    if (socialBarExpanded) {
-        toggleSocialbar();
-    }
-    showPageBrowser("/dailyleaderboard.html");
-}
-
-let leaderboardSectionExpand = document.getElementById("leaderboardsExpandButton");
-let leaderboardSection = document.getElementById("leaderboardDropdown");
-
-leaderboardSectionExpand.addEventListener("click", () => {
-    playSound("basic_button");
-    toggleLeaderboardSection(false);
-});
-
-let leaderboardSectionToggled = false;
-
-function toggleLeaderboardSection(alwaysClose) {
-
-    if (alwaysClose) {
-        leaderboardSectionToggled = true;
-    }
-
-    if (leaderboardSectionToggled) {
-        leaderboardSection.style.maxHeight = "0px";
-        leaderboardSectionExpand.style.borderBottomLeftRadius = "5px";
-        leaderboardSectionExpand.style.borderBottomRightRadius = "5px";
-    } else {
-        leaderboardSection.style.maxHeight = "500px";
-        leaderboardSectionExpand.style.borderBottomLeftRadius = "0px";
-        leaderboardSectionExpand.style.borderBottomRightRadius = "0px";
-    }
-
-    leaderboardSectionToggled = !leaderboardSectionToggled;
 }
 
 //Toggle Map on mobile devices ---------------------------------------------------------------------------------------
@@ -425,11 +383,7 @@ document.getElementById("mobileLeaderboardButton").addEventListener("click", () 
     toggleMobileMenu();
     goToLeaderboard();
 });
-document.getElementById("mobileDailyLeaderboardButton").addEventListener("click", () => {
-    playSound("basic_button");
-    toggleMobileMenu();
-    goToDailyLeaderboard();
-});
+
 document.getElementById("mobileMultiplayerButton").addEventListener("click", function () {
     toggleMobileMenu();
     toggleMultiplayerSelector();
@@ -600,6 +554,16 @@ document.addEventListener("DOMContentLoaded", () => {
     setTimeout(() => {
         document.getElementById("adsText").style.opacity = "0.25";
     }, 12000);
+});
+
+// Daily competition link to competitions ---------------------------------------------------------------------------------
+
+document.getElementById("dailyCompetition").addEventListener("click", () => {
+    if (socialBarExpanded) {
+        toggleSocialbar();
+    }
+    playSound("button_juicy");
+    showPageBrowser("/competitions.html");
 });
 
 // In-App page browser -----------------------------------------------------------------------------------
