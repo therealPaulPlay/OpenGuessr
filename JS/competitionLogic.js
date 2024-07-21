@@ -63,6 +63,7 @@ export function setCompetitionUI(enable) {
             });
         } else {
             document.getElementById("mapModeIndicator").style.display = "none";
+            document.getElementById("competitionLeave").style.display = "none";
 
             categoryButton.style.opacity = "1";
             categoryButton.style.pointerEvents = "auto";
