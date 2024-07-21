@@ -527,15 +527,15 @@ async function getCompetitionsFromServer(expired, search, daily) {
                     }
                 }
 
-                if (search && noContentLoaded) {
+                if (search && noContentLoaded && notExpiredIndex == 0) {
                     document.getElementById("competitionArea").innerHTML = `<p class="errorText">Search returned no results.</p>`;
                 } 
 
-                if (!daily && !search && !expired && noContentLoaded) {
+                if (!daily && !search && !expired && noContentLoaded && notExpiredIndex == 0) {
                     document.getElementById("competitionArea").innerHTML = `<p class="errorText">No active competitions found.</p>`;
                 } 
                 
-                if (!daily && !search && expired && noContentLoaded) {
+                if (!daily && !search && expired && noContentLoaded && expiredIndex == 0) {
                     document.getElementById("expiredCompetitionArea").innerHTML = `<p class="errorText">No expired competitions found.</p>`;
                 } 
                 
