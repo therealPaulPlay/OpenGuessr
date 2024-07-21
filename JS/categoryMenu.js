@@ -159,7 +159,7 @@ export function changeCategory(category, regenerate) {
         checkGenerationTypeAndGenerate();
         setTimeout(() => {
             toggleCategoryMenu(true);
-        }, 300);
+        }, 200);
     }
 }
 

@@ -401,15 +401,27 @@ async function loadLeaderboardFromServer(id) {
     }
 }
 
+// Query Links - enter and load leaderboard --------------------------------------------------------------------------------------------------------
 // open leaderboard via link
 let urlParams = new URLSearchParams(window.location.search);
 
 let leaderboardIdFromLink;
 
 try {
-    leaderboardIdFromLink = urlParams.get("leaderboard"); // remove all underscores
+    leaderboardIdFromLink = urlParams.get("leaderboard");
     if (leaderboardIdFromLink) {
         openLeaderboard(leaderboardIdFromLink);
+        history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
+    }
+} catch { }
+
+// enter competition via link
+let competitionIdFromLink;
+
+try {
+    competitionIdFromLink = urlParams.get("enter");
+    if (competitionIdFromLink) {
+        enterCompetitionPopup(competitionIdFromLink, "Competition from Link");
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
     }
 } catch { }
@@ -636,6 +648,9 @@ document.getElementById("submitConfirm").addEventListener("click", async () => {
     document.getElementById("submitConfirmText").textContent = operationMessage;
     if (operationMessage.includes("success")) {
         document.getElementById("submitConfirmHeader").textContent = "Competition created!";
+
+        // create links
+        
     } else {
         document.getElementById("submitConfirmHeader").textContent = "Oh no! An error occured";
     }
