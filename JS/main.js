@@ -6,11 +6,11 @@ import { resetMap, getMapSource, handleMapUnhover } from './miniMap.js';
 import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
 import { resultScreenEnabled, enableResultScreen, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
-import { dailyChallengeCheckTimer, dailyChallengeUIEnabled, dailyChallengeTimer } from "./dailyChallenge.js";
 import { checkHardModeTimeout } from './hardMode.js';
 import { multiplayer, startMultiplayerRound, isHost, multiplayerGuessesLocationsArray } from './multiplayer.js';
 import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } from './countryGuesser.js';
 import { playSound } from './soundManager.js';
+import { checkStartCompetitionRound } from './competitionLogic.js';
 
 //default coords of the location
 export let currentStreetviewLat = 0;
@@ -152,10 +152,6 @@ function compareDistances(distance) {
             } else {
                 resultAsString = finalResult + " km";
             }
-        }
-
-        if (dailyChallengeUIEnabled) {
-            extraMsg = "You took " + (120 - dailyChallengeTimer.getRemainingTime()) + "s to guess. The time is part of the XP calculation." //show timer data in extra message on result screen for daily challenge
         }
 
         if (countryGuesserMode && !multiplayer) {
@@ -397,8 +393,8 @@ export function loadIframe(lat, long) {
     // Define a function to handle iframe load event
     const handleLoad = () => {
         if (initialIframeLoad) {
-            dailyChallengeCheckTimer(); //check if daily challenge is active and start timer
-            checkHardModeTimeout(); //Check if the user is playing hard mode + apply changes if yes
+            checkHardModeTimeout(); // Check if the user is playing hard mode + apply changes if yes
+            checkStartCompetitionRound(); // Check if currently playing competition and start timer + new round if so 
         }
 
         initialIframeLoad = false;
@@ -410,7 +406,7 @@ export function loadIframe(lat, long) {
         }, 300);
     };
 
-    //add new load listener and delete old one - on load: fade out overlay
+    // add new load listener and delete old one - on load: fade out overlay
     iframe.removeEventListener('load', handleLoad);
     iframe.addEventListener('load', handleLoad);
 
