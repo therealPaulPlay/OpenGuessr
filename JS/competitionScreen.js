@@ -109,7 +109,7 @@ function addCompetition(id, name, author, authorId, playercount, restriction, du
                                 <div class="label${expiredItem}${dailyItem}">
                                     <p>Plays</p>
                                 </div>
-                                <p class="itemText">${playercount}</p>
+                                <p class="itemText">${playercount.toLocaleString()}</p>
                             </div>
                             <div class="propertyItem${expiredItem}${dailyItem}">
                                 <div class="label${expiredItem}${dailyItem}">
@@ -639,6 +639,8 @@ document.getElementById("uploadConfirm").addEventListener("click", showConfirmPo
 document.getElementById("submitConfirmClose").addEventListener("click", closeConfirmPopup);
 
 // submit with all details
+let competitionCreationId;
+
 document.getElementById("submitConfirm").addEventListener("click", async () => {
     document.getElementById("submitConfirm").style.display = "none";
     let operationMessage = await submitCompetition(localStorage.getItem("bearer"), document.getElementById("uploadCompetitionName").value, localStorage.getItem("username"), localStorage.getItem("id"),
@@ -650,6 +652,20 @@ document.getElementById("submitConfirm").addEventListener("click", async () => {
         document.getElementById("submitConfirmHeader").textContent = "Competition created!";
 
         // create links
+        const enterLink = window.location.origin + "/competitions.html?enter=" + competitionCreationId;
+        const leaderboardLink = window.location.origin + "/competitions.html?leaderboard=" + competitionCreationId;
+
+        let linkBox = document.createElement("div");
+        linkBox.innerHTML = `
+        <div class="spacer"></div>
+        <p>Enter link:</p>
+        <p class="linkField">${enterLink}</p>
+        <div class="spacer"></div>
+        <p>Leaderboard link:</p>
+        <p class="linkField">${leaderboardLink}</p>
+        `;
+
+        document.getElementById("submitConfirmText").appendChild(linkBox);
         
     } else {
         document.getElementById("submitConfirmHeader").textContent = "Oh no! An error occured";
@@ -797,7 +813,13 @@ async function submitCompetition(token, name, author, authorId, restriction, dur
         if (response.ok) {
             document.getElementById("uploadPopup").style.display = "none";
             competitionSubmittedSuccessfully = true;
-            return "Competition created successfully! Thank you for contributing.";
+            try {
+                const data = await response.json();
+                competitionCreationId = data.competitionId;
+            } catch (e) {
+                console.error("Error extracting competitionId from creation response: " + e)
+            }
+            return "Competition created successfully. Good luck and have fun!";
         } else {
             let responseData = null;
 
