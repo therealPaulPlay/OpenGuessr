@@ -5,6 +5,7 @@ import { toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners } from "./categoryMenu.js";
+import { loadCompetition } from "./competitionLogic.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -55,9 +56,13 @@ document.getElementById("leaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
     goToLeaderboard();
 });
-document.getElementById("dailyLeaderboardButton").addEventListener("click", () => {
+
+document.getElementById("competitionsButton").addEventListener("click", () => {
     playSound("basic_button");
-    goToDailyLeaderboard();
+    if (socialBarExpanded) {
+        toggleSocialbar();
+    }
+    showPageBrowser("/competitions.html");
 });
 
 function goToLeaderboard() {
@@ -65,13 +70,6 @@ function goToLeaderboard() {
         toggleSocialbar();
     }
     showPageBrowser("/leaderboard.html");
-}
-
-function goToDailyLeaderboard() {
-    if (socialBarExpanded) {
-        toggleSocialbar();
-    }
-    showPageBrowser("/dailyleaderboard.html");
 }
 
 //Toggle Map on mobile devices ---------------------------------------------------------------------------------------
@@ -140,7 +138,7 @@ socialDiscordButton.addEventListener("click", function () { playSound("basic_but
 let privacyButton = document.getElementById("privacyButton");
 privacyButton.addEventListener("click", function () { playSound("basic_button"); showPageBrowser("/legal.html"); });
 
-document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html");});
+document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html"); });
 
 //Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
@@ -268,7 +266,7 @@ function closeSocialPopup() {
 }
 
 export function socialPopupProbability() {
-    if (isAuthenticated && localStorage.getItem("discordPopup") == null) {
+    if (isAuthenticated && localStorage.getItem("discordPopup") == null && document.getElementById("pageBrowserWindow").style.display != "block") {
         const randomNumber = Math.floor(Math.random() * 3);
 
         if (randomNumber === 0) {
@@ -385,11 +383,7 @@ document.getElementById("mobileLeaderboardButton").addEventListener("click", () 
     toggleMobileMenu();
     goToLeaderboard();
 });
-document.getElementById("mobileDailyLeaderboardButton").addEventListener("click", () => {
-    playSound("basic_button");
-    toggleMobileMenu();
-    goToDailyLeaderboard();
-});
+
 document.getElementById("mobileMultiplayerButton").addEventListener("click", function () {
     toggleMobileMenu();
     toggleMultiplayerSelector();
@@ -400,6 +394,12 @@ document.getElementById("mobileCategoryButton").addEventListener("click", functi
     toggleMobileMenu();
     toggleCategoryMenu();
     playSound("floating_button");
+});
+
+document.getElementById("mobileCompetitionsButton").addEventListener("click", function () {
+    toggleMobileMenu();
+    playSound("basic_button");
+    showPageBrowser("/competitions.html");
 });
 
 //Prevent automatic "last button press" with space bar or enter key ------------------------------------------------------------------
@@ -556,13 +556,24 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 12000);
 });
 
+// Daily competition link to competitions ---------------------------------------------------------------------------------
+
+document.getElementById("dailyCompetition").addEventListener("click", () => {
+    if (socialBarExpanded) {
+        toggleSocialbar();
+    }
+    playSound("button_juicy");
+    showPageBrowser("/competitions.html");
+});
+
 // In-App page browser -----------------------------------------------------------------------------------
 
 let pageBrowserWindow = document.getElementById("pageBrowserWindow");
 
 export function showPageBrowser(page, login) {
-    document.getElementById("blackBackground").style.visibility = "visible"; 
+    document.getElementById("blackBackground").style.visibility = "visible";
     document.getElementById("pageBrowserIframe").src = window.location.origin + page;
+    socialWindow.style.display = "none"; // hide social window in case it is currently active to prevent overlap
 
     if (login) {
         pageBrowserWindow.classList.add("loginIframeWindow");
@@ -572,21 +583,21 @@ export function showPageBrowser(page, login) {
 
     pageBrowserWindow.style.display = "block";
 
-    document.getElementById("pageBrowserIframe").onload = function() {
+    document.getElementById("pageBrowserIframe").onload = function () {
         this.style.opacity = "1";
-      };
+    };
 }
 
 function disablePageBrowser() {
-    document.getElementById("blackBackground").style.visibility = "hidden"; 
+    document.getElementById("blackBackground").style.visibility = "hidden";
     pageBrowserWindow.style.display = "none";
     document.getElementById("pageBrowserIframe").style.opacity = "0";
     document.getElementById("pageBrowserIframe").src = ""; // unload iframe to save performance
 }
 
-window.onmessage = function(e) {
+window.onmessage = function (e) {
     switch (e.data) {
-        case "close": 
+        case "close":
             disablePageBrowser();
             break;
         case "reloadCommunityMaps":
@@ -603,6 +614,9 @@ window.onmessage = function(e) {
             break;
         case "loadAccountStatus":
             checkAuthenticationStatus();
+            break;
+        case "loadCompetition":
+            loadCompetition(true);
             break;
     }
 };

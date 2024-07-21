@@ -169,7 +169,7 @@ h1, h2, h3 {
   min-height: 80px;
   min-width: 80px;
   border-radius: 7px;
-  background-color: rgba(174, 174, 174, 0.25);
+  background-color: rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column; 
   justify-content: center; 
@@ -197,7 +197,7 @@ h1, h2, h3 {
 
 .pinLock {
   border-radius: 7px;
-  background-color: rgba(67, 67, 67, 0.5);
+  background-color: rgba(0, 0, 0, 0.15);
   width: 100%;
   height: 100%;
   display: flex;
@@ -399,7 +399,7 @@ h1, h2, h3 {
   text-align: center;
   white-space: nowrap;
   transition: filter 250ms ease, box-shadow 250ms ease;
-  margin: 2.5px;
+  margin: 2px;
   border-radius: 5px;
   user-select: none;
   -webkit-user-select: none;
@@ -448,6 +448,16 @@ h1, h2, h3 {
 
 li {
   margin-bottom: 20px;
+}
+
+input {
+  color: white;
+  background-color: rgba(255, 255, 255, 0.1);
+  transition: background-color 250ms ease;
+}
+
+input:focus {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 #usernameInput {
@@ -767,14 +777,6 @@ li {
   width: 35%;
   margin-bottom: 10px;
   transition: opacity 250ms ease, filter 250ms ease;
-}
-
-#multiplayerLeave {
-  display: none;
-  margin: 0;
-  padding-inline: 10px;
-  line-height: 0.9;
-  margin-left: 5px;
 }
 
 .infoNote {
@@ -1178,6 +1180,7 @@ li {
   flex-grow: 1;
   overflow: auto;
   z-index: 12;
+  scrollbar-width: none;
 }
 
 .categoriesNote {
@@ -1409,6 +1412,36 @@ map::selection {
   scrollbar-width: none;
   flex-direction: column;
   margin-top: 5px;
+}
+
+.statisticView {
+  border-radius: 5px;
+  background-color: rgba(30, 31, 44, 0.5);
+  display: flex;
+  justify-content: center;
+  max-height: 300px;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 10px;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.statsLabel {
+  padding: 2px;
+  padding-inline: 10px;
+  width: fit-content;
+  background-color: rgba(225, 255, 255, 0.1);
+  border-radius: 5px;
+  margin-right: 10px;
+}
+
+.statisticsEnclosure {
+  display: flex;
+}
+
+#profileStats {
+  margin-top: 10px;
 }
 
 #multiplayerMessageBox {
@@ -2105,8 +2138,9 @@ map::selection {
   min-height: 40px;
 }
 
-#dailyCategory {
+#dailyCompetition {
   background: linear-gradient(0.60turn, white, #bbf2ff);
+  filter: brightness(65%);
 }
 
 #hardCategory {
@@ -2296,9 +2330,17 @@ a:hover {
   filter: brightness(0.7);
 }
 
-#multiplayerButton {
+.socialBarBigger {
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+.leaveButton {
+  display: none;
+  margin: 0;
+  padding-inline: 10px;
+  line-height: 0.9;
+  margin-left: 5px;
 }
 
 #troubleshootingArea {
@@ -2327,13 +2369,28 @@ a:hover {
   margin-right: auto;
 }
 
-.multiplayerButtonArea {
+.multiplayerLeaderboardArea {
   margin: 5px;
   padding: 2px;
+  padding-top: 5px;
   border-radius: 7px;
   background-color: rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
+  margin-top: 0;
+  border-top-left-radius: 0;
+  border-top-right-radius: 0;
+}
+
+#leaderboardDropdown {
+  max-height: 0px;
+  overflow: hidden;
+  transition: max-height 250ms ease;
+}
+
+#leaderboardsExpandButton {
+  margin-bottom: 0;
+  transition: filter 250ms ease, border-radius 150ms ease;
 }
 
 #multiplayerMapDisplay {
@@ -2522,7 +2579,7 @@ input[type="checkbox"]:focus {
 .regularMapSize {
   width: 22%;
   height: 20%;
-  transition: height 250ms ease, width 250ms ease, opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
+  transition: height 150ms ease, width 150ms ease, opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
 }
 
 .mapHover {

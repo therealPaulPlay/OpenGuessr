@@ -2,7 +2,7 @@ import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socialBarExpanded, disableResultScreen, showPageBrowser } from "./mainUI.js";
 import { startTimer } from "./timer";
-import { uiSetUserXP, selectedPinIndex } from "./accountLogic.js";
+import { uiSetUserXP, selectedPinIndex, isAuthenticated } from "./accountLogic.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeamMarkers } from "./miniMap.js";
 import { calculateDistances, loadResultMap } from "./main.js";
@@ -63,23 +63,19 @@ export function toggleMultiplayerSelector(alwaysClose) {
         multiPlayerWindowOpen = true;
     }
 
-    if (localStorage.getItem("id") != null || multiplayer) {
-        if (multiPlayerWindowOpen) {
-            multiplayerSelectionScreen.style.display = "none";
-            document.getElementById("blackBackground").style.visibility = "hidden";
-        } else {
-            multiplayerSelectionScreen.style.display = "block";
-            document.getElementById("blackBackground").style.visibility = "visible";
-            setMultiplayerWindowSelection("main");
-            if (socialBarExpanded) {
-                toggleSocialbar();
-            }
-        }
-
-        multiPlayerWindowOpen = !multiPlayerWindowOpen;
+    if (multiPlayerWindowOpen) {
+        multiplayerSelectionScreen.style.display = "none";
+        document.getElementById("blackBackground").style.visibility = "hidden";
     } else {
-        showPageBrowser("/signup.html", true);
+        multiplayerSelectionScreen.style.display = "block";
+        document.getElementById("blackBackground").style.visibility = "visible";
+        setMultiplayerWindowSelection("main");
+        if (socialBarExpanded) {
+            toggleSocialbar();
+        }
     }
+
+    multiPlayerWindowOpen = !multiPlayerWindowOpen;
 }
 
 //Pages ---------------------------------------------------------------------------------------
@@ -144,9 +140,14 @@ function setMultiplayerWindowSelection(window) {
         multiplayerWindowHost.style.display = "block";
         multiplayerSelectorBack.style.display = "block";
     } else if (window == "duel") {
-        multiplayerWindowDuel.style.display = "block";
-        multiplayerSelectorBack.style.display = "block";
-        findDuel();
+        if (isAuthenticated) {
+            multiplayerWindowDuel.style.display = "block";
+            multiplayerSelectorBack.style.display = "block";
+            findDuel();
+        } else {
+            toggleMultiplayerSelector("close");
+            showPageBrowser("/signup.html", true);
+        }
     }
 }
 
@@ -540,10 +541,19 @@ function generateRandomCode(length) {
     return code;
 }
 
+let savedGuestName = "none set";
+
+function generateFunnyGuestName() {
+    let animals = ["Giraffe", "Ape", "Sloth", "Penguin", "Kangaroo", "Panda", "Zebra", "Llama", "Hippo", "Parrot", "Cat", "Dog", "Slug", "Crow", "Elephant"];
+    let randomAnimal = animals[Math.floor(Math.random() * animals.length)];
+    savedGuestName = "Guest" + randomAnimal;
+}
+
 if (localStorage.getItem("id") != null) {
     uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
 } else {
     uniqueUserID = "openguessr_" + "g" + generateRandomCode(7);
+    generateFunnyGuestName();
 }
 
 //set up the peer connection
@@ -631,15 +641,6 @@ function copyRoomcodeLink() {
             }, 700);
         });
 }
-
-function generateFunnyGuestName() {
-    var animals = ["Giraffe", "Ape", "Sloth", "Penguin", "Kangaroo", "Panda", "Zebra", "Llama"];
-    var randomAnimal = animals[Math.floor(Math.random() * animals.length)];
-    savedGuestName = "Guest" + randomAnimal;
-    return savedGuestName;
-}
-
-let savedGuestName = "none set";
 
 // Logic ------------------------------------------------------------------------------------------------
 var conn; // the connection data
@@ -1130,11 +1131,11 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     multiplayerFirstRoundPlayed = false;
     multiplayerCategory = mapCategory;
 
-    if (multiplayerCategory == "daily" || multiplayerCategory == "country") {
+    if (multiplayerCategory == "country") {
         multiplayerCategory = "standard";
     }
 
-    connectedPeers.push([peerId, localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0, 1]); //add yourself (host) to the overview
+    connectedPeers.push([peerId, localStorage.getItem("username") == null ? savedGuestName : localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0, 1]); //add yourself (host) to the overview
     yourTeam = 1; // Host is always in team 1
     showMultiplayerOverlay(true, "Waiting...", connectedPeers);
 
@@ -1288,7 +1289,7 @@ function joinRoom(code) {
 
     const options = {
         metadata: {
-            username: localStorage.getItem("username") == null ? generateFunnyGuestName() : localStorage.getItem("username"),
+            username: localStorage.getItem("username") == null ? savedGuestName : localStorage.getItem("username"),
             level: uiSetUserXP(localStorage.getItem("experience")).level,
             score: 0 //inital score is set to 0
         }
@@ -1794,7 +1795,7 @@ function multiplayerOverlayCountdown() {
 
 const guesserWindow = document.getElementById("GuesserWindow");
 
-function setRestriction(restriction) {
+export function setRestriction(restriction) {
     nmpzBackground.style.pointerEvents = "none";
     nmpzBackground.style.backgroundColor = "transparent";
     guesserWindow.style.filter = "none";

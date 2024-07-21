@@ -3,7 +3,6 @@ const CopyWebpackPlugin = require('copy-webpack-plugin'); // Copy certain files 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const JsonMinimizerPlugin = require('json-minimizer-webpack-plugin');
-const { WebpackRemoveEmptyScripts } = require('webpack-remove-empty-scripts');
 
 module.exports = {
   entry: {
@@ -57,6 +56,7 @@ module.exports = {
         { from: "./JS/signupScreen.js", to: "./" },
         { from: "./JS/userAPI.js", to: "./" },
         { from: "./JS/mapScreen.js", to: "./" },
+        { from: "./JS/competitionScreen.js", to: "./" },
       ],
     }),
   ],

@@ -1,7 +1,6 @@
 // Hard mode is a time limited mode accessed by the timer icon in the upper right hand corner of the screen.
 
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
-import { generateNewLocation } from "./main";
 import { playSound } from "./soundManager";
 
 let hardMode = false;

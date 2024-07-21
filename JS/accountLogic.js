@@ -1,6 +1,4 @@
 import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
-import { setDailyChallengeExperienceResult } from "./dailyChallenge";
-import { dailyChallengeTimer } from './dailyChallenge.js';
 import { checkTextLength, resultScreenEnabled, showPageBrowser, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
@@ -8,6 +6,7 @@ import { playSound } from "./soundManager.js";
 import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
+import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
 
 let accountLockedArray;
 
@@ -99,6 +98,7 @@ export function checkAuthenticationStatus() {
   if (bearerToken != null && bearerToken != "") {
     if (isTokenExpired(bearerToken)) {
       isAuthenticated = false;
+      resetLocalSave();
     }
     else {
       isAuthenticated = true;
@@ -140,12 +140,16 @@ function isTokenExpired(token) {
 
 //these are being accessed from index.htm
 
-function signout() {
-  localStorage.removeItem("bearer"); //reset bearer token
+function resetLocalSave() {
+  localStorage.removeItem("bearer");
   localStorage.removeItem("id");
   localStorage.removeItem("username");
   localStorage.removeItem("experience");
-  localStorage.removeItem("selectedPin"); //also reset selected pin, as that is xp-based
+  localStorage.removeItem("selectedPin");
+}
+
+function signout() {
+  resetLocalSave();
   checkAuthenticationStatus();
 }
 
@@ -318,7 +322,7 @@ export function restoreOldStreak(oldStreak) {
 }
 
 function streakCalculation() {
-  if (!multiplayer) {
+  if (!multiplayer && !playingCompetition) {
     if (getCountryFromCoords(mapMarkerLat, mapMarkerLong) == getCountryFromCoords(currentStreetviewLat, currentStreetviewLong)) {
       streak++;
     } else {
@@ -339,37 +343,37 @@ function streakCalculation() {
   }
 }
 
+function getStreakMultiplierAdjustedToGamemode() {
+  if (!multiplayer && !playingCompetition) {
+    return streakMultiplier;
+  } else {
+    return 1;
+  }
+}
+
 function calculateXPGain(distance, category) {
   if (category == null || category == "standard" || category == "capital" || category == "hard") {
 
     streakCalculation();
-    return Math.round((5000 * ((0.998036) ** distance)) * streakMultiplier);
+    return Math.round((5000 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode());
 
   } else if (category == "europe" || category == "asia" || category == "africa" || category == "oceania" || category == "southamerica") {
     // not NA as that is literally US 95% of the time, therefore no streak
     streakCalculation();
-    return Math.round((5000 * ((0.996036) ** distance)) * streakMultiplier); // slightly reduced xp range as continents are smaller than countries
+    return Math.round((5000 * ((0.996036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // slightly reduced xp range as continents are smaller than countries
 
   } else if (category == "famous") {
 
     streakCalculation();
-    return Math.round((1500 * ((0.998036) ** distance)) * streakMultiplier); //1500 xp for famous, with streak up to 1800sth
+    return Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //1500 xp for famous, with streak up to 1800sth
 
   } else if (category && category.includes("community")) {
 
     streakCalculation();
-    return Math.round((3000 * ((0.994036) ** distance)) * streakMultiplier); //3000 xp for community, with streak slightly more - also adjusted distance function
+    return Math.round((3000 * ((0.994036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //3000 xp for community, with streak slightly more - also adjusted distance function
 
   } else if (category == "northamerica") {
     return Math.round(5000 * ((0.996036) ** distance));
-
-  } else if (category == "daily") {
-    let timeUsedInSeconds = 120 - dailyChallengeTimer.getRemainingTime();
-
-    let timeFactor = Math.max(0, (120 - timeUsedInSeconds / 3) / 120);
-    let tempEarnedXP = Math.round(5000 * ((0.998036) ** distance) * timeFactor);
-    setDailyChallengeExperienceResult(tempEarnedXP);
-    return tempEarnedXP;
 
   } else if (category == "country") {
     return checkIfGuessWasCorrect() ? 1000 : 0;
@@ -410,10 +414,10 @@ export async function loadResultScreenXP(distance) {
     streakDisplay.style.width = "0";
 
     // XP calculation formulas -------------------------------------------------
-    if (!multiplayer) {
+    if (!multiplayer && !playingCompetition) {
       earnedXP = calculateXPGain(distance, selectedCategory);
 
-    } else {
+    } else if (multiplayer) {
       //always use the standard formula for multiplayer 
       earnedXP = calculateXPGain(distance, multiplayerCategory);
 
@@ -423,6 +427,9 @@ export async function loadResultScreenXP(distance) {
         peerSendsHost("score", earnedXP);
       }
 
+    } else if (playingCompetition) {
+      earnedXP = calculateXPGain(distance, "standard"); // always use standard calculation formula for competitions
+      addResultToCompetitionScore(earnedXP);
     }
 
     //apply XP visually and server-wise ----------------------------------
@@ -481,8 +488,8 @@ function viewProfile() {
   profileWindow.style.display = "block";
   document.getElementById("blackBackground").style.visibility = "visible";
   profileName.innerHTML = username;
-  document.getElementById("statisticExperience").innerHTML = "Total experience: " + Number(localStorage.getItem("experience")).toLocaleString();
-  document.getElementById("statisticUpgradeExperience").innerHTML = "Required for next level: " + uiSetUserXP(Number(localStorage.getItem("experience"))).requiredForLevelUpgrade.toLocaleString();
+  document.getElementById("statisticExperience").innerHTML = Number(localStorage.getItem("experience")).toLocaleString();
+  document.getElementById("statisticUpgradeExperience").innerHTML = uiSetUserXP(Number(localStorage.getItem("experience"))).requiredForLevelUpgrade.toLocaleString();
   updatePinLocks(localStorage.getItem("experience"));
 
 }

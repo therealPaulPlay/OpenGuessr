@@ -1,7 +1,7 @@
 import { errorPopup } from "./errorHandling.js";
 import { coordsFromHost } from "./multiplayer.js";
 import { mapCategory } from "./categoryMenu.js";
-import { getDailyChallengeIndex } from "./userAPI.js";
+import { competition, currentRound } from "./competitionLogic.js";
 
 //This is THE function to GET LOCATIONS (all others here are NOT export
 export async function getLocationCoordinates(type) {
@@ -12,14 +12,14 @@ export async function getLocationCoordinates(type) {
 
     if (type == "JSON") {
         return await getCoordsFromJSON(mapCategory);
-    } else if (type == "SDK" && type != "DAILY") {
+    } else if (type == "SDK") {
         return await getCoordsFromLocationServer();
-    } else if (type == "DAILY") {
-        return await getCoordsFromServerDaily();
     } else if (type == "FROMHOST") {
         return coordsFromHost; 
     } else if (type == "COMMUNITY") {
         return await getCommunityMapCoordinates();
+    } else if (type == "COMPETITION") {
+        return await getCompetitionCoordinates();
     } else {
         console.error("Incorrect Location type set in locationGeneration.js");
     }
@@ -174,42 +174,11 @@ async function selectLocationFromServer() {
       return resultLocationsArray;
 }
 
-//in case the location server does not respond, load the daily locations (just totally random locations) instead
+//in case the location server does not respond, load the backup, formerly daily locations (just totally random locations) instead
 async function loadBackupLocations(error) {
     console.log("Loading backup locations.");
     errorPopup("Location server error", "Loading local backup locations instead. ", "Error: " + error);
-    return await getCoordsFromJSON("daily");
-}
-
-//Get coords from Server for Daily Challenge -----------------------------------------------------------------------------------------------------------------------
-
-async function getCoordsFromServerDaily() {
-    //Load location JSON files
-    try {
-        let response = await fetch("./JSON/dailyLocations.json");
-
-        jsonResponse = await response.json();
-        listOfLocations = jsonResponse.locations;
-
-    } catch (error) {
-        errorPopup("JSON error", "There was an error loading the location json file.", "JSON Fetch failed.", true);
-        console.error(error);
-    }
-
-    try {
-        let dailyChallengeCoordinatesIndex = await getDailyChallengeIndex(listOfLocations.length);
-
-        const resultLat = Number(listOfLocations[dailyChallengeCoordinatesIndex][0]);
-        const resultLong = Number(listOfLocations[dailyChallengeCoordinatesIndex][1]);
-        const country = null;
-
-        let resultLocationsArray = [resultLat, resultLong, country];
-
-        return resultLocationsArray;
-    } catch {
-        errorPopup("Challenge API Error", "There was an error fetching the daily challenge location", "Challenge Fetch failed.", true);
-        return null;
-    }
+    return await getCoordsFromJSON("backup");
 }
 
 //Get community map coordinates ---------------------------------------------------------------------------
@@ -273,6 +242,24 @@ async function selectLocationFromMapsServer() {
         resultLocationsArray = [resultLat, resultLong, country];
     } catch (error) {
         console.error("Error in locationGeneration.js Community map location JSON generation: " + error);
+    }
+
+    return resultLocationsArray;
+}
+
+// get Competition coordinates ---------------------------------------------------------------------------------------------
+
+async function getCompetitionCoordinates() {
+    let resultLocationsArray = [];
+
+    try {
+        const resultLat = competition.locations[currentRound][0];
+        const resultLong = competition.locations[currentRound][1];
+        const country = null;
+    
+        resultLocationsArray = [resultLat, resultLong, country];
+    } catch (error) {
+        console.error("Error in locationGeneration.js in getCompetitionCoordinates: " + error);
     }
 
     return resultLocationsArray;
