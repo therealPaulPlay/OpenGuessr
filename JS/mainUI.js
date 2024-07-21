@@ -266,7 +266,7 @@ function closeSocialPopup() {
 }
 
 export function socialPopupProbability() {
-    if (isAuthenticated && localStorage.getItem("discordPopup") == null) {
+    if (isAuthenticated && localStorage.getItem("discordPopup") == null && document.getElementById("pageBrowserWindow").style.display != "block") {
         const randomNumber = Math.floor(Math.random() * 3);
 
         if (randomNumber === 0) {
@@ -573,6 +573,7 @@ let pageBrowserWindow = document.getElementById("pageBrowserWindow");
 export function showPageBrowser(page, login) {
     document.getElementById("blackBackground").style.visibility = "visible";
     document.getElementById("pageBrowserIframe").src = window.location.origin + page;
+    socialWindow.style.display = "none"; // hide social window in case it is currently active to prevent overlap
 
     if (login) {
         pageBrowserWindow.classList.add("loginIframeWindow");
