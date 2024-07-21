@@ -48,6 +48,7 @@ function toggleSection(e) {
 
 let normalAddSuccessful = false;
 let expiredAddSuccessful = false;
+let firstLoad = false;
 
 function formatDuration(seconds) {
     if (typeof seconds === 'string') {
@@ -448,9 +449,13 @@ document.getElementById("loadMoreExpired").addEventListener("click", () => {
 
 async function getCompetitionsFromServer(expired, search, daily) {
     // display initial loading message
-    document.querySelectorAll(".errorText").forEach((e) => {
-        e.textContent = "Loading competitions...";
-    });
+    if (!firstLoad) {
+        document.querySelectorAll(".errorText").forEach((e) => {
+            e.textContent = "Loading competitions...";
+        });
+
+        firstLoad = true;
+    }
 
     try {
         let requestBody = {
@@ -495,10 +500,13 @@ async function getCompetitionsFromServer(expired, search, daily) {
         });
 
         if (response.ok) {
+            let noContentLoaded = true;
+
             try {
                 const data = await response.json();
                 data.competitions.forEach(competition => {
                     addCompetition(competition.id, competition.name, competition.author, competition.author_id, competition.playercount, competition.restriction, competition.duration, competition.remainingDuration, competition.location_amount, competition.round_length, competition.description, competition.expired, competition.entered, daily);
+                    noContentLoaded = false;
 
                     if (!daily) {
                         if (!expired) {
@@ -506,20 +514,35 @@ async function getCompetitionsFromServer(expired, search, daily) {
                         } else {
                             expiredIndex += 1;
                         }
-
-                        let maxAmountLoaded = data.competitions.length == 10;
-
-                        if (expired) {
-                            document.getElementById("loadMoreExpired").style.display = maxAmountLoaded ? "block" : "none";
-                        } else {
-                            document.getElementById("loadMoreActive").style.display = maxAmountLoaded ? "block" : "none";
-                        }
                     }
                 });
 
-                if (search && document.getElementById("competitionArea").innerHTML == "") {
-                    document.getElementById("competitionArea").innerHTML = `<p class="errorText">Search returned no results.</p>`;
+                let maxAmountLoaded = data.competitions.length == 10;
+
+                if (!daily) {
+                    if (expired) {
+                        document.getElementById("loadMoreExpired").style.display = maxAmountLoaded ? "block" : "none";
+                    } else {
+                        document.getElementById("loadMoreActive").style.display = maxAmountLoaded ? "block" : "none";
+                    }
                 }
+
+                if (search && noContentLoaded) {
+                    document.getElementById("competitionArea").innerHTML = `<p class="errorText">Search returned no results.</p>`;
+                } 
+
+                if (!daily && !search && !expired && noContentLoaded) {
+                    document.getElementById("competitionArea").innerHTML = `<p class="errorText">No active competitions found.</p>`;
+                } 
+                
+                if (!daily && !search && expired && noContentLoaded) {
+                    document.getElementById("expiredCompetitionArea").innerHTML = `<p class="errorText">No expired competitions found.</p>`;
+                } 
+                
+                if (daily && !expired && !search && noContentLoaded) {
+                    document.getElementById("dailyCompetitionArea").innerHTML = `<p class="errorText">There currently is no daily competition. Wait shortly, as it's likely being created right now.</p>`;
+                }
+
             } catch (error) {
                 console.error("Error during the competition loading and add process: " + error);
             }
@@ -671,21 +694,21 @@ document.getElementById("submitConfirm").addEventListener("click", async () => {
         document.getElementById("submitConfirmText").appendChild(linkBox);
         document.getElementById("copyLinksButton").addEventListener("click", () => {
             navigator.clipboard.writeText(enterLink + " " + leaderboardLink)
-            .then(function () {
-                document.getElementById("copyLinksButton").textContent = "Copied!";
-                setTimeout(() => {
-                    document.getElementById("copyLinksButton").textContent = "Click to copy both links";
-                }, 700);
-            })
-            .catch(function (error) {
-                document.getElementById("copyLinksButton").textContent = "Error!";
-                console.error("Copy error: " + error);
-                setTimeout(() => {
-                    document.getElementById("copyLinksButton").textContent = "Click to copy both links";
-                }, 700);
-            });
+                .then(function () {
+                    document.getElementById("copyLinksButton").textContent = "Copied!";
+                    setTimeout(() => {
+                        document.getElementById("copyLinksButton").textContent = "Click to copy both links";
+                    }, 700);
+                })
+                .catch(function (error) {
+                    document.getElementById("copyLinksButton").textContent = "Error!";
+                    console.error("Copy error: " + error);
+                    setTimeout(() => {
+                        document.getElementById("copyLinksButton").textContent = "Click to copy both links";
+                    }, 700);
+                });
         })
-        
+
     } else {
         document.getElementById("submitConfirmHeader").textContent = "Oh no! An error occured";
     }
