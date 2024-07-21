@@ -658,14 +658,33 @@ document.getElementById("submitConfirm").addEventListener("click", async () => {
         let linkBox = document.createElement("div");
         linkBox.innerHTML = `
         <div class="spacer"></div>
+        <div class="linkBox">
         <p>Enter link:</p>
         <p class="linkField">${enterLink}</p>
         <div class="spacer"></div>
         <p>Leaderboard link:</p>
         <p class="linkField">${leaderboardLink}</p>
+        <button id="copyLinksButton" class="standardButton linkButtonSubmit">Click to copy both links</button>
+        </div>
         `;
 
         document.getElementById("submitConfirmText").appendChild(linkBox);
+        document.getElementById("copyLinksButton").addEventListener("click", () => {
+            navigator.clipboard.writeText(enterLink + " " + leaderboardLink)
+            .then(function () {
+                document.getElementById("copyLinksButton").textContent = "Copied!";
+                setTimeout(() => {
+                    document.getElementById("copyLinksButton").textContent = "Click to copy both links";
+                }, 700);
+            })
+            .catch(function (error) {
+                document.getElementById("copyLinksButton").textContent = "Error!";
+                console.error("Copy error: " + error);
+                setTimeout(() => {
+                    document.getElementById("copyLinksButton").textContent = "Click to copy both links";
+                }, 700);
+            });
+        })
         
     } else {
         document.getElementById("submitConfirmHeader").textContent = "Oh no! An error occured";
