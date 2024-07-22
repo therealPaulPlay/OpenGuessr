@@ -281,6 +281,8 @@
         background-color: rgba(255, 141, 141, 0.15);
         padding: 10px;
         font-size: 22px;
+        transition: filter 250ms ease;
+        filter: none;
     }
 
     .competitionItem {
@@ -448,7 +450,7 @@
     #enterPopup,
     #leaderboardPopup,
     #uploadPopup,
-    #submitConfirmPopup {
+    #submitConfirmPopup, #descriptionPopup {
         display: none;
     }
 
@@ -831,6 +833,14 @@
         max-width: 50%;
     }
 
+    .aboutSection {
+        cursor: pointer;
+    }
+
+    .aboutSection:hover {
+        filter: brightness(1.2);
+    }
+
     @media all and (orientation: portrait) {
         #text {
             width: 80%;
@@ -891,6 +901,16 @@
             <div class="buttonBox popupButtons">
                 <button id="enterClose" class="standardButton popupButton closeButton">Close</button>
                 <button id="enterConfirm" class="standardButton primaryButton popupButton">Enter</button>
+            </div>
+        </div>
+    </div>
+    <div id="descriptionPopup" class="popupHolder">
+        <div id="aboutWindow" class="uiWindow">
+            <h1 id="aboutHeader" class="textHeaderLeft">About</h1>
+            <p id="aboutText" class="popupBodyText">Default Text
+            </p>
+            <div class="buttonBox popupButtons">
+                <button id="aboutClose" class="standardButton popupButton closeButton">Close</button>
             </div>
         </div>
     </div>

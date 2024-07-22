@@ -137,7 +137,7 @@ function addCompetition(id, name, author, authorId, playercount, restriction, du
                                 <p class="itemText">${roundLength}s</p>
                             </div>
                         </div>
-                        <div class="competitionDesc${expiredItem}${dailyItem}">
+                        <div id="aboutItem${id}" class="aboutSection competitionDesc${expiredItem}${dailyItem}">
                             <div class="label${expiredItem}${dailyItem}">
                                 <p>About</p>
                             </div>
@@ -156,10 +156,15 @@ function addCompetition(id, name, author, authorId, playercount, restriction, du
 
     const leaderboardButton = document.getElementById("leaderboardButton" + id);
     const enterButton = document.getElementById("enterButton" + id);
+    const aboutItem = document.getElementById("aboutItem" + id);
 
     leaderboardButton.addEventListener("click", () => {
         openLeaderboard(id);
     });
+
+    aboutItem.addEventListener("click", () => {
+        openDescriptionWindow(description);
+    })
 
     enterButton.addEventListener("click", () => {
         if (localStorage.getItem("username") != null && localStorage.getItem("id") != null) {
@@ -184,6 +189,16 @@ function addCompetition(id, name, author, authorId, playercount, restriction, du
     }, 10);
 }
 
+// extend. Description window -------------------------------------------------------------------------------------------------------
+
+function openDescriptionWindow(text) {
+    document.getElementById("aboutText").textContent = text;
+    document.getElementById("descriptionPopup").style.display = "flex";
+}
+
+document.getElementById("aboutClose").addEventListener("click", () => {
+    document.getElementById("descriptionPopup").style.display = "none";
+});
 
 // Open leaderboard and Enter competition ------------------------------------------------------------------------------------------------------
 
