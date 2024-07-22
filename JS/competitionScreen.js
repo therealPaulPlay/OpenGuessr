@@ -330,9 +330,9 @@ async function loadLeaderboardFromServer(id) {
                     let newEntry = document.createElement("div");
                     newEntry.classList.add("rankItem");
                     newEntry.innerHTML = `
-                        <p>#${youItem.position}</p>
-                        <p>${youItem.userName}</p>
-                        <p>${youItem.score.toLocaleString()} Pts.</p>`;
+                        <p class="leaderboardTextEntry">#${youItem.position}</p>
+                        <p class="leaderboardTextEntry centerEntry">${youItem.userName}</p>
+                        <p class="leaderboardTextEntry">${youItem.score.toLocaleString()} Pts.</p>`;
                     youBar.innerHTML = `
                         <p class="youLabel">You:</p>
                     `
@@ -345,9 +345,9 @@ async function loadLeaderboardFromServer(id) {
                     let newEntry = document.createElement("div");
                     newEntry.classList.add("rankItem");
                     newEntry.innerHTML = `
-                        <p>#${entry.position}</p>
-                        <p>${entry.userName}</p>
-                        <p>${entry.score.toLocaleString()} Pts.</p>`;
+                        <p class="leaderboardTextEntry">#${entry.position}</p>
+                        <p class="leaderboardTextEntry centerEntry">${entry.userName}</p>
+                        <p class="leaderboardTextEntry">${entry.score.toLocaleString()} Pts.</p>`;
 
                     if (entry.id == localStorage.getItem("id")) {
                         newEntry.classList.add("rankYou");
