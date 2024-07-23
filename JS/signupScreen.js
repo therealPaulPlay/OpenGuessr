@@ -93,7 +93,6 @@ let randomQuestionIndex;
 function randomQuestion() {
   randomQuestionIndex = Math.floor(Math.random() * 10);
   document.getElementById("captchaHeader").innerHTML = questions[randomQuestionIndex][0];
-  
 }
 
 //validate answer to captcha question
