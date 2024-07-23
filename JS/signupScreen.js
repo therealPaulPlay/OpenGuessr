@@ -137,10 +137,11 @@ signupButtonSignupPage.addEventListener("click", signUpAction);
   }
 
   //this is the function that runs when the user click on login or presses enter.
-  function logInAction() {
+  async function logInAction() {
     if (checkEmptyFields(false)) {
       loginButtonSignupPage.textContent = "Wait...";
-      loginUser(loginEmail.value, loginPassword.value, "signup");
+      await loginUser(loginEmail.value, loginPassword.value, "signup");
+      loginButtonSignupPage.textContent = "Login";
     }
   }
 

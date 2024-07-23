@@ -790,8 +790,7 @@ async function attemptDuelJoin(index) {
         const response = await fetch("https://accounts.openguessr.com/accounts/rooms/" + index, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ` + localStorage.getItem("bearer")
+                'Content-Type': 'application/json'
             }
         });
 
