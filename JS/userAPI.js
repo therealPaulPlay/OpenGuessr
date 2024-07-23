@@ -1,11 +1,11 @@
 import { errorPopup } from "./errorHandling.js";
 
-export const backendURL = "https://api.openguessr.com/api";
-export const loginEndpoint = `${backendURL}/users/login`;
-export const registrationEndpoint = `${backendURL}/users/register`;
-export const userUpdateEndpoint = `${backendURL}/users/update`;
-export const userGetEndpoint = `${backendURL}/users`;
-export const challengesEndpoint = `${backendURL}/challenges`;
+export const backendURL = "https://accounts.openguessr.com/accounts";
+export const loginEndpoint = `${backendURL}/login`;
+export const registrationEndpoint = `${backendURL}/register`;
+export const userUpdateEndpoint = `${backendURL}/update`;
+export const userGetEndpoint = `${backendURL}/user`;
+export const leaderboardEndpoint = `${backendURL}/leaderboard`;
 
 function inIframe() {
   try {
@@ -116,11 +116,12 @@ export async function getUser(token, id, errorSource) {
 export async function getAllUsers() {
   try {
     let id = localStorage.getItem("id")
-    let leaderboardEndpoint = userGetEndpoint + "/leaderboard";
-    if (id != null && id != 0 && id != undefined)
-      leaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
+    let editLeaderboardEndpoint = leaderboardEndpoint;
+    if (id != null && id != 0 && id != undefined) {
+            editLeaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
+    }
 
-    const response = await fetch(`${leaderboardEndpoint}`, {
+    const response = await fetch(`${editLeaderboardEndpoint}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
