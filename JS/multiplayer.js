@@ -781,11 +781,10 @@ async function attemptDuelJoin(index) {
 
     //Get Roomcode from server
     try {
-        const response = await fetch("https://api.openguessr.com/api/rooms/" + index, {
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/" + index, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ` + localStorage.getItem("bearer")
+                'Content-Type': 'application/json'
             }
         });
 
@@ -841,7 +840,7 @@ async function sendRoomCodeToMatchmakingServer() {
             id: localStorage.getItem("id")
         }
 
-        const response = await fetch("https://api.openguessr.com/api/rooms/" + peerId.replace("openguessr_", ""), {
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/host/" + peerId.replace("openguessr_", ""), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -882,7 +881,7 @@ async function deleteRoomCodeFromMatchmakingServer() {
             id: localStorage.getItem("id")
         }
 
-        const response = await fetch("https://api.openguessr.com/api/rooms/" + peerId.replace("openguessr_", ""), {
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/delete/" + peerId.replace("openguessr_", ""), {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
