@@ -285,7 +285,12 @@
         container.innerHTML = "<p>Loading...</p>";
 
         // Await the promise returned by getAllUsers()
-        let userData = await getAllUsers();
+        let data = await getAllUsers();
+        let userData = data;
+        
+        if (userData.user) {
+            userData = data.experienceLeaderboard; // structure is different if you (the user) is also being returned
+        }
 
         if (userData == undefined) {
             container.innerHTML = "<p>An error occured while loading the leaderboard.</p>";
@@ -295,20 +300,18 @@
             // Iterate through the array once userData is available
             for (var i = 0; i < userData.length; i++) {
                 let user = userData[i];
-                let userName = user.userName;
+                let userName = user.user_name;
                 let experience = user.experience;
-
-                //This would be for loading the players stats from the response (in case they are included)
-                if (userName == yourUsername && !dontLoadStats) {
-                    document.getElementById("yourExperience").innerHTML = Number(experience).toLocaleString() + " XP";
-                    document.getElementById("yourRank").innerHTML = "#" + (userData[i]["position"]);
-                }
 
                 experience = Number(experience).toLocaleString();
 
-                if (i < 100) {
-                    addRankedItem(i + 1, userName, experience);
-                }
+                addRankedItem(i + 1, userName, experience);
+            }
+
+            //This would be for loading the players stats from the response (in case they are included)
+            if (data.user && !dontLoadStats) {
+                document.getElementById("yourExperience").innerHTML = Number(data.user.experience).toLocaleString() + " XP";
+                document.getElementById("yourRank").innerHTML = "#" + (data.user.position);
             }
         }
 

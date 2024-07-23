@@ -1,11 +1,11 @@
 import { errorPopup } from "./errorHandling.js";
 
-export const backendURL = "https://api.openguessr.com/api";
-export const loginEndpoint = `${backendURL}/users/login`;
-export const registrationEndpoint = `${backendURL}/users/register`;
-export const userUpdateEndpoint = `${backendURL}/users/update`;
-export const userGetEndpoint = `${backendURL}/users`;
-export const challengesEndpoint = `${backendURL}/challenges`;
+export const backendURL = "https://accounts.openguessr.com/accounts";
+export const loginEndpoint = `${backendURL}/login`;
+export const registrationEndpoint = `${backendURL}/register`;
+export const userUpdateEndpoint = `${backendURL}/update`;
+export const userGetEndpoint = `${backendURL}/user`;
+export const leaderboardEndpoint = `${backendURL}/leaderboard`;
 
 function inIframe() {
   try {
@@ -44,9 +44,9 @@ export async function loginUser(email, password, errorSource) {
         window.location.href = "/index.html";
       }
     } else {
-
+      let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Login failed:', response.status);
-      displayError("Login failed: " + response.status, errorSource);
+      displayError("Login failed: " + response.status, errorSource, responseError);
     }
   } catch (error) {
     console.error('Error occurred during login: ', error);
@@ -78,8 +78,9 @@ export async function registerUser(userName, email, password, errorSource) {
       localStorage.setItem("RegistrationSuccess", "success");
       window.location.reload();
     } else {
+      let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Registration failed: ', response.status);
-      displayError("Registration failed: " + response.status, errorSource);
+      displayError("Registration failed: " + response.status, errorSource, responseError);
     }
   } catch (error) {
     console.error('Error occurred during registration: ', error);
@@ -104,8 +105,9 @@ export async function getUser(token, id, errorSource) {
       await saveUserData(data['user']);
 
     } else {
+      let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Fetch failed:', response.status);
-      displayError("Fetch failed: " + response.status, errorSource);
+      displayError("Fetch failed: " + response.status, errorSource, responseError);
     }
   } catch (error) {
     console.error('Error occurred while fetching the user: ', error);
@@ -116,11 +118,12 @@ export async function getUser(token, id, errorSource) {
 export async function getAllUsers() {
   try {
     let id = localStorage.getItem("id")
-    let leaderboardEndpoint = userGetEndpoint + "/leaderboard";
-    if (id != null && id != 0 && id != undefined)
-      leaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
+    let editLeaderboardEndpoint = leaderboardEndpoint;
+    if (id != null && id != 0 && id != undefined) {
+            editLeaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
+    }
 
-    const response = await fetch(`${leaderboardEndpoint}`, {
+    const response = await fetch(`${editLeaderboardEndpoint}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -164,8 +167,9 @@ export async function updateExperience(token, id, experience, errorSource, secon
       localStorage.setItem("experience", data['user']['experience']);
     } else {
       if (response.status != 400 || secondAttempt) {
+        let responseError = await attemptExtractErrorFromResponse(response);
         console.error('User update failed:', response.status);
-        displayError("User update failed: " + response.status, errorSource);
+        displayError("User update failed: " + response.status, errorSource, responseError);
       } else {
         return "retry";
       }
@@ -185,7 +189,7 @@ export async function updateUsername(token, id, requestedUsername, errorSource) 
     }
 
     // Make the PUT request using Fetch API
-    const response = await fetch(userUpdateEndpoint, {
+    const response = await fetch(userUpdateEndpoint + "/username", {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -199,8 +203,9 @@ export async function updateUsername(token, id, requestedUsername, errorSource) 
       const data = await response.json();
       localStorage.setItem("username", data['user']['userName']);
     } else {
+      let responseError = await attemptExtractErrorFromResponse(response);
       console.error('User update failed: ', response.status);
-      displayError("User update failed: " + response.status, errorSource);
+      displayError("User update failed: " + response.status, errorSource, responseError);
     }
   } catch (error) {
     console.error('Error occurred during user update: ', error);
@@ -219,28 +224,22 @@ async function saveUserData(data) {
 }
 
 //Error catching ----------------------------------------------------------------------------------------
-export function displayError(error, source) {
+export function displayError(error, source, errorMsg) {
   if (source == "signup") {
-    //special cases
-    if (error.includes("400")) {
-      error = "400 - Wrong credentials.";
-    }
-    if (error.includes("409")) {
-      error = "409 - User with this email or username already exists.";
-    }
-    if (error.includes("429")) {
-      error = "429 - Too many requests. Please try again later.";
-    }
-    if (error.includes("500")) {
-      error = "500 - Please try clearing your cache and try different inputs.";
-    }
 
-    errorMessage.innerHTML = error;
-    errorMessage.style.display = "inline";
-    errorMessage.style.color = "red";
+    try {
+      errorMessage.innerHTML = error + " - " + errorMsg;
+      errorMessage.style.display = "inline";
+      errorMessage.style.color = "red";
+    } catch {}
 
   } else if (source == "index") {
-    errorPopup("User API Error", "The User API reports an error. Please consider signing out and logging in again to resolve the issue.", error, false)
+    if (!errorMsg) {
+      errorPopup("Account Backend Error", "The API reports an unknown error. Please consider reporting this in #bug-reports on the Discord.", error, false);
+    } else {
+      errorPopup("Account Backend Error", "Error: " + errorMsg, error, false);
+    }
+
   } else {
     //error will be displayed anyway - see functions above
     console.log("No element for displaying the error passed as an argument.");
@@ -248,14 +247,24 @@ export function displayError(error, source) {
 }
 
 export function displaySuccess() {
-  errorMessage.innerHTML = "Registration successful! Please log in.";
-  errorMessage.style.display = "inline";
-  errorMessage.style.color = "#64c681";
-
+  try {
+    errorMessage.innerHTML = "Registration successful! Please log in.";
+    errorMessage.style.display = "inline";
+    errorMessage.style.color = "#64c681";
+  } catch {}
 }
 
 if (localStorage.getItem("RegistrationSuccess") == "success") {
   displaySuccess();
   localStorage.removeItem("RegistrationSuccess");
+}
+
+export async function attemptExtractErrorFromResponse(response) {
+  try {
+    const data = await response.json();
+    return data.error;
+  } catch {
+    return null;
+  }
 }
 

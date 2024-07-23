@@ -93,7 +93,6 @@ let randomQuestionIndex;
 function randomQuestion() {
   randomQuestionIndex = Math.floor(Math.random() * 10);
   document.getElementById("captchaHeader").innerHTML = questions[randomQuestionIndex][0];
-  
 }
 
 //validate answer to captcha question
@@ -137,10 +136,11 @@ signupButtonSignupPage.addEventListener("click", signUpAction);
   }
 
   //this is the function that runs when the user click on login or presses enter.
-  function logInAction() {
+  async function logInAction() {
     if (checkEmptyFields(false)) {
       loginButtonSignupPage.textContent = "Wait...";
-      loginUser(loginEmail.value, loginPassword.value, "signup");
+      await loginUser(loginEmail.value, loginPassword.value, "signup");
+      loginButtonSignupPage.textContent = "Login";
     }
   }
 
