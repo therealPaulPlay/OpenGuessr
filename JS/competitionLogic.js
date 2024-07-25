@@ -59,7 +59,7 @@ export function setCompetitionUI(enable) {
             document.getElementById("revealCompass").style.marginBottom = "-21px";
 
             document.querySelectorAll(".mapAttribution").forEach((element) => { // remove this for js maps api
-                element.style.bottom = "58px";
+                element.style.bottom = "63px";
             });
         } else {
             document.getElementById("mapModeIndicator").style.display = "none";
