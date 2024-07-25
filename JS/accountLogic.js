@@ -1,4 +1,4 @@
-import { updateUsername as updateUsername, getUser, updateExperience } from "./userAPI";
+import { getUser, updateExperience } from "./userAPI";
 import { checkTextLength, resultScreenEnabled, showPageBrowser, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
@@ -7,14 +7,13 @@ import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } fro
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
+import { viewProfile } from "./profileView.js";
 
 let accountLockedArray;
 
 let lastDistance;
 
 let lastXPloadingAttemptAborted = false;
-
-let profileName = document.getElementById("profileViewName");
 
 let loginButton = document.getElementById("loginButton");
 loginButton.addEventListener("click", () => {
@@ -37,7 +36,7 @@ mobileLogoutButton.addEventListener("click", signout);
 
 let profileButton = document.getElementById("profileInfo");
 profileButton.addEventListener("click", () => {
-  viewProfile();
+  viewProfile(localStorage.getItem("username"), localStorage.getItem("experience"), localStorage.getItem("id"), true);
   playSound("basic_button");
 });
 
@@ -45,7 +44,7 @@ let mobileProfileButton = document.getElementById("mobileProfileButton");
 mobileProfileButton.addEventListener("click", function () {
   toggleMobileMenu();
   playSound("basic_button");
-  viewProfile();
+  viewProfile(localStorage.getItem("username"), localStorage.getItem("experience"), localStorage.getItem("id"), true);
 });
 
 let displayAccountName = document.getElementById("accountName");
@@ -53,31 +52,11 @@ let displayAccountName = document.getElementById("accountName");
 let XPbarNoAccount = document.getElementById("XPbarNoAccount");
 let XParea = document.getElementById("XParea");
 
-let profileClose = document.getElementById("profileClose");
-profileClose.addEventListener("click", () => {
-  closeProfile();
-  playSound("basic_button");
-});
-
-let profileWindow = document.getElementById("profileWindow");
-
 //default is not logged in, so these are all disabled
 logoutButton.style.display = "none";
 mobileLogoutButton.style.display = "none";
 mobileProfileButton.style.display = "none";
 XParea.style.display = "none";
-
-document.getElementById("usernameInput").style.visibility = "hidden";
-document.getElementById("confirmUsername").style.visibility = "hidden";
-
-document.getElementById("editUsername").addEventListener("click", () => {
-  toggleUsernameView();
-  playSound("basic_button");
-});
-document.getElementById("confirmUsername").addEventListener("click", () => {
-  updateProfileUsername();
-  playSound("basic_button");
-});
 
 let resultLevelText = document.getElementById("endScreenLevel");
 let resultLevelDisplay = document.getElementById("endScreenLevelDisplay");
@@ -188,19 +167,14 @@ async function changeUItoSignedOut() {
   XParea.style.display = "none";
   disableExlcusiveCategories();
   displayAccountName.innerHTML = "Guest";
-  profileName.innerHTML = "Guest";
   checkTextLength();
   uiSetUserXP(0);
 }
 
-let username;
-
-//part of checkSigninStatusAndLoadUserInfo
-function displayUserInfo() {
+// part of checkSigninStatusAndLoadUserInfo
+export function displayUserInfo() {
   uiSetUserXP(localStorage.getItem("experience"));
-  username = localStorage.getItem("username");
-  displayAccountName.innerHTML = username;
-  profileName.innerHTML = username;
+  displayAccountName.innerHTML = localStorage.getItem("username");
   checkTextLength();
 }
 
@@ -274,10 +248,6 @@ export function uiSetUserXP(xp) {
     requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
   }
 
-  let levelText = document.getElementById("levelText");
-
-  // Update the UI with the calculated level and XP progress
-  levelText.innerHTML = "Lvl. " + templevel; //account ui level text
   document.getElementById("progressRingLevel").innerHTML = templevel;
   resultLevelDisplay.innerHTML = "Lvl. " + templevel;
   // account UI 
@@ -491,49 +461,6 @@ export async function reattemptExperienceUpdate(earnedExp) {
   }
 }
 
-//Profile Window ---------------------------------------------------------------------------------------------
-
-function viewProfile() {
-  username = localStorage.getItem("username");
-  profileWindow.style.display = "block";
-  document.getElementById("blackBackground").style.visibility = "visible";
-  profileName.innerHTML = username;
-  document.getElementById("statisticExperience").innerHTML = Number(localStorage.getItem("experience")).toLocaleString();
-  document.getElementById("statisticUpgradeExperience").innerHTML = uiSetUserXP(Number(localStorage.getItem("experience"))).requiredForLevelUpgrade.toLocaleString();
-  updatePinLocks(localStorage.getItem("experience"));
-
-}
-
-function closeProfile() {
-  profileWindow.style.display = "none";
-  document.getElementById("blackBackground").style.visibility = "hidden";
-}
-
-function toggleUsernameView() {
-  if (document.getElementById("usernameInput").style.visibility == "hidden") {
-    document.getElementById("usernameInput").style.visibility = "visible";
-    document.getElementById("confirmUsername").style.visibility = "visible";
-  }
-  else {
-    document.getElementById("usernameInput").style.visibility = "hidden";
-    document.getElementById("confirmUsername").style.visibility = "hidden";
-    document.getElementById("usernameInput").value = "";
-  }
-}
-
-let newUsername;
-
-async function updateProfileUsername() {
-  newUsername = document.getElementById("usernameInput").value;
-  toggleUsernameView();
-  if (newUsername != "") {
-    await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername, "index").then(() => {
-      //updateUsername saves the new name in localstorage
-      displayUserInfo();
-    });
-  }
-}
-
 //Pin selection -------------------------------------------------------------------------------------------------------
 
 export let selectedPinIndex = 0;
@@ -570,7 +497,6 @@ function selectPin(index, sound) {
   }
 }
 
-
 // Function to load selected pin from localStorage
 function loadSelectedPin() {
   selectedPinIndex = parseInt(localStorage.getItem('selectedPin'));
@@ -583,7 +509,7 @@ function loadSelectedPin() {
 }
 
 // Function to update pinLocks based on XP
-function updatePinLocks(xpAmount) {
+export function updatePinLocks(xpAmount) {
 
   const pinLocks = document.querySelectorAll('.pinLock');
   pinLocks.forEach(function (lock) {
