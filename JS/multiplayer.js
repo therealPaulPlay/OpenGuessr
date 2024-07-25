@@ -1,6 +1,6 @@
 import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, toggleSocialbar, hideToggleMapButtonIfMobile, socialBarExpanded, disableResultScreen, showPageBrowser } from "./mainUI.js";
+import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex, isAuthenticated } from "./accountLogic.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
@@ -70,9 +70,6 @@ export function toggleMultiplayerSelector(alwaysClose) {
         multiplayerSelectionScreen.style.display = "block";
         document.getElementById("blackBackground").style.visibility = "visible";
         setMultiplayerWindowSelection("main");
-        if (socialBarExpanded) {
-            toggleSocialbar();
-        }
     }
 
     multiPlayerWindowOpen = !multiPlayerWindowOpen;
@@ -347,14 +344,12 @@ export let multiplayer = false;
 function setMultiplayerUI() {
     toggleCategoryMenu(true);
     let categoryButton = document.getElementById("categoryMenuButton");
-    let floatingSocialButton = document.getElementById("floatingSocialButton");
     let hardmodeTimerButton = document.getElementById("timerButton");
 
     if (multiplayer) {
         categoryButton.style.opacity = "0.5";
         categoryButton.style.pointerEvents = "none";
-        floatingSocialButton.style.opacity = "0.5";
-        floatingSocialButton.style.pointerEvents = "none";
+        setGamemodeSelector(false);
         hardmodeTimerButton.style.opacity = "0.5";
         hardmodeTimerButton.style.pointerEvents = "none";
         document.getElementById("mapModeIndicator").style.display = "flex";
@@ -376,8 +371,7 @@ function setMultiplayerUI() {
     } else {
         categoryButton.style.opacity = "1";
         categoryButton.style.pointerEvents = "auto";
-        floatingSocialButton.style.opacity = "1";
-        floatingSocialButton.style.pointerEvents = "auto";
+        setGamemodeSelector(true);
         hardmodeTimerButton.style.opacity = "1";
         hardmodeTimerButton.style.pointerEvents = "auto";
         document.getElementById("mapModeIndicator").style.display = "none";
@@ -1526,7 +1520,7 @@ function leaveMultiplayerRound() {
     lateJoinedWaiting = false;
 
     //reset UI things
-    document.getElementById("confirmButton").textContent = "Guess";
+    document.getElementById("guessText").textContent = "Guess";
     document.getElementById("confirmButton").style.pointerEvents = "auto";
 
     if (mapCategory != "country") {
@@ -1760,7 +1754,7 @@ function multiplayerOverlayCountdown() {
             clearInterval(countdownInterval); // Stop the countdown
             if (multiplayer) {
                 showMultiplayerOverlay(false); //hide the overlay --> round starts
-                document.getElementById("confirmButton").textContent = "Guess";
+                document.getElementById("guessText").textContent = "Guess";
 
                 try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
                 multiplayerTimer = startTimer(roundLength, multiplayerTimerExpired); //Start the timer

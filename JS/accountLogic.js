@@ -16,8 +16,6 @@ let lastXPloadingAttemptAborted = false;
 
 let profileName = document.getElementById("profileViewName");
 
-let profileInfo = document.getElementById("profileInfo");
-
 let loginButton = document.getElementById("loginButton");
 loginButton.addEventListener("click", () => {
   playSound("basic_button");
@@ -37,7 +35,7 @@ logoutButton.addEventListener("click", signout);
 let mobileLogoutButton = document.getElementById("mobileLogoutButton");
 mobileLogoutButton.addEventListener("click", signout);
 
-let profileButton = document.getElementById("profileButton");
+let profileButton = document.getElementById("profileInfo");
 profileButton.addEventListener("click", () => {
   viewProfile();
   playSound("basic_button");
@@ -65,7 +63,6 @@ let profileWindow = document.getElementById("profileWindow");
 
 //default is not logged in, so these are all disabled
 logoutButton.style.display = "none";
-profileButton.style.display = "none";
 mobileLogoutButton.style.display = "none";
 mobileProfileButton.style.display = "none";
 XParea.style.display = "none";
@@ -167,7 +164,6 @@ XPbarNoAccount.addEventListener("click", function () {
 async function changeUItoSignedIn() {
   logoutButton.style.display = "inline-block";
   loginButton.style.display = "none";
-  profileButton.style.display = "inline-block";
   mobileLogoutButton.style.display = "inline-block";
   mobileLoginButton.style.display = "none";
   mobileProfileButton.style.display = "inline-block";
@@ -185,7 +181,6 @@ async function changeUItoSignedIn() {
 async function changeUItoSignedOut() {
   logoutButton.style.display = "none";
   loginButton.style.display = "inline-block";
-  profileButton.style.display = "none";
   mobileLogoutButton.style.display = "none";
   mobileLoginButton.style.display = "inline-block";
   mobileProfileButton.style.display = "none";
@@ -212,7 +207,7 @@ function displayUserInfo() {
 //adjust the UI to the signin status and load user info on website load
 async function checkSigninStatusAndLoadUserInfo() {
   if (isAuthenticated) {
-    profileInfo.classList.remove("notSignedIn");
+    profileButton.classList.remove("notSignedIn");
     //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
     await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then(() => {
       changeUItoSignedIn(); // display user info is already being called in here
@@ -220,7 +215,7 @@ async function checkSigninStatusAndLoadUserInfo() {
   }
   else {
     changeUItoSignedOut();
-    profileInfo.classList.add("notSignedIn");
+    profileButton.classList.add("notSignedIn");
   }
 }
 
@@ -244,6 +239,20 @@ function disableExlcusiveCategories() {
   document.getElementById("categoryExclusiveText").innerHTML = " Sign up to unlock for free: ";
 }
 
+// Account UI - set circular progress bar ----------------------------------------------------------------------------------
+
+function setProgress(factor) {
+  const circle = document.querySelector('.progressRingCircle');
+  const radius = circle.r.baseVal.value;
+  const circumference = 2 * Math.PI * radius;
+
+  circle.style.strokeDasharray = `${circumference} ${circumference}`;
+  circle.style.strokeDashoffset = `${circumference}`;
+
+  const offset = circumference - (factor) * circumference;
+  circle.style.strokeDashoffset = offset;
+}
+
 //XP bar loading function -------------------------------------------------------------------------------------------------
 let requiredXP;
 
@@ -265,13 +274,14 @@ export function uiSetUserXP(xp) {
     requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
   }
 
-  let levelXPbar = document.getElementById("progressBar");
   let levelText = document.getElementById("levelText");
 
   // Update the UI with the calculated level and XP progress
-  levelText.innerHTML = "Level " + templevel; //account ui level text
+  levelText.innerHTML = "Lvl. " + templevel; //account ui level text
+  document.getElementById("progressRingLevel").innerHTML = templevel;
   resultLevelDisplay.innerHTML = "Lvl. " + templevel;
-  levelXPbar.style.width = xp != 0 ? Math.max((xp / requiredXP) * 100, 12) + "%" : "0%"; //account ui xp bar
+  // account UI 
+  setProgress(xp != 0 ? Math.max((xp / requiredXP), 0.1) : 0);
 
   return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
 }
