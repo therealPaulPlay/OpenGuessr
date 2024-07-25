@@ -1750,7 +1750,6 @@ map::selection {
   z-index: 10;
   font-size: 25px;
   padding: 8px;
-  padding-bottom: 3px;
   border-radius: 10px;
   transition: filter 250ms ease;
   user-select: none;
