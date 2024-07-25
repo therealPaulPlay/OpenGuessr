@@ -1217,7 +1217,7 @@ input:focus {
   box-shadow: 0 2px 20px rgba(5, 6, 10, 0.7);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  z-index: 13;
+  z-index: 15;
 }
 
 .extendedNavbar.expanded {
@@ -1228,7 +1228,7 @@ input:focus {
 }
 
 .extendedNavbar.expandedMobile {
-  max-height: calc(100% - 150px);
+  max-height: calc(100% - 75px);
   background-color: rgba(42, 44, 71, 1);
   border-radius: 0;
   backdrop-filter: none;
@@ -1247,6 +1247,10 @@ input:focus {
   background: linear-gradient(rgba(255, 255, 255, 0), hsla(232.5, 10.7%, 29.4%, 0.85));
   border-radius: 0 0 10px 10px;
   z-index: 13;
+}
+
+.expandedMobile #extendedNavbarGradient {
+  background: linear-gradient(rgba(255, 255, 255, 0), hsla(231.4, 24.7%, 16.7%, 0.85));
 }
 
 #extendedNavbarContent, #communityMapArea {
@@ -2605,14 +2609,6 @@ all and (max-width: 1200px) {
     font-size: 25px;
   }
 
-  .bannerLeft {
-    border-radius: 0;
-    width: 100%;
-    margin: 0;
-    padding-left: 25px;
-    padding-right: 10px;
-  }
-
   #mobileMenuRight {
     display: flex;
   }
@@ -2629,11 +2625,6 @@ all and (max-width: 1200px) {
     right: 0px;
     left: 0px;
     width: 100%;
-  }
-
-  .category {
-    margin-right: 0.5em;
-    margin-left: 5px;
   }
 
   .countryGuesserFlag {
