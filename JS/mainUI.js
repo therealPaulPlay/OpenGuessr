@@ -9,7 +9,10 @@ import { loadCompetition } from "./competitionLogic.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
-helpButton.addEventListener("click", toggleHelpWindow)
+helpButton.addEventListener("click", (e) => {
+    e.stopPropagation();
+    toggleHelpWindow();
+})
 
 let helpWindow = document.getElementById("helpWindow");
 
@@ -28,29 +31,7 @@ function toggleHelpWindow() {
     }
 }
 
-//Social Menu and Leaderboard link --------------------------------------------------------------------------
-export let socialBarExpanded = false;
-
-document.getElementById("floatingSocialButton").addEventListener("click", () => {
-    toggleSocialbar();
-    playSound("floating_button");
-});
-
-export function toggleSocialbar() {
-    try {
-        if (!socialBarExpanded) {
-            document.getElementById("socialBar").style.maxHeight = "1000px";
-            socialBarExpanded = true;
-            document.getElementById("multiplayerArrow").classList.add("arrowIconRotated");
-        } else {
-            document.getElementById("socialBar").style.maxHeight = "0";
-            socialBarExpanded = false;
-            document.getElementById("multiplayerArrow").classList.remove("arrowIconRotated");
-        }
-    } catch (error) {
-        console.warn("Socialbar couldn't be closed: ", error);
-    }
-}
+// Social Links --------------------------------------------------------------------------
 
 document.getElementById("leaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
@@ -59,16 +40,10 @@ document.getElementById("leaderboardButton").addEventListener("click", () => {
 
 document.getElementById("competitionsButton").addEventListener("click", () => {
     playSound("basic_button");
-    if (socialBarExpanded) {
-        toggleSocialbar();
-    }
     showPageBrowser("/competitions.html");
 });
 
 function goToLeaderboard() {
-    if (socialBarExpanded) {
-        toggleSocialbar();
-    }
     showPageBrowser("/leaderboard.html");
 }
 
@@ -136,7 +111,7 @@ let socialDiscordButton = document.getElementById("discordButton");
 socialDiscordButton.addEventListener("click", function () { playSound("basic_button"); window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
 
 let privacyButton = document.getElementById("privacyButton");
-privacyButton.addEventListener("click", function () { playSound("basic_button"); showPageBrowser("/legal.html"); });
+privacyButton.addEventListener("click", function () { playSound("basic_button"); toggleSettingsWindow(); showPageBrowser("/legal.html"); });
 
 document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html"); });
 
@@ -171,7 +146,7 @@ export function disableResultScreen() {
 //Extended Navbar dropdown (Category Selection Area) ------------------------------------------------------------------------------
 let extendedNavbar = document.getElementById("extendedNavbar");
 let categoryMenuButton = document.getElementById("categoryMenuButton");
-let floatingCategoryArea = document.getElementById("floatingCategoryArea");
+let topButtonArea = document.getElementById("topButtonArea");
 
 let categoriesExpanded = false;
 
@@ -195,8 +170,6 @@ export function toggleCategoryMenu(alwaysClose) {
 
         if (!categoriesExpanded) {
             clearInterval(moveTimeouts);
-            document.getElementById("upperBannerRight").style.transition = "all 100ms ease";
-            document.getElementById("upperBannerRight").style.minWidth = "415px";
             document.getElementById("extendedNavbarContent").scrollTop = "0";
 
             document.querySelectorAll('.animateSocialsText').forEach(function (text) {
@@ -214,7 +187,7 @@ export function toggleCategoryMenu(alwaysClose) {
             }
 
             moveTimeouts = setTimeout(() => {
-                floatingCategoryArea.style.top = "360px";
+                topButtonArea.style.top = "355px";
                 document.getElementById("extendedNavbarGradient").style.display = "block";
                 extendedNavbar.classList.add("expanded");
                 document.getElementById("mapsArrow").classList.add("arrowIconRotated");
@@ -224,14 +197,10 @@ export function toggleCategoryMenu(alwaysClose) {
         } else {
             clearInterval(moveTimeouts);
             setTimeout(function () {
-                floatingCategoryArea.style.top = "85px";
+                topButtonArea.style.top = "15px";
                 document.getElementById("extendedNavbarGradient").style.display = "none";
                 document.getElementById("mobileExtendedNavbarControls").style.display = "none";
             }, 75);
-            moveTimeouts = setTimeout(() => {
-                document.getElementById("upperBannerRight").style.transition = "all 250ms ease";
-                document.getElementById("upperBannerRight").style.minWidth = "0px";
-            }, 250)
             setTimeout(() => {
                 document.querySelectorAll('.animateSocialsText').forEach(function (text) {
                     text.style.maxWidth = "0px";
@@ -248,6 +217,36 @@ export function toggleCategoryMenu(alwaysClose) {
     }
 
 }
+
+// Social top bar area --------------------------------------------------------------------------------------------------------------
+
+export function setGamemodeSelector(enabled) {
+    if (enabled) {
+        document.getElementById("gamemodeMenu").classList.remove("gamemodeMenuDisabled");
+    } else {
+        document.getElementById("gamemodeMenu").classList.add("gamemodeMenuDisabled");
+    }
+}
+
+// Cool center hover for top bar -------------------------------------------------------
+
+let gamemodeTransitionTimeout;
+
+document.getElementById("gamemodeMenu").addEventListener("mouseover", () => {
+    clearTimeout(gamemodeTransitionTimeout);
+    document.querySelectorAll(".topBarSides").forEach((e) => {
+        e.classList.add("sideMenuDisabled");
+    })
+});
+
+document.getElementById("gamemodeMenu").addEventListener("mouseout", () => {
+    clearTimeout(gamemodeTransitionTimeout);
+    gamemodeTransitionTimeout = setTimeout(() => {
+        document.querySelectorAll(".topBarSides").forEach((e) => {
+            e.classList.remove("sideMenuDisabled");
+        })
+    }, 200);
+});
 
 //Social / Discord Join Popup -----------------------------------------------------------------------------------------------------
 
@@ -414,16 +413,20 @@ document.addEventListener('keydown', function (event) {
 
 //Settings - Window ---------------------------------------------------------------------------------------
 let settingsButton = document.getElementById("settingsButton");
-settingsButton.addEventListener("click", toggleSettingsWindow)
+settingsButton.addEventListener("click", () => {
+    playSound("basic_button");
+    toggleSettingsWindow();
+})
 
 let settingsWindow = document.getElementById("settingsWindow");
 
 let settingsClose = document.getElementById("settingsClose");
-settingsClose.addEventListener("click", toggleSettingsWindow);
+settingsClose.addEventListener("click", () => {
+    playSound("basic_button");
+    toggleSettingsWindow();
+});
 
 function toggleSettingsWindow() {
-    playSound("basic_button");
-
     if (settingsWindow.style.display == "block") {
         settingsWindow.style.display = "none";
         document.getElementById("blackBackground").style.visibility = "hidden";
@@ -559,9 +562,6 @@ document.addEventListener("DOMContentLoaded", () => {
 // Daily competition link to competitions ---------------------------------------------------------------------------------
 
 document.getElementById("dailyCompetition").addEventListener("click", () => {
-    if (socialBarExpanded) {
-        toggleSocialbar();
-    }
     playSound("button_juicy");
     showPageBrowser("/competitions.html");
 });
