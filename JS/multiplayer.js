@@ -357,7 +357,7 @@ function setMultiplayerUI() {
         document.getElementById("multiplayerLeave").style.display = "block";
         document.getElementById("revealCompass").style.marginBottom = "-21px";
         document.querySelectorAll(".mapAttribution").forEach((element) => {
-            element.style.bottom = "58px";
+            element.style.bottom = "63px";
         });
         document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
 
