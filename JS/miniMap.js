@@ -346,7 +346,7 @@ export function confirmButtonClicks() {
         calculateDistances(mapMarkerLat, mapMarkerLong);
         loadResultMap(mapMarkerLat, mapMarkerLong);
     } else {
-        document.getElementById("confirmButton").textContent = "Waiting...";
+        document.getElementById("guessText").textContent = "Waiting...";
         document.getElementById("confirmButton").style.pointerEvents = "none";
         document.getElementById("map").style.visibility = "hidden";
         document.querySelectorAll(".mapAttribution").forEach((element) => {

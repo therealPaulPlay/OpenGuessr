@@ -1,6 +1,6 @@
 import { confirmButtonClicks } from "./miniMap";
 import { startTimer } from "./timer";
-import { disableResultScreen, showPageBrowser, toggleCategoryMenu } from "./mainUI";
+import { disableResultScreen, setGamemodeSelector, showPageBrowser, toggleCategoryMenu } from "./mainUI";
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
 import { playSound } from "./soundManager";
 import { errorPopup } from "./errorHandling";
@@ -42,7 +42,6 @@ export function setCompetitionUI(enable) {
     try {
         toggleCategoryMenu(true); // collapse category menu, then hide it
         let categoryButton = document.getElementById("categoryMenuButton");
-        let floatingSocialButton = document.getElementById("floatingSocialButton");
         let hardmodeTimerButton = document.getElementById("timerButton");
 
         if (enable) {
@@ -53,8 +52,7 @@ export function setCompetitionUI(enable) {
 
             categoryButton.style.opacity = "0.5";
             categoryButton.style.pointerEvents = "none";
-            floatingSocialButton.style.opacity = "0.5";
-            floatingSocialButton.style.pointerEvents = "none";
+            setGamemodeSelector(false);
             hardmodeTimerButton.style.opacity = "0.5";
             hardmodeTimerButton.style.pointerEvents = "none";
 
@@ -69,8 +67,7 @@ export function setCompetitionUI(enable) {
 
             categoryButton.style.opacity = "1";
             categoryButton.style.pointerEvents = "auto";
-            floatingSocialButton.style.opacity = "1";
-            floatingSocialButton.style.pointerEvents = "auto";
+            setGamemodeSelector(true);
             hardmodeTimerButton.style.opacity = "1";
             hardmodeTimerButton.style.pointerEvents = "auto";
 

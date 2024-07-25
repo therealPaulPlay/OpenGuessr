@@ -6,19 +6,19 @@
   <meta name="description"
     content="Free GeoGuessr alternative with unlimited free play - Guess the location on Google Streetview to learn Geography. Enjoy GeoGuessr for free in Multiplayer. ">
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  
+
   <!-- address bar -->
   <meta name="theme-color" content="#07071e">
 
   <!-- Files from other sources (PeerJS, MapKit, Math.js) -->
   <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" defer></script>
-  
+
   <!-- maps js loading -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.css">
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=1.0.1">
 
   <!-- Non-bundled js files -->
   <script type="module" src="analytics.js" async></script>
@@ -28,7 +28,7 @@
     data-site-id="664453baf2089a039dc08edb" data-mode="scan" async></script>
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=1.0.2" defer></script>
+  <script type="module" src="main.js?v=1.0.3" defer></script>
 
   <!-- custom venatus scaling script -->
   <script type="module" src="venatusCustom.js" defer></script>
@@ -48,74 +48,72 @@
 
 <body>
   <!--this is the navbar-->
-  <div class="Banner">
-    <div class="bannerItem bannerLeft">
-      <a id="logo" alt="openguessr logo"><img id="icon" src="/IMG/openguessr.svg"
-          alt="OpenGuessr logo - the free geography location-guessing game"></a>
-      <button id="mobileMenu" class="menuButton">
+  <div class="logoLeft">
+    <img id="OpenGuessrIcon" src="/IMG/openguessr.svg"
+      alt="OpenGuessr logo - the free geography location-guessing game">
+  </div>
+  <div id="mobileMenuRight" class="menuRight">
+    <div class="topBarMenu">
+      <button id="mobileMenu" class="standardButton accountButton">
         <img src="/IMG/mobile-menu.png" alt="mobile main menu" id="mobileMenuIcon" class="socialIcon">
       </button>
     </div>
-    <div id="socialArea">
-      <div class="accountBar">
-        <div class="profileInfo notSignedIn" id="profileInfo">
-          <div id="accountNameArea">
-            <h2 id="accountName">Guest</h2>
-          </div>
-          <div class="level" id="levelDisplay">
-            <div class="progress">
-              <div class="progressBar" id="progressBar"></div>
-            </div>
-            <span id="levelText">Level 1</span>
-          </div>
-        </div>
-        <div class="loginArea">
-          <button class="accountButton" id="loginButton" type="button" alt="log in">Login / Sign up</button>
-          <button class="accountButton" id="profileButton" type="button" alt="go to profile">Profile</button>
-          <button class="accountButton" id="logoutButton" type="button" alt="log out">
-            <img id="logoutImage" src="/IMG/signout.png" alt="Log out of your OpenGuessr account.">
-          </button>
-        </div>
-      </div>
-      <div id="socialBar">
-        <div class="placeholder"></div>
-        <button id="multiplayerButton" class="socialBarBigger accountButton socialBarButton">Multiplayer
-          <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
-        </button>
-        <button id="leaderboardButton" class="accountButton socialBarButton">Leaderboard
-          <img class="socialBarIcons" src="/IMG/leaderboards_icon.png" alt="Experience Leaderboard">
-        </button>
-        <button class="accountButton socialBarButton" id="competitionsButton" class="accountButton socialBarButton">Competitions
-          <img class="socialBarIcons" src="/IMG/competitions_icon.png" alt="Competitions symbol">
-        </button>
-        <div class="placeholder"></div>
-      </div>
-      <button id="floatingSocialButton">Multiplayer Menu <img id="multiplayerArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="arrowIcon"></button>
-    </div>
-    <div id="upperBannerRight" class="bannerItem bannerRight">
-      <div class="leftNavbarButtons">
-        <button class="menuButton" id="mapTypeButton" type="button">Toggle language</button>
-        <button class="discordButton menuButton" id="discordButton" type="button">
-          <span class="animateSocialsText">Discord</span>
-          <img src="./IMG/discord.png" alt="Discord Logo" class="socialIcon shiftIconRight" id="discordIcon">
-        </button>
-        <button class="menuButton" id="redditButton" type="button">
-          <span class="animateSocialsText">Reddit</span>
-          <img src="./IMG/reddit.png" alt="Reddit Logo" class="socialIcon shiftIconRight">
-        </button>
-      </div>
-    </div>
-    <br><br>
   </div>
+  <div id="topButtonArea">
+    <div class="topBarMenu topBarSides">
+      <button class="standardButton accountButton" id="loginButton" type="button" alt="log in">Log in</button>
+      <div class="profileInfo notSignedIn" id="profileInfo">
+        <div id="accountNameArea">
+          <p id="accountName">Guest</p>
+        </div>
+        <div class="progressContainer">
+          <svg class="progressRing" width="30" height="30">
+            <circle class="progressRingCircle"
+              style="stroke-dasharray: 81.6814px, 81.6814px; stroke-dashoffset: 81.6814px;" stroke="#00cc00"
+              stroke-width="4" fill="transparent" r="13" cx="15" cy="15">
+          </svg>
+          <div id="progressRingLevel" class="progressRingText">1</div>
+        </div>
+      </div>
+      <button class="standardButton accountButton" id="logoutButton" type="button" alt="log out">
+        <img id="logoutImage" src="/IMG/signout.png" alt="Log out of your OpenGuessr account.">
+      </button>
+    </div>
+    <div class="topBarMenu" id="gamemodeMenu">
+      <button id="leaderboardButton" class="standardButton accountButton"><span class="topBarExpand">Leaderboard</span>
+        <img class="socialBarIcons invertSocialBarIcon" src="/IMG/leaderboards_icon.png" alt="Experience Leaderboard">
+      </button>
+      <button id="multiplayerButton" class="accountButton standardButton"><span class="topBarExpand">Multiplayer</span>
+        <img class="socialBarIcons invertSocialBarIcon" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
+      </button>
+      <button id="competitionsButton" class="standardButton accountButton"><span
+          class="topBarExpand">Competitions</span>
+        <img class="socialBarIcons invertSocialBarIcon" src="/IMG/competitions_icon.png" alt="Competitions symbol">
+      </button>
+    </div>
+    <div class="topBarMenu topBarSides">
+      <button class="standardButton accountButton" id="categoryMenuButton" type="button">Maps
+        <img id="mapsArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="socialBarIcons arrowIcon">
+      </button>
+      <button class="standardButton accountButton" id="timerButton" type="button">
+        <img src="/IMG/timer_icon.png" alt="one or five seconds" id="timerIcon" class="socialBarIcons">
+      </button>
+      <button class="standardButton accountButton" id="settingsButton" type="button">
+        <img src="/IMG/settings_icon.png" alt="settings" class="socialBarIcons">
+      </button>
+    </div>
+  </div>
+  <!-- extended navbar map menu -->
   <div class="extendedNavbar" id="extendedNavbar">
     <div id="extendedNavbarGradient"></div>
     <div id="extendedNavbarContent">
-      <!-- This is the extended navbar for selecting categories etc. -->
+      <!-- content -->
       <button class="category" id="standardCategory" type="button">Standard</button>
       <button class="category" id="capitalCategory" type="button">Capitals</button>
       <button class="category" id="famousCategory" type="button">Famous Places</button>
       <p class="categoriesNote" id="categoryExclusiveText"> Sign up to unlock for free: </p>
-      <button class="category countryCategory accountLock" id="dailyCompetition" type="button">Daily Competition</button>
+      <button class="category countryCategory accountLock" id="dailyCompetition" type="button">Daily
+        Competition</button>
       <button class="category countryCategory accountLock" id="countryCategory" type="button">Country Guesser</button>
       <button class="category countryCategory accountLock" id="australiaCategory" type="button">Australia</button>
       <button class="category countryCategory accountLock" id="austriaCategory" type="button">Austria</button>
@@ -164,21 +162,9 @@
       <br><br>
     </div>
   </div>
-
   <!-- mobile category menu bottom controls -->
   <div id="mobileExtendedNavbarControls">
-    <button id="mobileCategoriesClose" class="fixedMobileuiWidth accountButton socialBarButton">Close</button>
-  </div>
-
-  <!-- Category switch displayer -->
-  <div id="floatingCategoryArea">
-    <button class="floatingButton" id="categoryMenuButton" type="button">Maps <img id="mapsArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="arrowIcon"></button>
-    <button class="smallFloatingButton" id="timerButton" type="button">
-      <img src="/IMG/timer_icon.png" alt="one or five seconds" id="timerIcon">
-    </button>
-    <button class="smallFloatingButton" id="settingsButton" type="button">
-      <img src="/IMG/settings_icon.png" alt="settings" id="settingsIcon">
-    </button>
+    <button id="mobileCategoriesClose" class="fixedMobileuiWidth standardButton socialBarButton">Close</button>
   </div>
   <div id="BeforeOverlay">
     <img src="/IMG/compass_spinner.png" alt="Loading new streetview" id="spinner" class="spinner">
@@ -193,7 +179,7 @@
         <p>Never show again: </p>
         <input type="checkbox" id="hideErrors">
       </div>
-      <button id="popupClose" class="cookieButton close">Close and reload</button>
+      <button id="popupClose" class="standardButton white errorClose">Close and reload</button>
     </div>
   </div>
   <!-- remaining windows -->
@@ -201,12 +187,15 @@
     <!-- New profile window -->
     <div id="profileWindow" class="uiWindow">
       <div class="popup-title">
-        <h1 id="profileViewName">Username</h1>
-        <button class="accountButton white" id="editUsername">
+        <div class="profileNameArea">
+          <h1 id="profileViewName">Username</h1>
+          <p id="levelText">Lvl. 1</p>
+        </div>
+        <button class="standardButton white" id="editUsername">
           <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
           Edit
         </button> <input type="text" id="usernameInput" placeholder="New username" maxlength="12"></input>
-        <button class="accountButton" id="confirmUsername">Confirm</button>
+        <button class="standardButton" id="confirmUsername">Confirm</button>
       </div>
       <h3>Pin Style: </h3>
       <div id="pinSelector">
@@ -250,13 +239,15 @@
       <h3>User Stats: </h3>
       <div id="profileStats" class="statisticView">
         <div class="statisticsEnclosure">
-          <p class="statsLabel">Experience:</p><p id="statisticExperience">not set.</p>
+          <p class="statsLabel">Experience:</p>
+          <p id="statisticExperience">not set.</p>
         </div>
         <div class="statisticsEnclosure">
-          <p class="statsLabel">Until Level-Up:</p><p id="statisticUpgradeExperience"> not set.</p>
+          <p class="statsLabel">Until Level-Up:</p>
+          <p id="statisticUpgradeExperience"> not set.</p>
         </div>
       </div>
-      <button id="profileClose" class="accountButton white accountClose">Close</button>
+      <button id="profileClose" class="standardButton white accountClose">Close</button>
     </div>
     <!-- Help / How to Play Popup -->
     <div id="helpWindow" class="uiWindow">
@@ -281,18 +272,17 @@
           <p>Compete against friends in the multiplayer modes to see who can guess the most accurate locations.</p>
         </li>
       </ul>
-      <button id="helpClose" class="accountButton white accountClose">Let's go!</button>
+      <button id="helpClose" class="standardButton white accountClose">Let's go!</button>
     </div>
-        <!-- Page Browser for all other OpenGuessr pages to avoid any additional map loads -->
-        <div id="pageBrowserWindow" class="uiWindow">
-          <div id="browserIframeHolder">
-            <div class="absoluteCenter">
-              <img src="/IMG/compass_spinner.png" alt="Loading new streetview" class="spinner" id="pageBrowserLoading">
-            </div>
-            <iframe id="pageBrowserIframe" allowtransparency="true"
-            frameborder="0"></iframe>
-          </div>
+    <!-- Page Browser for all other OpenGuessr pages to avoid any additional map loads -->
+    <div id="pageBrowserWindow" class="uiWindow">
+      <div id="browserIframeHolder">
+        <div class="absoluteCenter">
+          <img src="/IMG/compass_spinner.png" alt="Loading new streetview" class="spinner" id="pageBrowserLoading">
         </div>
+        <iframe id="pageBrowserIframe" allowtransparency="true" frameborder="0"></iframe>
+      </div>
+    </div>
     <!-- Troubleshooting Guide for Multiplayer -->
     <div id="troubleshootWindow" class="uiWindow">
       <div class="popup-title">
@@ -321,23 +311,39 @@
       </ul>
       <p>If multiplayer still does not work after following these steps, consider using a different wifi such as your
         phone's cellular data hotspot for your internet connection or switch the host.</p>
-      <button id="troubleshootClose" class="accountButton white accountClose">Back</button>
+      <button id="troubleshootClose" class="standardButton white accountClose">Back</button>
     </div>
     <!-- Settings Window (Especially for Sounds) -->
     <div id="settingsWindow" class="uiWindow">
       <div class="popup-title">
         <h1>Settings</h1>
       </div>
-      <p class="slightBottomMargin">Unit System:</p>
-      <button id="unitSwitchKilometers" class="accountButton white">Metric</button>
-      <button id="unitSwitchMiles" class="accountButton white">Imperial</button><br><br>
-      <p>SFX Volume:</p>
-      <input type="range" min="0" max="1" step="0.01" value="0.5" class="slider" id="volumeSlider"><br><br>
-      <p class="slightBottomMargin">Toggle Fullscreen:</p>
-      <button id="fullscreenButton" class="accountButton white"><img src="/IMG/fullscreen_icon.png"
-          alt="Fullscreen symbol" id="fullscreenIcon" class="socialIcon"><span
-          id="fullscreenText">Fullscreen</span></button><br><br>
-      <button id="settingsClose" class="accountButton white accountClose">Close</button>
+      <div class="settingsCanvas">
+        <div class="settingsBox">
+          <p class="slightBottomMargin">Unit System:</p>
+          <button id="unitSwitchKilometers" class="standardButton white">Metric</button>
+          <button id="unitSwitchMiles" class="standardButton white">Imperial</button>
+        </div>
+        <div class="settingsBox">
+          <p>SFX Volume:</p>
+          <input type="range" min="0" max="1" step="0.01" value="0.5" class="slider" id="volumeSlider">
+        </div>
+        <div class="settingsBox">
+          <p class="slightBottomMargin">Map Type:</p>
+          <button class="standardButton white" id="mapTypeButton" type="button">Toggle Map Type</button>
+        </div>
+        <div class="settingsBox">
+          <p class="slightBottomMargin">Toggle Fullscreen:</p>
+          <button id="fullscreenButton" class="standardButton white"><img src="/IMG/fullscreen_icon.png"
+              alt="Fullscreen symbol" id="fullscreenIcon" class="socialIcon"><span
+              id="fullscreenText">Fullscreen</span></button>
+        </div>
+        <div class="settingsBox">
+          <p class="slightBottomMargin">Legal Information:</p>
+          <button class="standardButton white" id="privacyButton">View legal information</button>
+        </div>
+      </div>
+      <button id="settingsClose" class="standardButton white accountClose">Close</button>
     </div>
     <!-- Discord Popup -->
     <div id="socialWindow" class="uiWindow">
@@ -347,8 +353,8 @@
       <p>Join now and get <span class="highlight">7,500 XP</span> in return!</p>
       <iframe id="discordWidget" title="Discord Widget" width="350" height="500" allowtransparency="true"
         frameborder="0" sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"></iframe>
-      <button id="socialPopupClose" class="accountButton white accountClose">Close</button>
-      <button id="socialPopupJoin" class="discordButton accountButton accountClose">Join
+      <button id="socialPopupClose" class="standardButton white accountClose">Close</button>
+      <button id="socialPopupJoin" class="discordButton standardButton accountClose">Join
         <img src="./IMG/discord.png" class="socialIcon">
       </button>
     </div>
@@ -359,7 +365,7 @@
       </div>
       <p id="linkjoinStatus">Status: None set</p>
       <br>
-      <button id="linkJoinClose" class="accountButton white accountClose">Close</button>
+      <button id="linkJoinClose" class="standardButton white accountClose">Close</button>
     </div>
     <!-- Mobile UI Popup -->
     <div id="mobileWindow" class="uiWindow">
@@ -369,32 +375,32 @@
       <div id="mobileMenuContent">
         <div class="mobileMenuOptions">
           <div id="mobileAccountUI">
-            <button id="mobileLoginButton" class="fixedMobileuiWidth accountButton socialBarButton">Login / Sign
+            <button id="mobileLoginButton" class="fixedMobileuiWidth standardButton socialBarButton">Login / Sign
               up</button>
-            <button id="mobileProfileButton" class="fixedMobileuiWidth accountButton socialBarButton">Profile</button>
-            <button id="mobileLogoutButton" class="fixedMobileuiWidth accountButton socialBarButton">Sign
+            <button id="mobileProfileButton" class="fixedMobileuiWidth standardButton socialBarButton">Profile</button>
+            <button id="mobileLogoutButton" class="fixedMobileuiWidth standardButton socialBarButton">Sign
               out</button>
           </div>
         </div>
         <div class="mobileMenuOptions">
-          <button id="mobileCategoryButton" class="fixedMobileuiWidth accountButton socialBarButton">Maps
+          <button id="mobileCategoryButton" class="fixedMobileuiWidth standardButton socialBarButton">Maps
             <img class="socialBarIcons" src="/IMG/mobile_maps_icon.png" alt="Map Categories">
           </button>
         </div>
         <div class="mobileMenuOptions">
-          <button id="mobileMultiplayerButton" class="fixedMobileuiWidth accountButton socialBarButton">Multiplayer
+          <button id="mobileMultiplayerButton" class="fixedMobileuiWidth standardButton socialBarButton">Multiplayer
             <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
           </button>
-          <button id="mobileCompetitionsButton" class="fixedMobileuiWidth accountButton socialBarButton">Competitions
+          <button id="mobileCompetitionsButton" class="fixedMobileuiWidth standardButton socialBarButton">Competitions
             <img class="socialBarIcons" src="/IMG/competitions_icon.png" alt="Competitions symbol">
           </button>
-          <button id="mobileLeaderboardButton" class="fixedMobileuiWidth accountButton socialBarButton"> Leaderboard
+          <button id="mobileLeaderboardButton" class="fixedMobileuiWidth standardButton socialBarButton"> Leaderboard
             <img class="socialBarIcons" src="/IMG/leaderboards_icon.png" alt="Leaderboard for OpenGuessr">
           </button>
         </div>
         <p id="privacyNotice">Our <a href="/legal.html">privacy policy</a> applies.</p>
       </div>
-      <button id="mobilePopupClose" class="accountButton white accountClose">Close</button>
+      <button id="mobilePopupClose" class="standardButton white accountClose">Close</button>
       </button>
     </div>
     <!-- Multiplayer window -->
@@ -405,11 +411,11 @@
       <div id="multiplayerWindowMain">
         <div class="multiplayerHorizontalAlign">
           <div class="groupPartyButtons">
-            <button id="multiplayerSelectJoin" class="accountButton multiplayerSelect">Join</button>
-            <button id="multiplayerSelectHost" class="accountButton multiplayerSelect">Host</button>
+            <button id="multiplayerSelectJoin" class="standardButton multiplayerSelect">Join</button>
+            <button id="multiplayerSelectHost" class="standardButton multiplayerSelect">Host</button>
           </div>
           <div class="groupPartyButtons">
-            <button id="multiplayerSelectDuels" class="accountButton multiplayerSelect">Find Duel<img id="findIcon"
+            <button id="multiplayerSelectDuels" class="standardButton multiplayerSelect">Find Duel<img id="findIcon"
                 class="socialBarIcons" style="margin-left: 5px;" src="/IMG/find_icon.png"
                 alt="Lightning error symbol"></button>
           </div>
@@ -418,7 +424,7 @@
           <div id="troubleshootingArea">
             <p id="issuesTroubleshootText"> <img id="errorIcon" class="socialBarIcons" src="/IMG/error_icon.png"
                 alt="Lightning error symbol" style="opacity: 60%;">Having issues?</p>
-            <button class="white accountButton" id="troubleshootGuideButton">Troubleshooting Guide</button>
+            <button class="white standardButton" id="troubleshootGuideButton">Troubleshooting Guide</button>
           </div>
         </div>
       </div>
@@ -426,7 +432,7 @@
         <div class="multiplayerJoinAlign">
           <p id="multiplayerJoinInfo" class="multiplayerInputInfo">Enter the roomcode.</p>
           <input id="roomCodeInput" type="text" class="multiplayerInput" placeholder="Roomcode">
-          <button id="multiplayerJoin" class="accountButton">Join</button>
+          <button id="multiplayerJoin" class="standardButton">Join</button>
         </div>
       </div>
       <div id="multiplayerWindowHost" style="display: none;">
@@ -435,32 +441,32 @@
             <div>
               <p>Rounds:</p>
               <div class="ticker">
-                <button id="roundMinus" class="accountButton white">-</button>
+                <button id="roundMinus" class="standardButton white">-</button>
                 <p id="roundAmountText" class="tickerText">3</p>
-                <button id="roundPlus" class="accountButton white">+</button>
+                <button id="roundPlus" class="standardButton white">+</button>
               </div>
             </div>
             <div>
               <p>Round Length:</p>
               <div class="ticker">
-                <button id="lengthMinus" class="accountButton white">-</button>
+                <button id="lengthMinus" class="standardButton white">-</button>
                 <p id="roundLengthText" class="tickerText">2</p>
                 <p class="tickerNote"> sec</p>
-                <button id="lengthPlus" class="accountButton white">+</button>
+                <button id="lengthPlus" class="standardButton white">+</button>
               </div>
             </div>
           </div>
           <div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
             <p>Restrictions:</p>
-            <button id="toggleRestrictions" class="accountButton white">Standard</button>
+            <button id="toggleRestrictions" class="standardButton white">Standard</button>
           </div>
           <div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
             <p>Teams:</p>
             <div class="ticker">
-              <button id="teamsMinus" class="accountButton white">-</button>
+              <button id="teamsMinus" class="standardButton white">-</button>
               <p id="teamAmountText" class="tickerText">no</p>
               <p class="tickerNote"> teams</p>
-              <button id="teamsPlus" class="accountButton white">+</button>
+              <button id="teamsPlus" class="standardButton white">+</button>
             </div>
           </div>
           <div id="roomCreationMap" style="opacity: 0.5;" class="roomCreationModule multiplayerHostSettings">
@@ -476,10 +482,10 @@
           </div>
           <div class="multiplayerHostSubmitArea">
             <div id="innerSubmitAreaBlock">
-              <button id="roomcodeLink" class="copyLinkButton accountButton">
+              <button id="roomcodeLink" class="copyLinkButton standardButton">
                 <img id="linkIcon" class="socialIcon" src="/IMG/link_icon.png" alt="copy link">
               </button>
-              <button id="multiplayerHost" class="accountButton">Create room</button>
+              <button id="multiplayerHost" class="standardButton">Create room</button>
             </div>
           </div>
         </div>
@@ -487,11 +493,11 @@
       <div id="multiplayerWindowDuel" style="display: none;">
         <div class="multiplayerJoinAlign">
           <p id="multiplayerDuelInfo" class="multiplayerDuelStatus">Status OK</p>
-          <button id="multiplayerDuelRetry" class="accountButton">Try Again</button>
+          <button id="multiplayerDuelRetry" class="standardButton">Try Again</button>
         </div>
       </div>
-      <button id="multiplayerSelectorClose" class="accountButton white accountClose">Close</button>
-      <button id="multiplayerSelectorBack" class="accountButton white accountClose" stlye="display: none">Back</button>
+      <button id="multiplayerSelectorClose" class="standardButton white accountClose">Close</button>
+      <button id="multiplayerSelectorBack" class="standardButton white accountClose" stlye="display: none">Back</button>
     </div>
   </div>
   </div>
@@ -508,10 +514,10 @@
         </div>
         <p id="keepStreakText">Support us by watching an ad and keep your streak of <span id="streakKeepAmount"
             class="highlight">0</span> !</p>
-        <button id="streakWatchAd" class="streakButton accountButton accountClose">Keep streak
+        <button id="streakWatchAd" class="streakButton standardButton accountClose">Keep streak
           <img src="./IMG/streak_icon.png" class="socialIcon">
         </button>
-        <button id="streakAdDismiss" class="accountButton accountClose white">Close</button>
+        <button id="streakAdDismiss" class="standardButton accountClose white">Close</button>
       </div>
       <div id="endBottomBar">
         <div id="TextDiv">
@@ -529,7 +535,7 @@
             </div>
           </div>
           <p id="XPbarNoAccount">Sign up to see & save your points!</p>
-          <button id="nextRound" class="accountButton">Next round ➝</button>
+          <button id="nextRound" class="standardButton">Next round ➝</button>
         </div>
       </div>
     </div>
@@ -548,8 +554,8 @@
   <div id="multiplayerFade">
     <h1 id="multiplayerTitle">Multiplayer Default title</h1>
     <div id="multiplayerTable"></div>
-    <button id="endMultiplayerRematchButton" class="accountButton">Play again</button>
-    <button id="endMultiplayerRoundButton" class="accountButton">End round</button>
+    <button id="endMultiplayerRematchButton" class="standardButton">Play again</button>
+    <button id="endMultiplayerRoundButton" class="standardButton">End round</button>
   </div>
   <!--streetview-->
   <div class="MainDiv">
@@ -583,7 +589,8 @@
       </button>
     </div>
     <h1 id="TransparentHeader">Openguessr free geoguessr geoguesser alternative free open source geography geographie
-      Geotastic world map geoguessr Geo Quiz kostenlos google streetview rainbolt zi8gzag travel geographie education spiel
+      Geotastic world map geoguessr Geo Quiz kostenlos google streetview rainbolt zi8gzag travel geographie education
+      spiel
       videospiel guess Multiplayer which country play with friends challenges
       karte rate welches land more than 5 minutes unlimited free play unendlich freies spiel without
       subscription pro</h1>
@@ -594,19 +601,21 @@
     <div id="mapAttribution" class="mapAttribution">
       <p>Map Data ©2024 Google
         <span style="width: 5px; display:inline-block; text-align: center;">|</span>
-        <a style="color: black; text-decoration: none; pointer-events: auto;" href="https://www.google.com/intl/en_US/help/terms_maps/">Terms</a>
+        <a style="color: black; text-decoration: none; pointer-events: auto;"
+          href="https://www.google.com/intl/en_US/help/terms_maps/">Terms</a>
       </p>
     </div>
     <div id="mapAttributionLogo" class="mapAttribution">
-      <img style="width: 60px" alt="Google" src="data:image/svg+xml,%3Csvg%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2069%2029%22%3E%3Cg%20opacity%3D%22.6%22%20fill%3D%22%23fff%22%20stroke%3D%22%23fff%22%20stroke-width%3D%221.5%22%3E%3Cpath%20d%3D%22M17.4706%207.33616L18.0118%206.79504%2017.4599%206.26493C16.0963%204.95519%2014.2582%203.94522%2011.7008%203.94522c-4.613699999999999%200-8.50262%203.7551699999999997-8.50262%208.395779999999998C3.19818%2016.9817%207.0871%2020.7368%2011.7008%2020.7368%2014.1712%2020.7368%2016.0773%2019.918%2017.574%2018.3689%2019.1435%2016.796%2019.5956%2014.6326%2019.5956%2012.957%2019.5956%2012.4338%2019.5516%2011.9316%2019.4661%2011.5041L19.3455%2010.9012H10.9508V14.4954H15.7809C15.6085%2015.092%2015.3488%2015.524%2015.0318%2015.8415%2014.403%2016.4629%2013.4495%2017.1509%2011.7008%2017.1509%209.04835%2017.1509%206.96482%2015.0197%206.96482%2012.341%206.96482%209.66239%209.04835%207.53119%2011.7008%207.53119%2013.137%207.53119%2014.176%208.09189%2014.9578%208.82348L15.4876%209.31922%2016.0006%208.80619%2017.4706%207.33616z%22/%3E%3Cpath%20d%3D%22M24.8656%2020.7286C27.9546%2020.7286%2030.4692%2018.3094%2030.4692%2015.0594%2030.4692%2011.7913%2027.953%209.39011%2024.8656%209.39011%2021.7783%209.39011%2019.2621%2011.7913%2019.2621%2015.0594c0%203.25%202.514499999999998%205.6692%205.6035%205.6692zM24.8656%2012.8282C25.8796%2012.8282%2026.8422%2013.6652%2026.8422%2015.0594%2026.8422%2016.4399%2025.8769%2017.2905%2024.8656%2017.2905%2023.8557%2017.2905%2022.8891%2016.4331%2022.8891%2015.0594%2022.8891%2013.672%2023.853%2012.8282%2024.8656%2012.8282z%22/%3E%3Cpath%20d%3D%22M35.7511%2017.2905v0H35.7469C34.737%2017.2905%2033.7703%2016.4331%2033.7703%2015.0594%2033.7703%2013.672%2034.7343%2012.8282%2035.7469%2012.8282%2036.7608%2012.8282%2037.7234%2013.6652%2037.7234%2015.0594%2037.7234%2016.4439%2036.7554%2017.2962%2035.7511%2017.2905zM35.7387%2020.7286C38.8277%2020.7286%2041.3422%2018.3094%2041.3422%2015.0594%2041.3422%2011.7913%2038.826%209.39011%2035.7387%209.39011%2032.6513%209.39011%2030.1351%2011.7913%2030.1351%2015.0594%2030.1351%2018.3102%2032.6587%2020.7286%2035.7387%2020.7286z%22/%3E%3Cpath%20d%3D%22M51.953%2010.4357V9.68573H48.3999V9.80826C47.8499%209.54648%2047.1977%209.38187%2046.4808%209.38187%2043.5971%209.38187%2041.0168%2011.8998%2041.0168%2015.0758%2041.0168%2017.2027%2042.1808%2019.0237%2043.8201%2019.9895L43.7543%2020.0168%2041.8737%2020.797%2041.1808%2021.0844%2041.4684%2021.7772C42.0912%2023.2776%2043.746%2025.1469%2046.5219%2025.1469%2047.9324%2025.1469%2049.3089%2024.7324%2050.3359%2023.7376%2051.3691%2022.7367%2051.953%2021.2411%2051.953%2019.2723v-8.8366zm-7.2194%209.9844L44.7334%2020.4196C45.2886%2020.6201%2045.878%2020.7286%2046.4808%2020.7286%2047.1616%2020.7286%2047.7866%2020.5819%2048.3218%2020.3395%2048.2342%2020.7286%2048.0801%2021.0105%2047.8966%2021.2077%2047.6154%2021.5099%2047.1764%2021.7088%2046.5219%2021.7088%2045.61%2021.7088%2045.0018%2021.0612%2044.7336%2020.4201zM46.6697%2012.8282C47.6419%2012.8282%2048.5477%2013.6765%2048.5477%2015.084%2048.5477%2016.4636%2047.6521%2017.2987%2046.6697%2017.2987%2045.6269%2017.2987%2044.6767%2016.4249%2044.6767%2015.084%2044.6767%2013.7086%2045.6362%2012.8282%2046.6697%2012.8282zM55.7387%205.22083v-.75H52.0788V20.4412H55.7387V5.220829999999999z%22/%3E%3Cpath%20d%3D%22M63.9128%2016.0614L63.2945%2015.6492%2062.8766%2016.2637C62.4204%2016.9346%2061.8664%2017.3069%2061.0741%2017.3069%2060.6435%2017.3069%2060.3146%2017.2088%2060.0544%2017.0447%2059.9844%2017.0006%2059.9161%2016.9496%2059.8498%2016.8911L65.5497%2014.5286%2066.2322%2014.2456%2065.9596%2013.5589%2065.7406%2013.0075C65.2878%2011.8%2063.8507%209.39832%2060.8278%209.39832%2057.8445%209.39832%2055.5034%2011.7619%2055.5034%2015.0676%2055.5034%2018.2151%2057.8256%2020.7369%2061.0659%2020.7369%2063.6702%2020.7369%2065.177%2019.1378%2065.7942%2018.2213L66.2152%2017.5963%2065.5882%2017.1783%2063.9128%2016.0614zM61.3461%2012.8511L59.4108%2013.6526C59.7903%2013.0783%2060.4215%2012.7954%2060.9017%2012.7954%2061.067%2012.7954%2061.2153%2012.8161%2061.3461%2012.8511z%22/%3E%3C/g%3E%3Cpath%20d%3D%22M11.7008%2019.9868C7.48776%2019.9868%203.94818%2016.554%203.94818%2012.341%203.94818%208.12803%207.48776%204.69522%2011.7008%204.69522%2014.0331%204.69522%2015.692%205.60681%2016.9403%206.80583L15.4703%208.27586C14.5751%207.43819%2013.3597%206.78119%2011.7008%206.78119%208.62108%206.78119%206.21482%209.26135%206.21482%2012.341%206.21482%2015.4207%208.62108%2017.9009%2011.7008%2017.9009%2013.6964%2017.9009%2014.8297%2017.0961%2015.5606%2016.3734%2016.1601%2015.7738%2016.5461%2014.9197%2016.6939%2013.7454h-4.9931V11.6512h7.0298C18.8045%2012.0207%2018.8456%2012.4724%2018.8456%2012.957%2018.8456%2014.5255%2018.4186%2016.4637%2017.0389%2017.8434%2015.692%2019.2395%2013.9838%2019.9868%2011.7008%2019.9868z%22%20fill%3D%22%234285F4%22/%3E%3Cpath%20d%3D%22M29.7192%2015.0594C29.7192%2017.8927%2027.5429%2019.9786%2024.8656%2019.9786%2022.1884%2019.9786%2020.0121%2017.8927%2020.0121%2015.0594%2020.0121%2012.2096%2022.1884%2010.1401%2024.8656%2010.1401%2027.5429%2010.1401%2029.7192%2012.2096%2029.7192%2015.0594zM27.5922%2015.0594C27.5922%2013.2855%2026.3274%2012.0782%2024.8656%2012.0782S22.1391%2013.2937%2022.1391%2015.0594C22.1391%2016.8086%2023.4038%2018.0405%2024.8656%2018.0405S27.5922%2016.8168%2027.5922%2015.0594z%22%20fill%3D%22%23E94235%22/%3E%3Cpath%20d%3D%22M40.5922%2015.0594C40.5922%2017.8927%2038.4159%2019.9786%2035.7387%2019.9786%2033.0696%2019.9786%2030.8851%2017.8927%2030.8851%2015.0594%2030.8851%2012.2096%2033.0614%2010.1401%2035.7387%2010.1401%2038.4159%2010.1401%2040.5922%2012.2096%2040.5922%2015.0594zM38.4734%2015.0594C38.4734%2013.2855%2037.2087%2012.0782%2035.7469%2012.0782%2034.2851%2012.0782%2033.0203%2013.2937%2033.0203%2015.0594%2033.0203%2016.8086%2034.2851%2018.0405%2035.7469%2018.0405%2037.2087%2018.0487%2038.4734%2016.8168%2038.4734%2015.0594z%22%20fill%3D%22%23FABB05%22/%3E%3Cpath%20d%3D%22M51.203%2010.4357v8.8366C51.203%2022.9105%2049.0595%2024.3969%2046.5219%2024.3969%2044.132%2024.3969%2042.7031%2022.7955%2042.161%2021.4897L44.0417%2020.7095C44.3784%2021.5143%2045.1997%2022.4588%2046.5219%2022.4588%2048.1479%2022.4588%2049.1499%2021.4487%2049.1499%2019.568V18.8617H49.0759C48.5914%2019.4612%2047.6552%2019.9786%2046.4808%2019.9786%2044.0171%2019.9786%2041.7668%2017.8352%2041.7668%2015.0758%2041.7668%2012.3%2044.0253%2010.1319%2046.4808%2010.1319%2047.6552%2010.1319%2048.5914%2010.6575%2049.0759%2011.2323H49.1499V10.4357H51.203zM49.2977%2015.084C49.2977%2013.3512%2048.1397%2012.0782%2046.6697%2012.0782%2045.175%2012.0782%2043.9267%2013.3429%2043.9267%2015.084%2043.9267%2016.8004%2045.175%2018.0487%2046.6697%2018.0487%2048.1397%2018.0487%2049.2977%2016.8004%2049.2977%2015.084z%22%20fill%3D%22%234285F4%22/%3E%3Cpath%20d%3D%22M54.9887%205.22083V19.6912H52.8288V5.220829999999999H54.9887z%22%20fill%3D%22%2334A853%22/%3E%3Cpath%20d%3D%22M63.4968%2016.6854L65.1722%2017.8023C64.6301%2018.6072%2063.3244%2019.9869%2061.0659%2019.9869%2058.2655%2019.9869%2056.2534%2017.827%2056.2534%2015.0676%2056.2534%2012.1439%2058.2901%2010.1483%2060.8278%2010.1483%2063.3818%2010.1483%2064.6301%2012.1768%2065.0408%2013.2773L65.2625%2013.8357%2058.6843%2016.5623C59.1853%2017.5478%2059.9737%2018.0569%2061.0741%2018.0569%2062.1746%2018.0569%2062.9384%2017.5067%2063.4968%2016.6854zM58.3312%2014.9115L62.7331%2013.0884C62.4867%2012.4724%2061.764%2012.0454%2060.9017%2012.0454%2059.8012%2012.0454%2058.2737%2013.0145%2058.3312%2014.9115z%22%20fill%3D%22%23E94235%22/%3E%3C/svg%3E">
+      <img style="width: 60px" alt="Google"
+        src="data:image/svg+xml,%3Csvg%20fill%3D%22none%22%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2069%2029%22%3E%3Cg%20opacity%3D%22.6%22%20fill%3D%22%23fff%22%20stroke%3D%22%23fff%22%20stroke-width%3D%221.5%22%3E%3Cpath%20d%3D%22M17.4706%207.33616L18.0118%206.79504%2017.4599%206.26493C16.0963%204.95519%2014.2582%203.94522%2011.7008%203.94522c-4.613699999999999%200-8.50262%203.7551699999999997-8.50262%208.395779999999998C3.19818%2016.9817%207.0871%2020.7368%2011.7008%2020.7368%2014.1712%2020.7368%2016.0773%2019.918%2017.574%2018.3689%2019.1435%2016.796%2019.5956%2014.6326%2019.5956%2012.957%2019.5956%2012.4338%2019.5516%2011.9316%2019.4661%2011.5041L19.3455%2010.9012H10.9508V14.4954H15.7809C15.6085%2015.092%2015.3488%2015.524%2015.0318%2015.8415%2014.403%2016.4629%2013.4495%2017.1509%2011.7008%2017.1509%209.04835%2017.1509%206.96482%2015.0197%206.96482%2012.341%206.96482%209.66239%209.04835%207.53119%2011.7008%207.53119%2013.137%207.53119%2014.176%208.09189%2014.9578%208.82348L15.4876%209.31922%2016.0006%208.80619%2017.4706%207.33616z%22/%3E%3Cpath%20d%3D%22M24.8656%2020.7286C27.9546%2020.7286%2030.4692%2018.3094%2030.4692%2015.0594%2030.4692%2011.7913%2027.953%209.39011%2024.8656%209.39011%2021.7783%209.39011%2019.2621%2011.7913%2019.2621%2015.0594c0%203.25%202.514499999999998%205.6692%205.6035%205.6692zM24.8656%2012.8282C25.8796%2012.8282%2026.8422%2013.6652%2026.8422%2015.0594%2026.8422%2016.4399%2025.8769%2017.2905%2024.8656%2017.2905%2023.8557%2017.2905%2022.8891%2016.4331%2022.8891%2015.0594%2022.8891%2013.672%2023.853%2012.8282%2024.8656%2012.8282z%22/%3E%3Cpath%20d%3D%22M35.7511%2017.2905v0H35.7469C34.737%2017.2905%2033.7703%2016.4331%2033.7703%2015.0594%2033.7703%2013.672%2034.7343%2012.8282%2035.7469%2012.8282%2036.7608%2012.8282%2037.7234%2013.6652%2037.7234%2015.0594%2037.7234%2016.4439%2036.7554%2017.2962%2035.7511%2017.2905zM35.7387%2020.7286C38.8277%2020.7286%2041.3422%2018.3094%2041.3422%2015.0594%2041.3422%2011.7913%2038.826%209.39011%2035.7387%209.39011%2032.6513%209.39011%2030.1351%2011.7913%2030.1351%2015.0594%2030.1351%2018.3102%2032.6587%2020.7286%2035.7387%2020.7286z%22/%3E%3Cpath%20d%3D%22M51.953%2010.4357V9.68573H48.3999V9.80826C47.8499%209.54648%2047.1977%209.38187%2046.4808%209.38187%2043.5971%209.38187%2041.0168%2011.8998%2041.0168%2015.0758%2041.0168%2017.2027%2042.1808%2019.0237%2043.8201%2019.9895L43.7543%2020.0168%2041.8737%2020.797%2041.1808%2021.0844%2041.4684%2021.7772C42.0912%2023.2776%2043.746%2025.1469%2046.5219%2025.1469%2047.9324%2025.1469%2049.3089%2024.7324%2050.3359%2023.7376%2051.3691%2022.7367%2051.953%2021.2411%2051.953%2019.2723v-8.8366zm-7.2194%209.9844L44.7334%2020.4196C45.2886%2020.6201%2045.878%2020.7286%2046.4808%2020.7286%2047.1616%2020.7286%2047.7866%2020.5819%2048.3218%2020.3395%2048.2342%2020.7286%2048.0801%2021.0105%2047.8966%2021.2077%2047.6154%2021.5099%2047.1764%2021.7088%2046.5219%2021.7088%2045.61%2021.7088%2045.0018%2021.0612%2044.7336%2020.4201zM46.6697%2012.8282C47.6419%2012.8282%2048.5477%2013.6765%2048.5477%2015.084%2048.5477%2016.4636%2047.6521%2017.2987%2046.6697%2017.2987%2045.6269%2017.2987%2044.6767%2016.4249%2044.6767%2015.084%2044.6767%2013.7086%2045.6362%2012.8282%2046.6697%2012.8282zM55.7387%205.22083v-.75H52.0788V20.4412H55.7387V5.220829999999999z%22/%3E%3Cpath%20d%3D%22M63.9128%2016.0614L63.2945%2015.6492%2062.8766%2016.2637C62.4204%2016.9346%2061.8664%2017.3069%2061.0741%2017.3069%2060.6435%2017.3069%2060.3146%2017.2088%2060.0544%2017.0447%2059.9844%2017.0006%2059.9161%2016.9496%2059.8498%2016.8911L65.5497%2014.5286%2066.2322%2014.2456%2065.9596%2013.5589%2065.7406%2013.0075C65.2878%2011.8%2063.8507%209.39832%2060.8278%209.39832%2057.8445%209.39832%2055.5034%2011.7619%2055.5034%2015.0676%2055.5034%2018.2151%2057.8256%2020.7369%2061.0659%2020.7369%2063.6702%2020.7369%2065.177%2019.1378%2065.7942%2018.2213L66.2152%2017.5963%2065.5882%2017.1783%2063.9128%2016.0614zM61.3461%2012.8511L59.4108%2013.6526C59.7903%2013.0783%2060.4215%2012.7954%2060.9017%2012.7954%2061.067%2012.7954%2061.2153%2012.8161%2061.3461%2012.8511z%22/%3E%3C/g%3E%3Cpath%20d%3D%22M11.7008%2019.9868C7.48776%2019.9868%203.94818%2016.554%203.94818%2012.341%203.94818%208.12803%207.48776%204.69522%2011.7008%204.69522%2014.0331%204.69522%2015.692%205.60681%2016.9403%206.80583L15.4703%208.27586C14.5751%207.43819%2013.3597%206.78119%2011.7008%206.78119%208.62108%206.78119%206.21482%209.26135%206.21482%2012.341%206.21482%2015.4207%208.62108%2017.9009%2011.7008%2017.9009%2013.6964%2017.9009%2014.8297%2017.0961%2015.5606%2016.3734%2016.1601%2015.7738%2016.5461%2014.9197%2016.6939%2013.7454h-4.9931V11.6512h7.0298C18.8045%2012.0207%2018.8456%2012.4724%2018.8456%2012.957%2018.8456%2014.5255%2018.4186%2016.4637%2017.0389%2017.8434%2015.692%2019.2395%2013.9838%2019.9868%2011.7008%2019.9868z%22%20fill%3D%22%234285F4%22/%3E%3Cpath%20d%3D%22M29.7192%2015.0594C29.7192%2017.8927%2027.5429%2019.9786%2024.8656%2019.9786%2022.1884%2019.9786%2020.0121%2017.8927%2020.0121%2015.0594%2020.0121%2012.2096%2022.1884%2010.1401%2024.8656%2010.1401%2027.5429%2010.1401%2029.7192%2012.2096%2029.7192%2015.0594zM27.5922%2015.0594C27.5922%2013.2855%2026.3274%2012.0782%2024.8656%2012.0782S22.1391%2013.2937%2022.1391%2015.0594C22.1391%2016.8086%2023.4038%2018.0405%2024.8656%2018.0405S27.5922%2016.8168%2027.5922%2015.0594z%22%20fill%3D%22%23E94235%22/%3E%3Cpath%20d%3D%22M40.5922%2015.0594C40.5922%2017.8927%2038.4159%2019.9786%2035.7387%2019.9786%2033.0696%2019.9786%2030.8851%2017.8927%2030.8851%2015.0594%2030.8851%2012.2096%2033.0614%2010.1401%2035.7387%2010.1401%2038.4159%2010.1401%2040.5922%2012.2096%2040.5922%2015.0594zM38.4734%2015.0594C38.4734%2013.2855%2037.2087%2012.0782%2035.7469%2012.0782%2034.2851%2012.0782%2033.0203%2013.2937%2033.0203%2015.0594%2033.0203%2016.8086%2034.2851%2018.0405%2035.7469%2018.0405%2037.2087%2018.0487%2038.4734%2016.8168%2038.4734%2015.0594z%22%20fill%3D%22%23FABB05%22/%3E%3Cpath%20d%3D%22M51.203%2010.4357v8.8366C51.203%2022.9105%2049.0595%2024.3969%2046.5219%2024.3969%2044.132%2024.3969%2042.7031%2022.7955%2042.161%2021.4897L44.0417%2020.7095C44.3784%2021.5143%2045.1997%2022.4588%2046.5219%2022.4588%2048.1479%2022.4588%2049.1499%2021.4487%2049.1499%2019.568V18.8617H49.0759C48.5914%2019.4612%2047.6552%2019.9786%2046.4808%2019.9786%2044.0171%2019.9786%2041.7668%2017.8352%2041.7668%2015.0758%2041.7668%2012.3%2044.0253%2010.1319%2046.4808%2010.1319%2047.6552%2010.1319%2048.5914%2010.6575%2049.0759%2011.2323H49.1499V10.4357H51.203zM49.2977%2015.084C49.2977%2013.3512%2048.1397%2012.0782%2046.6697%2012.0782%2045.175%2012.0782%2043.9267%2013.3429%2043.9267%2015.084%2043.9267%2016.8004%2045.175%2018.0487%2046.6697%2018.0487%2048.1397%2018.0487%2049.2977%2016.8004%2049.2977%2015.084z%22%20fill%3D%22%234285F4%22/%3E%3Cpath%20d%3D%22M54.9887%205.22083V19.6912H52.8288V5.220829999999999H54.9887z%22%20fill%3D%22%2334A853%22/%3E%3Cpath%20d%3D%22M63.4968%2016.6854L65.1722%2017.8023C64.6301%2018.6072%2063.3244%2019.9869%2061.0659%2019.9869%2058.2655%2019.9869%2056.2534%2017.827%2056.2534%2015.0676%2056.2534%2012.1439%2058.2901%2010.1483%2060.8278%2010.1483%2063.3818%2010.1483%2064.6301%2012.1768%2065.0408%2013.2773L65.2625%2013.8357%2058.6843%2016.5623C59.1853%2017.5478%2059.9737%2018.0569%2061.0741%2018.0569%2062.1746%2018.0569%2062.9384%2017.5067%2063.4968%2016.6854zM58.3312%2014.9115L62.7331%2013.0884C62.4867%2012.4724%2061.764%2012.0454%2060.9017%2012.0454%2059.8012%2012.0454%2058.2737%2013.0145%2058.3312%2014.9115z%22%20fill%3D%22%23E94235%22/%3E%3C/svg%3E">
     </div>
     <button id="floatingMapButton">
       <img id="toggleMapImage" src="/IMG/map_icon.png" alt="Toggle the Map for guessing on mobile devices.">
     </button>
     <div id="map" tabindex="0"></div>
     <div id="mapModeIndicator">
-      <button id="multiplayerLeave" class="leaveButton accountButton accountClose">Leave</button>
-      <button id="competitionLeave" class="leaveButton accountButton accountClose">Leave</button>
+      <button id="multiplayerLeave" class="leaveButton standardButton accountClose">Leave</button>
+      <button id="competitionLeave" class="leaveButton standardButton accountClose">Leave</button>
       <div id="mapModeTextContainer">
         <p id="mapModeText" class="mapModeText">Default Mode</p>
       </div>
@@ -619,15 +628,24 @@
     </div>
     <div id="bottomMultiplayerChatArea">
       <input maxlength="100" type="text" id="multiplayerMessageInput" placeholder="Type your message...">
-      <button id="multiplayerSendButton" class="accountButton">Send</button>
+      <button id="multiplayerSendButton" class="standardButton">Send</button>
     </div>
   </div>
   <!--bottom toolbar with reset button-->
   <div id="BottomBar" class="BottomBar">
     <img class="BottomBarItem" id="resetButtonSVG" src="/IMG/reset.svg" alt="Return to start position">
-    <button class="BottomBarItem" id="privacyButton">Legal</button>
-    <button class="BottomBarItem" id="helpButton">?</button>
-    <button class="BottomBarItem" id="confirmButton">Guess</button>
+    <div class="BottomBarItem" id="bottomBarSocialArea">
+      <button class="BottomBarItem socialItem" id="discordButton" type="button">
+        <img src="./IMG/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" id="discordIcon">
+      </button>
+      <button class="BottomBarItem socialItem" id="redditButton" type="button">
+        <img src="./IMG/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon">
+      </button>
+    </div>
+    <div class="BottomBarItem" id="confirmButton">
+      <button class="socialItem" id="helpButton">?</button>
+      <p id="guessText">Guess</p>
+    </div>
   </div>
   <div id="bottomShadow"></div>
   <div id="bottomFooterAds" class="bottomFooterAds">
