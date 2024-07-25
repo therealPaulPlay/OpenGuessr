@@ -60,7 +60,7 @@ export function loadCommunityCategories() {
 
         //if key doesn't exist yet, add a few default picks
         if (localStorage.getItem("addedCommunityMaps") == null) {
-            mapArray = ["Indoor", "Airports", "Bridges", "Racetracks", "Modern Brutalism"];
+            mapArray = ["Indoor", "Airports", "Bridges", "Racetracks"];
             localStorage.setItem("addedCommunityMaps", JSON.stringify(mapArray));
         }
 

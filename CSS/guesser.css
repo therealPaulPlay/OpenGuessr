@@ -1250,7 +1250,7 @@ input:focus {
 }
 
 .expandedMobile #extendedNavbarGradient {
-  background: linear-gradient(rgba(255, 255, 255, 0), hsla(231.4, 24.7%, 16.7%, 0.85));
+  background: none;
 }
 
 #extendedNavbarContent, #communityMapArea {
