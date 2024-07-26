@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=5">
     <link rel="icon" href="favicon.ico">
     <script type="module" src="userAPI.js"></script>
-    <script type="module" src="signupScreen.js"></script>
+    <script type="module" src="signupScreen.js" defer></script>
     <title>Login / Signup</title>
     <style>
         @font-face {
@@ -155,6 +155,9 @@
         #errorMessage {
             color: red;
             display: none;
+            max-height: 100px;
+            transition: max-height 250ms ease, opacity 250ms ease, margin 250ms ease;
+            overflow: hidden;
         }
 
         @keyframes floatOrb {
@@ -220,7 +223,8 @@
 
         input {
             color: white;
-            background: rgba(42, 44, 71, 1);
+            background: rgba(55, 27, 27, 0.35);
+            transition: background-color 250ms ease;
             border-radius: 5px;
             font-size: 18px;
             padding: 15px;
@@ -234,6 +238,7 @@
         textarea:focus,
         input:focus {
             outline: none;
+            background: rgba(55, 27, 27, 0.5);
         }
 
         .password-container {
@@ -286,6 +291,25 @@
             padding: 5px;
             min-width: 330px;
         }
+
+        #resetForm, #newPasswordForm {
+            display: none;
+        }
+
+        #passwordResetOption {
+            color: rgba(255, 255, 255, 0.5);
+            transition: color 250ms ease;
+            font-size: 20px;
+            cursor: pointer;
+            border-radius: 5px;
+            width: 100%;
+            margin-bottom: 0;
+            user-select: none;
+        }
+
+        #passwordResetOption:hover {
+            color: rgba(255, 255, 255, 1);
+        }
     </style>
 </head>
 
@@ -293,15 +317,34 @@
     <div class="wrapper">
         <div class="container">
             <img class="logo" src="/IMG/openguessr.svg" alt="OpenGuessr Logo">
+            <div id="newPasswordForm">
+                <div>
+                    <input id="reset_password" type="password" placeholder="New Password"><br><br>
+                    <button id="changePassword" class="primaryButton">Set new password</button>
+                </div>
+                <p class="switchFormBox">Remembered Password?
+                    <button id="loginSwitchReset" class="secondaryButton">Log in</button>
+                </p>
+            </div>
+            <div id="resetForm">
+                <div>
+                    <input id="reset_email" type="email" placeholder="Email"><br><br>
+                    <button id="reset" class="primaryButton">Reset</button>
+                </div>
+                <p class="switchFormBox">Remembered password?
+                    <button id="loginSwitchReset" class="secondaryButton">Log in</button>
+                </p>
+            </div>
             <div id="loginForm">
                 <div>
                     <input id="login_email" type="email" placeholder="Email"><br><br>
                     <input id="login_password" type="password" placeholder="Password"><br><br>
-                    <button id="login" class="primaryButton">Login</button>
+                    <button id="login" class="primaryButton">Log in</button>
                 </div>
                 <p class="switchFormBox">Don't have an account?
                     <button id="loginSwitch" class="secondaryButton">Sign up</button>
                 </p>
+                <p id="passwordResetOption">Forgot password?</p>
             </div>
             <div id="signupForm" style="display: none;">
                 <div>

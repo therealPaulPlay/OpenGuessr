@@ -7,12 +7,14 @@ export const registrationEndpoint = `${backendURL}/register`;
 export const userUpdateEndpoint = `${backendURL}/update`;
 export const userGetEndpoint = `${backendURL}/user`;
 export const leaderboardEndpoint = `${backendURL}/leaderboard`;
+export const passwordResetEmailEndpoint = `${backendURL}/reset-password-request`;
+export const passwordChangeEndpoint = `${backendURL}/reset-password`;
 
 function inIframe() {
   try {
-      return window.self !== window.top;
+    return window.self !== window.top;
   } catch (e) {
-      return true;
+    return true;
   }
 }
 
@@ -76,8 +78,7 @@ export async function registerUser(userName, email, password, errorSource) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      localStorage.setItem("RegistrationSuccess", "success");
-      window.location.reload();
+      displaySuccess("Registration successful! Please log in.");
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Registration failed: ', response.status);
@@ -124,6 +125,71 @@ export async function deleteUser(id, password, errorSource) {
   }
 }
 
+// Send reset email
+export async function sendPasswordResetEmail(email, errorSource) {
+  try {
+    const requestBody = {
+      email: email
+    };
+
+    // Make the POST request using Fetch API
+    const response = await fetch(passwordResetEmailEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      displaySuccess("Password reset email sent!");
+
+    } else {
+      let responseError = await attemptExtractErrorFromResponse(response);
+      console.error('Account deletion failed:', response.status);
+      displayError("Account deletion failed: " + response.status, errorSource, responseError);
+    }
+  } catch (error) {
+    console.error('Error occurred during account deletion: ', error);
+    displayError("Error occured during account deletion: " + error, errorSource);
+  }
+}
+
+// Change password with reset token
+export async function changePassword(token, newPassword, errorSource) {
+  try {
+    const requestBody = {
+      token: token,
+      newPassword
+    };
+
+    // Make the POST request using Fetch API
+    const response = await fetch(passwordChangeEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      displaySuccess("Password changed successfully!");
+
+    } else {
+      let responseError = await attemptExtractErrorFromResponse(response);
+      console.error('Account deletion failed:', response.status);
+      displayError("Account deletion failed: " + response.status, errorSource, responseError);
+    }
+  } catch (error) {
+    console.error('Error occurred during account deletion: ', error);
+    displayError("Error occured during account deletion: " + error, errorSource);
+  }
+}
+
 //Get and Set game-related user info -----------------------------------------------------------------------------
 export async function getUser(token, id, errorSource) {
   try {
@@ -156,7 +222,7 @@ export async function getAllUsers() {
     let id = localStorage.getItem("id")
     let editLeaderboardEndpoint = leaderboardEndpoint;
     if (id != null && id != 0 && id != undefined) {
-            editLeaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
+      editLeaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
     }
 
     const response = await fetch(`${editLeaderboardEndpoint}`, {
@@ -262,17 +328,17 @@ async function saveUserData(data) {
 //Error catching ----------------------------------------------------------------------------------------
 export function displayError(error, source, errorMsg) {
   if (source == "signup") {
- 
+
     try {
       errorMessage.innerHTML = error + " - " + errorMsg;
-      
+
       if (!errorMsg) {
         errorMessage.innerHTML = error
       }
-      
+
       errorMessage.style.display = "inline";
       errorMessage.style.color = "red";
-    } catch {}
+    } catch { }
 
   } else if (source == "index") {
     if (!errorMsg) {
@@ -287,17 +353,30 @@ export function displayError(error, source, errorMsg) {
   }
 }
 
-export function displaySuccess() {
+export function displaySuccess(text) {
   try {
-    errorMessage.innerHTML = "Registration successful! Please log in.";
+    let timeout;
+    clearTimeout(timeout);
+    errorMessage.innerHTML = text;
+    errorMessage.style.maxHeight = "100px";
+    errorMessage.style.marginTop = "20px";
+    errorMessage.style.marginBottom = "20px";
+    errorMessage.style.opacity = "1";
     errorMessage.style.display = "inline";
     errorMessage.style.color = "#64c681";
-  } catch {}
-}
+    
+    // change to sign-in
+    document.getElementById("loginForm").style.display = "block";
+    document.getElementById("signupForm").style.display = "none";
+    document.getElementById("resetForm").style.display = "none";
+    document.getElementById("newPasswordForm").style.display = "none";
 
-if (localStorage.getItem("RegistrationSuccess") == "success") {
-  displaySuccess();
-  localStorage.removeItem("RegistrationSuccess");
+    timeout = setTimeout(() => {
+      errorMessage.style.maxHeight = "0";
+      errorMessage.style.opacity = "0";
+      errorMessage.style.margin = "0";
+    }, 4000);
+  } catch { }
 }
 
 export async function attemptExtractErrorFromResponse(response) {
