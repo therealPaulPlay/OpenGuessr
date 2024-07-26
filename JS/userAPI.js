@@ -148,12 +148,12 @@ export async function sendPasswordResetEmail(email, errorSource) {
 
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
-      console.error('Account deletion failed:', response.status);
-      displayError("Account deletion failed: " + response.status, errorSource, responseError);
+      console.error('Password reset request failed:', response.status);
+      displayError("Password reset request failed: " + response.status, errorSource, responseError);
     }
   } catch (error) {
-    console.error('Error occurred during account deletion: ', error);
-    displayError("Error occured during account deletion: " + error, errorSource);
+    console.error('Error occurred during password reset request: ', error);
+    displayError("Error occured during password reset request: " + error, errorSource);
   }
 }
 
@@ -181,12 +181,12 @@ export async function changePassword(token, newPassword, errorSource) {
 
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
-      console.error('Account deletion failed:', response.status);
-      displayError("Account deletion failed: " + response.status, errorSource, responseError);
+      console.error('Password change failed:', response.status);
+      displayError("Password change failed: " + response.status, errorSource, responseError);
     }
   } catch (error) {
-    console.error('Error occurred during account deletion: ', error);
-    displayError("Error occured during account deletion: " + error, errorSource);
+    console.error('Password change failed: ', error);
+    displayError("Password change failed: " + error, errorSource);
   }
 }
 
@@ -326,6 +326,8 @@ async function saveUserData(data) {
 }
 
 //Error catching ----------------------------------------------------------------------------------------
+let timeout;
+
 export function displayError(error, source, errorMsg) {
   if (source == "signup") {
 
@@ -333,6 +335,7 @@ export function displayError(error, source, errorMsg) {
       errorMessage.innerHTML = error + " - " + errorMsg;
 
       // make error message visible in case it isn't
+      clearTimeout(timeout);
       errorMessage.style.maxHeight = "100px";
       errorMessage.style.marginTop = "20px";
       errorMessage.style.marginBottom = "20px";
@@ -345,6 +348,12 @@ export function displayError(error, source, errorMsg) {
 
       errorMessage.style.display = "inline";
       errorMessage.style.color = "red";
+
+      timeout = setTimeout(() => {
+        errorMessage.style.maxHeight = "0";
+        errorMessage.style.opacity = "0";
+        errorMessage.style.margin = "0";
+      }, 7000);
     } catch { }
 
   } else if (source == "index") {
@@ -362,7 +371,6 @@ export function displayError(error, source, errorMsg) {
 
 export function displaySuccess(text) {
   try {
-    let timeout;
     clearTimeout(timeout);
     errorMessage.innerHTML = text;
     errorMessage.style.maxHeight = "100px";

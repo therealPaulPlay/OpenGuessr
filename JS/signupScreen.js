@@ -26,6 +26,9 @@ loginSwitch.addEventListener("click", toggleForm);
 let loginSwitchReset = document.getElementById("loginSwitchReset");
 loginSwitchReset.addEventListener("click", toggleForm);
 
+let loginSwitchChange = document.getElementById("loginSwitchChange");
+loginSwitchChange.addEventListener("click", toggleForm);
+
 let loginSwitchBack = document.getElementById("loginSwitchBack");
 loginSwitchBack.addEventListener("click", toggleForm);
 
@@ -122,7 +125,7 @@ function checkEmptyFields(isSignup) {
   if (isSignup) {
   if (document.getElementById("signup_username").value != "" && document.getElementById("signup_password").value != "" && validateEmail(document.getElementById("signup_email").value)) {
     return true; 
-  } else {displayError("Please check our input.", "signup"); return false;}
+  } else {displayError("Please check your input.", "signup"); return false;}
 } else {
   if (validateEmail(document.getElementById("login_email").value) && document.getElementById("login_password").value != "") {
     return true; 
