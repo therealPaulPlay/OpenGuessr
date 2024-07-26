@@ -570,10 +570,16 @@ document.getElementById("dailyCompetition").addEventListener("click", () => {
 
 let confirmPopup = document.getElementById("confirmPopup");
 
-export function showConfirmPopup(title, text, executeFunction) {
+export function showConfirmPopup(title, text, executeFunction, accountDelete) {
     confirmPopup.style.display = "flex";
     document.getElementById("confirmTitle").textContent = title;
     document.getElementById("confirmDescription").textContent = text;
+    document.getElementById("accountDeletePassword").style.display = "none";
+
+    if (accountDelete) {
+        document.getElementById("accountDeletePassword").style.display = "block";
+        document.getElementById("accountDeletePassword").value = "";
+    }
 
     // Remove all event listeners by cloning the element
     const button = document.getElementById("confirmProceed");

@@ -32,7 +32,7 @@ profileClose.addEventListener("click", () => {
     playSound("basic_button");
 });
 
-function closeProfile() {
+export function closeProfile() {
     profileWindow.style.display = "none";
     document.getElementById("blackBackground").style.visibility = "hidden";
 }

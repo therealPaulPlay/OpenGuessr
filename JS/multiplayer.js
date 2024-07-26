@@ -1477,7 +1477,7 @@ if (peer) {
 let leaveButton = document.getElementById("multiplayerLeave");
 
 leaveButton.addEventListener("click", () => {
-    showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
+    showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound, false);
     playSound("leave_round");
 });
 

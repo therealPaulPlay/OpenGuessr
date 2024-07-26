@@ -2,6 +2,7 @@ import { errorPopup } from "./errorHandling.js";
 
 export const backendURL = "https://accounts.openguessr.com/accounts";
 export const loginEndpoint = `${backendURL}/login`;
+export const deleteAccountEndpoint = `${backendURL}/delete`;
 export const registrationEndpoint = `${backendURL}/register`;
 export const userUpdateEndpoint = `${backendURL}/update`;
 export const userGetEndpoint = `${backendURL}/user`;
@@ -85,6 +86,41 @@ export async function registerUser(userName, email, password, errorSource) {
   } catch (error) {
     console.error('Error occurred during registration: ', error);
     displayError("Error occured during registration: " + error, errorSource);
+  }
+}
+
+// Delete user 
+export async function deleteUser(id, password, errorSource) {
+  try {
+    const requestBody = {
+      id: id,
+      password: password
+    };
+
+    // Make the POST request using Fetch API
+    const response = await fetch(deleteAccountEndpoint, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return true;
+
+    } else {
+      let responseError = await attemptExtractErrorFromResponse(response);
+      console.error('Account deletion failed:', response.status);
+      displayError("Account deletion failed: " + response.status, errorSource, responseError);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error occurred during account deletion: ', error);
+    displayError("Error occured during account deletion: " + error, errorSource);
+    return false;
   }
 }
 
@@ -226,9 +262,14 @@ async function saveUserData(data) {
 //Error catching ----------------------------------------------------------------------------------------
 export function displayError(error, source, errorMsg) {
   if (source == "signup") {
-
+ 
     try {
       errorMessage.innerHTML = error + " - " + errorMsg;
+      
+      if (!errorMsg) {
+        errorMessage.innerHTML = error
+      }
+      
       errorMessage.style.display = "inline";
       errorMessage.style.color = "red";
     } catch {}
