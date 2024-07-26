@@ -1541,7 +1541,7 @@ map::selection {
 
 #accountDeletePassword {
   border-radius: 5px;
-  font-size: 18px;
+  font-size: 20px;
   padding: 15px;
   font-family: Barlow;
   width: 40%;
@@ -2564,7 +2564,7 @@ input[type="checkbox"]:focus {
 
 .loginIframeWindow {
   max-width: 600px !important;
-  max-height: 700px !important;
+  max-height: 750px !important;
 }
 
 .regularMapSize {
