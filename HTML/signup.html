@@ -154,10 +154,12 @@
 
         #errorMessage {
             color: red;
-            display: none;
-            max-height: 100px;
+            display: inline;
             transition: max-height 250ms ease, opacity 250ms ease, margin 250ms ease;
             overflow: hidden;
+            max-height: 0px;
+            margin: 0;
+            opacity: 0;
         }
 
         @keyframes floatOrb {
@@ -223,7 +225,7 @@
 
         input {
             color: white;
-            background: rgba(55, 27, 27, 0.35);
+            background: rgba(55, 27, 31, 0.35);
             transition: background-color 250ms ease;
             border-radius: 5px;
             font-size: 18px;
@@ -238,7 +240,7 @@
         textarea:focus,
         input:focus {
             outline: none;
-            background: rgba(55, 27, 27, 0.5);
+            background: rgba(55, 27, 31, 0.5);
         }
 
         .password-container {

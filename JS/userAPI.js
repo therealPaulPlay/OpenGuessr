@@ -340,14 +340,11 @@ export function displayError(error, source, errorMsg) {
       errorMessage.style.marginTop = "20px";
       errorMessage.style.marginBottom = "20px";
       errorMessage.style.opacity = "1";
-      errorMessage.style.display = "inline";
+      errorMessage.style.color = "#ffaeae";
 
       if (!errorMsg) {
-        errorMessage.innerHTML = error
+        errorMessage.innerHTML = error;
       }
-
-      errorMessage.style.display = "inline";
-      errorMessage.style.color = "red";
 
       timeout = setTimeout(() => {
         errorMessage.style.maxHeight = "0";
@@ -377,7 +374,6 @@ export function displaySuccess(text) {
     errorMessage.style.marginTop = "20px";
     errorMessage.style.marginBottom = "20px";
     errorMessage.style.opacity = "1";
-    errorMessage.style.display = "inline";
     errorMessage.style.color = "#64c681";
     
     // change to sign-in
