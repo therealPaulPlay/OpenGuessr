@@ -1,6 +1,6 @@
 import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector } from "./mainUI.js";
+import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex, isAuthenticated } from "./accountLogic.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
@@ -1477,7 +1477,7 @@ if (peer) {
 let leaveButton = document.getElementById("multiplayerLeave");
 
 leaveButton.addEventListener("click", () => {
-    leaveMultiplayerRound();
+    showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
     playSound("leave_round");
 });
 
