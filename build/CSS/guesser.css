@@ -1832,11 +1832,16 @@ map::selection {
 }
 
 #helpButton {
-  pointer-events: auto !important;
+  pointer-events: auto;
 }
 
 #helpButton:hover {
   filter: brightness(0.7);
+}
+
+.helpButtonDisabled {
+  pointer-events: none !important;
+  opacity: 0.5;
 }
 
 .errorClose {
