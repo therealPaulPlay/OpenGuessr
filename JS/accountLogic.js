@@ -1,5 +1,5 @@
-import { getUser, updateExperience } from "./userAPI";
-import { checkTextLength, resultScreenEnabled, showPageBrowser, toggleMobileMenu } from "./mainUI";
+import { deleteUser, getUser, updateExperience } from "./userAPI";
+import { checkTextLength, resultScreenEnabled, showConfirmPopup, showPageBrowser, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
@@ -7,7 +7,8 @@ import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } fro
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
-import { viewProfile } from "./profileView.js";
+import { closeProfile, viewProfile } from "./profileView.js";
+import { closePopup, errorPopup } from "./errorHandling.js";
 
 let accountLockedArray;
 
@@ -60,6 +61,24 @@ XParea.style.display = "none";
 
 let resultLevelText = document.getElementById("endScreenLevel");
 let resultLevelDisplay = document.getElementById("endScreenLevelDisplay");
+
+// Account Deletion ----------------------------------------------------------------------------------------------------------------
+
+document.getElementById("accountDeleteButton").addEventListener("click", () => {
+  showConfirmPopup("Delete your Account", "Please input your password to confirm the account deletion. Make sure to delete user-created content before proceeding, if you wish to remove that from the platform.", submitAccountDeletion, true);
+});
+
+async function submitAccountDeletion() {
+  let successState = await deleteUser(localStorage.getItem("id"), document.getElementById("accountDeletePassword").value, "index");
+  if (successState) {
+    signout();
+
+    setTimeout(() => {
+      closeProfile();
+      errorPopup("Account deleted successfully", "You have deleted your OpenGuessr account.", "", false, true);
+    });
+  }
+}
 
 // Custom signup -------------------------------------------------------------------------------------------------------------------
 

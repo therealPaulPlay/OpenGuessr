@@ -131,6 +131,7 @@ signupButtonSignupPage.addEventListener("click", signUpAction);
         if (checkEmptyFields(true)) {
         signupStage = 2;
         setSignupStage();
+        loginEmail.value = signupEmail.value;
         }
       }
   }
