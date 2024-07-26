@@ -332,6 +332,13 @@ export function displayError(error, source, errorMsg) {
     try {
       errorMessage.innerHTML = error + " - " + errorMsg;
 
+      // make error message visible in case it isn't
+      errorMessage.style.maxHeight = "100px";
+      errorMessage.style.marginTop = "20px";
+      errorMessage.style.marginBottom = "20px";
+      errorMessage.style.opacity = "1";
+      errorMessage.style.display = "inline";
+
       if (!errorMsg) {
         errorMessage.innerHTML = error
       }
