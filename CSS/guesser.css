@@ -481,12 +481,21 @@ h1, h2, h3 {
   display: none;
 }
 
-#profileClose, #helpClose, #troubleshootClose, #settingsClose, #socialPopupClose, #linkJoinClose, #socialPopupJoin, #multiplayerSelectorClose, #multiplayerSelectorBack, #mobilePopupClose {
+#profileClose, #helpClose, #troubleshootClose, #settingsClose, #socialPopupClose, #linkJoinClose, #socialPopupJoin, 
+#multiplayerSelectorClose, #multiplayerSelectorBack, #mobilePopupClose, #confirmCancel, #confirmProceed {
   min-height: 50px;
 }
 
 #multiplayerSelectorBack {
   opacity: 0.5;
+}
+
+.buttonBoxRight {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 60px;
+  margin-bottom: 10px;
 }
 
 .copyLinkButton {
@@ -572,8 +581,19 @@ input:focus {
   z-index: 998;
 }
 
+.confirmBackground {
+  background-color: rgba(30, 30, 30, 0.7);
+  display: none;
+  z-index: 980;
+}
+
 .errorPopupWindow {
   z-index: 999;
+  display: block !important;
+}
+
+.confirmPopupWindow {
+  z-index: 981;
   display: block !important;
 }
 

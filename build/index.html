@@ -170,8 +170,8 @@
     <img src="/IMG/compass_spinner.png" alt="Loading new streetview" id="spinner" class="spinner">
     <p id="loadingText">Loading...</p>
   </div>
+  <!-- This is an overlay used to display error messages -->
   <div id="errorPopup" class="popupHolder errorBackground">
-    <!-- This is an overlay used to display error messages -->
     <div class="errorPopupWindow uiWindow">
       <div id="errorTitle" class="popup-title"></div>
       <div id="popup-description" class="popup-description"></div>
@@ -180,6 +180,17 @@
         <input type="checkbox" id="hideErrors">
       </div>
       <button id="popupClose" class="standardButton white errorClose">Close and reload</button>
+    </div>
+  </div>
+  <!-- Confirmation overlay for prompts (Are you sure, leave, delete..) -->
+  <div id="confirmPopup" class="popupHolder confirmBackground">
+    <div class="confirmPopupWindow uiWindow">
+      <h1 id="confirmTitle" class="popup-title"></h2>
+      <div id="confirmDescription" class="popup-description">This is the default warning.</div>
+      <div class="buttonBoxRight">
+        <button id="confirmCancel" class="standardButton white">Cancel</button>
+        <button id="confirmProceed" class="standardButton">Confirm</button>
+      </div>
     </div>
   </div>
   <!-- remaining windows -->
