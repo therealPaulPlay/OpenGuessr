@@ -327,7 +327,7 @@
             padding: 25px 25px 10px;
             border-radius: 10px;
             text-align: left;
-            z-index: 999;
+            z-index: 990;
             overflow-x: hidden;
             overflow-y: auto;
             background-color: #333343;
@@ -350,6 +350,8 @@
 
         .closeButton {
             margin-top: 40px;
+            color: black;
+            background-color: white;
         }
 
         .playButton {
@@ -493,6 +495,10 @@
         }
 
         #uploadPopup {
+            display: none;
+        }
+
+        #deletePopup {
             display: none;
         }
 
@@ -689,6 +695,15 @@
             height: 20px;
         }
 
+        .manageDelete {
+            background-color: rgb(173, 53, 65); 
+            color: rgb(255, 255, 255);
+        }
+
+        #deleteHeader {
+            margin-top: 10px;
+        }
+
         @media all and (orientation: portrait),
         all and (max-width: 800px) {
             #navbarTitle {
@@ -745,8 +760,18 @@
                 <button id="mapLink" class="closeButton standardButton">
                     <img id="linkIcon" src="/IMG/link_icon.png" alt="copy link">
                 </button>
-                <button id="descClose" style="background-color: white; color: black;"
-                    class="standardButton playButton">Close</button>
+                <button id="manageDelete" class="standardButton closeButton manageDelete">Delete</button>
+                <button id="descClose" class="standardButton closeButton">Close</button>
+            </div>
+        </div>
+    </div>
+    <div id="deletePopup" class="popupHolder">
+        <div id="deleteWindow" class="uiWindow">
+            <h1 id="deleteHeader">Delete default map?</h1>
+            <p id="deleteText" class="textEllipsis">This action cannot be undone. Do you wish to continue?</p>
+            <div class="buttonBox">
+                <button id="deleteProceed" class="standardButton closeButton manageDelete">Delete</button>
+                <button id="deleteClose" class="standardButton closeButton">Cancel</button>
             </div>
         </div>
     </div>
@@ -774,7 +799,7 @@
                     <li>Keep all details in english.</li>
                     <li>Pick a descriptive map name (e. g. not "My Map").</li>
                     <li>A maximum of 1000 locations is recommended.</li>
-                    <li>Maps cannot be edited or deleted! Message us on the Discord server if you need to delete one.
+                    <li>Maps cannot be edited!
                     </li>
                 </ul>
             </div>

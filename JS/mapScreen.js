@@ -125,17 +125,22 @@ function addMap(name, creator, creatorId, fav, author, description) {
 
     const descArea = document.createElement("div");
     descArea.classList.add("map-desc");
-    if (creatorId == localStorage.getItem("id") && localStorage.getItem("id")) {
+
+    let owned = false;
+
+    if (creatorId == localStorage.getItem("id") && localStorage.getItem("id") && !fav) { // favorite (spotlight) maps should not be deletable
         descArea.classList.add("map-desc-owned");
+        owned = true;
     }
+
     const descIcon = document.createElement("span");
     descIcon.textContent = "About";
-    if (localStorage.getItem("id") == creatorId && localStorage.getItem("id")) {
+    if (localStorage.getItem("id") == creatorId && localStorage.getItem("id") && !fav) {
         descIcon.textContent = "Manage";
     }
     descArea.addEventListener("click", (event) => {
         event.stopPropagation();
-        showDescriptionWindow(name, author, description);
+        showDescriptionWindow(name, author, description, owned);
     });
 
     const addButton = document.createElement("button");
@@ -199,11 +204,27 @@ function removeSelectedMap(name) {
     }
 }
 
-function showDescriptionWindow(title, author, desc) {
+function showDescriptionWindow(name, author, desc, isAuthor) {
     document.getElementById("descriptionPopup").style.display = "flex";
-    document.getElementById("descHeader").textContent = title;
+    document.getElementById("descHeader").textContent = name;
     document.getElementById("descAuthor").textContent = "by " + author;
     document.getElementById("descText").textContent = desc;
+
+    try {
+        if (isAuthor) {
+            const newButton = document.getElementById("manageDelete").cloneNode(true);
+            document.getElementById("manageDelete").parentNode.replaceChild(newButton, document.getElementById("manageDelete"));
+            newButton.style.display = "block";
+            newButton.addEventListener("click", () => {
+                deleteMapScreen(name);
+            });
+    
+        } else {
+            document.getElementById("manageDelete").style.display = "none";
+        }
+    } catch {
+        console.error("Error adding delete button in mapScreen.js.");
+    }
 
     document.getElementById("mapLink").addEventListener("click", () => {
         navigator.clipboard.writeText(window.location.origin + "/maps.html?map=" + title.split(" ").join("_"))
@@ -226,6 +247,26 @@ function showDescriptionWindow(title, author, desc) {
 document.getElementById("descClose").addEventListener("click", () => {
     document.getElementById("descriptionPopup").style.display = "none";
 });
+
+function deleteMapScreen(name) {
+    document.getElementById("descriptionPopup").style.display = "none";
+    document.getElementById("deleteHeader").textContent = "Delete " + name + "?";
+    document.getElementById("deletePopup").style.display = "flex";
+
+    const newButton = document.getElementById("deleteProceed").cloneNode(true);
+    document.getElementById("deleteProceed").parentNode.replaceChild(newButton, document.getElementById("deleteProceed"));
+    newButton.addEventListener("click", () => {
+        deleteMap(name);
+    });
+}
+
+document.getElementById("deleteClose").addEventListener("click", () => {
+    document.getElementById("deletePopup").style.display = "none";
+});
+
+function deleteMap(mapName) {
+    // delete from database
+}
 
 function instantPlayPopup(mapName) {
     document.getElementById("instantPlayPopup").style.display = "flex";
