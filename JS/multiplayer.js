@@ -1000,7 +1000,12 @@ if (peer) {
 
                 // Event listener for when the connection is open
                 incomingConn.on('open', function () {
-                    connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1]);
+                    const index = connectedPeers.findIndex(entry => entry[0] == incomingConn.peer);
+                    // If the entry doesn't already exist (prevent duplicates), only then push new user
+                    if (index == -1) {
+                        connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1]);
+                    }
+
                     connectedClientsCount++;
                     setJoinCounter(connectedClientsCount);
                     updateTeamDisplay();
