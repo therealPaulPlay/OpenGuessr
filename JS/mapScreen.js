@@ -125,11 +125,14 @@ function addMap(name, creator, creatorId, fav, author, description) {
 
     const descArea = document.createElement("div");
     descArea.classList.add("map-desc");
-    if (creatorId == localStorage.getItem("id")) {
+    if (creatorId == localStorage.getItem("id") && localStorage.getItem("id")) {
         descArea.classList.add("map-desc-owned");
     }
     const descIcon = document.createElement("span");
-    descIcon.textContent = localStorage.getItem("id") == creatorId ? "Manage" : "About";
+    descIcon.textContent = "About";
+    if (localStorage.getItem("id") == creatorId && localStorage.getItem("id")) {
+        descIcon.textContent = "Manage";
+    }
     descArea.addEventListener("click", (event) => {
         event.stopPropagation();
         showDescriptionWindow(name, author, description);
