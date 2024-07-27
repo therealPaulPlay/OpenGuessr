@@ -88,6 +88,9 @@ export function checkStartCompetitionRound() {
     if (playingCompetition) {
         currentRound++;
         document.getElementById("mapModeText").textContent = "Competition (Round: " + currentRound + "/" + competition.roundAmount + ")";
+        if (competition.restriction && competition.restriction != "standard") {
+            document.getElementById("mapModeText").textContent = "Competition (Round: " + currentRound + "/" + competition.roundAmount + ") (" + competition.restriction + ")";
+        }
 
         competitionTimer = startTimer(competition.roundLength, competitionTimerExpired);
     }
