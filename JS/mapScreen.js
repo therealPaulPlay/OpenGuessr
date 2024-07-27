@@ -65,8 +65,9 @@ async function loadCommunityMaps(index, category, query, fav) {
 
             data.communityMaps.forEach(map => {
                 // fav maps are only being added if fav is defined/true
+                console.log(map);
                 if (!map.favourite || fav) {
-                    addMap(map.name, map.author, map.favourite, map.author, map.description, map.category);
+                    addMap(map.name, map.author, map.authorId, map.favourite, map.author, map.description, map.category);
                     nothingFound = false;
                 }
             });
@@ -88,7 +89,7 @@ async function loadCommunityMaps(index, category, query, fav) {
 }
 
 // Load the map elements one by one ----------------------------------------------------------------------
-function addMap(name, creator, fav, author, description) {
+function addMap(name, creator, creatorId, fav, author, description) {
     let container = fav ? "featured-map" : "community-maps";
 
     let mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
@@ -125,8 +126,11 @@ function addMap(name, creator, fav, author, description) {
 
     const descArea = document.createElement("div");
     descArea.classList.add("map-desc");
+    if (creatorId == localStorage.getItem("id")) {
+        descArea.classList.add("map-desc-owned");
+    }
     const descIcon = document.createElement("span");
-    descIcon.textContent = "About";
+    descIcon.textContent = localStorage.getItem("id") == creatorId ? "Manage" : "About";
     descArea.addEventListener("click", (event) => {
         event.stopPropagation();
         showDescriptionWindow(name, author, description);
