@@ -383,8 +383,24 @@ async function uploadMap() {
     // if successful, close underlying menu
     let operationMessage = await submitMap();
     document.getElementById("uploadConfirmText").textContent = operationMessage;
+    
     if (operationMessage.includes("success")) {
         document.getElementById("uploadConfirmHeader").textContent = "Map submitted!";
+        
+        const mapName = document.getElementById('uploadMapName').value;
+        let playLink = window.location.origin + "/maps.html?map=" + mapName.split(" ").join("_")
+        let linkBox = document.createElement("div");
+       
+        linkBox.innerHTML = `
+        <div class="spacer"></div>
+        <p>Play link:</p>
+         <div class="halfSpacer"></div>
+        <div class="linkBox">
+        <p class="linkField">${playLink}</p>
+        </div>
+        `;
+
+        document.getElementById("uploadConfirmText").appendChild(linkBox);
     } else {
         document.getElementById("uploadConfirmHeader").textContent = "Oh no! An error occured";
     }
@@ -440,7 +456,7 @@ async function submitMap() {
         if (response.ok) {
             document.getElementById("uploadPopup").style.display = "none";
             mapSubmittedSuccessfully = true;
-            return "Map submitted successfully! Thank you so much for contributing.";
+            return `Map submitted successfully! Thank you so much for contributing.`;
         } else {
             let resultErrors = "";
             try {

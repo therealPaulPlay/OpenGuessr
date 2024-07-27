@@ -562,6 +562,39 @@ document.getElementById("dailyCompetition").addEventListener("click", () => {
     showPageBrowser("/competitions.html");
 });
 
+// Universal confirm popup -------------------------------------------------------------------------------------------------
+
+let confirmPopup = document.getElementById("confirmPopup");
+
+export function showConfirmPopup(title, text, executeFunction, accountDelete) {
+    confirmPopup.style.display = "flex";
+    document.getElementById("confirmTitle").textContent = title;
+    document.getElementById("confirmDescription").textContent = text;
+    document.getElementById("accountDeletePassword").style.display = "none";
+
+    if (accountDelete) {
+        document.getElementById("accountDeletePassword").style.display = "block";
+        document.getElementById("accountDeletePassword").value = "";
+    }
+
+    // Remove all event listeners by cloning the element
+    const button = document.getElementById("confirmProceed");
+    const newButton = button.cloneNode(true);
+    button.parentNode.replaceChild(newButton, button);
+    newButton.addEventListener("click", () => {
+        try {
+            executeFunction();
+            confirmPopup.style.display = "none";
+        } catch (error) {
+            console.error("Couldn't execute callback function in confirm popup in mainUI.js: " + error);
+        }
+    });
+}
+
+document.getElementById("confirmCancel").addEventListener("click", () => {
+    confirmPopup.style.display = "none";
+});
+
 // In-App page browser -----------------------------------------------------------------------------------
 
 let pageBrowserWindow = document.getElementById("pageBrowserWindow");

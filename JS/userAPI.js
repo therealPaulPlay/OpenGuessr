@@ -2,16 +2,19 @@ import { errorPopup } from "./errorHandling.js";
 
 export const backendURL = "https://accounts.openguessr.com/accounts";
 export const loginEndpoint = `${backendURL}/login`;
+export const deleteAccountEndpoint = `${backendURL}/delete`;
 export const registrationEndpoint = `${backendURL}/register`;
 export const userUpdateEndpoint = `${backendURL}/update`;
 export const userGetEndpoint = `${backendURL}/user`;
 export const leaderboardEndpoint = `${backendURL}/leaderboard`;
+export const passwordResetEmailEndpoint = `${backendURL}/reset-password-request`;
+export const passwordChangeEndpoint = `${backendURL}/reset-password`;
 
 function inIframe() {
   try {
-      return window.self !== window.top;
+    return window.self !== window.top;
   } catch (e) {
-      return true;
+    return true;
   }
 }
 
@@ -75,8 +78,7 @@ export async function registerUser(userName, email, password, errorSource) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      localStorage.setItem("RegistrationSuccess", "success");
-      window.location.reload();
+      displaySuccess("Registration successful! Please log in.");
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Registration failed: ', response.status);
@@ -85,6 +87,106 @@ export async function registerUser(userName, email, password, errorSource) {
   } catch (error) {
     console.error('Error occurred during registration: ', error);
     displayError("Error occured during registration: " + error, errorSource);
+  }
+}
+
+// Delete user 
+export async function deleteUser(id, password, errorSource) {
+  try {
+    const requestBody = {
+      id: id,
+      password: password
+    };
+
+    // Make the POST request using Fetch API
+    const response = await fetch(deleteAccountEndpoint, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return true;
+
+    } else {
+      let responseError = await attemptExtractErrorFromResponse(response);
+      console.error('Account deletion failed:', response.status);
+      displayError("Account deletion failed: " + response.status, errorSource, responseError);
+      return false;
+    }
+  } catch (error) {
+    console.error('Error occurred during account deletion: ', error);
+    displayError("Error occured during account deletion: " + error, errorSource);
+    return false;
+  }
+}
+
+// Send reset email
+export async function sendPasswordResetEmail(email, errorSource) {
+  try {
+    const requestBody = {
+      email: email
+    };
+
+    // Make the POST request using Fetch API
+    const response = await fetch(passwordResetEmailEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      displaySuccess("Password reset email sent!");
+
+    } else {
+      let responseError = await attemptExtractErrorFromResponse(response);
+      console.error('Password reset request failed:', response.status);
+      displayError("Password reset request failed: " + response.status, errorSource, responseError);
+    }
+  } catch (error) {
+    console.error('Error occurred during password reset request: ', error);
+    displayError("Error occured during password reset request: " + error, errorSource);
+  }
+}
+
+// Change password with reset token
+export async function changePassword(token, newPassword, errorSource) {
+  try {
+    const requestBody = {
+      token: token,
+      newPassword
+    };
+
+    // Make the POST request using Fetch API
+    const response = await fetch(passwordChangeEndpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(requestBody)
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      displaySuccess("Password changed successfully!");
+
+    } else {
+      let responseError = await attemptExtractErrorFromResponse(response);
+      console.error('Password change failed:', response.status);
+      displayError("Password change failed: " + response.status, errorSource, responseError);
+    }
+  } catch (error) {
+    console.error('Password change failed: ', error);
+    displayError("Password change failed: " + error, errorSource);
   }
 }
 
@@ -120,7 +222,7 @@ export async function getAllUsers() {
     let id = localStorage.getItem("id")
     let editLeaderboardEndpoint = leaderboardEndpoint;
     if (id != null && id != 0 && id != undefined) {
-            editLeaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
+      editLeaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
     }
 
     const response = await fetch(`${editLeaderboardEndpoint}`, {
@@ -224,14 +326,32 @@ async function saveUserData(data) {
 }
 
 //Error catching ----------------------------------------------------------------------------------------
+let timeout;
+
 export function displayError(error, source, errorMsg) {
   if (source == "signup") {
 
     try {
       errorMessage.innerHTML = error + " - " + errorMsg;
-      errorMessage.style.display = "inline";
-      errorMessage.style.color = "red";
-    } catch {}
+
+      // make error message visible in case it isn't
+      clearTimeout(timeout);
+      errorMessage.style.maxHeight = "100px";
+      errorMessage.style.marginTop = "20px";
+      errorMessage.style.marginBottom = "20px";
+      errorMessage.style.opacity = "1";
+      errorMessage.style.color = "#ffaeae";
+
+      if (!errorMsg) {
+        errorMessage.innerHTML = error;
+      }
+
+      timeout = setTimeout(() => {
+        errorMessage.style.maxHeight = "0";
+        errorMessage.style.opacity = "0";
+        errorMessage.style.margin = "0";
+      }, 7000);
+    } catch { }
 
   } else if (source == "index") {
     if (!errorMsg) {
@@ -246,17 +366,28 @@ export function displayError(error, source, errorMsg) {
   }
 }
 
-export function displaySuccess() {
+export function displaySuccess(text) {
   try {
-    errorMessage.innerHTML = "Registration successful! Please log in.";
-    errorMessage.style.display = "inline";
+    clearTimeout(timeout);
+    errorMessage.innerHTML = text;
+    errorMessage.style.maxHeight = "100px";
+    errorMessage.style.marginTop = "20px";
+    errorMessage.style.marginBottom = "20px";
+    errorMessage.style.opacity = "1";
     errorMessage.style.color = "#64c681";
-  } catch {}
-}
+    
+    // change to sign-in
+    document.getElementById("loginForm").style.display = "block";
+    document.getElementById("signupForm").style.display = "none";
+    document.getElementById("resetForm").style.display = "none";
+    document.getElementById("newPasswordForm").style.display = "none";
 
-if (localStorage.getItem("RegistrationSuccess") == "success") {
-  displaySuccess();
-  localStorage.removeItem("RegistrationSuccess");
+    timeout = setTimeout(() => {
+      errorMessage.style.maxHeight = "0";
+      errorMessage.style.opacity = "0";
+      errorMessage.style.margin = "0";
+    }, 4000);
+  } catch { }
 }
 
 export async function attemptExtractErrorFromResponse(response) {

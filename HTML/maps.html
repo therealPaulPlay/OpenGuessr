@@ -65,6 +65,23 @@
             outline: inherit;
         }
 
+        .spacer {
+            height: 15px;
+            width: 100%;
+        }
+
+        .halfSpacer {
+            height: 8px;
+            width: 100%;
+        }
+
+        .linkBox {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            width: calc(100% - 20px);
+        }
+
         #navbar {
             position: fixed;
             z-index: 100;
@@ -180,7 +197,8 @@
             user-select: none;
             cursor: pointer;
             transition: opacity 250ms ease, background-color 250ms ease;
-            opacity: 0; /* later being faded in using JS */
+            opacity: 0;
+            /* later being faded in using JS */
         }
 
         .map-item:hover {
@@ -710,7 +728,8 @@
         <div id="description" class="uiWindow">
             <h1 id="descHeader">Default map</h1>
             <p id="descAuthor" class="textEllipsis">by Paul</p>
-            <p id="descText" class="textEllipsis">This is a wonderful description of the default map. It features big default locations and
+            <p id="descText" class="textEllipsis">This is a wonderful description of the default map. It features big
+                default locations and
                 small default locations. Wow.</p>
             <div class="buttonBox">
                 <button id="mapLink" class="closeButton standardButton">
@@ -763,7 +782,7 @@
                     <option value="Sports">Sports</option>
                     <option value="Transport">Transport</option>
                     <option value="Miscellaneous">Miscellaneous</option>
-                  </select>
+                </select>
                 <p>Map Description: </p>
                 <input id="uploadMapDescription" class="uploadInfo" type="text" placeholder="Description..."
                     maxlength="300">

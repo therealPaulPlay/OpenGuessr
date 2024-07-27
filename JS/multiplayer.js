@@ -1,6 +1,6 @@
 import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector } from "./mainUI.js";
+import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex, isAuthenticated } from "./accountLogic.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
@@ -994,7 +994,12 @@ if (peer) {
 
                 // Event listener for when the connection is open
                 incomingConn.on('open', function () {
-                    connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1]);
+                    const index = connectedPeers.findIndex(entry => entry[0] == incomingConn.peer);
+                    // If the entry doesn't already exist (prevent duplicates), only then push new user
+                    if (index == -1) {
+                        connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1]);
+                    }
+
                     connectedClientsCount++;
                     setJoinCounter(connectedClientsCount);
                     updateTeamDisplay();
@@ -1471,7 +1476,7 @@ if (peer) {
 let leaveButton = document.getElementById("multiplayerLeave");
 
 leaveButton.addEventListener("click", () => {
-    leaveMultiplayerRound();
+    showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound, false);
     playSound("leave_round");
 });
 

@@ -1,11 +1,15 @@
-import { displayError, loginUser, registerUser } from "./userAPI.js"
+import { displayError, loginUser, registerUser, sendPasswordResetEmail, changePassword } from "./userAPI.js"
 
 //toggle between login and signup ---------------------------------------------------------------------------------------------
 let loginForm = document.getElementById("loginForm");
 let signupForm = document.getElementById("signupForm");
+let resetForm = document.getElementById("resetForm");
+let newPasswordForm = document.getElementById("newPasswordForm");
 
 function toggleForm() {
   signupStage = 1;
+  resetForm.style.display = "none";
+  newPasswordForm.style.display = "none";
 
   if (loginForm.style.display == "none") {
     loginForm.style.display = "block";
@@ -19,6 +23,12 @@ function toggleForm() {
 let loginSwitch = document.getElementById("loginSwitch");
 loginSwitch.addEventListener("click", toggleForm);
 
+let loginSwitchReset = document.getElementById("loginSwitchReset");
+loginSwitchReset.addEventListener("click", toggleForm);
+
+let loginSwitchChange = document.getElementById("loginSwitchChange");
+loginSwitchChange.addEventListener("click", toggleForm);
+
 let loginSwitchBack = document.getElementById("loginSwitchBack");
 loginSwitchBack.addEventListener("click", toggleForm);
 
@@ -30,6 +40,43 @@ function inIframe() {
   }
 }
 
+// Password reset screen -------------------------------------------------------------------------------------------------------------------------------------
+
+document.getElementById("passwordResetOption").addEventListener("click" , () => {
+  loginForm.style.display = "none";
+  signupForm.style.display = "none";
+  newPasswordForm.style.display = "none";
+  resetForm.style.display = "block";
+});
+
+document.getElementById("reset").addEventListener("click", () => {
+  const email = document.getElementById("reset_email").value;
+  sendPasswordResetEmail(email, "signup");
+});
+
+// Password reset via auth link ------------------------------------------------------------------------------------------------------------------------------
+
+let urlParams = new URLSearchParams(window.location.search);
+let resetBearerToken = urlParams.get("token");
+
+if (resetBearerToken) {
+    newPasswordForm.style.display = "block";
+    loginForm.style.display = "none";
+    signupForm.style.display = "none";
+    resetForm.style.display = "none";
+    history.replaceState({}, document.title, window.location.pathname); // reset url back to normal one
+}
+
+document.getElementById("changePassword").addEventListener("click", () => {
+  if (document.getElementById("reset_password").value != "") {
+    changePassword(resetBearerToken, document.getElementById("reset_password").value, "signup");
+  } else {
+    displayError("Please input a new password.", "signup");
+  }
+});
+
+// Back to OpenGuessr Button ---------------------------------------------------------------------------------------------------------------------------------
+
 document.getElementById("backButton").addEventListener("click",
   function () {
       if (inIframe()) {
@@ -39,6 +86,9 @@ document.getElementById("backButton").addEventListener("click",
       }
   }
 );
+
+
+// Signup UI Logic and Captcha ------------------------------------------------------------------------------------------------------------------------------
 
 //back button on signup screen (return to form from captcha)
 document.getElementById("back").addEventListener("click", function() {
@@ -75,7 +125,7 @@ function checkEmptyFields(isSignup) {
   if (isSignup) {
   if (document.getElementById("signup_username").value != "" && document.getElementById("signup_password").value != "" && validateEmail(document.getElementById("signup_email").value)) {
     return true; 
-  } else {displayError("Please check our input.", "signup"); return false;}
+  } else {displayError("Please check your input.", "signup"); return false;}
 } else {
   if (validateEmail(document.getElementById("login_email").value) && document.getElementById("login_password").value != "") {
     return true; 
@@ -131,6 +181,7 @@ signupButtonSignupPage.addEventListener("click", signUpAction);
         if (checkEmptyFields(true)) {
         signupStage = 2;
         setSignupStage();
+        loginEmail.value = signupEmail.value;
         }
       }
   }
@@ -140,7 +191,7 @@ signupButtonSignupPage.addEventListener("click", signUpAction);
     if (checkEmptyFields(false)) {
       loginButtonSignupPage.textContent = "Wait...";
       await loginUser(loginEmail.value, loginPassword.value, "signup");
-      loginButtonSignupPage.textContent = "Login";
+      loginButtonSignupPage.textContent = "Log in";
     }
   }
 

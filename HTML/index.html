@@ -170,8 +170,8 @@
     <img src="/IMG/compass_spinner.png" alt="Loading new streetview" id="spinner" class="spinner">
     <p id="loadingText">Loading...</p>
   </div>
+  <!-- This is an overlay used to display error messages -->
   <div id="errorPopup" class="popupHolder errorBackground">
-    <!-- This is an overlay used to display error messages -->
     <div class="errorPopupWindow uiWindow">
       <div id="errorTitle" class="popup-title"></div>
       <div id="popup-description" class="popup-description"></div>
@@ -180,6 +180,18 @@
         <input type="checkbox" id="hideErrors">
       </div>
       <button id="popupClose" class="standardButton white errorClose">Close and reload</button>
+    </div>
+  </div>
+  <!-- Confirmation overlay for prompts (Are you sure, leave, delete..) -->
+  <div id="confirmPopup" class="popupHolder confirmBackground">
+    <div class="confirmPopupWindow uiWindow">
+      <h1 id="confirmTitle" class="popup-title"></h2>
+      <div id="confirmDescription" class="popup-description">This is the default warning.</div>
+      <input id="accountDeletePassword" type="password" placeholder="Password">
+      <div class="buttonBoxRight">
+        <button id="confirmCancel" class="standardButton white">Cancel</button>
+        <button id="confirmProceed" class="standardButton">Confirm</button>
+      </div>
     </div>
   </div>
   <!-- remaining windows -->
@@ -247,6 +259,10 @@
           <p id="statisticUpgradeExperience"> not set.</p>
         </div>
       </div>
+      <h3>Account Management: </h3>
+      <div class="managementBox">
+        <button id="accountDeleteButton" class="standardButton">Delete Account</button>
+      </div>
       <button id="profileClose" class="standardButton white accountClose">Close</button>
     </div>
     <!-- Help / How to Play Popup -->
@@ -257,19 +273,19 @@
       <ul class="nolistdots">
         <li>
           <h3>🔍 Look at the Street View image</h3>
-          <p>Study the image carefully. Use the navigation controls to explore the surroundings.</p>
+          <p class="listMarginLeft">Study the image carefully. Use the navigation controls to explore the surroundings.</p>
         </li>
         <li>
           <h3>🌟 Make your guess</h3>
-          <p>Pinpoint your location on the world map. Be precise for higher scores!</p>
+          <p class="listMarginLeft">Pinpoint your location on the world map. Be precise for higher scores!</p>
         </li>
         <li>
           <h3>🎯 Get as close as you can</h3>
-          <p>Compare your guess with the actual location when revealed.</p>
+          <p class="listMarginLeft">Compare your guess with the actual location when revealed.</p>
         </li>
         <li>
           <h3>👍 Challenge your friends</h3>
-          <p>Compete against friends in the multiplayer modes to see who can guess the most accurate locations.</p>
+          <p class="listMarginLeft">Compete against friends in the multiplayer modes to see who can guess the most accurate locations.</p>
         </li>
       </ul>
       <button id="helpClose" class="standardButton white accountClose">Let's go!</button>

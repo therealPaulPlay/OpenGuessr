@@ -104,10 +104,12 @@ export function setConfirmButtonState() {
         document.getElementById("confirmButton").style.color = "white";
         document.getElementById("confirmButton").style.opacity = "100%"
         document.getElementById("confirmButton").style.pointerEvents = "auto";
+        document.getElementById("helpButton").classList.add("helpButtonDisabled");
     }
     else {
         document.getElementById("confirmButton").style.backgroundColor = "rgba(168, 168, 187, 0.3)";
         document.getElementById("confirmButton").style.pointerEvents = "none";
+        document.getElementById("helpButton").classList.remove("helpButtonDisabled");
     }
 }
 
@@ -353,7 +355,7 @@ export function confirmButtonClicks() {
         calculateDistances(mapMarkerLat, mapMarkerLong);
         loadResultMap(mapMarkerLat, mapMarkerLong);
     } else {
-        document.getElementById("guessText").textContent = "Waiting...";
+        document.getElementById("guessText").textContent = "Waiting";
         document.getElementById("confirmButton").style.pointerEvents = "none";
         document.getElementById("map").style.visibility = "hidden";
         hasGuessed = false;
