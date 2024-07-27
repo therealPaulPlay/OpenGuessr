@@ -2009,6 +2009,7 @@ map::selection {
   width: 100px;
   height: 100px;
   margin-bottom: 20px;
+  user-select: none;
 }
 
 @keyframes rotation {
