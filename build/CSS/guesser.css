@@ -490,6 +490,10 @@ h1, h2, h3 {
   opacity: 0.5;
 }
 
+.listMarginLeft {
+  margin-left: 35px;
+}
+
 .buttonBoxRight {
   display: flex;
   justify-content: flex-end;
