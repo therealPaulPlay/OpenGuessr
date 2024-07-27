@@ -488,6 +488,11 @@ h1, h2, h3 {
 
 #multiplayerSelectorBack {
   opacity: 0.5;
+  margin-right: 8px;
+}
+
+.listMarginLeft {
+  margin-left: 35px;
 }
 
 .buttonBoxRight {
@@ -1278,7 +1283,7 @@ input:focus {
 }
 
 #extendedNavbarContent, #communityMapArea {
-  margin-top: 15px;
+  padding-top: 15px;
   padding-inline: 20px;
   position: relative;
   flex-grow: 1;
