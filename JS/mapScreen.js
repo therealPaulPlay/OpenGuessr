@@ -251,12 +251,14 @@ document.getElementById("descClose").addEventListener("click", () => {
 function deleteMapScreen(name) {
     document.getElementById("descriptionPopup").style.display = "none";
     document.getElementById("deleteHeader").textContent = "Delete " + name + "?";
+    document.getElementById("deleteText").textContent = "This action cannot be undone. Do you wish to continue?";
     document.getElementById("deletePopup").style.display = "flex";
 
     const newButton = document.getElementById("deleteProceed").cloneNode(true);
     document.getElementById("deleteProceed").parentNode.replaceChild(newButton, document.getElementById("deleteProceed"));
-    newButton.addEventListener("click", () => {
-        deleteMap(name);
+    newButton.addEventListener("click", async () => {
+        document.getElementById("deleteText").textContent = await deleteMap(name);
+        document.getElementById("deleteProceed").style.display = "none";
     });
 }
 
@@ -264,8 +266,34 @@ document.getElementById("deleteClose").addEventListener("click", () => {
     document.getElementById("deletePopup").style.display = "none";
 });
 
-function deleteMap(mapName) {
+async function deleteMap(mapName) {
     // delete from database
+    try {
+        const body = {
+            id: localStorage.getItem("id") // for auth
+        }
+
+        // Send POST request to the server
+        const response = await fetch('https://maps.openguessr.com/maps/' + mapName, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ` + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        // Return the success or error message. No need to parse the response
+        if (response.ok) {
+            return `Map deleted successfully.`;
+        } else {
+            console.error("Error deleting map: " + response.status);
+            return "Failed to delete map: " + response.status;
+        }
+    } catch (error) {
+        console.error('Error deleting map:', error);
+        return "A network error occurred while deleting the map: " + error;
+    }
 }
 
 function instantPlayPopup(mapName) {
@@ -462,11 +490,11 @@ async function submitMap() {
     const mapData = filePicker.value ? filePicker.files[0] : document.getElementById('uploadMapData').value;
     inputFromFilepicker = filePicker.value ? true : false;
     const author = localStorage.getItem('username');
-    const player_id = localStorage.getItem('id');
+    const id = localStorage.getItem('id');
     const category = document.getElementById("categoryDropdown").value;
 
     // Validate inputs
-    if (!name || !description || !mapData || !author || !player_id || category == "none") {
+    if (!name || !description || !mapData || !author || !id || category == "none") {
         return 'All fields and a selected category are required.';
     }
 
@@ -474,13 +502,14 @@ async function submitMap() {
     let payload;
     try {
         payload = {
-            player_id,
+            id,
             name,
             author,
             description,
             mapData: inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData), // assuming mapData is a JSON string
             category: category
         };
+
     } catch (error) {
         console.error("Error creating payload and extracting coordinates: " + error);
         return "Your list of streetview links could not be converted to coordinates.";
@@ -491,6 +520,7 @@ async function submitMap() {
         const response = await fetch('https://maps.openguessr.com/maps', {
             method: 'POST',
             headers: {
+                'Authorization': `Bearer ` + localStorage.getItem("bearer"),
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)
