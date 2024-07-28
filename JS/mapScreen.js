@@ -66,7 +66,7 @@ async function loadCommunityMaps(index, category, query, fav) {
             data.communityMaps.forEach(map => {
                 // fav maps are only being added if fav is defined/true
                 if (!map.favourite || fav) {
-                    addMap(map.name, map.author, map.favourite, map.author, map.description, map.category);
+                    addMap(map.name, map.author, map.authorId, map.favourite, map.author, map.description, map.category);
                     nothingFound = false;
                 }
             });
@@ -88,7 +88,7 @@ async function loadCommunityMaps(index, category, query, fav) {
 }
 
 // Load the map elements one by one ----------------------------------------------------------------------
-function addMap(name, creator, fav, author, description) {
+function addMap(name, creator, creatorId, fav, author, description) {
     let container = fav ? "featured-map" : "community-maps";
 
     let mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
@@ -125,11 +125,22 @@ function addMap(name, creator, fav, author, description) {
 
     const descArea = document.createElement("div");
     descArea.classList.add("map-desc");
+
+    let owned = false;
+
+    if (creatorId == localStorage.getItem("id") && localStorage.getItem("id") && !fav) { // favorite (spotlight) maps should not be deletable
+        descArea.classList.add("map-desc-owned");
+        owned = true;
+    }
+
     const descIcon = document.createElement("span");
     descIcon.textContent = "About";
+    if (localStorage.getItem("id") == creatorId && localStorage.getItem("id") && !fav) {
+        descIcon.textContent = "Manage";
+    }
     descArea.addEventListener("click", (event) => {
         event.stopPropagation();
-        showDescriptionWindow(name, author, description);
+        showDescriptionWindow(name, author, description, owned);
     });
 
     const addButton = document.createElement("button");
@@ -193,11 +204,27 @@ function removeSelectedMap(name) {
     }
 }
 
-function showDescriptionWindow(title, author, desc) {
+function showDescriptionWindow(name, author, desc, isAuthor) {
     document.getElementById("descriptionPopup").style.display = "flex";
-    document.getElementById("descHeader").textContent = title;
+    document.getElementById("descHeader").textContent = name;
     document.getElementById("descAuthor").textContent = "by " + author;
     document.getElementById("descText").textContent = desc;
+
+    try {
+        if (isAuthor) {
+            const newButton = document.getElementById("manageDelete").cloneNode(true);
+            document.getElementById("manageDelete").parentNode.replaceChild(newButton, document.getElementById("manageDelete"));
+            newButton.style.display = "block";
+            newButton.addEventListener("click", () => {
+                deleteMapScreen(name);
+            });
+    
+        } else {
+            document.getElementById("manageDelete").style.display = "none";
+        }
+    } catch {
+        console.error("Error adding delete button in mapScreen.js.");
+    }
 
     document.getElementById("mapLink").addEventListener("click", () => {
         navigator.clipboard.writeText(window.location.origin + "/maps.html?map=" + title.split(" ").join("_"))
@@ -220,6 +247,61 @@ function showDescriptionWindow(title, author, desc) {
 document.getElementById("descClose").addEventListener("click", () => {
     document.getElementById("descriptionPopup").style.display = "none";
 });
+
+let mapWasDeletedRefresh = false;
+
+function deleteMapScreen(name) {
+    document.getElementById("descriptionPopup").style.display = "none";
+    document.getElementById("deleteHeader").textContent = "Delete " + name + "?";
+    document.getElementById("deleteText").textContent = "This action cannot be undone. Do you wish to continue?";
+    document.getElementById("deletePopup").style.display = "flex";
+    document.getElementById("deleteProceed").style.display = "block";
+
+    const newButton = document.getElementById("deleteProceed").cloneNode(true);
+    document.getElementById("deleteProceed").parentNode.replaceChild(newButton, document.getElementById("deleteProceed"));
+    newButton.addEventListener("click", async () => {
+        document.getElementById("deleteText").textContent = await deleteMap(name);
+        document.getElementById("deleteProceed").style.display = "none";
+    });
+}
+
+document.getElementById("deleteClose").addEventListener("click", () => {
+    document.getElementById("deletePopup").style.display = "none";
+    if (mapWasDeletedRefresh) {
+        window.location.reload();
+    }
+});
+
+async function deleteMap(mapName) {
+    // delete from database
+    try {
+        const body = {
+            id: localStorage.getItem("id") // for auth
+        }
+
+        // Send POST request to the server
+        const response = await fetch('https://maps.openguessr.com/maps/' + mapName, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Bearer ` + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        // Return the success or error message. No need to parse the response
+        if (response.ok) {
+            mapWasDeletedRefresh = true;
+            return `Map deleted successfully.`;
+        } else {
+            console.error("Error deleting map: " + response.status);
+            return "Failed to delete map: " + response.status;
+        }
+    } catch (error) {
+        console.error('Error deleting map:', error);
+        return "A network error occurred while deleting the map: " + error;
+    }
+}
 
 function instantPlayPopup(mapName) {
     document.getElementById("instantPlayPopup").style.display = "flex";
@@ -415,11 +497,11 @@ async function submitMap() {
     const mapData = filePicker.value ? filePicker.files[0] : document.getElementById('uploadMapData').value;
     inputFromFilepicker = filePicker.value ? true : false;
     const author = localStorage.getItem('username');
-    const player_id = localStorage.getItem('id');
+    const id = localStorage.getItem('id');
     const category = document.getElementById("categoryDropdown").value;
 
     // Validate inputs
-    if (!name || !description || !mapData || !author || !player_id || category == "none") {
+    if (!name || !description || !mapData || !author || !id || category == "none") {
         return 'All fields and a selected category are required.';
     }
 
@@ -427,13 +509,14 @@ async function submitMap() {
     let payload;
     try {
         payload = {
-            player_id,
+            id,
             name,
             author,
             description,
             mapData: inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData), // assuming mapData is a JSON string
             category: category
         };
+
     } catch (error) {
         console.error("Error creating payload and extracting coordinates: " + error);
         return "Your list of streetview links could not be converted to coordinates.";
@@ -444,6 +527,7 @@ async function submitMap() {
         const response = await fetch('https://maps.openguessr.com/maps', {
             method: 'POST',
             headers: {
+                'Authorization': `Bearer ` + localStorage.getItem("bearer"),
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify(payload)

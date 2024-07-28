@@ -1764,7 +1764,7 @@ function multiplayerOverlayCountdown() {
                 try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
                 multiplayerTimer = startTimer(roundLength, multiplayerTimerExpired); //Start the timer
                 document.getElementById("mapModeText").textContent = "Multiplayer (Round: " + roundIndex + "/" + roundAmount + ")";
-                if (multiplayerRestriction != "standard" && multiplayerRestriction != undefined) {
+                if (multiplayerRestriction != "standard" && multiplayerRestriction) {
                     document.getElementById("mapModeText").textContent += " (" + multiplayerRestriction + ")";
                 }
 
