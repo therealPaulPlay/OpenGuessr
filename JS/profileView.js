@@ -12,6 +12,9 @@ export function viewProfile(name, experience, userId, yourProfile) {
     document.getElementById("editUsername").style.display = "none";
     document.getElementById("blackBackground").style.visibility = "visible";
     document.getElementById("profileViewName").textContent = name ? name : "Guest / Not loaded";
+    document.getElementById("usernameInput").style.visibility = "hidden";
+    document.getElementById("confirmUsername").style.visibility = "hidden";
+    document.getElementById("usernameInput").value = "";
 
     // calculate the level
     document.getElementById("levelText").textContent = "Lvl. " + getExpStats(experience).level;
@@ -69,10 +72,12 @@ async function updateProfileUsername() {
     newUsername = document.getElementById("usernameInput").value;
     toggleUsernameView();
     if (newUsername != "") {
-        await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername, "index").then(() => {
-            //updateUsername saves the new name in localstorage
+        await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername, "index").then((isOk) => {
+            if (isOk) {
+            // updateUsername saves the new name in localstorage
             displayUserInfo();
             document.getElementById("profileViewName").textContent = newUsername;
+            }
         });
     }
 }

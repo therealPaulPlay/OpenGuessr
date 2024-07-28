@@ -309,6 +309,9 @@ export async function updateUsername(token, id, requestedUsername, errorSource) 
       console.error('User update failed: ', response.status);
       displayError("User update failed: " + response.status, errorSource, responseError);
     }
+
+    return (response.ok); // return true / false
+
   } catch (error) {
     console.error('Error occurred during user update: ', error);
     displayError("Error occured during user update " + error, errorSource);
