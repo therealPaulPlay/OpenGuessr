@@ -201,7 +201,11 @@ async function getCommunityMapCoordinates() {
     
         } else {
             console.error("Community map fetch failed. Server returned error:", response.status);
-            errorPopup("Error loading community map", "An error occured on the maps server.", response.status, true);
+            if (response.status == 404) {
+                errorPopup("Community map was deleted", "This map was likely deleted and cannot be found.", response.status, true);
+            } else {
+                errorPopup("Error loading community map", "An error occured on the maps server.", response.status, true);
+            }
             return null;
         }
       } catch (error) {
