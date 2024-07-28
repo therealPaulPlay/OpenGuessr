@@ -248,11 +248,14 @@ document.getElementById("descClose").addEventListener("click", () => {
     document.getElementById("descriptionPopup").style.display = "none";
 });
 
+let mapWasDeletedRefresh = false;
+
 function deleteMapScreen(name) {
     document.getElementById("descriptionPopup").style.display = "none";
     document.getElementById("deleteHeader").textContent = "Delete " + name + "?";
     document.getElementById("deleteText").textContent = "This action cannot be undone. Do you wish to continue?";
     document.getElementById("deletePopup").style.display = "flex";
+    document.getElementById("deleteProceed").style.display = "block";
 
     const newButton = document.getElementById("deleteProceed").cloneNode(true);
     document.getElementById("deleteProceed").parentNode.replaceChild(newButton, document.getElementById("deleteProceed"));
@@ -264,6 +267,9 @@ function deleteMapScreen(name) {
 
 document.getElementById("deleteClose").addEventListener("click", () => {
     document.getElementById("deletePopup").style.display = "none";
+    if (mapWasDeletedRefresh) {
+        window.location.reload();
+    }
 });
 
 async function deleteMap(mapName) {
@@ -285,6 +291,7 @@ async function deleteMap(mapName) {
 
         // Return the success or error message. No need to parse the response
         if (response.ok) {
+            mapWasDeletedRefresh = true;
             return `Map deleted successfully.`;
         } else {
             console.error("Error deleting map: " + response.status);
