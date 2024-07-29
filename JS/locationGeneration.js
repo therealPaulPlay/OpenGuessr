@@ -77,9 +77,9 @@ async function getCoordsFromJSON(category) {
     try {
 
         //to prevent a crashes if the json has too few locations
-        if (listOfLocations.length < 15) {
+        if (listOfLocations.length < 110) {
             lastGuessesIndexes = [];
-            console.warn("Loaded json has too few locations!");
+            console.warn("Loaded official map json has too few locations!");
         }
 
         do {
@@ -88,8 +88,8 @@ async function getCoordsFromJSON(category) {
 
         lastGuessesIndexes.unshift(guessIndex); //add guessIndex at the front of the array
 
-        if (lastGuessesIndexes.length > 10) {
-            lastGuessesIndexes.pop(); //if the array is longer than 10, pop the last entry out
+        if (lastGuessesIndexes.length > 100) {
+            lastGuessesIndexes.pop(); //if the array is longer than 100, pop the last entry out
         }
 
         const resultLat = Number(listOfLocations[guessIndex][0]);
@@ -147,7 +147,7 @@ async function selectLocationFromServer() {
       try {
   
           //to prevent a crashes if the json has too few locations
-          if (standardLocations.length < 105) {
+          if (standardLocations.length < 110) {
               lastStandardLocationIndexes = [];
               console.warn("Loaded standard json has too few locations!");
           }

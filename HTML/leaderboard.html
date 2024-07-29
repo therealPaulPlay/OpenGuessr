@@ -156,6 +156,12 @@
         .middle {
             margin-right: auto;
             margin-left: auto;
+            transition: opacity 250ms ease;
+            cursor: pointer;
+        }
+
+        .middle:hover {
+            opacity: 0.5;
         }
 
         .gold {
@@ -218,6 +224,7 @@
 <script type="module">
     import { getAllUsers } from "./userAPI.js";
 
+    // Back Button and iframe check -------------------------------------------------------------------------------------------
     function inIframe() {
         try {
             return window.self !== window.top;
@@ -226,7 +233,17 @@
         }
     }
 
-    //load the username of the player
+    document.getElementById("backButton").addEventListener("click",
+        function () {
+            if (inIframe()) {
+                window.top.postMessage("close", "*");
+            } else {
+                window.location.href = "/index.html";
+            }
+        }
+    );
+
+    // Load local data ----------------------------------------------------------------------------------------------------------
     let yourUsername = localStorage.getItem("username") != null ? localStorage.getItem("username") : "Not signed in";
     document.getElementById("yourName").innerHTML = yourUsername;
 
@@ -242,20 +259,30 @@
         document.getElementById("yourExperience").innerHTML = Number(localStorage.getItem("experience")).toLocaleString() + " XP";
     }
 
-    document.getElementById("backButton").addEventListener("click",
-        function () {
-            if (inIframe()) {
-                window.top.postMessage("close", "*");
-            } else {
-                window.location.href = "/index.html";
-            }
-        }
-    );
+    if (localStorage.getItem("id") != null) {
+        document.getElementById("yourName").addEventListener("click", () => {
+            openProfile(localStorage.getItem("id"));
+        });
+    }
 
+    // open profile -----------------------------------------------------------------------------------------------------------------
+
+    function openProfile(id) {
+        if (inIframe()) {
+            window.top.postMessage("profile" + id, "*");
+        } else {
+            window.location.href = "/index.html?profile=" + id;
+        }
+    }
+
+    // Add leaderboar entries --------------------------------------------------------------------------------------------------------
     let container = document.getElementById('container');
 
     // Function to add a new ranked item to the leaderboard
-    function addRankedItem(rank, name, xp) {
+    let idCounter = 0;
+
+    function addRankedItem(rank, name, xp, id) {
+        idCounter++;
         const rankedItem = document.createElement('div');
         rankedItem.classList.add('rankedItem');
 
@@ -275,19 +302,26 @@
 
         rankedItem.innerHTML = `
                 <p class="maxlength">#${rank}</p>
-                <p class="middle maxlength">${name}</p>
+                <p id="name${idCounter}" class="middle maxlength">${name}</p>
                 <p class="maxlength">${xp} XP</p>
             `;
+
         container.appendChild(rankedItem);
+
+        document.getElementById("name" + rank).addEventListener("click", () => {
+            openProfile(id);
+        });
     }
 
+
+    // Load leaderboard data -------------------------------------------------------------------------------------------------------
     async function loadLeaderboard() {
         container.innerHTML = "<p>Loading...</p>";
 
         // Await the promise returned by getAllUsers()
         let data = await getAllUsers();
         let userData = data;
-        
+
         if (userData.user) {
             userData = data.experienceLeaderboard; // structure is different if you (the user) is also being returned
         }
@@ -302,10 +336,11 @@
                 let user = userData[i];
                 let userName = user.user_name;
                 let experience = user.experience;
+                let id = user.id;
 
                 experience = Number(experience).toLocaleString();
 
-                addRankedItem(i + 1, userName, experience);
+                addRankedItem(i + 1, userName, experience, id);
             }
 
             //This would be for loading the players stats from the response (in case they are included)
