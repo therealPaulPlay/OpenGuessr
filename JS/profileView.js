@@ -69,12 +69,17 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
     document.getElementById("statisticDuelsPlayed").textContent = "0";
     document.getElementById("statisticDuelsWon").textContent = "0";
     document.getElementById("statisticCompetitionsEntered").textContent = "0";
+    document.getElementById("profileAbout").style.height = "65px";
 
     try {
         if (profileData && profileData.about) {
             document.getElementById("profileAbout").value = profileData.about;
             document.getElementById("profileAbout").style.display = "block";
             document.getElementById("profileAboutHeader").style.display = "block";
+            if (!yourProfile) {
+                document.getElementById("profileAbout").style.height = "1px";
+                document.getElementById("profileAbout").style.height = (document.getElementById("profileAbout").scrollHeight - 25) + "px";
+            }
         }
 
         if (profileData && profileData.duelsPlayed) {
