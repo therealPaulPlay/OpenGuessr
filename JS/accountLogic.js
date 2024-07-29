@@ -65,6 +65,7 @@ let resultLevelDisplay = document.getElementById("endScreenLevelDisplay");
 // Account Deletion ----------------------------------------------------------------------------------------------------------------
 
 document.getElementById("accountDeleteButton").addEventListener("click", () => {
+  playSound("basic_button");
   showConfirmPopup("Delete your Account", "Please input your password to confirm the account deletion. Make sure to delete user-created content before proceeding, if you wish to remove that from the platform.", submitAccountDeletion, true);
 });
 

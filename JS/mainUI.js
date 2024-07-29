@@ -587,6 +587,8 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete) {
     const newButton = button.cloneNode(true);
     button.parentNode.replaceChild(newButton, button);
     newButton.addEventListener("click", () => {
+        playSound("basic_button");
+        
         try {
             executeFunction();
             confirmPopup.style.display = "none";
@@ -597,6 +599,7 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete) {
 }
 
 document.getElementById("confirmCancel").addEventListener("click", () => {
+    playSound("basic_button");
     confirmPopup.style.display = "none";
 });
 
