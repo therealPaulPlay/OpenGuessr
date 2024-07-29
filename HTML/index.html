@@ -205,63 +205,69 @@
         </div>
         <button class="standardButton white" id="editUsername">
           <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
-          Edit
+          Name
         </button> <input type="text" id="usernameInput" placeholder="New username" maxlength="50"></input>
         <button class="standardButton" id="confirmUsername">Confirm</button>
       </div>
-      <h3 id="profilePinHeader">Pin Style: </h3>
-      <div id="pinSelector">
-        <button class="pinHolder selectedPin">
-          <div class="pinLock">
-            <p class="pinLockText">0 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker0.png">
-        </button>
-        <button class="pinHolder">
-          <div class="pinLock">
-            <p class="pinLockText">5,000 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker1.png">
-        </button>
-        <button class="pinHolder">
-          <div class="pinLock">
-            <p class="pinLockText">30,000 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker2.png">
-        </button>
-        <button class="pinHolder">
-          <div class="pinLock">
-            <p class="pinLockText">100,000 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker3.png">
-        </button>
-        <button class="pinHolder">
-          <div class="pinLock">
-            <p class="pinLockText">500,000 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker4.png">
-        </button>
-        <button class="pinHolder">
-          <div class="pinLock">
-            <p class="pinLockText">5,000,000 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker5.png">
-        </button>
-      </div>
-      <h3>User Stats: </h3>
-      <div id="profileStats" class="statisticView">
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Experience:</p>
-          <p id="statisticExperience">not set.</p>
+      <div id="profileScrollSection">
+        <h3 id="profileAboutHeader">About: </h3>
+        <textarea id="profileAbout" maxlength="150" spellcheck="false"
+          placeholder="Share a few facts about yourself with others..."></textarea>
+        <h3 id="profilePinHeader">Pin Style: </h3>
+        <div id="pinSelector">
+          <button class="pinHolder selectedPin">
+            <div class="pinLock">
+              <p class="pinLockText">0 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker0.png">
+          </button>
+          <button class="pinHolder">
+            <div class="pinLock">
+              <p class="pinLockText">5,000 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker1.png">
+          </button>
+          <button class="pinHolder">
+            <div class="pinLock">
+              <p class="pinLockText">30,000 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker2.png">
+          </button>
+          <button class="pinHolder">
+            <div class="pinLock">
+              <p class="pinLockText">100,000 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker3.png">
+          </button>
+          <button class="pinHolder">
+            <div class="pinLock">
+              <p class="pinLockText">500,000 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker4.png">
+          </button>
+          <button class="pinHolder">
+            <div class="pinLock">
+              <p class="pinLockText">5,000,000 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker5.png">
+          </button>
         </div>
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Until Level-Up:</p>
-          <p id="statisticUpgradeExperience"> not set.</p>
+        <h3>User Stats: </h3>
+        <div id="profileStats" class="statisticView">
+          <div class="statisticsEnclosure">
+            <p class="statsLabel">Experience:</p>
+            <p id="statisticExperience">not set.</p>
+          </div>
+          <div class="statisticsEnclosure">
+            <p class="statsLabel">Until Level-Up:</p>
+            <p id="statisticUpgradeExperience"> not set.</p>
+          </div>
         </div>
-      </div>
-      <h3 id="accountManagementHeader">Account Management: </h3>
-      <div id="accountManagementArea" class="managementBox">
-        <button id="accountDeleteButton" class="standardButton">Delete Account</button>
+        <h3 id="accountManagementHeader">Account Management: </h3>
+        <div id="accountManagementArea" class="managementBox">
+          <button id="accountDeleteButton" class="standardButton">Delete Account</button>
+        </div>
+        <br>
       </div>
       <button id="profileClose" class="standardButton white accountClose">Close</button>
     </div>

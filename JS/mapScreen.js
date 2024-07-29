@@ -17,6 +17,14 @@ document.getElementById("backButton").addEventListener("click", function () {
     }
 });
 
+function openProfile(id) {
+    if (inIframe()) {
+        window.top.postMessage("profile" + id, "*");
+    } else {
+        window.location.href = "/index.html?profile=" + id;
+    }
+}
+
 // Load community maps using the openguessr map api  -----------------------------------------------------
 let currentFetchIndex = 0;
 let lastSearchMode = "index";
@@ -140,7 +148,7 @@ function addMap(name, creator, creatorId, fav, author, description) {
     }
     descArea.addEventListener("click", (event) => {
         event.stopPropagation();
-        showDescriptionWindow(name, author, description, owned);
+        showDescriptionWindow(name, author, description, owned, creatorId);
     });
 
     const addButton = document.createElement("button");
@@ -204,11 +212,18 @@ function removeSelectedMap(name) {
     }
 }
 
-function showDescriptionWindow(name, author, desc, isAuthor) {
+function showDescriptionWindow(name, author, desc, isAuthor, authorId) {
     document.getElementById("descriptionPopup").style.display = "flex";
     document.getElementById("descHeader").textContent = name;
-    document.getElementById("descAuthor").textContent = "by " + author;
     document.getElementById("descText").textContent = desc;
+
+    const description = document.getElementById("descAuthor");
+    const newDescription = description.cloneNode(true);
+    description.parentNode.replaceChild(newDescription, description);
+    newDescription.textContent = "by " + author;
+    newDescription.addEventListener("click", () => {
+        openProfile(authorId);
+    });
 
     try {
         if (isAuthor) {

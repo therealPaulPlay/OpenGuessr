@@ -631,10 +631,9 @@ function disablePageBrowser() {
 
 window.onmessage = function (e) {
     try {
-        const data = e.data;
-        
-        // Check if data includes "profile" and extract the ID if it does
-        const profileMatch = data.match(/^profile(\d+)$/);
+        const data = String(e.data); // Ensure data is a string
+
+        const profileMatch = data.match(/^profile(\d+)$/); // extract profile id if text includes profile
 
         switch (true) {
             case data === "close":
@@ -659,10 +658,10 @@ window.onmessage = function (e) {
                 loadCompetition(true);
                 break;
             case profileMatch !== null:
-                loadProfileFromId(Number(profileMatch[1]));
+                loadProfileFromId(Number(profileMatch[1]), false);
                 break;
         }
-    } catch {
-        console.error("Error processing window message.");
+    } catch (error) {
+        console.error("Error processing window message: " + error);
     }
 };

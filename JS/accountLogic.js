@@ -7,7 +7,7 @@ import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } fro
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
-import { closeProfile, viewProfile } from "./profileView.js";
+import { closeProfile, loadProfileFromId } from "./profileView.js";
 import { closePopup, errorPopup } from "./errorHandling.js";
 
 let accountLockedArray;
@@ -37,7 +37,7 @@ mobileLogoutButton.addEventListener("click", signout);
 
 let profileButton = document.getElementById("profileInfo");
 profileButton.addEventListener("click", () => {
-  viewProfile(localStorage.getItem("username"), localStorage.getItem("experience"), localStorage.getItem("id"), true);
+  loadProfileFromId(localStorage.getItem("id"), true);
   playSound("basic_button");
 });
 
@@ -45,7 +45,7 @@ let mobileProfileButton = document.getElementById("mobileProfileButton");
 mobileProfileButton.addEventListener("click", function () {
   toggleMobileMenu();
   playSound("basic_button");
-  viewProfile(localStorage.getItem("username"), localStorage.getItem("experience"), localStorage.getItem("id"), true);
+  loadProfileFromId(localStorage.getItem("id"), true);
 });
 
 let displayAccountName = document.getElementById("accountName");
