@@ -44,6 +44,16 @@ function toggleSection(e) {
     faqToggled = !faqToggled;
 }
 
+// open profiles -----------------------------------------------------------------------------------
+
+function openProfile(id) {
+    if (inIframe()) {
+        window.top.postMessage("profile" + id, "*");
+    } else {
+        window.location.href = "/index.html?profile=" + id;
+    }
+}
+
 // add competitions programmatically ---------------------------------------------------------------
 
 let normalAddSuccessful = false;
@@ -73,6 +83,8 @@ function formatDuration(seconds) {
     return result.join(' ');
 }
 
+let competitionHostIdCounter = 0;
+
 function addCompetition(id, name, author, authorId, playercount, restriction, duration, remainingDuration, locationAmount, roundLength, description, expired, entered, daily) {
     let container = expired ? document.getElementById("expiredCompetitionArea") : document.getElementById("competitionArea");
 
@@ -101,10 +113,11 @@ function addCompetition(id, name, author, authorId, playercount, restriction, du
 
     let competitionItem = document.createElement("div");
     competitionItem.className = `competitionItem fadeInItem${expiredItem}${dailyItem}`;
+    competitionHostIdCounter++;
 
     competitionItem.innerHTML = `
                         <h2 class="competitionItemHeader">${name}</h2>
-                        <p class="competitionAuthor">hosted by ${author}</p>
+                        <p id="host${competitionHostIdCounter}" class="competitionAuthor">hosted by ${author}</p>
                         <div class="competitionPropertiesBox">
                             <div class="propertyItem${expiredItem}${dailyItem}">
                                 <div class="label${expiredItem}${dailyItem}">
@@ -153,6 +166,11 @@ function addCompetition(id, name, author, authorId, playercount, restriction, du
     `;
 
     container.appendChild(competitionItem);
+
+    document.getElementById("host" + competitionHostIdCounter).addEventListener("click", () => {
+        let id = authorId == 0 ? 2 : authorId; // if hosted by id 0 (system), set profile to PaulPlay
+        openProfile(id);
+    });
 
     const leaderboardButton = document.getElementById("leaderboardButton" + id);
     const enterButton = document.getElementById("enterButton" + id);
@@ -346,22 +364,31 @@ async function loadLeaderboardFromServer(id) {
                     newEntry.classList.add("rankItem");
                     newEntry.innerHTML = `
                         <p class="leaderboardTextEntry">#${youItem.position}</p>
-                        <p class="leaderboardTextEntry centerEntry">${youItem.userName}</p>
+                        <p id="yourUsername" class="leaderboardTextEntry centerEntry">${youItem.userName}</p>
                         <p class="leaderboardTextEntry">${youItem.score.toLocaleString()} Pts.</p>`;
                     youBar.innerHTML = `
                         <p class="youLabel">You:</p>
-                    `
-                    youBar.appendChild(newEntry);
+                    `;
 
+                    youBar.appendChild(newEntry);
                     document.getElementById("rankingDisplay").appendChild(youBar);
+                    document.getElementById("yourUsername").addEventListener("click", () => {
+                        openProfile(localStorage.getItem("id"));
+                    });
+
+
                 }
 
+                let idCounter = 0;
+
                 data.leaderboard.forEach(entry => {
+                    idCounter ++;
+
                     let newEntry = document.createElement("div");
                     newEntry.classList.add("rankItem");
                     newEntry.innerHTML = `
                         <p class="leaderboardTextEntry">#${entry.position}</p>
-                        <p class="leaderboardTextEntry centerEntry">${entry.userName}</p>
+                        <p id="entry${idCounter}" class="leaderboardTextEntry centerEntry">${entry.userName}</p>
                         <p class="leaderboardTextEntry">${entry.score.toLocaleString()} Pts.</p>`;
 
                     if (entry.id == localStorage.getItem("id")) {
@@ -369,6 +396,10 @@ async function loadLeaderboardFromServer(id) {
                     }
 
                     document.getElementById("rankingDisplay").appendChild(newEntry);
+
+                    document.getElementById("entry" + idCounter).addEventListener("click", () => {
+                        openProfile(entry.id);
+                    });
                 });
 
                 document.getElementById("leaderboardHeader").textContent = "Results for " + data.name;

@@ -6,6 +6,7 @@ import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCount
 import { playSound } from "./soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners } from "./categoryMenu.js";
 import { loadCompetition } from "./competitionLogic.js";
+import { loadProfileFromId } from "./profileView.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -586,6 +587,8 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete) {
     const newButton = button.cloneNode(true);
     button.parentNode.replaceChild(newButton, button);
     newButton.addEventListener("click", () => {
+        playSound("basic_button");
+        
         try {
             executeFunction();
             confirmPopup.style.display = "none";
@@ -596,6 +599,7 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete) {
 }
 
 document.getElementById("confirmCancel").addEventListener("click", () => {
+    playSound("basic_button");
     confirmPopup.style.display = "none";
 });
 
@@ -629,27 +633,38 @@ function disablePageBrowser() {
 }
 
 window.onmessage = function (e) {
-    switch (e.data) {
-        case "close":
-            disablePageBrowser();
-            break;
-        case "reloadCommunityMaps":
-            loadCommunityCategories();
-            attachCategoryEventListeners();
-            break;
-        case "loadCategory":
-            loadMapCategory();
-            changeCategory(mapCategory, false);
-            break;
-        case "reloadCategory":
-            loadMapCategory();
-            changeCategory(mapCategory, true);
-            break;
-        case "loadAccountStatus":
-            checkAuthenticationStatus();
-            break;
-        case "loadCompetition":
-            loadCompetition(true);
-            break;
+    try {
+        const data = String(e.data); // Ensure data is a string
+
+        const profileMatch = data.match(/^profile(\d+)$/); // extract profile id if text includes profile
+
+        switch (true) {
+            case data === "close":
+                disablePageBrowser();
+                break;
+            case data === "reloadCommunityMaps":
+                loadCommunityCategories();
+                attachCategoryEventListeners();
+                break;
+            case data === "loadCategory":
+                loadMapCategory();
+                changeCategory(mapCategory, false);
+                break;
+            case data === "reloadCategory":
+                loadMapCategory();
+                changeCategory(mapCategory, true);
+                break;
+            case data === "loadAccountStatus":
+                checkAuthenticationStatus();
+                break;
+            case data === "loadCompetition":
+                loadCompetition(true);
+                break;
+            case profileMatch !== null:
+                loadProfileFromId(Number(profileMatch[1]), false, true);
+                break;
+        }
+    } catch (error) {
+        console.error("Error processing window message: " + error);
     }
 };

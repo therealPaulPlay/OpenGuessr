@@ -178,7 +178,7 @@
         background-color: rgba(255, 255, 255, 0.1);
         transition: background-color 250ms ease, filter 250ms ease;
         width: calc(90% - 60px);
-        max-width: 1100px;
+        max-width: 1150px;
         padding: 25px;
         overflow: hidden;
         height: 300px;
@@ -374,6 +374,16 @@
         margin-bottom: 30px;
         padding-left: 2px;
         color: rgba(249, 216, 216, 0.5);
+        cursor: pointer;
+        transition: opacity 250ms ease;
+        max-width: 300px;
+        text-wrap: nowrap;
+        text-overflow: ellipsis;
+        overflow: hidden;
+    }
+
+    .competitionAuthor:hover {
+        opacity: 0.5;
     }
 
     .buttonBox {
@@ -831,6 +841,12 @@
 
     .centerEntry {
         max-width: 50%;
+        transition: opacity 250ms ease;
+        cursor: pointer;
+    }
+
+    .centerEntry:hover {
+        opacity: 0.5;
     }
 
     .aboutSection {

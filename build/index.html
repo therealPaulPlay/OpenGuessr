@@ -18,7 +18,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=1.0.2">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=1.0.3">
 
   <!-- Non-bundled js files -->
   <script type="module" src="analytics.js" async></script>
@@ -28,7 +28,7 @@
     data-site-id="664453baf2089a039dc08edb" data-mode="scan" async></script>
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=1.0.3" defer></script>
+  <script type="module" src="main.js?v=1.0.4" defer></script>
 
   <!-- custom venatus scaling script -->
   <script type="module" src="venatusCustom.js" defer></script>
@@ -185,18 +185,18 @@
   <!-- Confirmation overlay for prompts (Are you sure, leave, delete..) -->
   <div id="confirmPopup" class="popupHolder confirmBackground">
     <div class="confirmPopupWindow uiWindow">
-      <h1 id="confirmTitle" class="popup-title"></h2>
-      <div id="confirmDescription" class="popup-description">This is the default warning.</div>
-      <input id="accountDeletePassword" type="password" placeholder="Password">
-      <div class="buttonBoxRight">
-        <button id="confirmCancel" class="standardButton white">Cancel</button>
-        <button id="confirmProceed" class="standardButton">Confirm</button>
-      </div>
+      <h1 id="confirmTitle" class="popup-title">
+        </h2>
+        <div id="confirmDescription" class="popup-description">This is the default warning.</div>
+        <input id="accountDeletePassword" type="password" placeholder="Password">
+        <div class="buttonBoxRight">
+          <button id="confirmCancel" class="standardButton white">Cancel</button>
+          <button id="confirmProceed" class="standardButton">Confirm</button>
+        </div>
     </div>
   </div>
-  <!-- remaining windows -->
-  <div class="popupHolder">
-    <!-- New profile window -->
+  <!-- New profile window -->
+  <div id="profilePopup" class="popupHolder profilePopupBackground">
     <div id="profileWindow" class="uiWindow">
       <div class="popup-title">
         <div class="profileNameArea">
@@ -205,66 +205,91 @@
         </div>
         <button class="standardButton white" id="editUsername">
           <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
-          Edit
+          Name
         </button> <input type="text" id="usernameInput" placeholder="New username" maxlength="50"></input>
         <button class="standardButton" id="confirmUsername">Confirm</button>
       </div>
-      <h3>Pin Style: </h3>
-      <div id="pinSelector">
-        <button class="pinHolder selectedPin">
-          <div class="pinLock">
-            <p class="pinLockText">0 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker0.png">
-        </button>
-        <button class="pinHolder">
-          <div class="pinLock">
-            <p class="pinLockText">5,000 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker1.png">
-        </button>
-        <button class="pinHolder">
-          <div class="pinLock">
-            <p class="pinLockText">30,000 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker2.png">
-        </button>
-        <button class="pinHolder">
-          <div class="pinLock">
-            <p class="pinLockText">100,000 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker3.png">
-        </button>
-        <button class="pinHolder">
-          <div class="pinLock">
-            <p class="pinLockText">500,000 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker4.png">
-        </button>
-        <button class="pinHolder">
-          <div class="pinLock">
-            <p class="pinLockText">5,000,000 XP</p>
-          </div>
-          <img class="pinSelectIcon" src="/IMG/your_marker5.png">
-        </button>
-      </div>
-      <h3>User Stats: </h3>
-      <div id="profileStats" class="statisticView">
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Experience:</p>
-          <p id="statisticExperience">not set.</p>
+      <div id="profileScrollSection">
+        <h3 id="profileAboutHeader">About: </h3>
+        <textarea id="profileAbout" maxlength="150" spellcheck="false"
+          placeholder="Share a few facts about yourself with others..."></textarea>
+        <h3 id="profilePinHeader">Pin Style: </h3>
+        <div id="pinSelector">
+          <button class="pinHolder selectedPin">
+            <div class="pinLock">
+              <p class="pinLockText">0 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker0.png">
+          </button>
+          <button class="pinHolder">
+            <div class="pinLock">
+              <p class="pinLockText">5,000 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker1.png">
+          </button>
+          <button class="pinHolder">
+            <div class="pinLock">
+              <p class="pinLockText">30,000 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker2.png">
+          </button>
+          <button class="pinHolder">
+            <div class="pinLock">
+              <p class="pinLockText">100,000 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker3.png">
+          </button>
+          <button class="pinHolder">
+            <div class="pinLock">
+              <p class="pinLockText">500,000 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker4.png">
+          </button>
+          <button class="pinHolder">
+            <div class="pinLock">
+              <p class="pinLockText">5,000,000 XP</p>
+            </div>
+            <img class="pinSelectIcon" src="/IMG/your_marker5.png">
+          </button>
         </div>
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Until Level-Up:</p>
-          <p id="statisticUpgradeExperience"> not set.</p>
+        <h3>User Stats: </h3>
+        <div id="profileStats" class="statisticView">
+          <div class="statisticsEnclosure">
+            <p class="statsLabel">Experience:</p>
+            <p id="statisticExperience">not set.</p>
+          </div>
+          <div class="statisticsEnclosure">
+            <p class="statsLabel">Until Level-Up:</p>
+            <p id="statisticUpgradeExperience"> not set.</p>
+          </div>
+          <div class="statisticsEnclosure">
+            <p class="statsLabel">Duels played:</p>
+            <p id="statisticDuelsPlayed">0</p>
+          </div>
+          <div class="statisticsEnclosure">
+            <p class="statsLabel">Duels won:</p>
+            <p id="statisticDuelsWon">0</p>
+          </div>
+          <div class="statisticsEnclosure">
+            <p class="statsLabel">Competitions entered:</p>
+            <p id="statisticCompetitionsEntered">0</p>
+          </div>
+          <div class="statisticsEnclosure">
+            <p class="statsLabel">Joined:</p>
+            <p id="statisticJoinedDate"> not set.</p>
+          </div>
         </div>
-      </div>
-      <h3>Account Management: </h3>
-      <div class="managementBox">
-        <button id="accountDeleteButton" class="standardButton">Delete Account</button>
+        <h3 id="accountManagementHeader">Account Management: </h3>
+        <div id="accountManagementArea" class="managementBox">
+          <button id="accountDeleteButton" class="standardButton">Delete Account</button>
+        </div>
+        <br>
       </div>
       <button id="profileClose" class="standardButton white accountClose">Close</button>
     </div>
+  </div>
+  <!-- remaining windows -->
+  <div class="popupHolder">
     <!-- Help / How to Play Popup -->
     <div id="helpWindow" class="uiWindow">
       <div class="popup-title">
@@ -273,7 +298,8 @@
       <ul class="nolistdots">
         <li>
           <h3>🔍 Look at the Street View image</h3>
-          <p class="listMarginLeft">Study the image carefully. Use the navigation controls to explore the surroundings.</p>
+          <p class="listMarginLeft">Study the image carefully. Use the navigation controls to explore the surroundings.
+          </p>
         </li>
         <li>
           <h3>🌟 Make your guess</h3>
@@ -285,7 +311,8 @@
         </li>
         <li>
           <h3>👍 Challenge your friends</h3>
-          <p class="listMarginLeft">Compete against friends in the multiplayer modes to see who can guess the most accurate locations.</p>
+          <p class="listMarginLeft">Compete against friends in the multiplayer modes to see who can guess the most
+            accurate locations.</p>
         </li>
       </ul>
       <button id="helpClose" class="standardButton white accountClose">Let's go!</button>
