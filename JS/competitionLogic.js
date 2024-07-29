@@ -5,6 +5,7 @@ import { checkGenerationTypeAndGenerate } from "./categoryMenu";
 import { playSound } from "./soundManager";
 import { errorPopup } from "./errorHandling";
 import { setRestriction } from "./multiplayer";
+import { addCompetitionPlayed } from "./profileView";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
 
@@ -30,6 +31,8 @@ export function loadCompetition(regenerate) {
         playingCompetition = true;
         setCompetitionUI(true);
         setRestriction(competition.restriction);
+
+        addCompetitionPlayed();
 
         if (regenerate) {
             checkGenerationTypeAndGenerate();

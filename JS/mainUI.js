@@ -661,7 +661,7 @@ window.onmessage = function (e) {
                 loadCompetition(true);
                 break;
             case profileMatch !== null:
-                loadProfileFromId(Number(profileMatch[1]), false);
+                loadProfileFromId(Number(profileMatch[1]), false, true);
                 break;
         }
     } catch (error) {

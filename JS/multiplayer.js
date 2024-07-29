@@ -7,7 +7,7 @@ import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transition
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeamMarkers } from "./miniMap.js";
 import { calculateDistances, loadResultMap } from "./main.js";
 import { playSound } from "./soundManager.js";
-import { loadProfileFromId } from "./profileView.js";
+import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
 
 //Global UI --------------------------------------------------------------------------------------------
 export let coordsFromHost = [];
@@ -1146,6 +1146,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     roomLocked = false;
 }
 
+// Start room (HOST function)
 function StartRoom() {
     //start the round (from host)
     multiplayerHost.textContent = "Loading Location...";
@@ -1157,6 +1158,10 @@ function StartRoom() {
     checkGenerationTypeAndGenerate();
     if (playingDuels) {
         roomLocked = true;
+        
+        if (isAuthenticated) {
+            addDuelPlayed();
+        }
     }
     matchmakingActive = false;
 }
@@ -1321,6 +1326,10 @@ function joinRoom(code) {
             multiplayerCategory = data.content.category;
             yourTeam = data.content.team;
             roundIndex = data.content.currentRound;
+
+            if (playingDuels && isAuthenticated) {
+                addDuelPlayed();
+            }
         }
 
         if (data.type === "showPlayersArray") {
@@ -1649,7 +1658,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
 
             let winningTeamIndex = sortedTeams[0];
 
-            // Win state
+            // Teams Win state
             if (roundIndex >= roundAmount) {
                 let teamColorName = teams[winningTeamIndex].colorName;
                 document.getElementById("multiplayerTitle").textContent = `Team ${teamColorName} won!`;
@@ -1700,7 +1709,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                     if (id) {
                         try {
                             document.getElementById("usernameOverlayField" + nameProfileIdCounter).addEventListener("click", () => {
-                                loadProfileFromId(id, false);
+                                loadProfileFromId(id, false, true);
                             });
                         } catch(error) {
                             console.error("Error in showMultiplayerOverlay: " + error);
@@ -1711,11 +1720,18 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
         } else {
             array.sort((a, b) => b[3] - a[3]);
 
-            // no teams win state
+            // No teams win state
             if (roundIndex >= roundAmount && !lateJoin) {
                 let winningPlayerData = array[0];
                 let winningUsername = winningPlayerData[1];
+                let winningId = winningPlayerData[5];
                 document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
+                
+                // check if you won in duels
+                if (playingDuels && isAuthenticated && winningId == localStorage.getItem("id")) {
+                    addDuelWon();
+                }
+
                 showEndscreenUI(true);
             } else {
                 showEndscreenUI(false);
@@ -1756,7 +1772,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 if (id) {
                     try {
                         document.getElementById("usernameOverlayField" + nameProfileIdCounter).addEventListener("click", () => {
-                            loadProfileFromId(id, false);
+                            loadProfileFromId(id, false, true);
                         });
                     } catch(error) {
                         console.error("Error in showMultiplayerOverlay: " + error);

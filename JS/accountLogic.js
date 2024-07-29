@@ -37,7 +37,7 @@ mobileLogoutButton.addEventListener("click", signout);
 
 let profileButton = document.getElementById("profileInfo");
 profileButton.addEventListener("click", () => {
-  loadProfileFromId(localStorage.getItem("id"), true);
+  loadProfileFromId(localStorage.getItem("id"), true, true);
   playSound("basic_button");
 });
 
@@ -45,7 +45,7 @@ let mobileProfileButton = document.getElementById("mobileProfileButton");
 mobileProfileButton.addEventListener("click", function () {
   toggleMobileMenu();
   playSound("basic_button");
-  loadProfileFromId(localStorage.getItem("id"), true);
+  loadProfileFromId(localStorage.getItem("id"), true, true);
 });
 
 let displayAccountName = document.getElementById("accountName");
