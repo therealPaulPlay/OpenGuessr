@@ -606,6 +606,17 @@ input:focus {
   display: block !important;
 }
 
+#profileWindow {
+  z-index: 970;
+  display: block !important;
+}
+
+.profilePopupBackground {
+  background-color: rgba(30, 30, 30, 0.7);
+  display: none;
+  z-index: 970;
+}
+
 #socialWindow {
   width: 40%;
   min-width: 300px;

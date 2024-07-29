@@ -6,6 +6,7 @@ import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCount
 import { playSound } from "./soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners } from "./categoryMenu.js";
 import { loadCompetition } from "./competitionLogic.js";
+import { loadProfileFromId } from "./profileView.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -629,27 +630,39 @@ function disablePageBrowser() {
 }
 
 window.onmessage = function (e) {
-    switch (e.data) {
-        case "close":
-            disablePageBrowser();
-            break;
-        case "reloadCommunityMaps":
-            loadCommunityCategories();
-            attachCategoryEventListeners();
-            break;
-        case "loadCategory":
-            loadMapCategory();
-            changeCategory(mapCategory, false);
-            break;
-        case "reloadCategory":
-            loadMapCategory();
-            changeCategory(mapCategory, true);
-            break;
-        case "loadAccountStatus":
-            checkAuthenticationStatus();
-            break;
-        case "loadCompetition":
-            loadCompetition(true);
-            break;
+    try {
+        const data = e.data;
+        
+        // Check if data includes "profile" and extract the ID if it does
+        const profileMatch = data.match(/^profile(\d+)$/);
+
+        switch (true) {
+            case data === "close":
+                disablePageBrowser();
+                break;
+            case data === "reloadCommunityMaps":
+                loadCommunityCategories();
+                attachCategoryEventListeners();
+                break;
+            case data === "loadCategory":
+                loadMapCategory();
+                changeCategory(mapCategory, false);
+                break;
+            case data === "reloadCategory":
+                loadMapCategory();
+                changeCategory(mapCategory, true);
+                break;
+            case data === "loadAccountStatus":
+                checkAuthenticationStatus();
+                break;
+            case data === "loadCompetition":
+                loadCompetition(true);
+                break;
+            case profileMatch !== null:
+                loadProfileFromId(Number(profileMatch[1]));
+                break;
+        }
+    } catch {
+        console.error("Error processing window message.");
     }
 };
