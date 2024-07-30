@@ -8,12 +8,15 @@ import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
+import { setImageGuessrEnabled } from "./imageGuesser.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 let Category = {
     STANDARD: "standard",
     CAPITAL: "capital",
     FAMOUS: "famous",
+    COUNTRY: "country",
+    IMAGE: "image",
     USA: "usa",
     GERMANY: "germany",
     UK: "uk",
@@ -34,7 +37,6 @@ let Category = {
     SLOVAKIA: "slovakia",
     ROMANIA: "romania",
     TURKEY: "turkey",
-    COUNTRY: "country",
     FINLAND: "finland",
     ISRAEL: "israel",
     CZECHIA: "czechia",
@@ -173,17 +175,22 @@ export function checkGenerationTypeAndGenerate() {
     try { competitionTimer.stopTimer(); } catch { }; // has to be in try catch
     document.getElementById("mapTimer").textContent = "00" + ":" + "00"; // reset the timer visually
     setCountryGuesserMode(false);
+    setImageGuessrEnabled(false);
 
     if (!multiplayer && !playingCompetition) {
         //If multiplayer is disabled
         showMultiplayerOverlay(false);
 
         //pick between json and maps api loading depending on the category type
-        if (mapCategory != "standard" && mapCategory != "country" && !mapCategory.includes("community")) {
+        if (mapCategory != "standard" && mapCategory != "country" && mapCategory != "image" && !mapCategory.includes("community")) {
             generateNewLocation("JSON");
 
         } else if (mapCategory == "country") {
             setCountryGuesserMode(true);
+            generateNewLocation("JSON");
+
+        } else if (mapCategory == "image") {
+            setImageGuessrEnabled(true);
             generateNewLocation("JSON");
 
         } else if (mapCategory == "standard") {
@@ -201,7 +208,7 @@ export function checkGenerationTypeAndGenerate() {
             setHardMode(false);
 
             if (isHost) {
-                if (mapCategory != "standard" && mapCategory != "country" && !mapCategory.includes("community")) {
+                if (mapCategory != "standard" && mapSupportsMultiplayer(mapCategory) && !mapCategory.includes("community")) {
                     generateNewLocation("JSON");
                 } else if (mapCategory == "standard") {
                     generateNewLocation("SDK");
@@ -291,5 +298,15 @@ export function transitionToStart() {
 
     } else {
         console.warn("CategoryMenu.js: Already transitioning to start!");
+    }
+}
+
+// Check if map is supported for multiplayer --------------------------------------------------------------------------------------
+
+export function mapSupportsMultiplayer(mapCategory) {
+    if (mapCategory == "country" || mapCategory == "image") {
+        return false;
+    } else {
+        return true;
     }
 }

@@ -7,7 +7,7 @@ import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } fro
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
-import { closeProfile, loadProfileFromId } from "./profileView.js";
+import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, setSelectedProfilePin } from "./profileView.js";
 import { closePopup, errorPopup } from "./errorHandling.js";
 
 let accountLockedArray;
@@ -330,7 +330,9 @@ function streakCalculation() {
         toggleStreakWindow(streak, false);
       }
 
-      streak = 0; //reset country streak
+      setCheckNewHighestStreak(streak); // checks if this was the highest streak yet and 
+      
+      streak = 0; //reset country streak ( = Streak lost, but still restorable wit ad)
     }
 
     localStorage.setItem("streak", streak);
@@ -362,7 +364,7 @@ function calculateXPGain(distance, category) {
     streakCalculation();
     return Math.round((5000 * ((0.996036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // slightly reduced xp range as continents are smaller than countries
 
-  } else if (category == "famous") {
+  } else if (category == "famous" || category == "image") {
 
     streakCalculation();
     return Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //1500 xp for famous, with streak up to 1800sth
@@ -509,6 +511,8 @@ function selectPin(index, sound) {
         selectedPinIndex = index;
         localStorage.setItem("selectedPin", index);
       }
+
+      setSelectedProfilePin(index, true);
     } else {
       if (sound) {
         playSound("pin_locked");

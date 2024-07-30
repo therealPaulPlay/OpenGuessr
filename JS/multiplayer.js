@@ -3,7 +3,7 @@ import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex, isAuthenticated } from "./accountLogic.js";
-import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
+import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeamMarkers } from "./miniMap.js";
 import { calculateDistances, loadResultMap } from "./main.js";
 import { playSound } from "./soundManager.js";
@@ -1124,7 +1124,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     multiplayerFirstRoundPlayed = false;
     multiplayerCategory = mapCategory;
 
-    if (multiplayerCategory == "country") {
+    if (!mapSupportsMultiplayer(multiplayerCategory)) {
         multiplayerCategory = "standard";
     }
 
@@ -1152,10 +1152,6 @@ function StartRoom() {
     checkGenerationTypeAndGenerate();
     if (playingDuels) {
         roomLocked = true;
-        
-        if (isAuthenticated) {
-            addDuelPlayed();
-        }
     }
     matchmakingActive = false;
 }
@@ -1320,10 +1316,6 @@ function joinRoom(code) {
             multiplayerCategory = data.content.category;
             yourTeam = data.content.team;
             roundIndex = data.content.currentRound;
-
-            if (playingDuels && isAuthenticated) {
-                addDuelPlayed();
-            }
         }
 
         if (data.type === "showPlayersArray") {
@@ -1444,7 +1436,7 @@ if (peer) {
             if (err.type != "network") {
                 errorPopup("Multiplayer error", "Fatal multiplayer error. Please reload if you want to use multiplayer.", err.type, true);
             } else {
-                errorPopup("Disconnected from round.", "You have left the multiplayer round due to network issues. Check your and the host's connection.", err.type, false);
+                errorPopup("Disconnected from round", "You have left the multiplayer round due to network issues. Check your and the host's connection.", err.type, false);
             }
 
             leaveMultiplayerRound();
@@ -1721,9 +1713,13 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 let winningId = winningPlayerData[5];
                 document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
                 
-                // check if you won in duels
-                if (playingDuels && isAuthenticated && winningId == localStorage.getItem("id")) {
-                    addDuelWon();
+                // check if you won in duels or just played
+                if (playingDuels && isAuthenticated) {
+                    if (winningId == localStorage.getItem("id")) {
+                        addDuelWon();
+                    } else {
+                        addDuelPlayed();
+                    }
                 }
 
                 showEndscreenUI(true);

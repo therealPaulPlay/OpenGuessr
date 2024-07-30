@@ -27,7 +27,9 @@ body {
   background-color: #13151c;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-weight: 500;
 }
 
@@ -96,7 +98,7 @@ h1, h2, h3 {
 
 .topBarExpand {
   max-width: 0px;
-  transition: max-width 400ms cubic-bezier(.45,.05,.55,.95);
+  transition: max-width 400ms cubic-bezier(.45, .05, .55, .95);
   overflow: hidden;
   display: inline-block;
   vertical-align: bottom;
@@ -121,7 +123,7 @@ h1, h2, h3 {
   position: fixed;
   bottom: 0;
   width: 100%;
-  z-index: 3;
+  z-index: 1;
   height: 200px;
   background-image: linear-gradient(0.50turn, transparent, rgb(255, 255, 255));
   opacity: 30%;
@@ -181,7 +183,7 @@ h1, h2, h3 {
 }
 
 .pinHolder {
-  position: relative; 
+  position: relative;
   box-sizing: border-box;
   height: 80px;
   width: 80px;
@@ -190,8 +192,8 @@ h1, h2, h3 {
   border-radius: 7px;
   background-color: rgba(255, 255, 255, 0.1);
   display: flex;
-  flex-direction: column; 
-  justify-content: center; 
+  flex-direction: column;
+  justify-content: center;
   transition: scale 250ms ease, filter 250ms ease;
 }
 
@@ -201,13 +203,13 @@ h1, h2, h3 {
 }
 
 .pinSelectIcon {
-  position: absolute; 
-  top: 50%; 
-  left: 50%; 
-  transform: translate(-50%, -50%); 
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
   height: 40px;
   width: auto;
-  z-index: 1; 
+  z-index: 1;
 }
 
 .selectedPin {
@@ -261,7 +263,7 @@ h1, h2, h3 {
 #profileViewName {
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 80%;
+  max-width: 60%;
   text-wrap: nowrap;
 }
 
@@ -272,23 +274,37 @@ h1, h2, h3 {
 }
 
 .scroll {
-  animation: scrollText 5s ease-in-out infinite alternate; 
+  animation: scrollText 5s ease-in-out infinite alternate;
 }
 
 /* Animation for scrolling */
 @keyframes scrollText {
-  0% { transform: translateX(5px); }
-  100% { transform: translateX(calc(-100% + 135px)); } /* Adjusted animation */
+  0% {
+    transform: translateX(5px);
+  }
+
+  100% {
+    transform: translateX(calc(-100% + 135px));
+  }
+
+  /* Adjusted animation */
 }
 
 .modetextScroll {
-  animation: scrollModeText 5s ease-in-out infinite alternate; 
+  animation: scrollModeText 5s ease-in-out infinite alternate;
 }
 
 /* Animation for scrolling */
 @keyframes scrollModeText {
-  0% { transform: translateX(5px); }
-  100% { transform: translateX(calc(-100% + 135px)); } /* Adjusted animation */
+  0% {
+    transform: translateX(5px);
+  }
+
+  100% {
+    transform: translateX(calc(-100% + 135px));
+  }
+
+  /* Adjusted animation */
 }
 
 .progressContainer {
@@ -333,9 +349,17 @@ h1, h2, h3 {
 }
 
 @keyframes XPFade {
-  0% {filter: brightness(1) contrast(1)}
-  50% {filter: brightness(1.75) contrast(0.5)}
-  100% {filter: brightness(1) contrast(1)}
+  0% {
+    filter: brightness(1) contrast(1)
+  }
+
+  50% {
+    filter: brightness(1.75) contrast(0.5)
+  }
+
+  100% {
+    filter: brightness(1) contrast(1)
+  }
 }
 
 #endScreenXPbar {
@@ -414,7 +438,8 @@ h1, h2, h3 {
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   overflow: hidden;
-  display: none; /* default hidden */
+  display: none;
+  /* default hidden */
   pointer-events: auto;
 }
 
@@ -477,12 +502,23 @@ h1, h2, h3 {
   color: white;
 }
 
-#profileButton, #logoutButton {
+#profileButton,
+#logoutButton {
   display: none;
 }
 
-#profileClose, #helpClose, #troubleshootClose, #settingsClose, #socialPopupClose, #linkJoinClose, #socialPopupJoin, 
-#multiplayerSelectorClose, #multiplayerSelectorBack, #mobilePopupClose, #confirmCancel, #confirmProceed {
+#profileClose,
+#helpClose,
+#troubleshootClose,
+#settingsClose,
+#socialPopupClose,
+#linkJoinClose,
+#socialPopupJoin,
+#multiplayerSelectorClose,
+#multiplayerSelectorBack,
+#mobilePopupClose,
+#confirmCancel,
+#confirmProceed {
   min-height: 50px;
 }
 
@@ -596,7 +632,8 @@ textarea {
 }
 
 .uiWindow {
-  display: none; /* used with block */
+  display: none;
+  /* used with block */
   width: 45%;
   min-width: 300px;
   max-width: 600px;
@@ -642,6 +679,14 @@ textarea {
   display: block !important;
 }
 
+#selectedProfilePin {
+  width: 25px;
+  height: 25px;
+  margin-left: 5px;
+  margin-top: auto;
+  margin-bottom: 8px;
+}
+
 .profilePopupBackground {
   background-color: rgba(30, 30, 30, 0.7);
   display: none;
@@ -676,7 +721,8 @@ textarea {
 
 .highlight {
   color: rgb(198, 255, 198);
-  text-shadow: 0 0 10px #00cc00;;
+  text-shadow: 0 0 10px #00cc00;
+  ;
 }
 
 #profileWindow {
@@ -734,9 +780,17 @@ textarea {
 }
 
 @keyframes loadingText {
-  0% { color: white; }
-  50% { color: rgb(140, 140, 140); }
-  100% { color: white; }
+  0% {
+    color: white;
+  }
+
+  50% {
+    color: rgb(140, 140, 140);
+  }
+
+  100% {
+    color: white;
+  }
 }
 
 .newSocialMenuTag {
@@ -1079,15 +1133,15 @@ textarea {
 }
 
 .countryGuesserHolder {
-  position: relative; 
+  position: relative;
   box-sizing: border-box;
   height: 85px;
   width: 150px;
   border-radius: 7px;
   background-color: rgba(174, 174, 174, 0.25);
   display: flex;
-  flex-direction: column; 
-  justify-content: center; 
+  flex-direction: column;
+  justify-content: center;
   transition: scale 250ms ease, filter 250ms ease;
   text-align: center;
 }
@@ -1140,7 +1194,7 @@ textarea {
   height: 100%;
   position: fixed;
   top: 0;
-  z-index: 1;
+  z-index: 3;
   transition: opacity 250ms ease;
   opacity: 0;
   overflow: hidden;
@@ -1181,6 +1235,68 @@ textarea {
   user-select: none;
 }
 
+#imageGuesserOverlay {
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  top: 0;
+  z-index: 2;
+  transition: opacity 250ms ease, transform 2000ms ease, filter 250ms ease;
+  transform: scale(1.0);
+  opacity: 0;
+  overflow: hidden;
+  display: none; /* used with flex */
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  color: white;
+  pointer-events: none;
+  user-select: none;
+  background-color: rgb(22, 22, 22);
+}
+
+#imageGuesserImage {
+  max-width: 40%;
+  max-height: 70%;
+  width: 100%;
+  height: 100%;
+  transition: transform 250ms ease, filter 250ms ease, opacity 500ms ease;
+  pointer-events: auto;
+  z-index: 2;
+  opacity: 1;
+  background-size: contain; /* Maintain aspect ratio */
+  background-position: center;
+  background-repeat: no-repeat;
+  filter: drop-shadow(10px 0px 0px rgb(255, 255, 255)) drop-shadow(0px 10px 0px rgb(255, 255, 255)) drop-shadow(-10px 0px 0px rgb(255, 255, 255)) drop-shadow(0px -10px 0px rgb(255, 255, 255));
+}
+
+#imageGuesserAttribution {
+  font-size: 25px;
+  color: white;
+  opacity: 0.5;
+  z-index: 2;
+  margin-top: 10px;
+}
+
+.noTextDecoration {
+  text-decoration: none;
+}
+
+#imageGuesserBackground {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  filter: brightness(0.5);
+  background-size: cover;
+  transition: opacity 500ms ease;
+  opacity: 1;
+}
+
+.guessImageLoading {
+  opacity: 0 !important;
+}
+
 #duelsOverlay h1 {
   font-size: 75px;
   text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
@@ -1214,7 +1330,8 @@ textarea {
   margin-bottom: 20px;
 }
 
-#multiplayerFade p, #multiplayerTable p {
+#multiplayerFade p,
+#multiplayerTable p {
   font-size: 30px;
   text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 }
@@ -1222,7 +1339,8 @@ textarea {
 #multiplayerTable {
   display: flex;
   justify-content: safe center;
-  align-items: safe flex-start; /* Stretch items to full height */
+  align-items: safe flex-start;
+  /* Stretch items to full height */
   width: 50%;
   min-width: 350px;
   max-width: 750px;
@@ -1256,6 +1374,7 @@ textarea {
   flex: 1;
   transition: opacity 250ms ease;
   cursor: pointer;
+  user-select: none;
 }
 
 .multiplayerEntryPlayerName:hover {
@@ -1334,7 +1453,8 @@ textarea {
   background: none;
 }
 
-#extendedNavbarContent, #communityMapArea {
+#extendedNavbarContent,
+#communityMapArea {
   margin-top: 15px;
   padding-inline: 20px;
   position: relative;
@@ -1376,7 +1496,8 @@ textarea {
 #OpenGuessrIcon {
   width: 200px;
   height: auto;
-  filter: drop-shadow(0 0 10px rgba(43, 43, 43, 0.25)); /* shadow for image. left, top, blur, color */
+  filter: drop-shadow(0 0 10px rgba(43, 43, 43, 0.25));
+  /* shadow for image. left, top, blur, color */
 }
 
 #GuesserWindow {
@@ -1422,7 +1543,8 @@ textarea {
   border-radius: 10px;
 }
 
-.leaflet-bottom, .leaflet-control-attribution {
+.leaflet-bottom,
+.leaflet-control-attribution {
   pointer-events: none;
   display: none;
 }
@@ -1430,7 +1552,7 @@ textarea {
 .leaflet-tooltip {
   padding: 1px;
   padding-inline: 6px;
-  box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
   margin-top: -18px;
   margin-left: 23px;
 }
@@ -1479,7 +1601,8 @@ map::selection {
   height: 48px;
   width: 100%;
   border-radius: 10px;
-  display: none; /* set to flex in code when needed */
+  display: none;
+  /* set to flex in code when needed */
   align-items: center;
   justify-content: flex-start;
   color: white;
@@ -1495,15 +1618,31 @@ map::selection {
 }
 
 @keyframes textFade {
-  0% { color: white; }
-  50% { color: red; }
-  100% { color: white; }
+  0% {
+    color: white;
+  }
+
+  50% {
+    color: red;
+  }
+
+  100% {
+    color: white;
+  }
 }
 
 @keyframes divFade {
-  0% { background-color: hsla(236, 25%, 20%, 0.7);}
-  50% { background-color: hsla(298, 25%, 20%, 0.7); }
-  100% { background-color: hsla(236, 25%, 20%, 0.7);}
+  0% {
+    background-color: hsla(236, 25%, 20%, 0.7);
+  }
+
+  50% {
+    background-color: hsla(298, 25%, 20%, 0.7);
+  }
+
+  100% {
+    background-color: hsla(236, 25%, 20%, 0.7);
+  }
 }
 
 #mapTimer {
@@ -1584,7 +1723,7 @@ map::selection {
   margin-top: 20px;
 }
 
-.managementBox{
+.managementBox {
   border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.05);
   display: flex;
@@ -1650,7 +1789,8 @@ map::selection {
   margin-right: 0px;
 }
 
-#multiplayerMessageInput:focus, #multiplayerMessageInput:hover {
+#multiplayerMessageInput:focus,
+#multiplayerMessageInput:hover {
   outline: none;
 }
 
@@ -1714,11 +1854,12 @@ map::selection {
 .bottomFooterAds {
   position: fixed;
   bottom: 12px;
-  left: 0px; 
-  right: 0px; 
-  margin-left: auto; 
-  margin-right: auto; 
-  width: 728px; /* changed from 970 to 728 */
+  left: 0px;
+  right: 0px;
+  margin-left: auto;
+  margin-right: auto;
+  width: 728px;
+  /* changed from 970 to 728 */
   max-height: 92px;
   height: 90px;
   padding: 0;
@@ -1734,23 +1875,23 @@ map::selection {
 
 @media (max-width: 1500px) {
   .bottomFooterAds {
-  width: 728px;
-  height: 90px;
+    width: 728px;
+    height: 90px;
   }
 }
 
 @media (max-width: 1175px) {
   .bottomFooterAds {
-  width: 320px;
-  height: 50px;
-  bottom: 32px;
+    width: 320px;
+    height: 50px;
+    bottom: 32px;
   }
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
   .bottomFooterAds {
-  width: 0;
-  display: none;
+    width: 0;
+    display: none;
   }
 }
 
@@ -2042,6 +2183,7 @@ map::selection {
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(359deg);
   }
@@ -2097,10 +2239,10 @@ map::selection {
 
 .slider {
   width: 75%;
-  -webkit-appearance: none; 
+  -webkit-appearance: none;
   appearance: none;
   background: white;
-  outline: none; 
+  outline: none;
   border-radius: 15px;
   height: 8px;
 }
@@ -2114,7 +2256,8 @@ map::selection {
   border-radius: 50%;
   border: none;
   cursor: pointer;
-  margin-top: -5px; /* Adjust the vertical alignment */
+  margin-top: -5px;
+  /* Adjust the vertical alignment */
 }
 
 /* Firefox */
@@ -2132,6 +2275,7 @@ map::selection {
   height: 8px;
   border-radius: 15px;
 }
+
 .slider::-moz-range-track {
   width: 100%;
   height: 8px;
@@ -2154,8 +2298,15 @@ map::selection {
 }
 
 @keyframes restrictionFade {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0;
+  }
 }
 
 .categoryDisabled {
@@ -2211,6 +2362,10 @@ map::selection {
   background: linear-gradient(0.60turn, white, #d0ffca);
 }
 
+#imageCategory {
+  background: linear-gradient(0.60turn, white, #ffffca);
+}
+
 .continentCategory {
   background: linear-gradient(0.60turn, white, #b4b9e6);
 }
@@ -2249,6 +2404,7 @@ map::selection {
   margin-left: 20px;
   max-width: unset;
   background-color: rgba(0, 0, 0, 0.2);
+  min-width: 65%;
 }
 
 .accountLock {
@@ -2431,12 +2587,14 @@ a:hover {
   height: 50px;
 }
 
-#mobileLoginButton, #mobileProfileButton {
+#mobileLoginButton,
+#mobileProfileButton {
   background-color: var(--brand-color);
   color: white;
 }
 
-#mobileLogoutButton, #mobileProfileButton {
+#mobileLogoutButton,
+#mobileProfileButton {
   display: none;
 }
 
@@ -2447,7 +2605,8 @@ a:hover {
   overflow: hidden;
 }
 
-#mobileProfileButton, #mobileLogoutButton {
+#mobileProfileButton,
+#mobileLogoutButton {
   min-width: 0;
   flex-grow: 1;
   width: 120px;
@@ -2622,8 +2781,7 @@ input[type="checkbox"]:focus {
 }
 
 /* laptops and big screens */
-@media (orientation: landscape) and (min-width: 1250px) {
-}
+@media (orientation: landscape) and (min-width: 1250px) {}
 
 @media (max-width: 1600px) {
   #mapModeIndicator {
@@ -2660,7 +2818,8 @@ all and (max-width: 1250px) {
   }
 
   #adsText {
-    display: none; /* hide ads text as it is too big / noticable on these screens */
+    display: none;
+    /* hide ads text as it is too big / noticable on these screens */
   }
 
   #endScreenLevel {
@@ -2688,7 +2847,7 @@ all and (max-width: 1200px) {
   #duelsOverlay h1 {
     font-size: 45px;
   }
-  
+
   #duelsOverlay p {
     font-size: 25px;
   }
@@ -2700,7 +2859,7 @@ all and (max-width: 1200px) {
   #hardModeFade h1 {
     font-size: 45px;
   }
-  
+
   #hardModeFade p {
     font-size: 25px;
   }
@@ -2727,7 +2886,7 @@ all and (max-width: 1200px) {
     font-size: 25px;
 
   }
-  
+
   .countryGuesserTag {
     font-size: 18px;
   }
@@ -2757,6 +2916,11 @@ all and (max-width: 1200px) {
 
   #streakAdDismiss {
     margin-top: 20px;
+  }
+
+  #imageGuesserImage {
+    max-width: 80%;
+    max-height: 40%;
   }
 }
 

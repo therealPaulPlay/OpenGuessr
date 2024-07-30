@@ -18,7 +18,7 @@
       ({ key: "AIzaSyDcGJ0tK_syDMY4Pv3qY298oDDGUBwNvEk", v: "weekly" });</script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=1.0.3">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=1.0.4">
 
   <!-- Non-bundled js files -->
   <script type="module" src="analytics.js" async></script>
@@ -28,7 +28,7 @@
     data-site-id="664453baf2089a039dc08edb" data-mode="scan" async></script>
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=1.0.4" defer></script>
+  <script type="module" src="main.js?v=1.0.5" defer></script>
 
   <!-- custom venatus scaling script -->
   <script type="module" src="venatusCustom.js" defer></script>
@@ -115,6 +115,7 @@
       <button class="category countryCategory accountLock" id="dailyCompetition" type="button">Daily
         Competition</button>
       <button class="category countryCategory accountLock" id="countryCategory" type="button">Country Guesser</button>
+      <button class="category countryCategory accountLock" id="imageCategory" type="button">Image Guesser</button>
       <button class="category countryCategory accountLock" id="australiaCategory" type="button">Australia</button>
       <button class="category countryCategory accountLock" id="austriaCategory" type="button">Austria</button>
       <button class="category countryCategory accountLock" id="brasilCategory" type="button">Brasil</button>
@@ -202,6 +203,7 @@
         <div class="profileNameArea">
           <h1 id="profileViewName">Username</h1>
           <p id="levelText">Lvl. 1</p>
+          <img id="selectedProfilePin" src="/IMG/your_marker1.png">
         </div>
         <button class="standardButton white" id="editUsername">
           <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
@@ -273,6 +275,10 @@
           <div class="statisticsEnclosure">
             <p class="statsLabel">Competitions entered:</p>
             <p id="statisticCompetitionsEntered">0</p>
+          </div>
+          <div class="statisticsEnclosure">
+            <p class="statsLabel">Highest finished Streak:</p>
+            <p id="statisticHighestStreak">0</p>
           </div>
           <div class="statisticsEnclosure">
             <p class="statsLabel">Joined:</p>
@@ -597,6 +603,11 @@
     <div id="multiplayerTable"></div>
     <button id="endMultiplayerRematchButton" class="standardButton">Play again</button>
     <button id="endMultiplayerRoundButton" class="standardButton">End round</button>
+  </div>
+  <div id="imageGuesserOverlay">
+    <div id="imageGuesserImage" class="guessImageLoading"></div>
+    <p id="imageGuesserAttribution">CC0 Images by <a class="noTextDecoration" href="https://commons.wikimedia.org/" target="_blank">Wikimedia</a></p>
+    <div id="imageGuesserBackground" class="guessImageLoading"></div>
   </div>
   <!--streetview-->
   <div class="MainDiv">
