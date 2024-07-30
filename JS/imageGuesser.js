@@ -10,6 +10,7 @@ export function setImageGuessrEnabled(enable) {
     imageGuesserEnabled = enable;
 
     if (enable) {
+        document.getElementById("imageGuesserOverlay").style.display = "flex";
         overlay.style.opacity = "1";
         overlay.style.pointerEvents = "auto";
         image.style.transform = "rotate(" + Math.floor(Math.random() * 10 - 5) + "deg)";
@@ -20,6 +21,7 @@ export function setImageGuessrEnabled(enable) {
         image.style.backgroundImage = "";
         background.style.backgroundImage = "";
     } else {
+        document.getElementById("imageGuesserOverlay").style.display = "none";
         overlay.style.opacity = "0";
         overlay.style.pointerEvents = "none";
     }
