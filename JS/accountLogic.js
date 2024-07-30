@@ -7,7 +7,7 @@ import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } fro
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
-import { closeProfile, loadProfileFromId, setCheckNewHighestStreak } from "./profileView.js";
+import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, setSelectedProfilePin } from "./profileView.js";
 import { closePopup, errorPopup } from "./errorHandling.js";
 
 let accountLockedArray;
@@ -511,6 +511,8 @@ function selectPin(index, sound) {
         selectedPinIndex = index;
         localStorage.setItem("selectedPin", index);
       }
+
+      setSelectedProfilePin(index, true);
     } else {
       if (sound) {
         playSound("pin_locked");

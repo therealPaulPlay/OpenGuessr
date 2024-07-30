@@ -261,7 +261,7 @@ h1, h2, h3 {
 #profileViewName {
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 70%;
+  max-width: 60%;
   text-wrap: nowrap;
 }
 
@@ -640,6 +640,14 @@ textarea {
 #profileWindow {
   z-index: 970;
   display: block !important;
+}
+
+#selectedProfilePin {
+  width: 25px;
+  height: 25px;
+  margin-left: 5px;
+  margin-top: auto;
+  margin-bottom: 8px;
 }
 
 .profilePopupBackground {
