@@ -1158,10 +1158,6 @@ function StartRoom() {
     checkGenerationTypeAndGenerate();
     if (playingDuels) {
         roomLocked = true;
-        
-        if (isAuthenticated) {
-            addDuelPlayed();
-        }
     }
     matchmakingActive = false;
 }
@@ -1326,10 +1322,6 @@ function joinRoom(code) {
             multiplayerCategory = data.content.category;
             yourTeam = data.content.team;
             roundIndex = data.content.currentRound;
-
-            if (playingDuels && isAuthenticated) {
-                addDuelPlayed();
-            }
         }
 
         if (data.type === "showPlayersArray") {
@@ -1727,9 +1719,13 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 let winningId = winningPlayerData[5];
                 document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
                 
-                // check if you won in duels
-                if (playingDuels && isAuthenticated && winningId == localStorage.getItem("id")) {
-                    addDuelWon();
+                // check if you won in duels or just played
+                if (playingDuels && isAuthenticated) {
+                    if (winningId == localStorage.getItem("id")) {
+                        addDuelWon();
+                    } else {
+                        addDuelPlayed();
+                    }
                 }
 
                 showEndscreenUI(true);

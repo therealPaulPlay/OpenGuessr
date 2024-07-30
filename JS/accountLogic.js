@@ -364,7 +364,7 @@ function calculateXPGain(distance, category) {
     streakCalculation();
     return Math.round((5000 * ((0.996036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // slightly reduced xp range as continents are smaller than countries
 
-  } else if (category == "famous") {
+  } else if (category == "famous" || category == "image") {
 
     streakCalculation();
     return Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //1500 xp for famous, with streak up to 1800sth
