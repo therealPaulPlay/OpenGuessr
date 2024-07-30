@@ -73,6 +73,7 @@ function openClearedProfile() {
     document.getElementById("statisticExperience").innerHTML = "0";
     document.getElementById("statisticUpgradeExperience").innerHTML = "0";
     document.getElementById("statisticJoinedDate").textContent = "loading...";
+    document.getElementById("levelText").textContent = "Lvl. 0";
 }
 
 function viewProfile(name, experience, joined, yourProfile, profileData) {
