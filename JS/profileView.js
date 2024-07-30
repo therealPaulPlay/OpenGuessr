@@ -10,7 +10,9 @@ let lastProfileOwnerYou = false;
 let yourLoadedProfileData = "none";
 
 export async function loadProfileFromId(id, you, view) {
-    openClearedProfile();
+    if (view) {
+        openClearedProfile(); // open clear profile as loading
+    }
 
     try {
         const response = await fetch(`https://accounts.openguessr.com/accounts/profile/${id}`, {
@@ -74,6 +76,7 @@ function openClearedProfile() {
     document.getElementById("statisticUpgradeExperience").innerHTML = "0";
     document.getElementById("statisticJoinedDate").textContent = "loading...";
     document.getElementById("levelText").textContent = "Lvl. 0";
+    document.getElementById("statisticHighestStreak").textContent = "0";
 }
 
 function viewProfile(name, experience, joined, yourProfile, profileData) {
@@ -81,27 +84,33 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
     document.getElementById("profileViewName").textContent = name ? name : "Guest";
 
     try {
-        if (profileData && profileData.about) {
-            document.getElementById("profileAbout").value = profileData.about;
-            document.getElementById("profileAbout").style.display = "block";
-            document.getElementById("profileAboutHeader").style.display = "block";
-            if (!yourProfile) {
-                document.getElementById("profileAbout").style.height = "1px";
-                document.getElementById("profileAbout").style.height = (document.getElementById("profileAbout").scrollHeight - 25) + "px";
+        if (profileData) {
+            if (profileData.about) {
+                document.getElementById("profileAbout").value = profileData.about;
+                document.getElementById("profileAbout").style.display = "block";
+                document.getElementById("profileAboutHeader").style.display = "block";
+                if (!yourProfile) {
+                    document.getElementById("profileAbout").style.height = "1px";
+                    document.getElementById("profileAbout").style.height = (document.getElementById("profileAbout").scrollHeight - 25) + "px";
+                }
             }
-        }
-
-        if (profileData && profileData.duelsPlayed) {
-            document.getElementById("statisticDuelsPlayed").textContent = profileData.duelsPlayed;
-        }
-
-
-        if (profileData && profileData.duelsWon) {
-            document.getElementById("statisticDuelsWon").textContent = profileData.duelsWon;
-        }
-
-        if (profileData && profileData.competitionsPlayed) {
-            document.getElementById("statisticCompetitionsEntered").textContent = profileData.competitionsPlayed;
+    
+            if (profileData.duelsPlayed) {
+                document.getElementById("statisticDuelsPlayed").textContent = profileData.duelsPlayed;
+            }
+    
+    
+            if (profileData.duelsWon) {
+                document.getElementById("statisticDuelsWon").textContent = profileData.duelsWon;
+            }
+    
+            if (profileData.competitionsPlayed) {
+                document.getElementById("statisticCompetitionsEntered").textContent = profileData.competitionsPlayed;
+            }
+    
+            if (profileData.highestStreak) {
+                document.getElementById("statisticHighestStreak").textContent = profileData.highestStreak;
+            }
         }
 
     } catch (e) {
@@ -241,7 +250,7 @@ textarea.addEventListener('input', () => {
 // Submit profile data ----------------------------------------------------------------------------------------------------------------
 
 // always construct new object to prevent bad overlaps or issues
-function updateProfileData(aboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed) {
+function updateProfileData(aboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak) {
     aboutText = aboutText ? aboutText : yourLoadedProfileData.about;
     aboutText = aboutText ? aboutText : "";
 
@@ -263,11 +272,18 @@ function updateProfileData(aboutText, addDuelsPlayed, addDuelsWon, addCompetitio
         competitionsPlayed += addCompetitionsPlayed;
     }
 
+    let newStreak = yourLoadedProfileData.highestStreak;
+    newStreak = newStreak ? newStreak : 0;
+    if (setHighestStreak && newStreak < setHighestStreak) {
+        newStreak = setHighestStreak;
+    }
+
     const profileData = {
         about: aboutText,
         duelsPlayed: duelsPlayed,
         duelsWon: duelsWon, 
-        competitionsPlayed: competitionsPlayed
+        competitionsPlayed: competitionsPlayed,
+        highestStreak: newStreak
     }
 
     submitProfileData(profileData);
@@ -291,6 +307,14 @@ export async function addCompetitionPlayed() {
     // only load data - if it was successful, set statistics
     if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
         updateProfileData(null, null, null, 1);
+    }
+}
+
+export async function setCheckNewHighestStreak(streak) {
+    // only load data - if it was successful, set statistics
+    if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
+        if (yourLoadedProfileData.highestStreak && yourLoadedProfileData.highestStreak < streak); // check if it is actually greater than old streak (this also checks in update function)
+        updateProfileData(null, null, null, null, streak);
     }
 }
 
