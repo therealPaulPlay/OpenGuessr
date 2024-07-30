@@ -11,6 +11,7 @@ import { multiplayer, startMultiplayerRound, isHost, multiplayerGuessesLocations
 import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } from './countryGuesser.js';
 import { playSound } from './soundManager.js';
 import { checkStartCompetitionRound } from './competitionLogic.js';
+import { imageGuesserEnabled, loadImageFromUrl } from './imageGuesser.js';
 
 //default coords of the location
 export let currentStreetviewLat = 0;
@@ -61,10 +62,14 @@ export async function generateNewLocation(type) {
             setCountryGuesserCountry(newLocationArray[2]);
         }
 
+        if (imageGuesserEnabled && !multiplayer) {
+            loadImageFromUrl(newLocationArray[2]);
+        }
+
     } catch {
         console.error("The coordinates to load the iframe from are not defined. " + "Lat: " + currentStreetviewLat + " Long: " + currentStreetviewLong);
     }
-
+    
     loadIframe(currentStreetviewLat, currentStreetviewLong);
 
     if (multiplayer && isHost) {
@@ -384,7 +389,12 @@ let loadingLink = "/loader.html";
 export function loadIframe(lat, long) {
     let streetviewAPIKey = "AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs";
 
-    loadingLink = "https://www.google.com/maps/embed/v1/streetview?location=" + lat + "," + long + "&key=" + streetviewAPIKey + "&fov=90"; //API key (last part of URL)
+    if (!imageGuesserEnabled || multiplayer) {
+        loadingLink = "https://www.google.com/maps/embed/v1/streetview?location=" + lat + "," + long + "&key=" + streetviewAPIKey + "&fov=90"; //API key (last part of URL)
+    } else {
+        loadingLink = "";
+    }
+
     let initialIframeLoad = true;
 
     // Reference to the iframe

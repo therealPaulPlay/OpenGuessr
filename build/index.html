@@ -18,7 +18,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=1.0.3">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=1.0.4">
 
   <!-- Non-bundled js files -->
   <script type="module" src="analytics.js" async></script>
@@ -28,7 +28,7 @@
     data-site-id="664453baf2089a039dc08edb" data-mode="scan" async></script>
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=1.0.4" defer></script>
+  <script type="module" src="main.js?v=1.0.5" defer></script>
 
   <!-- custom venatus scaling script -->
   <script type="module" src="venatusCustom.js" defer></script>
@@ -115,6 +115,7 @@
       <button class="category countryCategory accountLock" id="dailyCompetition" type="button">Daily
         Competition</button>
       <button class="category countryCategory accountLock" id="countryCategory" type="button">Country Guesser</button>
+      <button class="category countryCategory accountLock" id="imageCategory" type="button">Image Guesser</button>
       <button class="category countryCategory accountLock" id="australiaCategory" type="button">Australia</button>
       <button class="category countryCategory accountLock" id="austriaCategory" type="button">Austria</button>
       <button class="category countryCategory accountLock" id="brasilCategory" type="button">Brasil</button>
@@ -605,6 +606,11 @@
     <button id="endMultiplayerRematchButton" class="standardButton">Play again</button>
     <button id="endMultiplayerRoundButton" class="standardButton">End round</button>
   </div>
+  <div id="imageGuesserOverlay">
+    <div id="imageGuesserImage" class="guessImageLoading"></div>
+    <p id="imageGuesserAttribution">CC0 Images by <a class="noTextDecoration" href="https://commons.wikimedia.org/" target="_blank">Wikimedia</a></p>
+    <div id="imageGuesserBackground" class="guessImageLoading"></div>
+  </div>
   <!--streetview-->
   <div class="MainDiv">
     <iframe id="GuesserWindow" referrerpolicy="no-referrer-when-downgrade" frameborder="0" allow="accelerometer"
@@ -650,7 +656,7 @@
       <p>Map Data ©2024 Google
         <span style="width: 5px; display:inline-block; text-align: center;">|</span>
         <a style="color: black; text-decoration: none; pointer-events: auto;"
-          href="https://www.google.com/intl/en_US/help/terms_maps/">Terms</a>
+          href="https://www.google.com/intl/en_US/help/terms_maps/" target="_blank">Terms</a>
       </p>
     </div>
     <div id="mapAttributionLogo" class="mapAttribution">

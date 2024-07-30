@@ -77,7 +77,7 @@ async function getCoordsFromJSON(category) {
     try {
 
         //to prevent a crashes if the json has too few locations
-        if (listOfLocations.length < 110) {
+        if (listOfLocations.length < 60) {
             lastGuessesIndexes = [];
             console.warn("Loaded official map json has too few locations!");
         }
@@ -88,15 +88,15 @@ async function getCoordsFromJSON(category) {
 
         lastGuessesIndexes.unshift(guessIndex); //add guessIndex at the front of the array
 
-        if (lastGuessesIndexes.length > 100) {
-            lastGuessesIndexes.pop(); //if the array is longer than 100, pop the last entry out
+        if (lastGuessesIndexes.length > 50) {
+            lastGuessesIndexes.pop(); //if the array is longer than 50, pop the last entry out
         }
 
         const resultLat = Number(listOfLocations[guessIndex][0]);
         const resultLong = Number(listOfLocations[guessIndex][1]);
-        const country = listOfLocations[guessIndex][2]; //only available for certain modes (like country guesser)
+        const additionalProperty = listOfLocations[guessIndex][2]; // only available for certain modes (like country guesser, image guesser..). This could be the country, the image URL etc.
 
-        resultLocationsArray = [resultLat, resultLong, country];
+        resultLocationsArray = [resultLat, resultLong, additionalProperty];
     } catch (error) {
         console.error("Error in locationGeneration.js during JSON Gen: " + error);
     }
@@ -164,9 +164,8 @@ async function selectLocationFromServer() {
   
           const resultLat = Number(standardLocations[guessIndex][0]);
           const resultLong = Number(standardLocations[guessIndex][1]);
-          const country = null;
   
-          resultLocationsArray = [resultLat, resultLong, country];
+          resultLocationsArray = [resultLat, resultLong];
       } catch (error) {
           console.error("Error in locationGeneration.js Standard Location JSON generation: " + error);
       }
@@ -241,9 +240,8 @@ async function selectLocationFromMapsServer() {
 
         const resultLat = Number(communityLocations[guessIndex][0]);
         const resultLong = Number(communityLocations[guessIndex][1]);
-        const country = null;
 
-        resultLocationsArray = [resultLat, resultLong, country];
+        resultLocationsArray = [resultLat, resultLong];
     } catch (error) {
         console.error("Error in locationGeneration.js Community map location JSON generation: " + error);
     }
@@ -259,9 +257,8 @@ async function getCompetitionCoordinates() {
     try {
         const resultLat = competition.locations[currentRound][0];
         const resultLong = competition.locations[currentRound][1];
-        const country = null;
     
-        resultLocationsArray = [resultLat, resultLong, country];
+        resultLocationsArray = [resultLat, resultLong];
     } catch (error) {
         console.error("Error in locationGeneration.js in getCompetitionCoordinates: " + error);
     }

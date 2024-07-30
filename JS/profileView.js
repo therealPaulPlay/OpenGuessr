@@ -311,10 +311,10 @@ export async function addDuelPlayed() {
     }
 }
 
-export async function addDuelWon() {
+export async function addDuelWon() { // also adds 1 to duel played
     // only load data - if it was successful, set statistics
     if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
-        updateProfileData(null, null, 1);
+        updateProfileData(null, 1, 1);
     }
 }
 
