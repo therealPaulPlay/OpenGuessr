@@ -1450,7 +1450,7 @@ if (peer) {
             if (err.type != "network") {
                 errorPopup("Multiplayer error", "Fatal multiplayer error. Please reload if you want to use multiplayer.", err.type, true);
             } else {
-                errorPopup("Disconnected from round.", "You have left the multiplayer round due to network issues. Check your and the host's connection.", err.type, false);
+                errorPopup("Disconnected from round", "You have left the multiplayer round due to network issues. Check your and the host's connection.", err.type, false);
             }
 
             leaveMultiplayerRound();
