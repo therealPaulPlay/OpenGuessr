@@ -255,9 +255,11 @@ textarea.addEventListener('input', () => {
 // Submit profile data ----------------------------------------------------------------------------------------------------------------
 
 // always construct new object to prevent bad overlaps or issues
-function updateProfileData(aboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin) {
-    aboutText = aboutText ? aboutText : yourLoadedProfileData.about;
-    aboutText = aboutText ? aboutText : "";
+function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin) {
+    let aboutText =  yourLoadedProfileData.about ? yourLoadedProfileData.about : "";
+    if (newAboutText != undefined) {
+        aboutText = newAboutText;
+    }
 
     let duelsPlayed = yourLoadedProfileData.duelsPlayed;
     duelsPlayed = duelsPlayed ? duelsPlayed : 0;
@@ -285,7 +287,7 @@ function updateProfileData(aboutText, addDuelsPlayed, addDuelsWon, addCompetitio
     
     let pin = yourLoadedProfileData.pin;
     pin = pin ? pin : 0;
-    if (newPin) {
+    if (newPin != undefined) {
         pin = newPin;
     }
 
@@ -299,6 +301,7 @@ function updateProfileData(aboutText, addDuelsPlayed, addDuelsWon, addCompetitio
     }
 
     submitProfileData(profileData);
+    yourLoadedProfileData = profileData; // also update the loaded profile data with these changes to make sure that changes always carry on to queried requests
 }
 
 export async function addDuelPlayed() {
