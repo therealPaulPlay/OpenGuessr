@@ -3,7 +3,7 @@ import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, selectedPinIndex, isAuthenticated } from "./accountLogic.js";
-import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, transitionToStart } from "./categoryMenu.js";
+import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeamMarkers } from "./miniMap.js";
 import { calculateDistances, loadResultMap } from "./main.js";
 import { playSound } from "./soundManager.js";
@@ -1130,7 +1130,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     multiplayerFirstRoundPlayed = false;
     multiplayerCategory = mapCategory;
 
-    if (multiplayerCategory == "country") {
+    if (!mapSupportsMultiplayer(multiplayerCategory)) {
         multiplayerCategory = "standard";
     }
 

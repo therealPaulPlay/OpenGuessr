@@ -18,7 +18,7 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=1.0.3">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=1.0.4">
 
   <!-- Non-bundled js files -->
   <script type="module" src="analytics.js" async></script>
@@ -28,7 +28,7 @@
     data-site-id="664453baf2089a039dc08edb" data-mode="scan" async></script>
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=1.0.4" defer></script>
+  <script type="module" src="main.js?v=1.0.5" defer></script>
 
   <!-- custom venatus scaling script -->
   <script type="module" src="venatusCustom.js" defer></script>
@@ -115,6 +115,7 @@
       <button class="category countryCategory accountLock" id="dailyCompetition" type="button">Daily
         Competition</button>
       <button class="category countryCategory accountLock" id="countryCategory" type="button">Country Guesser</button>
+      <button class="category countryCategory accountLock" id="imageCategory" type="button">Image Guesser</button>
       <button class="category countryCategory accountLock" id="australiaCategory" type="button">Australia</button>
       <button class="category countryCategory accountLock" id="austriaCategory" type="button">Austria</button>
       <button class="category countryCategory accountLock" id="brasilCategory" type="button">Brasil</button>
@@ -604,6 +605,10 @@
     <div id="multiplayerTable"></div>
     <button id="endMultiplayerRematchButton" class="standardButton">Play again</button>
     <button id="endMultiplayerRoundButton" class="standardButton">End round</button>
+  </div>
+  <div id="imageGuesserOverlay">
+    <div id="imageGuesserImage" class="guessImageLoading"></div> <!-- source is being added in code -->
+    <div id="imageGuesserBackground" class="guessImageLoading"></div>
   </div>
   <!--streetview-->
   <div class="MainDiv">
