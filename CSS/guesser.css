@@ -261,7 +261,7 @@ h1, h2, h3 {
 #profileViewName {
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 80%;
+  max-width: 70%;
   text-wrap: nowrap;
 }
 
@@ -1256,6 +1256,7 @@ textarea {
   flex: 1;
   transition: opacity 250ms ease;
   cursor: pointer;
+  user-select: none;
 }
 
 .multiplayerEntryPlayerName:hover {
@@ -2278,6 +2279,7 @@ map::selection {
   margin-left: 20px;
   max-width: unset;
   background-color: rgba(0, 0, 0, 0.2);
+  min-width: 65%;
 }
 
 .accountLock {
