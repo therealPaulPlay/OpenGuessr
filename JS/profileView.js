@@ -10,6 +10,8 @@ let lastProfileOwnerYou = false;
 let yourLoadedProfileData = "none";
 
 export async function loadProfileFromId(id, you, view) {
+    openClearedProfile();
+
     try {
         const response = await fetch(`https://accounts.openguessr.com/accounts/profile/${id}`, {
             method: 'GET',
@@ -45,12 +47,10 @@ export async function loadProfileFromId(id, you, view) {
     }
 }
 
-function viewProfile(name, experience, joined, yourProfile, profileData) {
-    lastProfileOwnerYou = yourProfile; // only update database entry on close if it was your profile that was opened
-
+function openClearedProfile() {
+    lastProfileOwnerYou = false;
     document.getElementById("profilePopup").style.display = "flex";
-    document.getElementById("profileViewName").textContent = name ? name : "Guest / Not loaded";
-
+    document.getElementById("profileViewName").textContent = "Loading...";
     document.getElementById("editUsername").style.display = "none";
     document.getElementById("usernameInput").style.visibility = "hidden";
     document.getElementById("confirmUsername").style.visibility = "hidden";
@@ -70,6 +70,14 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
     document.getElementById("statisticDuelsWon").textContent = "0";
     document.getElementById("statisticCompetitionsEntered").textContent = "0";
     document.getElementById("profileAbout").style.height = "65px";
+    document.getElementById("statisticExperience").innerHTML = "0";
+    document.getElementById("statisticUpgradeExperience").innerHTML = "0";
+    document.getElementById("statisticJoinedDate").textContent = "loading...";
+}
+
+function viewProfile(name, experience, joined, yourProfile, profileData) {
+    lastProfileOwnerYou = yourProfile; // only update database entry on close if it was your profile that was opened
+    document.getElementById("profileViewName").textContent = name ? name : "Guest";
 
     try {
         if (profileData && profileData.about) {
