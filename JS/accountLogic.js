@@ -7,7 +7,7 @@ import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } fro
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
-import { closeProfile, loadProfileFromId } from "./profileView.js";
+import { closeProfile, loadProfileFromId, setCheckNewHighestStreak } from "./profileView.js";
 import { closePopup, errorPopup } from "./errorHandling.js";
 
 let accountLockedArray;
@@ -330,7 +330,9 @@ function streakCalculation() {
         toggleStreakWindow(streak, false);
       }
 
-      streak = 0; //reset country streak
+      setCheckNewHighestStreak(streak); // checks if this was the highest streak yet and 
+      
+      streak = 0; //reset country streak ( = Streak lost, but still restorable wit ad)
     }
 
     localStorage.setItem("streak", streak);
