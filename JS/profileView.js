@@ -77,6 +77,7 @@ function openClearedProfile() {
     document.getElementById("statisticJoinedDate").textContent = "loading...";
     document.getElementById("levelText").textContent = "Lvl. 0";
     document.getElementById("statisticHighestStreak").textContent = "0";
+    document.getElementById("selectedProfilePin").src = "/IMG/your_marker0.png";
 }
 
 function viewProfile(name, experience, joined, yourProfile, profileData) {
@@ -110,6 +111,10 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
     
             if (profileData.highestStreak) {
                 document.getElementById("statisticHighestStreak").textContent = profileData.highestStreak;
+            }
+            
+            if(profileData.pin) {
+                document.getElementById("selectedProfilePin").src = `/IMG/your_marker${profileData.pin}.png`;
             }
         }
 
@@ -250,9 +255,11 @@ textarea.addEventListener('input', () => {
 // Submit profile data ----------------------------------------------------------------------------------------------------------------
 
 // always construct new object to prevent bad overlaps or issues
-function updateProfileData(aboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak) {
-    aboutText = aboutText ? aboutText : yourLoadedProfileData.about;
-    aboutText = aboutText ? aboutText : "";
+function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin) {
+    let aboutText =  yourLoadedProfileData.about ? yourLoadedProfileData.about : "";
+    if (newAboutText != undefined) {
+        aboutText = newAboutText;
+    }
 
     let duelsPlayed = yourLoadedProfileData.duelsPlayed;
     duelsPlayed = duelsPlayed ? duelsPlayed : 0;
@@ -277,16 +284,24 @@ function updateProfileData(aboutText, addDuelsPlayed, addDuelsWon, addCompetitio
     if (setHighestStreak && newStreak < setHighestStreak) {
         newStreak = setHighestStreak;
     }
+    
+    let pin = yourLoadedProfileData.pin;
+    pin = pin ? pin : 0;
+    if (newPin != undefined) {
+        pin = newPin;
+    }
 
     const profileData = {
         about: aboutText,
         duelsPlayed: duelsPlayed,
         duelsWon: duelsWon, 
         competitionsPlayed: competitionsPlayed,
-        highestStreak: newStreak
+        highestStreak: newStreak,
+        pin: pin
     }
 
     submitProfileData(profileData);
+    yourLoadedProfileData = profileData; // also update the loaded profile data with these changes to make sure that changes always carry on to queried requests
 }
 
 export async function addDuelPlayed() {
@@ -315,6 +330,16 @@ export async function setCheckNewHighestStreak(streak) {
     if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
         if (yourLoadedProfileData.highestStreak && yourLoadedProfileData.highestStreak < streak); // check if it is actually greater than old streak (this also checks in update function)
         updateProfileData(null, null, null, null, streak);
+    }
+}
+
+export async function setSelectedProfilePin(pinId, updateUI) {
+    // only load data - if it was successful, set statistics
+    if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
+    updateProfileData(null, null, null, null, null, pinId);
+        if (updateUI) {
+            document.getElementById("selectedProfilePin").src = `/IMG/your_marker${pinId}.png`;
+        }
     }
 }
 
