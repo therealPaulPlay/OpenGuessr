@@ -1111,6 +1111,15 @@ textarea {
   transform: rotate(180deg);
 }
 
+.directionArrowIcon {
+  width: 25px;
+  height: 25px;
+  filter: invert();
+  transform: rotate(270deg);
+  vertical-align: -2px;
+  margin-right: -10px;
+}
+
 #hardModeFade {
   width: 100%;
   height: 100%;
@@ -2172,6 +2181,10 @@ map::selection {
 
 #nextRound:hover {
   filter: brightness(0.7);
+}
+
+#nextRoundText {
+  display: inline;
 }
 
 #BeforeOverlay {

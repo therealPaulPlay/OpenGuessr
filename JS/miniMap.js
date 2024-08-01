@@ -328,7 +328,7 @@ export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
     playSound("basic_button");
 
-    document.getElementById("nextRound").innerHTML = "Next round ➝";
+    document.getElementById("nextRoundText").textContent = "Next round";
 
     if (playingCompetition) {
         try {
@@ -338,9 +338,9 @@ export function confirmButtonClicks() {
         }
 
         if (!checkCompetitionRoundStatus(true)) {
-            document.getElementById("nextRound").innerHTML = "See ranking ➝";
+            document.getElementById("nextRoundText").textContent = "See ranking";
         } else {
-            document.getElementById("nextRound").innerHTML = "Next round ➝";
+            document.getElementById("nextRoundText").textContent = "Next round";
         }
     }
 
