@@ -25,7 +25,7 @@ export async function loadProfileFromId(id, you, view) {
         // Check if the response is successful
         if (response.ok) {
             const data = await response.json();
-            
+
             if (you && data.profileData) {
                 yourLoadedProfileData = data.profileData;
             }
@@ -33,7 +33,7 @@ export async function loadProfileFromId(id, you, view) {
             // load data only or show profile
             if (view) {
                 viewProfile(data.username, data.experience, data.joinedDate, you, data.profileData);
-            } 
+            }
 
             return true;
 
@@ -95,25 +95,25 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
                     document.getElementById("profileAbout").style.height = (document.getElementById("profileAbout").scrollHeight - 25) + "px";
                 }
             }
-    
+
             if (profileData.duelsPlayed) {
                 document.getElementById("statisticDuelsPlayed").textContent = profileData.duelsPlayed;
             }
-    
-    
+
+
             if (profileData.duelsWon) {
                 document.getElementById("statisticDuelsWon").textContent = profileData.duelsWon;
             }
-    
+
             if (profileData.competitionsPlayed) {
                 document.getElementById("statisticCompetitionsEntered").textContent = profileData.competitionsPlayed;
             }
-    
+
             if (profileData.highestStreak) {
                 document.getElementById("statisticHighestStreak").textContent = profileData.highestStreak;
             }
-            
-            if(profileData.pin) {
+
+            if (profileData.pin) {
                 document.getElementById("selectedProfilePin").src = `/IMG/your_marker${profileData.pin}.png`;
             }
         }
@@ -256,7 +256,7 @@ textarea.addEventListener('input', () => {
 
 // always construct new object to prevent bad overlaps or issues
 function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin) {
-    let aboutText =  yourLoadedProfileData.about ? yourLoadedProfileData.about : "";
+    let aboutText = yourLoadedProfileData.about ? yourLoadedProfileData.about : "";
     if (newAboutText != undefined) {
         aboutText = newAboutText;
     }
@@ -284,7 +284,7 @@ function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompeti
     if (setHighestStreak && newStreak < setHighestStreak) {
         newStreak = setHighestStreak;
     }
-    
+
     let pin = yourLoadedProfileData.pin;
     pin = pin ? pin : 0;
     if (newPin != undefined) {
@@ -294,7 +294,7 @@ function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompeti
     const profileData = {
         about: aboutText,
         duelsPlayed: duelsPlayed,
-        duelsWon: duelsWon, 
+        duelsWon: duelsWon,
         competitionsPlayed: competitionsPlayed,
         highestStreak: newStreak,
         pin: pin
@@ -335,8 +335,10 @@ export async function setCheckNewHighestStreak(streak) {
 
 export async function setSelectedProfilePin(pinId, updateUI) {
     // only load data - if it was successful, set statistics
-    if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
-    updateProfileData(null, null, null, null, null, pinId);
+    if (!yourLoadedProfileData.pin || yourLoadedProfileData.pin != pinId) {
+        if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
+            updateProfileData(null, null, null, null, null, pinId);
+        }
         if (updateUI) {
             document.getElementById("selectedProfilePin").src = `/IMG/your_marker${pinId}.png`;
         }
@@ -362,7 +364,7 @@ async function submitProfileData(profileDataObject) {
 
         // Check if the response is successful
         if (response.ok) {
-            
+
         } else {
             console.error('Profile update failed: ', response.status);
             errorPopup("Profile update failed", "The server returned an error for the profile update.", response.status, false, false);
