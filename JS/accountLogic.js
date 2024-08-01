@@ -488,7 +488,7 @@ export async function reattemptExperienceUpdate(earnedExp) {
 export let selectedPinIndex = 0;
 
 // Function to handle pin selection
-function selectPin(index, sound) {
+function selectPin(index, activeSelect) {
   // Check if the pinHolder and pinLock exist
   const pinHolders = document.querySelectorAll('.pinHolder');
   if (pinHolders.length > index) {
@@ -502,8 +502,9 @@ function selectPin(index, sound) {
       // Add selectedPin class to the clicked pinHolder button
       pinHolders[index].classList.add('selectedPin');
 
-      if (sound) {
+      if (activeSelect) {
         playSound("item_select");
+        setSelectedProfilePin(index, true);
       }
 
       if (index != null || typeof (index) == "number") {
@@ -512,7 +513,6 @@ function selectPin(index, sound) {
         localStorage.setItem("selectedPin", index);
       }
 
-      setSelectedProfilePin(index, true);
     } else {
       if (sound) {
         playSound("pin_locked");
@@ -529,7 +529,7 @@ function loadSelectedPin() {
     selectedPinIndex = 0;
   }
 
-  selectPin(selectedPinIndex);
+  selectPin(selectedPinIndex, false);
 }
 
 // Function to update pinLocks based on XP
