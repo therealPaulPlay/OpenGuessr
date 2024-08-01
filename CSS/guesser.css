@@ -334,6 +334,7 @@ h3 {
   position: absolute;
   font-size: 15px;
   color: white;
+  user-select: none;
 }
 
 #XParea {

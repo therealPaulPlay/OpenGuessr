@@ -3,7 +3,8 @@ for signupScreen.js only. LoadMap and AccountLogic are both not being included i
 of the bundled main.js. */
 
 import { resetMap, getMapSource, handleMapUnhover } from './miniMap.js';
-import { loadResultScreenXP, selectedPinIndex } from "./accountLogic.js";
+import { loadResultScreenXP } from "./accountLogic.js";
+import { selectedPinIndex } from './profileView.js';
 import { resultScreenEnabled, enableResultScreen, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
 import { checkHardModeTimeout } from './hardMode.js';
