@@ -415,10 +415,10 @@ function endMultiplayerRound() {
             document.getElementById("nextRound").style.pointerEvents = "none";
             //After 2 seconds (or 5 for duels), enable the skip functionality
             let skipTimeout = playingDuels ? 5000 : 2000;
-            document.getElementById("nextRound").innerHTML = "Wait " + (skipTimeout / 1000) + "s... ➝";
+            document.getElementById("nextRoundText").textContent = "Wait " + (skipTimeout / 1000) + "s...";
 
             setTimeout(function () {
-                document.getElementById("nextRound").innerHTML = "Skip ➝";
+                document.getElementById("nextRoundText").textContent = "Skip";
                 document.getElementById("nextRound").style.opacity = "1";
                 document.getElementById("nextRound").style.pointerEvents = "auto";
             }, skipTimeout)
@@ -432,7 +432,7 @@ function endMultiplayerRound() {
             //if i'ts not the host, hide the next round button!
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
-            document.getElementById("nextRound").innerHTML = "Waiting for host... ➝";
+            document.getElementById("nextRoundText").textContent = "Waiting for host...";
         }
 
         if (!lateJoinedWaiting) {
@@ -1544,7 +1544,7 @@ function leaveMultiplayerRound() {
 
     document.getElementById("nextRound").style.opacity = "1";
     document.getElementById("nextRound").style.pointerEvents = "auto";
-    document.getElementById("nextRound").textContent = "Next round →";
+    document.getElementById("nextRoundText").textContent = "Next round";
     endMultiplayerRoundButton.style.display = "none";
     endMultiplayerRematchButton.style.display = "none";
     endMultiplayerRematchButton.style.opacity = "1";
