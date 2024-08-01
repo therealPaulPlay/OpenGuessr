@@ -484,3 +484,24 @@ export function selectPin(index, activeSelect) {
         }
     }
 }
+
+// Badge system ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+const badgeButton = document.getElementById("badgeButton");
+document.getElementById("badgeClose").addEventListener("click", () => {
+    playSound("basic_button");
+    closeBadgeWindow();
+});
+
+badgeButton.addEventListener("click", () => {
+    openBadeWindow();
+    playSound("basic_button");
+});
+
+function openBadeWindow() {
+    document.getElementById("badgePopup").style.display = "flex";
+}
+
+function closeBadgeWindow() {
+    document.getElementById("badgePopup").style.display = "none";
+}

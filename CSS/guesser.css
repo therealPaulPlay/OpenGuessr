@@ -253,7 +253,7 @@ h3 {
 
 .profileNameArea {
   display: flex;
-  align-items: baseline;
+  align-items: center;
   justify-content: flex-start;
   flex-wrap: nowrap;
   overflow: hidden;
@@ -519,6 +519,7 @@ h3 {
 #multiplayerSelectorBack,
 #mobilePopupClose,
 #confirmCancel,
+#badgeClose,
 #confirmProceed {
   min-height: 50px;
 }
@@ -680,6 +681,30 @@ textarea {
   display: block !important;
 }
 
+#badgeWindow {
+  z-index: 971;
+  display: block !important;
+  max-width: 700px;
+}
+
+.spacerBadge {
+  height: 5px;
+}
+
+#badgeButton {
+  background-color: rgba(255, 255, 255, 0.15);
+  color: white;
+  outline: 3px solid rgba(255, 255, 255, 0.3);
+  padding-inline: 12px;
+  margin-left: 15px;
+  margin-right: 5px;
+  margin-top: auto;
+  font-size: 20px;
+  margin-bottom: 7px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+}
+
 #selectedProfilePin {
   width: 25px;
   height: 25px;
@@ -692,6 +717,94 @@ textarea {
   background-color: rgba(30, 30, 30, 0.7);
   display: none;
   z-index: 970;
+}
+
+#badgePopup {
+  z-index: 971;
+}
+
+.badgeContainer {
+  border-radius: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  width: calc(100% - 10px);
+  padding: 10px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.badge {
+  padding: 3px;
+  border-radius: 5px;
+  font-style: italic;
+  color: white;
+  background-color: rgb(152, 152, 152);
+  font-size: 20px;
+  text-wrap: nowrap;
+  padding-inline: 10px;
+  cursor: pointer;
+  transition: opacity 250ms ease, transform 250ms ease, filter 250ms ease;
+}
+
+.badge:hover {
+  transform: scale(0.98);
+}
+
+.badgeStage1 {
+  background: linear-gradient(0.60turn, #6a6765, #665e55);
+}
+
+.badgeStage2 {
+  background: linear-gradient(0.60turn, #8d5dc8, #7249a2);
+}
+
+.badgeStage3 {
+  background: linear-gradient(0.60turn, #51b7c1, #549ba2);
+}
+
+.badgeStage4 {
+  background: linear-gradient(0.60turn, #ddb603, #b7983e);
+}
+
+.badgeStageSupporter1 {
+  background: linear-gradient(0.60turn, #72bb73, #5d7d5e);
+}
+
+.badgeStageSupporter2 {
+  background: linear-gradient(0.60turn, #4cc44d, #518852);
+}
+
+.badgeStageSupporter3 {
+  background: linear-gradient(0.60turn, #1dd01f, #36b238);
+}
+
+.badgeStageSupporter4 {
+  background: linear-gradient(0.60turn, #3ddf3e, #22a826);
+}
+
+.badgeStageDeveloper {
+  background: linear-gradient(0.60turn, #ff3f3f, #992a2a);
+}
+
+.badgeBox {
+  background-color: rgba(30, 31, 44, 0.5);
+  border-radius: 8px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 5px;
+  width: calc(100% - 10px);
+  flex-wrap: wrap;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.badgeLabel {
+  padding: 3px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  text-align: left;
+  margin-bottom: 10px;
+  padding-left: 10px;
 }
 
 #socialWindow {

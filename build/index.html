@@ -202,6 +202,7 @@
       <div class="popup-title">
         <div class="profileNameArea">
           <h1 id="profileViewName">Username</h1>
+          <button id="badgeButton" class="standardButton">+ Badge</button>
           <p id="levelText">Lvl. 1</p>
           <img id="selectedProfilePin" src="/IMG/your_marker1.png">
         </div>
@@ -292,6 +293,57 @@
         <br>
       </div>
       <button id="profileClose" class="standardButton white accountClose">Close</button>
+    </div>
+  </div>
+  <!-- New profile window -->
+  <div id="badgePopup" class="popupHolder profilePopupBackground">
+    <div id="badgeWindow" class="uiWindow">
+      <div class="popup-title">
+        <h1 id="profileViewName">Badges</h1>
+      </div>
+      <div class="badgeContainer">
+        <div class="spacerBadge"></div>
+        <p class="badgeLabel">For experience:</p>
+        <div class="badgeBox">
+          <p class="badge badgeStage1">Experienced Beginner</p>
+          <p class="badge badgeStage2">Skilled Adventurer</p>
+          <p class="badge badgeStage3">Experienced Veteran</p>
+          <p class="badge badgeStage4">Master of Experience</p>
+        </div>
+        <p class="badgeLabel">For Multiplayer:</p>
+        <div class="badgeBox">
+          <p class="badge badgeStage1">Casual Duelist</p>
+          <p class="badge badgeStage2">Proven Combatant</p>
+          <p class="badge badgeStage3">Expert Duelist</p>
+          <p class="badge badgeStage4">Duel Master</p>
+        </div>
+        <p class="badgeLabel">For Competitions:</p>
+        <div class="badgeBox">
+          <p class="badge badgeStage1">New Competitor</p>
+          <p class="badge badgeStage2">Dedicated Entrant</p>
+          <p class="badge badgeStage3">Seasoned Contendor</p>
+          <p class="badge badgeStage4">Competition Conqueror</p>
+        </div>
+        <p class="badgeLabel">For Streaks:</p>
+        <div class="badgeBox">
+          <p class="badge badgeStage1">Streak Starter</p>
+          <p class="badge badgeStage2">Consistent Performer</p>
+          <p class="badge badgeStage3">Streak Specialist</p>
+          <p class="badge badgeStage4">Ultimate Streaker</p>
+        </div>
+        <p class="badgeLabel">For Supporters:</p>
+        <div class="badgeBox">
+          <p class="badge badgeStageSupporter1">Basic Supporter</p>
+          <p class="badge badgeStageSupporter2">Kind Contributor</p>
+          <p class="badge badgeStageSupporter3">Generous Benefactor</p>
+          <p class="badge badgeStageSupporter4">Ultimate Patron</p>
+        </div>
+        <p class="badgeLabel">Miscellaneous:</p>
+        <div class="badgeBox">
+          <p class="badge badgeStageDeveloper">Developer</p>
+        </div>
+      </div>
+      <button id="badgeClose" class="standardButton white accountClose">Close</button>
     </div>
   </div>
   <!-- remaining windows -->
@@ -584,7 +636,8 @@
             </div>
           </div>
           <p id="XPbarNoAccount">Sign up to see & save your points!</p>
-          <button id="nextRound" class="standardButton"><p id="nextRoundText">Next round</p>    
+          <button id="nextRound" class="standardButton">
+            <p id="nextRoundText">Next round</p>
             <img id="nextRoundArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon">
           </button>
         </div>
@@ -610,7 +663,8 @@
   </div>
   <div id="imageGuesserOverlay">
     <div id="imageGuesserImage" class="guessImageLoading"></div>
-    <p id="imageGuesserAttribution">CC0 Images by <a class="noTextDecoration" href="https://commons.wikimedia.org/" target="_blank">Wikimedia</a></p>
+    <p id="imageGuesserAttribution">CC0 Images by <a class="noTextDecoration" href="https://commons.wikimedia.org/"
+        target="_blank">Wikimedia</a></p>
     <div id="imageGuesserBackground" class="guessImageLoading"></div>
   </div>
   <!--streetview-->
