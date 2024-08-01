@@ -7,8 +7,8 @@ import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } fro
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
-import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, setSelectedProfilePin } from "./profileView.js";
-import { closePopup, errorPopup } from "./errorHandling.js";
+import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData } from "./profileView.js";
+import { errorPopup } from "./errorHandling.js";
 
 let accountLockedArray;
 
@@ -141,7 +141,7 @@ function resetLocalSave() {
   localStorage.removeItem("id");
   localStorage.removeItem("username");
   localStorage.removeItem("experience");
-  localStorage.removeItem("selectedPin");
+  updateLoadedProfileData(null);
 }
 
 function signout() {
@@ -170,6 +170,7 @@ async function changeUItoSignedIn() {
   XParea.style.display = "flex";
   enableExclusiveCategories();
   displayUserInfo();
+  loadSelectedPin(); // loads it from fetched profile data
 
 
   if (resultScreenEnabled && lastXPloadingAttemptAborted) {
@@ -189,6 +190,7 @@ async function changeUItoSignedOut() {
   displayAccountName.innerHTML = "Guest";
   checkTextLength();
   uiSetUserXP(0);
+  loadSelectedPin(); // loads pin 0, as profile data should be undefined
 }
 
 // part of checkSigninStatusAndLoadUserInfo
@@ -203,7 +205,8 @@ async function checkSigninStatusAndLoadUserInfo() {
   if (isAuthenticated) {
     profileButton.classList.remove("notSignedIn");
     //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
-    await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then(() => {
+    await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((profileData) => {
+      updateLoadedProfileData(profileData);
       changeUItoSignedIn(); // display user info is already being called in here
     });
   }
@@ -482,84 +485,6 @@ export async function reattemptExperienceUpdate(earnedExp) {
     console.error("Re-attempting the XP update failed: " + error);
   }
 }
-
-//Pin selection -------------------------------------------------------------------------------------------------------
-
-export let selectedPinIndex = 0;
-
-// Function to handle pin selection
-function selectPin(index, activeSelect) {
-  // Check if the pinHolder and pinLock exist
-  const pinHolders = document.querySelectorAll('.pinHolder');
-  if (pinHolders.length > index) {
-    const pinLock = pinHolders[index].querySelector('.pinLock');
-    if (pinLock && (pinLock.style.display === 'none' || pinLock.style.display === '')) {
-      // Remove selectedPin class from all pinHolder buttons
-      document.querySelectorAll('.pinHolder').forEach(function (btn) {
-        btn.classList.remove('selectedPin');
-      });
-
-      // Add selectedPin class to the clicked pinHolder button
-      pinHolders[index].classList.add('selectedPin');
-
-      if (activeSelect) {
-        playSound("item_select");
-        setSelectedProfilePin(index, true);
-      }
-
-      if (index != null || typeof (index) == "number") {
-        // Set selectedPin index to localStorage
-        selectedPinIndex = index;
-        localStorage.setItem("selectedPin", index);
-      }
-
-    } else {
-      if (sound) {
-        playSound("pin_locked");
-      }
-    }
-  }
-}
-
-// Function to load selected pin from localStorage
-function loadSelectedPin() {
-  selectedPinIndex = parseInt(localStorage.getItem('selectedPin'));
-
-  if (isNaN(selectedPinIndex) || selectedPinIndex == undefined || selectedPinIndex > 5 || selectedPinIndex == null) {
-    selectedPinIndex = 0;
-  }
-
-  selectPin(selectedPinIndex, false);
-}
-
-// Function to update pinLocks based on XP
-export function updatePinLocks(xpAmount) {
-
-  const pinLocks = document.querySelectorAll('.pinLock');
-  pinLocks.forEach(function (lock) {
-    const lockXP = parseInt(lock.querySelector('.pinLockText').textContent.replace(/,/g, ''));
-    if (xpAmount >= lockXP) {
-      lock.style.display = "none"; // Hide pinLock if XP is enough
-    } else {
-      lock.style.display = "flex"; // Show pinLock if XP is not enough
-    }
-  });
-}
-
-// Add click event listener to pinHolder buttons
-document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
-  btn.addEventListener('click', function () {
-    selectPin(index, true); // Call selectPin function on button click
-  });
-});
-
-
-document.addEventListener("DOMContentLoaded", function () {
-  // Load selected pin when the page loads
-  loadSelectedPin();
-  updatePinLocks(localStorage.getItem("experience"));
-
-});
 
 //Animate currency values to tick up gradually -----------------------------------------------------------------------
 

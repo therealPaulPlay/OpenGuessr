@@ -1,13 +1,17 @@
 import { updateUsername } from "./userAPI";
 import { playSound } from "./soundManager.js";
-import { displayUserInfo, isAuthenticated, updatePinLocks } from "./accountLogic.js";
+import { displayUserInfo, isAuthenticated } from "./accountLogic.js";
 import { errorPopup } from "./errorHandling.js";
 // This is used to dynamically load the profile view
 
 //Profile Window ---------------------------------------------------------------------------------------------
 
 let lastProfileOwnerYou = false;
-let yourLoadedProfileData = "none";
+export let yourLoadedProfileData = "none";
+
+export function updateLoadedProfileData(newData) {
+    yourLoadedProfileData = newData;
+}
 
 export async function loadProfileFromId(id, you, view) {
     if (view) {
@@ -115,6 +119,7 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
 
             if (profileData.pin) {
                 document.getElementById("selectedProfilePin").src = `/IMG/your_marker${profileData.pin}.png`;
+                loadSelectedPin();
             }
         }
 
@@ -405,5 +410,77 @@ function formatDateTime(datetimeStr) {
         return "A year ago";
     } else {
         return diffYears + " years ago";
+    }
+}
+
+// Pin selection --------------------------------------------------------------------------------------------------------------------------
+
+export let selectedPinIndex = 0;
+
+// Function to load selected pin from localStorage
+export function loadSelectedPin() {
+    if (yourLoadedProfileData) {
+        selectedPinIndex = yourLoadedProfileData.pin ? yourLoadedProfileData.pin : 0;
+    } else {
+        selectedPinIndex = 0;
+    }
+
+    selectPin(selectedPinIndex, false);
+}
+
+// Function to update pinLocks based on XP
+function updatePinLocks(xpAmount) {
+
+    const pinLocks = document.querySelectorAll('.pinLock');
+    pinLocks.forEach(function (lock) {
+        const lockXP = parseInt(lock.querySelector('.pinLockText').textContent.replace(/,/g, ''));
+        if (xpAmount >= lockXP) {
+            lock.style.display = "none"; // Hide pinLock if XP is enough
+        } else {
+            lock.style.display = "flex"; // Show pinLock if XP is not enough
+        }
+    });
+}
+
+// Add click event listener to pinHolder buttons
+document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
+    btn.addEventListener('click', function () {
+        selectPin(index, true); // Call selectPin function on button click
+    });
+});
+
+
+// Function to handle pin selection
+export function selectPin(index, activeSelect) {
+    // Check if the pinHolder and pinLock exist
+    const pinHolders = document.querySelectorAll('.pinHolder');
+    if (pinHolders.length > index) {
+        const pinLock = pinHolders[index].querySelector('.pinLock');
+        if (pinLock && (pinLock.style.display === 'none' || pinLock.style.display === '')) {
+            // Remove selectedPin class from all pinHolder buttons
+            document.querySelectorAll('.pinHolder').forEach(function (btn) {
+                btn.classList.remove('selectedPin');
+            });
+
+            // Add selectedPin class to the clicked pinHolder button
+            pinHolders[index].classList.add('selectedPin');
+
+            if (activeSelect) {
+                playSound("item_select");
+            }
+
+            if (index != null || typeof (index) == "number") {
+                // Set selectedPin index to localStorage
+                selectedPinIndex = index;
+                if (activeSelect) {
+                    setSelectedProfilePin(index, true);
+                }
+            }
+
+        } else {
+            if (sound) {
+                playSound("pin_locked");
+            }
+        }
     }
 }
