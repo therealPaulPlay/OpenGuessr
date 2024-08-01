@@ -254,10 +254,16 @@ h3 {
 .profileNameArea {
   display: flex;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: space-between;
   flex-wrap: nowrap;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  background-color: rgba(30, 31, 44, 0.5);
+  padding: 15px;
+  padding-inline: 12px;
+  width: calc(100% + 25px);
+  margin-left: -25px;
+  margin-top: -25px;
 }
 
 #profileViewName {
@@ -265,6 +271,7 @@ h3 {
   overflow: hidden;
   max-width: 60%;
   text-wrap: nowrap;
+  margin-left: 10px;
 }
 
 #levelText {
@@ -692,25 +699,23 @@ textarea {
 }
 
 #badgeButton {
-  background-color: rgba(255, 255, 255, 0.15);
+  background: linear-gradient(0.60turn, rgb(144, 147, 151), #646575);
   color: white;
-  outline: 3px solid rgba(255, 255, 255, 0.3);
   padding-inline: 12px;
-  margin-left: 15px;
-  margin-right: 5px;
-  margin-top: auto;
+  margin: 0;
   font-size: 20px;
-  margin-bottom: 7px;
   padding-top: 0px;
   padding-bottom: 0px;
+  box-sizing: border-box;
 }
 
 #selectedProfilePin {
   width: 25px;
   height: 25px;
   margin-left: 5px;
-  margin-top: auto;
-  margin-bottom: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  padding: 4.5px;
 }
 
 .profilePopupBackground {
@@ -723,6 +728,13 @@ textarea {
   z-index: 971;
 }
 
+#profileNameBox {
+  padding: 5px;
+  margin-left: 5px;
+  display: flex;
+  align-items: center;
+}
+
 .badgeContainer {
   border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.1);
@@ -733,7 +745,7 @@ textarea {
 }
 
 .badge {
-  padding: 3px;
+  padding: 5px;
   border-radius: 5px;
   font-style: italic;
   color: white;
@@ -742,7 +754,23 @@ textarea {
   text-wrap: nowrap;
   padding-inline: 10px;
   cursor: pointer;
-  transition: opacity 250ms ease, transform 250ms ease, filter 250ms ease;
+  transition: opacity 250ms ease, transform 250ms ease, filter 250ms ease, border 150ms ease;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+#levelTextProfile {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 18px;
+  border-radius: 5px;
+  padding: 6px;
+  margin-left: 5px;
+  text-align: center;
+  min-width: 20px;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .badge:hover {
@@ -750,39 +778,39 @@ textarea {
 }
 
 .badgeStage1 {
-  background: linear-gradient(0.60turn, #807169, #554d45);
+  background: linear-gradient(0.60turn, rgb(136, 113, 113), #6f5a5a);
 }
 
 .badgeStage2 {
-  background: linear-gradient(0.60turn, #a17ad0, #7249a2);
+  background: linear-gradient(0.60turn, rgb(133, 78, 201), #6f5293);
 }
 
 .badgeStage3 {
-  background: linear-gradient(0.60turn, #51b7c1, #549ba2);
+  background: linear-gradient(0.60turn, #349aa4, #507d82);
 }
 
 .badgeStage4 {
-  background: linear-gradient(0.60turn, #ddb603, #b7983e);
+  background: linear-gradient(0.60turn, #ddbb1f, #aa8928);
 }
 
 .badgeStageSupporter1 {
-  background: linear-gradient(0.60turn, #72bb73, #5d7d5e);
+  background: linear-gradient(0.60turn, #419d42, #4a684a);
 }
 
 .badgeStageSupporter2 {
-  background: linear-gradient(0.60turn, #4cc44d, #518852);
+  background: linear-gradient(0.60turn, #319532, #518852);
 }
 
 .badgeStageSupporter3 {
-  background: linear-gradient(0.60turn, #1dd01f, #36b238);
+  background: linear-gradient(0.60turn, #19ae1b, #379338);
 }
 
 .badgeStageSupporter4 {
-  background: linear-gradient(0.60turn, #3ddf3e, #22a826);
+  background: linear-gradient(0.60turn, #37d738, #22a826);
 }
 
 .badgeStageDeveloper {
-  background: linear-gradient(0.60turn, #ff3f3f, #992a2a);
+  background: linear-gradient(0.60turn, #ce2f2f, #6f2d2d);
 }
 
 .badgeBox {
@@ -805,12 +833,31 @@ textarea {
   text-align: left;
   margin-bottom: 10px;
   padding-left: 10px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.unlockBadgeStatus {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 3px;
+  padding-inline: 7px;
+  border-radius: 5px;
+  font-size: 20px;
+
 }
 
 #socialWindow {
   width: 40%;
   min-width: 300px;
   max-width: 600px;
+}
+
+.badgeSelected {
+  border: 3px solid rgba(255, 255, 255, 0.75);
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-inline: 7px;
 }
 
 #socialPopupClose {

@@ -79,7 +79,8 @@ function openClearedProfile() {
     document.getElementById("statisticExperience").innerHTML = "0";
     document.getElementById("statisticUpgradeExperience").innerHTML = "0";
     document.getElementById("statisticJoinedDate").textContent = "loading...";
-    document.getElementById("levelText").textContent = "Lvl. 0";
+    document.getElementById("statisticsLevelText").textContent = "0";
+    document.getElementById("levelTextProfile").textContent = "Lvl. 0";
     document.getElementById("statisticHighestStreak").textContent = "0";
     document.getElementById("selectedProfilePin").src = "/IMG/your_marker0.png";
 }
@@ -128,7 +129,8 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
     }
 
     // calculate the level
-    document.getElementById("levelText").textContent = "Lvl. " + getExpStats(experience).level;
+    document.getElementById("statisticsLevelText").textContent = getExpStats(experience).level;
+    document.getElementById("levelTextProfile").textContent = "Lvl. " + getExpStats(experience).level;
 
     // load statistics
     document.getElementById("statisticExperience").innerHTML = Number(experience).toLocaleString();
@@ -260,53 +262,111 @@ textarea.addEventListener('input', () => {
 // Submit profile data ----------------------------------------------------------------------------------------------------------------
 
 // always construct new object to prevent bad overlaps or issues
-function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin) {
-    let aboutText = yourLoadedProfileData.about ? yourLoadedProfileData.about : "";
-    if (newAboutText != undefined) {
-        aboutText = newAboutText;
-    }
+function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin, newBadge) {
+    try {
+        // about text
+        let aboutText;
+        
+        if (yourLoadedProfileData) {
+            aboutText = yourLoadedProfileData.about ? yourLoadedProfileData.about : "";
+        }
 
-    let duelsPlayed = yourLoadedProfileData.duelsPlayed;
-    duelsPlayed = duelsPlayed ? duelsPlayed : 0;
-    if (addDuelsPlayed) {
-        duelsPlayed += addDuelsPlayed;
-    }
+        if (newAboutText != undefined) {
+            aboutText = newAboutText;
+        }
+        
+        // duels played
+        let duelsPlayed;
 
-    let duelsWon = yourLoadedProfileData.duelsWon;
-    duelsWon = duelsWon ? duelsWon : 0;
-    if (addDuelsWon) {
-        duelsWon += addDuelsWon;
-    }
+        if (yourLoadedProfileData) {
+            duelsPlayed = yourLoadedProfileData.duelsPlayed;
+        }
 
-    let competitionsPlayed = yourLoadedProfileData.competitionsPlayed;
-    competitionsPlayed = competitionsPlayed ? competitionsPlayed : 0;
-    if (addCompetitionsPlayed) {
-        competitionsPlayed += addCompetitionsPlayed;
-    }
+        duelsPlayed = duelsPlayed ? duelsPlayed : 0;
+        
+        if (addDuelsPlayed) {
+            duelsPlayed += addDuelsPlayed;
+        }
+        
+        // duels won
+        let duelsWon;
 
-    let newStreak = yourLoadedProfileData.highestStreak;
-    newStreak = newStreak ? newStreak : 0;
-    if (setHighestStreak && newStreak < setHighestStreak) {
-        newStreak = setHighestStreak;
-    }
+        if (yourLoadedProfileData) {
+            duelsWon = yourLoadedProfileData.duelsWon;
+        }
 
-    let pin = yourLoadedProfileData.pin;
-    pin = pin ? pin : 0;
-    if (newPin != undefined) {
-        pin = newPin;
-    }
+        duelsWon = duelsWon ? duelsWon : 0;
+        
+        if (addDuelsWon) {
+            duelsWon += addDuelsWon;
+        }
+        
+        // competitions played
+        let competitionsPlayed;
 
-    const profileData = {
-        about: aboutText,
-        duelsPlayed: duelsPlayed,
-        duelsWon: duelsWon,
-        competitionsPlayed: competitionsPlayed,
-        highestStreak: newStreak,
-        pin: pin
-    }
+        if (yourLoadedProfileData) {
+            competitionsPlayed = yourLoadedProfileData.competitionsPlayed;
+        }   
 
-    submitProfileData(profileData);
-    yourLoadedProfileData = profileData; // also update the loaded profile data with these changes to make sure that changes always carry on to queried requests
+        competitionsPlayed = competitionsPlayed ? competitionsPlayed : 0;
+        
+        if (addCompetitionsPlayed) {
+            competitionsPlayed += addCompetitionsPlayed;
+        }
+
+        // streak
+        let newStreak;
+        
+        if (yourLoadedProfileData) {
+            newStreak = yourLoadedProfileData.highestStreak;
+        }
+
+        newStreak = newStreak ? newStreak : 0;
+
+        if (setHighestStreak && newStreak < setHighestStreak) {
+            newStreak = setHighestStreak;
+        }
+
+        // pin
+        let pin;
+        
+        if (yourLoadedProfileData) {
+            pin = yourLoadedProfileData.pin;
+        }
+
+        pin = pin ? pin : 0;
+
+        if (newPin != undefined) {
+            pin = newPin;
+        }
+
+        // badge
+        let badge;
+
+        if (yourLoadedProfileData) {
+            badge = yourLoadedProfileData.badge;
+        }
+
+        badge = badge ? badge : null;
+
+        if (newBadge) {
+            badge = newBadge;
+        }
+    
+        const profileData = {
+            about: aboutText,
+            duelsPlayed: duelsPlayed,
+            duelsWon: duelsWon,
+            competitionsPlayed: competitionsPlayed,
+            highestStreak: newStreak,
+            pin: pin
+        }
+    
+        submitProfileData(profileData);
+        yourLoadedProfileData = profileData; // also update the loaded profile data with these changes to make sure that changes always carry on to queried requests
+    } catch (error) {
+        console.error("Error in updateProfileData: " + error);
+    }
 }
 
 export async function addDuelPlayed() {
@@ -347,6 +407,13 @@ export async function setSelectedProfilePin(pinId, updateUI) {
         if (updateUI) {
             document.getElementById("selectedProfilePin").src = `/IMG/your_marker${pinId}.png`;
         }
+    }
+}
+
+async function saveProfileBadge(badge) {
+    // only load data - if it was successful, set statistics
+    if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
+        updateProfileData(null, null, null, null, null, null, badge);
     }
 }
 
@@ -487,7 +554,7 @@ export function selectPin(index, activeSelect) {
 
 // Badge system ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-const badgeButton = document.getElementById("badgeButton");
+const badgeButton = document.getElementById("badgeArea");
 document.getElementById("badgeClose").addEventListener("click", () => {
     playSound("basic_button");
     closeBadgeWindow();
@@ -499,9 +566,44 @@ badgeButton.addEventListener("click", () => {
 });
 
 function openBadeWindow() {
+    document.getElementById("badgePopup").scrollTop = "0";
     document.getElementById("badgePopup").style.display = "flex";
 }
 
 function closeBadgeWindow() {
     document.getElementById("badgePopup").style.display = "none";
+}
+
+document.querySelectorAll(".badge").forEach((element) => {
+    element.addEventListener("click", () => {
+        selectBadge(element.id);
+    });
+});
+
+function selectBadge(id) {
+    try {
+        document.querySelectorAll(".badge").forEach((element) => {
+            element.classList.remove("badgeSelected");
+        });
+        document.getElementById(id).classList.add("badgeSelected");
+        setProfileBadge(id);
+        saveProfileBadge(id);
+    } catch (error) {
+        console.error("Error selecting badge: " + error);
+    }
+
+}
+
+function setProfileBadge(id) {
+    const badgeArea = document.getElementById("badgeArea");
+    badgeArea.innerHTML = "";
+
+    try {
+        const badgeToClone = document.getElementById(id);
+        const newBadge = badgeToClone.cloneNode(true);
+        newBadge.classList.remove("badgeSelected");
+        badgeArea.appendChild(newBadge);
+    } catch (error) {
+        console.error("Error setting profile badge: " + error);
+    }
 }
