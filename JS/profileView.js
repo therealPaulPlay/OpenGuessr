@@ -478,7 +478,7 @@ export function selectPin(index, activeSelect) {
             }
 
         } else {
-            if (sound) {
+            if (activeSelect) {
                 playSound("pin_locked");
             }
         }
