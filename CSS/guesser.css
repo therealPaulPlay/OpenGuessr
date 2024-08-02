@@ -255,7 +255,7 @@ h3 {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  flex-wrap: nowrap;
+  flex-wrap: wrap;
   overflow: hidden;
   margin-bottom: 20px;
   background-color: rgba(30, 31, 44, 0.5);
@@ -591,6 +591,7 @@ input:focus {
   border: none;
   user-select: none;
   width: 18%;
+  max-height: 29px;
 }
 
 textarea {
@@ -707,12 +708,12 @@ textarea {
   padding-top: 0px;
   padding-bottom: 0px;
   box-sizing: border-box;
+  margin-right: -10px;
 }
 
 #selectedProfilePin {
   width: 25px;
   height: 25px;
-  margin-left: 5px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 5px;
   padding: 4.5px;
@@ -733,15 +734,22 @@ textarea {
   margin-left: 5px;
   display: flex;
   align-items: center;
+  gap: 10px;
 }
 
 .badgeContainer {
-  border-radius: 10px;
-  background-color: rgba(255, 255, 255, 0.1);
   width: calc(100% - 10px);
   padding: 10px;
   padding-top: 7px;
   padding-bottom: 7px;
+}
+
+.multiplayerBadge {
+  width: fit-content;
+}
+
+.multiplayerBadge p {
+  font-size: 20px !important;
 }
 
 .badge {
@@ -759,13 +767,17 @@ textarea {
   user-select: none;
 }
 
+.badgeLocked {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
 #levelTextProfile {
   background-color: rgba(255, 255, 255, 0.1);
   color: white;
   font-size: 18px;
   border-radius: 5px;
   padding: 6px;
-  margin-left: 5px;
   text-align: center;
   min-width: 20px;
   text-wrap: nowrap;
@@ -782,11 +794,11 @@ textarea {
 }
 
 .badgeStage2 {
-  background: linear-gradient(0.60turn, rgb(133, 78, 201), #6f5293);
+  background: linear-gradient(0.60turn, #30929b, #507d82);
 }
 
 .badgeStage3 {
-  background: linear-gradient(0.60turn, #349aa4, #507d82);
+  background: linear-gradient(0.60turn, rgb(142, 70, 232), #7954a6); 
 }
 
 .badgeStage4 {
@@ -810,7 +822,7 @@ textarea {
 }
 
 .badgeStageDeveloper {
-  background: linear-gradient(0.60turn, #ce2f2f, #6f2d2d);
+  background: linear-gradient(0.60turn, #e31f1f, #8e3030);
 }
 
 .badgeBox {
@@ -819,10 +831,10 @@ textarea {
   display: flex;
   justify-content: flex-start;
   align-items: center;
-  padding: 5px;
-  width: calc(100% - 10px);
+  padding: 7px;
+  width: calc(100% - 14px);
   flex-wrap: wrap;
-  gap: 5px;
+  gap: 7px;
   margin-bottom: 10px;
 }
 
@@ -1539,6 +1551,9 @@ textarea {
   justify-content: space-between;
   gap: 50px;
   padding: 10px 20px;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .multiplayerEntryPlayerName {
@@ -1546,6 +1561,9 @@ textarea {
   transition: opacity 250ms ease;
   cursor: pointer;
   user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .multiplayerEntryPlayerName:hover {
@@ -1946,6 +1964,14 @@ map::selection {
   margin-top: 10px;
 }
 
+.editNameSection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 5px;
+}
+
 #multiplayerMessageBox {
   color: white;
   margin: 10px;
@@ -2080,22 +2106,6 @@ map::selection {
   .bottomFooterAds {
     width: 0;
     display: none;
-  }
-}
-
-@media (orientation: portrait) and (max-width: 750px) {
-  .bottomFooterAds {
-    width: 320px;
-    height: 50px;
-    bottom: 12px;
-  }
-
-  .BottomBar {
-    padding-bottom: 40px;
-  }
-
-  #mapHolder {
-    bottom: 145px;
   }
 }
 
@@ -2990,22 +3000,6 @@ input[type="checkbox"]:focus {
   }
 }
 
-/* phones in landscape, Tablets / Ipads */
-@media (orientation: landscape) and (max-width: 1250px) {
-  #mapHolder {
-    width: 40%;
-    height: 40%;
-  }
-
-  #map {
-    opacity: 50%;
-  }
-
-  #revealCompass {
-    opacity: 0.8;
-  }
-}
-
 /* phones / mobile but also narrow devices like ipads */
 @media all and (orientation: portrait),
 all and (max-width: 1250px) {
@@ -3127,6 +3121,19 @@ all and (max-width: 1200px) {
   #imageGuesserAttribution {
     font-size: 20px;
   }
+
+  #mapHolder {
+    width: 40%;
+    height: 40%;
+  }
+
+  #map {
+    opacity: 50%;
+  }
+
+  #revealCompass {
+    opacity: 0.8;
+  }
 }
 
 /* big screens in portrait, like vertical monitors */
@@ -3151,8 +3158,17 @@ all and (max-width: 1200px) {
 
 }
 
-/* higher bottom bar because of ad shift */
-@media (orientation: portrait) and (max-width: 700px) {
+/* ad shift for narrow screens */
+@media (orientation: portrait) and (max-width: 750px) {
+  .bottomFooterAds {
+    width: 320px;
+    height: 50px;
+    bottom: 12px;
+  }
+
+  .BottomBar {
+    padding-bottom: 40px;
+  }
 
   #mapHolder {
     bottom: 145px;

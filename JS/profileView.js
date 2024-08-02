@@ -83,11 +83,30 @@ function openClearedProfile() {
     document.getElementById("levelTextProfile").textContent = "Lvl. 0";
     document.getElementById("statisticHighestStreak").textContent = "0";
     document.getElementById("selectedProfilePin").src = "/IMG/your_marker0.png";
+    document.getElementById("badgeButton").style.display = "none";
+    document.getElementById("badgeArea").style.pointerEvents = "none";
+    document.getElementById("badgeArea").innerHTML = "";
 }
 
 function viewProfile(name, experience, joined, yourProfile, profileData) {
     lastProfileOwnerYou = yourProfile; // only update database entry on close if it was your profile that was opened
     document.getElementById("profileViewName").textContent = name ? name : "Guest";
+
+    if (yourProfile) {
+        updatePinLocks(localStorage.getItem("experience"));
+        document.getElementById("editUsername").style.display = "inline-block";
+        document.getElementById("profilePinHeader").style.display = "block";
+        document.getElementById("pinSelector").style.display = "flex";
+        document.getElementById("accountManagementHeader").style.display = "block";
+        document.getElementById("accountManagementArea").style.display = "flex";
+        document.getElementById("usernameInput").style.display = "inline";
+        document.getElementById("confirmUsername").style.display = "inline";
+        document.getElementById("profileAbout").style.pointerEvents = "auto";
+        document.getElementById("profileAbout").style.display = "block";
+        document.getElementById("profileAboutHeader").style.display = "block";
+        document.getElementById("badgeButton").style.display = "block";
+        document.getElementById("badgeArea").style.pointerEvents = "auto";
+    }
 
     try {
         if (profileData) {
@@ -122,6 +141,14 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
                 document.getElementById("selectedProfilePin").src = `/IMG/your_marker${profileData.pin}.png`;
                 loadSelectedPin();
             }
+
+            if (profileData.badge) {
+                if (yourProfile) {
+                    selectBadge(profileData.badge);
+                } else {
+                    setProfileBadge(profileData.badge);
+                }
+            }
         }
 
     } catch (e) {
@@ -136,20 +163,6 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
     document.getElementById("statisticExperience").innerHTML = Number(experience).toLocaleString();
     document.getElementById("statisticUpgradeExperience").innerHTML = getExpStats(experience).requiredForLevelUpgrade.toLocaleString();
     document.getElementById("statisticJoinedDate").textContent = formatDateTime(joined);
-
-    if (yourProfile) {
-        updatePinLocks(localStorage.getItem("experience"));
-        document.getElementById("editUsername").style.display = "inline-block";
-        document.getElementById("profilePinHeader").style.display = "block";
-        document.getElementById("pinSelector").style.display = "flex";
-        document.getElementById("accountManagementHeader").style.display = "block";
-        document.getElementById("accountManagementArea").style.display = "flex";
-        document.getElementById("usernameInput").style.display = "inline";
-        document.getElementById("confirmUsername").style.display = "inline";
-        document.getElementById("profileAbout").style.pointerEvents = "auto";
-        document.getElementById("profileAbout").style.display = "block";
-        document.getElementById("profileAboutHeader").style.display = "block";
-    }
 }
 
 let profileClose = document.getElementById("profileClose");
@@ -359,7 +372,8 @@ function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompeti
             duelsWon: duelsWon,
             competitionsPlayed: competitionsPlayed,
             highestStreak: newStreak,
-            pin: pin
+            pin: pin,
+            badge: badge
         }
     
         submitProfileData(profileData);
@@ -412,8 +426,11 @@ export async function setSelectedProfilePin(pinId, updateUI) {
 
 async function saveProfileBadge(badge) {
     // only load data - if it was successful, set statistics
-    if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
-        updateProfileData(null, null, null, null, null, null, badge);
+    if (!yourLoadedProfileData.badge || yourLoadedProfileData.badge != badge) { // only execute if selection actually changed
+        if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
+            selectedBadge = badge;
+            updateProfileData(null, null, null, null, null, null, badge);
+        }
     }
 }
 
@@ -554,20 +571,35 @@ export function selectPin(index, activeSelect) {
 
 // Badge system ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-const badgeButton = document.getElementById("badgeArea");
-document.getElementById("badgeClose").addEventListener("click", () => {
-    playSound("basic_button");
-    closeBadgeWindow();
-});
+export let selectedBadge = null;
+
+export function loadSelectedBadge() {
+    if (yourLoadedProfileData) {
+        selectedBadge = yourLoadedProfileData.badge ? yourLoadedProfileData.badge : null;
+    }
+}
+
+const badgeButton = document.getElementById("badgeButton");
 
 badgeButton.addEventListener("click", () => {
     openBadeWindow();
     playSound("basic_button");
 });
 
+document.getElementById("badgeArea").addEventListener("click", () => {
+    openBadeWindow();
+    playSound("basic_button");
+});
+
+document.getElementById("badgeClose").addEventListener("click", () => {
+    playSound("basic_button");
+    closeBadgeWindow();
+});
+
 function openBadeWindow() {
-    document.getElementById("badgePopup").scrollTop = "0";
+    updateBadgelocks();
     document.getElementById("badgePopup").style.display = "flex";
+    document.getElementById("badgeWindow").scrollTop = "0";
 }
 
 function closeBadgeWindow() {
@@ -577,6 +609,7 @@ function closeBadgeWindow() {
 document.querySelectorAll(".badge").forEach((element) => {
     element.addEventListener("click", () => {
         selectBadge(element.id);
+        playSound("item_select");
     });
 });
 
@@ -591,7 +624,6 @@ function selectBadge(id) {
     } catch (error) {
         console.error("Error selecting badge: " + error);
     }
-
 }
 
 function setProfileBadge(id) {
@@ -602,8 +634,108 @@ function setProfileBadge(id) {
         const badgeToClone = document.getElementById(id);
         const newBadge = badgeToClone.cloneNode(true);
         newBadge.classList.remove("badgeSelected");
+        newBadge.classList.remove("badgeLocked");
+        newBadge.id = "currentProfileBadgeSelection"; // change id to prevent overlap 
         badgeArea.appendChild(newBadge);
+        document.getElementById("badgeButton").style.display = "none";
     } catch (error) {
         console.error("Error setting profile badge: " + error);
+    }
+}
+
+function updateBadgelocks() {
+    try {
+        document.querySelectorAll(".badge").forEach((e) => {
+            if (e.id != "currentProfileBadgeSelection" && !e.id.includes("multiplayer")) {
+                e.classList.add("badgeLocked");
+            }
+        });
+    
+        const statusPrefix = "Unlock next at ";
+    
+        const experienceStatus = document.getElementById("experienceBadgeStatus");
+        const duelsStatus = document.getElementById("duelsBadgeStatus");
+        const competitionsStatus = document.getElementById("competitionsBadgeStatus");
+        const streaksStatus = document.getElementById("streakBadgeStatus");
+        const supporterStatus = document.getElementById("supporterBadgeStatus");
+    
+        const experienceRequirements = [50000, 250000, 1000000, 10000000];
+        const duelsRequirements = [5, 50, 100, 500];
+        const competitionRequirements = [10, 50, 100, 500];
+        const streaksRequirements = [5, 15, 50, 100];
+        const supporterRequirements = [2, 5, 10, 25]; // added later, suggestions in dollars
+    
+        let expIndex = 0;
+    
+        for (const amount of experienceRequirements) {
+            expIndex++;
+    
+            experienceStatus.textContent = statusPrefix + amount.toLocaleString() + " XP";
+            if (amount <= localStorage.getItem("experience")) {
+                document.getElementById("expBadge" + expIndex).classList.remove("badgeLocked");
+            } else {
+                break;
+            }
+        };
+    
+        let duelsIndex = 0;
+        let duelsWins = 0;
+    
+        if (yourLoadedProfileData && yourLoadedProfileData.duelsWon) {
+            duelsWins = yourLoadedProfileData.duelsWon;
+        }
+    
+        for (const amount of duelsRequirements) {
+            duelsIndex++;
+    
+            duelsStatus.textContent = statusPrefix + amount.toLocaleString() + " Wins";
+            if (amount <= duelsWins) {
+                document.getElementById("duelBadge" + duelsIndex).classList.remove("badgeLocked");
+            } else {
+                break;
+            }
+        };
+    
+        let competitionsIndex = 0;
+        let competitionEntries = 0;
+    
+        if (yourLoadedProfileData && yourLoadedProfileData.competitionsPlayed) {
+            competitionEntries = yourLoadedProfileData.competitionsPlayed;
+        }
+    
+        for (const amount of competitionRequirements) {
+            competitionsIndex++;
+    
+            competitionsStatus.textContent = statusPrefix + amount.toLocaleString() + " Entries";
+            if (amount <= competitionEntries) {
+                document.getElementById("compBadge" + competitionsIndex).classList.remove("badgeLocked");
+            } else {
+                break;
+            }
+        };
+    
+        let streaksIndex = 0;
+        let highestStreak = 0;
+    
+        if (yourLoadedProfileData && yourLoadedProfileData.highestStreak) {
+            highestStreak = yourLoadedProfileData.highestStreak;
+        }
+    
+        for (const amount of streaksRequirements) {
+            streaksIndex++;
+    
+            streaksStatus.textContent = statusPrefix + amount.toLocaleString() + " ended Streak";
+            if (amount <= highestStreak) {
+                document.getElementById("streakBadge" + streaksIndex).classList.remove("badgeLocked");
+            } else {
+                break;
+            }
+        };
+    
+        if (localStorage.getItem("id") <= 2) {
+            document.getElementById("miscBadge1").classList.remove("badgeLocked");
+        }
+    } catch (error) {
+        console.error("Error in updatePinLocks: " + error);
     }
 }
