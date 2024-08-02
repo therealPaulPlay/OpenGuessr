@@ -1,9 +1,9 @@
-import { generateNewLocation, resMap } from "./main.js";
+import { generateNewLocation } from "./main.js";
 import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
-import { handleMapUnhover } from "./miniMap.js";
+import { handleMapUnhover, resetMap } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
@@ -279,11 +279,10 @@ export function transitionToStart() {
 
         document.getElementById("BeforeOverlay").style.visibility = "visible";
         document.getElementById("BeforeOverlay").style.opacity = "100";
-        resMap.stop(); //stop the flying animation
-        setTimeout(function () { resMap.stop() }, 200)
         toggleStreakWindow(0, true);
         checkGenerationTypeAndGenerate();
         handleMapUnhover();
+        resetMap();
         disableResultScreen();
 
         setTimeout(socialPopupProbability, 650);
