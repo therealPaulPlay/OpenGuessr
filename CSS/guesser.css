@@ -1549,11 +1549,13 @@ textarea {
 .multiplayerEntryPlayerInfo {
   display: flex;
   justify-content: space-between;
-  gap: 50px;
-  padding: 10px 20px;
+  align-items: center;
+  gap: 5px;
+  padding-inline: 20px;
   text-wrap: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  min-height: 50px;
 }
 
 .multiplayerEntryPlayerName {
@@ -1564,6 +1566,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: 10px;
+  overflow: hidden;
 }
 
 .multiplayerEntryPlayerName:hover {
