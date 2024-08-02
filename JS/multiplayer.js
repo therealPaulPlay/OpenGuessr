@@ -2,7 +2,8 @@ import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup } from "./mainUI.js";
 import { startTimer } from "./timer";
-import { uiSetUserXP, selectedPinIndex, isAuthenticated } from "./accountLogic.js";
+import { uiSetUserXP, isAuthenticated, authenticationCheckComplete } from "./accountLogic.js";
+import { selectedBadge, selectedPinIndex } from "./profileView.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeamMarkers } from "./miniMap.js";
 import { calculateDistances, loadResultMap } from "./main.js";
@@ -409,10 +410,10 @@ function endMultiplayerRound() {
             document.getElementById("nextRound").style.pointerEvents = "none";
             //After 2 seconds (or 5 for duels), enable the skip functionality
             let skipTimeout = playingDuels ? 5000 : 2000;
-            document.getElementById("nextRound").innerHTML = "Wait " + (skipTimeout / 1000) + "s... ➝";
+            document.getElementById("nextRoundText").textContent = "Wait " + (skipTimeout / 1000) + "s...";
 
             setTimeout(function () {
-                document.getElementById("nextRound").innerHTML = "Skip ➝";
+                document.getElementById("nextRoundText").textContent = "Skip";
                 document.getElementById("nextRound").style.opacity = "1";
                 document.getElementById("nextRound").style.pointerEvents = "auto";
             }, skipTimeout)
@@ -426,7 +427,7 @@ function endMultiplayerRound() {
             //if i'ts not the host, hide the next round button!
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
-            document.getElementById("nextRound").innerHTML = "Waiting for host... ➝";
+            document.getElementById("nextRoundText").textContent = "Waiting for host...";
         }
 
         if (!lateJoinedWaiting) {
@@ -572,6 +573,30 @@ if (roomCode) {
     joinOnLoadViaLink = true;
 }
 
+document.getElementById("linkJoinClose").addEventListener("click", () => {
+    playSound("basic_button");
+    setLinkjoinPopup(false);
+})
+
+
+function attemptJoinViaLink() {
+    if (joinOnLoadViaLink) {
+        if (peer) {
+            try {
+                setLinkjoinPopup(true);
+                joinRoom(roomCode);
+            } catch (err) {
+                console.error("Tried to join via link with initizalized peer, but there was an exception when joining.");
+            }
+        } else {
+            console.error("Tried to join round via link, but peerjs was not initialized yet.");
+        }
+    
+        joinOnLoadViaLink = false;
+        history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
+    }
+}
+
 function setLinkjoinPopup(show) {
     if (show) {
         document.getElementById("linkjoinWindow").style.display = "block";
@@ -581,31 +606,6 @@ function setLinkjoinPopup(show) {
         document.getElementById("blackBackground").style.visibility = "hidden";
     }
 }
-
-document.getElementById("linkJoinClose").addEventListener("click", () => {
-    playSound("basic_button");
-    setLinkjoinPopup(false);
-})
-
-document.addEventListener('DOMContentLoaded', function () {
-    if (joinOnLoadViaLink) {
-        if (peer) {
-            try {
-                setLinkjoinPopup(true);
-                peer.on('open', function () {
-                    joinRoom(roomCode);
-                });
-            } catch (err) {
-                console.error("Tried to join via link with initizalized peer, but there was an exception when joining.");
-            }
-        } else {
-            console.error("Tried to join round via link, but peerjs was not initialized yet.");
-        }
-
-        joinOnLoadViaLink = false;
-        history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
-    }
-});
 
 let copyRoomcodeLinkButton = document.getElementById("roomcodeLink");
 
@@ -631,21 +631,11 @@ function copyRoomcodeLink() {
         });
 }
 
-// Logic ------------------------------------------------------------------------------------------------
-var conn; // the connection data
+// Vars ------------------------------------------------------------------------------------------------
+let conn; // the connection data
 export let peerId; //host peer id
 export let isHost = false;
 export let connectedPeers = [];
-
-function removeConnectedPeerById(peerId) {
-    // Find the index of the entry with the given ID
-    const index = connectedPeers.findIndex(entry => entry[0] === peerId);
-
-    // If the entry exists in the array, remove it
-    if (index !== -1) {
-        connectedPeers.splice(index, 1);
-    }
-}
 
 //Chat -----------------------------------------------------------------------------------------------------
 let chatBox = document.getElementById("multiplayerMessageBox");
@@ -966,14 +956,36 @@ function showTimeReduceOverlay(time, hide) {
     }
 }
 
+// Universal peer connection open (also attempt linkjoin) -----------------------------------------------------------------
+
+if (peer) {
+    peer.on('open', function (id) {
+        peerId = id; // this also triggers for peers, as their connection opens
+        if (authenticationCheckComplete) {
+            attemptJoinViaLink();
+        } else {
+            document.addEventListener("authCheckComplete", () => {
+                attemptJoinViaLink();
+            });
+        }
+    });
+}
+
 //Host Logic ----------------------------------------------------------------------------------------------
 export let multiplayerGuessesLocationsArray = [];
 let multiplayerFirstRoundPlayed = false; // for host and peers! peers use this to see whether they should incrase the round index
 export let yourTeam = 1;
 
+function removeConnectedPeerById(peerId) {
+    const index = connectedPeers.findIndex(entry => entry[0] === peerId);
+
+    if (index !== -1) {
+        connectedPeers.splice(index, 1); // splice: startindex, deletecount (here 1)
+    }
+}
+
 if (peer) {
     peer.on('open', function (id) {
-        peerId = id; // this also triggers for peers, as their connection opens
 
         // Set up event listener for incoming connections (HOST LOGIC)
         peer.on('connection', function (incomingConn) {
@@ -998,7 +1010,7 @@ if (peer) {
                     const index = connectedPeers.findIndex(entry => entry[0] == incomingConn.peer);
                     // If the entry doesn't already exist (prevent duplicates), only then push new user
                     if (index == -1) {
-                        connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1, incomingConn.metadata.id]);
+                        connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1, incomingConn.metadata.id, incomingConn.metadata.badge]);
                     }
 
                     connectedClientsCount++;
@@ -1128,7 +1140,7 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
         multiplayerCategory = "standard";
     }
 
-    connectedPeers.push([peerId, localStorage.getItem("username") == null ? savedGuestName : localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0, 1, localStorage.getItem("id")]); //add yourself (host) to the overview
+    connectedPeers.push([peerId, localStorage.getItem("username") == null ? savedGuestName : localStorage.getItem("username"), uiSetUserXP(localStorage.getItem("experience")).level, 0, 1, localStorage.getItem("id"), selectedBadge]); //add yourself (host) to the overview
     yourTeam = 1; // Host is always in team 1
     showMultiplayerOverlay(true, "Waiting...", connectedPeers);
 
@@ -1286,7 +1298,8 @@ function joinRoom(code) {
             username: localStorage.getItem("username") == null ? savedGuestName : localStorage.getItem("username"),
             level: uiSetUserXP(localStorage.getItem("experience")).level,
             score: 0, //inital score is set to 0,
-            id: localStorage.getItem("id")
+            id: localStorage.getItem("id"),
+            badge: selectedBadge
         }
     };
 
@@ -1538,7 +1551,7 @@ function leaveMultiplayerRound() {
 
     document.getElementById("nextRound").style.opacity = "1";
     document.getElementById("nextRound").style.pointerEvents = "auto";
-    document.getElementById("nextRound").textContent = "Next round →";
+    document.getElementById("nextRoundText").textContent = "Next round";
     endMultiplayerRoundButton.style.display = "none";
     endMultiplayerRematchButton.style.display = "none";
     endMultiplayerRematchButton.style.opacity = "1";
@@ -1660,7 +1673,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 teams[teamIndex].players.forEach(playerInfo => {
                     nameProfileIdCounter++;
 
-                    const [peerId, username, level, score, team, id] = playerInfo;
+                    const [peerId, username, level, score, team, id, badge] = playerInfo;
                     let playerColor = teams[teamIndex].color;
 
                     let clickableEntry = id ? "" : " entryNotClickable";
@@ -1673,7 +1686,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
 
                         elementHTML = `
                             <div class="multiplayerEntryPlayerInfo">
-                                <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})</div>
+                                <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})<div class="multiplayerBadge" id="newBadgeDiv${nameProfileIdCounter}"></div></div>
                                 <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
                             </div>
                     `;
@@ -1683,7 +1696,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
 
                         elementHTML = `
                             <div class="multiplayerEntryPlayerInfo">
-                                <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})</div>
+                                <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})<div class="multiplayerBadge" id="newBadgeDiv${nameProfileIdCounter}"></div></div>
                                 <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
                             </div>
                     `;
@@ -1692,12 +1705,17 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                     newEntry.innerHTML = elementHTML;
                     container.appendChild(newEntry);
 
+                    if (badge) {
+                        let newBadgeDiv = document.getElementById("newBadgeDiv" + nameProfileIdCounter);
+                        newBadgeDiv.appendChild(returnMultiplayerBadge(badge));
+                    }
+
                     if (id) {
                         try {
                             document.getElementById("usernameOverlayField" + nameProfileIdCounter).addEventListener("click", () => {
                                 loadProfileFromId(id, false, true);
                             });
-                        } catch(error) {
+                        } catch (error) {
                             console.error("Error in showMultiplayerOverlay: " + error);
                         }
                     }
@@ -1712,7 +1730,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 let winningUsername = winningPlayerData[1];
                 let winningId = winningPlayerData[5];
                 document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
-                
+
                 // check if you won in duels or just played
                 if (playingDuels && isAuthenticated) {
                     if (winningId == localStorage.getItem("id")) {
@@ -1730,7 +1748,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
             array.forEach(playerInfo => {
                 nameProfileIdCounter++;
 
-                const [peerId, username, level, score, team, id] = playerInfo;
+                const [peerId, username, level, score, team, id, badge] = playerInfo;
 
                 let newEntry = document.createElement("div");
 
@@ -1741,7 +1759,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
 
                     elementHTML = `
                         <div class="multiplayerEntryPlayerInfo">
-                            <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})</div>
+                            <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})<div class="multiplayerBadge" id="newBadgeDiv${nameProfileIdCounter}"></div></div>
                             <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
                         </div>
                 `;
@@ -1750,7 +1768,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
 
                     elementHTML = `
                         <div class="multiplayerEntryPlayerInfo">
-                            <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})</div>
+                            <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})<div class="multiplayerBadge" id="newBadgeDiv${nameProfileIdCounter}"></div></div>
                             <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
                         </div>
                 `;
@@ -1759,12 +1777,17 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 newEntry.innerHTML = elementHTML;
                 container.appendChild(newEntry);
 
+                if (badge) {
+                    let newBadgeDiv = document.getElementById("newBadgeDiv" + nameProfileIdCounter);
+                    newBadgeDiv.appendChild(returnMultiplayerBadge(badge));
+                }
+
                 if (id) {
                     try {
                         document.getElementById("usernameOverlayField" + nameProfileIdCounter).addEventListener("click", () => {
                             loadProfileFromId(id, false, true);
                         });
-                    } catch(error) {
+                    } catch (error) {
                         console.error("Error in showMultiplayerOverlay: " + error);
                     }
                 }
@@ -1776,7 +1799,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
         hideToggleMapButtonIfMobile(true);
         document.getElementById("revealCompass").style.visibility = "hidden";
         showTimeReduceOverlay(0, true); // hide = true (in case it somehow overlaps if the result screen is being skipped quickly)
-        
+
     } else {
         document.getElementById("multiplayerFade").style.opacity = "0";
         document.getElementById("multiplayerFade").style.pointerEvents = "none";
@@ -1785,6 +1808,27 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
             hideToggleMapButtonIfMobile(false);
             document.getElementById("revealCompass").style.visibility = "visible";
         }
+    }
+}
+
+let randomBadgeIndexId = 0;
+
+function returnMultiplayerBadge(badge) {
+    if (badge) {
+        randomBadgeIndexId++;
+
+        try {
+            const badgeToClone = document.getElementById(badge);
+            const newBadge = badgeToClone.cloneNode(true);
+            newBadge.classList.remove("badgeSelected");
+            newBadge.classList.remove("badgeLocked");
+            newBadge.id = "multiplayerOverlayBadge" + randomBadgeIndexId; // change id to prevent overlap 
+            return newBadge;
+        } catch (error) {
+            console.error("Couldn't load multiplayer badge with id " + badge + ". Error: " + error);
+        }
+    } else {
+        return "";
     }
 }
 

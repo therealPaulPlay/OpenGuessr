@@ -1,5 +1,5 @@
 import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main.js";
-import { selectedPinIndex } from "./accountLogic.js";
+import { selectedPinIndex } from "./profileView.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
@@ -335,7 +335,7 @@ export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
     playSound("basic_button");
 
-    document.getElementById("nextRound").innerHTML = "Next round ➝";
+    document.getElementById("nextRoundText").textContent = "Next round";
 
     if (playingCompetition) {
         try {
@@ -345,9 +345,9 @@ export function confirmButtonClicks() {
         }
 
         if (!checkCompetitionRoundStatus(true)) {
-            document.getElementById("nextRound").innerHTML = "See ranking ➝";
+            document.getElementById("nextRoundText").textContent = "See ranking";
         } else {
-            document.getElementById("nextRound").innerHTML = "Next round ➝";
+            document.getElementById("nextRoundText").textContent = "Next round";
         }
     }
 

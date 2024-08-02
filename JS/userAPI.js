@@ -38,7 +38,7 @@ export async function loginUser(email, password, errorSource) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      await saveUserData(data);
+      saveUserData(data);
 
       if (inIframe()) {
         window.top.postMessage("close", "*");
@@ -204,7 +204,8 @@ export async function getUser(token, id, errorSource) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      await saveUserData(data['user']);
+      saveUserData(data['user']);
+      return data.user.profile_data;
 
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);

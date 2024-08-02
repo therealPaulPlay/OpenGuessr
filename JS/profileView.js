@@ -1,13 +1,17 @@
 import { updateUsername } from "./userAPI";
 import { playSound } from "./soundManager.js";
-import { displayUserInfo, isAuthenticated, updatePinLocks } from "./accountLogic.js";
+import { displayUserInfo, isAuthenticated } from "./accountLogic.js";
 import { errorPopup } from "./errorHandling.js";
 // This is used to dynamically load the profile view
 
 //Profile Window ---------------------------------------------------------------------------------------------
 
 let lastProfileOwnerYou = false;
-let yourLoadedProfileData = "none";
+export let yourLoadedProfileData = "none";
+
+export function updateLoadedProfileData(newData) {
+    yourLoadedProfileData = newData;
+}
 
 export async function loadProfileFromId(id, you, view) {
     if (view) {
@@ -25,7 +29,7 @@ export async function loadProfileFromId(id, you, view) {
         // Check if the response is successful
         if (response.ok) {
             const data = await response.json();
-            
+
             if (you && data.profileData) {
                 yourLoadedProfileData = data.profileData;
             }
@@ -33,7 +37,7 @@ export async function loadProfileFromId(id, you, view) {
             // load data only or show profile
             if (view) {
                 viewProfile(data.username, data.experience, data.joinedDate, you, data.profileData);
-            } 
+            }
 
             return true;
 
@@ -75,60 +79,18 @@ function openClearedProfile() {
     document.getElementById("statisticExperience").innerHTML = "0";
     document.getElementById("statisticUpgradeExperience").innerHTML = "0";
     document.getElementById("statisticJoinedDate").textContent = "loading...";
-    document.getElementById("levelText").textContent = "Lvl. 0";
+    document.getElementById("statisticsLevelText").textContent = "0";
+    document.getElementById("levelTextProfile").textContent = "Lvl. 0";
     document.getElementById("statisticHighestStreak").textContent = "0";
     document.getElementById("selectedProfilePin").src = "/IMG/your_marker0.png";
+    document.getElementById("badgeButton").style.display = "none";
+    document.getElementById("badgeArea").style.pointerEvents = "none";
+    document.getElementById("badgeArea").innerHTML = "";
 }
 
 function viewProfile(name, experience, joined, yourProfile, profileData) {
     lastProfileOwnerYou = yourProfile; // only update database entry on close if it was your profile that was opened
     document.getElementById("profileViewName").textContent = name ? name : "Guest";
-
-    try {
-        if (profileData) {
-            if (profileData.about) {
-                document.getElementById("profileAbout").value = profileData.about;
-                document.getElementById("profileAbout").style.display = "block";
-                document.getElementById("profileAboutHeader").style.display = "block";
-                if (!yourProfile) {
-                    document.getElementById("profileAbout").style.height = "1px";
-                    document.getElementById("profileAbout").style.height = (document.getElementById("profileAbout").scrollHeight - 25) + "px";
-                }
-            }
-    
-            if (profileData.duelsPlayed) {
-                document.getElementById("statisticDuelsPlayed").textContent = profileData.duelsPlayed;
-            }
-    
-    
-            if (profileData.duelsWon) {
-                document.getElementById("statisticDuelsWon").textContent = profileData.duelsWon;
-            }
-    
-            if (profileData.competitionsPlayed) {
-                document.getElementById("statisticCompetitionsEntered").textContent = profileData.competitionsPlayed;
-            }
-    
-            if (profileData.highestStreak) {
-                document.getElementById("statisticHighestStreak").textContent = profileData.highestStreak;
-            }
-            
-            if(profileData.pin) {
-                document.getElementById("selectedProfilePin").src = `/IMG/your_marker${profileData.pin}.png`;
-            }
-        }
-
-    } catch (e) {
-        console.error("Error loading data from profileData in viewProfile: " + e);
-    }
-
-    // calculate the level
-    document.getElementById("levelText").textContent = "Lvl. " + getExpStats(experience).level;
-
-    // load statistics
-    document.getElementById("statisticExperience").innerHTML = Number(experience).toLocaleString();
-    document.getElementById("statisticUpgradeExperience").innerHTML = getExpStats(experience).requiredForLevelUpgrade.toLocaleString();
-    document.getElementById("statisticJoinedDate").textContent = formatDateTime(joined);
 
     if (yourProfile) {
         updatePinLocks(localStorage.getItem("experience"));
@@ -142,7 +104,65 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
         document.getElementById("profileAbout").style.pointerEvents = "auto";
         document.getElementById("profileAbout").style.display = "block";
         document.getElementById("profileAboutHeader").style.display = "block";
+        document.getElementById("badgeButton").style.display = "block";
+        document.getElementById("badgeArea").style.pointerEvents = "auto";
     }
+
+    try {
+        if (profileData) {
+            if (profileData.about) {
+                document.getElementById("profileAbout").value = profileData.about;
+                document.getElementById("profileAbout").style.display = "block";
+                document.getElementById("profileAboutHeader").style.display = "block";
+                if (!yourProfile) {
+                    document.getElementById("profileAbout").style.height = "1px";
+                    document.getElementById("profileAbout").style.height = (document.getElementById("profileAbout").scrollHeight - 25) + "px";
+                }
+            }
+
+            if (profileData.duelsPlayed) {
+                document.getElementById("statisticDuelsPlayed").textContent = profileData.duelsPlayed;
+            }
+
+
+            if (profileData.duelsWon) {
+                document.getElementById("statisticDuelsWon").textContent = profileData.duelsWon;
+            }
+
+            if (profileData.competitionsPlayed) {
+                document.getElementById("statisticCompetitionsEntered").textContent = profileData.competitionsPlayed;
+            }
+
+            if (profileData.highestStreak) {
+                document.getElementById("statisticHighestStreak").textContent = profileData.highestStreak;
+            }
+
+            if (profileData.pin) {
+                document.getElementById("selectedProfilePin").src = `/IMG/your_marker${profileData.pin}.png`;
+                loadSelectedPin();
+            }
+
+            if (profileData.badge) {
+                if (yourProfile) {
+                    selectBadge(profileData.badge);
+                } else {
+                    setProfileBadge(profileData.badge);
+                }
+            }
+        }
+
+    } catch (e) {
+        console.error("Error loading data from profileData in viewProfile: " + e);
+    }
+
+    // calculate the level
+    document.getElementById("statisticsLevelText").textContent = getExpStats(experience).level;
+    document.getElementById("levelTextProfile").textContent = "Lvl. " + getExpStats(experience).level;
+
+    // load statistics
+    document.getElementById("statisticExperience").innerHTML = Number(experience).toLocaleString();
+    document.getElementById("statisticUpgradeExperience").innerHTML = getExpStats(experience).requiredForLevelUpgrade.toLocaleString();
+    document.getElementById("statisticJoinedDate").textContent = formatDateTime(joined);
 }
 
 let profileClose = document.getElementById("profileClose");
@@ -255,53 +275,112 @@ textarea.addEventListener('input', () => {
 // Submit profile data ----------------------------------------------------------------------------------------------------------------
 
 // always construct new object to prevent bad overlaps or issues
-function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin) {
-    let aboutText =  yourLoadedProfileData.about ? yourLoadedProfileData.about : "";
-    if (newAboutText != undefined) {
-        aboutText = newAboutText;
-    }
+function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin, newBadge) {
+    try {
+        // about text
+        let aboutText;
+        
+        if (yourLoadedProfileData) {
+            aboutText = yourLoadedProfileData.about ? yourLoadedProfileData.about : "";
+        }
 
-    let duelsPlayed = yourLoadedProfileData.duelsPlayed;
-    duelsPlayed = duelsPlayed ? duelsPlayed : 0;
-    if (addDuelsPlayed) {
-        duelsPlayed += addDuelsPlayed;
-    }
+        if (newAboutText != undefined) {
+            aboutText = newAboutText;
+        }
+        
+        // duels played
+        let duelsPlayed;
 
-    let duelsWon = yourLoadedProfileData.duelsWon;
-    duelsWon = duelsWon ? duelsWon : 0;
-    if (addDuelsWon) {
-        duelsWon += addDuelsWon;
-    }
+        if (yourLoadedProfileData) {
+            duelsPlayed = yourLoadedProfileData.duelsPlayed;
+        }
 
-    let competitionsPlayed = yourLoadedProfileData.competitionsPlayed;
-    competitionsPlayed = competitionsPlayed ? competitionsPlayed : 0;
-    if (addCompetitionsPlayed) {
-        competitionsPlayed += addCompetitionsPlayed;
-    }
+        duelsPlayed = duelsPlayed ? duelsPlayed : 0;
+        
+        if (addDuelsPlayed) {
+            duelsPlayed += addDuelsPlayed;
+        }
+        
+        // duels won
+        let duelsWon;
 
-    let newStreak = yourLoadedProfileData.highestStreak;
-    newStreak = newStreak ? newStreak : 0;
-    if (setHighestStreak && newStreak < setHighestStreak) {
-        newStreak = setHighestStreak;
-    }
+        if (yourLoadedProfileData) {
+            duelsWon = yourLoadedProfileData.duelsWon;
+        }
+
+        duelsWon = duelsWon ? duelsWon : 0;
+        
+        if (addDuelsWon) {
+            duelsWon += addDuelsWon;
+        }
+        
+        // competitions played
+        let competitionsPlayed;
+
+        if (yourLoadedProfileData) {
+            competitionsPlayed = yourLoadedProfileData.competitionsPlayed;
+        }   
+
+        competitionsPlayed = competitionsPlayed ? competitionsPlayed : 0;
+        
+        if (addCompetitionsPlayed) {
+            competitionsPlayed += addCompetitionsPlayed;
+        }
+
+        // streak
+        let newStreak;
+        
+        if (yourLoadedProfileData) {
+            newStreak = yourLoadedProfileData.highestStreak;
+        }
+
+        newStreak = newStreak ? newStreak : 0;
+
+        if (setHighestStreak && newStreak < setHighestStreak) {
+            newStreak = setHighestStreak;
+        }
+
+        // pin
+        let pin;
+        
+        if (yourLoadedProfileData) {
+            pin = yourLoadedProfileData.pin;
+        }
+
+        pin = pin ? pin : 0;
+
+        if (newPin != undefined) {
+            pin = newPin;
+        }
+
+        // badge
+        let badge;
+
+        if (yourLoadedProfileData) {
+            badge = yourLoadedProfileData.badge;
+        }
+
+        badge = badge ? badge : null;
+
+        if (newBadge) {
+            badge = newBadge;
+        }
     
-    let pin = yourLoadedProfileData.pin;
-    pin = pin ? pin : 0;
-    if (newPin != undefined) {
-        pin = newPin;
+        const profileData = {
+            about: aboutText,
+            duelsPlayed: duelsPlayed,
+            duelsWon: duelsWon,
+            competitionsPlayed: competitionsPlayed,
+            highestStreak: newStreak,
+            pin: pin,
+            badge: badge
+        }
+    
+        submitProfileData(profileData);
+        yourLoadedProfileData = profileData; // also update the loaded profile data with these changes to make sure that changes always carry on to queried requests
+    } catch (error) {
+        console.error("Error in updateProfileData: " + error);
     }
-
-    const profileData = {
-        about: aboutText,
-        duelsPlayed: duelsPlayed,
-        duelsWon: duelsWon, 
-        competitionsPlayed: competitionsPlayed,
-        highestStreak: newStreak,
-        pin: pin
-    }
-
-    submitProfileData(profileData);
-    yourLoadedProfileData = profileData; // also update the loaded profile data with these changes to make sure that changes always carry on to queried requests
 }
 
 export async function addDuelPlayed() {
@@ -335,10 +414,22 @@ export async function setCheckNewHighestStreak(streak) {
 
 export async function setSelectedProfilePin(pinId, updateUI) {
     // only load data - if it was successful, set statistics
-    if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
-    updateProfileData(null, null, null, null, null, pinId);
+    if (!yourLoadedProfileData.pin || yourLoadedProfileData.pin != pinId) {
+        if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
+            updateProfileData(null, null, null, null, null, pinId);
+        }
         if (updateUI) {
             document.getElementById("selectedProfilePin").src = `/IMG/your_marker${pinId}.png`;
+        }
+    }
+}
+
+async function saveProfileBadge(badge) {
+    // only load data - if it was successful, set statistics
+    if (!yourLoadedProfileData.badge || yourLoadedProfileData.badge != badge) { // only execute if selection actually changed
+        if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
+            selectedBadge = badge;
+            updateProfileData(null, null, null, null, null, null, badge);
         }
     }
 }
@@ -362,7 +453,7 @@ async function submitProfileData(profileDataObject) {
 
         // Check if the response is successful
         if (response.ok) {
-            
+
         } else {
             console.error('Profile update failed: ', response.status);
             errorPopup("Profile update failed", "The server returned an error for the profile update.", response.status, false, false);
@@ -403,5 +494,248 @@ function formatDateTime(datetimeStr) {
         return "A year ago";
     } else {
         return diffYears + " years ago";
+    }
+}
+
+// Pin selection --------------------------------------------------------------------------------------------------------------------------
+
+export let selectedPinIndex = 0;
+
+// Function to load selected pin from localStorage
+export function loadSelectedPin() {
+    if (yourLoadedProfileData) {
+        selectedPinIndex = yourLoadedProfileData.pin ? yourLoadedProfileData.pin : 0;
+    } else {
+        selectedPinIndex = 0;
+    }
+
+    selectPin(selectedPinIndex, false);
+}
+
+// Function to update pinLocks based on XP
+function updatePinLocks(xpAmount) {
+
+    const pinLocks = document.querySelectorAll('.pinLock');
+    pinLocks.forEach(function (lock) {
+        const lockXP = parseInt(lock.querySelector('.pinLockText').textContent.replace(/,/g, ''));
+        if (xpAmount >= lockXP) {
+            lock.style.display = "none"; // Hide pinLock if XP is enough
+        } else {
+            lock.style.display = "flex"; // Show pinLock if XP is not enough
+        }
+    });
+}
+
+// Add click event listener to pinHolder buttons
+document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
+    btn.addEventListener('click', function () {
+        selectPin(index, true); // Call selectPin function on button click
+    });
+});
+
+
+// Function to handle pin selection
+export function selectPin(index, activeSelect) {
+    // Check if the pinHolder and pinLock exist
+    const pinHolders = document.querySelectorAll('.pinHolder');
+    if (pinHolders.length > index) {
+        const pinLock = pinHolders[index].querySelector('.pinLock');
+        if (pinLock && (pinLock.style.display === 'none' || pinLock.style.display === '')) {
+            // Remove selectedPin class from all pinHolder buttons
+            document.querySelectorAll('.pinHolder').forEach(function (btn) {
+                btn.classList.remove('selectedPin');
+            });
+
+            // Add selectedPin class to the clicked pinHolder button
+            pinHolders[index].classList.add('selectedPin');
+
+            if (activeSelect) {
+                playSound("item_select");
+            }
+
+            if (index != null || typeof (index) == "number") {
+                // Set selectedPin index to localStorage
+                selectedPinIndex = index;
+                if (activeSelect) {
+                    setSelectedProfilePin(index, true);
+                }
+            }
+
+        } else {
+            if (activeSelect) {
+                playSound("pin_locked");
+            }
+        }
+    }
+}
+
+// Badge system ----------------------------------------------------------------------------------------------------------------------------------------------------
+
+export let selectedBadge = null;
+
+export function loadSelectedBadge() {
+    if (yourLoadedProfileData) {
+        selectedBadge = yourLoadedProfileData.badge ? yourLoadedProfileData.badge : null;
+    }
+}
+
+const badgeButton = document.getElementById("badgeButton");
+
+badgeButton.addEventListener("click", () => {
+    openBadeWindow();
+    playSound("basic_button");
+});
+
+document.getElementById("badgeArea").addEventListener("click", () => {
+    openBadeWindow();
+    playSound("basic_button");
+});
+
+document.getElementById("badgeClose").addEventListener("click", () => {
+    playSound("basic_button");
+    closeBadgeWindow();
+});
+
+function openBadeWindow() {
+    updateBadgelocks();
+    document.getElementById("badgePopup").style.display = "flex";
+    document.getElementById("badgeWindow").scrollTop = "0";
+}
+
+function closeBadgeWindow() {
+    document.getElementById("badgePopup").style.display = "none";
+}
+
+document.querySelectorAll(".badge").forEach((element) => {
+    element.addEventListener("click", () => {
+        selectBadge(element.id);
+        playSound("item_select");
+    });
+});
+
+function selectBadge(id) {
+    try {
+        document.querySelectorAll(".badge").forEach((element) => {
+            element.classList.remove("badgeSelected");
+        });
+        document.getElementById(id).classList.add("badgeSelected");
+        setProfileBadge(id);
+        saveProfileBadge(id);
+    } catch (error) {
+        console.error("Error selecting badge: " + error);
+    }
+}
+
+function setProfileBadge(id) {
+    const badgeArea = document.getElementById("badgeArea");
+    badgeArea.innerHTML = "";
+
+    try {
+        const badgeToClone = document.getElementById(id);
+        const newBadge = badgeToClone.cloneNode(true);
+        newBadge.classList.remove("badgeSelected");
+        newBadge.classList.remove("badgeLocked");
+        newBadge.id = "currentProfileBadgeSelection"; // change id to prevent overlap 
+        badgeArea.appendChild(newBadge);
+        document.getElementById("badgeButton").style.display = "none";
+    } catch (error) {
+        console.error("Error setting profile badge: " + error);
+    }
+}
+
+function updateBadgelocks() {
+    try {
+        document.querySelectorAll(".badge").forEach((e) => {
+            if (e.id != "currentProfileBadgeSelection" && !e.id.includes("multiplayer")) {
+                e.classList.add("badgeLocked");
+            }
+        });
+    
+        const statusPrefix = "Unlock next at ";
+    
+        const experienceStatus = document.getElementById("experienceBadgeStatus");
+        const duelsStatus = document.getElementById("duelsBadgeStatus");
+        const competitionsStatus = document.getElementById("competitionsBadgeStatus");
+        const streaksStatus = document.getElementById("streakBadgeStatus");
+        const supporterStatus = document.getElementById("supporterBadgeStatus");
+    
+        const experienceRequirements = [50000, 250000, 1000000, 10000000];
+        const duelsRequirements = [5, 50, 100, 500];
+        const competitionRequirements = [10, 50, 100, 500];
+        const streaksRequirements = [5, 15, 50, 100];
+        const supporterRequirements = [2, 5, 10, 25]; // added later, suggestions in dollars
+    
+        let expIndex = 0;
+    
+        for (const amount of experienceRequirements) {
+            expIndex++;
+    
+            experienceStatus.textContent = statusPrefix + amount.toLocaleString() + " XP";
+            if (amount <= localStorage.getItem("experience")) {
+                document.getElementById("expBadge" + expIndex).classList.remove("badgeLocked");
+            } else {
+                break;
+            }
+        };
+    
+        let duelsIndex = 0;
+        let duelsWins = 0;
+    
+        if (yourLoadedProfileData && yourLoadedProfileData.duelsWon) {
+            duelsWins = yourLoadedProfileData.duelsWon;
+        }
+    
+        for (const amount of duelsRequirements) {
+            duelsIndex++;
+    
+            duelsStatus.textContent = statusPrefix + amount.toLocaleString() + " Wins";
+            if (amount <= duelsWins) {
+                document.getElementById("duelBadge" + duelsIndex).classList.remove("badgeLocked");
+            } else {
+                break;
+            }
+        };
+    
+        let competitionsIndex = 0;
+        let competitionEntries = 0;
+    
+        if (yourLoadedProfileData && yourLoadedProfileData.competitionsPlayed) {
+            competitionEntries = yourLoadedProfileData.competitionsPlayed;
+        }
+    
+        for (const amount of competitionRequirements) {
+            competitionsIndex++;
+    
+            competitionsStatus.textContent = statusPrefix + amount.toLocaleString() + " Entries";
+            if (amount <= competitionEntries) {
+                document.getElementById("compBadge" + competitionsIndex).classList.remove("badgeLocked");
+            } else {
+                break;
+            }
+        };
+    
+        let streaksIndex = 0;
+        let highestStreak = 0;
+    
+        if (yourLoadedProfileData && yourLoadedProfileData.highestStreak) {
+            highestStreak = yourLoadedProfileData.highestStreak;
+        }
+    
+        for (const amount of streaksRequirements) {
+            streaksIndex++;
+    
+            streaksStatus.textContent = statusPrefix + amount.toLocaleString() + " ended Streak";
+            if (amount <= highestStreak) {
+                document.getElementById("streakBadge" + streaksIndex).classList.remove("badgeLocked");
+            } else {
+                break;
+            }
+        };
+    
+        if (localStorage.getItem("id") <= 2) {
+            document.getElementById("miscBadge1").classList.remove("badgeLocked");
+        }
+    } catch (error) {
+        console.error("Error in updatePinLocks: " + error);
     }
 }

@@ -166,15 +166,15 @@
         }
 
         .gold {
-            background-color: #958443;
+            background-color: #9c8632;
         }
 
         .silver {
-            background-color: #8c8c8c;
+            background-color: #979797;
         }
 
         .bronze {
-            background-color: #5e3d3d;
+            background-color: #724242;
         }
 
         .yourItem {
@@ -187,6 +187,14 @@
             overflow: hidden;
         }
 
+        .directionArrowIcon {
+            width: 25px;
+            height: 25px;
+            filter: invert();
+            transform: rotate(90deg);
+            vertical-align: -4px;
+        }
+
         @media all and (orientation: portrait) {
             #navbarTitle {
                 font-size: 27px;
@@ -195,6 +203,10 @@
             #backButton {
                 font-size: 20px;
                 padding: 10px 10px;
+            }
+
+            .directionArrowIcon {
+                vertical-align: -5px;
             }
 
             p {
@@ -206,7 +218,9 @@
 
 <body>
     <div id="navbar">
-        <button id="backButton">⭠ Back</button>
+        <button id="backButton">
+            <img id="backArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon">
+            Back</button>
         <h1 id="navbarTitle">Leaderboard</h1>
     </div>
     <div class="center">
