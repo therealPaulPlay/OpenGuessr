@@ -269,7 +269,6 @@ h3 {
 #profileViewName {
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 60%;
   text-wrap: nowrap;
   margin-left: 10px;
 }
@@ -1961,6 +1960,7 @@ map::selection {
   border-radius: 5px;
   padding-right: 15px;
   align-items: center;
+  font-size: 22px;
 }
 
 #profileStats {
