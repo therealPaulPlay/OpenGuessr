@@ -7,7 +7,7 @@ import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } fro
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
-import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData } from "./profileView.js";
+import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge } from "./profileView.js";
 import { errorPopup } from "./errorHandling.js";
 
 let accountLockedArray;
@@ -171,7 +171,7 @@ async function changeUItoSignedIn() {
   enableExclusiveCategories();
   displayUserInfo();
   loadSelectedPin(); // loads it from fetched profile data
-
+  loadSelectedBadge();
 
   if (resultScreenEnabled && lastXPloadingAttemptAborted) {
     loadResultScreenXP(lastDistance);
@@ -191,6 +191,7 @@ async function changeUItoSignedOut() {
   checkTextLength();
   uiSetUserXP(0);
   loadSelectedPin(); // loads pin 0, as profile data should be undefined
+  loadSelectedBadge();
 }
 
 // part of checkSigninStatusAndLoadUserInfo
@@ -201,18 +202,26 @@ export function displayUserInfo() {
 }
 
 //adjust the UI to the signin status and load user info on website load
+export let authenticationCheckComplete = false;
+
 async function checkSigninStatusAndLoadUserInfo() {
+  const event = new Event("authCheckComplete");
+
   if (isAuthenticated) {
     profileButton.classList.remove("notSignedIn");
     //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
     await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((profileData) => {
       updateLoadedProfileData(profileData);
       changeUItoSignedIn(); // display user info is already being called in here
+      document.dispatchEvent(event); // dispatch account loaded event, used when joining multi rounds via link
+      authenticationCheckComplete = true;
     });
   }
   else {
     changeUItoSignedOut();
     profileButton.classList.add("notSignedIn");
+    document.dispatchEvent(event); // dispatch account loaded event, used when joining multi rounds via link
+    authenticationCheckComplete = true;
   }
 }
 

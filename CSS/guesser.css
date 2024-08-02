@@ -253,11 +253,17 @@ h3 {
 
 .profileNameArea {
   display: flex;
-  align-items: baseline;
-  justify-content: flex-start;
-  flex-wrap: nowrap;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
   overflow: hidden;
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+  background-color: rgba(30, 31, 44, 0.5);
+  padding: 15px;
+  padding-inline: 12px;
+  width: calc(100% + 25px);
+  margin-left: -25px;
+  margin-top: -25px;
 }
 
 #profileViewName {
@@ -265,6 +271,7 @@ h3 {
   overflow: hidden;
   max-width: 60%;
   text-wrap: nowrap;
+  margin-left: 10px;
 }
 
 #levelText {
@@ -519,6 +526,7 @@ h3 {
 #multiplayerSelectorBack,
 #mobilePopupClose,
 #confirmCancel,
+#badgeClose,
 #confirmProceed {
   min-height: 50px;
 }
@@ -583,6 +591,7 @@ input:focus {
   border: none;
   user-select: none;
   width: 18%;
+  max-height: 29px;
 }
 
 textarea {
@@ -680,12 +689,34 @@ textarea {
   display: block !important;
 }
 
+#badgeWindow {
+  z-index: 971;
+  display: block !important;
+  max-width: 700px;
+}
+
+.spacerBadge {
+  height: 5px;
+}
+
+#badgeButton {
+  background: linear-gradient(0.60turn, rgb(144, 147, 151), #646575);
+  color: white;
+  padding-inline: 12px;
+  margin: 0;
+  font-size: 20px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  box-sizing: border-box;
+  margin-right: -10px;
+}
+
 #selectedProfilePin {
   width: 25px;
   height: 25px;
-  margin-left: 5px;
-  margin-top: auto;
-  margin-bottom: 8px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  padding: 4.5px;
 }
 
 .profilePopupBackground {
@@ -694,10 +725,151 @@ textarea {
   z-index: 970;
 }
 
+#badgePopup {
+  z-index: 971;
+}
+
+#profileNameBox {
+  padding: 5px;
+  margin-left: 5px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.badgeContainer {
+  width: calc(100% - 10px);
+  padding: 10px;
+  padding-top: 7px;
+  padding-bottom: 7px;
+}
+
+.multiplayerBadge {
+  width: fit-content;
+}
+
+.multiplayerBadge p {
+  font-size: 20px !important;
+}
+
+.badge {
+  padding: 5px;
+  border-radius: 5px;
+  font-style: italic;
+  color: white;
+  background-color: rgb(152, 152, 152);
+  font-size: 20px;
+  text-wrap: nowrap;
+  padding-inline: 10px;
+  cursor: pointer;
+  transition: opacity 250ms ease, transform 250ms ease, filter 250ms ease, border 150ms ease;
+  box-sizing: border-box;
+  user-select: none;
+}
+
+.badgeLocked {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+#levelTextProfile {
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 18px;
+  border-radius: 5px;
+  padding: 6px;
+  text-align: center;
+  min-width: 20px;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.badge:hover {
+  transform: scale(0.98);
+}
+
+.badgeStage1 {
+  background: linear-gradient(0.60turn, rgb(136, 113, 113), #6f5a5a);
+}
+
+.badgeStage2 {
+  background: linear-gradient(0.60turn, #30929b, #507d82);
+}
+
+.badgeStage3 {
+  background: linear-gradient(0.60turn, rgb(142, 70, 232), #7954a6); 
+}
+
+.badgeStage4 {
+  background: linear-gradient(0.60turn, #ddbb1f, #aa8928);
+}
+
+.badgeStageSupporter1 {
+  background: linear-gradient(0.60turn, #419d42, #4a684a);
+}
+
+.badgeStageSupporter2 {
+  background: linear-gradient(0.60turn, #319532, #518852);
+}
+
+.badgeStageSupporter3 {
+  background: linear-gradient(0.60turn, #19ae1b, #379338);
+}
+
+.badgeStageSupporter4 {
+  background: linear-gradient(0.60turn, #37d738, #22a826);
+}
+
+.badgeStageDeveloper {
+  background: linear-gradient(0.60turn, #e31f1f, #8e3030);
+}
+
+.badgeBox {
+  background-color: rgba(30, 31, 44, 0.5);
+  border-radius: 8px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding: 7px;
+  width: calc(100% - 14px);
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-bottom: 10px;
+}
+
+.badgeLabel {
+  padding: 3px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  text-align: left;
+  margin-bottom: 10px;
+  padding-left: 10px;
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+.unlockBadgeStatus {
+  background-color: rgba(0, 0, 0, 0.1);
+  padding: 3px;
+  padding-inline: 7px;
+  border-radius: 5px;
+  font-size: 20px;
+
+}
+
 #socialWindow {
   width: 40%;
   min-width: 300px;
   max-width: 600px;
+}
+
+.badgeSelected {
+  border: 3px solid rgba(255, 255, 255, 0.75);
+  padding-top: 2px;
+  padding-bottom: 2px;
+  padding-inline: 7px;
 }
 
 #socialPopupClose {
@@ -1379,6 +1551,9 @@ textarea {
   justify-content: space-between;
   gap: 50px;
   padding: 10px 20px;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .multiplayerEntryPlayerName {
@@ -1386,6 +1561,9 @@ textarea {
   transition: opacity 250ms ease;
   cursor: pointer;
   user-select: none;
+  display: flex;
+  align-items: center;
+  gap: 10px;
 }
 
 .multiplayerEntryPlayerName:hover {
@@ -1786,6 +1964,14 @@ map::selection {
   margin-top: 10px;
 }
 
+.editNameSection {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 10px;
+  gap: 5px;
+}
+
 #multiplayerMessageBox {
   color: white;
   margin: 10px;
@@ -1920,22 +2106,6 @@ map::selection {
   .bottomFooterAds {
     width: 0;
     display: none;
-  }
-}
-
-@media (orientation: portrait) and (max-width: 750px) {
-  .bottomFooterAds {
-    width: 320px;
-    height: 50px;
-    bottom: 12px;
-  }
-
-  .BottomBar {
-    padding-bottom: 40px;
-  }
-
-  #mapHolder {
-    bottom: 145px;
   }
 }
 
@@ -2830,22 +3000,6 @@ input[type="checkbox"]:focus {
   }
 }
 
-/* phones in landscape, Tablets / Ipads */
-@media (orientation: landscape) and (max-width: 1250px) {
-  #mapHolder {
-    width: 40%;
-    height: 40%;
-  }
-
-  #map {
-    opacity: 50%;
-  }
-
-  #revealCompass {
-    opacity: 0.8;
-  }
-}
-
 /* phones / mobile but also narrow devices like ipads */
 @media all and (orientation: portrait),
 all and (max-width: 1250px) {
@@ -2967,6 +3121,19 @@ all and (max-width: 1200px) {
   #imageGuesserAttribution {
     font-size: 20px;
   }
+
+  #mapHolder {
+    width: 40%;
+    height: 40%;
+  }
+
+  #map {
+    opacity: 50%;
+  }
+
+  #revealCompass {
+    opacity: 0.8;
+  }
 }
 
 /* big screens in portrait, like vertical monitors */
@@ -2991,8 +3158,17 @@ all and (max-width: 1200px) {
 
 }
 
-/* higher bottom bar because of ad shift */
-@media (orientation: portrait) and (max-width: 700px) {
+/* ad shift for narrow screens */
+@media (orientation: portrait) and (max-width: 750px) {
+  .bottomFooterAds {
+    width: 320px;
+    height: 50px;
+    bottom: 12px;
+  }
+
+  .BottomBar {
+    padding-bottom: 40px;
+  }
 
   #mapHolder {
     bottom: 145px;
