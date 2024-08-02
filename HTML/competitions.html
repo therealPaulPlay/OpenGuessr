@@ -208,7 +208,7 @@
     }
 
     .explainElement {
-        background-color: rgba(255, 255, 255, 0.1);
+        background-color: rgba(122, 125, 156, 0.15);
         height: auto;
         padding-top: 10px;
         padding-bottom: 10px;
@@ -253,7 +253,7 @@
         padding-top: 5px;
         padding-bottom: 5px;
         height: auto;
-        background-color: rgba(104, 104, 104, 0.15);
+        background-color: rgba(133, 75, 75, 0.15);
         margin-top: -5px;
         width: 100%;
         margin-left: -25px;
@@ -267,7 +267,7 @@
         padding-top: 5px;
         padding-bottom: 5px;
         height: auto;
-        background-color: rgba(255, 141, 141, 0.15);
+        background-color: rgba(255, 120, 120, 0.15);
         filter: none !important;
     }
 
@@ -473,7 +473,7 @@
     }
 
     .expiredBox {
-        background-color: rgba(142, 142, 142, 0.15);
+        background-color: rgba(122, 125, 156, 0.15);
     }
 
     .expiredCompetitionColor {
@@ -798,7 +798,7 @@
     }
 
     .dailyItem {
-        background-color: rgba(181, 220, 230, 0.15);
+        background-color: rgba(181, 193, 230, 0.15);
     }
 
     .dailyPrimary {
@@ -872,6 +872,14 @@
         filter: invert();
         transform: rotate(90deg);
         vertical-align: -4px;
+    }
+
+    .competitionTitleDaily {
+        background-color: rgba(70, 74, 92, 0.15);
+    }
+
+    .competitionTitleExpired{
+        background-color: rgba(70, 74, 92, 0.15);
     }
 
     @media all and (orientation: portrait) {
@@ -1083,7 +1091,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                 </div>
             </div>
             <div class="competitionElement competitionBox expiredBox">
-                <div class="flexCompetitionBar competitionElement competitionTitle">
+                <div class="flexCompetitionBar competitionElement competitionTitle competitionTitleDaily">
                     <h2 class="boxHeader">Daily Competition: </h2>
                 </div>
                 <div id="dailyCompetitionArea" class="center competitionArea">
@@ -1110,7 +1118,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                 <button id="loadMoreActive" class="loadMore standardButton">Show more ▼</button>
             </div>
             <div class="competitionElement competitionBox expiredBox">
-                <div class="competitionElement competitionTitle">
+                <div class="competitionElement competitionTitle competitionTitleExpired">
                     <h2 class="boxHeader">Recently ended: </h2>
                 </div>
                 <div id="expiredCompetitionArea" class="center competitionArea">
