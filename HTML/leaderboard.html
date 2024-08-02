@@ -483,6 +483,10 @@
                 let podiumItem = document.getElementById(`${place}-place`);
                 podiumItem.querySelector('.name').textContent = user.user_name;
                 podiumItem.addEventListener('click', () => openProfile(user.id));
+
+                if (user.user_name == yourUsername && !dontLoadStats) {
+                    podiumItem.classList.add('yourItem');
+        }
             }
 
             // Populate main leaderboard starting from 4th place
