@@ -1263,7 +1263,7 @@ textarea {
   justify-content: center;
   margin: auto;
   z-index: 14;
-  background-color: rgb(45, 48, 71);
+  background-color: rgba(39, 41, 53, 0.95);
 }
 
 #mobileCategoriesClose {
@@ -1621,10 +1621,8 @@ textarea {
 
 .extendedNavbar.expandedMobile {
   max-height: calc(100% - 75px);
-  background-color: rgb(45, 48, 71);
+  background-color: rgba(39, 41, 53, 0.9);
   border-radius: 0;
-  backdrop-filter: none;
-  -webkit-backdrop-filter: none;
   height: auto;
   transition: none;
 }
@@ -2680,8 +2678,8 @@ button {
   justify-content: center;
   align-items: center;
   background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 15px;
-  padding: 5px;
+  border-radius: 10px;
+  padding: 2px;
   margin: 10px;
   flex-direction: column;
   overflow-x: hidden;
