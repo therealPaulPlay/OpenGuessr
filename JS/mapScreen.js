@@ -582,12 +582,18 @@ function extractCoordinates(text) {
     try {
         const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/g;
         const coordinates = [];
+        const seenCoordinates = new Set();
         let match;
 
         while ((match = regex.exec(text)) !== null) {
             const lat = parseFloat(match[1]);
             const long = parseFloat(match[2]);
-            coordinates.push([lat, long]);
+            const coordPair = `${lat},${long}`;
+
+            if (!seenCoordinates.has(coordPair)) {
+                coordinates.push([lat, long]);
+                seenCoordinates.add(coordPair);
+            }
         }
 
         // Wrap coordinates with the outer object
