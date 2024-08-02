@@ -673,6 +673,9 @@ function updateBadgelocks() {
             experienceStatus.textContent = statusPrefix + amount.toLocaleString() + " XP";
             if (amount <= localStorage.getItem("experience")) {
                 document.getElementById("expBadge" + expIndex).classList.remove("badgeLocked");
+                if (expIndex == 4) {
+                    experienceStatus.textContent = "All unlocked";
+                }
             } else {
                 break;
             }
@@ -691,6 +694,9 @@ function updateBadgelocks() {
             duelsStatus.textContent = statusPrefix + amount.toLocaleString() + " Wins";
             if (amount <= duelsWins) {
                 document.getElementById("duelBadge" + duelsIndex).classList.remove("badgeLocked");
+                if (duelsIndex == 4) {
+                    duelsStatus.textContent = "All unlocked";
+                }
             } else {
                 break;
             }
@@ -709,6 +715,9 @@ function updateBadgelocks() {
             competitionsStatus.textContent = statusPrefix + amount.toLocaleString() + " Entries";
             if (amount <= competitionEntries) {
                 document.getElementById("compBadge" + competitionsIndex).classList.remove("badgeLocked");
+                if (competitionsIndex == 4) {
+                    competitionsStatus.textContent = "All unlocked";
+                }
             } else {
                 break;
             }
@@ -727,6 +736,9 @@ function updateBadgelocks() {
             streaksStatus.textContent = statusPrefix + amount.toLocaleString() + " ended Streak";
             if (amount <= highestStreak) {
                 document.getElementById("streakBadge" + streaksIndex).classList.remove("badgeLocked");
+                if (streaksIndex == 4) {
+                    streaksStatus.textContent = "All unlocked";
+                }
             } else {
                 break;
             }
