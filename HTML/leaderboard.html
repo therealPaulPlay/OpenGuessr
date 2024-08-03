@@ -271,8 +271,19 @@
         .podium-item .rank {
             font-size: 30px;
             color: white;
-            margin-top: auto;
             margin-bottom: 20px;
+        }
+
+        .podium-item .podiumExp {
+            font-size: 25px;
+            color: white;
+            margin-top: auto;
+            margin-bottom: auto;
+            max-width: 20vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
+            opacity: 0.75;
         }
 
         @media all and (orientation: portrait) {
@@ -301,21 +312,25 @@
                 font-size: 25px;
             }
 
+            .podium-item .podiumExp {
+                font-size: 22px;
+            }
+
             #first-place {
-                height: 120px;
+                height: 160px;
             }
 
             #second-place {
-                height: 90px;
+                height: 130px;
             }
 
             #third-place {
-                height: 70px;
+                height: 110px;
             }
 
             .podium {
                 width: 85vw;
-                height: 110px;
+                height: 150px;
                 gap: 10px;
             }
 
@@ -337,14 +352,17 @@
         <div class="podium">
             <div class="podium-item silver" id="second-place">
                 <div class="name"></div>
+                <div class="podiumExp"></div>
                 <div class="rank">#2</div>
             </div>
             <div class="podium-item gold" id="first-place">
                 <div class="name"></div>
+                <div class="podiumExp"></div>
                 <div class="rank">#1</div>
             </div>
             <div class="podium-item bronze" id="third-place">
                 <div class="name"></div>
+                <div class="podiumExp"></div>
                 <div class="rank">#3</div>
             </div>
         </div>
@@ -478,6 +496,7 @@
                 let place = ['first', 'second', 'third'][i];
                 let podiumItem = document.getElementById(`${place}-place`);
                 podiumItem.querySelector('.name').textContent = user.user_name;
+                podiumItem.querySelector('.podiumExp').textContent = user.experience.toLocaleString() + " XP";
                 podiumItem.addEventListener('click', () => openProfile(user.id));
 
                 if (user.user_name == yourUsername && !dontLoadStats) {
