@@ -159,11 +159,9 @@ function onMapClick(e) {
 
     const yourIcon = new L.Icon({
         iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
-        shadowUrl: "./IMG/marker_shadow.png",
         iconSize: [35, 35],
         iconAnchor: [17.5, 34],
-        popupAnchor: [1, -34],
-        shadowSize: [37, 37]
+        popupAnchor: [1, -34]
     });
 
     marker = new L.Marker([mapMarkerLat, mapMarkerLong], { icon: yourIcon });
@@ -220,11 +218,9 @@ export function updateMinimapWithTeamMarkers(markerArray) {
                     // Marker doesn't exist, create new marker
                     let newMultiplayerIcon = new L.Icon({
                         iconUrl: "./IMG/your_marker" + miniMarkerPinIndex + ".png",
-                        shadowUrl: "./IMG/marker_shadow.png",
                         iconSize: [35, 35],
                         iconAnchor: [17.5, 34],
-                        popupAnchor: [1, -34],
-                        shadowSize: [37, 37]
+                        popupAnchor: [1, -34]
                     });
 
                     const newMultiplayerMiniMarker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon });
