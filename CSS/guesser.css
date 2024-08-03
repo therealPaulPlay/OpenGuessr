@@ -526,6 +526,7 @@ h3 {
 #mobilePopupClose,
 #confirmCancel,
 #badgeClose,
+#pinClose,
 #confirmProceed {
   min-height: 50px;
 }
@@ -688,10 +689,14 @@ textarea {
   display: block !important;
 }
 
-#badgeWindow {
+#badgeWindow, #pinWindow {
   z-index: 971;
   display: block !important;
   max-width: 700px;
+}
+
+#pinWindow {
+  max-width: 560px;
 }
 
 .spacerBadge {
@@ -716,6 +721,12 @@ textarea {
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 5px;
   padding: 4.5px;
+  cursor: pointer;
+  transition: background-color 250ms ease;
+}
+
+#selectedProfilePin:hover {
+  background-color: rgba(255, 255, 255, 0.3);
 }
 
 .profilePopupBackground {
@@ -724,7 +735,7 @@ textarea {
   z-index: 970;
 }
 
-#badgePopup {
+#badgePopup, #pinPopup {
   z-index: 971;
 }
 

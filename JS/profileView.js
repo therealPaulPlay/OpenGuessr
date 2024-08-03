@@ -63,7 +63,6 @@ function openClearedProfile() {
     document.getElementById("usernameInput").style.display = "none";
     document.getElementById("confirmUsername").style.display = "none";
     document.getElementById("usernameInput").value = "";
-    document.getElementById("profilePinHeader").style.display = "none";
     document.getElementById("pinSelector").style.display = "none";
     document.getElementById("accountManagementHeader").style.display = "none";
     document.getElementById("accountManagementArea").style.display = "none";
@@ -86,6 +85,7 @@ function openClearedProfile() {
     document.getElementById("badgeButton").style.display = "none";
     document.getElementById("badgeArea").style.pointerEvents = "none";
     document.getElementById("badgeArea").innerHTML = "";
+    document.getElementById("selectedProfilePin").style.pointerEvents = "none";
 }
 
 function viewProfile(name, experience, joined, yourProfile, profileData) {
@@ -95,7 +95,6 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
     if (yourProfile) {
         updatePinLocks(localStorage.getItem("experience"));
         document.getElementById("editUsername").style.display = "inline-block";
-        document.getElementById("profilePinHeader").style.display = "block";
         document.getElementById("pinSelector").style.display = "flex";
         document.getElementById("accountManagementHeader").style.display = "block";
         document.getElementById("accountManagementArea").style.display = "flex";
@@ -106,6 +105,7 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
         document.getElementById("profileAboutHeader").style.display = "block";
         document.getElementById("badgeButton").style.display = "block";
         document.getElementById("badgeArea").style.pointerEvents = "auto";
+        document.getElementById("selectedProfilePin").style.pointerEvents = "auto";
     }
 
     try {
@@ -139,7 +139,6 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
 
             if (profileData.pin) {
                 document.getElementById("selectedProfilePin").src = `/IMG/your_marker${profileData.pin}.png`;
-                loadSelectedPin();
             }
 
             if (profileData.badge) {
@@ -501,6 +500,17 @@ function formatDateTime(datetimeStr) {
 
 export let selectedPinIndex = 0;
 
+document.getElementById("selectedProfilePin").addEventListener("click", () => {
+    playSound("basic_button");
+    loadSelectedPin();
+    document.getElementById("pinPopup").style.display = "flex";
+});
+
+document.getElementById("pinClose").addEventListener("click", () => {
+    playSound("basic_button");
+    document.getElementById("pinPopup").style.display = "none";
+});
+
 // Function to load selected pin from localStorage
 export function loadSelectedPin() {
     if (yourLoadedProfileData) {
@@ -511,6 +521,13 @@ export function loadSelectedPin() {
 
     selectPin(selectedPinIndex, false);
 }
+
+// Add click event listener to pinHolder buttons
+document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
+    btn.addEventListener('click', function () {
+        selectPin(index, true); // Call selectPin function on button click
+    });
+});
 
 // Function to update pinLocks based on XP
 function updatePinLocks(xpAmount) {
@@ -525,14 +542,6 @@ function updatePinLocks(xpAmount) {
         }
     });
 }
-
-// Add click event listener to pinHolder buttons
-document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
-    btn.addEventListener('click', function () {
-        selectPin(index, true); // Call selectPin function on button click
-    });
-});
-
 
 // Function to handle pin selection
 export function selectPin(index, activeSelect) {
