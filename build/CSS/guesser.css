@@ -1760,14 +1760,12 @@ map::selection {
 
 #revealCompass {
   margin-left: auto;
-  margin-bottom: -25px;
+  margin-bottom: -30px;
   pointer-events: auto;
   color: rgb(54, 54, 54);
   padding-right: 10px;
   padding-left: 10px;
-  border-radius: 10px;
-  border-top-left-radius: 0;
-  border-bottom-right-radius: 0;
+  border-radius: 5px;
   height: 25px;
   font-size: 17px;
   background-color: rgba(255, 255, 255, 0.9);
@@ -1775,6 +1773,8 @@ map::selection {
   user-select: none;
   z-index: 10;
   opacity: 0.5;
+  margin-top: 5px;
+  margin-right: 5px;
 }
 
 .mapAttribution {
