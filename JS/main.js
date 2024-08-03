@@ -272,6 +272,7 @@ export function loadResultMap(playersLat, playersLong) {
 
             // Place multiplayer markers if not player's marker
             if (newMarkerLat != playersLat || newMarkerLong != playersLong) {
+
                 let newMultiplayerIcon = {
                     url: "./IMG/your_marker" + newMarkerPinIndex + ".png",
                     size: new google.maps.Size(35, 35),

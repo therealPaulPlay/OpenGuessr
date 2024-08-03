@@ -63,7 +63,6 @@ function openClearedProfile() {
     document.getElementById("usernameInput").style.display = "none";
     document.getElementById("confirmUsername").style.display = "none";
     document.getElementById("usernameInput").value = "";
-    document.getElementById("profilePinHeader").style.display = "none";
     document.getElementById("pinSelector").style.display = "none";
     document.getElementById("accountManagementHeader").style.display = "none";
     document.getElementById("accountManagementArea").style.display = "none";
@@ -86,6 +85,7 @@ function openClearedProfile() {
     document.getElementById("badgeButton").style.display = "none";
     document.getElementById("badgeArea").style.pointerEvents = "none";
     document.getElementById("badgeArea").innerHTML = "";
+    document.getElementById("selectedProfilePin").style.pointerEvents = "none";
 }
 
 function viewProfile(name, experience, joined, yourProfile, profileData) {
@@ -93,9 +93,7 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
     document.getElementById("profileViewName").textContent = name ? name : "Guest";
 
     if (yourProfile) {
-        updatePinLocks(localStorage.getItem("experience"));
         document.getElementById("editUsername").style.display = "inline-block";
-        document.getElementById("profilePinHeader").style.display = "block";
         document.getElementById("pinSelector").style.display = "flex";
         document.getElementById("accountManagementHeader").style.display = "block";
         document.getElementById("accountManagementArea").style.display = "flex";
@@ -106,6 +104,7 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
         document.getElementById("profileAboutHeader").style.display = "block";
         document.getElementById("badgeButton").style.display = "block";
         document.getElementById("badgeArea").style.pointerEvents = "auto";
+        document.getElementById("selectedProfilePin").style.pointerEvents = "auto";
     }
 
     try {
@@ -139,7 +138,6 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
 
             if (profileData.pin) {
                 document.getElementById("selectedProfilePin").src = `/IMG/your_marker${profileData.pin}.png`;
-                loadSelectedPin();
             }
 
             if (profileData.badge) {
@@ -501,6 +499,18 @@ function formatDateTime(datetimeStr) {
 
 export let selectedPinIndex = 0;
 
+document.getElementById("selectedProfilePin").addEventListener("click", () => {
+    playSound("basic_button");
+    updatePinLocks(localStorage.getItem("experience"));
+    loadSelectedPin();
+    document.getElementById("pinPopup").style.display = "flex";
+});
+
+document.getElementById("pinClose").addEventListener("click", () => {
+    playSound("basic_button");
+    document.getElementById("pinPopup").style.display = "none";
+});
+
 // Function to load selected pin from localStorage
 export function loadSelectedPin() {
     if (yourLoadedProfileData) {
@@ -512,20 +522,6 @@ export function loadSelectedPin() {
     selectPin(selectedPinIndex, false);
 }
 
-// Function to update pinLocks based on XP
-function updatePinLocks(xpAmount) {
-
-    const pinLocks = document.querySelectorAll('.pinLock');
-    pinLocks.forEach(function (lock) {
-        const lockXP = parseInt(lock.querySelector('.pinLockText').textContent.replace(/,/g, ''));
-        if (xpAmount >= lockXP) {
-            lock.style.display = "none"; // Hide pinLock if XP is enough
-        } else {
-            lock.style.display = "flex"; // Show pinLock if XP is not enough
-        }
-    });
-}
-
 // Add click event listener to pinHolder buttons
 document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
     btn.addEventListener('click', function () {
@@ -533,14 +529,64 @@ document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
     });
 });
 
+// Function to update pinLocks based on XP
+
+const pinRequirements = [["experience", 0], ["experience", 5000], ["experience", 30000], ["experience", 100000], ["experience", 500000],
+["experience", 5000000], ["experience", 10000000], ["duelWins", 75], ["competitionsPlayed", 50], ["highestStreak", 10], ["competitionsPlayed", 250], ["supporter", 0.1]];
+
+function updatePinLocks(xpAmount) {
+
+    const pinLocks = document.querySelectorAll('.pinLock');
+    pinLocks.forEach(function (lock) {
+        const lockIndex = Number(lock.id.replace("pinLock", ""));
+        const lockRequirementType = pinRequirements[lockIndex][0];
+        const lockRequirementAmount = pinRequirements[lockIndex][1];
+
+        if (lockRequirementType == "experience") {
+            if (localStorage.getItem("experience") >= lockRequirementAmount) {
+                lock.style.display = "none"; // Hide pinLock if XP is enough
+            } else {
+                lock.style.display = "flex"; // Show pinLock if XP is not enough
+            }
+        }
+
+        if (lockRequirementType == "duelWins") {
+            if (yourLoadedProfileData.duelsWon >= lockRequirementAmount) {
+                lock.style.display = "none";
+            } else {
+                lock.style.display = "flex";
+            }
+        }
+
+        if (lockRequirementType == "competitionsPlayed") {
+            if (yourLoadedProfileData.competitionsPlayed >= lockRequirementAmount) {
+                lock.style.display = "none";
+            } else {
+                lock.style.display = "flex";
+            }
+        }
+
+        if (lockRequirementType == "highestStreak") {
+            if (yourLoadedProfileData.highestStreak >= lockRequirementAmount) {
+                lock.style.display = "none"; 
+            } else {
+                lock.style.display = "flex";
+            }
+        }
+
+        if (lockRequirementType == "supporter") {
+            lock.style.display = "flex"; // supporter not yet implemented
+        }
+    });
+}
 
 // Function to handle pin selection
-export function selectPin(index, activeSelect) {
+function selectPin(index, activeSelect) {
     // Check if the pinHolder and pinLock exist
     const pinHolders = document.querySelectorAll('.pinHolder');
     if (pinHolders.length > index) {
         const pinLock = pinHolders[index].querySelector('.pinLock');
-        if (pinLock && (pinLock.style.display === 'none' || pinLock.style.display === '')) {
+        if ((pinLock && (pinLock.style.display === 'none' || pinLock.style.display === '')) || !activeSelect) {
             // Remove selectedPin class from all pinHolder buttons
             document.querySelectorAll('.pinHolder').forEach(function (btn) {
                 btn.classList.remove('selectedPin');
@@ -673,6 +719,9 @@ function updateBadgelocks() {
             experienceStatus.textContent = statusPrefix + amount.toLocaleString() + " XP";
             if (amount <= localStorage.getItem("experience")) {
                 document.getElementById("expBadge" + expIndex).classList.remove("badgeLocked");
+                if (expIndex == 4) {
+                    experienceStatus.textContent = "All unlocked";
+                }
             } else {
                 break;
             }
@@ -691,6 +740,9 @@ function updateBadgelocks() {
             duelsStatus.textContent = statusPrefix + amount.toLocaleString() + " Wins";
             if (amount <= duelsWins) {
                 document.getElementById("duelBadge" + duelsIndex).classList.remove("badgeLocked");
+                if (duelsIndex == 4) {
+                    duelsStatus.textContent = "All unlocked";
+                }
             } else {
                 break;
             }
@@ -709,6 +761,9 @@ function updateBadgelocks() {
             competitionsStatus.textContent = statusPrefix + amount.toLocaleString() + " Entries";
             if (amount <= competitionEntries) {
                 document.getElementById("compBadge" + competitionsIndex).classList.remove("badgeLocked");
+                if (competitionsIndex == 4) {
+                    competitionsStatus.textContent = "All unlocked";
+                }
             } else {
                 break;
             }
@@ -727,6 +782,9 @@ function updateBadgelocks() {
             streaksStatus.textContent = statusPrefix + amount.toLocaleString() + " ended Streak";
             if (amount <= highestStreak) {
                 document.getElementById("streakBadge" + streaksIndex).classList.remove("badgeLocked");
+                if (streaksIndex == 4) {
+                    streaksStatus.textContent = "All unlocked";
+                }
             } else {
                 break;
             }

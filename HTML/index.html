@@ -207,7 +207,7 @@
             <div id="badgeArea">
             </div>
             <img id="selectedProfilePin" src="/IMG/your_marker1.png">
-            <p id="levelTextProfile">2</p>
+            <p id="levelTextProfile">Lvl. 0</p>
           </div>
         </div>
       </div>
@@ -222,45 +222,6 @@
         <h3 id="profileAboutHeader">About: </h3>
         <textarea id="profileAbout" maxlength="150" spellcheck="false"
           placeholder="Share a few facts about yourself with others..."></textarea>
-        <h3 id="profilePinHeader">Pin Style: </h3>
-        <div id="pinSelector">
-          <button class="pinHolder selectedPin">
-            <div class="pinLock">
-              <p class="pinLockText">0 XP</p>
-            </div>
-            <img class="pinSelectIcon" src="/IMG/your_marker0.png">
-          </button>
-          <button class="pinHolder">
-            <div class="pinLock">
-              <p class="pinLockText">5,000 XP</p>
-            </div>
-            <img class="pinSelectIcon" src="/IMG/your_marker1.png">
-          </button>
-          <button class="pinHolder">
-            <div class="pinLock">
-              <p class="pinLockText">30,000 XP</p>
-            </div>
-            <img class="pinSelectIcon" src="/IMG/your_marker2.png">
-          </button>
-          <button class="pinHolder">
-            <div class="pinLock">
-              <p class="pinLockText">100,000 XP</p>
-            </div>
-            <img class="pinSelectIcon" src="/IMG/your_marker3.png">
-          </button>
-          <button class="pinHolder">
-            <div class="pinLock">
-              <p class="pinLockText">500,000 XP</p>
-            </div>
-            <img class="pinSelectIcon" src="/IMG/your_marker4.png">
-          </button>
-          <button class="pinHolder">
-            <div class="pinLock">
-              <p class="pinLockText">5,000,000 XP</p>
-            </div>
-            <img class="pinSelectIcon" src="/IMG/your_marker5.png">
-          </button>
-        </div>
         <h3>User Stats: </h3>
         <div id="profileStats" class="statisticView">
           <div class="statisticsEnclosure">
@@ -305,7 +266,7 @@
       <button id="profileClose" class="standardButton white accountClose">Close</button>
     </div>
   </div>
-  <!-- New profile window -->
+  <!-- Badge window -->
   <div id="badgePopup" class="popupHolder profilePopupBackground">
     <div id="badgeWindow" class="uiWindow">
       <div class="popup-title">
@@ -340,7 +301,7 @@
         <div class="badgeBox">
           <p id="compBadge1" class="badge badgeStage1">Rookie Competitor</p>
           <p id="compBadge2" class="badge badgeStage2">Dedicated Entrant</p>
-          <p id="compBadge3" class="badge badgeStage3">Seasoned Contendor</p>
+          <p id="compBadge3" class="badge badgeStage3">Seasoned Contender</p>
           <p id="compBadge4" class="badge badgeStage4">Top Champion</p>
         </div>
         <div class="badgeLabel">
@@ -371,6 +332,89 @@
         </div>
       </div>
       <button id="badgeClose" class="standardButton white accountClose">Close</button>
+    </div>
+  </div>
+  <!--Pin window -->
+  <div id="pinPopup" class="popupHolder profilePopupBackground">
+    <div id="pinWindow" class="uiWindow">
+      <div class="popup-title">
+        <h1 id="profileViewName">Pins</h1>
+      </div>
+      <div id="pinSelector">
+        <button class="pinHolder selectedPin">
+          <div id="pinLock0" class="pinLock">
+            <p class="pinLockText">0 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker0.png">
+        </button>
+        <button class="pinHolder">
+          <div id="pinLock1" class="pinLock">
+            <p class="pinLockText">5,000 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker1.png">
+        </button>
+        <button class="pinHolder">
+          <div id="pinLock2" class="pinLock">
+            <p class="pinLockText">30,000 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker2.png">
+        </button>
+        <button class="pinHolder">
+          <div id="pinLock3" class="pinLock">
+            <p class="pinLockText">100,000 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker3.png">
+        </button>
+        <button class="pinHolder">
+          <div id="pinLock4" class="pinLock">
+            <p class="pinLockText">500,000 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker4.png">
+        </button>
+        <button class="pinHolder">
+          <div id="pinLock5" class="pinLock">
+            <p class="pinLockText">5,000,000 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker5.png">
+        </button>
+        <button class="pinHolder">
+          <div id="pinLock6" class="pinLock">
+            <p class="pinLockText">10,000,000 XP</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker6.png">
+        </button>
+        <button class="pinHolder">
+          <div id="pinLock7" class="pinLock">
+            <p class="pinLockText">75 Duel Wins</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker7.png">
+        </button>
+        <button class="pinHolder">
+          <div id="pinLock8" class="pinLock">
+            <p class="pinLockText">50 Comp. Entries</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker8.png">
+        </button>
+        <button class="pinHolder">
+          <div id="pinLock9" class="pinLock">
+            <p class="pinLockText">10 Streak</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker9.png">
+        </button>
+        <button class="pinHolder">
+          <div id="pinLock10" class="pinLock">
+            <p class="pinLockText">250 Comp. Entries</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker10.png">
+        </button>
+        <button class="pinHolder">
+          <div id="pinLock11" class="pinLock">
+            <p class="pinLockText">Supporter (TBA)</p>
+          </div>
+          <img class="pinSelectIcon" src="/IMG/your_marker11.png">
+        </button>
+      </div>
+      <button id="pinClose" class="standardButton white accountClose">Close</button>
     </div>
   </div>
   <!-- remaining windows -->

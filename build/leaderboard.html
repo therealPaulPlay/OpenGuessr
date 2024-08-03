@@ -34,7 +34,7 @@
             font-weight: 400;
             height: 100%;
             overflow-y: auto;
-            background-color: #07071e;
+            background-color: #11121f;
             padding: 0;
             margin: 0;
         }
@@ -64,7 +64,7 @@
             display: flex;
             justify-content: space-around;
             height: 100px;
-            background-color: rgba(41, 41, 64, 0.9);
+            background-color: rgba(31, 33, 52, 0.9);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
             box-shadow: 0 2px 20px rgba(5, 6, 10, 0.5);
@@ -105,34 +105,29 @@
         }
 
         .container {
-            position: absolute;
-            top: 300px;
-            padding: 5px;
-            padding-left: 15px;
-            padding-right: 15px;
+            padding: 2px;
+            padding-left: 10px;
+            padding-right: 10px;
             width: 80vw;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
-            margin-bottom: 100px;
             background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            border-radius: 15px;
             text-align: center;
         }
 
         .yourContainer {
-            position: absolute;
-            top: 150px;
-            padding: 5px;
-            padding-left: 15px;
-            padding-right: 15px;
+            padding: 0;
+            padding-left: 10px;
+            padding-right: 10px;
             width: 80vw;
             max-width: 800px;
             margin-left: auto;
             margin-right: auto;
             margin-bottom: 20px;
             background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            border-radius: 15px;
             text-align: center;
         }
 
@@ -141,7 +136,7 @@
             width: 100%;
             height: 50px;
             box-sizing: border-box;
-            background-color: #4f506f;
+            background-color: rgba(201, 212, 255, 0.3);
             border-radius: 10px;
             margin: 10px 0px;
             display: flex;
@@ -151,6 +146,10 @@
             padding-right: 30px;
             white-space: nowrap;
             overflow: hidden;
+        }
+
+        .yourContainer .rankedItem {
+            background-color: rgba(222, 228, 251, 0.4);
         }
 
         .middle {
@@ -166,15 +165,15 @@
         }
 
         .gold {
-            background-color: #9c8632;
+            background-color: #caa128;
         }
 
         .silver {
-            background-color: #979797;
+            background-color: #898993;
         }
 
         .bronze {
-            background-color: #724242;
+            background-color: #803b3b;
         }
 
         .yourItem {
@@ -195,6 +194,98 @@
             vertical-align: -4px;
         }
 
+        .leaderboardContainer {
+            border-radius: 20px;
+            background-color: rgba(92, 93, 94, 0.1);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            width: calc(80vw + 50px);
+            max-width: 850px;
+            margin-top: 20px;
+            padding: 15px;
+            padding-inline: 0;
+        }
+
+        .podium-container {
+            display: flex;
+            justify-content: center;
+            margin-top: 220px;
+            margin-bottom: 30px;
+        }
+
+        .podium {
+            display: flex;
+            align-items: flex-end;
+            height: 250px;
+            width: 70vw;
+            max-width: 650px;
+            gap: 20px;
+        }
+
+        .podium-item {
+            flex-grow: 1;
+            margin: 0 10px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: filter 250ms ease;
+            outline: 10px solid rgba(255, 255, 255, 0.1);
+            max-width: 30%;
+        }
+
+        .podium-item:hover {
+            filter: brightness(1.2);
+        }
+
+        #first-place {
+            height: 200px;
+            flex-grow: 1.5;
+        }
+
+        #second-place {
+            height: 170px;
+        }
+
+        #third-place {
+            height: 140px;
+        }
+
+        .podium-item .name {
+            padding: 5px;
+            text-align: center;
+            color: white;
+            font-size: 25px;
+            word-break: break-word;
+            max-width: 100%;
+            position: relative;
+            top: -55px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
+        }
+
+        .podium-item .rank {
+            font-size: 30px;
+            color: white;
+            margin-bottom: 20px;
+        }
+
+        .podium-item .podiumExp {
+            font-size: 25px;
+            color: white;
+            margin-top: auto;
+            margin-bottom: auto;
+            max-width: 20vw;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            text-wrap: nowrap;
+            opacity: 0.75;
+        }
+
         @media all and (orientation: portrait) {
             #navbarTitle {
                 font-size: 27px;
@@ -212,6 +303,40 @@
             p {
                 font-size: 20px;
             }
+
+            .podium-item .rank {
+                font-size: 20px;
+            }
+
+            .podium-item .name {
+                font-size: 25px;
+            }
+
+            .podium-item .podiumExp {
+                font-size: 22px;
+            }
+
+            #first-place {
+                height: 160px;
+            }
+
+            #second-place {
+                height: 130px;
+            }
+
+            #third-place {
+                height: 110px;
+            }
+
+            .podium {
+                width: 85vw;
+                height: 150px;
+                gap: 10px;
+            }
+
+            .podium-item .name {
+                font-size: 20px;
+            }
         }
     </style>
 </head>
@@ -223,16 +348,36 @@
             Back</button>
         <h1 id="navbarTitle">Leaderboard</h1>
     </div>
-    <div class="center">
-        <div class="yourContainer">
-            <div class="rankedItem">
-                <p id="yourRank">You: </p>
-                <p id="yourName" class="middle">Loading name</p>
-                <p id="yourExperience"></p>
+    <div class="podium-container">
+        <div class="podium">
+            <div class="podium-item silver" id="second-place">
+                <div class="name"></div>
+                <div class="podiumExp"></div>
+                <div class="rank">#2</div>
+            </div>
+            <div class="podium-item gold" id="first-place">
+                <div class="name"></div>
+                <div class="podiumExp"></div>
+                <div class="rank">#1</div>
+            </div>
+            <div class="podium-item bronze" id="third-place">
+                <div class="name"></div>
+                <div class="podiumExp"></div>
+                <div class="rank">#3</div>
             </div>
         </div>
-        <div id="container" class="container"></div>
     </div>
+    <div class="center">
+        <div class="leaderboardContainer" id="leaderboardContainer">
+            <div class="yourContainer">
+                <div class="rankedItem">
+                    <p id="yourRank">You: </p>
+                    <p id="yourName" class="middle">Loading name</p>
+                    <p id="yourExperience"></p>
+                </div>
+            </div>
+            <div id="container" class="container"></div>
+        </div>
     </div>
 
 </body>
@@ -323,7 +468,7 @@
 
         container.appendChild(rankedItem);
 
-        document.getElementById("name" + rank).addEventListener("click", () => {
+        document.getElementById("name" + idCounter).addEventListener("click", () => {
             openProfile(id);
         });
     }
@@ -333,39 +478,49 @@
     async function loadLeaderboard() {
         container.innerHTML = "<p>Loading...</p>";
 
-        // Await the promise returned by getAllUsers()
         let data = await getAllUsers();
         let userData = data;
 
         if (userData.user) {
-            userData = data.experienceLeaderboard; // structure is different if you (the user) is also being returned
+            userData = data.experienceLeaderboard;
         }
 
         if (userData == undefined) {
-            container.innerHTML = "<p>An error occured while loading the leaderboard.</p>";
+            container.innerHTML = "<p>An error occurred while loading the leaderboard.</p>";
         } else {
             container.innerHTML = "";
 
-            // Iterate through the array once userData is available
-            for (var i = 0; i < userData.length; i++) {
+            // Populate podium
+            for (let i = 0; i < 3 && i < userData.length; i++) {
+                let user = userData[i];
+                let place = ['first', 'second', 'third'][i];
+                let podiumItem = document.getElementById(`${place}-place`);
+                podiumItem.querySelector('.name').textContent = user.user_name;
+                podiumItem.querySelector('.podiumExp').textContent = user.experience.toLocaleString() + " XP";
+                podiumItem.addEventListener('click', () => openProfile(user.id));
+
+                if (user.user_name == yourUsername && !dontLoadStats) {
+                    podiumItem.classList.add('yourItem');
+        }
+            }
+
+            // Populate main leaderboard starting from 4th place
+            for (let i = 3; i < userData.length; i++) {
                 let user = userData[i];
                 let userName = user.user_name;
-                let experience = user.experience;
+                let experience = Number(user.experience).toLocaleString();
                 let id = user.id;
-
-                experience = Number(experience).toLocaleString();
 
                 addRankedItem(i + 1, userName, experience, id);
             }
 
-            //This would be for loading the players stats from the response (in case they are included)
             if (data.user && !dontLoadStats) {
                 document.getElementById("yourExperience").innerHTML = Number(data.user.experience).toLocaleString() + " XP";
                 document.getElementById("yourRank").innerHTML = "#" + (data.user.position);
             }
         }
 
-        document.body.style.height = document.documentElement.scrollHeight + 100 + 'px';
+        document.body.style.height = document.documentElement.scrollHeight - 100 + 'px';
     }
 
     loadLeaderboard();
