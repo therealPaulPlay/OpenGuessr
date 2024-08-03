@@ -4,6 +4,7 @@ import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTe
 import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
+import { errorPopup } from "./errorHandling.js";
 
 
 // Initialize the map with correct provider --------------------------------------------------------------------
@@ -16,21 +17,61 @@ const Provider = {
 
 // Google Maps init --------------------------------------------------------------------------------------
 
+// ensure that the user has not exceeded a certain limit of map loads
+async function requestMapLoad() {
+    try {
+        let headers;
+
+        if (localStorage.getItem("bearer")) {
+            headers = {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("bearer")}`
+            };
+
+        } else {
+            headers = {
+                'Content-Type': 'application/json'
+            }
+        }
+        const response = await fetch(`https://accounts.openguessr.com/accounts/maplimit`, {
+            method: 'GET',
+            headers: headers
+        });
+
+        // Check if the response is successful
+        if (response.ok) {
+            const data = await response.json();
+            return true;
+
+        } else {
+            const data = await response.json();
+            console.error("Map load limit reached: " + data.error);
+            errorPopup("Daily map load limit reached", "Likely to prevent extraordinarily high Google API costs, your map load request was denied. Please read more details below.", data.error, false, false);
+            return false;
+        }
+    } catch (error) {
+        console.error('Error occurred while checking for the map load limit: ' + error);
+        return true;
+    }
+}
+
 export let map;
 
 async function initMap() {
     const { Map } = await google.maps.importLibrary("maps");
 
-    map = new Map(document.getElementById("map"), {
-        center: { lat: 50, lng: 25 },
-        zoom: 3,
-        streetViewControl: false, // Hide Street View control
-        zoomControl: false,       // Hide zoom control
-        fullscreenControl: false, // Hide fullscreen control
-        mapTypeControl: false,     // Hide map type control
-        draggableCursor: 'crosshair',
-        backgroundColor: "#8ab4f9",
-    });
+    if (await requestMapLoad()) {
+        map = new Map(document.getElementById("map"), {
+            center: { lat: 50, lng: 25 },
+            zoom: 3,
+            streetViewControl: false, // Hide Street View control
+            zoomControl: false,       // Hide zoom control
+            fullscreenControl: false, // Hide fullscreen control
+            mapTypeControl: false,     // Hide map type control
+            draggableCursor: 'crosshair',
+            backgroundColor: "#8ab4f9",
+        });
+    }
 }
 
 await initMap();
