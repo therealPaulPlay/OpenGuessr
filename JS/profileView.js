@@ -93,7 +93,6 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
     document.getElementById("profileViewName").textContent = name ? name : "Guest";
 
     if (yourProfile) {
-        updatePinLocks(localStorage.getItem("experience"));
         document.getElementById("editUsername").style.display = "inline-block";
         document.getElementById("pinSelector").style.display = "flex";
         document.getElementById("accountManagementHeader").style.display = "block";
@@ -502,6 +501,7 @@ export let selectedPinIndex = 0;
 
 document.getElementById("selectedProfilePin").addEventListener("click", () => {
     playSound("basic_button");
+    updatePinLocks(localStorage.getItem("experience"));
     loadSelectedPin();
     document.getElementById("pinPopup").style.display = "flex";
 });
@@ -530,26 +530,63 @@ document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
 });
 
 // Function to update pinLocks based on XP
+
+const pinRequirements = [["experience", 0], ["experience", 5000], ["experience", 30000], ["experience", 100000], ["experience", 500000],
+["experience", 5000000], ["experience", 10000000], ["duelWins", 75], ["competitionsPlayed", 50], ["highestStreak", 10], ["competitionsPlayed", 250], ["supporter", 0.1]];
+
 function updatePinLocks(xpAmount) {
 
     const pinLocks = document.querySelectorAll('.pinLock');
     pinLocks.forEach(function (lock) {
-        const lockXP = parseInt(lock.querySelector('.pinLockText').textContent.replace(/,/g, ''));
-        if (xpAmount >= lockXP) {
-            lock.style.display = "none"; // Hide pinLock if XP is enough
-        } else {
-            lock.style.display = "flex"; // Show pinLock if XP is not enough
+        const lockIndex = Number(lock.id.replace("pinLock", ""));
+        const lockRequirementType = pinRequirements[lockIndex][0];
+        const lockRequirementAmount = pinRequirements[lockIndex][1];
+
+        if (lockRequirementType == "experience") {
+            if (localStorage.getItem("experience") >= lockRequirementAmount) {
+                lock.style.display = "none"; // Hide pinLock if XP is enough
+            } else {
+                lock.style.display = "flex"; // Show pinLock if XP is not enough
+            }
+        }
+
+        if (lockRequirementType == "duelWins") {
+            if (yourLoadedProfileData.duelsWon >= lockRequirementAmount) {
+                lock.style.display = "none";
+            } else {
+                lock.style.display = "flex";
+            }
+        }
+
+        if (lockRequirementType == "competitionsPlayed") {
+            if (yourLoadedProfileData.competitionsPlayed >= lockRequirementAmount) {
+                lock.style.display = "none";
+            } else {
+                lock.style.display = "flex";
+            }
+        }
+
+        if (lockRequirementType == "highestStreak") {
+            if (yourLoadedProfileData.highestStreak >= lockRequirementAmount) {
+                lock.style.display = "none"; 
+            } else {
+                lock.style.display = "flex";
+            }
+        }
+
+        if (lockRequirementType == "supporter") {
+            lock.style.display = "flex"; // supporter not yet implemented
         }
     });
 }
 
 // Function to handle pin selection
-export function selectPin(index, activeSelect) {
+function selectPin(index, activeSelect) {
     // Check if the pinHolder and pinLock exist
     const pinHolders = document.querySelectorAll('.pinHolder');
     if (pinHolders.length > index) {
         const pinLock = pinHolders[index].querySelector('.pinLock');
-        if (pinLock && (pinLock.style.display === 'none' || pinLock.style.display === '')) {
+        if ((pinLock && (pinLock.style.display === 'none' || pinLock.style.display === '')) || !activeSelect) {
             // Remove selectedPin class from all pinHolder buttons
             document.querySelectorAll('.pinHolder').forEach(function (btn) {
                 btn.classList.remove('selectedPin');

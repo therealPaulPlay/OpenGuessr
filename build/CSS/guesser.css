@@ -218,7 +218,7 @@ h3 {
 
 .pinLock {
   border-radius: 7px;
-  background-color: rgba(0, 0, 0, 0.15);
+  background-color: rgba(4, 8, 15, 0.25);
   width: 100%;
   height: 100%;
   display: flex;
@@ -716,8 +716,8 @@ textarea {
 }
 
 #selectedProfilePin {
-  width: 25px;
-  height: 25px;
+  width: 29px;
+  height: 29px;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 5px;
   padding: 4.5px;
@@ -726,7 +726,7 @@ textarea {
 }
 
 #selectedProfilePin:hover {
-  background-color: rgba(255, 255, 255, 0.3);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .profilePopupBackground {
@@ -763,7 +763,7 @@ textarea {
 }
 
 .badge {
-  padding: 5px;
+  padding: 7px;
   border-radius: 5px;
   font-style: italic;
   color: white;
@@ -787,12 +787,13 @@ textarea {
   color: white;
   font-size: 18px;
   border-radius: 5px;
-  padding: 6px;
+  padding: 8px;
   text-align: center;
   min-width: 20px;
   text-wrap: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  user-select: none;
 }
 
 .badge:hover {
@@ -877,8 +878,8 @@ textarea {
 
 .badgeSelected {
   border: 3px solid rgba(255, 255, 255, 0.75);
-  padding-top: 2px;
-  padding-bottom: 2px;
+  padding-top: 3px;
+  padding-bottom: 3px;
   padding-inline: 7px;
 }
 

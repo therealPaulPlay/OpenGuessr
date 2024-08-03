@@ -233,20 +233,16 @@ export function loadResultMap(playersLat, playersLong) {
 
     const yourIcon = new L.Icon({
         iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
-        shadowUrl: "./IMG/marker_shadow.png",
         iconSize: [35, 35],
         iconAnchor: [17.5, 34],
-        popupAnchor: [1, -34],
-        shadowSize: [37, 37]
+        popupAnchor: [1, -34]
     });
 
     const greenIcon = new L.Icon({
         iconUrl: './IMG/result_marker.png',
-        shadowUrl: "./IMG/marker_shadow.png",
         iconSize: [35, 35],
         iconAnchor: [17.5, 34],
-        popupAnchor: [1, -34],
-        shadowSize: [37, 37]
+        popupAnchor: [1, -34]
     });
 
     //used to create the line between the points
@@ -303,11 +299,9 @@ export function loadResultMap(playersLat, playersLong) {
             if (newMarkerLat != playersLat || newMarkerLong != playersLong) {
                 let newMultiplayerIcon = new L.Icon({
                     iconUrl: "./IMG/your_marker" + newMarkerPinIndex + ".png",
-                    shadowUrl: "./IMG/marker_shadow.png",
                     iconSize: [35, 35],
                     iconAnchor: [17.5, 34],
                     popupAnchor: [1, -34],
-                    shadowSize: [37, 37]
                 });
 
                 let multiplayerLatLng = new L.LatLng(newMarkerLat, newMarkerLong);
