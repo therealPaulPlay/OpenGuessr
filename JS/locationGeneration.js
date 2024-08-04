@@ -15,7 +15,7 @@ export async function getLocationCoordinates(type) {
     } else if (type == "SDK") {
         return await getCoordsFromLocationServer();
     } else if (type == "FROMHOST") {
-        return coordsFromHost; 
+        return coordsFromHost;
     } else if (type == "COMMUNITY") {
         return await getCommunityMapCoordinates();
     } else if (type == "COMPETITION") {
@@ -26,7 +26,7 @@ export async function getLocationCoordinates(type) {
 }
 
 
-//Get Location from JSON (Legacy/Custom Map creation method) ----------------------------------------------------------------------------------------------------
+// Get Location from JSON (Legacy/Custom Map creation method) ----------------------------------------------------------------------------------------------------
 let listOfLocations = [];
 let jsonResponse;
 let lastGuessesIndexes = []; //to prevent repetition
@@ -35,7 +35,7 @@ let currentlyLoadedJson;
 let guessIndex;
 
 
-//Load location JSON files
+// Load location JSON files
 async function loadLocationJSON(jsonName) {
     if (currentlyLoadedJson != jsonName) {
         try {
@@ -48,8 +48,8 @@ async function loadLocationJSON(jsonName) {
             }
 
             jsonResponse = await response.json();
-            currentlyLoadedJson = jsonName; //set currently loaded json to the new one
-            lastGuessesIndexes = []; //reset previously played indexes
+            currentlyLoadedJson = jsonName; // set currently loaded json to the new one
+            lastGuessesIndexes = []; // reset previously played indexes
             listOfLocations = jsonResponse.locations;
 
         } catch (error) {
@@ -61,7 +61,7 @@ async function loadLocationJSON(jsonName) {
     }
 }
 
-//This will be called in main.js when a new location is being generated
+// This will be called in main.js when a new location is being generated
 async function getCoordsFromJSON(category) {
 
     let resultLocationsArray;
@@ -76,20 +76,14 @@ async function getCoordsFromJSON(category) {
 
     try {
 
-        //to prevent a crashes if the json has too few locations
-        if (listOfLocations.length < 60) {
-            lastGuessesIndexes = [];
-            console.warn("Loaded official map json has too few locations!");
-        }
-
         do {
             guessIndex = Math.floor(Math.random() * listOfLocations.length);
         } while (lastGuessesIndexes.includes(guessIndex));
 
-        lastGuessesIndexes.unshift(guessIndex); //add guessIndex at the front of the array
+        lastGuessesIndexes.unshift(guessIndex); // add guessIndex at the front of the array
 
-        if (lastGuessesIndexes.length > 50) {
-            lastGuessesIndexes.pop(); //if the array is longer than 50, pop the last entry out
+        if (lastGuessesIndexes.length > listOfLocations.length / 2) {
+            lastGuessesIndexes.pop(); // if the array is longer than 50% of the total amount, pop the last one out
         }
 
         const resultLat = Number(listOfLocations[guessIndex][0]);
@@ -105,7 +99,7 @@ async function getCoordsFromJSON(category) {
 }
 
 
-//Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
+// Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
 
 let standardLocations = null;
 let lastStandardLocationIndexes = [];
@@ -115,65 +109,59 @@ async function getCoordsFromLocationServer() {
     if (!standardLocations) {
         try {
             let locationEndpoint = "https://locations.openguessr.com/locations"; //for testing, use http://localhost:3000/locations
-        
+
             const response = await fetch(locationEndpoint, {
-              method: 'GET',
-              headers: { 'Content-Type': 'application/json' }
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
             });
-        
+
             // Check if the response is successful
             if (response.ok) {
-              const data = await response.json();
-              standardLocations = data.locations; //the array is in locations: {}
-              return await selectLocationFromServer(); //pick one new location for playing
-        
+                const data = await response.json();
+                standardLocations = data.locations; //the array is in locations: {}
+                return await selectLocationFromServer(); //pick one new location for playing
+
             } else {
                 console.error("Location fetch failed. Server returned error:", response.status);
                 return await loadBackupLocations(response.status);
             }
-          } catch (error) {
+        } catch (error) {
             console.error("Error occurred while fetching locations from server: ", error);
             return await loadBackupLocations(error);
-          }
+        }
     } else {
         return await selectLocationFromServer(); //just select a location from the server's json file, as it is already loaded
     }
 }
 
 async function selectLocationFromServer() {
-      //now, pick a random location
-      let resultLocationsArray = [];
+    // now, pick a random location
+    let resultLocationsArray = [];
 
-      try {
-  
-          //to prevent a crashes if the json has too few locations
-          if (standardLocations.length < 110) {
-              lastStandardLocationIndexes = [];
-              console.warn("Loaded standard json has too few locations!");
-          }
-  
-          do {
-              guessIndex = Math.floor(Math.random() * standardLocations.length);
-          } while (lastStandardLocationIndexes.includes(guessIndex));
-  
-          lastStandardLocationIndexes.unshift(guessIndex); //add guessIndex at the front of the array
-  
-          if (lastStandardLocationIndexes.length > 100) {
-              lastStandardLocationIndexes.pop(); //if the array is longer than 100, pop the last entry out
-          }
-  
-          const resultLat = Number(standardLocations[guessIndex][0]);
-          const resultLong = Number(standardLocations[guessIndex][1]);
-  
-          resultLocationsArray = [resultLat, resultLong];
-      } catch (error) {
-          console.error("Error in locationGeneration.js Standard Location JSON generation: " + error);
-      }
-  
-      return resultLocationsArray;
+    try {
+
+        do {
+            guessIndex = Math.floor(Math.random() * standardLocations.length);
+        } while (lastStandardLocationIndexes.includes(guessIndex));
+
+        lastStandardLocationIndexes.unshift(guessIndex); // add guessIndex at the front of the array
+
+        if (lastStandardLocationIndexes.length > standardLocations.length / 2) {
+            lastStandardLocationIndexes.pop(); // if the array is longer than half of the total standard location amount, pop the last one out
+        }
+
+        const resultLat = Number(standardLocations[guessIndex][0]);
+        const resultLong = Number(standardLocations[guessIndex][1]);
+
+        resultLocationsArray = [resultLat, resultLong];
+    } catch (error) {
+        console.error("Error in locationGeneration.js Standard Location JSON generation: " + error);
+    }
+
+    return resultLocationsArray;
 }
 
-//in case the location server does not respond, load the backup, formerly daily locations (just totally random locations) instead
+// in case the location server does not respond, load the backup, formerly daily locations (just totally random locations) instead
 async function loadBackupLocations(error) {
     console.log("Loading backup locations.");
     errorPopup("Location server error", "Loading local backup locations instead. ", "Error: " + error);
@@ -183,38 +171,44 @@ async function loadBackupLocations(error) {
 //Get community map coordinates ---------------------------------------------------------------------------
 
 let communityLocations = null;
+let lastCommunityLocationIndexes = [];
+let currentlyLoadedCommunityMap = "";
 
 async function getCommunityMapCoordinates() {
-    //Json files could later be fetched from a server here
-    try {
-        const response = await fetch("https://maps.openguessr.com/maps/" + mapCategory.replace("community_", ""), {
-          method: 'GET',
-          headers: { 'Content-Type': 'application/json' }
-        });
-    
-        // Check if the response is successful
-        if (response.ok) {
-          const data = await response.json();
-          communityLocations = data.map_data.locations; //the array is in locations: {}
-          return await selectLocationFromMapsServer(); //pick one new location for playing
-    
-        } else {
-            console.error("Community map fetch failed. Server returned error:", response.status);
-            if (response.status == 404) {
-                errorPopup("Community map was deleted", "This map was likely deleted and cannot be found.", response.status, true);
+
+    if (currentlyLoadedCommunityMap !== mapCategory || !communityLocations) {
+        try {
+            const response = await fetch("https://maps.openguessr.com/maps/" + mapCategory.replace("community_", ""), {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' }
+            });
+
+            // Check if the response is successful
+            if (response.ok) {
+                const data = await response.json();
+                currentlyLoadedCommunityMap = mapCategory;
+                communityLocations = data.map_data.locations; //the array is in locations: {}
+                lastCommunityLocationIndexes = []; // reset the array of the last locations which is in place to prevent duplicates
+                return await selectLocationFromMapsServer(); // pick one new location for playing
+
             } else {
-                errorPopup("Error loading community map", "An error occured on the maps server.", response.status, true);
+                console.error("Community map fetch failed. Server returned error:", response.status);
+                if (response.status == 404) {
+                    errorPopup("Community map was deleted", "This map was likely deleted and cannot be found.", response.status, true);
+                } else {
+                    errorPopup("Error loading community map", "An error occured on the maps server.", response.status, true);
+                }
+                return null;
             }
+        } catch (error) {
+            console.error("Error occurred while fetching map from server: ", error);
+            errorPopup("Error loading community map", "The maps server can't be reached.", error, true);
             return null;
         }
-      } catch (error) {
-        console.error("Error occurred while fetching map from server: ", error);
-        errorPopup("Error loading community map", "The maps server can't be reached.", error, true);
-        return null;
-      }
+    } else {
+        return await selectLocationFromMapsServer(); // pick one new location for playing
+    }
 }
-
-let lastCommunityLocationIndexes = [];
 
 async function selectLocationFromMapsServer() {
     //now, pick a random location
@@ -222,20 +216,14 @@ async function selectLocationFromMapsServer() {
 
     try {
 
-        //to prevent a crashes if the json has too few locations
-        if (communityLocations.length < 35) {
-            lastCommunityLocationIndexes = [];
-            console.warn("Loaded community map json has too few locations!");
-        }
-
         do {
             guessIndex = Math.floor(Math.random() * communityLocations.length);
         } while (lastCommunityLocationIndexes.includes(guessIndex));
 
-        lastCommunityLocationIndexes.unshift(guessIndex); //add guessIndex at the front of the array
+        lastCommunityLocationIndexes.unshift(guessIndex); // add guessIndex at the front of the array
 
-        if (lastCommunityLocationIndexes.length > 30) {
-            lastCommunityLocationIndexes.pop(); //if the array is longer than 30, pop the last entry out
+        if (lastCommunityLocationIndexes.length > communityLocations.length / 2) {
+            lastCommunityLocationIndexes.pop(); // if the array is longer than half of the total amount, pop last one out
         }
 
         const resultLat = Number(communityLocations[guessIndex][0]);
@@ -257,7 +245,7 @@ async function getCompetitionCoordinates() {
     try {
         const resultLat = competition.locations[currentRound][0];
         const resultLong = competition.locations[currentRound][1];
-    
+
         resultLocationsArray = [resultLat, resultLong];
     } catch (error) {
         console.error("Error in locationGeneration.js in getCompetitionCoordinates: " + error);
