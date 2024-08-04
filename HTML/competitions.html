@@ -610,15 +610,6 @@
         border: none;
     }
 
-    search {
-        display: flex;
-        justify-content: center;
-        width: 100%;
-        max-width: 300px;
-        gap: 10px;
-        margin-right: -15px;
-    }
-
     #infoNoteIcon {
         width: 35px;
         height: 35px;
@@ -632,10 +623,6 @@
         font-family: monospace;
         white-space: pre-wrap;
         font-size: 15px;
-    }
-
-    search form {
-        width: 100%;
     }
 
     textarea {
@@ -726,12 +713,13 @@
         display: flex;
         justify-content: center;
         width: 100%;
-        max-width: 300px;
+        max-width: 450px;
         gap: 10px;
+        margin-right: -15px;
     }
 
     search form {
-        width: 100%;
+        width: 55%;
     }
 
     #competitionSearch {
@@ -757,15 +745,19 @@
     }
 
     #startSearch {
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        color: white;
         max-width: 30px;
         min-height: 40px;
         margin: 0;
         display: flex;
         justify-content: center;
         align-items: center;
+    }
+
+    .searchBarButton {
+        background-color: rgba(255, 255, 255, 0.1);
+        border-radius: 10px;
+        color: white;
+        margin: 0;
     }
 
     #searchIcon {
@@ -778,6 +770,7 @@
         justify-content: space-between;
         align-items: center;
         gap: 10px;
+        flex-wrap: wrap;
     }
 
     .fadeInItem {
@@ -880,6 +873,19 @@
 
     .competitionTitleExpired{
         background-color: rgba(70, 74, 92, 0.15);
+    }
+
+    #hideEntered {
+        max-width: 35%;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        color: rgb(176, 166, 169);
+        transition: color 250ms ease, background-color 250ms ease, filter 250ms ease;
+    }
+
+    .hideEnteredActive {
+        background-color: rgba(255, 255, 255, 0.9);
+        color: rgb(35, 35, 35) !important;
     }
 
     @media all and (orientation: portrait) {
@@ -1103,10 +1109,11 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                 <div class="flexCompetitionBar competitionElement competitionTitle">
                     <h2 class="boxHeader">Currently ongoing: </h2>
                     <search>
+                        <button id="hideEntered" class="standardButton searchBarButton">Hide entered</button>
                         <form>
                             <input id="competitionSearch" placeholder="Search active Competitions...">
                         </form>
-                        <button id="startSearch" class="standardButton">
+                        <button id="startSearch" class="searchBarButton standardButton">
                             <img src="/IMG/find_icon.png" alt="start search" id="searchIcon">
                         </button>
                     </search>

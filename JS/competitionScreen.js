@@ -485,15 +485,31 @@ function loadCompetitions() {
 
 loadCompetitions();
 
+// competition notEntered filter 
+let hideEntered = false;
+document.getElementById("hideEntered").addEventListener("click", () => {
+    hideEntered = !hideEntered;
+
+    if (hideEntered) {
+        document.getElementById("hideEntered").classList.add("hideEnteredActive");
+    } else {
+        document.getElementById("hideEntered").classList.remove("hideEnteredActive");
+    }
+    
+    notExpiredIndex = 0; // reset index if starting new search
+    document.getElementById("competitionArea").innerHTML = ""; // reset html of competition area
+    getCompetitionsFromServer(false, undefined, undefined, hideEntered);
+});
+
 document.getElementById("loadMoreActive").addEventListener("click", () => {
-    getCompetitionsFromServer(false);
+    getCompetitionsFromServer(false, undefined, undefined, hideEntered);
 });
 
 document.getElementById("loadMoreExpired").addEventListener("click", () => {
     getCompetitionsFromServer(true);
 });
 
-async function getCompetitionsFromServer(expired, search, daily) {
+async function getCompetitionsFromServer(expired, search, daily, filterEntered) {
     // display initial loading message
     if (!firstLoad) {
         document.querySelectorAll(".errorText").forEach((e) => {
@@ -535,6 +551,10 @@ async function getCompetitionsFromServer(expired, search, daily) {
 
         if (daily) {
             Endpoint = competitionsEndpoint + "/daily/daily-competition";
+        }
+
+        if (filterEntered) {
+            Endpoint = competitionsEndpoint + "/notentered/" + notExpiredIndex;
         }
 
         const response = await fetch(Endpoint, {
@@ -653,6 +673,10 @@ document.getElementById("startSearch").addEventListener("click", startSearch);
 
 function startSearch() {
     let query = document.getElementById("competitionSearch").value.toLowerCase();
+    if (hideEntered) {
+        document.getElementById("hideEntered").classList.remove("hideEnteredActive");
+        hideEntered = false;
+    }
     notExpiredIndex = 0; // reset index if starting new search
     document.getElementById("competitionArea").innerHTML = ""; // reset html of competition area
 
