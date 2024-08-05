@@ -1926,6 +1926,7 @@ map::selection {
   margin-bottom: 10px;
   gap: 10px;
   flex-wrap: wrap;
+  width: calc(100% - 20px);
 }
 
 #accountDeletePassword {
@@ -2629,6 +2630,7 @@ map::selection {
   max-width: unset;
   background-color: rgba(0, 0, 0, 0.2);
   min-width: 65%;
+  width: calc(100% - 40px);
 }
 
 .accountLock {
