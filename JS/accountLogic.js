@@ -160,7 +160,7 @@ XPbarNoAccount.addEventListener("click", function () {
 })
 
 //part of checkSigninStatusAndLoadUserInfo
-async function changeUItoSignedIn() {
+async function changeUItoSignedIn(supporterLevel) {
   logoutButton.style.display = "inline-block";
   loginButton.style.display = "none";
   mobileLogoutButton.style.display = "inline-block";
@@ -172,6 +172,10 @@ async function changeUItoSignedIn() {
   displayUserInfo();
   loadSelectedPin(); // loads it from fetched profile data
   loadSelectedBadge();
+
+  if (supporterLevel && supporterLevel > 0) {
+    updateSupporterProfileHighlight(true);
+  }
 
   if (resultScreenEnabled && lastXPloadingAttemptAborted) {
     loadResultScreenXP(lastDistance);
@@ -192,6 +196,15 @@ async function changeUItoSignedOut() {
   uiSetUserXP(0);
   loadSelectedPin(); // loads pin 0, as profile data should be undefined
   loadSelectedBadge();
+  updateSupporterProfileHighlight(false);
+}
+
+function updateSupporterProfileHighlight(highlight) {
+  if (highlight) {
+    document.getElementById("profileInfo").classList.add("profileInfoSupporter");
+  } else {
+    document.getElementById("profileInfo").classList.remove("profileInfoSupporter");
+  }
 }
 
 // part of checkSigninStatusAndLoadUserInfo
@@ -210,9 +223,9 @@ async function checkSigninStatusAndLoadUserInfo() {
   if (isAuthenticated) {
     profileButton.classList.remove("notSignedIn");
     //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
-    await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((profileData) => {
-      updateLoadedProfileData(profileData);
-      changeUItoSignedIn(); // display user info is already being called in here
+    await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((user) => {
+      updateLoadedProfileData(user.profile_data);
+      changeUItoSignedIn(user.supporter_level); // display user info is already being called in here
       document.dispatchEvent(event); // dispatch account loaded event, used when joining multi rounds via link
       authenticationCheckComplete = true;
     });

@@ -154,6 +154,10 @@ h3 {
   filter: brightness(0.7);
 }
 
+.profileInfoSupporter {
+  background-color: rgba(192, 255, 217, 0.3);
+}
+
 .notSignedIn {
   opacity: 50%;
   pointer-events: none;
@@ -745,6 +749,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: 10px;
+  flex-wrap: wrap;
 }
 
 .badgeContainer {
@@ -794,6 +799,37 @@ textarea {
   overflow: hidden;
   text-overflow: ellipsis;
   user-select: none;
+}
+
+#supporterTag {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  overflow: hidden;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 38px;
+  padding-inline: 10px;
+}
+
+#supporterTag p {
+  font-size: 18px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 200px;
+  transition: max-width 250ms ease, margin 200ms linear;
+  margin-right: 5px;
+}
+
+.supporterTextHidden {
+  max-width: 0 !important;
+  margin-right: 0 !important;
+}
+
+#supporterIcon {
+  width: 25px;
+  height: 25px;
+  filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
 }
 
 .badge:hover {
