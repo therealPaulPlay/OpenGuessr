@@ -148,6 +148,10 @@
             overflow: hidden;
         }
 
+        .rankedItemSupporter {
+            background-color: rgba(193, 244, 222, 0.35);
+        }
+
         .yourContainer .rankedItem {
             background-color: rgba(222, 228, 251, 0.4);
         }
@@ -441,7 +445,7 @@
     // Function to add a new ranked item to the leaderboard
     let idCounter = 0;
 
-    function addRankedItem(rank, name, xp, id) {
+    function addRankedItem(rank, name, xp, id, supporterLevel) {
         idCounter++;
         const rankedItem = document.createElement('div');
         rankedItem.classList.add('rankedItem');
@@ -449,6 +453,10 @@
         //draw outline around your rank (if it is on the leaderboard)
         if (name == yourUsername && !dontLoadStats) {
             rankedItem.classList.add('yourItem');
+        }
+
+        if (supporterLevel && supporterLevel > 0) {
+            rankedItem.classList.add("rankedItemSupporter");
         }
 
         switch (rank) {
@@ -510,8 +518,9 @@
                 let userName = user.user_name;
                 let experience = Number(user.experience).toLocaleString();
                 let id = user.id;
+                let supporterLevel = user.supporter_level;
 
-                addRankedItem(i + 1, userName, experience, id);
+                addRankedItem(i + 1, userName, experience, id, supporterLevel);
             }
 
             if (data.user && !dontLoadStats) {

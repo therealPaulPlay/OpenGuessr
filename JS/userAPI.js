@@ -205,7 +205,7 @@ export async function getUser(token, id, errorSource) {
     if (response.ok) {
       const data = await response.json();
       saveUserData(data['user']);
-      return data.user.profile_data;
+      return data.user;
 
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
