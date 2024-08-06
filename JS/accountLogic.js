@@ -7,7 +7,7 @@ import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } fro
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
-import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge } from "./profileView.js";
+import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel } from "./profileView.js";
 import { errorPopup } from "./errorHandling.js";
 
 let accountLockedArray;
@@ -228,6 +228,7 @@ async function checkSigninStatusAndLoadUserInfo() {
       changeUItoSignedIn(user.supporter_level); // display user info is already being called in here
       document.dispatchEvent(event); // dispatch account loaded event, used when joining multi rounds via link
       authenticationCheckComplete = true;
+      setSupporterLevel(user.supporter_level || 0);
     });
   }
   else {
