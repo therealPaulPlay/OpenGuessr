@@ -811,7 +811,7 @@ function updateBadgelocks() {
         for (const amount of supporterRequirements) {
             supporterIndex++;
     
-            supporterStatus.textContent = statusPrefix + "Lvl. " + amount.toLocaleString() + " Supporter";
+            supporterStatus.textContent = statusPrefix + "Tier " + amount.toLocaleString() + " Supporter";
             if (amount <= supporterLevel) {
                 document.getElementById("supporterBadge" + supporterIndex).classList.remove("badgeLocked");
                 if (supporterIndex == 4) {
