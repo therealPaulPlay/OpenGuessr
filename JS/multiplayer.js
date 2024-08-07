@@ -3,7 +3,7 @@ import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, isAuthenticated, authenticationCheckComplete } from "./accountLogic.js";
-import { selectedBadge, selectedPinIndex } from "./profileView.js";
+import { selectedBadge, selectedPinIndex, supporterLevel } from "./profileView.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeamMarkers } from "./miniMap.js";
 import { calculateDistances, loadResultMap } from "./main.js";
@@ -412,7 +412,7 @@ function endMultiplayerRound() {
             sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
-            //After 2 seconds (or 5 for duels), enable the skip functionality
+            // After 2 seconds (or 5 for duels), enable the skip functionality
             let skipTimeout = playingDuels ? 5000 : 2000;
             document.getElementById("nextRoundText").textContent = "Wait " + (skipTimeout / 1000) + "s...";
 
@@ -422,7 +422,7 @@ function endMultiplayerRound() {
                 document.getElementById("nextRound").style.pointerEvents = "auto";
             }, skipTimeout)
 
-            //After 10 seconds, skip automatically to not let peers wait too long in Duels
+            // After 10 seconds, skip automatically to not let peers wait too long in Duels
             if (playingDuels) {
                 autoSkipResult = setTimeout(() => { transitionToStart() }, 10000);
             }
@@ -847,7 +847,7 @@ async function sendRoomCodeToMatchmakingServer() {
                     leaveMultiplayerRound();
                     deleteRoomCodeFromMatchmakingServer();
                 }
-            }, 10000); //After 10 seconds, as the room code is now expired, leave the multiplayer round and show the retry button
+            }, 10000); // After 10 seconds, as the room code is now expired, leave the multiplayer round and show the retry button
 
         } else {
             console.error("Failed sending the Room Code to the server: " + response.status);
@@ -979,6 +979,7 @@ if (peer) {
 export let multiplayerGuessesLocationsArray = [];
 let multiplayerFirstRoundPlayed = false; // for host and peers! peers use this to see whether they should incrase the round index
 export let yourTeam = 1;
+export let highestMultiplayerSupporterLevel = 1; // in multiplayer, the highest supporter stage will be used for the supporter bonus for everyone
 
 function removeConnectedPeerById(peerId) {
     const index = connectedPeers.findIndex(entry => entry[0] === peerId);
@@ -1015,12 +1016,22 @@ if (peer) {
                     // If the entry doesn't already exist (prevent duplicates), only then push new user
                     if (index == -1) {
                         connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1, incomingConn.metadata.id, incomingConn.metadata.badge]);
+                       
+                        if (incomingConn.supporterLevel > highestMultiplayerSupporterLevel) {
+                            highestMultiplayerSupporterLevel = incomingConn.supporterLevel;
+                        }
+
+                    } else {
+                        setTimeout(() => {
+                            incomingConn.close();
+                            distributeChat("System: " + incomingConn.metadata.username + " kicked (duplicate).");
+                        }, 500);
                     }
 
                     connectedClientsCount++;
                     setJoinCounter(connectedClientsCount);
                     updateTeamDisplay();
-                    clearInterval(brokenConnectionTimeout); //stop the broken-connection kick timer
+                    clearTimeout(brokenConnectionTimeout); //stop the broken-connection kick timer
 
                     const initialMessage = {
                         type: "initialize",
@@ -1152,6 +1163,9 @@ function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     roundAmount = AmountOfRounds;
     roundLength = LengthOfRounds;
 
+    // set supporter level to own supporter level as baseline
+    highestMultiplayerSupporterLevel = supporterLevel || 0;
+
     //unlock room
     roomLocked = false;
 }
@@ -1210,7 +1224,7 @@ export async function startMultiplayerRound(latitude, longitude) {
         }
     }
 
-    sendMessageToAll("start", [latitude, longitude]);
+    sendMessageToAll("start", {coordinates: [latitude, longitude], highestSupporterLevel: highestMultiplayerSupporterLevel});
     distributeChat("System: Starting Round " + roundIndex);
     multiplayerOverlayCountdown(); // for host
 }          
@@ -1300,7 +1314,8 @@ function joinRoom(code) {
             level: uiSetUserXP(localStorage.getItem("experience")).level,
             score: 0, //inital score is set to 0,
             id: localStorage.getItem("id"),
-            badge: selectedBadge
+            badge: selectedBadge,
+            supporterLevel: supporterLevel
         }
     };
 
@@ -1348,10 +1363,12 @@ function joinRoom(code) {
 
         if (data.type === "start") {
             try {
-                coordsFromHost = data.content;
+                coordsFromHost = data.content.coordinates;
+                highestMultiplayerSupporterLevel = data.content.highestSupporterLevel;
             } catch (error) {
-                console.error("Error receiving locations from the host in multiplayer.js Error: ", error);
+                console.error("Error receiving locations and supporter level from the host in multiplayer.js Error: ", error);
             }
+
 
             if (multiplayerFirstRoundPlayed) {
                 roundIndex++;
@@ -1541,6 +1558,7 @@ function leaveMultiplayerRound() {
     isHost = false;
     playingDuels = false;
     lateJoinedWaiting = false;
+    highestMultiplayerSupporterLevel = 1
 
     //reset UI things
     document.getElementById("guessText").textContent = "Guess";

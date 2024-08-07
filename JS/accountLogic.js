@@ -1,13 +1,13 @@
 import { deleteUser, getUser, updateExperience } from "./userAPI";
-import { checkTextLength, resultScreenEnabled, showConfirmPopup, showPageBrowser, toggleMobileMenu } from "./mainUI";
-import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory } from "./multiplayer.js";
+import { checkTextLength, resultScreenEnabled, showConfirmPopup, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
+import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
 import { toggleStreakWindow } from "./rewardedAds.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
-import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel } from "./profileView.js";
+import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel, supporterLevel } from "./profileView.js";
 import { errorPopup } from "./errorHandling.js";
 
 let accountLockedArray;
@@ -357,7 +357,7 @@ function streakCalculation() {
       }
 
       setCheckNewHighestStreak(streak); // checks if this was the highest streak yet and 
-      
+
       streak = 0; //reset country streak ( = Streak lost, but still restorable wit ad)
     }
 
@@ -379,42 +379,69 @@ function getStreakMultiplierAdjustedToGamemode() {
   }
 }
 
-function calculateXPGain(distance, category) {
+function calculateXPGain(distance, category, supporterLevel) {
+  let returnXP = 0;
+
   if (category == null || category == "standard" || category == "capital" || category == "hard") {
 
     streakCalculation();
-    return Math.round((5000 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode());
+    returnXP = Math.round((5000 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode());
 
   } else if (category == "europe" || category == "asia" || category == "africa" || category == "oceania" || category == "southamerica") {
     // not NA as that is literally US 95% of the time, therefore no streak
     streakCalculation();
-    return Math.round((5000 * ((0.996036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // slightly reduced xp range as continents are smaller than countries
+    returnXP = Math.round((5000 * ((0.996036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // slightly reduced xp range as continents are smaller than countries
 
   } else if (category == "famous" || category == "image") {
 
     streakCalculation();
-    return Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //1500 xp for famous, with streak up to 1800sth
+    returnXP = Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //1500 xp for famous, with streak up to 1800sth
 
   } else if (category && category.includes("community")) {
 
     streakCalculation();
-    return Math.round((3000 * ((0.994036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //3000 xp for community, with streak slightly more - also adjusted distance function
+    returnXP = Math.round((3000 * ((0.994036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //3000 xp for community, with streak slightly more - also adjusted distance function
 
   } else if (category == "northamerica") {
-    return Math.round(5000 * ((0.996036) ** distance));
+    returnXP = Math.round(5000 * ((0.996036) ** distance));
 
   } else if (category == "country") {
-    return checkIfGuessWasCorrect() ? 1000 : 0;
+    returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
   } else if (category == "israel" || category == "austria" || category == "slovakia" || category == "czechia") { //very small countries, more reduced xp
-    return Math.round(5000 * ((0.978036) ** distance));
+    returnXP = Math.round(5000 * ((0.978036) ** distance));
 
   } else {
-    return Math.round(5000 * ((0.988036) ** distance));//reduced XP for bad guesses in country locations (for better balance)
+    returnXP = Math.round(5000 * ((0.988036) ** distance));//reduced XP for bad guesses in country locations (for better balance)
   }
+
+  let supporterMultiplier = 1;
+
+  if (supporterLevel && supporterLevel > 0) {
+    switch (supporterLevel) {
+      case 1:
+        supporterMultiplier = 1.1;
+        break;
+      case 2:
+        supporterMultiplier = 1.15;
+        break;
+      case 3:
+        supporterMultiplier = 1.2;
+        break;
+      case 4:
+        supporterMultiplier = 1.25;
+    }
+  }
+
+  return { earnedXP: Math.round(returnXP * supporterMultiplier), earnedXPWithoutSupporterBoost: returnXP, supporterMultiplier: supporterMultiplier };
 }
 
+let animateSupporterBoostTimeout;
+
 export async function loadResultScreenXP(distance) {
+
+  let supporterMultiplier = 1;
+  clearTimeout(animateSupporterBoostTimeout);
 
   lastDistance = distance;
 
@@ -436,18 +463,25 @@ export async function loadResultScreenXP(distance) {
 
     let selectedCategory = localStorage.getItem("selectedCategory");
 
-    let earnedXP;
-
     streakDisplay.style.visibility = "hidden";
     streakDisplay.style.width = "0";
 
+    let earnedXP;
+    let earnedBasicXP; // without supporter mutliplier, that will be applied later (this is just for visuals)
+
     // XP calculation formulas -------------------------------------------------
     if (!multiplayer && !playingCompetition) {
-      earnedXP = calculateXPGain(distance, selectedCategory);
+      const calculatedXP = calculateXPGain(distance, selectedCategory, supporterLevel);
+      earnedXP = calculatedXP.earnedXP;
+      earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
+      supporterMultiplier = calculatedXP.supporterMultiplier;
 
     } else if (multiplayer) {
       //always use the standard formula for multiplayer 
-      earnedXP = calculateXPGain(distance, multiplayerCategory);
+      const calculatedXP = calculateXPGain(distance, multiplayerCategory, highestMultiplayerSupporterLevel);
+      earnedXP = calculatedXP.earnedXP;
+      earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
+      supporterMultiplier = calculatedXP.supporterMultiplier;
 
       if (isHost) {
         updatePeerDataScore(peerId, earnedXP);
@@ -456,7 +490,10 @@ export async function loadResultScreenXP(distance) {
       }
 
     } else if (playingCompetition) {
-      earnedXP = calculateXPGain(distance, "standard"); // always use standard calculation formula for competitions
+      const calculatedXP = calculateXPGain(distance, "standard"); // always use standard calculation formula for competitions
+      earnedXP = calculatedXP.earnedXP;
+      earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost; // supporter multiplier omitted because it should stay 1 (disabled)
+
       addResultToCompetitionScore(earnedXP);
     }
 
@@ -467,7 +504,7 @@ export async function loadResultScreenXP(distance) {
       XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
     }
     else {
-      XPbarResource.style.width = uiSetUserXP(currentXP).fraction * 100 + "%"; //otherwise, set the starting point of the bar to the current xp
+      XPbarResource.style.width = uiSetUserXP(currentXP).fraction * 100 + "%"; // otherwise, set the starting point of the bar to the current xp
     }
 
     if (earnedXP > 0 && isAuthenticated) {
@@ -478,8 +515,17 @@ export async function loadResultScreenXP(distance) {
       XPbarResource.classList.add("XPbarAnimate");
       XPbarResource.style.width = Math.max(uiSetUserXP(currentXP + earnedXP).fraction * 100, 4) + "%";
       resultLevelText.innerHTML = "+" + earnedXP + " XP";
-      animateIncrement(resultLevelText, 0, earnedXP, 1500);
+      animateIncrement(resultLevelText, 0, earnedBasicXP, 1500);
+
+      if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
+        supporterXpBoostAnimation(supporterMultiplier);
+
+        animateSupporterBoostTimeout = setTimeout(() => {
+          animateIncrement(resultLevelText, earnedBasicXP, earnedXP, 750);
+        }, 3500);
+      }
     }, 10);
+
   }
 }
 
