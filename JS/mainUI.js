@@ -325,22 +325,16 @@ window.addEventListener("resize", (event) => {
 
 // Check if the text length exceeds the threshold
 export function checkTextLength() {
-    // Get the elements
     const accountName = document.getElementById("accountName");
 
     const textLength = accountName.textContent.length;
 
-    if (textLength > 14) {
-        accountName.classList.add("scroll");
+    if (textLength > 10) {
+        accountName.classList.add("namescroll");
     } else {
-        accountName.classList.remove("scroll");
+        accountName.classList.remove("namescroll");
     }
 }
-
-// Check for text length initially and when the text changes
-window.addEventListener('DOMContentLoaded', checkTextLength); // Check on page load
-window.addEventListener('input', checkTextLength); // Check when text changes
-
 
 //Mobile UI Menu -----------------------------------------------------------------------------------------
 let mobileWindow = document.getElementById("mobileWindow");

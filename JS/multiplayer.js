@@ -392,14 +392,17 @@ function setMultiplayerUI() {
 }
 
 //if the timer expires for peers or host
+
+let endMultiplayerRoundIfGuessMissing;
+
 export function multiplayerTimerExpired() {
     confirmButtonClicks(); //only do this if the player actually hasnt guessed yet...
 
-    //when the timer expires, but a peer doesn't respond by executing confirmButtonCliks --> still end the round after 1000ms
+    // when the timer expires, but a peer doesn't respond by executing confirmButtonCliks --> still end the round after 2000ms
     if (isHost) {
-        setTimeout(function () {
+        endMultiplayerRoundIfGuessMissing = setTimeout(function () {
             endMultiplayerRound();
-        }, 5000);
+        }, 2000);
     }
 }
 
@@ -411,6 +414,7 @@ export let autoSkipResult;
 function endMultiplayerRound() {
     if (!roundEnded) {
         if (isHost) {
+            clearTimeout(endMultiplayerRoundIfGuessMissing);
             sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
@@ -1524,7 +1528,8 @@ function leaveMultiplayerRound() {
     }
 
     try { multiplayerTimer.stopTimer(); } catch { }; //has to be in try catch
-    try { clearInterval(countdownInterval); } catch { };
+    clearInterval(countdownInterval);
+    clearTimeout(endMultiplayerRoundIfGuessMissing);
     multiplayer = false;
     setMultiplayerUI();
     showMultiplayerOverlay(false);

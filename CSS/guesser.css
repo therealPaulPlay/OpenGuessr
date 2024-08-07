@@ -155,7 +155,7 @@ h3 {
 }
 
 .profileInfoSupporter {
-  background-color: rgba(192, 255, 217, 0.3);
+  background-color: rgba(181, 238, 203, 0.3);
 }
 
 .notSignedIn {
@@ -241,7 +241,7 @@ h3 {
 
 
 #accountNameArea {
-  max-width: 140.5px;
+  max-width: 80px;
   overflow: hidden;
   white-space: nowrap;
   margin-top: 2px;
@@ -283,7 +283,7 @@ h3 {
   margin-bottom: 5px;
 }
 
-.scroll {
+.namescroll {
   animation: scrollText 5s ease-in-out infinite alternate;
 }
 
@@ -294,10 +294,8 @@ h3 {
   }
 
   100% {
-    transform: translateX(calc(-100% + 135px));
+    transform: translateX(calc(-100% + 75px)); /* adjust second param to be max-width of element minus about 5px */
   }
-
-  /* Adjusted animation */
 }
 
 .modetextScroll {
