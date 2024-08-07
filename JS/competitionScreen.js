@@ -362,6 +362,11 @@ async function loadLeaderboardFromServer(id) {
 
                     let newEntry = document.createElement("div");
                     newEntry.classList.add("rankItem");
+                   
+                    if (youItem.supporter_level && youItem.supporter_level > 0) {
+                        newEntry.classList.add("leaderboardSupporterEntry");
+                    }
+
                     newEntry.innerHTML = `
                         <p class="leaderboardTextEntry">#${youItem.position}</p>
                         <p id="yourUsername" class="leaderboardTextEntry centerEntry">${youItem.userName}</p>
@@ -375,8 +380,6 @@ async function loadLeaderboardFromServer(id) {
                     document.getElementById("yourUsername").addEventListener("click", () => {
                         openProfile(localStorage.getItem("id"));
                     });
-
-
                 }
 
                 let idCounter = 0;
@@ -386,6 +389,11 @@ async function loadLeaderboardFromServer(id) {
 
                     let newEntry = document.createElement("div");
                     newEntry.classList.add("rankItem");
+
+                    if (entry.supporter_level && entry.supporter_level > 0) {
+                        newEntry.classList.add("leaderboardSupporterEntry");
+                    }
+
                     newEntry.innerHTML = `
                         <p class="leaderboardTextEntry">#${entry.position}</p>
                         <p id="entry${idCounter}" class="leaderboardTextEntry centerEntry">${entry.userName}</p>

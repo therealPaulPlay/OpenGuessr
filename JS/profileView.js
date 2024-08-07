@@ -13,6 +13,12 @@ export function updateLoadedProfileData(newData) {
     yourLoadedProfileData = newData;
 }
 
+export let supporterLevel = 0;
+
+export function setSupporterLevel(newSupporterLevel) {
+    supporterLevel = newSupporterLevel;
+}
+
 export async function loadProfileFromId(id, you, view) {
     if (view) {
         openClearedProfile(); // open clear profile as loading
@@ -32,6 +38,7 @@ export async function loadProfileFromId(id, you, view) {
 
             if (you && data.profileData) {
                 yourLoadedProfileData = data.profileData;
+                supporterLevel = data.supporterLevel || 0;
             }
 
             // load data only or show profile
@@ -537,9 +544,9 @@ document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
 // Function to update pinLocks based on XP
 
 const pinRequirements = [["experience", 0], ["experience", 5000], ["experience", 30000], ["experience", 100000], ["experience", 500000],
-["experience", 5000000], ["experience", 10000000], ["duelWins", 75], ["competitionsPlayed", 50], ["highestStreak", 10], ["competitionsPlayed", 250], ["supporter", 0.1]];
+["experience", 5000000], ["experience", 10000000], ["duelWins", 75], ["competitionsPlayed", 50], ["highestStreak", 10], ["competitionsPlayed", 250], ["supporter", 1]];
 
-function updatePinLocks(xpAmount) {
+function updatePinLocks() {
 
     const pinLocks = document.querySelectorAll('.pinLock');
     pinLocks.forEach(function (lock) {
@@ -580,7 +587,11 @@ function updatePinLocks(xpAmount) {
         }
 
         if (lockRequirementType == "supporter") {
-            lock.style.display = "flex"; // supporter not yet implemented
+            if (supporterLevel >= lockRequirementAmount) {
+                lock.style.display = "none";
+            } else {
+                lock.style.display = "flex";
+            }
         }
     });
 }
@@ -714,7 +725,7 @@ function updateBadgelocks() {
         const duelsRequirements = [5, 50, 100, 500];
         const competitionRequirements = [10, 50, 100, 500];
         const streaksRequirements = [5, 15, 50, 100];
-        const supporterRequirements = [2, 5, 10, 25]; // added later, suggestions in dollars
+        const supporterRequirements = [1, 2, 3, 4]; // supporter tiers
     
         let expIndex = 0;
     
@@ -788,6 +799,22 @@ function updateBadgelocks() {
             if (amount <= highestStreak) {
                 document.getElementById("streakBadge" + streaksIndex).classList.remove("badgeLocked");
                 if (streaksIndex == 4) {
+                    streaksStatus.textContent = "All unlocked";
+                }
+            } else {
+                break;
+            }
+        };
+
+        let supporterIndex = 0;
+
+        for (const amount of supporterRequirements) {
+            supporterIndex++;
+    
+            supporterStatus.textContent = statusPrefix + "Tier " + amount.toLocaleString() + " Supporter";
+            if (amount <= supporterLevel) {
+                document.getElementById("supporterBadge" + supporterIndex).classList.remove("badgeLocked");
+                if (supporterIndex == 4) {
                     streaksStatus.textContent = "All unlocked";
                 }
             } else {
