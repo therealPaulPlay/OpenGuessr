@@ -58,12 +58,7 @@ export function setCompetitionUI(enable) {
             setGamemodeSelector(false);
             hardmodeTimerButton.style.opacity = "0.5";
             hardmodeTimerButton.style.pointerEvents = "none";
-
             document.getElementById("revealCompass").style.marginBottom = "-27px";
-
-            document.querySelectorAll(".mapAttribution").forEach((element) => { // remove this for js maps api
-                element.style.bottom = "63px";
-            });
         } else {
             document.getElementById("mapModeIndicator").style.display = "none";
             document.getElementById("competitionLeave").style.display = "none";
@@ -73,12 +68,7 @@ export function setCompetitionUI(enable) {
             setGamemodeSelector(true);
             hardmodeTimerButton.style.opacity = "1";
             hardmodeTimerButton.style.pointerEvents = "auto";
-
             document.getElementById("revealCompass").style.marginBottom = "-30px";
-
-            document.querySelectorAll(".mapAttribution").forEach((element) => { // remove this for js maps api
-                element.style.bottom = "0px";
-            });
         }
     } catch (error) {
         console.error("Error enabling competition UI: " + error);
