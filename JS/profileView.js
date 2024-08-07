@@ -13,6 +13,12 @@ export function updateLoadedProfileData(newData) {
     yourLoadedProfileData = newData;
 }
 
+export let supporterLevel = 0;
+
+export function setSupporterLevel(newSupporterLevel) {
+    supporterLevel = newSupporterLevel;
+}
+
 export async function loadProfileFromId(id, you, view) {
     if (view) {
         openClearedProfile(); // open clear profile as loading
@@ -32,11 +38,12 @@ export async function loadProfileFromId(id, you, view) {
 
             if (you && data.profileData) {
                 yourLoadedProfileData = data.profileData;
+                supporterLevel = data.supporterLevel || 0;
             }
 
             // load data only or show profile
             if (view) {
-                viewProfile(data.username, data.experience, data.joinedDate, you, data.profileData);
+                viewProfile(data.username, data.experience, data.joinedDate, you, data.profileData, data.supporterLevel);
             }
 
             return true;
@@ -86,9 +93,10 @@ function openClearedProfile() {
     document.getElementById("badgeArea").style.pointerEvents = "none";
     document.getElementById("badgeArea").innerHTML = "";
     document.getElementById("selectedProfilePin").style.pointerEvents = "none";
+    document.getElementById("supporterTag").style.display = "none";
 }
 
-function viewProfile(name, experience, joined, yourProfile, profileData) {
+function viewProfile(name, experience, joined, yourProfile, profileData, supporterLevel) {
     lastProfileOwnerYou = yourProfile; // only update database entry on close if it was your profile that was opened
     document.getElementById("profileViewName").textContent = name ? name : "Guest";
 
@@ -147,6 +155,10 @@ function viewProfile(name, experience, joined, yourProfile, profileData) {
                     setProfileBadge(profileData.badge);
                 }
             }
+        }
+
+        if (supporterLevel && supporterLevel > 0) {
+            document.getElementById("supporterTag").style.display = "flex";
         }
 
     } catch (e) {
@@ -532,9 +544,9 @@ document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
 // Function to update pinLocks based on XP
 
 const pinRequirements = [["experience", 0], ["experience", 5000], ["experience", 30000], ["experience", 100000], ["experience", 500000],
-["experience", 5000000], ["experience", 10000000], ["duelWins", 75], ["competitionsPlayed", 50], ["highestStreak", 10], ["competitionsPlayed", 250], ["supporter", 0.1]];
+["experience", 5000000], ["experience", 10000000], ["duelWins", 75], ["competitionsPlayed", 50], ["highestStreak", 10], ["competitionsPlayed", 250], ["supporter", 1]];
 
-function updatePinLocks(xpAmount) {
+function updatePinLocks() {
 
     const pinLocks = document.querySelectorAll('.pinLock');
     pinLocks.forEach(function (lock) {
@@ -575,7 +587,11 @@ function updatePinLocks(xpAmount) {
         }
 
         if (lockRequirementType == "supporter") {
-            lock.style.display = "flex"; // supporter not yet implemented
+            if (supporterLevel >= lockRequirementAmount) {
+                lock.style.display = "none";
+            } else {
+                lock.style.display = "flex";
+            }
         }
     });
 }
@@ -709,7 +725,7 @@ function updateBadgelocks() {
         const duelsRequirements = [5, 50, 100, 500];
         const competitionRequirements = [10, 50, 100, 500];
         const streaksRequirements = [5, 15, 50, 100];
-        const supporterRequirements = [2, 5, 10, 25]; // added later, suggestions in dollars
+        const supporterRequirements = [1, 2, 3, 4]; // supporter tiers
     
         let expIndex = 0;
     
@@ -789,6 +805,22 @@ function updateBadgelocks() {
                 break;
             }
         };
+
+        let supporterIndex = 0;
+
+        for (const amount of supporterRequirements) {
+            supporterIndex++;
+    
+            supporterStatus.textContent = statusPrefix + "Tier " + amount.toLocaleString() + " Supporter";
+            if (amount <= supporterLevel) {
+                document.getElementById("supporterBadge" + supporterIndex).classList.remove("badgeLocked");
+                if (supporterIndex == 4) {
+                    streaksStatus.textContent = "All unlocked";
+                }
+            } else {
+                break;
+            }
+        };
     
         if (localStorage.getItem("id") <= 2) {
             document.getElementById("miscBadge1").classList.remove("badgeLocked");
@@ -797,3 +829,21 @@ function updateBadgelocks() {
         console.error("Error in updatePinLocks: " + error);
     }
 }
+
+// Supporter Profile Area -----------------------------------------------------------------------------------------------------------
+
+let supporterTag = document.getElementById("supporterTag")
+
+let tagTimeout;
+
+supporterTag.addEventListener("mouseover", () => {
+    clearTimeout(tagTimeout);
+    tagTimeout = setTimeout(() => {
+        document.getElementById("supporterTagText").classList.remove("supporterTextHidden");
+    }, 200);
+});
+
+supporterTag.addEventListener("mouseout", () => {
+    clearTimeout(tagTimeout);
+    document.getElementById("supporterTagText").classList.add("supporterTextHidden");
+});

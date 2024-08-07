@@ -5,7 +5,7 @@ import { checkGenerationTypeAndGenerate } from "./categoryMenu";
 import { playSound } from "./soundManager";
 import { errorPopup } from "./errorHandling";
 import { setRestriction } from "./multiplayer";
-import { addCompetitionPlayed } from "./profileView";
+import { addCompetitionPlayed, supporterLevel } from "./profileView";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
 
@@ -115,18 +115,19 @@ async function leaveCompetition() {
     setRestriction("standard");
 
     // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
-    await submitCompetitionResult(competition.id, competitionCombinedScore, localStorage.getItem("bearer"));
+    await submitCompetitionResult(competition.id, competitionCombinedScore, supporterLevel, localStorage.getItem("bearer"));
 
     // Show the leaderboard
     showPageBrowser("/competitions.html?leaderboard=" + competition.id);
 }
 
-async function submitCompetitionResult(id, score, token) {
+async function submitCompetitionResult(id, score, supporterLevel, token) {
     try {
         const requestBody = {
             username: localStorage.getItem("username"),
             id: localStorage.getItem("id"),
-            score: score
+            score: score,
+            supporter_level: supporterLevel || 0
         };
 
         const response = await fetch("https://competitions.openguessr.com/competitions/submit/" + id, {
