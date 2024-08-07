@@ -601,7 +601,7 @@ function attemptJoinViaLink() {
         } else {
             console.error("Tried to join round via link, but peerjs was not initialized yet.");
         }
-    
+
         joinOnLoadViaLink = false;
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
     }
@@ -1198,31 +1198,28 @@ function multiplayerRematch() {
 }
 
 //Start the first / next round
-export function startMultiplayerRound(latitude, longitude) {
-    multiplayerGuessesLocationsArray = []; //reset previous stored guesses from peers
+export async function startMultiplayerRound(latitude, longitude) {
+    multiplayerGuessesLocationsArray = []; // reset previous stored guesses from peers
     teamMarkerArray = [];
     totalRequiredGuesses = connectedClientsCount + 1; //connections + 1 for the host (this is being set here as well as after the countdown)
 
-    if (multiplayerFirstRoundPlayed == false) {
+    if (!multiplayerFirstRoundPlayed) {
         toggleMultiplayerSelector("close");
         multiplayerFirstRoundPlayed = true;
-
-        sendMessageToAll("start", [latitude, longitude]);
-        distributeChat("System: Starting Round " + roundIndex);
-        multiplayerOverlayCountdown();
     } else {
-        roundIndex++;
-
-        //check if session isn't over
-        if (roundIndex <= roundAmount) {
-            setTimeout(() => {
-                distributeChat("System: Starting Round " + roundIndex);
-                sendMessageToAll("start", [latitude, longitude]); //for peers
-                multiplayerOverlayCountdown(); //for host
-            }, 1500)
+        roundIndex++
+        if (roundIndex > roundAmount) {
+            return;
+        } else {
+            // if it is not the first round, wait to show the results properly
+            await new Promise(resolve => { setTimeout(resolve, 1500); });
         }
     }
-}
+
+    sendMessageToAll("start", [latitude, longitude]);
+    distributeChat("System: Starting Round " + roundIndex);
+    multiplayerOverlayCountdown(); // for host
+}          
 
 //Function to send a message from host to all peers
 export function sendMessageToAll(type, message) {
