@@ -597,6 +597,38 @@ document.getElementById("confirmCancel").addEventListener("click", () => {
     confirmPopup.style.display = "none";
 });
 
+// Supporter Boost effect -------------------------------------------------------------------------------
+
+let supporterBoost = document.getElementById("supporterBoost");
+let supporterBoostText = document.getElementById("supporterBoostText");
+let supporterBoostTimeout;
+
+export async function supporterXpBoostAnimation(factor) {
+    supporterBoost.style.opacity = "0";
+    supporterBoostText.classList.remove("supporterBoostTextMove");
+    clearTimeout(supporterBoostTimeout);
+
+    await new Promise(resolve => {
+        supporterBoostTimeout = setTimeout(resolve, 1500);
+    });
+
+    factor -= 1;
+    factor = Math.floor(factor * 100);
+    factor += "%";
+
+   supporterBoostText.textContent = factor + " Supporter Boost";
+
+    supporterBoost.style.opacity = "1";
+    supporterBoostText.classList.add("supporterBoostTextMove");
+
+    supporterBoostTimeout = setTimeout(() => {
+        supporterBoost.style.opacity = "0";
+        supporterBoostText.classList.remove("supporterBoostTextMove");
+    }, 2000);
+}   
+
+
+
 // In-App page browser -----------------------------------------------------------------------------------
 
 let pageBrowserWindow = document.getElementById("pageBrowserWindow");
