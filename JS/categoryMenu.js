@@ -279,8 +279,12 @@ export function transitionToStart() {
 
         document.getElementById("BeforeOverlay").style.visibility = "visible";
         document.getElementById("BeforeOverlay").style.opacity = "100";
-        resMap.stop(); //stop the flying animation
-        setTimeout(function () { resMap.stop() }, 200)
+        try {
+            resMap.stop(); //stop the flying animation
+            setTimeout(function () { resMap.stop() }, 200)
+        } catch {
+            console.warn("Couldn't stop resMap animation");
+        };
         toggleStreakWindow(0, true);
         checkGenerationTypeAndGenerate();
         handleMapUnhover();
