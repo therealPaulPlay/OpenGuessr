@@ -1,6 +1,6 @@
 import { deleteUser, getUser, updateExperience } from "./userAPI";
 import { checkTextLength, resultScreenEnabled, showConfirmPopup, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
-import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel } from "./multiplayer.js";
+import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel, attemptJoinViaLink } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
@@ -214,29 +214,23 @@ export function displayUserInfo() {
   checkTextLength();
 }
 
-//adjust the UI to the signin status and load user info on website load
-export let authenticationCheckComplete = false;
-
 async function checkSigninStatusAndLoadUserInfo() {
-  const event = new Event("authCheckComplete");
-
   if (isAuthenticated) {
     profileButton.classList.remove("notSignedIn");
     //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
     await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((user) => {
       updateLoadedProfileData(user.profile_data);
       changeUItoSignedIn(user.supporter_level); // display user info is already being called in here
-      document.dispatchEvent(event); // dispatch account loaded event, used when joining multi rounds via link
-      authenticationCheckComplete = true;
       setSupporterLevel(user.supporter_level || 0);
     });
   }
   else {
     changeUItoSignedOut();
     profileButton.classList.add("notSignedIn");
-    document.dispatchEvent(event); // dispatch account loaded event, used when joining multi rounds via link
-    authenticationCheckComplete = true;
   }
+
+  // now, check for multiplayer joins
+  attemptJoinViaLink();
 }
 
 function enableExclusiveCategories() {
@@ -294,10 +288,13 @@ export function uiSetUserXP(xp) {
     requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
   }
 
-  document.getElementById("progressRingLevel").innerHTML = templevel;
-  resultLevelDisplay.innerHTML = "Lvl. " + templevel;
-  // account UI 
-  setProgress(xp != 0 ? Math.max((xp / requiredXP), 0.1) : 0);
+  if (isAuthenticated) {
+    document.getElementById("progressRingLevel").innerHTML = templevel;
+    resultLevelDisplay.innerHTML = "Lvl. " + templevel;
+    
+    // account UI level circle
+    setProgress(xp != 0 ? Math.max((xp / requiredXP), 0.1) : 0);
+  }
 
   return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
 }
