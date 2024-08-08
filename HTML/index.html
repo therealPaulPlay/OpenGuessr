@@ -217,7 +217,9 @@
         </div>
       </div>
       <div id="supporterArea" class="supporterArea">
-        <p>Become a supporter.<span id="supporterTextSecondary"> Contributions keep the game free for everyone.</span></p>
+       <div class="supporterPitchText">
+        <p id="supporterPitch">Become a supporter (default).</p><span id="supporterTextSecondary"> Supporters keep the game free (default)</span>
+       </div>
         <button id="viewSupporterBenefits" class="standardButton">View benefits</button>
       </div>
       <div id="profileScrollSection">
@@ -435,9 +437,10 @@
             <p>The goal of my work is to provide a community-driven geography game that is open to everyone. However, as <a class="removeTextUnderline" href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en" target="_blank">Maps APIs</a>
             are <span class="supporterTextHighlight">highly expensive</span>, this has become <span class="supporterTextHighlight">more challenging than ever.</span></p>
           </div>
-          <div class="supporterBox supporterBoxFlex">
-            <div>
-              <p class="supporterBox supporterBoxHighlight">By becoming a supporter, you fund the game's development and help cover ongoing costs. Moreover, supporters unlock unique benefits:</p>
+          <div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
+            <div class="supporterBox supporterBoxHighlight">
+              <img alt="info icon" class="infoIcon" src="/IMG/info_icon.png">
+              <p>By becoming a supporter, you help cover ongoing costs and unlock unique benefits. You can upgrade to the next tier at any point.</p>
             </div>
             <div class="tierBox">
               <p class="tierBoxTier">Tier 1</p>
@@ -453,9 +456,7 @@
             <div class="tierBox">
               <p class="tierBoxTier">Tier 2</p>
               <ul class="tierBenefits">
-                <li>Highlighted on leaderboards</li>
-                <li>Supporter Icon in profile</li>
-                <li>Special Supporter Pin</li>
+                <li>All previous benefits</li>
                 <li>Tier 2 Supporter Badge</li>
                 <li>15% Supporter XP Boost</li>
               </ul>
@@ -464,9 +465,7 @@
             <div class="tierBox">
               <p class="tierBoxTier">Tier 3</p>
               <ul class="tierBenefits">
-                <li>Highlighted on leaderboards</li>
-                <li>Supporter Icon in profile</li>
-                <li>Special Supporter Pin</li>
+                <li>All previous benefits</li>
                 <li>Tier 3 Supporter Badge</li>
                 <li>20% Supporter XP Boost</li>
               </ul>
@@ -475,13 +474,11 @@
             <div class="tierBox">
               <p class="tierBoxTier">Tier 4</p>
               <ul class="tierBenefits">
-                <li>Highlighted on leaderboards</li>
-                <li>Supporter Icon in profile</li>
-                <li>Special Supporter Pin</li>
+                <li>All previous benefits</li>
                 <li>Tier 4 Supporter Badge</li>
                 <li>25% Supporter XP Boost</li>
               </ul>
-              <button class="standardButton tierBuyButton">custom $</button>
+              <button class="standardButton tierBuyButton">24.99 $</button>
             </div>
           </div>
         </p>

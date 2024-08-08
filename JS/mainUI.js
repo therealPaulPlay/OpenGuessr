@@ -6,7 +6,7 @@ import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCount
 import { playSound } from "./soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners } from "./categoryMenu.js";
 import { loadCompetition } from "./competitionLogic.js";
-import { loadProfileFromId } from "./profileView.js";
+import { loadProfileFromId, supporterLevel } from "./profileView.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -647,12 +647,23 @@ document.getElementById("supporterClose").addEventListener("click", () => {
 
 function openSupporterWindow() {
     document.getElementById("supporterPopup").style.display = "flex";
+    document.getElementById("supporterTierScrollBox").scrollTop = "0";
 }
 
 function closeSupporterWindow() {
+    setSupporterPitch();
     document.getElementById("supporterPopup").style.display = "none";
 }
 
+export function setSupporterPitch() {
+    if (!(supporterLevel > 0)) {
+        document.getElementById("supporterPitch").textContent = "Become a supporter.";
+        document.getElementById("supporterTextSecondary").textContent = "Contributions keep the game free for everyone.";
+    } else {
+        document.getElementById("supporterPitch").textContent = "Thank you.";
+        document.getElementById("supporterTextSecondary").textContent = "Your contribution keeps the game free.";
+    }
+}
 
 
 // In-App page browser -----------------------------------------------------------------------------------

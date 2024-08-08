@@ -2,7 +2,7 @@ import { updateUsername } from "./userAPI";
 import { playSound } from "./soundManager.js";
 import { displayUserInfo, isAuthenticated } from "./accountLogic.js";
 import { errorPopup } from "./errorHandling.js";
-import { showConfirmPopup } from "./mainUI.js";
+import { setSupporterPitch, showConfirmPopup } from "./mainUI.js";
 // This is used to dynamically load the profile view
 
 //Profile Window ---------------------------------------------------------------------------------------------
@@ -91,6 +91,7 @@ function openClearedProfile() {
     document.getElementById("selectedProfilePin").style.pointerEvents = "none";
     document.getElementById("supporterTag").style.display = "none";
     document.getElementById("supporterArea").style.display = "none";
+    setSupporterPitch();
 }
 
 function viewProfile(name, experience, joined, yourProfile, profileData, supporterLevel) {
