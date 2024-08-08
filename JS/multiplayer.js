@@ -2,7 +2,7 @@ import { clamp } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup } from "./mainUI.js";
 import { startTimer } from "./timer";
-import { uiSetUserXP, isAuthenticated, authenticationCheckComplete } from "./accountLogic.js";
+import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { selectedBadge, selectedPinIndex, supporterLevel } from "./profileView.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeamMarkers } from "./miniMap.js";
@@ -586,15 +586,16 @@ if (roomCode) {
 document.getElementById("linkJoinClose").addEventListener("click", () => {
     playSound("basic_button");
     setLinkjoinPopup(false);
-})
+});
 
-
-function attemptJoinViaLink() {
+// called in accountLogic after signin status was set
+export function attemptJoinViaLink() {
     if (joinOnLoadViaLink) {
         if (peer) {
             try {
                 setLinkjoinPopup(true);
                 joinRoom(roomCode);
+
             } catch (err) {
                 console.error("Tried to join via link with initizalized peer, but there was an exception when joining.");
             }
@@ -643,7 +644,7 @@ function copyRoomcodeLink() {
 
 // Vars ------------------------------------------------------------------------------------------------
 let conn; // the connection data
-export let peerId; //host peer id
+export let peerId;
 export let isHost = false;
 export let connectedPeers = [];
 
@@ -968,16 +969,12 @@ function showTimeReduceOverlay(time, hide) {
 
 // Universal peer connection open (also attempt linkjoin) -----------------------------------------------------------------
 
+let peerOpen = false;
+
 if (peer) {
     peer.on('open', function (id) {
         peerId = id; // this also triggers for peers, as their connection opens
-        if (authenticationCheckComplete) {
-            attemptJoinViaLink();
-        } else {
-            document.addEventListener("authCheckComplete", () => {
-                attemptJoinViaLink();
-            });
-        }
+        peerOpen = true;
     });
 }
 
@@ -1023,7 +1020,7 @@ if (peer) {
                     if (index == -1) {
                         connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1, incomingConn.metadata.id, incomingConn.metadata.badge]);
                        
-                        if (incomingConn.supporterLevel > highestMultiplayerSupporterLevel) {
+                        if (incomingConn.metadata.supporterLevel > highestMultiplayerSupporterLevel) {
                             highestMultiplayerSupporterLevel = incomingConn.supporterLevel;
                         }
 
@@ -1307,7 +1304,16 @@ function removeWhiteSpace(input) {
     return input.replace(/\s/g, '');
 }
 
-function joinRoom(code) {
+async function joinRoom(code) {
+    // if peer isn't open yet, await that
+    if (!peerOpen) {
+        await new Promise(resolve => {
+            peer.on('open', () => {
+                resolve();
+            })
+        });
+    }
+
     isHost = false;
     multiplayerFirstRoundPlayed = false;
 
