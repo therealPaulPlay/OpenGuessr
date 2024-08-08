@@ -216,6 +216,10 @@
           </div>
         </div>
       </div>
+      <div id="supporterArea" class="supporterArea">
+        <p>Become a supporter.<span id="supporterTextSecondary"> Contributions keep the game free for everyone.</span></p>
+        <button id="viewSupporterBenefits" class="standardButton">View benefits</button>
+      </div>
       <div id="profileScrollSection">
         <h3 id="profileAboutHeader">About: </h3>
         <textarea id="profileAbout" maxlength="150" spellcheck="false"
@@ -420,6 +424,70 @@
       <button id="pinClose" class="standardButton white accountClose">Close</button>
     </div>
   </div>
+    <!-- Supporter Window -->
+    <div id="supporterPopup" class="popupHolder profilePopupBackground">
+      <div id="supporterWindow" class="uiWindow">
+        <div class="popup-title">
+          <h1 id="profileViewName">Support OpenGuessr<img id="supporterIconTitle" alt="supporter tag" src="/IMG/supporter_icon.png"></h1>
+        </div>
+        <p class="supporterBodyText">
+          <div class="supporterBox">
+            <p>The goal of my work is to provide a community-driven geography game that is open to everyone. However, as <a class="removeTextUnderline" href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en" target="_blank">Maps APIs</a>
+            are <span class="supporterTextHighlight">highly expensive</span>, this has become <span class="supporterTextHighlight">more challenging than ever.</span></p>
+          </div>
+          <div class="supporterBox supporterBoxFlex">
+            <div>
+              <p class="supporterBox supporterBoxHighlight">By becoming a supporter, you fund the game's development and help cover ongoing costs. Moreover, supporters unlock unique benefits:</p>
+            </div>
+            <div class="tierBox">
+              <p class="tierBoxTier">Tier 1</p>
+              <ul class="tierBenefits">
+                <li>Highlighted on leaderboards</li>
+                <li>Supporter Icon in profile</li>
+                <li>Special Supporter Pin</li>
+                <li>Tier 1 Supporter Badge</li>
+                <li>10% Supporter XP Boost</li>
+              </ul>
+              <button class="standardButton tierBuyButton">2.99 $</button>
+            </div>
+            <div class="tierBox">
+              <p class="tierBoxTier">Tier 2</p>
+              <ul class="tierBenefits">
+                <li>Highlighted on leaderboards</li>
+                <li>Supporter Icon in profile</li>
+                <li>Special Supporter Pin</li>
+                <li>Tier 2 Supporter Badge</li>
+                <li>15% Supporter XP Boost</li>
+              </ul>
+              <button class="standardButton tierBuyButton">6.99 $</button>
+            </div>
+            <div class="tierBox">
+              <p class="tierBoxTier">Tier 3</p>
+              <ul class="tierBenefits">
+                <li>Highlighted on leaderboards</li>
+                <li>Supporter Icon in profile</li>
+                <li>Special Supporter Pin</li>
+                <li>Tier 3 Supporter Badge</li>
+                <li>20% Supporter XP Boost</li>
+              </ul>
+              <button class="standardButton tierBuyButton">14.99 $</button>
+            </div>
+            <div class="tierBox">
+              <p class="tierBoxTier">Tier 4</p>
+              <ul class="tierBenefits">
+                <li>Highlighted on leaderboards</li>
+                <li>Supporter Icon in profile</li>
+                <li>Special Supporter Pin</li>
+                <li>Tier 4 Supporter Badge</li>
+                <li>25% Supporter XP Boost</li>
+              </ul>
+              <button class="standardButton tierBuyButton">custom $</button>
+            </div>
+          </div>
+        </p>
+        <button id="supporterClose" class="standardButton white accountClose">Close</button>
+      </div>
+    </div>
   <!-- remaining windows -->
   <div class="popupHolder">
     <!-- Help / How to Play Popup -->

@@ -90,6 +90,7 @@ function openClearedProfile() {
     document.getElementById("badgeArea").innerHTML = "";
     document.getElementById("selectedProfilePin").style.pointerEvents = "none";
     document.getElementById("supporterTag").style.display = "none";
+    document.getElementById("supporterArea").style.display = "none";
 }
 
 function viewProfile(name, experience, joined, yourProfile, profileData, supporterLevel) {
@@ -107,6 +108,7 @@ function viewProfile(name, experience, joined, yourProfile, profileData, support
         document.getElementById("badgeButton").style.display = "block";
         document.getElementById("badgeArea").style.pointerEvents = "auto";
         document.getElementById("selectedProfilePin").style.pointerEvents = "auto";
+        document.getElementById("supporterArea").style.display = "flex";
     }
 
     try {

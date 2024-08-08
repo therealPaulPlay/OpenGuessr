@@ -633,6 +633,26 @@ export async function supporterXpBoostAnimation(factor) {
     }, 2000);
 }   
 
+// Supporter benefits window ---------------------------------------------------------------------------------------------
+
+document.getElementById("viewSupporterBenefits").addEventListener("click", () => {
+    playSound("basic_button");
+    openSupporterWindow();
+});
+
+document.getElementById("supporterClose").addEventListener("click", () => {
+    playSound("basic_button");
+    closeSupporterWindow();
+});
+
+function openSupporterWindow() {
+    document.getElementById("supporterPopup").style.display = "flex";
+}
+
+function closeSupporterWindow() {
+    document.getElementById("supporterPopup").style.display = "none";
+}
+
 
 
 // In-App page browser -----------------------------------------------------------------------------------
