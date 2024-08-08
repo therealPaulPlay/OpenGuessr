@@ -636,17 +636,6 @@ input:focus {
   background-color: rgba(255, 255, 255, 0.2);
 }
 
-#usernameInput {
-  padding: 5px 15px;
-  font-size: 22px;
-  border-radius: 5px;
-  outline: none;
-  border: none;
-  user-select: none;
-  width: 18%;
-  max-height: 29px;
-}
-
 textarea {
   background-color: rgba(255, 255, 255, 0.05);
   outline: none !important;
@@ -2021,27 +2010,27 @@ map::selection {
   display: none;
 }
 
-#accountDeletePassword {
+.confirmPopupInput {
   border-radius: 5px;
-  font-size: 20px;
-  padding: 15px;
+  font-size: 22px;
+  padding: 5px 15px;
   font-family: Barlow;
   width: 40%;
-  margin-top: 20px;
+  margin-top: 15px;
 }
 
 .managementBox {
   border-radius: 5px;
   background-color: rgba(255, 255, 255, 0.05);
   display: flex;
-  justify-content: center;
+  justify-content: flex-start;
   max-height: 300px;
   overflow-x: hidden;
   overflow-y: auto;
   padding: 10px;
-  flex-direction: column;
   gap: 10px;
   margin-top: 10px;
+  align-items: center;
 }
 
 .statsLabel {
@@ -2070,7 +2059,6 @@ map::selection {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  margin-bottom: 10px;
   gap: 5px;
 }
 

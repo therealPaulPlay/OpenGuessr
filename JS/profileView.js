@@ -2,6 +2,7 @@ import { updateUsername } from "./userAPI";
 import { playSound } from "./soundManager.js";
 import { displayUserInfo, isAuthenticated } from "./accountLogic.js";
 import { errorPopup } from "./errorHandling.js";
+import { showConfirmPopup } from "./mainUI.js";
 // This is used to dynamically load the profile view
 
 //Profile Window ---------------------------------------------------------------------------------------------
@@ -65,11 +66,6 @@ function openClearedProfile() {
     document.getElementById("profilePopup").style.display = "flex";
     document.getElementById("profileViewName").textContent = "Loading...";
     document.getElementById("editUsername").style.display = "none";
-    document.getElementById("usernameInput").style.visibility = "hidden";
-    document.getElementById("confirmUsername").style.visibility = "hidden";
-    document.getElementById("usernameInput").style.display = "none";
-    document.getElementById("confirmUsername").style.display = "none";
-    document.getElementById("usernameInput").value = "";
     document.getElementById("pinSelector").style.display = "none";
     document.getElementById("accountManagementHeader").style.display = "none";
     document.getElementById("accountManagementArea").style.display = "none";
@@ -105,8 +101,6 @@ function viewProfile(name, experience, joined, yourProfile, profileData, support
         document.getElementById("pinSelector").style.display = "flex";
         document.getElementById("accountManagementHeader").style.display = "block";
         document.getElementById("accountManagementArea").style.display = "flex";
-        document.getElementById("usernameInput").style.display = "inline";
-        document.getElementById("confirmUsername").style.display = "inline";
         document.getElementById("profileAbout").style.pointerEvents = "auto";
         document.getElementById("profileAbout").style.display = "block";
         document.getElementById("profileAboutHeader").style.display = "block";
@@ -189,29 +183,10 @@ export function closeProfile() {
     }
 }
 
-function toggleUsernameView() {
-    if (document.getElementById("usernameInput").style.visibility == "hidden") {
-        document.getElementById("usernameInput").style.visibility = "visible";
-        document.getElementById("confirmUsername").style.visibility = "visible";
-    }
-    else {
-        document.getElementById("usernameInput").style.visibility = "hidden";
-        document.getElementById("confirmUsername").style.visibility = "hidden";
-        document.getElementById("usernameInput").value = "";
-    }
-}
-
 // Username Update -------------------------------------------------------------------------------------------
 
-document.getElementById("usernameInput").style.visibility = "hidden";
-document.getElementById("confirmUsername").style.visibility = "hidden";
-
 document.getElementById("editUsername").addEventListener("click", () => {
-    toggleUsernameView();
-    playSound("basic_button");
-});
-document.getElementById("confirmUsername").addEventListener("click", () => {
-    updateProfileUsername();
+    showConfirmPopup("Update username", "Input your new name into the box and click confirm.", updateProfileUsername, false, true);
     playSound("basic_button");
 });
 
@@ -219,7 +194,6 @@ let newUsername;
 
 async function updateProfileUsername() {
     newUsername = document.getElementById("usernameInput").value;
-    toggleUsernameView();
     if (newUsername != "") {
         await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername, "index").then((isOk) => {
             if (isOk) {

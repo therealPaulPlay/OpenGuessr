@@ -189,7 +189,8 @@
       <h1 id="confirmTitle" class="popup-title">
         </h2>
         <div id="confirmDescription" class="popup-description">This is the default warning.</div>
-        <input id="accountDeletePassword" type="password" placeholder="Password">
+        <input id="accountDeletePassword" class="confirmPopupInput" type="password" placeholder="Password">
+        <input type="text" id="usernameInput" class="confirmPopupInput" placeholder="New username" maxlength="50"></input>
         <div class="buttonBoxRight">
           <button id="confirmCancel" class="standardButton white">Cancel</button>
           <button id="confirmProceed" class="standardButton">Confirm</button>
@@ -216,13 +217,6 @@
         </div>
       </div>
       <div id="profileScrollSection">
-        <div class="editNameSection">
-          <button class="standardButton white" id="editUsername">
-            <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
-            Name
-          </button> <input type="text" id="usernameInput" placeholder="New username" maxlength="50"></input>
-          <button class="standardButton" id="confirmUsername">Confirm</button>
-        </div>
         <h3 id="profileAboutHeader">About: </h3>
         <textarea id="profileAbout" maxlength="150" spellcheck="false"
           placeholder="Share a few facts about yourself with others..."></textarea>
@@ -263,6 +257,11 @@
         </div>
         <h3 id="accountManagementHeader">Account Management: </h3>
         <div id="accountManagementArea" class="managementBox">
+          <div class="editNameSection">
+            <button class="standardButton white" id="editUsername">
+              <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
+              Edit name</button> 
+          </div>
           <button id="accountDeleteButton" class="standardButton">Delete Account</button>
         </div>
         <br>
