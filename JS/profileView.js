@@ -15,9 +15,11 @@ export function updateLoadedProfileData(newData) {
 }
 
 export let supporterLevel = 0;
+export let supportedAmount = 0;
 
-export function setSupporterLevel(newSupporterLevel) {
+export function setSupporterLevel(newSupporterLevel, newSupporterAmount) {
     supporterLevel = newSupporterLevel;
+    supportedAmount = newSupporterAmount;
 }
 
 export async function loadProfileFromId(id, you, view) {
@@ -37,9 +39,13 @@ export async function loadProfileFromId(id, you, view) {
         if (response.ok) {
             const data = await response.json();
 
-            if (you && data.profileData) {
-                yourLoadedProfileData = data.profileData;
-                supporterLevel = data.supporterLevel || 0;
+            if (you) {
+                if (data.profileData) {
+                    yourLoadedProfileData = data.profileData;
+                }
+
+                supporterLevel = data.supporterLevel;
+                supportedAmount = data.supportedAmount;
             }
 
             // load data only or show profile

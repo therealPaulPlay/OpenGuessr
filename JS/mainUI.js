@@ -6,7 +6,7 @@ import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCount
 import { playSound } from "./soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners } from "./categoryMenu.js";
 import { loadCompetition } from "./competitionLogic.js";
-import { loadProfileFromId, supporterLevel } from "./profileView.js";
+import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -646,6 +646,7 @@ document.getElementById("supporterClose").addEventListener("click", () => {
 });
 
 function openSupporterWindow() {
+    updateTierPrices();
     document.getElementById("supporterPopup").style.display = "flex";
     document.getElementById("supporterTierScrollBox").scrollTop = "0";
 }
@@ -662,6 +663,27 @@ export function setSupporterPitch() {
     } else {
         document.getElementById("supporterPitch").textContent = "Thank you.";
         document.getElementById("supporterTextSecondary").textContent = "Your contribution keeps the game free.";
+    }
+}
+
+function updateTierPrices() {
+    const basePrices = [2.99, 6.99, 14.99, 24.99];
+
+    for (let i = 1; i <= 4; i++) {
+        const priceButton = document.getElementById("tierPrice" + i);
+
+        if (supporterLevel >= i) {
+            priceButton.classList.add("tierBuyButtonUnlocked");
+            priceButton.textContent = "Unlocked";
+        } else {
+            priceButton.classList.remove("tierBuyButtonUnlocked");
+            priceButton.textContent = basePrices[i - 1] + " $";
+
+            if (supportedAmount > 0) {
+                priceButton.innerHTML = `<span class="baseTierPrice">${priceButton.textContent = basePrices[i - 1]} $</span>${Math.max(basePrices[i - 1] - supportedAmount - 0.01, 0)} $`;
+            }
+        }
+
     }
 }
 

@@ -928,6 +928,17 @@ textarea {
   margin-bottom: 15px;
 }
 
+.baseTierPrice {
+ margin-right: 5px;
+ color: rgba(255, 255, 255, 0.5);
+ text-decoration: line-through;
+}
+
+.tierBuyButtonUnlocked {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
 #profileNameBox {
   padding: 5px;
   margin-left: 5px;
@@ -2673,11 +2684,6 @@ map::selection {
 .discordButton {
   background-color: #8c2aed;
   color: white;
-}
-
-.discordButton:hover {
-  box-shadow: 0 0 25px rgba(130, 87, 232, 0.7);
-  filter: brightness(100%);
 }
 
 #settingsButton {
