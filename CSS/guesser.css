@@ -124,7 +124,7 @@ h3 {
   bottom: 0;
   width: 100%;
   z-index: 1;
-  height: 200px;
+  height: 100px;
   background-image: linear-gradient(0.50turn, transparent, rgb(255, 255, 255));
   opacity: 30%;
   pointer-events: none;
