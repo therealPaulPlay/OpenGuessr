@@ -1850,6 +1850,11 @@ textarea {
   cursor: crosshair !important;
 }
 
+.gm-style .gm-style-iw {
+  font-size: 22px;
+  text-align: center;
+}
+
 #map:hover {
   opacity: 100%;
 }
@@ -1875,31 +1880,6 @@ map::selection {
   opacity: 0.5;
   margin-top: 5px;
   margin-right: 5px;
-}
-
-.mapAttribution {
-  position: absolute;
-  bottom: 0;
-  right: 10px;
-  color: black;
-  padding-right: 10px;
-  padding-left: 10px;
-  font: 400 12px Roboto, Arial, sans-serif;
-  z-index: 10;
-  background-color: rgb(245, 245, 245);
-  opacity: 0.7;
-  border-bottom-right-radius: 10px;
-  max-height: 2000px;
-  transition: max-height 250ms ease;
-  overflow: hidden;
-}
-
-#mapAttributionLogo {
-  background-color: transparent;
-  right: auto;
-  left: 5px;
-  opacity: 1;
-  height: 25px;
 }
 
 #mapModeIndicator {
@@ -2179,7 +2159,7 @@ map::selection {
   max-height: 92px;
   height: 90px;
   padding: 0;
-  z-index: 11;
+  z-index: 10;
 }
 
 .bottomFooterAdText {
@@ -2371,7 +2351,7 @@ map::selection {
   text-align: center;
   visibility: hidden;
   opacity: 0;
-  transition: all 500ms ease;
+  pointer-events: none;
   position: fixed;
   width: 100%;
   height: 100%;
@@ -2380,6 +2360,7 @@ map::selection {
   display: flex;
   justify-content: center;
   align-items: flex-end;
+  transition: opacity 250ms ease-out;
 }
 
 /* This is for the result screen */
@@ -2423,16 +2404,6 @@ map::selection {
   color: #CCC;
   margin-top: 10px;
   font-size: 25px;
-}
-
-#resultMap {
-  position: fixed;
-  top: 0;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  z-index: 10;
-  background: #e8e4dc;
 }
 
 #nextRound {
@@ -3001,7 +2972,7 @@ input[type="checkbox"]:focus {
   width: 100%;
 }
 
-#mapHolder {
+.mapHolder {
   position: fixed;
   display: flex;
   right: 0;
@@ -3241,7 +3212,7 @@ all and (max-width: 1200px) {
 /* big screens in portrait, like vertical monitors */
 @media all and (orientation: portrait) {
 
-  #mapHolder {
+  .mapHolder {
     height: 50%;
     width: calc(100% - 20px);
   }
@@ -3272,11 +3243,37 @@ all and (max-width: 1200px) {
     padding-bottom: 40px;
   }
 
-  #mapHolder {
+  .mapHolder {
     bottom: 145px;
   }
 
   #countryGuesserSelector {
     bottom: 155px;
   }
+}
+
+/* important map change properties */
+.mapHolderToResult {
+  bottom: 0;
+  margin-bottom: 0;
+  padding-inline: 0;
+  z-index: 11;
+  width: 100%;
+  height: 100%;
+  transition: none;
+}
+
+.mapHolderToResult #mapModeIndicator {
+  display: none !important;
+}
+
+.mapHolderToResult #floatingMapButton {
+  display: none !important;
+}
+
+.mapFullOpacity {
+  opacity: 100% !important;
+  z-index: 10 !important;
+  visibility: visible !important;
+  border-radius: 0 !important;
 }
