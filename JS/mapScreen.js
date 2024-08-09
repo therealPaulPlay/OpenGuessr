@@ -242,7 +242,7 @@ function showDescriptionWindow(name, author, desc, isAuthor, authorId) {
     }
 
     document.getElementById("mapLink").addEventListener("click", () => {
-        navigator.clipboard.writeText(window.location.origin + "/maps.html?map=" + title.split(" ").join("_"))
+        navigator.clipboard.writeText(window.location.origin + "/maps.html?map=" + name.split(" ").join("_"))
             .then(function () {
                 document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
                 setTimeout(() => {
