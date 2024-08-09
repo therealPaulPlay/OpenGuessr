@@ -1,4 +1,4 @@
-import { closePopup } from "./errorHandling.js";
+import { closePopup, errorPopup } from "./errorHandling.js";
 import { reloadIframe } from "./main.js";
 import { setUserXP, uiSetUserXP, isAuthenticated, checkAuthenticationStatus } from "./accountLogic.js";
 import { toggleMultiplayerSelector } from "./multiplayer.js";
@@ -633,7 +633,7 @@ export async function supporterXpBoostAnimation(factor) {
     }, 2000);
 }   
 
-// Supporter benefits window ---------------------------------------------------------------------------------------------
+// Supporter benefits window and purchases -----------------------------------------------------------------------------------------------------------------------
 
 document.getElementById("viewSupporterBenefits").addEventListener("click", () => {
     playSound("basic_button");
@@ -687,6 +687,55 @@ function updateTierPrices() {
     }
 }
 
+// Initialize Stripe
+const stripeTestPubKey = "pk_test_51Ple5q1DTHjmMID9JDDStdV8VeFdfqVZMpGKFMaCrFD6WioMuoAuWzl9Odz25aJvw3L4tHVtzLrdNUFG34gH5pN300ZhIcpIID";
+const stripeLivePubKey = 'pk_live_51Ple5q1DTHjmMID9LrSuKNuwlN0Ls0issp2PTRO9QWGPdmKpLspMUXvKZQnXtHT5u0SxYZDBVSDsadzy3lAq5T2j00X9uGEJdr';
+const stripe = Stripe(stripeTestPubKey);
+
+// Function to handle buy button click
+async function handleBuyClick(productId) {
+  try {
+    // Fetch the current user's ID (you need to implement this based on your authentication system)
+    const id = localStorage.getItem("id");
+
+    // Call the server to create a Checkout Session
+    const response = await fetch('https://accounts.openguessr.com/stripe/create-checkout-session', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + localStorage.getItem("bearer")
+      },
+      body: JSON.stringify({ productId, id })
+    });
+
+    const { sessionId } = await response.json();
+
+    // Redirect to Stripe Checkout
+    const result = await stripe.redirectToCheckout({
+      sessionId: sessionId
+    });
+
+    if (result.error) {
+      console.error('Error occured during request to stripe:', result.error.message);
+      errorPopup("Stripe request failed", "The server returned an error from your purchase request.", error, false, false);
+    }
+  } catch (error) {
+    console.error('Error occured when trying to send request to stripe:', error);
+    errorPopup("Error sending stripe request", "Your purchase request couldn't be sent.", error, false, false);
+  }
+}
+
+// Add event listeners to buy buttons
+document.querySelectorAll('.tierBuyButton').forEach((button) => {
+    try {
+        button.addEventListener('click', () => {
+            const productId = Number(button.id.replace(/[^0-9]/g, ''));
+            handleBuyClick(productId);
+          });
+    } catch (error) {
+        console.error("Failed to attach event listener to tierBuyButton: " + error);
+    }
+});
 
 // In-App page browser -----------------------------------------------------------------------------------
 

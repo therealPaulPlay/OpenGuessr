@@ -97,6 +97,7 @@ function openClearedProfile() {
     document.getElementById("selectedProfilePin").style.pointerEvents = "none";
     document.getElementById("supporterTag").style.display = "none";
     document.getElementById("supporterArea").style.display = "none";
+    document.getElementById("supporterTagText").textContent = "Supporter";
     setSupporterPitch();
 }
 
@@ -162,6 +163,7 @@ function viewProfile(name, experience, joined, yourProfile, profileData, support
 
         if (supporterLevel && supporterLevel > 0) {
             document.getElementById("supporterTag").style.display = "flex";
+            document.getElementById("supporterTagText").textContent = "Tier " + supporterLevel + " Supporter";
         }
 
     } catch (e) {

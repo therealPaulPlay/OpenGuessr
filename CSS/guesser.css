@@ -1014,7 +1014,8 @@ textarea {
   text-overflow: ellipsis;
   max-width: 200px;
   transition: max-width 250ms ease-in-out;
-  width: 65px;
+  width: 105px;
+  text-wrap: nowrap;
 }
 
 .supporterTextHidden {
