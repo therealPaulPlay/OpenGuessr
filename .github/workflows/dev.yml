@@ -11,16 +11,39 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
-    
-      - name: install ssh keys
+        uses: actions/checkout@v4
+
+      - name: Install Node.js and npm
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.11.1'
+  
+      - name: Install Dependencies
+        run: npm install
+  
+      - name: Build
+        run: npm run build
+        
+      - name: Install SSH and rsync
         run: |
+          sudo apt-get update
+          sudo apt-get install -y rsync
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_DEV_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_DEV_HOST }} > ~/.ssh/known_hosts
 
-      - name: connect & pull changes
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_DEV_HOST }} "cd ${{ secrets.DEV_WORK_DIR }} && rm -rf build && git checkout ${{ secrets.DEV_BRANCH }} && git reset --hard origin/${{ secrets.DEV_BRANCH }} && git pull && exit"
+      - name: Create new_build folder if it doesn't exist
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_DEV_HOST }} "mkdir -p ${{ secrets.DEV_WORK_DIR }}/new_build"
 
-      - name: cleanup ssh
+      - name: Transfer New Build to Server using rsync
+        run: |
+          rsync -avz --delete ./build/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_DEV_HOST }}:${{ secrets.DEV_WORK_DIR }}/new_build/
+
+      - name: Switch to New Build
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_DEV_HOST }} "rm -rf ${{ secrets.DEV_WORK_DIR }}/build"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_DEV_HOST }} "mv ${{ secrets.DEV_WORK_DIR }}/new_build ${{ secrets.DEV_WORK_DIR }}/build"
+
+      - name: Cleanup SSH
         run: rm -rf ~/.ssh
