@@ -7,14 +7,14 @@ on:
 
 jobs:
   deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Install Node.js and npm
-        uses: actions/setup-node@v2
+        uses: actions/setup-node@v4
         with:
           node-version: '20.11.1'
   
@@ -30,8 +30,18 @@ jobs:
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
-      - name: connect & pull changes
-        run: ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "cd ${{ secrets.WORK_DIR }} && rm -rf build && git checkout ${{ secrets.MAIN_BRANCH }} && git reset --hard origin/main && git pull && exit"
+      - name: Prepare Server for New Build
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "rm -rf ${{ secrets.WORK_DIR }}/new_build"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir ${{ secrets.WORK_DIR }}/new_build"
+
+      - name: Transfer New Build to Server
+        run: scp -r ./build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/new_build/
+
+      - name: Switch to New Build
+        run: |
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "rm -rf ${{ secrets.WORK_DIR }}/build"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mv ${{ secrets.WORK_DIR }}/new_build ${{ secrets.WORK_DIR }}/build"
 
       - name: cleanup ssh
         run: rm -rf ~/.ssh
