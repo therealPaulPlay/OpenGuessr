@@ -24,24 +24,26 @@ jobs:
       - name: Build
         run: npm run build
     
-      - name: install ssh keys
+      - name: Install SSH and rsync
         run: |
+          sudo apt-get update
+          sudo apt-get install -y rsync
           install -m 600 -D /dev/null ~/.ssh/id_rsa
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
           ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
 
-      - name: Prepare Server for New Build
+      - name: Create new_build folder if it doesn't exist
         run: |
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "rm -rf ${{ secrets.WORK_DIR }}/new_build"
-          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir ${{ secrets.WORK_DIR }}/new_build"
+          ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mkdir -p ${{ secrets.WORK_DIR }}/new_build"
 
-      - name: Transfer New Build to Server
-        run: scp -r ./build/* ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/new_build/
+      - name: Transfer New Build to Server using rsync
+        run: |
+          rsync -avz --delete ./build/ ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }}:${{ secrets.WORK_DIR }}/new_build/
 
       - name: Switch to New Build
         run: |
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "rm -rf ${{ secrets.WORK_DIR }}/build"
           ssh ${{ secrets.SSH_USER }}@${{ secrets.SSH_HOST }} "mv ${{ secrets.WORK_DIR }}/new_build ${{ secrets.WORK_DIR }}/build"
 
-      - name: cleanup ssh
+      - name: Cleanup SSH
         run: rm -rf ~/.ssh
