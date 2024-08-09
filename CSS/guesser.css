@@ -1883,6 +1883,7 @@ textarea {
   background: linear-gradient(rgba(255, 255, 255, 0), hsla(232.5, 10.7%, 29.4%, 0.85));
   border-radius: 0 0 10px 10px;
   z-index: 13;
+  pointer-events: none;
 }
 
 .expandedMobile #extendedNavbarGradient {
