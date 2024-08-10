@@ -700,6 +700,10 @@ textarea {
   opacity: 0.6;
 }
 
+.supporterLegalText {
+  opacity: 0.6;
+}
+
 #profileScrollSection {
   max-height: calc(100vh - 400px);
   overflow-x: hidden;
@@ -1143,6 +1147,7 @@ textarea {
 
 #profileWindow {
   max-width: 800px;
+  width: 50%;
 }
 
 .edit-icon {
@@ -2191,6 +2196,7 @@ map::selection {
   gap: 10px;
   margin-top: 10px;
   align-items: center;
+  flex-wrap: wrap;
 }
 
 .statsLabel {
@@ -3378,6 +3384,10 @@ all and (max-width: 1200px) {
 
   #revealCompass {
     opacity: 0.8;
+  }
+
+  #supporterTextSecondary {
+    display: none !important;
   }
 }
 
