@@ -565,12 +565,13 @@ document.getElementById("dailyCompetition").addEventListener("click", () => {
 
 let confirmPopup = document.getElementById("confirmPopup");
 
-export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange) {
+export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, supporterThanks) {
     confirmPopup.style.display = "flex";
     document.getElementById("confirmTitle").textContent = title;
     document.getElementById("confirmDescription").textContent = text;
     document.getElementById("accountDeletePassword").style.display = "none";
     document.getElementById("usernameInput").style.display = "none";
+    document.getElementById("confirmProceed").style.display = "block";
 
     if (accountDelete) {
         document.getElementById("accountDeletePassword").style.display = "block";
@@ -580,6 +581,10 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete, na
     if (nameChange) {
         document.getElementById("usernameInput").style.display = "block";
         document.getElementById("usernameInput").value = "";
+    }
+
+    if (supporterThanks) {
+        document.getElementById("confirmProceed").style.display = "none";
     }
 
     // Remove all event listeners by cloning the element
@@ -680,7 +685,7 @@ function updateTierPrices() {
             priceButton.textContent = basePrices[i - 1] + " $";
 
             if (supportedAmount > 0) {
-                priceButton.innerHTML = `<span class="baseTierPrice">${priceButton.textContent = basePrices[i - 1]} $</span>${Math.max(basePrices[i - 1] - supportedAmount - 0.01, 0)} $`;
+                priceButton.innerHTML = `<span class="baseTierPrice">${priceButton.textContent = basePrices[i - 1]} $</span>${Math.round(Math.max(basePrices[i - 1] - supportedAmount - 0.01, 0) * 100) / 100} $`;
             }
         }
 
@@ -736,6 +741,19 @@ document.querySelectorAll('.tierBuyButton').forEach((button) => {
         console.error("Failed to attach event listener to tierBuyButton: " + error);
     }
 });
+
+// Thank you window after purchase for stripe
+let urlParams = new URLSearchParams(window.location.search);
+
+let stripeSessionFinished;
+
+try {
+    stripeSessionFinished = urlParams.get("session_id");
+    if (stripeSessionFinished) {
+        showConfirmPopup("Thank you!", "Thank you for supporting OpenGuessr - you are now a supporter! Supporters like you keep the game open for everyone.", () => {}, false, false, true);
+        history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
+    }
+} catch { }
 
 // In-App page browser -----------------------------------------------------------------------------------
 
