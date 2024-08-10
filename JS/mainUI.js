@@ -695,7 +695,7 @@ function updateTierPrices() {
 // Initialize Stripe
 const stripeTestPubKey = "pk_test_51Ple5q1DTHjmMID9JDDStdV8VeFdfqVZMpGKFMaCrFD6WioMuoAuWzl9Odz25aJvw3L4tHVtzLrdNUFG34gH5pN300ZhIcpIID";
 const stripeLivePubKey = 'pk_live_51Ple5q1DTHjmMID9LrSuKNuwlN0Ls0issp2PTRO9QWGPdmKpLspMUXvKZQnXtHT5u0SxYZDBVSDsadzy3lAq5T2j00X9uGEJdr';
-const stripe = Stripe(stripeTestPubKey);
+const stripe = Stripe(stripeLivePubKey);
 
 // Function to handle buy button click
 async function handleBuyClick(productId) {
