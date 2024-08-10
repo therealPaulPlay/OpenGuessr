@@ -240,7 +240,7 @@ function hostTeamAmount(changeAmount, sound) {
 
 function setJoinCounter(playerAmount) {
     document.getElementById("joinCounter").textContent = "Players joined: " + (playerAmount + 1);
-    if (multiplayerHost.textContent == "Start" && playerAmount < (teamAmount * 2 - 1)) {
+    if (multiplayerHost.textContent == "Start" && ((playerAmount + 1) < teamAmount || playerAmount == 0)) {
         multiplayerHost.style.opacity = "0.5";
         multiplayerHost.style.pointerEvents = "none";
     } else {

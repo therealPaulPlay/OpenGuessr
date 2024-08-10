@@ -2,6 +2,7 @@ import { updateUsername } from "./userAPI";
 import { playSound } from "./soundManager.js";
 import { displayUserInfo, isAuthenticated } from "./accountLogic.js";
 import { errorPopup } from "./errorHandling.js";
+import { setSupporterPitch, showConfirmPopup } from "./mainUI.js";
 // This is used to dynamically load the profile view
 
 //Profile Window ---------------------------------------------------------------------------------------------
@@ -14,9 +15,11 @@ export function updateLoadedProfileData(newData) {
 }
 
 export let supporterLevel = 0;
+export let supportedAmount = 0;
 
-export function setSupporterLevel(newSupporterLevel) {
+export function setSupporterLevel(newSupporterLevel, newSupporterAmount) {
     supporterLevel = newSupporterLevel;
+    supportedAmount = newSupporterAmount;
 }
 
 export async function loadProfileFromId(id, you, view) {
@@ -36,9 +39,13 @@ export async function loadProfileFromId(id, you, view) {
         if (response.ok) {
             const data = await response.json();
 
-            if (you && data.profileData) {
-                yourLoadedProfileData = data.profileData;
-                supporterLevel = data.supporterLevel || 0;
+            if (you) {
+                if (data.profileData) {
+                    yourLoadedProfileData = data.profileData;
+                }
+
+                supporterLevel = data.supporterLevel;
+                supportedAmount = data.supportedAmount;
             }
 
             // load data only or show profile
@@ -65,11 +72,6 @@ function openClearedProfile() {
     document.getElementById("profilePopup").style.display = "flex";
     document.getElementById("profileViewName").textContent = "Loading...";
     document.getElementById("editUsername").style.display = "none";
-    document.getElementById("usernameInput").style.visibility = "hidden";
-    document.getElementById("confirmUsername").style.visibility = "hidden";
-    document.getElementById("usernameInput").style.display = "none";
-    document.getElementById("confirmUsername").style.display = "none";
-    document.getElementById("usernameInput").value = "";
     document.getElementById("pinSelector").style.display = "none";
     document.getElementById("accountManagementHeader").style.display = "none";
     document.getElementById("accountManagementArea").style.display = "none";
@@ -94,6 +96,9 @@ function openClearedProfile() {
     document.getElementById("badgeArea").innerHTML = "";
     document.getElementById("selectedProfilePin").style.pointerEvents = "none";
     document.getElementById("supporterTag").style.display = "none";
+    document.getElementById("supporterArea").style.display = "none";
+    document.getElementById("supporterTagText").textContent = "Supporter";
+    setSupporterPitch();
 }
 
 function viewProfile(name, experience, joined, yourProfile, profileData, supporterLevel) {
@@ -105,14 +110,13 @@ function viewProfile(name, experience, joined, yourProfile, profileData, support
         document.getElementById("pinSelector").style.display = "flex";
         document.getElementById("accountManagementHeader").style.display = "block";
         document.getElementById("accountManagementArea").style.display = "flex";
-        document.getElementById("usernameInput").style.display = "inline";
-        document.getElementById("confirmUsername").style.display = "inline";
         document.getElementById("profileAbout").style.pointerEvents = "auto";
         document.getElementById("profileAbout").style.display = "block";
         document.getElementById("profileAboutHeader").style.display = "block";
         document.getElementById("badgeButton").style.display = "block";
         document.getElementById("badgeArea").style.pointerEvents = "auto";
         document.getElementById("selectedProfilePin").style.pointerEvents = "auto";
+        document.getElementById("supporterArea").style.display = "flex";
     }
 
     try {
@@ -159,6 +163,7 @@ function viewProfile(name, experience, joined, yourProfile, profileData, support
 
         if (supporterLevel && supporterLevel > 0) {
             document.getElementById("supporterTag").style.display = "flex";
+            document.getElementById("supporterTagText").textContent = "Tier " + supporterLevel + " Supporter";
         }
 
     } catch (e) {
@@ -189,29 +194,10 @@ export function closeProfile() {
     }
 }
 
-function toggleUsernameView() {
-    if (document.getElementById("usernameInput").style.visibility == "hidden") {
-        document.getElementById("usernameInput").style.visibility = "visible";
-        document.getElementById("confirmUsername").style.visibility = "visible";
-    }
-    else {
-        document.getElementById("usernameInput").style.visibility = "hidden";
-        document.getElementById("confirmUsername").style.visibility = "hidden";
-        document.getElementById("usernameInput").value = "";
-    }
-}
-
 // Username Update -------------------------------------------------------------------------------------------
 
-document.getElementById("usernameInput").style.visibility = "hidden";
-document.getElementById("confirmUsername").style.visibility = "hidden";
-
 document.getElementById("editUsername").addEventListener("click", () => {
-    toggleUsernameView();
-    playSound("basic_button");
-});
-document.getElementById("confirmUsername").addEventListener("click", () => {
-    updateProfileUsername();
+    showConfirmPopup("Update username", "Input your new name into the box and click confirm.", updateProfileUsername, false, true);
     playSound("basic_button");
 });
 
@@ -219,7 +205,6 @@ let newUsername;
 
 async function updateProfileUsername() {
     newUsername = document.getElementById("usernameInput").value;
-    toggleUsernameView();
     if (newUsername != "") {
         await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername, "index").then((isOk) => {
             if (isOk) {
