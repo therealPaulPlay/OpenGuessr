@@ -221,7 +221,7 @@ async function checkSigninStatusAndLoadUserInfo() {
     await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((user) => {
       updateLoadedProfileData(user.profile_data);
       changeUItoSignedIn(user.supporter_level); // display user info is already being called in here
-      setSupporterLevel(user.supporter_level || 0);
+      setSupporterLevel(user.supporter_level, user.supported_amount);
     });
   }
   else {

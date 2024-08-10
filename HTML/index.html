@@ -27,6 +27,9 @@
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
     data-site-id="664453baf2089a039dc08edb" data-mode="scan" async></script>
 
+  <!-- stripe -->
+  <script src="https://js.stripe.com/v3/" defer></script>
+
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
   <script type="module" src="main.js?v=1.0.9" defer></script>
 
@@ -189,9 +192,10 @@
       <h1 id="confirmTitle" class="popup-title">
         </h2>
         <div id="confirmDescription" class="popup-description">This is the default warning.</div>
-        <input id="accountDeletePassword" type="password" placeholder="Password">
+        <input id="accountDeletePassword" class="confirmPopupInput" type="password" placeholder="Password">
+        <input type="text" id="usernameInput" class="confirmPopupInput" placeholder="New username" maxlength="50"></input>
         <div class="buttonBoxRight">
-          <button id="confirmCancel" class="standardButton white">Cancel</button>
+          <button id="confirmCancel" class="standardButton white">Close</button>
           <button id="confirmProceed" class="standardButton">Confirm</button>
         </div>
     </div>
@@ -215,14 +219,13 @@
           </div>
         </div>
       </div>
+      <div id="supporterArea" class="supporterArea">
+       <div class="supporterPitchText">
+        <p id="supporterPitch">Become a supporter (default).</p><span id="supporterTextSecondary"> Supporters keep the game free (default)</span>
+       </div>
+        <button id="viewSupporterBenefits" class="standardButton">View benefits</button>
+      </div>
       <div id="profileScrollSection">
-        <div class="editNameSection">
-          <button class="standardButton white" id="editUsername">
-            <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
-            Name
-          </button> <input type="text" id="usernameInput" placeholder="New username" maxlength="50"></input>
-          <button class="standardButton" id="confirmUsername">Confirm</button>
-        </div>
         <h3 id="profileAboutHeader">About: </h3>
         <textarea id="profileAbout" maxlength="150" spellcheck="false"
           placeholder="Share a few facts about yourself with others..."></textarea>
@@ -263,6 +266,11 @@
         </div>
         <h3 id="accountManagementHeader">Account Management: </h3>
         <div id="accountManagementArea" class="managementBox">
+          <div class="editNameSection">
+            <button class="standardButton white" id="editUsername">
+              <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
+              Edit name</button> 
+          </div>
           <button id="accountDeleteButton" class="standardButton">Delete Account</button>
         </div>
         <br>
@@ -421,6 +429,65 @@
       <button id="pinClose" class="standardButton white accountClose">Close</button>
     </div>
   </div>
+    <!-- Supporter Window -->
+    <div id="supporterPopup" class="popupHolder profilePopupBackground">
+      <div id="supporterWindow" class="uiWindow">
+        <div class="popup-title">
+          <h1 id="profileViewName">Support OpenGuessr<img id="supporterIconTitle" alt="supporter tag" src="/IMG/supporter_icon.png"></h1>
+        </div>
+        <p class="supporterBodyText">
+          <div class="supporterBox">
+            <p>The goal of my work is to provide a community-driven geography game that is open to everyone. However, as <a class="removeTextUnderline" href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en" target="_blank">Maps APIs</a>
+            are <span class="supporterTextHighlight">highly expensive</span>, this has become <span class="supporterTextHighlight">more challenging than ever.</span></p>
+          </div>
+          <div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
+            <div class="supporterBox supporterBoxHighlight">
+              <img alt="info icon" class="infoIcon" src="/IMG/info_icon.png">
+              <p>By becoming a supporter, you help cover ongoing costs and unlock unique benefits. These <a href="/legal.html" target="_blank">terms and conditions</a> apply.</p>
+            </div>
+            <div class="tierBox">
+              <p class="tierBoxTier">Tier 1</p>
+              <ul class="tierBenefits">
+                <li>Highlighted on leaderboards</li>
+                <li>Supporter Icon in profile</li>
+                <li>Special Supporter Pin</li>
+                <li>Tier 1 Supporter Badge</li>
+                <li>10% Supporter XP Boost</li>
+              </ul>
+              <button id="tierPrice1" class="standardButton tierBuyButton">2.99 $ (Default)</button>
+            </div>
+            <div class="tierBox">
+              <p class="tierBoxTier">Tier 2</p>
+              <ul class="tierBenefits">
+                <li>All previous benefits</li>
+                <li>Tier 2 Supporter Badge</li>
+                <li>15% Supporter XP Boost</li>
+              </ul>
+              <button id="tierPrice2" class="standardButton tierBuyButton">6.99 $ (Default)</button>
+            </div>
+            <div class="tierBox">
+              <p class="tierBoxTier">Tier 3</p>
+              <ul class="tierBenefits">
+                <li>All previous benefits</li>
+                <li>Tier 3 Supporter Badge</li>
+                <li>20% Supporter XP Boost</li>
+              </ul>
+              <button id="tierPrice3" class="standardButton tierBuyButton">14.99 $ (Default)</button>
+            </div>
+            <div class="tierBox">
+              <p class="tierBoxTier">Tier 4</p>
+              <ul class="tierBenefits">
+                <li>All previous benefits</li>
+                <li>Tier 4 Supporter Badge</li>
+                <li>25% Supporter XP Boost</li>
+              </ul>
+              <button id="tierPrice4" class="standardButton tierBuyButton">24.99 $ (Default)</button>
+            </div>
+          </div>
+        </p>
+        <button id="supporterClose" class="standardButton white accountClose">Close</button>
+      </div>
+    </div>
   <!-- remaining windows -->
   <div class="popupHolder">
     <!-- Help / How to Play Popup -->
