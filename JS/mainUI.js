@@ -1,5 +1,5 @@
 import { closePopup, errorPopup } from "./errorHandling.js";
-import { reloadIframe } from "./main.js";
+import { reloadIframe, loadAndInitializeLibrary } from "./main.js";
 import { setUserXP, uiSetUserXP, isAuthenticated, checkAuthenticationStatus } from "./accountLogic.js";
 import { toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
@@ -593,7 +593,7 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete, na
     button.parentNode.replaceChild(newButton, button);
     newButton.addEventListener("click", () => {
         playSound("basic_button");
-        
+
         try {
             executeFunction();
             confirmPopup.style.display = "none";
@@ -627,7 +627,7 @@ export async function supporterXpBoostAnimation(factor) {
     factor = Math.floor(factor * 100);
     factor += "%";
 
-   supporterBoostText.textContent = factor + " Supporter Boost";
+    supporterBoostText.textContent = factor + " Supporter Boost";
 
     supporterBoost.style.opacity = "1";
     supporterBoostText.classList.add("supporterBoostTextMove");
@@ -636,7 +636,7 @@ export async function supporterXpBoostAnimation(factor) {
         supporterBoost.style.opacity = "0";
         supporterBoostText.classList.remove("supporterBoostTextMove");
     }, 2000);
-}   
+}
 
 // Supporter benefits window and purchases -----------------------------------------------------------------------------------------------------------------------
 
@@ -695,39 +695,55 @@ function updateTierPrices() {
 // Initialize Stripe
 const stripeTestPubKey = "pk_test_51Ple5q1DTHjmMID9JDDStdV8VeFdfqVZMpGKFMaCrFD6WioMuoAuWzl9Odz25aJvw3L4tHVtzLrdNUFG34gH5pN300ZhIcpIID";
 const stripeLivePubKey = 'pk_live_51Ple5q1DTHjmMID9LrSuKNuwlN0Ls0issp2PTRO9QWGPdmKpLspMUXvKZQnXtHT5u0SxYZDBVSDsadzy3lAq5T2j00X9uGEJdr';
-const stripe = Stripe(stripeLivePubKey);
+let stripe;
+
+// load stripe
+async function getStripe() {
+    stripe = await loadAndInitializeLibrary(
+        'https://js.stripe.com/v3/',
+        'Stripe',
+        (Stripe) => Stripe(stripeLivePubKey)
+    );
+    
+    return stripe;
+}
 
 // Function to handle buy button click
 async function handleBuyClick(productId) {
-  try {
-    // Fetch the current user's ID (you need to implement this based on your authentication system)
-    const id = localStorage.getItem("id");
 
-    // Call the server to create a Checkout Session
-    const response = await fetch('https://accounts.openguessr.com/stripe/create-checkout-session', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': 'Bearer ' + localStorage.getItem("bearer")
-      },
-      body: JSON.stringify({ productId, id })
-    });
-
-    const { sessionId } = await response.json();
-
-    // Redirect to Stripe Checkout
-    const result = await stripe.redirectToCheckout({
-      sessionId: sessionId
-    });
-
-    if (result.error) {
-      console.error('Error occured during request to stripe:', result.error.message);
-      errorPopup("Stripe request failed", "The server returned an error from your purchase request.", error, false, false);
+    if (!stripe) {
+        await getStripe();
     }
-  } catch (error) {
-    console.error('Error occured when trying to send request to stripe:', error);
-    errorPopup("Error sending stripe request", "Your purchase request couldn't be sent.", error, false, false);
-  }
+
+    try {
+        // Fetch the current user's ID (you need to implement this based on your authentication system)
+        const id = localStorage.getItem("id");
+
+        // Call the server to create a Checkout Session
+        const response = await fetch('https://accounts.openguessr.com/stripe/create-checkout-session', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem("bearer")
+            },
+            body: JSON.stringify({ productId, id })
+        });
+
+        const { sessionId } = await response.json();
+
+        // Redirect to Stripe Checkout
+        const result = await stripe.redirectToCheckout({
+            sessionId: sessionId
+        });
+
+        if (result.error) {
+            console.error('Error occured during request to stripe:', result.error.message);
+            errorPopup("Stripe request failed", "The server returned an error from your purchase request.", error, false, false);
+        }
+    } catch (error) {
+        console.error('Error occured when trying to send request to stripe:', error);
+        errorPopup("Error sending stripe request", "Your purchase request couldn't be sent.", error, false, false);
+    }
 }
 
 // Add event listeners to buy buttons
@@ -736,7 +752,8 @@ document.querySelectorAll('.tierBuyButton').forEach((button) => {
         button.addEventListener('click', () => {
             const productId = Number(button.id.replace(/[^0-9]/g, ''));
             handleBuyClick(productId);
-          });
+            button.textContent = "please wait...";
+        });
     } catch (error) {
         console.error("Failed to attach event listener to tierBuyButton: " + error);
     }
@@ -750,7 +767,7 @@ let stripeSessionFinished;
 try {
     stripeSessionFinished = urlParams.get("session_id");
     if (stripeSessionFinished) {
-        showConfirmPopup("Thank you!", "Thank you for supporting OpenGuessr - you are now a supporter! Supporters like you keep the game open for everyone.", () => {}, false, false, true);
+        showConfirmPopup("Thank you!", "Thank you for supporting OpenGuessr - you are now a supporter! Supporters like you keep the game open for everyone.", () => { }, false, false, true);
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
     }
 } catch { }

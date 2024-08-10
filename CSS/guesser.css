@@ -835,6 +835,10 @@ textarea {
   padding: 7px;
 }
 
+#supporterInfoText {
+  font-size: 22px;
+}
+
 .supporterBoxHighlight {
   background-color: rgba(255, 255, 255, 0.1);
   margin-top: 10px;
