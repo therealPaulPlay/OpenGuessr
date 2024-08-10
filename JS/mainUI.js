@@ -664,7 +664,7 @@ function closeSupporterWindow() {
 export function setSupporterPitch() {
     if (!(supporterLevel > 0)) {
         document.getElementById("supporterPitch").textContent = "Become a supporter.";
-        document.getElementById("supporterTextSecondary").textContent = "Contributions keep the game free for everyone.";
+        document.getElementById("supporterTextSecondary").textContent = "Contributions keep the game free.";
     } else {
         document.getElementById("supporterPitch").textContent = "Thank you.";
         document.getElementById("supporterTextSecondary").textContent = "Your contribution keeps the game free.";
