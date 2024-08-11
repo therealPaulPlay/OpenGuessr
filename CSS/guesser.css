@@ -924,35 +924,35 @@ textarea {
 
   20% {
       opacity: 0;
-      transform: translate(100%)
+      transform: translate(100%);
   }
 
   21% {
       opacity: 0;
-      transform: translate(100%, 344px)
+      transform: translate(100%, 344px);
   }
 
   30% {
-      opacity: 1
+      opacity: 1;
   }
 
   40% {
       opacity: 0;
-      transform: translateY(344px)
+      transform: translateY(344px);
   }
 
   41% {
       opacity: 0;
-      transform: translate(0)
+      transform: translate(0);
   }
 
   50% {
-      opacity: 1
+      opacity: 1;
   }
 
   60% {
       opacity: 0;
-      transform: translate(100%)
+      transform: translate(100%);
   }
 }
 
@@ -1286,6 +1286,43 @@ textarea {
 #multiplayerSelectDuels {
   background-color: var(--brand-color);
   color: white;
+  position: relative;
+  overflow: hidden;
+}
+
+
+#multiplayerSelectDuels:before {
+  animation: duelButtonGlint 4s 0.5s infinite;
+  background: white;
+  content: "";
+  opacity: 0;
+  position: absolute;
+  width: 40px;
+  z-index: 1;
+  height: 200%;
+  top: -20px;
+  left: 0;
+  transform: rotate(30deg);
+  pointer-events: none;
+}
+
+
+@keyframes duelButtonGlint {
+  0% {
+      opacity: 0.5;
+      margin-left: -60px;
+      visibility: visible;
+  }
+
+  20% {
+      opacity: 0.3;
+      margin-left: calc(100% + 60px);
+  }
+
+  100% {
+    opacity: 0.3;
+    margin-left: calc(100% + 60px);
+  }
 }
 
 .multiplayerCreationArea {
