@@ -1,4 +1,4 @@
-import { clamp } from "./main.js";
+import { clamp, loadAndInitializeLibrary } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup } from "./mainUI.js";
 import { startTimer } from "./timer";
@@ -518,7 +518,7 @@ export function updatePeerDataScore(peerId, addScore) {
 export let multiplayerCategory = "standard";
 
 // Multiplayer Setup (IF player has an id! ) ---------------------------------------------------------------------------------------
-var peer;
+let peer;
 let connectedClientsCount = 0;
 
 let roundAmount; //how many rounds to play
@@ -550,18 +550,28 @@ if (localStorage.getItem("id") != null) {
     generateFunnyGuestName();
 }
 
-//set up the peer connection
+// load PeerJS + set up the connection
+async function getPeer() {
+        peer = await loadAndInitializeLibrary(
+            'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js',
+            'Peer',
+            (Peer) => new Peer(uniqueUserID, {
+                config: {
+                    'iceServers': [
+                        { urls: "stun:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                        { urls: "stun:stun.l.google.com:19302" },
+                        { urls: "turns:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                        { urls: "turn:fastturn.pro:3478", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                    ]
+                }
+            })
+        );
+
+    return peer;
+}
+
 try {
-    peer = new Peer(uniqueUserID, {
-        config: {
-            'iceServers': [
-                { urls: "stun:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-                { urls: "stun:stun.l.google.com:19302" },
-                { urls: "turns:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-                { urls: "turn:fastturn.pro:3478", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-            ]
-        }
-    });
+    await getPeer();
 } catch (error) {
     console.error("Could not inizialize PeerJS: " + error);
 }
@@ -1013,7 +1023,7 @@ if (peer) {
                     // If the entry doesn't already exist (prevent duplicates), only then push new user
                     if (index == -1) {
                         connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1, incomingConn.metadata.id, incomingConn.metadata.badge]);
-                       
+
                         if (incomingConn.metadata.supporterLevel > highestMultiplayerSupporterLevel) {
                             highestMultiplayerSupporterLevel = incomingConn.supporterLevel;
                         }
@@ -1221,10 +1231,10 @@ export async function startMultiplayerRound(latitude, longitude) {
         }
     }
 
-    sendMessageToAll("start", {coordinates: [latitude, longitude], highestSupporterLevel: highestMultiplayerSupporterLevel});
+    sendMessageToAll("start", { coordinates: [latitude, longitude], highestSupporterLevel: highestMultiplayerSupporterLevel });
     distributeChat("System: Starting Round " + roundIndex);
     multiplayerOverlayCountdown(); // for host
-}          
+}
 
 //Function to send a message from host to all peers
 export function sendMessageToAll(type, message) {

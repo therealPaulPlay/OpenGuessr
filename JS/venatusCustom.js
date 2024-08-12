@@ -1,4 +1,4 @@
-//Sample code from the venatus discord group modified for our use case
+// Sample code from the venatus modified for our use case
 try {
     window.top.__vm_add = window.top.__vm_add || [];
 
@@ -27,7 +27,7 @@ try {
     
             previousFooterAdsWidth = footerAdsScaler.getBoundingClientRect().width;
     
-            //push the placement to the venatus array
+            // push the placement to the venatus array
             window.top.__vm_add.push(placement); 
         }
     }

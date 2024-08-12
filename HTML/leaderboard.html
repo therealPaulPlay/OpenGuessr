@@ -145,11 +145,66 @@
             padding-left: 30px;
             padding-right: 30px;
             white-space: nowrap;
-            overflow: hidden;
         }
 
         .rankedItemSupporter {
-            background-color: rgba(193, 244, 222, 0.35);
+            background-color: rgba(137, 255, 183, 0.35);
+            box-sizing: border-box;
+            border: 4px solid rgba(137, 255, 183, 0.35);
+            position: relative;
+        }
+
+        .rankedItemSupporter::before {
+            animation: supporterGlint 5s 2s infinite;
+            background: linear-gradient(90deg, #00ff1c00 1%, #73ff96 50%, #00ff3400);
+            border-radius: inherit;
+            content: "";
+            height: 4px;
+            inset: -4px;
+            opacity: 0;
+            position: absolute;
+            transform: translate(0);
+            width: 50%;
+            z-index: 1;
+        }
+
+        @keyframes supporterGlint {
+            10% {
+                opacity: 1
+            }
+
+            20% {
+                opacity: 0;
+                transform: translate(100%)
+            }
+
+            21% {
+                opacity: 0;
+                transform: translate(100%, 46px)
+            }
+
+            30% {
+                opacity: 1
+            }
+
+            40% {
+                opacity: 0;
+                transform: translateY(46px)
+            }
+
+            41% {
+                opacity: 0;
+                transform: translate(0)
+            }
+
+            50% {
+                opacity: 1
+            }
+
+            60% {
+                opacity: 0;
+                transform: translate(100%)
+            }
         }
 
         .yourContainer .rankedItem {
@@ -226,6 +281,7 @@
             width: 70vw;
             max-width: 650px;
             gap: 20px;
+            position: relative;
         }
 
         .podium-item {
@@ -509,7 +565,7 @@
 
                 if (user.user_name == yourUsername && !dontLoadStats) {
                     podiumItem.classList.add('yourItem');
-        }
+                }
             }
 
             // Populate main leaderboard starting from 4th place

@@ -10,28 +10,22 @@
   <!-- address bar -->
   <meta name="theme-color" content="#07071e">
 
-  <!-- Files from other sources (PeerJS, MapKit, Math.js) -->
-  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js" defer></script>
-
   <!-- js maps api -->
   <script defer>(g => { var h, a, k, p = "The Google Maps JavaScript API", c = "google", l = "importLibrary", q = "__ib__", m = document, b = window; b = b[c] || (b[c] = {}); var d = b.maps || (b.maps = {}), r = new Set, e = new URLSearchParams, u = () => h || (h = new Promise(async (f, n) => { await (a = m.createElement("script")); e.set("libraries", [...r] + ""); for (k in g) e.set(k.replace(/[A-Z]/g, t => "_" + t[0].toLowerCase()), g[k]); e.set("callback", c + ".maps." + q); a.src = `https://maps.${c}apis.com/maps/api/js?` + e; d[q] = f; a.onerror = () => h = n(Error(p + " could not load.")); a.nonce = m.querySelector("script[nonce]")?.nonce || ""; m.head.append(a) })); d[l] ? console.warn(p + " only loads once. Ignoring:", g) : d[l] = (f, ...n) => r.add(f) && u().then(() => d[l](f, ...n)) })
       ({ key: "AIzaSyDcGJ0tK_syDMY4Pv3qY298oDDGUBwNvEk", v: "weekly" });</script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=1.0.7">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=1.0.9">
 
   <!-- Non-bundled js files -->
   <script type="module" src="analytics.js" async></script>
 
+  <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
+  <script type="module" src="main.js?v=1.1.2" defer></script>
+
   <!-- venatus ad script -->
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
-    data-site-id="664453baf2089a039dc08edb" data-mode="scan" async></script>
-
-  <!-- stripe -->
-  <script src="https://js.stripe.com/v3/" defer></script>
-
-  <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=1.0.9" defer></script>
+    data-site-id="664453baf2089a039dc08edb" data-mode="scan" defer></script>
 
   <!-- custom venatus scaling script -->
   <script type="module" src="venatusCustom.js" defer></script>
@@ -193,7 +187,8 @@
         </h2>
         <div id="confirmDescription" class="popup-description">This is the default warning.</div>
         <input id="accountDeletePassword" class="confirmPopupInput" type="password" placeholder="Password">
-        <input type="text" id="usernameInput" class="confirmPopupInput" placeholder="New username" maxlength="50"></input>
+        <input type="text" id="usernameInput" class="confirmPopupInput" placeholder="New username"
+          maxlength="50"></input>
         <div class="buttonBoxRight">
           <button id="confirmCancel" class="standardButton white">Close</button>
           <button id="confirmProceed" class="standardButton">Confirm</button>
@@ -220,9 +215,10 @@
         </div>
       </div>
       <div id="supporterArea" class="supporterArea">
-       <div class="supporterPitchText">
-        <p id="supporterPitch">Become a supporter (default).</p><span id="supporterTextSecondary"> Supporters keep the game free (default)</span>
-       </div>
+        <div class="supporterPitchText">
+          <p id="supporterPitch">Become a supporter (default).</p><span id="supporterTextSecondary"> Supporters keep the
+            game free (default)</span>
+        </div>
         <button id="viewSupporterBenefits" class="standardButton">View benefits</button>
       </div>
       <div id="profileScrollSection">
@@ -269,7 +265,7 @@
           <div class="editNameSection">
             <button class="standardButton white" id="editUsername">
               <img src="/IMG/edit-icon.png" alt="Edit username Icon" class="edit-icon">
-              Edit name</button> 
+              Edit name</button>
           </div>
           <button id="accountDeleteButton" class="standardButton">Delete Account</button>
         </div>
@@ -429,65 +425,72 @@
       <button id="pinClose" class="standardButton white accountClose">Close</button>
     </div>
   </div>
-    <!-- Supporter Window -->
-    <div id="supporterPopup" class="popupHolder profilePopupBackground">
-      <div id="supporterWindow" class="uiWindow">
-        <div class="popup-title">
-          <h1 id="profileViewName">Support OpenGuessr<img id="supporterIconTitle" alt="supporter tag" src="/IMG/supporter_icon.png"></h1>
-        </div>
-        <p class="supporterBodyText">
-          <div class="supporterBox">
-            <p>The goal of my work is to provide a community-driven geography game that is open to everyone. However, as <a class="removeTextUnderline" href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en" target="_blank">Maps APIs</a>
-            are <span class="supporterTextHighlight">highly expensive</span>, this has become <span class="supporterTextHighlight">more challenging than ever.</span></p>
-          </div>
-          <div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
-            <div class="supporterBox supporterBoxHighlight">
-              <img alt="info icon" class="infoIcon" src="/IMG/info_icon.png">
-              <p>By becoming a supporter, you help cover ongoing costs and unlock unique benefits. These <a href="/legal.html" target="_blank">terms and conditions</a> apply.</p>
-            </div>
-            <div class="tierBox">
-              <p class="tierBoxTier">Tier 1</p>
-              <ul class="tierBenefits">
-                <li>Highlighted on leaderboards</li>
-                <li>Supporter Icon in profile</li>
-                <li>Special Supporter Pin</li>
-                <li>Tier 1 Supporter Badge</li>
-                <li>10% Supporter XP Boost</li>
-              </ul>
-              <button id="tierPrice1" class="standardButton tierBuyButton">2.99 $ (Default)</button>
-            </div>
-            <div class="tierBox">
-              <p class="tierBoxTier">Tier 2</p>
-              <ul class="tierBenefits">
-                <li>All previous benefits</li>
-                <li>Tier 2 Supporter Badge</li>
-                <li>15% Supporter XP Boost</li>
-              </ul>
-              <button id="tierPrice2" class="standardButton tierBuyButton">6.99 $ (Default)</button>
-            </div>
-            <div class="tierBox">
-              <p class="tierBoxTier">Tier 3</p>
-              <ul class="tierBenefits">
-                <li>All previous benefits</li>
-                <li>Tier 3 Supporter Badge</li>
-                <li>20% Supporter XP Boost</li>
-              </ul>
-              <button id="tierPrice3" class="standardButton tierBuyButton">14.99 $ (Default)</button>
-            </div>
-            <div class="tierBox">
-              <p class="tierBoxTier">Tier 4</p>
-              <ul class="tierBenefits">
-                <li>All previous benefits</li>
-                <li>Tier 4 Supporter Badge</li>
-                <li>25% Supporter XP Boost</li>
-              </ul>
-              <button id="tierPrice4" class="standardButton tierBuyButton">24.99 $ (Default)</button>
-            </div>
-          </div>
-        </p>
-        <button id="supporterClose" class="standardButton white accountClose">Close</button>
+  <!-- Supporter Window -->
+  <div id="supporterPopup" class="popupHolder profilePopupBackground">
+    <div id="supporterWindow" class="uiWindow">
+      <div class="popup-title">
+        <h1 id="profileViewName">Support OpenGuessr<img id="supporterIconTitle" alt="supporter tag"
+            src="/IMG/supporter_icon.png"></h1>
       </div>
+      <p class="supporterBodyText">
+      <div class="supporterBox">
+        <p>The goal of my work is to provide a community-driven geography game that is open to everyone. However, as <a
+            class="removeTextUnderline"
+            href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en"
+            target="_blank">Maps APIs</a>
+          are <span class="supporterTextHighlight">highly expensive</span>, this has become <span
+            class="supporterTextHighlight">more challenging than ever.</span></p>
+      </div>
+      <div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
+        <div class="supporterBox supporterBoxHighlight">
+          <img alt="info icon" class="infoIcon" src="/IMG/info_icon.png">
+          <p id="supporterInfoText">By purchasing a supporter tier (one-time payment), you help cover ongoing costs and unlock unique benefits.
+            <span class="supporterLegalText">These <a href="/legal.html" target="_blank">terms and conditions</a>
+              apply.</span></p>
+        </div>
+        <div class="tierBox">
+          <p class="tierBoxTier">Tier 1</p>
+          <ul class="tierBenefits">
+            <li>Highlighted on leaderboards</li>
+            <li>Supporter Icon in profile</li>
+            <li>Special Supporter Pin</li>
+            <li>Tier 1 Supporter Badge</li>
+            <li>10% Supporter XP Boost</li>
+          </ul>
+          <button id="tierPrice1" class="standardButton tierBuyButton">2.99 $ (Default)</button>
+        </div>
+        <div class="tierBox">
+          <p class="tierBoxTier">Tier 2</p>
+          <ul class="tierBenefits">
+            <li>All previous benefits</li>
+            <li>Tier 2 Supporter Badge</li>
+            <li>15% Supporter XP Boost</li>
+          </ul>
+          <button id="tierPrice2" class="standardButton tierBuyButton">6.99 $ (Default)</button>
+        </div>
+        <div class="tierBox">
+          <p class="tierBoxTier">Tier 3</p>
+          <ul class="tierBenefits">
+            <li>All previous benefits</li>
+            <li>Tier 3 Supporter Badge</li>
+            <li>20% Supporter XP Boost</li>
+          </ul>
+          <button id="tierPrice3" class="standardButton tierBuyButton">14.99 $ (Default)</button>
+        </div>
+        <div class="tierBox">
+          <p class="tierBoxTier">Tier 4</p>
+          <ul class="tierBenefits">
+            <li>All previous benefits</li>
+            <li>Tier 4 Supporter Badge</li>
+            <li>25% Supporter XP Boost</li>
+          </ul>
+          <button id="tierPrice4" class="standardButton tierBuyButton">24.99 $ (Default)</button>
+        </div>
+      </div>
+      </p>
+      <button id="supporterClose" class="standardButton white accountClose">Close</button>
     </div>
+  </div>
   <!-- remaining windows -->
   <div class="popupHolder">
     <!-- Help / How to Play Popup -->

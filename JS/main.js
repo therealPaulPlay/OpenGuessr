@@ -68,7 +68,7 @@ export async function generateNewLocation(type) {
     } catch {
         console.error("The coordinates to load the iframe from are not defined. " + "Lat: " + currentStreetviewLat + " Long: " + currentStreetviewLong);
     }
-    
+
     loadIframe(currentStreetviewLat, currentStreetviewLong);
 
     if (multiplayer && isHost) {
@@ -107,7 +107,7 @@ export function calculateDistances(mapsLat, mapsLong) {
 
 function compareDistances(distance) {
     playSound("confirm");
-    
+
     //compares how big the distance is and enables result screen with a message.
     if (!resultScreenEnabled) {
 
@@ -414,4 +414,28 @@ export function reloadIframe() {
     document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
     window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 400);
 
+}
+
+// External script loader --------------------------------------------------------------------------------------------------------------
+
+// Generic script loader and initializer
+export function loadAndInitializeLibrary(url, globalVar, initFunction) {
+    return new Promise((resolve, reject) => {
+        if (window[globalVar]) {
+            resolve(initFunction(window[globalVar]));
+        } else {
+            const script = document.createElement('script');
+            script.src = url;
+            script.async = true;
+            script.onload = () => {
+                try {
+                    resolve(initFunction(window[globalVar]));
+                } catch (error) {
+                    reject(new Error(`Failed to initialize ${globalVar}: ${error.message}`));
+                }
+            };
+            script.onerror = () => reject(new Error(`Failed to load ${url}`));
+            document.head.appendChild(script);
+        }
+    });
 }
