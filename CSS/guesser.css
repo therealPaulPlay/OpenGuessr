@@ -835,6 +835,10 @@ textarea {
   padding: 7px;
 }
 
+#headingSupporterBox {
+  padding: 0;
+}
+
 #supporterInfoText {
   font-size: 22px;
 }
@@ -877,9 +881,10 @@ textarea {
   align-items: center;
   gap: 20px;
   margin-top: 10px;
-  max-height: calc(100vh - 400px);
+  max-height: calc(100vh - 300px);
   overflow-x: hidden;
   overflow-y: auto;
+  border-radius: 5px;
   border-radius: 5px;
 }
 
@@ -1330,6 +1335,8 @@ textarea {
   border-radius: 15px;
   padding: 8px;
   margin: 10px;
+  overflow: auto;
+  max-height: calc(100vh - 300px);
 }
 
 #multiplayerHost {
@@ -3484,6 +3491,34 @@ all and (max-width: 1200px) {
 
   #supporterTextSecondary {
     display: none !important;
+  }
+
+  .uiWindow {
+    font-size: 22px;
+  }
+
+  .supporterPitchText p {
+    font-size: 22px;
+  }
+
+  #viewSupporterBenefits, #profileAbout {
+    font-size: 22px;
+  }
+
+  h1 {
+    font-size: 35px;
+  }
+
+  h2 {
+    font-size: 30px;
+  }
+
+  h3 {
+    font-size: 25px;
+  }
+
+  #profileViewName {
+    font-size: 32px;
   }
 }
 
