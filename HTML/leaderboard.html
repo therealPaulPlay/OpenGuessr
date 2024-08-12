@@ -478,7 +478,7 @@
 
 </body>
 <script type="module">
-    import { getAllUsers } from "./userAPI.js";
+    import { getLeaderboard} from "./userAPI.js";
 
     // Back Button and iframe check -------------------------------------------------------------------------------------------
     function inIframe() {
@@ -574,7 +574,13 @@
     async function loadLeaderboard() {
         container.innerHTML = "<p>Loading...</p>";
 
-        let data = await getAllUsers();
+        let data = await getLeaderboard();
+
+        if (!data) {
+            container.innerHTML = "<p>An error occurred while loading the leaderboard.</p>";
+            return;
+        }
+
         let userData = data;
 
         if (userData.user) {
