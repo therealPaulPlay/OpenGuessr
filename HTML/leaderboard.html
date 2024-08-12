@@ -356,16 +356,21 @@
         #yourLeagueContainer {
             margin-top: 25px;
             min-height: 30px;
+            display: none;
         }
 
         .threeDotsContainer {
             width: 80vw;
             max-width: 800px;
-            display: flex;
             overflow: hidden;
             justify-content: center;
             gap: 15px;
             margin-top: 25px;
+            display: flex;
+        }
+
+        #threeDotsContainer {
+            display: none;
         }
 
         .circleDot {
@@ -469,7 +474,7 @@
                 </div>
             </div>
             <div id="container" class="container"></div>
-            <div class="threeDotsContainer">
+            <div id="threeDotsContainer" class="threeDotsContainer">
                 <div class="circleDot"></div><div class="circleDot"></div><div class="circleDot"></div>
             </div>
             <div id="yourLeagueContainer" class="container"></div>
@@ -623,9 +628,12 @@
             }
 
             if (data.userLeaderboard) {
+                yourLeagueContainer.style.display = "block";
+                document.getElementById("threeDotsContainer").style.display = "flex";
+
                 for (let i = 0; i < data.userLeaderboard.length; i++) {
                     let user = data.userLeaderboard[i];
-                    addRankedItem(user.position, user.user_name, Number(user.experience).toLocaleString(), user.id, user.supporter_level, true);
+                    addRankedItem(user.position.toLocaleString(), user.user_name, Number(user.experience).toLocaleString(), user.id, user.supporter_level, true);
                 }
             }
         }
