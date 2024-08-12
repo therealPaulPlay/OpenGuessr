@@ -216,7 +216,7 @@ function showDescriptionWindow(name, author, desc, isAuthor, authorId) {
     document.getElementById("descriptionPopup").style.display = "flex";
     document.getElementById("descHeader").textContent = name;
     document.getElementById("descText").textContent = desc;
-    document.getElementById("likesText").textContent = "loading...";
+    document.getElementById("likesText").textContent = "loading";
     document.getElementById("likeIcon").src = "/IMG/no_heart_icon.png";
     fetchMapInformation(name);
 
