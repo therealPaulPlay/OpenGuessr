@@ -423,7 +423,7 @@ h3 {
 }
 
 #endScreenXPbar {
-  width: 60%;
+  flex-grow: 10;
   height: 15px;
   background-color: #ccc;
   border-radius: 7px;
@@ -466,7 +466,8 @@ h3 {
   text-align: center;
   padding-left: 10px;
   text-wrap: nowrap;
-  min-width: 75px;
+  flex-grow: 1;
+  min-width: 90px;
 }
 
 #endScreenStreakText {
@@ -515,6 +516,7 @@ h3 {
   display: flex;
   align-items: center;
   flex-direction: row;
+  flex-grow: 1;
 }
 
 #endScreenLevelDisplay {
@@ -3359,11 +3361,11 @@ input[type="checkbox"]:focus {
 all and (max-width: 1250px) {
 
   #TextDiv {
-    font-size: 25pt;
+    font-size: 32px;
   }
 
   #motivationText {
-    font-size: 18pt;
+    font-size: 25px;
   }
 
   #adsText {
