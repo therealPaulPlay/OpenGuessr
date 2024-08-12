@@ -32,7 +32,7 @@ let lastSearchMode = "index";
 let loadMoreCategoryParam = undefined;
 let loadMoreQueryParam = undefined;
 
-let initial 
+let initial
 
 async function loadCommunityMaps(index, category, query, fav) {
     try {
@@ -68,7 +68,7 @@ async function loadCommunityMaps(index, category, query, fav) {
             if (data.communityMaps.length == 50 && !fav) {
                 document.getElementById("loadMore").style.display = "block";
             }
-            
+
             let nothingFound = true;
 
             data.communityMaps.forEach(map => {
@@ -216,6 +216,9 @@ function showDescriptionWindow(name, author, desc, isAuthor, authorId) {
     document.getElementById("descriptionPopup").style.display = "flex";
     document.getElementById("descHeader").textContent = name;
     document.getElementById("descText").textContent = desc;
+    document.getElementById("likesText").textContent = "loading...";
+    document.getElementById("likeIcon").src = "/IMG/no_heart_icon.png";
+    fetchMapInformation(name);
 
     const description = document.getElementById("descAuthor");
     const newDescription = description.cloneNode(true);
@@ -233,7 +236,7 @@ function showDescriptionWindow(name, author, desc, isAuthor, authorId) {
             newButton.addEventListener("click", () => {
                 deleteMapScreen(name);
             });
-    
+
         } else {
             document.getElementById("manageDelete").style.display = "none";
         }
@@ -257,11 +260,76 @@ function showDescriptionWindow(name, author, desc, isAuthor, authorId) {
                 }, 700);
             });
     });
+
+    try {
+        const newButton = document.getElementById("likeMap").cloneNode(true);
+        document.getElementById("likeMap").parentNode.replaceChild(newButton, document.getElementById("likeMap"));
+        newButton.addEventListener("click", () => {
+            likeOrDislikeMap(name);
+        });
+    } catch (error) {
+        console.error("Error adding like button in mapScreen.js and adding event listener:", error);
+    }
 }
 
 document.getElementById("descClose").addEventListener("click", () => {
     document.getElementById("descriptionPopup").style.display = "none";
 });
+
+// fetch map information (Likes, like status if id is there)
+async function fetchMapInformation(name) {
+    try {
+        let playerId = localStorage.getItem("id") || null;
+
+        const response = await fetch(`https://maps.openguessr.com/maps/rating/${name}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: playerId }), // playerId is optional
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            document.getElementById("likesText").textContent = data.likeAmount + " likes";
+            document.getElementById("likeIcon").src = data.liked ? "/IMG/heart_icon.png" : "/IMG/no_heart_icon.png";
+        } else {
+            console.error('Error loading map information and likes:', data.error);
+        }
+    } catch (error) {
+        console.error('Network error during map information fetch:', error);
+    }
+}
+
+// like or dislike maps 
+async function likeOrDislikeMap(mapName) {
+    if (localStorage.getItem("bearer") && localStorage.getItem("id")) {
+        try {
+            const response = await fetch(`https://maps.openguessr.com/maps/like/${mapName}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: localStorage.getItem("id") }),
+            });
+    
+            const data = await response.json();
+    
+            if (response.ok) {
+                await fetchMapInformation(mapName); // fetch new information
+            } else {
+                console.error('Error liking or disliking map:', data.error);
+            }
+        } catch (error) {
+            console.error('Network error during like or dislike of map:', error);
+        }
+    } else {
+        window.location.href = "/signup.html";
+    }
+}
+
 
 let mapWasDeletedRefresh = false;
 
@@ -351,16 +419,16 @@ document.querySelector(".categoriesBar").addEventListener("wheel", function (eve
 let currentSelection = document.getElementById("categoryAll");
 
 // search with enter key
-document.getElementById("mapSearch").addEventListener("keydown", function (event) { 
+document.getElementById("mapSearch").addEventListener("keydown", function (event) {
     if (event.key === "Enter") {
         event.preventDefault();
-    }; 
+    };
 });
 
-document.getElementById("mapSearch").addEventListener("keyup", function (event) { 
+document.getElementById("mapSearch").addEventListener("keyup", function (event) {
     if (event.key === "Enter") {
         startSearch();
-    }; 
+    };
 });
 
 document.getElementById("startSearch").addEventListener("click", startSearch);
@@ -393,7 +461,7 @@ function handleCategoryButtonClick(event) {
     event.target.classList.add("selected");
     currentSelection = event.target;
     const selectedCategory = currentSelection.textContent.toLowerCase();
-   
+
     if (selectedCategory != "all") {
         loadCommunityMaps(0, selectedCategory);
     } else {
@@ -480,14 +548,14 @@ async function uploadMap() {
     // if successful, close underlying menu
     let operationMessage = await submitMap();
     document.getElementById("uploadConfirmText").textContent = operationMessage;
-    
+
     if (operationMessage.includes("success")) {
         document.getElementById("uploadConfirmHeader").textContent = "Map submitted!";
-        
+
         const mapName = document.getElementById('uploadMapName').value;
         let playLink = window.location.origin + "/maps.html?map=" + mapName.split(" ").join("_")
         let linkBox = document.createElement("div");
-       
+
         linkBox.innerHTML = `
         <div class="spacer"></div>
         <p>Play link:</p>
@@ -632,7 +700,7 @@ let mapNameFromLink;
 
 try {
     mapNameFromLink = urlParams.get("map").split("_").join(" "); // remove all underscores
-} catch {}
+} catch { }
 
 async function checkPlayMapFromLink() {
     let didErrorOccur = false;
