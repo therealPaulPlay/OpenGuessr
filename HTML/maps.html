@@ -369,8 +369,12 @@
         }
 
         #descHeader {
-            margin-top: 10px;
             margin-bottom: -2px;
+            margin-top: 0;
+            max-width: 60%;
+            text-wrap: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         #descAuthor {
@@ -379,6 +383,7 @@
             transition: opacity 250ms ease;
             cursor: pointer;
             user-select: none;
+            width: fit-content;
         }
 
         #descAuthor:hover {
@@ -721,6 +726,40 @@
             vertical-align: -4px;
         }
 
+        .headerBox {
+            display: flex;
+            align-items: center;
+            flex-wrap: wrap;
+            margin-top: 10px;
+        }
+
+        #likesText {
+            opacity: 0.5;
+            margin-top: 5px;
+            margin-bottom: 3px;
+            margin-left: 12px;
+            font-size: 22px;
+        }
+
+        #likeMap {
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
+            margin-left: auto;
+            padding-inline: 12px;
+            display: flex;
+            align-items: center;
+            padding-bottom: 5px;
+            padding-top: 5px;
+            margin-top: auto;
+            margin-bottom: 2px;
+        }
+
+        #likeIcon {
+            width: 25px;
+            height: 25px;
+            margin-top: 2px;
+        }
+
         @media all and (orientation: portrait),
         all and (max-width: 800px) {
             #navbarTitle {
@@ -774,7 +813,13 @@
     </nav>
     <div id="descriptionPopup" class="popupHolder">
         <div id="description" class="uiWindow">
-            <h1 id="descHeader">Default map</h1>
+            <div class="headerBox">
+                <h1 id="descHeader">Default map</h1>
+                <button id="likeMap" class="standardButton">
+                    <img alt="likeIcon" id="likeIcon" src="/IMG/no_heart_icon.png">
+                    <p id="likesText">loadig...</p>
+                </button>
+            </div>
             <p id="descAuthor" class="textEllipsis">by Paul</p>
             <p id="descText" class="textEllipsis">This is a wonderful description of the default map. It features big
                 default locations and
