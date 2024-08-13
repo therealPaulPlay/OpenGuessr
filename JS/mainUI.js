@@ -635,7 +635,7 @@ export async function supporterXpBoostAnimation(factor) {
     factor = Math.round(factor * 100);
     factor += "%";
 
-    supporterBoostText.textContent = factor + " Supporter Boost";
+    supporterBoostText.textContent = factor + " Experience Boost";
 
     supporterBoost.style.opacity = "1";
     supporterBoostText.classList.add("supporterBoostTextMove");
