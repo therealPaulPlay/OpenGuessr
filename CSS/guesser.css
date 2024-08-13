@@ -423,7 +423,7 @@ h3 {
 }
 
 #endScreenXPbar {
-  width: 60%;
+  flex-grow: 10;
   height: 15px;
   background-color: #ccc;
   border-radius: 7px;
@@ -466,7 +466,8 @@ h3 {
   text-align: center;
   padding-left: 10px;
   text-wrap: nowrap;
-  min-width: 75px;
+  flex-grow: 1;
+  min-width: 90px;
 }
 
 #endScreenStreakText {
@@ -515,6 +516,7 @@ h3 {
   display: flex;
   align-items: center;
   flex-direction: row;
+  flex-grow: 1;
 }
 
 #endScreenLevelDisplay {
@@ -705,7 +707,7 @@ textarea {
 }
 
 #profileScrollSection {
-  max-height: calc(100vh - 400px);
+  max-height: calc(100dvh - 400px);
   overflow-x: hidden;
   overflow-y: auto;
   border-radius: 5px;
@@ -835,6 +837,10 @@ textarea {
   padding: 7px;
 }
 
+#headingSupporterBox {
+  padding: 0;
+}
+
 #supporterInfoText {
   font-size: 22px;
 }
@@ -877,9 +883,10 @@ textarea {
   align-items: center;
   gap: 20px;
   margin-top: 10px;
-  max-height: calc(100vh - 400px);
+  max-height: calc(100dvh - 300px);
   overflow-x: hidden;
   overflow-y: auto;
+  border-radius: 5px;
   border-radius: 5px;
 }
 
@@ -1330,6 +1337,8 @@ textarea {
   border-radius: 15px;
   padding: 8px;
   margin: 10px;
+  overflow: auto;
+  max-height: calc(100dvh - 300px);
 }
 
 #multiplayerHost {
@@ -3323,11 +3332,11 @@ input[type="checkbox"]:focus {
 all and (max-width: 1250px) {
 
   #TextDiv {
-    font-size: 25pt;
+    font-size: 32px;
   }
 
   #motivationText {
-    font-size: 18pt;
+    font-size: 25px;
   }
 
   #adsText {
@@ -3455,6 +3464,34 @@ all and (max-width: 1200px) {
 
   #supporterTextSecondary {
     display: none !important;
+  }
+
+  .uiWindow {
+    font-size: 22px;
+  }
+
+  .supporterPitchText p {
+    font-size: 22px;
+  }
+
+  #viewSupporterBenefits, #profileAbout {
+    font-size: 22px;
+  }
+
+  h1 {
+    font-size: 35px;
+  }
+
+  h2 {
+    font-size: 30px;
+  }
+
+  h3 {
+    font-size: 25px;
+  }
+
+  #profileViewName {
+    font-size: 32px;
   }
 }
 

@@ -218,7 +218,7 @@ export async function getUser(token, id, errorSource) {
   }
 }
 
-export async function getAllUsers() {
+export async function getLeaderboard() {
   try {
     let id = localStorage.getItem("id")
     let editLeaderboardEndpoint = leaderboardEndpoint;
