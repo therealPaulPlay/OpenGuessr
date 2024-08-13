@@ -1,5 +1,5 @@
 import { deleteUser, getUser, updateExperience } from "./userAPI";
-import { checkTextLength, resultScreenEnabled, showConfirmPopup, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
+import { checkTextLength, freeSupporterBoostEnabled, resultScreenEnabled, showConfirmPopup, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel, attemptJoinViaLink } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
@@ -376,7 +376,7 @@ function getStreakMultiplierAdjustedToGamemode() {
   }
 }
 
-function calculateXPGain(distance, category, supporterLevel) {
+function calculateXPGain(distance, category, supporterLevel, freeSupporterBoost) {
   let returnXP = 0;
 
   if (category == null || category == "standard" || category == "capital" || category == "hard") {
@@ -409,10 +409,14 @@ function calculateXPGain(distance, category, supporterLevel) {
     returnXP = Math.round(5000 * ((0.978036) ** distance));
 
   } else {
-    returnXP = Math.round(5000 * ((0.988036) ** distance));//reduced XP for bad guesses in country locations (for better balance)
+    returnXP = Math.round(5000 * ((0.988036) ** distance)); //reduced XP for bad guesses in country locations (for better balance)
   }
 
   let supporterMultiplier = 1;
+
+  if (freeSupporterBoost) {
+    supporterMultiplier = 1.2;
+  }
 
   if (supporterLevel && supporterLevel > 0) {
     switch (supporterLevel) {
@@ -468,7 +472,7 @@ export async function loadResultScreenXP(distance) {
 
     // XP calculation formulas -------------------------------------------------
     if (!multiplayer && !playingCompetition) {
-      const calculatedXP = calculateXPGain(distance, selectedCategory, supporterLevel);
+      const calculatedXP = calculateXPGain(distance, selectedCategory, supporterLevel, freeSupporterBoostEnabled);
       earnedXP = calculatedXP.earnedXP;
       earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
       supporterMultiplier = calculatedXP.supporterMultiplier;
