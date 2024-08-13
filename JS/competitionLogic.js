@@ -33,6 +33,9 @@ export function loadCompetition(regenerate) {
         setRestriction(competition.restriction);
 
         addCompetitionPlayed();
+        setTimeout(() => {
+            playSound("match_start");
+        }, 400);
 
         if (regenerate) {
             checkGenerationTypeAndGenerate();

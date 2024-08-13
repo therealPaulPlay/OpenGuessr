@@ -203,8 +203,7 @@
           <h1 id="profileViewName">Username</h1>
           <div id="profileNameBox">
             <button id="badgeButton" class="standardButton">+ Badge</button>
-            <div id="badgeArea">
-            </div>
+            <div id="badgeArea"></div>
             <img id="selectedProfilePin" src="/IMG/your_marker1.png" alt="map pin">
             <div id="supporterTag">
               <p id="supporterTagText" class="supporterTextHidden">Supporter</p>
@@ -441,13 +440,10 @@
             are <span class="supporterTextHighlight">highly expensive</span>, this has become <span
               class="supporterTextHighlight">more challenging than ever.</span></p>
         </div>
-        <div class="supporterBox supporterBoxHighlight">
-          <img alt="info icon" class="infoIcon" src="/IMG/info_icon.png">
-          <p id="supporterInfoText">By purchasing a supporter tier (one-time payment), you help cover ongoing costs and
-            unlock unique benefits.
-            <span class="supporterLegalText">These <a href="/legal.html" target="_blank">terms and conditions</a>
-              apply.</span>
-          </p>
+        <div id="adTierBox" class="adTierBox supporterArea">
+          <img alt="time limited" id="adBoostTimeLimitIcon" src="/IMG/time_limited.png">
+          <p id="freeSupporterBoostText">Free 20% experience boost.</p>
+          <button id="freeSupporterBoost" class="standardButton">Watch ad to activate</button>
         </div>
         <div class="tierBox">
           <p class="tierBoxTier">Tier 1</p>
@@ -486,6 +482,13 @@
             <li>25% Supporter XP Boost</li>
           </ul>
           <button id="tierPrice4" class="standardButton tierBuyButton">24.99 $ (Default)</button>
+        </div>
+        <div class="supporterBox supporterBoxHighlight">
+          <img alt="info icon" class="infoIcon" src="/IMG/info_icon.png">
+          <p id="supporterInfoText">By purchasing a supporter tier (one-time payment), you unlock unique benefits.
+            <span class="supporterLegalText"><a href="/legal.html" target="_blank">Terms and conditions</a>
+              apply.</span>
+          </p>
         </div>
       </div>
       </p>
