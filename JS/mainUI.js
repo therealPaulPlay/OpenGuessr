@@ -767,7 +767,7 @@ let stripeSessionFinished;
 try {
     stripeSessionFinished = urlParams.get("session_id");
     if (stripeSessionFinished) {
-        showConfirmPopup("Thank you!", "Thank you for supporting OpenGuessr - you are now a supporter! Supporters like you keep the game open for everyone.", () => { }, false, false, true);
+        showConfirmPopup("Thank you!", "You are now a supporter - thank you for your contribution! Supporters like you keep the game free and open for everyone.", () => { }, false, false, true);
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
     }
 } catch { }
