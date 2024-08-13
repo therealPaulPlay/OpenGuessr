@@ -392,12 +392,12 @@ function calculateXPGain(distance, category, supporterLevel, freeSupporterBoost)
   } else if (category == "famous" || category == "image") {
 
     streakCalculation();
-    returnXP = Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //1500 xp for famous, with streak up to 1800sth
+    returnXP = Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 1500 xp for famous, with streak up to 1800sth
 
   } else if (category && category.includes("community")) {
 
     streakCalculation();
-    returnXP = Math.round((3000 * ((0.994036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); //3000 xp for community, with streak slightly more - also adjusted distance function
+    returnXP = Math.round((3000 * ((0.994036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 3000 xp for community, with streak slightly more - also adjusted distance function
 
   } else if (category == "northamerica") {
     returnXP = Math.round(5000 * ((0.996036) ** distance));
@@ -405,18 +405,14 @@ function calculateXPGain(distance, category, supporterLevel, freeSupporterBoost)
   } else if (category == "country") {
     returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
-  } else if (category == "israel" || category == "austria" || category == "slovakia" || category == "czechia") { //very small countries, more reduced xp
+  } else if (category == "israel" || category == "austria" || category == "slovakia" || category == "czechia") { // very small countries, more reduced xp
     returnXP = Math.round(5000 * ((0.978036) ** distance));
 
   } else {
-    returnXP = Math.round(5000 * ((0.988036) ** distance)); //reduced XP for bad guesses in country locations (for better balance)
+    returnXP = Math.round(5000 * ((0.988036) ** distance)); // reduced XP for bad guesses in country locations (for better balance)
   }
 
   let supporterMultiplier = 1;
-
-  if (freeSupporterBoost) {
-    supporterMultiplier = 1.2;
-  }
 
   if (supporterLevel && supporterLevel > 0) {
     switch (supporterLevel) {
@@ -432,6 +428,10 @@ function calculateXPGain(distance, category, supporterLevel, freeSupporterBoost)
       case 4:
         supporterMultiplier = 1.25;
     }
+  }
+
+  if (freeSupporterBoost && supporterMultiplier < 1.2) {
+    supporterMultiplier = 1.2;
   }
 
   return { earnedXP: Math.round(returnXP * supporterMultiplier), earnedXPWithoutSupporterBoost: returnXP, supporterMultiplier: supporterMultiplier };
