@@ -708,7 +708,6 @@ textarea {
 
 #freeSupporterBoostText {
   flex-grow: 10;
-  margin-left: 5px;
 }
 
 #adTierBox {
@@ -716,6 +715,13 @@ textarea {
   margin: 0;
   background: rgb(80, 90, 91);
   transition: background-color 250ms ease, filter 250ms ease;
+}
+
+#adBoostTimeLimitIcon {
+  width: 30px;
+  height: 30px;
+  margin-left: 12px;
+  opacity: 0.5;
 }
 
 #supporterTextSecondary {

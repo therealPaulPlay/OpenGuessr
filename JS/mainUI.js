@@ -790,17 +790,17 @@ function setAdSupporterTier(available) {
         document.getElementById("adTierBox").style.background = "rgb(80, 90, 91)";
         freeSupporterBoost.style.pointerEvents = "auto";
         freeSupporterBoost.style.opacity = "1";
-        document.getElementById("freeSupporterBoostText").textContent = "Free, time-limited 20% experience boost.";
+        document.getElementById("freeSupporterBoostText").textContent = "Free 20% experience boost.";
     } else {
         document.getElementById("adTierBox").style.pointerEvents = "none";
         document.getElementById("adTierBox").style.background = "rgba(255, 255, 255, 0.1)";
         freeSupporterBoost.style.pointerEvents = "none";
-        freeSupporterBoost.style.opacity = "0";
+        freeSupporterBoost.style.opacity = "0.5";
         document.getElementById("freeSupporterBoostText").textContent = "Experience boost active.";
     }
 }
 
-function supporterBoostAdDismiss(adNotAvailable) {
+function supporterBoostAdDismiss(adNotAvailable, rewardClaimed) {
     if (adNotAvailable) {
         errorPopup("No ad available", "Please try again later or disable Ad Blockers.", "No ads", false, false);
         setAdSupporterTier(true);

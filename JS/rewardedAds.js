@@ -42,7 +42,7 @@ export function initializeRewardAd(dismissFunction, rewardFunction) {
 
                 googletag.pubads().addEventListener('rewardedSlotClosed', () => {
                     setTimeout(() => {
-                        dismissFunction(false);
+                        dismissFunction(false, rewardClaimed);
                         try { googletag.destroySlots([rewardedSlot]); } catch (error) { console.error("Error destroying: " + error); }
                     }, 350);
                 });

@@ -66,7 +66,7 @@ function showStreakAd() {
     playSound("basic_button");
 }
 
-function streakDismissRewardedAd(notAvailable) {
+function streakDismissRewardedAd(notAvailable, rewardClaimed) {
     if (notAvailable) {
         errorPopup("No ad available", "Please try again later or disable Ad Blockers.", "No ads", false, false);
         streakWatchAd.style.opacity = "1";
