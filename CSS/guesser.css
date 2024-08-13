@@ -464,10 +464,9 @@ h3 {
   width: auto;
   vertical-align: middle;
   text-align: center;
-  padding-left: 10px;
   text-wrap: nowrap;
   flex-grow: 1;
-  min-width: 100px;
+  min-width: 115px;
 }
 
 #endScreenStreakText {

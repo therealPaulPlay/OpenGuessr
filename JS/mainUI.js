@@ -564,13 +564,15 @@ document.getElementById("dailyCompetition").addEventListener("click", () => {
 
 let confirmPopup = document.getElementById("confirmPopup");
 
-export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, messageOnly) {
+export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, messageOnly, adPrompt) {
     confirmPopup.style.display = "flex";
     document.getElementById("confirmTitle").textContent = title;
     document.getElementById("confirmDescription").textContent = text;
     document.getElementById("accountDeletePassword").style.display = "none";
     document.getElementById("usernameInput").style.display = "none";
     document.getElementById("confirmProceed").style.display = "block";
+    document.getElementById("confirmProceed").textContent = "Confirm";
+    document.getElementById("confirmProceed").style.backgroundColor = "var(--brand-color)";
 
     if (accountDelete) {
         document.getElementById("accountDeletePassword").style.display = "block";
@@ -584,6 +586,11 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete, na
 
     if (messageOnly) {
         document.getElementById("confirmProceed").style.display = "none";
+    }
+
+    if (adPrompt) {
+        document.getElementById("confirmProceed").textContent = "Reactivate";
+        document.getElementById("confirmProceed").style.backgroundColor = "#588e6b";
     }
 
     // Remove all event listeners by cloning the element
@@ -823,14 +830,16 @@ function enableSupporterAdBoost() {
 async function startAdSupporterTimer(prefix = "Boost active. Remaining: ") {
     let t = 180, e = document.getElementById("freeSupporterBoostText");
     (function u() {
-      let timeText = t > 59 
-        ? Math.floor(t / 60) + ':' + (t % 60).toString().padStart(2, '0') + ' min'
-        : t + 's';
-      e.textContent = prefix + timeText;
-      t > 0 ? (setTimeout(u, 1000), t--) : (setAdSupporterTier(true), freeSupporterBoostEnabled = false, 
-      showConfirmPopup("Boost expired", "Your free experience boost has expired. Open the supporter menu to re-activate it.", false, false, false, true));
+        let timeText = t > 59
+            ? Math.floor(t / 60) + ':' + (t % 60).toString().padStart(2, '0') + ' min'
+            : t + 's';
+        e.textContent = prefix + timeText;
+        t > 0 ? (setTimeout(u, 1000), t--) : (setAdSupporterTier(true), freeSupporterBoostEnabled = false,
+            showConfirmPopup("Boost expired", "Your free experience boost has expired. Do you want to reactivate it?", () => { initializeRewardAd(supporterBoostAdDismiss, enableSupporterAdBoost) }, false, false));
     })();
-  }
+}
+
+showConfirmPopup("Boost expired", "Your free experience boost has expired. Do you want to watch an ad to reactivate it?", () => { initializeRewardAd(supporterBoostAdDismiss, enableSupporterAdBoost) }, false, false, false, true);
 
 // In-App page browser -----------------------------------------------------------------------------------
 
