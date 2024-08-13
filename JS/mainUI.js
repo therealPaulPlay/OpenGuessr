@@ -548,11 +548,9 @@ function toggleTroubleshootWindow() {
 // Show advertisement text after some time (if no ads are being served, it is visible) ---------------------------------------------------------------------------------
 
 // display text to encourage disabling ad block after 12s
-document.addEventListener("DOMContentLoaded", () => {
-    setTimeout(() => {
-        document.getElementById("adsText").style.opacity = "0.25";
-    }, 12000);
-});
+setTimeout(() => {
+    document.getElementById("adsText").style.opacity = "0.25";
+}, 12000);
 
 // Daily competition link to competitions ---------------------------------------------------------------------------------
 
@@ -704,7 +702,7 @@ async function getStripe() {
         'Stripe',
         (Stripe) => Stripe(stripeLivePubKey)
     );
-    
+
     return stripe;
 }
 
