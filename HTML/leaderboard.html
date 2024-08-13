@@ -624,7 +624,7 @@
 
             if (data.user && !dontLoadStats) {
                 document.getElementById("yourExperience").innerHTML = Number(data.user.experience).toLocaleString() + " XP";
-                document.getElementById("yourRank").innerHTML = "#" + (data.user.position);
+                document.getElementById("yourRank").innerHTML = "#" + (data.user.position.toLocaleString());
             }
 
             if (data.userLeaderboard) {
