@@ -2800,11 +2800,6 @@ map::selection {
   min-height: 50px;
 }
 
-.streakButton:hover {
-  box-shadow: 0 0 25px rgba(15, 248, 15, 0.4);
-  filter: brightness(100%);
-}
-
 .socialIcon {
   width: 20px;
   height: auto;
