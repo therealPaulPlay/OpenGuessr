@@ -835,11 +835,9 @@ async function startAdSupporterTimer(prefix = "Boost active. Remaining: ") {
             : t + 's';
         e.textContent = prefix + timeText;
         t > 0 ? (setTimeout(u, 1000), t--) : (setAdSupporterTier(true), freeSupporterBoostEnabled = false,
-            showConfirmPopup("Boost expired", "Your free experience boost has expired. Do you want to reactivate it?", () => { initializeRewardAd(supporterBoostAdDismiss, enableSupporterAdBoost) }, false, false));
+            showConfirmPopup("Boost expired", "Your free experience boost has expired. Do you want to reactivate it?", () => { initializeRewardAd(supporterBoostAdDismiss, enableSupporterAdBoost) }, false, false, false, true));
     })();
 }
-
-showConfirmPopup("Boost expired", "Your free experience boost has expired. Do you want to watch an ad to reactivate it?", () => { initializeRewardAd(supporterBoostAdDismiss, enableSupporterAdBoost) }, false, false, false, true);
 
 // In-App page browser -----------------------------------------------------------------------------------
 
