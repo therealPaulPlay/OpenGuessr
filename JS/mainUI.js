@@ -7,6 +7,7 @@ import { playSound } from "./soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners } from "./categoryMenu.js";
 import { loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
+import { initializeRewardAd } from "./rewardedAds.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -769,6 +770,49 @@ try {
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
     }
 } catch { }
+
+// Free ad-supported experience boost --------------------------------------------------------------------------
+
+let freeSupporterBoost = document.getElementById("freeSupporterBoost");
+
+freeSupporterBoost.addEventListener("click", () => {
+    playSound("basic_button");
+    initializeRewardAd(supporterBoostAdDismiss, enableSupporterAdBoost);
+});
+
+function setAdSupporterTier(available) {
+    if (available) {
+        document.getElementById("adTierBox").style.pointerEvents = "auto";
+        document.getElementById("adTierBox").style.background = "rgb(56, 91, 76)";
+        freeSupporterBoost.style.pointerEvents = "auto";
+        freeSupporterBoost.style.opacity = "1";
+        document.getElementById("freeSupporterBoostText").textContent = "Free 20% experience boost.";
+    } else {
+        document.getElementById("adTierBox").style.pointerEvents = "none";
+        document.getElementById("adTierBox").style.background = "rgba(255, 255, 255, 0.1)";
+        freeSupporterBoost.style.pointerEvents = "none";
+        freeSupporterBoost.style.opacity = "0";
+        document.getElementById("freeSupporterBoostText").textContent = "Experience boost active.";
+    }
+}
+
+function supporterBoostAdDismiss(adNotAvailable) {
+    if (adNotAvailable) {
+        errorPopup("No ad available", "Please try again later or disable Ad Blockers.", "No ads", false, false);
+        setAdSupporterTier(true);
+    } else {
+        if (!rewardClaimed) {
+            errorPopup("Ad dismissed", "Video ad dismissed. ", "", false, true);
+            setAdSupporterTier(true);
+        } else {
+            setAdSupporterTier(false);
+        }
+    }
+}
+
+function enableSupporterAdBoost() {
+
+}
 
 // In-App page browser -----------------------------------------------------------------------------------
 

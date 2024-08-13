@@ -6,7 +6,7 @@ import { errorPopup } from "./errorHandling.js";
 import { handleMapUnhover } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
-import { toggleStreakWindow } from "./rewardedAds.js";
+import { toggleStreakWindow } from "./streakAdPopup.js";
 import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
 import { setImageGuessrEnabled } from "./imageGuesser.js";
 

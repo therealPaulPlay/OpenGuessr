@@ -5,7 +5,7 @@ import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
 import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
-import { toggleStreakWindow } from "./rewardedAds.js";
+import { toggleStreakWindow } from "./streakAdPopup.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
 import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel, supporterLevel } from "./profileView.js";
 import { errorPopup } from "./errorHandling.js";

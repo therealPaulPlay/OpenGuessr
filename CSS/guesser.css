@@ -698,6 +698,26 @@ textarea {
   flex-grow: 1;
 }
 
+#freeSupporterBoost {
+  background: linear-gradient(30deg, rgba(143, 168, 148, 0.5), rgba(168, 198, 175, 0.6));
+  flex-grow: 1;
+  border-radius: 4px;
+  margin-right: 2px;
+  transition: opacity 250ms ease, filter 250ms ease;
+}
+
+#freeSupporterBoostText {
+  flex-grow: 10;
+  margin-left: 5px;
+}
+
+#adTierBox {
+  border-radius: 5px;
+  margin: 0;
+  background: rgb(56, 91, 76);
+  transition: background-color 250ms ease, filter 250ms ease;
+}
+
 #supporterTextSecondary {
   opacity: 0.6;
 }
@@ -847,9 +867,9 @@ textarea {
 
 .supporterBoxHighlight {
   background-color: rgba(255, 255, 255, 0.1);
-  margin-top: 10px;
   width: calc(100% - 30px);
   padding-inline: 15px;
+  display: flex;
 }
 
 .infoIcon {
@@ -858,6 +878,7 @@ textarea {
   opacity: 0.5;
   margin-left: 3px;
   margin-top: 5px;
+  margin-right: 10px;
 }
 
 #supporterIconTitle {
