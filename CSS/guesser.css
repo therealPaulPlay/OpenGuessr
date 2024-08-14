@@ -3487,11 +3487,6 @@ all and (max-width: 1200px) {
     font-size: 20px;
   }
 
-  #mapHolder {
-    width: 40%;
-    height: 40%;
-  }
-
   #map {
     opacity: 50%;
   }
@@ -3575,12 +3570,12 @@ all and (max-width: 1200px) {
 /* important map change properties */
 .mapHolderToResult {
   bottom: 0;
-  margin-bottom: 0;
   padding-inline: 0;
   z-index: 11;
   width: 100%;
   height: 100%;
   transition: none;
+  margin: 0 !important;
 }
 
 .mapHolderToResult #mapModeIndicator {
