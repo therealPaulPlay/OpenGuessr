@@ -2114,6 +2114,10 @@ textarea {
   outline: none;
 }
 
+#map * {
+  font-family: Roboto;
+}
+
 .mk-map-view {
   border-radius: 10px;
 }
