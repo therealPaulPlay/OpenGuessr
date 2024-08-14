@@ -284,11 +284,9 @@ function handleMapHover() {
 }
 
 export function handleMapUnhover() {
-    if (!document.getElementById("revealCompass").matches(':hover')) {
-        mapResizeTimeout = setTimeout(() => {
+        mapResizeTimeout = setTimeout(() => { 
             mapHolder.classList.remove("mapHover")
         }, 250);
-    }
 }
 
 function checkMapmodeindicatorOverflow() {
@@ -311,7 +309,6 @@ try {
 // Mouse events
 document.getElementById("map").addEventListener('mouseenter', handleMapHover);
 document.getElementById("map").addEventListener('mouseleave', handleMapUnhover);
-document.getElementById("revealCompass").addEventListener('mouseleave', handleMapUnhover);
 
 // Touch events
 document.getElementById("map").addEventListener('touchstart', handleMapHover);

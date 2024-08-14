@@ -302,12 +302,12 @@ let mapOffset = false;
 
 function toggleMapOffset() {
     if (mapOffset) {
+        document.getElementById("revealCompassArrow").style.transform = "rotate(90deg)";
         document.getElementById("mapHolder").style.marginRight = "0px";
-        revealCompass.innerHTML = "reveal compass";
         mapOffset = false;
     } else {
+        document.getElementById("revealCompassArrow").style.transform = "rotate(270deg)";
         document.getElementById("mapHolder").style.marginRight = "65px";
-        revealCompass.innerHTML = "hide compass";
         mapOffset = true;
     }
 }

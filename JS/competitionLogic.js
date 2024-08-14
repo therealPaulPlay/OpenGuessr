@@ -62,7 +62,7 @@ export function setCompetitionUI(enable) {
             hardmodeTimerButton.style.opacity = "0.5";
             hardmodeTimerButton.style.pointerEvents = "none";
 
-            document.getElementById("revealCompass").style.marginBottom = "-27px";
+            document.getElementById("revealCompass").style.bottom = "calc(50% - 10px)";
 
             document.querySelectorAll(".mapAttribution").forEach((element) => { // remove this for js maps api
                 element.style.bottom = "63px";
@@ -77,7 +77,7 @@ export function setCompetitionUI(enable) {
             hardmodeTimerButton.style.opacity = "1";
             hardmodeTimerButton.style.pointerEvents = "auto";
 
-            document.getElementById("revealCompass").style.marginBottom = "-30px";
+            document.getElementById("revealCompass").style.bottom = "calc(50% - 40px)";
 
             document.querySelectorAll(".mapAttribution").forEach((element) => { // remove this for js maps api
                 element.style.bottom = "0px";
