@@ -7,6 +7,7 @@ import { playSound } from "./soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners } from "./categoryMenu.js";
 import { loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
+import { initializeRewardAd } from "./rewardedAds.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -559,13 +560,15 @@ document.getElementById("dailyCompetition").addEventListener("click", () => {
 
 let confirmPopup = document.getElementById("confirmPopup");
 
-export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, supporterThanks) {
+export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, messageOnly, adPrompt) {
     confirmPopup.style.display = "flex";
     document.getElementById("confirmTitle").textContent = title;
     document.getElementById("confirmDescription").textContent = text;
     document.getElementById("accountDeletePassword").style.display = "none";
     document.getElementById("usernameInput").style.display = "none";
     document.getElementById("confirmProceed").style.display = "block";
+    document.getElementById("confirmProceed").textContent = "Confirm";
+    document.getElementById("confirmProceed").style.backgroundColor = "var(--brand-color)";
 
     if (accountDelete) {
         document.getElementById("accountDeletePassword").style.display = "block";
@@ -577,8 +580,13 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete, na
         document.getElementById("usernameInput").value = "";
     }
 
-    if (supporterThanks) {
+    if (messageOnly) {
         document.getElementById("confirmProceed").style.display = "none";
+    }
+
+    if (adPrompt) {
+        document.getElementById("confirmProceed").textContent = "Reactivate";
+        document.getElementById("confirmProceed").style.backgroundColor = "#588e6b";
     }
 
     // Remove all event listeners by cloning the element
@@ -589,7 +597,9 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete, na
         playSound("basic_button");
 
         try {
-            executeFunction();
+            if (executeFunction) {
+                executeFunction();
+            }
             confirmPopup.style.display = "none";
         } catch (error) {
             console.error("Couldn't execute callback function in confirm popup in mainUI.js: " + error);
@@ -618,10 +628,10 @@ export async function supporterXpBoostAnimation(factor) {
     });
 
     factor -= 1;
-    factor = Math.floor(factor * 100);
+    factor = Math.round(factor * 100);
     factor += "%";
 
-    supporterBoostText.textContent = factor + " Supporter Boost";
+    supporterBoostText.textContent = factor + " Experience Boost";
 
     supporterBoost.style.opacity = "1";
     supporterBoostText.classList.add("supporterBoostTextMove");
@@ -761,10 +771,69 @@ let stripeSessionFinished;
 try {
     stripeSessionFinished = urlParams.get("session_id");
     if (stripeSessionFinished) {
-        showConfirmPopup("Thank you!", "You are now a supporter - thank you for your contribution! Supporters like you keep the game free and open for everyone.", () => { }, false, false, true);
+        showConfirmPopup("Thank you!", "You are now a supporter - thank you for your contribution! Supporters like you keep the game free and open for everyone.", false, false, false, true);
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
     }
 } catch { }
+
+// Free ad-supported experience boost --------------------------------------------------------------------------
+
+let freeSupporterBoost = document.getElementById("freeSupporterBoost");
+
+export let freeSupporterBoostEnabled = false;
+
+freeSupporterBoost.addEventListener("click", () => {
+    playSound("basic_button");
+    initializeRewardAd(supporterBoostAdDismiss, enableSupporterAdBoost);
+});
+
+function setAdSupporterTier(available) {
+    if (available) {
+        document.getElementById("adTierBox").style.pointerEvents = "auto";
+        document.getElementById("adTierBox").style.background = "rgb(80, 90, 91)";
+        freeSupporterBoost.style.pointerEvents = "auto";
+        freeSupporterBoost.style.opacity = "1";
+        document.getElementById("freeSupporterBoostText").textContent = "Free 20% experience boost.";
+    } else {
+        document.getElementById("adTierBox").style.pointerEvents = "none";
+        document.getElementById("adTierBox").style.background = "rgba(255, 255, 255, 0.1)";
+        freeSupporterBoost.style.pointerEvents = "none";
+        freeSupporterBoost.style.opacity = "0.5";
+        document.getElementById("freeSupporterBoostText").textContent = "Experience boost active.";
+    }
+}
+
+function supporterBoostAdDismiss(adNotAvailable, rewardClaimed) {
+    if (adNotAvailable) {
+        errorPopup("No ad available", "Please try again later or disable Ad Blockers.", "No ads", false, false);
+        setAdSupporterTier(true);
+    } else {
+        if (!rewardClaimed) {
+            errorPopup("Ad dismissed", "Video ad dismissed. ", "", false, true);
+            setAdSupporterTier(true);
+        } else {
+            setAdSupporterTier(false);
+        }
+    }
+}
+
+function enableSupporterAdBoost() {
+    setAdSupporterTier(false);
+    startAdSupporterTimer();
+    freeSupporterBoostEnabled = true;
+}
+
+async function startAdSupporterTimer(prefix = "Boost active. Remaining: ") {
+    let t = 180, e = document.getElementById("freeSupporterBoostText");
+    (function u() {
+        let timeText = t > 59
+            ? Math.floor(t / 60) + ':' + (t % 60).toString().padStart(2, '0') + ' min'
+            : t + 's';
+        e.textContent = prefix + timeText;
+        t > 0 ? (setTimeout(u, 1000), t--) : (setAdSupporterTier(true), freeSupporterBoostEnabled = false,
+            showConfirmPopup("Boost expired", "Your free experience boost has expired. Do you want to reactivate it?", () => { initializeRewardAd(supporterBoostAdDismiss, enableSupporterAdBoost) }, false, false, false, true));
+    })();
+}
 
 // In-App page browser -----------------------------------------------------------------------------------
 
