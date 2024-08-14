@@ -357,7 +357,7 @@ function setMultiplayerUI() {
         document.getElementById("mapModeIndicator").style.display = "flex";
         document.getElementById("multiplayerChat").style.display = "flex";
         document.getElementById("multiplayerLeave").style.display = "block";
-        document.getElementById("revealCompass").style.marginBottom = "-27px";
+        document.getElementById("revealCompass").style.bottom = "calc(50% - 10px)";
         document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
 
         //hide country picker UI
@@ -379,7 +379,7 @@ function setMultiplayerUI() {
         document.getElementById("mapModeIndicator").style.display = "none";
         document.getElementById("multiplayerChat").style.display = "none";
         document.getElementById("multiplayerLeave").style.display = "none";
-        document.getElementById("revealCompass").style.marginBottom = "-30px";
+        document.getElementById("revealCompass").style.bottom = "calc(50% - 40px)";
         mobileMenuButton.style.opacity = "1";
         mobileMenuButton.style.pointerEvents = "auto";
     }
