@@ -2141,8 +2141,19 @@ textarea {
 }
 
 .gm-style .gm-style-iw {
-  font-size: 22px;
+  font-size: 16px;
   text-align: center;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  padding-bottom: 0;
+  padding-inline: 0;
+  padding-right: 15px;
+}
+
+.gm-style-iw-ch {
+  display: none;
 }
 
 #map:hover {
