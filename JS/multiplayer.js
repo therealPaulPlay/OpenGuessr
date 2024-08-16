@@ -9,6 +9,7 @@ import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeam
 import { calculateDistances, loadResultMap } from "./main.js";
 import { playSound } from "./soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
+import { loadFriends } from "./friendMenu.js";
 
 //Global UI --------------------------------------------------------------------------------------------
 export let coordsFromHost = [];
@@ -60,6 +61,8 @@ let multiPlayerWindowOpen = false;
 
 let uniqueUserID = 0; // used in setup for peerJS as peer id
 
+let loadFriendsInterval;
+
 export function toggleMultiplayerSelector(alwaysClose) {
     if (alwaysClose == "close") {
         multiPlayerWindowOpen = true;
@@ -68,13 +71,27 @@ export function toggleMultiplayerSelector(alwaysClose) {
     if (multiPlayerWindowOpen) {
         multiplayerSelectionScreen.style.display = "none";
         document.getElementById("blackBackground").style.visibility = "hidden";
+        clearInterval(loadFriendsInterval);
     } else {
         multiplayerSelectionScreen.style.display = "block";
         document.getElementById("blackBackground").style.visibility = "visible";
         setMultiplayerWindowSelection("main");
+        if (isAuthenticated) {
+            loadFriends();
+            startLoadFriendsInterval();
+        }
     }
 
     multiPlayerWindowOpen = !multiPlayerWindowOpen;
+}
+
+function startLoadFriendsInterval() {
+    clearInterval(loadFriendsInterval);
+    loadFriendsInterval = setInterval(() => {
+        if (multiplayerSelectionScreen.style.display == "block") {
+            loadFriends();
+        }
+    }, 7000);
 }
 
 //Pages ---------------------------------------------------------------------------------------

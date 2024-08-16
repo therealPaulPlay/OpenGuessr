@@ -1,6 +1,6 @@
 import { isAuthenticated } from "./accountLogic";
 import { errorPopup } from "./errorHandling";
-import { showConfirmPopup } from "./mainUI";
+import { showConfirmPopup, showPageBrowser } from "./mainUI";
 import { toggleMultiplayerSelector } from "./multiplayer";
 import { loadProfileFromId } from "./profileView";
 import { playSound } from "./soundManager";
@@ -229,10 +229,6 @@ async function loadInbox(silent) {
                         </button>
                     </div>`;
 
-                    if (entry.id == localStorage.getItem("id")) {
-                        newEntry.classList.add("friendSearchYou");
-                    }
-
                     newEntry.id = "friendInboxEntry" + idCounter;
 
                     inboxContainer.appendChild(newEntry);
@@ -294,6 +290,7 @@ async function acceptFriendRequest(senderId) {
 
         if (response.ok) {
             loadInbox();
+            loadFriends();
         } else {
             const data = await response.json();
             console.error("Error accepting / deleting the friend request: " + response.status);
@@ -336,5 +333,117 @@ async function declineFriendRequest(senderId) {
     } catch (error) {
         console.error('Fetch/Network error occurred while sending the friend request: ', error);
         errorPopup("Network error accepting / deleting friend request", "The friend request couldn't be accepted or deleted.", error, false, false);
+    }
+}
+
+// Load friends ------------------------------------------------------------------------------------------------------------------------
+
+let friendsContainer = document.getElementById("friendBox");
+let friendContainerMessage = document.getElementById("noFriendsText");
+
+export async function loadFriends() {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id")
+        };
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/friends/friends", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            try {
+                const data = await response.json();
+
+                let idCounter = 0;
+
+                friendsContainer.innerHTML = "";
+
+                data.friends.forEach(entry => {
+                    idCounter++;
+
+                    let newEntry = document.createElement("div");
+                    newEntry.classList.add("friendItem");
+                    newEntry.classList.add("standardButton");
+
+                    newEntry.innerHTML = `
+                    <p>${entry.user_name}</p>
+                    <button id="removeFriend${idCounter}" class="standardButton friendItemButtons">
+                        <img alt="remove friend" class="friendRemoveIcon" src="/IMG/delete_icon.png">
+                    </button>
+                    `;
+
+                    newEntry.id = "friendEntry" + idCounter;
+
+                    friendsContainer.appendChild(newEntry);
+
+                    document.getElementById("friendEntry" + idCounter).addEventListener("click", () => {
+                        loadProfileFromId(entry.id, false, true);
+                    });
+
+                    document.getElementById("removeFriend" + idCounter).addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        showConfirmPopup("Remove friend?", "You are about to remove your friend from your list. Your friend will see this and might not like it. Make sure to use this at our own risk.", () => {
+                            removeFriend(entry.id);
+                        });
+                    });
+                });
+
+                if (!friendsContainer.innerHTML) {
+                    friendContainerMessage.textContent = "You haven't added any friends.";
+                    friendContainerMessage.style.display = "block";
+                } else {
+                    friendContainerMessage.style.display = "none";
+                }
+
+            } catch (error) {
+                console.error("In-Code error loading inbox: " + error);
+            }
+
+        } else {
+            console.error("Error loading friends: " + response.status);
+            friendContainerMessage.textContent = "Error loading friends: " + response.status;
+            friendContainerMessage.style.display = "block";
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while loading friends: ', error);
+        friendContainerMessage.textContent = "Error occured while loading friends: " + error;
+        friendContainerMessage.style.display = "block";
+    }
+}
+
+async function removeFriend(friendId) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            friendId: friendId
+        };
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/friends/remove", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            loadFriends();
+        } else {
+            const data = await response.json();
+            console.error("Error removing friend: " + response.status);
+            errorPopup("Error removing friend", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while removing friend: ', error);
+        errorPopup("Network error removing friend", "The friend request couldn't be accepted or deleted.", error, false, false);
     }
 }
