@@ -1659,9 +1659,9 @@ let nameProfileIdCounter = 0;
 
 export function showMultiplayerOverlay(show, title, array, lateJoin) {
     let container = document.getElementById("multiplayerTable");
-    container.innerHTML = "";
 
     if (show) {
+        container.innerHTML = "";
         document.getElementById("multiplayerFade").style.opacity = "1";
         document.getElementById("multiplayerFade").style.pointerEvents = "auto";
         document.getElementById("multiplayerTitle").textContent = title;
@@ -1884,7 +1884,7 @@ function returnMultiplayerBadge(badge) {
 let multiplayerTimer;
 let countdownInterval;
 
-//this starts the round visually and code-wise for all peers (also host, but host also starts with startMultiplayerRound() )
+// this starts the round visually and code-wise for all peers (also host, but host also starts with startMultiplayerRound() )
 function multiplayerOverlayCountdown() {
     roundEnded = false;
     multiplayerHasAlreadyGuessed = false;
@@ -1905,7 +1905,9 @@ function multiplayerOverlayCountdown() {
 
                 try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
                 multiplayerTimer = startTimer(roundLength, multiplayerTimerExpired); //Start the timer
+                
                 document.getElementById("mapModeText").textContent = "Multiplayer (Round: " + roundIndex + "/" + roundAmount + ")";
+                
                 if (multiplayerRestriction != "standard" && multiplayerRestriction) {
                     document.getElementById("mapModeText").textContent += " (" + multiplayerRestriction + ")";
                 }
@@ -1919,7 +1921,7 @@ function multiplayerOverlayCountdown() {
     }, 1000);
 }
 
-//Set restriction ----------------------------------------------------------------------------------
+// Set restriction ----------------------------------------------------------------------------------
 
 const guesserWindow = document.getElementById("GuesserWindow");
 
