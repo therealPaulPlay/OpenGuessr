@@ -1590,7 +1590,7 @@ textarea {
   margin-top: 10px;
   margin-inline: 5px;
   outline: 5px solid rgba(255, 255, 255, 0.1);
-  min-height: 150px;
+  min-height: 50px;
 }
 
 .playerSearchError {
@@ -1631,6 +1631,10 @@ textarea {
 .sendFriendRequestBrowser {
   background-color: rgba(255, 255, 255, 0.2);
   margin-right: -7px;
+}
+
+.manageFriendRequest {
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .friendSearchYou {
@@ -3279,7 +3283,15 @@ a:hover {
   align-items: center;
   min-height: 55px;
   flex-wrap: wrap;
-  padding: 10px;
+  padding: 5px;
+}
+
+.inboxItemButtons {
+  display: flex;
+  width: fit-content;
+  overflow: hidden;
+  gap: 5px;
+  margin-right: -7px;
 }
 
 #errorIcon {
