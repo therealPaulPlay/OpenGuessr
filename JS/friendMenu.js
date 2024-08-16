@@ -1,3 +1,5 @@
+import { errorPopup } from "./errorHandling";
+import { showConfirmPopup } from "./mainUI";
 import { loadProfileFromId } from "./profileView";
 import { playSound } from "./soundManager";
 
@@ -8,6 +10,7 @@ let addFriendsButton = document.getElementById("browseUsersFriends");
 addFriendsButton.addEventListener("click", () => {
     playSound("basic_button");
     container.innerHTML =  `<p class="playerSearchError">Input a query.</p>`;
+    document.getElementById("friendBrowserInput").value = "";
     document.getElementById("friendBrowserPopup").style.display = "flex";
 });
 
@@ -80,6 +83,12 @@ async function startSearch() {
 
                     container.appendChild(newEntry);
 
+                    document.getElementById("sendFriendRequest" + idCounter).addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        playSound("basic_button");
+                        sendFriendRequest(entry.id);
+                    });
+
                     document.getElementById("friendSearchEntry" + idCounter).addEventListener("click", () => {
                         loadProfileFromId(entry.id, false, true);
                     });
@@ -101,5 +110,43 @@ async function startSearch() {
     } catch (error) {
         console.error('Fetch/Network error occurred while loading user browser results: ', error);
         container.innerHTML = `<p class="playerSearchError">Network error: ${error}</p>`;
+    }
+}
+
+// send friend request ---------------------------------------------------------------------------------------------
+
+async function sendFriendRequest(targetUserId) {
+    try {
+        const currentUserId = localStorage.getItem("id");
+
+        if (!currentUserId || !targetUserId) {
+            return;
+        }
+
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            senderId: localStorage.getItem("id"),
+            recipientId: targetUserId
+        };
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/friends/send", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            showConfirmPopup("Friend request sent!", "Your friend request was sent successfully.", () => {}, false, false, true);
+        } else {
+            console.error("Error sending the friend request: " + response.status);
+            errorPopup("Error sending friend request", "The server returned an error for your friend request.", response.status, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while sending the friend request: ', error);
+        errorPopup("Network error sending friend request", "The friend request couldn't be sent.", error, false, false);
     }
 }
