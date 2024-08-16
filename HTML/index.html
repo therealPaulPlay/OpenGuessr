@@ -438,7 +438,8 @@
               href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en"
               target="_blank">Maps APIs</a>
             are <span class="supporterTextHighlight">highly expensive</span>, this has become <span
-              class="supporterTextHighlight">more challenging than ever.</span></p>
+              class="supporterTextHighlight">more challenging than ever.</span>
+          </p>
         </div>
         <div id="adTierBox" class="adTierBox supporterArea">
           <img alt="time limited" id="adBoostTimeLimitIcon" src="/IMG/time_limited.png">
@@ -493,6 +494,24 @@
       </div>
       </p>
       <button id="supporterClose" class="standardButton white accountClose">Close</button>
+    </div>
+  </div>
+  <!-- Friend browser window -->
+  <div id="friendBrowserPopup" class="popupHolder profilePopupBackground">
+    <div id="friendBrowserWindow" class="uiWindow">
+      <div class="popup-title">
+        <h1 id="profileViewName">Search players</h1>
+      </div>
+      <search id="playerSearch">
+        <input maxlength="255" type="text" id="friendBrowserInput" placeholder="Search for a name...">
+        <button id="startFriendSearch" class="standardButton">
+          <img src="/IMG/find_icon.png" alt="start search" id="playerSearchIcon">
+        </button>
+      </search>
+      <div id="playerSearchBox" class="playerSearchBox">
+        <p class="playerSearchError">Search returned no results.</p>
+      </div>
+      <button id="friendBrowserClose" class="standardButton white accountClose">Close</button>
     </div>
   </div>
   <!-- remaining windows -->
@@ -668,6 +687,10 @@
                 class="socialBarIcons" style="margin-left: 5px;" src="/IMG/find_icon.png"
                 alt="Lightning error symbol"></button>
           </div>
+        </div>
+        <div class="multiplayerFriendArea">
+          <p id="noFriendsText">You haven't added any friends.</p>
+          <button class="standardButton" id="browseUsersFriends">Add friends +</button>
         </div>
         <div class="infoNote">
           <div id="troubleshootingArea">
@@ -859,7 +882,8 @@
   <!--map-->
   <div id="mapHolder" class="regularMapSize">
     <button id="revealCompass">
-      <img id="revealCompassArrow" src="/IMG/arrow_icon.png" alt="Shift map to the side" class="socialBarIcons arrowIcon">
+      <img id="revealCompassArrow" src="/IMG/arrow_icon.png" alt="Shift map to the side"
+        class="socialBarIcons arrowIcon">
     </button>
     <div id="mapAttribution" class="mapAttribution">
       <p>Map Data ©2024 Google

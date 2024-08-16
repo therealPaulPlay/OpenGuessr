@@ -582,7 +582,8 @@ h3 {
 #badgeClose,
 #pinClose,
 #supporterClose,
-#confirmProceed {
+#confirmProceed, 
+#friendBrowserClose {
   min-height: 50px;
 }
 
@@ -809,6 +810,12 @@ textarea {
   max-width: 700px;
 }
 
+#friendBrowserWindow {
+  z-index: 960;
+  display: block !important;
+  max-width: 700px;
+}
+
 #pinWindow {
   max-width: 560px;
 }
@@ -851,6 +858,10 @@ textarea {
 
 #badgePopup, #pinPopup, #supporterPopup {
   z-index: 971;
+}
+
+#friendBrowserPopup {
+  z-index: 960;
 }
 
 .supporterBox {
@@ -1545,6 +1556,124 @@ textarea {
   margin-right: auto;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
+}
+
+.multiplayerFriendArea {
+  margin: 10px;
+  width: calc(100% - 20px);
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 22px;
+  padding: 10px;
+  flex-wrap: wrap;
+  gap: 5px;
+} 
+
+.playerSearchBox {
+  display: flex;
+  justify-content: safe center;
+  flex-direction: column;
+  width: calc(100% - 13px);
+  border-radius: 5px;
+  max-height: 50vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 2px;
+  background-color: rgba(255, 255, 255, 0.1);
+  gap: 10px;
+  margin-top: 10px;
+  margin-inline: 5px;
+  outline: 5px solid rgba(255, 255, 255, 0.1);
+}
+
+.playerSearchError {
+  opacity: 0.5;
+  font-size: 22px;
+  text-align: center;
+  width: 100%;
+}
+
+#friendBrowserInput {
+  flex-grow: 1;
+}
+
+#playerSearch {
+  margin-bottom: 20px;
+  margin-top: 20px;
+  height: 45px;
+}
+
+.friendSearchItem {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  width: calc(100% - 30px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  padding-inline: 15px;
+  transition: background-color 250ms ease;
+}
+
+.friendSearchItem p {
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sendFriendRequestBrowser {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.friendSearchYou {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+#startFriendSearch {
+  background-color: rgba(255, 255, 255, 0.1);
+  width: fit-content;
+  margin: 0;
+}
+
+#playerSearchIcon {
+  width: 20px;
+  height: 20px;
+}
+
+search {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.friendSearchItem:hover {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+#friendBrowserInput {
+  border-radius: 5px;
+  padding-inline: 10px;
+  font-size: 22px;
+}
+
+#noFriendsText {
+  opacity: 0.75;
+  text-align: center;
+  margin-left: 10px;
+  margin-right: auto;
+}
+
+#browseUsersFriends {
+  background-color: rgba(255, 255, 255, 0.1);
 }
 
 .infoNote p {
