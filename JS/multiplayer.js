@@ -91,7 +91,7 @@ function startLoadFriendsInterval() {
         if (multiplayerSelectionScreen.style.display == "block") {
             loadFriends();
         }
-    }, 7000);
+    }, 10000);
 }
 
 //Pages ---------------------------------------------------------------------------------------
