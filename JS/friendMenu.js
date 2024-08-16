@@ -159,12 +159,21 @@ const inboxButton = document.getElementById("openFriendInbox");
 const inboxContainer = document.getElementById("friendInbox");
 let inboxRefreshInterval;
 
+export function setInboxStatus(newRequests) {
+    if (newRequests) {
+        document.getElementById("inboxIcon").src = "/IMG/inbox_icon_new.png";
+    } else {
+        document.getElementById("inboxIcon").src = "/IMG/inbox_icon.png";
+    }
+}
+
 inboxButton.addEventListener("click", () => {
     playSound("basic_button");
     if (isAuthenticated) {
         inboxContainer.innerHTML = `<p class="playerSearchError">Your inbox is empty.</p>`;
         document.getElementById("friendInboxPopup").style.display = "flex";
         loadInbox(false);
+        setInboxStatus(false);
         // auto refresh inbox 
         clearInterval(inboxRefreshInterval);
         inboxRefreshInterval = setInterval(() => {
@@ -388,7 +397,7 @@ export async function loadFriends() {
 
                     document.getElementById("removeFriend" + idCounter).addEventListener("click", (e) => {
                         e.stopPropagation();
-                        showConfirmPopup("Remove friend?", "You are about to remove your friend from your list. Your friend will see this and might not like it. Make sure to use this at our own risk.", () => {
+                        showConfirmPopup("Remove friend?", "You are about to remove your friend from your list. Your friend will see this and might not like it. Use this at our own risk.", () => {
                             removeFriend(entry.id);
                         });
                     });
