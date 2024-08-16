@@ -514,6 +514,18 @@
       <button id="friendBrowserClose" class="standardButton white accountClose">Close</button>
     </div>
   </div>
+    <!-- Inbox for friend requests -->
+    <div id="friendInboxPopup" class="popupHolder profilePopupBackground">
+      <div id="friendInboxWindow" class="uiWindow">
+        <div class="popup-title">
+          <h1 id="profileViewName">Inbox</h1>
+        </div>
+        <div id="friendInbox" class="playerSearchBox">
+          <p>Default</p>
+        </div>
+        <button id="friendInboxClose" class="standardButton white accountClose">Close</button>
+      </div>
+    </div>
   <!-- remaining windows -->
   <div class="popupHolder">
     <!-- Help / How to Play Popup -->
@@ -690,7 +702,12 @@
         </div>
         <div class="multiplayerFriendArea">
           <p id="noFriendsText">You haven't added any friends.</p>
-          <button class="standardButton" id="browseUsersFriends">Add friends +</button>
+          <div class="friendButtonArea">
+            <button class="standardButton" id="browseUsersFriends">Add friends +</button>
+            <button class="standardButton" id="openFriendInbox">
+              <img alt="inbox icon" src="/IMG/inbox_icon.png" id="inboxIcon">
+            </button>
+          </div>
         </div>
         <div class="infoNote">
           <div id="troubleshootingArea">

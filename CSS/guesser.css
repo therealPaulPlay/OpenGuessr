@@ -583,7 +583,8 @@ h3 {
 #pinClose,
 #supporterClose,
 #confirmProceed, 
-#friendBrowserClose {
+#friendBrowserClose,
+#friendInboxClose {
   min-height: 50px;
 }
 
@@ -810,7 +811,7 @@ textarea {
   max-width: 700px;
 }
 
-#friendBrowserWindow {
+#friendBrowserWindow, #friendInboxWindow {
   z-index: 960;
   display: block !important;
   max-width: 700px;
@@ -860,7 +861,7 @@ textarea {
   z-index: 971;
 }
 
-#friendBrowserPopup {
+#friendBrowserPopup, #friendInboxPopup {
   z-index: 960;
 }
 
@@ -1589,6 +1590,7 @@ textarea {
   margin-top: 10px;
   margin-inline: 5px;
   outline: 5px solid rgba(255, 255, 255, 0.1);
+  min-height: 150px;
 }
 
 .playerSearchError {
@@ -1666,6 +1668,16 @@ search {
   font-size: 22px;
 }
 
+#inboxIcon {
+  width: 20px;
+  height: 20px;
+  vertical-align: -2px;
+}
+
+#openFriendInbox {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 #noFriendsText {
   opacity: 0.75;
   text-align: center;
@@ -1675,6 +1687,14 @@ search {
 
 #browseUsersFriends {
   background-color: rgba(255, 255, 255, 0.1);
+}
+
+.friendButtonArea {
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+  align-items: center;
+  gap: 5px;
 }
 
 .infoNote p {

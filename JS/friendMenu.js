@@ -1,5 +1,7 @@
+import { isAuthenticated } from "./accountLogic";
 import { errorPopup } from "./errorHandling";
 import { showConfirmPopup } from "./mainUI";
+import { toggleMultiplayerSelector } from "./multiplayer";
 import { loadProfileFromId } from "./profileView";
 import { playSound } from "./soundManager";
 
@@ -9,9 +11,14 @@ let addFriendsButton = document.getElementById("browseUsersFriends");
 
 addFriendsButton.addEventListener("click", () => {
     playSound("basic_button");
-    container.innerHTML =  `<p class="playerSearchError">Input a query.</p>`;
-    document.getElementById("friendBrowserInput").value = "";
-    document.getElementById("friendBrowserPopup").style.display = "flex";
+    if (isAuthenticated) {
+        container.innerHTML =  `<p class="playerSearchError">Input a query.</p>`;
+        document.getElementById("friendBrowserInput").value = "";
+        document.getElementById("friendBrowserPopup").style.display = "flex";
+    } else {
+        toggleMultiplayerSelector("close");
+        showPageBrowser("/signup.html", true);
+    }
 });
 
 document.getElementById("friendBrowserClose").addEventListener("click", () => {
@@ -65,10 +72,6 @@ async function startSearch() {
                     let newEntry = document.createElement("div");
                     newEntry.classList.add("friendSearchItem");
 
-                    if (entry.supporter_level && entry.supporter_level > 0) {
-                        newEntry.classList.add("leaderboardSupporterEntry");
-                    }
-
                     newEntry.innerHTML = `
                     <p>${entry.user_name}</p>
                     <button id="sendFriendRequest${idCounter}" class="sendFriendRequestBrowser standardButton">
@@ -117,9 +120,7 @@ async function startSearch() {
 
 async function sendFriendRequest(targetUserId) {
     try {
-        const currentUserId = localStorage.getItem("id");
-
-        if (!currentUserId || !targetUserId) {
+        if (!targetUserId) {
             return;
         }
 
@@ -141,12 +142,142 @@ async function sendFriendRequest(targetUserId) {
         if (response.ok) {
             showConfirmPopup("Friend request sent!", "Your friend request was sent successfully.", () => {}, false, false, true);
         } else {
+            const data = await response.json();
             console.error("Error sending the friend request: " + response.status);
-            errorPopup("Error sending friend request", "The server returned an error for your friend request.", response.status, false, false);
+            errorPopup("Error sending friend request", "The server returned an error for your friend request.", response.status + " - " + data.error, false, false);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while sending the friend request: ', error);
         errorPopup("Network error sending friend request", "The friend request couldn't be sent.", error, false, false);
+    }
+}
+
+// Inbox -----------------------------------------------------------------------------------------------------------------------------------
+
+const inboxButton = document.getElementById("openFriendInbox");
+const inboxContainer = document.getElementById("friendInbox");
+
+inboxButton.addEventListener("click", () => {
+    playSound("basic_button");
+    if (isAuthenticated) {
+        inboxContainer.innerHTML = `<p class="playerSearchError">Your inbox is empty.</p>`;
+        document.getElementById("friendInboxPopup").style.display = "flex";
+    } else {
+        toggleMultiplayerSelector("close");
+        showPageBrowser("/signup.html", true);
+    }
+});
+
+document.getElementById("friendInboxClose").addEventListener("click", () => {
+    playSound("basic_button");
+    document.getElementById("friendInboxPopup").style.display = "none";
+});
+
+async function loadInbox() {
+    inboxContainer.innerHTML = `<p class="playerSearchError">Loading...</p>`;
+
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id")
+        };
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/friends/inbox", {
+            method: 'GET',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            try {
+                const data = await response.json();
+
+                let idCounter = 0;
+
+                inboxContainer.innerHTML = "";
+
+                data.users.forEach(entry => {
+                    idCounter++;
+
+                    let newEntry = document.createElement("div");
+                    newEntry.classList.add("friendSearchItem");
+
+                    newEntry.innerHTML = `
+                    <p>${entry.user_name}</p>
+                    <button id="acceptFriendRequest${idCounter}" class="sendFriendRequestBrowser standardButton">
+                        Accept
+                    </button>`;
+
+                    if (entry.id == localStorage.getItem("id")) {
+                        newEntry.classList.add("friendSearchYou");
+                    }
+
+                    newEntry.id = "friendInboxEntry" + idCounter;
+
+                    inboxContainer.appendChild(newEntry);
+
+                    document.getElementById("acceptFriendRequest" + idCounter).addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        playSound("basic_button");
+                        acceptFriendRequest(entry.id);
+                    });
+
+                    document.getElementById("friendInboxEntry" + idCounter).addEventListener("click", () => {
+                        loadProfileFromId(entry.id, false, true);
+                    });
+                });
+
+                if (!inboxContainer.innerHTML) {
+                    inboxContainer.innerHTML = `<p class="playerSearchError">Your inbox is empty.</p>`;
+                }
+
+            } catch (error) {
+                console.error("In-Code error loading inbox: " + error);
+            }
+
+        } else {
+            console.error("Error loading inbox: " + response.status);
+            inboxContainer.innerHTML = `<p class="playerSearchError">Error: ${response.status}</p>`;
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while loading inbox: ', error);
+        inboxContainer.innerHTML = `<p class="playerSearchError">Network error: ${error}</p>`;
+    }
+}
+
+// accept friend request
+async function acceptFriendRequest(senderId) {
+    try {
+
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            senderId: senderId,
+            recipientId: localStorage.getItem("id")
+        };
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/friends/accept", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            loadInbox();
+        } else {
+            const data = await response.json();
+            console.error("Error accepting / deleting the friend request: " + response.status);
+            errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while sending the friend request: ', error);
+        errorPopup("Network error accepting / deleting friend request", "The friend request couldn't be accepted or deleted.", error, false, false);
     }
 }
