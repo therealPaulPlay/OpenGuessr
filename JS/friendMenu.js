@@ -380,7 +380,10 @@ export async function loadFriends() {
                     newEntry.classList.add("friendItem");
                     newEntry.classList.add("standardButton");
 
+                    let friendOnlineBar = entry.online ? `<div class="friendOnlineBar"></div>` : "";
+
                     newEntry.innerHTML = `
+                    ${friendOnlineBar}
                     <p>${entry.user_name}</p>
                     <button id="removeFriend${idCounter}" class="standardButton friendItemButtons">
                         <img alt="remove friend" class="friendRemoveIcon" src="/IMG/delete_icon.png">

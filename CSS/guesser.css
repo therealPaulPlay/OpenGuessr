@@ -1703,6 +1703,14 @@ search {
   font-size: 22px;
 }
 
+.friendOnlineBar {
+  width: 6px;
+  border-radius: 5px;
+  height: 20%;
+  background-color: #00cc00;
+  margin-top: 4px;
+}
+
 #inboxIcon {
   width: 20px;
   height: 20px;
