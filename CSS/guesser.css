@@ -1620,6 +1620,7 @@ textarea {
   padding: 5px;
   padding-inline: 15px;
   transition: background-color 250ms ease;
+  gap: 10px;
 }
 
 .friendSearchItem p {
