@@ -352,6 +352,8 @@ let friendContainerMessage = document.getElementById("noFriendsText");
 
 export async function loadFriends() {
     try {
+        friendContainerMessage.textContent = "Loading...";
+
         const requestBody = {
             id: localStorage.getItem("id")
         };
