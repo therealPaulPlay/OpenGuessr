@@ -369,6 +369,7 @@ function streakCalculation() {
 
     streakDisplay.style.visibility = "visible";
     streakDisplay.style.width = "auto";
+    streakDisplay.style.maxWidth = "unset";
   }
 }
 
@@ -470,6 +471,7 @@ export async function loadResultScreenXP(distance) {
 
     streakDisplay.style.visibility = "hidden";
     streakDisplay.style.width = "0";
+    streakDisplay.style.maxWidth = "0";
 
     let earnedXP;
     let earnedBasicXP; // without supporter mutliplier, that will be applied later (this is just for visuals)

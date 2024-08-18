@@ -1,7 +1,8 @@
 import { isAuthenticated } from "./accountLogic";
+import { leaveCompetition } from "./competitionLogic";
 import { errorPopup } from "./errorHandling";
-import { showConfirmPopup, showPageBrowser } from "./mainUI";
-import { peerId, toggleMultiplayerSelector } from "./multiplayer";
+import { showConfirmPopup, showNotification, showPageBrowser } from "./mainUI";
+import { joinRoom, leaveMultiplayerRound, peerId, setFriendDuel, setLinkjoinPopup, setPlayingDuels, setupMultiplayerRoom, toggleMultiplayerSelector } from "./multiplayer";
 import { loadProfileFromId } from "./profileView";
 import { playSound } from "./soundManager";
 
@@ -491,16 +492,16 @@ async function sendMatchInvite(recipientId, duel) {
         });
 
         if (response.ok) {
-            showConfirmPopup("Invite sent", "You have sent your friend an invite. Wait for them to respond.", false, false, false, true);
+            showNotification(`Invite sent.`, false, false, false);
         } else {
             const data = await response.json();
-            console.error("Error sending invite: " + response.status);
-            errorPopup("Error sending invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+            console.error("Error sending invite: " + response.status + ", " + data.error);
+            showNotification("Error sending invite (user just went offline).", false, false, false);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while sending/accepting/declining invite: ', error);
-        errorPopup("Network error sending/accepting/declining invite", "The invite couldn't be sent / accepted / declined.", error, false, false);
+        errorPopup("Network error sending invite", "The invite couldn't be sent due to a network problem.", error, false, false);
     }
 }
 
@@ -580,14 +581,45 @@ export function initializeWebsocketConnection() {
     ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type === 'room-invite') {
-            // Handle room invite notification
-            console.log(`Received room invite from user ${data.from} with room code ${data.roomcode}`);
-            // Display this to the user in your frontend
+            showNotification(`Received room invite from ${data.name}.`, () => {
+                joinRoomFromNotification(data.roomcode, data.from, data.duel);
+            }, () => {
+                declineMatchInvite(data.from);
+            }, true);
+
         } else if (data.type === 'invite-accepted') {
-            console.log(`User ${data.from} accepted your invite to room ${data.roomcode}`);
+            createDuelRoom();
+
         } else if (data.type === 'invite-declined') {
-            console.log(`User ${data.from} declined your invite to room ${data.roomcode}`);
+            showNotification(`${data.name} declined your invite.`, false, false, false);
+        } else if (data.type === 'friend-request-received') {
+            showNotification(`${data.name} sent you a friend request.`, () => {
+                acceptFriendRequest(data.from);
+            }, false, true);
         }
     };
+}
+
+function joinRoomFromNotification(roomcode, recipientId, duel) {
+    acceptMatchInvite(recipientId);
+
+    // wait 1000ms for the other player to respond + host the room
+    setTimeout(() => {
+        leaveMultiplayerRound();
+        leaveCompetition(false);
+        setPlayingDuels(true);
+        setFriendDuel(true);
+        setLinkjoinPopup(true);
+        joinRoom(roomcode.replace("openguessr_", ""));
+    }, 1000);
+}
+
+function createDuelRoom() {
+    leaveMultiplayerRound();
+    leaveCompetition(false);
+    setPlayingDuels(true);
+    setFriendDuel(true);
+    setupMultiplayerRoom(5, 60);
+    toggleMultiplayerSelector("close");
 }
 
