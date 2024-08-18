@@ -1,7 +1,7 @@
 import { isAuthenticated } from "./accountLogic";
 import { errorPopup } from "./errorHandling";
 import { showConfirmPopup, showPageBrowser } from "./mainUI";
-import { toggleMultiplayerSelector } from "./multiplayer";
+import { peerId, toggleMultiplayerSelector } from "./multiplayer";
 import { loadProfileFromId } from "./profileView";
 import { playSound } from "./soundManager";
 
@@ -387,6 +387,9 @@ export async function loadFriends() {
                     newEntry.innerHTML = `
                     ${friendOnlineBar}
                     <p>${entry.user_name}</p>
+                    <button id="duelFriend${idCounter}" class="standardButton friendItemButtons">
+                        1v1
+                    </button>
                     <button id="removeFriend${idCounter}" class="standardButton friendItemButtons">
                         <img alt="remove friend" class="friendRemoveIcon" src="/IMG/delete_icon.png">
                     </button>
@@ -405,6 +408,12 @@ export async function loadFriends() {
                         showConfirmPopup("Remove friend?", "You are about to remove your friend from your list. Your friend will see this and might not like it. Use this at our own risk.", () => {
                             removeFriend(entry.id);
                         });
+                    });
+
+
+                    document.getElementById("duelFriend" + idCounter).addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        sendMatchInvite(entry.id, true);
                     });
                 });
 
@@ -461,3 +470,124 @@ async function removeFriend(friendId) {
         errorPopup("Network error removing friend", "The friend request couldn't be accepted or deleted.", error, false, false);
     }
 }
+
+async function sendMatchInvite(recipientId, duel) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            friend_id: recipientId,
+            roomcode: peerId,
+            senderName: localStorage.getItem("username"),
+            isDuel: duel
+        };
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/friends/send-invite", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            showConfirmPopup("Invite sent", "You have sent your friend an invite. Wait for them to respond.", false, false, false, true);
+        } else {
+            const data = await response.json();
+            console.error("Error sending invite: " + response.status);
+            errorPopup("Error sending invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while sending/accepting/declining invite: ', error);
+        errorPopup("Network error sending/accepting/declining invite", "The invite couldn't be sent / accepted / declined.", error, false, false);
+    }
+}
+
+async function acceptMatchInvite(recipientId) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            friend_id: recipientId,
+            senderName: localStorage.getItem("username")
+        };
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/friends/accept-invite", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+
+        } else {
+            const data = await response.json();
+            console.error("Error accepting invite: " + response.status);
+            errorPopup("Error accepting invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while sending/accepting/declining invite: ', error);
+        errorPopup("Network error sending/accepting/declining invite", "The invite couldn't be sent / accepted / declined.", error, false, false);
+    }
+}
+
+async function declineMatchInvite(recipientId) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            friend_id: recipientId,
+            senderName: localStorage.getItem("username")
+        };
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/friends/decline-invite", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+
+        } else {
+            const data = await response.json();
+            console.error("Error declining invite: " + response.status);
+            errorPopup("Error declining invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while sending/accepting/declining invite: ', error);
+        errorPopup("Network error sending/accepting/declining invite", "The invite couldn't be sent / accepted / declined.", error, false, false);
+    }
+}
+
+// Web socket for notifications -------------------------------------------------------------------------------
+
+export function initializeWebsocketConnection() {
+    const ws = new WebSocket('wss://accounts.openguessr.com/ws/');
+
+    ws.onopen = () => {
+        // Authenticate the WebSocket connection
+        ws.send(JSON.stringify({ id: localStorage.getItem("id") })); // Replace `userId` with the actual user ID
+    };
+
+    // Handle incoming WebSocket messages
+    ws.onmessage = (event) => {
+        const data = JSON.parse(event.data);
+        if (data.type === 'room-invite') {
+            // Handle room invite notification
+            console.log(`Received room invite from user ${data.from} with room code ${data.roomcode}`);
+            // Display this to the user in your frontend
+        } else if (data.type === 'invite-accepted') {
+            console.log(`User ${data.from} accepted your invite to room ${data.roomcode}`);
+        } else if (data.type === 'invite-declined') {
+            console.log(`User ${data.from} declined your invite to room ${data.roomcode}`);
+        }
+    };
+}
+

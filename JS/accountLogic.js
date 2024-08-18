@@ -9,7 +9,7 @@ import { toggleStreakWindow } from "./streakAdPopup.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
 import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel, supporterLevel } from "./profileView.js";
 import { errorPopup } from "./errorHandling.js";
-import { setInboxStatus } from "./friendMenu.js";
+import { initializeWebsocketConnection, setInboxStatus } from "./friendMenu.js";
 
 let accountLockedArray;
 
@@ -224,9 +224,8 @@ async function checkSigninStatusAndLoadUserInfo() {
       updateLoadedProfileData(user.profile_data);
       changeUItoSignedIn(user.supporter_level); // display user info is already being called in here
       setSupporterLevel(user.supporter_level, user.supported_amount);
-      if (user.new_requests) {
-        setInboxStatus(true);
-      }
+      if (user.new_requests) { setInboxStatus(true); }
+      initializeWebsocketConnection();
     });
   }
   else {
