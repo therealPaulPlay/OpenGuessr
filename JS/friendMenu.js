@@ -128,7 +128,8 @@ async function sendFriendRequest(targetUserId) {
         const requestBody = {
             id: localStorage.getItem("id"),
             senderId: localStorage.getItem("id"),
-            recipientId: targetUserId
+            recipientId: targetUserId,
+            senderName: localStorage.getItem("username")
         };
 
         const response = await fetch("https://accounts.openguessr.com/accounts/friends/send", {
@@ -421,8 +422,10 @@ export async function loadFriends() {
                 if (!friendsContainer.innerHTML) {
                     friendContainerMessage.textContent = "You haven't added any friends.";
                     friendContainerMessage.style.display = "block";
+                    document.getElementById("friendBox").style.display = "none";
                 } else {
                     friendContainerMessage.style.display = "none";
+                    document.getElementById("friendBox").style.display = "flex";
                 }
 
             } catch (error) {
@@ -496,7 +499,7 @@ async function sendMatchInvite(recipientId, duel) {
         } else {
             const data = await response.json();
             console.error("Error sending invite: " + response.status + ", " + data.error);
-            showNotification("Error sending invite (user just went offline).", false, false, false);
+            showNotification("Error sending invite (user offline).", false, false, false);
         }
 
     } catch (error) {
@@ -505,7 +508,7 @@ async function sendMatchInvite(recipientId, duel) {
     }
 }
 
-async function acceptMatchInvite(recipientId) {
+async function acceptDuelInvite(recipientId) {
     try {
         const requestBody = {
             id: localStorage.getItem("id"),
@@ -601,17 +604,26 @@ export function initializeWebsocketConnection() {
 }
 
 function joinRoomFromNotification(roomcode, recipientId, duel) {
-    acceptMatchInvite(recipientId);
+    let joinTimeout = 10;
+
+    if (duel) {
+        acceptDuelInvite(recipientId); // informs the host that they should create a room
+        joinTimeout = 1000;
+    }
 
     // wait 1000ms for the other player to respond + host the room
     setTimeout(() => {
         leaveMultiplayerRound();
         leaveCompetition(false);
-        setPlayingDuels(true);
-        setFriendDuel(true);
+
+        if (duel) {
+            setPlayingDuels(true);
+            setFriendDuel(true);
+        }
+
         setLinkjoinPopup(true);
         joinRoom(roomcode.replace("openguessr_", ""));
-    }, 1000);
+    }, joinTimeout);
 }
 
 function createDuelRoom() {

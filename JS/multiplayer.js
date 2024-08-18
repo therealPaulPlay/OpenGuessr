@@ -1670,7 +1670,7 @@ function showEndscreenUI(show) {
         if (isHost) {
             endMultiplayerRoundButton.textContent = "End Round";
 
-            if (!playingDuels) {
+            if (!playingDuels || friendDuel) {
                 endMultiplayerRematchButton.style.display = "block";
                 endMultiplayerRematchButton.style.opacity = "1";
                 endMultiplayerRematchButton.style.pointerEvents = "auto";

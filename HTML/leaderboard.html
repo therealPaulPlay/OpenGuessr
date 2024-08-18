@@ -117,20 +117,6 @@
             text-align: center;
         }
 
-        .yourContainer {
-            padding: 0;
-            padding-left: 10px;
-            padding-right: 10px;
-            width: 80vw;
-            max-width: 800px;
-            margin-left: auto;
-            margin-right: auto;
-            margin-bottom: 20px;
-            background-color: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            text-align: center;
-        }
-
         .rankedItem {
             width: 100%;
             height: 50px;
@@ -204,10 +190,6 @@
                 opacity: 0;
                 transform: translate(100%)
             }
-        }
-
-        .yourContainer .rankedItem {
-            background-color: rgba(182, 190, 221, 0.2); /* your leaderboard item */
         }
 
         .middle {
@@ -466,13 +448,6 @@
     </div>
     <div class="center">
         <div class="leaderboardContainer" id="leaderboardContainer">
-            <div class="yourContainer">
-                <div class="rankedItem">
-                    <p id="yourRank" class="rankedItemLeft maxlength">You: </p>
-                    <p id="yourName" class="middle maxlength">Loading name</p>
-                    <p id="yourExperience" class="rankedItemRight maxlength"></p>
-                </div>
-            </div>
             <div id="container" class="container"></div>
             <div id="threeDotsContainer" class="threeDotsContainer">
                 <div class="circleDot"></div><div class="circleDot"></div><div class="circleDot"></div>
@@ -505,25 +480,12 @@
     );
 
     // Load local data ----------------------------------------------------------------------------------------------------------
-    let yourUsername = localStorage.getItem("username") != null ? localStorage.getItem("username") : "Not signed in";
-    document.getElementById("yourName").innerHTML = yourUsername;
 
     let dontLoadStats = false;
 
     //dont load the stats if the user is not signed in 
     if (localStorage.getItem("username") == null) {
         dontLoadStats = true;
-    }
-
-    //get experience from localstorage in case it isn't being returned by the request
-    if (localStorage.getItem("experience") != null && !dontLoadStats) {
-        document.getElementById("yourExperience").innerHTML = Number(localStorage.getItem("experience")).toLocaleString() + " XP";
-    }
-
-    if (localStorage.getItem("id") != null) {
-        document.getElementById("yourName").addEventListener("click", () => {
-            openProfile(localStorage.getItem("id"));
-        });
     }
 
     // open profile -----------------------------------------------------------------------------------------------------------------
@@ -539,6 +501,7 @@
     // Add leaderboar entries --------------------------------------------------------------------------------------------------------
     let container = document.getElementById('container');
     let yourLeagueContainer = document.getElementById("yourLeagueContainer");
+    let yourUsername = localStorage.getItem("username");
 
     // Function to add a new ranked item to the leaderboard
     let idCounter = 0;
@@ -620,11 +583,6 @@
                 let supporterLevel = user.supporter_level;
 
                 addRankedItem(user.position, userName, experience, id, supporterLevel);
-            }
-
-            if (data.user && !dontLoadStats) {
-                document.getElementById("yourExperience").innerHTML = Number(data.user.experience).toLocaleString() + " XP";
-                document.getElementById("yourRank").innerHTML = "#" + (data.user.position.toLocaleString());
             }
 
             if (data.userLeaderboard) {
