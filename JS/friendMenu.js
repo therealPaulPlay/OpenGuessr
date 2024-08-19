@@ -578,49 +578,53 @@ export function initializeWebsocketConnection() {
     const maxReconnectAttempts = 5;
 
     function connectWebSocket() {
-        ws = new WebSocket('wss://accounts.openguessr.com/ws/');
+        try {
+            ws = new WebSocket('wss://accounts.openguessr.com/ws/');
 
-        ws.onopen = () => {
-            reconnectAttempts = 0; // Reset the reconnect attempts on a successful connection
-            ws.send(JSON.stringify({ id: localStorage.getItem("id") }));
-        };
-
-        ws.onmessage = (event) => {
-            const data = JSON.parse(event.data);
-            if (data.type === 'room-invite') {
-                const roomOrDuel = data.duel ? "Duel" : "Room";
-                showNotification(`${roomOrDuel} invite from ${data.name}.`, () => {
-                    joinRoomFromNotification(data.roomcode, data.from, data.duel);
-                }, () => {
-                    declineMatchInvite(data.from);
-                }, true);
-
-            } else if (data.type === 'invite-accepted') {
-                createDuelRoom();
-
-            } else if (data.type === 'invite-declined') {
-                showNotification(`${data.name} declined your invite.`, false, false, false);
-            } else if (data.type === 'friend-request-received') {
-                showNotification(`${data.name} sent you a friend request.`, () => {
-                    acceptFriendRequest(data.from);
-                }, false, true);
-            }
-        };
-
-        ws.onclose = () => {
-            if (reconnectAttempts < maxReconnectAttempts) {
-                reconnectAttempts++;
-                console.warn(`WebSocket closed. Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts})...`);
-                connectWebSocket();
-            } else {
-                console.error('Max reconnect attempts reached. Could not reconnect.');
-            }
-        };
-
-        ws.onerror = (error) => {
-            console.error('WebSocket encountered an error: ', error.message);
-            ws.close(); // Close the socket to trigger the onclose event
-        };
+            ws.onopen = () => {
+                reconnectAttempts = 0; // Reset the reconnect attempts on a successful connection
+                ws.send(JSON.stringify({ id: localStorage.getItem("id") }));
+            };
+    
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'room-invite') {
+                    const roomOrDuel = data.duel ? "Duel" : "Room";
+                    showNotification(`${roomOrDuel} invite from ${data.name}.`, () => {
+                        joinRoomFromNotification(data.roomcode, data.from, data.duel);
+                    }, () => {
+                        declineMatchInvite(data.from);
+                    }, true);
+    
+                } else if (data.type === 'invite-accepted') {
+                    createDuelRoom();
+    
+                } else if (data.type === 'invite-declined') {
+                    showNotification(`${data.name} declined your invite.`, false, false, false);
+                } else if (data.type === 'friend-request-received') {
+                    showNotification(`${data.name} sent you a friend request.`, () => {
+                        acceptFriendRequest(data.from);
+                    }, false, true);
+                }
+            };
+    
+            ws.onclose = () => {
+                if (reconnectAttempts < maxReconnectAttempts) {
+                    reconnectAttempts++;
+                    console.warn(`WebSocket closed. Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts})...`);
+                    connectWebSocket();
+                } else {
+                    console.error('Max reconnect attempts reached. Could not reconnect.');
+                }
+            };
+    
+            ws.onerror = (error) => {
+                console.error('WebSocket encountered an error: ', error.message);
+                ws.close(); // Close the socket to trigger the onclose event
+            };
+        } catch (error) {
+            console.error("Error in websocket friends code:", error);
+        }
     }
 
     connectWebSocket();
