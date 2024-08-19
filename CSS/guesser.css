@@ -119,6 +119,43 @@ h3 {
   filter: blur(1px);
 }
 
+#notificationBar {
+  position: absolute;
+  top: 50px;
+  border-radius: 10px;
+  background-color: hsla(236, 25%, 20%, 0.7);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  padding: 6px;
+  gap: 15px;
+  font-size: 22px;
+  opacity: 0;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
+  transition: all 200ms ease;
+  pointer-events: auto;
+  flex-wrap: wrap;
+  margin-inline: 10px;
+}
+
+#notificationText {
+  padding-left: 10px;
+  max-width: 350px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
+}
+
+.notificationButtonBox {
+  display: flex;
+  align-items: center;
+  width: fit-content;
+  gap: 4px;
+}
+
 #bottomShadow {
   position: fixed;
   bottom: 0;
@@ -582,7 +619,9 @@ h3 {
 #badgeClose,
 #pinClose,
 #supporterClose,
-#confirmProceed {
+#confirmProceed, 
+#friendBrowserClose,
+#friendInboxClose {
   min-height: 50px;
 }
 
@@ -745,7 +784,7 @@ textarea {
 }
 
 .popupHolder {
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   right: 0;
@@ -753,6 +792,8 @@ textarea {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
+  pointer-events: none;
 }
 
 .uiWindow {
@@ -774,6 +815,7 @@ textarea {
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 100px rgba(5, 6, 10, 0.5);
   color: white;
+  pointer-events: auto;
 }
 
 .errorBackground {
@@ -805,6 +847,12 @@ textarea {
 
 #badgeWindow, #pinWindow, #supporterWindow {
   z-index: 971;
+  display: block !important;
+  max-width: 700px;
+}
+
+#friendBrowserWindow, #friendInboxWindow {
+  z-index: 960;
   display: block !important;
   max-width: 700px;
 }
@@ -851,6 +899,10 @@ textarea {
 
 #badgePopup, #pinPopup, #supporterPopup {
   z-index: 971;
+}
+
+#friendBrowserPopup, #friendInboxPopup {
+  z-index: 960;
 }
 
 .supporterBox {
@@ -910,7 +962,7 @@ textarea {
   align-items: center;
   gap: 20px;
   margin-top: 10px;
-  max-height: calc(100dvh - 350px);
+  max-height: calc(92dvh - 250px);
   overflow-x: hidden;
   overflow-y: auto;
   border-radius: 5px;
@@ -1492,6 +1544,53 @@ textarea {
   padding-bottom: 10px;
 }
 
+#roomCreationFriendsBox {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  border-radius: 5px;
+  max-height: 130px;
+  overflow: auto;
+  gap: 5px;
+  padding: 0;
+}
+
+#friendsInviteDisplay {
+  width: calc(100% - 10px);
+  border-radius: 7px;
+  padding: 5px;
+}
+
+.friendsRoomEntryText {
+  padding-inline: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+#noFriendsToInvite {
+  font-size: 22px;
+  opacity: 0.5;
+  width: 100%;
+  text-align: center;
+}
+
+.sendIcon {
+  vertical-align: -2px;
+  width: 20px;
+  height: 20px;
+}
+
+.roomCreationFriendItem {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-inline: 5px;
+  flex-grow: 1;
+}
+
 .tickerText {
   background-color: rgba(255, 255, 255, 0.2);
   padding: 5px;
@@ -1545,6 +1644,208 @@ textarea {
   margin-right: auto;
   background-color: rgba(255, 255, 255, 0.1);
   border-radius: 10px;
+}
+
+.multiplayerFriendArea {
+  margin: 10px;
+  width: calc(100% - 20px);
+  margin-left: auto;
+  margin-right: auto;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 10px;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  font-size: 22px;
+  padding: 10px;
+  flex-wrap: wrap;
+  gap: 5px;
+} 
+
+.playerSearchBox {
+  display: flex;
+  justify-content: safe center;
+  flex-direction: column;
+  width: calc(100% - 13px);
+  border-radius: 5px;
+  max-height: 50vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  padding: 2px;
+  background-color: rgba(255, 255, 255, 0.1);
+  gap: 10px;
+  margin-top: 10px;
+  margin-inline: 5px;
+  outline: 5px solid rgba(255, 255, 255, 0.1);
+  min-height: 50px;
+}
+
+.playerSearchError {
+  opacity: 0.5;
+  font-size: 22px;
+  text-align: center;
+  width: 100%;
+}
+
+#friendBrowserInput {
+  flex-grow: 1;
+}
+
+#playerSearch {
+  margin-bottom: 20px;
+  margin-top: 20px;
+  height: 45px;
+}
+
+.friendSearchItem {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  width: calc(100% - 30px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px;
+  padding-inline: 15px;
+  transition: background-color 250ms ease;
+  gap: 10px;
+}
+
+.friendSearchItem p {
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 20vw;
+}
+
+.friendBox {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 3px;
+  margin-bottom: 10px;
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  padding: 5px;
+  max-height: 135px;
+  overflow: auto;
+  box-sizing: border-box;
+  border: 5px solid rgba(77, 77, 87, 0.1);
+  min-width: 100%;
+}
+
+#friendBox {
+  display: none;
+}
+
+.friendItem {
+  background-color: rgba(30, 31, 44, 0.25);
+  border-radius: 5px;
+  height: 36.5px;
+  padding-inline: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-left: 12px;
+  gap: 2px;
+}
+
+.friendItem p {
+  padding-inline: 3px;
+}
+
+.friendItemButtons {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding-inline: 5px;
+}
+
+.friendRemoveIcon {
+  width: 25px;
+  height: 25px;
+  vertical-align: -4px;
+}
+
+.sendFriendRequestBrowser {
+  background-color: rgba(255, 255, 255, 0.2);
+  margin-right: -7px;
+}
+
+.manageFriendRequest {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+.friendSearchYou {
+  pointer-events: none;
+  opacity: 0.5;
+}
+
+#startFriendSearch {
+  background-color: rgba(255, 255, 255, 0.1);
+  width: fit-content;
+  margin: 0;
+  border-radius: 10px;
+}
+
+#playerSearchIcon {
+  width: 20px;
+  height: 20px;
+}
+
+search {
+  display: flex;
+  justify-content: center;
+  width: 100%;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+
+.friendSearchItem:hover {
+  cursor: pointer;
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+#friendBrowserInput {
+  border-radius: 10px;
+  padding-inline: 10px;
+  font-size: 22px;
+}
+
+.friendOnlineBar {
+  width: 6px;
+  border-radius: 5px;
+  height: 20%;
+  background-color: #00cc00;
+  margin-top: 4px;
+  margin-right: 3px;
+}
+
+#inboxIcon {
+  width: 20px;
+  height: 20px;
+  vertical-align: -2px;
+}
+
+#openFriendInbox {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+#noFriendsText {
+  opacity: 0.75;
+  text-align: center;
+  margin-left: 10px;
+  margin-right: auto;
+}
+
+#browseUsersFriends {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.friendButtonArea {
+  display: flex;
+  justify-content: center;
+  width: fit-content;
+  align-items: center;
+  gap: 5px;
+  margin-left: auto;
 }
 
 .infoNote p {
@@ -2639,6 +2940,7 @@ map::selection {
 
 #helpButton {
   pointer-events: auto;
+  transition: filter 250ms ease, opacity 250ms ease;
 }
 
 #helpButton:hover {
@@ -3115,7 +3417,17 @@ a:hover {
   align-items: center;
   min-height: 55px;
   flex-wrap: wrap;
-  padding: 10px;
+  padding: 5px;
+}
+
+.inboxItemButtons {
+  display: flex;
+  width: fit-content;
+  overflow: hidden;
+  gap: 5px;
+  margin-right: -7px;
+  flex-grow: 5;
+  max-width: fit-content;
 }
 
 #errorIcon {
@@ -3411,8 +3723,12 @@ all and (max-width: 1200px) {
     display: none;
   }
 
-  #topButtonArea {
+  .topBarDesktop {
     display: none;
+  }
+
+  #notificationBar {
+    margin-top: -65px;
   }
 
   #duelsOverlay h1 {
@@ -3576,6 +3892,10 @@ all and (max-width: 1200px) {
   #countryGuesserSelector {
     bottom: 155px;
   }
+
+  #notificationBar {
+    margin-top: 0;
+  }
 }
 
 /* important map change properties */
@@ -3602,4 +3922,3 @@ all and (max-width: 1200px) {
   z-index: 10 !important;
   visibility: visible !important;
   border-radius: 0 !important;
-}
