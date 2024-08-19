@@ -52,7 +52,7 @@ async function startSearch() {
             return;
         }
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/friends/search/" + query, {
+        const response = await fetch("https://friends.openguessr.com/friends/search/" + query, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -132,7 +132,7 @@ async function sendFriendRequest(targetUserId) {
             senderName: localStorage.getItem("username")
         };
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/friends/send", {
+        const response = await fetch("https://friends.openguessr.com/friends/send", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -206,7 +206,7 @@ async function loadInbox(silent) {
             recipientId: localStorage.getItem("id")
         };
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/friends/requests", {
+        const response = await fetch("https://friends.openguessr.com/friends/requests", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -290,7 +290,7 @@ async function acceptFriendRequest(senderId) {
             recipientId: localStorage.getItem("id")
         };
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/friends/accept", {
+        const response = await fetch("https://friends.openguessr.com/friends/accept", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -324,7 +324,7 @@ async function declineFriendRequest(senderId) {
             recipientId: localStorage.getItem("id")
         };
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/friends/decline", {
+        const response = await fetch("https://friends.openguessr.com/friends/decline", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -360,7 +360,7 @@ export async function loadFriends() {
             id: localStorage.getItem("id")
         };
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/friends/friends", {
+        const response = await fetch("https://friends.openguessr.com/friends/friends", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -452,7 +452,7 @@ async function removeFriend(friendId) {
             friendId: friendId
         };
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/friends/remove", {
+        const response = await fetch("https://friends.openguessr.com/friends/remove", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -485,7 +485,7 @@ export async function sendMatchInvite(recipientId, duel) {
             isDuel: duel
         };
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/friends/send-invite", {
+        const response = await fetch("https://friends.openguessr.com/friends/send-invite", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -516,7 +516,7 @@ async function acceptDuelInvite(recipientId) {
             senderName: localStorage.getItem("username")
         };
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/friends/accept-invite", {
+        const response = await fetch("https://friends.openguessr.com/friends/accept-invite", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -547,7 +547,7 @@ async function declineMatchInvite(recipientId) {
             senderName: localStorage.getItem("username")
         };
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/friends/decline-invite", {
+        const response = await fetch("https://friends.openguessr.com/friends/decline-invite", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -579,7 +579,7 @@ export async function initializeWebsocketConnection() {
 
     async function connectWebSocket() {
         try {
-            ws = new WebSocket('wss://accounts.openguessr.com');
+            ws = new WebSocket('wss://friends.openguessr.com');
 
             ws.onopen = () => {
                 reconnectAttempts = 0; // Reset the reconnect attempts on a successful connection

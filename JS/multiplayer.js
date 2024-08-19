@@ -230,7 +230,7 @@ async function loadOnlineFriendsForRoomCreation() {
             id: localStorage.getItem("id")
         };
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/friends/friends", {
+        const response = await fetch("https://friends.openguessr.com/friends/friends", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
