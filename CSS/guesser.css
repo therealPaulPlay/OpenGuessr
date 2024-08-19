@@ -1714,6 +1714,7 @@ textarea {
   text-wrap: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  max-width: 20vw;
 }
 
 .friendBox {
@@ -3439,6 +3440,8 @@ a:hover {
   overflow: hidden;
   gap: 5px;
   margin-right: -7px;
+  flex-grow: 5;
+  max-width: fit-content;
 }
 
 #errorIcon {
