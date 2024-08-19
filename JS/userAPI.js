@@ -333,6 +333,13 @@ async function saveUserData(data) {
 let timeout;
 
 export function displayError(error, source, errorMsg) {
+  if (!error) {
+    error = "not defined";
+  }
+
+  if (!errorMsg) {
+    errorMsg = "no error message";
+  }
   if (source == "signup") {
 
     try {
