@@ -9,6 +9,7 @@ import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeam
 import { calculateDistances, loadResultMap } from "./main.js";
 import { playSound } from "./soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
+import { loadFriends, sendMatchInvite } from "./friendMenu.js";
 
 //Global UI --------------------------------------------------------------------------------------------
 export let coordsFromHost = [];
@@ -60,6 +61,8 @@ let multiPlayerWindowOpen = false;
 
 let uniqueUserID = 0; // used in setup for peerJS as peer id
 
+let loadFriendsInterval;
+
 export function toggleMultiplayerSelector(alwaysClose) {
     if (alwaysClose == "close") {
         multiPlayerWindowOpen = true;
@@ -68,13 +71,27 @@ export function toggleMultiplayerSelector(alwaysClose) {
     if (multiPlayerWindowOpen) {
         multiplayerSelectionScreen.style.display = "none";
         document.getElementById("blackBackground").style.visibility = "hidden";
+        clearInterval(loadFriendsInterval);
     } else {
         multiplayerSelectionScreen.style.display = "block";
         document.getElementById("blackBackground").style.visibility = "visible";
         setMultiplayerWindowSelection("main");
+        if (isAuthenticated) {
+            loadFriends();
+            startLoadFriendsInterval();
+        }
     }
 
     multiPlayerWindowOpen = !multiPlayerWindowOpen;
+}
+
+function startLoadFriendsInterval() {
+    clearInterval(loadFriendsInterval);
+    loadFriendsInterval = setInterval(() => {
+        if (multiplayerSelectionScreen.style.display == "block") {
+            loadFriends();
+        }
+    }, 10000);
 }
 
 //Pages ---------------------------------------------------------------------------------------
@@ -121,6 +138,7 @@ function setMultiplayerWindowSelection(window) {
     setDuelFindStatus("Initializing...");
     setJoinCounter(0);
     document.getElementById("teamsDisplayText").textContent = "Nothing to display";
+    document.getElementById("friendsInviteDisplay").style.display = "none";
     setJoinInfoText("Enter the roomcode.");
     document.getElementById("roomCreationModes").style.display = "flex";
     document.getElementById("roomCreationTeams").style.display = "flex";
@@ -200,6 +218,76 @@ function showHostCodeArea(roomcode) {
     document.getElementById("roomCreationTeams").style.display = "none";
     document.getElementById("roomCreationMap").style.display = "none";
     document.getElementById("roomcodeLink").style.display = "block";
+    document.getElementById("friendsInviteDisplay").style.display = "none";
+    loadOnlineFriendsForRoomCreation();
+}
+
+async function loadOnlineFriendsForRoomCreation() {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id")
+        };
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/friends/friends", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            try {
+                const data = await response.json();
+                let idCounter = 0;
+
+                document.getElementById("roomCreationFriendsBox").innerHTML = "";
+
+                data.friends.forEach(entry => {
+                    idCounter++;
+
+                    let newEntry = document.createElement("div");
+                    newEntry.classList.add("roomCreationFriendItem");
+                    newEntry.classList.add("standardButton");
+
+                    newEntry.innerHTML = `
+                    <p class="friendsRoomEntryText">${entry.user_name}</p>
+                    <button id="roomInviteFriend${idCounter}" class="standardButton friendItemButtons">
+                        <img src="/IMG/send_icon.png" alt="send invite" class="sendIcon">
+                    </button>
+                    `;
+
+                    newEntry.id = "roomFriendEntry" + idCounter;
+                    document.getElementById("roomCreationFriendsBox").appendChild(newEntry);
+
+                    document.getElementById("roomFriendEntry" + idCounter).addEventListener("click", () => {
+                        loadProfileFromId(entry.id, false, true);
+                    });
+
+                    document.getElementById("roomInviteFriend" + idCounter).addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        sendMatchInvite(entry.id, false);
+                    });
+                });
+
+                if (!document.getElementById("roomCreationFriendsBox").innerHTML) {
+                    document.getElementById("friendsInviteDisplay").style.display = "none";
+                } else {
+                    document.getElementById("friendsInviteDisplay").style.display = "block";
+                }
+
+            } catch (error) {
+                console.error("In-Code error loading friends to invite: " + error);
+            }
+
+        } else {
+            console.error("Error loading friends for room creation: " + response.status);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while loading friends for room creation: ', error);
+    }
 }
 
 roundPlus.addEventListener("click", () => { hostRoundAmount(1, true); })
@@ -437,7 +525,7 @@ function endMultiplayerRound() {
             //if i'ts not the host, hide the next round button!
             document.getElementById("nextRound").style.opacity = "0.5";
             document.getElementById("nextRound").style.pointerEvents = "none";
-            document.getElementById("nextRoundText").textContent = "Waiting for host...";
+            document.getElementById("nextRoundText").textContent = "Waiting...";
         }
 
         if (!lateJoinedWaiting) {
@@ -618,7 +706,7 @@ export function attemptJoinViaLink() {
     }
 }
 
-function setLinkjoinPopup(show) {
+export function setLinkjoinPopup(show) {
     if (show) {
         document.getElementById("linkjoinWindow").style.display = "block";
         document.getElementById("blackBackground").style.visibility = "visible";
@@ -750,6 +838,16 @@ function manuallySendChat() {
 let roomIndex = 0;
 let matchmakingActive = false;
 let playingDuels = false;
+
+let friendDuel = false;
+
+export function setPlayingDuels(state) {
+    playingDuels = state;
+}
+
+export function setFriendDuel(state) {
+    friendDuel = state;
+}
 
 //set info text
 let multiplayerDuelInfo = document.getElementById("multiplayerDuelInfo");
@@ -1010,7 +1108,7 @@ if (peer) {
             if (!roomLocked) {
 
                 //instantly lock the room on the first connection
-                if (matchmakingActive) {
+                if (matchmakingActive || friendDuel) {
                     roomLocked = true;
                 }
 
@@ -1077,6 +1175,10 @@ if (peer) {
                     //if duels matchmaking is active, immediately start the round on the first OPEN connection
                     if (matchmakingActive) {
                         deleteRoomCodeFromMatchmakingServer(); //delete roomcode from server
+                        StartRoom(); //this also locks the room
+                    } 
+
+                    if (friendDuel) {
                         StartRoom(); //this also locks the room
                     }
                 });
@@ -1158,7 +1260,7 @@ function createRoom(AmountOfRounds, LengthOfRounds) {
     }
 }
 
-function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
+export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     setDuelFindStatus("Room created. Please wait <10s");
     isHost = true;
     multiplayerFirstRoundPlayed = false;
@@ -1314,7 +1416,7 @@ function removeWhiteSpace(input) {
     return input.replace(/\s/g, '');
 }
 
-async function joinRoom(code) {
+export async function joinRoom(code) {
     // if peer isn't open yet, await that
     if (!peerOpen) {
         await new Promise(resolve => {
@@ -1536,7 +1638,7 @@ leaveButton.addEventListener("click", () => {
     playSound("leave_round");
 });
 
-function leaveMultiplayerRound() {
+export function leaveMultiplayerRound() {
     //important! first step is disabling multiplayer
     let wasMultiplayerEnabled = false;
 
@@ -1581,6 +1683,7 @@ function leaveMultiplayerRound() {
     playingDuels = false;
     lateJoinedWaiting = false;
     highestMultiplayerSupporterLevel = 1
+    friendDuel = false;
 
     //reset UI things
     document.getElementById("guessText").textContent = "Guess";
@@ -1638,7 +1741,7 @@ function showEndscreenUI(show) {
         if (isHost) {
             endMultiplayerRoundButton.textContent = "End Round";
 
-            if (!playingDuels) {
+            if (!playingDuels || friendDuel) {
                 endMultiplayerRematchButton.style.display = "block";
                 endMultiplayerRematchButton.style.opacity = "1";
                 endMultiplayerRematchButton.style.pointerEvents = "auto";
@@ -1774,7 +1877,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
 
                 // check if you won in duels or just played
-                if (playingDuels && isAuthenticated) {
+                if (playingDuels && isAuthenticated && !friendDuel) {
                     if (winningId == localStorage.getItem("id")) {
                         addDuelWon();
                     } else {

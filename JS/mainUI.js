@@ -839,6 +839,63 @@ async function startAdSupporterTimer(prefix = "Boost active. Remaining: ") {
     })();
 }
 
+// Notification -----------------------------------------------------------------------------------------
+
+const notificationBar = document.getElementById("notificationBar");
+
+let hideNotificationTimeout;
+
+export function showNotification(text, acceptFunction, dismissFunction, showAccept) {
+    notificationBar.style.top = "65px";
+    notificationBar.style.opacity = "1";
+    document.getElementById("notificationText").textContent = text;
+    clearTimeout(hideNotificationTimeout);
+
+    if (showAccept) {
+        document.getElementById("notificationAccept").style.display = "block";
+    } else {
+        document.getElementById("notificationAccept").style.display = "none";
+        hideNotificationTimeout = setTimeout(() => {
+            hideNotification();
+        }, 2000);
+    }
+
+    const button = document.getElementById("notificationAccept");
+    const newButton = button.cloneNode(true);
+    button.parentNode.replaceChild(newButton, button);
+
+    const dismissButton = document.getElementById("notificationDismiss");
+    const newDismissButton = dismissButton.cloneNode(true);
+    dismissButton.parentNode.replaceChild(newDismissButton, dismissButton);
+
+    newButton.addEventListener("click", () => {
+        if (acceptFunction) {
+            try {
+                acceptFunction();
+            } catch (e) { console.error("Error executing callback in showNotification: " + e); }
+        }
+
+        hideNotification();
+        playSound("basic_button");
+    });
+
+    newDismissButton.addEventListener("click", () => {
+        if (dismissFunction) {
+            try {
+                dismissFunction();
+            } catch (e) { console.error("Error executing callback in showNotification: " + e); }
+        }
+
+        hideNotification();
+        playSound("basic_button");
+    });
+}
+
+function hideNotification() {
+    notificationBar.style.top = "50px";
+    notificationBar.style.opacity = "0";
+}
+
 // In-App page browser -----------------------------------------------------------------------------------
 
 let pageBrowserWindow = document.getElementById("pageBrowserWindow");
