@@ -219,7 +219,9 @@ function showHostCodeArea(roomcode) {
     document.getElementById("roomCreationMap").style.display = "none";
     document.getElementById("roomcodeLink").style.display = "block";
     document.getElementById("friendsInviteDisplay").style.display = "none";
-    loadOnlineFriendsForRoomCreation();
+    if (isAuthenticated) {
+        loadOnlineFriendsForRoomCreation();
+    }
 }
 
 async function loadOnlineFriendsForRoomCreation() {
