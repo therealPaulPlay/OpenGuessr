@@ -57,7 +57,7 @@
     </div>
   </div>
   <div id="topButtonArea">
-    <div class="topBarMenu topBarSides">
+    <div class="topBarMenu topBarSides topBarDesktop">
       <button class="standardButton accountButton" id="loginButton" type="button" alt="log in">Log in</button>
       <div class="profileInfo notSignedIn" id="profileInfo">
         <div id="accountNameArea">
@@ -76,7 +76,7 @@
         <img id="logoutImage" src="/IMG/signout.png" alt="Log out of your OpenGuessr account.">
       </button>
     </div>
-    <div class="topBarMenu" id="gamemodeMenu">
+    <div class="topBarMenu topBarDesktop" id="gamemodeMenu">
       <button id="leaderboardButton" class="standardButton accountButton"><span class="topBarExpand">Leaderboard</span>
         <img class="socialBarIcons invertSocialBarIcon" src="/IMG/leaderboards_icon.png" alt="Experience Leaderboard">
       </button>
@@ -88,7 +88,7 @@
         <img class="socialBarIcons invertSocialBarIcon" src="/IMG/competitions_icon.png" alt="Competitions symbol">
       </button>
     </div>
-    <div class="topBarMenu topBarSides">
+    <div class="topBarMenu topBarSides topBarDesktop">
       <button class="standardButton accountButton" id="categoryMenuButton" type="button">Maps
         <img id="mapsArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="socialBarIcons arrowIcon">
       </button>
@@ -779,6 +779,11 @@
             <p id="joinCounter">Players joined: 0</p>
             <div id="teamsDisplay" class="roomCreationModule multiplayerHostSettings">
               <p id="teamsDisplayText">Nothing to show</p>
+            </div>
+            <div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
+              <div id="roomCreationFriendsBox" class="roomCreationFriendsBox">
+                <!-- online players will be added here programmatically -->
+              </div>
             </div>
           </div>
           <div class="multiplayerHostSubmitArea">

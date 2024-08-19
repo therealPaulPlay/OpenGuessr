@@ -9,7 +9,7 @@ import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeam
 import { calculateDistances, loadResultMap } from "./main.js";
 import { playSound } from "./soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
-import { loadFriends } from "./friendMenu.js";
+import { loadFriends, sendMatchInvite } from "./friendMenu.js";
 
 //Global UI --------------------------------------------------------------------------------------------
 export let coordsFromHost = [];
@@ -138,6 +138,7 @@ function setMultiplayerWindowSelection(window) {
     setDuelFindStatus("Initializing...");
     setJoinCounter(0);
     document.getElementById("teamsDisplayText").textContent = "Nothing to display";
+    document.getElementById("friendsInviteDisplay").style.display = "none";
     setJoinInfoText("Enter the roomcode.");
     document.getElementById("roomCreationModes").style.display = "flex";
     document.getElementById("roomCreationTeams").style.display = "flex";
@@ -217,6 +218,76 @@ function showHostCodeArea(roomcode) {
     document.getElementById("roomCreationTeams").style.display = "none";
     document.getElementById("roomCreationMap").style.display = "none";
     document.getElementById("roomcodeLink").style.display = "block";
+    document.getElementById("friendsInviteDisplay").style.display = "none";
+    loadOnlineFriendsForRoomCreation();
+}
+
+async function loadOnlineFriendsForRoomCreation() {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id")
+        };
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/friends/friends", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            try {
+                const data = await response.json();
+                let idCounter = 0;
+
+                document.getElementById("roomCreationFriendsBox").innerHTML = "";
+
+                data.friends.forEach(entry => {
+                    idCounter++;
+
+                    let newEntry = document.createElement("div");
+                    newEntry.classList.add("roomCreationFriendItem");
+                    newEntry.classList.add("standardButton");
+
+                    newEntry.innerHTML = `
+                    <p class="friendsRoomEntryText">${entry.user_name}</p>
+                    <button id="roomInviteFriend${idCounter}" class="standardButton friendItemButtons">
+                        <img src="/IMG/send_icon.png" alt="send invite" class="sendIcon">
+                    </button>
+                    `;
+
+                    newEntry.id = "roomFriendEntry" + idCounter;
+                    document.getElementById("roomCreationFriendsBox").appendChild(newEntry);
+
+                    document.getElementById("roomFriendEntry" + idCounter).addEventListener("click", () => {
+                        loadProfileFromId(entry.id, false, true);
+                    });
+
+                    document.getElementById("roomInviteFriend" + idCounter).addEventListener("click", (e) => {
+                        e.stopPropagation();
+                        sendMatchInvite(entry.id, false);
+                    });
+                });
+
+                if (!document.getElementById("roomCreationFriendsBox").innerHTML) {
+                    document.getElementById("friendsInviteDisplay").style.display = "none";
+                } else {
+                    document.getElementById("friendsInviteDisplay").style.display = "block";
+                }
+
+            } catch (error) {
+                console.error("In-Code error loading friends to invite: " + error);
+            }
+
+        } else {
+            console.error("Error loading friends for room creation: " + response.status);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while loading friends for room creation: ', error);
+    }
 }
 
 roundPlus.addEventListener("click", () => { hostRoundAmount(1, true); })

@@ -142,7 +142,7 @@ async function sendFriendRequest(targetUserId) {
         });
 
         if (response.ok) {
-            showConfirmPopup("Friend request sent!", "Your friend request was sent successfully.", () => { }, false, false, true);
+            showNotification("Friend request sent.", false, false, false);
         } else {
             const data = await response.json();
             console.error("Error sending the friend request: " + response.status);
@@ -429,7 +429,7 @@ export async function loadFriends() {
                 }
 
             } catch (error) {
-                console.error("In-Code error loading inbox: " + error);
+                console.error("In-Code error loading friends: " + error);
             }
 
         } else {
@@ -475,7 +475,7 @@ async function removeFriend(friendId) {
     }
 }
 
-async function sendMatchInvite(recipientId, duel) {
+export async function sendMatchInvite(recipientId, duel) {
     try {
         const requestBody = {
             id: localStorage.getItem("id"),
@@ -499,7 +499,7 @@ async function sendMatchInvite(recipientId, duel) {
         } else {
             const data = await response.json();
             console.error("Error sending invite: " + response.status + ", " + data.error);
-            showNotification("Error sending invite (user offline).", false, false, false);
+            showNotification("User is not reachable.", false, false, false);
         }
 
     } catch (error) {
@@ -584,7 +584,7 @@ export function initializeWebsocketConnection() {
     ws.onmessage = (event) => {
         const data = JSON.parse(event.data);
         if (data.type === 'room-invite') {
-            showNotification(`Received room invite from ${data.name}.`, () => {
+            showNotification(`Room invite from ${data.name}.`, () => {
                 joinRoomFromNotification(data.roomcode, data.from, data.duel);
             }, () => {
                 declineMatchInvite(data.from);

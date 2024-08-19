@@ -876,6 +876,7 @@ export function showNotification(text, acceptFunction, dismissFunction, showAcce
         }
 
         hideNotification();
+        playSound("basic_button");
     });
 
     newDismissButton.addEventListener("click", () => {
@@ -886,6 +887,7 @@ export function showNotification(text, acceptFunction, dismissFunction, showAcce
         }
 
         hideNotification();
+        playSound("basic_button");
     });
 }
 

@@ -137,10 +137,16 @@ h3 {
   box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
   transition: all 200ms ease;
   pointer-events: auto;
+  flex-wrap: wrap;
+  margin-inline: 10px;
 }
 
 #notificationText {
   padding-left: 10px;
+  max-width: 350px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-wrap: nowrap;
 }
 
 .notificationButtonBox {
@@ -778,7 +784,7 @@ textarea {
 }
 
 .popupHolder {
-  position: absolute;
+  position: fixed;
   top: 0;
   bottom: 0;
   right: 0;
@@ -786,6 +792,8 @@ textarea {
   display: flex;
   justify-content: center;
   align-items: center;
+  z-index: 100;
+  pointer-events: none;
 }
 
 .uiWindow {
@@ -807,6 +815,7 @@ textarea {
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 100px rgba(5, 6, 10, 0.5);
   color: white;
+  pointer-events: auto;
 }
 
 .errorBackground {
@@ -953,7 +962,7 @@ textarea {
   align-items: center;
   gap: 20px;
   margin-top: 10px;
-  max-height: calc(100dvh - 350px);
+  max-height: calc(92dvh - 250px);
   overflow-x: hidden;
   overflow-y: auto;
   border-radius: 5px;
@@ -1533,6 +1542,53 @@ textarea {
   margin-top: 8px;
   padding-top: 10px;
   padding-bottom: 10px;
+}
+
+#roomCreationFriendsBox {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  border-radius: 5px;
+  max-height: 130px;
+  overflow: auto;
+  gap: 5px;
+  padding: 0;
+}
+
+#friendsInviteDisplay {
+  width: calc(100% - 10px);
+  border-radius: 7px;
+  padding: 5px;
+}
+
+.friendsRoomEntryText {
+  padding-inline: 10px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 150px;
+}
+
+#noFriendsToInvite {
+  font-size: 22px;
+  opacity: 0.5;
+  width: 100%;
+  text-align: center;
+}
+
+.sendIcon {
+  vertical-align: -2px;
+  width: 20px;
+  height: 20px;
+}
+
+.roomCreationFriendItem {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-inline: 5px;
+  flex-grow: 1;
 }
 
 .tickerText {
@@ -2888,6 +2944,7 @@ map::selection {
 
 #helpButton {
   pointer-events: auto;
+  transition: filter 250ms ease, opacity 250ms ease;
 }
 
 #helpButton:hover {
@@ -3677,8 +3734,12 @@ all and (max-width: 1200px) {
     display: none;
   }
 
-  #topButtonArea {
+  .topBarDesktop {
     display: none;
+  }
+
+  #notificationBar {
+    margin-top: -65px;
   }
 
   #duelsOverlay h1 {
@@ -3846,5 +3907,9 @@ all and (max-width: 1200px) {
 
   #countryGuesserSelector {
     bottom: 155px;
+  }
+
+  #notificationBar {
+    margin-top: 0;
   }
 }
