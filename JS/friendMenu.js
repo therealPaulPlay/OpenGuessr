@@ -573,34 +573,57 @@ async function declineMatchInvite(recipientId) {
 // Web socket for notifications -------------------------------------------------------------------------------
 
 export function initializeWebsocketConnection() {
-    const ws = new WebSocket('wss://accounts.openguessr.com/ws/');
+    let ws;
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 5;
 
-    ws.onopen = () => {
-        // Authenticate the WebSocket connection
-        ws.send(JSON.stringify({ id: localStorage.getItem("id") })); // Replace `userId` with the actual user ID
-    };
+    function connectWebSocket() {
+        ws = new WebSocket('wss://accounts.openguessr.com/ws/');
 
-    // Handle incoming WebSocket messages
-    ws.onmessage = (event) => {
-        const data = JSON.parse(event.data);
-        if (data.type === 'room-invite') {
-            showNotification(`Room invite from ${data.name}.`, () => {
-                joinRoomFromNotification(data.roomcode, data.from, data.duel);
-            }, () => {
-                declineMatchInvite(data.from);
-            }, true);
+        ws.onopen = () => {
+            reconnectAttempts = 0; // Reset the reconnect attempts on a successful connection
+            ws.send(JSON.stringify({ id: localStorage.getItem("id") }));
+        };
 
-        } else if (data.type === 'invite-accepted') {
-            createDuelRoom();
+        ws.onmessage = (event) => {
+            const data = JSON.parse(event.data);
+            if (data.type === 'room-invite') {
+                const roomOrDuel = data.duel ? "Duel" : "Room";
+                showNotification(`${roomOrDuel} invite from ${data.name}.`, () => {
+                    joinRoomFromNotification(data.roomcode, data.from, data.duel);
+                }, () => {
+                    declineMatchInvite(data.from);
+                }, true);
 
-        } else if (data.type === 'invite-declined') {
-            showNotification(`${data.name} declined your invite.`, false, false, false);
-        } else if (data.type === 'friend-request-received') {
-            showNotification(`${data.name} sent you a friend request.`, () => {
-                acceptFriendRequest(data.from);
-            }, false, true);
-        }
-    };
+            } else if (data.type === 'invite-accepted') {
+                createDuelRoom();
+
+            } else if (data.type === 'invite-declined') {
+                showNotification(`${data.name} declined your invite.`, false, false, false);
+            } else if (data.type === 'friend-request-received') {
+                showNotification(`${data.name} sent you a friend request.`, () => {
+                    acceptFriendRequest(data.from);
+                }, false, true);
+            }
+        };
+
+        ws.onclose = () => {
+            if (reconnectAttempts < maxReconnectAttempts) {
+                reconnectAttempts++;
+                console.warn(`WebSocket closed. Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts})...`);
+                connectWebSocket();
+            } else {
+                console.error('Max reconnect attempts reached. Could not reconnect.');
+            }
+        };
+
+        ws.onerror = (error) => {
+            console.error('WebSocket encountered an error: ', error.message);
+            ws.close(); // Close the socket to trigger the onclose event
+        };
+    }
+
+    connectWebSocket();
 }
 
 function joinRoomFromNotification(roomcode, recipientId, duel) {
