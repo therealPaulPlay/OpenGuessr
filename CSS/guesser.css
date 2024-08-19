@@ -3451,9 +3451,9 @@ a:hover {
 
 #troubleshootGuideButton {
   margin-right: 9px;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.1);
   outline: 3px rgba(255, 255, 255, 0.2) solid;
-  color: rgba(255, 255, 255, 0.75);
+  color: white;
 }
 
 #issuesTroubleshootText {
