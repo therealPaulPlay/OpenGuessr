@@ -334,11 +334,11 @@ let timeout;
 
 export function displayError(error, source, errorMsg) {
   if (!error) {
-    error = "not defined";
+    error = "";
   }
 
   if (!errorMsg) {
-    errorMsg = "no error message";
+    errorMsg = "";
   }
   if (source == "signup") {
 
