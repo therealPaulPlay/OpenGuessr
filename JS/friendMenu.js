@@ -575,11 +575,11 @@ async function declineMatchInvite(recipientId) {
 export async function initializeWebsocketConnection() {
     let ws;
     let reconnectAttempts = 0;
-    const maxReconnectAttempts = 5;
+    const maxReconnectAttempts = 2;
 
     async function connectWebSocket() {
         try {
-            ws = new WebSocket('wss://accounts.openguessr.com/ws/');
+            ws = new WebSocket('wss://accounts.openguessr.com');
 
             ws.onopen = () => {
                 reconnectAttempts = 0; // Reset the reconnect attempts on a successful connection
