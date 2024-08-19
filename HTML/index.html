@@ -15,13 +15,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=1.1.3">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=1.1.4">
 
   <!-- Non-bundled js files -->
   <script type="module" src="analytics.js" async></script>
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=1.1.4" defer></script>
+  <script type="module" src="main.js?v=1.1.5" defer></script>
 
   <!-- venatus ad script -->
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
@@ -57,7 +57,7 @@
     </div>
   </div>
   <div id="topButtonArea">
-    <div class="topBarMenu topBarSides">
+    <div class="topBarMenu topBarSides topBarDesktop">
       <button class="standardButton accountButton" id="loginButton" type="button" alt="log in">Log in</button>
       <div class="profileInfo notSignedIn" id="profileInfo">
         <div id="accountNameArea">
@@ -76,7 +76,7 @@
         <img id="logoutImage" src="/IMG/signout.png" alt="Log out of your OpenGuessr account.">
       </button>
     </div>
-    <div class="topBarMenu" id="gamemodeMenu">
+    <div class="topBarMenu topBarDesktop" id="gamemodeMenu">
       <button id="leaderboardButton" class="standardButton accountButton"><span class="topBarExpand">Leaderboard</span>
         <img class="socialBarIcons invertSocialBarIcon" src="/IMG/leaderboards_icon.png" alt="Experience Leaderboard">
       </button>
@@ -88,7 +88,7 @@
         <img class="socialBarIcons invertSocialBarIcon" src="/IMG/competitions_icon.png" alt="Competitions symbol">
       </button>
     </div>
-    <div class="topBarMenu topBarSides">
+    <div class="topBarMenu topBarSides topBarDesktop">
       <button class="standardButton accountButton" id="categoryMenuButton" type="button">Maps
         <img id="mapsArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="socialBarIcons arrowIcon">
       </button>
@@ -99,6 +99,15 @@
         <img src="/IMG/settings_icon.png" alt="settings" class="socialBarIcons">
       </button>
     </div>
+  <div id="notificationBar">
+    <p id="notificationText">Default notification</p>
+    <div class="notificationButtonBox">
+      <button id="notificationAccept" class="standardButton accountButton">accept</button>
+      <button id="notificationDismiss" class="standardButton accountButton">
+        <img alt="dismiss notification" class="friendRemoveIcon" src="/IMG/delete_icon.png">
+      </button>
+    </div>
+  </div>
   </div>
   <!-- extended navbar map menu -->
   <div class="extendedNavbar" id="extendedNavbar">
@@ -438,7 +447,8 @@
               href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en"
               target="_blank">Maps APIs</a>
             are <span class="supporterTextHighlight">highly expensive</span>, this has become <span
-              class="supporterTextHighlight">more challenging than ever.</span></p>
+              class="supporterTextHighlight">more challenging than ever.</span>
+          </p>
         </div>
         <div id="adTierBox" class="adTierBox supporterArea">
           <img alt="time limited" id="adBoostTimeLimitIcon" src="/IMG/time_limited.png">
@@ -495,6 +505,36 @@
       <button id="supporterClose" class="standardButton white accountClose">Close</button>
     </div>
   </div>
+  <!-- Friend browser window -->
+  <div id="friendBrowserPopup" class="popupHolder profilePopupBackground">
+    <div id="friendBrowserWindow" class="uiWindow">
+      <div class="popup-title">
+        <h1 id="profileViewName">Search players</h1>
+      </div>
+      <search id="playerSearch">
+        <input maxlength="255" type="text" id="friendBrowserInput" placeholder="Search for a name...">
+        <button id="startFriendSearch" class="standardButton">
+          <img src="/IMG/find_icon.png" alt="start search" id="playerSearchIcon">
+        </button>
+      </search>
+      <div id="playerSearchBox" class="playerSearchBox">
+        <p class="playerSearchError">Search returned no results.</p>
+      </div>
+      <button id="friendBrowserClose" class="standardButton white accountClose">Close</button>
+    </div>
+  </div>
+    <!-- Inbox for friend requests -->
+    <div id="friendInboxPopup" class="popupHolder profilePopupBackground">
+      <div id="friendInboxWindow" class="uiWindow">
+        <div class="popup-title">
+          <h1 id="profileViewName">Inbox</h1>
+        </div>
+        <div id="friendInbox" class="playerSearchBox">
+          <p>Default</p>
+        </div>
+        <button id="friendInboxClose" class="standardButton white accountClose">Close</button>
+      </div>
+    </div>
   <!-- remaining windows -->
   <div class="popupHolder">
     <!-- Help / How to Play Popup -->
@@ -610,7 +650,7 @@
     <!-- Linkjoin Popup -->
     <div id="linkjoinWindow" class="uiWindow">
       <div class="popup-title">
-        <h1 id="socialHeader">Joining via Link...</h1>
+        <h1 id="socialHeader">Joining...</h1>
       </div>
       <p id="linkjoinStatus">Status: None set</p>
       <br>
@@ -667,6 +707,18 @@
             <button id="multiplayerSelectDuels" class="standardButton multiplayerSelect">Find Duel<img id="findIcon"
                 class="socialBarIcons" style="margin-left: 5px;" src="/IMG/find_icon.png"
                 alt="Lightning error symbol"></button>
+          </div>
+        </div>
+        <div class="multiplayerFriendArea">
+          <p id="noFriendsText">Sign up to add friends!</p>
+          <div id="friendBox" class="friendBox">
+            <!-- friends will be programmatically added in here -->
+          </div>
+          <div class="friendButtonArea">
+            <button class="standardButton" id="browseUsersFriends">Add friends +</button>
+            <button class="standardButton" id="openFriendInbox">
+              <img alt="inbox icon" src="/IMG/inbox_icon.png" id="inboxIcon">
+            </button>
           </div>
         </div>
         <div class="infoNote">
@@ -727,6 +779,11 @@
             <p id="joinCounter">Players joined: 0</p>
             <div id="teamsDisplay" class="roomCreationModule multiplayerHostSettings">
               <p id="teamsDisplayText">Nothing to show</p>
+            </div>
+            <div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
+              <div id="roomCreationFriendsBox" class="roomCreationFriendsBox">
+                <!-- online players will be added here programmatically -->
+              </div>
             </div>
           </div>
           <div class="multiplayerHostSubmitArea">
@@ -859,7 +916,8 @@
   <!--map-->
   <div id="mapHolder" class="regularMapSize">
     <button id="revealCompass">
-      <img id="revealCompassArrow" src="/IMG/arrow_icon.png" alt="Shift map to the side" class="socialBarIcons arrowIcon">
+      <img id="revealCompassArrow" src="/IMG/arrow_icon.png" alt="Shift map to the side"
+        class="socialBarIcons arrowIcon">
     </button>
     <div id="mapAttribution" class="mapAttribution">
       <p>Map Data ©2024 Google

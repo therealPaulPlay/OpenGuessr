@@ -9,6 +9,7 @@ import { toggleStreakWindow } from "./streakAdPopup.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
 import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel, supporterLevel } from "./profileView.js";
 import { errorPopup } from "./errorHandling.js";
+import { initializeWebsocketConnection, setInboxStatus } from "./friendMenu.js";
 
 let accountLockedArray;
 
@@ -157,7 +158,7 @@ function goTologin() {
 
 XPbarNoAccount.addEventListener("click", function () {
   goTologin();
-})
+});
 
 //part of checkSigninStatusAndLoadUserInfo
 async function changeUItoSignedIn(supporterLevel) {
@@ -197,6 +198,7 @@ async function changeUItoSignedOut() {
   loadSelectedPin(); // loads pin 0, as profile data should be undefined
   loadSelectedBadge();
   updateSupporterProfileHighlight(false);
+  setInboxStatus(false);
 }
 
 function updateSupporterProfileHighlight(highlight) {
@@ -222,6 +224,8 @@ async function checkSigninStatusAndLoadUserInfo() {
       updateLoadedProfileData(user.profile_data);
       changeUItoSignedIn(user.supporter_level); // display user info is already being called in here
       setSupporterLevel(user.supporter_level, user.supported_amount);
+      if (user.new_requests) { setInboxStatus(true); }
+      initializeWebsocketConnection();
     });
   }
   else {
@@ -365,6 +369,7 @@ function streakCalculation() {
 
     streakDisplay.style.visibility = "visible";
     streakDisplay.style.width = "auto";
+    streakDisplay.style.maxWidth = "unset";
   }
 }
 
@@ -466,6 +471,7 @@ export async function loadResultScreenXP(distance) {
 
     streakDisplay.style.visibility = "hidden";
     streakDisplay.style.width = "0";
+    streakDisplay.style.maxWidth = "0";
 
     let earnedXP;
     let earnedBasicXP; // without supporter mutliplier, that will be applied later (this is just for visuals)

@@ -118,20 +118,24 @@ let leaveButton = document.getElementById("competitionLeave");
 
 leaveButton.addEventListener("click", () => {
     playSound("basic_button");
-    leaveCompetition();
+    leaveCompetition(true);
 });
 
-async function leaveCompetition() {
-    playingCompetition = false;
-    setCompetitionUI(false);
-    checkGenerationTypeAndGenerate();
-    setRestriction("standard");
-
-    // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
-    await submitCompetitionResult(competition.id, competitionCombinedScore, supporterLevel, localStorage.getItem("bearer"));
-
-    // Show the leaderboard
-    showPageBrowser("/competitions.html?leaderboard=" + competition.id);
+export async function leaveCompetition(showResult) {
+    if (playingCompetition) {
+        playingCompetition = false;
+        setCompetitionUI(false);
+        checkGenerationTypeAndGenerate();
+        setRestriction("standard");
+    
+        // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
+        await submitCompetitionResult(competition.id, competitionCombinedScore, supporterLevel, localStorage.getItem("bearer"));
+    
+        if (showResult) {
+            // Show the leaderboard
+            showPageBrowser("/competitions.html?leaderboard=" + competition.id);
+        }
+    }
 }
 
 async function submitCompetitionResult(id, score, supporterLevel, token) {
@@ -195,7 +199,7 @@ async function submitCompetitionResult(id, score, supporterLevel, token) {
 export function checkCompetitionRoundStatus(justReturnResult) {
     if (currentRound == competition.roundAmount) {
         if (!justReturnResult) {
-            leaveCompetition();
+            leaveCompetition(true);
         }
 
         return false;
