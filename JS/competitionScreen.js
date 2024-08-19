@@ -204,7 +204,7 @@ function addCompetition(id, name, author, authorId, playercount, restriction, du
 
     setTimeout(() => {
         competitionItem.style.opacity = "1";
-    }, 10);
+    }, 50);
 }
 
 // extend. Description window -------------------------------------------------------------------------------------------------------

@@ -355,6 +355,7 @@ let friendContainerMessage = document.getElementById("noFriendsText");
 export async function loadFriends() {
     try {
         friendContainerMessage.textContent = "Loading...";
+        friendsContainer.style.maxHeight = "50px";
 
         const requestBody = {
             id: localStorage.getItem("id")
@@ -418,6 +419,10 @@ export async function loadFriends() {
                         sendMatchInvite(entry.id, true);
                     });
                 });
+
+                setTimeout(() => {
+                    friendsContainer.style.maxHeight = "";
+                }, 30);
 
                 if (!friendsContainer.innerHTML) {
                     friendContainerMessage.textContent = "You haven't added any friends.";
