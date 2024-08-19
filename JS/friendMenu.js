@@ -572,12 +572,12 @@ async function declineMatchInvite(recipientId) {
 
 // Web socket for notifications -------------------------------------------------------------------------------
 
-export function initializeWebsocketConnection() {
+export async function initializeWebsocketConnection() {
     let ws;
     let reconnectAttempts = 0;
     const maxReconnectAttempts = 5;
 
-    function connectWebSocket() {
+    async function connectWebSocket() {
         try {
             ws = new WebSocket('wss://accounts.openguessr.com/ws/');
 
