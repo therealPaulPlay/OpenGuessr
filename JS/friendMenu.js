@@ -352,10 +352,13 @@ async function declineFriendRequest(senderId) {
 let friendsContainer = document.getElementById("friendBox");
 let friendContainerMessage = document.getElementById("noFriendsText");
 
-export async function loadFriends() {
+export async function loadFriends(animate) {
     try {
         friendContainerMessage.textContent = "Loading...";
-        friendsContainer.style.maxHeight = "50px";
+        if (animate) {
+            friendsContainer.innerHTML = "";
+            friendsContainer.style.maxHeight = "50px";
+        }
 
         const requestBody = {
             id: localStorage.getItem("id")
@@ -467,7 +470,7 @@ async function removeFriend(friendId) {
         });
 
         if (response.ok) {
-            loadFriends();
+            loadFriends(false);
         } else {
             const data = await response.json();
             console.error("Error removing friend: " + response.status);
