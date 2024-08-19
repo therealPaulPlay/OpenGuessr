@@ -77,7 +77,7 @@ export function toggleMultiplayerSelector(alwaysClose) {
         document.getElementById("blackBackground").style.visibility = "visible";
         setMultiplayerWindowSelection("main");
         if (isAuthenticated) {
-            loadFriends();
+            loadFriends(true);
             startLoadFriendsInterval();
         }
     }
@@ -89,7 +89,7 @@ function startLoadFriendsInterval() {
     clearInterval(loadFriendsInterval);
     loadFriendsInterval = setInterval(() => {
         if (multiplayerSelectionScreen.style.display == "block") {
-            loadFriends();
+            loadFriends(false);
         }
     }, 10000);
 }

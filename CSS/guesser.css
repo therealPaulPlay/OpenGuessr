@@ -1731,6 +1731,7 @@ textarea {
   box-sizing: border-box;
   border: 5px solid rgba(77, 77, 87, 0.1);
   min-width: 100%;
+  transition: max-height 150ms ease;
 }
 
 #friendBox {
@@ -3451,7 +3452,7 @@ a:hover {
 
 #troubleshootGuideButton {
   margin-right: 9px;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.1);
   outline: 3px rgba(255, 255, 255, 0.2) solid;
   color: rgba(255, 255, 255, 0.75);
 }
