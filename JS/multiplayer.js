@@ -10,6 +10,7 @@ import { calculateDistances, loadResultMap } from "./main.js";
 import { playSound } from "./soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
 import { loadFriends, sendMatchInvite } from "./friendMenu.js";
+import { toggleStreakWindow } from "./streakAdPopup.js";
 
 //Global UI --------------------------------------------------------------------------------------------
 export let coordsFromHost = [];
@@ -226,6 +227,8 @@ function showHostCodeArea(roomcode) {
 
 async function loadOnlineFriendsForRoomCreation() {
     try {
+        document.getElementById("roomCreationFriendsBox").style.maxHeight = "0";
+
         const requestBody = {
             id: localStorage.getItem("id")
         };
@@ -245,38 +248,43 @@ async function loadOnlineFriendsForRoomCreation() {
                 let idCounter = 0;
 
                 document.getElementById("roomCreationFriendsBox").innerHTML = "";
-
+                
                 data.friends.forEach(entry => {
-                    idCounter++;
+                    if (entry.online) {
+                        idCounter++;
 
-                    let newEntry = document.createElement("div");
-                    newEntry.classList.add("roomCreationFriendItem");
-                    newEntry.classList.add("standardButton");
-
-                    newEntry.innerHTML = `
-                    <p class="friendsRoomEntryText">${entry.user_name}</p>
-                    <button id="roomInviteFriend${idCounter}" class="standardButton friendItemButtons">
-                        <img src="/IMG/send_icon.png" alt="send invite" class="sendIcon">
-                    </button>
-                    `;
-
-                    newEntry.id = "roomFriendEntry" + idCounter;
-                    document.getElementById("roomCreationFriendsBox").appendChild(newEntry);
-
-                    document.getElementById("roomFriendEntry" + idCounter).addEventListener("click", () => {
-                        loadProfileFromId(entry.id, false, true);
-                    });
-
-                    document.getElementById("roomInviteFriend" + idCounter).addEventListener("click", (e) => {
-                        e.stopPropagation();
-                        sendMatchInvite(entry.id, false);
-                    });
+                        let newEntry = document.createElement("div");
+                        newEntry.classList.add("roomCreationFriendItem");
+                        newEntry.classList.add("standardButton");
+    
+                        newEntry.innerHTML = `
+                        <p class="friendsRoomEntryText">${entry.user_name}</p>
+                        <button id="roomInviteFriend${idCounter}" class="standardButton friendItemButtons">
+                            <img src="/IMG/send_icon.png" alt="send invite" class="sendIcon">
+                        </button>
+                        `;
+    
+                        newEntry.id = "roomFriendEntry" + idCounter;
+                        document.getElementById("roomCreationFriendsBox").appendChild(newEntry);
+    
+                        document.getElementById("roomFriendEntry" + idCounter).addEventListener("click", () => {
+                            loadProfileFromId(entry.id, false, true);
+                        });
+    
+                        document.getElementById("roomInviteFriend" + idCounter).addEventListener("click", (e) => {
+                            e.stopPropagation();
+                            sendMatchInvite(entry.id, false);
+                        });
+                    }
                 });
 
                 if (!document.getElementById("roomCreationFriendsBox").innerHTML) {
                     document.getElementById("friendsInviteDisplay").style.display = "none";
                 } else {
                     document.getElementById("friendsInviteDisplay").style.display = "block";
+                    setTimeout(() => {
+                        document.getElementById("roomCreationFriendsBox").style.maxHeight = "";
+                    }, 50);
                 }
 
             } catch (error) {

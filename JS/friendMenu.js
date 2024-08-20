@@ -425,7 +425,7 @@ export async function loadFriends(animate) {
 
                 setTimeout(() => {
                     friendsContainer.style.maxHeight = "";
-                }, 30);
+                }, 50);
 
                 if (!friendsContainer.innerHTML) {
                     friendContainerMessage.textContent = "You haven't added any friends.";
