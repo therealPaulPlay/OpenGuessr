@@ -130,6 +130,8 @@
             padding: 0;
             padding-inline: 25px;
             white-space: nowrap;
+            opacity: 0;
+            transition: opacity 250ms ease;
         }
 
         .rankedItemSupporter {
@@ -271,6 +273,9 @@
             max-width: 650px;
             gap: 20px;
             position: relative;
+            transform: scale(0.9);
+            opacity: 0.3;
+            transition: opacity 250ms ease, transform 250ms ease;
         }
 
         .podium-item {
@@ -428,7 +433,7 @@
         <h1 id="navbarTitle">Leaderboard</h1>
     </div>
     <div class="podium-container">
-        <div class="podium">
+        <div id="podium" class="podium">
             <div class="podium-item silver" id="second-place">
                 <div class="name"></div>
                 <div class="podiumExp"></div>
@@ -506,6 +511,8 @@
     // Function to add a new ranked item to the leaderboard
     let idCounter = 0;
 
+    let timeoutMultiplier = 0;
+
     function addRankedItem(rank, name, xp, id, supporterLevel, yourLeague) {
         idCounter++;
         const rankedItem = document.createElement('div');
@@ -531,6 +538,12 @@
         } else {
             yourLeagueContainer.appendChild(rankedItem);
         }
+
+        timeoutMultiplier++;
+
+        setTimeout(() => {
+            rankedItem.style.opacity = "1";
+        }, 10 * timeoutMultiplier);
 
         document.getElementById("name" + idCounter).addEventListener("click", () => {
             openProfile(id);
@@ -573,6 +586,9 @@
                     podiumItem.classList.add('yourItem');
                 }
             }
+            
+            document.getElementById("podium").style.opacity = 1;
+            document.getElementById("podium").style.transform = "scale(1)";
 
             // Populate main leaderboard starting from 4th place
             for (let i = 3; i < userData.length; i++) {

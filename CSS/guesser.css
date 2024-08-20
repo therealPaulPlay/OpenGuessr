@@ -747,6 +747,7 @@ textarea {
 #freeSupporterBoostText {
   flex-grow: 10;
   max-width: 75%;
+  font-size: 22px;
 }
 
 #adTierBox {
@@ -1553,6 +1554,7 @@ textarea {
   overflow: auto;
   gap: 5px;
   padding: 0;
+  transition: max-height 250ms ease;
 }
 
 #friendsInviteDisplay {
@@ -1731,6 +1733,7 @@ textarea {
   box-sizing: border-box;
   border: 5px solid rgba(77, 77, 87, 0.1);
   min-width: 100%;
+  transition: max-height 150ms ease;
 }
 
 #friendBox {
@@ -1850,7 +1853,7 @@ search {
 
 .infoNote p {
   padding: 5px;
-  padding-left: 20px;
+  padding-left: 5px;
   padding-right: 15px;
   padding-bottom: 15px;
   opacity: 75%;
@@ -3415,9 +3418,9 @@ a:hover {
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 55px;
   flex-wrap: wrap;
-  padding: 5px;
+  padding: 10px;
+  gap: 10px;
 }
 
 .inboxItemButtons {
@@ -3436,15 +3439,16 @@ a:hover {
 }
 
 #troubleshootGuideButton {
-  margin-right: 9px;
-  background-color: transparent;
+  background-color: rgba(255, 255, 255, 0.1);
   outline: 3px rgba(255, 255, 255, 0.2) solid;
   color: rgba(255, 255, 255, 0.75);
+  flex-grow: 1;
 }
 
 #issuesTroubleshootText {
   padding-bottom: 5px;
   margin-right: auto;
+  flex-grow: 50;
 }
 
 .multiplayerLeaderboardArea {
@@ -3576,7 +3580,7 @@ input[type="checkbox"]:focus {
 }
 
 #mobileWindow {
-  max-width: 400px;
+  max-width: 300px;
   transition: opacity 150ms ease, scale 150ms ease;
   opacity: 0;
   scale: 0.95;

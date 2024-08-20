@@ -220,13 +220,17 @@ async function checkSigninStatusAndLoadUserInfo() {
   if (isAuthenticated) {
     profileButton.classList.remove("notSignedIn");
     //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
-    await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((user) => {
-      updateLoadedProfileData(user.profile_data);
-      changeUItoSignedIn(user.supporter_level); // display user info is already being called in here
-      setSupporterLevel(user.supporter_level, user.supported_amount);
-      if (user.new_requests) { setInboxStatus(true); }
-      initializeWebsocketConnection();
-    });
+    try {
+      await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((user) => {
+        updateLoadedProfileData(user.profile_data);
+        changeUItoSignedIn(user.supporter_level); // display user info is already being called in here
+        setSupporterLevel(user.supporter_level, user.supported_amount);
+        if (user.new_requests) { setInboxStatus(true); }
+        initializeWebsocketConnection();
+      });
+    } catch (error) {
+      console.error("Error getting user data in checkSigninStatusAndLoadUserInfo: " + error);
+    }
   }
   else {
     changeUItoSignedOut();
