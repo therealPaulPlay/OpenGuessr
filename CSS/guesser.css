@@ -10,6 +10,8 @@
 
 :root {
   --brand-color: #ff0808;
+  --panel-color: hsla(236, 25%, 20%, 0.7);
+  --menu-background: rgba(39, 41, 53, 0.9);
 }
 
 html {
@@ -80,7 +82,7 @@ h3 {
 }
 
 .topBarMenu {
-  background-color: hsla(236, 25%, 20%, 0.7);
+  background-color: var(--panel-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
@@ -123,7 +125,7 @@ h3 {
   position: absolute;
   top: 50px;
   border-radius: 10px;
-  background-color: hsla(236, 25%, 20%, 0.7);
+  background-color: var(--panel-color);
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -531,7 +533,7 @@ h3 {
   user-select: none;
   -webkit-user-select: none;
   color: white;
-  background-color: hsla(236, 25%, 20%, 0.7);
+  background-color: var(--panel-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   overflow: hidden;
@@ -811,7 +813,7 @@ textarea {
   z-index: 900;
   overflow-x: hidden;
   overflow-y: auto;
-  background-color: rgba(39, 41, 53, 0.9);
+  background-color: var(--menu-background);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 100px rgba(5, 6, 10, 0.5);
@@ -1326,9 +1328,22 @@ textarea {
   margin-right: auto;
   flex-wrap: wrap;
   flex-direction: column;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(30, 31, 44, 0.5);
   border-radius: 10px;
 }
+
+.multiplayerJoinField {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 7px;
+  width: calc(100% - 20px);
+  padding: 10px;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  flex-wrap: wrap;
+  display: flex;
+  gap: 5px;
+} 
 
 .multiplayerDuelStatus {
   text-align: center;
@@ -1432,6 +1447,7 @@ textarea {
   justify-content: center;
   align-items: center;
   padding: 10px;
+  padding-bottom: 5px;
 }
 
 #innerSubmitAreaBlock {
@@ -1448,9 +1464,7 @@ textarea {
   outline: none;
   border: none;
   user-select: none;
-  width: 65%;
-  min-width: 65%;
-  flex-grow: 1;
+  width: calc(100% - 60px);
 }
 
 .ticker {
@@ -1624,9 +1638,10 @@ textarea {
 .multiplayerInputInfo {
   font-size: 17px;
   padding: 0;
-  color: lightgrey;
-  width: 70%;
+  color: rgba(255, 255, 255, 0.5);
   overflow: hidden;
+  width: calc(100% - 20px);
+  padding-left: 20px;
 }
 
 #toggleRestrictions {
@@ -1635,7 +1650,6 @@ textarea {
 
 #multiplayerJoin {
   width: 35%;
-  margin-bottom: 10px;
   transition: opacity 250ms ease, filter 250ms ease;
 }
 
@@ -2048,7 +2062,7 @@ search {
   margin-inline: auto;
   display: none;
   gap: 8px;
-  background-color: hsla(236, 25%, 20%, 0.7);
+  background-color: var(--panel-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   border-radius: 12px;
@@ -2293,7 +2307,7 @@ search {
   transition: max-height 0.3s ease, background-color 250ms ease;
   position: fixed;
   width: 675px;
-  background-color: hsla(236, 25%, 20%, 0.7);
+  background-color: var(--panel-color);
   border-radius: 0 0 10px 10px;
   box-shadow: 0 2px 20px rgba(5, 6, 10, 0.7);
   backdrop-filter: blur(10px);
@@ -2310,7 +2324,7 @@ search {
 
 .extendedNavbar.expandedMobile {
   max-height: calc(100% - 75px);
-  background-color: rgba(39, 41, 53, 0.9);
+  background-color: var(--menu-background);
   border-radius: 0;
   height: auto;
   transition: none;
@@ -2454,7 +2468,7 @@ map::selection {
   color: rgb(255, 255, 255);
   border-radius: 5px;
   font-size: 17px;
-  background-color: hsla(236, 25%, 20%, 0.4);
+  background-color: hsla(236, 25%, 20%, 0.5);
   transition: margin 250ms ease, filter 250ms ease, opacity 250ms ease;
   user-select: none;
   z-index: 10;
@@ -2506,7 +2520,7 @@ map::selection {
 
 #mapModeIndicator {
   pointer-events: auto;
-  background-color: hsla(236, 25%, 20%, 0.7);
+  background-color: var(--panel-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   height: 48px;
@@ -2544,7 +2558,7 @@ map::selection {
 
 @keyframes divFade {
   0% {
-    background-color: hsla(236, 25%, 20%, 0.7);
+    background-color: var(--panel-color);
   }
 
   50% {
@@ -2552,7 +2566,7 @@ map::selection {
   }
 
   100% {
-    background-color: hsla(236, 25%, 20%, 0.7);
+    background-color: var(--panel-color);
   }
 }
 
@@ -2582,7 +2596,7 @@ map::selection {
   display: none;
   flex-direction: column;
   align-items: center;
-  background-color: hsla(236, 25%, 20%, 0.7);
+  background-color: var(--panel-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   pointer-events: auto;
@@ -2749,7 +2763,7 @@ map::selection {
   margin-inline: 10px;
   flex: 1;
   z-index: 10;
-  background-color: hsla(236, 25%, 20%, 0.7);
+  background-color: var(--panel-color);
   transition: background-color 250ms ease;
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
@@ -2893,7 +2907,7 @@ map::selection {
   user-select: none;
   -webkit-user-select: none;
   color: white;
-  background-color: hsla(236, 25%, 20%, 0.7);
+  background-color: var(--panel-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   justify-content: center;
@@ -2914,7 +2928,7 @@ map::selection {
   user-select: none;
   -webkit-user-select: none;
   color: white;
-  background-color: hsla(236, 25%, 20%, 0.7);
+  background-color: var(--panel-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   pointer-events: auto;
@@ -3004,7 +3018,7 @@ map::selection {
   height: fit-content;
   flex: 1;
   border-radius: 10px;
-  background-color: hsla(236, 25%, 20%, 0.7);
+  background-color: var(--panel-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   pointer-events: auto;
