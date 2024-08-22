@@ -583,7 +583,7 @@ async function declineMatchInvite(recipientId) {
 export async function initializeWebsocketConnection() {
     let ws;
     let reconnectAttempts = 0;
-    const maxReconnectAttempts = 2;
+    const maxReconnectAttempts = 5;
 
     async function connectWebSocket() {
         try {
