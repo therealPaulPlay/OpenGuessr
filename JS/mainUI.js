@@ -124,14 +124,16 @@ export function enableResultScreen(resultString, extraMessage) {
     document.getElementById("EndOverlay").style.opacity = "100%";
     document.getElementById("EndOverlay").style.visibility = "visible";
 
-    document.getElementById("distanceText").innerText = "Your guess was " + resultString + " away from the target.";
+    document.getElementById("distanceText").innerText = resultString;
     document.getElementById("motivationText").innerText = extraMessage;
 
     if (countryGuesserMode) {
         if (checkIfGuessWasCorrect()) {
-            document.getElementById("distanceText").innerText = "That is correct! The location was in " + selectedCountryGuesserCountry + ".";
+            document.getElementById("distanceText").innerText = "Correct!";
+            document.getElementById("motivationText").innerText = "The country is " + selectedCountryGuesserCountry + ".";
         } else {
-            document.getElementById("distanceText").innerText = "Wrong! The correct country would have been " + selectedCountryGuesserCountry + ".";
+            document.getElementById("distanceText").innerText = "Wrong!";
+            document.getElementById("motivationText").innerText = "The country was " + selectedCountryGuesserCountry + ".";
         }
     }
 
@@ -550,8 +552,10 @@ function toggleTroubleshootWindow() {
 
 // display text to encourage disabling ad block after 12s
 setTimeout(() => {
-    document.getElementById("adsText").style.opacity = "0.25";
-}, 12000);
+    document.querySelectorAll(".adsText").forEach((e) => {
+        e.style.opacity = "0.25";
+    });
+}, 8000);
 
 // Daily competition link to competitions ---------------------------------------------------------------------------------
 
@@ -647,6 +651,12 @@ export async function supporterXpBoostAnimation(factor) {
 }
 
 // Supporter benefits window and purchases -----------------------------------------------------------------------------------------------------------------------
+
+document.querySelectorAll(".supporterAdText").forEach((e) => {
+    e.addEventListener("click", () => {
+        openSupporterWindow();
+    });
+});
 
 document.getElementById("viewSupporterBenefits").addEventListener("click", () => {
     playSound("basic_button");
@@ -894,6 +904,18 @@ export function showNotification(text, acceptFunction, dismissFunction, showAcce
 function hideNotification() {
     notificationBar.style.top = "50px";
     notificationBar.style.opacity = "0";
+}
+
+// Hide advertisements (Supporter Tier 2) ----------------------------------------------------------------
+
+export function setAdVisibility(visible) {
+    try {
+        document.querySelectorAll(".hideForSupporters").forEach((e) => {
+            e.style.display = visible ? "" : "none";
+        });
+    } catch (error) {
+        console.error("Error disabling/enabling ads that can be hidden for supporters in main.js: " + error);
+    }
 }
 
 // In-App page browser -----------------------------------------------------------------------------------
