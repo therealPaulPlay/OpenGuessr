@@ -15,13 +15,13 @@
       ({ key: "AIzaSyDcGJ0tK_syDMY4Pv3qY298oDDGUBwNvEk", v: "weekly" });</script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=1.1.4">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=1.1.5">
 
   <!-- Non-bundled js files -->
   <script type="module" src="analytics.js" async></script>
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=1.1.7" defer></script>
+  <script type="module" src="main.js?v=1.1.8" defer></script>
 
   <!-- venatus ad script -->
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
@@ -99,15 +99,15 @@
         <img src="/IMG/settings_icon.png" alt="settings" class="socialBarIcons">
       </button>
     </div>
-  <div id="notificationBar">
-    <p id="notificationText">Default notification</p>
-    <div class="notificationButtonBox">
-      <button id="notificationAccept" class="standardButton accountButton">accept</button>
-      <button id="notificationDismiss" class="standardButton accountButton">
-        <img alt="dismiss notification" class="friendRemoveIcon" src="/IMG/delete_icon.png">
-      </button>
+    <div id="notificationBar">
+      <p id="notificationText">Default notification</p>
+      <div class="notificationButtonBox">
+        <button id="notificationAccept" class="standardButton accountButton">accept</button>
+        <button id="notificationDismiss" class="standardButton accountButton">
+          <img alt="dismiss notification" class="friendRemoveIcon" src="/IMG/delete_icon.png">
+        </button>
+      </div>
     </div>
-  </div>
   </div>
   <!-- extended navbar map menu -->
   <div class="extendedNavbar" id="extendedNavbar">
@@ -470,6 +470,7 @@
           <p class="tierBoxTier">Tier 2</p>
           <ul class="tierBenefits">
             <li>All previous benefits</li>
+            <li>Ad-free experience</li>
             <li>Tier 2 Supporter Badge</li>
             <li>15% Supporter XP Boost</li>
           </ul>
@@ -523,18 +524,18 @@
       <button id="friendBrowserClose" class="standardButton white accountClose">Close</button>
     </div>
   </div>
-    <!-- Inbox for friend requests -->
-    <div id="friendInboxPopup" class="popupHolder profilePopupBackground">
-      <div id="friendInboxWindow" class="uiWindow">
-        <div class="popup-title">
-          <h1 id="profileViewName">Inbox</h1>
-        </div>
-        <div id="friendInbox" class="playerSearchBox">
-          <p>Default</p>
-        </div>
-        <button id="friendInboxClose" class="standardButton white accountClose">Close</button>
+  <!-- Inbox for friend requests -->
+  <div id="friendInboxPopup" class="popupHolder profilePopupBackground">
+    <div id="friendInboxWindow" class="uiWindow">
+      <div class="popup-title">
+        <h1 id="profileViewName">Inbox</h1>
       </div>
+      <div id="friendInbox" class="playerSearchBox">
+        <p>Default</p>
+      </div>
+      <button id="friendInboxClose" class="standardButton white accountClose">Close</button>
     </div>
+  </div>
   <!-- remaining windows -->
   <div class="popupHolder">
     <!-- Help / How to Play Popup -->
@@ -586,16 +587,18 @@
           <p>Disable VPNs or Proxies: Certain VPNs or Proxies, often browser extensions, block WebRTC connections.</p>
         </li>
         <li>
-          <p>Disable Firewalls: Some restrictive firewall settings or use wifi routers can block WebRTC.</p>
+          <p>Disable Firewalls: Some restrictive firewall settings or wifi routers can block WebRTC.</p>
         </li>
         <li>
-          Check if the TURN servers are online: We use turn servers from <a href="https://fastturn.net/status" target="_blank">fastturn</a>.
+          Check if the TURN servers are online: We use turn servers from <a href="https://fastturn.net/status"
+            target="_blank">fastturn</a>.
         </li>
         <li>
           Check if your browser supports WebRTC: Open chrome://webrtc-internals/ or about:webrtc for Firefox.
         </li>
       </ul>
-      <p>If multiplayer still does not work after following these steps, consider using a different wifi, cellular data or switch the host.</p>
+      <p>If multiplayer still does not work after following these steps, consider using a different wifi, cellular data
+        or switch the host.</p>
       <button id="troubleshootClose" class="standardButton white accountClose">Back</button>
     </div>
     <!-- Settings Window (Especially for Sounds) -->
@@ -727,8 +730,10 @@
       </div>
       <div id="multiplayerWindowJoin" style="display: none;">
         <div class="multiplayerJoinAlign">
-          <p id="multiplayerJoinInfo" class="multiplayerInputInfo">Enter the roomcode.</p>
-          <input id="roomCodeInput" type="text" class="multiplayerInput" placeholder="Roomcode">
+          <div class="multiplayerJoinField">
+            <p id="multiplayerJoinInfo" class="multiplayerInputInfo">Enter the roomcode.</p>
+            <input id="roomCodeInput" type="text" class="multiplayerInput" placeholder="Roomcode">
+          </div>
           <button id="multiplayerJoin" class="standardButton">Join</button>
         </div>
       </div>
@@ -806,8 +811,6 @@
   <!-- Result screen -->
   <div id="EndOverlay">
     <div id="endBottomArea">
-      <button type="button" id="endScreenOpenLocation">Open streetview <img src="/IMG/streetview_icon.png"
-          alt="Streetview symbol" class="socialIcon" style="vertical-align: -2px"></button>
       <div id="endScreenStreakRevive">
         <div class="popup-title">
           <h1 id="streakHeader">Streak lost!</h1>
@@ -820,10 +823,20 @@
         <button id="streakAdDismiss" class="standardButton accountClose white">Close</button>
       </div>
       <div id="endBottomBar">
-        <div id="TextDiv">
-          <p id="distanceText"></p>
-          <p id="motivationText"></p>
-          <div id="XParea">
+        <div id="floatingResultLeaderboardArea" class="hideForSupporters">
+          <p class="adsTextResult adsText">Please consider supporting OpenGuessr to go ad-free. <span class="supporterAdText">Learn more</span>.</p>
+          <div id="floatingResultLeaderboardAd"></div>
+        </div>
+        <div id="resultBox">
+          <p class="resultField" id="motivationText"></p>
+          <div id="resultLeaderboardAd" class="resultField hideForSupporters">
+            <p class="adsTextResult adsText">Go ad-free. <span class="supporterAdText">Learn more</span>.</p>
+          </div>
+          <div class="resultField">
+            <img src="/IMG/distance_icon.png" alt="Distance icon" id="distanceIcon">
+            <p id="distanceText"></p>
+          </div>
+          <div id="XParea" class="resultField">
             <div id="supporterBoost">
               <p id="supporterBoostText">Supporter Boost (Default)</p>
             </div>
@@ -838,10 +851,15 @@
             </div>
           </div>
           <p id="XPbarNoAccount">Sign up to see & save your points!</p>
-          <button id="nextRound" class="standardButton">
-            <p id="nextRoundText">Next round</p>
-            <img id="nextRoundArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon">
-          </button>
+          <div id="nextRoundArea">
+            <button id="endScreenOpenLocation">
+              <img src="/IMG/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon">
+            </button>
+            <button id="nextRound" class="standardButton">
+              <p id="nextRoundText">Next round</p>
+              <img id="nextRoundArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon">
+            </button>
+          </div>
         </div>
       </div>
     </div>
@@ -952,10 +970,10 @@
     </div>
   </div>
   <div id="bottomShadow"></div>
-  <div id="bottomFooterAds" class="bottomFooterAds">
+  <div id="bottomFooterAds" class="bottomFooterAds leaderboardAds hideForSupporters">
   </div>
-  <div class="bottomFooterAds bottomFooterAdText">
-    <p id="adsText">Advertisements keep OpenGuessr free ♥</p>
+  <div class="bottomFooterAds leaderboardAds bottomFooterAdText hideForSupporters">
+    <p id="bottomAdsText" class="adsText">Advertisements keep OpenGuessr free ♥</p>
   </div>
 </body>
 
