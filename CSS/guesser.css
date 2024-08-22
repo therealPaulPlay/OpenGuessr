@@ -3684,17 +3684,16 @@ input[type="checkbox"]:focus {
   font-size: 22px;
   overflow: hidden;
   transition: opacity 500ms ease;
-  outline: 4px rgba(255, 255, 255, 0.5) solid;
-  border-radius: 5px;
+  border-radius: 7px;
   padding: 13px;
   padding-inline: 50px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.2);
 }
 
 .adsTextResult {
   outline: none;
   background-color: transparent;
-  opacity: 0.25 !important;
+  opacity: 0.5 !important;
   position: absolute;
   left: 50%;
   top: 50%;
@@ -3736,6 +3735,11 @@ input[type="checkbox"]:focus {
 #floatingResultLeaderboardAd {
   width: 728px;
   height: 90px;
+}
+
+.supporterAdText {
+  text-decoration: underline;
+  cursor: pointer;
 }
 
 @media (min-width: 1900px) {

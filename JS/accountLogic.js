@@ -1,5 +1,5 @@
 import { deleteUser, getUser, updateExperience } from "./userAPI";
-import { checkTextLength, freeSupporterBoostEnabled, resultScreenEnabled, showConfirmPopup, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
+import { checkTextLength, freeSupporterBoostEnabled, resultScreenEnabled, setAdVisibility, showConfirmPopup, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel, attemptJoinViaLink } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
@@ -178,6 +178,10 @@ async function changeUItoSignedIn(supporterLevel) {
     updateSupporterProfileHighlight(true);
   }
 
+  if (supporterLevel && supporterLevel >= 2) {
+    setAdVisibility(false);
+  }
+
   if (resultScreenEnabled && lastXPloadingAttemptAborted) {
     loadResultScreenXP(lastDistance);
   }
@@ -199,6 +203,7 @@ async function changeUItoSignedOut() {
   loadSelectedBadge();
   updateSupporterProfileHighlight(false);
   setInboxStatus(false);
+  setAdVisibility(true);
 }
 
 function updateSupporterProfileHighlight(highlight) {

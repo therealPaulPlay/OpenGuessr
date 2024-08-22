@@ -652,6 +652,12 @@ export async function supporterXpBoostAnimation(factor) {
 
 // Supporter benefits window and purchases -----------------------------------------------------------------------------------------------------------------------
 
+document.querySelectorAll(".supporterAdText").forEach((e) => {
+    e.addEventListener("click", () => {
+        openSupporterWindow();
+    });
+});
+
 document.getElementById("viewSupporterBenefits").addEventListener("click", () => {
     playSound("basic_button");
     openSupporterWindow();
@@ -898,6 +904,18 @@ export function showNotification(text, acceptFunction, dismissFunction, showAcce
 function hideNotification() {
     notificationBar.style.top = "50px";
     notificationBar.style.opacity = "0";
+}
+
+// Hide advertisements (Supporter Tier 2) ----------------------------------------------------------------
+
+export function setAdVisibility(visible) {
+    try {
+        document.querySelectorAll(".hideForSupporters").forEach((e) => {
+            e.style.display = visible ? "" : "none";
+        });
+    } catch (error) {
+        console.error("Error disabling/enabling ads that can be hidden for supporters in main.js: " + error);
+    }
 }
 
 // In-App page browser -----------------------------------------------------------------------------------
