@@ -392,7 +392,7 @@ h3 {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   position: relative;
-  flex-grow: 2;
+  flex-grow: 100;
   min-width: 300px;
   height: 40px;
 }
@@ -2958,7 +2958,7 @@ map::selection {
   background-color: rgba(0, 0, 0, 0.1);
   border-radius: 7px;
   padding: 10px;
-  flex-grow: 1;
+  flex-grow: 10;
   height: 40px;
   position: relative;
   transition: width 250ms ease, height 250ms ease;
@@ -2993,6 +2993,7 @@ map::selection {
   flex-direction: column;
   pointer-events: none;
   width: 100%;
+  overflow: hidden;
 }
 
 #motivationText {
@@ -3745,6 +3746,10 @@ input[type="checkbox"]:focus {
   #resultLeaderboardAd {
     display: none;
   }
+
+  #endBottomArea {
+    overflow: visible;
+  }
 }
 
 .bottomFooterAds {
@@ -3784,7 +3789,7 @@ input[type="checkbox"]:focus {
 }
 
 @media (orientation: landscape) and (max-width: 700px) {
-  .leaderboard {
+  .leaderboardAds {
     width: 0;
     display: none;
   }
@@ -3810,7 +3815,7 @@ input[type="checkbox"]:focus {
 
 /* phones / mobile but also narrow devices like ipads */
 @media all and (orientation: portrait),
-all and (max-width: 1250px) {
+all and (max-width: 1350px) {
 
   #resultBox {
     font-size: 22px;
@@ -3829,9 +3834,6 @@ all and (max-width: 1250px) {
     right: 0;
     margin-bottom: 0;
     margin-top: 10px;
-  }
-
-  #XParea {
     width: calc(100% - 20px);
   }
 }
