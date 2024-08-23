@@ -156,7 +156,7 @@ function goTologin() {
 
 //Account UI (working) -------------------------------------------------------------------------------------------------------------
 
-XPbarNoAccount.addEventListener("click", function () {
+document.getElementById("resultSignupPrompt").addEventListener("click", function () {
   goTologin();
 });
 
@@ -193,7 +193,7 @@ async function changeUItoSignedOut() {
   mobileLogoutButton.style.display = "none";
   mobileLoginButton.style.display = "inline-block";
   mobileProfileButton.style.display = "none";
-  XPbarNoAccount.style.display = "block";
+  XPbarNoAccount.style.display = ""; // resets to flex state
   XParea.style.display = "none";
   disableExlcusiveCategories();
   displayAccountName.innerHTML = "Guest";

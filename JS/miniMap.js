@@ -39,7 +39,7 @@ changeMapTypeButtonLabel();
 //reset the map - used for going to the next round. 
 export function resetMap() {
     map.removeLayer(marker);
-    map.setView(new L.LatLng(50, 25), 3);
+    map.setView(new L.LatLng(20, 0), 1);
 
     //reset the guess button as well
     hasGuessed = false;
@@ -64,7 +64,7 @@ function resetGuessMap() {
     loadMap();
 }
 
-map.setZoom(3);
+map.setZoom(1);
 
 // Map Type Button Label ----------------------------------------------------------------------------------------
 
