@@ -654,7 +654,11 @@ export async function supporterXpBoostAnimation(factor) {
 
 document.querySelectorAll(".supporterAdText").forEach((e) => {
     e.addEventListener("click", () => {
-        openSupporterWindow();
+        if (isAuthenticated) {
+            openSupporterWindow();
+        } else {
+            showConfirmPopup("Account required", "In order to unlock supporter benefits for a one-time payment, you need to create an account first to ensure that purchases can be stored safely.", false, false, false, true);
+        }
     });
 });
 

@@ -646,6 +646,8 @@ document.getElementById("badgeClose").addEventListener("click", () => {
 function openBadeWindow() {
     updateBadgelocks();
     document.getElementById("badgePopup").style.display = "flex";
+    // has to be after the display setting
+    document.getElementById("badgeContainer").scrollTop = "0";
     document.getElementById("badgeWindow").scrollTop = "0";
 }
 
