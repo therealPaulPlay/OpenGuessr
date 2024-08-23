@@ -575,7 +575,7 @@ document.getElementById("uploadButton").addEventListener("click", () => {
 
 document.getElementById("uploadConfirm").addEventListener("click", () => {
     document.getElementById("uploadConfirmHeader").textContent = "Are you sure?";
-    document.getElementById("uploadConfirmText").textContent = "Submitted maps cannot be edited or deleted! Violating the rules can result in a permanent ban.";
+    document.getElementById("uploadConfirmText").textContent = "Some map details cannot be edited later! Violating the rules can result in a permanent ban.";
     document.getElementById("uploadConfirmClose").style.display = "block";
     document.getElementById("uploadConfirmFinal").style.display = "block";
     // now show the window
