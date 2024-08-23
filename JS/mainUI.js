@@ -558,7 +558,7 @@ function toggleTroubleshootWindow() {
 
 // display text to encourage disabling ad block after 12s
 setTimeout(() => {
-    document.querySelectorAll(".adsText").forEach((e) => {
+    document.querySelectorAll(".noAdvertsText").forEach((e) => {
         e.style.opacity = "0.25";
     });
 }, 8000);
@@ -663,7 +663,7 @@ document.querySelectorAll(".supporterAdText").forEach((e) => {
         if (isAuthenticated) {
             openSupporterWindow();
         } else {
-            showConfirmPopup("Account required", "In order to unlock supporter benefits for a one-time payment, you need to create an account first to ensure that purchases can be stored safely.", false, false, false, true);
+            showConfirmPopup("Account required", "To unlock supporter benefits with a one-time payment, you need to create an account first to ensure that purchases are stored safely.", false, false, false, true);
         }
     });
 });

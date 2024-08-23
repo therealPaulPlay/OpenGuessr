@@ -3692,7 +3692,7 @@ input[type="checkbox"]:focus {
 
 /* Ad CSS */
 
-.adsText {
+.noAdvertsText {
   text-align: center;
   color: white;
   opacity: 0;
