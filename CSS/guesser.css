@@ -3719,10 +3719,12 @@ input[type="checkbox"]:focus {
   overflow: hidden;
 }
 
-#resultLeaderboardAd {
+#resultLeaderboardAdArea {
   min-width: 320px;
   max-width: 500px;
   height: 50px;
+  padding: 5px;
+  flex-grow: 0;
 }
 
 #floatingResultLeaderboardArea {
@@ -3758,7 +3760,7 @@ input[type="checkbox"]:focus {
     display: flex;
   }
 
-  #resultLeaderboardAd {
+  #resultLeaderboardAdArea {
     display: none;
   }
 
@@ -3783,9 +3785,6 @@ input[type="checkbox"]:focus {
   justify-content: center;
   align-items: center;
   z-index: 10;
-}
-#resultLeaderboardAd {
-  padding: 5px;
 }
 
 @media (max-width: 1175px) {
