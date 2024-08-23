@@ -76,6 +76,7 @@ async function initMap() {
             fullscreenControl: false, // Hide fullscreen control
             mapTypeControl: false,     // Hide map type control
             draggableCursor: "crosshair",
+            clickableIcons: false,
             restriction: {
                 latLngBounds: worldBounds,
                 strictBounds: true, // Enforce the restriction
