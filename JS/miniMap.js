@@ -58,11 +58,11 @@ async function requestMapLoad() {
 export let map;
 
 const worldBounds = {
-    north: 85,
-    south: -85,
-    west: -180,
-    east: 180
-  };
+    north: 90,
+    south: -90,
+    west: -190,
+    east: 190
+};
 
 async function initMap() {
     const { Map } = await google.maps.importLibrary("maps");
@@ -76,7 +76,6 @@ async function initMap() {
             fullscreenControl: false, // Hide fullscreen control
             mapTypeControl: false,     // Hide map type control
             draggableCursor: "crosshair",
-            backgroundColor: "#9ad8e6",
             restriction: {
                 latLngBounds: worldBounds,
                 strictBounds: true, // Enforce the restriction
