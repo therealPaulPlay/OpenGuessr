@@ -26,8 +26,8 @@
                             e.appendChild(placement);
                         }
     
-                        // Update placement attributes based on element width
-                        if (e.getBoundingClientRect().width >= 728) {
+                        // Update placement attributes based on element width - not 728 by design, because Chrome often miscalculates element size and thinks it is 727.99px instead of 728px
+                        if (e.getBoundingClientRect().width >= 720) {
                             placement.setAttribute("data-id", "666702f0549bd20a9f2bfab6"); // Desktop Multi-Size leaderboard
                         } else {
                             placement.setAttribute("data-id", "66670320549bd20a9f2bfaba"); // Mobile Leaderboard
