@@ -62,8 +62,8 @@ async function initMap() {
 
     if (await requestMapLoad()) {
         map = new Map(document.getElementById("map"), {
-            center: { lat: 50, lng: 25 },
-            zoom: 3,
+            center: { lat: 20, lng: 0 },
+            zoom: 1,
             streetViewControl: false, // Hide Street View control
             zoomControl: false,       // Hide zoom control
             fullscreenControl: false, // Hide fullscreen control
@@ -101,8 +101,8 @@ export function resetMap() {
 
     addedMarkers = []; // Clear the array
 
-    map.panTo({ lat: 50, lng: 22 }); // reset center
-    map.setZoom(3);
+    map.panTo({ lat: 20, lng: 0 }); // reset center
+    map.setZoom(1);
 
     map.overlayMapTypes.clear();
 
