@@ -244,6 +244,10 @@ function showDescriptionWindow(name, author, desc, isAuthor, authorId) {
         console.error("Error adding delete button in mapScreen.js.");
     }
 
+    const button = document.getElementById("mapLink");
+    const newButton = button.cloneNode(true);
+    button.parentNode.replaceChild(newButton, button);
+
     document.getElementById("mapLink").addEventListener("click", () => {
         navigator.clipboard.writeText(window.location.origin + "/maps.html?map=" + name.split(" ").join("_"))
             .then(function () {
