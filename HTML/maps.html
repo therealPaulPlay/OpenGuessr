@@ -445,11 +445,13 @@
             align-items: center;
         }
 
-        #jsonUpload {
+        #jsonUpload,
+        #jsonUpdate {
             display: none;
         }
 
-        #jsonUploadButton {
+        #jsonUploadButton,
+        #jsonUpdateButton {
             background-color: rgba(255, 255, 255, 0.1);
             margin-top: 10px;
             color: white;
@@ -517,6 +519,10 @@
             display: none;
         }
 
+        #mapUpdatePopup {
+            display: none;
+        }
+
         #bottomGlow {
             width: 100%;
             height: 150px;
@@ -528,7 +534,9 @@
         }
 
         #uploadHeader,
-        #instantPlayHeader {
+        #instantPlayHeader,
+        #mapUpdateHeader,
+        #JsonInfoPlayHeader {
             margin-top: 5px;
         }
 
@@ -761,6 +769,14 @@
             margin-top: 2px;
         }
 
+        #updateMapStatus {
+            background-color: rgba(0, 0, 0, 0.1);
+            padding: 5px;
+            border-radius: 10px;
+            padding-inline: 15px;
+            width: 90%;
+        }
+
         @media all and (orientation: portrait),
         all and (max-width: 800px) {
             #navbarTitle {
@@ -855,6 +871,7 @@
                     <img id="linkIcon" src="/IMG/link_icon.png" alt="copy link">
                 </button>
                 <button id="manageDelete" class="standardButton closeButton manageDelete">Delete</button>
+                <button id="manageUpdate" class="standardButton closeButton">Update</button>
                 <button id="descClose" class="standardButton closeButton">Close</button>
             </div>
         </div>
@@ -866,6 +883,28 @@
             <div class="buttonBox">
                 <button id="deleteClose" class="standardButton closeButton">Cancel</button>
                 <button id="deleteProceed" class="standardButton closeButton manageDelete">Delete</button>
+            </div>
+        </div>
+    </div>
+    <div id="mapUpdatePopup" class="popupHolder">
+        <div id="mapUpdateWindow" class="uiWindow">
+            <h1 id="mapUpdateHeader">Update locations</h1>
+            <p class="marginTop" id="updateMapStatus">Default</p>
+            <p class="marginTop">Locations:</p>
+            <textarea id="updateMapData" class="uploadInfo locationTextbox" type="text" rows="20"
+                placeholder="https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
+
+https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6!1e1!3m4!1scgVGr1HY1alolDg8gfwrzA!2e0!7i16384!8i8192?coh=205409&entry=ttu
+
+https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu" maxlength="5000000"></textarea>
+            <p>...or upload a .json file with <span id="jsonFormatInfoSpan">this formatting</span>:</p>
+            <button id="jsonUpdateButton" class="standardButton">
+                <input type="file" id="jsonUpdate" accept="application/json">
+                <p id="fileNameUpdate">Pick file</p>
+            </button>
+            <div class="buttonBox">
+                <button id="updateClose" class="standardButton closeButton">Close</button>
+                <button id="updateProceed" class="standardButton playButton">Update</button>
             </div>
         </div>
     </div>
@@ -934,7 +973,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
             </div>
             <p>...or upload a .json file with <span id="jsonFormatInfoSpan">this formatting</span>:</p>
             <button id="jsonUploadButton" class="standardButton">
-                <input type="file" id="jsonUpload" accept="application/json" />
+                <input type="file" id="jsonUpload" accept="application/json">
                 <p id="fileName">Pick file</p>
             </button>
             <div class="buttonBox">

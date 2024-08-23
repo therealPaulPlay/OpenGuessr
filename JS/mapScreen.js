@@ -244,6 +244,22 @@ function showDescriptionWindow(name, author, desc, isAuthor, authorId) {
         console.error("Error adding delete button in mapScreen.js.");
     }
 
+    try {
+        if (isAuthor) {
+            const newButton = document.getElementById("manageUpdate").cloneNode(true);
+            document.getElementById("manageUpdate").parentNode.replaceChild(newButton, document.getElementById("manageUpdate"));
+            newButton.style.display = "block";
+            newButton.addEventListener("click", () => {
+                updateMapScreen(name);
+            });
+
+        } else {
+            document.getElementById("manageUpdate").style.display = "none";
+        }
+    } catch {
+        console.error("Error adding update button in mapScreen.js.");
+    }
+
     const button = document.getElementById("mapLink");
     const newButton = button.cloneNode(true);
     button.parentNode.replaceChild(newButton, button);
@@ -387,6 +403,71 @@ async function deleteMap(mapName) {
     } catch (error) {
         console.error('Error deleting map:', error);
         return "A network error occurred while deleting the map: " + error;
+    }
+}
+
+function updateMapScreen(name) {
+    document.getElementById("mapUpdatePopup").style.display = "flex";
+    document.getElementById("mapUpdateHeader").style.display = "Update " + name;
+    document.getElementById("jsonUpdate").value = ""; // reset filepicker input
+    document.getElementById("updateMapStatus").style.display = "none";
+
+    const newButton = document.getElementById("updateProceed").cloneNode(true);
+    document.getElementById("updateProceed").parentNode.replaceChild(newButton, document.getElementById("updateProceed"));
+    newButton.addEventListener("click", async () => {
+        document.getElementById("updateMapStatus").style.display = "block";
+        document.getElementById("updateMapStatus").textContent = "Updating...";
+        document.getElementById("updateMapStatus").textContent = "Status: " + await updateMap(name);
+    });
+}
+
+document.getElementById("updateClose").addEventListener("click", () => {
+    document.getElementById("mapUpdatePopup").style.display = "none";
+    document.getElementById("fileNameUpdate").textContent = "Pick file";
+});
+
+document.getElementById("jsonUpdateButton").addEventListener('click', function () {
+    document.getElementById("jsonUpdate").click();
+});
+
+document.getElementById("jsonUpdate").addEventListener('change', function () {
+    var fileName = document.getElementById("fileNameUpdate");
+    fileName.textContent = this.files.length > 0 ? this.files[0].name : "Pick file";
+});
+
+async function updateMap(mapName) {
+    let filePicker = document.getElementById("jsonUpdate");
+    let inputFromFilepicker = false;
+    const mapData = filePicker.value ? filePicker.files[0] : document.getElementById("updateMapData").value;
+    inputFromFilepicker = filePicker.value ? true : false;
+
+    try {
+        const body = {
+            id: localStorage.getItem("id"),
+            name: mapName,
+            mapData: inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData)
+        }
+
+        // Send POST request to the server
+        const response = await fetch('https://maps.openguessr.com/maps', {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ` + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        // Return the success or error message. No need to parse the response
+        if (response.ok) {
+            return `Map updated successfully.`;
+        } else {
+            console.error("Error updating map: " + response.status);
+            return "Failed to update map: " + response.status;
+        }
+    } catch (error) {
+        console.error('Error updating map:', error);
+        return "A network error occurred while updating the map: " + error;
     }
 }
 
