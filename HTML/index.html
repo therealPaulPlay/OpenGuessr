@@ -288,7 +288,7 @@
       <div class="popup-title">
         <h1 id="profileViewName">Badges</h1>
       </div>
-      <div class="badgeContainer">
+      <div id="badgeContainer" class="badgeContainer">
         <div class="spacerBadge"></div>
         <div class="badgeLabel">
           <p>For Experience:</p>
@@ -850,7 +850,10 @@
               <p id="endScreenStreakText">7 (x1.1)</p>
             </div>
           </div>
-          <p id="XPbarNoAccount">Sign up to see & save your points!</p>
+          <div id="XPbarNoAccount" class="resultField">
+            <p id="signupPromptText">See & save your earned points!</p>
+            <button id="resultSignupPrompt" class="standardButton">Sign up</button>
+          </div>
           <div id="nextRoundArea">
             <button id="endScreenOpenLocation">
               <img src="/IMG/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon">
