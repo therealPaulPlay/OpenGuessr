@@ -3678,7 +3678,7 @@ input[type="checkbox"]:focus {
 
 /* Ad CSS */
 
-.adsText {
+.noAdvertsText {
   text-align: center;
   color: white;
   opacity: 0;
@@ -3728,7 +3728,6 @@ input[type="checkbox"]:focus {
   display: none;
   justify-content: center;
   align-items: center;
-  height: fit-content;
   border-radius: 10px;
   background-color: var(--panel-color);
   backdrop-filter: blur(10px);
@@ -3742,9 +3741,8 @@ input[type="checkbox"]:focus {
 }
 
 #floatingResultLeaderboardAd {
-  width: 728px;
-  height: 90px;
   z-index: 1;
+  width: 728px;
 }
 
 .supporterAdText {

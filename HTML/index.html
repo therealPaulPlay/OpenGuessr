@@ -20,12 +20,12 @@
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
   <script type="module" src="main.js?v=1.2.0" defer></script>
 
-  <!-- analytics script -->
-  <script type="module" src="analytics.js" async></script>
-
   <!-- venatus ad script -->
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
-    data-site-id="664453baf2089a039dc08edb" data-mode="scan" async></script>
+    data-site-id="664453baf2089a039dc08edb" data-mode="scan" defer></script>
+
+  <!-- analytics script -->
+  <script type="module" src="analytics.js" async></script>
 
   <title>OpenGuessr - free geoguessr alternative</title>
 
@@ -819,7 +819,7 @@
       </div>
       <div id="floatingResultLeaderboardArea" class="hideForSupporters">
         <div id="floatingResultLeaderboardAd"></div>
-        <p class="adsTextResult adsText">Please consider supporting OpenGuessr to go ad-free. <span
+        <p class="adsTextResult noAdvertsText">Please consider supporting OpenGuessr to go ad-free. <span
             class="supporterAdText">Learn more</span>.</p>
       </div>
       <div id="endBottomBar">
@@ -827,7 +827,7 @@
           <p class="resultField" id="motivationText"></p>
           <div id="resultLeaderboardAdArea" class="resultField hideForSupporters">
             <div id="resultLeaderboardAd"></div>
-            <p class="adsTextResult adsText">Go ad-free. <span class="supporterAdText">Learn more</span>.</p>
+            <p class="adsTextResult noAdvertsText">Go ad-free. <span class="supporterAdText">Learn more</span>.</p>
           </div>
           <div class="resultField">
             <img src="/IMG/distance_icon.png" alt="Distance icon" id="distanceIcon">
@@ -973,7 +973,7 @@
   <div id="bottomFooterAds" class="bottomFooterAds leaderboardAds hideForSupporters">
   </div>
   <div class="bottomFooterAds leaderboardAds bottomFooterAdText hideForSupporters">
-    <p id="bottomAdsText" class="adsText">Advertisements keep OpenGuessr free ♥</p>
+    <p id="bottomAdsText" class="noAdvertsText">Advertisements keep OpenGuessr free ♥</p>
   </div>
 </body>
 
