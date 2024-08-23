@@ -489,7 +489,10 @@ h3 {
 }
 
 #signupPromptText {
-  padding-left: 10px;
+  padding-inline: 10px;
+  text-wrap: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .XPbarResource {
@@ -2973,6 +2976,7 @@ map::selection {
   height: 40px;
   position: relative;
   transition: width 250ms ease, height 250ms ease;
+  overflow: hidden;
 }
 
 #distanceIcon {
@@ -3724,7 +3728,7 @@ input[type="checkbox"]:focus {
   max-width: 500px;
   height: 50px;
   padding: 5px;
-  flex-grow: 0;
+  flex-grow: 1;
 }
 
 #floatingResultLeaderboardArea {
