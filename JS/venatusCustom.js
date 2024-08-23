@@ -23,12 +23,10 @@ try {
 
                     // Update placement attributes based on element width
                     if (e.getBoundingClientRect().width >= 728) {
-                        placement.setAttribute("data-id", "666702f0549bd20a9f2bfab6"); //Desktop Multi-Size leaderboard
+                        placement.setAttribute("data-id", "666702f0549bd20a9f2bfab6"); // Desktop Multi-Size leaderboard
                     } else {
-                        placement.setAttribute("data-id", "66670320549bd20a9f2bfaba"); //Mobile Leaderboard
+                        placement.setAttribute("data-id", "66670320549bd20a9f2bfaba"); // Mobile Leaderboard
                     }
-
-                    previousFooterAdsWidth = e.getBoundingClientRect().width;
 
                     // push the placement to the venatus array
                     window.top.__vm_add.push(placement);
@@ -37,6 +35,8 @@ try {
                     console.error("Error in custom ad script: " + error);
                 }
             });
+
+            previousFooterAdsWidth = footerAdsScaler.getBoundingClientRect().width;
         }
     }
 
