@@ -3729,6 +3729,11 @@ input[type="checkbox"]:focus {
   height: 50px;
   padding: 5px;
   flex-grow: 1;
+  position: relative;
+}
+
+#resultLeaderboardAd {
+  z-index: 1;
 }
 
 #floatingResultLeaderboardArea {
@@ -3752,6 +3757,7 @@ input[type="checkbox"]:focus {
 #floatingResultLeaderboardAd {
   width: 728px;
   height: 90px;
+  z-index: 1;
 }
 
 .supporterAdText {
