@@ -134,7 +134,7 @@ export function enableResultScreen(resultString, extraMessage) {
 
     resultScreenEnabled = true;
 
-    applyCorrectIds(true);
+    applyCorrectIds();
 }
 
 export function disableResultScreen() {
