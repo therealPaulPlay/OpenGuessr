@@ -8,7 +8,6 @@ module.exports = {
   entry: {
     // Separate bundles for each of these
     analytics: "./JS/analytics.js",
-    venatusCustom: "./JS/venatusCustom.js",
     main: ["./JS/categoryMenu.js", "./JS/main.js", "./JS/rewardedAds.js", "./JS/friendMenu.js"], // webpack finds other imported code automatically, these are necessary though
   },
   output: {
