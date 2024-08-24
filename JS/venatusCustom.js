@@ -74,6 +74,9 @@ function applyCorrectIds(parentElement) {
             placement.setAttribute("data-id", "66670320549bd20a9f2bfaba"); // Mobile Leaderboard
         }
 
+        // update last ad size
+        previousAdElementSize = parentElement.getBoundingClientRect().width;
+
         // push the placement to the venatus array
         window.top.__vm_add.push(placement);
 
