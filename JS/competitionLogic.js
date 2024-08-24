@@ -21,14 +21,13 @@ export let competitionTimer;
 export function loadCompetition(regenerate) {
     competition = JSON.parse(localStorage.getItem("competition"));
 
-    disableResultScreen(); // in case result screen is enabled
-
     currentRound = 0; // reset round index
     competitionCombinedScore = 0; // reset combined score
 
     if (competition) {
         localStorage.removeItem("competition"); // remove localstorage key
         playingCompetition = true;
+        disableResultScreen(); // in case result screen is enabled
         setCompetitionUI(true);
         setRestriction(competition.restriction);
 
