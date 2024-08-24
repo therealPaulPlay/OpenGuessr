@@ -6,6 +6,7 @@ let adElements = [document.getElementById("bottomFooterAds"), document.getElemen
 export function clearResultAds() {
     document.getElementById("resultLeaderboardAd").innerHTML = "";
     document.getElementById("floatingResultLeaderboardAd").innerHTML = "";
+    applyCorrectIds(true);
 }
 
 export function applyCorrectIds(skipOtherScreens) {
