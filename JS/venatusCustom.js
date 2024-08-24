@@ -1,9 +1,7 @@
 // Sample code from the venatus modified for our use case
 window.top.__vm_add = window.top.__vm_add || [];
 
-let previousAdElementSize = 0;
 let bottomAdElement = document.getElementById("bottomFooterAds");
-
 let currentAdParent = bottomAdElement; // initial value is the bottom footer ad (as this is the first ad to load)
 
 export function enableResultAds() {
@@ -28,7 +26,7 @@ export function enableResultAds() {
             currentAdParent = mobileResultAd;
         }
         
-        applyCorrectIds(currentAdParent); // this only does sth if the new size is actually different
+        applyCorrectIds(currentAdParent);
 
     } catch (error) {
         console.error("Error moving ad around in venatus custom js:", error);
@@ -53,10 +51,6 @@ export function enableBottomAd() {
 
 function applyCorrectIds(parentElement) {
     try {
-        if (previousAdElementSize == parentElement.getBoundingClientRect().width) {
-            return;
-        }
-
         // Check if the placement already exists
         let placement = document.querySelector('.vm-placement');
 
@@ -73,9 +67,6 @@ function applyCorrectIds(parentElement) {
         } else {
             placement.setAttribute("data-id", "66670320549bd20a9f2bfaba"); // Mobile Leaderboard
         }
-
-        // update last ad size
-        previousAdElementSize = parentElement.getBoundingClientRect().width;
 
         // push the placement to the venatus array
         window.top.__vm_add.push(placement);
@@ -102,6 +93,6 @@ window.addEventListener("resize", function () {
 
     onResizeTimeout = setTimeout(() => {
         applyCorrectIds(currentAdParent);
-    }, 100);
+    }, 200);
 });
 
