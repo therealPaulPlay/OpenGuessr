@@ -3763,6 +3763,7 @@ input[type="checkbox"]:focus {
 #floatingResultLeaderboardAd {
   z-index: 1;
   width: 728px;
+  height: 90px;
 }
 
 .supporterAdText {
