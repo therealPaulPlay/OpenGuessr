@@ -8,9 +8,13 @@ export function clearResultAds() {
     document.getElementById("floatingResultLeaderboardAd").innerHTML = "";
 }
 
-export function applyCorrectIds() {
+export function applyCorrectIds(skipOtherScreens) {
     try {
         adElements.forEach((e) => {
+            if (skipOtherScreens && e != adElements[0]) {
+                return;
+            }
+
             try {
                 // Check if the placement already exists
                 let placement = e.querySelector('.vm-placement');
@@ -44,10 +48,10 @@ export function applyCorrectIds() {
 
 // Apply IDs when the page is loaded
 if (window.document.readyState !== "loading") {
-    applyCorrectIds();
+    applyCorrectIds(true);
 } else {
     window.document.addEventListener("DOMContentLoaded", function () {
-        applyCorrectIds();
+        applyCorrectIds(true);
     });
 }
 

@@ -10,10 +10,9 @@ import { calculateDistances, loadResultMap } from "./main.js";
 import { playSound } from "./soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
 import { loadFriends, sendMatchInvite } from "./friendMenu.js";
-import { toggleStreakWindow } from "./streakAdPopup.js";
 
 //Global UI --------------------------------------------------------------------------------------------
-export let coordsFromHost = [];
+export let coordsFromHost = [35.7072457, 139.863412]; // assign default to prevent blackscreen on link join
 
 let socialMenuMultiplayerButton = document.getElementById("multiplayerButton");
 let multiplayerSelectionScreen = document.getElementById("multiplayerSelectionWindow");

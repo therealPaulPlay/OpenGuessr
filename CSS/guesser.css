@@ -334,7 +334,8 @@ h3 {
   }
 
   100% {
-    transform: translateX(calc(-100% + 75px)); /* adjust second param to be max-width of element minus about 5px */
+    transform: translateX(calc(-100% + 75px));
+    /* adjust second param to be max-width of element minus about 5px */
   }
 }
 
@@ -443,14 +444,17 @@ h3 {
     opacity: 0;
     transform: translateX(-100%);
   }
+
   20% {
     opacity: 1;
     transform: translateX(0);
   }
+
   80% {
     opacity: 1;
     transform: translateX(0);
   }
+
   100% {
     opacity: 0;
     transform: translateX(100%);
@@ -632,7 +636,7 @@ h3 {
 #badgeClose,
 #pinClose,
 #supporterClose,
-#confirmProceed, 
+#confirmProceed,
 #friendBrowserClose,
 #friendInboxClose {
   min-height: 50px;
@@ -859,13 +863,16 @@ textarea {
   display: block !important;
 }
 
-#badgeWindow, #pinWindow, #supporterWindow {
+#badgeWindow,
+#pinWindow,
+#supporterWindow {
   z-index: 971;
   display: block !important;
   max-width: 700px;
 }
 
-#friendBrowserWindow, #friendInboxWindow {
+#friendBrowserWindow,
+#friendInboxWindow {
   z-index: 960;
   display: block !important;
   max-width: 700px;
@@ -911,11 +918,14 @@ textarea {
   z-index: 970;
 }
 
-#badgePopup, #pinPopup, #supporterPopup {
+#badgePopup,
+#pinPopup,
+#supporterPopup {
   z-index: 971;
 }
 
-#friendBrowserPopup, #friendInboxPopup {
+#friendBrowserPopup,
+#friendInboxPopup {
   z-index: 960;
 }
 
@@ -1019,40 +1029,40 @@ textarea {
 
 @keyframes supporterGlintTierBox {
   10% {
-      opacity: 1
+    opacity: 1
   }
 
   20% {
-      opacity: 0;
-      transform: translate(100%);
+    opacity: 0;
+    transform: translate(100%);
   }
 
   21% {
-      opacity: 0;
-      transform: translate(100%, 344px);
+    opacity: 0;
+    transform: translate(100%, 344px);
   }
 
   30% {
-      opacity: 1;
+    opacity: 1;
   }
 
   40% {
-      opacity: 0;
-      transform: translateY(344px);
+    opacity: 0;
+    transform: translateY(344px);
   }
 
   41% {
-      opacity: 0;
-      transform: translate(0);
+    opacity: 0;
+    transform: translate(0);
   }
 
   50% {
-      opacity: 1;
+    opacity: 1;
   }
 
   60% {
-      opacity: 0;
-      transform: translate(100%);
+    opacity: 0;
+    transform: translate(100%);
   }
 }
 
@@ -1092,9 +1102,9 @@ textarea {
 }
 
 .baseTierPrice {
- margin-right: 5px;
- color: rgba(255, 255, 255, 0.5);
- text-decoration: line-through;
+  margin-right: 5px;
+  color: rgba(255, 255, 255, 0.5);
+  text-decoration: line-through;
 }
 
 .tierBuyButtonUnlocked {
@@ -1208,7 +1218,7 @@ textarea {
 }
 
 .badgeStage3 {
-  background: linear-gradient(0.60turn, rgb(142, 70, 232), #7954a6); 
+  background: linear-gradient(0.60turn, rgb(142, 70, 232), #7954a6);
 }
 
 .badgeStage4 {
@@ -1358,7 +1368,7 @@ textarea {
   flex-wrap: wrap;
   display: flex;
   gap: 5px;
-} 
+}
 
 .multiplayerDuelStatus {
   text-align: center;
@@ -1426,14 +1436,14 @@ textarea {
 
 @keyframes duelButtonGlint {
   0% {
-      opacity: 0.5;
-      margin-left: -60px;
-      visibility: visible;
+    opacity: 0.5;
+    margin-left: -60px;
+    visibility: visible;
   }
 
   20% {
-      opacity: 0.3;
-      margin-left: calc(100% + 60px);
+    opacity: 0.3;
+    margin-left: calc(100% + 60px);
   }
 
   100% {
@@ -1691,7 +1701,7 @@ textarea {
   padding: 10px;
   flex-wrap: wrap;
   gap: 5px;
-} 
+}
 
 .playerSearchBox {
   display: flex;
@@ -1982,6 +1992,8 @@ search {
   margin: auto;
   z-index: 14;
   background-color: rgba(39, 41, 53, 0.95);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 #mobileCategoriesClose {
@@ -2144,7 +2156,8 @@ search {
   transform: scale(1.0);
   opacity: 0;
   overflow: hidden;
-  display: none; /* used with flex */
+  display: none;
+  /* used with flex */
   justify-content: center;
   align-items: center;
   flex-direction: column;
@@ -2163,7 +2176,8 @@ search {
   pointer-events: auto;
   z-index: 2;
   opacity: 1;
-  background-size: contain; /* Maintain aspect ratio */
+  background-size: contain;
+  /* Maintain aspect ratio */
   background-position: center;
   background-repeat: no-repeat;
   filter: drop-shadow(10px 0px 0px rgb(255, 255, 255)) drop-shadow(0px 10px 0px rgb(255, 255, 255)) drop-shadow(-10px 0px 0px rgb(255, 255, 255)) drop-shadow(0px -10px 0px rgb(255, 255, 255));
@@ -2487,6 +2501,10 @@ search {
 
 .gm-style-iw-ch {
   display: none;
+}
+
+.gm-style iframe + div {
+  border: none !important;
 }
 
 #map:hover {
@@ -2938,7 +2956,7 @@ map::selection {
   position: fixed;
   width: 100%;
   height: 100%;
-  z-index: 12;
+  z-index: 13;
   top: 0;
   display: flex;
   justify-content: center;
@@ -2996,7 +3014,6 @@ map::selection {
 
 #endBottomArea {
   position: sticky;
-  z-index: 12;
   height: fit-content;
   display: flex;
   bottom: 10px;
@@ -3961,7 +3978,8 @@ all and (max-width: 1200px) {
     font-size: 22px;
   }
 
-  #viewSupporterBenefits, #profileAbout {
+  #viewSupporterBenefits,
+  #profileAbout {
     font-size: 22px;
   }
 
@@ -4036,7 +4054,7 @@ all and (max-width: 1200px) {
 .mapHolderToResult {
   bottom: 0;
   padding-inline: 0;
-  z-index: 11;
+  z-index: 12;
   width: 100%;
   height: 100%;
   transition: none;
@@ -4053,7 +4071,6 @@ all and (max-width: 1200px) {
 
 .mapFullOpacity {
   opacity: 100% !important;
-  z-index: 10 !important;
   visibility: visible !important;
   border-radius: 0 !important;
 }

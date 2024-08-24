@@ -103,19 +103,21 @@ export let addedMarkers = []; // this is needed for this api to delete them agai
 
 //reset the map - used for going to the next round. 
 export function resetMap() {
-    document.getElementById("mapHolder").classList.remove("mapHolderToResult");
-    document.getElementById("map").classList.remove("mapFullOpacity");
-
-    for (let i = 0; i < addedMarkers.length; i++) {
-        addedMarkers[i].setMap(null);
+    if (map) {
+        document.getElementById("mapHolder").classList.remove("mapHolderToResult");
+        document.getElementById("map").classList.remove("mapFullOpacity");
+    
+        for (let i = 0; i < addedMarkers.length; i++) {
+            addedMarkers[i].setMap(null);
+        }
+    
+        addedMarkers = []; // Clear the array
+    
+        map.panTo({ lat: 20, lng: 0 }); // reset center
+        map.setZoom(1);
+    
+        map.overlayMapTypes.clear();
     }
-
-    addedMarkers = []; // Clear the array
-
-    map.panTo({ lat: 20, lng: 0 }); // reset center
-    map.setZoom(1);
-
-    map.overlayMapTypes.clear();
 
     //reset the guess button as well
     hasGuessed = false;
