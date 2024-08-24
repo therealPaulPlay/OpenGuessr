@@ -4,11 +4,11 @@ window.top.__vm_add = window.top.__vm_add || [];
 let bottomAdElement = document.getElementById("bottomFooterAds");
 let currentAdParent = bottomAdElement; // initial value is the bottom footer ad (as this is the first ad to load)
 
+// executed once when the result screen is made visible
 export function enableResultAds() {
     try {
         const mobileResultAd = document.getElementById("resultLeaderboardAd");
         const desktopResultAd = document.getElementById("floatingResultLeaderboardAd");
-
         const desktopSize = window.getComputedStyle(document.getElementById("floatingResultLeaderboardArea")).display === "flex";
 
         currentAdParent = desktopSize ? desktopResultAd : mobileResultAd;
@@ -19,6 +19,7 @@ export function enableResultAds() {
     }
 }
 
+// executed once when the result screen is made invisible
 export function enableBottomAd() {
     const bottomAdBar = document.getElementById("bottomFooterAds");
 
