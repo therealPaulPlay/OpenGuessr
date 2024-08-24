@@ -6,23 +6,9 @@ let currentAdParent = bottomAdElement; // initial value is the bottom footer ad 
 
 export function enableResultAds() {
     try {
-        // clear previous ad areas in case there are any leftovers
-        const mobileResultAd = document.getElementById("resultLeaderboardAd");
-        const desktopResultAd = document.getElementById("floatingResultLeaderboardAd");
-
-        // check if big or small ad should be activated
         const desktopSize = window.getComputedStyle(document.getElementById("floatingResultLeaderboardArea")).display === "flex";
 
-        const adPlacement = document.querySelector(".vm-placement");
-
-        if (desktopSize) {
-            desktopResultAd.appendChild(adPlacement);
-            currentAdParent = desktopResultAd;
-        } else {
-            mobileResultAd.appendChild(adPlacement);
-            currentAdParent = mobileResultAd;
-        }
-        
+        currentAdParent = desktopSize ? desktopResultAd : mobileResultAd;
         applyCorrectIds(currentAdParent);
 
     } catch (error) {
@@ -33,13 +19,6 @@ export function enableResultAds() {
 export function enableBottomAd() {
     const bottomAdBar = document.getElementById("bottomFooterAds");
 
-    try {
-        const adPlacement = document.querySelector(".vm-placement");
-        bottomAdBar.appendChild(adPlacement);
-    } catch (error) {
-        console.error("Error moving ad back to bottom bar in venatus custom js:", error);
-    }
-
     currentAdParent = bottomAdBar;
     applyCorrectIds(currentAdParent);
 }
@@ -49,23 +28,20 @@ function applyCorrectIds(parentElement) {
         // Check if the placement already exists
         let placement = document.querySelector('.vm-placement');
 
-        if (!placement) {
-            // If placement doesn't exist, create a new one
-            placement = document.createElement("div");
-            placement.setAttribute("class", "vm-placement");
-            parentElement.appendChild(placement);
+        if (placement) {
+            parentElement.removeChild(placement);
         }
+
+        placement = document.createElement("div");
+        placement.setAttribute("class", "vm-placement");
+        parentElement.appendChild(placement);
 
         // Update placement attributes based on element width - not 728 by design, because Chrome often miscalculates element size and thinks it is 727.99px instead of 728px
         const width = parentElement.getBoundingClientRect().width;
         const newId = width >= 720 ? "666702f0549bd20a9f2bfab6" : "66670320549bd20a9f2bfaba";
 
-        if (placement.getAttribute("data-id") !== newId) {
-            placement.setAttribute("data-id", newId);
-        }
+        placement.setAttribute("data-id", newId)
 
-        // push the placement to the venatus array (and clear it to maybe combat issues?)
-        window.top.__vm_add = [];
         window.top.__vm_add.push(placement);
 
     } catch (error) {
@@ -73,7 +49,7 @@ function applyCorrectIds(parentElement) {
     }
 }
 
-// Apply IDs when the page is loaded
+// Apply IDs when the page is loaded (for the bottom ad element, as that appears first)
 if (window.document.readyState !== "loading") {
     applyCorrectIds(bottomAdElement);
 } else {
