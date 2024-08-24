@@ -3731,6 +3731,7 @@ input[type="checkbox"]:focus {
   min-width: 330px;
   max-width: 330px;
   height: 50px;
+  max-height: 60px;
   padding: 5px;
   flex-grow: 1;
   position: relative;

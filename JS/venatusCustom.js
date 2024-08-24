@@ -8,10 +8,7 @@ export function enableResultAds() {
     try {
         // clear previous ad areas in case there are any leftovers
         const mobileResultAd = document.getElementById("resultLeaderboardAd");
-        mobileResultAd.innerHTML = "";
-
         const desktopResultAd = document.getElementById("floatingResultLeaderboardAd");
-        desktopResultAd.innerHTML = "";
 
         // check if big or small ad should be activated
         const desktopSize = window.getComputedStyle(document.getElementById("floatingResultLeaderboardArea")).display === "flex";
@@ -38,8 +35,6 @@ export function enableBottomAd() {
 
     try {
         const adPlacement = document.querySelector(".vm-placement");
-        bottomAdBar.innerHTML = "";
-
         bottomAdBar.appendChild(adPlacement);
     } catch (error) {
         console.error("Error moving ad back to bottom bar in venatus custom js:", error);
@@ -62,13 +57,15 @@ function applyCorrectIds(parentElement) {
         }
 
         // Update placement attributes based on element width - not 728 by design, because Chrome often miscalculates element size and thinks it is 727.99px instead of 728px
-        if (parentElement.getBoundingClientRect().width >= 720) {
-            placement.setAttribute("data-id", "666702f0549bd20a9f2bfab6"); // Desktop Multi-Size leaderboard
-        } else {
-            placement.setAttribute("data-id", "66670320549bd20a9f2bfaba"); // Mobile Leaderboard
+        const width = parentElement.getBoundingClientRect().width;
+        const newId = width >= 720 ? "666702f0549bd20a9f2bfab6" : "66670320549bd20a9f2bfaba";
+
+        if (placement.getAttribute("data-id") !== newId) {
+            placement.setAttribute("data-id", newId);
         }
 
-        // push the placement to the venatus array
+        // push the placement to the venatus array (and clear it to maybe combat issues?)
+        window.top.__vm_add = [];
         window.top.__vm_add.push(placement);
 
     } catch (error) {
