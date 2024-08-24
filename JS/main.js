@@ -192,6 +192,7 @@ export function loadResultMap(playersLat, playersLong) {
     
     // Set map center to the currentStreetviewLat and currentStreetviewLong
     map.setCenter({ lat: currentStreetviewLat, lng: currentStreetviewLong });
+    map.setZoom(3);
 
     // Define custom icons for markers
     let yourIcon = {

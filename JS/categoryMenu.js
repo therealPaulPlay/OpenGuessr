@@ -282,7 +282,6 @@ export function transitionToStart() {
         toggleStreakWindow(0, true);
         checkGenerationTypeAndGenerate();
         handleMapUnhover();
-        resetMap();
         disableResultScreen();
 
         setTimeout(socialPopupProbability, 650);
