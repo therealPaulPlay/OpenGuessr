@@ -9,6 +9,7 @@ import { loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
 import { initializeRewardAd } from "./rewardedAds.js";
 import { applyCorrectIds, clearResultAds } from "./venatusCustom.js";
+import { resetMap } from "./miniMap.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -145,10 +146,11 @@ export function enableResultScreen(resultString, extraMessage) {
 
 export function disableResultScreen() {
     document.getElementById("EndOverlay").style.opacity = "0%";
+
     setTimeout(function () { 
         document.getElementById("EndOverlay").style.visibility = "hidden";
         clearResultAds();
-     }, 200)
+     }, 250)
 
     resultScreenEnabled = false;
 }
