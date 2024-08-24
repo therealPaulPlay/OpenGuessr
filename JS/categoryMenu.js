@@ -158,6 +158,7 @@ export function changeCategory(category, regenerate) {
     }
 
     if (regenerate) {
+        resetMap();
         checkGenerationTypeAndGenerate();
         setTimeout(() => {
             toggleCategoryMenu(true);
