@@ -8,7 +8,7 @@ import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, 
 import { loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
 import { initializeRewardAd } from "./rewardedAds.js";
-import { applyCorrectIds, clearResultAds } from "./venatusCustom.js";
+import { enableBottomAd, enableResultAds } from "./venatusCustom.js";
 import { resetMap } from "./miniMap.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
@@ -129,6 +129,8 @@ export function enableResultScreen(resultString, extraMessage) {
     document.getElementById("distanceText").innerText = resultString;
     document.getElementById("motivationText").innerText = extraMessage;
 
+    enableResultAds();
+
     if (countryGuesserMode) {
         if (checkIfGuessWasCorrect()) {
             document.getElementById("distanceText").innerText = "Correct!";
@@ -140,8 +142,6 @@ export function enableResultScreen(resultString, extraMessage) {
     }
 
     resultScreenEnabled = true;
-
-    applyCorrectIds();
 }
 
 export function disableResultScreen() {
@@ -149,8 +149,8 @@ export function disableResultScreen() {
 
     setTimeout(function () { 
         document.getElementById("EndOverlay").style.visibility = "hidden";
-        clearResultAds();
-     }, 250)
+        enableBottomAd();
+    }, 250);
 
     resultScreenEnabled = false;
 }
