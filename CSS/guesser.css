@@ -3022,6 +3022,7 @@ map::selection {
   pointer-events: none;
   width: 100%;
   overflow: hidden;
+  z-index: 13;
 }
 
 #motivationText {
