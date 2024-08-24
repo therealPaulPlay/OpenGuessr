@@ -3728,8 +3728,8 @@ input[type="checkbox"]:focus {
 }
 
 #resultLeaderboardAdArea {
-  min-width: 320px;
-  max-width: 500px;
+  min-width: 330px;
+  max-width: 330px;
   height: 50px;
   padding: 5px;
   flex-grow: 1;
@@ -3738,6 +3738,7 @@ input[type="checkbox"]:focus {
 
 #resultLeaderboardAd {
   z-index: 1;
+  overflow: hidden;
 }
 
 #floatingResultLeaderboardArea {
