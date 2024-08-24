@@ -32,7 +32,7 @@ function applyCorrectIds(parentElement) {
         let placement = document.querySelector('.vm-placement');
 
         if (placement) {
-            parentElement.removeChild(placement);
+            placement.remove();
         }
 
         placement = document.createElement("div");
