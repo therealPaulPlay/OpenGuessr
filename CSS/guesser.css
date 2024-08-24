@@ -4052,6 +4052,8 @@ all and (max-width: 1200px) {
 }
 
 /* important map change properties */
+
+/* map Holder class on result screen */
 .mapHolderToResult {
   bottom: 0;
   padding-inline: 0;
@@ -4070,8 +4072,11 @@ all and (max-width: 1200px) {
   display: none !important;
 }
 
+/* map class on result screen */
 .mapFullOpacity {
   opacity: 100% !important;
   visibility: visible !important;
   border-radius: 0 !important;
+  max-height: 100% !important;
+  transition: none !important;
 }
