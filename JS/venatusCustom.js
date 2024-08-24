@@ -6,6 +6,9 @@ let currentAdParent = bottomAdElement; // initial value is the bottom footer ad 
 
 export function enableResultAds() {
     try {
+        const mobileResultAd = document.getElementById("resultLeaderboardAd");
+        const desktopResultAd = document.getElementById("floatingResultLeaderboardAd");
+
         const desktopSize = window.getComputedStyle(document.getElementById("floatingResultLeaderboardArea")).display === "flex";
 
         currentAdParent = desktopSize ? desktopResultAd : mobileResultAd;
