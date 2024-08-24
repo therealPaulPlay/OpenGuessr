@@ -38,6 +38,7 @@ changeMapTypeButtonLabel();
 
 //reset the map - used for going to the next round. 
 export function resetMap() {
+  
     map.removeLayer(marker);
     map.setView(new L.LatLng(20, 0), 1);
 
