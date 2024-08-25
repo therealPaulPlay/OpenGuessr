@@ -1,10 +1,9 @@
 import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main.js";
 import { selectedPinIndex } from "./profileView.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
-import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled } from "./mainUI.js";
+import { hideToggleMapButtonIfMobile, isElementClickable } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
-import { errorPopup } from "./errorHandling.js";
 
 
 // Initialize the map with correct provider --------------------------------------------------------------------
@@ -15,113 +14,58 @@ const Provider = {
     TERRAIN: "3"
 }
 
-// Google Maps init --------------------------------------------------------------------------------------
+// Leaflet initialization and Tiles --------------------------------------------------------------------------------------
+let map = L.map('map', { zoomControl: false }).setView([40.321160, 10.252812], 1.5); //starting position
 
-// ensure that the user has not exceeded a certain limit of map loads
-async function requestMapLoad() {
-    try {
-        let headers;
-
-        if (localStorage.getItem("bearer")) {
-            headers = {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem("bearer")}`
-            };
-
-        } else {
-            headers = {
-                'Content-Type': 'application/json'
-            }
-        }
-
-        const mapLimitUrl = "https://accounts.openguessr.com/accounts/maplimit";
-
-        const response = await fetch(mapLimitUrl, {
-            method: 'GET',
-            headers: headers
-        });
-
-        // Check if the response is successful
-        if (response.ok) {
-            const data = await response.json();
-            return true;
-
-        } else {
-            const data = await response.json();
-            console.error("Map load limit reached: " + data.error);
-            errorPopup("Daily map load limit reached", "To prevent extraordinarily high Google API costs, your map load request was denied due to too many refreshes. Become a supporter to increase your limit!", data.error, false, false);
-            return false;
-        }
-    } catch (error) {
-        console.error('Error occurred while checking for the map load limit: ' + error);
-        return true;
-    }
-}
-
-export let map;
-
-const worldBounds = {
-    north: 90,
-    south: -90,
-    west: -190,
-    east: 190
-};
-
-// Standard should be the new default!
-let providerIndex = localStorage.getItem("providerIndex") || Provider.STANDARD;
-
-async function initMap() {
-    const { Map } = await google.maps.importLibrary("maps");
-
-    if (await requestMapLoad()) {
-        map = new Map(document.getElementById("map"), {
-            center: { lat: 20, lng: 0 },
-            zoom: 2,
-            streetViewControl: false, // Hide Street View control
-            zoomControl: false,       // Hide zoom control
-            fullscreenControl: false, // Hide fullscreen control
-            mapTypeControl: false,     // Hide map type control
-            draggableCursor: "crosshair",
-            clickableIcons: false,
-            restriction: {
-                latLngBounds: worldBounds,
-                strictBounds: true, // Enforce the restriction
-              },
-        });
-
-        map.setMapTypeId(getMapType(providerIndex)); // Set the map type on the actual map
-        changeMapTypeButtonLabel();
-    }
-}
-
-await initMap();
+let mapProvider = ["https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en"];
 
 let multiplayerMiniMarkers = []; // team markers
 
-export let addedMarkers = []; // this is needed for this api to delete them again
+// Standard should be the new default!
+let providerIndex = Provider.STANDARD;
+let storedProviderIndex = localStorage.getItem("providerIndex");
+
+if (storedProviderIndex != null) {
+    providerIndex = storedProviderIndex;
+}
+
+export function getMapSource() {
+    return mapProvider[providerIndex];
+}
+
+loadMap();
+changeMapTypeButtonLabel();
 
 //reset the map - used for going to the next round. 
 export function resetMap() {
-    if (map) {
-        document.getElementById("mapHolder").classList.remove("mapHolderToResult");
-        document.getElementById("map").classList.remove("mapFullOpacity");
-    
-        for (let i = 0; i < addedMarkers.length; i++) {
-            addedMarkers[i].setMap(null);
-        }
-    
-        addedMarkers = []; // Clear the array
-    
-        map.panTo({ lat: 20, lng: 0 }); // reset center
-        map.setZoom(2);
-    
-        map.overlayMapTypes.clear();
-    }
+  
+    map.removeLayer(marker);
+    map.setView(new L.LatLng(20, 0), 1);
 
     //reset the guess button as well
     hasGuessed = false;
     setConfirmButtonState();
 }
+
+// Leaflet Tile Layer Loading and Resetting --------------------------------------------------------------------
+let dataLayer;
+
+function loadMap() {
+    dataLayer = L.tileLayer(mapProvider[providerIndex], {
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        maxZoom: 20,
+        minZoom: 1,
+        noWrap: true,
+        fakeRetina: true,
+    }).addTo(map);
+}
+
+function resetGuessMap() {
+    map.removeLayer(dataLayer);
+    loadMap();
+}
+
+map.setZoom(1);
 
 // Map Type Button Label ----------------------------------------------------------------------------------------
 
@@ -186,10 +130,11 @@ function changeMapType() {
         default:
             providerIndex = Provider.STANDARD;
     }
-
     localStorage.setItem("providerIndex", providerIndex);
-    map.setMapTypeId(getMapType(providerIndex)); // Set the map type on the actual map
+
     changeMapTypeButtonLabel();
+    resetGuessMap();
+    setResultMapTileLayer();
 }
 
 function getMapType(provider) {
@@ -211,15 +156,9 @@ function getMapType(provider) {
 export let mapMarkerLat = 0;
 export let mapMarkerLong = 0;
 
-let marker;
+let marker = new L.Marker([0, 0]); // define initial marker
 
-map.addListener('click', function (e) {
-    if (!resultScreenEnabled) {
-        onMapClick(e.latLng);
-    }
-});
-
-function onMapClick(latLng) {
+function onMapClick(e) {
     //creates markers wherever the user clicks and if it clicks to another position,
     //delete the old one and also save the position in latitudes and longitudes
 
@@ -228,30 +167,21 @@ function onMapClick(latLng) {
     playSound("pin_drop", "pin");
 
     if (marker) {
-        marker.setMap(null);
+        map.removeLayer(marker);
     }
-
     //sets the variables from the USER input (this is the one that the user has placed)
-    mapMarkerLat = latLng.lat();
-    mapMarkerLong = latLng.lng();
+    mapMarkerLat = e.latlng.lat;
+    mapMarkerLong = e.latlng.lng;
 
-    var yourIcon = {
-        url: './IMG/your_marker' + selectedPinIndex + '.png',
-        size: new google.maps.Size(35, 35),
-        anchor: new google.maps.Point(17.5, 34),
-        origin: new google.maps.Point(0, 0),
-        scaledSize: new google.maps.Size(35, 35),
-    };
-
-    marker = new google.maps.Marker({
-        position: latLng,
-        map: map,
-        icon: yourIcon,
-        clickable: false
+    const yourIcon = new L.Icon({
+        iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
+        iconSize: [35, 35],
+        iconAnchor: [17.5, 34],
+        popupAnchor: [1, -34]
     });
 
-    addedMarkers.push(marker);
-
+    marker = new L.Marker([mapMarkerLat, mapMarkerLong], { icon: yourIcon });
+    marker.addTo(map);
     sendTeamMarkers(mapMarkerLat, mapMarkerLong);
 }
 
@@ -261,26 +191,26 @@ export function updateMinimapWithTeamMarkers(markerArray) {
 
     // Collect positions of current markers
     multiplayerMiniMarkers.forEach(existingMarker => {
-        const position = existingMarker.getPosition();
-        existingMarkerPositions.set(`${position.lat()},${position.lng()}`, existingMarker);
+        const position = existingMarker.getLatLng(); // this does not work
+        existingMarkerPositions.set(`${position.lat},${position.lng}`, existingMarker);
     });
 
     try {
         // Remove markers that no longer exist in markerArray
         multiplayerMiniMarkers.forEach(existingMarker => {
-            const position = existingMarker.getPosition();
-            const markerPositionKey = `${position.lat()},${position.lng()}`;
+            const position = existingMarker.getLatLng();
+            const markerPositionKey = `${position.lat},${position.lng}`;
 
             // Check if current marker exists in the updated markerArray
             const markerExists = markerArray.some(element => {
                 let miniMarkerLat = element[1];
                 let miniMarkerLong = element[2];
-                return miniMarkerLat == position.lat() && miniMarkerLong == position.lng();
+                return miniMarkerLat == position.lat && miniMarkerLong == position.lng;
             });
 
             // If marker doesn't exist in markerArray, remove it
             if (!markerExists) {
-                existingMarker.setMap(null);
+                map.removeLayer(existingMarker);
                 multiplayerMiniMarkers = multiplayerMiniMarkers.filter(m => m !== existingMarker);
                 existingMarkerPositions.delete(markerPositionKey);
             }
@@ -297,30 +227,23 @@ export function updateMinimapWithTeamMarkers(markerArray) {
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
             // and miniMarkerTeam matches yourTeam
             if (miniMarkerId != peerId && miniMarkerTeam === yourTeam) {
-                const multiplayerLatLng = new google.maps.LatLng(miniMarkerLat, miniMarkerLong);
-                const markerPositionKey = `${multiplayerLatLng.lat()},${multiplayerLatLng.lng()}`;
+                const multiplayerLatLng = new L.LatLng(miniMarkerLat, miniMarkerLong);
+                const markerPositionKey = `${multiplayerLatLng.lat},${multiplayerLatLng.lng}`;
 
                 if (!existingMarkerPositions.has(markerPositionKey)) {
                     // Marker doesn't exist, create new marker
-                    const newMultiplayerIcon = {
-                        url: './IMG/your_marker' + miniMarkerPinIndex + '.png',
-                        size: new google.maps.Size(25, 25),
-                        anchor: new google.maps.Point(15, 24),
-                        origin: new google.maps.Point(0, 0),
-                        scaledSize: new google.maps.Size(25, 25),
-                    };
-
-                    let marker = new google.maps.Marker({
-                        position: multiplayerLatLng,
-                        map: map,
-                        icon: newMultiplayerIcon,
-                        clickable: false
+                    let newMultiplayerIcon = new L.Icon({
+                        iconUrl: "./IMG/your_marker" + miniMarkerPinIndex + ".png",
+                        iconSize: [35, 35],
+                        iconAnchor: [17.5, 34],
+                        popupAnchor: [1, -34]
                     });
 
-                    addedMarkers.push(marker);
-
-                    multiplayerMiniMarkers.push(marker);
-                    existingMarkerPositions.set(markerPositionKey, marker); // Update positions map
+                    const newMultiplayerMiniMarker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon });
+                    newMultiplayerMiniMarker.setOpacity(0.5);
+                    newMultiplayerMiniMarker.addTo(map);
+                    multiplayerMiniMarkers.push(newMultiplayerMiniMarker);
+                    existingMarkerPositions.set(markerPositionKey, newMultiplayerMiniMarker); // Update positions map
                 }
             }
         });
@@ -344,6 +267,26 @@ languageBTN.addEventListener("click", () => {
 });
 
 //Reset map scaling when the user "enlarges" it --------------------------------------------------------------
+map.on('click', onMapClick);
+
+let useLegacyMouseOver = false;
+
+//this is for legacy browsers that do not support resizeObservers
+if (useLegacyMouseOver) {
+    map.on('mouseover', onMapHover);
+    map.on('mouseout', onMapHover);
+}
+
+function onMapHover() {
+    map.invalidateSize();
+}
+
+try {
+    new ResizeObserver(onMapHover).observe(document.getElementById("map"));
+} catch (error) {
+    console.error("Resize oberser unsupported. Err: " + error);
+    useLegacyMouseOver = true;
+}
 
 // Enlarge map
 const mapHolder = document.getElementById("mapHolder");
@@ -417,6 +360,9 @@ export function confirmButtonClicks() {
         document.getElementById("guessText").textContent = "Waiting";
         document.getElementById("confirmButton").style.pointerEvents = "none";
         document.getElementById("map").style.visibility = "hidden";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.visibility = "hidden";
+        });
         hasGuessed = false;
         setConfirmButtonState();
         hideToggleMapButtonIfMobile(true);
