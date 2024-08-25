@@ -137,21 +137,6 @@ function changeMapType() {
     setResultMapTileLayer();
 }
 
-function getMapType(provider) {
-    switch (provider) {
-        case Provider.STANDARD:
-            return google.maps.MapTypeId.ROADMAP;
-        case Provider.SATELLITE:
-            return google.maps.MapTypeId.SATELLITE;
-        case Provider.HYBRID:
-            return google.maps.MapTypeId.HYBRID;
-        case Provider.TERRAIN:
-            return google.maps.MapTypeId.TERRAIN;
-        default:
-            return google.maps.MapTypeId.ROADMAP;
-    }
-}
-
 //Placing the marker on the minimap ------------------------------------------------------------------------
 export let mapMarkerLat = 0;
 export let mapMarkerLong = 0;
