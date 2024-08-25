@@ -67,6 +67,9 @@ const worldBounds = {
     east: 190
 };
 
+// Standard should be the new default!
+let providerIndex = localStorage.getItem("providerIndex") || Provider.STANDARD;
+
 async function initMap() {
     const { Map } = await google.maps.importLibrary("maps");
 
@@ -85,22 +88,15 @@ async function initMap() {
                 strictBounds: true, // Enforce the restriction
               },
         });
+
+        map.setMapTypeId(getMapType(providerIndex)); // Set the map type on the actual map
+        changeMapTypeButtonLabel();
     }
 }
 
 await initMap();
 
 let multiplayerMiniMarkers = []; // team markers
-
-// Standard should be the new default!
-let providerIndex = Provider.STANDARD;
-let storedProviderIndex = localStorage.getItem("providerIndex");
-
-if (storedProviderIndex != null) {
-    providerIndex = storedProviderIndex;
-}
-
-changeMapTypeButtonLabel();
 
 export let addedMarkers = []; // this is needed for this api to delete them again
 
@@ -177,29 +173,38 @@ export function setConfirmButtonEnabled() {
 
 //Change map provider / language ---------------------------------------------------------------------
 function changeMapType() {
-    let mapType;
-
     switch (providerIndex) {
         case Provider.STANDARD:
             providerIndex = Provider.SATELLITE;
-            mapType = google.maps.MapTypeId.SATELLITE;
             break;
         case Provider.SATELLITE:
             providerIndex = Provider.HYBRID;
-            mapType = google.maps.MapTypeId.HYBRID;
             break;
         case Provider.HYBRID:
             providerIndex = Provider.TERRAIN;
-            mapType = google.maps.MapTypeId.TERRAIN;
             break;
         default:
             providerIndex = Provider.STANDARD;
-            mapType = google.maps.MapTypeId.ROADMAP;
     }
 
     localStorage.setItem("providerIndex", providerIndex);
-    map.setMapTypeId(mapType); // Set the map type on the actual map
+    map.setMapTypeId(getMapType(providerIndex)); // Set the map type on the actual map
     changeMapTypeButtonLabel();
+}
+
+function getMapType(provider) {
+    switch (provider) {
+        case Provider.STANDARD:
+            return google.maps.MapTypeId.ROADMAP;
+        case Provider.SATELLITE:
+            return google.maps.MapTypeId.SATELLITE;
+        case Provider.HYBRID:
+            return google.maps.MapTypeId.HYBRID;
+        case Provider.TERRAIN:
+            return google.maps.MapTypeId.TERRAIN;
+        default:
+            return google.maps.MapTypeId.ROADMAP;
+    }
 }
 
 //Placing the marker on the minimap ------------------------------------------------------------------------
