@@ -33,7 +33,10 @@ async function requestMapLoad() {
                 'Content-Type': 'application/json'
             }
         }
-        const response = await fetch(`https://accounts.openguessr.com/accounts/maplimit`, {
+
+        const mapLimitUrl = "https://accounts.openguessr.com/accounts/maplimit";
+
+        const response = await fetch(mapLimitUrl, {
             method: 'GET',
             headers: headers
         });
