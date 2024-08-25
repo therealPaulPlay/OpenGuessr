@@ -158,7 +158,9 @@ export function changeCategory(category, regenerate) {
     }
 
     if (regenerate) {
-        resetMap();
+        if (!resultScreenEnabled) {
+            resetMap(); // reset map if not on result screen to clear markers + make guess button grey again
+        }
         checkGenerationTypeAndGenerate();
         setTimeout(() => {
             toggleCategoryMenu(true);
