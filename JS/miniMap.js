@@ -1,5 +1,5 @@
 import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main.js";
-import { selectedPinIndex, supporterLevel } from "./profileView.js";
+import { selectedPinIndex } from "./profileView.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
