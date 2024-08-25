@@ -1,5 +1,5 @@
 import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main.js";
-import { selectedPinIndex } from "./profileView.js";
+import { selectedPinIndex, supporterLevel } from "./profileView.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
@@ -33,7 +33,10 @@ async function requestMapLoad() {
                 'Content-Type': 'application/json'
             }
         }
-        const response = await fetch(`https://accounts.openguessr.com/accounts/maplimit`, {
+
+        const mapLimitUrl = "https://accounts.openguessr.com/accounts/maplimit";
+
+        const response = await fetch(mapLimitUrl, {
             method: 'GET',
             headers: headers
         });
