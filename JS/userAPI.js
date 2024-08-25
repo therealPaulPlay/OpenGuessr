@@ -9,6 +9,7 @@ export const userGetEndpoint = `${backendURL}/user`;
 export const leaderboardEndpoint = `${backendURL}/leaderboard`;
 export const passwordResetEmailEndpoint = `${backendURL}/reset-password-request`;
 export const passwordChangeEndpoint = `${backendURL}/reset-password`;
+export const supporterLeaderboardEndpoint = `${backendURL}/supporter-leaderboard`;
 
 function inIframe() {
   try {
@@ -227,6 +228,28 @@ export async function getLeaderboard() {
     }
 
     const response = await fetch(`${editLeaderboardEndpoint}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+
+    } else {
+      console.error('Fetch failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching the user: ', error);
+  }
+}
+
+export async function getSupporterLeaderboard() {
+  try {
+    const response = await fetch(supporterLeaderboardEndpoint, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

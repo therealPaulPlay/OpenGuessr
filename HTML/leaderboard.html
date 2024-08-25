@@ -39,10 +39,33 @@
             margin: 0;
         }
 
+        .standardButton {
+            cursor: pointer;
+            width: fit-content;
+            font-size: 22px;
+            padding: 10px 20px;
+            min-height: 35px;
+            text-align: center;
+            white-space: nowrap;
+            transition: filter 250ms ease, box-shadow 250ms ease;
+            margin: 2.5px;
+            border-radius: 5px;
+            user-select: none;
+            -webkit-user-select: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            opacity: 100%;
+        }
+
+        .standardButton:hover {
+            filter: brightness(0.7);
+        }
+
         .center {
             display: flex;
             justify-content: center;
             align-items: center;
+            flex-direction: column;
         }
 
         button {
@@ -102,6 +125,38 @@
 
         #backButton:hover {
             filter: brightness(0.7);
+        }
+
+        .optionBar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 5px !important;
+            overflow-x: auto;
+            overflow-y: hidden;
+        }
+
+        .optionLabel {
+            padding: 5px;
+            padding-inline: 10px;
+            background-color: rgba(17, 18, 31, 0.5);
+            border-radius: 7px;
+            min-height: 25px;
+            margin: 0;
+            height: 100%;
+        }
+
+        .optionButton {
+            border-radius: 7px;
+            min-height: 25px;
+            margin: 0;
+            padding: 5px;
+            padding-inline: 10px;
+            height: 100%;
+        }
+
+        .optionButtonSelected {
+            background-color: rgba(255, 255, 255, 0.3);
         }
 
         .container {
@@ -286,7 +341,7 @@
             align-items: center;
             border-radius: 15px;
             cursor: pointer;
-            transition: filter 250ms ease;
+            transition: filter 250ms ease, height 250ms ease, width 250ms ease;
             outline: 10px solid rgba(92, 93, 94, 0.1);
             max-width: 30%;
         }
@@ -383,7 +438,7 @@
                 vertical-align: -5px;
             }
 
-            p {
+            p, .optionButton {
                 font-size: 20px;
             }
 
@@ -455,6 +510,11 @@
         </div>
     </div>
     <div class="center">
+        <div class="optionBar container">
+            <p class="optionLabel">Filter:</p>
+            <button id="filterAll" class="standardButton optionButton">All</button>
+            <button id="filterSupporter" class="standardButton optionButton">Supporters</button>
+        </div>
         <div class="leaderboardContainer" id="leaderboardContainer">
             <div id="container" class="container"></div>
             <div id="threeDotsContainer" class="threeDotsContainer">
@@ -468,7 +528,7 @@
 
 </body>
 <script type="module">
-    import { getLeaderboard } from "./userAPI.js";
+    import { getLeaderboard, getSupporterLeaderboard } from "./userAPI.js";
 
     // Back Button and iframe check -------------------------------------------------------------------------------------------
     function inIframe() {
@@ -489,12 +549,11 @@
         }
     );
 
-    // Load local data ----------------------------------------------------------------------------------------------------------
+    // Check for login status ----------------------------------------------------------------------------------------------------------
 
     let dontLoadStats = false;
 
-    //dont load the stats if the user is not signed in 
-    if (localStorage.getItem("username") == null) {
+    if (localStorage.getItem("id") == null) {
         dontLoadStats = true;
     }
 
@@ -557,10 +616,24 @@
 
 
     // Load leaderboard data -------------------------------------------------------------------------------------------------------
-    async function loadLeaderboard() {
+    async function loadLeaderboard(leaderboardType) {
         container.innerHTML = "<p>Loading...</p>";
+        yourLeagueContainer.innerHTML = "<p>Loading...</p>";
+        yourLeagueContainer.style.display = "none";
+        document.getElementById("threeDotsContainer").style.display = "none";
+        document.body.style.height = "100vh";
+        timeoutMultiplier = 0;
 
-        let data = await getLeaderboard();
+        let data;
+
+        switch (leaderboardType) {
+            case "experience":
+                data = await getLeaderboard();
+                break;
+            case "experience-supporter":
+                data = await getSupporterLeaderboard();
+                break;
+        }
 
         if (!data) {
             container.innerHTML = "<p>An error occurred while loading the leaderboard.</p>";
@@ -575,8 +648,10 @@
 
         if (userData == undefined) {
             container.innerHTML = "<p>An error occurred while loading the leaderboard.</p>";
+            yourLeagueContainer.innerHTML = "<p>An error occurred while loading the leaderboard.</p>";
         } else {
             container.innerHTML = "";
+            yourLeagueContainer.innerHTML = "";
 
             // Populate podium
             for (let i = 0; i < 3 && i < userData.length; i++) {
@@ -620,7 +695,38 @@
         document.body.style.height = document.documentElement.scrollHeight - 100 + 'px';
     }
 
-    loadLeaderboard();
+    // Filter / Sort Options -------------------------------------------------------------------------------------------------
+
+    let filter = "all";
+
+    function setFilterHighlight() {
+        document.querySelectorAll(".optionButton").forEach((e) => {
+            e.classList.remove("optionButtonSelected");
+        });
+
+        switch (filter) {
+            case "all":
+                document.getElementById("filterAll").classList.add("optionButtonSelected");
+                loadLeaderboard("experience");
+                break;
+            case "supporter":
+                document.getElementById("filterSupporter").classList.add("optionButtonSelected");
+                loadLeaderboard("experience-supporter");
+                break;
+        }
+    }
+
+    document.getElementById("filterAll").addEventListener("click", () => {
+        filter = "all";
+        setFilterHighlight();
+    });
+
+    document.getElementById("filterSupporter").addEventListener("click", () => {
+        filter = "supporter";
+        setFilterHighlight();
+    });
+
+    setFilterHighlight();
 
     //Google Analytics 4 (simplified implementation) -------------------------------------------------------------------------
     window['gtag_enable_tcf_support'] = true;

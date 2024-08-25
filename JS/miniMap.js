@@ -46,7 +46,7 @@ async function requestMapLoad() {
         } else {
             const data = await response.json();
             console.error("Map load limit reached: " + data.error);
-            errorPopup("Daily map load limit reached", "Likely to prevent extraordinarily high Google API costs, your map load request was denied. Please read more details below.", data.error, false, false);
+            errorPopup("Daily map load limit reached", "To prevent extraordinarily high Google API costs, your map load request was denied due to too many refreshes. Become a supporter to increase your limit!", data.error, false, false);
             return false;
         }
     } catch (error) {
