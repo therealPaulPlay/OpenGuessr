@@ -438,7 +438,8 @@
                 vertical-align: -5px;
             }
 
-            p, .optionButton {
+            p,
+            .optionButton {
                 font-size: 20px;
             }
 
@@ -652,6 +653,13 @@
         } else {
             container.innerHTML = "";
             yourLeagueContainer.innerHTML = "";
+
+            // rest podium items to remove any previous event listeners
+            document.querySelectorAll(".podium-item").forEach((e) => {
+                const podiumItem = e;
+                const newPodiumItem = podiumItem.cloneNode(true);
+                podiumItem.parentNode.replaceChild(newPodiumItem, podiumItem);
+            });
 
             // Populate podium
             for (let i = 0; i < 3 && i < userData.length; i++) {
