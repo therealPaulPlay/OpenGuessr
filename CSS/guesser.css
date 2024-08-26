@@ -916,6 +916,7 @@ textarea {
   background-color: rgba(30, 30, 30, 0.7);
   display: none;
   z-index: 970;
+  pointer-events: auto;
 }
 
 #badgePopup,
