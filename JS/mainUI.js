@@ -572,7 +572,7 @@ document.getElementById("dailyCompetition").addEventListener("click", () => {
 
 let confirmPopup = document.getElementById("confirmPopup");
 
-export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, messageOnly, adPrompt) {
+export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, messageOnly, adPrompt, supporterPrompt) {
     confirmPopup.style.display = "flex";
     document.getElementById("confirmTitle").textContent = title;
     document.getElementById("confirmDescription").textContent = text;
@@ -598,6 +598,11 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete, na
 
     if (adPrompt) {
         document.getElementById("confirmProceed").textContent = "Reactivate";
+        document.getElementById("confirmProceed").style.backgroundColor = "#588e6b";
+    }
+
+    if (supporterPrompt) {
+        document.getElementById("confirmProceed").textContent = "Support";
         document.getElementById("confirmProceed").style.backgroundColor = "#588e6b";
     }
 
@@ -658,13 +663,17 @@ export async function supporterXpBoostAnimation(factor) {
 
 document.querySelectorAll(".supporterAdText").forEach((e) => {
     e.addEventListener("click", () => {
-        if (isAuthenticated) {
-            openSupporterWindow();
-        } else {
-            showConfirmPopup("Account required", "To unlock supporter benefits with a one-time payment, you need to create an account first to ensure that purchases are stored safely.", false, false, false, true);
-        }
+        supporterWindowIfAuthenticated();
     });
 });
+
+export function supporterWindowIfAuthenticated() {
+    if (isAuthenticated) {
+        openSupporterWindow();
+    } else {
+        showConfirmPopup("Account required", "To unlock supporter benefits with a one-time payment, you need to create an account first to ensure that purchases are stored safely.", false, false, false, true);
+    }
+}
 
 document.getElementById("viewSupporterBenefits").addEventListener("click", () => {
     playSound("basic_button");

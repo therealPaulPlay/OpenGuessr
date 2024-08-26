@@ -1,6 +1,6 @@
 import { clamp, loadAndInitializeLibrary } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup } from "./mainUI.js";
+import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup, supporterWindowIfAuthenticated } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { selectedBadge, selectedPinIndex, supporterLevel } from "./profileView.js";
@@ -727,7 +727,8 @@ copyRoomcodeLinkButton.addEventListener("click", () => {
 });
 
 function copyRoomcodeLink() {
-    navigator.clipboard.writeText(window.location.origin + "/?join=" + peerId.replace("openguessr_", ""))
+    if (supporterLevel > 0) {
+        navigator.clipboard.writeText(window.location.origin + "/?join=" + peerId.replace("openguessr_", ""))
         .then(function () {
             document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
             setTimeout(() => {
@@ -741,6 +742,9 @@ function copyRoomcodeLink() {
                 document.getElementById("linkIcon").src = "/IMG/link_icon.png";
             }, 700);
         });
+    } else {
+        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature, as opening links causes a map reload which leads to higher API costs.", () => { supporterWindowIfAuthenticated(); }, false, false, false, false, true);
+    }
 }
 
 // Vars ------------------------------------------------------------------------------------------------
