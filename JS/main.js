@@ -189,6 +189,11 @@ export function loadResultMap(playersLat, playersLong) {
     // Add CSS class to the map container to style the map
     document.getElementById("mapHolder").classList.add("mapHolderToResult");
     document.getElementById("map").classList.add("mapFullOpacity");
+
+    if (!map) {
+        console.error("Map not properly inizialized - exiting result map load function.");
+        return;
+    }
     
     // Set map center to the currentStreetviewLat and currentStreetviewLong
     map.setCenter({ lat: currentStreetviewLat, lng: currentStreetviewLong });
@@ -340,7 +345,7 @@ export function loadResultMap(playersLat, playersLong) {
 
 function flyToDestination() {
     // Check if EndOverlay is fully visible before flying to the destination
-    if (document.getElementById("EndOverlay").style.opacity == "1") {
+    if (document.getElementById("EndOverlay").style.opacity == "1" && map) {
         let currentZoom = map.getZoom();
         let newZoom = Math.min(currentZoom + 2, map.maxZoom || 21); // Adjust 2 to the desired zoom increment and 21 to the max zoom level if you have a custom max
 
