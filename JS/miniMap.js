@@ -86,7 +86,7 @@ async function initMap() {
             restriction: {
                 latLngBounds: worldBounds,
                 strictBounds: true, // Enforce the restriction
-              },
+            },
         });
 
         map.setMapTypeId(getMapType(providerIndex)); // Set the map type on the actual map
@@ -102,19 +102,20 @@ export let addedMarkers = []; // this is needed for this api to delete them agai
 
 //reset the map - used for going to the next round. 
 export function resetMap() {
+    document.getElementById("mapHolder").classList.remove("mapHolderToResult");
+    document.getElementById("map").classList.remove("mapFullOpacity");
+
     if (map) {
-        document.getElementById("mapHolder").classList.remove("mapHolderToResult");
-        document.getElementById("map").classList.remove("mapFullOpacity");
-    
+
         for (let i = 0; i < addedMarkers.length; i++) {
             addedMarkers[i].setMap(null);
         }
-    
+
         addedMarkers = []; // Clear the array
-    
+
         map.panTo({ lat: 20, lng: 0 }); // reset center
         map.setZoom(2);
-    
+
         map.overlayMapTypes.clear();
     }
 
@@ -188,7 +189,9 @@ function changeMapType() {
     }
 
     localStorage.setItem("providerIndex", providerIndex);
-    map.setMapTypeId(getMapType(providerIndex)); // Set the map type on the actual map
+    if (map) {
+        map.setMapTypeId(getMapType(providerIndex)); // Set the map type on the actual map
+    }
     changeMapTypeButtonLabel();
 }
 
@@ -213,11 +216,13 @@ export let mapMarkerLong = 0;
 
 let marker;
 
-map.addListener('click', function (e) {
-    if (!resultScreenEnabled) {
-        onMapClick(e.latLng);
-    }
-});
+if (map) {
+    map.addListener('click', function (e) {
+        if (!resultScreenEnabled) {
+            onMapClick(e.latLng);
+        }
+    });
+}
 
 function onMapClick(latLng) {
     //creates markers wherever the user clicks and if it clicks to another position,
@@ -357,9 +362,9 @@ function handleMapHover() {
 }
 
 export function handleMapUnhover() {
-        mapResizeTimeout = setTimeout(() => { 
-            mapHolder.classList.remove("mapHover")
-        }, 250);
+    mapResizeTimeout = setTimeout(() => {
+        mapHolder.classList.remove("mapHover")
+    }, 250);
 }
 
 function checkMapmodeindicatorOverflow() {

@@ -139,7 +139,7 @@
         .optionLabel {
             padding: 5px;
             padding-inline: 10px;
-            background-color: rgba(17, 18, 31, 0.5);
+            background-color: rgba(17, 18, 31, 0.25);
             border-radius: 7px;
             min-height: 25px;
             margin: 0;
@@ -438,7 +438,8 @@
                 vertical-align: -5px;
             }
 
-            p, .optionButton {
+            p,
+            .optionButton {
                 font-size: 20px;
             }
 
@@ -652,6 +653,13 @@
         } else {
             container.innerHTML = "";
             yourLeagueContainer.innerHTML = "";
+
+            // rest podium items to remove any previous event listeners
+            document.querySelectorAll(".podium-item").forEach((e) => {
+                const podiumItem = e;
+                const newPodiumItem = podiumItem.cloneNode(true);
+                podiumItem.parentNode.replaceChild(newPodiumItem, podiumItem);
+            });
 
             // Populate podium
             for (let i = 0; i < 3 && i < userData.length; i++) {
