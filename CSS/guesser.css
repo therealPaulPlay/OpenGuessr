@@ -1570,8 +1570,28 @@ textarea {
 }
 
 #roomCodeDisplay {
-  margin: 15px;
   font-size: 40px;
+  min-width: 75%;
+  text-align: center;
+}
+
+#roomCodeDisplayArea {
+  background-color: rgba(255, 255, 255, 0.10);
+  padding: 5px;
+  border-radius: 5px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  margin: 10px;
+  margin-top: 5px;
+  margin-inline: 0;
+  width: calc(100% - 10px);
+}
+
+#roomCodeDisplayArea p {
+  opacity: 0.5;
+  font-size: 20px;
 }
 
 #joinCounter {
@@ -1600,6 +1620,7 @@ textarea {
   width: calc(100% - 10px);
   border-radius: 7px;
   padding: 5px;
+  background-color: rgba(30, 31, 44, 0.5);
 }
 
 .friendsRoomEntryText {
@@ -1648,16 +1669,35 @@ textarea {
 }
 
 #teamsDisplay {
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(30, 31, 44, 0.5);
   width: calc(100% - 10px);
   border-radius: 7px;
-  margin-top: 15px;
+  position: relative;
 }
 
 #teamsDisplayText {
-  padding-inline: 8px;
+  padding-inline: 40px;
   opacity: 0.5;
   font-size: 22px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#smallJoinCounter {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  padding: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  height: 29px;
+  width: 30px;
+  border-radius: 5px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.75);
+  font-size: 22px;
+  line-height: 30px;
+  text-overflow: ellipsis;
+  overflow: hidden;
 }
 
 .multiplayerInputInfo {

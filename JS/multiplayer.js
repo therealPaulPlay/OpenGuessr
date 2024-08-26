@@ -336,7 +336,7 @@ function hostTeamAmount(changeAmount, sound) {
 }
 
 function setJoinCounter(playerAmount) {
-    document.getElementById("joinCounter").textContent = "Players joined: " + (playerAmount + 1);
+    document.getElementById("smallJoinCounter").textContent = playerAmount + 1;
     if (multiplayerHost.textContent == "Start" && ((playerAmount + 1) < teamAmount || playerAmount == 0)) {
         multiplayerHost.style.opacity = "0.5";
         multiplayerHost.style.pointerEvents = "none";
@@ -1262,7 +1262,7 @@ let roomLocked = true;
 function createRoom(AmountOfRounds, LengthOfRounds) {
     if (multiplayerHost.textContent != "Start") {
         setupMultiplayerRoom(AmountOfRounds, LengthOfRounds);
-        showHostCodeArea("Roomcode: " + peerId.replace("openguessr_", ""));
+        showHostCodeArea(peerId.replace("openguessr_", ""));
         multiplayerHost.textContent = "Start";
         setJoinCounter(0); //greys out the start button too
         updateTeamDisplay();
