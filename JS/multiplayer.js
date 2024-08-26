@@ -26,8 +26,8 @@ let multiplayerSelectDuels = document.getElementById("multiplayerSelectDuels");
 let multiplayerSelectorClose = document.getElementById("multiplayerSelectorClose");
 
 let joinInfoText = document.getElementById("multiplayerJoinInfo");
-let multiplayerJoin = document.getElementById("multiplayerJoin"); //button with join functionality
-let multiplayerHost = document.getElementById("multiplayerHost"); //button that creates a room
+let multiplayerJoin = document.getElementById("multiplayerJoin"); // button with join functionality
+let multiplayerHost = document.getElementById("multiplayerHost"); // button that creates a room
 let nmpzBackground = document.getElementById("nmpzBackground");
 
 //host settings
@@ -743,7 +743,7 @@ function copyRoomcodeLink() {
             }, 700);
         });
     } else {
-        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature, as opening links causes a map reload which leads to higher API costs.", () => { supporterWindowIfAuthenticated(); }, false, false, false, false, true);
+        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature, as opening links causes map reloads, which leads to higher API usage.", () => { supporterWindowIfAuthenticated(); }, false, false, false, false, true);
     }
 }
 
