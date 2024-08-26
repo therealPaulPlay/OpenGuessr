@@ -75,11 +75,7 @@ export function toggleMultiplayerSelector(alwaysClose) {
     } else {
         multiplayerSelectionScreen.style.display = "block";
         document.getElementById("blackBackground").style.visibility = "visible";
-        setMultiplayerWindowSelection("main");
-        if (isAuthenticated) {
-            loadFriends(true);
-            startLoadFriendsInterval();
-        }
+        setMultiplayerWindowSelection("main"); // here, friends will be loaded
     }
 
     multiPlayerWindowOpen = !multiPlayerWindowOpen;
@@ -146,10 +142,16 @@ function setMultiplayerWindowSelection(window) {
     document.getElementById("roomcodeLink").style.display = "none";
     setJoinButtonState();
     leaveMultiplayerRound(); //leave round and disconnect all peers if you are the host
+    clearInterval(loadFriendsInterval);
 
     if (window == "main") {
         multiplayerWindowMain.style.display = "block";
+        // load friends
         disconnectAllPeersAndCloseRoom();
+        if (isAuthenticated) {
+            loadFriends(true);
+            startLoadFriendsInterval();
+        }
     } else if (window == "join") {
         multiplayerWindowJoin.style.display = "block";
         multiplayerSelectorBack.style.display = "block";
