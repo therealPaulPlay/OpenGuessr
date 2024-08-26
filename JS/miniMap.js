@@ -38,9 +38,10 @@ changeMapTypeButtonLabel();
 
 //reset the map - used for going to the next round. 
 export function resetMap() {
-  
+  if (map) {
     map.removeLayer(marker);
     map.setView(new L.LatLng(20, 0), 1);
+  }
 
     //reset the guess button as well
     hasGuessed = false;
@@ -285,9 +286,9 @@ function handleMapHover() {
 }
 
 export function handleMapUnhover() {
-        mapResizeTimeout = setTimeout(() => { 
-            mapHolder.classList.remove("mapHover")
-        }, 250);
+    mapResizeTimeout = setTimeout(() => {
+        mapHolder.classList.remove("mapHover")
+    }, 250);
 }
 
 function checkMapmodeindicatorOverflow() {

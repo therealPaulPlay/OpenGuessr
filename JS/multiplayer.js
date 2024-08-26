@@ -1,6 +1,6 @@
 import { clamp, loadAndInitializeLibrary } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup } from "./mainUI.js";
+import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup, supporterWindowIfAuthenticated } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { selectedBadge, selectedPinIndex, supporterLevel } from "./profileView.js";
@@ -26,8 +26,8 @@ let multiplayerSelectDuels = document.getElementById("multiplayerSelectDuels");
 let multiplayerSelectorClose = document.getElementById("multiplayerSelectorClose");
 
 let joinInfoText = document.getElementById("multiplayerJoinInfo");
-let multiplayerJoin = document.getElementById("multiplayerJoin"); //button with join functionality
-let multiplayerHost = document.getElementById("multiplayerHost"); //button that creates a room
+let multiplayerJoin = document.getElementById("multiplayerJoin"); // button with join functionality
+let multiplayerHost = document.getElementById("multiplayerHost"); // button that creates a room
 let nmpzBackground = document.getElementById("nmpzBackground");
 
 //host settings
@@ -733,7 +733,8 @@ copyRoomcodeLinkButton.addEventListener("click", () => {
 });
 
 function copyRoomcodeLink() {
-    navigator.clipboard.writeText(window.location.origin + "/?join=" + peerId.replace("openguessr_", ""))
+    if (supporterLevel > 0) {
+        navigator.clipboard.writeText(window.location.origin + "/?join=" + peerId.replace("openguessr_", ""))
         .then(function () {
             document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
             setTimeout(() => {
@@ -747,6 +748,9 @@ function copyRoomcodeLink() {
                 document.getElementById("linkIcon").src = "/IMG/link_icon.png";
             }, 700);
         });
+    } else {
+        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature, as opening links causes map reloads, which leads to higher API usage.", () => { supporterWindowIfAuthenticated(); }, false, false, false, false, true);
+    }
 }
 
 // Vars ------------------------------------------------------------------------------------------------

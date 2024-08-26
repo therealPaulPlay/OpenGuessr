@@ -335,7 +335,7 @@ export function loadResultMap(playersLat, playersLong) {
 }
 
 function flyToDestination() {
-    if (document.getElementById("EndOverlay").style.opacity == "1") {
+    if (document.getElementById("EndOverlay").style.opacity == "1" && resMap) {
         var lat = currentStreetviewLat;
         var lng = currentStreetviewLong;
         var zoom = clamp(resMap.getZoom() + 2, 0, 18);
