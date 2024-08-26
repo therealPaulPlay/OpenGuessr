@@ -15,10 +15,10 @@
       ({ key: "AIzaSyDcGJ0tK_syDMY4Pv3qY298oDDGUBwNvEk", v: "weekly" });</script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=1.1.8">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=1.1.9">
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=1.2.2" defer></script>
+  <script type="module" src="main.js?v=1.2.3" defer></script>
 
   <!-- venatus ad script -->
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
@@ -771,10 +771,13 @@
             <p id="multiplayerMapDisplay">Default</p>
           </div>
           <div id="hostCodeArea" class="multiplayerHostCodeArea">
-            <h1 id="roomCodeDisplay">Roomcode (error, please reload)</h1>
-            <p id="joinCounter">Players joined: 0</p>
+            <div id="roomCodeDisplayArea">
+              <p>Join with code:</p>
+              <h1 id="roomCodeDisplay">Default</h1>
+            </div>
             <div id="teamsDisplay" class="roomCreationModule multiplayerHostSettings">
               <p id="teamsDisplayText">Nothing to show</p>
+              <p id="smallJoinCounter">0</p>
             </div>
             <div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
               <div id="roomCreationFriendsBox" class="roomCreationFriendsBox">
