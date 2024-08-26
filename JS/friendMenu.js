@@ -448,7 +448,7 @@ export async function loadFriends(animate) {
 
     } catch (error) {
         console.error('Fetch/Network error occurred while loading friends: ', error);
-        friendContainerMessage.textContent = "Error occured while loading friends: " + error;
+        friendContainerMessage.textContent = "An error occured loading your friends.";
         friendContainerMessage.style.display = "block";
     }
 }
@@ -620,7 +620,10 @@ export async function initializeWebsocketConnection() {
                 if (reconnectAttempts < maxReconnectAttempts) {
                     reconnectAttempts++;
                     console.warn(`WebSocket closed. Attempting to reconnect (${reconnectAttempts}/${maxReconnectAttempts})...`);
-                    connectWebSocket();
+                    // slightly delayed reconnect attempt
+                    setTimeout(() => {
+                        connectWebSocket();
+                    }, 500);
                 } else {
                     console.error('Max reconnect attempts reached. Could not reconnect.');
                 }
