@@ -4129,6 +4129,10 @@ all and (max-width: 1200px) {
   #profileViewName {
     font-size: 32px;
   }
+
+  #topCursorDetectionBar {
+    display: none;
+  }
 }
 
 /* big screens in portrait, like vertical monitors */
