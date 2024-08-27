@@ -643,7 +643,7 @@ h3 {
 .buttonBoxRight {
   display: flex;
   justify-content: flex-end;
-  gap: 15px;
+  gap: 8px;
   margin-top: 60px;
 }
 
@@ -965,7 +965,7 @@ textarea {
 
 #beforeExitNotAgain {
   opacity: 0.5;
-  margin-right: 10px;
+  margin-right: 8px;
 }
 
 .exitSpacer {
@@ -3567,6 +3567,7 @@ a:hover {
   padding-inline: 10px;
   line-height: 0.9;
   margin-left: 8px;
+  min-height: unset;
 }
 
 #troubleshootingArea {
