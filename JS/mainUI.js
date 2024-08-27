@@ -1012,19 +1012,23 @@ function exitIntentPopup() {
 document.getElementById("beforeExitNotAgain").addEventListener("click", () => {
     beforeExitPopup.style.display = "none";
     localStorage.setItem("hideExitPopup", "1");
+    playSound("basic_button");
 });
 
 document.getElementById("beforeExitClose").addEventListener("click", () => {
     beforeExitPopup.style.display = "none";
+    playSound("basic_button");
 });
 
 document.getElementById("costSupportButton").addEventListener("click", () => {
     beforeExitPopup.style.display = "none";
+    playSound("basic_button");
     supporterWindowIfAuthenticated();
 });
 
 document.getElementById("beforeExitReloadButton").addEventListener("click", () => {
     beforeExitPopup.style.display = "none";
+    playSound("basic_button");
     leaveMultiplayerRound();
     leaveCompetition(false);
     disableResultScreen();
