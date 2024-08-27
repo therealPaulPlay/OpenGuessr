@@ -168,8 +168,6 @@ export function changeCategory(category, regenerate) {
     }
 }
 
-
-
 //Check categories and initiate location generation  ---------------------------------------------------------------------------------------------------------------
 
 loadCompetition(false);
