@@ -82,6 +82,15 @@ h3 {
   pointer-events: none;
 }
 
+#topCursorDetectionBar {
+  position: fixed;
+  top: 0;
+  height: 15px;
+  left: 0;
+  right: 0;
+  z-index: 990; /* above everything, except for error popups */
+}
+
 .topBarMenu {
   background-color: var(--panel-color);
   backdrop-filter: blur(10px);
@@ -622,26 +631,6 @@ h3 {
   display: none;
 }
 
-#profileClose,
-#helpClose,
-#troubleshootClose,
-#settingsClose,
-#socialPopupClose,
-#linkJoinClose,
-#socialPopupJoin,
-#multiplayerSelectorClose,
-#multiplayerSelectorBack,
-#mobilePopupClose,
-#confirmCancel,
-#badgeClose,
-#pinClose,
-#supporterClose,
-#confirmProceed,
-#friendBrowserClose,
-#friendInboxClose {
-  min-height: 50px;
-}
-
 #multiplayerSelectorBack {
   opacity: 0.5;
   margin-right: 8px;
@@ -654,9 +643,8 @@ h3 {
 .buttonBoxRight {
   display: flex;
   justify-content: flex-end;
-  gap: 8px;
+  gap: 15px;
   margin-top: 60px;
-  margin-bottom: 10px;
 }
 
 .copyLinkButton {
@@ -854,26 +842,23 @@ textarea {
 }
 
 .confirmPopupWindow {
-  z-index: 981;
   display: block !important;
 }
 
 #profileWindow {
-  z-index: 970;
   display: block !important;
 }
 
 #badgeWindow,
 #pinWindow,
-#supporterWindow {
-  z-index: 971;
+#supporterWindow,
+#beforeExitWindow {
   display: block !important;
   max-width: 700px;
 }
 
 #friendBrowserWindow,
 #friendInboxWindow {
-  z-index: 960;
   display: block !important;
   max-width: 700px;
 }
@@ -930,6 +915,10 @@ textarea {
   z-index: 960;
 }
 
+#beforeExitPopup {
+  z-index: 981;
+}
+
 .supporterBox {
   padding: 10px;
   width: calc(100% - 20px);
@@ -962,6 +951,102 @@ textarea {
   margin-left: 3px;
   margin-top: 5px;
   margin-right: 10px;
+}
+
+#infoIconBeforeExit {
+  margin-top: 7px;
+}
+
+.beforeExitHeader {
+  margin-top: 15px;
+  margin-bottom: 10px;
+  width: fit-content;
+}
+
+#beforeExitNotAgain {
+  opacity: 0.5;
+  margin-right: 10px;
+}
+
+.exitSpacer {
+  width: 100%;
+  height: 10px;
+}
+
+.beforeExitNote {
+  border-radius: 5px;
+  background-color: rgba(30, 31, 44, 0.5);
+  padding: 7px;
+  padding-left: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#reloadIcon {
+  width: 25px;
+  height: 25px;
+  vertical-align: -4px;
+}
+
+.costDisplayArea {
+  border-radius: 10px;
+  background: linear-gradient(30deg, rgba(201, 37, 37, 0.5), rgba(215, 25, 25, 0.7));
+  color: white;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  padding: 5px;
+  width: calc(100% - 20px);
+  margin-top: 15px;
+  gap: 7px;
+}
+
+.costDisplayValue {
+  padding: 5px;
+  padding-inline: 10px;
+  background-color: rgba(0, 0, 0, 0.15);
+  border-radius: 5px;
+  flex-grow: 1;
+  text-wrap: nowrap;
+}
+
+.costDisplayText {
+  margin-left: 10px;
+  flex-grow: 100;
+}
+
+.costFlex {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-grow: 1;
+  min-width: 100%;
+  gap: 10px;
+}
+
+.costButton {
+  margin: 0 !important;
+  flex-grow: 1;
+  background-color: rgba(255, 255, 255, 0.3);
+  color: white;
+}
+
+.beforeExitReloadArea {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+#reloadExitNote {
+  flex-grow: 100;
+}
+
+#beforeExitReloadButton {
+  color: black;
+  background-color: white;
 }
 
 #supporterIconTitle {
@@ -1974,13 +2059,14 @@ search {
   flex-grow: 1;
 }
 
-.accountClose {
+.closeButton {
   float: right;
   margin-top: 30px;
-  margin-bottom: 10px;
+  margin-bottom: 15px;
   font-size: 20px;
   font-weight: 500;
-  padding: 10px 35px;
+  padding: 10px 25px;
+  min-height: 50px;
 }
 
 #blackBackground {
