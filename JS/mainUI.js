@@ -971,7 +971,7 @@ document.addEventListener("mousemove", (event) => {
 });
 
 // Disable popup on top bar hover
-document.querySelectorAll(".topBarMenu").forEach((e) => {
+document.querySelectorAll(".topBarDesktop").forEach((e) => {
     e.addEventListener("mouseover", () => {
         clearTimeout(exitBarTimeout);
         exitBarDisabled = true;
