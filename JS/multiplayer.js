@@ -745,7 +745,7 @@ function copyRoomcodeLink() {
             }, 700);
         });
     } else {
-        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature, as opening links causes map reloads, which leads to higher API usage.", () => { supporterWindowIfAuthenticated(); }, false, false, false, false, true);
+        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature as it leads to higher API usage.", () => { supporterWindowIfAuthenticated(); }, false, false, false, false, true);
     }
 }
 
