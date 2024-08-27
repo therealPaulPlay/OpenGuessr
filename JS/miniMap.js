@@ -74,6 +74,8 @@ async function initMap() {
     const { Map } = await google.maps.importLibrary("maps");
 
     if (await requestMapLoad()) {
+        removeMapPreview();
+
         map = new Map(document.getElementById("map"), {
             center: { lat: 20, lng: 0 },
             zoom: 2,
@@ -89,12 +91,55 @@ async function initMap() {
             },
         });
 
+        map.addListener('click', function (e) {
+            if (!resultScreenEnabled) {
+                onMapClick(e.latLng);
+            }
+        });
+
         map.setMapTypeId(getMapType(providerIndex)); // Set the map type on the actual map
         changeMapTypeButtonLabel();
     }
 }
 
-await initMap();
+// Trigger map initialization delayed --------------------------------------------------------------
+
+let mapInitialized = false;
+
+export async function initializeMapIfNotAlready() {
+    if (!mapInitialized) {
+        mapInitialized = true;
+
+        await initMap();
+        return true;
+    }
+
+    return true;
+}
+
+function removeMapPreview() {
+    const mapPreview = document.getElementById("mapPlaceholderBeforeLoad");
+
+    if (mapPreview) {
+        mapPreview.style.opacity = "0";
+
+        setTimeout(() => {
+            try {
+                mapPreview.remove();
+            } catch { };
+        }, 500);
+    };
+}
+
+document.getElementById("map").addEventListener("mouseover", () => {
+    initializeMapIfNotAlready();
+});
+
+document.getElementById("map").addEventListener("touchstart", () => {
+    initializeMapIfNotAlready();
+});
+
+// Reset map ---------------------------------------------------------------------------------------
 
 let multiplayerMiniMarkers = []; // team markers
 
@@ -215,14 +260,6 @@ export let mapMarkerLat = 0;
 export let mapMarkerLong = 0;
 
 let marker;
-
-if (map) {
-    map.addListener('click', function (e) {
-        if (!resultScreenEnabled) {
-            onMapClick(e.latLng);
-        }
-    });
-}
 
 function onMapClick(latLng) {
     //creates markers wherever the user clicks and if it clicks to another position,
