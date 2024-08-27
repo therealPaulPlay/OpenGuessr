@@ -1,11 +1,11 @@
 import { closePopup, errorPopup } from "./errorHandling.js";
 import { reloadIframe, loadAndInitializeLibrary } from "./main.js";
 import { setUserXP, uiSetUserXP, isAuthenticated, checkAuthenticationStatus } from "./accountLogic.js";
-import { toggleMultiplayerSelector } from "./multiplayer.js";
+import { leaveMultiplayerRound, toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
-import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners } from "./categoryMenu.js";
-import { loadCompetition } from "./competitionLogic.js";
+import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners, checkGenerationTypeAndGenerate } from "./categoryMenu.js";
+import { leaveCompetition, loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
 import { initializeRewardAd } from "./rewardedAds.js";
 import { enableBottomAd, enableResultAds } from "./venatusCustom.js";
@@ -139,16 +139,21 @@ export function enableResultScreen(resultString, extraMessage) {
 }
 
 export function disableResultScreen() {
-    document.getElementById("EndOverlay").style.opacity = "0%";
+    if (resultScreenEnabled) {
+        document.getElementById("EndOverlay").style.opacity = "0%";
 
-    setTimeout(function () {
-        document.getElementById("EndOverlay").style.visibility = "hidden";
-        enableBottomAd();
-    }, 250);
+        setTimeout(function () {
+            document.getElementById("EndOverlay").style.visibility = "hidden";
+            enableBottomAd();
+        }, 250);
+    
+        resetMap();
 
-    resetMap();
 
-    resultScreenEnabled = false;
+        resultScreenEnabled = false;
+    } else {
+        console.warn("Result screen already disabled.");
+    }
 }
 
 //Extended Navbar dropdown (Category Selection Area) ------------------------------------------------------------------------------
@@ -572,7 +577,7 @@ document.getElementById("dailyCompetition").addEventListener("click", () => {
 
 let confirmPopup = document.getElementById("confirmPopup");
 
-export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, messageOnly, adPrompt, supporterPrompt) {
+export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, messageOnly, adPrompt, supporterPrompt, signupPrompt) {
     confirmPopup.style.display = "flex";
     document.getElementById("confirmTitle").textContent = title;
     document.getElementById("confirmDescription").textContent = text;
@@ -604,6 +609,10 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete, na
     if (supporterPrompt) {
         document.getElementById("confirmProceed").textContent = "Support";
         document.getElementById("confirmProceed").style.backgroundColor = "#588e6b";
+    }
+
+    if (signupPrompt) {
+        document.getElementById("confirmProceed").textContent = "Create Account";
     }
 
     // Remove all event listeners by cloning the element
@@ -670,8 +679,12 @@ document.querySelectorAll(".supporterAdText").forEach((e) => {
 export function supporterWindowIfAuthenticated() {
     if (isAuthenticated) {
         openSupporterWindow();
+        return true;
     } else {
-        showConfirmPopup("Account required", "To unlock supporter benefits with a one-time payment, you need to create an account first to ensure that purchases are stored safely.", false, false, false, true);
+        showConfirmPopup("Account required", "To support OpenGuessr with a one-time payment, an account is required, so that you can enjoy amazing supporter benefits on all devices!", () => {
+            showPageBrowser("/signup.html", true);
+        }, false, false, false, false, false, true);
+        return false;
     }
 }
 
@@ -935,6 +948,90 @@ export function setAdVisibility(visible) {
     }
 }
 
+// Detect intent to leave or reload website using mouse movements  -----------------------------------------------------------------------------
+
+let exitBarTimeout;
+let exitBarDisabled = false;
+let lastMouseY = window.innerHeight; // Start as the bottom of the window
+let isMouseInPage = false; // Flag to check if the mouse was previously outside the window
+
+// Track mouse movements
+document.addEventListener("mousemove", (event) => {
+    const currentMouseY = event.clientY;
+
+    // Check if the mouse is entering the page for the first time
+    if (!isMouseInPage) {
+        isMouseInPage = true;
+        lastMouseY = currentMouseY;
+        return;
+    }
+
+    // Update lastMouseY only after mouse enters the page
+    lastMouseY = currentMouseY;
+});
+
+// Disable popup on top bar hover
+document.querySelectorAll(".topBarDesktop").forEach((e) => {
+    e.addEventListener("mouseover", () => {
+        clearTimeout(exitBarTimeout);
+        exitBarDisabled = true;
+        exitBarTimeout = setTimeout(() => {
+            exitBarDisabled = false;
+        }, 350);
+    });
+});
+
+document.getElementById("topCursorDetectionBar").addEventListener("mouseover", (event) => {
+    const currentMouseY = event.clientY;
+
+    // Trigger popup only if mouse is moving upwards and was inside the page before
+    if (currentMouseY < lastMouseY && isMouseInPage) {
+        if (!exitBarDisabled) {
+            exitIntentPopup();
+        }
+    }
+
+    // Update lastMouseY after checking
+    lastMouseY = currentMouseY;
+});
+
+// Reset mouse-in-page flag when the mouse leaves the window
+document.addEventListener("mouseleave", () => {
+    isMouseInPage = false;
+});
+
+// Before Exit Popup ---------------------------------------------------------------
+const beforeExitPopup = document.getElementById("beforeExitPopup");
+
+function exitIntentPopup() {
+    if (!localStorage.getItem("hideExitPopup")) {
+        beforeExitPopup.style.display = "flex";
+    }
+}
+
+document.getElementById("beforeExitNotAgain").addEventListener("click", () => {
+    beforeExitPopup.style.display = "none";
+    localStorage.setItem("hideExitPopup", "1");
+});
+
+document.getElementById("beforeExitClose").addEventListener("click", () => {
+    beforeExitPopup.style.display = "none";
+});
+
+document.getElementById("costSupportButton").addEventListener("click", () => {
+    beforeExitPopup.style.display = "none";
+    supporterWindowIfAuthenticated();
+});
+
+document.getElementById("beforeExitReloadButton").addEventListener("click", () => {
+    beforeExitPopup.style.display = "none";
+    leaveMultiplayerRound();
+    leaveCompetition(false);
+    disableResultScreen();
+    disablePageBrowser();
+    checkGenerationTypeAndGenerate();
+});
+
 // In-App page browser -----------------------------------------------------------------------------------
 
 let pageBrowserWindow = document.getElementById("pageBrowserWindow");
@@ -958,10 +1055,12 @@ export function showPageBrowser(page, login) {
 }
 
 function disablePageBrowser() {
-    document.getElementById("blackBackground").style.visibility = "hidden";
-    pageBrowserWindow.style.display = "none";
-    document.getElementById("pageBrowserIframe").style.opacity = "0";
-    document.getElementById("pageBrowserIframe").src = ""; // unload iframe to save performance
+    if (pageBrowserWindow.style.display != "none") {
+        document.getElementById("blackBackground").style.visibility = "hidden";
+        pageBrowserWindow.style.display = "none";
+        document.getElementById("pageBrowserIframe").style.opacity = "0";
+        document.getElementById("pageBrowserIframe").src = ""; // unload iframe to save performance
+    }
 }
 
 window.onmessage = function (e) {
