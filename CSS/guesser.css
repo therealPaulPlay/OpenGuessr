@@ -643,7 +643,7 @@ h3 {
 .buttonBoxRight {
   display: flex;
   justify-content: flex-end;
-  gap: 15px;
+  gap: 7px;
   margin-top: 60px;
 }
 
