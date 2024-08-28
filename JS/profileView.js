@@ -178,6 +178,10 @@ function viewProfile(name, experience, joined, yourProfile, profileData, support
     document.getElementById("statisticExperience").innerHTML = Number(experience).toLocaleString();
     document.getElementById("statisticUpgradeExperience").innerHTML = getExpStats(experience).requiredForLevelUpgrade.toLocaleString();
     document.getElementById("statisticJoinedDate").textContent = formatDateTime(joined);
+    
+    setTimeout(() => {
+        document.getElementById("profileScrollSection").style.maxHeight = "calc(100dvh - 350px)";
+    }, 50);
 }
 
 let profileClose = document.getElementById("profileClose");
@@ -188,6 +192,7 @@ profileClose.addEventListener("click", () => {
 
 export function closeProfile() {
     document.getElementById("profilePopup").style.display = "none";
+    document.getElementById("profileScrollSection").style.maxHeight = "300px";
 
     if (lastProfileOwnerYou && isAuthenticated) {
         updateProfileData(document.getElementById("profileAbout").value);

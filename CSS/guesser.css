@@ -8,6 +8,11 @@
   src: url('../FONTS/BarlowCondensed-Medium.ttf');
 }
 
+@font-face {
+  font-family: Roboto;
+  src: url("../FONTS/Roboto-Regular.ttf");
+}
+
 :root {
   --brand-color: #ff0808;
   --panel-color: hsla(236, 25%, 20%, 0.7);
@@ -778,10 +783,13 @@ textarea {
 }
 
 #profileScrollSection {
-  max-height: calc(100dvh - 350px);
   overflow-x: hidden;
   overflow-y: auto;
   border-radius: 5px;
+  max-height: 300px; /* switched in code to   max-height: calc(100dvh - 350px); */
+  min-height: 250px;
+  scrollbar-width: none;
+  transition: max-height 250ms ease-in-out;
 }
 
 .white {
@@ -2801,6 +2809,8 @@ map::selection {
   gap: 10px;
   flex-wrap: wrap;
   width: calc(100% - 20px);
+  overflow: auto;
+  height: fit-content;
 }
 
 #accountDeletePassword {
