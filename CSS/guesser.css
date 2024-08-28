@@ -8,6 +8,11 @@
   src: url('../FONTS/BarlowCondensed-Medium.ttf');
 }
 
+@font-face {
+  font-family: Roboto;
+  src: url('../FONTS/Roboto-Regular.ttf');
+}
+
 :root {
   --brand-color: #ff0808;
   --panel-color: hsla(236, 25%, 20%, 0.7);
@@ -2582,6 +2587,7 @@ search {
   background: #e8e4dc;
   box-shadow: 0 2px 30px rgba(71, 71, 71, 0.5);
   transition: opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
+  overflow: hidden;
 }
 
 #map:focus {
@@ -2656,7 +2662,6 @@ map::selection {
   color: black;
   padding-right: 10px;
   padding-left: 10px;
-  font: 400 12px Roboto, Arial, sans-serif;
   z-index: 10;
   background-color: rgb(245, 245, 245);
   opacity: 0.7;
@@ -2664,6 +2669,10 @@ map::selection {
   max-height: 2000px;
   transition: max-height 250ms ease;
   overflow: hidden;
+}
+
+.mapAttribution * {
+  font: 400 11px Roboto, Arial, sans-serif;
 }
 
 #mapAttributionLogo {

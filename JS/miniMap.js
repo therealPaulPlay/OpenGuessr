@@ -40,7 +40,7 @@ changeMapTypeButtonLabel();
 export function resetMap() {
   if (map) {
     map.removeLayer(marker);
-    map.setView(new L.LatLng(20, 0), 1);
+    map.setView(new L.LatLng(20, 0), 2);
   }
 
     //reset the guess button as well
@@ -59,14 +59,9 @@ function loadMap() {
         noWrap: true,
         fakeRetina: true,
     }).addTo(map);
-}
 
-function resetGuessMap() {
-    map.removeLayer(dataLayer);
-    loadMap();
+    map.setZoom(2);
 }
-
-map.setZoom(1);
 
 // Map Type Button Label ----------------------------------------------------------------------------------------
 
@@ -134,7 +129,8 @@ function changeMapType() {
     localStorage.setItem("providerIndex", providerIndex);
 
     changeMapTypeButtonLabel();
-    resetGuessMap();
+    map.removeLayer(dataLayer);
+    loadMap();
     setResultMapTileLayer();
 }
 

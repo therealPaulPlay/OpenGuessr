@@ -3,7 +3,7 @@ import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopu
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
-import { handleMapUnhover } from "./miniMap.js";
+import { handleMapUnhover, resetMap } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { toggleStreakWindow } from "./streakAdPopup.js";
@@ -159,7 +159,7 @@ export function changeCategory(category, regenerate) {
 
     if (regenerate) {
         if (!resultScreenEnabled) {
-            resetMap(); // reset map if not on result screen to clear markers + make guess button grey again
+            resetMap();
         }
         checkGenerationTypeAndGenerate();
         setTimeout(() => {
