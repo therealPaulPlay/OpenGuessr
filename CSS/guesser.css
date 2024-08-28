@@ -8,6 +8,11 @@
   src: url('../FONTS/BarlowCondensed-Medium.ttf');
 }
 
+@font-face {
+  font-family: Roboto;
+  src: url('../FONTS/Roboto-Regular.ttf');
+}
+
 :root {
   --brand-color: #ff0808;
   --panel-color: hsla(236, 25%, 20%, 0.7);
@@ -2589,24 +2594,6 @@ search {
   outline: none;
 }
 
-#map * {
-  font-family: Roboto;
-}
-
-#mapPlaceholderBeforeLoad {
-  width: 100%;
-  height: 100%;
-  left: 10px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  background-image: url("/IMG/map_preview.webp");
-  background-size: cover;
-  background-position: center;
-  transition: opacity 500ms ease;
-  pointer-events: none;
-}
-
 .mk-map-view {
   border-radius: 10px;
 }
@@ -2627,26 +2614,6 @@ search {
 
 .leaflet-interactive {
   cursor: crosshair !important;
-}
-
-.gm-style .gm-style-iw {
-  font-size: 16px;
-  text-align: center;
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-  padding-bottom: 0;
-  padding-inline: 0;
-  padding-right: 15px;
-}
-
-.gm-style-iw-ch {
-  display: none;
-}
-
-.gm-style iframe + div {
-  border: none !important;
 }
 
 #map:hover {
@@ -2686,6 +2653,34 @@ map::selection {
 #revealCompassArrow {
   transform: rotate(90deg);
   margin: 0;
+}
+
+.mapAttribution {
+  position: absolute;
+  bottom: 0;
+  right: 10px;
+  color: black;
+  padding-right: 10px;
+  padding-left: 10px;
+  z-index: 10;
+  background-color: rgb(245, 245, 245);
+  opacity: 0.7;
+  border-bottom-right-radius: 10px;
+  max-height: 2000px;
+  transition: max-height 250ms ease;
+  overflow: hidden;
+}
+
+.mapAttribution * {
+  font: 400 11px Roboto, Arial, sans-serif;
+}
+
+#mapAttributionLogo {
+  background-color: transparent;
+  right: auto;
+  left: 5px;
+  opacity: 1;
+  height: 25px;
 }
 
 #mapModeIndicator {
@@ -3094,7 +3089,7 @@ map::selection {
   text-align: center;
   visibility: hidden;
   opacity: 0;
-  pointer-events: none;
+  transition: all 500ms ease;
   position: fixed;
   width: 100%;
   height: 100%;
@@ -3103,7 +3098,6 @@ map::selection {
   display: flex;
   justify-content: center;
   align-items: flex-end;
-  transition: opacity 250ms ease-out;
 }
 
 /* This is for the result screen */
@@ -3175,6 +3169,16 @@ map::selection {
   text-overflow: ellipsis;
   text-wrap: nowrap;
   min-width: 40%;
+}
+
+#resultMap {
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 10;
+  background: #e8e4dc;
 }
 
 #nextRound {
@@ -3752,7 +3756,7 @@ input[type="checkbox"]:focus {
   width: 100%;
 }
 
-.mapHolder {
+#mapHolder {
   position: fixed;
   display: flex;
   right: 0;
@@ -4109,6 +4113,11 @@ all and (max-width: 1200px) {
     font-size: 20px;
   }
 
+  #mapHolder {
+    width: 40%;
+    height: 40%;
+  }
+
   #map {
     opacity: 50%;
   }
@@ -4150,7 +4159,7 @@ all and (max-width: 1200px) {
 /* big screens in portrait, like vertical monitors */
 @media all and (orientation: portrait) {
 
-  .mapHolder {
+  #mapHolder {
     height: 50%;
     width: calc(100% - 20px);
   }
@@ -4184,7 +4193,7 @@ all and (max-width: 1200px) {
     padding-bottom: 40px;
   }
 
-  .mapHolder {
+  #mapHolder {
     bottom: 145px;
   }
 
@@ -4195,34 +4204,4 @@ all and (max-width: 1200px) {
   #notificationBar {
     margin-top: 0;
   }
-}
-
-/* important map change properties */
-
-/* map Holder class on result screen */
-.mapHolderToResult {
-  bottom: 0;
-  padding-inline: 0;
-  z-index: 12;
-  width: 100%;
-  height: 100%;
-  transition: none;
-  margin: 0 !important;
-}
-
-.mapHolderToResult #mapModeIndicator {
-  display: none !important;
-}
-
-.mapHolderToResult #floatingMapButton {
-  display: none !important;
-}
-
-/* map class on result screen */
-.mapFullOpacity {
-  opacity: 100% !important;
-  visibility: visible !important;
-  border-radius: 0 !important;
-  max-height: 100% !important;
-  transition: none !important;
 }
