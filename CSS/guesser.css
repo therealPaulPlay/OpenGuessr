@@ -2582,6 +2582,7 @@ search {
   background: #e8e4dc;
   box-shadow: 0 2px 30px rgba(71, 71, 71, 0.5);
   transition: opacity 250ms ease, max-height 250ms ease, margin 250ms ease;
+  overflow: hidden;
 }
 
 #map:focus {
@@ -2590,6 +2591,20 @@ search {
 
 #map * {
   font-family: Roboto;
+}
+
+#mapPlaceholderBeforeLoad {
+  width: 100%;
+  height: 100%;
+  left: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-image: url("/IMG/map_preview.webp");
+  background-size: cover;
+  background-position: center;
+  transition: opacity 500ms ease;
+  pointer-events: none;
 }
 
 .mk-map-view {
