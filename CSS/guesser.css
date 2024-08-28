@@ -8,6 +8,11 @@
   src: url('../FONTS/BarlowCondensed-Medium.ttf');
 }
 
+@font-face {
+  font-family: Roboto;
+  src: url("../FONTS/Roboto-Regular.ttf");
+}
+
 :root {
   --brand-color: #ff0808;
   --panel-color: hsla(236, 25%, 20%, 0.7);
