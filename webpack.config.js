@@ -3,6 +3,7 @@ const CopyWebpackPlugin = require('copy-webpack-plugin'); // Copy certain files 
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
 const TerserPlugin = require('terser-webpack-plugin');
 const JsonMinimizerPlugin = require('json-minimizer-webpack-plugin');
+const CacheBusterPlugin = require('webpack-cache-buster-plugin');
 
 module.exports = {
   entry: {
@@ -37,6 +38,10 @@ module.exports = {
   },
   plugins: [
     new CleanWebpackPlugin(),
+    new CacheBusterPlugin({
+      htmlFilePaths: ['./HTML/index.html'], // List of HTML files to modify
+      filesToCacheBust: ['main.js', 'guesser.css'], // List of files to add cache-busting query
+    }),
     new CopyWebpackPlugin({
       patterns: [
         // Copies files/folders over to build

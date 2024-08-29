@@ -307,6 +307,9 @@ export function uiSetUserXP(xp) {
     
     // account UI level circle
     setProgress(xp != 0 ? Math.max((xp / requiredXP), 0.1) : 0);
+  } else {
+    setProgress(0);
+    document.getElementById("progressRingLevel").innerHTML = "1";
   }
 
   return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };

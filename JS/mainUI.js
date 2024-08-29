@@ -1006,6 +1006,8 @@ const beforeExitPopup = document.getElementById("beforeExitPopup");
 function exitIntentPopup() {
     if (!localStorage.getItem("hideExitPopup")) {
         beforeExitPopup.style.display = "flex";
+        expandCostExpanded = false;
+        setExplanationExpandState();
     }
 }
 
@@ -1035,6 +1037,27 @@ document.getElementById("beforeExitReloadButton").addEventListener("click", () =
     disablePageBrowser();
     checkGenerationTypeAndGenerate();
 });
+
+// text expand
+
+const expandableCostExplanation = document.getElementById("costExplanationText");
+
+let expandCostExpanded = false;
+
+document.getElementById("costExplanationToggle").addEventListener("click", () => {
+    expandCostExpanded = !expandCostExpanded;
+    setExplanationExpandState();
+})
+
+function setExplanationExpandState() {
+    if (expandCostExpanded) {
+        document.getElementById("costExplanationToggle").textContent = "Show less";
+        expandableCostExplanation.style.maxHeight = "5000px";
+    } else {
+        document.getElementById("costExplanationToggle").textContent = "Read more";
+        expandableCostExplanation.style.maxHeight = "";
+    }
+}
 
 // In-App page browser -----------------------------------------------------------------------------------
 
