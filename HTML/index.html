@@ -15,10 +15,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=1.2.1">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=lj3g5">
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=1.2.5" defer></script>
+  <script type="module" src="main.js?v=lj3g5" defer></script>
 
   <!-- venatus ad script -->
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
@@ -98,7 +98,7 @@
     <div id="notificationBar">
       <p id="notificationText">Default notification</p>
       <div class="notificationButtonBox">
-        <button id="notificationAccept" class="standardButton accountButton">accept</button>
+        <button id="notificationAccept" class="standardButton accountButton">Accept</button>
         <button id="notificationDismiss" class="standardButton accountButton">
           <img alt="dismiss notification" class="friendRemoveIcon" src="/IMG/delete_icon.png">
         </button>
@@ -546,6 +546,15 @@
           </div>
         </div>
         <button id="costSupportButton" class="standardButton costButton">Support OpenGuessr &lt;3</button>
+      </div>
+      <div id="costExplanationArea">
+        <p id="costExplanationText">Using maps on your phone or browser is free, but it's expensive to integrate them into a website.<br><br>
+          Every time the game's minimap loads, it incurs a cost that adds up quickly with more players.
+          Ads help cover some expenses, but the best way to support OpenGuessr is to purchase a supporter tier.<br><br>
+          You can also help by sharing the game! More players result in a lower cost per user due to bulk request discounts. Thank you!<br><br><br>
+        </p>
+        <div id="costTextGradient"></div>
+        <p id="costExplanationToggle">Read more</p>
       </div>
       <h3 class="beforeExitHeader">Want to reload the page?</h3>
       <div class="beforeExitNote">
