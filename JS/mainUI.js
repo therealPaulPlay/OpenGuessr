@@ -580,7 +580,7 @@ let confirmPopup = document.getElementById("confirmPopup");
 export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, messageOnly, adPrompt, supporterPrompt, signupPrompt) {
     confirmPopup.style.display = "flex";
     document.getElementById("confirmTitle").textContent = title;
-    document.getElementById("confirmDescription").textContent = text;
+    document.getElementById("confirmDescription").innerHTML = text;
     document.getElementById("accountDeletePassword").style.display = "none";
     document.getElementById("usernameInput").style.display = "none";
     document.getElementById("confirmProceed").style.display = "block";
@@ -885,19 +885,31 @@ const notificationBar = document.getElementById("notificationBar");
 
 let hideNotificationTimeout;
 
-export function showNotification(text, acceptFunction, dismissFunction, showAccept) {
+export function showNotification(text, acceptFunction, dismissFunction, showAccept, renameAcceptToLearnMore) {
     notificationBar.style.top = "65px";
     notificationBar.style.opacity = "1";
     document.getElementById("notificationText").textContent = text;
+    document.getElementById("notificationAccept").textContent = "Accept";
     clearTimeout(hideNotificationTimeout);
 
     if (showAccept) {
         document.getElementById("notificationAccept").style.display = "block";
+        hideNotificationTimeout = setTimeout(() => {
+            hideNotification();
+        }, 30000); // much longer expiration time for notifications that ask for user action
     } else {
         document.getElementById("notificationAccept").style.display = "none";
         hideNotificationTimeout = setTimeout(() => {
             hideNotification();
-        }, 2000);
+        }, 3000);
+    }
+
+    if (renameAcceptToLearnMore) {
+        document.getElementById("notificationAccept").textContent = "Learn more";
+        clearTimeout(hideNotificationTimeout);
+        hideNotificationTimeout = setTimeout(() => {
+            hideNotification();
+        }, 5000); // shorter expiration for informational notifications
     }
 
     const button = document.getElementById("notificationAccept");
