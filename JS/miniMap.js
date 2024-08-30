@@ -1,6 +1,6 @@
 import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main.js";
 import { selectedPinIndex } from "./profileView.js";
-import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
+import { distributeChat, multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showConfirmPopup, showNotification } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
@@ -111,6 +111,7 @@ async function initMap() {
 
         map.setMapTypeId(getMapType(providerIndex)); // Set the map type on the actual map
         changeMapTypeButtonLabel();
+        enableMapTypeButton();
     }
 }
 
@@ -200,6 +201,13 @@ function changeMapTypeButtonLabel() {
 
         default: document.getElementById("mapTypeButton").innerHTML = `${mapTypeBaseText} Standard`;
             break;
+    }
+}
+
+function enableMapTypeButton() {
+    if (map && document.getElementById("mapTypeButton")) {
+        document.getElementById("mapTypeButton").style.pointerEvents = "auto";
+        document.getElementById("mapTypeButton").style.opacity = "1";
     }
 }
 
