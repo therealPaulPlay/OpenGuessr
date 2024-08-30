@@ -1,7 +1,7 @@
 import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main.js";
 import { selectedPinIndex } from "./profileView.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
-import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled } from "./mainUI.js";
+import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showConfirmPopup, showNotification } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 import { errorPopup } from "./errorHandling.js";
@@ -44,18 +44,30 @@ async function requestMapLoad() {
         // Check if the response is successful
         if (response.ok) {
             const data = await response.json();
+            try {
+                displayMaploadUsage(data.rateLimit.used, data.rateLimit.limit);
+            } catch (error) {
+                console.error("Error parsing data from maplimit request: " + error);
+            }
+
             return true;
 
         } else {
             const data = await response.json();
             console.error("Map load limit reached: " + data.error);
-            errorPopup("Daily map load limit reached", "To prevent extraordinarily high Google API costs, your map load request was denied due to too many refreshes. Become a supporter to increase your limit!", data.error, false, false);
+            errorPopup("Daily minimap load limit reached", "To prevent extraordinarily high Google API costs, your map load request was denied due to too many refreshes. Become a supporter to increase your limit!", data.error, false, false);
             return false;
         }
     } catch (error) {
         console.error('Error occurred while checking for the map load limit: ' + error);
         return true;
     }
+}
+
+function displayMaploadUsage(used, limit) {
+    showNotification(`(${used}/${limit}) daily minimap loads used.`, () => {
+        showConfirmPopup("What are minimap loads?", "A daily load is only used when you first open the minimap after loading the site, meaning your playtime remains unrestricted.<br><br> To help reduce API costs, please keep the website open to minimize additional minimap loads. The available amount resets every day.", false, false, false, true);
+    }, false, true, true);
 }
 
 export let map;
