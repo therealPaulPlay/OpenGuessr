@@ -457,6 +457,9 @@ function setMultiplayerUI() {
         document.getElementById("multiplayerChat").style.display = "flex";
         document.getElementById("multiplayerLeave").style.display = "block";
         document.getElementById("revealCompass").style.bottom = "calc(50% - 10px)";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.bottom = "63px";
+        });
         document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
 
         //hide country picker UI
@@ -479,6 +482,9 @@ function setMultiplayerUI() {
         document.getElementById("multiplayerChat").style.display = "none";
         document.getElementById("multiplayerLeave").style.display = "none";
         document.getElementById("revealCompass").style.bottom = "calc(50% - 40px)";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.bottom = "0px";
+        });
         mobileMenuButton.style.opacity = "1";
         mobileMenuButton.style.pointerEvents = "auto";
     }
@@ -1952,6 +1958,10 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
         document.getElementById("map").style.visibility = "hidden";
         hideToggleMapButtonIfMobile(true);
         document.getElementById("revealCompass").style.visibility = "hidden";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.visibility = "hidden";
+        });
+
         showTimeReduceOverlay(0, true); // hide = true (in case it somehow overlaps if the result screen is being skipped quickly)
 
     } else {
@@ -1961,6 +1971,9 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
             document.getElementById("map").style.visibility = "visible";
             hideToggleMapButtonIfMobile(false);
             document.getElementById("revealCompass").style.visibility = "visible";
+            document.querySelectorAll(".mapAttribution").forEach((element) => {
+                element.style.visibility = "visible";
+            });
         }
     }
 }
