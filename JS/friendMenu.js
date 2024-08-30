@@ -625,7 +625,10 @@ export async function initializeWebsocketConnection() {
                         connectWebSocket();
                     }, 500);
                 } else {
-                    console.error('Max reconnect attempts reached. Could not reconnect.');
+                    console.error('Max reconnect attempts reached. Could not reconnect. Re-attempting approx. every minute from now on.');
+                    setTimeout(() => {
+                        connectWebSocket();
+                    }, 60000 + Math.floor(Math.random() * 10000));
                 }
             };
     
