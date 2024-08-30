@@ -68,9 +68,15 @@ toggleMapButton.addEventListener("click", () => {
 function toggleMap() {
     if (!mapExpanded) {
         document.getElementById("map").style.maxHeight = "100%";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.maxHeight = "2000px";
+        });
         mapExpanded = true;
     } else {
         document.getElementById("map").style.maxHeight = "0%";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.maxHeight = "0px";
+        });
         mapExpanded = false;
     }
 }
@@ -147,8 +153,6 @@ export function disableResultScreen() {
             enableBottomAd();
         }, 250);
     
-        resetMap();
-
 
         resultScreenEnabled = false;
     } else {
