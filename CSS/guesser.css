@@ -42,6 +42,9 @@ h3 {
 
 #mapTypeButton {
   min-width: 162px;
+  /* disabled initially, enabled after map load */
+  pointer-events: none;
+  opacity: 0.5;
 }
 
 .leftNavbarButtons {
@@ -154,8 +157,12 @@ h3 {
   box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
   transition: all 200ms ease;
   pointer-events: auto;
-  flex-wrap: wrap;
   margin-inline: 10px;
+  max-width: 90vw;
+}
+
+#notificationAccept {
+  min-width: 55px;
 }
 
 #notificationText {

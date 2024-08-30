@@ -909,7 +909,7 @@ export function showNotification(text, acceptFunction, dismissFunction, showAcce
     }
 
     if (renameAcceptToLearnMore) {
-        document.getElementById("notificationAccept").textContent = "Learn more";
+        document.getElementById("notificationAccept").textContent = "?";
         clearTimeout(hideNotificationTimeout);
         hideNotificationTimeout = setTimeout(() => {
             hideNotification();

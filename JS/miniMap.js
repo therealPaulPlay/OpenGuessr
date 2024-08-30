@@ -29,6 +29,8 @@ if (storedProviderIndex != null) {
     providerIndex = storedProviderIndex;
 }
 
+enableMapTypeButton();
+
 export function getMapSource() {
     return mapProvider[providerIndex];
 }
@@ -82,6 +84,13 @@ function changeMapTypeButtonLabel() {
 
         default: document.getElementById("mapTypeButton").innerHTML = `${mapTypeBaseText} Standard`;
             break;
+    }
+}
+
+function enableMapTypeButton() {
+    if (map && document.getElementById("mapTypeButton")) {
+        document.getElementById("mapTypeButton").style.pointerEvents = "auto";
+        document.getElementById("mapTypeButton").style.opacity = "1";
     }
 }
 
