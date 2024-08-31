@@ -118,6 +118,11 @@ export let resultScreenEnabled = false;
 
 export function enableResultScreen(guessLat, guessLong) {
     if (!resultScreenEnabled) {
+        
+        // Error proofing in case they are not defined
+        guessLat = guessLat || 0;
+        guessLong = guessLong || 0;
+
         const distance = calculateDistances(guessLat, guessLong);
     
         const resultStrings = compareDistances(distance);

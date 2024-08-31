@@ -177,12 +177,6 @@ export async function loadResultMap(playersLat, playersLong) {
         return;
     }
     
-    // Default values in case there was an error / not defined
-    if (playersLat == null || playersLat == undefined) {
-        playersLat = 0;
-        playersLong = 0;
-    }
-    
     // Set map center to the currentStreetviewLat and currentStreetviewLong
     map.setCenter({ lat: currentStreetviewLat, lng: currentStreetviewLong });
     map.setZoom(3);
