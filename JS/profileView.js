@@ -149,7 +149,10 @@ function viewProfile(name, experience, joined, yourProfile, profileData, support
             }
 
             if (profileData.pin) {
-                document.getElementById("selectedProfilePin").src = `/IMG/your_marker${profileData.pin}.png`;
+                let img = new Image();
+                img.onload = () => { document.getElementById("selectedProfilePin").src = `/IMG/your_marker${profileData.pin}.png`; };
+                img.onerror = () => { console.error("Image for pin not found, default image used.") };
+                img.src = `/IMG/your_marker${profileData.pin}.png`;
             }
 
             if (profileData.badge) {
@@ -178,7 +181,7 @@ function viewProfile(name, experience, joined, yourProfile, profileData, support
     document.getElementById("statisticExperience").innerHTML = Number(experience).toLocaleString();
     document.getElementById("statisticUpgradeExperience").innerHTML = getExpStats(experience).requiredForLevelUpgrade.toLocaleString();
     document.getElementById("statisticJoinedDate").textContent = formatDateTime(joined);
-    
+
     setTimeout(() => {
         document.getElementById("profileScrollSection").style.maxHeight = "calc(100dvh - 350px)";
     }, 50);
@@ -279,7 +282,7 @@ function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompeti
     try {
         // about text
         let aboutText;
-        
+
         if (yourLoadedProfileData) {
             aboutText = yourLoadedProfileData.about ? yourLoadedProfileData.about : "";
         }
@@ -287,7 +290,7 @@ function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompeti
         if (newAboutText != undefined) {
             aboutText = newAboutText;
         }
-        
+
         // duels played
         let duelsPlayed;
 
@@ -296,11 +299,11 @@ function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompeti
         }
 
         duelsPlayed = duelsPlayed ? duelsPlayed : 0;
-        
+
         if (addDuelsPlayed) {
             duelsPlayed += addDuelsPlayed;
         }
-        
+
         // duels won
         let duelsWon;
 
@@ -309,27 +312,27 @@ function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompeti
         }
 
         duelsWon = duelsWon ? duelsWon : 0;
-        
+
         if (addDuelsWon) {
             duelsWon += addDuelsWon;
         }
-        
+
         // competitions played
         let competitionsPlayed;
 
         if (yourLoadedProfileData) {
             competitionsPlayed = yourLoadedProfileData.competitionsPlayed;
-        }   
+        }
 
         competitionsPlayed = competitionsPlayed ? competitionsPlayed : 0;
-        
+
         if (addCompetitionsPlayed) {
             competitionsPlayed += addCompetitionsPlayed;
         }
 
         // streak
         let newStreak;
-        
+
         if (yourLoadedProfileData) {
             newStreak = yourLoadedProfileData.highestStreak;
         }
@@ -342,7 +345,7 @@ function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompeti
 
         // pin
         let pin;
-        
+
         if (yourLoadedProfileData) {
             pin = yourLoadedProfileData.pin;
         }
@@ -365,7 +368,7 @@ function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompeti
         if (newBadge) {
             badge = newBadge;
         }
-    
+
         const profileData = {
             about: aboutText,
             duelsPlayed: duelsPlayed,
@@ -375,7 +378,7 @@ function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompeti
             pin: pin,
             badge: badge
         }
-    
+
         submitProfileData(profileData);
         yourLoadedProfileData = profileData; // also update the loaded profile data with these changes to make sure that changes always carry on to queried requests
     } catch (error) {
@@ -570,7 +573,7 @@ function updatePinLocks() {
 
         if (lockRequirementType == "highestStreak") {
             if (yourLoadedProfileData.highestStreak >= lockRequirementAmount) {
-                lock.style.display = "none"; 
+                lock.style.display = "none";
             } else {
                 lock.style.display = "flex";
             }
@@ -686,12 +689,14 @@ function setProfileBadge(id) {
 
     try {
         const badgeToClone = document.getElementById(id);
-        const newBadge = badgeToClone.cloneNode(true);
-        newBadge.classList.remove("badgeSelected");
-        newBadge.classList.remove("badgeLocked");
-        newBadge.id = "currentProfileBadgeSelection"; // change id to prevent overlap 
-        badgeArea.appendChild(newBadge);
-        document.getElementById("badgeButton").style.display = "none";
+        if (badgeToClone) {
+            const newBadge = badgeToClone.cloneNode(true);
+            newBadge.classList.remove("badgeSelected");
+            newBadge.classList.remove("badgeLocked");
+            newBadge.id = "currentProfileBadgeSelection"; // change id to prevent overlap 
+            badgeArea.appendChild(newBadge);
+            document.getElementById("badgeButton").style.display = "none";
+        }
     } catch (error) {
         console.error("Error setting profile badge: " + error);
     }
@@ -704,26 +709,26 @@ function updateBadgelocks() {
                 e.classList.add("badgeLocked");
             }
         });
-    
+
         const statusPrefix = "Unlock next at ";
-    
+
         const experienceStatus = document.getElementById("experienceBadgeStatus");
         const duelsStatus = document.getElementById("duelsBadgeStatus");
         const competitionsStatus = document.getElementById("competitionsBadgeStatus");
         const streaksStatus = document.getElementById("streakBadgeStatus");
         const supporterStatus = document.getElementById("supporterBadgeStatus");
-    
+
         const experienceRequirements = [50000, 250000, 1000000, 10000000];
         const duelsRequirements = [5, 50, 100, 500];
         const competitionRequirements = [10, 50, 100, 500];
         const streaksRequirements = [5, 15, 50, 100];
         const supporterRequirements = [1, 2, 3, 4]; // supporter tiers
-    
+
         let expIndex = 0;
-    
+
         for (const amount of experienceRequirements) {
             expIndex++;
-    
+
             experienceStatus.textContent = statusPrefix + amount.toLocaleString() + " XP";
             if (amount <= localStorage.getItem("experience")) {
                 document.getElementById("expBadge" + expIndex).classList.remove("badgeLocked");
@@ -734,17 +739,17 @@ function updateBadgelocks() {
                 break;
             }
         };
-    
+
         let duelsIndex = 0;
         let duelsWins = 0;
-    
+
         if (yourLoadedProfileData && yourLoadedProfileData.duelsWon) {
             duelsWins = yourLoadedProfileData.duelsWon;
         }
-    
+
         for (const amount of duelsRequirements) {
             duelsIndex++;
-    
+
             duelsStatus.textContent = statusPrefix + amount.toLocaleString() + " Wins";
             if (amount <= duelsWins) {
                 document.getElementById("duelBadge" + duelsIndex).classList.remove("badgeLocked");
@@ -755,17 +760,17 @@ function updateBadgelocks() {
                 break;
             }
         };
-    
+
         let competitionsIndex = 0;
         let competitionEntries = 0;
-    
+
         if (yourLoadedProfileData && yourLoadedProfileData.competitionsPlayed) {
             competitionEntries = yourLoadedProfileData.competitionsPlayed;
         }
-    
+
         for (const amount of competitionRequirements) {
             competitionsIndex++;
-    
+
             competitionsStatus.textContent = statusPrefix + amount.toLocaleString() + " Entries";
             if (amount <= competitionEntries) {
                 document.getElementById("compBadge" + competitionsIndex).classList.remove("badgeLocked");
@@ -776,17 +781,17 @@ function updateBadgelocks() {
                 break;
             }
         };
-    
+
         let streaksIndex = 0;
         let highestStreak = 0;
-    
+
         if (yourLoadedProfileData && yourLoadedProfileData.highestStreak) {
             highestStreak = yourLoadedProfileData.highestStreak;
         }
-    
+
         for (const amount of streaksRequirements) {
             streaksIndex++;
-    
+
             streaksStatus.textContent = statusPrefix + amount.toLocaleString() + " ended Streak";
             if (amount <= highestStreak) {
                 document.getElementById("streakBadge" + streaksIndex).classList.remove("badgeLocked");
@@ -802,7 +807,7 @@ function updateBadgelocks() {
 
         for (const amount of supporterRequirements) {
             supporterIndex++;
-    
+
             supporterStatus.textContent = statusPrefix + "Tier " + amount.toLocaleString() + " Supporter";
             if (amount <= supporterLevel) {
                 document.getElementById("supporterBadge" + supporterIndex).classList.remove("badgeLocked");
@@ -813,7 +818,7 @@ function updateBadgelocks() {
                 break;
             }
         };
-    
+
         if (localStorage.getItem("id") <= 2) {
             document.getElementById("miscBadge1").classList.remove("badgeLocked");
         }
