@@ -1,7 +1,6 @@
-import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main.js";
 import { selectedPinIndex } from "./profileView.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
-import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showConfirmPopup, showNotification } from "./mainUI.js";
+import { enableResultScreen, hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showConfirmPopup, showNotification } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 import { errorPopup } from "./errorHandling.js";
@@ -473,8 +472,7 @@ export function confirmButtonClicks() {
     }
 
     if (!multiplayer) {
-        calculateDistances(mapMarkerLat, mapMarkerLong);
-        loadResultMap(mapMarkerLat, mapMarkerLong);
+        enableResultScreen(mapMarkerLat, mapMarkerLong);
     } else {
         document.getElementById("guessText").textContent = "Waiting";
         document.getElementById("confirmButton").style.pointerEvents = "none";

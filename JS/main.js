@@ -102,12 +102,10 @@ export function calculateDistances(mapsLat, mapsLong) {
 
     const distance = R * c; // Distance in kilometers
 
-    compareDistances(distance);
+    return distance;
 }
 
-function compareDistances(distance) {
-    playSound("confirm");
-
+export function compareDistances(distance) {
     //compares how big the distance is and enables result screen with a message.
     if (!resultScreenEnabled) {
 
@@ -165,36 +163,24 @@ function compareDistances(distance) {
             }
         }
 
-        loadResultScreenXP(distance);
-        enableResultScreen(resultAsString, extraMsg);
+        return { resultAsString: resultAsString, extraMsg: extraMsg};
     }
 }
 
 //Load result Map (resMap) ------------------------------------------------------------------------------------------------
 
 export async function loadResultMap(playersLat, playersLong) {
-    setTimeout(() => {
-        handleMapUnhover();
-    }, 250);
-
     await initializeMapIfNotAlready();
+
+    if (!map) {
+        console.error("Map not properly inizialized - exiting result map load function.");
+        return;
+    }
     
     // Default values in case there was an error / not defined
     if (playersLat == null || playersLat == undefined) {
         playersLat = 0;
         playersLong = 0;
-    }
-
-    // Reset the map if it already exists - important for going to the next round
-    resetMap();
-
-    // Add CSS class to the map container to style the map
-    document.getElementById("mapHolder").classList.add("mapHolderToResult");
-    document.getElementById("map").classList.add("mapFullOpacity");
-
-    if (!map) {
-        console.error("Map not properly inizialized - exiting result map load function.");
-        return;
     }
     
     // Set map center to the currentStreetviewLat and currentStreetviewLong

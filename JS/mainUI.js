@@ -1,6 +1,6 @@
 import { closePopup, errorPopup } from "./errorHandling.js";
-import { reloadIframe, loadAndInitializeLibrary } from "./main.js";
-import { setUserXP, uiSetUserXP, isAuthenticated, checkAuthenticationStatus } from "./accountLogic.js";
+import { reloadIframe, loadAndInitializeLibrary, compareDistances, calculateDistances, loadResultMap } from "./main.js";
+import { setUserXP, uiSetUserXP, isAuthenticated, checkAuthenticationStatus, loadResultScreenXP } from "./accountLogic.js";
 import { leaveMultiplayerRound, toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
@@ -9,7 +9,7 @@ import { leaveCompetition, loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
 import { initializeRewardAd } from "./rewardedAds.js";
 import { enableBottomAd, enableResultAds } from "./venatusCustom.js";
-import { resetMap } from "./miniMap.js";
+import { handleMapUnhover, resetMap } from "./miniMap.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -116,41 +116,68 @@ document.getElementById("discoverMaps").addEventListener("click", () => { playSo
 //Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
 
-export function enableResultScreen(resultString, extraMessage) {
-    document.getElementById("EndOverlay").style.opacity = "100%";
-    document.getElementById("EndOverlay").style.visibility = "visible";
-
-    document.getElementById("distanceText").innerText = resultString;
-    document.getElementById("motivationText").innerText = extraMessage;
-
-    enableResultAds();
-
-    if (countryGuesserMode) {
-        if (checkIfGuessWasCorrect()) {
-            document.getElementById("distanceText").innerText = "Correct!";
-            document.getElementById("motivationText").innerText = "The country is " + selectedCountryGuesserCountry + ".";
-        } else {
-            document.getElementById("distanceText").innerText = "Wrong!";
-            document.getElementById("motivationText").innerText = "The country was " + selectedCountryGuesserCountry + ".";
+export function enableResultScreen(guessLat, guessLong) {
+    if (!resultScreenEnabled) {
+        const distance = calculateDistances(guessLat, guessLong);
+    
+        const resultStrings = compareDistances(distance);
+        let resultString = resultStrings.resultAsString;
+        let extraMessage = resultStrings.extraMsg;
+        
+        loadResultScreenXP(distance);
+    
+        document.getElementById("EndOverlay").style.opacity = "100%";
+        document.getElementById("EndOverlay").style.visibility = "visible";
+    
+        document.getElementById("distanceText").innerText = resultString;
+        document.getElementById("motivationText").innerText = extraMessage;
+    
+        enableResultAds();
+    
+        if (countryGuesserMode) {
+            if (checkIfGuessWasCorrect()) {
+                document.getElementById("distanceText").innerText = "Correct!";
+                document.getElementById("motivationText").innerText = "The country is " + selectedCountryGuesserCountry + ".";
+            } else {
+                document.getElementById("distanceText").innerText = "Wrong!";
+                document.getElementById("motivationText").innerText = "The country was " + selectedCountryGuesserCountry + ".";
+            }
         }
+    
+        // Reset the map if it already exists - important for going to the next round
+        resetMap();
+    
+        // Add CSS class to the map container to style the map
+        document.getElementById("mapHolder").classList.add("mapHolderToResult");
+        document.getElementById("map").classList.add("mapFullOpacity");
+    
+        // Load result on the map
+        loadResultMap(guessLat, guessLong);
+    
+        playSound("confirm");
+    
+        resultScreenEnabled = true;
+    } else {
+        console.log("Result screen already enabled!");
     }
-
-    resultScreenEnabled = true;
 }
+
+let hideEndOverlayTimeout;
 
 export function disableResultScreen() {
     if (resultScreenEnabled) {
+        clearTimeout(hideEndOverlayTimeout);
+
         document.getElementById("EndOverlay").style.opacity = "0%";
 
-        setTimeout(function () {
+        hideEndOverlayTimeout = setTimeout(function () {
             document.getElementById("EndOverlay").style.visibility = "hidden";
+            resultScreenEnabled = false;
             enableBottomAd();
         }, 250);
-    
+
         resetMap();
-
-
-        resultScreenEnabled = false;
+        handleMapUnhover();
     } else {
         console.warn("Result screen already disabled.");
     }
@@ -1068,28 +1095,28 @@ function setExplanationExpandState() {
 // Function to add the animation class
 function handleVisibilityChange(entries) {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate');
-      } else {
-        entry.target.classList.remove('animate');
-      }
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+        } else {
+            entry.target.classList.remove('animate');
+        }
     });
-  }
-  
-  // Options for the IntersectionObserver
-  const observerOptions = {
+}
+
+// Options for the IntersectionObserver
+const observerOptions = {
     root: null, // Use the viewport as the root
     rootMargin: '0px',
     threshold: 0 // Trigger as soon as even one pixel is visible
-  };
-  
-  // Create the observer
-  const observer = new IntersectionObserver(handleVisibilityChange, observerOptions);
-  
-  // Start observing all `.uiWindow` elements
-  document.querySelectorAll('.uiWindow').forEach(element => {
+};
+
+// Create the observer
+const observer = new IntersectionObserver(handleVisibilityChange, observerOptions);
+
+// Start observing all `.uiWindow` elements
+document.querySelectorAll('.uiWindow').forEach(element => {
     observer.observe(element);
-  });
+});
 
 // In-App page browser -----------------------------------------------------------------------------------
 
