@@ -364,16 +364,8 @@ export function toggleMobileMenu() {
 
     if (mobileWindowOpen) {
         mobileWindow.style.display = "block";
-
-        setTimeout(() => {
-            mobileWindow.style.opacity = "1";
-            mobileWindow.style.scale = "1";
-        }, 50);
-
         document.getElementById("blackBackground").style.visibility = "visible";
     } else {
-        mobileWindow.style.opacity = "0";
-        mobileWindow.style.scale = "0.95";
         mobileWindow.style.display = "none";
         document.getElementById("blackBackground").style.visibility = "hidden";
     }
@@ -1070,6 +1062,34 @@ function setExplanationExpandState() {
         expandableCostExplanation.style.maxHeight = "";
     }
 }
+
+// Animate all uiWindow elements --------------------------------------------------------------------------
+
+// Function to add the animation class
+function handleVisibilityChange(entries) {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate');
+      } else {
+        entry.target.classList.remove('animate');
+      }
+    });
+  }
+  
+  // Options for the IntersectionObserver
+  const observerOptions = {
+    root: null, // Use the viewport as the root
+    rootMargin: '0px',
+    threshold: 0 // Trigger as soon as even one pixel is visible
+  };
+  
+  // Create the observer
+  const observer = new IntersectionObserver(handleVisibilityChange, observerOptions);
+  
+  // Start observing all `.uiWindow` elements
+  document.querySelectorAll('.uiWindow').forEach(element => {
+    observer.observe(element);
+  });
 
 // In-App page browser -----------------------------------------------------------------------------------
 
