@@ -135,7 +135,7 @@ function setMultiplayerWindowSelection(window) {
     setJoinCounter(0);
     document.getElementById("teamsDisplayText").textContent = "Nothing to display";
     document.getElementById("friendsInviteDisplay").style.display = "none";
-    setJoinInfoText("Enter the roomcode.");
+    setJoinInfoText("Enter the room code.");
     document.getElementById("roomCreationModes").style.display = "flex";
     document.getElementById("roomCreationTeams").style.display = "flex";
     document.getElementById("roomCreationMap").style.display = "flex";
@@ -751,7 +751,7 @@ function copyRoomcodeLink() {
             }, 700);
         });
     } else {
-        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature as it leads to higher API usage.", () => { supporterWindowIfAuthenticated(); }, false, false, false, false, true);
+        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature as it leads to higher API usage.<br><br> Please join using the room code or the friend invite system instead if you do not wish to purchase a supporter tier.", () => { supporterWindowIfAuthenticated(); }, false, false, false, false, true);
     }
 }
 
