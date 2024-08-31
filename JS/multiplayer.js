@@ -1,12 +1,11 @@
 import { clamp, loadAndInitializeLibrary } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup, supporterWindowIfAuthenticated } from "./mainUI.js";
+import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup, supporterWindowIfAuthenticated, enableResultScreen } from "./mainUI.js";
 import { startTimer } from "./timer";
 import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { selectedBadge, selectedPinIndex, supporterLevel } from "./profileView.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeamMarkers } from "./miniMap.js";
-import { calculateDistances, loadResultMap } from "./main.js";
 import { playSound } from "./soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
 import { loadFriends, sendMatchInvite } from "./friendMenu.js";
@@ -534,8 +533,7 @@ function endMultiplayerRound() {
         }
 
         if (!lateJoinedWaiting) {
-            calculateDistances(mapMarkerLat, mapMarkerLong);
-            loadResultMap(mapMarkerLat, mapMarkerLong);
+            enableResultScreen(mapMarkerLat, mapMarkerLong);
         }
 
         try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer

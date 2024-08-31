@@ -3,7 +3,7 @@ import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopu
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
-import { handleMapUnhover, resetMap } from "./miniMap.js";
+import { resetMap } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { toggleStreakWindow } from "./streakAdPopup.js";
@@ -281,9 +281,8 @@ export function transitionToStart() {
         document.getElementById("BeforeOverlay").style.visibility = "visible";
         document.getElementById("BeforeOverlay").style.opacity = "100";
         toggleStreakWindow(0, true);
-        checkGenerationTypeAndGenerate();
-        handleMapUnhover();
         disableResultScreen();
+        checkGenerationTypeAndGenerate();
 
         setTimeout(socialPopupProbability, 650);
 
