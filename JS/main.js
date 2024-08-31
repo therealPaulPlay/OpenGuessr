@@ -202,16 +202,6 @@ export function setResultMapTileLayer() {
 }
 
 export function loadResultMap(playersLat, playersLong) {
-    setTimeout(() => {
-        handleMapUnhover();
-    }, 250);
-
-    //default values in case there was an error / not defined
-    if (playersLat == null || playersLat == undefined) {
-        playersLat = 0;
-        playersLong = 0;
-    }
-
     //this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
     if (resMap && resMap.remove) {
         resMap.off();
