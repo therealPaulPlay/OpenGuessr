@@ -2,8 +2,7 @@
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
 
-import { resetMap, map, addedMarkers, handleMapUnhover, initializeMapIfNotAlready } from './miniMap.js';
-import { loadResultScreenXP } from "./accountLogic.js";
+import { map, addedMarkers, initializeMapIfNotAlready } from './miniMap.js';
 import { selectedPinIndex } from './profileView.js';
 import { resultScreenEnabled, enableResultScreen, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
