@@ -1,6 +1,6 @@
 import { loadResultMap, calculateDistances, setResultMapTileLayer } from "./main.js";
 import { selectedPinIndex } from "./profileView.js";
-import { distributeChat, multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
+import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
 import { hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showConfirmPopup, showNotification } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
