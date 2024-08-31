@@ -412,7 +412,7 @@ const mapHolder = document.getElementById("mapHolder");
 let mapResizeTimeout;
 
 function handleMapHover() {
-    if (window.matchMedia("(orientation: landscape) and (min-width: 1250px)").matches) {
+    if (window.matchMedia("(min-width: 1200px)").matches) {
         clearTimeout(mapResizeTimeout);
         mapHolder.classList.add("mapHover")
     }
