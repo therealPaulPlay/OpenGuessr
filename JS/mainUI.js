@@ -182,7 +182,6 @@ export function disableResultScreen() {
         }, 250);
 
         resetMap();
-        handleMapUnhover();
     } else {
         console.warn("Result screen already disabled.");
     }

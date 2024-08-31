@@ -161,6 +161,7 @@ export let addedMarkers = []; // this is needed for this api to delete them agai
 export function resetMap() {
     document.getElementById("mapHolder").classList.remove("mapHolderToResult");
     document.getElementById("map").classList.remove("mapFullOpacity");
+    handleMapUnhover();
 
     if (map) {
 
