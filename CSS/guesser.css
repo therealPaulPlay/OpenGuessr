@@ -4079,8 +4079,7 @@ input[type="checkbox"]:focus {
 }
 
 /* phones / mobile but also narrow devices like ipads */
-@media all and (orientation: portrait),
-all and (max-width: 1350px) {
+@media all and (max-width: 1350px) {
 
   #resultBox {
     font-size: 22px;
@@ -4103,9 +4102,8 @@ all and (max-width: 1350px) {
   }
 }
 
-/* Small phones, mobile as well as all portrait screens */
-@media all and (orientation: portrait),
-all and (max-width: 1200px) {
+/* Small phones, mobile and other narrow screens */
+@media all and (max-width: 1200px) {
   .bannerRight {
     display: none;
   }
@@ -4201,10 +4199,6 @@ all and (max-width: 1200px) {
     font-size: 20px;
   }
 
-  #map {
-    opacity: 50%;
-  }
-
   #supporterTextSecondary {
     display: none !important;
   }
@@ -4237,10 +4231,6 @@ all and (max-width: 1200px) {
   #profileViewName {
     font-size: 32px;
   }
-}
-
-/* big screens in portrait, like vertical monitors */
-@media all and (orientation: portrait) {
 
   .mapHolder {
     height: 50%;
@@ -4258,7 +4248,14 @@ all and (max-width: 1200px) {
   #floatingMapButton {
     display: flex;
   }
+}
 
+/* Tablet map */
+@media all and (orientation: landscape) and (max-width: 1200px) {
+  .mapHolder{
+    width: 40%;
+    height: 45%;
+  }
 }
 
 /* ad shift for narrow screens */
