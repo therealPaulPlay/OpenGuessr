@@ -96,7 +96,8 @@ h3 {
   height: 15px;
   left: 0;
   right: 0;
-  z-index: 990; /* above everything, except for error popups */
+  z-index: 990;
+  /* above everything, except for error popups */
 }
 
 .topBarMenu {
@@ -793,7 +794,8 @@ textarea {
   overflow-x: hidden;
   overflow-y: auto;
   border-radius: 5px;
-  max-height: 300px; /* switched in code to   max-height: calc(100dvh - 350px); */
+  max-height: 300px;
+  /* switched in code to   max-height: calc(100dvh - 350px); */
   min-height: 250px;
   scrollbar-width: none;
   transition: max-height 250ms ease-in-out;
@@ -841,10 +843,21 @@ textarea {
 }
 
 @keyframes windowFadeIn {
-  0% { transform: scale(0.99); }
-  50% { transform: scale(1.01); }
-  85% { transform: scale(0.995); }
-  100% { transform: scale(1); }
+  0% {
+    transform: scale(0.99);
+  }
+
+  50% {
+    transform: scale(1.01);
+  }
+
+  85% {
+    transform: scale(0.995);
+  }
+
+  100% {
+    transform: scale(1);
+  }
 }
 
 .uiWindow.animate {
@@ -1116,7 +1129,7 @@ textarea {
   color: white;
 }
 
-.beforeExitReloadArea {
+.beforeExitReloadArea {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
