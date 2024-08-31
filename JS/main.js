@@ -2,10 +2,9 @@
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
 
-import { resetMap, getMapSource, handleMapUnhover } from './miniMap.js';
-import { loadResultScreenXP } from "./accountLogic.js";
+import { getMapSource } from './miniMap.js';
 import { selectedPinIndex } from './profileView.js';
-import { resultScreenEnabled, enableResultScreen, distanceUnit } from './mainUI.js';
+import { resultScreenEnabled, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
 import { checkHardModeTimeout } from './hardMode.js';
 import { multiplayer, startMultiplayerRound, isHost, multiplayerGuessesLocationsArray } from './multiplayer.js';
@@ -45,8 +44,6 @@ export function getCountryFromCoords(lat, lon) {
 //Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
 
 export async function generateNewLocation(type) {
-    resetMap();
-
     let newLocationArray;
 
     try {
