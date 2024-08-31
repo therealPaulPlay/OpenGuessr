@@ -105,12 +105,10 @@ export function calculateDistances(mapsLat, mapsLong) {
 
     const distance = R * c; // Distance in kilometers
 
-    compareDistances(distance);
+    return distance;
 }
 
-function compareDistances(distance) {
-    playSound("confirm");
-
+export function compareDistances(distance) {
     //compares how big the distance is and enables result screen with a message.
     if (!resultScreenEnabled) {
 
@@ -168,8 +166,7 @@ function compareDistances(distance) {
             }
         }
 
-        loadResultScreenXP(distance);
-        enableResultScreen(resultAsString, extraMsg);
+        return { resultAsString: resultAsString, extraMsg: extraMsg};
     }
 }
 

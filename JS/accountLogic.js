@@ -379,7 +379,7 @@ function streakCalculation() {
     streakMultiplier = calculateMultiplier(streak);
     streakText.textContent = streak + " (" + streakMultiplier + "x)";
 
-    streakDisplay.style.visibility = "visible";
+    streakDisplay.style.opacity = "1";
     streakDisplay.style.width = "auto";
     streakDisplay.style.maxWidth = "unset";
   }
@@ -481,7 +481,7 @@ export async function loadResultScreenXP(distance) {
 
     let selectedCategory = localStorage.getItem("selectedCategory");
 
-    streakDisplay.style.visibility = "hidden";
+    streakDisplay.style.opacity = "0";
     streakDisplay.style.width = "0";
     streakDisplay.style.maxWidth = "0";
 
