@@ -226,7 +226,7 @@ export function toggleCategoryMenu(alwaysClose) {
                 text.style.maxWidth = "200px";
             });
 
-            if (window.innerHeight > window.innerWidth) {
+            if (window.matchMedia("(max-width: 600px)").matches) {
                 extendedNavbar.classList.add("expandedMobile");
                 document.getElementById("extendedNavbarGradient").style.display = "block";
                 document.getElementById("extendedNavbarGradient").style.borderRadius = "0";
