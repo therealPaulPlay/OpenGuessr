@@ -16,8 +16,6 @@ export let coordsFromHost = [35.7072457, 139.863412]; // assign default to preve
 let socialMenuMultiplayerButton = document.getElementById("multiplayerButton");
 let multiplayerSelectionScreen = document.getElementById("multiplayerSelectionWindow");
 
-let mobileMenuButton = document.getElementById("mobileMenu");
-
 let multiplayerSelectJoin = document.getElementById("multiplayerSelectJoin");
 let multiplayerSelectHost = document.getElementById("multiplayerSelectHost");
 let multiplayerSelectDuels = document.getElementById("multiplayerSelectDuels");
@@ -461,11 +459,13 @@ function setMultiplayerUI() {
         });
         document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
 
+        document.querySelectorAll(".mobileHideInMultiplayer").forEach((e) => {
+            e.style.pointerEvents = "none";
+            e.style.opacity = "0.5";
+        });
+
         //hide country picker UI
         document.getElementById("countryGuesserSelector").style.display = "none";
-
-        mobileMenuButton.style.opacity = "0.5";
-        mobileMenuButton.style.pointerEvents = "none";
 
         // disable result screen if it is open (edge case)
         if (document.getElementById("EndOverlay").style.opacity != "0%") {
@@ -481,6 +481,12 @@ function setMultiplayerUI() {
         document.getElementById("multiplayerChat").style.display = "none";
         document.getElementById("multiplayerLeave").style.display = "none";
         document.getElementById("revealCompass").style.bottom = "calc(50% - 40px)";
+
+        document.querySelectorAll(".mobileHideInMultiplayer").forEach((e) => {
+            e.style.pointerEvents = "auto";
+            e.style.opacity = "1";
+        });
+
         document.querySelectorAll(".mapAttribution").forEach((element) => {
             element.style.bottom = "0px";
         });

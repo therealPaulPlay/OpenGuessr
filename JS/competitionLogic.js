@@ -63,6 +63,11 @@ export function setCompetitionUI(enable) {
 
             document.getElementById("revealCompass").style.bottom = "calc(50% - 10px)";
 
+            document.querySelectorAll(".mobileHideInMultiplayer").forEach((e) => {
+                e.style.pointerEvents = "none";
+                e.style.opacity = "0.5";
+            });
+          
             document.querySelectorAll(".mapAttribution").forEach((element) => { // remove this for js maps api
                 element.style.bottom = "63px";
             });
@@ -78,6 +83,11 @@ export function setCompetitionUI(enable) {
 
             document.getElementById("revealCompass").style.bottom = "calc(50% - 40px)";
 
+            document.querySelectorAll(".mobileHideInMultiplayer").forEach((e) => {
+                e.style.pointerEvents = "auto";
+                e.style.opacity = "1";
+            });
+          
             document.querySelectorAll(".mapAttribution").forEach((element) => { // remove this for js maps api
                 element.style.bottom = "0px";
             });

@@ -72,12 +72,14 @@ function toggleMap() {
             element.style.maxHeight = "2000px";
         });
         mapExpanded = true;
+        toggleMapButton.style.marginBottom = "10px";
     } else {
         document.getElementById("map").style.maxHeight = "0%";
         document.querySelectorAll(".mapAttribution").forEach((element) => {
             element.style.maxHeight = "0px";
         });
         mapExpanded = false;
+        toggleMapButton.style.marginBottom = "0";
     }
 }
 
@@ -124,27 +126,27 @@ export let resultScreenEnabled = false;
 
 export function enableResultScreen(guessLat, guessLong) {
     if (!resultScreenEnabled) {
-        
+
         // Error proofing in case they are not defined
         guessLat = guessLat || 0;
         guessLong = guessLong || 0;
 
         const distance = calculateDistances(guessLat, guessLong);
-    
+
         const resultStrings = compareDistances(distance);
         let resultString = resultStrings.resultAsString;
         let extraMessage = resultStrings.extraMsg;
-        
+
         loadResultScreenXP(distance);
-    
+
         document.getElementById("EndOverlay").style.opacity = "100%";
         document.getElementById("EndOverlay").style.visibility = "visible";
-    
+
         document.getElementById("distanceText").innerText = resultString;
         document.getElementById("motivationText").innerText = extraMessage;
-    
+
         enableResultAds();
-    
+
         if (countryGuesserMode) {
             if (checkIfGuessWasCorrect()) {
                 document.getElementById("distanceText").innerText = "Correct!";
@@ -154,19 +156,19 @@ export function enableResultScreen(guessLat, guessLong) {
                 document.getElementById("motivationText").innerText = "The country was " + selectedCountryGuesserCountry + ".";
             }
         }
-    
+
         // Reset the map if it already exists - important for going to the next round
         resetMap();
-    
+
         // Add CSS class to the map container to style the map
         document.getElementById("mapHolder").classList.add("mapHolderToResult");
         document.getElementById("map").classList.add("mapFullOpacity");
-    
+
         // Load result on the map
         loadResultMap(guessLat, guessLong);
-    
+
         playSound("confirm");
-    
+
         resultScreenEnabled = true;
     } else {
         console.log("Result screen already enabled!");
@@ -197,6 +199,7 @@ export function disableResultScreen() {
 let extendedNavbar = document.getElementById("extendedNavbar");
 let categoryMenuButton = document.getElementById("categoryMenuButton");
 let topButtonArea = document.getElementById("topButtonArea");
+let mobileButtonArea = document.getElementById("mobileButtonArea");
 
 let categoriesExpanded = false;
 
@@ -217,23 +220,25 @@ export function toggleCategoryMenu(alwaysClose) {
         }
 
         let moveTimeouts;
+        let mobileControlsTimeout;
 
         if (!categoriesExpanded) {
-            clearInterval(moveTimeouts);
+            clearTimeout(moveTimeouts);
+            clearTimeout(mobileControlsTimeout);
             document.getElementById("extendedNavbarContent").scrollTop = "0";
-
-            document.querySelectorAll('.animateSocialsText').forEach(function (text) {
-                text.style.maxWidth = "200px";
-            });
 
             if (window.matchMedia("(max-width: 600px)").matches) {
                 extendedNavbar.classList.add("expandedMobile");
                 document.getElementById("extendedNavbarGradient").style.display = "block";
                 document.getElementById("extendedNavbarGradient").style.borderRadius = "0";
-                document.getElementById("mobileExtendedNavbarControls").style.display = "flex";
-                document.getElementById("mobileExtendedNavbarControls").style.opacity = "1";
+
+                mobileControlsTimeout = setTimeout(() => {
+                    document.getElementById("mobileExtendedNavbarControls").style.display = "flex";
+                    document.getElementById("mobileExtendedNavbarControls").style.opacity = "1";
+                }, 150);
             } else {
                 document.getElementById("extendedNavbarGradient").style.borderRadius = "0 0 10px 10px";
+                mobileButtonArea.style.top = "355px";
             }
 
             moveTimeouts = setTimeout(() => {
@@ -245,25 +250,22 @@ export function toggleCategoryMenu(alwaysClose) {
             }, 100);
 
         } else {
-            clearInterval(moveTimeouts);
+            clearTimeout(moveTimeouts);
+            clearTimeout(mobileControlsTimeout);
             setTimeout(function () {
                 topButtonArea.style.top = "15px";
+                mobileButtonArea.style.top = "15px";
                 document.getElementById("extendedNavbarGradient").style.display = "none";
                 document.getElementById("mobileExtendedNavbarControls").style.display = "none";
             }, 75);
-            setTimeout(() => {
-                document.querySelectorAll('.animateSocialsText').forEach(function (text) {
-                    text.style.maxWidth = "0px";
-                });
-            }, 150);
             document.getElementById("mobileExtendedNavbarControls").style.opacity = "0";
             extendedNavbar.classList.remove("expanded");
             extendedNavbar.classList.remove("expandedMobile");
             document.getElementById("mapsArrow").classList.remove("arrowIconRotated");
             categoriesExpanded = false;
         }
-    } catch {
-        console.warn("Couldn't toggle category menu");
+    } catch (error) {
+        console.warn("Couldn't toggle category menu: " + error);
     }
 
 }
@@ -386,53 +388,23 @@ export function checkTextLength() {
 }
 
 //Mobile UI Menu -----------------------------------------------------------------------------------------
-let mobileWindow = document.getElementById("mobileWindow");
-let mobileMenuButton = document.getElementById("mobileMenu");
-
-mobileMenuButton.addEventListener("click", () => {
-    toggleMobileMenu();
-    playSound("basic_button");
-});
-
-let mobileWindowOpen = false;
-
-export function toggleMobileMenu() {
-    mobileWindowOpen = !mobileWindowOpen;
-
-    if (mobileWindowOpen) {
-        mobileWindow.style.display = "block";
-        document.getElementById("blackBackground").style.visibility = "visible";
-    } else {
-        mobileWindow.style.display = "none";
-        document.getElementById("blackBackground").style.visibility = "hidden";
-    }
-}
-
-document.getElementById("mobilePopupClose").addEventListener("click", () => {
-    toggleMobileMenu();
-    playSound("basic_button");
-});
 
 document.getElementById("mobileLeaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
-    toggleMobileMenu();
     goToLeaderboard();
 });
 
 document.getElementById("mobileMultiplayerButton").addEventListener("click", function () {
-    toggleMobileMenu();
     toggleMultiplayerSelector();
     playSound("basic_button");
 });
 
 document.getElementById("mobileCategoryButton").addEventListener("click", function () {
-    toggleMobileMenu();
     toggleCategoryMenu();
     playSound("floating_button");
 });
 
 document.getElementById("mobileCompetitionsButton").addEventListener("click", function () {
-    toggleMobileMenu();
     playSound("basic_button");
     showPageBrowser("/competitions.html");
 });
