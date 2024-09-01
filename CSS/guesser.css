@@ -3574,7 +3574,7 @@ button {
   filter: invert();
 }
 
-#mobileMenuArea {
+#mobileButtonArea {
   display: none;
 }
 
@@ -4085,7 +4085,7 @@ input[type="checkbox"]:focus {
     font-size: 25px;
   }
 
-  #mobileMenuArea {
+  #mobileButtonArea {
     display: flex;
   }
 
@@ -4095,12 +4095,6 @@ input[type="checkbox"]:focus {
 
   #multiplayerChat {
     visibility: hidden;
-  }
-
-  .extendedNavbar {
-    right: 0px;
-    left: 0px;
-    width: 100%;
   }
 
   .countryGuesserFlag {
@@ -4200,6 +4194,19 @@ input[type="checkbox"]:focus {
 
   .logoLeft {
     display: none;
+  }
+
+  .extendedNavbar {
+    right: 0px;
+    left: 0px;
+    width: 65%;
+  }
+}
+
+/* phone fullscreen category menu */
+@media all and (max-width: 600px) {
+  .extendedNavbar {
+    width: 100%;
   }
 }
 

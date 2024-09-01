@@ -193,6 +193,7 @@ export function disableResultScreen() {
 let extendedNavbar = document.getElementById("extendedNavbar");
 let categoryMenuButton = document.getElementById("categoryMenuButton");
 let topButtonArea = document.getElementById("topButtonArea");
+let mobileButtonArea = document.getElementById("mobileButtonArea");
 
 let categoriesExpanded = false;
 
@@ -220,10 +221,6 @@ export function toggleCategoryMenu(alwaysClose) {
             clearTimeout(mobileControlsTimeout);
             document.getElementById("extendedNavbarContent").scrollTop = "0";
 
-            document.querySelectorAll('.animateSocialsText').forEach(function (text) {
-                text.style.maxWidth = "200px";
-            });
-
             if (window.matchMedia("(max-width: 600px)").matches) {
                 extendedNavbar.classList.add("expandedMobile");
                 document.getElementById("extendedNavbarGradient").style.display = "block";
@@ -235,6 +232,7 @@ export function toggleCategoryMenu(alwaysClose) {
                 }, 150);
             } else {
                 document.getElementById("extendedNavbarGradient").style.borderRadius = "0 0 10px 10px";
+                mobileButtonArea.style.top = "355px";
             }
 
             moveTimeouts = setTimeout(() => {
@@ -250,14 +248,10 @@ export function toggleCategoryMenu(alwaysClose) {
             clearTimeout(mobileControlsTimeout);
             setTimeout(function () {
                 topButtonArea.style.top = "15px";
+                mobileButtonArea.style.top = "15px";
                 document.getElementById("extendedNavbarGradient").style.display = "none";
                 document.getElementById("mobileExtendedNavbarControls").style.display = "none";
             }, 75);
-            setTimeout(() => {
-                document.querySelectorAll('.animateSocialsText').forEach(function (text) {
-                    text.style.maxWidth = "0px";
-                });
-            }, 150);
             document.getElementById("mobileExtendedNavbarControls").style.opacity = "0";
             extendedNavbar.classList.remove("expanded");
             extendedNavbar.classList.remove("expandedMobile");
