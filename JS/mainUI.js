@@ -68,10 +68,16 @@ toggleMapButton.addEventListener("click", () => {
 function toggleMap() {
     if (!mapExpanded) {
         document.getElementById("map").style.maxHeight = "100%";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.maxHeight = "2000px";
+        });
         mapExpanded = true;
         toggleMapButton.style.marginBottom = "10px";
     } else {
         document.getElementById("map").style.maxHeight = "0%";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.maxHeight = "0px";
+        });
         mapExpanded = false;
         toggleMapButton.style.marginBottom = "0";
     }
@@ -183,7 +189,7 @@ export function disableResultScreen() {
             enableBottomAd();
         }, 250);
 
-        resetMap();
+        resultScreenEnabled = false;
     } else {
         console.warn("Result screen already disabled.");
     }
