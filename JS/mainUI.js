@@ -879,13 +879,16 @@ async function startAdSupporterTimer(prefix = "Boost active. Remaining: ") {
 const notificationBar = document.getElementById("notificationBar");
 
 let hideNotificationTimeout;
+let visibilityTimeout;
 
 export function showNotification(text, acceptFunction, dismissFunction, showAccept, renameAcceptToLearnMore) {
     notificationBar.style.top = "65px";
+    notificationBar.style.visibility = "visible";
     notificationBar.style.opacity = "1";
     document.getElementById("notificationText").textContent = text;
     document.getElementById("notificationAccept").textContent = "Accept";
     clearTimeout(hideNotificationTimeout);
+    clearTimeout(visibilityTimeout);
 
     if (showAccept) {
         document.getElementById("notificationAccept").style.display = "block";
@@ -941,6 +944,11 @@ export function showNotification(text, acceptFunction, dismissFunction, showAcce
 function hideNotification() {
     notificationBar.style.top = "50px";
     notificationBar.style.opacity = "0";
+    clearTimeout(visibilityTimeout);
+
+    visibilityTimeout = setTimeout(() => {
+        notificationBar.style.visibility = "hidden";
+    }, 200);
 }
 
 // Hide advertisements (Supporter Tier 2) ----------------------------------------------------------------
