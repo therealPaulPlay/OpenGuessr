@@ -130,6 +130,7 @@ h3 {
 
 #notificationBar {
   position: absolute;
+  visibility: hidden; /* changed in code */
   top: 50px;
   border-radius: 10px;
   background-color: var(--panel-color);
@@ -4203,6 +4204,10 @@ input[type="checkbox"]:focus {
     right: 0px;
     left: 0px;
     width: 65%;
+  }
+
+  #topCursorDetectionBar {
+    display: none;
   }
 }
 
