@@ -3569,6 +3569,10 @@ button {
   margin-bottom: -2px;
 }
 
+.shiftedSocialbarIcon {
+  margin-right: 4px;
+}
+
 .invertSocialBarIcon {
   filter: invert();
 }
