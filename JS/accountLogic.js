@@ -26,7 +26,6 @@ loginButton.addEventListener("click", () => {
 let mobileLoginButton = document.getElementById("mobileLoginButton");
 mobileLoginButton.addEventListener("click", () => {
   playSound("basic_button");
-  toggleMobileMenu();
   goTologin();
 });
 
@@ -44,7 +43,6 @@ profileButton.addEventListener("click", () => {
 
 let mobileProfileButton = document.getElementById("mobileProfileButton");
 mobileProfileButton.addEventListener("click", function () {
-  toggleMobileMenu();
   playSound("basic_button");
   loadProfileFromId(localStorage.getItem("id"), true, true);
 });

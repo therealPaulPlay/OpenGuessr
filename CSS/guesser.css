@@ -65,19 +65,7 @@ h3 {
   pointer-events: none;
 }
 
-.menuRight {
-  position: fixed;
-  top: 0;
-  right: 0;
-  height: 80px;
-  padding-inline: 20px;
-  z-index: 14;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#topButtonArea {
+.topButtonArea {
   position: fixed;
   width: 100%;
   top: 15px;
@@ -159,11 +147,15 @@ h3 {
   transition: all 200ms ease;
   pointer-events: auto;
   margin-inline: 10px;
-  max-width: 90vw;
+  max-width: 80vw;
 }
 
 #notificationAccept {
-  min-width: 55px;
+  min-width: 45px;
+}
+
+#notificationDismiss {
+  padding-inline: 10px;
 }
 
 #notificationText {
@@ -1163,7 +1155,7 @@ textarea {
   align-items: center;
   gap: 20px;
   margin-top: 10px;
-  max-height: calc(92dvh - 250px);
+  max-height: calc(95dvh - 260px);
   overflow-x: hidden;
   overflow-y: auto;
   border-radius: 5px;
@@ -1610,6 +1602,9 @@ textarea {
   pointer-events: none;
 }
 
+#findIcon {
+  margin-right: 0;
+}
 
 @keyframes duelButtonGlint {
   0% {
@@ -2532,11 +2527,11 @@ search {
   margin-left: 10px;
 }
 
-#logoutImage {
-  width: 25px;
-  height: auto;
-  margin-left: 4px;
-  margin-top: 3px;
+.logoutImage {
+  width: 22px;
+  height: 22px;
+  margin-left: 3px;
+  margin-top: 5px;
   filter: invert();
 }
 
@@ -2573,10 +2568,9 @@ search {
 
 .extendedNavbar.expandedMobile {
   max-height: calc(100% - 75px);
+  height: calc(100% - 75px);
   background-color: var(--menu-background);
   border-radius: 0;
-  height: auto;
-  transition: none;
 }
 
 #extendedNavbarGradient {
@@ -3103,7 +3097,6 @@ map::selection {
 
 #floatingMapButton {
   display: none;
-  margin-bottom: 10px;
   pointer-events: auto;
   margin-top: auto;
   z-index: 10;
@@ -3118,6 +3111,7 @@ map::selection {
   -webkit-backdrop-filter: blur(10px);
   justify-content: center;
   align-items: center;
+  margin-bottom: 10px;
 }
 
 #endScreenOpenLocation {
@@ -3141,7 +3135,7 @@ map::selection {
 }
 
 #toggleMapImage {
-  width: 30px;
+  width: 35px;
   height: auto;
   background-color: rgba(168, 168, 187, 0.3);
   border-radius: 5px;
@@ -3572,53 +3566,20 @@ button {
 .socialBarIcons {
   width: 20px;
   height: auto;
-  margin-left: 2px;
+  margin-inline: 2px;
   margin-bottom: -2px;
 }
 
 .invertSocialBarIcon {
   filter: invert();
-  margin-right: 3px;
 }
 
-#mobileMenu {
-  padding: 0;
-  padding-inline: 10px;
-}
-
-#mobileMenuRight {
+#mobileButtonArea {
   display: none;
 }
 
-#mobileMenuIcon {
-  width: 40px;
-  height: auto;
-  margin: 0;
-}
-
-#mobileMenuContent {
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  align-items: flex-start;
-  height: fit-content;
-  overflow: hidden;
-  flex-wrap: wrap;
-}
-
-.mobileMenuOptions {
-  display: flex;
-  width: fit-content;
-  height: fit-content;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 10px;
-  padding: 2px;
-  margin: 10px;
-  flex-direction: column;
-  overflow-x: hidden;
-  overflow-y: auto;
+.mobileAccountButton {
+  padding-inline: 12px;
 }
 
 #streakHeader {
@@ -3757,19 +3718,15 @@ a:hover {
   display: none;
 }
 
+#mobileLoginButton {
+  min-width: 100px;
+}
+
 #mobileAccountUI {
   display: flex;
   align-items: center;
   justify-content: space-around;
   overflow: hidden;
-}
-
-#mobileProfileButton,
-#mobileLogoutButton {
-  min-width: 0;
-  flex-grow: 1;
-  width: 120px;
-  padding-inline: 10px;
 }
 
 .errorCode {
@@ -3833,10 +3790,6 @@ input[type="checkbox"]:focus {
 
 .popup-description {
   word-wrap: break-word;
-}
-
-#mobileWindow {
-  max-width: 300px;
 }
 
 .close {
@@ -4112,10 +4065,6 @@ input[type="checkbox"]:focus {
     display: none;
   }
 
-  #notificationBar {
-    margin-top: -65px;
-  }
-
   #duelsOverlay h1 {
     font-size: 45px;
   }
@@ -4136,7 +4085,7 @@ input[type="checkbox"]:focus {
     font-size: 25px;
   }
 
-  #mobileMenuRight {
+  #mobileButtonArea {
     display: flex;
   }
 
@@ -4146,12 +4095,6 @@ input[type="checkbox"]:focus {
 
   #multiplayerChat {
     visibility: hidden;
-  }
-
-  .extendedNavbar {
-    right: 0px;
-    left: 0px;
-    width: 100%;
   }
 
   .countryGuesserFlag {
@@ -4248,6 +4191,23 @@ input[type="checkbox"]:focus {
   #floatingMapButton {
     display: flex;
   }
+
+  .logoLeft {
+    display: none;
+  }
+
+  .extendedNavbar {
+    right: 0px;
+    left: 0px;
+    width: 65%;
+  }
+}
+
+/* phone fullscreen category menu */
+@media all and (max-width: 600px) {
+  .extendedNavbar {
+    width: 100%;
+  }
 }
 
 /* Tablet map */
@@ -4279,10 +4239,6 @@ input[type="checkbox"]:focus {
 
   #countryGuesserSelector {
     bottom: 155px;
-  }
-
-  #notificationBar {
-    margin-top: 0;
   }
 }
 
