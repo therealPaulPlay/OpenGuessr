@@ -2568,9 +2568,9 @@ search {
 
 .extendedNavbar.expandedMobile {
   max-height: calc(100% - 75px);
+  height: calc(100% - 75px);
   background-color: var(--menu-background);
   border-radius: 0;
-  height: auto;
 }
 
 #extendedNavbarGradient {
