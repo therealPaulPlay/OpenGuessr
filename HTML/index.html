@@ -15,10 +15,10 @@
       ({ key: "AIzaSyDcGJ0tK_syDMY4Pv3qY298oDDGUBwNvEk", v: "weekly" });</script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=2fyng">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=bax43">
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=2fyng" defer></script>
+  <script type="module" src="main.js?v=bax43" defer></script>
 
   <!-- venatus ad script -->
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
@@ -44,15 +44,31 @@
     <img id="OpenGuessrIcon" src="/IMG/openguessr.svg"
       alt="OpenGuessr logo - the free geography location-guessing game">
   </div>
-  <div id="mobileMenuRight" class="menuRight">
+  <div id="mobileMenuArea" class="topButtonArea">
     <div class="topBarMenu">
-      <button id="mobileMenu" class="standardButton accountButton">
-        <img src="/IMG/mobile-menu.png" alt="mobile main menu" id="mobileMenuIcon" class="socialIcon">
+      <button id="mobileLoginButton" class="standardButton accountButton mobileAccountButton">Login</button>
+      <button id="mobileProfileButton" class="standardButton accountButton mobileAccountButton">
+        <img class="socialBarIcons invertSocialBarIcon" src="/IMG/profile_icon.png" alt="Your profile">
+      </button>
+      <button id="mobileLogoutButton" class="standardButton accountButton mobileAccountButton">
+        <img class="logoutImage" src="/IMG/signout.png" alt="Log out of your OpenGuessr account.">
+      </button>
+      <button id="mobileCategoryButton" class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer">
+        <img class="socialBarIcons invertSocialBarIcon" src="/IMG/mobile_maps_icon.png" alt="Map Categories">
+      </button>
+      <button id="mobileMultiplayerButton" class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer">
+        <img class="socialBarIcons invertSocialBarIcon" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
+      </button>
+      <button id="mobileCompetitionsButton" class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer">
+        <img class="socialBarIcons invertSocialBarIcon" src="/IMG/competitions_icon.png" alt="Competitions symbol">
+      </button>
+      <button id="mobileLeaderboardButton" class="standardButton accountButton mobileAccountButton">
+        <img class="socialBarIcons invertSocialBarIcon" src="/IMG/leaderboards_icon.png" alt="Leaderboard for OpenGuessr">
       </button>
     </div>
   </div>
   <div id="topCursorDetectionBar"></div> <!-- used to detect the cursor leaving the iframe -->
-  <div id="topButtonArea">
+  <div id="topButtonArea" class="topButtonArea">
     <div class="topBarMenu topBarSides topBarDesktop">
       <button class="standardButton accountButton" id="loginButton" type="button" alt="log in">Log in</button>
       <div class="profileInfo notSignedIn" id="profileInfo">
@@ -69,7 +85,7 @@
         </div>
       </div>
       <button class="standardButton accountButton" id="logoutButton" type="button" alt="log out">
-        <img id="logoutImage" src="/IMG/signout.png" alt="Log out of your OpenGuessr account.">
+        <img class="logoutImage" src="/IMG/signout.png" alt="Log out of your OpenGuessr account.">
       </button>
     </div>
     <div class="topBarMenu topBarDesktop" id="gamemodeMenu">
@@ -548,10 +564,12 @@
         <button id="costSupportButton" class="standardButton costButton">Support OpenGuessr &lt;3</button>
       </div>
       <div id="costExplanationArea">
-        <p id="costExplanationText">Using maps on your phone or browser is free, but it's expensive to integrate them into a website.<br><br>
+        <p id="costExplanationText">Using maps on your phone or browser is free, but it's expensive to integrate them
+          into a website.<br><br>
           Every time the game's minimap loads, it incurs a cost that adds up quickly with more players.
           Ads help cover some expenses, but the best way to support OpenGuessr is to purchase a supporter tier.<br><br>
-          You can also help by sharing the game! More players result in a lower cost per user due to bulk request discounts. Thank you!<br><br><br>
+          You can also help by sharing the game! More players result in a lower cost per user due to bulk request
+          discounts. Thank you!<br><br><br>
         </p>
         <div id="costTextGradient"></div>
         <p id="costExplanationToggle">Read more</p>
@@ -587,16 +605,12 @@
           </p>
         </li>
         <li>
-          <h3>🌟 Make your guess</h3>
+          <h3>🎯 Make your guess</h3>
           <p class="listMarginLeft">Pinpoint your location on the world map. Be precise for higher scores!</p>
         </li>
         <li>
-          <h3>🎯 Get as close as you can</h3>
-          <p class="listMarginLeft">Compare your guess with the actual location when revealed.</p>
-        </li>
-        <li>
-          <h3>👍 Challenge your friends</h3>
-          <p class="listMarginLeft">Compete against friends in the multiplayer modes and competitions.</p>
+          <h3>👥 Challenge your friends</h3>
+          <p class="listMarginLeft">Compete against friends in multiplayer modes and competitions.</p>
         </li>
       </ul>
       <button id="helpClose" class="standardButton white closeButton">Let's go!</button>
@@ -691,42 +705,6 @@
       <p id="linkjoinStatus">Status: None set</p>
       <br>
       <button id="linkJoinClose" class="standardButton white closeButton">Close</button>
-    </div>
-    <!-- Mobile UI Popup -->
-    <div id="mobileWindow" class="uiWindow">
-      <div class="popup-title">
-        <h1 id="mobileMenuHeader">Menu</h1>
-      </div>
-      <div id="mobileMenuContent">
-        <div class="mobileMenuOptions">
-          <div id="mobileAccountUI">
-            <button id="mobileLoginButton" class="fixedMobileuiWidth standardButton socialBarButton">Login / Sign
-              up</button>
-            <button id="mobileProfileButton" class="fixedMobileuiWidth standardButton socialBarButton">Profile</button>
-            <button id="mobileLogoutButton" class="fixedMobileuiWidth standardButton socialBarButton">Sign
-              out</button>
-          </div>
-        </div>
-        <div class="mobileMenuOptions">
-          <button id="mobileCategoryButton" class="fixedMobileuiWidth standardButton socialBarButton">Maps
-            <img class="socialBarIcons" src="/IMG/mobile_maps_icon.png" alt="Map Categories">
-          </button>
-        </div>
-        <div class="mobileMenuOptions">
-          <button id="mobileMultiplayerButton" class="fixedMobileuiWidth standardButton socialBarButton">Multiplayer
-            <img class="socialBarIcons" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
-          </button>
-          <button id="mobileCompetitionsButton" class="fixedMobileuiWidth standardButton socialBarButton">Competitions
-            <img class="socialBarIcons" src="/IMG/competitions_icon.png" alt="Competitions symbol">
-          </button>
-          <button id="mobileLeaderboardButton" class="fixedMobileuiWidth standardButton socialBarButton"> Leaderboard
-            <img class="socialBarIcons" src="/IMG/leaderboards_icon.png" alt="Leaderboard for OpenGuessr">
-          </button>
-        </div>
-        <p id="privacyNotice">Our <a href="/legal.html" target="_blank">policies</a> apply.</p>
-      </div>
-      <button id="mobilePopupClose" class="standardButton white closeButton">Close</button>
-      </button>
     </div>
     <!-- Multiplayer window -->
     <div id="multiplayerSelectionWindow" class="uiWindow">

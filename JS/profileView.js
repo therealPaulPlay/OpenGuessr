@@ -128,6 +128,10 @@ function viewProfile(name, experience, joined, yourProfile, profileData, support
                 if (!yourProfile) {
                     document.getElementById("profileAbout").style.height = "1px";
                     document.getElementById("profileAbout").style.height = (document.getElementById("profileAbout").scrollHeight - 25) + "px";
+                } else {
+                    if (window.matchMedia("(max-width: 800px)").matches) {
+                        document.getElementById("profileAbout").style.height = "115px";
+                    }
                 }
             }
 
