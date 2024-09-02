@@ -30,15 +30,24 @@ async function requestMapLoad() {
         } else {
             headers = {
                 'Content-Type': 'application/json'
-            }
+            };
         }
 
         const mapLimitUrl = "https://accounts.openguessr.com/accounts/maplimit";
 
-        const response = await fetch(mapLimitUrl, {
-            method: 'GET',
-            headers: headers
-        });
+        // Create a promise that rejects in 1 second
+        const timeout = new Promise((_, reject) =>
+            setTimeout(() => reject(new Error('Request timed out')), 1000)
+        );
+
+        // Race the fetch request against the timeout
+        const response = await Promise.race([
+            fetch(mapLimitUrl, {
+                method: 'GET',
+                headers: headers
+            }),
+            timeout
+        ]);
 
         // Check if the response is successful
         if (response.ok) {
@@ -59,9 +68,10 @@ async function requestMapLoad() {
         }
     } catch (error) {
         console.error('Error occurred while checking for the map load limit: ' + error);
-        return true;
+        return true;  // Return true if there's an error or if the request times out
     }
 }
+
 
 function displayMaploadUsage(used, limit) {
     showNotification(`(${used}/${limit}) daily minimap loads used.`, () => {
