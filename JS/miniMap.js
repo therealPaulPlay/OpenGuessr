@@ -18,36 +18,40 @@ const Provider = {
 
 // ensure that the user has not exceeded a certain limit of map loads
 async function requestMapLoad() {
+    let headers;
+
+    if (localStorage.getItem("bearer")) {
+        headers = {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${localStorage.getItem("bearer")}`
+        };
+    } else {
+        headers = {
+            'Content-Type': 'application/json'
+        };
+    }
+
+    const mapLimitUrl = "https://accounts.openguessr.com/accounts/maplimit";
+    
+    // Create an AbortController to cancel the fetch if it takes too long
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    // Set up the timeout to abort the fetch after 1 second
+    const timeout = setTimeout(() => {
+        controller.abort();  // Abort the fetch
+    }, 1000);
+
     try {
-        let headers;
+        // Start the fetch with the abort signal
+        const response = await fetch(mapLimitUrl, {
+            method: 'GET',
+            headers: headers,
+            signal: signal
+        });
 
-        if (localStorage.getItem("bearer")) {
-            headers = {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem("bearer")}`
-            };
-
-        } else {
-            headers = {
-                'Content-Type': 'application/json'
-            };
-        }
-
-        const mapLimitUrl = "https://accounts.openguessr.com/accounts/maplimit";
-
-        // Create a promise that rejects in 1 second
-        const timeout = new Promise((_, reject) =>
-            setTimeout(() => reject(new Error('Request timed out')), 1000)
-        );
-
-        // Race the fetch request against the timeout
-        const response = await Promise.race([
-            fetch(mapLimitUrl, {
-                method: 'GET',
-                headers: headers
-            }),
-            timeout
-        ]);
+        // Clear the timeout once the fetch completes successfully
+        clearTimeout(timeout);
 
         // Check if the response is successful
         if (response.ok) {
@@ -57,9 +61,7 @@ async function requestMapLoad() {
             } catch (error) {
                 console.error("Error parsing data from maplimit request: " + error);
             }
-
             return true;
-
         } else {
             const data = await response.json();
             console.error("Map load limit reached: " + data.error);
@@ -67,11 +69,14 @@ async function requestMapLoad() {
             return false;
         }
     } catch (error) {
-        console.error('Error occurred while checking for the map load limit: ' + error);
+        if (error.name === 'AbortError') {
+            console.error('Request timed out after 1 second');
+        } else {
+            console.error('Error occurred while checking for the map load limit: ' + error);
+        }
         return true;  // Return true if there's an error or if the request times out
     }
 }
-
 
 function displayMaploadUsage(used, limit) {
     showNotification(`(${used}/${limit}) daily minimap loads used.`, () => {
