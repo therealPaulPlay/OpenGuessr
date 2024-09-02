@@ -3202,7 +3202,7 @@ map::selection {
   justify-content: center;
   align-items: center;
   margin: 20px 20px;
-  color: #EEE;
+  color: white;
   font-size: 25px;
   height: fit-content;
   max-width: 735px;
