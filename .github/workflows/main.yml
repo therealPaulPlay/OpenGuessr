@@ -48,7 +48,7 @@ jobs:
       - name: Cleanup SSH
         run: rm -rf ~/.ssh
   
-  deploy-secondary:
+  deploy-backup:
       runs-on: ubuntu-22.04
       needs: deploy-primary
 
