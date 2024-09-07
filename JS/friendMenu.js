@@ -90,7 +90,7 @@ async function startSearch() {
                     document.getElementById("sendFriendRequest" + idCounter).addEventListener("click", (e) => {
                         e.stopPropagation();
                         playSound("basic_button");
-                        sendFriendRequest(entry.id);
+                        sendFriendRequest(entry.id, e.target);
                     });
 
                     document.getElementById("friendSearchEntry" + idCounter).addEventListener("click", () => {
@@ -119,7 +119,7 @@ async function startSearch() {
 
 // send friend request ---------------------------------------------------------------------------------------------
 
-async function sendFriendRequest(targetUserId) {
+export async function sendFriendRequest(targetUserId, button) {
     try {
         if (!targetUserId) {
             return;
@@ -143,6 +143,14 @@ async function sendFriendRequest(targetUserId) {
 
         if (response.ok) {
             showNotification("Friend request sent.", false, false, false);
+
+            try {
+                button.style.opacity = "0.5";
+                button.style.pointerEvents = "none";
+            } catch (error) {
+                console.error("Error changing button style after friend reqeust:", error);
+            }
+
         } else {
             const data = await response.json();
             console.error("Error sending the friend request: " + response.status);
@@ -453,6 +461,43 @@ export async function loadFriends(animate) {
     }
 }
 
+export async function checkIfFriendsWithId(id) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id")
+        };
+
+        const response = await fetch("https://friends.openguessr.com/friends/friends", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            try {
+                const data = await response.json();
+                const isFriend = data.friends.some(friend => friend.id === id);
+
+                return isFriend; // Return true if the friend is found, otherwise false
+
+            } catch (error) {
+                console.error("In-Code error loading friends to check friendship state: " + error);
+            }
+
+        } else {
+            console.error("Error loading friends to check friendship state: " + response.status);
+            return false;
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while loading friends: ', error);
+        return false;
+    }
+}
+
 async function removeFriend(friendId) {
     try {
         const requestBody = {
@@ -593,7 +638,7 @@ export async function initializeWebsocketConnection() {
                 reconnectAttempts = 0; // Reset the reconnect attempts on a successful connection
                 ws.send(JSON.stringify({ id: localStorage.getItem("id") }));
             };
-    
+
             ws.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 if (data.type === 'room-invite') {
@@ -603,10 +648,10 @@ export async function initializeWebsocketConnection() {
                     }, () => {
                         declineMatchInvite(data.from);
                     }, true);
-    
+
                 } else if (data.type === 'invite-accepted') {
                     createDuelRoom();
-    
+
                 } else if (data.type === 'invite-declined') {
                     showNotification(`${data.name} declined your invite.`, false, false, false);
                 } else if (data.type === 'friend-request-received') {
@@ -615,7 +660,7 @@ export async function initializeWebsocketConnection() {
                     }, false, true);
                 }
             };
-    
+
             ws.onclose = () => {
                 if (reconnectAttempts < maxReconnectAttempts) {
                     reconnectAttempts++;
@@ -631,7 +676,7 @@ export async function initializeWebsocketConnection() {
                     }, 60000 + Math.floor(Math.random() * 10000));
                 }
             };
-    
+
             ws.onerror = (error) => {
                 console.error('WebSocket encountered an error: ', error.message);
                 ws.close(); // Close the socket to trigger the onclose event
