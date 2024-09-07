@@ -119,7 +119,7 @@ async function startSearch() {
 
 // send friend request ---------------------------------------------------------------------------------------------
 
-async function sendFriendRequest(targetUserId, button) {
+export async function sendFriendRequest(targetUserId, button) {
     try {
         if (!targetUserId) {
             return;
@@ -458,6 +458,43 @@ export async function loadFriends(animate) {
         console.error('Fetch/Network error occurred while loading friends: ', error);
         friendContainerMessage.textContent = "An error occured loading your friends.";
         friendContainerMessage.style.display = "block";
+    }
+}
+
+export async function checkIfFriendsWithId(id) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id")
+        };
+
+        const response = await fetch("https://friends.openguessr.com/friends/friends", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            try {
+                const data = await response.json();
+                const isFriend = data.friends.some(friend => friend.id === id);
+
+                return isFriend; // Return true if the friend is found, otherwise false
+
+            } catch (error) {
+                console.error("In-Code error loading friends to check friendship state: " + error);
+            }
+
+        } else {
+            console.error("Error loading friends to check friendship state: " + response.status);
+            return false;
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while loading friends: ', error);
+        return false;
     }
 }
 

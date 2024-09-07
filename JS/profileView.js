@@ -3,6 +3,7 @@ import { playSound } from "./soundManager.js";
 import { displayUserInfo, isAuthenticated } from "./accountLogic.js";
 import { errorPopup } from "./errorHandling.js";
 import { setSupporterPitch, showConfirmPopup } from "./mainUI.js";
+import { checkIfFriendsWithId, sendFriendRequest } from "./friendMenu.js";
 // This is used to dynamically load the profile view
 
 //Profile Window ---------------------------------------------------------------------------------------------
@@ -50,7 +51,7 @@ export async function loadProfileFromId(id, you, view) {
 
             // load data only or show profile
             if (view) {
-                viewProfile(data.username, data.experience, data.joinedDate, you, data.profileData, data.supporterLevel);
+                viewProfile(data.username, data.experience, data.joinedDate, you, data.profileData, data.supporterLevel, id);
             }
 
             return true;
@@ -98,10 +99,13 @@ function openClearedProfile() {
     document.getElementById("supporterTag").style.display = "none";
     document.getElementById("supporterArea").style.display = "none";
     document.getElementById("supporterTagText").textContent = "Supporter";
+    document.getElementById("profileAddFriend").style.display = "none";
+    document.getElementById("profileAddFriend").style.opacity = "1";
+    document.getElementById("profileAddFriend").style.pointerEvents = "auto";
     setSupporterPitch();
 }
 
-function viewProfile(name, experience, joined, yourProfile, profileData, supporterLevel) {
+async function viewProfile(name, experience, joined, yourProfile, profileData, supporterLevel, id) {
     lastProfileOwnerYou = yourProfile; // only update database entry on close if it was your profile that was opened
     document.getElementById("profileViewName").textContent = name ? name : "Guest";
 
@@ -167,6 +171,30 @@ function viewProfile(name, experience, joined, yourProfile, profileData, support
                 }
             }
         }
+
+        // Treat this as async, but don't await it (IIFE - Immediately Invoked Function Expression)
+        (async () => {
+            if (!yourProfile && isAuthenticated) {
+                if (!(await checkIfFriendsWithId(id))) {
+                    // Remove previous event listeners
+                    const button = document.getElementById("profileAddFriend");
+                    const newButton = button.cloneNode(true);
+                    button.parentNode.replaceChild(newButton, button);
+    
+                    // Enable button to send friend request
+                    document.getElementById("profileAddFriend").style.transform = "scale(0)";
+                    document.getElementById("profileAddFriend").style.display = "block";
+                    document.getElementById("profileAddFriend").addEventListener("click", (e) => {
+                        playSound("basic_button");
+                        sendFriendRequest(id, e.target);
+                    });
+
+                    setTimeout(() => {
+                        document.getElementById("profileAddFriend").style.transform = "scale(1)";
+                    }, 50);
+                }
+            }
+        })();
 
         if (supporterLevel && supporterLevel > 0) {
             document.getElementById("supporterTag").style.display = "flex";
