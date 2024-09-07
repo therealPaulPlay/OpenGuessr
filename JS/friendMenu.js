@@ -90,7 +90,7 @@ async function startSearch() {
                     document.getElementById("sendFriendRequest" + idCounter).addEventListener("click", (e) => {
                         e.stopPropagation();
                         playSound("basic_button");
-                        sendFriendRequest(entry.id);
+                        sendFriendRequest(entry.id, e.target);
                     });
 
                     document.getElementById("friendSearchEntry" + idCounter).addEventListener("click", () => {
@@ -119,7 +119,7 @@ async function startSearch() {
 
 // send friend request ---------------------------------------------------------------------------------------------
 
-async function sendFriendRequest(targetUserId) {
+async function sendFriendRequest(targetUserId, button) {
     try {
         if (!targetUserId) {
             return;
@@ -143,6 +143,14 @@ async function sendFriendRequest(targetUserId) {
 
         if (response.ok) {
             showNotification("Friend request sent.", false, false, false);
+
+            try {
+                button.style.opacity = "0.5";
+                button.style.pointerEvents = "none";
+            } catch (error) {
+                console.error("Error changing button style after friend reqeust:", error);
+            }
+
         } else {
             const data = await response.json();
             console.error("Error sending the friend request: " + response.status);
@@ -593,7 +601,7 @@ export async function initializeWebsocketConnection() {
                 reconnectAttempts = 0; // Reset the reconnect attempts on a successful connection
                 ws.send(JSON.stringify({ id: localStorage.getItem("id") }));
             };
-    
+
             ws.onmessage = (event) => {
                 const data = JSON.parse(event.data);
                 if (data.type === 'room-invite') {
@@ -603,10 +611,10 @@ export async function initializeWebsocketConnection() {
                     }, () => {
                         declineMatchInvite(data.from);
                     }, true);
-    
+
                 } else if (data.type === 'invite-accepted') {
                     createDuelRoom();
-    
+
                 } else if (data.type === 'invite-declined') {
                     showNotification(`${data.name} declined your invite.`, false, false, false);
                 } else if (data.type === 'friend-request-received') {
@@ -615,7 +623,7 @@ export async function initializeWebsocketConnection() {
                     }, false, true);
                 }
             };
-    
+
             ws.onclose = () => {
                 if (reconnectAttempts < maxReconnectAttempts) {
                     reconnectAttempts++;
@@ -631,7 +639,7 @@ export async function initializeWebsocketConnection() {
                     }, 60000 + Math.floor(Math.random() * 10000));
                 }
             };
-    
+
             ws.onerror = (error) => {
                 console.error('WebSocket encountered an error: ', error.message);
                 ws.close(); // Close the socket to trigger the onclose event
