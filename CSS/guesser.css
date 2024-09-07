@@ -4183,6 +4183,7 @@ input[type="checkbox"]:focus {
   .mapHolder {
     height: 50%;
     width: calc(100% - 20px);
+    margin: 0 !important;
   }
 
   #map {
