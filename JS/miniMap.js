@@ -16,10 +16,40 @@ const Provider = {
 
 // Google Maps init --------------------------------------------------------------------------------------
 
+async function loadGoogleMapsApi(apiKey) {
+    await new Promise((resolve, reject) => {
+        // Check if Google Maps is already loaded
+        if (window.google && window.google.maps) {
+            resolve(window.google.maps);
+            return;
+        }
+
+        // Create a script element to load the API
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly`;
+        script.async = true;
+        script.defer = true;
+
+        // Resolve the promise when the script loads
+        script.onload = () => {
+            if (window.google && window.google.maps) {
+                resolve(window.google.maps);
+            } else {
+                reject(new Error('Google Maps API script loaded, but no google.maps object found.'));
+            }
+        };
+
+        script.onerror = () => {
+            reject(new Error('Failed to load the Google Maps API script.'));
+        };
+
+        document.head.appendChild(script);
+    });
+}
+
 // ensure that the user has not exceeded a certain limit of map loads
 async function requestMapLoad() {
     let headers;
-
     if (localStorage.getItem("bearer")) {
         headers = {
             'Content-Type': 'application/json',
@@ -31,37 +61,28 @@ async function requestMapLoad() {
         };
     }
 
-    const mapLimitUrl = "https://accounts.openguessr.com/accounts/maplimit";
-    
-    // Create an AbortController to cancel the fetch if it takes too long
-    const controller = new AbortController();
-    const signal = controller.signal;
-
-    // Set up the timeout to abort the fetch after 1 second
-    const timeout = setTimeout(() => {
-        controller.abort();  // Abort the fetch
-    }, 1000);
+    const mapLimitUrl = "https://accounts.openguessr.com/accounts/maplimit?time=" + new Date().getTime();
 
     try {
-        // Start the fetch with the abort signal
         const response = await fetch(mapLimitUrl, {
             method: 'GET',
-            headers: headers,
-            signal: signal
+            headers: headers
         });
 
-        // Clear the timeout once the fetch completes successfully
-        clearTimeout(timeout);
-
-        // Check if the response is successful
         if (response.ok) {
             const data = await response.json();
-            try {
+
+            if (data.rateLimit) {
                 displayMaploadUsage(data.rateLimit.used, data.rateLimit.limit);
-            } catch (error) {
-                console.error("Error parsing data from maplimit request: " + error);
             }
-            return true;
+
+            if (data.apiKey.keyString) {
+
+                // Load the Google Maps API with the provided key
+                await loadGoogleMapsApi(data.apiKey.keyString);
+
+                return true;
+            }
         } else {
             const data = await response.json();
             console.error("Map load limit reached: " + data.error);
@@ -69,12 +90,9 @@ async function requestMapLoad() {
             return false;
         }
     } catch (error) {
-        if (error.name === 'AbortError') {
-            console.error('Request timed out after 1 second');
-        } else {
-            console.error('Error occurred while checking for the map load limit: ' + error);
-        }
-        return true;  // Return true if there's an error or if the request times out
+        console.error('Error occurred while checking for the map load limit: ' + error);
+        errorPopup("Failed to validate minimap load", "The system that validates minimap loads didn't respond. Check your internet connection and consider reporting the issue on Discord if it persists.", error, false, false);
+        return false;
     }
 }
 
@@ -97,9 +115,9 @@ const worldBounds = {
 let providerIndex = localStorage.getItem("providerIndex") || Provider.STANDARD;
 
 async function initMap() {
-    const { Map } = await google.maps.importLibrary("maps");
-
     if (await requestMapLoad()) {
+        const { Map } = await google.maps.importLibrary("maps");
+
         removeMapPreview();
 
         map = new Map(document.getElementById("map"), {
@@ -114,7 +132,7 @@ async function initMap() {
             restriction: {
                 latLngBounds: worldBounds,
                 strictBounds: true, // Enforce the restriction
-            },
+            }
         });
 
         map.addListener('click', function (e) {

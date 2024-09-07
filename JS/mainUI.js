@@ -342,25 +342,35 @@ revealCompass.addEventListener("click", () => {
     playSound("basic_button");
 });
 
+// Load the saved map offset state
 let mapOffset = false;
+let mapOffsetFromStorage = localStorage.getItem("mapOffset");
+
+if (mapOffsetFromStorage == "true") {
+    mapOffset = true;
+}
 
 function toggleMapOffset() {
+    mapOffset = !mapOffset;
+    localStorage.setItem("mapOffset", mapOffset);
+    setMapOffset();
+}
+
+function setMapOffset() {
     if (mapOffset) {
-        document.getElementById("revealCompassArrow").style.transform = "rotate(90deg)";
-        document.getElementById("mapHolder").style.marginRight = "0px";
-        mapOffset = false;
-    } else {
         document.getElementById("revealCompassArrow").style.transform = "rotate(270deg)";
         document.getElementById("mapHolder").style.marginRight = "65px";
-        mapOffset = true;
+    } else {
+        document.getElementById("revealCompassArrow").style.transform = "rotate(90deg)";
+        document.getElementById("mapHolder").style.marginRight = "0px";
     }
 }
+
+setMapOffset();
 
 //switch UI toggles back to standard on window resize ----------------------------------------------
 
 window.addEventListener("resize", (event) => {
-    mapOffset = true;
-    toggleMapOffset();
     mapExpanded = false;
     toggleMap();
     toggleCategoryMenu(true);
