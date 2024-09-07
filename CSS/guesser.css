@@ -2737,6 +2737,11 @@ search {
   border: none !important;
 }
 
+.gm-style-iw-d {
+  overflow: visible !important;
+  margin-right: 20px !important;
+}
+
 #map:hover {
   opacity: 100%;
 }
@@ -2941,6 +2946,22 @@ map::selection {
 
 #profileStats {
   margin-top: 10px;
+}
+
+#addFriendIcon {
+  width: 22px;
+  height: 22px;
+  filter: invert();
+  vertical-align: -3px;
+  padding-left: 4px;
+  pointer-events: none;
+}
+
+#profileAddFriend {
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  margin: 0;
+  transition: filter 250ms ease, opacity 250ms ease, transform 150ms ease;
 }
 
 .editNameSection {
