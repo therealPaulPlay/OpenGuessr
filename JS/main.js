@@ -168,12 +168,21 @@ export function compareDistances(distance) {
 
 //Load result Map (resMap) ------------------------------------------------------------------------------------------------
 
+async function awaitMapInit() {
+    return new Promise(resolve =>  document.addEventListener("mapInitialized", () => { resolve(); }));
+}
+
 export async function loadResultMap(playersLat, playersLong) {
-    await initializeMapIfNotAlready();
 
     if (!map) {
-        console.error("Map not properly inizialized - exiting result map load function.");
-        return;
+        // Trigger the captcha popup, which results in a map load, then await the map load
+        initializeMapIfNotAlready();
+        await awaitMapInit();
+
+        if (!map) {
+            console.error("Map not properly inizialized - exiting result map load function.");
+            return;
+        }
     }
     
     // Set map center to the currentStreetviewLat and currentStreetviewLong

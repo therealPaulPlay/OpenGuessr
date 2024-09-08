@@ -152,6 +152,8 @@ async function initMap() {
         map.setMapTypeId(getMapType(providerIndex)); // Set the map type on the actual map
         changeMapTypeButtonLabel();
         enableMapTypeButton();
+
+        document.dispatchEvent(new Event("mapInitialized"));
     }
 
     captchaToken = ""; // reset Captcha token after each map load
@@ -161,33 +163,26 @@ async function initMap() {
 
 let mapInitialized = false;
 
-let currentlyInitializing = false;
-
 export async function initializeMapIfNotAlready() {
-
     if (!mapInitialized && !currentlyInitializing) {
-        currentlyInitializing = true;
-
-        if (captchaToken) {
-            await initMap();
-            currentlyInitializing = false;
-            return true;
-        } else {
-            currentlyInitializing = false;
-            showCaptchaPopup();
-            return false;
-        }
-    } else {
-        currentlyInitializing = false;
-        return true;
+        showCaptchaPopup();
     }
 }
 
+
+let currentlyInitializing = false;
+
 // Callback from the captcha
-window.onTurnstileCallback = function (token) {
-    captchaToken = token;
-    hideCaptchaPopup();
-    initializeMapIfNotAlready();
+window.onTurnstileCallback = async function (token) {
+    if (!currentlyInitializing) {
+        currentlyInitializing = true;
+        captchaToken = token;
+        hideCaptchaPopup();
+
+        // After acquiring the token, initalize the map
+        await initMap();
+        currentlyInitializing = false;
+    }
 };
 
 function removeMapPreview() {
