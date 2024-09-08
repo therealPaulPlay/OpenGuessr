@@ -175,6 +175,7 @@ export async function initializeMapIfNotAlready() {
         } else {
             currentlyInitializing = false;
             showCaptchaPopup();
+            return false;
         }
     } else {
         currentlyInitializing = false;
