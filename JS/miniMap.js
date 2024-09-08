@@ -121,7 +121,7 @@ const worldBounds = {
 let providerIndex = localStorage.getItem("providerIndex") || Provider.STANDARD;
 
 async function initMap() {
-    if (await requestMapLoad()) {
+    if (!mapInitialized && await requestMapLoad()) {
         mapInitialized = true;
 
         const { Map } = await google.maps.importLibrary("maps");
