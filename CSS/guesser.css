@@ -879,6 +879,14 @@ textarea {
   display: block !important;
 }
 
+.captchaWindow {
+  display: block !important;
+}
+
+#captchaInfoText {
+  opacity: 0.5;
+}
+
 #badgeWindow,
 #pinWindow,
 #supporterWindow,
