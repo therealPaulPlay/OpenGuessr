@@ -863,6 +863,7 @@ textarea {
   background-color: rgba(30, 30, 30, 0.7);
   display: none;
   z-index: 980;
+  pointer-events: auto;
 }
 
 .errorPopupWindow {
@@ -1014,6 +1015,10 @@ textarea {
   flex-wrap: wrap;
 }
 
+.secondaryExitNote {
+  opacity: 0.75;
+}
+
 #reloadIcon {
   width: 25px;
   height: 25px;
@@ -1081,10 +1086,17 @@ textarea {
   flex-grow: 1;
   text-wrap: nowrap;
 }
+.positiveCostDisplay {
+  background-color: rgba(255, 255, 255, 0.1);
+}
 
 .costDisplayText {
   margin-left: 10px;
   flex-grow: 100;
+}
+
+.costDisplayTextPositive {
+  opacity: 0.75;
 }
 
 #costExplanationToggle {
@@ -1111,10 +1123,15 @@ textarea {
   gap: 10px;
 }
 
+.costFlexPositive {
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
 .costButton {
   margin: 0 !important;
   flex-grow: 1;
-  background-color: rgba(255, 255, 255, 0.3);
+  background: linear-gradient(5deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.5));
   color: white;
 }
 

@@ -451,6 +451,9 @@ function toggleSettingsWindow() {
     } else {
         settingsWindow.style.display = "block";
         document.getElementById("blackBackground").style.visibility = "visible";
+
+        // load certain values
+        document.getElementById("exitPopupSetting").textContent = localStorage.getItem("hideExitPopup") == "1" ? "Disabled" : "Enabled";
     }
 }
 
@@ -490,6 +493,16 @@ milesButton.addEventListener("click", () => {
     setDistanceUnitButtons("miles");
     playSound("basic_button");
     localStorage.setItem("distanceUnit", "miles");
+});
+
+document.getElementById("exitPopupSetting").addEventListener("click", () => {
+    if (localStorage.getItem("hideExitPopup") == "1") {
+        localStorage.setItem("hideExitPopup", "0");
+        document.getElementById("exitPopupSetting").textContent = "Enabled";
+    } else {
+        localStorage.setItem("hideExitPopup", "1");
+        document.getElementById("exitPopupSetting").textContent = "Disabled";
+    }
 });
 
 let fullscreenButton = document.getElementById("fullscreenButton");
@@ -1035,10 +1048,11 @@ document.addEventListener("mouseleave", () => {
 const beforeExitPopup = document.getElementById("beforeExitPopup");
 
 function exitIntentPopup() {
-    if (!localStorage.getItem("hideExitPopup")) {
+    if (localStorage.getItem("hideExitPopup") != "1" && beforeExitPopup.style.display != "flex") {
         beforeExitPopup.style.display = "flex";
         expandCostExpanded = false;
         setExplanationExpandState();
+        loadMonthlySupportedAmount();
     }
 }
 
@@ -1088,6 +1102,31 @@ function setExplanationExpandState() {
         document.getElementById("costExplanationToggle").textContent = "Read more";
         expandableCostExplanation.style.maxHeight = "";
     }
+}
+
+async function loadMonthlySupportedAmount() {
+    const monthlySupportedText = document.getElementById("monthlySupportedAmount");
+    monthlySupportedText.textContent = "+$ ... ...";
+
+    try {
+        const response = await fetch("https://accounts.openguessr.com/stripe/statistics/current-month", {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            console.error("Error occurred while loading monthly supported amount: " + response.status);
+        } else {
+            const data = await response.json();
+            monthlySupportedText.textContent = "+$ " + data.supported_amount;
+        }
+
+    } catch (error) {
+        console.error("Network error occured trying to load monthly supported amount: " + error);
+    }
+
 }
 
 // Animate all uiWindow elements --------------------------------------------------------------------------

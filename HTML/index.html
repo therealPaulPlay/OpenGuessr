@@ -15,10 +15,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=s8n2p">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=ajw6y">
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=s8n2p" defer></script>
+  <script type="module" src="main.js?v=ajw6y" defer></script>
 
   <!-- venatus ad script -->
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
@@ -564,6 +564,12 @@
             <p>-$ 6800</p>
           </div>
         </div>
+        <div class="costFlex costFlexPositive">
+          <p class="costDisplayText costDisplayTextPositive">Covered by supporter purchases this month: </p>
+          <div class="costDisplayValue positiveCostDisplay">
+            <p id="monthlySupportedAmount" class="costDisplayTextPositive">+$ ... ...</p>
+          </div>
+        </div>
         <button id="costSupportButton" class="standardButton costButton">Support OpenGuessr &lt;3</button>
       </div>
       <div id="costExplanationArea">
@@ -579,14 +585,14 @@
       </div>
       <h3 class="beforeExitHeader">Want to reload the page?</h3>
       <div class="beforeExitNote">
-        <p id="reloadExitNote">To prevent additional API costs, please use this button.</p>
+        <p id="reloadExitNote" class="secondaryExitNote">To prevent additional API costs, please use this button.</p>
         <button id="beforeExitReloadButton" class="standardButton">
           <img alt="reloadIcon" id="reloadIcon" src="/IMG/reload_icon.png">
         </button>
       </div>
       <div class="exitSpacer"></div>
       <h3 class="beforeExitHeader">Want to leave now, but return in the future?</h3>
-      <div class="beforeExitNote">
+      <div class="beforeExitNote secondaryExitNote">
         <p>Please keep the tab open to reduce API usage. Thank you!</p>
       </div>
       <div class="exitSpacer"></div>
@@ -683,6 +689,10 @@
         <div class="settingsBox">
           <p class="slightBottomMargin">Legal Information:</p>
           <button class="standardButton white" id="privacyButton">View legal information</button>
+        </div>
+        <div class="settingsBox">
+          <p class="slightBottomMargin">Exit Popup:</p>
+          <button class="standardButton white" id="exitPopupSetting">Enabled</button>
         </div>
       </div>
       <button id="settingsClose" class="standardButton white closeButton">Close</button>
