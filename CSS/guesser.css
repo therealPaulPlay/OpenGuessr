@@ -856,6 +856,7 @@ textarea {
 .errorBackground {
   background-color: rgba(30, 30, 30, 0.7);
   display: none;
+  pointer-events: auto;
   z-index: 998;
 }
 
