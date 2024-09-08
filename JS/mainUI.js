@@ -1123,6 +1123,37 @@ async function loadMonthlySupportedAmount() {
 
 }
 
+// Captcha Popup for the minimap to prevent bots and malicious map load attempts --------------------------
+
+const captchaPopup = document.getElementById("captchaPopup");
+
+let captchaRendered = false;
+
+export function showCaptchaPopup() {
+    captchaPopup.style.display = "flex";
+
+    if (!captchaRendered) {
+        captchaRendered = true;
+        try {
+            turnstile.render('#captchaContainer', {
+                sitekey: "0x4AAAAAAAi-FhzOg4nXIP3z",
+                callback: onTurnstileCallback // Ensure this callback function is defined globally (window.functionname)
+            });
+        } catch (error) {
+            console.error("Error occured trying to render captcha with Turnstile: " + error);
+        }
+    }
+}
+
+export function hideCaptchaPopup() {
+    captchaPopup.style.display = "none";
+}
+
+document.getElementById("captchaClose").addEventListener("click", () => {
+    playSound("basic_button");
+    hideCaptchaPopup();
+});
+
 // Animate all uiWindow elements --------------------------------------------------------------------------
 
 // Function to add the animation class

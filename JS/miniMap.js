@@ -1,6 +1,6 @@
 import { selectedPinIndex } from "./profileView.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
-import { enableResultScreen, hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showConfirmPopup, showNotification } from "./mainUI.js";
+import { enableResultScreen, hideCaptchaPopup, hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showCaptchaPopup, showConfirmPopup, showNotification } from "./mainUI.js";
 import { playSound } from "./soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 import { errorPopup } from "./errorHandling.js";
@@ -47,17 +47,24 @@ async function loadGoogleMapsApi(apiKey) {
     });
 }
 
+// Captcha token, later validated on the server
+let captchaToken;
+
 // ensure that the user has not exceeded a certain limit of map loads
 async function requestMapLoad() {
+
     let headers;
+
     if (localStorage.getItem("bearer")) {
         headers = {
             'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem("bearer")}`
+            'Authorization': `Bearer ${localStorage.getItem("bearer")}`,
+            'cf-turnstile-response': captchaToken
         };
     } else {
         headers = {
-            'Content-Type': 'application/json'
+            'Content-Type': 'application/json',
+            'cf-turnstile-response': captchaToken
         };
     }
 
@@ -116,9 +123,11 @@ let providerIndex = localStorage.getItem("providerIndex") || Provider.STANDARD;
 
 async function initMap() {
     if (await requestMapLoad()) {
+        mapInitialized = true;
+
         const { Map } = await google.maps.importLibrary("maps");
 
-        removeMapPreview();
+        removeMapPreview(); // remove the preview image
 
         map = new Map(document.getElementById("map"), {
             center: { lat: 20, lng: 0 },
@@ -145,6 +154,8 @@ async function initMap() {
         changeMapTypeButtonLabel();
         enableMapTypeButton();
     }
+
+    captchaToken = ""; // reset Captcha token after each map load
 }
 
 // Trigger map initialization delayed --------------------------------------------------------------
@@ -152,15 +163,26 @@ async function initMap() {
 let mapInitialized = false;
 
 export async function initializeMapIfNotAlready() {
-    if (!mapInitialized) {
-        mapInitialized = true;
 
-        await initMap();
+    if (!mapInitialized) {
+        if (captchaToken) {
+            await initMap();
+
+            return true;
+        } else {
+            showCaptchaPopup();
+        }
+    } else {
         return true;
     }
-
-    return true;
 }
+
+// Callback from the captcha
+window.onTurnstileCallback = function (token) {
+    captchaToken = token;
+    hideCaptchaPopup();
+    initializeMapIfNotAlready();
+};
 
 function removeMapPreview() {
     const mapPreview = document.getElementById("mapPlaceholderBeforeLoad");
