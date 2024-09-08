@@ -52,7 +52,6 @@ let captchaToken;
 
 // ensure that the user has not exceeded a certain limit of map loads
 async function requestMapLoad() {
-
     let headers;
 
     if (localStorage.getItem("bearer")) {
@@ -162,17 +161,23 @@ async function initMap() {
 
 let mapInitialized = false;
 
+let currentlyInitializing = false;
+
 export async function initializeMapIfNotAlready() {
 
-    if (!mapInitialized) {
+    if (!mapInitialized && !currentlyInitializing) {
+        currentlyInitializing = true;
+
         if (captchaToken) {
             await initMap();
-
+            currentlyInitializing = false;
             return true;
         } else {
+            currentlyInitializing = false;
             showCaptchaPopup();
         }
     } else {
+        currentlyInitializing = false;
         return true;
     }
 }
