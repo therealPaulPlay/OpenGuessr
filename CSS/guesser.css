@@ -856,6 +856,7 @@ textarea {
 .errorBackground {
   background-color: rgba(30, 30, 30, 0.7);
   display: none;
+  pointer-events: auto;
   z-index: 998;
 }
 
@@ -877,6 +878,14 @@ textarea {
 
 #profileWindow {
   display: block !important;
+}
+
+.captchaWindow {
+  display: block !important;
+}
+
+#captchaInfoText {
+  opacity: 0.5;
 }
 
 #badgeWindow,

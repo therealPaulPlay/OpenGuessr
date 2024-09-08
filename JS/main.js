@@ -199,14 +199,14 @@ export function setResultMapTileLayer() {
 }
 
 export function loadResultMap(playersLat, playersLong) {
-    //this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
+    // this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
     if (resMap && resMap.remove) {
         resMap.off();
         resMap.remove();
     }
 
-    //this makes it so the map in the result screen is focused on the center between the point
-    //and zooming out so both points are visible on the map.
+    // this makes it so the map in the result screen is focused on the center between the point
+    // and zooming out so both points are visible on the map.
     resMap = document.getElementById("resultMap");
     resMap = L.map('resultMap', { zoomControl: false }).setView([currentStreetviewLat, currentStreetviewLong], 10); // basically only for country guessr
     setResultMapTileLayer();
@@ -229,7 +229,7 @@ export function loadResultMap(playersLat, playersLong) {
         popupAnchor: [1, -34]
     });
 
-    //used to create the line between the points
+    // used to create the line between the points
     let curLatLng = new L.LatLng(currentStreetviewLat, currentStreetviewLong);
     let pointList = null;
     let playerLatLng;
@@ -242,7 +242,7 @@ export function loadResultMap(playersLat, playersLong) {
         pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
         playerMarker;
 
-        //this places the Player Marker (where the player thinks the location is)
+        // this places the Player Marker (where the player thinks the location is)
         playerMarker = new L.Marker(playerLatLng, { icon: yourIcon });
         if (multiplayer) {
             playerMarker.bindTooltip("You",
@@ -254,13 +254,13 @@ export function loadResultMap(playersLat, playersLong) {
 
         playerMarker.addTo(resMap);
 
-        //this draws the line to the goal
+        // this draws the line to the goal
         const polygon = L.polygon(polyList, {
             color: "black", weight: "1", opacity: "0.75"
         }).addTo(resMap);
     }
 
-    //pins of other players
+    // pins of other players
     if (multiplayer) {
         multiplayerGuessesLocationsArray.forEach(function (element) {
             let newMarkerLat = element[0];
@@ -268,7 +268,7 @@ export function loadResultMap(playersLat, playersLong) {
             let newMarkerPinIndex = element[2];
             let associatedPlayerName = element[3];
 
-            //checks for edge cases
+            // checks for edge cases
             if (newMarkerLat == null || newMarkerLong == null || isNaN(newMarkerLat)) {
                 newMarkerLat = 0;
                 newMarkerLong = 0;
@@ -279,7 +279,7 @@ export function loadResultMap(playersLat, playersLong) {
                 console.error("Provided maker pin index form peer is null");
             }
 
-            //only place the multiplayer marker if it isn't your marker!
+            // only place the multiplayer marker if it isn't your marker!
             if (newMarkerLat != playersLat || newMarkerLong != playersLong) {
                 let newMultiplayerIcon = new L.Icon({
                     iconUrl: "./IMG/your_marker" + newMarkerPinIndex + ".png",
@@ -299,7 +299,7 @@ export function loadResultMap(playersLat, playersLong) {
                 multiplayerMarker.setOpacity(0.6);
                 multiplayerMarker.addTo(resMap);
 
-                let multiplayerPolyList = [curLatLng, multiplayerLatLng]; //takes the cur lat lng from the guess (the destination) + the current guess from other player
+                let multiplayerPolyList = [curLatLng, multiplayerLatLng]; // takes the cur lat lng from the guess (the destination) + the current guess from other player
                 const multiplayerPolygon = L.polygon(multiplayerPolyList, {
                     color: "black", weight: "1", opacity: "0.25"
                 }).addTo(resMap);
@@ -311,7 +311,7 @@ export function loadResultMap(playersLat, playersLong) {
         resMap.fitBounds(pointList, { padding: [150, 250], animate: false });
     }
 
-    //this places the "correct" marker that actually reflects the target location
+    // this places the "correct" marker that actually reflects the target location
     destinationMarker = new L.Marker([currentStreetviewLat, currentStreetviewLong], { icon: greenIcon });
     destinationMarker.addTo(resMap);
 

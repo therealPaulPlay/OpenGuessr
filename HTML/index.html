@@ -15,10 +15,13 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=ajw6y">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=lr8ux">
+
+  <!-- Turnstile Captcha to prevent malicious map loads -->
+  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=ajw6y" defer></script>
+  <script type="module" src="main.js?v=lr8ux" defer></script>
 
   <!-- venatus ad script -->
   <script src="https://hb.vntsm.com/v3/live/ad-manager.min.js" type="text/javascript"
@@ -53,17 +56,21 @@
       <button id="mobileLogoutButton" class="standardButton accountButton mobileAccountButton">
         <img class="logoutImage" src="/IMG/signout.png" alt="Log out of your OpenGuessr account.">
       </button>
-      <button id="mobileCategoryButton" class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer">
+      <button id="mobileCategoryButton"
+        class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer">
         <img class="socialBarIcons invertSocialBarIcon" src="/IMG/mobile_maps_icon.png" alt="Map Categories">
       </button>
-      <button id="mobileMultiplayerButton" class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer">
+      <button id="mobileMultiplayerButton"
+        class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer">
         <img class="socialBarIcons invertSocialBarIcon" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
       </button>
-      <button id="mobileCompetitionsButton" class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer">
+      <button id="mobileCompetitionsButton"
+        class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer">
         <img class="socialBarIcons invertSocialBarIcon" src="/IMG/competitions_icon.png" alt="Competitions symbol">
       </button>
       <button id="mobileLeaderboardButton" class="standardButton accountButton mobileAccountButton">
-        <img class="socialBarIcons invertSocialBarIcon" src="/IMG/leaderboards_icon.png" alt="Leaderboard for OpenGuessr">
+        <img class="socialBarIcons invertSocialBarIcon" src="/IMG/leaderboards_icon.png"
+          alt="Leaderboard for OpenGuessr">
       </button>
     </div>
   </div>
@@ -90,14 +97,17 @@
     </div>
     <div class="topBarMenu topBarDesktop" id="gamemodeMenu">
       <button id="leaderboardButton" class="standardButton accountButton"><span class="topBarExpand">Leaderboard</span>
-        <img class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon" src="/IMG/leaderboards_icon.png" alt="Experience Leaderboard">
+        <img class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon" src="/IMG/leaderboards_icon.png"
+          alt="Experience Leaderboard">
       </button>
       <button id="multiplayerButton" class="accountButton standardButton"><span class="topBarExpand">Multiplayer</span>
-        <img class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon" src="/IMG/multiplayer_icon.png" alt="Open the multiplayer menu">
+        <img class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon" src="/IMG/multiplayer_icon.png"
+          alt="Open the multiplayer menu">
       </button>
       <button id="competitionsButton" class="standardButton accountButton"><span
           class="topBarExpand">Competitions</span>
-        <img class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon" src="/IMG/competitions_icon.png" alt="Competitions symbol">
+        <img class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon" src="/IMG/competitions_icon.png"
+          alt="Competitions symbol">
       </button>
     </div>
     <div class="topBarMenu topBarSides topBarDesktop">
@@ -204,16 +214,32 @@
   <!-- Confirmation overlay for prompts (Are you sure, leave, delete..) -->
   <div id="confirmPopup" class="popupHolder confirmBackground">
     <div class="confirmPopupWindow uiWindow">
-      <h1 id="confirmTitle" class="popup-title">
-        </h2>
-        <div id="confirmDescription" class="popup-description">This is the default warning.</div>
-        <input id="accountDeletePassword" class="confirmPopupInput" type="password" placeholder="Password">
-        <input type="text" id="usernameInput" class="confirmPopupInput" placeholder="New username"
-          maxlength="50"></input>
-        <div class="buttonBoxRight">
-          <button id="confirmCancel" class="standardButton white closeButton">Close</button>
-          <button id="confirmProceed" class="standardButton closeButton">Confirm</button>
-        </div>
+      <h1 id="confirmTitle" class="popup-title"></h1>
+      <div id="confirmDescription" class="popup-description">This is the default warning.</div>
+      <input id="accountDeletePassword" class="confirmPopupInput" type="password" placeholder="Password">
+      <input type="text" id="usernameInput" class="confirmPopupInput" placeholder="New username" maxlength="50"></input>
+      <div class="buttonBoxRight">
+        <button id="confirmCancel" class="standardButton white closeButton">Close</button>
+        <button id="confirmProceed" class="standardButton closeButton">Confirm</button>
+      </div>
+    </div>
+  </div>
+  <!-- Captcha Popup -->
+  <div id="captchaPopup" class="popupHolder confirmBackground">
+    <div class="captchaWindow uiWindow">
+      <h1 id="confirmTitle" class="popup-title">Captcha</h1>
+      <div class="supporterBox supporterBoxHighlight">
+        <img alt="info icon" class="infoIcon" src="/IMG/info_icon.png">
+        <p id="captchaInfoText">As bots are being used to drive up API costs, please solve this captcha to
+          load the minimap.</p>
+      </div>
+      <br>
+      <div id="captchaContainer">
+        <!-- the captcha will be loaded dynamically here -->
+      </div>
+      <div class="buttonBoxRight">
+        <button id="captchaClose" class="standardButton white closeButton">Close</button>
+      </div>
     </div>
   </div>
   <!-- New profile window -->
