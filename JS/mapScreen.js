@@ -640,6 +640,10 @@ document.getElementById("jsonFormatInfoSpan").addEventListener("click", () => {
     document.getElementById("jsonInfoPopup").style.display = "flex";
 });
 
+document.getElementById("jsonFormatInfoSpanUpdate").addEventListener("click", () => {
+    document.getElementById("jsonInfoPopup").style.display = "flex";
+});
+
 document.getElementById("uploadConfirmFinal").addEventListener("click", () => {
     document.getElementById("uploadConfirmClose").style.display = "block";
     document.getElementById("uploadConfirmFinal").style.display = "none";
