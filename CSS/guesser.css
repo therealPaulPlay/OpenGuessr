@@ -130,7 +130,8 @@ h3 {
 
 #notificationBar {
   position: absolute;
-  visibility: hidden; /* changed in code */
+  visibility: hidden;
+  /* changed in code */
   top: 50px;
   border-radius: 10px;
   background-color: var(--panel-color);
@@ -1095,6 +1096,7 @@ textarea {
   flex-grow: 1;
   text-wrap: nowrap;
 }
+
 .positiveCostDisplay {
   background-color: rgba(255, 255, 255, 0.1);
 }
@@ -1614,7 +1616,7 @@ textarea {
 }
 
 
-#multiplayerSelectDuels:before {
+#multiplayerSelectDuels::before {
   animation: duelButtonGlint 4s 0.5s infinite;
   background: white;
   content: "";
@@ -2473,6 +2475,52 @@ search {
 #multiplayerTitle {
   overflow: hidden;
   white-space: nowrap;
+  transition: opacity 250ms ease, transform 250ms ease, color 250ms ease;
+  color: white;
+}
+
+@keyframes multiplayerTitleWin {
+  0% {
+    transform: scale(1);
+    color: white;
+  }
+
+  20% {
+    transform: scale(1.1);
+    color: rgb(255, 225, 133);
+  }
+
+  70% {
+    color: rgb(255, 233, 165);
+    transform: scale(1.1);
+  }
+
+  100% {
+    transform: scale(1);
+    color: white;
+  }
+}
+
+@keyframes multiplayerTitleLose {
+  0% {
+    transform: scale(1);
+    color: white;
+  }
+
+  20% {
+    transform: scale(0.95);
+    color: rgb(241, 104, 104);
+  }
+
+  70% {
+    transform: scale(0.95);
+    color: rgb(184, 48, 48);
+  }
+
+  100% {
+    transform: scale(1);
+    color: white;
+  }
 }
 
 #hardModeFade p {
@@ -4269,7 +4317,7 @@ input[type="checkbox"]:focus {
 
 /* Tablet map */
 @media all and (orientation: landscape) and (max-width: 1200px) {
-  .mapHolder{
+  .mapHolder {
     width: 40%;
     height: 45%;
   }
