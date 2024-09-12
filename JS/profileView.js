@@ -174,7 +174,7 @@ async function viewProfile(name, experience, joined, yourProfile, profileData, s
 
         // Treat this as async, but don't await it (IIFE - Immediately Invoked Function Expression)
         (async () => {
-            if (!yourProfile && isAuthenticated) {
+            if (!yourProfile && isAuthenticated && id != localStorage.getItem("id")) {
                 if (!(await checkIfFriendsWithId(id))) {
                     // Remove previous event listeners
                     const button = document.getElementById("profileAddFriend");

@@ -246,7 +246,7 @@ async function loadOnlineFriendsForRoomCreation() {
                 let idCounter = 0;
 
                 document.getElementById("roomCreationFriendsBox").innerHTML = "";
-                
+
                 data.friends.forEach(entry => {
                     if (entry.online) {
                         idCounter++;
@@ -254,21 +254,21 @@ async function loadOnlineFriendsForRoomCreation() {
                         let newEntry = document.createElement("div");
                         newEntry.classList.add("roomCreationFriendItem");
                         newEntry.classList.add("standardButton");
-    
+
                         newEntry.innerHTML = `
                         <p class="friendsRoomEntryText">${entry.user_name}</p>
                         <button id="roomInviteFriend${idCounter}" class="standardButton friendItemButtons">
                             <img src="/IMG/send_icon.png" alt="send invite" class="sendIcon">
                         </button>
                         `;
-    
+
                         newEntry.id = "roomFriendEntry" + idCounter;
                         document.getElementById("roomCreationFriendsBox").appendChild(newEntry);
-    
+
                         document.getElementById("roomFriendEntry" + idCounter).addEventListener("click", () => {
                             loadProfileFromId(entry.id, false, true);
                         });
-    
+
                         document.getElementById("roomInviteFriend" + idCounter).addEventListener("click", (e) => {
                             e.stopPropagation();
                             sendMatchInvite(entry.id, false);
@@ -661,20 +661,20 @@ if (localStorage.getItem("id") != null) {
 
 // load PeerJS + set up the connection
 async function getPeer() {
-        peer = await loadAndInitializeLibrary(
-            'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js',
-            'Peer',
-            (Peer) => new Peer(uniqueUserID, {
-                config: {
-                    'iceServers': [
-                        { urls: "stun:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-                        { urls: "stun:stun.l.google.com:19302" },
-                        { urls: "turns:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-                        { urls: "turn:fastturn.pro:3478", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
-                    ]
-                }
-            })
-        );
+    peer = await loadAndInitializeLibrary(
+        'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js',
+        'Peer',
+        (Peer) => new Peer(uniqueUserID, {
+            config: {
+                'iceServers': [
+                    { urls: "stun:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                    { urls: "stun:stun.l.google.com:19302" },
+                    { urls: "turns:fastturn.pro:5349", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                    { urls: "turn:fastturn.pro:3478", username: "paulplaystudio", credential: "GTFS-GTKU-TRES" },
+                ]
+            }
+        })
+    );
 
     return peer;
 }
@@ -741,19 +741,19 @@ copyRoomcodeLinkButton.addEventListener("click", () => {
 function copyRoomcodeLink() {
     if (supporterLevel > 0) {
         navigator.clipboard.writeText(window.location.origin + "/?join=" + peerId.replace("openguessr_", ""))
-        .then(function () {
-            document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
-            setTimeout(() => {
-                document.getElementById("linkIcon").src = "/IMG/link_icon.png";
-            }, 700);
-        })
-        .catch(function (error) {
-            document.getElementById("linkIcon").src = "/IMG/link_error_icon.png";
-            console.error("Copy error: " + error);
-            setTimeout(() => {
-                document.getElementById("linkIcon").src = "/IMG/link_icon.png";
-            }, 700);
-        });
+            .then(function () {
+                document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
+                setTimeout(() => {
+                    document.getElementById("linkIcon").src = "/IMG/link_icon.png";
+                }, 700);
+            })
+            .catch(function (error) {
+                document.getElementById("linkIcon").src = "/IMG/link_error_icon.png";
+                console.error("Copy error: " + error);
+                setTimeout(() => {
+                    document.getElementById("linkIcon").src = "/IMG/link_icon.png";
+                }, 700);
+            });
     } else {
         showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature as it leads to higher API usage.<br><br> Please join using the room code or the friend invite system instead if you do not wish to purchase a supporter tier.", () => { supporterWindowIfAuthenticated(); }, false, false, false, false, true);
     }
@@ -1195,7 +1195,7 @@ if (peer) {
                     if (matchmakingActive) {
                         deleteRoomCodeFromMatchmakingServer(); //delete roomcode from server
                         StartRoom(); //this also locks the room
-                    } 
+                    }
 
                     if (friendDuel) {
                         StartRoom(); //this also locks the room
@@ -1779,6 +1779,41 @@ function showEndscreenUI(show) {
 // Leaderboard / Overlay / Overview
 let nameProfileIdCounter = 0;
 
+// Win / Lose animations
+function animateMultiplayerWin() {
+    let timeout;
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+        playSound("win_sound");
+        const title = document.getElementById('multiplayerTitle');
+
+        // Reset animations
+        title.style.animation = 'none';
+        title.offsetHeight; // Trigger a reflow to restart the animation
+
+        // Apply lose animation
+        title.style.animation = 'multiplayerTitleWin 1s ease-in-out';
+    }, 1500);
+}
+
+function animateMultiplayerLose() {
+    let timeout;
+    clearTimeout(timeout);
+
+    timeout = setTimeout(() => {
+        playSound("lose_sound");
+        const title = document.getElementById('multiplayerTitle');
+
+        // Reset animations
+        title.style.animation = 'none';
+        title.offsetHeight; // Trigger a reflow to restart the animation
+
+        // Apply lose animations
+        title.style.animation = 'multiplayerTitleLose 1s ease-in-out';
+    }, 1500);
+}
+
 export function showMultiplayerOverlay(show, title, array, lateJoin) {
     let container = document.getElementById("multiplayerTable");
 
@@ -1826,6 +1861,12 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 let teamColorName = teams[winningTeamIndex].colorName;
                 document.getElementById("multiplayerTitle").textContent = `Team ${teamColorName} won!`;
                 showEndscreenUI(true);
+
+                if (yourTeam == winningTeamIndex) {
+                    animateMultiplayerWin();
+                } else {
+                    animateMultiplayerLose();
+                }
             } else {
                 showEndscreenUI(false);
             }
@@ -1894,6 +1935,12 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 let winningUsername = winningPlayerData[1];
                 let winningId = winningPlayerData[5];
                 document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
+
+                if (localStorage.getItem("id") == winningId) {
+                    animateMultiplayerWin();
+                } else {
+                    animateMultiplayerLose();
+                }
 
                 // check if you won in duels or just played
                 if (playingDuels && isAuthenticated && !friendDuel) {
@@ -2027,9 +2074,9 @@ function multiplayerOverlayCountdown() {
 
                 try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
                 multiplayerTimer = startTimer(roundLength, multiplayerTimerExpired); //Start the timer
-                
+
                 document.getElementById("mapModeText").textContent = "Multiplayer (Round: " + roundIndex + "/" + roundAmount + ")";
-                
+
                 if (multiplayerRestriction != "standard" && multiplayerRestriction) {
                     document.getElementById("mapModeText").textContent += " (" + multiplayerRestriction + ")";
                 }
