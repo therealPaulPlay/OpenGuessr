@@ -1776,6 +1776,7 @@ function animateMultiplayerWin() {
     clearTimeout(timeout);
 
     timeout = setTimeout(() => {
+        playSound("win_sound");
         const title = document.getElementById('multiplayerTitle');
 
         // Reset animations
@@ -1783,8 +1784,8 @@ function animateMultiplayerWin() {
         title.offsetHeight; // Trigger a reflow to restart the animation
 
         // Apply lose animation
-        title.style.animation = 'multiplayerTitleWin 1s ease-out';
-    }, 1000);
+        title.style.animation = 'multiplayerTitleWin 1s ease-in-out';
+    }, 1500);
 }
 
 function animateMultiplayerLose() {
@@ -1792,15 +1793,16 @@ function animateMultiplayerLose() {
     clearTimeout(timeout);
 
     timeout = setTimeout(() => {
+        playSound("lose_sound");
         const title = document.getElementById('multiplayerTitle');
 
         // Reset animations
         title.style.animation = 'none';
         title.offsetHeight; // Trigger a reflow to restart the animation
 
-        // Apply lose animation
-        title.style.animation = 'multiplayerTitleLose 1s ease-out';
-    }, 1000);
+        // Apply lose animations
+        title.style.animation = 'multiplayerTitleLose 1s ease-in-out';
+    }, 1500);
 }
 
 export function showMultiplayerOverlay(show, title, array, lateJoin) {
@@ -1850,6 +1852,12 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 let teamColorName = teams[winningTeamIndex].colorName;
                 document.getElementById("multiplayerTitle").textContent = `Team ${teamColorName} won!`;
                 showEndscreenUI(true);
+
+                if (yourTeam == winningTeamIndex) {
+                    animateMultiplayerWin();
+                } else {
+                    animateMultiplayerLose();
+                }
             } else {
                 showEndscreenUI(false);
             }

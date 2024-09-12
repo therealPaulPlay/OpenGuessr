@@ -162,9 +162,10 @@ async function initMap() {
 // Trigger map initialization delayed --------------------------------------------------------------
 
 let mapInitialized = false;
+let captchaCompleted = false;
 
 export async function initializeMapIfNotAlready() {
-    if (!mapInitialized && !currentlyInitializing) {
+    if (!mapInitialized && !currentlyInitializing && !captchaCompleted) {
         showCaptchaPopup();
     }
 }
@@ -176,7 +177,9 @@ let currentlyInitializing = false;
 window.onTurnstileCallback = async function (token) {
     if (!currentlyInitializing) {
         currentlyInitializing = true;
+        captchaCompleted = true;
         captchaToken = token;
+
         hideCaptchaPopup();
 
         // After acquiring the token, initalize the map

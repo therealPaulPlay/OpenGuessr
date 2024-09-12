@@ -2487,12 +2487,12 @@ search {
 
   20% {
     transform: scale(1.1);
-    color: rgb(245, 220, 146);
+    color: rgb(255, 225, 133);
   }
 
   70% {
-    transform: scale(1.07);
-    color: rgb(255, 244, 211);
+    color: rgb(255, 233, 165);
+    transform: scale(1.1);
   }
 
   100% {
@@ -2513,7 +2513,7 @@ search {
   }
 
   70% {
-    transform: scale(0.94);
+    transform: scale(0.95);
     color: rgb(184, 48, 48);
   }
 
