@@ -885,7 +885,7 @@ textarea {
   display: block !important;
 }
 
-#captchaInfoText {
+.captchaInfoText {
   opacity: 0.5;
 }
 
