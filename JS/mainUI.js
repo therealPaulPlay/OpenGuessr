@@ -904,14 +904,21 @@ const notificationBar = document.getElementById("notificationBar");
 let hideNotificationTimeout;
 let visibilityTimeout;
 
-export function showNotification(text, acceptFunction, dismissFunction, showAccept, renameAcceptToLearnMore) {
+export async function showNotification(text, acceptFunction, dismissFunction, showAccept, renameAcceptToLearnMore) {
+    clearTimeout(hideNotificationTimeout);
+    clearTimeout(visibilityTimeout);
+
+    if (notificationBar.style.opacity == "1" && notificationBar.style.visibility == "visible") {
+        hideNotification();
+
+        await new Promise (resolve => setTimeout(resolve, 250));
+    };
+
     notificationBar.style.top = "65px";
     notificationBar.style.visibility = "visible";
     notificationBar.style.opacity = "1";
     document.getElementById("notificationText").textContent = text;
     document.getElementById("notificationAccept").textContent = "Accept";
-    clearTimeout(hideNotificationTimeout);
-    clearTimeout(visibilityTimeout);
 
     if (showAccept) {
         document.getElementById("notificationAccept").style.display = "block";
