@@ -52,6 +52,8 @@ let captchaToken;
 
 // ensure that the user has not exceeded a certain limit of map loads
 async function requestMapLoad() {
+    showNotification("Loading minimap..");
+
     let headers;
 
     if (localStorage.getItem("bearer")) {
@@ -78,17 +80,23 @@ async function requestMapLoad() {
         if (response.ok) {
             const data = await response.json();
 
+            await new Promise( async (resolve) => {
+                if (data.apiKey.keyString) {
+
+                    // Load the Google Maps API with the provided key
+                    await loadGoogleMapsApi(data.apiKey.keyString);
+                    resolve();
+                } else {
+                    console.error("No api key returned by the maplimit endpoint.");
+                    resolve();
+                }
+            });
+
             if (data.rateLimit) {
                 displayMaploadUsage(data.rateLimit.used, data.rateLimit.limit);
             }
 
-            if (data.apiKey.keyString) {
-
-                // Load the Google Maps API with the provided key
-                await loadGoogleMapsApi(data.apiKey.keyString);
-
-                return true;
-            }
+            return true;
         } else {
             const data = await response.json();
             console.error("Map load limit reached: " + data.error);
