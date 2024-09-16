@@ -4,6 +4,8 @@ window.top.__vm_add = window.top.__vm_add || [];
 let bottomAdElement = document.getElementById("bottomFooterAds");
 let currentAdParent = bottomAdElement; // initial value is the bottom footer ad (as this is the first ad to load)
 
+let placementsArray = [];
+
 // executed once when the result screen is made visible
 export function enableResultAds() {
     try {
@@ -27,8 +29,22 @@ export function enableBottomAd() {
     applyCorrectIds(currentAdParent);
 }
 
+// Remove all ads
+function removeAllAds() {
+    window.top.__vm_remove_category = ["richmedia_all"] ;
+    window.top.__vm_remove = (window.top).__vm_remove || [];
+    for (var i = 0; i < placementsArray.length; i++){
+        (window.top).__vm_remove.push(placementsArray[i]);
+    }
+
+    placementsArray = [];
+}
+
 function applyCorrectIds(parentElement) {
     try {
+        // Remove all ads - this is feasible because there are never multiple ads on screen
+        removeAllAds();
+
         // Check if the placement already exists
         let placement = document.querySelector('.vm-placement');
 
@@ -46,6 +62,7 @@ function applyCorrectIds(parentElement) {
 
         placement.setAttribute("data-id", newId)
 
+        placementsArray.push(placement);
         window.top.__vm_add.push(placement);
 
     } catch (error) {
@@ -65,11 +82,16 @@ if (window.document.readyState !== "loading") {
 // Apply IDs (once) when the window is resized
 let onResizeTimeout;
 
+let lastBottombarComputedWidth = bottomAdElement.getBoundingClientRect().width;
+
 window.addEventListener("resize", function () {
     clearTimeout(onResizeTimeout);
 
     onResizeTimeout = setTimeout(() => {
-        applyCorrectIds(currentAdParent);
+        if (lastBottombarComputedWidth != bottomAdElement.getBoundingClientRect().width) { // only apply new id's if the size has actually changed
+            lastBottombarComputedWidth = bottomAdElement.getBoundingClientRect().width;
+            applyCorrectIds(currentAdParent);
+        }
     }, 200);
 });
 
