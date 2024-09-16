@@ -3639,7 +3639,7 @@ map::selection {
   margin-bottom: 40px;
   margin-left: 20px;
   max-width: unset;
-  background-color: rgba(0, 0, 0, 0.2);
+  background-color: rgba(239, 223, 255, 0.15);
   min-width: 65%;
   width: calc(100% - 40px);
 }
