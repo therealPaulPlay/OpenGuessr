@@ -576,6 +576,9 @@ export async function reattemptExperienceUpdate(earnedExp) {
 
 function animateIncrement(element, startValue, endValue, duration) {
   let startTime = null;
+  let lastValue = startValue;
+  let lastSoundPlayTime = 0; // Track the time of the last sound play
+  const soundCooldown = 100; // Minimum time between sound plays (in milliseconds)
 
   function step(timestamp) {
     if (!startTime) startTime = timestamp;
@@ -587,10 +590,23 @@ function animateIncrement(element, startValue, endValue, duration) {
     const originalText = element.dataset.originalText;
     element.innerHTML = originalText.replace(/(\+\d+)\s*(XP)/, `+${currentValue} $2`);
 
+    // Check if value increased and enough time has passed since the last sound play
+    if (currentValue > lastValue) {
+      const now = Date.now();
+
+      if (now - lastSoundPlayTime >= soundCooldown) {
+        playSound("score_increase");
+        lastSoundPlayTime = now; // Update the last sound play time
+      }
+
+      lastValue = currentValue;
+    }
+
     if (progress < 1) {
       requestAnimationFrame(step);
     } else {
-      element.innerHTML = originalText.replace(/(\+\d+)\s*(XP)/, `+${endValue} $2`); // Ensure it ends at the exact endValue
+      // Ensure it ends at the exact endValue
+      element.innerHTML = originalText.replace(/(\+\d+)\s*(XP)/, `+${endValue} $2`);
     }
   }
 
