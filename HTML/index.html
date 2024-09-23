@@ -15,10 +15,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=er6au">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=lduy3">
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=er6au" defer></script>
+  <script type="module" src="main.js?v=lduy3" defer></script>
 
   <!-- Turnstile Captcha to prevent malicious map loads -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
@@ -134,61 +134,92 @@
   <!-- extended navbar map menu -->
   <div class="extendedNavbar" id="extendedNavbar">
     <div id="extendedNavbarGradient"></div>
-    <div id="extendedNavbarContent">
+    <div id="extendedNavbarContent" class="mapArea">
       <!-- content -->
-      <button class="category" id="standardCategory" type="button">Standard</button>
-      <button class="category" id="capitalCategory" type="button">Capitals</button>
-      <button class="category" id="famousCategory" type="button">Famous Places</button>
-      <p class="categoriesNote" id="categoryExclusiveText"> Sign up to unlock for free: </p>
-      <button class="category countryCategory accountLock" id="dailyCompetition" type="button">Daily
-        Competition</button>
-      <button class="category countryCategory accountLock" id="countryCategory" type="button">Country Guesser</button>
-      <button class="category countryCategory accountLock" id="imageCategory" type="button">Image Guesser</button>
-      <button class="category countryCategory accountLock" id="australiaCategory" type="button">Australia</button>
-      <button class="category countryCategory accountLock" id="austriaCategory" type="button">Austria</button>
-      <button class="category countryCategory accountLock" id="brasilCategory" type="button">Brasil</button>
-      <button class="category countryCategory accountLock" id="canadaCategory" type="button">Canada</button>
-      <button class="category countryCategory accountLock" id="czechiaCategory" type="button">Czech Republic</button>
-      <button class="category countryCategory accountLock" id="finlandCategory" type="button">Finland</button>
-      <button class="category countryCategory accountLock" id="franceCategory" type="button">France</button>
-      <button class="category countryCategory accountLock" id="germanyCategory" type="button">Germany</button>
-      <button class="category countryCategory accountLock" id="indiaCategory" type="button">India</button>
-      <button class="category countryCategory accountLock" id="indonesiaCategory" type="button">Indonesia</button>
-      <button class="category countryCategory accountLock" id="israelCategory" type="button">Israel</button>
-      <button class="category countryCategory accountLock" id="italyCategory" type="button">Italy</button>
-      <button class="category countryCategory accountLock" id="japanCategory" type="button">Japan</button>
-      <button class="category countryCategory accountLock" id="mexicoCategory" type="button">Mexico</button>
-      <button class="category countryCategory accountLock" id="norwayCategory" type="button">Norway</button>
-      <button class="category countryCategory accountLock" id="polandCategory" type="button">Poland</button>
-      <button class="category countryCategory accountLock" id="romaniaCategory" type="button">Romania</button>
-      <button class="category countryCategory accountLock" id="russiaCategory" type="button">Russia (limited)</button>
-      <button class="category countryCategory accountLock" id="slovakiaCategory" type="button">Slovakia</button>
-      <button class="category countryCategory accountLock" id="spainCategory" type="button">Spain</button>
-      <button class="category countryCategory accountLock" id="swedenCategory" type="button">Sweden</button>
-      <button class="category countryCategory accountLock" id="turkeyCategory" type="button">Turkey</button>
-      <button class="category countryCategory accountLock" id="ukCategory" type="button">UK & Ireland</button>
-      <button class="category countryCategory accountLock" id="ukraineCategory" type="button">Ukraine</button>
-      <button class="category countryCategory accountLock" id="usaCategory" type="button">United States</button>
-      <button class="category continentCategory countryCategory accountLock" id="africaCategory"
-        type="button">Africa</button>
-      <button class="category continentCategory countryCategory accountLock" id="asiaCategory"
-        type="button">Asia</button>
-      <button class="category continentCategory countryCategory accountLock" id="europeCategory"
-        type="button">Europe</button>
-      <button class="category continentCategory countryCategory accountLock" id="northamericaCategory"
-        type="button">North America</button>
-      <button class="category continentCategory countryCategory accountLock" id="oceaniaCategory"
-        type="button">Oceania</button>
-      <button class="category continentCategory countryCategory accountLock" id="southamericaCategory"
-        type="button">South America</button>
-      <p class="categoriesNote" id="communityMapsNote"> Community Maps: </p>
-      <div id="communityMapArea" class="mapUnavailable">
-        <!-- auto generated in categoryMenu.js -->
+      <div class="mapBox">
+        <p>General:</p>
+        <div class="mapArea">
+          <button class="category" id="standardCategory" type="button">Standard</button>
+          <button class="category" id="capitalCategory" type="button">Capitals</button>
+          <button class="category" id="famousCategory" type="button">Famous</button>
+        </div>
       </div>
-      <button class="category categoryUpcoming" id="discoverMaps" type="button">Discover all Community Maps
-        <img class="discoverIcon" alt="discover more categories" src="/IMG/discover_icon.png">
-      </button>
-      <br><br>
+      <div class="mapBox">
+        <span class="mapsAccountLock">
+          Free Account needed
+          <img alt="locked" class="lockedIcon" src="/IMG/locked_icon.png">
+        </span>
+        <p>Special modes:</p>
+        <div id="specialGamemodesArea" class="mapArea">
+          <button class="category countryCategory accountLock" id="dailyCompetition" type="button">Daily Competition</button>
+          <button class="category countryCategory accountLock" id="countryCategory" type="button">Country Guesser</button>
+          <button class="category countryCategory accountLock" id="imageCategory" type="button">Image Guesser</button>
+        </div>
+      </div>
+      <div class="mapBox">
+        <span class="mapsAccountLock">
+          Free Account needed
+          <img alt="locked" class="lockedIcon" src="/IMG/locked_icon.png">
+        </span>
+        <p>Countries:</p>
+        <div class="mapArea">
+          <button class="category countryCategory accountLock" id="australiaCategory" type="button">Australia</button>
+          <button class="category countryCategory accountLock" id="austriaCategory" type="button">Austria</button>
+          <button class="category countryCategory accountLock" id="brasilCategory" type="button">Brasil</button>
+          <button class="category countryCategory accountLock" id="canadaCategory" type="button">Canada</button>
+          <button class="category countryCategory accountLock" id="czechiaCategory" type="button">Czech Republic</button>
+          <button class="category countryCategory accountLock" id="finlandCategory" type="button">Finland</button>
+          <button class="category countryCategory accountLock" id="franceCategory" type="button">France</button>
+          <button class="category countryCategory accountLock" id="germanyCategory" type="button">Germany</button>
+          <button class="category countryCategory accountLock" id="indiaCategory" type="button">India</button>
+          <button class="category countryCategory accountLock" id="indonesiaCategory" type="button">Indonesia</button>
+          <button class="category countryCategory accountLock" id="israelCategory" type="button">Israel</button>
+          <button class="category countryCategory accountLock" id="italyCategory" type="button">Italy</button>
+          <button class="category countryCategory accountLock" id="japanCategory" type="button">Japan</button>
+          <button class="category countryCategory accountLock" id="mexicoCategory" type="button">Mexico</button>
+          <button class="category countryCategory accountLock" id="norwayCategory" type="button">Norway</button>
+          <button class="category countryCategory accountLock" id="polandCategory" type="button">Poland</button>
+          <button class="category countryCategory accountLock" id="romaniaCategory" type="button">Romania</button>
+          <button class="category countryCategory accountLock" id="russiaCategory" type="button">Russia (limited)</button>
+          <button class="category countryCategory accountLock" id="slovakiaCategory" type="button">Slovakia</button>
+          <button class="category countryCategory accountLock" id="spainCategory" type="button">Spain</button>
+          <button class="category countryCategory accountLock" id="swedenCategory" type="button">Sweden</button>
+          <button class="category countryCategory accountLock" id="turkeyCategory" type="button">Turkey</button>
+          <button class="category countryCategory accountLock" id="ukCategory" type="button">UK & Ireland</button>
+          <button class="category countryCategory accountLock" id="ukraineCategory" type="button">Ukraine</button>
+          <button class="category countryCategory accountLock" id="usaCategory" type="button">United States</button>
+        </div>
+      </div>
+      <div class="mapBox">
+        <span class="mapsAccountLock">
+          Free Account needed
+          <img alt="locked" class="lockedIcon" src="/IMG/locked_icon.png">
+        </span>
+        <p>Continents:</p>
+        <div class="mapArea">
+          <button class="category continentCategory countryCategory accountLock" id="africaCategory"
+          type="button">Africa</button>
+        <button class="category continentCategory countryCategory accountLock" id="asiaCategory"
+          type="button">Asia</button>
+        <button class="category continentCategory countryCategory accountLock" id="europeCategory"
+          type="button">Europe</button>
+        <button class="category continentCategory countryCategory accountLock" id="northamericaCategory"
+          type="button">North America</button>
+        <button class="category continentCategory countryCategory accountLock" id="oceaniaCategory"
+          type="button">Oceania</button>
+        <button class="category continentCategory countryCategory accountLock" id="southamericaCategory"
+          type="button">South America</button>
+        </div>
+      </div>
+      <div class="mapBox lastMapBox">
+        <p>Community maps:</p>
+        <div id="communityMapArea" class="mapArea">
+          <!-- auto generated in categoryMenu.js -->
+        </div>
+        <button class="categoryLink" id="discoverMaps" type="button">Discover all Community Maps
+          <img class="discoverIcon" alt="discover more categories" src="/IMG/discover_icon.png">
+        </button>
+      </div>
     </div>
   </div>
   <!-- mobile category menu bottom controls -->
