@@ -251,7 +251,7 @@ function enableExclusiveCategories() {
     accountLockedArray[i].classList.remove("accountLock");
   }
 
-  document.getElementById("categoryExclusiveText").innerHTML = "You can now select these maps:";
+  document.querySelectorAll(".mapsAccountLock").forEach((e => e.style.visibility = "hidden"));
 }
 
 function disableExlcusiveCategories() {
@@ -261,7 +261,7 @@ function disableExlcusiveCategories() {
     }
   }
 
-  document.getElementById("categoryExclusiveText").innerHTML = " Sign up to unlock for free: ";
+  document.querySelectorAll(".mapsAccountLock").forEach(e => e.style.visibility = "visible");
 }
 
 // Account UI - set circular progress bar ----------------------------------------------------------------------------------
