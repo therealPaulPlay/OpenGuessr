@@ -140,20 +140,20 @@ async function viewProfile(name, experience, joined, yourProfile, profileData, s
             }
 
             if (profileData.duelsPlayed) {
-                document.getElementById("statisticDuelsPlayed").textContent = profileData.duelsPlayed;
+                document.getElementById("statisticDuelsPlayed").textContent = profileData.duelsPlayed.toLocaleString();
             }
 
 
             if (profileData.duelsWon) {
-                document.getElementById("statisticDuelsWon").textContent = profileData.duelsWon;
+                document.getElementById("statisticDuelsWon").textContent = profileData.duelsWon.toLocaleString();
             }
 
             if (profileData.competitionsPlayed) {
-                document.getElementById("statisticCompetitionsEntered").textContent = profileData.competitionsPlayed;
+                document.getElementById("statisticCompetitionsEntered").textContent = profileData.competitionsPlayed.toLocaleString();
             }
 
             if (profileData.highestStreak) {
-                document.getElementById("statisticHighestStreak").textContent = profileData.highestStreak;
+                document.getElementById("statisticHighestStreak").textContent = profileData.highestStreak.toLocaleString();
             }
 
             if (profileData.pin) {

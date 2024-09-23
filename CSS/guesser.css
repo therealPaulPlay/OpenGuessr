@@ -2634,6 +2634,11 @@ search {
   z-index: 15;
 }
 
+#extendedNavbarContent {
+  margin-top: 15px;
+  overflow: auto;
+}
+
 .extendedNavbar.expanded {
   /* Adjust max-height as needed */
   max-height: 340px;
@@ -2664,37 +2669,44 @@ search {
   background: none;
 }
 
-#extendedNavbarContent,
-#communityMapArea {
-  margin-top: 15px;
+.mapArea {
+  margin-top: 10px;
   padding-inline: 20px;
   position: relative;
   flex-grow: 1;
-  overflow: auto;
   z-index: 12;
   scrollbar-width: none;
   display: flex;
-  justify-content: center;
   align-items: flex-start;
   flex-wrap: wrap;
-  gap: 20px;
+  gap: 15px;
 }
 
-#communityMapArea {
-  padding-bottom: 10px;
-  padding-top: 10px;
-}
-
-.categoriesNote {
+.mapBox {
+  background-color: rgba(0, 0, 0, 0.1);
   display: block;
   font-size: 22px;
   color: white;
-  text-align: center;
   background-color: rgba(0, 0, 0, 0.2);
   padding-top: 5px;
-  padding-bottom: 5px;
+  padding-bottom: 18px;
   border-radius: 5px;
   width: 100%;
+  text-align: left;
+  position: relative;
+}
+
+.lastMapBox {
+  margin-bottom: 20px;
+}
+
+.mapBox p {
+  padding-inline: 20px;
+  opacity: 0.75;
+  padding-top: 10px;
+  text-transform: uppercase;
+  font-size: 18px;
+  user-select: none;
 }
 
 #communityMapsNote {
@@ -3561,6 +3573,7 @@ map::selection {
   border-radius: 5px;
   color: black;
   background-color: white;
+  background: linear-gradient(0.60turn, white, rgb(220, 220, 220));
   flex-grow: 1;
   max-width: 200px;
   overflow: hidden;
@@ -3624,6 +3637,25 @@ map::selection {
   opacity: 50%;
 }
 
+.lockedIcon {
+  width: 20px;
+  height: 20px;
+  filter: invert();
+  vertical-align: -2px;
+  margin-left: 3px;
+}
+
+.mapsAccountLock {
+  border-radius: 3px;
+  background-color: rgba(180, 180, 180, 0.2);
+  padding: 3px;
+  padding-inline: 8px;
+  font-size: 18px;
+  position: absolute;
+  right: 20px;
+  top: 10px;
+}
+
 .discoverIcon {
   width: 25px;
   height: auto;
@@ -3631,17 +3663,23 @@ map::selection {
   margin-left: 10px;
 }
 
-.categoryUpcoming {
+.categoryLink {
   opacity: 1;
   background-color: transparent;
   color: white;
   border-radius: 5px;
-  margin-bottom: 40px;
   margin-left: 20px;
+  margin-top: 20px;
   max-width: unset;
   background-color: rgba(239, 223, 255, 0.2);
   min-width: 65%;
   width: calc(100% - 40px);
+  padding: 10px 12px;
+  transition: filter 250ms ease;
+}
+
+.categoryLink:hover {
+  filter: brightness(0.7);
 }
 
 .accountLock {
