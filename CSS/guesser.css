@@ -4061,6 +4061,9 @@ input[type="checkbox"]:focus {
   padding: 5px;
   flex-grow: 1;
   position: relative;
+  display: none; 
+  /* when enabled, should switch between   this and floating 
+  and make overflow of endBottomBar visible at 1900px width */
 }
 
 #resultLeaderboardAd {
@@ -4095,20 +4098,6 @@ input[type="checkbox"]:focus {
 .supporterAdText {
   text-decoration: underline;
   cursor: pointer;
-}
-
-@media (min-width: 1900px) {
-  #floatingResultLeaderboardArea {
-    display: flex;
-  }
-
-  #resultLeaderboardAdArea {
-    display: none;
-  }
-
-  #endBottomArea {
-    overflow: visible;
-  }
 }
 
 .bottomFooterAds {
