@@ -8,7 +8,6 @@ import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, 
 import { leaveCompetition, loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
 import { initializeRewardAd } from "./rewardedAds.js";
-import { enableBottomAd, enableResultAds } from "./venatusCustom.js";
 import { handleMapUnhover, resetMap } from "./miniMap.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
@@ -139,8 +138,6 @@ export function enableResultScreen(guessLat, guessLong) {
         document.getElementById("distanceText").innerText = resultString;
         document.getElementById("motivationText").innerText = extraMessage;
 
-        enableResultAds();
-
         if (countryGuesserMode) {
             if (checkIfGuessWasCorrect()) {
                 document.getElementById("distanceText").innerText = "Correct!";
@@ -180,7 +177,6 @@ export function disableResultScreen() {
         hideEndOverlayTimeout = setTimeout(function () {
             document.getElementById("EndOverlay").style.visibility = "hidden";
             resultScreenEnabled = false;
-            enableBottomAd();
         }, 250);
 
         resetMap();
@@ -729,7 +725,7 @@ function closeSupporterWindow() {
 
 export function setSupporterPitch() {
     if (!(supporterLevel > 0)) {
-        document.getElementById("supporterPitch").textContent = "Become a supporter.";
+        document.getElementById("supporterPitch").textContent = "Purchase a supporter tier.";
         document.getElementById("supporterTextSecondary").textContent = "Contributions keep the game free.";
     } else {
         document.getElementById("supporterPitch").textContent = "Thank you.";
