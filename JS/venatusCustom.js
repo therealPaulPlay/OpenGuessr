@@ -1,4 +1,3 @@
-// Sample code from the venatus modified for our use case
 window.top.__vm_add = window.top.__vm_add || [];
 
 let bottomAdElement = document.getElementById("bottomFooterAds");
@@ -6,6 +5,7 @@ let currentAdParent = bottomAdElement; // initial value is the bottom footer ad 
 
 let placementsArray = [];
 
+/*
 // executed once when the result screen is made visible
 export function enableResultAds() {
     try {
@@ -28,6 +28,7 @@ export function enableBottomAd() {
     currentAdParent = bottomAdBar;
     applyCorrectIds(currentAdParent);
 }
+*/
 
 // Remove all ads
 function removeAllAds() {
@@ -80,9 +81,8 @@ if (window.document.readyState !== "loading") {
 }
 
 // Apply IDs (once) when the window is resized
-let onResizeTimeout;
-
 let lastBottombarComputedWidth = bottomAdElement.getBoundingClientRect().width;
+let onResizeTimeout;
 
 window.addEventListener("resize", function () {
     clearTimeout(onResizeTimeout);
