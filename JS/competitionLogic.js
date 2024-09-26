@@ -133,7 +133,7 @@ export async function leaveCompetition(showResult) {
     
         if (showResult) {
             // Show the leaderboard
-            showPageBrowser("/competitions.html?leaderboard=" + competition.id);
+            showPageBrowser("/competitions.html?leaderboardsubmit=" + competition.id);
         }
     }
 }
