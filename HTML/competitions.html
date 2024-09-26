@@ -909,6 +909,42 @@
         color: rgb(35, 35, 35) !important;
     }
 
+    #ratingBox {
+        border-radius: 5px;
+        background-color: rgba(255, 255, 255, 0.1);
+        display: none; /* changed to flex in code */
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+        margin-top: 20px;
+        padding: 5px;
+        gap: 10px;
+    }
+
+    #ratingBox p {
+        padding-inline: 5px;
+    }
+
+    .rateButton {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 5px;
+        margin: 0;
+    }
+
+    .ratingButtonBox {
+        display: flex;
+        gap: 5px;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .ratingIcon {
+        width: 22px;
+        height: 22px;
+        filter: invert();
+        vertical-align: -3px;
+    }
+
     @media all and (orientation: portrait) {
         #text {
             width: 80%;
@@ -1034,6 +1070,20 @@
                     <p>#2</p>
                     <p>DefaultUser3</p>
                     <p>5 Pts.</p>
+                </div>
+            </div>
+            <div id="ratingBox">
+                <p id="ratingText">Rate this competition (Default)</p>
+                <div class="ratingButtonBox" id="ratingButtonBox">
+                    <button class="standardButton rateButton" id="rateGood">
+                        <img class="ratingIcon" alt="good" src="/IMG/rating_good_icon.png">
+                    </button>
+                    <button class="standardButton rateButton" id="rateBad">
+                        <img class="ratingIcon" alt="bad" src="/IMG/rating_bad_icon.png">
+                    </button>
+                    <button class="standardButton rateButton" id="rateBroken">
+                        <img class="ratingIcon" alt="broken" src="/IMG/rating_broken_icon.png">
+                    </button>
                 </div>
             </div>
             <div class="buttonBox popupButtons">
