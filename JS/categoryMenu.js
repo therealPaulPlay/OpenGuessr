@@ -168,6 +168,18 @@ export function changeCategory(category, regenerate) {
     }
 }
 
+// Start specific official map from link
+let urlParams = new URLSearchParams(window.location.search);
+
+try {
+    let mapFromLink = urlParams.get("play-map");
+
+    if (mapFromLink) {
+        changeCategory(mapFromLink);
+        history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
+    }
+} catch { }
+
 //Check categories and initiate location generation  ---------------------------------------------------------------------------------------------------------------
 
 loadCompetition(false);

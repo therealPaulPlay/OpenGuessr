@@ -22,28 +22,28 @@ document.getElementById("backButton").addEventListener("click", () => {
 // Function to add the animation class
 function handleVisibilityChange(entries) {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate');
-      } else {
-        entry.target.classList.remove('animate');
-      }
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+        } else {
+            entry.target.classList.remove('animate');
+        }
     });
-  }
-  
-  // Options for the IntersectionObserver
-  const observerOptions = {
+}
+
+// Options for the IntersectionObserver
+const observerOptions = {
     root: null, // Use the viewport as the root
     rootMargin: '0px',
     threshold: 0 // Trigger as soon as even one pixel is visible
-  };
-  
-  // Create the observer
-  const observer = new IntersectionObserver(handleVisibilityChange, observerOptions);
-  
-  // Start observing all `.uiWindow` elements
-  document.querySelectorAll('.uiWindow').forEach(element => {
+};
+
+// Create the observer
+const observer = new IntersectionObserver(handleVisibilityChange, observerOptions);
+
+// Start observing all `.uiWindow` elements
+document.querySelectorAll('.uiWindow').forEach(element => {
     observer.observe(element);
-  });
+});
 
 // FAQ expand / collapse -------------------------------------------------------------------------
 document.getElementById("toggleFaqButton").addEventListener("click", (e) => {
@@ -348,16 +348,25 @@ async function enterCompetition(id, token) {
 
 
 // Leaderboard ---------------------------
+let leaderboardCompetitionId;
+
 function openLeaderboard(id) {
+    leaderboardCompetitionId = id;
     document.getElementById("leaderboardPopup").style.display = "flex";
     document.getElementById("leaderboardHeader").textContent = "Results loading...";
 
     // load data from endpoint using id here
     document.getElementById("rankingDisplay").innerHTML = `<p>Loading...</p>`;
     loadLeaderboardFromServer(id);
+
+    if (showRatingBox) {
+        displayRatingBox();
+        showRatingBox = false;
+    }
 }
 
 document.getElementById("leaderboardClose").addEventListener("click", () => {
+    document.getElementById("ratingBox").style.display = "none";
     document.getElementById("leaderboardPopup").style.display = "none";
 });
 
@@ -390,7 +399,7 @@ async function loadLeaderboardFromServer(id) {
 
                     let newEntry = document.createElement("div");
                     newEntry.classList.add("rankItem");
-                   
+
                     if (youItem.supporter_level && youItem.supporter_level > 0) {
                         newEntry.classList.add("leaderboardSupporterEntry");
                     }
@@ -413,7 +422,7 @@ async function loadLeaderboardFromServer(id) {
                 let idCounter = 0;
 
                 data.leaderboard.forEach(entry => {
-                    idCounter ++;
+                    idCounter++;
 
                     let newEntry = document.createElement("div");
                     newEntry.classList.add("rankItem");
@@ -489,12 +498,23 @@ async function loadLeaderboardFromServer(id) {
 let urlParams = new URLSearchParams(window.location.search);
 
 let leaderboardIdFromLink;
+let leaderboardIdFromLinkAfterSubmit;
+let showRatingBox = false;
 
 try {
     leaderboardIdFromLink = urlParams.get("leaderboard");
+
     if (leaderboardIdFromLink) {
         openLeaderboard(leaderboardIdFromLink);
-        history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
+        history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
+    }
+
+    leaderboardIdFromLinkAfterSubmit = urlParams.get("leaderboardsubmit");
+
+    if (leaderboardIdFromLinkAfterSubmit) {
+        showRatingBox = true;
+        openLeaderboard(leaderboardIdFromLinkAfterSubmit);
+        history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
     }
 } catch { }
 
@@ -531,7 +551,7 @@ document.getElementById("hideEntered").addEventListener("click", () => {
     } else {
         document.getElementById("hideEntered").classList.remove("hideEnteredActive");
     }
-    
+
     notExpiredIndex = 0; // reset index if starting new search
     document.getElementById("competitionArea").innerHTML = ""; // reset html of competition area
     getCompetitionsFromServer(false, undefined, undefined, hideEntered);
@@ -631,16 +651,16 @@ async function getCompetitionsFromServer(expired, search, daily, filterEntered) 
 
                 if (search && noContentLoaded && notExpiredIndex == 0) {
                     document.getElementById("competitionArea").innerHTML = `<p class="errorText">Search returned no results.</p>`;
-                } 
+                }
 
                 if (!daily && !search && !expired && noContentLoaded && notExpiredIndex == 0) {
                     document.getElementById("competitionArea").innerHTML = `<p class="errorText">No active competitions found.</p>`;
-                } 
-                
+                }
+
                 if (!daily && !search && expired && noContentLoaded && expiredIndex == 0) {
                     document.getElementById("expiredCompetitionArea").innerHTML = `<p class="errorText">No expired competitions found.</p>`;
-                } 
-                
+                }
+
                 if (daily && !expired && !search && noContentLoaded) {
                     document.getElementById("dailyCompetitionArea").innerHTML = `<p class="errorText">There currently is no daily competition. Wait shortly, as it's likely being created right now.</p>`;
                 }
@@ -1003,5 +1023,52 @@ async function submitCompetition(token, name, author, authorId, restriction, dur
         console.error('Error occurred during competition submission: ', error);
         return "A network error has occurred.";
     }
+}
+
+// Rating -------------------------------------------------------------------------------------------
+
+function displayRatingBox() {
+    document.getElementById("ratingBox").style.display = "flex";
+    document.getElementById("ratingButtonBox").style.display = "";
+    document.getElementById("ratingText").textContent = "Rate this competition";
+}
+
+document.getElementById("rateGood").addEventListener("click", () => submitRating(5));
+document.getElementById("rateBad").addEventListener("click", () => submitRating(-3));
+document.getElementById("rateBroken").addEventListener("click", () => submitRating(-10));
+
+async function submitRating(factor) {
+    document.getElementById("ratingButtonBox").style.display = "none";
+    document.getElementById("ratingText").textContent = "Rating...";
+
+    try {
+        const body = {
+            id: localStorage.getItem("id"),
+            compId: Number(leaderboardCompetitionId),
+            updateFactor: factor
+        }
+    
+        const response = await fetch("https://competitions.openguessr.com/competitions/ranking", {
+            method: "POST",
+            headers: {
+                'Authorization': `Bearer ` + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(body)
+        });
+
+        if (!response.ok) {
+            let error = await response.json().error;
+            if (!error) error = response.status;
+            console.error("An occured submitting the competition rating: " + error);
+            document.getElementById("ratingText").textContent = error;
+        } else {
+            document.getElementById("ratingText").textContent = "Rating received, thank you!";
+        }
+    } catch (error) {
+        console.error("A network error occured submitting the competition rating: " + error);
+        document.getElementById("ratingText").textContent = "Network error";
+    }
+
 }
 
