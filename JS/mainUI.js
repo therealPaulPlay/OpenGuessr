@@ -9,6 +9,7 @@ import { leaveCompetition, loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
 import { initializeRewardAd } from "./rewardedAds.js";
 import { handleMapUnhover, resetMap } from "./miniMap.js";
+import { switchAdsToMainScreen, switchAdsToResultScreen } from "./ads.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -160,6 +161,9 @@ export function enableResultScreen(guessLat, guessLong) {
 
         playSound("confirm");
 
+        // Enable result leaderboard ads
+        switchAdsToResultScreen();
+
         resultScreenEnabled = true;
     } else {
         console.log("Result screen already enabled!");
@@ -180,6 +184,9 @@ export function disableResultScreen() {
         }, 250);
 
         resetMap();
+
+        // disable result leaderboard ads
+        switchAdsToMainScreen();
     } else {
         console.warn("Result screen already disabled.");
     }

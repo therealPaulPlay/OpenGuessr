@@ -9,7 +9,7 @@ module.exports = {
   entry: {
     // Separate bundles for each of these
     analytics: "./JS/analytics.js",
-    main: ["./JS/categoryMenu.js", "./JS/main.js", "./JS/rewardedAds.js", "./JS/venatusCustom.js"], // webpack finds other imported code automatically, these are necessary though
+    main: ["./JS/categoryMenu.js", "./JS/main.js", "./JS/rewardedAds.js", "./JS/ads.js"], // webpack finds other imported code automatically, these are necessary though
   },
   output: {
     path: path.resolve(__dirname, "build/"),
