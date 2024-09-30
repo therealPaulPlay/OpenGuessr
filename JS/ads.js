@@ -2,13 +2,15 @@
 self.__VM = self.__VM || [];
 self.__VM.push(handleAdManagerPush);
 
+console.log("Ads.js loaded.");
+
 let currentScreen = 'main';
 
 // Global vars for admanager and scope to use them in this code independently
 let admanager, scope;
 
 export function switchAdsToResultScreen() {
-    if (currentScreen === "result") return;
+    if (currentScreen == "result") return;
     currentScreen = "result";
     updateAds();
 }
@@ -55,6 +57,8 @@ function updateAds() {
             scope.Config.get("leaderboard", "result").display("mobileResultLeaderboardAd");
         }
     }
+
+    console.log("Ads updated.");
 }
 
 function handleAdManagerPush(_admanager, _scope) {
