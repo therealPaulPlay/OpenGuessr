@@ -10,7 +10,7 @@ let currentScreen = 'main';
 let admanager, scope;
 
 export function switchAdsToResultScreen() {
-    if (currentScreen === "result") return;
+    if (currentScreen == "result") return;
     currentScreen = "result";
     updateAds();
 }
