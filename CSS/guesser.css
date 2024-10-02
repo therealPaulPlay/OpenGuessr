@@ -3185,7 +3185,7 @@ map::selection {
 }
 
 #endScreenOpenLocation {
-  padding: 13px;
+  padding: 10px;
   height: 100%;
   border-radius: 7px;
   transition: filter 250ms ease;
@@ -3348,7 +3348,7 @@ map::selection {
   transition: filter 250ms ease, scale 250ms ease, opacity 250ms ease;
   color: black;
   background-color: white;
-  font-size: 30px;
+  font-size: 25px;
   border-radius: 7px;
   opacity: 100%;
   padding: 10px 30px;
@@ -3357,8 +3357,7 @@ map::selection {
 
 #nextRoundArea {
   z-index: 15;
-  margin: 20px 20px;
-  margin-bottom: 19px;
+  margin: 15px 15px;
   position: absolute;
   bottom: 5px;
   right: 5px;
