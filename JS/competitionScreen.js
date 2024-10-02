@@ -13,7 +13,11 @@ document.getElementById("backButton").addEventListener("click", () => {
     if (inIframe()) {
         window.top.postMessage("close", "*");
     } else {
-        window.location.href = "/index.html";
+        if (document.referrer) {
+            window.history.back();
+        } else {
+            window.location.href = "/";  // Fallback if no referrer
+        }
     }
 });
 
@@ -1047,7 +1051,7 @@ async function submitRating(factor) {
             compId: Number(leaderboardCompetitionId),
             updateFactor: factor
         }
-    
+
         const response = await fetch("https://competitions.openguessr.com/competitions/ranking", {
             method: "POST",
             headers: {
