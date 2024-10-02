@@ -17,7 +17,6 @@ export function setCountryGuesserMode(enabled) {
         if (!multiplayer) {
             document.getElementById("map").style.visibility = "hidden";
             hideToggleMapButtonIfMobile(true);
-            document.getElementById("revealCompass").style.visibility = "hidden";
             document.querySelectorAll(".mapAttribution").forEach((element) => {
                 element.style.visibility = "hidden";
             });
@@ -32,7 +31,6 @@ export function setCountryGuesserMode(enabled) {
         if (!multiplayer) {
             document.getElementById("map").style.visibility = "visible";
             hideToggleMapButtonIfMobile(false);
-            document.getElementById("revealCompass").style.visibility = "visible";
             document.querySelectorAll(".mapAttribution").forEach((element) => {
                 element.style.visibility = "visible";
             });

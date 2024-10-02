@@ -61,8 +61,6 @@ export function setCompetitionUI(enable) {
             hardmodeTimerButton.style.opacity = "0.5";
             hardmodeTimerButton.style.pointerEvents = "none";
 
-            document.getElementById("revealCompass").style.bottom = "calc(50% - 10px)";
-
             document.querySelectorAll(".mobileHideInMultiplayer").forEach((e) => {
                 e.style.pointerEvents = "none";
                 e.style.opacity = "0.5";
@@ -80,8 +78,6 @@ export function setCompetitionUI(enable) {
             setGamemodeSelector(true);
             hardmodeTimerButton.style.opacity = "1";
             hardmodeTimerButton.style.pointerEvents = "auto";
-
-            document.getElementById("revealCompass").style.bottom = "calc(50% - 40px)";
 
             document.querySelectorAll(".mobileHideInMultiplayer").forEach((e) => {
                 e.style.pointerEvents = "auto";

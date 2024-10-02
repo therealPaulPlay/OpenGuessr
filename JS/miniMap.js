@@ -139,12 +139,14 @@ export function setConfirmButtonState() {
         document.getElementById("confirmButton").style.color = "white";
         document.getElementById("confirmButton").style.opacity = "100%"
         document.getElementById("confirmButton").style.pointerEvents = "auto";
-        document.getElementById("helpButton").classList.add("helpButtonDisabled");
+        document.getElementById("helpButton").classList.add("innerConfirmButtonDisabled");
+        document.getElementById("revealCompass").classList.add("innerConfirmButtonDisabled");
     }
     else {
         document.getElementById("confirmButton").style.backgroundColor = "rgba(168, 168, 187, 0.3)";
         document.getElementById("confirmButton").style.pointerEvents = "none";
-        document.getElementById("helpButton").classList.remove("helpButtonDisabled");
+        document.getElementById("helpButton").classList.remove("innerConfirmButtonDisabled");
+        document.getElementById("revealCompass").classList.remove("innerConfirmButtonDisabled");
     }
 }
 
@@ -389,7 +391,6 @@ export function confirmButtonClicks() {
         hasGuessed = false;
         setConfirmButtonState();
         hideToggleMapButtonIfMobile(true);
-        document.getElementById("revealCompass").style.visibility = "hidden";
 
         multiplayerStateToGuessed();
     }

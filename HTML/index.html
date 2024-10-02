@@ -15,10 +15,10 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.8.0/leaflet.js" defer></script>
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=5jr55">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=xdgvc">
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=5jr55" defer></script>
+  <script type="module" src="main.js?v=xdgvc" defer></script>
 
   <!-- Turnstile Captcha to prevent malicious map loads -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
@@ -1025,10 +1025,6 @@
   </div>
   <!--map-->
   <div id="mapHolder" class="regularMapSize">
-    <button id="revealCompass">
-      <img id="revealCompassArrow" src="/IMG/arrow_icon.png" alt="Shift map to the side"
-        class="socialBarIcons arrowIcon">
-    </button>
     <div id="mapAttribution" class="mapAttribution">
       <p>Map Data ©2024 Google
         <span style="width: 5px; display:inline-block; text-align: center;">|</span>
@@ -1078,6 +1074,9 @@
     <div class="barMenu bottomRightMenu">
       <div class="standardButton bottomBarButton" id="confirmButton">
         <button class="socialItem" id="helpButton">?</button>
+        <button class="socialItem" id="revealCompass">
+          <img src="./IMG/discover_icon.png" alt="Toggle compass" class="socialIcon bottomBarIcon">
+        </button>
         <p id="guessText">Guess</p>
       </div>
     </div>

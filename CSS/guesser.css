@@ -2780,65 +2780,6 @@ map::selection {
   outline: none;
 }
 
-#revealCompass {
-  margin-left: auto;
-  pointer-events: auto;
-  color: rgb(255, 255, 255);
-  border-radius: 5px;
-  font-size: 17px;
-  background-color: hsla(236, 25%, 20%, 0.5);
-  transition: margin 250ms ease, filter 250ms ease, opacity 250ms ease;
-  user-select: none;
-  z-index: 10;
-  position: absolute;
-  bottom: calc(50% - 40px);
-  left: -20px;
-  height: 80px;
-  width: 22px;
-  overflow: hidden;
-  backdrop-filter: blur(10px);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-#revealCompass:hover {
-  filter: brightness(0.7);
-}
-
-#revealCompassArrow {
-  transform: rotate(90deg);
-  margin: 0;
-}
-
-.mapAttribution {
-  position: absolute;
-  bottom: 0;
-  right: 10px;
-  color: black;
-  padding-right: 10px;
-  padding-left: 10px;
-  z-index: 10;
-  background-color: rgb(245, 245, 245);
-  opacity: 0.7;
-  border-bottom-right-radius: 10px;
-  max-height: 2000px;
-  transition: max-height 250ms ease;
-  overflow: hidden;
-}
-
-.mapAttribution * {
-  font: 400 11px Roboto, Arial, sans-serif;
-}
-
-#mapAttributionLogo {
-  background-color: transparent;
-  right: auto;
-  left: 5px;
-  opacity: 1;
-  height: 25px;
-}
-
 #mapModeIndicator {
   pointer-events: auto;
   background-color: var(--panel-color);
@@ -3213,7 +3154,7 @@ map::selection {
   transition: background-color 250ms ease, color 250ms ease, filter 250ms ease, opacity 250ms ease;
   display: flex;
   align-items: center;
-  gap: 30px;
+  gap: 12px;
   min-height: 0;
 }
 
@@ -3227,13 +3168,25 @@ map::selection {
   pointer-events: auto;
   transition: filter 250ms ease, opacity 250ms ease;
   margin-left: -5px;
+  font-size: 20px;
+  height: 30px;
 }
 
 #helpButton:hover {
   filter: brightness(0.7);
 }
 
-.helpButtonDisabled {
+#revealCompass {
+  pointer-events: auto;
+  transition: filter 250ms ease, opacity 250ms ease;
+  margin-left: -5px;
+}
+
+#revealCompass:hover {
+  filter: brightness(0.7);
+}
+
+.innerConfirmButtonDisabled {
   pointer-events: none !important;
   opacity: 0.5;
 }
@@ -3985,10 +3938,6 @@ input[type="checkbox"]:focus {
   height: 55%;
 }
 
-.mapHover #revealCompass {
-  opacity: 1;
-}
-
 /* Ad CSS */
 
 .noAdvertsText {
@@ -4136,6 +4085,10 @@ input[type="checkbox"]:focus {
     font-size: 20px;
   }
 
+  #revealCompass {
+    display: none;
+  }
+
   #nextRoundArea {
     position: relative;
     right: 0;
@@ -4269,10 +4222,6 @@ input[type="checkbox"]:focus {
 
   #map {
     opacity: 100%;
-  }
-
-  #revealCompass {
-    display: none;
   }
 
   #floatingMapButton {
