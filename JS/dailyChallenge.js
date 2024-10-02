@@ -29,14 +29,12 @@ export function setDailyChallengeUI(enable) {
         floatingSocialButton.style.pointerEvents = "none";
         hardmodeTimerButton.style.opacity = "0.5";
         hardmodeTimerButton.style.pointerEvents = "none";
-        document.getElementById("revealCompass").style.marginBottom = "-21px";
     } else {
         document.getElementById("mapModeIndicator").style.display = "none";
         floatingSocialButton.style.opacity = "1";
         floatingSocialButton.style.pointerEvents = "auto";
         hardmodeTimerButton.style.opacity = "1";
         hardmodeTimerButton.style.pointerEvents = "auto";
-        document.getElementById("revealCompass").style.marginBottom = "-25px";
     }
 }
 

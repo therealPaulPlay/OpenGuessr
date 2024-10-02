@@ -333,7 +333,8 @@ document.getElementById("socialPopupJoin").addEventListener("click", function ()
 
 //reveal compass -------------------------------------------------------------------------------------
 let revealCompass = document.getElementById("revealCompass");
-revealCompass.addEventListener("click", () => {
+revealCompass.addEventListener("click", (e) => {
+    e.stopPropagation();
     toggleMapOffset();
     playSound("basic_button");
 });
@@ -354,10 +355,8 @@ function toggleMapOffset() {
 
 function setMapOffset() {
     if (mapOffset) {
-        document.getElementById("revealCompassArrow").style.transform = "rotate(270deg)";
         document.getElementById("mapHolder").style.marginRight = "65px";
     } else {
-        document.getElementById("revealCompassArrow").style.transform = "rotate(90deg)";
         document.getElementById("mapHolder").style.marginRight = "0px";
     }
 }
