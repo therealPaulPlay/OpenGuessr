@@ -88,20 +88,19 @@ h3 {
   /* above everything, except for error popups */
 }
 
-.topBarMenu {
+.barMenu {
   background-color: var(--panel-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
   transition: opacity 200ms linear, transform 200ms linear, filter 200ms linear;
   border-radius: 10px;
-  height: 55px;
   width: fit-content;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 4px;
-  padding-inline: 6px;
+  padding: 6px;
   pointer-events: auto;
 }
 
@@ -173,17 +172,6 @@ h3 {
   align-items: center;
   width: fit-content;
   gap: 4px;
-}
-
-#bottomShadow {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  z-index: 1;
-  height: 100px;
-  background-image: linear-gradient(0.50turn, transparent, rgb(255, 255, 255));
-  opacity: 30%;
-  pointer-events: none;
 }
 
 .profile {
@@ -2871,11 +2859,11 @@ map::selection {
   background-color: var(--panel-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
   height: 48px;
   width: 100%;
   border-radius: 10px;
-  display: none;
-  /* set to flex in code when needed */
+  display: none; /* set to flex in code when needed */
   align-items: center;
   justify-content: flex-start;
   color: white;
@@ -2940,13 +2928,14 @@ map::selection {
   overflow: hidden;
   position: fixed;
   left: 10px;
-  bottom: 115px;
+  bottom: 75px;
   display: none;
   flex-direction: column;
   align-items: center;
   background-color: var(--panel-color);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
   pointer-events: auto;
   font-size: 20px;
   z-index: 10;
@@ -3122,53 +3111,42 @@ map::selection {
   min-height: 95px;
   max-height: 95px;
   display: flex;
-  align-items: center;
-  justify-content: left;
+  align-items: end;
+  justify-content: space-between;
   margin: auto;
   border-radius: 10px;
   margin-inline: 10px;
   flex: 1;
   z-index: 10;
-  background-color: var(--panel-color);
   transition: background-color 250ms ease;
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
+  pointer-events: none;
+}
+
+.bottomRightMenu {
+  width: calc(22% - 8px);
+  min-width: 200px;
 }
 
 /* Buttons */
 
-#resetButtonSVG {
-  cursor: pointer;
-  transition: all 250ms ease;
-  background-color: var(--brand-color);
-  width: 45px;
-  margin-left: 24px;
-  z-index: 11;
-}
-
-.BottomBarItem {
-  cursor: pointer;
-  transition: all 250ms ease;
-  border-radius: 7px;
-  font-size: 30px;
-  height: 55%;
-  user-select: none;
-  -webkit-user-select: none;
-  padding-left: 10px;
-  padding-right: 10px;
-  margin-inline: 10px;
-  z-index: 12;
-  color: white;
+.bottomBarButton {
   background-color: rgba(168, 168, 187, 0.3);
+  pointer-events: auto;
+  font-size: 25px;
 }
 
-.BottomBarItem:hover {
-  filter: brightness(70%);
-  transition: filter 250ms;
+#resetButtonImg {
+  height: auto;
+  width: 25px;
+  vertical-align: -1px;
+  filter: invert();
+}
+
+#resetButton {
+  background-color: var(--brand-color);
 }
 
 .socialItem {
-  width: 40%;
   min-width: 40px;
   height: 70%;
   margin-inline: 0;
@@ -3185,21 +3163,6 @@ map::selection {
 #discordButton:hover {
   background-color: #8c2aed;
   filter: none;
-}
-
-#bottomBarSocialArea {
-  background-color: rgba(168, 168, 187, 0.3);
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  filter: none !important;
-  padding-inline: 4px;
-  gap: 2px;
-  width: 100px;
-}
-
-.bottomBarIcon {
-  vertical-align: 2px;
 }
 
 #floatingMapButton {
@@ -3252,19 +3215,27 @@ map::selection {
 
 #confirmButton {
   width: fit-content;
+  position: relative;
   padding-left: 10px;
   padding-right: 30px;
-  margin-right: 24px;
-  margin-left: auto;
+  width: 100%;
   transition: background-color 250ms ease, color 250ms ease, filter 250ms ease, opacity 250ms ease;
   display: flex;
   align-items: center;
   gap: 30px;
+  min-height: 0;
+}
+
+#guessText {
+  position: absolute;
+  left: 50%;
+  transform: translate(-50%, 0);
 }
 
 #helpButton {
   pointer-events: auto;
   transition: filter 250ms ease, opacity 250ms ease;
+  margin-left: -5px;
 }
 
 #helpButton:hover {
@@ -3417,7 +3388,7 @@ map::selection {
   top: 0;
   width: 100%;
   height: 100%;
-  z-index: 8;
+  z-index: 6;
   box-shadow: 0 0 700px rgba(255, 176, 176, 0.2) inset;
 }
 
@@ -3938,7 +3909,7 @@ input[type="checkbox"]:focus {
   position: fixed;
   display: flex;
   right: 0;
-  bottom: 105px;
+  bottom: 65px;
   padding-inline: 10px;
   align-items: flex-end;
   flex-direction: column;
@@ -4024,14 +3995,12 @@ input[type="checkbox"]:focus {
 .noAdvertsText {
   text-align: center;
   color: white;
-  opacity: 0;
+  opacity: 0.25;
   font-size: 22px;
   overflow: hidden;
   transition: opacity 500ms ease;
   border-radius: 7px;
-  padding: 13px;
-  padding-inline: 50px;
-  background-color: rgba(255, 255, 255, 0.2);
+  background-color: rgba(168, 168, 187, 0.3);
 }
 
 .adsTextResult {
@@ -4042,8 +4011,12 @@ input[type="checkbox"]:focus {
   left: 50%;
   top: 50%;
   transform: translate(-50%, -50%);
-  padding: 0;
   width: 80%;
+}
+
+#bottomAdsText {
+  width: calc(100% - 30px);
+  background-color: transparent;
 }
 
 .leaderboardAds {
@@ -4107,28 +4080,20 @@ input[type="checkbox"]:focus {
   margin-left: auto;
   margin-right: auto;
   padding: 0;
-  z-index: 11;
+  z-index: 8;
 }
 
 .bottomFooterAdText {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 10;
+  z-index: 7;
 }
 
-@media (max-width: 1175px) {
+@media (max-width: 1375px) {
   .leaderboardAds {
     width: 320px;
     height: 50px;
-  }
-
-  .bottomFooterAds {
-    bottom: 32px;
-  }
-
-  #bottomAdsText {
-    display: none;
   }
 }
 
@@ -4213,10 +4178,6 @@ input[type="checkbox"]:focus {
 
   #mobileButtonArea {
     display: flex;
-  }
-
-  #bottomBarSocialArea {
-    display: none;
   }
 
   #multiplayerChat {
@@ -4332,6 +4293,10 @@ input[type="checkbox"]:focus {
   #topCursorDetectionBar {
     display: none;
   }
+
+  .bottomSocialItem {
+    display: none;
+  }
 }
 
 /* phone fullscreen category menu */
@@ -4344,13 +4309,17 @@ input[type="checkbox"]:focus {
 /* Tablet map */
 @media all and (orientation: landscape) and (max-width: 1200px) {
   .mapHolder {
-    width: 40%;
+    width: 30%;
     height: 45%;
+  }
+
+  .bottomRightMenu {
+    width: calc(30% - 8px);
   }
 }
 
 /* ad shift for narrow screens */
-@media (orientation: portrait) and (max-width: 750px) {
+@media (orientation: portrait) and (max-width: 800px) {
   .bottomFooterAds {
     bottom: 12px;
   }
@@ -4361,11 +4330,11 @@ input[type="checkbox"]:focus {
   }
 
   .BottomBar {
-    padding-bottom: 40px;
+    padding-bottom: 60px;
   }
 
   .mapHolder {
-    bottom: 145px;
+    bottom: 125px;
   }
 
   #countryGuesserSelector {
