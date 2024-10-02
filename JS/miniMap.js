@@ -160,6 +160,7 @@ async function initMap() {
         map.setMapTypeId(getMapType(providerIndex)); // Set the map type on the actual map
         changeMapTypeButtonLabel();
         enableMapTypeButton();
+        adjustMapToCountry();
 
         document.dispatchEvent(new Event("mapInitialized"));
     }
@@ -224,6 +225,8 @@ let multiplayerMiniMarkers = []; // team markers
 
 export let addedMarkers = []; // this is needed for this api to delete them again
 
+let officialCountryBounds;
+
 //reset the map - used for going to the next round. 
 export function resetMap() {
     document.getElementById("mapHolder").classList.remove("mapHolderToResult");
@@ -238,8 +241,7 @@ export function resetMap() {
 
         addedMarkers = []; // Clear the array
 
-        map.panTo({ lat: 20, lng: 0 }); // reset center
-        map.setZoom(2);
+        adjustMapToCountry();
 
         map.overlayMapTypes.clear();
     }
@@ -247,6 +249,40 @@ export function resetMap() {
     //reset the guess button as well
     hasGuessed = false;
     setConfirmButtonState();
+}
+
+// For official countries, adjust the map to zoom in on that country - otherwise just reset to default scale
+async function adjustMapToCountry() {
+    const category = localStorage.getItem("selectedCategory");
+    const categoryCountry = category.replace("Category", "");
+
+    if (map) {
+        if (!officialCountryBounds) {
+            try {
+                officialCountryBounds = await fetch("/JSON/official_countries_center.json");
+                officialCountryBounds = await officialCountryBounds.json();
+            } catch(error) {
+                console.error("Error fetching country bounds:", error);
+            }
+        }
+
+        if (officialCountryBounds && !categoryCountry.includes("community") && officialCountryBounds.hasOwnProperty(categoryCountry)) {
+            try {
+                const countryProperty = officialCountryBounds[categoryCountry];
+                const lat = countryProperty.center.lat;
+                const long = countryProperty.center.long;
+                const zoom = countryProperty.zoom;
+
+                map.panTo({ lat: lat, lng: long }); // reset center
+                map.setZoom(zoom);
+            } catch(error) {
+                console.error("Error setting correct map zoom and pan for official country (miniMap.js):", error);
+            }
+        } else {
+            map.panTo({ lat: 20, lng: 0 }); // reset center
+            map.setZoom(2);
+        }
+    }
 }
 
 // Map Type Button Label ----------------------------------------------------------------------------------------

@@ -25,7 +25,7 @@
   <!-- analytics script -->
   <script type="module" src="analytics.js" async></script>
 
-  <title>OpenGuessr - free geoguessr alternative</title>
+  <title>OpenGuessr - Free GeoGuessr Alternative (Unlimited)</title>
 
   <link rel="icon" href="favicon.ico">
   <link rel="apple-touch-icon" sizes="180x180" href="/IMG/apple-touch-icon.png">
@@ -43,7 +43,7 @@
       alt="OpenGuessr logo - the free geography location-guessing game">
   </div>
   <div id="mobileButtonArea" class="topButtonArea">
-    <div class="topBarMenu">
+    <div class="barMenu">
       <button id="mobileLoginButton" class="standardButton accountButton mobileAccountButton">Login</button>
       <button id="mobileProfileButton" class="standardButton accountButton mobileAccountButton">
         <img class="socialBarIcons invertSocialBarIcon" src="/IMG/profile_icon.png" alt="Your profile">
@@ -71,7 +71,7 @@
   </div>
   <div id="topCursorDetectionBar"></div> <!-- used to detect the cursor leaving the iframe -->
   <div id="topButtonArea" class="topButtonArea">
-    <div class="topBarMenu topBarSides topBarDesktop">
+    <div class="barMenu topBarSides topBarDesktop">
       <button class="standardButton accountButton" id="loginButton" type="button" alt="log in">Log in</button>
       <div class="profileInfo notSignedIn" id="profileInfo">
         <div id="accountNameArea">
@@ -90,7 +90,7 @@
         <img class="logoutImage" src="/IMG/signout.png" alt="Log out of your OpenGuessr account.">
       </button>
     </div>
-    <div class="topBarMenu topBarDesktop" id="gamemodeMenu">
+    <div class="barMenu topBarDesktop" id="gamemodeMenu">
       <button id="leaderboardButton" class="standardButton accountButton"><span class="topBarExpand">Leaderboard</span>
         <img class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon" src="/IMG/leaderboards_icon.png"
           alt="Experience Leaderboard">
@@ -105,7 +105,7 @@
           alt="Competitions symbol">
       </button>
     </div>
-    <div class="topBarMenu topBarSides topBarDesktop">
+    <div class="barMenu topBarSides topBarDesktop">
       <button class="standardButton accountButton" id="categoryMenuButton" type="button">Maps
         <img id="mapsArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="socialBarIcons arrowIcon">
       </button>
@@ -146,8 +146,10 @@
         </span>
         <p>Special modes:</p>
         <div id="specialGamemodesArea" class="mapArea">
-          <button class="category countryCategory accountLock" id="dailyCompetition" type="button">Daily Competition</button>
-          <button class="category countryCategory accountLock" id="countryCategory" type="button">Country Guesser</button>
+          <button class="category countryCategory accountLock" id="dailyCompetition" type="button">Daily
+            Competition</button>
+          <button class="category countryCategory accountLock" id="countryCategory" type="button">Country
+            Guesser</button>
           <button class="category countryCategory accountLock" id="imageCategory" type="button">Image Guesser</button>
         </div>
       </div>
@@ -162,7 +164,8 @@
           <button class="category countryCategory accountLock" id="austriaCategory" type="button">Austria</button>
           <button class="category countryCategory accountLock" id="brasilCategory" type="button">Brasil</button>
           <button class="category countryCategory accountLock" id="canadaCategory" type="button">Canada</button>
-          <button class="category countryCategory accountLock" id="czechiaCategory" type="button">Czech Republic</button>
+          <button class="category countryCategory accountLock" id="czechiaCategory" type="button">Czech
+            Republic</button>
           <button class="category countryCategory accountLock" id="finlandCategory" type="button">Finland</button>
           <button class="category countryCategory accountLock" id="franceCategory" type="button">France</button>
           <button class="category countryCategory accountLock" id="germanyCategory" type="button">Germany</button>
@@ -175,7 +178,7 @@
           <button class="category countryCategory accountLock" id="norwayCategory" type="button">Norway</button>
           <button class="category countryCategory accountLock" id="polandCategory" type="button">Poland</button>
           <button class="category countryCategory accountLock" id="romaniaCategory" type="button">Romania</button>
-          <button class="category countryCategory accountLock" id="russiaCategory" type="button">Russia (limited)</button>
+          <button class="category countryCategory accountLock" id="russiaCategory" type="button">Russia</button>
           <button class="category countryCategory accountLock" id="slovakiaCategory" type="button">Slovakia</button>
           <button class="category countryCategory accountLock" id="spainCategory" type="button">Spain</button>
           <button class="category countryCategory accountLock" id="swedenCategory" type="button">Sweden</button>
@@ -193,17 +196,17 @@
         <p>Continents:</p>
         <div class="mapArea">
           <button class="category continentCategory countryCategory accountLock" id="africaCategory"
-          type="button">Africa</button>
-        <button class="category continentCategory countryCategory accountLock" id="asiaCategory"
-          type="button">Asia</button>
-        <button class="category continentCategory countryCategory accountLock" id="europeCategory"
-          type="button">Europe</button>
-        <button class="category continentCategory countryCategory accountLock" id="northamericaCategory"
-          type="button">North America</button>
-        <button class="category continentCategory countryCategory accountLock" id="oceaniaCategory"
-          type="button">Oceania</button>
-        <button class="category continentCategory countryCategory accountLock" id="southamericaCategory"
-          type="button">South America</button>
+            type="button">Africa</button>
+          <button class="category continentCategory countryCategory accountLock" id="asiaCategory"
+            type="button">Asia</button>
+          <button class="category continentCategory countryCategory accountLock" id="europeCategory"
+            type="button">Europe</button>
+          <button class="category continentCategory countryCategory accountLock" id="northamericaCategory"
+            type="button">North America</button>
+          <button class="category continentCategory countryCategory accountLock" id="oceaniaCategory"
+            type="button">Oceania</button>
+          <button class="category continentCategory countryCategory accountLock" id="southamericaCategory"
+            type="button">South America</button>
         </div>
       </div>
       <div class="mapBox lastMapBox">
@@ -1045,25 +1048,28 @@
   </div>
   <!--bottom toolbar with reset button-->
   <div id="BottomBar" class="BottomBar">
-    <img class="BottomBarItem" id="resetButtonSVG" src="/IMG/reset.svg" alt="Return to start position">
-    <div class="BottomBarItem" id="bottomBarSocialArea">
-      <button class="BottomBarItem socialItem" id="discordButton" type="button">
-        <img src="./IMG/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" id="discordIcon">
+    <div class="barMenu">
+      <button class="standardButton bottomBarButton" id="resetButton">
+        <img id="resetButtonImg" src="/IMG/return_icon.png" alt="Return to start position">
       </button>
-      <button class="BottomBarItem socialItem" id="redditButton" type="button">
+      <button class="standardButton bottomBarButton bottomSocialItem" id="discordButton" type="button">
+        <img src="./IMG/discord.png" alt="Discord Logo" class="socialIcon" id="discordIcon">
+      </button>
+      <button class="standardButton bottomBarButton bottomSocialItem" id="redditButton" type="button">
         <img src="./IMG/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon">
       </button>
     </div>
-    <div class="BottomBarItem" id="confirmButton">
-      <button class="socialItem" id="helpButton">?</button>
-      <p id="guessText">Guess</p>
+    <div class="barMenu bottomRightMenu">
+      <div class="standardButton bottomBarButton" id="confirmButton">
+        <button class="socialItem" id="helpButton">?</button>
+        <p id="guessText">Guess</p>
+      </div>
     </div>
   </div>
-  <div id="bottomShadow"></div>
   <div id="bottomFooterAds" class="bottomFooterAds leaderboardAds hideForSupporters">
   </div>
-  <div class="bottomFooterAds leaderboardAds bottomFooterAdText hideForSupporters">
-    <p id="bottomAdsText" class="noAdvertsText">Advertisements keep OpenGuessr free ♥</p>
+  <div class="bottomFooterAds leaderboardAds bottomFooterAdText hideForSupporters barMenu">
+    <p id="bottomAdsText" class="noAdvertsText">Ads keep OpenGuessr free ♥</p>
   </div>
 </body>
 
