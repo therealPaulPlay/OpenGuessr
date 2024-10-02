@@ -41,10 +41,12 @@ let officialCountryBounds;
 
 //reset the map - used for going to the next round. 
 export function resetMap() {
-  if (map) {
-    map.removeLayer(marker);
-    adjustMapToCountry();
-  }
+    if (map) {
+        map.removeLayer(marker);
+        adjustMapToCountry();
+    }
+
+    mapHolder.classList.remove("mapHover")
 
     //reset the guess button as well
     hasGuessed = false;
@@ -61,7 +63,7 @@ async function adjustMapToCountry() {
             try {
                 officialCountryBounds = await fetch("/JSON/official_countries_center.json");
                 officialCountryBounds = await officialCountryBounds.json();
-            } catch(error) {
+            } catch (error) {
                 console.error("Error fetching country bounds:", error);
             }
         }
@@ -74,7 +76,7 @@ async function adjustMapToCountry() {
                 const zoom = countryProperty.zoom;
 
                 map.setView(new L.LatLng(lat, long), zoom);
-            } catch(error) {
+            } catch (error) {
                 console.error("Error setting correct map zoom and pan for official country (miniMap.js):", error);
             }
         } else {
@@ -94,8 +96,6 @@ function loadMap() {
         noWrap: true,
         fakeRetina: true,
     }).addTo(map);
-
-    adjustMapToCountry();
 }
 
 // Map Type Button Label ----------------------------------------------------------------------------------------
