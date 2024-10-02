@@ -4025,7 +4025,7 @@ input[type="checkbox"]:focus {
   overflow: hidden;
 }
 
-@media all and (max-width: 1600px) {
+@media all and (max-width: 1800px) {
   .leaderboardAds {
     width: 728px;
   }

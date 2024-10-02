@@ -46,8 +46,8 @@ function updateAds() {
     if (currentScreen == "main" && !isLandscapeSmall) {
         scope.Config.buildPlacement((configBuilder) => {
             configBuilder.add('billboard');
-            configBuilder.addDefaultOrUnique('leaderboard').setBreakPoint({ mediaQuery: 'max-width:1600px' });
-            configBuilder.addDefaultOrUnique('mobile_banner').setBreakPoint({ mediaQuery: 'max-width: 1175px' });
+            configBuilder.addDefaultOrUnique('leaderboard').setBreakPoint({ mediaQuery: 'max-width: 1800px' });
+            configBuilder.addDefaultOrUnique('mobile_banner').setBreakPoint({ mediaQuery: 'max-width: 1375px' });
         }, "main").display("bottomFooterAds");
 
     } else if (currentScreen == "result" && usingFloatingResultAd) {
