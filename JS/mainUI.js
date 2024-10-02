@@ -100,7 +100,7 @@ closeButton.addEventListener("click", () => {
 });
 
 //Various buttons and links ------------------------------------------------------------------------------------------------
-let resetBTN = document.getElementById("resetButtonSVG");
+let resetBTN = document.getElementById("resetButton");
 resetBTN.addEventListener("click", function () { playSound("reload"); reloadIframe(); });
 
 let socialRedditButton = document.getElementById("redditButton");
@@ -570,15 +570,6 @@ function toggleTroubleshootWindow() {
     }
     troubleshootWindow.style.display = troubleshootWindow.style.display != "block" ? "block" : "none";
 }
-
-// Show advertisement text after some time (if no ads are being served, it is visible) ---------------------------------------------------------------------------------
-
-// display text to encourage disabling ad block after 12s
-setTimeout(() => {
-    document.querySelectorAll(".noAdvertsText").forEach((e) => {
-        e.style.opacity = "0.25";
-    });
-}, 8000);
 
 // Daily competition link to competitions ---------------------------------------------------------------------------------
 
