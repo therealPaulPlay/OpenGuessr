@@ -14,7 +14,7 @@ const Provider = {
 }
 
 // Leaflet initialization and Tiles --------------------------------------------------------------------------------------
-let map = L.map('map', { zoomControl: false }).setView([40.321160, 10.252812], 1.5); //starting position
+let map = L.map('map', { zoomControl: false }).setView([20, 0], 1.5); //starting position
 
 let mapProvider = ["https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en", "https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en"];
 
@@ -37,16 +37,50 @@ export function getMapSource() {
 loadMap();
 changeMapTypeButtonLabel();
 
+let officialCountryBounds;
+
 //reset the map - used for going to the next round. 
 export function resetMap() {
   if (map) {
     map.removeLayer(marker);
-    map.setView(new L.LatLng(20, 0), 2);
+    adjustMapToCountry();
   }
 
     //reset the guess button as well
     hasGuessed = false;
     setConfirmButtonState();
+}
+
+// For official countries, adjust the map to zoom in on that country - otherwise just reset to default scale
+async function adjustMapToCountry() {
+    const category = localStorage.getItem("selectedCategory");
+    const categoryCountry = category.replace("Category", "");
+
+    if (map) {
+        if (!officialCountryBounds) {
+            try {
+                officialCountryBounds = await fetch("/JSON/official_countries_center.json");
+                officialCountryBounds = await officialCountryBounds.json();
+            } catch(error) {
+                console.error("Error fetching country bounds:", error);
+            }
+        }
+
+        if (officialCountryBounds && !categoryCountry.includes("community") && officialCountryBounds.hasOwnProperty(categoryCountry)) {
+            try {
+                const countryProperty = officialCountryBounds[categoryCountry];
+                const lat = countryProperty.center.lat;
+                const long = countryProperty.center.long;
+                const zoom = countryProperty.zoom;
+
+                map.setView(new L.LatLng(lat, long), zoom);
+            } catch(error) {
+                console.error("Error setting correct map zoom and pan for official country (miniMap.js):", error);
+            }
+        } else {
+            map.setView(new L.LatLng(20, 0), 2); // reset center and zoom
+        }
+    }
 }
 
 // Leaflet Tile Layer Loading and Resetting --------------------------------------------------------------------
@@ -61,7 +95,7 @@ function loadMap() {
         fakeRetina: true,
     }).addTo(map);
 
-    map.setZoom(2);
+    adjustMapToCountry();
 }
 
 // Map Type Button Label ----------------------------------------------------------------------------------------
