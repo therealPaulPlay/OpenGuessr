@@ -13,7 +13,11 @@ document.getElementById("backButton").addEventListener("click", function () {
         window.top.postMessage("reloadCommunityMaps", "*");
         window.top.postMessage("loadCategory", "*");
     } else {
-        window.location.href = "/index.html";
+        if (document.referrer) {
+            window.history.back();
+        } else {
+            window.location.href = "/";  // Fallback if no referrer
+        }
     }
 });
 
@@ -30,28 +34,28 @@ function openProfile(id) {
 // Function to add the animation class
 function handleVisibilityChange(entries) {
     entries.forEach(entry => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate');
-      } else {
-        entry.target.classList.remove('animate');
-      }
+        if (entry.isIntersecting) {
+            entry.target.classList.add('animate');
+        } else {
+            entry.target.classList.remove('animate');
+        }
     });
-  }
-  
-  // Options for the IntersectionObserver
-  const observerOptions = {
+}
+
+// Options for the IntersectionObserver
+const observerOptions = {
     root: null, // Use the viewport as the root
     rootMargin: '0px',
     threshold: 0 // Trigger as soon as even one pixel is visible
-  };
-  
-  // Create the observer
-  const observer = new IntersectionObserver(handleVisibilityChange, observerOptions);
-  
-  // Start observing all `.uiWindow` elements
-  document.querySelectorAll('.uiWindow').forEach(element => {
+};
+
+// Create the observer
+const observer = new IntersectionObserver(handleVisibilityChange, observerOptions);
+
+// Start observing all `.uiWindow` elements
+document.querySelectorAll('.uiWindow').forEach(element => {
     observer.observe(element);
-  });
+});
 
 // Load community maps using the openguessr map api  -----------------------------------------------------
 let currentFetchIndex = 0;
@@ -362,9 +366,9 @@ async function likeOrDislikeMap(mapName) {
                 },
                 body: JSON.stringify({ id: localStorage.getItem("id") }),
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
                 await fetchMapInformation(mapName); // fetch new information
             } else {

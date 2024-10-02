@@ -45,7 +45,11 @@ export async function loginUser(email, password, errorSource) {
         window.top.postMessage("close", "*");
         window.top.postMessage("loadAccountStatus", "*");
       } else {
-        window.location.href = "/index.html";
+        if (document.referrer) {
+          window.history.back();
+        } else {
+          window.location.href = "/";  // Fallback if no referrer
+        }
       }
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
@@ -409,7 +413,7 @@ export function displaySuccess(text) {
     errorMessage.style.marginBottom = "20px";
     errorMessage.style.opacity = "1";
     errorMessage.style.color = "#64c681";
-    
+
     // change to sign-in
     document.getElementById("loginForm").style.display = "block";
     document.getElementById("signupForm").style.display = "none";

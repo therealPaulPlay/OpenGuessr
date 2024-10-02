@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <head>
     <title>Legal</title>
     <meta charset="UTF-8">
@@ -19,13 +20,19 @@
             <div id="text">
                 <h1>Introduction</h1>
                 <br>
-                <p>This page exists to inform the reader about how user data is collected, which terms apply when using the game, and how to reach out to the developer. 
-                    By using this website, you accept the following agreements and policies. Please note that some information is available on different pages linked below. 
-                    If you have any questions regarding these policies, feel free to contact me using the contact form, which you can find linked at the bottom of this page.</p>
+                <p>This page exists to inform the reader about how user data is collected, which terms apply when using
+                    the game, and how to reach out to the developer.
+                    By using this website, you accept the following agreements and policies. Please note that some
+                    information is available on different pages linked below.
+                    If you have any questions regarding these policies, feel free to contact me using the contact form,
+                    which you can find linked at the bottom of this page.</p>
                 <br>
-                <p>Imprint: For imprint and contact information, please refer to <a href="https://paulplay.studio/imprint" target="_blank">this page</a>.</p>
-                <p>Terms of Use: For the Terms of Use, please refer to <a href="https://paulplay.studio/terms-of-use" target="_blank">this page</a>.</p>
-                <p>EULA: For the End user license agreement (EULA), please refer to <a href="https://paulplay.studio/eula" target="_blank">this page</a>.</p>
+                <p>Imprint: For imprint and contact information, please refer to <a
+                        href="https://paulplay.studio/imprint" target="_blank">this page</a>.</p>
+                <p>Terms of Use: For the Terms of Use, please refer to <a href="https://paulplay.studio/terms-of-use"
+                        target="_blank">this page</a>.</p>
+                <p>EULA: For the End user license agreement (EULA), please refer to <a
+                        href="https://paulplay.studio/eula" target="_blank">this page</a>.</p>
                 <br><br>
                 <h1>Privacy Policy</h1>
                 <br>
@@ -43,8 +50,8 @@
                 <p>Our partners (e.g. Google or Stripe) collect details of which version of web browser you used and
                     information on how you use the site using page tagging techniques. Furthermore, we are utilizing
                     Google
-                    Maps Streetview for our application which has its own <a
-                        href="https://policies.google.com/privacy" target="_blank">privacy policy</a>.
+                    Maps Streetview for our application which has its own <a href="https://policies.google.com/privacy"
+                        target="_blank">privacy policy</a>.
                     If you provide your consent, we use Google Analytics and our own cookies to collect information
                     about
                     how you use OpenGuessr. For a better experience, while using our Service, we may require you to
@@ -52,7 +59,8 @@
                     us with certain personally identifiable information such as a username. If you create an account we
                     will
                     also store account-specific information such as your level or experience. By creating an account you
-                    accept that we may share non-sensitive information (like your username, email address, experience or other associated data)
+                    accept that we may share non-sensitive information (like your username, email address, experience or
+                    other associated data)
                     with other users.
                     <br> <br>
                     Google Analytics processes information about:
@@ -74,8 +82,10 @@
                     account related details that you provide at your own choice. Additionally, we save game-related
                     information such as, but not limited to, your account level.
                     <br><br>
-                    If you purchase any item in the game/on the site, the data you provide might be stored and processed using stripe. Please
-                    refer to stripe's <a href="https://stripe.com/privacy" target="_blank">privacy policy</a> for more information.
+                    If you purchase any item in the game/on the site, the data you provide might be stored and processed
+                    using stripe. Please
+                    refer to stripe's <a href="https://stripe.com/privacy" target="_blank">privacy policy</a> for more
+                    information.
                 </p>
                 <br>
                 <h2>How we use your data</h2>
@@ -292,12 +302,12 @@
 
 
     .directionArrowIcon {
-            width: 25px;
-            height: 25px;
-            filter: invert();
-            transform: rotate(90deg);
-            vertical-align: -4px;
-        }
+        width: 25px;
+        height: 25px;
+        filter: invert();
+        transform: rotate(90deg);
+        vertical-align: -4px;
+    }
 
     @media all and (orientation: portrait) {
         #text {
@@ -326,8 +336,8 @@
         }
 
         .directionArrowIcon {
-                vertical-align: -5px;
-            }
+            vertical-align: -5px;
+        }
     }
 </style>
 
@@ -344,7 +354,11 @@
         if (inIframe()) {
             window.top.postMessage("close", "*");
         } else {
-            window.location.href = "/index.html";
+            if (document.referrer) {
+                window.history.back();
+            } else {
+                window.location.href = "/";  // Fallback if no referrer
+            }
         }
     });
 </script>
