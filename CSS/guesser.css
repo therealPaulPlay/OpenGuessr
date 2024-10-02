@@ -3127,6 +3127,12 @@ map::selection {
   min-width: 200px;
 }
 
+.bottomBarIcon {
+  width: 18px !important;
+  height: 18px !important;
+  vertical-align: 1px;
+}
+
 /* Buttons */
 
 .bottomBarButton {
