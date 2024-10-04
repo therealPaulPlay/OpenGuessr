@@ -21,40 +21,75 @@ export function switchAdsToMainScreen() {
     updateAds();
 }
 
+let mainInstance;
+let resultInstance;
+
 function updateAds() {
     if (!admanager || !scope) return;
 
     // Remove all existing ads
-    ['billboard', 'leaderboard', 'mobile_banner'].forEach(placementName => {
+    ["billboard", "leaderboard", "mobile_banner"].forEach(placementName => {
         try {
-            const mainInstance = scope.Config.get(placementName, "main").instance();
-            const resultInstance = scope.Config.get(placementName, "result").instance();
-            if (mainInstance) admanager.removePlacement(mainInstance);
-            if (resultInstance) admanager.removePlacement(resultInstance);
-        } catch(error) {
-            console.error("Error in custom ads.js while attempting to remove ad:", error);
+            if (mainInstance) admanager.removePlacement(mainInstance.instance());
+            if (resultInstance) admanager.removePlacement(resultInstance.instance());
+            
+        } catch (error) {
+            console.error("Error in custom ads.js while attempting to remove ad configurations:", error);
         }
     });
 
     // In this scenario, no main-screen ads should be shown
     const isLandscapeSmall = window.matchMedia('(orientation: landscape) and (max-width: 700px)').matches;
 
-    // Determines whether a desktop or mobile leaderboard ad should be used
-    const usingFloatingResultAd = window.matchMedia('(max-width: 1900px)').matches;
-
     // Add new ads based on current screen
     if (currentScreen == "main" && !isLandscapeSmall) {
-        scope.Config.buildPlacement((configBuilder) => {
-            configBuilder.add('billboard');
-            configBuilder.addDefaultOrUnique('leaderboard').setBreakPoint({ mediaQuery: 'max-width: 1800px' });
-            configBuilder.addDefaultOrUnique('mobile_banner').setBreakPoint({ mediaQuery: 'max-width: 1375px' });
-        }, "main").display("bottomFooterAds");
 
-    } else if (currentScreen == "result" && usingFloatingResultAd) {
-        if (usingFloatingResultAd) {
-            scope.Config.get("leaderboard", "result").display("floatingResultLeaderboardAd");
-        } else {
-            scope.Config.get("leaderboard", "result").display("mobileResultLeaderboardAd");
+        // Config for the main bottom footer ad
+        try {
+            mainInstance = scope.Config.buildPlacement((configBuilder) => {
+                scope.Config.setBreakPoint("desktop", "(min-width:1800px)");
+    
+                configBuilder.add("billboard");
+    
+                configBuilder.addDefaultOrUnique("leaderboard").setBreakPoint({
+                    mediaQuery: "(min-width:1375px) and (max-width:1800px)"
+                });
+    
+                configBuilder.addDefaultOrUnique("mobile_banner").setBreakPoint({
+                    mediaQuery: "max-width: 1375px"
+                });
+    
+            }, "main").display("bottomFooterAds");
+
+        } catch(error) {
+            console.error("Error setting ad configs for main screen:", error);
+        }
+
+    } else if (currentScreen == "result") {
+
+        // Config for the result screen
+        try {
+            if (window.matchMedia('(min-width: 1900px)').matches) {
+                // Leaderboard ad slot for large desktop screens
+                resultInstance = scope.Config.get("leaderboard", "result").display("floatingResultLeaderboardAd");
+
+            } else {
+                resultInstance = scope.Config.buildPlacement((configBuilder) => {
+                    // (Different) Mobile banner ad slot for smaller screens
+                    scope.Config.setBreakPoint("desktop", "(min-width:1900px)");
+
+                    configBuilder.add("mobile_banner");
+                    
+                    // Default option not necessary here, as this slot is mobile only
+                    // It seems like the config won't work without a default option however, which is why it is there but redundant
+                    configBuilder.addDefaultOrUnique("mobile_banner").setBreakPoint({
+                        mediaQuery: "max-width: 1900px"
+                    });
+
+                }, "result").display("mobileResultLeaderboardAd");
+            }
+        } catch(error) {
+            console.error("Error setting ad configs for result screen:", error);
         }
     }
 
@@ -64,7 +99,7 @@ function updateAds() {
 function handleAdManagerPush(_admanager, _scope) {
     admanager = _admanager;
     scope = _scope;
-    
+
     // Initial ad setup
     updateAds();
 }
