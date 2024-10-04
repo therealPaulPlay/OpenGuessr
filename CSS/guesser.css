@@ -4004,6 +4004,7 @@ input[type="checkbox"]:focus {
 .leaderboardAds {
   width: 970px;
   height: 90px;
+  text-align: center;
   overflow: hidden;
 }
 
@@ -4026,6 +4027,9 @@ input[type="checkbox"]:focus {
 #mobileResultLeaderboardAd {
   z-index: 1;
   overflow: hidden;
+  text-align: center;
+  width: 320px;
+  height: 50px;
 }
 
 #floatingResultLeaderboardArea {
@@ -4050,6 +4054,7 @@ input[type="checkbox"]:focus {
   z-index: 1;
   width: 728px;
   height: 90px;
+  text-align: center;
 }
 
 @media (min-width: 1900px) {
