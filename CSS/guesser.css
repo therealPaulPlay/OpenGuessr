@@ -4002,16 +4002,10 @@ input[type="checkbox"]:focus {
 }
 
 .leaderboardAds {
-  width: 970px;
+  width: 728px;
   height: 90px;
   text-align: center;
   overflow: hidden;
-}
-
-@media all and (max-width: 1800px) {
-  .leaderboardAds {
-    width: 728px;
-  }
 }
 
 #mobileResultLeaderboardAdArea {
