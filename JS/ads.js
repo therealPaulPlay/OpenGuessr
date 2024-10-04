@@ -27,16 +27,14 @@ let resultInstance;
 function updateAds() {
     if (!admanager || !scope) return;
 
-    // Remove all existing ads
-    ["billboard", "leaderboard", "mobile_banner"].forEach(placementName => {
-        try {
-            if (mainInstance) admanager.removePlacement(mainInstance.instance());
-            if (resultInstance) admanager.removePlacement(resultInstance.instance());
-            
-        } catch (error) {
-            console.error("Error in custom ads.js while attempting to remove ad configurations:", error);
-        }
-    });
+    // Remove existing ads
+    try {
+        if (mainInstance) admanager.removePlacement(mainInstance.instance());
+        if (resultInstance) admanager.removePlacement(resultInstance.instance());
+
+    } catch (error) {
+        console.error("Error in custom ads.js while attempting to remove ad configurations:", error);
+    }
 
     // In this scenario, no main-screen ads should be shown
     const isLandscapeSmall = window.matchMedia('(orientation: landscape) and (max-width: 700px)').matches;
@@ -48,20 +46,20 @@ function updateAds() {
         try {
             mainInstance = scope.Config.buildPlacement((configBuilder) => {
                 scope.Config.setBreakPoint("desktop", "(min-width:1800px)");
-    
+
                 configBuilder.add("billboard");
-    
+
                 configBuilder.addDefaultOrUnique("leaderboard").setBreakPoint({
                     mediaQuery: "(min-width:1375px) and (max-width:1800px)"
                 });
-    
+
                 configBuilder.addDefaultOrUnique("mobile_banner").setBreakPoint({
                     mediaQuery: "max-width: 1375px"
                 });
-    
+
             }, "main").display("bottomFooterAds");
 
-        } catch(error) {
+        } catch (error) {
             console.error("Error setting ad configs for main screen:", error);
         }
 
@@ -79,7 +77,7 @@ function updateAds() {
                     scope.Config.setBreakPoint("desktop", "(min-width:1900px)");
 
                     configBuilder.add("mobile_banner");
-                    
+
                     // Default option not necessary here, as this slot is mobile only
                     // It seems like the config won't work without a default option however, which is why it is there but redundant
                     configBuilder.addDefaultOrUnique("mobile_banner").setBreakPoint({
@@ -88,7 +86,7 @@ function updateAds() {
 
                 }, "result").display("mobileResultLeaderboardAd");
             }
-        } catch(error) {
+        } catch (error) {
             console.error("Error setting ad configs for result screen:", error);
         }
     }
