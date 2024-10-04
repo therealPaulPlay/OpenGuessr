@@ -45,13 +45,9 @@ function updateAds() {
         // Config for the main bottom footer ad
         try {
             mainInstance = scope.Config.buildPlacement((configBuilder) => {
-                scope.Config.setBreakPoint("desktop", "(min-width:1800px)");
+                scope.Config.setBreakPoint("desktop", "(min-width:1375px)");
 
-                configBuilder.add("billboard");
-
-                configBuilder.addDefaultOrUnique("leaderboard").setBreakPoint({
-                    mediaQuery: "(min-width:1375px) and (max-width:1800px)"
-                });
+                configBuilder.add("leaderboard");
 
                 configBuilder.addDefaultOrUnique("mobile_banner").setBreakPoint({
                     mediaQuery: "max-width: 1375px"
