@@ -3,7 +3,7 @@ const competitionsEndpoint = "https://competitions.openguessr.com/competitions";
 // Return button logic ------------------------------------------------------------------------
 function inIframe() {
     try {
-        return window.self !== window.top;
+        return window.self !== window.parent;
     } catch (e) {
         return true;
     }
@@ -11,7 +11,7 @@ function inIframe() {
 
 document.getElementById("backButton").addEventListener("click", () => {
     if (inIframe()) {
-        window.top.postMessage("close", "*");
+        window.parent.postMessage("close", "*");
     } else {
         if (document.referrer) {
             window.history.back();
@@ -80,7 +80,7 @@ function toggleSection(e) {
 
 function openProfile(id) {
     if (inIframe()) {
-        window.top.postMessage("profile" + id, "*");
+        window.parent.postMessage("profile" + id, "*");
     } else {
         window.location.href = "/index.html?profile=" + id;
     }
@@ -303,8 +303,8 @@ async function enterCompetition(id, token) {
 
                 // go back to main page and start competition
                 if (inIframe()) {
-                    window.top.postMessage("close", "*");
-                    window.top.postMessage("loadCompetition", "*");
+                    window.parent.postMessage("close", "*");
+                    window.parent.postMessage("loadCompetition", "*");
                 } else {
                     window.location.href = "/index.html";
                 }

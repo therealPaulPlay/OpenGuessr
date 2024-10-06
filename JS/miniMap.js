@@ -254,7 +254,11 @@ export function resetMap() {
 // For official countries, adjust the map to zoom in on that country - otherwise just reset to default scale
 async function adjustMapToCountry() {
     const category = localStorage.getItem("selectedCategory");
-    const categoryCountry = category.replace("Category", "");
+    let categoryCountry;
+
+    if (category) {
+        categoryCountry = category.replace("Category", "");
+    }
 
     if (map) {
         if (!officialCountryBounds) {
