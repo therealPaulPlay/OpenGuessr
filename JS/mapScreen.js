@@ -1,7 +1,7 @@
 // Back button and iframe communication + check ---------------------------------------------------
 function inIframe() {
     try {
-        return window.self !== window.top;
+        return window.self !== window.parent;
     } catch (e) {
         return true;
     }
@@ -9,9 +9,9 @@ function inIframe() {
 
 document.getElementById("backButton").addEventListener("click", function () {
     if (inIframe()) {
-        window.top.postMessage("close", "*");
-        window.top.postMessage("reloadCommunityMaps", "*");
-        window.top.postMessage("loadCategory", "*");
+        window.parent.postMessage("close", "*");
+        window.parent.postMessage("reloadCommunityMaps", "*");
+        window.parent.postMessage("loadCategory", "*");
     } else {
         if (document.referrer) {
             window.history.back();
@@ -23,7 +23,7 @@ document.getElementById("backButton").addEventListener("click", function () {
 
 function openProfile(id) {
     if (inIframe()) {
-        window.top.postMessage("profile" + id, "*");
+        window.parent.postMessage("profile" + id, "*");
     } else {
         window.location.href = "/index.html?profile=" + id;
     }
@@ -513,9 +513,9 @@ function instantPlayPopup(mapName) {
         addSelectedMap(mapName);
 
         if (inIframe()) {
-            window.top.postMessage("close", "*");
-            window.top.postMessage("reloadCommunityMaps", "*");
-            window.top.postMessage("reloadCategory", "*");
+            window.parent.postMessage("close", "*");
+            window.parent.postMessage("reloadCommunityMaps", "*");
+            window.parent.postMessage("reloadCategory", "*");
         } else {
             window.location.href = "/";
         }

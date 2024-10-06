@@ -34,7 +34,7 @@ loginSwitchBack.addEventListener("click", toggleForm);
 
 function inIframe() {
   try {
-    return window.self !== window.top;
+    return window.self !== window.parent;
   } catch (e) {
     return true;
   }
@@ -80,7 +80,7 @@ document.getElementById("changePassword").addEventListener("click", () => {
 document.getElementById("backButton").addEventListener("click",
   function () {
     if (inIframe()) {
-      window.top.postMessage("close", "*");
+      window.parent.postMessage("close", "*");
     } else {
       if (document.referrer) {
         window.history.back();

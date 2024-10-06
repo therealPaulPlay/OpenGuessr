@@ -13,7 +13,7 @@ export const supporterLeaderboardEndpoint = `${backendURL}/supporter-leaderboard
 
 function inIframe() {
   try {
-    return window.self !== window.top;
+    return window.self !== window.parent;
   } catch (e) {
     return true;
   }
@@ -42,8 +42,8 @@ export async function loginUser(email, password, errorSource) {
       saveUserData(data);
 
       if (inIframe()) {
-        window.top.postMessage("close", "*");
-        window.top.postMessage("loadAccountStatus", "*");
+        window.parent.postMessage("close", "*");
+        window.parent.postMessage("loadAccountStatus", "*");
       } else {
         if (document.referrer) {
           window.history.back();
