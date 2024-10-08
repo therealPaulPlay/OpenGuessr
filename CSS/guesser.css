@@ -3246,7 +3246,6 @@ map::selection {
   overflow: hidden;
   color: #EEE;
   text-align: center;
-  visibility: hidden;
   opacity: 0;
   pointer-events: none;
   position: fixed;
@@ -3254,7 +3253,7 @@ map::selection {
   height: 100%;
   z-index: 13;
   top: 0;
-  display: flex;
+  display: none; /* changed in code to flex */
   justify-content: center;
   align-items: flex-end;
   transition: opacity 250ms ease-out;
