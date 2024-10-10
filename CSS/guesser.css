@@ -3246,7 +3246,6 @@ map::selection {
   overflow: hidden;
   color: #EEE;
   text-align: center;
-  visibility: hidden;
   opacity: 0;
   pointer-events: none;
   position: fixed;
@@ -3254,7 +3253,7 @@ map::selection {
   height: 100%;
   z-index: 13;
   top: 0;
-  display: flex;
+  display: none; /* changed in code to flex */
   justify-content: center;
   align-items: flex-end;
   transition: opacity 250ms ease-out;
@@ -4004,10 +4003,11 @@ input[type="checkbox"]:focus {
 .leaderboardAds {
   width: 728px;
   height: 90px;
+  text-align: center;
   overflow: hidden;
 }
 
-#resultLeaderboardAdArea {
+#mobileResultLeaderboardAdArea {
   min-width: 330px;
   max-width: 380px;
   height: 50px;
@@ -4015,14 +4015,14 @@ input[type="checkbox"]:focus {
   padding: 5px;
   flex-grow: 1;
   position: relative;
-  display: none; 
-  /* when enabled, should switch between   this and floating 
-  and make overflow of endBottomBar visible at 1900px width */
 }
 
-#resultLeaderboardAd {
+#mobileResultLeaderboardAd {
   z-index: 1;
   overflow: hidden;
+  text-align: center;
+  width: 320px;
+  height: 50px;
 }
 
 #floatingResultLeaderboardArea {
@@ -4047,6 +4047,21 @@ input[type="checkbox"]:focus {
   z-index: 1;
   width: 728px;
   height: 90px;
+  text-align: center;
+}
+
+@media (min-width: 1900px) {
+  #floatingResultLeaderboardArea {
+    display: flex;
+  }
+
+  #mobileResultLeaderboardAdArea {
+    display: none;
+  }
+
+  #endBottomArea {
+    overflow: visible;
+  }
 }
 
 .supporterAdText {
