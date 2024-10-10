@@ -133,8 +133,12 @@ export function enableResultScreen(guessLat, guessLong) {
 
         loadResultScreenXP(distance);
 
-        document.getElementById("EndOverlay").style.opacity = "100%";
+        document.getElementById("EndOverlay").style.opacity = "0%";
         document.getElementById("EndOverlay").style.display = "flex";
+
+        setTimeout(() => {
+            document.getElementById("EndOverlay").style.opacity = "100%";
+        }), 50;
 
         refreshPlacements();
 
