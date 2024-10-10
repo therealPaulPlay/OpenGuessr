@@ -9,6 +9,7 @@ import { leaveCompetition, loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
 import { initializeRewardAd } from "./rewardedAds.js";
 import { handleMapUnhover, resetMap } from "./miniMap.js";
+import { refreshPlacements } from "./ads.js";
 
 //How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
@@ -138,8 +139,14 @@ export function enableResultScreen(guessLat, guessLong) {
 
         loadResultScreenXP(distance);
 
-        document.getElementById("EndOverlay").style.opacity = "100%";
-        document.getElementById("EndOverlay").style.visibility = "visible";
+        document.getElementById("EndOverlay").style.opacity = "0%";
+        document.getElementById("EndOverlay").style.display = "flex";
+
+        setTimeout(() => {
+            document.getElementById("EndOverlay").style.opacity = "100%";
+        }), 50;
+
+        refreshPlacements();
 
         document.getElementById("distanceText").innerText = resultString;
         document.getElementById("motivationText").innerText = extraMessage;
@@ -181,8 +188,9 @@ export function disableResultScreen() {
         document.getElementById("EndOverlay").style.opacity = "0%";
 
         hideEndOverlayTimeout = setTimeout(function () {
-            document.getElementById("EndOverlay").style.visibility = "hidden";
+            document.getElementById("EndOverlay").style.display = "none";
             resultScreenEnabled = false;
+            refreshPlacements();
         }, 250);
 
         resultScreenEnabled = false;
