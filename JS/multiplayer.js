@@ -5,7 +5,7 @@ import { startTimer } from "./timer";
 import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { selectedBadge, selectedPinIndex, supporterLevel } from "./profileView.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
-import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, updateMinimapWithTeamMarkers } from "./miniMap.js";
+import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, resetMap, updateMinimapWithTeamMarkers } from "./miniMap.js";
 import { playSound } from "./soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
 import { loadFriends, sendMatchInvite } from "./friendMenu.js";
@@ -138,13 +138,14 @@ function setMultiplayerWindowSelection(window) {
     document.getElementById("roomCreationMap").style.display = "flex";
     document.getElementById("roomcodeLink").style.display = "none";
     setJoinButtonState();
-    leaveMultiplayerRound(); //leave round and disconnect all peers if you are the host
+    leaveMultiplayerRound(); // leave round and disconnect all peers if you are the host
+    
     clearInterval(loadFriendsInterval);
 
     if (window == "main") {
         multiplayerWindowMain.style.display = "block";
+        
         // load friends
-        disconnectAllPeersAndCloseRoom();
         if (isAuthenticated) {
             loadFriends(true);
             startLoadFriendsInterval();
@@ -463,13 +464,14 @@ function setMultiplayerUI() {
             e.style.opacity = "0.5";
         });
 
-        //hide country picker UI
+        // hide country picker UI
         document.getElementById("countryGuesserSelector").style.display = "none";
 
         // disable result screen if it is open (edge case)
         if (document.getElementById("EndOverlay").style.opacity != "0%") {
             disableResultScreen();
         }
+
     } else {
         categoryButton.style.opacity = "1";
         categoryButton.style.pointerEvents = "auto";
@@ -493,7 +495,7 @@ function setMultiplayerUI() {
     }
 }
 
-//if the timer expires for peers or host
+// if the timer expires for peers or host
 
 let endMultiplayerRoundIfGuessMissing;
 
@@ -1665,7 +1667,7 @@ export function leaveMultiplayerRound() {
     }
 
     if (isHost) {
-        disconnectAllPeersAndCloseRoom(); //only does this if there are clients connected (connectedClientsCount != 0)
+        disconnectAllPeersAndCloseRoom(); // only does this if there are clients connected (connectedClientsCount != 0)
     } else {
         if (conn) {
             try {
@@ -1676,7 +1678,7 @@ export function leaveMultiplayerRound() {
         }
     }
 
-    try { multiplayerTimer.stopTimer(); } catch { }; //has to be in try catch
+    try { multiplayerTimer.stopTimer(); } catch { }; // has to be in try catch
     clearInterval(countdownInterval);
     clearTimeout(endMultiplayerRoundIfGuessMissing);
     multiplayer = false;
@@ -1702,9 +1704,11 @@ export function leaveMultiplayerRound() {
     highestMultiplayerSupporterLevel = 1
     friendDuel = false;
 
-    //reset UI things
+    // reset Guess/Confirm button text
     document.getElementById("guessText").textContent = "Guess";
-    document.getElementById("confirmButton").style.pointerEvents = "auto";
+
+    // Set confirm button state to ensure pointer events are correct (this function calls the confirmButtonState func) and reset minimap markers
+    resetMap();
 
     if (mapCategory != "country") {
         document.getElementById("map").style.visibility = "visible";
@@ -1726,7 +1730,7 @@ export function leaveMultiplayerRound() {
     }
 }
 
-//Streetview Overlay UI -------------------------------------------------------------------------------------------------------------------
+// Streetview Overlay UI -------------------------------------------------------------------------------------------------------------------
 let endMultiplayerRoundButton = document.getElementById("endMultiplayerRoundButton");
 let endMultiplayerRematchButton = document.getElementById("endMultiplayerRematchButton");
 
