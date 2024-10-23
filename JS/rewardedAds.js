@@ -1,81 +1,89 @@
-// Global variables
+let isRewardVideoReady = false;
+let firstLoad = true;
+let playVideoTriggered = false;
+
+let currentDismissFunction = null;
+let currentRewardFunction = null;
 let rewardClaimed = false;
-var rewardedSlot;
-var adLoadTimeout;
 
-// Function to initialize the rewarded ad
+// Initial setup (outside of any function, runs when the script is loaded)
+self.__VM ??= [];
+self.__VM.push(function (admanager, scope) {
+    scope.Config.get('gpt_reward').display({ body: true }).setKnown('gptReward');
+    scope.Config.getKnown('gptReward').rewardedApi((api) => {
+        // Dispatched when api is loading
+        api.on('loading', (reward) => {
+            isRewardVideoReady = false;
+        });
+
+        // Dispatched if no available video
+        api.on('empty', (reward) => {
+            isRewardVideoReady = false;
+            if (!firstLoad && playVideoTriggered) {
+                playVideoTriggered = false;
+                if (currentDismissFunction) currentDismissFunction(true, false);
+            } else {
+                firstLoad = false;
+            }
+        });
+
+        // Dispatched when api is ready, and okay to play
+        api.on('ready', (reward) => {
+            isRewardVideoReady = true;
+            if (!firstLoad && playVideoTriggered) {
+                playVideoTriggered = false;
+                showVideo();
+            }
+        });
+
+        // Dispatched when the video is done playing
+        api.on('rewarded', (reward) => {
+            isRewardVideoReady = false;
+            playVideoTriggered = false;
+            rewardClaimed = true;
+            if (currentRewardFunction) currentRewardFunction();
+            api.clear(); // Call to close the video player
+        });
+
+        // Dispatched when video is closed or skipped while playing
+        api.on('closed', (reward) => {
+            isRewardVideoReady = false;
+            playVideoTriggered = false;
+            firstLoad = false;
+            if (currentDismissFunction) currentDismissFunction(false, rewardClaimed);
+            api.clear();
+            rewardClaimed = false; // Reset for next time
+        });
+    });
+});
+
+// This function is equivalent to playRewardVideo() in the documentation
 export function initializeRewardAd(dismissFunction, rewardFunction) {
-    // Set a timeout to handle the scenario where no ad is returned in 10 seconds
-    adLoadTimeout = setTimeout(handleNoAdReturned, 10000);
+    currentDismissFunction = dismissFunction;
+    currentRewardFunction = rewardFunction;
     rewardClaimed = false;
+    playVideoTriggered = true;
 
-    function handleNoAdReturned() {
-        dismissFunction(true);
-        try {
-            googletag.destroySlots([rewardedSlot]);
-        } catch (error) {
-            console.error("Error destroying slot: " + error);
-        }
+    if (isRewardVideoReady) {
+        firstLoad = false;
+        showVideo();
+    } else {
+        reloadReward();
     }
-
-    // Function to safely initialize Google Tag
-    function initializeGoogleTag() {
-        if (typeof window.googletag !== "undefined" && googletag.cmd) {
-            // Safe to proceed with initializing rewarded ad
-            googletag.cmd.push(() => {
-                rewardedSlot = googletag.defineOutOfPageSlot(
-                    // Venatus will supply separate line below as this is a demo tag
-                    // Actual tag: /21726375739,23114577746/ca-video-pub-5781531207509232-tag/openguessr.com_Rewarded_Video
-                    // Test tag: /21726375739/ca-video-pub-5781531207509232-tag/Max_Rewarded_Video_Test'
-                    '/21726375739,23114577746/ca-video-pub-5781531207509232-tag/openguessr.com_Rewarded_Video',
-                    googletag.enums.OutOfPageFormat.REWARDED
-                );
-
-                if (rewardedSlot) {
-                    rewardedSlot.addService(googletag.pubads());
-
-                    googletag.pubads().addEventListener('rewardedSlotReady', function (event) {
-                        clearTimeout(adLoadTimeout); // Clear the timeout when an ad is ready
-                        event.makeRewardedVisible();
-                    });
-
-                    googletag.pubads().addEventListener('rewardedSlotClosed', () => {
-                        setTimeout(() => {
-                            dismissFunction(false, rewardClaimed);
-                            try {
-                                googletag.destroySlots([rewardedSlot]);
-                            } catch (error) {
-                                console.error("Error destroying slot: " + error);
-                            }
-                        }, 350);
-                    });
-
-                    googletag.pubads().addEventListener('rewardedSlotGranted', function (event) {
-                        rewardClaimed = true;
-                        rewardFunction();
-                    });
-
-                    googletag.enableServices();
-                    googletag.display(rewardedSlot);
-                }
-            });
-        } else {
-            // Retry initialization after a short delay if googletag is not ready yet
-            setTimeout(initializeGoogleTag, 300); // Increased delay to 300 milliseconds
-        }
-    }
-
-    // Call the function to start the initialization process
-    initializeGoogleTag();
 }
 
-// Trigger Google Tag initialization once everything is loaded
-window.onload = () => {
-    setTimeout(() => {
-        try {
-            window.googletag = window.googletag || { cmd: [] };
-        } catch (error) {
-            console.error("Google tag cannot be assigned: " + error);
-        }
-    }, 250);
-};
+// Internal function to actually show the video
+function showVideo() {
+    self.__VM.push(function (admanager, scope) {
+        scope.Config.getKnown('gptReward').rewardedApi((api) => {
+            api.show();
+        });
+    });
+}
+
+// Internal function to reload the reward ad
+function reloadReward() {
+    self.__VM.push(function (admanager, scope) {
+        scope.Config.getKnown('gptReward').reload();
+    });
+}
