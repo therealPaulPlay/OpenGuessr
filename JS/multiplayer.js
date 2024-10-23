@@ -5,7 +5,7 @@ import { startTimer } from "./timer";
 import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { selectedBadge, selectedPinIndex, supporterLevel } from "./profileView.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
-import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, resetMap, updateMinimapWithTeamMarkers } from "./miniMap.js";
+import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, setConfirmButtonState, updateMinimapWithTeamMarkers } from "./miniMap.js";
 import { playSound } from "./soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
 import { loadFriends, sendMatchInvite } from "./friendMenu.js";
@@ -1708,7 +1708,7 @@ export function leaveMultiplayerRound() {
     document.getElementById("guessText").textContent = "Guess";
 
     // Set confirm button state to ensure pointer events are correct (this function calls the confirmButtonState func) and reset minimap markers
-    resetMap();
+    setConfirmButtonState();
 
     if (mapCategory != "country") {
         document.getElementById("map").style.visibility = "visible";
