@@ -168,14 +168,19 @@ export function changeCategory(category, regenerate) {
     }
 }
 
-// Start specific official map from link
+// Start specific official map from link -------------------------------------------------------------------------------------------------------------------------
 let urlParams = new URLSearchParams(window.location.search);
 
 try {
-    let mapFromLink = urlParams.get("play-map");
+    let mapFromLink = urlParams.get("play-map").toLocaleLowerCase();
 
     if (mapFromLink) {
-        changeCategory(mapFromLink);
+        if (document.getElementById(`${mapFromLink}Category`)) {
+            changeCategory(mapFromLink);
+        } else {
+            errorPopup("Map not available", "Unfortunately, this map doesn't exist (yet). It will likely be released in the future! Feel free to search for similar community maps.", "Map not found", false, true);
+        }
+
         history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
     }
 } catch { }
@@ -216,7 +221,7 @@ export function checkGenerationTypeAndGenerate() {
             console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
         }
     } else if (multiplayer) {
-        //If multiplayer is enabled
+        // If multiplayer is enabled
         try {
             setHardMode(false);
 
@@ -251,7 +256,7 @@ export function checkGenerationTypeAndGenerate() {
     }
 }
 
-//Load the map category using localstorage ---------------------------------------------------------------------
+// Load the map category using localstorage ---------------------------------------------------------------------
 
 export function loadMapCategory() {
     let storedSelectedCategory = localStorage.getItem("selectedCategory");
