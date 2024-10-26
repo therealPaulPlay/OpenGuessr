@@ -11,15 +11,17 @@ import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playing
 import { setImageGuessrEnabled } from "./imageGuesser.js";
 
 //Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
+
+// Seperate countries with spaces using _ !
 let Category = {
     STANDARD: "standard",
     CAPITAL: "capital",
     FAMOUS: "famous",
     COUNTRY: "country",
     IMAGE: "image",
-    USA: "usa",
+    UNITED_STATES: "united_states",
     GERMANY: "germany",
-    UK: "uk",
+    UNITED_KINGDOM: "united_kingdom",
     FRANCE: "france",
     SPAIN: "spain",
     POLAND: "poland",
@@ -32,7 +34,7 @@ let Category = {
     AUSTRIA: "austria",
     NORWAY: "norway",
     AUSTRALIA: "australia",
-    BRASIL: "brasil",
+    BRAZIL: "brazil",
     RUSSIA: "russia",
     SLOVAKIA: "slovakia",
     ROMANIA: "romania",
@@ -43,8 +45,8 @@ let Category = {
     JAPAN: "japan",
     INDONESIA: "indonesia",
     AFRICA: "africa",
-    SOUTHAMERICA: "southamerica",
-    NORTHAMERICA: "northamerica",
+    SOUTH_AMERICA: "south_america",
+    NORTH_AMERICA: "north_america",
     ASIA: "asia",
     EUROPE: "europe",
     OCEANIA: "oceania"
@@ -172,10 +174,11 @@ export function changeCategory(category, regenerate) {
 let urlParams = new URLSearchParams(window.location.search);
 
 try {
-    let mapFromLink = urlParams.get("play-map").toLocaleLowerCase();
+    let mapFromLink = urlParams.get("play-map").toLowerCase();
 
     if (mapFromLink) {
         if (document.getElementById(`${mapFromLink}Category`)) {
+            console.log("Loading category " + mapFromLink);
             changeCategory(mapFromLink);
         } else {
             errorPopup("Map not available", "Unfortunately, this map doesn't exist (yet). It will likely be released in the future! Feel free to search for similar community maps.", "Map not found", false, true);
