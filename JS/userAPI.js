@@ -42,10 +42,10 @@ export async function loginUser(email, password, errorSource) {
       saveUserData(data);
 
       if (inIframe()) {
-        window.parent.postMessage("close", "*");
         window.parent.postMessage("loadAccountStatus", "*");
         window.parent.postMessage(`id ${data['id']}`, "*");
         window.parent.postMessage(`token ${data['token']}`, "*");
+        window.parent.postMessage("close", "*");
       } else {
         if (document.referrer) {
           window.history.back();
