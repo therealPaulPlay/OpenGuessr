@@ -45,7 +45,7 @@ export async function loginUser(email, password, errorSource) {
         window.parent.postMessage("close", "*");
         window.parent.postMessage("loadAccountStatus", "*");
         window.parent.postMessage(`id ${data['id']}`, "*");
-        window.parent.postMessage(`id ${data['token']}`, "*");
+        window.parent.postMessage(`token ${data['token']}`, "*");
       } else {
         if (document.referrer) {
           window.history.back();
