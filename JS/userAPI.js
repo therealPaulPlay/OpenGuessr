@@ -44,6 +44,8 @@ export async function loginUser(email, password, errorSource) {
       if (inIframe()) {
         window.parent.postMessage("close", "*");
         window.parent.postMessage("loadAccountStatus", "*");
+        window.parent.postMessage(`id ${data['id']}`, "*");
+        window.parent.postMessage(`id ${data['token']}`, "*");
       } else {
         if (document.referrer) {
           window.history.back();
@@ -348,8 +350,8 @@ export async function updateUsername(token, id, requestedUsername, errorSource) 
 
 //executed after successful login
 async function saveUserData(data) {
-  if (data['access_token'] && data['id']) {
-    localStorage.setItem("bearer", data['access_token']);
+  if (data['token'] && data['id']) {
+    localStorage.setItem("bearer", data['token']);
     localStorage.setItem("id", data['id']);
   }
   localStorage.setItem("username", data['userName']);
