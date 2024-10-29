@@ -114,6 +114,7 @@ let privacyButton = document.getElementById("privacyButton");
 privacyButton.addEventListener("click", function () { playSound("basic_button"); toggleSettingsWindow(); showPageBrowser("/legal.html"); });
 
 document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html"); });
+document.getElementById("discoverEducation").addEventListener("click", function () { playSound("basic_button"); window.open("https://education.openguessr.com", '_blank').focus() });
 
 //Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
