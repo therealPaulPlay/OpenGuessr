@@ -3501,7 +3501,7 @@ map::selection {
   background-color: white;
   background: linear-gradient(0.60turn, white, rgb(220, 220, 220));
   flex-grow: 1;
-  max-width: 175px;
+  max-width: 200px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
