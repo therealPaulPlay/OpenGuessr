@@ -34,6 +34,11 @@ body {
   background-color: #13151c;
 }
 
+a, a:visited, a:link, a:hover {
+  text-decoration: none;
+  color: #FFFFFF;
+}
+
 h1,
 h2,
 h3 {
@@ -3492,11 +3497,11 @@ map::selection {
   white-space: nowrap;
   transition: all 250ms ease;
   border-radius: 5px;
-  color: black;
+  color: black !important;
   background-color: white;
   background: linear-gradient(0.60turn, white, rgb(220, 220, 220));
   flex-grow: 1;
-  max-width: 200px;
+  max-width: 175px;
   overflow: hidden;
   text-overflow: ellipsis;
 }
@@ -3507,6 +3512,11 @@ map::selection {
 
 .countryCategory {
   background: linear-gradient(0.60turn, white, #ffcaca);
+}
+
+.educationCategory {
+  background: linear-gradient(0.60turn, #fdd, #ffa08a);
+  filter: brightness(78%);
 }
 
 .communityMap {
@@ -3580,7 +3590,7 @@ map::selection {
 .discoverIcon {
   width: 25px;
   height: auto;
-  vertical-align: -6px;
+  vertical-align: -4.5px;
   margin-left: 10px;
 }
 
@@ -3595,7 +3605,7 @@ map::selection {
   background-color: rgba(239, 223, 255, 0.2);
   min-width: 65%;
   width: calc(100% - 40px);
-  padding: 10px 12px;
+  padding: 8px 12px;
   transition: filter 250ms ease;
 }
 
@@ -3648,18 +3658,6 @@ button {
 #privacyNotice {
   font-size: 20px;
   opacity: 50%;
-}
-
-a:link {
-  color: #FFFFFF;
-}
-
-a:visited {
-  color: #FFFFFF;
-}
-
-a:hover {
-  color: #FFFFFF;
 }
 
 .socialBarButton {
