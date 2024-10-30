@@ -66,7 +66,6 @@ export function setHardMode(enabled) {
 
 let hardModeTitle = document.getElementById("hardModeTitle");
 let hardModeSubtitle = document.getElementById("hardModeSubtitle");
-let resetButton = document.getElementById("resetButton");
 let startHardModePromise;
 
 export function checkHardModeTimeout() {

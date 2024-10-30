@@ -1,5 +1,6 @@
 import { closePopup, errorPopup } from "./errorHandling.js";
-import { reloadIframe, loadAndInitializeLibrary, compareDistances, calculateDistances, loadResultMap } from "./main.js";
+import { reloadIframe, loadAndInitializeLibrary, compareDistances, calculateDistances, currentStreetviewLat, currentStreetviewLong } from "./main.js";
+import { loadResultMap } from "./resultMap.js";
 import { setUserXP, uiSetUserXP, isAuthenticated, checkAuthenticationStatus, loadResultScreenXP } from "./accountLogic.js";
 import { leaveMultiplayerRound, toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
@@ -8,10 +9,10 @@ import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, 
 import { leaveCompetition, loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
 import { initializeRewardAd } from "./rewardedAds.js";
-import { handleMapUnhover, resetMap } from "./miniMap.js";
+import { resetMap } from "./miniMap.js";
 import { refreshPlacements } from "./ads.js";
 
-//How to play - Window ---------------------------------------------------------------------------------------
+// How to play - Window ---------------------------------------------------------------------------------------
 let helpButton = document.getElementById("helpButton");
 helpButton.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -36,7 +37,6 @@ function toggleHelpWindow() {
 }
 
 // Social Links --------------------------------------------------------------------------
-
 document.getElementById("leaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
     goToLeaderboard();
@@ -51,7 +51,7 @@ function goToLeaderboard() {
     showPageBrowser("/leaderboard.html");
 }
 
-//Toggle Map on mobile devices ---------------------------------------------------------------------------------------
+// Toggle Map on mobile devices ---------------------------------------------------------------------------------------
 let toggleMapButton = document.getElementById("floatingMapButton");
 
 let mapExpanded = true;
@@ -93,14 +93,14 @@ export function hideToggleMapButtonIfMobile(hide) {
     }
 }
 
-//Universal Popup Window (Account info and How to play window) ------------------------------------------------------------
+// Universal Popup Window (Account info and How to play window) ---------------------------------------------------------------------
 let closeButton = document.getElementById("popupClose");
 closeButton.addEventListener("click", () => {
     closePopup();
     playSound("basic_button");
 });
 
-//Various buttons and links ------------------------------------------------------------------------------------------------
+//Various buttons and links -----------------------------------------------------------------------------------------------------------------
 let resetBTN = document.getElementById("resetButton");
 resetBTN.addEventListener("click", function () { playSound("reload"); reloadIframe(); });
 
@@ -194,7 +194,7 @@ export function disableResultScreen() {
     }
 }
 
-//Extended Navbar dropdown (Category Selection Area) ------------------------------------------------------------------------------
+// Map Category menu (extended navbar) -------------------------------------------------------------------------------------------------
 let extendedNavbar = document.getElementById("extendedNavbar");
 let categoryMenuButton = document.getElementById("categoryMenuButton");
 let topButtonArea = document.getElementById("topButtonArea");
@@ -340,7 +340,7 @@ document.getElementById("socialPopupJoin").addEventListener("click", function ()
     }, 200)
 });
 
-//reveal compass -------------------------------------------------------------------------------------
+// Reveal compass ----------------------------------------------------------------------------------------
 let revealCompass = document.getElementById("revealCompass");
 revealCompass.addEventListener("click", (e) => {
     e.stopPropagation();
@@ -372,15 +372,17 @@ function setMapOffset() {
 
 setMapOffset();
 
-//switch UI toggles back to standard on window resize ----------------------------------------------
+// Switch UI toggles back to standard on window resize ----------------------------------------------
 
-window.addEventListener("resize", (event) => {
-    mapExpanded = false;
-    toggleMap();
-    toggleCategoryMenu(true);
-});
+if (window) {
+    window.addEventListener("resize", (event) => {
+        mapExpanded = false;
+        toggleMap();
+        toggleCategoryMenu(true);
+    });
+}
 
-//Username UI endless scroll --------------------------------------------------------------------------------------------------
+// Username UI endless scroll --------------------------------------------------------------------------------------------------
 
 // Check if the text length exceeds the threshold
 export function checkTextLength() {
@@ -395,8 +397,7 @@ export function checkTextLength() {
     }
 }
 
-//Mobile UI Menu -----------------------------------------------------------------------------------------
-
+// Mobile UI Menu Buttons -----------------------------------------------------------------------------------------
 document.getElementById("mobileLeaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
     goToLeaderboard();
@@ -417,7 +418,7 @@ document.getElementById("mobileCompetitionsButton").addEventListener("click", fu
     showPageBrowser("/competitions.html");
 });
 
-//Prevent automatic "last button press" with space bar or enter key ------------------------------------------------------------------
+// Prevent automatic "last button press" with space bar or enter key ------------------------------------------------------------------
 document.addEventListener('keydown', function (event) {
     var tag = event.target.tagName.toLowerCase();
     if (event.key === 'Enter' || event.key === ' ') {
@@ -427,7 +428,7 @@ document.addEventListener('keydown', function (event) {
     }
 });
 
-//Settings - Window ---------------------------------------------------------------------------------------
+// Settings - Window ---------------------------------------------------------------------------------------
 let settingsButton = document.getElementById("settingsButton");
 settingsButton.addEventListener("click", () => {
     playSound("basic_button");
@@ -455,7 +456,7 @@ function toggleSettingsWindow() {
     }
 }
 
-//Unit switch between kilometers and miles
+// Unit switch between kilometers and miles
 
 let kilometersButton = document.getElementById("unitSwitchKilometers");
 let milesButton = document.getElementById("unitSwitchMiles");
@@ -529,7 +530,7 @@ document.addEventListener("fullscreenchange", () => {
     }
 });
 
-//Check if element is clickable ----------------------------------------------------------
+// Check if element is clickable ----------------------------------------------------------
 
 export function isElementClickable(element) {
     if (!element || element.offsetParent === null || getComputedStyle(element).visibility === 'hidden') {
@@ -892,7 +893,16 @@ async function startAdSupporterTimer(prefix = "Boost active. Remaining: ") {
     })();
 }
 
-// Notification -----------------------------------------------------------------------------------------
+// Open map locations on google maps --------------------------------------------------------------------------------------------------
+
+function openLocationOnMap() {
+    playSound("basic_button");
+    window.open("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + currentStreetviewLat + "," + currentStreetviewLong, '_blank').focus();
+}
+
+document.getElementById("endScreenOpenLocation").addEventListener("click", openLocationOnMap);
+
+// In-game Notifications -------------------------------------------------------------------------------------------
 
 const notificationBar = document.getElementById("notificationBar");
 
@@ -906,7 +916,7 @@ export async function showNotification(text, acceptFunction, dismissFunction, sh
     if (notificationBar.style.opacity == "1" && notificationBar.style.visibility == "visible") {
         hideNotification();
 
-        await new Promise (resolve => setTimeout(resolve, 250));
+        await new Promise(resolve => setTimeout(resolve, 250));
     };
 
     notificationBar.style.top = "65px";
@@ -988,7 +998,7 @@ export function setAdVisibility(visible) {
     }
 }
 
-// Detect intent to leave or reload website using mouse movements  -----------------------------------------------------------------------------
+// Detect intent to leave or reload website using mouse movements  --------------------------------------------------------------------------------
 
 let exitBarTimeout;
 let exitBarDisabled = false;
@@ -1125,8 +1135,7 @@ async function loadMonthlySupportedAmount() {
 
 }
 
-// Captcha Popup for the minimap to prevent bots and malicious map load attempts --------------------------
-
+// Captcha Popup for the minimap to prevent bots and malicious map load attempts ------------------------------------------------
 const captchaPopup = document.getElementById("captchaPopup");
 
 let captchaRendered = false;
@@ -1156,7 +1165,7 @@ document.getElementById("captchaClose").addEventListener("click", () => {
     hideCaptchaPopup();
 });
 
-// Animate all uiWindow elements --------------------------------------------------------------------------
+// Animate all uiWindow elements (with the .uiWindow class) --------------------------------------------------------------------------
 
 // Function to add the animation class
 function handleVisibilityChange(entries) {
@@ -1184,8 +1193,7 @@ document.querySelectorAll('.uiWindow').forEach(element => {
     observer.observe(element);
 });
 
-// In-App page browser -----------------------------------------------------------------------------------
-
+// In-App page browser -------------------------------------------------------------------------------------------------------
 let pageBrowserWindow = document.getElementById("pageBrowserWindow");
 
 export function showPageBrowser(page, login) {

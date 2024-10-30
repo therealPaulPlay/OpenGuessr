@@ -10,9 +10,10 @@ import { toggleStreakWindow } from "./streakAdPopup.js";
 import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
 import { setImageGuessrEnabled } from "./imageGuesser.js";
 
-//Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
+// Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 
 // Seperate countries with spaces using _ !
+// This is the list of categories to immediately attach event listeners to - this is the only use of this object!
 let Category = {
     STANDARD: "standard",
     CAPITAL: "capital",
@@ -52,9 +53,9 @@ let Category = {
     OCEANIA: "oceania"
 };
 
-export let mapCategory = Category.STANDARD; // Default category
+export let mapCategory = "standard"; // Default category
 
-//Community Categories Generation ----------------------------------------------------------------------------
+// Community Categories Generation --------------------------------------------------------------------------------
 export function loadCommunityCategories() {
     try {
         document.getElementById("communityMapArea").innerHTML = ""; // reset element
@@ -62,7 +63,7 @@ export function loadCommunityCategories() {
         let mapArray = [];
         mapArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 
-        //if key doesn't exist yet, add a few default picks
+        // if key doesn't exist yet, add a few default picks
         if (localStorage.getItem("addedCommunityMaps") == null) {
             mapArray = ["Indoor", "Airports", "Bridges", "Racetracks"];
             localStorage.setItem("addedCommunityMaps", JSON.stringify(mapArray));
@@ -73,7 +74,7 @@ export function loadCommunityCategories() {
             categoryMenu.innerHTML += `<button class="category communityMap" id="community_${element.toLowerCase()}Category"
             type="button">${element}</button>`;
 
-            //add to categories
+            // add to categories
             Category["COMMUNITY_" + element.toUpperCase()] = "community_" + element.toLowerCase();
         });
 
@@ -81,7 +82,6 @@ export function loadCommunityCategories() {
         console.error("Error loading community maps from localstorage: " + error);
     }
 }
-
 
 function addCommunityCreditTag() {
     let communityCategories = document.getElementsByClassName("communityMap");
@@ -186,9 +186,9 @@ try {
 
         history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
     }
-} catch { }
+} catch {}
 
-//Check categories and initiate location generation  ---------------------------------------------------------------------------------------------------------------
+// Check categories and initiate location generation  ---------------------------------------------------------------------------------------------------------------
 
 loadCompetition(false);
 
@@ -272,7 +272,7 @@ loadMapCategory();
 changeCategory(mapCategory, true);
 
 
-//Next round / new location -------------------------------------------------------------------------------------
+// Next round / new location -------------------------------------------------------------------------------------
 let nextRound = document.getElementById("nextRound");
 nextRound.addEventListener("click", () => {
     if (resultScreenEnabled) {

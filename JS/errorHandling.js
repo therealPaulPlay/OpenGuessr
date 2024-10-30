@@ -1,5 +1,4 @@
-//This is being used to better catch and analyze streetview errors. (and any future error messages that could be related to an account system etc.)
-
+// This is being used to better catch and analyze errors - it displays a custom error message, together with an error code, which ist most likely the console error
 let showErrors = true;
 
 export function errorPopup(title, description, errorCode, reload, hideDontShowAgainOption) {
@@ -29,6 +28,7 @@ export function errorPopup(title, description, errorCode, reload, hideDontShowAg
 
 export function closePopup() {
   document.getElementById("errorPopup").style.display = "none";
+  
   if (document.getElementById("popupClose").innerHTML != "Close") {
     localStorage.setItem("selectedCategory", "standard");
     location.reload();
@@ -46,4 +46,5 @@ try {
   console.warn("Error checkbox does not exist on this page");
 }
 
+// Usage:
 // errorPopup("Streetview link is invalid","Link: https://errorsareawesome.saidnooneever.ml", "Testerror description", false);

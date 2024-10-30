@@ -118,8 +118,8 @@ async function getCoordsFromLocationServer() {
             // Check if the response is successful
             if (response.ok) {
                 const data = await response.json();
-                standardLocations = data.locations; //the array is in locations: {}
-                return await selectLocationFromServer(); //pick one new location for playing
+                standardLocations = data.locations; // the array is in locations: {}
+                return await selectLocationFromServer(); // pick one new location for playing
 
             } else {
                 console.error("Location fetch failed. Server returned error:", response.status);
@@ -165,10 +165,11 @@ async function selectLocationFromServer() {
 async function loadBackupLocations(error) {
     console.log("Loading backup locations.");
     errorPopup("Location server error", "Loading local backup locations instead. ", "Error: " + error);
+
     return await getCoordsFromJSON("backup");
 }
 
-//Get community map coordinates ---------------------------------------------------------------------------
+// Get community map coordinates ---------------------------------------------------------------------------
 
 let communityLocations = null;
 let lastCommunityLocationIndexes = [];
@@ -187,7 +188,7 @@ async function getCommunityMapCoordinates() {
             if (response.ok) {
                 const data = await response.json();
                 currentlyLoadedCommunityMap = mapCategory;
-                communityLocations = data.map_data.locations; //the array is in locations: {}
+                communityLocations = data.map_data.locations; // the array is in locations: {}
                 lastCommunityLocationIndexes = []; // reset the array of the last locations which is in place to prevent duplicates
                 return await selectLocationFromMapsServer(); // pick one new location for playing
 
@@ -211,7 +212,7 @@ async function getCommunityMapCoordinates() {
 }
 
 async function selectLocationFromMapsServer() {
-    //now, pick a random location
+    // Now, pick a random location
     let resultLocationsArray = [];
 
     try {
@@ -237,7 +238,7 @@ async function selectLocationFromMapsServer() {
     return resultLocationsArray;
 }
 
-// get Competition coordinates ---------------------------------------------------------------------------------------------
+// Get Competition coordinates ---------------------------------------------------------------------------------------------
 
 async function getCompetitionCoordinates() {
     let resultLocationsArray = [];
