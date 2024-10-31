@@ -6,7 +6,7 @@ import { setSupporterPitch, showConfirmPopup } from "./mainUI.js";
 import { checkIfFriendsWithId, sendFriendRequest } from "./friendMenu.js";
 // This is used to dynamically load the profile view
 
-//Profile Window ---------------------------------------------------------------------------------------------
+// Profile Window ---------------------------------------------------------------------------------------------
 
 let lastProfileOwnerYou = false;
 export let yourLoadedProfileData = "none";

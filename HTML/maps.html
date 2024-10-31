@@ -482,6 +482,11 @@
             cursor: pointer;
         }
 
+        .linkToMapConverter {
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
         .uploadInfo {
             border-radius: 10px;
             outline: none;
@@ -795,6 +800,14 @@
             width: 90%;
         }
 
+        .infoNoteBoxMarginTop {
+            margin-top: 15px;
+        }
+
+        #infoTextMapConverter {
+            margin-bottom: 20px;
+        }
+
         @media all and (orientation: portrait),
         all and (max-width: 800px) {
             #navbarTitle {
@@ -994,6 +1007,10 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                 <input type="file" id="jsonUpload" accept="application/json">
                 <p id="fileName">Pick file</p>
             </button>
+            <div class="infoNoteBox infoNoteBoxMarginTop">
+                <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+                <p id="infoTextMapConverter">You can generate a map using a tool like Map-Generator and then convert it to the OpenGuessr format. Learn more <a target="_blank" href="https://education.openguessr.com/tools/map-converter" class="linkToMapConverter">here</a>.</p>
+            </div>
             <div class="buttonBox">
                 <button id="uploadClose" class="standardButton closeButton">Close</button>
                 <button id="uploadConfirm" class="standardButton playButton">Submit</button>

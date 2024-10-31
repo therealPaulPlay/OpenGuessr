@@ -4,6 +4,7 @@ import { enableResultScreen, hideCaptchaPopup, hideToggleMapButtonIfMobile, isEl
 import { playSound } from "./soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 import { errorPopup } from "./errorHandling.js";
+import { currentlyLoadedLocationsArray } from "./locationGeneration.js";
 
 
 // Initialize the map with correct provider --------------------------------------------------------------------
@@ -80,7 +81,7 @@ async function requestMapLoad() {
         if (response.ok) {
             const data = await response.json();
 
-            await new Promise( async (resolve) => {
+            await new Promise(async (resolve) => {
                 if (data.apiKey.keyString) {
 
                     // Load the Google Maps API with the provided key
@@ -225,8 +226,6 @@ let multiplayerMiniMarkers = []; // team markers
 
 export let addedMarkers = []; // this is needed for this api to delete them again
 
-let officialCountryBounds;
-
 //reset the map - used for going to the next round. 
 export function resetMap() {
     document.getElementById("mapHolder").classList.remove("mapHolderToResult");
@@ -246,41 +245,72 @@ export function resetMap() {
         map.overlayMapTypes.clear();
     }
 
-    //reset the guess button as well
+    // reset the guess button as well
     hasGuessed = false;
     setConfirmButtonState();
 }
 
-// For official countries, adjust the map to zoom in on that country - otherwise just reset to default scale
+let previousLocationArray = [];
+let currentCenterLat = 0;
+let currentCenterLong = 0;
+
+let currentZoom = 2;
+
+// For most maps, adjust the boundaries to the map's locations
 async function adjustMapToCountry() {
     const category = localStorage.getItem("selectedCategory");
-    let categoryCountry = "";
-
-    if (category) {
-        categoryCountry = category.replace("Category", "") || "";
-    }
 
     if (map) {
-        if (!officialCountryBounds) {
-            try {
-                officialCountryBounds = await fetch("/JSON/official_countries_center.json");
-                officialCountryBounds = await officialCountryBounds.json();
-            } catch(error) {
-                console.error("Error fetching country bounds:", error);
-            }
-        }
-
-        if (officialCountryBounds && !categoryCountry.includes("community") && officialCountryBounds.hasOwnProperty(categoryCountry)) {
-            try {
-                const countryProperty = officialCountryBounds[categoryCountry];
-                const lat = countryProperty.center.lat;
-                const long = countryProperty.center.long;
-                const zoom = countryProperty.zoom;
-
-                map.panTo({ lat: lat, lng: long }); // reset center
-                map.setZoom(zoom);
-            } catch(error) {
-                console.error("Error setting correct map zoom and pan for official country (miniMap.js):", error);
+        if (!playingCompetition && category != "standard" && category != "capital" && category != "famous") {
+            if (currentlyLoadedLocationsArray == previousLocationArray) {
+                // If the location array has not changed, re-use the calculated values
+                map.panTo({ lat: currentCenterLat, lng: currentCenterLong });
+                map.setZoom(currentZoom);
+            } else {
+                // If the location array is new, calculate new map zoom and center coords
+                let south = Infinity;
+                let north = -Infinity;
+                let west = Infinity;
+                let east = -Infinity;
+    
+                currentlyLoadedLocationsArray.forEach(([lat, lon]) => {
+                    lat = parseFloat(lat);
+                    lon = parseFloat(lon);
+    
+                    if (lat > north) north = lat;
+                    if (lat < south) south = lat;
+                    if (lon > east) east = lon;
+                    if (lon < west) west = lon;
+                });
+    
+                // Calculate the center point
+                const centerLat = (north + south) / 2;
+                const centerLon = (east + west) / 2;
+    
+                // Calculate the longer side
+                const latDiff = north - south;
+                const lonDiff = east - west;
+                const diameter = Math.max(latDiff, lonDiff);
+    
+                // Define function to determine zoom level from diameter
+                function calculateZoom(diameter) {
+                    if (diameter > 60) return 2;       // entire planet view
+                    if (diameter > 20) return 3;       // large country
+                    if (diameter > 10) return 4;       // medium country
+                    if (diameter > 5) return 5;        // small country
+                    return Math.min(10, 6 + Math.floor(5 - diameter)); // smaller region, minimum zoom at 10
+                }
+    
+                // Calculate zoom level
+                const zoomLevel = calculateZoom(diameter);
+               
+                currentCenterLat = centerLat;
+                currentCenterLong = centerLon;
+                currentZoom = zoomLevel;
+                previousLocationArray = currentlyLoadedLocationsArray;
+    
+                map.panTo({ lat: centerLat, lng: centerLon });
+                map.setZoom(zoomLevel);
             }
         } else {
             map.panTo({ lat: 20, lng: 0 }); // reset center

@@ -2715,7 +2715,7 @@ search {
   /* shadow for image. left, top, blur, color */
 }
 
-#GuesserWindow {
+#PanoramaIframe {
   transition: all 250ms;
   background: #13151c;
   -moz-user-select: none;

@@ -1,5 +1,4 @@
-// This file is used for the Image Guesser gamemode
-
+// This code is used for the Image Guesser game mode
 export let imageGuesserEnabled = false;
 
 const overlay = document.getElementById("imageGuesserOverlay");
