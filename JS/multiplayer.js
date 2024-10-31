@@ -454,6 +454,9 @@ function setMultiplayerUI() {
         document.getElementById("mapModeIndicator").style.display = "flex";
         document.getElementById("multiplayerChat").style.display = "flex";
         document.getElementById("multiplayerLeave").style.display = "block";
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.bottom = "63px";
+        });
         document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
 
         document.querySelectorAll(".mobileHideInMultiplayer").forEach((e) => {
@@ -483,6 +486,12 @@ function setMultiplayerUI() {
             e.style.pointerEvents = "auto";
             e.style.opacity = "1";
         });
+
+        document.querySelectorAll(".mapAttribution").forEach((element) => {
+            element.style.bottom = "0px";
+        });
+        mobileMenuButton.style.opacity = "1";
+        mobileMenuButton.style.pointerEvents = "auto";
     }
 }
 

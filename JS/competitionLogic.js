@@ -65,7 +65,10 @@ export function setCompetitionUI(enable) {
                 e.style.pointerEvents = "none";
                 e.style.opacity = "0.5";
             });
-
+          
+            document.querySelectorAll(".mapAttribution").forEach((element) => { // remove this for js maps api
+                element.style.bottom = "63px";
+            });
         } else {
             document.getElementById("mapModeIndicator").style.display = "none";
             document.getElementById("competitionLeave").style.display = "none";
@@ -79,6 +82,10 @@ export function setCompetitionUI(enable) {
             document.querySelectorAll(".mobileHideInMultiplayer").forEach((e) => {
                 e.style.pointerEvents = "auto";
                 e.style.opacity = "1";
+            });
+          
+            document.querySelectorAll(".mapAttribution").forEach((element) => { // remove this for js maps api
+                element.style.bottom = "0px";
             });
         }
     } catch (error) {
