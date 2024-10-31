@@ -3868,6 +3868,36 @@ input[type="checkbox"]:focus {
   pointer-events: none;
 }
 
+/* Leaflet branch only, Custom Map Attribution */
+
+.mapAttribution {
+  position: absolute;
+  z-index: 10;
+}
+
+#mapAttributionLogo {
+  bottom: 0px;
+  left: 15px;
+}
+
+#mapAttribution {
+  bottom: 0px;
+  right: 10px;
+  padding: 1px;
+  background-color: rgba(255, 255, 255, 0.5);
+  color: black;
+  font-size: 11px;
+  opacity: 0.7;
+  padding-inline: 10px;
+  border-bottom-right-radius: 10px;
+}
+
+#mapAttribution p {
+  font-family: Roboto !important;
+}
+
+/* End leaflet exclusive part */
+
 #streakWatchAd {
   padding: 10px 20px;
 }

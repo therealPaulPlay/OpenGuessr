@@ -1,89 +1,103 @@
-import { map, addedMarkers, initializeMapIfNotAlready } from './miniMap.js';
-import { currentStreetviewLat, currentStreetviewLong } from './main.js';
+import { currentStreetviewLat, currentStreetviewLong, clamp } from './main.js';
 import { multiplayer, multiplayerGuessesLocationsArray } from './multiplayer.js';
 import { countryGuesserMode } from './countryGuesser.js';
 import { selectedPinIndex } from './profileView.js';
+import { getMapSource } from './miniMap.js';
 
-async function awaitMapInit() {
-    return new Promise(resolve =>  document.addEventListener("mapInitialized", () => { resolve(); }));
+export let resMap;
+
+let tileLayer;
+
+function setTileLayer() {
+    tileLayer = L.tileLayer(getMapSource(), {
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        maxZoom: 20,
+        minZoom: 2,
+        detectRetina: true,
+    });
 }
 
-export async function loadResultMap(playersLat, playersLong) {
+setTileLayer(); // set initial value for tileLayer
 
-    if (!map) {
-        // Trigger the captcha popup, which results in a map load, then await the map load
-        initializeMapIfNotAlready();
-        await awaitMapInit();
+export function setResultMapTileLayer() {
+    try {
+        if (resMap) {
+            resMap.removeLayer(tileLayer);
 
-        if (!map) {
-            console.error("Map not properly inizialized - exiting result map load function.");
-            return;
+            setTileLayer();
+
+            tileLayer.addTo(resMap);
         }
+    } catch (e) {
+        console.error("ResMap TileLayer adding error: " + e);
     }
-    
-    // Set map center to the currentStreetviewLat and currentStreetviewLong
-    map.setCenter({ lat: currentStreetviewLat, lng: currentStreetviewLong });
-    map.setZoom(3);
+}
 
-    // Define custom icons for markers
-    let yourIcon = {
-        url: './IMG/your_marker' + selectedPinIndex + '.png',
-        size: new google.maps.Size(35, 35),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17.5, 34),
-        scaledSize: new google.maps.Size(35, 35)
-    };
+let destinationMarker;
 
-    let greenIcon = {
-        url: './IMG/result_marker.png',
-        size: new google.maps.Size(35, 35),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17.5, 34),
-        scaledSize: new google.maps.Size(35, 35)
-    };
+export function loadResultMap(playersLat, playersLong) {
+    // this deletes the map only if it already exists - otherwise it will never exist - important for going to the next round
+    if (resMap && resMap.remove) {
+        resMap.off();
+        resMap.remove();
+    }
 
-    // Create LatLng objects for current and player positions
-    let curLatLng = new google.maps.LatLng(currentStreetviewLat, currentStreetviewLong);
+    // this makes it so the map in the result screen is focused on the center between the point
+    // and zooming out so both points are visible on the map.
+    resMap = document.getElementById("resultMap");
+    resMap = L.map('resultMap', { zoomControl: false }).setView([currentStreetviewLat, currentStreetviewLong], 10); // basically only for country guessr
+    setResultMapTileLayer();
+
+    if (countryGuesserMode && !multiplayer) {
+        resMap.setZoom(3); //set default zoom
+    }
+
+    const yourIcon = new L.Icon({
+        iconUrl: "./IMG/your_marker" + selectedPinIndex + ".png",
+        iconSize: [35, 35],
+        iconAnchor: [17.5, 34],
+        popupAnchor: [1, -34]
+    });
+
+    const greenIcon = new L.Icon({
+        iconUrl: './IMG/result_marker.png',
+        iconSize: [35, 35],
+        iconAnchor: [17.5, 34],
+        popupAnchor: [1, -34]
+    });
+
+    // used to create the line between the points
+    let curLatLng = new L.LatLng(currentStreetviewLat, currentStreetviewLong);
+    let pointList = null;
     let playerLatLng;
-    let pointList;
+    let polyList;
+    let playerMarker;
 
-    // Check if in multiplayer mode or country guesser mode
     if (!countryGuesserMode || multiplayer) {
-        playerLatLng = new google.maps.LatLng(playersLat, playersLong);
-        pointList = new google.maps.LatLngBounds();
-        pointList.extend(curLatLng);
-        pointList.extend(playerLatLng);
+        playerLatLng = new L.LatLng(playersLat, playersLong);
+        polyList = [curLatLng, playerLatLng];
+        pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
+        playerMarker;
 
-        // Place the player marker (where the player thinks the location is)
-        let playerMarker = new google.maps.Marker({
-            position: playerLatLng,
-            map: map,
-            icon: yourIcon
-        });
+        // this places the Player Marker (where the player thinks the location is)
+        playerMarker = new L.Marker(playerLatLng, { icon: yourIcon });
+        if (multiplayer) {
+            playerMarker.bindTooltip("You",
+                {
+                    permanent: true,
+                    direction: 'right'
+                });
+        }
 
-        addedMarkers.push(playerMarker);
+        playerMarker.addTo(resMap);
 
-        // Create InfoWindow for playerMarker
-        let playerInfoWindow = new google.maps.InfoWindow({
-            content: "You" // Replace with dynamic content if needed
-        });
-
-        // Open InfoWindow when marker is clicked
-        playerMarker.addListener('click', function() {
-            playerInfoWindow.open(map, playerMarker);
-        });
-
-        let polyline = new google.maps.Polyline({
-            path: [curLatLng, playerLatLng],
-            map: map,
-            strokeWeight: 1,
-            strokeColor: "black"
-        });
-
-        addedMarkers.push(polyline);
+        // this draws the line to the goal
+        const polygon = L.polygon(polyList, {
+            color: "black", weight: "1", opacity: "0.75"
+        }).addTo(resMap);
     }
 
-    // Handle multiplayer markers
+    // pins of other players
     if (multiplayer) {
         multiplayerGuessesLocationsArray.forEach(function (element) {
             let newMarkerLat = element[0];
@@ -91,7 +105,7 @@ export async function loadResultMap(playersLat, playersLong) {
             let newMarkerPinIndex = element[2];
             let associatedPlayerName = element[3];
 
-            // Handle edge cases
+            // checks for edge cases
             if (newMarkerLat == null || newMarkerLong == null || isNaN(newMarkerLat)) {
                 newMarkerLat = 0;
                 newMarkerLong = 0;
@@ -102,82 +116,68 @@ export async function loadResultMap(playersLat, playersLong) {
                 console.error("Provided maker pin index form peer is null");
             }
 
-            // Place multiplayer markers if not player's marker
+            // only place the multiplayer marker if it isn't your marker!
             if (newMarkerLat != playersLat || newMarkerLong != playersLong) {
-
-                let newMultiplayerIcon = {
-                    url: "./IMG/your_marker" + newMarkerPinIndex + ".png",
-                    size: new google.maps.Size(35, 35),
-                    origin: new google.maps.Point(0, 0),
-                    anchor: new google.maps.Point(17.5, 34),
-                    scaledSize: new google.maps.Size(35, 35)
-                };
-
-                let multiplayerLatLng = new google.maps.LatLng(newMarkerLat, newMarkerLong);
-
-                let multiplayerMarker = new google.maps.Marker({
-                    position: multiplayerLatLng,
-                    map: map,
-                    icon: newMultiplayerIcon,
+                let newMultiplayerIcon = new L.Icon({
+                    iconUrl: "./IMG/your_marker" + newMarkerPinIndex + ".png",
+                    iconSize: [35, 35],
+                    iconAnchor: [17.5, 34],
+                    popupAnchor: [1, -34],
                 });
 
-                addedMarkers.push(multiplayerMarker);
+                let multiplayerLatLng = new L.LatLng(newMarkerLat, newMarkerLong);
 
-                // Create InfoWindow for multiplayerMarker
-                let multiplayerInfoWindow = new google.maps.InfoWindow({
-                    content: associatedPlayerName // Replace with dynamic content if needed
-                });
+                let multiplayerMarker = new L.Marker(multiplayerLatLng, { icon: newMultiplayerIcon });
+                multiplayerMarker.bindTooltip(associatedPlayerName,
+                    {
+                        permanent: true,
+                        direction: 'right'
+                    });
+                multiplayerMarker.setOpacity(0.6);
+                multiplayerMarker.addTo(resMap);
 
-                // Open InfoWindow when marker is clicked
-                multiplayerMarker.addListener('click', function() {
-                    multiplayerInfoWindow.open(map, multiplayerMarker);
-                });
-
-                let multiplayerPolyline = new google.maps.Polyline({
-                    path: [curLatLng, multiplayerLatLng],
-                    strokeColor: "black",
-                    strokeWeight: 1,
-                    strokeOpacity: 0.25,
-                    map: map
-                });
-
-                addedMarkers.push(multiplayerPolyline);
+                let multiplayerPolyList = [curLatLng, multiplayerLatLng]; // takes the cur lat lng from the guess (the destination) + the current guess from other player
+                
+                const multiplayerPolygon = L.polygon(multiplayerPolyList, {
+                    color: "black", weight: "1", opacity: "0.25"
+                }).addTo(resMap);
             }
         });
     }
 
-    // Fit the map bounds to show all markers and lines (with padding)
     if (!countryGuesserMode || multiplayer) {
-        map.fitBounds(pointList, { padding: { top: 150, right: 250, bottom: 150, left: 250 }});
-        if (map.getZoom() > 4) {
-            map.setZoom(map.getZoom() - 2);
-        } else {
-            map.setZoom(map.getZoom() - 1);
-        }
+        resMap.fitBounds(pointList, { padding: [150, 250], animate: false });
     }
 
-    // Place the "correct" marker reflecting the target location
-    let destinationMarker = new google.maps.Marker({
-        position: { lat: currentStreetviewLat, lng: currentStreetviewLong },
-        map: map,
-        icon: greenIcon
-    });
+    // this places the "correct" marker that actually reflects the target location
+    destinationMarker = new L.Marker([currentStreetviewLat, currentStreetviewLong], { icon: greenIcon });
+    destinationMarker.addTo(resMap);
 
-    addedMarkers.push(destinationMarker);
-
-    // Fly to the destination marker after a delay
     setTimeout(flyToDestination, 1500);
 }
 
 function flyToDestination() {
-    // Check if EndOverlay is fully visible before flying to the destination
-    if (document.getElementById("EndOverlay").style.opacity == "1" && map) {
-        let currentZoom = map.getZoom();
-        let newZoom = Math.min(currentZoom + 2, map.maxZoom || 21); // Adjust 2 to the desired zoom increment and 21 to the max zoom level if you have a custom max
+    if (document.getElementById("EndOverlay").style.opacity == "1" && resMap) {
+        var lat = currentStreetviewLat;
+        var lng = currentStreetviewLong;
+        var zoom = clamp(resMap.getZoom() + 2, 0, 18);
+        var animate = {
+            animate: true,
+            duration: 1
+        };
 
-        let latLng = { lat: currentStreetviewLat, lng: currentStreetviewLong };
-        
-        map.setZoom(newZoom);
-        map.setCenter(latLng);
+
+        // move the marker up a notch on phones
+        if (window.innerHeight > window.innerWidth) {  // Check if it's a mobile device in portrait mode
+            var mapHeight = resMap.getSize().y; // Get the map's height in pixels
+            var offset = mapHeight / 25; // Adjust to place the marker slightly above the center (1/4 of the map's height)
+            var targetPoint = resMap.latLngToContainerPoint([lat, lng]); // Convert the lat/lng to container point
+            targetPoint.y += offset; // Adjust the point to move it slightly up
+            var newLatLng = resMap.containerPointToLatLng(targetPoint); // Convert back to lat/lng
+
+            resMap.flyTo(newLatLng, zoom, animate);
+        } else {
+            resMap.flyTo([lat, lng], zoom, animate);
+        }
     }
 }

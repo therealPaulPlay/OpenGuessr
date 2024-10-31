@@ -490,8 +490,6 @@ function setMultiplayerUI() {
         document.querySelectorAll(".mapAttribution").forEach((element) => {
             element.style.bottom = "0px";
         });
-        mobileMenuButton.style.opacity = "1";
-        mobileMenuButton.style.pointerEvents = "auto";
     }
 }
 

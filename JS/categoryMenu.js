@@ -1,4 +1,5 @@
-import { generateNewLocation, resMap } from "./main.js";
+import { generateNewLocation } from "./main.js";
+import { resMap } from "./resultMap.js";
 import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
 import { setHardMode } from "./hardMode.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";

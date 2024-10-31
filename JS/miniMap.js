@@ -5,6 +5,7 @@ import { playSound } from "./soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 import { errorPopup } from "./errorHandling.js";
 import { currentlyLoadedLocationsArray } from "./locationGeneration.js";
+import { setResultMapTileLayer } from "./resultMap.js";
 
 
 // Initialize the map with correct provider --------------------------------------------------------------------
