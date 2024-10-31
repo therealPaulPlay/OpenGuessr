@@ -140,7 +140,7 @@ function createCategoryChangeListener(category) {
     };
 }
 
-export function changeCategory(category, regenerate) {
+export async function changeCategory(category, regenerate) {
     // Disable all category buttons
     const categoryButtons = document.querySelectorAll("[id$='Category']");
     categoryButtons.forEach(button => button.classList.add("categoryDisabled"));
@@ -160,13 +160,15 @@ export function changeCategory(category, regenerate) {
     }
 
     if (regenerate) {
-        if (!resultScreenEnabled) {
-            resetMap(); // reset map if not on result screen to clear markers + make guess button grey again
-        }
-        checkGenerationTypeAndGenerate();
         setTimeout(() => {
             toggleCategoryMenu(true);
         }, 200);
+
+        await checkGenerationTypeAndGenerate();
+        
+        if (!resultScreenEnabled) {
+            resetMap(); // reset map if not on result screen to clear markers + make guess button grey again
+        }
     }
 }
 
@@ -186,13 +188,13 @@ try {
 
         history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
     }
-} catch {}
+} catch { }
 
 // Check categories and initiate location generation  ---------------------------------------------------------------------------------------------------------------
 
 loadCompetition(false);
 
-export function checkGenerationTypeAndGenerate() {
+export async function checkGenerationTypeAndGenerate() {
     try { competitionTimer.stopTimer(); } catch { }; // has to be in try catch
     document.getElementById("mapTimer").textContent = "00" + ":" + "00"; // reset the timer visually
     setCountryGuesserMode(false);
@@ -204,21 +206,21 @@ export function checkGenerationTypeAndGenerate() {
 
         //pick between json and maps api loading depending on the category type
         if (mapCategory != "standard" && mapCategory != "country" && mapCategory != "image" && !mapCategory.includes("community")) {
-            generateNewLocation("JSON");
+            await generateNewLocation("JSON");
 
         } else if (mapCategory == "country") {
             setCountryGuesserMode(true);
-            generateNewLocation("JSON");
+            await generateNewLocation("JSON");
 
         } else if (mapCategory == "image") {
             setImageGuessrEnabled(true);
-            generateNewLocation("JSON");
+            await generateNewLocation("JSON");
 
         } else if (mapCategory == "standard") {
-            generateNewLocation("SDK");
+            await generateNewLocation("SDK");
 
         } else if (mapCategory.includes("community")) {
-            generateNewLocation("COMMUNITY");
+            await generateNewLocation("COMMUNITY");
 
         } else {
             console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
@@ -230,22 +232,22 @@ export function checkGenerationTypeAndGenerate() {
 
             if (isHost) {
                 if (mapCategory != "standard" && mapSupportsMultiplayer(mapCategory) && !mapCategory.includes("community")) {
-                    generateNewLocation("JSON");
+                    await generateNewLocation("JSON");
                 } else if (mapCategory == "standard") {
-                    generateNewLocation("SDK");
+                    await generateNewLocation("SDK");
 
                 } else if (mapCategory.includes("community")) {
-                    generateNewLocation("COMMUNITY");
+                    await generateNewLocation("COMMUNITY");
 
                 } else {
                     //if the map category is an unsupported multiplayer category, such as hard, switch to standard
-                    changeCategory("standard", true); //this will re-run checkGenerationTypeAndGenerate
+                    changeCategory("standard", true); // this will re-run checkGenerationTypeAndGenerate
                     setTimeout(function () {
                         errorPopup("Unsupported Multiplayer Map", "This map category is not available for multiplayer and was automatically changed to Standard.", "Map unsupported", false);
                     }, 3500);
                 }
             } else {
-                generateNewLocation("FROMHOST");
+                await generateNewLocation("FROMHOST");
             }
         } catch (error) {
             console.error("Error loading multiplayer location in categoryMenu.js Error: ", error)
@@ -254,7 +256,7 @@ export function checkGenerationTypeAndGenerate() {
     } else if (playingCompetition) {
         if (checkCompetitionRoundStatus(false)) {
             setHardMode(false);
-            generateNewLocation("COMPETITION");
+            await generateNewLocation("COMPETITION");
         }
     }
 }

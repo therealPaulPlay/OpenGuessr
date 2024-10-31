@@ -25,19 +25,20 @@ export async function getLocationCoordinates(type) {
     }
 }
 
+export let currentlyLoadedLocationsArray; // Currently loaded JSON array [] with all locations of the map
 
 // Get Location from JSON (Legacy/Custom Map creation method) ----------------------------------------------------------------------------------------------------
-let listOfLocations = [];
 let jsonResponse;
 let lastGuessesIndexes = []; //to prevent repetition
-let currentlyLoadedJson;
 
 let guessIndex;
+
+let currentJsonName;
 
 
 // Load location JSON files
 async function loadLocationJSON(jsonName) {
-    if (currentlyLoadedJson != jsonName) {
+    if (currentJsonName != jsonName) {
         try {
             let response = null;
 
@@ -48,9 +49,10 @@ async function loadLocationJSON(jsonName) {
             }
 
             jsonResponse = await response.json();
-            currentlyLoadedJson = jsonName; // set currently loaded json to the new one
+            currentJsonName = jsonName; // set currently loaded json to the new one
             lastGuessesIndexes = []; // reset previously played indexes
-            listOfLocations = jsonResponse.locations;
+            currentlyLoadedLocationsArray = jsonResponse.locations;
+
 
         } catch (error) {
             //choose standard and instantly reload (if categories get renamed / get deleted-> this happens)
@@ -63,10 +65,9 @@ async function loadLocationJSON(jsonName) {
 
 // This will be called in main.js when a new location is being generated
 async function getCoordsFromJSON(category) {
-
     let resultLocationsArray;
 
-    if (currentlyLoadedJson != category) {
+    if (currentJsonName !== category) {
         try {
             await loadLocationJSON(category);
         } catch (error) {
@@ -77,18 +78,18 @@ async function getCoordsFromJSON(category) {
     try {
 
         do {
-            guessIndex = Math.floor(Math.random() * listOfLocations.length);
+            guessIndex = Math.floor(Math.random() * currentlyLoadedLocationsArray.length);
         } while (lastGuessesIndexes.includes(guessIndex));
 
         lastGuessesIndexes.unshift(guessIndex); // add guessIndex at the front of the array
 
-        if (lastGuessesIndexes.length > listOfLocations.length / 2) {
+        if (lastGuessesIndexes.length > currentlyLoadedLocationsArray.length / 2) {
             lastGuessesIndexes.pop(); // if the array is longer than 50% of the total amount, pop the last one out
         }
 
-        const resultLat = Number(listOfLocations[guessIndex][0]);
-        const resultLong = Number(listOfLocations[guessIndex][1]);
-        const additionalProperty = listOfLocations[guessIndex][2]; // only available for certain modes (like country guesser, image guesser..). This could be the country, the image URL etc.
+        const resultLat = Number(currentlyLoadedLocationsArray[guessIndex][0]);
+        const resultLong = Number(currentlyLoadedLocationsArray[guessIndex][1]);
+        const additionalProperty = currentlyLoadedLocationsArray[guessIndex][2]; // only available for certain modes (like country guesser, image guesser..). This could be the country, the image URL etc.
 
         resultLocationsArray = [resultLat, resultLong, additionalProperty];
     } catch (error) {
@@ -119,6 +120,7 @@ async function getCoordsFromLocationServer() {
             if (response.ok) {
                 const data = await response.json();
                 standardLocations = data.locations; // the array is in locations: {}
+                currentlyLoadedLocationsArray = standardLocations;
                 return await selectLocationFromServer(); // pick one new location for playing
 
             } else {
@@ -141,17 +143,17 @@ async function selectLocationFromServer() {
     try {
 
         do {
-            guessIndex = Math.floor(Math.random() * standardLocations.length);
+            guessIndex = Math.floor(Math.random() * currentlyLoadedLocationsArray.length);
         } while (lastStandardLocationIndexes.includes(guessIndex));
 
         lastStandardLocationIndexes.unshift(guessIndex); // add guessIndex at the front of the array
 
-        if (lastStandardLocationIndexes.length > standardLocations.length / 2) {
+        if (lastStandardLocationIndexes.length > currentlyLoadedLocationsArray.length / 2) {
             lastStandardLocationIndexes.pop(); // if the array is longer than half of the total standard location amount, pop the last one out
         }
 
-        const resultLat = Number(standardLocations[guessIndex][0]);
-        const resultLong = Number(standardLocations[guessIndex][1]);
+        const resultLat = Number(currentlyLoadedLocationsArray[guessIndex][0]);
+        const resultLong = Number(currentlyLoadedLocationsArray[guessIndex][1]);
 
         resultLocationsArray = [resultLat, resultLong];
     } catch (error) {
@@ -171,13 +173,12 @@ async function loadBackupLocations(error) {
 
 // Get community map coordinates ---------------------------------------------------------------------------
 
-let communityLocations = null;
 let lastCommunityLocationIndexes = [];
 let currentlyLoadedCommunityMap = "";
 
 async function getCommunityMapCoordinates() {
 
-    if (currentlyLoadedCommunityMap !== mapCategory || !communityLocations) {
+    if (currentlyLoadedCommunityMap !== mapCategory || !currentlyLoadedLocationsArray) {
         try {
             const response = await fetch("https://maps.openguessr.com/maps/" + mapCategory.replace("community_", ""), {
                 method: 'GET',
@@ -188,7 +189,7 @@ async function getCommunityMapCoordinates() {
             if (response.ok) {
                 const data = await response.json();
                 currentlyLoadedCommunityMap = mapCategory;
-                communityLocations = data.map_data.locations; // the array is in locations: {}
+                currentlyLoadedLocationsArray = data.map_data.locations; // the array is in locations: {}
                 lastCommunityLocationIndexes = []; // reset the array of the last locations which is in place to prevent duplicates
                 return await selectLocationFromMapsServer(); // pick one new location for playing
 
@@ -218,17 +219,17 @@ async function selectLocationFromMapsServer() {
     try {
 
         do {
-            guessIndex = Math.floor(Math.random() * communityLocations.length);
+            guessIndex = Math.floor(Math.random() * currentlyLoadedLocationsArray.length);
         } while (lastCommunityLocationIndexes.includes(guessIndex));
 
         lastCommunityLocationIndexes.unshift(guessIndex); // add guessIndex at the front of the array
 
-        if (lastCommunityLocationIndexes.length > communityLocations.length / 2) {
+        if (lastCommunityLocationIndexes.length > currentlyLoadedLocationsArray.length / 2) {
             lastCommunityLocationIndexes.pop(); // if the array is longer than half of the total amount, pop last one out
         }
 
-        const resultLat = Number(communityLocations[guessIndex][0]);
-        const resultLong = Number(communityLocations[guessIndex][1]);
+        const resultLat = Number(currentlyLoadedLocationsArray[guessIndex][0]);
+        const resultLong = Number(currentlyLoadedLocationsArray[guessIndex][1]);
 
         resultLocationsArray = [resultLat, resultLong];
     } catch (error) {
