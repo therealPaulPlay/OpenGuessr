@@ -1,23 +1,21 @@
-/*these imports are being handled and performed by Webpack. Note that errorHandling.js is still being included
+/* These imports are being handled and performed by Webpack. Note that errorHandling.js is still being included
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
 
 import { getMapSource } from './miniMap.js';
-import { selectedPinIndex } from './profileView.js';
 import { resultScreenEnabled, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
 import { checkHardModeTimeout } from './hardMode.js';
-import { multiplayer, startMultiplayerRound, isHost, multiplayerGuessesLocationsArray } from './multiplayer.js';
+import { multiplayer, startMultiplayerRound, isHost } from './multiplayer.js';
 import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } from './countryGuesser.js';
-import { playSound } from './soundManager.js';
 import { checkStartCompetitionRound } from './competitionLogic.js';
 import { imageGuesserEnabled, loadImageFromUrl } from './imageGuesser.js';
 
-//default coords of the location
+// default coords of the location
 export let currentStreetviewLat = 0;
 export let currentStreetviewLong = 0;
 
-//Coordinates to country --------------------------------------------------------------------------
+// Coordinates to country --------------------------------------------------------------------------
 
 let gridData = null;
 
@@ -41,7 +39,7 @@ export function getCountryFromCoords(lat, lon) {
     }
 }
 
-//Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
+// Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
 
 export async function generateNewLocation(type) {
     let newLocationArray;
@@ -106,7 +104,7 @@ export function calculateDistances(mapsLat, mapsLong) {
 }
 
 export function compareDistances(distance) {
-    //compares how big the distance is and enables result screen with a message.
+    // compares how big the distance is and enables result screen with a message.
     if (!resultScreenEnabled) {
 
         let finalResult;
@@ -167,8 +165,7 @@ export function compareDistances(distance) {
     }
 }
 
-//Load result Map (resMap) ------------------------------------------------------------------------------------------------
-
+// STARTING HERE; MOVE TO NEW FILE
 export let resMap;
 
 let tileLayer;
@@ -344,7 +341,9 @@ function flyToDestination() {
     }
 }
 
-//clamp function 
+// END MOVE
+
+// Clamp function (Global) ----------------------------------------------------------------------------------------------------------------------
 export function clamp(num, min, max) {
     return num <= min
         ? min
@@ -353,16 +352,7 @@ export function clamp(num, min, max) {
             : num
 }
 
-//Open map locations on google maps --------------------------------------------------------------------------------------------------
-
-document.getElementById("endScreenOpenLocation").addEventListener("click", openLocationOnMap);
-
-function openLocationOnMap() {
-    playSound("basic_button");
-    window.open("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + currentStreetviewLat + "," + currentStreetviewLong, '_blank').focus();
-}
-
-//Load the Main StreetView Iframe -------------------------------------------------------------------------------------------------------------
+// Load the Main StreetView Iframe -------------------------------------------------------------------------------------------------------------
 let loadingLink = "/loader.html";
 
 export function loadIframe(lat, long) {
@@ -377,7 +367,7 @@ export function loadIframe(lat, long) {
     let initialIframeLoad = true;
 
     // Reference to the iframe
-    const iframe = document.getElementById("GuesserWindow");
+    const iframe = document.getElementById("PanoramaIframe");
 
     // Define a function to handle iframe load event
     const handleLoad = () => {
@@ -405,7 +395,7 @@ export function loadIframe(lat, long) {
 export function reloadIframe() {
     document.getElementById("BeforeOverlay").style.opacity = "100";
     document.getElementById("BeforeOverlay").style.visibility = "visible";
-    document.getElementById("GuesserWindow").setAttribute("src", loadingLink);
+    document.getElementById("PanoramaIframe").setAttribute("src", loadingLink);
     window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 400);
 
 }

@@ -1,4 +1,4 @@
-window['gtag_enable_tcf_support'] = true;
+window['gtag_enable_tcf_support'] = true; // Listen to any CMP (= Consent Management Platform, basically cookie screen) that is tfc enabled, then grab consent from there
 
 const imported = document.createElement('script');
 imported.src = "https://www.googletagmanager.com/gtag/js?id=G-DXD64B7ZDX";

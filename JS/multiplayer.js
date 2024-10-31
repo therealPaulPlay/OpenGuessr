@@ -10,7 +10,7 @@ import { playSound } from "./soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
 import { loadFriends, sendMatchInvite } from "./friendMenu.js";
 
-//Global UI --------------------------------------------------------------------------------------------
+// Global UI --------------------------------------------------------------------------------------------
 export let coordsFromHost = [35.7072457, 139.863412]; // assign default to prevent blackscreen on link join
 
 let socialMenuMultiplayerButton = document.getElementById("multiplayerButton");
@@ -168,7 +168,7 @@ function setMultiplayerWindowSelection(window) {
     }
 }
 
-//Join page ----------------------------------------------------------------------------------------------
+// Join page ----------------------------------------------------------------------------------------------
 
 multiplayerJoin.addEventListener("click", () => {
     //disable join button for 1s to prevent spamming from causing issues
@@ -205,7 +205,7 @@ function setJoinButtonState() {
     }
 }
 
-//Host page ------------------------------------------------------------------------------------------------
+// Host page ------------------------------------------------------------------------------------------------
 multiplayerHost.addEventListener("click", () => {
     createRoom(roundAmountText.textContent, roundLengthText.textContent);
 });
@@ -437,7 +437,7 @@ function toggleMultiplayerRestriction() {
     setRestriction(multiplayerRestriction);
 }
 
-//Game Ui ------------------------------------------------------------------------------------------------------------------------
+// Game Ui ----------------------------------------------------------------------------------------------------------------------------------
 export let multiplayer = false;
 
 function setMultiplayerUI() {
@@ -765,14 +765,14 @@ export let peerId;
 export let isHost = false;
 export let connectedPeers = [];
 
-//Chat -----------------------------------------------------------------------------------------------------
+// Chat -----------------------------------------------------------------------------------------------------
 let chatBox = document.getElementById("multiplayerMessageBox");
 
 function resetChat() {
     chatBox.textContent = "";
 }
 
-//mainly for peers if they receive a message
+// mainly for peers if they receive a message
 async function addToChat(text) {
     const profanityList = [
         "hate ", "idiot", "fuck", "asshole", "suck ass", "nigg", "pussy", "kill y", "cock", "bastard", "suck"
@@ -852,7 +852,7 @@ function manuallySendChat() {
     }
 }
 
-//Find Duel Logic ------------------------------------------------------------------------------------------
+// Find Duel Logic -------------------------------------------------------------------------------------------------------------------------
 
 let roomIndex = 0;
 let matchmakingActive = false;
@@ -868,7 +868,7 @@ export function setFriendDuel(state) {
     friendDuel = state;
 }
 
-//set info text
+// set info text
 let multiplayerDuelInfo = document.getElementById("multiplayerDuelInfo");
 function setDuelFindStatus(text) {
     multiplayerDuelInfo.textContent = text;
@@ -883,7 +883,7 @@ function setDuelFindStatus(text) {
     }
 }
 
-//this initiates the find duel system
+// this initiates the find duel system
 async function findDuel() {
     roomIndex = 0; //reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     matchmakingActive = true;
@@ -893,7 +893,7 @@ async function findDuel() {
     attemptDuelJoin(roomIndex);
 }
 
-//This function attempts to get a room code from the server and to join the room
+// This function attempts to get a room code from the server and to join the room
 async function attemptDuelJoin(index) {
     if (index == 0) {
         setDuelFindStatus("Requesting roomcode...");
@@ -902,7 +902,7 @@ async function attemptDuelJoin(index) {
     }
     let receivedRoomCode = "default";
 
-    //Get Roomcode from server
+    // Get Roomcode from server
     try {
         const response = await fetch("https://accounts.openguessr.com/accounts/rooms/" + index, {
             method: 'GET',
@@ -927,11 +927,11 @@ async function attemptDuelJoin(index) {
         setRetryButtonState();
     }
 
-    //Attempt to join if there is a code, otherwise create room
+    // Attempt to join if there is a code, otherwise create room
     if (receivedRoomCode != null && receivedRoomCode != "default") {
         joinRoom(receivedRoomCode); //duel find status will be set in this function as well
     } else if (receivedRoomCode == null) {
-        //create room & hide close + back button for the time
+        // Create room & hide close + back button for the time
         multiplayerSelectorBack.style.opacity = "0.2";
         multiplayerSelectorClose.style.opacity = "0.2";
         multiplayerSelectorBack.style.pointerEvents = "none";
@@ -946,7 +946,7 @@ async function attemptDuelJoin(index) {
     }
 }
 
-//This occurs when the peer connect returns an error like peer_unavailable (means = doesn't exist)
+// This occurs when the peer connect returns an error like peer_unavailable (means = doesn't exist)
 function findNextDuel() {
     if (roomIndex < 10) {
         roomIndex++;
@@ -1027,9 +1027,9 @@ async function deleteRoomCodeFromMatchmakingServer() {
 retryDuelFind.addEventListener("click", () => {
     findDuel();
     playSound("basic_button");
-}); //Retry button will trigger the attempt join function
+}); // Retry button will trigger the attempt join function
 
-//enable / disable the retry button depending on whether it is currently trying to join/host or not
+// enable / disable the retry button depending on whether it is currently trying to join/host or not
 function setRetryButtonState() {
     if (matchmakingActive) {
         retryDuelFind.style.pointerEvents = "none";
@@ -1105,7 +1105,7 @@ if (peer) {
     });
 }
 
-//Host Logic ----------------------------------------------------------------------------------------------
+// Host Logic ----------------------------------------------------------------------------------------------
 export let multiplayerGuessesLocationsArray = [];
 let multiplayerFirstRoundPlayed = false; // for host and peers! peers use this to see whether they should incrase the round index
 export let yourTeam = 1;
@@ -1339,7 +1339,7 @@ function multiplayerRematch() {
     endMultiplayerRematchButton.textContent = "Loading...";
 }
 
-//Start the first / next round
+// Start the first / next round
 export async function startMultiplayerRound(latitude, longitude) {
     multiplayerGuessesLocationsArray = []; // reset previous stored guesses from peers
     teamMarkerArray = [];
@@ -1363,7 +1363,7 @@ export async function startMultiplayerRound(latitude, longitude) {
     multiplayerOverlayCountdown(); // for host
 }
 
-//Function to send a message from host to all peers
+// Function to send a message from host to all peers
 export function sendMessageToAll(type, message) {
     connectedPeers.forEach(function (peerInfo) {
         const peerId = peerInfo[0]; // Peer ID is the first element in each peerInfo array
@@ -1430,7 +1430,7 @@ function addReplaceTeamMarkers(id, lat, long, pinIndex, team) {
     teamMarkerArray.push([id, lat, long, pinIndex, team]);
 }
 
-//Peer Logic -----------------------------------------------------------------------------------------------------------------
+// Peer Logic -----------------------------------------------------------------------------------------------------------------
 function removeWhiteSpace(input) {
     return input.replace(/\s/g, '');
 }
@@ -1649,7 +1649,7 @@ if (peer) {
     });
 }
 
-//Multiplayer leave ----------------------------------------------------------------------------------
+// Multiplayer leave ----------------------------------------------------------------------------------
 let leaveButton = document.getElementById("multiplayerLeave");
 
 leaveButton.addEventListener("click", () => {
@@ -1658,7 +1658,7 @@ leaveButton.addEventListener("click", () => {
 });
 
 export function leaveMultiplayerRound() {
-    //important! first step is disabling multiplayer
+    // important! Has to be the first step is disabling multiplayer
     let wasMultiplayerEnabled = false;
 
     if (multiplayer) {
@@ -1944,7 +1944,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                     animateMultiplayerLose();
                 }
 
-                // check if you won in duels or just played
+                // Check if you won in duels or just played
                 if (playingDuels && isAuthenticated && !friendDuel) {
                     if (winningId == localStorage.getItem("id")) {
                         addDuelWon();
@@ -2085,26 +2085,26 @@ function multiplayerOverlayCountdown() {
 
 // Set restriction ----------------------------------------------------------------------------------
 
-const guesserWindow = document.getElementById("GuesserWindow");
+const PanoramaIframe = document.getElementById("PanoramaIframe");
 
 export function setRestriction(restriction) {
     nmpzBackground.style.pointerEvents = "none";
     nmpzBackground.style.backgroundColor = "transparent";
-    guesserWindow.style.filter = "none";
-    guesserWindow.style.animation = "none";
+    PanoramaIframe.style.filter = "none";
+    PanoramaIframe.style.animation = "none";
 
     switch (restriction) {
         case "nmpz":
             nmpzBackground.style.pointerEvents = "auto";
             break;
         case "grayscale":
-            guesserWindow.style.filter = "grayscale(100%)";
+            PanoramaIframe.style.filter = "grayscale(100%)";
             break;
         case "invert":
-            guesserWindow.style.filter = "invert(100%)";
+            PanoramaIframe.style.filter = "invert(100%)";
             break;
         case "hue":
-            guesserWindow.style.filter = "hue-rotate(90deg)";
+            PanoramaIframe.style.filter = "hue-rotate(90deg)";
             break;
         case "fade":
             nmpzBackground.style.backgroundColor = "black";

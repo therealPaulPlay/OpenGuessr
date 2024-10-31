@@ -546,7 +546,7 @@ export async function loadResultScreenXP(distance) {
   }
 }
 
-//Save / Set user XP ----------------------------------------------------------------------------------------------
+// Save / Set user XP ----------------------------------------------------------------------------------------------
 
 export async function setUserXP(newExp, earnedExp, secondAttempt) {
   let state;
@@ -572,7 +572,7 @@ export async function reattemptExperienceUpdate(earnedExp) {
   }
 }
 
-//Animate currency values to tick up gradually -----------------------------------------------------------------------
+// Animate currency values to tick up gradually ----------------------------------------------------------------------------------------------
 
 function animateIncrement(element, startValue, endValue, duration) {
   let startTime = null;

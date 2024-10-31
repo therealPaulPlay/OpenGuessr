@@ -1,19 +1,19 @@
-//Gamemode where you guess the country (not on the map)
+// Gamemode where you guess the country (not on the map)
 import { hideToggleMapButtonIfMobile } from "./mainUI";
 import { setConfirmButtonEnabled, confirmButtonClicks } from "./miniMap";
 import { multiplayer } from "./multiplayer";
 import { playSound } from "./soundManager";
 
 export let countryGuesserMode = false;
-export let selectedCountryGuesserCountry = null; //this will be set in locationGeneration.js and is the country
-let selectedCountryGuessIndex = null; //this is the field the user has selected in the UI 
+export let selectedCountryGuesserCountry = null; // this will be set in locationGeneration.js and is the country
+let selectedCountryGuessIndex = null; // this is the field the user has selected in the UI 
 let correctCountryField = null; // 1-6
 
 
 export function setCountryGuesserMode(enabled) {
     if (enabled) {
         countryGuesserMode = true;
-        //hide map
+        // hide map
         if (!multiplayer) {
             document.getElementById("map").style.visibility = "hidden";
             hideToggleMapButtonIfMobile(true);
@@ -22,12 +22,12 @@ export function setCountryGuesserMode(enabled) {
             });
         }
 
-        //show country picker UI
+        // show country picker UI
         document.getElementById("countryGuesserSelector").style.display = "flex";
 
     } else {
         countryGuesserMode = false;
-        //show map
+        // show map
         if (!multiplayer) {
             document.getElementById("map").style.visibility = "visible";
             hideToggleMapButtonIfMobile(false);
@@ -36,7 +36,7 @@ export function setCountryGuesserMode(enabled) {
             });
         }
 
-        //hide country picker UI
+        // hide country picker UI
         document.getElementById("countryGuesserSelector").style.display = "none";
 
     }
@@ -51,17 +51,18 @@ export function checkIfGuessWasCorrect() {
 }
 
 export function setCountryGuesserCountry(country) {
-    selectedCountryGuesserCountry = country; //This can be "South Africa", "United States", "India" and so on. Data was received by Nominatium API (which cannot be used in prod)
+    selectedCountryGuesserCountry = country; // This can be "South Africa", "United States", "India" and so on. Data was received by Nominatium API (which cannot be used in prod)
     clearSelection();
+    
     try {
         if (countryGuesserMode) {
-            let takenLocations = []; //to avoid duplicates amongst the 6 random / wrong ones (one of them will be replaced by the correct one)
+            let takenLocations = []; // To avoid duplicates amongst the 6 random / wrong ones (one of them will be replaced by the correct one)
             for (let i = 1; i <= 6; i++) {
                 let countryItem = document.getElementById("countryTag" + i);
                 let countryFlag = document.getElementById("countryFlag" + i);
                 let randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
 
-                //avoid duplicates and avoid a random country matching the corect country
+                // Avoid duplicates and avoid a random country matching the corect country
                 while (Object.keys(countryEmojis)[randomCountryIndex] == selectedCountryGuesserCountry || takenLocations.includes(Object.keys(countryEmojis)[randomCountryIndex])) {
                     randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
                 }
@@ -98,7 +99,7 @@ export function setCountryGuesserCountry(country) {
     }
 }
 
-//UI selection --------------------------------------------------------------------------------------------------------
+// UI selection --------------------------------------------------------------------------------------------------------
 const countryGuesserHolders = document.querySelectorAll('.countryGuesserHolder');
 
 countryGuesserHolders.forEach((holder, index) => {
@@ -119,9 +120,9 @@ function clearSelection() {
     selectedCountryGuessIndex = null;
 }
 
-//Spacebar click to guess ---------------------------------------------------------------------------------------------
+// Spacebar click to guess ---------------------------------------------------------------------------------------------
 
-//Confirm Button with Spacebar and a few checks
+// Confirm Button with Spacebar and a few checks
 document.getElementById("countryGuesserSelector").addEventListener("keyup", function (event) {
     if (event.key === " ") {
         if (document.getElementById("confirmButton").style.pointerEvents == "auto") {
@@ -132,7 +133,7 @@ document.getElementById("countryGuesserSelector").addEventListener("keyup", func
     }
 });
 
-//Country emojis --------------------------------------------------------------------------------------------------------
+// Country emojis --------------------------------------------------------------------------------------------------------
 
 const countryEmojis = {
     "Andorra": "🇦🇩",

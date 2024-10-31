@@ -19,7 +19,7 @@ function inIframe() {
   }
 }
 
-//Login and registration -----------------------------------------------------------------------------------
+// Login and registration -----------------------------------------------------------------------------------
 export async function loginUser(email, password, errorSource) {
   try {
     const requestBody = {
