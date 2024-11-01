@@ -17,6 +17,9 @@ export function setCountryGuesserMode(enabled) {
         if (!multiplayer) {
             document.getElementById("map").style.visibility = "hidden";
             hideToggleMapButtonIfMobile(true);
+            document.querySelectorAll(".mapAttribution").forEach((element) => {
+                element.style.visibility = "hidden";
+            });
         }
 
         // show country picker UI
@@ -28,6 +31,9 @@ export function setCountryGuesserMode(enabled) {
         if (!multiplayer) {
             document.getElementById("map").style.visibility = "visible";
             hideToggleMapButtonIfMobile(false);
+            document.querySelectorAll(".mapAttribution").forEach((element) => {
+                element.style.visibility = "visible";
+            });
         }
 
         // hide country picker UI
