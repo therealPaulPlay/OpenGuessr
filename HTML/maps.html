@@ -800,8 +800,9 @@
             width: 90%;
         }
 
-        .infoNoteBoxMarginTop {
-            margin-top: 15px;
+        .infoNoteBoxConverter {
+            margin-top: 25px;
+            margin-bottom: 15px;
         }
 
         #infoTextMapConverter {
@@ -928,7 +929,7 @@
 https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6!1e1!3m4!1scgVGr1HY1alolDg8gfwrzA!2e0!7i16384!8i8192?coh=205409&entry=ttu
 
 https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu" maxlength="5000000"></textarea>
-            <p>...or upload a .json file with <span id="jsonFormatInfoSpanUpdate">this formatting</span>:</p>
+            <p>You can upload a JSON file with <span id="jsonFormatInfoSpanUpdate">this formatting</span>:</p>
             <button id="jsonUpdateButton" class="standardButton">
                 <input type="file" id="jsonUpdate" accept="application/json">
                 <p id="fileNameUpdate">Pick file</p>
@@ -994,22 +995,25 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                         <li>Copy the URL from the address bar of your browser into the textbox.</li>
                     </ol>
                 </div>
-                <p class="marginTop">Locations:</p>
+                <p class="marginTop">Locations (as links):</p>
                 <textarea id="uploadMapData" class="uploadInfo locationTextbox" type="text" rows="20"
                     placeholder="https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
 
 https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6!1e1!3m4!1scgVGr1HY1alolDg8gfwrzA!2e0!7i16384!8i8192?coh=205409&entry=ttu
 
 https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu" maxlength="5000000"></textarea>
-            </div>
-            <p>...or upload a .json file with <span id="jsonFormatInfoSpan">this formatting</span>:</p>
-            <button id="jsonUploadButton" class="standardButton">
-                <input type="file" id="jsonUpload" accept="application/json">
-                <p id="fileName">Pick file</p>
-            </button>
-            <div class="infoNoteBox infoNoteBoxMarginTop">
-                <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
-                <p id="infoTextMapConverter">You can generate a map using a tool like Map-Generator and then convert it to the OpenGuessr format. Learn more <a target="_blank" href="https://education.openguessr.com/tools/map-converter" class="linkToMapConverter">here</a>.</p>
+                <div class="infoNoteBox infoNoteBoxConverter">
+                    <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+                    <p id="infoTextMapConverter">You can generate a map using a tool like Map-Generator and then convert
+                        it to the OpenGuessr format. Learn more <a target="_blank"
+                            href="https://education.openguessr.com/tools/map-converter"
+                            class="linkToMapConverter">here</a>.</p>
+                </div>
+                <p>Locations from a JSON file with <span id="jsonFormatInfoSpan">this formatting</span>:</p>
+                <button id="jsonUploadButton" class="standardButton">
+                    <input type="file" id="jsonUpload" accept="application/json">
+                    <p id="fileName">Pick file</p>
+                </button>
             </div>
             <div class="buttonBox">
                 <button id="uploadClose" class="standardButton closeButton">Close</button>

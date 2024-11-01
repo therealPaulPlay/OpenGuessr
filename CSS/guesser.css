@@ -3947,7 +3947,7 @@ input[type="checkbox"]:focus {
 #pageBrowserWindow {
   width: calc(99% - 25px);
   height: calc(98% - 25px);
-  max-width: unset;
+  max-width: 1400px;
   max-height: unset;
   overflow: hidden;
   padding: 5px;
