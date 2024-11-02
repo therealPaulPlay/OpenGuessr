@@ -269,6 +269,32 @@ export function toggleCategoryMenu(alwaysClose) {
 
 }
 
+// Expand Countries Category section in map menu -----------------------------------------------------------------------------------
+
+let countryCategoriesExpand = document.getElementById("countryCategoriesExpand");
+let countryCategoryArea = document.getElementById("expandableCountryArea");
+
+let countryCategoriesExpanded = false;
+
+countryCategoriesExpand.addEventListener("click", () => {
+
+    if (countryCategoriesExpanded) {
+        countryCategoryArea.style.maxHeight = "185px";
+        document.getElementById("arrowIconCountries").style.rotate = "0deg";
+        document.getElementById("countryCategoriesFade").style.opacity = "1";
+        document.getElementById("countriesMoreText").style.width = "fit-content"
+        document.getElementById("countriesMoreText").style.marginRight = "5px";
+    } else {
+        countryCategoryArea.style.maxHeight = "2000px";
+        document.getElementById("arrowIconCountries").style.rotate = "180deg";
+        document.getElementById("countryCategoriesFade").style.opacity = "0";
+        document.getElementById("countriesMoreText").style.width = "0"
+        document.getElementById("countriesMoreText").style.marginRight = "0";
+    }
+
+    countryCategoriesExpanded = !countryCategoriesExpanded;
+});
+
 // Social top bar area --------------------------------------------------------------------------------------------------------------
 
 export function setGamemodeSelector(enabled) {

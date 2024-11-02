@@ -34,7 +34,10 @@ body {
   background-color: #13151c;
 }
 
-a, a:visited, a:link, a:hover {
+a,
+a:visited,
+a:link,
+a:hover {
   text-decoration: none;
   color: #FFFFFF;
 }
@@ -2674,6 +2677,64 @@ search {
   gap: 15px;
 }
 
+.expandableCountryArea {
+  max-height: 185px;
+  overflow: clip;
+  transition: max-height 500ms ease;
+}
+
+.expandableMapAreaFade {
+  position: absolute;
+  width: 100%;
+  height: 100px;
+  bottom: 0;
+  background: linear-gradient(rgba(255, 255, 255, 0), hsla(233.3, 9.7%, 18.2%, 0.9));
+  border-radius: 5px;
+  z-index: 13;
+  pointer-events: none;
+  transition: opacity 250ms ease;
+}
+
+.mapAreaExpandButton {
+  position: absolute;
+  bottom: 7px;
+  right: 7px;
+  background-color: rgba(219, 223, 242, 0.2);
+  backdrop-filter: blur(10px);
+  z-index: 14;
+  box-shadow: 0 0 30px rgba(19, 22, 28, 0.55);
+}
+
+#arrowIconCountries {
+  width: 20px;
+  height: 20px;
+  margin-bottom: -2px;
+  transition: rotate 250ms ease;
+  margin-left: -5px;
+}
+
+.outerCountryCategoryContainer {
+  width: fit-content;
+  height: fit-content;
+  position: relative;
+}
+
+#countriesMoreText {
+  transition: width 250ms ease, margin 250ms ease;
+  overflow: hidden;
+  display: inline-block;
+  margin-bottom: -4px;
+}
+
+.expandableMapBox {
+  padding-bottom: 0 !important;
+}
+
+.categorySpacer {
+  width: 100%;
+  height: 5px;
+}
+
 .mapBox {
   background-color: rgba(0, 0, 0, 0.1);
   display: block;
@@ -2837,7 +2898,8 @@ map::selection {
   height: 48px;
   width: 100%;
   border-radius: 10px;
-  display: none; /* set to flex in code when needed */
+  display: none;
+  /* set to flex in code when needed */
   align-items: center;
   justify-content: flex-start;
   color: white;
@@ -3258,7 +3320,8 @@ map::selection {
   height: 100%;
   z-index: 13;
   top: 0;
-  display: none; /* changed in code to flex */
+  display: none;
+  /* changed in code to flex */
   justify-content: center;
   align-items: flex-end;
   transition: opacity 250ms ease-out;

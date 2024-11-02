@@ -14,46 +14,143 @@ import { setImageGuessrEnabled } from "./imageGuesser.js";
 
 // Seperate countries with spaces using _ !
 // This is the list of categories to immediately attach event listeners to - this is the only use of this object!
-let Category = {
+
+let SpecialCatgories = {
     STANDARD: "standard",
     CAPITAL: "capital",
     FAMOUS: "famous",
     COUNTRY: "country",
     IMAGE: "image",
-    UNITED_STATES: "united_states",
-    GERMANY: "germany",
-    UNITED_KINGDOM: "united_kingdom",
-    FRANCE: "france",
-    SPAIN: "spain",
-    POLAND: "poland",
-    CANADA: "canada",
-    SWEDEN: "sweden",
-    INDIA: "india",
-    MEXICO: "mexico",
-    ITALY: "italy",
-    UKRAINE: "ukraine",
-    AUSTRIA: "austria",
-    NORWAY: "norway",
-    AUSTRALIA: "australia",
-    BRAZIL: "brazil",
-    RUSSIA: "russia",
-    SLOVAKIA: "slovakia",
-    ROMANIA: "romania",
-    TURKEY: "turkey",
-    FINLAND: "finland",
-    ISRAEL: "israel",
-    CZECHIA: "czechia",
-    JAPAN: "japan",
-    INDONESIA: "indonesia",
+}
+
+let ContinentCategories = {
     AFRICA: "africa",
     SOUTH_AMERICA: "south_america",
     NORTH_AMERICA: "north_america",
     ASIA: "asia",
     EUROPE: "europe",
     OCEANIA: "oceania"
+}
+
+let CountryCategories = {
+    ALBANIA: "albania",
+    ANDORRA: "andorra",
+    ARGENTINA: "argentina",
+    AUSTRALIA: "australia",
+    AUSTRIA: "austria",
+    BANGLADESH: "bangladesh",
+    BELGIUM: "belgium",
+    BHUTAN: "bhutan",
+    BOLIVIA: "bolivia",
+    BOTSWANA: "botswana",
+    BRAZIL: "brazil",
+    BULGARIA: "bulgaria",
+    CANADA: "canada",
+    CAMBODIA: "cambodia",
+    CHILE: "chile",
+    COLOMBIA: "colombia",
+    CROATIA: "croatia",
+    CZECHIA: "czechia",
+    DENMARK: "denmark",
+    DOMINICAN_REPUBLIC: "dominican_republic",
+    ECUADOR: "ecuador",
+    ESWATINI: "eswatini",
+    ESTONIA: "estonia",
+    FINLAND: "finland",
+    FRANCE: "france",
+    GERMANY: "germany",
+    GHANA: "ghana",
+    GREECE: "greece",
+    GUATEMALA: "guatemala",
+    HUNGARY: "hungary",
+    ICELAND: "iceland",
+    INDIA: "india",
+    INDONESIA: "indonesia",
+    IRELAND: "ireland",
+    ISRAEL: "israel",
+    ITALY: "italy",
+    JAPAN: "japan",
+    JORDAN: "jordan",
+    KENYA: "kenya",
+    LATVIA: "latvia",
+    LESOTHO: "lesotho",
+    LITHUANIA: "lithuania",
+    LUXEMBOURG: "luxembourg",
+    MALAYSIA: "malaysia",
+    MALTA: "malta",
+    MEXICO: "mexico",
+    MONACO: "monaco",
+    MONGOLIA: "mongolia",
+    MONTENEGRO: "montenegro",
+    NETHERLANDS: "netherlands",
+    NEW_ZEALAND: "new_zealand",
+    NIGERIA: "nigeria",
+    NORTH_MACEDONIA: "north_macedonia",
+    NORWAY: "norway",
+    PERU: "peru",
+    PHILIPPINES: "philippines",
+    POLAND: "poland",
+    PORTUGAL: "portugal",
+    PUERTO_RICO: "puerto_rico",
+    ROMANIA: "romania",
+    RWANDA: "rwanda",
+    RUSSIA: "russia",
+    SAN_MARINO: "san_marino",
+    SENEGAL: "senegal",
+    SERBIA: "serbia",
+    SINGAPORE: "singapore",
+    SLOVAKIA: "slovakia",
+    SLOVENIA: "slovenia",
+    SOUTH_AFRICA: "south_africa",
+    SOUTH_KOREA: "south_korea",
+    SPAIN: "spain",
+    SRI_LANKA: "sri_lanka",
+    SWEDEN: "sweden",
+    SWITZERLAND: "switzerland",
+    TAIWAN: "taiwan",
+    THAILAND: "thailand",
+    TUNISIA: "tunisia",
+    TURKEY: "turkey",
+    UKRAINE: "ukraine",
+    UNITED_ARAB_EMIRATES: "united_arab_emirates",
+    UNITED_KINGDOM: "united_kingdom",
+    UNITED_STATES: "united_states",
+    URUGUAY: "uruguay"
+};
+
+let Category = {
+    ...SpecialCatgories,
+    ...CountryCategories,
+    ...ContinentCategories
 };
 
 export let mapCategory = "standard"; // Default category
+
+// Country Categories generation (based on object above) -------------------------------------------------------------
+
+function capitalizeWords(str) {
+    return str
+        .split(" ")
+        .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+}
+
+let countryCategoryContainer = document.getElementById("expandableCountryArea");
+
+for (const [key, value] of Object.entries(CountryCategories)) {
+    const categoryButton = document.createElement("div");
+    categoryButton.className = "category countryCategory accountLock";
+    categoryButton.setAttribute("type", "button");
+    categoryButton.setAttribute("id", value + "Category");
+    categoryButton.innerHTML = capitalizeWords(value.replaceAll("_", " "));
+
+    countryCategoryContainer.appendChild(categoryButton);
+}
+
+// Add spacer at the end
+const categorySpacer = document.createElement("div");
+categorySpacer.classList.add("categorySpacer");
+countryCategoryContainer.appendChild(categorySpacer);
 
 // Community Categories Generation --------------------------------------------------------------------------------
 export function loadCommunityCategories() {
@@ -165,7 +262,7 @@ export async function changeCategory(category, regenerate) {
         }, 200);
 
         await checkGenerationTypeAndGenerate();
-        
+
         if (!resultScreenEnabled) {
             resetMap(); // reset map if not on result screen to clear markers + make guess button grey again
         }
