@@ -238,7 +238,7 @@ function createCategoryChangeListener(category) {
 }
 
 export async function changeCategory(category, regenerate) {
-    // Disable all category buttons
+    // Disable all category buttons (visually)
     const categoryButtons = document.querySelectorAll("[id$='Category']");
     categoryButtons.forEach(button => button.classList.add("categoryDisabled"));
 
@@ -250,11 +250,8 @@ export async function changeCategory(category, regenerate) {
         console.warn(`Element with ID "${category.toLowerCase()}Category" not found.`);
     }
 
-    // Refresh category if needed
-    if (mapCategory !== category) {
-        mapCategory = category;
-        localStorage.setItem("selectedCategory", category);
-    }
+    mapCategory = category;
+    localStorage.setItem("selectedCategory", category);
 
     if (regenerate) {
         setTimeout(() => {

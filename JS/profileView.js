@@ -237,7 +237,7 @@ export function closeProfile() {
 // Username Update -------------------------------------------------------------------------------------------
 
 document.getElementById("editUsername").addEventListener("click", () => {
-    showConfirmPopup("Update username", "Input your new name into the box and click confirm.", updateProfileUsername, false, true);
+    showConfirmPopup("Update your username", "Input your new name into the box and click confirm.", updateProfileUsername, false, true);
     playSound("basic_button");
 });
 

@@ -11,7 +11,7 @@ export async function getLocationCoordinates(type) {
     document.getElementById("BeforeOverlay").style.visibility = "visible";
 
     if (type == "JSON") {
-        return await getCoordsFromJSON(mapCategory);
+        return await getJSONCoords(mapCategory);
     } else if (type == "SDK") {
         return await getCoordsFromLocationServer();
     } else if (type == "FROMHOST") {
@@ -26,90 +26,50 @@ export async function getLocationCoordinates(type) {
 }
 
 export let currentlyLoadedLocationsArray; // Currently loaded JSON array [] with all locations of the map
+let loadedMapCategory;
+let previousGuessesIndexes = [];
 
 // Get Location from JSON (Legacy/Custom Map creation method) ----------------------------------------------------------------------------------------------------
-let jsonResponse;
-let lastGuessesIndexes = []; //to prevent repetition
-
-let guessIndex;
-
-let currentJsonName;
-
 
 // Load location JSON files
-async function loadLocationJSON(jsonName) {
-    if (currentJsonName != jsonName) {
+async function getJSONCoords(category) {
+    if (loadedMapCategory !== category) {
         try {
             let response = null;
-
-            response = await fetch("./JSON/" + jsonName + "Locations.json");
-
+            loadedMapCategory = category;
+            previousGuessesIndexes = [];
+    
+            response = await fetch("./JSON/" + category + "Locations.json");
+    
             if (!response.ok) {
                 throw new Error("JSON fetch failed.");
             }
-
-            jsonResponse = await response.json();
-            currentJsonName = jsonName; // set currently loaded json to the new one
-            lastGuessesIndexes = []; // reset previously played indexes
+    
+            const jsonResponse = await response.json();
             currentlyLoadedLocationsArray = jsonResponse.locations;
-
-
+            return pickRandomLocations();
+    
         } catch (error) {
             //choose standard and instantly reload (if categories get renamed / get deleted-> this happens)
             localStorage.setItem("selectedCategory", "standard");
             window.location.reload();
             console.error(error);
         }
+    } else {
+        return pickRandomLocations();
     }
-}
-
-// This will be called in main.js when a new location is being generated
-async function getCoordsFromJSON(category) {
-    let resultLocationsArray;
-
-    if (currentJsonName !== category) {
-        try {
-            await loadLocationJSON(category);
-        } catch (error) {
-            console.error("Error loading location json in getCoordsFromJson in locationGeneration.js: " + error);
-        }
-    }
-
-    try {
-
-        do {
-            guessIndex = Math.floor(Math.random() * currentlyLoadedLocationsArray.length);
-        } while (lastGuessesIndexes.includes(guessIndex));
-
-        lastGuessesIndexes.unshift(guessIndex); // add guessIndex at the front of the array
-
-        if (lastGuessesIndexes.length > currentlyLoadedLocationsArray.length / 2) {
-            lastGuessesIndexes.pop(); // if the array is longer than 50% of the total amount, pop the last one out
-        }
-
-        const resultLat = Number(currentlyLoadedLocationsArray[guessIndex][0]);
-        const resultLong = Number(currentlyLoadedLocationsArray[guessIndex][1]);
-        const additionalProperty = currentlyLoadedLocationsArray[guessIndex][2]; // only available for certain modes (like country guesser, image guesser..). This could be the country, the image URL etc.
-
-        resultLocationsArray = [resultLat, resultLong, additionalProperty];
-    } catch (error) {
-        console.error("Error in locationGeneration.js during JSON Gen: " + error);
-    }
-
-    return resultLocationsArray;
 }
 
 
 // Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
 
-let standardLocations = null;
-let lastStandardLocationIndexes = [];
-
 async function getCoordsFromLocationServer() {
-    //if the standard locations aren't already loaded
-    if (!standardLocations) {
+    if (loadedMapCategory != "standard") {
         try {
-            let locationEndpoint = "https://locations.openguessr.com/locations"; //for testing, use http://localhost:3000/locations
+            previousGuessesIndexes = [];
+            loadedMapCategory = "standard";
+
+            let locationEndpoint = "https://locations.openguessr.com/locations"; // for testing, use http://localhost:3000/locations
 
             const response = await fetch(locationEndpoint, {
                 method: 'GET',
@@ -119,9 +79,9 @@ async function getCoordsFromLocationServer() {
             // Check if the response is successful
             if (response.ok) {
                 const data = await response.json();
-                standardLocations = data.locations; // the array is in locations: {}
+                const standardLocations = data.locations; // the array is in locations: {}
                 currentlyLoadedLocationsArray = standardLocations;
-                return await selectLocationFromServer(); // pick one new location for playing
+                return pickRandomLocations();
 
             } else {
                 console.error("Location fetch failed. Server returned error:", response.status);
@@ -132,35 +92,8 @@ async function getCoordsFromLocationServer() {
             return await loadBackupLocations(error);
         }
     } else {
-        return await selectLocationFromServer(); //just select a location from the server's json file, as it is already loaded
+        return pickRandomLocations();
     }
-}
-
-async function selectLocationFromServer() {
-    // now, pick a random location
-    let resultLocationsArray = [];
-
-    try {
-
-        do {
-            guessIndex = Math.floor(Math.random() * currentlyLoadedLocationsArray.length);
-        } while (lastStandardLocationIndexes.includes(guessIndex));
-
-        lastStandardLocationIndexes.unshift(guessIndex); // add guessIndex at the front of the array
-
-        if (lastStandardLocationIndexes.length > currentlyLoadedLocationsArray.length / 2) {
-            lastStandardLocationIndexes.pop(); // if the array is longer than half of the total standard location amount, pop the last one out
-        }
-
-        const resultLat = Number(currentlyLoadedLocationsArray[guessIndex][0]);
-        const resultLong = Number(currentlyLoadedLocationsArray[guessIndex][1]);
-
-        resultLocationsArray = [resultLat, resultLong];
-    } catch (error) {
-        console.error("Error in locationGeneration.js Standard Location JSON generation: " + error);
-    }
-
-    return resultLocationsArray;
 }
 
 // in case the location server does not respond, load the backup, formerly daily locations (just totally random locations) instead
@@ -173,12 +106,9 @@ async function loadBackupLocations(error) {
 
 // Get community map coordinates ---------------------------------------------------------------------------
 
-let lastCommunityLocationIndexes = [];
-let currentlyLoadedCommunityMap = "";
-
 async function getCommunityMapCoordinates() {
 
-    if (currentlyLoadedCommunityMap !== mapCategory || !currentlyLoadedLocationsArray) {
+    if (loadedMapCategory !== mapCategory) {
         try {
             const response = await fetch("https://maps.openguessr.com/maps/" + mapCategory.replace("community_", ""), {
                 method: 'GET',
@@ -188,10 +118,10 @@ async function getCommunityMapCoordinates() {
             // Check if the response is successful
             if (response.ok) {
                 const data = await response.json();
-                currentlyLoadedCommunityMap = mapCategory;
+                loadedMapCategory = mapCategory;
+                previousGuessesIndexes = [];
                 currentlyLoadedLocationsArray = data.map_data.locations; // the array is in locations: {}
-                lastCommunityLocationIndexes = []; // reset the array of the last locations which is in place to prevent duplicates
-                return await selectLocationFromMapsServer(); // pick one new location for playing
+                return pickRandomLocations(); // pick one new location for playing
 
             } else {
                 console.error("Community map fetch failed. Server returned error:", response.status);
@@ -208,32 +138,35 @@ async function getCommunityMapCoordinates() {
             return null;
         }
     } else {
-        return await selectLocationFromMapsServer(); // pick one new location for playing
+       return pickRandomLocations(); // pick one new location for playing
     }
 }
 
-async function selectLocationFromMapsServer() {
-    // Now, pick a random location
+// Universal function to pick random coordinates ---------------------------------------------------------------------------
+
+function pickRandomLocations() {
     let resultLocationsArray = [];
+    let guessIndex;
 
     try {
 
         do {
             guessIndex = Math.floor(Math.random() * currentlyLoadedLocationsArray.length);
-        } while (lastCommunityLocationIndexes.includes(guessIndex));
+        } while (previousGuessesIndexes.includes(guessIndex));
 
-        lastCommunityLocationIndexes.unshift(guessIndex); // add guessIndex at the front of the array
+        previousGuessesIndexes.unshift(guessIndex); // add guessIndex at the front of the array
 
-        if (lastCommunityLocationIndexes.length > currentlyLoadedLocationsArray.length / 2) {
-            lastCommunityLocationIndexes.pop(); // if the array is longer than half of the total amount, pop last one out
+        if (previousGuessesIndexes.length > previousGuessesIndexes.length / 2) {
+            previousGuessesIndexes.pop(); // if the array is longer than half of the total amount, pop last one out
         }
 
         const resultLat = Number(currentlyLoadedLocationsArray[guessIndex][0]);
         const resultLong = Number(currentlyLoadedLocationsArray[guessIndex][1]);
+        const additionalProperty = currentlyLoadedLocationsArray[guessIndex][2]; // only available for certain modes (like country guesser, image guesser..). This could be the country, the image URL etc.
 
-        resultLocationsArray = [resultLat, resultLong];
+        resultLocationsArray = [resultLat, resultLong, additionalProperty];
     } catch (error) {
-        console.error("Error in locationGeneration.js Community map location JSON generation: " + error);
+        console.error("Error picking random locations in locationGeneration.js: " + error);
     }
 
     return resultLocationsArray;

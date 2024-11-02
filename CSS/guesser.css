@@ -2636,7 +2636,7 @@ search {
 
 .extendedNavbar.expanded {
   /* Adjust max-height as needed */
-  max-height: 340px;
+  max-height: 450px;
   /* Use height: auto to fit content */
   height: auto;
 }
@@ -3609,6 +3609,7 @@ map::selection {
 
 .countryCategory {
   background: linear-gradient(0.60turn, white, #ffcaca);
+  max-width: 110px;
 }
 
 .educationCategory {

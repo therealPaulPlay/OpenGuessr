@@ -237,11 +237,11 @@ export function toggleCategoryMenu(alwaysClose) {
                 }, 150);
             } else {
                 document.getElementById("extendedNavbarGradient").style.borderRadius = "0 0 10px 10px";
-                mobileButtonArea.style.top = "355px";
+                mobileButtonArea.style.top = "465px";
             }
 
             moveTimeouts = setTimeout(() => {
-                topButtonArea.style.top = "355px";
+                topButtonArea.style.top = "465px";
                 document.getElementById("extendedNavbarGradient").style.display = "block";
                 extendedNavbar.classList.add("expanded");
                 document.getElementById("mapsArrow").classList.add("arrowIconRotated");
