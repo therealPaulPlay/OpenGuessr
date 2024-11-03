@@ -293,7 +293,6 @@ async function adjustMapToCountry() {
                 const latDiff = north - south;
                 const lonDiff = east - west;
                 diameter = Math.max(latDiff, lonDiff);
-                console.log(diameter);
     
                 // Define function to determine zoom level from diameter
                 function calculateZoom(diameter) {
