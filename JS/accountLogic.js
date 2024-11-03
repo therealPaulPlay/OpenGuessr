@@ -4,7 +4,7 @@ import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multip
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
 import { playSound } from "./soundManager.js";
 import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
-import { mapMarkerLat, mapMarkerLong } from "./miniMap.js";
+import { mapMarkerLat, mapMarkerLong, diameter } from "./miniMap.js";
 import { toggleStreakWindow } from "./streakAdPopup.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
 import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel, supporterLevel } from "./profileView.js";
@@ -65,7 +65,7 @@ let resultLevelDisplay = document.getElementById("endScreenLevelDisplay");
 
 document.getElementById("accountDeleteButton").addEventListener("click", () => {
   playSound("basic_button");
-  showConfirmPopup("Delete your Account", "Please input your password to confirm the account deletion. Make sure to delete user-created content before proceeding, if you wish to remove that from the platform.", submitAccountDeletion, true);
+  showConfirmPopup("Delete your account", "Please input your password to confirm the account deletion. Make sure to delete user-created content before proceeding, if you wish to remove that from the platform.", submitAccountDeletion, true);
 });
 
 async function submitAccountDeletion() {
@@ -302,7 +302,7 @@ export function uiSetUserXP(xp) {
   if (isAuthenticated) {
     document.getElementById("progressRingLevel").innerHTML = templevel;
     resultLevelDisplay.innerHTML = "Lvl. " + templevel;
-    
+
     // account UI level circle
     setProgress(xp != 0 ? Math.max((xp / requiredXP), 0.1) : 0);
   } else {
@@ -391,40 +391,33 @@ function getStreakMultiplierAdjustedToGamemode() {
   }
 }
 
+// Adjust XP calculation parameter to diameter (country size)
+function calculateExponentialModifier(mapDiameter) {
+  const A = 0.9978;
+  const B = 0.08;
+  const C = 0.06;
+  return A - B * Math.exp(-C * mapDiameter);
+}
+
+
 function calculateXPGain(distance, category, supporterLevel, freeSupporterBoost) {
   let returnXP = 0;
 
-  if (category == null || category == "standard" || category == "capital" || category == "hard") {
-
+  if (category == null || category == "standard" || category == "capital") {
     streakCalculation();
     returnXP = Math.round((5000 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode());
 
-  } else if (category == "europe" || category == "asia" || category == "africa" || category == "oceania" || category == "southamerica") {
-    // not NA as that is literally US 95% of the time, therefore no streak
-    streakCalculation();
-    returnXP = Math.round((5000 * ((0.996036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // slightly reduced xp range as continents are smaller than countries
-
   } else if (category == "famous" || category == "image") {
-
     streakCalculation();
-    returnXP = Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 1500 xp for famous, with streak up to 1800sth
-
-  } else if (category && category.includes("community")) {
-
-    streakCalculation();
-    returnXP = Math.round((3000 * ((0.994036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 3000 xp for community, with streak slightly more - also adjusted distance function
-
-  } else if (category == "northamerica") {
-    returnXP = Math.round(5000 * ((0.996036) ** distance));
+    returnXP = Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 1500 xp, with streak up to 1800sth
 
   } else if (category == "country") {
     returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
-  } else if (category == "israel" || category == "austria" || category == "slovakia" || category == "czechia") { // very small countries, more reduced xp
-    returnXP = Math.round(5000 * ((0.978036) ** distance));
-
   } else {
-    returnXP = Math.round(5000 * ((0.988036) ** distance)); // reduced XP for bad guesses in country locations (for better balance)
+    
+    if (diameter > 250) streakCalculation(); // If the map is big enough, calculate the country streak
+    returnXP = Math.round(5000 * ((calculateExponentialModifier(diameter)) ** distance));
   }
 
   let supporterMultiplier = 1;

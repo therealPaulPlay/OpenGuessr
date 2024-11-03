@@ -256,6 +256,8 @@ let currentCenterLong = 0;
 
 let currentZoom = 2;
 
+export let diameter = 100; // longest side of the map, used for score as well
+
 // For most maps, adjust the boundaries to the map's locations
 async function adjustMapToCountry() {
     const category = localStorage.getItem("selectedCategory");
@@ -290,7 +292,7 @@ async function adjustMapToCountry() {
                 // Calculate the longer side
                 const latDiff = north - south;
                 const lonDiff = east - west;
-                const diameter = Math.max(latDiff, lonDiff);
+                diameter = Math.max(latDiff, lonDiff);
     
                 // Define function to determine zoom level from diameter
                 function calculateZoom(diameter) {
