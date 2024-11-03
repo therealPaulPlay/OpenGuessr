@@ -87,6 +87,7 @@ let CountryCategories = {
     NIGERIA: "nigeria",
     NORTH_MACEDONIA: "north_macedonia",
     NORWAY: "norway",
+    OMAN: "oman",
     PERU: "peru",
     PHILIPPINES: "philippines",
     POLAND: "poland",
