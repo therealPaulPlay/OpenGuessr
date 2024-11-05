@@ -37,9 +37,15 @@ self.__VM.push((admanager, scope) => {
 export function refreshPlacements() {
     self.__VM = self.__VM || [];
 
+    /*
     self.__VM.push((admanager, scope) => {
         scope.Instances.pageManager.on('navigated', () => {
            scope.Instances.pageManager.newPageSession(false);
         }, false);
+    });
+    */
+
+    self.__VM.push(function (admanager, scope) {
+        admanager.reload(admanager.placements.filter(p => p.anyName !== 'gpt_reward'));
     });
 }
