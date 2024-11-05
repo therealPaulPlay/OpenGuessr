@@ -14,6 +14,7 @@ self.__VM.push(function (admanager, scope) {
         // Dispatched when api is loading
         api.on('loading', (reward) => {
             isRewardVideoReady = false;
+            console.log("loading");
         });
 
         // Dispatched if no available video
@@ -25,6 +26,7 @@ self.__VM.push(function (admanager, scope) {
             } else {
                 firstLoad = false;
             }
+            console.log("empty");
         });
 
         // Dispatched when api is ready, and okay to play
@@ -34,6 +36,7 @@ self.__VM.push(function (admanager, scope) {
                 playVideoTriggered = false;
                 showVideo();
             }
+            console.log("ready");
         });
 
         // Dispatched when the video is done playing
@@ -86,4 +89,5 @@ function reloadReward() {
     self.__VM.push(function (admanager, scope) {
         scope.Config.getKnown('gptReward').reload();
     });
+    console.log("reload");
 }
