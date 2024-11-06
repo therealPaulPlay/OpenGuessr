@@ -1,6 +1,5 @@
 import { generateNewLocation } from "./main.js";
 import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
-import { setHardMode } from "./singleplayerOptions.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
 import { resetMap } from "./miniMap.js";
@@ -9,6 +8,7 @@ import { playSound } from "./soundManager.js";
 import { toggleStreakWindow } from "./streakAdPopup.js";
 import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
 import { setImageGuessrEnabled } from "./imageGuesser.js";
+import { setSingleplayer } from "./singleplayerOptions.js";
 
 // Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 
@@ -287,19 +287,22 @@ try {
 
 // Check categories and initiate location generation  ---------------------------------------------------------------------------------------------------------------
 
-loadCompetition(false);
+loadCompetition(false); // Check for active competition on launch, in case it was selected on the separate site
 
 export async function checkGenerationTypeAndGenerate() {
     try { competitionTimer.stopTimer(); } catch { }; // has to be in try catch
     document.getElementById("mapTimer").textContent = "00" + ":" + "00"; // reset the timer visually
+
     setCountryGuesserMode(false);
     setImageGuessrEnabled(false);
 
     if (!multiplayer && !playingCompetition) {
-        //If multiplayer is disabled
+        setSingleplayer(true);
+
+        // If multiplayer is disabled
         showMultiplayerOverlay(false);
 
-        //pick between json and maps api loading depending on the category type
+        // Pick between json and maps api loading depending on the category type
         if (mapCategory != "standard" && mapCategory != "country" && mapCategory != "image" && !mapCategory.includes("community")) {
             await generateNewLocation("JSON");
 
@@ -322,9 +325,9 @@ export async function checkGenerationTypeAndGenerate() {
         }
     } else if (multiplayer) {
         // If multiplayer is enabled
-        try {
-            setHardMode(false);
+        setSingleplayer(false);
 
+        try {
             if (isHost) {
                 if (mapCategory != "standard" && mapSupportsMultiplayer(mapCategory) && !mapCategory.includes("community")) {
                     await generateNewLocation("JSON");
@@ -349,8 +352,9 @@ export async function checkGenerationTypeAndGenerate() {
         }
 
     } else if (playingCompetition) {
+        setSingleplayer(false);
+
         if (checkCompetitionRoundStatus(false)) {
-            setHardMode(false);
             await generateNewLocation("COMPETITION");
         }
     }

@@ -1,6 +1,7 @@
 // Hard mode is a time limited mode accessed by the timer icon in the upper right hand corner of the screen.
 
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
+import { startTimer } from "./timer";
 import { playSound } from "./soundManager";
 
 // Singleplayer Options UI ----------------------------------------------------------------------------------------
@@ -10,117 +11,126 @@ let isSingleplayerOpened = false;
 document.getElementById("singleplayerOptionsClose").addEventListener("click", toggleSingleplayerOptionsMenu);
 document.getElementById("singleplayerOptionsButton").addEventListener("click", toggleSingleplayerOptionsMenu);
 
+let timerSlider = document.getElementById("timerSlider");
+
 function toggleSingleplayerOptionsMenu() {
     isSingleplayerOpened = !isSingleplayerOpened;
     document.getElementById("blackBackground").style.visibility = isSingleplayerOpened ? "visible" : "hidden";
     document.getElementById("singleplayerOptionsWindow").style.display = isSingleplayerOpened ? "block" : "none";
+    setTimerText();
+    timerSlider.value = timeout;
 }
 
-// Hard mode / Timer restriction ----------------------------------------------------------------------------------
-let hardMode = false;
-let hardmodeState = 0;
-let timeout = 2500;
+// Timer Slider ---------------------------------------------------------------------------------------------------------------------------
+
+timerSlider.addEventListener("input", setTimerText);
+timerSlider.addEventListener("change", changeTimeout);
+
+function setTimerText() {
+    document.getElementById("timerSliderText").textContent = (timerSlider.value == 0 || !timerSlider.value) ? "No Timer" : timerSlider.value + " Seconds";
+}
 
 let hardModeFade = document.getElementById("hardModeFade");
 
-let toggleTimoutButton = document.getElementById("timerButton");
+function changeTimeout() {
+    timeout = Number(timerSlider.value);
+    localStorage.setItem("singleplayerTimer", timeout);
 
-let timerIcon = document.getElementById("timerIcon");
+    hardModeFade.style.visibility = timeout ? "visible" : "hidden";
+
+    checkGenerationTypeAndGenerate();
+}
+
+// Toggle Singleplayer Restrictions -----------------------------------------------------------------------------------
+
+let isSingleplayerNMPZ = false;
+
+isSingleplayerNMPZ = localStorage.getItem("singleplayerNMPZ") ? Boolean(localStorage.getItem("singleplayerNMPZ")) : false;
+document.getElementById("setSingleplayerNMPZ").textContent = isSingleplayerNMPZ ? "Enabled" : "Disabled";
+
+document.getElementById("setSingleplayerNMPZ").addEventListener("click", () => {
+    isSingleplayerNMPZ = !isSingleplayerNMPZ;
+    document.getElementById("setSingleplayerNMPZ").textContent = isSingleplayerNMPZ ? "Enabled" : "Disabled";
+    localStorage.setItem("singleplayerNMPZ", isSingleplayerNMPZ ? "true" : "");
+    checkGenerationTypeAndGenerate();
+
+    playSound("basic_button");
+});
+
+// Apply singleplayer settings ----------------------------------------------------------------------------------
+let timeout = localStorage.getItem("singleplayerTimer") != null ? Number(localStorage.getItem("singleplayerTimer")) : 0;
 
 let timeoutVariable;
 let startTimeoutVariable;
 let intervalTimeoutVariable;
 
-hardmodeState = localStorage.getItem("hardmodeTimeout") != null ? hardmodeState = Number(localStorage.getItem("hardmodeTimeout")) : 0;
-
-setHardmodeTimeout();
-
-toggleTimoutButton.addEventListener("click", () => {
-    playSound("basic_button");
-    hardmodeState++;
-    if (hardmodeState > 2) {
-        hardmodeState = 0;
-    }
-    setHardmodeTimeout();
-    checkGenerationTypeAndGenerate();
-});
-
-function setHardmodeTimeout() {
-    switch (hardmodeState) {
-        case 0:
-            setHardMode(false);
-            timerIcon.src = "/IMG/timer_icon.png";
-            break;
-        case 1:
-            setHardMode(true);
-            timeout = 2500;
-            timerIcon.src = "/IMG/timer_icon_1s.png";
-            break;
-        case 2:
-            setHardMode(true);
-            timeout = 5500;
-            timerIcon.src = "/IMG/timer_icon_5s.png";
-            break;
-        default:
-            setHardMode(false);
-            timerIcon.src = "/IMG/timer_icon.png";
-            break;
-    }
-    localStorage.setItem("hardmodeTimeout", hardmodeState);
-}
-
-export function setHardMode(enabled) {
-    hardMode = enabled;
-    hardModeFade.style.visibility = hardMode ? "visible" : "hidden";
-    if (!enabled) {
-        timerIcon.src = "/IMG/timer_icon.png";
-        hardmodeState = 0;
-        localStorage.setItem("hardmodeTimeout", hardmodeState);
-    }
-}
+let timer;
 
 let hardModeTitle = document.getElementById("hardModeTitle");
 let hardModeSubtitle = document.getElementById("hardModeSubtitle");
+let nmpzBackground = document.getElementById("nmpzSingleplayerBackground");
+
 let startHardModePromise;
 
-export function checkHardModeTimeout() {
+let isSingleplayer = true;
+
+export function setSingleplayer(enable) {
+    isSingleplayer = enable;
+}
+
+export function applySingleplayerSettings() {
+    // Disable all here, then enable what should be enabled
     hardModeFade.style.opacity = "0";
     hardModeFade.style.pointerEvents = "none";
+    nmpzBackground.style.pointerEvents = "none";
+    try { timer.stopTimer(); } catch { }
+    clearTimeout(timeoutVariable);
+    clearTimeout(startTimeoutVariable);
+    clearInterval(intervalTimeoutVariable);
 
-    if (hardMode) {
-        clearTimeout(timeoutVariable);
-        clearTimeout(startTimeoutVariable);
-        clearInterval(intervalTimeoutVariable);
+    // Now, enable what's needed if in Singleplayer
+    if (isSingleplayer) {
+        if (isSingleplayerNMPZ) {
+            nmpzBackground.style.pointerEvents = "auto";
+        }
 
-        startHardModePromise = new Promise((resolve, reject) => {
-            hardModeFade.style.opacity = "100%";
-            hardModeFade.style.pointerEvents = "auto";
-            hardModeSubtitle.innerText = "Get ready...";
-            hardModeTitle.innerText = "Starting in 3";
+        if (timeout) {
+            // Show MapModeIndicator (Timer UI)
+            document.getElementById("mapModeIndicator").style.display = "flex";
+            document.getElementById("mapModeText").textContent = "Singleplayer";
 
-            let loopIndex = 2;
-
-            intervalTimeoutVariable = setInterval(() => {
-                hardModeTitle.innerText = "Starting in " + loopIndex;
-                loopIndex--;
-            }, 700);
-
-            startTimeoutVariable = setTimeout(() => {
-                resolve("start");
-                clearInterval(intervalTimeoutVariable);
-            }, 2000);
-        });
-
-        startHardModePromise.then(function () {
-            hardModeFade.style.opacity = "0";
-            hardModeFade.style.pointerEvents = "none";
-
-            timeoutVariable = setTimeout(() => {
+            startHardModePromise = new Promise((resolve, reject) => {
                 hardModeFade.style.opacity = "100%";
-                hardModeTitle.innerText = "The time is up!";
                 hardModeFade.style.pointerEvents = "auto";
-                hardModeSubtitle.innerText = "Please take your guess.";
-            }, timeout)
-        });
+                hardModeSubtitle.innerText = "Get ready...";
+                hardModeTitle.innerText = "Starting in 3";
+
+                let loopIndex = 2;
+
+                intervalTimeoutVariable = setInterval(() => {
+                    hardModeTitle.innerText = "Starting in " + loopIndex;
+                    loopIndex--;
+                }, 700);
+
+                startTimeoutVariable = setTimeout(() => {
+                    resolve("start");
+                    clearInterval(intervalTimeoutVariable);
+                }, 2000);
+            });
+
+            startHardModePromise.then(function () {
+                hardModeFade.style.opacity = "0";
+                hardModeFade.style.pointerEvents = "none";
+
+                timer = startTimer(timeout, () => {
+                    hardModeFade.style.opacity = "100%";
+                    hardModeTitle.innerText = "The time is up!";
+                    hardModeFade.style.pointerEvents = "auto";
+                    hardModeSubtitle.innerText = "Please take your guess.";
+                });
+            });
+        } else {
+            document.getElementById("mapModeIndicator").style.display = "none"; // Hide MapMpdeIndicator
+        }
     }
 }

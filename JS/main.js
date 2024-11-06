@@ -4,7 +4,7 @@ of the bundled main.js. */
 
 import { resultScreenEnabled, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
-import { checkHardModeTimeout } from './singleplayerOptions.js';
+import { applySingleplayerSettings } from './singleplayerOptions.js';
 import { multiplayer, startMultiplayerRound, isHost } from './multiplayer.js';
 import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } from './countryGuesser.js';
 import { checkStartCompetitionRound } from './competitionLogic.js';
@@ -192,7 +192,7 @@ export function loadIframe(lat, long) {
     // Define a function to handle iframe load event
     const handleLoad = () => {
         if (initialIframeLoad) {
-            checkHardModeTimeout(); // Check if the user is playing hard mode + apply changes if yes
+            applySingleplayerSettings(); // Check if the user is playing hard mode + apply changes if yes
             checkStartCompetitionRound(); // Check if currently playing competition and start timer + new round if so 
         }
 

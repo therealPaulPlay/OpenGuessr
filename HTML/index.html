@@ -11,10 +11,10 @@
   <meta name="theme-color" content="#07071e">
 
   <!-- guesser css  & other stylesheets-->
-  <link rel="stylesheet" href="/CSS/guesser.css?v=r0bgu">
+  <link rel="stylesheet" href="/CSS/guesser.css?v=007c6">
 
   <!-- Main.js, bundled. We use imports and exports so it has to be a module. Versioning is to prevent caching of broken old files -->
-  <script type="module" src="main.js?v=r0bgu" defer></script>
+  <script type="module" src="main.js?v=007c6" defer></script>
 
   <!-- Turnstile Captcha to prevent malicious map loads -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
@@ -745,14 +745,36 @@
       </div>
       <button id="settingsClose" class="standardButton white closeButton">Close</button>
     </div>
-    <!-- Singleplayer Settings Window -->
+    <!-- Singleplayer Options Window -->
     <div id="singleplayerOptionsWindow" class="uiWindow">
       <div class="popup-title">
         <h1>Singleplayer</h1>
       </div>
-      <button class="standardButton accountButton" id="timerButton" type="button">
-        <img src="/IMG/timer_icon.png" alt="one or five seconds" id="timerIcon" class="socialBarIcons">
-      </button>
+      <div class="settingsCanvas slightBottomMargin">
+        <div class="settingsBox">
+          <p class="slightBottomMargin">
+            Timer:
+          </p>
+          <div class="timerSliderBox">
+            <input type="range" min="0" max="300" step="1" value="0" class="slider" id="timerSlider">
+            <div class="timerTextBox">
+              <img alt="timer icon" class="timerIcon" src="/IMG/timer_icon.png">
+              <p id="timerSliderText">No Timer</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="settingsCanvas slightBottomMargin">
+        <div class="settingsBox">
+          <p class="slightBottomMargin">
+            NMPZ:
+          </p>
+          <div class="timerSliderBox">
+            <p class="singleplayerDesc">Prevent Move, Pan and Zoom:</p>
+            <button id="setSingleplayerNMPZ" class="standardButton white">Disabled</button>
+          </div>
+        </div>
+      </div>
       <button id="singleplayerOptionsClose" class="standardButton white closeButton">Close</button>
     </div>
     <!-- Discord Popup -->
@@ -960,6 +982,7 @@
   </div>
   <div id="blackBackground"></div>
   <div id="nmpzBackground"></div>
+  <div id="nmpzSingleplayerBackground"></div>
   <div id="littleTimeVignette"></div>
   <div id="hardModeFade">
     <h1 id="hardModeTitle">Default hardmode title</h1>
