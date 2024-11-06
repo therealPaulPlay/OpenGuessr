@@ -1743,6 +1743,10 @@ textarea {
   flex-grow: 1;
 }
 
+#settingsIcon {
+  filter: invert();
+}
+
 #keepStreakText {
   max-width: 350px;
 }
@@ -3566,6 +3570,10 @@ map::selection {
 
 #timerButton {
   padding-inline: 13px;
+}
+
+#joystickIcon {
+  filter: invert();
 }
 
 @keyframes restrictionFade {

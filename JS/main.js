@@ -4,7 +4,7 @@ of the bundled main.js. */
 
 import { resultScreenEnabled, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
-import { checkHardModeTimeout } from './hardMode.js';
+import { checkHardModeTimeout } from './singleplayerOptions.js';
 import { multiplayer, startMultiplayerRound, isHost } from './multiplayer.js';
 import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } from './countryGuesser.js';
 import { checkStartCompetitionRound } from './competitionLogic.js';

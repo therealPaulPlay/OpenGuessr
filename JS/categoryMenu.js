@@ -1,6 +1,6 @@
 import { generateNewLocation } from "./main.js";
 import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
-import { setHardMode } from "./hardMode.js";
+import { setHardMode } from "./singleplayerOptions.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
 import { resetMap } from "./miniMap.js";

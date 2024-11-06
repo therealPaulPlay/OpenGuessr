@@ -100,7 +100,7 @@ closeButton.addEventListener("click", () => {
     playSound("basic_button");
 });
 
-//Various buttons and links -----------------------------------------------------------------------------------------------------------------
+// Various buttons and links -----------------------------------------------------------------------------------------------------------------
 let resetBTN = document.getElementById("resetButton");
 resetBTN.addEventListener("click", function () { playSound("reload"); reloadIframe(); });
 
@@ -116,7 +116,7 @@ privacyButton.addEventListener("click", function () { playSound("basic_button");
 document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html"); });
 document.getElementById("discoverEducation").addEventListener("click", function () { playSound("basic_button"); window.open("https://education.openguessr.com", '_blank').focus() });
 
-//Result screen animations ---------------------------------------------------------------------------------------------------------
+// Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
 
 export function enableResultScreen(guessLat, guessLong) {

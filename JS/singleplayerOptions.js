@@ -3,6 +3,20 @@
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
 import { playSound } from "./soundManager";
 
+// Singleplayer Options UI ----------------------------------------------------------------------------------------
+
+let isSingleplayerOpened = false;
+
+document.getElementById("singleplayerOptionsClose").addEventListener("click", toggleSingleplayerOptionsMenu);
+document.getElementById("singleplayerOptionsButton").addEventListener("click", toggleSingleplayerOptionsMenu);
+
+function toggleSingleplayerOptionsMenu() {
+    isSingleplayerOpened = !isSingleplayerOpened;
+    document.getElementById("blackBackground").style.visibility = isSingleplayerOpened ? "visible" : "hidden";
+    document.getElementById("singleplayerOptionsWindow").style.display = isSingleplayerOpened ? "block" : "none";
+}
+
+// Hard mode / Timer restriction ----------------------------------------------------------------------------------
 let hardMode = false;
 let hardmodeState = 0;
 let timeout = 2500;
@@ -18,6 +32,7 @@ let startTimeoutVariable;
 let intervalTimeoutVariable;
 
 hardmodeState = localStorage.getItem("hardmodeTimeout") != null ? hardmodeState = Number(localStorage.getItem("hardmodeTimeout")) : 0;
+
 setHardmodeTimeout();
 
 toggleTimoutButton.addEventListener("click", () => {
