@@ -100,7 +100,7 @@ closeButton.addEventListener("click", () => {
     playSound("basic_button");
 });
 
-//Various buttons and links -----------------------------------------------------------------------------------------------------------------
+// Various buttons and links -----------------------------------------------------------------------------------------------------------------
 let resetBTN = document.getElementById("resetButton");
 resetBTN.addEventListener("click", function () { playSound("reload"); reloadIframe(); });
 
@@ -116,7 +116,7 @@ privacyButton.addEventListener("click", function () { playSound("basic_button");
 document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html"); });
 document.getElementById("discoverEducation").addEventListener("click", function () { playSound("basic_button"); window.open("https://education.openguessr.com", '_blank').focus() });
 
-//Result screen animations ---------------------------------------------------------------------------------------------------------
+// Result screen animations ---------------------------------------------------------------------------------------------------------
 export let resultScreenEnabled = false;
 
 export function enableResultScreen(guessLat, guessLong) {
@@ -482,11 +482,11 @@ function toggleSettingsWindow() {
     }
 }
 
-// Unit switch between kilometers and miles
+// Unit switch between kilometers and miles ------------------
+export let distanceUnit = "kilometers";
 
 let kilometersButton = document.getElementById("unitSwitchKilometers");
 let milesButton = document.getElementById("unitSwitchMiles");
-export let distanceUnit = "kilometers";
 
 const tempStorageDistanceUnit = localStorage.getItem("distanceUnit");
 
@@ -520,6 +520,7 @@ milesButton.addEventListener("click", () => {
     localStorage.setItem("distanceUnit", "miles");
 });
 
+// Exit Popup Setting ---------------------
 document.getElementById("exitPopupSetting").addEventListener("click", () => {
     if (localStorage.getItem("hideExitPopup") == "1") {
         localStorage.setItem("hideExitPopup", "0");
@@ -530,6 +531,7 @@ document.getElementById("exitPopupSetting").addEventListener("click", () => {
     }
 });
 
+// Fullscreen Setting ---------------------
 let fullscreenButton = document.getElementById("fullscreenButton");
 
 fullscreenButton.addEventListener("click", () => {
@@ -921,12 +923,11 @@ async function startAdSupporterTimer(prefix = "Boost active. Remaining: ") {
 
 // Open map locations on google maps --------------------------------------------------------------------------------------------------
 
-function openLocationOnMap() {
-    playSound("basic_button");
-    window.open("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + currentStreetviewLat + "," + currentStreetviewLong, '_blank').focus();
-}
+document.getElementById("endScreenOpenLocation").addEventListener("click", () => { playSound("basic_button"); openLocationOnMaps(currentStreetviewLat, currentStreetviewLong) });
 
-document.getElementById("endScreenOpenLocation").addEventListener("click", openLocationOnMap);
+export function openLocationOnMaps(lat, long) {
+    window.open("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + lat + "," + long, '_blank').focus();
+}
 
 // In-game Notifications -------------------------------------------------------------------------------------------
 

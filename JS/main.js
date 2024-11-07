@@ -4,7 +4,7 @@ of the bundled main.js. */
 
 import { resultScreenEnabled, distanceUnit } from './mainUI.js';
 import { getLocationCoordinates } from './locationGeneration.js';
-import { checkHardModeTimeout } from './hardMode.js';
+import { applySingleplayerSettings } from './singleplayerOptions.js';
 import { multiplayer, startMultiplayerRound, isHost } from './multiplayer.js';
 import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } from './countryGuesser.js';
 import { checkStartCompetitionRound } from './competitionLogic.js';
@@ -105,51 +105,23 @@ export function compareDistances(distance) {
     // compares how big the distance is and enables result screen with a message.
     if (!resultScreenEnabled) {
 
-        let finalResult;
         let resultAsString;
 
         veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Do you have an A in geography?", "Wow.", "Time for a screenshot.", "Seriously impressive."];
         closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!", "Yup, that was impressive.", "That's how it's done!"];
         farDistances = ["Distance is relative. Here, relatively big.", "You'll get it next time!", "At least it was on the correct planet.", "It could have been worse."];
 
-        //motivational quotes
-        if (distance < 1000 && !(distance < 5)) {
+        // motivational quotes
+        if (distance < 5) {
+            extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
+        } else if (distance < 1000) {
             extraMsg = closeDistances[Math.floor(Math.random() * closeDistances.length)];
-        }
-        else {
+        } else {
             extraMsg = farDistances[Math.floor(Math.random() * farDistances.length)];
         }
 
-        //distance number formatting (km or m)
-        if (distance < 5) {
-            finalResult = Math.round(distance * 1000);
-            if (distanceUnit == "miles") {
-                finalResult = Math.round(finalResult * 1.09361);
-            }
-            finalResult = finalResult.toLocaleString();
-
-            if (distanceUnit == "miles") {
-                resultAsString = finalResult + " yards";
-            } else {
-                resultAsString = finalResult + " m";
-            }
-
-            extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
-        }
-        else {
-            finalResult = Math.round(distance * 10) / 10;
-            if (distanceUnit == "miles") {
-                finalResult = Math.round(finalResult * 0.621371 * 10) / 10;
-            }
-
-            finalResult = finalResult.toLocaleString();
-
-            if (distanceUnit == "miles") {
-                resultAsString = finalResult + " miles";
-            } else {
-                resultAsString = finalResult + " km";
-            }
-        }
+        // distance number formatting (km or m)
+        resultAsString = formatDistance(distance);
 
         if (countryGuesserMode && !multiplayer) {
             if (checkIfGuessWasCorrect()) {
@@ -159,8 +131,46 @@ export function compareDistances(distance) {
             }
         }
 
-        return { resultAsString: resultAsString, extraMsg: extraMsg};
+        return { resultAsString: resultAsString, extraMsg: extraMsg };
     }
+}
+
+// This function neatly formats a distance in meters into a readable string (e.g. 500 km or 15 miles)
+export function formatDistance(distance) {
+    let finalResult;
+    let resultString;
+
+    distance = Number(distance); // For error prevention
+
+    if (distance < 5) {
+        finalResult = Math.round(distance * 1000);
+        if (distanceUnit == "miles") {
+            finalResult = Math.round(finalResult * 1.09361);
+        }
+        finalResult = finalResult.toLocaleString();
+
+        if (distanceUnit == "miles") {
+            resultString = finalResult + " yards";
+        } else {
+            resultString = finalResult + " m";
+        }
+    }
+    else {
+        finalResult = Math.round(distance * 10) / 10;
+        if (distanceUnit == "miles") {
+            finalResult = Math.round(finalResult * 0.621371 * 10) / 10;
+        }
+
+        finalResult = finalResult.toLocaleString();
+
+        if (distanceUnit == "miles") {
+            resultString= finalResult + " miles";
+        } else {
+            resultString = finalResult + " km";
+        }
+    }
+
+    return resultString;
 }
 
 // Clamp function (Global) ----------------------------------------------------------------------------------------------------------------------
@@ -192,7 +202,7 @@ export function loadIframe(lat, long) {
     // Define a function to handle iframe load event
     const handleLoad = () => {
         if (initialIframeLoad) {
-            checkHardModeTimeout(); // Check if the user is playing hard mode + apply changes if yes
+            applySingleplayerSettings(); // Check if the user is playing hard mode + apply changes if yes
             checkStartCompetitionRound(); // Check if currently playing competition and start timer + new round if so 
         }
 

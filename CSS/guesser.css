@@ -1743,6 +1743,87 @@ textarea {
   flex-grow: 1;
 }
 
+.timerSliderBox {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.timerTextBox {
+  border: 5px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 5px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 5px;
+  padding-inline: 10px;
+  border-radius: 5px;
+  min-width: 140px;
+  text-align: center;
+}
+
+.singleplayerDesc {
+  opacity: 0.5;
+}
+
+.roundLogBox {
+  display: flex;
+  align-items: center;
+  justify-content: safe center;
+  gap: 5px;
+  flex-direction: column;
+  overflow-y: auto;
+  max-height: 150px;
+  padding-top: 10px;
+  padding-bottom: 10px
+}
+
+.logItemButton {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+.logItemMode {
+  font-size: 20px;
+  opacity: 50%;
+}
+
+.roundLogContainer {
+  height: fit-content;
+  padding-bottom: 15px;
+}
+
+.centerLogText {
+  text-align: center;
+  width: 100%;
+  opacity: 50%;
+  font-style: italic;
+  font-size: 22px;
+}
+
+.roundLogItem {
+  background-color: rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px;
+  padding-inline: 15px;
+  border-radius: 5px;
+  width: calc(100% - 30px);
+}
+
+.timerIcon {
+  width: 23px;
+  height: 23px;
+  opacity: 0.5;
+}
+
+#settingsIcon {
+  filter: invert();
+}
+
 #keepStreakText {
   max-width: 350px;
 }
@@ -2204,6 +2285,16 @@ search {
   top: 0;
 }
 
+#nmpzSingleplayerBackground {
+  position: fixed;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  top: 0;
+}
+
 #littleTimeVignette {
   position: fixed;
   overflow: hidden;
@@ -2440,7 +2531,7 @@ search {
   width: 100%;
   height: 100%;
   z-index: 1;
-  filter: brightness(0.5);
+  filter: brightness(0.5) blur(50px);
   background-size: cover;
   transition: opacity 500ms ease;
   opacity: 1;
@@ -3509,10 +3600,10 @@ map::selection {
 }
 
 .slider {
-  width: 75%;
+  width: 65%;
   -webkit-appearance: none;
   appearance: none;
-  background: white;
+  background: rgba(255, 255, 255, 0.2);
   outline: none;
   border-radius: 15px;
   height: 8px;
@@ -3566,6 +3657,10 @@ map::selection {
 
 #timerButton {
   padding-inline: 13px;
+}
+
+#joystickIcon {
+  filter: invert();
 }
 
 @keyframes restrictionFade {

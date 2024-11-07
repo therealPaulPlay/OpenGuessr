@@ -443,14 +443,14 @@ export let multiplayer = false;
 function setMultiplayerUI() {
     toggleCategoryMenu(true);
     let categoryButton = document.getElementById("categoryMenuButton");
-    let hardmodeTimerButton = document.getElementById("timerButton");
+    let singleplayerOptionsButton = document.getElementById("singleplayerOptionsButton");
 
     if (multiplayer) {
         categoryButton.style.opacity = "0.5";
         categoryButton.style.pointerEvents = "none";
         setGamemodeSelector(false);
-        hardmodeTimerButton.style.opacity = "0.5";
-        hardmodeTimerButton.style.pointerEvents = "none";
+        singleplayerOptionsButton.style.opacity = "0.5";
+        singleplayerOptionsButton.style.pointerEvents = "none";
         document.getElementById("mapModeIndicator").style.display = "flex";
         document.getElementById("multiplayerChat").style.display = "flex";
         document.getElementById("multiplayerLeave").style.display = "block";
@@ -473,8 +473,8 @@ function setMultiplayerUI() {
         categoryButton.style.opacity = "1";
         categoryButton.style.pointerEvents = "auto";
         setGamemodeSelector(true);
-        hardmodeTimerButton.style.opacity = "1";
-        hardmodeTimerButton.style.pointerEvents = "auto";
+        singleplayerOptionsButton.style.opacity = "1";
+        singleplayerOptionsButton.style.pointerEvents = "auto";
         document.getElementById("mapModeIndicator").style.display = "none";
         document.getElementById("multiplayerChat").style.display = "none";
         document.getElementById("multiplayerLeave").style.display = "none";
@@ -1713,7 +1713,7 @@ export function leaveMultiplayerRound() {
     endMultiplayerRematchButton.style.display = "none";
     endMultiplayerRematchButton.style.opacity = "1";
     endMultiplayerRematchButton.style.pointerEvents = "auto";
-    endMultiplayerRematchButton.textContent = "Play again"
+    endMultiplayerRematchButton.textContent = "Play again";
     setRestriction("standard");
 
     if (wasMultiplayerEnabled) {
