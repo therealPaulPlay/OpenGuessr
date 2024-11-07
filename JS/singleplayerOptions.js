@@ -10,8 +10,8 @@ import { formatDistance } from "./main";
 
 let isSingleplayerOpened = false;
 
-document.getElementById("singleplayerOptionsClose").addEventListener("click", toggleSingleplayerOptionsMenu);
-document.getElementById("singleplayerOptionsButton").addEventListener("click", toggleSingleplayerOptionsMenu);
+document.getElementById("singleplayerOptionsClose").addEventListener("click", () => { playSound("basic_button"); toggleSingleplayerOptionsMenu(); });
+document.getElementById("singleplayerOptionsButton").addEventListener("click", () => { playSound("basic_button"); toggleSingleplayerOptionsMenu(); });
 
 let timerSlider = document.getElementById("timerSlider");
 
