@@ -1778,7 +1778,8 @@ textarea {
   overflow-y: auto;
   max-height: 150px;
   padding-top: 10px;
-  padding-bottom: 10px
+  padding-bottom: 10px;
+  scrollbar-width: none;
 }
 
 .logItemButton {
