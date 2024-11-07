@@ -3,6 +3,8 @@
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
 import { startTimer } from "./timer";
 import { playSound } from "./soundManager";
+import { openLocationOnMaps } from "./mainUI";
+import { formatDistance } from "./main";
 
 // Singleplayer Options UI ----------------------------------------------------------------------------------------
 
@@ -18,6 +20,7 @@ function toggleSingleplayerOptionsMenu() {
     document.getElementById("blackBackground").style.visibility = isSingleplayerOpened ? "visible" : "hidden";
     document.getElementById("singleplayerOptionsWindow").style.display = isSingleplayerOpened ? "block" : "none";
     setTimerText();
+    loadRoundLogItems();
     timerSlider.value = timeout;
 }
 
@@ -72,10 +75,10 @@ let nmpzBackground = document.getElementById("nmpzSingleplayerBackground");
 
 let startHardModePromise;
 
-let isSingleplayer = true;
+let playingSingleplayer = true;
 
 export function setSingleplayer(enable) {
-    isSingleplayer = enable;
+    playingSingleplayer = enable;
 }
 
 export function applySingleplayerSettings() {
@@ -89,7 +92,7 @@ export function applySingleplayerSettings() {
     clearInterval(intervalTimeoutVariable);
 
     // Now, enable what's needed if in Singleplayer
-    if (isSingleplayer) {
+    if (playingSingleplayer) {
         if (isSingleplayerNMPZ) {
             nmpzBackground.style.pointerEvents = "auto";
         }
@@ -139,22 +142,56 @@ export function applySingleplayerSettings() {
 
 let logBox = document.getElementById("roundLogBox");
 
+let itemIndex = 0;
+
 function addRoundLogItem(mode, distance, coordinates) {
     const item = document.createElement("div");
     item.classList.add("roundLogItem");
+    itemIndex++;
     item.innerHTML = `
     <div>
         <p class="logItemMode">${mode}</p>
-        <p>500 km away</p>
+        <p>${formatDistance(distance)} away</p>
     </div>
-    <button class="standardButton logItemButton">View</button>
+    <button class="standardButton logItemButton" id="viewLogLocation${itemIndex}">View</button>
     `;
 
     logBox.appendChild(item);
+    document.getElementById("viewLogLocation" + itemIndex).addEventListener("click", () => {
+        playSound("basic_button");
+        openLocationOnMaps(coordinates[0], coordinates[1]);
+    });
 }
 
-addRoundLogItem("Singleplayer", "500 km", [50, 50]);
-addRoundLogItem("Singleplayer", "500 km", [50, 50]);
-addRoundLogItem("Singleplayer", "500 km", [50, 50]);
-addRoundLogItem("Singleplayer", "500 km", [50, 50]);
-addRoundLogItem("Singleplayer", "500 km", [50, 50]);
+let roundLog = [];
+
+try {
+    roundLog = JSON.parse(localStorage.getItem("roundLog")) || [];
+} catch (error) { console.error("Error parsing roundLog JSON:", error)};
+
+// Pass coordinates as array, [lat, long]
+export function saveRoundToLog(mode, distance, coordinates) {
+    roundLog.unshift([mode, distance, coordinates])
+    if (roundLog.length > 10) roundLog.pop();
+
+    localStorage.setItem("roundLog", JSON.stringify(roundLog));
+}
+
+function loadRoundLogItems() {
+    logBox.innerHTML = ""; // Clear Box HTML
+
+    if (roundLog.length > 0) {
+        try {
+            roundLog.forEach((element) => {
+                addRoundLogItem(element[0], element[1], element[2]);
+            });
+        } catch (error) {
+            console.error("Error loading round log:", error);
+            console.error("The round log:", roundLog);
+        }
+    } else {
+        logBox.innerHTML = `
+        <p class="centerLogText">Play a few rounds to make them appear here.</p>
+        `;
+    }
+}

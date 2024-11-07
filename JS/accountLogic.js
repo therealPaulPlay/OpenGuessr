@@ -10,6 +10,7 @@ import { addResultToCompetitionScore, playingCompetition } from "./competitionLo
 import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel, supporterLevel } from "./profileView.js";
 import { errorPopup } from "./errorHandling.js";
 import { initializeWebsocketConnection, setInboxStatus } from "./friendMenu.js";
+import { saveRoundToLog } from "./singleplayerOptions.js";
 
 let accountLockedArray;
 
@@ -329,7 +330,7 @@ function willCauseLevelUpgrade(xp, newXP) {
   return ((xp + newXP) / requiredXP);
 }
 
-//Calculate XP gain for each round ---------------------------------------------------------------------------------------
+// Calculate XP gain for each round ---------------------------------------------------------------------------------------
 let streak = 0;
 let streakDisplay = document.getElementById("streakDisplay");
 let streakText = document.getElementById("endScreenStreakText");
@@ -415,7 +416,7 @@ function calculateXPGain(distance, category, supporterLevel, freeSupporterBoost)
     returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
   } else {
-    
+
     if (diameter > 250) streakCalculation(); // If the map is big enough, calculate the country streak
     returnXP = Math.round(5000 * ((calculateExponentialModifier(diameter)) ** distance));
   }
@@ -458,10 +459,18 @@ export async function loadResultScreenXP(distance) {
     lastXPloadingAttemptAborted = true;
   }
 
+  // Save played round to log ------------------------------------------------
+  let mode = "Singleplayer";
+  if (multiplayer) mode = "Multiplayer";
+  if (playingCompetition) mode = "Competition";
+
+  saveRoundToLog(mode, distance, [currentStreetviewLat, currentStreetviewLong]);
+
+  // If Authenticated or in Multiplayer, show XP thing ------------------------------
   if (isAuthenticated || multiplayer) {
     lastXPloadingAttemptAborted = false;
 
-    //Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
+    // Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
 
     let currentXP = Number(localStorage.getItem("experience"));
@@ -472,6 +481,7 @@ export async function loadResultScreenXP(distance) {
 
     let selectedCategory = localStorage.getItem("selectedCategory");
 
+    // Hide streak display
     streakDisplay.style.opacity = "0";
     streakDisplay.style.width = "0";
     streakDisplay.style.maxWidth = "0";
@@ -507,7 +517,7 @@ export async function loadResultScreenXP(distance) {
       addResultToCompetitionScore(earnedXP);
     }
 
-    //apply XP visually and server-wise ----------------------------------
+    // Apply XP visually and server-wise ----------------------------------
     XPbarResource.classList.remove("XPbarAnimate");
 
     if ((willCauseLevelUpgrade(currentXP, earnedXP)) > 1) {
