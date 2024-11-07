@@ -134,3 +134,27 @@ export function applySingleplayerSettings() {
         }
     }
 }
+
+// Round Log ---------------------------------------------------------------------------------------------------------------
+
+let logBox = document.getElementById("roundLogBox");
+
+function addRoundLogItem(mode, distance, coordinates) {
+    const item = document.createElement("div");
+    item.classList.add("roundLogItem");
+    item.innerHTML = `
+    <div>
+        <p class="logItemMode">${mode}</p>
+        <p>500 km away</p>
+    </div>
+    <button class="standardButton logItemButton">View</button>
+    `;
+
+    logBox.appendChild(item);
+}
+
+addRoundLogItem("Singleplayer", "500 km", [50, 50]);
+addRoundLogItem("Singleplayer", "500 km", [50, 50]);
+addRoundLogItem("Singleplayer", "500 km", [50, 50]);
+addRoundLogItem("Singleplayer", "500 km", [50, 50]);
+addRoundLogItem("Singleplayer", "500 km", [50, 50]);
