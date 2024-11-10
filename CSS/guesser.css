@@ -689,7 +689,7 @@ textarea {
   outline: none !important;
   border: none;
   font-size: 22px;
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 #profileAbout {
@@ -758,7 +758,7 @@ textarea {
 }
 
 #adTierBox {
-  border-radius: 5px;
+  border-radius: 10px;
   margin: 0;
   background: rgb(80, 90, 91);
   transition: background-color 250ms ease, filter 250ms ease;
@@ -957,7 +957,7 @@ textarea {
 .supporterBox {
   padding: 10px;
   width: calc(100% - 20px);
-  border-radius: 5px;
+  border-radius: 10px;
 }
 
 .supporterBox p {
@@ -1188,7 +1188,7 @@ textarea {
 
 .tierBox {
   background-color: rgba(255, 255, 255, 0.1);
-  border-radius: 5px;
+  border-radius: 10px;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -1453,7 +1453,7 @@ textarea {
 
 .badgeLabel {
   padding: 3px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.05);
   border-radius: 5px;
   text-align: left;
   margin-bottom: 10px;
@@ -2001,7 +2001,7 @@ textarea {
   width: 100%;
   margin-left: auto;
   margin-right: auto;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
 }
 
@@ -2010,7 +2010,7 @@ textarea {
   width: calc(100% - 20px);
   margin-left: auto;
   margin-right: auto;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.05);
   border-radius: 10px;
   display: flex;
   justify-content: flex-start;
@@ -2031,11 +2031,11 @@ textarea {
   overflow-x: hidden;
   overflow-y: auto;
   padding: 2px;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.05);
   gap: 10px;
   margin-top: 10px;
   margin-inline: 5px;
-  outline: 5px solid rgba(255, 255, 255, 0.1);
+  outline: 5px solid rgba(255, 255, 255, 0.05);
   min-height: 50px;
 }
 
@@ -2233,7 +2233,7 @@ search {
   gap: 5px;
   justify-content: center;
   align-items: center;
-  background-color: rgba(255, 255, 255, 0.1);
+  background-color: rgba(255, 255, 255, 0.05);
   padding: 5px;
   border-radius: 10px;
   flex-grow: 1.5;
@@ -3089,7 +3089,7 @@ map::selection {
 }
 
 .statisticView {
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.05);
   display: flex;
   padding: 10px;
@@ -3115,7 +3115,7 @@ map::selection {
 }
 
 .managementBox {
-  border-radius: 5px;
+  border-radius: 10px;
   background-color: rgba(255, 255, 255, 0.05);
   display: flex;
   justify-content: flex-start;
