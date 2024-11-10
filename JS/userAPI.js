@@ -7,6 +7,7 @@ export const registrationEndpoint = `${backendURL}/register`;
 export const userUpdateEndpoint = `${backendURL}/update`;
 export const userGetEndpoint = `${backendURL}/user`;
 export const leaderboardEndpoint = `${backendURL}/leaderboard`;
+export const userLeaderboardEndpoint = `${backendURL}/user-leaderboard`;
 export const passwordResetEmailEndpoint = `${backendURL}/reset-password-request`;
 export const passwordChangeEndpoint = `${backendURL}/reset-password`;
 export const supporterLeaderboardEndpoint = `${backendURL}/supporter-leaderboard`;
@@ -227,11 +228,31 @@ export async function getUser(token, id, errorSource) {
 
 export async function getLeaderboard() {
   try {
-    let id = localStorage.getItem("id")
-    let editLeaderboardEndpoint = leaderboardEndpoint;
-    if (id != null && id != 0 && id != undefined) {
-      editLeaderboardEndpoint = `${leaderboardEndpoint}/${id}`;
+
+    const response = await fetch(`${leaderboardEndpoint}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+
+    } else {
+      console.error('Fetch failed:', response.status);
     }
+  } catch (error) {
+    console.error('Error occurred while fetching the user: ', error);
+  }
+}
+
+export async function getUserLeaderboard() {
+  try {
+    let id = localStorage.getItem("id")
+    let editLeaderboardEndpoint = `${userLeaderboardEndpoint}/${id}`;
 
     const response = await fetch(`${editLeaderboardEndpoint}`, {
       method: 'GET',

@@ -537,7 +537,7 @@
 
 </body>
 <script type="module">
-    import { getLeaderboard, getSupporterLeaderboard } from "./userAPI.js";
+    import { getLeaderboard, getUserLeaderboard, getSupporterLeaderboard } from "./userAPI.js";
 
     // Back Button and iframe check -------------------------------------------------------------------------------------------
     function inIframe() {
@@ -638,10 +638,13 @@
         timeoutMultiplier = 0;
 
         let data;
+        let userData;
+        let userId = localStorage.getItem("id");
 
         switch (leaderboardType) {
             case "experience":
                 data = await getLeaderboard();
+                if (userId) userData = await getUserLeaderboard();
                 break;
             case "experience-supporter":
                 data = await getSupporterLeaderboard();
@@ -653,62 +656,57 @@
             return;
         }
 
-        let userData = data;
-
-        if (userData.experienceLeaderboard) {
-            userData = data.experienceLeaderboard;
+        if (!userData) {
+            yourLeagueContainer.innerHTML = "<p>An error occurred while loading the user leaderboard.</p>";
         }
 
-        if (userData == undefined) {
-            container.innerHTML = "<p>An error occurred while loading the leaderboard.</p>";
-            yourLeagueContainer.innerHTML = "<p>An error occurred while loading the leaderboard.</p>";
-        } else {
-            container.innerHTML = "";
-            yourLeagueContainer.innerHTML = "";
+        container.innerHTML = "";
+        yourLeagueContainer.innerHTML = "";
 
-            // rest podium items to remove any previous event listeners
-            document.querySelectorAll(".podium-item").forEach((e) => {
-                const podiumItem = e;
-                const newPodiumItem = podiumItem.cloneNode(true);
-                podiumItem.parentNode.replaceChild(newPodiumItem, podiumItem);
-            });
+        // rest podium items to remove any previous event listeners
+        document.querySelectorAll(".podium-item").forEach((e) => {
+            const podiumItem = e;
+            const newPodiumItem = podiumItem.cloneNode(true);
+            podiumItem.parentNode.replaceChild(newPodiumItem, podiumItem);
+        });
 
-            // Populate podium
-            for (let i = 0; i < 3 && i < userData.length; i++) {
-                let user = userData[i];
-                let place = ['first', 'second', 'third'][i];
-                let podiumItem = document.getElementById(`${place}-place`);
-                podiumItem.querySelector('.name').textContent = user.user_name;
-                podiumItem.querySelector('.podiumExp').textContent = user.experience.toLocaleString() + " XP";
-                podiumItem.addEventListener('click', () => openProfile(user.id));
+        // Populate podium
+        for (let i = 0; i < 3 && i < data.length; i++) {
+            let user = data[i];
+            let place = ['first', 'second', 'third'][i];
+            let podiumItem = document.getElementById(`${place}-place`);
+            podiumItem.querySelector('.name').textContent = user.user_name;
+            podiumItem.querySelector('.podiumExp').textContent = user.experience.toLocaleString() + " XP";
+            podiumItem.addEventListener('click', () => openProfile(user.id));
 
-                if (user.user_name == yourUsername && !dontLoadStats) {
-                    podiumItem.classList.add('yourItem');
-                }
+            if (user.user_name == yourUsername && !dontLoadStats) {
+                podiumItem.classList.add('yourItem');
             }
+        }
 
-            document.getElementById("podium").style.opacity = 1;
-            document.getElementById("podium").style.transform = "scale(1)";
+        document.getElementById("podium").style.opacity = 1;
+        document.getElementById("podium").style.transform = "scale(1)";
 
-            // Populate main leaderboard starting from 4th place
-            for (let i = 3; i < userData.length; i++) {
+        // Populate main leaderboard starting from 4th place
+        for (let i = 3; i < data.length; i++) {
+            let user = data[i];
+            let userName = user.user_name;
+            let experience = Number(user.experience).toLocaleString();
+            let id = user.id;
+            let supporterLevel = user.supporter_level;
+
+            addRankedItem(user.position, userName, experience, id, supporterLevel);
+        }
+
+        // A section to show where the user is at, as well as a few others above them
+        if (userData) {
+            console.log(userData);
+            yourLeagueContainer.style.display = "block"; // Make user section visible
+            document.getElementById("threeDotsContainer").style.display = "flex";
+
+            for (let i = 0; i < userData.length; i++) {
                 let user = userData[i];
-                let userName = user.user_name;
-                let experience = Number(user.experience).toLocaleString();
-                let id = user.id;
-                let supporterLevel = user.supporter_level;
-
-                addRankedItem(user.position, userName, experience, id, supporterLevel);
-            }
-
-            if (data.userLeaderboard) {
-                yourLeagueContainer.style.display = "block";
-                document.getElementById("threeDotsContainer").style.display = "flex";
-
-                for (let i = 0; i < data.userLeaderboard.length; i++) {
-                    let user = data.userLeaderboard[i];
-                    addRankedItem(user.position.toLocaleString(), user.user_name, Number(user.experience).toLocaleString(), user.id, user.supporter_level, true);
-                }
+                addRankedItem(user.position.toLocaleString(), user.user_name, Number(user.experience).toLocaleString(), user.id, user.supporter_level, true);
             }
         }
 
