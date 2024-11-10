@@ -631,39 +631,33 @@
     // Load leaderboard data -------------------------------------------------------------------------------------------------------
     async function loadLeaderboard(leaderboardType) {
         container.innerHTML = "<p>Loading...</p>";
-        yourLeagueContainer.innerHTML = "<p>Loading...</p>";
+        yourLeagueContainer.innerHTML = "<p>Loading...</p>"; // Set to loading, though this is display none. However, if it then gets loaded later, it will be shown.
+
         yourLeagueContainer.style.display = "none";
+
         document.getElementById("threeDotsContainer").style.display = "none";
         document.body.style.height = "100vh";
         timeoutMultiplier = 0;
 
         let data;
-        let userData;
-        let userId = localStorage.getItem("id");
 
         switch (leaderboardType) {
             case "experience":
                 data = await getLeaderboard();
-                if (userId) userData = await getUserLeaderboard();
                 break;
             case "experience-supporter":
                 data = await getSupporterLeaderboard();
                 break;
         }
 
+        container.innerHTML = "";
+
         if (!data) {
             container.innerHTML = "<p>An error occurred while loading the leaderboard.</p>";
             return;
         }
 
-        if (!userData) {
-            yourLeagueContainer.innerHTML = "<p>An error occurred while loading the user leaderboard.</p>";
-        }
-
-        container.innerHTML = "";
-        yourLeagueContainer.innerHTML = "";
-
-        // rest podium items to remove any previous event listeners
+        // reset podium items to remove any previous event listeners
         document.querySelectorAll(".podium-item").forEach((e) => {
             const podiumItem = e;
             const newPodiumItem = podiumItem.cloneNode(true);
@@ -698,18 +692,85 @@
             addRankedItem(user.position, userName, experience, id, supporterLevel);
         }
 
-        // A section to show where the user is at, as well as a few others above them
-        if (userData) {
-            yourLeagueContainer.style.display = "block"; // Make user section visible
-            document.getElementById("threeDotsContainer").style.display = "flex";
+        document.body.style.height = document.documentElement.scrollHeight - 100 + 'px';
+    }
 
-            for (let i = 0; i < userData.length; i++) {
-                let user = userData[i];
-                addRankedItem(user.position.toLocaleString(), user.user_name, Number(user.experience).toLocaleString(), user.id, user.supporter_level, true);
-            }
+    let potentialUserLeaderboardType = "none";
+
+    // A section to show where the user is at, as well as a few others above them
+    async function loadUserLeaderboard(leaderboardType) {
+        // Can only be loaded if ID is specified
+        potentialUserLeaderboardType = "none"; // Reset user leaderboard as it is now (soon) loaded
+        
+        let userId = localStorage.getItem("id");
+        if (!userId) return;
+
+        timeoutMultiplier = 0;
+        yourLeagueContainer.style.display = "block"; // Make user section visible
+
+        let userData;
+
+        switch (leaderboardType) {
+            case "experience":
+                userData = await getUserLeaderboard();
+                break;
+            default:
+                return; // if no case fits, exit this function
+        }
+
+        if (!userData) {
+            yourLeagueContainer.innerHTML = "<p>An error occurred while loading the user leaderboard.</p>";
+            return;
+        }
+
+        document.getElementById("threeDotsContainer").style.display = "flex";
+        yourLeagueContainer.innerHTML = "";
+
+        for (let i = 0; i < userData.length; i++) {
+            let user = userData[i];
+            addRankedItem(user.position.toLocaleString(), user.user_name, Number(user.experience).toLocaleString(), user.id, user.supporter_level, true);
         }
 
         document.body.style.height = document.documentElement.scrollHeight - 100 + 'px';
+    }
+
+    // Check if user section is in view -------------------------------------------------------------------------------------
+
+    let scrollTimeout;
+
+    document.addEventListener("scroll", () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+            checkIfUserSectionIsInView();
+        }, 150);
+    });
+
+    function checkIfUserSectionIsInView() {
+        const element = yourLeagueContainer;
+
+        if (!element) return;
+
+        const originalDisplay = window.getComputedStyle(element).display;
+        if (originalDisplay === 'none') {
+            element.style.display = 'block';
+        }
+
+        const rect = element.getBoundingClientRect();
+
+        if (originalDisplay === 'none') {
+            element.style.display = originalDisplay;
+        }
+
+        const isInViewport = (
+            rect.top < (window.innerHeight || document.documentElement.clientHeight) &&
+            rect.bottom > 0 &&
+            rect.left < (window.innerWidth || document.documentElement.clientWidth) &&
+            rect.right > 0
+        );
+
+        if (isInViewport && potentialUserLeaderboardType != "none" && potentialUserLeaderboardType) {
+            loadUserLeaderboard(potentialUserLeaderboardType);
+        }
     }
 
     // Filter / Sort Options -------------------------------------------------------------------------------------------------
@@ -725,10 +786,12 @@
             case "all":
                 document.getElementById("filterAll").classList.add("optionButtonSelected");
                 loadLeaderboard("experience");
+                potentialUserLeaderboardType = "experience";
                 break;
             case "supporter":
                 document.getElementById("filterSupporter").classList.add("optionButtonSelected");
                 loadLeaderboard("experience-supporter");
+                potentialUserLeaderboardType = "none";
                 break;
         }
     }
@@ -745,7 +808,7 @@
 
     setFilterHighlight();
 
-    //Google Analytics 4 (simplified implementation) -------------------------------------------------------------------------
+    // Google Analytics 4 (simplified implementation) -------------------------------------------------------------------------
     window['gtag_enable_tcf_support'] = true;
 
     const imported = document.createElement('script');
