@@ -1,22 +1,38 @@
-# OpenGuessr
-The free location guessing game. 
+# sv
 
-## Get started with the repo:
-After cloning the repo, make sure you have
-installed all of the required npm packages.
-To do so, run `npm install` in the repository.
+Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
 
-Webpack is configured to create two bundled javascript files,
-one from main.js as well as one from analytics js. It resolves import and export dependencies
-automatically which means that we do not need to specify multiple entry points for one bundle.
+## Creating a project
 
-The signup screen currently does not use a bundled javascript file, rather than that, the userAPI as
-well as errorPopup.js are being included in conjunction with the signupScreen.js file to work together
-without bundling.
+If you're seeing this, you've probably already done this step. Congrats!
 
-In order to configure the VS Code live server plugin to use the build folder as the new entry point / root folder,
-you need to specify `"liveServer.settings.root": "/build"` in the settings.json of the live server plugin. 
-The file is available through Extensions -> Live Server -> Settings (gear icon) -> Click where it says "edit in settings.json".
+```bash
+# create a new project in the current directory
+npx sv create
 
-Running `npm run build` is currently configured (in the package.json file) to build with webpack.
-All necessary files will be included in the build folder and versioning queries are added automatically.
+# create a new project in my-app
+npx sv create my-app
+```
+
+## Developing
+
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```bash
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+## Building
+
+To create a production version of your app:
+
+```bash
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.

@@ -216,7 +216,7 @@ document.addEventListener(
   false
 );
 
-//Toggle password field visability ------------
+// Toggle password field visability ------------
 document.querySelector('.toggle-password').addEventListener('click', function () {
   const passwordInput = document.getElementById('signup_password');
   const icon = this;
@@ -231,26 +231,4 @@ document.querySelector('.toggle-password').addEventListener('click', function ()
     icon.classList.add('hide-eye');
   }
 });
-
-
-//Google Analytics 4 (simplified implementation) -------------------------------------------------------------------------
-window['gtag_enable_tcf_support'] = true;
-
-const imported = document.createElement('script');
-imported.src = "https://www.googletagmanager.com/gtag/js?id=G-DXD64B7ZDX";
-document.head.appendChild(imported);
-
-try {
-  window.dataLayer = window.dataLayer || [];
-  function gtag() { dataLayer.push(arguments); }
-
-  gtag('js', new Date());
-
-  gtag('config', 'G-DXD64B7ZDX', {
-    cookie_domain: location.hostname,
-    cookie_flags: "SameSite=None; Secure",
-  });
-} catch (error) {
-  console.error("Error loading GA4: " + error);
-}
 
