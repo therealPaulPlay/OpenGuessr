@@ -7,11 +7,15 @@
         changePassword,
     } from "$lib/utils/userAPI";
 
+    import inIframe from "$lib/utils/checkIframe";
+
+    import { onMount, onDestroy } from "svelte";
+
     // Toggle between login and signup ---------------------------------------------------------------------------------------------
-    let loginForm = document.getElementById("loginForm");
-    let signupForm = document.getElementById("signupForm");
-    let resetForm = document.getElementById("resetForm");
-    let newPasswordForm = document.getElementById("newPasswordForm");
+    let loginForm;
+    let signupForm;
+    let resetForm;
+    let newPasswordForm;
 
     function toggleForm() {
         signupStage = 1;
@@ -27,123 +31,103 @@
         }
     }
 
-    let loginSwitch = document.getElementById("loginSwitch");
-    loginSwitch.addEventListener("click", toggleForm);
-
-    let loginSwitchReset = document.getElementById("loginSwitchReset");
-    loginSwitchReset.addEventListener("click", toggleForm);
-
-    let loginSwitchChange = document.getElementById("loginSwitchChange");
-    loginSwitchChange.addEventListener("click", toggleForm);
-
-    let loginSwitchBack = document.getElementById("loginSwitchBack");
-    loginSwitchBack.addEventListener("click", toggleForm);
-
-    function inIframe() {
-        try {
-            return window.self !== window.parent;
-        } catch (e) {
-            return true;
-        }
-    }
-
     // Password reset screen -------------------------------------------------------------------------------------------------------------------------------------
 
-    document
-        .getElementById("passwordResetOption")
-        .addEventListener("click", () => {
-            loginForm.style.display = "none";
-            signupForm.style.display = "none";
-            newPasswordForm.style.display = "none";
-            resetForm.style.display = "block";
-        });
+    let resetEmail = $state();
 
-    document.getElementById("reset").addEventListener("click", () => {
-        const email = document.getElementById("reset_email").value;
-        sendPasswordResetEmail(email, "signup");
-    });
+    function showPasswordResetForm() {
+        loginForm.style.display = "none";
+        signupForm.style.display = "none";
+        newPasswordForm.style.display = "none";
+        resetForm.style.display = "block";
+    }
 
     // Password reset via auth link ------------------------------------------------------------------------------------------------------------------------------
 
-    let urlParams = new URLSearchParams(window.location.search);
-    let resetBearerToken = urlParams.get("token");
+    onMount(() => {
+        let urlParams = new URLSearchParams(window.location.search);
+        let resetBearerToken = urlParams.get("token");
 
-    if (resetBearerToken) {
-        newPasswordForm.style.display = "block";
-        loginForm.style.display = "none";
-        signupForm.style.display = "none";
-        resetForm.style.display = "none";
-        history.replaceState({}, document.title, window.location.pathname); // reset url back to normal one
-    }
+        if (resetBearerToken) {
+            newPasswordForm.style.display = "block";
+            loginForm.style.display = "none";
+            signupForm.style.display = "none";
+            resetForm.style.display = "none";
+            history.replaceState({}, document.title, window.location.pathname); // reset url back to normal one
+        }
+    });
 
-    document.getElementById("changePassword").addEventListener("click", () => {
-        if (document.getElementById("reset_password").value != "") {
-            changePassword(
-                resetBearerToken,
-                document.getElementById("reset_password").value,
-                "signup",
-            );
+    let resetPasswordValue = $state("");
+
+    function changePasswordIfValuesProvided() {
+        if (resetPasswordValue) {
+            changePassword(resetBearerToken, resetPasswordValue, "signup");
         } else {
             displayError("Please input a new password.", "signup");
         }
-    });
+    }
 
     // Back to OpenGuessr Button ---------------------------------------------------------------------------------------------------------------------------------
 
-    document
-        .getElementById("backButton")
-        .addEventListener("click", function () {
-            if (inIframe()) {
-                window.parent.postMessage("close", "*");
+    function backToPrevious() {
+        if (inIframe()) {
+            window.parent.postMessage("close", "*");
+        } else {
+            if (document.referrer) {
+                window.history.back();
             } else {
-                if (document.referrer) {
-                    window.history.back();
-                } else {
-                    window.location.href = "/"; // Fallback if no referrer
-                }
+                window.location.href = "/"; // Fallback if no referrer
             }
-        });
+        }
+    }
 
     // Signup UI Logic and Captcha ------------------------------------------------------------------------------------------------------------------------------
 
-    //back button on signup screen (return to form from captcha)
-    document.getElementById("back").addEventListener("click", function () {
+    let signupButtonSignupPage;
+
+    // Back button on signup screen (return to form from captcha)
+    function returnToStage1() {
         signupStage = 1;
         setSignupStage();
-    });
+    }
 
     let signupStage = 1;
 
-    setSignupStage();
+    let captcha;
+    let signupArea;
+    let signupBack;
 
-    //switch between captcha and form
+    // Switch between captcha and form
     function setSignupStage() {
-        document.getElementById("signup").innerHTML =
-            "Signup (" + signupStage + "/2)";
+        signupButtonSignupPage.innerHTML = "Signup (" + signupStage + "/2)";
         if (signupStage == 2) {
-            document.getElementById("signup_area").style.display = "none";
-            document.getElementById("captcha").style.display = "block";
-            document.getElementById("back").style.display = "inline";
+            signupArea.style.display = "none";
+            captcha.style.display = "block";
+            signupBack.style.display = "inline";
             randomQuestion();
         } else {
-            document.getElementById("signup_area").style.display = "block";
-            document.getElementById("captcha").style.display = "none";
-            document.getElementById("back").style.display = "none";
+            signupArea.style.display = "block";
+            captcha.style.display = "none";
+            signupBack.style.display = "none";
         }
     }
+
+    onMount(() => {
+        setSignupStage();
+    });
 
     function validateEmail(email) {
         var re = /\S+@\S+\.\S+/;
         return re.test(email);
     }
 
-    //check fields + validate email address structure
+    // Check fields + validate email address structure
     function checkEmptyFields(isSignup) {
         if (isSignup) {
             if (
-                document.getElementById("signup_username").value != "" &&
-                document.getElementById("signup_password").value != "" &&
-                validateEmail(document.getElementById("signup_email").value)
+                signupUsername &&
+                signupPassword &&
+                validateEmail(signupEmail)
             ) {
                 return true;
             } else {
@@ -151,10 +135,7 @@
                 return false;
             }
         } else {
-            if (
-                validateEmail(document.getElementById("login_email").value) &&
-                document.getElementById("login_password").value != ""
-            ) {
+            if (validateEmail(loginEmail) && loginPassword) {
                 return true;
             } else {
                 displayError(
@@ -181,18 +162,18 @@
 
     let randomQuestionIndex;
 
+    let captchaHeader = $state("Default Captcha");
+
     function randomQuestion() {
         randomQuestionIndex = Math.floor(Math.random() * 10);
-        document.getElementById("captchaHeader").innerHTML =
-            questions[randomQuestionIndex][0];
+        captchaHeader = questions[randomQuestionIndex][0];
     }
+
+    let captchaUserAnswer = $state();
 
     //validate answer to captcha question
     function validateQuestion() {
-        if (
-            document.getElementById("captchaQuestion").value ==
-            questions[randomQuestionIndex][1]
-        ) {
+        if (captchaUserAnswer == questions[randomQuestionIndex][1]) {
             return true;
         } else {
             displayError("Answer incorrect :( Try again.", "signup");
@@ -201,52 +182,42 @@
         }
     }
 
-    //Signup and login ----------------------------------------------------------------------------------------------------------
+    // Signup and login ----------------------------------------------------------------------------------------------------------
 
-    let loginEmail = document.getElementById("login_email");
-    let loginPassword = document.getElementById("login_password");
+    let loginEmail = $state();
+    let loginPassword = $state();
 
-    let signupEmail = document.getElementById("signup_email");
-    let signupPassword = document.getElementById("signup_password");
-    let signupUsername = document.getElementById("signup_username");
+    let signupEmail = $state();
+    let signupPassword = $state();
+    let signupUsername = $state();
 
-    let loginButtonSignupPage = document.getElementById("login");
-    loginButtonSignupPage.addEventListener("click", logInAction);
+    let loginButtonSignupPage;
 
-    let signupButtonSignupPage = document.getElementById("signup");
-    signupButtonSignupPage.addEventListener("click", signUpAction);
-
-    //this is the function that runs when the user click on signup or presses enter.
+    // This is the function that runs when the user click on signup or presses enter.
     function signUpAction() {
         if (signupStage == 2 && validateQuestion()) {
-            registerUser(
-                signupUsername.value,
-                signupEmail.value,
-                signupPassword.value,
-                "signup",
-            );
+            registerUser(signupUsername, signupEmail, signupPassword, "signup");
         } else {
             if (checkEmptyFields(true)) {
                 signupStage = 2;
                 setSignupStage();
-                loginEmail.value = signupEmail.value;
+                loginEmail = signupEmail;
             }
         }
     }
 
-    //this is the function that runs when the user click on login or presses enter.
+    // This is the function that runs when the user click on login or presses enter.
     async function logInAction() {
         if (checkEmptyFields(false)) {
             loginButtonSignupPage.textContent = "Wait...";
-            await loginUser(loginEmail.value, loginPassword.value, "signup");
+            await loginUser(loginEmail, loginPassword, "signup");
             loginButtonSignupPage.textContent = "Log in";
         }
     }
 
-    //keyboard controls / enter --> next step
-    document.addEventListener(
-        "keyup",
-        (event) => {
+    onMount(() => {
+        // Keyboard Enter
+        function handleKeyUp(event) {
             const keyName = event.key;
 
             // Will go to the next step when pressing Enter.
@@ -258,155 +229,197 @@
             ) {
                 signUpAction();
             }
-        },
-        false,
-    );
+        }
+
+        document.addEventListener("keyup", handleKeyUp);
+    });
+
+    onDestroy(() => {
+        if (typeof window !== "undefined") {
+            document.removeEventListener("keyup", handleKeyUp);
+        }
+    });
 
     // Toggle password field visability ------------
-    document
-        .querySelector(".toggle-password")
-        .addEventListener("click", function () {
-            const passwordInput = document.getElementById("signup_password");
-            const icon = this;
 
-            if (passwordInput.type === "password") {
-                passwordInput.type = "text";
-                icon.classList.remove("hide-eye");
-                icon.classList.add("show-eye");
-            } else {
-                passwordInput.type = "password";
-                icon.classList.remove("show-eye");
-                icon.classList.add("hide-eye");
-            }
-        });
+    let passwordInputType = $state("password");
+    let eyeIconPath = $state("/img/eyeclosed.png");
+
+    function togglePasswordVisibility() {
+        if (passwordInputType == "password") {
+            passwordInputType = "text";
+            eyeIconPath = "/img/eyeopen.png";
+        } else {
+            passwordInputType = "password";
+            eyeIconPath = "/img/eyeclosed.png";
+        }
+    }
 </script>
 
 <svelte:head>
     <title>Login and Signup</title>
 </svelte:head>
 
-<div class="wrapper">
-    <div class="container">
-        <img class="logo" src="/IMG/openguessr.svg" alt="OpenGuessr Logo" />
-        <div id="newPasswordForm">
-            <div>
-                <input
-                    id="reset_password"
-                    type="password"
-                    placeholder="New Password" /><br /><br />
-                <button id="changePassword" class="primaryButton"
-                    >Set new password</button>
-            </div>
-            <p class="switchFormBox">
-                Remembered Password?
-                <button id="loginSwitchChange" class="secondaryButton"
-                    >Log in</button>
-            </p>
-        </div>
-        <div id="resetForm">
-            <div>
-                <input
-                    id="reset_email"
-                    type="email"
-                    placeholder="Email" /><br /><br />
-                <button id="reset" class="primaryButton">Reset</button>
-            </div>
-            <p class="switchFormBox">
-                Remembered password?
-                <button id="loginSwitchReset" class="secondaryButton"
-                    >Log in</button>
-            </p>
-        </div>
-        <div id="loginForm">
-            <div>
-                <input
-                    id="login_email"
-                    type="email"
-                    placeholder="Email" /><br /><br />
-                <input
-                    id="login_password"
-                    type="password"
-                    placeholder="Password" /><br /><br />
-                <button id="login" class="primaryButton">Log in</button>
-            </div>
-            <p class="switchFormBox">
-                Don't have an account?
-                <button id="loginSwitch" class="secondaryButton"
-                    >Sign up</button>
-            </p>
-            <p id="passwordResetOption">Forgot password?</p>
-        </div>
-        <div id="signupForm" style="display: none;">
-            <div>
-                <div id="signup_area">
+<main>
+    <div class="wrapper">
+        <div class="container">
+            <img class="logo" src="/img/openguessr.svg" alt="OpenGuessr Logo" />
+            <div id="newPasswordForm" bind:this={newPasswordForm}>
+                <div>
                     <input
-                        id="signup_username"
-                        type="text"
-                        placeholder="Username" /><br /><br />
+                        bind:value={resetPasswordValue}
+                        type="password"
+                        placeholder="New Password" /><br /><br />
+                    <button
+                        id="changePassword"
+                        class="standardButton"
+                        onclick={changePasswordIfValuesProvided}
+                        >Set new password</button>
+                </div>
+                <p class="switchFormBox">
+                    Recovered Password?
+                    <button
+                        id="loginSwitchChange"
+                        class="standardButton white"
+                        onclick={toggleForm}>Log in</button>
+                </p>
+            </div>
+            <div id="resetForm" bind:this={resetForm}>
+                <div>
                     <input
-                        id="signup_email"
+                        bind:value={resetEmail}
                         type="email"
                         placeholder="Email" /><br /><br />
-                    <div class="password-container">
-                        <input
-                            id="signup_password"
-                            type="password"
-                            placeholder="Password" />
-                        <img
-                            class="toggle-password"
-                            src="/IMG/eyeclosed.png"
-                            alt="Show Password" />
-                    </div>
+                    <button
+                        id="reset"
+                        class="standardButton"
+                        onclick={() =>
+                            sendPasswordResetEmail(resetEmail, "signup")}
+                        >Reset</button>
                 </div>
-                <div id="captcha">
-                    <h2 id="captchaHeader">
-                        Can you answer the default question?
-                    </h2>
-                    <input
-                        id="captchaQuestion"
-                        type="number"
-                        min="0"
-                        max="10"
-                        placeholder="0 - 10" /><br /><br />
-                </div>
-                <button id="back" class="primaryButton">back</button>
-                <button id="signup" class="primaryButton">Sign Up (1/2)</button>
+                <p class="switchFormBox">
+                    Recovered Password?
+                    <button
+                        id="loginSwitchReset"
+                        class="standardButton white"
+                        onclick={toggleForm}>Log in</button>
+                </p>
             </div>
-            <p class="switchFormBox">
-                Already have an account?
-                <button id="loginSwitchBack" class="secondaryButton"
-                    >Login</button>
-            </p>
-            <p id="privacyNotice">
-                Our <a href="/legal.html">policies</a> apply.
-            </p>
+            <div id="loginForm" bind:this={loginForm}>
+                <div>
+                    <input
+                        id="login_email"
+                        type="email"
+                        bind:value={loginEmail}
+                        placeholder="Email" /><br /><br />
+                    <input
+                        id="login_password"
+                        type="password"
+                        bind:value={loginPassword}
+                        placeholder="Password" /><br /><br />
+                    <button
+                        id="login"
+                        class="standardButton"
+                        bind:this={loginButtonSignupPage}
+                        onclick={logInAction}>Log in</button>
+                </div>
+                <p class="switchFormBox">
+                    No Account yet?
+                    <button
+                        id="loginSwitch"
+                        class="standardButton white"
+                        onclick={toggleForm}>Sign up</button>
+                </p>
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+                <p id="passwordResetOption" onclick={showPasswordResetForm}>
+                    Forgot password?
+                </p>
+            </div>
+            <div id="signupForm" style="display: none;" bind:this={signupForm}>
+                <div>
+                    <div id="signup_area" bind:this={signupArea}>
+                        <input
+                            id="signup_username"
+                            type="text"
+                            bind:value={signupUsername}
+                            placeholder="Username" /><br /><br />
+                        <input
+                            id="signup_email"
+                            type="email"
+                            bind:value={signupEmail}
+                            placeholder="Email" /><br /><br />
+                        <div class="password-container">
+                            <input
+                                id="signup_password"
+                                bind:value={signupPassword}
+                                type={passwordInputType}
+                                placeholder="Password" />
+                            <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+                            <!-- svelte-ignore a11y_click_events_have_key_events -->
+                            <img
+                                class="toggle-password"
+                                onclick={togglePasswordVisibility}
+                                src={eyeIconPath}
+                                alt="Show Password" />
+                        </div>
+                    </div>
+                    <div id="captcha" bind:this={captcha}>
+                        <h2
+                            id="captchaHeader"
+                            bind:textContent={captchaHeader}
+                            contenteditable="false">
+                            Can you answer the default question?
+                        </h2>
+                        <input
+                            id="captchaAnswer"
+                            type="number"
+                            bind:value={captchaUserAnswer}
+                            min="0"
+                            max="10"
+                            placeholder="0 - 10" /><br /><br />
+                    </div>
+                    <button
+                        id="back"
+                        class="standardButton"
+                        onclick={returnToStage1}
+                        bind:this={signupBack}>back</button>
+                    <button
+                        id="signup"
+                        class="standardButton"
+                        bind:this={signupButtonSignupPage}
+                        onclick={signUpAction}>Sign Up (1/2)</button>
+                </div>
+                <p class="switchFormBox">
+                    Already signed up?
+                    <button
+                        id="loginSwitchBack"
+                        class="standardButton white"
+                        onclick={toggleForm}>Login</button>
+                </p>
+                <p id="privacyNotice">
+                    Our <a href="/legal">policies</a> apply.
+                </p>
+            </div>
+            <p id="errorMessage">This is an error message box.</p>
         </div>
-        <p id="errorMessage">This is an error message box.</p>
+        <div class="container containerBottom">
+            <button
+                id="backButton"
+                onclick={backToPrevious}
+                class="standardButton white">⭠ Go Back</button>
+        </div>
     </div>
-    <div class="container containerBottom">
-        <button id="backButton" class="secondaryButton">⭠ Go Back</button>
-    </div>
-</div>
-<div class="orb"></div>
-<div id="secondOrb" class="orb"></div>
+    <div class="orb"></div>
+    <div id="secondOrb" class="orb"></div>
+</main>
 
 <style>
-    @font-face {
-        font-family: Barlow;
-        src: url("/FONTS/BarlowCondensed-Medium.ttf");
-    }
-
-    h1,
-    h2,
-    h3 {
-        font-weight: 400;
-    }
-
     p {
         color: white;
     }
 
-    body {
+    main {
         position: fixed;
         top: 0;
         bottom: 0;
@@ -421,18 +434,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
-        /* removes everything that is not in visible screen area, this way, it is no longer scrollable */
         overflow: hidden;
-    }
-
-    #title1,
-    #title2 {
-        color: rgba(42, 44, 71, 1);
-        font-size: 24px;
-        background-color: rgba(255, 255, 255, 0.5);
-        border-radius: 5px;
-        padding: 5px;
-        width: 75%;
     }
 
     .logo {
@@ -457,48 +459,15 @@
         backdrop-filter: blur(1000px);
     }
 
-    button {
-        padding: 10px 20px;
-        border: none;
-        border-radius: 5px;
-        cursor: pointer;
-        margin: 5px;
-    }
-
-    .primaryButton {
-        transition: filter 250ms ease;
-        background-color: #ff0808;
-        color: white;
-        cursor: pointer;
-        width: fit-content;
-        font-size: 22px;
-        font-family: Barlow;
-        padding: 5px 15px;
-        text-align: center;
-        white-space: nowrap;
-        margin: 2.5px;
-        border-radius: 5px;
-        user-select: none;
-        -webkit-user-select: none;
-    }
-
-    .primaryButton:hover {
-        filter: brightness(70%);
-    }
-
     .orb {
         position: absolute;
         width: 1500px;
         height: 1200px;
         border-radius: 50%;
         background-color: rgba(255, 59, 48, 0.15);
-        /* Red-ish color with decreased opacity */
         filter: blur(1500px);
-        /* Blurry effect */
         -webkit-filter: blur(1500px);
-        /* Safari compatibility */
         z-index: -1;
-        /* Ensure orbs are below other content */
         top: 20%;
         overflow: hidden;
         right: 10%;
@@ -512,7 +481,7 @@
         left: 10%;
     }
 
-    #captchaQuestion {
+    #captchaAnswer {
         color: black;
         background-color: rgba(255, 255, 255, 0.8);
         width: 30%;
@@ -563,48 +532,15 @@
         }
     }
 
-    .secondaryButton {
-        transition: filter 250ms ease;
-        background-color: white;
-        color: black;
-        cursor: pointer;
-        width: fit-content;
-        font-size: 20px;
-        font-family: Barlow;
-        padding: 5px 15px;
-        text-align: center;
-        white-space: nowrap;
-        margin: 2.5px;
-        margin-left: 10px;
-        border-radius: 5px;
-        user-select: none;
-        -webkit-user-select: none;
-    }
-
     #back {
         background-color: white;
         color: black;
     }
 
-    .secondaryButton:hover {
-        filter: brightness(70%);
-    }
-
-    a:link {
-        color: #ffffff;
-    }
-
-    a:visited {
-        color: #ffffff;
-    }
-
-    a:hover {
-        color: #ffffff;
-    }
-
     #privacyNotice {
         opacity: 50%;
         margin-bottom: 0;
+        margin-top: 20px;
     }
 
     input {
@@ -626,21 +562,22 @@
         opacity: 0.5;
     }
 
-    textarea:focus,
-    input:focus {
-        outline: none;
-        background: rgba(55, 27, 31, 0.5);
-    }
-
     .password-container {
         position: relative;
         margin-bottom: 20px;
     }
 
     .switchFormBox {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        justify-content: space-between;
+        min-width: 250px;
         background-color: rgba(255, 255, 255, 0.1);
         border-radius: 5px;
         padding: 8px;
+        padding-inline: 16px;
+        padding-right: 8px;
         margin-top: 50px;
     }
 
@@ -653,14 +590,6 @@
         width: 30px;
         height: auto;
         opacity: 0.75;
-    }
-
-    .toggle-password.hide-eye {
-        content: url("/IMG/eyeclosed.png");
-    }
-
-    .toggle-password.show-eye {
-        content: url("/IMG/eyeopen.png");
     }
 
     .wrapper {
@@ -696,6 +625,7 @@
         border-radius: 5px;
         width: 100%;
         margin-bottom: 0;
+        margin-top: 20px;
         user-select: none;
     }
 
@@ -703,7 +633,7 @@
         color: rgba(255, 255, 255, 1);
     }
 
-    #captchaQuestion::placeholder {
+    #captchaAnswer::placeholder {
         color: black;
     }
 </style>

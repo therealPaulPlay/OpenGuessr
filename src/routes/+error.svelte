@@ -1,5 +1,5 @@
 <svelte:head>
-    <title>OpenGuessr - 404</title>
+    <title>OpenGuessr - Error</title>
 </svelte:head>
 
 <div id="page-content">

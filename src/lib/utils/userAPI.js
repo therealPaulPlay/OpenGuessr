@@ -1,4 +1,5 @@
-import { errorPopup } from "../../../JS/errorHandling.js";
+import { errorPopup } from "./errorHandling";
+import inIframe from "./checkIframe";
 
 export const backendURL = "https://accounts.openguessr.com/accounts";
 export const loginEndpoint = `${backendURL}/login`;
@@ -11,14 +12,6 @@ export const userLeaderboardEndpoint = `${backendURL}/user-leaderboard`;
 export const passwordResetEmailEndpoint = `${backendURL}/reset-password-request`;
 export const passwordChangeEndpoint = `${backendURL}/reset-password`;
 export const supporterLeaderboardEndpoint = `${backendURL}/supporter-leaderboard`;
-
-function inIframe() {
-  try {
-    return window.self !== window.parent;
-  } catch (e) {
-    return true;
-  }
-}
 
 // Login and registration -----------------------------------------------------------------------------------
 export async function loginUser(email, password, errorSource) {
