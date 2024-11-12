@@ -9,7 +9,7 @@
 
     import inIframe from "$lib/utils/checkIframe";
 
-    import { onMount, onDestroy } from "svelte";
+    import { onMount } from "svelte";
 
     // Toggle between login and signup ---------------------------------------------------------------------------------------------
     let loginForm;
@@ -215,30 +215,16 @@
         }
     }
 
-    onMount(() => {
-        // Keyboard Enter
-        function handleKeyUp(event) {
-            const keyName = event.key;
+    function handleKeyUp(event) {
+        const keyName = event.key;
 
-            // Will go to the next step when pressing Enter.
-            if (keyName === "Enter" && loginForm.style.display != "none") {
-                logInAction();
-            } else if (
-                keyName === "Enter" &&
-                signupForm.style.display != "none"
-            ) {
-                signUpAction();
-            }
+        // Will go to the next step when pressing Enter.
+        if (keyName === "Enter" && loginForm.style.display != "none") {
+            logInAction();
+        } else if (keyName === "Enter" && signupForm.style.display != "none") {
+            signUpAction();
         }
-
-        document.addEventListener("keyup", handleKeyUp);
-    });
-
-    onDestroy(() => {
-        if (typeof window !== "undefined") {
-            document.removeEventListener("keyup", handleKeyUp);
-        }
-    });
+    }
 
     // Toggle password field visability ------------
 
@@ -259,6 +245,8 @@
 <svelte:head>
     <title>Login and Signup</title>
 </svelte:head>
+
+<svelte:window on:keyup={handleKeyUp} />
 
 <main>
     <div class="wrapper">
