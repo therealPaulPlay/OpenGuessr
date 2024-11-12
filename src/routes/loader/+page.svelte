@@ -7,11 +7,6 @@
 </div>
 
 <style>
-    @font-face {
-        font-family: Barlow;
-        src: url("../FONTS/BarlowCondensed-Medium.ttf");
-    }
-
     h1 {
         text-align: center;
         font-family: Barlow;

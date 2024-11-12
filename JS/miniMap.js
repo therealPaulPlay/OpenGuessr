@@ -4,7 +4,7 @@ import { enableResultScreen, hideCaptchaPopup, hideToggleMapButtonIfMobile, isEl
 import { playSound } from "./soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 import { errorPopup } from "./errorHandling.js";
-import { currentlyLoadedLocationsArray } from "./locationGeneration.js";
+import { currentlyLoadedLocationsArray } from "../src/lib/logic/locationGeneration.js";
 
 
 // Initialize the map with correct provider --------------------------------------------------------------------
@@ -591,7 +591,7 @@ document.getElementById("map").addEventListener('touchstart', handleMapHover);
 document.getElementById("map").addEventListener('touchend', handleMapUnhover);
 
 
-//Guess / Confirm function ----------------------------------------------------------------------------------
+// Guess / Confirm function ----------------------------------------------------------------------------------
 
 export function confirmButtonClicks() {
     confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
@@ -627,7 +627,7 @@ export function confirmButtonClicks() {
     }
 }
 
-//Confirm Button with Spacebar and a few checks
+// Confirm Button with Spacebar and a few checks
 document.getElementById("map").addEventListener("keyup", function (event) {
     if (event.key === " ") {
         if (confirmBTN.style.pointerEvents == "auto" && isElementClickable(document.getElementById("map"))) {

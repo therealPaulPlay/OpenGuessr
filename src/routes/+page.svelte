@@ -1,5 +1,1173 @@
+<script>
+  import LoadingFade from "$lib/components/LoadingFade.svelte";
+  import ImageGuesser from "$lib/components/ImageGuesser.svelte";
+  import ErrorPopup from "$lib/components/ErrorPopup.svelte";
+</script>
 
 <svelte:head>
-        <title>OpenGuessr - Free GeoGuessr Alternative</title>
+  <title>OpenGuessr - Free GeoGuessr Alternative</title>
 </svelte:head>
 
+<!--this is the navbar-->
+<div class="logoLeft">
+  <img
+    id="OpenGuessrIcon"
+    src="/img/openguessr.svg"
+    alt="OpenGuessr logo - the free geography location-guessing game"
+  />
+</div>
+<div id="mobileButtonArea" class="topButtonArea">
+  <div class="barMenu">
+    <button id="mobileLoginButton" class="standardButton accountButton mobileAccountButton">Login</button>
+    <button id="mobileProfileButton" class="standardButton accountButton mobileAccountButton">
+      <img class="socialBarIcons invertSocialBarIcon" src="/img/profile_icon.png" alt="Your profile" />
+    </button>
+    <button id="mobileLogoutButton" class="standardButton accountButton mobileAccountButton">
+      <img class="logoutImage" src="/img/signout.png" alt="Log out of your OpenGuessr account." />
+    </button>
+    <button id="mobileCategoryButton" class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer">
+      <img class="socialBarIcons invertSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Map Categories" />
+    </button>
+    <button
+      id="mobileMultiplayerButton"
+      class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer"
+    >
+      <img class="socialBarIcons invertSocialBarIcon" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
+    </button>
+    <button
+      id="mobileCompetitionsButton"
+      class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer"
+    >
+      <img class="socialBarIcons invertSocialBarIcon" src="/img/competitions_icon.png" alt="Competitions symbol" />
+    </button>
+    <button id="mobileLeaderboardButton" class="standardButton accountButton mobileAccountButton">
+      <img
+        class="socialBarIcons invertSocialBarIcon"
+        src="/img/leaderboards_icon.png"
+        alt="Leaderboard for OpenGuessr"
+      />
+    </button>
+  </div>
+</div>
+<div id="topCursorDetectionBar"></div>
+<!-- used to detect the cursor leaving the iframe -->
+<div id="topButtonArea" class="topButtonArea">
+  <div class="barMenu topBarSides topBarDesktop">
+    <button class="standardButton accountButton" id="loginButton" type="button" alt="log in">Log in</button>
+    <div class="profileInfo notSignedIn" id="profileInfo">
+      <div id="accountNameArea">
+        <p id="accountName">Guest</p>
+      </div>
+      <div class="progressContainer">
+        <svg class="progressRing" width="30" height="30">
+          <circle
+            class="progressRingCircle"
+            style="stroke-dasharray: 81.6814px, 81.6814px; stroke-dashoffset: 81.6814px;"
+            stroke="#00cc00"
+            stroke-width="4"
+            fill="transparent"
+            r="13"
+            cx="15"
+            cy="15"
+          ></circle>
+        </svg>
+        <div id="progressRingLevel" class="progressRingText">1</div>
+      </div>
+    </div>
+    <button class="standardButton accountButton" id="logoutButton" type="button" alt="log out">
+      <img class="logoutImage" src="/img/signout.png" alt="Log out of your OpenGuessr account." />
+    </button>
+  </div>
+  <div class="barMenu topBarDesktop" id="gamemodeMenu">
+    <button id="leaderboardButton" class="standardButton accountButton">
+      <span class="topBarExpand">Leaderboard</span>
+      <img
+        class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
+        src="/img/leaderboards_icon.png"
+        alt="Experience Leaderboard"
+      />
+    </button>
+    <button id="multiplayerButton" class="accountButton standardButton">
+      <span class="topBarExpand">Multiplayer</span>
+      <img
+        class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
+        src="/img/multiplayer_icon.png"
+        alt="Open the multiplayer menu"
+      />
+    </button>
+    <button id="competitionsButton" class="standardButton accountButton">
+      <span class="topBarExpand">Competitions</span>
+      <img
+        class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
+        src="/img/competitions_icon.png"
+        alt="Competitions symbol"
+      />
+    </button>
+  </div>
+  <div class="barMenu topBarSides topBarDesktop">
+    <button class="standardButton accountButton" id="categoryMenuButton" type="button">
+      Maps
+      <img id="mapsArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="socialBarIcons arrowIcon" />
+    </button>
+    <button class="standardButton accountButton" id="singleplayerOptionsButton" type="button">
+      <img src="/img/joystick_icon.png" alt="one or five seconds" id="joystickIcon" class="socialBarIcons" />
+    </button>
+    <button class="standardButton accountButton" id="settingsButton" type="button">
+      <img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
+    </button>
+  </div>
+  <div id="notificationBar">
+    <p id="notificationText">Default notification</p>
+    <div class="notificationButtonBox">
+      <button id="notificationAccept" class="standardButton accountButton">Accept</button>
+      <button id="notificationDismiss" class="standardButton accountButton">
+        <img alt="dismiss notification" class="friendRemoveIcon" src="/img/delete_icon.png" />
+      </button>
+    </div>
+  </div>
+</div>
+<!-- extended navbar map menu -->
+<div class="extendedNavbar" id="extendedNavbar">
+  <div id="extendedNavbarGradient"></div>
+  <div id="extendedNavbarContent" class="mapArea">
+    <!-- content -->
+    <div class="mapBox">
+      <p>General</p>
+      <div class="mapArea">
+        <button class="category" id="standardCategory" type="button">Standard</button>
+        <button class="category" id="capitalCategory" type="button">Capitals</button>
+        <button class="category" id="famousCategory" type="button">Famous</button>
+      </div>
+    </div>
+    <div class="mapBox">
+      <span class="mapsAccountLock">
+        Free Account needed
+        <img alt="locked" class="lockedIcon" src="/img/locked_icon.png" />
+      </span>
+      <p>Special modes</p>
+      <div id="specialGamemodesArea" class="mapArea">
+        <button class="category accountLock" id="dailyCompetition" type="button">Daily Competition</button>
+        <button class="category accountLock" id="countryCategory" type="button">Country Guesser</button>
+        <button class="category accountLock" id="imageCategory" type="button">Image Guesser</button>
+      </div>
+    </div>
+    <div class="mapBox expandableMapBox" id="countriesMapBox">
+      <span class="mapsAccountLock">
+        Free Account needed
+        <img alt="locked" class="lockedIcon" src="/img/locked_icon.png" />
+      </span>
+      <p>Countries</p>
+      <div class="outerCountryCategoryContainer">
+        <div class="expandableMapAreaFade" id="countryCategoriesFade"></div>
+        <button class="standardButton mapAreaExpandButton" id="countryCategoriesExpand">
+          <span id="countriesMoreText">More</span>
+          <img id="arrowIconCountries" src="/img/arrow_icon.png" alt="Expand arrow" />
+        </button>
+        <div class="mapArea expandableCountryArea" id="expandableCountryArea">
+          <!-- country map category buttons are generated in categoryMenu.js -->
+        </div>
+      </div>
+    </div>
+    <div class="mapBox">
+      <p>OpenGuessr Education</p>
+      <div class="mapArea">
+        <a
+          class="category educationCategory"
+          id="educationGuidesLink"
+          target="_blank"
+          href="https://education.openguessr.com/guides"
+        >
+          Guides
+        </a>
+        <a
+          class="category educationCategory"
+          id="educationQuizzesLink"
+          target="_blank"
+          href="https://education.openguessr.com/quiz"
+        >
+          Quizzes
+        </a>
+        <a
+          class="category educationCategory"
+          id="educationCountriesLink"
+          target="_blank"
+          href="https://education.openguessr.com/countries"
+        >
+          Learn Countries
+        </a>
+      </div>
+      <button class="categoryLink" id="discoverEducation">
+        Master OpenGuessr
+        <img class="discoverIcon" alt="discover more categories" src="/img/crown_icon.png" />
+      </button>
+    </div>
+    <div class="mapBox">
+      <span class="mapsAccountLock">
+        Free Account needed
+        <img alt="locked" class="lockedIcon" src="/img/locked_icon.png" />
+      </span>
+      <p>Continents</p>
+      <div class="mapArea">
+        <button class="category continentCategory accountLock" id="africaCategory" type="button">Africa</button>
+        <button class="category continentCategory accountLock" id="asiaCategory" type="button">Asia</button>
+        <button class="category continentCategory accountLock" id="europeCategory" type="button">Europe</button>
+        <button class="category continentCategory accountLock" id="north_americaCategory" type="button">
+          North America
+        </button>
+        <button class="category continentCategory accountLock" id="oceaniaCategory" type="button">Oceania</button>
+        <button class="category continentCategory accountLock" id="south_americaCategory" type="button">
+          South America
+        </button>
+      </div>
+    </div>
+    <div class="mapBox lastMapBox">
+      <p>Community maps</p>
+      <div id="communityMapArea" class="mapArea">
+        <!-- country categories auto generated in categoryMenu.js, then added here automatically -->
+      </div>
+      <button class="categoryLink" id="discoverMaps" type="button">
+        Discover all Community Maps
+        <img class="discoverIcon" alt="discover more categories" src="/img/discover_icon.png" />
+      </button>
+    </div>
+  </div>
+</div>
+<!-- mobile category menu bottom controls -->
+<div id="mobileExtendedNavbarControls">
+  <button id="mobileCategoriesClose" class="fixedMobileuiWidth standardButton socialBarButton">Close</button>
+</div>
+<LoadingFade />
+<ErrorPopup />
+<!-- Confirmation overlay for prompts (Are you sure, leave, delete..) -->
+<div id="confirmPopup" class="popupHolder confirmBackground">
+  <div class="confirmPopupWindow uiWindow">
+    <h1 id="confirmTitle" class="popup-title">Default Confirm Title</h1>
+    <div id="confirmDescription" class="popup-description">This is the default warning.</div>
+    <input id="accountDeletePassword" class="confirmPopupInput" type="password" placeholder="Password" />
+    <input type="text" id="usernameInput" class="confirmPopupInput" placeholder="New username" maxlength="50" />
+    <div class="buttonBoxRight">
+      <button id="confirmCancel" class="standardButton white closeButton">Close</button>
+      <button id="confirmProceed" class="standardButton closeButton">Confirm</button>
+    </div>
+  </div>
+</div>
+<!-- Captcha Popup -->
+<div id="captchaPopup" class="popupHolder confirmBackground">
+  <div class="captchaWindow uiWindow">
+    <h1 id="confirmTitle" class="popup-title">Captcha</h1>
+    <div class="supporterBox supporterBoxHighlight">
+      <img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+      <p class="captchaInfoText">
+        As bots are being used to drive up API costs, please solve this captcha to load the minimap.
+      </p>
+    </div>
+    <br />
+    <div id="captchaContainer">
+      <!-- the captcha will be loaded dynamically here -->
+    </div>
+    <div class="buttonBoxRight">
+      <button id="captchaClose" class="standardButton white closeButton">Close</button>
+    </div>
+  </div>
+</div>
+<!-- New profile window -->
+<div id="profilePopup" class="popupHolder profilePopupBackground">
+  <div id="profileWindow" class="uiWindow">
+    <div class="popup-title">
+      <div class="profileNameArea">
+        <h1 id="profileViewName">Username</h1>
+        <div id="profileNameBox">
+          <button id="badgeButton" class="standardButton">+ Badge</button>
+          <div id="badgeArea"></div>
+          <img id="selectedProfilePin" src="/img/your_marker1.png" alt="map pin" />
+          <div id="supporterTag">
+            <p id="supporterTagText" class="supporterTextHidden">Supporter</p>
+            <img id="supporterIcon" alt="supporter tag" src="/img/supporter_icon.png" />
+          </div>
+          <p id="levelTextProfile">Lvl. 0</p>
+          <button class="standardButton" id="profileAddFriend">
+            <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
+          </button>
+        </div>
+      </div>
+    </div>
+    <div id="supporterArea" class="supporterArea">
+      <div class="supporterPitchText">
+        <p id="supporterPitch">Become a supporter (default).</p>
+        <span id="supporterTextSecondary">Supporters keep the game free (default)</span>
+      </div>
+      <button id="viewSupporterBenefits" class="standardButton">View benefits</button>
+    </div>
+    <div id="profileScrollSection">
+      <h3 id="profileAboutHeader">About:</h3>
+      <textarea
+        id="profileAbout"
+        maxlength="150"
+        spellcheck="false"
+        placeholder="Share a few facts about yourself with others..."
+      ></textarea>
+      <h3>User Stats:</h3>
+      <div id="profileStats" class="statisticView">
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">Level:</p>
+          <p id="statisticsLevelText">1</p>
+        </div>
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">Experience:</p>
+          <p id="statisticExperience">not set.</p>
+        </div>
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">Until Level-Up:</p>
+          <p id="statisticUpgradeExperience">not set.</p>
+        </div>
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">Duels played:</p>
+          <p id="statisticDuelsPlayed">0</p>
+        </div>
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">Duels won:</p>
+          <p id="statisticDuelsWon">0</p>
+        </div>
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">Competitions entered:</p>
+          <p id="statisticCompetitionsEntered">0</p>
+        </div>
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">Highest ended Streak:</p>
+          <p id="statisticHighestStreak">0</p>
+        </div>
+        <div class="statisticsEnclosure">
+          <p class="statsLabel">Joined:</p>
+          <p id="statisticJoinedDate">not set.</p>
+        </div>
+      </div>
+      <h3 id="accountManagementHeader">Account Management:</h3>
+      <div id="accountManagementArea" class="managementBox">
+        <div class="editNameSection">
+          <button class="standardButton white" id="editUsername">
+            <img src="/img/edit-icon.png" alt="Edit username Icon" class="edit-icon" />
+            Name
+          </button>
+        </div>
+        <button id="accountDeleteButton" class="standardButton">Delete Account</button>
+      </div>
+      <br />
+    </div>
+    <button id="profileClose" class="standardButton white closeButton">Close</button>
+  </div>
+</div>
+<!-- Badge window -->
+<div id="badgePopup" class="popupHolder profilePopupBackground">
+  <div id="badgeWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1 id="badgePopupHeader">Badges</h1>
+    </div>
+    <div id="badgeContainer" class="badgeContainer">
+      <div class="spacerBadge"></div>
+      <div class="badgeLabel">
+        <p>For Experience:</p>
+        <p id="experienceBadgeStatus" class="unlockBadgeStatus">Unlock next at x XP</p>
+      </div>
+      <div class="badgeBox">
+        <p id="expBadge1" class="badge badgeStage1">New Explorer</p>
+        <p id="expBadge2" class="badge badgeStage2">Skilled Adventurer</p>
+        <p id="expBadge3" class="badge badgeStage3">Experienced Veteran</p>
+        <p id="expBadge4" class="badge badgeStage4">Master of Experience</p>
+      </div>
+      <div class="badgeLabel">
+        <p>For Duels:</p>
+        <p id="duelsBadgeStatus" class="unlockBadgeStatus">Unlock next at x Wins</p>
+      </div>
+      <div class="badgeBox">
+        <p id="duelBadge1" class="badge badgeStage1">Casual Duelist</p>
+        <p id="duelBadge2" class="badge badgeStage2">Proven Combatant</p>
+        <p id="duelBadge3" class="badge badgeStage3">Expert Duelist</p>
+        <p id="duelBadge4" class="badge badgeStage4">Duel Master</p>
+      </div>
+      <div class="badgeLabel">
+        <p>For Competitions:</p>
+        <p id="competitionsBadgeStatus" class="unlockBadgeStatus">Unlock next at x Entries</p>
+      </div>
+      <div class="badgeBox">
+        <p id="compBadge1" class="badge badgeStage1">Rookie Competitor</p>
+        <p id="compBadge2" class="badge badgeStage2">Dedicated Entrant</p>
+        <p id="compBadge3" class="badge badgeStage3">Seasoned Contender</p>
+        <p id="compBadge4" class="badge badgeStage4">Top Champion</p>
+      </div>
+      <div class="badgeLabel">
+        <p>For Streaks:</p>
+        <p id="streakBadgeStatus" class="unlockBadgeStatus">Unlock next at x Streak</p>
+      </div>
+      <div class="badgeBox">
+        <p id="streakBadge1" class="badge badgeStage1">Streak Starter</p>
+        <p id="streakBadge2" class="badge badgeStage2">Consistent Performer</p>
+        <p id="streakBadge3" class="badge badgeStage3">Streak Specialist</p>
+        <p id="streakBadge4" class="badge badgeStage4">Ultimate Streaker</p>
+      </div>
+      <div class="badgeLabel">
+        <p>For Supporters:</p>
+        <p id="supporterBadgeStatus" class="unlockBadgeStatus">Become a supporter (coming soon)</p>
+      </div>
+      <div class="badgeBox">
+        <p id="supporterBadge1" class="badge badgeStageSupporter1">New Supporter</p>
+        <p id="supporterBadge2" class="badge badgeStageSupporter2">Kind Contributor</p>
+        <p id="supporterBadge3" class="badge badgeStageSupporter3">Generous Benefactor</p>
+        <p id="supporterBadge4" class="badge badgeStageSupporter4">Ultimate Patron</p>
+      </div>
+      <div class="badgeLabel">
+        <p>Miscellaneous:</p>
+      </div>
+      <div class="badgeBox" style="margin-bottom: 5px">
+        <p id="miscBadge1" class="badge badgeStageDeveloper">Developer</p>
+      </div>
+    </div>
+    <button id="badgeClose" class="standardButton white closeButton">Close</button>
+  </div>
+</div>
+<!--Pin window -->
+<div id="pinPopup" class="popupHolder profilePopupBackground">
+  <div id="pinWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1 id="pinPopupWindow">Pins</h1>
+    </div>
+    <div id="pinSelector">
+      <button class="pinHolder selectedPin">
+        <div id="pinLock0" class="pinLock">
+          <p class="pinLockText">0 XP</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker0.png" alt="pin icon" />
+      </button>
+      <button class="pinHolder">
+        <div id="pinLock1" class="pinLock">
+          <p class="pinLockText">5,000 XP</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker1.png" alt="pin icon" />
+      </button>
+      <button class="pinHolder">
+        <div id="pinLock2" class="pinLock">
+          <p class="pinLockText">30,000 XP</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker2.png" alt="pin icon" />
+      </button>
+      <button class="pinHolder">
+        <div id="pinLock3" class="pinLock">
+          <p class="pinLockText">100,000 XP</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker3.png" alt="pin icon" />
+      </button>
+      <button class="pinHolder">
+        <div id="pinLock4" class="pinLock">
+          <p class="pinLockText">500,000 XP</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker4.png" alt="pin icon" />
+      </button>
+      <button class="pinHolder">
+        <div id="pinLock5" class="pinLock">
+          <p class="pinLockText">5,000,000 XP</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker5.png" alt="pin icon" />
+      </button>
+      <button class="pinHolder">
+        <div id="pinLock6" class="pinLock">
+          <p class="pinLockText">10,000,000 XP</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker6.png" alt="pin icon" />
+      </button>
+      <button class="pinHolder">
+        <div id="pinLock7" class="pinLock">
+          <p class="pinLockText">75 Duel Wins</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker7.png" alt="pin icon" />
+      </button>
+      <button class="pinHolder">
+        <div id="pinLock8" class="pinLock">
+          <p class="pinLockText">50 Comp. Entries</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker8.png" alt="pin icon" />
+      </button>
+      <button class="pinHolder">
+        <div id="pinLock9" class="pinLock">
+          <p class="pinLockText">10 Streak</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker9.png" alt="pin icon" />
+      </button>
+      <button class="pinHolder">
+        <div id="pinLock10" class="pinLock">
+          <p class="pinLockText">250 Comp. Entries</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker10.png" alt="pin icon" />
+      </button>
+      <button class="pinHolder">
+        <div id="pinLock11" class="pinLock">
+          <p class="pinLockText">Supporter</p>
+        </div>
+        <img class="pinSelectIcon" src="/img/your_marker11.png" alt="pin icon" />
+      </button>
+    </div>
+    <button id="pinClose" class="standardButton white closeButton">Close</button>
+  </div>
+</div>
+<!-- Supporter Window -->
+<div id="supporterPopup" class="popupHolder profilePopupBackground">
+  <div id="supporterWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1 id="supporterPopupHeader">
+        Support OpenGuessr
+        <img id="supporterIconTitle" alt="supporter tag" src="/img/supporter_icon.png" />
+      </h1>
+    </div>
+    <div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
+      <div class="supporterBox" id="headingSupporterBox">
+        <p>
+          The goal of this website is to provide a community-driven geography game that is open to everyone. However, as
+          <a
+            class="removeTextUnderline"
+            href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en"
+            target="_blank"
+          >
+            Maps APIs
+          </a>
+          are
+          <span class="supporterTextHighlight">highly expensive</span>
+          , this has become
+          <span class="supporterTextHighlight">more challenging than ever.</span>
+        </p>
+      </div>
+      <div id="adTierBox" class="adTierBox supporterArea">
+        <img alt="time limited" id="adBoostTimeLimitIcon" src="/img/time_limited.png" />
+        <p id="freeSupporterBoostText">Free 20% experience boost.</p>
+        <button id="freeSupporterBoost" class="standardButton">Watch ad to activate</button>
+      </div>
+      <div class="tierBox">
+        <p class="tierBoxTier">Tier 1</p>
+        <ul class="tierBenefits">
+          <li>Highlighted on leaderboards</li>
+          <li>Supporter Icon in profile</li>
+          <li>Special Supporter Pin</li>
+          <li>Tier 1 Supporter Badge</li>
+          <li>10% Supporter XP Boost</li>
+        </ul>
+        <button id="tierPrice1" class="standardButton tierBuyButton">2.99 $ (Default)</button>
+      </div>
+      <div class="tierBox">
+        <p class="tierBoxTier">Tier 2</p>
+        <ul class="tierBenefits">
+          <li>All previous benefits</li>
+          <li>Ad-free experience</li>
+          <li>Tier 2 Supporter Badge</li>
+          <li>15% Supporter XP Boost</li>
+        </ul>
+        <button id="tierPrice2" class="standardButton tierBuyButton">6.99 $ (Default)</button>
+      </div>
+      <div class="tierBox">
+        <p class="tierBoxTier">Tier 3</p>
+        <ul class="tierBenefits">
+          <li>All previous benefits</li>
+          <li>Tier 3 Supporter Badge</li>
+          <li>20% Supporter XP Boost</li>
+        </ul>
+        <button id="tierPrice3" class="standardButton tierBuyButton">14.99 $ (Default)</button>
+      </div>
+      <div class="tierBox">
+        <p class="tierBoxTier">Tier 4</p>
+        <ul class="tierBenefits">
+          <li>All previous benefits</li>
+          <li>Tier 4 Supporter Badge</li>
+          <li>25% Supporter XP Boost</li>
+        </ul>
+        <button id="tierPrice4" class="standardButton tierBuyButton">24.99 $ (Default)</button>
+      </div>
+      <div class="supporterBox supporterBoxHighlight">
+        <img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+        <p id="supporterInfoText">
+          All purchases are one-time payments.
+          <span class="supporterLegalText">
+            <a href="/legal.html" target="_blank">Terms and conditions</a>
+            apply.
+          </span>
+        </p>
+      </div>
+    </div>
+    <button id="supporterClose" class="standardButton white closeButton">Close</button>
+  </div>
+</div>
+<!-- Friend browser window -->
+<div id="friendBrowserPopup" class="popupHolder profilePopupBackground">
+  <div id="friendBrowserWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1 id="friendBrowserHeader">Search players</h1>
+    </div>
+    <search id="playerSearch">
+      <input maxlength="255" type="text" id="friendBrowserInput" placeholder="Search for a name..." />
+      <button id="startFriendSearch" class="standardButton">
+        <img src="/img/find_icon.png" alt="start search" id="playerSearchIcon" />
+      </button>
+    </search>
+    <div id="playerSearchBox" class="playerSearchBox">
+      <p class="playerSearchError">Search returned no results.</p>
+    </div>
+    <button id="friendBrowserClose" class="standardButton white closeButton">Close</button>
+  </div>
+</div>
+<!-- Inbox for friend requests -->
+<div id="friendInboxPopup" class="popupHolder profilePopupBackground">
+  <div id="friendInboxWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1 id="inboxPopupHeader">Inbox</h1>
+    </div>
+    <div id="friendInbox" class="playerSearchBox">
+      <p>Default</p>
+    </div>
+    <button id="friendInboxClose" class="standardButton white closeButton">Close</button>
+  </div>
+</div>
+<!-- Before the user exits or refresh, try to convince them to keep the site open / soft refresh -->
+<div id="beforeExitPopup" class="popupHolder profilePopupBackground">
+  <div id="beforeExitWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1 id="beforeExitHeader">Before you go...</h1>
+    </div>
+    <div class="costDisplayArea">
+      <div class="costFlex">
+        <p class="costDisplayText">Estimated monthly API & server costs:</p>
+        <div class="costDisplayValue">
+          <p>-$ 5300</p>
+        </div>
+      </div>
+      <div class="costFlex costFlexPositive">
+        <p class="costDisplayText costDisplayTextPositive">Covered by supporter purchases this month:</p>
+        <div class="costDisplayValue positiveCostDisplay">
+          <p id="monthlySupportedAmount" class="costDisplayTextPositive">+$ ... ...</p>
+        </div>
+      </div>
+      <button id="costSupportButton" class="standardButton costButton">Support OpenGuessr &lt;3</button>
+    </div>
+    <div id="costExplanationArea">
+      <p id="costExplanationText">
+        Using maps on your phone or browser is free, but it's expensive to integrate them into a website.
+        <br />
+        <br />
+        Every time the game's minimap loads, it incurs a cost that adds up quickly with more players. Ads help cover some
+        expenses, but the best way to support OpenGuessr is to purchase a supporter tier.
+        <br />
+        <br />
+        You can also help by sharing the game! More players result in a lower cost per user due to bulk request discounts.
+        Thank you!
+        <br />
+        <br />
+        <br />
+      </p>
+      <div id="costTextGradient"></div>
+      <p id="costExplanationToggle">Read more</p>
+    </div>
+    <h3 class="beforeExitHeader">Want to reload the page?</h3>
+    <div class="beforeExitNote">
+      <p id="reloadExitNote" class="secondaryExitNote">To prevent additional API costs, please use this button.</p>
+      <button id="beforeExitReloadButton" class="standardButton">
+        <img alt="reloadIcon" id="reloadIcon" src="/img/reload_icon.png" />
+      </button>
+    </div>
+    <div class="exitSpacer"></div>
+    <h3 class="beforeExitHeader">Want to leave now, but return in the future?</h3>
+    <div class="beforeExitNote secondaryExitNote">
+      <p>Please keep the tab open to reduce API usage. Thank you!</p>
+    </div>
+    <div class="exitSpacer"></div>
+    <button id="beforeExitClose" class="standardButton white closeButton">Close</button>
+    <button id="beforeExitNotAgain" class="standardButton white closeButton">Don't show again</button>
+  </div>
+</div>
+<!-- remaining windows -->
+<div class="popupHolder">
+  <!-- Help / How to Play Popup -->
+  <div id="helpWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1>How to play</h1>
+    </div>
+    <ul class="nolistdots">
+      <li>
+        <h3>🔍 Look at the Street View image</h3>
+        <p class="listMarginLeft">Study the streetview image carefully and explore the surroundings.</p>
+      </li>
+      <li>
+        <h3>🎯 Guess where you are</h3>
+        <p class="listMarginLeft">Pinpoint the location on the world map. Be precise for higher scores!</p>
+      </li>
+      <li>
+        <h3>👥 Challenge your friends</h3>
+        <p class="listMarginLeft">Compete against friends in multiplayer modes and competitions.</p>
+      </li>
+    </ul>
+    <button id="helpClose" class="standardButton white closeButton">Let's go!</button>
+  </div>
+  <!-- Page Browser for all other OpenGuessr pages to avoid any additional map loads -->
+  <div id="pageBrowserWindow" class="uiWindow">
+    <div id="browserIframeHolder">
+      <div class="absoluteCenter">
+        <img src="/img/compass_spinner.png" alt="Loading new streetview" class="spinner" id="pageBrowserLoading" />
+      </div>
+      <!-- svelte-ignore a11y_missing_attribute -->
+      <iframe id="pageBrowserIframe" allowtransparency="true" frameborder="0"></iframe>
+    </div>
+  </div>
+  <!-- Troubleshooting Guide for Multiplayer -->
+  <div id="troubleshootWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1>Troubleshooting Guide</h1>
+    </div>
+    <p>
+      OpenGuessr uses a peer2peer connection system via WebRTC Datachannels. Follow these steps to ensure a smooth
+      experience:
+      <br />
+      <br />
+    </p>
+    <ul>
+      <li>
+        <p>Disable VPNs or Proxies: Certain VPNs or Proxies, often browser extensions, block WebRTC connections.</p>
+      </li>
+      <li>
+        <p>Disable Firewalls: Some restrictive firewall settings or wifi routers can block WebRTC.</p>
+      </li>
+      <li>
+        Check if the TURN servers are online: We use turn servers from <a
+          href="https://fastturn.net/status"
+          target="_blank"
+        >
+          fastturn
+        </a>
+        .
+      </li>
+      <li>Check if your browser supports WebRTC: Open chrome://webrtc-internals/ or about:webrtc for Firefox.</li>
+    </ul>
+    <p>
+      If multiplayer still does not work after following these steps, consider using a different wifi, cellular data or
+      switch the host.
+    </p>
+    <button id="troubleshootClose" class="standardButton white closeButton">Back</button>
+  </div>
+  <!-- Settings Window (Especially for Sounds) -->
+  <div id="settingsWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1>Settings</h1>
+    </div>
+    <div class="settingsCanvas">
+      <div class="settingsBox">
+        <p class="slightBottomMargin">Unit System:</p>
+        <button id="unitSwitchKilometers" class="standardButton white">Metric</button>
+        <button id="unitSwitchMiles" class="standardButton white">Imperial</button>
+      </div>
+      <div class="settingsBox">
+        <p>SFX Volume:</p>
+        <input type="range" min="0" max="1" step="0.01" value="0.5" class="slider" id="volumeSlider" />
+      </div>
+      <div class="settingsBox">
+        <p class="slightBottomMargin">Map Type:</p>
+        <button class="standardButton white" id="mapTypeButton" type="button">Map not loaded</button>
+      </div>
+      <div class="settingsBox">
+        <p class="slightBottomMargin">Toggle Fullscreen:</p>
+        <button id="fullscreenButton" class="standardButton white">
+          <img src="/img/fullscreen_icon.png" alt="Fullscreen symbol" id="fullscreenIcon" class="socialIcon" />
+          <span id="fullscreenText">Fullscreen</span>
+        </button>
+      </div>
+      <div class="settingsBox">
+        <p class="slightBottomMargin">Legal Information:</p>
+        <button class="standardButton white" id="privacyButton">View legal information</button>
+      </div>
+      <div class="settingsBox">
+        <p class="slightBottomMargin">Exit Popup:</p>
+        <button class="standardButton white" id="exitPopupSetting">Enabled</button>
+      </div>
+    </div>
+    <button id="settingsClose" class="standardButton white closeButton">Close</button>
+  </div>
+  <!-- Singleplayer Options Window -->
+  <div id="singleplayerOptionsWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1>Singleplayer</h1>
+    </div>
+    <div class="settingsCanvas slightBottomMargin">
+      <div class="settingsBox">
+        <p class="slightBottomMargin">Timer:</p>
+        <div class="timerSliderBox">
+          <input type="range" min="0" max="300" step="1" value="0" class="slider" id="timerSlider" />
+          <div class="timerTextBox">
+            <img alt="timer icon" class="timerIcon" src="/img/timer_icon.png" />
+            <p id="timerSliderText">No Timer</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="settingsCanvas slightBottomMargin">
+      <div class="settingsBox">
+        <p class="slightBottomMargin">NMPZ:</p>
+        <div class="timerSliderBox">
+          <p class="singleplayerDesc">Prevent Move, Pan and Zoom:</p>
+          <button id="setSingleplayerNMPZ" class="standardButton white">Disabled</button>
+        </div>
+      </div>
+    </div>
+    <div class="settingsCanvas slightBottomMargin">
+      <div class="settingsBox roundLogContainer">
+        <p class="slightBottomMargin">Round Log:</p>
+        <div class="roundLogBox" id="roundLogBox">
+          <!-- round log will be automatically generated here -->
+        </div>
+      </div>
+    </div>
+    <button id="singleplayerOptionsClose" class="standardButton white closeButton">Close</button>
+  </div>
+  <!-- Discord Popup -->
+  <div id="socialWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1 id="socialHeader">Join the community</h1>
+    </div>
+    <p>
+      Join now and get <span class="highlight">7,500 XP</span>
+      in return!
+    </p>
+    <iframe
+      id="discordWidget"
+      title="Discord Widget"
+      width="350"
+      height="500"
+      allowtransparency="true"
+      frameborder="0"
+      sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
+    ></iframe>
+    <button id="socialPopupClose" class="standardButton white closeButton">Close</button>
+    <button id="socialPopupJoin" class="discordButton standardButton closeButton">
+      Join
+      <img src="./img/discord.png" class="socialIcon" alt="Discord Icon" />
+    </button>
+  </div>
+  <!-- Linkjoin Popup -->
+  <div id="linkjoinWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1 id="socialHeader">Joining...</h1>
+    </div>
+    <p id="linkjoinStatus">Status: None set</p>
+    <br />
+    <button id="linkJoinClose" class="standardButton white closeButton">Close</button>
+  </div>
+  <!-- Multiplayer window -->
+  <div id="multiplayerSelectionWindow" class="uiWindow">
+    <div class="popup-title">
+      <h1>Multiplayer</h1>
+    </div>
+    <div id="multiplayerWindowMain">
+      <div class="multiplayerHorizontalAlign">
+        <div class="groupPartyButtons">
+          <button id="multiplayerSelectJoin" class="standardButton multiplayerSelect">Join</button>
+          <button id="multiplayerSelectHost" class="standardButton multiplayerSelect">Host</button>
+        </div>
+        <div class="groupPartyButtons">
+          <button id="multiplayerSelectDuels" class="standardButton multiplayerSelect">
+            Find Duel
+            <img
+              id="findIcon"
+              class="socialBarIcons"
+              style="margin-left: 5px;"
+              src="/img/find_icon.png"
+              alt="Lightning error symbol"
+            />
+          </button>
+        </div>
+      </div>
+      <div class="multiplayerFriendArea">
+        <p id="noFriendsText">Sign up to add friends!</p>
+        <div id="friendBox" class="friendBox">
+          <!-- friends will be programmatically added in here -->
+        </div>
+        <div class="friendButtonArea">
+          <button class="standardButton" id="browseUsersFriends">Add friends +</button>
+          <button class="standardButton" id="openFriendInbox">
+            <img alt="inbox icon" src="/img/inbox_icon.png" id="inboxIcon" />
+          </button>
+        </div>
+      </div>
+      <div class="infoNote">
+        <div id="troubleshootingArea">
+          <p id="issuesTroubleshootText">
+            <img
+              id="errorIcon"
+              class="socialBarIcons"
+              src="/img/error_icon.png"
+              alt="Lightning error symbol"
+              style="opacity: 60%;"
+            />
+            Having issues?
+          </p>
+          <button class="white standardButton" id="troubleshootGuideButton">Troubleshooting Guide</button>
+        </div>
+      </div>
+    </div>
+    <div id="multiplayerWindowJoin" style="display: none;">
+      <div class="multiplayerJoinAlign">
+        <div class="multiplayerJoinField">
+          <p id="multiplayerJoinInfo" class="multiplayerInputInfo">Enter the room code (default).</p>
+          <input id="roomCodeInput" type="text" class="multiplayerInput" placeholder="Room code" />
+        </div>
+        <button id="multiplayerJoin" class="standardButton">Join</button>
+      </div>
+    </div>
+    <div id="multiplayerWindowHost" style="display: none;">
+      <div class="multiplayerCreationArea">
+        <div id="roomCreationSettings" class="multiplayerHostSettings">
+          <div>
+            <p>Rounds:</p>
+            <div class="ticker">
+              <button id="roundMinus" class="standardButton white">-</button>
+              <p id="roundAmountText" class="tickerText">3</p>
+              <button id="roundPlus" class="standardButton white">+</button>
+            </div>
+          </div>
+          <div>
+            <p>Round Length:</p>
+            <div class="ticker">
+              <button id="lengthMinus" class="standardButton white">-</button>
+              <p id="roundLengthText" class="tickerText">2</p>
+              <p class="tickerNote">sec</p>
+              <button id="lengthPlus" class="standardButton white">+</button>
+            </div>
+          </div>
+        </div>
+        <div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
+          <p>Restrictions:</p>
+          <button id="toggleRestrictions" class="standardButton white">Standard</button>
+        </div>
+        <div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
+          <p>Teams:</p>
+          <div class="ticker">
+            <button id="teamsMinus" class="standardButton white">-</button>
+            <p id="teamAmountText" class="tickerText">no</p>
+            <p class="tickerNote">teams</p>
+            <button id="teamsPlus" class="standardButton white">+</button>
+          </div>
+        </div>
+        <div id="roomCreationMap" style="opacity: 0.5;" class="roomCreationModule multiplayerHostSettings">
+          <p>Selected Map:</p>
+          <p id="multiplayerMapDisplay">Default</p>
+        </div>
+        <div id="hostCodeArea" class="multiplayerHostCodeArea">
+          <div id="roomCodeDisplayArea">
+            <p>Join with code:</p>
+            <h1 id="roomCodeDisplay">Default</h1>
+          </div>
+          <div id="teamsDisplay" class="roomCreationModule multiplayerHostSettings">
+            <p id="teamsDisplayText">Nothing to show</p>
+            <p id="smallJoinCounter">0</p>
+          </div>
+          <div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
+            <div id="roomCreationFriendsBox" class="roomCreationFriendsBox">
+              <!-- online players will be added here programmatically -->
+            </div>
+          </div>
+        </div>
+        <div class="multiplayerHostSubmitArea">
+          <div id="innerSubmitAreaBlock">
+            <button id="roomcodeLink" class="copyLinkButton standardButton">
+              <img id="linkIcon" class="socialIcon" src="/img/link_icon.png" alt="copy link" />
+            </button>
+            <button id="multiplayerHost" class="standardButton">Create room</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div id="multiplayerWindowDuel" style="display: none;">
+      <div class="multiplayerJoinAlign">
+        <p id="multiplayerDuelInfo" class="multiplayerDuelStatus">Status OK</p>
+        <button id="multiplayerDuelRetry" class="standardButton">Try Again</button>
+      </div>
+    </div>
+    <button id="multiplayerSelectorClose" class="standardButton white closeButton">Close</button>
+    <button id="multiplayerSelectorBack" class="standardButton white closeButton" stlye="display: none">Back</button>
+  </div>
+</div>
+<!-- Result screen -->
+<div id="EndOverlay">
+  <div id="endBottomArea">
+    <div id="endScreenStreakRevive">
+      <div class="popup-title">
+        <h1 id="streakHeader">Streak lost!</h1>
+      </div>
+      <p id="keepStreakText">
+        Support us by watching an ad and keep your streak of <span id="streakKeepAmount" class="highlight">0</span>
+        !
+      </p>
+      <button id="streakWatchAd" class="streakButton standardButton closeButton">
+        Keep streak
+        <img src="./img/streak_icon.png" class="socialIcon" alt="Streak Icon" />
+      </button>
+      <button id="streakAdDismiss" class="standardButton closeButton white">Close</button>
+    </div>
+    <div id="endBottomBar">
+      <div id="floatingResultLeaderboardArea" class="hideForSupporters">
+        <div id="floatingResultLeaderboardAd"></div>
+        <p class="adsTextResult noAdvertsText">
+          Please consider supporting OpenGuessr to go ad-free. <span class="supporterAdText">Learn more</span>
+          .
+        </p>
+      </div>
+      <div id="resultBox">
+        <p class="resultField" id="motivationText"></p>
+        <div id="mobileResultLeaderboardAdArea" class="resultField hideForSupporters">
+          <div id="mobileResultLeaderboardAd"></div>
+          <p class="adsTextResult noAdvertsText">
+            Go ad-free. <span class="supporterAdText">Learn more</span>
+            .
+          </p>
+        </div>
+        <div class="resultField">
+          <img src="/img/distance_icon.png" alt="Distance icon" id="distanceIcon" />
+          <p id="distanceText"></p>
+        </div>
+        <div id="XParea" class="resultField">
+          <div id="supporterBoost">
+            <p id="supporterBoostText">Supporter Boost (Default)</p>
+          </div>
+          <p id="endScreenLevelDisplay">Lvl. 42</p>
+          <div id="endScreenXPbar">
+            <div class="XPbarResource" id="endScreenXPbarResource"></div>
+          </div>
+          <p id="endScreenLevel">Default XP</p>
+          <div id="streakDisplay">
+            <img id="streakIcon" src="/img/streak_icon.png" alt="country streak" />
+            <p id="endScreenStreakText">7 (x1.1)</p>
+          </div>
+        </div>
+        <div id="XPbarNoAccount" class="resultField">
+          <p id="signupPromptText">See & save your earned points!</p>
+          <button id="resultSignupPrompt" class="standardButton">Sign up</button>
+        </div>
+        <div id="nextRoundArea">
+          <button id="endScreenOpenLocation">
+            <img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
+          </button>
+          <button id="nextRound" class="standardButton">
+            <p id="nextRoundText">Next round</p>
+            <img id="nextRoundArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div id="blackBackground"></div>
+<div id="nmpzBackground"></div>
+<div id="nmpzSingleplayerBackground"></div>
+<div id="littleTimeVignette"></div>
+<div id="hardModeFade">
+  <h1 id="hardModeTitle">Default hardmode title</h1>
+  <p id="hardModeSubtitle">Default hardmode subtitle</p>
+</div>
+<div id="duelsOverlay">
+  <h1>Your opponent has guessed</h1>
+  <p id="duelsOverlaySubtitle">Time reduced to 15s.</p>
+</div>
+<div id="multiplayerFade">
+  <h1 id="multiplayerTitle">Multiplayer Default title</h1>
+  <div id="multiplayerTable"></div>
+  <button id="endMultiplayerRematchButton" class="standardButton">Play again</button>
+  <button id="endMultiplayerRoundButton" class="standardButton">End round</button>
+</div>
+<ImageGuesser />
+<!--streetview-->
+<div class="MainDiv">
+  <!-- svelte-ignore a11y_missing_attribute -->
+  <iframe
+    id="PanoramaIframe"
+    referrerpolicy="no-referrer-when-downgrade"
+    frameborder="0"
+    allow="accelerometer"
+    src="/loader"
+  ></iframe>
+  <!-- Country Guessr UI -->
+  <div id="countryGuesserSelector">
+    <button class="countryGuesserHolder">
+      <p id="countryFlag1" class="countryGuesserFlag">🇦🇽</p>
+      <p id="countryTag1" class="countryGuesserTag">Country 1</p>
+    </button>
+    <button class="countryGuesserHolder">
+      <p id="countryFlag2" class="countryGuesserFlag">🇦🇽</p>
+      <p id="countryTag2" class="countryGuesserTag">Country 2</p>
+    </button>
+    <button class="countryGuesserHolder">
+      <p id="countryFlag3" class="countryGuesserFlag">🇦🇽</p>
+      <p id="countryTag3" class="countryGuesserTag">Country 3</p>
+    </button>
+    <button class="countryGuesserHolder">
+      <p id="countryFlag4" class="countryGuesserFlag">🇦🇽</p>
+      <p id="countryTag4" class="countryGuesserTag">Country 4</p>
+    </button>
+    <button class="countryGuesserHolder">
+      <p id="countryFlag5" class="countryGuesserFlag">🇦🇽</p>
+      <p id="countryTag5" class="countryGuesserTag">Country 5</p>
+    </button>
+    <button class="countryGuesserHolder">
+      <p id="countryFlag6" class="countryGuesserFlag">🇦🇽</p>
+      <p id="countryTag6" class="countryGuesserTag">Country 6</p>
+    </button>
+  </div>
+  <h1 id="TransparentHeader">
+    Openguessr - GeoGuessr free. Free Geoguesser alternative free open source geography geographie Geotastic world map
+    geoguessr Geo Quiz kostenlos google streetview rainbolt zi8gzag travel geographie education spiel videospiel guess
+    Multiplayer which country play with friends challenges karte rate welches land more than 5 minutes unlimited free
+    play unendlich freies spiel without subscription pro with Duels
+  </h1>
+</div>
+<!--map-->
+<div id="mapHolder" class="regularMapSize mapHolder">
+  <button id="floatingMapButton">
+    <img id="toggleMapImage" src="/img/map_icon.png" alt="Toggle the Map for guessing on mobile devices." />
+  </button>
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <div id="map" tabindex="0">
+    <div id="mapPlaceholderBeforeLoad"></div>
+  </div>
+  <div id="mapModeIndicator">
+    <button id="multiplayerLeave" class="leaveButton standardButton closeButton">Leave</button>
+    <button id="competitionLeave" class="leaveButton standardButton closeButton">Leave</button>
+    <div id="mapModeTextContainer">
+      <p id="mapModeText" class="mapModeText">Default Mode</p>
+    </div>
+    <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
+  </div>
+</div>
+<div id="multiplayerChat">
+  <div id="multiplayerChatMessages">
+    <p id="multiplayerMessageBox"></p>
+  </div>
+  <div id="bottomMultiplayerChatArea">
+    <input maxlength="100" type="text" id="multiplayerMessageInput" placeholder="Type your message..." />
+    <button id="multiplayerSendButton" class="standardButton">Send</button>
+  </div>
+</div>
+<!--bottom toolbar with reset button-->
+<div id="BottomBar" class="BottomBar">
+  <div class="barMenu">
+    <button class="standardButton bottomBarButton" id="resetButton">
+      <img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
+    </button>
+    <button class="standardButton bottomBarButton bottomSocialItem" id="discordButton" type="button">
+      <img src="./img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" id="discordIcon" />
+    </button>
+    <button class="standardButton bottomBarButton bottomSocialItem" id="redditButton" type="button">
+      <img src="./img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
+    </button>
+  </div>
+  <div class="barMenu bottomRightMenu">
+    <div class="standardButton bottomBarButton" id="confirmButton">
+      <button class="socialItem" id="helpButton">?</button>
+      <button class="socialItem" id="revealCompass">
+        <img src="./img/discover_icon.png" alt="Toggle compass" class="socialIcon bottomBarIcon" />
+      </button>
+      <p id="guessText">Guess</p>
+    </div>
+  </div>
+</div>
+<div id="bottomFooterAds" class="bottomFooterAds leaderboardAds hideForSupporters"></div>
+<div class="bottomFooterAds leaderboardAds bottomFooterAdText hideForSupporters barMenu">
+  <p id="bottomAdsText" class="noAdvertsText">Ads keep OpenGuessr free ♥</p>
+</div>

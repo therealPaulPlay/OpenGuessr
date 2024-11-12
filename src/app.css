@@ -65,7 +65,7 @@ input:focus {
 }
 
 .neumorphic-menu {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), inset 0 0.075rem 0 hsla(0,0%,100%, 0.2), inset 0 -0.1rem 0 rgba(0,0,0,0.15);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), inset 0 0.075rem 0 hsla(0, 0%, 100%, 0.2), inset 0 -0.1rem 0 rgba(0, 0, 0, 0.15);
 }
 
 .standardButton {
@@ -99,6 +99,19 @@ input:focus {
 
 .white {
     background-color: rgba(255, 255, 255, 0.2);
+}
+
+.spinner {
+    opacity: 0.3;
+    animation: rotation 1.5s infinite linear;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 20px;
+    user-select: none;
+}
+
+.noTextDecoration {
+    text-decoration: none;
 }
 
 /* end of new, universal styling */
@@ -2496,71 +2509,6 @@ search {
     user-select: none;
 }
 
-#imageGuesserOverlay {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    z-index: 2;
-    transition: opacity 250ms ease, transform 2000ms ease, filter 250ms ease;
-    transform: scale(1.0);
-    opacity: 0;
-    overflow: hidden;
-    display: none;
-    /* used with flex */
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    color: white;
-    pointer-events: none;
-    user-select: none;
-    background-color: rgb(22, 22, 22);
-}
-
-#imageGuesserImage {
-    max-width: 40%;
-    max-height: 70%;
-    width: 100%;
-    height: 100%;
-    transition: transform 250ms ease, filter 250ms ease, opacity 500ms ease;
-    pointer-events: auto;
-    z-index: 2;
-    opacity: 1;
-    background-size: contain;
-    /* Maintain aspect ratio */
-    background-position: center;
-    background-repeat: no-repeat;
-    filter: drop-shadow(10px 0px 0px rgb(255, 255, 255)) drop-shadow(0px 10px 0px rgb(255, 255, 255)) drop-shadow(-10px 0px 0px rgb(255, 255, 255)) drop-shadow(0px -10px 0px rgb(255, 255, 255));
-}
-
-#imageGuesserAttribution {
-    font-size: 22px;
-    color: white;
-    opacity: 0.5;
-    z-index: 2;
-    margin-bottom: 10vh;
-    margin-top: 10px;
-}
-
-.noTextDecoration {
-    text-decoration: none;
-}
-
-#imageGuesserBackground {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    filter: brightness(0.5) blur(50px);
-    background-size: cover;
-    transition: opacity 500ms ease;
-    opacity: 1;
-}
-
-.guessImageLoading {
-    opacity: 0 !important;
-}
-
 #duelsOverlay h1 {
     font-size: 75px;
     text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
@@ -3534,38 +3482,6 @@ map::selection {
 
 #nextRoundText {
     display: inline;
-}
-
-#BeforeOverlay {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    opacity: 100%;
-    background-color: #13151c;
-    transition: all 250ms ease;
-    position: fixed;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    z-index: 6;
-    box-shadow: 0 0 700px rgba(255, 176, 176, 0.2) inset;
-}
-
-#loadingText {
-    color: white;
-    opacity: 0.3;
-    font-size: 25px;
-    text-align: center;
-}
-
-.spinner {
-    opacity: 0.3;
-    animation: rotation 1.5s infinite linear;
-    width: 100px;
-    height: 100px;
-    margin-bottom: 20px;
-    user-select: none;
 }
 
 @keyframes rotation {

@@ -1,49 +1,21 @@
-// This is being used to better catch and analyze errors - it displays a custom error message, together with an error code, which ist most likely the console error
-let showErrors = true;
+// Display custom error messages
+import { hideDisableOption, showErrors, title, description, errorCode, popupOpen, closeButtonText, reload } from "$lib/stores/errorPopupData";
+import { get } from "svelte/store"; // Get values from svelte stores using this
 
-export function errorPopup(title, description, errorCode, reload, hideDontShowAgainOption) {
-  if (hideDontShowAgainOption) {
-    document.getElementById("errorPopupDisable").style.display = "none";
-  } else {
-    document.getElementById("errorPopupDisable").style.display = "flex";
-  }
+export function errorPopup(popupTitle, popupDescription, popupErrorCode, reloadPopup, hideDontShowAgainOption) {
+  hideDisableOption.set(hideDontShowAgainOption || false);
 
-  if (showErrors || reload) { // if errors should be shown or it is a critical error that needs a reload, show the popup
-    document.getElementById("errorTitle").innerHTML = `<h2>${title}</h2>`;
-    document.getElementById("popup-description").innerHTML = `<p class="slightBottomMargin">${description}</p>`;
+  if (get(showErrors) || reload) { // if errors should be shown or it is a critical error that needs a reload, show the popup
+    title.set(popupTitle)
+    description.set(popupDescription);
    
-    if (errorCode) {
-      document.getElementById("popup-description").innerHTML += `<p class="errorCode">${errorCode}</p>`;
-    }
+    errorCode.set(popupErrorCode || "");
 
-    document.getElementById("errorPopup").style.display = "flex";
+    popupOpen.set(true);
 
-    if (!reload) {
-      document.getElementById("popupClose").innerHTML = "Close";
-    } else {
-      document.getElementById("popupClose").innerHTML = "Reload";
-    }
+    closeButtonText.set(reloadPopup ? "Reload" : "Close");
+    reload.set(reloadPopup || false);
   }
-}
-
-export function closePopup() {
-  document.getElementById("errorPopup").style.display = "none";
-  
-  if (document.getElementById("popupClose").innerHTML != "Close") {
-    localStorage.setItem("selectedCategory", "standard");
-    location.reload();
-  }
-}
-
-try {
-  let checkbox = document.getElementById("hideErrors");
-  checkbox.checked = false;
-
-  checkbox.addEventListener("change", (e => {
-    showErrors = !e.currentTarget.checked;
-  }));
-} catch (err) {
-  console.warn("Error checkbox does not exist on this page");
 }
 
 // Usage:

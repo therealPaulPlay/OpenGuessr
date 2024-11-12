@@ -1,8 +1,14 @@
 <script>
     import Analytics from "$lib/components/Analytics.svelte";
+    import { initializeAds } from "$lib/utils/ads";
+    import { onMount } from "svelte";
     import "../app.css";
 
     let { children } = $props();
+
+    onMount(() => {
+        initializeAds();
+    });
 </script>
 
 <svelte:head>

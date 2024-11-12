@@ -1,14 +1,15 @@
 import { errorPopup } from "./errorHandling.js";
-import { coordsFromHost } from "./multiplayer.js";
-import { mapCategory } from "./categoryMenu.js";
-import { competition, currentRound } from "./competitionLogic.js";
+import { coordsFromHost } from "../../../JS/multiplayer.js";
+import { mapCategory } from "../../../JS/categoryMenu.js";
+import { competition, currentRound } from "../../../JS/competitionLogic.js";
 
-//This is THE function to GET LOCATIONS (all others here are NOT export
+import { loadingScreenVisible } from "$lib/stores/UIStore.js";
+
+// This is THE function to GET LOCATIONS (all others here are NOT export
 export async function getLocationCoordinates(type) {
 
-    //show loading screen
-    document.getElementById("BeforeOverlay").style.opacity = "100";
-    document.getElementById("BeforeOverlay").style.visibility = "visible";
+    // Show loading screen
+    loadingScreenVisible.set(true);
 
     if (type == "JSON") {
         return await getJSONCoords(mapCategory);
@@ -39,7 +40,7 @@ async function getJSONCoords(category) {
             loadedMapCategory = category;
             previousGuessesIndexes = [];
     
-            response = await fetch("./JSON/" + category + "Locations.json");
+            response = await fetch("/json/" + category + "Locations.json");
     
             if (!response.ok) {
                 throw new Error("JSON fetch failed.");

@@ -3,7 +3,7 @@ for signupScreen.js only. LoadMap and AccountLogic are both not being included i
 of the bundled main.js. */
 
 import { resultScreenEnabled, distanceUnit } from './mainUI.js';
-import { getLocationCoordinates } from './locationGeneration.js';
+import { getLocationCoordinates } from '../src/lib/logic/locationGeneration.js';
 import { applySingleplayerSettings } from './singleplayerOptions.js';
 import { multiplayer, startMultiplayerRound, isHost } from './multiplayer.js';
 import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } from './countryGuesser.js';
