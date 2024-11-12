@@ -182,6 +182,7 @@
         display: flex;
         justify-content: center;
         align-items: center;
+        margin: 20px 0;
     }
 
     #navbar {
@@ -193,7 +194,7 @@
         display: flex;
         justify-content: space-around;
         height: 100px;
-        background-color: rgba(20, 22, 38, 0.9);
+        background-color: rgb(27, 28, 43);
         backdrop-filter: blur(10px);
         -webkit-backdrop-filter: blur(10px);
     }

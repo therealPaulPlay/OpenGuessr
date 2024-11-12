@@ -1,3 +1,7 @@
+<script>
+    import { ArrowLeft } from "lucide-svelte";
+</script>
+
 <svelte:head>
     <title>OpenGuessr - Error</title>
 </svelte:head>
@@ -5,7 +9,9 @@
 <div id="page-content">
     <h1>404 - Page not found.</h1>
     <p>The page you requested does not exist under this domain.</p>
-    <a class="returnButton" href="/">Return to OpenGuessr</a>
+    <a class="returnButton standardButton" href="/">
+        <ArrowLeft size=18 />
+        Return to OpenGuessr</a>
 </div>
 
 <style>
@@ -40,24 +46,11 @@
     }
 
     .returnButton {
-        cursor: pointer;
-        width: fit-content;
         font-size: 25px;
         padding: 15px 20px;
-        text-align: center;
-        white-space: nowrap;
-        transition: transform 250ms ease;
         border-radius: 10px;
-        user-select: none;
-        -webkit-user-select: none;
-        background-color: var(--brand-color);
-        color: white;
-        opacity: 100%;
-        margin-top: 200px;
-    }
-
-    .returnButton:hover {
-        transform: scale(1.05);
+        margin-top: 100px;
+        text-decoration: none;
     }
 
     @media (max-width: 800px) {
@@ -77,6 +70,7 @@
 
         p {
             font-size: 15px;
+            max-width: 250px;
         }
 
         .returnButton {

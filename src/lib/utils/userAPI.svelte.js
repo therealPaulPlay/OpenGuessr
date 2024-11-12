@@ -14,7 +14,7 @@ export const passwordChangeEndpoint = `${backendURL}/reset-password`;
 export const supporterLeaderboardEndpoint = `${backendURL}/supporter-leaderboard`;
 
 // Login and registration -----------------------------------------------------------------------------------
-export async function loginUser(email, password, errorSource) {
+export async function loginUser(email, password, errorSource, errorElement) {
   try {
     const requestBody = {
       email: email,
@@ -50,15 +50,15 @@ export async function loginUser(email, password, errorSource) {
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Login failed:', response.status);
-      displayError("Login failed: " + response.status, errorSource, responseError);
+      displayError("Login failed: " + response.status, errorSource, errorElement, responseError);
     }
   } catch (error) {
     console.error('Error occurred during login: ', error);
-    displayError("Error occured during login: " + error, errorSource);
+    displayError("Error occured during login: " + error, errorSource, errorElement);
   }
 }
 
-export async function registerUser(userName, email, password, errorSource) {
+export async function registerUser(userName, email, password, errorSource, successFunction, errorElement) {
   try {
     // Define the request body
     const requestBody = {
@@ -79,20 +79,21 @@ export async function registerUser(userName, email, password, errorSource) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      displaySuccess("Registration successful! Please log in.");
+      if (typeof successFunction != "function") return;
+      successFunction("Registration successful! Please log in.");
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Registration failed: ', response.status);
-      displayError("Registration failed: " + response.status, errorSource, responseError);
+      displayError("Registration failed: " + response.status, errorSource, errorElement, responseError);
     }
   } catch (error) {
     console.error('Error occurred during registration: ', error);
-    displayError("Error occured during registration: " + error, errorSource);
+    displayError("Error occured during registration: " + error, errorSource, errorElement);
   }
 }
 
 // Delete user 
-export async function deleteUser(id, password, errorSource) {
+export async function deleteUser(id, password, errorSource, errorElement) {
   try {
     const requestBody = {
       id: id,
@@ -116,18 +117,18 @@ export async function deleteUser(id, password, errorSource) {
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Account deletion failed:', response.status);
-      displayError("Account deletion failed: " + response.status, errorSource, responseError);
+      displayError("Account deletion failed: " + response.status, errorSource, errorElement, responseError);
       return false;
     }
   } catch (error) {
     console.error('Error occurred during account deletion: ', error);
-    displayError("Error occured during account deletion: " + error, errorSource);
+    displayError("Error occured during account deletion: " + error, errorElement, errorSource);
     return false;
   }
 }
 
 // Send reset email
-export async function sendPasswordResetEmail(email, errorSource) {
+export async function sendPasswordResetEmail(email, errorSource, successFunction, errorElement) {
   try {
     const requestBody = {
       email: email
@@ -145,21 +146,22 @@ export async function sendPasswordResetEmail(email, errorSource) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      displaySuccess("Password reset email sent!");
+      if (typeof successFunction != "function") return;
+      successFunction("Password reset email sent!");
 
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Password reset request failed:', response.status);
-      displayError("Password reset request failed: " + response.status, errorSource, responseError);
+      displayError("Password reset request failed: " + response.status, errorSource, errorElement, responseError);
     }
   } catch (error) {
     console.error('Error occurred during password reset request: ', error);
-    displayError("Error occured during password reset request: " + error, errorSource);
+    displayError("Error occured during password reset request: " + error, errorSource, errorElement);
   }
 }
 
 // Change password with reset token
-export async function changePassword(token, newPassword, errorSource) {
+export async function changePassword(token, newPassword, errorSource, successFunction, errorElement) {
   try {
     const requestBody = {
       token: token,
@@ -178,21 +180,22 @@ export async function changePassword(token, newPassword, errorSource) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      displaySuccess("Password changed successfully!");
+      if (typeof successFunction != "function") return;
+      successFunction("Password changed successfully!");
 
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Password change failed:', response.status);
-      displayError("Password change failed: " + response.status, errorSource, responseError);
+      displayError("Password change failed: " + response.status, errorSource, errorElement, responseError);
     }
   } catch (error) {
     console.error('Password change failed: ', error);
-    displayError("Password change failed: " + error, errorSource);
+    displayError("Password change failed: " + error, errorSource, errorElement);
   }
 }
 
 //Get and Set game-related user info -----------------------------------------------------------------------------
-export async function getUser(token, id, errorSource) {
+export async function getUser(token, id, errorSource, errorElement) {
   try {
     const response = await fetch(`${userGetEndpoint}/${id}`, {
       method: 'GET',
@@ -211,11 +214,11 @@ export async function getUser(token, id, errorSource) {
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Fetch failed:', response.status);
-      displayError("Fetch failed: " + response.status, errorSource, responseError);
+      displayError("Fetch failed: " + response.status, errorSource, errorElement, responseError);
     }
   } catch (error) {
     console.error('Error occurred while fetching the user: ', error);
-    displayError("Error occurred while fetching the user: " + error, errorSource);
+    displayError("Error occurred while fetching the user: " + error, errorSource, errorElement);
   }
 }
 
@@ -289,7 +292,7 @@ export async function getSupporterLeaderboard() {
   }
 }
 
-export async function updateExperience(token, id, experience, errorSource, secondAttempt) {
+export async function updateExperience(token, id, experience, errorSource, secondAttempt, errorElement) {
   try {
     const requestBody = {
       id: id,
@@ -315,18 +318,18 @@ export async function updateExperience(token, id, experience, errorSource, secon
       if (response.status != 400 || secondAttempt) {
         let responseError = await attemptExtractErrorFromResponse(response);
         console.error('User update failed:', response.status);
-        displayError("User update failed: " + response.status, errorSource, responseError);
+        displayError("User update failed: " + response.status, errorSource, errorElement, responseError);
       } else {
         return "retry";
       }
     }
   } catch (error) {
     console.error('Error occurred during user update: ', error);
-    displayError("Error occured during user update: " + error, errorSource);
+    displayError("Error occured during user update: " + error, errorSource, errorElement);
   }
 }
 
-export async function updateUsername(token, id, requestedUsername, errorSource) {
+export async function updateUsername(token, id, requestedUsername, errorSource, errorElement) {
   try {
 
     const requestBody = {
@@ -351,14 +354,14 @@ export async function updateUsername(token, id, requestedUsername, errorSource) 
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('User update failed: ', response.status);
-      displayError("User update failed: " + response.status, errorSource, responseError);
+      displayError("User update failed: " + response.status, errorSource, errorElement, responseError);
     }
 
     return (response.ok); // return true / false
 
   } catch (error) {
     console.error('Error occurred during user update: ', error);
-    displayError("Error occured during user update " + error, errorSource);
+    displayError("Error occured during user update " + error, errorSource, errorElement);
   }
 }
 
@@ -372,10 +375,10 @@ async function saveUserData(data) {
   localStorage.setItem("experience", data['experience']);
 }
 
-//Error catching ----------------------------------------------------------------------------------------
+// Error catching ----------------------------------------------------------------------------------------
 let timeout;
 
-export function displayError(error, source, errorMsg) {
+export function displayError(error, source, errorMessageElement, errorMsg) {
   if (!error) {
     error = "";
   }
@@ -383,27 +386,33 @@ export function displayError(error, source, errorMsg) {
   if (!errorMsg) {
     errorMsg = "";
   }
+
   if (source == "signup") {
 
+    if (!errorMessageElement) {
+      console.error("No errorMessageElement in displayError function! Needed for Signup-Page errors.");
+      return;
+    }
+
     try {
-      errorMessage.innerHTML = error + " - " + errorMsg;
+      errorMessageElement.innerHTML = error + " - " + errorMsg;
 
       // make error message visible in case it isn't
       clearTimeout(timeout);
-      errorMessage.style.maxHeight = "100px";
-      errorMessage.style.marginTop = "20px";
-      errorMessage.style.marginBottom = "20px";
-      errorMessage.style.opacity = "1";
-      errorMessage.style.color = "#ffaeae";
+      errorMessageElement.style.maxHeight = "100px";
+      errorMessageElement.style.marginTop = "20px";
+      errorMessageElement.style.marginBottom = "20px";
+      errorMessageElement.style.opacity = "1";
+      errorMessageElement.style.color = "#ffaeae";
 
       if (!errorMsg) {
-        errorMessage.innerHTML = error;
+        errorMessageElement.innerHTML = error;
       }
 
       timeout = setTimeout(() => {
-        errorMessage.style.maxHeight = "0";
-        errorMessage.style.opacity = "0";
-        errorMessage.style.margin = "0";
+        errorMessageElement.style.maxHeight = "0";
+        errorMessageElement.style.opacity = "0";
+        errorMessageElement.style.margin = "0";
       }, 7000);
     } catch { }
 
@@ -420,30 +429,6 @@ export function displayError(error, source, errorMsg) {
   }
 }
 
-export function displaySuccess(text) {
-  try {
-    clearTimeout(timeout);
-    errorMessage.innerHTML = text;
-    errorMessage.style.maxHeight = "100px";
-    errorMessage.style.marginTop = "20px";
-    errorMessage.style.marginBottom = "20px";
-    errorMessage.style.opacity = "1";
-    errorMessage.style.color = "#64c681";
-
-    // change to sign-in
-    document.getElementById("loginForm").style.display = "block";
-    document.getElementById("signupForm").style.display = "none";
-    document.getElementById("resetForm").style.display = "none";
-    document.getElementById("newPasswordForm").style.display = "none";
-
-    timeout = setTimeout(() => {
-      errorMessage.style.maxHeight = "0";
-      errorMessage.style.opacity = "0";
-      errorMessage.style.margin = "0";
-    }, 4000);
-  } catch { }
-}
-
 export async function attemptExtractErrorFromResponse(response) {
   try {
     const data = await response.json();
@@ -452,4 +437,3 @@ export async function attemptExtractErrorFromResponse(response) {
     return null;
   }
 }
-

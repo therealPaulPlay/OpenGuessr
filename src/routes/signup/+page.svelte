@@ -5,13 +5,41 @@
         registerUser,
         sendPasswordResetEmail,
         changePassword,
-    } from "$lib/utils/userAPI";
+    } from "$lib/utils/userAPI.svelte.js";
 
     import { Eye, EyeClosed } from "lucide-svelte";
 
     import inIframe from "$lib/utils/checkIframe";
 
     import { onMount } from "svelte";
+
+    // Export error / success functions --------------------------------------------------------------------------------------------------------------
+
+    let errorMessage;
+
+    function displaySuccess(text) {
+        try {
+            clearTimeout(timeout);
+            errorMessage.innerHTML = text;
+            errorMessage.style.maxHeight = "100px";
+            errorMessage.style.marginTop = "20px";
+            errorMessage.style.marginBottom = "20px";
+            errorMessage.style.opacity = "1";
+            errorMessage.style.color = "#64c681";
+
+            // change to sign-in
+            loginForm.style.display = "block";
+            signupForm.style.display = "none";
+            resetForm.style.display = "none";
+            newPasswordForm.style.display = "none";
+
+            timeout = setTimeout(() => {
+                errorMessage.style.maxHeight = "0";
+                errorMessage.style.opacity = "0";
+                errorMessage.style.margin = "0";
+            }, 4000);
+        } catch {}
+    }
 
     // Toggle between login and signup ---------------------------------------------------------------------------------------------
     let loginForm;
@@ -62,9 +90,19 @@
 
     function changePasswordIfValuesProvided() {
         if (resetPasswordValue) {
-            changePassword(resetBearerToken, resetPasswordValue, "signup");
+            changePassword(
+                resetBearerToken,
+                resetPasswordValue,
+                "signup",
+                displaySuccess,
+                errorMessage,
+            );
         } else {
-            displayError("Please input a new password.", "signup");
+            displayError(
+                "Please input a new password.",
+                "signup",
+                errorMessage,
+            );
         }
     }
 
@@ -103,7 +141,11 @@
             ) {
                 return true;
             } else {
-                displayError("Please check your input.", "signup");
+                displayError(
+                    "Please check your input.",
+                    "signup",
+                    errorMessage,
+                );
                 return false;
             }
         } else {
@@ -113,6 +155,7 @@
                 displayError(
                     "Please check your input. The first field should contain a valid email address!",
                     "signup",
+                    errorMessage,
                 );
                 return false;
             }
@@ -133,7 +176,14 @@
     // This is the function that runs when the user click on signup or presses enter.
     function signUpAction() {
         if (checkEmptyFields(true)) {
-            registerUser(signupUsername, signupEmail, signupPassword, "signup");
+            registerUser(
+                signupUsername,
+                signupEmail,
+                signupPassword,
+                "signup",
+                displaySuccess,
+                errorMessage,
+            );
             loginEmail = signupEmail;
         }
     }
@@ -142,7 +192,7 @@
     async function logInAction() {
         if (checkEmptyFields(false)) {
             loginButtonSignupPage.textContent = "Wait...";
-            await loginUser(loginEmail, loginPassword, "signup");
+            await loginUser(loginEmail, loginPassword, "signup", errorMessage);
             loginButtonSignupPage.textContent = "Log in";
         }
     }
@@ -214,8 +264,12 @@
                         id="reset"
                         class="standardButton"
                         onclick={() =>
-                            sendPasswordResetEmail(resetEmail, "signup")}
-                        >Reset</button>
+                            sendPasswordResetEmail(
+                                resetEmail,
+                                "signup",
+                                displaySuccess,
+                                errorMessage,
+                            )}>Reset</button>
                 </div>
                 <p class="switchFormBox">
                     Recovered Password?
@@ -304,7 +358,9 @@
                     Our <a href="/legal">policies</a> apply.
                 </p>
             </div>
-            <p id="errorMessage">This is an error message box.</p>
+            <p id="errorMessage" bind:this={errorMessage}>
+                This is an error message box.
+            </p>
         </div>
         <div class="container containerBottom neumorphic-menu">
             <button
@@ -346,7 +402,7 @@
         height: 57px;
         margin-bottom: 30px;
         margin-top: 5px;
-        filter: drop-shadow(0 0 5px rgba(0,0, 0, 0.1));
+        filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
     }
 
     input {
