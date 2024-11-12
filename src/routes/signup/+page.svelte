@@ -349,6 +349,10 @@
         filter: drop-shadow(0 0 5px rgba(0,0, 0, 0.1));
     }
 
+    input {
+        background-color: rgba(55, 27, 31, 0.35);
+    }
+
     .container {
         display: flex;
         flex-direction: column;
