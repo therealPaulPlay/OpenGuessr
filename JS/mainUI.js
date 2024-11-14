@@ -1192,34 +1192,6 @@ document.getElementById("captchaClose").addEventListener("click", () => {
     hideCaptchaPopup();
 });
 
-// Animate all uiWindow elements (with the .uiWindow class) --------------------------------------------------------------------------
-
-// Function to add the animation class
-function handleVisibilityChange(entries) {
-    entries.forEach(entry => {
-        if (entry.isIntersecting) {
-            entry.target.classList.add('animate');
-        } else {
-            entry.target.classList.remove('animate');
-        }
-    });
-}
-
-// Options for the IntersectionObserver
-const observerOptions = {
-    root: null, // Use the viewport as the root
-    rootMargin: '0px',
-    threshold: 0 // Trigger as soon as even one pixel is visible
-};
-
-// Create the observer
-const observer = new IntersectionObserver(handleVisibilityChange, observerOptions);
-
-// Start observing all `.uiWindow` elements
-document.querySelectorAll('.uiWindow').forEach(element => {
-    observer.observe(element);
-});
-
 // In-App page browser -------------------------------------------------------------------------------------------------------
 let pageBrowserWindow = document.getElementById("pageBrowserWindow");
 
