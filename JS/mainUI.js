@@ -8,7 +8,7 @@ import { playSound } from "./soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners, checkGenerationTypeAndGenerate } from "./categoryMenu.js";
 import { leaveCompetition, loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
-import { initializeRewardAd } from "./rewardedAds.js";
+import { initializeRewardAd } from "../src/lib/utils/rewardedAds.js";
 import { resetMap } from "./miniMap.js";
 import { refreshPlacements } from "./ads.js";
 

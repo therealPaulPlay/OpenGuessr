@@ -5,7 +5,7 @@ const sounds = {};
 let globalVolume = 1.0;
 
 // Function to set the global volume
-export function setGlobalVolume(volume) {
+export function setSoundsVolume(volume) {
     globalVolume = Math.max(0, Math.min(volume, 1)); // Ensure the volume is between 0 and 1
     localStorage.setItem("soundVolume", globalVolume);
     // Update the volume for all currently playing sounds
@@ -23,7 +23,7 @@ export function setGlobalVolume(volume) {
 // Function to play a sound and assign it a tag
 export function playSound(fileName, tag) {
     try {
-        let sound = new Audio("./SOUNDS/" + fileName + ".ogg");
+        let sound = new Audio("/sounds/" + fileName + ".ogg");
         sound.volume = globalVolume * 0.5; // Set the sound volume to the global volume
         sound.play();
         sounds[tag] = sound;
@@ -47,7 +47,7 @@ export function stopSound(tag) {
 const volumeSlider = document.getElementById("volumeSlider");
 
 volumeSlider.addEventListener("input", function () {
-    setGlobalVolume(volumeSlider.value);
+    setSoundsVolume(volumeSlider.value);
     updateSliderBackground();
 });
 
@@ -59,6 +59,6 @@ function updateSliderBackground() {
 
 
 let TempLocalstorageSoundVolume = localStorage.getItem("soundVolume") ? localStorage.getItem("soundVolume") : 0.5;
-setGlobalVolume(TempLocalstorageSoundVolume);
+setSoundsVolume(TempLocalstorageSoundVolume);
 volumeSlider.value = TempLocalstorageSoundVolume;
 updateSliderBackground();

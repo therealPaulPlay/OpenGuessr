@@ -4,7 +4,7 @@ import { enableResultScreen, hideCaptchaPopup, hideToggleMapButtonIfMobile, isEl
 import { playSound } from "./soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 import { errorPopup } from "./errorHandling.js";
-import { currentlyLoadedLocationsArray } from "../src/lib/logic/locationGeneration.js";
+import { currentlyLoadedLocationsArray } from "$lib/logic/locationGeneration.js";
 
 
 // Initialize the map with correct provider --------------------------------------------------------------------
