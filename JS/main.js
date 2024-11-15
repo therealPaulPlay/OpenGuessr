@@ -2,7 +2,7 @@
 for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
 of the bundled main.js. */
 
-import { resultScreenEnabled, distanceUnit } from './mainUI.js';
+import { resultScreenEnabled } from './mainUI.js';
 import { getLocationCoordinates } from '../src/lib/logic/locationGeneration.js';
 import { applySingleplayerSettings } from './singleplayerOptions.js';
 import { multiplayer, startMultiplayerRound, isHost } from './multiplayer.js';
@@ -139,6 +139,8 @@ export function compareDistances(distance) {
 export function formatDistance(distance) {
     let finalResult;
     let resultString;
+    
+    const distanceUnit = localStorage.getItem("distanceUnit") || "kilometers";
 
     distance = Number(distance); // For error prevention
 

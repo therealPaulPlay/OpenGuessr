@@ -44,21 +44,3 @@ export function stopSound(tag) {
         console.error("Couldn't stop sound: " + error);
     }
 }
-const volumeSlider = document.getElementById("volumeSlider");
-
-volumeSlider.addEventListener("input", function () {
-    setSoundsVolume(volumeSlider.value);
-    updateSliderBackground();
-});
-
-function updateSliderBackground() {
-    const value = volumeSlider.value;
-    const percentage = value * 100;
-    volumeSlider.style.background = `linear-gradient(to right, var(--brand-color) 0%, var(--brand-color) ${percentage}%, white ${percentage}%, white 100%)`;
-}
-
-
-let TempLocalstorageSoundVolume = localStorage.getItem("soundVolume") ? localStorage.getItem("soundVolume") : 0.5;
-setSoundsVolume(TempLocalstorageSoundVolume);
-volumeSlider.value = TempLocalstorageSoundVolume;
-updateSliderBackground();

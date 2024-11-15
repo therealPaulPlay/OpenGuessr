@@ -2,7 +2,7 @@ import { confirmButtonClicks } from "./miniMap";
 import { startTimer } from "./timer";
 import { disableResultScreen, setGamemodeSelector, showPageBrowser, toggleCategoryMenu } from "./mainUI";
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
-import { playSound } from "./soundManager";
+import { playSound } from "../src/lib/utils/soundManager";
 import { errorPopup } from "./errorHandling";
 import { setRestriction } from "./multiplayer";
 import { addCompetitionPlayed, supporterLevel } from "./profileView";

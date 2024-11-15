@@ -2,7 +2,7 @@ import { deleteUser, getUser, updateExperience } from "./userAPI";
 import { checkTextLength, freeSupporterBoostEnabled, resultScreenEnabled, setAdVisibility, showConfirmPopup, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel, attemptJoinViaLink } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "./countryGuesser.js";
-import { playSound } from "./soundManager.js";
+import { playSound } from "../src/lib/utils/soundManager.js";
 import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
 import { mapMarkerLat, mapMarkerLong, diameter } from "./miniMap.js";
 import { toggleStreakWindow } from "./streakAdPopup.js";

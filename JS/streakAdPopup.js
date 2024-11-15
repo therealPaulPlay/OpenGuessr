@@ -1,6 +1,6 @@
 import { restoreOldStreak } from "./accountLogic";
 import { errorPopup } from "./errorHandling";
-import { playSound } from "./soundManager";
+import { playSound } from "../src/lib/utils/soundManager";
 import { initializeRewardAd } from "../src/lib/utils/rewardedAds";
 
 let streakBanner = document.getElementById("endScreenStreakRevive");

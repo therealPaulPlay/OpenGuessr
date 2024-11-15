@@ -4,7 +4,7 @@ import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMult
 import { errorPopup } from "./errorHandling.js";
 import { resetMap } from "./miniMap.js";
 import { setCountryGuesserMode } from "./countryGuesser.js";
-import { playSound } from "./soundManager.js";
+import { playSound } from "../src/lib/utils/soundManager.js";
 import { toggleStreakWindow } from "./streakAdPopup.js";
 import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
 import { setImageGuessrEnabled } from "./imageGuesser.js";

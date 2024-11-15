@@ -4,7 +4,7 @@ import { loadResultMap } from "./resultMap.js";
 import { setUserXP, uiSetUserXP, isAuthenticated, checkAuthenticationStatus, loadResultScreenXP } from "./accountLogic.js";
 import { leaveMultiplayerRound, toggleMultiplayerSelector } from "./multiplayer.js";
 import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
-import { playSound } from "./soundManager.js";
+import { playSound } from "../src/lib/utils/soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners, checkGenerationTypeAndGenerate } from "./categoryMenu.js";
 import { leaveCompetition, loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
@@ -451,110 +451,6 @@ document.addEventListener('keydown', function (event) {
         if (tag === 'button') {
             event.preventDefault();
         }
-    }
-});
-
-// Settings - Window ---------------------------------------------------------------------------------------
-let settingsButton = document.getElementById("settingsButton");
-settingsButton.addEventListener("click", () => {
-    playSound("basic_button");
-    toggleSettingsWindow();
-})
-
-let settingsWindow = document.getElementById("settingsWindow");
-
-let settingsClose = document.getElementById("settingsClose");
-settingsClose.addEventListener("click", () => {
-    playSound("basic_button");
-    toggleSettingsWindow();
-});
-
-function toggleSettingsWindow() {
-    if (settingsWindow.style.display == "block") {
-        settingsWindow.style.display = "none";
-        document.getElementById("blackBackground").style.visibility = "hidden";
-    } else {
-        settingsWindow.style.display = "block";
-        document.getElementById("blackBackground").style.visibility = "visible";
-
-        // load certain values
-        document.getElementById("exitPopupSetting").textContent = localStorage.getItem("hideExitPopup") == "1" ? "Disabled" : "Enabled";
-    }
-}
-
-// Unit switch between kilometers and miles ------------------
-export let distanceUnit = "kilometers";
-
-let kilometersButton = document.getElementById("unitSwitchKilometers");
-let milesButton = document.getElementById("unitSwitchMiles");
-
-const tempStorageDistanceUnit = localStorage.getItem("distanceUnit");
-
-if (tempStorageDistanceUnit != null) {
-    setDistanceUnitButtons(tempStorageDistanceUnit);
-} else {
-    setDistanceUnitButtons("kilometers");
-}
-
-function setDistanceUnitButtons(unit) {
-    if (unit == "miles") {
-        kilometersButton.style.opacity = "0.5";
-        milesButton.style.opacity = "1";
-        distanceUnit = "miles";
-    } else {
-        milesButton.style.opacity = "0.5";
-        kilometersButton.style.opacity = "1";
-        distanceUnit = "kilometers";
-    }
-}
-
-kilometersButton.addEventListener("click", () => {
-    setDistanceUnitButtons("kilometers");
-    playSound("basic_button");
-    localStorage.setItem("distanceUnit", "kilometers");
-});
-
-milesButton.addEventListener("click", () => {
-    setDistanceUnitButtons("miles");
-    playSound("basic_button");
-    localStorage.setItem("distanceUnit", "miles");
-});
-
-// Exit Popup Setting ---------------------
-document.getElementById("exitPopupSetting").addEventListener("click", () => {
-    if (localStorage.getItem("hideExitPopup") == "1") {
-        localStorage.setItem("hideExitPopup", "0");
-        document.getElementById("exitPopupSetting").textContent = "Enabled";
-    } else {
-        localStorage.setItem("hideExitPopup", "1");
-        document.getElementById("exitPopupSetting").textContent = "Disabled";
-    }
-});
-
-// Fullscreen Setting ---------------------
-let fullscreenButton = document.getElementById("fullscreenButton");
-
-fullscreenButton.addEventListener("click", () => {
-    try {
-        if (!document.fullscreenElement) {
-            if (document.documentElement.requestFullscreen) {
-                document.documentElement.requestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            }
-        }
-    } catch (error) {
-        console.error("Error entering / exiting fullscreen: " + error);
-    }
-});
-
-document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) {
-        document.getElementById("fullscreenText").textContent = "Fullscreen";
-    } else {
-        document.getElementById("fullscreenText").textContent = "Exit Fullscreen";
     }
 });
 

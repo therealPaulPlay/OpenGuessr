@@ -2,7 +2,7 @@
 
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
 import { startTimer } from "./timer";
-import { playSound } from "./soundManager";
+import { playSound } from "../src/lib/utils/soundManager";
 import { openLocationOnMaps } from "./mainUI";
 import { formatDistance } from "./main";
 

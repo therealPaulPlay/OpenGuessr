@@ -1,5 +1,5 @@
 import { updateUsername } from "./userAPI";
-import { playSound } from "./soundManager.js";
+import { playSound } from "../src/lib/utils/soundManager.js";
 import { displayUserInfo, isAuthenticated } from "./accountLogic.js";
 import { errorPopup } from "./errorHandling.js";
 import { setSupporterPitch, showConfirmPopup } from "./mainUI.js";

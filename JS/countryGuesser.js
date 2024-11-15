@@ -2,7 +2,7 @@
 import { hideToggleMapButtonIfMobile } from "./mainUI";
 import { setConfirmButtonEnabled, confirmButtonClicks } from "./miniMap";
 import { multiplayer } from "./multiplayer";
-import { playSound } from "./soundManager";
+import { playSound } from "../src/lib/utils/soundManager";
 
 export let countryGuesserMode = false;
 export let selectedCountryGuesserCountry = null; // this will be set in locationGeneration.js and is the country

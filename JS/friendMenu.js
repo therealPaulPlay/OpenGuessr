@@ -4,7 +4,7 @@ import { errorPopup } from "./errorHandling";
 import { showConfirmPopup, showNotification, showPageBrowser } from "./mainUI";
 import { joinRoom, leaveMultiplayerRound, peerId, setFriendDuel, setLinkjoinPopup, setPlayingDuels, setupMultiplayerRoom, toggleMultiplayerSelector } from "./multiplayer";
 import { loadProfileFromId } from "./profileView";
-import { playSound } from "./soundManager";
+import { playSound } from "../src/lib/utils/soundManager";
 
 // Friend browser ---------------------------------------------------------------------------------------
 const container = document.getElementById("playerSearchBox");

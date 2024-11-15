@@ -14,7 +14,7 @@
   });
 </script>
 
-<div class="popupHolder errorBackground">
+<div class="popupHolder">
   <div class="uiWindow {animateClass}" style:z-index={z}>
     {@render children?.()}
   </div>

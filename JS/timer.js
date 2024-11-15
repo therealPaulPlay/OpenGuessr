@@ -1,4 +1,4 @@
-import { playSound, stopSound } from "./soundManager";
+import { playSound, stopSound } from "../src/lib/utils/soundManager";
 
 // UI Timer ---------------------------------------------------------------------------------------------------------------------
 export function startTimer(durationInSeconds, onTimerExpired) {
