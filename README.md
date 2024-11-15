@@ -1,18 +1,10 @@
-# sv
+# OpenGuessr
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+The free location guessing game.
 
-## Creating a project
+## Framework
 
-If you're seeing this, you've probably already done this step. Congrats!
-
-```bash
-# create a new project in the current directory
-npx sv create
-
-# create a new project in my-app
-npx sv create my-app
-```
+OpenGuessr now uses [Svelte](https://svelte.dev). 
 
 ## Developing
 
