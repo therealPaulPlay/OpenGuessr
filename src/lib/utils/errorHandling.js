@@ -19,4 +19,4 @@ export function errorPopup(popupTitle, popupDescription, popupErrorCode, reloadP
 }
 
 // Usage:
-// errorPopup("Streetview link is invalid","Link: https://errorsareawesome.saidnooneever.ml", "Testerror description", false);
+// errorPopup("Streetview link is invalid","Link: https://errorsareawesome.saidnooneever.ml", "Code 7: Link not found", false);

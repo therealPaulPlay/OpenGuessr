@@ -4,6 +4,7 @@
   import { setSoundsVolume, playSound } from "$lib/utils/soundManager";
 
   import { settingsPopup } from "$lib/stores/UIStore";
+  import { Scan } from "lucide-svelte";
 
   // Settings - Window ---------------------------------------------------------------------------------------
   function closeSettingsButton() {
@@ -69,7 +70,9 @@
     updateSliderBackground();
   });
 
-  let sfxSliderBg = $derived(`linear-gradient(to right, var(--brand-color) 0%, var(--brand-color) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) 100%)`);
+  let sfxSliderBg = $derived(
+    `linear-gradient(to right, var(--brand-color) 0%, var(--brand-color) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) 100%)`,
+  );
 
   // Exit Popup Setting ---------------------
   let exitPopupButtonText = $state("Default");
@@ -168,7 +171,9 @@
       <div class="settingsBox">
         <p class="slightBottomMargin">Toggle Fullscreen:</p>
         <button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
-          <img src="/img/fullscreen_icon.png" alt="Fullscreen symbol" id="fullscreenIcon" class="socialIcon" />
+          <span class="fullscreenIcon">
+            <Scan size=17 />
+          </span>
           <span id="fullscreenText">{fullscreenButtonText}</span>
         </button>
       </div>
@@ -213,11 +218,7 @@
     opacity: 0.5;
   }
 
-  #fullscreenIcon {
-    width: 25px;
-    height: 25px;
-    vertical-align: -5px;
-    margin-right: 5px;
-    filter: invert();
+  .fullscreenIcon {
+    margin-right: 3px;
   }
 </style>

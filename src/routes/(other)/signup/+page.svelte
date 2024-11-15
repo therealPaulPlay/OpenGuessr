@@ -5,7 +5,7 @@
         registerUser,
         sendPasswordResetEmail,
         changePassword,
-    } from "$lib/utils/userAPI.svelte.js";
+    } from "$lib/utils/userAPI";
 
     import { Eye, EyeClosed } from "lucide-svelte";
 

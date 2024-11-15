@@ -565,23 +565,6 @@ export function handleMapUnhover() {
     }, 250);
 }
 
-function checkMapmodeindicatorOverflow() {
-    let mapModeTextContainer = document.getElementById("mapModeTextContainer");
-    let positionInfo = mapModeTextContainer.getBoundingClientRect();
-    let width = positionInfo.width;
-    if (width < 150 || (width < 235 && document.getElementById("mapModeText").textContent.length > 25) || (width < 280 && document.getElementById("mapModeText").textContent.length > 31)) {
-        document.getElementById("mapModeText").classList.add("modetextScroll");
-    } else {
-        document.getElementById("mapModeText").classList.remove("modetextScroll");
-    }
-}
-
-try {
-    new ResizeObserver(() => { checkMapmodeindicatorOverflow(); }).observe(document.getElementById("mapModeTextContainer"));
-} catch (error) {
-    console.error("Error setting Resize Observer in miniMap.js: " + error);
-}
-
 // Mouse events
 document.getElementById("map").addEventListener('mouseenter', handleMapHover);
 document.getElementById("map").addEventListener('mouseleave', handleMapUnhover);

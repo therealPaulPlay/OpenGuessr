@@ -7,18 +7,49 @@
     indicatorFading,
     timerText,
   } from "$lib/stores/context-specific/mapModeIndicatorStore";
+
+  import { browser } from "$app/environment";
+
+  let mapModeTextContainer = $state();
+  let scrollModeText = $state(false);
+
+  function checkMapmodeindicatorOverflow() {
+    let positionInfo = mapModeTextContainer.getBoundingClientRect();
+    let width = positionInfo.width;
+    scrollModeText =
+      width < 150 ||
+      (width < 235 && document.getElementById("mapModeText").textContent.length > 25) ||
+      (width < 280 && document.getElementById("mapModeText").textContent.length > 31);
+  }
+
+  try {
+    if (browser) {
+      // svelte-ignore state_referenced_locally
+      new ResizeObserver(() => {
+        checkMapmodeindicatorOverflow();
+      }).observe(mapModeTextContainer);
+    }
+  } catch (error) {
+    console.error("Error setting Resize Observer for MapModeIndicator: " + error);
+  }
 </script>
 
 {#if $mapModeIndicatorVisible}
   <div id="mapModeIndicator">
     {#if $leaveFunction}
       <button class="leaveButton standardButton closeButton {$indicatorFading ? 'fading' : ''}" onclick={leaveFunction}
-        >Leave</button>
+        >Leave</button
+      >
     {/if}
-    <div id="mapModeTextContainer">
+    <div bind:this={mapModeTextContainer} class="mapModeTextContainer">
       <p class="mapModeText">{$modeText}</p>
     </div>
-    <p id="mapTimer" class="mapModeText modeTextRight {$indicatorFading ? 'fading' : ''}">{$timerText}</p>
+    <p
+      id="mapTimer"
+      class="mapModeText modeTextRight {$indicatorFading ? 'fading' : ''} {scrollModeText ? 'modetextScroll' : ''}"
+    >
+      {$timerText}
+    </p>
   </div>
 {/if}
 
@@ -48,13 +79,7 @@
     flex-shrink: 0;
   }
 
-  @media (max-width: 1600px) {
-    #mapModeIndicator {
-      font-size: 20px;
-    }
-  }
-
-  #mapModeIndicator.fading {
+  :global(#mapModeIndicator.fading) {
     animation: divFade 1s infinite;
   }
 
@@ -72,7 +97,7 @@
     width: fit-content;
   }
 
-  #mapModeTextContainer {
+  .mapModeTextContainer {
     margin-left: 10px;
     margin-right: 5px;
     overflow: hidden;
@@ -98,7 +123,7 @@
     }
   }
 
-  .modetextScroll {
+  :global(.modetextScroll) {
     animation: scrollModeText 5s ease-in-out infinite alternate;
   }
 

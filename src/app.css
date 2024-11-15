@@ -181,6 +181,11 @@ input:focus {
     border-radius: 15px;
 }
 
+.experienceHighlight {
+    color: rgb(198, 255, 198);
+    text-shadow: 0 0 10px #00cc00;
+}
+
 /* end of new, universal styling ---------------------------------------------------------------------------------------------------------------------- */
 
 .leftNavbarButtons {
@@ -638,31 +643,6 @@ input:focus {
     color: white;
     margin-left: 3px;
     text-wrap: nowrap;
-}
-
-#endScreenStreakRevive {
-    margin-top: auto;
-    margin-left: 0;
-    margin-right: auto;
-    margin-bottom: 10px;
-    z-index: 11;
-    font-size: 25px;
-    padding: 35px;
-    padding-top: 15px;
-    padding-bottom: 5px;
-    border-radius: 10px;
-    max-height: 1000px;
-    transition: filter 250ms ease, max-height 250ms ease;
-    user-select: none;
-    -webkit-user-select: none;
-    color: white;
-    background-color: var(--panel-color);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    overflow: hidden;
-    display: none;
-    /* default hidden */
-    pointer-events: auto;
 }
 
 #streakIcon {
@@ -1496,12 +1476,6 @@ textarea {
     min-height: 300px;
 }
 
-.highlight {
-    color: rgb(198, 255, 198);
-    text-shadow: 0 0 10px #00cc00;
-    ;
-}
-
 #profileWindow {
     max-width: 800px;
     width: 50%;
@@ -1797,10 +1771,6 @@ textarea {
 
 #settingsIcon {
     filter: invert();
-}
-
-#keepStreakText {
-    max-width: 350px;
 }
 
 #endMultiplayerRoundButton {
@@ -3335,12 +3305,6 @@ map::selection {
     overflow: hidden;
 }
 
-.streakButton {
-    background-color: #01a001;
-    color: white;
-    min-height: 50px;
-}
-
 .shiftIconRight {
     padding-right: 3px;
 }
@@ -3547,10 +3511,6 @@ button {
     padding-inline: 12px;
 }
 
-#streakHeader {
-    transition: color 350ms ease;
-}
-
 #privacyNotice {
     font-size: 20px;
     opacity: 50%;
@@ -3740,17 +3700,6 @@ input[type="checkbox"]:focus {
     max-height: 100%;
     z-index: 9;
     pointer-events: none;
-}
-
-#streakWatchAd {
-    padding: 10px 20px;
-}
-
-#streakAdDismiss {
-    padding: 10px 20px;
-    height: 50px;
-    margin-left: auto;
-    margin-right: 10px;
 }
 
 #pageBrowserIframe {
@@ -4032,22 +3981,6 @@ input[type="checkbox"]:focus {
     #countryGuesserSelector {
         min-width: calc(100% - 40px);
         margin-inline: 10px;
-    }
-
-    #streakHeader {
-        font-size: 30px;
-    }
-
-    #endScreenStreakRevive {
-        padding-top: 10px;
-    }
-
-    #streakWatchAd {
-        margin-top: 20px;
-    }
-
-    #streakAdDismiss {
-        margin-top: 20px;
     }
 
     #imageGuesserImage {

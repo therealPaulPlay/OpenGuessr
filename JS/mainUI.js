@@ -8,7 +8,7 @@ import { playSound } from "../src/lib/utils/soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners, checkGenerationTypeAndGenerate } from "./categoryMenu.js";
 import { leaveCompetition, loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
-import { initializeRewardAd } from "../src/lib/utils/rewardedAds.js";
+import { initializeRewardedAd } from "../src/lib/utils/rewardedAds.js";
 import { resetMap } from "./miniMap.js";
 import { refreshPlacements } from "./ads.js";
 
@@ -766,7 +766,7 @@ export let freeSupporterBoostEnabled = false;
 
 freeSupporterBoost.addEventListener("click", () => {
     playSound("basic_button");
-    initializeRewardAd(supporterBoostAdDismiss, enableSupporterAdBoost);
+    initializeRewardedAd(supporterBoostAdDismiss, enableSupporterAdBoost);
 });
 
 function setAdSupporterTier(available) {
@@ -813,7 +813,7 @@ async function startAdSupporterTimer(prefix = "Boost active. Remaining: ") {
             : t + 's';
         e.textContent = prefix + timeText;
         t > 0 ? (setTimeout(u, 1000), t--) : (setAdSupporterTier(true), freeSupporterBoostEnabled = false,
-            showConfirmPopup("Boost expired", "Your free experience boost has expired. Do you want to reactivate it?", () => { initializeRewardAd(supporterBoostAdDismiss, enableSupporterAdBoost) }, false, false, false, true));
+            showConfirmPopup("Boost expired", "Your free experience boost has expired. Do you want to reactivate it?", () => { initializeRewardedAd(supporterBoostAdDismiss, enableSupporterAdBoost) }, false, false, false, true));
     })();
 }
 

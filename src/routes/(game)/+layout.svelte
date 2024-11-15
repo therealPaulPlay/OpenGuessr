@@ -13,6 +13,7 @@
   import TopLeftLogo from "$lib/components/TopLeftLogo.svelte";
   import MapModeIndicator from "$lib/components/MapModeIndicator.svelte";
   import LittleTimeVignette from "$lib/components/LittleTimeVignette.svelte";
+  import StreakRestore from "$lib/components/StreakRestore.svelte";
 
   // Start ads
   onMount(() => {
@@ -858,20 +859,7 @@
 <!-- Result screen -->
 <div id="EndOverlay">
   <div id="endBottomArea">
-    <div id="endScreenStreakRevive">
-      <div class="popup-title">
-        <h1 id="streakHeader">Streak lost!</h1>
-      </div>
-      <p id="keepStreakText">
-        Support us by watching an ad and keep your streak of <span id="streakKeepAmount" class="highlight">0</span>
-        !
-      </p>
-      <button id="streakWatchAd" class="streakButton standardButton closeButton">
-        Keep streak
-        <img src="./img/streak_icon.png" class="socialIcon" alt="Streak Icon" />
-      </button>
-      <button id="streakAdDismiss" class="standardButton closeButton white">Close</button>
-    </div>
+    <StreakRestore />
     <div id="endBottomBar">
       <div id="floatingResultLeaderboardArea" class="hideForSupporters">
         <div id="floatingResultLeaderboardAd"></div>
