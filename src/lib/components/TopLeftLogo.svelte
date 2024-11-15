@@ -20,6 +20,13 @@
     pointer-events: none;
   }
 
+  /* hide logo on screens that don't have room for it */
+  @media (max-width: 900px) {
+    .logoLeft {
+      display: none;
+    }
+  }
+
   #OpenGuessrIcon {
     width: 200px;
     height: auto;

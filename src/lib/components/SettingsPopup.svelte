@@ -195,6 +195,7 @@
     height: 80px;
     overflow: hidden;
     flex-grow: 1;
+    min-width: 150px;
   }
 
   .settingsCanvas {
