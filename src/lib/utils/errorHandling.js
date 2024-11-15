@@ -1,5 +1,5 @@
 // Display custom error messages
-import { hideDisableOption, showErrors, title, description, errorCode, popupOpen, closeButtonText, reload } from "$lib/stores/context-specific/errorPopupData";
+import { hideDisableOption, showErrors, title, description, errorCode, popupOpen, closeButtonText, reload } from "$lib/stores/context-specific/errorPopupStore";
 import { get } from "svelte/store"; // Get values from svelte stores using this
 
 export function errorPopup(popupTitle, popupDescription, popupErrorCode, reloadPopup, hideDontShowAgainOption) {

@@ -1,7 +1,7 @@
 import { clamp, loadAndInitializeLibrary } from "./main.js";
 import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup, supporterWindowIfAuthenticated, enableResultScreen } from "./mainUI.js";
-import { startTimer } from "./timer";
+import { startTimer } from "../src/lib/utils/timer.js";
 import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { selectedBadge, selectedPinIndex, supporterLevel } from "./profileView.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";

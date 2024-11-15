@@ -1,5 +1,5 @@
 import { confirmButtonClicks } from "./miniMap";
-import { startTimer } from "./timer";
+import { startTimer } from "../src/lib/utils/timer";
 import { disableResultScreen, setGamemodeSelector, showPageBrowser, toggleCategoryMenu } from "./mainUI";
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
 import { playSound } from "../src/lib/utils/soundManager";

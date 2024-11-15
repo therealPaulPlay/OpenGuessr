@@ -8,7 +8,7 @@
     errorCode,
     popupOpen,
     closeButtonText,
-  } from "$lib/stores/context-specific/errorPopupData";
+  } from "$lib/stores/context-specific/errorPopupStore";
 
   import Popup from "./Popup.svelte";
   import { get } from "svelte/store"; // Import get from svelte/store

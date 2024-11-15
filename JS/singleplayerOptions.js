@@ -1,7 +1,7 @@
 // Hard mode is a time limited mode accessed by the timer icon in the upper right hand corner of the screen.
 
 import { checkGenerationTypeAndGenerate } from "./categoryMenu";
-import { startTimer } from "./timer";
+import { startTimer } from "../src/lib/utils/timer";
 import { playSound } from "../src/lib/utils/soundManager";
 import { openLocationOnMaps } from "./mainUI";
 import { formatDistance } from "./main";

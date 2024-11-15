@@ -1,14 +1,17 @@
-import { playSound, stopSound } from "../src/lib/utils/soundManager";
+import { playSound, stopSound } from "./soundManager";
+import {
+    indicatorFading,
+    timerText,
+} from "$lib/stores/context-specific/mapModeIndicatorStore";
 
-// UI Timer ---------------------------------------------------------------------------------------------------------------------
+import { littleTimeVignette } from "$lib/stores/UIStore";
+
 export function startTimer(durationInSeconds, onTimerExpired) {
     let currentTimerIntervalId; // Variable to store the current interval ID
     let isRunning = false; // Flag to indicate if the timer is running
     clearInterval(currentTimerIntervalId); // Clear previous timer, if any
 
     let timer = durationInSeconds, minutes, seconds;
-    const mapTimer = document.getElementById("mapTimer");
-    const mapModeIndicator = document.getElementById("mapModeIndicator");
 
     currentTimerIntervalId = setInterval(function () {
         isRunning = true; // Set flag to true when the timer starts
@@ -19,25 +22,22 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         minutes = minutes < 10 ? "0" + minutes : minutes;
         seconds = seconds < 10 ? "0" + seconds : seconds;
 
-        mapTimer.textContent = minutes + ":" + seconds;
+        timerText.set(minutes + ":" + seconds);
 
         if (timer < 10) {
-            mapTimer.classList.add("fading");
-            mapModeIndicator.classList.add("fading");
+            indicatorFading.set(true);
             playSound("ticking_timer", "timerSound");
-            document.getElementById("littleTimeVignette").style.opacity = "1";
+            littleTimeVignette.set(true);
         } else {
-            mapTimer.classList.remove("fading");
-            mapModeIndicator.classList.remove("fading");
-            document.getElementById("littleTimeVignette").style.opacity = "0";
+            indicatorFading.set(false);
+            littleTimeVignette.set(false);
         }
 
         if (--timer < 0) {
             clearInterval(currentTimerIntervalId); // Stop the interval
             isRunning = false; // Set flag to false when the timer stops
-            mapTimer.classList.remove("fading");
-            mapModeIndicator.classList.remove("fading");
-            document.getElementById("littleTimeVignette").style.opacity = "0";
+            indicatorFading.set(false);
+            littleTimeVignette.set(false);
             timerExpired(); // Call the function when timer expires
         }
     }, 1000);
@@ -52,9 +52,8 @@ export function startTimer(durationInSeconds, onTimerExpired) {
     function stopTimer() {
         clearInterval(currentTimerIntervalId);
         isRunning = false; // Set flag to false when the timer is stopped
-        mapTimer.classList.remove("fading");
-        mapModeIndicator.classList.remove("fading");
-        document.getElementById("littleTimeVignette").style.opacity = "0";
+        indicatorFading.set(false);
+        littleTimeVignette.set(true);
         stopSound("timerSound");
     }
 

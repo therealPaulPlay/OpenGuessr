@@ -466,23 +466,6 @@ input:focus {
     }
 }
 
-.modetextScroll {
-    animation: scrollModeText 5s ease-in-out infinite alternate;
-}
-
-/* Animation for scrolling */
-@keyframes scrollModeText {
-    0% {
-        transform: translateX(5px);
-    }
-
-    100% {
-        transform: translateX(calc(-100% + 135px));
-    }
-
-    /* Adjusted animation */
-}
-
 .progressContainer {
     position: relative;
     width: 30px;
@@ -2288,19 +2271,6 @@ search {
     top: 0;
 }
 
-#littleTimeVignette {
-    position: fixed;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    box-shadow: 0 0 350px rgba(254, 0, 0, 0.5) inset;
-    opacity: 0;
-    pointer-events: none;
-    transition: opacity 500ms ease;
-    top: 0;
-}
-
 #mobileExtendedNavbarControls {
     display: none;
     position: fixed;
@@ -2897,72 +2867,6 @@ map::selection {
     outline: none;
 }
 
-#mapModeIndicator {
-    pointer-events: auto;
-    background-color: var(--panel-color);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
-    height: 48px;
-    width: 100%;
-    border-radius: 10px;
-    display: none;
-    /* set to flex in code when needed */
-    align-items: center;
-    justify-content: flex-start;
-    color: white;
-    font-size: 22px;
-    transition: width 250ms ease, margin 250ms ease;
-    pointer-events: auto;
-    z-index: 10;
-    margin-top: 10px;
-    padding-top: 3px;
-    padding-bottom: 2px;
-    user-select: none;
-    flex-shrink: 0;
-}
-
-@keyframes textFade {
-    0% {
-        color: white;
-    }
-
-    50% {
-        color: red;
-    }
-
-    100% {
-        color: white;
-    }
-}
-
-@keyframes divFade {
-    0% {
-        background-color: var(--panel-color);
-    }
-
-    50% {
-        background-color: hsla(298, 25%, 20%, 0.7);
-    }
-
-    100% {
-        background-color: var(--panel-color);
-    }
-}
-
-#mapTimer {
-    text-align: right;
-    min-width: 40px;
-}
-
-#mapTimer.fading {
-    animation: textFade 1s infinite;
-}
-
-#mapModeIndicator.fading {
-    animation: divFade 1s infinite;
-}
-
 #multiplayerChat {
     width: 300px;
     height: 20%;
@@ -3123,23 +3027,6 @@ map::selection {
 #multiplayerMessageInput:focus,
 #multiplayerMessageInput:hover {
     outline: none;
-}
-
-.mapModeText {
-    white-space: nowrap;
-    width: fit-content;
-}
-
-#mapModeTextContainer {
-    margin-left: 10px;
-    margin-right: 5px;
-    overflow: hidden;
-    flex-grow: 1;
-}
-
-.modeTextRight {
-    margin-left: auto;
-    margin-right: 25px;
 }
 
 .MainDiv {
@@ -3688,15 +3575,6 @@ button {
     padding-bottom: 10px;
 }
 
-.leaveButton {
-    display: none;
-    margin: 0;
-    padding-inline: 10px;
-    line-height: 0.9;
-    margin-left: 8px;
-    min-height: unset;
-}
-
 #troubleshootingArea {
     display: flex;
     justify-content: center;
@@ -4070,15 +3948,6 @@ input[type="checkbox"]:focus {
     }
 }
 
-/* laptops and big screens */
-@media (orientation: landscape) and (min-width: 1250px) {}
-
-@media (max-width: 1600px) {
-    #mapModeIndicator {
-        font-size: 20px;
-    }
-}
-
 /* phones / mobile but also narrow devices like ipads */
 @media all and (max-width: 1350px) {
 
@@ -4302,10 +4171,6 @@ input[type="checkbox"]:focus {
     height: 100%;
     transition: none;
     margin: 0 !important;
-}
-
-.mapHolderToResult #mapModeIndicator {
-    display: none !important;
 }
 
 .mapHolderToResult #floatingMapButton {

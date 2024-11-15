@@ -11,6 +11,8 @@
   import SettingsPopup from "$lib/components/SettingsPopup.svelte";
   import NavigationBar from "$lib/components/NavigationBar.svelte";
   import TopLeftLogo from "$lib/components/TopLeftLogo.svelte";
+  import MapModeIndicator from "$lib/components/MapModeIndicator.svelte";
+  import LittleTimeVignette from "$lib/components/LittleTimeVignette.svelte";
 
   // Start ads
   onMount(() => {
@@ -925,7 +927,7 @@
 <div id="blackBackground"></div>
 <div id="nmpzBackground"></div>
 <div id="nmpzSingleplayerBackground"></div>
-<div id="littleTimeVignette"></div>
+<LittleTimeVignette />
 <div id="hardModeFade">
   <h1 id="hardModeTitle">Default hardmode title</h1>
   <p id="hardModeSubtitle">Default hardmode subtitle</p>
@@ -994,14 +996,7 @@
   <div id="map" tabindex="0">
     <div id="mapPlaceholderBeforeLoad"></div>
   </div>
-  <div id="mapModeIndicator">
-    <button id="multiplayerLeave" class="leaveButton standardButton closeButton">Leave</button>
-    <button id="competitionLeave" class="leaveButton standardButton closeButton">Leave</button>
-    <div id="mapModeTextContainer">
-      <p id="mapModeText" class="mapModeText">Default Mode</p>
-    </div>
-    <p id="mapTimer" class="mapModeText modeTextRight">00:00</p>
-  </div>
+  <MapModeIndicator />
 </div>
 <div id="multiplayerChat">
   <div id="multiplayerChatMessages">
