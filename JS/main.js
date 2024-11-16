@@ -1,7 +1,3 @@
-/* These imports are being handled and performed by Webpack. Note that errorHandling.js is still being included
-for signupScreen.js only. LoadMap and AccountLogic are both not being included in the build folder as they are part
-of the bundled main.js. */
-
 import { resultScreenEnabled } from './mainUI.js';
 import { getLocationCoordinates } from '../src/lib/logic/locationGeneration.js';
 import { applySingleplayerSettings } from './singleplayerOptions.js';
@@ -13,30 +9,6 @@ import { imageGuesserEnabled, loadImageFromUrl } from './imageGuesser.js';
 // default coords of the location
 export let currentStreetviewLat = 0;
 export let currentStreetviewLong = 0;
-
-// Coordinates to country --------------------------------------------------------------------------
-
-let gridData = null;
-
-async function loadDataset() {
-    const response = await fetch("./JSON/countries.json");
-    gridData = await response.json();
-}
-
-loadDataset();
-
-export function getCountryFromCoords(lat, lon) {
-    try {
-        const gridSize = gridData.grid_size;
-        const latIndex = Math.floor(lat / gridSize);
-        const lonIndex = Math.floor(lon / gridSize);
-        const key = `${latIndex},${lonIndex}`;
-        return gridData.data[key] || "Unknown";
-    } catch (error) {
-        console.error("Error getting country from coords: " + error);
-        return "Uknknown";
-    }
-}
 
 // Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
 
@@ -173,15 +145,6 @@ export function formatDistance(distance) {
     }
 
     return resultString;
-}
-
-// Clamp function (Global) ----------------------------------------------------------------------------------------------------------------------
-export function clamp(num, min, max) {
-    return num <= min
-        ? min
-        : num >= max
-            ? max
-            : num
 }
 
 // Load the Main StreetView Iframe -------------------------------------------------------------------------------------------------------------

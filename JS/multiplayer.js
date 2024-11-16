@@ -1,6 +1,7 @@
-import { clamp, loadAndInitializeLibrary } from "./main.js";
+import { loadAndInitializeLibrary } from "./main.js";
+import { clamp } from "../src/lib/utils/clamp.js";
 import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, showConfirmPopup, supporterWindowIfAuthenticated, enableResultScreen } from "./mainUI.js";
+import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, supporterWindowIfAuthenticated, enableResultScreen } from "./mainUI.js";
 import { startTimer } from "../src/lib/utils/timer.js";
 import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { selectedBadge, selectedPinIndex, supporterLevel } from "./profileView.js";
@@ -9,6 +10,7 @@ import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, setConfirmButtonState
 import { playSound } from "../src/lib/utils/soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
 import { loadFriends, sendMatchInvite } from "./friendMenu.js";
+import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 
 // Global UI --------------------------------------------------------------------------------------------
 export let coordsFromHost = [35.7072457, 139.863412]; // assign default to prevent blackscreen on link join
@@ -746,7 +748,7 @@ function copyRoomcodeLink() {
                 }, 700);
             });
     } else {
-        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature as it leads to higher API usage.<br><br> Please join using the room code or the friend invite system instead if you do not wish to purchase a supporter tier.", () => { supporterWindowIfAuthenticated(); }, false, false, false, false, true);
+        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature as it leads to higher API usage.<br><br> Please join using the room code or the friend invite system instead if you do not wish to purchase a supporter tier.", () => { supporterWindowIfAuthenticated(); }, false, false, false, "Support", "#588e6b");
     }
 }
 

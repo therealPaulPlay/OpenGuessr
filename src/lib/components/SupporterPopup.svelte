@@ -1,0 +1,493 @@
+<script>
+  import Popup from "$lib/components/Popup.svelte";
+  import { showConfirmPopup } from "$lib/utils/confirmPopup";
+
+  document.querySelectorAll(".supporterAdText").forEach((e) => {
+    e.addEventListener("click", () => {
+      supporterWindowIfAuthenticated();
+    });
+  });
+
+  export function supporterWindowIfAuthenticated() {
+    if (isAuthenticated) {
+      openSupporterWindow();
+      return true;
+    } else {
+      showConfirmPopup(
+        "Account required",
+        "To support OpenGuessr with a one-time payment, an account is required, so that you can enjoy amazing supporter benefits on all devices!",
+        () => {
+          showPageBrowser("/signup.html");
+        },
+        undefined,
+        undefined,
+        undefined,
+        "Sign up",
+      );
+      return false;
+    }
+  }
+
+  document.getElementById("viewSupporterBenefits").addEventListener("click", () => {
+    playSound("basic_button");
+    openSupporterWindow();
+  });
+
+  document.getElementById("supporterClose").addEventListener("click", () => {
+    playSound("basic_button");
+    closeSupporterWindow();
+  });
+
+  function openSupporterWindow() {
+    updateTierPrices();
+    document.getElementById("supporterPopup").style.display = "flex";
+    document.getElementById("supporterTierScrollBox").scrollTop = "0";
+  }
+
+  function closeSupporterWindow() {
+    setSupporterPitch();
+    document.getElementById("supporterPopup").style.display = "none";
+  }
+
+  export function setSupporterPitch() {
+    if (!(supporterLevel > 0)) {
+      document.getElementById("supporterPitch").textContent = "Purchase a supporter tier.";
+      document.getElementById("supporterTextSecondary").textContent = "Contributions keep the game free.";
+    } else {
+      document.getElementById("supporterPitch").textContent = "Thank you.";
+      document.getElementById("supporterTextSecondary").textContent = "Your contribution keeps the game free.";
+    }
+  }
+
+  function updateTierPrices() {
+    const basePrices = [2.99, 6.99, 14.99, 24.99];
+
+    for (let i = 1; i <= 4; i++) {
+      const priceButton = document.getElementById("tierPrice" + i);
+
+      if (supporterLevel >= i) {
+        priceButton.classList.add("tierBuyButtonUnlocked");
+        priceButton.textContent = "Unlocked";
+      } else {
+        priceButton.classList.remove("tierBuyButtonUnlocked");
+        priceButton.textContent = basePrices[i - 1] + " $";
+
+        if (supportedAmount > 0) {
+          priceButton.innerHTML = `<span class="baseTierPrice">${(priceButton.textContent = basePrices[i - 1])} $</span>${Math.round(Math.max(basePrices[i - 1] - supportedAmount - 0.01, 0) * 100) / 100} $`;
+        }
+      }
+    }
+  }
+
+  // Initialize Stripe
+  const stripeTestPubKey =
+    "pk_test_51Ple5q1DTHjmMID9JDDStdV8VeFdfqVZMpGKFMaCrFD6WioMuoAuWzl9Odz25aJvw3L4tHVtzLrdNUFG34gH5pN300ZhIcpIID";
+  const stripeLivePubKey =
+    "pk_live_51Ple5q1DTHjmMID9LrSuKNuwlN0Ls0issp2PTRO9QWGPdmKpLspMUXvKZQnXtHT5u0SxYZDBVSDsadzy3lAq5T2j00X9uGEJdr";
+  let stripe;
+
+  // load stripe
+  async function getStripe() {
+    stripe = await loadAndInitializeLibrary("https://js.stripe.com/v3/", "Stripe", (Stripe) =>
+      Stripe(stripeLivePubKey),
+    );
+
+    return stripe;
+  }
+
+  // Function to handle buy button click
+  async function handleBuyClick(productId) {
+    if (!stripe) {
+      await getStripe();
+    }
+
+    try {
+      // Fetch the current user's ID (you need to implement this based on your authentication system)
+      const id = localStorage.getItem("id");
+
+      // Call the server to create a Checkout Session
+      const response = await fetch("https://accounts.openguessr.com/stripe/create-checkout-session", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("bearer"),
+        },
+        body: JSON.stringify({ productId, id }),
+      });
+
+      const { sessionId } = await response.json();
+
+      // Redirect to Stripe Checkout
+      const result = await stripe.redirectToCheckout({
+        sessionId: sessionId,
+      });
+
+      if (result.error) {
+        console.error("Error occured during request to stripe:", result.error.message);
+        errorPopup(
+          "Stripe request failed",
+          "The server returned an error from your purchase request.",
+          error,
+          false,
+          false,
+        );
+      }
+    } catch (error) {
+      console.error("Error occured when trying to send request to stripe:", error);
+      errorPopup("Error sending stripe request", "Your purchase request couldn't be sent.", error, false, false);
+    }
+  }
+
+  // Add event listeners to buy buttons
+  document.querySelectorAll(".tierBuyButton").forEach((button) => {
+    try {
+      button.addEventListener("click", () => {
+        const productId = Number(button.id.replace(/[^0-9]/g, ""));
+        handleBuyClick(productId);
+        button.textContent = "please wait...";
+      });
+    } catch (error) {
+      console.error("Failed to attach event listener to tierBuyButton: " + error);
+    }
+  });
+
+  // Thank you window after purchase for stripe
+  let urlParams = new URLSearchParams(window.location.search);
+
+  let stripeSessionFinished;
+
+  try {
+    stripeSessionFinished = urlParams.get("session_id");
+    if (stripeSessionFinished) {
+      showConfirmPopup(
+        "Thank you!",
+        "You are now a supporter - thank you for your contribution! Supporters like you keep the game free and open for everyone.",
+        false,
+        false,
+        false,
+        true,
+      );
+      history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
+    }
+  } catch {}
+
+  // Free ad-supported experience boost --------------------------------------------------------------------------
+
+  let freeSupporterBoost = document.getElementById("freeSupporterBoost");
+
+  export let freeSupporterBoostEnabled = false;
+
+  freeSupporterBoost.addEventListener("click", () => {
+    playSound("basic_button");
+    initializeRewardedAd(supporterBoostAdDismiss, enableSupporterAdBoost);
+  });
+
+  function setAdSupporterTier(available) {
+    if (available) {
+      document.getElementById("adTierBox").style.pointerEvents = "auto";
+      document.getElementById("adTierBox").style.background = "rgb(80, 90, 91)";
+      freeSupporterBoost.style.pointerEvents = "auto";
+      freeSupporterBoost.style.opacity = "1";
+      document.getElementById("freeSupporterBoostText").textContent = "Free 20% experience boost.";
+    } else {
+      document.getElementById("adTierBox").style.pointerEvents = "none";
+      document.getElementById("adTierBox").style.background = "rgba(255, 255, 255, 0.1)";
+      freeSupporterBoost.style.pointerEvents = "none";
+      freeSupporterBoost.style.opacity = "0.5";
+      document.getElementById("freeSupporterBoostText").textContent = "Experience boost active.";
+    }
+  }
+
+  function supporterBoostAdDismiss(adNotAvailable, rewardClaimed) {
+    if (adNotAvailable) {
+      errorPopup("No ad available", "Please try again later or disable Ad Blockers.", "No ads", false, false);
+      setAdSupporterTier(true);
+    } else {
+      if (!rewardClaimed) {
+        errorPopup("Ad dismissed", "Video ad dismissed. ", "", false, true);
+        setAdSupporterTier(true);
+      } else {
+        setAdSupporterTier(false);
+      }
+    }
+  }
+
+  function enableSupporterAdBoost() {
+    setAdSupporterTier(false);
+    startAdSupporterTimer();
+    freeSupporterBoostEnabled = true;
+  }
+
+  async function startAdSupporterTimer(prefix = "Boost active. Remaining: ") {
+    let t = 180,
+      e = document.getElementById("freeSupporterBoostText");
+    (function u() {
+      let timeText = t > 59 ? Math.floor(t / 60) + ":" + (t % 60).toString().padStart(2, "0") + " min" : t + "s";
+      e.textContent = prefix + timeText;
+      t > 0
+        ? (setTimeout(u, 1000), t--)
+        : (setAdSupporterTier(true),
+          (freeSupporterBoostEnabled = false),
+          showConfirmPopup(
+            "Boost expired",
+            "Your free experience boost has expired. Do you want to reactivate it?",
+            () => {
+              initializeRewardedAd(supporterBoostAdDismiss, enableSupporterAdBoost);
+            },
+            false,
+            false,
+            false,
+            "Reactivate",
+            "#588e6b",
+          ));
+    })();
+  }
+</script>
+
+<Popup z="971">
+  <div class="popup-title">
+    <h1>
+      Support OpenGuessr
+      <img id="supporterIconTitle" alt="supporter tag" src="/img/supporter_icon.png" />
+    </h1>
+  </div>
+  <div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
+    <div class="supporterBox" id="headingSupporterBox">
+      <p>
+        The goal of this website is to provide a community-driven geography game that is open to everyone. However, as
+        <a
+          class="removeTextUnderline"
+          href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en"
+          target="_blank"
+        >
+          Maps APIs
+        </a>
+        are
+        <span class="supporterTextHighlight">highly expensive</span>
+        , this has become
+        <span class="supporterTextHighlight">more challenging than ever.</span>
+      </p>
+    </div>
+    <div id="adTierBox" class="adTierBox supporterArea">
+      <img alt="time limited" id="adBoostTimeLimitIcon" src="/img/time_limited.png" />
+      <p id="freeSupporterBoostText">Free 20% experience boost.</p>
+      <button id="freeSupporterBoost" class="standardButton">Watch ad to activate</button>
+    </div>
+    <div class="tierBox">
+      <p class="tierBoxTier">Tier 1</p>
+      <ul class="tierBenefits">
+        <li>Highlighted on leaderboards</li>
+        <li>Supporter Icon in profile</li>
+        <li>Special Supporter Pin</li>
+        <li>Tier 1 Supporter Badge</li>
+        <li>10% Supporter XP Boost</li>
+      </ul>
+      <button id="tierPrice1" class="standardButton tierBuyButton">2.99 $ (Default)</button>
+    </div>
+    <div class="tierBox">
+      <p class="tierBoxTier">Tier 2</p>
+      <ul class="tierBenefits">
+        <li>All previous benefits</li>
+        <li>Ad-free experience</li>
+        <li>Tier 2 Supporter Badge</li>
+        <li>15% Supporter XP Boost</li>
+      </ul>
+      <button id="tierPrice2" class="standardButton tierBuyButton">6.99 $ (Default)</button>
+    </div>
+    <div class="tierBox">
+      <p class="tierBoxTier">Tier 3</p>
+      <ul class="tierBenefits">
+        <li>All previous benefits</li>
+        <li>Tier 3 Supporter Badge</li>
+        <li>20% Supporter XP Boost</li>
+      </ul>
+      <button id="tierPrice3" class="standardButton tierBuyButton">14.99 $ (Default)</button>
+    </div>
+    <div class="tierBox">
+      <p class="tierBoxTier">Tier 4</p>
+      <ul class="tierBenefits">
+        <li>All previous benefits</li>
+        <li>Tier 4 Supporter Badge</li>
+        <li>25% Supporter XP Boost</li>
+      </ul>
+      <button id="tierPrice4" class="standardButton tierBuyButton">24.99 $ (Default)</button>
+    </div>
+    <div class="supporterBox supporterBoxHighlight">
+      <img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+      <p id="supporterInfoText">
+        All purchases are one-time payments.
+        <span class="supporterLegalText">
+          <a href="/legal.html" target="_blank">Terms and conditions</a>
+          apply.
+        </span>
+      </p>
+    </div>
+  </div>
+  <button id="supporterClose" class="standardButton white closeButton">Close</button>
+</Popup>
+
+<style>
+  #freeSupporterBoost {
+    background: linear-gradient(30deg, rgba(143, 168, 148, 0.5), rgba(168, 198, 175, 0.6));
+    flex-grow: 1;
+    border-radius: 4px;
+    margin-right: 2px;
+    transition:
+      opacity 250ms ease,
+      filter 250ms ease;
+  }
+
+  #freeSupporterBoostText {
+    flex-grow: 10;
+    max-width: 75%;
+    font-size: 22px;
+  }
+
+  #adTierBox {
+    border-radius: 10px;
+    margin: 0;
+    background: rgb(80, 90, 91);
+    transition:
+      background-color 250ms ease,
+      filter 250ms ease;
+  }
+
+  #supporterIconTitle {
+    width: 40px;
+    height: 40px;
+    margin-left: 7px;
+    vertical-align: -5px;
+  }
+
+  .supporterTextHighlight {
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 5px;
+    padding-inline: 5px;
+  }
+
+  .tierBoxTier {
+    background-color: rgba(41, 208, 91, 0.2);
+    text-align: center;
+    width: 120%;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    margin-bottom: 20px;
+    margin-top: -10px;
+  }
+
+  .tierBenefits {
+    padding-left: 30px;
+    font-size: 22px;
+    width: 90%;
+    margin-bottom: 10px;
+    min-height: 210px;
+    width: 220px;
+  }
+
+  .tierBenefits li {
+    margin-bottom: 15px;
+  }
+
+  .tierBuyButton {
+    flex-grow: 1;
+    background: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(25, 215, 70, 0.7));
+    width: 100%;
+    margin-bottom: 15px;
+  }
+
+  :global(.baseTierPrice) {
+    margin-right: 5px;
+    color: rgba(255, 255, 255, 0.5);
+    text-decoration: line-through;
+  }
+
+  :global(.tierBuyButtonUnlocked) {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
+  .tierBox {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 10px;
+    padding-inline: 25px;
+    overflow: hidden;
+    flex-grow: 1;
+    transition: filter 250ms ease;
+    position: relative;
+  }
+
+  .tierBox:hover {
+    filter: brightness(1.2);
+  }
+
+  .tierBox::before {
+    animation: supporterGlintTierBox 5s 2s infinite;
+    background: linear-gradient(90deg, #00ff1c00 1%, #cfffd754 50%, #c0ffcd00);
+    border-radius: inherit;
+    content: "";
+    height: 4px;
+    inset: 0;
+    opacity: 0;
+    position: absolute;
+    transform: translate(0);
+    width: 50%;
+    z-index: 1;
+  }
+
+  .supporterBoxFlex {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+    max-height: calc(95dvh - 260px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 5px;
+    border-radius: 5px;
+  }
+
+  @keyframes supporterGlintTierBox {
+    10% {
+      opacity: 1;
+    }
+
+    20% {
+      opacity: 0;
+      transform: translate(100%);
+    }
+
+    21% {
+      opacity: 0;
+      transform: translate(100%, 344px);
+    }
+
+    30% {
+      opacity: 1;
+    }
+
+    40% {
+      opacity: 0;
+      transform: translateY(344px);
+    }
+
+    41% {
+      opacity: 0;
+      transform: translate(0);
+    }
+
+    50% {
+      opacity: 1;
+    }
+
+    60% {
+      opacity: 0;
+      transform: translate(100%);
+    }
+  }
+</style>

@@ -1,6 +1,7 @@
 import { selectedPinIndex } from "./profileView.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
-import { enableResultScreen, hideCaptchaPopup, hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showCaptchaPopup, showConfirmPopup, showNotification } from "./mainUI.js";
+import { enableResultScreen, hideCaptchaPopup, hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showCaptchaPopup, showNotification } from "./mainUI.js";
+import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 import { errorPopup } from "./errorHandling.js";

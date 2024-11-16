@@ -428,8 +428,8 @@
         height: 1200px;
         border-radius: 50%;
         background-color: rgba(255, 59, 48, 0.15);
-        filter: blur(1500px);
-        -webkit-filter: blur(1500px);
+        filter: blur(2000px);
+        -webkit-filter: blur(2000px);
         z-index: -1;
         top: 20%;
         overflow: hidden;
