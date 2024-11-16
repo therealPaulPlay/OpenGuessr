@@ -3,7 +3,7 @@
   import { onMount, onDestroy } from "svelte";
   import { setSoundsVolume, playSound } from "$lib/utils/soundManager";
 
-  import { settingsPopup } from "$lib/stores/UIStore";
+  import { settingsPopup } from "$lib/stores/uiStore";
   import { Scan } from "lucide-svelte";
 
   // Settings - Window ---------------------------------------------------------------------------------------

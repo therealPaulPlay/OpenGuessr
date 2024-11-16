@@ -1,6 +1,6 @@
 <!-- Red Vignette, shown when the timer runs low -->
 <script>
-  import { littleTimeVignette } from "$lib/stores/UIStore";
+  import { littleTimeVignette } from "$lib/stores/uiStore";
 </script>
 
 {#if $littleTimeVignette}

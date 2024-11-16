@@ -14,6 +14,9 @@
   import MapModeIndicator from "$lib/components/MapModeIndicator.svelte";
   import LittleTimeVignette from "$lib/components/LittleTimeVignette.svelte";
   import StreakRestore from "$lib/components/StreakRestore.svelte";
+  import MapHolder from "../../lib/components/MapHolder.svelte";
+    import MobileMapToggle from "../../lib/components/MobileMapToggle.svelte";
+    import Map from "../../lib/components/Map.svelte";
 
   // Start ads
   onMount(() => {
@@ -976,16 +979,11 @@
   </h1>
 </div>
 <!--map-->
-<div id="mapHolder" class="regularMapSize mapHolder">
-  <button id="floatingMapButton">
-    <img id="toggleMapImage" src="/img/map_icon.png" alt="Toggle the Map for guessing on mobile devices." />
-  </button>
-  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-  <div id="map" tabindex="0">
-    <div id="mapPlaceholderBeforeLoad"></div>
-  </div>
+<MapHolder>
+  <MobileMapToggle />
+  <Map />
   <MapModeIndicator />
-</div>
+</MapHolder>
 <div id="multiplayerChat">
   <div id="multiplayerChatMessages">
     <p id="multiplayerMessageBox"></p>

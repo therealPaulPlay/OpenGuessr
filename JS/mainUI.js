@@ -51,48 +51,6 @@ function goToLeaderboard() {
     showPageBrowser("/leaderboard.html");
 }
 
-// Toggle Map on mobile devices ---------------------------------------------------------------------------------------
-let toggleMapButton = document.getElementById("floatingMapButton");
-
-let mapExpanded = true;
-
-toggleMapButton.addEventListener("click", () => {
-    toggleMap();
-    playSound("floating_button");
-    toggleMapButton.style.filter = "brightness(0.7)";
-    setTimeout(() => {
-        toggleMapButton.style.filter = "brightness(1)";
-    }, 250);
-});
-
-function toggleMap() {
-    if (!mapExpanded) {
-        document.getElementById("map").style.maxHeight = "100%";
-        mapExpanded = true;
-        toggleMapButton.style.marginBottom = "10px";
-    } else {
-        document.getElementById("map").style.maxHeight = "0%";
-        mapExpanded = false;
-        toggleMapButton.style.marginBottom = "0";
-    }
-}
-
-export function shrinkMapIfMobile() {
-    if (window.innerHeight > window.innerWidth && mapExpanded) {
-        toggleMap();
-    }
-}
-
-export function hideToggleMapButtonIfMobile(hide) {
-    if (window.innerHeight > window.innerWidth) {
-        if (hide) {
-            toggleMapButton.style.visibility = "hidden";
-        } else {
-            toggleMapButton.style.visibility = "visible";
-        }
-    }
-}
-
 // Universal Popup Window (Account info and How to play window) ---------------------------------------------------------------------
 let closeButton = document.getElementById("popupClose");
 closeButton.addEventListener("click", () => {
@@ -397,16 +355,6 @@ function setMapOffset() {
 }
 
 setMapOffset();
-
-// Switch UI toggles back to standard on window resize ----------------------------------------------
-
-if (window) {
-    window.addEventListener("resize", (event) => {
-        mapExpanded = false;
-        toggleMap();
-        toggleCategoryMenu(true);
-    });
-}
 
 // Username UI endless scroll --------------------------------------------------------------------------------------------------
 

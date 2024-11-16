@@ -3,7 +3,7 @@ import { coordsFromHost } from "../../../JS/multiplayer.js";
 import { mapCategory } from "../../../JS/categoryMenu.js";
 import { competition, currentRound } from "../../../JS/competitionLogic.js";
 
-import { loadingScreenVisible } from "$lib/stores/UIStore.js";
+import { loadingScreenVisible } from "$lib/stores/uiStore.js";
 
 // This is THE function to GET LOCATIONS (all others here are NOT export
 export async function getLocationCoordinates(type) {

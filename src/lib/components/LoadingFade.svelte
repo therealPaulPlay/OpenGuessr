@@ -1,5 +1,5 @@
 <script>
-  import { loadingScreenVisible } from "$lib/stores/UIStore.js";
+  import { loadingScreenVisible } from "$lib/stores/uiStore";
 </script>
 
 {#if $loadingScreenVisible}

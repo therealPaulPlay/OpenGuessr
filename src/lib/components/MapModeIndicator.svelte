@@ -8,7 +8,7 @@
     timerText,
   } from "$lib/stores/context-specific/mapModeIndicatorStore";
 
-  import { browser } from "$app/environment";
+  import { onMount } from "svelte";
 
   let mapModeTextContainer = $state();
   let scrollModeText = $state(false);
@@ -22,16 +22,22 @@
       (width < 280 && document.getElementById("mapModeText").textContent.length > 31);
   }
 
-  try {
-    if (browser) {
-      // svelte-ignore state_referenced_locally
-      new ResizeObserver(() => {
-        checkMapmodeindicatorOverflow();
-      }).observe(mapModeTextContainer);
+  let resizeObserver;
+
+  $effect(() => {
+    if (resizeObserver) {
+      resizeObserver.disconnect();
     }
-  } catch (error) {
-    console.error("Error setting Resize Observer for MapModeIndicator: " + error);
-  }
+
+    if (mapModeTextContainer) {
+      try {
+        resizeObserver = new ResizeObserver(checkMapmodeindicatorOverflow);
+        resizeObserver.observe(mapModeTextContainer);
+      } catch (error) {
+        console.error("Error setting Resize Observer for MapModeIndicator: " + error);
+      }
+    }
+  });
 </script>
 
 {#if $mapModeIndicatorVisible}

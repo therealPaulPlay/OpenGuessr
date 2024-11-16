@@ -4,7 +4,7 @@ import {
     timerText,
 } from "$lib/stores/context-specific/mapModeIndicatorStore";
 
-import { littleTimeVignette } from "$lib/stores/UIStore";
+import { littleTimeVignette } from "$lib/stores/uiStore";
 
 export function startTimer(durationInSeconds, onTimerExpired) {
     let currentTimerIntervalId; // Variable to store the current interval ID

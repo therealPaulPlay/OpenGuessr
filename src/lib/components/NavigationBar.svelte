@@ -1,5 +1,5 @@
 <script>
-  import { settingsPopup } from "$lib/stores/UIStore";
+  import { settingsPopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
 
   function openSettings() {
