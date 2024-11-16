@@ -3437,34 +3437,6 @@ input[type="checkbox"]:focus {
 }
 
 /* Ad CSS */
-
-.noAdvertsText {
-    text-align: center;
-    color: white;
-    opacity: 0.25;
-    font-size: 22px;
-    overflow: hidden;
-    transition: opacity 500ms ease;
-    border-radius: 7px;
-    background-color: rgba(168, 168, 187, 0.3);
-}
-
-.adsTextResult {
-    outline: none;
-    background-color: transparent;
-    opacity: 0.5 !important;
-    position: absolute;
-    left: 50%;
-    top: 50%;
-    transform: translate(-50%, -50%);
-    width: 80%;
-}
-
-#bottomAdsText {
-    width: calc(100% - 30px);
-    background-color: transparent;
-}
-
 .leaderboardAds {
     width: 728px;
     height: 90px;
@@ -3527,11 +3499,6 @@ input[type="checkbox"]:focus {
     #endBottomArea {
         overflow: visible;
     }
-}
-
-.supporterAdText {
-    text-decoration: underline;
-    cursor: pointer;
 }
 
 .bottomFooterAds {

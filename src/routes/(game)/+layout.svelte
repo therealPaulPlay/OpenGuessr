@@ -14,11 +14,12 @@
   import MapModeIndicator from "$lib/components/MapModeIndicator.svelte";
   import LittleTimeVignette from "$lib/components/LittleTimeVignette.svelte";
   import StreakRestore from "$lib/components/StreakRestore.svelte";
-  import MapHolder from "../../lib/components/MapHolder.svelte";
-  import MobileMapToggle from "../../lib/components/MobileMapToggle.svelte";
-  import Map from "../../lib/components/Map.svelte";
-  import SupporterPopup from "../../lib/components/SupporterPopup.svelte";
-  import ConfirmPopup from "../../lib/components/ConfirmPopup.svelte";
+  import MapHolder from "$lib/components/MapHolder.svelte";
+  import MobileMapToggle from "$lib/components/MobileMapToggle.svelte";
+  import Map from "$lib/components/Map.svelte";
+  import SupporterPopup from "$lib/components/SupporterPopup.svelte";
+  import ConfirmPopup from "$lib/components/ConfirmPopup.svelte";
+  import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
 
   // Start ads
   onMount(() => {
@@ -775,19 +776,13 @@
     <div id="endBottomBar">
       <div id="floatingResultLeaderboardArea" class="hideForSupporters">
         <div id="floatingResultLeaderboardAd"></div>
-        <p class="adsTextResult noAdvertsText">
-          Please consider supporting OpenGuessr to go ad-free. <span class="supporterAdText">Learn more</span>
-          .
-        </p>
+        <RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." />
       </div>
       <div id="resultBox">
         <p class="resultField" id="motivationText"></p>
         <div id="mobileResultLeaderboardAdArea" class="resultField hideForSupporters">
           <div id="mobileResultLeaderboardAd"></div>
-          <p class="adsTextResult noAdvertsText">
-            Go ad-free. <span class="supporterAdText">Learn more</span>
-            .
-          </p>
+          <RemoveAdsText text="Go Ad-Free." />
         </div>
         <div class="resultField">
           <img src="/img/distance_icon.png" alt="Distance icon" id="distanceIcon" />
@@ -927,7 +922,7 @@
 </div>
 <div id="bottomFooterAds" class="bottomFooterAds leaderboardAds hideForSupporters"></div>
 <div class="bottomFooterAds leaderboardAds bottomFooterAdText hideForSupporters barMenu">
-  <p id="bottomAdsText" class="noAdvertsText">Ads keep OpenGuessr free ♥</p>
+  <RemoveAdsText text="Ads keep OpenGuessr free ♥" />
 </div>
 
 <!-- Render children such as overlayed pages and menus -->

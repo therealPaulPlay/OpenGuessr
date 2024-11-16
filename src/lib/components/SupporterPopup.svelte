@@ -1,15 +1,11 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
-
-  document.querySelectorAll(".supporterAdText").forEach((e) => {
-    e.addEventListener("click", () => {
-      supporterWindowIfAuthenticated();
-    });
-  });
+  import { isAuthenticated } from "$lib/stores/accountStore";
+  import { supporterPopupVisible } from "$lib/stores/context-specific/supporterPopupStore";
 
   export function supporterWindowIfAuthenticated() {
-    if (isAuthenticated) {
+    if ($isAuthenticated) {
       openSupporterWindow();
       return true;
     } else {
@@ -28,25 +24,21 @@
     }
   }
 
+  /* Move this into the profile window
   document.getElementById("viewSupporterBenefits").addEventListener("click", () => {
     playSound("basic_button");
     openSupporterWindow();
   });
-
-  document.getElementById("supporterClose").addEventListener("click", () => {
-    playSound("basic_button");
-    closeSupporterWindow();
-  });
+  */
 
   function openSupporterWindow() {
     updateTierPrices();
-    document.getElementById("supporterPopup").style.display = "flex";
-    document.getElementById("supporterTierScrollBox").scrollTop = "0";
+    supporterPopupVisible.set(true);
   }
 
   function closeSupporterWindow() {
     setSupporterPitch();
-    document.getElementById("supporterPopup").style.display = "none";
+    supporterPopupVisible.set(false);
   }
 
   export function setSupporterPitch() {
@@ -244,87 +236,96 @@
   }
 </script>
 
-<Popup z="971">
-  <div class="popup-title">
-    <h1>
-      Support OpenGuessr
-      <img id="supporterIconTitle" alt="supporter tag" src="/img/supporter_icon.png" />
-    </h1>
-  </div>
-  <div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
-    <div class="supporterBox" id="headingSupporterBox">
-      <p>
-        The goal of this website is to provide a community-driven geography game that is open to everyone. However, as
-        <a
-          class="removeTextUnderline"
-          href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en"
-          target="_blank"
-        >
-          Maps APIs
-        </a>
-        are
-        <span class="supporterTextHighlight">highly expensive</span>
-        , this has become
-        <span class="supporterTextHighlight">more challenging than ever.</span>
-      </p>
+{#if $supporterPopupVisible}
+  <Popup z="971">
+    <div class="popup-title">
+      <h1>
+        Support OpenGuessr
+        <img id="supporterIconTitle" alt="supporter tag" src="/img/supporter_icon.png" />
+      </h1>
     </div>
-    <div id="adTierBox" class="adTierBox supporterArea">
-      <img alt="time limited" id="adBoostTimeLimitIcon" src="/img/time_limited.png" />
-      <p id="freeSupporterBoostText">Free 20% experience boost.</p>
-      <button id="freeSupporterBoost" class="standardButton">Watch ad to activate</button>
+    <div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
+      <div class="supporterBox" id="headingSupporterBox">
+        <p>
+          The goal of this website is to provide a community-driven geography game that is open to everyone. However, as
+          <a
+            class="removeTextUnderline"
+            href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en"
+            target="_blank"
+          >
+            Maps APIs
+          </a>
+          are
+          <span class="supporterTextHighlight">highly expensive</span>
+          , this has become
+          <span class="supporterTextHighlight">more challenging than ever.</span>
+        </p>
+      </div>
+      <div id="adTierBox" class="adTierBox supporterArea">
+        <img alt="time limited" id="adBoostTimeLimitIcon" src="/img/time_limited.png" />
+        <p id="freeSupporterBoostText">Free 20% experience boost.</p>
+        <button id="freeSupporterBoost" class="standardButton">Watch ad to activate</button>
+      </div>
+      <div class="tierBox">
+        <p class="tierBoxTier">Tier 1</p>
+        <ul class="tierBenefits">
+          <li>Highlighted on leaderboards</li>
+          <li>Supporter Icon in profile</li>
+          <li>Special Supporter Pin</li>
+          <li>Tier 1 Supporter Badge</li>
+          <li>10% Supporter XP Boost</li>
+        </ul>
+        <button id="tierPrice1" class="standardButton tierBuyButton">2.99 $ (Default)</button>
+      </div>
+      <div class="tierBox">
+        <p class="tierBoxTier">Tier 2</p>
+        <ul class="tierBenefits">
+          <li>All previous benefits</li>
+          <li>Ad-free experience</li>
+          <li>Tier 2 Supporter Badge</li>
+          <li>15% Supporter XP Boost</li>
+        </ul>
+        <button id="tierPrice2" class="standardButton tierBuyButton">6.99 $ (Default)</button>
+      </div>
+      <div class="tierBox">
+        <p class="tierBoxTier">Tier 3</p>
+        <ul class="tierBenefits">
+          <li>All previous benefits</li>
+          <li>Tier 3 Supporter Badge</li>
+          <li>20% Supporter XP Boost</li>
+        </ul>
+        <button id="tierPrice3" class="standardButton tierBuyButton">14.99 $ (Default)</button>
+      </div>
+      <div class="tierBox">
+        <p class="tierBoxTier">Tier 4</p>
+        <ul class="tierBenefits">
+          <li>All previous benefits</li>
+          <li>Tier 4 Supporter Badge</li>
+          <li>25% Supporter XP Boost</li>
+        </ul>
+        <button id="tierPrice4" class="standardButton tierBuyButton">24.99 $ (Default)</button>
+      </div>
+      <div class="supporterBox supporterBoxHighlight">
+        <img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+        <p id="supporterInfoText">
+          All purchases are one-time payments.
+          <span class="supporterLegalText">
+            <a href="/legal.html" target="_blank">Terms and conditions</a>
+            apply.
+          </span>
+        </p>
+      </div>
     </div>
-    <div class="tierBox">
-      <p class="tierBoxTier">Tier 1</p>
-      <ul class="tierBenefits">
-        <li>Highlighted on leaderboards</li>
-        <li>Supporter Icon in profile</li>
-        <li>Special Supporter Pin</li>
-        <li>Tier 1 Supporter Badge</li>
-        <li>10% Supporter XP Boost</li>
-      </ul>
-      <button id="tierPrice1" class="standardButton tierBuyButton">2.99 $ (Default)</button>
-    </div>
-    <div class="tierBox">
-      <p class="tierBoxTier">Tier 2</p>
-      <ul class="tierBenefits">
-        <li>All previous benefits</li>
-        <li>Ad-free experience</li>
-        <li>Tier 2 Supporter Badge</li>
-        <li>15% Supporter XP Boost</li>
-      </ul>
-      <button id="tierPrice2" class="standardButton tierBuyButton">6.99 $ (Default)</button>
-    </div>
-    <div class="tierBox">
-      <p class="tierBoxTier">Tier 3</p>
-      <ul class="tierBenefits">
-        <li>All previous benefits</li>
-        <li>Tier 3 Supporter Badge</li>
-        <li>20% Supporter XP Boost</li>
-      </ul>
-      <button id="tierPrice3" class="standardButton tierBuyButton">14.99 $ (Default)</button>
-    </div>
-    <div class="tierBox">
-      <p class="tierBoxTier">Tier 4</p>
-      <ul class="tierBenefits">
-        <li>All previous benefits</li>
-        <li>Tier 4 Supporter Badge</li>
-        <li>25% Supporter XP Boost</li>
-      </ul>
-      <button id="tierPrice4" class="standardButton tierBuyButton">24.99 $ (Default)</button>
-    </div>
-    <div class="supporterBox supporterBoxHighlight">
-      <img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
-      <p id="supporterInfoText">
-        All purchases are one-time payments.
-        <span class="supporterLegalText">
-          <a href="/legal.html" target="_blank">Terms and conditions</a>
-          apply.
-        </span>
-      </p>
-    </div>
-  </div>
-  <button id="supporterClose" class="standardButton white closeButton">Close</button>
-</Popup>
+    <button
+      id="supporterClose"
+      class="standardButton white closeButton"
+      onclick={() => {
+        playSound("basic_button");
+        closeSupporterWindow();
+      }}>Close</button
+    >
+  </Popup>
+{/if}
 
 <style>
   #freeSupporterBoost {
