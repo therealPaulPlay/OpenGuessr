@@ -1,4 +1,4 @@
-import { loadAndInitializeLibrary } from "./main.js";
+import { loadAndInitializeLibrary } from "$lib/utils/scriptLoader";
 import { clamp } from "../src/lib/utils/clamp.js";
 import { errorPopup } from "./errorHandling.js";
 import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, supporterWindowIfAuthenticated, enableResultScreen } from "./mainUI.js";

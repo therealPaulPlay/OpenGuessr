@@ -20,6 +20,7 @@
   import SupporterPopup from "$lib/components/SupporterPopup.svelte";
   import ConfirmPopup from "$lib/components/ConfirmPopup.svelte";
   import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
+  import SupporterPitch from "$lib/components/SupporterPitch.svelte";
 
   // Start ads
   onMount(() => {
@@ -194,13 +195,7 @@
         </div>
       </div>
     </div>
-    <div id="supporterArea" class="supporterArea">
-      <div class="supporterPitchText">
-        <p id="supporterPitch">Become a supporter (default).</p>
-        <span id="supporterTextSecondary">Supporters keep the game free (default)</span>
-      </div>
-      <button id="viewSupporterBenefits" class="standardButton">View benefits</button>
-    </div>
+    <SupporterPitch />
     <div id="profileScrollSection">
       <h3 id="profileAboutHeader">About:</h3>
       <textarea

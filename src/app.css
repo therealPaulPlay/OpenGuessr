@@ -754,35 +754,6 @@ textarea {
     background-color: rgba(255, 255, 255, 0.15);
 }
 
-.supporterArea {
-    border-radius: 10px;
-    background: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(25, 215, 70, 0.7));
-    color: white;
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-    transition: filter 250ms ease;
-    gap: 10px;
-    padding: 5px;
-    width: calc(100% - 10px);
-    margin-bottom: 15px;
-}
-
-.supporterArea:hover {
-    filter: brightness(1.2);
-}
-
-.supporterArea p {
-    font-size: 25px;
-    padding-right: 5px;
-    display: inline;
-}
-
-.supporterArea span {
-    display: inline;
-}
-
 #viewSupporterBenefits {
     background-color: rgba(255, 255, 255, 0.2);
     outline: 3px solid rgba(255, 255, 255, 0.5);
@@ -1102,10 +1073,6 @@ textarea {
     text-decoration: none;
 }
 
-.supporterPitchText {
-    flex-grow: 10;
-    padding-inline: 10px;
-}
 
 #profileNameBox {
     padding: 5px;
@@ -3637,15 +3604,6 @@ input[type="checkbox"]:focus {
         font-size: 20px;
     }
 
-    #supporterTextSecondary {
-        display: none !important;
-    }
-
-    .supporterPitchText p {
-        font-size: 22px;
-    }
-
-    #viewSupporterBenefits,
     #profileAbout {
         font-size: 22px;
     }
