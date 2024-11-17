@@ -2,6 +2,7 @@
   import Popup from "$lib/components/Popup.svelte";
   import { helpPopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
+  import { Search, Goal, Users } from "lucide-svelte";
 </script>
 
 {#if $helpPopup}
@@ -11,15 +12,15 @@
   </div>
   <ul class="nolistdots">
     <li>
-      <h3>🔍 Look at the Street View image</h3>
+      <h3><Search size=25 />  Look at the Street View image</h3>
       <p class="listMarginLeft">Study the streetview image carefully and explore the surroundings.</p>
     </li>
     <li>
-      <h3>🎯 Guess where you are</h3>
+      <h3><Goal size=25 />  Guess where you are</h3>
       <p class="listMarginLeft">Pinpoint the location on the world map. Be precise for higher scores!</p>
     </li>
     <li>
-      <h3>👥 Challenge your friends</h3>
+      <h3><Users size=25 />  Challenge your friends</h3>
       <p class="listMarginLeft">Compete against friends in multiplayer modes and competitions.</p>
     </li>
   </ul>
@@ -37,6 +38,7 @@
   }
 
   .listMarginLeft {
-    margin-left: 35px;
+    margin-left: 40px;
+    opacity: 0.75;
   }
 </style>

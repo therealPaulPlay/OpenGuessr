@@ -1,6 +1,7 @@
 <script>
   import { settingsPopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
+    import Notification from "$lib/components/Notification.svelte";
 
   function openSettings() {
     playSound("basic_button");
@@ -107,13 +108,5 @@
       <img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
     </button>
   </div>
-  <div id="notificationBar">
-    <p id="notificationText">Default notification</p>
-    <div class="notificationButtonBox">
-      <button id="notificationAccept" class="standardButton accountButton">Accept</button>
-      <button id="notificationDismiss" class="standardButton accountButton">
-        <img alt="dismiss notification" class="friendRemoveIcon" src="/img/delete_icon.png" />
-      </button>
-    </div>
-  </div>
+  <Notification />
 </div>

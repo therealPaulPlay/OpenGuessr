@@ -1,7 +1,8 @@
 import { isAuthenticated } from "./accountLogic";
 import { leaveCompetition } from "./competitionLogic";
 import { errorPopup } from "..src/lib/utils/errorHandling";
-import { showNotification, showPageBrowser } from "./mainUI";
+import { showPageBrowser } from "./mainUI";
+import { showNotification } from "../src/lib/utils/notifications";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup";
 import { joinRoom, leaveMultiplayerRound, peerId, setFriendDuel, setLinkjoinPopup, setPlayingDuels, setupMultiplayerRoom, toggleMultiplayerSelector } from "./multiplayer";
 import { loadProfileFromId } from "./profileView";

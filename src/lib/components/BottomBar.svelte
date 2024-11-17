@@ -4,6 +4,31 @@
   import { playSound } from "$lib/utils/soundManager";
   import { reloadPanorama } from "$lib/stores/locationStore";
   import { helpPopup } from "$lib/stores/uiStore";
+  import { mapHolderMarginRight } from "$lib/stores/context-specific/mapStore";
+  import { onMount } from "svelte";
+
+  // Load the saved map offset state
+  let mapOffset = false;
+
+  onMount(() => {
+    let mapOffsetFromStorage = localStorage.getItem("mapOffset");
+    if (mapOffsetFromStorage == "true") mapOffset = true;
+    setMapOffset();
+  });
+
+  function toggleMapOffset() {
+    mapOffset = !mapOffset;
+    localStorage.setItem("mapOffset", mapOffset);
+    setMapOffset();
+  }
+
+  function setMapOffset() {
+    if (mapOffset) {
+      $mapHolderMarginRight = "65px";
+    } else {
+      $mapHolderMarginRight = "0px";
+    }
+  }
 </script>
 
 <div id="BottomBar" class="BottomBar">
@@ -49,7 +74,15 @@
           $helpPopup = true;
         }}>?</button
       >
-      <button class="socialItem" id="revealCompass">
+      <button
+        class="socialItem"
+        id="revealCompass"
+        onclick={(e) => {
+          e.stopPropagation();
+          toggleMapOffset();
+          playSound("basic_button");
+        }}
+      >
         <img src="./img/discover_icon.png" alt="Toggle compass" class="socialIcon bottomBarIcon" />
       </button>
       <p id="guessText">Guess</p>

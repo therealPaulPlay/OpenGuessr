@@ -287,37 +287,6 @@ document.getElementById("socialPopupJoin").addEventListener("click", function ()
     }, 200)
 });
 
-// Reveal compass ----------------------------------------------------------------------------------------
-let revealCompass = document.getElementById("revealCompass");
-revealCompass.addEventListener("click", (e) => {
-    e.stopPropagation();
-    toggleMapOffset();
-    playSound("basic_button");
-});
-
-// Load the saved map offset state
-let mapOffset = false;
-let mapOffsetFromStorage = localStorage.getItem("mapOffset");
-
-if (mapOffsetFromStorage == "true") {
-    mapOffset = true;
-}
-
-function toggleMapOffset() {
-    mapOffset = !mapOffset;
-    localStorage.setItem("mapOffset", mapOffset);
-    setMapOffset();
-}
-
-function setMapOffset() {
-    if (mapOffset) {
-        document.getElementById("mapHolder").style.marginRight = "65px";
-    } else {
-        document.getElementById("mapHolder").style.marginRight = "0px";
-    }
-}
-
-setMapOffset();
 
 // Username UI endless scroll --------------------------------------------------------------------------------------------------
 
@@ -458,90 +427,6 @@ document.getElementById("endScreenOpenLocation").addEventListener("click", () =>
 
 export function openLocationOnMaps(lat, long) {
     window.open("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + lat + "," + long, '_blank').focus();
-}
-
-// In-game Notifications -------------------------------------------------------------------------------------------
-
-const notificationBar = document.getElementById("notificationBar");
-
-let hideNotificationTimeout;
-let visibilityTimeout;
-
-export async function showNotification(text, acceptFunction, dismissFunction, showAccept, renameAcceptToLearnMore) {
-    clearTimeout(hideNotificationTimeout);
-    clearTimeout(visibilityTimeout);
-
-    if (notificationBar.style.opacity == "1" && notificationBar.style.visibility == "visible") {
-        hideNotification();
-
-        await new Promise(resolve => setTimeout(resolve, 250));
-    };
-
-    notificationBar.style.top = "65px";
-    notificationBar.style.visibility = "visible";
-    notificationBar.style.opacity = "1";
-    document.getElementById("notificationText").textContent = text;
-    document.getElementById("notificationAccept").textContent = "Accept";
-
-    if (showAccept) {
-        document.getElementById("notificationAccept").style.display = "block";
-        hideNotificationTimeout = setTimeout(() => {
-            hideNotification();
-        }, 30000); // much longer expiration time for notifications that ask for user action
-    } else {
-        document.getElementById("notificationAccept").style.display = "none";
-        hideNotificationTimeout = setTimeout(() => {
-            hideNotification();
-        }, 3000);
-    }
-
-    if (renameAcceptToLearnMore) {
-        document.getElementById("notificationAccept").textContent = "?";
-        clearTimeout(hideNotificationTimeout);
-        hideNotificationTimeout = setTimeout(() => {
-            hideNotification();
-        }, 5000); // shorter expiration for informational notifications
-    }
-
-    const button = document.getElementById("notificationAccept");
-    const newButton = button.cloneNode(true);
-    button.parentNode.replaceChild(newButton, button);
-
-    const dismissButton = document.getElementById("notificationDismiss");
-    const newDismissButton = dismissButton.cloneNode(true);
-    dismissButton.parentNode.replaceChild(newDismissButton, dismissButton);
-
-    newButton.addEventListener("click", () => {
-        if (acceptFunction) {
-            try {
-                acceptFunction();
-            } catch (e) { console.error("Error executing callback in showNotification: " + e); }
-        }
-
-        hideNotification();
-        playSound("basic_button");
-    });
-
-    newDismissButton.addEventListener("click", () => {
-        if (dismissFunction) {
-            try {
-                dismissFunction();
-            } catch (e) { console.error("Error executing callback in showNotification: " + e); }
-        }
-
-        hideNotification();
-        playSound("basic_button");
-    });
-}
-
-function hideNotification() {
-    notificationBar.style.top = "50px";
-    notificationBar.style.opacity = "0";
-    clearTimeout(visibilityTimeout);
-
-    visibilityTimeout = setTimeout(() => {
-        notificationBar.style.visibility = "hidden";
-    }, 200);
 }
 
 // Hide advertisements (Supporter Tier 2) ----------------------------------------------------------------
