@@ -1,5 +1,5 @@
 import { resultScreenEnabled } from './mainUI.js';
-import { getLocationCoordinates } from '../src/lib/logic/locationGeneration.js';
+import { getLocationCoordinates } from '$lib/logic/locationGeneration.js';
 import { applySingleplayerSettings } from './singleplayerOptions.js';
 import { multiplayer, startMultiplayerRound, isHost } from './multiplayer.js';
 import { checkIfGuessWasCorrect, countryGuesserMode, setCountryGuesserCountry } from './countryGuesser.js';
@@ -111,7 +111,7 @@ export function compareDistances(distance) {
 export function formatDistance(distance) {
     let finalResult;
     let resultString;
-    
+
     const distanceUnit = localStorage.getItem("distanceUnit") || "kilometers";
 
     distance = Number(distance); // For error prevention
@@ -138,59 +138,11 @@ export function formatDistance(distance) {
         finalResult = finalResult.toLocaleString();
 
         if (distanceUnit == "miles") {
-            resultString= finalResult + " miles";
+            resultString = finalResult + " miles";
         } else {
             resultString = finalResult + " km";
         }
     }
 
     return resultString;
-}
-
-// Load the Main StreetView Iframe -------------------------------------------------------------------------------------------------------------
-let loadingLink = "/loader.html";
-
-export function loadIframe(lat, long) {
-    let streetviewAPIKey = "AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs";
-
-    if (!imageGuesserEnabled || multiplayer) {
-        loadingLink = "https://www.google.com/maps/embed/v1/streetview?location=" + lat + "," + long + "&key=" + streetviewAPIKey + "&fov=90"; //API key (last part of URL)
-    } else {
-        loadingLink = "";
-    }
-
-    let initialIframeLoad = true;
-
-    // Reference to the iframe
-    const iframe = document.getElementById("PanoramaIframe");
-
-    // Define a function to handle iframe load event
-    const handleLoad = () => {
-        if (initialIframeLoad) {
-            applySingleplayerSettings(); // Check if the user is playing hard mode + apply changes if yes
-            checkStartCompetitionRound(); // Check if currently playing competition and start timer + new round if so 
-        }
-
-        initialIframeLoad = false;
-
-        setTimeout(function () {
-            const beforeOverlay = document.getElementById("BeforeOverlay");
-            beforeOverlay.style.opacity = "0";
-            beforeOverlay.style.visibility = "hidden";
-        }, 300);
-    };
-
-    // add new load listener and delete old one - on load: fade out overlay
-    iframe.removeEventListener('load', handleLoad);
-    iframe.addEventListener('load', handleLoad);
-
-    iframe.setAttribute("src", loadingLink);
-}
-
-export function reloadIframe() {
-    document.getElementById("BeforeOverlay").style.opacity = "100";
-    document.getElementById("BeforeOverlay").style.visibility = "visible";
-    document.getElementById("PanoramaIframe").setAttribute("src", loadingLink);
-    window.setTimeout(() => { document.getElementById("BeforeOverlay").style.opacity = "0"; document.getElementById("BeforeOverlay").style.visibility = "hidden"; }, 400);
-
 }

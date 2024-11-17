@@ -2,8 +2,8 @@ import { updateUsername } from "./userAPI";
 import { playSound } from "../src/lib/utils/soundManager.js";
 import { displayUserInfo, isAuthenticated } from "./accountLogic.js";
 import { errorPopup } from "./errorHandling.js";
-import { setSupporterPitch, showConfirmPopup } from "./mainUI.js";
 import { checkIfFriendsWithId, sendFriendRequest } from "./friendMenu.js";
+import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 // This is used to dynamically load the profile view
 
 // Profile Window ---------------------------------------------------------------------------------------------
@@ -102,7 +102,6 @@ function openClearedProfile() {
     document.getElementById("profileAddFriend").style.display = "none";
     document.getElementById("profileAddFriend").style.opacity = "1";
     document.getElementById("profileAddFriend").style.pointerEvents = "auto";
-    setSupporterPitch();
 }
 
 async function viewProfile(name, experience, joined, yourProfile, profileData, supporterLevel, id) {

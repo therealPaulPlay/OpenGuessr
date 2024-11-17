@@ -4,7 +4,7 @@
   import { setSoundsVolume, playSound } from "$lib/utils/soundManager";
 
   import { settingsPopup } from "$lib/stores/uiStore";
-  import { Scan } from "lucide-svelte";
+  import { Scan, WindArrowDown } from "lucide-svelte";
 
   // Settings - Window ---------------------------------------------------------------------------------------
   function closeSettingsButton() {
@@ -179,7 +179,7 @@
       </div>
       <div class="settingsBox">
         <p class="slightBottomMargin">Legal Information:</p>
-        <button class="standardButton white" id="privacyButton">View legal information</button>
+        <button class="standardButton white" id="privacyButton" onclick={() => { playSound("basic_button"); window.location.href = "/legal"; }}>View legal information</button>
       </div>
       <div class="settingsBox">
         <p class="slightBottomMargin">Exit Popup:</p>

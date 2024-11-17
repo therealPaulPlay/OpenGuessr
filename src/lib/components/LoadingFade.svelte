@@ -2,12 +2,10 @@
   import { loadingScreenVisible } from "$lib/stores/uiStore";
 </script>
 
-{#if $loadingScreenVisible}
-  <div id="BeforeOverlay">
-    <img src="/img/compass_spinner.png" alt="Loading new streetview" id="spinner" class="spinner" />
-    <p id="loadingText">Loading...</p>
-  </div>
-{/if}
+<div id="BeforeOverlay" style:opacity={$loadingScreenVisible ? "100%" : "0%"}>
+  <img src="/img/compass_spinner.png" alt="Loading new streetview" class="spinner" style:opacity={$loadingScreenVisible ? "30%" : "10%"} />
+  <p id="loadingText">Loading...</p>
+</div>
 
 <style>
   #BeforeOverlay {
@@ -15,15 +13,15 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    opacity: 100%;
-    background-color: #13151c;
-    transition: all 250ms ease;
+    opacity: 0%;
+    background-color: #11121f;
+    transition: opacity 250ms ease-in-out;
     position: fixed;
     top: 0;
     width: 100%;
     height: 100%;
     z-index: 6;
-    box-shadow: 0 0 700px rgba(255, 176, 176, 0.2) inset;
+    box-shadow: 0 0 700px rgba(165, 176, 251, 0.2) inset;
   }
 
   #loadingText {

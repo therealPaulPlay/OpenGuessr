@@ -11,30 +11,6 @@ import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileVie
 import { resetMap } from "./miniMap.js";
 import { refreshPlacements } from "./ads.js";
 
-// How to play - Window ---------------------------------------------------------------------------------------
-let helpButton = document.getElementById("helpButton");
-helpButton.addEventListener("click", (e) => {
-    e.stopPropagation();
-    toggleHelpWindow();
-})
-
-let helpWindow = document.getElementById("helpWindow");
-
-let helpClose = document.getElementById("helpClose");
-helpClose.addEventListener("click", toggleHelpWindow);
-
-function toggleHelpWindow() {
-    playSound("basic_button");
-
-    if (helpWindow.style.display == "block") {
-        helpWindow.style.display = "none";
-        document.getElementById("blackBackground").style.visibility = "hidden";
-    } else {
-        helpWindow.style.display = "block";
-        document.getElementById("blackBackground").style.visibility = "visible";
-    }
-}
-
 // Social Links --------------------------------------------------------------------------
 document.getElementById("leaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
@@ -58,18 +34,6 @@ closeButton.addEventListener("click", () => {
 });
 
 // Various buttons and links -----------------------------------------------------------------------------------------------------------------
-let resetBTN = document.getElementById("resetButton");
-resetBTN.addEventListener("click", function () { playSound("reload"); reloadIframe(); });
-
-let socialRedditButton = document.getElementById("redditButton");
-socialRedditButton.addEventListener("click", function () { playSound("basic_button"); window.open("https://www.reddit.com/r/OpenGuessr/", '_blank').focus() });
-
-let socialDiscordButton = document.getElementById("discordButton");
-socialDiscordButton.addEventListener("click", function () { playSound("basic_button"); window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus() });
-
-let privacyButton = document.getElementById("privacyButton");
-privacyButton.addEventListener("click", function () { playSound("basic_button"); toggleSettingsWindow(); showPageBrowser("/legal.html"); });
-
 document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html"); });
 document.getElementById("discoverEducation").addEventListener("click", function () { playSound("basic_button"); window.open("https://education.openguessr.com", '_blank').focus() });
 

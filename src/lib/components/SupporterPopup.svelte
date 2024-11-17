@@ -35,13 +35,6 @@
     }
   }
 
-  /* Move this into the profile window !TODO !CHANGE
-  document.getElementById("viewSupporterBenefits").addEventListener("click", () => {
-    playSound("basic_button");
-    openSupporterWindow();
-  });
-  */
-
   function closeSupporterWindow() {
     supporterPopupVisible.set(false);
   }

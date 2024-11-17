@@ -1,12 +1,16 @@
 <script>
-  import { supporterWindowIfAuthenticated } from "$lib/components/SupporterPopup.svelte";
-  let { text } = $props();
+  import SupporterPopup from "$lib/components/SupporterPopup.svelte";
+  let { text, learnMore } = $props();
 </script>
 
 <!-- svelte-ignore a11y_interactive_supports_focus -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <p class="adsTextResult noAdvertsText">
-  {text} <span class="supporterAdText" onclick={supporterWindowIfAuthenticated} role="button">Learn more</span>.
+  {text}
+  {#if learnMore}
+    <span class="supporterAdText" onclick={SupporterPopup.supporterWindowIfAuthenticated} role="button">Learn more</span
+    >.
+  {/if}
 </p>
 
 <style>
@@ -29,7 +33,6 @@
     overflow: hidden;
     transition: opacity 500ms ease;
     border-radius: 7px;
-    background-color: rgba(168, 168, 187, 0.3);
   }
 
   .supporterAdText {

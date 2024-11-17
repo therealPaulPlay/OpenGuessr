@@ -21,6 +21,9 @@
   import ConfirmPopup from "$lib/components/ConfirmPopup.svelte";
   import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
   import SupporterPitch from "$lib/components/SupporterPitch.svelte";
+  import BottomBar from "$lib/components/BottomBar.svelte";
+  import PanoramaIframe from "$lib/components/PanoramaIframe.svelte";
+  import HelpPopup from "$lib/components/HelpPopup.svelte";
 
   // Start ads
   onMount(() => {
@@ -492,29 +495,9 @@
     <button id="beforeExitNotAgain" class="standardButton white closeButton">Don't show again</button>
   </div>
 </div>
+<HelpPopup />
 <!-- remaining windows -->
 <div class="popupHolder">
-  <!-- Help / How to Play Popup -->
-  <div id="helpWindow" class="uiWindow">
-    <div class="popup-title">
-      <h1>How to play</h1>
-    </div>
-    <ul class="nolistdots">
-      <li>
-        <h3>🔍 Look at the Street View image</h3>
-        <p class="listMarginLeft">Study the streetview image carefully and explore the surroundings.</p>
-      </li>
-      <li>
-        <h3>🎯 Guess where you are</h3>
-        <p class="listMarginLeft">Pinpoint the location on the world map. Be precise for higher scores!</p>
-      </li>
-      <li>
-        <h3>👥 Challenge your friends</h3>
-        <p class="listMarginLeft">Compete against friends in multiplayer modes and competitions.</p>
-      </li>
-    </ul>
-    <button id="helpClose" class="standardButton white closeButton">Let's go!</button>
-  </div>
   <!-- Page Browser for all other OpenGuessr pages to avoid any additional map loads -->
   <div id="pageBrowserWindow" class="uiWindow">
     <div id="browserIframeHolder">
@@ -771,13 +754,13 @@
     <div id="endBottomBar">
       <div id="floatingResultLeaderboardArea" class="hideForSupporters">
         <div id="floatingResultLeaderboardAd"></div>
-        <RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." />
+        <RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." learnMore="true" />
       </div>
       <div id="resultBox">
         <p class="resultField" id="motivationText"></p>
         <div id="mobileResultLeaderboardAdArea" class="resultField hideForSupporters">
           <div id="mobileResultLeaderboardAd"></div>
-          <RemoveAdsText text="Go Ad-Free." />
+          <RemoveAdsText text="Go Ad-Free." learnMore="true" />
         </div>
         <div class="resultField">
           <img src="/img/distance_icon.png" alt="Distance icon" id="distanceIcon" />
@@ -836,13 +819,7 @@
 <!--streetview-->
 <div class="MainDiv">
   <!-- svelte-ignore a11y_missing_attribute -->
-  <iframe
-    id="PanoramaIframe"
-    referrerpolicy="no-referrer-when-downgrade"
-    frameborder="0"
-    allow="accelerometer"
-    src="/loader"
-  ></iframe>
+  <PanoramaIframe />
   <!-- Country Guessr UI -->
   <div id="countryGuesserSelector">
     <button class="countryGuesserHolder">
@@ -892,33 +869,6 @@
     <button id="multiplayerSendButton" class="standardButton">Send</button>
   </div>
 </div>
-<!--bottom toolbar with reset button-->
-<div id="BottomBar" class="BottomBar">
-  <div class="barMenu">
-    <button class="standardButton bottomBarButton" id="resetButton">
-      <img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
-    </button>
-    <button class="standardButton bottomBarButton bottomSocialItem" id="discordButton" type="button">
-      <img src="./img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" id="discordIcon" />
-    </button>
-    <button class="standardButton bottomBarButton bottomSocialItem" id="redditButton" type="button">
-      <img src="./img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
-    </button>
-  </div>
-  <div class="barMenu bottomRightMenu">
-    <div class="standardButton bottomBarButton" id="confirmButton">
-      <button class="socialItem" id="helpButton">?</button>
-      <button class="socialItem" id="revealCompass">
-        <img src="./img/discover_icon.png" alt="Toggle compass" class="socialIcon bottomBarIcon" />
-      </button>
-      <p id="guessText">Guess</p>
-    </div>
-  </div>
-</div>
-<div id="bottomFooterAds" class="bottomFooterAds leaderboardAds hideForSupporters"></div>
-<div class="bottomFooterAds leaderboardAds bottomFooterAdText hideForSupporters barMenu">
-  <RemoveAdsText text="Ads keep OpenGuessr free ♥" />
-</div>
-
+<BottomBar />
 <!-- Render children such as overlayed pages and menus -->
 {@render children?.()}

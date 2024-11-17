@@ -22,8 +22,8 @@
                 reach out to the developer. By using this website, you accept
                 the following agreements and policies. Please note that some
                 information is available on different pages linked below. If you
-                have any questions regarding these policies, feel free to
-                contact me using the contact form, which you can find linked at
+                have any questions regarding these policies, feel free to 
+                reach out using the contact form, which you can find linked at
                 the bottom of this page.
             </p>
             <br />

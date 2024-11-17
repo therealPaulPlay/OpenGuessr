@@ -6,3 +6,4 @@ export const littleTimeVignette = writable(false);
 
 // Popup Visibility
 export const settingsPopup = writable(false);
+export const helpPopup = writable(false);
