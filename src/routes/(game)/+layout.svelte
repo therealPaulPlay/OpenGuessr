@@ -24,6 +24,7 @@
   import BottomBar from "$lib/components/BottomBar.svelte";
   import PanoramaIframe from "$lib/components/PanoramaIframe.svelte";
   import HelpPopup from "$lib/components/HelpPopup.svelte";
+  import SignupIframe from "$lib/components/SignupIframe.svelte";
 
   // Start ads
   onMount(() => {
@@ -496,18 +497,9 @@
   </div>
 </div>
 <HelpPopup />
+<SignupIframe />
 <!-- remaining windows -->
 <div class="popupHolder">
-  <!-- Page Browser for all other OpenGuessr pages to avoid any additional map loads -->
-  <div id="pageBrowserWindow" class="uiWindow">
-    <div id="browserIframeHolder">
-      <div class="absoluteCenter">
-        <img src="/img/compass_spinner.png" alt="Loading new streetview" class="spinner" id="pageBrowserLoading" />
-      </div>
-      <!-- svelte-ignore a11y_missing_attribute -->
-      <iframe id="pageBrowserIframe" allowtransparency="true" frameborder="0"></iframe>
-    </div>
-  </div>
   <!-- Troubleshooting Guide for Multiplayer -->
   <div id="troubleshootWindow" class="uiWindow">
     <div class="popup-title">

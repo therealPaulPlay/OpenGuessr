@@ -3312,51 +3312,6 @@ input[type="checkbox"]:focus {
     opacity: 60%;
 }
 
-#pageBrowserIframe {
-    width: 100%;
-    height: 100%;
-    overflow: hidden;
-    background: transparent;
-    outline: 5px solid rgba(75, 75, 75, 0.25);
-    border-radius: 5px;
-    opacity: 0;
-    transition: opacity 200ms ease;
-    position: relative;
-    z-index: 901;
-}
-
-#pageBrowserLoading {
-    margin: 0;
-    opacity: 0.15;
-}
-
-#browserIframeHolder {
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.2);
-}
-
-.absoluteCenter {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-}
-
-#pageBrowserWindow {
-    width: calc(99% - 25px);
-    height: calc(98% - 25px);
-    max-width: 1400px;
-    max-height: unset;
-    overflow: hidden;
-    padding: 5px;
-}
-
-.loginIframeWindow {
-    max-width: 600px !important;
-    max-height: 750px !important;
-}
-
 .mapHover {
     width: 60%;
     height: 55%;
