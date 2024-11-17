@@ -1254,33 +1254,11 @@ textarea {
 
 }
 
-#socialWindow {
-    width: 40%;
-    min-width: 300px;
-    max-width: 600px;
-}
-
 .badgeSelected {
     border: 3px solid rgba(255, 255, 255, 0.75);
     padding-top: 3px;
     padding-bottom: 3px;
     padding-inline: 7px;
-}
-
-#socialPopupClose {
-    float: left;
-}
-
-#socialPopupJoin {
-    background-color: #8e44f0;
-}
-
-#discordWidget {
-    margin-top: 30px;
-    margin-bottom: 30px;
-    height: 100%;
-    width: 100%;
-    min-height: 300px;
 }
 
 #profileWindow {
@@ -2730,16 +2708,6 @@ search {
     border-radius: 5px;
     max-width: 60px;
     background-color: rgba(56, 56, 79, 0.2);
-}
-
-#redditButton:hover {
-    background-color: #d45f24;
-    filter: none;
-}
-
-#discordButton:hover {
-    background-color: #8c2aed;
-    filter: none;
 }
 
 #endScreenOpenLocation {

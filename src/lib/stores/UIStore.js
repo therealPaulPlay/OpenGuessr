@@ -8,3 +8,4 @@ export const littleTimeVignette = writable(false);
 export const settingsPopup = writable(false);
 export const helpPopup = writable(false);
 export const signupPopup = writable(false);
+export const discordPopup = writable(false);

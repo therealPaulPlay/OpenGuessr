@@ -11,7 +11,6 @@ import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileVie
 import { resetMap } from "./miniMap.js";
 import { refreshPlacements } from "./ads.js";
 
-// Social Links --------------------------------------------------------------------------
 document.getElementById("leaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
     goToLeaderboard();
@@ -25,13 +24,6 @@ document.getElementById("competitionsButton").addEventListener("click", () => {
 function goToLeaderboard() {
     showPageBrowser("/leaderboard.html");
 }
-
-// Universal Popup Window (Account info and How to play window) ---------------------------------------------------------------------
-let closeButton = document.getElementById("popupClose");
-closeButton.addEventListener("click", () => {
-    closePopup();
-    playSound("basic_button");
-});
 
 // Various buttons and links -----------------------------------------------------------------------------------------------------------------
 document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html"); });
@@ -225,68 +217,6 @@ export function setGamemodeSelector(enabled) {
         document.getElementById("gamemodeMenu").classList.add("gamemodeMenuDisabled");
     }
 }
-
-// Cool center hover for top bar -------------------------------------------------------
-
-let gamemodeTransitionTimeout;
-
-document.getElementById("gamemodeMenu").addEventListener("mouseover", () => {
-    clearTimeout(gamemodeTransitionTimeout);
-    document.querySelectorAll(".topBarSides").forEach((e) => {
-        e.classList.add("sideMenuDisabled");
-    })
-});
-
-document.getElementById("gamemodeMenu").addEventListener("mouseout", () => {
-    clearTimeout(gamemodeTransitionTimeout);
-    gamemodeTransitionTimeout = setTimeout(() => {
-        document.querySelectorAll(".topBarSides").forEach((e) => {
-            e.classList.remove("sideMenuDisabled");
-        })
-    }, 200);
-});
-
-//Social / Discord Join Popup -----------------------------------------------------------------------------------------------------
-
-let socialWindow = document.getElementById("socialWindow");
-
-function showSocialPopup() {
-    document.getElementById("discordWidget").setAttribute("src", "https://discord.com/widget?id=1221841177863651499&theme=dark");
-    socialWindow.style.display = "block";
-    document.getElementById("blackBackground").style.visibility = "visible";
-}
-
-function closeSocialPopup() {
-    socialWindow.style.display = "none";
-    document.getElementById("blackBackground").style.visibility = "hidden";
-    localStorage.setItem("discordPopup", "true");
-}
-
-export function socialPopupProbability() {
-    if (isAuthenticated && localStorage.getItem("discordPopup") == null && document.getElementById("pageBrowserWindow").style.display != "block") {
-        const randomNumber = Math.floor(Math.random() * 3);
-
-        if (randomNumber === 0) {
-            showSocialPopup();
-        }
-    }
-}
-
-document.getElementById("socialPopupClose").addEventListener("click", () => {
-    closeSocialPopup();
-    playSound("basic_button");
-});
-
-document.getElementById("socialPopupJoin").addEventListener("click", function () {
-    playSound("basic_button");
-    window.open("https://discord.gg/CSc3MbDrZ8", '_blank').focus();
-    setTimeout(async function () {
-        closeSocialPopup();
-        await setUserXP(Number(localStorage.getItem("experience")) + 7500, 7500, false);
-        uiSetUserXP(localStorage.getItem("experience"));
-    }, 200)
-});
-
 
 // Username UI endless scroll --------------------------------------------------------------------------------------------------
 

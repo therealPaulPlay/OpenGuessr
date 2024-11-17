@@ -82,6 +82,8 @@
   });
 
   function toggleExitPopup() {
+    playSound("basic_button");
+
     if (localStorage.getItem("hideExitPopup") == "1") {
       localStorage.setItem("hideExitPopup", "0");
       exitPopupButtonText = "Enabled";
@@ -114,6 +116,8 @@
   });
 
   function toggleFullscreen() {
+    playSound("basic_button");
+
     try {
       if (!document.fullscreenElement) {
         if (document.documentElement.requestFullscreen) {
@@ -172,14 +176,21 @@
         <p class="slightBottomMargin">Toggle Fullscreen:</p>
         <button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
           <span class="fullscreenIcon">
-            <Scan size=17 />
+            <Scan size="17" />
           </span>
           <span id="fullscreenText">{fullscreenButtonText}</span>
         </button>
       </div>
       <div class="settingsBox">
         <p class="slightBottomMargin">Legal Information:</p>
-        <button class="standardButton white" id="privacyButton" onclick={() => { playSound("basic_button"); window.location.href = "/legal"; }}>View legal information</button>
+        <button
+          class="standardButton white"
+          id="privacyButton"
+          onclick={() => {
+            playSound("basic_button");
+            window.location.href = "/legal";
+          }}>View legal information</button
+        >
       </div>
       <div class="settingsBox">
         <p class="slightBottomMargin">Exit Popup:</p>

@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy } from "svelte";
-  let { children, z, frameLess } = $props();
+  let { children, z, frameLess, socialPopup } = $props();
 
   let animateClass = $state("");
 
@@ -15,7 +15,12 @@
 </script>
 
 <div class="popupHolder">
-  <div class="uiWindow {animateClass}" class:frameLess={Boolean(frameLess)} style:z-index={z}>
+  <div
+    class="uiWindow {animateClass}"
+    class:frameLess={Boolean(frameLess)}
+    style:z-index={z}
+    class:socialWindow={Boolean(socialPopup)}
+  >
     {@render children?.()}
   </div>
 </div>
@@ -33,6 +38,12 @@
     background-color: rgba(30, 30, 30, 0.7);
     pointer-events: auto;
     z-index: 100; /* Default Z-Index, can be changed with Prop */
+  }
+
+  .socialWindow {
+    width: 40%;
+    min-width: 300px;
+    max-width: 600px;
   }
 
   .frameLess {

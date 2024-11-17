@@ -186,4 +186,14 @@
     pointer-events: none !important;
     opacity: 0.5;
   }
+
+  #redditButton:hover {
+    background-color: #d45f24;
+    filter: none;
+  }
+
+  #discordButton:hover {
+    background-color: #8c2aed;
+    filter: none;
+  }
 </style>

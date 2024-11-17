@@ -1,11 +1,27 @@
 <script>
   import { settingsPopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
-    import Notification from "$lib/components/Notification.svelte";
+  import Notification from "$lib/components/Notification.svelte";
 
   function openSettings() {
     playSound("basic_button");
     settingsPopup.set(true);
+  }
+
+  // Fade out the left / right bar elements when the center is enlarged
+  let gamemodeTransitionTimeout;
+  let sideMenusDisabled = $state(false);
+
+  function centerMouseOut() {
+    clearTimeout(gamemodeTransitionTimeout);
+    gamemodeTransitionTimeout = setTimeout(() => {
+      sideMenusDisabled = false;
+    }, 200);
+  }
+
+  function centerMouseOver() {
+    clearTimeout(gamemodeTransitionTimeout);
+    sideMenusDisabled = true;
   }
 </script>
 
@@ -44,7 +60,7 @@
 </div>
 
 <div id="topButtonArea" class="topButtonArea">
-  <div class="barMenu topBarSides topBarDesktop">
+  <div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
     <button class="standardButton accountButton" id="loginButton" type="button" alt="log in">Log in</button>
     <div class="profileInfo notSignedIn" id="profileInfo">
       <div id="accountNameArea">
@@ -70,7 +86,15 @@
       <img class="logoutImage" src="/img/signout.png" alt="Log out of your OpenGuessr account." />
     </button>
   </div>
-  <div class="barMenu topBarDesktop" id="gamemodeMenu">
+  <!-- svelte-ignore a11y_interactive_supports_focus -->
+  <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+  <div
+    class="barMenu topBarDesktop"
+    id="gamemodeMenu"
+    onmouseover={centerMouseOver}
+    onmouseout={centerMouseOut}
+    role="menu"
+  >
     <button id="leaderboardButton" class="standardButton accountButton">
       <span class="topBarExpand">Leaderboard</span>
       <img
@@ -96,7 +120,7 @@
       />
     </button>
   </div>
-  <div class="barMenu topBarSides topBarDesktop">
+  <div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
     <button class="standardButton accountButton" id="categoryMenuButton">
       Maps
       <img id="mapsArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="socialBarIcons arrowIcon" />
@@ -110,3 +134,6 @@
   </div>
   <Notification />
 </div>
+
+<style>
+</style>

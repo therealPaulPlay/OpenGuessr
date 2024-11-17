@@ -1,5 +1,5 @@
 import { generateNewLocation } from "./main.js";
-import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, socialPopupProbability, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
+import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "./errorHandling.js";
 import { resetMap } from "./miniMap.js";
@@ -9,6 +9,7 @@ import { toggleStreakWindow } from "./streakAdPopup.js";
 import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
 import { setImageGuessrEnabled } from "./imageGuesser.js";
 import { setSingleplayer } from "./singleplayerOptions.js";
+import { socialPopupProbability } from "../src/lib/utils/socialPopupProbability.js";
 
 // Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 

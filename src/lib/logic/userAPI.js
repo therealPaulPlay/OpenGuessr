@@ -1,5 +1,5 @@
-import { errorPopup } from "./errorHandling";
-import inIframe from "./checkIframe";
+import { errorPopup } from "../utils/errorHandling";
+import inIframe from "../utils/checkIframe";
 
 export const backendURL = "https://accounts.openguessr.com/accounts";
 export const loginEndpoint = `${backendURL}/login`;
@@ -194,7 +194,7 @@ export async function changePassword(token, newPassword, errorSource, successFun
   }
 }
 
-//Get and Set game-related user info -----------------------------------------------------------------------------
+// Get and Set game-related user info -----------------------------------------------------------------------------
 export async function getUser(token, id, errorSource, errorElement) {
   try {
     const response = await fetch(`${userGetEndpoint}/${id}`, {

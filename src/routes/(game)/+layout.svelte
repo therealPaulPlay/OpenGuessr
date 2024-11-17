@@ -25,6 +25,7 @@
   import PanoramaIframe from "$lib/components/PanoramaIframe.svelte";
   import HelpPopup from "$lib/components/HelpPopup.svelte";
   import SignupIframe from "$lib/components/SignupIframe.svelte";
+  import DiscordPopup from "$lib/components/DiscordPopup.svelte";
 
   // Start ads
   onMount(() => {
@@ -572,30 +573,7 @@
     </div>
     <button id="singleplayerOptionsClose" class="standardButton white closeButton">Close</button>
   </div>
-  <!-- Discord Popup -->
-  <div id="socialWindow" class="uiWindow">
-    <div class="popup-title">
-      <h1 id="socialHeader">Join the community</h1>
-    </div>
-    <p>
-      Join now and get <span class="highlight">7,500 XP</span>
-      in return!
-    </p>
-    <iframe
-      id="discordWidget"
-      title="Discord Widget"
-      width="350"
-      height="500"
-      allowtransparency="true"
-      frameborder="0"
-      sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
-    ></iframe>
-    <button id="socialPopupClose" class="standardButton white closeButton">Close</button>
-    <button id="socialPopupJoin" class="discordButton standardButton closeButton">
-      Join
-      <img src="./img/discord.png" class="socialIcon" alt="Discord Icon" />
-    </button>
-  </div>
+  <DiscordPopup />
   <!-- Linkjoin Popup -->
   <div id="linkjoinWindow" class="uiWindow">
     <div class="popup-title">
