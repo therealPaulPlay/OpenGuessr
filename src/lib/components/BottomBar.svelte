@@ -37,8 +37,7 @@
       class="standardButton bottomBarButton"
       id="resetButton"
       onclick={() => {
-        playSound("basic_button");
-        $reloadPanorama();
+        $reloadPanorama(); // No sound, as the reload sound will play
       }}
     >
       <img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />

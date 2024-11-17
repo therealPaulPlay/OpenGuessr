@@ -4,6 +4,7 @@
   import { imageGuesser, multiplayer } from "$lib/stores/modeStore";
   import { loadingScreenVisible } from "$lib/stores/uiStore";
   import { get } from "svelte/store";
+  import { playSound } from "$lib/utils/soundManager";
 
   const streetviewAPIKey = "AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs";
 
@@ -32,6 +33,7 @@
   loadPanorama.set(loadPanorama);
 
   export function reload() {
+    playSound("reload");
     $loadingScreenVisible = true;
     iframe.setAttribute("src", get(panoramaLink));
     window.setTimeout(() => {
