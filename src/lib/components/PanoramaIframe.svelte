@@ -5,6 +5,7 @@
   import { loadingScreenVisible } from "$lib/stores/uiStore";
   import { get } from "svelte/store";
   import { playSound } from "$lib/utils/soundManager";
+  import { applySingleplayerSettings } from "$lib/utils/applySingleplayerSettings";
 
   const streetviewAPIKey = "AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs";
 
@@ -46,7 +47,7 @@
   const handleLoad = () => {
     if (initialIframeLoad) {
       try {
-        applySingleplayerSettings(); // Check if the user is playing hard mode + apply changes if yes
+        applySingleplayerSettings(); // Apply singleplayer options / settings (NMPZ, timer etc.) if Singleplayer, otherwise disable all
         checkStartCompetitionRound(); // Check if currently playing competition and start timer + new round if so
       } catch (error) {
         console.error("Error after Iframe Load (in handleLoad function):", error);

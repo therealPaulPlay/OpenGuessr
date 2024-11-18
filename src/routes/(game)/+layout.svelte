@@ -26,6 +26,9 @@
   import HelpPopup from "$lib/components/HelpPopup.svelte";
   import SignupIframe from "$lib/components/SignupIframe.svelte";
   import DiscordPopup from "$lib/components/DiscordPopup.svelte";
+  import SingleplayerOptions from "$lib/components/SingleplayerOptions.svelte";
+  import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
+  import SingleplayerNmpz from "$lib/components/SingleplayerNMPZ.svelte";
 
   // Start ads
   onMount(() => {
@@ -537,42 +540,7 @@
     <button id="troubleshootClose" class="standardButton white closeButton">Back</button>
   </div>
   <SettingsPopup />
-  <!-- Singleplayer Options Window -->
-  <div id="singleplayerOptionsWindow" class="uiWindow">
-    <div class="popup-title">
-      <h1>Singleplayer</h1>
-    </div>
-    <div class="settingsCanvas slightBottomMargin">
-      <div class="settingsBox">
-        <p class="slightBottomMargin">Timer:</p>
-        <div class="timerSliderBox">
-          <input type="range" min="0" max="300" step="1" value="0" class="slider" id="timerSlider" />
-          <div class="timerTextBox">
-            <img alt="timer icon" class="timerIcon" src="/img/timer_icon.png" />
-            <p id="timerSliderText">No Timer</p>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="settingsCanvas slightBottomMargin">
-      <div class="settingsBox">
-        <p class="slightBottomMargin">NMPZ:</p>
-        <div class="timerSliderBox">
-          <p class="singleplayerDesc">Prevent Move, Pan and Zoom:</p>
-          <button id="setSingleplayerNMPZ" class="standardButton white">Disabled</button>
-        </div>
-      </div>
-    </div>
-    <div class="settingsCanvas slightBottomMargin">
-      <div class="settingsBox roundLogContainer">
-        <p class="slightBottomMargin">Round Log:</p>
-        <div class="roundLogBox" id="roundLogBox">
-          <!-- round log will be automatically generated here -->
-        </div>
-      </div>
-    </div>
-    <button id="singleplayerOptionsClose" class="standardButton white closeButton">Close</button>
-  </div>
+  <SingleplayerOptions />
   <DiscordPopup />
   <!-- Linkjoin Popup -->
   <div id="linkjoinWindow" class="uiWindow">
@@ -769,12 +737,9 @@
 </div>
 <div id="blackBackground"></div>
 <div id="nmpzBackground"></div>
-<div id="nmpzSingleplayerBackground"></div>
+<SingleplayerNmpz />
 <LittleTimeVignette />
-<div id="hardModeFade">
-  <h1 id="hardModeTitle">Default hardmode title</h1>
-  <p id="hardModeSubtitle">Default hardmode subtitle</p>
-</div>
+<TimerCountdown />
 <div id="duelsOverlay">
   <h1>Your opponent has guessed</h1>
   <p id="duelsOverlaySubtitle">Time reduced to 15s.</p>

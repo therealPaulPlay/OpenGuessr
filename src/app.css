@@ -1476,84 +1476,6 @@ textarea {
     flex-direction: column;
 }
 
-.timerSliderBox {
-    display: flex;
-    gap: 10px;
-    flex-wrap: wrap;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.timerTextBox {
-    border: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 5px;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 5px;
-    padding-inline: 10px;
-    border-radius: 5px;
-    min-width: 140px;
-    text-align: center;
-}
-
-.singleplayerDesc {
-    opacity: 0.5;
-}
-
-.roundLogBox {
-    display: flex;
-    align-items: center;
-    justify-content: safe center;
-    gap: 5px;
-    flex-direction: column;
-    overflow-y: auto;
-    max-height: 150px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-    scrollbar-width: none;
-}
-
-.logItemButton {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.logItemMode {
-    font-size: 20px;
-    opacity: 50%;
-}
-
-.roundLogContainer {
-    height: fit-content;
-    padding-bottom: 15px;
-}
-
-.centerLogText {
-    text-align: center;
-    width: 100%;
-    opacity: 50%;
-    font-style: italic;
-    font-size: 22px;
-}
-
-.roundLogItem {
-    background-color: rgba(255, 255, 255, 0.1);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px;
-    padding-inline: 15px;
-    border-radius: 5px;
-    width: calc(100% - 30px);
-}
-
-.timerIcon {
-    width: 23px;
-    height: 23px;
-    opacity: 0.5;
-}
-
 #settingsIcon {
     filter: invert();
 }
@@ -2016,16 +1938,6 @@ search {
     top: 0;
 }
 
-#nmpzSingleplayerBackground {
-    position: fixed;
-    overflow: hidden;
-    width: 100%;
-    height: 100%;
-    z-index: 1;
-    pointer-events: none;
-    top: 0;
-}
-
 #mobileExtendedNavbarControls {
     display: none;
     /* switched to display: flex in code */
@@ -2068,27 +1980,6 @@ search {
     transform: rotate(270deg);
     vertical-align: -3px;
     margin-right: -10px;
-}
-
-#hardModeFade {
-    width: 100%;
-    height: 100%;
-    position: fixed;
-    top: 0;
-    z-index: 3;
-    transition: opacity 500ms ease;
-    opacity: 0;
-    overflow: hidden;
-    backdrop-filter: blur(50px);
-    -webkit-backdrop-filter: blur(50px);
-    background-color: rgba(0, 0, 0, 0.2);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    color: white;
-    pointer-events: none;
-    user-select: none;
 }
 
 .countryGuesserHolder {
@@ -2167,12 +2058,6 @@ search {
     color: white;
     pointer-events: none;
     user-select: none;
-}
-
-#hardModeFade h1 {
-    font-size: 75px;
-    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
-    margin-bottom: 20px;
 }
 
 #duelsOverlay {
@@ -2260,11 +2145,6 @@ search {
         transform: scale(1);
         color: white;
     }
-}
-
-#hardModeFade p {
-    font-size: 30px;
-    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 }
 
 #multiplayerFade h1 {

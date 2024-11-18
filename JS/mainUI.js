@@ -1,5 +1,5 @@
 import { closePopup, errorPopup } from "./errorHandling.js";
-import { reloadIframe, loadAndInitializeLibrary, compareDistances, calculateDistances, currentStreetviewLat, currentStreetviewLong } from "./main.js";
+import { reloadIframe, loadAndInitializeLibrary, compareDistances, currentStreetviewLat, currentStreetviewLong } from "./main.js";
 import { loadResultMap } from "./resultMap.js";
 import { setUserXP, uiSetUserXP, isAuthenticated, checkAuthenticationStatus, loadResultScreenXP } from "./accountLogic.js";
 import { leaveMultiplayerRound, toggleMultiplayerSelector } from "./multiplayer.js";
@@ -10,6 +10,8 @@ import { leaveCompetition, loadCompetition } from "./competitionLogic.js";
 import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
 import { resetMap } from "./miniMap.js";
 import { refreshPlacements } from "./ads.js";
+import { openLocationOnMaps } from "../src/lib/utils/openLocationOnMaps.js";
+import { calculateDistances } from "../src/lib/utils/distanceFunctions.js";
 
 document.getElementById("leaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
@@ -355,10 +357,6 @@ export async function supporterXpBoostAnimation(factor) {
 
 document.getElementById("endScreenOpenLocation").addEventListener("click", () => { playSound("basic_button"); openLocationOnMaps(currentStreetviewLat, currentStreetviewLong) });
 
-export function openLocationOnMaps(lat, long) {
-    window.open("https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" + lat + "," + long, '_blank').focus();
-}
-
 // Hide advertisements (Supporter Tier 2) ----------------------------------------------------------------
 
 export function setAdVisibility(visible) {
@@ -539,34 +537,9 @@ document.getElementById("captchaClose").addEventListener("click", () => {
 });
 
 // In-App page browser -------------------------------------------------------------------------------------------------------
-let pageBrowserWindow = document.getElementById("pageBrowserWindow");
 
-export function showPageBrowser(page, login) {
-    document.getElementById("blackBackground").style.visibility = "visible";
-    document.getElementById("pageBrowserIframe").src = window.location.origin + page;
-    socialWindow.style.display = "none"; // hide social window in case it is currently active to prevent overlap
-
-    if (login) {
-        pageBrowserWindow.classList.add("loginIframeWindow");
-    } else {
-        pageBrowserWindow.classList.remove("loginIframeWindow");
-    }
-
-    pageBrowserWindow.style.display = "block";
-
-    document.getElementById("pageBrowserIframe").onload = function () {
-        this.style.opacity = "1";
-    };
-}
-
-function disablePageBrowser() {
-    if (pageBrowserWindow.style.display != "none") {
-        document.getElementById("blackBackground").style.visibility = "hidden";
-        pageBrowserWindow.style.display = "none";
-        document.getElementById("pageBrowserIframe").style.opacity = "0";
-        document.getElementById("pageBrowserIframe").src = ""; // unload iframe to save performance
-    }
-}
+/*
+KEPT AROUND FOR FUTURE INSPECTION
 
 window.onmessage = function (e) {
     try {
@@ -575,9 +548,6 @@ window.onmessage = function (e) {
         const profileMatch = data.match(/^profile(\d+)$/); // extract profile id if text includes profile
 
         switch (true) {
-            case data === "close":
-                disablePageBrowser();
-                break;
             case data === "reloadCommunityMaps":
                 loadCommunityCategories();
                 attachCategoryEventListeners();
@@ -590,9 +560,6 @@ window.onmessage = function (e) {
                 loadMapCategory();
                 changeCategory(mapCategory, true);
                 break;
-            case data === "loadAccountStatus":
-                checkAuthenticationStatus();
-                break;
             case data === "loadCompetition":
                 loadCompetition(true);
                 break;
@@ -604,3 +571,4 @@ window.onmessage = function (e) {
         console.error("Error processing window message: " + error);
     }
 };
+*/

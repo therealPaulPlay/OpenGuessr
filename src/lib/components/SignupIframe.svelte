@@ -10,6 +10,25 @@
 
     setTimeout(() => (loaderVisible = false), 250);
   });
+
+  if (typeof window !== "undefined") {
+    window.onmessage = function (e) {
+      try {
+        const data = String(e.data); // Ensure data is a string
+
+        switch (true) {
+          case data === "close":
+            $signupPopup = false;
+            break;
+          case data === "loadAccountStatus":
+            checkAuthenticationStatus(); // TODO: Import checkAuthenticationStatus function and make this functional
+            break;
+        }
+      } catch (error) {
+        console.error("Error processing window message: " + error);
+      }
+    };
+  }
 </script>
 
 {#if $signupPopup}

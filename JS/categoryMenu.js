@@ -8,8 +8,8 @@ import { playSound } from "../src/lib/utils/soundManager.js";
 import { toggleStreakWindow } from "./streakAdPopup.js";
 import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
 import { setImageGuessrEnabled } from "./imageGuesser.js";
-import { setSingleplayer } from "./singleplayerOptions.js";
 import { socialPopupProbability } from "../src/lib/utils/socialPopupProbability.js";
+import { singleplayer } from "$lib/stores/modeStore";
 
 // Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 
@@ -298,7 +298,7 @@ export async function checkGenerationTypeAndGenerate() {
     setImageGuessrEnabled(false);
 
     if (!multiplayer && !playingCompetition) {
-        setSingleplayer(true);
+        singleplayer.set(true);
 
         // If multiplayer is disabled
         showMultiplayerOverlay(false);
@@ -326,7 +326,7 @@ export async function checkGenerationTypeAndGenerate() {
         }
     } else if (multiplayer) {
         // If multiplayer is enabled
-        setSingleplayer(false);
+        singleplayer.set(false);
 
         try {
             if (isHost) {
@@ -353,7 +353,7 @@ export async function checkGenerationTypeAndGenerate() {
         }
 
     } else if (playingCompetition) {
-        setSingleplayer(false);
+        singleplayer.set(false);
 
         if (checkCompetitionRoundStatus(false)) {
             await generateNewLocation("COMPETITION");

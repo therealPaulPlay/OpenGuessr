@@ -2,6 +2,7 @@
   import { settingsPopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
   import Notification from "$lib/components/Notification.svelte";
+  import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
 
   function openSettings() {
     playSound("basic_button");
@@ -125,7 +126,10 @@
       Maps
       <img id="mapsArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="socialBarIcons arrowIcon" />
     </button>
-    <button class="standardButton accountButton" id="singleplayerOptionsButton">
+    <button class="standardButton accountButton" id="singleplayerOptionsButton" onclick={() => {
+      playSound("basic_button");
+      singleplayerOptionsPopup.set(true);
+    }}>
       <img src="/img/joystick_icon.png" alt="one or five seconds" id="joystickIcon" class="socialBarIcons" />
     </button>
     <button class="standardButton accountButton" id="settingsButton" onclick={openSettings}>

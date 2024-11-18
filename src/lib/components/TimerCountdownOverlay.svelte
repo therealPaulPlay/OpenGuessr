@@ -1,0 +1,43 @@
+<!-- Used for the singleplayer timer countdown  - formerly known as the hardmode fade (when hardmode was still a thing) -->
+<script>
+  import { timerCountdownOverlay, timerCountdownOverlayTitle, timerCountdownOverlaySubtitle} from "$lib/stores/context-specific/timerCountdownOverlayStore";
+</script>
+
+<div id="timerCountdown" style:opacity={$timerCountdownOverlay ? "1" : "0"} style:pointer-events={$timerCountdownOverlay ? "auto" : "none"}>
+  <h1 id="hardModeTitle">{$timerCountdownOverlayTitle}</h1>
+  <p id="hardModeSubtitle">{$timerCountdownOverlaySubtitle}</p>
+</div>
+
+<style>
+  #timerCountdown {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    z-index: 3;
+    transition: opacity 500ms ease;
+    opacity: 0;
+    overflow: hidden;
+    backdrop-filter: blur(50px);
+    -webkit-backdrop-filter: blur(50px);
+    background-color: rgba(0, 0, 0, 0.2);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    color: white;
+    pointer-events: none;
+    user-select: none;
+  }
+
+  #timerCountdown h1 {
+    font-size: 75px;
+    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+    margin-bottom: 20px;
+  }
+
+  #timerCountdown p {
+    font-size: 30px;
+    text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+  }
+</style>

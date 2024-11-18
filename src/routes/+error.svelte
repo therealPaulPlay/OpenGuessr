@@ -29,7 +29,10 @@
     font-size: 70px;
     font-weight: 500;
     word-wrap: break-word;
+    text-wrap: wrap;
+    text-align: center;
     color: white;
+    padding-inline: 20px;
   }
 
   p {
@@ -38,6 +41,7 @@
     max-width: 400px;
     font-size: 30px;
     color: white;
+    padding-inline: 20px;
   }
 
   a,
@@ -57,26 +61,15 @@
 
   @media (max-width: 800px) {
     h1 {
-      font-size: 50px;
-    }
-
-    .returnButton {
-      font-size: 25px;
-    }
-  }
-
-  @media (max-width: 500px) {
-    h1 {
-      font-size: 35px;
+      font-size: 40px;
     }
 
     p {
-      font-size: 15px;
-      max-width: 250px;
+      font-size: 25px;
     }
 
     .returnButton {
-      font-size: 15px;
+      font-size: 22px;
     }
   }
 </style>
