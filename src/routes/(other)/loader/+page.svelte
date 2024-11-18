@@ -13,6 +13,7 @@
         width: 70%;
         color: #686161;
         font-weight: 500;
+        font-size: 30px;
     }
 
     div {
@@ -28,7 +29,7 @@
         }
 
         h1 {
-            margin-top: 200px;
+            margin-top: 300px;
         }
     }
 </style>
