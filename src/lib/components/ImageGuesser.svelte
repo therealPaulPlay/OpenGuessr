@@ -1,25 +1,6 @@
 <script>
   import { imageGuesser } from "$lib/stores/modeStore.js";
-
-  let overlay = $state();
-  let image = $state();
-  let background = $state();
-
-  export function setImageGuessrEnabled(enable) {
-    $imageGuesser = enable;
-
-    if (enable) {
-      image.style.transform = "rotate(" + Math.floor(Math.random() * 10 - 5) + "deg)";
-
-      // Apply image loading styles
-      image.classList.add("guessImageLoading");
-      background.classList.add("guessImageLoading");
-
-      // Clear the background styles
-      image.style.backgroundImage = "";
-      background.style.backgroundImage = "";
-    }
-  }
+  import { imageGuesserImage, imageGuesserBackground } from "$lib/stores/context-specific/imageGuesserStore";
 
   function scaleUp(event) {
     const image = event.target;
@@ -30,30 +11,10 @@
     const image = event.target;
     image.style.transform = image.style.transform.replace(" scale(1.01)", "");
   }
-
-  // CONVERT this to a url prop later?
-  export function loadImageFromUrl(url) {
-    // Preload the image to ensure it is loaded before setting it as background
-    const img = new Image();
-    img.src = url;
-
-    img.onload = function () {
-      // Set the background image once it's loaded
-      image.style.backgroundImage = `url(${url})`;
-      background.style.backgroundImage = `url(${url})`;
-
-      // Remove the loading class to apply any transitions
-      setTimeout(() => {
-        image.classList.remove("guessImageLoading");
-        background.classList.remove("guessImageLoading");
-      }, 200);
-    };
-  }
 </script>
 
 <div
   id="imageGuesserOverlay"
-  bind:this={overlay}
   style:display={$imageGuesser ? "flex" : "none"}
   style:opacity={$imageGuesser ? "1" : "0"}
   style:pointerEvents={$imageGuesser ? "auto" : "none"}
@@ -61,7 +22,7 @@
   <div
     id="imageGuesserImage"
     class="guessImageLoading"
-    bind:this={image}
+    bind:this={$imageGuesserImage}
     onmouseenter={scaleUp}
     onmouseleave={scaleDown}
     role="img"
@@ -69,7 +30,7 @@
   <p id="imageGuesserAttribution">
     CC0 Images by <a class="noTextDecoration" href="https://commons.wikimedia.org/" target="_blank">Wikimedia</a>
   </p>
-  <div id="imageGuesserBackground" class="guessImageLoading" bind:this={background}></div>
+  <div id="imageGuesserBackground" class="guessImageLoading" bind:this={$imageGuesserBackground}></div>
 </div>
 
 <style>
@@ -132,7 +93,7 @@
     opacity: 1;
   }
 
-  .guessImageLoading {
+  :global(.guessImageLoading) {
     opacity: 0 !important;
   }
 </style>

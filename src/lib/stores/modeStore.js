@@ -2,10 +2,13 @@ import { writable } from "svelte/store";
 
 // Modes
 export const imageGuesser = writable(false);
-export const multiplayer = writable(false);
-export const singleplayer = writable(true);
+export const countryGuesser = writable(false);
 
-// Mode options
+// Singleplayer or Multiplayer
+export const singleplayer = writable(true);
+export const multiplayer = writable(false);
+
+// More Options -----------------------------------------------------
 
 // Singleplayer
 export const timeout = writable(0);

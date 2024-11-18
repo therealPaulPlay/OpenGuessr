@@ -7,6 +7,7 @@ import { playSound } from "../src/lib/utils/soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 import { errorPopup } from "./errorHandling.js";
 import { currentlyLoadedLocationsArray } from "$lib/logic/locationGeneration.js";
+import { confirmButtonActive } from "../src/lib/stores/context-specific/confirmButtonStore.js";
 
 
 // Initialize the map with correct provider --------------------------------------------------------------------
@@ -248,8 +249,7 @@ export function resetMap() {
     }
 
     // reset the guess button as well
-    hasGuessed = false;
-    setConfirmButtonState();
+    confirmButtonActive.set(false);
 }
 
 let previousLocationArray = [];
@@ -352,34 +352,6 @@ function enableMapTypeButton() {
     }
 }
 
-//Set state of the confirm ("guess") button ------------------------------------------------------------------
-
-//indicate whether a guess has been made and the button can be used
-let hasGuessed = false;
-setConfirmButtonState();
-
-export function setConfirmButtonState() {
-    if (hasGuessed) {
-        document.getElementById("confirmButton").style.backgroundColor = "red";
-        document.getElementById("confirmButton").style.color = "white";
-        document.getElementById("confirmButton").style.opacity = "100%"
-        document.getElementById("confirmButton").style.pointerEvents = "auto";
-        document.getElementById("helpButton").classList.add("innerConfirmButtonDisabled");
-        document.getElementById("revealCompass").classList.add("innerConfirmButtonDisabled");
-    }
-    else {
-        document.getElementById("confirmButton").style.backgroundColor = "rgba(168, 168, 187, 0.3)";
-        document.getElementById("confirmButton").style.pointerEvents = "none";
-        document.getElementById("helpButton").classList.remove("innerConfirmButtonDisabled");
-        document.getElementById("revealCompass").classList.remove("innerConfirmButtonDisabled");
-    }
-}
-
-export function setConfirmButtonEnabled() {
-    hasGuessed = true;
-    setConfirmButtonState();
-}
-
 //Change map provider / language ---------------------------------------------------------------------
 function changeMapType() {
     switch (providerIndex) {
@@ -425,11 +397,7 @@ export let mapMarkerLong = 0;
 let marker;
 
 function onMapClick(latLng) {
-    //creates markers wherever the user clicks and if it clicks to another position,
-    //delete the old one and also save the position in latitudes and longitudes
-
-    hasGuessed = true;
-    setConfirmButtonState();
+    confirmButtonActive.set(true);
     playSound("pin_drop", "pin");
 
     if (marker) {

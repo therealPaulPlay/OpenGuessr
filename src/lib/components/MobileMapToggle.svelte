@@ -1,12 +1,12 @@
 <script>
   import { onMount } from "svelte";
-  import { mapExpanded } from "$lib/stores/context-specific/mapStore";
+  import { mapExpanded, hideToggleMap } from "$lib/stores/context-specific/mapStore";
   import { get } from "svelte/store";
   import { playSound } from "$lib/utils/soundManager";
   let toggleMapButton = $state();
 
   function toggleMapClick() {
-    mapExpanded.set(!get(mapExpanded)); // Invert mapExpanded
+    mapExpanded.set(!get(mapExpanded)); // Invert mapExpandedp
     playSound("floating_button");
   }
 
@@ -22,7 +22,7 @@
     }
   }
 
-  export function hideToggleMapButtonIfMobile(hide) {
+  function hideToggleMapButtonIfMobile(hide) {
     if (window.innerHeight > window.innerWidth) {
       if (hide) {
         toggleMapButton.style.visibility = "hidden";
@@ -31,6 +31,8 @@
       }
     }
   }
+
+  hideToggleMap.set(hideToggleMapButtonIfMobile); // Assign function to store variable, to make it accesible anywhere
 </script>
 
 <button

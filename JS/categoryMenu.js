@@ -1,15 +1,16 @@
-import { generateNewLocation } from "./main.js";
 import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
-import { errorPopup } from "./errorHandling.js";
+import { errorPopup } from "$lib/utils/errorHandling";
 import { resetMap } from "./miniMap.js";
-import { setCountryGuesserMode } from "./countryGuesser.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
-import { toggleStreakWindow } from "./streakAdPopup.js";
 import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playingCompetition } from "./competitionLogic.js";
-import { setImageGuessrEnabled } from "./imageGuesser.js";
 import { socialPopupProbability } from "../src/lib/utils/socialPopupProbability.js";
+import { setCountryGuesserMode } from "../src/lib/utils/countryGuesserFunctions.js";
 import { singleplayer } from "$lib/stores/modeStore";
+import { generateNewLocation } from "$lib/logic/newLocation";
+import { setImageGuessrEnabled } from "$lib/utils/imageGuesserFunctions";
+import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
+import { get } from "svelte/store";
 
 // Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------
 
@@ -402,7 +403,7 @@ export function transitionToStart() {
 
         document.getElementById("BeforeOverlay").style.visibility = "visible";
         document.getElementById("BeforeOverlay").style.opacity = "100";
-        toggleStreakWindow(0, true);
+        get(toggleStreakRestoreWindow)(0, true);
         disableResultScreen();
         checkGenerationTypeAndGenerate();
 

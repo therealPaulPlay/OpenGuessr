@@ -3,7 +3,8 @@ import { reloadIframe, loadAndInitializeLibrary, compareDistances, currentStreet
 import { loadResultMap } from "./resultMap.js";
 import { setUserXP, uiSetUserXP, isAuthenticated, checkAuthenticationStatus, loadResultScreenXP } from "./accountLogic.js";
 import { leaveMultiplayerRound, toggleMultiplayerSelector } from "./multiplayer.js";
-import { checkIfGuessWasCorrect, countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
+import { countryGuesserMode, selectedCountryGuesserCountry } from "./countryGuesser.js";
+import { checkIfGuessWasCorrect } from "../src/lib/utils/countryGuesserFunctions.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
 import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners, checkGenerationTypeAndGenerate } from "./categoryMenu.js";
 import { leaveCompetition, loadCompetition } from "./competitionLogic.js";

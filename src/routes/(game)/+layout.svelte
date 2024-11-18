@@ -29,6 +29,7 @@
   import SingleplayerOptions from "$lib/components/SingleplayerOptions.svelte";
   import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
   import SingleplayerNmpz from "$lib/components/SingleplayerNMPZ.svelte";
+  import CountryGuesserBar from "$lib/components/CountryGuesserBar.svelte";
 
   // Start ads
   onMount(() => {
@@ -43,13 +44,20 @@
 </svelte:head>
 
 <TopLeftLogo />
-
 <NavigationBar />
 
-<!-- used to detect the cursor leaving the iframe -->
+<!-- Keywords -->
+<h1 style:display="none">
+  Openguessr - GeoGuessr free. Free Geoguesser alternative free open source geography geographie Geotastic world map
+  geoguessr Geo Quiz kostenlos google streetview rainbolt zi8gzag travel geographie education spiel videospiel guess
+  Multiplayer which country play with friends challenges karte rate welches land more than 5 minutes unlimited free play
+  unendlich freies spiel without subscription pro with Duels
+</h1>
+
+<!-- Used to detect the cursor leaving the iframe -->
 <div id="topCursorDetectionBar"></div>
 
-<!-- extended navbar map menu -->
+<!-- Extended navbar map menu -->
 <div class="extendedNavbar" id="extendedNavbar">
   <div id="extendedNavbarGradient"></div>
   <div id="extendedNavbarContent" class="mapArea">
@@ -755,39 +763,7 @@
 <div class="MainDiv">
   <!-- svelte-ignore a11y_missing_attribute -->
   <PanoramaIframe />
-  <!-- Country Guessr UI -->
-  <div id="countryGuesserSelector">
-    <button class="countryGuesserHolder">
-      <p id="countryFlag1" class="countryGuesserFlag">🇦🇽</p>
-      <p id="countryTag1" class="countryGuesserTag">Country 1</p>
-    </button>
-    <button class="countryGuesserHolder">
-      <p id="countryFlag2" class="countryGuesserFlag">🇦🇽</p>
-      <p id="countryTag2" class="countryGuesserTag">Country 2</p>
-    </button>
-    <button class="countryGuesserHolder">
-      <p id="countryFlag3" class="countryGuesserFlag">🇦🇽</p>
-      <p id="countryTag3" class="countryGuesserTag">Country 3</p>
-    </button>
-    <button class="countryGuesserHolder">
-      <p id="countryFlag4" class="countryGuesserFlag">🇦🇽</p>
-      <p id="countryTag4" class="countryGuesserTag">Country 4</p>
-    </button>
-    <button class="countryGuesserHolder">
-      <p id="countryFlag5" class="countryGuesserFlag">🇦🇽</p>
-      <p id="countryTag5" class="countryGuesserTag">Country 5</p>
-    </button>
-    <button class="countryGuesserHolder">
-      <p id="countryFlag6" class="countryGuesserFlag">🇦🇽</p>
-      <p id="countryTag6" class="countryGuesserTag">Country 6</p>
-    </button>
-  </div>
-  <h1 id="TransparentHeader">
-    Openguessr - GeoGuessr free. Free Geoguesser alternative free open source geography geographie Geotastic world map
-    geoguessr Geo Quiz kostenlos google streetview rainbolt zi8gzag travel geographie education spiel videospiel guess
-    Multiplayer which country play with friends challenges karte rate welches land more than 5 minutes unlimited free
-    play unendlich freies spiel without subscription pro with Duels
-  </h1>
+  <CountryGuesserBar />
 </div>
 <!--map-->
 <MapHolder>

@@ -1,3 +1,6 @@
+import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
+import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
+
 let veryCloseDistances;
 let closeDistances;
 let farDistances;
@@ -47,7 +50,7 @@ export function compareDistances(distance) {
         // distance number formatting (km or m)
         resultAsString = formatDistance(distance);
 
-        if (countryGuesserMode && !multiplayer) {
+        if (countryGuesser && !multiplayer) {
             if (checkIfGuessWasCorrect()) {
                 extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
             } else {

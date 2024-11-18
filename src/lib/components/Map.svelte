@@ -1,11 +1,13 @@
 <script>
-  import { mapExpanded } from "$lib/stores/context-specific/mapStore";
+  import { mapExpanded, mapVisible } from "$lib/stores/context-specific/mapStore";
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-<div id="map" tabindex="0" style:max-height={$mapExpanded ? "100%" : "0%"}>
-  <div id="mapPlaceholderBeforeLoad"></div>
-</div>
+{#if $mapVisible}
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <div id="map" tabindex="0" style:max-height={$mapExpanded ? "100%" : "0%"}>
+    <div id="mapPlaceholderBeforeLoad"></div>
+  </div>
+{/if}
 
 <style>
   #map {
@@ -52,8 +54,7 @@
     border-radius: 10px;
   }
 
-  :global(.leaflet-bottom,
-  .leaflet-control-attribution) {
+  :global(.leaflet-bottom, .leaflet-control-attribution) {
     pointer-events: none;
     display: none;
   }

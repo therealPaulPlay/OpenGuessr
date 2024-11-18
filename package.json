@@ -9,9 +9,9 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",
-		"@sveltejs/kit": "^2.0.0",
+		"@sveltejs/kit": "^2.8.1",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
-		"svelte": "^5.0.0",
+		"svelte": "^5.2.2",
 		"vite": "^5.0.3"
 	},
 	"dependencies": {

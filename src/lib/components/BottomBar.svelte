@@ -5,6 +5,7 @@
   import { reloadPanorama } from "$lib/stores/locationStore";
   import { helpPopup } from "$lib/stores/uiStore";
   import { mapHolderMarginRight } from "$lib/stores/context-specific/mapStore";
+  import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
   import { onMount } from "svelte";
 
   // Load the saved map offset state
@@ -64,10 +65,15 @@
     </button>
   </div>
   <div class="barMenu bottomRightMenu">
-    <div class="standardButton bottomBarButton" id="confirmButton">
+    <div
+      class="standardButton bottomBarButton confirmButton"
+      id="confirmButton"
+      class:confirmActive={$confirmButtonActive}
+    >
       <button
         class="socialItem"
         id="helpButton"
+        class:innerConfirmButtonDisabled={$confirmButtonActive}
         onclick={() => {
           playSound("basic_button");
           $helpPopup = true;
@@ -76,6 +82,7 @@
       <button
         class="socialItem"
         id="revealCompass"
+        class:innerConfirmButtonDisabled={$confirmButtonActive}
         onclick={(e) => {
           e.stopPropagation();
           toggleMapOffset();
@@ -169,9 +176,10 @@
     z-index: 9;
   }
 
-  #confirmButton {
+  .confirmButton {
     width: fit-content;
     position: relative;
+    pointer-events: none;
     padding-left: 10px;
     padding-right: 30px;
     width: 100%;
@@ -179,6 +187,11 @@
     align-items: center;
     gap: 12px;
     min-height: 0;
+  }
+
+  .confirmActive {
+    pointer-events: auto;
+    background-color: var(--brand-color);
   }
 
   :global(.innerConfirmButtonDisabled) {
