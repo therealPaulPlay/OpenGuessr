@@ -3,7 +3,7 @@
   import { errorPopup } from "$lib/utils/errorHandling";
   import { playSound } from "$lib/utils/soundManager";
   import { initializeRewardedAd } from "$lib/utils/rewardedAds";
-  import { ToggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
+  import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
   
   let streakHeaderText = $state("Streak lost! (Default)");
   let streakHeaderColor = $state("white");
@@ -44,7 +44,7 @@
   }
 
   // Assign function to store variable, to access it everywhere
-  ToggleStreakRestoreWindow.set(toggleStreakWindow);
+  toggleStreakRestoreWindow.set(toggleStreakWindow);
 
   function resetStreakWindow() {
     streakWatchAd.style.opacity = "1";
