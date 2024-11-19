@@ -1,13 +1,10 @@
 // Gamemode where you guess the country (not on the map)
 import { hideToggleMap, mapVisible } from "$lib/stores/context-specific/mapStore";
 import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
-import { selectedCountryField } from "$lib/stores/context-specific/countryGuesserStore";
+import { selectedCountryField, selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuesserStore";
 import { get } from "svelte/store";
 
-export let selectedCountryGuesserCountry = null; // this will be set in locationGeneration.js and is the country
-
 let correctCountryField = null; // 1-6
-
 
 export function setCountryGuesserMode(enabled) {
     if (enabled) {
@@ -40,7 +37,7 @@ export function checkIfGuessWasCorrect() {
 export async function setCountryGuesserCountry(country) {
     if (!countryEmojis) await loadCountryEmojis();
 
-    selectedCountryGuesserCountry = country; // This can be "South Africa", "United States", "India" and so on. Data was received by Nominatium API (which cannot be used in prod)
+    selectedCountryGuesserCountry.set(country);// This can be "South Africa", "United States", "India" and so on. Data was received by Nominatium API (which cannot be used in prod)
     selectedCountryField.set(0); // Clear country field selection
 
     try {
@@ -52,7 +49,7 @@ export async function setCountryGuesserCountry(country) {
                 let randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
 
                 // Avoid duplicates and avoid a random country matching the corect country
-                while (Object.keys(countryEmojis)[randomCountryIndex] == selectedCountryGuesserCountry || takenLocations.includes(Object.keys(countryEmojis)[randomCountryIndex])) {
+                while (Object.keys(countryEmojis)[randomCountryIndex] == get(selectedCountryGuesserCountry) || takenLocations.includes(Object.keys(countryEmojis)[randomCountryIndex])) {
                     randomCountryIndex = Math.floor(Math.random() * Object.keys(countryEmojis).length);
                 }
 
@@ -73,7 +70,7 @@ export async function setCountryGuesserCountry(country) {
             let countryItem = document.getElementById("countryTag" + correctCountryField);
             let countryFlag = document.getElementById("countryFlag" + correctCountryField);
 
-            const countryName = selectedCountryGuesserCountry;
+            const countryName = get(selectedCountryGuesserCountry);
 
             countryItem.textContent = countryName;
             countryFlag.textContent = countryEmojis[countryName];

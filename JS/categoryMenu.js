@@ -1,4 +1,4 @@
-import { disableResultScreen, resultScreenEnabled, shrinkMapIfMobile, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
+import { disableResultScreen, resultScreenEnabled, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { resetMap } from "./miniMap.js";
@@ -10,6 +10,7 @@ import { singleplayer } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/logic/newLocation";
 import { setImageGuessrEnabled } from "$lib/utils/imageGuesserFunctions";
 import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
+import { shrinkMapIfMobile } from "../src/lib/utils/shrinkMinimapIfMobile.js";
 import { get } from "svelte/store";
 
 // Button Logic / Event listeners / apply correct styling to selected categories -------------------------------------------------------------------------

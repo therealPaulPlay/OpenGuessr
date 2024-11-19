@@ -5,7 +5,7 @@
         registerUser,
         sendPasswordResetEmail,
         changePassword,
-    } from "$lib/utils/userAPI";
+    } from "$lib/logic/userAPI";
 
     import { Eye, EyeClosed } from "lucide-svelte";
 
@@ -513,7 +513,7 @@
         cursor: pointer;
         width: 30px;
         height: auto;
-        opacity: 0.75;
+        opacity: 0.5;
         color: white;
     }
 

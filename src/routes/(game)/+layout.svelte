@@ -13,13 +13,11 @@
   import TopLeftLogo from "$lib/components/TopLeftLogo.svelte";
   import MapModeIndicator from "$lib/components/MapModeIndicator.svelte";
   import LittleTimeVignette from "$lib/components/LittleTimeVignette.svelte";
-  import StreakRestore from "$lib/components/StreakRestore.svelte";
   import MapHolder from "$lib/components/MapHolder.svelte";
   import MobileMapToggle from "$lib/components/MobileMapToggle.svelte";
   import Map from "$lib/components/Map.svelte";
   import SupporterPopup from "$lib/components/SupporterPopup.svelte";
   import ConfirmPopup from "$lib/components/ConfirmPopup.svelte";
-  import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
   import SupporterPitch from "$lib/components/SupporterPitch.svelte";
   import BottomBar from "$lib/components/BottomBar.svelte";
   import PanoramaIframe from "$lib/components/PanoramaIframe.svelte";
@@ -30,10 +28,26 @@
   import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
   import SingleplayerNmpz from "$lib/components/SingleplayerNMPZ.svelte";
   import CountryGuesserBar from "$lib/components/CountryGuesserBar.svelte";
+  import ResultScreen from "$lib/components/ResultScreen.svelte";
+  import BeforeExitPopup from "$lib/components/BeforeExitPopup.svelte";
 
   // Start ads
   onMount(() => {
     initializeAds();
+
+    // Prevent automatic "last button press" with space bar or enter key
+    try {
+      document.addEventListener("keydown", function (event) {
+        var tag = event.target.tagName.toLowerCase();
+        if (event.key === "Enter" || event.key === " ") {
+          if (tag === "button") {
+            event.preventDefault();
+          }
+        }
+      });
+    } catch (error) {
+      console.warn("Error during keydown listener to prevent unwanted last button press:", error);
+    }
   });
 </script>
 
@@ -53,9 +67,6 @@
   Multiplayer which country play with friends challenges karte rate welches land more than 5 minutes unlimited free play
   unendlich freies spiel without subscription pro with Duels
 </h1>
-
-<!-- Used to detect the cursor leaving the iframe -->
-<div id="topCursorDetectionBar"></div>
 
 <!-- Extended navbar map menu -->
 <div class="extendedNavbar" id="extendedNavbar">
@@ -452,62 +463,7 @@
     <button id="friendInboxClose" class="standardButton white closeButton">Close</button>
   </div>
 </div>
-<!-- Before the user exits or refresh, try to convince them to keep the site open / soft refresh -->
-<div id="beforeExitPopup" class="popupHolder profilePopupBackground">
-  <div id="beforeExitWindow" class="uiWindow">
-    <div class="popup-title">
-      <h1 id="beforeExitHeader">Before you go...</h1>
-    </div>
-    <div class="costDisplayArea">
-      <div class="costFlex">
-        <p class="costDisplayText">Estimated monthly API & server costs:</p>
-        <div class="costDisplayValue">
-          <p>-$ 5300</p>
-        </div>
-      </div>
-      <div class="costFlex costFlexPositive">
-        <p class="costDisplayText costDisplayTextPositive">Covered by supporter purchases this month:</p>
-        <div class="costDisplayValue positiveCostDisplay">
-          <p id="monthlySupportedAmount" class="costDisplayTextPositive">+$ ... ...</p>
-        </div>
-      </div>
-      <button id="costSupportButton" class="standardButton costButton">Support OpenGuessr &lt;3</button>
-    </div>
-    <div id="costExplanationArea">
-      <p id="costExplanationText">
-        Using maps on your phone or browser is free, but it's expensive to integrate them into a website.
-        <br />
-        <br />
-        Every time the game's minimap loads, it incurs a cost that adds up quickly with more players. Ads help cover some
-        expenses, but the best way to support OpenGuessr is to purchase a supporter tier.
-        <br />
-        <br />
-        You can also help by sharing the game! More players result in a lower cost per user due to bulk request discounts.
-        Thank you!
-        <br />
-        <br />
-        <br />
-      </p>
-      <div id="costTextGradient"></div>
-      <p id="costExplanationToggle">Read more</p>
-    </div>
-    <h3 class="beforeExitHeader">Want to reload the page?</h3>
-    <div class="beforeExitNote">
-      <p id="reloadExitNote" class="secondaryExitNote">To prevent additional API costs, please use this button.</p>
-      <button id="beforeExitReloadButton" class="standardButton">
-        <img alt="reloadIcon" id="reloadIcon" src="/img/reload_icon.png" />
-      </button>
-    </div>
-    <div class="exitSpacer"></div>
-    <h3 class="beforeExitHeader">Want to leave now, but return in the future?</h3>
-    <div class="beforeExitNote secondaryExitNote">
-      <p>Please keep the tab open to reduce API usage. Thank you!</p>
-    </div>
-    <div class="exitSpacer"></div>
-    <button id="beforeExitClose" class="standardButton white closeButton">Close</button>
-    <button id="beforeExitNotAgain" class="standardButton white closeButton">Don't show again</button>
-  </div>
-</div>
+<BeforeExitPopup />
 <HelpPopup />
 <SignupIframe />
 <!-- remaining windows -->
@@ -693,56 +649,7 @@
     <button id="multiplayerSelectorBack" class="standardButton white closeButton" stlye="display: none">Back</button>
   </div>
 </div>
-<!-- Result screen -->
-<div id="EndOverlay">
-  <div id="endBottomArea">
-    <StreakRestore />
-    <div id="endBottomBar">
-      <div id="floatingResultLeaderboardArea" class="hideForSupporters">
-        <div id="floatingResultLeaderboardAd"></div>
-        <RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." learnMore="true" />
-      </div>
-      <div id="resultBox">
-        <p class="resultField" id="motivationText"></p>
-        <div id="mobileResultLeaderboardAdArea" class="resultField hideForSupporters">
-          <div id="mobileResultLeaderboardAd"></div>
-          <RemoveAdsText text="Go Ad-Free." learnMore="true" />
-        </div>
-        <div class="resultField">
-          <img src="/img/distance_icon.png" alt="Distance icon" id="distanceIcon" />
-          <p id="distanceText"></p>
-        </div>
-        <div id="XParea" class="resultField">
-          <div id="supporterBoost">
-            <p id="supporterBoostText">Supporter Boost (Default)</p>
-          </div>
-          <p id="endScreenLevelDisplay">Lvl. 42</p>
-          <div id="endScreenXPbar">
-            <div class="XPbarResource" id="endScreenXPbarResource"></div>
-          </div>
-          <p id="endScreenLevel">Default XP</p>
-          <div id="streakDisplay">
-            <img id="streakIcon" src="/img/streak_icon.png" alt="country streak" />
-            <p id="endScreenStreakText">7 (x1.1)</p>
-          </div>
-        </div>
-        <div id="XPbarNoAccount" class="resultField">
-          <p id="signupPromptText">See & save your earned points!</p>
-          <button id="resultSignupPrompt" class="standardButton">Sign up</button>
-        </div>
-        <div id="nextRoundArea">
-          <button id="endScreenOpenLocation">
-            <img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
-          </button>
-          <button id="nextRound" class="standardButton">
-            <p id="nextRoundText">Next round</p>
-            <img id="nextRoundArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
+<ResultScreen />
 <div id="blackBackground"></div>
 <div id="nmpzBackground"></div>
 <SingleplayerNmpz />

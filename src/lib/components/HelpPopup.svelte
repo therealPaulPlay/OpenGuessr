@@ -6,7 +6,7 @@
 </script>
 
 {#if $helpPopup}
-<Popup>
+<Popup verySlim=true >
   <div class="popup-title">
     <h1>How to play</h1>
   </div>

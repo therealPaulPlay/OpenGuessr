@@ -244,7 +244,7 @@
         }
 
         h1 {
-            font-size: 35px;
+            font-size: 40px !important;
         }
 
         h2 {
@@ -253,10 +253,6 @@
 
         p {
             font-size: 22px;
-        }
-
-        #navbarTitle {
-            font-size: 27px;
         }
     }
 </style>

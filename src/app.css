@@ -235,6 +235,21 @@ li {
     margin-bottom: 20px;
 }
 
+.leaderboardAds {
+    width: 728px;
+    height: 90px;
+    text-align: center;
+    overflow: hidden;
+}
+
+.directionArrowIcon {
+    width: 25px;
+    height: 25px;
+    transform: rotate(270deg);
+    vertical-align: -3px;
+    margin-right: -10px;
+}
+
 /* end of new, universal styling ---------------------------------------------------------------------------------------------------------------------- */
 
 .leftNavbarButtons {
@@ -253,16 +268,6 @@ li {
     transition: all 250ms ease;
     z-index: 14;
     pointer-events: none;
-}
-
-#topCursorDetectionBar {
-    position: fixed;
-    top: 0;
-    height: 15px;
-    left: 0;
-    right: 0;
-    z-index: 990;
-    /* above everything, except for error popups */
 }
 
 .topBarExpand {
@@ -534,182 +539,6 @@ li {
     user-select: none;
 }
 
-#XParea {
-    display: flex;
-    align-items: center;
-    padding: 10px;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 7px;
-    position: relative;
-    flex-grow: 100;
-    min-width: 300px;
-    height: 40px;
-}
-
-@keyframes XPFade {
-    0% {
-        filter: brightness(1) contrast(1)
-    }
-
-    50% {
-        filter: brightness(1.75) contrast(0.5)
-    }
-
-    100% {
-        filter: brightness(1) contrast(1)
-    }
-}
-
-#supporterBoost {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(21, 26, 32, 0.5);
-    transition: opacity 250ms ease;
-    pointer-events: none;
-    opacity: 0;
-    z-index: 2;
-    border-radius: 7px;
-}
-
-#supporterBoost p {
-    color: white;
-    font-size: 25px;
-}
-
-#supporterBoostText {
-    opacity: 0;
-}
-
-@keyframes supporterBoostTextMove {
-    0% {
-        opacity: 0;
-        transform: translateX(-100%);
-    }
-
-    20% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    80% {
-        opacity: 1;
-        transform: translateX(0);
-    }
-
-    100% {
-        opacity: 0;
-        transform: translateX(100%);
-    }
-}
-
-.supporterBoostTextMove {
-    animation: supporterBoostTextMove 2s ease-in-out;
-}
-
-#endScreenXPbar {
-    flex-grow: 10;
-    height: 15px;
-    background-color: #ccc;
-    border-radius: 7px;
-    transition: none;
-}
-
-#XPbarNoAccount {
-    color: white;
-    text-align: center;
-    background-color: rgba(0, 0, 0, 0.2);
-    line-height: 38px;
-    justify-content: space-between;
-}
-
-#resultSignupPrompt {
-    background-color: rgba(255, 255, 255, 0.1);
-    box-sizing: border-box;
-    outline: 3px rgba(255, 255, 255, 0.2) solid;
-    margin: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    margin-right: 1px;
-}
-
-#signupPromptText {
-    padding-inline: 10px;
-    text-wrap: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-.XPbarResource {
-    height: 100%;
-    border-radius: 7px;
-    background-color: #00cc00;
-    width: 0%;
-    transition: none;
-}
-
-.XPbarAnimate {
-    transition: width 1s ease;
-    animation: XPFade 1s ease-in-out;
-}
-
-#endScreenLevel {
-    font-size: 22px;
-    width: auto;
-    vertical-align: middle;
-    text-align: center;
-    text-wrap: nowrap;
-    flex-grow: 1;
-    min-width: 115px;
-}
-
-#endScreenStreakText {
-    font-size: 20px;
-    vertical-align: middle;
-    text-align: center;
-    color: white;
-    margin-left: 3px;
-    text-wrap: nowrap;
-}
-
-#streakIcon {
-    width: 25px;
-    height: auto;
-}
-
-#streakDisplay {
-    margin-right: auto;
-    margin-left: 10px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    flex-direction: row;
-    flex-grow: 1;
-}
-
-#endScreenLevelDisplay {
-    font-size: 14px;
-    width: auto;
-    margin-left: auto;
-    vertical-align: middle;
-    text-align: center;
-    padding-inline: 10px;
-    margin-right: 5px;
-    margin-left: 8px;
-    color: white;
-    background-color: #00cc00;
-    border-radius: 7px;
-    text-wrap: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
 .accountButton {
     min-height: 40px;
     max-height: 40px;
@@ -810,14 +639,6 @@ textarea {
     opacity: 0.5;
 }
 
-#badgeWindow,
-#pinWindow,
-#supporterWindow,
-#beforeExitWindow {
-    display: block !important;
-    max-width: 700px;
-}
-
 #friendBrowserWindow,
 #friendInboxWindow {
     display: block !important;
@@ -876,10 +697,6 @@ textarea {
     z-index: 960;
 }
 
-#beforeExitPopup {
-    z-index: 981;
-}
-
 .supporterBox {
     padding: 10px;
     width: calc(100% - 20px);
@@ -912,174 +729,6 @@ textarea {
     margin-left: 3px;
     margin-top: 5px;
     margin-right: 10px;
-}
-
-#infoIconBeforeExit {
-    margin-top: 7px;
-}
-
-.beforeExitHeader {
-    margin-top: 15px;
-    margin-bottom: 10px;
-    width: fit-content;
-}
-
-#beforeExitNotAgain {
-    opacity: 0.5;
-    margin-right: 8px;
-}
-
-.exitSpacer {
-    width: 100%;
-    height: 10px;
-}
-
-.beforeExitNote {
-    border-radius: 5px;
-    background-color: rgba(30, 31, 44, 0.5);
-    padding: 7px;
-    padding-left: 10px;
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.secondaryExitNote {
-    opacity: 0.75;
-}
-
-#reloadIcon {
-    width: 25px;
-    height: 25px;
-    vertical-align: -4px;
-}
-
-.costDisplayArea {
-    border-radius: 10px;
-    background: linear-gradient(30deg, rgb(128, 33, 33), rgb(153, 26, 38));
-    color: white;
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    padding: 5px;
-    width: calc(100% - 10px);
-    margin-top: 15px;
-    gap: 7px;
-    position: relative;
-    z-index: 2;
-}
-
-#costExplanationArea {
-    padding: 15px;
-    background-color: rgba(30, 31, 44, 0.5);
-    color: white;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    border-bottom-right-radius: 10px;
-    border-bottom-left-radius: 10px;
-    margin-top: -10px;
-    position: relative;
-    z-index: 1;
-    padding-top: 20px;
-}
-
-#costExplanationArea p {
-    opacity: 0.75;
-}
-
-#costExplanationText {
-    overflow: hidden;
-    max-height: 65px;
-    transition: max-height 500ms ease;
-    text-overflow: ellipsis;
-}
-
-#costTextGradient {
-    position: absolute;
-    width: 100%;
-    height: 75px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    background: linear-gradient(rgba(0, 0, 0, 0), rgb(34, 35, 45) 95%);
-    border-radius: 10px;
-}
-
-.costDisplayValue {
-    padding: 5px;
-    padding-inline: 10px;
-    background-color: rgba(0, 0, 0, 0.15);
-    border-radius: 5px;
-    flex-grow: 1;
-    text-wrap: nowrap;
-}
-
-.positiveCostDisplay {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.costDisplayText {
-    margin-left: 10px;
-    flex-grow: 100;
-}
-
-.costDisplayTextPositive {
-    opacity: 0.75;
-}
-
-#costExplanationToggle {
-    position: absolute;
-    right: 30px;
-    bottom: 10px;
-    text-shadow: 0 0 50px rgb(34, 35, 45);
-    color: white;
-    transition: opacity 250ms ease;
-    cursor: pointer;
-    text-decoration: underline;
-}
-
-#costExplanationToggle:hover {
-    opacity: 0.5;
-}
-
-.costFlex {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    flex-grow: 1;
-    min-width: 100%;
-    gap: 10px;
-}
-
-.costFlexPositive {
-    border-radius: 5px;
-    background-color: var(--box-color);
-}
-
-.costButton {
-    margin: 0 !important;
-    flex-grow: 1;
-    background: linear-gradient(5deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.5));
-    color: white;
-}
-
-.beforeExitReloadArea {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-#reloadExitNote {
-    flex-grow: 100;
-}
-
-#beforeExitReloadButton {
-    color: black;
-    background-color: white;
 }
 
 .removeTextUnderline {
@@ -1973,15 +1622,6 @@ search {
     transform: rotate(180deg);
 }
 
-.directionArrowIcon {
-    width: 25px;
-    height: 25px;
-    filter: invert();
-    transform: rotate(270deg);
-    vertical-align: -3px;
-    margin-right: -10px;
-}
-
 #multiplayerFade {
     width: 100%;
     height: 100%;
@@ -2529,176 +2169,6 @@ search {
     background-color: rgba(56, 56, 79, 0.2);
 }
 
-#endScreenOpenLocation {
-    padding: 10px;
-    height: 100%;
-    border-radius: 7px;
-    transition: filter 250ms ease;
-    user-select: none;
-    color: white;
-    background-color: white;
-    pointer-events: auto;
-}
-
-#endScreenOpenLocation:hover {
-    filter: brightness(70%);
-}
-
-#streetviewIcon {
-    vertical-align: -2px;
-    filter: invert();
-}
-
-#guessText {
-    position: absolute;
-    left: 50%;
-    transform: translate(-50%, 0);
-}
-
-#helpButton {
-    pointer-events: auto;
-    transition: filter 250ms ease, opacity 250ms ease;
-    margin-left: -5px;
-    font-size: 20px;
-    height: 30px;
-}
-
-#helpButton:hover {
-    filter: brightness(0.7);
-}
-
-#revealCompass {
-    pointer-events: auto;
-    transition: filter 250ms ease, opacity 250ms ease;
-    margin-left: -5px;
-}
-
-#revealCompass:hover {
-    filter: brightness(0.7);
-}
-
-/* GameOver content */
-
-#EndOverlay {
-    overflow: hidden;
-    color: #EEE;
-    text-align: center;
-    opacity: 0;
-    pointer-events: none;
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: 13;
-    top: 0;
-    display: none;
-    /* changed in code to flex */
-    justify-content: center;
-    align-items: flex-end;
-    transition: opacity 250ms ease-out;
-}
-
-/* This is for the result screen */
-#resultBox {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 20px 20px;
-    color: white;
-    font-size: 25px;
-    height: fit-content;
-    max-width: 735px;
-    flex-wrap: wrap;
-    width: calc(100% - 20px);
-    gap: 10px;
-}
-
-.resultField {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 7px;
-    padding: 10px;
-    flex-grow: 10;
-    height: 40px;
-    position: relative;
-    transition: width 250ms ease, height 250ms ease;
-    overflow: hidden;
-}
-
-#distanceIcon {
-    width: 30px;
-    height: 30px;
-    margin-right: 10px;
-}
-
-#endBottomBar {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: fit-content;
-    flex: 1;
-    border-radius: 10px;
-    background-color: var(--panel-color);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    pointer-events: auto;
-}
-
-#endBottomArea {
-    position: sticky;
-    height: fit-content;
-    display: flex;
-    bottom: 10px;
-    margin-inline: 10px;
-    flex-direction: column;
-    pointer-events: none;
-    width: 100%;
-    overflow: hidden;
-    z-index: 13;
-}
-
-#motivationText {
-    color: white;
-    font-size: 25px;
-    flex-grow: 100;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-wrap: nowrap;
-    min-width: 40%;
-}
-
-#nextRound {
-    transition: filter 250ms ease, scale 250ms ease, opacity 250ms ease;
-    color: black;
-    background-color: white;
-    font-size: 25px;
-    border-radius: 7px;
-    opacity: 100%;
-    padding: 10px 30px;
-    margin: 0;
-}
-
-#nextRoundArea {
-    z-index: 15;
-    margin: 15px 15px;
-    position: absolute;
-    bottom: 5px;
-    right: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-}
-
-#nextRound:hover {
-    filter: brightness(0.7);
-}
-
-#nextRoundText {
-    display: inline;
-}
-
 @keyframes rotation {
     from {
         transform: rotate(0deg);
@@ -3104,71 +2574,6 @@ input[type="checkbox"]:focus {
     height: 55%;
 }
 
-/* Ad CSS */
-.leaderboardAds {
-    width: 728px;
-    height: 90px;
-    text-align: center;
-    overflow: hidden;
-}
-
-#mobileResultLeaderboardAdArea {
-    min-width: 330px;
-    max-width: 380px;
-    height: 50px;
-    max-height: 60px;
-    padding: 5px;
-    flex-grow: 1;
-    position: relative;
-}
-
-#mobileResultLeaderboardAd {
-    z-index: 1;
-    overflow: hidden;
-    text-align: center;
-    width: 320px;
-    height: 50px;
-}
-
-#floatingResultLeaderboardArea {
-    width: 728px;
-    height: 90px;
-    display: none;
-    justify-content: center;
-    align-items: center;
-    border-radius: 10px;
-    background-color: var(--panel-color);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    position: absolute;
-    top: -110px;
-    left: 50%;
-    transform: translate(-50%, 0);
-    padding: 5px;
-    pointer-events: auto;
-}
-
-#floatingResultLeaderboardAd {
-    z-index: 1;
-    width: 728px;
-    height: 90px;
-    text-align: center;
-}
-
-@media (min-width: 1900px) {
-    #floatingResultLeaderboardArea {
-        display: flex;
-    }
-
-    #mobileResultLeaderboardAdArea {
-        display: none;
-    }
-
-    #endBottomArea {
-        overflow: visible;
-    }
-}
-
 .bottomFooterAdText {
     display: flex;
     justify-content: center;
@@ -3180,34 +2585,6 @@ input[type="checkbox"]:focus {
 @media (max-width: 700px) {
     #pinSelector {
         justify-content: space-around;
-    }
-}
-
-/* phones / mobile but also narrow devices like ipads */
-@media all and (max-width: 1350px) {
-
-    #resultBox {
-        font-size: 22px;
-    }
-
-    #motivationText {
-        font-size: 22px;
-    }
-
-    #endScreenLevel {
-        font-size: 20px;
-    }
-
-    #revealCompass {
-        display: none;
-    }
-
-    #nextRoundArea {
-        position: relative;
-        right: 0;
-        margin-bottom: 0;
-        margin-top: 10px;
-        width: calc(100% - 20px);
     }
 }
 
@@ -3286,10 +2663,6 @@ input[type="checkbox"]:focus {
         right: 0px;
         left: 0px;
         width: 65%;
-    }
-
-    #topCursorDetectionBar {
-        display: none;
     }
 
     .bottomSocialItem {

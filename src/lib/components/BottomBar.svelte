@@ -132,35 +132,6 @@
     vertical-align: 1px;
   }
 
-  @media all and (max-width: 1200px) {
-    .bottomSocialItem {
-      display: none;
-    }
-  }
-
-  @media (orientation: portrait) and (max-width: 800px) {
-    .BottomBar {
-      padding-bottom: 60px;
-    }
-  }
-
-  @media (orientation: portrait) and (max-width: 800px) {
-    .bottomFooterAds {
-      bottom: 12px;
-    }
-  }
-
-  .bottomRightMenu {
-    width: calc(22% - 8px);
-    min-width: 200px;
-  }
-
-  @media all and (orientation: landscape) and (max-width: 1200px) {
-    .bottomRightMenu {
-      width: calc(30% - 8px);
-    }
-  }
-
   .bottomFooterAds {
     position: fixed;
     bottom: 12px;
@@ -207,5 +178,74 @@
   #discordButton:hover {
     background-color: #8c2aed;
     filter: none;
+  }
+
+  #guessText {
+    position: absolute;
+    left: 50%;
+    transform: translate(-50%, 0);
+  }
+
+  #helpButton {
+    pointer-events: auto;
+    transition:
+      filter 250ms ease,
+      opacity 250ms ease;
+    margin-left: -5px;
+    font-size: 20px;
+    height: 30px;
+  }
+
+  #helpButton:hover {
+    filter: brightness(0.7);
+  }
+
+  #revealCompass {
+    pointer-events: auto;
+    transition:
+      filter 250ms ease,
+      opacity 250ms ease;
+    margin-left: -5px;
+  }
+
+  #revealCompass:hover {
+    filter: brightness(0.7);
+  }
+
+  @media all and (max-width: 1200px) {
+    .bottomSocialItem {
+      display: none;
+    }
+
+    #revealCompass {
+      display: none;
+    }
+  }
+
+  @media (orientation: portrait) {
+    #revealCompass {
+      display: none;
+    }
+  }
+
+  @media (orientation: portrait) and (max-width: 800px) {
+    .bottomFooterAds {
+      bottom: 12px;
+    }
+
+    .BottomBar {
+      padding-bottom: 60px;
+    }
+  }
+
+  .bottomRightMenu {
+    width: calc(22% - 8px);
+    min-width: 200px;
+  }
+
+  @media all and (orientation: landscape) and (max-width: 1200px) {
+    .bottomRightMenu {
+      width: calc(30% - 8px);
+    }
   }
 </style>

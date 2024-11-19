@@ -1,7 +1,6 @@
 import { writable } from "svelte/store";
 
 export const mapVisible = writable(true);
-export const resultMap = writable(false);
 export const mapExpanded = writable(true);
 export const mapHolderMarginRight = writable(0);
 

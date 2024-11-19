@@ -1,10 +1,11 @@
 <script>
   import { mapExpanded, mapVisible } from "$lib/stores/context-specific/mapStore";
+  import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 </script>
 
 {#if $mapVisible}
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-  <div id="map" tabindex="0" style:max-height={$mapExpanded ? "100%" : "0%"}>
+  <div id="map" tabindex="0" style:max-height={$mapExpanded ? "100%" : "0%"} class:mapFullOpacity={Boolean($resultScreenEnabled)}>
     <div id="mapPlaceholderBeforeLoad"></div>
   </div>
 {/if}
@@ -34,6 +35,10 @@
 
   #map * {
     font-family: Roboto;
+  }
+
+  .mapFullOpacity {
+    opacity: 1 !important;
   }
 
   #mapPlaceholderBeforeLoad {

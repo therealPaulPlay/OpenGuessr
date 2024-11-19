@@ -1,11 +1,12 @@
 import { selectedPinIndex } from "./profileView.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
-import { enableResultScreen, hideCaptchaPopup, hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showCaptchaPopup } from "./mainUI.js";
+import { hideCaptchaPopup, hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showCaptchaPopup } from "./mainUI.js";
 import { showNotification } from "../src/lib/utils/notifications.js";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
 import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
 import { errorPopup } from "./errorHandling.js";
+import { enableResultScreen } from "../src/lib/utils/setResultScreen.js";
 import { currentlyLoadedLocationsArray } from "$lib/logic/locationGeneration.js";
 import { confirmButtonActive } from "../src/lib/stores/context-specific/confirmButtonStore.js";
 
@@ -231,8 +232,6 @@ export let addedMarkers = []; // this is needed for this api to delete them agai
 
 //reset the map - used for going to the next round. 
 export function resetMap() {
-    document.getElementById("mapHolder").classList.remove("mapHolderToResult");
-    document.getElementById("map").classList.remove("mapFullOpacity");
     handleMapUnhover();
 
     if (map) {

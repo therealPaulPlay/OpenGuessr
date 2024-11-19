@@ -1,10 +1,12 @@
 import { loadAndInitializeLibrary } from "$lib/utils/scriptLoader";
 import { clamp } from "../src/lib/utils/clamp.js";
-import { errorPopup } from "./errorHandling.js";
-import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector, supporterWindowIfAuthenticated, enableResultScreen } from "./mainUI.js";
+import { errorPopup } from "$lib/utils/errorHandling";
+import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser, setGamemodeSelector } from "./mainUI.js";
+import { supporterWindowIfAuthenticated } from "../src/lib/utils/showSupporterPopup.js";
 import { startTimer } from "../src/lib/utils/timer.js";
 import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
 import { selectedBadge, selectedPinIndex, supporterLevel } from "./profileView.js";
+import { enableResultScreen } from "../src/lib/utils/setResultScreen.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, mapMarkerLat, mapMarkerLong, setConfirmButtonState, updateMinimapWithTeamMarkers } from "./miniMap.js";
 import { playSound } from "../src/lib/utils/soundManager.js";

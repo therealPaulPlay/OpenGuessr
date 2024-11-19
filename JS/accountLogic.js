@@ -1,10 +1,11 @@
-import { deleteUser, getUser, updateExperience } from "./userAPI";
-import { checkTextLength, freeSupporterBoostEnabled, resultScreenEnabled, setAdVisibility, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
+import { deleteUser, getUser } from "./userAPI";
+import { checkTextLength, freeSupporterBoostEnabled, setAdVisibility, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel, attemptJoinViaLink } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "../src/lib/utils/countryGuesserFunctions.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
-import { getCountryFromCoords, currentStreetviewLat, currentStreetviewLong } from "./main.js";
+import { currentLocationLatitude, currentLocationLongitude } from "../src/lib/stores/locationStore.js";
+import { getCountryFromCoords } from "../src/lib/utils/countryFromCoordinates.js";
 import { mapMarkerLat, mapMarkerLong, diameter } from "./miniMap.js";
 import { toggleStreakWindow } from "./streakAdPopup.js";
 import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
@@ -13,11 +14,11 @@ import { errorPopup } from "$lib/utils/errorHandling";
 import { initializeWebsocketConnection, setInboxStatus } from "./friendMenu.js";
 import { saveRoundToLog } from "./singleplayerOptions.js";
 import { setUserXP } from "$lib/utils/setUserXP";
+import { resultScreenEnabled } from "../src/lib/stores/context-specific/resultScreenStore.js";
+import { get } from "svelte/store";
 
 let accountLockedArray;
-
 let lastDistance;
-
 let lastXPloadingAttemptAborted = false;
 
 let loginButton = document.getElementById("loginButton");
@@ -183,7 +184,7 @@ async function changeUItoSignedIn(supporterLevel) {
     setAdVisibility(false);
   }
 
-  if (resultScreenEnabled && lastXPloadingAttemptAborted) {
+  if (get(resultScreenEnabled) && lastXPloadingAttemptAborted) {
     loadResultScreenXP(lastDistance);
   }
 }
@@ -363,7 +364,7 @@ export function restoreOldStreak(oldStreak) {
 
 async function streakCalculation() {
   if (!multiplayer && !playingCompetition) {
-    if (await getCountryFromCoords(mapMarkerLat, mapMarkerLong) == await getCountryFromCoords(currentStreetviewLat, currentStreetviewLong)) {
+    if (await getCountryFromCoords(mapMarkerLat, mapMarkerLong) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
       streak++;
     } else {
       if (streak >= 2) {
@@ -466,7 +467,7 @@ export async function loadResultScreenXP(distance) {
   if (multiplayer) mode = "Multiplayer";
   if (playingCompetition) mode = "Competition";
 
-  saveRoundToLog(mode, distance, [currentStreetviewLat, currentStreetviewLong]);
+  saveRoundToLog(mode, distance, [get(currentLocationLatitude), get(currentLocationLongitude)]);
 
   // If Authenticated or in Multiplayer, show XP thing ------------------------------
   if (isAuthenticated || multiplayer) {

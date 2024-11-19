@@ -16,12 +16,6 @@
     });
   });
 
-  export function shrinkMapIfMobile() {
-    if (window.innerHeight > window.innerWidth && mapExpanded) {
-      mapExpanded.set(false);
-    }
-  }
-
   function hideToggleMapButtonIfMobile(hide) {
     if (window.innerHeight > window.innerWidth) {
       if (hide) {
@@ -54,7 +48,6 @@
       font-size: 25px;
       padding: 8px;
       border-radius: 10px;
-      transition: filter 250ms ease;
       user-select: none;
       color: white;
       background-color: var(--panel-color);

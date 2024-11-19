@@ -8,8 +8,6 @@
     timerText,
   } from "$lib/stores/context-specific/mapModeIndicatorStore";
 
-  import { onMount } from "svelte";
-
   let mapModeTextContainer = $state();
   let scrollModeText = $state(false);
 

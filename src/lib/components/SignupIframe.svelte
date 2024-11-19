@@ -1,15 +1,6 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
   import { signupPopup } from "$lib/stores/uiStore";
-  import { onMount } from "svelte";
-
-  let loaderVisible = $state(true);
-
-  onMount(() => {
-    loaderVisible = true;
-
-    setTimeout(() => (loaderVisible = false), 250);
-  });
 
   if (typeof window !== "undefined") {
     window.onmessage = function (e) {
@@ -21,7 +12,7 @@
             $signupPopup = false;
             break;
           case data === "loadAccountStatus":
-            checkAuthenticationStatus(); // TODO: Import checkAuthenticationStatus function and make this functional
+            checkAuthenticationStatus(); // !TODO: Import checkAuthenticationStatus function and make this functional
             break;
         }
       } catch (error) {
@@ -43,7 +34,6 @@
         allowtransparency="true"
         frameborder="0"
         src="/signup"
-        style:opacity={loaderVisible ? "0" : "1"}
       ></iframe>
     </div>
   </Popup>
@@ -77,7 +67,6 @@
     background: transparent;
     outline: 5px solid rgba(75, 75, 75, 0.25);
     border-radius: 5px;
-    transition: opacity 250ms ease-in-out;
     position: relative;
     z-index: 2;
   }

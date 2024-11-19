@@ -15,26 +15,6 @@
 
   const basePrices = [2.99, 6.99, 14.99, 24.99];
 
-  export function supporterWindowIfAuthenticated() {
-    if ($isAuthenticated) {
-      supporterPopupVisible.set(true);
-      return true;
-    } else {
-      showConfirmPopup(
-        "Account required",
-        "To support OpenGuessr with a one-time payment, an account is required, so that you can enjoy amazing supporter benefits on all devices!",
-        () => {
-          showPageBrowser("/signup.html");
-        },
-        undefined,
-        undefined,
-        undefined,
-        "Sign up",
-      );
-      return false;
-    }
-  }
-
   function closeSupporterWindow() {
     supporterPopupVisible.set(false);
   }
@@ -195,10 +175,10 @@
 </script>
 
 {#if $supporterPopupVisible}
-  <Popup z="971">
+  <Popup z="971" slim=true>
     <div class="popup-title">
       <h1>
-        Support OpenGuessr
+        Supporter Tiers
         <img id="supporterIconTitle" alt="supporter tag" src="/img/supporter_icon.png" />
       </h1>
     </div>
@@ -206,16 +186,8 @@
       <div class="supporterBox" id="headingSupporterBox">
         <p>
           The goal of this website is to provide a community-driven geography game that is open to everyone. However, as
-          <a
-            class="removeTextUnderline"
-            href="https://developers.google.com/maps/documentation/javascript/usage-and-billing?hl=en"
-            target="_blank"
-          >
-            Maps APIs
-          </a>
-          are
-          <span class="supporterTextHighlight">highly expensive</span>
-          , this has become
+          Maps API's are
+          <span class="supporterTextHighlight">highly expensive</span>, this has become
           <span class="supporterTextHighlight">more challenging than ever.</span>
         </p>
       </div>
@@ -320,6 +292,7 @@
     flex-grow: 1;
     border-radius: 4px;
     margin-right: 2px;
+    border: none;
     transition:
       opacity 250ms ease,
       filter 250ms ease;
@@ -343,6 +316,12 @@
     transition:
       background-color 250ms ease,
       filter 250ms ease;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px;
+    flex-wrap: wrap;
   }
 
   .adTierBoxDisabled {
@@ -391,6 +370,7 @@
     background: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(25, 215, 70, 0.7));
     width: 100%;
     margin-bottom: 15px;
+    border: none;
   }
 
   :global(.baseTierPrice) {
@@ -462,7 +442,7 @@
 
     21% {
       opacity: 0;
-      transform: translate(100%, 344px);
+      transform: translate(100%, 348px);
     }
 
     30% {
@@ -471,7 +451,7 @@
 
     40% {
       opacity: 0;
-      transform: translateY(344px);
+      transform: translateY(348px);
     }
 
     41% {

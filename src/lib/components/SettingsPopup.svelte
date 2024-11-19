@@ -4,7 +4,7 @@
   import { setSoundsVolume, playSound } from "$lib/utils/soundManager";
 
   import { settingsPopup } from "$lib/stores/uiStore";
-  import { Scan, WindArrowDown } from "lucide-svelte";
+  import { Scan } from "lucide-svelte";
 
   // Settings - Window ---------------------------------------------------------------------------------------
   function closeSettingsButton() {
@@ -77,8 +77,10 @@
   // Exit Popup Setting ---------------------
   let exitPopupButtonText = $state("Default");
 
-  onMount(() => {
-    exitPopupButtonText = Number(localStorage.getItem("hideExitPopup")) ? "Disabled" : "Enabled";
+  $effect(() => {
+    if ($settingsPopup) {
+      exitPopupButtonText = Number(localStorage.getItem("hideExitPopup")) ? "Disabled" : "Enabled";
+    }
   });
 
   function toggleExitPopup() {
@@ -135,7 +137,7 @@
 </script>
 
 {#if $settingsPopup}
-  <Popup>
+  <Popup verySlim=true>
     <div class="popup-title">
       <h1>Settings</h1>
     </div>

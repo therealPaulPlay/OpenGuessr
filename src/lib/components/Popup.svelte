@@ -1,6 +1,6 @@
 <script>
   import { onMount, onDestroy } from "svelte";
-  let { children, z, frameLess, socialPopup } = $props();
+  let { children, z, frameLess, socialPopup, slim, verySlim } = $props();
 
   let animateClass = $state("");
 
@@ -19,6 +19,7 @@
     class="uiWindow {animateClass}"
     class:frameLess={Boolean(frameLess)}
     style:z-index={z}
+    style:max-width={Boolean(verySlim) ? "550px" : (Boolean(slim) ? "700px" : "")}
     class:socialWindow={Boolean(socialPopup)}
   >
     {@render children?.()}
@@ -58,7 +59,7 @@
   .uiWindow {
     width: 45%;
     min-width: 300px;
-    max-width: 600px;
+    max-width: 800px;
     max-height: 90%;
     font-size: 25px;
     padding: 25px 25px 10px;

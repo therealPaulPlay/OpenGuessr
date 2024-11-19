@@ -1,9 +1,10 @@
 <script>
   let { children } = $props();
-  import { resultMap, mapHolderMarginRight } from "$lib/stores/context-specific/mapStore";
+  import { mapHolderMarginRight } from "$lib/stores/context-specific/mapStore";
+  import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 </script>
 
-<div id="mapHolder" class="regularMapSize mapHolder" class:mapHolderToResult={$resultMap} style:margin-right={$mapHolderMarginRight}>
+<div id="mapHolder" class="regularMapSize mapHolder" class:mapHolderToResult={$resultScreenEnabled} style:margin-right={$mapHolderMarginRight}>
   {@render children?.()}
 </div>
 
