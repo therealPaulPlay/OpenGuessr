@@ -6,6 +6,7 @@
   import { get } from "svelte/store";
   import { playSound } from "$lib/utils/soundManager";
   import { applySingleplayerSettings } from "$lib/utils/applySingleplayerSettings";
+  import { checkStartCompetitionRound } from "$lib/logic/competitionLogic";
 
   const streetviewAPIKey = "AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs";
 

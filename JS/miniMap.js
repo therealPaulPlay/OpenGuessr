@@ -1,14 +1,15 @@
 import { selectedPinIndex } from "./profileView.js";
 import { multiplayer, multiplayerStateToGuessed, peerId, sendTeamMarkers, yourTeam } from "./multiplayer.js";
-import { hideCaptchaPopup, hideToggleMapButtonIfMobile, isElementClickable, resultScreenEnabled, showCaptchaPopup } from "./mainUI.js";
+import { hideCaptchaPopup, isElementClickable, resultScreenEnabled, showCaptchaPopup } from "./mainUI.js";
 import { showNotification } from "../src/lib/utils/notifications.js";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
-import { competitionTimer, playingCompetition, checkCompetitionRoundStatus } from "./competitionLogic.js";
+import { playingCompetition } from "../src/lib/logic/competitionLogic.js";
 import { errorPopup } from "./errorHandling.js";
-import { enableResultScreen } from "../src/lib/utils/setResultScreen.js";
 import { currentlyLoadedLocationsArray } from "$lib/logic/locationGeneration.js";
 import { confirmButtonActive } from "../src/lib/stores/context-specific/confirmButtonStore.js";
+import { mapPinLat, mapPinLng } from "../src/lib/stores/context-specific/mapStore.js";
+import { get } from "svelte/store";
 
 
 // Initialize the map with correct provider --------------------------------------------------------------------
@@ -184,7 +185,6 @@ export async function initializeMapIfNotAlready() {
     }
 }
 
-
 let currentlyInitializing = false;
 
 // Callback from the captcha
@@ -275,26 +275,26 @@ async function adjustMapToCountry() {
                 let north = -Infinity;
                 let west = Infinity;
                 let east = -Infinity;
-    
+
                 currentlyLoadedLocationsArray.forEach(([lat, lon]) => {
                     lat = parseFloat(lat);
                     lon = parseFloat(lon);
-    
+
                     if (lat > north) north = lat;
                     if (lat < south) south = lat;
                     if (lon > east) east = lon;
                     if (lon < west) west = lon;
                 });
-    
+
                 // Calculate the center point
                 const centerLat = (north + south) / 2;
                 const centerLon = (east + west) / 2;
-    
+
                 // Calculate the longer side
                 const latDiff = north - south;
                 const lonDiff = east - west;
                 diameter = Math.max(latDiff, lonDiff);
-    
+
                 // Define function to determine zoom level from diameter
                 function calculateZoom(diameter) {
                     if (diameter > 60) return 2;       // entire planet view
@@ -303,15 +303,15 @@ async function adjustMapToCountry() {
                     if (diameter > 5) return 5;        // small country
                     return Math.min(10, 6 + Math.floor(5 - diameter)); // smaller region, minimum zoom at 10
                 }
-    
+
                 // Calculate zoom level
                 const zoomLevel = calculateZoom(diameter);
-               
+
                 currentCenterLat = centerLat;
                 currentCenterLong = centerLon;
                 currentZoom = zoomLevel;
                 previousLocationArray = currentlyLoadedLocationsArray;
-    
+
                 map.panTo({ lat: centerLat, lng: centerLon });
                 map.setZoom(zoomLevel);
             }
@@ -390,9 +390,6 @@ function getMapType(provider) {
 }
 
 //Placing the marker on the minimap ------------------------------------------------------------------------
-export let mapMarkerLat = 0;
-export let mapMarkerLong = 0;
-
 let marker;
 
 function onMapClick(latLng) {
@@ -403,9 +400,9 @@ function onMapClick(latLng) {
         marker.setMap(null);
     }
 
-    //sets the variables from the USER input (this is the one that the user has placed)
-    mapMarkerLat = latLng.lat();
-    mapMarkerLong = latLng.lng();
+    // Set Map Marker Position to user input
+    mapPinLat.set(latLng.lat());
+    mapPinLng.set(latLng.lng());
 
     var yourIcon = {
         url: './IMG/your_marker' + selectedPinIndex + '.png',
@@ -424,7 +421,7 @@ function onMapClick(latLng) {
 
     addedMarkers.push(marker);
 
-    sendTeamMarkers(mapMarkerLat, mapMarkerLong);
+    sendTeamMarkers(get(mapPinLat), get(mapPinLng));
 }
 
 export function updateMinimapWithTeamMarkers(markerArray) {
@@ -503,11 +500,6 @@ export function updateMinimapWithTeamMarkers(markerArray) {
 }
 
 //event listeners -----------------------------------------------------------------
-//click listener for confirm button
-
-const confirmBTN = document.getElementById("confirmButton");
-confirmBTN.addEventListener("click", confirmButtonClicks);
-
 //toggle languages
 const languageBTN = document.getElementById("mapTypeButton");
 languageBTN.addEventListener("click", () => {
@@ -541,43 +533,6 @@ document.getElementById("map").addEventListener('mouseleave', handleMapUnhover);
 // Touch events
 document.getElementById("map").addEventListener('touchstart', handleMapHover);
 document.getElementById("map").addEventListener('touchend', handleMapUnhover);
-
-
-// Guess / Confirm function ----------------------------------------------------------------------------------
-
-export function confirmButtonClicks() {
-    confirmBTN.style.pointerEvents = "none"; //disable the button (will be re-enabled by setConfirmButtonState)
-    playSound("basic_button");
-
-    document.getElementById("nextRoundText").textContent = "Next round";
-
-    if (playingCompetition) {
-        try {
-            competitionTimer.stopTimer();
-        } catch (e) {
-            console.warn("Competition timer already stopped: " + e);
-        }
-
-        if (!checkCompetitionRoundStatus(true)) {
-            document.getElementById("nextRoundText").textContent = "See ranking";
-        } else {
-            document.getElementById("nextRoundText").textContent = "Next round";
-        }
-    }
-
-    if (!multiplayer) {
-        enableResultScreen(mapMarkerLat, mapMarkerLong);
-    } else {
-        document.getElementById("guessText").textContent = "Waiting";
-        document.getElementById("confirmButton").style.pointerEvents = "none";
-        document.getElementById("map").style.visibility = "hidden";
-        hasGuessed = false;
-        setConfirmButtonState();
-        hideToggleMapButtonIfMobile(true);
-
-        multiplayerStateToGuessed();
-    }
-}
 
 // Confirm Button with Spacebar and a few checks
 document.getElementById("map").addEventListener("keyup", function (event) {

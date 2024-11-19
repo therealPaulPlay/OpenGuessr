@@ -513,7 +513,7 @@ try {
         history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
     }
 
-    leaderboardIdFromLinkAfterSubmit = urlParams.get("leaderboardsubmit");
+    leaderboardIdFromLinkAfterSubmit = urlParams.get("leaderboard-submit");
 
     if (leaderboardIdFromLinkAfterSubmit) {
         showRatingBox = true;

@@ -1,35 +1,39 @@
-import { confirmButtonClicks } from "./miniMap";
-import { startTimer } from "../src/lib/utils/timer";
-import { disableResultScreen, setGamemodeSelector, showPageBrowser, toggleCategoryMenu } from "./mainUI";
-import { checkGenerationTypeAndGenerate } from "./categoryMenu";
-import { playSound } from "../src/lib/utils/soundManager";
-import { errorPopup } from "./errorHandling";
-import { setRestriction } from "./multiplayer";
-import { addCompetitionPlayed, supporterLevel } from "./profileView";
+import { startTimer } from "$lib/utils/timer";
+import { disableResultScreen } from "$lib/utils/setResultScreen";
+// import { checkGenerationTypeAndGenerate } from "../../../JS/categoryMenu"; !TODO !CHANGE
+import { playSound } from "$lib/utils/soundManager";
+import { errorPopup } from "$lib/utils/errorHandling";
+// import { setRestriction } from "../../../JS/multiplayer"; !TODO !CHANGE
+// import { addCompetitionPlayed } from "../../../JS/profileView"; !TODO !CHANGE
+import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
+import { supporterLevel } from "$lib/stores/accountStore";
+import { competition } from "$lib/stores/modeStore";
+import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
+import {
+    mapModeIndicatorVisible,
+    modeText,
+    leaveFunction
+} from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { get } from "svelte/store";
+import { username } from "$lib/stores/accountStore";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
 
-export let competition;
-export let playingCompetition = false;
-export let currentRound = 0;
-
 let competitionCombinedScore = 0;
+let competitionTimer;
 
-export let competitionTimer;
-
-// called in category menu before generating so that these values are set before they are needed!
+// Called in category menu before generating so that these values are set before they are needed!
 export function loadCompetition(regenerate) {
-    competition = JSON.parse(localStorage.getItem("competition"));
-
-    currentRound = 0; // reset round index
+    competitionRound.set(0); // reset round index
     competitionCombinedScore = 0; // reset combined score
+    leaveFunction.set(leaveCompetition); // Set leave function for mapModeIndicator
 
     if (competition) {
         localStorage.removeItem("competition"); // remove localstorage key
-        playingCompetition = true;
+        competition.set(true);
         disableResultScreen(); // in case result screen is enabled
         setCompetitionUI(true);
-        setRestriction(competition.restriction);
+        setRestriction(get(competitionData)?.restriction || "standard");
 
         addCompetitionPlayed();
         setTimeout(() => {
@@ -44,94 +48,56 @@ export function loadCompetition(regenerate) {
 
 // Set competition UI ----------------------------------------------------------------------------------------------------
 export function setCompetitionUI(enable) {
-    try {
-        toggleCategoryMenu(true); // collapse category menu, then hide it
-        let categoryButton = document.getElementById("categoryMenuButton");
-        let hardmodeTimerButton = document.getElementById("timerButton");
+    if (enable) {
+        mapModeIndicatorVisible.set(true);
+        modeText.set("Competition");
 
-        if (enable) {
-            document.getElementById("mapModeIndicator").style.display = "flex";
-            document.getElementById("mapModeText").textContent = "Competition";
-            document.getElementById("multiplayerLeave").style.display = "none";
-            document.getElementById("competitionLeave").style.display = "block";
-
-            categoryButton.style.opacity = "0.5";
-            categoryButton.style.pointerEvents = "none";
-            setGamemodeSelector(false);
-            hardmodeTimerButton.style.opacity = "0.5";
-            hardmodeTimerButton.style.pointerEvents = "none";
-
-            document.querySelectorAll(".mobileHideInMultiplayer").forEach((e) => {
-                e.style.pointerEvents = "none";
-                e.style.opacity = "0.5";
-            });
-
-        } else {
-            document.getElementById("mapModeIndicator").style.display = "none";
-            document.getElementById("competitionLeave").style.display = "none";
-
-            categoryButton.style.opacity = "1";
-            categoryButton.style.pointerEvents = "auto";
-            setGamemodeSelector(true);
-            hardmodeTimerButton.style.opacity = "1";
-            hardmodeTimerButton.style.pointerEvents = "auto";
-
-            document.querySelectorAll(".mobileHideInMultiplayer").forEach((e) => {
-                e.style.pointerEvents = "auto";
-                e.style.opacity = "1";
-            });
-        }
-    } catch (error) {
-        console.error("Error enabling competition UI: " + error);
+    } else {
+        mapModeIndicatorVisible.set(false);
+        leaveFunction.set(); // Reset leave function
     }
 }
 
 // Round Logic ---------------------------------------------------------------------------------------------------------
-
 export function checkStartCompetitionRound() {
-    if (playingCompetition) {
-        currentRound++;
-        document.getElementById("mapModeText").textContent = "Competition (Round: " + currentRound + "/" + competition.roundAmount + ")";
-        if (competition.restriction && competition.restriction != "standard") {
-            document.getElementById("mapModeText").textContent = "Competition (Round: " + currentRound + "/" + competition.roundAmount + ") (" + competition.restriction + ")";
+    if (get(competition)) {
+        competitionRound.set(get(competitionRound) + 1);
+        modeText.set("Competition (Round: " + get(competitionRound) + "/" + competition.roundAmount + ")");
+
+        if (get(competitionData)?.restriction && get(competitionData)?.restriction != "standard") {
+            modeText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ") (" + get(competitionData)?.restriction + ")");
         }
 
-        competitionTimer = startTimer(competition.roundLength, competitionTimerExpired);
+        competitionTimer = startTimer(get(competitionData)?.roundLength, confirmButtonClicks);
     }
 }
 
-function competitionTimerExpired() {
-    confirmButtonClicks(); //if the timer expires and the player hasn't guessed yet, the guess function will be evoked.
+export function stopCompetitionTimer() {
+    try {
+        competitionTimer.stopTimer();
+    } catch (e) {
+        console.warn("Competition timer already stopped: " + e);
+    }
 }
 
 // Score logic ------------------------------------------------------------------------------------------------------
-
 export function addResultToCompetitionScore(scoreToAdd) {
     competitionCombinedScore += scoreToAdd;
 }
 
 // Leave logic --------------------------------------------------------------------------------------------------------
-
-let leaveButton = document.getElementById("competitionLeave");
-
-leaveButton.addEventListener("click", () => {
-    playSound("basic_button");
-    leaveCompetition(true);
-});
-
 export async function leaveCompetition(showResult) {
-    if (playingCompetition) {
-        playingCompetition = false;
+    if (get(competition)) {
+        competition.set(false);
         setCompetitionUI(false);
         checkGenerationTypeAndGenerate();
         setRestriction("standard");
-    
+
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
-        await submitCompetitionResult(competition.id, competitionCombinedScore, supporterLevel, localStorage.getItem("bearer"));
-    
+        await submitCompetitionResult(competition.id, competitionCombinedScore, get(supporterLevel), localStorage.getItem("bearer"));
+
         if (showResult) {
-            // Show the leaderboard
-            showPageBrowser("/competitions.html?leaderboardsubmit=" + competition.id);
+            window.location.href = "/competitions?leaderboard-submit=" + competition.id;
         }
     }
 }
@@ -139,7 +105,7 @@ export async function leaveCompetition(showResult) {
 async function submitCompetitionResult(id, score, supporterLevel, token) {
     try {
         const requestBody = {
-            username: localStorage.getItem("username"),
+            username: get(username),
             id: localStorage.getItem("id"),
             score: score,
             supporter_level: supporterLevel || 0
@@ -195,7 +161,7 @@ async function submitCompetitionResult(id, score, supporterLevel, token) {
 // Check round status and end if needed ----------------------------------------------------------------------------------
 
 export function checkCompetitionRoundStatus(justReturnResult) {
-    if (currentRound == competition.roundAmount) {
+    if (get(competitionRound) == get(competitionData)?.roundAmount) {
         if (!justReturnResult) {
             leaveCompetition(true);
         }

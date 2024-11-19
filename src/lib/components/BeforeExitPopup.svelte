@@ -98,7 +98,7 @@
 </script>
 
 {#if showExitIntentPopup}
-  <Popup slim="true" z=981>
+  <Popup slim="true" z="981">
     <div class="popup-title">
       <h1>Enjoy playing?</h1>
     </div>

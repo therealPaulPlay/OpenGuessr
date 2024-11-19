@@ -1,8 +1,5 @@
-import { leaveMultiplayerRound, toggleMultiplayerSelector } from "./multiplayer.js";
+import { toggleMultiplayerSelector } from "./multiplayer.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
-import { changeCategory, loadCommunityCategories, mapCategory, loadMapCategory, attachCategoryEventListeners, checkGenerationTypeAndGenerate } from "./categoryMenu.js";
-import { leaveCompetition, loadCompetition } from "./competitionLogic.js";
-import { loadProfileFromId, supportedAmount, supporterLevel } from "./profileView.js";
 
 document.getElementById("leaderboardButton").addEventListener("click", () => {
     playSound("basic_button");
@@ -122,31 +119,6 @@ countryCategoriesExpand.addEventListener("click", () => {
 
     countryCategoriesExpanded = !countryCategoriesExpanded;
 });
-
-// Social top bar area --------------------------------------------------------------------------------------------------------------
-
-export function setGamemodeSelector(enabled) {
-    if (enabled) {
-        document.getElementById("gamemodeMenu").classList.remove("gamemodeMenuDisabled");
-    } else {
-        document.getElementById("gamemodeMenu").classList.add("gamemodeMenuDisabled");
-    }
-}
-
-// Username UI endless scroll --------------------------------------------------------------------------------------------------
-
-// Check if the text length exceeds the threshold
-export function checkTextLength() {
-    const accountName = document.getElementById("accountName");
-
-    const textLength = accountName.textContent.length;
-
-    if (textLength > 10) {
-        accountName.classList.add("namescroll");
-    } else {
-        accountName.classList.remove("namescroll");
-    }
-}
 
 // Mobile UI Menu Buttons -----------------------------------------------------------------------------------------
 document.getElementById("mobileLeaderboardButton").addEventListener("click", () => {

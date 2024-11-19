@@ -1,20 +1,25 @@
 import { deleteUser, getUser } from "./userAPI";
 import { checkTextLength, freeSupporterBoostEnabled, setAdVisibility, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
-import { isHost, multiplayer, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel, attemptJoinViaLink } from "./multiplayer.js";
+import { isHost, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel, attemptJoinViaLink } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "../src/lib/utils/countryGuesserFunctions.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
 import { currentLocationLatitude, currentLocationLongitude } from "../src/lib/stores/locationStore.js";
 import { getCountryFromCoords } from "../src/lib/utils/countryFromCoordinates.js";
-import { mapMarkerLat, mapMarkerLong, diameter } from "./miniMap.js";
+import { diameter } from "./miniMap.js";
+import { mapPinLat, mapPinLng } from "../src/lib/stores/context-specific/mapStore.js";
 import { toggleStreakWindow } from "./streakAdPopup.js";
-import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
+import { addResultToCompetitionScore, playingCompetition } from "../src/lib/logic/competitionLogic.js";
 import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel, supporterLevel } from "./profileView.js";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { initializeWebsocketConnection, setInboxStatus } from "./friendMenu.js";
 import { saveRoundToLog } from "./singleplayerOptions.js";
 import { setUserXP } from "$lib/utils/setUserXP";
 import { resultScreenEnabled } from "../src/lib/stores/context-specific/resultScreenStore.js";
+import { animateIncrement } from "../src/lib/utils/animateIncrement.js";
+import { isAuthenticated, experience } from "$lib/stores/accountStore";
+import { isTokenExpired } from "../src/lib/utils/isTokenExpired.js";
+import { multiplayer } from "../src/lib/stores/modeStore.js";
 import { get } from "svelte/store";
 
 let accountLockedArray;
@@ -86,8 +91,6 @@ async function submitAccountDeletion() {
 
 // Custom signup -------------------------------------------------------------------------------------------------------------------
 
-export let isAuthenticated = false; //true if user is logged in 
-
 checkAuthenticationStatus();
 
 // Global function that changes everything to logged in or signed out (all other sign-in functions are related to this)
@@ -96,54 +99,22 @@ export function checkAuthenticationStatus() {
 
   if (bearerToken != null && bearerToken != "") {
     if (isTokenExpired(bearerToken)) {
-      isAuthenticated = false;
+      isAuthenticated.set(false);
       resetLocalSave();
     }
     else {
-      isAuthenticated = true;
+      isAuthenticated.set(true);
     }
   }
   else {
-    isAuthenticated = false;
+    isAuthenticated.set(false);
   }
   checkSigninStatusAndLoadUserInfo(); //set UI accordingly
 }
 
-
-/* this should decode the token and return expired (true/false) - only works if the token is not encrypted,
-otherwise we will need a jwt token verifier (with public key) */
-function isTokenExpired(token) {
-  const base64Url = token.split(".")[1];
-  const base64 = base64Url.replace(/-/g, "+").replace(/_/g, "/");
-  const jsonPayload = decodeURIComponent(
-    atob(base64)
-      .split("")
-      .map(function (c) {
-        return "%" + ("00" + c.charCodeAt(0).toString(16)).slice(-2);
-      })
-      .join("")
-  );
-
-  try {
-    const { exp } = JSON.parse(jsonPayload);
-    const expired = Date.now() >= exp * 1000;
-    return expired;
-  }
-
-  catch {
-    expired = false;
-    return expired;
-  }
-
-}
-
-//these are being accessed from index.htm
-
 function resetLocalSave() {
   localStorage.removeItem("bearer");
   localStorage.removeItem("id");
-  localStorage.removeItem("username");
-  localStorage.removeItem("experience");
   updateLoadedProfileData(null);
 }
 
@@ -218,13 +189,13 @@ function updateSupporterProfileHighlight(highlight) {
 
 // part of checkSigninStatusAndLoadUserInfo
 export function displayUserInfo() {
-  uiSetUserXP(localStorage.getItem("experience"));
+  uiSetUserXP(get(experience));
   displayAccountName.innerHTML = localStorage.getItem("username");
   checkTextLength();
 }
 
 async function checkSigninStatusAndLoadUserInfo() {
-  if (isAuthenticated) {
+  if (get(isAuthenticated)) {
     profileButton.classList.remove("notSignedIn");
     //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
     try {
@@ -303,7 +274,7 @@ export function uiSetUserXP(xp) {
     requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
   }
 
-  if (isAuthenticated) {
+  if (get(isAuthenticated)) {
     document.getElementById("progressRingLevel").innerHTML = templevel;
     resultLevelDisplay.innerHTML = "Lvl. " + templevel;
 
@@ -364,7 +335,7 @@ export function restoreOldStreak(oldStreak) {
 
 async function streakCalculation() {
   if (!multiplayer && !playingCompetition) {
-    if (await getCountryFromCoords(mapMarkerLat, mapMarkerLong) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
+    if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
       streak++;
     } else {
       if (streak >= 2) {
@@ -458,7 +429,7 @@ export async function loadResultScreenXP(distance) {
 
   lastDistance = distance;
 
-  if (!isAuthenticated && !multiplayer) {
+  if (!get(isAuthenticated) && !get(multiplayer)) {
     lastXPloadingAttemptAborted = true;
   }
 
@@ -470,13 +441,13 @@ export async function loadResultScreenXP(distance) {
   saveRoundToLog(mode, distance, [get(currentLocationLatitude), get(currentLocationLongitude)]);
 
   // If Authenticated or in Multiplayer, show XP thing ------------------------------
-  if (isAuthenticated || multiplayer) {
+  if (get(isAuthenticated) || get(multiplayer)) {
     lastXPloadingAttemptAborted = false;
 
     // Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
     let XPbarResource = document.getElementById("endScreenXPbarResource");
 
-    let currentXP = Number(localStorage.getItem("experience"));
+    let currentXP = Number(get(experience));
 
     if (currentXP == null) {
       currentXP = 0;
@@ -530,7 +501,7 @@ export async function loadResultScreenXP(distance) {
       XPbarResource.style.width = uiSetUserXP(currentXP).fraction * 100 + "%"; // otherwise, set the starting point of the bar to the current xp
     }
 
-    if (earnedXP > 0 && isAuthenticated) {
+    if (earnedXP > 0 && get(isAuthenticated)) {
       setUserXP(currentXP + earnedXP, earnedXP, false); //save XP, this is the last step! This function is async, but we don't await it as we set the XP to be currentXP + earnedXP in the ui anyway
     }
 
@@ -550,52 +521,4 @@ export async function loadResultScreenXP(distance) {
     }, 10);
 
   }
-}
-
-// Save / Set user XP ----------------------------------------------------------------------------------------------
-
-// Animate currency values to tick up gradually ----------------------------------------------------------------------------------------------
-
-function animateIncrement(element, startValue, endValue, duration) {
-  let startTime = null;
-  let lastValue = startValue;
-  let lastSoundPlayTime = 0; // Track the time of the last sound play
-  const soundCooldown = 100; // Minimum time between sound plays (in milliseconds)
-
-  function step(timestamp) {
-    if (!startTime) startTime = timestamp;
-    const progress = Math.min((timestamp - startTime) / duration, 1); // Progress from 0 to 1
-    const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3); // Ease-out cubic function
-    const currentValue = Math.floor(startValue + (endValue - startValue) * easeOutCubic(progress));
-
-    // Update only the XP part of the text while keeping the rest intact
-    const originalText = element.dataset.originalText;
-    element.innerHTML = originalText.replace(/(\+\d+)\s*(XP)/, `+${currentValue} $2`);
-
-    // Check if value increased and enough time has passed since the last sound play
-    if (currentValue > lastValue) {
-      const now = Date.now();
-
-      if (now - lastSoundPlayTime >= soundCooldown) {
-        playSound("score_increase");
-        lastSoundPlayTime = now; // Update the last sound play time
-      }
-
-      lastValue = currentValue;
-    }
-
-    if (progress < 1) {
-      requestAnimationFrame(step);
-    } else {
-      // Ensure it ends at the exact endValue
-      element.innerHTML = originalText.replace(/(\+\d+)\s*(XP)/, `+${endValue} $2`);
-    }
-  }
-
-  // Store the original text in a data attribute if not already done
-  if (!element.dataset.originalText) {
-    element.dataset.originalText = element.innerHTML;
-  }
-
-  requestAnimationFrame(step);
 }

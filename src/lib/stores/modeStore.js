@@ -4,9 +4,10 @@ import { writable } from "svelte/store";
 export const imageGuesser = writable(false);
 export const countryGuesser = writable(false);
 
-// Singleplayer or Multiplayer
+// Singleplayer, Multiplayer or Competition
 export const singleplayer = writable(true);
 export const multiplayer = writable(false);
+export const competition = writable(false);
 
 // More Options -----------------------------------------------------
 

@@ -5,7 +5,8 @@
   import { reloadPanorama } from "$lib/stores/locationStore";
   import { helpPopup } from "$lib/stores/uiStore";
   import { mapHolderMarginRight } from "$lib/stores/context-specific/mapStore";
-  import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
+  import { confirmButtonActive, confirmButtonText } from "$lib/stores/context-specific/confirmButtonStore";
+  import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
   import { onMount } from "svelte";
 
   // Load the saved map offset state
@@ -65,10 +66,13 @@
     </button>
   </div>
   <div class="barMenu bottomRightMenu">
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
       class="standardButton bottomBarButton confirmButton"
       id="confirmButton"
       class:confirmActive={$confirmButtonActive}
+      onclick={confirmButtonClicks}
     >
       <button
         class="socialItem"
@@ -91,7 +95,7 @@
       >
         <img src="./img/discover_icon.png" alt="Toggle compass" class="socialIcon bottomBarIcon" />
       </button>
-      <p id="guessText">Guess</p>
+      <p id="guessText">{$confirmButtonText}</p>
     </div>
   </div>
 </div>

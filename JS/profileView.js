@@ -4,6 +4,8 @@ import { displayUserInfo, isAuthenticated } from "./accountLogic.js";
 import { errorPopup } from "./errorHandling.js";
 import { checkIfFriendsWithId, sendFriendRequest } from "./friendMenu.js";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
+import { get } from "svelte/store";
+import { experience } from "../src/lib/stores/accountStore.js";
 // This is used to dynamically load the profile view
 
 // Profile Window ---------------------------------------------------------------------------------------------
@@ -537,7 +539,7 @@ export let selectedPinIndex = 0;
 
 document.getElementById("selectedProfilePin").addEventListener("click", () => {
     playSound("basic_button");
-    updatePinLocks(localStorage.getItem("experience"));
+    updatePinLocks(get(experience));
     loadSelectedPin();
     document.getElementById("pinPopup").style.display = "flex";
 });
@@ -579,7 +581,7 @@ function updatePinLocks() {
         const lockRequirementAmount = pinRequirements[lockIndex][1];
 
         if (lockRequirementType == "experience") {
-            if (localStorage.getItem("experience") >= lockRequirementAmount) {
+            if (get(experience) >= lockRequirementAmount) {
                 lock.style.display = "none"; // Hide pinLock if XP is enough
             } else {
                 lock.style.display = "flex"; // Show pinLock if XP is not enough

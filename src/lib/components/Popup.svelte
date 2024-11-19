@@ -14,12 +14,11 @@
   });
 </script>
 
-<div class="popupHolder">
+<div class="popupHolder" style:z-index={z}>
   <div
     class="uiWindow {animateClass}"
     class:frameLess={Boolean(frameLess)}
-    style:z-index={z}
-    style:max-width={Boolean(verySlim) ? "550px" : (Boolean(slim) ? "700px" : "")}
+    style:max-width={Boolean(verySlim) ? "550px" : Boolean(slim) ? "700px" : ""}
     class:socialWindow={Boolean(socialPopup)}
   >
     {@render children?.()}

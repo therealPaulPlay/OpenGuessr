@@ -7,6 +7,7 @@
     indicatorFading,
     timerText,
   } from "$lib/stores/context-specific/mapModeIndicatorStore";
+  import { playSound } from "$lib/utils/soundManager";
 
   let mapModeTextContainer = $state();
   let scrollModeText = $state(false);
@@ -39,10 +40,14 @@
 </script>
 
 {#if $mapModeIndicatorVisible}
-  <div id="mapModeIndicator">
+  <div id="mapModeIndicator" class:fading={$indicatorFading}>
     {#if $leaveFunction}
-      <button class="leaveButton standardButton closeButton {$indicatorFading ? 'fading' : ''}" onclick={leaveFunction}
-        >Leave</button
+      <button
+        class="leaveButton standardButton closeButton"
+        onclick={() => {
+          playSound("leave_round");
+          leaveFunction();
+        }}>Leave</button
       >
     {/if}
     <div bind:this={mapModeTextContainer} class="mapModeTextContainer">

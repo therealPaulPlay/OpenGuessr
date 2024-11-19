@@ -345,29 +345,6 @@ li {
     align-items: center;
 }
 
-.profileInfo {
-    border-radius: 5px;
-    padding-left: 10px;
-    height: 40px;
-    margin-inline: 2px;
-    max-height: 40px;
-    background-color: rgba(168, 168, 187, 0.3);
-    transition: filter 250ms ease;
-    cursor: pointer;
-    display: flex;
-    grid: 5px;
-    justify-content: center;
-    align-items: center;
-}
-
-.profileInfo:hover {
-    filter: brightness(0.7);
-}
-
-.profileInfoSupporter {
-    background: linear-gradient(30deg, rgba(133, 230, 153, 0.3), rgba(255, 255, 255, 0.2));
-}
-
 .notSignedIn {
     opacity: 50%;
     pointer-events: none;
@@ -491,22 +468,6 @@ li {
     margin-left: 8px;
     margin-top: auto;
     margin-bottom: 5px;
-}
-
-.namescroll {
-    animation: scrollText 5s ease-in-out infinite alternate;
-}
-
-/* Animation for scrolling */
-@keyframes scrollText {
-    0% {
-        transform: translateX(5px);
-    }
-
-    100% {
-        transform: translateX(calc(-100% + 75px));
-        /* adjust second param to be max-width of element minus about 5px */
-    }
 }
 
 .progressContainer {

@@ -2,7 +2,10 @@
   import { settingsPopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
   import Notification from "$lib/components/Notification.svelte";
+  import { isAuthenticated, experience, supporterLevel } from "$lib/stores/accountStore";
   import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
+  import { competition, multiplayer } from "$lib/stores/modeStore";
+  import { get } from "svelte/store";
 
   function openSettings() {
     playSound("basic_button");
@@ -24,6 +27,25 @@
     clearTimeout(gamemodeTransitionTimeout);
     sideMenusDisabled = true;
   }
+
+  // Check if the username should be scrolled automatically (happens when it is too long)
+  let accountNameText = $state();
+  let scrollNameText = $state(false);
+
+  function checkTextLength() {
+    const textLength = accountNameText.length;
+    scrollNameText = textLength > 10;
+  }
+
+  $effect(() => {
+    checkTextLength();
+  });
+
+  let preventNavigateOut = $state(false);
+
+  $effect(() => {
+    preventNavigateOut = $competition || $multiplayer; // Check if certain buttons should be disabled to prevent navigating out (e.g. Starting a competition in Multiplayer)
+  });
 </script>
 
 <div id="mobileButtonArea" class="topButtonArea">
@@ -35,18 +57,20 @@
     <button id="mobileLogoutButton" class="standardButton accountButton mobileAccountButton">
       <img class="logoutImage" src="/img/signout.png" alt="Log out of your OpenGuessr account." />
     </button>
-    <button id="mobileCategoryButton" class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer">
+    <button id="mobileCategoryButton" class="standardButton accountButton mobileAccountButton" class:preventNavigateOut>
       <img class="socialBarIcons invertSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Map Categories" />
     </button>
     <button
       id="mobileMultiplayerButton"
-      class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer"
+      class="standardButton accountButton mobileAccountButton"
+      class:preventNavigateOut
     >
       <img class="socialBarIcons invertSocialBarIcon" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
     </button>
     <button
       id="mobileCompetitionsButton"
-      class="standardButton accountButton mobileAccountButton mobileHideInMultiplayer"
+      class="standardButton accountButton mobileAccountButton"
+      class:preventNavigateOut
     >
       <img class="socialBarIcons invertSocialBarIcon" src="/img/competitions_icon.png" alt="Competitions symbol" />
     </button>
@@ -63,9 +87,16 @@
 <div id="topButtonArea" class="topButtonArea">
   <div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
     <button class="standardButton accountButton" id="loginButton" type="button" alt="log in">Log in</button>
-    <div class="profileInfo notSignedIn" id="profileInfo">
+    <div class="profileInfo notSignedIn" id="profileInfo" class:profileInfoSupporter={supporterLevel >= 1}>
       <div id="accountNameArea">
-        <p id="accountName">Guest</p>
+        <p
+          id="accountName"
+          bind:textContent={accountNameText}
+          contenteditable="false"
+          class:namescroll={scrollNameText}
+        >
+          Guest
+        </p>
       </div>
       <div class="progressContainer">
         <svg class="progressRing" width="30" height="30">
@@ -96,7 +127,7 @@
     onmouseout={centerMouseOut}
     role="menu"
   >
-    <button id="leaderboardButton" class="standardButton accountButton">
+    <button id="leaderboardButton" class="standardButton accountButton" class:preventNavigateOut>
       <span class="topBarExpand">Leaderboard</span>
       <img
         class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
@@ -104,7 +135,7 @@
         alt="Experience Leaderboard"
       />
     </button>
-    <button id="multiplayerButton" class="accountButton standardButton">
+    <button id="multiplayerButton" class="accountButton standardButton" class:preventNavigateOut>
       <span class="topBarExpand">Multiplayer</span>
       <img
         class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
@@ -112,7 +143,7 @@
         alt="Open the multiplayer menu"
       />
     </button>
-    <button id="competitionsButton" class="standardButton accountButton">
+    <button id="competitionsButton" class="standardButton accountButton" class:preventNavigateOut>
       <span class="topBarExpand">Competitions</span>
       <img
         class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
@@ -122,14 +153,19 @@
     </button>
   </div>
   <div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
-    <button class="standardButton accountButton" id="categoryMenuButton">
+    <button class="standardButton accountButton" id="categoryMenuButton" class:preventNavigateOut>
       Maps
       <img id="mapsArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="socialBarIcons arrowIcon" />
     </button>
-    <button class="standardButton accountButton" id="singleplayerOptionsButton" onclick={() => {
-      playSound("basic_button");
-      singleplayerOptionsPopup.set(true);
-    }}>
+    <button
+      class="standardButton accountButton"
+      id="singleplayerOptionsButton"
+      class:preventNavigateOut
+      onclick={() => {
+        playSound("basic_button");
+        singleplayerOptionsPopup.set(true);
+      }}
+    >
       <img src="/img/joystick_icon.png" alt="one or five seconds" id="joystickIcon" class="socialBarIcons" />
     </button>
     <button class="standardButton accountButton" id="settingsButton" onclick={openSettings}>
@@ -140,4 +176,47 @@
 </div>
 
 <style>
+  .profileInfo {
+    border-radius: 5px;
+    padding-left: 10px;
+    height: 40px;
+    margin-inline: 2px;
+    max-height: 40px;
+    background-color: rgba(168, 168, 187, 0.3);
+    transition: filter 250ms ease;
+    cursor: pointer;
+    display: flex;
+    grid: 5px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  /* Disable certain buttons in Competitions, Multiplayer etc. to prevent users from leaving accidentally */
+  .preventNavigateOut {
+    pointer-events: none !important;
+    opacity: 0.5 !important;
+  }
+
+  .profileInfo:hover {
+    filter: brightness(0.7);
+  }
+
+  .profileInfoSupporter {
+    background: linear-gradient(30deg, rgba(133, 230, 153, 0.3), rgba(255, 255, 255, 0.2));
+  }
+
+  :global(.namescroll) {
+    animation: scrollText 5s ease-in-out infinite alternate;
+  }
+
+  @keyframes scrollText {
+    0% {
+      transform: translateX(5px);
+    }
+
+    100% {
+      transform: translateX(calc(-100% + 75px));
+      /* adjust second param to be max-width of element minus about 5px */
+    }
+  }
 </style>

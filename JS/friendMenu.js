@@ -1,5 +1,5 @@
 import { isAuthenticated } from "./accountLogic";
-import { leaveCompetition } from "./competitionLogic";
+import { leaveCompetition } from "../src/lib/logic/competitionLogic";
 import { errorPopup } from "..src/lib/utils/errorHandling";
 import { showPageBrowser } from "./mainUI";
 import { showNotification } from "../src/lib/utils/notifications";

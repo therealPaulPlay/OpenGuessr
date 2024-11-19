@@ -2,7 +2,12 @@
 <script>
   import StreakRestore from "$lib/components/StreakRestore.svelte";
   import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
-  import { resultScreenEnabled, distanceText, motivationText } from "$lib/stores/context-specific/resultScreenStore";
+  import {
+    resultScreenEnabled,
+    distanceText,
+    motivationText,
+    continueText,
+  } from "$lib/stores/context-specific/resultScreenStore";
   import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
   import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
   import { get } from "svelte/store";
@@ -57,7 +62,13 @@
             <img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
           </button>
           <button id="nextRound" class="standardButton white">
-            <p id="nextRoundText">Next round</p>
+            <p
+              class="nextRoundText"
+              style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
+              style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
+            >
+              {continueText}
+            </p>
             <img id="nextRoundArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
           </button>
         </div>
@@ -416,7 +427,7 @@
     filter: brightness(0.7);
   }
 
-  #nextRoundText {
+  .nextRoundText {
     display: inline;
   }
 
