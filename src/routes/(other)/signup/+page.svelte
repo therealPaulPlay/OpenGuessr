@@ -345,7 +345,7 @@
                         id="signup"
                         class="standardButton"
                         bind:this={signupButtonSignupPage}
-                        onclick={signUpAction}>Sign Up</button>
+                        onclick={signUpAction}>Sign up</button>
                 </div>
                 <p class="switchFormBox">
                     Already signed up?
