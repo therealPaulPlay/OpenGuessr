@@ -4,7 +4,7 @@ import { get } from "svelte/store";
 let hideNotificationTimeout;
 let visibilityTimeout;
 
-export async function showNotification(text, acceptFunction, dismissFunction, showAccept, renameAcceptToLearnMore) {
+export async function showNotification(text, acceptFunctionParam, dismissFunctionParam, showAccept, renameAcceptToLearnMore) {
     clearTimeout(hideNotificationTimeout);
     clearTimeout(visibilityTimeout);
 
@@ -42,8 +42,8 @@ export async function showNotification(text, acceptFunction, dismissFunction, sh
         }, 5000); // Shorter expiration for informational notifications
     }
 
-    acceptFunction.set(acceptFunction);
-    dismissFunction.set(dismissFunction);
+    acceptFunction.set(acceptFunctionParam);
+    dismissFunction.set(dismissFunctionParam);
 }
 
 export function hideNotification() {

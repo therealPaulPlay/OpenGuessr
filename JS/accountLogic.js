@@ -6,7 +6,7 @@ import { checkIfGuessWasCorrect } from "../src/lib/utils/countryGuesserFunctions
 import { playSound } from "../src/lib/utils/soundManager.js";
 import { currentLocationLatitude, currentLocationLongitude } from "../src/lib/stores/locationStore.js";
 import { getCountryFromCoords } from "../src/lib/utils/countryFromCoordinates.js";
-import { diameter } from "./miniMap.js";
+import { diameter } from "../src/lib/logic/miniMap.js";
 import { mapPinLat, mapPinLng } from "../src/lib/stores/context-specific/mapStore.js";
 import { toggleStreakWindow } from "./streakAdPopup.js";
 import { addResultToCompetitionScore, playingCompetition } from "../src/lib/logic/competitionLogic.js";

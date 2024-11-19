@@ -14,11 +14,7 @@
   let timerSliderValue = $state(0);
 
   let timerSliderText = $derived(
-    timerSliderValue
-      ? timerSliderValue == 0 || !timerSliderValue
-        ? "No Timer"
-        : timerSliderValue + " Seconds"
-      : "Not loaded",
+    timerSliderValue == 0 || !timerSliderValue ? "No Timer" : timerSliderValue + " Seconds",
   );
 
   // Timer Slider ---------------------------------------------------------------------------------------------------------------------------
@@ -76,7 +72,7 @@
 </script>
 
 {#if $singleplayerOptionsPopup}
-  <Popup verySlim=true>
+  <Popup verySlim="true">
     <div class="popup-title">
       <h1>Singleplayer</h1>
     </div>

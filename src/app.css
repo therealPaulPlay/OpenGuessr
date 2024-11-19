@@ -250,6 +250,14 @@ li {
     margin-right: -10px;
 }
 
+.infoIcon {
+    width: 30px;
+    height: 30px;
+    opacity: 0.5;
+    margin-left: 3px;
+    margin-right: 10px;
+}
+
 /* end of new, universal styling ---------------------------------------------------------------------------------------------------------------------- */
 
 .leftNavbarButtons {
@@ -596,10 +604,6 @@ textarea {
     pointer-events: auto;
 }
 
-.captchaInfoText {
-    opacity: 0.5;
-}
-
 #friendBrowserWindow,
 #friendInboxWindow {
     display: block !important;
@@ -681,15 +685,6 @@ textarea {
     width: calc(100% - 30px);
     padding-inline: 15px;
     display: flex;
-}
-
-.infoIcon {
-    width: 30px;
-    height: 30px;
-    opacity: 0.5;
-    margin-left: 3px;
-    margin-top: 5px;
-    margin-right: 10px;
 }
 
 .removeTextUnderline {
@@ -2528,11 +2523,6 @@ input[type="checkbox"]:focus {
     margin-top: 20px;
     font-size: 22px;
     opacity: 60%;
-}
-
-.mapHover {
-    width: 60%;
-    height: 55%;
 }
 
 .bottomFooterAdText {

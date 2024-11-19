@@ -10,3 +10,5 @@ export const freeSupporterBoostEnabled = writable(false);
 export const experience = writable(0);
 export const supporterLevel = writable(0);
 export const username = writable("Guest");
+export const selectedPinIndex = writable(0); // Number representing the selected pin
+export const selectedBadge = writable("");

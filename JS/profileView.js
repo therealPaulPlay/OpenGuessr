@@ -6,6 +6,7 @@ import { checkIfFriendsWithId, sendFriendRequest } from "./friendMenu.js";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { get } from "svelte/store";
 import { experience } from "../src/lib/stores/accountStore.js";
+import { selectedPinIndex, selectedBadge } from "$lib/stores/accountStore.js";
 // This is used to dynamically load the profile view
 
 // Profile Window ---------------------------------------------------------------------------------------------
@@ -181,7 +182,7 @@ async function viewProfile(name, experience, joined, yourProfile, profileData, s
                     const button = document.getElementById("profileAddFriend");
                     const newButton = button.cloneNode(true);
                     button.parentNode.replaceChild(newButton, button);
-    
+
                     // Enable button to send friend request
                     document.getElementById("profileAddFriend").style.transform = "scale(0)";
                     document.getElementById("profileAddFriend").style.display = "block";
@@ -464,7 +465,7 @@ async function saveProfileBadge(badge) {
     // only load data - if it was successful, set statistics
     if (!yourLoadedProfileData.badge || yourLoadedProfileData.badge != badge) { // only execute if selection actually changed
         if (await loadProfileFromId(localStorage.getItem("id"), true, false)) {
-            selectedBadge = badge;
+            selectedBadge.set(badge);
             updateProfileData(null, null, null, null, null, null, badge);
         }
     }
@@ -535,8 +536,6 @@ function formatDateTime(datetimeStr) {
 
 // Pin selection --------------------------------------------------------------------------------------------------------------------------
 
-export let selectedPinIndex = 0;
-
 document.getElementById("selectedProfilePin").addEventListener("click", () => {
     playSound("basic_button");
     updatePinLocks(get(experience));
@@ -552,12 +551,12 @@ document.getElementById("pinClose").addEventListener("click", () => {
 // Function to load selected pin from localStorage
 export function loadSelectedPin() {
     if (yourLoadedProfileData) {
-        selectedPinIndex = yourLoadedProfileData.pin ? yourLoadedProfileData.pin : 0;
+        selectedPinIndex.set(yourLoadedProfileData.pin ? yourLoadedProfileData.pin : 0);
     } else {
-        selectedPinIndex = 0;
+        selectedPinIndex.set(0);
     }
 
-    selectPin(selectedPinIndex, false);
+    selectPin(get(selectedPinIndex), false);
 }
 
 // Add click event listener to pinHolder buttons
@@ -643,7 +642,7 @@ function selectPin(index, activeSelect) {
 
             if (index != null || typeof (index) == "number") {
                 // Set selectedPin index to localStorage
-                selectedPinIndex = index;
+                selectedPinIndex.set(index);
                 if (activeSelect) {
                     setSelectedProfilePin(index, true);
                 }
@@ -659,11 +658,9 @@ function selectPin(index, activeSelect) {
 
 // Badge system ----------------------------------------------------------------------------------------------------------------------------------------------------
 
-export let selectedBadge = null;
-
 export function loadSelectedBadge() {
     if (yourLoadedProfileData) {
-        selectedBadge = yourLoadedProfileData.badge ? yourLoadedProfileData.badge : null;
+        selectedBadge.set(yourLoadedProfileData.badge ? yourLoadedProfileData.badge : null);
     }
 }
 

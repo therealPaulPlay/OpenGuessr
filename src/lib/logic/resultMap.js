@@ -1,33 +1,36 @@
-import { map, addedMarkers, initializeMapIfNotAlready } from './miniMap.js';
-import { currentStreetviewLat, currentStreetviewLong } from './main.js';
-import { multiplayer, multiplayerGuessesLocationsArray } from './multiplayer.js';
-import { countryGuesserMode } from './countryGuesser.js';
-import { selectedPinIndex } from './profileView.js';
+import { map, addedMarkers } from "$lib/stores/context-specific/mapStore";
+import { initializeMapIfNotAlready } from "$lib/logic/miniMap";
+import { selectedPinIndex } from "$lib/stores/accountStore";
+import { multiplayerGuessesLocationsArray } from "$lib/stores/multiplayerStore";
+import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
+import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
+import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+import { get } from "svelte/store";
 
 async function awaitMapInit() {
-    return new Promise(resolve =>  document.addEventListener("mapInitialized", () => { resolve(); }));
+    return new Promise(resolve => document.addEventListener("mapInitialized", () => { resolve(); }));
 }
 
 export async function loadResultMap(playersLat, playersLong) {
 
-    if (!map) {
+    if (!get(map)) {
         // Trigger the captcha popup, which results in a map load, then await the map load
         initializeMapIfNotAlready();
         await awaitMapInit();
 
-        if (!map) {
+        if (!get(map)) {
             console.error("Map not properly inizialized - exiting result map load function.");
             return;
         }
     }
-    
+
     // Set map center to the currentStreetviewLat and currentStreetviewLong
-    map.setCenter({ lat: currentStreetviewLat, lng: currentStreetviewLong });
-    map.setZoom(3);
+    get(map).setCenter({ lat: get(currentLocationLatitude), lng: get(currentLocationLongitude) });
+    get(map).setZoom(3);
 
     // Define custom icons for markers
     let yourIcon = {
-        url: './IMG/your_marker' + selectedPinIndex + '.png',
+        url: '/img/your_marker' + get(selectedPinIndex) + '.png',
         size: new google.maps.Size(35, 35),
         origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(17.5, 34),
@@ -35,7 +38,7 @@ export async function loadResultMap(playersLat, playersLong) {
     };
 
     let greenIcon = {
-        url: './IMG/result_marker.png',
+        url: '/img/result_marker.png',
         size: new google.maps.Size(35, 35),
         origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(17.5, 34),
@@ -43,12 +46,12 @@ export async function loadResultMap(playersLat, playersLong) {
     };
 
     // Create LatLng objects for current and player positions
-    let curLatLng = new google.maps.LatLng(currentStreetviewLat, currentStreetviewLong);
+    let curLatLng = new google.maps.LatLng(get(currentLocationLatitude), get(currentLocationLongitude));
     let playerLatLng;
     let pointList;
 
     // Check if in multiplayer mode or country guesser mode
-    if (!countryGuesserMode || multiplayer) {
+    if (!get(countryGuesser) || get(multiplayer)) {
         playerLatLng = new google.maps.LatLng(playersLat, playersLong);
         pointList = new google.maps.LatLngBounds();
         pointList.extend(curLatLng);
@@ -61,7 +64,9 @@ export async function loadResultMap(playersLat, playersLong) {
             icon: yourIcon
         });
 
-        addedMarkers.push(playerMarker);
+        addedMarkers.update((markers) => {
+            return [...markers, playerMarker];
+        });
 
         // Create InfoWindow for playerMarker
         let playerInfoWindow = new google.maps.InfoWindow({
@@ -69,7 +74,7 @@ export async function loadResultMap(playersLat, playersLong) {
         });
 
         // Open InfoWindow when marker is clicked
-        playerMarker.addListener('click', function() {
+        playerMarker.addListener('click', function () {
             playerInfoWindow.open(map, playerMarker);
         });
 
@@ -80,12 +85,14 @@ export async function loadResultMap(playersLat, playersLong) {
             strokeColor: "black"
         });
 
-        addedMarkers.push(polyline);
+        addedMarkers.update((markers) => {
+            return [...markers, polyline];
+        });
     }
 
     // Handle multiplayer markers
-    if (multiplayer) {
-        multiplayerGuessesLocationsArray.forEach(function (element) {
+    if (get(multiplayer)) {
+        get(multiplayerGuessesLocationsArray).forEach(function (element) {
             let newMarkerLat = element[0];
             let newMarkerLong = element[1];
             let newMarkerPinIndex = element[2];
@@ -106,7 +113,7 @@ export async function loadResultMap(playersLat, playersLong) {
             if (newMarkerLat != playersLat || newMarkerLong != playersLong) {
 
                 let newMultiplayerIcon = {
-                    url: "./IMG/your_marker" + newMarkerPinIndex + ".png",
+                    url: "/img/your_marker" + newMarkerPinIndex + ".png",
                     size: new google.maps.Size(35, 35),
                     origin: new google.maps.Point(0, 0),
                     anchor: new google.maps.Point(17.5, 34),
@@ -121,7 +128,9 @@ export async function loadResultMap(playersLat, playersLong) {
                     icon: newMultiplayerIcon,
                 });
 
-                addedMarkers.push(multiplayerMarker);
+                addedMarkers.update((markers) => {
+                    return [...markers, multiplayerMarker];
+                });
 
                 // Create InfoWindow for multiplayerMarker
                 let multiplayerInfoWindow = new google.maps.InfoWindow({
@@ -129,7 +138,7 @@ export async function loadResultMap(playersLat, playersLong) {
                 });
 
                 // Open InfoWindow when marker is clicked
-                multiplayerMarker.addListener('click', function() {
+                multiplayerMarker.addListener('click', function () {
                     multiplayerInfoWindow.open(map, multiplayerMarker);
                 });
 
@@ -141,29 +150,33 @@ export async function loadResultMap(playersLat, playersLong) {
                     map: map
                 });
 
-                addedMarkers.push(multiplayerPolyline);
+                addedMarkers.update((markers) => {
+                    return [...markers, multiplayerPolyline];
+                });
             }
         });
     }
 
     // Fit the map bounds to show all markers and lines (with padding)
-    if (!countryGuesserMode || multiplayer) {
-        map.fitBounds(pointList, { padding: { top: 150, right: 250, bottom: 150, left: 250 }});
-        if (map.getZoom() > 4) {
-            map.setZoom(map.getZoom() - 2);
+    if (!get(countryGuesser) || get(multiplayer)) {
+        get(map).fitBounds(pointList, { padding: { top: 150, right: 250, bottom: 150, left: 250 } });
+        if (get(map).getZoom() > 4) {
+            get(map).setZoom(map.getZoom() - 2);
         } else {
-            map.setZoom(map.getZoom() - 1);
+            get(map).setZoom(get(map).getZoom() - 1);
         }
     }
 
     // Place the "correct" marker reflecting the target location
     let destinationMarker = new google.maps.Marker({
-        position: { lat: currentStreetviewLat, lng: currentStreetviewLong },
+        position: { lat: get(currentLocationLatitude), lng: get(currentLocationLongitude) },
         map: map,
         icon: greenIcon
     });
 
-    addedMarkers.push(destinationMarker);
+    addedMarkers.update((markers) => {
+        return [...markers, destinationMarker];
+    });
 
     // Fly to the destination marker after a delay
     setTimeout(flyToDestination, 1500);
@@ -171,13 +184,13 @@ export async function loadResultMap(playersLat, playersLong) {
 
 function flyToDestination() {
     // Check if EndOverlay is fully visible before flying to the destination
-    if (document.getElementById("EndOverlay").style.opacity == "1" && map) {
-        let currentZoom = map.getZoom();
+    if (get(resultScreenEnabled)) {
+        let currentZoom = get(map).getZoom();
         let newZoom = Math.min(currentZoom + 2, map.maxZoom || 21); // Adjust 2 to the desired zoom increment and 21 to the max zoom level if you have a custom max
 
-        let latLng = { lat: currentStreetviewLat, lng: currentStreetviewLong };
-        
-        map.setZoom(newZoom);
-        map.setCenter(latLng);
+        let latLng = { lat: get(currentLocationLatitude), lng: get(currentLocationLongitude) };
+
+        get(map).setZoom(newZoom);
+        get(map).setCenter(latLng);
     }
 }

@@ -1,5 +1,8 @@
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
 import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
+import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
+import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+import { get } from "svelte/store";
 
 let veryCloseDistances;
 let closeDistances;
@@ -9,8 +12,8 @@ let extraMsg;
 // Haversine formula, takes spherical nature of planet into account
 export function calculateDistances(mapsLat, mapsLong) {
     const R = 6371; // Radius of the Earth in km
-    const lat1 = currentStreetviewLat * Math.PI / 180; // Convert degrees to radians
-    const lon1 = currentStreetviewLong * Math.PI / 180;
+    const lat1 = get(currentLocationLatitude) * Math.PI / 180; // Convert degrees to radians
+    const lon1 = get(currentLocationLongitude) * Math.PI / 180;
     const lat2 = mapsLat * Math.PI / 180;
     const lon2 = mapsLong * Math.PI / 180;
 
@@ -30,7 +33,7 @@ export function calculateDistances(mapsLat, mapsLong) {
 
 export function compareDistances(distance) {
     // compares how big the distance is and enables result screen with a message.
-    if (!resultScreenEnabled) {
+    if (!get(resultScreenEnabled)) {
 
         let resultAsString;
 

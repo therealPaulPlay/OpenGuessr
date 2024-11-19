@@ -30,6 +30,7 @@
   import CountryGuesserBar from "$lib/components/CountryGuesserBar.svelte";
   import ResultScreen from "$lib/components/ResultScreen.svelte";
   import BeforeExitPopup from "$lib/components/BeforeExitPopup.svelte";
+  import CaptchaPopup from "$lib/components/CaptchaPopup.svelte";
 
   // Start ads
   onMount(() => {
@@ -180,27 +181,8 @@
 </div>
 <LoadingFade />
 <ErrorPopup />
-<!-- Confirmation overlay for prompts (Are you sure, leave, delete..) -->
 <ConfirmPopup />
-<!-- Captcha Popup -->
-<div id="captchaPopup" class="popupHolder confirmBackground">
-  <div class="captchaWindow uiWindow">
-    <h1 id="confirmTitle" class="popup-title">Captcha</h1>
-    <div class="supporterBox supporterBoxHighlight">
-      <img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
-      <p class="captchaInfoText">
-        As bots are being used to drive up API costs, please solve this captcha to load the minimap.
-      </p>
-    </div>
-    <br />
-    <div id="captchaContainer">
-      <!-- the captcha will be loaded dynamically here -->
-    </div>
-    <div class="buttonBoxRight">
-      <button id="captchaClose" class="standardButton white closeButton">Close</button>
-    </div>
-  </div>
-</div>
+<CaptchaPopup />
 <!-- New profile window -->
 <div id="profilePopup" class="popupHolder profilePopupBackground">
   <div id="profileWindow" class="uiWindow">

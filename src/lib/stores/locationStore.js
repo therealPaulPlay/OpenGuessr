@@ -7,3 +7,6 @@ export const reloadPanorama = writable(); // Function (defined in PanoramaIframe
 // Current coordinates (of the current Panorama, Image, etc.)
 export const currentLocationLatitude = writable(0);
 export const currentLocationLongitude = writable(0);
+
+// Location Maps
+export const currentlyLoadedLocationsArray = writable();

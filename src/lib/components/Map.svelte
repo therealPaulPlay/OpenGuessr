@@ -1,12 +1,56 @@
 <script>
-  import { mapExpanded, mapVisible } from "$lib/stores/context-specific/mapStore";
+  import { mapExpanded, mapVisible, mapHovered, map } from "$lib/stores/context-specific/mapStore";
+  import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
   import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+  import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
+  import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
+  import { initializeMapIfNotAlready } from "$lib/logic/miniMap";
+  import { get } from "svelte/store";
+
+  let mapResizeTimeout;
+
+  function handleMapHover() {
+    if (window.matchMedia("(min-width: 1200px)").matches) {
+      clearTimeout(mapResizeTimeout);
+      mapHovered.set(true);
+    }
+  }
+
+  function handleMapUnhover() {
+    mapResizeTimeout = setTimeout(() => {
+      mapHovered.set(false);
+    }, 250);
+  }
+
+  // Allow the user to guess with the space bar (instead of clicking on "Guess")
+  function spaceBarGuess(event) {
+    if (event.key === " ") {
+      if (get(confirmButtonActive) && isElementClickable(document.getElementById("map"))) {
+        confirmButtonClicks();
+      }
+    }
+  }
 </script>
 
 {#if $mapVisible}
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-  <div id="map" tabindex="0" style:max-height={$mapExpanded ? "100%" : "0%"} class:mapFullOpacity={Boolean($resultScreenEnabled)}>
-    <div id="mapPlaceholderBeforeLoad"></div>
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+  <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+  <div
+    id="map"
+    role="region"
+    tabindex="0"
+    onmouseenter={handleMapHover}
+    onmouseleave={handleMapUnhover}
+    onkeyup={spaceBarGuess}
+    onmouseover={initializeMapIfNotAlready}
+    ontouchstart={initializeMapIfNotAlready}
+    style:max-height={$mapExpanded ? "100%" : "0%"}
+    class:mapFullOpacity={Boolean($resultScreenEnabled)}
+  >
+    {#if !$map}
+      <div id="mapPlaceholderBeforeLoad"></div>
+    {/if}
   </div>
 {/if}
 

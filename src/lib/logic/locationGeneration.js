@@ -1,9 +1,11 @@
 import { errorPopup } from "./errorHandling.js";
 import { coordsFromHost } from "../../../JS/multiplayer.js";
 import { mapCategory } from "../../../JS/categoryMenu.js";
-import { competition, currentRound } from "../../../JS/competitionLogic.js";
+import { competitionData, competitionRound } from "lib/stores/context-specific/competitionStore";
+import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore.js";
 
 import { loadingScreenVisible } from "$lib/stores/uiStore.js";
+import { get } from "svelte/store";
 
 // This is THE function to GET LOCATIONS (all others here are NOT export
 export async function getLocationCoordinates(type) {
@@ -26,7 +28,6 @@ export async function getLocationCoordinates(type) {
     }
 }
 
-export let currentlyLoadedLocationsArray; // Currently loaded JSON array [] with all locations of the map
 let loadedMapCategory;
 let previousGuessesIndexes = [];
 
@@ -39,17 +40,17 @@ async function getJSONCoords(category) {
             let response = null;
             loadedMapCategory = category;
             previousGuessesIndexes = [];
-    
+
             response = await fetch("/json/" + category + "Locations.json");
-    
+
             if (!response.ok) {
                 throw new Error("JSON fetch failed.");
             }
-    
+
             const jsonResponse = await response.json();
-            currentlyLoadedLocationsArray = jsonResponse.locations;
+            currentlyLoadedLocationsArray.set(jsonResponse.locations);
             return pickRandomLocations();
-    
+
         } catch (error) {
             //choose standard and instantly reload (if categories get renamed / get deleted-> this happens)
             localStorage.setItem("selectedCategory", "standard");
@@ -81,7 +82,7 @@ async function getCoordsFromLocationServer() {
             if (response.ok) {
                 const data = await response.json();
                 const standardLocations = data.locations; // the array is in locations: {}
-                currentlyLoadedLocationsArray = standardLocations;
+                currentlyLoadedLocationsArray.set(standardLocations);
                 return pickRandomLocations();
 
             } else {
@@ -121,7 +122,7 @@ async function getCommunityMapCoordinates() {
                 const data = await response.json();
                 loadedMapCategory = mapCategory;
                 previousGuessesIndexes = [];
-                currentlyLoadedLocationsArray = data.map_data.locations; // the array is in locations: {}
+                currentlyLoadedLocationsArray.set(data.map_data.locations); // the array is in locations: {}
                 return pickRandomLocations(); // pick one new location for playing
 
             } else {
@@ -139,7 +140,7 @@ async function getCommunityMapCoordinates() {
             return null;
         }
     } else {
-       return pickRandomLocations(); // pick one new location for playing
+        return pickRandomLocations(); // pick one new location for playing
     }
 }
 
@@ -152,7 +153,7 @@ function pickRandomLocations() {
     try {
 
         do {
-            guessIndex = Math.floor(Math.random() * currentlyLoadedLocationsArray.length);
+            guessIndex = Math.floor(Math.random() * get(currentlyLoadedLocationsArray)?.length);
         } while (previousGuessesIndexes.includes(guessIndex));
 
         previousGuessesIndexes.unshift(guessIndex); // add guessIndex at the front of the array
@@ -161,9 +162,9 @@ function pickRandomLocations() {
             previousGuessesIndexes.pop(); // if the array is longer than half of the total amount, pop last one out
         }
 
-        const resultLat = Number(currentlyLoadedLocationsArray[guessIndex][0]);
-        const resultLong = Number(currentlyLoadedLocationsArray[guessIndex][1]);
-        const additionalProperty = currentlyLoadedLocationsArray[guessIndex][2]; // only available for certain modes (like country guesser, image guesser..). This could be the country, the image URL etc.
+        const resultLat = Number(get(currentlyLoadedLocationsArray)[guessIndex][0]);
+        const resultLong = Number(get(currentlyLoadedLocationsArray)[guessIndex][1]);
+        const additionalProperty = get(currentlyLoadedLocationsArray)[guessIndex][2]; // only available for certain modes (like country guesser, image guesser..). This could be the country, the image URL etc.
 
         resultLocationsArray = [resultLat, resultLong, additionalProperty];
     } catch (error) {
@@ -179,8 +180,8 @@ async function getCompetitionCoordinates() {
     let resultLocationsArray = [];
 
     try {
-        const resultLat = competition.locations[currentRound][0];
-        const resultLong = competition.locations[currentRound][1];
+        const resultLat = get(competitionData)?.locations[get(competitionRound)][0];
+        const resultLong = get(competitionData)?.locations[get(competitionRound)][1];
 
         resultLocationsArray = [resultLat, resultLong];
     } catch (error) {

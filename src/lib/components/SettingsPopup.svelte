@@ -171,10 +171,6 @@
         />
       </div>
       <div class="settingsBox">
-        <p class="slightBottomMargin">Map Type:</p>
-        <button class="standardButton white" id="mapTypeButton" type="button">Map not loaded</button>
-      </div>
-      <div class="settingsBox">
         <p class="slightBottomMargin">Toggle Fullscreen:</p>
         <button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
           <span class="fullscreenIcon">
@@ -222,13 +218,6 @@
     gap: 10px;
     justify-content: flex-start;
     align-items: center;
-  }
-
-  #mapTypeButton {
-    min-width: 162px;
-    /* disabled initially, enabled after map load */
-    pointer-events: none;
-    opacity: 0.5;
   }
 
   .fullscreenIcon {

@@ -1,7 +1,7 @@
 import { disableResultScreen, resultScreenEnabled, toggleCategoryMenu, isElementClickable, showPageBrowser } from "./mainUI.js";
 import { multiplayer, showMultiplayerOverlay, isHost, sendMessageToAll, showMultiplayerRoundResults, autoSkipResult } from "./multiplayer.js";
 import { errorPopup } from "$lib/utils/errorHandling";
-import { resetMap } from "./miniMap.js";
+import { resetMap } from "../src/lib/logic/miniMap.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
 import { checkCompetitionRoundStatus, competitionTimer, loadCompetition, playingCompetition } from "../src/lib/logic/competitionLogic.js";
 import { socialPopupProbability } from "../src/lib/utils/socialPopupProbability.js";

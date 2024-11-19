@@ -1,6 +1,6 @@
 // Generate a new location (new Panorama, New Image etc.)
 import { getLocationCoordinates } from '$lib/logic/locationGeneration';
-import { startMultiplayerRound, isHost } from './multiplayer.js';
+// import { startMultiplayerRound, isHost } from './multiplayer.js'; !TODO !CHANGE
 import { countryGuesser, multiplayer, imageGuesser } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from '$lib/stores/locationStore';
 import { setCountryGuesserCountry } from '$lib/utils/countryGuesserFunctions';

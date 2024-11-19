@@ -2,9 +2,16 @@
   let { children } = $props();
   import { mapHolderMarginRight } from "$lib/stores/context-specific/mapStore";
   import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+  import { mapHovered } from "$lib/stores/context-specific/mapStore";
 </script>
 
-<div id="mapHolder" class="regularMapSize mapHolder" class:mapHolderToResult={$resultScreenEnabled} style:margin-right={$mapHolderMarginRight}>
+<div
+  id="mapHolder"
+  class="regularMapSize mapHolder"
+  class:mapHover={$mapHovered}
+  class:mapHolderToResult={$resultScreenEnabled}
+  style:margin-right={$mapHolderMarginRight}
+>
   {@render children?.()}
 </div>
 
@@ -54,18 +61,23 @@
     display: none !important;
   }
 
+  @media all and (orientation: landscape) and (max-width: 1200px) {
+    .mapHolder {
+      width: 30%;
+      height: 45%;
+    }
+  }
+
+  .mapHover {
+    width: 60%;
+    height: 55%;
+  }
+
   @media all and (max-width: 1200px) {
     .mapHolder {
       height: 50%;
       width: calc(100% - 20px);
       margin-right: 0 !important;
-    }
-  }
-
-  @media all and (orientation: landscape) and (max-width: 1200px) {
-    .mapHolder {
-      width: 30%;
-      height: 45%;
     }
   }
 

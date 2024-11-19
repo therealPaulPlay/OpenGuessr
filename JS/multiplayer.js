@@ -5,10 +5,10 @@ import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, s
 import { supporterWindowIfAuthenticated } from "../src/lib/utils/showSupporterPopup.js";
 import { startTimer } from "../src/lib/utils/timer.js";
 import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
-import { selectedBadge, selectedPinIndex, supporterLevel } from "./profileView.js";
+import { selectedBadge, selectedPinIndex, supporterLevel } from "../src/lib/stores/accountStore";
 import { enableResultScreen } from "../src/lib/utils/setResultScreen.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
-import { confirmButtonClicks, setConfirmButtonState, updateMinimapWithTeamMarkers } from "./miniMap.js";
+import { confirmButtonClicks, setConfirmButtonState, updateMinimapWithTeamMarkers } from "../src/lib/logic/miniMap.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
 import { loadFriends, sendMatchInvite } from "./friendMenu.js";
@@ -543,7 +543,7 @@ export function multiplayerStateToGuessed() {
 
     if (isHost) {
         if (!multiplayerHasAlreadyGuessed) {
-            multiplayerGuessesLocationsArray.push([get(mapPinLat), get(mapPinLng), selectedPinIndex, get(username) != null ? get(username) : savedGuestName]); //add the hosts guess to the guesses
+            multiplayerGuessesLocationsArray.push([get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) != null ? get(username) : savedGuestName]); //add the hosts guess to the guesses
             multiplayerHasGuessed(); // this substracts one from the total requried guesses (and maybe ends the round)
         }
 
@@ -552,7 +552,7 @@ export function multiplayerStateToGuessed() {
             peerSendsHost("guessed", {
                 lat: get(mapPinLat),
                 long: get(mapPinLng),
-                style: selectedPinIndex,
+                style: get(selectedPinIndex),
                 name: get(username) != null ? get(username) : savedGuestName
             });
         }
@@ -1264,7 +1264,7 @@ export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
         multiplayerCategory = "standard";
     }
 
-    connectedPeers.push([peerId, get(username) == null ? savedGuestName : get(username), uiSetUserXP(get(experience)).level, 0, 1, localStorage.getItem("id"), selectedBadge]); //add yourself (host) to the overview
+    connectedPeers.push([peerId, get(username) == null ? savedGuestName : get(username), uiSetUserXP(get(experience)).level, 0, 1, localStorage.getItem("id"), get(selectedBadge)]); //add yourself (host) to the overview
     yourTeam = 1; // Host is always in team 1
     showMultiplayerOverlay(true, "Waiting...", connectedPeers);
 
@@ -1388,10 +1388,10 @@ let teamMarkerArray = [];
 export function sendTeamMarkers(lat, long) {
     if (multiplayer) {
         if (isHost) {
-            addReplaceTeamMarkers(peerId, lat, long, selectedPinIndex, yourTeam);
+            addReplaceTeamMarkers(peerId, lat, long, get(selectedPinIndex), yourTeam);
             sendMessageToAll("teamMarkers", teamMarkerArray);
         } else {
-            peerSendsHost("teamMarkers", { id: peerId, lat: lat, long: long, pin: selectedPinIndex, team: yourTeam });
+            peerSendsHost("teamMarkers", { id: peerId, lat: lat, long: long, pin: get(selectedPinIndex), team: yourTeam });
         }
     }
 }
@@ -1432,7 +1432,7 @@ export async function joinRoom(code) {
             level: uiSetUserXP(get(experience)).level,
             score: 0, //inital score is set to 0,
             id: localStorage.getItem("id"),
-            badge: selectedBadge,
+            badge: get(selectedBadge),
             supporterLevel: get(supporterLevel)
         }
     };
