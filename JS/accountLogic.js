@@ -1,5 +1,5 @@
 import { deleteUser, getUser } from "./userAPI";
-import { checkTextLength, freeSupporterBoostEnabled, setAdVisibility, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
+import { freeSupporterBoostEnabled, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { isHost, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel, attemptJoinViaLink } from "./multiplayer.js";
 import { checkIfGuessWasCorrect } from "../src/lib/utils/countryGuesserFunctions.js";
@@ -19,7 +19,8 @@ import { resultScreenEnabled } from "../src/lib/stores/context-specific/resultSc
 import { animateIncrement } from "../src/lib/utils/animateIncrement.js";
 import { isAuthenticated, experience } from "$lib/stores/accountStore";
 import { isTokenExpired } from "../src/lib/utils/isTokenExpired.js";
-import { multiplayer } from "../src/lib/stores/modeStore.js";
+import { competition, multiplayer } from "../src/lib/stores/modeStore.js";
+import { saveRoundToLog } from "../src/lib/utils/saveRoundToLog.js";
 import { get } from "svelte/store";
 
 let accountLockedArray;
@@ -147,14 +148,6 @@ async function changeUItoSignedIn(supporterLevel) {
   loadSelectedPin(); // loads it from fetched profile data
   loadSelectedBadge();
 
-  if (supporterLevel && supporterLevel > 0) {
-    updateSupporterProfileHighlight(true);
-  }
-
-  if (supporterLevel && supporterLevel >= 2) {
-    setAdVisibility(false);
-  }
-
   if (get(resultScreenEnabled) && lastXPloadingAttemptAborted) {
     loadResultScreenXP(lastDistance);
   }
@@ -170,28 +163,16 @@ async function changeUItoSignedOut() {
   XParea.style.display = "none";
   disableExlcusiveCategories();
   displayAccountName.innerHTML = "Guest";
-  checkTextLength();
   uiSetUserXP(0);
   loadSelectedPin(); // loads pin 0, as profile data should be undefined
   loadSelectedBadge();
   updateSupporterProfileHighlight(false);
   setInboxStatus(false);
-  setAdVisibility(true);
-}
-
-function updateSupporterProfileHighlight(highlight) {
-  if (highlight) {
-    document.getElementById("profileInfo").classList.add("profileInfoSupporter");
-  } else {
-    document.getElementById("profileInfo").classList.remove("profileInfoSupporter");
-  }
 }
 
 // part of checkSigninStatusAndLoadUserInfo
 export function displayUserInfo() {
   uiSetUserXP(get(experience));
-  displayAccountName.innerHTML = localStorage.getItem("username");
-  checkTextLength();
 }
 
 async function checkSigninStatusAndLoadUserInfo() {
@@ -253,13 +234,11 @@ function setProgress(factor) {
   circle.style.strokeDashoffset = offset;
 }
 
-//XP bar loading function -------------------------------------------------------------------------------------------------
+// XP bar loading function -------------------------------------------------------------------------------------------------
 let requiredXP;
 
 export function uiSetUserXP(xp) {
-  if (xp == undefined || xp == null) {
-    xp = 0;
-  }
+  if (xp == null) xp = 0;
 
   const baseXP = 5000;
   const xpIncreaseRate = 1.1; // xp needed to level up increases per level
@@ -334,7 +313,7 @@ export function restoreOldStreak(oldStreak) {
 }
 
 async function streakCalculation() {
-  if (!multiplayer && !playingCompetition) {
+  if (!get(multiplayer) && !get(competition)) {
     if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
       streak++;
     } else {
@@ -359,14 +338,14 @@ async function streakCalculation() {
 }
 
 function getStreakMultiplierAdjustedToGamemode() {
-  if (!multiplayer && !playingCompetition) {
+  if (!get(multiplayer) && !get(competition)) {
     return streakMultiplier;
   } else {
     return 1;
   }
 }
 
-// Adjust XP calculation parameter to diameter (country size)
+// Adjust XP calculation parameter to diameter (map size)
 function calculateExponentialModifier(mapDiameter) {
   const A = 0.9978;
   const B = 0.08;
@@ -429,14 +408,12 @@ export async function loadResultScreenXP(distance) {
 
   lastDistance = distance;
 
-  if (!get(isAuthenticated) && !get(multiplayer)) {
-    lastXPloadingAttemptAborted = true;
-  }
+  if (!get(isAuthenticated) && !get(multiplayer)) lastXPloadingAttemptAborted = true;
 
   // Save played round to log ------------------------------------------------
   let mode = "Singleplayer";
-  if (multiplayer) mode = "Multiplayer";
-  if (playingCompetition) mode = "Competition";
+  if (get(multiplayer)) mode = "Multiplayer";
+  if (get(competition)) mode = "Competition";
 
   saveRoundToLog(mode, distance, [get(currentLocationLatitude), get(currentLocationLongitude)]);
 
@@ -464,7 +441,7 @@ export async function loadResultScreenXP(distance) {
     let earnedBasicXP; // without supporter mutliplier, that will be applied later (this is just for visuals)
 
     // XP calculation formulas -------------------------------------------------
-    if (!multiplayer && !playingCompetition) {
+    if (!get(multiplayer) && !get(competition)) {
       const calculatedXP = await calculateXPGain(distance, selectedCategory, supporterLevel, freeSupporterBoostEnabled);
       earnedXP = calculatedXP.earnedXP;
       earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;

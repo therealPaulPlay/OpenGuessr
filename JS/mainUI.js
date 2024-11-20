@@ -196,18 +196,6 @@ export async function supporterXpBoostAnimation(factor) {
     }, 2000);
 }
 
-// Hide advertisements (Supporter Tier 2) ----------------------------------------------------------------
-
-export function setAdVisibility(visible) {
-    try {
-        document.querySelectorAll(".hideForSupporters").forEach((e) => {
-            e.style.display = visible ? "" : "none";
-        });
-    } catch (error) {
-        console.error("Error disabling/enabling ads that can be hidden for supporters in main.js: " + error);
-    }
-}
-
 // In-App page browser -------------------------------------------------------------------------------------------------------
 
 /*

@@ -7,6 +7,7 @@
   import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
   import { timerCountdownOverlay } from "$lib/stores/context-specific/timerCountdownOverlayStore";
   import { isSingleplayerNMPZ, timeout } from "$lib/stores/modeStore";
+  import { roundLog } from "$lib/stores/locationStore";
   import { onMount } from "svelte";
 
   // Singleplayer Options UI ----------------------------------------------------------------------------------------
@@ -53,22 +54,13 @@
   });
 
   // Round Log ---------------------------------------------------------------------------------------------------------------
-  let roundLog = $state([]);
-
   onMount(() => {
     try {
-      roundLog = JSON.parse(localStorage.getItem("roundLog")) || [];
+      roundLog.set(JSON.parse(localStorage.getItem("roundLog")) || []);
     } catch (error) {
       console.error("Error parsing roundLog JSON:", error);
     }
   });
-
-  // Pass coordinates as array, [lat, long]
-  export function saveRoundToLog(mode, distance, coordinates) {
-    roundLog.unshift([mode, distance, coordinates]);
-    if (roundLog.length > 10) roundLog.pop();
-    localStorage.setItem("roundLog", JSON.stringify(roundLog));
-  }
 </script>
 
 {#if $singleplayerOptionsPopup}
@@ -113,8 +105,8 @@
         <p class="slightBottomMargin">Round Log:</p>
         <div class="roundLogBox" id="roundLogBox">
           <!-- round log will be automatically generated here -->
-          {#if roundLog.length > 0}
-            {#each roundLog as [mode, distance, coordinates], index}
+          {#if $roundLog.length > 0}
+            {#each $roundLog as [mode, distance, coordinates], index}
               <div class="roundLogItem">
                 <div>
                   <p class="logItemMode">{mode}</p>

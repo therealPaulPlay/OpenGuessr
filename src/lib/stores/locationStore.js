@@ -10,3 +10,6 @@ export const currentLocationLongitude = writable(0);
 
 // Location Maps
 export const currentlyLoadedLocationsArray = writable();
+
+// Round Log
+export const roundLog = writable([]);

@@ -2,7 +2,7 @@
   import { settingsPopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
   import Notification from "$lib/components/Notification.svelte";
-  import { isAuthenticated, experience, supporterLevel } from "$lib/stores/accountStore";
+  import { isAuthenticated, experience, supporterLevel, username } from "$lib/stores/accountStore";
   import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
   import { competition, multiplayer } from "$lib/stores/modeStore";
   import { get } from "svelte/store";
@@ -95,7 +95,7 @@
           contenteditable="false"
           class:namescroll={scrollNameText}
         >
-          Guest
+          {$username}
         </p>
       </div>
       <div class="progressContainer">

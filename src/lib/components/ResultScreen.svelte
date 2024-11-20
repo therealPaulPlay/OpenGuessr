@@ -10,6 +10,7 @@
   } from "$lib/stores/context-specific/resultScreenStore";
   import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
   import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
+  import { supporterLevel } from "$lib/stores/accountStore";
   import { get } from "svelte/store";
   import { playSound } from "$lib/utils/soundManager";
 </script>
@@ -18,13 +19,13 @@
   <div id="endBottomArea">
     <StreakRestore />
     <div id="endBottomBar">
-      <div id="floatingResultLeaderboardArea" class="hideForSupporters">
-        <div id="floatingResultLeaderboardAd"></div>
+      <div class="floatingResultLeaderboardArea" style:display={$supporterLevel >= 2 ? "none" : ""}>
+        <div class="floatingResultLeaderboardAd"></div>
         <RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." learnMore="true" />
       </div>
       <div id="resultBox">
         <p class="resultField" id="motivationText">{$motivationText}</p>
-        <div id="mobileResultLeaderboardAdArea" class="resultField hideForSupporters">
+        <div id="mobileResultLeaderboardAdArea" class="resultField" style:display={$supporterLevel >= 2 ? "none" : ""}>
           <div id="mobileResultLeaderboardAd"></div>
           <RemoveAdsText text="Go Ad-Free." learnMore="true" />
         </div>
@@ -206,7 +207,7 @@
     height: 50px;
   }
 
-  #floatingResultLeaderboardArea {
+  .floatingResultLeaderboardArea {
     width: 728px;
     height: 90px;
     display: none;
@@ -224,7 +225,7 @@
     pointer-events: auto;
   }
 
-  #floatingResultLeaderboardAd {
+  .floatingResultLeaderboardAd {
     z-index: 1;
     width: 728px;
     height: 90px;
@@ -432,7 +433,7 @@
   }
 
   @media (min-width: 1900px) {
-    #floatingResultLeaderboardArea {
+    .floatingResultLeaderboardArea {
       display: flex;
     }
 
