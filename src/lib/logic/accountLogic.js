@@ -1,66 +1,39 @@
 import { deleteUser, getUser } from "./userAPI";
-import { freeSupporterBoostEnabled, showPageBrowser, supporterXpBoostAnimation, toggleMobileMenu } from "./mainUI";
-import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
-import { isHost, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel, attemptJoinViaLink } from "./multiplayer.js";
-import { checkIfGuessWasCorrect } from "../src/lib/utils/countryGuesserFunctions.js";
-import { playSound } from "../src/lib/utils/soundManager.js";
-import { currentLocationLatitude, currentLocationLongitude } from "../src/lib/stores/locationStore.js";
-import { getCountryFromCoords } from "../src/lib/utils/countryFromCoordinates.js";
-import { diameter } from "../src/lib/logic/miniMap.js";
-import { mapPinLat, mapPinLng } from "../src/lib/stores/context-specific/mapStore.js";
+import { freeSupporterBoostEnabled, showPageBrowser, supporterXpBoostAnimation } from "../../../JS/mainUI.js";
+import { showConfirmPopup } from "../utils/confirmPopup.js";
+import { isHost, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel, attemptJoinViaLink } from "../../../JS/multiplayer.js";
+import { checkIfGuessWasCorrect } from "../utils/countryGuesserFunctions.js";
+import { playSound } from "../utils/soundManager.js";
+import { currentLocationLatitude, currentLocationLongitude } from "../stores/locationStore.js";
+import { getCountryFromCoords } from "../utils/countryFromCoordinates.js";
+import { diameter } from "./miniMap.js";
+import { mapPinLat, mapPinLng } from "../stores/context-specific/mapStore.js";
 import { toggleStreakWindow } from "./streakAdPopup.js";
-import { addResultToCompetitionScore, playingCompetition } from "../src/lib/logic/competitionLogic.js";
-import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel, supporterLevel } from "./profileView.js";
+import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
+import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel, supporterLevel } from "../../../JS/profileView.js";
 import { errorPopup } from "$lib/utils/errorHandling";
-import { initializeWebsocketConnection, setInboxStatus } from "./friendMenu.js";
+import { initializeWebsocketConnection, setInboxStatus } from "../../../JS/friendMenu.js";
 import { saveRoundToLog } from "./singleplayerOptions.js";
 import { setUserXP } from "$lib/utils/setUserXP";
-import { resultScreenEnabled } from "../src/lib/stores/context-specific/resultScreenStore.js";
-import { animateIncrement } from "../src/lib/utils/animateIncrement.js";
+import { resultScreenEnabled } from "../stores/context-specific/resultScreenStore.js";
+import { animateIncrement } from "../utils/animateIncrement.js";
 import { isAuthenticated, experience } from "$lib/stores/accountStore";
-import { isTokenExpired } from "../src/lib/utils/isTokenExpired.js";
-import { competition, multiplayer } from "../src/lib/stores/modeStore.js";
-import { saveRoundToLog } from "../src/lib/utils/saveRoundToLog.js";
+import { isTokenExpired } from "../utils/isTokenExpired.js";
+import { competition, multiplayer } from "../stores/modeStore.js";
+import { saveRoundToLog } from "../utils/saveRoundToLog.js";
 import { get } from "svelte/store";
 
 let accountLockedArray;
 let lastDistance;
 let lastXPloadingAttemptAborted = false;
 
-let loginButton = document.getElementById("loginButton");
-loginButton.addEventListener("click", () => {
-  playSound("basic_button");
-  goTologin();
-});
-
-let mobileLoginButton = document.getElementById("mobileLoginButton");
-mobileLoginButton.addEventListener("click", () => {
-  playSound("basic_button");
-  goTologin();
-});
-
-let logoutButton = document.getElementById("logoutButton");
-logoutButton.addEventListener("click", signout);
-
-let mobileLogoutButton = document.getElementById("mobileLogoutButton");
-mobileLogoutButton.addEventListener("click", signout);
-
-let profileButton = document.getElementById("profileInfo");
-profileButton.addEventListener("click", () => {
-  loadProfileFromId(localStorage.getItem("id"), true, true);
-  playSound("basic_button");
-});
-
-let mobileProfileButton = document.getElementById("mobileProfileButton");
-mobileProfileButton.addEventListener("click", function () {
-  playSound("basic_button");
-  loadProfileFromId(localStorage.getItem("id"), true, true);
-});
-
-let displayAccountName = document.getElementById("accountName");
-
 let XPbarNoAccount = document.getElementById("XPbarNoAccount");
 let XParea = document.getElementById("XParea");
+
+export function signout() {
+  resetLocalSave();
+  checkAuthenticationStatus();
+}
 
 //default is not logged in, so these are all disabled
 logoutButton.style.display = "none";
@@ -116,16 +89,6 @@ export function checkAuthenticationStatus() {
 function resetLocalSave() {
   localStorage.removeItem("bearer");
   localStorage.removeItem("id");
-  updateLoadedProfileData(null);
-}
-
-function signout() {
-  resetLocalSave();
-  checkAuthenticationStatus();
-}
-
-function goTologin() {
-  showPageBrowser("/signup.html", true);
 }
 
 //Account UI (working) -------------------------------------------------------------------------------------------------------------
@@ -162,7 +125,6 @@ async function changeUItoSignedOut() {
   XPbarNoAccount.style.display = ""; // resets to flex state
   XParea.style.display = "none";
   disableExlcusiveCategories();
-  displayAccountName.innerHTML = "Guest";
   uiSetUserXP(0);
   loadSelectedPin(); // loads pin 0, as profile data should be undefined
   loadSelectedBadge();

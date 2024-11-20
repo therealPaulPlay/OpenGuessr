@@ -3,8 +3,11 @@
   import { playSound } from "$lib/utils/soundManager";
   import Notification from "$lib/components/Notification.svelte";
   import { isAuthenticated, experience, supporterLevel, username } from "$lib/stores/accountStore";
+  import { signupPopup } from "$lib/stores/uiStore";
   import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
   import { competition, multiplayer } from "$lib/stores/modeStore";
+  import { signout } from "$lib/logic/accountLogic";
+  // import { loadProfileFromId } from "$lib/utils/loadProfile" !TODO !CHANGE
   import { get } from "svelte/store";
 
   function openSettings() {
@@ -12,7 +15,7 @@
     settingsPopup.set(true);
   }
 
-  // Fade out the left / right bar elements when the center is enlarged
+  // Fade out the left / right bar elements when the center is enlarged --------------------------------------------------
   let gamemodeTransitionTimeout;
   let sideMenusDisabled = $state(false);
 
@@ -28,7 +31,7 @@
     sideMenusDisabled = true;
   }
 
-  // Check if the username should be scrolled automatically (happens when it is too long)
+  // Check if the username should be scrolled automatically (happens when it is too long) -------------------------------------------
   let accountNameText = $state();
   let scrollNameText = $state(false);
 
@@ -41,20 +44,44 @@
     checkTextLength();
   });
 
+  // Prevent exiting mulitplayer etc. by starting using a conflicting feature -----------------------------------------------------------------------------
+
   let preventNavigateOut = $state(false);
 
   $effect(() => {
-    preventNavigateOut = $competition || $multiplayer; // Check if certain buttons should be disabled to prevent navigating out (e.g. Starting a competition in Multiplayer)
+    preventNavigateOut = $competition || $multiplayer;
   });
 </script>
 
-<div id="mobileButtonArea" class="topButtonArea">
+<!-- mobile top nav bar -->
+<nav id="mobileButtonArea" class="topButtonArea">
   <div class="barMenu">
-    <button id="mobileLoginButton" class="standardButton accountButton mobileAccountButton">Login</button>
-    <button id="mobileProfileButton" class="standardButton accountButton mobileAccountButton">
+    <button
+      id="mobileLoginButton"
+      class="standardButton accountButton mobileAccountButton"
+      onclick={() => {
+        playSound("basic_button");
+        signupPopup.set(true);
+      }}>Login</button
+    >
+    <button
+      id="mobileProfileButton"
+      class="standardButton accountButton mobileAccountButton"
+      onclick={() => {
+        loadProfileFromId(localStorage.getItem("id"), true, true);
+        playSound("basic_button");
+      }}
+    >
       <img class="socialBarIcons invertSocialBarIcon" src="/img/profile_icon.png" alt="Your profile" />
     </button>
-    <button id="mobileLogoutButton" class="standardButton accountButton mobileAccountButton">
+    <button
+      id="mobileLogoutButton"
+      class="standardButton accountButton mobileAccountButton"
+      onclick={() => {
+        playSound("basic_button");
+        signout();
+      }}
+    >
       <img class="logoutImage" src="/img/signout.png" alt="Log out of your OpenGuessr account." />
     </button>
     <button id="mobileCategoryButton" class="standardButton accountButton mobileAccountButton" class:preventNavigateOut>
@@ -82,12 +109,31 @@
       />
     </button>
   </div>
-</div>
+</nav>
 
-<div id="topButtonArea" class="topButtonArea">
+<!-- Desktop top nav bar -->
+<nav id="topButtonArea" class="topButtonArea">
   <div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
-    <button class="standardButton accountButton" id="loginButton" type="button" alt="log in">Log in</button>
-    <div class="profileInfo notSignedIn" id="profileInfo" class:profileInfoSupporter={supporterLevel >= 1}>
+    <button
+      class="standardButton accountButton"
+      id="loginButton"
+      alt="log in"
+      onclick={() => {
+        playSound("basic_button");
+        signupPopup.set(true);
+      }}>Log in</button
+    >
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div
+      class="profileInfo notSignedIn"
+      id="profileInfo"
+      class:profileInfoSupporter={supporterLevel >= 1}
+      onclick={() => {
+        loadProfileFromId(localStorage.getItem("id"), true, true);
+        playSound("basic_button");
+      }}
+    >
       <div id="accountNameArea">
         <p
           id="accountName"
@@ -114,8 +160,17 @@
         <div id="progressRingLevel" class="progressRingText">1</div>
       </div>
     </div>
-    <button class="standardButton accountButton" id="logoutButton" type="button" alt="log out">
-      <img class="logoutImage" src="/img/signout.png" alt="Log out of your OpenGuessr account." />
+    <button
+      class="standardButton accountButton"
+      id="logoutButton"
+      type="button"
+      alt="log out"
+      onclick={() => {
+        playSound("basic_button");
+        signout();
+      }}
+    >
+      <img class="logoutImage" src="/img/signout.png" alt="Log out" />
     </button>
   </div>
   <!-- svelte-ignore a11y_interactive_supports_focus -->
@@ -173,7 +228,7 @@
     </button>
   </div>
   <Notification />
-</div>
+</nav>
 
 <style>
   .profileInfo {
@@ -218,5 +273,166 @@
       transform: translateX(calc(-100% + 75px));
       /* adjust second param to be max-width of element minus about 5px */
     }
+  }
+
+  .topButtonArea {
+    position: fixed;
+    width: 100%;
+    top: 15px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: all 250ms ease;
+    z-index: 14;
+    pointer-events: none;
+  }
+
+  .topBarExpand {
+    max-width: 0px;
+    transition: max-width 400ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+  }
+
+  .sideMenuDisabled {
+    opacity: 0.8;
+    transform: scale(0.95);
+    filter: blur(1px);
+  }
+
+  #notificationBar {
+    position: absolute;
+    visibility: hidden;
+    /* changed in code */
+    top: 50px;
+    border-radius: 10px;
+    background-color: var(--panel-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    padding: 6px;
+    gap: 15px;
+    font-size: 22px;
+    opacity: 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
+    transition: all 200ms ease;
+    pointer-events: auto;
+    margin-inline: 10px;
+    max-width: 80vw;
+  }
+
+  .notSignedIn {
+    opacity: 50%;
+    pointer-events: none;
+  }
+
+  :global(.level) {
+    display: flex;
+    align-items: center;
+    margin-right: 10px;
+    color: white;
+  }
+
+  #mobileButtonArea {
+    display: none;
+  }
+
+  .mobileAccountButton {
+    padding-inline: 12px;
+  }
+
+  .socialBarIcons {
+    width: 20px;
+    height: auto;
+    margin-inline: 2px;
+    margin-bottom: -2px;
+  }
+
+  .shiftedSocialbarIcon {
+    margin-right: 4px;
+  }
+
+  .invertSocialBarIcon {
+    filter: invert();
+  }
+
+  #mobileLoginButton,
+  #mobileProfileButton {
+    background-color: var(--brand-color);
+    color: white;
+  }
+
+  #mobileLogoutButton,
+  #mobileProfileButton {
+    display: none;
+  }
+
+  #mobileLoginButton {
+    min-width: 100px;
+  }
+
+  #accountNameArea {
+    max-width: 80px;
+    overflow: hidden;
+    white-space: nowrap;
+    margin-top: 2px;
+  }
+
+  #accountName {
+    color: white;
+    display: inline-block;
+    width: fit-content;
+    margin-top: -3px;
+    font-size: 22px;
+  }
+
+  .accountButton {
+    min-height: 40px;
+    max-height: 40px;
+    background-color: rgba(168, 168, 187, 0.3);
+  }
+
+  @media all and (max-width: 1200px) {
+    .topBarDesktop {
+      display: none;
+    }
+  }
+
+  #settingsIcon {
+    filter: invert();
+  }
+
+  .progressContainer {
+    position: relative;
+    width: 30px;
+    height: 30px;
+    margin-inline: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.15);
+    border-radius: 50%;
+  }
+
+  .progressRing {
+    transform: rotate(-90deg);
+  }
+
+  .progressRingCircle {
+    transition: 0.35s stroke-dashoffset;
+    transform: rotate(-90deg);
+    transform-origin: 50% 50%;
+  }
+
+  .progressRingText {
+    position: absolute;
+    font-size: 15px;
+    color: white;
+    user-select: none;
   }
 </style>

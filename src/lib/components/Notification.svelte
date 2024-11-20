@@ -48,3 +48,28 @@
     </button>
   </div>
 </div>
+
+<style>
+  #notificationAccept {
+    min-width: 45px;
+  }
+
+  #notificationDismiss {
+    padding-inline: 10px;
+  }
+
+  #notificationText {
+    padding-left: 10px;
+    max-width: 350px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    text-wrap: nowrap;
+  }
+
+  .notificationButtonBox {
+    display: flex;
+    align-items: center;
+    width: fit-content;
+    gap: 4px;
+  }
+</style>

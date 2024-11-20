@@ -30,6 +30,16 @@ body {
     background-color: #11121f;
 }
 
+button {
+    background: none;
+    color: inherit;
+    border: none;
+    padding: 0;
+    font: inherit;
+    cursor: pointer;
+    outline: inherit;
+}
+
 a,
 a:visited,
 a:link,
@@ -210,27 +220,6 @@ input:focus {
     pointer-events: auto;
 }
 
-@media (orientation: portrait) and (max-width: 800px) {
-    .leaderboardAds {
-        width: 320px;
-        height: 50px;
-    }
-}
-
-@media (max-width: 1375px) {
-    .leaderboardAds {
-        width: 320px;
-        height: 50px;
-    }
-}
-
-@media (orientation: landscape) and (max-width: 700px) {
-    .leaderboardAds {
-        width: 0;
-        display: none;
-    }
-}
-
 li {
     margin-bottom: 20px;
 }
@@ -258,112 +247,28 @@ li {
     margin-right: 10px;
 }
 
+@media (orientation: portrait) and (max-width: 800px) {
+    .leaderboardAds {
+        width: 320px;
+        height: 50px;
+    }
+}
+
+@media (max-width: 1375px) {
+    .leaderboardAds {
+        width: 320px;
+        height: 50px;
+    }
+}
+
+@media (orientation: landscape) and (max-width: 700px) {
+    .leaderboardAds {
+        width: 0;
+        display: none;
+    }
+}
+
 /* end of new, universal styling ---------------------------------------------------------------------------------------------------------------------- */
-
-.leftNavbarButtons {
-    align-items: center;
-    margin-top: 2px;
-}
-
-.topButtonArea {
-    position: fixed;
-    width: 100%;
-    top: 15px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 10px;
-    transition: all 250ms ease;
-    z-index: 14;
-    pointer-events: none;
-}
-
-.topBarExpand {
-    max-width: 0px;
-    transition: max-width 400ms cubic-bezier(.45, .05, .55, .95);
-    overflow: hidden;
-    display: inline-block;
-    vertical-align: bottom;
-}
-
-#gamemodeMenu:hover .topBarExpand {
-    max-width: 1000px;
-}
-
-.gamemodeMenuDisabled .accountButton {
-    opacity: 0.5;
-    pointer-events: none;
-}
-
-.sideMenuDisabled {
-    opacity: 0.8;
-    transform: scale(0.95);
-    filter: blur(1px);
-}
-
-#notificationBar {
-    position: absolute;
-    visibility: hidden;
-    /* changed in code */
-    top: 50px;
-    border-radius: 10px;
-    background-color: var(--panel-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-    padding: 6px;
-    gap: 15px;
-    font-size: 22px;
-    opacity: 0;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
-    transition: all 200ms ease;
-    pointer-events: auto;
-    margin-inline: 10px;
-    max-width: 80vw;
-}
-
-#notificationAccept {
-    min-width: 45px;
-}
-
-#notificationDismiss {
-    padding-inline: 10px;
-}
-
-#notificationText {
-    padding-left: 10px;
-    max-width: 350px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    text-wrap: nowrap;
-}
-
-.notificationButtonBox {
-    display: flex;
-    align-items: center;
-    width: fit-content;
-    gap: 4px;
-}
-
-.profile {
-    display: flex;
-    align-items: center;
-}
-
-.notSignedIn {
-    opacity: 50%;
-    pointer-events: none;
-}
-
-.level {
-    display: flex;
-    align-items: center;
-    margin-right: 10px;
-    color: white;
-}
 
 #pinSelector {
     display: flex;
@@ -434,22 +339,6 @@ li {
     text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.50);
 }
 
-
-#accountNameArea {
-    max-width: 80px;
-    overflow: hidden;
-    white-space: nowrap;
-    margin-top: 2px;
-}
-
-#accountName {
-    color: white;
-    display: inline-block;
-    width: fit-content;
-    margin-top: -3px;
-    font-size: 22px;
-}
-
 .profileNameArea {
     display: flex;
     align-items: center;
@@ -476,42 +365,6 @@ li {
     margin-left: 8px;
     margin-top: auto;
     margin-bottom: 5px;
-}
-
-.progressContainer {
-    position: relative;
-    width: 30px;
-    height: 30px;
-    margin-inline: 10px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.15);
-    border-radius: 50%;
-}
-
-.progressRing {
-    transform: rotate(-90deg);
-}
-
-.progressRingCircle {
-    transition: 0.35s stroke-dashoffset;
-    transform: rotate(-90deg);
-    transform-origin: 50% 50%;
-}
-
-
-.progressRingText {
-    position: absolute;
-    font-size: 15px;
-    color: white;
-    user-select: none;
-}
-
-.accountButton {
-    min-height: 40px;
-    max-height: 40px;
-    background-color: rgba(168, 168, 187, 0.3);
 }
 
 #loginButton {
@@ -608,10 +461,6 @@ textarea {
 #friendInboxWindow {
     display: block !important;
     max-width: 700px;
-}
-
-#pinWindow {
-    max-width: 560px;
 }
 
 .spacerBadge {
@@ -866,11 +715,6 @@ textarea {
     padding-inline: 7px;
 }
 
-#profileWindow {
-    max-width: 800px;
-    width: 50%;
-}
-
 .edit-icon {
     margin-right: 5px;
     width: 20px;
@@ -1079,10 +923,6 @@ textarea {
     padding: 15px;
     padding-top: 10px;
     flex-direction: column;
-}
-
-#settingsIcon {
-    filter: invert();
 }
 
 #endMultiplayerRoundButton {
@@ -2315,39 +2155,6 @@ search {
     opacity: 60%;
 }
 
-button {
-    background: none;
-    color: inherit;
-    border: none;
-    padding: 0;
-    font: inherit;
-    cursor: pointer;
-    outline: inherit;
-}
-
-.socialBarIcons {
-    width: 20px;
-    height: auto;
-    margin-inline: 2px;
-    margin-bottom: -2px;
-}
-
-.shiftedSocialbarIcon {
-    margin-right: 4px;
-}
-
-.invertSocialBarIcon {
-    filter: invert();
-}
-
-#mobileButtonArea {
-    display: none;
-}
-
-.mobileAccountButton {
-    padding-inline: 12px;
-}
-
 #privacyNotice {
     font-size: 20px;
     opacity: 50%;
@@ -2448,28 +2255,6 @@ button {
     height: 50px;
 }
 
-#mobileLoginButton,
-#mobileProfileButton {
-    background-color: var(--brand-color);
-    color: white;
-}
-
-#mobileLogoutButton,
-#mobileProfileButton {
-    display: none;
-}
-
-#mobileLoginButton {
-    min-width: 100px;
-}
-
-#mobileAccountUI {
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
-    overflow: hidden;
-}
-
 .errorCode {
     opacity: 70%;
     background-color: rgba(255, 255, 255, 0.1);
@@ -2541,14 +2326,6 @@ input[type="checkbox"]:focus {
 
 /* Small phones, mobile and other narrow screens */
 @media all and (max-width: 1200px) {
-    .bannerRight {
-        display: none;
-    }
-
-    .topBarDesktop {
-        display: none;
-    }
-
     #duelsOverlay h1 {
         font-size: 45px;
     }
