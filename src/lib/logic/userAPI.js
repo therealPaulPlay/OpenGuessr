@@ -292,7 +292,7 @@ export async function getSupporterLeaderboard() {
   }
 }
 
-export async function updateExperience(token, id, experience, errorSource, secondAttempt, errorElement) {
+export async function updateExperience(token, id, experience, errorSource, errorElement) {
   try {
     const requestBody = {
       id: id,
@@ -315,13 +315,9 @@ export async function updateExperience(token, id, experience, errorSource, secon
       const data = await response.json();
       localStorage.setItem("experience", data['user']['experience']);
     } else {
-      if (response.status != 400 || secondAttempt) {
-        let responseError = await attemptExtractErrorFromResponse(response);
-        console.error('User update failed:', response.status);
-        displayError("User update failed: " + response.status, errorSource, errorElement, responseError);
-      } else {
-        return "retry";
-      }
+      let responseError = await attemptExtractErrorFromResponse(response);
+      console.error('User update failed:', response.status);
+      displayError("User update failed: " + response.status, errorSource, errorElement, responseError);
     }
   } catch (error) {
     console.error('Error occurred during user update: ', error);

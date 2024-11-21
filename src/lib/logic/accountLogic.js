@@ -280,7 +280,7 @@ export async function loadResultScreenXP(distance) {
     earnedExperience.set(earnedBasicXP);
 
     if (earnedXP > 0 && get(isAuthenticated)) {
-      setUserXP(currentXP + earnedXP, earnedXP, false); // Save XP to database
+      setUserXP(currentXP + earnedXP); // Save XP to database
       experienceBarAnimated.set(true);
     }
 

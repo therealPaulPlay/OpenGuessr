@@ -4,7 +4,7 @@ import { errorPopup } from "$lib/utils/errorHandling";
 import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, showPageBrowser } from "./mainUI.js";
 import { supporterWindowIfAuthenticated } from "../src/lib/utils/showSupporterPopup.js";
 import { startTimer } from "../src/lib/utils/timer.js";
-import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
+import { isAuthenticated } from "./accountLogic.js";
 import { selectedBadge, selectedPinIndex, supporterLevel, experience, username } from "../src/lib/stores/accountStore";
 import { enableResultScreen } from "../src/lib/utils/setResultScreen.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
@@ -17,6 +17,7 @@ import { continueText } from "../src/lib/stores/context-specific/resultScreenSto
 import { mapPinLat, mapPinLng } from "../src/lib/stores/context-specific/mapStore.js";
 import { multiplayerCategory, highestMultiplayerSupporterLevel } from "../src/lib/stores/context-specific/multiplayerStore.js";
 import { get } from "svelte/store";
+import { getLevel } from "../src/lib/utils/experienceCalculations.js";
 
 // Global UI --------------------------------------------------------------------------------------------
 export let coordsFromHost = [35.7072457, 139.863412]; // assign default to prevent blackscreen on link join
@@ -1261,7 +1262,7 @@ export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
         multiplayerCategory.set("standard");
     }
 
-    connectedPeers.push([peerId, get(username) == null ? savedGuestName : get(username), uiSetUserXP(get(experience)).level, 0, 1, localStorage.getItem("id"), get(selectedBadge)]); //add yourself (host) to the overview
+    connectedPeers.push([peerId, get(username) == null ? savedGuestName : get(username), getLevel(), 0, 1, localStorage.getItem("id"), get(selectedBadge)]); //add yourself (host) to the overview
     yourTeam = 1; // Host is always in team 1
     showMultiplayerOverlay(true, "Waiting...", connectedPeers);
 
@@ -1426,7 +1427,7 @@ export async function joinRoom(code) {
     const options = {
         metadata: {
             username: get(username) == null ? savedGuestName : get(username),
-            level: uiSetUserXP(get(experience)).level,
+            level: getLevel(),
             score: 0, //inital score is set to 0,
             id: localStorage.getItem("id"),
             badge: get(selectedBadge),

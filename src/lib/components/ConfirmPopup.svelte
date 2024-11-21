@@ -9,6 +9,7 @@
     confirmConfirmText,
     confirmConfirmColor,
     confirmExecuteFunction,
+    confirmShowConfirm,
   } from "$lib/stores/context-specific/confirmPopupStore";
   import { playSound } from "$lib/utils/soundManager";
   import { get } from "svelte/store";
@@ -31,7 +32,7 @@
 </script>
 
 {#if $confirmPopupVisible}
-  <Popup slim=true>
+  <Popup verySlim="true">
     <h1 id="confirmTitle" class="popup-title">{$confirmTitle}</h1>
     <div id="confirmDescription" class="popup-description">{$confirmDescription}</div>
     {#if $confirmPasswordInput}
@@ -42,12 +43,14 @@
     {/if}
     <div class="buttonBoxRight">
       <button id="confirmCancel" class="standardButton white closeButton" onclick={closeConfirmPopup}>Close</button>
-      <button
-        id="confirmProceed"
-        class="standardButton closeButton"
-        onclick={confirm}
-        style:background-color={$confirmConfirmColor}>{$confirmConfirmText}</button
-      >
+      {#if $confirmShowConfirm}
+        <button
+          id="confirmProceed"
+          class="standardButton closeButton"
+          onclick={confirm}
+          style:background-color={$confirmConfirmColor}>{$confirmConfirmText}</button
+        >
+      {/if}
     </div>
   </Popup>
 {/if}

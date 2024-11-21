@@ -136,10 +136,10 @@ async function initMap() {
                 mapTypeControlOptions: {
                     style: google.maps.MapTypeControlStyle.DEFAULT,
                     mapTypeIds: [
-                      google.maps.MapTypeId.ROADMAP, // Standard view
-                      google.maps.MapTypeId.HYBRID, // Satellite view with labels
+                        google.maps.MapTypeId.ROADMAP, // Standard view
+                        google.maps.MapTypeId.HYBRID, // Satellite view with labels
                     ],
-                  },
+                },
                 clickableIcons: false,
                 restriction: {
                     latLngBounds: worldBounds,

@@ -1,6 +1,5 @@
 <script>
   import { discordPopup } from "$lib/stores/uiStore";
-  import { isAuthenticated } from "$lib/stores/accountStore";
   import { setUserXP } from "$lib/utils/setUserXP";
   import Popup from "./Popup.svelte";
   import { playSound } from "$lib/utils/soundManager";
@@ -10,7 +9,7 @@
     window.open("https://discord.gg/CSc3MbDrZ8", "_blank").focus();
     setTimeout(async function () {
       closePopup();
-      await setUserXP(Number(localStorage.getItem("experience")) + 7500, 7500, false);
+      await setUserXP(Number(localStorage.getItem("experience")) + 7500);
     }, 200);
   }
 
