@@ -268,7 +268,10 @@
     margin-inline: 2px;
     max-height: 40px;
     background-color: rgba(168, 168, 187, 0.3);
-    transition: filter 250ms ease;
+    box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    box-sizing: border-box;
+    transition: filter 250ms ease, transform 150ms ease;
     cursor: pointer;
     display: flex;
     grid: 5px;
@@ -284,6 +287,10 @@
 
   .profileInfo:hover {
     filter: brightness(0.7);
+  }
+
+  .profileInfo:active {
+    transform: scale(0.95);
   }
 
   .profileInfoSupporter {

@@ -1,6 +1,7 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
   import { signupPopup } from "$lib/stores/uiStore";
+  import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
 
   if (typeof window !== "undefined") {
     window.onmessage = function (e) {
