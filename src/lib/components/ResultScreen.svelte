@@ -23,12 +23,10 @@
   let level = $state(1);
   let percentageWidth = $state("0%");
 
-  $effect(() => {
-    if ($experience) {
-      level = getLevel();
-      percentageWidth = getLevelFraction() * 100 + "%";
-    }
-  });
+  experience.subscribe((value) => {
+    level = getLevel();
+    percentageWidth = getLevelFraction() * 100 + "%";
+  })
 </script>
 
 <div id="EndOverlay" class:resultScreenHidden={!Boolean($resultScreenEnabled)}>
@@ -124,6 +122,7 @@
     display: flex;
     justify-content: center;
     align-items: flex-end;
+    pointer-events: none;
     transition: opacity 250ms ease-out;
   }
 

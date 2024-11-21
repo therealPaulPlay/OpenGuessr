@@ -7,8 +7,11 @@ import { startTimer } from "../src/lib/utils/timer.js";
 import { isAuthenticated } from "./accountLogic.js";
 import { selectedBadge, selectedPinIndex, supporterLevel, experience, username } from "../src/lib/stores/accountStore";
 import { enableResultScreen } from "../src/lib/utils/setResultScreen.js";
-import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
+import { mapCategory, transitionToStart } from "./categoryMenu.js";
+import { changeCategory } from "../src/lib/utils/changeCategory.js";
+import { checkGenerationTypeAndGenerate } from "../src/lib/logic/newLocation.js";
 import { confirmButtonClicks, setConfirmButtonState, updateMinimapWithTeamMarkers } from "../src/lib/logic/miniMap.js";
+import { mapSupportsMultiplayer } from "../src/lib/utils/doesMapSupportMultiplayer.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
 import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
 import { loadFriends, sendMatchInvite } from "./friendMenu.js";
@@ -16,12 +19,11 @@ import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { continueText } from "../src/lib/stores/context-specific/resultScreenStore.js";
 import { mapPinLat, mapPinLng } from "../src/lib/stores/context-specific/mapStore.js";
 import { multiplayerCategory, highestMultiplayerSupporterLevel } from "../src/lib/stores/context-specific/multiplayerStore.js";
+import { isHost, coordsFromHost } from "../src/lib/stores/multiplayerStore.js";
 import { get } from "svelte/store";
 import { getLevel } from "../src/lib/utils/experienceCalculations.js";
 
 // Global UI --------------------------------------------------------------------------------------------
-export let coordsFromHost = [35.7072457, 139.863412]; // assign default to prevent blackscreen on link join
-
 let socialMenuMultiplayerButton = document.getElementById("multiplayerButton");
 let multiplayerSelectionScreen = document.getElementById("multiplayerSelectionWindow");
 
@@ -483,7 +485,7 @@ export function multiplayerTimerExpired() {
     confirmButtonClicks(); //only do this if the player actually hasnt guessed yet...
 
     // when the timer expires, but a peer doesn't respond by executing confirmButtonCliks --> still end the round after 2000ms
-    if (isHost) {
+    if (get(isHost)) {
         endMultiplayerRoundIfGuessMissing = setTimeout(function () {
             endMultiplayerRound();
         }, 2000);
@@ -497,7 +499,7 @@ export let autoSkipResult;
 
 function endMultiplayerRound() {
     if (!roundEnded) {
-        if (isHost) {
+        if (get(isHost)) {
             clearTimeout(endMultiplayerRoundIfGuessMissing);
             sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
             document.getElementById("nextRound").style.opacity = "0.5";
@@ -542,7 +544,7 @@ export function multiplayerStateToGuessed() {
         }
     }
 
-    if (isHost) {
+    if (get(isHost)) {
         if (!multiplayerHasAlreadyGuessed) {
             multiplayerGuessesLocationsArray.push([get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) != null ? get(username) : savedGuestName]); //add the hosts guess to the guesses
             multiplayerHasGuessed(); // this substracts one from the total requried guesses (and maybe ends the round)
@@ -563,7 +565,7 @@ export function multiplayerStateToGuessed() {
 
     // Reduce time for the opponent in duels (after setting ..hasGuessed!!)
     if (playingDuels) {
-        if (isHost) {
+        if (get(isHost)) {
             sendMessageToAll("timeReduce", 15); // 15 seconds
             showTimeReduceOverlay(15, true); // reduce time for the host too
         } else {
@@ -736,7 +738,6 @@ function copyRoomcodeLink() {
 // Vars ------------------------------------------------------------------------------------------------
 let conn; // the connection data
 export let peerId;
-export let isHost = false;
 export let connectedPeers = [];
 
 // Chat -----------------------------------------------------------------------------------------------------
@@ -783,7 +784,7 @@ function sanitizeHTML(text) {
 //for peers and hosts, this is how you send messages
 export function distributeChat(text) {
     try {
-        if (isHost) {
+        if (get(isHost)) {
             addToChat(text);
             sendMessageToAll("chat", text);
         } else {
@@ -1254,7 +1255,7 @@ function createRoom(AmountOfRounds, LengthOfRounds) {
 
 export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     setDuelFindStatus("Room created. Please wait <10s");
-    isHost = true;
+    isHost.set(true);
     multiplayerFirstRoundPlayed = false;
     multiplayerCategory.set(mapCategory);
 
@@ -1356,7 +1357,7 @@ export function sendMessageToAll(type, message) {
 
 // Function to disconnect all peers and close the room
 function disconnectAllPeersAndCloseRoom() {
-    if (isHost) {
+    if (get(isHost)) {
         if (peer && connectedClientsCount != 0) {
             try {
                 for (let peerId in peer.connections) {
@@ -1385,7 +1386,7 @@ let teamMarkerArray = [];
 
 export function sendTeamMarkers(lat, long) {
     if (multiplayer) {
-        if (isHost) {
+        if (get(isHost)) {
             addReplaceTeamMarkers(peerId, lat, long, get(selectedPinIndex), yourTeam);
             sendMessageToAll("teamMarkers", teamMarkerArray);
         } else {
@@ -1418,7 +1419,7 @@ export async function joinRoom(code) {
         });
     }
 
-    isHost = false;
+    isHost.set(false);
     multiplayerFirstRoundPlayed = false;
 
     setJoinInfoText("Attempting join...");
@@ -1479,7 +1480,7 @@ export async function joinRoom(code) {
 
         if (data.type === "start") {
             try {
-                coordsFromHost = data.content.coordinates;
+                coordsFromHost.set(data.content.coordinates);
                 highestMultiplayerSupporterLevel.set(data.content.highestSupporterLevel);
             } catch (error) {
                 console.error("Error receiving locations and supporter level from the host in multiplayer.js Error: ", error);
@@ -1593,7 +1594,7 @@ if (peer) {
         }
 
         if (matchmakingActive) {
-            if (err.type == "peer-unavailable" && !isHost) {
+            if (err.type == "peer-unavailable" && !get(isHost)) {
                 findNextDuel();
             } else {
                 setDuelFindStatus("Please try again. Error: " + err.type);
@@ -1601,7 +1602,7 @@ if (peer) {
                 setRetryButtonState();
             }
 
-            if (isHost) {
+            if (get(isHost)) {
                 deleteRoomCodeFromMatchmakingServer(); //the retry button will also appear as seen above
             }
         }
@@ -1614,7 +1615,7 @@ if (peer) {
             leaveMultiplayerRound();
         }
 
-        if (isHost && matchmakingActive) {
+        if (get(isHost) && matchmakingActive) {
             deleteRoomCodeFromMatchmakingServer(); //this happens when you close the tab / leave or refresh the page
         }
 
@@ -1639,7 +1640,7 @@ export function leaveMultiplayerRound() {
         wasMultiplayerEnabled = true;
     }
 
-    if (isHost) {
+    if (get(isHost)) {
         disconnectAllPeersAndCloseRoom(); // only does this if there are clients connected (connectedClientsCount != 0)
     } else {
         if (conn) {
@@ -1671,7 +1672,7 @@ export function leaveMultiplayerRound() {
     multiplayerRestriction = "standard";
     resetChat();
     matchmakingActive = false;
-    isHost = false;
+    isHost.set(false);
     playingDuels = false;
     lateJoinedWaiting = false;
     highestMultiplayerSupporterLevel.set(0);
@@ -1730,7 +1731,7 @@ function showEndscreenUI(show) {
     if (show) {
         endMultiplayerRoundButton.style.display = "block"; // show leave / end button
 
-        if (isHost) {
+        if (get(isHost)) {
             endMultiplayerRoundButton.textContent = "End Round";
 
             if (!playingDuels || friendDuel) {

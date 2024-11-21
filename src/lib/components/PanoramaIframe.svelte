@@ -1,52 +1,12 @@
 <!-- The IFrame that the StreetView / Panorama is in -->
 <script>
-  import { panoramaLink, reloadPanorama, loadPanorama } from "$lib/stores/locationStore";
-  import { imageGuesser, multiplayer } from "$lib/stores/modeStore";
+  import { iframeElement, initialIframeLoad } from "$lib/stores/locationStore";
   import { loadingScreenVisible } from "$lib/stores/uiStore";
-  import { get } from "svelte/store";
-  import { playSound } from "$lib/utils/soundManager";
   import { applySingleplayerSettings } from "$lib/utils/applySingleplayerSettings";
   import { checkStartCompetitionRound } from "$lib/logic/competitionLogic";
 
-  const streetviewAPIKey = "AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs";
-
-  let iframe = $state();
-  let initialIframeLoad = true;
-
-  export function loadIframe(lat, long) {
-    if (!$imageGuesser || $multiplayer) {
-      panoramaLink.set(
-        "https://www.google.com/maps/embed/v1/streetview?location=" +
-          lat +
-          "," +
-          long +
-          "&key=" +
-          streetviewAPIKey +
-          "&fov=90",
-      ); // API key (last part of URL)
-    } else {
-      panoramaLink.set("/loader");
-    }
-
-    iframe.setAttribute("src", get(panoramaLink)); // Apply manually, to avoid URL override on move (where the URL changes)
-    initialIframeLoad = true;
-  }
-
-  loadPanorama.set(loadPanorama);
-
-  export function reload() {
-    playSound("reload");
-    $loadingScreenVisible = true;
-    iframe.setAttribute("src", get(panoramaLink));
-    window.setTimeout(() => {
-      $loadingScreenVisible = false;
-    }, 400);
-  }
-
-  reloadPanorama.set(reload);
-
   const handleLoad = () => {
-    if (initialIframeLoad) {
+    if ($initialIframeLoad) {
       try {
         applySingleplayerSettings(); // Apply singleplayer options / settings (NMPZ, timer etc.) if Singleplayer, otherwise disable all
         checkStartCompetitionRound(); // Check if currently playing competition and start timer + new round if so
@@ -55,7 +15,7 @@
       }
     }
 
-    initialIframeLoad = false;
+    initialIframeLoad.set(false);
 
     setTimeout(function () {
       $loadingScreenVisible = false;
@@ -70,5 +30,5 @@
   frameborder="0"
   onload={handleLoad}
   src="/loader"
-  bind:this={iframe}
+  bind:this={$iframeElement}
 ></iframe>

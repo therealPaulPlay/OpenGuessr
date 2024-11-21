@@ -1,6 +1,6 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
-  // import { checkGenerationTypeAndGenerate } from "./categoryMenu"; !TODO !CHANGE
+  import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
   import { playSound } from "$lib/utils/soundManager";
   import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
   import { formatDistance } from "$lib/utils/distanceFunctions";
@@ -8,6 +8,7 @@
   import { timerCountdownOverlay } from "$lib/stores/context-specific/timerCountdownOverlayStore";
   import { isSingleplayerNMPZ, timeout } from "$lib/stores/modeStore";
   import { roundLog } from "$lib/stores/locationStore";
+  import { get } from "svelte/store";
   import { onMount } from "svelte";
 
   // Singleplayer Options UI ----------------------------------------------------------------------------------------
@@ -35,12 +36,11 @@
       : false;
   });
 
-  let singleplayerNMPZToggleText = $derived($isSingleplayerNMPZ ? "Enabled" : "Disabled");
-
   function toggleSingleplayerNMPZ() {
     playSound("basic_button");
     $isSingleplayerNMPZ = !$isSingleplayerNMPZ;
     localStorage.setItem("singleplayerNMPZ", $isSingleplayerNMPZ ? "true" : "");
+    
     checkGenerationTypeAndGenerate();
   }
 
@@ -95,7 +95,7 @@
         <div class="timerSliderBox">
           <p class="singleplayerDesc">Prevent Move, Pan and Zoom:</p>
           <button id="setSingleplayerNMPZ" class="standardButton white" onclick={toggleSingleplayerNMPZ}
-            >{singleplayerNMPZToggleText}</button
+            >{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
           >
         </div>
       </div>

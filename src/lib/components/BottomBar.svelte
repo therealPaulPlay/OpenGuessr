@@ -2,7 +2,7 @@
 <script>
   import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
   import { playSound } from "$lib/utils/soundManager";
-  import { reloadPanorama } from "$lib/stores/locationStore";
+  import { reloadPanorama } from "$lib/utils/loadPanorama"; 
   import { helpPopup } from "$lib/stores/uiStore";
   import { mapHolderMarginRight } from "$lib/stores/context-specific/mapStore";
   import { confirmButtonActive, confirmButtonText } from "$lib/stores/context-specific/confirmButtonStore";
@@ -40,7 +40,7 @@
       class="standardButton bottomBarButton"
       id="resetButton"
       onclick={() => {
-        $reloadPanorama(); // No sound, as the reload sound will play
+        reloadPanorama(); // No sound, as the reload sound will play
       }}
     >
       <img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
@@ -79,7 +79,8 @@
         class="socialItem"
         id="helpButton"
         class:innerConfirmButtonDisabled={$confirmButtonActive}
-        onclick={() => {
+        onclick={(element) => {
+          element.stopPropagation();
           playSound("basic_button");
           $helpPopup = true;
         }}>?</button
@@ -88,8 +89,8 @@
         class="socialItem"
         id="revealCompass"
         class:innerConfirmButtonDisabled={$confirmButtonActive}
-        onclick={(e) => {
-          e.stopPropagation();
+        onclick={(element) => {
+          element.stopPropagation();
           toggleMapOffset();
           playSound("basic_button");
         }}

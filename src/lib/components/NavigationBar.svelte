@@ -8,6 +8,7 @@
   import { competition, multiplayer } from "$lib/stores/modeStore";
   import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
   import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
+  import { get } from "svelte/store";
   // import { loadProfileFromId } from "$lib/utils/loadProfile" !TODO !CHANGE
 
   function openSettings() {
@@ -54,25 +55,28 @@
 
   // Level indicator (progress ring) -----------------------------------------------------------------------------------------
   let progressRingLevel = $state(0);
-  let progressRingSVG = $state();
 
-  $effect(() => {
-    if ($experience) {
-      progressRingLevel = getLevel();
-      setProgress(getLevelFraction());
-    }
+  experience.subscribe((value) => {
+    progressRingLevel = getLevel();
+    setProgress(getLevelFraction());
   });
 
   function setProgress(factor) {
-    const circle = progressRingSVG;
-    const radius = circle.r.baseVal.value;
-    const circumference = 2 * Math.PI * radius;
+    if (typeof window == "undefined") return;
+    
+    try {
+      const circle = document.getElementById("progressRingCircle");
+      const radius = circle.r.baseVal.value;
+      const circumference = 2 * Math.PI * radius;
 
-    circle.style.strokeDasharray = `${circumference} ${circumference}`;
-    circle.style.strokeDashoffset = `${circumference}`;
+      circle.style.strokeDasharray = `${circumference} ${circumference}`;
+      circle.style.strokeDashoffset = `${circumference}`;
 
-    const offset = circumference - factor * circumference;
-    circle.style.strokeDashoffset = offset;
+      const offset = circumference - factor * circumference;
+      circle.style.strokeDashoffset = offset;
+    } catch (error) {
+      console.error("Error setting progress:", error);
+    }
   }
 </script>
 
@@ -100,7 +104,7 @@
       >
         <img class="socialBarIcons invertSocialBarIcon" src="/img/profile_icon.png" alt="Your profile" />
       </button>
-      |{/if}
+    {/if}
     {#if $isAuthenticated}
       <button
         id="mobileLogoutButton"
@@ -180,7 +184,7 @@
       <div class="progressContainer">
         <svg class="progressRing" width="30" height="30">
           <circle
-            bind:this={progressRingSVG}
+            id="progressRingCircle"
             class="progressRingCircle"
             style="stroke-dasharray: 81.6814px, 81.6814px; stroke-dashoffset: 81.6814px;"
             stroke="#00cc00"
@@ -271,7 +275,9 @@
     box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
     border: 3px solid rgba(255, 255, 255, 0.1);
     box-sizing: border-box;
-    transition: filter 250ms ease, transform 150ms ease;
+    transition:
+      filter 250ms ease,
+      transform 150ms ease;
     cursor: pointer;
     display: flex;
     grid: 5px;

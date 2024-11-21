@@ -1,7 +1,6 @@
-import { errorPopup } from "./errorHandling.js";
-import { coordsFromHost } from "../../../JS/multiplayer.js";
-import { mapCategory } from "../../../JS/categoryMenu.js";
-import { competitionData, competitionRound } from "lib/stores/context-specific/competitionStore";
+import { errorPopup } from "$lib/utils/errorHandling";
+import { coordsFromHost } from "$lib/stores/multiplayerStore.js";
+import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore.js";
 
 import { loadingScreenVisible } from "$lib/stores/uiStore.js";
@@ -14,11 +13,11 @@ export async function getLocationCoordinates(type) {
     loadingScreenVisible.set(true);
 
     if (type == "JSON") {
-        return await getJSONCoords(mapCategory);
+        return await getJSONCoords(localStorage.getItem("selectedCategory"));
     } else if (type == "SDK") {
         return await getCoordsFromLocationServer();
     } else if (type == "FROMHOST") {
-        return coordsFromHost;
+        return get(coordsFromHost);
     } else if (type == "COMMUNITY") {
         return await getCommunityMapCoordinates();
     } else if (type == "COMPETITION") {
@@ -110,9 +109,9 @@ async function loadBackupLocations(error) {
 
 async function getCommunityMapCoordinates() {
 
-    if (loadedMapCategory !== mapCategory) {
+    if (loadedMapCategory !== localStorage.getItem("selectedCategory")) {
         try {
-            const response = await fetch("https://maps.openguessr.com/maps/" + mapCategory.replace("community_", ""), {
+            const response = await fetch("https://maps.openguessr.com/maps/" + localStorage.getItem("selectedCategory").replace("community_", ""), {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
@@ -120,7 +119,7 @@ async function getCommunityMapCoordinates() {
             // Check if the response is successful
             if (response.ok) {
                 const data = await response.json();
-                loadedMapCategory = mapCategory;
+                loadedMapCategory = localStorage.getItem("selectedCategory");
                 previousGuessesIndexes = [];
                 currentlyLoadedLocationsArray.set(data.map_data.locations); // the array is in locations: {}
                 return pickRandomLocations(); // pick one new location for playing

@@ -46,7 +46,7 @@
     onmouseover={initializeMapIfNotAlready}
     ontouchstart={initializeMapIfNotAlready}
     style:max-height={$mapExpanded ? "100%" : "0%"}
-    class:mapFullOpacity={Boolean($resultScreenEnabled)}
+    class:mapFullOpacityResult={Boolean($resultScreenEnabled)}
   >
     {#if !$map}
       <div id="mapPlaceholderBeforeLoad"></div>
@@ -81,8 +81,13 @@
     font-family: Roboto;
   }
 
-  .mapFullOpacity {
+  .mapFullOpacityResult {
     opacity: 1 !important;
+    border-radius: 0 !important;
+    top: -60px;
+    position: fixed !important;
+    max-height: calc(100% + 60px) !important;
+    height: calc(100% + 60px) !important;
   }
 
   #mapPlaceholderBeforeLoad {

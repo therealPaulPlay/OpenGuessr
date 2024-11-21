@@ -4,9 +4,8 @@ import {
     timerCountdownOverlayTitle,
     timerCountdownOverlaySubtitle,
 } from "$lib/stores/context-specific/timerCountdownOverlayStore";
-import { singleplayer, isSingleplayerNMPZ, timeout } from "$lib/stores/modeStore";
+import { singleplayer, timeout } from "$lib/stores/modeStore";
 import { get } from "svelte/store";
-import { singleplayerNMPZ } from "$lib/stores/uiStore";
 import { startTimer } from "$lib/utils/timer";
 
 let timeoutVariable;
@@ -19,7 +18,6 @@ let startHardModePromise;
 export function applySingleplayerSettings() {
     // Disable all here, then enable what should be enabled
     timerCountdownOverlay.set(false);
-    isSingleplayerNMPZ.set(false);
 
     try {
         timer.stopTimer();
@@ -31,10 +29,6 @@ export function applySingleplayerSettings() {
 
     // Now, enable what's needed if in Singleplayer
     if (get(singleplayer)) {
-        if (get(isSingleplayerNMPZ)) {
-            singleplayerNMPZ.set(true);
-        }
-
         if (get(timeout)) {
             // Show MapModeIndicator (Timer UI)
             mapModeIndicatorVisible.set(true);

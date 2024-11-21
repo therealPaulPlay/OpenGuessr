@@ -1,6 +1,6 @@
 import { startTimer } from "$lib/utils/timer";
 import { disableResultScreen } from "$lib/utils/setResultScreen";
-// import { checkGenerationTypeAndGenerate } from "../../../JS/categoryMenu"; !TODO !CHANGE
+import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 import { playSound } from "$lib/utils/soundManager";
 import { errorPopup } from "$lib/utils/errorHandling";
 // import { setRestriction } from "../../../JS/multiplayer"; !TODO !CHANGE

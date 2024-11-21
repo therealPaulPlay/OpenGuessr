@@ -43,12 +43,12 @@
 
   /* map Holder class on result screen */
   :global(.mapHolderToResult) {
-    bottom: 0;
-    padding-inline: 0;
-    z-index: 12;
-    width: 100%;
-    height: 100%;
-    transition: none;
+    bottom: 0 !important;
+    padding-inline: 0 !important;
+    z-index: 12 !important;
+    width: 100% !important;
+    height: 100% !important;
+    transition: none !important;
     margin: 0 !important;
     opacity: 100% !important;
     visibility: visible !important;

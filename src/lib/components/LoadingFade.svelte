@@ -14,6 +14,7 @@
     align-items: center;
     flex-direction: column;
     opacity: 0%;
+    pointer-events: none;
     background-color: #11121f;
     transition: opacity 250ms ease-in-out;
     position: fixed;

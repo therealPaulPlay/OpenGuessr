@@ -1,44 +1,82 @@
-// Generate a new location (new Panorama, New Image etc.)
-import { getLocationCoordinates } from '$lib/logic/locationGeneration';
-// import { startMultiplayerRound, isHost } from './multiplayer.js'; !TODO !CHANGE
-import { countryGuesser, multiplayer, imageGuesser } from "$lib/stores/modeStore";
-import { currentLocationLatitude, currentLocationLongitude } from '$lib/stores/locationStore';
-import { setCountryGuesserCountry } from '$lib/utils/countryGuesserFunctions';
-import { loadPanorama } from '$lib/stores/locationStore';
-import { loadImageFromUrl } from '$lib/utils/imageGuesserFunctions';
-import { get } from 'svelte/store';
+// Use this to present the player with a new location. This strongly depends on locationGeneration.js and generateLocation.js and feeds the generator with the right settings
+import { timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { stopCompetitionTimer } from "$lib/logic/competitionLogic";
+import { setCountryGuesserMode } from "$lib/utils/countryGuesserFunctions";
+import { setImageGuesserMode } from "$lib/utils/imageGuesserFunctions";
+import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
+import { generateNewLocation } from "$lib/utils/generateLocation";
+import { isHost } from "$lib/stores/multiplayerStore";
+import { errorPopup } from "$lib/utils/errorHandling";
+import { changeCategory } from "$lib/utils/changeCategory";
+import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
+import { get } from "svelte/store";
 
-// Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
+export async function checkGenerationTypeAndGenerate() {
+    const mapCategory = localStorage.getItem("selectedCategory") || "standard";
 
-export async function generateNewLocation(type) {
-    let newLocationArray;
+    stopCompetitionTimer();
+    timerText.set("00:00"); // Visually reset timer
 
-    try {
-        newLocationArray = await getLocationCoordinates(type);
-    } catch (error) {
-        console.error("Invalid location generation type in generateNewLocation function. Error:", error);
-    }
+    setCountryGuesserMode(false);
+    setImageGuesserMode(false);
 
-    try {
-        currentLocationLatitude.set(Number(newLocationArray[0]));
-        currentLocationLongitude.set(Number(newLocationArray[1]));
+    if (!get(multiplayer) && !get(competition)) {
+        singleplayer.set(true);
 
-        if (get(countryGuesser) && !get(multiplayer)) {
-            setCountryGuesserCountry(newLocationArray[2]);
+        // Pick between json and maps api loading depending on the category type
+        if (mapCategory != "standard" && mapCategory != "country" && mapCategory != "image" && !mapCategory.includes("community")) {
+            await generateNewLocation("JSON");
+
+        } else if (mapCategory == "country") {
+            setCountryGuesserMode(true);
+            await generateNewLocation("JSON");
+
+        } else if (mapCategory == "image") {
+            setImageGuesserMode(true);
+            await generateNewLocation("JSON");
+
+        } else if (mapCategory == "standard") {
+            await generateNewLocation("SDK");
+
+        } else if (mapCategory.includes("community")) {
+            await generateNewLocation("COMMUNITY");
+
+        } else {
+            console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
+        }
+    } else if (get(multiplayer)) {
+        // If multiplayer is enabled
+        singleplayer.set(false);
+
+        try {
+            if (get(isHost)) {
+                if (mapCategory != "standard" && mapSupportsMultiplayer(mapCategory) && !mapCategory.includes("community")) {
+                    await generateNewLocation("JSON");
+                } else if (mapCategory == "standard") {
+                    await generateNewLocation("SDK");
+
+                } else if (mapCategory.includes("community")) {
+                    await generateNewLocation("COMMUNITY");
+
+                } else {
+                    // If the map category is an unsupported multiplayer category, such as hard, switch to standard
+                    changeCategory("standard", true); // this will re-run checkGenerationTypeAndGenerate
+                    setTimeout(function () {
+                        errorPopup("Unsupported Multiplayer Map", "This map category is not available for multiplayer and was automatically changed to Standard.", "Map unsupported", false);
+                    }, 3500);
+                }
+            } else {
+                await generateNewLocation("FROMHOST");
+            }
+        } catch (error) {
+            console.error("Error loading multiplayer location in categoryMenu.js Error: ", error)
         }
 
-        if (get(imageGuesser) && !get(multiplayer)) {
-            loadImageFromUrl(newLocationArray[2]);
+    } else if (playingCompetition) {
+        singleplayer.set(false);
+
+        if (checkCompetitionRoundStatus(false)) {
+            await generateNewLocation("COMPETITION");
         }
-
-    } catch {
-        console.error("The coordinates to load the iframe from are not defined. " + "Lat: " + get(currentLocationLatitude) + " Long: " + get(currentLocationLongitude));
     }
-
-    loadPanorama(get(currentLocationLatitude), get(currentLocationLongitude));
-
-    if (get(multiplayer) && isHost) {
-        startMultiplayerRound(get(currentLocationLatitude), get(currentLocationLongitude));
-    }
-
 }

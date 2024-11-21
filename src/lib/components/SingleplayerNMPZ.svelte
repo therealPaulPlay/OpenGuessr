@@ -1,8 +1,8 @@
 <script>
-  import { singleplayerNMPZ } from "$lib/stores/uiStore";
+  import { isSingleplayerNMPZ, singleplayer } from "$lib/stores/modeStore";
 </script>
 
-{#if $singleplayerNMPZ}
+{#if $isSingleplayerNMPZ && $singleplayer}
   <div id="nmpzSingleplayerBackground"></div>
 {/if}
 

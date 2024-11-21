@@ -20,7 +20,7 @@ export function loadImageFromUrl(url) {
     };
 }
 
-export function setImageGuessrEnabled(enable) {
+export function setImageGuesserMode(enable) {
     imageGuesser.set(enable);
 
     if (enable) {

@@ -33,7 +33,12 @@ export async function loginUser(email, password, errorSource, errorElement) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      saveUserData(data);
+
+      // Important: Save the Token and ID, to enable future requests
+      if (data['token'] && data['id']) {
+        localStorage.setItem("bearer", data['token']);
+        localStorage.setItem("id", data['id']);
+      }
 
       if (inIframe()) {
         window.parent.postMessage("loadAccountStatus", "*");
@@ -208,7 +213,6 @@ export async function getUser(token, id, errorSource, errorElement) {
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      saveUserData(data['user']);
       return data.user;
 
     } else {
@@ -313,7 +317,7 @@ export async function updateExperience(token, id, experience, errorSource, error
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      localStorage.setItem("experience", data['user']['experience']);
+      experience.set(data?.user?.experience);
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('User update failed:', response.status);
@@ -359,16 +363,6 @@ export async function updateUsername(token, id, requestedUsername, errorSource, 
     console.error('Error occurred during user update: ', error);
     displayError("Error occured during user update " + error, errorSource, errorElement);
   }
-}
-
-//executed after successful login
-async function saveUserData(data) {
-  if (data['token'] && data['id']) {
-    localStorage.setItem("bearer", data['token']);
-    localStorage.setItem("id", data['id']);
-  }
-  localStorage.setItem("username", data['userName']);
-  localStorage.setItem("experience", data['experience']);
 }
 
 // Error catching ----------------------------------------------------------------------------------------

@@ -1,6 +1,7 @@
 import { deleteUser, getUser } from "./userAPI";
 // import { supporterXpBoostAnimation } from "../../../JS/mainUI.js"; !TODO !CHANGE
-// import { isHost, peerSendsHost, peerId, updatePeerDataScore, attemptJoinViaLink } from "../../../JS/multiplayer.js"; !TODO !CHANGE
+// import { peerSendsHost, peerId, updatePeerDataScore, attemptJoinViaLink } from "../../../JS/multiplayer.js"; !TODO !CHANGE
+import { isHost } from "$lib/stores/multiplayerStore.js";
 import { highestMultiplayerSupporterLevel, multiplayerCategory } from "$lib/stores/context-specific/multiplayerStore.js";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions.js";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore.js";
@@ -22,6 +23,7 @@ import { loadedProfileData } from "$lib/stores/context-specific/profileStore.js"
 import { profilePopup } from "$lib/stores/UIStore.js";
 import { mapDiameter } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
+import { supportedAmount } from "../stores/accountStore.js";
 
 let lastDistance;
 let lastXPloadingAttemptAborted = false;
@@ -62,19 +64,21 @@ export async function checkAuthenticationStatus() {
     isAuthenticated.set(false);
   }
 
-  attemptJoinViaLink();
+  try { attemptJoinViaLink(); } catch (e) { console.error("Error in accountLogic.js:", e) };
 }
 
 export function resetLocalSave() {
   // Localstorage
   localStorage.removeItem("bearer");
   localStorage.removeItem("id");
+  localStorage.removeItem("experience");
 
   // Stores
   username.set("Guest");
   selectedPinIndex.set(0);
   selectedBadge.set(null);
   inboxAlert.set(false);
+  experience.set(0);
 }
 
 // Load user data ---------------------------------------------------------------------------------------------------------------------------
@@ -84,6 +88,10 @@ async function loadUserInfo() {
       loadedProfileData.set(user.profile_data);
 
       // Extract profile cosmetics
+      experience.set(user.experience);
+      username.set(user.userName);
+      supporterLevel.set(user.supporter_level);
+      supportedAmount.set(user.supportd_amount);
       selectedPinIndex.set(user?.profile_data?.pin || 0);
       selectedBadge.set(user?.profile_data?.badge || null);
 
@@ -261,7 +269,7 @@ export async function loadResultScreenXP(distance) {
       earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
       supporterMultiplier = calculatedXP.supporterMultiplier;
 
-      if (isHost) {
+      if (get(isHost)) {
         updatePeerDataScore(peerId, earnedXP);
       } else {
         peerSendsHost("score", earnedXP);

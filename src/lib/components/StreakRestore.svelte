@@ -101,10 +101,10 @@
     bind:this={streakWatchAd}
   >
     Keep streak
-    <img src="./img/streak_icon.png" class="socialIcon" alt="Streak Icon" />
+    <img src="./img/streak_icon.png" class="socialIcon streakIcon" alt="Streak Icon" />
   </button>
   <button
-    class="standardButton closeButton whit streakAdDismiss {streakAdDismissEnabled ? '' : 'disabled'}"
+    class="standardButton closeButton white streakAdDismiss {streakAdDismissEnabled ? '' : 'disabled'}"
     onclick={() => {
       playSound("basic_button");
       toggleStreakWindow(0, false);
@@ -149,6 +149,10 @@
     margin-right: 10px;
   }
 
+  .streakIcon {
+    vertical-align: -4px !important;
+  }
+
   .streakAdDismiss.disabled {
     opacity: 0.5;
     pointer-events: none;
@@ -156,8 +160,6 @@
 
   .streakButton {
     background-color: #01a001;
-    color: white;
-    min-height: 50px;
   }
 
   #keepStreakText {
