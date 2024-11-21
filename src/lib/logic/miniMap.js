@@ -108,7 +108,7 @@ async function requestMapLoad() {
 
 function displayMaploadUsage(used, limit) {
     showNotification(`(${used}/${limit}) daily minimap loads used.`, () => {
-        showConfirmPopup("What are minimap loads?", "A daily load is only used when you first open the minimap after loading the site, meaning your playtime remains unrestricted.<br><br> To help reduce API costs, please keep the website open to minimize additional minimap loads. The available amount resets every day.", false, false, false, true);
+        showConfirmPopup("What are minimap loads?", "A daily load is only used when you first open the minimap after loading the site, meaning your playtime remains unrestricted. The available amount resets every day.", false, false, false, true);
     }, false, true, true);
 }
 
@@ -214,7 +214,7 @@ async function adjustMapToCountry() {
     get(map).setZoom(mapCenterAndZoom.zoom);
 }
 
-//Placing the marker on the minimap ------------------------------------------------------------------------
+// Placing the marker on the minimap ------------------------------------------------------------------------
 let marker;
 
 function onMapClick(latLng) {

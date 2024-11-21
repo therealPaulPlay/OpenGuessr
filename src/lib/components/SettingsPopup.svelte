@@ -186,7 +186,7 @@
           id="privacyButton"
           onclick={() => {
             playSound("basic_button");
-            window.location.href = "/legal";
+            window.open("/legal", '_blank').focus();
           }}>View legal information</button
         >
       </div>

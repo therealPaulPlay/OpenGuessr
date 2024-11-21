@@ -1,5 +1,5 @@
 <script>
-  import SupporterPopup from "$lib/components/SupporterPopup.svelte";
+  import { supporterWindowIfAuthenticated } from "$lib/utils/showSupporterPopup";
   let { text, learnMore } = $props();
 </script>
 
@@ -8,7 +8,7 @@
 <p class="adsTextResult noAdvertsText">
   {text}
   {#if learnMore}
-    <span class="supporterAdText" onclick={SupporterPopup.supporterWindowIfAuthenticated} role="button">Learn more</span
+    <span class="supporterAdText" onclick={supporterWindowIfAuthenticated} role="button">Learn more</span
     >.
   {/if}
 </p>

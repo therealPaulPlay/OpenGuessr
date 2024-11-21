@@ -3,6 +3,7 @@
   import { errorPopup } from "$lib/utils/errorHandling";
   import { loadAndInitializeLibrary } from "$lib/utils/scriptLoader";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
+  import { initializeRewardedAd } from "$lib/utils/rewardedAds";
   import {
     isAuthenticated,
     supporterLevel,
@@ -269,7 +270,7 @@
         <p id="supporterInfoText">
           All purchases are one-time payments.
           <span class="supporterLegalText">
-            <a href="/legal.html" target="_blank">Terms and conditions</a>
+            <a href="/legal" target="_blank">Terms and conditions</a>
             apply.
           </span>
         </p>
@@ -293,9 +294,6 @@
     border-radius: 4px;
     margin-right: 2px;
     border: none;
-    transition:
-      opacity 250ms ease,
-      filter 250ms ease;
   }
 
   .freeSupporterBoostDisabled {

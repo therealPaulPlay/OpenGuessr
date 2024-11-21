@@ -173,9 +173,9 @@ let inboxRefreshInterval;
 
 export function setInboxStatus(newRequests) {
     if (newRequests) {
-        document.getElementById("inboxIcon").src = "/IMG/inbox_icon_new.png";
+        document.getElementById("inboxIcon").src = "/img/inbox_icon_new.png";
     } else {
-        document.getElementById("inboxIcon").src = "/IMG/inbox_icon.png";
+        document.getElementById("inboxIcon").src = "/img/inbox_icon.png";
     }
 }
 
@@ -407,7 +407,7 @@ export async function loadFriends(animate) {
                         1v1
                     </button>
                     <button id="removeFriend${idCounter}" class="standardButton friendItemButtons">
-                        <img alt="remove friend" class="friendRemoveIcon" src="/IMG/delete_icon.png">
+                        <img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png">
                     </button>
                     `;
 

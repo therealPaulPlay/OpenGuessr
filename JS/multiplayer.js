@@ -5,7 +5,7 @@ import { toggleCategoryMenu, hideToggleMapButtonIfMobile, disableResultScreen, s
 import { supporterWindowIfAuthenticated } from "../src/lib/utils/showSupporterPopup.js";
 import { startTimer } from "../src/lib/utils/timer.js";
 import { uiSetUserXP, isAuthenticated } from "./accountLogic.js";
-import { selectedBadge, selectedPinIndex, supporterLevel } from "../src/lib/stores/accountStore";
+import { selectedBadge, selectedPinIndex, supporterLevel, experience, username } from "../src/lib/stores/accountStore";
 import { enableResultScreen } from "../src/lib/utils/setResultScreen.js";
 import { changeCategory, checkGenerationTypeAndGenerate, mapCategory, mapSupportsMultiplayer, transitionToStart } from "./categoryMenu.js";
 import { confirmButtonClicks, setConfirmButtonState, updateMinimapWithTeamMarkers } from "../src/lib/logic/miniMap.js";
@@ -15,8 +15,8 @@ import { loadFriends, sendMatchInvite } from "./friendMenu.js";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { continueText } from "../src/lib/stores/context-specific/resultScreenStore.js";
 import { mapPinLat, mapPinLng } from "../src/lib/stores/context-specific/mapStore.js";
+import { multiplayerCategory, highestMultiplayerSupporterLevel } from "../src/lib/stores/context-specific/multiplayerStore.js";
 import { get } from "svelte/store";
-import { experience, username, supporterLevel } from "../src/lib/stores/accountStore";
 
 // Global UI --------------------------------------------------------------------------------------------
 export let coordsFromHost = [35.7072457, 139.863412]; // assign default to prevent blackscreen on link join
@@ -267,7 +267,7 @@ async function loadOnlineFriendsForRoomCreation() {
                         newEntry.innerHTML = `
                         <p class="friendsRoomEntryText">${entry.user_name}</p>
                         <button id="roomInviteFriend${idCounter}" class="standardButton friendItemButtons">
-                            <img src="/IMG/send_icon.png" alt="send invite" class="sendIcon">
+                            <img src="/img/send_icon.png" alt="send invite" class="sendIcon">
                         </button>
                         `;
 
@@ -599,8 +599,6 @@ export function updatePeerDataScore(peerId, addScore) {
     }
 }
 
-export let multiplayerCategory = "standard";
-
 // Multiplayer Setup (IF player has an id! ) ---------------------------------------------------------------------------------------
 let peer;
 let connectedClientsCount = 0;
@@ -717,20 +715,20 @@ function copyRoomcodeLink() {
     if (supporterLevel > 0) {
         navigator.clipboard.writeText(window.location.origin + "/?join=" + peerId.replace("openguessr_", ""))
             .then(function () {
-                document.getElementById("linkIcon").src = "/IMG/link_success_icon.png";
+                document.getElementById("linkIcon").src = "/img/link_success_icon.png";
                 setTimeout(() => {
-                    document.getElementById("linkIcon").src = "/IMG/link_icon.png";
+                    document.getElementById("linkIcon").src = "/img/link_icon.png";
                 }, 700);
             })
             .catch(function (error) {
-                document.getElementById("linkIcon").src = "/IMG/link_error_icon.png";
+                document.getElementById("linkIcon").src = "/img/link_error_icon.png";
                 console.error("Copy error: " + error);
                 setTimeout(() => {
-                    document.getElementById("linkIcon").src = "/IMG/link_icon.png";
+                    document.getElementById("linkIcon").src = "/img/link_icon.png";
                 }, 700);
             });
     } else {
-        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature as it leads to higher API usage.<br><br> Please join using the room code or the friend invite system instead if you do not wish to purchase a supporter tier.", () => { supporterWindowIfAuthenticated(); }, false, false, false, "Support", "#588e6b");
+        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature as it leads to higher API usage. Please join using the room code or the friend invite system instead if you do not wish to purchase a supporter tier.", () => { supporterWindowIfAuthenticated(); }, false, false, false, "Support", "#588e6b");
     }
 }
 
@@ -1084,7 +1082,6 @@ if (peer) {
 export let multiplayerGuessesLocationsArray = [];
 let multiplayerFirstRoundPlayed = false; // for host and peers! peers use this to see whether they should incrase the round index
 export let yourTeam = 1;
-export let highestMultiplayerSupporterLevel = 1; // in multiplayer, the highest supporter stage will be used for the supporter bonus for everyone
 
 function removeConnectedPeerById(peerId) {
     const index = connectedPeers.findIndex(entry => entry[0] === peerId);
@@ -1122,8 +1119,8 @@ if (peer) {
                     if (index == -1) {
                         connectedPeers.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1, incomingConn.metadata.id, incomingConn.metadata.badge]);
 
-                        if (incomingConn.metadata.supporterLevel > highestMultiplayerSupporterLevel) {
-                            highestMultiplayerSupporterLevel = incomingConn.supporterLevel;
+                        if (incomingConn.metadata.supporterLevel > get(highestMultiplayerSupporterLevel)) {
+                            highestMultiplayerSupporterLevel.set(incomingConn.supporterLevel);
                         }
 
                     } else {
@@ -1147,7 +1144,7 @@ if (peer) {
                             teamAmount: teamAmount,
                             team: getTeamFromPeerId(incomingConn.peer),
                             multiplayerRestriction: multiplayerRestriction,
-                            category: multiplayerCategory
+                            category: get(multiplayerCategory)
                         }
                     }
                     // Send messages
@@ -1258,10 +1255,10 @@ export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     setDuelFindStatus("Room created. Please wait <10s");
     isHost = true;
     multiplayerFirstRoundPlayed = false;
-    multiplayerCategory = mapCategory;
+    multiplayerCategory.set(mapCategory);
 
-    if (!mapSupportsMultiplayer(multiplayerCategory)) {
-        multiplayerCategory = "standard";
+    if (!mapSupportsMultiplayer(get(multiplayerCategory))) {
+        multiplayerCategory.set("standard");
     }
 
     connectedPeers.push([peerId, get(username) == null ? savedGuestName : get(username), uiSetUserXP(get(experience)).level, 0, 1, localStorage.getItem("id"), get(selectedBadge)]); //add yourself (host) to the overview
@@ -1273,7 +1270,7 @@ export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     roundLength = LengthOfRounds;
 
     // set supporter level to own supporter level as baseline
-    highestMultiplayerSupporterLevel = supporterLevel || 0;
+    highestMultiplayerSupporterLevel.set(supporterLevel || 0);
 
     //unlock room
     roomLocked = false;
@@ -1333,7 +1330,7 @@ export async function startMultiplayerRound(latitude, longitude) {
         }
     }
 
-    sendMessageToAll("start", { coordinates: [latitude, longitude], highestSupporterLevel: highestMultiplayerSupporterLevel });
+    sendMessageToAll("start", { coordinates: [latitude, longitude], highestSupporterLevel: get(highestMultiplayerSupporterLevel) });
     distributeChat("System: Starting Round " + roundIndex);
     multiplayerOverlayCountdown(); // for host
 }
@@ -1460,7 +1457,7 @@ export async function joinRoom(code) {
             roundLength = data.content.roundLength;
             teamAmount = data.content.teamAmount;
             multiplayerRestriction = data.content.multiplayerRestriction;
-            multiplayerCategory = data.content.category;
+            multiplayerCategory.set(data.content.category);
             yourTeam = data.content.team;
             roundIndex = data.content.currentRound;
         }
@@ -1482,7 +1479,7 @@ export async function joinRoom(code) {
         if (data.type === "start") {
             try {
                 coordsFromHost = data.content.coordinates;
-                highestMultiplayerSupporterLevel = data.content.highestSupporterLevel;
+                highestMultiplayerSupporterLevel.set(data.content.highestSupporterLevel);
             } catch (error) {
                 console.error("Error receiving locations and supporter level from the host in multiplayer.js Error: ", error);
             }
@@ -1676,7 +1673,7 @@ export function leaveMultiplayerRound() {
     isHost = false;
     playingDuels = false;
     lateJoinedWaiting = false;
-    highestMultiplayerSupporterLevel = 1
+    highestMultiplayerSupporterLevel.set(0);
     friendDuel = false;
 
     // reset Guess/Confirm button text
@@ -1799,7 +1796,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
         document.getElementById("multiplayerTitle").textContent = title;
 
         if (!multiplayerFirstRoundPlayed) {
-            document.getElementById("mapModeText").textContent = "Multiplayer (" + multiplayerCategory.replace("community_", "") + ")";
+            document.getElementById("mapModeText").textContent = "Multiplayer (" + get(multiplayerCategory)?.replace("community_", "") + ")";
         }
 
         let yourPeerId = peerId;

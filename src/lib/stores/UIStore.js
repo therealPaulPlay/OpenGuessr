@@ -11,3 +11,4 @@ export const helpPopup = writable(false);
 export const signupPopup = writable(false);
 export const discordPopup = writable(false);
 export const singleplayerOptionsPopup = writable(false);
+export const profilePopup = writable(false);

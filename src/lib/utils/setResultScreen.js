@@ -4,10 +4,10 @@ import { countryGuesser } from "$lib/stores/modeStore";
 import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuesserStore";
 import { refreshPlacements } from "$lib/utils/ads";
 import { playSound } from "$lib/utils/soundManager";
+import { loadResultScreenXP } from "$lib/logic/accountLogic";
+import { resetMap } from "$lib/logic/miniMap";
+import { loadResultMap } from "$lib/logic/resultMap";
 import { get } from "svelte/store";
-// !TODO !CHANGE import resetMap() here
-// !TODO !CHANGE import loadResultMap() here
-// !TODO !CHANGE import loadResultScreenXP here
 
 export function enableResultScreen(guessLat, guessLong) {
     if (!get(resultScreenEnabled)) {

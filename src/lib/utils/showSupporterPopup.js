@@ -1,3 +1,4 @@
+// Show supporter popup if the user is signed in, otherwise display sign-in prompt
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { supporterPopupVisible } from "$lib/stores/context-specific/supporterPopupStore";

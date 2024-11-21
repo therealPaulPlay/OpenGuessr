@@ -7,12 +7,28 @@
     distanceText,
     motivationText,
     continueText,
+    earnedExperience,
+    experienceBarAnimated,
+    showStreakDisplay,
+    streakText,
   } from "$lib/stores/context-specific/resultScreenStore";
   import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
   import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-  import { supporterLevel } from "$lib/stores/accountStore";
+  import { supporterLevel, isAuthenticated, experience } from "$lib/stores/accountStore";
+  import { signupPopup } from "$lib/stores/uiStore";
   import { get } from "svelte/store";
   import { playSound } from "$lib/utils/soundManager";
+  import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
+
+  let level = $state(1);
+  let percentageWidth = $state("0%");
+
+  $effect(() => {
+    if ($experience) {
+      level = getLevel();
+      percentageWidth = getLevelFraction() * 100 + "%";
+    }
+  });
 </script>
 
 <div id="EndOverlay" class:resultScreenHidden={!Boolean($resultScreenEnabled)}>
@@ -33,24 +49,41 @@
           <img src="/img/distance_icon.png" alt="Distance icon" id="distanceIcon" />
           <p id="distanceText">{$distanceText}</p>
         </div>
-        <div id="XParea" class="resultField">
-          <div id="supporterBoost">
-            <p id="supporterBoostText">Supporter Boost (Default)</p>
+        {#if $isAuthenticated}
+          <div id="XParea" class="resultField">
+            <div id="supporterBoost">
+              <p id="supporterBoostText">Supporter Boost (Default)</p>
+            </div>
+            <p id="endScreenLevelDisplay">Lvl. {level}</p>
+            <div id="endScreenXPbar">
+              <div
+                class="XPbarResource"
+                id="endScreenXPbarResource"
+                class:XPbarAnimate={$experienceBarAnimated}
+                style:width={percentageWidth}
+              ></div>
+            </div>
+            <p id="endScreenXP">{$earnedExperience} XP</p>
+            {#if $showStreakDisplay}
+              <div id="streakDisplay">
+                <img id="streakIcon" src="/img/streak_icon.png" alt="country streak" />
+                <p id="endScreenStreakText">{$streakText}</p>
+              </div>
+            {/if}
           </div>
-          <p id="endScreenLevelDisplay">Lvl. 42</p>
-          <div id="endScreenXPbar">
-            <div class="XPbarResource" id="endScreenXPbarResource"></div>
+        {:else}
+          <div id="XPbarNoAccount" class="resultField">
+            <p id="signupPromptText">See & save your earned points!</p>
+            <button
+              id="resultSignupPrompt"
+              class="standardButton white"
+              onclick={() => {
+                playSound("basic_button");
+                signupPopup.set(true);
+              }}>Sign up</button
+            >
           </div>
-          <p id="endScreenLevel">Default XP</p>
-          <div id="streakDisplay">
-            <img id="streakIcon" src="/img/streak_icon.png" alt="country streak" />
-            <p id="endScreenStreakText">0 (x1.0)</p>
-          </div>
-        </div>
-        <div id="XPbarNoAccount" class="resultField">
-          <p id="signupPromptText">See & save your earned points!</p>
-          <button id="resultSignupPrompt" class="standardButton white">Sign up</button>
-        </div>
+        {/if}
         <div id="nextRoundArea">
           <button
             id="endScreenOpenLocation"
@@ -68,7 +101,7 @@
               style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
               style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
             >
-              {continueText}
+              {$continueText}
             </p>
             <img id="nextRoundArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
           </button>
@@ -354,7 +387,7 @@
     animation: XPFade 1s ease-in-out;
   }
 
-  #endScreenLevel {
+  #endScreenXP {
     font-size: 22px;
     width: auto;
     vertical-align: middle;
@@ -455,7 +488,7 @@
       font-size: 22px;
     }
 
-    #endScreenLevel {
+    #endScreenXP {
       font-size: 20px;
     }
 

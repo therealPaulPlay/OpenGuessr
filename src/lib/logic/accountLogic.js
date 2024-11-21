@@ -1,258 +1,112 @@
 import { deleteUser, getUser } from "./userAPI";
-import { freeSupporterBoostEnabled, showPageBrowser, supporterXpBoostAnimation } from "../../../JS/mainUI.js";
-import { showConfirmPopup } from "../utils/confirmPopup.js";
-import { isHost, peerSendsHost, peerId, updatePeerDataScore, multiplayerCategory, highestMultiplayerSupporterLevel, attemptJoinViaLink } from "../../../JS/multiplayer.js";
-import { checkIfGuessWasCorrect } from "../utils/countryGuesserFunctions.js";
-import { playSound } from "../utils/soundManager.js";
-import { currentLocationLatitude, currentLocationLongitude } from "../stores/locationStore.js";
-import { getCountryFromCoords } from "../utils/countryFromCoordinates.js";
-import { diameter } from "./miniMap.js";
-import { mapPinLat, mapPinLng } from "../stores/context-specific/mapStore.js";
-import { toggleStreakWindow } from "./streakAdPopup.js";
-import { addResultToCompetitionScore, playingCompetition } from "./competitionLogic.js";
-import { closeProfile, loadProfileFromId, setCheckNewHighestStreak, loadSelectedPin, updateLoadedProfileData, loadSelectedBadge, setSupporterLevel, supporterLevel } from "../../../JS/profileView.js";
+// import { supporterXpBoostAnimation } from "../../../JS/mainUI.js"; !TODO !CHANGE
+// import { isHost, peerSendsHost, peerId, updatePeerDataScore, attemptJoinViaLink } from "../../../JS/multiplayer.js"; !TODO !CHANGE
+import { highestMultiplayerSupporterLevel, multiplayerCategory } from "$lib/stores/context-specific/multiplayerStore.js";
+import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions.js";
+import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore.js";
+import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates.js";
+import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore.js";
+import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
+import { addResultToCompetitionScore } from "./competitionLogic.js";
+// import { setCheckNewHighestStreak } from "../../../JS/profileView.js"; !TODO !CHANGE
 import { errorPopup } from "$lib/utils/errorHandling";
-import { initializeWebsocketConnection, setInboxStatus } from "../../../JS/friendMenu.js";
-import { saveRoundToLog } from "./singleplayerOptions.js";
+// import { initializeWebsocketConnection } from "../../../JS/friendMenu.js"; !TODO !CHANGE
 import { setUserXP } from "$lib/utils/setUserXP";
-import { resultScreenEnabled } from "../stores/context-specific/resultScreenStore.js";
-import { animateIncrement } from "../utils/animateIncrement.js";
-import { isAuthenticated, experience } from "$lib/stores/accountStore";
-import { isTokenExpired } from "../utils/isTokenExpired.js";
-import { competition, multiplayer } from "../stores/modeStore.js";
-import { saveRoundToLog } from "../utils/saveRoundToLog.js";
+import { resultScreenEnabled, experienceBarAnimated, earnedExperience, showStreakDisplay, streakText } from "$lib/stores/context-specific/resultScreenStore.js";
+import { animateIncrement } from "$lib/utils/animateIncrement.js";
+import { isAuthenticated, supporterLevel, experience, freeSupporterBoostEnabled, username, selectedPinIndex, selectedBadge, inboxAlert } from "$lib/stores/accountStore";
+import { isTokenExpired } from "$lib/utils/isTokenExpired.js";
+import { competition, multiplayer } from "$lib/stores/modeStore.js";
+import { saveRoundToLog } from "$lib/utils/saveRoundToLog.js";
+import { loadedProfileData } from "$lib/stores/context-specific/profileStore.js";
+import { profilePopup } from "$lib/stores/UIStore.js";
+import { mapDiameter } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
 
-let accountLockedArray;
 let lastDistance;
 let lastXPloadingAttemptAborted = false;
 
-let XPbarNoAccount = document.getElementById("XPbarNoAccount");
-let XParea = document.getElementById("XParea");
-
-export function signout() {
-  resetLocalSave();
-  checkAuthenticationStatus();
-}
-
-//default is not logged in, so these are all disabled
-logoutButton.style.display = "none";
-mobileLogoutButton.style.display = "none";
-mobileProfileButton.style.display = "none";
-XParea.style.display = "none";
-
-let resultLevelText = document.getElementById("endScreenLevel");
-let resultLevelDisplay = document.getElementById("endScreenLevelDisplay");
-
 // Account Deletion ----------------------------------------------------------------------------------------------------------------
 
-document.getElementById("accountDeleteButton").addEventListener("click", () => {
-  playSound("basic_button");
-  showConfirmPopup("Delete your account", "Please input your password to confirm the account deletion. Make sure to delete user-created content before proceeding, if you wish to remove that from the platform.", submitAccountDeletion, true);
-});
+// !TODO !CHANGE hook this up to the profile delete button
 
-async function submitAccountDeletion() {
+export async function submitAccountDeletion() {
   let successState = await deleteUser(localStorage.getItem("id"), document.getElementById("accountDeletePassword").value, "index");
   if (successState) {
     signout();
 
     setTimeout(() => {
-      closeProfile();
+      profilePopup.set(false); // Close popup
       errorPopup("Account deleted successfully", "You have deleted your OpenGuessr account.", "", false, true);
-    });
+    }, 250);
   }
 }
 
-// Custom signup -------------------------------------------------------------------------------------------------------------------
+// Authentication -----------------------------------------------------------------------------------------------------------------------
 
-checkAuthenticationStatus();
-
-// Global function that changes everything to logged in or signed out (all other sign-in functions are related to this)
-export function checkAuthenticationStatus() {
+// Global function that changes everything to logged in or signed out
+export async function checkAuthenticationStatus() {
   let bearerToken = localStorage.getItem("bearer");
 
-  if (bearerToken != null && bearerToken != "") {
-    if (isTokenExpired(bearerToken)) {
-      isAuthenticated.set(false);
-      resetLocalSave();
+  if (bearerToken) {
+    if (!isTokenExpired(bearerToken)) {
+      isAuthenticated.set(true);
+      await loadUserInfo();
     }
     else {
-      isAuthenticated.set(true);
+      isAuthenticated.set(false);
+      resetLocalSave();
     }
   }
   else {
     isAuthenticated.set(false);
   }
-  checkSigninStatusAndLoadUserInfo(); //set UI accordingly
-}
 
-function resetLocalSave() {
-  localStorage.removeItem("bearer");
-  localStorage.removeItem("id");
-}
-
-//Account UI (working) -------------------------------------------------------------------------------------------------------------
-
-document.getElementById("resultSignupPrompt").addEventListener("click", function () {
-  goTologin();
-});
-
-//part of checkSigninStatusAndLoadUserInfo
-async function changeUItoSignedIn(supporterLevel) {
-  logoutButton.style.display = "inline-block";
-  loginButton.style.display = "none";
-  mobileLogoutButton.style.display = "inline-block";
-  mobileLoginButton.style.display = "none";
-  mobileProfileButton.style.display = "inline-block";
-  XPbarNoAccount.style.display = "none";
-  XParea.style.display = "flex";
-  enableExclusiveCategories();
-  displayUserInfo();
-  loadSelectedPin(); // loads it from fetched profile data
-  loadSelectedBadge();
-
-  if (get(resultScreenEnabled) && lastXPloadingAttemptAborted) {
-    loadResultScreenXP(lastDistance);
-  }
-}
-
-async function changeUItoSignedOut() {
-  logoutButton.style.display = "none";
-  loginButton.style.display = "inline-block";
-  mobileLogoutButton.style.display = "none";
-  mobileLoginButton.style.display = "inline-block";
-  mobileProfileButton.style.display = "none";
-  XPbarNoAccount.style.display = ""; // resets to flex state
-  XParea.style.display = "none";
-  disableExlcusiveCategories();
-  uiSetUserXP(0);
-  loadSelectedPin(); // loads pin 0, as profile data should be undefined
-  loadSelectedBadge();
-  updateSupporterProfileHighlight(false);
-  setInboxStatus(false);
-}
-
-// part of checkSigninStatusAndLoadUserInfo
-export function displayUserInfo() {
-  uiSetUserXP(get(experience));
-}
-
-async function checkSigninStatusAndLoadUserInfo() {
-  if (get(isAuthenticated)) {
-    profileButton.classList.remove("notSignedIn");
-    //load user data - experience, username etc. could have been changed on a different device -> make sure to load them in!
-    try {
-      await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((user) => {
-        updateLoadedProfileData(user.profile_data);
-        changeUItoSignedIn(user.supporter_level); // display user info is already being called in here
-        setSupporterLevel(user.supporter_level, user.supported_amount);
-        if (user.new_requests) { setInboxStatus(true); }
-        initializeWebsocketConnection();
-      });
-    } catch (error) {
-      console.error("Error getting user data in checkSigninStatusAndLoadUserInfo: " + error);
-    }
-  }
-  else {
-    changeUItoSignedOut();
-    profileButton.classList.add("notSignedIn");
-  }
-
-  // now, check for multiplayer joins
   attemptJoinViaLink();
 }
 
-function enableExclusiveCategories() {
-  let accountLocked = document.getElementsByClassName("accountLock");
-  accountLockedArray = Array.from(accountLocked); // Convert to array
-  for (let i = 0; i < accountLockedArray.length; i++) {
-    accountLockedArray[i].classList.remove("accountLock");
-  }
+export function resetLocalSave() {
+  // Localstorage
+  localStorage.removeItem("bearer");
+  localStorage.removeItem("id");
 
-  document.querySelectorAll(".mapsAccountLock").forEach((e => e.style.visibility = "hidden"));
+  // Stores
+  username.set("Guest");
+  selectedPinIndex.set(0);
+  selectedBadge.set(null);
+  inboxAlert.set(false);
 }
 
-function disableExlcusiveCategories() {
-  if (accountLockedArray) {
-    for (let i = 0; i < accountLockedArray.length; i++) {
-      accountLockedArray[i].classList.add("accountLock");
-    }
-  }
+// Load user data ---------------------------------------------------------------------------------------------------------------------------
+async function loadUserInfo() {
+  try {
+    await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((user) => {
+      loadedProfileData.set(user.profile_data);
 
-  document.querySelectorAll(".mapsAccountLock").forEach(e => e.style.visibility = "visible");
+      // Extract profile cosmetics
+      selectedPinIndex.set(user?.profile_data?.pin || 0);
+      selectedBadge.set(user?.profile_data?.badge || null);
+
+
+      if (get(resultScreenEnabled) && lastXPloadingAttemptAborted) loadResultScreenXP(lastDistance);
+      if (user.new_requests) { inboxAlert.set(true); }
+
+      initializeWebsocketConnection();
+    });
+  } catch (error) {
+    console.error("Error getting user data in loadUserInfo:", error);
+  }
 }
 
-// Account UI - set circular progress bar ----------------------------------------------------------------------------------
-
-function setProgress(factor) {
-  const circle = document.querySelector('.progressRingCircle');
-  const radius = circle.r.baseVal.value;
-  const circumference = 2 * Math.PI * radius;
-
-  circle.style.strokeDasharray = `${circumference} ${circumference}`;
-  circle.style.strokeDashoffset = `${circumference}`;
-
-  const offset = circumference - (factor) * circumference;
-  circle.style.strokeDashoffset = offset;
-}
-
-// XP bar loading function -------------------------------------------------------------------------------------------------
-let requiredXP;
-
-export function uiSetUserXP(xp) {
-  if (xp == null) xp = 0;
-
-  const baseXP = 5000;
-  const xpIncreaseRate = 1.1; // xp needed to level up increases per level
-
-  // Calculate the level based on an exponential growth of required XP
-  let templevel = 1;
-  requiredXP = baseXP;
-
-  while (xp >= requiredXP) {
-    xp -= requiredXP;
-    templevel++;
-    requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
-  }
-
-  if (get(isAuthenticated)) {
-    document.getElementById("progressRingLevel").innerHTML = templevel;
-    resultLevelDisplay.innerHTML = "Lvl. " + templevel;
-
-    // account UI level circle
-    setProgress(xp != 0 ? Math.max((xp / requiredXP), 0.1) : 0);
-  } else {
-    setProgress(0);
-    document.getElementById("progressRingLevel").innerHTML = "1";
-  }
-
-  return { fraction: (xp / requiredXP), requiredForLevelUpgrade: requiredXP - xp, level: templevel };
-}
-
-function willCauseLevelUpgrade(xp, newXP) {
-  const baseXP = 5000;
-  const xpIncreaseRate = 1.1;
-
-  let templevel = 1;
-  requiredXP = baseXP;
-
-  while (xp >= requiredXP) {
-    xp -= requiredXP;
-    templevel++;
-    requiredXP = Math.floor(baseXP * Math.pow(xpIncreaseRate, templevel - 1));
-  }
-
-  return ((xp + newXP) / requiredXP);
-}
-
-// Calculate XP gain for each round ---------------------------------------------------------------------------------------
+// Streak ----------------------------------------------------------------------------------------------------------------------------------------------------
 let streak = 0;
-let streakDisplay = document.getElementById("streakDisplay");
-let streakText = document.getElementById("endScreenStreakText");
 
-let tempLoadedStreak = localStorage.getItem("streak");
-if (tempLoadedStreak != null) {
-  streak = Number(tempLoadedStreak);
+function loadStreak() {
+  let tempLoadedStreak = localStorage.getItem("streak");
+
+  if (tempLoadedStreak != null) {
+    streak = Number(tempLoadedStreak);
+  }
 }
 
 function calculateMultiplier(streak) {
@@ -271,16 +125,19 @@ export function restoreOldStreak(oldStreak) {
   streak = oldStreak;
   localStorage.setItem("streak", streak);
   streakMultiplier = calculateMultiplier(streak);
-  streakText.textContent = streak + " (" + streakMultiplier + "x)";
+
+  streakText.set(streak + " (" + streakMultiplier + "x)");
 }
 
 async function streakCalculation() {
   if (!get(multiplayer) && !get(competition)) {
+    loadStreak(); // Load streak from localstorage
+
     if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
       streak++;
     } else {
       if (streak >= 2) {
-        toggleStreakWindow(streak, false);
+        get(toggleStreakRestoreWindow)(streak, false);
       }
 
       setCheckNewHighestStreak(streak); // checks if this was the highest streak yet and 
@@ -289,13 +146,9 @@ async function streakCalculation() {
     }
 
     localStorage.setItem("streak", streak);
+    streakText.set(streak + " (" + streakMultiplier + "x)");
 
-    streakMultiplier = calculateMultiplier(streak);
-    streakText.textContent = streak + " (" + streakMultiplier + "x)";
-
-    streakDisplay.style.opacity = "1";
-    streakDisplay.style.width = "auto";
-    streakDisplay.style.maxWidth = "unset";
+    showStreakDisplay.set(true);
   }
 }
 
@@ -315,11 +168,12 @@ function calculateExponentialModifier(mapDiameter) {
   return A - B * Math.exp(-C * mapDiameter);
 }
 
+// Calculate XP gain --------------------------------------------------------------------------------------------------------------------------------
 
 async function calculateXPGain(distance, category, supporterLevel, freeSupporterBoost) {
   let returnXP = 0;
 
-  if (category == null || category == "standard" || category == "capital") {
+  if (!category || category == "standard" || category == "capital") {
     await streakCalculation();
     returnXP = Math.round((5000 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode());
 
@@ -331,9 +185,8 @@ async function calculateXPGain(distance, category, supporterLevel, freeSupporter
     returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
   } else {
-
-    if (diameter > 250) await streakCalculation(); // If the map is big enough, calculate the country streak
-    returnXP = Math.round(5000 * ((calculateExponentialModifier(diameter)) ** distance));
+    if (get(mapDiameter) > 250) await streakCalculation(); // If the map is big enough, calculate the country streak
+    returnXP = Math.round(5000 * ((calculateExponentialModifier(get(mapDiameter))) ** distance));
   }
 
   let supporterMultiplier = 1;
@@ -363,6 +216,8 @@ async function calculateXPGain(distance, category, supporterLevel, freeSupporter
 
 let animateSupporterBoostTimeout;
 
+
+// Load Experience stats on result screen -----------------------------------------------------------------------------------------------------------------------------
 export async function loadResultScreenXP(distance) {
 
   let supporterMultiplier = 1;
@@ -383,35 +238,25 @@ export async function loadResultScreenXP(distance) {
   if (get(isAuthenticated) || get(multiplayer)) {
     lastXPloadingAttemptAborted = false;
 
-    // Checks whether or not the extra XP will cause the level to upgrade. Returns a value above 1 if yes. 
-    let XPbarResource = document.getElementById("endScreenXPbarResource");
-
-    let currentXP = Number(get(experience));
-
-    if (currentXP == null) {
-      currentXP = 0;
-    }
-
+    let currentXP = Number(get(experience)) || 0;
     let selectedCategory = localStorage.getItem("selectedCategory");
 
     // Hide streak display
-    streakDisplay.style.opacity = "0";
-    streakDisplay.style.width = "0";
-    streakDisplay.style.maxWidth = "0";
+    showStreakDisplay.set(false);
 
     let earnedXP;
     let earnedBasicXP; // without supporter mutliplier, that will be applied later (this is just for visuals)
 
     // XP calculation formulas -------------------------------------------------
     if (!get(multiplayer) && !get(competition)) {
-      const calculatedXP = await calculateXPGain(distance, selectedCategory, supporterLevel, freeSupporterBoostEnabled);
+      const calculatedXP = await calculateXPGain(distance, selectedCategory, get(supporterLevel), get(freeSupporterBoostEnabled));
       earnedXP = calculatedXP.earnedXP;
       earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
       supporterMultiplier = calculatedXP.supporterMultiplier;
 
-    } else if (multiplayer) {
+    } else if (get(multiplayer)) {
       //always use the standard formula for multiplayer 
-      const calculatedXP = await calculateXPGain(distance, multiplayerCategory, highestMultiplayerSupporterLevel);
+      const calculatedXP = await calculateXPGain(distance, get(multiplayerCategory), get(highestMultiplayerSupporterLevel));
       earnedXP = calculatedXP.earnedXP;
       earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
       supporterMultiplier = calculatedXP.supporterMultiplier;
@@ -422,39 +267,32 @@ export async function loadResultScreenXP(distance) {
         peerSendsHost("score", earnedXP);
       }
 
-    } else if (playingCompetition) {
-      const calculatedXP = await calculateXPGain(distance, "standard"); // always use standard calculation formula for competitions
+    } else if (get(competition)) {
+      const calculatedXP = await calculateXPGain(distance, "standard");
       earnedXP = calculatedXP.earnedXP;
       earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost; // supporter multiplier omitted because it should stay 1 (disabled)
-
       addResultToCompetitionScore(earnedXP);
     }
 
     // Apply XP visually and server-wise ----------------------------------
-    XPbarResource.classList.remove("XPbarAnimate");
 
-    if ((willCauseLevelUpgrade(currentXP, earnedXP)) > 1) {
-      XPbarResource.style.width = 0; //reset bar to beginning if it will go up by a level
-    }
-    else {
-      XPbarResource.style.width = uiSetUserXP(currentXP).fraction * 100 + "%"; // otherwise, set the starting point of the bar to the current xp
-    }
+    experienceBarAnimated.set(false);
+    earnedExperience.set(earnedBasicXP);
 
     if (earnedXP > 0 && get(isAuthenticated)) {
-      setUserXP(currentXP + earnedXP, earnedXP, false); //save XP, this is the last step! This function is async, but we don't await it as we set the XP to be currentXP + earnedXP in the ui anyway
+      setUserXP(currentXP + earnedXP, earnedXP, false); // Save XP to database
+      experienceBarAnimated.set(true);
     }
 
     setTimeout(function () {
-      XPbarResource.classList.add("XPbarAnimate");
-      XPbarResource.style.width = Math.max(uiSetUserXP(currentXP + earnedXP).fraction * 100, 4) + "%";
-      resultLevelText.innerHTML = "+" + earnedXP + " XP";
-      animateIncrement(resultLevelText, 0, earnedBasicXP, 1500);
+      animateIncrement(document.getElementById("endScreenXP"), 0, earnedBasicXP, 1500);
 
       if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
         supporterXpBoostAnimation(supporterMultiplier);
 
         animateSupporterBoostTimeout = setTimeout(() => {
-          animateIncrement(resultLevelText, earnedBasicXP, earnedXP, 750);
+          earnedExperience.set(earnedXP);
+          animateIncrement(document.getElementById("endScreenXP"), earnedBasicXP, earnedXP, 750);
         }, 3500);
       }
     }, 10);

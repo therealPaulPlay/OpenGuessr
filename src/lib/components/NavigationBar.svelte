@@ -6,9 +6,9 @@
   import { signupPopup } from "$lib/stores/uiStore";
   import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
   import { competition, multiplayer } from "$lib/stores/modeStore";
-  import { signout } from "$lib/logic/accountLogic";
+  import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
+  import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
   // import { loadProfileFromId } from "$lib/utils/loadProfile" !TODO !CHANGE
-  import { get } from "svelte/store";
 
   function openSettings() {
     playSound("basic_button");
@@ -51,39 +51,69 @@
   $effect(() => {
     preventNavigateOut = $competition || $multiplayer;
   });
+
+  // Level indicator (progress ring) -----------------------------------------------------------------------------------------
+  let progressRingLevel = $state(0);
+  let progressRingSVG = $state();
+
+  $effect(() => {
+    if ($experience) {
+      progressRingLevel = getLevel();
+      setProgress(getLevelFraction());
+    }
+  });
+
+  function setProgress(factor) {
+    const circle = progressRingSVG;
+    const radius = circle.r.baseVal.value;
+    const circumference = 2 * Math.PI * radius;
+
+    circle.style.strokeDasharray = `${circumference} ${circumference}`;
+    circle.style.strokeDashoffset = `${circumference}`;
+
+    const offset = circumference - factor * circumference;
+    circle.style.strokeDashoffset = offset;
+  }
 </script>
 
 <!-- mobile top nav bar -->
-<nav id="mobileButtonArea" class="topButtonArea">
+<nav class="mobileButtonArea topButtonArea">
   <div class="barMenu">
-    <button
-      id="mobileLoginButton"
-      class="standardButton accountButton mobileAccountButton"
-      onclick={() => {
-        playSound("basic_button");
-        signupPopup.set(true);
-      }}>Login</button
-    >
-    <button
-      id="mobileProfileButton"
-      class="standardButton accountButton mobileAccountButton"
-      onclick={() => {
-        loadProfileFromId(localStorage.getItem("id"), true, true);
-        playSound("basic_button");
-      }}
-    >
-      <img class="socialBarIcons invertSocialBarIcon" src="/img/profile_icon.png" alt="Your profile" />
-    </button>
-    <button
-      id="mobileLogoutButton"
-      class="standardButton accountButton mobileAccountButton"
-      onclick={() => {
-        playSound("basic_button");
-        signout();
-      }}
-    >
-      <img class="logoutImage" src="/img/signout.png" alt="Log out of your OpenGuessr account." />
-    </button>
+    {#if !$isAuthenticated}
+      <button
+        id="mobileLoginButton"
+        class="standardButton loginButton mobileAccountButton"
+        onclick={() => {
+          playSound("basic_button");
+          signupPopup.set(true);
+        }}>Login</button
+      >
+    {/if}
+    {#if $isAuthenticated}
+      <button
+        id="mobileProfileButton"
+        class="standardButton accountButton mobileAccountButton"
+        onclick={() => {
+          loadProfileFromId(localStorage.getItem("id"), true, true);
+          playSound("basic_button");
+        }}
+      >
+        <img class="socialBarIcons invertSocialBarIcon" src="/img/profile_icon.png" alt="Your profile" />
+      </button>
+      |{/if}
+    {#if $isAuthenticated}
+      <button
+        id="mobileLogoutButton"
+        class="standardButton accountButton mobileAccountButton"
+        onclick={() => {
+          playSound("basic_button");
+          resetLocalSave();
+          checkAuthenticationStatus();
+        }}
+      >
+        <img class="logoutImage" src="/img/signout.png" alt="Log out." />
+      </button>
+    {/if}
     <button id="mobileCategoryButton" class="standardButton accountButton mobileAccountButton" class:preventNavigateOut>
       <img class="socialBarIcons invertSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Map Categories" />
     </button>
@@ -114,19 +144,22 @@
 <!-- Desktop top nav bar -->
 <nav id="topButtonArea" class="topButtonArea">
   <div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
-    <button
-      class="standardButton accountButton"
-      id="loginButton"
-      alt="log in"
-      onclick={() => {
-        playSound("basic_button");
-        signupPopup.set(true);
-      }}>Log in</button
-    >
+    {#if !$isAuthenticated}
+      <button
+        class="standardButton loginButton"
+        id="loginButton"
+        alt="log in"
+        onclick={() => {
+          playSound("basic_button");
+          signupPopup.set(true);
+        }}>Log in</button
+      >
+    {/if}
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-      class="profileInfo notSignedIn"
+      class="profileInfo"
+      class:notSignedIn={!$isAuthenticated}
       id="profileInfo"
       class:profileInfoSupporter={supporterLevel >= 1}
       onclick={() => {
@@ -147,6 +180,7 @@
       <div class="progressContainer">
         <svg class="progressRing" width="30" height="30">
           <circle
+            bind:this={progressRingSVG}
             class="progressRingCircle"
             style="stroke-dasharray: 81.6814px, 81.6814px; stroke-dashoffset: 81.6814px;"
             stroke="#00cc00"
@@ -157,31 +191,27 @@
             cy="15"
           ></circle>
         </svg>
-        <div id="progressRingLevel" class="progressRingText">1</div>
+        <div id="progressRingLevel" class="progressRingText">{progressRingLevel}</div>
       </div>
     </div>
-    <button
-      class="standardButton accountButton"
-      id="logoutButton"
-      type="button"
-      alt="log out"
-      onclick={() => {
-        playSound("basic_button");
-        signout();
-      }}
-    >
-      <img class="logoutImage" src="/img/signout.png" alt="Log out" />
-    </button>
+    {#if $isAuthenticated}
+      <button
+        class="standardButton accountButton"
+        id="logoutButton"
+        alt="log out"
+        onclick={() => {
+          playSound("basic_button");
+          resetLocalSave();
+          checkAuthenticationStatus();
+        }}
+      >
+        <img class="logoutImage" src="/img/signout.png" alt="Log out" />
+      </button>
+    {/if}
   </div>
   <!-- svelte-ignore a11y_interactive_supports_focus -->
   <!-- svelte-ignore a11y_mouse_events_have_key_events -->
-  <div
-    class="barMenu topBarDesktop"
-    id="gamemodeMenu"
-    onmouseover={centerMouseOver}
-    onmouseout={centerMouseOut}
-    role="menu"
-  >
+  <div class="barMenu topBarDesktop gameModeMenu" onmouseover={centerMouseOver} onmouseout={centerMouseOut} role="menu">
     <button id="leaderboardButton" class="standardButton accountButton" class:preventNavigateOut>
       <span class="topBarExpand">Leaderboard</span>
       <img
@@ -288,42 +318,10 @@
     pointer-events: none;
   }
 
-  .topBarExpand {
-    max-width: 0px;
-    transition: max-width 400ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
-    overflow: hidden;
-    display: inline-block;
-    vertical-align: bottom;
-  }
-
   .sideMenuDisabled {
     opacity: 0.8;
     transform: scale(0.95);
     filter: blur(1px);
-  }
-
-  #notificationBar {
-    position: absolute;
-    visibility: hidden;
-    /* changed in code */
-    top: 50px;
-    border-radius: 10px;
-    background-color: var(--panel-color);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    color: white;
-    padding: 6px;
-    gap: 15px;
-    font-size: 22px;
-    opacity: 0;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
-    transition: all 200ms ease;
-    pointer-events: auto;
-    margin-inline: 10px;
-    max-width: 80vw;
   }
 
   .notSignedIn {
@@ -338,7 +336,7 @@
     color: white;
   }
 
-  #mobileButtonArea {
+  .mobileButtonArea {
     display: none;
   }
 
@@ -367,11 +365,6 @@
     color: white;
   }
 
-  #mobileLogoutButton,
-  #mobileProfileButton {
-    display: none;
-  }
-
   #mobileLoginButton {
     min-width: 100px;
   }
@@ -397,9 +390,18 @@
     background-color: rgba(168, 168, 187, 0.3);
   }
 
+  .loginButton {
+    min-height: 40px;
+    max-height: 40px;
+  }
+
   @media all and (max-width: 1200px) {
     .topBarDesktop {
       display: none;
+    }
+
+    .mobileButtonArea {
+      display: flex;
     }
   }
 
@@ -434,5 +436,25 @@
     font-size: 15px;
     color: white;
     user-select: none;
+  }
+
+  .logoutImage {
+    width: 22px;
+    height: 22px;
+    margin-left: 3px;
+    margin-top: 5px;
+    filter: invert();
+  }
+
+  .topBarExpand {
+    max-width: 0px;
+    transition: max-width 400ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
+    overflow: hidden;
+    display: inline-block;
+    vertical-align: bottom;
+  }
+
+  .gameModeMenu:hover .topBarExpand {
+    max-width: 1000px;
   }
 </style>

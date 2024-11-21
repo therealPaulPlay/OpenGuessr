@@ -367,16 +367,6 @@ li {
     margin-bottom: 5px;
 }
 
-#loginButton {
-    background-color: var(--brand-color);
-    color: white;
-}
-
-#profileButton,
-#logoutButton {
-    display: none;
-}
-
 #multiplayerSelectorBack {
     opacity: 0.5;
     margin-right: 8px;
@@ -1598,14 +1588,6 @@ search {
 
 .multiplayerEntryPlayerScore {
     margin-left: 10px;
-}
-
-.logoutImage {
-    width: 22px;
-    height: 22px;
-    margin-left: 3px;
-    margin-top: 5px;
-    filter: invert();
 }
 
 /* category bar */

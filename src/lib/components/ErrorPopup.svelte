@@ -24,7 +24,7 @@
 </script>
 
 {#if $popupOpen}
-  <Popup z="999">
+  <Popup z="999" verySlim=true>
     <div id="errorTitle" class="popup-title">
       <h2>{$title}</h2>
     </div>
@@ -40,15 +40,6 @@
         <input type="checkbox" id="hideErrors" bind:checked={$showErrors} />
       </div>
     {/if}
-    <button class="standardButton white errorClose" onclick={closePopup}>{$closeButtonText}</button>
+    <button class="standardButton white closeButton" onclick={closePopup}>{$closeButtonText}</button>
   </Popup>
 {/if}
-
-<style>
-  .errorClose {
-    height: 50px;
-    width: 100%;
-    margin-bottom: 16px;
-    margin-top: 40px;
-  }
-</style>

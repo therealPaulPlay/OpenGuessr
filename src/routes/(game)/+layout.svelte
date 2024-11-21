@@ -31,6 +31,7 @@
   import ResultScreen from "$lib/components/ResultScreen.svelte";
   import BeforeExitPopup from "$lib/components/BeforeExitPopup.svelte";
   import CaptchaPopup from "$lib/components/CaptchaPopup.svelte";
+  import Authenticate from "$lib/components/Authenticate.svelte";
 
   // Start ads
   onMount(() => {
@@ -60,6 +61,9 @@
 
 <TopLeftLogo />
 <NavigationBar />
+
+<!-- Log user in -->
+<Authenticate />
 
 <!-- Keywords -->
 <h1 style:display="none">

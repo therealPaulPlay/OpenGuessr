@@ -41,20 +41,44 @@
   <p id="notificationText">{$notificationText}</p>
   <div class="notificationButtonBox">
     {#if $showAcceptButton}
-      <button id="notificationAccept" class="standardButton accountButton" onclick={accept}>{$acceptText}</button>
+      <button id="notificationAccept" class="standardButton white" onclick={accept}>{$acceptText}</button>
     {/if}
-    <button id="notificationDismiss" class="standardButton accountButton" onclick={dismiss}>
+    <button id="notificationDismiss" class="standardButton white" onclick={dismiss}>
       <img alt="dismiss notification" class="friendRemoveIcon" src="/img/delete_icon.png" />
     </button>
   </div>
 </div>
 
 <style>
+  #notificationBar {
+    position: absolute;
+    visibility: hidden; /* changed in code */
+    top: 50px;
+    border-radius: 10px;
+    background-color: var(--panel-color);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    padding: 6px;
+    gap: 15px;
+    font-size: 22px;
+    opacity: 0;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
+    transition: all 200ms ease;
+    pointer-events: auto;
+    margin-inline: 10px;
+    max-width: 80vw;
+  }
+
   #notificationAccept {
     min-width: 45px;
   }
 
-  #notificationDismiss {
+  #notificationDismiss,
+  #notificationAccept {
     padding-inline: 10px;
   }
 

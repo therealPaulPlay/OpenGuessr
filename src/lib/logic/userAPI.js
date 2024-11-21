@@ -1,5 +1,5 @@
-import { errorPopup } from "../utils/errorHandling";
-import inIframe from "../utils/checkIframe";
+import { errorPopup } from "$lib/utils/errorHandling";
+import inIframe from "$lib/utils/checkIframe";
 
 export const backendURL = "https://accounts.openguessr.com/accounts";
 export const loginEndpoint = `${backendURL}/login`;

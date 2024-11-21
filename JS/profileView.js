@@ -5,7 +5,7 @@ import { errorPopup } from "./errorHandling.js";
 import { checkIfFriendsWithId, sendFriendRequest } from "./friendMenu.js";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { get } from "svelte/store";
-import { experience } from "../src/lib/stores/accountStore.js";
+import { experience, supportedAmount, supporterLevel } from "../src/lib/stores/accountStore.js";
 import { selectedPinIndex, selectedBadge } from "$lib/stores/accountStore.js";
 // This is used to dynamically load the profile view
 
@@ -16,14 +16,6 @@ export let yourLoadedProfileData = "none";
 
 export function updateLoadedProfileData(newData) {
     yourLoadedProfileData = newData;
-}
-
-export let supporterLevel = 0;
-export let supportedAmount = 0;
-
-export function setSupporterLevel(newSupporterLevel, newSupporterAmount) {
-    supporterLevel = newSupporterLevel;
-    supportedAmount = newSupporterAmount;
 }
 
 export async function loadProfileFromId(id, you, view) {
@@ -48,8 +40,8 @@ export async function loadProfileFromId(id, you, view) {
                     yourLoadedProfileData = data.profileData;
                 }
 
-                supporterLevel = data.supporterLevel;
-                supportedAmount = data.supportedAmount;
+                supporterLevel.set(data.supporterLevel);
+                supportedAmount.set(data.supportedAmount);
             }
 
             // load data only or show profile
@@ -228,6 +220,7 @@ profileClose.addEventListener("click", () => {
 });
 
 export function closeProfile() {
+    // TODO switch to profilePopup.set(false) store
     document.getElementById("profilePopup").style.display = "none";
     document.getElementById("profileScrollSection").style.maxHeight = "300px";
 
@@ -250,8 +243,6 @@ async function updateProfileUsername() {
     if (newUsername != "") {
         await updateUsername(localStorage.getItem("bearer"), localStorage.getItem("id"), newUsername, "index").then((isOk) => {
             if (isOk) {
-                // updateUsername saves the new name in localstorage
-                displayUserInfo();
                 document.getElementById("profileViewName").textContent = newUsername;
             }
         });
@@ -539,7 +530,7 @@ function formatDateTime(datetimeStr) {
 document.getElementById("selectedProfilePin").addEventListener("click", () => {
     playSound("basic_button");
     updatePinLocks(get(experience));
-    loadSelectedPin();
+    selectPin(get(selectedPinIndex));
     document.getElementById("pinPopup").style.display = "flex";
 });
 
@@ -547,17 +538,6 @@ document.getElementById("pinClose").addEventListener("click", () => {
     playSound("basic_button");
     document.getElementById("pinPopup").style.display = "none";
 });
-
-// Function to load selected pin from localStorage
-export function loadSelectedPin() {
-    if (yourLoadedProfileData) {
-        selectedPinIndex.set(yourLoadedProfileData.pin ? yourLoadedProfileData.pin : 0);
-    } else {
-        selectedPinIndex.set(0);
-    }
-
-    selectPin(get(selectedPinIndex), false);
-}
 
 // Add click event listener to pinHolder buttons
 document.querySelectorAll('.pinHolder').forEach(function (btn, index) {
@@ -612,7 +592,7 @@ function updatePinLocks() {
         }
 
         if (lockRequirementType == "supporter") {
-            if (supporterLevel >= lockRequirementAmount) {
+            if (get(supporterLevel) >= lockRequirementAmount) {
                 lock.style.display = "none";
             } else {
                 lock.style.display = "flex";
@@ -657,12 +637,6 @@ function selectPin(index, activeSelect) {
 }
 
 // Badge system ----------------------------------------------------------------------------------------------------------------------------------------------------
-
-export function loadSelectedBadge() {
-    if (yourLoadedProfileData) {
-        selectedBadge.set(yourLoadedProfileData.badge ? yourLoadedProfileData.badge : null);
-    }
-}
 
 const badgeButton = document.getElementById("badgeButton");
 
@@ -839,7 +813,7 @@ function updateBadgelocks() {
             supporterIndex++;
 
             supporterStatus.textContent = statusPrefix + "Tier " + amount.toLocaleString() + " Supporter";
-            if (amount <= supporterLevel) {
+            if (amount <= get(supporterLevel)) {
                 document.getElementById("supporterBadge" + supporterIndex).classList.remove("badgeLocked");
                 if (supporterIndex == 4) {
                     streaksStatus.textContent = "All unlocked";
