@@ -8,7 +8,6 @@
   import { timerCountdownOverlay } from "$lib/stores/context-specific/timerCountdownOverlayStore";
   import { isSingleplayerNMPZ, timeout } from "$lib/stores/modeStore";
   import { roundLog } from "$lib/stores/locationStore";
-  import { get } from "svelte/store";
   import { onMount } from "svelte";
 
   // Singleplayer Options UI ----------------------------------------------------------------------------------------
@@ -140,8 +139,8 @@
   </Popup>
 {/if}
 
-<div id="alwaysMountSingleplayerOptions">
-  <!-- Ensure this component is always mounted, so that the logic inside executes -->
+<div style="display: none;">
+  <!-- Ensure this component is always mounted, so that the logic inside loads -->
 </div>
 
 <style>

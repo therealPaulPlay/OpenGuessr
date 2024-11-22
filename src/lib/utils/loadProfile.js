@@ -1,45 +1,32 @@
 import { profilePopup } from "$lib/stores/uiStore";
 import { profileData, profileName, profileExperience, joinedDate, profileId, profileSupporterLevel } from "$lib/stores/context-specific/profileStore";
-import { errorPopup } from "$lib/utils/errorHandling";
+import { getProfileData } from "$lib/utils/getProfileData";
 
 export async function loadProfileFromId(id, view) {
-    try {
-        const response = await fetch(`https://accounts.openguessr.com/accounts/profile/${id}`, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-        });
+    // Reset data
+    profileData.set();
+    profileName.set("Guest");
+    profileExperience.set(0);
+    joinedDate.set(0);
+    profileSupporterLevel.set(0);
+    profileId.set(-1);
 
-        // Check if the response is successful
-        if (response.ok) {
-            const data = await response.json();
+    const data = await getProfileData(id);
 
-            // Save data
-            if (data) {
-                profileData.set(data.profileData);
-                profileName.set(data.username);
-                profileExperience.set(data.experience);
-                joinedDate.set(data.joinedDate);
-                profileSupporterLevel.set(data.supporterLevel);
-                profileId.set(id);
-            }
-
-            // Show profile Popup
-            if (view) {
-                profilePopup.set(true);
-            }
-
-            return true;
-
-        } else {
-            console.error('Failed to load profile:', response.status);
-            errorPopup("Failed to load profile", "Couldn't load the user's profile.", response.status, false, false);
-            return false;
-        }
-    } catch (error) {
-        console.error('Error occurred while fetching the user: ', error);
-        errorPopup("Error occured while loading Profile", "Couldn't load the user's profile due to network error.", error, false, false);
-        return false;
+    // Save data
+    if (data) {
+        profileData.set(data.profileData);
+        profileName.set(data.username);
+        profileExperience.set(data.experience);
+        joinedDate.set(data.joinedDate);
+        profileSupporterLevel.set(data.supporterLevel);
+        profileId.set(id);
     }
+
+    // Show profile Popup
+    if (view) {
+        profilePopup.set(true);
+    }
+
+    return true;
 }

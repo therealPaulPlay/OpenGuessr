@@ -13,7 +13,8 @@ import { checkGenerationTypeAndGenerate } from "../src/lib/logic/newLocation.js"
 import { confirmButtonClicks, setConfirmButtonState, updateMinimapWithTeamMarkers } from "../src/lib/logic/miniMap.js";
 import { mapSupportsMultiplayer } from "../src/lib/utils/doesMapSupportMultiplayer.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
-import { addDuelPlayed, addDuelWon, loadProfileFromId } from "./profileView.js";
+import { addDuelPlayed, addDuelWon } from "../src/lib/utils/updateProfileData.js";
+import { loadProfileFromId } from "../src/lib/utils/loadProfile.js";
 import { loadFriends, sendMatchInvite } from "./friendMenu.js";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { continueText } from "../src/lib/stores/context-specific/resultScreenStore.js";

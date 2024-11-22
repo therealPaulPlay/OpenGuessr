@@ -10,6 +10,8 @@
   import { submitAccountDeletion } from "$lib/utils/deleteAccount";
   import { confirmPasswordValue, confirmUsernameValue } from "$lib/stores/context-specific/confirmPopupStore";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
+  import { loadProfileFromId } from "$lib/utils/loadProfile";
+  import { saveProfileAboutIfYourProfileAndChanges } from "$lib/utils/updateProfileData";
   import {
     profileData,
     profileName,
@@ -17,12 +19,32 @@
     joinedDate,
     profileId,
     profileSupporterLevel,
+    unsavedAboutChanges,
   } from "$lib/stores/context-specific/profileStore";
   import { profilePopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
   import { Edit, Trash2 } from "lucide-svelte";
+  import { onMount } from "svelte";
 
   // !TODO load profile badge + badge system / component
+
+  let textarea = $state();
+
+  // Load profile from link query
+  function loadProfileFromURL() {
+    try {
+      let urlParams = new URLSearchParams(window.location.search);
+      let profileFromLink = urlParams.get("profile");
+      if (profileFromLink) {
+        loadProfileFromId(profileFromLink, true);
+        history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
+      }
+    } catch {}
+  }
+
+  onMount(() => {
+    loadProfileFromURL();
+  });
 </script>
 
 {#if $profilePopup}
@@ -35,13 +57,13 @@
             <button id="badgeButton" class="standardButton">+ Badge</button>
           {/if}
           {#if $profileData?.badge}
-            <div id="badgeArea" style:pointer-evens={$profileId == localStorage.getItem("id") ? "auto" : "none"}></div>
+            <div id="badgeArea" style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}></div>
           {/if}
           <img
             id="selectedProfilePin"
             alt="map pin"
             src={`/img/your_marker${$profileData?.pin || 0}.png`}
-            style:pointer-evens={$profileId == localStorage.getItem("id") ? "auto" : "none"}
+            style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
           />
           {#if $profileSupporterLevel >= 1}
             <div id="supporterTag">
@@ -76,7 +98,11 @@
           maxlength="150"
           spellcheck="false"
           value={$profileData?.about}
+          bind:this={textarea}
           placeholder="Share a few facts about yourself with others..."
+          oninput={() => {
+            if (!$unsavedAboutChanges) unsavedAboutChanges.set(true);
+          }}
           onkeypress={(e) => {
             if (e.key == "Enter") {
               e.preventDefault();
@@ -168,11 +194,16 @@
       class="standardButton white closeButton"
       onclick={() => {
         playSound("basic_button");
+        saveProfileAboutIfYourProfileAndChanges(textarea.value);
         profilePopup.set(false);
       }}>Close</button
     >
   </Popup>
 {/if}
+
+<div style="display: none;">
+  <!-- Ensure the component is always mounted, for the URL load to work -->
+</div>
 
 <style>
   .profileNameArea {
@@ -200,7 +231,6 @@
     padding-top: 0px;
     padding-bottom: 0px;
     box-sizing: border-box;
-    margin-right: -10px;
   }
 
   #profileStats {

@@ -178,20 +178,12 @@
 {#if $supporterPopupVisible}
   <Popup z="971" slim="true">
     <div class="popup-title">
-      <h1>
+      <h1 class="shiftTitle">
         Supporter Tiers
         <img id="supporterIconTitle" alt="supporter tag" src="/img/supporter_icon.png" />
       </h1>
     </div>
     <div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
-      <div class="supporterBox" id="headingSupporterBox">
-        <p>
-          The goal of this website is to provide a community-driven geography game that is open to everyone. However, as
-          Maps API's are
-          <span class="supporterTextHighlight">highly expensive</span>, this has become
-          <span class="supporterTextHighlight">more challenging than ever.</span>
-        </p>
-      </div>
       <div id="adTierBox" class="adTierBox supporterArea" class:adTierBoxDisabled={$freeSupporterBoostEnabled}>
         <img alt="time limited" id="adBoostTimeLimitIcon" src="/img/time_limited.png" />
         <p id="freeSupporterBoostText" bind:textContent={freeSupporterBoostText} contenteditable="false"></p>
@@ -334,12 +326,6 @@
     vertical-align: -5px;
   }
 
-  .supporterTextHighlight {
-    background-color: rgba(255, 255, 255, 0.15);
-    border-radius: 5px;
-    padding-inline: 5px;
-  }
-
   .tierBoxTier {
     background-color: rgba(41, 208, 91, 0.2);
     text-align: center;
@@ -369,6 +355,11 @@
     width: 100%;
     margin-bottom: 15px;
     border: none;
+  }
+
+  .shiftTitle {
+    margin-left: 10px;
+    margin-bottom: 20px;
   }
 
   :global(.baseTierPrice) {
@@ -444,10 +435,6 @@
 
   .supporterBox p {
     padding: 7px;
-  }
-
-  #headingSupporterBox {
-    padding: 0;
   }
 
   @keyframes supporterGlintTierBox {
