@@ -1,7 +1,7 @@
 <script>
   function goBack() {
     if (document.referrer) {
-      window.location.href = document.referrer;
+      window.history.back();
     } else {
       window.location.href = "/"; // Fallback if no referrer
     }

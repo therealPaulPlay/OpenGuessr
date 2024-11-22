@@ -5,6 +5,7 @@ import { showPageBrowser } from "./mainUI";
 import { showNotification } from "../src/lib/utils/notifications";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup";
 import { joinRoom, leaveMultiplayerRound, peerId, setFriendDuel, setLinkjoinPopup, setPlayingDuels, setupMultiplayerRoom, toggleMultiplayerSelector } from "./multiplayer";
+import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
 import { loadProfileFromId } from "./profileView";
 import { playSound } from "../src/lib/utils/soundManager";
 
@@ -96,7 +97,7 @@ async function startSearch() {
                     });
 
                     document.getElementById("friendSearchEntry" + idCounter).addEventListener("click", () => {
-                        loadProfileFromId(entry.id, false, true);
+                        loadProfileFromId(entry.id, true);
                     });
                 });
 
@@ -116,52 +117,6 @@ async function startSearch() {
     } catch (error) {
         console.error('Fetch/Network error occurred while loading user browser results: ', error);
         container.innerHTML = `<p class="playerSearchError">Network error: ${error}</p>`;
-    }
-}
-
-// send friend request ---------------------------------------------------------------------------------------------
-
-export async function sendFriendRequest(targetUserId, button) {
-    try {
-        if (!targetUserId) {
-            return;
-        }
-
-        const requestBody = {
-            id: localStorage.getItem("id"),
-            senderId: localStorage.getItem("id"),
-            recipientId: targetUserId,
-            senderName: localStorage.getItem("username")
-        };
-
-        const response = await fetch("https://friends.openguessr.com/friends/send", {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + localStorage.getItem("bearer"),
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        });
-
-        if (response.ok) {
-            showNotification("Friend request sent.", false, false, false);
-
-            try {
-                button.style.opacity = "0.5";
-                button.style.pointerEvents = "none";
-            } catch (error) {
-                console.error("Error changing button style after friend reqeust:", error);
-            }
-
-        } else {
-            const data = await response.json();
-            console.error("Error sending the friend request: " + response.status);
-            errorPopup("Error sending friend request", "The server returned an error for your friend request.", response.status + " - " + data.error, false, false);
-        }
-
-    } catch (error) {
-        console.error('Fetch/Network error occurred while sending the friend request: ', error);
-        errorPopup("Network error sending friend request", "The friend request couldn't be sent.", error, false, false);
     }
 }
 
@@ -267,7 +222,7 @@ async function loadInbox(silent) {
                     });
 
                     document.getElementById("friendInboxEntry" + idCounter).addEventListener("click", () => {
-                        loadProfileFromId(entry.id, false, true);
+                        loadProfileFromId(entry.id, true);
                     });
                 });
 
@@ -416,7 +371,7 @@ export async function loadFriends(animate) {
                     friendsContainer.appendChild(newEntry);
 
                     document.getElementById("friendEntry" + idCounter).addEventListener("click", () => {
-                        loadProfileFromId(entry.id, false, true);
+                        loadProfileFromId(entry.id, true);
                     });
 
                     document.getElementById("removeFriend" + idCounter).addEventListener("click", (e) => {
@@ -460,43 +415,6 @@ export async function loadFriends(animate) {
         console.error('Fetch/Network error occurred while loading friends: ', error);
         friendContainerMessage.textContent = "An error occured loading your friends.";
         friendContainerMessage.style.display = "block";
-    }
-}
-
-export async function checkIfFriendsWithId(id) {
-    try {
-        const requestBody = {
-            id: localStorage.getItem("id")
-        };
-
-        const response = await fetch("https://friends.openguessr.com/friends/friends", {
-            method: 'POST',
-            headers: {
-                'Authorization': "Bearer " + localStorage.getItem("bearer"),
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(requestBody)
-        });
-
-        if (response.ok) {
-            try {
-                const data = await response.json();
-                const isFriend = data.friends.some(friend => friend.id === id);
-
-                return isFriend; // Return true if the friend is found, otherwise false
-
-            } catch (error) {
-                console.error("In-Code error loading friends to check friendship state: " + error);
-            }
-
-        } else {
-            console.error("Error loading friends to check friendship state: " + response.status);
-            return false;
-        }
-
-    } catch (error) {
-        console.error('Fetch/Network error occurred while loading friends: ', error);
-        return false;
     }
 }
 

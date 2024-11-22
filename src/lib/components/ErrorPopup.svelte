@@ -2,7 +2,7 @@
   import {
     hideDisableOption,
     reload,
-    showErrors,
+    hideErrors,
     title,
     description,
     errorCode,
@@ -37,7 +37,7 @@
     {#if !$hideDisableOption}
       <div id="errorPopupDisable">
         <p>Never show again:</p>
-        <input type="checkbox" id="hideErrors" bind:checked={$showErrors} />
+        <input type="checkbox" id="hideErrors" bind:checked={$hideErrors} />
       </div>
     {/if}
     <button class="standardButton white closeButton" onclick={closePopup}>{$closeButtonText}</button>

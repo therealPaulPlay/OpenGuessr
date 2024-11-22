@@ -13,3 +13,6 @@ export const confirmShowConfirm = writable(true);
 export const confirmConfirmText = writable("Default");
 export const confirmConfirmColor = writable("var(--brand-color)");
 export const confirmTitle = writable("Default");
+
+export const confirmPasswordValue = writable();
+export const confirmUsernameValue = writable();

@@ -18,7 +18,6 @@
   import Map from "$lib/components/Map.svelte";
   import SupporterPopup from "$lib/components/SupporterPopup.svelte";
   import ConfirmPopup from "$lib/components/ConfirmPopup.svelte";
-  import SupporterPitch from "$lib/components/SupporterPitch.svelte";
   import BottomBar from "$lib/components/BottomBar.svelte";
   import PanoramaIframe from "$lib/components/PanoramaIframe.svelte";
   import HelpPopup from "$lib/components/HelpPopup.svelte";
@@ -32,6 +31,7 @@
   import BeforeExitPopup from "$lib/components/BeforeExitPopup.svelte";
   import CaptchaPopup from "$lib/components/CaptchaPopup.svelte";
   import Authenticate from "$lib/components/Authenticate.svelte";
+  import ProfilePopup from "$lib/components/ProfilePopup.svelte";
 
   // Start ads
   onMount(() => {
@@ -187,86 +187,7 @@
 <ErrorPopup />
 <ConfirmPopup />
 <CaptchaPopup />
-<!-- New profile window -->
-<div id="profilePopup" class="popupHolder profilePopupBackground">
-  <div id="profileWindow" class="uiWindow">
-    <div class="popup-title">
-      <div class="profileNameArea">
-        <h1 id="profileViewName">Username</h1>
-        <div id="profileNameBox">
-          <button id="badgeButton" class="standardButton">+ Badge</button>
-          <div id="badgeArea"></div>
-          <img id="selectedProfilePin" src="/img/your_marker1.png" alt="map pin" />
-          <div id="supporterTag">
-            <p id="supporterTagText" class="supporterTextHidden">Supporter</p>
-            <img id="supporterIcon" alt="supporter tag" src="/img/supporter_icon.png" />
-          </div>
-          <p id="levelTextProfile">Lvl. 0</p>
-          <button class="standardButton" id="profileAddFriend">
-            <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
-          </button>
-        </div>
-      </div>
-    </div>
-    <SupporterPitch />
-    <div id="profileScrollSection">
-      <h3 id="profileAboutHeader">About:</h3>
-      <textarea
-        id="profileAbout"
-        maxlength="150"
-        spellcheck="false"
-        placeholder="Share a few facts about yourself with others..."
-      ></textarea>
-      <h3>User Stats:</h3>
-      <div id="profileStats" class="statisticView">
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Level:</p>
-          <p id="statisticsLevelText">1</p>
-        </div>
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Experience:</p>
-          <p id="statisticExperience">not set.</p>
-        </div>
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Until Level-Up:</p>
-          <p id="statisticUpgradeExperience">not set.</p>
-        </div>
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Duels played:</p>
-          <p id="statisticDuelsPlayed">0</p>
-        </div>
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Duels won:</p>
-          <p id="statisticDuelsWon">0</p>
-        </div>
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Competitions entered:</p>
-          <p id="statisticCompetitionsEntered">0</p>
-        </div>
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Highest ended Streak:</p>
-          <p id="statisticHighestStreak">0</p>
-        </div>
-        <div class="statisticsEnclosure">
-          <p class="statsLabel">Joined:</p>
-          <p id="statisticJoinedDate">not set.</p>
-        </div>
-      </div>
-      <h3 id="accountManagementHeader">Account Management:</h3>
-      <div id="accountManagementArea" class="managementBox">
-        <div class="editNameSection">
-          <button class="standardButton white" id="editUsername">
-            <img src="/img/edit-icon.png" alt="Edit username Icon" class="edit-icon" />
-            Name
-          </button>
-        </div>
-        <button id="accountDeleteButton" class="standardButton">Delete Account</button>
-      </div>
-      <br />
-    </div>
-    <button id="profileClose" class="standardButton white closeButton">Close</button>
-  </div>
-</div>
+<ProfilePopup />
 <!-- Badge window -->
 <div id="badgePopup" class="popupHolder profilePopupBackground">
   <div id="badgeWindow" class="uiWindow">

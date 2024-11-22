@@ -7,6 +7,7 @@
   function clickJoin() {
     playSound("basic_button");
     window.open("https://discord.gg/CSc3MbDrZ8", "_blank").focus();
+    
     setTimeout(async function () {
       closePopup();
       await setUserXP(Number(localStorage.getItem("experience")) + 7500);

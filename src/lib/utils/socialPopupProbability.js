@@ -1,5 +1,5 @@
 // Popup with CTA to follow on Socials, has a certain probability of showing up when this function is called
-import { discordPopup } from "$lib/stores/UIStore";
+import { discordPopup } from "$lib/stores/uiStore";
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
 

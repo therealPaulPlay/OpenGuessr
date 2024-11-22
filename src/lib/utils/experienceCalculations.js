@@ -15,7 +15,7 @@ export function getRequiredLevelUpExperience() {
     return experienceCalculations(get(experience)).requiredForLevelUpgrade;
 }
 
-function experienceCalculations(xp) {
+export function experienceCalculations(xp) {
     if (xp == null) xp = 0;
 
     let requiredXP;

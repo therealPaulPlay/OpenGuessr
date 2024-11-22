@@ -1,4 +1,4 @@
-import { confirmPopupVisible, confirmTitle, confirmDescription, confirmUsernameInput, confirmPasswordInput, confirmConfirmColor, confirmConfirmText, confirmShowConfirm, confirmExecuteFunction } from "$lib/stores/context-specific/confirmPopupStore";
+import { confirmPopupVisible, confirmTitle, confirmDescription, confirmUsernameInput, confirmPasswordInput, confirmConfirmColor, confirmConfirmText, confirmShowConfirm, confirmExecuteFunction, confirmUsernameValue, confirmPasswordValue } from "$lib/stores/context-specific/confirmPopupStore";
 
 export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, messageOnly, confirmText, confirmColor) {
 
@@ -9,15 +9,12 @@ export function showConfirmPopup(title, text, executeFunction, accountDelete, na
     confirmConfirmText.set(confirmText || "Confirm");
     confirmConfirmColor.set(confirmColor || "");
     confirmExecuteFunction.set(executeFunction);
+    
+    // Reset input fields
+    confirmUsernameValue.set("");
+    confirmPasswordValue.set("");
 
-    if (accountDelete) {
-        document.getElementById("accountDeletePassword").value = "";
-    }
-
-    if (nameChange) {
-        document.getElementById("usernameInput").value = "";
-    }
-
+    // Hide "Confirm" button if message only param is true
     confirmShowConfirm.set(!Boolean(messageOnly));
 
     confirmPopupVisible.set(true); // Show the popup

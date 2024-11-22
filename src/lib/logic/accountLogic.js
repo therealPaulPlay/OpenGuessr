@@ -10,7 +10,6 @@ import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore.js";
 import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
 import { addResultToCompetitionScore } from "./competitionLogic.js";
 // import { setCheckNewHighestStreak } from "../../../JS/profileView.js"; !TODO !CHANGE
-import { errorPopup } from "$lib/utils/errorHandling";
 // import { initializeWebsocketConnection } from "../../../JS/friendMenu.js"; !TODO !CHANGE
 import { setUserXP } from "$lib/utils/setUserXP";
 import { resultScreenEnabled, experienceBarAnimated, earnedExperience, showStreakDisplay, streakText } from "$lib/stores/context-specific/resultScreenStore.js";
@@ -19,30 +18,13 @@ import { isAuthenticated, supporterLevel, experience, freeSupporterBoostEnabled,
 import { isTokenExpired } from "$lib/utils/isTokenExpired.js";
 import { competition, multiplayer } from "$lib/stores/modeStore.js";
 import { saveRoundToLog } from "$lib/utils/saveRoundToLog.js";
-import { loadedProfileData } from "$lib/stores/context-specific/profileStore.js";
-import { profilePopup } from "$lib/stores/UIStore.js";
+import { profileData } from "$lib/stores/context-specific/profileStore.js";
 import { mapDiameter } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
 import { supportedAmount } from "../stores/accountStore.js";
 
 let lastDistance;
 let lastXPloadingAttemptAborted = false;
-
-// Account Deletion ----------------------------------------------------------------------------------------------------------------
-
-// !TODO !CHANGE hook this up to the profile delete button
-
-export async function submitAccountDeletion() {
-  let successState = await deleteUser(localStorage.getItem("id"), document.getElementById("accountDeletePassword").value, "index");
-  if (successState) {
-    signout();
-
-    setTimeout(() => {
-      profilePopup.set(false); // Close popup
-      errorPopup("Account deleted successfully", "You have deleted your OpenGuessr account.", "", false, true);
-    }, 250);
-  }
-}
 
 // Authentication -----------------------------------------------------------------------------------------------------------------------
 
@@ -85,7 +67,7 @@ export function resetLocalSave() {
 async function loadUserInfo() {
   try {
     await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((user) => {
-      loadedProfileData.set(user.profile_data);
+      profileData.set(user.profile_data);
 
       // Extract profile cosmetics
       experience.set(user.experience);
@@ -130,6 +112,8 @@ function calculateMultiplier(streak) {
 let streakMultiplier = 1;
 
 export function restoreOldStreak(oldStreak) {
+  loadStreak();
+
   streak = oldStreak;
   localStorage.setItem("streak", streak);
   streakMultiplier = calculateMultiplier(streak);

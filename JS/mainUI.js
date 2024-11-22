@@ -223,9 +223,6 @@ window.onmessage = function (e) {
             case data === "loadCompetition":
                 loadCompetition(true);
                 break;
-            case profileMatch !== null:
-                loadProfileFromId(Number(profileMatch[1]), false, true);
-                break;
         }
     } catch (error) {
         console.error("Error processing window message: " + error);

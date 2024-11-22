@@ -1892,7 +1892,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                     if (id) {
                         try {
                             document.getElementById("usernameOverlayField" + nameProfileIdCounter).addEventListener("click", () => {
-                                loadProfileFromId(id, false, true);
+                                loadProfileFromId(id, true);
                             });
                         } catch (error) {
                             console.error("Error in showMultiplayerOverlay: " + error);
@@ -1970,7 +1970,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 if (id) {
                     try {
                         document.getElementById("usernameOverlayField" + nameProfileIdCounter).addEventListener("click", () => {
-                            loadProfileFromId(id, false, true);
+                            loadProfileFromId(id, true);
                         });
                     } catch (error) {
                         console.error("Error in showMultiplayerOverlay: " + error);

@@ -84,8 +84,8 @@ export async function registerUser(userName, email, password, errorSource, succe
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      if (typeof successFunction != "function") return;
-      successFunction("Registration successful! Please log in.");
+      if (typeof successFunction == "function") successFunction("Registration successful! Please log in.");
+      
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Registration failed: ', response.status);

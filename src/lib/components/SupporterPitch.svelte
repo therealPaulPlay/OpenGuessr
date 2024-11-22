@@ -58,15 +58,17 @@
     padding-inline: 10px;
   }
 
-  .supporterPitchText p {
-    font-size: 22px;
-  }
-
-  #supporterTextSecondary {
-    display: none !important;
-  }
-
   #viewSupporterBenefits {
     font-size: 22px;
+  }
+
+  @media all and (max-width: 1200px) {
+    .supporterPitchText p {
+      font-size: 22px;
+    }
+
+    #supporterTextSecondary {
+      display: none !important;
+    }
   }
 </style>

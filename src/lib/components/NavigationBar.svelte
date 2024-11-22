@@ -8,8 +8,8 @@
   import { competition, multiplayer } from "$lib/stores/modeStore";
   import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
   import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
+  import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { get } from "svelte/store";
-  // import { loadProfileFromId } from "$lib/utils/loadProfile" !TODO !CHANGE
 
   function openSettings() {
     playSound("basic_button");
@@ -63,7 +63,7 @@
 
   function setProgress(factor) {
     if (typeof window == "undefined") return;
-    
+
     try {
       const circle = document.getElementById("progressRingCircle");
       const radius = circle.r.baseVal.value;
@@ -98,7 +98,7 @@
         id="mobileProfileButton"
         class="standardButton accountButton mobileAccountButton"
         onclick={() => {
-          loadProfileFromId(localStorage.getItem("id"), true, true);
+          loadProfileFromId(localStorage.getItem("id"), true);
           playSound("basic_button");
         }}
       >
@@ -167,7 +167,7 @@
       id="profileInfo"
       class:profileInfoSupporter={supporterLevel >= 1}
       onclick={() => {
-        loadProfileFromId(localStorage.getItem("id"), true, true);
+        loadProfileFromId(localStorage.getItem("id"), true);
         playSound("basic_button");
       }}
     >
@@ -183,11 +183,17 @@
       </div>
       <div class="progressContainer">
         <svg class="progressRing" width="30" height="30">
+          <defs>
+            <linearGradient id="ringGradient" gradientTransform="rotate(240)">
+              <stop offset="5%" stop-color="#37d738" />
+              <stop offset="95%" stop-color="#22a826" />
+            </linearGradient>
+          </defs>
           <circle
             id="progressRingCircle"
             class="progressRingCircle"
             style="stroke-dasharray: 81.6814px, 81.6814px; stroke-dashoffset: 81.6814px;"
-            stroke="#00cc00"
+            stroke="url('#ringGradient')"
             stroke-width="4"
             fill="transparent"
             r="13"

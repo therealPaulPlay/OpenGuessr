@@ -176,7 +176,7 @@
 </script>
 
 {#if $supporterPopupVisible}
-  <Popup z="971" slim=true>
+  <Popup z="971" slim="true">
     <div class="popup-title">
       <h1>
         Supporter Tiers
@@ -428,6 +428,28 @@
     border-radius: 5px;
   }
 
+  .supporterBox {
+    padding: 10px;
+    width: calc(100% - 20px);
+    border-radius: 10px;
+  }
+
+  .supporterBoxHighlight {
+    background-color: rgba(255, 255, 255, 0.1);
+    width: calc(100% - 30px);
+    padding-inline: 15px;
+    display: flex;
+    align-items: center;
+  }
+
+  .supporterBox p {
+    padding: 7px;
+  }
+
+  #headingSupporterBox {
+    padding: 0;
+  }
+
   @keyframes supporterGlintTierBox {
     10% {
       opacity: 1;
@@ -440,7 +462,7 @@
 
     21% {
       opacity: 0;
-      transform: translate(100%, 348px);
+      transform: translate(100%, 342px);
     }
 
     30% {
@@ -449,7 +471,7 @@
 
     40% {
       opacity: 0;
-      transform: translateY(348px);
+      transform: translateY(342px);
     }
 
     41% {
