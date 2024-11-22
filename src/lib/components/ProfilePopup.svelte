@@ -13,6 +13,7 @@
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { saveProfileAboutIfYourProfileAndChanges } from "$lib/utils/updateProfileData";
   import { pinPopup, badgePopup } from "$lib/stores/uiStore";
+  import Badge from "$lib/components/Badge.svelte";
   import {
     profileData,
     profileName,
@@ -26,8 +27,6 @@
   import { playSound } from "$lib/utils/soundManager";
   import { Edit, Trash2 } from "lucide-svelte";
   import { onMount } from "svelte";
-
-  // !TODO load profile badge + badge system / component
 
   let textarea = $state();
 
@@ -55,11 +54,30 @@
         <h1 id="profileViewName">{$profileName}</h1>
         <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
         <div id="profileNameBox">
-          {#if $profileId == localStorage.getItem("id")}
-            <button id="badgeButton" class="standardButton">+ Badge</button>
+          {#if $profileId == localStorage.getItem("id") && !$profileData?.badge}
+            <button
+              id="badgeButton"
+              class="standardButton"
+              onclick={() => {
+                playSound("basic_button");
+                badgePopup.set(true);
+              }}>+ Badge</button
+            >
           {/if}
           {#if $profileData?.badge}
-            <div id="badgeArea" style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}></div>
+            <!-- svelte-ignore a11y_click_events_have_key_events -->
+            <div
+              id="badgeArea"
+              role="button"
+              tabindex="0"
+              style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
+              onclick={() => {
+                playSound("basic_button");
+                badgePopup.set(true);
+              }}
+            >
+              <Badge id={$profileData?.badge} interactive="false" display=true />
+            </div>
           {/if}
           <!-- svelte-ignore a11y_click_events_have_key_events -->
           <img
@@ -225,6 +243,15 @@
     width: calc(100% + 25px);
     margin-left: -25px;
     margin-top: -25px;
+  }
+
+  #badgeArea {
+    cursor: pointer;
+    transition: scale 250ms ease;
+  }
+
+  #badgeArea:hover {
+    scale: 0.98;
   }
 
   #badgeButton {

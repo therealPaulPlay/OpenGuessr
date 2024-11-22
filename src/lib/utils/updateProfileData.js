@@ -83,11 +83,13 @@ export async function setCheckNewHighestStreak(streak) {
 }
 
 export async function setSelectedProfilePin(pinId) {
+    if (pinId == get(selectedPinIndex)) return; // Detect if the new selection is different from the current one
     selectedPinIndex.set(pinId);
     updateProfileData(null, null, null, null, null, pinId);
 }
 
-export async function saveProfileBadge(badge) {
+export async function setProfileBadge(badge) {
+    if (badge == get(selectedBadge)) return; // Detect if the new selection is different from the current one
     selectedBadge.set(badge);
     updateProfileData(null, null, null, null, null, null, badge);
 }

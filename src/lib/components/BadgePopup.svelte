@@ -2,6 +2,13 @@
   import Popup from "$lib/components/Popup.svelte";
   import { playSound } from "$lib/utils/soundManager";
   import { badgePopup } from "$lib/stores/uiStore";
+  import {
+    profileData,
+    profileExperience,
+    profileSupporterLevel,
+    profileId,
+  } from "$lib/stores/context-specific/profileStore";
+  import Badge from "./Badge.svelte";
 </script>
 
 {#if $badgePopup}
@@ -13,64 +20,119 @@
       <div class="spacerBadge"></div>
       <div class="badgeLabel">
         <p>For Experience:</p>
-        <p id="experienceBadgeStatus" class="unlockBadgeStatus">Unlock next at x XP</p>
+        <p id="experienceBadgeStatus" class="unlockBadgeStatus">50,000 - 250,000 - 1M - 10M</p>
       </div>
       <div class="badgeBox">
-        <p id="expBadge1" class="badge badgeStage1">New Explorer</p>
-        <p id="expBadge2" class="badge badgeStage2">Skilled Adventurer</p>
-        <p id="expBadge3" class="badge badgeStage3">Experienced Veteran</p>
-        <p id="expBadge4" class="badge badgeStage4">Master of Experience</p>
+        <Badge id="expBadge1" interactive="true" unlocked={$profileExperience >= 50000} />
+        <Badge id="expBadge2" interactive="true" unlocked={$profileExperience >= 250000} />
+        <Badge id="expBadge3" interactive="true" unlocked={$profileExperience >= 1000000} />
+        <Badge id="expBadge4" interactive="true" unlocked={$profileExperience >= 10000000} />
       </div>
       <div class="badgeLabel">
         <p>For Duels:</p>
-        <p id="duelsBadgeStatus" class="unlockBadgeStatus">Unlock next at x Wins</p>
+        <p id="duelsBadgeStatus" class="unlockBadgeStatus">5 - 50 - 100 - 500</p>
       </div>
       <div class="badgeBox">
-        <p id="duelBadge1" class="badge badgeStage1">Casual Duelist</p>
-        <p id="duelBadge2" class="badge badgeStage2">Proven Combatant</p>
-        <p id="duelBadge3" class="badge badgeStage3">Expert Duelist</p>
-        <p id="duelBadge4" class="badge badgeStage4">Duel Master</p>
+        <Badge id="duelBadge1" interactive="true" unlocked={$profileData?.duelsWon >= 5} />
+        <Badge id="duelBadge2" interactive="true" unlocked={$profileData?.duelsWon >= 50} />
+        <Badge id="duelBadge3" interactive="true" unlocked={$profileData?.duelsWon >= 100} />
+        <Badge id="duelBadge4" interactive="true" unlocked={$profileData?.duelsWon >= 500} />
       </div>
       <div class="badgeLabel">
         <p>For Competitions:</p>
-        <p id="competitionsBadgeStatus" class="unlockBadgeStatus">Unlock next at x Entries</p>
+        <p id="competitionsBadgeStatus" class="unlockBadgeStatus">10 - 50 - 100 - 500</p>
       </div>
       <div class="badgeBox">
-        <p id="compBadge1" class="badge badgeStage1">Rookie Competitor</p>
-        <p id="compBadge2" class="badge badgeStage2">Dedicated Entrant</p>
-        <p id="compBadge3" class="badge badgeStage3">Seasoned Contender</p>
-        <p id="compBadge4" class="badge badgeStage4">Top Champion</p>
+        <Badge id="compBadge1" interactive="true" unlocked={$profileData?.competitionsPlayed >= 10} />
+        <Badge id="compBadge2" interactive="true" unlocked={$profileData?.competitionsPlayed >= 50} />
+        <Badge id="compBadge3" interactive="true" unlocked={$profileData?.competitionsPlayed >= 100} />
+        <Badge id="compBadge4" interactive="true" unlocked={$profileData?.competitionsPlayed >= 500} />
       </div>
       <div class="badgeLabel">
         <p>For Streaks:</p>
-        <p id="streakBadgeStatus" class="unlockBadgeStatus">Unlock next at x Streak</p>
+        <p id="streakBadgeStatus" class="unlockBadgeStatus">5 - 15 - 50 - 100</p>
       </div>
       <div class="badgeBox">
-        <p id="streakBadge1" class="badge badgeStage1">Streak Starter</p>
-        <p id="streakBadge2" class="badge badgeStage2">Consistent Performer</p>
-        <p id="streakBadge3" class="badge badgeStage3">Streak Specialist</p>
-        <p id="streakBadge4" class="badge badgeStage4">Ultimate Streaker</p>
+        <Badge id="streakBadge1" interactive="true" unlocked={$profileData?.highestStreak >= 5} />
+        <Badge id="streakBadge2" interactive="true" unlocked={$profileData?.highestStreak >= 15} />
+        <Badge id="streakBadge3" interactive="true" unlocked={$profileData?.highestStreak >= 50} />
+        <Badge id="streakBadge4" interactive="true" unlocked={$profileData?.highestStreak >= 100} />
       </div>
       <div class="badgeLabel">
         <p>For Supporters:</p>
-        <p id="supporterBadgeStatus" class="unlockBadgeStatus">Become a supporter (coming soon)</p>
+        <p id="supporterBadgeStatus" class="unlockBadgeStatus">1 - 2 - 3 - 4</p>
       </div>
       <div class="badgeBox">
-        <p id="supporterBadge1" class="badge badgeStageSupporter1">New Supporter</p>
-        <p id="supporterBadge2" class="badge badgeStageSupporter2">Kind Contributor</p>
-        <p id="supporterBadge3" class="badge badgeStageSupporter3">Generous Benefactor</p>
-        <p id="supporterBadge4" class="badge badgeStageSupporter4">Ultimate Patron</p>
+        <Badge id="supporterBadge1" interactive="true" unlocked={$profileSupporterLevel >= 1} />
+        <Badge id="supporterBadge2" interactive="true" unlocked={$profileSupporterLevel >= 2} />
+        <Badge id="supporterBadge3" interactive="true" unlocked={$profileSupporterLevel >= 3} />
+        <Badge id="supporterBadge4" interactive="true" unlocked={$profileSupporterLevel >= 4} />
       </div>
       <div class="badgeLabel">
         <p>Miscellaneous:</p>
       </div>
       <div class="badgeBox" style="margin-bottom: 5px">
-        <p id="miscBadge1" class="badge badgeStageDeveloper">Developer</p>
+        <Badge id="miscBadge1" interactive="true" unlocked={$profileId <= 5} />
       </div>
     </div>
-    <button id="badgeClose" class="standardButton white closeButton">Close</button>
+    <button
+      id="badgeClose"
+      class="standardButton white closeButton"
+      onclick={() => {
+        playSound("basic_button");
+        badgePopup.set(false);
+      }}>Close</button
+    >
   </Popup>
 {/if}
 
 <style>
+  .badgeContainer {
+    width: calc(100% - 10px);
+    padding: 10px;
+    padding-top: 7px;
+    padding-bottom: 7px;
+    max-height: calc(100dvh - 300px);
+    overflow-x: hidden;
+    overflow-y: auto;
+    border-radius: 5px;
+  }
+
+  .spacerBadge {
+    height: 5px;
+  }
+
+  .badgeLabel {
+    padding: 3px;
+    background-color: var(--box-color);
+    border-radius: 5px;
+    text-align: left;
+    margin-bottom: 10px;
+    padding-left: 10px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+  }
+
+  .badgeBox {
+    background-color: rgba(30, 31, 44, 0.5);
+    border-radius: 8px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 7px;
+    width: calc(100% - 14px);
+    flex-wrap: wrap;
+    gap: 7px;
+    margin-bottom: 10px;
+  }
+
+  .unlockBadgeStatus {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 3px;
+    padding-inline: 7px;
+    border-radius: 5px;
+    font-size: 20px;
+    color: rgba(255, 255, 255, 0.75);
+  }
 </style>

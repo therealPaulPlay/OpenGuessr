@@ -15,7 +15,7 @@
       setSelectedProfilePin(pinId);
       $profileData["pin"] = pinId;
     } else {
-      playSound("pin_locked");
+      playSound("item_locked");
     }
   }}
 >
