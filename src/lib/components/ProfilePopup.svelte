@@ -12,6 +12,7 @@
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { saveProfileAboutIfYourProfileAndChanges } from "$lib/utils/updateProfileData";
+  import { pinPopup, badgePopup } from "$lib/stores/uiStore";
   import {
     profileData,
     profileName,
@@ -52,6 +53,7 @@
     <div class="popup-title">
       <div class="profileNameArea">
         <h1 id="profileViewName">{$profileName}</h1>
+        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
         <div id="profileNameBox">
           {#if $profileId == localStorage.getItem("id")}
             <button id="badgeButton" class="standardButton">+ Badge</button>
@@ -59,15 +61,19 @@
           {#if $profileData?.badge}
             <div id="badgeArea" style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}></div>
           {/if}
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
           <img
             id="selectedProfilePin"
             alt="map pin"
             src={`/img/your_marker${$profileData?.pin || 0}.png`}
             style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
+            onclick={() => {
+              pinPopup.set(true);
+            }}
           />
           {#if $profileSupporterLevel >= 1}
             <div id="supporterTag">
-              <p id="supporterTagText" class="supporterTextHidden">Tier {$profileSupporterLevel}</p>
+              <p id="supporterTagText">Tier {$profileSupporterLevel}</p>
               <img id="supporterIcon" alt="supporter tag" src="/img/supporter_icon.png" />
             </div>
           {/if}
@@ -282,10 +288,15 @@
     font-size: 18px;
     overflow: hidden;
     text-overflow: ellipsis;
-    max-width: 200px;
-    transition: max-width 250ms ease-in-out;
-    width: 105px;
+    max-width: 0;
+    transition: max-width 350ms ease-in-out;
+    transition-delay: 100ms;
+    width: 45px;
     text-wrap: nowrap;
+  }
+
+  #supporterTag:hover p {
+    max-width: 100px;
   }
 
   #selectedProfilePin {
@@ -300,10 +311,6 @@
 
   #selectedProfilePin:hover {
     background-color: rgba(255, 255, 255, 0.2);
-  }
-
-  .supporterTextHidden {
-    max-width: 0 !important;
   }
 
   #supporterIcon {

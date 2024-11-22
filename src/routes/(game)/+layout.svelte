@@ -32,6 +32,8 @@
   import CaptchaPopup from "$lib/components/CaptchaPopup.svelte";
   import Authenticate from "$lib/components/Authenticate.svelte";
   import ProfilePopup from "$lib/components/ProfilePopup.svelte";
+  import PinPopup from "$lib/components/PinPopup.svelte";
+  import BadgePopup from "$lib/components/BadgePopup.svelte";
 
   // Start ads
   onMount(() => {
@@ -179,166 +181,13 @@
     </div>
   </div>
 </div>
-<!-- mobile category menu bottom controls -->
-<div id="mobileExtendedNavbarControls">
-  <button id="mobileCategoriesClose" class="fixedMobileuiWidth standardButton socialBarButton">Close</button>
-</div>
 <LoadingFade />
 <ErrorPopup />
 <ConfirmPopup />
 <CaptchaPopup />
 <ProfilePopup />
-<!-- Badge window -->
-<div id="badgePopup" class="popupHolder profilePopupBackground">
-  <div id="badgeWindow" class="uiWindow">
-    <div class="popup-title">
-      <h1 id="badgePopupHeader">Badges</h1>
-    </div>
-    <div id="badgeContainer" class="badgeContainer">
-      <div class="spacerBadge"></div>
-      <div class="badgeLabel">
-        <p>For Experience:</p>
-        <p id="experienceBadgeStatus" class="unlockBadgeStatus">Unlock next at x XP</p>
-      </div>
-      <div class="badgeBox">
-        <p id="expBadge1" class="badge badgeStage1">New Explorer</p>
-        <p id="expBadge2" class="badge badgeStage2">Skilled Adventurer</p>
-        <p id="expBadge3" class="badge badgeStage3">Experienced Veteran</p>
-        <p id="expBadge4" class="badge badgeStage4">Master of Experience</p>
-      </div>
-      <div class="badgeLabel">
-        <p>For Duels:</p>
-        <p id="duelsBadgeStatus" class="unlockBadgeStatus">Unlock next at x Wins</p>
-      </div>
-      <div class="badgeBox">
-        <p id="duelBadge1" class="badge badgeStage1">Casual Duelist</p>
-        <p id="duelBadge2" class="badge badgeStage2">Proven Combatant</p>
-        <p id="duelBadge3" class="badge badgeStage3">Expert Duelist</p>
-        <p id="duelBadge4" class="badge badgeStage4">Duel Master</p>
-      </div>
-      <div class="badgeLabel">
-        <p>For Competitions:</p>
-        <p id="competitionsBadgeStatus" class="unlockBadgeStatus">Unlock next at x Entries</p>
-      </div>
-      <div class="badgeBox">
-        <p id="compBadge1" class="badge badgeStage1">Rookie Competitor</p>
-        <p id="compBadge2" class="badge badgeStage2">Dedicated Entrant</p>
-        <p id="compBadge3" class="badge badgeStage3">Seasoned Contender</p>
-        <p id="compBadge4" class="badge badgeStage4">Top Champion</p>
-      </div>
-      <div class="badgeLabel">
-        <p>For Streaks:</p>
-        <p id="streakBadgeStatus" class="unlockBadgeStatus">Unlock next at x Streak</p>
-      </div>
-      <div class="badgeBox">
-        <p id="streakBadge1" class="badge badgeStage1">Streak Starter</p>
-        <p id="streakBadge2" class="badge badgeStage2">Consistent Performer</p>
-        <p id="streakBadge3" class="badge badgeStage3">Streak Specialist</p>
-        <p id="streakBadge4" class="badge badgeStage4">Ultimate Streaker</p>
-      </div>
-      <div class="badgeLabel">
-        <p>For Supporters:</p>
-        <p id="supporterBadgeStatus" class="unlockBadgeStatus">Become a supporter (coming soon)</p>
-      </div>
-      <div class="badgeBox">
-        <p id="supporterBadge1" class="badge badgeStageSupporter1">New Supporter</p>
-        <p id="supporterBadge2" class="badge badgeStageSupporter2">Kind Contributor</p>
-        <p id="supporterBadge3" class="badge badgeStageSupporter3">Generous Benefactor</p>
-        <p id="supporterBadge4" class="badge badgeStageSupporter4">Ultimate Patron</p>
-      </div>
-      <div class="badgeLabel">
-        <p>Miscellaneous:</p>
-      </div>
-      <div class="badgeBox" style="margin-bottom: 5px">
-        <p id="miscBadge1" class="badge badgeStageDeveloper">Developer</p>
-      </div>
-    </div>
-    <button id="badgeClose" class="standardButton white closeButton">Close</button>
-  </div>
-</div>
-<!--Pin window -->
-<div id="pinPopup" class="popupHolder profilePopupBackground">
-  <div id="pinWindow" class="uiWindow">
-    <div class="popup-title">
-      <h1 id="pinPopupWindow">Pins</h1>
-    </div>
-    <div id="pinSelector">
-      <button class="pinHolder selectedPin">
-        <div id="pinLock0" class="pinLock">
-          <p class="pinLockText">0 XP</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker0.png" alt="pin icon" />
-      </button>
-      <button class="pinHolder">
-        <div id="pinLock1" class="pinLock">
-          <p class="pinLockText">5,000 XP</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker1.png" alt="pin icon" />
-      </button>
-      <button class="pinHolder">
-        <div id="pinLock2" class="pinLock">
-          <p class="pinLockText">30,000 XP</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker2.png" alt="pin icon" />
-      </button>
-      <button class="pinHolder">
-        <div id="pinLock3" class="pinLock">
-          <p class="pinLockText">100,000 XP</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker3.png" alt="pin icon" />
-      </button>
-      <button class="pinHolder">
-        <div id="pinLock4" class="pinLock">
-          <p class="pinLockText">500,000 XP</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker4.png" alt="pin icon" />
-      </button>
-      <button class="pinHolder">
-        <div id="pinLock5" class="pinLock">
-          <p class="pinLockText">5,000,000 XP</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker5.png" alt="pin icon" />
-      </button>
-      <button class="pinHolder">
-        <div id="pinLock6" class="pinLock">
-          <p class="pinLockText">10,000,000 XP</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker6.png" alt="pin icon" />
-      </button>
-      <button class="pinHolder">
-        <div id="pinLock7" class="pinLock">
-          <p class="pinLockText">75 Duel Wins</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker7.png" alt="pin icon" />
-      </button>
-      <button class="pinHolder">
-        <div id="pinLock8" class="pinLock">
-          <p class="pinLockText">50 Comp. Entries</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker8.png" alt="pin icon" />
-      </button>
-      <button class="pinHolder">
-        <div id="pinLock9" class="pinLock">
-          <p class="pinLockText">10 Streak</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker9.png" alt="pin icon" />
-      </button>
-      <button class="pinHolder">
-        <div id="pinLock10" class="pinLock">
-          <p class="pinLockText">250 Comp. Entries</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker10.png" alt="pin icon" />
-      </button>
-      <button class="pinHolder">
-        <div id="pinLock11" class="pinLock">
-          <p class="pinLockText">Supporter</p>
-        </div>
-        <img class="pinSelectIcon" src="/img/your_marker11.png" alt="pin icon" />
-      </button>
-    </div>
-    <button id="pinClose" class="standardButton white closeButton">Close</button>
-  </div>
-</div>
+<BadgePopup />
+<PinPopup />
 <SupporterPopup />
 <!-- Friend browser window -->
 <div id="friendBrowserPopup" class="popupHolder profilePopupBackground">

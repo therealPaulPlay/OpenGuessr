@@ -165,7 +165,7 @@
       class="profileInfo"
       class:notSignedIn={!$isAuthenticated}
       id="profileInfo"
-      class:profileInfoSupporter={supporterLevel >= 1}
+      class:profileInfoSupporter={$supporterLevel >= 1}
       onclick={() => {
         loadProfileFromId(localStorage.getItem("id"), true);
         playSound("basic_button");
@@ -461,7 +461,7 @@
     width: 22px;
     height: 22px;
     margin-left: 3px;
-    margin-top: 5px;
+    margin-top: 4px;
     filter: invert();
   }
 
