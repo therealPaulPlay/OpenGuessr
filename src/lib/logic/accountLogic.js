@@ -18,7 +18,6 @@ import { isAuthenticated, supporterLevel, experience, freeSupporterBoostEnabled,
 import { isTokenExpired } from "$lib/utils/isTokenExpired.js";
 import { competition, multiplayer } from "$lib/stores/modeStore.js";
 import { saveRoundToLog } from "$lib/utils/saveRoundToLog.js";
-import { profileData } from "$lib/stores/context-specific/profileStore.js";
 import { mapDiameter } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
 import { supportedAmount } from "../stores/accountStore.js";
@@ -67,8 +66,6 @@ export function resetLocalSave() {
 async function loadUserInfo() {
   try {
     await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((user) => {
-      profileData.set(user.profile_data);
-
       // Extract profile cosmetics
       experience.set(user.experience);
       username.set(user.userName);

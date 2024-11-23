@@ -76,7 +76,7 @@
                 badgePopup.set(true);
               }}
             >
-              <Badge id={$profileData?.badge} interactive="false" display=true />
+              <Badge id={$profileData?.badge} interactive="false" display="true" />
             </div>
           {/if}
           <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -118,7 +118,7 @@
       {#if $profileId == localStorage.getItem("id") || $profileData?.about}
         <textarea
           id="profileAbout"
-          style:pointer-events="{$profileId == localStorage.getItem('id') ? 'auto' : 'none'};"
+          style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
           maxlength="150"
           spellcheck="false"
           value={$profileData?.about}
