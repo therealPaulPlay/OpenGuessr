@@ -1,5 +1,6 @@
 <script>
   import { initializeAds } from "$lib/utils/ads";
+  import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
   import { onMount } from "svelte";
 
   let { children } = $props();
@@ -39,6 +40,7 @@
 
   // Start ads
   onMount(() => {
+    checkGenerationTypeAndGenerate();
     initializeAds();
 
     // Prevent automatic "last button press" with space bar or enter key

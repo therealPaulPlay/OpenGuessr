@@ -204,7 +204,7 @@
     transition:
       filter 250ms ease,
       opacity 250ms ease;
-    margin-left: -5px;
+    margin-left: -6px;
     font-size: 20px;
     height: 30px;
   }
@@ -218,7 +218,7 @@
     transition:
       filter 250ms ease,
       opacity 250ms ease;
-    margin-left: -5px;
+    margin-left: -8px;
   }
 
   #revealCompass:hover {

@@ -86,6 +86,7 @@
             src={`/img/your_marker${$profileData?.pin || 0}.png`}
             style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
             onclick={() => {
+              playSound("basic_button");
               pinPopup.set(true);
             }}
           />

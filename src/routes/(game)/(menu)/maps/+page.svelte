@@ -1,1 +1,0 @@
-<h1>Test maps page</h1>

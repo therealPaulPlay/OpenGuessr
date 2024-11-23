@@ -219,7 +219,6 @@
     text-align: center;
     width: 100%;
     opacity: 50%;
-    font-style: italic;
     font-size: 22px;
   }
 

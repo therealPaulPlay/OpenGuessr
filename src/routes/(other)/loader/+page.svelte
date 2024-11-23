@@ -3,7 +3,7 @@
 </svelte:head>
 
 <div>
-    <h1>No panorama loaded.</h1>
+    <h1>Loading panorama...</h1>
 </div>
 
 <style>
