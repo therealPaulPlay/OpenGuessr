@@ -1,3 +1,5 @@
+<!-- Universal Popup component, used as the "enclosure" for (basically) all Popups -->
+
 <script>
   import { onMount, onDestroy } from "svelte";
   let { children, z, frameLess, socialPopup, slim, verySlim } = $props();

@@ -274,6 +274,11 @@ textarea {
     border-radius: 10px;
 }
 
+.viewContainer {
+    display: flex;
+    justify-content: center;
+}
+
 @media (orientation: portrait) and (max-width: 800px) {
     .leaderboardAds {
         width: 320px;
@@ -1462,11 +1467,6 @@ search {
 #multiplayerMessageInput:focus,
 #multiplayerMessageInput:hover {
     outline: none;
-}
-
-.MainDiv {
-    display: flex;
-    justify-content: center;
 }
 
 /* Buttons */

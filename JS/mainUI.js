@@ -141,24 +141,6 @@ document.getElementById("mobileCompetitionsButton").addEventListener("click", fu
     showPageBrowser("/competitions.html");
 });
 
-// Troubleshootig Window ------------------------------------------------------------------------------------------------------
-
-let troubleshootButton = document.getElementById("troubleshootGuideButton");
-let troubleshootClose = document.getElementById("troubleshootClose");
-let troubleshootWindow = document.getElementById("troubleshootWindow");
-
-troubleshootButton.addEventListener("click", toggleTroubleshootWindow);
-troubleshootClose.addEventListener("click", toggleTroubleshootWindow);
-
-function toggleTroubleshootWindow() {
-    playSound("basic_button");
-    toggleMultiplayerSelector();
-    if (troubleshootWindow.style.display != "block") {
-        document.getElementById("blackBackground").style.visibility = "visible";
-    }
-    troubleshootWindow.style.display = troubleshootWindow.style.display != "block" ? "block" : "none";
-}
-
 // Daily competition link to competitions ---------------------------------------------------------------------------------
 
 document.getElementById("dailyCompetition").addEventListener("click", () => {

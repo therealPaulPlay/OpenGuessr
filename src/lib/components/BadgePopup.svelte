@@ -19,7 +19,7 @@
     <div id="badgeContainer" class="badgeContainer">
       <div class="spacerBadge"></div>
       <div class="badgeLabel">
-        <p>For Experience:</p>
+        <p>For Experience gained:</p>
         <p id="experienceBadgeStatus" class="unlockBadgeStatus">50,000 - 250,000 - 1M - 10M</p>
       </div>
       <div class="badgeBox">
@@ -29,7 +29,7 @@
         <Badge id="expBadge4" interactive="true" unlocked={$profileExperience >= 10000000} />
       </div>
       <div class="badgeLabel">
-        <p>For Duels:</p>
+        <p>For Duels won:</p>
         <p id="duelsBadgeStatus" class="unlockBadgeStatus">5 - 50 - 100 - 500</p>
       </div>
       <div class="badgeBox">
@@ -39,7 +39,7 @@
         <Badge id="duelBadge4" interactive="true" unlocked={$profileData?.duelsWon >= 500} />
       </div>
       <div class="badgeLabel">
-        <p>For Competitions:</p>
+        <p>For Competitions entered:</p>
         <p id="competitionsBadgeStatus" class="unlockBadgeStatus">10 - 50 - 100 - 500</p>
       </div>
       <div class="badgeBox">
@@ -49,7 +49,7 @@
         <Badge id="compBadge4" interactive="true" unlocked={$profileData?.competitionsPlayed >= 500} />
       </div>
       <div class="badgeLabel">
-        <p>For Streaks:</p>
+        <p>For Streaks finished:</p>
         <p id="streakBadgeStatus" class="unlockBadgeStatus">5 - 15 - 50 - 100</p>
       </div>
       <div class="badgeBox">
@@ -59,7 +59,7 @@
         <Badge id="streakBadge4" interactive="true" unlocked={$profileData?.highestStreak >= 100} />
       </div>
       <div class="badgeLabel">
-        <p>For Supporters:</p>
+        <p>For Supporter Tiers:</p>
         <p id="supporterBadgeStatus" class="unlockBadgeStatus">1 - 2 - 3 - 4</p>
       </div>
       <div class="badgeBox">

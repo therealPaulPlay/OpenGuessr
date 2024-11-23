@@ -34,6 +34,7 @@
   import ProfilePopup from "$lib/components/ProfilePopup.svelte";
   import PinPopup from "$lib/components/PinPopup.svelte";
   import BadgePopup from "$lib/components/BadgePopup.svelte";
+  import TroubleshootPopup from "../../lib/components/TroubleshootPopup.svelte";
 
   // Start ads
   onMount(() => {
@@ -222,46 +223,11 @@
 <BeforeExitPopup />
 <HelpPopup />
 <SignupIframe />
-<!-- remaining windows -->
+<TroubleshootPopup />
+<SettingsPopup />
+<SingleplayerOptions />
+<DiscordPopup />
 <div class="popupHolder">
-  <!-- Troubleshooting Guide for Multiplayer -->
-  <div id="troubleshootWindow" class="uiWindow">
-    <div class="popup-title">
-      <h1>Troubleshooting Guide</h1>
-    </div>
-    <p>
-      OpenGuessr uses a peer2peer connection system via WebRTC Datachannels. Follow these steps to ensure a smooth
-      experience:
-      <br />
-      <br />
-    </p>
-    <ul>
-      <li>
-        <p>Disable VPNs or Proxies: Certain VPNs or Proxies, often browser extensions, block WebRTC connections.</p>
-      </li>
-      <li>
-        <p>Disable Firewalls: Some restrictive firewall settings or wifi routers can block WebRTC.</p>
-      </li>
-      <li>
-        Check if the TURN servers are online: We use turn servers from <a
-          href="https://fastturn.net/status"
-          target="_blank"
-        >
-          fastturn
-        </a>
-        .
-      </li>
-      <li>Check if your browser supports WebRTC: Open chrome://webrtc-internals/ or about:webrtc for Firefox.</li>
-    </ul>
-    <p>
-      If multiplayer still does not work after following these steps, consider using a different wifi, cellular data or
-      switch the host.
-    </p>
-    <button id="troubleshootClose" class="standardButton white closeButton">Back</button>
-  </div>
-  <SettingsPopup />
-  <SingleplayerOptions />
-  <DiscordPopup />
   <!-- Linkjoin Popup -->
   <div id="linkjoinWindow" class="uiWindow">
     <div class="popup-title">
@@ -422,13 +388,10 @@
   <button id="endMultiplayerRoundButton" class="standardButton">End round</button>
 </div>
 <ImageGuesser />
-<!--streetview-->
-<div class="MainDiv">
-  <!-- svelte-ignore a11y_missing_attribute -->
+<div class="viewContainer">
   <PanoramaIframe />
   <CountryGuesserBar />
 </div>
-<!--map-->
 <MapHolder>
   <MobileMapToggle />
   <Map />
@@ -444,5 +407,6 @@
   </div>
 </div>
 <BottomBar />
+
 <!-- Render children such as overlayed pages and menus -->
 {@render children?.()}

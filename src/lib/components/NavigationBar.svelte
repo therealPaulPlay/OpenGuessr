@@ -10,6 +10,7 @@
   import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { get } from "svelte/store";
+  import { onMount } from "svelte";
 
   function openSettings() {
     playSound("basic_button");
@@ -55,6 +56,11 @@
 
   // Level indicator (progress ring) -----------------------------------------------------------------------------------------
   let progressRingLevel = $state(0);
+
+  onMount(() => {
+    progressRingLevel = getLevel();
+    setProgress(getLevelFraction());
+  });
 
   experience.subscribe((value) => {
     progressRingLevel = getLevel();
