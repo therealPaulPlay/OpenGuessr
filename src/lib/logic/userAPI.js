@@ -251,7 +251,7 @@ export async function getLeaderboard() {
 
 export async function getUserLeaderboard() {
   try {
-    let id = localStorage.getItem("id")
+    let id = localStorage.getItem("id");
     let editLeaderboardEndpoint = `${userLeaderboardEndpoint}/${id}`;
 
     const response = await fetch(`${editLeaderboardEndpoint}`, {

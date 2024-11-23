@@ -101,7 +101,7 @@
   tabindex="0"
   class="badge {'badgeStage' + badges[id].stage}"
   class:badgeLocked={!unlocked && !display}
-  style:pointer-events={interactive ? "auto" : "none"}
+  style:pointer-events={Boolean(interactive) ? "auto" : "none"}
   onclick={() => {
     if (unlocked) {
       playSound("item_select");

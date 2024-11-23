@@ -76,7 +76,7 @@
                 badgePopup.set(true);
               }}
             >
-              <Badge id={$profileData?.badge} interactive="false" display="true" />
+              <Badge id={$profileData?.badge} interactive={false} display="true" />
             </div>
           {/if}
           <!-- svelte-ignore a11y_click_events_have_key_events -->

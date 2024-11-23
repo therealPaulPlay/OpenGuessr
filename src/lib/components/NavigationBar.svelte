@@ -9,7 +9,6 @@
   import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
   import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
-  import { get } from "svelte/store";
   import { onMount } from "svelte";
 
   function openSettings() {
@@ -124,9 +123,17 @@
         <img class="logoutImage" src="/img/signout.png" alt="Log out." />
       </button>
     {/if}
-    <button id="mobileCategoryButton" class="standardButton accountButton mobileAccountButton" class:preventNavigateOut>
+    <a
+      id="mobileCategoryButton"
+      class="standardButton accountButton mobileAccountButton"
+      class:preventNavigateOut
+      href="/maps"
+      onclick={() => {
+        playSound("basic_button");
+      }}
+    >
       <img class="socialBarIcons invertSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Map Categories" />
-    </button>
+    </a>
     <button
       id="mobileMultiplayerButton"
       class="standardButton accountButton mobileAccountButton"
@@ -134,20 +141,31 @@
     >
       <img class="socialBarIcons invertSocialBarIcon" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
     </button>
-    <button
+    <a
       id="mobileCompetitionsButton"
       class="standardButton accountButton mobileAccountButton"
       class:preventNavigateOut
+      href="/competitions"
+      onclick={() => {
+        playSound("basic_button");
+      }}
     >
       <img class="socialBarIcons invertSocialBarIcon" src="/img/competitions_icon.png" alt="Competitions symbol" />
-    </button>
-    <button id="mobileLeaderboardButton" class="standardButton accountButton mobileAccountButton">
+    </a>
+    <a
+      id="mobileLeaderboardButton"
+      class="standardButton accountButton mobileAccountButton"
+      href="/leaderboard"
+      onclick={() => {
+        playSound("basic_button");
+      }}
+    >
       <img
         class="socialBarIcons invertSocialBarIcon"
         src="/img/leaderboards_icon.png"
         alt="Leaderboard for OpenGuessr"
       />
-    </button>
+    </a>
   </div>
 </nav>
 
@@ -228,14 +246,22 @@
   <!-- svelte-ignore a11y_interactive_supports_focus -->
   <!-- svelte-ignore a11y_mouse_events_have_key_events -->
   <div class="barMenu topBarDesktop gameModeMenu" onmouseover={centerMouseOver} onmouseout={centerMouseOut} role="menu">
-    <button id="leaderboardButton" class="standardButton accountButton" class:preventNavigateOut>
+    <a
+      id="leaderboardButton"
+      class="standardButton accountButton"
+      class:preventNavigateOut
+      href="/leaderboard"
+      onclick={() => {
+        playSound("basic_button");
+      }}
+    >
       <span class="topBarExpand">Leaderboard</span>
       <img
         class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
         src="/img/leaderboards_icon.png"
         alt="Experience Leaderboard"
       />
-    </button>
+    </a>
     <button id="multiplayerButton" class="accountButton standardButton" class:preventNavigateOut>
       <span class="topBarExpand">Multiplayer</span>
       <img
@@ -244,20 +270,36 @@
         alt="Open the multiplayer menu"
       />
     </button>
-    <button id="competitionsButton" class="standardButton accountButton" class:preventNavigateOut>
+    <a
+      id="competitionsButton"
+      class="standardButton accountButton"
+      class:preventNavigateOut
+      href="/competitions"
+      onclick={() => {
+        playSound("basic_button");
+      }}
+    >
       <span class="topBarExpand">Competitions</span>
       <img
         class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
         src="/img/competitions_icon.png"
         alt="Competitions symbol"
       />
-    </button>
+    </a>
   </div>
   <div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
-    <button class="standardButton accountButton" id="categoryMenuButton" class:preventNavigateOut>
-      Maps
-      <img id="mapsArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="socialBarIcons arrowIcon" />
-    </button>
+    <a
+      class="standardButton accountButton"
+      id="categoryMenuButton"
+      class:preventNavigateOut
+      href="/maps"
+      onclick={() => {
+        playSound("basic_button");
+      }}
+    >
+      Map
+      <img class="socialBarIcons invertSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Map Categories" />
+    </a>
     <button
       class="standardButton accountButton"
       id="singleplayerOptionsButton"
@@ -367,6 +409,7 @@
 
   .mobileAccountButton {
     padding-inline: 12px;
+    text-decoration: none;
   }
 
   .socialBarIcons {
@@ -413,6 +456,7 @@
     min-height: 40px;
     max-height: 40px;
     background-color: rgba(168, 168, 187, 0.3);
+    text-decoration: none;
   }
 
   .loginButton {

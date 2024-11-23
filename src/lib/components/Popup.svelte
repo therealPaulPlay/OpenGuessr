@@ -37,7 +37,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    background-color: rgba(30, 30, 30, 0.7);
+    background-color: var(--dark-background);
     pointer-events: auto;
     z-index: 100; /* Default Z-Index, can be changed with Prop */
   }

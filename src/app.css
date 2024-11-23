@@ -13,6 +13,7 @@
     --panel-color: hsla(236, 25%, 20%, 0.7);
     --menu-background: rgba(39, 41, 53, 0.9);
     --box-color: rgba(255, 255, 255, 0.05);
+    --dark-background: rgba(30, 30, 30, 0.7);
 }
 
 html {
@@ -251,6 +252,7 @@ textarea {
     background-color: var(--box-color);
     outline: none !important;
     border: none;
+    resize: none;
     font-size: 22px;
     border-radius: 10px;
 }
@@ -344,13 +346,6 @@ textarea {
 
 .supporterLegalText {
     opacity: 0.6;
-}
-
-.confirmBackground {
-    background-color: rgba(30, 30, 30, 0.7);
-    display: none;
-    z-index: 980;
-    pointer-events: auto;
 }
 
 #friendBrowserWindow,

@@ -1,3 +1,5 @@
+import { errorPopup } from "$lib/utils/errorHandling";
+
 export async function getProfileData(id) {
 
     try {

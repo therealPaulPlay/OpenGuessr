@@ -9,45 +9,6 @@
     <script type="module" src="userAPI.js"></script>
     <script src="mapScreen.js" type="module" defer></script>
     <style>
-        @font-face {
-            font-family: Barlow;
-            src: url('/FONTS/BarlowCondensed-Medium.ttf');
-        }
-
-        :root {
-            --brand-color: #ff0808;
-        }
-
-        h1,
-        h2,
-        h3 {
-            font-weight: 400;
-        }
-
-        p {
-            color: white;
-            font-size: 25px;
-            margin: 0;
-            margin-top: auto;
-            margin-bottom: auto;
-            box-sizing: border-box;
-        }
-
-        li {
-            font-size: 22px;
-            margin-bottom: 10px;
-        }
-
-        body {
-            font-family: Barlow, Futura, Arial, sans-serif;
-            font-size: 20px;
-            font-weight: 400;
-            height: 100%;
-            overflow-y: auto;
-            background-color: #11121f;
-            padding: 0;
-            margin: 0;
-        }
 
         .center {
             display: flex;
@@ -94,28 +55,6 @@
             background-color: rgba(20, 22, 38, 0.9);
             backdrop-filter: blur(10px);
             -webkit-backdrop-filter: blur(10px);
-        }
-
-        .standardButton {
-            cursor: pointer;
-            width: fit-content;
-            font-size: 22px;
-            padding: 10px 20px;
-            min-height: 35px;
-            text-align: center;
-            white-space: nowrap;
-            transition: filter 250ms ease, box-shadow 250ms ease;
-            margin: 2.5px;
-            border-radius: 5px;
-            user-select: none;
-            -webkit-user-select: none;
-            background-color: white;
-            color: black;
-            opacity: 100%;
-        }
-
-        .standardButton:hover {
-            filter: brightness(0.7);
         }
 
         #navbarTitle {
@@ -315,44 +254,6 @@
         #community-maps {
             width: calc(100% - 40px);
             margin-bottom: 50px;
-        }
-
-        .uiWindow {
-            display: block;
-            width: 55%;
-            min-width: 300px;
-            max-width: 600px;
-            max-height: 90%;
-            font-size: 25px;
-            padding: 25px 25px 10px;
-            border-radius: 10px;
-            text-align: left;
-            z-index: 990;
-            overflow-x: hidden;
-            overflow-y: auto;
-            background-color: rgba(39, 41, 53, 0.9);
-            backdrop-filter: blur(10px);
-            -webkit-backdrop-filter: blur(10px);
-            box-shadow: 0 2px 40px rgba(5, 6, 10, 0.7);
-            color: white;
-        }
-
-        @keyframes windowFadeIn {
-            0% {
-                transform: scale(0.99);
-            }
-
-            50% {
-                transform: scale(1.01);
-            }
-
-            100% {
-                transform: scale(1);
-            }
-        }
-
-        .uiWindow.animate {
-            animation: windowFadeIn 200ms ease-in-out;
         }
 
         .popupHolder {
