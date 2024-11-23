@@ -218,7 +218,7 @@
       class="standardButton white closeButton"
       onclick={() => {
         playSound("basic_button");
-        saveProfileAboutIfYourProfileAndChanges(textarea.value);
+        if (textarea) saveProfileAboutIfYourProfileAndChanges(textarea.value);
         profilePopup.set(false);
       }}>Close</button
     >
