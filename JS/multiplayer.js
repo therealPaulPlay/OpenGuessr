@@ -20,7 +20,7 @@ import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { continueText } from "../src/lib/stores/context-specific/resultScreenStore.js";
 import { mapPinLat, mapPinLng } from "../src/lib/stores/context-specific/mapStore.js";
 import { multiplayerCategory, highestMultiplayerSupporterLevel } from "../src/lib/stores/context-specific/multiplayerStore.js";
-import { isHost, coordsFromHost } from "../src/lib/stores/multiplayerStore.js";
+import { isHost, coordsFromHost } from "../src/lib/stores/context-specific/multiplayerStore";
 import { get } from "svelte/store";
 import { getLevel } from "../src/lib/utils/experienceCalculations.js";
 

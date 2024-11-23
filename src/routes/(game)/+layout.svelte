@@ -34,7 +34,8 @@
   import ProfilePopup from "$lib/components/ProfilePopup.svelte";
   import PinPopup from "$lib/components/PinPopup.svelte";
   import BadgePopup from "$lib/components/BadgePopup.svelte";
-  import TroubleshootPopup from "../../lib/components/TroubleshootPopup.svelte";
+  import TroubleshootPopup from "$lib/components/TroubleshootPopup.svelte";
+  import LinkJoinPopup from "$lib/components/LinkJoinPopup.svelte";
 
   // Start ads
   onMount(() => {
@@ -227,16 +228,8 @@
 <SettingsPopup />
 <SingleplayerOptions />
 <DiscordPopup />
+<LinkJoinPopup />
 <div class="popupHolder">
-  <!-- Linkjoin Popup -->
-  <div id="linkjoinWindow" class="uiWindow">
-    <div class="popup-title">
-      <h1 id="socialHeader">Joining...</h1>
-    </div>
-    <p id="linkjoinStatus">Status: None set</p>
-    <br />
-    <button id="linkJoinClose" class="standardButton white closeButton">Close</button>
-  </div>
   <!-- Multiplayer window -->
   <div id="multiplayerSelectionWindow" class="uiWindow">
     <div class="popup-title">

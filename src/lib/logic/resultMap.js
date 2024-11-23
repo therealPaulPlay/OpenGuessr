@@ -1,7 +1,7 @@
 import { map, addedMarkers } from "$lib/stores/context-specific/mapStore";
 import { initializeMapIfNotAlready } from "$lib/logic/miniMap";
 import { selectedPinIndex } from "$lib/stores/accountStore";
-import { multiplayerGuessesLocationsArray } from "$lib/stores/multiplayerStore";
+import { multiplayerGuessesLocationsArray } from "$lib/stores/context-specific/multiplayerStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";

@@ -1,7 +1,7 @@
 import { deleteUser, getUser } from "./userAPI";
 // import { supporterXpBoostAnimation } from "../../../JS/mainUI.js"; !TODO !CHANGE
 // import { peerSendsHost, peerId, updatePeerDataScore, attemptJoinViaLink } from "../../../JS/multiplayer.js"; !TODO !CHANGE
-import { isHost } from "$lib/stores/multiplayerStore.js";
+import { isHost } from "$lib/stores/context-specific/multiplayerStore";
 import { highestMultiplayerSupporterLevel, multiplayerCategory } from "$lib/stores/context-specific/multiplayerStore.js";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions.js";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore.js";

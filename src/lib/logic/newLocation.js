@@ -5,7 +5,7 @@ import { setCountryGuesserMode } from "$lib/utils/countryGuesserFunctions";
 import { setImageGuesserMode } from "$lib/utils/imageGuesserFunctions";
 import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
-import { isHost } from "$lib/stores/multiplayerStore";
+import { isHost } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
@@ -72,7 +72,7 @@ export async function checkGenerationTypeAndGenerate() {
             console.error("Error loading multiplayer location in categoryMenu.js Error: ", error)
         }
 
-    } else if (playingCompetition) {
+    } else if (get(competition)) {
         singleplayer.set(false);
 
         if (checkCompetitionRoundStatus(false)) {
