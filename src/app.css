@@ -282,6 +282,24 @@ textarea {
     justify-content: center;
 }
 
+.playerSearchBox {
+    display: flex;
+    justify-content: safe center;
+    flex-direction: column;
+    width: calc(100% - 13px);
+    border-radius: 5px;
+    max-height: 50vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 2px;
+    background-color: var(--box-color);
+    gap: 10px;
+    margin-top: 10px;
+    margin-inline: 5px;
+    outline: 5px solid var(--box-color);
+    min-height: 50px;
+}
+
 @media (orientation: portrait) and (max-width: 800px) {
     .leaderboardAds {
         width: 320px;
@@ -347,17 +365,6 @@ textarea {
 
 .supporterLegalText {
     opacity: 0.6;
-}
-
-#friendBrowserWindow,
-#friendInboxWindow {
-    display: block !important;
-    max-width: 700px;
-}
-
-#friendBrowserPopup,
-#friendInboxPopup {
-    z-index: 960;
 }
 
 #supporterInfoText {
@@ -763,35 +770,6 @@ textarea {
     gap: 5px;
 }
 
-.playerSearchBox {
-    display: flex;
-    justify-content: safe center;
-    flex-direction: column;
-    width: calc(100% - 13px);
-    border-radius: 5px;
-    max-height: 50vh;
-    overflow-x: hidden;
-    overflow-y: auto;
-    padding: 2px;
-    background-color: var(--box-color);
-    gap: 10px;
-    margin-top: 10px;
-    margin-inline: 5px;
-    outline: 5px solid var(--box-color);
-    min-height: 50px;
-}
-
-.playerSearchError {
-    opacity: 0.5;
-    font-size: 22px;
-    text-align: center;
-    width: 100%;
-}
-
-#friendBrowserInput {
-    flex-grow: 1;
-}
-
 #playerSearch {
     margin-bottom: 20px;
     margin-top: 20px;
@@ -904,12 +882,6 @@ search {
 .friendSearchItem:hover {
     cursor: pointer;
     background-color: rgba(255, 255, 255, 0.2);
-}
-
-#friendBrowserInput {
-    border-radius: 10px;
-    padding-inline: 10px;
-    font-size: 22px;
 }
 
 .friendOnlineBar {

@@ -1,8 +1,17 @@
 import { showNotification } from "$lib/utils/notifications";
 import { username } from "$lib/stores/accountStore";
 import { errorPopup } from "$lib/utils/errorHandling";
+import { isAuthenticated } from "$lib/stores/accountStore";
+import { signupPopup } from "$lib/stores/UIStore";
+import { get } from "svelte/store";
 
 export async function sendFriendRequest(targetUserId, button) {
+    // If the user is not logged in, show the signup screen
+    if (!get(isAuthenticated)) {
+        signupPopup.set(true);
+        return;
+    }
+
     try {
         if (!targetUserId) {
             return;

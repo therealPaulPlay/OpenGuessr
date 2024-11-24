@@ -3,6 +3,7 @@
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { isAuthenticated, username } from "$lib/stores/accountStore";
   import { playSound } from "$lib/utils/soundManager";
+  import { onMount } from "svelte";
 
   // Add leaderboar entries --------------------------------------------------------------------------------------------------------
   let mainSectionEntries = $state();
@@ -77,7 +78,9 @@
     }
   }
 
-  loadCorrectLeaderboard();
+  onMount(() => {
+    loadCorrectLeaderboard();
+  });
 </script>
 
 <div class="podium-container">

@@ -37,6 +37,8 @@
   import BadgePopup from "$lib/components/BadgePopup.svelte";
   import TroubleshootPopup from "$lib/components/TroubleshootPopup.svelte";
   import LinkJoinPopup from "$lib/components/LinkJoinPopup.svelte";
+  import FriendBrowsePopup from "$lib/components/FriendBrowsePopup.svelte";
+  import InboxPopup from "$lib/components/InboxPopup.svelte";
 
   // Start ads
   onMount(() => {
@@ -193,36 +195,8 @@
 <BadgePopup />
 <PinPopup />
 <SupporterPopup />
-<!-- Friend browser window -->
-<div id="friendBrowserPopup" class="popupHolder profilePopupBackground">
-  <div id="friendBrowserWindow" class="uiWindow">
-    <div class="popup-title">
-      <h1 id="friendBrowserHeader">Search players</h1>
-    </div>
-    <search id="playerSearch">
-      <input maxlength="255" type="text" id="friendBrowserInput" placeholder="Search for a name..." />
-      <button id="startFriendSearch" class="standardButton">
-        <img src="/img/find_icon.png" alt="start search" id="playerSearchIcon" />
-      </button>
-    </search>
-    <div id="playerSearchBox" class="playerSearchBox">
-      <p class="playerSearchError">Search returned no results.</p>
-    </div>
-    <button id="friendBrowserClose" class="standardButton white closeButton">Close</button>
-  </div>
-</div>
-<!-- Inbox for friend requests -->
-<div id="friendInboxPopup" class="popupHolder profilePopupBackground">
-  <div id="friendInboxWindow" class="uiWindow">
-    <div class="popup-title">
-      <h1 id="inboxPopupHeader">Inbox</h1>
-    </div>
-    <div id="friendInbox" class="playerSearchBox">
-      <p>Default</p>
-    </div>
-    <button id="friendInboxClose" class="standardButton white closeButton">Close</button>
-  </div>
-</div>
+<FriendBrowsePopup />
+<InboxPopup />
 <BeforeExitPopup />
 <HelpPopup />
 <SignupIframe />
@@ -264,7 +238,7 @@
         <div class="friendButtonArea">
           <button class="standardButton" id="browseUsersFriends">Add friends +</button>
           <button class="standardButton" id="openFriendInbox">
-            <img alt="inbox icon" src="/img/inbox_icon.png" id="inboxIcon" />
+            <img alt="inbox icon" src="/img/inbox_icon.png" id="inboxIcon" /> <!-- change path to inbox_icon_new if $inboxIconNew from inboxStore is true-->
           </button>
         </div>
       </div>

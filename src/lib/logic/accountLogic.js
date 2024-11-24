@@ -1,4 +1,4 @@
-import { deleteUser, getUser } from "./userAPI";
+import { getUser } from "./userAPI";
 // import { supporterXpBoostAnimation } from "../../../JS/mainUI.js"; !TODO !CHANGE
 // import { peerSendsHost, peerId, updatePeerDataScore, attemptJoinViaLink } from "../../../JS/multiplayer.js"; !TODO !CHANGE
 import { isHost } from "$lib/stores/context-specific/multiplayerStore";
@@ -9,12 +9,13 @@ import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates.js";
 import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore.js";
 import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic.js";
-// import { setCheckNewHighestStreak } from "../../../JS/profileView.js"; !TODO !CHANGE
+import { setCheckNewHighestStreak } from "$lib/utils/updateProfileData";
 import { initializeWebsocketConnection } from "$lib/logic/websocketLogic.js";
 import { setUserXP } from "$lib/utils/setUserXP";
 import { resultScreenEnabled, experienceBarAnimated, earnedExperience, showStreakDisplay, streakText } from "$lib/stores/context-specific/resultScreenStore.js";
 import { animateIncrement } from "$lib/utils/animateIncrement.js";
-import { isAuthenticated, supporterLevel, experience, freeSupporterBoostEnabled, username, selectedPinIndex, selectedBadge, inboxAlert } from "$lib/stores/accountStore";
+import { isAuthenticated, supporterLevel, experience, freeSupporterBoostEnabled, username, selectedPinIndex, selectedBadge } from "$lib/stores/accountStore";
+import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
 import { isTokenExpired } from "$lib/utils/isTokenExpired.js";
 import { competition, multiplayer } from "$lib/stores/modeStore.js";
 import { saveRoundToLog } from "$lib/utils/saveRoundToLog.js";
@@ -58,7 +59,7 @@ export function resetLocalSave() {
   username.set("Guest");
   selectedPinIndex.set(0);
   selectedBadge.set(null);
-  inboxAlert.set(false);
+  inboxIconNew.set(false);
   experience.set(0);
 }
 
@@ -76,7 +77,7 @@ async function loadUserInfo() {
 
 
       if (get(resultScreenEnabled) && lastXPloadingAttemptAborted) loadResultScreenXP(lastDistance);
-      if (user.new_requests) { inboxAlert.set(true); }
+      if (user.new_requests) { inboxIconNew.set(true); }
 
       initializeWebsocketConnection();
     });
