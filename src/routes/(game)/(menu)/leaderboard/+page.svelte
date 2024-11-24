@@ -200,7 +200,8 @@
 <style>
   .loadingText {
     color: white;
-    font-size: 25px;
+    font-size: 22px;
+    opacity: 0.5;
   }
 
   .optionBar {

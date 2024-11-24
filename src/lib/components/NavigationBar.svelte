@@ -4,7 +4,7 @@
   import Notification from "$lib/components/Notification.svelte";
   import { isAuthenticated, experience, supporterLevel, username } from "$lib/stores/accountStore";
   import { signupPopup } from "$lib/stores/uiStore";
-  import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
+  import { singleplayerOptionsPopup, multiplayerPopup } from "$lib/stores/uiStore";
   import { competition, multiplayer } from "$lib/stores/modeStore";
   import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
   import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
@@ -138,6 +138,10 @@
       id="mobileMultiplayerButton"
       class="standardButton accountButton mobileAccountButton white"
       class:preventNavigateOut
+      onclick={() => {
+        playSound("basic_button");
+        multiplayerPopup.set(true);
+      }}
     >
       <img class="socialBarIcons invertSocialBarIcon" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
     </button>
@@ -262,7 +266,15 @@
         alt="Experience Leaderboard"
       />
     </a>
-    <button id="multiplayerButton" class="accountButton standardButton white" class:preventNavigateOut>
+    <button
+      id="multiplayerButton"
+      class="accountButton standardButton white"
+      class:preventNavigateOut
+      onclick={() => {
+        playSound("basic_button");
+        multiplayerPopup.set(true);
+      }}
+    >
       <span class="topBarExpand">Multiplayer</span>
       <img
         class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
@@ -464,16 +476,6 @@
     max-height: 40px;
   }
 
-  @media all and (max-width: 1200px) {
-    .topBarDesktop {
-      display: none;
-    }
-
-    .mobileButtonArea {
-      display: flex;
-    }
-  }
-
   #settingsIcon {
     filter: invert();
   }
@@ -525,5 +527,15 @@
 
   .gameModeMenu:hover .topBarExpand {
     max-width: 1000px;
+  }
+
+  @media all and (max-width: 1200px) {
+    .topBarDesktop {
+      display: none;
+    }
+
+    .mobileButtonArea {
+      display: flex;
+    }
   }
 </style>

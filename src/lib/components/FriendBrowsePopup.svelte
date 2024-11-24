@@ -8,9 +8,11 @@
 
   let userSearchResults = $state();
   let searchQuery = $state("");
+  let yourId = $state();
 
   async function startSearch() {
     userSearchResults = undefined;
+    yourId = localStorage.getItem("id") || -1;
 
     try {
       const query = searchQuery;
@@ -30,7 +32,6 @@
       if (response.ok) {
         const data = await response.json();
         userSearchResults = data;
-        
       } else {
         console.error("Error loading the user browser: " + response.status);
         errorPopup("Error loading users", "An error occured loading users in the user browser.", response.status);
@@ -91,7 +92,8 @@
             <p>${entry.user_name}</p>
             <button
               id="sendFriendRequest"
-              class="sendFriendRequestBrowser standardButton"
+              class="sendFriendRequestBrowser standardButton white"
+              class:friendSearchYou={entry.id == yourId}
               onclick={(e) => {
                 e.stopPropagation();
                 playSound("basic_button");
@@ -125,10 +127,32 @@
     width: 100%;
   }
 
+  .friendSearchYou {
+    pointer-events: none;
+    opacity: 0.5;
+  }
+
   #friendBrowserInput {
     border-radius: 10px;
     padding-inline: 10px;
     font-size: 22px;
     flex-grow: 1;
+  }
+
+  #playerSearch {
+    margin-bottom: 20px;
+    margin-top: 20px;
+    height: 45px;
+  }
+
+  #startFriendSearch {
+    background-color: rgba(255, 255, 255, 0.1);
+    width: fit-content;
+    margin: 0;
+    border-radius: 10px;
+  }
+
+  .sendFriendRequestBrowser {
+    margin-right: -7px;
   }
 </style>

@@ -32,3 +32,20 @@
   src="/loader"
   bind:this={$iframeElement}
 ></iframe>
+
+<style>
+  #PanoramaIframe {
+    transition: all 250ms;
+    background: #13151c;
+    user-select: none;
+    position: fixed;
+    top: -75px;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    width: 100%;
+    height: calc(100% + 75px); /* cut off the name display area on Gmaps */
+    border: none;
+    z-index: 0;
+  }
+</style>

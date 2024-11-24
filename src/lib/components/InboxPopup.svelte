@@ -49,7 +49,7 @@
             <p>${entry.user_name}</p>
             <div class="inboxItemButtons">
               <button
-                class="manageFriendRequest standardButton"
+                class="standardButton"
                 onclick={(e) => {
                   e.stopPropagation();
                   playSound("basic_button");
@@ -59,7 +59,7 @@
                 Accept
               </button>
               <button
-                class="manageFriendRequest standardButton"
+                class="standardButton"
                 onclick={(e) => {
                   e.stopPropagation();
                   playSound("basic_button");
@@ -85,3 +85,35 @@
     >
   </Popup>
 {/if}
+
+<style>
+  .friendSearchItem {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    width: calc(100% - 30px);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 5px;
+    padding-inline: 15px;
+    transition: background-color 250ms ease;
+    gap: 10px;
+  }
+
+  .friendSearchItem p {
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 20vw;
+  }
+
+  .inboxItemButtons {
+    display: flex;
+    width: fit-content;
+    overflow: hidden;
+    gap: 5px;
+    margin-right: -7px;
+    flex-grow: 5;
+    max-width: fit-content;
+  }
+</style>

@@ -93,7 +93,18 @@
     opacity: 1;
   }
 
+  #imageGuesserAttribution {
+    font-size: 20px;
+  }
+
   :global(.guessImageLoading) {
     opacity: 0 !important;
+  }
+
+  @media all and (max-width: 1200px) {
+    #imageGuesserImage {
+      max-width: 80%;
+      max-height: 40%;
+    }
   }
 </style>

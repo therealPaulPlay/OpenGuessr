@@ -2,7 +2,7 @@
 <script>
   import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
   import { playSound } from "$lib/utils/soundManager";
-  import { reloadPanorama } from "$lib/utils/loadPanorama"; 
+  import { reloadPanorama } from "$lib/utils/loadPanorama";
   import { helpPopup } from "$lib/stores/uiStore";
   import { mapHolderMarginRight } from "$lib/stores/context-specific/mapStore";
   import { confirmButtonActive, confirmButtonText } from "$lib/stores/context-specific/confirmButtonStore";
@@ -221,8 +221,21 @@
     margin-left: -8px;
   }
 
+  #resetButtonImg {
+    height: auto;
+    width: 23px;
+    filter: invert();
+  }
+
   #revealCompass:hover {
     filter: brightness(0.7);
+  }
+
+  .bottomFooterAdText {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 7;
   }
 
   @media all and (max-width: 1200px) {
@@ -259,6 +272,10 @@
   @media all and (orientation: landscape) and (max-width: 1200px) {
     .bottomRightMenu {
       width: calc(30% - 8px);
+    }
+
+    .bottomSocialItem {
+      display: none;
     }
   }
 </style>

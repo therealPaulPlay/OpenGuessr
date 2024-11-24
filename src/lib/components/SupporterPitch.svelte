@@ -24,6 +24,12 @@
 </div>
 
 <style>
+  #viewSupporterBenefits {
+    background-color: rgba(255, 255, 255, 0.2);
+    outline: 3px solid rgba(255, 255, 255, 0.5);
+    flex-grow: 1;
+  }
+
   .supporterArea {
     border-radius: 10px;
     background: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(25, 215, 70, 0.7));

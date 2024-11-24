@@ -124,6 +124,41 @@ input:focus {
     transition: transform 250ms ease, scale 250ms ease, opacity 500ms ease;
 }
 
+input[type="checkbox"] {
+    -webkit-appearance: none;
+    appearance: none;
+    margin: 0;
+    color: white;
+    width: 20px;
+    height: 20px;
+    border: 0.15em solid white;
+    border-radius: 5px;
+    transform: translateY(5px);
+    display: grid;
+    place-content: center;
+    margin-left: 10px;
+    cursor: pointer;
+}
+
+input[type="checkbox"]::before {
+    content: "";
+    width: 12px;
+    height: 12px;
+    transform: scale(0);
+    box-shadow: inset 20px -10px rgb(255, 255, 255);
+    transform-origin: center;
+    border-radius: 2px;
+}
+
+input[type="checkbox"]:checked::before {
+    transform: scale(1);
+}
+
+input[type="checkbox"]:focus {
+    outline: none;
+    outline-offset: max(2px, 0.15em);
+}
+
 .noTextDecoration {
     text-decoration: none;
 }
@@ -241,6 +276,17 @@ li {
     margin-right: -10px;
 }
 
+.arrowIcon {
+    width: 25px;
+    height: 25px;
+    transform: rotate(0deg);
+    transition: transform 250ms ease;
+}
+
+.arrowIconRotated {
+    transform: rotate(180deg);
+}
+
 .infoIcon {
     width: 30px;
     height: 30px;
@@ -268,15 +314,6 @@ textarea {
     min-height: 50px;
 }
 
-.infoNote {
-    margin: 10px;
-    width: 100%;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: var(--box-color);
-    border-radius: 10px;
-}
-
 .viewContainer {
     display: flex;
     justify-content: center;
@@ -300,6 +337,24 @@ textarea {
     min-height: 50px;
 }
 
+search {
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    gap: 10px;
+    margin-bottom: 10px;
+}
+
+@keyframes rotation {
+    from {
+        transform: rotate(0deg);
+    }
+
+    to {
+        transform: rotate(359deg);
+    }
+}
+
 @media (orientation: portrait) and (max-width: 800px) {
     .leaderboardAds {
         width: 320px;
@@ -321,59 +376,14 @@ textarea {
     }
 }
 
+@media (orientation: portrait) and (max-width: 800px) {
+    .leaderboardAds {
+        width: 320px;
+        height: 50px;
+    }
+}
+
 /* end of new, universal styling ---------------------------------------------------------------------------------------------------------------------- */
-
-#levelText {
-    margin-left: 8px;
-    margin-top: auto;
-    margin-bottom: 5px;
-}
-
-#multiplayerSelectorBack {
-    opacity: 0.5;
-    margin-right: 8px;
-}
-
-.copyLinkButton {
-    color: black;
-    background-color: rgba(255, 255, 255, 1);
-    margin: 5px;
-    height: fit-content;
-    padding-inline: 10px;
-}
-
-#linkIcon {
-    vertical-align: -1px;
-}
-
-#viewSupporterBenefits {
-    background-color: rgba(255, 255, 255, 0.2);
-    outline: 3px solid rgba(255, 255, 255, 0.5);
-    flex-grow: 1;
-}
-
-#adBoostTimeLimitIcon {
-    width: 30px;
-    height: 30px;
-    margin-left: 12px;
-    opacity: 0.5;
-}
-
-#supporterTextSecondary {
-    opacity: 0.6;
-}
-
-.supporterLegalText {
-    opacity: 0.6;
-}
-
-#supporterInfoText {
-    font-size: 22px;
-}
-
-.removeTextUnderline {
-    text-decoration: none;
-}
 
 .multiplayerBadge {
     width: fit-content;
@@ -381,210 +391,6 @@ textarea {
 
 .multiplayerBadge p {
     font-size: 20px !important;
-}
-
-.multiplayerHorizontalAlign {
-    display: flex;
-    gap: 10px;
-    justify-content: space-around;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-}
-
-.multiplayerJoinAlign {
-    display: flex;
-    gap: 10px;
-    padding: 10px;
-    justify-content: center;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-top: 30px;
-    width: fit-content;
-    min-width: 65%;
-    margin-left: auto;
-    margin-right: auto;
-    flex-wrap: wrap;
-    flex-direction: column;
-    background-color: rgba(30, 31, 44, 0.5);
-    border-radius: 10px;
-}
-
-.multiplayerJoinField {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 7px;
-    width: calc(100% - 20px);
-    padding: 10px;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    flex-wrap: wrap;
-    display: flex;
-    gap: 5px;
-}
-
-.multiplayerDuelStatus {
-    text-align: center;
-    width: 100%;
-    text-wrap: wrap;
-    font-size: 30px;
-    color: white;
-    min-height: 60px;
-    margin-top: 10px;
-    max-width: 400px;
-    transition: color 250ms ease;
-}
-
-.multiplayerDuelStatus.loading {
-    animation: loadingText 1s infinite;
-}
-
-@keyframes loadingText {
-    0% {
-        color: white;
-    }
-
-    50% {
-        color: rgb(140, 140, 140);
-    }
-
-    100% {
-        color: white;
-    }
-}
-
-.newSocialMenuTag {
-    font-size: 18px;
-    color: white;
-    background-color: var(--brand-color);
-    border-radius: 3px;
-    padding-inline: 3px;
-    margin-left: 10px;
-    vertical-align: 2px;
-}
-
-#multiplayerSelectDuels {
-    background-color: var(--brand-color);
-    color: white;
-    position: relative;
-    overflow: hidden;
-}
-
-
-#multiplayerSelectDuels::before {
-    animation: duelButtonGlint 4s 0.5s infinite;
-    background: white;
-    content: "";
-    opacity: 0;
-    position: absolute;
-    width: 40px;
-    z-index: 1;
-    height: 200%;
-    top: -20px;
-    left: 0;
-    transform: rotate(30deg);
-    pointer-events: none;
-}
-
-#findIcon {
-    margin-right: 0;
-}
-
-@keyframes duelButtonGlint {
-    0% {
-        opacity: 0.5;
-        margin-left: -60px;
-        visibility: visible;
-    }
-
-    20% {
-        opacity: 0.3;
-        margin-left: calc(100% + 60px);
-    }
-
-    100% {
-        opacity: 0.3;
-        margin-left: calc(100% + 60px);
-    }
-}
-
-.multiplayerCreationArea {
-    background-color: rgba(30, 31, 44, 0.5);
-    border-radius: 15px;
-    padding: 8px;
-    margin: 10px;
-    overflow: auto;
-    max-height: calc(100dvh - 300px);
-}
-
-#multiplayerHost {
-    padding: 0 20px;
-    margin: 0;
-    height: 36.5px;
-}
-
-.multiplayerHostSubmitArea {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 10px;
-    padding-bottom: 5px;
-}
-
-#innerSubmitAreaBlock {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 5px;
-}
-
-.multiplayerInput {
-    padding: 5px 15px;
-    font-size: 22px;
-    border-radius: 5px;
-    outline: none;
-    border: none;
-    user-select: none;
-    width: calc(100% - 60px);
-}
-
-.ticker {
-    display: flex;
-    gap: 10px;
-    border-radius: 10px;
-    justify-content: left;
-    padding: 5px;
-    width: fit-content;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.multiplayerHostSettings {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-    gap: 2px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    padding: 5px;
-    padding-top: 10px;
-}
-
-.multiplayerHostCodeArea {
-    display: none;
-    flex-wrap: wrap;
-    justify-content: space-around;
-    align-items: center;
-    background-color: var(--box-color);
-    border-radius: 10px;
-    padding: 15px;
-    padding-top: 10px;
-    flex-direction: column;
 }
 
 #endMultiplayerRoundButton {
@@ -603,60 +409,6 @@ textarea {
     margin-top: 20px;
     color: white;
     background-color: rgba(255, 255, 255, 0.2);
-}
-
-#roomCodeDisplay {
-    font-size: 40px;
-    min-width: 75%;
-    text-align: center;
-}
-
-#roomCodeDisplayArea {
-    background-color: rgba(255, 255, 255, 0.10);
-    padding: 5px;
-    border-radius: 5px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    margin: 10px;
-    margin-top: 5px;
-    margin-inline: 0;
-    width: calc(100% - 10px);
-}
-
-#roomCodeDisplayArea p {
-    opacity: 0.5;
-    font-size: 20px;
-}
-
-#joinCounter {
-    user-select: none;
-}
-
-.roomCreationModule {
-    margin-top: 8px;
-    padding-top: 10px;
-    padding-bottom: 10px;
-}
-
-#roomCreationFriendsBox {
-    display: flex;
-    flex-wrap: wrap;
-    align-items: center;
-    border-radius: 5px;
-    max-height: 130px;
-    overflow: auto;
-    gap: 5px;
-    padding: 0;
-    transition: max-height 250ms ease;
-}
-
-#friendsInviteDisplay {
-    width: calc(100% - 10px);
-    border-radius: 7px;
-    padding: 5px;
-    background-color: rgba(30, 31, 44, 0.5);
 }
 
 .friendsRoomEntryText {
@@ -689,135 +441,6 @@ textarea {
     flex-grow: 1;
 }
 
-.tickerText {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    text-align: center;
-    border-radius: 10px;
-    font-size: 20px;
-    min-width: 50px;
-}
-
-.tickerNote {
-    font-size: 20px;
-}
-
-#teamsDisplay {
-    background-color: rgba(30, 31, 44, 0.5);
-    width: calc(100% - 10px);
-    border-radius: 7px;
-    position: relative;
-}
-
-#teamsDisplayText {
-    padding-inline: 40px;
-    opacity: 0.5;
-    font-size: 22px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-#smallJoinCounter {
-    position: absolute;
-    top: 4px;
-    right: 4px;
-    padding: 5px;
-    background-color: rgba(255, 255, 255, 0.1);
-    height: 29px;
-    width: 30px;
-    border-radius: 5px;
-    text-align: center;
-    color: rgba(255, 255, 255, 0.75);
-    font-size: 22px;
-    line-height: 30px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-}
-
-.multiplayerInputInfo {
-    font-size: 17px;
-    padding: 0;
-    color: rgba(255, 255, 255, 0.5);
-    overflow: hidden;
-    width: calc(100% - 20px);
-    padding-left: 20px;
-}
-
-#toggleRestrictions {
-    min-width: 170px;
-}
-
-#multiplayerJoin {
-    width: 35%;
-    transition: opacity 250ms ease, filter 250ms ease;
-}
-
-.multiplayerFriendArea {
-    margin: 10px;
-    width: calc(100% - 20px);
-    margin-left: auto;
-    margin-right: auto;
-    background-color: var(--box-color);
-    border-radius: 10px;
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    font-size: 22px;
-    padding: 10px;
-    flex-wrap: wrap;
-    gap: 5px;
-}
-
-#playerSearch {
-    margin-bottom: 20px;
-    margin-top: 20px;
-    height: 45px;
-}
-
-.friendSearchItem {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    width: calc(100% - 30px);
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 5px;
-    padding-inline: 15px;
-    transition: background-color 250ms ease;
-    gap: 10px;
-}
-
-.friendSearchItem p {
-    text-wrap: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 20vw;
-}
-
-.friendBox {
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-    gap: 3px;
-    margin-bottom: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    padding: 5px;
-    max-height: 135px;
-    overflow: auto;
-    scrollbar-width: none;
-    box-sizing: border-box;
-    border: 5px solid rgba(77, 77, 87, 0.1);
-    min-width: 100%;
-    transition: max-height 150ms ease;
-}
-
-#friendBox {
-    display: none;
-}
-
 .friendItem {
     background-color: rgba(30, 31, 44, 0.25);
     border-radius: 5px;
@@ -845,38 +468,9 @@ textarea {
     vertical-align: -4px;
 }
 
-.sendFriendRequestBrowser {
-    background-color: rgba(255, 255, 255, 0.2);
-    margin-right: -7px;
-}
-
-.manageFriendRequest {
-    background-color: rgba(255, 255, 255, 0.2);
-}
-
-.friendSearchYou {
-    pointer-events: none;
-    opacity: 0.5;
-}
-
-#startFriendSearch {
-    background-color: rgba(255, 255, 255, 0.1);
-    width: fit-content;
-    margin: 0;
-    border-radius: 10px;
-}
-
 #playerSearchIcon {
     width: 20px;
     height: 20px;
-}
-
-search {
-    display: flex;
-    justify-content: center;
-    width: 100%;
-    gap: 10px;
-    margin-bottom: 10px;
 }
 
 .friendSearchItem:hover {
@@ -893,77 +487,9 @@ search {
     margin-right: 3px;
 }
 
-#inboxIcon {
-    width: 20px;
-    height: 20px;
-    vertical-align: -2px;
-}
-
-#openFriendInbox {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-#noFriendsText {
-    opacity: 0.75;
-    text-align: center;
-    margin-left: 10px;
-    margin-right: auto;
-}
-
-#browseUsersFriends {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-.friendButtonArea {
-    display: flex;
-    justify-content: center;
-    width: fit-content;
-    align-items: center;
-    gap: 5px;
-    margin-left: auto;
-}
-
-.infoNote p {
-    padding: 5px;
-    padding-left: 5px;
-    padding-right: 15px;
-    padding-bottom: 15px;
-    opacity: 75%;
-    font-size: 20px;
-    max-height: 50px;
-    overflow-y: auto;
-}
-
-#infoNoteIcon {
-    margin-top: 15px;
-    margin-left: 15px;
-    width: 30px;
-    height: auto;
-    opacity: 50%;
-}
-
-.groupPartyButtons {
-    display: flex;
-    gap: 5px;
-    justify-content: center;
-    align-items: center;
-    background-color: var(--box-color);
-    padding: 5px;
-    border-radius: 10px;
-    flex-grow: 1.5;
-}
-
 .modeComingSoon {
     opacity: 50%;
     font-style: italic;
-}
-
-.multiplayerSelect {
-    height: 50px;
-    width: auto;
-    color: black;
-    background-color: white;
-    flex-grow: 1;
 }
 
 #blackBackground {
@@ -989,17 +515,6 @@ search {
     z-index: 1;
     pointer-events: none;
     top: 0;
-}
-
-.arrowIcon {
-    width: 25px;
-    height: 25px;
-    transform: rotate(0deg);
-    transition: transform 250ms ease;
-}
-
-.arrowIconRotated {
-    transform: rotate(180deg);
 }
 
 #multiplayerFade {
@@ -1216,13 +731,6 @@ search {
     height: auto;
 }
 
-.extendedNavbar.expandedMobile {
-    max-height: calc(100% - 75px);
-    height: calc(100% - 75px);
-    background-color: var(--menu-background);
-    border-radius: 0;
-}
-
 #extendedNavbarGradient {
     position: absolute;
     display: none;
@@ -1233,10 +741,6 @@ search {
     border-radius: 0 0 10px 10px;
     z-index: 13;
     pointer-events: none;
-}
-
-.expandedMobile #extendedNavbarGradient {
-    background: none;
 }
 
 .mapArea {
@@ -1344,23 +848,6 @@ search {
     opacity: 0.8;
 }
 
-#PanoramaIframe {
-    transition: all 250ms;
-    background: #13151c;
-    -moz-user-select: none;
-    -webkit-user-select: none;
-    user-select: none;
-    position: fixed;
-    top: -75px;
-    left: 0;
-    bottom: 0;
-    right: 0;
-    width: 100%;
-    height: calc(100% + 75px);
-    border: none;
-    z-index: 0;
-}
-
 #multiplayerChat {
     width: 300px;
     height: 20%;
@@ -1439,17 +926,6 @@ search {
 
 /* Buttons */
 
-#resetButtonImg {
-    height: auto;
-    width: 25px;
-    vertical-align: -1px;
-    filter: invert();
-}
-
-#resetButton {
-    background-color: var(--brand-color);
-}
-
 .socialItem {
     min-width: 40px;
     height: 70%;
@@ -1457,16 +933,6 @@ search {
     border-radius: 5px;
     max-width: 60px;
     background-color: rgba(56, 56, 79, 0.2);
-}
-
-@keyframes rotation {
-    from {
-        transform: rotate(0deg);
-    }
-
-    to {
-        transform: rotate(359deg);
-    }
 }
 
 .animateSocialsText {
@@ -1487,14 +953,6 @@ search {
 .discordButton {
     background-color: #8c2aed;
     color: white;
-}
-
-#settingsButton {
-    padding-inline: 12px;
-}
-
-#timerButton {
-    padding-inline: 13px;
 }
 
 #joystickIcon {
@@ -1673,142 +1131,9 @@ search {
     padding-bottom: 10px;
 }
 
-#troubleshootingArea {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-wrap: wrap;
-    padding: 10px;
-    gap: 10px;
-}
-
-.inboxItemButtons {
-    display: flex;
-    width: fit-content;
-    overflow: hidden;
-    gap: 5px;
-    margin-right: -7px;
-    flex-grow: 5;
-    max-width: fit-content;
-}
-
-#errorIcon {
-    margin-right: 10px;
-    vertical-align: -2px;
-}
-
-#troubleshootGuideButton {
-    background-color: rgba(255, 255, 255, 0.1);
-    outline: 3px rgba(255, 255, 255, 0.2) solid;
-    color: rgba(255, 255, 255, 0.75);
-    flex-grow: 1;
-}
-
-#issuesTroubleshootText {
-    padding-bottom: 5px;
-    margin-right: auto;
-    flex-grow: 50;
-}
-
-.multiplayerLeaderboardArea {
-    margin: 5px;
-    padding: 2px;
-    padding-top: 5px;
-    border-radius: 7px;
-    background-color: rgba(255, 255, 255, 0.1);
-    display: flex;
-    flex-direction: column;
-    margin-top: 0;
-    border-top-left-radius: 0;
-    border-top-right-radius: 0;
-}
-
-#leaderboardDropdown {
-    max-height: 0px;
-    overflow: hidden;
-    transition: max-height 250ms ease;
-}
-
-#leaderboardsExpandButton {
-    margin-bottom: 0;
-    transition: filter 250ms ease, border-radius 150ms ease;
-}
-
 #multiplayerMapDisplay {
     min-width: 160px;
     text-align: center;
-}
-
-.placeholder {
-    height: 5px;
-}
-
-.fixedMobileuiWidth {
-    min-width: 250px;
-    width: 250px;
-    height: 50px;
-}
-
-.errorCode {
-    opacity: 70%;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 10px;
-    padding-inline: 20px;
-    border-radius: 7px;
-    font-size: 14px;
-    line-height: 22px;
-    font-family: monospace;
-    margin-top: 20px;
-}
-
-input[type="checkbox"] {
-    -webkit-appearance: none;
-    appearance: none;
-    margin: 0;
-    color: white;
-    width: 20px;
-    height: 20px;
-    border: 0.15em solid white;
-    border-radius: 5px;
-    transform: translateY(5px);
-    display: grid;
-    place-content: center;
-    margin-left: 10px;
-    cursor: pointer;
-}
-
-input[type="checkbox"]::before {
-    content: "";
-    width: 12px;
-    height: 12px;
-    transform: scale(0);
-    box-shadow: inset 20px -10px rgb(255, 255, 255);
-    transform-origin: center;
-    border-radius: 2px;
-}
-
-input[type="checkbox"]:checked::before {
-    transform: scale(1);
-}
-
-input[type="checkbox"]:focus {
-    outline: none;
-    outline-offset: max(2px, 0.15em);
-}
-
-#errorPopupDisable {
-    display: flex;
-    vertical-align: center;
-    margin-top: 20px;
-    font-size: 22px;
-    opacity: 60%;
-}
-
-.bottomFooterAdText {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    z-index: 7;
 }
 
 /* Small phones, mobile and other narrow screens */
@@ -1821,10 +1146,6 @@ input[type="checkbox"]:focus {
         font-size: 25px;
     }
 
-    #floatingCategoryArea {
-        visibility: hidden;
-    }
-
     #hardModeFade h1 {
         font-size: 45px;
     }
@@ -1833,21 +1154,8 @@ input[type="checkbox"]:focus {
         font-size: 25px;
     }
 
-    #mobileButtonArea {
-        display: flex;
-    }
-
     #multiplayerChat {
         visibility: hidden;
-    }
-
-    #imageGuesserImage {
-        max-width: 80%;
-        max-height: 40%;
-    }
-
-    #imageGuesserAttribution {
-        font-size: 20px;
     }
 
     h1 {
@@ -1864,30 +1172,5 @@ input[type="checkbox"]:focus {
 
     #map {
         opacity: 100%;
-    }
-
-    .extendedNavbar {
-        right: 0px;
-        left: 0px;
-        width: 65%;
-    }
-
-    .bottomSocialItem {
-        display: none;
-    }
-}
-
-/* phone fullscreen category menu */
-@media all and (max-width: 600px) {
-    .extendedNavbar {
-        width: 100%;
-    }
-}
-
-/* ad shift for narrow screens */
-@media (orientation: portrait) and (max-width: 800px) {
-    .leaderboardAds {
-        width: 320px;
-        height: 50px;
     }
 }

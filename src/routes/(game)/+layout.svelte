@@ -39,6 +39,7 @@
   import LinkJoinPopup from "$lib/components/LinkJoinPopup.svelte";
   import FriendBrowsePopup from "$lib/components/FriendBrowsePopup.svelte";
   import InboxPopup from "$lib/components/InboxPopup.svelte";
+  import MultiplayerPopup from "$lib/components/MultiplayerPopup.svelte";
 
   // Start ads
   onMount(() => {
@@ -205,141 +206,7 @@
 <SingleplayerOptions />
 <DiscordPopup />
 <LinkJoinPopup />
-<div class="popupHolder">
-  <!-- Multiplayer window -->
-  <div id="multiplayerSelectionWindow" class="uiWindow">
-    <div class="popup-title">
-      <h1>Multiplayer</h1>
-    </div>
-    <div id="multiplayerWindowMain">
-      <div class="multiplayerHorizontalAlign">
-        <div class="groupPartyButtons">
-          <button id="multiplayerSelectJoin" class="standardButton multiplayerSelect">Join</button>
-          <button id="multiplayerSelectHost" class="standardButton multiplayerSelect">Host</button>
-        </div>
-        <div class="groupPartyButtons">
-          <button id="multiplayerSelectDuels" class="standardButton multiplayerSelect">
-            Find Duel
-            <img
-              id="findIcon"
-              class="socialBarIcons"
-              style="margin-left: 5px;"
-              src="/img/find_icon.png"
-              alt="Lightning error symbol"
-            />
-          </button>
-        </div>
-      </div>
-      <div class="multiplayerFriendArea">
-        <p id="noFriendsText">Sign up to add friends!</p>
-        <div id="friendBox" class="friendBox">
-          <!-- friends will be programmatically added in here -->
-        </div>
-        <div class="friendButtonArea">
-          <button class="standardButton" id="browseUsersFriends">Add friends +</button>
-          <button class="standardButton" id="openFriendInbox">
-            <img alt="inbox icon" src="/img/inbox_icon.png" id="inboxIcon" /> <!-- change path to inbox_icon_new if $inboxIconNew from inboxStore is true-->
-          </button>
-        </div>
-      </div>
-      <div class="infoNote">
-        <div id="troubleshootingArea">
-          <p id="issuesTroubleshootText">
-            <img
-              id="errorIcon"
-              class="socialBarIcons"
-              src="/img/error_icon.png"
-              alt="Lightning error symbol"
-              style="opacity: 60%;"
-            />
-            Having issues?
-          </p>
-          <button class="white standardButton" id="troubleshootGuideButton">Troubleshooting Guide</button>
-        </div>
-      </div>
-    </div>
-    <div id="multiplayerWindowJoin" style="display: none;">
-      <div class="multiplayerJoinAlign">
-        <div class="multiplayerJoinField">
-          <p id="multiplayerJoinInfo" class="multiplayerInputInfo">Enter the room code (default).</p>
-          <input id="roomCodeInput" type="text" class="multiplayerInput" placeholder="Room code" />
-        </div>
-        <button id="multiplayerJoin" class="standardButton">Join</button>
-      </div>
-    </div>
-    <div id="multiplayerWindowHost" style="display: none;">
-      <div class="multiplayerCreationArea">
-        <div id="roomCreationSettings" class="multiplayerHostSettings">
-          <div>
-            <p>Rounds:</p>
-            <div class="ticker">
-              <button id="roundMinus" class="standardButton white">-</button>
-              <p id="roundAmountText" class="tickerText">3</p>
-              <button id="roundPlus" class="standardButton white">+</button>
-            </div>
-          </div>
-          <div>
-            <p>Round Length:</p>
-            <div class="ticker">
-              <button id="lengthMinus" class="standardButton white">-</button>
-              <p id="roundLengthText" class="tickerText">2</p>
-              <p class="tickerNote">sec</p>
-              <button id="lengthPlus" class="standardButton white">+</button>
-            </div>
-          </div>
-        </div>
-        <div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
-          <p>Restrictions:</p>
-          <button id="toggleRestrictions" class="standardButton white">Standard</button>
-        </div>
-        <div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
-          <p>Teams:</p>
-          <div class="ticker">
-            <button id="teamsMinus" class="standardButton white">-</button>
-            <p id="teamAmountText" class="tickerText">no</p>
-            <p class="tickerNote">teams</p>
-            <button id="teamsPlus" class="standardButton white">+</button>
-          </div>
-        </div>
-        <div id="roomCreationMap" style="opacity: 0.5;" class="roomCreationModule multiplayerHostSettings">
-          <p>Selected Map:</p>
-          <p id="multiplayerMapDisplay">Default</p>
-        </div>
-        <div id="hostCodeArea" class="multiplayerHostCodeArea">
-          <div id="roomCodeDisplayArea">
-            <p>Join with code:</p>
-            <h1 id="roomCodeDisplay">Default</h1>
-          </div>
-          <div id="teamsDisplay" class="roomCreationModule multiplayerHostSettings">
-            <p id="teamsDisplayText">Nothing to show</p>
-            <p id="smallJoinCounter">0</p>
-          </div>
-          <div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
-            <div id="roomCreationFriendsBox" class="roomCreationFriendsBox">
-              <!-- online players will be added here programmatically -->
-            </div>
-          </div>
-        </div>
-        <div class="multiplayerHostSubmitArea">
-          <div id="innerSubmitAreaBlock">
-            <button id="roomcodeLink" class="copyLinkButton standardButton">
-              <img id="linkIcon" class="socialIcon" src="/img/link_icon.png" alt="copy link" />
-            </button>
-            <button id="multiplayerHost" class="standardButton">Create room</button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div id="multiplayerWindowDuel" style="display: none;">
-      <div class="multiplayerJoinAlign">
-        <p id="multiplayerDuelInfo" class="multiplayerDuelStatus">Status OK</p>
-        <button id="multiplayerDuelRetry" class="standardButton">Try Again</button>
-      </div>
-    </div>
-    <button id="multiplayerSelectorClose" class="standardButton white closeButton">Close</button>
-    <button id="multiplayerSelectorBack" class="standardButton white closeButton" stlye="display: none">Back</button>
-  </div>
-</div>
+<MultiplayerPopup />
 <ResultScreen />
 <div id="blackBackground"></div>
 <div id="nmpzBackground"></div>

@@ -437,6 +437,25 @@
     padding: 7px;
   }
 
+  #adBoostTimeLimitIcon {
+    width: 30px;
+    height: 30px;
+    margin-left: 12px;
+    opacity: 0.5;
+  }
+
+  #supporterTextSecondary {
+    opacity: 0.6;
+  }
+
+  .supporterLegalText {
+    opacity: 0.6;
+  }
+
+  #supporterInfoText {
+    font-size: 22px;
+  }
+
   @keyframes supporterGlintTierBox {
     10% {
       opacity: 1;
