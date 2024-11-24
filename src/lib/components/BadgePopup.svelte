@@ -2,6 +2,7 @@
   import Popup from "$lib/components/Popup.svelte";
   import { playSound } from "$lib/utils/soundManager";
   import { badgePopup } from "$lib/stores/uiStore";
+  import { ArrowRight } from "lucide-svelte";
   import {
     profileData,
     profileExperience,
@@ -20,7 +21,7 @@
       <div class="spacerBadge"></div>
       <div class="badgeLabel">
         <p>For Experience gained:</p>
-        <p id="experienceBadgeStatus" class="unlockBadgeStatus">50,000 - 250,000 - 1M - 10M</p>
+        <p id="experienceBadgeStatus" class="unlockBadgeStatus">50,000 <ArrowRight size=13 /> 250,000 <ArrowRight size=13 /> 1M <ArrowRight size=13 /> 10M</p>
       </div>
       <div class="badgeBox">
         <Badge id="expBadge1" interactive="true" unlocked={$profileExperience >= 50000} />
@@ -30,7 +31,7 @@
       </div>
       <div class="badgeLabel">
         <p>For Duels won:</p>
-        <p id="duelsBadgeStatus" class="unlockBadgeStatus">5 - 50 - 100 - 500</p>
+        <p id="duelsBadgeStatus" class="unlockBadgeStatus">5 <ArrowRight size=13 /> 50 <ArrowRight size=13 /> 100 <ArrowRight size=13 /> 500</p>
       </div>
       <div class="badgeBox">
         <Badge id="duelBadge1" interactive="true" unlocked={$profileData?.duelsWon >= 5} />
@@ -40,7 +41,7 @@
       </div>
       <div class="badgeLabel">
         <p>For Competitions entered:</p>
-        <p id="competitionsBadgeStatus" class="unlockBadgeStatus">10 - 50 - 100 - 500</p>
+        <p id="competitionsBadgeStatus" class="unlockBadgeStatus">10 <ArrowRight size=13 /> 50 <ArrowRight size=13 /> 100 <ArrowRight size=13 /> 500</p>
       </div>
       <div class="badgeBox">
         <Badge id="compBadge1" interactive="true" unlocked={$profileData?.competitionsPlayed >= 10} />
@@ -50,7 +51,7 @@
       </div>
       <div class="badgeLabel">
         <p>For Streaks finished:</p>
-        <p id="streakBadgeStatus" class="unlockBadgeStatus">5 - 15 - 50 - 100</p>
+        <p id="streakBadgeStatus" class="unlockBadgeStatus">5 <ArrowRight size=13 /> 15 <ArrowRight size=13 /> 50 <ArrowRight size=13 /> 100</p>
       </div>
       <div class="badgeBox">
         <Badge id="streakBadge1" interactive="true" unlocked={$profileData?.highestStreak >= 5} />
@@ -60,7 +61,7 @@
       </div>
       <div class="badgeLabel">
         <p>For Supporter Tiers:</p>
-        <p id="supporterBadgeStatus" class="unlockBadgeStatus">1 - 2 - 3 - 4</p>
+        <p id="supporterBadgeStatus" class="unlockBadgeStatus">1 <ArrowRight size=13 /> 2 <ArrowRight size=13 /> 3 <ArrowRight size=13 /> 4</p>
       </div>
       <div class="badgeBox">
         <Badge id="supporterBadge1" interactive="true" unlocked={$profileSupporterLevel >= 1} />

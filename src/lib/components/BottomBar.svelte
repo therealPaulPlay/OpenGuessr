@@ -37,7 +37,7 @@
 <div id="BottomBar" class="BottomBar">
   <div class="barMenu">
     <button
-      class="standardButton bottomBarButton"
+      class="standardButton bottomBarButton white"
       id="resetButton"
       onclick={() => {
         reloadPanorama(); // No sound, as the reload sound will play
@@ -46,7 +46,7 @@
       <img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
     </button>
     <button
-      class="standardButton bottomBarButton bottomSocialItem"
+      class="standardButton bottomBarButton bottomSocialItem white"
       id="discordButton"
       onclick={() => {
         playSound("basic_button");
@@ -56,7 +56,7 @@
       <img src="./img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" id="discordIcon" />
     </button>
     <button
-      class="standardButton bottomBarButton bottomSocialItem"
+      class="standardButton bottomBarButton bottomSocialItem white"
       id="redditButton"
       onclick={() => {
         playSound("basic_button");
@@ -70,7 +70,7 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_static_element_interactions -->
     <div
-      class="standardButton bottomBarButton confirmButton"
+      class="standardButton bottomBarButton confirmButton white"
       id="confirmButton"
       class:confirmActive={$confirmButtonActive}
       onclick={confirmButtonClicks}

@@ -118,7 +118,7 @@
 
 <style>
   .badgeLocked {
-    opacity: 0.5;
+    opacity: 0.35;
     pointer-events: none;
   }
 

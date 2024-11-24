@@ -15,3 +15,4 @@ export const pinPopup = writable(false);
 export const badgePopup = writable(false);
 export const troubleshootPopup = writable(false);
 export const linkJoinPopup = writable(false);
+export const multiplayerPopup = writable(false); // Multiplayer Popup Var replaces toggle function

@@ -8,9 +8,9 @@ import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/l
 import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates.js";
 import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore.js";
 import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
-import { addResultToCompetitionScore } from "./competitionLogic.js";
+import { addResultToCompetitionScore } from "$lib/logic/competitionLogic.js";
 // import { setCheckNewHighestStreak } from "../../../JS/profileView.js"; !TODO !CHANGE
-// import { initializeWebsocketConnection } from "../../../JS/friendMenu.js"; !TODO !CHANGE
+import { initializeWebsocketConnection } from "$lib/logic/websocketLogic.js";
 import { setUserXP } from "$lib/utils/setUserXP";
 import { resultScreenEnabled, experienceBarAnimated, earnedExperience, showStreakDisplay, streakText } from "$lib/stores/context-specific/resultScreenStore.js";
 import { animateIncrement } from "$lib/utils/animateIncrement.js";
@@ -20,7 +20,7 @@ import { competition, multiplayer } from "$lib/stores/modeStore.js";
 import { saveRoundToLog } from "$lib/utils/saveRoundToLog.js";
 import { mapDiameter } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
-import { supportedAmount } from "../stores/accountStore.js";
+import { supportedAmount } from "$lib/stores/accountStore.js";
 
 let lastDistance;
 let lastXPloadingAttemptAborted = false;

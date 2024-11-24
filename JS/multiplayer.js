@@ -19,7 +19,7 @@ import { loadFriends, sendMatchInvite } from "./friendMenu.js";
 import { showConfirmPopup } from "../src/lib/utils/confirmPopup.js";
 import { continueText } from "../src/lib/stores/context-specific/resultScreenStore.js";
 import { mapPinLat, mapPinLng } from "../src/lib/stores/context-specific/mapStore.js";
-import { multiplayerCategory, highestMultiplayerSupporterLevel } from "../src/lib/stores/context-specific/multiplayerStore.js";
+import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId } from "../src/lib/stores/context-specific/multiplayerStore.js";
 import { isHost, coordsFromHost } from "../src/lib/stores/context-specific/multiplayerStore";
 import { get } from "svelte/store";
 import { getLevel } from "../src/lib/utils/experienceCalculations.js";
@@ -717,7 +717,7 @@ copyRoomcodeLinkButton.addEventListener("click", () => {
 
 function copyRoomcodeLink() {
     if (supporterLevel > 0) {
-        navigator.clipboard.writeText(window.location.origin + "/?join=" + peerId.replace("openguessr_", ""))
+        navigator.clipboard.writeText(window.location.origin + "/?join=" + get(peerId).replace("openguessr_", ""))
             .then(function () {
                 document.getElementById("linkIcon").src = "/img/link_success_icon.png";
                 setTimeout(() => {
@@ -738,7 +738,6 @@ function copyRoomcodeLink() {
 
 // Vars ------------------------------------------------------------------------------------------------
 let conn; // the connection data
-export let peerId;
 export let connectedPeers = [];
 
 // Chat -----------------------------------------------------------------------------------------------------
@@ -939,7 +938,7 @@ async function sendRoomCodeToMatchmakingServer() {
             id: localStorage.getItem("id")
         }
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/host/" + peerId.replace("openguessr_", ""), {
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/host/" + get(peerId).replace("openguessr_", ""), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -980,7 +979,7 @@ async function deleteRoomCodeFromMatchmakingServer() {
             id: localStorage.getItem("id")
         }
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/delete/" + peerId.replace("openguessr_", ""), {
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/delete/" + get(peerId).replace("openguessr_", ""), {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -1076,7 +1075,7 @@ let peerOpen = false;
 
 if (peer) {
     peer.on('open', function (id) {
-        peerId = id; // this also triggers for peers, as their connection opens
+        peerId.set(id); // this also triggers for peers, as their connection opens
         peerOpen = true;
     });
 }
@@ -1243,7 +1242,7 @@ let roomLocked = true;
 function createRoom(AmountOfRounds, LengthOfRounds) {
     if (multiplayerHost.textContent != "Start") {
         setupMultiplayerRoom(AmountOfRounds, LengthOfRounds);
-        showHostCodeArea(peerId.replace("openguessr_", ""));
+        showHostCodeArea(get(peerId).replace("openguessr_", ""));
         multiplayerHost.textContent = "Start";
         setJoinCounter(0); //greys out the start button too
         updateTeamDisplay();
@@ -1264,7 +1263,7 @@ export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
         multiplayerCategory.set("standard");
     }
 
-    connectedPeers.push([peerId, get(username) == null ? savedGuestName : get(username), getLevel(), 0, 1, localStorage.getItem("id"), get(selectedBadge)]); //add yourself (host) to the overview
+    connectedPeers.push([get(peerId), get(username) == null ? savedGuestName : get(username), getLevel(), 0, 1, localStorage.getItem("id"), get(selectedBadge)]); //add yourself (host) to the overview
     yourTeam = 1; // Host is always in team 1
     showMultiplayerOverlay(true, "Waiting...", connectedPeers);
 
@@ -1388,10 +1387,10 @@ let teamMarkerArray = [];
 export function sendTeamMarkers(lat, long) {
     if (multiplayer) {
         if (get(isHost)) {
-            addReplaceTeamMarkers(peerId, lat, long, get(selectedPinIndex), yourTeam);
+            addReplaceTeamMarkers(get(peerId), lat, long, get(selectedPinIndex), yourTeam);
             sendMessageToAll("teamMarkers", teamMarkerArray);
         } else {
-            peerSendsHost("teamMarkers", { id: peerId, lat: lat, long: long, pin: get(selectedPinIndex), team: yourTeam });
+            peerSendsHost("teamMarkers", { id: get(peerId), lat: lat, long: long, pin: get(selectedPinIndex), team: yourTeam });
         }
     }
 }
@@ -1802,7 +1801,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
             document.getElementById("mapModeText").textContent = "Multiplayer (" + get(multiplayerCategory)?.replace("community_", "") + ")";
         }
 
-        let yourPeerId = peerId;
+        let yourPeerId = get(peerId);
 
         let elementHTML = ""; // content to be added to each entry
 

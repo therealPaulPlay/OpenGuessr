@@ -8,6 +8,7 @@ export const highestMultiplayerSupporterLevel = writable(0);
 
 // Data
 export const multiplayerGuessesLocationsArray = writable([]);
+export const peerId = writable();
 
 // UI
 export const multiplayerStatus = writable("None set");

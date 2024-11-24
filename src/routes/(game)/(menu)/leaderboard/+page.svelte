@@ -275,8 +275,8 @@
     background: linear-gradient(90deg, #00ff1c00 1%, #73ff96 50%, #00ff3400);
     border-radius: inherit;
     content: "";
-    height: 4px;
-    inset: -4px;
+    height: 3px;
+    inset: -3px;
     opacity: 0;
     position: absolute;
     transform: translate(0);
@@ -296,7 +296,7 @@
 
     21% {
       opacity: 0;
-      transform: translate(100%, 41px);
+      transform: translate(100%, 42px);
     }
 
     30% {
@@ -305,7 +305,7 @@
 
     40% {
       opacity: 0;
-      transform: translateY(41px);
+      transform: translateY(42px);
     }
 
     41% {
@@ -419,7 +419,8 @@
       filter 250ms ease,
       height 250ms ease,
       width 250ms ease;
-    outline: 10px solid rgba(92, 93, 94, 0.1);
+    border: solid 3px rgba(255, 255, 255, 0.2);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
     max-width: 25%;
   }
 
@@ -491,7 +492,7 @@
   }
 
   .circleDot {
-    padding: 8px;
+    padding: 6px;
     border-radius: 50%;
     background-color: rgba(255, 255, 255, 0.1);
   }

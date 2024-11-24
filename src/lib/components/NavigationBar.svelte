@@ -101,7 +101,7 @@
     {#if $isAuthenticated}
       <button
         id="mobileProfileButton"
-        class="standardButton accountButton mobileAccountButton"
+        class="standardButton accountButton mobileAccountButton white"
         onclick={() => {
           loadProfileFromId(localStorage.getItem("id"), true);
           playSound("basic_button");
@@ -113,7 +113,7 @@
     {#if $isAuthenticated}
       <button
         id="mobileLogoutButton"
-        class="standardButton accountButton mobileAccountButton"
+        class="standardButton accountButton mobileAccountButton white"
         onclick={() => {
           playSound("basic_button");
           resetLocalSave();
@@ -125,7 +125,7 @@
     {/if}
     <a
       id="mobileCategoryButton"
-      class="standardButton accountButton mobileAccountButton"
+      class="standardButton accountButton mobileAccountButton white"
       class:preventNavigateOut
       href="/maps"
       onclick={() => {
@@ -136,14 +136,14 @@
     </a>
     <button
       id="mobileMultiplayerButton"
-      class="standardButton accountButton mobileAccountButton"
+      class="standardButton accountButton mobileAccountButton white"
       class:preventNavigateOut
     >
       <img class="socialBarIcons invertSocialBarIcon" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
     </button>
     <a
       id="mobileCompetitionsButton"
-      class="standardButton accountButton mobileAccountButton"
+      class="standardButton accountButton mobileAccountButton white"
       class:preventNavigateOut
       href="/competitions"
       onclick={() => {
@@ -154,7 +154,7 @@
     </a>
     <a
       id="mobileLeaderboardButton"
-      class="standardButton accountButton mobileAccountButton"
+      class="standardButton accountButton mobileAccountButton white"
       href="/leaderboard"
       onclick={() => {
         playSound("basic_button");
@@ -248,7 +248,7 @@
   <div class="barMenu topBarDesktop gameModeMenu" onmouseover={centerMouseOver} onmouseout={centerMouseOut} role="menu">
     <a
       id="leaderboardButton"
-      class="standardButton accountButton"
+      class="standardButton accountButton white"
       class:preventNavigateOut
       href="/leaderboard"
       onclick={() => {
@@ -262,7 +262,7 @@
         alt="Experience Leaderboard"
       />
     </a>
-    <button id="multiplayerButton" class="accountButton standardButton" class:preventNavigateOut>
+    <button id="multiplayerButton" class="accountButton standardButton white" class:preventNavigateOut>
       <span class="topBarExpand">Multiplayer</span>
       <img
         class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
@@ -272,7 +272,7 @@
     </button>
     <a
       id="competitionsButton"
-      class="standardButton accountButton"
+      class="standardButton accountButton white"
       class:preventNavigateOut
       href="/competitions"
       onclick={() => {
@@ -289,7 +289,7 @@
   </div>
   <div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
     <a
-      class="standardButton accountButton"
+      class="standardButton accountButton white"
       id="categoryMenuButton"
       class:preventNavigateOut
       href="/maps"
@@ -301,7 +301,7 @@
       <img class="socialBarIcons invertSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Map Categories" />
     </a>
     <button
-      class="standardButton accountButton"
+      class="standardButton accountButton white"
       id="singleplayerOptionsButton"
       class:preventNavigateOut
       onclick={() => {
@@ -311,7 +311,7 @@
     >
       <img src="/img/joystick_icon.png" alt="one or five seconds" id="joystickIcon" class="socialBarIcons" />
     </button>
-    <button class="standardButton accountButton" id="settingsButton" onclick={openSettings}>
+    <button class="standardButton accountButton white" id="settingsButton" onclick={openSettings}>
       <img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
     </button>
   </div>

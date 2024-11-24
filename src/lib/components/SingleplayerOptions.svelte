@@ -123,7 +123,7 @@
               </div>
             {/each}
           {:else}
-            <p class="centerLogText">Play a few rounds to make them appear here.</p>
+            <p class="centerLogText">No saved rounds.</p>
           {/if}
         </div>
       </div>
@@ -218,7 +218,7 @@
   .centerLogText {
     text-align: center;
     width: 100%;
-    opacity: 50%;
+    opacity: 25%;
     font-size: 22px;
   }
 
