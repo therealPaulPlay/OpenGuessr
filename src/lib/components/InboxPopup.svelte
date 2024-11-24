@@ -7,6 +7,7 @@
   import { playSound } from "$lib/utils/soundManager";
   import { acceptFriendRequest, declineFriendRequest } from "$lib/logic/friendAPI";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
+  import { Check, X } from "lucide-svelte";
 
   let inboxRefreshInterval;
 
@@ -46,33 +47,33 @@
               loadProfileFromId(entry.id, true);
             }}
           >
-            <p>${entry.user_name}</p>
+            <p>{entry.user_name}</p>
             <div class="inboxItemButtons">
               <button
-                class="standardButton"
+                class="standardButton white"
                 onclick={(e) => {
                   e.stopPropagation();
                   playSound("basic_button");
                   acceptFriendRequest(entry.id);
                 }}
               >
-                Accept
+                <Check size="17" strokeWidth="4" />
               </button>
               <button
-                class="standardButton"
+                class="standardButton white"
                 onclick={(e) => {
                   e.stopPropagation();
                   playSound("basic_button");
                   declineFriendRequest(entry.id);
                 }}
               >
-                Decline
+                <X size="17" strokeWidth="4" />
               </button>
             </div>
           </div>
         {/each}
       {:else}
-        <p>Your inbox is empty.</p>
+        <p class="noResultsText">Your inbox is empty.</p>
       {/if}
     </div>
     <button
@@ -98,6 +99,40 @@
     padding-inline: 15px;
     transition: background-color 250ms ease;
     gap: 10px;
+    cursor: pointer;
+  }
+
+  .friendSearchItem:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .noResultsText {
+    opacity: 0.5;
+    font-size: 22px;
+    text-align: center;
+    width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .playerSearchBox {
+    display: flex;
+    justify-content: safe center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    width: calc(100% - 13px);
+    border-radius: 5px;
+    max-height: 50vh;
+    min-height: 20vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 2px;
+    background-color: var(--box-color);
+    gap: 10px;
+    margin-top: 10px;
+    margin-inline: 5px;
+    outline: 5px solid var(--box-color);
+    scrollbar-width: none;
   }
 
   .friendSearchItem p {

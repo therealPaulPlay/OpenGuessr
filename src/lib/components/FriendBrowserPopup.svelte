@@ -2,9 +2,10 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
   import { playSound } from "$lib/utils/soundManager";
-  import { friendBrowsePopup } from "$lib/stores/uiStore";
+  import { friendBrowserPopup } from "$lib/stores/uiStore";
   import { errorPopup } from "$lib/utils/errorHandling";
   import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
+  import { loadProfileFromId } from "$lib/utils/loadProfile";
 
   let userSearchResults = $state();
   let searchQuery = $state("");
@@ -31,7 +32,8 @@
 
       if (response.ok) {
         const data = await response.json();
-        userSearchResults = data;
+        userSearchResults = data.users;
+        if (userSearchResults.length == 0) userSearchResults = undefined;
       } else {
         console.error("Error loading the user browser: " + response.status);
         errorPopup("Error loading users", "An error occured loading users in the user browser.", response.status);
@@ -43,7 +45,7 @@
   }
 </script>
 
-{#if $friendBrowsePopup}
+{#if $friendBrowserPopup}
   <Popup z="960" slim="true">
     <div class="popup-title">
       <h1 id="friendBrowserHeader">Search players</h1>
@@ -89,7 +91,7 @@
             role="menu"
             tabindex="0"
           >
-            <p>${entry.user_name}</p>
+            <p class="entryName">{entry.user_name}</p>
             <button
               id="sendFriendRequest"
               class="sendFriendRequestBrowser standardButton white"
@@ -113,7 +115,7 @@
       class="standardButton white closeButton"
       onclick={() => {
         playSound("basic_button");
-        friendBrowsePopup.set(false);
+        friendBrowserPopup.set(false);
       }}>Close</button
     >
   </Popup>
@@ -125,6 +127,59 @@
     font-size: 22px;
     text-align: center;
     width: 100%;
+    margin-top: auto;
+    margin-bottom: auto;
+  }
+
+  .playerSearchBox {
+    display: flex;
+    justify-content: safe center;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    width: calc(100% - 13px);
+    border-radius: 5px;
+    max-height: 50vh;
+    min-height: 20vh;
+    overflow-x: hidden;
+    overflow-y: auto;
+    padding: 2px;
+    background-color: var(--box-color);
+    gap: 10px;
+    margin-top: 10px;
+    margin-inline: 5px;
+    outline: 5px solid var(--box-color);
+    scrollbar-width: none;
+}
+
+  #playerSearchIcon {
+    width: 20px;
+    height: 20px;
+    vertical-align: -1px;
+  }
+
+  .friendSearchItem {
+    display: flex;
+    gap: 5px;
+    justify-content: space-between;
+    align-items: center;
+    border-radius: 5px;
+    padding: 5px;
+    padding-inline: 15px;
+    width: calc(100% - 30px);
+    transition: background-color 250ms ease;
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
+  .friendSearchItem:hover {
+    cursor: pointer;
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .entryName {
+    max-width: 50%;
+    text-wrap: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   .friendSearchYou {
@@ -153,6 +208,6 @@
   }
 
   .sendFriendRequestBrowser {
-    margin-right: -7px;
+    margin-right: -8px;
   }
 </style>

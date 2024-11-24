@@ -1,8 +1,10 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
   import { PlusCircle, Unplug } from "lucide-svelte";
-  import { multiplayerPopup } from "$lib/stores/uiStore";
+  import { multiplayerPopup, signupPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
+  import { troubleshootPopup } from "$lib/stores/uiStore";
+  import { isAuthenticated } from "$lib/stores/accountStore";
 </script>
 
 {#if $multiplayerPopup}
@@ -39,8 +41,29 @@
           <!-- friends will be programmatically added in here -->
         </div>
         <div class="friendButtonArea">
-          <button class="standardButton white" id="browseUsersFriends">Add friends +</button>
-          <button class="standardButton white" id="openFriendInbox">
+          <button
+            class="standardButton white"
+            id="browseUsersFriends"
+            onclick={() => {
+              if ($isAuthenticated) {
+                friendBrowserPopup.set(true);
+              } else {
+                signupPopup.set(true);
+              }
+            }}>Add friends +</button
+          >
+          <button
+            class="standardButton white"
+            id="openFriendInbox"
+            onclick={() => {
+              playSound("basic_button");
+              if ($isAuthenticated) {
+                inboxPopup.set(true);
+              } else {
+                signupPopup.set(true);
+              }
+            }}
+          >
             <img alt="inbox icon" src="/img/inbox_icon.png" id="inboxIcon" />
             <!-- change path to inbox_icon_new if $inboxIconNew from inboxStore is true-->
           </button>
@@ -58,7 +81,14 @@
             />
             Having issues?
           </p>
-          <button class="white standardButton" id="troubleshootGuideButton">Troubleshooting Guide</button>
+          <button
+            class="white standardButton"
+            id="troubleshootGuideButton"
+            onclick={() => {
+              playSound("basic_button");
+              troubleshootPopup.set(true);
+            }}>Troubleshooting Guide</button
+          >
         </div>
       </div>
     </div>

@@ -5,6 +5,7 @@ import { peerId } from "$lib/stores/context-specific/multiplayerStore";
 import { loadProfileFromId } from "$lib/utils/loadProfile";
 import { inboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
+import { get } from "svelte/store";
 
 // Inbox -----------------------------------------------------------------------------------------------------------------------------------
 export async function loadInbox() {
@@ -25,7 +26,8 @@ export async function loadInbox() {
 
         if (response.ok) {
             const data = await response.json();
-            inboxContent.set(data);
+            inboxContent.set(data?.requests);
+            if (get(inboxContent).length == 0) inboxContent.set(undefined);
 
         } else {
             console.error("Error loading inbox: " + response.status);

@@ -37,7 +37,7 @@
   import BadgePopup from "$lib/components/BadgePopup.svelte";
   import TroubleshootPopup from "$lib/components/TroubleshootPopup.svelte";
   import LinkJoinPopup from "$lib/components/LinkJoinPopup.svelte";
-  import FriendBrowsePopup from "$lib/components/FriendBrowsePopup.svelte";
+  import FriendBrowserPopup from "$lib/components/FriendBrowserPopup.svelte";
   import InboxPopup from "$lib/components/InboxPopup.svelte";
   import MultiplayerPopup from "$lib/components/MultiplayerPopup.svelte";
 
@@ -196,7 +196,7 @@
 <BadgePopup />
 <PinPopup />
 <SupporterPopup />
-<FriendBrowsePopup />
+<FriendBrowserPopup />
 <InboxPopup />
 <BeforeExitPopup />
 <HelpPopup />

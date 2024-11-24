@@ -5,7 +5,7 @@
 </script>
 
 {#if $troubleshootPopup}
-  <Popup>
+  <Popup z=910 verySlim=true>
     <div class="popup-title">
       <h1>Troubleshooting Guide</h1>
     </div>
