@@ -1,9 +1,9 @@
 <script>
-  import { countryGuesser, multiplayer } from "$lib/stores/modeStore";
+  import { countryGuesser, multiplayer, competition } from "$lib/stores/modeStore";
   import { selectedCountryField } from "$lib/stores/context-specific/countryGuesserStore";
   import { playSound } from "$lib/utils/soundManager";
   import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
-  // import { confirmButtonClicks } from "./miniMap"; !TODO !CHANGE
+  import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 
   function selectCountry(fieldNr) {
     playSound("item_select");
@@ -21,7 +21,7 @@
   }
 </script>
 
-{#if $countryGuesser && !$multiplayer}
+{#if $countryGuesser && !$multiplayer && !$competition}
   <div id="countryGuesserSelector" onkeyup={clickConfirm} role="menu" tabindex="0">
     <button
       class="countryGuesserHolder"

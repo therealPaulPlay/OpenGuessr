@@ -24,8 +24,10 @@
     connectedClientsCount,
     multiplayerStatus,
     restrictionButtonText,
+    teamsDisplayText,
   } from "$lib/stores/context-specific/multiplayerStore";
   import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
+  import { showNotification } from "$lib/utils/notifications";
   import { loadFriends, removeFriend, sendMatchInvite } from "$lib/logic/friendAPI";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
@@ -270,10 +272,14 @@
             </div>
             <div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
               <p>Restriction:</p>
-              <button id="toggleRestrictions" class="standardButton white" onclick={() => {
-                playSound("basic_button");
-                toggleRestrictions();
-              }}>{$restrictionButtonText}</button>
+              <button
+                id="toggleRestrictions"
+                class="standardButton white"
+                onclick={() => {
+                  playSound("basic_button");
+                  toggleRestrictions();
+                }}>{$restrictionButtonText}</button
+              >
             </div>
             <div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
               <p>Teams:</p>
@@ -293,7 +299,7 @@
                 <h1 id="roomCodeDisplay">{$peerId.replace("openguessr_", "")}</h1>
               </div>
               <div id="teamsDisplay" class="roomCreationModule multiplayerHostSettings">
-                <p id="teamsDisplayText">Nothing to show</p>
+                <p id="teamsDisplayText">{$teamsDisplayText}</p>
                 <p id="smallJoinCounter">{$connectedClientsCount + 1}</p>
               </div>
               {#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online).length >= 1}
@@ -330,7 +336,20 @@
           <div class="multiplayerHostSubmitArea">
             <div id="innerSubmitAreaBlock">
               {#if $hostStage == 1}
-                <button id="roomcodeLink" class="copyLinkButton standardButton white">
+                <button
+                  id="roomcodeLink"
+                  class="copyLinkButton standardButton white"
+                  onclick={() => {
+                    navigator.clipboard
+                      .writeText(window.location.origin + "/?join=" + get(peerId).replace("openguessr_", ""))
+                      .then(function () {
+                        showNotification("Copied!", false, false, false);
+                      })
+                      .catch(function (error) {
+                        showNotification("Error: " + error, false, false, false);
+                      });
+                  }}
+                >
                   <Link strokeWidth="2" size="16" />
                 </button>
               {/if}

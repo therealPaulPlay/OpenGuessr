@@ -1,8 +1,8 @@
 import { getUser } from "./userAPI";
 // import { supporterXpBoostAnimation } from "../../../JS/mainUI.js"; !TODO !CHANGE
-// import { peerSendsHost, peerId, updatePeerDataScore, attemptJoinViaLink } from "../../../JS/multiplayer.js"; !TODO !CHANGE
-import { isHost } from "$lib/stores/context-specific/multiplayerStore";
-import { highestMultiplayerSupporterLevel, multiplayerCategory } from "$lib/stores/context-specific/multiplayerStore.js";
+// import { peerSendsHost, updatePeerDataScore } from "../../../JS/multiplayer.js"; !TODO !CHANGE
+import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
+import { highestMultiplayerSupporterLevel, multiplayerCategory, isHost, peerId } from "$lib/stores/context-specific/multiplayerStore.js";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions.js";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore.js";
 import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates.js";
@@ -252,7 +252,7 @@ export async function loadResultScreenXP(distance) {
       supporterMultiplier = calculatedXP.supporterMultiplier;
 
       if (get(isHost)) {
-        updatePeerDataScore(peerId, earnedXP);
+        updatePeerDataScore(get(peerId), earnedXP);
       } else {
         peerSendsHost("score", earnedXP);
       }

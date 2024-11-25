@@ -9,6 +9,7 @@ let correctCountryField = null; // 1-6
 export function setCountryGuesserMode(enabled) {
     if (enabled) {
         countryGuesser.set(true);
+        
         // hide map
         if (!get(multiplayer)) {
             mapVisible.set(false);

@@ -4,7 +4,7 @@ import { acceptFriendRequest } from "$lib/logic/friendAPI";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { multiplayerPopup, linkJoinPopup } from "$lib/stores/UIStore";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
-// import { leaveMultiplayerRound, setPlayingDuels, setFriendDuel, setupMultiplayerRoom } from "../../../JS/multiplayer"; !TODO !CHANGE resolve imports
+import { leaveMultiplayerRound, setPlayingDuels, setFriendDuel, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 
 export async function initializeWebsocketConnection() {

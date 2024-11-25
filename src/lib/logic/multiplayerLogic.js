@@ -1,11 +1,10 @@
 import { loadAndInitializeLibrary } from "$lib/utils/scriptLoader";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScreen.js";
-import { supporterWindowIfAuthenticated } from "$lib/utils/showSupporterPopup.js";
 import { startTimer } from "$lib/utils/timer.js";
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { selectedBadge, selectedPinIndex, supporterLevel, username } from "$lib/stores/accountStore.js";
-import { mapCategory, transitionToStart } from "../../../JS/categoryMenu.js"; // !TODO !CHANGE update imports
+import { transitionToStart } from "../../../JS/categoryMenu.js"; // !TODO !CHANGE update imports
 import { changeCategory } from "$lib/utils/changeCategory.js";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation.js";
 import { confirmButtonClicks, setConfirmButtonState, updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
@@ -15,17 +14,19 @@ import { addDuelPlayed, addDuelWon } from "$lib/utils/updateProfileData.js";
 import { loadProfileFromId } from "$lib/utils/loadProfile.js";
 import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText } from "$lib/stores/context-specific/resultScreenStore.js";
-import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore.js";
+import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
 import { linkJoinPopup } from "$lib/stores/uiStore";
-import { mapModeIndicatorVisible, leaveFunction } from "$lib/stores/context-specific/mapModeIndicatorStore";
-import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, multiplayerCategory, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText } from "$lib/stores/context-specific/multiplayerStore.js";
+import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, multiplayerCategory, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText } from "$lib/stores/context-specific/multiplayerStore.js";
 import { getLevel } from "$lib/utils/experienceCalculations.js";
+import { confirmButtonText } from "$lib/stores/context-specific/confirmButtonStore";
+import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
 import { get } from "svelte/store";
 
 let uniqueUserID = 0; // used in setup for peerJS as peer id
 
-// Host page ------------------------------------------------------------------------------------------------
+// Team display on Host Page  ------------------------------------------------------------------------------------------------
 
 function updateTeamDisplay() {
     const amountOfTeams = get(teamAmount);
@@ -55,7 +56,7 @@ function updateTeamDisplay() {
     });
 
     if (amountOfTeams === 1) {
-        document.getElementById("teamsDisplayText").textContent = "No team: " + noTeamPlayers.join(", ");
+        teamsDisplayText.set("No team: " + noTeamPlayers.join(", "));
     } else {
         let teamText = "";
         for (let i = 1; i <= amountOfTeams; i++) {
@@ -64,10 +65,11 @@ function updateTeamDisplay() {
             }
         }
         // Update the innerText property instead of textContent to preserve line breaks
-        document.getElementById("teamsDisplayText").innerText = teamText.trim(); // remove the trailing newline
+        teamsDisplayText.set(teamText.trim()); // remove the trailing newline
     }
 }
 
+// Get Team from Peer ---------------------------------------------------------------------------------------------------------------------------------
 function getTeamFromPeerId(id) {
     const playerArray = connectedPeers.find(item => item[0] === id);
     return playerArray[4];
@@ -117,17 +119,17 @@ function setMultiplayerUI() {
     if (get(multiplayer)) {
         mapModeIndicatorVisible.set(true);
         leaveFunction.set(promptLeaveButton);
+        modeText.set("Multiplayer (Awaiting info..)");
 
-        document.getElementById("multiplayerChat").style.display = "flex";
-        document.getElementById("mapModeText").textContent = "Multiplayer (Awaiting info..)";
+        chatVisible.set(true);
 
         // disable result screen if it is open (edge case)
         disableResultScreen();
 
     } else {
         mapModeIndicatorVisible.set(false);
-        document.getElementById("multiplayerChat").style.display = "none";
         leaveFunction.set();
+        chatVisible.set(false);
     }
 }
 
@@ -155,12 +157,11 @@ function endMultiplayerRound() {
         if (get(isHost)) {
             clearTimeout(endMultiplayerRoundIfGuessMissing);
             sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
-            document.getElementById("nextRound").style.opacity = "0.5";
-            document.getElementById("nextRound").style.pointerEvents = "none";
-            // After 2 seconds (or 5 for duels), enable the skip functionality
+            // Continue button will be disabled, whenever the text contains the word "Wait" - no pointer events none necessary here
             let skipTimeout = playingDuels ? 5000 : 2000;
             continueText.set("Wait " + (skipTimeout / 1000) + "s...");
 
+            // After 2 seconds (or 5 for duels), enable the skip functionality
             setTimeout(function () {
                 continueText.set("Continue");
             }, skipTimeout)
@@ -193,13 +194,13 @@ export function multiplayerStateToGuessed() {
         if (get(username) != null) {
             distributeChat("System: " + get(username) + " guessed.");
         } else {
-            distributeChat("System: " + savedGuestName + " guessed.");
+            distributeChat("System: " + get(savedGuestName) + " guessed.");
         }
     }
 
     if (get(isHost)) {
         if (!multiplayerHasAlreadyGuessed) {
-            multiplayerGuessesLocationsArray.push([get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) != null ? get(username) : savedGuestName]); //add the hosts guess to the guesses
+            multiplayerGuessesLocationsArray.push([get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) != null ? get(username) : get(savedGuestName)]); //add the hosts guess to the guesses
             multiplayerHasGuessed(); // this substracts one from the total requried guesses (and maybe ends the round)
         }
 
@@ -209,7 +210,7 @@ export function multiplayerStateToGuessed() {
                 lat: get(mapPinLat),
                 long: get(mapPinLng),
                 style: get(selectedPinIndex),
-                name: get(username) != null ? get(username) : savedGuestName
+                name: get(username) != null ? get(username) : get(savedGuestName)
             });
         }
     }
@@ -255,8 +256,7 @@ export function updatePeerDataScore(peerId, addScore) {
     }
 }
 
-// Multiplayer Setup (IF player has an id! ) ---------------------------------------------------------------------------------------
-let peer;
+// Assign Name or Alias  ---------------------------------------------------------------------------------------------------------------------------
 let roundIndex = 1; //the index of the current round, starts with the first round
 
 function generateRandomCode(length) {
@@ -269,12 +269,10 @@ function generateRandomCode(length) {
     return code;
 }
 
-let savedGuestName = "none set";
-
 function generateFunnyGuestName() {
     let animals = ["Giraffe", "Ape", "Sloth", "Penguin", "Kangaroo", "Panda", "Zebra", "Llama", "Hippo", "Parrot", "Cat", "Dog", "Slug", "Crow", "Elephant"];
     let randomAnimal = animals[Math.floor(Math.random() * animals.length)];
-    savedGuestName = "Guest" + randomAnimal;
+    savedGuestName.set("Guest" + randomAnimal);
 }
 
 if (localStorage.getItem("id") != null) {
@@ -284,8 +282,11 @@ if (localStorage.getItem("id") != null) {
     generateFunnyGuestName();
 }
 
-// load PeerJS + set up the connection
-async function getPeer() {
+// Load PeerJS -----------------------------------------------------------------------------------------------------------------------
+let peer;
+let peerOpen = false;
+
+export async function getPeer() {
     peer = await loadAndInitializeLibrary(
         'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js',
         'Peer',
@@ -301,29 +302,24 @@ async function getPeer() {
         })
     );
 
-    return peer;
+    if (peer) {
+        peer.on('open', function (id) {
+            peerId.set(id); // Once the PeerJS connection was established, we store the peer ID that was assigned by the PeerJS server + mark the client as open
+            peerOpen = true;
+        });
+    }
 }
 
-try {
-    await getPeer();
-} catch (error) {
-    console.error("Could not inizialize PeerJS: " + error);
-}
 
 // Joining via Links (also as a guest!) -------------------------------------------------------------------------------------
 
-let urlParams = new URLSearchParams(window.location.search);
-let joinOnLoadViaLink = false;
-let roomCode = urlParams.get("join");
-
-if (roomCode) {
-    console.log("Attempting join via Room Code Link:", roomCode);
-    joinOnLoadViaLink = true;
-}
-
-// called in accountLogic after signin status was set
+// Called in accountLogic after signin status was set
 export function attemptJoinViaLink() {
-    if (joinOnLoadViaLink) {
+    let urlParams = new URLSearchParams(window.location.search);
+    let roomCode = urlParams.get("join");
+    if (roomCode) {
+        console.log("Attempting join via Room Code Link:", roomCode);
+
         if (peer) {
             try {
                 linkJoinPopup.set(false);
@@ -336,85 +332,19 @@ export function attemptJoinViaLink() {
             console.error("Tried to join round via link, but peerjs was not initialized yet.");
         }
 
-        joinOnLoadViaLink = false;
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
     }
-}
 
-let copyRoomcodeLinkButton = document.getElementById("roomcodeLink");
-
-copyRoomcodeLinkButton.addEventListener("click", () => {
-    copyRoomcodeLink();
-    playSound("basic_button");
-});
-
-function copyRoomcodeLink() {
-    if (supporterLevel > 0) {
-        navigator.clipboard.writeText(window.location.origin + "/?join=" + get(peerId).replace("openguessr_", ""))
-            .then(function () {
-                document.getElementById("linkIcon").src = "/img/link_success_icon.png";
-                setTimeout(() => {
-                    document.getElementById("linkIcon").src = "/img/link_icon.png";
-                }, 700);
-            })
-            .catch(function (error) {
-                document.getElementById("linkIcon").src = "/img/link_error_icon.png";
-                console.error("Copy error: " + error);
-                setTimeout(() => {
-                    document.getElementById("linkIcon").src = "/img/link_icon.png";
-                }, 700);
-            });
-    } else {
-        showConfirmPopup("Supporter tier required", "Sharing invite links is a supporter-exclusive feature as it leads to higher API usage. Please join using the room code or the friend invite system instead if you do not wish to purchase a supporter tier.", () => { supporterWindowIfAuthenticated(); }, false, false, false, "Support", "#588e6b");
-    }
 }
 
 // Vars ------------------------------------------------------------------------------------------------
+
 let conn; // the connection data
 export let connectedPeers = [];
 
 // Chat -----------------------------------------------------------------------------------------------------
-let chatBox = document.getElementById("multiplayerMessageBox");
 
-function resetChat() {
-    chatBox.textContent = "";
-}
-
-// mainly for peers if they receive a message
-async function addToChat(text) {
-    const profanityList = [
-        "hate ", "idiot", "fuck", "asshole", "suck ass", "nigg", "pussy", "kill y", "cock", "bastard", "suck"
-    ];
-
-    function containsProfanity(text) {
-        const lowerCaseText = text.toLowerCase();
-        return profanityList.some(word => lowerCaseText.includes(word));
-    }
-
-    if (containsProfanity(text)) {
-        addTextToChat("System: Censored Profanity");
-    } else {
-        addTextToChat(text);
-    }
-}
-
-//this is only used in the above function
-function addTextToChat(text) {
-    const sanitizedText = sanitizeHTML(text); // Call a function to sanitize HTML
-    chatBox.innerHTML += "<br>";
-    if (sanitizedText.startsWith("System:")) {
-        chatBox.innerHTML += `<span style="color: #c1c1c1;">${sanitizedText}</span>`;
-    } else {
-        chatBox.innerHTML += sanitizedText;
-    }
-    document.getElementById("multiplayerChatMessages").scrollTop = document.getElementById("multiplayerChatMessages").scrollHeight;
-}
-
-function sanitizeHTML(text) {
-    return text.replace(/<[^>]*>?/gm, ''); //strip it of any malicious html (security)
-}
-
-//for peers and hosts, this is how you send messages
+// For peers and hosts, this is how you send messages
 export function distributeChat(text) {
     try {
         if (get(isHost)) {
@@ -425,38 +355,6 @@ export function distributeChat(text) {
         }
     } catch (error) {
         console.error("Error sending multiplayer message: " + error);
-    }
-}
-
-let chatInput = document.getElementById("multiplayerMessageInput");
-let chatSendButton = document.getElementById("multiplayerSendButton");
-
-chatSendButton.addEventListener("click", () => {
-    manuallySendChat();
-    playSound("basic_button");
-});
-
-chatInput.addEventListener("keydown", function (event) {
-    if (document.activeElement === chatInput && event.key === "Enter" && !event.shiftKey) {
-        event.preventDefault();
-        manuallySendChat();
-    }
-});
-
-chatInput.addEventListener('keydown', (event) => {
-    if (event.key === " ") {
-        event.stopPropagation();
-    }
-});
-
-function manuallySendChat() {
-    if (chatInput.value != "") {
-        if (get(username) != null) {
-            distributeChat(get(username) + ": " + chatInput.value);
-        } else {
-            distributeChat(savedGuestName + ": " + chatInput.value);
-        }
-        chatInput.value = "";
     }
 }
 
@@ -493,10 +391,11 @@ async function attemptDuelJoin(index) {
     } else {
         multiplayerStatus.set("Requesting new roomcode...");
     }
+
     let receivedRoomCode = "default";
 
-    // Get Roomcode from server
     try {
+        // Get Roomcode from server
         const response = await fetch("https://accounts.openguessr.com/accounts/rooms/" + index, {
             method: 'GET',
             headers: {
@@ -528,7 +427,7 @@ async function attemptDuelJoin(index) {
         screenEscapeDisabled.set(true);
 
         try {
-            changeCategory("standard", false); //this will only change the category and not generate! (to prevent skip of first round)
+            changeCategory("standard", false); // This will only change the category and not generate! (to prevent skip of first round)
         } catch (e) {
             console.error("Error changing category to standard for multiplayer duels. Error: " + e);
         }
@@ -630,60 +529,38 @@ function showTimeReduceOverlay(time, hide) {
     time = Number(time);
 
     let timeReduceOverlayTimer;
-    let disableBlurTimeout;
-
     clearTimeout(timeReduceOverlayTimer);
-    clearTimeout(disableBlurTimeout);
 
     if (!hide) {
         try {
             if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > 3) { // only show overlay if it the remaining time is above 3s
-                document.getElementById("duelsOverlay").style.opacity = "1";
-                document.getElementById("duelsOverlay").style.transform = "scale(1.03)";
-                document.getElementById("duelsOverlay").style.filter = "none";
+                timeReducedOverlay.set(true);
                 playSound("time_reduced");
 
                 timeReduceOverlayTimer = setTimeout(() => {
-                    document.getElementById("duelsOverlay").style.opacity = "0";
-                    document.getElementById("duelsOverlay").style.transform = "scale(1.0)";
-                    document.getElementById("duelsOverlay").style.filter = "blur(5px)";
-                }, 2000);
-
-                disableBlurTimeout = setTimeout(() => {
-                    document.getElementById("duelsOverlay").style.filter = "none";
+                    timeReduceOverlayTimer.set(false);
                 }, 3000)
             }
         } catch { console.warn("Error showing time reduce overlay: " + error) }
 
     } else {
-        document.getElementById("duelsOverlay").style.opacity = "0";
+        timeReducedOverlay.set(false);
     }
 
     if (time != 0) {
         try {
             if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > time) {
                 multiplayerTimer.stopTimer();
-                multiplayerTimer = startTimer(time, multiplayerTimerExpired); //Start the timer with new time
-                document.getElementById("duelsOverlaySubtitle").textContent = `Time reduced to ${time}s.`;
+                multiplayerTimer = startTimer(time, multiplayerTimerExpired); // Start the timer with new time
+                timeReducedOverlayText.set(`Time reduced to ${time}s.`);
             } else {
-                document.getElementById("duelsOverlaySubtitle").textContent = "Time remains unaffected.";
+                timeReducedOverlayText.set("Time remains unaffected.");
             }
         } catch (error) {
-            document.getElementById("duelsOverlaySubtitle").textContent = "Time error occured.";
+            timeReducedOverlayText.set("Time error occured.");
             console.warn("Could not set new timer for duels in showTimerReduceOverlay" + error);
         }
     }
-}
-
-// Universal peer connection open (also attempt linkjoin) -----------------------------------------------------------------
-
-let peerOpen = false;
-
-if (peer) {
-    peer.on('open', function (id) {
-        peerId.set(id); // this also triggers for peers, as their connection opens
-        peerOpen = true;
-    });
 }
 
 // Host Logic ----------------------------------------------------------------------------------------------
@@ -760,8 +637,8 @@ if (peer) {
 
                     // whether the first round has been played & the starting screen should be shown
                     if (!multiplayerFirstRoundPlayed) {
-                        sendMessageToAll("showPlayersArray", connectedPeers); //send it to peer
-                        showMultiplayerOverlay(true, "Waiting...", connectedPeers); //also show it for host
+                        sendMessageToAll("showPlayersArray", connectedPeers); // send it to peer
+                        showMultiplayerOverlay(true, "Waiting...", connectedPeers); // also show it for host
                     } else {
                         const waitingMessage = {
                             type: "lateJoin",
@@ -847,10 +724,8 @@ export function createRoom(AmountOfRounds, LengthOfRounds) {
     if (get(hostStage) == 2) {
         setupMultiplayerRoom(AmountOfRounds, LengthOfRounds);
         updateTeamDisplay();
-        playSound("basic_button");
     } else {
         StartRoom();
-        playSound("start_button");
     }
 }
 
@@ -864,7 +739,7 @@ export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
         multiplayerCategory.set("standard");
     }
 
-    connectedPeers.push([get(peerId), get(username) == null ? savedGuestName : get(username), getLevel(), 0, 1, localStorage.getItem("id"), get(selectedBadge)]); //add yourself (host) to the overview
+    connectedPeers.push([get(peerId), get(username) == null ? get(savedGuestName) : get(username), getLevel(), 0, 1, localStorage.getItem("id"), get(selectedBadge)]); // add yourself (host) to the overview
 
     yourTeam = 1; // Host is always in team 1
     showMultiplayerOverlay(true, "Waiting...", connectedPeers);
@@ -882,17 +757,14 @@ export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
 
 // Start room (HOST function)
 function StartRoom() {
-    //start the round (from host)
-    multiplayerHost.textContent = "Loading Location...";
+    // Start the round (from host)
     multiplayerStatus.set("Starting! Loading location...");
     multiplayer.set(true);
     setMultiplayerUI();
     showMultiplayerOverlay(true, "Ready...", connectedPeers); //only for host, also to set the map category in mode text
     sendMessageToAll("showPlayersArray", connectedPeers); //this is for the peers (the same thing as showMultiplayerOverlay for host)
     checkGenerationTypeAndGenerate();
-    if (playingDuels) {
-        roomLocked = true;
-    }
+    if (playingDuels) roomLocked = true;
     matchmakingActive = false;
 }
 
@@ -1024,7 +896,7 @@ export async function joinRoom(code) {
 
     const options = {
         metadata: {
-            username: get(username) == null ? savedGuestName : get(username),
+            username: get(username) == null ? get(savedGuestName) : get(username),
             level: getLevel(),
             score: 0, //inital score is set to 0,
             id: localStorage.getItem("id"),
@@ -1246,7 +1118,7 @@ export function leaveMultiplayerRound() {
     }
 
     // Stop Timer to prevent result screen
-    try { multiplayerTimer.stopTimer(); } catch { }; // has to be in try catch
+    try { multiplayerTimer.stopTimer() } catch { }; // has to be in try catch
 
     // Clear running intervals
     clearInterval(countdownInterval);
@@ -1271,18 +1143,20 @@ export function leaveMultiplayerRound() {
     restrictionButtonText.set("Standard");
     multiplayerRestriction = "standard";
 
+    // UI functions
     setMultiplayerUI();
     showMultiplayerOverlay(false);
     showTimeReduceOverlay(0, true);
+    resetChat();
+
+    connectedPeers = [];
     multiplayerFirstRoundPlayed = false;
     roomLocked = true;
     multiplayerGuessesLocationsArray = [];
     teamMarkerArray = [];
     updateMinimapWithTeamMarkers(teamMarkerArray); // clean up multiplayer minimap markers
-    connectedPeers = [];
     roundEnded = false;
     multiplayerHasAlreadyGuessed = false;
-    resetChat();
     matchmakingActive = false;
     playingDuels = false;
     lateJoinedWaiting = false;
@@ -1290,21 +1164,22 @@ export function leaveMultiplayerRound() {
     friendDuel = false;
 
     // reset Guess/Confirm button text
-    document.getElementById("guessText").textContent = "Guess";
+    confirmButtonText.set("Guess");
 
     // Set confirm button state to ensure pointer events are correct (this function calls the confirmButtonState func) and reset minimap markers
     setConfirmButtonState();
 
-    if (mapCategory != "country") {
-        document.getElementById("map").style.visibility = "visible";
-        hideToggleMapButtonIfMobile(false);
+    if (localStorage.setItem("selectedMap") != "country") {
+        mapVisible.set(true);
     }
 
+    // !TODO !CHANGE hook up to store vars to adjust the end screen stuff
     endMultiplayerRoundButton.style.display = "none";
     endMultiplayerRematchButton.style.display = "none";
     endMultiplayerRematchButton.style.opacity = "1";
     endMultiplayerRematchButton.style.pointerEvents = "auto";
     endMultiplayerRematchButton.textContent = "Play again";
+
     setRestriction("standard");
 
     if (wasMultiplayerEnabled) {
@@ -1644,21 +1519,20 @@ function multiplayerOverlayCountdown() {
         } else {
             clearInterval(countdownInterval); // Stop the countdown
             if (get(multiplayer)) {
-                showMultiplayerOverlay(false); //hide the overlay --> round starts
-                document.getElementById("guessText").textContent = "Guess";
+                showMultiplayerOverlay(false); // Hide the overlay --> round starts
+                confirmButtonText.set("Guess");
 
                 try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
                 multiplayerTimer = startTimer(get(roundLength), multiplayerTimerExpired); //Start the timer
 
-                document.getElementById("mapModeText").textContent = "Multiplayer (Round: " + roundIndex + "/" + get(roundAmount) + ")";
+                modeText.set("Multiplayer (Round: " + roundIndex + "/" + get(roundAmount) + ")");
 
-                if (multiplayerRestriction != "standard" && multiplayerRestriction) {
-                    document.getElementById("mapModeText").textContent += " (" + multiplayerRestriction + ")";
+                if (multiplayerRestriction !== "standard" && multiplayerRestriction) {
+                    modeText.set(get(modeText) + " (" + multiplayerRestriction + ")");
                 }
 
                 totalRequiredGuesses = get(connectedClientsCount) + 1; //connections + 1 for the host
                 setRestriction(multiplayerRestriction);
-
                 playSound("match_countdown_start");
             }
         }

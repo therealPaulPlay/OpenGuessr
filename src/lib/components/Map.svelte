@@ -150,11 +150,18 @@
     margin-right: 20px !important;
   }
 
-  :global(#map:hover) {
+  #map:hover {
     opacity: 100%;
   }
 
   :global(map::selection) {
     outline: none;
+  }
+
+  @media all and (max-width: 1200px) {
+    /* On mobile, the map doesn't fade out if it's not being hovered over */
+    #map {
+      opacity: 100%;
+    }
   }
 </style>

@@ -40,6 +40,9 @@
   import FriendBrowserPopup from "$lib/components/FriendBrowserPopup.svelte";
   import InboxPopup from "$lib/components/InboxPopup.svelte";
   import MultiplayerPopup from "$lib/components/MultiplayerPopup.svelte";
+  import Chat from "$lib/components/Chat.svelte";
+  import InitMultiplayer from "$lib/components/InitMultiplayer.svelte";
+  import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
 
   // Start ads
   onMount(() => {
@@ -68,11 +71,14 @@
   <script src="https://hb.vntsm.com/v4/live/vms/sites/openguessr.com/index.js" async></script>
 </svelte:head>
 
-<TopLeftLogo />
-<NavigationBar />
-
 <!-- Log user in -->
 <Authenticate />
+
+<!-- Load Peer JS and check for Join URL -->
+<InitMultiplayer />
+
+<TopLeftLogo />
+<NavigationBar />
 
 <!-- Keywords -->
 <h1 style:display="none">
@@ -213,10 +219,7 @@
 <SingleplayerNmpz />
 <LittleTimeVignette />
 <TimerCountdown />
-<div id="duelsOverlay">
-  <h1>Your opponent has guessed</h1>
-  <p id="duelsOverlaySubtitle">Time reduced to 15s.</p>
-</div>
+<TimeReducedOverlay />
 <div id="multiplayerFade">
   <h1 id="multiplayerTitle">Multiplayer Default title</h1>
   <div id="multiplayerTable"></div>
@@ -233,15 +236,7 @@
   <Map />
   <MapModeIndicator />
 </MapHolder>
-<div id="multiplayerChat">
-  <div id="multiplayerChatMessages">
-    <p id="multiplayerMessageBox"></p>
-  </div>
-  <div id="bottomMultiplayerChatArea">
-    <input maxlength="100" type="text" id="multiplayerMessageInput" placeholder="Type your message..." />
-    <button id="multiplayerSendButton" class="standardButton">Send</button>
-  </div>
-</div>
+<Chat />
 <BottomBar />
 
 <!-- Render children such as overlayed pages and menus -->
