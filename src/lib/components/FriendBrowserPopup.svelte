@@ -70,7 +70,7 @@
       />
       <button
         id="startFriendSearch"
-        class="standardButton"
+        class="standardButton white"
         onclick={() => {
           playSound("basic_button");
           startSearch();
@@ -201,7 +201,6 @@
   }
 
   #startFriendSearch {
-    background-color: rgba(255, 255, 255, 0.1);
     width: fit-content;
     margin: 0;
     border-radius: 10px;

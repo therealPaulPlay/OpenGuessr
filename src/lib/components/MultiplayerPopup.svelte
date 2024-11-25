@@ -5,6 +5,33 @@
   import { playSound } from "$lib/utils/soundManager";
   import { troubleshootPopup } from "$lib/stores/uiStore";
   import { isAuthenticated } from "$lib/stores/accountStore";
+  import { loadedFriendsData } from "$lib/stores/context-specific/multiplayerStore";
+  import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
+  import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
+  import { loadProfileFromId } from "$lib/utils/loadProfile";
+  import { showConfirmPopup } from "$lib/utils/confirmPopup";
+
+  let friendSectionLoaded = $state(false);
+
+  let friendsRefreshInterval;
+
+  multiplayerPopup.subscribe(async (value) => {
+    if (value) {
+      await loadFriends();
+
+      // Re-fetch friends every X seconds
+      clearInterval(friendsRefreshInterval);
+      friendsRefreshInterval = setInterval(() => {
+        loadFriends();
+      }, 10000);
+
+      setTimeout(() => {
+        friendSectionLoaded = true;
+      }, 50);
+    } else {
+      clearInterval(friendsRefreshInterval);
+    }
+  });
 </script>
 
 {#if $multiplayerPopup}
@@ -36,13 +63,62 @@
         </div>
       </div>
       <div class="multiplayerFriendArea">
-        <p id="noFriendsText">Sign up to add friends!</p>
-        <div id="friendBox" class="friendBox">
-          <!-- friends will be programmatically added in here -->
-        </div>
+        {#if !$isAuthenticated}
+          <p class="noFriendsText">Sign up to add friends!</p>
+        {/if}
+        {#if $loadedFriendsData}
+          <div id="friendBox" class="friendBox" style:max-height={friendSectionLoaded ? "145px" : "0px"}>
+            {#each $loadedFriendsData as entry}
+              <!-- svelte-ignore a11y_click_events_have_key_events -->
+              <div
+                class="standardButton white friendItem"
+                role="menu"
+                tabindex="0"
+                onclick={() => {
+                  loadProfileFromId(entry.id, true);
+                }}
+              >
+                {#if entry.online}
+                  <div class="friendOnlineBar"></div>
+                {/if}
+                <p>{entry.user_name}</p>
+                <button
+                  id="duelFriend"
+                  class="standardButton friendItemButtons"
+                  onclick={() => {
+                    e.stopPropagation();
+                    playSound("basic_button");
+                    sendMatchInvite(entry.id, true);
+                  }}
+                >
+                  1v1
+                </button>
+                <button
+                  id="removeFriend"
+                  class="standardButton friendItemButtons"
+                  onclick={(e) => {
+                    e.stopPropagation();
+                    playSound("basic_button");
+                    showConfirmPopup(
+                      "Remove friend?",
+                      "You are about to remove your friend from your list. Your friend will see this and might not like it. Use this at our own risk.",
+                      () => {
+                        removeFriend(entry.id);
+                      },
+                    );
+                  }}
+                >
+                  <img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
+                </button>
+              </div>
+            {/each}
+          </div>
+        {:else}
+          <p class="noFriendsText">Added friends appear here.</p>
+        {/if}
         <div class="friendButtonArea">
           <button
-            class="standardButton white"
+            class="standardButton white friendsAreaButton"
             id="browseUsersFriends"
             onclick={() => {
               if ($isAuthenticated) {
@@ -53,7 +129,7 @@
             }}>Add friends +</button
           >
           <button
-            class="standardButton white"
+            class="standardButton white friendsAreaButton"
             id="openFriendInbox"
             onclick={() => {
               playSound("basic_button");
@@ -64,8 +140,11 @@
               }
             }}
           >
-            <img alt="inbox icon" src="/img/inbox_icon.png" id="inboxIcon" />
-            <!-- change path to inbox_icon_new if $inboxIconNew from inboxStore is true-->
+            <img
+              alt="inbox icon"
+              src={$inboxIconNew ? "/img/inbox_icon_new.png" : "/img/inbox_icon.png"}
+              id="inboxIcon"
+            />
           </button>
         </div>
       </div>
@@ -202,6 +281,38 @@
     border-radius: 10px;
   }
 
+  .friendItem {
+    background-color: rgba(30, 31, 44, 0.25);
+    border-radius: 11px;
+    height: 49px;
+    padding-inline: 3px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding-left: 12px;
+    gap: 2px;
+  }
+
+  .friendItem p {
+    padding-inline: 3px;
+  }
+
+  .friendItemButtons {
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 0;
+    padding-inline: 5px;
+  }
+
+  .friendRemoveIcon {
+    width: 25px;
+    height: 25px;
+    vertical-align: -4px;
+  }
+
+  .friendsAreaButton {
+    background-color: rgba(255, 255, 255, 0.1);
+  }
+
   .infoNote p {
     padding: 5px;
     padding-left: 5px;
@@ -303,7 +414,7 @@
     gap: 5px;
   }
 
-  #noFriendsText {
+  .noFriendsText {
     opacity: 0.75;
     text-align: center;
     margin-left: 10px;
@@ -314,22 +425,17 @@
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 3px;
+    gap: 2px;
     margin-bottom: 10px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 5px;
     padding: 5px;
-    max-height: 135px;
     overflow: auto;
     scrollbar-width: none;
     box-sizing: border-box;
     border: 5px solid rgba(77, 77, 87, 0.1);
     min-width: 100%;
     transition: max-height 150ms ease;
-  }
-
-  #friendBox {
-    display: none;
   }
 
   .friendButtonArea {

@@ -423,33 +423,6 @@ search {
     flex-grow: 1;
 }
 
-.friendItem {
-    background-color: rgba(30, 31, 44, 0.25);
-    border-radius: 5px;
-    height: 36.5px;
-    padding-inline: 3px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-left: 12px;
-    gap: 2px;
-}
-
-.friendItem p {
-    padding-inline: 3px;
-}
-
-.friendItemButtons {
-    background-color: rgba(255, 255, 255, 0.1);
-    padding-inline: 5px;
-}
-
-.friendRemoveIcon {
-    width: 25px;
-    height: 25px;
-    vertical-align: -4px;
-}
-
 .friendOnlineBar {
     width: 6px;
     border-radius: 5px;

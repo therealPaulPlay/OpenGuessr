@@ -439,8 +439,7 @@
     filter: invert();
   }
 
-  #mobileLoginButton,
-  #mobileProfileButton {
+  #mobileLoginButton {
     background-color: var(--brand-color);
     color: white;
   }

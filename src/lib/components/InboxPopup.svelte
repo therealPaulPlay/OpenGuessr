@@ -1,7 +1,6 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
   import { inboxPopup } from "$lib/stores/uiStore";
-  import { onDestroy, onMount } from "svelte";
   import { inboxIconNew, inboxContent } from "$lib/stores/context-specific/inboxStore";
   import { loadInbox } from "$lib/logic/friendAPI";
   import { playSound } from "$lib/utils/soundManager";
@@ -11,21 +10,19 @@
 
   let inboxRefreshInterval;
 
-  onMount(() => {
-    inboxIconNew.set(false);
-    loadInbox();
+  inboxPopup.subscribe((value) => {
+    if (value) {
+      inboxIconNew.set(false);
+      loadInbox();
 
-    // Re-fetch the inbox every X seconds
-    clearInterval(inboxRefreshInterval);
-    inboxRefreshInterval = setInterval(() => {
-      if ($inboxPopup) {
+      // Refetch every X seconds
+      clearInterval(inboxRefreshInterval);
+      inboxRefreshInterval = setInterval(() => {
         loadInbox();
-      }
-    }, 5000);
-  });
-
-  onDestroy(() => {
-    clearInterval(inboxRefreshInterval);
+      }, 5000);
+    } else {
+      clearInterval(inboxRefreshInterval);
+    }
   });
 </script>
 

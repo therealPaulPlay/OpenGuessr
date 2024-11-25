@@ -28,6 +28,7 @@
     background-color: rgba(255, 255, 255, 0.2);
     outline: 3px solid rgba(255, 255, 255, 0.5);
     flex-grow: 1;
+    border: none;
   }
 
   .supporterArea {
@@ -66,6 +67,10 @@
 
   #viewSupporterBenefits {
     font-size: 22px;
+  }
+
+  #supporterTextSecondary {
+    opacity: 0.75;
   }
 
   @media all and (max-width: 1200px) {

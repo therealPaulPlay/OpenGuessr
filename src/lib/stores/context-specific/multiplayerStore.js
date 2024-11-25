@@ -12,3 +12,4 @@ export const peerId = writable();
 
 // UI
 export const multiplayerStatus = writable("None set");
+export const loadedFriendsData = writable();

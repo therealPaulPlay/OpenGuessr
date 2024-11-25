@@ -1,7 +1,7 @@
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
-import { peerId } from "$lib/stores/context-specific/multiplayerStore";
+import { peerId, loadedFriendsData } from "$lib/stores/context-specific/multiplayerStore";
 import { loadProfileFromId } from "$lib/utils/loadProfile";
 import { inboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
@@ -9,6 +9,8 @@ import { get } from "svelte/store";
 
 // Inbox -----------------------------------------------------------------------------------------------------------------------------------
 export async function loadInbox() {
+    if (!get(isAuthenticated)) return;
+
     try {
         const requestBody = {
             id: localStorage.getItem("id"),
@@ -107,7 +109,9 @@ export async function declineFriendRequest(senderId) {
 }
 
 // Load friends ------------------------------------------------------------------------------------------------------------------------
-export async function loadFriends(animate) {
+export async function loadFriends() {
+    if (!get(isAuthenticated)) return;
+
     try {
         const requestBody = {
             id: localStorage.getItem("id")
@@ -123,86 +127,20 @@ export async function loadFriends(animate) {
         });
 
         if (response.ok) {
-            try {
-                const data = await response.json();
-
-                let idCounter = 0;
-
-                friendsContainer.innerHTML = "";
-
-                data.friends.forEach(entry => {
-                    idCounter++;
-
-                    let newEntry = document.createElement("div");
-                    newEntry.classList.add("friendItem");
-                    newEntry.classList.add("standardButton");
-
-                    let friendOnlineBar = entry.online ? `<div class="friendOnlineBar"></div>` : "";
-
-                    newEntry.innerHTML = `
-                    ${friendOnlineBar}
-                    <p>${entry.user_name}</p>
-                    <button id="duelFriend${idCounter}" class="standardButton friendItemButtons">
-                        1v1
-                    </button>
-                    <button id="removeFriend${idCounter}" class="standardButton friendItemButtons">
-                        <img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png">
-                    </button>
-                    `;
-
-                    newEntry.id = "friendEntry" + idCounter;
-
-                    friendsContainer.appendChild(newEntry);
-
-                    document.getElementById("friendEntry" + idCounter).addEventListener("click", () => {
-                        loadProfileFromId(entry.id, true);
-                    });
-
-                    document.getElementById("removeFriend" + idCounter).addEventListener("click", (e) => {
-                        e.stopPropagation();
-                        showConfirmPopup("Remove friend?", "You are about to remove your friend from your list. Your friend will see this and might not like it. Use this at our own risk.", () => {
-                            removeFriend(entry.id);
-                        });
-                    });
-
-
-                    document.getElementById("duelFriend" + idCounter).addEventListener("click", (e) => {
-                        e.stopPropagation();
-                        sendMatchInvite(entry.id, true);
-                    });
-                });
-
-                setTimeout(() => {
-                    friendsContainer.style.maxHeight = "";
-                }, 50);
-
-                if (!friendsContainer.innerHTML) {
-                    friendContainerMessage.textContent = "You haven't added any friends.";
-                    friendContainerMessage.style.display = "block";
-                    document.getElementById("friendBox").style.display = "none";
-                } else {
-                    friendContainerMessage.style.display = "none";
-                    document.getElementById("friendBox").style.display = "flex";
-                }
-
-            } catch (error) {
-                console.error("In-Code error loading friends: " + error);
-            }
+            const data = await response.json();
+            loadedFriendsData.set(data.friends);
+            if (get(loadedFriendsData)?.length == 0) loadedFriendsData.set(undefined);
 
         } else {
             console.error("Error loading friends: " + response.status);
-            friendContainerMessage.textContent = "Error loading friends: " + response.status;
-            friendContainerMessage.style.display = "block";
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while loading friends: ', error);
-        friendContainerMessage.textContent = "An error occured loading your friends.";
-        friendContainerMessage.style.display = "block";
     }
 }
 
-async function removeFriend(friendId) {
+export async function removeFriend(friendId) {
     try {
         const requestBody = {
             id: localStorage.getItem("id"),
@@ -219,7 +157,7 @@ async function removeFriend(friendId) {
         });
 
         if (response.ok) {
-            loadFriends(false);
+            loadFriends();
         } else {
             const data = await response.json();
             console.error("Error removing friend: " + response.status);
