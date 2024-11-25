@@ -1,19 +1,4 @@
-import { toggleMultiplayerSelector } from "./multiplayer.js";
 import { playSound } from "../src/lib/utils/soundManager.js";
-
-document.getElementById("leaderboardButton").addEventListener("click", () => {
-    playSound("basic_button");
-    goToLeaderboard();
-});
-
-document.getElementById("competitionsButton").addEventListener("click", () => {
-    playSound("basic_button");
-    showPageBrowser("/competitions.html");
-});
-
-function goToLeaderboard() {
-    showPageBrowser("/leaderboard.html");
-}
 
 // Various buttons and links -----------------------------------------------------------------------------------------------------------------
 document.getElementById("discoverMaps").addEventListener("click", () => { playSound("basic_button"); showPageBrowser("/maps.html"); });
@@ -118,34 +103,6 @@ countryCategoriesExpand.addEventListener("click", () => {
     }
 
     countryCategoriesExpanded = !countryCategoriesExpanded;
-});
-
-// Mobile UI Menu Buttons -----------------------------------------------------------------------------------------
-document.getElementById("mobileLeaderboardButton").addEventListener("click", () => {
-    playSound("basic_button");
-    goToLeaderboard();
-});
-
-document.getElementById("mobileMultiplayerButton").addEventListener("click", function () {
-    toggleMultiplayerSelector();
-    playSound("basic_button");
-});
-
-document.getElementById("mobileCategoryButton").addEventListener("click", function () {
-    toggleCategoryMenu();
-    playSound("floating_button");
-});
-
-document.getElementById("mobileCompetitionsButton").addEventListener("click", function () {
-    playSound("basic_button");
-    showPageBrowser("/competitions.html");
-});
-
-// Daily competition link to competitions ---------------------------------------------------------------------------------
-
-document.getElementById("dailyCompetition").addEventListener("click", () => {
-    playSound("button_juicy");
-    showPageBrowser("/competitions.html");
 });
 
 // Supporter Boost effect -------------------------------------------------------------------------------

@@ -80,7 +80,7 @@
       const offset = circumference - factor * circumference;
       circle.style.strokeDashoffset = offset;
     } catch (error) {
-      console.error("Error setting progress:", error);
+      console.warn("Error setting progress:", error);
     }
   }
 </script>

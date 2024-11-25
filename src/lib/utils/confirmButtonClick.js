@@ -3,7 +3,7 @@ import { confirmButtonActive, confirmButtonText } from "$lib/stores/context-spec
 import { continueText } from "$lib/stores/context-specific/resultScreenStore";
 import { multiplayer, competition } from "$lib/stores/modeStore";
 import { playSound } from "$lib/utils/soundManager";
-import { hideToggleMap, mapVisible, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore"
+import { mapVisible, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore"
 import { enableResultScreen } from "$lib/utils/setResultScreen";
 // import { stopCompetitionTimer } from "../../../JS/competitionLogic"; // !TODO !CHANGE correct import
 import { get } from "svelte/store";
@@ -24,7 +24,6 @@ export function confirmButtonClicks() {
     } else {
         confirmButtonText.set("Wait...");
         mapVisible.set(false);
-        get(hideToggleMap)(true);
 
         multiplayerStateToGuessed();
     }

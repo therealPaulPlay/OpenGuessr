@@ -10,21 +10,39 @@
   } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
   import { isAuthenticated } from "$lib/stores/accountStore";
-  import { loadedFriendsData, currentScreen, hostStage } from "$lib/stores/context-specific/multiplayerStore";
+  import {
+    loadedFriendsData,
+    currentScreen,
+    hostStage,
+    teamAmount,
+    roundAmount,
+    roundLength,
+    peerId,
+    screenEscapeDisabled,
+    multiplayerCategory,
+    duelRetryEnabled,
+    connectedClientsCount,
+    multiplayerStatus,
+    restrictionButtonText,
+  } from "$lib/stores/context-specific/multiplayerStore";
   import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
-  import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
+  import { loadFriends, removeFriend, sendMatchInvite } from "$lib/logic/friendAPI";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
   import { Link } from "lucide-svelte";
+  import { findDuel, leaveMultiplayerRound, joinRoom, toggleRestrictions } from "$lib/logic/multiplayerLogic";
+  import Ticker from "./Ticker.svelte";
 
   let friendSectionLoaded = $state(false);
-
   let friendsRefreshInterval;
 
   multiplayerPopup.subscribe(async (value) => {
     if (value) {
-      await loadFriends();
+      // On Popup opened
+      multiplayerCategory.set(localStorage.getItem("selectedCategory" || "standard"));
+      roomCodeInput = "";
 
+      await loadFriends();
       clearInterval(friendsRefreshInterval);
 
       // Re-fetch friends every X seconds
@@ -39,6 +57,8 @@
       clearInterval(friendsRefreshInterval);
     }
   });
+
+  let roomCodeInput = $state();
 </script>
 
 {#if $multiplayerPopup}
@@ -75,6 +95,7 @@
                 playSound("basic_button");
                 if ($isAuthenticated) {
                   currentScreen.set("duel");
+                  findDuel();
                 } else {
                   signupPopup.set(true);
                 }
@@ -205,10 +226,31 @@
       <div id="multiplayerWindowJoin">
         <div class="multiplayerJoinAlign">
           <div class="multiplayerJoinField">
-            <p id="multiplayerJoinInfo" class="multiplayerInputInfo">Enter the room code (default).</p>
-            <input id="roomCodeInput" type="text" class="multiplayerInput" placeholder="Room code" />
+            <p id="multiplayerJoinInfo" class="multiplayerInputInfo">{$multiplayerStatus || "Input a room code."}</p>
+            <input
+              id="roomCodeInput"
+              type="text"
+              class="multiplayerInput"
+              placeholder="Room code"
+              bind:value={roomCodeInput}
+            />
           </div>
-          <button id="multiplayerJoin" class="standardButton">Join</button>
+          <button
+            id="multiplayerJoin"
+            class="standardButton"
+            class:buttonDisabled={Boolean(roomCodeInput)}
+            onclick={() => {
+              playSound("start_button");
+              joinRoom(roomCodeInput);
+            }}
+            onkeypress={(e) => {
+              if (e.key == "Enter") {
+                e.preventDefault();
+                playSound("start_button");
+                joinRoom(roomCodeInput);
+              }
+            }}>Join</button
+          >
         </div>
       </div>
     {/if}
@@ -219,55 +261,70 @@
             <div id="roomCreationSettings" class="multiplayerHostSettings">
               <div>
                 <p>Rounds:</p>
-                <div class="ticker">
-                  <button id="roundMinus" class="standardButton white">-</button>
-                  <p id="roundAmountText" class="tickerText">3</p>
-                  <button id="roundPlus" class="standardButton white">+</button>
-                </div>
+                <Ticker limit={10} minimum={2} initialValue={3} bind:value={$roundAmount} />
               </div>
               <div>
                 <p>Round Length:</p>
-                <div class="ticker">
-                  <button id="lengthMinus" class="standardButton white">-</button>
-                  <p id="roundLengthText" class="tickerText">2</p>
-                  <p class="tickerNote">sec</p>
-                  <button id="lengthPlus" class="standardButton white">+</button>
-                </div>
+                <Ticker limit={300} step={10} minimum={10} note="sec" initialValue={60} bind:value={$roundLength} />
               </div>
             </div>
             <div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
-              <p>Restrictions:</p>
-              <button id="toggleRestrictions" class="standardButton white">Standard</button>
+              <p>Restriction:</p>
+              <button id="toggleRestrictions" class="standardButton white" onclick={() => {
+                playSound("basic_button");
+                toggleRestrictions();
+              }}>{$restrictionButtonText}</button>
             </div>
             <div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
               <p>Teams:</p>
               <div class="ticker">
-                <button id="teamsMinus" class="standardButton white">-</button>
-                <p id="teamAmountText" class="tickerText">no</p>
-                <p class="tickerNote">teams</p>
-                <button id="teamsPlus" class="standardButton white">+</button>
+                <Ticker limit={5} lowerLimitText="no" note="teams" initialValue={1} bind:value={$teamAmount} />
               </div>
             </div>
             <div id="roomCreationMap" style="opacity: 0.5;" class="roomCreationModule multiplayerHostSettings">
               <p>Selected Map:</p>
-              <p id="multiplayerMapDisplay">Default</p>
+              <p id="multiplayerMapDisplay">{$multiplayerCategory.replace("community_", "")}</p>
             </div>
           {/if}
           {#if $hostStage == 2}
             <div id="hostCodeArea" class="multiplayerHostCodeArea">
               <div id="roomCodeDisplayArea">
                 <p>Join with code:</p>
-                <h1 id="roomCodeDisplay">Default</h1>
+                <h1 id="roomCodeDisplay">{$peerId.replace("openguessr_", "")}</h1>
               </div>
               <div id="teamsDisplay" class="roomCreationModule multiplayerHostSettings">
                 <p id="teamsDisplayText">Nothing to show</p>
-                <p id="smallJoinCounter">0</p>
+                <p id="smallJoinCounter">{$connectedClientsCount + 1}</p>
               </div>
-              <div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
-                <div id="roomCreationFriendsBox" class="roomCreationFriendsBox">
-                  <!-- online players will be added here programmatically -->
+              {#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online).length >= 1}
+                <div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
+                  <div id="roomCreationFriendsBox" class="roomCreationFriendsBox">
+                    <!-- online players will be added here programmatically -->
+                    {#each $loadedFriendsData.filter((value) => value.online) as entry}
+                      <!-- svelte-ignore a11y_click_events_have_key_events -->
+                      <div
+                        class="standardButton roomCreationFriendItem"
+                        role="menu"
+                        tabindex="0"
+                        onclick={() => {
+                          loadProfileFromId(entry.id, true);
+                        }}
+                      >
+                        <p class="friendsRoomEntryText">{entry.user_name}</p>
+                        <button
+                          class="standardButton friendItemButtons"
+                          onclick={() => {
+                            playSound("basic_button");
+                            sendMatchInvite(entry.id, false);
+                          }}
+                        >
+                          <img src="/img/send_icon.png" alt="send invite" class="sendIcon" />
+                        </button>
+                      </div>
+                    {/each}
+                  </div>
                 </div>
-              </div>
+              {/if}
             </div>
           {/if}
           <div class="multiplayerHostSubmitArea">
@@ -280,6 +337,8 @@
               <button
                 id="multiplayerHost"
                 class="standardButton"
+                class:buttonDisabled={$hostStage == 2 &&
+                  ($connectedClientsCount + 1 < get(teamAmount) || $connectedClientsCount == 0)}
                 onclick={() => {
                   playSound("basic_button");
 
@@ -287,7 +346,10 @@
                   if ($hostStage == 1) {
                     hostStage.set(2);
                   }
-                }}>Create room</button
+
+                  // this has more logic in regards to the stage inside
+                  createRoom(get(roundAmount), get(roundLength));
+                }}>{$hostStage == 1 ? "Create room" : "Start"}</button
               >
             </div>
           </div>
@@ -297,25 +359,42 @@
     {#if $currentScreen == "duel"}
       <div id="multiplayerWindowDuel">
         <div class="multiplayerJoinAlign">
-          <p id="multiplayerDuelInfo" class="multiplayerDuelStatus">Status OK</p>
-          <button id="multiplayerDuelRetry" class="standardButton">Try Again</button>
+          <p
+            id="multiplayerDuelInfo"
+            class="multiplayerDuelStatus"
+            class:loading={$multiplayerStatus.toLowerCase().includes("wait")}
+          >
+            {$multiplayerStatus || "Initializing..."}
+          </p>
+          <button
+            id="multiplayerDuelRetry"
+            class="standardButton"
+            class:buttonDisabled={!$duelRetryEnabled}
+            onclick={() => {
+              playSound("basic_button");
+              findDuel();
+            }}>Try Again</button
+          >
         </div>
       </div>
     {/if}
     <button
       id="multiplayerSelectorClose"
       class="standardButton white closeButton"
+      class:buttonDisabled={$screenEscapeDisabled}
       onclick={() => {
         playSound("basic_button");
         multiplayerPopup.set(false);
         currentScreen.set("main");
         hostStage.set(1);
+        leaveMultiplayerRound();
       }}>Close</button
     >
     {#if $currentScreen != "main"}
       <button
         id="multiplayerSelectorBack"
         class="standardButton white closeButton"
+        class:buttonDisabled={$screenEscapeDisabled}
         onclick={() => {
           playSound("basic_button");
           currentScreen.set("main");
@@ -484,6 +563,38 @@
     text-align: center;
     margin-left: 10px;
     margin-right: auto;
+  }
+
+  .sendIcon {
+    vertical-align: -2px;
+    width: 20px;
+    height: 20px;
+  }
+
+  .roomCreationFriendItem {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-inline: 5px;
+    flex-grow: 1;
+  }
+
+  .friendOnlineBar {
+    width: 6px;
+    border-radius: 5px;
+    height: 20%;
+    background-color: #00cc00;
+    margin-top: 4px;
+    margin-right: 3px;
+  }
+
+  .friendsRoomEntryText {
+    padding-inline: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 150px;
   }
 
   .friendBox {
@@ -716,7 +827,7 @@
     transition: color 250ms ease;
   }
 
-  :global(.multiplayerDuelStatus.loading) {
+  .multiplayerDuelStatus.loading {
     animation: loadingText 1s infinite;
   }
 
@@ -777,33 +888,8 @@
     width: calc(100% - 10px);
   }
 
-  /* ticker */
-  .tickerText {
-    background-color: rgba(255, 255, 255, 0.2);
-    padding: 5px;
-    padding-left: 10px;
-    padding-right: 10px;
-    text-align: center;
-    border-radius: 10px;
-    font-size: 20px;
-    min-width: 50px;
-  }
-
-  .tickerNote {
-    font-size: 20px;
-  }
-
-  .ticker {
-    display: flex;
-    gap: 10px;
-    border-radius: 10px;
-    justify-content: left;
-    padding: 5px;
-    width: fit-content;
-    align-items: center;
-    margin-bottom: 10px;
-    margin-top: 10px;
-    flex-wrap: wrap;
-    background-color: rgba(255, 255, 255, 0.2);
+  .buttonDisabled {
+    pointer-events: none !important;
+    opacity: 0.5;
   }
 </style>

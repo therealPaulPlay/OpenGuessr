@@ -9,9 +9,13 @@ export const highestMultiplayerSupporterLevel = writable(0);
 // Data
 export const multiplayerGuessesLocationsArray = writable([]);
 export const peerId = writable();
+export const connectedClientsCount = writable(0); // Players in round connected to host (excluding host)
 
 // UI
-export const multiplayerStatus = writable("None set");
+export const multiplayerStatus = writable(); // Status for Duel, Join, Linjoin etc.
 export const loadedFriendsData = writable();
 export const currentScreen = writable("main");
 export const hostStage = writable(1);
+export const screenEscapeDisabled = writable(false); // Set the Close and Back buttons disabled (e.g. when establishing connection)
+export const duelRetryEnabled = writable(false);
+export const restrictionButtonText = writable("Standard");

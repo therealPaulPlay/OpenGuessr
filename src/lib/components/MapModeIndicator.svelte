@@ -12,13 +12,13 @@
   let mapModeTextContainer = $state();
   let scrollModeText = $state(false);
 
+  let mapModeText = $state();
+
   function checkMapmodeindicatorOverflow() {
     let positionInfo = mapModeTextContainer.getBoundingClientRect();
     let width = positionInfo.width;
     scrollModeText =
-      width < 150 ||
-      (width < 235 && document.getElementById("mapModeText").textContent.length > 25) ||
-      (width < 280 && document.getElementById("mapModeText").textContent.length > 31);
+      width < 150 || (width < 235 && mapModeText.length > 25) || (width < 280 && mapModeText.length > 31);
   }
 
   let resizeObserver;
@@ -51,7 +51,7 @@
       >
     {/if}
     <div bind:this={mapModeTextContainer} class="mapModeTextContainer">
-      <p class="mapModeText">{$modeText}</p>
+      <p class="mapModeText" bind:textContent={mapModeText} contenteditable="false">{$modeText}</p>
     </div>
     <p
       id="mapTimer"

@@ -393,50 +393,6 @@ search {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.friendsRoomEntryText {
-    padding-inline: 10px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 150px;
-}
-
-#noFriendsToInvite {
-    font-size: 22px;
-    opacity: 0.5;
-    width: 100%;
-    text-align: center;
-}
-
-.sendIcon {
-    vertical-align: -2px;
-    width: 20px;
-    height: 20px;
-}
-
-.roomCreationFriendItem {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 5px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding-inline: 5px;
-    flex-grow: 1;
-}
-
-.friendOnlineBar {
-    width: 6px;
-    border-radius: 5px;
-    height: 20%;
-    background-color: #00cc00;
-    margin-top: 4px;
-    margin-right: 3px;
-}
-
-.modeComingSoon {
-    opacity: 50%;
-    font-style: italic;
-}
-
 #blackBackground {
     overflow: hidden;
     visibility: hidden;

@@ -1,5 +1,5 @@
 // Gamemode where you guess the country (not on the map)
-import { hideToggleMap, mapVisible } from "$lib/stores/context-specific/mapStore";
+import { mapVisible } from "$lib/stores/context-specific/mapStore";
 import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
 import { selectedCountryField, selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuesserStore";
 import { get } from "svelte/store";
@@ -12,7 +12,6 @@ export function setCountryGuesserMode(enabled) {
         // hide map
         if (!get(multiplayer)) {
             mapVisible.set(false);
-            get(hideToggleMap)(true);
         }
 
     } else {
@@ -21,7 +20,6 @@ export function setCountryGuesserMode(enabled) {
         // show map
         if (!get(multiplayer)) {
             mapVisible.set(true);
-            get(hideToggleMap)(false);
         }
     }
 }

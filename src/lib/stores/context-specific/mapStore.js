@@ -9,8 +9,6 @@ export const mapExpanded = writable(true);
 export const mapHolderMarginRight = writable(0);
 export const mapHovered = writable(false);
 
-export const hideToggleMap = writable(); // Function from MobileMapToggle.svelte
-
 // Marker / Pin position
 export const mapPinLat = writable(0); // Player Pin latitude
 export const mapPinLng = writable(0); // Player pin longitude

@@ -1,5 +1,5 @@
 <script>
-  import { countryGuesser } from "$lib/stores/modeStore";
+  import { countryGuesser, multiplayer } from "$lib/stores/modeStore";
   import { selectedCountryField } from "$lib/stores/context-specific/countryGuesserStore";
   import { playSound } from "$lib/utils/soundManager";
   import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
@@ -21,7 +21,7 @@
   }
 </script>
 
-{#if $countryGuesser}
+{#if $countryGuesser && !$multiplayer}
   <div id="countryGuesserSelector" onkeyup={clickConfirm} role="menu" tabindex="0">
     <button
       class="countryGuesserHolder"
