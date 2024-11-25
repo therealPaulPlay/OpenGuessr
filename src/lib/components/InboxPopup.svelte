@@ -19,7 +19,7 @@
       clearInterval(inboxRefreshInterval);
       inboxRefreshInterval = setInterval(() => {
         loadInbox();
-      }, 5000);
+      }, 8000);
     } else {
       clearInterval(inboxRefreshInterval);
     }

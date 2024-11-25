@@ -444,10 +444,6 @@
     opacity: 0.5;
   }
 
-  #supporterTextSecondary {
-    opacity: 0.6;
-  }
-
   .supporterLegalText {
     opacity: 0.6;
   }

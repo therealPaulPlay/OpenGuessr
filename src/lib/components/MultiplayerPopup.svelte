@@ -1,15 +1,21 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
   import { PlusCircle, Unplug } from "lucide-svelte";
-  import { multiplayerPopup, signupPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
+  import {
+    multiplayerPopup,
+    signupPopup,
+    friendBrowserPopup,
+    inboxPopup,
+    troubleshootPopup,
+  } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
-  import { troubleshootPopup } from "$lib/stores/uiStore";
   import { isAuthenticated } from "$lib/stores/accountStore";
-  import { loadedFriendsData } from "$lib/stores/context-specific/multiplayerStore";
+  import { loadedFriendsData, currentScreen, hostStage } from "$lib/stores/context-specific/multiplayerStore";
   import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
   import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
+  import { Link } from "lucide-svelte";
 
   let friendSectionLoaded = $state(false);
 
@@ -19,11 +25,12 @@
     if (value) {
       await loadFriends();
 
-      // Re-fetch friends every X seconds
       clearInterval(friendsRefreshInterval);
+
+      // Re-fetch friends every X seconds
       friendsRefreshInterval = setInterval(() => {
         loadFriends();
-      }, 10000);
+      }, 15000);
 
       setTimeout(() => {
         friendSectionLoaded = true;
@@ -39,225 +46,283 @@
     <div class="popup-title">
       <h1>Multiplayer</h1>
     </div>
-    <div id="multiplayerWindowMain">
-      <div class="multiplayerHorizontalAlign">
-        <div class="groupPartyButtons">
-          <button id="multiplayerSelectJoin" class="standardButton multiplayerSelect white"
-            >Join <span class="groupIcons"><Unplug size="19" /></span></button
-          >
-          <button id="multiplayerSelectHost" class="standardButton multiplayerSelect white"
-            >Host <span class="groupIcons"><PlusCircle size="19" /></span></button
-          >
-        </div>
-        <div class="groupPartyButtons">
-          <button id="multiplayerSelectDuels" class="standardButton multiplayerSelect">
-            Find Duel
-            <img
-              id="findIcon"
-              class="multiplayerMenuIcon"
-              style="margin-left: 5px;"
-              src="/img/find_icon.png"
-              alt="Lightning error symbol"
-            />
-          </button>
-        </div>
-      </div>
-      <div class="multiplayerFriendArea">
-        {#if !$isAuthenticated}
-          <p class="noFriendsText">Sign up to add friends!</p>
-        {/if}
-        {#if $loadedFriendsData}
-          <div id="friendBox" class="friendBox" style:max-height={friendSectionLoaded ? "145px" : "0px"}>
-            {#each $loadedFriendsData as entry}
-              <!-- svelte-ignore a11y_click_events_have_key_events -->
-              <div
-                class="standardButton white friendItem"
-                role="menu"
-                tabindex="0"
-                onclick={() => {
-                  loadProfileFromId(entry.id, true);
-                }}
-              >
-                {#if entry.online}
-                  <div class="friendOnlineBar"></div>
-                {/if}
-                <p>{entry.user_name}</p>
-                <button
-                  id="duelFriend"
-                  class="standardButton friendItemButtons"
-                  onclick={() => {
-                    e.stopPropagation();
-                    playSound("basic_button");
-                    sendMatchInvite(entry.id, true);
-                  }}
-                >
-                  1v1
-                </button>
-                <button
-                  id="removeFriend"
-                  class="standardButton friendItemButtons"
-                  onclick={(e) => {
-                    e.stopPropagation();
-                    playSound("basic_button");
-                    showConfirmPopup(
-                      "Remove friend?",
-                      "You are about to remove your friend from your list. Your friend will see this and might not like it. Use this at our own risk.",
-                      () => {
-                        removeFriend(entry.id);
-                      },
-                    );
-                  }}
-                >
-                  <img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
-                </button>
-              </div>
-            {/each}
+    {#if $currentScreen == "main"}
+      <div id="multiplayerWindowMain">
+        <div class="multiplayerHorizontalAlign">
+          <div class="groupPartyButtons">
+            <button
+              id="multiplayerSelectJoin"
+              class="standardButton multiplayerSelect white"
+              onclick={() => {
+                playSound("basic_button");
+                currentScreen.set("join");
+              }}>Join <span class="groupIcons"><Unplug size="19" /></span></button
+            >
+            <button
+              id="multiplayerSelectHost"
+              class="standardButton multiplayerSelect white"
+              onclick={() => {
+                playSound("basic_button");
+                currentScreen.set("host");
+              }}>Host <span class="groupIcons"><PlusCircle size="19" /></span></button
+            >
           </div>
-        {:else}
-          <p class="noFriendsText">Added friends appear here.</p>
-        {/if}
-        <div class="friendButtonArea">
-          <button
-            class="standardButton white friendsAreaButton"
-            id="browseUsersFriends"
-            onclick={() => {
-              if ($isAuthenticated) {
-                friendBrowserPopup.set(true);
-              } else {
-                signupPopup.set(true);
-              }
-            }}>Add friends +</button
-          >
-          <button
-            class="standardButton white friendsAreaButton"
-            id="openFriendInbox"
-            onclick={() => {
-              playSound("basic_button");
-              if ($isAuthenticated) {
-                inboxPopup.set(true);
-              } else {
-                signupPopup.set(true);
-              }
-            }}
-          >
-            <img
-              alt="inbox icon"
-              src={$inboxIconNew ? "/img/inbox_icon_new.png" : "/img/inbox_icon.png"}
-              id="inboxIcon"
-            />
-          </button>
-        </div>
-      </div>
-      <div class="infoNote">
-        <div id="troubleshootingArea">
-          <p id="issuesTroubleshootText">
-            <img
-              id="errorIcon"
-              class="multiplayerMenuIcon"
-              src="/img/error_icon.png"
-              alt="Lightning error symbol"
-              style="opacity: 60%;"
-            />
-            Having issues?
-          </p>
-          <button
-            class="white standardButton"
-            id="troubleshootGuideButton"
-            onclick={() => {
-              playSound("basic_button");
-              troubleshootPopup.set(true);
-            }}>Troubleshooting Guide</button
-          >
-        </div>
-      </div>
-    </div>
-    <div id="multiplayerWindowJoin" style="display: none;">
-      <div class="multiplayerJoinAlign">
-        <div class="multiplayerJoinField">
-          <p id="multiplayerJoinInfo" class="multiplayerInputInfo">Enter the room code (default).</p>
-          <input id="roomCodeInput" type="text" class="multiplayerInput" placeholder="Room code" />
-        </div>
-        <button id="multiplayerJoin" class="standardButton">Join</button>
-      </div>
-    </div>
-    <div id="multiplayerWindowHost" style="display: none;">
-      <div class="multiplayerCreationArea">
-        <div id="roomCreationSettings" class="multiplayerHostSettings">
-          <div>
-            <p>Rounds:</p>
-            <div class="ticker">
-              <button id="roundMinus" class="standardButton white">-</button>
-              <p id="roundAmountText" class="tickerText">3</p>
-              <button id="roundPlus" class="standardButton white">+</button>
-            </div>
-          </div>
-          <div>
-            <p>Round Length:</p>
-            <div class="ticker">
-              <button id="lengthMinus" class="standardButton white">-</button>
-              <p id="roundLengthText" class="tickerText">2</p>
-              <p class="tickerNote">sec</p>
-              <button id="lengthPlus" class="standardButton white">+</button>
-            </div>
-          </div>
-        </div>
-        <div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
-          <p>Restrictions:</p>
-          <button id="toggleRestrictions" class="standardButton white">Standard</button>
-        </div>
-        <div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
-          <p>Teams:</p>
-          <div class="ticker">
-            <button id="teamsMinus" class="standardButton white">-</button>
-            <p id="teamAmountText" class="tickerText">no</p>
-            <p class="tickerNote">teams</p>
-            <button id="teamsPlus" class="standardButton white">+</button>
-          </div>
-        </div>
-        <div id="roomCreationMap" style="opacity: 0.5;" class="roomCreationModule multiplayerHostSettings">
-          <p>Selected Map:</p>
-          <p id="multiplayerMapDisplay">Default</p>
-        </div>
-        <div id="hostCodeArea" class="multiplayerHostCodeArea">
-          <div id="roomCodeDisplayArea">
-            <p>Join with code:</p>
-            <h1 id="roomCodeDisplay">Default</h1>
-          </div>
-          <div id="teamsDisplay" class="roomCreationModule multiplayerHostSettings">
-            <p id="teamsDisplayText">Nothing to show</p>
-            <p id="smallJoinCounter">0</p>
-          </div>
-          <div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
-            <div id="roomCreationFriendsBox" class="roomCreationFriendsBox">
-              <!-- online players will be added here programmatically -->
-            </div>
-          </div>
-        </div>
-        <div class="multiplayerHostSubmitArea">
-          <div id="innerSubmitAreaBlock">
-            <button id="roomcodeLink" class="copyLinkButton standardButton white">
-              <img id="linkIcon" class="socialIcon" src="/img/link_icon.png" alt="copy link" />
+          <div class="groupPartyButtons">
+            <button
+              id="multiplayerSelectDuels"
+              class="standardButton multiplayerSelect"
+              onclick={() => {
+                playSound("basic_button");
+                if ($isAuthenticated) {
+                  currentScreen.set("duel");
+                } else {
+                  signupPopup.set(true);
+                }
+              }}
+            >
+              Find Duel
+              <img
+                id="findIcon"
+                class="multiplayerMenuIcon"
+                style="margin-left: 5px;"
+                src="/img/find_icon.png"
+                alt="Lightning error symbol"
+              />
             </button>
-            <button id="multiplayerHost" class="standardButton">Create room</button>
+          </div>
+        </div>
+        <div class="multiplayerFriendArea">
+          {#if !$isAuthenticated}
+            <p class="noFriendsText">Sign up to add friends!</p>
+          {/if}
+          {#if $loadedFriendsData}
+            <div id="friendBox" class="friendBox" style:max-height={friendSectionLoaded ? "145px" : "0px"}>
+              {#each $loadedFriendsData as entry}
+                <!-- svelte-ignore a11y_click_events_have_key_events -->
+                <div
+                  class="standardButton white friendItem"
+                  role="menu"
+                  tabindex="0"
+                  onclick={() => {
+                    loadProfileFromId(entry.id, true);
+                  }}
+                >
+                  {#if entry.online}
+                    <div class="friendOnlineBar"></div>
+                  {/if}
+                  <p>{entry.user_name}</p>
+                  <button
+                    id="duelFriend"
+                    class="standardButton friendItemButtons"
+                    onclick={() => {
+                      e.stopPropagation();
+                      playSound("basic_button");
+                      sendMatchInvite(entry.id, true);
+                    }}
+                  >
+                    1v1
+                  </button>
+                  <button
+                    id="removeFriend"
+                    class="standardButton friendItemButtons"
+                    onclick={(e) => {
+                      e.stopPropagation();
+                      playSound("basic_button");
+                      showConfirmPopup(
+                        "Remove friend?",
+                        "You are about to remove your friend from your list. Your friend will see this and might not like it. Use this at our own risk.",
+                        () => {
+                          removeFriend(entry.id);
+                        },
+                      );
+                    }}
+                  >
+                    <img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
+                  </button>
+                </div>
+              {/each}
+            </div>
+          {:else}
+            <p class="noFriendsText">Added friends appear here.</p>
+          {/if}
+          <div class="friendButtonArea">
+            <button
+              class="standardButton white friendsAreaButton"
+              id="browseUsersFriends"
+              onclick={() => {
+                if ($isAuthenticated) {
+                  friendBrowserPopup.set(true);
+                } else {
+                  signupPopup.set(true);
+                }
+              }}>Add friends +</button
+            >
+            <button
+              class="standardButton white friendsAreaButton"
+              id="openFriendInbox"
+              onclick={() => {
+                playSound("basic_button");
+                if ($isAuthenticated) {
+                  inboxPopup.set(true);
+                } else {
+                  signupPopup.set(true);
+                }
+              }}
+            >
+              <img
+                alt="inbox icon"
+                src={$inboxIconNew ? "/img/inbox_icon_new.png" : "/img/inbox_icon.png"}
+                id="inboxIcon"
+              />
+            </button>
+          </div>
+        </div>
+        <div class="infoNote">
+          <div id="troubleshootingArea">
+            <p id="issuesTroubleshootText">
+              <img
+                id="errorIcon"
+                class="multiplayerMenuIcon"
+                src="/img/error_icon.png"
+                alt="Lightning error symbol"
+                style="opacity: 60%;"
+              />
+              Having issues?
+            </p>
+            <button
+              class="white standardButton"
+              id="troubleshootGuideButton"
+              onclick={() => {
+                playSound("basic_button");
+                troubleshootPopup.set(true);
+              }}>Troubleshooting Guide</button
+            >
           </div>
         </div>
       </div>
-    </div>
-    <div id="multiplayerWindowDuel" style="display: none;">
-      <div class="multiplayerJoinAlign">
-        <p id="multiplayerDuelInfo" class="multiplayerDuelStatus">Status OK</p>
-        <button id="multiplayerDuelRetry" class="standardButton">Try Again</button>
+    {/if}
+    {#if $currentScreen == "join"}
+      <div id="multiplayerWindowJoin">
+        <div class="multiplayerJoinAlign">
+          <div class="multiplayerJoinField">
+            <p id="multiplayerJoinInfo" class="multiplayerInputInfo">Enter the room code (default).</p>
+            <input id="roomCodeInput" type="text" class="multiplayerInput" placeholder="Room code" />
+          </div>
+          <button id="multiplayerJoin" class="standardButton">Join</button>
+        </div>
       </div>
-    </div>
+    {/if}
+    {#if $currentScreen == "host"}
+      <div id="multiplayerWindowHost">
+        <div class="multiplayerCreationArea">
+          {#if $hostStage == 1}
+            <div id="roomCreationSettings" class="multiplayerHostSettings">
+              <div>
+                <p>Rounds:</p>
+                <div class="ticker">
+                  <button id="roundMinus" class="standardButton white">-</button>
+                  <p id="roundAmountText" class="tickerText">3</p>
+                  <button id="roundPlus" class="standardButton white">+</button>
+                </div>
+              </div>
+              <div>
+                <p>Round Length:</p>
+                <div class="ticker">
+                  <button id="lengthMinus" class="standardButton white">-</button>
+                  <p id="roundLengthText" class="tickerText">2</p>
+                  <p class="tickerNote">sec</p>
+                  <button id="lengthPlus" class="standardButton white">+</button>
+                </div>
+              </div>
+            </div>
+            <div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
+              <p>Restrictions:</p>
+              <button id="toggleRestrictions" class="standardButton white">Standard</button>
+            </div>
+            <div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
+              <p>Teams:</p>
+              <div class="ticker">
+                <button id="teamsMinus" class="standardButton white">-</button>
+                <p id="teamAmountText" class="tickerText">no</p>
+                <p class="tickerNote">teams</p>
+                <button id="teamsPlus" class="standardButton white">+</button>
+              </div>
+            </div>
+            <div id="roomCreationMap" style="opacity: 0.5;" class="roomCreationModule multiplayerHostSettings">
+              <p>Selected Map:</p>
+              <p id="multiplayerMapDisplay">Default</p>
+            </div>
+          {/if}
+          {#if $hostStage == 2}
+            <div id="hostCodeArea" class="multiplayerHostCodeArea">
+              <div id="roomCodeDisplayArea">
+                <p>Join with code:</p>
+                <h1 id="roomCodeDisplay">Default</h1>
+              </div>
+              <div id="teamsDisplay" class="roomCreationModule multiplayerHostSettings">
+                <p id="teamsDisplayText">Nothing to show</p>
+                <p id="smallJoinCounter">0</p>
+              </div>
+              <div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
+                <div id="roomCreationFriendsBox" class="roomCreationFriendsBox">
+                  <!-- online players will be added here programmatically -->
+                </div>
+              </div>
+            </div>
+          {/if}
+          <div class="multiplayerHostSubmitArea">
+            <div id="innerSubmitAreaBlock">
+              {#if $hostStage == 1}
+                <button id="roomcodeLink" class="copyLinkButton standardButton white">
+                  <Link strokeWidth="2" size="16" />
+                </button>
+              {/if}
+              <button
+                id="multiplayerHost"
+                class="standardButton"
+                onclick={() => {
+                  playSound("basic_button");
+
+                  // Switch to stage 2 (host code area) if on stage 1
+                  if ($hostStage == 1) {
+                    hostStage.set(2);
+                  }
+                }}>Create room</button
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+    {/if}
+    {#if $currentScreen == "duel"}
+      <div id="multiplayerWindowDuel">
+        <div class="multiplayerJoinAlign">
+          <p id="multiplayerDuelInfo" class="multiplayerDuelStatus">Status OK</p>
+          <button id="multiplayerDuelRetry" class="standardButton">Try Again</button>
+        </div>
+      </div>
+    {/if}
     <button
       id="multiplayerSelectorClose"
       class="standardButton white closeButton"
       onclick={() => {
         playSound("basic_button");
         multiplayerPopup.set(false);
+        currentScreen.set("main");
+        hostStage.set(1);
       }}>Close</button
     >
-    <button id="multiplayerSelectorBack" class="standardButton white closeButton" stlye="display: none">Back</button>
+    {#if $currentScreen != "main"}
+      <button
+        id="multiplayerSelectorBack"
+        class="standardButton white closeButton"
+        onclick={() => {
+          playSound("basic_button");
+          currentScreen.set("main");
+          hostStage.set(1);
+        }}>Back</button
+      >
+    {/if}
   </Popup>
 {/if}
 
@@ -510,9 +575,6 @@
 
   #multiplayerJoin {
     width: 35%;
-    transition:
-      opacity 250ms ease,
-      filter 250ms ease;
   }
 
   .multiplayerInputInfo {
@@ -612,11 +674,8 @@
   .copyLinkButton {
     margin: 5px;
     height: fit-content;
+    padding: 1px;
     padding-inline: 10px;
-  }
-
-  #linkIcon {
-    vertical-align: -1px;
   }
 
   #multiplayerHost {
@@ -634,7 +693,7 @@
   }
 
   .multiplayerHostCodeArea {
-    display: none;
+    display: flex;
     flex-wrap: wrap;
     justify-content: space-around;
     align-items: center;
