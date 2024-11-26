@@ -32,7 +32,13 @@
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
   import { Link } from "lucide-svelte";
-  import { findDuel, leaveMultiplayerRound, joinRoom, createRoom, toggleMultiplayerRestriction } from "$lib/logic/multiplayerLogic";
+  import {
+    findDuel,
+    leaveMultiplayerRound,
+    joinRoom,
+    createRoom,
+    toggleMultiplayerRestriction,
+  } from "$lib/logic/multiplayerLogic";
   import Ticker from "./Ticker.svelte";
   import { get } from "svelte/store";
 
@@ -45,7 +51,11 @@
     if (value) {
       // On Popup opened
       multiplayerCategory.set(localStorage.getItem("selectedCategory" || "standard"));
+
+      // UI Resets
       roomCodeInput = "";
+      currentScreen.set("main");
+      hostStage.set(1);
 
       await loadFriends();
       clearInterval(friendsRefreshInterval);
@@ -336,7 +346,7 @@
           {/if}
           <div class="multiplayerHostSubmitArea">
             <div id="innerSubmitAreaBlock">
-              {#if $hostStage == 1}
+              {#if $hostStage == 2}
                 <button
                   id="roomcodeLink"
                   class="copyLinkButton standardButton white"
@@ -380,9 +390,9 @@
           <p
             id="multiplayerDuelInfo"
             class="multiplayerDuelStatus"
-            class:loading={$multiplayerStatus.toLowerCase().includes("wait")}
+            class:loading={$multiplayerStatus && $multiplayerStatus?.toLowerCase()?.includes("wait")}
           >
-            {$multiplayerStatus || "Initializing..."}
+            {$multiplayerStatus || "No match found."}
           </p>
           <button
             id="multiplayerDuelRetry"
@@ -403,8 +413,6 @@
       onclick={() => {
         playSound("basic_button");
         multiplayerPopup.set(false);
-        currentScreen.set("main");
-        hostStage.set(1);
         leaveMultiplayerRound();
       }}>Close</button
     >
@@ -415,8 +423,6 @@
         class:buttonDisabled={$screenEscapeDisabled}
         onclick={() => {
           playSound("basic_button");
-          currentScreen.set("main");
-          hostStage.set(1);
           leaveMultiplayerRound();
         }}>Back</button
       >

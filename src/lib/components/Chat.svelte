@@ -8,7 +8,11 @@
 
   chatHTML.subscribe((value) => {
     try {
-      if (multiplayerChatMessages) multiplayerChatMessages.scrollTop = multiplayerChatMessages.scrollHeight;
+      if (multiplayerChatMessages) {
+        setTimeout(() => {
+          multiplayerChatMessages.scrollTop = multiplayerChatMessages.scrollHeight;
+        }, 100);
+      }
     } catch (error) {
       console.error("Error setting chat box scroll value:", error);
     }

@@ -18,7 +18,7 @@ import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/m
 import { multiplayer } from "$lib/stores/modeStore";
 import { linkJoinPopup, multiplayerPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
-import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, overlayTitleElement, multiplayerTableArray, yourTeam } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, overlayTitleElement, multiplayerTableArray, yourTeam, multiplayerGuessesLocationsArray } from "$lib/stores/context-specific/multiplayerStore";
 import { getLevel } from "$lib/utils/experienceCalculations.js";
 import { confirmButtonText, confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
@@ -161,7 +161,7 @@ function endMultiplayerRound() {
     if (!roundEnded) {
         if (get(isHost)) {
             clearTimeout(endMultiplayerRoundIfGuessMissing);
-            sendMessageToAll("roundOver", multiplayerGuessesLocationsArray);
+            sendMessageToAll("roundOver", get(multiplayerGuessesLocationsArray));
             // Continue button will be disabled, whenever the text contains the word "Wait" - no pointer events none necessary here
             let skipTimeout = playingDuels ? 5000 : 2000;
             continueText.set("Wait " + (skipTimeout / 1000) + "s...");
@@ -202,7 +202,9 @@ export function multiplayerStateToGuessed() {
 
     if (get(isHost)) {
         if (!multiplayerHasAlreadyGuessed) {
-            multiplayerGuessesLocationsArray.push([get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) != null ? get(username) : get(savedGuestName)]); //add the hosts guess to the guesses
+            multiplayerGuessesLocationsArray.update((array) => {
+                return [...array, [get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) != null ? get(username) : get(savedGuestName)]];
+            });
             multiplayerHasGuessed(); // this substracts one from the total requried guesses (and maybe ends the round)
         }
 
@@ -476,11 +478,11 @@ async function sendRoomCodeToMatchmakingServer() {
         if (response.ok) {
             setTimeout(() => {
                 if (matchmakingActive) {
-                    multiplayerStatus.set("No match found. Please retry");
-                    matchmakingActive = false;
-                    setRetryButtonState();
                     leaveMultiplayerRound();
                     deleteRoomCodeFromMatchmakingServer();
+                    matchmakingActive = false;
+                    multiplayerStatus.set("No match found. Please retry.");
+                    setRetryButtonState();
                 }
             }, 10000); // After 10 seconds, as the room code is now expired, leave the multiplayer round and show the retry button
 
@@ -549,7 +551,7 @@ function showTimeReduceOverlay(time, hide) {
                 playSound("time_reduced");
 
                 timeReduceOverlayTimer = setTimeout(() => {
-                    timeReduceOverlayTimer.set(false);
+                    timeReducedOverlay.set(false);
                 }, 3000)
             }
         } catch { console.warn("Error showing time reduce overlay: " + error) }
@@ -575,7 +577,6 @@ function showTimeReduceOverlay(time, hide) {
 }
 
 // Host Logic ----------------------------------------------------------------------------------------------
-export let multiplayerGuessesLocationsArray = [];
 let multiplayerFirstRoundPlayed = false; // for host and peers! peers use this to see whether they should incrase the round index
 
 function removeConnectedPeerById(peerId) {
@@ -673,7 +674,10 @@ function attachHostLogic() {
                     // Receive messages
                     incomingConn.on('data', function (data) {
                         if (data.type == "guessed") {
-                            multiplayerGuessesLocationsArray.push([data.content.lat, data.content.long, data.content.style, data.content.name]);
+                            multiplayerGuessesLocationsArray.update((array) => {
+                                return [...array, [data.content.lat, data.content.long, data.content.style, data.content.name]];
+                            });
+
                             multiplayerHasGuessed();
                         }
 
@@ -798,7 +802,7 @@ export function multiplayerRematch() {
 
 // Start the first / next round
 export async function startMultiplayerRound(latitude, longitude) {
-    multiplayerGuessesLocationsArray = []; // reset previous stored guesses from peers
+    multiplayerGuessesLocationsArray.set([]);
     teamMarkerArray = [];
     totalRequiredGuesses = get(connectedClientsCount) + 1; //connections + 1 for the host (this is being set here as well as after the countdown)
 
@@ -989,7 +993,7 @@ export async function joinRoom(code) {
         }
 
         if (data.type === "roundOver") {
-            multiplayerGuessesLocationsArray = data.content;
+            multiplayerGuessesLocationsArray.set(data.content);
             endMultiplayerRound();
         }
 
@@ -1178,7 +1182,7 @@ export function leaveMultiplayerRound() {
     connectedPeers = [];
     multiplayerFirstRoundPlayed = false;
     roomLocked = true;
-    multiplayerGuessesLocationsArray = [];
+    multiplayerGuessesLocationsArray.set([]);
     teamMarkerArray = [];
     updateMinimapWithTeamMarkers(teamMarkerArray); // clean up multiplayer minimap markers
     roundEnded = false;
@@ -1247,7 +1251,7 @@ function animateMultiplayerWin() {
         playSound("win_sound");
         // Reset animations
         get(overlayTitleElement).style.animation = 'none';
-        get(overlayTitleElement).offsetHeight; // Trigger a reflow to restart the animation
+        const offsetHeight = get(overlayTitleElement).offsetHeight; // Trigger a reflow to restart the animation
 
         // Apply lose animation
         get(overlayTitleElement).style.animation = 'multiplayerTitleWin 1s ease-in-out';
@@ -1263,7 +1267,7 @@ function animateMultiplayerLose() {
 
         // Reset animations
         get(overlayTitleElement).style.animation = 'none';
-        get(overlayTitleElement).offsetHeight; // Trigger a reflow to restart the animation
+        const offsetHeight = get(overlayTitleElement).offsetHeight; // Trigger a reflow to restart the animation
 
         // Apply lose animations
         get(overlayTitleElement).style.animation = 'multiplayerTitleLose 1s ease-in-out';
@@ -1333,7 +1337,6 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
 
             // Assign to table array (loaded in Overlay Component)
             multiplayerTableArray.set(sortedTeamsArray);
-            console.log(sortedTeamsArray);
         } else {
             array.sort((a, b) => b[3] - a[3]);
 
@@ -1402,10 +1405,12 @@ function multiplayerOverlayCountdown() {
                 confirmButtonText.set("Guess");
 
                 try { multiplayerTimer.stopTimer(); } catch { }; //stop multiplayer timer (redudancy)
+
                 multiplayerTimer = startTimer(get(roundLength), multiplayerTimerExpired); //Start the timer
 
                 modeText.set("Multiplayer (Round: " + roundIndex + "/" + get(roundAmount) + ")");
 
+                // Append restriction text
                 if (multiplayerRestriction !== "standard" && multiplayerRestriction) {
                     modeText.set(get(modeText) + " (" + multiplayerRestriction + ")");
                 }

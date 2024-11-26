@@ -4,7 +4,7 @@ import { username } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
 
 export function manuallySendChat(text) {
-    if (text != "") {
+    if (text) {
         if (get(username) != null) {
             distributeChat(get(username) + ": " + text);
         } else {
@@ -47,5 +47,5 @@ function addTextToChat(text) {
 }
 
 function sanitizeHTML(text) {
-    return text.replace(/<[^>]*>?/gm, ''); //strip it of any malicious html (security)
+    return text.replace(/<[^>]*>?/gm, ''); // Strip it of any malicious html (security)
 }

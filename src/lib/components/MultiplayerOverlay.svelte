@@ -34,7 +34,7 @@
             <div
               class="multiplayerOverlayEntry"
               class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peerId)}
-              style:background={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
+              style:background-image={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
             >
               <div class="multiplayerEntryPlayerInfo">
                 <div
@@ -50,7 +50,9 @@
                 >
                   {username} (Lvl. {level})
                   <div class="multiplayerBadge">
-                    <Badge interactive={false} display={true} id={badge} />
+                    {#if badge}
+                      <Badge interactive={false} display={true} id={badge} />
+                    {/if}
                   </div>
                 </div>
                 <div class="multiplayerEntryPlayerScore">Score: {score.toLocaleString()}</div>
@@ -76,7 +78,9 @@
               >
                 {username} (Lvl. {level})
                 <div class="multiplayerBadge">
-                  <Badge interactive={false} display={true} id={badge} />
+                  {#if badge}
+                    <Badge interactive={false} display={true} id={badge} />
+                  {/if}
                 </div>
               </div>
               <div class="multiplayerEntryPlayerScore">Score: {score.toLocaleString()}</div>
@@ -128,6 +132,30 @@
     color: white;
     pointer-events: none;
     user-select: none;
+  }
+
+  .multiplayerBadge {
+    width: fit-content;
+  }
+
+  :global(.multiplayerBadge p) {
+    font-size: 20px !important;
+  }
+
+  #endMultiplayerRoundButton {
+    min-width: 150px;
+    height: 50px;
+    font-size: 25px;
+    margin-top: 10px;
+  }
+
+  #endMultiplayerRematchButton {
+    min-width: 150px;
+    height: 50px;
+    font-size: 25px;
+    margin-top: 20px;
+    color: white;
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   #multiplayerTitle {

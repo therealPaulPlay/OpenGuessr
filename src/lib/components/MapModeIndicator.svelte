@@ -9,6 +9,7 @@
   } from "$lib/stores/context-specific/mapModeIndicatorStore";
   import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
   import { playSound } from "$lib/utils/soundManager";
+  import { get } from "svelte/store";
 
   let mapModeTextContainer = $state();
   let scrollModeText = $state(false);
@@ -40,28 +41,27 @@
   });
 </script>
 
-{#if $mapModeIndicatorVisible && !$resultScreenEnabled}
-  <div id="mapModeIndicator" class:fading={Boolean($indicatorFading)}>
-    {#if $leaveFunction}
-      <button
-        class="leaveButton standardButton closeButton"
-        onclick={() => {
-          playSound("leave_round");
-          leaveFunction();
-        }}>Leave</button
-      >
-    {/if}
-    <div bind:this={mapModeTextContainer} class="mapModeTextContainer">
-      <p class="mapModeText" bind:textContent={mapModeText} contenteditable="false">{$modeText}</p>
-    </div>
-    <p
-      id="mapTimer"
-      class="mapModeText modeTextRight {$indicatorFading ? 'fading' : ''} {scrollModeText ? 'modetextScroll' : ''}"
+<div
+  id="mapModeIndicator"
+  class:fading={Boolean($indicatorFading)}
+  style:display={$mapModeIndicatorVisible && !$resultScreenEnabled ? "" : "none"}
+>
+  {#if $leaveFunction}
+    <button
+      class="leaveButton standardButton"
+      onclick={() => {
+        playSound("leave_round");
+        get(leaveFunction)();
+      }}>Leave</button
     >
-      {$timerText}
-    </p>
+  {/if}
+  <div bind:this={mapModeTextContainer} class="mapModeTextContainer {scrollModeText ? 'modetextScroll' : ''}">
+    <p class="mapModeText" bind:textContent={mapModeText} contenteditable="false">{$modeText}</p>
   </div>
-{/if}
+  <p id="mapTimer" class="mapModeText modeTextRight {$indicatorFading ? 'fading' : ''}">
+    {$timerText}
+  </p>
+</div>
 
 <style>
   #mapModeIndicator {
@@ -95,8 +95,8 @@
   }
 
   .leaveButton {
-    display: none;
     margin: 0;
+    padding: 6px;
     padding-inline: 10px;
     line-height: 0.9;
     margin-left: 8px;

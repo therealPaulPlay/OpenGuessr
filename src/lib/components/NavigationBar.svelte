@@ -47,11 +47,7 @@
 
   // Prevent exiting mulitplayer etc. by starting using a conflicting feature -----------------------------------------------------------------------------
 
-  let preventNavigateOut = $state(false);
-
-  $effect(() => {
-    preventNavigateOut = $competition || $multiplayer;
-  });
+  let preventNavigateOut = $derived($competition || $multiplayer);
 
   // Level indicator (progress ring) -----------------------------------------------------------------------------------------
   let progressRingLevel = $state(0);

@@ -50,7 +50,7 @@ export async function loadResultMap(playersLat, playersLong) {
     let playerLatLng;
     let pointList;
 
-    // Check if in multiplayer mode or country guesser mode
+    // Check if NOT in Country Guesser (or if IN multiplayer)
     if (!get(countryGuesser) || get(multiplayer)) {
         playerLatLng = new google.maps.LatLng(playersLat, playersLong);
         pointList = new google.maps.LatLngBounds();
@@ -65,6 +65,7 @@ export async function loadResultMap(playersLat, playersLong) {
         });
 
         addedMarkers.update((markers) => {
+            markers = markers || [];
             return [...markers, playerMarker];
         });
 
@@ -86,6 +87,7 @@ export async function loadResultMap(playersLat, playersLong) {
         });
 
         addedMarkers.update((markers) => {
+            markers = markers || [];
             return [...markers, polyline];
         });
     }
@@ -129,6 +131,7 @@ export async function loadResultMap(playersLat, playersLong) {
                 });
 
                 addedMarkers.update((markers) => {
+                    markers = markers || [];
                     return [...markers, multiplayerMarker];
                 });
 
@@ -151,6 +154,7 @@ export async function loadResultMap(playersLat, playersLong) {
                 });
 
                 addedMarkers.update((markers) => {
+                    markers = markers || [];
                     return [...markers, multiplayerPolyline];
                 });
             }
@@ -175,6 +179,7 @@ export async function loadResultMap(playersLat, playersLong) {
     });
 
     addedMarkers.update((markers) => {
+        markers = markers || [];
         return [...markers, destinationMarker];
     });
 

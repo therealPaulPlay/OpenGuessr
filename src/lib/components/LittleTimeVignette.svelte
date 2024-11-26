@@ -3,9 +3,7 @@
   import { littleTimeVignette } from "$lib/stores/uiStore";
 </script>
 
-{#if $littleTimeVignette}
-  <div id="littleTimeVignette"></div>
-{/if}
+<div id="littleTimeVignette" style:opacity={$littleTimeVignette ? "1" : "0"}></div>
 
 <style>
   #littleTimeVignette {

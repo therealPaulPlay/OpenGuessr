@@ -103,7 +103,7 @@
 </div>
 <div
   id="bottomFooterAds"
-  class="bottomFooterAds leaderboardAds bottomFooterAdsAd"
+  class="bottomFooterAds leaderboardAds"
   style:display={$supporterLevel >= 2 ? "none" : ""}
 ></div>
 <div
@@ -154,10 +154,6 @@
     margin-right: auto;
     padding: 0;
     z-index: 8;
-  }
-
-  .bottomFooterAdsAd {
-    z-index: 9;
   }
 
   .confirmButton {
