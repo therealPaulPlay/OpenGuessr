@@ -17,17 +17,16 @@
   });
 </script>
 
-{#if $mapVisible}
-  <button
-    id="floatingMapButton"
-    class="standardButton white floatingMapButton"
-    bind:this={toggleMapButton}
-    onclick={toggleMapClick}
-    style={$mapExpanded ? "margin-bottom: 10px;" : ""}
-  >
-    <img id="toggleMapImage" src="/img/map_icon.png" alt="Toggle Minimap." />
-  </button>
-{/if}
+<button
+  id="floatingMapButton"
+  style:visibility={$mapVisible ? "visible" : "hidden"}
+  class="standardButton white floatingMapButton"
+  bind:this={toggleMapButton}
+  onclick={toggleMapClick}
+  style={$mapExpanded ? "margin-bottom: 10px;" : ""}
+>
+  <img id="toggleMapImage" src="/img/map_icon.png" alt="Toggle Minimap." />
+</button>
 
 <style>
   .floatingMapButton {

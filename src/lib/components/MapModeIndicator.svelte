@@ -85,7 +85,6 @@
     padding-top: 3px;
     padding-bottom: 2px;
     user-select: none;
-    margin-top: auto; /* DONT set this to something else, auto is needed to put it to the bottom */
     margin-bottom: 10px;
     flex-shrink: 0;
   }
