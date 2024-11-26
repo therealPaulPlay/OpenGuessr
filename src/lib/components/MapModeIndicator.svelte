@@ -40,7 +40,7 @@
 </script>
 
 {#if $mapModeIndicatorVisible}
-  <div id="mapModeIndicator" class:fading={$indicatorFading}>
+  <div id="mapModeIndicator" class:fading={Boolean($indicatorFading)}>
     {#if $leaveFunction}
       <button
         class="leaveButton standardButton closeButton"
@@ -81,10 +81,11 @@
       width 250ms ease,
       margin 250ms ease;
     z-index: 10;
-    margin-top: 10px;
     padding-top: 3px;
     padding-bottom: 2px;
     user-select: none;
+    margin-top: auto; /* DONT set this to something else, auto is needed to put it to the bottom */
+    margin-bottom: 10px;
     flex-shrink: 0;
   }
 

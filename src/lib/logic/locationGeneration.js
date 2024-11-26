@@ -64,7 +64,7 @@ async function getJSONCoords(category) {
 // Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
 
 async function getCoordsFromLocationServer() {
-    if (loadedMapCategory != "standard") {
+    if (loadedMapCategory !== "standard") {
         try {
             previousGuessesIndexes = [];
             loadedMapCategory = "standard";

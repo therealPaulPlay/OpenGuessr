@@ -24,7 +24,6 @@
     padding-inline: 10px;
     align-items: flex-end;
     flex-direction: column;
-    margin-bottom: 10px;
     max-height: 100%;
     z-index: 9;
     pointer-events: none;

@@ -3,8 +3,8 @@ import { disableResultScreen } from "$lib/utils/setResultScreen";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 import { playSound } from "$lib/utils/soundManager";
 import { errorPopup } from "$lib/utils/errorHandling";
-// import { setRestriction } from "../../../JS/multiplayer"; !TODO !CHANGE
-// import { addCompetitionPlayed } from "../../../JS/profileView"; !TODO !CHANGE
+import { setRestriction } from "$lib/utils/setRestriction";
+import { addCompetitionPlayed } from "$lib/utils/updateProfileData";
 import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 import { supporterLevel } from "$lib/stores/accountStore";
 import { competition } from "$lib/stores/modeStore";
@@ -75,9 +75,7 @@ export function checkStartCompetitionRound() {
 export function stopCompetitionTimer() {
     try {
         competitionTimer.stopTimer();
-    } catch (e) {
-        console.warn("Competition timer already stopped: " + e);
-    }
+    } catch {}
 }
 
 // Score logic ------------------------------------------------------------------------------------------------------

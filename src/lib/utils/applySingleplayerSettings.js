@@ -4,7 +4,8 @@ import {
     timerCountdownOverlayTitle,
     timerCountdownOverlaySubtitle,
 } from "$lib/stores/context-specific/timerCountdownOverlayStore";
-import { singleplayer, timeout } from "$lib/stores/modeStore";
+import { singleplayer, timeout, isSingleplayerNMPZ } from "$lib/stores/modeStore";
+import { setRestriction } from "$lib/utils/setRestriction";
 import { get } from "svelte/store";
 import { startTimer } from "$lib/utils/timer";
 
@@ -29,8 +30,9 @@ export function applySingleplayerSettings() {
 
     // Now, enable what's needed if in Singleplayer
     if (get(singleplayer)) {
+        
+        // Timer
         if (get(timeout)) {
-            // Show MapModeIndicator (Timer UI)
             mapModeIndicatorVisible.set(true);
             modeText.set("Singleplayer");
 
@@ -64,5 +66,8 @@ export function applySingleplayerSettings() {
         } else {
             mapModeIndicatorVisible.set(false); // Hide MapMpdeIndicator
         }
+
+        // NMPZ
+        if (get(isSingleplayerNMPZ)) setRestriction("nmpz");
     }
 }

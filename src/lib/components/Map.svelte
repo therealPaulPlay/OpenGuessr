@@ -32,7 +32,6 @@
   }
 </script>
 
-{#if $mapVisible}
   <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
   <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
   <!-- svelte-ignore a11y_mouse_events_have_key_events -->
@@ -43,16 +42,16 @@
     onmouseenter={handleMapHover}
     onmouseleave={handleMapUnhover}
     onkeyup={spaceBarGuess}
+    style:visibility={$mapVisible ? "" : "hidden"}
     onmouseover={initializeMapIfNotAlready}
     ontouchstart={initializeMapIfNotAlready}
     style:max-height={$mapExpanded ? "100%" : "0%"}
     class:mapFullOpacityResult={Boolean($resultScreenEnabled)}
   >
-    {#if !$map}
+    {#if !$map && $mapVisible}
       <div id="mapPlaceholderBeforeLoad"></div>
     {/if}
   </div>
-{/if}
 
 <style>
   #map {
@@ -63,6 +62,7 @@
     z-index: 9;
     opacity: 60%;
     border-radius: 10px;
+    margin-bottom: 10px;
     max-height: 100%;
     background: #e8e4dc;
     box-shadow: 0 2px 30px rgba(71, 71, 71, 0.5);
@@ -86,6 +86,7 @@
     border-radius: 0 !important;
     top: -60px;
     position: fixed !important;
+    visibility: visible !important;
     max-height: calc(100% + 60px) !important;
     height: calc(100% + 60px) !important;
   }

@@ -48,11 +48,11 @@ export async function checkGenerationTypeAndGenerate() {
         // If multiplayer is enabled
         singleplayer.set(false);
 
-        try {
-            if (get(isHost)) {
-                if (mapCategory != "standard" && mapSupportsMultiplayer(mapCategory) && !mapCategory.includes("community")) {
+        if (get(isHost)) {
+            try {
+                if (mapCategory && mapCategory != "standard" && mapSupportsMultiplayer(mapCategory) && !mapCategory.includes("community")) {
                     await generateNewLocation("JSON");
-                } else if (mapCategory == "standard") {
+                } else if (mapCategory == "standard" || !mapCategory) {
                     await generateNewLocation("SDK");
 
                 } else if (mapCategory.includes("community")) {
@@ -65,11 +65,12 @@ export async function checkGenerationTypeAndGenerate() {
                         errorPopup("Unsupported Multiplayer Map", "This map category is not available for multiplayer and was automatically changed to Standard.", "Map unsupported", false);
                     }, 3500);
                 }
-            } else {
-                await generateNewLocation("FROMHOST");
+
+            } catch (error) {
+                console.error("Error loading multiplayer location in newLocation. Error: ", error)
             }
-        } catch (error) {
-            console.error("Error loading multiplayer location in categoryMenu.js Error: ", error)
+        } else {
+            await generateNewLocation("FROMHOST");
         }
 
     } else if (get(competition)) {

@@ -1,7 +1,6 @@
 // Calculate Level, XP until next level, fraction (how many percent of next level done) etc.
 import { experience } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
-// NOW TODO: apply this to progressRingLevel and progressRing, and resultLevelDisplay
 
 export function getLevel() {
     return experienceCalculations(get(experience)).level;

@@ -39,12 +39,12 @@
 
 <style>
   .tickerText {
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
     padding: 5px;
     padding-left: 10px;
     padding-right: 10px;
     text-align: center;
-    border-radius: 10px;
+    border-radius: 5px;
     font-size: 20px;
     min-width: 50px;
   }

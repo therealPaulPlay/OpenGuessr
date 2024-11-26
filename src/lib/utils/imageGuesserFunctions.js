@@ -12,7 +12,7 @@ export function loadImageFromUrl(url) {
         get(imageGuesserImage).style.backgroundImage = `url(${url})`;
         get(imageGuesserBackground).style.backgroundImage = `url(${url})`;
 
-        // Remove the loading class to apply any transitionsƒ
+        // Remove the loading class to apply any transitions
         setTimeout(() => {
             get(imageGuesserImage).classList.remove("guessImageLoading");
             get(imageGuesserBackground).classList.remove("guessImageLoading");

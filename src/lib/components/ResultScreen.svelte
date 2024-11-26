@@ -16,9 +16,12 @@
   import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
   import { supporterLevel, isAuthenticated, experience } from "$lib/stores/accountStore";
   import { signupPopup } from "$lib/stores/uiStore";
-  import { get } from "svelte/store";
   import { playSound } from "$lib/utils/soundManager";
   import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
+  import { transitionToStart } from "$lib/utils/transitionToStart";
+  import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
+  import { onMount } from "svelte";
+  import { get } from "svelte/store";
 
   let level = $state(1);
   let percentageWidth = $state("0%");
@@ -26,7 +29,18 @@
   experience.subscribe((value) => {
     level = getLevel();
     percentageWidth = getLevelFraction() * 100 + "%";
-  })
+  });
+
+  onMount(() => {
+    if (typeof window === "undefined") return;
+
+    window.addEventListener("keydown", function (event) {
+      if (event.key === " " && isElementClickable(document.getElementById("nextRound")) && $resultScreenEnabled) {
+        transitionToStart();
+        playSound("basic_button");
+      }
+    });
+  });
 </script>
 
 <div id="EndOverlay" class:resultScreenHidden={!Boolean($resultScreenEnabled)}>
@@ -93,12 +107,17 @@
           >
             <img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
           </button>
-          <button id="nextRound" class="standardButton white">
-            <p
-              class="nextRoundText"
-              style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
-              style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
-            >
+          <button
+            id="nextRound"
+            class="standardButton white"
+            style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
+            style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
+            onclick={() => {
+              playSound("basic_button");
+              transitionToStart();
+            }}
+          >
+            <p class="nextRoundText">
               {$continueText}
             </p>
             <img id="nextRoundArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />

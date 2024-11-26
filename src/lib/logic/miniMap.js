@@ -1,4 +1,5 @@
-// import { peerId, sendTeamMarkers, yourTeam } from "../../../JS/multiplayer.js"; !TODO !CHANGE
+import { peerId, yourTeam } from "$lib/stores/context-specific/multiplayerStore";
+import { sendTeamMarkers } from "$lib/logic/multiplayerLogic";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { showNotification } from "$lib/utils/notifications.js";
 import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
@@ -160,14 +161,13 @@ async function initMap() {
 // Trigger map initialization delayed --------------------------------------------------------------
 
 let mapInitialized = false;
+let currentlyInitializing = false;
 
 export async function initializeMapIfNotAlready() {
     if (!mapInitialized && !currentlyInitializing && !get(captchaToken)) {
         captchaPopupVisible.set(true);
     }
 }
-
-let currentlyInitializing = false;
 
 // Callback from the captcha
 if (typeof window !== "undefined") {
@@ -187,15 +187,17 @@ if (typeof window !== "undefined") {
 
 // Reset map ---------------------------------------------------------------------------------------
 
-let multiplayerMiniMarkers = []; // team markers
+let multiplayerMiniMarkers; // team markers
 
 //reset the map - used for going to the next round. 
 export function resetMap() {
     if (get(map)) {
         mapHovered.set(false);
 
-        for (let i = 0; i < get(addedMarkers).length; i++) {
-            get(addedMarkers)[i].setMap(null);
+        if (get(addedMarkers)) {
+            for (let i = 0; i < get(addedMarkers).length; i++) {
+                get(addedMarkers)[i].setMap(null);
+            }
         }
 
         addedMarkers.set([]); // Clear the array
@@ -220,40 +222,42 @@ let marker;
 function onMapClick(latLng) {
     if (get(resultScreenEnabled)) return; // Placing a pin is disabled on result screen
 
-    confirmButtonActive.set(true);
-    playSound("pin_drop", "pin");
-
-    if (marker) {
-        marker.setMap(null);
-    }
-
-    // Set Map Marker Position to user input
-    mapPinLat.set(latLng.lat());
-    mapPinLng.set(latLng.lng());
-
-    var yourIcon = {
-        url: '/img/your_marker' + get(selectedPinIndex) + '.png',
-        size: new google.maps.Size(35, 35),
-        anchor: new google.maps.Point(17.5, 34),
-        origin: new google.maps.Point(0, 0),
-        scaledSize: new google.maps.Size(35, 35),
-    };
-
-    marker = new google.maps.Marker({
-        position: latLng,
-        map: get(map),
-        icon: yourIcon,
-        clickable: false
-    });
-
-    addedMarkers.update((markers) => {
-        return [...markers, marker]
-    });
-
     try {
+
+        confirmButtonActive.set(true);
+        playSound("pin_drop", "pin");
+
+        if (marker) {
+            marker.setMap(null);
+        }
+
+        // Set Map Marker Position to user input
+        mapPinLat.set(latLng.lat());
+        mapPinLng.set(latLng.lng());
+
+        var yourIcon = {
+            url: '/img/your_marker' + get(selectedPinIndex) + '.png',
+            size: new google.maps.Size(35, 35),
+            anchor: new google.maps.Point(17.5, 34),
+            origin: new google.maps.Point(0, 0),
+            scaledSize: new google.maps.Size(35, 35),
+        };
+
+        marker = new google.maps.Marker({
+            position: latLng,
+            map: get(map),
+            icon: yourIcon,
+            clickable: false
+        });
+
+        addedMarkers.update((markers) => {
+            markers = markers || [];
+            return [...markers, marker]
+        });
+
         sendTeamMarkers(get(mapPinLat), get(mapPinLng));
     } catch (error) {
-        console.error("Error sending team markers:", error);
+        console.error("Error in onMapClick function:", error)
     }
 }
 
@@ -297,7 +301,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
             // and miniMarkerTeam matches yourTeam
-            if (miniMarkerId != peerId && miniMarkerTeam === yourTeam) {
+            if (miniMarkerId != get(peerId) && miniMarkerTeam === get(yourTeam)) {
                 const multiplayerLatLng = new google.maps.LatLng(miniMarkerLat, miniMarkerLong);
                 const markerPositionKey = `${multiplayerLatLng.lat()},${multiplayerLatLng.lng()}`;
 

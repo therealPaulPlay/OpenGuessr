@@ -1,5 +1,5 @@
 <script>
-  // import { restoreOldStreak } from "$lib/logic/accountLogic"; !CHANGE !TODO this later
+  import { restoreOldStreak } from "$lib/logic/resultScoreLogic";
   import { errorPopup } from "$lib/utils/errorHandling";
   import { playSound } from "$lib/utils/soundManager";
   import { initializeRewardedAd } from "$lib/utils/rewardedAds";
@@ -51,7 +51,7 @@
     streakWatchAd.style.pointerEvents = "auto";
     streakAdDismissEnabled = true;
     streakHeaderText = "Streak lost!";
-    streakText = `<p>Support us by watching an ad and keep your streak of <span id="streakKeepAmount" class="highlight">${formerStreak}</span> !</p>`;
+    streakText = `<p>Support us by watching an ad and keep your streak of <span id="streakKeepAmount" class="highlight">${formerStreak}</span>!</p>`;
   }
 
   function showStreakAd() {

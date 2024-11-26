@@ -4,7 +4,7 @@ import { countryGuesser } from "$lib/stores/modeStore";
 import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuesserStore";
 import { refreshPlacements } from "$lib/utils/ads";
 import { playSound } from "$lib/utils/soundManager";
-import { loadResultScreenXP } from "$lib/logic/accountLogic";
+import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { resetMap } from "$lib/logic/miniMap";
 import { loadResultMap } from "$lib/logic/resultMap";
 import { get } from "svelte/store";

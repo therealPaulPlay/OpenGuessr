@@ -5,10 +5,9 @@ import { multiplayer, competition } from "$lib/stores/modeStore";
 import { playSound } from "$lib/utils/soundManager";
 import { mapVisible, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore"
 import { enableResultScreen } from "$lib/utils/setResultScreen";
-// import { stopCompetitionTimer } from "../../../JS/competitionLogic"; // !TODO !CHANGE correct import
+import { stopCompetitionTimer } from "$lib/logic/competitionLogic";
+import { multiplayerStateToGuessed } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
-// !TODO !CHANGE import multiplayerStateToGuessed();
-
 
 export function confirmButtonClicks() {
     confirmButtonActive.set(false); // Disable confirm button – will be re-enabled when placing pin

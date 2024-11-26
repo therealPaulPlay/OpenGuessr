@@ -13,7 +13,7 @@
             $signupPopup = false;
             break;
           case data === "loadAccountStatus":
-            checkAuthenticationStatus(); // !TODO: Import checkAuthenticationStatus function and make this functional
+            checkAuthenticationStatus();
             break;
         }
       } catch (error) {

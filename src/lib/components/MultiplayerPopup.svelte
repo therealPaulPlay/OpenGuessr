@@ -361,14 +361,12 @@
                   ($connectedClientsCount + 1 < get(teamAmount) || $connectedClientsCount == 0)}
                 onclick={() => {
                   playSound("basic_button");
+                  createRoom(get(roundAmount), get(roundLength));
 
-                  // Switch to stage 2 (host code area) if on stage 1
+                  // Switch to stage 2 (host code area) if on stage 1 (after the create room function!!)
                   if ($hostStage == 1) {
                     hostStage.set(2);
                   }
-
-                  // this has more logic in regards to the stage inside
-                  createRoom(get(roundAmount), get(roundLength));
                 }}>{$hostStage == 1 ? "Create room" : "Start"}</button
               >
             </div>
@@ -750,6 +748,7 @@
     overflow: auto;
     gap: 5px;
     padding: 0;
+    width: 100%;
     transition: max-height 250ms ease;
   }
 

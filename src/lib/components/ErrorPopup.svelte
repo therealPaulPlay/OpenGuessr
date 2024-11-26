@@ -30,7 +30,7 @@
     </div>
     <div>
       <p class="slightBottomMargin">{$description}</p>
-      {#if errorCode}
+      {#if $errorCode}
         <p class="errorCode">{$errorCode}</p>
       {/if}
     </div>

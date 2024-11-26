@@ -60,7 +60,7 @@ export async function loadResultMap(playersLat, playersLong) {
         // Place the player marker (where the player thinks the location is)
         let playerMarker = new google.maps.Marker({
             position: playerLatLng,
-            map: map,
+            map: get(map),
             icon: yourIcon
         });
 
@@ -75,12 +75,12 @@ export async function loadResultMap(playersLat, playersLong) {
 
         // Open InfoWindow when marker is clicked
         playerMarker.addListener('click', function () {
-            playerInfoWindow.open(map, playerMarker);
+            playerInfoWindow.open(get(map), playerMarker);
         });
 
         let polyline = new google.maps.Polyline({
             path: [curLatLng, playerLatLng],
-            map: map,
+            map: get(map),
             strokeWeight: 1,
             strokeColor: "black"
         });
@@ -124,7 +124,7 @@ export async function loadResultMap(playersLat, playersLong) {
 
                 let multiplayerMarker = new google.maps.Marker({
                     position: multiplayerLatLng,
-                    map: map,
+                    map: get(map),
                     icon: newMultiplayerIcon,
                 });
 
@@ -139,7 +139,7 @@ export async function loadResultMap(playersLat, playersLong) {
 
                 // Open InfoWindow when marker is clicked
                 multiplayerMarker.addListener('click', function () {
-                    multiplayerInfoWindow.open(map, multiplayerMarker);
+                    multiplayerInfoWindow.open(get(map), multiplayerMarker);
                 });
 
                 let multiplayerPolyline = new google.maps.Polyline({
@@ -147,7 +147,7 @@ export async function loadResultMap(playersLat, playersLong) {
                     strokeColor: "black",
                     strokeWeight: 1,
                     strokeOpacity: 0.25,
-                    map: map
+                    map: get(map)
                 });
 
                 addedMarkers.update((markers) => {
@@ -161,7 +161,7 @@ export async function loadResultMap(playersLat, playersLong) {
     if (!get(countryGuesser) || get(multiplayer)) {
         get(map).fitBounds(pointList, { padding: { top: 150, right: 250, bottom: 150, left: 250 } });
         if (get(map).getZoom() > 4) {
-            get(map).setZoom(map.getZoom() - 2);
+            get(map).setZoom(get(map).getZoom() - 2);
         } else {
             get(map).setZoom(get(map).getZoom() - 1);
         }
@@ -170,7 +170,7 @@ export async function loadResultMap(playersLat, playersLong) {
     // Place the "correct" marker reflecting the target location
     let destinationMarker = new google.maps.Marker({
         position: { lat: get(currentLocationLatitude), lng: get(currentLocationLongitude) },
-        map: map,
+        map: get(map),
         icon: greenIcon
     });
 
@@ -186,7 +186,7 @@ function flyToDestination() {
     // Check if EndOverlay is fully visible before flying to the destination
     if (get(resultScreenEnabled)) {
         let currentZoom = get(map).getZoom();
-        let newZoom = Math.min(currentZoom + 2, map.maxZoom || 21); // Adjust 2 to the desired zoom increment and 21 to the max zoom level if you have a custom max
+        let newZoom = Math.min(currentZoom + 2, get(map).maxZoom || 21); // Adjust 2 to the desired zoom increment and 21 to the max zoom level if you have a custom max
 
         let latLng = { lat: get(currentLocationLatitude), lng: get(currentLocationLongitude) };
 

@@ -1,4 +1,5 @@
 import { errorPopup } from "$lib/utils/errorHandling";
+import { experience } from "$lib/stores/accountStore";
 import inIframe from "$lib/utils/checkIframe";
 
 export const backendURL = "https://accounts.openguessr.com/accounts";
@@ -296,11 +297,11 @@ export async function getSupporterLeaderboard() {
   }
 }
 
-export async function updateExperience(token, id, experience, errorSource, errorElement) {
+export async function updateExperience(token, id, experienceParam, errorSource, errorElement) {
   try {
     const requestBody = {
       id: id,
-      experience: experience
+      experience: experienceParam
     };
 
     const experienceEndpoint = userUpdateEndpoint + "/experience";

@@ -6,6 +6,8 @@ export const motivationText = writable("Well done! Default Motivation!"); // Res
 export const continueText = writable("Continue");
 export const earnedExperience = writable(0);
 export const streakText = writable("1 (default)");
+export const lastDistance = writable();
+export const lastExperienceCalculationAborted = writable(false);
 
 export const experienceBarAnimated = writable(true);
 export const showStreakDisplay = writable(true);

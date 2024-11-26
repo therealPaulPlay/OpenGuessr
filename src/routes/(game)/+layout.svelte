@@ -26,7 +26,6 @@
   import DiscordPopup from "$lib/components/DiscordPopup.svelte";
   import SingleplayerOptions from "$lib/components/SingleplayerOptions.svelte";
   import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
-  import SingleplayerNmpz from "$lib/components/SingleplayerNMPZ.svelte";
   import CountryGuesserBar from "$lib/components/CountryGuesserBar.svelte";
   import ResultScreen from "$lib/components/ResultScreen.svelte";
   import BeforeExitPopup from "$lib/components/BeforeExitPopup.svelte";
@@ -44,6 +43,7 @@
   import InitMultiplayer from "$lib/components/InitMultiplayer.svelte";
   import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
   import MultiplayerOverlay from "$lib/components/MultiplayerOverlay.svelte";
+  import BlinkRestrictionFade from "$lib/components/BlinkRestrictionFade.svelte";
 
   // Start ads
   onMount(() => {
@@ -215,9 +215,7 @@
 <LinkJoinPopup />
 <MultiplayerPopup />
 <ResultScreen />
-<div id="blackBackground"></div>
-<div id="nmpzBackground"></div>
-<SingleplayerNmpz />
+<BlinkRestrictionFade />
 <LittleTimeVignette />
 <TimerCountdown />
 <TimeReducedOverlay />

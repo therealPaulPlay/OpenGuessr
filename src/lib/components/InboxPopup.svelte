@@ -26,7 +26,6 @@
   });
 </script>
 
-ƒ
 {#if $inboxPopup}
   <Popup z="960" slim="true">
     <div class="popup-title">

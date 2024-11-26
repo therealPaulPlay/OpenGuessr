@@ -50,7 +50,7 @@
                 >
                   {username} (Lvl. {level})
                   <div class="multiplayerBadge">
-                    <Badge interactive="false" display="true" id={badge} />
+                    <Badge interactive={false} display={true} id={badge} />
                   </div>
                 </div>
                 <div class="multiplayerEntryPlayerScore">Score: {score.toLocaleString()}</div>
@@ -76,7 +76,7 @@
               >
                 {username} (Lvl. {level})
                 <div class="multiplayerBadge">
-                  <Badge interactive="false" display="true" id={badge} />
+                  <Badge interactive={false} display={true} id={badge} />
                 </div>
               </div>
               <div class="multiplayerEntryPlayerScore">Score: {score.toLocaleString()}</div>

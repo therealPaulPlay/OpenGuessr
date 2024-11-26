@@ -4,6 +4,7 @@
   import { loadingScreenVisible } from "$lib/stores/uiStore";
   import { applySingleplayerSettings } from "$lib/utils/applySingleplayerSettings";
   import { checkStartCompetitionRound } from "$lib/logic/competitionLogic";
+  import { panoramaFilter, nmpz } from "$lib/stores/context-specific/restrictionStore";
 
   const handleLoad = () => {
     if ($initialIframeLoad) {
@@ -27,6 +28,8 @@
 <iframe
   id="PanoramaIframe"
   referrerpolicy="no-referrer-when-downgrade"
+  style:filter={$panoramaFilter || "none"}
+  style:pointer-events={Boolean($nmpz)}
   frameborder="0"
   onload={handleLoad}
   src="/loader"
