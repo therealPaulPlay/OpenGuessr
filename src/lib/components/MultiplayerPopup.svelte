@@ -413,6 +413,8 @@
       onclick={() => {
         playSound("basic_button");
         multiplayerPopup.set(false);
+        roomCodeInput = "";
+        currentScreen.set("main");
         leaveMultiplayerRound();
       }}>Close</button
     >
@@ -423,6 +425,8 @@
         class:buttonDisabled={$screenEscapeDisabled}
         onclick={() => {
           playSound("basic_button");
+          roomCodeInput = "";
+          currentScreen.set("main");
           leaveMultiplayerRound();
         }}>Back</button
       >
