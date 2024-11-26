@@ -53,7 +53,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         clearInterval(currentTimerIntervalId);
         isRunning = false; // Set flag to false when the timer is stopped
         indicatorFading.set(false);
-        littleTimeVignette.set(true);
+        littleTimeVignette.set(false);
         stopSound("timerSound");
     }
 

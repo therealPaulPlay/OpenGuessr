@@ -1,46 +1,43 @@
-import { multiplayer, competition } from "$lib/stores/modeStore";
+import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
 import { setCheckNewHighestStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, freeSupporterBoostEnabled, supporterLevel, experience } from "$lib/stores/accountStore";
 import { streakText, showStreakDisplay, lastDistance, lastExperienceCalculationAborted, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
-import { isHost, peerId } from "$lib/stores/context-specific/multiplayerStore";
+import { isHost, peerId, multiplayerCategory, highestMultiplayerSupporterLevel } from "$lib/stores/context-specific/multiplayerStore";
 import { updatePeerDataScore, peerSendsHost } from "$lib/logic/multiplayerLogic";
-import { addResultToCompetitionScore } from "$lib/logic/competitionLogic"; 
+import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { setUserXP } from "$lib/utils/setUserXP";
-import { animateIncrement } from "$lib/utils/animateIncrement";
 import { mapDiameter } from "$lib/stores/context-specific/mapStore";
 import { saveRoundToLog } from "$lib/utils/saveRoundToLog";
 import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates";
+import { playSound } from "$lib/utils/soundManager";
 import { get } from "svelte/store";
 
 // Streak ----------------------------------------------------------------------------------------------------------------------------------------------------
 let streak = 0;
-
-function loadStreak() {
-    let tempLoadedStreak = localStorage.getItem("streak");
-
-    if (tempLoadedStreak != null) {
-        streak = Number(tempLoadedStreak);
-    }
-}
-
-function calculateMultiplier(streak) {
-    if (streak === 0) {
-        return 1;
-    } else if (streak >= 9) {
-        return 1.5;
-    } else {
-        return Math.round((1 + (streak / 9) * 0.5) * 100) / 100;
-    }
-}
-
 let streakMultiplier = 1;
 
-export function restoreOldStreak(oldStreak) {
-    loadStreak();
+function loadStreak() {
+    let tempLoadedStreak = Number(localStorage.getItem("streak") || 0);
 
+    if (tempLoadedStreak) {
+        streak = tempLoadedStreak;
+    }
+}
+
+function calculateMultiplier(streakParam) {
+    if (streakParam === 0) {
+        return 1;
+    } else if (streakParam >= 9) {
+        return 1.5;
+    } else {
+        return Math.round((1 + (streakParam / 9) * 0.5) * 100) / 100;
+    }
+}
+
+export function restoreOldStreak(oldStreak) {
     streak = oldStreak;
     localStorage.setItem("streak", streak);
     streakMultiplier = calculateMultiplier(streak);
@@ -49,22 +46,21 @@ export function restoreOldStreak(oldStreak) {
 }
 
 async function streakCalculation() {
-    if (!get(multiplayer) && !get(competition)) {
+    if (get(singleplayer)) {
         loadStreak(); // Load streak from localstorage
 
         if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
             streak++;
         } else {
-            if (streak >= 2) {
-                get(toggleStreakRestoreWindow)(streak, false);
-            }
+            if (streak >= 2) get(toggleStreakRestoreWindow)(streak, false);
 
             setCheckNewHighestStreak(streak); // checks if this was the highest streak yet and 
-
             streak = 0; //reset country streak ( = Streak lost, but still restorable wit ad)
         }
 
         localStorage.setItem("streak", streak);
+
+        streakMultiplier = calculateMultiplier(streak);
         streakText.set(streak + " (" + streakMultiplier + "x)");
 
         showStreakDisplay.set(true);
@@ -168,7 +164,7 @@ export async function loadResultScreenXP(distance) {
         let earnedBasicXP; // without supporter mutliplier, that will be applied later (this is just for visuals)
 
         // XP calculation formulas -------------------------------------------------
-        if (!get(multiplayer) && !get(competition)) {
+        if (get(singleplayer)) {
             const calculatedXP = await calculateXPGain(distance, selectedCategory, get(supporterLevel), get(freeSupporterBoostEnabled));
             earnedXP = calculatedXP.earnedXP;
             earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
@@ -203,17 +199,28 @@ export async function loadResultScreenXP(distance) {
             experienceBarAnimated.set(true);
         }
 
-        setTimeout(function () {
-            animateIncrement(document.getElementById("endScreenXP"), 0, earnedBasicXP, 1500);
+        if (earnedBasicXP > 50) {
+            setTimeout(() => {
+                playScoreincreaseSound();
+            }, 500);
+        }
 
+        setTimeout(function () {
             if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
                 supporterXpBoostAnimation(supporterMultiplier); // !TODO !CHANGE import this
                 animateSupporterBoostTimeout = setTimeout(() => {
                     earnedExperience.set(earnedXP);
-                    animateIncrement(document.getElementById("endScreenXP"), earnedBasicXP, earnedXP, 750);
                 }, 3500);
             }
         }, 10);
 
+    }
+}
+
+function playScoreincreaseSound() {
+    for (let i = 0; i < 30; i++) {
+        setTimeout(() => {
+            playSound("score_increase");
+        }, 150 * i)
     }
 }

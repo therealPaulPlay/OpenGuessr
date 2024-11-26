@@ -21,7 +21,18 @@
   import { transitionToStart } from "$lib/utils/transitionToStart";
   import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
   import { onMount } from "svelte";
+  import { tweened } from "svelte/motion";
+  import { cubicOut } from "svelte/easing";
   import { get } from "svelte/store";
+
+  const animatedExperience = tweened(0, {
+    duration: 2000,
+    easing: cubicOut,
+  });
+
+  $effect(() => {
+    animatedExperience.set($earnedExperience);
+  });
 
   let level = $state(1);
   let percentageWidth = $state("0%");
@@ -75,7 +86,7 @@
                 style:width={percentageWidth}
               ></div>
             </div>
-            <p id="endScreenXP">{$earnedExperience} XP</p>
+            <p id="endScreenXP">{$animatedExperience.toFixed(0)} XP</p>
             {#if $showStreakDisplay}
               <div id="streakDisplay">
                 <img id="streakIcon" src="/img/streak_icon.png" alt="country streak" />

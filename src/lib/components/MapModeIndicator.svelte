@@ -7,6 +7,7 @@
     indicatorFading,
     timerText,
   } from "$lib/stores/context-specific/mapModeIndicatorStore";
+  import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
   import { playSound } from "$lib/utils/soundManager";
 
   let mapModeTextContainer = $state();
@@ -39,7 +40,7 @@
   });
 </script>
 
-{#if $mapModeIndicatorVisible}
+{#if $mapModeIndicatorVisible && !$resultScreenEnabled}
   <div id="mapModeIndicator" class:fading={Boolean($indicatorFading)}>
     {#if $leaveFunction}
       <button

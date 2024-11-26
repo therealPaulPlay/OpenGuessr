@@ -4,7 +4,7 @@ import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScr
 import { startTimer } from "$lib/utils/timer.js";
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { selectedBadge, selectedPinIndex, supporterLevel, username } from "$lib/stores/accountStore.js";
-// import { transitionToStart } from "../../../JS/categoryMenu.js"; !TODO !CHANGE update imports
+import { transitionToStart } from "$lib/utils/transitionToStart";
 import { changeCategory } from "$lib/utils/changeCategory.js";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
@@ -1295,19 +1295,26 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 teams[teamIndex].players.push(playerInfo);
             });
 
-            // Sort the teams themselves based on total XP
-            let sortedTeams = Object.keys(teams).sort((a, b) => {
-                const totalExperienceA = teams[a].players.reduce((sum, player) => sum + player[3], 0);
-                const totalExperienceB = teams[b].players.reduce((sum, player) => sum + player[3], 0);
-                return totalExperienceB - totalExperienceA;
-            });
+            // Sort the teams based on total XP and transform into an array
+            let sortedTeamsArray = Object.keys(teams)
+                .sort((a, b) => {
+                    const totalExperienceA = teams[a].players.reduce((sum, player) => sum + player[3], 0);
+                    const totalExperienceB = teams[b].players.reduce((sum, player) => sum + player[3], 0);
+                    return totalExperienceB - totalExperienceA; // Sort descending
+                })
+                .map((teamIndex) => {
+                    // Sort players within each team by XP
+                    teams[teamIndex].players.sort((a, b) => b[3] - a[3]);
 
-            // Sort players within each team by XP
-            sortedTeams.forEach(teamIndex => {
-                teams[teamIndex].players.sort((a, b) => b[3] - a[3]);
-            });
+                    // Return the team object
+                    return {
+                        teamIndex: parseInt(teamIndex), // Ensure the team index is numeric
+                        ...teams[teamIndex], // Spread the team properties (color, colorName, players)
+                    };
+                });
 
-            let winningTeamIndex = sortedTeams[0];
+            // Find the winning team index (now as a numeric index from the sorted array)
+            let winningTeamIndex = sortedTeamsArray[0]?.teamIndex;
 
             // Teams Win state
             if (roundIndex >= get(roundAmount)) {
@@ -1325,7 +1332,8 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
             }
 
             // Assign to table array (loaded in Overlay Component)
-            multiplayerTableArray.set(sortedTeams);
+            multiplayerTableArray.set(sortedTeamsArray);
+            console.log(sortedTeamsArray);
         } else {
             array.sort((a, b) => b[3] - a[3]);
 
