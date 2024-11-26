@@ -187,7 +187,7 @@ if (typeof window !== "undefined") {
 
 // Reset map ---------------------------------------------------------------------------------------
 
-let multiplayerMiniMarkers; // team markers
+let multiplayerMiniMarkers = []; // team markers
 
 //reset the map - used for going to the next round. 
 export function resetMap() {

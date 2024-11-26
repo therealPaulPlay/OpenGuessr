@@ -67,7 +67,11 @@ export function applySingleplayerSettings() {
             mapModeIndicatorVisible.set(false); // Hide MapMpdeIndicator
         }
 
-        // NMPZ
+
+        // Reset restriction
+        setRestriction("standard");
+
+        // If NMPZ
         if (get(isSingleplayerNMPZ)) setRestriction("nmpz");
     }
 }

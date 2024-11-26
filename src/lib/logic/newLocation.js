@@ -45,8 +45,7 @@ export async function checkGenerationTypeAndGenerate() {
             console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
         }
     } else if (get(multiplayer)) {
-        // If multiplayer is enabled
-        singleplayer.set(false);
+        singleplayer.set(false); // Don't apply singleplayer settings
 
         if (get(isHost)) {
             try {
@@ -74,7 +73,7 @@ export async function checkGenerationTypeAndGenerate() {
         }
 
     } else if (get(competition)) {
-        singleplayer.set(false);
+        singleplayer.set(false); // Don't apply singleplayer settings
 
         if (checkCompetitionRoundStatus(false)) {
             await generateNewLocation("COMPETITION");

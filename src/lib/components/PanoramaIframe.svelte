@@ -29,7 +29,7 @@
   id="PanoramaIframe"
   referrerpolicy="no-referrer-when-downgrade"
   style:filter={$panoramaFilter || "none"}
-  style:pointer-events={Boolean($nmpz)}
+  style:pointer-events={$nmpz ? "none" : ""}
   frameborder="0"
   onload={handleLoad}
   src="/loader"
