@@ -17,6 +17,8 @@ npm run dev
 npm run dev -- --open
 ```
 
+Make sure to use the ```--host ``` option for the vite dev command, otherwise WebRTC won't work.
+
 ## Building
 
 To create a production version of your app:

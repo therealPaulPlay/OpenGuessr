@@ -4,23 +4,23 @@ import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScr
 import { startTimer } from "$lib/utils/timer.js";
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { selectedBadge, selectedPinIndex, supporterLevel, username } from "$lib/stores/accountStore.js";
-import { transitionToStart } from "../../../JS/categoryMenu.js"; // !TODO !CHANGE update imports
+// import { transitionToStart } from "../../../JS/categoryMenu.js"; !TODO !CHANGE update imports
 import { changeCategory } from "$lib/utils/changeCategory.js";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation.js";
-import { confirmButtonClicks, setConfirmButtonState, updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
+import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
+import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 import { mapSupportsMultiplayer } from "$lib/utils/doesMapSupportMultiplayer.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { addDuelPlayed, addDuelWon } from "$lib/utils/updateProfileData.js";
-import { loadProfileFromId } from "$lib/utils/loadProfile.js";
 import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
 import { linkJoinPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
-import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, multiplayerCategory, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText } from "$lib/stores/context-specific/multiplayerStore.js";
+import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, overlayTitleElement, multiplayerTableArray } from "$lib/stores/context-specific/multiplayerStore.js";
 import { getLevel } from "$lib/utils/experienceCalculations.js";
-import { confirmButtonText } from "$lib/stores/context-specific/confirmButtonStore";
+import { confirmButtonText, confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
 import { get } from "svelte/store";
 
@@ -275,11 +275,13 @@ function generateFunnyGuestName() {
     savedGuestName.set("Guest" + randomAnimal);
 }
 
-if (localStorage.getItem("id") != null) {
-    uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
-} else {
-    uniqueUserID = "openguessr_" + "g" + generateRandomCode(7);
-    generateFunnyGuestName();
+function setUniqueUserID() {
+    if (localStorage.getItem("id") != null) {
+        uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
+    } else {
+        uniqueUserID = "openguessr_" + "g" + generateRandomCode(7);
+        generateFunnyGuestName();
+    }
 }
 
 // Load PeerJS -----------------------------------------------------------------------------------------------------------------------
@@ -287,6 +289,8 @@ let peer;
 let peerOpen = false;
 
 export async function getPeer() {
+    setUniqueUserID();
+
     peer = await loadAndInitializeLibrary(
         'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js',
         'Peer',
@@ -307,9 +311,10 @@ export async function getPeer() {
             peerId.set(id); // Once the PeerJS connection was established, we store the peer ID that was assigned by the PeerJS server + mark the client as open
             peerOpen = true;
         });
+    } else {
+        console.error("Peer could not be created - Loading the library and executing the callback failed.");
     }
 }
-
 
 // Joining via Links (also as a guest!) -------------------------------------------------------------------------------------
 
@@ -617,7 +622,7 @@ if (peer) {
 
                     connectedClientsCount.set(get(connectedClientsCount) + 1);
                     updateTeamDisplay();
-                    clearTimeout(brokenConnectionTimeout); //stop the broken-connection kick timer
+                    clearTimeout(brokenConnectionTimeout); // stop the broken-connection kick timer
 
                     const initialMessage = {
                         type: "initialize",
@@ -715,7 +720,7 @@ if (peer) {
         });
     });
 } else {
-    console.warn("PeerJS not initialized -> Host Logic failed!");
+    console.warn("PeerJS not initialized -> Host Logic failed!"); // !TODO !CHANGE wrap this and erorr logic in functions that add the event listeners + add that to peer load function
 }
 
 let roomLocked = true;
@@ -768,7 +773,7 @@ function StartRoom() {
     matchmakingActive = false;
 }
 
-function multiplayerRematch() {
+export function multiplayerRematch() {
     roundEnded = false;
     multiplayerHasAlreadyGuessed = false;
     multiplayerFirstRoundPlayed = false;
@@ -781,10 +786,8 @@ function multiplayerRematch() {
         StartRoom()
     });
 
-    //change the rematch button so signal the change
-    endMultiplayerRematchButton.style.opacity = "0.5";
-    endMultiplayerRematchButton.style.pointerEvents = "none";
-    endMultiplayerRematchButton.textContent = "Loading...";
+    // Disable the rematch button to avoid multiple clicks + give feedback
+    rematchButtonEnabled.set(false);
 }
 
 // Start the first / next round
@@ -879,6 +882,8 @@ function addReplaceTeamMarkers(id, lat, long, pinIndex, team) {
 
 // Peer Logic -----------------------------------------------------------------------------------------------------------------
 export async function joinRoom(code) {
+    if (!peer) console.warn("Cannot join because PeerJS is not initialized.");
+
     code.replace(/\s/g, ''); // Remove whitespaces
 
     // If peer isn't open yet, await that
@@ -1086,6 +1091,8 @@ if (peer) {
 
         peer.destroy(); //clean up peer
     });
+} else {
+    console.warn("PeerJS not initialized -> Error states cannot be shown!");
 }
 
 // Multiplayer leave ----------------------------------------------------------------------------------
@@ -1163,22 +1170,16 @@ export function leaveMultiplayerRound() {
     highestMultiplayerSupporterLevel.set(0);
     friendDuel = false;
 
-    // reset Guess/Confirm button text
+    // Reset Guess/Confirm button text
     confirmButtonText.set("Guess");
 
-    // Set confirm button state to ensure pointer events are correct (this function calls the confirmButtonState func) and reset minimap markers
-    setConfirmButtonState();
-
-    if (localStorage.setItem("selectedMap") != "country") {
+    if (localStorage.setItem("selectedMap") !== "country") {
         mapVisible.set(true);
     }
 
-    // !TODO !CHANGE hook up to store vars to adjust the end screen stuff
-    endMultiplayerRoundButton.style.display = "none";
-    endMultiplayerRematchButton.style.display = "none";
-    endMultiplayerRematchButton.style.opacity = "1";
-    endMultiplayerRematchButton.style.pointerEvents = "auto";
-    endMultiplayerRematchButton.textContent = "Play again";
+    leaveMatchButtonVisible.set(false);
+    rematchButtonVisible.set(false);
+    rematchButtonEnabled.set(true);
 
     setRestriction("standard");
 
@@ -1187,18 +1188,7 @@ export function leaveMultiplayerRound() {
     }
 }
 
-// Streetview Overlay UI -------------------------------------------------------------------------------------------------------------------
-let endMultiplayerRoundButton = document.getElementById("endMultiplayerRoundButton");
-let endMultiplayerRematchButton = document.getElementById("endMultiplayerRematchButton");
-
-endMultiplayerRoundButton.addEventListener("click", () => {
-    leaveMultiplayerRound();
-    playSound("leave_round");
-});
-endMultiplayerRematchButton.addEventListener("click", () => {
-    multiplayerRematch();
-    playSound("basic_button");
-});
+// Panorama Overlay UI -------------------------------------------------------------------------------------------------------------------
 
 const baseHues = [200, 0, 120, 60, 300]; // Blue, Yellow, Green, Red, Purple
 
@@ -1214,24 +1204,18 @@ function getTeamColorName(teamIndex) {
 
 function showEndscreenUI(show) {
     if (show) {
-        endMultiplayerRoundButton.style.display = "block"; // show leave / end button
+        leaveMatchButtonVisible.set(true); // show leave / end button
 
         if (get(isHost)) {
-            endMultiplayerRoundButton.textContent = "End Round";
-
             if (!playingDuels || friendDuel) {
-                endMultiplayerRematchButton.style.display = "block";
-                endMultiplayerRematchButton.style.opacity = "1";
-                endMultiplayerRematchButton.style.pointerEvents = "auto";
-                endMultiplayerRematchButton.textContent = "Play again";
+                rematchButtonEnabled.set(true);
+                rematchButtonVisible.set(true);
             }
 
-        } else {
-            endMultiplayerRoundButton.textContent = "Leave Round";
         }
     } else {
-        endMultiplayerRoundButton.style.display = "none";
-        endMultiplayerRematchButton.style.display = "none";
+        rematchButtonVisible.set(false);
+        leaveMatchButtonVisible.set(false);
     }
 }
 
@@ -1245,14 +1229,12 @@ function animateMultiplayerWin() {
 
     timeout = setTimeout(() => {
         playSound("win_sound");
-        const title = document.getElementById('multiplayerTitle');
-
         // Reset animations
-        title.style.animation = 'none';
-        title.offsetHeight; // Trigger a reflow to restart the animation
+        get(overlayTitleElement).style.animation = 'none';
+        get(overlayTitleElement).offsetHeight; // Trigger a reflow to restart the animation
 
         // Apply lose animation
-        title.style.animation = 'multiplayerTitleWin 1s ease-in-out';
+        get(overlayTitleElement).style.animation = 'multiplayerTitleWin 1s ease-in-out';
     }, 1500);
 }
 
@@ -1262,38 +1244,29 @@ function animateMultiplayerLose() {
 
     timeout = setTimeout(() => {
         playSound("lose_sound");
-        const title = document.getElementById('multiplayerTitle');
 
         // Reset animations
-        title.style.animation = 'none';
-        title.offsetHeight; // Trigger a reflow to restart the animation
+        get(overlayTitleElement).style.animation = 'none';
+        get(overlayTitleElement).offsetHeight; // Trigger a reflow to restart the animation
 
         // Apply lose animations
-        title.style.animation = 'multiplayerTitleLose 1s ease-in-out';
+        get(overlayTitleElement).style.animation = 'multiplayerTitleLose 1s ease-in-out';
     }, 1500);
 }
 
 export function showMultiplayerOverlay(show, title, array, lateJoin) {
-    let container = document.getElementById("multiplayerTable");
-
     if (show) {
-        container.innerHTML = "";
-        document.getElementById("multiplayerFade").style.opacity = "1";
-        document.getElementById("multiplayerFade").style.pointerEvents = "auto";
-        document.getElementById("multiplayerTitle").textContent = title;
+        multiplayerOverlay.set(true); // Show the overlay
+        multiplayerOverlayTitle.set(title);
 
         if (!multiplayerFirstRoundPlayed) {
-            document.getElementById("mapModeText").textContent = "Multiplayer (" + get(multiplayerCategory)?.replace("community_", "") + ")";
+            modeText.set("Multiplayer (" + get(multiplayerCategory)?.replace("community_", "") + ")");
         }
-
-        let yourPeerId = get(peerId);
-
-        let elementHTML = ""; // content to be added to each entry
 
         if (get(teamAmount) > 1) {
             let teams = {};
 
-            // array in this case is always connected peers
+            // "array" in this case is always connected peers (see passed property)
             array.forEach(playerInfo => {
                 const teamIndex = playerInfo[4]; // team id 
                 if (!teams[teamIndex]) {
@@ -1306,11 +1279,16 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 teams[teamIndex].players.push(playerInfo);
             });
 
-            // Sort the teams themselves based on total xp
+            // Sort the teams themselves based on total XP
             let sortedTeams = Object.keys(teams).sort((a, b) => {
                 const totalExperienceA = teams[a].players.reduce((sum, player) => sum + player[3], 0);
                 const totalExperienceB = teams[b].players.reduce((sum, player) => sum + player[3], 0);
                 return totalExperienceB - totalExperienceA;
+            });
+
+            // Sort players within each team by XP
+            sortedTeams.forEach(teamIndex => {
+                teams[teamIndex].players.sort((a, b) => b[3] - a[3]);
             });
 
             let winningTeamIndex = sortedTeams[0];
@@ -1318,7 +1296,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
             // Teams Win state
             if (roundIndex >= get(roundAmount)) {
                 let teamColorName = teams[winningTeamIndex].colorName;
-                document.getElementById("multiplayerTitle").textContent = `Team ${teamColorName} won!`;
+                multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
                 showEndscreenUI(true);
 
                 if (yourTeam == winningTeamIndex) {
@@ -1330,61 +1308,8 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 showEndscreenUI(false);
             }
 
-            sortedTeams.forEach(teamIndex => {
-                // Sort players within each team by score (experience)
-                teams[teamIndex].players.sort((a, b) => b[3] - a[3]);
-
-                teams[teamIndex].players.forEach(playerInfo => {
-                    nameProfileIdCounter++;
-
-                    const [peerId, username, level, score, team, id, badge] = playerInfo;
-                    let playerColor = teams[teamIndex].color;
-
-                    let clickableEntry = id ? "" : " entryNotClickable";
-
-                    let newEntry = document.createElement("div");
-
-                    if (peerId == yourPeerId) {
-                        newEntry.className = "multiplayerOverlayEntry yourMultiplayerOverlay";
-                        newEntry.style = `background-image: linear-gradient(90deg, transparent 60%, ${playerColor})`;
-
-                        elementHTML = `
-                            <div class="multiplayerEntryPlayerInfo">
-                                <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})<div class="multiplayerBadge" id="newBadgeDiv${nameProfileIdCounter}"></div></div>
-                                <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
-                            </div>
-                    `;
-                    } else {
-                        newEntry.className = "multiplayerOverlayEntry";
-                        newEntry.style = `background-image: linear-gradient(90deg, transparent 60%, ${playerColor})`;
-
-                        elementHTML = `
-                            <div class="multiplayerEntryPlayerInfo">
-                                <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})<div class="multiplayerBadge" id="newBadgeDiv${nameProfileIdCounter}"></div></div>
-                                <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
-                            </div>
-                    `;
-                    }
-
-                    newEntry.innerHTML = elementHTML;
-                    container.appendChild(newEntry);
-
-                    if (badge) {
-                        let newBadgeDiv = document.getElementById("newBadgeDiv" + nameProfileIdCounter);
-                        newBadgeDiv.appendChild(returnMultiplayerBadge(badge));
-                    }
-
-                    if (id) {
-                        try {
-                            document.getElementById("usernameOverlayField" + nameProfileIdCounter).addEventListener("click", () => {
-                                loadProfileFromId(id, true);
-                            });
-                        } catch (error) {
-                            console.error("Error in showMultiplayerOverlay: " + error);
-                        }
-                    }
-                });
-            });
+            // Assign to table array (loaded in Overlay Component)
+            multiplayerTableArray.set(sortedTeams);
         } else {
             array.sort((a, b) => b[3] - a[3]);
 
@@ -1393,7 +1318,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 let winningPlayerData = array[0];
                 let winningUsername = winningPlayerData[1];
                 let winningId = winningPlayerData[5];
-                document.getElementById("multiplayerTitle").textContent = winningUsername + " won!";
+                multiplayerOverlayTitle.set(winningUsername + " won!");
 
                 if (localStorage.getItem("id") == winningId) {
                     animateMultiplayerWin();
@@ -1415,88 +1340,19 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
                 showEndscreenUI(false);
             }
 
-            array.forEach(playerInfo => {
-                nameProfileIdCounter++;
-
-                const [peerId, username, level, score, team, id, badge] = playerInfo;
-
-                let newEntry = document.createElement("div");
-
-                let clickableEntry = id ? "" : " entryNotClickable";
-
-                if (peerId == yourPeerId) {
-                    newEntry.className = "multiplayerOverlayEntry yourMultiplayerOverlay";
-
-                    elementHTML = `
-                        <div class="multiplayerEntryPlayerInfo">
-                            <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})<div class="multiplayerBadge" id="newBadgeDiv${nameProfileIdCounter}"></div></div>
-                            <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
-                        </div>
-                `;
-                } else {
-                    newEntry.className = "multiplayerOverlayEntry";
-
-                    elementHTML = `
-                        <div class="multiplayerEntryPlayerInfo">
-                            <div id="usernameOverlayField${nameProfileIdCounter}" class="multiplayerEntryPlayerName${clickableEntry}">${username} (Lvl. ${level})<div class="multiplayerBadge" id="newBadgeDiv${nameProfileIdCounter}"></div></div>
-                            <div class="multiplayerEntryPlayerScore">Score: ${score.toLocaleString()}</div>
-                        </div>
-                `;
-                }
-
-                newEntry.innerHTML = elementHTML;
-                container.appendChild(newEntry);
-
-                if (badge) {
-                    let newBadgeDiv = document.getElementById("newBadgeDiv" + nameProfileIdCounter);
-                    newBadgeDiv.appendChild(returnMultiplayerBadge(badge));
-                }
-
-                if (id) {
-                    try {
-                        document.getElementById("usernameOverlayField" + nameProfileIdCounter).addEventListener("click", () => {
-                            loadProfileFromId(id, true);
-                        });
-                    } catch (error) {
-                        console.error("Error in showMultiplayerOverlay: " + error);
-                    }
-                }
-            });
+            // Assign to table array (the sorted version!) (loaded in Overlay Component)
+            multiplayerTableArray.set(array);
         }
 
-        document.getElementById("confirmButton").style.pointerEvents = "none";
-        document.getElementById("map").style.visibility = "hidden";
-        hideToggleMapButtonIfMobile(true);
+        confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
+        mapVisible.set(false); // Hide map
         showTimeReduceOverlay(0, true); // hide = true (in case it somehow overlaps if the result screen is being skipped quickly)
 
     } else {
-        document.getElementById("multiplayerFade").style.opacity = "0";
-        document.getElementById("multiplayerFade").style.pointerEvents = "none";
-        if (get(multiplayer) || mapCategory != "country") {
-            document.getElementById("map").style.visibility = "visible";
-            hideToggleMapButtonIfMobile(false);
+        multiplayerOverlay.set(false);
+        if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country") {
+            mapVisible.set(true);
         }
-    }
-}
-
-let randomBadgeIndexId = 0;
-
-function returnMultiplayerBadge(badge) {
-    if (badge) {
-        randomBadgeIndexId++;
-
-        try {
-            const badgeToClone = document.getElementById(badge);
-            const newBadge = badgeToClone.cloneNode(true);
-            newBadge.classList.remove("badgeSelected");
-            newBadge.classList.remove("badgeLocked");
-            newBadge.id = "multiplayerOverlayBadge" + randomBadgeIndexId; // change id to prevent overlap 
-            return newBadge;
-        } catch (error) {
-            console.error("Couldn't load multiplayer badge with id " + badge + ". Error: " + error);
-        }
-    } else {
-        return "";
     }
 }
 
@@ -1508,12 +1364,11 @@ function multiplayerOverlayCountdown() {
     roundEnded = false;
     multiplayerHasAlreadyGuessed = false;
 
-    const multiplayerTitle = document.getElementById("multiplayerTitle");
     let countdown = 3;
 
     countdownInterval = setInterval(function () {
         if (countdown > 0) {
-            multiplayerTitle.textContent = `Starting... ${countdown}`;
+            multiplayerOverlayTitle.set(`Starting... ${countdown}`);
             countdown--;
             playSound("match_countdown");
         } else {
@@ -1541,7 +1396,7 @@ function multiplayerOverlayCountdown() {
 
 // Set restriction ----------------------------------------------------------------------------------
 
-const PanoramaIframe = document.getElementById("PanoramaIframe");
+// const PanoramaIframe = document.getElementById("PanoramaIframe");
 
 export function setRestriction(restriction) {
     nmpzBackground.style.pointerEvents = "none";

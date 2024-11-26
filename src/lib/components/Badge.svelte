@@ -1,4 +1,5 @@
 <script>
+  // Must pass a "id" prop to load a badge!
   let { unlocked = false, id, interactive = false, display = false } = $props();
   import { selectedBadge } from "$lib/stores/accountStore";
   import { profileData } from "$lib/stores/context-specific/profileStore";

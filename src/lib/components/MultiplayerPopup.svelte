@@ -32,11 +32,14 @@
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
   import { Link } from "lucide-svelte";
-  import { findDuel, leaveMultiplayerRound, joinRoom, toggleRestrictions } from "$lib/logic/multiplayerLogic";
+  import { findDuel, leaveMultiplayerRound, joinRoom, createRoom, toggleMultiplayerRestriction } from "$lib/logic/multiplayerLogic";
   import Ticker from "./Ticker.svelte";
+  import { get } from "svelte/store";
 
   let friendSectionLoaded = $state(false);
   let friendsRefreshInterval;
+
+  let roomCodeInput = $state("");
 
   multiplayerPopup.subscribe(async (value) => {
     if (value) {
@@ -59,8 +62,6 @@
       clearInterval(friendsRefreshInterval);
     }
   });
-
-  let roomCodeInput = $state();
 </script>
 
 {#if $multiplayerPopup}
@@ -240,7 +241,7 @@
           <button
             id="multiplayerJoin"
             class="standardButton"
-            class:buttonDisabled={Boolean(roomCodeInput)}
+            class:buttonDisabled={!Boolean(roomCodeInput)}
             onclick={() => {
               playSound("start_button");
               joinRoom(roomCodeInput);
@@ -277,7 +278,7 @@
                 class="standardButton white"
                 onclick={() => {
                   playSound("basic_button");
-                  toggleRestrictions();
+                  toggleMultiplayerRestriction();
                 }}>{$restrictionButtonText}</button
               >
             </div>
@@ -418,6 +419,7 @@
           playSound("basic_button");
           currentScreen.set("main");
           hostStage.set(1);
+          leaveMultiplayerRound();
         }}>Back</button
       >
     {/if}

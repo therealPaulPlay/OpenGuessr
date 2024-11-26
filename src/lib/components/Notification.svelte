@@ -44,7 +44,7 @@
       <button id="notificationAccept" class="standardButton white" onclick={accept}>{$acceptText}</button>
     {/if}
     <button id="notificationDismiss" class="standardButton white" onclick={dismiss}>
-      <img alt="dismiss notification" class="friendRemoveIcon" src="/img/delete_icon.png" />
+      <img alt="dismiss notification" class="dismissIcon" src="/img/delete_icon.png" />
     </button>
   </div>
 </div>
@@ -95,5 +95,11 @@
     align-items: center;
     width: fit-content;
     gap: 4px;
+  }
+
+  .dismissIcon {
+    width: 25px;
+    height: 25px;
+    vertical-align: -4px;
   }
 </style>

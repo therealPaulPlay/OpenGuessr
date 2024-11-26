@@ -43,6 +43,7 @@
   import Chat from "$lib/components/Chat.svelte";
   import InitMultiplayer from "$lib/components/InitMultiplayer.svelte";
   import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
+  import MultiplayerOverlay from "$lib/components/MultiplayerOverlay.svelte";
 
   // Start ads
   onMount(() => {
@@ -220,12 +221,7 @@
 <LittleTimeVignette />
 <TimerCountdown />
 <TimeReducedOverlay />
-<div id="multiplayerFade">
-  <h1 id="multiplayerTitle">Multiplayer Default title</h1>
-  <div id="multiplayerTable"></div>
-  <button id="endMultiplayerRematchButton" class="standardButton">Play again</button>
-  <button id="endMultiplayerRoundButton" class="standardButton">End round</button>
-</div>
+<MultiplayerOverlay />
 <ImageGuesser />
 <div class="viewContainer">
   <PanoramaIframe />
