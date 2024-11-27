@@ -2,18 +2,22 @@
   let { children } = $props();
   import { playSound } from "$lib/utils/soundManager";
   import Notification from "$lib/components/Notification.svelte";
+
+  function goBack() {
+    history.back();
+  }
 </script>
 
 <nav class="menuNavBar">
-  <a
+  <button
     class="backButton standardButton white"
-    href="/"
     onclick={() => {
       playSound("basic_button");
+      goBack();
     }}
   >
     <img src="/img/arrow_icon.png" alt="Expand or close arrow" class="backButtonArrowIcon" />
-    Back</a
+    Back</button
   >
 </nav>
 
@@ -88,8 +92,9 @@
 
   .container {
     max-width: 1200px;
+    padding: 20px;
     padding-top: 100px;
-    width: 100%;
+    width: calc(100% - 40px);
   }
 
   @media (max-width: 1200px) {

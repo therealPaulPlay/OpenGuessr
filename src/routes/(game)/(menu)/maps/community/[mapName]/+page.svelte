@@ -9,7 +9,10 @@
   import { Link, MapPin, Heart, HeartOff, Trash2, Replace } from "lucide-svelte";
   import { playSound } from "$lib/utils/soundManager";
   import Popup from "$lib/components/Popup.svelte";
+  import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
   import { onMount } from "svelte";
+
+  let { data } = $props();
 
   // TODO import update utilities to get coords
 
@@ -23,6 +26,7 @@
 
   onMount(() => {
     playerId = localStorage.getItem("id") || -1;
+    console.log(data);
   });
 
   // Panorama -------------------------------------------------------------------------------------
@@ -133,10 +137,11 @@
   let fileName = $state("Pick file");
   let showStatus = $state(false);
   let statusText = $state("Default...");
+  let textareaValue = $state();
 
   async function updateMap(mapName) {
     let inputFromFilepicker = false;
-    const mapData = filePicker.value ? filePicker.files[0] : document.getElementById("updateMapData").value;
+    const mapData = filePicker.value ? filePicker.files[0] : textareaValue;
     inputFromFilepicker = filePicker.value ? true : false;
 
     try {
@@ -169,6 +174,10 @@
     }
   }
 </script>
+
+<svelte:head>
+  <title>{mapName}</title>
+</svelte:head>
 
 <div class="mainContainer">
   <!-- Main View (Panorama Preview) -->
@@ -234,7 +243,7 @@
       >
         <Link strokeWidth={2} size={18} />
       </button>
-      {#if (mapAuthorId == playerId && playerId) || true}
+      {#if mapAuthorId == playerId && playerId}
         <button
           id="manageDelete"
           class="standardButton white"
@@ -290,6 +299,7 @@
       class="uploadInfo locationTextbox"
       type="text"
       rows="20"
+      bind:value={textareaValue}
       placeholder="https://www.google.com/maps..."
       maxlength="5000000"
     ></textarea>
