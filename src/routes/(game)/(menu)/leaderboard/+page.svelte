@@ -87,118 +87,120 @@
   <title>Leaderboard</title>
 </svelte:head>
 
-<div class="podium-container">
+<div class="centerContainer">
+  <div class="podium-container">
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_static_element_interactions -->
+    <div id="podium" class="podium" class:podium-loaded={Boolean(mainSectionEntries)}>
+      <div
+        class="podium-item silver"
+        id="second-place"
+        onclick={() => {
+          loadProfileFromId(mainSectionEntries?.[1]?.id, true);
+        }}
+      >
+        <div class="name">{mainSectionEntries?.[1]?.user_name || "Guest"}</div>
+        <div class="podiumExp">{mainSectionEntries?.[1]?.experience.toLocaleString() || "0 XP"}</div>
+        <div class="rank">#2</div>
+      </div>
+      <div
+        class="podium-item gold"
+        id="first-place"
+        onclick={() => {
+          loadProfileFromId(mainSectionEntries?.[0]?.id, true);
+        }}
+      >
+        <div class="name">{mainSectionEntries?.[0]?.user_name || "Guest"}</div>
+        <div class="podiumExp">{mainSectionEntries?.[0]?.experience?.toLocaleString() || "0 XP"}</div>
+        <div class="rank">#1</div>
+      </div>
+      <div
+        class="podium-item bronze"
+        id="third-place"
+        onclick={() => {
+          loadProfileFromId(mainSectionEntries?.[2]?.id, true);
+        }}
+      >
+        <div class="name">{mainSectionEntries?.[2]?.user_name || "Guest"}</div>
+        <div class="podiumExp">{mainSectionEntries?.[2]?.experience?.toLocaleString() || "0 XP"}</div>
+        <div class="rank">#3</div>
+      </div>
+    </div>
+  </div>
+  <div class="container" id="filterContainer">
+    <div class="optionBar">
+      <button
+        id="filterAll"
+        class="standardButton white optionButton"
+        class:optionButtonSelected={filter == "all"}
+        onclick={() => {
+          filter = "all";
+          playSound("basic_button");
+          loadCorrectLeaderboard();
+        }}>All</button
+      >
+      <button
+        id="filterSupporter"
+        class="standardButton white optionButton"
+        class:optionButtonSelected={filter == "supporter"}
+        onclick={() => {
+          filter = "supporter";
+          playSound("basic_button");
+          loadCorrectLeaderboard();
+        }}>Supporters</button
+      >
+    </div>
+  </div>
   <!-- svelte-ignore a11y_click_events_have_key_events -->
-  <!-- svelte-ignore a11y_no_static_element_interactions -->
-  <div id="podium" class="podium" class:podium-loaded={Boolean(mainSectionEntries)}>
-    <div
-      class="podium-item silver"
-      id="second-place"
-      onclick={() => {
-        loadProfileFromId(mainSectionEntries?.[1]?.id, true);
-      }}
-    >
-      <div class="name">{mainSectionEntries?.[1]?.user_name || "Guest"}</div>
-      <div class="podiumExp">{mainSectionEntries?.[1]?.experience.toLocaleString() || "0 XP"}</div>
-      <div class="rank">#2</div>
+  <div class="leaderboardContainer" id="leaderboardContainer">
+    <div id="container" class="container">
+      {#if mainSectionEntries}
+        {#each mainSectionEntries.slice(3) as entry, i}
+          <div
+            class="rankedItem"
+            role="button"
+            tabindex="0"
+            class:yourItem={entry.user_name == $username && $isAuthenticated}
+            class:rankedItemSupporter={entry.supporter_level >= 1}
+            onclick={() => {
+              loadProfileFromId(entry.id, true);
+            }}
+          >
+            <p class="maxlength rankedItemLeft">#{entry.position}</p>
+            <p class="middle maxlength">{entry.user_name}</p>
+            <p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
+          </div>
+        {/each}
+      {:else}
+        <p class="loadingText">Loading...</p>
+      {/if}
     </div>
-    <div
-      class="podium-item gold"
-      id="first-place"
-      onclick={() => {
-        loadProfileFromId(mainSectionEntries?.[0]?.id, true);
-      }}
-    >
-      <div class="name">{mainSectionEntries?.[0]?.user_name || "Guest"}</div>
-      <div class="podiumExp">{mainSectionEntries?.[0]?.experience?.toLocaleString() || "0 XP"}</div>
-      <div class="rank">#1</div>
-    </div>
-    <div
-      class="podium-item bronze"
-      id="third-place"
-      onclick={() => {
-        loadProfileFromId(mainSectionEntries?.[2]?.id, true);
-      }}
-    >
-      <div class="name">{mainSectionEntries?.[2]?.user_name || "Guest"}</div>
-      <div class="podiumExp">{mainSectionEntries?.[2]?.experience?.toLocaleString() || "0 XP"}</div>
-      <div class="rank">#3</div>
-    </div>
-  </div>
-</div>
-<div class="container" id="filterContainer">
-  <div class="optionBar">
-    <button
-      id="filterAll"
-      class="standardButton white optionButton"
-      class:optionButtonSelected={filter == "all"}
-      onclick={() => {
-        filter = "all";
-        playSound("basic_button");
-        loadCorrectLeaderboard();
-      }}>All</button
-    >
-    <button
-      id="filterSupporter"
-      class="standardButton white optionButton"
-      class:optionButtonSelected={filter == "supporter"}
-      onclick={() => {
-        filter = "supporter";
-        playSound("basic_button");
-        loadCorrectLeaderboard();
-      }}>Supporters</button
-    >
-  </div>
-</div>
-<!-- svelte-ignore a11y_click_events_have_key_events -->
-<div class="leaderboardContainer" id="leaderboardContainer">
-  <div id="container" class="container">
-    {#if mainSectionEntries}
-      {#each mainSectionEntries.slice(3) as entry, i}
-        <div
-          class="rankedItem"
-          role="button"
-          tabindex="0"
-          class:yourItem={entry.user_name == $username && $isAuthenticated}
-          class:rankedItemSupporter={entry.supporter_level >= 1}
-          onclick={() => {
-            loadProfileFromId(entry.id, true);
-          }}
-        >
-          <p class="maxlength rankedItemLeft">#{entry.position}</p>
-          <p class="middle maxlength">{entry.user_name}</p>
-          <p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
-        </div>
-      {/each}
-    {:else}
-      <p class="loadingText">Loading...</p>
+    {#if userSectionEntries}
+      <div id="threeDotsContainer" class="threeDotsContainer">
+        <div class="circleDot"></div>
+        <div class="circleDot"></div>
+        <div class="circleDot"></div>
+      </div>
+      <div id="yourLeagueContainer" class="container">
+        {#each userSectionEntries as entry, i}
+          <div
+            class="rankedItem"
+            role="button"
+            tabindex="0"
+            class:yourItem={entry.user_name == $username && $isAuthenticated}
+            class:rankedItemSupporter={entry.supporter_level >= 1}
+            onclick={() => {
+              loadProfileFromId(entry.id, true);
+            }}
+          >
+            <p class="maxlength rankedItemLeft">#{entry.position}</p>
+            <p class="middle maxlength">{entry.user_name}</p>
+            <p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
+          </div>
+        {/each}
+      </div>
     {/if}
   </div>
-  {#if userSectionEntries}
-    <div id="threeDotsContainer" class="threeDotsContainer">
-      <div class="circleDot"></div>
-      <div class="circleDot"></div>
-      <div class="circleDot"></div>
-    </div>
-    <div id="yourLeagueContainer" class="container">
-      {#each userSectionEntries as entry, i}
-        <div
-          class="rankedItem"
-          role="button"
-          tabindex="0"
-          class:yourItem={entry.user_name == $username && $isAuthenticated}
-          class:rankedItemSupporter={entry.supporter_level >= 1}
-          onclick={() => {
-            loadProfileFromId(entry.id, true);
-          }}
-        >
-          <p class="maxlength rankedItemLeft">#{entry.position}</p>
-          <p class="middle maxlength">{entry.user_name}</p>
-          <p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
-        </div>
-      {/each}
-    </div>
-  {/if}
 </div>
 
 <style>
@@ -224,6 +226,11 @@
     border-radius: 13px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
+  }
+
+  .centerContainer {
+    width: fit-content;
+    margin-inline: auto;
   }
 
   #filterContainer {
@@ -542,7 +549,7 @@
     .podium {
       width: 85vw;
       height: 150px;
-      gap: 10px;
+      gap: 5px;
     }
 
     .podium-item .name {

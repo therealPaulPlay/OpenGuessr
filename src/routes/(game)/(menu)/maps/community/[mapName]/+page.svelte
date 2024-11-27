@@ -6,10 +6,12 @@
   import { errorPopup } from "$lib/utils/errorHandling";
   import { signupPopup } from "$lib/stores/uiStore";
   import { showNotification } from "$lib/utils/notifications";
-  import { Link, MapPin, Heart, HeartOff } from "lucide-svelte";
+  import { Link, MapPin, Heart, HeartOff, Trash2, Replace } from "lucide-svelte";
   import { playSound } from "$lib/utils/soundManager";
   import Popup from "$lib/components/Popup.svelte";
   import { onMount } from "svelte";
+
+  // TODO import update utilities to get coords
 
   let iframeSource = $state("/loader");
   let mapName = $state("Default Name");
@@ -113,8 +115,8 @@
 
       // Return the success or error message. No need to parse the response
       if (response.ok) {
-        loadedCommunityMaps = loadedCommunityMaps.filter((map) => map.name !== mapName); // Remove deleted map from map array
-        return `Map deleted successfully.`;
+        showConfirmPopup("Map deleted", "The map was deleted successfully.", false, false, false, true);
+        return "Map deleted successfully.";
       } else {
         console.error("Error deleting map: " + response.status);
         errorPopup("Failed to delete map", "Failed to delete the map " + mapName + ".", response.status);
@@ -127,6 +129,45 @@
 
   // Map Update ---------------------------------------------------------------------------------------------------------
   let updatePopup = $state(false);
+  let filePicker = $state();
+  let fileName = $state("Pick file");
+  let showStatus = $state(false);
+  let statusText = $state("Default...");
+
+  async function updateMap(mapName) {
+    let inputFromFilepicker = false;
+    const mapData = filePicker.value ? filePicker.files[0] : document.getElementById("updateMapData").value;
+    inputFromFilepicker = filePicker.value ? true : false;
+
+    try {
+      const body = {
+        id: localStorage.getItem("id"),
+        name: mapName,
+        mapData: inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData),
+      };
+
+      // Send POST request to the server
+      const response = await fetch("https://maps.openguessr.com/maps", {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ` + localStorage.getItem("bearer"),
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      // Return the success or error message. No need to parse the response
+      if (response.ok) {
+        return `Map updated successfully.`;
+      } else {
+        console.error("Error updating map: " + response.status);
+        return "Failed to update map: " + response.status;
+      }
+    } catch (error) {
+      console.error("Error updating map:", error);
+      return "A network error occurred while updating the map: " + error;
+    }
+  }
 </script>
 
 <div class="mainContainer">
@@ -193,6 +234,25 @@
       >
         <Link strokeWidth={2} size={18} />
       </button>
+      {#if (mapAuthorId == playerId && playerId) || true}
+        <button
+          id="manageDelete"
+          class="standardButton white"
+          onclick={() => {
+            playSound("basic_button");
+            deleteMapScreen(mapName);
+          }}><Trash2 size={18} /></button
+        >
+        <button
+          id="manageUpdate"
+          class="standardButton white"
+          onclick={() => {
+            playSound("basic_button");
+            updatePopup = true;
+            showStatus = false;
+          }}><Replace size={18} /></button
+        >
+      {/if}
     </div>
     <a
       class="standardButton playButton"
@@ -205,24 +265,6 @@
     >
       Play  "{mapName}"
     </a>
-    {#if mapAuthorId == playerId && playerId}
-      <button
-        id="manageDelete"
-        class="standardButton white"
-        onclick={() => {
-          playSound("basic_button");
-          deleteMapScreen(mapName);
-        }}>Delete</button
-      >
-      <button
-        id="manageUpdate"
-        class="standardButton white"
-        onclick={() => {
-          playSound("basic_button");
-          updateMapScreen(mapName);
-        }}>Update</button
-      >
-    {/if}
   </div>
   <div class="information">
     <div class="locationAmountInfo infoElement">
@@ -241,9 +283,8 @@
 
 {#if updatePopup}
   <Popup>
-    <h1 id="mapUpdateHeader">Update {mapName}</h1>
-    <p class="marginTop" id="updateMapStatus">Default</p>
-    <p class="marginTop">Locations:</p>
+    <h1 id="mapUpdateHeader">Replace locations</h1>
+    <p class="marginTop">New locations:</p>
     <textarea
       id="updateMapData"
       class="uploadInfo locationTextbox"
@@ -252,25 +293,60 @@
       placeholder="https://www.google.com/maps..."
       maxlength="5000000"
     ></textarea>
-    <p>You can upload a JSON file with <span id="jsonFormatInfoSpanUpdate">this formatting</span>:</p>
-    <button id="jsonUpdateButton" class="standardButton">
-      <input type="file" id="jsonUpdate" accept="application/json" />
-      <p id="fileNameUpdate">Pick file</p>
+    <p>...or upload a JSON in the OpenGuessr format:</p>
+    <button
+      id="jsonUpdateButton"
+      class="standardButton white"
+      onclick={() => {
+        playSound("basic_button");
+        filePicker.click(); // Simulate click on filePicker to make the file picker UI nicer (default picker is hidden)
+      }}
+    >
+      <input
+        type="file"
+        id="jsonUpdate"
+        accept="application/json"
+        bind:this={filePicker}
+        onchange={(e) => {
+          fileName = e.target.files.length > 0 ? e.target.files[0].name : "Pick file";
+        }}
+      />
+      <p id="fileNameUpdate">{fileName}</p>
     </button>
+    {#if showStatus}
+      <p class="marginTop" id="updateMapStatus">{statusText}</p>
+    {/if}
     <div class="buttonBoxRight">
-      <button id="updateClose" class="standardButton closeButton">Close</button>
-      <button id="updateProceed" class="standardButton playButton">Update</button>
+      <button
+        id="updateClose"
+        class="standardButton closeButton white"
+        onclick={() => {
+          playSound("basic_button");
+          fileName = "Pick file"; // Reset file name input
+          updatePopup = false;
+        }}>Close</button
+      >
+      <button
+        id="updateProceed"
+        class="standardButton closeButton"
+        onclick={async () => {
+          showStatus = true;
+          statusText = "Updating...";
+          statusText = "Status: " + (await updateMap(mapName));
+        }}>Update</button
+      >
     </div>
   </Popup>
 {/if}
 
 <style>
   .mainContainer {
-    width: 100%;
+    width: calc(100% - 20px);
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     align-items: center;
+    padding-inline: 10px;
   }
 
   .descriptionScroll {
@@ -285,6 +361,10 @@
   .descHeader {
     font-size: 25px;
     margin-bottom: 5px;
+  }
+
+  .marginTop {
+    margin-top: 20px;
   }
 
   #updateMapStatus {
@@ -315,6 +395,31 @@
     opacity: 0.75;
   }
 
+  .uploadInfo {
+    border-radius: 10px;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 75%;
+    font-size: 22px;
+    min-height: 30px;
+    font-family: Barlow;
+    border: none;
+    padding: 10px;
+    padding-inline: 20px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    transition: background-color 250ms ease;
+  }
+
+  .uploadInfo:focus {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  #jsonUpdateButton {
+    margin-top: 10px;
+  }
+
   .locationAmountInfo {
     justify-content: center;
     align-items: center;
@@ -324,6 +429,10 @@
 
   .descriptionInfo {
     flex-grow: 4;
+  }
+
+  #jsonUpdate {
+    display: none;
   }
 
   .information {
@@ -354,9 +463,11 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
     width: 100%;
     border-radius: 10px;
     padding: 10px;
+    gap: 10px;
     background-color: var(--box-color);
     position: relative;
   }

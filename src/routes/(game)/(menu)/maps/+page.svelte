@@ -102,74 +102,6 @@
     }
   }
 
-  // Update map Screen ------------------------------------------------------------------------------------------------------------------
-  function updateMapScreen(name) {
-    document.getElementById("mapUpdatePopup").style.display = "flex";
-    document.getElementById("mapUpdateHeader").style.display = "Update " + name;
-    document.getElementById("jsonUpdate").value = ""; // reset filepicker input
-    document.getElementById("updateMapStatus").style.display = "none";
-
-    const newButton = document.getElementById("updateProceed").cloneNode(true);
-    document
-      .getElementById("updateProceed")
-      .parentNode.replaceChild(newButton, document.getElementById("updateProceed"));
-    newButton.addEventListener("click", async () => {
-      document.getElementById("updateMapStatus").style.display = "block";
-      document.getElementById("updateMapStatus").textContent = "Updating...";
-      document.getElementById("updateMapStatus").textContent = "Status: " + (await updateMap(name));
-    });
-  }
-
-  document.getElementById("updateClose").addEventListener("click", () => {
-    document.getElementById("mapUpdatePopup").style.display = "none";
-    document.getElementById("fileNameUpdate").textContent = "Pick file";
-  });
-
-  document.getElementById("jsonUpdateButton").addEventListener("click", function () {
-    document.getElementById("jsonUpdate").click();
-  });
-
-  document.getElementById("jsonUpdate").addEventListener("change", function () {
-    var fileName = document.getElementById("fileNameUpdate");
-    fileName.textContent = this.files.length > 0 ? this.files[0].name : "Pick file";
-  });
-
-  async function updateMap(mapName) {
-    let filePicker = document.getElementById("jsonUpdate");
-    let inputFromFilepicker = false;
-    const mapData = filePicker.value ? filePicker.files[0] : document.getElementById("updateMapData").value;
-    inputFromFilepicker = filePicker.value ? true : false;
-
-    try {
-      const body = {
-        id: localStorage.getItem("id"),
-        name: mapName,
-        mapData: inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData),
-      };
-
-      // Send POST request to the server
-      const response = await fetch("https://maps.openguessr.com/maps", {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ` + localStorage.getItem("bearer"),
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(body),
-      });
-
-      // Return the success or error message. No need to parse the response
-      if (response.ok) {
-        return `Map updated successfully.`;
-      } else {
-        console.error("Error updating map: " + response.status);
-        return "Failed to update map: " + response.status;
-      }
-    } catch (error) {
-      console.error("Error updating map:", error);
-      return "A network error occurred while updating the map: " + error;
-    }
-  }
-
   // Search and categories ------------------------------------------------------------------------
 
   function startSearch() {
@@ -842,47 +774,12 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
     text-decoration: underline;
   }
 
-  .uploadInfo {
-    border-radius: 10px;
-    outline: none;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    width: 75%;
-    font-size: 22px;
-    min-height: 30px;
-    font-family: Barlow;
-    border: none;
-    padding: 5px;
-    padding-inline: 20px;
-    margin-bottom: 20px;
-    margin-top: 10px;
-    transition: background-color 250ms ease;
-  }
-
-  .uploadInfo:focus {
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-
-  input:focus {
-    outline: none;
-    border: none;
-  }
-
   #mapSearch:focus {
     outline: none;
     background-color: rgba(255, 255, 255, 0.2);
   }
 
-  #uploadPopup {
-    display: none;
-  }
-
-  #mapUpdatePopup {
-    display: none;
-  }
-
   #uploadHeader,
-  #mapUpdateHeader,
   #JsonInfoPlayHeader {
     margin-top: 5px;
   }
@@ -902,6 +799,27 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
+  }
+
+  .uploadInfo {
+    border-radius: 10px;
+    outline: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    width: 75%;
+    font-size: 22px;
+    min-height: 30px;
+    font-family: Barlow;
+    border: none;
+    padding: 10px;
+    padding-inline: 20px;
+    margin-bottom: 20px;
+    margin-top: 10px;
+    transition: background-color 250ms ease;
+  }
+
+  .uploadInfo:focus {
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   #uploadConfirmPopup {
@@ -953,13 +871,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 
   #uploadConfirmText {
     margin-bottom: 50px;
-  }
-
-  #linkIcon {
-    width: 20px;
-    height: 20px;
-    padding: 0;
-    vertical-align: -2px;
   }
 
   .categoriesBar {
