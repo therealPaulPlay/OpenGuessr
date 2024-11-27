@@ -50,7 +50,7 @@
   multiplayerPopup.subscribe(async (value) => {
     if (value) {
       // On Popup opened
-      multiplayerCategory.set(localStorage.getItem("selectedCategory" || "standard"));
+      multiplayerCategory.set(localStorage.getItem("selectedCategory") || "standard");
 
       // UI Resets
       roomCodeInput = "";
@@ -129,55 +129,57 @@
           {#if !$isAuthenticated}
             <p class="noFriendsText">Sign up to add friends!</p>
           {/if}
-          {#if $loadedFriendsData}
-            <div id="friendBox" class="friendBox" style:max-height={friendSectionLoaded ? "145px" : "0px"}>
-              {#each $loadedFriendsData as entry}
-                <!-- svelte-ignore a11y_click_events_have_key_events -->
-                <div
-                  class="standardButton white friendItem"
-                  role="menu"
-                  tabindex="0"
-                  onclick={() => {
-                    loadProfileFromId(entry.id, true);
-                  }}
-                >
-                  {#if entry.online}
-                    <div class="friendOnlineBar"></div>
-                  {/if}
-                  <p>{entry.user_name}</p>
-                  <button
-                    id="duelFriend"
-                    class="standardButton friendItemButtons"
+          {#if $isAuthenticated}
+            {#if $loadedFriendsData}
+              <div id="friendBox" class="friendBox" style:max-height={friendSectionLoaded ? "145px" : "0px"}>
+                {#each $loadedFriendsData as entry}
+                  <!-- svelte-ignore a11y_click_events_have_key_events -->
+                  <div
+                    class="standardButton white friendItem"
+                    role="menu"
+                    tabindex="0"
                     onclick={() => {
-                      e.stopPropagation();
-                      playSound("basic_button");
-                      sendMatchInvite(entry.id, true);
+                      loadProfileFromId(entry.id, true);
                     }}
                   >
-                    1v1
-                  </button>
-                  <button
-                    id="removeFriend"
-                    class="standardButton friendItemButtons"
-                    onclick={(e) => {
-                      e.stopPropagation();
-                      playSound("basic_button");
-                      showConfirmPopup(
-                        "Remove friend?",
-                        "You are about to remove your friend from your list. Your friend will see this and might not like it. Use this at our own risk.",
-                        () => {
-                          removeFriend(entry.id);
-                        },
-                      );
-                    }}
-                  >
-                    <img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
-                  </button>
-                </div>
-              {/each}
-            </div>
-          {:else}
-            <p class="noFriendsText">Added friends appear here.</p>
+                    {#if entry.online}
+                      <div class="friendOnlineBar"></div>
+                    {/if}
+                    <p>{entry.user_name}</p>
+                    <button
+                      id="duelFriend"
+                      class="standardButton friendItemButtons"
+                      onclick={(e) => {
+                        e.stopPropagation();
+                        playSound("basic_button");
+                        sendMatchInvite(entry.id, true);
+                      }}
+                    >
+                      1v1
+                    </button>
+                    <button
+                      id="removeFriend"
+                      class="standardButton friendItemButtons"
+                      onclick={(e) => {
+                        e.stopPropagation();
+                        playSound("basic_button");
+                        showConfirmPopup(
+                          "Remove friend?",
+                          "You are about to remove your friend from your list. Your friend will see this and might not like it. Use this at our own risk.",
+                          () => {
+                            removeFriend(entry.id);
+                          },
+                        );
+                      }}
+                    >
+                      <img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
+                    </button>
+                  </div>
+                {/each}
+              </div>
+            {:else}
+              <p class="noFriendsText">Added friends appear here.</p>
+            {/if}
           {/if}
           <div class="friendButtonArea">
             <button

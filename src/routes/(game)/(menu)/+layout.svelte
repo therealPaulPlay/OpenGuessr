@@ -84,6 +84,7 @@
 
   .container {
     max-width: 1200px;
+    padding-top: 100px;
   }
 
   @media (max-width: 1200px) {

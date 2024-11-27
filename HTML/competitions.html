@@ -79,7 +79,6 @@
         text-align: center;
         Font-family: Barlow, Futura, sans-serif;
         color: rgb(255, 255, 255);
-        font-size: 45px;
         margin-bottom: 12px;
         margin-top: 10px;
         text-overflow: ellipsis;
@@ -89,7 +88,6 @@
         text-align: left;
         Font-family: Barlow, Futura, sans-serif;
         color: rgb(255, 255, 255);
-        font-size: 40px;
         margin-bottom: 10px;
         margin-top: 5px;
         text-overflow: ellipsis;
@@ -378,11 +376,6 @@
 
     .expiredLeaderboardColor {
         background-color: rgba(255, 176, 176, 0.2);
-    }
-
-    .closeButton {
-        background-color: white;
-        color: black;
     }
 
     .competitionArea {
@@ -822,19 +815,6 @@
             width: 80%;
         }
 
-        h1 {
-            font-size: 30px;
-        }
-
-        h2 {
-            font-size: 30px;
-        }
-
-        p,
-        li {
-            font-size: 20px;
-        }
-
         .boxHeader {
             font-size: 25px;
         }
@@ -885,7 +865,7 @@
 <body>
     <div id="navbar">
         <button id="backButton" class="backButton">
-            <img id="backArrow" src="/IMG/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon">
+            <img id="backArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon">
             Back</button>
         <h1 id="navbarTitle">Competitions</h1>
         <button id="createButton" class="backButton">+ Create</button>
@@ -948,13 +928,13 @@
                 <p id="ratingText">Rate this competition (Default)</p>
                 <div class="ratingButtonBox" id="ratingButtonBox">
                     <button class="standardButton rateButton" id="rateGood">
-                        <img class="ratingIcon" alt="good" src="/IMG/rating_good_icon.png">
+                        <img class="ratingIcon" alt="good" src="/img/rating_good_icon.png">
                     </button>
                     <button class="standardButton rateButton" id="rateBad">
-                        <img class="ratingIcon" alt="bad" src="/IMG/rating_bad_icon.png">
+                        <img class="ratingIcon" alt="bad" src="/img/rating_bad_icon.png">
                     </button>
                     <button class="standardButton rateButton" id="rateBroken">
-                        <img class="ratingIcon" alt="broken" src="/IMG/rating_broken_icon.png">
+                        <img class="ratingIcon" alt="broken" src="/img/rating_broken_icon.png">
                     </button>
                 </div>
             </div>
@@ -967,7 +947,7 @@
         <div id="createWindow" class="uiWindow">
             <h1 id="uploadHeader">Create a Competition</h1>
             <div class="infoNoteBox">
-                <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+                <img id="infoNoteIcon" src="./img/info_icon.png" alt="Information Icon">
                 <p id="uploadFirstText">Information and Rules:</p>
                 <ul class="verticalMarginUl">
                     <li class="helpItem">Ensure that your competition names and author names are familiy-friendly.</li>
@@ -987,7 +967,7 @@
                 <input id="uploadCompetitionDescription" class="uploadInfo" type="text" placeholder="Description..."
                     maxlength="70">
                 <div class="infoNoteBox marginBottom">
-                    <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+                    <img id="infoNoteIcon" src="./img/info_icon.png" alt="Information Icon">
                     <p id="uploadFirstText">Information regarding private competitions:</p>
                     <p id="visibilityInfo">Competitions are public by default, meaning they appear on the site for
                         everyone. Private competitions can only be accessed via the link, so make sure not to lose it.
@@ -1007,7 +987,7 @@
                 <input id="uploadCompetitionDuration" class="uploadInfo" type="text" style="width: 150px"
                     placeholder="2d" maxlength="30">
                 <div class="infoNoteBox marginBottom">
-                    <img id="infoNoteIcon" src="./IMG/info_icon.png" alt="Information Icon">
+                    <img id="infoNoteIcon" src="./img/info_icon.png" alt="Information Icon">
                     <p id="uploadFirstText">How to add locations:</p>
                     <ol>
                         <li class="helpItem">Visit <a href="https://www.google.com/maps/">Google Maps</a> on a desktop
@@ -1041,15 +1021,15 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                     <div class="spacer"></div>
                     <ul style="list-style: none;">
                         <li class="faqItem">
-                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> Competitions
+                            <img src="/img/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> Competitions
                             are a fun way to compete with others on leaderboards.
                         </li>
                         <li class="faqItem">
-                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> They are
+                            <img src="/img/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> They are
                             hosted by players and go on for a limited time period.
                         </li>
                         <li class="faqItem">
-                            <img src="/IMG/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> There are very
+                            <img src="/img/list_arrow_icon.png" alt="list arrow symbol" class="listIcon"> There are very
                             customizable in regards to restrictions, length and locations.
                         </li>
                     </ul>
@@ -1073,7 +1053,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                             <input id="competitionSearch" placeholder="Search active Competitions...">
                         </form>
                         <button id="startSearch" class="searchBarButton standardButton">
-                            <img src="/IMG/find_icon.png" alt="start search" id="searchIcon">
+                            <img src="/img/find_icon.png" alt="start search" id="searchIcon">
                         </button>
                     </search>
                 </div>

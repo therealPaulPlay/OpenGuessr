@@ -243,7 +243,6 @@
 
   #motivationText {
     color: white;
-    font-size: 25px;
     flex-grow: 100;
     overflow: hidden;
     text-overflow: ellipsis;

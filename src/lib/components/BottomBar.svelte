@@ -110,7 +110,7 @@
   class="bottomFooterAds leaderboardAds bottomFooterAdText barMenu"
   style:display={$supporterLevel >= 2 ? "none" : ""}
 >
-  <RemoveAdsText text="Ads keep OpenGuessr free ♥" />
+  <RemoveAdsText text="Ads keep OpenGuessr free." />
 </div>
 
 <style>
