@@ -1,6 +1,7 @@
 import { writable } from "svelte/store";
 
-export const notificationElement = writable();
+export const notificationMarginTop = writable(0);
+export const notificationOpacity = writable(0);
 export const notificationText = writable(false);
 export const acceptText = writable("Accept");
 export const showAcceptButton = writable(true);

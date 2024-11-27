@@ -1,6 +1,7 @@
 <script>
   import {
-    notificationElement,
+    notificationOpacity,
+    notificationMarginTop,
     notificationText,
     acceptText,
     showAcceptButton,
@@ -39,7 +40,7 @@
   }
 </script>
 
-<div id="notificationBar" bind:this={$notificationElement} style:top={belowNavbar ? "50px" : "0"}>
+<div id="notificationBar" style:top={belowNavbar ? "65px" : "0"} style:margin-top={$notificationMarginTop} style:opacity={$notificationOpacity}>
   <p id="notificationText">{$notificationText}</p>
   <div class="notificationButtonBox">
     {#if $showAcceptButton}
@@ -53,8 +54,8 @@
 
 <style>
   #notificationBar {
-    position: absolute;
-    visibility: hidden; /* changed in code */
+    position: fixed;
+    top: 0;
     border-radius: 10px;
     background-color: var(--panel-color);
     display: flex;
@@ -64,7 +65,6 @@
     padding: 6px;
     gap: 15px;
     font-size: 22px;
-    opacity: 0;
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
@@ -72,6 +72,7 @@
     pointer-events: auto;
     margin-inline: 10px;
     max-width: 80vw;
+    z-index: 999;
   }
 
   #notificationAccept {

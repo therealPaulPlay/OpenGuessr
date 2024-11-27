@@ -13,6 +13,7 @@
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { saveProfileAboutIfYourProfileAndChanges } from "$lib/utils/updateProfileData";
   import { pinPopup, badgePopup } from "$lib/stores/uiStore";
+  import { showNotification } from "$lib/utils/notifications";
   import Badge from "$lib/components/Badge.svelte";
   import {
     profileData,
@@ -44,6 +45,13 @@
 
   onMount(() => {
     loadProfileFromURL();
+  });
+
+  let isFriendsWithId = $state(true);
+
+  profilePopup.subscribe(async (value) => {
+    isFriendsWithId = true;
+    isFriendsWithId = await checkIfFriendsWithId($profileId);
   });
 </script>
 
@@ -97,13 +105,14 @@
             </div>
           {/if}
           <p id="levelTextProfile">Lvl. {experienceCalculations($profileExperience)?.level}</p>
-          {#if $profileId != localStorage.getItem("id") && $isAuthenticated && !checkIfFriendsWithId($profileId)}
+          {#if $profileId != localStorage.getItem("id") && $isAuthenticated && !isFriendsWithId}
             <button
               class="standardButton"
               id="profileAddFriend"
               onclick={(e) => {
                 playSound("basic_button");
-                sendFriendRequest(id, e.target);
+                sendFriendRequest($profileId, e.target);
+                showNotification("Friend request sent!");
               }}
             >
               <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />

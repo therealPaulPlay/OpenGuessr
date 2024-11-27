@@ -224,10 +224,10 @@
           navigator.clipboard
             .writeText(window.location)
             .then(function () {
-              showNotification("Copied!", false, false, false);
+              showNotification("Copied!");
             })
             .catch(function (error) {
-              showNotification("Error: " + error, false, false, false);
+              showNotification("Error: " + error);
               console.error("Copy error: " + error);
             });
         }}

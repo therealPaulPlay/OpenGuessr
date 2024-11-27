@@ -190,11 +190,11 @@ export async function sendMatchInvite(recipientId, duel) {
         });
 
         if (response.ok) {
-            showNotification(`Invite sent.`, false, false, false);
+            showNotification(`Invite sent.`);
         } else {
             const data = await response.json();
             console.error("Error sending invite: " + response.status + ", " + data.error);
-            showNotification("User is not reachable.", false, false, false);
+            showNotification("User is not reachable.");
         }
 
     } catch (error) {

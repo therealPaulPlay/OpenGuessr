@@ -356,10 +356,10 @@
                     navigator.clipboard
                       .writeText(window.location.origin + "/?join=" + get(peerId).replace("openguessr_", ""))
                       .then(function () {
-                        showNotification("Copied!", false, false, false);
+                        showNotification("Copied!");
                       })
                       .catch(function (error) {
-                        showNotification("Error: " + error, false, false, false);
+                        showNotification("Error: " + error);
                       });
                   }}
                 >
