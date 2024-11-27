@@ -1,6 +1,7 @@
 <script>
   let { children } = $props();
   import { playSound } from "$lib/utils/soundManager";
+  import Notification from "$lib/components/Notification.svelte";
 </script>
 
 <nav class="menuNavBar">
@@ -19,6 +20,7 @@
 <div class="background"></div>
 
 <main class="content">
+  <Notification belowNavbar={false} />
   <div class="container">
     {@render children?.()}
   </div>
@@ -45,6 +47,7 @@
     margin: 10px;
     text-decoration: none;
     line-height: 35px;
+    pointer-events: auto;
   }
 
   .backButtonArrowIcon {
@@ -66,6 +69,7 @@
     display: flex;
     padding: 15px;
     z-index: 99;
+    pointer-events: none;
   }
 
   .content {
@@ -85,6 +89,7 @@
   .container {
     max-width: 1200px;
     padding-top: 100px;
+    width: 100%;
   }
 
   @media (max-width: 1200px) {

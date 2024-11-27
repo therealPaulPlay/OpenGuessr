@@ -10,6 +10,8 @@
   import { hideNotification } from "$lib/utils/notifications";
   import { playSound } from "$lib/utils/soundManager";
 
+  let { belowNavbar = true } = $props();
+
   function accept() {
     if ($acceptFunction) {
       try {
@@ -37,7 +39,7 @@
   }
 </script>
 
-<div id="notificationBar" bind:this={$notificationElement}>
+<div id="notificationBar" bind:this={$notificationElement} style:top={belowNavbar ? "50px" : "0"}>
   <p id="notificationText">{$notificationText}</p>
   <div class="notificationButtonBox">
     {#if $showAcceptButton}
@@ -53,7 +55,6 @@
   #notificationBar {
     position: absolute;
     visibility: hidden; /* changed in code */
-    top: 50px;
     border-radius: 10px;
     background-color: var(--panel-color);
     display: flex;

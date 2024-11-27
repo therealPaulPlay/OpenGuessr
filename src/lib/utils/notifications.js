@@ -15,7 +15,7 @@ export async function showNotification(text, acceptFunctionParam, dismissFunctio
         await new Promise(resolve => setTimeout(resolve, 250));
     };
 
-    get(notificationElement).style.top = "65px";
+    get(notificationElement).style.marginTop = "15px";
     get(notificationElement).style.visibility = "visible";
     get(notificationElement).style.opacity = "1";
 
@@ -47,7 +47,7 @@ export async function showNotification(text, acceptFunctionParam, dismissFunctio
 }
 
 export function hideNotification() {
-    get(notificationElement).style.top = "50px";
+    get(notificationElement).style.marginTop = "0";
     get(notificationElement).style.opacity = "0";
     clearTimeout(visibilityTimeout);
 

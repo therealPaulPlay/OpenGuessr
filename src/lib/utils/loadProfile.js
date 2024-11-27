@@ -24,7 +24,7 @@ export async function loadProfileFromId(id, view) {
     }
 
     // Show profile Popup
-    if (view) {
+    if (view && data) {
         profilePopup.set(true);
     }
 
