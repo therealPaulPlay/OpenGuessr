@@ -279,6 +279,9 @@
       onclick={() => {
         playSound("basic_button");
         localStorage.setItem("selectedCategory", "community_" + mapName.toLowerCase()); // Set the category
+        let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
+        addedCommunityMaps.push(mapName);
+        localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
         checkGenerationTypeAndGenerate(); // Generate with this map (this is a link <a>, so it will return to the game page)
       }}
     >

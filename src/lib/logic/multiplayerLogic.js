@@ -1196,7 +1196,7 @@ export function leaveMultiplayerRound() {
     // Reset Guess/Confirm button text
     confirmButtonText.set("Guess");
 
-    if (localStorage.getItem("selectedMap") !== "country") {
+    if (localStorage.getItem("selectedMap") !== "country_guesser") {
         mapVisible.set(true);
     }
 
@@ -1377,7 +1377,7 @@ export function showMultiplayerOverlay(show, title, array, lateJoin) {
 
     } else {
         multiplayerOverlay.set(false);
-        if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country") {
+        if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country_guesser") {
             mapVisible.set(true);
         }
     }

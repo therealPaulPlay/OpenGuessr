@@ -393,6 +393,10 @@
     pointer-events: none;
   }
 
+  #joystickIcon {
+    filter: invert();
+  }
+
   .sideMenuDisabled {
     opacity: 0.8;
     transform: scale(0.95);

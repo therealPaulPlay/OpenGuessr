@@ -156,6 +156,15 @@
     z-index: 8;
   }
 
+  .socialItem {
+    min-width: 40px;
+    height: 70%;
+    margin-inline: 0;
+    border-radius: 5px;
+    max-width: 60px;
+    background-color: rgba(56, 56, 79, 0.2);
+  }
+
   .confirmButton {
     width: fit-content;
     position: relative;

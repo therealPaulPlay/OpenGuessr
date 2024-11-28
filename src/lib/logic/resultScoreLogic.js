@@ -88,15 +88,15 @@ function calculateExponentialModifier(mapDiameter) {
 async function calculateXPGain(distance, category, supporterLevelParam, freeSupporterBoost) {
     let returnXP = 0;
 
-    if (!category || category == "standard" || category == "capital") {
+    if (!category || category == "standard" || category == "capital_cities") {
         await streakCalculation();
         returnXP = Math.round((5000 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode());
 
-    } else if (category == "famous" || category == "image") {
+    } else if (category == "famous_places" || category == "image_guesser") {
         await streakCalculation();
         returnXP = Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 1500 xp, with streak up to 1800sth
 
-    } else if (category == "country") {
+    } else if (category == "country_guesser") {
         returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
     } else {

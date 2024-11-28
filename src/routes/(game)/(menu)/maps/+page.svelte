@@ -1,10 +1,12 @@
 <script>
-  import { Plus } from "lucide-svelte";
+  import { Plus, XCircle, ExternalLinkIcon } from "lucide-svelte";
   import { playSound } from "$lib/utils/soundManager";
   import { isAuthenticated } from "$lib/stores/accountStore";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import { signupPopup } from "$lib/stores/uiStore";
+  import { specialModes, continentMaps, countryMaps, basicMaps } from "$lib/stores/context-specific/officialMapsStore";
+  import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 
   // Load community maps  ---------------------------------------------------------------------------------------------------------
 
@@ -81,6 +83,32 @@
       errorMessageShown = true;
       errorMessageText = "Error: " + error;
     }
+  }
+
+  // Play Map --------------------------------------------------------------------------------------------------------------
+
+  function selectCategory(name, community) {
+    playSound("button_juicy");
+    const communityAppendix = community ? "community_" : "";
+    localStorage.setItem("selectedCategory", communityAppendix + name.toLowerCase());
+    checkGenerationTypeAndGenerate();
+    goto("/");
+  }
+
+  function checkIfSelected(name, community) {
+    if (typeof window === "undefined") return;
+    const selectedMap = localStorage.getItem("selectedCategory");
+    if (community) name = "community_" + name;
+    if (selectedMap == name.toLowerCase()) return true;
+    return false;
+  }
+
+  // Capitalize words - used for regular categories, where the category string will be converted into a Name --------------
+  function formatIdToName(str) {
+    return str
+      .split("_")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   }
 
   // Manage added community maps -------------------------------------------------------------------------------------------
@@ -167,49 +195,213 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="main-container">
+  <div class="headerContainer">
+    <h2 class="header">Base Maps</h2>
+  </div>
   <div class="map-container">
-    <div class="headerContainer">
-      <h2 class="header">Community Spotlight:</h2>
+    {#each $basicMaps as map}
+      <div
+        class="map-item map-item-slim"
+        class:selected-map-item={checkIfSelected(map)}
+        role="button"
+        tabindex="0"
+        onclick={() => {
+          selectCategory(map);
+        }}
+      >
+        <div class="mapInfo">
+          <div class="map-name">{formatIdToName(map) || "Name not loaded"}</div>
+        </div>
+      </div>
+    {/each}
+  </div>
+  <div class="headerContainer">
+    <h2 class="header">Special Modes</h2>
+  </div>
+  <div class="map-container">
+    {#each $specialModes as map}
+      <div
+        class="map-item map-item-slim"
+        class:selected-map-item={checkIfSelected(map)}
+        role="button"
+        tabindex="0"
+        onclick={() => {
+          selectCategory(map);
+        }}
+      >
+        <div class="mapInfo">
+          <div class="map-name">{formatIdToName(map) || "Name not loaded"}</div>
+        </div>
+      </div>
+    {/each}
+    <div
+      class="map-item map-item-slim"
+      role="button"
+      tabindex="0"
+      onclick={() => {
+        playSound("button_juicy");
+        goto("/competitions");
+      }}
+    >
+      <div class="mapInfo">
+        <div class="map-name">
+          Competitions <span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
+        </div>
+      </div>
     </div>
-    <div id="spotlight-maps" class="map-container">
-      <!-- Featured maps will be injected here -->
-      {#each loadedSpotlightMaps as map}
-        <a
-          class="map-item"
-          role="button"
-          tabindex="0"
-          href={"/maps/community/" + map.name.split(" ").join("_").toLowerCase()}
-        >
-          <div class="mapInfo">
-            <div class="map-name">{map.name || "Name not loaded"}</div>
-            <div class="map-author">by {map.author || "Bugsnacker"}</div>
-          </div>
-          <button
-            class="add-button"
-            onclick={() => {
-              playSound("basic_button");
-              if (addedCommunityMapsArray.includes(map.name)) {
-                removeSelectedMap(map.name);
-              } else {
-                addSelectedMap(map.name);
-              }
-            }}
-          >
-            <img
-              src={addedCommunityMapsArray.includes(map.name) ? "/img/disselect_icon.png" : "/img/select_icon.png"}
-              alt="add / remove map"
-              class="selection-icon"
-            />
-          </button>
-        </a>
-      {/each}
+    <div
+      class="map-item map-item-slim"
+      role="button"
+      tabindex="0"
+      onclick={() => {
+        playSound("button_juicy");
+        window.open("https://education.openguessr.com/quiz", "_blank").focus();
+      }}
+    >
+      <div class="mapInfo">
+        <div class="map-name">
+          Quizzes <span class="educationBadge">Edu</span>
+          <span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
+        </div>
+      </div>
+    </div>
+    <div
+      class="map-item map-item-slim"
+      role="button"
+      tabindex="0"
+      onclick={() => {
+        playSound("button_juicy");
+        window.open("https://education.openguessr.com/guides", "_blank").focus();
+      }}
+    >
+      <div class="mapInfo">
+        <div class="map-name">
+          Guides <span class="educationBadge">Edu</span>
+          <span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
+        </div>
+      </div>
     </div>
   </div>
   <div class="headerContainer">
-    <h2 class="header">Community Maps:</h2>
+    <h2 class="header">Countries</h2>
+  </div>
+  <div class="map-container">
+    {#each $countryMaps as map}
+      <div
+        class="map-item map-item-slim"
+        class:selected-map-item={checkIfSelected(map)}
+        role="button"
+        tabindex="0"
+        onclick={() => {
+          selectCategory(map);
+        }}
+      >
+        <div class="mapInfo">
+          <div class="map-name">{formatIdToName(map) || "Name not loaded"}</div>
+        </div>
+      </div>
+    {/each}
+  </div>
+  <div class="headerContainer">
+    <h2 class="header">Continents</h2>
+  </div>
+  <div class="map-container">
+    {#each $continentMaps as map}
+      <div
+        class="map-item map-item-slim"
+        class:selected-map-item={checkIfSelected(map)}
+        role="button"
+        tabindex="0"
+        onclick={() => {
+          selectCategory(map);
+        }}
+      >
+        <div class="mapInfo">
+          <div class="map-name">{formatIdToName(map) || "Name not loaded"}</div>
+        </div>
+      </div>
+    {/each}
+  </div>
+  <!-- Saved Community Maps -->
+  <div class="headerContainer">
+    <h2 class="header">Bookmarked Maps</h2>
+  </div>
+  <div class="map-container">
+    {#if addedCommunityMapsArray.length > 0}
+      {#each addedCommunityMapsArray as map}
+        <div
+          class="map-item map-item-slim map-item-bookmark"
+          class:selected-map-item={checkIfSelected(map, true)}
+          role="button"
+          tabindex="0"
+          onclick={() => {
+            selectCategory(map, true);
+          }}
+        >
+          <div class="mapInfo">
+            <div class="map-name">{map || "Name not loaded"}</div>
+          </div>
+          <button
+            class="remove-button"
+            onclick={(e) => {
+              e.stopPropagation();
+              playSound("basic_button");
+              removeSelectedMap(map);
+            }}
+          >
+            <XCircle size={21} />
+          </button>
+        </div>
+      {/each}
+    {:else}
+      <p class="nothingFound noSavedMaps">No saved maps.</p>
+    {/if}
+  </div>
+  <!-- Featured Maps -->
+  <div class="headerContainer largeHeaderMargin">
+    <h2 class="header">Community Spotlight</h2>
+  </div>
+  <div class="map-container">
+    {#each loadedSpotlightMaps as map}
+      <div
+        class="map-item"
+        role="button"
+        tabindex="0"
+        onclick={() => {
+          goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
+        }}
+      >
+        <div class="mapInfo">
+          <div class="map-name">{map.name || "Name not loaded"}</div>
+          <div class="map-author">by {map.author || "Bugsnacker"}</div>
+        </div>
+        <button
+          class="add-button"
+          onclick={(e) => {
+            e.stopPropagation();
+            playSound("basic_button");
+            if (addedCommunityMapsArray.includes(map.name)) {
+              removeSelectedMap(map.name);
+            } else {
+              addSelectedMap(map.name);
+            }
+          }}
+        >
+          <img
+            src={addedCommunityMapsArray.includes(map.name) ? "/img/disselect_icon.png" : "/img/select_icon.png"}
+            alt="add / remove map"
+            class="selection-icon"
+          />
+        </button>
+      </div>
+    {/each}
+  </div>
+  <!-- All Community Maps -->
+  <div class="headerContainer">
+    <h2 class="header mediumHeaderMargin">Community Maps</h2>
     <button
       id="uploadButton"
-      class="standardButton primaryButtonHighlight"
+      class="standardButton white"
       onclick={() => {
         playSound("basic_button");
         if ($isAuthenticated) {
@@ -259,11 +451,13 @@
   <div id="community-maps" class="map-container">
     <!-- Community maps will be injected here -->
     {#each loadedCommunityMaps as map}
-      <a
+      <div
         class="map-item"
         role="button"
         tabindex="0"
-        href={"/maps/community/" + map.name.split(" ").join("_").toLowerCase()}
+        onclick={() => {
+          goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
+        }}
       >
         <div class="mapInfo">
           <div class="map-name">{map.name || "Name not loaded"}</div>
@@ -271,7 +465,8 @@
         </div>
         <button
           class="add-button"
-          onclick={() => {
+          onclick={(e) => {
+            e.stopPropagation();
             playSound("basic_button");
             if (addedCommunityMapsArray.includes(map.name)) {
               removeSelectedMap(map.name);
@@ -286,25 +481,25 @@
             class="selection-icon"
           />
         </button>
-      </a>
+      </div>
     {/each}
+    {#if showLoadMore}
+      <button
+        id="loadMore"
+        class="map-item"
+        onclick={() => {
+          playSound("basic_button");
+          loadCommunityMaps(currentFetchIndex + 50, loadMoreCategoryParam, loadMoreQueryParam);
+        }}>More <span class="loadMoreIconSpan"><Plus strokeWidth={2.5} /></span></button
+      >
+    {/if}
+    {#if errorMessageShown}
+      <p class="nothingFound">{errorMessageText}</p>
+    {/if}
+    {#if showNothingFound}
+      <p class="nothingFound">No map matches the search query.</p>
+    {/if}
   </div>
-  {#if errorMessageShown}
-    <p id="errorMessage">{errorMessageText}</p>
-  {/if}
-  {#if showNothingFound}
-    <p id="nothingFound" style="opacity: 0.5;">No map matches the search query.</p>
-  {/if}
-  {#if showLoadMore}
-    <button
-      id="loadMore"
-      class="standardButton white"
-      onclick={() => {
-        playSound("basic_button");
-        loadCommunityMaps(currentFetchIndex + 50, loadMoreCategoryParam, loadMoreQueryParam);
-      }}>Show more <span class="loadMoreIconSpan"><Plus strokeWidth={2} /></span></button
-    >
-  {/if}
 </div>
 
 <style>
@@ -320,19 +515,40 @@
     align-items: center;
     flex-wrap: wrap;
     width: 100%;
-    padding: 10px;
+    padding: 15px;
     padding-inline: 0;
     gap: 12px;
   }
 
   .loadMoreIconSpan {
-    vertical-align: -4px;
+    margin-top: 7px;
   }
 
   .header {
     text-align: center;
     font-size: 45px;
     color: white;
+  }
+
+  .largeHeaderMargin {
+    margin-top: 80px;
+  }
+
+  .mediumHeaderMargin {
+    margin-top: 30px;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  .linkSpan {
+    margin-left: 5px;
   }
 
   .map-item {
@@ -344,27 +560,52 @@
     color: white;
     border-radius: 12px;
     padding: 10px;
-    width: 100%;
+    padding-inline: 15px;
     box-sizing: border-box;
+    animation: fadeIn 100ms ease-in-out;
     user-select: none;
     flex-grow: 1;
     flex-basis: 30%;
     min-width: 300px;
+    max-width: 360px;
+    text-overflow: ellipsis;
+    overflow: hidden;
     cursor: pointer;
     transition:
       opacity 250ms ease,
+      scale 250ms ease,
       background-color 250ms ease;
   }
 
   .map-item:hover {
     background-color: rgba(255, 255, 255, 0.3);
+    scale: 1.01;
+  }
+
+  .map-item-slim {
+    min-width: 140px;
+    max-width: 170px;
+    flex-basis: 100%;
+  }
+
+  .selected-map-item {
+    background-image: linear-gradient(20deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.3));
   }
 
   .map-name {
     font-size: 22px;
     white-space: nowrap;
-    max-width: 160px;
+    max-width: 200px;
     overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .map-item-slim .map-name {
+    max-width: 140px;
+  }
+
+  .map-item-bookmark .map-name {
+    max-width: 110px;
   }
 
   .map-author {
@@ -380,31 +621,43 @@
     display: flex;
     align-items: flex-start;
     gap: 15px;
-    justify-content: center;
     flex-wrap: wrap;
     width: 100%;
     margin-bottom: 20px;
   }
 
-  .buttonDisabled {
-    pointer-events: none;
-    opacity: 0.5;
-  }
-
   .add-button {
-    background-color: rgba(255, 255, 255, 0.2);
-    color: white;
+    background-color: rgba(255, 255, 255, 0.15);
     border: none;
     border-radius: 5px;
     padding: 5px 7px;
     cursor: pointer;
     user-select: none;
     margin-left: 10px;
-    margin-right: 10px;
+    margin-right: 5px;
     font-size: 25px;
     width: 35px;
     line-height: 0.9;
     transition: background-color 250ms ease;
+  }
+
+  .add-button:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+  }
+
+  .remove-button {
+    border: none;
+    cursor: pointer;
+    user-select: none;
+    margin-left: 10px;
+    margin-right: -3px;
+    font-size: 25px;
+    line-height: 0.9;
+    transition: opacity 250ms ease;
+  }
+
+  .remove-button:hover {
+    opacity: 0.5;
   }
 
   .selection-icon {
@@ -413,23 +666,33 @@
     vertical-align: -1px;
   }
 
-  .add-button:hover {
-    background-color: rgba(255, 255, 255, 0.3);
-  }
-
-  .primaryButtonHighlight {
-    background-color: rgb(153, 82, 193);
-    color: white;
-  }
-
   #community-maps {
     margin-bottom: 50px;
     margin-top: 10px;
+    min-height: 1200px;
   }
 
-  #nothingFound {
-    margin-top: -30px;
+  .nothingFound {
     margin-bottom: 20px;
+    opacity: 0.5;
+    width: 100%;
+    text-align: center;
+  }
+
+  .noSavedMaps {
+    text-align: start;
+    margin-left: 10px;
+  }
+
+  .educationBadge {
+    border-radius: 3px;
+    background-color: rgba(255, 0, 0, 0.75);
+    padding-inline: 2px;
+    font-style: italic;
+    font-size: 16px;
+    padding-right: 5px;
+    vertical-align: 1px;
+    margin-left: 1px;
   }
 
   #mapSearch {
@@ -463,7 +726,8 @@
   #uploadButton {
     border-radius: 10px;
     text-decoration: none;
-    line-height: 36px;
+    line-height: 35px;
+    margin-top: auto;
   }
 
   .categoriesBar {
@@ -507,22 +771,15 @@
     align-items: center;
     border-radius: 13px;
     padding: 5px;
+    margin-top: 5px;
     background-color: rgba(255, 255, 255, 0.05);
   }
 
   #loadMore {
-    border-radius: 10px;
-    min-height: 40px;
-    width: 280px;
-    padding: 10px;
-    margin-bottom: 30px;
-    margin-top: -20px;
-    padding-bottom: 7px;
-  }
-
-  #errorMessage {
-    margin-bottom: 50px;
-    opacity: 0.5;
+    font-size: 22px;
+    min-height: 69px;
+    justify-content: center;
+    gap: 10px;
   }
 
   #searchIcon {

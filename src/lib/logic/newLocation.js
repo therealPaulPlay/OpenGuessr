@@ -7,6 +7,7 @@ import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
 import { isHost } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
+import { mapSupportsMultiplayer } from "$lib/utils/doesMapSupportMultiplayer";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
@@ -24,14 +25,14 @@ export async function checkGenerationTypeAndGenerate() {
         singleplayer.set(true);
 
         // Pick between json and maps api loading depending on the category type
-        if (mapCategory != "standard" && mapCategory != "country" && mapCategory != "image" && !mapCategory.includes("community")) {
+        if (mapCategory != "standard" && mapCategory != "country_guesser" && mapCategory != "image_guesser" && !mapCategory.includes("community")) {
             await generateNewLocation("JSON");
 
-        } else if (mapCategory == "country") {
+        } else if (mapCategory == "country_guesser") {
             setCountryGuesserMode(true);
             await generateNewLocation("JSON");
 
-        } else if (mapCategory == "image") {
+        } else if (mapCategory == "image_guesser") {
             setImageGuesserMode(true);
             await generateNewLocation("JSON");
 

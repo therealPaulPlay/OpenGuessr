@@ -413,7 +413,7 @@
     padding: 5px;
     padding-inline: 10px;
     width: fit-content;
-    background-color: rgba(225, 255, 255, 0.1);
+    background-color: rgba(185, 185, 185, 0.1);
     border-radius: 5px;
     margin-right: 10px;
   }

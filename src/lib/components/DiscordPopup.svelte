@@ -7,7 +7,7 @@
   function clickJoin() {
     playSound("basic_button");
     window.open("https://discord.gg/CSc3MbDrZ8", "_blank").focus();
-    
+
     setTimeout(async function () {
       closePopup();
       await setUserXP(Number(localStorage.getItem("experience")) + 7500);
@@ -47,7 +47,7 @@
       }}
       class="standardButton white closeButton">Close</button
     >
-    <button id="socialPopupJoin" class="discordButton standardButton closeButton" onclick={clickJoin}>
+    <button id="socialPopupJoin" class="standardButton closeButton white" onclick={clickJoin}>
       Join
       <img src="/img/discord.png" class="socialIcon" alt="Discord Icon" />
     </button>
