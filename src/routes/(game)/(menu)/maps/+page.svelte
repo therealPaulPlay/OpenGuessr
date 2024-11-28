@@ -171,7 +171,12 @@
     <div id="spotlight-maps" class="map-container">
       <!-- Featured maps will be injected here -->
       {#each loadedSpotlightMaps as map}
-        <a class="map-item" role="button" tabindex="0" href={"/maps/community/" + map.name.split(" ").join("_").toLowerCase()}>
+        <a
+          class="map-item"
+          role="button"
+          tabindex="0"
+          href={"/maps/community/" + map.name.split(" ").join("_").toLowerCase()}
+        >
           <div class="mapInfo">
             <div class="map-name">{map.name || "Name not loaded"}</div>
             <div class="map-author">by {map.author || "Bugsnacker"}</div>
@@ -247,7 +252,12 @@
   <div id="community-maps" class="map-container">
     <!-- Community maps will be injected here -->
     {#each loadedCommunityMaps as map}
-      <a class="map-item" role="button" tabindex="0" href={"/maps/community/" + map.name}>
+      <a
+        class="map-item"
+        role="button"
+        tabindex="0"
+        href={"/maps/community/" + map.name.split(" ").join("_").toLowerCase()}
+      >
         <div class="mapInfo">
           <div class="map-name">{map.name || "Name not loaded"}</div>
           <div class="map-author">by {map.author || "Bugsnacker"}</div>

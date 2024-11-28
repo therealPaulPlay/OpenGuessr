@@ -1,4 +1,4 @@
-import { writable } from "svelte/store";
+import { writable, readable } from "svelte/store";
 
 export const panoramaLink = writable("/loader");
 
@@ -14,3 +14,6 @@ export const currentlyLoadedLocationsArray = writable();
 
 // Round Log
 export const roundLog = writable([]);
+
+// Panorama key
+export const panoramaKey = readable("AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs");

@@ -6,32 +6,37 @@
   import { errorPopup } from "$lib/utils/errorHandling";
   import { signupPopup } from "$lib/stores/uiStore";
   import { showNotification } from "$lib/utils/notifications";
-  import { Link, MapPin, Heart, HeartOff, Trash2, Replace } from "lucide-svelte";
+  import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Dices } from "lucide-svelte";
   import { playSound } from "$lib/utils/soundManager";
   import Popup from "$lib/components/Popup.svelte";
   import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
+  import { panoramaKey } from "$lib/stores/locationStore";
   import { onMount } from "svelte";
+  import { get } from "svelte/store";
 
   let { data } = $props();
 
-  // TODO import update utilities to get coords
-
-  let iframeSource = $state("/loader");
-  let mapName = $state("Default Name");
-  let mapAuthor = $state("Default Author");
-  let mapAuthorId = $state(0);
-  let mapLocationAmount = $state(999);
+  let randomLocationIndex = $state(0);
+  let iframeSource = $derived(
+    "https://www.google.com/maps/embed/v1/streetview?location=" +
+      data.map_data.locations[randomLocationIndex][0] +
+      "," +
+      data.map_data.locations[randomLocationIndex][1] +
+      "&key=" +
+      get(panoramaKey) +
+      "&fov=90",
+  );
+  let mapName = $state(data.name);
+  let mapAuthor = $state(data.author);
+  let mapAuthorId = $state(data.authorId);
+  let mapDescription = $state(data.description);
+  let mapLocationAmount = $state(data.map_data.locations.length);
 
   let playerId = $state(0);
 
   onMount(() => {
     playerId = localStorage.getItem("id") || -1;
-    console.log(data);
   });
-
-  // Panorama -------------------------------------------------------------------------------------
-
-  function handleLoad() {}
 
   // Like Functionality ------------------------------------------------------------------------------
   let isLiked = $state(false);
@@ -56,7 +61,7 @@
         const data = await response.json();
 
         if (response.ok) {
-          await fetchMapInformation(mapName); // fetch new information
+          await fetchMapLikeStatus(mapName); // fetch new information
         } else {
           console.error("Error liking or disliking map:", data.error);
         }
@@ -182,12 +187,20 @@
 <div class="mainContainer">
   <!-- Main View (Panorama Preview) -->
   <div class="mapViewIframe">
+    <button
+      class="standardButton white randomizeLocationButton"
+      onclick={() => {
+        playSound("basic_button");
+        randomLocationIndex = Number(Math.floor(Math.random() * mapLocationAmount));
+      }}
+    >
+      <Dices size={18}></Dices>
+    </button>
     <!-- svelte-ignore a11y_missing_attribute -->
     <iframe
       class="mapIframe"
       referrerpolicy="no-referrer-when-downgrade"
       frameborder="0"
-      onload={handleLoad}
       src={iframeSource}
     ></iframe>
   </div>
@@ -272,7 +285,7 @@
         checkGenerationTypeAndGenerate(); // Generate with this map (this is a link <a>, so it will return to the game page)
       }}
     >
-      Play  "{mapName}"
+      Play {mapName}
     </a>
   </div>
   <div class="information">
@@ -280,11 +293,14 @@
       <div class="pinIconContainer">
         <MapPin size={120} strokeWidth={1} />
       </div>
-      <h2 class="locationAmountText">{mapLocationAmount} Locations</h2>
+      <h2 class="locationAmountText">{mapLocationAmount.toLocaleString()} Locations</h2>
     </div>
     <div class="descriptionInfo infoElement">
       <div class="descriptionScroll">
         <h2 class="descHeader">About "{mapName}"</h2>
+        <p>
+          {mapDescription}
+        </p>
       </div>
     </div>
   </div>
@@ -370,7 +386,7 @@
 
   .descHeader {
     font-size: 25px;
-    margin-bottom: 5px;
+    margin-bottom: 10px;
   }
 
   .marginTop {
@@ -385,11 +401,17 @@
     width: 90%;
   }
 
+  .randomizeLocationButton {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background-color: var(--panel-color);
+  }
+
   .infoElement {
     background-color: var(--box-color);
     border-radius: 10px;
     display: flex;
-    flex-wrap: wrap;
     padding: 10px;
     flex-grow: 1;
     height: 250px;
@@ -448,7 +470,6 @@
   .information {
     width: 100%;
     display: flex;
-    flex-wrap: wrap;
     gap: 20px;
   }
 
@@ -519,8 +540,9 @@
     height: 500px;
     border-radius: 10px;
     overflow: hidden;
-    pointer-events: none;
     margin-bottom: 20px;
+    opacity: 0.8;
+    position: relative;
     background-color: rgb(27, 27, 37);
   }
 
@@ -550,5 +572,11 @@
 
   .playButton {
     text-decoration: none;
+  }
+
+  @media (max-width: 800px) {
+    .information {
+      flex-wrap: wrap;
+    }
   }
 </style>

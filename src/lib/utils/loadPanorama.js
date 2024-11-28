@@ -1,11 +1,9 @@
 // Load a panorama for the iframe
-import { panoramaLink, iframeElement, initialIframeLoad } from "$lib/stores/locationStore";
+import { panoramaLink, iframeElement, initialIframeLoad, panoramaKey } from "$lib/stores/locationStore";
 import { loadingScreenVisible } from "$lib/stores/uiStore";
 import { imageGuesser, multiplayer } from "$lib/stores/modeStore";
 import { playSound } from "$lib/utils/soundManager";
 import { get } from "svelte/store";
-
-const streetviewAPIKey = "AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs";
 
 export function loadPanorama(lat, long) {
     if (!get(imageGuesser) || get(multiplayer)) {
@@ -15,7 +13,7 @@ export function loadPanorama(lat, long) {
             "," +
             long +
             "&key=" +
-            streetviewAPIKey +
+            get(panoramaKey) +
             "&fov=90",
         ); // API key (last part of URL)
     } else {
