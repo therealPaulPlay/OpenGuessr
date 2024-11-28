@@ -279,9 +279,9 @@
   }
 
   .rankedItemSupporter {
-    background-color: rgba(137, 255, 183, 0.35);
+    background-color: rgba(118, 236, 164, 0.4);
     box-sizing: border-box;
-    border: 3px solid rgba(137, 255, 183, 0.35);
+    border: 3px solid rgba(118, 236, 164, 0.4);
     position: relative;
   }
 

@@ -1,5 +1,5 @@
 <script>
-  import { Plus, XCircle, ExternalLinkIcon } from "lucide-svelte";
+  import { Plus, XCircle, ExternalLinkIcon, ArrowDown } from "lucide-svelte";
   import { playSound } from "$lib/utils/soundManager";
   import { isAuthenticated } from "$lib/stores/accountStore";
   import { onMount } from "svelte";
@@ -187,6 +187,9 @@
     loadCommunityMaps(0);
     loadCommunityMaps(undefined, undefined, undefined, true); // load favourite maps / load spotlight section
   });
+
+  // Toggle Enlarge Country section ---------------------------------------------------------------------------------
+  let countrySectionExpanded = $state(false);
 </script>
 
 <svelte:head>
@@ -285,7 +288,7 @@
   <div class="headerContainer">
     <h2 class="header">Countries</h2>
   </div>
-  <div class="map-container">
+  <div class="map-container map-container-expand" class:map-container-expand-fadeout={!countrySectionExpanded}>
     {#each $countryMaps as map}
       <div
         class="map-item map-item-slim"
@@ -302,6 +305,16 @@
       </div>
     {/each}
   </div>
+  <button
+    class="standardButton white expandButton"
+    style:margin-top={countrySectionExpanded ? "10px" : "-35px"}
+    onclick={() => {
+      playSound("basic_button");
+      countrySectionExpanded = !countrySectionExpanded;
+    }}
+    >{countrySectionExpanded ? "Show less" : "Show all"}
+    <img class="arrowExpand" class:arrowExpandRotate={countrySectionExpanded} alt="arrow" src="/img/arrow_icon.png" />
+  </button>
   <div class="headerContainer">
     <h2 class="header">Continents</h2>
   </div>
@@ -535,7 +548,7 @@
   }
 
   .mediumHeaderMargin {
-    margin-top: 30px;
+    margin-top: 20px;
   }
 
   @keyframes fadeIn {
@@ -567,7 +580,7 @@
     flex-grow: 1;
     flex-basis: 30%;
     min-width: 300px;
-    max-width: 360px;
+    max-width: 357px;
     text-overflow: ellipsis;
     overflow: hidden;
     cursor: pointer;
@@ -586,6 +599,10 @@
     min-width: 140px;
     max-width: 170px;
     flex-basis: 100%;
+  }
+
+  .map-item-slim:hover {
+    scale: 1.03;
   }
 
   .selected-map-item {
@@ -620,10 +637,49 @@
   .map-container {
     display: flex;
     align-items: flex-start;
+    position: relative;
     gap: 15px;
     flex-wrap: wrap;
     width: 100%;
     margin-bottom: 20px;
+    overflow: visible;
+  }
+
+  .map-container-expand {
+    transition: mask 650ms ease-in-out;
+  }
+
+  .map-container-expand-fadeout {
+    mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%);
+    mask-composite: intersect;
+    max-height: 300px;
+  }
+
+  .expandButton {
+    margin-inline: auto;
+    border-radius: 10px;
+    padding-inline: 30px;
+    margin-bottom: 10px;
+    transition:
+      margin 150ms ease,
+      scale 150ms ease,
+      background-color 250ms ease,
+      filter 250ms ease;
+    height: 50px;
+    bottom: 0;
+    z-index: 10;
+  }
+
+  .arrowExpand {
+    rotate: 0deg;
+    transition: rotate 250ms ease;
+    width: 25px;
+    height: 25px;
+    vertical-align: -4px;
+  }
+
+  .arrowExpandRotate {
+    rotate: 180deg;
   }
 
   .add-button {
@@ -638,6 +694,7 @@
     font-size: 25px;
     width: 35px;
     line-height: 0.9;
+    outline: 3px solid rgba(255, 255, 255, 0.25);
     transition: background-color 250ms ease;
   }
 
@@ -653,6 +710,7 @@
     margin-right: -3px;
     font-size: 25px;
     line-height: 0.9;
+    opacity: 0.75;
     transition: opacity 250ms ease;
   }
 
@@ -739,6 +797,7 @@
     align-items: center;
     gap: 5px;
     padding: 5px;
+    padding-right: 0;
     scrollbar-width: none;
   }
 
@@ -754,7 +813,7 @@
 
   .categoryButton:hover {
     filter: none;
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   .selected {

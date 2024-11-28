@@ -33,16 +33,15 @@
   }
 
   // Check if the username should be scrolled automatically (happens when it is too long) -------------------------------------------
-  let accountNameText = $state();
   let scrollNameText = $state(false);
 
-  function checkTextLength() {
-    const textLength = accountNameText.length;
+  function checkTextLength(text) {
+    const textLength = text.length;
     scrollNameText = textLength > 10;
   }
 
-  $effect(() => {
-    checkTextLength();
+  username.subscribe((value) => {
+    if (value) checkTextLength(value);
   });
 
   // Prevent exiting mulitplayer etc. by starting using a conflicting feature -----------------------------------------------------------------------------
@@ -198,7 +197,6 @@
       <div id="accountNameArea">
         <p
           id="accountName"
-          bind:textContent={accountNameText}
           contenteditable="false"
           class:namescroll={scrollNameText}
         >

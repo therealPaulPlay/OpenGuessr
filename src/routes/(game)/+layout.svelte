@@ -72,15 +72,6 @@
   <script src="https://hb.vntsm.com/v4/live/vms/sites/openguessr.com/index.js" async></script>
 </svelte:head>
 
-<!-- Log user in -->
-<Authenticate />
-
-<!-- Load Peer JS and check for Join URL -->
-<InitMultiplayer />
-
-<TopLeftLogo />
-<NavigationBar />
-
 <!-- Keywords -->
 <h1 style:display="none">
   Openguessr - GeoGuessr free. Free Geoguesser alternative free open source geography geographie Geotastic world map
@@ -89,112 +80,16 @@
   unendlich freies spiel without subscription pro with Duels
 </h1>
 
-<!-- Extended navbar map menu -->
-<div class="extendedNavbar" id="extendedNavbar">
-  <div id="extendedNavbarGradient"></div>
-  <div id="extendedNavbarContent" class="mapArea">
-    <!-- content -->
-    <div class="mapBox">
-      <p>General</p>
-      <div class="mapArea">
-        <button class="category" id="standardCategory" type="button">Standard</button>
-        <button class="category" id="capitalCategory" type="button">Capitals</button>
-        <button class="category" id="famousCategory" type="button">Famous</button>
-      </div>
-    </div>
-    <div class="mapBox">
-      <span class="mapsAccountLock">
-        Free Account needed
-        <img alt="locked" class="lockedIcon" src="/img/locked_icon.png" />
-      </span>
-      <p>Special modes</p>
-      <div id="specialGamemodesArea" class="mapArea">
-        <button class="category accountLock" id="dailyCompetition" type="button">Daily Competition</button>
-        <button class="category accountLock" id="countryCategory" type="button">Country Guesser</button>
-        <button class="category accountLock" id="imageCategory" type="button">Image Guesser</button>
-      </div>
-    </div>
-    <div class="mapBox expandableMapBox" id="countriesMapBox">
-      <span class="mapsAccountLock">
-        Free Account needed
-        <img alt="locked" class="lockedIcon" src="/img/locked_icon.png" />
-      </span>
-      <p>Countries</p>
-      <div class="outerCountryCategoryContainer">
-        <div class="expandableMapAreaFade" id="countryCategoriesFade"></div>
-        <button class="standardButton mapAreaExpandButton" id="countryCategoriesExpand">
-          <span id="countriesMoreText">More</span>
-          <img id="arrowIconCountries" src="/img/arrow_icon.png" alt="Expand arrow" />
-        </button>
-        <div class="mapArea expandableCountryArea" id="expandableCountryArea">
-          <!-- country map category buttons are generated in categoryMenu.js -->
-        </div>
-      </div>
-    </div>
-    <div class="mapBox">
-      <p>OpenGuessr Education</p>
-      <div class="mapArea">
-        <a
-          class="category educationCategory"
-          id="educationGuidesLink"
-          target="_blank"
-          href="https://education.openguessr.com/guides"
-        >
-          Guides
-        </a>
-        <a
-          class="category educationCategory"
-          id="educationQuizzesLink"
-          target="_blank"
-          href="https://education.openguessr.com/quiz"
-        >
-          Quizzes
-        </a>
-        <a
-          class="category educationCategory"
-          id="educationCountriesLink"
-          target="_blank"
-          href="https://education.openguessr.com/countries"
-        >
-          Learn Countries
-        </a>
-      </div>
-      <button class="categoryLink" id="discoverEducation">
-        Master OpenGuessr
-        <img class="discoverIcon" alt="discover more categories" src="/img/crown_icon.png" />
-      </button>
-    </div>
-    <div class="mapBox">
-      <span class="mapsAccountLock">
-        Free Account needed
-        <img alt="locked" class="lockedIcon" src="/img/locked_icon.png" />
-      </span>
-      <p>Continents</p>
-      <div class="mapArea">
-        <button class="category continentCategory accountLock" id="africaCategory" type="button">Africa</button>
-        <button class="category continentCategory accountLock" id="asiaCategory" type="button">Asia</button>
-        <button class="category continentCategory accountLock" id="europeCategory" type="button">Europe</button>
-        <button class="category continentCategory accountLock" id="north_americaCategory" type="button">
-          North America
-        </button>
-        <button class="category continentCategory accountLock" id="oceaniaCategory" type="button">Oceania</button>
-        <button class="category continentCategory accountLock" id="south_americaCategory" type="button">
-          South America
-        </button>
-      </div>
-    </div>
-    <div class="mapBox lastMapBox">
-      <p>Community maps</p>
-      <div id="communityMapArea" class="mapArea">
-        <!-- country categories auto generated in categoryMenu.js, then added here automatically -->
-      </div>
-      <button class="categoryLink" id="discoverMaps" type="button">
-        Discover all Community Maps
-        <img class="discoverIcon" alt="discover more categories" src="/img/discover_icon.png" />
-      </button>
-    </div>
-  </div>
-</div>
+<!-- Log user in -->
+<Authenticate />
+
+<!-- Load Peer JS and check for Join URL -->
+<InitMultiplayer />
+
+<!-- Logo and Navbar -->
+<TopLeftLogo />
+<NavigationBar />
+
 <LoadingFade />
 <ErrorPopup />
 <ConfirmPopup />

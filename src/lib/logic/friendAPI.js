@@ -1,4 +1,4 @@
-import { isAuthenticated } from "$lib/stores/accountStore";
+import { isAuthenticated, username } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { peerId, loadedFriendsData } from "$lib/stores/context-specific/multiplayerStore";
@@ -175,8 +175,8 @@ export async function sendMatchInvite(recipientId, duel) {
         const requestBody = {
             id: localStorage.getItem("id"),
             friend_id: recipientId,
-            roomcode: peerId,
-            senderName: localStorage.getItem("username"),
+            roomcode: get(peerId),
+            senderName: get(username),
             isDuel: duel
         };
 

@@ -331,8 +331,9 @@
                       >
                         <p class="friendsRoomEntryText">{entry.user_name}</p>
                         <button
-                          class="standardButton friendItemButtons"
-                          onclick={() => {
+                          class="standardButton white sendInviteButton"
+                          onclick={(e) => {
+                            e.stopPropagation();
                             playSound("basic_button");
                             sendMatchInvite(entry.id, false);
                           }}
@@ -478,6 +479,11 @@
     padding-inline: 5px;
   }
 
+  .sendInviteButton {
+    padding: 0;
+    padding-inline: 5px;
+  }
+
   .friendRemoveIcon {
     width: 25px;
     height: 25px;
@@ -502,6 +508,11 @@
   .groupIcons {
     margin-inline: 3px;
     vertical-align: -2px;
+  }
+
+  #multiplayerMapDisplay {
+    min-width: 160px;
+    text-align: center;
   }
 
   .groupPartyButtons {
@@ -604,6 +615,7 @@
 
   .roomCreationFriendItem {
     background-color: rgba(255, 255, 255, 0.1);
+    border: none;
     border-radius: 5px;
     display: flex;
     justify-content: space-between;

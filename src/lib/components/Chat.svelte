@@ -93,6 +93,8 @@
     color: white;
     margin: 10px;
     line-height: 1.7;
+    margin-top: auto;
+    font-size: 20px;
   }
 
   #multiplayerSendButton {
@@ -101,10 +103,6 @@
     margin-left: 8px;
     padding-inline: 12px;
     font-size: 20px;
-  }
-
-  #multiplayerMessageBox {
-    margin-top: auto;
   }
 
   #multiplayerMessageInput {
