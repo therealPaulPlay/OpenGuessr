@@ -142,7 +142,7 @@
       <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
       <p id="uploadFirstText">How to add locations:</p>
       <ol>
-        <li>Visit <a href="https://www.google.com/maps/">Google Maps</a> on a desktop computer.</li>
+        <li>Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer.</li>
         <li>Drag the orange figure onto the map to open a streetview.</li>
         <li>Copy the URL from the address bar of your browser into the textbox.</li>
       </ol>
