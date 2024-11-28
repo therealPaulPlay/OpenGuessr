@@ -1,98 +1,26 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
-
-  document.getElementById("uploadButton").addEventListener("click", () => {
-    if (localStorage.getItem("username") != null && localStorage.getItem("id") != null) {
-      openUploadPopup();
-    } else {
-      window.location.href = "/signup.html";
-    }
-  });
-
-  document.getElementById("uploadConfirm").addEventListener("click", () => {
-    document.getElementById("uploadConfirmHeader").textContent = "Are you sure?";
-    document.getElementById("uploadConfirmText").textContent =
-      "Some map details cannot be edited later! Violating the rules can result in a permanent ban.";
-    document.getElementById("uploadConfirmClose").style.display = "block";
-    document.getElementById("uploadConfirmFinal").style.display = "block";
-    // now show the window
-    document.getElementById("uploadConfirmPopup").style.display = "flex";
-  });
-
-  function openUploadPopup() {
-    document.getElementById("uploadPopup").style.display = "flex";
-    document.getElementById("uploadWindow").scrollTop = "0";
-    document.getElementById("uploadPopup").scrollTop = "0";
-    document.getElementById("jsonUpload").value = ""; // reset filepicker input
-  }
-
-  document.getElementById("uploadClose").addEventListener("click", () => {
-    document.getElementById("uploadPopup").style.display = "none";
-    document.getElementById("fileName").textContent = "Pick file";
-  });
+  import { playSound } from "$lib/utils/soundManager";
+  import { errorPopup } from "$lib/utils/errorHandling";
+  import { goto } from "$app/navigation";
+  import { showConfirmPopup } from "$lib/utils/confirmPopup";
+  import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
 
   let mapSubmittedSuccessfully = false;
 
-  document.getElementById("uploadConfirmClose").addEventListener("click", () => {
-    document.getElementById("uploadConfirmPopup").style.display = "none";
-    if (mapSubmittedSuccessfully) {
-      window.location.reload();
-    }
-  });
-
-  document.getElementById("jsonInfoClose").addEventListener("click", () => {
-    document.getElementById("jsonInfoPopup").style.display = "none";
-  });
-
-  document.getElementById("jsonFormatInfoSpan").addEventListener("click", () => {
-    document.getElementById("jsonInfoPopup").style.display = "flex";
-  });
-
-  document.getElementById("jsonFormatInfoSpanUpdate").addEventListener("click", () => {
-    document.getElementById("jsonInfoPopup").style.display = "flex";
-  });
-
-  document.getElementById("uploadConfirmFinal").addEventListener("click", () => {
-    document.getElementById("uploadConfirmClose").style.display = "block";
-    document.getElementById("uploadConfirmFinal").style.display = "none";
-    document.getElementById("uploadConfirmHeader").textContent = "Submitting map...";
-    document.getElementById("uploadConfirmText").textContent = "Waiting for status...";
-    uploadMap();
-  });
-
-  document.getElementById("jsonUploadButton").addEventListener("click", function () {
-    document.getElementById("jsonUpload").click();
-  });
-
-  document.getElementById("jsonUpload").addEventListener("change", function () {
-    var fileName = document.getElementById("fileName");
-    fileName.textContent = this.files.length > 0 ? this.files[0].name : "Pick file";
-  });
+  let jsonPopup = $state(false);
+  let fileName = $state("Pick file");
+  let jsonUpload = $state();
 
   async function uploadMap() {
     // if successful, close underlying menu
     let operationMessage = await submitMap();
-    document.getElementById("uploadConfirmText").textContent = operationMessage;
 
     if (operationMessage.includes("success")) {
-      document.getElementById("uploadConfirmHeader").textContent = "Map submitted!";
-
-      const mapName = document.getElementById("uploadMapName").value;
-      let playLink = window.location.origin + "/maps.html?map=" + mapName.split(" ").join("_");
-      let linkBox = document.createElement("div");
-
-      linkBox.innerHTML = `
-        <div class="spacer"></div>
-        <p>Play link:</p>
-         <div class="halfSpacer"></div>
-        <div class="linkBox">
-        <p class="linkField">${playLink}</p>
-        </div>
-        `;
-
-      document.getElementById("uploadConfirmText").appendChild(linkBox);
+      let mapName = document.getElementById("uploadMapName").value;
+      goto("/maps/community/" + mapName.replaceAll(" ", "_").toLowerCase()); // Open the map page after submitting
     } else {
-      document.getElementById("uploadConfirmHeader").textContent = "Oh no! An error occured";
+      errorPopup("Error occured uploading a map", "Please refer to the error code below.", operationMessage);
     }
   }
 
@@ -174,126 +102,152 @@
 </svelte:head>
 
 <div class="mainContainer">
-  <div id="uploadPopup" class="popupHolder">
-    <div id="uploadWindow" class="uiWindow">
-      <h1 id="uploadHeader">Upload Map</h1>
-      <div class="infoNoteBox">
-        <img id="infoNoteIcon" src="./img/info_icon.png" alt="Information Icon" />
-        <p id="uploadFirstText">Rules (please read before submitting a map):</p>
-        <ul>
-          <li>You can only upload max. 3 maps per day.</li>
-          <li>Maps must at least have 50 unique locations.</li>
-          <li>Ensure that your map names and author names are familiy-friendly.</li>
-          <li>Keep all details in english.</li>
-          <li>Pick a descriptive map name (e. g. not "My Map").</li>
-          <li>A maximum of 1000 locations is recommended.</li>
-          <li>Maps cannot be edited!</li>
-        </ul>
-      </div>
-      <div id="inputArea">
-        <p class="marginTop">Map name:</p>
-        <input
-          id="uploadMapName"
-          class="uploadInfo"
-          type="text"
-          style="width: 180px"
-          placeholder="Name of your map..."
-          maxlength="17"
-        />
-        <p>Map Category:</p>
-        <select id="categoryDropdown" class="dropdown">
-          <option value="none">Select one...</option>
-          <option value="Nature">Nature</option>
-          <option value="Architecture">Architecture</option>
-          <option value="Urban">Urban</option>
-          <option value="Regions">Regions</option>
-          <option value="Sports">Sports</option>
-          <option value="Transport">Transport</option>
-          <option value="Miscellaneous">Miscellaneous</option>
-        </select>
-        <p>Map Description:</p>
-        <input id="uploadMapDescription" class="uploadInfo" type="text" placeholder="Description..." maxlength="300" />
-        <div class="infoNoteBox">
-          <img id="infoNoteIcon" src="./img/info_icon.png" alt="Information Icon" />
-          <p id="uploadFirstText">How to add locations:</p>
-          <ol>
-            <li>Visit <a href="https://www.google.com/maps/">Google Maps</a> on a desktop computer.</li>
-            <li>Drag the orange figure onto the map to open a streetview.</li>
-            <li>Copy the URL from the address bar of your browser into the textbox.</li>
-          </ol>
-        </div>
-        <p class="marginTop">Locations (as links):</p>
-        <textarea
-          id="uploadMapData"
-          class="uploadInfo locationTextbox"
-          type="text"
-          rows="20"
-          placeholder="https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
+  <h1 id="uploadHeader">Upload Map</h1>
+  <div class="infoNoteBox">
+    <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
+    <h2 id="uploadFirstText">Important Rules:</h2>
+    <ul>
+      <li>You can only upload max. 3 maps per day.</li>
+      <li>Maps must at least have 50 unique locations.</li>
+      <li>Ensure that your map names and author names are familiy-friendly.</li>
+      <li>Keep all details in english.</li>
+      <li>Pick a descriptive map name (e. g. not "My Map").</li>
+      <li>A maximum of 2,000 locations is recommended, up to 15,000 are possible.</li>
+    </ul>
+  </div>
+  <div id="inputArea">
+    <p class="marginTop">Map name:</p>
+    <input
+      id="uploadMapName"
+      class="uploadInfo"
+      type="text"
+      style="width: 180px"
+      placeholder="Name of your map..."
+      maxlength="17"
+    />
+    <p>Map Category:</p>
+    <select id="categoryDropdown" class="dropdown">
+      <option value="none">Select one...</option>
+      <option value="Nature">Nature</option>
+      <option value="Architecture">Architecture</option>
+      <option value="Urban">Urban</option>
+      <option value="Regions">Regions</option>
+      <option value="Sports">Sports</option>
+      <option value="Transport">Transport</option>
+      <option value="Miscellaneous">Miscellaneous</option>
+    </select>
+    <p>Map Description:</p>
+    <input id="uploadMapDescription" class="uploadInfo" type="text" placeholder="Description..." maxlength="300" />
+    <div class="infoNoteBox">
+      <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
+      <p id="uploadFirstText">How to add locations:</p>
+      <ol>
+        <li>Visit <a href="https://www.google.com/maps/">Google Maps</a> on a desktop computer.</li>
+        <li>Drag the orange figure onto the map to open a streetview.</li>
+        <li>Copy the URL from the address bar of your browser into the textbox.</li>
+      </ol>
+    </div>
+    <p class="marginTop">Locations (as links):</p>
+    <textarea
+      id="uploadMapData"
+      class="uploadInfo locationTextbox"
+      type="text"
+      rows="20"
+      placeholder="
+      https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
       
       https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6!1e1!3m4!1scgVGr1HY1alolDg8gfwrzA!2e0!7i16384!8i8192?coh=205409&entry=ttu
       
       https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu"
-          maxlength="5000000"
-        ></textarea>
-        <div class="infoNoteBox infoNoteBoxConverter">
-          <img id="infoNoteIcon" src="./img/info_icon.png" alt="Information Icon" />
-          <p id="infoTextMapConverter">
-            You can generate a map using a tool like Map-Generator and then convert it to the OpenGuessr format. Learn
-            more <a
-              target="_blank"
-              href="https://education.openguessr.com/tools/map-converter"
-              class="linkToMapConverter">here</a
-            >.
-          </p>
-        </div>
-        <p>Locations from a JSON file with <span id="jsonFormatInfoSpan">this formatting</span>:</p>
-        <button id="jsonUploadButton" class="standardButton">
-          <input type="file" id="jsonUpload" accept="application/json" />
-          <p id="fileName">Pick file</p>
-        </button>
-      </div>
-      <div class="buttonBoxRight">
-        <button id="uploadClose" class="standardButton closeButton">Close</button>
-        <button id="uploadConfirm" class="standardButton playButton">Submit</button>
-      </div>
+      maxlength="5000000"
+    ></textarea>
+    <div class="infoNoteBox infoNoteBoxConverter">
+      <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
+      <p id="infoTextMapConverter">
+        You can generate a map using a tool like Map-Generator and then convert it to the OpenGuessr format. Learn more <a
+          target="_blank"
+          href="https://education.openguessr.com/tools/map-converter"
+          class="linkToMapConverter">here</a
+        >.
+      </p>
     </div>
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <p>
+      Locations from a JSON file with <span
+        id="jsonFormatInfoSpan"
+        role="tooltip"
+        onclick={() => {
+          jsonPopup = true;
+        }}>this formatting</span
+      >:
+    </p>
+    <button
+      id="jsonUploadButton"
+      class="standardButton"
+      onclick={() => {
+        jsonUpload.click();
+      }}
+    >
+      <input
+        type="file"
+        id="jsonUpload"
+        bind:this={jsonUpload}
+        accept="application/json"
+        onchange={(event) => {
+          fileName = event.target.files.length > 0 ? event.target.files[0].name : "Pick file";
+        }}
+      />
+      <p id="fileName">{fileName}</p>
+    </button>
   </div>
-  <div id="uploadConfirmPopup" style="z-index: 101;" class="popupHolder">
-    <div class="uiWindow">
-      <h1 id="uploadConfirmHeader">Are you sure?</h1>
-      <p id="uploadConfirmText">Default text</p>
-      <div class="buttonBoxRight">
-        <button id="uploadConfirmClose" class="standardButton closeButton">Close</button>
-        <button id="uploadConfirmFinal" class="standardButton playButton">Yes, submit</button>
-      </div>
-    </div>
+  <div class="buttonBoxRight fullWidth">
+    <button
+      id="uploadConfirm"
+      class="standardButton closeButton playButton"
+      onclick={() => {
+        playSound("basic_button");
+        showConfirmPopup(
+          "Submit?",
+          "Some map details cannot be edited later! Violating the rules can result in a ban.",
+          uploadMap,
+        );
+      }}>Submit</button
+    >
   </div>
-  <div id="jsonInfoPopup" class="popupHolder">
-    <div id="JsonInfoWindow" class="uiWindow">
-      <h1 id="JsonInfoPlayHeader">JSON Format</h1>
+  {#if jsonPopup}
+    <Popup>
+      <h1 class="popup-title">JSON Format</h1>
       <p id="jsonFormatTextInfo">
         OpenGuessr uses a JSON format to load its locations. Here is an example of how that looks like:
       </p>
       <br />
       <div class="infoNoteBox">
-        <img id="infoNoteIcon" src="./img/info_icon.png" alt="Information Icon" />
+        <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
         <pre>
-      &rbrace
+        &lbrace;
           "locations": [
                   [latitude, longitude],
                   [latitude, longitude],
                   [latitude, longitude],
-                  ...and so on...
+                  ...
                   [latitude, longitude]
               ]
-      &rcub;
+        &rbrace;
                       </pre>
       </div>
       <div class="buttonBoxRight">
-        <button id="jsonInfoClose" class="standardButton closeButton">Close</button>
+        <button
+          id="jsonInfoClose"
+          class="standardButton closeButton white"
+          onclick={() => {
+            playSound("basic_button");
+            jsonPopup = false;
+          }}>Close</button
+        >
       </div>
-    </div>
-  </div>
+    </Popup>
+  {/if}
 </div>
 
 <style>
@@ -301,7 +255,6 @@
     width: calc(100% - 20px);
     display: flex;
     flex-wrap: wrap;
-    justify-content: center;
     align-items: center;
     padding-inline: 10px;
   }
@@ -319,36 +272,47 @@
     cursor: pointer;
   }
 
+  #uploadFirstText {
+    margin-bottom: 15px;
+    font-size: 22px;
+  }
+
   .linkToMapConverter {
     cursor: pointer;
     text-decoration: underline;
   }
 
-  #mapSearch:focus {
-    outline: none;
-    background-color: rgba(255, 255, 255, 0.2);
+  #jsonUpload {
+    display: none;
   }
 
-  #uploadHeader,
-  #JsonInfoPlayHeader {
-    margin-top: 5px;
+  .fullWidth {
+    width: 100%;
+  }
+
+  #uploadHeader {
+    width: 100%;
+    margin-bottom: 30px;
+    font-size: 40px;
   }
 
   .infoNoteBox {
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 10px;
     padding: 10px;
+    padding-inline: 20px;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
-    padding-inline: 30px;
+    width: calc(100% - 40px);
   }
 
   #inputArea {
-    padding: 10px;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
+    width: 100%;
+    margin-top: 15px;
   }
 
   .uploadInfo {
@@ -372,14 +336,10 @@
     background-color: rgba(255, 255, 255, 0.2);
   }
 
-  #uploadConfirmPopup {
-    display: none;
-  }
-
   .locationTextbox {
     min-height: 350px;
     font-size: 12px;
-    width: 90%;
+    width: calc(100% - 30px);
     padding: 15px;
   }
 
@@ -387,13 +347,18 @@
     margin-top: 15px;
   }
 
+  li {
+    color: white;
+    font-size: 22px;
+  }
+
   #infoNoteIcon {
     width: 35px;
     height: 35px;
     margin-bottom: 20px;
-    margin-top: 7px;
+    margin-top: 5px;
     opacity: 0.5;
-    margin-left: -10px;
+    margin-left: -5px;
   }
 
   pre {
@@ -417,7 +382,7 @@
     width: 150px;
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 10px;
-    min-height: 30px;
+    min-height: 50px;
     color: white;
     border: none;
     font-size: 22px;
@@ -433,9 +398,5 @@
 
   #uploadMapData {
     margin-bottom: 5px;
-  }
-
-  #uploadConfirmText {
-    margin-bottom: 50px;
   }
 </style>

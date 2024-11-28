@@ -47,7 +47,7 @@
   });
 
   async function likeOrDislikeMap(mapName) {
-    if (localStorage.getItem("bearer") && localStorage.getItem("id")) {
+    if (get(isAuthenticated)) {
       try {
         const response = await fetch(`https://maps.openguessr.com/maps/like/${mapName}`, {
           method: "POST",
@@ -324,7 +324,6 @@
       id="jsonUpdateButton"
       class="standardButton white"
       onclick={() => {
-        playSound("basic_button");
         filePicker.click(); // Simulate click on filePicker to make the file picker UI nicer (default picker is hidden)
       }}
     >

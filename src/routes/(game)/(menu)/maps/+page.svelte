@@ -1,7 +1,10 @@
 <script>
   import { Plus } from "lucide-svelte";
   import { playSound } from "$lib/utils/soundManager";
+  import { isAuthenticated } from "$lib/stores/accountStore";
   import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
+  import { signupPopup } from "$lib/stores/uiStore";
 
   // Load community maps  ---------------------------------------------------------------------------------------------------------
 
@@ -204,13 +207,17 @@
   </div>
   <div class="headerContainer">
     <h2 class="header">Community Maps:</h2>
-    <a
+    <button
       id="uploadButton"
       class="standardButton primaryButtonHighlight"
-      href="/maps/upload"
       onclick={() => {
         playSound("basic_button");
-      }}>+ Upload</a
+        if ($isAuthenticated) {
+          goto("/maps/upload");
+        } else {
+          signupPopup.set(true);
+        }
+      }}>+ Upload</button
     >
     <div class="categoriesSearchArea">
       <div class="categoriesBar">
@@ -291,7 +298,7 @@
   {#if showLoadMore}
     <button
       id="loadMore"
-      class="standardButton"
+      class="standardButton white"
       onclick={() => {
         playSound("basic_button");
         loadCommunityMaps(currentFetchIndex + 50, loadMoreCategoryParam, loadMoreQueryParam);
@@ -377,6 +384,11 @@
     flex-wrap: wrap;
     width: 100%;
     margin-bottom: 20px;
+  }
+
+  .buttonDisabled {
+    pointer-events: none;
+    opacity: 0.5;
   }
 
   .add-button {
@@ -500,9 +512,6 @@
 
   #loadMore {
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 22px;
     min-height: 40px;
     width: 280px;
     padding: 10px;
