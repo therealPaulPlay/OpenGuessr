@@ -184,7 +184,7 @@
     </p>
     <button
       id="jsonUploadButton"
-      class="standardButton"
+      class="standardButton white"
       onclick={() => {
         jsonUpload.click();
       }}
@@ -260,9 +260,7 @@
   }
 
   #jsonUploadButton {
-    background-color: rgba(255, 255, 255, 0.1);
     margin-top: 10px;
-    color: white;
     padding-top: 2px;
     padding-bottom: 2px;
   }
