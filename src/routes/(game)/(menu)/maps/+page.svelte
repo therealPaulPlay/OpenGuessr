@@ -213,11 +213,11 @@
       onclick={() => {
         playSound("basic_button");
         if ($isAuthenticated) {
-          goto("/maps/upload");
+          goto("/maps/create");
         } else {
           signupPopup.set(true);
         }
-      }}>+ Upload</button
+      }}>+ Create</button
     >
     <div class="categoriesSearchArea">
       <div class="categoriesBar">

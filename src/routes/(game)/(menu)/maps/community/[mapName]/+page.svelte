@@ -12,6 +12,7 @@
   import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
   import { panoramaKey } from "$lib/stores/locationStore";
   import { onMount } from "svelte";
+  import { goto } from "$app/navigation";
   import { get } from "svelte/store";
 
   let { data } = $props();
@@ -125,6 +126,7 @@
       // Return the success or error message. No need to parse the response
       if (response.ok) {
         showConfirmPopup("Map deleted", "The map was deleted successfully.", false, false, false, true);
+        goto("/maps");
         return "Map deleted successfully.";
       } else {
         console.error("Error deleting map: " + response.status);
@@ -197,12 +199,7 @@
       <Dices size={18}></Dices>
     </button>
     <!-- svelte-ignore a11y_missing_attribute -->
-    <iframe
-      class="mapIframe"
-      referrerpolicy="no-referrer-when-downgrade"
-      frameborder="0"
-      src={iframeSource}
-    ></iframe>
+    <iframe class="mapIframe" referrerpolicy="no-referrer-when-downgrade" frameborder="0" src={iframeSource}></iframe>
   </div>
   <!-- Author name and Like -->
   <div class="titleContainer">

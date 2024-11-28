@@ -2,39 +2,44 @@
   import Popup from "$lib/components/Popup.svelte";
   import { playSound } from "$lib/utils/soundManager";
   import { errorPopup } from "$lib/utils/errorHandling";
+  import { username } from "$lib/stores/accountStore";
   import { goto } from "$app/navigation";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
   import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
-
-  let mapSubmittedSuccessfully = false;
+  import { showNotification } from "$lib/utils/notifications";
+  import { get } from "svelte/store";
 
   let jsonPopup = $state(false);
   let fileName = $state("Pick file");
-  let jsonUpload = $state();
 
   async function uploadMap() {
     // if successful, close underlying menu
     let operationMessage = await submitMap();
 
     if (operationMessage.includes("success")) {
-      let mapName = document.getElementById("uploadMapName").value;
       goto("/maps/community/" + mapName.replaceAll(" ", "_").toLowerCase()); // Open the map page after submitting
+      showNotification("Thank you for contributing!");
     } else {
       errorPopup("Error occured uploading a map", "Please refer to the error code below.", operationMessage);
     }
   }
 
+  let filePicker = $state();
+  let mapName = $state();
+  let mapDescription = $state();
+  let uploadMapDataValue = $state();
+  let categoryValue = $state();
+
   async function submitMap() {
-    let filePicker = document.getElementById("jsonUpload");
     let inputFromFilepicker = false;
-    // Retrieve input values
-    const name = document.getElementById("uploadMapName").value;
-    const description = document.getElementById("uploadMapDescription").value;
-    const mapData = filePicker.value ? filePicker.files[0] : document.getElementById("uploadMapData").value;
+    const name = mapName;
+    const description = mapDescription;
+    const mapData = filePicker.value ? filePicker.files[0] : uploadMapDataValue;
     inputFromFilepicker = filePicker.value ? true : false;
-    const author = localStorage.getItem("username");
+
+    const author = get(username);
     const id = localStorage.getItem("id");
-    const category = document.getElementById("categoryDropdown").value;
+    const category = categoryValue;
 
     // Validate inputs
     if (!name || !description || !mapData || !author || !id || category == "none") {
@@ -73,9 +78,7 @@
 
       // Return the success or error message
       if (response.ok) {
-        document.getElementById("uploadPopup").style.display = "none";
-        mapSubmittedSuccessfully = true;
-        return `Map submitted successfully! Thank you so much for contributing.`;
+        return `Map submitted successfully!`; // must include "success"
       } else {
         let resultErrors = "";
         try {
@@ -98,11 +101,11 @@
 </script>
 
 <svelte:head>
-  <title>Upload a Map</title>
+  <title>Create a Map</title>
 </svelte:head>
 
 <div class="mainContainer">
-  <h1 id="uploadHeader">Upload Map</h1>
+  <h1 id="uploadHeader">Create Map</h1>
   <div class="infoNoteBox">
     <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
     <h2 id="uploadFirstText">Important Rules:</h2>
@@ -120,13 +123,14 @@
     <input
       id="uploadMapName"
       class="uploadInfo"
+      bind:value={mapName}
       type="text"
       style="width: 180px"
       placeholder="Name of your map..."
       maxlength="17"
     />
     <p>Map Category:</p>
-    <select id="categoryDropdown" class="dropdown">
+    <select id="categoryDropdown" class="dropdown" bind:value={categoryValue}>
       <option value="none">Select one...</option>
       <option value="Nature">Nature</option>
       <option value="Architecture">Architecture</option>
@@ -137,7 +141,14 @@
       <option value="Miscellaneous">Miscellaneous</option>
     </select>
     <p>Map Description:</p>
-    <input id="uploadMapDescription" class="uploadInfo" type="text" placeholder="Description..." maxlength="300" />
+    <input
+      id="uploadMapDescription"
+      class="uploadInfo"
+      type="text"
+      placeholder="Description..."
+      maxlength="300"
+      bind:value={mapDescription}
+    />
     <div class="infoNoteBox">
       <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
       <p id="uploadFirstText">How to add locations:</p>
@@ -150,6 +161,7 @@
     <p class="marginTop">Locations (as links):</p>
     <textarea
       id="uploadMapData"
+      bind:value={uploadMapDataValue}
       class="uploadInfo locationTextbox"
       type="text"
       rows="20"
@@ -192,7 +204,7 @@
       <input
         type="file"
         id="jsonUpload"
-        bind:this={jsonUpload}
+        bind:this={filePicker}
         accept="application/json"
         onchange={(event) => {
           fileName = event.target.files.length > 0 ? event.target.files[0].name : "Pick file";
