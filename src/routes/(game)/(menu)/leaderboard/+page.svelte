@@ -219,11 +219,9 @@
     overflow-x: auto;
     overflow-y: hidden;
     margin-right: auto;
-    margin-left: 18px;
+    margin-left: 10px;
     margin-bottom: 22px;
     width: fit-content;
-    background-color: rgba(92, 93, 94, 0.1);
-    border-radius: 13px;
     border-bottom-right-radius: 0;
     border-bottom-left-radius: 0;
   }
@@ -382,7 +380,6 @@
 
   .leaderboardContainer {
     border-radius: 20px;
-    background-color: rgba(92, 93, 94, 0.1);
     display: flex;
     justify-content: center;
     align-items: center;

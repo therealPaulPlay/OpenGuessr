@@ -8,11 +8,13 @@ import { streakText, showStreakDisplay, lastDistance, lastExperienceCalculationA
 import { isHost, peerId, multiplayerCategory, highestMultiplayerSupporterLevel } from "$lib/stores/context-specific/multiplayerStore";
 import { updatePeerDataScore, peerSendsHost } from "$lib/logic/multiplayerLogic";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
+import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
 import { setUserXP } from "$lib/utils/setUserXP";
 import { mapDiameter } from "$lib/stores/context-specific/mapStore";
 import { saveRoundToLog } from "$lib/utils/saveRoundToLog";
 import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates";
 import { playSound } from "$lib/utils/soundManager";
+import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
 import { get } from "svelte/store";
 
 // Streak ----------------------------------------------------------------------------------------------------------------------------------------------------
@@ -207,7 +209,7 @@ export async function loadResultScreenXP(distance) {
 
         setTimeout(function () {
             if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
-                supporterXpBoostAnimation(supporterMultiplier); // !TODO !CHANGE import this
+                supporterXpBoostAnimation(supporterMultiplier);
                 animateSupporterBoostTimeout = setTimeout(() => {
                     earnedExperience.set(earnedXP);
                 }, 3500);

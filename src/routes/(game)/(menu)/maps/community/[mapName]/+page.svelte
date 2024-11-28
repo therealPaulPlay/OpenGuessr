@@ -1,11 +1,11 @@
 <script>
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { isAuthenticated } from "$lib/stores/accountStore";
-  import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
   import { errorPopup } from "$lib/utils/errorHandling";
   import { signupPopup } from "$lib/stores/uiStore";
   import { showNotification } from "$lib/utils/notifications";
+  import { changeCategory } from "$lib/utils/changeCategory";
   import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Dices } from "lucide-svelte";
   import { playSound } from "$lib/utils/soundManager";
   import Popup from "$lib/components/Popup.svelte";
@@ -278,11 +278,10 @@
       href="/"
       onclick={() => {
         playSound("basic_button");
-        localStorage.setItem("selectedCategory", "community_" + mapName.toLowerCase()); // Set the category
         let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
         addedCommunityMaps.push(mapName);
         localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
-        checkGenerationTypeAndGenerate(); // Generate with this map (this is a link <a>, so it will return to the game page)
+        changeCategory("community_" + mapName.toLowerCase(), true);
       }}
     >
       Play {mapName}
@@ -404,7 +403,8 @@
     position: absolute;
     top: 15px;
     right: 15px;
-    background-color: var(--panel-color);
+    background-color: rgba(32, 32, 32, 0.75);
+    backdrop-filter: blur(5px);
   }
 
   .infoElement {
@@ -567,6 +567,8 @@
     padding-top: 5px;
     margin-top: auto;
     margin-bottom: auto;
+    background-color: var(--box-color);
+    border: none;
   }
 
   .playButton {

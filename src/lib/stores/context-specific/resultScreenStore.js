@@ -8,6 +8,8 @@ export const earnedExperience = writable(0);
 export const streakText = writable("1 (default)");
 export const lastDistance = writable();
 export const lastExperienceCalculationAborted = writable(false);
+export const supporterBoost = writable();
+export const supporterBoostText = writable();
 
 export const experienceBarAnimated = writable(true);
 export const showStreakDisplay = writable(true);

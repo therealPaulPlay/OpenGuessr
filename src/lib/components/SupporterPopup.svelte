@@ -4,12 +4,7 @@
   import { loadAndInitializeLibrary } from "$lib/utils/scriptLoader";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
   import { initializeRewardedAd } from "$lib/utils/rewardedAds";
-  import {
-    isAuthenticated,
-    supporterLevel,
-    supportedAmount,
-    freeSupporterBoostEnabled,
-  } from "$lib/stores/accountStore";
+  import { supporterLevel, supportedAmount, freeSupporterBoostEnabled } from "$lib/stores/accountStore";
   import { supporterPopupVisible } from "$lib/stores/context-specific/supporterPopupStore";
   import { onMount } from "svelte";
   import { playSound } from "$lib/utils/soundManager";
@@ -23,8 +18,7 @@
   function getTierPrice(tier) {
     if ($supporterLevel >= tier) return "Unlocked";
     if ($supporterLevel == 0) return basePrices[tier - 1] + " $";
-
-    return `<span class="baseTierPrice">${basePrices[tier - 1]} $</span>${Math.round(Math.max(basePrices[tier - 1] - $supportedAmount - 0.01, 0) * 100) / 100} $`;
+    return Math.round(Math.max(basePrices[tier - 1] - $supportedAmount - 0.01, 0) * 100) / 100 + " $";
   }
 
   // Initialize Stripe
@@ -226,8 +220,12 @@
           id="tierPrice2"
           class="standardButton tierBuyButton"
           onclick={() => startPurchase(2)}
-          class:tierBuyButtonUnlocked={$supporterLevel >= 2}>{getTierPrice(2)}</button
-        >
+          class:tierBuyButtonUnlocked={$supporterLevel >= 2}
+          >{getTierPrice(2)}
+          {#if $supporterLevel >= 1 && $supporterLevel < 2}
+            <span class="discountBadge">Upgrade Discount</span>
+          {/if}
+        </button>
       </div>
       <div class="tierBox">
         <p class="tierBoxTier">Tier 3</p>
@@ -240,7 +238,11 @@
           id="tierPrice3"
           class="standardButton tierBuyButton"
           onclick={() => startPurchase(3)}
-          class:tierBuyButtonUnlocked={$supporterLevel >= 3}>{getTierPrice(3)}</button
+          class:tierBuyButtonUnlocked={$supporterLevel >= 3}
+          >{getTierPrice(3)}
+          {#if $supporterLevel >= 1 && $supporterLevel < 3}
+            <span class="discountBadge">Upgrade Discount</span>
+          {/if}</button
         >
       </div>
       <div class="tierBox">
@@ -254,7 +256,11 @@
           id="tierPrice4"
           class="standardButton tierBuyButton"
           onclick={() => startPurchase(4)}
-          class:tierBuyButtonUnlocked={$supporterLevel >= 4}>{getTierPrice(4)}</button
+          class:tierBuyButtonUnlocked={$supporterLevel >= 4}
+          >{getTierPrice(4)}
+          {#if $supporterLevel >= 1 && $supporterLevel < 4}
+            <span class="discountBadge">Upgrade Discount</span>
+          {/if}</button
         >
       </div>
       <div class="supporterBox supporterBoxHighlight">
@@ -343,6 +349,19 @@
     margin-bottom: 10px;
     min-height: 210px;
     width: 220px;
+  }
+
+  .discountBadge {
+    font-size: 18px;
+    padding: 2px;
+    opacity: 0.9;
+    padding-left: 5px;
+    padding-right: 9px;
+    font-style: italic;
+    border-radius: 3px;
+    margin-left: 5px;
+    background-color: rgba(0, 0, 0, 0.15);
+    vertical-align: 1px;
   }
 
   .tierBenefits li {

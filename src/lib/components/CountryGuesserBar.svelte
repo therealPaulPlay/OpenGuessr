@@ -8,6 +8,7 @@
   function selectCountry(fieldNr) {
     playSound("item_select");
     selectedCountryField.set(fieldNr);
+    confirmButtonActive.set(true);
   }
 
   function clickConfirm(event) {
@@ -132,7 +133,7 @@
     position: fixed;
     bottom: 115px;
     margin-inline: auto;
-    display: none;
+    display: flex;
     gap: 8px;
     background-color: var(--panel-color);
     backdrop-filter: blur(10px);

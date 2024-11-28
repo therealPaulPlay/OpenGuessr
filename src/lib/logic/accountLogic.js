@@ -1,5 +1,4 @@
 import { getUser } from "./userAPI";
-// import { supporterXpBoostAnimation } from "../../../JS/mainUI.js"; !TODO !CHANGE
 import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
 import { initializeWebsocketConnection } from "$lib/logic/websocketLogic";
 import { resultScreenEnabled, lastDistance, lastExperienceCalculationAborted } from "$lib/stores/context-specific/resultScreenStore";
@@ -55,7 +54,7 @@ async function loadUserInfo() {
       experience.set(user.experience);
       username.set(user.userName);
       supporterLevel.set(user.supporter_level);
-      supportedAmount.set(user.supportd_amount);
+      supportedAmount.set(user.supported_amount);
       selectedPinIndex.set(user?.profile_data?.pin || 0);
       selectedBadge.set(user?.profile_data?.badge || null);
 

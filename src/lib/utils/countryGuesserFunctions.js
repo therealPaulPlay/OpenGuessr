@@ -90,7 +90,7 @@ let countryEmojis;
 async function loadCountryEmojis() {
     try {
         const countryEmojisResponse = await fetch("/json/country-emojis/countryEmojis.json");
-        const countryEmojis = await countryEmojisResponse.json().then((response) => response.countryEmojis);
+        countryEmojis = await countryEmojisResponse.json().then((response) => response.countryEmojis);
     } catch (error) {
         console.error("Error loading country emojis:", error);
     }

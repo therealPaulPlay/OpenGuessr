@@ -11,6 +11,8 @@
     experienceBarAnimated,
     showStreakDisplay,
     streakText,
+    supporterBoost,
+    supporterBoostText,
   } from "$lib/stores/context-specific/resultScreenStore";
   import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
   import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
@@ -74,8 +76,8 @@
         </div>
         {#if $isAuthenticated}
           <div id="XParea" class="resultField">
-            <div id="supporterBoost">
-              <p id="supporterBoostText">Supporter Boost (Default)</p>
+            <div id="supporterBoost" bind:this={$supporterBoost}>
+              <p id="supporterBoostText" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
             </div>
             <p id="endScreenLevelDisplay">Lvl. {level}</p>
             <div id="endScreenXPbar">

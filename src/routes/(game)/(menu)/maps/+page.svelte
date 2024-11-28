@@ -5,8 +5,8 @@
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import { signupPopup } from "$lib/stores/uiStore";
+  import { changeCategory } from "$lib/utils/changeCategory";
   import { specialModes, continentMaps, countryMaps, basicMaps } from "$lib/stores/context-specific/officialMapsStore";
-  import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 
   // Load community maps  ---------------------------------------------------------------------------------------------------------
 
@@ -90,8 +90,7 @@
   function selectCategory(name, community) {
     playSound("button_juicy");
     const communityAppendix = community ? "community_" : "";
-    localStorage.setItem("selectedCategory", communityAppendix + name.toLowerCase());
-    checkGenerationTypeAndGenerate();
+    changeCategory(communityAppendix + name.toLowerCase(), true);
     goto("/");
   }
 
@@ -606,7 +605,7 @@
   }
 
   .selected-map-item {
-    background-image: linear-gradient(20deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.3));
+    background-image: linear-gradient(20deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.35));
   }
 
   .map-name {

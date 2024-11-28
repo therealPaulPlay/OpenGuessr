@@ -7,13 +7,41 @@ import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
 import { isHost } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
+import { countryMaps, continentMaps } from "$lib/stores/context-specific/officialMapsStore";
 import { mapSupportsMultiplayer } from "$lib/utils/doesMapSupportMultiplayer";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
 
+// Check for Play URLs that include a map ---------------------------------------------------------------------------
+
+let checkedForMapLink = false;
+
+function checkLinkMap() {
+    checkedForMapLink = true; // Only executes this once for the first generation
+
+    try {
+        let urlParams = new URLSearchParams(window.location.search);
+        let mapFromLink = urlParams.get("play-map").toLowerCase();
+
+        if (mapFromLink) {
+            if (get(countryMaps).includes(mapFromLink) || get(continentMaps).includes(mapFromLink)) {
+                changeCategory(mapFromLink);
+            } else {
+                errorPopup("Map not available", "Unfortunately, this map doesn't exist yet. It will likely be released in the future! Feel free to search for similar community maps.", "Map not found", false, true);
+            }
+        }
+
+        history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
+    } catch { }
+}
+
+// Location Generation with correct Type ---------------------------------------------------------------------------------------------------------
+
 export async function checkGenerationTypeAndGenerate() {
     const mapCategory = localStorage.getItem("selectedCategory") || "standard";
+
+    if (!checkedForMapLink) checkLinkMap();
 
     stopCompetitionTimer();
     timerText.set("00:00"); // Visually reset timer
