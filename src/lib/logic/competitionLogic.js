@@ -23,26 +23,23 @@ let competitionCombinedScore = 0;
 let competitionTimer;
 
 // Called in category menu before generating so that these values are set before they are needed!
-export function loadCompetition(regenerate) {
-    competitionRound.set(0); // reset round index
-    competitionCombinedScore = 0; // reset combined score
+export function loadCompetition() {
+    competitionRound.set(0); // Reset round index
+    competitionCombinedScore = 0; // Reset combined score
     leaveFunction.set(leaveCompetition); // Set leave function for mapModeIndicator
 
-    if (competition) {
-        localStorage.removeItem("competition"); // remove localstorage key
-        competition.set(true);
-        disableResultScreen(); // in case result screen is enabled
+    if (get(competitionData)) {
+        competition.set(true); // Activate Competition mode
+        disableResultScreen(); // In case result screen is enabled
         setCompetitionUI(true);
         setRestriction(get(competitionData)?.restriction || "standard");
-
         addCompetitionPlayed();
+
         setTimeout(() => {
             playSound("match_start");
         }, 400);
 
-        if (regenerate) {
-            checkGenerationTypeAndGenerate();
-        }
+        checkGenerationTypeAndGenerate();
     }
 }
 
@@ -75,7 +72,7 @@ export function checkStartCompetitionRound() {
 export function stopCompetitionTimer() {
     try {
         competitionTimer.stopTimer();
-    } catch {}
+    } catch { }
 }
 
 // Score logic ------------------------------------------------------------------------------------------------------
@@ -92,7 +89,7 @@ export async function leaveCompetition(showResult) {
         setRestriction("standard");
 
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
-        await submitCompetitionResult(competition.id, competitionCombinedScore, get(supporterLevel), localStorage.getItem("bearer"));
+        await submitCompetitionResult(get(competitionData).id, competitionCombinedScore, get(supporterLevel), localStorage.getItem("bearer"));
 
         if (showResult) {
             window.location.href = "/competitions?leaderboard-submit=" + competition.id;
@@ -158,11 +155,11 @@ async function submitCompetitionResult(id, score, supporterLevel, token) {
 
 // Check round status and end if needed ----------------------------------------------------------------------------------
 
-export function checkCompetitionRoundStatus(justReturnResult) {
+export function checkCompetitionRoundStatus() {
+    stopCompetitionTimer(); // Stop the timer
+
     if (get(competitionRound) == get(competitionData)?.roundAmount) {
-        if (!justReturnResult) {
-            leaveCompetition(true);
-        }
+        leaveCompetition(true);
 
         return false;
     } else {

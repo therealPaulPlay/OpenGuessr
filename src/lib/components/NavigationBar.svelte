@@ -160,7 +160,7 @@
       }}
     >
       <img
-        class="socialBarIcons invertSocialBarIcon"
+        class="socialBarIcons"
         src="/img/leaderboards_icon.png"
         alt="Leaderboard for OpenGuessr"
       />
@@ -255,7 +255,7 @@
     >
       <span class="topBarExpand">Leaderboard</span>
       <img
-        class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
+        class="socialBarIcons shiftedSocialbarIcon"
         src="/img/leaderboards_icon.png"
         alt="Experience Leaderboard"
       />

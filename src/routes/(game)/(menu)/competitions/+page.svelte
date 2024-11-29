@@ -3,18 +3,17 @@
   import { playSound } from "$lib/utils/soundManager";
   import { signupPopup } from "$lib/stores/uiStore";
   import { errorPopup } from "$lib/utils/errorHandling";
+  import Popup from "$lib/components/Popup.svelte";
+  import { competitionData } from "$lib/stores/context-specific/competitionStore";
+  import { loadCompetition } from "$lib/logic/competitionLogic";
   import { isAuthenticated } from "$lib/stores/accountStore";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
   import { goto } from "$app/navigation";
   import { onMount } from "svelte";
+
   const competitionsEndpoint = "https://competitions.openguessr.com/competitions";
 
-  // add competitions programmatically ---------------------------------------------------------------
-
-  let normalAddSuccessful = false;
-  let expiredAddSuccessful = false;
-  let firstLoad = false;
-
+  // Format Duration of Competitions ---------------------------------------------------------------
   function formatDuration(seconds) {
     if (typeof seconds === "string") {
       seconds = parseInt(seconds, 10);
@@ -36,154 +35,7 @@
     return result.join(" ");
   }
 
-  let competitionHostIdCounter = 0;
-
-  function addCompetition(
-    id,
-    name,
-    author,
-    authorId,
-    playercount,
-    restriction,
-    duration,
-    remainingDuration,
-    locationAmount,
-    roundLength,
-    description,
-    expired,
-    entered,
-    daily,
-  ) {
-    let container = expired
-      ? document.getElementById("expiredCompetitionArea")
-      : document.getElementById("competitionArea");
-
-    if (daily) {
-      container = document.getElementById("dailyCompetitionArea");
-      container.innerHTML = "";
-    } else {
-      // clean container on load of first competition for each one.
-      if (!expired && !normalAddSuccessful) {
-        container.innerHTML = "";
-        normalAddSuccessful = true;
-      }
-
-      if (expired && !expiredAddSuccessful) {
-        container.innerHTML = "";
-        expiredAddSuccessful = true;
-      }
-    }
-
-    let displayEnterButton = expired ? "display: none;" : "";
-    let expiredItem = expired ? " expiredCompetitionColor" : "";
-    let dailyItem = daily ? " dailyItem" : "";
-    let dailyPrimary = daily ? " dailyPrimary" : "";
-    let dailyLeaderboardButton = daily ? " dailyLeaderboardButton" : "";
-    let expiredLeaderboardButton = expired ? " expiredLeaderboardColor" : "";
-
-    let competitionItem = document.createElement("div");
-    competitionItem.className = `competitionItem fadeInItem${expiredItem}${dailyItem}`;
-    competitionHostIdCounter++;
-
-    competitionItem.innerHTML = `
-                        <h2 class="competitionItemHeader">${name}</h2>
-                        <p id="host${competitionHostIdCounter}" class="competitionAuthor">hosted by ${author}</p>
-                        <div class="competitionPropertiesBox">
-                            <div class="propertyItem${expiredItem}${dailyItem}">
-                                <div class="label${expiredItem}${dailyItem}">
-                                    <p>Plays</p>
-                                </div>
-                                <p class="itemText">${playercount.toLocaleString()}</p>
-                            </div>
-                            <div class="propertyItem${expiredItem}${dailyItem}">
-                                <div class="label${expiredItem}${dailyItem}">
-                                    <p>Restriction</p>
-                                </div>
-                                <p class="itemText">${restriction}</p>
-                            </div>
-                            <div class="propertyItem${expiredItem}${dailyItem}">
-                                <div class="label${expiredItem}${dailyItem}">
-                                    <p>Duration</p>
-                                </div>
-                                <p class="itemText">${formatDuration(duration)} (${formatDuration(remainingDuration)} left)</p>
-                            </div>
-                            <div class="propertyItem${expiredItem}${dailyItem}">
-                                <div class="label${expiredItem}${dailyItem}">
-                                    <p>Rounds</p>
-                                </div>
-                                <p class="itemText">${locationAmount}</p>
-                            </div>
-                            <div class="propertyItem${expiredItem}${dailyItem}">
-                                <div class="label${expiredItem}${dailyItem}">
-                                    <p>Round length</p>
-                                </div>
-                                <p class="itemText">${roundLength}s</p>
-                            </div>
-                        </div>
-                        <div id="aboutItem${id}" class="aboutSection competitionDesc${expiredItem}${dailyItem}">
-                            <div class="label${expiredItem}${dailyItem}">
-                                <p>About</p>
-                            </div>
-                            <p class="itemText descText">${description}</p>
-                        </div>
-                        <div class="buttonBox competitionButtonBox">
-                            <button id="leaderboardButton${id}" class="standardButton competitionButton leftButton${expiredLeaderboardButton}${dailyLeaderboardButton}">Results
-                                <img class="textIcon invert" src="/IMG/leaderboards_icon.png"
-                                    alt="Leaderboards for OpenGuessr">
-                            </button>
-                            <button id="enterButton${id}" style="${displayEnterButton}" class="standardButton competitionButton primaryButton${dailyPrimary}">Enter</button>
-                        </div>
-    `;
-
-    container.appendChild(competitionItem);
-
-    document.getElementById("host" + competitionHostIdCounter).addEventListener("click", () => {
-      let id = authorId == 0 ? 2 : authorId; // if hosted by id 0 (system), set profile to PaulPlay
-      loadProfileFromId(id, true);
-    });
-
-    const leaderboardButton = document.getElementById("leaderboardButton" + id);
-    const enterButton = document.getElementById("enterButton" + id);
-    const aboutItem = document.getElementById("aboutItem" + id);
-
-    leaderboardButton.addEventListener("click", () => {
-      openLeaderboard(id);
-    });
-
-    aboutItem.addEventListener("click", () => {
-      showConfirmPopup("About", description, false, false, false, true);
-    });
-
-    enterButton.addEventListener("click", () => {
-      if (localStorage.getItem("username") != null && localStorage.getItem("id") != null) {
-        showConfirmPopup(
-          "Enter " + name + "?",
-          "This will start the game immediately. You can only enter a competition once.",
-          () => {
-            enterCompetition(id, localStorage.getItem("bearer"));
-          },
-        );
-      } else {
-        window.location.href = "/signup.html";
-      }
-    });
-
-    if (entered) {
-      enterButton.style.pointerEvents = "none";
-      enterButton.style.opacity = "0.5";
-      enterButton.textContent = "Already entered";
-    } else if (authorId == localStorage.getItem("id")) {
-      enterButton.style.pointerEvents = "none";
-      enterButton.style.opacity = "0.5";
-      enterButton.textContent = "Hosted by you";
-    }
-
-    setTimeout(() => {
-      competitionItem.style.opacity = "1";
-    }, 50);
-  }
-
-  // Open leaderboard and Enter competition ------------------------------------------------------------------------------------------------------
+  // Enter Competition ------------------------------------------------------------------------------------------------------------------------------
   async function enterCompetition(id, token) {
     try {
       const requestBody = {
@@ -212,15 +64,10 @@
             locations: data.locations.locations,
           };
 
-          localStorage.setItem("competition", JSON.stringify(activeCompetitionDetails));
-
-          // go back to main page and start competition
-          if (inIframe()) {
-            window.parent.postMessage("close", "*");
-            window.parent.postMessage("loadCompetition", "*");
-          } else {
-            window.location.href = "/index.html";
-          }
+          // Go back to main page and start competition
+          competitionData.set(activeCompetitionDetails);
+          loadCompetition();
+          goto("/");
         } catch (error) {
           console.error("Error parsing competition details: " + error);
         }
@@ -245,39 +92,52 @@
             });
           }
 
-          document.getElementById("enterText").textContent = "Error: " + errorMessages.join(" ");
+          errorPopup(
+            "Error entering Competition",
+            "An error occured trying to enter a competition.",
+            errorMessages.join(" "),
+          );
         } catch {
-          document.getElementById("enterText").textContent = "Error did not include json error string.";
+          errorPopup(
+            "Unknown Competition Error",
+            "An error without a proper error message occured entering the competition.",
+            "No error - Please check the browser console and request response",
+          );
         }
       }
     } catch (error) {
       console.error("Error occurred during competition details fetch ", error);
-      document.getElementById("enterText").textContent = "Error: " + error;
+      errorPopup(
+        "Error entering Competition (Network)",
+        "A network error occured trying to enter a competition",
+        error,
+      );
     }
   }
 
   // Leaderboard ---------------------------------------------------------------------------------------------------------
+  let leaderboardPopup = $state(false);
+  let showRatingsBox = $state(false);
   let leaderboardCompetitionId;
 
-  function openLeaderboard(id) {
-    leaderboardCompetitionId = id;
-    document.getElementById("leaderboardPopup").style.display = "flex";
-    document.getElementById("leaderboardHeader").textContent = "Results loading...";
+  function openLeaderboard(id, showRatingBox) {
+    leaderboardCompetitionId = id; // Used for e.g. the ratings requests
+    leaderboardPopup = true;
+    leaderboardEntries = [];
+    yourEntry = undefined;
+    leaderboardName = "Loading...";
 
-    // load data from endpoint using id here
-    document.getElementById("rankingDisplay").innerHTML = `<p>Loading...</p>`;
+    // Load data from endpoint using id here
     loadLeaderboardFromServer(id);
 
     if (showRatingBox) {
       displayRatingBox();
-      showRatingBox = false;
     }
   }
 
-  document.getElementById("leaderboardClose").addEventListener("click", () => {
-    document.getElementById("ratingBox").style.display = "none";
-    document.getElementById("leaderboardPopup").style.display = "none";
-  });
+  let leaderboardEntries = $state([]);
+  let yourEntry = $state();
+  let leaderboardName = $state("Default");
 
   async function loadLeaderboardFromServer(id) {
     try {
@@ -294,91 +154,18 @@
       });
 
       if (response.ok) {
-        try {
-          const data = await response.json();
-          document.getElementById("rankingDisplay").innerHTML = "";
-
-          // add yourself at top with margin to others if you have played
-          let youItem = data.userRank;
-
-          if (youItem) {
-            let youBar = document.createElement("div");
-            youBar.classList.add("youBar");
-            youBar.classList.add("bottomMarginItem");
-
-            let newEntry = document.createElement("div");
-            newEntry.classList.add("rankItem");
-
-            if (youItem.supporter_level && youItem.supporter_level > 0) {
-              newEntry.classList.add("leaderboardSupporterEntry");
-            }
-
-            newEntry.innerHTML = `
-                        <p class="leaderboardTextEntry">#${youItem.position}</p>
-                        <p id="yourUsername" class="leaderboardTextEntry centerEntry">${youItem.userName}</p>
-                        <p class="leaderboardTextEntry">${youItem.score.toLocaleString()} Pts.</p>`;
-            youBar.innerHTML = `
-                        <p class="youLabel">You:</p>
-                    `;
-
-            youBar.appendChild(newEntry);
-            document.getElementById("rankingDisplay").appendChild(youBar);
-            document.getElementById("yourUsername").addEventListener("click", () => {
-              loadProfileFromId(id, true);
-            });
-          }
-
-          let idCounter = 0;
-
-          data.leaderboard.forEach((entry) => {
-            idCounter++;
-
-            let newEntry = document.createElement("div");
-            newEntry.classList.add("rankItem");
-
-            if (entry.supporter_level && entry.supporter_level > 0) {
-              newEntry.classList.add("leaderboardSupporterEntry");
-            }
-
-            newEntry.innerHTML = `
-                        <p class="leaderboardTextEntry">#${entry.position}</p>
-                        <p id="entry${idCounter}" class="leaderboardTextEntry centerEntry">${entry.userName}</p>
-                        <p class="leaderboardTextEntry">${entry.score.toLocaleString()} Pts.</p>`;
-
-            if (entry.id == localStorage.getItem("id")) {
-              newEntry.classList.add("rankYou");
-            }
-
-            document.getElementById("rankingDisplay").appendChild(newEntry);
-
-            document.getElementById("entry" + idCounter).addEventListener("click", () => {
-              loadProfileFromId(id, true);
-            });
-          });
-
-          document.getElementById("leaderboardHeader").textContent = "Results for " + data.name;
-        } catch (error) {
-          console.error("Error during the leaderboard loading and add process: " + error);
-        }
-
-        if (document.getElementById("rankingDisplay").innerHTML == "") {
-          document.getElementById("rankingDisplay").innerHTML = `<p>No entries yet.</p>`;
-        }
+        const data = await response.json();
+        leaderboardEntries = data.leaderboard;
+        leaderboardName = data.name;
       } else {
         let responseData = null;
 
         try {
           responseData = await response.json();
-
           let errorMessages = [];
 
-          if (responseData.error) {
-            errorMessages.push(responseData.error);
-          }
-
-          if (responseData.message) {
-            errorMessages.push(responseData.message);
-          }
+          if (responseData.error) errorMessages.push(responseData.error);
+          if (responseData.message) errorMessages.push(responseData.message);
 
           if (responseData.errors && Array.isArray(responseData.errors)) {
             responseData.errors.forEach((err) => {
@@ -390,14 +177,17 @@
             });
           }
 
-          document.getElementById("rankingDisplay").innerHTML = `<p>Error: ${errorMessages.join(" ")}</p>`;
+          errorPopup("Failed loading a leaderboard", "An error occured loading a leaderboard", errorMessages.join(" "));
         } catch {
-          document.getElementById("rankingDisplay").innerHTML = `<p>Error: Error did not include json.</p>`;
+          errorPopup(
+            "Unknown error loading a leaderboard",
+            "An unknown erorr occured loading a leaderboard.",
+            "Please inspect console logs and network requests for more details.",
+          );
         }
       }
     } catch (error) {
-      console.error("Error occurred during competition submission: ", error);
-      document.getElementById("rankingDisplay").innerHTML = `<p>Error: ${error}</p>`;
+      console.error("Error occurred during leaderboard load: ", error);
     }
   }
 
@@ -423,8 +213,7 @@
       leaderboardIdFromLinkAfterSubmit = urlParams.get("leaderboard-submit");
 
       if (leaderboardIdFromLinkAfterSubmit) {
-        showRatingBox = true;
-        openLeaderboard(leaderboardIdFromLinkAfterSubmit);
+        openLeaderboard(leaderboardIdFromLinkAfterSubmit, true);
         history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
       }
     } catch {}
@@ -434,6 +223,7 @@
 
     try {
       competitionIdFromLink = urlParams.get("enter");
+
       if (competitionIdFromLink) {
         showConfirmPopup(
           "Enter competition from link?",
@@ -448,51 +238,27 @@
   });
 
   // Load competitions ----------------------------------------------------------------------------------------------------------------------------
+
   let notExpiredIndex = 0;
   let expiredIndex = 0;
 
-  function loadCompetitions() {
-    getCompetitionsFromServer(false, undefined, true); // get daily comp
-    getCompetitionsFromServer(false); // get initial 10 active comps
-    getCompetitionsFromServer(true); // get initial 10 expired comps
-  }
+  // Competition "Don't show entered Competitions" Filter
+  let hideEntered = $state(false);
 
-  loadCompetitions();
+  // Fetched Data
+  let activeCompetitionsData = $state([]);
+  let expiredCompetitionData = $state([]);
+  let dailyCompetitionData = $state([]);
 
-  // competition notEntered filter
-  let hideEntered = false;
-  document.getElementById("hideEntered").addEventListener("click", () => {
-    hideEntered = !hideEntered;
+  let loadMoreActive = $state(false);
+  let loadMoreExpired = $state(false);
 
-    if (hideEntered) {
-      document.getElementById("hideEntered").classList.add("hideEnteredActive");
-    } else {
-      document.getElementById("hideEntered").classList.remove("hideEnteredActive");
-    }
-
-    notExpiredIndex = 0; // reset index if starting new search
-    document.getElementById("competitionArea").innerHTML = ""; // reset html of competition area
-    getCompetitionsFromServer(false, undefined, undefined, hideEntered);
-  });
-
-  document.getElementById("loadMoreActive").addEventListener("click", () => {
-    getCompetitionsFromServer(false, undefined, undefined, hideEntered);
-  });
-
-  document.getElementById("loadMoreExpired").addEventListener("click", () => {
-    getCompetitionsFromServer(true);
-  });
+  // Error texts
+  let dailyCompetitionError = $state("Loading...");
+  let activeCompetitionError = $state("Loading...");
+  let expiredCompetitionsError = $state("Loading...");
 
   async function getCompetitionsFromServer(expired, search, daily, filterEntered) {
-    // display initial loading message
-    if (!firstLoad) {
-      document.querySelectorAll(".errorText").forEach((e) => {
-        e.textContent = "Loading competitions...";
-      });
-
-      firstLoad = true;
-    }
-
     try {
       let requestBody = {
         id: localStorage.getItem("id"), // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
@@ -500,22 +266,14 @@
 
       if (search) requestBody.search = search;
 
+      // Always hide load more bar during loading process
+      if (!expired) loadMoreActive = false;
+      if (expired) loadMoreExpired = false;
+
+      // Endpoint selection
       let Endpoint = null;
-
-      if (!expired) {
-        Endpoint = competitionsEndpoint + "/" + notExpiredIndex;
-      } else {
-        Endpoint = competitionsEndpoint + "/expired/" + expiredIndex;
-      }
-
-      // always hide load more bar during loading process
-      if (!expired) {
-        document.getElementById("loadMoreActive").style.display = "none";
-      } else {
-        document.getElementById("loadMoreExpired").style.display = "none";
-      }
-
-      // if a search query is passed, use the search endpoint
+      if (!expired) Endpoint = competitionsEndpoint + "/" + notExpiredIndex;
+      if (expired) Endpoint = competitionsEndpoint + "/expired/" + expiredIndex;
       if (search) Endpoint = competitionsEndpoint + "/search/" + notExpiredIndex;
       if (daily) Endpoint = competitionsEndpoint + "/daily/daily-competition";
       if (filterEntered) Endpoint = competitionsEndpoint + "/notentered/" + notExpiredIndex;
@@ -533,63 +291,38 @@
 
         try {
           const data = await response.json();
-          data.competitions.forEach((competition) => {
-            addCompetition(
-              competition.id,
-              competition.name,
-              competition.author,
-              competition.author_id,
-              competition.playercount,
-              competition.restriction,
-              competition.duration,
-              competition.remainingDuration,
-              competition.location_amount,
-              competition.round_length,
-              competition.description,
-              competition.expired,
-              competition.entered,
-              daily,
-            );
-            noContentLoaded = false;
 
-            if (!daily) {
-              if (!expired) {
-                notExpiredIndex += 1;
-              } else {
-                expiredIndex += 1;
-              }
+          if (expired) expiredCompetitionData = [...expiredCompetitionData, ...data.competitions];
+          if (!expired && !daily) activeCompetitionsData = [...activeCompetitionsData, ...data.competitions];
+          if (!expired && daily) dailyCompetitionData = data.competitions; // Only one, so no need to concatinate arrays here
+          console.log(dailyCompetitionData);
+
+          if (!daily) {
+            if (!expired) {
+              notExpiredIndex += data.competitions?.length;
+            } else {
+              expiredIndex += data.competitions?.length;
             }
-          });
+          }
 
+          if (data.competitions?.length > 0) noContentLoaded = false;
           let maxAmountLoaded = data.competitions.length == 10;
 
           if (!daily) {
             if (expired) {
-              document.getElementById("loadMoreExpired").style.display = maxAmountLoaded ? "block" : "none";
+              loadMoreExpired = maxAmountLoaded; // if the max amount was loaded, there are likely more available
             } else {
-              document.getElementById("loadMoreActive").style.display = maxAmountLoaded ? "block" : "none";
+              loadMoreActive = maxAmountLoaded;
             }
           }
 
-          if (search && noContentLoaded && notExpiredIndex == 0) {
-            document.getElementById("competitionArea").innerHTML =
-              `<p class="errorText">Search returned no results.</p>`;
-          }
-
-          if (!daily && !search && !expired && noContentLoaded && notExpiredIndex == 0) {
-            document.getElementById("competitionArea").innerHTML =
-              `<p class="errorText">No active competitions found.</p>`;
-          }
-
-          if (!daily && !search && expired && noContentLoaded && expiredIndex == 0) {
-            document.getElementById("expiredCompetitionArea").innerHTML =
-              `<p class="errorText">No expired competitions found.</p>`;
-          }
-
-          if (daily && !expired && !search && noContentLoaded) {
-            document.getElementById("dailyCompetitionArea").innerHTML =
-              `<p class="errorText">There currently is no daily competition. Wait shortly, as it's likely being created right now.</p>`;
-          }
+          if (search && noContentLoaded && notExpiredIndex == 0) activeCompetitionError = "Search returned no results.";
+          if (!daily && !search && !expired && noContentLoaded && notExpiredIndex == 0)
+            activeCompetitionError = "No active competitions found.";
+          if (!daily && !search && expired && noContentLoaded && expiredIndex == 0)
+            expiredCompetitionsError = "No expired competitions found.";
+          if (daily && !expired && !search && noContentLoaded)
+            dailyCompetitionError = "The daily competition is likely being generated right now.";
         } catch (error) {
           console.error("Error during the competition loading and add process: " + error);
         }
@@ -624,10 +357,17 @@
         }
       }
     } catch (error) {
-      console.error("Error occurred during competition submission: ", error);
+      console.error("Error occurred during competition load: ", error);
       return "A network error has occurred.";
     }
   }
+
+  // Initial Load
+  onMount(() => {
+    getCompetitionsFromServer(false, undefined, true); // get daily comp
+    getCompetitionsFromServer(false); // get initial 10 active comps
+    getCompetitionsFromServer(true); // get initial 10 expired comps
+  });
 
   // Search Competitions -------------------------------------------------------------------------------------------------
 
@@ -649,19 +389,18 @@
 
   // Rating -------------------------------------------------------------------------------------------
 
+  let ratingText = $state();
+  let ratingsButtonBox = $state(false);
+
   function displayRatingBox() {
-    document.getElementById("ratingBox").style.display = "flex";
-    document.getElementById("ratingButtonBox").style.display = "";
-    document.getElementById("ratingText").textContent = "Rate this competition";
+    showRatingsBox = true;
+    ratingsButtonBox = true;
+    ratingText = "Rate this competition.";
   }
 
-  document.getElementById("rateGood").addEventListener("click", () => submitRating(5));
-  document.getElementById("rateBad").addEventListener("click", () => submitRating(-3));
-  document.getElementById("rateBroken").addEventListener("click", () => submitRating(-10));
-
   async function submitRating(factor) {
-    document.getElementById("ratingButtonBox").style.display = "none";
-    document.getElementById("ratingText").textContent = "Rating...";
+    ratingsButtonBox = false;
+    ratingText = "Submitting rating...";
 
     try {
       const body = {
@@ -682,57 +421,235 @@
       if (!response.ok) {
         let error = await response.json().error;
         if (!error) error = response.status;
+
         console.error("An occured submitting the competition rating: " + error);
-        document.getElementById("ratingText").textContent = error;
+        ratingText = "Error: " + error;
       } else {
-        document.getElementById("ratingText").textContent = "Rating received, thank you!";
+        ratingText = "Rating received. Thank you!";
       }
     } catch (error) {
       console.error("A network error occured submitting the competition rating: " + error);
-      document.getElementById("ratingText").textContent = "Network error";
+      ratingText = "Network error.";
     }
   }
 </script>
 
-<div id="leaderboardPopup" class="popupHolder">
-  <div id="leaderboardWindow" class="uiWindow">
-    <h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for DefaultMap</h1>
+{#if leaderboardPopup}
+  <Popup>
+    <h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for {leaderboardName}</h1>
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
     <div id="rankingDisplay" class="rankingDisplay">
-      <div class="rankItem">
-        <p>#1</p>
-        <p>DefaultUser1</p>
-        <p>15 Pts.</p>
+      {#if yourEntry}
+        <div class="youBar bottomMarginItem">
+          <p class="youLabel">You:</p>
+          <div class="rankItem" class:leaderboardSupporterEntry={yourEntry.supporter_level > 0}>
+            <p class="leaderboardTextEntry">#{yourEntry.position}</p>
+            <p
+              id="yourUsername"
+              class="leaderboardTextEntry centerEntry"
+              onclick={() => {
+                loadProfileFromId(localStorage.getItem("id"), true);
+              }}
+            >
+              {youItem.userName}
+            </p>
+            <p class="leaderboardTextEntry">{yourEntry.score.toLocaleString()} Pts.</p>
+          </div>
+        </div>
+      {/if}
+      {#if leaderboardEntries?.length > 0}
+        {#each leaderboardEntries as entry}
+          <div
+            class="rankItem"
+            class:leaderboardSupporterEntry={entry.supporter_level > 0}
+            class:rankYou={entry.id == localStorage.getItem("id")}
+          >
+            <p class="leaderboardTextEntry">#{entry.position}</p>
+            <p
+              class="leaderboardTextEntry centerEntry"
+              onclick={() => {
+                loadProfileFromId(entry.id, true);
+              }}
+            >
+              {entry.userName}
+            </p>
+            <p class="leaderboardTextEntry">{entry.score.toLocaleString()} Pts.</p>
+          </div>
+        {/each}
+      {:else}
+        <p>No entries yet.</p>
+      {/if}
+    </div>
+    {#if showRatingsBox}
+      <div id="ratingBox">
+        <p id="ratingText">Rate this competition (Default)</p>
+        {#if ratingsButtonBox}
+          <div class="ratingButtonBox" id="ratingButtonBox">
+            <button
+              class="standardButton rateButton"
+              id="rateGood"
+              onclick={() => {
+                submitRating(5);
+              }}
+            >
+              <img class="ratingIcon" alt="good" src="/img/rating_good_icon.png" />
+            </button>
+            <button
+              class="standardButton rateButton"
+              id="rateBad"
+              onclick={() => {
+                submitRating(-3);
+              }}
+            >
+              <img class="ratingIcon" alt="bad" src="/img/rating_bad_icon.png" />
+            </button>
+            <button
+              class="standardButton rateButton"
+              id="rateBroken"
+              onclick={() => {
+                submitRating(-10);
+              }}
+            >
+              <img class="ratingIcon" alt="broken" src="/img/rating_broken_icon.png" />
+            </button>
+          </div>
+        {/if}
       </div>
-      <div class="rankItem rankYou">
-        <p>#2</p>
-        <p>DefaultUser2</p>
-        <p>10 Pts.</p>
+    {/if}
+    <div class="buttonBoxRight">
+      <button
+        id="leaderboardClose"
+        class="standardButton white closeButton"
+        onclick={() => {
+          playSound("basic_button");
+          showRatingsBox = false;
+          leaderboardPopup = false;
+        }}>Close</button
+      >
+    </div>
+  </Popup>
+{/if}
+
+<!-- Competition Item Component -->
+{#snippet competitionItem(
+  id,
+  name,
+  author,
+  authorId,
+  playercount,
+  restriction,
+  duration,
+  remainingDuration,
+  locationAmount,
+  roundLength,
+  description,
+  expired,
+  entered,
+  daily,
+)}
+  <div class="competitionItem fadeInItem" class:dailyItem={daily}>
+    <h2 class="competitionItemHeader">{name}</h2>
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <p
+      class="competitionAuthor"
+      onclick={() => {
+        const id = authorId == 0 ? 2 : authorId; // Set to 2 (PaulPlay) if created by System (0)
+        loadProfileFromId(id, true);
+      }}
+    >
+      hosted by {author}
+    </p>
+    <div class="competitionPropertiesBox">
+      <div class="propertyItem" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+        <div class="label" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+          <p>Plays</p>
+        </div>
+        <p class="itemText">{playercount.toLocaleString()}</p>
       </div>
-      <div class="rankItem">
-        <p>#2</p>
-        <p>DefaultUser3</p>
-        <p>5 Pts.</p>
+      <div class="propertyItem" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+        <div class="label" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+          <p>Restriction</p>
+        </div>
+        <p class="itemText">{restriction}</p>
+      </div>
+      <div class="propertyItem" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+        <div class="label" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+          <p>Duration</p>
+        </div>
+        <p class="itemText">{formatDuration(duration)} ({formatDuration(remainingDuration)} left)</p>
+      </div>
+      <div class="propertyItem" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+        <div class="label" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+          <p>Rounds</p>
+        </div>
+        <p class="itemText">{locationAmount}</p>
+      </div>
+      <div class="propertyItem" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+        <div class="label" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+          <p>Round length</p>
+        </div>
+        <p class="itemText">{roundLength}s</p>
       </div>
     </div>
-    <div id="ratingBox">
-      <p id="ratingText">Rate this competition (Default)</p>
-      <div class="ratingButtonBox" id="ratingButtonBox">
-        <button class="standardButton rateButton" id="rateGood">
-          <img class="ratingIcon" alt="good" src="/img/rating_good_icon.png" />
-        </button>
-        <button class="standardButton rateButton" id="rateBad">
-          <img class="ratingIcon" alt="bad" src="/img/rating_bad_icon.png" />
-        </button>
-        <button class="standardButton rateButton" id="rateBroken">
-          <img class="ratingIcon" alt="broken" src="/img/rating_broken_icon.png" />
-        </button>
+    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+    <!-- svelte-ignore a11y_click_events_have_key_events -->
+    <div
+      id="aboutItem${id}"
+      class="aboutSection competitionDesc"
+      role="button"
+      tabindex="0"
+      onclick={() => {
+        playSound("basic_button");
+        showConfirmPopup("About", description, false, false, false, true);
+      }}
+      class:expiredCompetitionColor={expired}
+      class:dailyItem={daily}
+    >
+      <div class="label" class:expiredCompetitionColor={expired} role="button" tabindex="0" class:dailyItem={daily}>
+        <p>About</p>
       </div>
+      <p class="itemText descText">
+        {description}
+      </p>
     </div>
-    <div class="buttonBox popupButtons">
-      <button id="leaderboardClose" class="standardButton popupButton closeButton">Close</button>
+    <div class="buttonBoxRight competitionButtonBox">
+      <button
+        class="standardButton competitionButton leftButton"
+        class:expiredLeaderboardColor={expired}
+        class:dailyLeaderboardButton={daily}
+        onclick={() => {
+          playSound("basic_button");
+          openLeaderboard(id);
+        }}
+        >Results
+        <img class="textIcon" src="/img/leaderboards_icon.png" alt="Leaderboards for OpenGuessr" />
+      </button>
+      <button
+        class="standardButton competitionButton primaryButton"
+        class:dailyPrimary={daily}
+        class:buttonDisabled={entered || authorId == localStorage.getItem("id")}
+        onclick={() => {
+          playSound("basic_button");
+
+          if ($isAuthenticated) {
+            showConfirmPopup(
+              "Enter " + name + "?",
+              "This will start the game immediately. You can only enter a competition once.",
+              () => {
+                enterCompetition(id, localStorage.getItem("bearer"));
+              },
+            );
+          } else {
+            signupPopup.set(true);
+          }
+        }}>{entered ? "Already entered" : authorId == localStorage.getItem("id") ? "Hosted by you" : "Enter"}</button
+      >
     </div>
   </div>
-</div>
+{/snippet}
+
 <div class="main-container">
   <button
     class="standardButton white"
@@ -752,14 +669,46 @@
       </div>
       <div id="dailyCompetitionArea" class="center competitionArea">
         <!-- daily competitions will be inserted here -->
-        <p class="errorText">Please wait...</p>
+        {#if dailyCompetitionData?.length > 0}
+          {#each dailyCompetitionData as entry}
+            {@render competitionItem(
+              entry.id,
+              entry.name,
+              entry.author,
+              entry.author_id,
+              entry.playercount,
+              entry.restriction,
+              entry.duration,
+              entry.remainingDuration,
+              entry.location_amount,
+              entry.round_length,
+              entry.description,
+              entry.expired,
+              entry.entered,
+              true,
+            )}
+          {/each}
+        {/if}
+        {#if dailyCompetitionError}
+          <p class="errorText">{dailyCompetitionError}</p>
+        {/if}
       </div>
     </div>
     <div class="competitionElement competitionBox">
       <div class="flexCompetitionBar competitionElement competitionTitle">
         <h2 class="boxHeader">Currently ongoing:</h2>
         <search>
-          <button id="hideEntered" class="standardButton searchBarButton">Hide entered</button>
+          <button
+            id="hideEntered"
+            class="standardButton searchBarButton"
+            class:hideEnteredActive={hideEntered}
+            onclick={() => {
+              playSound("basic_button");
+              hideEntered = !hideEntered;
+              activeCompetitionsData = []; // Reset loaded data
+              getCompetitionsFromServer(false, undefined, undefined, hideEntered);
+            }}>Hide entered</button
+          >
           <form>
             <input
               id="competitionSearch"
@@ -791,9 +740,20 @@
       </div>
       <div id="competitionArea" class="center competitionArea">
         <!-- active competitions will be inserted here -->
-        <p class="errorText">Please wait...</p>
+        {#if activeCompetitionError}
+          <p class="errorText">{activeCompetitionError}</p>
+        {/if}
       </div>
-      <button id="loadMoreActive" class="loadMore standardButton">Show more ▼</button>
+      {#if loadMoreActive}
+        <button
+          id="loadMoreActive"
+          class="loadMore standardButton"
+          onclick={() => {
+            playSound("basic_button");
+            getCompetitionsFromServer(false, undefined, undefined, hideEntered);
+          }}>Show more ▼</button
+        >
+      {/if}
     </div>
     <div class="competitionElement competitionBox expiredBox">
       <div class="competitionElement competitionTitle competitionTitleExpired">
@@ -801,9 +761,19 @@
       </div>
       <div id="expiredCompetitionArea" class="center competitionArea">
         <!-- expired competitions will be inserted here -->
-        <p class="errorText">Please wait...</p>
+        {#if expiredCompetitionsError}
+          <p class="errorText">{expiredCompetitionsError}</p>
+        {/if}
       </div>
-      <button id="loadMoreExpired" class="loadMore standardButton">Show more ▼</button>
+      {#if loadMoreExpired}
+        <button
+          class="loadMore standardButton"
+          onclick={() => {
+            playSound("basic_button");
+            getCompetitionsFromServer(true);
+          }}>Show more ▼</button
+        >
+      {/if}
     </div>
   </div>
 </div>
@@ -813,17 +783,6 @@
 </svelte:head>
 
 <style>
-  .faqItem {
-    margin-bottom: 15px;
-    background-color: rgba(255, 210, 210, 0.15);
-    border-radius: 5px;
-    padding: 10px;
-    padding-inline: 20px;
-    padding-inline-end: 30px;
-    min-width: 50%;
-    list-style: none;
-  }
-
   .main-container {
     display: flex;
     justify-content: center;
@@ -868,33 +827,6 @@
     margin-bottom: 100px;
     width: 100%;
     flex-direction: column;
-  }
-
-  .spacer {
-    height: 15px;
-    width: 100%;
-  }
-
-  .competitionHeader {
-    text-align: left;
-    font-size: 30px;
-  }
-
-  .explainElement {
-    background-color: rgba(20, 22, 38, 0.9);
-    height: auto;
-    padding-top: 10px;
-    padding-bottom: 10px;
-  }
-
-  .explainElement:hover {
-    filter: none !important;
-  }
-
-  .listIcon {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
   }
 
   .competitionTitle {
@@ -1038,29 +970,6 @@
     opacity: 0.5;
   }
 
-  .buttonBox {
-    display: flex;
-    width: 100%;
-    align-items: center;
-    justify-content: flex-end;
-    gap: 10px;
-    margin-top: 20px;
-    flex-wrap: wrap;
-  }
-
-  .popupHolder {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    left: 0;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    background-color: rgba(12, 12, 12, 0.75);
-    z-index: 100;
-  }
-
   .primaryButton {
     background-color: rgb(181, 63, 63);
   }
@@ -1069,15 +978,6 @@
     width: 25px;
     height: 25px;
     vertical-align: -2px;
-  }
-
-  .popupButtons {
-    gap: 20px;
-    margin-top: 40px;
-  }
-
-  .popupButton {
-    margin-right: -12px;
   }
 
   .textHeaderLeft {
@@ -1100,6 +1000,7 @@
   }
 
   .competitionArea {
+    display: flex;
     flex-direction: row;
     flex-wrap: wrap;
     gap: 20px;
@@ -1116,19 +1017,20 @@
   .errorText {
     width: 100%;
     text-align: center;
+    opacity: 0.5;
   }
 
   .rankingDisplay {
     display: flex;
     justify-content: safe center;
     flex-direction: column;
-    width: calc(100% - 40px);
+    width: calc(100% - 10px);
     border-radius: 5px;
     max-height: 50vh;
     overflow-x: hidden;
     overflow-y: auto;
     scrollbar-width: none;
-    padding: 20px;
+    padding: 5px;
     background-color: rgba(255, 255, 255, 0.1);
     gap: 10px;
     margin-top: 30px;
@@ -1154,42 +1056,11 @@
     cursor: pointer;
   }
 
-  .infoNoteBox {
-    background-color: rgba(0, 0, 0, 0.1);
-    border-radius: 10px;
-    padding: 10px;
-    display: flex;
-    justify-content: flex-start;
-    flex-direction: column;
-    padding-inline: 30px;
-  }
-
   #inputArea {
     padding: 10px;
     display: flex;
     justify-content: flex-start;
     flex-direction: column;
-  }
-
-  .uploadInfo {
-    border-radius: 10px;
-    outline: none;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    width: 75%;
-    font-size: 22px;
-    min-height: 30px;
-    font-family: Barlow;
-    border: none;
-    padding: 5px;
-    padding-inline: 20px;
-    margin-bottom: 20px;
-    margin-top: 10px;
-    transition: background-color 250ms ease;
-  }
-
-  .uploadInfo:focus {
-    background-color: rgba(255, 255, 255, 0.2);
   }
 
   #infoNoteIcon {
@@ -1199,29 +1070,6 @@
     margin-top: 7px;
     opacity: 0.5;
     margin-left: -10px;
-  }
-
-  pre {
-    font-family: monospace;
-    white-space: pre-wrap;
-    font-size: 15px;
-  }
-
-  .locationTextbox {
-    min-height: 350px;
-    font-size: 12px;
-    width: 90%;
-    padding: 15px;
-  }
-
-  .helpItem {
-    margin-bottom: 10px;
-  }
-
-  .verticalMarginUl {
-    margin-top: 25px;
-    margin-bottom: 25px;
-    margin-left: 40px;
   }
 
   #createWindow {
@@ -1236,28 +1084,6 @@
 
   #uploadFirstText {
     font-size: 25px;
-  }
-
-  .metricEnd {
-    margin-left: 10px;
-    margin-top: 19px;
-  }
-
-  .extendedInputBox {
-    display: flex;
-  }
-
-  .marginBottom {
-    margin-bottom: 20px;
-  }
-
-  .toggleButton {
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    margin-bottom: 20px;
-    margin-top: 10px;
-    border-radius: 10px;
-    min-width: 190px;
   }
 
   #uploadCompetitionDescription {
@@ -1283,7 +1109,6 @@
     padding: 10px;
     margin-bottom: 30px;
     margin-left: calc(50% - 140px);
-    /* centers it */
     display: none;
   }
 
@@ -1351,8 +1176,17 @@
     flex-wrap: wrap;
   }
 
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
   .fadeInItem {
-    opacity: 0;
+    animation: fadeIn 100ms ease-in-out;
   }
 
   .youBar {
@@ -1378,30 +1212,6 @@
 
   .dailyLeaderboardButton {
     background-color: rgba(147, 203, 225, 0.4);
-  }
-
-  .linkField {
-    border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.1);
-    padding: 5px;
-    margin-top: 5px;
-  }
-
-  .linkButtonSubmit {
-    border-radius: 5px;
-    background-color: rgba(255, 255, 255, 0.3);
-    padding: 10px;
-    min-width: 250px;
-    margin: 0;
-    margin-top: 20px;
-    width: 100%;
-  }
-
-  .linkBox {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 10px;
-    width: calc(100% - 20px);
   }
 
   #contentSelection {
@@ -1437,18 +1247,6 @@
     filter: brightness(1.2);
   }
 
-  .shiftedButtonBox {
-    width: calc(100% + 13px);
-  }
-
-  .directionArrowIcon {
-    width: 25px;
-    height: 25px;
-    filter: invert();
-    transform: rotate(90deg);
-    vertical-align: -4px;
-  }
-
   .competitionTitleDaily {
     background-color: rgba(70, 74, 92, 0.15);
   }
@@ -1476,8 +1274,7 @@
   #ratingBox {
     border-radius: 10px;
     background-color: rgba(255, 255, 255, 0.1);
-    display: none;
-    /* changed to flex in code */
+    display: flex;
     justify-content: space-between;
     align-items: center;
     flex-wrap: wrap;
@@ -1510,6 +1307,11 @@
     vertical-align: -3px;
   }
 
+  .buttonDisabled {
+    opacity: 0.5;
+    pointer-events: none;
+  }
+
   @media all and (orientation: portrait) {
     .boxHeader {
       font-size: 25px;
@@ -1521,10 +1323,6 @@
 
     .competitionButton {
       flex-grow: 1;
-    }
-
-    .competitionHeader {
-      font-size: 22px;
     }
 
     .competitionItemHeader {

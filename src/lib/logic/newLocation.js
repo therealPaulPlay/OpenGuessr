@@ -43,9 +43,11 @@ export async function checkGenerationTypeAndGenerate() {
 
     if (!checkedForMapLink) checkLinkMap();
 
+    // Timer resets
     stopCompetitionTimer();
-    timerText.set("00:00"); // Visually reset timer
+    timerText.set("00:00");
 
+    // Reset Mode specific UI
     setCountryGuesserMode(false);
     setImageGuesserMode(false);
 
@@ -104,7 +106,7 @@ export async function checkGenerationTypeAndGenerate() {
     } else if (get(competition)) {
         singleplayer.set(false); // Don't apply singleplayer settings
 
-        if (checkCompetitionRoundStatus(false)) {
+        if (checkCompetitionRoundStatus()) {
             await generateNewLocation("COMPETITION");
         }
     }
