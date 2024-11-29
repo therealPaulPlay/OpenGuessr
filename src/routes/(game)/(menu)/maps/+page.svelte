@@ -790,7 +790,6 @@
   .categoriesBar {
     overflow: hidden;
     overflow-x: scroll;
-    border-radius: 10px;
     display: flex;
     justify-content: flex-start;
     align-items: center;
@@ -827,10 +826,10 @@
     min-width: 280px;
     gap: 10px;
     align-items: center;
-    border-radius: 13px;
+    border-radius: 10px;
     padding: 5px;
     margin-top: 5px;
-    background-color: rgba(255, 255, 255, 0.05);
+    background-color: var(--box-color);
   }
 
   #loadMore {
@@ -845,7 +844,7 @@
     height: 20px;
   }
 
-  @media all and (orientation: portrait), all and (max-width: 800px) {
+  @media (max-width: 800px) {
     p {
       font-size: 20px;
     }

@@ -9,6 +9,7 @@
   import { isAuthenticated } from "$lib/stores/accountStore";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
   import { goto } from "$app/navigation";
+  import { Plus } from "lucide-svelte";
   import { onMount } from "svelte";
 
   const competitionsEndpoint = "https://competitions.openguessr.com/competitions";
@@ -123,7 +124,7 @@
   function openLeaderboard(id, showRatingBox) {
     leaderboardCompetitionId = id; // Used for e.g. the ratings requests
     leaderboardPopup = true;
-    leaderboardEntries = [];
+    leaderboardEntries = undefined;
     yourEntry = undefined;
     leaderboardName = "Loading...";
 
@@ -295,7 +296,7 @@
           if (expired) expiredCompetitionData = [...expiredCompetitionData, ...data.competitions];
           if (!expired && !daily) activeCompetitionsData = [...activeCompetitionsData, ...data.competitions];
           if (!expired && daily) dailyCompetitionData = data.competitions; // Only one, so no need to concatinate arrays here
-          console.log(dailyCompetitionData);
+          console.log(activeCompetitionsData);
 
           if (!daily) {
             if (!expired) {
@@ -364,7 +365,7 @@
 
   // Initial Load
   onMount(() => {
-    getCompetitionsFromServer(false, undefined, true); // get daily comp
+    getCompetitionsFromServer(false, false, true); // get daily comp
     getCompetitionsFromServer(false); // get initial 10 active comps
     getCompetitionsFromServer(true); // get initial 10 expired comps
   });
@@ -375,6 +376,7 @@
 
   function startSearch() {
     let query = searchQuery.toLowerCase();
+    activeCompetitionsData = [];
 
     if (hideEntered) {
       document.getElementById("hideEntered").classList.remove("hideEnteredActive");
@@ -478,7 +480,13 @@
           </div>
         {/each}
       {:else}
-        <p>No entries yet.</p>
+        <div class="emptyLeaderboardBox">
+          {#if leaderboardEntries}
+            <p class="errorText">No entries yet.</p>
+          {:else}
+            <p class="errorText">Loading...</p>
+          {/if}
+        </div>
       {/if}
     </div>
     {#if showRatingsBox}
@@ -562,32 +570,32 @@
       hosted by {author}
     </p>
     <div class="competitionPropertiesBox">
-      <div class="propertyItem" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
-        <div class="label" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+      <div class="propertyItem" class:dailyItem={daily}>
+        <div class="label">
           <p>Plays</p>
         </div>
         <p class="itemText">{playercount.toLocaleString()}</p>
       </div>
-      <div class="propertyItem" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
-        <div class="label" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+      <div class="propertyItem" class:dailyItem={daily}>
+        <div class="label" class:dailyItem={daily}>
           <p>Restriction</p>
         </div>
         <p class="itemText">{restriction}</p>
       </div>
-      <div class="propertyItem" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
-        <div class="label" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+      <div class="propertyItem" class:dailyItem={daily}>
+        <div class="label" class:dailyItem={daily}>
           <p>Duration</p>
         </div>
         <p class="itemText">{formatDuration(duration)} ({formatDuration(remainingDuration)} left)</p>
       </div>
-      <div class="propertyItem" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
-        <div class="label" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+      <div class="propertyItem" class:dailyItem={daily}>
+        <div class="label" class:dailyItem={daily}>
           <p>Rounds</p>
         </div>
         <p class="itemText">{locationAmount}</p>
       </div>
-      <div class="propertyItem" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
-        <div class="label" class:expiredCompetitionColor={expired} class:dailyItem={daily}>
+      <div class="propertyItem" class:dailyItem={daily}>
+        <div class="label" class:dailyItem={daily}>
           <p>Round length</p>
         </div>
         <p class="itemText">{roundLength}s</p>
@@ -604,7 +612,6 @@
         playSound("basic_button");
         showConfirmPopup("About", description, false, false, false, true);
       }}
-      class:expiredCompetitionColor={expired}
       class:dailyItem={daily}
     >
       <div class="label" class:expiredCompetitionColor={expired} role="button" tabindex="0" class:dailyItem={daily}>
@@ -616,9 +623,7 @@
     </div>
     <div class="buttonBoxRight competitionButtonBox">
       <button
-        class="standardButton competitionButton leftButton"
-        class:expiredLeaderboardColor={expired}
-        class:dailyLeaderboardButton={daily}
+        class="standardButton competitionButton white"
         onclick={() => {
           playSound("basic_button");
           openLeaderboard(id);
@@ -626,155 +631,194 @@
         >Results
         <img class="textIcon" src="/img/leaderboards_icon.png" alt="Leaderboards for OpenGuessr" />
       </button>
-      <button
-        class="standardButton competitionButton primaryButton"
-        class:dailyPrimary={daily}
-        class:buttonDisabled={entered || authorId == localStorage.getItem("id")}
-        onclick={() => {
-          playSound("basic_button");
+      {#if !expired}
+        <button
+          class="standardButton competitionButton white"
+          class:dailyPrimary={daily}
+          class:buttonDisabled={entered || authorId == localStorage.getItem("id")}
+          onclick={() => {
+            playSound("basic_button");
 
-          if ($isAuthenticated) {
-            showConfirmPopup(
-              "Enter " + name + "?",
-              "This will start the game immediately. You can only enter a competition once.",
-              () => {
-                enterCompetition(id, localStorage.getItem("bearer"));
-              },
-            );
-          } else {
-            signupPopup.set(true);
-          }
-        }}>{entered ? "Already entered" : authorId == localStorage.getItem("id") ? "Hosted by you" : "Enter"}</button
-      >
+            if ($isAuthenticated) {
+              showConfirmPopup(
+                "Enter " + name + "?",
+                "This will start the game immediately. You can only enter a competition once.",
+                () => {
+                  enterCompetition(id, localStorage.getItem("bearer"));
+                },
+              );
+            } else {
+              signupPopup.set(true);
+            }
+          }}>{entered ? "Already entered" : authorId == localStorage.getItem("id") ? "Hosted by you" : "Enter"}</button
+        >
+      {/if}
     </div>
   </div>
 {/snippet}
-
-<div class="main-container">
-  <button
-    class="standardButton white"
-    onclick={() => {
-      playSound("basic_button");
-      if ($isAuthenticated) {
-        goto("/competitions/create");
-      } else {
-        signupPopup.set(true);
-      }
-    }}>+ Create</button
-  >
-  <div class="main center">
-    <div class="competitionElement competitionBox expiredBox">
-      <div class="flexCompetitionBar competitionElement competitionTitle competitionTitleDaily">
-        <h2 class="boxHeader">Daily Competition:</h2>
-      </div>
-      <div id="dailyCompetitionArea" class="center competitionArea">
-        <!-- daily competitions will be inserted here -->
-        {#if dailyCompetitionData?.length > 0}
-          {#each dailyCompetitionData as entry}
-            {@render competitionItem(
-              entry.id,
-              entry.name,
-              entry.author,
-              entry.author_id,
-              entry.playercount,
-              entry.restriction,
-              entry.duration,
-              entry.remainingDuration,
-              entry.location_amount,
-              entry.round_length,
-              entry.description,
-              entry.expired,
-              entry.entered,
-              true,
-            )}
-          {/each}
-        {/if}
-        {#if dailyCompetitionError}
-          <p class="errorText">{dailyCompetitionError}</p>
-        {/if}
-      </div>
+<div class="main">
+  <div class="competitionElement competitionBox">
+    <div class="flexCompetitionBar competitionTitle competitionTitleDaily">
+      <h2 class="boxHeader">Competitions</h2>
     </div>
-    <div class="competitionElement competitionBox">
-      <div class="flexCompetitionBar competitionElement competitionTitle">
-        <h2 class="boxHeader">Currently ongoing:</h2>
-        <search>
-          <button
-            id="hideEntered"
-            class="standardButton searchBarButton"
-            class:hideEnteredActive={hideEntered}
-            onclick={() => {
-              playSound("basic_button");
-              hideEntered = !hideEntered;
-              activeCompetitionsData = []; // Reset loaded data
-              getCompetitionsFromServer(false, undefined, undefined, hideEntered);
-            }}>Hide entered</button
-          >
-          <form>
-            <input
-              id="competitionSearch"
-              bind:value={searchQuery}
-              placeholder="Search active Competitions..."
-              onkeydown={(event) => {
-                if (event.key === "Enter") {
-                  event.preventDefault();
-                }
-              }}
-              onkeyup={(event) => {
-                if (event.key === "Enter") {
-                  startSearch();
-                }
-              }}
-            />
-          </form>
-          <button
-            id="startSearch"
-            class="searchBarButton standardButton"
-            onclick={() => {
-              playSound("basic_button");
-              startSearch();
+    <div id="dailyCompetitionArea" class="competitionArea">
+      <!-- daily competitions will be inserted here -->
+      {#if dailyCompetitionData?.length > 0}
+        {#each dailyCompetitionData as entry}
+          {@render competitionItem(
+            entry.id,
+            entry.name,
+            entry.author,
+            entry.author_id,
+            entry.playercount,
+            entry.restriction,
+            entry.duration,
+            entry.remainingDuration,
+            entry.location_amount,
+            entry.round_length,
+            entry.description,
+            entry.expired,
+            entry.entered,
+            true,
+          )}
+        {/each}
+      {:else}
+        <p class="errorText">{dailyCompetitionError}</p>
+      {/if}
+    </div>
+  </div>
+  <div class="competitionElement competitionBox">
+    <div class="flexCompetitionBar competitionTitle">
+      <h2 class="boxHeader">Active</h2>
+      <button
+        class="standardButton white createButton"
+        onclick={() => {
+          playSound("basic_button");
+          if ($isAuthenticated) {
+            goto("/competitions/create");
+          } else {
+            signupPopup.set(true);
+          }
+        }}>+ Create</button
+      >
+    </div>
+    <div class="buttonToolbar">
+      <search>
+        <form>
+          <input
+            id="competitionSearch"
+            bind:value={searchQuery}
+            placeholder="Search active Competitions..."
+            onkeydown={(event) => {
+              if (event.key === "Enter") {
+                event.preventDefault();
+              }
             }}
-          >
-            <img src="/img/find_icon.png" alt="start search" id="searchIcon" />
-          </button>
-        </search>
-      </div>
-      <div id="competitionArea" class="center competitionArea">
-        <!-- active competitions will be inserted here -->
-        {#if activeCompetitionError}
-          <p class="errorText">{activeCompetitionError}</p>
-        {/if}
-      </div>
-      {#if loadMoreActive}
+            onkeyup={(event) => {
+              if (event.key === "Enter") {
+                startSearch();
+              }
+            }}
+          />
+        </form>
         <button
-          id="loadMoreActive"
-          class="loadMore standardButton"
+          id="startSearch"
+          class="standardButton white"
           onclick={() => {
             playSound("basic_button");
-            getCompetitionsFromServer(false, undefined, undefined, hideEntered);
-          }}>Show more ▼</button
+            startSearch();
+          }}
         >
-      {/if}
-    </div>
-    <div class="competitionElement competitionBox expiredBox">
-      <div class="competitionElement competitionTitle competitionTitleExpired">
-        <h2 class="boxHeader">Recently ended:</h2>
-      </div>
-      <div id="expiredCompetitionArea" class="center competitionArea">
-        <!-- expired competitions will be inserted here -->
-        {#if expiredCompetitionsError}
-          <p class="errorText">{expiredCompetitionsError}</p>
-        {/if}
-      </div>
-      {#if loadMoreExpired}
+          <img src="/img/find_icon.png" alt="start search" id="searchIcon" />
+        </button>
         <button
-          class="loadMore standardButton"
+          id="hideEntered"
+          class="standardButton white"
+          class:hideEnteredActive={hideEntered}
           onclick={() => {
             playSound("basic_button");
-            getCompetitionsFromServer(true);
-          }}>Show more ▼</button
+            activeCompetitionsData = []; // Reset loaded data
+            hideEntered = !hideEntered;
+            notExpiredIndex = 0;
+            getCompetitionsFromServer(false, false, false, hideEntered);
+          }}>Hide entered</button
         >
+      </search>
+    </div>
+    <div id="competitionArea" class="competitionArea">
+      <!-- active competitions will be inserted here -->
+      {#if activeCompetitionsData?.length > 0}
+        {#each activeCompetitionsData as entry}
+          {@render competitionItem(
+            entry.id,
+            entry.name,
+            entry.author,
+            entry.author_id,
+            entry.playercount,
+            entry.restriction,
+            entry.duration,
+            entry.remainingDuration,
+            entry.location_amount,
+            entry.round_length,
+            entry.description,
+            entry.expired,
+            entry.entered,
+            false,
+          )}
+        {/each}
+      {:else}
+        <p class="errorText">{activeCompetitionError}</p>
       {/if}
     </div>
+    {#if loadMoreActive}
+      <button
+        id="loadMoreActive"
+        class="loadMore standardButton white"
+        onclick={() => {
+          playSound("basic_button");
+          getCompetitionsFromServer(false, false, false, hideEntered);
+        }}>Show more <span class="plusSpan"><Plus size={20} /></span></button
+      >
+    {/if}
+  </div>
+  <div class="competitionElement competitionBox expiredBox">
+    <div class="competitionTitle competitionTitleExpired">
+      <h2 class="boxHeader">Recently ended</h2>
+    </div>
+    <div id="expiredCompetitionArea" class="competitionArea">
+      <!-- expired competitions will be inserted here -->
+      {#if expiredCompetitionData?.length > 0}
+        {#each expiredCompetitionData as entry}
+          {@render competitionItem(
+            entry.id,
+            entry.name,
+            entry.author,
+            entry.author_id,
+            entry.playercount,
+            entry.restriction,
+            entry.duration,
+            entry.remainingDuration,
+            entry.location_amount,
+            entry.round_length,
+            entry.description,
+            entry.expired,
+            entry.entered,
+            false,
+          )}
+        {/each}
+      {:else}
+        <p class="errorText">{expiredCompetitionsError}</p>
+      {/if}
+    </div>
+    {#if loadMoreExpired}
+      <button
+        class="loadMore standardButton white"
+        onclick={() => {
+          playSound("basic_button");
+          getCompetitionsFromServer(true);
+        }}>Show more <span class="plusSpan"><Plus size={20} /></span></button
+      >
+    {/if}
   </div>
 </div>
 
@@ -783,72 +827,55 @@
 </svelte:head>
 
 <style>
-  .main-container {
+  .buttonToolbar {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: calc(100% - 10px);
+    min-width: 280px;
+    gap: 10px;
     align-items: center;
-    flex-direction: column;
-  }
-
-  h1 {
-    margin-bottom: 12px;
-    margin-top: 10px;
-    text-overflow: ellipsis;
-  }
-
-  h2 {
-    text-align: left;
-    margin-bottom: 10px;
+    border-radius: 10px;
+    padding: 5px;
     margin-top: 5px;
-    text-overflow: ellipsis;
+    margin-bottom: 20px;
+    background-color: var(--box-color);
   }
 
   .competitionElement {
-    border-radius: 15px;
-    background-color: rgba(255, 255, 255, 0.1);
     transition:
       background-color 250ms ease,
       filter 250ms ease;
-    width: calc(90% - 60px);
-    max-width: 1150px;
-    padding: 25px;
+    width: 100%;
     overflow: hidden;
     height: 300px;
-    filter: brightness(1);
     margin-bottom: 20px;
   }
 
-  .competitionElement:hover {
-    filter: brightness(1.2);
-  }
-
   .main {
-    margin-top: 150px;
     margin-bottom: 100px;
     width: 100%;
     flex-direction: column;
   }
 
+  .emptyLeaderboardBox {
+    height: 300px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+  }
+
   .competitionTitle {
     padding-top: 5px;
     padding-bottom: 5px;
-    height: auto;
-    background-color: rgba(133, 75, 75, 0.15);
-    margin-top: -5px;
+    margin-bottom: 10px;
     width: 100%;
-    margin-left: -25px;
-    box-shadow: none;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-    filter: none !important;
   }
 
   .competitionBox {
     padding-top: 5px;
     padding-bottom: 5px;
     height: auto;
-    background-color: rgba(255, 120, 120, 0.15);
-    filter: none !important;
   }
 
   #competitionArea,
@@ -858,16 +885,15 @@
 
   .competitionDesc {
     border-radius: 5px;
-    background-color: rgba(255, 141, 141, 0.15);
+    background-color: var(--box-color);
     padding: 10px;
     font-size: 22px;
     transition: filter 250ms ease;
-    filter: none;
   }
 
   .competitionItem {
     border-radius: 10px;
-    background-color: rgba(255, 141, 141, 0.15);
+    background-color: var(--box-color);
     transition:
       background-color 250ms ease,
       filter 250ms ease,
@@ -878,7 +904,6 @@
     padding: 20px;
     overflow: hidden;
     height: fit-content;
-    filter: brightness(1);
     flex-basis: 25%;
   }
 
@@ -886,8 +911,8 @@
     padding: 2px;
     padding-inline: 10px;
     width: fit-content;
-    background-color: rgba(225, 156, 156, 0.2);
-    border-radius: 5px;
+    background-color: var(--box-color);
+    border-radius: 3px;
     margin-right: 5px;
   }
 
@@ -896,16 +921,12 @@
   }
 
   .itemText {
-    margin: 6px;
+    margin: 5px;
     margin-inline: 5px;
     text-overflow: ellipsis;
     overflow: hidden;
     text-wrap: nowrap;
-    min-width: 40px;
-  }
-
-  .competitionItem:hover {
-    filter: brightness(1.2);
+    min-width: 50px;
   }
 
   .competitionItemHeader {
@@ -938,12 +959,12 @@
     max-height: 39px;
     display: flex;
     align-items: center;
-    background-color: rgba(255, 141, 141, 0.15);
+    background-color: var(--box-color);
   }
 
   .boxHeader {
     text-align: left;
-    font-size: 30px;
+    font-size: 45px;
     margin-top: 10px;
   }
 
@@ -953,10 +974,13 @@
     max-height: 60px;
   }
 
+  .plusSpan {
+    vertical-align: -2px;
+  }
+
   .competitionAuthor {
     margin-bottom: 30px;
     padding-left: 2px;
-    color: rgba(249, 216, 216, 0.5);
     cursor: pointer;
     transition: opacity 250ms ease;
     max-width: 300px;
@@ -964,14 +988,11 @@
     text-overflow: ellipsis;
     overflow: hidden;
     user-select: none;
-  }
-
-  .competitionAuthor:hover {
     opacity: 0.5;
   }
 
-  .primaryButton {
-    background-color: rgb(181, 63, 63);
+  .competitionAuthor:hover {
+    opacity: 0.25;
   }
 
   .textIcon {
@@ -987,16 +1008,8 @@
     text-wrap: nowrap;
   }
 
-  .expiredBox {
-    background-color: rgba(122, 125, 156, 0.15);
-  }
-
   .expiredCompetitionColor {
-    background-color: rgba(164, 140, 140, 0.15);
-  }
-
-  .expiredLeaderboardColor {
-    background-color: rgba(255, 176, 176, 0.2);
+    background-color: var(--box-color);
   }
 
   .competitionArea {
@@ -1031,10 +1044,10 @@
     overflow-y: auto;
     scrollbar-width: none;
     padding: 5px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--box-color);
     gap: 10px;
     margin-top: 30px;
-    outline: 5px solid rgba(255, 255, 255, 0.1);
+    outline: 5px solid var(--box-color);
   }
 
   .rankItem {
@@ -1101,66 +1114,41 @@
 
   .loadMore {
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
-    font-size: 22px;
-    min-height: 40px;
-    width: 280px;
+    width: 200px;
     padding: 10px;
     margin-bottom: 30px;
-    margin-left: calc(50% - 140px);
-    display: none;
+    margin-left: calc(50% - 100px);
   }
 
   search {
     display: flex;
-    justify-content: center;
+    justify-content: start;
     width: 100%;
     max-width: 450px;
-    gap: 10px;
-    margin-right: -15px;
+    gap: 5px;
   }
 
   search form {
     width: 55%;
+    margin: 2.5px;
   }
 
   #competitionSearch {
-    border-radius: 10px;
-    outline: none;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
     width: calc(100% - 20px);
     max-width: 700px;
     transition: background-color 250ms ease;
     font-size: 22px;
-    min-height: 40px;
-    border: none;
-    font-family: Barlow;
     padding: 5px;
     padding-inline: 10px;
+    height: 28px;
     text-overflow: ellipsis;
   }
 
-  #competitionSearch:focus {
-    outline: none;
-    background-color: rgba(255, 255, 255, 0.2);
-  }
-
   #startSearch {
-    max-width: 30px;
-    min-height: 40px;
-    margin: 0;
+    max-width: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-
-  .searchBarButton {
-    background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
-    color: white;
-    margin: 0;
   }
 
   #searchIcon {
@@ -1174,6 +1162,11 @@
     align-items: center;
     gap: 10px;
     flex-wrap: wrap;
+  }
+
+  .createButton {
+    border-radius: 10px;
+    line-height: 35px;
   }
 
   @keyframes fadeIn {
@@ -1203,15 +1196,11 @@
   }
 
   .dailyItem {
-    background-color: rgba(181, 193, 230, 0.15);
+    background-color: rgba(255, 255, 255, 0.1);
   }
 
   .dailyPrimary {
-    background-color: rgb(79, 137, 166);
-  }
-
-  .dailyLeaderboardButton {
-    background-color: rgba(147, 203, 225, 0.4);
+    background-color: var(--brand-color);
   }
 
   #contentSelection {
@@ -1225,7 +1214,7 @@
   }
 
   .leaderboardSupporterEntry {
-    background-color: rgba(175, 220, 189, 0.3);
+    background-color: rgba(125, 189, 144, 0.5);
   }
 
   .centerEntry {
@@ -1243,27 +1232,10 @@
     cursor: pointer;
   }
 
-  .aboutSection:hover {
-    filter: brightness(1.2);
-  }
-
-  .competitionTitleDaily {
-    background-color: rgba(70, 74, 92, 0.15);
-  }
-
-  .competitionTitleExpired {
-    background-color: rgba(70, 74, 92, 0.15);
-  }
-
   #hideEntered {
     max-width: 35%;
     overflow: hidden;
     text-overflow: ellipsis;
-    color: rgb(176, 166, 169);
-    transition:
-      color 250ms ease,
-      background-color 250ms ease,
-      filter 250ms ease;
   }
 
   .hideEnteredActive {
@@ -1312,9 +1284,9 @@
     pointer-events: none;
   }
 
-  @media all and (orientation: portrait) {
+  @media all and (max-width: 800px) {
     .boxHeader {
-      font-size: 25px;
+      font-size: 35px;
     }
 
     .competitionItem {
@@ -1327,10 +1299,6 @@
 
     .competitionItemHeader {
       font-size: 27px;
-    }
-
-    .label p {
-      font-size: 18px;
     }
   }
 </style>
