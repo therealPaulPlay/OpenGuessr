@@ -1071,10 +1071,6 @@
     vertical-align: -2px;
   }
 
-  .invert {
-    filter: invert();
-  }
-
   .popupButtons {
     gap: 20px;
     margin-top: 40px;
@@ -1089,18 +1085,6 @@
     text-overflow: ellipsis;
     overflow: hidden;
     text-wrap: nowrap;
-  }
-
-  #enterPopup,
-  #leaderboardPopup,
-  #uploadPopup,
-  #submitConfirmPopup,
-  #descriptionPopup {
-    display: none;
-  }
-
-  #submitConfirmPopup {
-    z-index: 110;
   }
 
   .expiredBox {
@@ -1129,34 +1113,9 @@
     overflow: hidden;
   }
 
-  .faqTopSection {
-    display: flex;
-    align-items: center;
-    width: 100%;
-    justify-content: space-between;
-  }
-
-  #toggleFaqButton {
-    background-color: rgba(215, 190, 190, 0.2);
-    margin-right: 0;
-    min-width: 50px;
-    border-radius: 7px;
-    margin-right: -12px;
-  }
-
   .errorText {
     width: 100%;
     text-align: center;
-  }
-
-  #faqTitle {
-    margin-bottom: 5px;
-    color: rgba(255, 255, 255, 0.9);
-  }
-
-  .popupBodyText {
-    margin-top: 30px;
-    font-size: 25px;
   }
 
   .rankingDisplay {
@@ -1556,10 +1515,6 @@
       font-size: 25px;
     }
 
-    .directionArrowIcon {
-      vertical-align: -5px;
-    }
-
     .competitionItem {
       flex-grow: 1;
     }
@@ -1577,14 +1532,6 @@
     }
 
     .label p {
-      font-size: 18px;
-    }
-
-    #toggleFaqButton {
-      font-size: 18px;
-    }
-
-    .uploadInfo {
       font-size: 18px;
     }
   }

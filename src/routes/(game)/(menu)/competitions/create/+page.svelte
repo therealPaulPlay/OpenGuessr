@@ -1,12 +1,15 @@
 <script>
   import { playSound } from "$lib/utils/soundManager";
   import { username } from "$lib/stores/accountStore";
+  import { Link } from "lucide-svelte";
   import { showNotification } from "$lib/utils/notifications";
+  import { showConfirmPopup } from "$lib/utils/confirmPopup";
+  import { errorPopup } from "$lib/utils/errorHandling";
   import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
   import Popup from "$lib/components/Popup.svelte";
 
   let competitionSubmittedSuccessfully = false;
-  let uploadConfirmPopup = $state(false);
+  let successPopup = $state(false);
 
   // Competition Data
   let competitionName = $state();
@@ -20,7 +23,11 @@
   // submit with all details
   let competitionCreationId;
 
-  document.getElementById("submitConfirm").addEventListener("click", async () => {
+  // Links
+  let enterLink = $state();
+  let leaderboardLink = $state();
+
+  async function submitCompetitionWithDetails() {
     let operationMessage = await submitCompetition(
       localStorage.getItem("bearer"),
       competitionName,
@@ -34,43 +41,16 @@
       competitionPrivate,
     );
 
-    document.getElementById("submitConfirmText").textContent = operationMessage;
-
     if (operationMessage.includes("success")) {
-      document.getElementById("submitConfirmHeader").textContent = "Competition created!";
-
       // create links
-      const enterLink = window.location.origin + "/competitions?enter=" + competitionCreationId;
-      const leaderboardLink = window.location.origin + "/competitions?leaderboard=" + competitionCreationId;
+      enterLink = window.location.origin + "/competitions?enter=" + competitionCreationId;
+      leaderboardLink = window.location.origin + "/competitions?leaderboard=" + competitionCreationId;
 
-      let linkBox = document.createElement("div");
-      linkBox.innerHTML = `
-      <div class="spacer"></div>
-      <div class="linkBox">
-      <p>Enter link:</p>
-      <p class="linkField">${enterLink}</p>
-      <div class="spacer"></div>
-      <p>Leaderboard link:</p>
-      <p class="linkField">${leaderboardLink}</p>
-      <button id="copyLinksButton" class="standardButton linkButtonSubmit">Click to copy both links</button>
-      </div>
-      `;
-
-      document.getElementById("submitConfirmText").appendChild(linkBox);
-      document.getElementById("copyLinksButton").addEventListener("click", () => {
-        navigator.clipboard
-          .writeText(enterLink + " " + leaderboardLink)
-          .then(function () {
-            showNotification("Copied!");
-          })
-          .catch(function (error) {
-            showNotification("Error: " + error);
-          });
-      });
+      successPopup = true;
     } else {
-      document.getElementById("submitConfirmHeader").textContent = "Oh no! An error occured";
+      errorPopup("Error submitting a competition", "An error occured submitting your competition.", operationMessage);
     }
-  });
+  }
 
   // Get seconds from string time input -------------------------------------------------------------------------------
 
@@ -144,7 +124,7 @@
         private: isPrivate,
       };
 
-      const response = await fetch(competitionsEndpoint + "/create", {
+      const response = await fetch("https://competitions.openguessr.com/competitions/create", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -162,7 +142,7 @@
         } catch (e) {
           console.error("Error extracting competitionId from creation response: " + e);
         }
-        
+
         return "Competition created successfully. Good luck and have fun!";
       } else {
         let responseData = null;
@@ -202,22 +182,41 @@
   }
 </script>
 
-{#if uploadConfirmPopup}
-  <Popup verySlim={true}>
-    <h1 id="submitConfirmHeader" class="textHeaderLeft">Submit?</h1>
-    <p id="submitConfirmText" class="popupBodyText">
-      Submitted competitions cannot be edited or deleted! Violating the rules can result in a permanent ban.
-    </p>
-    <div class="buttonBoxRight">
+{#if successPopup}
+  <Popup verySlim="true">
+    <h1 id="submitConfirmHeader" class="textHeaderLeft">Success!</h1>
+    <p>Thank you for creating a competition! Share these direct links with your friends:</p>
+    <div class="spacer"></div>
+    <div class="linkBox">
+      <p>Enter link:</p>
+      <p class="linkField">{enterLink}</p>
+      <div class="spacer"></div>
+      <p>Leaderboard link:</p>
+      <p class="linkField">{leaderboardLink}</p>
       <button
-        id="submitConfirmClose"
-        class="standardButton white closeButton"
+        id="copyLinksButton"
+        class="standardButton white copyButton"
         onclick={() => {
           playSound("basic_button");
-          uploadConfirmPopup = false;
-        }}>Close</button
+          navigator.clipboard
+            .writeText(enterLink + " " + leaderboardLink)
+            .then(function () {
+              showNotification("Copied!");
+            })
+            .catch(function (error) {
+              showNotification("Error: " + error);
+            });
+        }}><Link size="16" /> Copy Both</button
       >
-      <button id="submitConfirm" class="standardButton closeButton">Submit</button>
+      <div class="buttonBoxRight">
+        <button
+          class="standardButton closeButton white"
+          onclick={() => {
+            playSound("basic_button");
+            successPopup = false;
+          }}>Close</button
+        >
+      </div>
     </div>
   </Popup>
 {/if}
@@ -226,7 +225,7 @@
   <h1 id="uploadHeader">Create a Competition</h1>
   <div class="infoNoteBox">
     <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
-    <p id="uploadFirstText">Information and Rules:</p>
+    <p class="uploadFirstText">Information and Rules:</p>
     <ul class="verticalMarginUl">
       <li class="helpItem">Ensure that your competition names and author names are familiy-friendly.</li>
       <li class="helpItem">Keep all details in english.</li>
@@ -259,31 +258,32 @@
     />
     <div class="infoNoteBox marginBottom">
       <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
-      <p id="uploadFirstText">Information regarding private competitions:</p>
+      <p class="uploadFirstText">Information regarding private competitions:</p>
       <p id="visibilityInfo">
         Competitions are public by default, meaning they appear on the site for everyone. Private competitions can only
         be accessed via the link, so make sure not to lose it.
       </p>
     </div>
+    <div class="spacer"></div>
     <p>Visibility:</p>
     <button
-      id="uploadCompetitionVisibility"
-      class="standardButton toggleButton"
+      class="standardButton white toggleButton"
       onclick={() => {
         playSound("basic_button");
         competitionPrivate = !competitionPrivate;
       }}>{competitionPrivate ? "Private" : "Public"}</button
     >
+    <div class="spacer"></div>
     <p>Restriction:</p>
     <button
-      id="uploadCompetitionRestriction"
-      class="standardButton toggleButton"
+      class="standardButton white toggleButton"
       onclick={() => {
         playSound("basic_button");
         togglecompetitionRestriction();
       }}>{competitionRestrictionText}</button
     >
-    <p>Round length:</p>
+    <div class="spacer"></div>
+    <p>Round length (seconds):</p>
     <div class="extendedInputBox">
       <input
         id="uploadCompetitionRoundLength"
@@ -294,7 +294,6 @@
         placeholder="60"
         maxlength="30"
       />
-      <p class="metricEnd">sec</p>
     </div>
     <p>Duration (use min, h and d):</p>
     <input
@@ -306,23 +305,28 @@
       placeholder="2d"
       maxlength="30"
     />
+    <div class="spacer"></div>
     <div class="infoNoteBox marginBottom">
       <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
-      <p id="uploadFirstText">How to add locations:</p>
+      <p class="uploadFirstText">How to add locations:</p>
       <ol>
-        <li class="helpItem">Visit <a href="https://www.google.com/maps/">Google Maps</a> on a desktop computer.</li>
+        <li class="helpItem">
+          Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer.
+        </li>
         <li class="helpItem">Drag the orange figure onto the map to open a streetview.</li>
         <li class="helpItem">Copy the URL from the address bar of your browser into the textbox.</li>
       </ol>
     </div>
-    <p class="marginTop">Locations (fixed order, max. 20):</p>
+    <div class="spacer"></div>
+    <p>Locations (fixed order, max. 20):</p>
     <textarea
       id="uploadLocationData"
       bind:value={locationData}
       class="uploadInfo locationTextbox"
       type="text"
       rows="20"
-      placeholder="https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
+      placeholder="
+  https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
   
   https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6!1e1!3m4!1scgVGr1HY1alolDg8gfwrzA!2e0!7i16384!8i8192?coh=205409&entry=ttu
   
@@ -330,14 +334,15 @@
       maxlength="50000"
     ></textarea>
   </div>
-  <div class="buttonBox shiftedButtonBox">
-    <button id="uploadClose" class="standardButton closeButton">Close</button>
+  <div class="buttonBoxRight fullWidth">
     <button
       id="uploadConfirm"
-      class="standardButton primaryButton"
+      class="standardButton closeButton submitButton"
       onclick={() => {
         playSound("basic_button");
-        uploadConfirmPopup = true;
+        showConfirmPopup("Submit?", "Competitions cannot be edited or deleted.", () => {
+          submitCompetitionWithDetails();
+        });
       }}>Submit</button
     >
   </div>
@@ -352,39 +357,18 @@
     padding-inline: 10px;
   }
 
-  #jsonUploadButton {
-    margin-top: 10px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-  }
-
-  #jsonFormatInfoSpan {
-    text-decoration: underline;
-    cursor: pointer;
-  }
-
-  #uploadFirstText {
-    margin-bottom: 15px;
-    font-size: 22px;
-  }
-
-  .linkToMapConverter {
-    cursor: pointer;
-    text-decoration: underline;
-  }
-
-  #jsonUpload {
-    display: none;
-  }
-
-  .fullWidth {
-    width: 100%;
-  }
-
   #uploadHeader {
     width: 100%;
     margin-bottom: 30px;
     font-size: 40px;
+  }
+
+  .textHeaderLeft {
+    margin-bottom: 15px;
+  }
+
+  .fullWidth {
+    width: 100%;
   }
 
   .infoNoteBox {
@@ -404,6 +388,16 @@
     flex-direction: column;
     width: 100%;
     margin-top: 15px;
+  }
+
+  .uploadFirstText {
+    margin-bottom: 15px;
+    font-size: 22px;
+  }
+
+  .spacer {
+    height: 20px;
+    width: 100%;
   }
 
   .uploadInfo {
@@ -438,9 +432,21 @@
     margin-top: 15px;
   }
 
+  .copyButton {
+    margin-top: 25px;
+    margin-left: 0;
+  }
+
   li {
     color: white;
     font-size: 22px;
+  }
+
+  .toggleButton {
+    margin-top: 10px;
+    border-radius: 10px;
+    min-height: 50px;
+    min-width: 150px;
   }
 
   #infoNoteIcon {
@@ -450,24 +456,5 @@
     margin-top: 5px;
     opacity: 0.5;
     margin-left: -5px;
-  }
-
-  pre {
-    font-family: monospace;
-    white-space: pre-wrap;
-    font-size: 15px;
-  }
-
-  .infoNoteBoxConverter {
-    margin-top: 25px;
-    margin-bottom: 15px;
-  }
-
-  #infoTextMapConverter {
-    margin-bottom: 20px;
-  }
-
-  #uploadMapData {
-    margin-bottom: 5px;
   }
 </style>

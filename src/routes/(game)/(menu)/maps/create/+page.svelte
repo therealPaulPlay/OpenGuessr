@@ -108,7 +108,7 @@
   <h1 id="uploadHeader">Create Map</h1>
   <div class="infoNoteBox">
     <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
-    <h2 id="uploadFirstText">Important Rules:</h2>
+    <h2 class="uploadFirstText">Important Rules:</h2>
     <ul>
       <li>You can only upload max. 3 maps per day.</li>
       <li>Maps must at least have 50 unique locations.</li>
@@ -151,7 +151,7 @@
     />
     <div class="infoNoteBox">
       <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
-      <p id="uploadFirstText">How to add locations:</p>
+      <p class="uploadFirstText">How to add locations:</p>
       <ol>
         <li>Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer.</li>
         <li>Drag the orange figure onto the map to open a streetview.</li>
@@ -282,7 +282,7 @@
     cursor: pointer;
   }
 
-  #uploadFirstText {
+  .uploadFirstText {
     margin-bottom: 15px;
     font-size: 22px;
   }
