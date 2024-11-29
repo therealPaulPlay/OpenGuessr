@@ -111,8 +111,7 @@
               id="profileAddFriend"
               onclick={(e) => {
                 playSound("basic_button");
-                sendFriendRequest($profileId, e.target);
-                showNotification("Friend request sent!");
+                sendFriendRequest($profileId, e.target); // This also shows a notification
               }}
             >
               <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
@@ -452,7 +451,6 @@
   #addFriendIcon {
     width: 22px;
     height: 22px;
-    filter: invert();
     vertical-align: -3px;
     padding-left: 4px;
     pointer-events: none;

@@ -102,7 +102,7 @@
           playSound("basic_button");
         }}
       >
-        <img class="socialBarIcons invertSocialBarIcon" src="/img/profile_icon.png" alt="Your profile" />
+        <img class="socialBarIcons" src="/img/profile_icon.png" alt="Your profile" />
       </button>
     {/if}
     {#if $isAuthenticated}
@@ -127,7 +127,7 @@
         playSound("basic_button");
       }}
     >
-      <img class="socialBarIcons invertSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Map Categories" />
+      <img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
     </a>
     <button
       id="mobileMultiplayerButton"
@@ -138,7 +138,7 @@
         multiplayerPopup.set(true);
       }}
     >
-      <img class="socialBarIcons invertSocialBarIcon" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
+      <img class="socialBarIcons" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
     </button>
     <a
       id="mobileCompetitionsButton"
@@ -149,7 +149,7 @@
         playSound("basic_button");
       }}
     >
-      <img class="socialBarIcons invertSocialBarIcon" src="/img/competitions_icon.png" alt="Competitions symbol" />
+      <img class="socialBarIcons" src="/img/competitions_icon.png" alt="Competitions symbol" />
     </a>
     <a
       id="mobileLeaderboardButton"
@@ -271,7 +271,7 @@
     >
       <span class="topBarExpand">Multiplayer</span>
       <img
-        class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
+        class="socialBarIcons shiftedSocialbarIcon"
         src="/img/multiplayer_icon.png"
         alt="Open the multiplayer menu"
       />
@@ -287,7 +287,7 @@
     >
       <span class="topBarExpand">Competitions</span>
       <img
-        class="socialBarIcons invertSocialBarIcon shiftedSocialbarIcon"
+        class="socialBarIcons shiftedSocialbarIcon"
         src="/img/competitions_icon.png"
         alt="Competitions symbol"
       />
@@ -304,7 +304,7 @@
       }}
     >
       Map
-      <img class="socialBarIcons invertSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Map Categories" />
+      <img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
     </a>
     <button
       class="standardButton accountButton white"
@@ -391,10 +391,6 @@
     pointer-events: none;
   }
 
-  #joystickIcon {
-    filter: invert();
-  }
-
   .sideMenuDisabled {
     opacity: 0.8;
     transform: scale(0.95);
@@ -433,10 +429,6 @@
     margin-right: 4px;
   }
 
-  .invertSocialBarIcon {
-    filter: invert();
-  }
-
   #mobileLoginButton {
     background-color: var(--brand-color);
     color: white;
@@ -473,10 +465,6 @@
     max-height: 40px;
   }
 
-  #settingsIcon {
-    filter: invert();
-  }
-
   .progressContainer {
     position: relative;
     width: 30px;
@@ -511,7 +499,6 @@
     height: 22px;
     margin-left: 3px;
     margin-top: 4px;
-    filter: invert();
   }
 
   .topBarExpand {
