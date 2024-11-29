@@ -79,38 +79,18 @@ function getTeamFromPeerId(id) {
 // Restriction Toggle -------------------------------------------------------------------------------------------------------------------------------
 let multiplayerRestriction = "standard";
 let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
+let restrictionsText = ["Standard", "NMPZ", "Grayscale", "Invert Colors", "Hue Shift", "Blink (Fade)"];
 let currentRestrictionIndex = 0;
 
 export function toggleMultiplayerRestriction() {
     if (get(restrictionButtonText) == "Standard") {
-        currentRestrictionIndex = 1; // start from the first restriction after standard
+        currentRestrictionIndex = 1; // Start from the first restriction after standard
     } else {
         currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
     }
-    multiplayerRestriction = restrictions[currentRestrictionIndex];
 
-    // Update the button text
-    switch (multiplayerRestriction) {
-        case "nmpz":
-            restrictionButtonText.set("No move (NMPZ)");
-            break;
-        case "grayscale":
-            restrictionButtonText.set("Grayscale");
-            break;
-        case "invert":
-            restrictionButtonText.set("Invert Colors");
-            break;
-        case "hue":
-            restrictionButtonText.set("Hue Shift");
-            break;
-        case "fade":
-            restrictionButtonText.set("Blink (Fade)");
-            break;
-        case "standard":
-        default:
-            restrictionButtonText.set("Standard");
-            break;
-    }
+    multiplayerRestriction = restrictions[currentRestrictionIndex];
+    restrictionButtonText.set(restrictionsText[currentRestrictionIndex]);
 
     setRestriction(multiplayerRestriction);
 }

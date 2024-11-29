@@ -308,7 +308,7 @@
     class="standardButton white expandButton"
     style:margin-top={countrySectionExpanded ? "10px" : "-35px"}
     onclick={() => {
-      playSound("basic_button");
+      playSound("floating_button");
       countrySectionExpanded = !countrySectionExpanded;
     }}
     >{countrySectionExpanded ? "Show less" : "Show all"}

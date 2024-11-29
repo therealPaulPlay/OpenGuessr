@@ -44,7 +44,6 @@
 
   .backButton {
     margin-right: auto !important;
-    font-size: 25px;
     width: fit-content;
     height: 50px;
     border-radius: 10px;
@@ -58,7 +57,7 @@
     width: 25px;
     height: 25px;
     transform: rotate(90deg);
-    vertical-align: -4px;
+    vertical-align: -5px;
   }
 
   .backButton:hover {
