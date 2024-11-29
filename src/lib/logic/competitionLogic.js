@@ -9,6 +9,7 @@ import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 import { supporterLevel } from "$lib/stores/accountStore";
 import { competition } from "$lib/stores/modeStore";
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
+import { goto } from "$app/navigation";
 import {
     mapModeIndicatorVisible,
     modeText,
@@ -26,7 +27,7 @@ let competitionTimer;
 export function loadCompetition() {
     competitionRound.set(0); // Reset round index
     competitionCombinedScore = 0; // Reset combined score
-    leaveFunction.set(leaveCompetition); // Set leave function for mapModeIndicator
+    leaveFunction.set(() => leaveCompetition(true)); // Set leave function for mapModeIndicator
 
     if (get(competitionData)) {
         competition.set(true); // Activate Competition mode
@@ -92,7 +93,7 @@ export async function leaveCompetition(showResult) {
         await submitCompetitionResult(get(competitionData).id, competitionCombinedScore, get(supporterLevel), localStorage.getItem("bearer"));
 
         if (showResult) {
-            window.location.href = "/competitions?leaderboard-submit=" + competition.id;
+            goto("/competitions?leaderboard-submit=" + get(competitionData).id);
         }
     }
 }

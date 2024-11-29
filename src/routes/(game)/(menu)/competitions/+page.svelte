@@ -157,6 +157,7 @@
       if (response.ok) {
         const data = await response.json();
         leaderboardEntries = data.leaderboard;
+        yourEntry = data?.userRank;
         leaderboardName = data.name;
       } else {
         let responseData = null;
@@ -296,7 +297,6 @@
           if (expired) expiredCompetitionData = [...expiredCompetitionData, ...data.competitions];
           if (!expired && !daily) activeCompetitionsData = [...activeCompetitionsData, ...data.competitions];
           if (!expired && daily) dailyCompetitionData = data.competitions; // Only one, so no need to concatinate arrays here
-          console.log(activeCompetitionsData);
 
           if (!daily) {
             if (!expired) {
@@ -454,7 +454,7 @@
                 loadProfileFromId(localStorage.getItem("id"), true);
               }}
             >
-              {youItem.userName}
+              {yourEntry.userName}
             </p>
             <p class="leaderboardTextEntry">{yourEntry.score.toLocaleString()} Pts.</p>
           </div>
@@ -491,7 +491,7 @@
     </div>
     {#if showRatingsBox}
       <div id="ratingBox">
-        <p id="ratingText">Rate this competition (Default)</p>
+        <p id="ratingText">{ratingText}</p>
         {#if ratingsButtonBox}
           <div class="ratingButtonBox" id="ratingButtonBox">
             <button
@@ -1039,7 +1039,7 @@
     flex-direction: column;
     width: calc(100% - 10px);
     border-radius: 5px;
-    max-height: 50vh;
+    max-height: 52vh;
     overflow-x: hidden;
     overflow-y: auto;
     scrollbar-width: none;
@@ -1245,7 +1245,7 @@
 
   #ratingBox {
     border-radius: 10px;
-    background-color: rgba(255, 255, 255, 0.1);
+    background-color: var(--box-color);
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -1253,6 +1253,7 @@
     margin-top: 20px;
     padding: 5px;
     gap: 10px;
+    width: calc(100% - 10px);
   }
 
   #ratingBox p {

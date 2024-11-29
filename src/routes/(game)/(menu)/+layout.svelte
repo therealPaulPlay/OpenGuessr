@@ -2,6 +2,8 @@
   let { children } = $props();
   import { playSound } from "$lib/utils/soundManager";
   import Notification from "$lib/components/Notification.svelte";
+  import { goto } from "$app/navigation";
+  import { Home } from "lucide-svelte";
 
   function goBack() {
     history.back();
@@ -18,6 +20,15 @@
   >
     <img src="/img/arrow_icon.png" alt="Expand or close arrow" class="backButtonArrowIcon" />
     Back</button
+  >
+  <button
+    class="backButton standardButton white"
+    onclick={() => {
+      playSound("basic_button");
+      goto("/");
+    }}
+  >
+    <span class="homeButtonIcon"><Home strokeWidth={2.25} /></span></button
   >
 </nav>
 
@@ -43,7 +54,6 @@
   }
 
   .backButton {
-    margin-right: auto !important;
     width: fit-content;
     height: 50px;
     border-radius: 10px;
@@ -51,6 +61,10 @@
     text-decoration: none;
     line-height: 35px;
     pointer-events: auto;
+  }
+
+  .homeButtonIcon {
+    vertical-align: -6px;
   }
 
   .backButtonArrowIcon {

@@ -390,6 +390,10 @@
     margin-top: 15px;
   }
 
+  #visibilityInfo {
+    margin-bottom: 10px;
+  }
+
   .uploadFirstText {
     margin-bottom: 15px;
     font-size: 22px;
