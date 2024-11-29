@@ -1,0 +1,202 @@
+<script>
+  // Must pass a "id" prop to load a badge!
+  let { unlocked = false, id, interactive = false, display = false } = $props();
+  import { selectedBadge } from "$lib/stores/accountStore";
+  import { profileData } from "$lib/stores/context-specific/profileStore";
+  import { setProfileBadge } from "$lib/utils/updateProfileData";
+  import { playSound } from "$lib/utils/soundManager";
+
+  const badges = {
+    expBadge1: {
+      title: "New Explorer",
+      stage: 1,
+    },
+    expBadge2: {
+      title: "Skilled Adventurer",
+      stage: 2,
+    },
+    expBadge3: {
+      title: "Experienced Veteran",
+      stage: 3,
+    },
+    expBadge4: {
+      title: "Master of Experience",
+      stage: 4,
+    },
+    duelBadge1: {
+      title: "Casual Duelist",
+      stage: 1,
+    },
+    duelBadge2: {
+      title: "Proven Combatant",
+      stage: 2,
+    },
+    duelBadge3: {
+      title: "Expert Duelist",
+      stage: 3,
+    },
+    duelBadge4: {
+      title: "Duel Master",
+      stage: 4,
+    },
+    compBadge1: {
+      title: "Rookie Competitor",
+      stage: 1,
+    },
+    compBadge2: {
+      title: "Dedicated Entrant",
+      stage: 2,
+    },
+    compBadge3: {
+      title: "Seasoned Contender",
+      stage: 3,
+    },
+    compBadge4: {
+      title: "Top Champion",
+      stage: 4,
+    },
+    streakBadge1: {
+      title: "Streak Starter",
+      stage: 1,
+    },
+    streakBadge2: {
+      title: "Consistent Performer",
+      stage: 2,
+    },
+    streakBadge3: {
+      title: "Streak Specialist",
+      stage: 3,
+    },
+    streakBadge4: {
+      title: "Ultimate Streaker",
+      stage: 4,
+    },
+    supporterBadge1: {
+      title: "New Supporter",
+      stage: "Supporter1",
+    },
+    supporterBadge2: {
+      title: "Kind Contributor",
+      stage: "Supporter2",
+    },
+    supporterBadge3: {
+      title: "Generous Benefactor",
+      stage: "Supporter3",
+    },
+    supporterBadge4: {
+      title: "Ultimate Patron",
+      stage: "Supporter4",
+    },
+    miscBadge1: {
+      title: "Developer",
+      stage: "Developer",
+    },
+  };
+</script>
+
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+<div
+  {id}
+  role="button"
+  tabindex="0"
+  class="badge {'badgeStage' + badges[id].stage}"
+  class:badgeLocked={!unlocked && !display}
+  style:pointer-events={Boolean(interactive) ? "auto" : "none"}
+  onclick={() => {
+    if (unlocked) {
+      playSound("item_select");
+      setProfileBadge(id);
+      $profileData["badge"] = id;
+    } else {
+      playSound("item_locked");
+    }
+  }}
+>
+  {badges[id].title}
+  <div class:badgeSelected={$selectedBadge == id && !display}></div>
+</div>
+
+<style>
+  .badgeLocked {
+    opacity: 0.35;
+    pointer-events: none;
+  }
+
+  .badgeSelected {
+    border: 3px solid rgba(255, 255, 255, 0.75);
+    box-sizing: border-box;
+    padding-top: 3px;
+    padding-bottom: 3px;
+    padding-inline: 7px;
+    width: 100%;
+    height: 100%;
+    border-radius: 5px;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    z-index: 2;
+  }
+
+  .badge {
+    padding: 7px;
+    border-radius: 5px;
+    font-style: italic;
+    position: relative;
+    color: white;
+    background-color: rgb(152, 152, 152);
+    font-size: 20px;
+    text-wrap: nowrap;
+    padding-inline: 10px;
+    cursor: pointer;
+    transition:
+      opacity 250ms ease,
+      transform 250ms ease,
+      filter 250ms ease,
+      border 150ms ease;
+    box-sizing: border-box;
+    user-select: none;
+  }
+
+  .badge:hover {
+    transform: scale(0.98);
+  }
+
+  .badgeStage1 {
+    background: linear-gradient(0.6turn, rgb(136, 113, 113), #6f5a5a);
+  }
+
+  .badgeStage2 {
+    background: linear-gradient(0.6turn, #30929b, #507d82);
+  }
+
+  .badgeStage3 {
+    background: linear-gradient(0.6turn, rgb(142, 70, 232), #7954a6);
+  }
+
+  .badgeStage4 {
+    background: linear-gradient(0.6turn, #ddbb1f, #aa8928);
+  }
+
+  .badgeStageSupporter1 {
+    background: linear-gradient(0.6turn, #419d42, #4a684a);
+  }
+
+  .badgeStageSupporter2 {
+    background: linear-gradient(0.6turn, #319532, #518852);
+  }
+
+  .badgeStageSupporter3 {
+    background: linear-gradient(0.6turn, #19ae1b, #379338);
+  }
+
+  .badgeStageSupporter4 {
+    background: linear-gradient(0.6turn, #37d738, #22a826);
+  }
+
+  .badgeStageDeveloper {
+    background: linear-gradient(0.6turn, #e31f1f, #8e3030);
+  }
+</style>

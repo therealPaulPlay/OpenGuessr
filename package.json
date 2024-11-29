@@ -1,41 +1,21 @@
 {
-  "name": "openguessr",
-  "version": "0.5.0",
-  "description": "The free geography guessing game with unlimited free play!",
-  "main": "index.html",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --mode production"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ColaniYT/OpenGuessr.git"
-  },
-  "keywords": [
-    "OpenGuessr",
-    "GeoGuessr",
-    "Geography"
-  ],
-  "author": "Colani, PaulPlay",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/ColaniYT/OpenGuessr/issues"
-  },
-  "homepage": "https://github.com/ColaniYT/OpenGuessr#readme",
-  "dependencies": {
-    "webpack-cache-buster-plugin": "^1.0.5"
-  },
-  "devDependencies": {
-    "@babel/core": "^7.23.9",
-    "@babel/preset-env": "^7.23.9",
-    "babel-loader": "^9.1.3",
-    "clean-webpack-plugin": "^4.0.0",
-    "compression-webpack-plugin": "^11.1.0",
-    "copy-webpack-plugin": "^12.0.2",
-    "json-minimizer-webpack-plugin": "^5.0.0",
-    "path": "^0.12.7",
-    "terser-webpack-plugin": "^5.3.10",
-    "webpack": "^5.90.2",
-    "webpack-cli": "^5.1.4"
-  }
+	"name": "openguessr",
+	"version": "0.0.1",
+	"type": "module",
+	"scripts": {
+		"dev": "vite dev --port 3000 --host",
+		"build": "vite build",
+		"preview": "vite preview --port 3000"
+	},
+	"devDependencies": {
+		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/kit": "^2.8.1",
+		"@sveltejs/vite-plugin-svelte": "^4.0.0",
+		"svelte": "^5.2.2",
+		"vite": "^5.0.3"
+	},
+	"dependencies": {
+		"@sveltejs/adapter-static": "^3.0.6",
+		"lucide-svelte": "^0.456.0"
+	}
 }

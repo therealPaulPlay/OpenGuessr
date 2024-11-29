@@ -1,22 +1,32 @@
 # OpenGuessr
-The free location guessing game. 
 
-## Get started with the repo:
-After cloning the repo, make sure you have
-installed all of the required npm packages.
-To do so, run `npm install` in the repository.
+The free location guessing game.
 
-Webpack is configured to create two bundled javascript files,
-one from main.js as well as one from analytics js. It resolves import and export dependencies
-automatically which means that we do not need to specify multiple entry points for one bundle.
+## Framework
 
-The signup screen currently does not use a bundled javascript file, rather than that, the userAPI as
-well as errorPopup.js are being included in conjunction with the signupScreen.js file to work together
-without bundling.
+OpenGuessr now uses [Svelte](https://svelte.dev). 
 
-In order to configure the VS Code live server plugin to use the build folder as the new entry point / root folder,
-you need to specify `"liveServer.settings.root": "/build"` in the settings.json of the live server plugin. 
-The file is available through Extensions -> Live Server -> Settings (gear icon) -> Click where it says "edit in settings.json".
+## Developing
 
-Running `npm run build` is currently configured (in the package.json file) to build with webpack.
-All necessary files will be included in the build folder and versioning queries are added automatically.
+Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+
+```bash
+npm run dev
+
+# or start the server and open the app in a new browser tab
+npm run dev -- --open
+```
+
+Make sure to use the ```--host ``` option for the vite dev command, otherwise WebRTC won't work.
+
+## Building
+
+To create a production version of your app:
+
+```bash
+npm run build
+```
+
+You can preview the production build with `npm run preview`.
+
+> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
