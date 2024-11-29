@@ -290,7 +290,7 @@
   <div class="information">
     <div class="locationAmountInfo infoElement">
       <div class="pinIconContainer">
-        <MapPin size={120} strokeWidth={1} />
+        <MapPin size={100} strokeWidth={1} />
       </div>
       <h2 class="locationAmountText">{mapLocationAmount.toLocaleString()} Locations</h2>
     </div>
@@ -413,7 +413,7 @@
     display: flex;
     padding: 10px;
     flex-grow: 1;
-    height: 250px;
+    height: 200px;
     min-width: 300px;
     color: white;
   }
@@ -455,7 +455,7 @@
     justify-content: center;
     align-items: center;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
   }
 
   .descriptionInfo {
