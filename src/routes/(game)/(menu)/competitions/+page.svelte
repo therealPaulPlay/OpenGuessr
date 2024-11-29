@@ -556,7 +556,7 @@
   entered,
   daily,
 )}
-  <div class="competitionItem fadeInItem" class:dailyItem={daily}>
+  <div class="competitionItem fadeInItem">
     <h2 class="competitionItemHeader">{name}</h2>
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -570,32 +570,32 @@
       hosted by {author}
     </p>
     <div class="competitionPropertiesBox">
-      <div class="propertyItem" class:dailyItem={daily}>
+      <div class="propertyItem">
         <div class="label">
           <p>Plays</p>
         </div>
         <p class="itemText">{playercount.toLocaleString()}</p>
       </div>
-      <div class="propertyItem" class:dailyItem={daily}>
-        <div class="label" class:dailyItem={daily}>
+      <div class="propertyItem">
+        <div class="label">
           <p>Restriction</p>
         </div>
         <p class="itemText">{restriction}</p>
       </div>
-      <div class="propertyItem" class:dailyItem={daily}>
-        <div class="label" class:dailyItem={daily}>
+      <div class="propertyItem">
+        <div class="label">
           <p>Duration</p>
         </div>
         <p class="itemText">{formatDuration(duration)} ({formatDuration(remainingDuration)} left)</p>
       </div>
-      <div class="propertyItem" class:dailyItem={daily}>
-        <div class="label" class:dailyItem={daily}>
+      <div class="propertyItem">
+        <div class="label">
           <p>Rounds</p>
         </div>
         <p class="itemText">{locationAmount}</p>
       </div>
-      <div class="propertyItem" class:dailyItem={daily}>
-        <div class="label" class:dailyItem={daily}>
+      <div class="propertyItem">
+        <div class="label">
           <p>Round length</p>
         </div>
         <p class="itemText">{roundLength}s</p>
@@ -612,9 +612,8 @@
         playSound("basic_button");
         showConfirmPopup("About", description, false, false, false, true);
       }}
-      class:dailyItem={daily}
     >
-      <div class="label" class:expiredCompetitionColor={expired} role="button" tabindex="0" class:dailyItem={daily}>
+      <div class="label" class:expiredCompetitionColor={expired} role="button" tabindex="0">
         <p>About</p>
       </div>
       <p class="itemText descText">
@@ -1193,10 +1192,6 @@
     background-color: rgba(255, 255, 255, 0.1);
     padding: 5px;
     padding-inline: 10px;
-  }
-
-  .dailyItem {
-    background-color: rgba(255, 255, 255, 0.1);
   }
 
   .dailyPrimary {

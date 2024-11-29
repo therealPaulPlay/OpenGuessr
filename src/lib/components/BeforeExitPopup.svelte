@@ -185,6 +185,7 @@
 <style>
   #beforeExitNotAgain {
     margin-right: 8px;
+    opacity: 0.5;
   }
 
   .exitSpacer {
