@@ -1,0 +1,204 @@
+import { isAuthenticated, username } from "$lib/stores/accountStore";
+import { showNotification } from "$lib/utils/notifications";
+import { showConfirmPopup } from "$lib/utils/confirmPopup";
+import { peerId, loadedFriendsData } from "$lib/stores/context-specific/multiplayerStore";
+import { loadProfileFromId } from "$lib/utils/loadProfile";
+import { inboxContent } from "$lib/stores/context-specific/inboxStore";
+import { errorPopup } from "$lib/utils/errorHandling";
+import { get } from "svelte/store";
+
+// Inbox -----------------------------------------------------------------------------------------------------------------------------------
+export async function loadInbox() {
+    if (!get(isAuthenticated)) return;
+
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            recipientId: localStorage.getItem("id")
+        };
+
+        const response = await fetch("https://friends.openguessr.com/friends/requests", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            inboxContent.set(data?.requests);
+            if (get(inboxContent).length == 0) inboxContent.set(undefined);
+
+        } else {
+            console.error("Error loading inbox: " + response.status);
+            errorPopup("Error fetching inbox", "An error occured fetching the friend inbox.", response.status);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while loading inbox: ', error);
+        errorPopup("Error fetching inbox (Network)", "An error occured fetching the friend inbox.", error);
+    }
+}
+
+// accept friend request
+export async function acceptFriendRequest(senderId) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            senderId: senderId,
+            recipientId: localStorage.getItem("id")
+        };
+
+        const response = await fetch("https://friends.openguessr.com/friends/accept", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            loadInbox();
+            loadFriends();
+        } else {
+            const data = await response.json();
+            console.error("Error accepting / deleting the friend request: " + response.status);
+            errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while sending the friend request: ', error);
+        errorPopup("Network error accepting / deleting friend request", "The friend request couldn't be accepted or deleted.", error, false, false);
+    }
+}
+
+// accept friend request
+export async function declineFriendRequest(senderId) {
+    try {
+
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            senderId: senderId,
+            recipientId: localStorage.getItem("id")
+        };
+
+        const response = await fetch("https://friends.openguessr.com/friends/decline", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            loadInbox();
+        } else {
+            const data = await response.json();
+            console.error("Error accepting / deleting the friend request: " + response.status);
+            errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while sending the friend request: ', error);
+        errorPopup("Network error accepting / deleting friend request", "The friend request couldn't be accepted or deleted.", error, false, false);
+    }
+}
+
+// Load friends ------------------------------------------------------------------------------------------------------------------------
+export async function loadFriends() {
+    if (!get(isAuthenticated)) return;
+
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id")
+        };
+
+        const response = await fetch("https://friends.openguessr.com/friends/friends", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            loadedFriendsData.set(data.friends);
+            if (get(loadedFriendsData)?.length == 0) loadedFriendsData.set(undefined);
+
+        } else {
+            console.error("Error loading friends: " + response.status);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while loading friends: ', error);
+    }
+}
+
+export async function removeFriend(friendId) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            friendId: friendId
+        };
+
+        const response = await fetch("https://friends.openguessr.com/friends/remove", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            loadFriends();
+        } else {
+            const data = await response.json();
+            console.error("Error removing friend: " + response.status);
+            errorPopup("Error removing friend", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while removing friend: ', error);
+        errorPopup("Network error removing friend", "The friend request couldn't be accepted or deleted.", error, false, false);
+    }
+}
+
+export async function sendMatchInvite(recipientId, duel) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            friend_id: recipientId,
+            roomcode: get(peerId),
+            senderName: get(username),
+            isDuel: duel
+        };
+
+        const response = await fetch("https://friends.openguessr.com/friends/send-invite", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            showNotification(`Invite sent.`);
+        } else {
+            const data = await response.json();
+            console.error("Error sending invite: " + response.status + ", " + data.error);
+            showNotification("User is not reachable.");
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while sending/accepting/declining invite: ', error);
+        errorPopup("Network error sending invite", "The invite couldn't be sent due to a network problem.", error, false, false);
+    }
+}

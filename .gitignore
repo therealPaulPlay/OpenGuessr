@@ -1,15 +1,22 @@
-# Default ignored files
-/shelf/
-/workspace.xml
-/projectSettingsUpdater.xml
-/modules.xml
-/contentModel.xml
-*.env
-# Editor-based HTTP Client requests
-/httpRequests/
-# Datasource local storage ignored files
-/dataSources/
-/dataSources.local.xml
-*.DS_Store
-# Build folder
-build/
+node_modules
+node_modules/
+
+# Output
+.output
+.vercel
+/.svelte-kit
+/build
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*
