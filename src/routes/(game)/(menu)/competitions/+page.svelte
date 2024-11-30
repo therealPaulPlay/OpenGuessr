@@ -891,7 +891,7 @@
   }
 
   .competitionItem {
-    border-radius: 10px;
+    border-radius: 15px;
     background-color: var(--box-color);
     transition:
       background-color 250ms ease,
