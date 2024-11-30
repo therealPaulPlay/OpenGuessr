@@ -753,14 +753,9 @@
   }
 
   #mapSearch {
-    outline: none;
-    background-color: rgba(255, 255, 255, 0.1);
-    color: white;
     transition: background-color 250ms ease;
     font-size: 22px;
     flex-grow: 1;
-    border: none;
-    font-family: Barlow;
     padding: 5px;
     padding-inline: 10px;
     text-overflow: ellipsis;
