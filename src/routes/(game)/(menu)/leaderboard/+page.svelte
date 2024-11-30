@@ -261,7 +261,6 @@
     height: 45px;
     box-sizing: border-box;
     background-color: rgba(255, 255, 255, 0.1);
-    border: solid 3px rgba(255, 255, 255, 0.1);
     box-sizing: border-box;
     border-radius: 8px;
     margin: 10px 0px;
