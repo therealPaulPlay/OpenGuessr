@@ -239,10 +239,6 @@
   .optionButton {
     border-radius: 7px;
     min-height: 25px;
-    margin: 0;
-    padding: 5px;
-    padding-inline: 10px;
-    height: 100%;
     opacity: 0.5;
   }
 

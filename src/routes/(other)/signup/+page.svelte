@@ -272,7 +272,7 @@
         </div>
         <p class="switchFormBox">
           Already signed up?
-          <button id="loginSwitchBack" class="standardButton white" onclick={toggleForm}>Login</button>
+          <button id="loginSwitchBack" class="standardButton white" onclick={toggleForm}>Log in</button>
         </p>
         <p id="privacyNotice">
           Our <a href="/legal">policies</a> apply.

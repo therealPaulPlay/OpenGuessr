@@ -2,8 +2,6 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
   import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupStore";
-  import { playSound } from "$lib/utils/soundManager";
-  import { onMount } from "svelte";
 
   $effect(() => {
     if ($captchaPopupVisible) {
@@ -30,16 +28,7 @@
     <div id="captchaContainer" bind:this={captchaContainer}>
       <!-- the captcha will be loaded dynamically here -->
     </div>
-    <div class="buttonBoxRight">
-      <button
-        id="captchaClose"
-        class="standardButton white closeButton"
-        onclick={() => {
-          playSound("basic_button");
-          captchaPopupVisible.set(false);
-        }}>Close</button
-      >
-    </div>
+    <div class="buttonBoxRight"></div>
   </Popup>
 </div>
 

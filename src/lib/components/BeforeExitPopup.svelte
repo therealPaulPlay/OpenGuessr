@@ -104,7 +104,7 @@
     </div>
     <div class="costDisplayArea">
       <div class="costFlex">
-        <p class="costDisplayText">Estimated monthly API & server costs:</p>
+        <p class="costDisplayText">Estimated monthly costs:</p>
         <div class="costDisplayValue">
           <p>-$ 5300</p>
         </div>
@@ -222,7 +222,7 @@
     align-items: center;
     padding: 5px;
     width: calc(100% - 10px);
-    margin-top: 15px;
+    margin-top: 20px;
     gap: 7px;
     position: relative;
     z-index: 2;

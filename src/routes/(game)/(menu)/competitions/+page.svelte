@@ -605,7 +605,7 @@
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <div
       id="aboutItem${id}"
-      class="aboutSection competitionDesc"
+      class="aboutSection competitionDescription"
       role="button"
       tabindex="0"
       onclick={() => {
@@ -882,10 +882,11 @@
     min-height: 200px;
   }
 
-  .competitionDesc {
-    border-radius: 5px;
+  .competitionDescription {
+    border-radius: 10px;
     background-color: var(--box-color);
-    padding: 10px;
+    padding: 7px;
+    padding-inline: 4px;
     font-size: 22px;
     transition: filter 250ms ease;
   }
@@ -907,13 +908,13 @@
   }
 
   .label {
-    padding: 2px;
+    padding: 3px;
     padding-inline: 10px;
     width: fit-content;
     background-color: rgba(255, 255, 255, 0.1);
-    border-radius: 3px;
+    border-radius: 5px;
     margin-right: 5px;
-    margin-left: -1px;
+    margin-left: 4px;
   }
 
   .label p {
@@ -926,7 +927,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     text-wrap: nowrap;
-    min-width: 50px;
+    min-width: 55px;
   }
 
   .competitionItemHeader {
@@ -950,10 +951,8 @@
 
   .propertyItem {
     flex-grow: 1;
-    border-radius: 5px;
-    padding: 6px;
-    padding-bottom: 0;
-    padding-top: 0;
+    border-radius: 10px;
+    padding: 3px;
     overflow: hidden;
     text-overflow: ellipsis;
     max-height: 39px;
@@ -972,6 +971,7 @@
     margin-top: 10px;
     overflow: hidden;
     max-height: 60px;
+    margin-inline: 10px;
   }
 
   .plusSpan {

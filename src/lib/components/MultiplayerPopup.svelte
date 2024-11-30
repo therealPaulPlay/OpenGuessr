@@ -450,6 +450,11 @@
     flex-wrap: wrap;
   }
 
+  #multiplayerWindowMain {
+    max-height: calc(100dvh - 300px);
+    overflow: auto;
+  }
+
   .infoNote {
     margin: 10px;
     width: 100%;
@@ -734,7 +739,7 @@
   }
 
   .multiplayerInputInfo {
-    font-size: 17px;
+    font-size: 18px;
     padding: 0;
     color: rgba(255, 255, 255, 0.5);
     overflow: hidden;

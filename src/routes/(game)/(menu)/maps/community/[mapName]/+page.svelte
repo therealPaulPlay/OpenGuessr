@@ -536,7 +536,8 @@
 
   .mapViewIframe {
     width: 100%;
-    height: 500px;
+    height: 35dvh;
+    max-height: 650px;
     border-radius: 10px;
     overflow: hidden;
     margin-bottom: 20px;
