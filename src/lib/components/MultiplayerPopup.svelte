@@ -186,6 +186,8 @@
               class="standardButton white friendsAreaButton"
               id="browseUsersFriends"
               onclick={() => {
+                playSound("basic_button");
+
                 if ($isAuthenticated) {
                   friendBrowserPopup.set(true);
                 } else {
