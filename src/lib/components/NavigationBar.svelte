@@ -90,7 +90,7 @@
         onclick={() => {
           playSound("basic_button");
           signupPopup.set(true);
-        }}>Login</button
+        }}>Log in</button
       >
     {/if}
     {#if $isAuthenticated}
@@ -159,11 +159,7 @@
         playSound("basic_button");
       }}
     >
-      <img
-        class="socialBarIcons"
-        src="/img/leaderboards_icon.png"
-        alt="Leaderboard for OpenGuessr"
-      />
+      <img class="socialBarIcons" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
     </a>
   </div>
 </nav>
@@ -195,11 +191,7 @@
       }}
     >
       <div id="accountNameArea">
-        <p
-          id="accountName"
-          contenteditable="false"
-          class:namescroll={scrollNameText}
-        >
+        <p id="accountName" contenteditable="false" class:namescroll={scrollNameText}>
           {$username || "Guest"}
         </p>
       </div>
@@ -254,11 +246,7 @@
       }}
     >
       <span class="topBarExpand">Leaderboard</span>
-      <img
-        class="socialBarIcons shiftedSocialbarIcon"
-        src="/img/leaderboards_icon.png"
-        alt="Experience Leaderboard"
-      />
+      <img class="socialBarIcons shiftedSocialbarIcon" src="/img/leaderboards_icon.png" alt="Experience Leaderboard" />
     </a>
     <button
       id="multiplayerButton"
@@ -286,11 +274,7 @@
       }}
     >
       <span class="topBarExpand">Competitions</span>
-      <img
-        class="socialBarIcons shiftedSocialbarIcon"
-        src="/img/competitions_icon.png"
-        alt="Competitions symbol"
-      />
+      <img class="socialBarIcons shiftedSocialbarIcon" src="/img/competitions_icon.png" alt="Competitions symbol" />
     </a>
   </div>
   <div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
@@ -414,7 +398,7 @@
   }
 
   .mobileAccountButton {
-    padding-inline: 12px;
+    padding-inline: 10px; /* Mobile navbar buttons are more narrow */
     text-decoration: none;
   }
 
@@ -426,7 +410,7 @@
   }
 
   .shiftedSocialbarIcon {
-    margin-right: 4px;
+    margin-right: 5px;
   }
 
   #mobileLoginButton {

@@ -431,7 +431,7 @@
     align-items: center;
     gap: 20px;
     margin-top: 10px;
-    max-height: calc(95dvh - 260px);
+    max-height: calc(100dvh - 300px);
     overflow-x: hidden;
     overflow-y: auto;
     border-radius: 5px;

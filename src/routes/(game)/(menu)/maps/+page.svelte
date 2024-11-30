@@ -590,7 +590,7 @@
   }
 
   .map-item:hover {
-    background-color: rgba(255, 255, 255, 0.3);
+    background-color: rgba(255, 255, 255, 0.2);
     scale: 1.01;
   }
 
@@ -774,7 +774,6 @@
   #startSearch {
     max-width: 50px;
     margin: 0;
-    margin-right: 8px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -793,9 +792,7 @@
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    gap: 5px;
-    padding: 5px;
-    padding-right: 0;
+    gap: 10px;
     scrollbar-width: none;
   }
 
@@ -807,6 +804,7 @@
     max-height: 30px;
     padding-top: 0;
     padding-bottom: 0;
+    margin: 0;
   }
 
   .categoryButton:hover {
@@ -827,7 +825,7 @@
     gap: 10px;
     align-items: center;
     border-radius: 10px;
-    padding: 5px;
+    padding: 8px;
     margin-top: 5px;
     background-color: var(--box-color);
   }

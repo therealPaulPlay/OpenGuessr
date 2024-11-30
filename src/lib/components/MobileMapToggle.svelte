@@ -47,8 +47,8 @@
   }
 
   #toggleMapImage {
-    width: 35px;
-    height: 35px;
+    width: 30px;
+    height: 30px;
     border-radius: 5px;
     padding: 8px;
   }
