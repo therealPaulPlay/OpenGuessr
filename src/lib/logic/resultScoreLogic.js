@@ -220,9 +220,9 @@ export async function loadResultScreenXP(distance) {
 }
 
 function playScoreincreaseSound() {
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 15; i++) {
         setTimeout(() => {
             playSound("score_increase");
-        }, 150 * i)
+        }, 50 * i)
     }
 }

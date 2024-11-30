@@ -18,7 +18,7 @@ import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/m
 import { multiplayer } from "$lib/stores/modeStore";
 import { linkJoinPopup, multiplayerPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
-import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, overlayTitleElement, multiplayerTableArray, yourTeam, multiplayerGuessesLocationsArray } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray, yourTeam, multiplayerGuessesLocationsArray } from "$lib/stores/context-specific/multiplayerStore";
 import { getLevel } from "$lib/utils/experienceCalculations.js";
 import { confirmButtonText, confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
@@ -1229,13 +1229,7 @@ function animateMultiplayerWin() {
 
     timeout = setTimeout(() => {
         playSound("win_sound");
-        // Reset animations
-        get(overlayTitleElement).style.animation = 'none';
-        const offsetHeight = get(overlayTitleElement).offsetHeight; // Trigger a reflow to restart the animation
-
-        // Apply lose animation
-        get(overlayTitleElement).style.animation = 'multiplayerTitleWin 1s ease-in-out';
-    }, 1500);
+    }, 1000);
 }
 
 function animateMultiplayerLose() {
@@ -1244,14 +1238,7 @@ function animateMultiplayerLose() {
 
     timeout = setTimeout(() => {
         playSound("lose_sound");
-
-        // Reset animations
-        get(overlayTitleElement).style.animation = 'none';
-        const offsetHeight = get(overlayTitleElement).offsetHeight; // Trigger a reflow to restart the animation
-
-        // Apply lose animations
-        get(overlayTitleElement).style.animation = 'multiplayerTitleLose 1s ease-in-out';
-    }, 1500);
+    }, 1000);
 }
 
 export function showMultiplayerOverlay(show, title, array, lateJoin) {

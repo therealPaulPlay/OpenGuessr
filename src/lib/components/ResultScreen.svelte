@@ -61,7 +61,8 @@
     <StreakRestore />
     <div id="endBottomBar">
       <div class="floatingResultLeaderboardArea" style:display={$supporterLevel >= 2 ? "none" : ""}>
-        <div class="floatingResultLeaderboardAd"></div>
+        <div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
+        <!-- id is necessary for ad script! -->
         <RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." learnMore="true" />
       </div>
       <div id="resultBox">

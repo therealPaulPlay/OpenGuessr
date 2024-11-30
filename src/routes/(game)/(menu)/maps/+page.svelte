@@ -568,9 +568,9 @@
     justify-content: space-between;
     text-decoration: none;
     align-items: center;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
     color: white;
-    border-radius: 12px;
+    border-radius: 10px;
     padding: 10px;
     padding-inline: 15px;
     box-sizing: border-box;

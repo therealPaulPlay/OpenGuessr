@@ -110,7 +110,7 @@
     width: calc(100% - 40px);
   }
 
-  @media (max-width: 1200px) {
+  @media (max-width: 1500px) {
     .backButton {
       background-color: rgb(78, 77, 87); /* Switch to solid color, to avoid transparent overlaps */
     }
