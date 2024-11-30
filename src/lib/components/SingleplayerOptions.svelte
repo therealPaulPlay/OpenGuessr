@@ -197,7 +197,7 @@
     overflow-y: auto;
     max-height: 150px;
     padding-top: 10px;
-    padding-bottom: 10px;
+    padding-bottom: 0;
     scrollbar-width: none;
   }
 
@@ -218,7 +218,7 @@
   .centerLogText {
     text-align: center;
     width: 100%;
-    opacity: 25%;
+    opacity: 50%;
     font-size: 22px;
   }
 
