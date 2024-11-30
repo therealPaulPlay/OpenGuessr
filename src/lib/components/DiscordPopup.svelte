@@ -2,7 +2,9 @@
   import { discordPopup } from "$lib/stores/uiStore";
   import { setUserXP } from "$lib/utils/setUserXP";
   import Popup from "./Popup.svelte";
+  import { experience } from "$lib/stores/accountStore";
   import { playSound } from "$lib/utils/soundManager";
+  import { get } from "svelte/store";
 
   function clickJoin() {
     playSound("basic_button");
@@ -10,7 +12,7 @@
 
     setTimeout(async function () {
       closePopup();
-      await setUserXP(Number(localStorage.getItem("experience")) + 7500);
+      await setUserXP(get(experience) + 7500);
     }, 200);
   }
 
@@ -21,7 +23,7 @@
 </script>
 
 {#if $discordPopup}
-  <Popup socialPopup="true">
+  <Popup verySlim={true}>
     <div class="popup-title">
       <h1 id="socialHeader">Join the community</h1>
     </div>

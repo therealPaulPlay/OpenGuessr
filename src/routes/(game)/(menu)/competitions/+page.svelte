@@ -437,7 +437,7 @@
 </script>
 
 {#if leaderboardPopup}
-  <Popup>
+  <Popup slim={true}>
     <h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for {leaderboardName}</h1>
     <!-- svelte-ignore a11y_click_events_have_key_events -->
     <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -910,9 +910,10 @@
     padding: 2px;
     padding-inline: 10px;
     width: fit-content;
-    background-color: var(--box-color);
+    background-color: rgba(255, 255, 255, 0.1);
     border-radius: 3px;
     margin-right: 5px;
+    margin-left: -1px;
   }
 
   .label p {
@@ -974,7 +975,7 @@
   }
 
   .plusSpan {
-    vertical-align: -2px;
+    vertical-align: -3px;
   }
 
   .competitionAuthor {

@@ -200,7 +200,7 @@
           contenteditable="false"
           class:namescroll={scrollNameText}
         >
-          {$username}
+          {$username || "Guest"}
         </p>
       </div>
       <div class="progressContainer">

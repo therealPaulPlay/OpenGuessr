@@ -18,7 +18,7 @@ import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/m
 import { multiplayer } from "$lib/stores/modeStore";
 import { linkJoinPopup, multiplayerPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
-import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, overlayTitleElement, multiplayerTableArray, yourTeam, multiplayerGuessesLocationsArray } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray, yourTeam, multiplayerGuessesLocationsArray } from "$lib/stores/context-specific/multiplayerStore";
 import { getLevel } from "$lib/utils/experienceCalculations.js";
 import { confirmButtonText, confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
@@ -183,7 +183,7 @@ export function multiplayerStateToGuessed() {
     if (get(isHost)) {
         if (!multiplayerHasAlreadyGuessed) {
             multiplayerGuessesLocationsArray.update((array) => {
-                return [...array, [get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) != null ? get(username) : get(savedGuestName)]];
+                return [...array, [get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) || get(savedGuestName)]];
             });
             multiplayerHasGuessed(); // this substracts one from the total requried guesses (and maybe ends the round)
         }
@@ -194,7 +194,7 @@ export function multiplayerStateToGuessed() {
                 lat: get(mapPinLat),
                 long: get(mapPinLng),
                 style: get(selectedPinIndex),
-                name: get(username) != null ? get(username) : get(savedGuestName)
+                name: get(username) || get(savedGuestName)
             });
         }
     }
@@ -260,7 +260,7 @@ function generateFunnyGuestName() {
 }
 
 function setUniqueUserID() {
-    if (localStorage.getItem("id") != null) {
+    if (localStorage.getItem("id")) {
         uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
     } else {
         uniqueUserID = "openguessr_" + "g" + generateRandomCode(7);
@@ -735,7 +735,7 @@ export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
         multiplayerCategory.set("standard");
     }
 
-    connectedPeers.push([get(peerId), get(username) == null ? get(savedGuestName) : get(username), getLevel(), 0, 1, localStorage.getItem("id"), get(selectedBadge)]); // add yourself (host) to the overview
+    connectedPeers.push([get(peerId), get(username) || get(savedGuestName), getLevel(), 0, 1, localStorage.getItem("id"), get(selectedBadge)]); // add yourself (host) to the overview
 
     yourTeam.set(1);
     showMultiplayerOverlay(true, "Waiting...", connectedPeers);
@@ -902,7 +902,7 @@ export async function joinRoom(code) {
 
     const options = {
         metadata: {
-            username: get(username) == null ? get(savedGuestName) : get(username),
+            username: get(username) || get(savedGuestName),
             level: getLevel(),
             score: 0, //inital score is set to 0,
             id: localStorage.getItem("id"),
@@ -1229,13 +1229,7 @@ function animateMultiplayerWin() {
 
     timeout = setTimeout(() => {
         playSound("win_sound");
-        // Reset animations
-        get(overlayTitleElement).style.animation = 'none';
-        const offsetHeight = get(overlayTitleElement).offsetHeight; // Trigger a reflow to restart the animation
-
-        // Apply lose animation
-        get(overlayTitleElement).style.animation = 'multiplayerTitleWin 1s ease-in-out';
-    }, 1500);
+    }, 1000);
 }
 
 function animateMultiplayerLose() {
@@ -1244,14 +1238,7 @@ function animateMultiplayerLose() {
 
     timeout = setTimeout(() => {
         playSound("lose_sound");
-
-        // Reset animations
-        get(overlayTitleElement).style.animation = 'none';
-        const offsetHeight = get(overlayTitleElement).offsetHeight; // Trigger a reflow to restart the animation
-
-        // Apply lose animations
-        get(overlayTitleElement).style.animation = 'multiplayerTitleLose 1s ease-in-out';
-    }, 1500);
+    }, 1000);
 }
 
 export function showMultiplayerOverlay(show, title, array, lateJoin) {

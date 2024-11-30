@@ -168,50 +168,6 @@
     color: white;
   }
 
-  @keyframes multiplayerTitleWin {
-    0% {
-      transform: scale(1);
-      color: white;
-    }
-
-    20% {
-      transform: scale(1.1);
-      color: rgb(255, 225, 133);
-    }
-
-    70% {
-      color: rgb(255, 233, 165);
-      transform: scale(1.1);
-    }
-
-    100% {
-      transform: scale(1);
-      color: white;
-    }
-  }
-
-  @keyframes multiplayerTitleLose {
-    0% {
-      transform: scale(1);
-      color: white;
-    }
-
-    20% {
-      transform: scale(0.95);
-      color: rgb(241, 104, 104);
-    }
-
-    70% {
-      transform: scale(0.95);
-      color: rgb(184, 48, 48);
-    }
-
-    100% {
-      transform: scale(1);
-      color: white;
-    }
-  }
-
   #multiplayerFade h1 {
     font-size: 50px;
     text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
