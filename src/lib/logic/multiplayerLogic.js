@@ -183,7 +183,7 @@ export function multiplayerStateToGuessed() {
     if (get(isHost)) {
         if (!multiplayerHasAlreadyGuessed) {
             multiplayerGuessesLocationsArray.update((array) => {
-                return [...array, [get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) != null ? get(username) : get(savedGuestName)]];
+                return [...array, [get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) || get(savedGuestName)]];
             });
             multiplayerHasGuessed(); // this substracts one from the total requried guesses (and maybe ends the round)
         }
@@ -194,7 +194,7 @@ export function multiplayerStateToGuessed() {
                 lat: get(mapPinLat),
                 long: get(mapPinLng),
                 style: get(selectedPinIndex),
-                name: get(username) != null ? get(username) : get(savedGuestName)
+                name: get(username) || get(savedGuestName)
             });
         }
     }
@@ -260,7 +260,7 @@ function generateFunnyGuestName() {
 }
 
 function setUniqueUserID() {
-    if (localStorage.getItem("id") != null) {
+    if (localStorage.getItem("id")) {
         uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
     } else {
         uniqueUserID = "openguessr_" + "g" + generateRandomCode(7);
@@ -735,7 +735,7 @@ export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
         multiplayerCategory.set("standard");
     }
 
-    connectedPeers.push([get(peerId), get(username) == null ? get(savedGuestName) : get(username), getLevel(), 0, 1, localStorage.getItem("id"), get(selectedBadge)]); // add yourself (host) to the overview
+    connectedPeers.push([get(peerId), get(username) || get(savedGuestName), getLevel(), 0, 1, localStorage.getItem("id"), get(selectedBadge)]); // add yourself (host) to the overview
 
     yourTeam.set(1);
     showMultiplayerOverlay(true, "Waiting...", connectedPeers);
@@ -902,7 +902,7 @@ export async function joinRoom(code) {
 
     const options = {
         metadata: {
-            username: get(username) == null ? get(savedGuestName) : get(username),
+            username: get(username) || get(savedGuestName),
             level: getLevel(),
             score: 0, //inital score is set to 0,
             id: localStorage.getItem("id"),
