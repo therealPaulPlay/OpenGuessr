@@ -830,12 +830,12 @@
     display: flex;
     justify-content: space-between;
     flex-wrap: wrap;
-    width: calc(100% - 10px);
+    width: calc(100% - 16px);
     min-width: 280px;
     gap: 10px;
     align-items: center;
     border-radius: 10px;
-    padding: 5px;
+    padding: 8px;
     margin-top: 5px;
     margin-bottom: 20px;
     background-color: var(--box-color);
