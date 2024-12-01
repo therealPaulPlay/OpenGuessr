@@ -158,6 +158,7 @@
   :global(map::selection) {
     outline: none;
   }
+
   @media all and (max-width: 1200px) {
     /* On mobile, the map doesn't fade out if it's not being hovered over */
     #map {
