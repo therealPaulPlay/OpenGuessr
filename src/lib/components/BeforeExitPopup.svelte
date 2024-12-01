@@ -104,15 +104,9 @@
     </div>
     <div class="costDisplayArea">
       <div class="costFlex">
-        <p class="costDisplayText">Estimated monthly costs:</p>
+        <p class="costDisplayText">Supporter contributions this month:</p>
         <div class="costDisplayValue">
-          <p>-$ 5300</p>
-        </div>
-      </div>
-      <div class="costFlex costFlexPositive">
-        <p class="costDisplayText costDisplayTextPositive">Covered by supporter purchases this month:</p>
-        <div class="costDisplayValue positiveCostDisplay">
-          <p id="monthlySupportedAmount" class="costDisplayTextPositive">+$ {monthlySupportedAmount}</p>
+          <p>+$ {monthlySupportedAmount}</p>
         </div>
       </div>
       <button
@@ -127,14 +121,14 @@
     </div>
     <div id="costExplanationArea">
       <p id="costExplanationText" style:max-height={expandCostExpanded ? "5000px" : ""}>
-        Using maps on your phone or browser is free, but it's expensive to integrate them into a website.
+        Maintaining a larger website, especially a web game that requires a robust infrastructure, is quite expensive.
         <br />
         <br />
-        Every time the game's minimap loads, it incurs a cost that adds up quickly with more players. Ads help cover some
-        expenses, but the best way to support OpenGuessr is to purchase a supporter tier.
+        Servers, CDN costs and expenses related to security and development quickly add up. Moreover, 
+        working on new features, fixing bugs and ensuring that OpenGuessr is up and running, is extremely time consuming.
         <br />
         <br />
-        You can also help by sharing the game! More players result in a lower cost per user due to bulk request discounts.
+        If you enjoy playing, a small donation would help maintaining the site and funding future updates immensely.
         Thank you!
         <br />
         <br />
@@ -151,10 +145,6 @@
       >
         {expandCostExpanded ? "Show less" : "Read more"}
       </p>
-    </div>
-    <div class="exitSpacer"></div>
-    <div class="beforeExitNote secondaryExitNote">
-      <p>Planning to return? <span class="reducedOpacity">Please keep the tab open to reduce API usage.</span></p>
     </div>
     <div class="exitSpacer"></div>
     <button
@@ -193,29 +183,13 @@
     height: 10px;
   }
 
-  .reducedOpacity {
-    opacity: 0.75;
-  }
-
-  .beforeExitNote {
-    border-radius: 5px;
-    background-color: rgba(30, 31, 44, 0.5);
-    padding: 7px;
-    padding-left: 10px;
-    display: flex;
-    justify-content: space-between;
-    gap: 10px;
-    align-items: center;
-    flex-wrap: wrap;
-  }
-
   .heartIconSpan {
     vertical-align: -2px;
   }
 
   .costDisplayArea {
     border-radius: 10px;
-    background: linear-gradient(30deg, rgb(128, 33, 33), rgb(153, 26, 38));
+    background: linear-gradient(30deg, rgb(33, 129, 60), rgb(24, 141, 30));
     color: white;
     display: flex;
     flex-wrap: wrap;
@@ -275,17 +249,9 @@
     text-wrap: nowrap;
   }
 
-  .positiveCostDisplay {
-    background-color: rgba(255, 255, 255, 0.1);
-  }
-
   .costDisplayText {
     margin-left: 10px;
     flex-grow: 100;
-  }
-
-  .costDisplayTextPositive {
-    opacity: 0.75;
   }
 
   #costExplanationToggle {
@@ -312,15 +278,10 @@
     gap: 10px;
   }
 
-  .costFlexPositive {
-    border-radius: 5px;
-    background-color: var(--box-color);
-  }
-
   .costButton {
     margin: 0 !important;
     flex-grow: 1;
-    background: linear-gradient(5deg, rgba(255, 255, 255, 0.3), rgba(255, 255, 255, 0.5));
+    background: linear-gradient(5deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.3));
     color: white;
     border: none;
   }
