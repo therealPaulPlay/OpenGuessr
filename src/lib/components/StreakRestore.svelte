@@ -144,7 +144,7 @@
 
   .streakAdDismiss {
     padding: 10px 20px;
-    height: 50px;
+    height: 53px;
     margin-left: auto;
     margin-right: 10px;
   }
