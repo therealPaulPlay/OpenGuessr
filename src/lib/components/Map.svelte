@@ -188,7 +188,7 @@
   }
 
   :global(.leaflet-touch .leaflet-control-layers) {
-    border: none;
+    border: none !important;
   }
 
   :global(.leaflet-touch .leaflet-control-layers-toggle) {
@@ -197,12 +197,12 @@
   }
 
   :global(.leaflet-control-layers-selector) {
-    top: -2px;
+    top: -2px !important;
   }
 
   :global(.leaflet-control-layers-base) {
-    font-size: 18px;
-    line-height: 30px;
+    font-size: 18px !important;
+    line-height: 30px !important;
   }
 
   @media all and (max-width: 1200px) {
