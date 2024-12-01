@@ -475,7 +475,7 @@
   }
 
   #multiplayerWindowMain {
-    max-height: calc(100dvh - 300px);
+    max-height: calc(100dvh - 200px);
     overflow: auto;
   }
 
