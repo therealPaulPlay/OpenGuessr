@@ -323,6 +323,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
                     });
 
                     addedMarkers.update((markers) => {
+                        markers = markers || [];
                         return [...markers, marker]
                     });
 
