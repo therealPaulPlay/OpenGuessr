@@ -14,8 +14,6 @@ export async function loadResultMap(playersLat, playersLong) {
         return;
     }
 
-    get(map).setView([get(currentLocationLatitude), get(currentLocationLongitude)], 8); // Initial Zoom is high for leaflet here to avoid glitching
-
     // Define custom icons for markers
     const yourIcon = new L.Icon({
         iconUrl: '/img/your_marker' + get(selectedPinIndex) + '.png',
@@ -37,7 +35,7 @@ export async function loadResultMap(playersLat, playersLong) {
     let pointList;
     let polyList;
 
-    // Check if NOT in Country Guesser (or if IN multiplayer)
+    // Check if NOT in Country Guesser (or if IN multiplayer) --------------------------------------------------
     if (!get(countryGuesser) || get(multiplayer)) {
         playerLatLng = new L.LatLng(playersLat, playersLong);
         polyList = [curLatLng, playerLatLng];
@@ -69,9 +67,12 @@ export async function loadResultMap(playersLat, playersLong) {
             markers = markers || [];
             return [...markers, polyline];
         });
+    } else {
+        // If Country Guesser is being played, show the destination zoomed out as the starting frame
+        get(map).setView([get(currentLocationLatitude), get(currentLocationLongitude)], 2);
     }
 
-    // Handle multiplayer markers
+    // Handle multiplayer markers --------------------------------------------------------------------------
     if (get(multiplayer)) {
         get(multiplayerGuessesLocationsArray).forEach(function (element) {
             let newMarkerLat = element[0];
