@@ -14,7 +14,7 @@ export async function loadResultMap(playersLat, playersLong) {
         return;
     }
 
-    get(map).setView([get(currentLocationLatitude), get(currentLocationLongitude)], 10); // Initial Zoom is high for leaflet here to avoid glitching
+    get(map).setView([get(currentLocationLatitude), get(currentLocationLongitude)], 8); // Initial Zoom is high for leaflet here to avoid glitching
 
     // Define custom icons for markers
     const yourIcon = new L.Icon({
@@ -133,7 +133,9 @@ export async function loadResultMap(playersLat, playersLong) {
 
     // Fit the map bounds to show all markers and lines (with padding)
     if (!get(countryGuesser) || get(multiplayer)) {
-        get(map).fitBounds(pointList, { animate: false });
+        get(map).fitBounds(pointList, {
+            animate: false
+        });
     }
 
     // Place the "correct" marker reflecting the target location

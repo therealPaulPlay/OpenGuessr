@@ -173,8 +173,8 @@
   }
 
   :global(.leaflet-control-layers-toggle) {
-    background-image: url("/img/map_layer_icon.png");
-    background-size: 23px 23px;
+    background-image: url("/img/map_layer_icon.png") !important;
+    background-size: 23px 23px !important;
   }
 
   :global(.leaflet-touch .leaflet-control-layers) {

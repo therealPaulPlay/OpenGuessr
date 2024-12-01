@@ -124,12 +124,12 @@
         Maintaining a larger website, especially a web game that requires a robust infrastructure, is quite expensive.
         <br />
         <br />
-        Servers, CDN costs and expenses related to security and development quickly add up. Moreover, 
-        working on new features, fixing bugs and ensuring that OpenGuessr is up and running, is extremely time consuming.
+        Servers, CDN costs and expenses related to security and development quickly add up. Moreover, working on new features,
+        fixing bugs and ensuring that OpenGuessr is up and running, is extremely time consuming.
         <br />
         <br />
-        If you enjoy playing, a small donation would help maintaining the site and funding future updates immensely.
-        Thank you!
+        If you enjoy playing, a small donation would help maintaining the site and funding future updates immensely. Thank
+        you!
         <br />
         <br />
         <br />
@@ -189,7 +189,7 @@
 
   .costDisplayArea {
     border-radius: 10px;
-    background: linear-gradient(30deg, rgb(33, 129, 60), rgb(24, 141, 30));
+    background: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(25, 215, 70, 0.7));
     color: white;
     display: flex;
     flex-wrap: wrap;

@@ -33,7 +33,7 @@ export function initMap() {
     const leafletMap = L.map('map', {
         center: [20, 0],
         zoom: 2,
-        minZoom: 2,        // Prevents zooming out too far
+        minZoom: 2,
         maxBounds: worldBounds,
         maxBoundsViscosity: 1.0,  // Makes the bounds restriction strict
         zoomControl: false,       // Hide zoom control
@@ -65,16 +65,16 @@ export function initMap() {
 let multiplayerMiniMarkers = []; // team markers
 
 //reset the map - used for going to the next round. 
-export function resetMap() {
+export function resetMap(keepSize) {
     if (get(map)) {
         mapHovered.set(false);
 
-        get(addedMarkers).forEach(marker => {
+        get(addedMarkers)?.forEach(marker => {
             get(map).removeLayer(marker);
         });
 
         addedMarkers.set([]); // Clear the array
-        adjustMapToCountry();
+        if (!keepSize) adjustMapToCountry();
     }
 
     // reset the guess button as well
@@ -132,7 +132,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
 
     // Collect positions of current markers
     multiplayerMiniMarkers.forEach(existingMarker => {
-        const position = existingMarker.getLatLng(); // this does not work
+        const position = existingMarker.getLatLng();
         existingMarkerPositions.set(`${position.lat},${position.lng}`, existingMarker);
     });
 
@@ -187,6 +187,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
                     marker.addTo(get(map));
 
                     addedMarkers.update((markers) => {
+                        markers = markers || [];
                         return [...markers, marker]
                     });
 

@@ -1,10 +1,10 @@
 <!-- Google Maps attribution for TOS compliance -->
 <script>
   import { mapModeIndicatorVisible } from "$lib/stores/context-specific/mapModeIndicatorStore";
-  import { mapVisible } from "$lib/stores/context-specific/mapStore";
+  import { mapVisible, mapExpanded } from "$lib/stores/context-specific/mapStore";
 </script>
 
-{#if $mapVisible}
+{#if $mapVisible && $mapExpanded}
   <div id="mapAttribution" class="mapAttribution" style:bottom={$mapModeIndicatorVisible ? "73px" : ""}>
     <p>Map Data ©2024 Google</p>
     <p style="border-bottom-right-radius: 10px">
@@ -53,7 +53,7 @@
 
   #mapAttribution p {
     font-family: Roboto !important;
-    font-size: 11px;
+    font-size: 10px;
     color: black;
   }
 </style>
