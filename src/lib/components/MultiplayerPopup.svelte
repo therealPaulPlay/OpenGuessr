@@ -868,15 +868,11 @@
 
   .copyLinkButton {
     margin: 5px;
-    height: fit-content;
-    padding: 1px;
     padding-inline: 10px;
   }
 
   #multiplayerHost {
-    padding: 0 20px;
-    margin: 0;
-    height: 36.5px;
+    padding-inline: 20px;
   }
 
   .multiplayerHostSubmitArea {

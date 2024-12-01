@@ -47,7 +47,6 @@
     z-index: 12 !important;
     width: 100% !important;
     height: 100% !important;
-    transition: none !important;
     margin: 0 !important;
     opacity: 100% !important;
     visibility: visible !important;
@@ -72,7 +71,7 @@
     height: 55%;
   }
 
-  @media all and (max-width: 1200px) {
+  @media (orientation: portrait) and (max-width: 1200px) {
     .mapHolder {
       height: 50%;
       width: calc(100% - 20px);
@@ -80,6 +79,7 @@
     }
   }
 
+  /* Shift up to fit ad */
   @media (orientation: portrait) and (max-width: 800px) {
     .mapHolder {
       bottom: 125px;
