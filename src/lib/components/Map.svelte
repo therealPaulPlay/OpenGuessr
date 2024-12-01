@@ -4,9 +4,8 @@
   import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
   import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
   import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
-  import { initMap } from "$lib/logic/miniMap";
+  import { initializeMapIfNotAlready } from "$lib/logic/miniMap";
   import { get } from "svelte/store";
-  import { onMount } from "svelte";
 
   let mapResizeTimeout;
 
@@ -31,50 +30,28 @@
       }
     }
   }
-
-  function onMapHover() {
-    get(map).invalidateSize();
-  }
-
-  onMount(async () => {
-    await new Promise((resolve, reject) => {
-      const script = document.createElement("script");
-      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-      script.onload = () => {
-        resolve(window.L); // Resolve when Leaflet is loaded
-      };
-      script.onerror = reject; // Reject if there's an error loading the script
-      document.head.appendChild(script);
-    });
-
-    initMap();
-
-    try {
-      new ResizeObserver(onMapHover).observe(document.getElementById("map"));
-    } catch (error) {
-      console.error("Resize oberser unsupported. Err: " + error);
-    }
-  });
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<!-- svelte-ignore a11y_mouse_events_have_key_events -->
-<div
-  id="map"
-  role="region"
-  tabindex="0"
-  onmouseenter={handleMapHover}
-  onmouseleave={handleMapUnhover}
-  onkeyup={spaceBarGuess}
-  style:visibility={$mapVisible ? "" : "hidden"}
-  style:max-height={$mapExpanded ? "100%" : "0%"}
-  class:mapFullOpacityResult={Boolean($resultScreenEnabled)}
->
-  {#if !$map && $mapVisible}
-    <div id="mapPlaceholderBeforeLoad"></div>
-  {/if}
-</div>
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+  <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+  <div
+    id="map"
+    role="region"
+    tabindex="0"
+    onmouseenter={handleMapHover}
+    onmouseleave={handleMapUnhover}
+    onkeyup={spaceBarGuess}
+    style:visibility={$mapVisible ? "" : "hidden"}
+    onmouseover={initializeMapIfNotAlready}
+    ontouchstart={initializeMapIfNotAlready}
+    style:max-height={$mapExpanded ? "100%" : "0%"}
+    class:mapFullOpacityResult={Boolean($resultScreenEnabled)}
+  >
+    {#if !$map && $mapVisible}
+      <div id="mapPlaceholderBeforeLoad"></div>
+    {/if}
+  </div>
 
 <style>
   #map {
@@ -180,29 +157,6 @@
 
   :global(map::selection) {
     outline: none;
-  }
-
-  :global(.leaflet-control-layers-toggle) {
-    background-image: url("/img/map_layer_icon.png") !important;
-    background-size: 23px 23px !important;
-  }
-
-  :global(.leaflet-touch .leaflet-control-layers) {
-    border: none !important;
-  }
-
-  :global(.leaflet-touch .leaflet-control-layers-toggle) {
-    width: 35px !important;
-    height: 35px !important;
-  }
-
-  :global(.leaflet-control-layers-selector) {
-    top: -2px !important;
-  }
-
-  :global(.leaflet-control-layers-base) {
-    font-size: 18px !important;
-    line-height: 30px !important;
   }
 
   @media all and (max-width: 1200px) {
