@@ -44,6 +44,7 @@
   import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
   import MultiplayerOverlay from "$lib/components/MultiplayerOverlay.svelte";
   import BlinkRestrictionFade from "$lib/components/BlinkRestrictionFade.svelte";
+  import MapAttribution from "$lib/components/MapAttribution.svelte";
 
   // Start ads
   onMount(() => {
@@ -70,6 +71,10 @@
   <!-- Ad script and Cloudflare Turnstile Script -->
   <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
   <script src="https://hb.vntsm.com/v4/live/vms/sites/openguessr.com/index.js" async></script>
+
+  <!-- Leaflet Map -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js" defer></script>
 </svelte:head>
 
 <!-- Keywords -->
@@ -121,6 +126,7 @@
   <CountryGuesserBar />
 </div>
 <MapHolder>
+  <MapAttribution />
   <MobileMapToggle />
   <Map />
   <MapModeIndicator />

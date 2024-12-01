@@ -27,7 +27,7 @@ export function enableResultScreen(guessLat, guessLong) {
         loadResultScreenXP(distance);
 
         // Reset the map, before loading the result map
-        resetMap();
+        resetMap(true);
 
         distanceText.set(resultString);
         motivationText.set(extraMessage);

@@ -55,7 +55,7 @@
                     {/if}
                   </div>
                 </div>
-                <div class="multiplayerEntryPlayerScore">Score: {score.toLocaleString()}</div>
+                <div class="multiplayerEntryPlayerScore">Score: {score?.toLocaleString()}</div>
               </div>
             </div>
           {/each}
@@ -83,7 +83,7 @@
                   {/if}
                 </div>
               </div>
-              <div class="multiplayerEntryPlayerScore">Score: {score.toLocaleString()}</div>
+              <div class="multiplayerEntryPlayerScore">Score: {score?.toLocaleString()}</div>
             </div>
           </div>
         {/each}
