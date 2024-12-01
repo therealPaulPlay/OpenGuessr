@@ -43,7 +43,7 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     align-items: center;
-    max-height: 65px;
+    max-height: 60px;
   }
 
   #toggleMapImage {

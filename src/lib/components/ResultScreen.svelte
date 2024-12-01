@@ -60,14 +60,21 @@
   <div id="endBottomArea">
     <StreakRestore />
     <div id="endBottomBar">
-      <div class="floatingResultLeaderboardArea" style:display={$supporterLevel >= 2 ? "none" : ""}>
+      <div
+        class="floatingResultLeaderboardArea"
+        style:display={$supporterLevel >= 2 || !$resultScreenEnabled ? "none" : ""}
+      >
         <div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
         <!-- id is necessary for ad script! -->
         <RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." learnMore="true" />
       </div>
       <div id="resultBox">
         <p class="resultField" id="motivationText">{$motivationText}</p>
-        <div id="mobileResultLeaderboardAdArea" class="resultField" style:display={$supporterLevel >= 2 ? "none" : ""}>
+        <div
+          id="mobileResultLeaderboardAdArea"
+          class="resultField"
+          style:display={$supporterLevel >= 2 || !$resultScreenEnabled ? "none" : ""}
+        >
           <div id="mobileResultLeaderboardAd"></div>
           <RemoveAdsText text="Go Ad-Free." learnMore="true" />
         </div>
