@@ -192,8 +192,8 @@
   }
 
   :global(.leaflet-touch .leaflet-control-layers-toggle) {
-    width: 35px;
-    height: 35px;
+    width: 35px !important;
+    height: 35px !important;
   }
 
   :global(.leaflet-control-layers-selector) {
