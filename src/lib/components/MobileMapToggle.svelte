@@ -12,7 +12,7 @@
 
   onMount(() => {
     window.addEventListener("resize", (event) => {
-      mapExpanded.set(true);
+      if (window.innerHeight < window.innerWidth) mapExpanded.set(true); // If changed to landscape, expand the map again
     });
   });
 </script>

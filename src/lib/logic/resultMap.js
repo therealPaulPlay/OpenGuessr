@@ -23,11 +23,7 @@ export async function loadResultMap(playersLat, playersLong) {
             return;
         }
     }
-
-    // Set map center to the currentStreetviewLat and currentStreetviewLong
-    get(map).setCenter({ lat: get(currentLocationLatitude), lng: get(currentLocationLongitude) });
-    get(map).setZoom(3);
-
+  
     // Define custom icons for markers
     let yourIcon = {
         url: '/img/your_marker' + get(selectedPinIndex) + '.png',
@@ -50,7 +46,7 @@ export async function loadResultMap(playersLat, playersLong) {
     let playerLatLng;
     let pointList;
 
-    // Check if NOT in Country Guesser (or if IN multiplayer)
+    // Check if NOT in Country Guesser (or if IN multiplayer) --------------------------------------------------
     if (!get(countryGuesser) || get(multiplayer)) {
         playerLatLng = new google.maps.LatLng(playersLat, playersLong);
         pointList = new google.maps.LatLngBounds();
@@ -90,9 +86,13 @@ export async function loadResultMap(playersLat, playersLong) {
             markers = markers || [];
             return [...markers, polyline];
         });
+    } else {
+        // If Country Guesser is being played, show the destination zoomed out as the starting frame
+        get(map).setCenter({ lat: get(currentLocationLatitude), lng: get(currentLocationLongitude) });
+        get(map).setZoom(3);
     }
 
-    // Handle multiplayer markers
+    // Handle multiplayer markers --------------------------------------------------------------------------
     if (get(multiplayer)) {
         get(multiplayerGuessesLocationsArray).forEach(function (element) {
             let newMarkerLat = element[0];

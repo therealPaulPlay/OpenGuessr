@@ -332,7 +332,7 @@
   }
 
   #supporterTag:hover p {
-    max-width: 100px;
+    max-width: 120px;
   }
 
   #selectedProfilePin {
