@@ -1,6 +1,6 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
-  import { PlusCircle, Unplug } from "lucide-svelte";
+  import { PlusCircle, Unplug, ArrowRightLeft } from "lucide-svelte";
   import {
     multiplayerPopup,
     signupPopup,
@@ -41,6 +41,7 @@
   } from "$lib/logic/multiplayerLogic";
   import Ticker from "./Ticker.svelte";
   import { get } from "svelte/store";
+  import { goto } from "$app/navigation";
 
   let friendSectionLoaded = $state(false);
   let friendsRefreshInterval;
@@ -52,7 +53,7 @@
       // On Popup opened
       multiplayerCategory.set(localStorage.getItem("selectedCategory") || "standard");
 
-      // UI Resets
+      // UI Resets - important, as when starting a multiplayer round, these values are not being reset
       roomCodeInput = "";
       currentScreen.set("main");
       hostStage.set(1);
@@ -302,9 +303,19 @@
                 <Ticker limit={5} lowerLimitText="no" note="teams" initialValue={1} bind:value={$teamAmount} />
               </div>
             </div>
-            <div id="roomCreationMap" style="opacity: 0.5;" class="roomCreationModule multiplayerHostSettings">
+            <div id="roomCreationMap" class="roomCreationModule multiplayerHostSettings">
               <p>Selected Map:</p>
-              <p id="multiplayerMapDisplay">{$multiplayerCategory.replace("community_", "")}</p>
+              <div class="selectedMapField">
+                <p id="multiplayerMapDisplay">{$multiplayerCategory.replace("community_", "")}</p>
+                <button
+                  class="standardButton white"
+                  onclick={() => {
+                    playSound("basic_button");
+                    multiplayerPopup.set(false);
+                    goto("/maps");
+                  }}>Change <ArrowRightLeft size={17} strokeWidth={2} /></button
+                >
+              </div>
             </div>
           {/if}
           {#if $hostStage == 2}
@@ -418,8 +429,6 @@
       onclick={() => {
         playSound("basic_button");
         multiplayerPopup.set(false);
-        roomCodeInput = "";
-        currentScreen.set("main");
         leaveMultiplayerRound();
       }}>Close</button
     >
@@ -432,6 +441,7 @@
           playSound("basic_button");
           roomCodeInput = "";
           currentScreen.set("main");
+          hostStage.set(1);
           leaveMultiplayerRound();
         }}>Back</button
       >
@@ -448,6 +458,20 @@
     margin-bottom: 10px;
     margin-top: 20px;
     flex-wrap: wrap;
+  }
+
+  .selectedMapField {
+    display: flex;
+    gap: 10px;
+    border-radius: 10px;
+    justify-content: left;
+    padding: 5px;
+    width: fit-content;
+    align-items: center;
+    margin-bottom: 10px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    background-color: rgba(255, 255, 255, 0.2);
   }
 
   #multiplayerWindowMain {
@@ -518,8 +542,17 @@
   }
 
   #multiplayerMapDisplay {
-    min-width: 160px;
+    min-width: 120px;
     text-align: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 5px;
+    padding-inline: 10px;
+    max-width: 180px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-radius: 5px;
+    font-size: 20px;
+    margin-left: 4px;
   }
 
   .groupPartyButtons {
