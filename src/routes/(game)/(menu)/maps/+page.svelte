@@ -96,9 +96,11 @@
 
   function checkIfSelected(name, community) {
     if (typeof window === "undefined") return;
+
     const selectedMap = localStorage.getItem("selectedCategory");
     if (community) name = "community_" + name;
     if (selectedMap == name.toLowerCase()) return true;
+    if (name.toLowerCase() == "standard" && !selectedMap) return true; // Select Standard as the default, if no selection was saved in storage
     return false;
   }
 

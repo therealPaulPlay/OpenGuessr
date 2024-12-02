@@ -13,7 +13,6 @@
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { saveProfileAboutIfYourProfileAndChanges } from "$lib/utils/updateProfileData";
   import { pinPopup, badgePopup } from "$lib/stores/uiStore";
-  import { showNotification } from "$lib/utils/notifications";
   import Badge from "$lib/components/Badge.svelte";
   import {
     profileData,
