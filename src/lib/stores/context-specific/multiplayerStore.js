@@ -8,6 +8,7 @@ export const highestMultiplayerSupporterLevel = writable(0);
 export const roundAmount = writable(3);
 export const roundLength = writable(60);
 export const teamAmount = writable(1);
+export const roomLocked = writable(true);
 
 // Data
 export const multiplayerGuessesLocationsArray = writable([]);

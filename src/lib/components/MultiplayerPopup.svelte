@@ -10,6 +10,7 @@
   } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
   import { isAuthenticated } from "$lib/stores/accountStore";
+  import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
   import {
     loadedFriendsData,
     currentScreen,
@@ -367,14 +368,25 @@
                   id="roomcodeLink"
                   class="copyLinkButton standardButton white"
                   onclick={() => {
+                    playSound("basic_button");
+                    const roomId = get(peerId).replace("openguessr_", "");
+
+                    // Copy to Clipboard
                     navigator.clipboard
-                      .writeText(window.location.origin + "/?join=" + get(peerId).replace("openguessr_", ""))
+                      .writeText(window.location.origin + "/?join=" + roomId)
                       .then(function () {
                         showNotification("Copied!");
                       })
                       .catch(function (error) {
                         showNotification("Error: " + error);
                       });
+
+                    // Use CrazyGames Link invite feature
+                    if ($crazyGames) {
+                      const link = window.CrazyGames.SDK.game.inviteLink({
+                        join: roomId,
+                      });
+                    }
                   }}
                 >
                   <Link strokeWidth="2" size="16" />

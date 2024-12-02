@@ -18,12 +18,13 @@ import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/m
 import { multiplayer } from "$lib/stores/modeStore";
 import { linkJoinPopup, multiplayerPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
-import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray, yourTeam, multiplayerGuessesLocationsArray } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, hostStage, connectedClientsCount, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray, yourTeam, multiplayerGuessesLocationsArray, roomLocked } from "$lib/stores/context-specific/multiplayerStore";
 import { getLevel } from "$lib/utils/experienceCalculations.js";
 import { confirmButtonText, confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { get } from "svelte/store";
+import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 
 let uniqueUserID = 0; // used in setup for peerJS as peer id
 
@@ -270,7 +271,6 @@ function setUniqueUserID() {
 
 // Load PeerJS -----------------------------------------------------------------------------------------------------------------------
 let peer;
-let peerOpen = false;
 
 export async function getPeer() {
     setUniqueUserID();
@@ -293,7 +293,10 @@ export async function getPeer() {
     if (peer) {
         peer.on('open', function (id) {
             peerId.set(id); // Once the PeerJS connection was established, we store the peer ID that was assigned by the PeerJS server + mark the client as open
-            peerOpen = true;
+
+            if (typeof peerLoadJoinCallback == "function") {
+                peerLoadJoinCallback();
+            }
         });
     } else {
         console.error("Peer could not be created - Loading the library and executing the callback failed.");
@@ -305,24 +308,25 @@ export async function getPeer() {
 
 // Joining via Links (also as a guest!) -------------------------------------------------------------------------------------
 
+let peerLoadJoinCallback; // This will be executed after peer load as a callback in case peerJS isn't loaded yet
+
 // Called in accountLogic after signin status was set
 export function attemptJoinViaLink() {
     let urlParams = new URLSearchParams(window.location.search);
     let roomCode = urlParams.get("join");
+
+    if (!roomCode && get(crazyGames)) {
+        try {
+            roomCode = window.CrazyGames.SDK.game.getInviteParam("join");
+        } catch {
+            console.error("Failed to join via CrazyGames link.");
+        }
+    }
+
     if (roomCode) {
         console.log("Attempting join via Room Code Link:", roomCode);
-
-        if (peer) {
-            try {
-                linkJoinPopup.set(false);
-                joinRoom(roomCode);
-
-            } catch (err) {
-                console.error("Tried to join via link with initizalized peer, but there was an exception when joining.");
-            }
-        } else {
-            console.error("Tried to join round via link, but peerjs was not initialized yet.");
-        }
+        linkJoinPopup.set(true);
+        joinRoom(roomCode);
 
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
     }
@@ -573,17 +577,17 @@ function attachHostLogic() {
 
             // Set up event listener for incoming connections (HOST LOGIC)
             peer.on('connection', function (incomingConn) {
-                if (!roomLocked) {
+                if (!get(roomLocked)) {
 
                     //instantly lock the room on the first connection
                     if (matchmakingActive || friendDuel) {
-                        roomLocked = true;
+                        roomLocked.set(true);
                     }
 
                     let brokenConnectionTimeout = setTimeout(() => {
                         // Unlock the room & disconnect non-working peer if connection fails to open within 2 seconds
                         if (!incomingConn.open) {
-                            roomLocked = false;
+                            roomLocked.set(false);
                             incomingConn.close();
                             distributeChat("System: " + incomingConn.metadata.username + " kicked (no response from peer).");
                         }
@@ -714,8 +718,6 @@ function attachHostLogic() {
     }
 }
 
-let roomLocked = true;
-
 export function createRoom(AmountOfRounds, LengthOfRounds) {
     if (get(hostStage) == 1) {
         setupMultiplayerRoom(AmountOfRounds, LengthOfRounds);
@@ -748,7 +750,7 @@ export function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     highestMultiplayerSupporterLevel.set(get(supporterLevel) || 0);
 
     // unlock room
-    roomLocked = false;
+    roomLocked.set(false);
 }
 
 // Start room (HOST function)
@@ -759,7 +761,7 @@ function StartRoom() {
     showMultiplayerOverlay(true, "Ready...", connectedPeers); //only for host, also to set the map category in mode text
     sendMessageToAll("showPlayersArray", connectedPeers); //this is for the peers (the same thing as showMultiplayerOverlay for host)
     checkGenerationTypeAndGenerate();
-    if (playingDuels) roomLocked = true;
+    if (playingDuels) roomLocked.set(true);
     matchmakingActive = false;
 }
 
@@ -882,18 +884,16 @@ function addReplaceTeamMarkers(id, lat, long, pinIndex, team) {
 
 // Peer Logic -----------------------------------------------------------------------------------------------------------------
 export async function joinRoom(code) {
-    if (!peer) console.warn("Cannot join because PeerJS is not initialized.");
-
     code.replace(/\s/g, ''); // Remove whitespaces
 
-    // If peer isn't open yet, await that
-    if (!peerOpen) {
-        console.warn("Peer not open yet. Awaiting peer open.")
-        await new Promise(resolve => {
-            peer.on('open', () => {
-                resolve();
-            })
-        });
+    if (!peer) {
+        console.warn("PeerJS not yet initialized. Adding callback function.")
+        multiplayerStatus.set("Waiting for PeerJS initialization...");
+        peerLoadJoinCallback = () => {
+            joinRoom(code);
+        };
+
+        return;
     }
 
     isHost.set(false);
@@ -1161,7 +1161,7 @@ export function leaveMultiplayerRound() {
 
     connectedPeers = [];
     multiplayerFirstRoundPlayed = false;
-    roomLocked = true;
+    roomLocked.set(true);
     multiplayerGuessesLocationsArray.set([]);
     teamMarkerArray = [];
     updateMinimapWithTeamMarkers(teamMarkerArray); // clean up multiplayer minimap markers
