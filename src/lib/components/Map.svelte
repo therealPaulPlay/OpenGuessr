@@ -37,15 +37,19 @@
   }
 
   onMount(async () => {
-    await new Promise((resolve, reject) => {
-      const script = document.createElement("script");
-      script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-      script.onload = () => {
-        resolve(window.L); // Resolve when Leaflet is loaded
-      };
-      script.onerror = reject; // Reject if there's an error loading the script
-      document.head.appendChild(script);
-    });
+    try {
+      await new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
+        script.onload = () => {
+          resolve(window.L); // Resolve when Leaflet is loaded
+        };
+        script.onerror = reject; // Reject if there's an error loading the script
+        document.head.appendChild(script);
+      });
+    } catch (error) {
+      console.error("Error loading leaflet script:", error);
+    }
 
     initMap();
 
