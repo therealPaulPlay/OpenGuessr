@@ -6,7 +6,7 @@
 
 {#if $mapVisible && $mapExpanded}
   <div id="mapAttribution" class="mapAttribution" style:bottom={$mapModeIndicatorVisible ? "73px" : ""}>
-    <p>Map Data ©2024 Google</p>
+    <p>Map Data ©{new Date().getFullYear()} Google</p>
     <p style="border-bottom-right-radius: 10px">
       <a
         style="color: black; text-decoration: none; pointer-events: auto; font-family: Roboto;"
