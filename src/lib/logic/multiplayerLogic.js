@@ -23,8 +23,8 @@ import { getLevel } from "$lib/utils/experienceCalculations.js";
 import { confirmButtonText, confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
-import { get } from "svelte/store";
 import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
+import { get } from "svelte/store";
 
 let uniqueUserID = 0; // used in setup for peerJS as peer id
 
