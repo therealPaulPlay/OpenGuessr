@@ -2,9 +2,10 @@
   import { restoreOldStreak } from "$lib/logic/resultScoreLogic";
   import { errorPopup } from "$lib/utils/errorHandling";
   import { playSound } from "$lib/utils/soundManager";
+  import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
   import { initializeRewardedAd } from "$lib/utils/rewardedAds";
   import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
-  
+
   let streakHeaderText = $state("Streak lost! (Default)");
   let streakHeaderColor = $state("white");
 
@@ -35,11 +36,13 @@
         resetStreakWindow();
       }, 250);
     } else {
-      streakBanner.style.display = "block";
-      setTimeout(() => {
-        streakBanner.style.maxHeight = "1000px";
-        resetStreakWindow();
-      }, 20);
+      if (!$adsDisabled) {
+        streakBanner.style.display = "block";
+        setTimeout(() => {
+          streakBanner.style.maxHeight = "1000px";
+          resetStreakWindow();
+        }, 20);
+      }
     }
   }
 

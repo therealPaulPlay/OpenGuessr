@@ -44,6 +44,7 @@
   import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
   import MultiplayerOverlay from "$lib/components/MultiplayerOverlay.svelte";
   import BlinkRestrictionFade from "$lib/components/BlinkRestrictionFade.svelte";
+  import CrazyGames from "$lib/components/CrazyGames.svelte";
 
   // Start ads
   onMount(() => {
@@ -127,6 +128,9 @@
 </MapHolder>
 <Chat />
 <BottomBar />
+
+<!-- 3rd party -->
+<CrazyGames />
 
 <!-- Render children such as overlayed pages and menus -->
 {@render children?.()}
