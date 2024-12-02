@@ -3,6 +3,7 @@
   import { onMount } from "svelte";
   import { isHost, roomLocked, peerId } from "$lib/stores/context-specific/multiplayerStore";
   import { adsDisabled, crazyGames, preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
+  import { get } from "svelte/store";
 
   onMount(async () => {
     try {
