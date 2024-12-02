@@ -24,6 +24,12 @@ export function initMap() {
         bounds: worldBounds
     });
 
+    const terrainMap = L.tileLayer("https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en&scale=2", {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
+        bounds: worldBounds
+    });
+
     const satelliteMap = L.tileLayer("https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en&scale=2", {
         maxZoom: 20,
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
@@ -43,6 +49,7 @@ export function initMap() {
     // Set up the layer control
     const baseMaps = {
         "Standard": standardMap,
+        "Terrain": terrainMap,
         "Satellite": satelliteMap
     };
 
