@@ -21,6 +21,7 @@
             document.head.appendChild(script);
           });
 
+          await window.CrazyGames.SDK.init(); // Initialize SDK
           window.CrazyGames.SDK.game.gameplayStart(); // Start the gameplay
         } catch (error) {
           console.error("Error loading CrazyGames SDK:", error);
