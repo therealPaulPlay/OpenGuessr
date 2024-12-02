@@ -2,7 +2,7 @@
 <script>
   import { onMount } from "svelte";
   import { isHost, roomLocked, peerId } from "$lib/stores/context-specific/multiplayerStore";
-  import { adsDisabled, crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
+  import { adsDisabled, crazyGames, preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
 
   onMount(async () => {
     try {
@@ -26,7 +26,11 @@
           console.error("Error loading CrazyGames SDK:", error);
         }
 
+        // Platform settings
         adsDisabled.set(true);
+        preventExitPopup.set(true);
+
+        // Enable platform
         crazyGames.set(true);
 
         // Add listener to multiplayer state to display friend invite thingie

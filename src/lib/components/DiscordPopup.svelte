@@ -51,7 +51,7 @@
     >
     <button id="socialPopupJoin" class="standardButton closeButton white" onclick={clickJoin}>
       Join
-      <img src="/img/discord.png" class="socialIcon" alt="Discord Icon" />
+      <img src="/img/discord.png" class="socialIcon discordIconJoin" alt="Discord Icon" />
     </button>
   </Popup>
 {/if}
@@ -59,6 +59,10 @@
 <style>
   #socialPopupJoin {
     background-color: #8e44f0;
+  }
+
+  .discordIconJoin {
+    vertical-align: -1px;
   }
 
   #discordWidget {
