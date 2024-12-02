@@ -1,8 +1,18 @@
 <!-- This component handles the SDK stuff, and checks if the crazy-games query is being used -->
 <script>
   import { onMount } from "svelte";
-  import { isHost, roomLocked, peerId } from "$lib/stores/context-specific/multiplayerStore";
+  import {
+    isHost,
+    roomLocked,
+    peerId,
+    roundAmount,
+    roundLength,
+    hostStage,
+    currentScreen,
+  } from "$lib/stores/context-specific/multiplayerStore";
   import { adsDisabled, crazyGames, preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
+  import { multiplayerPopup } from "$lib/stores/uiStore";
+  import { createRoom } from "$lib/logic/multiplayerLogic";
   import { get } from "svelte/store";
 
   onMount(async () => {
@@ -34,6 +44,16 @@
 
         // Enable platform
         crazyGames.set(true);
+
+        if (window.CrazyGames.SDK.game.isInstantJoin) {
+          multiplayerPopup.set(true);
+          // Timeout, as toggling the popup causes the screen and stage to reset
+          setTimeout(() => {
+            currentScreen.set("host");
+            hostStage.set(2); // Go to second stage of multiplayer popup
+            createRoom(get(roundAmount), get(roundLength)); // Create room
+          }, 150);
+        }
 
         // Add listener to multiplayer state to display friend invite thingie
         roomLocked.subscribe((value) => {
