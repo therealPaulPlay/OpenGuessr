@@ -8,6 +8,7 @@
   import { confirmButtonActive, confirmButtonText } from "$lib/stores/context-specific/confirmButtonStore";
   import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
   import { supporterLevel } from "$lib/stores/accountStore";
+  import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
   import { onMount } from "svelte";
 
   // Load the saved map offset state
@@ -104,11 +105,11 @@
 <div
   id="bottomFooterAds"
   class="bottomFooterAds leaderboardAds"
-  style:display={$supporterLevel >= 2 ? "none" : ""}
+  style:display={$supporterLevel >= 2 || $adsDisabled ? "none" : ""}
 ></div>
 <div
   class="bottomFooterAds leaderboardAds bottomFooterAdText barMenu"
-  style:display={$supporterLevel >= 2 ? "none" : ""}
+  style:display={$supporterLevel >= 2 || $adsDisabled ? "none" : ""}
 >
   <RemoveAdsText text="Ads keep OpenGuessr free." />
 </div>

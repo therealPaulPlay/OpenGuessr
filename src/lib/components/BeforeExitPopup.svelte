@@ -3,14 +3,16 @@
   import { HandHeart } from "lucide-svelte";
   import { playSound } from "$lib/utils/soundManager";
   import { supporterWindowIfAuthenticated } from "$lib/utils/showSupporterPopup";
+  import { preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
   import { onMount } from "svelte";
+  import { get } from "svelte/store";
 
   // Before Exit Popup ---------------------------------------------------------------
   let showExitIntentPopup = $state(false);
   let expandCostExpanded = $state(false);
 
   function exitIntentPopup() {
-    if (localStorage.getItem("hideExitPopup") != "1" && !showExitIntentPopup) {
+    if (localStorage.getItem("hideExitPopup") != "1" && !showExitIntentPopup && !get(preventExitPopup)) {
       showExitIntentPopup = true;
       expandCostExpanded = false;
       loadMonthlySupportedAmount();

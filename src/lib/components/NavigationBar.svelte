@@ -90,7 +90,7 @@
         onclick={() => {
           playSound("basic_button");
           signupPopup.set(true);
-        }}>Log in</button
+        }}>Sign up</button
       >
     {/if}
     {#if $isAuthenticated}
@@ -171,11 +171,11 @@
       <button
         class="standardButton loginButton"
         id="loginButton"
-        alt="log in"
+        alt="sign up or log in"
         onclick={() => {
           playSound("basic_button");
           signupPopup.set(true);
-        }}>Log in</button
+        }}>Sign up</button
       >
     {/if}
     <!-- svelte-ignore a11y_click_events_have_key_events -->

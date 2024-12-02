@@ -2,6 +2,7 @@
 <script>
   import StreakRestore from "$lib/components/StreakRestore.svelte";
   import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
+  import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
   import {
     resultScreenEnabled,
     distanceText,
@@ -62,7 +63,7 @@
     <div id="endBottomBar">
       <div
         class="floatingResultLeaderboardArea"
-        style:display={$supporterLevel >= 2 || !$resultScreenEnabled ? "none" : ""}
+        style:display={$supporterLevel >= 2 || !$resultScreenEnabled || $adsDisabled ? "none" : ""}
       >
         <div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
         <!-- id is necessary for ad script! -->
@@ -73,7 +74,7 @@
         <div
           id="mobileResultLeaderboardAdArea"
           class="resultField"
-          style:display={$supporterLevel >= 2 || !$resultScreenEnabled ? "none" : ""}
+          style:display={$supporterLevel >= 2 || !$resultScreenEnabled || $adsDisabled ? "none" : ""}
         >
           <div id="mobileResultLeaderboardAd"></div>
           <RemoveAdsText text="Go Ad-Free." learnMore="true" />
