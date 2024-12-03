@@ -15,6 +15,7 @@
   import { multiplayerPopup } from "$lib/stores/uiStore";
   import { createRoom } from "$lib/logic/multiplayerLogic";
   import { isAuthenticated } from "$lib/stores/accountStore";
+  import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
   import { get } from "svelte/store";
 
   onMount(async () => {
@@ -79,6 +80,14 @@
             });
           } else {
             window.CrazyGames.SDK.game.hideInviteButton();
+          }
+        });
+
+        resultScreenEnabled.subscribe((value) => {
+          if (value) {
+            window.CrazyGames.SDK.game.gameplayStop();
+          } else {
+            window.CrazyGames.SDK.game.gameplayStart();
           }
         });
       }
