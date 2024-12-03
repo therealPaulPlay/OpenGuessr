@@ -92,7 +92,7 @@
         onclick={() => {
           playSound("basic_button");
           signupPrompt();
-        }}><UserRoundPlus strokeWidth={2.5} size={20} /></button
+        }}><span class="mobileSigninIcon"><UserRoundPlus strokeWidth={3} size={20} /></span></button
       >
     {/if}
     {#if $isAuthenticated}
@@ -340,6 +340,11 @@
   .preventNavigateOut {
     pointer-events: none !important;
     opacity: 0.5 !important;
+  }
+
+  .mobileSigninIcon {
+    vertical-align: -1px;
+    margin-left: 2px;
   }
 
   .profileInfo:hover {
