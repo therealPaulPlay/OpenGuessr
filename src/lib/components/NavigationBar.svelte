@@ -151,7 +151,7 @@
       <img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
     </a>
     <button
-      class="standardButton accountButton white"
+      class="standardButton accountButton mobileAccountButton white"
       id="singleplayerOptionsButton"
       class:preventNavigateOut
       onclick={() => {
