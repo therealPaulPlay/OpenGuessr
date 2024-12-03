@@ -156,7 +156,6 @@
     background-color: var(--box-color);
     border-radius: 10px;
     padding: 15px;
-    height: 80px;
     overflow: hidden;
     flex-grow: 1;
     min-width: 150px;
@@ -164,7 +163,8 @@
 
   .timerSliderBox {
     display: flex;
-    gap: 10px;
+    gap: 15px;
+    margin-top: 5px;
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;

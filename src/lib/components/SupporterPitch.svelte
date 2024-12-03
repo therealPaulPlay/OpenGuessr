@@ -4,8 +4,6 @@
   import { supporterLevel } from "$lib/stores/accountStore";
   import { supporterPopupVisible } from "$lib/stores/context-specific/supporterPopupStore";
   import { playSound } from "$lib/utils/soundManager";
-  import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-  import { showConfirmPopup } from "$lib/utils/confirmPopup";
 </script>
 
 <div id="supporterArea" class="supporterArea">
@@ -20,17 +18,7 @@
     class="standardButton"
     onclick={() => {
       playSound("basic_button");
-      if (!$crazyGames) {
-        supporterPopupVisible.set(true);
-      } else {
-        showConfirmPopup(
-          "Visit store?",
-          "Purchases are not available in this version of OpenGuessr. Do you want to launch OpenGuessr in a new tab?",
-          () => {
-            window.open("https://openguessr.com", "_blank").focus();
-          },
-        );
-      }
+      supporterPopupVisible.set(true);
     }}>View benefits</button
   >
 </div>

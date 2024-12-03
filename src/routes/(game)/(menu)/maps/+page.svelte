@@ -581,7 +581,6 @@
     flex-grow: 1;
     flex-basis: 30%;
     min-width: 300px;
-    max-width: 357px;
     text-overflow: ellipsis;
     overflow: hidden;
     cursor: pointer;
@@ -597,9 +596,8 @@
   }
 
   .map-item-slim {
-    min-width: 140px;
-    max-width: 170px;
-    flex-basis: 100%;
+    min-width: 150px;
+    flex-basis: 15%;
   }
 
   .map-item-slim:hover {

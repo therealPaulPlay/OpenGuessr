@@ -348,7 +348,7 @@
 
   .locationTextbox {
     min-height: 350px;
-    font-size: 12px;
+    font-size: 16px;
     width: calc(100% - 30px);
     padding: 15px;
   }
