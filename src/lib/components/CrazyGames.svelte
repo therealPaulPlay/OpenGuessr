@@ -23,7 +23,6 @@
       let crazyGamesEnabled = urlParams.get("crazy-games");
 
       if (crazyGamesEnabled) {
-        
         // Platform settings
         adsDisabled.set(true);
         preventExitPopup.set(true);
@@ -44,7 +43,12 @@
           });
 
           await window.CrazyGames.SDK.init();
-          window.CrazyGames.SDK.game.gameplayStart(); // Start the gameplay
+          window.CrazyGames.SDK.game.loadingStart();
+
+          setTimeout(() => {
+            window.CrazyGames.SDK.game.loadingStop();
+            window.CrazyGames.SDK.game.gameplayStart();
+          }, 150);
         } catch (error) {
           console.error("Error loading CrazyGames SDK:", error);
         }
