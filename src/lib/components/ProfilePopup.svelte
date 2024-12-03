@@ -227,6 +227,7 @@
               playSound("basic_button");
               resetLocalSave();
               checkAuthenticationStatus();
+              profilePopup.set(false);
             }}
           >
             <img class="logoutImage" src="/img/signout.png" alt="Log out." />
@@ -459,8 +460,8 @@
     max-height: 300px;
     overflow-x: hidden;
     overflow-y: auto;
-    padding: 10px;
-    gap: 10px;
+    padding: 8px;
+    gap: 8px;
     margin-top: 10px;
     align-items: center;
     flex-wrap: wrap;

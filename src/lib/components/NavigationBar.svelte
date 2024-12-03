@@ -10,6 +10,7 @@
   import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
+  import { UserRoundPlus } from "lucide-svelte";
   import { onMount } from "svelte";
 
   function openSettings() {
@@ -91,7 +92,7 @@
         onclick={() => {
           playSound("basic_button");
           signupPrompt();
-        }}>Sign up</button
+        }}><UserRoundPlus strokeWidth={2.5} size={20} /></button
       >
     {/if}
     {#if $isAuthenticated}
@@ -422,10 +423,6 @@
   #mobileLoginButton {
     background-color: var(--brand-color);
     color: white;
-  }
-
-  #mobileLoginButton {
-    min-width: 100px;
   }
 
   #accountNameArea {

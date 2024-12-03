@@ -198,6 +198,7 @@ input[type="checkbox"]:focus {
     border-radius: 15px;
     height: 8px;
     margin: 5px;
+    width: 60%;
     margin-inline: 0;
 }
 
