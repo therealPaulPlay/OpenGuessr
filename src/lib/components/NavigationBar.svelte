@@ -3,12 +3,13 @@
   import { playSound } from "$lib/utils/soundManager";
   import Notification from "$lib/components/Notification.svelte";
   import { isAuthenticated, experience, supporterLevel, username } from "$lib/stores/accountStore";
-  import { signupPopup } from "$lib/stores/uiStore";
+  import { signupPrompt } from "$lib/utils/signupPrompt";
   import { singleplayerOptionsPopup, multiplayerPopup } from "$lib/stores/uiStore";
   import { competition, multiplayer } from "$lib/stores/modeStore";
   import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
   import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
+  import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
   import { onMount } from "svelte";
 
   function openSettings() {
@@ -89,7 +90,7 @@
         class="standardButton loginButton mobileAccountButton"
         onclick={() => {
           playSound("basic_button");
-          signupPopup.set(true);
+          signupPrompt();
         }}>Sign up</button
       >
     {/if}
@@ -109,6 +110,7 @@
       <button
         id="mobileLogoutButton"
         class="standardButton accountButton mobileAccountButton white"
+        class:signoutDisabled={$crazyGames}
         onclick={() => {
           playSound("basic_button");
           resetLocalSave();
@@ -174,7 +176,7 @@
         alt="sign up or log in"
         onclick={() => {
           playSound("basic_button");
-          signupPopup.set(true);
+          signupPrompt();
         }}>Sign up</button
       >
     {/if}
@@ -221,6 +223,7 @@
     {#if $isAuthenticated}
       <button
         class="standardButton accountButton"
+        class:signoutDisabled={$crazyGames}
         id="logoutButton"
         alt="log out"
         onclick={() => {
@@ -327,6 +330,12 @@
     grid: 5px;
     justify-content: center;
     align-items: center;
+  }
+
+  /* On certain platforms, signout might be disabled */
+  .signoutDisabled {
+    pointer-events: none;
+    opacity: 0.5;
   }
 
   /* Disable certain buttons in Competitions, Multiplayer etc. to prevent users from leaving accidentally */

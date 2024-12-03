@@ -18,7 +18,7 @@
   import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
   import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
   import { supporterLevel, isAuthenticated, experience } from "$lib/stores/accountStore";
-  import { signupPopup } from "$lib/stores/uiStore";
+  import { signupPrompt } from "$lib/utils/signupPrompt";
   import { playSound } from "$lib/utils/soundManager";
   import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
   import { transitionToStart } from "$lib/utils/transitionToStart";
@@ -113,7 +113,7 @@
               class="standardButton white"
               onclick={() => {
                 playSound("basic_button");
-                signupPopup.set(true);
+                signupPrompt();
               }}>Sign up</button
             >
           </div>
