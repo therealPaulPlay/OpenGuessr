@@ -314,7 +314,7 @@
                     playSound("basic_button");
                     multiplayerPopup.set(false);
                     goto("/maps");
-                  }}>Change <ArrowRightLeft size={17} strokeWidth={2} /></button
+                  }}><ArrowRightLeft size={17} strokeWidth={2} /></button
                 >
               </div>
             </div>
