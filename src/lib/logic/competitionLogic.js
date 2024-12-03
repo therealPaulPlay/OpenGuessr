@@ -60,7 +60,7 @@ export function setCompetitionUI(enable) {
 export function checkStartCompetitionRound() {
     if (get(competition)) {
         competitionRound.set(get(competitionRound) + 1);
-        modeText.set("Competition (Round: " + get(competitionRound) + "/" + get(competition)?.roundAmount + ")");
+        modeText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ")");
 
         if (get(competitionData)?.restriction && get(competitionData)?.restriction != "standard") {
             modeText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ") (" + get(competitionData)?.restriction + ")");
