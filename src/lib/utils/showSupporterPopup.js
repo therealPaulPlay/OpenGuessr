@@ -2,7 +2,7 @@
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { supporterPopupVisible } from "$lib/stores/context-specific/supporterPopupStore";
-import { signupPopup } from "$lib/stores/uiStore";
+import { signupPrompt } from "$lib/utils/signupPrompt";
 import { get } from "svelte/store";
 
 export function supporterWindowIfAuthenticated() {
@@ -14,7 +14,7 @@ export function supporterWindowIfAuthenticated() {
             "Account required",
             "To support OpenGuessr with a one-time payment, an account is required, so that you can enjoy amazing supporter benefits on all devices!",
             () => {
-                signupPopup.set(true);
+                signupPrompt();
             },
             undefined,
             undefined,

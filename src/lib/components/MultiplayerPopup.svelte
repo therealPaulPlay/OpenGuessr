@@ -3,7 +3,6 @@
   import { PlusCircle, Unplug, ArrowRightLeft } from "lucide-svelte";
   import {
     multiplayerPopup,
-    signupPopup,
     friendBrowserPopup,
     inboxPopup,
     troubleshootPopup,
@@ -43,6 +42,7 @@
   import Ticker from "./Ticker.svelte";
   import { get } from "svelte/store";
   import { goto } from "$app/navigation";
+  import { signupPrompt } from "$lib/utils/signupPrompt";
 
   let friendSectionLoaded = $state(false);
   let friendsRefreshInterval;
@@ -112,7 +112,7 @@
                   currentScreen.set("duel");
                   findDuel();
                 } else {
-                  signupPopup.set(true);
+                  signupPrompt();
                 }
               }}
             >
@@ -193,7 +193,7 @@
                 if ($isAuthenticated) {
                   friendBrowserPopup.set(true);
                 } else {
-                  signupPopup.set(true);
+                  signupPrompt();
                 }
               }}>Add friends +</button
             >
@@ -205,7 +205,7 @@
                 if ($isAuthenticated) {
                   inboxPopup.set(true);
                 } else {
-                  signupPopup.set(true);
+                  signupPrompt();
                 }
               }}
             >

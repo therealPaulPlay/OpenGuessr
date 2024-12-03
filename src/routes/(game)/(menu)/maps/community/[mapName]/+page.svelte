@@ -3,7 +3,7 @@
   import { isAuthenticated } from "$lib/stores/accountStore";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
   import { errorPopup } from "$lib/utils/errorHandling";
-  import { signupPopup } from "$lib/stores/uiStore";
+  import { signupPrompt } from "$lib/utils/signupPrompt";
   import { showNotification } from "$lib/utils/notifications";
   import { changeCategory } from "$lib/utils/changeCategory";
   import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Dices } from "lucide-svelte";
@@ -70,7 +70,7 @@
         console.error("Network error during like or dislike of map:", error);
       }
     } else {
-      signupPopup.set(true);
+      signupPrompt();
     }
   }
 

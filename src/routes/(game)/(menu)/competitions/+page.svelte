@@ -1,7 +1,7 @@
 <script>
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { playSound } from "$lib/utils/soundManager";
-  import { signupPopup } from "$lib/stores/uiStore";
+  import { signupPrompt } from "$lib/utils/signupPrompt";
   import { errorPopup } from "$lib/utils/errorHandling";
   import Popup from "$lib/components/Popup.svelte";
   import { competitionData } from "$lib/stores/context-specific/competitionStore";
@@ -647,7 +647,7 @@
                 },
               );
             } else {
-              signupPopup.set(true);
+              signupPrompt();
             }
           }}>{entered ? "Already entered" : authorId == localStorage.getItem("id") ? "Hosted by you" : "Enter"}</button
         >
@@ -696,7 +696,7 @@
           if ($isAuthenticated) {
             goto("/competitions/create");
           } else {
-            signupPopup.set(true);
+            signupPrompt();
           }
         }}>+ Create</button
       >
