@@ -244,6 +244,7 @@ input[type="checkbox"]:focus {
 
 .buttonBoxRight {
     display: flex;
+    flex-wrap: wrap;
     justify-content: flex-end;
     gap: 8px;
     margin-top: 60px;
