@@ -31,7 +31,8 @@
   let mapAuthor = $state(data.author);
   let mapAuthorId = $state(data.authorId);
   let mapDescription = $state(data.description);
-  let mapLocationAmount = $state(data.map_data.locations.length);
+  let mapLocationAmount = $state(data.map_data?.locations.length);
+  let mapLocationData = $state(data.map_data);
 
   let playerId = $state(0);
 
@@ -146,16 +147,29 @@
   let statusText = $state("Default...");
   let textareaValue = $state();
 
+  let addInsteadOfOverwrite = $state(false); // Add locations instead of overwriting the old ones
+
   async function updateMap(mapName) {
     let inputFromFilepicker = false;
     const mapData = filePicker.value ? filePicker.files[0] : textareaValue;
     inputFromFilepicker = filePicker.value ? true : false;
 
     try {
+      let newLocations = inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData);
+      let newMapData = newLocations;
+      console.log(newMapData);
+
+      // If add instead of overwrite is selected, add the new locations to the old ones.
+      if (addInsteadOfOverwrite) {
+        newMapData = JSON.stringify({
+          locations: [...mapLocationData?.locations, ...JSON.parse(newLocations)?.locations],
+        });
+      }
+
       const body = {
         id: localStorage.getItem("id"),
         name: mapName,
-        mapData: inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData),
+        mapData: newMapData,
       };
 
       // Send POST request to the server
@@ -307,11 +321,30 @@
 
 {#if updatePopup}
   <Popup>
-    <h1 id="mapUpdateHeader">Replace locations</h1>
+    <h1 id="mapUpdateHeader">Update locations</h1>
+    <p class="selectionText">I want to...</p>
+    <div class="flexChoiceBox">
+      <button
+        class="standardButton white"
+        class:buttonUnselected={addInsteadOfOverwrite}
+        onclick={() => {
+          addInsteadOfOverwrite = false;
+          playSound("basic_button");
+        }}>Overwrite all locations</button
+      >
+      <button
+        class="standardButton white"
+        class:buttonUnselected={!addInsteadOfOverwrite}
+        onclick={() => {
+          addInsteadOfOverwrite = true;
+          playSound("basic_button");
+        }}>Add locations</button
+      >
+    </div>
     <p class="marginTop">New locations:</p>
     <textarea
       id="updateMapData"
-      class="uploadInfo locationTextbox"
+      class="uploadInfo"
       type="text"
       rows="20"
       bind:value={textareaValue}
@@ -373,6 +406,11 @@
     padding-inline: 10px;
   }
 
+  .selectionText {
+    margin-top: 20px;
+    margin-bottom: 5px;
+  }
+
   .descriptionScroll {
     width: 100%;
     overflow-x: hidden;
@@ -407,6 +445,18 @@
     backdrop-filter: blur(5px);
   }
 
+  .buttonUnselected {
+    opacity: 0.5;
+  }
+
+  .flexChoiceBox {
+    display: flex;
+    width: 100%;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
   .infoElement {
     background-color: var(--box-color);
     border-radius: 10px;
@@ -432,7 +482,7 @@
     background-color: rgba(255, 255, 255, 0.1);
     color: white;
     width: 75%;
-    font-size: 22px;
+    font-size: 16px;
     min-height: 30px;
     font-family: Barlow;
     border: none;

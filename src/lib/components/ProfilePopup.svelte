@@ -12,8 +12,10 @@
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { saveProfileAboutIfYourProfileAndChanges } from "$lib/utils/updateProfileData";
+  import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
   import { pinPopup, badgePopup } from "$lib/stores/uiStore";
   import Badge from "$lib/components/Badge.svelte";
+  import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
   import {
     profileData,
     profileName,
@@ -119,7 +121,7 @@
         </div>
       </div>
     </div>
-    {#if $profileId == localStorage.getItem("id")}
+    {#if $profileId == localStorage.getItem("id") && !$crazyGames}
       <SupporterPitch />
     {/if}
     <div id="profileScrollSection">
@@ -215,8 +217,21 @@
             }}
           >
             <Trash2 size="16" />
-            Delete Account</button
+            Delete</button
           >
+          <button
+            id="profileSignoutButton"
+            class="standardButton white"
+            class:signoutDisabled={$crazyGames}
+            onclick={() => {
+              playSound("basic_button");
+              resetLocalSave();
+              checkAuthenticationStatus();
+              profilePopup.set(false);
+            }}
+          >
+            <img class="logoutImage" src="/img/signout.png" alt="Log out." />
+          </button>
         </div>
       {/if}
       <br />
@@ -251,6 +266,11 @@
     width: calc(100% + 25px);
     margin-left: -25px;
     margin-top: -25px;
+  }
+
+  .signoutDisabled {
+    pointer-events: none;
+    opacity: 0.5;
   }
 
   #badgeArea {
@@ -306,6 +326,13 @@
     overflow: hidden;
     text-overflow: ellipsis;
     user-select: none;
+  }
+
+  .logoutImage {
+    width: 22px;
+    height: 22px;
+    margin-left: 3px;
+    vertical-align: -3px;
   }
 
   #supporterTag {
@@ -433,8 +460,8 @@
     max-height: 300px;
     overflow-x: hidden;
     overflow-y: auto;
-    padding: 10px;
-    gap: 10px;
+    padding: 8px;
+    gap: 8px;
     margin-top: 10px;
     align-items: center;
     flex-wrap: wrap;

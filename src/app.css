@@ -191,13 +191,15 @@ input[type="checkbox"]:focus {
 }
 
 .slider {
-    width: 65%;
     -webkit-appearance: none;
     appearance: none;
     background: rgba(255, 255, 255, 0.2);
     outline: none;
     border-radius: 15px;
     height: 8px;
+    margin: 5px;
+    width: 60%;
+    margin-inline: 0;
 }
 
 .slider::-webkit-slider-thumb {

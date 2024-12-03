@@ -10,6 +10,7 @@
   import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
   import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
+  import { UserRoundPlus } from "lucide-svelte";
   import { onMount } from "svelte";
 
   function openSettings() {
@@ -91,7 +92,7 @@
         onclick={() => {
           playSound("basic_button");
           signupPrompt();
-        }}>Sign up</button
+        }}><span class="mobileSigninIcon"><UserRoundPlus strokeWidth={3} size={20} /></span></button
       >
     {/if}
     {#if $isAuthenticated}
@@ -106,30 +107,15 @@
         <img class="socialBarIcons" src="/img/profile_icon.png" alt="Your profile" />
       </button>
     {/if}
-    {#if $isAuthenticated}
-      <button
-        id="mobileLogoutButton"
-        class="standardButton accountButton mobileAccountButton white"
-        class:signoutDisabled={$crazyGames}
-        onclick={() => {
-          playSound("basic_button");
-          resetLocalSave();
-          checkAuthenticationStatus();
-        }}
-      >
-        <img class="logoutImage" src="/img/signout.png" alt="Log out." />
-      </button>
-    {/if}
     <a
-      id="mobileCategoryButton"
+      id="mobileLeaderboardButton"
       class="standardButton accountButton mobileAccountButton white"
-      class:preventNavigateOut
-      href="/maps"
+      href="/leaderboard"
       onclick={() => {
         playSound("basic_button");
       }}
     >
-      <img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
+      <img class="socialBarIcons" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
     </a>
     <button
       id="mobileMultiplayerButton"
@@ -154,15 +140,27 @@
       <img class="socialBarIcons" src="/img/competitions_icon.png" alt="Competitions symbol" />
     </a>
     <a
-      id="mobileLeaderboardButton"
+      id="mobileCategoryButton"
       class="standardButton accountButton mobileAccountButton white"
-      href="/leaderboard"
+      class:preventNavigateOut
+      href="/maps"
       onclick={() => {
         playSound("basic_button");
       }}
     >
-      <img class="socialBarIcons" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
+      <img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
     </a>
+    <button
+      class="standardButton accountButton white"
+      id="singleplayerOptionsButton"
+      class:preventNavigateOut
+      onclick={() => {
+        playSound("basic_button");
+        singleplayerOptionsPopup.set(true);
+      }}
+    >
+      <img src="/img/joystick_icon.png" alt="one or five seconds" id="joystickIcon" class="socialBarIcons" />
+    </button>
   </div>
 </nav>
 
@@ -344,6 +342,11 @@
     opacity: 0.5 !important;
   }
 
+  .mobileSigninIcon {
+    vertical-align: -1px;
+    margin-left: 2px;
+  }
+
   .profileInfo:hover {
     filter: brightness(0.7);
   }
@@ -425,10 +428,6 @@
   #mobileLoginButton {
     background-color: var(--brand-color);
     color: white;
-  }
-
-  #mobileLoginButton {
-    min-width: 100px;
   }
 
   #accountNameArea {
