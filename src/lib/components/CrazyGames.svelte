@@ -23,6 +23,15 @@
       let crazyGamesEnabled = urlParams.get("crazy-games");
 
       if (crazyGamesEnabled) {
+        
+        // Platform settings
+        adsDisabled.set(true);
+        preventExitPopup.set(true);
+
+        // Enable platform
+        crazyGames.set(true);
+
+        // Load and initialize SDK
         try {
           await new Promise((resolve, reject) => {
             const script = document.createElement("script");
@@ -34,18 +43,11 @@
             document.head.appendChild(script);
           });
 
-          await window.CrazyGames.SDK.init(); // Initialize SDK
+          await window.CrazyGames.SDK.init();
           window.CrazyGames.SDK.game.gameplayStart(); // Start the gameplay
         } catch (error) {
           console.error("Error loading CrazyGames SDK:", error);
         }
-
-        // Platform settings
-        adsDisabled.set(true);
-        preventExitPopup.set(true);
-
-        // Enable platform
-        crazyGames.set(true);
 
         if (window.CrazyGames.SDK.game.isInstantJoin) {
           multiplayerPopup.set(true);
