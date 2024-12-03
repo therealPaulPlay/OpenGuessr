@@ -220,7 +220,7 @@
     </div>
     {#if $isAuthenticated}
       <button
-        class="standardButton accountButton"
+        class="standardButton accountButton white"
         class:signoutDisabled={$crazyGames}
         id="logoutButton"
         alt="log out"
