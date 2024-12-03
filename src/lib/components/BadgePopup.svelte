@@ -93,7 +93,7 @@
     padding: 10px;
     padding-top: 7px;
     padding-bottom: 7px;
-    max-height: calc(100dvh - 300px);
+    max-height: calc(100dvh - 250px);
     overflow-x: hidden;
     overflow-y: auto;
     border-radius: 5px;

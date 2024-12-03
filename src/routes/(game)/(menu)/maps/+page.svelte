@@ -4,7 +4,7 @@
   import { isAuthenticated } from "$lib/stores/accountStore";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
-  import { signupPopup } from "$lib/stores/uiStore";
+  import { signupPrompt } from "$lib/utils/signupPrompt";
   import { changeCategory } from "$lib/utils/changeCategory";
   import { specialModes, continentMaps, countryMaps, basicMaps } from "$lib/stores/context-specific/officialMapsStore";
 
@@ -421,7 +421,7 @@
         if ($isAuthenticated) {
           goto("/maps/create");
         } else {
-          signupPopup.set(true);
+          signupPrompt();
         }
       }}>+ Create</button
     >
