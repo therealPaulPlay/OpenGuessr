@@ -39,7 +39,7 @@
     playSound("basic_button");
     $isSingleplayerNMPZ = !$isSingleplayerNMPZ;
     localStorage.setItem("singleplayerNMPZ", $isSingleplayerNMPZ ? "true" : "");
-    
+
     checkGenerationTypeAndGenerate();
   }
 
@@ -67,64 +67,66 @@
     <div class="popup-title">
       <h1>Singleplayer</h1>
     </div>
-    <div class="settingsCanvas slightBottomMargin">
-      <div class="settingsBox">
-        <p class="slightBottomMargin">Timer:</p>
-        <div class="timerSliderBox">
-          <input
-            type="range"
-            min="0"
-            max="300"
-            step="1"
-            class="slider"
-            id="timerSlider"
-            onchange={changeTimeout}
-            bind:value={timerSliderValue}
-          />
-          <div class="timerTextBox">
-            <img alt="timer icon" class="timerIcon" src="/img/timer_icon.png" />
-            <p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
+    <div class="settingsScrollArea">
+      <div class="settingsCanvas slightBottomMargin">
+        <div class="settingsBox">
+          <p class="slightBottomMargin">Timer:</p>
+          <div class="timerSliderBox">
+            <input
+              type="range"
+              min="0"
+              max="300"
+              step="1"
+              class="slider"
+              id="timerSlider"
+              onchange={changeTimeout}
+              bind:value={timerSliderValue}
+            />
+            <div class="timerTextBox">
+              <img alt="timer icon" class="timerIcon" src="/img/timer_icon.png" />
+              <p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-    <div class="settingsCanvas slightBottomMargin">
-      <div class="settingsBox">
-        <p class="slightBottomMargin">NMPZ:</p>
-        <div class="timerSliderBox">
-          <p class="singleplayerDesc">Prevent Move, Pan and Zoom:</p>
-          <button id="setSingleplayerNMPZ" class="standardButton white" onclick={toggleSingleplayerNMPZ}
-            >{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
-          >
+      <div class="settingsCanvas slightBottomMargin">
+        <div class="settingsBox">
+          <p class="slightBottomMargin">NMPZ:</p>
+          <div class="timerSliderBox">
+            <p class="singleplayerDesc">Prevent Move, Pan and Zoom:</p>
+            <button id="setSingleplayerNMPZ" class="standardButton white" onclick={toggleSingleplayerNMPZ}
+              >{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
+            >
+          </div>
         </div>
       </div>
-    </div>
-    <div class="settingsCanvas slightBottomMargin">
-      <div class="settingsBox roundLogContainer">
-        <p class="slightBottomMargin">Round Log:</p>
-        <div class="roundLogBox" id="roundLogBox">
-          <!-- round log will be automatically generated here -->
-          {#if $roundLog.length > 0}
-            {#each $roundLog as [mode, distance, coordinates], index}
-              <div class="roundLogItem">
-                <div>
-                  <p class="logItemMode">{mode}</p>
-                  <p>{formatDistance(distance)} away</p>
+      <div class="settingsCanvas slightBottomMargin">
+        <div class="settingsBox roundLogContainer">
+          <p class="slightBottomMargin">Round Log:</p>
+          <div class="roundLogBox" id="roundLogBox">
+            <!-- round log will be automatically generated here -->
+            {#if $roundLog.length > 0}
+              {#each $roundLog as [mode, distance, coordinates], index}
+                <div class="roundLogItem">
+                  <div>
+                    <p class="logItemMode">{mode}</p>
+                    <p>{formatDistance(distance)} away</p>
+                  </div>
+                  <button
+                    class="standardButton logItemButton"
+                    onclick={() => {
+                      playSound("basic_button");
+                      openLocationOnMaps(coordinates[0], coordinates[1]);
+                    }}
+                  >
+                    View
+                  </button>
                 </div>
-                <button
-                  class="standardButton logItemButton"
-                  onclick={() => {
-                    playSound("basic_button");
-                    openLocationOnMaps(coordinates[0], coordinates[1]);
-                  }}
-                >
-                  View
-                </button>
-              </div>
-            {/each}
-          {:else}
-            <p class="centerLogText">No saved rounds.</p>
-          {/if}
+              {/each}
+            {:else}
+              <p class="centerLogText">No saved rounds.</p>
+            {/if}
+          </div>
         </div>
       </div>
     </div>
@@ -168,6 +170,13 @@
     flex-wrap: wrap;
     justify-content: space-between;
     align-items: center;
+  }
+
+  .settingsScrollArea {
+    max-height: calc(100dvh - 250px);
+    width: 100%;
+    overflow: hidden;
+    overflow-y: auto;
   }
 
   .timerTextBox {
