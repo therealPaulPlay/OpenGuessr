@@ -58,12 +58,12 @@
     gap: 10px;
     border-radius: 10px;
     justify-content: left;
-    padding: 5px;
+    padding: 4px;
     width: fit-content;
     align-items: center;
     margin-bottom: 10px;
     margin-top: 10px;
     flex-wrap: wrap;
-    background-color: rgba(255, 255, 255, 0.2);
+    background-color: rgba(255, 255, 255, 0.1);
   }
 </style>
