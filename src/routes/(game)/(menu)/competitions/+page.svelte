@@ -38,6 +38,22 @@
 
   // Enter Competition ------------------------------------------------------------------------------------------------------------------------------
   async function enterCompetition(id, token) {
+    if (!$isAuthenticated) {
+      showConfirmPopup(
+        "Account required",
+        "In order to enter competitions, an account is needed.",
+        () => {
+          signupPrompt();
+        },
+        undefined,
+        undefined,
+        undefined,
+        "Sign up",
+      );
+
+      return;
+    }
+
     try {
       const requestBody = {
         id: localStorage.getItem("id"), // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
@@ -201,7 +217,6 @@
 
     let leaderboardIdFromLink;
     let leaderboardIdFromLinkAfterSubmit;
-    let showRatingBox = false;
 
     // Load leaderboard via link
     try {
