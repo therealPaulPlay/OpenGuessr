@@ -406,19 +406,19 @@ async function attemptDuelJoin(index) {
         } else {
             console.error('Error fetching room code:', response.status);
             multiplayerStatus.set("Bad Get Request response: " + response.status);
-            findNextDuel(); //as this could be a temporary thing, try again
+            findNextDuel(); // as this could be a temporary thing, try again
         }
 
     } catch (error) {
         console.error('Error occurred when trying to fetch room code: ', error);
         multiplayerStatus.set("Couldn't send get request");
-        matchmakingActive = false; //if there is no sever response, stop the matchmaking process
+        matchmakingActive = false; // if there is no sever response, stop the matchmaking process
         setRetryButtonState();
     }
 
     // Attempt to join if there is a code, otherwise create room
     if (receivedRoomCode != null && receivedRoomCode != "default") {
-        joinRoom(receivedRoomCode); //duel find status will be set in this function as well
+        joinRoom(receivedRoomCode); // duel find status will be set in this function as well
     } else if (receivedRoomCode == null) {
         // Create room & hide close + back button for the time
         screenEscapeDisabled.set(true);
@@ -428,7 +428,8 @@ async function attemptDuelJoin(index) {
         } catch (e) {
             console.error("Error changing category to standard for multiplayer duels. Error: " + e);
         }
-        setupMultiplayerRoom(5, 60); //+ auto skip for result screen
+
+        setupMultiplayerRoom(5, 60); // + auto skip for result screen
         sendRoomCodeToMatchmakingServer();
     }
 }
@@ -440,6 +441,7 @@ function findNextDuel() {
         attemptDuelJoin(roomIndex);
     } else {
         matchmakingActive = false;
+        multiplayerStatus.set("Couldn't connect to any room.");
         setRetryButtonState();
     }
 }
@@ -462,9 +464,9 @@ async function sendRoomCodeToMatchmakingServer() {
         if (response.ok) {
             setTimeout(() => {
                 if (matchmakingActive) {
-                    leaveMultiplayerRound();
-                    deleteRoomCodeFromMatchmakingServer();
                     matchmakingActive = false;
+                    deleteRoomCodeFromMatchmakingServer();
+                    leaveMultiplayerRound();
                     multiplayerStatus.set("No match found. Please retry.");
                     setRetryButtonState();
                 }
@@ -579,7 +581,7 @@ function attachHostLogic() {
             peer.on('connection', function (incomingConn) {
                 if (!get(roomLocked)) {
 
-                    //instantly lock the room on the first connection
+                    // instantly lock the room on the first connection
                     if (matchmakingActive || friendDuel) {
                         roomLocked.set(true);
                     }
@@ -643,14 +645,14 @@ function attachHostLogic() {
                             incomingConn.send(waitingMessage);
                         }
 
-                        //if duels matchmaking is active, immediately start the round on the first OPEN connection
+                        // If duels matchmaking is active, immediately start the round on the first OPEN connection
                         if (matchmakingActive) {
-                            deleteRoomCodeFromMatchmakingServer(); //delete roomcode from server
-                            StartRoom(); //this also locks the room
+                            deleteRoomCodeFromMatchmakingServer(); // Delete roomcode from server
+                            StartRoom(); // This also locks the room
                         }
 
                         if (friendDuel) {
-                            StartRoom(); //this also locks the room
+                            StartRoom(); // This also locks the room
                         }
                     });
 
@@ -847,11 +849,6 @@ function disconnectAllPeersAndCloseRoom() {
             } catch (error) {
                 console.error("Error disconnecting all peers in multiplayer js: " + error);
             }
-        }
-
-        if (matchmakingActive) {
-            //as this is apparent in leaveMultplayerRound, it is good too
-            deleteRoomCodeFromMatchmakingServer();
         }
     }
 
@@ -1062,7 +1059,7 @@ function attachErrorEvents() {
 
                 leaveMultiplayerRound();
             } else {
-                multiplayerStatus.set("Failed to join.");
+                multiplayerStatus.set("Failed to join: " + err);
             }
 
             if (matchmakingActive) {
@@ -1075,7 +1072,7 @@ function attachErrorEvents() {
                 }
 
                 if (get(isHost)) {
-                    deleteRoomCodeFromMatchmakingServer(); //the retry button will also appear as seen above
+                    deleteRoomCodeFromMatchmakingServer(); // the retry button will also appear as seen above
                 }
             }
 
@@ -1088,10 +1085,10 @@ function attachErrorEvents() {
             }
 
             if (get(isHost) && matchmakingActive) {
-                deleteRoomCodeFromMatchmakingServer(); //this happens when you close the tab / leave or refresh the page
+                deleteRoomCodeFromMatchmakingServer(); // this happens when you close the tab / leave or refresh the page
             }
 
-            peer.destroy(); //clean up peer
+            peer.destroy(); // clean up peer
         });
     } else {
         console.warn("PeerJS not initialized -> Error states cannot be shown!");
@@ -1117,12 +1114,14 @@ export function leaveMultiplayerRound() {
     // Disconnect all clients or Close the connection to the host
     if (get(isHost)) {
         disconnectAllPeersAndCloseRoom(); // only executes if clients connected
+        if (matchmakingActive) deleteRoomCodeFromMatchmakingServer();
+
     } else {
         if (conn) {
             try {
                 conn.close();
             } catch (error) {
-                console.error("Error when closing connection in multiplayer js: " + error);
+                console.error("Error when closing connection to host in multiplayer js: " + error);
             }
         }
     }
