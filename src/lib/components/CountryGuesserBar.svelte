@@ -148,7 +148,7 @@
 
   @media (orientation: portrait) and (max-width: 800px) {
     #countryGuesserSelector {
-      bottom: 155px;
+      bottom: 135px;
     }
   }
 
@@ -165,6 +165,7 @@
       height: 75px;
       width: 31%;
       border-radius: 7px;
+      flex-grow: 1;
     }
 
     #countryGuesserSelector {
