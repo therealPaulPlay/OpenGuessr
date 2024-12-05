@@ -2,6 +2,8 @@
 
 <script>
   import { onMount, onDestroy } from "svelte";
+  import { fade } from "svelte/transition";
+
   let { children, z, frameLess, slim, verySlim } = $props();
 
   let animateClass = $state("");
@@ -16,7 +18,7 @@
   });
 </script>
 
-<div class="popupHolder" style:z-index={z}>
+<div class="popupHolder" style:z-index={z} transition:fade={{ duration: 50 }}>
   <div
     class="uiWindow {animateClass}"
     class:frameLess={Boolean(frameLess)}
@@ -73,7 +75,7 @@
   }
 
   .animate {
-    animation: popupFadeIn 200ms ease-in-out;
+    animation: popupFadeIn 250ms ease-in-out;
   }
 
   @keyframes popupFadeIn {
@@ -82,7 +84,7 @@
     }
 
     50% {
-      transform: scale(1.01);
+      transform: scale(1.02);
     }
 
     100% {
