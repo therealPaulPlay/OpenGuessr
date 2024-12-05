@@ -15,7 +15,7 @@
   // Export error / success functions --------------------------------------------------------------------------------------------------------------
 
   let timeout;
-  
+
   function displaySuccess(text) {
     try {
       console.log("yes");
@@ -215,7 +215,7 @@
           >
         </div>
         <p class="switchFormBox">
-          Recovered Password?
+          Recovered password?
           <button id="loginSwitchChange" class="standardButton white" onclick={toggleForm}>Log in</button>
         </p>
       </div>
@@ -242,7 +242,7 @@
           >
         </div>
         <p class="switchFormBox">
-          No Account yet?
+          No account yet?
           <button id="loginSwitch" class="standardButton white" onclick={toggleForm}>Sign up</button>
         </p>
         <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -281,7 +281,7 @@
       <p id="errorMessage" bind:this={errorMessage}>This is an error message box.</p>
     </div>
     <div class="container containerBottom neumorphic-menu">
-      <button id="backButton" onclick={backToPrevious} class="standardButton">⭠ Go Back</button>
+      <button id="backButton" onclick={backToPrevious} class="standardButton">⭠ Go back</button>
     </div>
   </div>
   <div class="orb"></div>
