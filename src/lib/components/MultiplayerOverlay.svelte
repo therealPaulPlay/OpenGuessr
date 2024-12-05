@@ -90,6 +90,9 @@
       {/if}
     {/if}
   </div>
+  <div class="buttonSpacer">
+
+  </div>
   {#if $rematchButtonVisible}
     <button
       id="endMultiplayerRematchButton"
@@ -134,6 +137,11 @@
     user-select: none;
   }
 
+  .buttonSpacer {
+    width: 100%;
+    height: 20px;
+  }
+
   .multiplayerBadge {
     width: fit-content;
   }
@@ -153,7 +161,6 @@
     min-width: 150px;
     height: 50px;
     font-size: 25px;
-    margin-top: 20px;
     color: white;
     background-color: rgba(255, 255, 255, 0.2);
   }

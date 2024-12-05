@@ -788,8 +788,9 @@
     padding: 0;
     color: rgba(255, 255, 255, 0.5);
     overflow: hidden;
-    width: calc(100% - 20px);
-    padding-left: 20px;
+    width: calc(100% - 40px);
+    text-overflow: ellipsis;
+    padding-inline: 20px;
   }
 
   .multiplayerHostSettings {
@@ -916,6 +917,8 @@
     min-height: 60px;
     margin-top: 10px;
     max-width: 400px;
+    overflow: hidden;
+    text-overflow: ellipsis;
     transition: color 250ms ease;
   }
 
