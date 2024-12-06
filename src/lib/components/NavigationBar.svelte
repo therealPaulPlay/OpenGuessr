@@ -316,7 +316,7 @@
     height: 40px;
     margin-inline: 2px;
     max-height: 40px;
-    background-color: rgba(168, 168, 187, 0.3);
+    background-color: var(--panel-button-color);
     box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
     border: 3px solid rgba(255, 255, 255, 0.1);
     box-sizing: border-box;
@@ -448,7 +448,7 @@
   .accountButton {
     min-height: 40px;
     max-height: 40px;
-    background-color: rgba(168, 168, 187, 0.3);
+    background-color: var(--panel-button-color);
     text-decoration: none;
   }
 
