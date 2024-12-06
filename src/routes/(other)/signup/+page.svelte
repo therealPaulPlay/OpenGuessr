@@ -18,7 +18,6 @@
 
   function displaySuccess(text) {
     try {
-      console.log("yes");
       clearTimeout(timeout);
       errorMessage.innerHTML = text;
       errorMessage.style.maxHeight = "100px";
@@ -71,9 +70,11 @@
 
   // Password reset via auth link ------------------------------------------------------------------------------------------------------------------------------
 
+  let resetBearerToken;
+
   onMount(() => {
     let urlParams = new URLSearchParams(window.location.search);
-    let resetBearerToken = urlParams.get("token");
+    resetBearerToken = urlParams.get("token");
 
     if (resetBearerToken) {
       newPasswordForm.style.display = "block";
