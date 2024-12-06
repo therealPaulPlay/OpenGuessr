@@ -14,6 +14,7 @@
     --menu-background: rgba(39, 41, 53, 0.9);
     --box-color: rgba(255, 255, 255, 0.05);
     --dark-background: rgba(30, 30, 30, 0.7);
+    --panel-button-color: rgba(168, 168, 187, 0.3);
 }
 
 html {

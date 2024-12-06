@@ -135,7 +135,7 @@
   }
 
   .bottomBarButton {
-    background-color: rgba(168, 168, 187, 0.3);
+    background-color: var(--panel-button-color);
     pointer-events: auto;
     font-size: 25px;
   }
