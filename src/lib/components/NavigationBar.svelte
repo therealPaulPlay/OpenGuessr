@@ -39,7 +39,7 @@
 
   function checkTextLength(text) {
     const textLength = text.length;
-    scrollNameText = textLength > 10;
+    scrollNameText = textLength > 9;
   }
 
   username.subscribe((value) => {
