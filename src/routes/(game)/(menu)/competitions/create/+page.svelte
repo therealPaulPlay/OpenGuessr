@@ -371,6 +371,10 @@
     width: 100%;
   }
 
+  .submitButton {
+    border-radius: 10px;
+  }
+
   .infoNoteBox {
     background-color: rgba(0, 0, 0, 0.1);
     border-radius: 10px;
