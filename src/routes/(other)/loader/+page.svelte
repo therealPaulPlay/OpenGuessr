@@ -1,5 +1,5 @@
 <svelte:head>
-    <title>Loading Error</title>
+    <title>No Panorama</title>
 </svelte:head>
 
 <div>
