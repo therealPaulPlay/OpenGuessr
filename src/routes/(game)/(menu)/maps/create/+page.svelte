@@ -396,6 +396,7 @@
     color: white;
     border: none;
     font-size: 22px;
+    padding-inline: 15px;
     font-family: inherit;
     padding: 5px;
     cursor: pointer;
