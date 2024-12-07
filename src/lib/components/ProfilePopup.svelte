@@ -263,7 +263,7 @@
     background-color: rgba(30, 31, 44, 0.5);
     padding: 15px;
     padding-inline: 12px;
-    width: calc(100% + 25px);
+    width: calc(100% + 26px);
     margin-left: -25px;
     margin-top: -25px;
   }

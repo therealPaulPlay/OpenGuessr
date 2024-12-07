@@ -105,7 +105,7 @@
 </svelte:head>
 
 <div class="mainContainer">
-  <h1 id="uploadHeader">Create Map</h1>
+  <h1 id="uploadHeader">Create a Map</h1>
   <div class="infoNoteBox">
     <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
     <h2 class="uploadFirstText">Important Rules:</h2>
@@ -216,7 +216,7 @@
   <div class="buttonBoxRight fullWidth">
     <button
       id="uploadConfirm"
-      class="standardButton closeButton playButton"
+      class="standardButton closeButton submitButton"
       onclick={() => {
         playSound("basic_button");
         showConfirmPopup(
@@ -275,6 +275,9 @@
     margin-top: 10px;
     padding-top: 2px;
     padding-bottom: 2px;
+    border-radius: 10px;
+    min-height: 50px;
+    min-width: 150px;
   }
 
   #jsonFormatInfoSpan {
@@ -304,6 +307,10 @@
     width: 100%;
     margin-bottom: 30px;
     font-size: 40px;
+  }
+
+  .submitButton {
+    border-radius: 10px;
   }
 
   .infoNoteBox {
@@ -396,6 +403,7 @@
     color: white;
     border: none;
     font-size: 22px;
+    padding-inline: 15px;
     font-family: inherit;
     padding: 5px;
     cursor: pointer;
