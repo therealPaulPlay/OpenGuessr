@@ -521,6 +521,7 @@
     display: flex;
     flex-direction: column;
     align-items: center;
+    min-height: 2500px; /* avoid searches changing the page size much */
   }
 
   .headerContainer {
@@ -727,7 +728,6 @@
   #community-maps {
     margin-bottom: 50px;
     margin-top: 10px;
-    min-height: 1200px;
   }
 
   .nothingFound {
