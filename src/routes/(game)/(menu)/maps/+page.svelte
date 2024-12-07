@@ -641,11 +641,12 @@
     flex-wrap: wrap;
     width: 100%;
     margin-bottom: 20px;
-    overflow: visible;
+    overflow: visible; /* On hover, prevent scale up from clipping elements at the borders */
   }
 
   .map-container-expand {
     transition: mask 650ms ease-in-out;
+    overflow: hidden !important;
   }
 
   .map-container-expand-fadeout {
