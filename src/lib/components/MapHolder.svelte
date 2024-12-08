@@ -20,8 +20,9 @@
     position: fixed;
     display: flex;
     right: 0;
-    bottom: 65px;
+    bottom: 76px;
     padding-inline: 10px;
+    min-height: 150px;
     align-items: flex-end;
     flex-direction: column;
     max-height: 100%;
@@ -82,7 +83,7 @@
   /* Shift up to fit ad */
   @media (orientation: portrait) and (max-width: 800px) {
     .mapHolder {
-      bottom: 125px;
+      bottom: 135px;
     }
   }
 </style>

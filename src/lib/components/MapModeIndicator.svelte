@@ -85,7 +85,7 @@
     padding-top: 3px;
     padding-bottom: 2px;
     user-select: none;
-    margin-bottom: 10px;
+    margin-top: 8px;
     flex-shrink: 0;
   }
 
