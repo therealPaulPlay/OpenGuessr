@@ -591,9 +591,7 @@ function attachHostLogic() {
                 if (!get(roomLocked)) {
 
                     // instantly lock the room on the first connection
-                    if (matchmakingActive || friendDuel) {
-                        roomLocked.set(true);
-                    }
+                    if (matchmakingActive || friendDuel) roomLocked.set(true);
 
                     let brokenConnectionTimeout = setTimeout(() => {
                         // Unlock the room & disconnect non-working peer if connection fails to open within 2 seconds
@@ -630,6 +628,7 @@ function attachHostLogic() {
                                 category: get(multiplayerCategory)
                             }
                         }
+
                         // Send messages
                         incomingConn.send(initialMessage);
                         distributeChat("System: " + incomingConn.metadata.username + " joined.");
@@ -706,8 +705,9 @@ function attachHostLogic() {
                             sendMessageToAll("showPlayersArray", get(connectedPlayers));
                             showMultiplayerOverlay(true, "Waiting...");
                         } else {
-                            // if already in round, count it as a guess (so that the others don't have to wait)
+                            // if already in round, count it as a guess & update players data
                             multiplayerHasGuessed();
+                            sendMessageToAll("updateConnectedPlayers", get(connectedPlayers));
                         }
                     })
                 } else {
@@ -951,7 +951,7 @@ export async function joinRoom(code) {
         if (data.type === "lateJoin") {
             multiplayerFirstRoundPlayed = true;
             lateJoinedWaiting = true;
-            
+
             connectedPlayers.set(data.content);
             showMultiplayerOverlay(true, "Wait for next round...", true);
         }
@@ -959,6 +959,10 @@ export async function joinRoom(code) {
         if (data.type === "showPlayersArrayAfterRound") {
             connectedPlayers.set(data.content);
             showMultiplayerOverlay(true, "Results from round " + roundIndex);
+        }
+
+        if (data.type === "updateConnectedPlayers") {
+            connectedPlayers.set(data.content);
         }
 
         if (data.type === "start") {

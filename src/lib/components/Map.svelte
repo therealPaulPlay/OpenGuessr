@@ -145,7 +145,10 @@
     padding-inline: 6px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
     margin-top: -18px;
-    margin-left: 23px;
+  }
+
+  :global(.leaflet-tooltip-right) {
+    margin-left: 22px !important;
   }
 
   :global(.leaflet-interactive) {

@@ -7,6 +7,11 @@
   } from "$lib/stores/context-specific/multiplayerStore";
   import { fade } from "svelte/transition";
 
+  // Helper function to truncate names
+  const truncateName = (name) => {
+    return name.length > 10 ? `${name.slice(0, 7)}...` : name;
+  };
+
   // Derive the players who haven't guessed yet
   const remainingPlayers = $derived(
     $connectedPlayers.filter((player) => {
@@ -15,8 +20,8 @@
     }),
   );
 
-  // Get just the usernames of remaining players
-  const remainingNames = $derived(remainingPlayers.map((player) => player[1]));
+  // Get just the usernames of remaining players and truncate if necessary
+  const remainingNames = $derived(remainingPlayers.map((player) => truncateName(player[1])));
 
   // Format the waiting message based on number of remaining players
   const waitingMessage = $derived(
@@ -32,21 +37,21 @@
                 prefix: "Waiting for ",
                 names: [remainingNames[0], remainingNames[1], remainingNames[2]],
                 separator: ", ",
-                lastSeparator: " and", // Removed space at the end
+                lastSeparator: " and",
                 suffix: ".",
               },
   );
 </script>
 
 {#if remainingNames.length > 0 && $multiplayerGuessesLocationsArray.some((element) => element[4] == $peerId)}
-  <div class="remainingGuessesDisplay" transition:fade={{ duration: 300 }}>
-    <p transition:fade={{ duration: 200 }}>
+  <div class="remainingGuessesDisplay" transition:fade={{ duration: 250 }}>
+    <p transition:fade={{ duration: 250 }}>
       <span class="dimmed">{waitingMessage.prefix}</span>
       {#each waitingMessage.names as name, i}
         {#if i > 0}
           <span class="dimmed"
             >{i === waitingMessage.names.length - 1 && waitingMessage.lastSeparator
-              ? waitingMessage.lastSeparator + " " // Added space after "and"
+              ? waitingMessage.lastSeparator + " "
               : waitingMessage.separator}</span
           >
         {/if}
@@ -69,15 +74,12 @@
     border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
   }
-
   .remainingGuessesDisplay p {
     font-size: 20px;
   }
-
   .dimmed {
     opacity: 0.75;
   }
-
   .name {
     opacity: 1;
   }
