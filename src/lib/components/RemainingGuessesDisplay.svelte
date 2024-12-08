@@ -28,7 +28,7 @@
     remainingNames.length === 0
       ? { prefix: "", names: [], suffix: "" }
       : remainingNames.length > 3
-        ? { prefix: "Waiting for ", names: [`${remainingNames.length} others`], suffix: "." }
+        ? { prefix: "Waiting for ", names: [`${remainingNames.length} players`], suffix: "." }
         : remainingNames.length === 1
           ? { prefix: "Waiting for ", names: [remainingNames[0]], suffix: "." }
           : remainingNames.length === 2
@@ -65,8 +65,6 @@
   .remainingGuessesDisplay {
     border-radius: 10px;
     background-color: var(--box-color);
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
     padding: 5px;
     padding-inline: 10px;
     width: calc(100% - 20px);

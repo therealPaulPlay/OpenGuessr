@@ -2,7 +2,7 @@
   import { chatHTML, chatVisible } from "$lib/stores/context-specific/multiplayerStore";
   import { manuallySendChat } from "$lib/utils/chatFunctions";
   import { playSound } from "$lib/utils/soundManager";
-  import RemainingGuessesDisplay from "./RemainingGuessesDisplay.svelte";
+  import RemainingGuessesDisplay from "$lib/components/RemainingGuessesDisplay.svelte";
 
   let multiplayerChatMessages = $state();
   let inputValue = $state();
