@@ -89,7 +89,6 @@
     z-index: 9;
     opacity: 60%;
     border-radius: 10px;
-    margin-bottom: 10px;
     max-height: 100%;
     background: #e8e4dc;
     box-shadow: 0 2px 30px rgba(71, 71, 71, 0.5);

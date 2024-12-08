@@ -2,6 +2,7 @@
   import { chatHTML, chatVisible } from "$lib/stores/context-specific/multiplayerStore";
   import { manuallySendChat } from "$lib/utils/chatFunctions";
   import { playSound } from "$lib/utils/soundManager";
+  import RemainingGuessesDisplay from "./RemainingGuessesDisplay.svelte";
 
   let multiplayerChatMessages = $state();
   let inputValue = $state();
@@ -19,48 +20,48 @@
   });
 </script>
 
-<div id="multiplayerChat" style:display={$chatVisible ? "" : "none"}>
-  <div id="multiplayerChatMessages" bind:this={multiplayerChatMessages}>
-    <p id="multiplayerMessageBox" bind:innerHTML={$chatHTML} contenteditable="false"></p>
-  </div>
-  <div id="bottomMultiplayerChatArea">
-    <input
-      maxlength="100"
-      type="text"
-      id="multiplayerMessageInput"
-      placeholder="Type your message..."
-      bind:value={inputValue}
-      onkeydown={(event) => {
-        if (event.key == "Enter") {
-          event.preventDefault();
+<div class="chatContainer" style:display={$chatVisible ? "flex" : "none"}>
+  <div id="multiplayerChat">
+    <RemainingGuessesDisplay />
+    <div id="multiplayerChatMessages" bind:this={multiplayerChatMessages}>
+      <p id="multiplayerMessageBox" bind:innerHTML={$chatHTML} contenteditable="false"></p>
+    </div>
+    <div id="bottomMultiplayerChatArea">
+      <input
+        maxlength="100"
+        type="text"
+        id="multiplayerMessageInput"
+        placeholder="Type your message..."
+        bind:value={inputValue}
+        onkeydown={(event) => {
+          if (event.key == "Enter") {
+            event.preventDefault();
+            manuallySendChat(inputValue);
+            inputValue = "";
+          }
+        }}
+      />
+      <button
+        id="multiplayerSendButton"
+        class="standardButton"
+        onclick={() => {
+          playSound("basic_button");
           manuallySendChat(inputValue);
           inputValue = "";
-        }
-      }}
-    />
-    <button
-      id="multiplayerSendButton"
-      class="standardButton"
-      onclick={() => {
-        playSound("basic_button");
-        manuallySendChat(inputValue);
-        inputValue = "";
-      }}>Send</button
-    >
+        }}>Send</button
+      >
+    </div>
   </div>
 </div>
 
 <style>
   #multiplayerChat {
-    width: 300px;
-    height: 20%;
+    width: 100%;
+    height: 15vh;
     max-height: 250px;
     min-height: 150px;
     border-radius: 10px;
     overflow: hidden;
-    position: fixed;
-    left: 10px;
-    bottom: 75px;
     flex-direction: column;
     align-items: center;
     display: flex;
@@ -69,7 +70,19 @@
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
     font-size: 20px;
+  }
+
+  .chatContainer {
+    left: 10px;
+    bottom: 76px;
+    justify-content: flex-end;
+    align-items: center;
     z-index: 10;
+    position: fixed;
+    height: fit-content;
+    flex-direction: column;
+    width: 300px;
+    gap: 8px;
   }
 
   #bottomMultiplayerChatArea {

@@ -27,11 +27,11 @@ export function transitionToStart() {
 
         setTimeout(socialPopupProbability, 650);
 
-        //notify peers that the next round has begun
+        // Notify peers that the next round has begun
         if (get(isHost) && get(multiplayer)) {
             clearAutoSkipTimeout();
             sendMessageToAll("closeResultScreen");
-            showMultiplayerRoundResults();
+            showMultiplayerRoundResults(); // Show Overlay for peers and host
         }
 
         shrinkMapIfMobile();

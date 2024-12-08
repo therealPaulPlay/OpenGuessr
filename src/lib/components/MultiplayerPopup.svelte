@@ -21,7 +21,7 @@
     screenEscapeDisabled,
     multiplayerCategory,
     duelRetryEnabled,
-    connectedClientsCount,
+    connectedPlayers,
     multiplayerStatus,
     restrictionButtonText,
     teamsDisplayText,
@@ -327,7 +327,7 @@
               </div>
               <div id="teamsDisplay" class="roomCreationModule multiplayerHostSettings">
                 <p id="teamsDisplayText">{$teamsDisplayText}</p>
-                <p id="smallJoinCounter">{$connectedClientsCount + 1}</p>
+                <p id="smallJoinCounter">{$connectedPlayers.length}</p>
               </div>
               {#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online).length >= 1}
                 <div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
@@ -396,7 +396,7 @@
                 id="multiplayerHost"
                 class="standardButton"
                 class:buttonDisabled={$hostStage == 2 &&
-                  ($connectedClientsCount + 1 < get(teamAmount) || $connectedClientsCount == 0)}
+                  ($connectedPlayers.length < get(teamAmount) || $connectedPlayers.length <= 1)}
                 onclick={() => {
                   playSound("basic_button");
                   createRoom(get(roundAmount), get(roundLength));

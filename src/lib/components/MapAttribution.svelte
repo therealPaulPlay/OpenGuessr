@@ -5,7 +5,7 @@
 </script>
 
 {#if $mapVisible && $mapExpanded}
-  <div id="mapAttribution" class="mapAttribution" style:bottom={$mapModeIndicatorVisible ? "73px" : ""}>
+  <div id="mapAttribution" class="mapAttribution" style:bottom={$mapModeIndicatorVisible ? "61px" : ""}>
     <p>Map Data ©{new Date().getFullYear()} Google</p>
     <p style="border-bottom-right-radius: 10px">
       <a
@@ -15,7 +15,7 @@
       >
     </p>
   </div>
-  <div id="mapAttributionLogo" class="mapAttribution" style:bottom={$mapModeIndicatorVisible ? "73px" : ""}>
+  <div id="mapAttributionLogo" class="mapAttribution" style:bottom={$mapModeIndicatorVisible ? "59px" : ""}>
     <img
       style="width: 60px"
       alt="Google"
@@ -31,13 +31,13 @@
   }
 
   #mapAttributionLogo {
-    bottom: 8px;
+    bottom: -2px;
     left: 15px;
     opacity: 0.8;
   }
 
   #mapAttribution {
-    bottom: 10px;
+    bottom: 0;
     right: 10px;
     opacity: 0.8;
     border-bottom-right-radius: 10px;
