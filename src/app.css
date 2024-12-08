@@ -95,7 +95,7 @@ input:focus {
     min-height: 35px;
     text-align: center;
     white-space: nowrap;
-    transition: filter 250ms ease, box-shadow 250ms ease, transform 150ms ease, color 250ms ease, background-color 250ms ease;
+    transition: filter 250ms ease, box-shadow 250ms ease, transform 150ms ease, color 250ms ease, background-color 250ms ease, opacity 250ms ease;
     border-radius: 5px;
     margin: 2px;
     user-select: none;
