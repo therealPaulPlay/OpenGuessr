@@ -13,7 +13,7 @@ export const roomLocked = writable(true);
 // Data
 export const multiplayerGuessesLocationsArray = writable([]);
 export const peerId = writable();
-export const connectedClientsCount = writable(0); // Players in round connected to host (excluding host)
+export const connectedPlayers = writable([]); // Connected peers and the host, with a lot of data
 export const savedGuestName = writable("Guest (Default)");
 export const yourTeam = writable(1);
 

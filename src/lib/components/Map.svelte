@@ -62,7 +62,6 @@
     z-index: 9;
     opacity: 60%;
     border-radius: 10px;
-    margin-bottom: 10px;
     max-height: 100%;
     background: #e8e4dc;
     box-shadow: 0 2px 30px rgba(71, 71, 71, 0.5);
@@ -119,7 +118,10 @@
     padding-inline: 6px;
     box-shadow: 0 1px 5px rgba(0, 0, 0, 0.4);
     margin-top: -18px;
-    margin-left: 23px;
+  }
+
+  :global(.leaflet-tooltip-right) {
+    margin-left: 22px !important;
   }
 
   :global(.leaflet-interactive) {

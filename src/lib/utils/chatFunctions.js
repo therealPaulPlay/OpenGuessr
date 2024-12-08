@@ -40,7 +40,7 @@ function addTextToChat(text) {
     chatHTML.set(get(chatHTML) + "<br>");
 
     if (sanitizedText.startsWith("System:")) {
-        chatHTML.set(get(chatHTML) + `<span style="color: #c1c1c1;">${sanitizedText}</span>`);
+        chatHTML.set(get(chatHTML) + `<span style="opacity: 0.75">${sanitizedText}</span>`);
     } else {
         chatHTML.set(get(chatHTML) + sanitizedText);
     }

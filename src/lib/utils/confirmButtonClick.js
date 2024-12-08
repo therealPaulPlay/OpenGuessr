@@ -1,5 +1,5 @@
 // This executes when the user presses "Space" or the "Confirm" / "Guess" button
-import { confirmButtonActive, confirmButtonText } from "$lib/stores/context-specific/confirmButtonStore.js";
+import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore.js";
 import { continueText } from "$lib/stores/context-specific/resultScreenStore";
 import { multiplayer, competition } from "$lib/stores/modeStore";
 import { playSound } from "$lib/utils/soundManager";
@@ -21,7 +21,6 @@ export function confirmButtonClicks() {
     if (!get(multiplayer)) {
         enableResultScreen(get(mapPinLat), get(mapPinLng));
     } else {
-        confirmButtonText.set("Wait...");
         mapVisible.set(false);
 
         multiplayerStateToGuessed();

@@ -483,7 +483,7 @@
 
     21% {
       opacity: 0;
-      transform: translate(100%, 342px);
+      transform: translate(100%, 340px);
     }
 
     30% {
@@ -492,7 +492,7 @@
 
     40% {
       opacity: 0;
-      transform: translateY(342px);
+      transform: translateY(340px);
     }
 
     41% {

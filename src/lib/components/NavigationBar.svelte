@@ -159,7 +159,7 @@
         singleplayerOptionsPopup.set(true);
       }}
     >
-      <img src="/img/joystick_icon.png" alt="one or five seconds" id="joystickIcon" class="socialBarIcons" />
+      <img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
     </button>
   </div>
 </nav>
@@ -300,7 +300,7 @@
         singleplayerOptionsPopup.set(true);
       }}
     >
-      <img src="/img/joystick_icon.png" alt="one or five seconds" id="joystickIcon" class="socialBarIcons" />
+      <img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
     </button>
     <button class="standardButton accountButton white" id="settingsButton" onclick={openSettings}>
       <img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
