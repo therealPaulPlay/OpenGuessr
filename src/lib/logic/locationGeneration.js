@@ -68,24 +68,41 @@ async function getCoordsFromLocationServer() {
         try {
             previousGuessesIndexes = [];
             loadedMapCategory = "standard";
+            let locationEndpoint = "https://locations.openguessr.com/locations";
 
-            let locationEndpoint = "https://locations.openguessr.com/locations"; // for testing, use http://localhost:3000/locations
+            // Create an AbortController for the timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 500); // 500ms timeout
 
-            const response = await fetch(locationEndpoint, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            });
+            try {
+                const response = await fetch(locationEndpoint, {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                    signal: controller.signal
+                });
 
-            // Check if the response is successful
-            if (response.ok) {
-                const data = await response.json();
-                const standardLocations = data.locations; // the array is in locations: {}
-                currentlyLoadedLocationsArray.set(standardLocations);
-                return pickRandomLocations();
+                // Clear the timeout since we got a response
+                clearTimeout(timeoutId);
 
-            } else {
-                console.error("Location fetch failed. Server returned error:", response.status);
-                return await loadBackupLocations(response.status);
+                // Check if the response is successful
+                if (response.ok) {
+                    const data = await response.json();
+                    const standardLocations = data.locations;
+                    currentlyLoadedLocationsArray.set(standardLocations);
+                    return pickRandomLocations();
+                } else {
+                    console.error("Location fetch failed. Server returned error:", response.status);
+                    return await loadBackupLocations(response.status);
+                }
+            } catch (error) {
+                // Clear the timeout in case of error
+                clearTimeout(timeoutId);
+
+                if (error.name === 'AbortError') {
+                    console.error("Request timed out after 500ms");
+                    return await loadBackupLocations("Request timeout");
+                }
+                throw error; // Re-throw other errors to be caught by outer try-catch
             }
         } catch (error) {
             console.error("Error occurred while fetching locations from server: ", error);
@@ -101,7 +118,7 @@ async function loadBackupLocations(error) {
     console.log("Loading backup locations.");
     errorPopup("Location server error", "Loading local backup locations instead. ", "Error: " + error);
 
-    return await getCoordsFromJSON("backup");
+    return await getJSONCoords("backup");
 }
 
 // Get community map coordinates ---------------------------------------------------------------------------
