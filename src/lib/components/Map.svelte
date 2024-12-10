@@ -10,10 +10,8 @@
   let mapResizeTimeout;
 
   function handleMapHover() {
-    if (window.matchMedia("(min-width: 1200px)").matches) {
-      clearTimeout(mapResizeTimeout);
-      mapHovered.set(true);
-    }
+    clearTimeout(mapResizeTimeout);
+    mapHovered.set(true);
   }
 
   function handleMapUnhover() {
@@ -161,7 +159,30 @@
     outline: none;
   }
 
-  @media all and (max-width: 1200px) {
+  :global(.leaflet-control-layers-toggle) {
+    background-image: url("/img/map_layer_icon.png") !important;
+    background-size: 23px 23px !important;
+  }
+
+  :global(.leaflet-touch .leaflet-control-layers) {
+    border: none !important;
+  }
+
+  :global(.leaflet-touch .leaflet-control-layers-toggle) {
+    width: 35px !important;
+    height: 35px !important;
+  }
+
+  :global(.leaflet-control-layers-selector) {
+    top: -2px !important;
+  }
+
+  :global(.leaflet-control-layers-base) {
+    font-size: 18px !important;
+    line-height: 30px !important;
+  }
+
+  @media (orientation: portrait) and (max-width: 1200px) {
     /* On mobile, the map doesn't fade out if it's not being hovered over */
     #map {
       opacity: 100%;

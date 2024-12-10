@@ -54,7 +54,7 @@
     border-radius: 5px;
   }
 
-  @media all and (max-width: 1200px) {
+  @media ((orientation: portrait) or (max-width: 800px)) and (max-width: 1200px) {
     .floatingMapButton {
       display: flex;
     }
