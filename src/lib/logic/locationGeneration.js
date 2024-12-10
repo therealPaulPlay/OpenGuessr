@@ -99,7 +99,7 @@ async function getCoordsFromLocationServer() {
                 clearTimeout(timeoutId);
 
                 if (error.name === 'AbortError') {
-                    console.error("Request timed out after 500ms");
+                    console.error("Request timed out.");
                     return await loadBackupLocations("Request timeout");
                 }
                 throw error; // Re-throw other errors to be caught by outer try-catch

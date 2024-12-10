@@ -278,14 +278,6 @@ li {
     overflow: hidden;
 }
 
-.directionArrowIcon {
-    width: 25px;
-    height: 25px;
-    transform: rotate(270deg);
-    vertical-align: -3px;
-    margin-right: -10px;
-}
-
 .arrowIcon {
     width: 25px;
     height: 25px;
