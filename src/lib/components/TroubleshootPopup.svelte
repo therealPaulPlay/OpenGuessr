@@ -23,15 +23,19 @@
         <p>Disable Firewalls: Some restrictive firewall settings or wifi routers can block WebRTC.</p>
       </li>
       <li>
-        Check if the TURN servers are online: We use turn servers from <a
-          href="https://fastturn.net/status"
-          target="_blank"
-        >
-          fastturn
-        </a>
-        .
+        <p>
+          Check if the TURN servers are online: We use turn servers from <a
+            href="https://fastturn.net/status"
+            target="_blank"
+          >
+            fastturn
+          </a>
+          .
+        </p>
       </li>
-      <li>Check if your browser supports WebRTC: Open chrome://webrtc-internals/ or about:webrtc for Firefox.</li>
+      <li>
+        <p>Check if your browser supports WebRTC: Open chrome://webrtc-internals/ or about:webrtc for Firefox.</p>
+      </li>
     </ul>
     <p>
       If multiplayer still does not work after following these steps, consider using a different wifi, cellular data or
