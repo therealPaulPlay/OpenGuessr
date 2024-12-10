@@ -1,7 +1,8 @@
 <script>
-  import { Plus, XCircle, ExternalLinkIcon, ArrowDown } from "lucide-svelte";
+  import { Plus, XCircle, ExternalLinkIcon } from "lucide-svelte";
   import { playSound } from "$lib/utils/soundManager";
   import { isAuthenticated } from "$lib/stores/accountStore";
+  import { disableExternalLinks } from "$lib/stores/context-specific/platformSettingsStore";
   import { onMount } from "svelte";
   import { goto } from "$app/navigation";
   import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -220,7 +221,7 @@
     {/each}
   </div>
   <div class="headerContainer">
-    <h2 class="header">Special Modes</h2>
+    <h2 class="header">Special Games</h2>
   </div>
   <div class="map-container">
     {#each $specialModes as map}
@@ -253,38 +254,40 @@
         </div>
       </div>
     </div>
-    <div
-      class="map-item map-item-slim"
-      role="button"
-      tabindex="0"
-      onclick={() => {
-        playSound("button_juicy");
-        window.open("https://education.openguessr.com/quiz", "_blank").focus();
-      }}
-    >
-      <div class="mapInfo">
-        <div class="map-name">
-          Quizzes <span class="educationBadge">Edu</span>
-          <span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
+    {#if !$disableExternalLinks}
+      <div
+        class="map-item map-item-slim"
+        role="button"
+        tabindex="0"
+        onclick={() => {
+          playSound("button_juicy");
+          window.open("https://education.openguessr.com/quiz", "_blank").focus();
+        }}
+      >
+        <div class="mapInfo">
+          <div class="map-name">
+            Quizzes <span class="educationBadge">Edu</span>
+            <span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
+          </div>
         </div>
       </div>
-    </div>
-    <div
-      class="map-item map-item-slim"
-      role="button"
-      tabindex="0"
-      onclick={() => {
-        playSound("button_juicy");
-        window.open("https://education.openguessr.com/guides", "_blank").focus();
-      }}
-    >
-      <div class="mapInfo">
-        <div class="map-name">
-          Guides <span class="educationBadge">Edu</span>
-          <span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
+      <div
+        class="map-item map-item-slim"
+        role="button"
+        tabindex="0"
+        onclick={() => {
+          playSound("button_juicy");
+          window.open("https://education.openguessr.com/guides", "_blank").focus();
+        }}
+      >
+        <div class="mapInfo">
+          <div class="map-name">
+            Guides <span class="educationBadge">Edu</span>
+            <span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
+          </div>
         </div>
       </div>
-    </div>
+    {/if}
   </div>
   <div class="headerContainer">
     <h2 class="header">Countries</h2>

@@ -327,7 +327,7 @@ export function attemptJoinViaLink() {
         try {
             roomCode = window.CrazyGames.SDK.game.getInviteParam("join");
         } catch {
-            console.error("Failed to join via CrazyGames link.");
+            console.error("Failed to retrieve Crazy Games Link Parameters. Is the SDK loaded?");
         }
     }
 

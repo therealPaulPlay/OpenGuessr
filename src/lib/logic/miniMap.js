@@ -13,8 +13,8 @@ import { get } from "svelte/store";
 // Initialize the map
 export function initMap() {
     const worldBounds = L.latLngBounds(
-        L.latLng(-90, -180), // Southwest corner
-        L.latLng(90, 180)    // Northeast corner
+        L.latLng(-135, -315), // Southwest corner
+        L.latLng(135, 315)    // Northeast corner
     );
 
     // Initialize providers

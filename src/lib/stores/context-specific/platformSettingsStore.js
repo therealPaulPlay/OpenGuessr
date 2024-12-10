@@ -4,6 +4,7 @@ import { writable } from "svelte/store";
 // Settings
 export const adsDisabled = writable(false);
 export const preventExitPopup = writable(false);
+export const disableExternalLinks = writable(false);
 
 // Platforms
 export const crazyGames = writable(false);
