@@ -11,10 +11,8 @@
   let mapResizeTimeout;
 
   function handleMapHover() {
-    if (window.matchMedia("(min-width: 1200px)").matches) {
-      clearTimeout(mapResizeTimeout);
-      mapHovered.set(true);
-    }
+    clearTimeout(mapResizeTimeout);
+    mapHovered.set(true);
   }
 
   function handleMapUnhover() {
@@ -211,7 +209,7 @@
     line-height: 30px !important;
   }
 
-  @media all and (max-width: 1200px) {
+  @media (orientation: portrait) and (max-width: 1200px) {
     /* On mobile, the map doesn't fade out if it's not being hovered over */
     #map {
       opacity: 100%;

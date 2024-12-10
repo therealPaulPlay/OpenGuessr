@@ -248,13 +248,9 @@
     .bottomSocialItem {
       display: none;
     }
-
-    #revealCompass {
-      display: none;
-    }
   }
 
-  @media (orientation: portrait) {
+  @media (orientation: portrait) or (max-width: 900px) {
     #revealCompass {
       display: none;
     }
