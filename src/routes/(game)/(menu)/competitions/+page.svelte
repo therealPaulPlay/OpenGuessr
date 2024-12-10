@@ -1054,7 +1054,7 @@
     flex-direction: column;
     width: calc(100% - 10px);
     border-radius: 5px;
-    max-height: 50vh;
+    max-height: calc(70dvh - 250px);
     overflow-x: hidden;
     overflow-y: auto;
     scrollbar-width: none;

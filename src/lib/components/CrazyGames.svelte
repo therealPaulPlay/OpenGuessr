@@ -11,7 +11,7 @@
     currentScreen,
   } from "$lib/stores/context-specific/multiplayerStore";
   import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
-  import { adsDisabled, crazyGames, preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
+  import { adsDisabled, crazyGames, preventExitPopup, disableExternalLinks } from "$lib/stores/context-specific/platformSettingsStore";
   import { multiplayerPopup } from "$lib/stores/uiStore";
   import { createRoom } from "$lib/logic/multiplayerLogic";
   import { isAuthenticated } from "$lib/stores/accountStore";
@@ -27,6 +27,7 @@
         // Platform settings
         adsDisabled.set(true);
         preventExitPopup.set(true);
+        disableExternalLinks.set(true);
 
         // Enable platform
         crazyGames.set(true);
