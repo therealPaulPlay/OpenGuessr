@@ -4,6 +4,7 @@
   import { isAuthenticated, username } from "$lib/stores/accountStore";
   import { playSound } from "$lib/utils/soundManager";
   import { onMount } from "svelte";
+  import { fade } from "svelte/transition";
 
   // Add leaderboar entries --------------------------------------------------------------------------------------------------------
   let mainSectionEntries = $state();
@@ -176,7 +177,7 @@
       {/if}
     </div>
     {#if userSectionEntries}
-      <div id="threeDotsContainer" class="threeDotsContainer">
+      <div id="threeDotsContainer" class="threeDotsContainer" transition:fade={{ duration: 250 }}>
         <div class="circleDot"></div>
         <div class="circleDot"></div>
         <div class="circleDot"></div>
