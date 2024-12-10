@@ -167,6 +167,14 @@
     transition: opacity 250ms ease-out;
   }
 
+  .directionArrowIcon {
+    width: 22px;
+    height: 22px;
+    transform: rotate(270deg);
+    vertical-align: -3px;
+    margin-right: -10px;
+}
+
   .resultScreenHidden {
     pointer-events: none !important;
     opacity: 0 !important;
