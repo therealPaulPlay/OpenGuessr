@@ -63,7 +63,7 @@
   @media all and (orientation: landscape) and (max-width: 1200px) {
     .mapHolder {
       width: 30%;
-      height: 45%;
+      height: 30%;
     }
   }
 
@@ -72,7 +72,7 @@
     height: 55%;
   }
 
-  @media (orientation: portrait) and (max-width: 1200px) {
+  @media ((orientation: portrait) or (max-width: 800px)) and (max-width: 1200px) {
     .mapHolder {
       height: 50%;
       width: calc(100% - 20px);
