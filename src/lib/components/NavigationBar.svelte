@@ -80,87 +80,120 @@
       console.warn("Error setting progress:", error);
     }
   }
+
+  // Mobile bar fadeout -----------------------------------------------------------------------------------------------------
+  let mobileBarScroll = $state(0);
+  let mobileBarFadeRight = $state(false);
+  let mobileBarFadeLeft = $state(false);
+
+  function checkIfBarScrollable() {
+    mobileBarFadeRight =
+      mobileBarScroll.scrollWidth > mobileBarScroll.clientWidth &&
+      mobileBarScroll.scrollLeft + mobileBarScroll.clientWidth < mobileBarScroll.scrollWidth;
+    mobileBarFadeLeft = mobileBarScroll.scrollWidth > mobileBarScroll.clientWidth && mobileBarScroll.scrollLeft > 0;
+  }
+
+  onMount(() => {
+    checkIfBarScrollable();
+  });
 </script>
+
+<svelte:window onresize={checkIfBarScrollable} />
 
 <!-- mobile top nav bar -->
 <nav class="mobileButtonArea topButtonArea">
-  <div class="barMenu">
-    {#if !$isAuthenticated}
-      <button
-        id="mobileLoginButton"
-        class="standardButton loginButton mobileAccountButton"
-        onclick={() => {
-          playSound("basic_button");
-          signupPrompt();
-        }}><span class="mobileSigninIcon"><UserRoundPlus strokeWidth={3} size={20} /></span></button
-      >
-    {/if}
-    {#if $isAuthenticated}
-      <button
-        id="mobileProfileButton"
+  <div class="barMenu mobileBarMenu">
+    <div
+      class="mobileScrollBarMenu"
+      bind:this={mobileBarScroll}
+      onscroll={checkIfBarScrollable}
+      class:mobileScrollBarFadeRight={mobileBarFadeRight}
+      class:mobileScrollBarFadeLeft={mobileBarFadeLeft}
+    >
+      {#if !$isAuthenticated}
+        <button
+          id="mobileLoginButton"
+          class="standardButton loginButton mobileAccountButton"
+          onclick={() => {
+            playSound("basic_button");
+            signupPrompt();
+          }}><span class="mobileSigninIcon"><UserRoundPlus strokeWidth={3} size={20} /></span></button
+        >
+      {/if}
+      {#if $isAuthenticated}
+        <button
+          id="mobileProfileButton"
+          class="standardButton accountButton mobileAccountButton white"
+          onclick={() => {
+            loadProfileFromId(localStorage.getItem("id"), true);
+            playSound("basic_button");
+          }}
+        >
+          <img class="socialBarIcons" src="/img/profile_icon.png" alt="Your profile" />
+        </button>
+      {/if}
+      <a
+        id="mobileLeaderboardButton"
         class="standardButton accountButton mobileAccountButton white"
+        href="/leaderboard"
         onclick={() => {
-          loadProfileFromId(localStorage.getItem("id"), true);
           playSound("basic_button");
         }}
       >
-        <img class="socialBarIcons" src="/img/profile_icon.png" alt="Your profile" />
+        <img class="socialBarIcons" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
+      </a>
+      <button
+        id="mobileMultiplayerButton"
+        class="standardButton accountButton mobileAccountButton white"
+        class:preventNavigateOut
+        onclick={() => {
+          playSound("basic_button");
+          multiplayerPopup.set(true);
+        }}
+      >
+        <img class="socialBarIcons" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
       </button>
-    {/if}
-    <a
-      id="mobileLeaderboardButton"
-      class="standardButton accountButton mobileAccountButton white"
-      href="/leaderboard"
-      onclick={() => {
-        playSound("basic_button");
-      }}
-    >
-      <img class="socialBarIcons" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
-    </a>
-    <button
-      id="mobileMultiplayerButton"
-      class="standardButton accountButton mobileAccountButton white"
-      class:preventNavigateOut
-      onclick={() => {
-        playSound("basic_button");
-        multiplayerPopup.set(true);
-      }}
-    >
-      <img class="socialBarIcons" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
-    </button>
-    <a
-      id="mobileCompetitionsButton"
-      class="standardButton accountButton mobileAccountButton white"
-      class:preventNavigateOut
-      href="/competitions"
-      onclick={() => {
-        playSound("basic_button");
-      }}
-    >
-      <img class="socialBarIcons" src="/img/competitions_icon.png" alt="Competitions symbol" />
-    </a>
-    <a
-      id="mobileCategoryButton"
-      class="standardButton accountButton mobileAccountButton white"
-      class:preventNavigateOut
-      href="/maps"
-      onclick={() => {
-        playSound("basic_button");
-      }}
-    >
-      <img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
-    </a>
-    <button
-      class="standardButton accountButton mobileAccountButton white"
-      id="singleplayerOptionsButton"
-      class:preventNavigateOut
-      onclick={() => {
-        playSound("basic_button");
-        singleplayerOptionsPopup.set(true);
-      }}
-    >
-      <img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
-    </button>
+      <a
+        id="mobileCompetitionsButton"
+        class="standardButton accountButton mobileAccountButton white"
+        class:preventNavigateOut
+        href="/competitions"
+        onclick={() => {
+          playSound("basic_button");
+        }}
+      >
+        <img class="socialBarIcons" src="/img/competitions_icon.png" alt="Competitions symbol" />
+      </a>
+      <a
+        id="mobileCategoryButton"
+        class="standardButton accountButton mobileAccountButton white"
+        class:preventNavigateOut
+        href="/maps"
+        onclick={() => {
+          playSound("basic_button");
+        }}
+      >
+        <img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
+      </a>
+      <button
+        class="standardButton accountButton mobileAccountButton white"
+        id="singleplayerOptionsButton"
+        class:preventNavigateOut
+        onclick={() => {
+          playSound("basic_button");
+          singleplayerOptionsPopup.set(true);
+        }}
+      >
+        <img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
+      </button>
+      <button
+        class="standardButton accountButton mobileAccountButton white"
+        id="settingsButtonMobile"
+        onclick={openSettings}
+      >
+        <img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
+      </button>
+    </div>
   </div>
 </nav>
 
@@ -387,6 +420,32 @@
     pointer-events: none;
   }
 
+  .mobileScrollBarMenu {
+    gap: 4px;
+    overflow-x: auto;
+    display: flex;
+    transition: mask 0.3s ease-in-out;
+    scrollbar-width: none;
+  }
+
+  .mobileScrollBarFadeLeft {
+    mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 1) 100%);
+  }
+
+  .mobileScrollBarFadeRight {
+    mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0) 100%);
+  }
+
+  .mobileScrollBarFadeLeft.mobileScrollBarFadeRight {
+    mask-image: linear-gradient(
+      to right,
+      rgba(0, 0, 0, 0) 0%,
+      rgba(0, 0, 0, 1) 10%,
+      rgba(0, 0, 0, 1) 90%,
+      rgba(0, 0, 0, 0) 100%
+    );
+  }
+
   .sideMenuDisabled {
     opacity: 0.8;
     transform: scale(0.95);
@@ -407,6 +466,10 @@
 
   .mobileButtonArea {
     display: none;
+  }
+
+  .mobileBarMenu {
+    max-width: calc(100% - 40px);
   }
 
   .mobileAccountButton {

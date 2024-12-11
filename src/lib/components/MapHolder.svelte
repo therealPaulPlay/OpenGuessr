@@ -1,6 +1,5 @@
 <script>
   let { children } = $props();
-  import { mapHolderMarginRight } from "$lib/stores/context-specific/mapStore";
   import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
   import { mapHovered } from "$lib/stores/context-specific/mapStore";
 </script>
@@ -10,7 +9,6 @@
   class="regularMapSize mapHolder"
   class:mapHover={$mapHovered}
   class:mapHolderToResult={$resultScreenEnabled}
-  style:margin-right={$mapHolderMarginRight}
 >
   {@render children?.()}
 </div>
@@ -19,9 +17,10 @@
   .mapHolder {
     position: fixed;
     display: flex;
-    right: 0;
+    right: 60px;
     bottom: 76px;
     padding-inline: 10px;
+    min-width: 212px;
     min-height: 150px;
     align-items: flex-end;
     flex-direction: column;
@@ -31,7 +30,7 @@
   }
 
   .regularMapSize {
-    width: 22%;
+    width: 20%;
     height: 20%;
     transition:
       height 150ms ease,
@@ -44,6 +43,8 @@
   /* map Holder class on result screen */
   :global(.mapHolderToResult) {
     bottom: 0 !important;
+    right: 0 !important;
+    left: 0 !important;
     padding-inline: 0 !important;
     z-index: 12 !important;
     width: 100% !important;
@@ -62,21 +63,21 @@
 
   @media all and (orientation: landscape) and (max-width: 1200px) {
     .mapHolder {
-      width: 30%;
-      height: 30%;
+      width: 25%;
+      height: 25%;
     }
   }
 
   .mapHover {
-    width: 60%;
+    width: 55%;
     height: 55%;
   }
 
-  @media ((orientation: portrait) or (max-width: 800px)) and (max-width: 1200px) {
+  @media (orientation: portrait) and (max-width: 1200px) {
     .mapHolder {
       height: 50%;
       width: calc(100% - 20px);
-      margin-right: 0 !important;
+      right: 0 !important;
     }
   }
 

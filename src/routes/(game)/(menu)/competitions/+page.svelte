@@ -540,17 +540,15 @@
         {/if}
       </div>
     {/if}
-    <div class="buttonBoxRight">
-      <button
-        id="leaderboardClose"
-        class="standardButton white closeButton"
-        onclick={() => {
-          playSound("basic_button");
-          showRatingsBox = false;
-          leaderboardPopup = false;
-        }}>Close</button
-      >
-    </div>
+    <button
+      id="leaderboardClose"
+      class="standardButton white closeButton"
+      onclick={() => {
+        playSound("basic_button");
+        showRatingsBox = false;
+        leaderboardPopup = false;
+      }}>Close</button
+    >
   </Popup>
 {/if}
 

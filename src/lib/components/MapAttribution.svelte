@@ -2,9 +2,10 @@
 <script>
   import { mapModeIndicatorVisible } from "$lib/stores/context-specific/mapModeIndicatorStore";
   import { mapVisible, mapExpanded } from "$lib/stores/context-specific/mapStore";
+  import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 </script>
 
-{#if $mapVisible && $mapExpanded}
+{#if $mapVisible && $mapExpanded && !$resultScreenEnabled}
   <div id="mapAttribution" class="mapAttribution" style:bottom={$mapModeIndicatorVisible ? "61px" : ""}>
     <p>Map Data ©{new Date().getFullYear()} Google</p>
     <p style="border-bottom-right-radius: 10px">
