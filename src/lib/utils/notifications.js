@@ -1,4 +1,4 @@
-import { notificationMarginTop, notificationOpacity, notificationText, acceptText, showAcceptButton, acceptFunction, dismissFunction } from "$lib/stores/context-specific/notificationStore";
+import { notificationVisible, notificationText, acceptText, showAcceptButton, acceptFunction, dismissFunction } from "$lib/stores/context-specific/notificationStore";
 import { get } from "svelte/store";
 
 let hideNotificationTimeout;
@@ -7,14 +7,13 @@ export async function showNotification(text, acceptFunctionParam, dismissFunctio
     clearTimeout(hideNotificationTimeout);
 
     // If a notification is already shown, animate that away
-    if (get(notificationOpacity) == "1") {
+    if (get(notificationVisible)) {
         hideNotification();
 
         await new Promise(resolve => setTimeout(resolve, 250));
     };
 
-    notificationMarginTop.set("15px");
-    notificationOpacity.set(1);
+    notificationVisible.set(true);
 
     notificationText.set(text);
     acceptText.set("Accept");
@@ -44,6 +43,5 @@ export async function showNotification(text, acceptFunctionParam, dismissFunctio
 }
 
 export function hideNotification() {
-    notificationMarginTop.set(0);
-    notificationOpacity.set(0);
+    notificationVisible.set(false);
 }
