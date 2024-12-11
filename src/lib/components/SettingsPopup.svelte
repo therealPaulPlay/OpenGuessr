@@ -187,7 +187,7 @@
           onclick={() => {
             playSound("basic_button");
             window.open("/legal", '_blank').focus();
-          }}>View</button
+          }}>Read</button
         >
       </div>
       <div class="settingsBox">
