@@ -1,7 +1,6 @@
 <script>
   import {
-    notificationOpacity,
-    notificationMarginTop,
+    notificationVisible,
     notificationText,
     acceptText,
     showAcceptButton,
@@ -10,6 +9,7 @@
   } from "$lib/stores/context-specific/notificationStore";
   import { hideNotification } from "$lib/utils/notifications";
   import { playSound } from "$lib/utils/soundManager";
+  import { fly } from "svelte/transition";
 
   let { belowNavbar = true } = $props();
 
@@ -40,17 +40,19 @@
   }
 </script>
 
-<div id="notificationBar" style:top={belowNavbar ? "65px" : "0"} style:margin-top={$notificationMarginTop} style:opacity={$notificationOpacity}>
-  <p id="notificationText">{$notificationText}</p>
-  <div class="notificationButtonBox">
-    {#if $showAcceptButton}
-      <button id="notificationAccept" class="standardButton white" onclick={accept}>{$acceptText}</button>
-    {/if}
-    <button id="notificationDismiss" class="standardButton white" onclick={dismiss}>
-      <img alt="dismiss notification" class="dismissIcon" src="/img/delete_icon.png" />
-    </button>
+{#if $notificationVisible}
+  <div id="notificationBar" style:top={belowNavbar ? "80px" : "15px"} transition:fly={{ y: -20, duration: 250 }}>
+    <p id="notificationText">{$notificationText}</p>
+    <div class="notificationButtonBox">
+      {#if $showAcceptButton}
+        <button id="notificationAccept" class="standardButton white" onclick={accept}>{$acceptText}</button>
+      {/if}
+      <button id="notificationDismiss" class="standardButton white" onclick={dismiss}>
+        <img alt="dismiss notification" class="dismissIcon" src="/img/delete_icon.png" />
+      </button>
+    </div>
   </div>
-</div>
+{/if}
 
 <style>
   #notificationBar {
