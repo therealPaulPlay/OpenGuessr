@@ -6,7 +6,6 @@ export const map = writable();
 // Visuals
 export const mapVisible = writable(true);
 export const mapExpanded = writable(true);
-export const mapHolderMarginRight = writable(0);
 export const mapHovered = writable(false);
 
 // Marker / Pin position

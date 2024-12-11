@@ -4,35 +4,10 @@
   import { playSound } from "$lib/utils/soundManager";
   import { reloadPanorama } from "$lib/utils/loadPanorama";
   import { helpPopup } from "$lib/stores/uiStore";
-  import { mapHolderMarginRight } from "$lib/stores/context-specific/mapStore";
   import { confirmButtonActive, confirmButtonText } from "$lib/stores/context-specific/confirmButtonStore";
   import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
   import { supporterLevel } from "$lib/stores/accountStore";
   import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
-  import { onMount } from "svelte";
-
-  // Load the saved map offset state
-  let mapOffset = false;
-
-  onMount(() => {
-    let mapOffsetFromStorage = localStorage.getItem("mapOffset");
-    if (mapOffsetFromStorage == "true") mapOffset = true;
-    setMapOffset();
-  });
-
-  function toggleMapOffset() {
-    mapOffset = !mapOffset;
-    localStorage.setItem("mapOffset", mapOffset);
-    setMapOffset();
-  }
-
-  function setMapOffset() {
-    if (mapOffset) {
-      $mapHolderMarginRight = "65px";
-    } else {
-      $mapHolderMarginRight = "0px";
-    }
-  }
 </script>
 
 <div id="BottomBar" class="BottomBar">
@@ -86,18 +61,6 @@
           $helpPopup = true;
         }}>?</button
       >
-      <button
-        class="socialItem"
-        id="revealCompass"
-        class:innerConfirmButtonDisabled={$confirmButtonActive}
-        onclick={(element) => {
-          element.stopPropagation();
-          toggleMapOffset();
-          playSound("basic_button");
-        }}
-      >
-        <img src="./img/discover_icon.png" alt="Toggle compass" class="socialIcon bottomBarIcon" />
-      </button>
       <p id="guessText">{$confirmButtonText}</p>
     </div>
   </div>
@@ -219,22 +182,10 @@
     filter: brightness(0.7);
   }
 
-  #revealCompass {
-    pointer-events: auto;
-    transition:
-      filter 250ms ease,
-      opacity 250ms ease;
-    margin-left: -8px;
-  }
-
   #resetButtonImg {
     height: auto;
     width: 23px;
     filter: invert();
-  }
-
-  #revealCompass:hover {
-    filter: brightness(0.7);
   }
 
   .bottomFooterAdText {
@@ -250,12 +201,6 @@
     }
   }
 
-  @media (orientation: portrait) or (max-width: 900px) {
-    #revealCompass {
-      display: none;
-    }
-  }
-
   @media (orientation: portrait) and (max-width: 800px) {
     .bottomFooterAds {
       bottom: 12px;
@@ -267,13 +212,20 @@
   }
 
   .bottomRightMenu {
-    width: calc(22% - 8px);
+    width: calc(20% - 8px);
     min-width: 200px;
+    margin-right: 60px;
+  }
+
+  @media (orientation: portrait) and (max-width: 1200px) {
+    .bottomRightMenu {
+      margin-right: 0;
+    }
   }
 
   @media all and (orientation: landscape) and (max-width: 1200px) {
     .bottomRightMenu {
-      width: calc(30% - 8px);
+      width: calc(25% - 8px);
     }
 
     .bottomSocialItem {
