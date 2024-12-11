@@ -341,7 +341,7 @@ search {
     }
 }
 
-@media (max-width: 1375px) {
+@media (max-width: 1500px) {
     .leaderboardAds {
         width: 320px;
         height: 50px;

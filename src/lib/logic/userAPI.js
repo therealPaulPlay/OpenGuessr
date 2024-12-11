@@ -1,5 +1,6 @@
 import { errorPopup } from "$lib/utils/errorHandling";
 import { experience } from "$lib/stores/accountStore";
+import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import inIframe from "$lib/utils/checkIframe";
 
 export const backendURL = "https://accounts.openguessr.com/accounts";
@@ -86,7 +87,7 @@ export async function registerUser(userName, email, password, errorSource, succe
     if (response.ok) {
       const data = await response.json();
       if (typeof successFunction == "function") successFunction("Registration successful! Please log in.");
-      
+
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Registration failed: ', response.status);
@@ -219,7 +220,15 @@ export async function getUser(token, id, errorSource, errorElement) {
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Fetch failed:', response.status);
-      displayError("Fetch failed: " + response.status, errorSource, errorElement, responseError);
+      if (response.status == 404) {
+        showConfirmPopup("Account removed", "This account was removed by an admin. If this was a test account, it was likely modifed / re-created by staff during tests. Your locally saved account data should be deleted to avoid issues. Continue?", () => {
+          localStorage.removeItem("id");
+          localStorage.removeItem("bearer");
+          window.location.reload();
+        }, false, false, false, "Continue");
+      } else {
+        displayError("Fetch failed: " + response.status, errorSource, errorElement, responseError);
+      }
     }
   } catch (error) {
     console.error('Error occurred while fetching the user: ', error);
