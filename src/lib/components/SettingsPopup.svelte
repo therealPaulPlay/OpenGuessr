@@ -218,6 +218,8 @@
     gap: 10px;
     justify-content: flex-start;
     align-items: center;
+    max-height: calc(100dvh - 250px);
+    overflow-y: auto;
   }
 
   .fullscreenIcon {
