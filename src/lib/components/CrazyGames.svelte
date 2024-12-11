@@ -11,7 +11,12 @@
     currentScreen,
   } from "$lib/stores/context-specific/multiplayerStore";
   import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
-  import { adsDisabled, crazyGames, preventExitPopup, disableExternalLinks } from "$lib/stores/context-specific/platformSettingsStore";
+  import {
+    adsDisabled,
+    crazyGames,
+    preventExitPopup,
+    disableExternalLinks,
+  } from "$lib/stores/context-specific/platformSettingsStore";
   import { multiplayerPopup } from "$lib/stores/uiStore";
   import { createRoom } from "$lib/logic/multiplayerLogic";
   import { isAuthenticated } from "$lib/stores/accountStore";
@@ -50,19 +55,19 @@
           setTimeout(() => {
             window.CrazyGames.SDK.game.loadingStop();
             window.CrazyGames.SDK.game.gameplayStart();
+
+            if (window.CrazyGames.SDK.game.isInstantJoin) {
+              multiplayerPopup.set(true);
+              // Timeout, as toggling the popup causes the screen and stage to reset
+              setTimeout(() => {
+                currentScreen.set("host");
+                hostStage.set(2); // Go to second stage of multiplayer popup
+                createRoom(get(roundAmount), get(roundLength)); // Create room
+              }, 150);
+            }
           }, 150);
         } catch (error) {
           console.error("Error loading CrazyGames SDK:", error);
-        }
-
-        if (window.CrazyGames.SDK.game.isInstantJoin) {
-          multiplayerPopup.set(true);
-          // Timeout, as toggling the popup causes the screen and stage to reset
-          setTimeout(() => {
-            currentScreen.set("host");
-            hostStage.set(2); // Go to second stage of multiplayer popup
-            createRoom(get(roundAmount), get(roundLength)); // Create room
-          }, 150);
         }
 
         // Automatic signup / login (if user is not authenticated)
