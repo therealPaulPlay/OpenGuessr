@@ -667,6 +667,7 @@
     transition:
       margin 150ms ease,
       scale 150ms ease,
+      transform 150ms ease,
       background-color 250ms ease,
       filter 250ms ease;
     height: 50px;
