@@ -28,26 +28,8 @@
   import { profilePopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
   import { Edit, Trash2 } from "lucide-svelte";
-  import { onMount } from "svelte";
 
   let textarea = $state();
-
-  // Load profile from link query
-  function loadProfileFromURL() {
-    try {
-      let urlParams = new URLSearchParams(window.location.search);
-      let profileFromLink = urlParams.get("profile");
-      if (profileFromLink) {
-        loadProfileFromId(profileFromLink, true);
-        history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
-      }
-    } catch {}
-  }
-
-  onMount(() => {
-    loadProfileFromURL();
-  });
-
   let isFriendsWithId = $state(true);
 
   profilePopup.subscribe(async (value) => {
@@ -204,6 +186,7 @@
           <button
             id="accountDeleteButton"
             class="standardButton white"
+            class:buttonDisabled={$crazyGames}
             onclick={() => {
               playSound("basic_button");
               showConfirmPopup(
@@ -222,7 +205,7 @@
           <button
             id="profileSignoutButton"
             class="standardButton white"
-            class:signoutDisabled={$crazyGames}
+            class:buttonDisabled={$crazyGames}
             onclick={() => {
               playSound("basic_button");
               resetLocalSave();
@@ -268,7 +251,7 @@
     margin-top: -25px;
   }
 
-  .signoutDisabled {
+  .buttonDisabled {
     pointer-events: none;
     opacity: 0.5;
   }

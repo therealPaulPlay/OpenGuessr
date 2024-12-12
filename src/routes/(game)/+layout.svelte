@@ -81,6 +81,9 @@
   unendlich freies spiel without subscription pro with Duels
 </h1>
 
+<!-- 3rd party -->
+<CrazyGames />
+
 <!-- Log user in -->
 <Authenticate />
 
@@ -128,9 +131,6 @@
 </MapHolder>
 <Chat />
 <BottomBar />
-
-<!-- 3rd party -->
-<CrazyGames />
 
 <!-- Render children such as overlayed pages and menus -->
 {@render children?.()}

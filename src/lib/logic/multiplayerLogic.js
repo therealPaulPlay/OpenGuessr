@@ -104,9 +104,12 @@ export function toggleMultiplayerRestriction() {
 function setMultiplayerUI() {
     if (get(multiplayer)) {
         mapModeIndicatorVisible.set(true);
-        leaveFunction.set(promptLeaveButton);
-        modeText.set("Multiplayer (Awaiting info..)");
+        leaveFunction.set(() => {
+            showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound, false);
+            playSound("leave_round");
+        });
 
+        modeText.set("Multiplayer (Awaiting info..)");
         chatVisible.set(true);
 
         // disable result screen if it is open (edge case)
@@ -283,6 +286,14 @@ let peer;
 export async function getPeer() {
     setUniqueUserID();
 
+    if (peer) {
+        try {
+            peer.destroy();
+        } catch (error) {
+            console.error("Peer could not be destroyed:", error);
+        }
+    }
+
     peer = await loadAndInitializeLibrary(
         'https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js',
         'Peer',
@@ -321,24 +332,14 @@ let peerLoadJoinCallback; // This will be executed after peer load as a callback
 // Called in accountLogic after signin status was set
 export function attemptJoinViaLink() {
     let urlParams = new URLSearchParams(window.location.search);
-    let roomCode = urlParams.get("join");
+    const roomCode = urlParams.get("join");
+    if (roomCode) joinFromLink(roomCode);
+}
 
-    if (!roomCode && get(crazyGames)) {
-        try {
-            roomCode = window.CrazyGames.SDK.game.getInviteParam("join");
-        } catch {
-            console.error("Failed to retrieve Crazy Games Link Parameters. Is the SDK loaded?");
-        }
-    }
-
-    if (roomCode) {
-        console.log("Attempting join via Room Code Link:", roomCode);
-        linkJoinPopup.set(true);
-        joinRoom(roomCode);
-
-        history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
-    }
-
+export function joinFromLink(roomcode) {
+    console.log("Attempting join via Room Code Link:", roomcode);
+    linkJoinPopup.set(true);
+    joinRoom(roomcode);
 }
 
 // Vars ------------------------------------------------------------------------------------------------
@@ -379,7 +380,7 @@ export function setFriendDuel(state) {
 
 // this initiates the find duel system
 export async function findDuel() {
-    roomIndex = 0; //reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
+    roomIndex = 0; // reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     matchmakingActive = true;
     playingDuels = true;
     setRetryButtonState();
@@ -694,8 +695,7 @@ function attachHostLogic() {
                         }
                     });
 
-                    // Peer disconnects
-                    incomingConn.on('close', function () {
+                    function handlePeerDisconnect() {
                         removeConnectedPeerById(incomingConn.peer);
                         updateTeamDisplay();
                         distributeChat("System: " + incomingConn.metadata.username + " left.");
@@ -709,7 +709,10 @@ function attachHostLogic() {
                             multiplayerHasGuessed();
                             sendMessageToAll("updateConnectedPlayers", get(connectedPlayers));
                         }
-                    })
+                    }
+
+                    // Peer close (disconnect event would be from signalling server - not from host)
+                    incomingConn.on('close', handlePeerDisconnect);
                 } else {
                     setTimeout(() => {
                         incomingConn.close(); // Close the connection if room is locked (= the round has alr started)
@@ -1104,11 +1107,6 @@ function attachErrorEvents() {
 
 // Multiplayer leave ----------------------------------------------------------------------------------
 
-function promptLeaveButton() {
-    showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound, false);
-    playSound("leave_round");
-}
-
 export function leaveMultiplayerRound() {
     let wasMultiplayerEnabled = false;
 
@@ -1217,7 +1215,6 @@ function showEndscreenUI(show) {
                 rematchButtonEnabled.set(true);
                 rematchButtonVisible.set(true);
             }
-
         }
     } else {
         rematchButtonVisible.set(false);
@@ -1227,19 +1224,13 @@ function showEndscreenUI(show) {
 
 // Win / Lose animations
 function animateMultiplayerWin() {
-    let timeout;
-    clearTimeout(timeout);
-
-    timeout = setTimeout(() => {
+    setTimeout(() => {
         playSound("win_sound");
     }, 1000);
 }
 
 function animateMultiplayerLose() {
-    let timeout;
-    clearTimeout(timeout);
-
-    timeout = setTimeout(() => {
+    setTimeout(() => {
         playSound("lose_sound");
     }, 1000);
 }

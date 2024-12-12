@@ -35,8 +35,24 @@ export function transitionToStart() {
         }
 
         shrinkMapIfMobile();
+        potentialCrazyGamesAd(); // Crazy Games
 
     } else {
         console.warn("Already transitioning to start!");
     }
 }
+
+let adIndex = 0;
+
+function potentialCrazyGamesAd() {
+    if (get(multiplayer)) return;
+    adIndex++;
+
+    if (adIndex % 10 == 0) {
+      try {
+        window.CrazyGames.SDK.ad.requestAd("midgame", callbacks);
+      } catch (error) {
+        console.error("Error showing crazy games midgame ad:", error);
+      }
+    }
+  }
