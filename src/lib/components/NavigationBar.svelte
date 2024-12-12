@@ -113,7 +113,7 @@
       {#if !$isAuthenticated}
         <button
           id="mobileLoginButton"
-          class="standardButton loginButton mobileAccountButton"
+          class="standardButton loginButton"
           onclick={() => {
             playSound("basic_button");
             signupPrompt();
@@ -123,7 +123,7 @@
       {#if $isAuthenticated}
         <button
           id="mobileProfileButton"
-          class="standardButton accountButton mobileAccountButton white"
+          class="standardButton accountButton white"
           onclick={() => {
             loadProfileFromId(localStorage.getItem("id"), true);
             playSound("basic_button");
@@ -134,7 +134,7 @@
       {/if}
       <a
         id="mobileLeaderboardButton"
-        class="standardButton accountButton mobileAccountButton white"
+        class="standardButton accountButton white"
         href="/leaderboard"
         onclick={() => {
           playSound("basic_button");
@@ -144,7 +144,7 @@
       </a>
       <button
         id="mobileMultiplayerButton"
-        class="standardButton accountButton mobileAccountButton white"
+        class="standardButton accountButton white"
         class:preventNavigateOut
         onclick={() => {
           playSound("basic_button");
@@ -155,7 +155,7 @@
       </button>
       <a
         id="mobileCompetitionsButton"
-        class="standardButton accountButton mobileAccountButton white"
+        class="standardButton accountButton white"
         class:preventNavigateOut
         href="/competitions"
         onclick={() => {
@@ -166,7 +166,7 @@
       </a>
       <a
         id="mobileCategoryButton"
-        class="standardButton accountButton mobileAccountButton white"
+        class="standardButton accountButton white"
         class:preventNavigateOut
         href="/maps"
         onclick={() => {
@@ -176,7 +176,7 @@
         <img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
       </a>
       <button
-        class="standardButton accountButton mobileAccountButton white"
+        class="standardButton accountButton white"
         id="singleplayerOptionsButton"
         class:preventNavigateOut
         onclick={() => {
@@ -187,7 +187,7 @@
         <img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
       </button>
       <button
-        class="standardButton accountButton mobileAccountButton white"
+        class="standardButton accountButton white"
         id="settingsButtonMobile"
         onclick={openSettings}
       >
@@ -470,11 +470,6 @@
 
   .mobileBarMenu {
     max-width: calc(100% - 40px);
-  }
-
-  .mobileAccountButton {
-    padding-inline: 10px; /* Mobile navbar buttons are more narrow */
-    text-decoration: none;
   }
 
   .socialBarIcons {
