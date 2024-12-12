@@ -50,7 +50,7 @@ function potentialCrazyGamesAd() {
 
     if (adIndex % 10 == 0) {
       try {
-        window.CrazyGames.SDK.ad.requestAd("midgame", callbacks);
+        window.CrazyGames.SDK.ad.requestAd("midgame");
       } catch (error) {
         console.error("Error showing crazy games midgame ad:", error);
       }
