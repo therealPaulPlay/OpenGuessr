@@ -4,17 +4,10 @@
   import inIframe from "$lib/utils/checkIframe";
   import { onMount } from "svelte";
 
-  // Variables assigned to HTML elements ------------------------------------------------------------------
-
-  let loginForm;
-  let signupForm;
-  let resetForm;
-  let newPasswordForm;
-  let errorMessage;
-
   // Export error / success functions --------------------------------------------------------------------------------------------------------------
 
   let timeout;
+  let errorMessage = $state();
 
   function displaySuccess(text) {
     try {
@@ -26,12 +19,10 @@
       errorMessage.style.opacity = "1";
       errorMessage.style.color = "#64c681";
 
-      // change to sign-in
-      loginForm.style.display = "block";
-      signupForm.style.display = "none";
-      resetForm.style.display = "none";
-      newPasswordForm.style.display = "none";
+      // Change to log in
+      formType = "login";
 
+      // Hide error again
       timeout = setTimeout(() => {
         errorMessage.style.maxHeight = "0";
         errorMessage.style.opacity = "0";
@@ -42,31 +33,13 @@
     }
   }
 
-  // Toggle between login and signup ---------------------------------------------------------------------------------------------
+  // Toggle between login, signup, newPassword and reset ---------------------------------------------------------------------------------------------
 
-  function toggleForm() {
-    resetForm.style.display = "none";
-    newPasswordForm.style.display = "none";
-
-    if (loginForm.style.display == "none") {
-      loginForm.style.display = "block";
-      signupForm.style.display = "none";
-    } else {
-      loginForm.style.display = "none";
-      signupForm.style.display = "block";
-    }
-  }
+  let formType = $state("login");
 
   // Password reset screen -------------------------------------------------------------------------------------------------------------------------------------
 
   let resetEmail = $state();
-
-  function showPasswordResetForm() {
-    loginForm.style.display = "none";
-    signupForm.style.display = "none";
-    newPasswordForm.style.display = "none";
-    resetForm.style.display = "block";
-  }
 
   // Password reset via auth link ------------------------------------------------------------------------------------------------------------------------------
 
@@ -77,10 +50,7 @@
     resetBearerToken = urlParams.get("token");
 
     if (resetBearerToken) {
-      newPasswordForm.style.display = "block";
-      loginForm.style.display = "none";
-      signupForm.style.display = "none";
-      resetForm.style.display = "none";
+      formType = "newPassword";
       history.replaceState({}, document.title, window.location.pathname); // reset url back to normal one
     }
   });
@@ -111,9 +81,8 @@
 
   // Signup UI Logic and Captcha ------------------------------------------------------------------------------------------------------------------------------
 
-  let signupButtonSignupPage;
-
-  let signupArea;
+  let signupButtonSignupPage = $state();
+  let signupArea = $state();
 
   function validateEmail(email) {
     var re = /\S+@\S+\.\S+/;
@@ -152,7 +121,7 @@
   let signupPassword = $state();
   let signupUsername = $state();
 
-  let loginButtonSignupPage;
+  let loginButtonSignupPage = $state();
 
   // This is the function that runs when the user click on signup or presses enter.
   function signUpAction() {
@@ -175,9 +144,9 @@
     const keyName = event.key;
 
     // Will go to the next step when pressing Enter.
-    if (keyName === "Enter" && loginForm.style.display != "none") {
+    if (keyName === "Enter" && formType == "login") {
       logInAction();
-    } else if (keyName === "Enter" && signupForm.style.display != "none") {
+    } else if (keyName === "Enter" && formType == "signup") {
       signUpAction();
     }
   }
@@ -185,16 +154,9 @@
   // Toggle password field visability ------------
 
   let passwordInputType = $state("password");
-  let eyeIconVisible = $state(false);
 
   function togglePasswordVisibility() {
-    if (passwordInputType == "password") {
-      passwordInputType = "text";
-      eyeIconVisible = true;
-    } else {
-      passwordInputType = "password";
-      eyeIconVisible = false;
-    }
+    passwordInputType = passwordInputType == "password" ? "text" : "password";
   }
 </script>
 
@@ -208,77 +170,121 @@
   <div class="wrapper">
     <div class="container neumorphic-menu">
       <img class="logo" src="/img/openguessr.svg" alt="OpenGuessr Logo" />
-      <div id="newPasswordForm" bind:this={newPasswordForm}>
-        <div>
-          <input bind:value={resetPasswordValue} type="password" placeholder="New Password" /><br /><br />
-          <button id="changePassword" class="standardButton" onclick={changePasswordIfValuesProvided}
-            >Set new password</button
-          >
-        </div>
-        <p class="switchFormBox">
-          Recovered password?
-          <button id="loginSwitchChange" class="standardButton white" onclick={toggleForm}>Log in</button>
-        </p>
-      </div>
-      <div id="resetForm" bind:this={resetForm}>
-        <div>
-          <input bind:value={resetEmail} type="email" placeholder="Email" /><br /><br />
-          <button
-            id="reset"
-            class="standardButton"
-            onclick={() => sendPasswordResetEmail(resetEmail, "signup", displaySuccess, errorMessage)}>Reset</button
-          >
-        </div>
-        <p class="switchFormBox">
-          Recovered Password?
-          <button id="loginSwitchReset" class="standardButton white" onclick={toggleForm}>Log in</button>
-        </p>
-      </div>
-      <div id="loginForm" bind:this={loginForm}>
-        <div>
-          <input id="login_email" type="email" bind:value={loginEmail} placeholder="Email" /><br /><br />
-          <input id="login_password" type="password" bind:value={loginPassword} placeholder="Password" /><br /><br />
-          <button id="login" class="standardButton" bind:this={loginButtonSignupPage} onclick={logInAction}
-            >Log in</button
-          >
-        </div>
-        <p class="switchFormBox">
-          No account yet?
-          <button id="loginSwitch" class="standardButton white" onclick={toggleForm}>Sign up</button>
-        </p>
-        <!-- svelte-ignore a11y_click_events_have_key_events -->
-        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-        <p id="passwordResetOption" onclick={showPasswordResetForm}>Forgot password?</p>
-      </div>
-      <div id="signupForm" style="display: none;" bind:this={signupForm}>
-        <div>
-          <div id="signup_area" bind:this={signupArea}>
-            <input id="signup_username" type="text" bind:value={signupUsername} placeholder="Username" /><br /><br />
-            <input id="signup_email" type="email" bind:value={signupEmail} placeholder="Email" /><br /><br />
-            <div class="password-container">
-              <input id="signup_password" bind:value={signupPassword} type={passwordInputType} placeholder="Password" />
-              <!-- svelte-ignore a11y_consider_explicit_label -->
-              <button class="toggle-password" onclick={togglePasswordVisibility}>
-                {#if eyeIconVisible}
-                  <Eye />
-                {:else}
-                  <EyeClosed />
-                {/if}
-              </button>
-            </div>
+      {#if formType == "newPassword"}
+        <div id="newPasswordForm">
+          <div>
+            <input bind:value={resetPasswordValue} type="password" placeholder="New Password" /><br /><br />
+            <button id="changePassword" class="standardButton" onclick={changePasswordIfValuesProvided}
+              >Set new password</button
+            >
           </div>
-          <button id="signup" class="standardButton" bind:this={signupButtonSignupPage} onclick={signUpAction}
-            >Sign up</button
-          >
+          <p class="switchFormBox">
+            Recovered password?
+            <button
+              id="loginSwitchChange"
+              class="standardButton white"
+              onclick={() => {
+                formType = "login";
+              }}>Log in</button
+            >
+          </p>
         </div>
-        <p class="switchFormBox">
-          Already signed up?
-          <button id="loginSwitchBack" class="standardButton white" onclick={toggleForm}>Log in</button>
-        </p>
-        <p id="privacyNotice">
-          Our <a href="/legal">policies</a> apply.
-        </p>
-      </div>
+      {/if}
+      {#if formType == "reset"}
+        <div id="resetForm">
+          <div>
+            <input bind:value={resetEmail} type="email" placeholder="Email" /><br /><br />
+            <button
+              id="reset"
+              class="standardButton"
+              onclick={() => sendPasswordResetEmail(resetEmail, "signup", displaySuccess, errorMessage)}>Reset</button
+            >
+          </div>
+          <p class="switchFormBox">
+            Recovered Password?
+            <button
+              id="loginSwitchReset"
+              class="standardButton white"
+              onclick={() => {
+                formType = "login";
+              }}>Log in</button
+            >
+          </p>
+        </div>
+      {/if}
+      {#if formType == "login"}
+        <div id="loginForm">
+          <div>
+            <input id="login_email" type="email" bind:value={loginEmail} placeholder="Email" /><br /><br />
+            <input id="login_password" type="password" bind:value={loginPassword} placeholder="Password" /><br /><br />
+            <button id="login" class="standardButton" bind:this={loginButtonSignupPage} onclick={logInAction}
+              >Log in</button
+            >
+          </div>
+          <p class="switchFormBox">
+            No account yet?
+            <button
+              id="loginSwitch"
+              class="standardButton white"
+              onclick={() => {
+                formType = "signup";
+              }}>Sign up</button
+            >
+          </p>
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+          <p
+            id="passwordResetOption"
+            onclick={() => {
+              formType = "reset";
+            }}
+          >
+            Forgot password?
+          </p>
+        </div>
+      {/if}
+      {#if formType == "signup"}
+        <div id="signupForm">
+          <div>
+            <div id="signup_area" bind:this={signupArea}>
+              <input id="signup_username" type="text" bind:value={signupUsername} placeholder="Username" /><br /><br />
+              <input id="signup_email" type="email" bind:value={signupEmail} placeholder="Email" /><br /><br />
+              <div class="password-container">
+                <input
+                  id="signup_password"
+                  bind:value={signupPassword}
+                  type={passwordInputType}
+                  placeholder="Password"
+                />
+                <!-- svelte-ignore a11y_consider_explicit_label -->
+                <button class="toggle-password" onclick={togglePasswordVisibility}>
+                  {#if passwordInputType == "text"}
+                    <Eye />
+                  {:else}
+                    <EyeClosed />
+                  {/if}
+                </button>
+              </div>
+            </div>
+            <button id="signup" class="standardButton" bind:this={signupButtonSignupPage} onclick={signUpAction}
+              >Sign up</button
+            >
+          </div>
+          <p class="switchFormBox">
+            Already signed up?
+            <button
+              id="loginSwitchBack"
+              class="standardButton white"
+              onclick={() => {
+                formType = "login";
+              }}>Log in</button
+            >
+          </p>
+          <p id="privacyNotice">
+            Our <a href="/legal">policies</a> apply.
+          </p>
+        </div>
+      {/if}
       <p id="errorMessage" bind:this={errorMessage}>This is an error message box.</p>
     </div>
     <div class="container containerBottom neumorphic-menu">
@@ -335,7 +341,7 @@
     padding: 20px;
     width: 300px;
     text-align: center;
-    backdrop-filter: blur(1000px);
+    backdrop-filter: blur(100px);
   }
 
   .orb {
@@ -343,9 +349,9 @@
     width: 1500px;
     height: 1200px;
     border-radius: 50%;
-    background-color: rgba(255, 59, 48, 0.15);
-    filter: blur(2000px);
-    -webkit-filter: blur(2000px);
+    background: radial-gradient(rgba(255, 59, 48, 0.1), rgba(0, 0, 0, 0));
+    filter: blur(12vw);
+    -webkit-filter: blur(12vw);
     z-index: -1;
     top: 20%;
     overflow: hidden;
@@ -452,11 +458,6 @@
     margin-top: 10px;
     padding: 5px;
     min-width: 330px;
-  }
-
-  #resetForm,
-  #newPasswordForm {
-    display: none;
   }
 
   #passwordResetOption {

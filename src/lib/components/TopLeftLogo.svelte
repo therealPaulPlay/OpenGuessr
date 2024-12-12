@@ -21,7 +21,7 @@
   }
 
   /* hide logo on screens that don't have room for it */
-  @media (max-width: 900px) {
+  @media (max-width: 925px) {
     .logoLeft {
       display: none;
     }
