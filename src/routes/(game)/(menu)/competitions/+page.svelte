@@ -392,11 +392,7 @@
   function startSearch() {
     let query = searchQuery.toLowerCase();
     activeCompetitionsData = [];
-
-    if (hideEntered) {
-      document.getElementById("hideEntered").classList.remove("hideEnteredActive");
-      hideEntered = false;
-    }
+    if (hideEntered) hideEntered = false;
 
     notExpiredIndex = 0; // reset index if starting new search
     if (query == "") query = undefined; // so the undefined check works in the load function
@@ -746,14 +742,13 @@
         <button
           id="hideEntered"
           class="standardButton white"
-          class:hideEnteredActive={hideEntered}
           onclick={() => {
             playSound("basic_button");
             activeCompetitionsData = []; // Reset loaded data
             hideEntered = !hideEntered;
             notExpiredIndex = 0;
             getCompetitionsFromServer(false, false, false, hideEntered);
-          }}>Hide entered</button
+          }}>{hideEntered ? "Show entered" : "Hide entered"}</button
         >
       </search>
     </div>
@@ -1245,11 +1240,6 @@
     max-width: 35%;
     overflow: hidden;
     text-overflow: ellipsis;
-  }
-
-  .hideEnteredActive {
-    background-color: rgba(255, 255, 255, 0.9);
-    color: rgb(35, 35, 35) !important;
   }
 
   #ratingBox {

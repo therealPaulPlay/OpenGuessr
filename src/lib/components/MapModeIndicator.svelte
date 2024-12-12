@@ -55,8 +55,14 @@
       }}>Leave</button
     >
   {/if}
-  <div bind:this={mapModeTextContainer} class="mapModeTextContainer {scrollModeText ? 'modetextScroll' : ''}">
-    <p class="mapModeText" bind:textContent={mapModeText} contenteditable="false">{$modeText}</p>
+  <div bind:this={mapModeTextContainer} class="mapModeTextContainer">
+    <p
+      class="mapModeText {scrollModeText ? 'modetextScroll' : ''}"
+      bind:textContent={mapModeText}
+      contenteditable="false"
+    >
+      {$modeText}
+    </p>
   </div>
   <p id="mapTimer" class="mapModeText modeTextRight {$indicatorFading ? 'fading' : ''}">
     {$timerText}
@@ -102,16 +108,15 @@
     min-height: unset;
   }
 
-  .mapModeText {
+  .mapModeTextContainer {
+    margin-inline: 10px;
+    overflow: hidden;
     white-space: nowrap;
-    width: fit-content;
+    flex-grow: 1;
   }
 
-  .mapModeTextContainer {
-    margin-left: 10px;
-    margin-right: 5px;
-    overflow: hidden;
-    flex-grow: 1;
+  .mapModeText {
+    width: fit-content;
   }
 
   .modeTextRight {
@@ -166,7 +171,7 @@
     }
 
     100% {
-      transform: translateX(calc(-100% + 135px));
+      transform: translateX(calc(-100% + 100px));
     }
   }
 </style>
