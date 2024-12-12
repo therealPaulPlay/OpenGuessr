@@ -349,7 +349,7 @@
     width: 1500px;
     height: 1200px;
     border-radius: 50%;
-    background: radial-gradient(rgba(255, 59, 48, 0.1), rgba(0, 0, 0, 0));
+    background: radial-gradient(rgba(255, 59, 48, 0.15), rgba(0, 0, 0, 0));
     filter: blur(12vw);
     -webkit-filter: blur(12vw);
     z-index: -1;

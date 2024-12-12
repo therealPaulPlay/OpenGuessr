@@ -72,7 +72,7 @@ async function getCoordsFromLocationServer() {
 
             // Create an AbortController for the timeout
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 1000); // timeout
+            const timeoutId = setTimeout(() => controller.abort(), 2000); // timeout
 
             try {
                 const response = await fetch(locationEndpoint, {

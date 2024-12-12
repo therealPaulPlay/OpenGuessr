@@ -37,7 +37,7 @@
   }
 
   // Enter Competition ------------------------------------------------------------------------------------------------------------------------------
-  async function enterCompetition(id, token) {
+  async function enterCompetition(id) {
     if (!$isAuthenticated) {
       showConfirmPopup(
         "Account required",
@@ -62,7 +62,7 @@
       const response = await fetch(competitionsEndpoint + "/details/" + id, {
         method: "POST",
         headers: {
-          Authorization: `Bearer ${token}`,
+          Authorization: "Bearer " + localStorage.getItem("bearer"),
           "Content-Type": "application/json",
         },
         body: JSON.stringify(requestBody),
@@ -246,7 +246,7 @@
           "Enter competition from link?",
           "This will start the game immediately. You can only enter a competition once.",
           () => {
-            enterCompetition(competitionIdFromLink, localStorage.getItem("bearer"));
+            enterCompetition(competitionIdFromLink);
           },
         );
         history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
@@ -652,7 +652,7 @@
                 "Enter " + name + "?",
                 "This will start the game immediately. You can only enter a competition once.",
                 () => {
-                  enterCompetition(id, localStorage.getItem("bearer"));
+                  enterCompetition(id);
                 },
               );
             } else {

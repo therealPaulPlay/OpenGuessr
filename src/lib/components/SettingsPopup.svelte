@@ -2,6 +2,7 @@
   import Popup from "./Popup.svelte";
   import { onMount, onDestroy } from "svelte";
   import { setSoundsVolume, playSound } from "$lib/utils/soundManager";
+  import { preventFullscreen, preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
 
   import { settingsPopup } from "$lib/stores/uiStore";
   import { Scan } from "lucide-svelte";
@@ -137,7 +138,7 @@
 </script>
 
 {#if $settingsPopup}
-  <Popup verySlim=true>
+  <Popup verySlim="true">
     <div class="popup-title">
       <h1>Settings</h1>
     </div>
@@ -170,15 +171,17 @@
           oninput={inputSFXVolumeSlider}
         />
       </div>
-      <div class="settingsBox">
-        <p class="slightBottomMargin">Toggle Fullscreen:</p>
-        <button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
-          <span class="fullscreenIcon">
-            <Scan size="17" />
-          </span>
-          <span id="fullscreenText">{fullscreenButtonText}</span>
-        </button>
-      </div>
+      {#if !$preventFullscreen}
+        <div class="settingsBox">
+          <p class="slightBottomMargin">Toggle Fullscreen:</p>
+          <button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
+            <span class="fullscreenIcon">
+              <Scan size="17" />
+            </span>
+            <span id="fullscreenText">{fullscreenButtonText}</span>
+          </button>
+        </div>
+      {/if}
       <div class="settingsBox">
         <p class="slightBottomMargin">Legal Information:</p>
         <button
@@ -186,16 +189,18 @@
           id="privacyButton"
           onclick={() => {
             playSound("basic_button");
-            window.open("/legal", '_blank').focus();
+            window.open("/legal", "_blank").focus();
           }}>Read</button
         >
       </div>
-      <div class="settingsBox">
-        <p class="slightBottomMargin">Exit Popup:</p>
-        <button class="standardButton white" id="exitPopupSetting" onclick={toggleExitPopup}
-          >{exitPopupButtonText}</button
-        >
-      </div>
+      {#if !$preventExitPopup}
+        <div class="settingsBox">
+          <p class="slightBottomMargin">Exit Popup:</p>
+          <button class="standardButton white" id="exitPopupSetting" onclick={toggleExitPopup}
+            >{exitPopupButtonText}</button
+          >
+        </div>
+      {/if}
     </div>
     <button id="settingsClose" class="standardButton white closeButton" onclick={closeSettingsButton}>Close</button>
   </Popup>
