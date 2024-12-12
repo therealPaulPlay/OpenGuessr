@@ -1066,7 +1066,7 @@ function attachErrorEvents() {
 
                 leaveMultiplayerRound();
             } else {
-                multiplayerStatus.set("Failed to join: " + err);
+                multiplayerStatus.set("Failed to join.");
             }
 
             if (matchmakingActive) {
