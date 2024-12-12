@@ -13,7 +13,7 @@ import { supportedAmount } from "$lib/stores/accountStore.js";
 
 // Global function that changes everything to logged in or signed out
 export async function checkAuthenticationStatus() {
-  let bearerToken = localStorage.getItem("bearer");
+  const bearerToken = localStorage.getItem("bearer");
 
   if (bearerToken) {
     if (!isTokenExpired(bearerToken)) {
@@ -29,7 +29,7 @@ export async function checkAuthenticationStatus() {
     isAuthenticated.set(false);
   }
 
-  try { attemptJoinViaLink(); } catch (e) { console.error("Error in accountLogic.js:", e) };
+  attemptJoinViaLink();
 }
 
 export function resetLocalSave() {
@@ -57,7 +57,6 @@ async function loadUserInfo() {
       supportedAmount.set(user.supported_amount);
       selectedPinIndex.set(user?.profile_data?.pin || 0);
       selectedBadge.set(user?.profile_data?.badge || null);
-
 
       if (get(resultScreenEnabled) && get(lastExperienceCalculationAborted)) loadResultScreenXP(get(lastDistance));
       if (user.new_requests) { inboxIconNew.set(true); }

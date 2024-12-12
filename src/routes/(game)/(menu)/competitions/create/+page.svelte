@@ -29,7 +29,6 @@
 
   async function submitCompetitionWithDetails() {
     let operationMessage = await submitCompetition(
-      localStorage.getItem("bearer"),
       competitionName,
       $username,
       localStorage.getItem("id"),
@@ -100,7 +99,6 @@
   // Submission function ------------------------------------------------------------------------------------------------------
 
   async function submitCompetition(
-    token,
     name,
     author,
     authorId,
@@ -128,7 +126,7 @@
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ` + localStorage.getItem("bearer"),
         },
         body: JSON.stringify(requestBody),
       });

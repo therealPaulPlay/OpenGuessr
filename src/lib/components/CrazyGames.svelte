@@ -16,9 +16,11 @@
     crazyGames,
     preventExitPopup,
     disableExternalLinks,
+    preventFullscreen,
+    disableAutoAuthentication,
   } from "$lib/stores/context-specific/platformSettingsStore";
   import { multiplayerPopup } from "$lib/stores/uiStore";
-  import { createRoom } from "$lib/logic/multiplayerLogic";
+  import { createRoom, joinFromLink } from "$lib/logic/multiplayerLogic";
   import { isAuthenticated } from "$lib/stores/accountStore";
   import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
   import { get } from "svelte/store";
@@ -33,6 +35,8 @@
         adsDisabled.set(true);
         preventExitPopup.set(true);
         disableExternalLinks.set(true);
+        preventFullscreen.set(true);
+        disableAutoAuthentication.set(true);
 
         // Enable platform
         crazyGames.set(true);
@@ -56,6 +60,15 @@
             window.CrazyGames.SDK.game.loadingStop();
             window.CrazyGames.SDK.game.gameplayStart();
 
+            try {
+              const roomCode = window.CrazyGames.SDK.game.getInviteParam("join");
+              if (roomCode) {
+                joinFromLink(roomCode);
+              }
+            } catch {
+              console.error("Failed to retrieve Crazy Games Link Parameters. Is the SDK loaded?");
+            }
+
             if (window.CrazyGames.SDK.game.isInstantJoin) {
               multiplayerPopup.set(true);
               // Timeout, as toggling the popup causes the screen and stage to reset
@@ -76,12 +89,12 @@
         // Attach auth listener for if the user signs up mid play
         window.CrazyGames.SDK.user.addAuthListener(authenticateWithCrazyGames);
 
-        // Add listener to multiplayer state to display friend invite thingie
+        // Add listener to multiplayer state to display friend invite thing
         roomLocked.subscribe((value) => {
           if (!value && $isHost) {
             const roomId = get(peerId).replace("openguessr_", "");
 
-            const link = window.CrazyGames.SDK.game.showInviteButton({
+            window.CrazyGames.SDK.game.showInviteButton({
               join: roomId,
             });
           } else {

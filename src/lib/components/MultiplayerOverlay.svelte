@@ -111,7 +111,7 @@
       onclick={() => {
         playSound("basic_button");
         leaveMultiplayerRound();
-      }}>Leave</button
+      }}>End</button
     >
   {/if}
 </div>
