@@ -68,8 +68,7 @@
 </script>
 
 <svelte:head>
-  <!-- Ad script and Cloudflare Turnstile Script -->
-  <script src="https://challenges.cloudflare.com/turnstile/v0/api.js" defer></script>
+  <!-- Ad script -->
   <script src="https://hb.vntsm.com/v4/live/vms/sites/openguessr.com/index.js" async></script>
 </svelte:head>
 

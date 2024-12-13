@@ -383,7 +383,7 @@
 
                     // Use CrazyGames Link invite feature
                     if ($crazyGames) {
-                      const link = window.CrazyGames.SDK.game.inviteLink({
+                      window.CrazyGames.SDK.game.inviteLink({
                         join: roomId,
                       });
                     }
