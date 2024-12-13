@@ -8,7 +8,6 @@ import { errorPopup } from "$lib/utils/errorHandling.js";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore.js";
 import { mapPinLat, mapPinLng, map, addedMarkers } from "$lib/stores/context-specific/mapStore.js";
 import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupStore.js";
-import { captchaToken } from "$lib/stores/context-specific/captchaPopupStore.js";
 import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { mapHovered } from "$lib/stores/context-specific/mapStore.js";
@@ -16,6 +15,8 @@ import { mapHovered } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
 
 // Google Maps init --------------------------------------------------------------------------------------
+
+let captchaToken = $state();
 
 async function loadGoogleMapsApi(apiKey) {
     await new Promise((resolve, reject) => {
@@ -57,12 +58,12 @@ async function requestMapLoad() {
         headers = {
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${localStorage.getItem("bearer")}`,
-            'cf-turnstile-response': get(captchaToken)
+            'cf-turnstile-response': captchaToken
         };
     } else {
         headers = {
             'Content-Type': 'application/json',
-            'cf-turnstile-response': get(captchaToken)
+            'cf-turnstile-response': captchaToken
         };
     }
 
@@ -164,7 +165,7 @@ let mapInitialized = false;
 let currentlyInitializing = false;
 
 export async function initializeMapIfNotAlready() {
-    if (!mapInitialized && !currentlyInitializing && !get(captchaToken)) {
+    if (!mapInitialized && !currentlyInitializing && !captchaToken) {
         captchaPopupVisible.set(true);
     }
 }
@@ -174,7 +175,7 @@ if (typeof window !== "undefined") {
     window.onTurnstileCallback = async function (token) {
         if (!currentlyInitializing) {
             currentlyInitializing = true;
-            captchaToken.set(token);
+            captchaToken = token;
 
             captchaPopupVisible.set(false);
 
