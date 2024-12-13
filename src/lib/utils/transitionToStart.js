@@ -8,6 +8,7 @@ import { multiplayer, singleplayer } from "$lib/stores/modeStore";
 import { sendMessageToAll, showMultiplayerRoundResults, clearAutoSkipTimeout } from "$lib/logic/multiplayerLogic";
 import { shrinkMapIfMobile } from "$lib/utils/shrinkMinimapIfMobile";
 import { isHost } from "$lib/stores/context-specific/multiplayerStore";
+import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 import { get } from "svelte/store";
 
 let alreadyTransitioning = false;
@@ -35,7 +36,8 @@ export function transitionToStart() {
     }
 
     shrinkMapIfMobile();
-    potentialCrazyGamesAd(); // Crazy Games
+    
+    if (get(crazyGames)) potentialCrazyGamesAd(); // Crazy Games Ad
 
   } else {
     console.warn("Already transitioning to start!");
