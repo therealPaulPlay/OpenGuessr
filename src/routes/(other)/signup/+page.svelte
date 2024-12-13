@@ -1,8 +1,10 @@
 <script>
   import { displayError, loginUser, registerUser, sendPasswordResetEmail, changePassword } from "$lib/logic/userAPI";
   import { Eye, EyeClosed } from "lucide-svelte";
+  import { renderCaptcha } from "$lib/utils/renderCaptcha";
   import inIframe from "$lib/utils/checkIframe";
   import { onMount } from "svelte";
+  import { fade, scale } from "svelte/transition";
 
   // Export error / success functions --------------------------------------------------------------------------------------------------------------
 
@@ -122,12 +124,12 @@
   let signupUsername = $state();
 
   let loginButtonSignupPage = $state();
+  let captchaVisible = $state(false);
 
   // This is the function that runs when the user click on signup or presses enter.
   function signUpAction() {
     if (checkEmptyFields(true)) {
-      registerUser(signupUsername, signupEmail, signupPassword, "signup", displaySuccess, errorMessage);
-      loginEmail = signupEmail;
+      captchaVisible = true;
     }
   }
 
@@ -151,7 +153,21 @@
     }
   }
 
-  // Toggle password field visability ------------
+  $effect(() => {
+    if (captchaVisible) {
+      renderCaptcha("#captchaContainer", window.onSignupTurnstileCompleted);
+    }
+  });
+
+  if (typeof window !== "undefined") {
+    window.onSignupTurnstileCompleted = function (token) {
+      registerUser(signupUsername, signupEmail, signupPassword, token, "signup", displaySuccess, errorMessage);
+      loginEmail = signupEmail;
+      captchaVisible = false;
+    };
+  }
+
+  // Toggle password field visability ----------------------------------------------------
 
   let passwordInputType = $state("password");
 
@@ -167,6 +183,18 @@
 <svelte:window on:keyup={handleKeyUp} />
 
 <main>
+  <!-- Captcha Popup-->
+  {#if captchaVisible}
+    <div class="popupContainer" transition:fade={{ duration: 150 }}>
+      <div class="container neumorphic-menu" transition:scale>
+        <h2>Captcha</h2>
+        <div id="captchaContainer">
+          <!-- Captcha will be loaded here -->
+        </div>
+      </div>
+    </div>
+  {/if}
+  <!-- Center Container -->
   <div class="wrapper">
     <div class="container neumorphic-menu">
       <img class="logo" src="/img/openguessr.svg" alt="OpenGuessr Logo" />
@@ -325,6 +353,20 @@
     margin-bottom: 30px;
     margin-top: 5px;
     filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
+  }
+
+  .popupContainer {
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
+    backdrop-filter: blur(10px);
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 
   input {
