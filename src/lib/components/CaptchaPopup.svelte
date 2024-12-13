@@ -1,18 +1,12 @@
 <!-- Captcha popup (currently using Cloudflare Turnstile) -->
 <script>
   import Popup from "$lib/components/Popup.svelte";
+  import { renderCaptcha } from "$lib/utils/renderCaptcha";
   import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupStore";
 
   $effect(() => {
     if ($captchaPopupVisible) {
-      try {
-        turnstile.render("#captchaContainer", {
-          sitekey: "0x4AAAAAAAi-FhzOg4nXIP3z",
-          callback: onTurnstileCallback, // Ensure this callback function is defined globally (window.functionname)
-        });
-      } catch (error) {
-        console.error("Error occured trying to render captcha with Turnstile:", error);
-      }
+      renderCaptcha("#captchaContainer", window.onTurnstileCallback);
     }
   });
 </script>

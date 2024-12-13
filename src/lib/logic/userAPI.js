@@ -65,7 +65,7 @@ export async function loginUser(email, password, errorSource, errorElement) {
   }
 }
 
-export async function registerUser(userName, email, password, errorSource, successFunction, errorElement) {
+export async function registerUser(userName, email, password, token, errorSource, successFunction, errorElement) {
   try {
     // Define the request body
     const requestBody = {
@@ -78,7 +78,8 @@ export async function registerUser(userName, email, password, errorSource, succe
     const response = await fetch(registrationEndpoint, {
       method: 'POST',
       headers: {
-        'Content-Type': 'application/json'
+        'Content-Type': 'application/json',
+        'cf-turnstile-response': token
       },
       body: JSON.stringify(requestBody)
     });
