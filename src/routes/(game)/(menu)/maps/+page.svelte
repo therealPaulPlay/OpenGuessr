@@ -678,9 +678,9 @@
   .arrowExpand {
     rotate: 0deg;
     transition: rotate 250ms ease;
-    width: 25px;
-    height: 25px;
-    vertical-align: -4px;
+    width: 22px;
+    height: 22px;
+    vertical-align: -3px;
   }
 
   .arrowExpandRotate {

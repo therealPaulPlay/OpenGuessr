@@ -20,7 +20,7 @@
     peerId,
     screenEscapeDisabled,
     multiplayerCategory,
-    duelRetryEnabled,
+    matchmakingActive,
     connectedPlayers,
     multiplayerStatus,
     restrictionButtonText,
@@ -36,7 +36,9 @@
     findDuel,
     leaveMultiplayerRound,
     joinRoom,
-    createRoom,
+    setupMultiplayerRoom,
+    startRoom,
+    updateTeamDisplay,
     toggleMultiplayerRestriction,
   } from "$lib/logic/multiplayerLogic";
   import Ticker from "./Ticker.svelte";
@@ -399,11 +401,14 @@
                   ($connectedPlayers.length < get(teamAmount) || $connectedPlayers.length <= 1)}
                 onclick={() => {
                   playSound("basic_button");
-                  createRoom(get(roundAmount), get(roundLength));
 
                   // Switch to stage 2 (host code area) if on stage 1 (after the create room function!!)
                   if ($hostStage == 1) {
+                    setupMultiplayerRoom(get(roundAmount), get(roundLength));
+                    updateTeamDisplay();
                     hostStage.set(2);
+                  } else {
+                    startRoom();
                   }
                 }}>{$hostStage == 1 ? "Create room" : "Start"}</button
               >
@@ -425,7 +430,7 @@
           <button
             id="multiplayerDuelRetry"
             class="standardButton"
-            class:buttonDisabled={!$duelRetryEnabled}
+            class:buttonDisabled={$matchmakingActive}
             onclick={() => {
               playSound("basic_button");
               findDuel();
@@ -751,7 +756,7 @@
   .multiplayerJoinAlign {
     display: flex;
     gap: 10px;
-    padding: 10px;
+    padding: 8px;
     justify-content: center;
     align-items: center;
     margin-bottom: 10px;
