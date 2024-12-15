@@ -1,0 +1,117 @@
+// Multiplayer room matchmaking APIs, for Duels
+import { matchmakingActive, multiplayerStatus, screenEscapeDisabled, peerId } from "$lib/stores/context-specific/multiplayerStore";
+import { changeCategory } from "$lib/utils/changeCategory";
+import { leaveMultiplayerRound, setupMultiplayerRoom, joinRoom, findNextDuel } from "$lib/logic/multiplayerLogic";
+import { get } from "svelte/store";
+
+export async function deleteRoomCodeFromMatchmakingServer() {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id")
+        }
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/delete/" + get(peerId).replace("openguessr_", ""), {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ` + localStorage.getItem("bearer")
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (!response.ok) {
+            console.warn("Failed deleting the Room Code from the server: " + response.status);
+            multiplayerStatus.set("Error deleting roomcode from server: " + response.status);
+        }
+
+    } catch (error) {
+        console.error('Failed making a delete request to the server: ', error);
+        multiplayerStatus.set("Error making a request to server: " + error);
+    }
+}
+
+// This function attempts to get a room code from the server and to join the room
+export async function attemptDuelJoin(index) {
+    index == 0 ? multiplayerStatus.set("Requesting roomcode...") : multiplayerStatus.set("Requesting new roomcode...");
+    let receivedRoomCode = "default";
+
+    try {
+        // Get Roomcode from server
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/" + index, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            receivedRoomCode = await response.json();
+            receivedRoomCode = receivedRoomCode.code;
+        } else {
+            console.error('Error fetching room code:', response.status);
+            multiplayerStatus.set("Bad Get Request response: " + response.status);
+            findNextDuel(); // as this could be a temporary thing, try again
+        }
+
+    } catch (error) {
+        console.error('Error occurred when trying to fetch room code: ', error);
+        multiplayerStatus.set("Couldn't send get request");
+        matchmakingActive.set(false); // if there is no sever response, stop the matchmaking process
+    }
+
+    // Attempt to join if there is a code, otherwise create room
+    if (receivedRoomCode != null && receivedRoomCode != "default") {
+        joinRoom(receivedRoomCode); // duel find status will be set in this function as well
+    } else if (receivedRoomCode == null) {
+        // Create room & hide close + back button for the time
+        screenEscapeDisabled.set(true);
+
+        changeCategory("standard", false); // This will only change the category and not generate! (to prevent skip of first round)
+        setupMultiplayerRoom(5, 60); // + auto skip for result screen
+        sendRoomCodeToMatchmakingServer();
+    }
+}
+
+async function sendRoomCodeToMatchmakingServer() {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id")
+        }
+
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/host/" + get(peerId).replace("openguessr_", ""), {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ` + localStorage.getItem("bearer")
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+            setTimeout(() => {
+                if (get(matchmakingActive)) {
+                    matchmakingActive.set(false);
+                    deleteRoomCodeFromMatchmakingServer();
+                    leaveMultiplayerRound();
+                    multiplayerStatus.set("No match found. Please retry.");
+                }
+            }, 10000); // After 10 seconds, as the room code is now expired, leave the multiplayer round and show the retry button
+
+        } else {
+            console.error("Failed sending the Room Code to the server: " + response.status);
+            multiplayerStatus.set("Error sending roomcode to server: " + response.status);
+            matchmakingActive.set(false);
+        }
+
+    } catch (error) {
+        console.error('Failed making a post request to the server: ', error);
+        multiplayerStatus.set("Error making a request to server: " + error);
+        matchmakingActive.set(false);
+    }
+}
+
+matchmakingActive.subscribe((value) => {
+    if (!value) {
+        screenEscapeDisabled.set(false);
+    }
+});
