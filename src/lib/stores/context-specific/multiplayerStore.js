@@ -10,6 +10,9 @@ export const roundLength = writable(60);
 export const teamAmount = writable(1);
 export const roomLocked = writable(true);
 
+// Matchmaking and Duels
+export const matchmakingActive = writable(false);
+
 // Data
 export const multiplayerGuessesLocationsArray = writable([]);
 export const peerId = writable();

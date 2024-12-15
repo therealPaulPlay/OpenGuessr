@@ -20,7 +20,7 @@
     disableAutoAuthentication,
   } from "$lib/stores/context-specific/platformSettingsStore";
   import { multiplayerPopup } from "$lib/stores/uiStore";
-  import { createRoom, joinFromLink } from "$lib/logic/multiplayerLogic";
+  import { joinFromLink, updateTeamDisplay, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
   import { isAuthenticated } from "$lib/stores/accountStore";
   import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
   import { get } from "svelte/store";
@@ -74,8 +74,9 @@
               // Timeout, as toggling the popup causes the screen and stage to reset
               setTimeout(() => {
                 currentScreen.set("host");
+                setupMultiplayerRoom(get(roundAmount), get(roundLength));
+                updateTeamDisplay();
                 hostStage.set(2); // Go to second stage of multiplayer popup
-                createRoom(get(roundAmount), get(roundLength)); // Create room
               }, 150);
             }
           }, 150);
