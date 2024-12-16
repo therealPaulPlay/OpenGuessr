@@ -2,7 +2,7 @@ import { showNotification } from "$lib/utils/notifications";
 import { username } from "$lib/stores/accountStore";
 import { acceptFriendRequest } from "$lib/logic/friendAPI";
 import { errorPopup } from "$lib/utils/errorHandling";
-import { linkJoinPopup } from "$lib/stores/UIStore";
+import { linkJoinPopup } from "$lib/stores/uiStore";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
 import { leaveMultiplayerRound, setPlayingDuels, setFriendDuel, setupMultiplayerRoom, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
