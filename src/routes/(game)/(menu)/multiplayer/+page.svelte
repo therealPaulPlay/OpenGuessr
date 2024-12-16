@@ -213,7 +213,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
   }
 
   .playBox {
