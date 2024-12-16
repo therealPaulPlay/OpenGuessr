@@ -21,6 +21,7 @@
   import { joinFromLink, updateTeamDisplay, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
   import { isAuthenticated } from "$lib/stores/accountStore";
   import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+  import { helpPopup } from "$lib/stores/uiStore";
   import { goto } from "$app/navigation";
   import { get } from "svelte/store";
 
@@ -39,6 +40,12 @@
 
         // Enable platform
         crazyGames.set(true);
+
+        // Show Help Popup
+        if (!localStorage.getItem("helpPopupCompleted")) {
+          helpPopup.set(true);
+          localStorage.setItem("helpPopupCompleted", "true");
+        }
 
         // Load and initialize SDK
         try {
@@ -61,9 +68,7 @@
 
             try {
               const roomCode = window.CrazyGames.SDK.game.getInviteParam("join");
-              if (roomCode) {
-                joinFromLink(roomCode);
-              }
+              if (roomCode) joinFromLink(roomCode);
             } catch {
               console.error("Failed to retrieve Crazy Games Link Parameters. Is the SDK loaded?");
             }

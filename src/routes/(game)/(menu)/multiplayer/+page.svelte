@@ -1,5 +1,5 @@
 <script>
-  import { PlusCircle, Unplug, Swords, ContactRound, Contact} from "lucide-svelte";
+  import { PlusCircle, Unplug, Swords, ContactRound } from "lucide-svelte";
   import { friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
   import { isAuthenticated } from "$lib/stores/accountStore";
@@ -130,7 +130,7 @@
       </button>
     </div>
   </div>
-  <div class="friendBox">
+  <div class="friendBox" style:min-height={$loadedFriendsData ? "50px" : "80px"}>
     {#if $loadedFriendsData && $isAuthenticated}
       {#each $loadedFriendsData as entry}
         <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -392,7 +392,6 @@
     transition: max-height 150ms ease;
     background-color: var(--box-color);
     border-radius: 15px;
-    min-height: 80px;
     padding: 10px;
     overflow: hidden;
   }
