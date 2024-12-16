@@ -527,25 +527,8 @@
     min-height: 2500px; /* avoid searches changing the page size much */
   }
 
-  .headerContainer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    flex-wrap: wrap;
-    width: 100%;
-    padding: 15px;
-    padding-inline: 0;
-    gap: 12px;
-  }
-
   .loadMoreIconSpan {
     margin-top: 7px;
-  }
-
-  .header {
-    text-align: center;
-    font-size: 45px;
-    color: white;
   }
 
   .largeHeaderMargin {
@@ -782,8 +765,8 @@
   #uploadButton {
     border-radius: 10px;
     text-decoration: none;
-    line-height: 35px;
     margin-top: auto;
+    min-height: 50px;
   }
 
   .categoriesBar {
@@ -845,10 +828,6 @@
   @media (max-width: 800px) {
     p {
       font-size: 20px;
-    }
-
-    .header {
-      font-size: 35px;
     }
 
     .categoryButton {

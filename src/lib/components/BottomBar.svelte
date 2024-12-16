@@ -29,7 +29,7 @@
         window.open("https://discord.gg/CSc3MbDrZ8", "_blank").focus();
       }}
     >
-      <img src="./img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" id="discordIcon" />
+      <img src="/img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" id="discordIcon" />
     </button>
     <button
       class="standardButton bottomBarButton bottomSocialItem white"
@@ -39,7 +39,7 @@
         window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
       }}
     >
-      <img src="./img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
+      <img src="/img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
     </button>
   </div>
   <div class="barMenu bottomRightMenu">

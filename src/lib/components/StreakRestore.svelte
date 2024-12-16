@@ -104,7 +104,7 @@
     bind:this={streakWatchAd}
   >
     Keep streak
-    <img src="./img/streak_icon.png" class="socialIcon streakIcon" alt="Streak Icon" />
+    <img src="/img/streak_icon.png" class="socialIcon streakIcon" alt="Streak Icon" />
   </button>
   <button
     class="standardButton closeButton white streakAdDismiss {streakAdDismissEnabled ? '' : 'disabled'}"

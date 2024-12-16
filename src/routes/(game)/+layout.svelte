@@ -38,7 +38,6 @@
   import LinkJoinPopup from "$lib/components/LinkJoinPopup.svelte";
   import FriendBrowserPopup from "$lib/components/FriendBrowserPopup.svelte";
   import InboxPopup from "$lib/components/InboxPopup.svelte";
-  import MultiplayerPopup from "$lib/components/MultiplayerPopup.svelte";
   import Chat from "$lib/components/Chat.svelte";
   import InitMultiplayer from "$lib/components/InitMultiplayer.svelte";
   import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
@@ -111,7 +110,6 @@
 <SingleplayerOptions />
 <DiscordPopup />
 <LinkJoinPopup />
-<MultiplayerPopup />
 <ResultScreen />
 <BlinkRestrictionFade />
 <LittleTimeVignette />

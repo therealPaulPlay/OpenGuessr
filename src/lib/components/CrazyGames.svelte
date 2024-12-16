@@ -8,7 +8,6 @@
     roundAmount,
     roundLength,
     hostStage,
-    currentScreen,
   } from "$lib/stores/context-specific/multiplayerStore";
   import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
   import {
@@ -19,10 +18,11 @@
     preventFullscreen,
     disableAutoAuthentication,
   } from "$lib/stores/context-specific/platformSettingsStore";
-  import { multiplayerPopup } from "$lib/stores/uiStore";
   import { joinFromLink, updateTeamDisplay, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
   import { isAuthenticated } from "$lib/stores/accountStore";
   import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+  import { helpPopup } from "$lib/stores/uiStore";
+  import { goto } from "$app/navigation";
   import { get } from "svelte/store";
 
   onMount(async () => {
@@ -40,6 +40,12 @@
 
         // Enable platform
         crazyGames.set(true);
+
+        // Show Help Popup
+        if (!localStorage.getItem("helpPopupCompleted")) {
+          helpPopup.set(true);
+          localStorage.setItem("helpPopupCompleted", "true");
+        }
 
         // Load and initialize SDK
         try {
@@ -62,18 +68,15 @@
 
             try {
               const roomCode = window.CrazyGames.SDK.game.getInviteParam("join");
-              if (roomCode) {
-                joinFromLink(roomCode);
-              }
+              if (roomCode) joinFromLink(roomCode);
             } catch {
               console.error("Failed to retrieve Crazy Games Link Parameters. Is the SDK loaded?");
             }
 
             if (window.CrazyGames.SDK.game.isInstantJoin) {
-              multiplayerPopup.set(true);
+              goto("/multiplayer/host");
               // Timeout, as toggling the popup causes the screen and stage to reset
               setTimeout(() => {
-                currentScreen.set("host");
                 setupMultiplayerRoom(get(roundAmount), get(roundLength));
                 updateTeamDisplay();
                 hostStage.set(2); // Go to second stage of multiplayer popup
