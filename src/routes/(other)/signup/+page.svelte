@@ -187,7 +187,7 @@
   {#if captchaVisible}
     <div class="popupContainer" transition:fade={{ duration: 150 }}>
       <div class="container neumorphic-menu" transition:scale>
-        <h2>Captcha</h2>
+        <h2 class="captchaHeader">Captcha</h2>
         <div id="captchaContainer">
           <!-- Captcha will be loaded here -->
         </div>
@@ -344,6 +344,10 @@
     justify-content: center;
     align-items: center;
     overflow: hidden;
+  }
+
+  .captchaHeader {
+    margin-bottom: 15px;
   }
 
   .logo {

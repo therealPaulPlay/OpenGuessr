@@ -22,6 +22,7 @@
     z-index: 1;
     transition:
       opacity 500ms ease,
+      scale 2000ms ease,
       transform 2000ms ease,
       filter 500ms ease;
     overflow: hidden;

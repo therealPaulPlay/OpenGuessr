@@ -213,7 +213,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 5px;
+    gap: 8px;
   }
 
   .playBox {
@@ -263,11 +263,11 @@
     display: flex;
     background-color: rgba(255, 255, 255, 0.1);
     padding: 10px;
+    padding-inline: 5px !important;
+    padding-left: 12px;
     height: 50px;
-    padding-inline: 5px;
     align-items: center;
     justify-content: space-between;
-    padding-left: 12px;
     border: none;
     box-shadow: none;
     gap: 3px;
