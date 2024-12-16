@@ -15,7 +15,7 @@ import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
-import { linkJoinPopup, multiplayerPopup } from "$lib/stores/uiStore";
+import { linkJoinPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, connectedPlayers, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, hostStage, multiplayerStatus, restrictionButtonText, teamsDisplayText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray, yourTeam, multiplayerGuessesLocationsArray, roomLocked, matchmakingActive } from "$lib/stores/context-specific/multiplayerStore";
 import { getLevel } from "$lib/utils/experienceCalculations.js";
@@ -24,6 +24,7 @@ import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
 import { get } from "svelte/store";
+import { goto } from "$app/navigation";
 
 let uniqueUserID = 0; // used in setup for peerJS as peer id
 
@@ -95,8 +96,6 @@ export function toggleMultiplayerRestriction() {
 
     multiplayerRestriction = restrictions[currentRestrictionIndex];
     restrictionButtonText.set(restrictionsText[currentRestrictionIndex]);
-
-    setRestriction(multiplayerRestriction);
 }
 
 // Game UI ----------------------------------------------------------------------------------------------------------------------------------
@@ -642,7 +641,7 @@ export async function startMultiplayerRound(latitude, longitude) {
     totalRequiredGuesses = get(connectedPlayers).length; // this is being set here as well as after the countdown (in case sb latejoins)
 
     if (!multiplayerFirstRoundPlayed) {
-        multiplayerPopup.set(false);
+        goto("/");
         multiplayerFirstRoundPlayed = true;
     } else {
         roundIndex++
@@ -770,7 +769,7 @@ export async function joinRoom(code) {
             multiplayer.set(true);
 
             setMultiplayerUI();
-            multiplayerPopup.set(false);
+            goto("/");
             linkJoinPopup.set(false);
             matchmakingActive.set(false);
             roundAmount.set(data.content.roundAmount);

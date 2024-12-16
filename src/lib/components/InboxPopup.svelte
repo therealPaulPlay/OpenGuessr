@@ -88,11 +88,13 @@
     background-color: rgba(255, 255, 255, 0.1);
     border-radius: 5px;
     width: calc(100% - 30px);
+    position: relative;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 5px;
     padding-inline: 15px;
+    margin-bottom: 10px;
     transition: background-color 250ms ease;
     gap: 10px;
     cursor: pointer;
@@ -106,16 +108,14 @@
     opacity: 0.5;
     font-size: 22px;
     text-align: center;
-    width: 100%;
-    margin-top: auto;
     margin-bottom: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
   }
 
   .playerSearchBox {
-    display: flex;
-    justify-content: safe center;
-    align-items: flex-start;
-    flex-wrap: wrap;
     width: calc(100% - 13px);
     border-radius: 5px;
     max-height: 50vh;

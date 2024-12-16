@@ -220,7 +220,7 @@
 {/if}
 
 <div class="mainContainer">
-  <h1 id="uploadHeader">Create a Competition</h1>
+  <h1 class="header" id="uploadHeader">Create a Competition</h1>
   <div class="infoNoteBox">
     <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
     <p class="uploadFirstText">Information and Rules:</p>
@@ -356,9 +356,7 @@
   }
 
   #uploadHeader {
-    width: 100%;
     margin-bottom: 30px;
-    font-size: 40px;
   }
 
   .textHeaderLeft {

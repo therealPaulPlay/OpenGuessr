@@ -17,4 +17,3 @@ export const troubleshootPopup = writable(false);
 export const linkJoinPopup = writable(false);
 export const friendBrowserPopup = writable(false);
 export const inboxPopup = writable(false);
-export const multiplayerPopup = writable(false); // Multiplayer Popup Var replaces toggle function

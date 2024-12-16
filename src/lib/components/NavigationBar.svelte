@@ -4,7 +4,7 @@
   import Notification from "$lib/components/Notification.svelte";
   import { isAuthenticated, experience, supporterLevel, username } from "$lib/stores/accountStore";
   import { signupPrompt } from "$lib/utils/signupPrompt";
-  import { singleplayerOptionsPopup, multiplayerPopup } from "$lib/stores/uiStore";
+  import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
   import { competition, multiplayer } from "$lib/stores/modeStore";
   import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
   import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
@@ -142,17 +142,17 @@
       >
         <img class="socialBarIcons" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
       </a>
-      <button
+      <a
         id="mobileMultiplayerButton"
         class="standardButton accountButton white"
         class:preventNavigateOut
+        href="/multiplayer"
         onclick={() => {
           playSound("basic_button");
-          multiplayerPopup.set(true);
         }}
       >
         <img class="socialBarIcons" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
-      </button>
+      </a>
       <a
         id="mobileCompetitionsButton"
         class="standardButton accountButton white"
@@ -186,11 +186,7 @@
       >
         <img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
       </button>
-      <button
-        class="standardButton accountButton white"
-        id="settingsButtonMobile"
-        onclick={openSettings}
-      >
+      <button class="standardButton accountButton white" id="settingsButtonMobile" onclick={openSettings}>
         <img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
       </button>
     </div>
@@ -282,13 +278,13 @@
       <span class="topBarExpand">Leaderboard</span>
       <img class="socialBarIcons shiftedSocialbarIcon" src="/img/leaderboards_icon.png" alt="Experience Leaderboard" />
     </a>
-    <button
+    <a
       id="multiplayerButton"
       class="accountButton standardButton white"
       class:preventNavigateOut
+      href="/multiplayer"
       onclick={() => {
         playSound("basic_button");
-        multiplayerPopup.set(true);
       }}
     >
       <span class="topBarExpand">Multiplayer</span>
@@ -297,7 +293,7 @@
         src="/img/multiplayer_icon.png"
         alt="Open the multiplayer menu"
       />
-    </button>
+    </a>
     <a
       id="competitionsButton"
       class="standardButton accountButton white"

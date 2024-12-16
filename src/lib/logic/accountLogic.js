@@ -51,15 +51,15 @@ async function loadUserInfo() {
   try {
     await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((user) => {
       // Extract profile cosmetics
-      experience.set(user.experience);
-      username.set(user.userName);
-      supporterLevel.set(user.supporter_level);
-      supportedAmount.set(user.supported_amount);
+      experience.set(user?.experience);
+      username.set(user?.userName);
+      supporterLevel.set(user?.supporter_level);
+      supportedAmount.set(user?.supported_amount);
       selectedPinIndex.set(user?.profile_data?.pin || 0);
       selectedBadge.set(user?.profile_data?.badge || null);
 
       if (get(resultScreenEnabled) && get(lastExperienceCalculationAborted)) loadResultScreenXP(get(lastDistance));
-      if (user.new_requests) { inboxIconNew.set(true); }
+      if (user?.new_requests) { inboxIconNew.set(true); }
 
       initializeWebsocketConnection();
     });
