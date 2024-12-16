@@ -666,8 +666,8 @@
 {/snippet}
 <div class="main">
   <div class="competitionElement competitionBox">
-    <div class="flexCompetitionBar competitionTitle competitionTitleDaily">
-      <h2 class="boxHeader">Competitions</h2>
+    <div class="headerContainer">
+      <h2 class="header">Competitions</h2>
     </div>
     <div id="dailyCompetitionArea" class="competitionArea">
       <!-- daily competitions will be inserted here -->
@@ -696,8 +696,8 @@
     </div>
   </div>
   <div class="competitionElement competitionBox">
-    <div class="flexCompetitionBar competitionTitle">
-      <h2 class="boxHeader">Active</h2>
+    <div class="headerContainer">
+      <h2 class="header">Active</h2>
       <button
         class="standardButton white createButton"
         onclick={() => {
@@ -789,8 +789,8 @@
     {/if}
   </div>
   <div class="competitionElement competitionBox expiredBox">
-    <div class="competitionTitle competitionTitleExpired">
-      <h2 class="boxHeader">Recently ended</h2>
+    <div class="headerContainer">
+      <h2 class="header">Recently ended</h2>
     </div>
     <div id="expiredCompetitionArea" class="competitionArea">
       <!-- expired competitions will be inserted here -->
@@ -870,13 +870,6 @@
     width: 100%;
     display: flex;
     align-items: center;
-  }
-
-  .competitionTitle {
-    padding-top: 5px;
-    padding-bottom: 5px;
-    margin-bottom: 10px;
-    width: 100%;
   }
 
   .competitionBox {
@@ -967,12 +960,6 @@
     display: flex;
     align-items: center;
     background-color: var(--box-color);
-  }
-
-  .boxHeader {
-    text-align: left;
-    font-size: 45px;
-    margin-top: 10px;
   }
 
   .descText {
@@ -1164,17 +1151,9 @@
     height: 20px;
   }
 
-  .flexCompetitionBar {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 10px;
-    flex-wrap: wrap;
-  }
-
   .createButton {
     border-radius: 10px;
-    line-height: 35px;
+    min-height: 50px;
   }
 
   @keyframes fadeIn {
@@ -1285,10 +1264,6 @@
   }
 
   @media all and (max-width: 800px) {
-    .boxHeader {
-      font-size: 35px;
-    }
-
     .competitionItem {
       flex-grow: 1;
     }

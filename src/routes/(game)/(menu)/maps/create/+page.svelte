@@ -105,7 +105,7 @@
 </svelte:head>
 
 <div class="mainContainer">
-  <h1 id="uploadHeader">Create a Map</h1>
+  <h1 class="header" id="uploadHeader">Create a Map</h1>
   <div class="infoNoteBox">
     <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
     <h2 class="uploadFirstText">Important Rules:</h2>
@@ -176,24 +176,21 @@
     <div class="infoNoteBox infoNoteBoxConverter">
       <img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
       <p id="infoTextMapConverter">
-        You can generate a map using a tool like Map-Generator and then convert it to the OpenGuessr format. Learn more <a
-          target="_blank"
-          href="https://education.openguessr.com/tools/map-converter"
-          class="linkToMapConverter">here</a
+        You can generate a map using a tool like Map-Generator and then convert it to the
+        <!-- svelte-ignore a11y_click_events_have_key_events -->
+        <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+        <span
+          id="jsonFormatInfoSpan"
+          role="tooltip"
+          onclick={() => {
+            jsonPopup = true;
+          }}>OpenGuessr JSON format</span
+        >. Check out the official converter
+        <a target="_blank" href="https://education.openguessr.com/tools/map-converter" class="linkToMapConverter"
+          >here</a
         >.
       </p>
     </div>
-    <!-- svelte-ignore a11y_click_events_have_key_events -->
-    <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-    <p>
-      Locations from a JSON file with <span
-        id="jsonFormatInfoSpan"
-        role="tooltip"
-        onclick={() => {
-          jsonPopup = true;
-        }}>this formatting</span
-      >:
-    </p>
     <button
       id="jsonUploadButton"
       class="standardButton white"
@@ -271,6 +268,10 @@
     padding-inline: 10px;
   }
 
+  #uploadHeader {
+    margin-bottom: 30px;
+  }
+
   #jsonUploadButton {
     margin-top: 10px;
     padding-top: 2px;
@@ -301,12 +302,6 @@
 
   .fullWidth {
     width: 100%;
-  }
-
-  #uploadHeader {
-    width: 100%;
-    margin-bottom: 30px;
-    font-size: 40px;
   }
 
   .submitButton {

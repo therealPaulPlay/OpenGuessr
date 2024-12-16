@@ -558,16 +558,6 @@
     gap: 10px;
   }
 
-  .header {
-    text-align: left;
-    text-overflow: ellipsis;
-    text-wrap: nowrap;
-    overflow: hidden;
-    color: white;
-    font-size: 40px;
-    width: 100%;
-  }
-
   .authorText {
     text-align: left;
     text-overflow: ellipsis;

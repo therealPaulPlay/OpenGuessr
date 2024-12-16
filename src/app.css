@@ -68,6 +68,7 @@ input {
     background-color: rgba(255, 255, 255, 0.1);
     transition: background-color 250ms ease;
     border-radius: 5px;
+    font-size: 22px;
     outline: none;
     box-shadow: none;
     border: none;
@@ -119,6 +120,22 @@ input:focus {
 .white {
     background-color: rgba(255, 255, 255, 0.2);
     border: 3px solid rgba(255, 255, 255, 0.1);
+}
+
+.header {
+    font-size: 45px;
+    color: white;
+}
+
+.headerContainer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 15px;
+    padding-inline: 0;
+    gap: 12px;
 }
 
 .spinner {
@@ -338,6 +355,11 @@ search {
     .leaderboardAds {
         width: 320px;
         height: 50px;
+    }
+
+
+    .header {
+        font-size: 35px;
     }
 }
 
