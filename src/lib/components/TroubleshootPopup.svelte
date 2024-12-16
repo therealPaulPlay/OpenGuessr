@@ -29,8 +29,7 @@
             target="_blank"
           >
             fastturn
-          </a>
-          .
+          </a>.
         </p>
       </li>
       <li>
