@@ -1,8 +1,8 @@
 import { errorPopup } from "$lib/utils/errorHandling";
 import { coordsFromHost } from "$lib/stores/context-specific/multiplayerStore";
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
-import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore.js";
-import { loadingScreenVisible } from "$lib/stores/uiStore.js";
+import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
+import { loadingScreenVisible } from "$lib/stores/uiStore";
 import { get } from "svelte/store";
 
 // This is THE function to get locations (all others here are NOT export) - not the functino to start a new round! (look for newLocation.js for that)
