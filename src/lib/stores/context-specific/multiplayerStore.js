@@ -28,7 +28,6 @@ export const hostStage = writable(1);
 export const screenEscapeDisabled = writable(false); // Set the Close and Back buttons disabled (e.g. when establishing connection)
 export const duelRetryEnabled = writable(false);
 export const restrictionButtonText = writable("Standard");
-export const teamsDisplayText = writable(); // Displays all connected players and their teams, as a string
 
 // UI - Time reduced Overlay for Duels
 export const timeReducedOverlay = writable(false);

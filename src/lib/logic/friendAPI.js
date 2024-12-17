@@ -1,10 +1,10 @@
 import { isAuthenticated, username } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
-import { showConfirmPopup } from "$lib/utils/confirmPopup";
-import { peerId, loadedFriendsData } from "$lib/stores/context-specific/multiplayerStore";
-import { loadProfileFromId } from "$lib/utils/loadProfile";
+import { peerId, loadedFriendsData, multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 import { inboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
+import { linkJoinPopup } from "$lib/stores/uiStore";
+import { setPlayingDuels, setFriendDuel, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 
 // Inbox -----------------------------------------------------------------------------------------------------------------------------------
@@ -170,7 +170,17 @@ export async function removeFriend(friendId) {
     }
 }
 
+// Match invites -------------------------------------------------------------------------------------------------------------
 export async function sendMatchInvite(recipientId, duel) {
+    if (duel) {
+        // If Duel, create a room first
+        setPlayingDuels(true);
+        setFriendDuel(true);
+        await setupMultiplayerRoom(3, 60);
+        linkJoinPopup.set(true);
+        multiplayerStatus.set("Waiting for response from friend...");
+    }
+
     try {
         const requestBody = {
             id: localStorage.getItem("id"),
@@ -198,7 +208,7 @@ export async function sendMatchInvite(recipientId, duel) {
         }
 
     } catch (error) {
-        console.error('Eerror occurred while sending/accepting/declining invite (Network): ', error);
-        errorPopup("E error sending invite (Network)", "The invite couldn't be sent due to a network problem.", error, false, false);
+        console.error('Error occurred while sending/accepting/declining invite (Network): ', error);
+        errorPopup("Error sending invite (Network)", "The invite couldn't be sent due to a network problem.", error, false, false);
     }
 }

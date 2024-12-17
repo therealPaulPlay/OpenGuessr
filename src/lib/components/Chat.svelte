@@ -12,7 +12,7 @@
       if (multiplayerChatMessages) {
         setTimeout(() => {
           multiplayerChatMessages.scrollTop = multiplayerChatMessages.scrollHeight;
-        }, 100);
+        }, 50);
       }
     } catch (error) {
       console.error("Error setting chat box scroll value:", error);

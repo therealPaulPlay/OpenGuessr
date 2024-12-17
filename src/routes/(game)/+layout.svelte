@@ -39,7 +39,6 @@
   import FriendBrowserPopup from "$lib/components/FriendBrowserPopup.svelte";
   import InboxPopup from "$lib/components/InboxPopup.svelte";
   import Chat from "$lib/components/Chat.svelte";
-  import InitMultiplayer from "$lib/components/InitMultiplayer.svelte";
   import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
   import MultiplayerOverlay from "$lib/components/MultiplayerOverlay.svelte";
   import BlinkRestrictionFade from "$lib/components/BlinkRestrictionFade.svelte";
@@ -84,9 +83,6 @@
 
 <!-- Log user in -->
 <Authenticate />
-
-<!-- Load Peer JS and check for Join URL -->
-<InitMultiplayer />
 
 <!-- Logo and Navbar -->
 <TopLeftLogo />

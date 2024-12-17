@@ -18,7 +18,7 @@
     preventFullscreen,
     disableAutoAuthentication,
   } from "$lib/stores/context-specific/platformSettingsStore";
-  import { joinFromLink, updateTeamDisplay, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
+  import { joinFromLink, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
   import { isAuthenticated } from "$lib/stores/accountStore";
   import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
   import { helpPopup } from "$lib/stores/uiStore";
@@ -75,12 +75,8 @@
 
             if (window.CrazyGames.SDK.game.isInstantJoin) {
               goto("/multiplayer/host");
-              // Timeout, as toggling the popup causes the screen and stage to reset
-              setTimeout(() => {
-                setupMultiplayerRoom(get(roundAmount), get(roundLength));
-                updateTeamDisplay();
-                hostStage.set(2); // Go to second stage of multiplayer popup
-              }, 150);
+              setupMultiplayerRoom(get(roundAmount), get(roundLength));
+              hostStage.set(2); // Go to second stage
             }
           }, 150);
         } catch (error) {

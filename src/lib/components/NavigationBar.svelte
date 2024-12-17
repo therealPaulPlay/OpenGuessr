@@ -67,6 +67,7 @@
     if (typeof window == "undefined") return;
 
     try {
+      if (factor < 0.05 && factor != 0) factor = 0.05;
       const circle = document.getElementById("progressRingCircle");
       const radius = circle.r.baseVal.value;
       const circumference = 2 * Math.PI * radius;
