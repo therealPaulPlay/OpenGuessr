@@ -3,7 +3,7 @@
   import { friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
   import { isAuthenticated } from "$lib/stores/accountStore";
-  import { loadedFriendsData, multiplayerCategory } from "$lib/stores/context-specific/multiplayerStore";
+  import { loadedFriendsData, hostStage } from "$lib/stores/context-specific/multiplayerStore";
   import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
   import { loadFriends, removeFriend, sendMatchInvite } from "$lib/logic/friendAPI";
   import { loadProfileFromId } from "$lib/utils/loadProfile";
@@ -18,9 +18,7 @@
   let friendsRefreshInterval;
 
   onMount(async () => {
-    // On Popup opened
-    multiplayerCategory.set(localStorage.getItem("selectedCategory") || "standard");
-
+    hostStage.set(1); // Reset host stage
     await loadFriends();
     clearInterval(friendsRefreshInterval);
 

@@ -1,8 +1,10 @@
 import { isAuthenticated, username } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
-import { peerId, loadedFriendsData } from "$lib/stores/context-specific/multiplayerStore";
+import { peerId, loadedFriendsData, multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 import { inboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
+import { linkJoinPopup } from "$lib/stores/uiStore";
+import { setPlayingDuels, setFriendDuel, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 
 // Inbox -----------------------------------------------------------------------------------------------------------------------------------
@@ -168,7 +170,17 @@ export async function removeFriend(friendId) {
     }
 }
 
+// Match invites -------------------------------------------------------------------------------------------------------------
 export async function sendMatchInvite(recipientId, duel) {
+    if (duel) {
+        // If Duel, create a room first
+        setPlayingDuels(true);
+        setFriendDuel(true);
+        await setupMultiplayerRoom(3, 60);
+        linkJoinPopup.set(true);
+        multiplayerStatus.set("Waiting for response from friend...");
+    }
+
     try {
         const requestBody = {
             id: localStorage.getItem("id"),

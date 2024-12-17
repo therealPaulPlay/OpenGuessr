@@ -13,7 +13,6 @@
     roundAmount,
     roundLength,
     peerId,
-    multiplayerCategory,
     connectedPlayers,
     restrictionButtonText,
   } from "$lib/stores/context-specific/multiplayerStore";
@@ -21,17 +20,17 @@
   import { playSound } from "$lib/utils/soundManager";
   import Ticker from "$lib/components/Ticker.svelte";
   import { goto } from "$app/navigation";
-  import { onMount } from "svelte";
-
-  onMount(() => {
-    hostStage.set(1);
-  });
-
   let teamsDisplayText = $state("");
 
   connectedPlayers.subscribe(() => {
     buildTeamDisplayText();
   });
+
+  function getFormattedCategory() {
+    if (typeof window === "undefined") return;
+    const category = localStorage.getItem("selectedCategory") || "standard";
+    return category.replace("community_", "");
+  }
 
   function buildTeamDisplayText() {
     const amountOfTeams = get(teamAmount); // Get the amount of teams from the store
@@ -106,7 +105,9 @@
       <div id="roomCreationMap" class="roomCreationModule multiplayerHostSettings">
         <p>Selected Map:</p>
         <div class="selectedMapField">
-          <p id="multiplayerMapDisplay">{$multiplayerCategory.replace("community_", "")}</p>
+          <p id="multiplayerMapDisplay">
+            {getFormattedCategory()}
+          </p>
           <button
             class="standardButton white"
             onclick={() => {
