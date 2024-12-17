@@ -75,7 +75,8 @@ input {
     font-family: Barlow;
 }
 
-input::placeholder {
+input::placeholder,
+textarea::placeholder {
     color: white;
     opacity: 0.5;
 }
