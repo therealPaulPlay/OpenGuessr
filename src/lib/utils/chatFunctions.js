@@ -2,6 +2,7 @@ import { chatHTML, savedGuestName } from "$lib/stores/context-specific/multiplay
 import { distributeChat } from "$lib/logic/multiplayerLogic";
 import { username } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
+import { filterProfanity } from "$lib/utils/profanityCheck";
 
 export function manuallySendChat(text) {
     if (text) {
@@ -19,20 +20,8 @@ export function resetChat() {
 
 // Add chat and check for profanity
 export async function addToChat(text) {
-    const profanityList = [
-        "hate ", "idiot", "fuck", "asshole", "suck ass", "nigg", "pussy", "kill y", "cock", "bastard", "suck"
-    ];
-
-    function containsProfanity(text) {
-        const lowerCaseText = text.toLowerCase();
-        return profanityList.some(word => lowerCaseText.includes(word));
-    }
-
-    if (containsProfanity(text)) {
-        addTextToChat("System: Censored Profanity");
-    } else {
-        addTextToChat(text);
-    }
+    text = await filterProfanity(text);
+    addTextToChat(text);
 }
 
 function addTextToChat(text) {
