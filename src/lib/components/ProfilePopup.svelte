@@ -40,8 +40,10 @@
   let filteredAbout = $state("");
 
   $effect(async () => {
-    if (!$profileData?.about) return;
-    filteredAbout = await filterProfanity($profileData?.about);
+    filteredAbout = "";
+    if ($profileData?.about) {
+      filteredAbout = await filterProfanity($profileData?.about);
+    }
   });
 </script>
 

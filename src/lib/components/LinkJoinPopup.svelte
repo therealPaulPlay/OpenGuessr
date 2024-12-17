@@ -2,6 +2,7 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
   import { linkJoinPopup } from "$lib/stores/uiStore";
+  import { leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
   import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
   import { playSound } from "$lib/utils/soundManager";
 </script>
@@ -9,13 +10,18 @@
 {#if $linkJoinPopup}
   <Popup verySlim="true">
     <div class="popup-title">
-      <h1 id="socialHeader">Joining...</h1>
+      <h1 id="socialHeader">Room</h1>
     </div>
-    <p id="linkjoinStatus">Status: {$multiplayerStatus}</p>
+    <p id="linkjoinStatus">Status: {$multiplayerStatus || "No status."}</p>
     <br />
-    <button id="linkJoinClose" class="standardButton white closeButton" onclick={() => {
-      linkJoinPopup.set(false);
-      playSound("basic_button");
-    }}>Close</button>
+    <button
+      id="linkJoinClose"
+      class="standardButton white closeButton"
+      onclick={() => {
+        linkJoinPopup.set(false);
+        leaveMultiplayerRound();
+        playSound("basic_button");
+      }}>Close</button
+    >
   </Popup>
 {/if}
