@@ -67,7 +67,7 @@ export async function attemptDuelJoin(index) {
         screenEscapeDisabled.set(true);
 
         changeCategory("standard", false); // This will only change the category and not generate! (to prevent skip of first round)
-        setupMultiplayerRoom(5, 60); // + auto skip for result screen
+        await setupMultiplayerRoom(5, 60);
         sendRoomCodeToMatchmakingServer();
     }
 }

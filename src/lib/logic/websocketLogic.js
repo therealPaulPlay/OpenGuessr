@@ -78,7 +78,7 @@ function joinRoomFromNotification(roomcode, recipientId, duel) {
 
     if (duel) {
         acceptDuelInvite(recipientId); // informs the host that they should create a room
-        joinTimeout = 1000;
+        joinTimeout = 1500;
     }
 
     // wait 1000ms for the other player to respond + host the room
@@ -101,7 +101,7 @@ function createDuelRoom() {
     leaveCompetition(false);
     setPlayingDuels(true);
     setFriendDuel(true);
-    setupMultiplayerRoom(5, 60);
+    setupMultiplayerRoom(5, 60); // Async
     goto("/");
 }
 

@@ -1,8 +1,6 @@
 import { isAuthenticated, username } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
-import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { peerId, loadedFriendsData } from "$lib/stores/context-specific/multiplayerStore";
-import { loadProfileFromId } from "$lib/utils/loadProfile";
 import { inboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { get } from "svelte/store";
@@ -198,7 +196,7 @@ export async function sendMatchInvite(recipientId, duel) {
         }
 
     } catch (error) {
-        console.error('Eerror occurred while sending/accepting/declining invite (Network): ', error);
-        errorPopup("E error sending invite (Network)", "The invite couldn't be sent due to a network problem.", error, false, false);
+        console.error('Error occurred while sending/accepting/declining invite (Network): ', error);
+        errorPopup("Error sending invite (Network)", "The invite couldn't be sent due to a network problem.", error, false, false);
     }
 }
