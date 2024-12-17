@@ -10,7 +10,7 @@
   import { submitAccountDeletion } from "$lib/utils/deleteAccount";
   import { confirmPasswordValue, confirmUsernameValue } from "$lib/stores/context-specific/confirmPopupStore";
   import { showConfirmPopup } from "$lib/utils/confirmPopup";
-  import { loadProfileFromId } from "$lib/utils/loadProfile";
+  import { filterProfanity } from "$lib/utils/profanityCheck";
   import { saveProfileAboutIfYourProfileAndChanges } from "$lib/utils/updateProfileData";
   import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
   import { pinPopup, badgePopup } from "$lib/stores/uiStore";
@@ -35,6 +35,13 @@
   profilePopup.subscribe(async (value) => {
     isFriendsWithId = true;
     isFriendsWithId = await checkIfFriendsWithId($profileId);
+  });
+
+  let filteredAbout = $state("");
+
+  $effect(async () => {
+    if (!$profileData?.about) return;
+    filteredAbout = await filterProfanity($profileData?.about);
   });
 </script>
 
@@ -113,7 +120,7 @@
           style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
           maxlength="150"
           spellcheck="false"
-          value={$profileData?.about}
+          value={filteredAbout}
           bind:this={textarea}
           placeholder="Share a few facts about yourself with others..."
           oninput={() => {

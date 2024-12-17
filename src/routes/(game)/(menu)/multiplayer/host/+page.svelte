@@ -130,22 +130,20 @@
               playSound("basic_button");
               const roomId = get(peerId).replace("openguessr_", "");
 
+              // Use regular or Crazy Games link for invitation
+              const link = $crazyGames
+                ? window.CrazyGames.SDK.game.inviteLink({ join: roomId })
+                : window.location.origin + "/?join=" + roomId;
+
               // Copy to Clipboard
               navigator.clipboard
-                .writeText(window.location.origin + "/?join=" + roomId)
+                .writeText(link)
                 .then(function () {
                   showNotification("Copied!");
                 })
                 .catch(function (error) {
                   showNotification("Error: " + error);
                 });
-
-              // Use CrazyGames Link invite feature
-              if ($crazyGames) {
-                window.CrazyGames.SDK.game.inviteLink({
-                  join: roomId,
-                });
-              }
             }}
           >
             <Link strokeWidth="2.5" size="18" />
