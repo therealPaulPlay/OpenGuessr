@@ -71,7 +71,7 @@
   <script src="https://hb.vntsm.com/v4/live/vms/sites/openguessr.com/index.js" async></script>
 
   <!-- Leaflet Map -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" async />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
 </svelte:head>
 
 <!-- Keywords -->
