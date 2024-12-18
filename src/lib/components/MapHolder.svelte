@@ -2,6 +2,8 @@
   let { children } = $props();
   import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
   import { mapHovered } from "$lib/stores/context-specific/mapStore";
+  import { supporterLevel } from "$lib/stores/accountStore";
+  import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 </script>
 
 <div
@@ -9,6 +11,7 @@
   class="regularMapSize mapHolder"
   class:mapHover={$mapHovered}
   class:mapHolderToResult={$resultScreenEnabled}
+  class:mapHolderAdShift={$supporterLevel < 2 && !$adsDisabled}
 >
   {@render children?.()}
 </div>
@@ -83,7 +86,7 @@
 
   /* Shift up to fit ad */
   @media (orientation: portrait) and (max-width: 800px) {
-    .mapHolder {
+    .mapHolderAdShift {
       bottom: 135px;
     }
   }
