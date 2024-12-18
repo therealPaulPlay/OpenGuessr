@@ -20,7 +20,7 @@
 <div
   class="floatingMapButton"
   style:visibility={$mapVisible ? "visible" : "hidden"}
-  style={$mapExpanded ? "margin-bottom: 10px;" : ""}
+  style={$mapExpanded ? "margin-bottom: 8px;" : ""}
 >
   <button id="floatingMapButton" class="standardButton white floatingButtonColor" bind:this={toggleMapButton} onclick={toggleMapClick}>
     <img id="toggleMapImage" src="/img/map_icon.png" alt="Toggle Minimap." />
