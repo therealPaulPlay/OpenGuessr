@@ -10,7 +10,7 @@
   import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 </script>
 
-<div id="BottomBar" class="BottomBar">
+<div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
   <div class="barMenu">
     <button
       class="standardButton bottomBarButton white"
@@ -201,12 +201,13 @@
     }
   }
 
+  /* Ad shift */
   @media (orientation: portrait) and (max-width: 800px) {
     .bottomFooterAds {
       bottom: 12px;
     }
 
-    .BottomBar {
+    .BottomBarAdShift {
       padding-bottom: 60px;
     }
   }
