@@ -1026,9 +1026,8 @@ function showMultiplayerOverlay(show, title, lateJoin) {
     if (show) {
         multiplayerOverlay.set(true); // Show the overlay
         multiplayerOverlayTitle.set(title);
-
-        const array = get(connectedPlayers);
-
+        showEndscreenUI(false); // Default to no endscreen UI
+        let array = get(connectedPlayers);
         if (!multiplayerFirstRoundPlayed) modeText.set("Multiplayer (" + get(multiplayerCategory)?.replace("community_", "") + ")");
 
         if (get(teamAmount) > 1) {
@@ -1048,7 +1047,7 @@ function showMultiplayerOverlay(show, title, lateJoin) {
             });
 
             // Sort the teams based on total XP and transform into an array
-            let sortedTeamsArray = Object.keys(teams)
+            array = Object.keys(teams)
                 .sort((a, b) => {
                     const totalExperienceA = teams[a].players.reduce((sum, player) => sum + player[3], 0);
                     const totalExperienceB = teams[b].players.reduce((sum, player) => sum + player[3], 0);
@@ -1057,63 +1056,19 @@ function showMultiplayerOverlay(show, title, lateJoin) {
                 .map((teamIndex) => {
                     // Sort players within each team by XP
                     teams[teamIndex].players.sort((a, b) => b[3] - a[3]);
-
-                    // Return the team object
                     return {
                         teamIndex: parseInt(teamIndex), // Ensure the team index is numeric
                         ...teams[teamIndex], // Spread the team properties (color, colorName, players)
                     };
                 });
 
-            // Find the winning team index (now as a numeric index from the sorted array)
-            let winningTeamIndex = sortedTeamsArray[0]?.teamIndex;
-
-            // Teams Win state
-            if (roundIndex >= get(roundAmount)) {
-                let teamColorName = teams[winningTeamIndex].colorName;
-                multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
-                showEndscreenUI(true);
-
-                if (get(yourTeam) == winningTeamIndex) {
-                    animateMultiplayerWin();
-                } else {
-                    animateMultiplayerLose();
-                }
-            } else {
-                showEndscreenUI(false);
-            }
+            determineWinner(array, true, teams);
 
             // Assign to table array (loaded in Overlay Component)
-            multiplayerTableArray.set(sortedTeamsArray);
+            multiplayerTableArray.set(array);
         } else {
             array.sort((a, b) => b[3] - a[3]);
-
-            // No teams win state
-            if (roundIndex >= get(roundAmount) && !lateJoin) {
-                let winningPlayerData = array[0];
-                let winningUsername = winningPlayerData[1];
-                let winningId = winningPlayerData[5];
-                multiplayerOverlayTitle.set(winningUsername + " won!");
-
-                if (localStorage.getItem("id") == winningId) {
-                    animateMultiplayerWin();
-                } else {
-                    animateMultiplayerLose();
-                }
-
-                // Check if you won in duels or just played
-                if (playingDuels && get(isAuthenticated) && !friendDuel) {
-                    if (winningId == localStorage.getItem("id")) {
-                        addDuelWon();
-                    } else {
-                        addDuelPlayed();
-                    }
-                }
-
-                showEndscreenUI(true);
-            } else {
-                showEndscreenUI(false);
-            }
+            determineWinner(array, false);
 
             // Assign to table array (the sorted version!) (loaded in Overlay Component)
             multiplayerTableArray.set(array);
@@ -1128,6 +1083,36 @@ function showMultiplayerOverlay(show, title, lateJoin) {
         if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country_guesser") {
             mapVisible.set(true);
         }
+    }
+}
+
+function determineWinner(array, teams, teamsObject) {
+    if (roundIndex >= get(roundAmount)) {
+
+        if (teams) {
+            const winningTeamIndex = array[0]?.teamIndex;
+            let teamColorName = teamsObject[winningTeamIndex].colorName;
+            multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
+
+        } else {
+            const winningPlayerData = array[0];
+            const followUpPlayerData = array[1];
+            if (winningPlayerData[3] == followUpPlayerData[3]) {
+                multiplayerOverlayTitle.set("It's a draw!");
+                if (playingDuels && get(isAuthenticated) && !friendDuel) addDuelPlayed();
+                
+            } else {
+                multiplayerOverlayTitle.set(winningPlayerData[1] + " won!");
+                localStorage.getItem("id") == winningPlayerData[5] ? animateMultiplayerWin() : animateMultiplayerLose();
+
+                // Check if you won in duels or just played
+                if (playingDuels && get(isAuthenticated) && !friendDuel) {
+                    winningPlayerData[5] == localStorage.getItem("id") ? addDuelWon() : addDuelPlayed();
+                }
+            }
+        }
+
+        showEndscreenUI(true);
     }
 }
 
