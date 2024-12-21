@@ -15,6 +15,7 @@
   import { scale } from "svelte/transition";
   import { bounceInOut } from "svelte/easing";
   import { calculateDivision } from "$lib/utils/rankedDuels";
+  import { getEloLeaderboard } from "$lib/logic/userAPI";
 
   let friendsRefreshInterval;
 
@@ -51,6 +52,10 @@
 
   // Division leaderboard
   let divisionLeaderboard = $state([]);
+
+  onMount(async () => {
+    divisionLeaderboard = await getEloLeaderboard();
+  });
 
   const nextMonth = new Date();
   nextMonth.setMonth(nextMonth.getMonth() + 1);
@@ -163,7 +168,7 @@
       {#each divisionLeaderboard as entry}
         <div
           class="divisionLeaderboardEntry"
-          style:background-color={"rgba(255, 255, 255, 0." + Math.max(4 - Number(entry.position), 1)}
+          class:divisionLeaderboardEntryYou={entry.id == localStorage.getItem("id")}
         >
           <p>#{entry.position}</p>
           <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -176,7 +181,7 @@
           >
             {entry.user_name}
           </p>
-          <p>{entry.elo}</p>
+          <p>{entry.elo} Elo</p>
         </div>
       {/each}
     {:else}
@@ -325,6 +330,7 @@
     overflow: hidden;
     overflow-y: auto;
     max-height: 280px;
+    scrollbar-width: none;
   }
 
   .divisionLeaderboardEntry {
@@ -341,6 +347,11 @@
     width: 100%;
     box-sizing: border-box;
     overflow: hidden;
+    animation: fadeIn 100ms ease-in-out;
+  }
+
+  .divisionLeaderboardEntryYou {
+    background-color: rgba(255, 255, 255, 0.3);
   }
 
   .leaderboardUserName {
@@ -349,6 +360,7 @@
     max-width: 50%;
     transition: opacity 250ms ease;
     cursor: pointer;
+    text-wrap: nowrap;
   }
 
   .leaderboardUserName:hover {
