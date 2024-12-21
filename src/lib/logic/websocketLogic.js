@@ -1,11 +1,13 @@
 import { showNotification } from "$lib/utils/notifications";
-import { username } from "$lib/stores/accountStore";
+import { username, elo } from "$lib/stores/accountStore";
 import { acceptFriendRequest } from "$lib/logic/friendAPI";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
 import { linkJoinPopup } from "$lib/stores/uiStore";
 import { leaveMultiplayerRound, setPlayingDuels, setFriendDuel, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
+import { duelResultPopup } from "$lib/stores/uiStore";
+import { eloChange } from "$lib/stores/context-specific/duelResultStore";
 import { goto } from "$app/navigation";
 
 export async function initializeWebsocketConnection() {
@@ -24,6 +26,7 @@ export async function initializeWebsocketConnection() {
 
             ws.onmessage = (event) => {
                 const data = JSON.parse(event.data);
+
                 if (data.type === 'room-invite') {
                     const roomOrDuel = data.duel ? "Duel" : "Room";
                     showNotification(`${roomOrDuel} invite from ${data.name}.`, () => {
@@ -46,6 +49,14 @@ export async function initializeWebsocketConnection() {
                     showNotification(`${data.name} sent you a friend request.`, () => {
                         acceptFriendRequest(data.from);
                     }, false, true);
+
+                } else if (data.type === "duel-result") {
+                    duelResultPopup.set(true);
+                    eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
+                    elo.set(get(elo) + get(eloChange));
+
+                } else if (data.type === "duel-result-error") {
+                    errorPopup("Elo-Validation error", "You or your opponent did not submit a result or submitted a fake result (cheating). No Elo was granted to both players.", data?.message);
                 }
             };
 

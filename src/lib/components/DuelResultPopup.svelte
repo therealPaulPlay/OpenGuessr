@@ -23,12 +23,10 @@
   <Popup slim={true}>
     <div class="popup-title">
       <h1 id="socialHeader">Division</h1>
-
       <div class="eloChangeDisplay">
         <p class="eloChangeText">{$eloChange >= 0 ? "+" : ""}{$animatedElo.toFixed(0)} Elo</p>
         <p>You now have {$elo} Elo.</p>
       </div>
-
       <DuelDivisionDisplay />
     </div>
     <button
