@@ -140,7 +140,6 @@
     text-overflow: ellipsis;
     border-radius: 5px;
     background-color: rgba(0, 0, 0, 0.3);
-    backdrop-filter: blur(50px);
     padding-inline: 2px;
   }
 

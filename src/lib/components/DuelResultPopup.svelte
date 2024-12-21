@@ -20,7 +20,7 @@
 </script>
 
 {#if $duelResultPopup}
-  <Popup>
+  <Popup slim={true}>
     <div class="popup-title">
       <h1 id="socialHeader">Division</h1>
 
@@ -46,7 +46,7 @@
     width: 100%;
     height: 100px;
     margin-bottom: 15px;
-    margin-top: 25px;
+    margin-top: 15px;
     display: flex;
     border-radius: 15px;
     background-color: var(--box-color);
