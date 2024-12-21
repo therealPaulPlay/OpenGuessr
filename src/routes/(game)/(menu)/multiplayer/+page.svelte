@@ -2,7 +2,7 @@
   import { PlusCircle, Unplug, Swords, ContactRound } from "lucide-svelte";
   import { friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
   import { playSound } from "$lib/utils/soundManager";
-  import { isAuthenticated } from "$lib/stores/accountStore";
+  import { isAuthenticated, elo } from "$lib/stores/accountStore";
   import { loadedFriendsData, hostStage } from "$lib/stores/context-specific/multiplayerStore";
   import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
   import { loadFriends, removeFriend, sendMatchInvite } from "$lib/logic/friendAPI";
@@ -34,9 +34,8 @@
   });
 
   // Divisions
-  let elo = 1300;
   let fillPercentage = $derived.by(() => {
-    const value = elo;
+    const value = $elo;
     if (value <= 1000) return 0;
     if (value <= 1200) return (value - 1000) * (25 / 200); // 0-25%
     if (value <= 1400) return 25 + (value - 1200) * (25 / 200); // 25-50%
@@ -44,10 +43,18 @@
     if (value <= 2000) return 75 + (value - 1600) * (25 / 400); // 75-100%
     return 100;
   });
-  let currentDivision = $derived(calculateDivision(elo));
+
+  let currentDivision = $derived(calculateDivision($elo));
 
   const divisions = ["I", "II", "III", "IV", "V"].reverse();
   const circlePositions = [0, 25, 50, 75, 100];
+
+  // Division leaderboard
+  let divisionLeaderboard = $state([]);
+
+  const nextMonth = new Date();
+  nextMonth.setMonth(nextMonth.getMonth() + 1);
+  nextMonth.setDate(1);
 </script>
 
 <svelte:head>
@@ -117,6 +124,16 @@
   <div class="headerContainer headerMarginTop">
     <h2 class="header">Duel Divisions</h2>
   </div>
+  <div class="infoContainer">
+    <img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+    <p>
+      Elo above 2000 will be reset on {nextMonth.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })}.
+    </p>
+  </div>
   <div class="progressContainer">
     <div class="progressBarWrapper">
       <div class="progressBar">
@@ -135,10 +152,27 @@
       {#if fillPercentage > 0 && fillPercentage < 100}
         <div class="eloIndicator" style="left: {fillPercentage}%">
           <div class="eloLine"></div>
-          <div class="eloValue">{Math.round(elo)} ELO</div>
+          <div class="eloValue">{Math.round($elo)} ELO</div>
         </div>
       {/if}
     </div>
+  </div>
+  <!-- Division leaderboard -->
+  <div class="divisionLeaderboardContainer">
+    {#if divisionLeaderboard?.length > 0}
+      {#each divisionLeaderboard as entry}
+        <div
+          class="divisionLeaderboardEntry"
+          style:background-color={"rgba(255, 255, 255, 0." + Math.max(4 - Number(entry.position), 1)}
+        >
+          <p>#{entry.position}</p>
+          <p class="leaderboardUserName">{entry.user_name}</p>
+          <p>{entry.elo}</p>
+        </div>
+      {/each}
+    {:else}
+      <p class="divisionLeaderboardError">Division leaderboard not loaded.</p>
+    {/if}
   </div>
   <div class="headerContainer headerMarginTop">
     <h2 class="header">Friends</h2>
@@ -251,6 +285,69 @@
     border-radius: 15px;
     background-color: var(--box-color);
     padding-inline: 25px;
+    margin-bottom: 15px;
+  }
+
+  .infoContainer {
+    display: flex;
+    padding: 10px;
+    width: calc(100% - 20px);
+    border-radius: 15px;
+    align-items: center;
+    background-color: var(--box-color);
+    margin-bottom: 15px;
+  }
+
+  .divisionLeaderboardError {
+    margin-inline: auto;
+    opacity: 0.5;
+  }
+
+  .divisionLeaderboardContainer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px;
+    width: calc(100% - 20px);
+    border-radius: 15px;
+    gap: 10px;
+    background-color: var(--box-color);
+    margin-bottom: 15px;
+    overflow: hidden;
+    overflow-y: auto;
+    max-height: 280px;
+  }
+
+  .divisionLeaderboardEntry {
+    display: flex;
+    border-radius: 10px;
+    flex-basis: 22%;
+    flex-grow: 1;
+    min-width: 200px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 5px;
+    padding-inline: 10px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  .leaderboardUserName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50%;
+    transition: opacity 250ms ease;
+    cursor: pointer;
+  }
+
+  .leaderboardUserName:hover {
+    opacity: 0.5;
+  }
+
+  .infoContainer p {
+    opacity: 0.5;
   }
 
   .progressBarWrapper {
