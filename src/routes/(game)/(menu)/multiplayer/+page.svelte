@@ -166,7 +166,16 @@
           style:background-color={"rgba(255, 255, 255, 0." + Math.max(4 - Number(entry.position), 1)}
         >
           <p>#{entry.position}</p>
-          <p class="leaderboardUserName">{entry.user_name}</p>
+          <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <p
+            class="leaderboardUserName"
+            onclick={() => {
+              loadProfileFromId(entry.id, true);
+            }}
+          >
+            {entry.user_name}
+          </p>
           <p>{entry.elo}</p>
         </div>
       {/each}
