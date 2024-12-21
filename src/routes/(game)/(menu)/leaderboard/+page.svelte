@@ -163,12 +163,17 @@
             tabindex="0"
             class:yourItem={entry.user_name == $username && $isAuthenticated}
             class:rankedItemSupporter={entry.supporter_level >= 1}
-            onclick={() => {
-              loadProfileFromId(entry.id, true);
-            }}
           >
             <p class="maxlength rankedItemLeft">#{entry.position}</p>
-            <p class="middle maxlength">{entry.user_name}</p>
+            <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+            <p
+              class="middle maxlength"
+              onclick={() => {
+                loadProfileFromId(entry.id, true);
+              }}
+            >
+              {entry.user_name}
+            </p>
             <p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
           </div>
         {/each}
