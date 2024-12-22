@@ -3,7 +3,7 @@ import { errorPopup } from "$lib/utils/errorHandling";
 import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScreen.js";
 import { startTimer } from "$lib/utils/timer.js";
 import { isAuthenticated } from "$lib/stores/accountStore";
-import { selectedBadge, selectedPinIndex, supporterLevel, username } from "$lib/stores/accountStore.js";
+import { selectedBadge, selectedPinIndex, supporterLevel, username, elo } from "$lib/stores/accountStore.js";
 import { transitionToStart } from "$lib/utils/transitionToStart";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
@@ -18,11 +18,11 @@ import { multiplayer } from "$lib/stores/modeStore";
 import { linkJoinPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, connectedPlayers, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, multiplayerStatus, restrictionButtonText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray, yourTeam, multiplayerGuessesLocationsArray, roomLocked, matchmakingActive } from "$lib/stores/context-specific/multiplayerStore";
-import { getLevel } from "$lib/utils/experienceCalculations.js";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
+import { generateDuelUUID, sendDuelDivisionResult } from "$lib/utils/rankedDuels";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
 
@@ -335,6 +335,8 @@ let roomIndex = 0;
 let playingDuels = false;
 let friendDuel = false;
 
+let duelUUID = null; // Used for duel validation and identification, created by host
+
 export function setPlayingDuels(state) {
     playingDuels = state;
 }
@@ -437,7 +439,7 @@ function attachHostLogic() {
                 // Event listener for when the connection is open
                 incomingConn.on('open', function () {
                     connectedPlayers.update((array) => {
-                        array.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.level, incomingConn.metadata.score, 1, incomingConn.metadata.id, incomingConn.metadata.badge]);
+                        array.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.elo, incomingConn.metadata.score, 1, incomingConn.metadata.id, incomingConn.metadata.badge]);
                         return array;
                     });
 
@@ -457,7 +459,8 @@ function attachHostLogic() {
                             teamAmount: get(teamAmount),
                             team: getTeamFromPeerId(incomingConn.peer),
                             multiplayerRestriction: multiplayerRestriction,
-                            category: get(multiplayerCategory)
+                            category: get(multiplayerCategory),
+                            uuid: duelUUID // Used for duel validation
                         }
                     }
 
@@ -564,7 +567,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     }
 
     connectedPlayers.update((array) => {
-        array.push([get(peerId), get(username) || get(savedGuestName), getLevel(), 0, 1, localStorage.getItem("id"), get(selectedBadge)]);
+        array.push([get(peerId), get(username) || get(savedGuestName), get(elo), 0, 1, localStorage.getItem("id"), get(selectedBadge)]);
         return array;
     });  // add yourself (host) to the overview
 
@@ -578,6 +581,9 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
 
     // set supporter level to own supporter level as baseline
     highestMultiplayerSupporterLevel.set(get(supporterLevel) || 0);
+
+    // Generate random duel UUID (only used in duels)
+    duelUUID = generateDuelUUID();
 
     // unlock room
     roomLocked.set(false);
@@ -724,7 +730,7 @@ export async function joinRoom(code) {
     const options = {
         metadata: {
             username: get(username) || get(savedGuestName),
-            level: getLevel(),
+            elo: get(elo),
             score: 0,
             id: localStorage.getItem("id"),
             badge: get(selectedBadge),
@@ -756,6 +762,7 @@ export async function joinRoom(code) {
             multiplayerCategory.set(data.content.category);
             yourTeam.set(data.content.team);
             roundIndex = data.content.currentRound;
+            duelUUID = data.content.uuid;
         }
 
         if (data.type === "showPlayersArray") {
@@ -1090,24 +1097,31 @@ function determineWinner(array, teams, teamsObject) {
     if (roundIndex >= get(roundAmount)) {
 
         if (teams) {
+            // Teams
             const winningTeamIndex = array[0]?.teamIndex;
             let teamColorName = teamsObject[winningTeamIndex].colorName;
             multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
 
         } else {
+            // No Teams
             const winningPlayerData = array[0];
             const followUpPlayerData = array[1];
+
             if (winningPlayerData[3] == followUpPlayerData[3]) {
+                // Draw
                 multiplayerOverlayTitle.set("It's a draw!");
                 if (playingDuels && get(isAuthenticated) && !friendDuel) addDuelPlayed();
-                
+
             } else {
+                // Clear Winner
                 multiplayerOverlayTitle.set(winningPlayerData[1] + " won!");
                 localStorage.getItem("id") == winningPlayerData[5] ? animateMultiplayerWin() : animateMultiplayerLose();
 
                 // Check if you won in duels or just played
                 if (playingDuels && get(isAuthenticated) && !friendDuel) {
-                    winningPlayerData[5] == localStorage.getItem("id") ? addDuelWon() : addDuelPlayed();
+                    const won = winningPlayerData[5] == localStorage.getItem("id");
+                    won ? addDuelWon() : addDuelPlayed();
+                    sendDuelDivisionResult(won, duelUUID);
                 }
             }
         }

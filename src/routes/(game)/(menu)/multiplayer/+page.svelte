@@ -14,6 +14,8 @@
   import { onDestroy, onMount } from "svelte";
   import { scale } from "svelte/transition";
   import { bounceInOut } from "svelte/easing";
+  import { getEloLeaderboard } from "$lib/logic/userAPI";
+  import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 
   let friendsRefreshInterval;
 
@@ -31,6 +33,17 @@
   onDestroy(() => {
     clearInterval(friendsRefreshInterval);
   });
+
+  // Division leaderboard
+  let divisionLeaderboard = $state([]);
+
+  onMount(async () => {
+    divisionLeaderboard = await getEloLeaderboard();
+  });
+
+  const nextMonth = new Date();
+  nextMonth.setMonth(nextMonth.getMonth() + 1);
+  nextMonth.setDate(1);
 </script>
 
 <svelte:head>
@@ -96,6 +109,46 @@
         </button>
       </div>
     </div>
+  </div>
+  <div class="headerContainer headerMarginTop">
+    <h2 class="header">Duel Divisions</h2>
+  </div>
+  <div class="infoContainer">
+    <img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+    <p>
+      Elo above 2000 will be reset on {nextMonth.toLocaleDateString("en-US", {
+        month: "long",
+        day: "numeric",
+        year: "numeric",
+      })}.
+    </p>
+  </div>
+  <DuelDivisionDisplay />
+  <!-- Division leaderboard -->
+  <div class="divisionLeaderboardContainer">
+    {#if divisionLeaderboard?.length > 0}
+      {#each divisionLeaderboard as entry}
+        <div
+          class="divisionLeaderboardEntry"
+          class:divisionLeaderboardEntryYou={entry.id == localStorage.getItem("id")}
+        >
+          <p>#{entry.position}</p>
+          <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+          <!-- svelte-ignore a11y_click_events_have_key_events -->
+          <p
+            class="leaderboardUserName"
+            onclick={() => {
+              loadProfileFromId(entry.id, true);
+            }}
+          >
+            {entry.user_name}
+          </p>
+          <p>{entry.elo} Elo</p>
+        </div>
+      {/each}
+    {:else}
+      <p class="divisionLeaderboardError">Division leaderboard not loaded.</p>
+    {/if}
   </div>
   <div class="headerContainer headerMarginTop">
     <h2 class="header">Friends</h2>
@@ -201,6 +254,75 @@
 </div>
 
 <style>
+  .infoContainer {
+    display: flex;
+    padding: 10px;
+    width: calc(100% - 20px);
+    border-radius: 15px;
+    align-items: center;
+    background-color: var(--box-color);
+    margin-bottom: 15px;
+  }
+
+  .divisionLeaderboardError {
+    margin-inline: auto;
+    opacity: 0.5;
+  }
+
+  .divisionLeaderboardContainer {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    padding: 10px;
+    width: calc(100% - 20px);
+    border-radius: 15px;
+    gap: 10px;
+    background-color: var(--box-color);
+    margin-bottom: 15px;
+    overflow: hidden;
+    overflow-y: auto;
+    max-height: 185px;
+    scrollbar-width: none;
+  }
+
+  .divisionLeaderboardEntry {
+    display: flex;
+    border-radius: 10px;
+    flex-basis: 22%;
+    flex-grow: 1;
+    min-width: 200px;
+    background-color: rgba(255, 255, 255, 0.1);
+    padding: 5px;
+    padding-inline: 10px;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
+    animation: fadeIn 100ms ease-in-out;
+  }
+
+  .divisionLeaderboardEntryYou {
+    background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .leaderboardUserName {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 50%;
+    transition: opacity 250ms ease;
+    cursor: pointer;
+    text-wrap: nowrap;
+  }
+
+  .leaderboardUserName:hover {
+    opacity: 0.5;
+  }
+
+  .infoContainer p {
+    opacity: 0.5;
+  }
+
   .main-container {
     display: flex;
     flex-direction: column;
@@ -272,6 +394,7 @@
     flex-grow: 1;
     max-width: 400px;
     overflow: hidden;
+    margin: 0;
     animation: fadeIn 100ms ease-in-out;
   }
 
