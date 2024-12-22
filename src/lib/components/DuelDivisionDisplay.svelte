@@ -1,5 +1,5 @@
 <script>
-  import { calculateDivision } from "$lib/utils/rankedDuels";
+  import { calculateDivision } from "$lib/utils/duelDivisionFunctions";
   import { elo } from "$lib/stores/accountStore";
 
   // Divisions
