@@ -1105,9 +1105,9 @@ function determineWinner(array, teams, teamsObject) {
         } else {
             // No Teams
             const winningPlayerData = array[0];
-            const followUpPlayerData = array[1];
+            const followUpPlayerData = array[1] || undefined;
 
-            if (winningPlayerData[3] == followUpPlayerData[3]) {
+            if (followUpPlayerData && winningPlayerData[3] == followUpPlayerData[3]) {
                 // Draw
                 multiplayerOverlayTitle.set("It's a draw!");
                 if (playingDuels && get(isAuthenticated) && !friendDuel) addDuelPlayed();
