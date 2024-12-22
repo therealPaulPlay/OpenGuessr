@@ -22,7 +22,7 @@ import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonS
 import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
-import { generateDuelUUID, sendDuelDivisionResult } from "$lib/utils/rankedDuels";
+import { generateDuelUUID, sendDuelDivisionResult, checkRankedLeavePenalty } from "$lib/utils/duelDivisionFunctions";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
 
@@ -622,14 +622,14 @@ export function multiplayerRematch() {
     rematchButtonEnabled.set(false);
 }
 
-// Start the first / next round
+// Start the first / next round (HOST)
 export async function startMultiplayerRound(latitude, longitude) {
     multiplayerGuessesLocationsArray.set([]);
     teamMarkerArray = [];
     totalRequiredGuesses = get(connectedPlayers).length; // this is being set here as well as after the countdown (in case sb latejoins)
 
     if (!multiplayerFirstRoundPlayed) {
-        goto("/");
+        goto("/"); // Go to home if starting from different page
         multiplayerFirstRoundPlayed = true;
     } else {
         roundIndex++
@@ -864,8 +864,10 @@ export function peerSendsHost(type, message) {
 // Error states (disconnected, closed etc.) --------------------------------------------------------------------------------------------------
 function attachErrorEvents() {
     peer.on('disconnected', function () {
-        peer.reconnect();
-        console.log("Disconnected from signalling server. Attempting to reconnect...");
+        if (!peer.destroyed) {
+            peer.reconnect();
+            console.log("Disconnected from signalling server. Attempting to reconnect...");
+        }
     });
 
     peer.on('error', function (err) {
@@ -940,6 +942,9 @@ export function leaveMultiplayerRound() {
 
     screenEscapeDisabled.set(false); // Make Back and Close visible
     duelRetryEnabled.set(false); // Make Duel retry button disabled (Standard)
+
+    // Apply leave penalty if in division game
+    checkRankedLeavePenalty();
 
     // Reset to default settings
     roundLength.set(60);
@@ -1107,6 +1112,8 @@ function determineWinner(array, teams, teamsObject) {
             const winningPlayerData = array[0];
             const followUpPlayerData = array[1] || undefined;
 
+            if (playingDuels && !friendDuel) localStorage.removeItem("activeDuel"); // Remove leave penalty notice
+
             if (followUpPlayerData && winningPlayerData[3] == followUpPlayerData[3]) {
                 // Draw
                 multiplayerOverlayTitle.set("It's a draw!");
@@ -1118,7 +1125,7 @@ function determineWinner(array, teams, teamsObject) {
                 localStorage.getItem("id") == winningPlayerData[5] ? animateMultiplayerWin() : animateMultiplayerLose();
 
                 // Check if you won in duels or just played
-                if (playingDuels && get(isAuthenticated) && !friendDuel) {
+                if (playingDuels && !friendDuel) {
                     const won = winningPlayerData[5] == localStorage.getItem("id");
                     won ? addDuelWon() : addDuelPlayed();
                     sendDuelDivisionResult(won, duelUUID);
@@ -1137,6 +1144,8 @@ let countdownInterval;
 function multiplayerOverlayCountdown() {
     roundEnded = false;
     multiplayerHasAlreadyGuessed = false;
+
+    if (playingDuels && !friendDuel) localStorage.setItem("activeDuel", "active"); // Save for leave penalty
 
     let countdown = 3;
 
