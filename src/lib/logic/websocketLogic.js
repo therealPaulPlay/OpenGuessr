@@ -54,6 +54,7 @@ export async function initializeWebsocketConnection() {
                     duelResultPopup.set(true);
                     eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
                     elo.set(get(elo) + get(eloChange));
+                    if (get(elo) < 0) elo.set(0); // Prevent elo from becoming negative (it won't on the server either)
 
                 } else if (data.type === "duel-result-error") {
                     errorPopup("Elo remains unchanged", "You or your opponent did not submit a valid result (e.g. they left early, or attempted to cheat). No Elo was granted to both players.", data?.message);
