@@ -48,7 +48,7 @@
                     }
                   }}
                 >
-                  {username} ({elo} Elo)
+                  {username} ({elo || 0} Elo)
                   <div class="multiplayerBadge">
                     {#if badge}
                       <Badge interactive={false} display={true} id={badge} />
@@ -76,7 +76,7 @@
                   }
                 }}
               >
-                {username} ({elo} Elo)
+                {username} ({elo || 0} Elo)
                 <div class="multiplayerBadge">
                   {#if badge}
                     <Badge interactive={false} display={true} id={badge} />

@@ -1,7 +1,7 @@
 <script>
   import Popup from "$lib/components/Popup.svelte";
   import { duelResultPopup } from "$lib/stores/uiStore";
-  import { eloChange } from "$lib/stores/context-specific/duelResultStore";
+  import { eloChange, duelWon } from "$lib/stores/context-specific/duelResultStore";
   import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
   import { playSound } from "$lib/utils/soundManager";
   import { elo } from "$lib/stores/accountStore";
@@ -22,7 +22,7 @@
 {#if $duelResultPopup}
   <Popup slim={true}>
     <div class="popup-title">
-      <h1 id="socialHeader">Division</h1>
+      <h1 id="socialHeader">{$duelWon ? "Victory!" : "Defeat!"}</h1>
       <div class="eloChangeDisplay">
         <p class="eloChangeText">{$eloChange >= 0 ? "+" : ""}{$animatedElo.toFixed(0)} Elo</p>
         <p>You now have {$elo} Elo.</p>

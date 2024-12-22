@@ -1,5 +1,6 @@
 // Ranked Duels logic and API
 import { errorPopup } from "$lib/utils/errorHandling";
+import { duelWon } from "$lib/stores/context-specific/duelResultStore";
 
 export function calculateDivision(elo) {
     if (elo < 1200) return 4;      // V   (index 0 in the UI)
@@ -19,6 +20,8 @@ export const generateDuelUUID = () => {
 
 // Won = true means the player won, won = false means they lost
 export async function sendDuelDivisionResult(won, uuid) {
+    duelWon.set(won); // Save the win state for later (the popup which triggers on websocket server response)
+
     try {
         const response = await fetch(`https://friends.openguessr.com/multiplayer/duel-elo-result/${uuid}`, {
             method: 'POST',
