@@ -56,7 +56,7 @@ export async function initializeWebsocketConnection() {
                     elo.set(get(elo) + get(eloChange));
 
                 } else if (data.type === "duel-result-error") {
-                    errorPopup("Elo-Validation error", "You or your opponent did not submit a result or submitted a fake result (cheating). No Elo was granted to both players.", data?.message);
+                    errorPopup("Elo remains unchanged", "You or your opponent did not submit a valid result (e.g. they left early, or attempted to cheat). No Elo was granted to both players.", data?.message);
                 }
             };
 
