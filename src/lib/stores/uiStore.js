@@ -17,3 +17,4 @@ export const troubleshootPopup = writable(false);
 export const linkJoinPopup = writable(false);
 export const friendBrowserPopup = writable(false);
 export const inboxPopup = writable(false);
+export const duelResultPopup = writable(false);

@@ -1,5 +1,5 @@
 import { profilePopup } from "$lib/stores/uiStore";
-import { profileData, profileName, profileExperience, joinedDate, profileId, profileSupporterLevel } from "$lib/stores/context-specific/profileStore";
+import { profileData, profileName, profileExperience, joinedDate, profileId, profileElo, profileSupporterLevel } from "$lib/stores/context-specific/profileStore";
 import { getProfileData } from "$lib/utils/getProfileData";
 
 export async function loadProfileFromId(id, view) {
@@ -10,6 +10,7 @@ export async function loadProfileFromId(id, view) {
     joinedDate.set(0);
     profileSupporterLevel.set(0);
     profileId.set(-1);
+    profileElo.set(1000);
 
     const data = await getProfileData(id);
 
@@ -19,6 +20,7 @@ export async function loadProfileFromId(id, view) {
         profileName.set(data.username);
         profileExperience.set(data.experience);
         joinedDate.set(data.joinedDate);
+        profileElo.set(data.elo);
         profileSupporterLevel.set(data.supporterLevel);
         profileId.set(id);
     }

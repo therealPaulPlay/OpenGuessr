@@ -20,6 +20,7 @@
     profileData,
     profileName,
     profileExperience,
+    profileElo,
     joinedDate,
     profileId,
     profileSupporterLevel,
@@ -156,11 +157,15 @@
           <p id="statisticDuelsWon">{$profileData?.duelsWon?.toLocaleString() || 0}</p>
         </div>
         <div class="statisticsEnclosure">
+          <p class="statsLabel">Elo:</p>
+          <p id="statisticExperience">{$profileElo}</p>
+        </div>
+        <div class="statisticsEnclosure">
           <p class="statsLabel">Competitions entered:</p>
           <p id="statisticCompetitionsEntered">{$profileData?.competitionsPlayed?.toLocaleString() || 0}</p>
         </div>
         <div class="statisticsEnclosure">
-          <p class="statsLabel">Highest ended Streak:</p>
+          <p class="statsLabel">Highest ended streak:</p>
           <p id="statisticHighestStreak">{$profileData?.highestStreak?.toLocaleString() || 0}</p>
         </div>
         <div class="statisticsEnclosure">
@@ -442,6 +447,7 @@
     padding-right: 15px;
     align-items: center;
     font-size: 22px;
+    flex-grow: 1;
   }
 
   .managementBox {
