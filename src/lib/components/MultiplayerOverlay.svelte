@@ -30,7 +30,7 @@
       {#if $teamAmount > 1}
         <!-- Teams version -->
         {#each $multiplayerTableArray as team}
-          {#each team.players as [entryPeerId, username, level, score, teamIndex, id, badge]}
+          {#each team.players as [entryPeerId, username, elo, score, teamIndex, id, badge]}
             <div
               class="multiplayerOverlayEntry"
               class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peerId)}
@@ -48,7 +48,7 @@
                     }
                   }}
                 >
-                  {username} (Lvl. {level})
+                  {username} ({elo || 0} Elo)
                   <div class="multiplayerBadge">
                     {#if badge}
                       <Badge interactive={false} display={true} id={badge} />
@@ -62,7 +62,7 @@
         {/each}
       {:else}
         <!-- No teams version -->
-        {#each $multiplayerTableArray as [entryPeerId, username, level, score, teamIndex, id, badge]}
+        {#each $multiplayerTableArray as [entryPeerId, username, elo, score, teamIndex, id, badge]}
           <div class="multiplayerOverlayEntry" class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peerId)}>
             <div class="multiplayerEntryPlayerInfo">
               <div
@@ -76,7 +76,7 @@
                   }
                 }}
               >
-                {username} (Lvl. {level})
+                {username} ({elo || 0} Elo)
                 <div class="multiplayerBadge">
                   {#if badge}
                     <Badge interactive={false} display={true} id={badge} />
@@ -90,9 +90,7 @@
       {/if}
     {/if}
   </div>
-  <div class="buttonSpacer">
-
-  </div>
+  <div class="buttonSpacer"></div>
   {#if $rematchButtonVisible}
     <button
       id="endMultiplayerRematchButton"

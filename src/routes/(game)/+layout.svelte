@@ -44,6 +44,7 @@
   import BlinkRestrictionFade from "$lib/components/BlinkRestrictionFade.svelte";
   import MapAttribution from "$lib/components/MapAttribution.svelte";
   import CrazyGames from "$lib/components/CrazyGames.svelte";
+  import DuelResultPopup from "$lib/components/DuelResultPopup.svelte";
 
   // Start ads
   onMount(() => {
@@ -104,6 +105,7 @@
 <InboxPopup />
 <BeforeExitPopup />
 <HelpPopup />
+<DuelResultPopup />
 <SignupIframe />
 <TroubleshootPopup />
 <SettingsPopup />

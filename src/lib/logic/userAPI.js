@@ -14,6 +14,7 @@ export const userLeaderboardEndpoint = `${backendURL}/user-leaderboard`;
 export const passwordResetEmailEndpoint = `${backendURL}/reset-password-request`;
 export const passwordChangeEndpoint = `${backendURL}/reset-password`;
 export const supporterLeaderboardEndpoint = `${backendURL}/supporter-leaderboard`;
+export const eloLeaderboardEndpoint = `${backendURL}/elo-leaderboard`;
 
 // Login and registration -----------------------------------------------------------------------------------
 export async function loginUser(email, password, errorSource, errorElement) {
@@ -288,6 +289,29 @@ export async function getUserLeaderboard() {
 export async function getSupporterLeaderboard() {
   try {
     const response = await fetch(supporterLeaderboardEndpoint, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return data;
+
+    } else {
+      console.error('Fetch failed:', response.status);
+    }
+  } catch (error) {
+    console.error('Error occurred while fetching the user: ', error);
+  }
+}
+
+export async function getEloLeaderboard() {
+  try {
+
+    const response = await fetch(`${eloLeaderboardEndpoint}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
