@@ -22,7 +22,7 @@ import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonS
 import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
-import { generateDuelUUID, sendDuelDivisionResult, checkRankedLeavePenalty } from "$lib/utils/duelDivisionFunctions";
+import { generateDuelUUID, sendDuelDivisionResult, checkRankedLeavePenalty, removeRankedLeavePenalty } from "$lib/utils/duelDivisionFunctions";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
 
@@ -836,6 +836,7 @@ export async function joinRoom(code) {
     conn.on('close', function () {
         //if you get disconnected mid round
         if (get(multiplayer)) {
+            removeRankedLeavePenalty(); // Remove leave penalty (not at fault here)
             leaveMultiplayerRound();
             errorPopup("Disconnected from room", "The connection to the host was closed.", "", false, true);
         }
@@ -877,7 +878,7 @@ function attachErrorEvents() {
             if (err.type != "network") {
                 errorPopup("Multiplayer error", "Fatal multiplayer error. Please reload if you want to use multiplayer.", err.type, true);
             } else {
-                errorPopup("Disconnected from round", "You have left the multiplayer round due to network issues. Check your and the host's connection.", err.type, false);
+                errorPopup("Disconnected from round", "You have left the multiplayer round due to network issues. Check your connection.", err.type, false);
             }
 
             leaveMultiplayerRound();
@@ -1112,7 +1113,7 @@ function determineWinner(array, teams, teamsObject) {
             const winningPlayerData = array[0];
             const followUpPlayerData = array[1] || undefined;
 
-            if (playingDuels && !friendDuel) localStorage.removeItem("activeDuel"); // Remove leave penalty notice
+            removeRankedLeavePenalty(); // Remove leave penalty notice
 
             if (followUpPlayerData && winningPlayerData[3] == followUpPlayerData[3]) {
                 // Draw

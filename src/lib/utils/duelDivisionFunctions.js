@@ -64,17 +64,21 @@ export async function checkRankedLeavePenalty() {
     if (localStorage.getItem("activeDuel")) {
         // Timeout to avoid this triggering during a reload, causing the popup to show for a few milliseconds only
         setTimeout(async () => {
-            await applyLeavePenalty();
+            const penalty = await applyLeavePenalty();
             localStorage.removeItem("activeDuel");
 
             // Show popup
             duelResultTitle.set("Leave penalty!");
             duelResultPopup.set(true);
-            eloChange.set(-5);
+            eloChange.set(Number(penalty));
             elo.set(get(elo) + get(eloChange));
             if (get(elo) < 0) elo.set(0); // Prevent elo from becoming negative (it won't on the server either)
         }, 1000);
     }
+}
+
+export function removeRankedLeavePenalty() {
+    localStorage.removeItem("activeDuel");
 }
 
 // Penalty for players that leave duels, substracts Elo
@@ -93,7 +97,8 @@ async function applyLeavePenalty() {
             throw new Error('Failed to apply penalty with status' + response?.status);
         }
 
-        return true;
+        const parsedResponse = await response.json();
+        return parsedResponse.penalty;
     } catch (error) {
         console.error('Error applying duel leave penalty:', error);
         return false;
