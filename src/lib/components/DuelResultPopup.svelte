@@ -34,6 +34,7 @@
       onclick={() => {
         playSound("basic_button");
         duelResultPopup.set(false);
+        eloChange.set(0); // Reset to make UI number animation start from 0 again
       }}>Close</button
     >
   </Popup>
