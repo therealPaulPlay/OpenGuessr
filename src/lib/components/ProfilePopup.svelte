@@ -120,7 +120,7 @@
       {#if $profileId == localStorage.getItem("id") || $profileData?.about}
         <textarea
           id="profileAbout"
-          style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
+          readonly={$profileId != localStorage.getItem("id")}
           maxlength="150"
           spellcheck="false"
           value={filteredAbout}
@@ -388,10 +388,6 @@
     margin-top: 5px;
     margin-bottom: 10px;
     font-size: 25px;
-  }
-
-  #profileAbout:focus {
-    background-color: rgba(255, 255, 255, 0.15);
   }
 
   #profileAddFriend {
