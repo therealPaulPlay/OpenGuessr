@@ -118,6 +118,7 @@
   .playerSearchBox {
     width: calc(100% - 13px);
     border-radius: 5px;
+    position: relative;
     max-height: 50vh;
     min-height: 20vh;
     overflow-x: hidden;
