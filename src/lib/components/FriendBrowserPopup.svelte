@@ -133,6 +133,7 @@
 
   .playerSearchBox {
     display: flex;
+    position: relative;
     justify-content: safe center;
     align-items: flex-start;
     flex-wrap: wrap;
