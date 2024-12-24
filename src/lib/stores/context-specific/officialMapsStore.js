@@ -2,19 +2,19 @@ import { readable } from "svelte/store";
 
 export const basicMaps = readable([
     "standard",
-    "capital_cities",
-    "famous_places"
+    "capital cities",
+    "famous places"
 ]);
 
 export const specialModes = readable([
-    "country_guesser",
-    "image_guesser"
+    "country guesser",
+    "image guesser"
 ]);
 
 export const continentMaps = readable([
     "africa",
-    "south_america",
-    "north_america",
+    "south america",
+    "north america",
     "asia",
     "europe",
     "oceania"
@@ -40,7 +40,7 @@ export const countryMaps = readable([
     "croatia",
     "czechia",
     "denmark",
-    "dominican_republic",
+    "dominican republic",
     "ecuador",
     "eswatini",
     "estonia",
@@ -71,29 +71,29 @@ export const countryMaps = readable([
     "mongolia",
     "montenegro",
     "netherlands",
-    "new_zealand",
+    "new zealand",
     "nigeria",
-    "north_macedonia",
+    "north macedonia",
     "norway",
     "oman",
     "peru",
     "philippines",
     "poland",
     "portugal",
-    "puerto_rico",
+    "puerto rico",
     "romania",
     "rwanda",
     "russia",
-    "san_marino",
+    "san marino",
     "senegal",
     "serbia",
     "singapore",
     "slovakia",
     "slovenia",
-    "south_africa",
-    "south_korea",
+    "south africa",
+    "south korea",
     "spain",
-    "sri_lanka",
+    "sri lanka",
     "sweden",
     "switzerland",
     "taiwan",
@@ -101,8 +101,8 @@ export const countryMaps = readable([
     "tunisia",
     "turkey",
     "ukraine",
-    "united_arab_emirates",
-    "united_kingdom",
-    "united_states",
+    "united arab emirates",
+    "united kingdom",
+    "united states",
     "uruguay"
 ]);

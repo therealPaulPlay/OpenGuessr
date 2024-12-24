@@ -15,7 +15,7 @@ export function manuallySendChat(text) {
 }
 
 export function resetChat() {
-    chatHTML.set();
+    chatHTML.set("");
 }
 
 // Add chat and check for profanity

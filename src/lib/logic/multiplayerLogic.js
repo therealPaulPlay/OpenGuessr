@@ -17,14 +17,17 @@ import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/m
 import { multiplayer } from "$lib/stores/modeStore";
 import { linkJoinPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
-import { multiplayerCategory, highestMultiplayerSupporterLevel, peerId, isHost, connectedPlayers, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, multiplayerStatus, restrictionButtonText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray, yourTeam, multiplayerGuessesLocationsArray, roomLocked, matchmakingActive } from "$lib/stores/context-specific/multiplayerStore";
+import { highestMultiplayerSupporterLevel, peerId, isHost, connectedPlayers, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled, duelRetryEnabled, multiplayerStatus, restrictionButtonText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay, multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray, yourTeam, multiplayerGuessesLocationsArray, roomLocked, matchmakingActive } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
 import { generateDuelUUID, sendDuelDivisionResult, checkRankedLeavePenalty, removeRankedLeavePenalty } from "$lib/utils/duelDivisionFunctions";
+import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
+import { changeCategory } from "$lib/utils/changeCategory";
+import { showNotification } from "$lib/utils/notifications";
 
 // Team display on Host Page  ------------------------------------------------------------------------------------------------
 function updateTeamIndexes() {
@@ -459,7 +462,8 @@ function attachHostLogic() {
                             teamAmount: get(teamAmount),
                             team: getTeamFromPeerId(incomingConn.peer),
                             multiplayerRestriction: multiplayerRestriction,
-                            category: get(multiplayerCategory),
+                            category: localStorage.getItem("selectedCategory") || "standard",
+                            mapLocationsArray: get(currentlyLoadedLocationsArray),
                             uuid: duelUUID // Used for duel validation
                         }
                     }
@@ -560,10 +564,10 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     multiplayerStatus.set("Room created. Please wait <10s");
     isHost.set(true);
     multiplayerFirstRoundPlayed = false;
-    multiplayerCategory.set(localStorage.getItem("selectedCategory") || "standard");
 
-    if (!mapSupportsMultiplayer(get(multiplayerCategory))) {
-        multiplayerCategory.set("standard");
+    if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
+        showNotification("Map changed to Standard.")
+        changeCategory("standard");
     }
 
     connectedPlayers.update((array) => {
@@ -759,10 +763,15 @@ export async function joinRoom(code) {
             roundLength.set(data.content.roundLength);
             teamAmount.set(data.content.teamAmount);
             multiplayerRestriction = data.content.multiplayerRestriction;
-            multiplayerCategory.set(data.content.category);
+            const hostMapCategory = data.content.category;
+            currentlyLoadedLocationsArray.set(data.content.mapLocationsArray); // For score and map zoom
             yourTeam.set(data.content.team);
             roundIndex = data.content.currentRound;
             duelUUID = data.content.uuid;
+
+            // Change own map to multiplayer map to adjust map + score
+            changeCategory(hostMapCategory);
+            showNotification("Map changed to " + hostMapCategory.replaceAll("community_", "") + ".");
         }
 
         if (data.type === "showPlayersArray") {
@@ -983,7 +992,7 @@ export function leaveMultiplayerRound() {
     highestMultiplayerSupporterLevel.set(0);
     friendDuel = false;
 
-    if (localStorage.getItem("selectedMap") !== "country_guesser") mapVisible.set(true);
+    if (localStorage.getItem("selectedMap") !== "country guesser") mapVisible.set(true);
     leaveMatchButtonVisible.set(false);
     rematchButtonVisible.set(false);
     rematchButtonEnabled.set(true);
@@ -1041,7 +1050,7 @@ function showMultiplayerOverlay(show, title, lateJoin) {
         multiplayerOverlayTitle.set(title);
         showEndscreenUI(false); // Default to no endscreen UI
         let array = get(connectedPlayers);
-        if (!multiplayerFirstRoundPlayed) modeText.set("Multiplayer (" + get(multiplayerCategory)?.replace("community_", "") + ")");
+        if (!multiplayerFirstRoundPlayed) modeText.set("Multiplayer (" + (localStorage.getItem("selectedCategory") || "standard").replace("community_", "") + ")");
 
         if (get(teamAmount) > 1) {
             let teams = {};
@@ -1093,7 +1102,7 @@ function showMultiplayerOverlay(show, title, lateJoin) {
 
     } else {
         multiplayerOverlay.set(false);
-        if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country_guesser") {
+        if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country guesser") {
             mapVisible.set(true);
         }
     }

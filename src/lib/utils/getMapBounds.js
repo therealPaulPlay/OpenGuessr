@@ -1,7 +1,6 @@
 // Get the locations of a map (currentlyLoadedLocationsArray), and caluclate the ideal minimap center + zoom based on that
 // This allows all maps to only show the area on the minimap that is really needed
 import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
-import { singleplayer } from "$lib/stores/modeStore";
 import { mapDiameter } from "$lib/stores/context-specific/mapStore";
 import { get } from "svelte/store";
 
@@ -12,8 +11,8 @@ let currentCenterLong = 0;
 let currentZoom = 2;
 
 export function getMapBounds() {
-    // If no locations are loaded, set the map to the default - Or if not in Singleplayer (Multiplayer locs from host, competition locs from server etc. don't position map)
-    if (!get(singleplayer) || !get(currentlyLoadedLocationsArray)) {
+    // If no locations are loaded, set the map to the default
+    if (!get(currentlyLoadedLocationsArray)) {
         return { zoom: 2, lat: 0, lng: 0 }
     }
 
