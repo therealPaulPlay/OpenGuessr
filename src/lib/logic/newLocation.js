@@ -8,7 +8,6 @@ import { generateNewLocation } from "$lib/utils/generateLocation";
 import { isHost } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { countryMaps, continentMaps } from "$lib/stores/context-specific/officialMapsStore";
-import { mapSupportsMultiplayer } from "$lib/utils/doesMapSupportMultiplayer";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
@@ -55,14 +54,14 @@ export async function checkGenerationTypeAndGenerate() {
         singleplayer.set(true);
 
         // Pick between json and maps api loading depending on the category type
-        if (mapCategory != "standard" && mapCategory != "country_guesser" && mapCategory != "image_guesser" && !mapCategory.includes("community")) {
+        if (mapCategory != "standard" && mapCategory != "country guesser" && mapCategory != "image guesser" && !mapCategory.includes("community")) {
             await generateNewLocation("JSON");
 
-        } else if (mapCategory == "country_guesser") {
+        } else if (mapCategory == "country guesser") {
             setCountryGuesserMode(true);
             await generateNewLocation("JSON");
 
-        } else if (mapCategory == "image_guesser") {
+        } else if (mapCategory == "image guesser") {
             setImageGuesserMode(true);
             await generateNewLocation("JSON");
 
@@ -80,20 +79,14 @@ export async function checkGenerationTypeAndGenerate() {
 
         if (get(isHost)) {
             try {
-                if (mapCategory && mapCategory != "standard" && mapSupportsMultiplayer(mapCategory) && !mapCategory.includes("community")) {
+                if (mapCategory && mapCategory != "standard" && !mapCategory.includes("community")) {
                     await generateNewLocation("JSON");
+
                 } else if (mapCategory == "standard" || !mapCategory) {
                     await generateNewLocation("SDK");
 
                 } else if (mapCategory.includes("community")) {
                     await generateNewLocation("COMMUNITY");
-
-                } else {
-                    // If the map category is an unsupported multiplayer category, such as hard, switch to standard
-                    changeCategory("standard", true); // this will re-run checkGenerationTypeAndGenerate
-                    setTimeout(function () {
-                        errorPopup("Unsupported Multiplayer Map", "This map category is not available for multiplayer and was automatically changed to Standard.", "Map unsupported", false);
-                    }, 3500);
                 }
 
             } catch (error) {
