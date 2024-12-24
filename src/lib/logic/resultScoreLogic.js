@@ -5,7 +5,7 @@ import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleSt
 import { setCheckNewHighestStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, freeSupporterBoostEnabled, supporterLevel, experience } from "$lib/stores/accountStore";
 import { streakText, showStreakDisplay, lastDistance, lastExperienceCalculationAborted, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
-import { isHost, peerId, multiplayerCategory, highestMultiplayerSupporterLevel } from "$lib/stores/context-specific/multiplayerStore";
+import { isHost, peerId, highestMultiplayerSupporterLevel } from "$lib/stores/context-specific/multiplayerStore";
 import { updatePeerDataScore, peerSendsHost } from "$lib/logic/multiplayerLogic";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
@@ -70,11 +70,7 @@ async function streakCalculation() {
 }
 
 function getStreakMultiplierAdjustedToGamemode() {
-    if (!get(multiplayer) && !get(competition)) {
-        return streakMultiplier;
-    } else {
-        return 1;
-    }
+    return get(singleplayer) ? streakMultiplier : 1;
 }
 
 // Adjust XP calculation parameter to diameter (map size)
@@ -90,15 +86,15 @@ function calculateExponentialModifier(mapDiameter) {
 async function calculateXPGain(distance, category, supporterLevelParam, freeSupporterBoost) {
     let returnXP = 0;
 
-    if (!category || category == "standard" || category == "capital_cities") {
+    if (!category || category == "standard" || category == "capital cities") {
         await streakCalculation();
         returnXP = Math.round((5000 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode());
 
-    } else if (category == "famous_places" || category == "image_guesser") {
+    } else if (category == "famous places" || category == "image guesser") {
         await streakCalculation();
         returnXP = Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 1500 xp, with streak up to 1800sth
 
-    } else if (category == "country_guesser") {
+    } else if (category == "country guesser") {
         returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
     } else {
@@ -154,34 +150,28 @@ export async function loadResultScreenXP(distance) {
 
     // If Authenticated or in Multiplayer, show XP thing ------------------------------
     if (get(isAuthenticated) || get(multiplayer)) {
-        lastExperienceCalculationAborted.set(false);
-
-        let currentXP = Number(get(experience)) || 0;
-        let selectedCategory = localStorage.getItem("selectedCategory") || "standard";
 
         // Hide streak display
         showStreakDisplay.set(false);
+        lastExperienceCalculationAborted.set(false);
+        let currentXP = Number(get(experience)) || 0;
 
         let earnedXP;
-        let earnedBasicXP; // without supporter mutliplier, that will be applied later (this is just for visuals)
+        let earnedBasicXP; // Without supporter mutliplier, that will be applied later (this is just for visuals)
+
+        const selectedCategory = localStorage.getItem("selectedCategory") || "standard";
 
         // XP calculation formulas -------------------------------------------------
-        if (get(singleplayer)) {
-            const calculatedXP = await calculateXPGain(distance, selectedCategory, get(supporterLevel), get(freeSupporterBoostEnabled));
+        if (get(singleplayer) || get(multiplayer)) {
+            const adjustedSupporterLevel = get(multiplayer) ? get(highestMultiplayerSupporterLevel) : get(supporterLevel);
+
+            const calculatedXP = await calculateXPGain(distance, selectedCategory, adjustedSupporterLevel, get(singleplayer) ? get(freeSupporterBoostEnabled) : undefined);
             earnedXP = calculatedXP.earnedXP;
             earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
             supporterMultiplier = calculatedXP.supporterMultiplier;
 
-        } else if (get(multiplayer)) {
-            const calculatedXP = await calculateXPGain(distance, get(multiplayerCategory), get(highestMultiplayerSupporterLevel));
-            earnedXP = calculatedXP.earnedXP;
-            earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
-            supporterMultiplier = calculatedXP.supporterMultiplier;
-
-            if (get(isHost)) {
-                updatePeerDataScore(get(peerId), earnedXP);
-            } else {
-                peerSendsHost("score", earnedXP);
+            if (get(multiplayer)) {
+                get(isHost) ? updatePeerDataScore(get(peerId), earnedXP) : peerSendsHost("score", earnedXP);
             }
 
         } else if (get(competition)) {

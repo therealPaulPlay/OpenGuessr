@@ -39,7 +39,7 @@ async function getJSONCoords(category) {
             loadedMapCategory = category;
             previousGuessesIndexes = [];
 
-            response = await fetch("/json/" + category + "Locations.json");
+            response = await fetch("/json/" + category.replaceAll(" ", "_") + "Locations.json");
 
             if (!response.ok) {
                 throw new Error("JSON fetch failed.");

@@ -105,14 +105,6 @@
     return false;
   }
 
-  // Capitalize words - used for regular categories, where the category string will be converted into a Name --------------
-  function formatIdToName(str) {
-    return str
-      .split("_")
-      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-      .join(" ");
-  }
-
   // Manage added community maps -------------------------------------------------------------------------------------------
 
   // Add / Remove from user section
@@ -136,6 +128,19 @@
       }
     } catch (error) {
       console.error("Error removing community map: " + error);
+    }
+  }
+
+  function idToMapName(str) {
+    try {
+      return str
+        .replace("community_", "")
+        .split(" ")
+        .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+        .join(" ");
+    } catch (error) {
+      console.error("Error converting ID to map name:", error);
+      return "Error (?)";
     }
   }
 
@@ -215,7 +220,7 @@
         }}
       >
         <div class="mapInfo">
-          <div class="map-name">{formatIdToName(map) || "Name not loaded"}</div>
+          <div class="map-name">{idToMapName(map) || "Name not loaded"}</div>
         </div>
       </div>
     {/each}
@@ -235,7 +240,7 @@
         }}
       >
         <div class="mapInfo">
-          <div class="map-name">{formatIdToName(map) || "Name not loaded"}</div>
+          <div class="map-name">{idToMapName(map) || "Name not loaded"}</div>
         </div>
       </div>
     {/each}
@@ -304,7 +309,7 @@
         }}
       >
         <div class="mapInfo">
-          <div class="map-name">{formatIdToName(map) || "Name not loaded"}</div>
+          <div class="map-name">{idToMapName(map) || "Name not loaded"}</div>
         </div>
       </div>
     {/each}
@@ -334,7 +339,7 @@
         }}
       >
         <div class="mapInfo">
-          <div class="map-name">{formatIdToName(map) || "Name not loaded"}</div>
+          <div class="map-name">{idToMapName(map) || "Name not loaded"}</div>
         </div>
       </div>
     {/each}
