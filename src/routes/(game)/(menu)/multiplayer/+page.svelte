@@ -12,9 +12,10 @@
   import { signupPrompt } from "$lib/utils/signupPrompt";
   import { goto } from "$app/navigation";
   import { onDestroy, onMount } from "svelte";
-  import { scale } from "svelte/transition";
+  import { scale, slide } from "svelte/transition";
   import { bounceInOut } from "svelte/easing";
   import { getEloLeaderboard } from "$lib/logic/userAPI";
+  import { ChevronDown, ChevronUp } from "lucide-svelte";
   import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 
   let friendsRefreshInterval;
@@ -36,9 +37,10 @@
 
   // Division leaderboard
   let divisionLeaderboard = $state([]);
+  let isExpanded = $state(false);
 
-  onMount(async () => {
-    divisionLeaderboard = await getEloLeaderboard();
+  $effect(async () => {
+    if (isExpanded && divisionLeaderboard.length == 0) divisionLeaderboard = await getEloLeaderboard();
   });
 
   const nextMonth = new Date();
@@ -125,29 +127,40 @@
   </div>
   <DuelDivisionDisplay />
   <!-- Division leaderboard -->
-  <div class="divisionLeaderboardContainer">
-    {#if divisionLeaderboard?.length > 0}
-      {#each divisionLeaderboard as entry}
-        <div
-          class="divisionLeaderboardEntry"
-          class:divisionLeaderboardEntryYou={entry.id == localStorage.getItem("id")}
-        >
-          <p>#{entry.position}</p>
-          <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-          <!-- svelte-ignore a11y_click_events_have_key_events -->
-          <p
-            class="leaderboardUserName"
-            onclick={() => {
-              loadProfileFromId(entry.id, true);
-            }}
-          >
-            {entry.user_name}
-          </p>
-          <p>{entry.elo} Elo</p>
-        </div>
-      {/each}
-    {:else}
-      <p class="divisionLeaderboardError">Division leaderboard not loaded.</p>
+  <div class="leaderboardSection">
+    <button class="sectionButton" onclick={() => (isExpanded = !isExpanded)}>
+      <span class="flexSectionSpan">
+        <img class="duelLeaderboardIcon" src="/img/leaderboards_icon.png" alt="duel leaderboard" />
+        <p>Leaderboard</p>
+      </span>
+      {#if isExpanded}
+        <ChevronUp size={20} strokeWidth={3} />
+      {:else}
+        <ChevronDown size={20} strokeWidth={3} />
+      {/if}
+    </button>
+
+    {#if isExpanded}
+      <div class="divisionLeaderboardContainer" transition:slide={{ duration: 250 }}>
+        {#if divisionLeaderboard?.length > 0}
+          {#each divisionLeaderboard as entry}
+            <div
+              class="divisionLeaderboardEntry"
+              class:divisionLeaderboardEntryYou={entry.id == localStorage.getItem("id")}
+            >
+              <p>#{entry.position}</p>
+              <!-- svelte-ignore a11y_click_events_have_key_events -->
+              <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+              <p class="leaderboardUserName" onclick={() => loadProfileFromId(entry.id, true)}>
+                {entry.user_name}
+              </p>
+              <p>{entry.elo} Elo</p>
+            </div>
+          {/each}
+        {:else}
+          <p class="divisionLeaderboardError">Division leaderboard not loaded.</p>
+        {/if}
+      </div>
     {/if}
   </div>
   <div class="headerContainer headerMarginTop">
@@ -275,13 +288,13 @@
     flex-wrap: wrap;
     padding: 10px;
     width: calc(100% - 20px);
-    border-radius: 15px;
+    border-radius: 8px;
     gap: 10px;
     background-color: var(--box-color);
-    margin-bottom: 15px;
+    margin-top: 15px;
     overflow: hidden;
     overflow-y: auto;
-    max-height: 185px;
+    max-height: 280px;
     scrollbar-width: none;
   }
 
@@ -304,6 +317,45 @@
 
   .divisionLeaderboardEntryYou {
     background-color: rgba(255, 255, 255, 0.3);
+  }
+
+  .leaderboardSection {
+    width: calc(100% - 20px);
+    background-color: var(--box-color);
+    border-radius: 15px;
+    padding: 10px;
+    min-height: 30px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .sectionButton {
+    width: calc(100% - 10px);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding-inline: 5px;
+    color: white;
+    font-size: 25px;
+    justify-content: space-between;
+    align-items: center;
+    transition: opacity 250ms ease;
+  }
+
+  .flexSectionSpan {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .duelLeaderboardIcon {
+    width: 25px;
+    height: 25px;
+  }
+
+  .sectionButton:hover {
+    opacity: 0.5;
   }
 
   .leaderboardUserName {
