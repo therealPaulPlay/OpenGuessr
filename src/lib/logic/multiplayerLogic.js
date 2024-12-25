@@ -565,15 +565,17 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     isHost.set(true);
     multiplayerFirstRoundPlayed = false;
 
-    if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
-        showNotification("Map changed to Standard.")
-        changeCategory("standard");
-    }
-
+    // Add yourself (host) to the overview
     connectedPlayers.update((array) => {
         array.push([get(peerId), get(username) || get(savedGuestName), get(elo), 0, 1, localStorage.getItem("id"), get(selectedBadge)]);
         return array;
-    });  // add yourself (host) to the overview
+    });
+
+    // Check if map is valid for multiplayer
+    if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
+        showNotification("Unsupported map changed to Standard.")
+        changeCategory("standard", true);
+    }
 
     yourTeam.set(1);
     showMultiplayerOverlay(true, "Waiting...");
