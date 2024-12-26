@@ -16,7 +16,7 @@ import { get } from "svelte/store";
 
 // Google Maps init --------------------------------------------------------------------------------------
 
-let captchaToken = $state();
+let captchaToken;
 
 async function loadGoogleMapsApi(apiKey) {
     await new Promise((resolve, reject) => {
@@ -190,7 +190,7 @@ if (typeof window !== "undefined") {
 
 let multiplayerMiniMarkers = []; // team markers
 
-//reset the map - used for going to the next round. 
+// Reset the map - used for going to the next round. 
 export function resetMap() {
     if (get(map)) {
         mapHovered.set(false);
