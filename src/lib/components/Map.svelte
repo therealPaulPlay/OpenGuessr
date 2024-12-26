@@ -4,9 +4,8 @@
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
-	import { initMap } from "$lib/logic/miniMap";
+	import { initializeMapIfNotAlready } from "$lib/logic/miniMap";
 	import { get } from "svelte/store";
-	import { onMount } from "svelte";
 
 	let mapResizeTimeout;
 
@@ -29,34 +28,6 @@
 			}
 		}
 	}
-
-	function onMapHover() {
-		get(map).invalidateSize();
-	}
-
-	onMount(async () => {
-		try {
-			await new Promise((resolve, reject) => {
-				const script = document.createElement("script");
-				script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-				script.onload = () => {
-					resolve(window.L); // Resolve when Leaflet is loaded
-				};
-				script.onerror = reject; // Reject if there's an error loading the script
-				document.head.appendChild(script);
-			});
-		} catch (error) {
-			console.error("Error loading leaflet script:", error);
-		}
-
-		initMap();
-
-		try {
-			new ResizeObserver(onMapHover).observe(document.getElementById("map"));
-		} catch (error) {
-			console.error("Resize oberser unsupported. Err: " + error);
-		}
-	});
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -70,6 +41,8 @@
 	onmouseleave={handleMapUnhover}
 	onkeyup={spaceBarGuess}
 	style:visibility={$mapVisible ? "" : "hidden"}
+	onmouseover={initializeMapIfNotAlready}
+	ontouchstart={initializeMapIfNotAlready}
 	style:max-height={$mapExpanded ? "100%" : "0%"}
 	class:mapFullOpacityResult={Boolean($resultScreenEnabled)}
 >
