@@ -388,6 +388,7 @@
 		margin-top: 5px;
 		margin-bottom: 10px;
 		font-size: 25px;
+		scrollbar-width: none;
 	}
 
 	#profileAddFriend {
