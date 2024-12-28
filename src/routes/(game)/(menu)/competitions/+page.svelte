@@ -1197,7 +1197,7 @@
 	}
 
 	.leaderboardSupporterEntry {
-		background-color: rgba(125, 189, 144, 0.5);
+		background-color: var(--supporter-highlight);
 	}
 
 	.centerEntry {
