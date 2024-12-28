@@ -146,6 +146,7 @@
 					{#each divisionLeaderboard as entry}
 						<div
 							class="divisionLeaderboardEntry"
+							class:leaderboardSupporter={entry?.supporter_level > 0}
 							class:divisionLeaderboardEntryYou={entry.id == localStorage.getItem("id")}
 						>
 							<p>#{entry.position}</p>
@@ -369,6 +370,10 @@
 
 	.leaderboardUserName:hover {
 		opacity: 0.5;
+	}
+
+	.leaderboardSupporter {
+		background-color: var(--supporter-highlight);
 	}
 
 	.infoContainer p {

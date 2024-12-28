@@ -75,7 +75,7 @@ function getStreakMultiplierAdjustedToGamemode() {
 
 // Adjust XP calculation parameter to diameter (map size)
 function calculateExponentialModifier(mapDiameter) {
-    const A = 0.9978;
+    const A = 0.9982;
     const B = 0.08;
     const C = 0.06;
     return A - B * Math.exp(-C * mapDiameter);
@@ -88,11 +88,11 @@ async function calculateXPGain(distance, category, supporterLevelParam, freeSupp
 
     if (!category || category == "standard" || category == "capital cities") {
         await streakCalculation();
-        returnXP = Math.round((5000 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode());
+        returnXP = Math.round((5000 * ((0.9985) ** distance)) * getStreakMultiplierAdjustedToGamemode());
 
     } else if (category == "famous places" || category == "image guesser") {
         await streakCalculation();
-        returnXP = Math.round((1500 * ((0.998036) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 1500 xp, with streak up to 1800sth
+        returnXP = Math.round((1500 * ((0.9982) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 1500 xp, with streak up to 1800sth
 
     } else if (category == "country guesser") {
         returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
