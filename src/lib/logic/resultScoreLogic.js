@@ -104,7 +104,7 @@ async function calculateXPGain(distance, category, supporterLevelParam, freeSupp
 
     let supporterMultiplier = 1;
 
-    if (supporterLevelParam && supporterLevelParam > 0) {
+    if (supporterLevelParam) {
         switch (supporterLevelParam) {
             case 1:
                 supporterMultiplier = 1.1;
