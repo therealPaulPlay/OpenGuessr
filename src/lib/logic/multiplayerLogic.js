@@ -447,7 +447,7 @@ function attachHostLogic() {
                     });
 
                     if (incomingConn.metadata.supporterLevel > get(highestMultiplayerSupporterLevel)) {
-                        highestMultiplayerSupporterLevel.set(incomingConn.supporterLevel);
+                        highestMultiplayerSupporterLevel.set(incomingConn.metadata.supporterLevel);
                     }
 
                     updateTeamIndexes();
