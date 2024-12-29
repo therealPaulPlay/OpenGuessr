@@ -66,7 +66,7 @@ export async function attemptDuelJoin(index) {
         // Create room & hide close + back button for the time
         screenEscapeDisabled.set(true);
 
-        changeCategory("standard", false); // This will only change the category and not generate! (to prevent skip of first round)
+        changeCategory("standard", true); // Regenerate to update the loaded locations array
         await setupMultiplayerRoom(3, 60);
         sendRoomCodeToMatchmakingServer();
     }
