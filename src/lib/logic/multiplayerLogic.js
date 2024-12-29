@@ -574,7 +574,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     // Check if map is valid for multiplayer
     if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
         showNotification("Unsupported map changed to Standard.")
-        changeCategory("standard", true);
+        changeCategory("standard", true); // Regenerate to update locations array
     }
 
     yourTeam.set(1);
