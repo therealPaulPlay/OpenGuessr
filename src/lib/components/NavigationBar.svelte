@@ -5,7 +5,7 @@
 	import { isAuthenticated, experience, supporterLevel, username } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
-	import { competition, multiplayer } from "$lib/stores/modeStore";
+	import { competition, multiplayer, singleplayer } from "$lib/stores/modeStore";
 	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
@@ -251,7 +251,7 @@
 		{#if $isAuthenticated}
 			<button
 				class="standardButton accountButton white"
-				class:signoutDisabled={$crazyGames}
+				class:signoutDisabled={$crazyGames || !$singleplayer}
 				id="logoutButton"
 				alt="log out"
 				onclick={() => {

@@ -2,6 +2,7 @@
 	import Popup from "$lib/components/Popup.svelte";
 	import { checkIfFriendsWithId } from "$lib/utils/checkIfFriendsWithId";
 	import SupporterPitch from "$lib/components/SupporterPitch.svelte";
+	import { singleplayer } from "$lib/stores/modeStore";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
 	import { experienceCalculations } from "$lib/utils/experienceCalculations";
@@ -219,7 +220,7 @@
 					<button
 						id="profileSignoutButton"
 						class="standardButton white"
-						class:buttonDisabled={$crazyGames}
+						class:buttonDisabled={$crazyGames || !$singleplayer}
 						onclick={() => {
 							playSound("basic_button");
 							resetLocalSave();
