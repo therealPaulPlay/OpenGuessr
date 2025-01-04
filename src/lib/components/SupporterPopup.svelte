@@ -91,7 +91,7 @@
 		let stripeSessionFinished;
 
 		try {
-			stripeSessionFinished = urlParams.get("session_id");
+			stripeSessionFinished = urlParams.get("payment_completed");
 			if (stripeSessionFinished) {
 				showConfirmPopup(
 					"Thank you!",
