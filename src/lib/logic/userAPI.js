@@ -443,7 +443,7 @@ export function displayError(error, source, errorMessageElement, errorMsg) {
 
   } else if (source == "index") {
     if (!errorMsg) {
-      errorPopup("Account Backend Error", "The API reports an unknown error. Please consider reporting this in #bug-reports on the Discord.", error, false);
+      errorPopup("Account Backend Error", "The API reports an unknown error. Please check your internet connection and the site's server status.", error, false);
     } else {
       errorPopup("Account Backend Error", "Error: " + errorMsg, error, false);
     }
