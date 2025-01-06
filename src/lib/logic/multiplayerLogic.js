@@ -845,7 +845,6 @@ export async function joinRoom(code) {
 
     // Event listener for Connection closed
     conn.on('close', function () {
-        //if you get disconnected mid round
         if (get(multiplayer)) {
             removeRankedLeavePenalty(); // Remove leave penalty (not at fault here)
             leaveMultiplayerRound();
@@ -856,6 +855,15 @@ export async function joinRoom(code) {
         if (!get(multiplayer)) {
             multiplayerStatus.set("Room locked.");
             if (get(matchmakingActive)) findNextDuel();
+        }
+    });
+
+    // Event listener for Connection experiences an error
+    conn.on('error', function (error) {
+        if (get(multiplayer)) {
+            removeRankedLeavePenalty(); // Remove leave penalty (not at fault here)
+            leaveMultiplayerRound();
+            errorPopup("WebRTC DataChannel error", "An error occured in the data channel. You are not the host.", error.type, false, true);
         }
     });
 }
