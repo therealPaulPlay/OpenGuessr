@@ -46,6 +46,7 @@
 	import MapAttribution from "$lib/components/MapAttribution.svelte";
 	import CrazyGames from "$lib/components/CrazyGames.svelte";
 	import DuelResultPopup from "$lib/components/DuelResultPopup.svelte";
+	import ReportIframePopup from "$lib/components/ReportIframePopup.svelte";
 
 	// Start ads
 	onMount(() => {
@@ -120,6 +121,7 @@
 <TimerCountdown />
 <TimeReducedOverlay />
 <MultiplayerOverlay />
+<ReportIframePopup />
 <ImageGuesser />
 <div class="viewContainer">
 	<PanoramaIframe />

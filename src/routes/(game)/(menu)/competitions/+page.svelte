@@ -9,7 +9,7 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
-	import { Plus } from "lucide-svelte";
+	import { Frown, Plus, Smile, TriangleAlert } from "lucide-svelte";
 	import { onMount } from "svelte";
 
 	const competitionsEndpoint = "https://competitions.openguessr.com/competitions";
@@ -512,7 +512,7 @@
 								submitRating(5);
 							}}
 						>
-							<img class="ratingIcon" alt="good" src="/img/rating_good_icon.png" />
+							<Smile size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
 						</button>
 						<button
 							class="standardButton rateButton"
@@ -521,7 +521,7 @@
 								submitRating(-3);
 							}}
 						>
-							<img class="ratingIcon" alt="bad" src="/img/rating_bad_icon.png" />
+							<Frown size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
 						</button>
 						<button
 							class="standardButton rateButton"
@@ -530,7 +530,7 @@
 								submitRating(-10);
 							}}
 						>
-							<img class="ratingIcon" alt="broken" src="/img/rating_broken_icon.png" />
+							<TriangleAlert size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
 						</button>
 					</div>
 				{/if}
@@ -1249,13 +1249,6 @@
 		gap: 5px;
 		justify-content: center;
 		align-items: center;
-	}
-
-	.ratingIcon {
-		width: 22px;
-		height: 22px;
-		filter: invert();
-		vertical-align: -3px;
 	}
 
 	.buttonDisabled {

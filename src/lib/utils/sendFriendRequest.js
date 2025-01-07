@@ -42,7 +42,7 @@ export async function sendFriendRequest(targetUserId, button) {
         }
 
     } catch (error) {
-        console.error('Fetch/Network error occurred while sending the friend request: ', error);
+        console.error('Fetch/Network error occurred while sending the friend request:', error);
         errorPopup("Network error sending friend request", "The friend request couldn't be sent.", error, false, false);
     }
 }

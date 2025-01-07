@@ -2,7 +2,7 @@ import { loadAndInitializeLibrary } from "$lib/utils/scriptLoader";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScreen.js";
 import { startTimer } from "$lib/utils/timer.js";
-import { isAuthenticated } from "$lib/stores/accountStore";
+import { checkedForBan, isAuthenticated, isBanned, reportEntryData } from "$lib/stores/accountStore";
 import { selectedBadge, selectedPinIndex, supporterLevel, username, elo } from "$lib/stores/accountStore.js";
 import { transitionToStart } from "$lib/utils/transitionToStart";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation.js";
@@ -350,6 +350,19 @@ export function setFriendDuel(state) {
 
 // this initiates the find duel system
 export async function findDuel() {
+    if (!get(checkedForBan)) await new Promise(resolve => setTimeout(resolve, 1000));
+    if (get(isBanned)) {
+        errorPopup(
+            "You are banned",
+            `Unfortunately, you are banned from playing duels for "${get(reportEntryData).reason}" until "${get(reportEntryData).expires_at ? new Date(get(reportEntryData).expires_at).toLocaleDateString() : "forever"}". 
+            Please contact the moderators on Discord if you think this was a mistake.`,
+            "Blacklisted."
+        );
+
+        multiplayerStatus.set("Aborted due to ban.");
+        return;
+    }
+
     roomIndex = 0; // reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     matchmakingActive.set(true);
     playingDuels = true;
@@ -845,7 +858,6 @@ export async function joinRoom(code) {
 
     // Event listener for Connection closed
     conn.on('close', function () {
-        //if you get disconnected mid round
         if (get(multiplayer)) {
             removeRankedLeavePenalty(); // Remove leave penalty (not at fault here)
             leaveMultiplayerRound();
@@ -856,6 +868,15 @@ export async function joinRoom(code) {
         if (!get(multiplayer)) {
             multiplayerStatus.set("Room locked.");
             if (get(matchmakingActive)) findNextDuel();
+        }
+    });
+
+    // Event listener for Connection experiences an error
+    conn.on('error', function (error) {
+        if (get(multiplayer)) {
+            removeRankedLeavePenalty(); // Remove leave penalty (not at fault here)
+            leaveMultiplayerRound();
+            errorPopup("WebRTC DataChannel error", "An error occured in the data channel. You are not the host.", error.type, false, true);
         }
     });
 }

@@ -170,7 +170,7 @@
 </script>
 
 {#if $supporterPopupVisible}
-	<Popup z="971" slim="true">
+	<Popup z={971} slim="true">
 		<div class="popup-title">
 			<h1 class="shiftTitle">
 				Supporter Tiers

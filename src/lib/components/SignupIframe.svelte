@@ -24,7 +24,7 @@
 </script>
 
 {#if $signupPopup}
-	<Popup z="961" frameLess="true">
+	<Popup z={961} frameLess="true">
 		<div id="browserIframeHolder">
 			<div class="absoluteCenter">
 				<img src="/img/compass_spinner.png" alt="Loading new streetview" class="spinner" id="pageBrowserLoading" />

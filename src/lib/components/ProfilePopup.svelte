@@ -14,7 +14,7 @@
 	import { filterProfanity } from "$lib/utils/profanityCheck";
 	import { saveProfileAboutIfYourProfileAndChanges } from "$lib/utils/updateProfileData";
 	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
-	import { pinPopup, badgePopup } from "$lib/stores/uiStore";
+	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
@@ -29,7 +29,12 @@
 	} from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Edit, Trash2 } from "lucide-svelte";
+	import { Edit, Trash2, TriangleAlert } from "lucide-svelte";
+	import { onMount } from "svelte";
+	import { page } from "$app/stores";
+	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { reportUserId } from "$lib/stores/context-specific/reportPopupStore";
+	import { scale } from "svelte/transition";
 
 	let textarea = $state();
 	let isFriendsWithId = $state(true);
@@ -47,10 +52,15 @@
 			filteredAbout = await filterProfanity($profileData?.about);
 		}
 	});
+
+	onMount(() => {
+		const profileFromURL = $page.url.searchParams.get("profile-id");
+		if (profileFromURL != null) loadProfileFromId(profileFromURL, true);
+	});
 </script>
 
 {#if $profilePopup}
-	<Popup z="970">
+	<Popup z={970}>
 		<div class="popup-title">
 			<div class="profileNameArea">
 				<h1 id="profileViewName">{$profileName}</h1>
@@ -99,9 +109,23 @@
 						</div>
 					{/if}
 					<p id="levelTextProfile">Lvl. {experienceCalculations($profileExperience)?.level}</p>
+					{#if $profileId != localStorage.getItem("id")}
+						<button
+							class="standardButton white"
+							id="profileReportButton"
+							onclick={(e) => {
+								playSound("basic_button");
+								reportUserId.set($profileId);
+								reportPopup.set(true);
+							}}
+						>
+							Report <TriangleAlert size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 2px;" />
+						</button>
+					{/if}
 					{#if $profileId != localStorage.getItem("id") && $isAuthenticated && !isFriendsWithId}
 						<button
-							class="standardButton"
+							class="standardButton white"
+							transition:scale
 							id="profileAddFriend"
 							onclick={(e) => {
 								playSound("basic_button");
@@ -393,17 +417,16 @@
 	}
 
 	#profileAddFriend {
-		background-color: rgba(255, 255, 255, 0.1);
-		border: none;
 		padding: 5px;
+		font-size: 20px;
 		margin: 0;
-		box-shadow: none;
-		height: 100%;
-		font-size: 23px;
-		transition:
-			filter 250ms ease,
-			opacity 250ms ease,
-			transform 150ms ease;
+	}
+
+	#profileReportButton {
+		padding: 5px;
+		padding-inline: 8px;
+		font-size: 20px;
+		margin: 0;
 	}
 
 	#profileScrollSection {

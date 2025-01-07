@@ -46,7 +46,7 @@
 </script>
 
 {#if $friendBrowserPopup}
-	<Popup z="960" slim="true">
+	<Popup z={960} slim="true">
 		<div class="popup-title">
 			<h1 id="friendBrowserHeader">Search players</h1>
 		</div>
@@ -102,7 +102,7 @@
 								sendFriendRequest(entry.id, e.target);
 							}}
 						>
-							Send request +
+							Friend request <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
 						</button>
 					</div>
 				{/each}
@@ -156,6 +156,14 @@
 		width: 20px;
 		height: 20px;
 		vertical-align: -1px;
+	}
+
+	#addFriendIcon {
+		width: 22px;
+		height: 22px;
+		vertical-align: -4px;
+		padding-left: 4px;
+		pointer-events: none;
 	}
 
 	.friendSearchItem {
