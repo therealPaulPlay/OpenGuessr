@@ -201,50 +201,52 @@
 	</div>
 	<div class="friendBox" style:min-height={$loadedFriendsData ? "50px" : "80px"}>
 		{#if $loadedFriendsData && $isAuthenticated}
-			{#each $loadedFriendsData as entry}
-				<!-- svelte-ignore a11y_click_events_have_key_events -->
-				<div
-					class="standardButton white friendItem"
-					role="menu"
-					tabindex="0"
-					onclick={() => {
-						loadProfileFromId(entry.id, true);
-					}}
-				>
-					{#if entry.online}
-						<div class="friendOnlineBar"></div>
-					{/if}
-					<p>{entry.user_name}</p>
-					<button
-						id="duelFriend"
-						class="standardButton friendItemButtons white"
-						onclick={(e) => {
-							e.stopPropagation();
-							playSound("basic_button");
-							sendMatchInvite(entry.id, true);
+			<div class="innerFriendBox">
+				{#each $loadedFriendsData as entry}
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<div
+						class="standardButton white friendItem"
+						role="menu"
+						tabindex="0"
+						onclick={() => {
+							loadProfileFromId(entry.id, true);
 						}}
 					>
-						<Swords strokeWidth={3} size={17} />
-					</button>
-					<button
-						id="removeFriend"
-						class="standardButton friendItemButtons white"
-						onclick={(e) => {
-							e.stopPropagation();
-							playSound("basic_button");
-							showConfirmPopup(
-								"Remove friend?",
-								"You are about to remove your friend from your list. Your friend will see this and might not like it. Use this at our own risk.",
-								() => {
-									removeFriend(entry.id);
-								},
-							);
-						}}
-					>
-						<img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
-					</button>
-				</div>
-			{/each}
+						{#if entry.online}
+							<div class="friendOnlineBar"></div>
+						{/if}
+						<p>{entry.user_name}</p>
+						<button
+							id="duelFriend"
+							class="standardButton friendItemButtons white"
+							onclick={(e) => {
+								e.stopPropagation();
+								playSound("basic_button");
+								sendMatchInvite(entry.id, true);
+							}}
+						>
+							<Swords strokeWidth={3} size={17} />
+						</button>
+						<button
+							id="removeFriend"
+							class="standardButton friendItemButtons white"
+							onclick={(e) => {
+								e.stopPropagation();
+								playSound("basic_button");
+								showConfirmPopup(
+									"Remove friend?",
+									"You are about to remove your friend from your list. Your friend will see this and might not like it. Use this at our own risk.",
+									() => {
+										removeFriend(entry.id);
+									},
+								);
+							}}
+						>
+							<img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
+						</button>
+					</div>
+				{/each}
+			</div>
 		{:else}
 			<p class="noFriendsText">Added friends show up here.</p>
 		{/if}
@@ -453,10 +455,16 @@
 		box-shadow: none;
 		gap: 3px;
 		flex-grow: 1;
-		max-width: 400px;
+		max-width: 250px;
 		overflow: hidden;
 		margin: 0;
 		animation: fadeIn 100ms ease-in-out;
+	}
+
+	@media (max-width: 800px) {
+		.friendItem {
+			max-width: 400px;
+		}
 	}
 
 	@keyframes fadeIn {
@@ -566,16 +574,22 @@
 	}
 
 	.friendBox {
+		width: calc(100% - 20px);
+		transition: max-height 150ms ease;
+		background-color: var(--box-color);
+		border-radius: 10px;
+		outline: 10px solid var(--box-color);
+		overflow: hidden;
+		overflow-y: auto;
+		max-height: 250px;
+		margin-top: 10px;
+	}
+
+	.innerFriendBox {
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
 		gap: 10px;
-		width: calc(100% - 20px);
-		transition: max-height 150ms ease;
-		background-color: var(--box-color);
-		border-radius: 15px;
-		padding: 10px;
-		overflow: hidden;
 	}
 
 	#inboxIcon {
