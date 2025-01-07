@@ -3,6 +3,13 @@
 	import { findDuel } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
 	import { RefreshCcw } from "lucide-svelte";
+	import { onMount } from "svelte";
+	import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
+
+	onMount(() => {
+		// Check blacklist if logged in and not already (async)
+		fetchBlacklistStatus();
+	});
 </script>
 
 <svelte:head>

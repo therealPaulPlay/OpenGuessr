@@ -13,3 +13,8 @@ export const username = writable(); // No default name - Guest will be a fallbac
 export const selectedPinIndex = writable(0); // Number representing the selected pin
 export const selectedBadge = writable(null);
 export const elo = writable(1000);
+
+// Moderation related
+export const isBanned = writable(false);
+export const reportEntryData = writable();
+export const checkedForBan = writable(false);

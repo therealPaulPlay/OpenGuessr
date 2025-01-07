@@ -27,7 +27,7 @@
 </script>
 
 {#if $inboxPopup}
-	<Popup z="960" slim="true">
+	<Popup z={960} slim="true">
 		<div class="popup-title">
 			<h1 id="inboxPopupHeader">Inbox</h1>
 		</div>

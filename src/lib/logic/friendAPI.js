@@ -70,7 +70,7 @@ export async function acceptFriendRequest(senderId) {
         }
 
     } catch (error) {
-        console.error('Error occurred while sending the friend request (Network): ', error);
+        console.error('Error occurred while sending the friend request (Network):', error);
         errorPopup("Network error accepting / deleting friend request", "The friend request couldn't be accepted or deleted.", error, false, false);
     }
 }
@@ -103,7 +103,7 @@ export async function declineFriendRequest(senderId) {
         }
 
     } catch (error) {
-        console.error('Error occurred while sending the friend request: ', error);
+        console.error('Error occurred while sending the friend request:', error);
         errorPopup("Error accepting / deleting friend request (Network)", "The friend request couldn't be accepted or deleted.", error, false, false);
     }
 }
@@ -165,7 +165,7 @@ export async function removeFriend(friendId) {
         }
 
     } catch (error) {
-        console.error('Fetch/Network error occurred while removing friend: ', error);
+        console.error('Fetch/Network error occurred while removing friend:', error);
         errorPopup("Error removing friend (Network)", "The friend request couldn't be accepted or deleted.", error, false, false);
     }
 }
@@ -208,7 +208,7 @@ export async function sendMatchInvite(recipientId, duel) {
         }
 
     } catch (error) {
-        console.error('Error occurred while sending/accepting/declining invite (Network): ', error);
+        console.error('Error occurred while sending/accepting/declining invite (Network):', error);
         errorPopup("Error sending invite (Network)", "The invite couldn't be sent due to a network problem.", error, false, false);
     }
 }

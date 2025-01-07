@@ -2,7 +2,7 @@
 	import { PlusCircle, Unplug, Swords, ContactRound } from "lucide-svelte";
 	import { friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { isAuthenticated } from "$lib/stores/accountStore";
+	import { checkedForBan, isAuthenticated, isBanned, reportEntryData } from "$lib/stores/accountStore";
 	import { loadedFriendsData, hostStage } from "$lib/stores/context-specific/multiplayerStore";
 	import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
 	import { loadFriends, removeFriend, sendMatchInvite } from "$lib/logic/friendAPI";
@@ -17,6 +17,7 @@
 	import { getEloLeaderboard } from "$lib/logic/userAPI";
 	import { ChevronDown, ChevronUp } from "lucide-svelte";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
+	import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
 
 	let friendsRefreshInterval;
 
@@ -29,6 +30,9 @@
 		friendsRefreshInterval = setInterval(() => {
 			loadFriends();
 		}, 15000);
+
+		// Check blacklist if logged in and not already (async)
+		fetchBlacklistStatus();
 	});
 
 	onDestroy(() => {

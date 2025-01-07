@@ -12,7 +12,7 @@
 </script>
 
 <div style:visibility={$captchaPopupVisible ? "visible" : "hidden"}>
-	<Popup slim="true" z="981">
+	<Popup slim="true" z={981}>
 		<h1 class="popup-title">Captcha</h1>
 		<div class="infoBox">
 			<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
