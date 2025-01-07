@@ -9,6 +9,7 @@ import { loadPanorama } from '$lib/utils/loadPanorama';
 import { loadImageFromUrl } from '$lib/utils/imageGuesserFunctions';
 import { get } from 'svelte/store';
 import { resetMap } from '$lib/logic/miniMap';
+import { resultScreenEnabled } from '$lib/stores/context-specific/resultScreenStore';
 
 // Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
 
@@ -40,10 +41,9 @@ export async function generateNewLocation(type) {
     loadPanorama(get(currentLocationLatitude), get(currentLocationLongitude));
 
     // Rest Map
-    resetMap();
+    if (!get(resultScreenEnabled)) resetMap();
 
     if (get(multiplayer) && get(isHost)) {
         startMultiplayerRound(get(currentLocationLatitude), get(currentLocationLongitude));
     }
-
 }
