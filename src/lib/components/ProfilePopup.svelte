@@ -194,6 +194,10 @@
 					<p id="statisticHighestStreak">{$profileData?.highestStreak?.toLocaleString() || 0}</p>
 				</div>
 				<div class="statisticsEnclosure">
+					<p class="statsLabel">ID:</p>
+					<p id="statisticExperience">user-{$profileId}</p>
+				</div>
+				<div class="statisticsEnclosure">
 					<p class="statsLabel">Joined:</p>
 					<p id="statisticJoinedDate">{formatDateTime($joinedDate)}</p>
 				</div>
