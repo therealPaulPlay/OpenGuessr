@@ -260,7 +260,7 @@ export async function getPeer() {
         // Generate a unique user ID
         let uniqueUserID;
         if (localStorage.getItem("id")) {
-            uniqueUserID = "openguessr_" + localStorage.getItem("id") + generateRandomCode(2);
+            uniqueUserID = "openguessr_" + Number(localStorage.getItem("id")).toString(16) + generateRandomCode(2);
         } else {
             uniqueUserID = "openguessr_" + "g" + generateRandomCode(7);
             generateFunnyGuestName();
@@ -741,7 +741,9 @@ let conn; // the connection data
 export async function joinRoom(code) {
     await getPeer();
 
-    code.replace(/\s/g, ''); // Remove whitespaces
+    code = code.replaceAll(" ", ""); // Remove whitespaces
+    code = code.toLowerCase(); // Ensure lowercase
+    
     isHost.set(false);
     multiplayerFirstRoundPlayed = false;
     multiplayerStatus.set("Attempting join...");
