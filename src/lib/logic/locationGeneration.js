@@ -40,10 +40,7 @@ async function getJSONCoords(category) {
             previousGuessesIndexes = [];
 
             response = await fetch("/json/" + category.replaceAll(" ", "_") + "Locations.json");
-
-            if (!response.ok) {
-                throw new Error("JSON fetch failed.");
-            }
+            if (!response.ok) throw new Error("JSON fetch failed.");
 
             const jsonResponse = await response.json();
             currentlyLoadedLocationsArray.set(jsonResponse.locations);
@@ -59,7 +56,6 @@ async function getJSONCoords(category) {
         return pickRandomLocations();
     }
 }
-
 
 // Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
 
@@ -142,17 +138,14 @@ async function getCommunityMapCoordinates() {
 
             } else {
                 console.error("Community map fetch failed. Server returned error:", response.status);
-                if (response.status == 404) {
-                    errorPopup("Community map was deleted", "This map was likely deleted and cannot be found.", response.status, true);
-                } else {
-                    errorPopup("Error loading community map", "An error occured on the maps server.", response.status, true);
-                }
-                return null;
+                if (response.status == 404) errorPopup("Community map was deleted", "This map was likely deleted and cannot be found.", response.status, true);
+                if (response.status != 404) errorPopup("Error loading community map", "An error occured on the maps server.", response.status, true);
+                return [];
             }
         } catch (error) {
             console.error("Error occurred while fetching map from server: ", error);
             errorPopup("Error loading community map", "The maps server can't be reached.", error, true);
-            return null;
+            return [];
         }
     } else {
         return pickRandomLocations(); // pick one new location for playing
@@ -162,10 +155,8 @@ async function getCommunityMapCoordinates() {
 // Universal function to pick random coordinates ---------------------------------------------------------------------------
 
 function pickRandomLocations() {
-    let resultLocationsArray = [];
-    let guessIndex;
-
     try {
+        let guessIndex;
 
         do {
             guessIndex = Math.floor(Math.random() * get(currentlyLoadedLocationsArray)?.length);
@@ -173,7 +164,7 @@ function pickRandomLocations() {
 
         previousGuessesIndexes.unshift(guessIndex); // add guessIndex at the front of the array
 
-        if (previousGuessesIndexes.length > previousGuessesIndexes.length / 2) {
+        if (previousGuessesIndexes.length > get(currentlyLoadedLocationsArray)?.length / 2) {
             previousGuessesIndexes.pop(); // if the array is longer than half of the total amount, pop last one out
         }
 
@@ -181,12 +172,12 @@ function pickRandomLocations() {
         const resultLong = Number(get(currentlyLoadedLocationsArray)[guessIndex][1]);
         const additionalProperty = get(currentlyLoadedLocationsArray)[guessIndex][2]; // only available for certain modes (like country guesser, image guesser..). This could be the country, the image URL etc.
 
-        resultLocationsArray = [resultLat, resultLong, additionalProperty];
+        const resultLocationsArray = [resultLat, resultLong, additionalProperty];
+        return resultLocationsArray;
     } catch (error) {
         console.error("Error picking random locations in locationGeneration.js: " + error);
+        return [];
     }
-
-    return resultLocationsArray;
 }
 
 // Get Competition coordinates ---------------------------------------------------------------------------------------------
