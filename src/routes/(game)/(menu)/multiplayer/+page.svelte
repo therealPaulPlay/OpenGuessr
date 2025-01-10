@@ -560,8 +560,10 @@
 	.noFriendsText {
 		opacity: 0.5;
 		text-align: center;
-		margin-left: 20px;
-		margin-right: auto;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 
 	.friendOnlineBar {
@@ -583,6 +585,7 @@
 		overflow-y: auto;
 		max-height: 250px;
 		margin-top: 10px;
+		position: relative;
 	}
 
 	.innerFriendBox {
