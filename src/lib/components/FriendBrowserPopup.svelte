@@ -15,6 +15,8 @@
 		userSearchResults = undefined;
 		yourId = localStorage.getItem("id") || -1;
 
+		if (!searchQuery) return;
+
 		try {
 			const query = searchQuery;
 
@@ -126,17 +128,15 @@
 		opacity: 0.5;
 		font-size: 22px;
 		text-align: center;
-		width: 100%;
-		margin-top: auto;
 		margin-bottom: auto;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
 	}
 
 	.playerSearchBox {
-		display: flex;
 		position: relative;
-		justify-content: safe center;
-		align-items: flex-start;
-		flex-wrap: wrap;
 		width: calc(100% - 13px);
 		border-radius: 5px;
 		max-height: 50vh;
@@ -169,6 +169,7 @@
 	.friendSearchItem {
 		display: flex;
 		gap: 5px;
+		margin-bottom: 10px;
 		justify-content: space-between;
 		align-items: center;
 		border-radius: 5px;
