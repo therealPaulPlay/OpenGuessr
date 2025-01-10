@@ -59,7 +59,7 @@
 			};
 		} catch (error) {
 			console.error("Error creating payload and extracting coordinates: " + error);
-			return "Your list of streetview links could not be converted to coordinates.";
+			return "Error extracting the cordinates: " + error;
 		}
 
 		try {

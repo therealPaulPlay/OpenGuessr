@@ -104,9 +104,8 @@
 	}
 
 	.bottomBarIcon {
-		width: 18px !important;
-		height: 18px !important;
-		vertical-align: 1px;
+		width: 21px !important;
+		height: 21px !important;
 	}
 
 	.bottomFooterAds {
@@ -184,8 +183,8 @@
 
 	#resetButtonImg {
 		height: auto;
-		width: 23px;
-		filter: invert();
+		width: 21px;
+		vertical-align: 1px;
 	}
 
 	.bottomFooterAdText {
