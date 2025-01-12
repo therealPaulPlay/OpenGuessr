@@ -13,7 +13,7 @@ export async function fetchBlacklistStatus() {
             banReportEntryData.set(data?.entry);
             checkedForBan.set(true);
         } else {
-            console.error("Error accepting / deleting the friend request: " + response.status);
+            console.error("Error checking banlist status: " + response.status);
         }
     } catch (error) {
         console.error("Error occurred while checking banlist status:", error);
@@ -32,7 +32,7 @@ export async function fetchWarnlistStatus() {
             warnReportEntryData.set(data?.entry);
             checkedForWarning.set(true);
         } else {
-            console.error("Error accepting / deleting the friend request: " + response.status);
+            console.error("Error checking warnlist status: " + response.status);
         }
     } catch (error) {
         console.error("Error occurred while checking banlist status:", error);

@@ -24,6 +24,7 @@
 	import { ChevronDown, ChevronUp } from "lucide-svelte";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { fetchBlacklistStatus, fetchWarnlistStatus } from "$lib/utils/checkBanStatus";
+	import { get } from "svelte/store";
 
 	let friendsRefreshInterval;
 
@@ -126,16 +127,18 @@
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Duel Divisions</h2>
 	</div>
-	<div class="infoContainer">
-		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
-		<p>
-			You are currently on the warnlist and under close observation for "{get(warnReportEntryData).reason}" until {get(
-				warnReportEntryData,
-			).expires_at
-				? new Date(get(banReportEntryData).expires_at).toLocaleDateString()
-				: "forever"}. Please contact the moderators on Discord if you think this is a mistake.
-		</p>
-	</div>
+	{#if $warnReportEntryData}
+		<div class="infoContainer">
+			<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+			<p>
+				You are currently on the warnlist and under close observation for "{get(warnReportEntryData)?.reason}" until {get(
+					warnReportEntryData,
+				).expires_at
+					? new Date(get(warnReportEntryData)?.expires_at).toLocaleDateString()
+					: "forever"}. Please contact the moderators on Discord if you think this is a mistake.
+			</p>
+		</div>
+	{/if}
 	<div class="infoContainer">
 		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
 		<p>
