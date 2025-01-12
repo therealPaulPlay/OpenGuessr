@@ -1,5 +1,5 @@
 <script>
-	import { PlusCircle, Unplug, Swords, ContactRound } from "lucide-svelte";
+	import { PlusCircle, Unplug, Swords, ContactRound, TriangleAlert } from "lucide-svelte";
 	import { friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import {
@@ -68,6 +68,18 @@
 	<div class="headerContainer">
 		<h1 class="header">Multiplayer</h1>
 	</div>
+	{#if $warnReportEntryData}
+		<div class="infoContainer warnInfo" transition:slide>
+			<TriangleAlert color="white" strokeWidth={2.5} class="infoIcon triangleAlertMarginRight" />
+			<p>
+				You are currently on the warnlist and under close observation for "{get(warnReportEntryData)?.reason}". Please
+				contact the moderators on Discord if you think this is a mistake. Warnings can quickly turn into bans if ignored
+				in order to keep the game a safe place. This warning will expire on {get(warnReportEntryData).expires_at
+					? new Date(get(warnReportEntryData)?.expires_at).toLocaleDateString()
+					: "forever"}.
+			</p>
+		</div>
+	{/if}
 	<div class="playBox">
 		<div class="groupPartyButtons">
 			<h3 class="playButtonsHeader">Custom</h3>
@@ -127,18 +139,6 @@
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Duel Divisions</h2>
 	</div>
-	{#if $warnReportEntryData}
-		<div class="infoContainer">
-			<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
-			<p>
-				You are currently on the warnlist and under close observation for "{get(warnReportEntryData)?.reason}" until {get(
-					warnReportEntryData,
-				).expires_at
-					? new Date(get(warnReportEntryData)?.expires_at).toLocaleDateString()
-					: "forever"}. Please contact the moderators on Discord if you think this is a mistake.
-			</p>
-		</div>
-	{/if}
 	<div class="infoContainer">
 		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
 		<p>
@@ -304,6 +304,10 @@
 		margin-bottom: 15px;
 	}
 
+	.warnInfo {
+		flex-wrap: wrap;
+	}
+
 	.divisionLeaderboardError {
 		margin-inline: auto;
 		opacity: 0.5;
@@ -355,6 +359,13 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
+	}
+
+	:global(.triangleAlertMarginRight) {
+		margin-right: auto;
+		margin-bottom: 5px;
+		width: 25px;
+		height: 25px;
 	}
 
 	.sectionButton {
