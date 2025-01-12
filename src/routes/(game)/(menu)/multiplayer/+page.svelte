@@ -2,7 +2,13 @@
 	import { PlusCircle, Unplug, Swords, ContactRound } from "lucide-svelte";
 	import { friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { checkedForBan, isAuthenticated, isBanned, reportEntryData } from "$lib/stores/accountStore";
+	import {
+		checkedForBan,
+		isAuthenticated,
+		isBanned,
+		banReportEntryData,
+		warnReportEntryData,
+	} from "$lib/stores/accountStore";
 	import { loadedFriendsData, hostStage } from "$lib/stores/context-specific/multiplayerStore";
 	import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
 	import { loadFriends, removeFriend, sendMatchInvite } from "$lib/logic/friendAPI";
@@ -17,7 +23,7 @@
 	import { getEloLeaderboard } from "$lib/logic/userAPI";
 	import { ChevronDown, ChevronUp } from "lucide-svelte";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
-	import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
+	import { fetchBlacklistStatus, fetchWarnlistStatus } from "$lib/utils/checkBanStatus";
 
 	let friendsRefreshInterval;
 
@@ -31,8 +37,9 @@
 			loadFriends();
 		}, 15000);
 
-		// Check blacklist if logged in and not already (async)
+		// Check blacklist & warnlist if logged in and not already (async)
 		fetchBlacklistStatus();
+		fetchWarnlistStatus();
 	});
 
 	onDestroy(() => {
@@ -118,6 +125,16 @@
 	</div>
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Duel Divisions</h2>
+	</div>
+	<div class="infoContainer">
+		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+		<p>
+			You are currently on the warnlist and under close observation for "{get(warnReportEntryData).reason}" until {get(
+				warnReportEntryData,
+			).expires_at
+				? new Date(get(banReportEntryData).expires_at).toLocaleDateString()
+				: "forever"}. Please contact the moderators on Discord if you think this is a mistake.
+		</p>
 	</div>
 	<div class="infoContainer">
 		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
