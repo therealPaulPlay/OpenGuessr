@@ -325,7 +325,7 @@
 		margin-top: 15px;
 		overflow: hidden;
 		overflow-y: auto;
-		max-height: 280px;
+		max-height: 285px;
 		scrollbar-width: none;
 	}
 
