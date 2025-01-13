@@ -64,7 +64,7 @@
 	}
 
 	.creditNote {
-		opacity: 0.6;
+		opacity: 0.65;
 		padding: 50px;
 		padding-top: 0px;
 		padding-bottom: 20px;
@@ -103,7 +103,7 @@
 		width: 100%;
 		text-align: center;
 		font-size: 75px;
-		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 0.9) 50%, rgba(255, 255, 255, 0.5) 100%);
+		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
 		mask-size: 100% 100%;
 		mask-repeat: no-repeat;
 		padding-inline: 30px;
