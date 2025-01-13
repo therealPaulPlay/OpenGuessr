@@ -1,8 +1,14 @@
 <script>
-	import { PlusCircle, Unplug, Swords, ContactRound } from "lucide-svelte";
+	import { PlusCircle, Unplug, Swords, ContactRound, TriangleAlert } from "lucide-svelte";
 	import { friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { checkedForBan, isAuthenticated, isBanned, reportEntryData } from "$lib/stores/accountStore";
+	import {
+		checkedForBan,
+		isAuthenticated,
+		isBanned,
+		banReportEntryData,
+		warnReportEntryData,
+	} from "$lib/stores/accountStore";
 	import { loadedFriendsData, hostStage } from "$lib/stores/context-specific/multiplayerStore";
 	import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
 	import { loadFriends, removeFriend, sendMatchInvite } from "$lib/logic/friendAPI";
@@ -17,7 +23,8 @@
 	import { getEloLeaderboard } from "$lib/logic/userAPI";
 	import { ChevronDown, ChevronUp } from "lucide-svelte";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
-	import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
+	import { fetchBlacklistStatus, fetchWarnlistStatus } from "$lib/utils/checkBanStatus";
+	import { get } from "svelte/store";
 
 	let friendsRefreshInterval;
 
@@ -31,8 +38,9 @@
 			loadFriends();
 		}, 15000);
 
-		// Check blacklist if logged in and not already (async)
+		// Check blacklist & warnlist if logged in and not already (async)
 		fetchBlacklistStatus();
+		fetchWarnlistStatus();
 	});
 
 	onDestroy(() => {
@@ -60,6 +68,18 @@
 	<div class="headerContainer">
 		<h1 class="header">Multiplayer</h1>
 	</div>
+	{#if $warnReportEntryData}
+		<div class="infoContainer warnInfo" transition:slide>
+			<TriangleAlert color="white" strokeWidth={2.5} class="infoIcon triangleAlertMarginRight" />
+			<p>
+				You are currently on the warnlist and under close observation for "{get(warnReportEntryData)?.reason}". Please
+				contact the moderators on Discord if you think this is a mistake. Warnings can quickly turn into bans if ignored
+				in order to keep the game a safe place. This warning will expire on {get(warnReportEntryData).expires_at
+					? new Date(get(warnReportEntryData)?.expires_at).toLocaleDateString()
+					: "forever"}.
+			</p>
+		</div>
+	{/if}
 	<div class="playBox">
 		<div class="groupPartyButtons">
 			<h3 class="playButtonsHeader">Custom</h3>
@@ -284,6 +304,10 @@
 		margin-bottom: 15px;
 	}
 
+	.warnInfo {
+		flex-wrap: wrap;
+	}
+
 	.divisionLeaderboardError {
 		margin-inline: auto;
 		opacity: 0.5;
@@ -301,7 +325,7 @@
 		margin-top: 15px;
 		overflow: hidden;
 		overflow-y: auto;
-		max-height: 280px;
+		max-height: 285px;
 		scrollbar-width: none;
 	}
 
@@ -335,6 +359,13 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
+	}
+
+	:global(.triangleAlertMarginRight) {
+		margin-right: auto;
+		margin-bottom: 5px;
+		width: 25px;
+		height: 25px;
 	}
 
 	.sectionButton {
