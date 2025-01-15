@@ -11,7 +11,6 @@ import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupSt
 import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { mapHovered } from "$lib/stores/context-specific/mapStore.js";
-
 import { get } from "svelte/store";
 
 // Google Maps init --------------------------------------------------------------------------------------

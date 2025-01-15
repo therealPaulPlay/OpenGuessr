@@ -72,9 +72,9 @@
 		<div class="infoContainer warnInfo" transition:slide>
 			<TriangleAlert color="white" strokeWidth={2.5} class="infoIcon triangleAlertMarginRight" />
 			<p>
-				You are currently on the warnlist and under close observation for "{get(warnReportEntryData)?.reason}". Please
-				contact the moderators on Discord if you think this is a mistake. Warnings can quickly turn into bans if ignored
-				in order to keep the game a safe place. This warning will expire on {get(warnReportEntryData).expires_at
+				You are currently on the warnlist and under close observation for "{get(warnReportEntryData)?.reason?.trim()}".
+				Please contact the moderators on Discord if you think this is a mistake. Warnings can quickly turn into bans if
+				ignored in order to keep the game a safe place. This warning will expire on {get(warnReportEntryData).expires_at
 					? new Date(get(warnReportEntryData)?.expires_at).toLocaleDateString()
 					: "forever"}.
 			</p>
