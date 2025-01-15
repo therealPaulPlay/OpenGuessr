@@ -5,6 +5,7 @@
 	import { profileData } from "$lib/stores/context-specific/profileStore";
 	import { setProfileBadge } from "$lib/utils/updateProfileData";
 	import { playSound } from "$lib/utils/soundManager";
+	import { onMount } from "svelte";
 
 	const badges = {
 		expBadge1: {
@@ -92,6 +93,14 @@
 			stage: "Developer",
 		},
 	};
+
+	// Reset badge that doesn't exist
+	onMount(() => {
+		if (!badges[id]) {
+			id = "expBadge1";
+			console.warn("This badge does not exist. Resetting to badge that does exist.");
+		}
+	});
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -100,7 +109,7 @@
 	{id}
 	role="button"
 	tabindex="0"
-	class="badge {'badgeStage' + badges[id].stage}"
+	class="badge {'badgeStage' + badges[id]?.stage}"
 	class:badgeLocked={!unlocked && !display}
 	style:pointer-events={Boolean(interactive) ? "auto" : "none"}
 	onclick={() => {
@@ -113,7 +122,7 @@
 		}
 	}}
 >
-	{badges[id].title}
+	{badges[id]?.title}
 	<div class:badgeSelected={$selectedBadge == id && !display}></div>
 </div>
 
