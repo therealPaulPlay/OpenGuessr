@@ -95,7 +95,7 @@
 					<img
 						id="selectedProfilePin"
 						alt="map pin"
-						src={`/img/your_marker${$profileData?.pin || 0}.png`}
+						src={`/img/your_marker${Number($profileData?.pin) || 0}.png`}
 						style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
 						onclick={() => {
 							playSound("basic_button");
