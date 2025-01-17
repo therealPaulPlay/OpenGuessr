@@ -28,15 +28,15 @@ export function transitionToStart() {
 
     setTimeout(socialPopupProbability, 650);
 
+    if (get(multiplayer)) clearAutoSkipTimeout();
     // Notify peers that the next round has begun
     if (get(isHost) && get(multiplayer)) {
-      clearAutoSkipTimeout();
       sendMessageToAll("closeResultScreen");
       showMultiplayerRoundResults(); // Show Overlay for peers and host
     }
 
     shrinkMapIfMobile();
-    
+
     if (get(crazyGames)) potentialCrazyGamesAd(); // Crazy Games Ad
 
   } else {

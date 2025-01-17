@@ -90,7 +90,7 @@ function setMultiplayerUI() {
     if (get(multiplayer)) {
         mapModeIndicatorVisible.set(true);
         leaveFunction.set(() => {
-            showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound, false);
+            showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
             playSound("leave_round");
         });
 
@@ -134,6 +134,7 @@ function endMultiplayerRound() {
         if (get(isHost)) {
             clearTimeout(endMultiplayerRoundIfGuessMissing);
             sendMessageToAll("roundOver");
+
             // Continue button will be disabled, whenever the text contains the word "Wait" - no pointer events none necessary here
             let skipTimeout = playingDuels ? 5000 : 2000;
             continueText.set("Wait " + (skipTimeout / 1000) + "s...");
@@ -141,7 +142,7 @@ function endMultiplayerRound() {
             // After 2 seconds (or 5 for duels), enable the skip functionality
             setTimeout(function () {
                 continueText.set("Continue");
-            }, skipTimeout)
+            }, skipTimeout);
 
             // After 10 seconds, skip automatically to not let peers wait too long in Duels
             if (playingDuels) {
@@ -150,8 +151,17 @@ function endMultiplayerRound() {
 
         } else {
             continueText.set("Waiting..."); // Also disables the continue button (if "wait" is included in text)
+            if (playingDuels) {
+                autoSkipResult = setTimeout(() => {
+                    showConfirmPopup("No response from host", "It seems that the host has disconnected silently - likely a WebRTC issue. Do you want to leave (penalty-free)?", () => {
+                        removeRankedLeavePenalty();
+                        leaveMultiplayerRound();
+                    });
+                }, 15000);
+            }
         }
 
+        // For peers and host
         if (!lateJoinedWaiting) enableResultScreen(get(mapPinLat), get(mapPinLng));
         try { multiplayerTimer.stopTimer(); } catch { }; // stop multiplayer timer
         roundEnded = true;
@@ -743,7 +753,7 @@ export async function joinRoom(code) {
 
     code = code.replaceAll(" ", ""); // Remove whitespaces
     code = code.toLowerCase(); // Ensure lowercase
-    
+
     isHost.set(false);
     multiplayerFirstRoundPlayed = false;
     multiplayerStatus.set("Attempting join...");
@@ -809,9 +819,7 @@ export async function joinRoom(code) {
             showMultiplayerOverlay(true, "Results from round " + roundIndex);
         }
 
-        if (data.type === "updateConnectedPlayers") {
-            connectedPlayers.set(data.content);
-        }
+        if (data.type === "updateConnectedPlayers") connectedPlayers.set(data.content);
 
         if (data.type === "start") {
             coordsFromHost.set(data.content.coordinates);
@@ -825,26 +833,18 @@ export async function joinRoom(code) {
             multiplayerOverlayCountdown();
         }
 
-        if (data.type === "roundOver") {
-            endMultiplayerRound();
-        }
+        if (data.type === "roundOver") endMultiplayerRound();
 
-        if (data.type === "guessesArray") {
-            multiplayerGuessesLocationsArray.set(data.content);
-        }
+        if (data.type === "guessesArray") multiplayerGuessesLocationsArray.set(data.content);
 
-        if (data.type === "chat") {
-            addToChat(data.content);
-        }
+        if (data.type === "chat") addToChat(data.content);
 
         if (data.type === "teamMarkers") {
             teamMarkerArray = data.content;
             if (get(teamAmount) > 1) { updateMinimapWithTeamMarkers(teamMarkerArray) };
         }
 
-        if (data.type === "closeResultScreen") {
-            transitionToStart();
-        }
+        if (data.type === "closeResultScreen") transitionToStart();
 
         if (data.type === "rematch") {
             roundEnded = false;
@@ -853,9 +853,7 @@ export async function joinRoom(code) {
             roundIndex = 1;
         }
 
-        if (data.type === "timeReduce") {
-            showTimeReduceOverlay(data.content, multiplayerHasAlreadyGuessed); // only show the warning overlay if player has not already guessed
-        }
+        if (data.type === "timeReduce") showTimeReduceOverlay(data.content, multiplayerHasAlreadyGuessed); // only show the warning overlay if player has not already guessed
     });
 
     // Event listener for Connection closed
