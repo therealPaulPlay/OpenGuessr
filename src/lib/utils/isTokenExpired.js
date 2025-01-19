@@ -22,8 +22,7 @@ export function isTokenExpired(token) {
     }
 
     catch {
-        expired = false;
-        return expired;
+        return false;
     }
 
 }
