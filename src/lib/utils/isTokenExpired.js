@@ -19,10 +19,7 @@ export function isTokenExpired(token) {
         const { exp } = JSON.parse(jsonPayload);
         const expired = Date.now() >= exp * 1000;
         return expired;
-    }
-
-    catch {
+    } catch {
         return false;
     }
-
 }
