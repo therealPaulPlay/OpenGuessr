@@ -24,7 +24,6 @@ export function loadAndInitializeLibrary(url, globalVar, initFunction) {
         };
 
         script.onerror = () => reject(new Error(`Failed to load ${url}`));
-
         document.head.appendChild(script);
     });
 }
