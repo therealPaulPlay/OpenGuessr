@@ -176,7 +176,7 @@
 					<p class="slightBottomMargin">Toggle Fullscreen:</p>
 					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
 						<span class="fullscreenIcon">
-							<Scan size="17" />
+							<Scan size="17" strokeWidth={3} />
 						</span>
 						<span id="fullscreenText">{fullscreenButtonText}</span>
 					</button>
