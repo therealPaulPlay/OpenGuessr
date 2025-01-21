@@ -24,6 +24,7 @@ import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
 import { generateDuelUUID, sendDuelDivisionResult, checkRankedLeavePenalty, removeRankedLeavePenalty } from "$lib/utils/duelDivisionFunctions";
 import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
+import { generateFunnyGuestName, generateRandomCode } from "$lib/utils/codeGenerationUtil";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
 import { changeCategory } from "$lib/utils/changeCategory";
@@ -75,12 +76,8 @@ let restrictionsText = ["Standard", "NMPZ", "Grayscale", "Invert Colors", "Hue S
 let currentRestrictionIndex = 0;
 
 export function toggleMultiplayerRestriction() {
-    if (get(restrictionButtonText) == "Standard") {
-        currentRestrictionIndex = 1; // Start from the first restriction after standard
-    } else {
-        currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
-    }
-
+    if (get(restrictionButtonText) == "Standard") currentRestrictionIndex = 0; // Start from the beginning if text reset
+    currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
     multiplayerRestriction = restrictions[currentRestrictionIndex];
     restrictionButtonText.set(restrictionsText[currentRestrictionIndex]);
 }
@@ -90,15 +87,13 @@ function setMultiplayerUI() {
     if (get(multiplayer)) {
         mapModeIndicatorVisible.set(true);
         leaveFunction.set(() => {
-            showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound, false);
+            showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
             playSound("leave_round");
         });
 
         modeText.set("Multiplayer (Awaiting info..)");
         chatVisible.set(true);
-
-        // disable result screen if it is open (edge case)
-        disableResultScreen();
+        disableResultScreen(); // disable result screen if it is open (edge case)
     } else {
         mapModeIndicatorVisible.set(false);
         leaveFunction.set();
@@ -110,9 +105,9 @@ function setMultiplayerUI() {
 let endMultiplayerRoundIfGuessMissing;
 
 export function multiplayerTimerExpired() {
-    confirmButtonClicks(); //only do this if the player actually hasnt guessed yet...
+    confirmButtonClicks(); // Only do this if the player actually hasnt guessed yet...
 
-    // when the timer expires, but a peer doesn't respond by executing confirmButtonCliks --> still end the round after 2000ms
+    // When the timer expires, but a peer doesn't respond by executing confirmButtonCliks --> still end the round after 2000ms
     if (get(isHost)) {
         endMultiplayerRoundIfGuessMissing = setTimeout(function () {
             endMultiplayerRound();
@@ -134,6 +129,7 @@ function endMultiplayerRound() {
         if (get(isHost)) {
             clearTimeout(endMultiplayerRoundIfGuessMissing);
             sendMessageToAll("roundOver");
+
             // Continue button will be disabled, whenever the text contains the word "Wait" - no pointer events none necessary here
             let skipTimeout = playingDuels ? 5000 : 2000;
             continueText.set("Wait " + (skipTimeout / 1000) + "s...");
@@ -141,7 +137,7 @@ function endMultiplayerRound() {
             // After 2 seconds (or 5 for duels), enable the skip functionality
             setTimeout(function () {
                 continueText.set("Continue");
-            }, skipTimeout)
+            }, skipTimeout);
 
             // After 10 seconds, skip automatically to not let peers wait too long in Duels
             if (playingDuels) {
@@ -150,8 +146,17 @@ function endMultiplayerRound() {
 
         } else {
             continueText.set("Waiting..."); // Also disables the continue button (if "wait" is included in text)
+            if (playingDuels) {
+                autoSkipResult = setTimeout(() => {
+                    showConfirmPopup("No response from host", "It seems that the host has disconnected silently - likely a WebRTC issue. Do you want to leave (penalty-free)?", () => {
+                        removeRankedLeavePenalty();
+                        leaveMultiplayerRound();
+                    });
+                }, 15000);
+            }
         }
 
+        // For peers and host
         if (!lateJoinedWaiting) enableResultScreen(get(mapPinLat), get(mapPinLng));
         try { multiplayerTimer.stopTimer(); } catch { }; // stop multiplayer timer
         roundEnded = true;
@@ -228,24 +233,7 @@ export function updatePeerDataScore(peerId, addScore) {
     }
 }
 
-// Assign Name or Alias  ---------------------------------------------------------------------------------------------------------------------------
 let roundIndex = 1; //the index of the current round, starts with the first round
-
-function generateRandomCode(length) {
-    const characters = "abcdefghijklmnopqrstuvwxyz0123456789";
-    let code = '';
-    for (let i = 0; i < length; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        code += characters.charAt(randomIndex);
-    }
-    return code;
-}
-
-function generateFunnyGuestName() {
-    let animals = ["Giraffe", "Ape", "Sloth", "Penguin", "Kangaroo", "Panda", "Zebra", "Llama", "Hippo", "Parrot", "Cat", "Dog", "Slug", "Crow", "Elephant"];
-    let randomAnimal = animals[Math.floor(Math.random() * animals.length)];
-    savedGuestName.set("Guest" + randomAnimal);
-}
 
 // Load PeerJS -----------------------------------------------------------------------------------------------------------------------
 let peer;
@@ -325,7 +313,7 @@ export function distributeChat(text) {
             addToChat(text);
             sendMessageToAll("chat", text);
         } else {
-            peerSendsHost("chat", text); //don't add it to the chat yet - the msg will be sent to the host, the host will then send it to all peers which will add it to chat
+            peerSendsHost("chat", text); // Don't add it to the chat yet - the msg will be sent to the host, the host will then send it to all peers which will add it to chat
         }
     } catch (error) {
         console.error("Error sending multiplayer message: " + error);
@@ -403,7 +391,7 @@ function showTimeReduceOverlay(time, hide) {
         timeReducedOverlay.set(false);
     }
 
-    if (time != 0) {
+    if (time) {
         try {
             if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > time) {
                 multiplayerTimer.stopTimer();
@@ -636,9 +624,7 @@ export function multiplayerRematch() {
 
     sendMessageToAll("rematch");
     startRoom();
-
-    // Disable the rematch button to avoid multiple clicks + give feedback
-    rematchButtonEnabled.set(false);
+    rematchButtonEnabled.set(false); // Prevent multiple clicks
 }
 
 // Start the first / next round (HOST)
@@ -651,7 +637,7 @@ export async function startMultiplayerRound(latitude, longitude) {
         goto("/"); // Go to home if starting from different page
         multiplayerFirstRoundPlayed = true;
     } else {
-        roundIndex++
+        roundIndex++;
         if (roundIndex > get(roundAmount)) {
             return;
         } else {
@@ -693,26 +679,6 @@ export function sendMessageToAll(type, message) {
     }
 }
 
-// Function to disconnect all peers and close the room
-function disconnectAllPeersAndCloseRoom() {
-    if (get(isHost)) {
-        if (peer && get(connectedPlayers).length > 1) {
-            try {
-                for (let peerId in peer.connections) {
-                    peer.connections[peerId].forEach(function (connection) {
-                        connection.close();
-                    });
-                }
-            } catch (error) {
-                console.error("Error disconnecting all peers in multiplayer js: " + error);
-            }
-        }
-    }
-
-    connectedPlayers.set([]);
-    updateTeamIndexes();
-}
-
 let teamMarkerArray = [];
 
 export function sendTeamMarkers(lat, long) {
@@ -728,10 +694,7 @@ export function sendTeamMarkers(lat, long) {
 
 function addReplaceTeamMarkers(id, lat, long, pinIndex, team) {
     const index = teamMarkerArray.findIndex(entry => entry[0] == id);
-    if (index !== -1) {
-        teamMarkerArray.splice(index, 1);
-    }
-
+    if (index !== -1) teamMarkerArray.splice(index, 1);
     teamMarkerArray.push([id, lat, long, pinIndex, team]);
 }
 
@@ -743,7 +706,7 @@ export async function joinRoom(code) {
 
     code = code.replaceAll(" ", ""); // Remove whitespaces
     code = code.toLowerCase(); // Ensure lowercase
-    
+
     isHost.set(false);
     multiplayerFirstRoundPlayed = false;
     multiplayerStatus.set("Attempting join...");
@@ -771,7 +734,6 @@ export async function joinRoom(code) {
         if (data.type === "initialize") {
             multiplayerStatus.set("Joined!");
             multiplayer.set(true);
-
             setMultiplayerUI();
             goto("/");
             linkJoinPopup.set(false);
@@ -809,9 +771,7 @@ export async function joinRoom(code) {
             showMultiplayerOverlay(true, "Results from round " + roundIndex);
         }
 
-        if (data.type === "updateConnectedPlayers") {
-            connectedPlayers.set(data.content);
-        }
+        if (data.type === "updateConnectedPlayers") connectedPlayers.set(data.content);
 
         if (data.type === "start") {
             coordsFromHost.set(data.content.coordinates);
@@ -825,26 +785,18 @@ export async function joinRoom(code) {
             multiplayerOverlayCountdown();
         }
 
-        if (data.type === "roundOver") {
-            endMultiplayerRound();
-        }
+        if (data.type === "roundOver") endMultiplayerRound();
 
-        if (data.type === "guessesArray") {
-            multiplayerGuessesLocationsArray.set(data.content);
-        }
+        if (data.type === "guessesArray") multiplayerGuessesLocationsArray.set(data.content);
 
-        if (data.type === "chat") {
-            addToChat(data.content);
-        }
+        if (data.type === "chat") addToChat(data.content);
 
         if (data.type === "teamMarkers") {
             teamMarkerArray = data.content;
             if (get(teamAmount) > 1) { updateMinimapWithTeamMarkers(teamMarkerArray) };
         }
 
-        if (data.type === "closeResultScreen") {
-            transitionToStart();
-        }
+        if (data.type === "closeResultScreen") transitionToStart();
 
         if (data.type === "rematch") {
             roundEnded = false;
@@ -853,9 +805,7 @@ export async function joinRoom(code) {
             roundIndex = 1;
         }
 
-        if (data.type === "timeReduce") {
-            showTimeReduceOverlay(data.content, multiplayerHasAlreadyGuessed); // only show the warning overlay if player has not already guessed
-        }
+        if (data.type === "timeReduce") showTimeReduceOverlay(data.content, multiplayerHasAlreadyGuessed); // only show the warning overlay if player has not already guessed
     });
 
     // Event listener for Connection closed
@@ -957,19 +907,11 @@ export function leaveMultiplayerRound() {
 
     // Disconnect all clients or Close the connection to the host
     if (get(isHost)) {
-        disconnectAllPeersAndCloseRoom(); // only executes if clients connected
         if (get(matchmakingActive)) deleteRoomCodeFromMatchmakingServer();
-
-    } else {
-        if (conn) {
-            conn.close();
-        }
     }
 
     if (peer) peer.destroy(); // Destroy Peer to ensure everything cleans up
-
-    // Stop Timer to prevent result screen
-    try { multiplayerTimer.stopTimer() } catch { }; // has to be in try catch
+    try { multiplayerTimer.stopTimer() } catch { }; // Result screen timer - has to be in try catch
 
     // Clear running intervals
     clearInterval(countdownInterval);
@@ -1008,7 +950,7 @@ export function leaveMultiplayerRound() {
     roomLocked.set(true);
     multiplayerGuessesLocationsArray.set([]);
     teamMarkerArray = [];
-    updateMinimapWithTeamMarkers(teamMarkerArray); // clean up multiplayer minimap markers
+    updateMinimapWithTeamMarkers([]); // clean up multiplayer minimap markers
     roundEnded = false;
     multiplayerHasAlreadyGuessed = false;
     matchmakingActive.set(false);
@@ -1016,11 +958,8 @@ export function leaveMultiplayerRound() {
     lateJoinedWaiting = false;
     highestMultiplayerSupporterLevel.set(0);
     friendDuel = false;
-
     if (localStorage.getItem("selectedMap") !== "country guesser") mapVisible.set(true);
-    leaveMatchButtonVisible.set(false);
-    rematchButtonVisible.set(false);
-    rematchButtonEnabled.set(true);
+    showEndscreenUI(false);
     setRestriction("standard");
 
     if (wasMultiplayerEnabled) checkGenerationTypeAndGenerate();
@@ -1044,29 +983,15 @@ function showEndscreenUI(show) {
     if (show) {
         leaveMatchButtonVisible.set(true); // show leave / end button
 
-        if (get(isHost)) {
-            if (!playingDuels || friendDuel) {
-                rematchButtonEnabled.set(true);
-                rematchButtonVisible.set(true);
-            }
+        if (get(isHost) && (!playingDuels || friendDuel)) {
+            rematchButtonEnabled.set(true);
+            rematchButtonVisible.set(true);
         }
     } else {
         rematchButtonVisible.set(false);
         leaveMatchButtonVisible.set(false);
+        rematchButtonEnabled.set(true);
     }
-}
-
-// Win / Lose animations
-function animateMultiplayerWin() {
-    setTimeout(() => {
-        playSound("win_sound");
-    }, 1000);
-}
-
-function animateMultiplayerLose() {
-    setTimeout(() => {
-        playSound("lose_sound");
-    }, 1000);
 }
 
 function showMultiplayerOverlay(show, title, lateJoin) {
@@ -1157,7 +1082,7 @@ function determineWinner(array, teams, teamsObject) {
             } else {
                 // Clear Winner
                 multiplayerOverlayTitle.set(winningPlayerData[1] + " won!");
-                localStorage.getItem("id") == winningPlayerData[5] ? animateMultiplayerWin() : animateMultiplayerLose();
+                localStorage.getItem("id") == winningPlayerData[5] ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
 
                 // Check if you won in duels or just played
                 if (playingDuels && !friendDuel) {

@@ -35,7 +35,6 @@
 			<p>To report a player, open their profile and click on "Report".</p>
 			<button
 				class="standardButton white growSearch"
-				style="margin-left: auto; margin-right: -2px;"
 				onclick={() => {
 					playSound("basic_button");
 					friendBrowserPopup.set(true);
