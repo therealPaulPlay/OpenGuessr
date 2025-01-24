@@ -1,5 +1,8 @@
 import { writable } from "svelte/store";
 
+// Peer
+export const peer = writable();
+
 // Settings
 export const isHost = writable(false);
 export const coordsFromHost = writable([35.7072457, 139.863412]); // Default panorama to prevent black screen flash on e.g. link join
@@ -7,7 +10,6 @@ export const highestMultiplayerSupporterLevel = writable(0);
 export const roundAmount = writable(3);
 export const roundLength = writable(60);
 export const teamAmount = writable(1);
-export const roomLocked = writable(true);
 
 // Matchmaking and Duels
 export const matchmakingActive = writable(false);

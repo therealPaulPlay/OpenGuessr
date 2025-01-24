@@ -17,6 +17,7 @@
 	"dependencies": {
 		"@sveltejs/adapter-static": "^3.0.6",
 		"leaflet": "^1.9.4",
-		"lucide-svelte": "^0.456.0"
+		"lucide-svelte": "^0.456.0",
+		"playpeerjs": "^1.0.8"
 	}
 }
