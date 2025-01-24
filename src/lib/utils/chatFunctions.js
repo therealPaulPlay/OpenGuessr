@@ -1,21 +1,30 @@
-import { chatHTML, savedGuestName } from "$lib/stores/context-specific/multiplayerStore";
-import { distributeChat } from "$lib/logic/multiplayerLogic";
+import { chatHTML, peer, savedGuestName } from "$lib/stores/context-specific/multiplayerStore";
 import { username } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
 import { filterProfanity } from "$lib/utils/profanityCheck";
 
 export function manuallySendChat(text) {
-    if (text) {
-        if (get(username) != null) {
-            distributeChat(get(username) + ": " + text);
-        } else {
-            distributeChat(get(savedGuestName) + ": " + text);
-        }
-    }
+    if (!text) return;
+    get(peer)?.updateStorage("chats", [...(get(peer)?.getStorage?.chats || []), get(username) || get(savedGuestName) + ": " + text]);
 }
 
 export function resetChat() {
     chatHTML.set("");
+    previousChats = [];
+}
+
+let previousChats = [];
+
+export function loadChat(chats) {
+    if (previousChats == chats) return;
+    previousChats = chats;
+    try {
+        chats.forEach(chat => {
+            addToChat(chat);
+        });
+    } catch (error) {
+        console.error("Error loading chat:", error);
+    }
 }
 
 // Add chat and check for profanity

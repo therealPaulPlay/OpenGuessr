@@ -21,10 +21,11 @@ import {
     highestMultiplayerSupporterLevel, peerId, isHost, coordsFromHost, teamAmount, roundAmount, roundLength, screenEscapeDisabled,
     duelRetryEnabled, multiplayerStatus, restrictionButtonText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay,
     multiplayerOverlayTitle, rematchButtonEnabled, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray, yourTeam,
-    multiplayerGuessesLocationsArray, matchmakingActive, peer
+    matchmakingActive, peer,
+    multiplayerGuessesLocationsArray
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
-import { resetChat, addToChat } from "$lib/utils/chatFunctions.js";
+import { resetChat, addToChat, loadChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
 import { generateDuelUUID, sendDuelDivisionResult, checkRankedLeavePenalty, removeRankedLeavePenalty } from "$lib/utils/duelDivisionFunctions";
@@ -63,6 +64,7 @@ function updateTeamIndexes() {
             index = (index % amountOfTeams) + 1; // Increment index circularly from 1 to amountOfTeams
         }
     });
+
     get(peer)?.updateStorage("players", newArray);
 }
 
@@ -172,46 +174,19 @@ let multiplayerHasAlreadyGuessed = false;
 
 export function multiplayerStateToGuessed() {
     if (!multiplayerHasAlreadyGuessed) {
-        distributeChat("System: " + (get(username) || get(savedGuestName)) + " guessed.");
+        get(peer)?.updateStorage("guessLocationsArray", [...get(peer)?.getStorage?.guessLocationsArray, [get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) || get(savedGuestName), get(peerId)]])
+        multiplayerHasGuessed(); // this substracts one from the total requried guesses (and maybe ends the round)
+        multiplayerHasAlreadyGuessed = true;
     }
-
-    if (get(isHost)) {
-        if (!multiplayerHasAlreadyGuessed) {
-            multiplayerGuessesLocationsArray.update((array) => {
-                return [...array, [get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) || get(savedGuestName), get(peerId)]];
-            });
-            multiplayerHasGuessed(); // this substracts one from the total requried guesses (and maybe ends the round)
-        }
-
-    } else {
-        if (!multiplayerHasAlreadyGuessed) {
-            peerSendsHost("guessed", {
-                lat: get(mapPinLat),
-                long: get(mapPinLng),
-                style: get(selectedPinIndex),
-                name: get(username) || get(savedGuestName)
-            });
-        }
-    }
-
-    multiplayerHasAlreadyGuessed = true;
 
     // Reduce time for the opponent in duels (after setting ..hasGuessed!)
-    if (playingDuels) {
-        if (get(isHost)) {
-            sendMessageToAll("timeReduce", 15); // 15 seconds
-            showTimeReduceOverlay(15, true); // reduce time for the host too
-        } else {
-            peerSendsHost("timeReduce", 15); // 15 seconds, the host will respond with a time reduce for everyone
-        }
-    }
+    if (playingDuels) get(peer)?.updateStorage("timeReduceOverlay", true);
 }
 
 let totalRequiredGuesses = 0;
 
 export function multiplayerHasGuessed() {
     if (get(multiplayer)) {
-        sendMessageToAll("guessesArray", get(multiplayerGuessesLocationsArray));
         totalRequiredGuesses--;
         if (totalRequiredGuesses <= 0) endMultiplayerRound();
     }
@@ -222,12 +197,10 @@ export function showMultiplayerRoundResults() {
     showMultiplayerOverlay(true, "Results from round " + roundIndex); // also load the results on the host's side
 }
 
-export function updatePeerDataScore(peerId, addScore) {
-
-    if (peerIndex != -1) {
-        const peerIndex = get(peer)?.getStorage?.players.findIndex(findPeer => findPeer[0] === get(peer)?.id);
+export function updatePeerScore(peerId, addScore) {
+    const peerIndex = get(peer)?.getStorage?.players.findIndex(findPeer => findPeer[0] === get(peer)?.id);
+    if (peerIndex !== -1) {
         const newScore = get(peer)?.getStorage?.players[peerIndex][3] + addScore;
-
         const players = get(peer)?.getStorage?.players;
         players[peerIndex][3] = newScore;
         get(peer)?.updateStorage("players", players);
@@ -264,6 +237,7 @@ export async function createPeerInstance() {
                 }
             }));
 
+            // Initialize and open peer
             await get(peer).init();
 
             // Register event listeners
@@ -272,23 +246,44 @@ export async function createPeerInstance() {
                 if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system (PlayPeerJS) reports an error.", error);
             });
             get(peer).onEvent('outgoingPeerConnected', () => {
-                get(peer)?.updateStorage("chats", [...(get(peer)?.getStorage?.chats || []), `System: ${get(username) || get(savedGuestName)} connected`]);
+                // Joined room successfully...
+                multiplayer.set(true);
+                linkJoinPopup.set(false);
+                matchmakingActive.set(false);
+                setMultiplayerUI();
+                goto("/");
+                get(peer)?.updateStorage("chats", [...(get(peer)?.getStorage?.chats || []), `System: ${get(username) || get(savedGuestName)} connected.`]);
+                get(peer)?.updateStorage("players", ...(get(peer)?.getStorage?.players || []), [get(peer)?.id, get(username) || get(savedGuestName), get(elo), 0, 1, localStorage.getItem("id"), get(selectedBadge)]);
+                if (get(peer)?.getStorage?.highestSupporterLevel < (get(supporterLevel) || 0)) get(peer)?.updateStorage("highestSupporterLevel", get(supporterLevel));
+            });
+            get(peer).onEvent('incomingPeerConnected', (id) => {
+                // New peer connected to host...
+                updateTeamIndexes();
+                if (get(matchmakingActive)) deleteRoomCodeFromMatchmakingServer(); // Delete roomcode from server
+                if (friendDuel || get(matchmakingActive)) startRoom(); // Immediately start on first connection
+            });
+            get(peer).onEvent('incomingPeerDisconnected', (id) => {
+                const disconnectedPlayer = get(peer)?.getStorage?.players?.find((item) => item[0] == id);
+                const disconnectedPlayerName = disconnectedPlayer[1] || "Unknown";
+                removeConnectedPeerById(id);
+                updateTeamIndexes();
+                get(peer)?.updateStorage("chats", [...(get(peer)?.getStorage?.chats || []), `System: ${disconnectedPlayerName} left.`]);
             });
             get(peer).onEvent('storageUpdate', (storage) => {
                 if (get(multiplayerOverlay) !== storage?.overlay) multiplayerOverlay.set(storage?.overlay);
                 get(peer)?.updateStorage("players", storage?.players);
+                loadChat(storage?.chats);
+                multiplayerGuessesLocationsArray.set(storage?.guessLocationsArray);
+                if (storage?.timeReduceOverlay !== get(timeReducedOverlay)) {
+                    if (!storage?.timeReduceOverlay) showTimeReduceOverlay(0, false);
+                    if (storage?.timeReduceOverlay) showTimeReduceOverlay(15, multiplayerHasAlreadyGuessed);
+                }
             });
 
             // Attach event listeners
             attachHostLogic();
 
-            resolve(get(peer).id)
-
-            // Resolve once the peer is open
-            peer.on('open', (id) => {
-                peerId.set(id); // Store the peer ID
-                resolve(peer); // Resolve the promise with the peer instance
-            });
+            resolve(get(peer).id);
         } catch (error) {
             console.error("Error creating peer instance:", error);
             reject(new Error("Failed to create peer instance."))
@@ -309,22 +304,6 @@ export function joinFromLink(roomcode) {
     console.log("Attempting join via Room Code Link:", roomcode);
     linkJoinPopup.set(true);
     joinRoom(roomcode);
-}
-
-// Chat -----------------------------------------------------------------------------------------------------
-
-// For peers and hosts, this is how you send messages
-export function distributeChat(text) {
-    try {
-        if (get(isHost)) {
-            addToChat(text);
-            sendMessageToAll("chat", text);
-        } else {
-            peerSendsHost("chat", text); // Don't add it to the chat yet - the msg will be sent to the host, the host will then send it to all peers which will add it to chat
-        }
-    } catch (error) {
-        console.error("Error sending multiplayer message: " + error);
-    }
 }
 
 // Find Duel Logic -------------------------------------------------------------------------------------------------------------------------
@@ -390,12 +369,14 @@ function showTimeReduceOverlay(time, hide) {
 
                 timeReduceOverlayTimer = setTimeout(() => {
                     timeReducedOverlay.set(false);
+                    get(peer)?.updateStorage("timeReducedOverlay", false);
                 }, 3000)
             }
         } catch { console.warn("Error showing time reduce overlay: " + error) }
 
     } else {
         timeReducedOverlay.set(false);
+        get(peer)?.updateStorage("timeReducedOverlay", false);
     }
 
     if (time) {
@@ -430,94 +411,42 @@ function attachHostLogic() {
 
             // Event listener for when the connection is open
             incomingConn.on('open', function () {
-                connectedPlayers.update((array) => {
-                    array.push([incomingConn.peer, incomingConn.metadata.username, incomingConn.metadata.elo, incomingConn.metadata.score, 1, incomingConn.metadata.id, incomingConn.metadata.badge]);
-                    return array;
-                });
-
-                if (incomingConn.metadata.supporterLevel > get(highestMultiplayerSupporterLevel)) {
-                    highestMultiplayerSupporterLevel.set(incomingConn.metadata.supporterLevel);
-                }
-
-                updateTeamIndexes();
 
                 const initialMessage = {
                     type: "initialize",
                     content: {
-                        players =[],
+                        players: [[get(peer)?.id, get(username) || get(savedGuestName), get(elo), 0, 1, localStorage.getItem("id"), get(selectedBadge)]],
                         roundAmount: get(roundAmount),
                         currentRound: roundIndex,
                         roundLength: get(roundLength),
                         teamAmount: get(teamAmount),
+                        highestSupporterLevel: get(supporterLevel) || 0,
                         team: getTeamFromPeerId(incomingConn.peer),
                         multiplayerRestriction: multiplayerRestriction,
                         category: localStorage.getItem("selectedCategory") || "standard",
                         mapLocationsArray: get(currentlyLoadedLocationsArray),
+                        guessLocationsArray: [],
                         uuid: duelUUID,
                         firstRoundPlayed: false,
                         chats: [],
                         overlay: true,
+                        timeReduceOverlay: false,
                         overlayTitle = "Waiting...",
                     }
                 }
-
-                // Send messages
-                incomingConn.send(initialMessage);
-
-                if (get(matchmakingActive)) deleteRoomCodeFromMatchmakingServer(); // Delete roomcode from server
-                if (friendDuel || get(matchmakingActive)) startRoom(); // Immediately start on first connection
             });
 
             // Receive messages
             incomingConn.on('data', function (data) {
-                if (data.type == "guessed") {
-                    multiplayerGuessesLocationsArray.update((array) => {
-                        return [...array, [data.content.lat, data.content.long, data.content.style, data.content.name, incomingConn.peer]];
-                    });
-
-                    // This updates the array for all peers too
-                    multiplayerHasGuessed();
-                }
-
-                if (data.type == "score") {
-                    updatePeerDataScore(incomingConn.peer, data.content);
-                }
-
-                if (data.type == "chat") {
-                    distributeChat(data.content);
-                }
-
                 if (data.type == "teamMarkers") {
                     addReplaceTeamMarkers(data.content.id, data.content.lat, data.content.long, data.content.pin, data.content.team);
                     sendMessageToAll("teamMarkers", teamMarkerArray);
                     if (get(teamAmount) > 1) { updateMinimapWithTeamMarkers(teamMarkerArray) };
                 }
-
-                if (data.type == "timeReduce") {
-                    sendMessageToAll("timeReduce", data.content); // send time reduce to everyone if one peer has guessed
-
-                    if (!multiplayerHasAlreadyGuessed) {
-                        showTimeReduceOverlay(data.content, false);
-                    } else {
-                        showTimeReduceOverlay(data.content, true); // only show the warning overlay if player has not already guessed
-                    }
-                }
             });
 
             function handlePeerDisconnect() {
-                removeConnectedPeerById(incomingConn.peer);
-                updateTeamIndexes();
-                distributeChat("System: " + incomingConn.metadata.username + " left.");
-
-                // if peer disconnects pre-game, update the waiting screen
-                if (!get(peer)?.getStorage?.firstRoundPlayed) {
-                    sendMessageToAll("showPlayersArray", get(peer)?.getStorage?.players);
-                    showMultiplayerOverlay(true, "Waiting...");
-                } else {
-                    // if already in round, count it as a guess & update players data
-                    multiplayerHasGuessed();
-                    sendMessageToAll("updateConnectedPlayers", get(peer)?.getStorage?.players);
-                }
+                multiplayerHasGuessed();
             }
 
             // Peer close (disconnect event would be from signalling server - not from host)
@@ -530,12 +459,6 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     await createPeerInstance(); // Get new peer instance
     multiplayerStatus.set("Room created. Please wait <10s");
     isHost.set(true);
-
-    // Add yourself (host) to the overview
-    connectedPlayers.update((array) => {
-        array.push([get(peerId), get(username) || get(savedGuestName), get(elo), 0, 1, localStorage.getItem("id"), get(selectedBadge)]);
-        return array;
-    });
 
     // Check if map is valid for multiplayer
     if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
@@ -556,6 +479,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
 
     // Generate random duel UUID (only used in duels)
     duelUUID = generateDuelUUID();
+    get(peer)?.updateStorage("duelUUID", duelUUID);
 }
 
 // Start room (HOST function)
@@ -575,13 +499,12 @@ export function multiplayerRematch() {
     get(peer)?.updateStorage("firstRoundPlayed", false);
     roundIndex = 1;
 
-    connectedPlayers.update((array) => {
-        const newArray = [...array];
-        newArray.forEach((element) => {
-            element[3] = 0; // Reset scores
-        });
-        return newArray;
+    // Reset player scores
+    const playersArray = get(peer)?.getStorage?.players;
+    playersArray.forEach((element) => {
+        element[3] = 0;
     });
+    get(peer)?.updateStorage("players", playersArray);
 
     sendMessageToAll("rematch");
     startRoom();
@@ -590,7 +513,7 @@ export function multiplayerRematch() {
 
 // Start the first / next round (HOST)
 export async function startMultiplayerRound(latitude, longitude) {
-    multiplayerGuessesLocationsArray.set([]);
+    get(peer)?.updateStorage("guessLocationsArray", []); // Reset
     teamMarkerArray = [];
     totalRequiredGuesses = get(peer)?.getStorage?.players.length; // this is being set here as well as after the countdown (in case sb latejoins)
 
@@ -602,13 +525,12 @@ export async function startMultiplayerRound(latitude, longitude) {
         if (roundIndex > get(roundAmount)) {
             return;
         } else {
-            // if it is not the first round, wait to show the results properly
-            await new Promise(resolve => { setTimeout(resolve, 1500); });
+            await new Promise(resolve => { setTimeout(resolve, 1500); }); // if it is not the first round, wait to show the results properly
         }
     }
 
     sendMessageToAll("start", { coordinates: [latitude, longitude], highestSupporterLevel: get(highestMultiplayerSupporterLevel) });
-    distributeChat("System: Starting Round " + roundIndex);
+    get(peer)?.updateStorage("chats", [...(get(peer)?.getStorage?.chats || []), `System: Starting round ${roundIndex}.`]);
     multiplayerOverlayCountdown(); // For Host
 }
 
@@ -663,42 +585,20 @@ function addReplaceTeamMarkers(id, lat, long, pinIndex, team) {
 let conn; // the connection data
 
 export async function joinRoom(code) {
-    await getPeer();
+    await createPeerInstance();
 
     code = code.replaceAll(" ", ""); // Remove whitespaces
     code = code.toLowerCase(); // Ensure lowercase
 
     isHost.set(false);
+
     get(peer)?.updateStorage("firstRoundPlayed", false);
     multiplayerStatus.set("Attempting join...");
-
-    const options = {
-        metadata: {
-            username: get(username) || get(savedGuestName),
-            elo: get(elo),
-            score: 0,
-            id: localStorage.getItem("id"),
-            badge: get(selectedBadge),
-            supporterLevel: get(supporterLevel)
-        },
-        reliable: true // WebRTC ordered mode
-    };
-
-    conn = peer.connect("openguessr_" + code, options);
-
-    // Event listener for when the connection is opened
-    conn.on('open', () => multiplayerStatus.set("Connection opened..."));
 
     // Receive messages
     conn.on('data', function (data) {
 
         if (data.type === "initialize") {
-            multiplayerStatus.set("Joined!");
-            multiplayer.set(true);
-            setMultiplayerUI();
-            goto("/");
-            linkJoinPopup.set(false);
-            matchmakingActive.set(false);
             roundAmount.set(data.content.roundAmount);
             roundLength.set(data.content.roundLength);
             teamAmount.set(data.content.teamAmount);
@@ -707,7 +607,6 @@ export async function joinRoom(code) {
             currentlyLoadedLocationsArray.set(data.content.mapLocationsArray); // For score and map zoom
             yourTeam.set(data.content.team);
             roundIndex = data.content.currentRound;
-            duelUUID = data.content.uuid;
 
             // Change own map to multiplayer map to adjust map + score
             changeCategory(hostMapCategory);
@@ -728,8 +627,6 @@ export async function joinRoom(code) {
 
         if (data.type === "roundOver") endMultiplayerRound();
 
-        if (data.type === "guessesArray") multiplayerGuessesLocationsArray.set(data.content);
-
         if (data.type === "teamMarkers") {
             teamMarkerArray = data.content;
             if (get(teamAmount) > 1) { updateMinimapWithTeamMarkers(teamMarkerArray) };
@@ -743,8 +640,6 @@ export async function joinRoom(code) {
             get(peer)?.updateStorage("firstRoundPlayed", true);
             roundIndex = 1;
         }
-
-        if (data.type === "timeReduce") showTimeReduceOverlay(data.content, multiplayerHasAlreadyGuessed); // only show the warning overlay if player has not already guessed
     });
 
     // Event listener for Connection closed
@@ -833,11 +728,9 @@ export function leaveMultiplayerRound() {
     // UI functions
     setMultiplayerUI();
     showMultiplayerOverlay(false);
-    showTimeReduceOverlay(0, true);
     resetChat();
 
     get(peer)?.updateStorage("players", []);
-    multiplayerGuessesLocationsArray.set([]);
     teamMarkerArray = [];
     updateMinimapWithTeamMarkers([]); // clean up multiplayer minimap markers
     roundEnded = false;
@@ -977,7 +870,7 @@ function determineWinner(array, teams, teamsObject) {
                 if (playingDuels && !friendDuel) {
                     const won = winningPlayerData[5] == localStorage.getItem("id");
                     won ? addDuelWon() : addDuelPlayed();
-                    sendDuelDivisionResult(won, duelUUID);
+                    sendDuelDivisionResult(won, get(peer)?.getStorage?.uuid);
                 }
             }
         }

@@ -17,7 +17,6 @@ export const matchmakingActive = writable(false);
 // Data
 export const multiplayerGuessesLocationsArray = writable([]);
 export const peerId = writable();
-export const connectedPlayers = writable([]); // Connected peers and the host, with a lot of data
 export const savedGuestName = writable("Guest (Default)");
 export const yourTeam = writable(1);
 

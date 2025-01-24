@@ -5,8 +5,8 @@ import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleSt
 import { setCheckNewHighestStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, freeSupporterBoostEnabled, supporterLevel, experience } from "$lib/stores/accountStore";
 import { streakText, showStreakDisplay, lastDistance, lastExperienceCalculationAborted, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
-import { isHost, peerId, highestMultiplayerSupporterLevel } from "$lib/stores/context-specific/multiplayerStore";
-import { updatePeerDataScore, peerSendsHost } from "$lib/logic/multiplayerLogic";
+import { isHost, peerId, highestMultiplayerSupporterLevel, peer } from "$lib/stores/context-specific/multiplayerStore";
+import { peerSendsHost, updatePeerScore } from "$lib/logic/multiplayerLogic";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
 import { setUserXP } from "$lib/utils/setUserXP";
@@ -170,9 +170,7 @@ export async function loadResultScreenXP(distance) {
             earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
             supporterMultiplier = calculatedXP.supporterMultiplier;
 
-            if (get(multiplayer)) {
-                get(isHost) ? updatePeerDataScore(get(peerId), earnedXP) : peerSendsHost("score", earnedXP);
-            }
+            if (get(multiplayer)) updatePeerScore(get(peer)?.id, earnedXP);
 
         } else if (get(competition)) {
             const calculatedXP = await calculateXPGain(distance, "standard");

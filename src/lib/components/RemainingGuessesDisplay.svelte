@@ -1,7 +1,7 @@
 <!-- For Multiplayer - Shows, who still hasn't guessed -->
 <script>
 	import {
-		connectedPlayers,
+		peer,
 		multiplayerGuessesLocationsArray,
 		peerId,
 	} from "$lib/stores/context-specific/multiplayerStore";
@@ -14,7 +14,7 @@
 
 	// Derive the players who haven't guessed yet
 	const remainingPlayers = $derived(
-		$connectedPlayers.filter((player) => {
+		$peer?.getStorage?.players?.filter((player) => {
 			const peerID = player[0];
 			return !$multiplayerGuessesLocationsArray.some((guess) => guess[4] === peerID);
 		}),

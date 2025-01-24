@@ -13,8 +13,8 @@
 		roundAmount,
 		roundLength,
 		peerId,
-		connectedPlayers,
 		restrictionButtonText,
+		peer,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { toggleMultiplayerRestriction, setupMultiplayerRoom, startRoom } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
@@ -22,7 +22,7 @@
 	import { goto } from "$app/navigation";
 	let teamsDisplayText = $state("");
 
-	connectedPlayers.subscribe(() => {
+	get(peer)?.onEvent("storageUpdate", () => {
 		buildTeamDisplayText();
 	});
 
@@ -34,7 +34,7 @@
 
 	function buildTeamDisplayText() {
 		const amountOfTeams = get(teamAmount); // Get the amount of teams from the store
-		const players = get(connectedPlayers); // Get the connected players from the store
+		const players = get(peer)?.getStorage?.players; // Get the connected players from the store
 		let teams = {}; // To store players by team
 		let noTeamPlayers = []; // To store players with no team
 
@@ -125,7 +125,7 @@
 			</div>
 			<div class="roomCreationModule multiplayerHostSettings teamsDisplay">
 				<p id="teamsDisplayText">{teamsDisplayText}</p>
-				<p id="smallJoinCounter">{$connectedPlayers?.length}</p>
+				<p id="smallJoinCounter">{get(peer)?.connectionCount + 1}</p>
 			</div>
 			{#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online)?.length >= 1}
 				<div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
@@ -191,7 +191,7 @@
 					id="multiplayerHost"
 					class="standardButton"
 					class:buttonDisabled={$hostStage == 2 &&
-						($connectedPlayers?.length < get(teamAmount) || $connectedPlayers?.length <= 1)}
+						(get(peer)?.connectionCount + 1 < get(teamAmount) || get(peer)?.connectionCount + 1 <= 1)}
 					onclick={() => {
 						playSound("basic_button");
 
