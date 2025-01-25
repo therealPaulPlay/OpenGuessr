@@ -5,7 +5,7 @@ import { filterProfanity } from "$lib/utils/profanityCheck";
 
 export function manuallySendChat(text) {
     if (!text) return;
-    get(peer)?.updateStorage("chats", [...(get(peer)?.getStorage?.chats || []), get(username) || get(savedGuestName) + ": " + text]);
+    get(peer)?.updateStorage("chats", "add", get(username) || get(savedGuestName) + ": " + text);
 }
 
 export function resetChat() {

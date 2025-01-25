@@ -65,7 +65,7 @@ function updateTeamIndexes() {
         }
     });
 
-    get(peer)?.updateStorage("players", newArray);
+    get(peer)?.updateStorage("players", newArray); // !TODO move into separate array to avoid sync overwriting
 }
 
 // Get Team from Peer ---------------------------------------------------------------------------------------------------------------------------------
@@ -174,7 +174,7 @@ let multiplayerHasAlreadyGuessed = false;
 
 export function multiplayerStateToGuessed() {
     if (!multiplayerHasAlreadyGuessed) {
-        get(peer)?.updateStorage("guessLocationsArray", [...get(peer)?.getStorage?.guessLocationsArray, [get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) || get(savedGuestName), get(peerId)]])
+        get(peer)?.updateStorageArray("guessLocationsArray", "add", [get(mapPinLat), get(mapPinLng), get(selectedPinIndex), get(username) || get(savedGuestName), get(peerId)]);
         multiplayerHasGuessed(); // this substracts one from the total requried guesses (and maybe ends the round)
         multiplayerHasAlreadyGuessed = true;
     }
@@ -203,7 +203,7 @@ export function updatePeerScore(peerId, addScore) {
         const newScore = get(peer)?.getStorage?.players[peerIndex][3] + addScore;
         const players = get(peer)?.getStorage?.players;
         players[peerIndex][3] = newScore;
-        get(peer)?.updateStorage("players", players);
+        get(peer)?.updateStorage("players", players); // !TODO move into separate score array to avoid sync issues
     }
 }
 
@@ -252,8 +252,8 @@ export async function createPeerInstance() {
                 matchmakingActive.set(false);
                 setMultiplayerUI();
                 goto("/");
-                get(peer)?.updateStorage("chats", [...(get(peer)?.getStorage?.chats || []), `System: ${get(username) || get(savedGuestName)} connected.`]);
-                get(peer)?.updateStorage("players", ...(get(peer)?.getStorage?.players || []), [get(peer)?.id, get(username) || get(savedGuestName), get(elo), 0, 1, localStorage.getItem("id"), get(selectedBadge)]);
+                get(peer)?.updateStorageArray("chats", "add", `System: ${get(username) || get(savedGuestName)} connected.`);
+                get(peer)?.updateStorageArray("players", "add", [get(peer)?.id, get(username) || get(savedGuestName), get(elo), 0, 1, localStorage.getItem("id"), get(selectedBadge)]);
                 if (get(peer)?.getStorage?.highestSupporterLevel < (get(supporterLevel) || 0)) get(peer)?.updateStorage("highestSupporterLevel", get(supporterLevel));
             });
             get(peer).onEvent('incomingPeerConnected', (id) => {
@@ -267,17 +267,19 @@ export async function createPeerInstance() {
                 const disconnectedPlayerName = disconnectedPlayer[1] || "Unknown";
                 removeConnectedPeerById(id);
                 updateTeamIndexes();
-                get(peer)?.updateStorage("chats", [...(get(peer)?.getStorage?.chats || []), `System: ${disconnectedPlayerName} left.`]);
+                get(peer)?.updateStorageArray("chats", "add", `System: ${disconnectedPlayerName} left.`);
             });
             get(peer).onEvent('storageUpdate', (storage) => {
                 if (get(multiplayerOverlay) !== storage?.overlay) multiplayerOverlay.set(storage?.overlay);
-                get(peer)?.updateStorage("players", storage?.players);
                 loadChat(storage?.chats);
                 multiplayerGuessesLocationsArray.set(storage?.guessLocationsArray);
                 if (storage?.timeReduceOverlay !== get(timeReducedOverlay)) {
                     if (!storage?.timeReduceOverlay) showTimeReduceOverlay(0, false);
                     if (storage?.timeReduceOverlay) showTimeReduceOverlay(15, multiplayerHasAlreadyGuessed);
                 }
+
+                // !TODO remove debug
+                console.log("Storage updated: " + get(peer)?.getStorage);
             });
 
             // Attach event listeners
@@ -399,8 +401,8 @@ function showTimeReduceOverlay(time, hide) {
 function removeConnectedPeerById(peerId) {
     const array = get(peer)?.getStorage?.players;
     const index = array.findIndex(entry => entry[0] === peerId);
-    if (index !== -1) array.splice(index, 1); // splice: startindex, deletecount (here 1)
-    get(peer).updateStorage("players", array);
+    const contentToRemove = array[index];
+    get(peer)?.updateStorageArray("players", "remove-matching", contentToRemove);
 }
 
 function attachHostLogic() {
@@ -530,7 +532,7 @@ export async function startMultiplayerRound(latitude, longitude) {
     }
 
     sendMessageToAll("start", { coordinates: [latitude, longitude], highestSupporterLevel: get(highestMultiplayerSupporterLevel) });
-    get(peer)?.updateStorage("chats", [...(get(peer)?.getStorage?.chats || []), `System: Starting round ${roundIndex}.`]);
+    get(peer)?.updateStorageArray("chats", "add" `System: Starting round ${roundIndex}.`);
     multiplayerOverlayCountdown(); // For Host
 }
 
@@ -730,7 +732,6 @@ export function leaveMultiplayerRound() {
     showMultiplayerOverlay(false);
     resetChat();
 
-    get(peer)?.updateStorage("players", []);
     teamMarkerArray = [];
     updateMinimapWithTeamMarkers([]); // clean up multiplayer minimap markers
     roundEnded = false;
