@@ -75,10 +75,10 @@ export async function loadResultMap(playersLat, playersLong) {
     // Handle multiplayer markers --------------------------------------------------------------------------
     if (get(multiplayer)) {
         get(multiplayerGuessesLocationsArray).forEach(function (element) {
-            let newMarkerLat = element[0];
-            let newMarkerLong = element[1];
-            let newMarkerPinIndex = element[2];
-            let associatedPlayerName = element[3];
+            let newMarkerLat = element.lat;
+            let newMarkerLong = element.long;
+            let newMarkerPinIndex = element.pin;
+            let associatedPlayerName = element.username;
 
             // Handle edge cases
             if (newMarkerLat == null || newMarkerLong == null || isNaN(newMarkerLat)) {

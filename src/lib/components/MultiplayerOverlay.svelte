@@ -3,13 +3,12 @@
 	import {
 		multiplayerOverlay,
 		multiplayerOverlayTitle,
-		rematchButtonEnabled,
 		rematchButtonVisible,
 		leaveMatchButtonVisible,
 		overlayTitleElement,
 		multiplayerTableArray,
 		teamAmount,
-		peerId,
+		peer,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import Badge from "$lib/components/Badge.svelte";
 	import { leaveMultiplayerRound, multiplayerRematch } from "$lib/logic/multiplayerLogic";
@@ -33,7 +32,7 @@
 					{#each team.players as [entryPeerId, username, elo, score, teamIndex, id, badge]}
 						<div
 							class="multiplayerOverlayEntry"
-							class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peerId)}
+							class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peer)?.id}
 							style:background-image={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
 						>
 							<div class="multiplayerEntryPlayerInfo">
@@ -63,7 +62,10 @@
 			{:else}
 				<!-- No teams version -->
 				{#each $multiplayerTableArray as [entryPeerId, username, elo, score, teamIndex, id, badge]}
-					<div class="multiplayerOverlayEntry" class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peerId)}>
+					<div
+						class="multiplayerOverlayEntry"
+						class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peer)?.id}
+					>
 						<div class="multiplayerEntryPlayerInfo">
 							<div
 								class="multiplayerEntryPlayerName"
@@ -95,7 +97,6 @@
 		<button
 			id="endMultiplayerRematchButton"
 			class="standardButton"
-			class:buttonDisabled={!$rematchButtonEnabled}
 			onclick={() => {
 				playSound("basic_button");
 				multiplayerRematch();
@@ -244,10 +245,5 @@
 
 	.multiplayerEntryPlayerScore {
 		margin-left: 10px;
-	}
-
-	.buttonDisabled {
-		opacity: 0.5;
-		pointer-events: none;
 	}
 </style>

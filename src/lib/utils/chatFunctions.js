@@ -5,21 +5,19 @@ import { filterProfanity } from "$lib/utils/profanityCheck";
 
 export function manuallySendChat(text) {
     if (!text) return;
-    get(peer)?.updateStorage("chats", "add", get(username) || get(savedGuestName) + ": " + text);
+    get(peer)?.updateStorageArray("chats", "add", (get(username) || get(savedGuestName)) + ": " + text);
 }
 
 export function resetChat() {
     chatHTML.set("");
-    previousChats = [];
 }
 
-let previousChats = [];
-
 export function loadChat(chats) {
-    if (previousChats == chats) return;
-    previousChats = chats;
+    // !TODO ensure that this doesn't run every storage update
+    resetChat();
+
     try {
-        chats.forEach(chat => {
+        chats.forEach((chat) => {
             addToChat(chat);
         });
     } catch (error) {

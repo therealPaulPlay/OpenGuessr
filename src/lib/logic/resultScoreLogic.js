@@ -5,8 +5,8 @@ import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleSt
 import { setCheckNewHighestStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, freeSupporterBoostEnabled, supporterLevel, experience } from "$lib/stores/accountStore";
 import { streakText, showStreakDisplay, lastDistance, lastExperienceCalculationAborted, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
-import { isHost, peerId, highestMultiplayerSupporterLevel, peer } from "$lib/stores/context-specific/multiplayerStore";
-import { peerSendsHost, updatePeerScore } from "$lib/logic/multiplayerLogic";
+import { peer } from "$lib/stores/context-specific/multiplayerStore";
+import { updatePeerScore } from "$lib/logic/multiplayerLogic";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
 import { setUserXP } from "$lib/utils/setUserXP";
@@ -163,14 +163,14 @@ export async function loadResultScreenXP(distance) {
 
         // XP calculation formulas -------------------------------------------------
         if (get(singleplayer) || get(multiplayer)) {
-            const adjustedSupporterLevel = get(multiplayer) ? get(highestMultiplayerSupporterLevel) : get(supporterLevel);
+            const adjustedSupporterLevel = get(multiplayer) ? get(peer)?.getStorage?.highestSupporterLevel : get(supporterLevel);
 
             const calculatedXP = await calculateXPGain(distance, selectedCategory, adjustedSupporterLevel, get(singleplayer) ? get(freeSupporterBoostEnabled) : undefined);
             earnedXP = calculatedXP.earnedXP;
             earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
             supporterMultiplier = calculatedXP.supporterMultiplier;
 
-            if (get(multiplayer)) updatePeerScore(get(peer)?.id, earnedXP);
+            if (get(multiplayer)) updatePeerScore(earnedXP); // Add XP to score
 
         } else if (get(competition)) {
             const calculatedXP = await calculateXPGain(distance, "standard");

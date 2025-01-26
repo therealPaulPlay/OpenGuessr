@@ -5,7 +5,7 @@ import { setCountryGuesserMode } from "$lib/utils/countryGuesserFunctions";
 import { setImageGuesserMode } from "$lib/utils/imageGuesserFunctions";
 import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
-import { isHost } from "$lib/stores/context-specific/multiplayerStore";
+import { peer } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { countryMaps, continentMaps } from "$lib/stores/context-specific/officialMapsStore";
 import { changeCategory } from "$lib/utils/changeCategory";
@@ -77,7 +77,7 @@ export async function checkGenerationTypeAndGenerate() {
     } else if (get(multiplayer)) {
         singleplayer.set(false); // Don't apply singleplayer settings
 
-        if (get(isHost)) {
+        if (get(peer).id) {
             try {
                 if (mapCategory && mapCategory != "standard" && !mapCategory.includes("community")) {
                     await generateNewLocation("JSON");

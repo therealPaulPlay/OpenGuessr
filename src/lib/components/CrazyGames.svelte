@@ -2,8 +2,6 @@
 <script>
 	import { onMount } from "svelte";
 	import {
-		isHost,
-		peerId,
 		roundAmount,
 		roundLength,
 		hostStage,

@@ -1,5 +1,5 @@
-import { peerId, yourTeam } from "$lib/stores/context-specific/multiplayerStore";
-import { sendTeamMarkers } from "$lib/logic/multiplayerLogic";
+import { peer } from "$lib/stores/context-specific/multiplayerStore";
+import { addMultiplayerGuessMarker, getTeamFromPeerId } from "$lib/logic/multiplayerLogic";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore.js";
@@ -8,6 +8,7 @@ import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { mapHovered } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
+import { multiplayer } from "$lib/stores/modeStore";
 
 // Initialize the map
 export function initMap() {
@@ -127,7 +128,7 @@ function onMapClick(latLng) {
             return [...markers, marker]
         });
 
-        sendTeamMarkers(get(mapPinLat), get(mapPinLng));
+        if (get(multiplayer)) addMultiplayerGuessMarker();
     } catch (error) {
         console.error("Error in onMapClick function:", error)
     }
@@ -173,7 +174,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
             // and miniMarkerTeam matches yourTeam
-            if (miniMarkerId != get(peerId) && miniMarkerTeam === get(yourTeam)) {
+            if (miniMarkerId != get(peer)?.id && miniMarkerTeam === getTeamFromPeerId(get(peer)?.id)) {
                 const multiplayerLatLng = new L.LatLng(miniMarkerLat, miniMarkerLong);
                 const markerPositionKey = `${multiplayerLatLng.lat},${multiplayerLatLng.lng}`;
 

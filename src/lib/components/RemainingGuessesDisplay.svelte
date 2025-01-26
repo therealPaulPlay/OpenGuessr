@@ -1,10 +1,6 @@
 <!-- For Multiplayer - Shows, who still hasn't guessed -->
 <script>
-	import {
-		peer,
-		multiplayerGuessesLocationsArray,
-		peerId,
-	} from "$lib/stores/context-specific/multiplayerStore";
+	import { multiplayerGuessesLocationsArray, peer } from "$lib/stores/context-specific/multiplayerStore";
 	import { fade } from "svelte/transition";
 
 	// Helper function to truncate names
@@ -21,13 +17,13 @@
 	);
 
 	// Get just the usernames of remaining players and truncate if necessary
-	const remainingNames = $derived(remainingPlayers.map((player) => truncateName(player[1])));
+	const remainingNames = $derived(remainingPlayers?.map((player) => truncateName(player[1])) || 0);
 
 	// Format the waiting message based on number of remaining players
 	const waitingMessage = $derived(
-		remainingNames.length === 0
+		remainingNames?.length === 0
 			? { prefix: "", names: [], suffix: "" }
-			: remainingNames.length > 3
+			: remainingNames?.length > 3
 				? { prefix: "Waiting for ", names: [`${remainingNames.length} players`], suffix: "." }
 				: remainingNames.length === 1
 					? { prefix: "Waiting for ", names: [remainingNames[0]], suffix: "." }
@@ -43,7 +39,7 @@
 	);
 </script>
 
-{#if remainingNames.length > 0 && $multiplayerGuessesLocationsArray.some((element) => element[4] == $peerId)}
+{#if remainingNames.length > 0 && $multiplayerGuessesLocationsArray.some((element) => element[4] == $peer?.id)}
 	<div class="remainingGuessesDisplay" transition:fade={{ duration: 250 }}>
 		<p transition:fade={{ duration: 250 }}>
 			<span class="dimmed">{waitingMessage.prefix}</span>

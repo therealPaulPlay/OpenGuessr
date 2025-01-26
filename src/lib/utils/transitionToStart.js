@@ -1,47 +1,28 @@
 // Go from the Result screen back to the main View, the start
 import { loadingScreenVisible } from "$lib/stores/uiStore";
-import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
 import { socialPopupProbability } from "$lib/utils/socialPopupProbability";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 import { disableResultScreen } from "$lib/utils/setResultScreen";
 import { multiplayer, singleplayer } from "$lib/stores/modeStore";
-import { sendMessageToAll, showMultiplayerRoundResults, clearAutoSkipTimeout } from "$lib/logic/multiplayerLogic";
-import { shrinkMapIfMobile } from "$lib/utils/shrinkMinimapIfMobile";
-import { isHost } from "$lib/stores/context-specific/multiplayerStore";
+import { peer } from "$lib/stores/context-specific/multiplayerStore";
 import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 import { get } from "svelte/store";
 
-let alreadyTransitioning = false;
-
 export function transitionToStart() {
-  if (!alreadyTransitioning) {
-    alreadyTransitioning = true;
+  loadingScreenVisible.set(true);
+  disableResultScreen();
+  checkGenerationTypeAndGenerate();
 
-    setTimeout(() => {
-      alreadyTransitioning = false;
-    }, 400);
+  setTimeout(socialPopupProbability, 650);
 
-    loadingScreenVisible.set(true);
-    get(toggleStreakRestoreWindow)(0, true);
-    disableResultScreen();
-    checkGenerationTypeAndGenerate();
-
-    setTimeout(socialPopupProbability, 650);
-
-    if (get(multiplayer)) clearAutoSkipTimeout();
-    // Notify peers that the next round has begun
-    if (get(isHost) && get(multiplayer)) {
-      sendMessageToAll("closeResultScreen");
-      showMultiplayerRoundResults(); // Show Overlay for peers and host
-    }
-
-    shrinkMapIfMobile();
-
-    if (get(crazyGames)) potentialCrazyGamesAd(); // Crazy Games Ad
-
-  } else {
-    console.warn("Already transitioning to start!");
+  if (get(multiplayer)) {
+    // Show Overlay for peers and host
+    get(peer)?.updateStorage("showResult", false);
+    get(peer)?.updateStorage("overlay", true);
+    get(peer)?.updateStorage("overlayTitle", "Results from round " + get(peer)?.getStorage?.currentRound);
   }
+
+  if (get(crazyGames)) potentialCrazyGamesAd(); // Crazy Games Ad
 }
 
 let adIndex = 0;

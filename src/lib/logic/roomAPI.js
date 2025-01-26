@@ -1,5 +1,5 @@
 // Multiplayer room matchmaking APIs, for Duels
-import { matchmakingActive, multiplayerStatus, screenEscapeDisabled, peerId } from "$lib/stores/context-specific/multiplayerStore";
+import { matchmakingActive, multiplayerStatus, screenEscapeDisabled, roomcode } from "$lib/stores/context-specific/multiplayerStore";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { leaveMultiplayerRound, setupMultiplayerRoom, joinRoom, findNextDuel } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
@@ -10,7 +10,7 @@ export async function deleteRoomCodeFromMatchmakingServer() {
             id: localStorage.getItem("id")
         }
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/delete/" + get(peerId).replace("openguessr_", ""), {
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/delete/" + get(roomcode).replace("openguessr_", ""), {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -78,7 +78,7 @@ async function sendRoomCodeToMatchmakingServer() {
             id: localStorage.getItem("id")
         }
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/host/" + get(peerId).replace("openguessr_", ""), {
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/host/" + get(roomcode).replace("openguessr_", ""), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -91,8 +91,7 @@ async function sendRoomCodeToMatchmakingServer() {
             setTimeout(() => {
                 if (get(matchmakingActive)) {
                     matchmakingActive.set(false);
-                    deleteRoomCodeFromMatchmakingServer();
-                    leaveMultiplayerRound();
+                    leaveMultiplayerRound(); // Deletes code from matchmaking server too
                     multiplayerStatus.set("No match found. Please retry.");
                 }
             }, 10000); // After 10 seconds, as the room code is now expired, leave the multiplayer round and show the retry button

@@ -10,6 +10,8 @@ import { loadResultMap } from "$lib/logic/resultMap";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
 import { earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
+import { shrinkMapIfMobile } from "./shrinkMinimapIfMobile";
+import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
 
 export function enableResultScreen(guessLat, guessLong) {
     if (!get(resultScreenEnabled)) {
@@ -48,8 +50,6 @@ export function enableResultScreen(guessLat, guessLong) {
 
         resultScreenEnabled.set(true);
         refreshPlacements();
-    } else {
-        console.error("Result screen already enabled!");
     }
 }
 
@@ -58,9 +58,11 @@ export function disableResultScreen() {
         resultScreenEnabled.set(false);
         refreshPlacements();
 
+        // UI resets
+        shrinkMapIfMobile();
+        get(toggleStreakRestoreWindow)(0, true);
+
         earnedExperience.set(0); // Reset the earned experience, to trigger a new "tick up" animation on the next result load
         resetMap(); // Reset the map for the next round
-    } else {
-        console.warn("Result screen already disabled.");
     }
 }
