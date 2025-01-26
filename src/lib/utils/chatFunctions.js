@@ -1,4 +1,4 @@
-import { chatHTML, peer, savedGuestName } from "$lib/stores/context-specific/multiplayerStore";
+import { chatArray, peer, savedGuestName } from "$lib/stores/context-specific/multiplayerStore";
 import { username } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
 import { filterProfanity } from "$lib/utils/profanityCheck";
@@ -8,40 +8,20 @@ export function manuallySendChat(text) {
     get(peer)?.updateStorageArray("chats", "add", (get(username) || get(savedGuestName)) + ": " + text);
 }
 
-export function resetChat() {
-    chatHTML.set("");
-}
-
-export function loadChat(chats) {
-    // !TODO ensure that this doesn't run every storage update
-    resetChat();
-
+export async function loadChat(chats) {
+    const tempArray = [];
     try {
-        chats.forEach((chat) => {
-            addToChat(chat);
-        });
+        for (const chat of chats) {
+            const text = await filterProfanity(chat);
+            const sanitizedText = sanitizeHTML(text);
+            tempArray.push(sanitizedText);
+        }
+        chatArray.set(tempArray);
     } catch (error) {
         console.error("Error loading chat:", error);
     }
 }
 
-// Add chat and check for profanity
-export async function addToChat(text) {
-    text = await filterProfanity(text);
-    addTextToChat(text);
-}
-
-function addTextToChat(text) {
-    const sanitizedText = sanitizeHTML(text); // Call a function to sanitize HTML
-    chatHTML.set(get(chatHTML) + "<br>");
-
-    if (sanitizedText.startsWith("System:")) {
-        chatHTML.set(get(chatHTML) + `<span style="opacity: 0.75">${sanitizedText}</span>`);
-    } else {
-        chatHTML.set(get(chatHTML) + sanitizedText);
-    }
-}
-
 function sanitizeHTML(text) {
-    return text.replace(/<[^>]*>?/gm, ''); // Strip it of any malicious html (security)
+    return text.replace(/<[^>]*>?/gm, ""); // Strip malicious HTML (security)
 }

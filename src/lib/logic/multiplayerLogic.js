@@ -27,7 +27,7 @@ import {
     connectionCount
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
-import { resetChat, addToChat, loadChat } from "$lib/utils/chatFunctions.js";
+import { loadChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
 import { generateDuelUUID, sendDuelDivisionResult, checkRankedLeavePenalty, removeRankedLeavePenalty } from "$lib/utils/duelDivisionFunctions";
@@ -187,7 +187,7 @@ export async function createPeerInstance() {
                 matchmakingActive.set(false);
                 setMultiplayerUI();
                 goto("/");
-                get(peer)?.updateStorageArray("chats", "add", `System: ${get(username) || get(savedGuestName)} connected.`);
+                get(peer)?.updateStorageArray("chats", "add", `System: ${get(username) || get(savedGuestName)} joined.`);
                 get(peer)?.updateStorageArray("players", "add", [get(peer)?.id, get(username) || get(savedGuestName), get(elo), 0, 1, localStorage.getItem("id"), get(selectedBadge)]);
                 if (get(peer)?.getStorage?.highestSupporterLevel < (get(supporterLevel) || 0)) get(peer)?.updateStorage("highestSupporterLevel", get(supporterLevel));
             });
@@ -213,7 +213,7 @@ export async function createPeerInstance() {
 
                 if (storage.overlay) storage.overlay ? showMultiplayerOverlay(true) : showMultiplayerOverlay(false);
 
-                if (storage.chats && storage.chats?.length) loadChat(storage.chats);
+                if (storage.chats) loadChat(storage.chats || []);
 
                 if (storage.guessLocationsArray) multiplayerGuessesLocationsArray.set(storage.guessLocationsArray); // Make reactive
                 if (get(teamAmount) > 1 && storage.guessLocationsArray) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
@@ -520,7 +520,6 @@ export function leaveMultiplayerRound(destroy = true) {
     // UI functions
     setMultiplayerUI();
     showMultiplayerOverlay(false);
-    resetChat();
 
     updateMinimapWithTeamMarkers([]); // clean up multiplayer minimap markers
     matchmakingActive.set(false);

@@ -42,5 +42,5 @@ export const rematchButtonVisible = writable(false);
 export const leaveMatchButtonVisible = writable(false);
 
 // UI - Chat
-export const chatHTML = writable(); // Inner Chat HTML
+export const chatArray = writable(); // Inner Chat HTML
 export const chatVisible = writable(false);

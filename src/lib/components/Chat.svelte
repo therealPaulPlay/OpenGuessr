@@ -1,5 +1,5 @@
 <script>
-	import { chatHTML, chatVisible } from "$lib/stores/context-specific/multiplayerStore";
+	import { chatArray, chatVisible } from "$lib/stores/context-specific/multiplayerStore";
 	import { manuallySendChat } from "$lib/utils/chatFunctions";
 	import { playSound } from "$lib/utils/soundManager";
 	import RemainingGuessesDisplay from "$lib/components/RemainingGuessesDisplay.svelte";
@@ -7,12 +7,12 @@
 	let multiplayerChatMessages = $state();
 	let inputValue = $state();
 
-	chatHTML.subscribe((value) => {
+	chatArray.subscribe((value) => {
 		try {
 			if (multiplayerChatMessages) {
 				setTimeout(() => {
 					multiplayerChatMessages.scrollTop = multiplayerChatMessages.scrollHeight;
-				}, 50);
+				}, 150);
 			}
 		} catch (error) {
 			console.error("Error setting chat box scroll value:", error);
@@ -24,7 +24,18 @@
 	<div id="multiplayerChat">
 		<RemainingGuessesDisplay />
 		<div id="multiplayerChatMessages" bind:this={multiplayerChatMessages}>
-			<p id="multiplayerMessageBox" bind:innerHTML={$chatHTML} contenteditable="false"></p>
+			<p id="multiplayerMessageBox" contenteditable="false">
+				{#if $chatArray}
+					{#each $chatArray as chat}
+						{#if chat.startsWith("System")}
+							<span style="opacity: 0.75">{chat}</span>
+						{:else}
+							{chat}
+						{/if}
+						<br />
+					{/each}
+				{/if}
+			</p>
 		</div>
 		<div id="bottomMultiplayerChatArea">
 			<input
