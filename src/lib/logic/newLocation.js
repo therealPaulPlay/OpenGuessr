@@ -77,7 +77,7 @@ export async function checkGenerationTypeAndGenerate() {
     } else if (get(multiplayer)) {
         singleplayer.set(false); // Don't apply singleplayer settings
 
-        if (get(peer).id) {
+        if (get(peer)?.isHost) {
             try {
                 if (mapCategory && mapCategory != "standard" && !mapCategory.includes("community")) {
                     await generateNewLocation("JSON");

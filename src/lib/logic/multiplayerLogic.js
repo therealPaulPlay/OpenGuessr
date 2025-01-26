@@ -211,7 +211,8 @@ export async function createPeerInstance() {
             get(peer).onEvent('storageUpdate', (storage) => {
                 console.log("Storage updated:", get(peer)?.getStorage); // !TODO remove debug
 
-                if (storage.overlay && get(multiplayerOverlay) !== storage.overlay) multiplayerOverlay.set(storage.overlay);
+                if (storage.overlay) storage.overlay ? showMultiplayerOverlay(true) : showMultiplayerOverlay(false);
+
                 if (storage.chats && storage.chats?.length) loadChat(storage.chats);
 
                 if (storage.guessLocationsArray) multiplayerGuessesLocationsArray.set(storage.guessLocationsArray); // Make reactive
@@ -412,7 +413,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             overlayTitle: "Waiting...",
         }));
 
-        showMultiplayerOverlay(true, "Waiting...");
+        showMultiplayerOverlay(true);
     } catch (error) {
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", "Error occured trying to set up PlayPeerJS room.", error);
@@ -463,6 +464,7 @@ export async function startMultiplayerRound(latitude, longitude) {
     if (get(peer)?.getStorage?.currentRound > get(roundAmount)) return; // If this was the last round, do not start a new one
 
     get(peer)?.updateStorageArray("chats", "add", `System: Starting round ${get(peer)?.getStorage?.currentRound}.`);
+    get(peer)?.updateStorage("location", [latitude, longitude]);
 }
 
 // Peer Logic -----------------------------------------------------------------------------------------------------------------
@@ -555,12 +557,13 @@ function getTeamColorName(teamIndex) {
     return colorNames[(teamIndex - 1) % colorNames.length];
 }
 
-function showMultiplayerOverlay(show, title) {
+function showMultiplayerOverlay(show) {
+    multiplayerOverlay.set(show);
+    multiplayerOverlayTitle.set(get(peer)?.getStorage?.overlayTitle);
+
     if (show) {
-        multiplayerOverlay.set(true); // Show the overlay
-        multiplayerOverlayTitle.set(get(peer)?.getStorage?.overlayTitle);
         showEndscreenUI(false); // Default to no endscreen UI
-        let array = get(peer)?.getStorage?.players;
+        let array = get(peer)?.getStorage?.players; // Get up-to-date player array
         if (!get(peer)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (localStorage.getItem("selectedCategory") || "standard").replace("community_", "") + ")");
 
         if (get(teamAmount) > 1) {
@@ -596,23 +599,17 @@ function showMultiplayerOverlay(show, title) {
                 });
 
             determineWinner(array, true, teams);
-
-            // Assign to table array (loaded in Overlay Component)
-            multiplayerTableArray.set(array);
+            multiplayerTableArray.set(array); // Reactive update for table array
         } else {
             array.sort((a, b) => b[3] - a[3]);
             determineWinner(array, false);
-
-            // Assign to table array (the sorted version!) (loaded in Overlay Component)
-            multiplayerTableArray.set(array);
+            multiplayerTableArray.set(array); // Reactive update for table array
         }
 
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
         mapVisible.set(false); // Hide map
-        showTimeReduceOverlay(0, true); // hide = true (in case it somehow overlaps if the result screen is being skipped quickly)
 
     } else {
-        multiplayerOverlay.set(false);
         if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country guesser") {
             mapVisible.set(true);
         }
@@ -666,6 +663,7 @@ function multiplayerOverlayCountdown() {
 
     let countdown = 3;
 
+    clearInterval(countdownInterval); // Clear
     countdownInterval = setInterval(function () {
         if (countdown > 0) {
             multiplayerOverlayTitle.set(`Starting... ${countdown}`);

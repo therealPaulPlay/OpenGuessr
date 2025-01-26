@@ -15,6 +15,7 @@
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
+	import { slide } from "svelte/transition";
 </script>
 
 <div
@@ -31,6 +32,7 @@
 				{#each $multiplayerTableArray as team}
 					{#each team.players as [entryPeerId, username, elo, score, teamIndex, id, badge]}
 						<div
+							transition:slide
 							class="multiplayerOverlayEntry"
 							class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peer)?.id}
 							style:background-image={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
@@ -63,6 +65,7 @@
 				<!-- No teams version -->
 				{#each $multiplayerTableArray as [entryPeerId, username, elo, score, teamIndex, id, badge]}
 					<div
+						transition:slide
 						class="multiplayerOverlayEntry"
 						class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peer)?.id}
 					>
