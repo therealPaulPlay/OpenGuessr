@@ -13,18 +13,15 @@ import { get } from "svelte/store";
 import { shrinkMapIfMobile } from "./shrinkMinimapIfMobile";
 import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
 
-export function enableResultScreen(guessLat, guessLong) {
+export function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (!get(resultScreenEnabled)) {
+        resultScreenEnabled.set(true);
 
         console.log("ENABLING RESULT!!")
-        
-        // Error proofing in case they are not defined
-        guessLat = guessLat || 0;
-        guessLong = guessLong || 0;
 
         // Obtain contents
         const distance = calculateDistances(guessLat, guessLong);
-        const resultStrings = compareDistances(distance);
+        const resultStrings = compareDistances(distance) || {};
         let resultString = resultStrings.resultAsString;
         let extraMessage = resultStrings.extraMsg;
 
@@ -49,8 +46,6 @@ export function enableResultScreen(guessLat, guessLong) {
         // Load result on the map
         loadResultMap(guessLat, guessLong);
         playSound("confirm");
-
-        resultScreenEnabled.set(true);
         refreshPlacements();
     }
 }
@@ -58,6 +53,7 @@ export function enableResultScreen(guessLat, guessLong) {
 export function disableResultScreen() {
     if (get(resultScreenEnabled)) {
         resultScreenEnabled.set(false);
+        console.log("DISABLINGGG");
         refreshPlacements();
 
         // UI resets

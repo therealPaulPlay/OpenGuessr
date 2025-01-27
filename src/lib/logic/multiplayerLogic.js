@@ -4,7 +4,6 @@ import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScr
 import { startTimer } from "$lib/utils/timer.js";
 import { checkedForBan, isAuthenticated, isBanned, banReportEntryData } from "$lib/stores/accountStore";
 import { selectedBadge, selectedPinIndex, supporterLevel, username, elo } from "$lib/stores/accountStore.js";
-import { transitionToStart } from "$lib/utils/transitionToStart";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
 import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
@@ -94,7 +93,6 @@ function setMultiplayerUI() {
 
         modeText.set("Multiplayer (Awaiting info..)");
         chatVisible.set(true);
-        disableResultScreen(); // disable result screen if it is open (edge case)
     } else {
         mapModeIndicatorVisible.set(false);
         leaveFunction.set();
@@ -109,19 +107,16 @@ function multiplayerTimerExpired() {
 }
 
 function endMultiplayerRound() {
-
     // After 5 seconds, allow the skip functionality for all players
     continueText.set("Wait 5s..."); // Wait text will auto-disable the button
     setTimeout(function () {
         continueText.set("Continue");
     }, 5000);
 
-    enableResultScreen(get(mapPinLat), get(mapPinLng));
-
-    // Config changes
     try { multiplayerTimer.stopTimer(); } catch { }; // Stop multiplayer timer
-    get(peer)?.updateStorage("confirmedArray", []);
+    enableResultScreen(get(mapPinLat), get(mapPinLng));
     get(peer)?.updateStorage("showResult", true);
+    get(peer)?.updateStorage("confirmedArray", []); // Reset confirmed guesses to prevent double-end
 }
 
 export function multiplayerStateToGuessed() {
@@ -214,7 +209,9 @@ export async function createPeerInstance() {
             get(peer).onEvent('storageUpdate', (storage) => {
                 console.log("Storage updated:", get(peer)?.getStorage); // !TODO remove debug
 
-                if (storage.overlay) storage.overlay ? showMultiplayerOverlay(true) : showMultiplayerOverlay(false);
+                if (typeof storage.overlay !== "undefined" && storage.overlay != get(multiplayerOverlay)) storage.overlay ? showMultiplayerOverlay(true) : showMultiplayerOverlay(false);
+
+                if (storage.players) updateMultiplayerTableArray();
 
                 if (storage.chats) loadChat(storage.chats || []);
 
@@ -247,11 +244,6 @@ export async function createPeerInstance() {
 
                 if (storage.players) updateTeamIndexes();
 
-                // Check if all guesses are in, and if so, end round
-                if (storage.players?.length && storage.confirmedArray?.length && storage.confirmedArray?.length >= storage.players?.length && storage.showResult == false && get(resultScreenEnabled) == false) {
-                    endMultiplayerRound();
-                }
-
                 if (storage.confirmedArray && storage.players) {
                     const confirmedIDs = new Set(storage.confirmedArray); // Convert confirmedArray to a Set for efficient lookups
                     const truncate = (name) => name.length > 10 ? `${name.slice(0, 7)}...` : name;
@@ -262,17 +254,25 @@ export async function createPeerInstance() {
                 }
 
                 // Control result screen
-                if (typeof storage.showResult !== "undefined" && storage.showResult == true && storage.showResult !== get(resultScreenEnabled)) endMultiplayerRound();
-                if (typeof storage.showResult !== "undefined" && storage.showResult == false && storage.showResult !== get(resultScreenEnabled)) disableResultScreen();
+                if (storage.showResult !== undefined && storage.showResult !== get(resultScreenEnabled)) {
+                    if (storage.showResult == true) {
+                        endMultiplayerRound();
+                    } else {
+                        disableResultScreen();
+                    }
+                }
+
+                // Check if all guesses are in, and if so, end round
+                if (storage.players?.length && storage.confirmedArray?.length && storage.confirmedArray?.length >= storage.players?.length && get(resultScreenEnabled) == false) {
+                    if (get(peer)?.isHost) get(peer)?.updateStorage("showResult", true);
+                }
 
                 // Set coordinates
                 if (storage.location && storage.currentRound && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1])) {
                     // The host generates the location, so don't execute this again for them
                     if (get(multiplayer) && !get(peer)?.isHost) {
                         checkGenerationTypeAndGenerate();
-
-                        // If this is not the last round, wait to show the results properly
-                        get(peer)?.getStorage?.firstRoundPlayed ? setTimeout(multiplayerOverlayCountdown, 1500) : multiplayerOverlayCountdown();
+                        multiplayerOverlayCountdown();
                     }
                 }
             });
@@ -471,13 +471,8 @@ export async function startMultiplayerRound(latitude, longitude) {
     get(peer)?.updateStorage("guessLocationsArray", []); // Resets
 
     // Host countdown
-    get(peer)?.getStorage?.firstRoundPlayed ? setTimeout(multiplayerOverlayCountdown, 1500) : multiplayerOverlayCountdown();
-
-    // If this is the first round...
-    if (!get(peer)?.getStorage?.firstRoundPlayed) {
-        goto("/"); // Go to home if starting from different page
-        get(peer)?.updateStorage("firstRoundPlayed", true);
-    }
+    multiplayerOverlayCountdown();
+    if (!get(peer)?.getStorage?.firstRoundPlayed) goto("/"); // Go to home if starting from different page
 
     get(peer)?.updateStorage("currentRound", get(peer)?.getStorage?.currentRound + 1); // Add 1 to currentRound
     if (get(peer)?.getStorage?.currentRound > get(roundAmount)) return; // If this was the last round, do not start a new one
@@ -571,54 +566,46 @@ function getTeamColorName(teamIndex) {
     return colorNames[(teamIndex - 1) % colorNames.length];
 }
 
+let teams = [];
+
+function updateMultiplayerTableArray() {
+    const players = get(peer)?.getStorage?.players;
+
+    if (get(teamAmount) <= 1) {
+        multiplayerTableArray.set([...players].sort((a, b) => b[3] - a[3]));
+        return;
+    }
+
+    const grouped = players.reduce((acc, p) => {
+        (acc[p[4]] ??= {
+            teamIndex: p[4],
+            color: generateColorForTeam(p[4]),
+            colorName: getTeamColorName(p[4]),
+            players: []
+        }).players.push(p);
+        return acc;
+    }, {});
+
+    multiplayerTableArray.set(
+        Object.values(grouped)
+            .sort((a, b) =>
+                b.players.reduce((s, p) => s + p[3], 0) -
+                a.players.reduce((s, p) => s + p[3], 0)
+            )
+            .map(t => ({ ...t, players: t.players.sort((a, b) => b[3] - a[3]) }))
+    );
+}
+
 function showMultiplayerOverlay(show) {
     multiplayerOverlay.set(show);
     multiplayerOverlayTitle.set(get(peer)?.getStorage?.overlayTitle);
 
     if (show) {
         showEndscreenUI(false); // Default to no endscreen UI
-        let array = get(peer)?.getStorage?.players; // Get up-to-date player array
         if (!get(peer)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (localStorage.getItem("selectedCategory") || "standard").replace("community_", "") + ")");
 
-        if (get(teamAmount) > 1) {
-            let teams = {};
-
-            // "array" in this case is always connected peers (see passed property)
-            array.forEach(playerInfo => {
-                const teamIndex = playerInfo[4]; // team id 
-                if (!teams[teamIndex]) {
-                    teams[teamIndex] = {
-                        color: generateColorForTeam(teamIndex),
-                        colorName: getTeamColorName(teamIndex),
-                        players: []
-                    };
-                }
-                teams[teamIndex].players.push(playerInfo);
-            });
-
-            // Sort the teams based on total XP and transform into an array
-            array = Object.keys(teams)
-                .sort((a, b) => {
-                    const totalExperienceA = teams[a].players.reduce((sum, player) => sum + player[3], 0);
-                    const totalExperienceB = teams[b].players.reduce((sum, player) => sum + player[3], 0);
-                    return totalExperienceB - totalExperienceA; // Sort descending
-                })
-                .map((teamIndex) => {
-                    // Sort players within each team by XP
-                    teams[teamIndex].players.sort((a, b) => b[3] - a[3]);
-                    return {
-                        teamIndex: parseInt(teamIndex), // Ensure the team index is numeric
-                        ...teams[teamIndex], // Spread the team properties (color, colorName, players)
-                    };
-                });
-
-            determineWinner(array, true, teams);
-            multiplayerTableArray.set(array); // Reactive update for table array
-        } else {
-            array.sort((a, b) => b[3] - a[3]);
-            determineWinner(array, false);
-            multiplayerTableArray.set(array); // Reactive update for table array
-        }
+        const isTeams = get(teamAmount) > 1;
+        determineWinner(get(multiplayerTableArray, isTeams, isTeams ? teams : undefined));
 
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
         mapVisible.set(false); // Hide map
@@ -672,12 +659,13 @@ let multiplayerTimer;
 let countdownInterval;
 
 // This starts the round visually with a countdown
-function multiplayerOverlayCountdown() {
+async function multiplayerOverlayCountdown() {
     if (playingDuels && !friendDuel) localStorage.setItem("activeDuel", "active"); // Save for leave penalty
 
     let countdown = 3;
-
     clearInterval(countdownInterval); // Clear
+    if (get(peer)?.getStorage?.firstRoundPlayed) await new Promise(resolve => setTimeout(resolve, 1500));
+
     countdownInterval = setInterval(function () {
         if (countdown > 0) {
             multiplayerOverlayTitle.set(`Starting... ${countdown}`);
@@ -688,6 +676,8 @@ function multiplayerOverlayCountdown() {
 
             if (get(multiplayer)) {
                 showMultiplayerOverlay(false); // Hide the overlay --> round starts
+                get(peer)?.updateStorage("firstRoundPlayed", true);
+
                 try { multiplayerTimer.stopTimer(); } catch { }; // Stop multiplayer timer (redudancy)
                 multiplayerTimer = startTimer(get(roundLength), multiplayerTimerExpired); // Start the timer
 

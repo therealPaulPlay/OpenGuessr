@@ -17,7 +17,6 @@ export function transitionToStart() {
   if (!get(multiplayer) || get(peer)?.isHost) checkGenerationTypeAndGenerate(); // Generate new location
 
   if (get(multiplayer)) {
-    // Show Overlay for peers and host
     get(peer)?.updateStorage("showResult", false);
     get(peer)?.updateStorage("overlay", true);
     get(peer)?.updateStorage("overlayTitle", "Results from round " + get(peer)?.getStorage?.currentRound);

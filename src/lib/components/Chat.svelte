@@ -126,7 +126,6 @@
 		margin: 8px;
 		margin-left: 8px;
 		padding-inline: 12px;
-		font-size: 20px;
 	}
 
 	#multiplayerMessageInput {
