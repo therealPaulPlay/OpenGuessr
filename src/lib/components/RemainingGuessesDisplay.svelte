@@ -1,37 +1,26 @@
 <!-- For Multiplayer - Shows, who still hasn't guessed -->
 <script>
-	import { multiplayerGuessesLocationsArray, peer } from "$lib/stores/context-specific/multiplayerStore";
+	import { peer, remainingPlayers } from "$lib/stores/context-specific/multiplayerStore";
 	import { fade } from "svelte/transition";
-
-	// Helper function to truncate names
-	const truncateName = (name) => {
-		return name.length > 10 ? `${name.slice(0, 7)}...` : name;
-	};
-
-	// Derive the players who haven't guessed yet
-	const remainingPlayers = $derived(
-		$peer?.getStorage?.players?.filter((player) => {
-			const peerID = player[0];
-			return !$multiplayerGuessesLocationsArray.some((guess) => guess[4] === peerID);
-		}),
-	);
-
-	// Get just the usernames of remaining players and truncate if necessary
-	const remainingNames = $derived(remainingPlayers?.map((player) => truncateName(player[1])) || 0);
 
 	// Format the waiting message based on number of remaining players
 	const waitingMessage = $derived(
-		remainingNames?.length === 0
+		$remainingPlayers?.length === 0
 			? { prefix: "", names: [], suffix: "" }
-			: remainingNames?.length > 3
-				? { prefix: "Waiting for ", names: [`${remainingNames.length} players`], suffix: "." }
-				: remainingNames.length === 1
-					? { prefix: "Waiting for ", names: [remainingNames[0]], suffix: "." }
-					: remainingNames.length === 2
-						? { prefix: "Waiting for ", names: [remainingNames[0], remainingNames[1]], separator: " and ", suffix: "." }
+			: $remainingPlayers?.length > 3
+				? { prefix: "Waiting for ", names: [`${$remainingPlayers.length} players`], suffix: "." }
+				: $remainingPlayers?.length === 1
+					? { prefix: "Waiting for ", names: [$remainingPlayers[0]], suffix: "." }
+					: $remainingPlayers?.length === 2
+						? {
+								prefix: "Waiting for ",
+								names: [$remainingPlayers[0], $remainingPlayers[1]],
+								separator: " and ",
+								suffix: ".",
+							}
 						: {
 								prefix: "Waiting for ",
-								names: [remainingNames[0], remainingNames[1], remainingNames[2]],
+								names: [$remainingPlayers[0], $remainingPlayers[1], $remainingPlayers[2]],
 								separator: ", ",
 								lastSeparator: " and",
 								suffix: ".",
@@ -39,7 +28,7 @@
 	);
 </script>
 
-{#if remainingNames.length > 0 && $multiplayerGuessesLocationsArray.some((element) => element[4] == $peer?.id)}
+{#if $remainingPlayers.length > 0 && $peer?.getStorage?.confirmedArray?.includes($peer?.id)}
 	<div class="remainingGuessesDisplay" transition:fade={{ duration: 250 }}>
 		<p transition:fade={{ duration: 250 }}>
 			<span class="dimmed">{waitingMessage.prefix}</span>

@@ -12,7 +12,6 @@ export const teamAmount = writable(1);
 export const matchmakingActive = writable(false);
 
 // Data
-export const multiplayerGuessesLocationsArray = writable([]);
 export const savedGuestName = writable("Guest (Default)");
 
 // UI
@@ -23,10 +22,12 @@ export const hostStage = writable(1);
 export const screenEscapeDisabled = writable(false); // Set the Close and Back buttons disabled (e.g. when establishing connection)
 export const duelRetryEnabled = writable(false);
 export const restrictionButtonText = writable("Standard");
-export const roomcode = writable("loading...");
+
+// UI - Host
 export const teamDisplayText = writable("")
 export const connectionCount = writable(0);
 export const teamsDisplayText = writable("");
+export const roomcode = writable("loading...");
 
 // UI - Time reduced Overlay for Duels
 export const timeReducedOverlay = writable(false);
@@ -44,3 +45,4 @@ export const leaveMatchButtonVisible = writable(false);
 // UI - Chat
 export const chatArray = writable(); // Inner Chat HTML
 export const chatVisible = writable(false);
+export const remainingPlayers = writable([]);

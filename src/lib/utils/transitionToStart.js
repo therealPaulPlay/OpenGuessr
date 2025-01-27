@@ -11,9 +11,10 @@ import { get } from "svelte/store";
 export function transitionToStart() {
   loadingScreenVisible.set(true);
   disableResultScreen();
-  checkGenerationTypeAndGenerate();
 
   setTimeout(socialPopupProbability, 650);
+
+  if (!get(multiplayer) || get(peer)?.isHost) checkGenerationTypeAndGenerate(); // Generate new location
 
   if (get(multiplayer)) {
     // Show Overlay for peers and host

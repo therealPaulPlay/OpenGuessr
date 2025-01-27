@@ -12,7 +12,7 @@ import { mapSupportsMultiplayer } from "$lib/utils/doesMapSupportMultiplayer.js"
 import { playSound } from "$lib/utils/soundManager.js";
 import { addDuelPlayed, addDuelWon } from "$lib/utils/updateProfileData.js";
 import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
-import { continueText } from "$lib/stores/context-specific/resultScreenStore.js";
+import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
 import { linkJoinPopup } from "$lib/stores/uiStore";
@@ -22,9 +22,9 @@ import {
     duelRetryEnabled, multiplayerStatus, restrictionButtonText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay,
     multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray,
     matchmakingActive, peer,
-    multiplayerGuessesLocationsArray,
     roomcode,
-    connectionCount
+    connectionCount,
+    remainingPlayers
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadChat } from "$lib/utils/chatFunctions.js";
@@ -105,7 +105,7 @@ function setMultiplayerUI() {
 // End round ---------------------------------------------------------------------------------------------------------------------------------
 function multiplayerTimerExpired() {
     confirmButtonClicks(); // Only do this if the player actually hasnt guessed yet...
-    endMultiplayerRound();
+    setTimeout(endMultiplayerRound, 1000); // Wait for guesses to arrive
 }
 
 function endMultiplayerRound() {
@@ -118,18 +118,19 @@ function endMultiplayerRound() {
     }, skipTimeout);
 
     enableResultScreen(get(mapPinLat), get(mapPinLng));
+    get(peer)?.updateStorage("showResult", true);
     try { multiplayerTimer.stopTimer(); } catch { }; // Stop multiplayer timer
 }
 
 export function multiplayerStateToGuessed() {
     addMultiplayerGuessMarker();
-    get(peer)?.updateStorage("currentGuessAmount", get(peer)?.getStorage?.currentGuessAmount + 1);
+    get(peer)?.updateStorageArray("confirmedArray", "add", get(peer)?.id);
     if (playingDuels) get(peer)?.updateStorage("timeReduceOverlay", true); // Reduce time in duels
 }
 
 export function addMultiplayerGuessMarker() {
     // Remove previous guess entry (if exists)
-    const yourElement = get(peer)?.getStorage?.players?.find((element) => element.id == get(peer).id);
+    const yourElement = get(peer)?.getStorage?.guessLocationsArray?.find((element) => element.id == get(peer)?.id);
     if (yourElement) get(peer)?.updateStorageArray("guessLocationsArray", "remove-matching", yourElement);
     get(peer)?.updateStorageArray("guessLocationsArray", "add", { id: get(peer)?.id, lat: get(mapPinLat), long: get(mapPinLng), pin: get(selectedPinIndex), username: get(username) || get(savedGuestName), team: getTeamFromPeerId(get(peer)?.id) });
 }
@@ -215,8 +216,7 @@ export async function createPeerInstance() {
 
                 if (storage.chats) loadChat(storage.chats || []);
 
-                if (storage.guessLocationsArray) multiplayerGuessesLocationsArray.set(storage.guessLocationsArray); // Make reactive
-                if (get(teamAmount) > 1 && storage.guessLocationsArray) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
+                if (get(teamAmount) > 1 && storage.guessLocationsArray && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
 
                 if (typeof storage.timeReduceOverlay !== "undefined" && storage.timeReduceOverlay !== get(timeReducedOverlay)) {
                     if (!storage.timeReduceOverlay) showTimeReduceOverlay(0, false);
@@ -229,24 +229,40 @@ export async function createPeerInstance() {
                     showNotification("Map changed to " + storage?.category?.replaceAll("community_", "") + ".");
                 }
 
+                if (storage.currentRound && storage.restriction) {
+                    modeText.set("Multiplayer (Round: " + get(peer)?.getStorage?.currentRound + "/" + get(roundAmount) + ")");
+                    setRestriction(storage.restriction);
+                    if (storage.restriction !== "standard" && storage.restriction) modeText.set(get(modeText) + " (" + storage.restriction + ")");
+                }
+
                 // Sync game info
                 if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.restriction && storage.mapLocationsArray) {
                     roundAmount.set(storage?.roundAmount);
                     roundLength.set(storage?.roundLength);
                     teamAmount.set(storage?.teamAmount);
-                    multiplayerRestriction = storage?.restriction;
                     currentlyLoadedLocationsArray.set(storage?.mapLocationsArray);
                 }
 
-                if (storage.players) {
-                    updateTeamIndexes();
-                }
+                if (storage.players) updateTeamIndexes();
 
                 // Check if all guesses are in, and if so, end round
-                if (storage.currentGuessAmount && storage.currentGuessAmount >= storage?.players?.length) endMultiplayerRound();
+                if (storage.players?.length && storage.confirmedArray?.length && storage.confirmedArray?.length >= storage.players?.length && storage.result !== get(resultScreenEnabled)) {
+                    get(peer)?.updateStorage("confirmedArray", []);
+                    endMultiplayerRound();
+                }
+
+                if (storage.confirmedArray && storage.players) {
+                    const confirmedIDs = new Set(storage.confirmedArray); // Convert confirmedArray to a Set for efficient lookups
+                    const truncate = (name) => name.length > 10 ? `${name.slice(0, 7)}...` : name;
+                    const remaining = storage.players
+                        .filter((player) => !confirmedIDs.has(player[0]))
+                        .map((player) => truncate(player[1]));
+                    remainingPlayers.set(remaining); // Set the remainingPlayers to the usernames
+                }
+
 
                 // Control result screen
-                if (storage.showResult) storage.showResult ? enableResultScreen() : disableResultScreen();
+                if (typeof storage.showResult !== "undefined" && storage.result !== get(resultScreenEnabled)) storage.showResult ? enableResultScreen(get(mapPinLat), get(mapPinLng)) : disableResultScreen();
 
                 // Set coordinates
                 if (storage.location && storage.currentRound && (get(currentLocationLatitude) !== storage?.location[0] || get(currentLocationLongitude) !== storage?.location[1])) {
@@ -404,6 +420,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             mapLocationsArray: get(currentlyLoadedLocationsArray), // Map location data to calculate boundaries
             location: [35.7072457, 139.863412], // Default panorama to prevent blackscreen
             guessLocationsArray: [], // Guesses from players
+            confirmedArray: [], // Players that have confirmed their guess
             uuid: duelUUID,
             firstRoundPlayed: false,
             chats: [],
@@ -426,7 +443,7 @@ export function startRoom() {
     multiplayer.set(true);
     setMultiplayerUI();
     get(peer)?.updateStorage("overlay", true);
-    get(peer)?.updateStorage("overlayTitle", "Ready");
+    get(peer)?.updateStorage("overlayTitle", "Starting...");
     checkGenerationTypeAndGenerate(); // Load map and set map text
     matchmakingActive.set(false);
 }
@@ -447,7 +464,7 @@ export function multiplayerRematch() {
 
 // Start the first / next round
 export async function startMultiplayerRound(latitude, longitude) {
-    get(peer)?.updateStorage("guessLocationsArray", []); // Reset
+    get(peer)?.updateStorage("guessLocationsArray", []); // Resets
 
     // If this is not the last round, wait to show the results properly
     if (get(peer)?.getStorage?.firstRoundPlayed) {
@@ -514,7 +531,6 @@ export function leaveMultiplayerRound(destroy = true) {
 
     // Reset restriction
     restrictionButtonText.set("Standard");
-    multiplayerRestriction = "standard";
     setRestriction("standard");
 
     // UI functions
@@ -676,14 +692,7 @@ function multiplayerOverlayCountdown() {
                 try { multiplayerTimer.stopTimer(); } catch { }; // Stop multiplayer timer (redudancy)
                 multiplayerTimer = startTimer(get(roundLength), multiplayerTimerExpired); // Start the timer
 
-                modeText.set("Multiplayer (Round: " + get(peer)?.getStorage?.currentRound + "/" + get(roundAmount) + ")");
-
-                // Append restriction text
-                if (multiplayerRestriction !== "standard" && multiplayerRestriction) {
-                    modeText.set(get(modeText) + " (" + multiplayerRestriction + ")");
-                }
-
-                setRestriction(multiplayerRestriction);
+                get(peer)?.updateStorage("overlay", false); // Hide overlay for all
                 playSound("match_countdown_start");
             }
         }

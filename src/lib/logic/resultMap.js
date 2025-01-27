@@ -1,6 +1,6 @@
 import { map, addedMarkers } from "$lib/stores/context-specific/mapStore";
 import { selectedPinIndex } from "$lib/stores/accountStore";
-import { multiplayerGuessesLocationsArray } from "$lib/stores/context-specific/multiplayerStore";
+import { peer } from "$lib/stores/context-specific/multiplayerStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
@@ -74,7 +74,7 @@ export async function loadResultMap(playersLat, playersLong) {
 
     // Handle multiplayer markers --------------------------------------------------------------------------
     if (get(multiplayer)) {
-        get(multiplayerGuessesLocationsArray).forEach(function (element) {
+        get(peer)?.getStorage?.guessLocationsArray?.forEach(function (element) {
             let newMarkerLat = element.lat;
             let newMarkerLong = element.long;
             let newMarkerPinIndex = element.pin;
