@@ -16,6 +16,8 @@ import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleSt
 export function enableResultScreen(guessLat, guessLong) {
     if (!get(resultScreenEnabled)) {
 
+        console.log("ENABLING RESULT!!")
+        
         // Error proofing in case they are not defined
         guessLat = guessLat || 0;
         guessLong = guessLong || 0;
