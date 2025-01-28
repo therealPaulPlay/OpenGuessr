@@ -511,6 +511,7 @@ export function leaveMultiplayerRound(destroy = true) {
     teamAmount.set(1);
     roomcode.set("loading...");
     connectionCount.set(0);
+    multiplayerRestriction = "standard";
 
     // General UI resets
     continueText.set("Continue");
@@ -568,23 +569,26 @@ function updateMultiplayerTableArray() {
         return;
     }
 
-    const grouped = players.reduce((acc, p) => {
-        (acc[p[4]] ??= {
-            teamIndex: p[4],
-            color: generateColorForTeam(p[4]),
-            colorName: getTeamColorName(p[4]),
-            players: []
-        }).players.push(p);
+    const groupedTeams = players.reduce((acc, player) => {
+        const teamIndex = player[4];
+        if (!acc[teamIndex]) {
+            teams[teamIndex] = { color: generateColorForTeam(teamIndex), colorName: getTeamColorName(teamIndex) };
+            acc[teamIndex] = { ...teams[teamIndex], teamIndex, players: [] };
+        }
+        acc[teamIndex].players.push(player);
         return acc;
     }, {});
 
     multiplayerTableArray.set(
-        Object.values(grouped)
+        Object.values(groupedTeams)
+            .map(team => ({
+                ...team,
+                players: team.players.sort((a, b) => b[3] - a[3])
+            }))
             .sort((a, b) =>
                 b.players.reduce((s, p) => s + p[3], 0) -
                 a.players.reduce((s, p) => s + p[3], 0)
             )
-            .map(t => ({ ...t, players: t.players.sort((a, b) => b[3] - a[3]) }))
     );
 }
 
@@ -615,13 +619,12 @@ function determineWinner(array, teams, teamsObject) {
 
         if (teams) {
             const winningTeamIndex = array[0]?.teamIndex;
-            let teamColorName = teamsObject[winningTeamIndex].colorName;
+            let teamColorName = teamsObject[winningTeamIndex]?.colorName;
             multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
 
         } else {
             const winningPlayerData = array[0];
             const followUpPlayerData = array[1] || undefined;
-
             removeRankedLeavePenalty(); // Remove leave penalty notice
 
             if (followUpPlayerData && winningPlayerData[3] == followUpPlayerData[3]) {
@@ -670,11 +673,11 @@ async function multiplayerOverlayCountdown() {
 
             if (get(multiplayer)) {
                 showMultiplayerOverlay(false); // Hide the overlay --> round starts
-                get(peer)?.updateStorage("firstRoundPlayed", true);
                 try { multiplayerTimer.stopTimer(); } catch { }; // Stop multiplayer timer
                 multiplayerTimer = startTimer(get(roundLength), multiplayerTimerExpired); // Start the timer
 
                 get(peer)?.updateStorage("overlay", false); // Hide overlay for all
+                get(peer)?.updateStorage("firstRoundPlayed", true);
                 playSound("match_countdown_start");
             }
         }

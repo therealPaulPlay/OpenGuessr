@@ -20,7 +20,7 @@
 		let positionInfo = mapModeTextContainer.getBoundingClientRect();
 		let width = positionInfo.width;
 		scrollModeText =
-			width < 150 || (width < 235 && mapModeText.length > 25) || (width < 280 && mapModeText.length > 31);
+			width < 150 || (width < 235 && mapModeText.length > 25) || (width < 295 && mapModeText.length > 31);
 	}
 
 	let resizeObserver;
@@ -171,7 +171,7 @@
 		}
 
 		100% {
-			transform: translateX(calc(-100% + 100px));
+			transform: translateX(calc(-65%));
 		}
 	}
 </style>
