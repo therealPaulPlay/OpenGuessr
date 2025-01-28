@@ -15,7 +15,6 @@ export function transitionToStart() {
 
   if (get(multiplayer)) {
     get(peer)?.updateStorage("showResult", false);
-    get(peer)?.updateStorage("overlay", true);
   }
 
   if (get(crazyGames)) potentialCrazyGamesAd(); // Crazy Games Ad

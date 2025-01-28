@@ -103,7 +103,9 @@ function setMultiplayerUI() {
 function multiplayerTimerExpired() {
     const hasSubmittedMarker = get(peer)?.getStorage?.guessLocationsArray?.find((element) => element.id == get(peer)?.id);
     if (!hasSubmittedMarker) addMultiplayerGuessMarker(); // Only add default / previous marker if the player actually hasnt guessed yet...
-    setTimeout(endMultiplayerRound, 1000); // Wait for guesses to arrive
+    setTimeout(() => {
+        if (get(peer)?.isHost) get(peer)?.updateStorage("showResult", true);
+    }, 1000); // Wait for guesses to arrive
 }
 
 function endMultiplayerRound() {
@@ -115,7 +117,6 @@ function endMultiplayerRound() {
 
     try { multiplayerTimer.stopTimer(); } catch { }; // Stop multiplayer timer
     enableResultScreen(get(mapPinLat), get(mapPinLng));
-    get(peer)?.updateStorage("showResult", true);
     get(peer)?.updateStorage("confirmedArray", []); // Reset confirmed guesses to prevent double-end
 }
 
@@ -260,17 +261,18 @@ export async function createPeerInstance() {
                 }
 
                 // Control result screen
-                if (storage.showResult !== undefined && storage.showResult !== get(resultScreenEnabled)) {
+                if (storage.showResult !== undefined && storage.showResult != get(resultScreenEnabled)) {
                     if (storage.showResult == true) {
                         endMultiplayerRound();
                     } else {
                         if (get(peer)?.isHost && storage?.currentRound < get(roundAmount)) startMultiplayerRound();
                         disableResultScreen();
+                        get(peer)?.updateStorage("overlay", true);
                     }
                 }
 
                 // Check if all guesses are in, and if so, end round
-                if (storage.players?.length && storage.confirmedArray?.length && storage.confirmedArray?.length >= storage.players?.length && get(resultScreenEnabled) == false) {
+                if (storage.players?.length && storage.confirmedArray?.length && storage.confirmedArray?.length >= storage.players?.length && get(resultScreenEnabled) == false && !storage?.showResult) {
                     if (get(peer)?.isHost) get(peer)?.updateStorage("showResult", true);
                 }
 
@@ -608,7 +610,7 @@ function showMultiplayerOverlay(show) {
         if (!get(peer)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (localStorage.getItem("selectedCategory") || "standard").replace("community_", "") + ")");
 
         const isTeams = get(teamAmount) > 1;
-        determineWinner(get(multiplayerTableArray, isTeams, isTeams ? teams : undefined));
+        determineWinner(get(multiplayerTableArray), isTeams, isTeams ? teams : undefined);
 
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
         mapVisible.set(false); // Hide map
