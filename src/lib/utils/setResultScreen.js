@@ -12,6 +12,7 @@ import { earnedExperience } from "$lib/stores/context-specific/resultScreenStore
 import { get } from "svelte/store";
 import { shrinkMapIfMobile } from "./shrinkMinimapIfMobile";
 import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
+import { timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 
 export function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (!get(resultScreenEnabled)) {
@@ -56,6 +57,7 @@ export function disableResultScreen() {
         // UI resets
         shrinkMapIfMobile();
         get(toggleStreakRestoreWindow)(0, true);
+        timerText.set("00:00"); // Reset timer text
 
         earnedExperience.set(0); // Reset the earned experience, to trigger a new "tick up" animation on the next result load
         resetMap(); // Reset the map for the next round

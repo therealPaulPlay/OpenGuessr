@@ -198,10 +198,17 @@ export async function createPeerInstance() {
 
             // Peer disconnected from host...
             get(peer).onEvent('incomingPeerDisconnected', (id) => {
-                const disconnectedPlayer = get(peer)?.getStorage?.players?.find((item) => item[0] == id);
-                const disconnectedPlayerName = disconnectedPlayer[1] || "Unknown";
+                const disconnectedPlayerName = get(peer)?.getStorage?.players?.find((item) => item[0] == id)[1] || "Unknown";
                 removeConnectedPeerById(id);
                 get(peer)?.updateStorageArray("chats", "add", `System: ${disconnectedPlayerName} left.`);
+                connectionCount.set(get(peer)?.connectionCount);
+            });
+
+            // Host disconnected from peer...
+            get(peer).onEvent('outgoingPeerDisconnected', (id) => {
+                const disconnectedPlayerName = get(peer)?.getStorage?.players?.find((item) => item[0] == id)[1] || "Unknown";
+                removeConnectedPeerById(id);
+                get(peer)?.updateStorageArray("chats", "add", `System: ${disconnectedPlayerName} left - changing host.`);
                 connectionCount.set(get(peer)?.connectionCount);
             });
 
@@ -256,9 +263,8 @@ export async function createPeerInstance() {
                 if (storage.showResult !== undefined && storage.showResult !== get(resultScreenEnabled)) {
                     if (storage.showResult == true) {
                         endMultiplayerRound();
-                        console.log("ending");
                     } else {
-                        if (get(peer)?.isHost) startMultiplayerRound();
+                        if (get(peer)?.isHost && storage?.currentRound < get(roundAmount)) startMultiplayerRound();
                         disableResultScreen();
                     }
                 }
@@ -269,7 +275,7 @@ export async function createPeerInstance() {
                 }
 
                 // Set coordinates
-                if (storage.location && storage.currentRound && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1])) {
+                if (storage.location && storage.currentRound >= 1 && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1])) {
                     // The host generates the location, so don't execute this again for them
                     if (get(multiplayer) && !get(peer)?.isHost) {
                         multiplayerOverlayCountdown();
@@ -463,7 +469,7 @@ export function multiplayerRematch() {
     startRoom();
 }
 
-// Start the first / next round (Host only)
+// Start the first / next round (HOST only)
 async function startMultiplayerRound() {
     await checkGenerationTypeAndGenerate();
     get(peer)?.updateStorage("location", [get(currentLocationLatitude), get(currentLocationLongitude)]); // Set coordinates
@@ -472,9 +478,7 @@ async function startMultiplayerRound() {
     // Countdown
     multiplayerOverlayCountdown();
     if (!get(peer)?.getStorage?.firstRoundPlayed) goto("/"); // Go to home if starting from different page
-
-    get(peer)?.updateStorage("currentRound", get(peer)?.getStorage?.currentRound + 1); // Add 1 to currentRound
-    if (get(peer)?.getStorage?.currentRound > get(roundAmount)) return; // If this was the last round, do not start a new one
+    get(peer)?.updateStorage("currentRound", get(peer)?.getStorage?.currentRound + 1);
 
     get(peer)?.updateStorageArray("chats", "add", `System: Starting round ${get(peer)?.getStorage?.currentRound}.`);
 }
@@ -544,7 +548,6 @@ function showEndscreenUI(show) {
     if (show) {
         leaveMatchButtonVisible.set(true); // show leave / end button
         if (playingDuels && !friendDuel) return; // Do not rematch option in ranked duel
-
         rematchButtonVisible.set(true);
     } else {
         rematchButtonVisible.set(false);
@@ -597,8 +600,8 @@ function updateMultiplayerTableArray() {
 
 function showMultiplayerOverlay(show) {
     multiplayerOverlay.set(show);
-    if (get(peer?.getStorage?.firstRoundPlayed)) multiplayerOverlayTitle.set("Results from round " + get(peer)?.getStorage?.currentRound);
-    if (!get(peer?.getStorage?.firstRoundPlayed) && show) multiplayerOverlayTitle.set("Waiting...");
+    if (get(peer)?.getStorage?.firstRoundPlayed && show) multiplayerOverlayTitle.set("Results from round " + get(peer)?.getStorage?.currentRound);
+    if (!get(peer)?.getStorage?.firstRoundPlayed && show) multiplayerOverlayTitle.set("Waiting...");
 
     if (show) {
         showEndscreenUI(false); // Default to no endscreen UI
@@ -664,6 +667,7 @@ async function multiplayerOverlayCountdown() {
 
     let countdown = 3;
     clearInterval(countdownInterval); // Clear
+    showEndscreenUI(false); // Hide Leave & End option
     if (get(peer)?.getStorage?.firstRoundPlayed) await new Promise(resolve => setTimeout(resolve, 1500));
 
     countdownInterval = setInterval(function () {
@@ -677,8 +681,7 @@ async function multiplayerOverlayCountdown() {
             if (get(multiplayer)) {
                 showMultiplayerOverlay(false); // Hide the overlay --> round starts
                 get(peer)?.updateStorage("firstRoundPlayed", true);
-
-                try { multiplayerTimer.stopTimer(); } catch { }; // Stop multiplayer timer (redudancy)
+                try { multiplayerTimer.stopTimer(); } catch { }; // Stop multiplayer timer
                 multiplayerTimer = startTimer(get(roundLength), multiplayerTimerExpired); // Start the timer
 
                 get(peer)?.updateStorage("overlay", false); // Hide overlay for all

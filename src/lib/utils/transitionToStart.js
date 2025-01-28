@@ -1,5 +1,4 @@
 // Go from the Result screen back to the main View, the start
-import { loadingScreenVisible } from "$lib/stores/uiStore";
 import { socialPopupProbability } from "$lib/utils/socialPopupProbability";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 import { disableResultScreen } from "$lib/utils/setResultScreen";
@@ -9,9 +8,6 @@ import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 import { get } from "svelte/store";
 
 export function transitionToStart() {
-  loadingScreenVisible.set(true);
-  setTimeout(socialPopupProbability, 650);
-
   if (!get(multiplayer)) {
     checkGenerationTypeAndGenerate(); // Generate new location
     disableResultScreen();
@@ -23,6 +19,7 @@ export function transitionToStart() {
   }
 
   if (get(crazyGames)) potentialCrazyGamesAd(); // Crazy Games Ad
+  setTimeout(socialPopupProbability, 650); // Social Media CTA
 }
 
 let adIndex = 0;
