@@ -19,7 +19,7 @@ export function confirmButtonClicks() {
         enableResultScreen(get(mapPinLat), get(mapPinLng));
     } else {
         mapVisible.set(false);
-        if (get(confirmButtonActive)) multiplayerStateToGuessed();
+        multiplayerStateToGuessed();
     }
 
     confirmButtonActive.set(false); // Disable confirm button (make it greyed out) – will be re-enabled when placing pin

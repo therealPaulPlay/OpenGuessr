@@ -17,8 +17,6 @@ export function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (!get(resultScreenEnabled)) {
         resultScreenEnabled.set(true);
 
-        console.log("ENABLING RESULT!!")
-
         // Obtain contents
         const distance = calculateDistances(guessLat, guessLong);
         const resultStrings = compareDistances(distance) || {};
@@ -53,7 +51,6 @@ export function enableResultScreen(guessLat = 0, guessLong = 0) {
 export function disableResultScreen() {
     if (get(resultScreenEnabled)) {
         resultScreenEnabled.set(false);
-        console.log("DISABLINGGG");
         refreshPlacements();
 
         // UI resets

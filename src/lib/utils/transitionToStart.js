@@ -10,16 +10,16 @@ import { get } from "svelte/store";
 
 export function transitionToStart() {
   loadingScreenVisible.set(true);
-  disableResultScreen();
-
   setTimeout(socialPopupProbability, 650);
 
-  if (!get(multiplayer) || get(peer)?.isHost) checkGenerationTypeAndGenerate(); // Generate new location
+  if (!get(multiplayer)) {
+    checkGenerationTypeAndGenerate(); // Generate new location
+    disableResultScreen();
+  }
 
   if (get(multiplayer)) {
     get(peer)?.updateStorage("showResult", false);
     get(peer)?.updateStorage("overlay", true);
-    get(peer)?.updateStorage("overlayTitle", "Results from round " + get(peer)?.getStorage?.currentRound);
   }
 
   if (get(crazyGames)) potentialCrazyGamesAd(); // Crazy Games Ad
