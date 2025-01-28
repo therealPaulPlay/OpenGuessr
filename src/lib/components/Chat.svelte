@@ -3,6 +3,7 @@
 	import { manuallySendChat } from "$lib/utils/chatFunctions";
 	import { playSound } from "$lib/utils/soundManager";
 	import RemainingGuessesDisplay from "$lib/components/RemainingGuessesDisplay.svelte";
+	import { SendHorizonal } from "lucide-svelte";
 
 	let multiplayerChatMessages = $state();
 	let inputValue = $state();
@@ -59,7 +60,7 @@
 					playSound("basic_button");
 					manuallySendChat(inputValue);
 					inputValue = "";
-				}}>Send</button
+				}}><SendHorizonal strokeWidth={2.5} size={22} style="margin-right: -2px; margin-top: 2px" /></button
 			>
 		</div>
 	</div>
@@ -122,7 +123,7 @@
 	}
 
 	#multiplayerSendButton {
-		height: 37px;
+		height: 38px;
 		margin: 8px;
 		margin-left: 8px;
 		padding-inline: 12px;
