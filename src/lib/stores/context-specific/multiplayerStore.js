@@ -24,7 +24,6 @@ export const duelRetryEnabled = writable(false);
 export const restrictionButtonText = writable("Standard");
 
 // UI - Host
-export const teamDisplayText = writable("")
 export const connectionCount = writable(0);
 export const teamsDisplayText = writable("");
 export const roomcode = writable("loading...");

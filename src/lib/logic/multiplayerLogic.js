@@ -38,31 +38,6 @@ import { showNotification } from "$lib/utils/notifications";
 import PlayPeer from "playpeerjs";
 import { buildTeamDisplayText } from "$lib/utils/buildTeamDisplayText";
 
-// Team display on Host Page  -----------------------------------------------------------------------------------------------------------------------
-function updateTeamIndexes() {
-    buildTeamDisplayText(get(peer)?.getStorage?.players);
-    if (get(teamAmount) <= 1) return;
-
-    const amountOfTeams = get(teamAmount);
-    const teams = {};
-
-    for (let i = 1; i <= amountOfTeams; i++) {
-        teams[i] = []; // Add empty array for each team
-    }
-
-    let index = 1;
-    const newArray = get(peer)?.getStorage?.players;
-    newArray.forEach((element) => {
-        // Distribute players in teams starting from team 1
-        const teamIndex = index;
-        teams[teamIndex].push(element[1]);
-        element[4] = teamIndex; // Update the team index on the player data
-        index = (index % amountOfTeams) + 1; // Increment index circularly from 1 to amountOfTeams
-    });
-
-    get(peer)?.updateStorage("players", newArray); // !TODO move into separate array to avoid sync overwriting, also, this would lead to endless loop!
-}
-
 export function getTeamFromPeerId(id) {
     const playerArray = get(peer)?.getStorage?.players.find(item => item[0] === id);
     return playerArray[4];
@@ -186,8 +161,6 @@ export async function createPeerInstance() {
                 setMultiplayerUI();
                 goto("/");
                 get(peer)?.updateStorageArray("chats", "add", `System: ${get(username) || get(savedGuestName)} joined.`);
-                get(peer)?.updateStorageArray("players", "add", [get(peer)?.id, get(username) || get(savedGuestName), get(elo), 0, 1, localStorage.getItem("id"), get(selectedBadge)]);
-                if (get(peer)?.getStorage?.highestSupporterLevel < (get(supporterLevel) || 0)) get(peer)?.updateStorage("highestSupporterLevel", get(supporterLevel));
             });
 
             // New peer connected to host...
@@ -213,8 +186,30 @@ export async function createPeerInstance() {
                 connectionCount.set(get(peer)?.connectionCount);
             });
 
+            let playerAdded;
+
             get(peer).onEvent('storageUpdate', (storage) => {
                 console.log("Storage updated:", get(peer)?.getStorage); // !TODO remove debug
+
+                // Sync game info
+                if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.restriction && storage.mapLocationsArray) {
+                    roundAmount.set(storage?.roundAmount);
+                    roundLength.set(storage?.roundLength);
+                    teamAmount.set(storage?.teamAmount);
+                    currentlyLoadedLocationsArray.set(storage?.mapLocationsArray);
+                }
+
+                // If player is not already in the room, add player info
+                if (!playerAdded && get(peer)?.getStorage?.players?.findIndex((player) => player[0] == get(peer)?.id) == -1) {
+                    playerAdded = true;
+
+                    // Calculate the team
+                    const playerCount = get(peer)?.getStorage?.players.length;
+                    const teamNumber = get(teamAmount) <= 1 ? 1 : ((playerCount % get(teamAmount)) + 1);
+
+                    get(peer)?.updateStorageArray("players", "add-unique", [get(peer)?.id, get(username) || get(savedGuestName), get(elo), 0, teamNumber, localStorage.getItem("id"), get(selectedBadge)]);
+                    if (get(peer)?.getStorage?.highestSupporterLevel < (get(supporterLevel) || 0)) get(peer)?.updateStorage("highestSupporterLevel", get(supporterLevel));
+                }
 
                 if (typeof storage.overlay !== "undefined" && storage.overlay != get(multiplayerOverlay)) storage.overlay ? showMultiplayerOverlay(true) : showMultiplayerOverlay(false);
 
@@ -241,15 +236,7 @@ export async function createPeerInstance() {
                     if (storage.restriction !== "standard" && storage.restriction) modeText.set(get(modeText) + " (" + storage.restriction + ")");
                 }
 
-                // Sync game info
-                if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.restriction && storage.mapLocationsArray) {
-                    roundAmount.set(storage?.roundAmount);
-                    roundLength.set(storage?.roundLength);
-                    teamAmount.set(storage?.teamAmount);
-                    currentlyLoadedLocationsArray.set(storage?.mapLocationsArray);
-                }
-
-                if (storage.players) updateTeamIndexes();
+                if (storage.players) buildTeamDisplayText(get(peer)?.getStorage?.players);
 
                 if (storage.confirmedArray && storage.players) {
                     const confirmedIDs = new Set(storage.confirmedArray); // Convert confirmedArray to a Set for efficient lookups
@@ -396,10 +383,11 @@ function showTimeReduceOverlay(time, hide) {
 
 // Host Logic ----------------------------------------------------------------------------------------------
 function removeConnectedPeerById(peerId) {
-    const array = get(peer)?.getStorage?.players;
-    const index = array.findIndex(entry => entry[0] === peerId);
-    const contentToRemove = array[index];
-    get(peer)?.updateStorageArray("players", "remove-matching", contentToRemove);
+    const index = get(peer)?.getStorage?.players?.findIndex(entry => entry[0] === peerId);
+    if (index >= 0) {
+        const contentToRemove = get(peer)?.getStorage?.players[index];
+        get(peer)?.updateStorageArray("players", "remove-matching", contentToRemove);
+    }
 }
 
 export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
@@ -421,7 +409,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
         duelUUID = generateDuelUUID();
 
         roomcode.set(await get(peer)?.createRoom({
-            players: [[get(peer)?.id, get(username) || get(savedGuestName), get(elo), 0, 1, localStorage.getItem("id"), get(selectedBadge)]],
+            players: [],
             roundAmount: get(roundAmount),
             currentRound: 0,
             roundLength: get(roundLength),

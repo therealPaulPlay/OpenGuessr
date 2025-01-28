@@ -25,7 +25,7 @@ export function buildTeamDisplayText(players) {
     } else {
         for (let i = 1; i <= amountOfTeams; i++) {
             if (teams[i] && teams[i].length > 0) {
-                tempTeamsDisplayText += `Team ${i}: ${teams[i].join(", ")}\n`;
+                tempTeamsDisplayText += `Team ${i}: ${teams[i].join(", ")}<br>`;
             }
         }
         if (noTeamPlayers.length > 0) {

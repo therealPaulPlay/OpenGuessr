@@ -84,7 +84,7 @@
 				<h1 id="roomCodeDisplay">{$roomcode?.replace("openguessr_", "")}</h1>
 			</div>
 			<div class="roomCreationModule multiplayerHostSettings teamsDisplay">
-				<p id="teamsDisplayText">{$teamsDisplayText}</p>
+				<p id="teamsDisplayText" bind:innerHTML={$teamsDisplayText} contenteditable="false"></p>
 				<p id="smallJoinCounter">{$connectionCount + 1}</p>
 			</div>
 			{#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online)?.length >= 1}
@@ -179,6 +179,7 @@
 
 	.teamsDisplay {
 		position: relative;
+		min-height: 27px;
 	}
 
 	.multiplayerCreationArea {
