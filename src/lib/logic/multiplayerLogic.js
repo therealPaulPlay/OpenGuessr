@@ -185,6 +185,7 @@ export async function createPeerInstance() {
                 removeConnectedPeerById(id);
                 get(peer)?.updateStorageArray("chats", "add", `System: ${disconnectedPlayerName} left - changing host.`);
                 connectionCount.set(get(peer)?.connectionCount);
+                if (!get(peer)?.getStorage?.gameOngoing) startRoom(); // If the host leaves and the game is still in the hosting phase, start
             });
 
             let playerAdded;
@@ -432,7 +433,8 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             overlay: true,
             timeReducedOverlay: false,
             showResult: false,
-            startRound: false
+            startRound: false,
+            gameOngoing: false // True after the room was started once and is not in creation phase
         }));
 
         showMultiplayerOverlay(true);
@@ -446,8 +448,8 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
 export function startRoom() {
     multiplayer.set(true);
     setMultiplayerUI();
-    get(peer)?.updateStorage("overlay", true);
     matchmakingActive.set(false);
+    get(peer)?.updateStorage("gameOngoing", true);
     get(peer).updateStorage("startRound", true);
 }
 
