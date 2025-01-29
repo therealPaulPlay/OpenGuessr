@@ -39,7 +39,7 @@ import PlayPeer from "playpeerjs";
 import { buildTeamDisplayText } from "$lib/utils/buildTeamDisplayText";
 
 export function getTeamFromPeerId(id) {
-    const playerArray = get(peer)?.getStorage?.players.find(item => item[0] === id);
+    const playerArray = get(peer)?.getStorage?.players?.find(item => item[0] === id);
     return playerArray[4];
 }
 
@@ -97,7 +97,7 @@ function endMultiplayerRound() {
 
 export function multiplayerStateToGuessed() {
     get(peer)?.updateStorageArray("confirmedArray", "add", get(peer)?.id);
-    if (playingDuels) get(peer)?.updateStorage("timeReduceOverlay", true); // Reduce time in duels
+    if (playingDuels) get(peer)?.updateStorage("timeReducedOverlay", true); // Reduce time in duels
 }
 
 export function addMultiplayerGuessMarker() {
@@ -108,7 +108,7 @@ export function addMultiplayerGuessMarker() {
 }
 
 export function updatePeerScore(addScore) {
-    const peerIndex = get(peer)?.getStorage?.players.findIndex(findPeer => findPeer[0] === get(peer)?.id);
+    const peerIndex = get(peer)?.getStorage?.players?.findIndex(findPeer => findPeer[0] === get(peer)?.id);
     if (peerIndex !== -1) {
         const thisPlayer = get(peer)?.getStorage?.players[peerIndex];
         let newPlayer = [...thisPlayer];
@@ -219,9 +219,8 @@ export async function createPeerInstance() {
 
                 if (get(teamAmount) > 1 && storage.guessLocationsArray && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
 
-                if (typeof storage.timeReduceOverlay !== "undefined" && storage.timeReduceOverlay !== get(timeReducedOverlay)) {
-                    if (!storage.timeReduceOverlay) showTimeReduceOverlay(0, false);
-                    if (storage.timeReduceOverlay) showTimeReduceOverlay(15, get(mapVisible));
+                if (storage.timeReducedOverlay && storage.timeReducedOverlay !== get(timeReducedOverlay)) {
+                    showTimeReducedOverlay(15, storage?.confirmedArray?.includes(get(peer)?.id));
                 }
 
                 // Set multiplayer category
@@ -341,7 +340,7 @@ export async function findDuel() {
 }
 
 // This occurs when the peer connect returns an error like peer_unavailable (means = doesn't exist)
-export function findNextDuel() {
+function findNextDuel() {
     if (roomIndex < 10) {
         roomIndex++;
         attemptDuelJoin(roomIndex);
@@ -352,7 +351,7 @@ export function findNextDuel() {
 }
 
 // Duel Guess Time Reduce Overlay & reduce remaining time
-function showTimeReduceOverlay(time, hide) {
+function showTimeReducedOverlay(time, hide) {
     if (!hide) {
         try {
             if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > 3) { // Only show overlay if it the remaining time is above 3s
@@ -367,7 +366,6 @@ function showTimeReduceOverlay(time, hide) {
         } catch (error) { console.warn("Error showing time reduce overlay: " + error) }
     } else {
         timeReducedOverlay.set(false);
-        get(peer)?.updateStorage("timeReducedOverlay", false);
     }
 
     if (time) {
@@ -425,7 +423,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             firstRoundPlayed: false,
             chats: [],
             overlay: true,
-            timeReduceOverlay: false,
+            timeReducedOverlay: false,
             showResult: false,
         }));
 
@@ -464,6 +462,7 @@ async function startMultiplayerRound() {
     await checkGenerationTypeAndGenerate();
     get(peer)?.updateStorage("location", [get(currentLocationLatitude), get(currentLocationLongitude)]); // Set coordinates
     get(peer)?.updateStorage("guessLocationsArray", []); // Resets
+    get(peer)?.updateStorage("timeReducedOverlay", false);
 
     // Countdown
     multiplayerOverlayCountdown();
@@ -480,7 +479,8 @@ export async function joinRoom(code) {
         await createPeerInstance();
         await get(peer).joinRoom(code);
     } catch (error) {
-        console.error("Error occured joining room:", error); // Status will be set too
+        console.error("Error occured joining room:", error); // Status will be set by playpeerjs
+        if (get(matchmakingActive)) findNextDuel();
     }
 }
 

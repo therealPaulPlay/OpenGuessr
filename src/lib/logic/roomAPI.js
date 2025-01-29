@@ -1,7 +1,7 @@
 // Multiplayer room matchmaking APIs, for Duels
 import { matchmakingActive, multiplayerStatus, screenEscapeDisabled, roomcode } from "$lib/stores/context-specific/multiplayerStore";
 import { changeCategory } from "$lib/utils/changeCategory";
-import { leaveMultiplayerRound, setupMultiplayerRoom, joinRoom, findNextDuel } from "$lib/logic/multiplayerLogic";
+import { leaveMultiplayerRound, setupMultiplayerRoom, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 
 export async function deleteRoomCodeFromMatchmakingServer() {
@@ -50,7 +50,7 @@ export async function attemptDuelJoin(index) {
         } else {
             console.error('Error fetching room code:', response.status);
             multiplayerStatus.set("Bad Get Request response: " + response.status);
-            findNextDuel(); // as this could be a temporary thing, try again
+            matchmakingActive.set(false);
         }
 
     } catch (error) {

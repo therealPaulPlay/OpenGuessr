@@ -171,7 +171,7 @@
 		}
 
 		100% {
-			transform: translateX(calc(-65%));
+			transform: translateX(calc(-60%));
 		}
 	}
 </style>
