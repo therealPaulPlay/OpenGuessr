@@ -29,7 +29,7 @@ import { loadChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
 import { generateDuelUUID, sendDuelDivisionResult, checkRankedLeavePenalty, removeRankedLeavePenalty } from "$lib/utils/duelDivisionFunctions";
-import { currentLocationLatitude, currentLocationLongitude, currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
+import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { generateFunnyGuestName, generateRandomCode } from "$lib/utils/codeGenerationUtil";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
@@ -37,6 +37,7 @@ import { changeCategory } from "$lib/utils/changeCategory";
 import { showNotification } from "$lib/utils/notifications";
 import PlayPeer from "playpeerjs";
 import { buildTeamDisplayText } from "$lib/utils/buildTeamDisplayText";
+import { getMapBounds } from "$lib/utils/getMapBounds";
 
 export function getTeamFromPeerId(id) {
     const playerArray = get(peer)?.getStorage?.players?.find(item => item[0] === id);
@@ -173,11 +174,10 @@ export async function createPeerInstance() {
                 console.log("Storage updated:", get(peer)?.getStorage); // !TODO remove debug
 
                 // Sync game info
-                if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.restriction && storage.mapLocationsArray) {
+                if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.restriction) {
                     roundAmount.set(storage?.roundAmount);
                     roundLength.set(storage?.roundLength);
                     teamAmount.set(storage?.teamAmount);
-                    currentlyLoadedLocationsArray.set(storage?.mapLocationsArray);
                 }
 
                 // If player is not already in the room, add player info
@@ -388,9 +388,6 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
         roundAmount.set(AmountOfRounds);
         roundLength.set(LengthOfRounds);
 
-        // Generate random duel UUID (only used in duels)
-        const duelUUID = generateDuelUUID();
-
         roomcode.set(await get(peer)?.createRoom({
             players: [],
             roundAmount: get(roundAmount),
@@ -400,11 +397,11 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             highestSupporterLevel: get(supporterLevel) || 0,
             restriction: multiplayerRestriction,
             category: localStorage.getItem("selectedCategory") || "standard",
-            mapLocationsArray: get(currentlyLoadedLocationsArray), // Map location data to calculate boundaries
+            mapBounds: getMapBounds(),
             location: [35.7072457, 139.863412], // Default panorama to prevent blackscreen
             guessLocationsArray: [], // Guesses from players
             confirmedArray: [], // Players that have confirmed their guess
-            uuid: duelUUID,
+            uuid: generateDuelUUID(),
             firstRoundPlayed: false,
             chats: [],
             overlay: true,

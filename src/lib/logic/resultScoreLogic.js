@@ -10,12 +10,12 @@ import { updatePeerScore } from "$lib/logic/multiplayerLogic";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
 import { setUserXP } from "$lib/utils/setUserXP";
-import { mapDiameter } from "$lib/stores/context-specific/mapStore";
 import { saveRoundToLog } from "$lib/utils/saveRoundToLog";
 import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates";
 import { playSound } from "$lib/utils/soundManager";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
 import { get } from "svelte/store";
+import { getMapBounds } from "$lib/utils/getMapBounds";
 
 // Streak ----------------------------------------------------------------------------------------------------------------------------------------------------
 let streak = 0;
@@ -98,8 +98,8 @@ async function calculateXPGain(distance, category, supporterLevelParam, freeSupp
         returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
     } else {
-        if (get(mapDiameter) > 250) await streakCalculation(); // If the map is big enough, calculate the country streak
-        returnXP = Math.round(5000 * ((calculateExponentialModifier(get(mapDiameter))) ** distance));
+        if (getMapBounds().diameter > 250) await streakCalculation(); // If the map is big enough, calculate the country streak
+        returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance));
     }
 
     let supporterMultiplier = 1;
