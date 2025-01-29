@@ -69,29 +69,19 @@ function setMultiplayerUI() {
         chatVisible.set(true);
     } else {
         mapModeIndicatorVisible.set(false);
-        leaveFunction.set();
+        leaveFunction.set(); // Hides leave option too
         chatVisible.set(false);
     }
 }
 
 // End round ---------------------------------------------------------------------------------------------------------------------------------
-function multiplayerTimerExpired() {
-    const hasSubmittedMarker = get(peer)?.getStorage?.guessLocationsArray?.find((element) => element.id == get(peer)?.id);
-    if (!hasSubmittedMarker) addMultiplayerGuessMarker(); // Only add default / previous marker if the player actually hasnt guessed yet...
-    setTimeout(() => {
-        if (get(peer)?.isHost) get(peer)?.updateStorage("showResult", true);
-    }, 1000); // Wait for guesses to arrive
-}
-
 function endMultiplayerRound() {
     // After 5 seconds, allow the skip functionality for all players
     startedRound = false;
     continueText.set("Wait 5s..."); // Wait text will auto-disable the button
-    setTimeout(function () {
-        continueText.set("Continue");
-    }, 5000);
+    setTimeout(() => continueText.set("Continue"), 5000);
 
-    try { multiplayerTimer.stopTimer(); } catch { }; // Stop multiplayer timer
+    if (get(peer)?.isHost) get(peer)?.updateStorage("timerStart", 0);
     enableResultScreen(get(mapPinLat), get(mapPinLng));
     get(peer)?.updateStorage("confirmedArray", []); // Reset confirmed guesses to prevent double-end
 }
@@ -120,7 +110,6 @@ export function updatePeerScore(addScore) {
 
 // Load PlayPeerJS -----------------------------------------------------------------------------------------------------------------------
 export async function createPeerInstance() {
-    // Generate a unique user ID
     let uniqueUserID;
 
     if (localStorage.getItem("id")) {
@@ -152,16 +141,6 @@ export async function createPeerInstance() {
             get(peer).onEvent('status', status => console.log(status)); // !TODO remove debug
             get(peer).onEvent('error', (error) => {
                 if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system (PlayPeerJS) reports an error.", error);
-            });
-
-            // Joined room successfully...
-            get(peer).onEvent('outgoingPeerConnected', () => {
-                multiplayer.set(true);
-                linkJoinPopup.set(false);
-                matchmakingActive.set(false);
-                setMultiplayerUI();
-                goto("/");
-                get(peer)?.updateStorageArray("chats", "add", `System: ${get(username) || get(savedGuestName)} joined.`);
             });
 
             // New peer connected to host...
@@ -271,13 +250,14 @@ export async function createPeerInstance() {
                 }
 
                 // Set coordinates
-                if (storage.location && storage.currentRound >= 1 && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1])) {
-                    // The host generates the location, so don't execute this again for them
-                    if (get(multiplayer) && !get(peer)?.isHost) {
-                        multiplayerOverlayCountdown();
-                        checkGenerationTypeAndGenerate();
-                    }
+                if (storage.location && storage.currentRound >= 1 && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1]) && get(multiplayer)) {
+                    checkGenerationTypeAndGenerate();
                 }
+
+                if (storage.countdownActive) multiplayerOverlayCountdown(); // Activate countdown
+
+                if (storage.timerStart && !multiplayerTimer?.isTimerRunning()) startMultiplayerTimer(Math.max(0, get(roundLength) - (Math.round(Date.now() / 1000) - storage.timerStart))); // Set timer if not running
+                if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) try { multiplayerTimer?.stopTimer(); } catch { }; // Stop multiplayer timer
             });
 
             get(peer).onEvent('destroy', () => {
@@ -314,8 +294,6 @@ export function joinFromLink(roomcode) {
 let roomIndex = 0;
 let playingDuels = false;
 let friendDuel = false;
-
-let duelUUID = null; // Used for duel validation and identification, created by host
 
 export function setPlayingDuels(state) {
     playingDuels = state;
@@ -362,7 +340,7 @@ function findNextDuel() {
 function showTimeReducedOverlay(time, hide) {
     if (!hide) {
         try {
-            if (multiplayerTimer.isTimerRunning() && multiplayerTimer.getRemainingTime() > 3) { // Only show overlay if it the remaining time is above 3s
+            if (multiplayerTimer?.isTimerRunning() && multiplayerTimer?.getRemainingTime() > 3) { // Only show overlay if it the remaining time is above 3s
                 timeReducedOverlay.set(true);
                 playSound("time_reduced");
 
@@ -378,8 +356,7 @@ function showTimeReducedOverlay(time, hide) {
 
     if (time) {
         if (multiplayerTimer?.isTimerRunning() && multiplayerTimer?.getRemainingTime() > time) {
-            multiplayerTimer?.stopTimer();
-            multiplayerTimer = startTimer(time, multiplayerTimerExpired); // Start the timer with new time
+            startMultiplayerTimer(time); // Start the timer with new time
             timeReducedOverlayText.set(`Time reduced to ${time}s.`);
         } else {
             timeReducedOverlayText.set("Time remains unaffected.");
@@ -412,7 +389,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
         roundLength.set(LengthOfRounds);
 
         // Generate random duel UUID (only used in duels)
-        duelUUID = generateDuelUUID();
+        const duelUUID = generateDuelUUID();
 
         roomcode.set(await get(peer)?.createRoom({
             players: [],
@@ -434,10 +411,10 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             timeReducedOverlay: false,
             showResult: false,
             startRound: false,
-            gameOngoing: false // True after the room was started once and is not in creation phase
+            gameOngoing: false, // True after the room was started once and is not in creation phase
+            countdownActive: false,
+            timerStart: 0
         }));
-
-        showMultiplayerOverlay(true);
     } catch (error) {
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", "Error occured trying to set up PlayPeerJS room.", error);
@@ -449,6 +426,7 @@ export function startRoom() {
     multiplayer.set(true);
     setMultiplayerUI();
     matchmakingActive.set(false);
+    if (!get(peer)?.getStorage?.firstRoundPlayed) goto("/"); // Creation page -> home
     get(peer)?.updateStorage("gameOngoing", true);
     get(peer).updateStorage("startRound", true);
 }
@@ -463,12 +441,12 @@ export function multiplayerRematch() {
         element[3] = 0;
     });
     get(peer)?.updateStorage("players", playersArray);
-
     startRoom();
 }
 
 // Start the first / next round (HOST only)
 let startedRound = false;
+
 async function startMultiplayerRound() {
     if (startedRound) return;
     startedRound = true;
@@ -478,8 +456,8 @@ async function startMultiplayerRound() {
     get(peer)?.updateStorage("timeReducedOverlay", false);
 
     // Countdown
-    multiplayerOverlayCountdown();
-    if (!get(peer)?.getStorage?.firstRoundPlayed) goto("/"); // Go to home if starting from different page
+    if (get(peer)?.getStorage?.firstRoundPlayed) await new Promise(resolve => setTimeout(resolve, 1500)); // Wait to show results
+    get(peer)?.updateStorage("countdownActive", true);
     get(peer)?.updateStorage("currentRound", get(peer)?.getStorage?.currentRound + 1);
     get(peer)?.updateStorageArray("chats", "add", `System: Starting round ${get(peer)?.getStorage?.currentRound}.`);
 }
@@ -490,6 +468,12 @@ export async function joinRoom(code) {
         code = "openguessr_" + code.replaceAll(" ", "").toLowerCase(); // Remove whitespaces and lowercase
         await createPeerInstance();
         await get(peer).joinRoom(code);
+        multiplayer.set(true);
+        linkJoinPopup.set(false);
+        matchmakingActive.set(false);
+        setMultiplayerUI();
+        goto("/");
+        get(peer)?.updateStorageArray("chats", "add", `System: ${get(username) || get(savedGuestName)} joined.`);
     } catch (error) {
         console.error("Error occured joining room:", error); // Status will be set by playpeerjs
         if (get(matchmakingActive)) findNextDuel();
@@ -506,7 +490,7 @@ export function leaveMultiplayerRound(destroy = true) {
     get(peer)?.destroy(); // Destroy peer
 
     // Result screen timer (sometimes not set, therefore catch)
-    try { multiplayerTimer.stopTimer() } catch { };
+    try { multiplayerTimer?.stopTimer() } catch { };
 
     // Clear running intervals
     clearInterval(countdownInterval);
@@ -543,7 +527,7 @@ export function leaveMultiplayerRound(destroy = true) {
     friendDuel = false;
     if (localStorage.getItem("selectedMap") !== "country guesser") mapVisible.set(true);
 
-    if (wasMultiplayerEnabled) checkGenerationTypeAndGenerate(); // Regenerate
+    if (wasMultiplayerEnabled) checkGenerationTypeAndGenerate(); // Regenerate location
 }
 
 // Panorama Overlay UI ------------------------------------------------------------------------------------------------------------------------------------------
@@ -651,8 +635,7 @@ function determineWinner(array, teams, teamsObject) {
 
                 // Check if you won in duels or just played
                 if (playingDuels && !friendDuel) {
-                    const won = winningPlayerData[5] == localStorage.getItem("id");
-                    won ? addDuelWon() : addDuelPlayed();
+                    winningPlayerData[5] == localStorage.getItem("id") ? addDuelWon() : addDuelPlayed();
                     sendDuelDivisionResult(won, get(peer)?.getStorage?.uuid);
                 }
             }
@@ -663,17 +646,17 @@ function determineWinner(array, teams, teamsObject) {
     }
 }
 
-let multiplayerTimer;
 let countdownInterval;
 
 // This starts the round visually with a countdown
 async function multiplayerOverlayCountdown() {
+    if (countdownInterval) return;
+
+    clearInterval(countdownInterval); // Clear
+    showEndscreenUI(false); // Hide Leave & End option
     if (playingDuels && !friendDuel) localStorage.setItem("activeDuel", "active"); // Save for leave penalty
 
     let countdown = 3;
-    clearInterval(countdownInterval); // Clear
-    showEndscreenUI(false); // Hide Leave & End option
-    if (get(peer)?.getStorage?.firstRoundPlayed) await new Promise(resolve => setTimeout(resolve, 1500));
 
     countdownInterval = setInterval(function () {
         if (countdown > 0) {
@@ -682,16 +665,34 @@ async function multiplayerOverlayCountdown() {
             playSound("match_countdown");
         } else {
             clearInterval(countdownInterval); // Stop the countdown
+            countdownInterval = undefined;
 
             if (get(multiplayer)) {
                 showMultiplayerOverlay(false); // Hide the overlay --> round starts
-                try { multiplayerTimer.stopTimer(); } catch { }; // Stop multiplayer timer
-                multiplayerTimer = startTimer(get(roundLength), multiplayerTimerExpired); // Start the timer
-
+                get(peer)?.updateStorage("countdownActive", false);
                 get(peer)?.updateStorage("overlay", false); // Hide overlay for all
                 get(peer)?.updateStorage("firstRoundPlayed", true);
                 playSound("match_countdown_start");
+
+                // Timer
+                get(peer)?.updateStorage("timerStart", Math.round(Date.now() / 1000));
             }
         }
     }, 1000);
+}
+
+// Timer -------------------------------------------------------------------------------------------------------------------------------------
+let multiplayerTimer;
+
+function startMultiplayerTimer(duration) {
+    try { multiplayerTimer?.stopTimer(); } catch { };
+    multiplayerTimer = startTimer(duration, multiplayerTimerExpired);
+}
+
+function multiplayerTimerExpired() {
+    const hasSubmittedMarker = get(peer)?.getStorage?.guessLocationsArray?.find((element) => element.id == get(peer)?.id);
+    if (!hasSubmittedMarker) addMultiplayerGuessMarker(); // Only add default / previous marker if the player actually hasnt guessed yet...
+    setTimeout(() => {
+        if (get(peer)?.isHost) get(peer)?.updateStorage("showResult", true);
+    }, 1000); // Wait for guesses to arrive
 }
