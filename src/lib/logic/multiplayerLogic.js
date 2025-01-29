@@ -400,8 +400,8 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             category: localStorage.getItem("selectedCategory") || "standard",
             mapBounds: getMapBounds(),
             location: [35.7072457, 139.863412], // Default panorama to prevent blackscreen
-            guessLocationsArray: [], // Guesses from players
-            confirmedArray: [], // Players that have confirmed their guess
+            guessLocationsArray: [], // Guesses from players (with location data)
+            confirmedArray: [], // Player ids that have confirmed their guess
             uuid: generateDuelUUID(),
             firstRoundPlayed: false,
             chats: [],
@@ -618,6 +618,8 @@ function determineWinner(array, teams, teamsObject) {
             const winningTeamIndex = array[0]?.teamIndex;
             let teamColorName = teamsObject[winningTeamIndex]?.colorName;
             multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
+            const yourTeam = (get(peer)?.getStorage?.players?.find((e) => e[0] == get(peer)?.id))[4];
+            yourTeam == winningTeamIndex ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
 
         } else {
             const winningPlayerData = array[0];
@@ -632,7 +634,7 @@ function determineWinner(array, teams, teamsObject) {
             } else {
                 // Clear Winner
                 multiplayerOverlayTitle.set(winningPlayerData[1] + " won!");
-                localStorage.getItem("id") == winningPlayerData[5] ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
+                get(peer)?.id == winningPlayerData[0] ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
 
                 // Check if you won in duels or just played
                 if (playingDuels && !friendDuel) {
