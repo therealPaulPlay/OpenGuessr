@@ -85,6 +85,7 @@ function multiplayerTimerExpired() {
 
 function endMultiplayerRound() {
     // After 5 seconds, allow the skip functionality for all players
+    startedRound = false;
     continueText.set("Wait 5s..."); // Wait text will auto-disable the button
     setTimeout(function () {
         continueText.set("Continue");
@@ -246,14 +247,20 @@ export async function createPeerInstance() {
                     remainingPlayers.set(remaining); // Set the remainingPlayers to the usernames
                 }
 
+                // Start new round
+                if (storage.startRound && get(peer)?.isHost) {
+                    get(peer).updateStorage("startRound", false);
+                    startMultiplayerRound();
+                }
+
                 // Control result screen
                 if (storage.showResult !== undefined && storage.showResult != get(resultScreenEnabled)) {
                     if (storage.showResult == true) {
                         endMultiplayerRound();
                     } else {
-                        if (get(peer)?.isHost && storage?.currentRound < get(roundAmount)) startMultiplayerRound();
                         disableResultScreen();
                         get(peer)?.updateStorage("overlay", true);
+                        if (storage?.currentRound < get(roundAmount)) get(peer).updateStorage("startRound", true);
                     }
                 }
 
@@ -425,6 +432,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             overlay: true,
             timeReducedOverlay: false,
             showResult: false,
+            startRound: false
         }));
 
         showMultiplayerOverlay(true);
@@ -440,7 +448,7 @@ export function startRoom() {
     setMultiplayerUI();
     get(peer)?.updateStorage("overlay", true);
     matchmakingActive.set(false);
-    startMultiplayerRound();
+    get(peer).updateStorage("startRound", true);
 }
 
 export function multiplayerRematch() {
@@ -458,7 +466,10 @@ export function multiplayerRematch() {
 }
 
 // Start the first / next round (HOST only)
+let startedRound = false;
 async function startMultiplayerRound() {
+    if (startedRound) return;
+    startedRound = true;
     await checkGenerationTypeAndGenerate();
     get(peer)?.updateStorage("location", [get(currentLocationLatitude), get(currentLocationLongitude)]); // Set coordinates
     get(peer)?.updateStorage("guessLocationsArray", []); // Resets
@@ -468,7 +479,6 @@ async function startMultiplayerRound() {
     multiplayerOverlayCountdown();
     if (!get(peer)?.getStorage?.firstRoundPlayed) goto("/"); // Go to home if starting from different page
     get(peer)?.updateStorage("currentRound", get(peer)?.getStorage?.currentRound + 1);
-
     get(peer)?.updateStorageArray("chats", "add", `System: Starting round ${get(peer)?.getStorage?.currentRound}.`);
 }
 
