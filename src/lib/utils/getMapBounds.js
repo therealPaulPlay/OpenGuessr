@@ -1,4 +1,4 @@
-// Get the locations of a map (currentlyLoadedLocationsArray), and caluclate the ideal minimap center + zoom based on that
+// Get the locations of a map (the loaded locations Array), and caluclate the ideal minimap center + zoom based on that
 // This allows all maps to only show the area on the minimap that is really needed
 import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
@@ -13,7 +13,7 @@ let currentZoom = 2;
 
 export function getMapBounds() {
     // If no locations are loaded, set the map to the default
-    if (!get(currentlyLoadedLocationsArray) || !get(currentlyLoadedLocationsArray)?.length) {
+    if (!get(currentlyLoadedLocationsArray)?.length) {
         if (get(multiplayer) && get(peer)?.getStorage?.mapBounds) return get(peer)?.getStorage?.mapBounds;
         return { zoom: 2, lat: 0, lng: 0, diameter: 360 }
     }

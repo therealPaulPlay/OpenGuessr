@@ -587,10 +587,11 @@ function updateMultiplayerTableArray() {
 
 function showMultiplayerOverlay(show) {
     multiplayerOverlay.set(show);
-    if (get(peer)?.getStorage?.firstRoundPlayed && show) multiplayerOverlayTitle.set("Results from round " + get(peer)?.getStorage?.currentRound);
-    if (!get(peer)?.getStorage?.firstRoundPlayed && show) multiplayerOverlayTitle.set("Waiting...");
 
     if (show) {
+        if (get(peer)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(peer)?.getStorage?.currentRound);
+        if (!get(peer)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
+
         showEndscreenUI(false); // Default to no endscreen UI
         if (!get(peer)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (localStorage.getItem("selectedCategory") || "standard").replace("community_", "") + ")");
 
@@ -658,22 +659,19 @@ async function multiplayerOverlayCountdown() {
     countdownInterval = setInterval(function () {
         if (countdown > 0) {
             multiplayerOverlayTitle.set(`Starting... ${countdown}`);
+            get(peer)?.updateStorage("countdownActive", false);
             countdown--;
             playSound("match_countdown");
         } else {
             clearInterval(countdownInterval); // Stop the countdown
             countdownInterval = undefined;
 
-            if (get(multiplayer)) {
-                showMultiplayerOverlay(false); // Hide the overlay --> round starts
-                get(peer)?.updateStorage("countdownActive", false);
-                get(peer)?.updateStorage("overlay", false); // Hide overlay for all
-                get(peer)?.updateStorage("firstRoundPlayed", true);
-                playSound("match_countdown_start");
+            get(peer)?.updateStorage("overlay", false); // Hide overlay (round starts)
+            get(peer)?.updateStorage("firstRoundPlayed", true);
+            playSound("match_countdown_start");
 
-                // Timer
-                get(peer)?.updateStorage("timerStart", Math.round(Date.now() / 1000));
-            }
+            // Timer
+            get(peer)?.updateStorage("timerStart", Math.round(Date.now() / 1000));
         }
     }, 1000);
 }

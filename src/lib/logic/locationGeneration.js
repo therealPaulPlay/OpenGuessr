@@ -11,7 +11,7 @@ export async function getLocationCoordinates(type) {
     } else if (type == "SDK") {
         return await getCoordsFromLocationServer();
     } else if (type == "FROMHOST") {
-        currentlyLoadedLocationsArray.set(); // Empty, to use host data
+        currentlyLoadedLocationsArray.set([]); // Empty, to use host data
         return get(peer)?.getStorage?.location;
     } else if (type == "COMMUNITY") {
         return await getCommunityMapCoordinates();
