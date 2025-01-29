@@ -231,10 +231,11 @@ export async function createPeerInstance() {
                 if (storage.startRound && get(peer)?.isHost) {
                     get(peer).updateStorage("startRound", false);
                     startMultiplayerRound();
+                    console.log("Starting");
                 }
 
                 // Control result screen
-                if (storage.showResult !== undefined && storage.showResult != get(resultScreenEnabled)) {
+                if (storage.showResult !== undefined && storage.showResult !== get(resultScreenEnabled)) {
                     if (storage.showResult == true) {
                         endMultiplayerRound();
                     } else {
@@ -426,6 +427,7 @@ export function startRoom() {
     if (!get(peer)?.getStorage?.firstRoundPlayed) goto("/"); // Creation page -> home
     get(peer)?.updateStorage("gameOngoing", true);
     get(peer).updateStorage("startRound", true);
+    console.log("Room starting");
 }
 
 export function multiplayerRematch() {
@@ -505,6 +507,7 @@ export function leaveMultiplayerRound(destroy = true) {
     roomcode.set("loading...");
     connectionCount.set(0);
     multiplayerRestriction = "standard";
+    startedRound = false;
 
     // General UI resets
     continueText.set("Continue");

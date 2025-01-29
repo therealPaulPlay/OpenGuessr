@@ -13,7 +13,7 @@ let currentZoom = 2;
 
 export function getMapBounds() {
     // If no locations are loaded, set the map to the default
-    if (!get(currentlyLoadedLocationsArray)?.length) {
+    if (get(multiplayer) || !get(currentlyLoadedLocationsArray)?.length) {
         if (get(multiplayer) && get(peer)?.getStorage?.mapBounds) return get(peer)?.getStorage?.mapBounds;
         return { zoom: 2, lat: 0, lng: 0, diameter: 360 }
     }
