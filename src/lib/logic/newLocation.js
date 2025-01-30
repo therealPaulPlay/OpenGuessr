@@ -5,12 +5,13 @@ import { setCountryGuesserMode } from "$lib/utils/countryGuesserFunctions";
 import { setImageGuesserMode } from "$lib/utils/imageGuesserFunctions";
 import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
-import { isHost } from "$lib/stores/context-specific/multiplayerStore";
+import { peer } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { countryMaps, continentMaps } from "$lib/stores/context-specific/officialMapsStore";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
+import { loadingScreenVisible } from "$lib/stores/uiStore";
 
 // Check for Play URLs that include a map ---------------------------------------------------------------------------
 
@@ -38,13 +39,13 @@ function checkLinkMap() {
 // Location Generation with correct Type ---------------------------------------------------------------------------------------------------------
 
 export async function checkGenerationTypeAndGenerate() {
-    const mapCategory = localStorage.getItem("selectedCategory") || "standard";
+    loadingScreenVisible.set(true); // Show loading screen
 
+    const mapCategory = localStorage.getItem("selectedCategory") || "standard";
     if (!checkedForMapLink) checkLinkMap();
 
-    // Timer resets
+    // Competition timer reset
     stopCompetitionTimer();
-    timerText.set("00:00");
 
     // Reset Mode specific UI
     setCountryGuesserMode(false);
@@ -77,7 +78,7 @@ export async function checkGenerationTypeAndGenerate() {
     } else if (get(multiplayer)) {
         singleplayer.set(false); // Don't apply singleplayer settings
 
-        if (get(isHost)) {
+        if (get(peer)?.isHost) {
             try {
                 if (mapCategory && mapCategory != "standard" && !mapCategory.includes("community")) {
                     await generateNewLocation("JSON");

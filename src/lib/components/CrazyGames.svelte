@@ -2,9 +2,6 @@
 <script>
 	import { onMount } from "svelte";
 	import {
-		isHost,
-		roomLocked,
-		peerId,
 		roundAmount,
 		roundLength,
 		hostStage,
@@ -88,19 +85,6 @@
 
 				// Attach auth listener for if the user signs up mid play
 				window.CrazyGames.SDK.user.addAuthListener(authenticateWithCrazyGames);
-
-				// Add listener to multiplayer state to display friend invite thing
-				roomLocked.subscribe((value) => {
-					if (!value && $isHost) {
-						const roomId = get(peerId).replace("openguessr_", "");
-
-						window.CrazyGames.SDK.game.showInviteButton({
-							join: roomId,
-						});
-					} else {
-						window.CrazyGames.SDK.game.hideInviteButton();
-					}
-				});
 
 				resultScreenEnabled.subscribe((value) => {
 					if (value) {

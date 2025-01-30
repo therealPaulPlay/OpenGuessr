@@ -1,23 +1,18 @@
 import { writable } from "svelte/store";
 
+// Peer
+export const peer = writable();
+
 // Settings
-export const isHost = writable(false);
-export const coordsFromHost = writable([35.7072457, 139.863412]); // Default panorama to prevent black screen flash on e.g. link join
-export const highestMultiplayerSupporterLevel = writable(0);
 export const roundAmount = writable(3);
 export const roundLength = writable(60);
 export const teamAmount = writable(1);
-export const roomLocked = writable(true);
 
 // Matchmaking and Duels
 export const matchmakingActive = writable(false);
 
 // Data
-export const multiplayerGuessesLocationsArray = writable([]);
-export const peerId = writable();
-export const connectedPlayers = writable([]); // Connected peers and the host, with a lot of data
 export const savedGuestName = writable("Guest (Default)");
-export const yourTeam = writable(1);
 
 // UI
 export const multiplayerStatus = writable(); // Status for Duel, Join, Linjoin etc.
@@ -28,6 +23,11 @@ export const screenEscapeDisabled = writable(false); // Set the Close and Back b
 export const duelRetryEnabled = writable(false);
 export const restrictionButtonText = writable("Standard");
 
+// UI - Host
+export const connectionCount = writable(0);
+export const teamsDisplayText = writable("");
+export const roomcode = writable("loading...");
+
 // UI - Time reduced Overlay for Duels
 export const timeReducedOverlay = writable(false);
 export const timeReducedOverlayText = writable("Default");
@@ -35,13 +35,14 @@ export const timeReducedOverlayText = writable("Default");
 // UI - Multiplayer Overlay (Table Overlay)
 export const multiplayerOverlay = writable(false);
 export const multiplayerOverlayTitle = writable("Default Title");
-export const rematchButtonEnabled = writable(false); // Control whether the rematch button is greyed out or not
 export const overlayTitleElement = writable(); // Used for animations
 export const multiplayerTableArray = writable([]); // Array used for the table in the overlay (with all players ranked by XP etc.)
+export const overlayShowSubtitle = writable(false);
 
 export const rematchButtonVisible = writable(false);
 export const leaveMatchButtonVisible = writable(false);
 
 // UI - Chat
-export const chatHTML = writable(); // Inner Chat HTML
+export const chatArray = writable(); // Inner Chat HTML
 export const chatVisible = writable(false);
+export const remainingPlayers = writable([]);

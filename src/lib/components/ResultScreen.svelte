@@ -44,17 +44,6 @@
 		level = getLevel();
 		percentageWidth = getLevelFraction() * 100 + "%";
 	});
-
-	onMount(() => {
-		if (typeof window === "undefined") return;
-
-		window.addEventListener("keydown", function (event) {
-			if (event.key === " " && isElementClickable(document.getElementById("nextRound")) && $resultScreenEnabled) {
-				transitionToStart();
-				playSound("basic_button");
-			}
-		});
-	});
 </script>
 
 <div id="EndOverlay" class:resultScreenHidden={!Boolean($resultScreenEnabled)}>
@@ -149,6 +138,15 @@
 		</div>
 	</div>
 </div>
+
+<svelte:window
+	onkeypress={(event) => {
+		if (event.key === " " && isElementClickable(document.getElementById("nextRound")) && $resultScreenEnabled) {
+			transitionToStart();
+			playSound("basic_button");
+		}
+	}}
+/>
 
 <style>
 	#EndOverlay {

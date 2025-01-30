@@ -1,7 +1,6 @@
 // This generates a new location, but keep in mind that this is NOT the function to present the user with a new location! This does not check the selected map etc.
 import { getLocationCoordinates } from '$lib/logic/locationGeneration';
-import { startMultiplayerRound } from '$lib/logic/multiplayerLogic';
-import { isHost } from "$lib/stores/context-specific/multiplayerStore"
+import { peer } from "$lib/stores/context-specific/multiplayerStore"
 import { countryGuesser, multiplayer, imageGuesser } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from '$lib/stores/locationStore';
 import { setCountryGuesserCountry } from '$lib/utils/countryGuesserFunctions';
@@ -42,8 +41,4 @@ export async function generateNewLocation(type) {
 
     // Rest Map
     if (!get(resultScreenEnabled)) resetMap();
-
-    if (get(multiplayer) && get(isHost)) {
-        startMultiplayerRound(get(currentLocationLatitude), get(currentLocationLongitude));
-    }
 }
