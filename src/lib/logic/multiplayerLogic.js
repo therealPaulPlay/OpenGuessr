@@ -369,6 +369,7 @@ function removeConnectedPeerById(peerId) {
 
 export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit) {
     try {
+        disableResultScreen(); // Edge case
         await createPeerInstance(); // Get new peer instance
 
         // Check if map is valid for multiplayer
@@ -458,6 +459,7 @@ async function startMultiplayerRound() {
 export async function joinRoom(code) {
     try {
         code = "openguessr_" + code.replaceAll(" ", "").toLowerCase(); // Remove whitespaces and lowercase
+        disableResultScreen(); // Edge case
         await createPeerInstance();
         await get(peer).joinRoom(code);
         multiplayer.set(true);
@@ -485,6 +487,7 @@ export function leaveMultiplayerRound(destroy = true) {
 
     // Clear running intervals
     clearInterval(countdownInterval);
+    countdownInterval = undefined; // Tell overlay countdown it is not running
 
     screenEscapeDisabled.set(false); // Make Back and Close visible
     duelRetryEnabled.set(false); // Make Duel retry button disabled (Standard)
@@ -591,10 +594,10 @@ function showMultiplayerOverlay(show) {
         if (!get(peer)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (localStorage.getItem("selectedCategory") || "standard").replace("community_", "") + ")");
 
         const isTeams = get(teamAmount) > 1;
-        determineWinner(get(multiplayerTableArray), isTeams, isTeams ? teams : undefined);
 
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
         mapVisible.set(false); // Hide map
+        if (get(peer)?.getStorage?.currentRound >= get(roundAmount)) determineWinner(get(multiplayerTableArray), isTeams, isTeams ? teams : undefined); // Win / Lose
 
     } else {
         if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country guesser") {
@@ -604,42 +607,39 @@ function showMultiplayerOverlay(show) {
 }
 
 function determineWinner(array, teams, teamsObject) {
-    if (get(peer)?.getStorage?.currentRound >= get(roundAmount)) {
+    if (teams) {
+        const winningTeamIndex = array[0]?.teamIndex;
+        let teamColorName = teamsObject[winningTeamIndex]?.colorName;
+        multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
+        const yourTeam = (get(peer)?.getStorage?.players?.find((e) => e[0] == get(peer)?.id))[4];
+        yourTeam == winningTeamIndex ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
 
-        if (teams) {
-            const winningTeamIndex = array[0]?.teamIndex;
-            let teamColorName = teamsObject[winningTeamIndex]?.colorName;
-            multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
-            const yourTeam = (get(peer)?.getStorage?.players?.find((e) => e[0] == get(peer)?.id))[4];
-            yourTeam == winningTeamIndex ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
+    } else {
+        const winningPlayerData = array[0];
+        const followUpPlayerData = array[1] || undefined;
+        removeRankedLeavePenalty(); // Remove leave penalty notice
+
+        if (followUpPlayerData && winningPlayerData[3] == followUpPlayerData[3]) {
+            // Draw
+            multiplayerOverlayTitle.set("It's a draw!");
+            if (playingDuels && get(isAuthenticated) && !friendDuel) addDuelPlayed();
 
         } else {
-            const winningPlayerData = array[0];
-            const followUpPlayerData = array[1] || undefined;
-            removeRankedLeavePenalty(); // Remove leave penalty notice
+            // Clear Winner
+            multiplayerOverlayTitle.set(winningPlayerData[1] + " won!");
+            get(peer)?.id == winningPlayerData[0] ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
 
-            if (followUpPlayerData && winningPlayerData[3] == followUpPlayerData[3]) {
-                // Draw
-                multiplayerOverlayTitle.set("It's a draw!");
-                if (playingDuels && get(isAuthenticated) && !friendDuel) addDuelPlayed();
-
-            } else {
-                // Clear Winner
-                multiplayerOverlayTitle.set(winningPlayerData[1] + " won!");
-                get(peer)?.id == winningPlayerData[0] ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
-
-                // Check if you won in duels or just played
-                if (playingDuels && !friendDuel) {
-                    const won = winningPlayerData[5] == localStorage.getItem("id");
-                    won ? addDuelWon() : addDuelPlayed();
-                    sendDuelDivisionResult(won, get(peer)?.getStorage?.uuid);
-                }
+            // Check if you won in duels or just played
+            if (playingDuels && !friendDuel) {
+                const won = winningPlayerData[5] == localStorage.getItem("id");
+                won ? addDuelWon() : addDuelPlayed();
+                sendDuelDivisionResult(won, get(peer)?.getStorage?.uuid);
             }
         }
-
-        // Display UI for playing again or exiting
-        showEndscreenUI(true);
     }
+
+    // Display UI for playing again or exiting
+    showEndscreenUI(true);
 }
 
 let countdownInterval;
@@ -647,8 +647,6 @@ let countdownInterval;
 // This starts the round visually with a countdown
 async function multiplayerOverlayCountdown() {
     if (countdownInterval) return;
-
-    clearInterval(countdownInterval); // Clear
     showEndscreenUI(false); // Hide Leave & End option
 
     let countdown = 3;

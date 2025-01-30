@@ -101,18 +101,14 @@ export async function loadResultMap(playersLat, playersLong) {
             let associatedPlayerName = element.username;
 
             // Handle edge cases
+            if (newMarkerPinIndex == null) newMarkerPinIndex = 0;
             if (newMarkerLat == null || newMarkerLong == null || isNaN(newMarkerLat)) {
                 newMarkerLat = 0;
                 newMarkerLong = 0;
             }
 
-            if (newMarkerPinIndex == null) {
-                newMarkerPinIndex = 0;
-                console.error("Provided maker pin index form peer is null");
-            }
-
             // Place multiplayer markers if not player's marker
-            if (newMarkerLat != playersLat || newMarkerLong != playersLong) {
+            if (element.id !== get(peer)?.id) {
 
                 let newMultiplayerIcon = {
                     url: "/img/your_marker" + newMarkerPinIndex + ".png",
