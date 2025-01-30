@@ -156,17 +156,17 @@ export async function createPeerInstance() {
 
             // Peer disconnected from host...
             get(peer).onEvent('incomingPeerDisconnected', (id) => {
-                const disconnectedPlayerName = get(peer)?.getStorage?.players?.find((item) => item[0] == id)[1] || "Unknown";
+                const name = get(peer)?.getStorage?.players?.find((p) => p[0] == id)?.[1] || "Unknown";
+                get(peer)?.updateStorageArray("chats", "add", `System: ${name} left.`);
                 removeConnectedPeerById(id);
-                get(peer)?.updateStorageArray("chats", "add", `System: ${disconnectedPlayerName} left.`);
                 connectionCount.set(get(peer)?.connectionCount);
             });
 
             // Host disconnected from peer...
             get(peer).onEvent('outgoingPeerDisconnected', (id) => {
-                const disconnectedPlayerName = get(peer)?.getStorage?.players?.find((item) => item[0] == id)[1] || "Unknown";
+                const name = get(peer)?.getStorage?.players?.find((p) => p[0] == id)?.[1] || "Unknown";
+                get(peer)?.updateStorageArray("chats", "add", `System: ${name} left - changing host.`);
                 removeConnectedPeerById(id);
-                get(peer)?.updateStorageArray("chats", "add", `System: ${disconnectedPlayerName} left - changing host.`);
                 connectionCount.set(get(peer)?.connectionCount);
                 if (!get(peer)?.getStorage?.gameOngoing) startRoom(); // If the host leaves and the game is still in the hosting phase, start
             });
@@ -360,14 +360,10 @@ function showTimeReducedOverlay(time, show) {
 
 // Host Logic ----------------------------------------------------------------------------------------------
 function removeConnectedPeerById(peerId) {
-    try {
-        const index = get(peer)?.getStorage?.players?.findIndex(entry => entry[0] === peerId) || -1;
-        if (index >= 0) {
-            const contentToRemove = get(peer)?.getStorage?.players[index];
-            get(peer)?.updateStorageArray("players", "remove-matching", contentToRemove);
-        }
-    } catch (error) {
-        console.error("Error in removeConnectedPeerById:", error);
+    const index = get(peer)?.getStorage?.players?.findIndex(entry => entry[0] === peerId);
+    if (index >= 0) {
+        const contentToRemove = get(peer)?.getStorage?.players[index];
+        get(peer)?.updateStorageArray("players", "remove-matching", contentToRemove);
     }
 }
 
