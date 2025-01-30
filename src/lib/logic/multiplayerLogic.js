@@ -370,7 +370,6 @@ function removeConnectedPeerById(peerId) {
 export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
     try {
         await createPeerInstance(); // Get new peer instance
-        multiplayerStatus.set("Room created. Please wait <10s");
 
         // Check if map is valid for multiplayer
         if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
@@ -406,6 +405,8 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             countdownActive: false,
             timerStart: false
         }));
+        if (get(matchmakingActive)) multiplayerStatus.set("Room created. Please wait <10s"); // Wait status
+        
     } catch (error) {
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", "Error occured trying to set up PlayPeerJS room.", error);
