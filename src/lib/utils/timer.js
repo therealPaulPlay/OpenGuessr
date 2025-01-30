@@ -28,13 +28,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         timerText.set(formattedTime);
 
         // Call the onTimerChange callback with just the seconds if it exists
-        if (typeof onChangeCallback === 'function') {
-            try {
-                onChangeCallback(timer);
-            } catch (error) {
-                console.error("Error in timer callback:", error);
-            }
-        }
+        if (typeof onChangeCallback === 'function') onChangeCallback(timer);
 
         if (timer < 10) {
             indicatorFading.set(true);
@@ -62,8 +56,8 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         isRunning = false;
         indicatorFading.set(false);
         littleTimeVignette.set(false);
-        timerText.set("00:00");
         stopSound("timerSound");
+        setTimeout(() => { if (!activeTimer) timerText.set("00:00") }, 1000);
 
         // Clear active timer reference if this is the active timer
         if (activeTimer === timerInstance) {

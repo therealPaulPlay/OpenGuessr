@@ -22,7 +22,8 @@ import {
     matchmakingActive, peer,
     roomcode,
     connectionCount,
-    remainingPlayers
+    remainingPlayers,
+    overlayShowSubtitle
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadChat } from "$lib/utils/chatFunctions.js";
@@ -68,6 +69,7 @@ function setMultiplayerUI() {
 
         modeText.set("Multiplayer (Awaiting info..)");
         chatVisible.set(true);
+        linkJoinPopup.set(false);
     } else {
         mapModeIndicatorVisible.set(false);
         leaveFunction.set(); // Hides leave option too
@@ -82,7 +84,7 @@ function endMultiplayerRound() {
     continueText.set("Wait 5s..."); // Wait text will auto-disable the button
     setTimeout(() => continueText.set("Continue"), 5000);
 
-    if (get(peer)?.isHost) get(peer)?.updateStorage("timerStart", 0);
+    if (get(peer)?.isHost) get(peer)?.updateStorage("timerStart", false);
     enableResultScreen(get(mapPinLat), get(mapPinLng));
     get(peer)?.updateStorage("confirmedArray", []); // Reset confirmed guesses to prevent double-end
 }
@@ -104,6 +106,7 @@ export function updatePeerScore(addScore) {
     if (peerIndex !== -1) {
         const thisPlayer = get(peer)?.getStorage?.players[peerIndex];
         let newPlayer = [...thisPlayer];
+        if (playingDuels && get(peer)?.getStorage?.currentRound > 3) addScore = Math.round(addScore * 1.5); // Duel Multiplayer for round 4 + 5
         newPlayer[3] = newPlayer[3] + addScore;
         get(peer)?.updateStorageArray("players", "update-matching", thisPlayer, newPlayer);
     }
@@ -200,10 +203,6 @@ export async function createPeerInstance() {
 
                 if (get(teamAmount) > 1 && storage.guessLocationsArray && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
 
-                if (storage.timeReducedOverlay && storage.timeReducedOverlay !== get(timeReducedOverlay)) {
-                    showTimeReducedOverlay(15, storage?.confirmedArray?.includes(get(peer)?.id));
-                }
-
                 // Set multiplayer category
                 if (storage.category && localStorage.getItem("selectedCategory") !== storage.category) {
                     changeCategory(storage?.category);
@@ -231,7 +230,6 @@ export async function createPeerInstance() {
                 if (storage.startRound && get(peer)?.isHost) {
                     get(peer).updateStorage("startRound", false);
                     startMultiplayerRound();
-                    console.log("Starting");
                 }
 
                 // Control result screen
@@ -257,8 +255,12 @@ export async function createPeerInstance() {
 
                 if (storage.countdownActive) multiplayerOverlayCountdown(); // Activate countdown
 
-                if (storage.timerStart && !multiplayerTimer?.isTimerRunning()) startMultiplayerTimer(Math.max(0, get(roundLength) - (Math.round(Date.now() / 1000) - storage.timerStart))); // Set timer if not running
+                if (storage.timerStart) startMultiplayerTimer(Math.max(0, storage.timerStart.length - (Math.round(Date.now() / 1000) - storage.timerStart.timestamp))); // Set timer if not running
                 if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) try { multiplayerTimer?.stopTimer(); } catch { }; // Stop multiplayer timer
+
+                if (storage.timeReducedOverlay && storage.timeReducedOverlay !== get(timeReducedOverlay)) {
+                    showTimeReducedOverlay(15, !storage?.confirmedArray?.includes(get(peer)?.id));
+                }
             });
 
             get(peer).onEvent('destroy', () => {
@@ -338,30 +340,21 @@ function findNextDuel() {
 }
 
 // Duel Guess Time Reduce Overlay & reduce remaining time
-function showTimeReducedOverlay(time, hide) {
-    if (!hide) {
-        try {
-            if (multiplayerTimer?.isTimerRunning() && multiplayerTimer?.getRemainingTime() > 3) { // Only show overlay if it the remaining time is above 3s
-                timeReducedOverlay.set(true);
-                playSound("time_reduced");
-
-                setTimeout(() => {
-                    timeReducedOverlay.set(false);
-                    get(peer)?.updateStorage("timeReducedOverlay", false);
-                }, 3000)
-            }
-        } catch (error) { console.warn("Error showing time reduce overlay: " + error) }
-    } else {
-        timeReducedOverlay.set(false);
-    }
-
+function showTimeReducedOverlay(time, show) {
     if (time) {
-        if (multiplayerTimer?.isTimerRunning() && multiplayerTimer?.getRemainingTime() > time) {
-            startMultiplayerTimer(time); // Start the timer with new time
-            timeReducedOverlayText.set(`Time reduced to ${time}s.`);
-        } else {
-            timeReducedOverlayText.set("Time remains unaffected.");
-        }
+        get(peer)?.updateStorage("timerStart", { timestamp: Math.round(Date.now() / 1000), length: time }); // Start timer with new time
+        timeReducedOverlayText.set(`Time reduced to max. ${time}s.`);
+    }
+    if (show) {
+        try {
+            timeReducedOverlay.set(true);
+            playSound("time_reduced");
+
+            setTimeout(() => {
+                timeReducedOverlay.set(false);
+                get(peer)?.updateStorage("timeReducedOverlay", false);
+            }, 3000)
+        } catch (error) { console.warn("Error showing time reduce overlay:", error) }
     }
 }
 
@@ -411,7 +404,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             startRound: false,
             gameOngoing: false, // True after the room was started once and is not in creation phase
             countdownActive: false,
-            timerStart: 0
+            timerStart: false
         }));
     } catch (error) {
         console.error("Error setting up room:", error);
@@ -427,7 +420,6 @@ export function startRoom() {
     if (!get(peer)?.getStorage?.firstRoundPlayed) goto("/"); // Creation page -> home
     get(peer)?.updateStorage("gameOngoing", true);
     get(peer).updateStorage("startRound", true);
-    console.log("Room starting");
 }
 
 export function multiplayerRematch() {
@@ -468,7 +460,6 @@ export async function joinRoom(code) {
         await createPeerInstance();
         await get(peer).joinRoom(code);
         multiplayer.set(true);
-        linkJoinPopup.set(false);
         matchmakingActive.set(false);
         setMultiplayerUI();
         goto("/");
@@ -594,6 +585,7 @@ function showMultiplayerOverlay(show) {
     if (show) {
         if (get(peer)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(peer)?.getStorage?.currentRound);
         if (!get(peer)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
+        overlayShowSubtitle.set(playingDuels && get(peer)?.getStorage?.currentRound >= 3 && get(peer)?.getStorage?.currentRound < 5);
 
         showEndscreenUI(false); // Default to no endscreen UI
         if (!get(peer)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (localStorage.getItem("selectedCategory") || "standard").replace("community_", "") + ")");
@@ -676,16 +668,17 @@ async function multiplayerOverlayCountdown() {
             playSound("match_countdown_start");
 
             // Timer
-            get(peer)?.updateStorage("timerStart", Math.round(Date.now() / 1000));
+            get(peer)?.updateStorage("timerStart", { timestamp: Math.round(Date.now() / 1000), length: get(roundLength) });
         }
     }, 1000);
 }
 
 // Timer -------------------------------------------------------------------------------------------------------------------------------------
 let multiplayerTimer;
+let remainingTime;
 
 function startMultiplayerTimer(duration) {
-    try { multiplayerTimer?.stopTimer(); } catch { };
+    if (Math.abs(multiplayerTimer?.getRemainingTime() - duration) <= 1) return; // If the running timer alr has this duration (with slight tolerance), skip
     multiplayerTimer = startTimer(duration, multiplayerTimerExpired);
 }
 

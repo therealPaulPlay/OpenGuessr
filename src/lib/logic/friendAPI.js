@@ -176,8 +176,8 @@ export async function sendMatchInvite(recipientId, duel) {
         // If Duel, create a room first
         setPlayingDuels(true);
         setFriendDuel(true);
-        await setupMultiplayerRoom(3, 60);
         linkJoinPopup.set(true);
+        await setupMultiplayerRoom(5, 60);
         multiplayerStatus.set("Waiting for response from friend...");
     }
 

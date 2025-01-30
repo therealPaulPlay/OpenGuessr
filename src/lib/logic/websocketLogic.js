@@ -37,7 +37,6 @@ export async function initializeWebsocketConnection() {
 
                 } else if (data.type === 'invite-accepted') {
                     showNotification(`${data.name} accepted your invite.`);
-                    linkJoinPopup.set(false);
                     goto("/"); // Go to main game page
 
                 } else if (data.type === 'invite-declined') {

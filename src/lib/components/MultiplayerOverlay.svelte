@@ -9,6 +9,7 @@
 		multiplayerTableArray,
 		teamAmount,
 		peer,
+		overlayShowSubtitle,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import Badge from "$lib/components/Badge.svelte";
 	import { leaveMultiplayerRound, multiplayerRematch } from "$lib/logic/multiplayerLogic";
@@ -23,7 +24,10 @@
 	style:opacity={$multiplayerOverlay ? "1" : "0"}
 	style:pointer-events={$multiplayerOverlay ? "auto" : "none"}
 >
-	<h1 id="multiplayerTitle" bind:this={$overlayTitleElement}>{$multiplayerOverlayTitle}</h1>
+	<h1 class="multiplayerTitle" bind:this={$overlayTitleElement}>{$multiplayerOverlayTitle}</h1>
+	{#if $overlayShowSubtitle}
+		<h2 class="multiplayerTitle">1.5x Multiplier</h2>
+	{/if}
 	<div id="multiplayerTable">
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		{#if $multiplayerTableArray.length > 0}
@@ -167,7 +171,7 @@
 		background-color: rgba(255, 255, 255, 0.2);
 	}
 
-	#multiplayerTitle {
+	.multiplayerTitle {
 		overflow: hidden;
 		white-space: nowrap;
 		transition:
@@ -181,6 +185,13 @@
 		font-size: 50px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: 20px;
+	}
+
+	#multiplayerFade h2 {
+		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
+		margin-bottom: 20px;
+		margin-top: -20px;
+		opacity: 0.75;
 	}
 
 	:global(#multiplayerFade p),
