@@ -255,10 +255,10 @@ export async function createPeerInstance() {
 
                 if (storage.countdownActive) multiplayerOverlayCountdown(); // Activate countdown
 
-                if (storage.timerStart) startMultiplayerTimer(Math.max(0, storage.timerStart.length - (Math.round(Date.now() / 1000) - storage.timerStart.timestamp))); // Set timer if not running
+                if (storage.timerStart) startMultiplayerTimer(Math.max(0, storage.timerStart?.length - (Math.round(Date.now() / 1000) - storage.timerStart?.timestamp))); // Set timer if not running
                 if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) try { multiplayerTimer?.stopTimer(); } catch { }; // Stop multiplayer timer
 
-                if (storage.timeReducedOverlay && storage.timeReducedOverlay !== get(timeReducedOverlay)) {
+                if (storage.timeReducedOverlay && storage.timeReducedOverlay !== get(timeReducedOverlay) && storage?.confirmedArray?.length === 1) {
                     showTimeReducedOverlay(15, !storage?.confirmedArray?.includes(get(peer)?.id));
                 }
             });
@@ -345,7 +345,7 @@ function showTimeReducedOverlay(time, show) {
         get(peer)?.updateStorage("timerStart", { timestamp: Math.round(Date.now() / 1000), length: time }); // Start timer with new time
         timeReducedOverlayText.set(`Time reduced to max. ${time}s.`);
     }
-    if (show) {
+    if (show && !get(timeReducedOverlay)) {
         try {
             timeReducedOverlay.set(true);
             playSound("time_reduced");
