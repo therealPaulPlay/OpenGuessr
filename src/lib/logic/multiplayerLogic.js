@@ -650,12 +650,6 @@ async function multiplayerOverlayCountdown() {
     clearInterval(countdownInterval); // Clear
     showEndscreenUI(false); // Hide Leave & End option
 
-    // Leave penalty
-    if (playingDuels && !friendDuel) {
-        const opponentId = get(peer)?.getStorage?.players?.find((e) => e[5] !== localStorage.getItem("id"))[5] || null;
-        localStorage.setItem("activeDuel", opponentId);
-    }
-
     let countdown = 3;
 
     countdownInterval = setInterval(function () {
@@ -674,6 +668,12 @@ async function multiplayerOverlayCountdown() {
 
             // Timer
             get(peer)?.updateStorage("timerStart", { timestamp: Math.round(Date.now() / 1000), length: get(roundLength) });
+
+            // Leave penalty
+            if (playingDuels && !friendDuel) {
+                const opponentId = get(peer)?.getStorage?.players?.find(e => e[5] !== localStorage.getItem("id"))?.[5];
+                if (opponentId) localStorage.setItem("activeDuel", opponentId);
+            }
         }
     }, 1000);
 }
