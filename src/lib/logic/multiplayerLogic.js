@@ -323,9 +323,9 @@ export async function findDuel() {
     }
 
     roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
-    matchmakingActive.set(true);
     playingDuels = true;
     multiplayerStatus.set("Starting...");
+    matchmakingActive.set(true);
     attemptDuelJoin(roomIndex);
 }
 
@@ -374,7 +374,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
         // Check if map is valid for multiplayer
         if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
             showNotification("Unsupported map changed to Standard.")
-            changeCategory("standard", true); // Regenerate to update locations array
+            await changeCategory("standard", true); // Regenerate to update locations array
         }
 
         // set round and length parameters
