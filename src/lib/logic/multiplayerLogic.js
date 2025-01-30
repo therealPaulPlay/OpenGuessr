@@ -142,7 +142,7 @@ export async function createPeerInstance() {
 
             // Register event listeners
             get(peer).onEvent('status', status => multiplayerStatus.set(status));
-            get(peer).onEvent('status', status => console.log(status)); // !TODO remove debug
+            get(peer).onEvent('status', status => console.log(status)); // !TODO remove debug (future)
             get(peer).onEvent('error', (error) => {
                 if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system (PlayPeerJS) reports an error.", error);
             });
@@ -174,8 +174,6 @@ export async function createPeerInstance() {
             let playerAdded;
 
             get(peer).onEvent('storageUpdate', (storage) => {
-                console.log("Storage updated:", get(peer)?.getStorage); // !TODO remove debug
-
                 // Sync game info
                 if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.restriction) {
                     roundAmount.set(storage?.roundAmount);
@@ -363,10 +361,14 @@ function showTimeReducedOverlay(time, show) {
 
 // Host Logic ----------------------------------------------------------------------------------------------
 function removeConnectedPeerById(peerId) {
-    const index = get(peer)?.getStorage?.players?.findIndex(entry => entry[0] === peerId);
-    if (index >= 0) {
-        const contentToRemove = get(peer)?.getStorage?.players[index];
-        get(peer)?.updateStorageArray("players", "remove-matching", contentToRemove);
+    try {
+        const index = get(peer)?.getStorage?.players?.findIndex(entry => entry[0] === peerId) || -1;
+        if (index >= 0) {
+            const contentToRemove = get(peer)?.getStorage?.players[index];
+            get(peer)?.updateStorageArray("players", "remove-matching", contentToRemove);
+        }
+    } catch (error) {
+        console.error("Error in removeConnectedPeerById:", error);
     }
 }
 
@@ -632,7 +634,8 @@ function determineWinner(array, teams, teamsObject) {
 
                 // Check if you won in duels or just played
                 if (playingDuels && !friendDuel) {
-                    winningPlayerData[5] == localStorage.getItem("id") ? addDuelWon() : addDuelPlayed();
+                    const won = winningPlayerData[5] == localStorage.getItem("id");
+                    won ? addDuelWon() : addDuelPlayed();
                     sendDuelDivisionResult(won, get(peer)?.getStorage?.uuid);
                 }
             }
