@@ -37,7 +37,6 @@ export async function initializeWebsocketConnection() {
 
                 } else if (data.type === 'invite-accepted') {
                     showNotification(`${data.name} accepted your invite.`);
-                    linkJoinPopup.set(false);
                     goto("/"); // Go to main game page
 
                 } else if (data.type === 'invite-declined') {
@@ -53,11 +52,14 @@ export async function initializeWebsocketConnection() {
                 } else if (data.type === "duel-result") {
                     duelResultPopup.set(true);
                     eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
-                    elo.set(get(elo) + get(eloChange));
-                    if (get(elo) < 0) elo.set(0); // Prevent elo from becoming negative (it won't on the server either)
+                    elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
 
                 } else if (data.type === "duel-result-error") {
-                    errorPopup("Elo remains unchanged", "You or your opponent did not submit a valid result (e.g. they left early, or attempted to cheat). No Elo was granted to both players.", data?.message);
+                    if (data?.message?.includes("null")) {
+                        errorPopup("Elo remains unchanged", "Your opponent left early and the Elo handshake could not be completed. Once they come back online, the Elo will be applied.", data?.message);
+                    } else {
+                        errorPopup("Elo remains unchanged", "You or your opponent submitted a fake result in an attempt to cheat.", data?.message);
+                    }
                 }
             };
 

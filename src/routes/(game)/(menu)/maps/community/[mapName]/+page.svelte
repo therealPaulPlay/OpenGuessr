@@ -157,7 +157,6 @@
     try {
       let newLocations = inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData);
       let newMapData = newLocations;
-      console.log(newMapData);
 
       // If add instead of overwrite is selected, add the new locations to the old ones.
       if (addInsteadOfOverwrite) {

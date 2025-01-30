@@ -2,7 +2,7 @@
 	let { children } = $props();
 	import { playSound } from "$lib/utils/soundManager";
 	import Notification from "$lib/components/Notification.svelte";
-	import { screenEscapeDisabled, roomLocked } from "$lib/stores/context-specific/multiplayerStore";
+	import { screenEscapeDisabled } from "$lib/stores/context-specific/multiplayerStore";
 	import { leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
 	import { goto } from "$app/navigation";
 	import { Home } from "lucide-svelte";
@@ -19,7 +19,7 @@
 		onclick={() => {
 			playSound("basic_button");
 			goBack();
-			if (!$roomLocked) leaveMultiplayerRound();
+			leaveMultiplayerRound();
 		}}
 	>
 		<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="backButtonArrowIcon" />
@@ -30,7 +30,7 @@
 		class:buttonDisabled={$screenEscapeDisabled}
 		onclick={() => {
 			playSound("basic_button");
-			if (!$roomLocked) leaveMultiplayerRound();
+			leaveMultiplayerRound();
 			goto("/");
 		}}
 	>

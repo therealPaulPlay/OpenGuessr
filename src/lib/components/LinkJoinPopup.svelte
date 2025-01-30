@@ -21,7 +21,7 @@
 				linkJoinPopup.set(false);
 				leaveMultiplayerRound();
 				playSound("basic_button");
-			}}>Close</button
+			}}>Cancel</button
 		>
 	</Popup>
 {/if}

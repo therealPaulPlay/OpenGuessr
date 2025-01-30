@@ -10,19 +10,17 @@ import { multiplayerStateToGuessed } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 
 export function confirmButtonClicks() {
-    confirmButtonActive.set(false); // Disable confirm button – will be re-enabled when placing pin
     playSound("basic_button");
     continueText.set("Continue");
 
-    if (get(competition)) {
-        stopCompetitionTimer();
-    }
+    if (get(competition)) stopCompetitionTimer(); // If in competition, end round timer
 
     if (!get(multiplayer)) {
         enableResultScreen(get(mapPinLat), get(mapPinLng));
     } else {
         mapVisible.set(false);
-
         multiplayerStateToGuessed();
     }
+
+    confirmButtonActive.set(false); // Disable confirm button (make it greyed out) – will be re-enabled when placing pin
 }
