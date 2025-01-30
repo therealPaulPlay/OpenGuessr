@@ -1,72 +1,55 @@
 <script>
-	import { mapExpanded, mapVisible, mapHovered, map } from "$lib/stores/context-specific/mapStore";
-	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
-	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
-	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
-	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
-	import { initMap } from "$lib/logic/miniMap";
-	import { get } from "svelte/store";
-	import { onMount } from "svelte";
+  import { mapExpanded, mapVisible, mapHovered, map } from "$lib/stores/context-specific/mapStore";
+  import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
+  import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+  import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
+  import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
+  import { initializeMapIfNotAlready } from "$lib/logic/miniMap";
+  import { get } from "svelte/store";
 
-	let mapResizeTimeout;
+  let mapResizeTimeout;
 
-	function handleMapHover() {
-		clearTimeout(mapResizeTimeout);
-		mapHovered.set(true);
-	}
+  function handleMapHover() {
+    clearTimeout(mapResizeTimeout);
+    mapHovered.set(true);
+  }
 
-	function handleMapUnhover() {
-		mapResizeTimeout = setTimeout(() => {
-			mapHovered.set(false);
-		}, 250);
-	}
+  function handleMapUnhover() {
+    mapResizeTimeout = setTimeout(() => {
+      mapHovered.set(false);
+    }, 250);
+  }
 
-	// Allow the user to guess with the space bar (instead of clicking on "Guess")
-	function spaceBarGuess(event) {
-		if (event.key === " ") {
-			if (get(confirmButtonActive) && isElementClickable(document.getElementById("map"))) {
-				confirmButtonClicks();
-			}
-		}
-	}
-
-	function onMapHover() {
-		get(map).invalidateSize();
-	}
-
-	onMount(async () => {
-		const module = await import("leaflet");
-		// let L = module.default;
-		// window.L = L; seemingly, leaflet attaches L to the window element when being loaded anyway
-
-		initMap();
-
-		try {
-			new ResizeObserver(onMapHover).observe(document.getElementById("map"));
-		} catch (error) {
-			console.error("Resize oberser unsupported. Err: " + error);
-		}
-	});
+  // Allow the user to guess with the space bar (instead of clicking on "Guess")
+  function spaceBarGuess(event) {
+    if (event.key === " ") {
+      if (get(confirmButtonActive) && isElementClickable(document.getElementById("map"))) {
+        confirmButtonClicks();
+      }
+    }
+  }
 </script>
 
-<!-- svelte-ignore a11y_no_noninteractive_tabindex -->
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<!-- svelte-ignore a11y_mouse_events_have_key_events -->
-<div
-	id="map"
-	role="region"
-	tabindex="0"
-	onmouseenter={handleMapHover}
-	onmouseleave={handleMapUnhover}
-	onkeyup={spaceBarGuess}
-	style:visibility={$mapVisible ? "" : "hidden"}
-	style:max-height={$mapExpanded ? "100%" : "0%"}
-	class:mapFullOpacityResult={Boolean($resultScreenEnabled)}
->
-	{#if !$map && $mapVisible}
-		<div id="mapPlaceholderBeforeLoad"></div>
-	{/if}
-</div>
+  <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
+  <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+  <!-- svelte-ignore a11y_mouse_events_have_key_events -->
+  <div
+    id="map"
+    role="region"
+    tabindex="0"
+    onmouseenter={handleMapHover}
+    onmouseleave={handleMapUnhover}
+    onkeyup={spaceBarGuess}
+    style:visibility={$mapVisible ? "" : "hidden"}
+    onmouseover={initializeMapIfNotAlready}
+    ontouchstart={initializeMapIfNotAlready}
+    style:max-height={$mapExpanded ? "100%" : "0%"}
+    class:mapFullOpacityResult={Boolean($resultScreenEnabled)}
+  >
+    {#if !$map && $mapVisible}
+      <div id="mapPlaceholderBeforeLoad"></div>
+    {/if}
+  </div>
 
 <style>
 	#map {
