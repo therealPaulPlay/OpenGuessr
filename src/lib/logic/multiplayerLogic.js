@@ -17,7 +17,7 @@ import { linkJoinPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
-    duelRetryEnabled, multiplayerStatus, restrictionButtonText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay,
+    duelRetryEnabled, multiplayerStatus, restrictionButtonText, savedGuestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
     multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray,
     matchmakingActive, peer,
     roomcode,
@@ -142,7 +142,7 @@ export async function createPeerInstance() {
 
             // Register event listeners
             get(peer).onEvent('status', status => multiplayerStatus.set(status));
-            get(peer).onEvent('status', status => console.log(status)); // !TODO remove debug
+            get(peer).onEvent('status', status => console.log(status)); // !TODO remove debug (future)
             get(peer).onEvent('error', (error) => {
                 if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system (PlayPeerJS) reports an error.", error);
             });
@@ -156,17 +156,17 @@ export async function createPeerInstance() {
 
             // Peer disconnected from host...
             get(peer).onEvent('incomingPeerDisconnected', (id) => {
-                const disconnectedPlayerName = get(peer)?.getStorage?.players?.find((item) => item[0] == id)[1] || "Unknown";
+                const name = get(peer)?.getStorage?.players?.find((p) => p[0] == id)?.[1] || "Unknown";
+                get(peer)?.updateStorageArray("chats", "add", `System: ${name} left.`);
                 removeConnectedPeerById(id);
-                get(peer)?.updateStorageArray("chats", "add", `System: ${disconnectedPlayerName} left.`);
                 connectionCount.set(get(peer)?.connectionCount);
             });
 
             // Host disconnected from peer...
             get(peer).onEvent('outgoingPeerDisconnected', (id) => {
-                const disconnectedPlayerName = get(peer)?.getStorage?.players?.find((item) => item[0] == id)[1] || "Unknown";
+                const name = get(peer)?.getStorage?.players?.find((p) => p[0] == id)?.[1] || "Unknown";
+                get(peer)?.updateStorageArray("chats", "add", `System: ${name} left - changing host.`);
                 removeConnectedPeerById(id);
-                get(peer)?.updateStorageArray("chats", "add", `System: ${disconnectedPlayerName} left - changing host.`);
                 connectionCount.set(get(peer)?.connectionCount);
                 if (!get(peer)?.getStorage?.gameOngoing) startRoom(); // If the host leaves and the game is still in the hosting phase, start
             });
@@ -174,8 +174,6 @@ export async function createPeerInstance() {
             let playerAdded;
 
             get(peer).onEvent('storageUpdate', (storage) => {
-                console.log("Storage updated:", get(peer)?.getStorage); // !TODO remove debug
-
                 // Sync game info
                 if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.restriction) {
                     roundAmount.set(storage?.roundAmount);
@@ -344,9 +342,8 @@ function findNextDuel() {
 
 // Duel Guess Time Reduce Overlay & reduce remaining time
 function showTimeReducedOverlay(time, show) {
-    if (time) {
+    if (time && multiplayerTimer?.getRemainingTime() > 15) {
         get(peer)?.updateStorage("timerStart", { timestamp: Math.round(Date.now() / 1000), length: time }); // Start timer with new time
-        timeReducedOverlayText.set(`Time reduced to max. ${time}s.`);
     }
     if (show && !get(timeReducedOverlay)) {
         try {
@@ -370,10 +367,9 @@ function removeConnectedPeerById(peerId) {
     }
 }
 
-export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
+export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit) {
     try {
         await createPeerInstance(); // Get new peer instance
-        multiplayerStatus.set("Room created. Please wait <10s");
 
         // Check if map is valid for multiplayer
         if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
@@ -408,7 +404,9 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             gameOngoing: false, // True after the room was started once and is not in creation phase
             countdownActive: false,
             timerStart: false
-        }));
+        }, sizeLimit));
+        if (get(matchmakingActive)) multiplayerStatus.set("Room created. Please wait <10s"); // Wait status
+
     } catch (error) {
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", "Error occured trying to set up PlayPeerJS room.", error);
@@ -632,7 +630,8 @@ function determineWinner(array, teams, teamsObject) {
 
                 // Check if you won in duels or just played
                 if (playingDuels && !friendDuel) {
-                    winningPlayerData[5] == localStorage.getItem("id") ? addDuelWon() : addDuelPlayed();
+                    const won = winningPlayerData[5] == localStorage.getItem("id");
+                    won ? addDuelWon() : addDuelPlayed();
                     sendDuelDivisionResult(won, get(peer)?.getStorage?.uuid);
                 }
             }
@@ -652,12 +651,6 @@ async function multiplayerOverlayCountdown() {
     clearInterval(countdownInterval); // Clear
     showEndscreenUI(false); // Hide Leave & End option
 
-    // Leave penalty
-    if (playingDuels && !friendDuel) {
-        const opponentId = get(peer)?.getStorage?.players?.find((e) => e[5] !== localStorage.getItem("id"))[5] || null;
-        localStorage.setItem("activeDuel", opponentId);
-    }
-
     let countdown = 3;
 
     countdownInterval = setInterval(function () {
@@ -676,6 +669,12 @@ async function multiplayerOverlayCountdown() {
 
             // Timer
             get(peer)?.updateStorage("timerStart", { timestamp: Math.round(Date.now() / 1000), length: get(roundLength) });
+
+            // Leave penalty
+            if (playingDuels && !friendDuel) {
+                const opponentId = get(peer)?.getStorage?.players?.find(e => e[5] !== localStorage.getItem("id"))?.[5];
+                if (opponentId) localStorage.setItem("activeDuel", opponentId);
+            }
         }
     }, 1000);
 }

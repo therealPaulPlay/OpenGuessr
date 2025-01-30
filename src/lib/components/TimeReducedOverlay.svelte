@@ -1,6 +1,6 @@
 <!-- Appears in duels when the oponnent has guessed and informs the player that the time has been reduced -->
 <script>
-	import { timeReducedOverlay, timeReducedOverlayText } from "$lib/stores/context-specific/multiplayerStore";
+	import { timeReducedOverlay } from "$lib/stores/context-specific/multiplayerStore";
 </script>
 
 <div
@@ -10,7 +10,7 @@
 	style:filter={$timeReducedOverlay ? "none" : "blur(5px)"}
 >
 	<h1>Your opponent has guessed</h1>
-	<p id="duelsOverlaySubtitle">{$timeReducedOverlayText}</p>
+	<p id="duelsOverlaySubtitle">Time reduced to max. 15s</p>
 </div>
 
 <style>

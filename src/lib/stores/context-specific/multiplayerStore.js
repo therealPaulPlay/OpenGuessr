@@ -30,7 +30,6 @@ export const roomcode = writable("loading...");
 
 // UI - Time reduced Overlay for Duels
 export const timeReducedOverlay = writable(false);
-export const timeReducedOverlayText = writable("Default");
 
 // UI - Multiplayer Overlay (Table Overlay)
 export const multiplayerOverlay = writable(false);
