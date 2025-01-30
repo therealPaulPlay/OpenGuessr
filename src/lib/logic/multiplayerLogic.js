@@ -649,7 +649,12 @@ async function multiplayerOverlayCountdown() {
 
     clearInterval(countdownInterval); // Clear
     showEndscreenUI(false); // Hide Leave & End option
-    if (playingDuels && !friendDuel) localStorage.setItem("activeDuel", "active"); // Save for leave penalty
+
+    // Leave penalty
+    if (playingDuels && !friendDuel) {
+        const opponentId = get(peer)?.getStorage?.players?.find((e) => e[5] !== localStorage.getItem("id"))[5] || null;
+        localStorage.setItem("activeDuel", opponentId);
+    }
 
     let countdown = 3;
 
