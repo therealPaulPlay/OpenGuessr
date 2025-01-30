@@ -17,7 +17,7 @@ import { linkJoinPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
-    duelRetryEnabled, multiplayerStatus, restrictionButtonText, savedGuestName, chatVisible, timeReducedOverlay, timeReducedOverlayText, multiplayerOverlay,
+    duelRetryEnabled, multiplayerStatus, restrictionButtonText, savedGuestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
     multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray,
     matchmakingActive, peer,
     roomcode,
@@ -342,9 +342,8 @@ function findNextDuel() {
 
 // Duel Guess Time Reduce Overlay & reduce remaining time
 function showTimeReducedOverlay(time, show) {
-    if (time) {
+    if (time && multiplayerTimer?.getRemainingTime() > 15) {
         get(peer)?.updateStorage("timerStart", { timestamp: Math.round(Date.now() / 1000), length: time }); // Start timer with new time
-        timeReducedOverlayText.set(`Time reduced to max. ${time}s.`);
     }
     if (show && !get(timeReducedOverlay)) {
         try {
