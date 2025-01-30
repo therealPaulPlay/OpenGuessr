@@ -367,7 +367,7 @@ function removeConnectedPeerById(peerId) {
     }
 }
 
-export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
+export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit) {
     try {
         await createPeerInstance(); // Get new peer instance
 
@@ -404,9 +404,9 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds) {
             gameOngoing: false, // True after the room was started once and is not in creation phase
             countdownActive: false,
             timerStart: false
-        }));
+        }, sizeLimit));
         if (get(matchmakingActive)) multiplayerStatus.set("Room created. Please wait <10s"); // Wait status
-        
+
     } catch (error) {
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", "Error occured trying to set up PlayPeerJS room.", error);
