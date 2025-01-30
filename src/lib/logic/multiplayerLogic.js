@@ -369,6 +369,7 @@ function removeConnectedPeerById(peerId) {
 
 export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit) {
     try {
+        disableResultScreen(); // Edge case
         await createPeerInstance(); // Get new peer instance
 
         // Check if map is valid for multiplayer
@@ -458,6 +459,7 @@ async function startMultiplayerRound() {
 export async function joinRoom(code) {
     try {
         code = "openguessr_" + code.replaceAll(" ", "").toLowerCase(); // Remove whitespaces and lowercase
+        disableResultScreen(); // Edge case
         await createPeerInstance();
         await get(peer).joinRoom(code);
         multiplayer.set(true);
