@@ -21,7 +21,7 @@
 		opacity: 0%;
 		pointer-events: none;
 		background-color: #11121f;
-		transition: opacity 250ms ease-in-out;
+		transition: opacity 100ms ease;
 		position: fixed;
 		top: 0;
 		width: 100%;

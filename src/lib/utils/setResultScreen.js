@@ -10,17 +10,17 @@ import { loadResultMap } from "$lib/logic/resultMap";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
 import { earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
+import { shrinkMapIfMobile } from "./shrinkMinimapIfMobile";
+import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
+import { timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 
-export function enableResultScreen(guessLat, guessLong) {
+export function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (!get(resultScreenEnabled)) {
-
-        // Error proofing in case they are not defined
-        guessLat = guessLat || 0;
-        guessLong = guessLong || 0;
+        resultScreenEnabled.set(true);
 
         // Obtain contents
         const distance = calculateDistances(guessLat, guessLong);
-        const resultStrings = compareDistances(distance);
+        const resultStrings = compareDistances(distance) || {};
         let resultString = resultStrings.resultAsString;
         let extraMessage = resultStrings.extraMsg;
 
@@ -45,11 +45,7 @@ export function enableResultScreen(guessLat, guessLong) {
         // Load result on the map
         loadResultMap(guessLat, guessLong);
         playSound("confirm");
-
-        resultScreenEnabled.set(true);
         refreshPlacements();
-    } else {
-        console.error("Result screen already enabled!");
     }
 }
 
@@ -58,9 +54,12 @@ export function disableResultScreen() {
         resultScreenEnabled.set(false);
         refreshPlacements();
 
+        // UI resets
+        shrinkMapIfMobile();
+        get(toggleStreakRestoreWindow)(0, true);
+        timerText.set("00:00"); // Reset timer text
+
         earnedExperience.set(0); // Reset the earned experience, to trigger a new "tick up" animation on the next result load
         resetMap(); // Reset the map for the next round
-    } else {
-        console.warn("Result screen already disabled.");
     }
 }

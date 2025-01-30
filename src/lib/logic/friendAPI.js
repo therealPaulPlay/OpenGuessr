@@ -1,6 +1,6 @@
 import { isAuthenticated, username } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
-import { peerId, loadedFriendsData, multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
+import { loadedFriendsData, multiplayerStatus, roomcode } from "$lib/stores/context-specific/multiplayerStore";
 import { inboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { linkJoinPopup } from "$lib/stores/uiStore";
@@ -176,8 +176,8 @@ export async function sendMatchInvite(recipientId, duel) {
         // If Duel, create a room first
         setPlayingDuels(true);
         setFriendDuel(true);
-        await setupMultiplayerRoom(3, 60);
         linkJoinPopup.set(true);
+        await setupMultiplayerRoom(5, 60);
         multiplayerStatus.set("Waiting for response from friend...");
     }
 
@@ -185,7 +185,7 @@ export async function sendMatchInvite(recipientId, duel) {
         const requestBody = {
             id: localStorage.getItem("id"),
             friend_id: recipientId,
-            roomcode: get(peerId),
+            roomcode: get(roomcode),
             senderName: get(username),
             isDuel: duel
         };

@@ -1,5 +1,5 @@
-import { peerId, yourTeam } from "$lib/stores/context-specific/multiplayerStore";
-import { sendTeamMarkers } from "$lib/logic/multiplayerLogic";
+import { peer } from "$lib/stores/context-specific/multiplayerStore";
+import { addMultiplayerGuessMarker, getTeamFromPeerId } from "$lib/logic/multiplayerLogic";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { showNotification } from "$lib/utils/notifications.js";
 import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
@@ -12,6 +12,7 @@ import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { mapHovered } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
+import { multiplayer } from "$lib/stores/modeStore";
 
 // Google Maps init --------------------------------------------------------------------------------------
 
@@ -255,58 +256,31 @@ function onMapClick(latLng) {
             return [...markers, marker]
         });
 
-        sendTeamMarkers(get(mapPinLat), get(mapPinLng));
+        if (get(multiplayer)) addMultiplayerGuessMarker();
     } catch (error) {
         console.error("Error in onMapClick function:", error)
     }
 }
 
 export function updateMinimapWithTeamMarkers(markerArray) {
-    let existingMarkerPositions = new Map();
-
-    // Collect positions of current markers
+    // Remove existing mini markers
     multiplayerMiniMarkers.forEach(existingMarker => {
-        const position = existingMarker.getPosition();
-        existingMarkerPositions.set(`${position.lat()},${position.lng()}`, existingMarker);
+        existingMarker?.setMap(null);
     });
 
     try {
-        // Remove markers that no longer exist in markerArray
-        multiplayerMiniMarkers.forEach(existingMarker => {
-            const position = existingMarker.getPosition();
-            const markerPositionKey = `${position.lat()},${position.lng()}`;
-
-            // Check if current marker exists in the updated markerArray
-            const markerExists = markerArray.some(element => {
-                let miniMarkerLat = element[1];
-                let miniMarkerLong = element[2];
-                return miniMarkerLat == position.lat() && miniMarkerLong == position.lng();
-            });
-
-            // If marker doesn't exist in markerArray, remove it
-            if (!markerExists) {
-                existingMarker.setMap(null);
-                multiplayerMiniMarkers = multiplayerMiniMarkers.filter(m => m !== existingMarker);
-                existingMarkerPositions.delete(markerPositionKey);
-            }
-        });
-
         // Add new markers from markerArray that belong to yourTeam
         markerArray.forEach(element => {
-            let miniMarkerId = element[0];
-            let miniMarkerLat = element[1];
-            let miniMarkerLong = element[2];
-            let miniMarkerPinIndex = element[3];
-            let miniMarkerTeam = element[4];
+            let miniMarkerId = element.id;
+            let miniMarkerLat = element.lat;
+            let miniMarkerLong = element.long;
+            let miniMarkerPinIndex = element.pin;
+            let miniMarkerTeam = element.team;
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
-            // and miniMarkerTeam matches yourTeam
             if (miniMarkerId != get(peerId) && miniMarkerTeam === get(yourTeam)) {
                 const multiplayerLatLng = new google.maps.LatLng(miniMarkerLat, miniMarkerLong);
-                const markerPositionKey = `${multiplayerLatLng.lat()},${multiplayerLatLng.lng()}`;
-
-                if (!existingMarkerPositions.has(markerPositionKey)) {
-                    // Marker doesn't exist, create new marker
+              
                     const newMultiplayerIcon = {
                         url: '/img/your_marker' + miniMarkerPinIndex + '.png',
                         size: new google.maps.Size(25, 25),
@@ -327,9 +301,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
                         return [...markers, marker]
                     });
 
-                    multiplayerMiniMarkers.push(marker);
-                    existingMarkerPositions.set(markerPositionKey, marker); // Update positions map
-                }
+                multiplayerMiniMarkers.push(marker);
             }
         });
 
