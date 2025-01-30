@@ -39,6 +39,7 @@ import { showNotification } from "$lib/utils/notifications";
 import PlayPeer from "playpeerjs";
 import { buildTeamDisplayText } from "$lib/utils/buildTeamDisplayText";
 import { getMapBounds } from "$lib/utils/getMapBounds";
+import { getServerTimestamp } from "$lib/utils/timeUtil";
 
 export function getTeamFromPeerId(id) {
     const playerArray = get(peer)?.getStorage?.players?.find(item => item[0] === id);
@@ -341,9 +342,10 @@ function findNextDuel() {
 }
 
 // Duel Guess Time Reduce Overlay & reduce remaining time
-function showTimeReducedOverlay(time, show) {
+async function showTimeReducedOverlay(time, show) {
     if (time && multiplayerTimer?.getRemainingTime() > 15) {
-        get(peer)?.updateStorage("timerStart", { timestamp: Math.round(Date.now() / 1000), length: time }); // Start timer with new time
+        const serverTime = await getServerTimestamp();
+        get(peer)?.updateStorage("timerStart", { timestamp: serverTime, length: time }); // Start timer with new time
     }
     if (show && !get(timeReducedOverlay)) {
         try {
@@ -651,7 +653,7 @@ async function multiplayerOverlayCountdown() {
 
     let countdown = 3;
 
-    countdownInterval = setInterval(function () {
+    countdownInterval = setInterval(async function () {
         if (countdown > 0) {
             multiplayerOverlayTitle.set(`Starting... ${countdown}`);
             get(peer)?.updateStorage("countdownActive", false);
@@ -666,7 +668,8 @@ async function multiplayerOverlayCountdown() {
             playSound("match_countdown_start");
 
             // Timer
-            get(peer)?.updateStorage("timerStart", { timestamp: Math.round(Date.now() / 1000), length: get(roundLength) });
+            const serverTime = await getServerTimestamp();
+            get(peer)?.updateStorage("timerStart", { timestamp: serverTime, length: get(roundLength) });
 
             // Leave penalty
             if (playingDuels && !friendDuel) {
