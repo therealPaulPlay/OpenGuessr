@@ -499,6 +499,9 @@ export function leaveMultiplayerRound(destroy = true) {
     connectionCount.set(0);
     multiplayerRestriction = "standard";
     startedRound = false;
+    playingDuels = false;
+    friendDuel = false;
+    matchmakingActive.set(false);
 
     // General UI resets
     continueText.set("Continue");
@@ -511,11 +514,7 @@ export function leaveMultiplayerRound(destroy = true) {
     // UI functions
     setMultiplayerUI();
     showMultiplayerOverlay(false);
-
     updateMinimapWithTeamMarkers([]); // clean up multiplayer minimap markers
-    matchmakingActive.set(false);
-    playingDuels = false;
-    friendDuel = false;
     if (localStorage.getItem("selectedMap") !== "country guesser") mapVisible.set(true);
 
     if (wasMultiplayerEnabled) checkGenerationTypeAndGenerate(); // Regenerate location
