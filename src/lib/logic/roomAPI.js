@@ -66,7 +66,7 @@ export async function attemptDuelJoin(index) {
         // Create room & hide close + back button for the time
         screenEscapeDisabled.set(true);
 
-        changeCategory("standard", true); // Regenerate to update the loaded locations array
+        await changeCategory("standard", true); // Regenerate to update the bounds (await to ensure bounds are ready)
         await setupMultiplayerRoom(5, 60, 2);
         sendRoomCodeToMatchmakingServer();
     }
