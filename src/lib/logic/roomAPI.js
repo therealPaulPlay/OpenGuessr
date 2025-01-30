@@ -67,7 +67,7 @@ export async function attemptDuelJoin(index) {
         screenEscapeDisabled.set(true);
 
         changeCategory("standard", true); // Regenerate to update the loaded locations array
-        await setupMultiplayerRoom(5, 60);
+        await setupMultiplayerRoom(5, 60, 2);
         sendRoomCodeToMatchmakingServer();
     }
 }
