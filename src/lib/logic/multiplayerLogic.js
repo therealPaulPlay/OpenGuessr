@@ -235,6 +235,9 @@ export async function createPeerInstance() {
                 // Control result screen
                 if (storage.showResult !== undefined && storage.showResult !== get(resultScreenEnabled)) {
                     if (storage.showResult == true) {
+                        // Ensure the coords are set, in case they join during result screen
+                        currentLocationLatitude.set(storage?.location[0]);
+                        currentLocationLongitude.set(storage?.location[1]);
                         endMultiplayerRound();
                     } else {
                         disableResultScreen();
