@@ -1,10 +1,7 @@
 <script>
 	function goBack() {
-		if (document.referrer) {
-			window.history.back();
-		} else {
-			window.location.href = "/"; // Fallback if no referrer
-		}
+		if (document.referrer) return window.history.back();
+		window.location.href = "/"; // Fallback if no referrer
 	}
 </script>
 
@@ -16,12 +13,11 @@
 <style>
 	.backButton {
 		margin-right: auto !important;
-		font-size: 25px;
 		width: fit-content;
 		height: 50px;
 		line-height: 20px;
 		border-radius: 10px;
-		margin: 20px 20px;
+		margin: 25px 20px;
 	}
 
 	.backButtonArrowIcon {
@@ -29,9 +25,5 @@
 		height: 25px;
 		transform: rotate(90deg);
 		vertical-align: -4px;
-	}
-
-	.backButton:hover {
-		filter: brightness(0.7);
 	}
 </style>
