@@ -12,7 +12,7 @@
 		overlayShowSubtitle,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import Badge from "$lib/components/Badge.svelte";
-	import { leaveMultiplayerRound, multiplayerRematch } from "$lib/logic/multiplayerLogic";
+	import { leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
@@ -106,7 +106,7 @@
 			class="standardButton"
 			onclick={() => {
 				playSound("basic_button");
-				multiplayerRematch();
+				get(peer)?.updateStorage("rematch", true);
 			}}>Play again</button
 		>
 	{/if}
