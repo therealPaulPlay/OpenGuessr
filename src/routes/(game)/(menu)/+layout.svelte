@@ -8,7 +8,8 @@
 	import { Home } from "lucide-svelte";
 
 	function goBack() {
-		history.back();
+		if (document.referrer) return window.history.back();
+		window.location.href = "/"; // Fallback if no referrer
 	}
 </script>
 

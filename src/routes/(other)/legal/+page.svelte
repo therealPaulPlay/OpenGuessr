@@ -128,6 +128,7 @@
 		justify-content: center;
 		align-items: center;
 		margin: 20px 0;
+		overflow-y: scroll;
 	}
 
 	#navbar {
