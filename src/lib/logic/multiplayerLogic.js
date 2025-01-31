@@ -257,7 +257,7 @@ export async function createPeerInstance() {
 
                 if (storage.countdownActive) multiplayerOverlayCountdown(); // Activate countdown
 
-                if (storage.timerStart) startMultiplayerTimer(Math.max(0, storage.timerStart?.length - (Math.round(Date.now() / 1000) - storage.timerStart?.timestamp))); // Set timer if not running
+                if (storage.timerStart) startMultiplayerTimer(storage.timerStart?.length, storage.timerStart?.timestamp); // Set timer if not running
                 if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) try { multiplayerTimer?.stopTimer(); } catch { }; // Stop multiplayer timer
 
                 if (storage.timeReducedOverlay && storage.timeReducedOverlay !== get(timeReducedOverlay) && storage?.confirmedArray?.length === 1) {
@@ -684,7 +684,9 @@ async function multiplayerOverlayCountdown() {
 let multiplayerTimer;
 let remainingTime;
 
-function startMultiplayerTimer(duration) {
+async function startMultiplayerTimer(totalDuration, startTimestamp) {
+    const serverTimestamp = await getServerTimestamp();
+    const duration = Math.max(0, totalDuration - (serverTimestamp - startTimestamp));
     if (Math.abs(multiplayerTimer?.getRemainingTime() - duration) <= 1) return; // If the running timer alr has this duration (with slight tolerance), skip
     multiplayerTimer = startTimer(duration, multiplayerTimerExpired);
 }
