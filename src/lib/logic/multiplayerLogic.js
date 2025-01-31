@@ -84,9 +84,10 @@ function endMultiplayerRound() {
     startedRound = false;
     continueText.set("Wait 5s..."); // Wait text will auto-disable the button
     setTimeout(() => continueText.set("Continue"), 5000);
-
-    if (get(peer)?.isHost) get(peer)?.updateStorage("timerStart", false);
     enableResultScreen(get(mapPinLat), get(mapPinLng));
+
+    // Storage events after enabling result! (otherwise, result might trigger multiple times)
+    get(peer)?.updateStorage("timerStart", false);
     get(peer)?.updateStorage("confirmedArray", []); // Reset confirmed guesses to prevent double-end
 }
 
@@ -246,8 +247,8 @@ export async function createPeerInstance() {
                 }
 
                 // Check if all guesses are in, and if so, end round
-                if (storage.players?.length && storage.confirmedArray?.length && storage.confirmedArray?.length >= storage.players?.length && get(resultScreenEnabled) == false && !storage?.showResult) {
-                    if (get(peer)?.isHost) get(peer)?.updateStorage("showResult", true);
+                if (storage.confirmedArray?.length >= storage.players?.length && get(resultScreenEnabled) == false && !storage?.showResult) {
+                    get(peer)?.updateStorage("showResult", true);
                 }
 
                 // Set coordinates
@@ -695,6 +696,6 @@ function multiplayerTimerExpired() {
     const hasSubmittedMarker = get(peer)?.getStorage?.guessLocationsArray?.find((element) => element.id == get(peer)?.id);
     if (!hasSubmittedMarker) addMultiplayerGuessMarker(); // Only add default / previous marker if the player actually hasnt guessed yet...
     setTimeout(() => {
-        if (get(peer)?.isHost) get(peer)?.updateStorage("showResult", true);
+        get(peer)?.updateStorage("showResult", true);
     }, 1000); // Wait for guesses to arrive
 }
