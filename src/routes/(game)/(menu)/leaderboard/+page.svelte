@@ -88,125 +88,121 @@
 	<title>Leaderboard</title>
 </svelte:head>
 
-<div class="centerContainer">
-	<div class="podium-container">
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<div id="podium" class="podium" class:podium-loaded={Boolean(mainSectionEntries)}>
-			<div
-				class="podium-item silver"
-				id="second-place"
-				onclick={() => {
-					loadProfileFromId(mainSectionEntries?.[1]?.id, true);
-				}}
-			>
-				<div class="name">{mainSectionEntries?.[1]?.user_name || "Guest"}</div>
-				<div class="podiumExp">{mainSectionEntries?.[1]?.experience.toLocaleString() || "0 XP"}</div>
-				<div class="rank">#2</div>
-			</div>
-			<div
-				class="podium-item gold"
-				id="first-place"
-				onclick={() => {
-					loadProfileFromId(mainSectionEntries?.[0]?.id, true);
-				}}
-			>
-				<div class="name">{mainSectionEntries?.[0]?.user_name || "Guest"}</div>
-				<div class="podiumExp">{mainSectionEntries?.[0]?.experience?.toLocaleString() || "0 XP"}</div>
-				<div class="rank">#1</div>
-			</div>
-			<div
-				class="podium-item bronze"
-				id="third-place"
-				onclick={() => {
-					loadProfileFromId(mainSectionEntries?.[2]?.id, true);
-				}}
-			>
-				<div class="name">{mainSectionEntries?.[2]?.user_name || "Guest"}</div>
-				<div class="podiumExp">{mainSectionEntries?.[2]?.experience?.toLocaleString() || "0 XP"}</div>
-				<div class="rank">#3</div>
-			</div>
-		</div>
-	</div>
-	<div class="container" id="filterContainer">
-		<div class="optionBar">
-			<button
-				id="filterAll"
-				class="standardButton white optionButton"
-				class:optionButtonSelected={filter == "all"}
-				onclick={() => {
-					filter = "all";
-					playSound("basic_button");
-					loadCorrectLeaderboard();
-				}}>All</button
-			>
-			<button
-				id="filterSupporter"
-				class="standardButton white optionButton"
-				class:optionButtonSelected={filter == "supporter"}
-				onclick={() => {
-					filter = "supporter";
-					playSound("basic_button");
-					loadCorrectLeaderboard();
-				}}>Supporters</button
-			>
-		</div>
-	</div>
+<div class="podium-container">
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<div class="leaderboardContainer" id="leaderboardContainer">
-		<div id="container" class="container">
-			{#if mainSectionEntries}
-				{#each mainSectionEntries.slice(3) as entry, i}
-					<div
-						class="rankedItem"
-						role="button"
-						tabindex="0"
-						class:yourItem={entry.user_name == $username && $isAuthenticated}
-						class:rankedItemSupporter={entry.supporter_level >= 1}
-					>
-						<p class="maxlength rankedItemLeft">#{entry.position}</p>
-						<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-						<p
-							class="middle maxlength"
-							onclick={() => {
-								loadProfileFromId(entry.id, true);
-							}}
-						>
-							{entry.user_name}
-						</p>
-						<p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
-					</div>
-				{/each}
-			{:else}
-				<p class="loadingText">Loading...</p>
-			{/if}
+	<!-- svelte-ignore a11y_no_static_element_interactions -->
+	<div id="podium" class="podium" class:podium-loaded={Boolean(mainSectionEntries)}>
+		<div
+			class="podium-item silver"
+			id="second-place"
+			onclick={() => {
+				loadProfileFromId(mainSectionEntries?.[1]?.id, true);
+			}}
+		>
+			<div class="name">{mainSectionEntries?.[1]?.user_name || "Guest"}</div>
+			<div class="podiumExp">{mainSectionEntries?.[1]?.experience.toLocaleString() || "0 XP"}</div>
+			<div class="rank">#2</div>
 		</div>
-		{#if userSectionEntries}
-			<div id="threeDotsContainer" class="threeDotsContainer" transition:fade={{ duration: 250 }}>
-				<div class="circleDot"></div>
-				<div class="circleDot"></div>
-				<div class="circleDot"></div>
-			</div>
-			<div id="yourLeagueContainer" class="container">
-				{#each userSectionEntries as entry, i}
-					<div
-						class="rankedItem"
-						role="button"
-						tabindex="0"
-						class:yourItem={entry.user_name == $username && $isAuthenticated}
-						class:rankedItemSupporter={entry.supporter_level >= 1}
+		<div
+			class="podium-item gold"
+			id="first-place"
+			onclick={() => {
+				loadProfileFromId(mainSectionEntries?.[0]?.id, true);
+			}}
+		>
+			<div class="name">{mainSectionEntries?.[0]?.user_name || "Guest"}</div>
+			<div class="podiumExp">{mainSectionEntries?.[0]?.experience?.toLocaleString() || "0 XP"}</div>
+			<div class="rank">#1</div>
+		</div>
+		<div
+			class="podium-item bronze"
+			id="third-place"
+			onclick={() => {
+				loadProfileFromId(mainSectionEntries?.[2]?.id, true);
+			}}
+		>
+			<div class="name">{mainSectionEntries?.[2]?.user_name || "Guest"}</div>
+			<div class="podiumExp">{mainSectionEntries?.[2]?.experience?.toLocaleString() || "0 XP"}</div>
+			<div class="rank">#3</div>
+		</div>
+	</div>
+</div>
+<div class="optionBar">
+	<button
+		id="filterAll"
+		class="standardButton white optionButton"
+		class:optionButtonSelected={filter == "all"}
+		onclick={() => {
+			filter = "all";
+			playSound("basic_button");
+			loadCorrectLeaderboard();
+		}}>All</button
+	>
+	<button
+		id="filterSupporter"
+		class="standardButton white optionButton"
+		class:optionButtonSelected={filter == "supporter"}
+		onclick={() => {
+			filter = "supporter";
+			playSound("basic_button");
+			loadCorrectLeaderboard();
+		}}>Supporters</button
+	>
+</div>
+<!-- svelte-ignore a11y_click_events_have_key_events -->
+<div class="leaderboardContainer">
+	<div class="item-container">
+		{#if mainSectionEntries}
+			{#each mainSectionEntries.slice(3) as entry, i}
+				<div
+					class="rankedItem"
+					role="button"
+					tabindex="0"
+					class:yourItem={entry.user_name == $username && $isAuthenticated}
+					class:rankedItemSupporter={entry.supporter_level >= 1}
+				>
+					<p class="maxlength rankedItemLeft">#{entry.position}</p>
+					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+					<p
+						class="middle maxlength"
 						onclick={() => {
 							loadProfileFromId(entry.id, true);
 						}}
 					>
-						<p class="maxlength rankedItemLeft">#{entry.position}</p>
-						<p class="middle maxlength">{entry.user_name}</p>
-						<p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
-					</div>
-				{/each}
-			</div>
+						{entry.user_name}
+					</p>
+					<p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
+				</div>
+			{/each}
+		{:else}
+			<p class="loadingText">Loading...</p>
 		{/if}
 	</div>
+	{#if userSectionEntries}
+		<div id="threeDotsContainer" class="threeDotsContainer" transition:fade={{ duration: 250 }}>
+			<div class="circleDot"></div>
+			<div class="circleDot"></div>
+			<div class="circleDot"></div>
+		</div>
+		<div id="yourLeagueContainer" class="item-container">
+			{#each userSectionEntries as entry, i}
+				<div
+					class="rankedItem"
+					role="button"
+					tabindex="0"
+					class:yourItem={entry.user_name == $username && $isAuthenticated}
+					class:rankedItemSupporter={entry.supporter_level >= 1}
+					onclick={() => {
+						loadProfileFromId(entry.id, true);
+					}}
+				>
+					<p class="maxlength rankedItemLeft">#{entry.position}</p>
+					<p class="middle maxlength">{entry.user_name}</p>
+					<p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
+				</div>
+			{/each}
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -214,6 +210,9 @@
 		color: white;
 		font-size: 22px;
 		opacity: 0.5;
+		width: 100%;
+		text-align: center;
+		margin-top: 10px;
 	}
 
 	.optionBar {
@@ -221,23 +220,12 @@
 		align-items: center;
 		gap: 8px;
 		padding: 8px;
-		padding-bottom: 5px;
 		overflow-x: auto;
-		overflow-y: hidden;
-		margin-right: auto;
-		margin-left: 10px;
-		margin-bottom: 22px;
+		margin-inline: auto;
+		margin-bottom: 18px;
 		width: fit-content;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
-	}
-
-	.centerContainer {
-		width: fit-content;
-		margin-inline: auto;
-	}
-
-	#filterContainer {
 		background: none;
 		margin-bottom: -22px;
 	}
@@ -246,22 +234,18 @@
 		border-radius: 7px;
 		min-height: 25px;
 		opacity: 0.5;
+		width: 130px;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.optionButtonSelected {
 		opacity: 1;
 	}
 
-	.container {
-		width: 80vw;
-		max-width: 800px;
-		text-align: center;
-	}
-
 	.rankedItem {
 		width: 100%;
 		height: 45px;
-		box-sizing: border-box;
 		background-color: rgba(255, 255, 255, 0.1);
 		box-sizing: border-box;
 		border-radius: 8px;
@@ -269,7 +253,6 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 0;
 		padding-inline: 25px;
 		white-space: nowrap;
 		color: white;
@@ -341,6 +324,7 @@
 		transition: opacity 250ms ease;
 		cursor: pointer;
 		user-select: none;
+		text-align: center;
 	}
 
 	.middle:hover {
@@ -382,14 +366,15 @@
 	.leaderboardContainer {
 		border-radius: 20px;
 		display: flex;
+		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
-		flex-direction: column;
-		width: calc(80vw + 30px);
-		max-width: 830px;
+		width: 100%;
 		margin-top: 20px;
 		padding: 5px;
 		padding-inline: 0;
+		max-width: 850px;
+		margin-inline: auto;
 	}
 
 	.podium-container {
@@ -460,12 +445,12 @@
 		color: white;
 		font-size: 25px;
 		word-break: break-word;
-		max-width: 100%;
 		position: relative;
 		top: -55px;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
+		max-width: 100%;
 	}
 
 	.podium-item .rank {
@@ -494,12 +479,15 @@
 		min-height: 30px;
 	}
 
+	.item-container {
+		width: 100%;
+	}
+
 	.threeDotsContainer {
-		width: 80vw;
-		max-width: 800px;
 		overflow: hidden;
 		justify-content: center;
 		gap: 15px;
+		width: 100%;
 		margin-top: 25px;
 		display: flex;
 	}
