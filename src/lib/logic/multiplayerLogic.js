@@ -81,7 +81,6 @@ function setMultiplayerUI() {
 // End round ---------------------------------------------------------------------------------------------------------------------------------
 function endMultiplayerRound() {
     // After 5 seconds, allow the skip functionality for all players
-    startedRound = false;
     continueText.set("Wait 5s..."); // Wait text will auto-disable the button
     setTimeout(() => continueText.set("Continue"), 5000);
     enableResultScreen(get(mapPinLat), get(mapPinLng));
@@ -89,6 +88,7 @@ function endMultiplayerRound() {
     // Storage events after enabling result! (otherwise, result might trigger multiple times)
     get(peer)?.updateStorage("timerStart", false);
     get(peer)?.updateStorage("confirmedArray", []); // Reset confirmed guesses to prevent double-end
+    startedRound = false;
 }
 
 export function multiplayerStateToGuessed() {
@@ -152,7 +152,7 @@ export async function createPeerInstance() {
             // New peer connected to host...
             get(peer).onEvent('incomingPeerConnected', (id) => {
                 if (get(matchmakingActive)) deleteRoomCodeFromMatchmakingServer(); // Delete roomcode from server
-                if (friendDuel || get(matchmakingActive)) startRoom(); // Immediately start on first connection
+                if (playingDuels && !get(peer)?.getStorage?.gameOngoing) startRoom(); // Immediately start on first connection
                 connectionCount.set(get(peer)?.connectionCount);
             });
 
@@ -241,7 +241,6 @@ export async function createPeerInstance() {
                     } else {
                         disableResultScreen();
                         get(peer)?.updateStorage("overlay", true);
-                        if (storage?.currentRound < get(roundAmount)) get(peer).updateStorage("startRound", true);
                     }
                 }
 

@@ -56,8 +56,7 @@
 	});
 
 	const nextMonth = new Date();
-	nextMonth.setMonth(nextMonth.getMonth() + 1);
-	nextMonth.setDate(1);
+	nextMonth.setMonth(nextMonth.getMonth() + 1, 1); // Set to first day of next month
 </script>
 
 <svelte:head>

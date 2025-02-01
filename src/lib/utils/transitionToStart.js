@@ -3,7 +3,7 @@ import { socialPopupProbability } from "$lib/utils/socialPopupProbability";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 import { disableResultScreen } from "$lib/utils/setResultScreen";
 import { multiplayer, singleplayer } from "$lib/stores/modeStore";
-import { peer } from "$lib/stores/context-specific/multiplayerStore";
+import { peer, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
 import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 import { get } from "svelte/store";
 
@@ -14,7 +14,8 @@ export function transitionToStart() {
   }
 
   if (get(multiplayer)) {
-    get(peer)?.updateStorage("showResult", false);
+    get(peer)?.updateStorage("showResult", false); // Disable result screen
+    if (get(peer)?.getStorage?.currentRound < get(roundAmount)) get(peer).updateStorage("startRound", true); // Start new round
   }
 
   if (get(crazyGames)) potentialCrazyGamesAd(); // Crazy Games Ad
