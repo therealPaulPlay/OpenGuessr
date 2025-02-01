@@ -42,7 +42,7 @@
 
 	experience.subscribe((value) => {
 		level = getLevel();
-		percentageWidth = getLevelFraction() * 100 + "%";
+		percentageWidth = Math.max(7, getLevelFraction() * 100) + "%"; // Minimum 7% to prevent weird thin line
 	});
 </script>
 
