@@ -337,11 +337,6 @@
 		border-radius: 7px;
 	}
 
-	#supporterBoost p {
-		color: white;
-		font-size: 25px;
-	}
-
 	#supporterBoostText {
 		opacity: 0;
 	}
