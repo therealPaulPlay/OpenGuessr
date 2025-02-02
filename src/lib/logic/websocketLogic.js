@@ -60,6 +60,10 @@ export async function initializeWebsocketConnection() {
                     } else {
                         errorPopup("Elo remains unchanged", "You or your opponent submitted a fake result in an attempt to cheat.", data?.message);
                     }
+
+                } else if (data.type === "penalty-elo-gain") {
+                    showNotification(`Received ${data.eloGain} Elo from leaver.`);
+                    if (data.eloGain) elo.set(get(elo) + data.eloGain);
                 }
             };
 
