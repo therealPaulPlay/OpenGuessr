@@ -88,68 +88,62 @@
 	}
 </script>
 
-<div id="endScreenStreakRevive" bind:this={streakBanner}>
-	<div class="popup-title">
-		<h1 id="streakHeader" style:color={streakHeaderColor}>{streakHeaderText}</h1>
+<div id="endScreenStreakRevive" class="barMenu" bind:this={streakBanner}>
+	<div class="textBox">
+		<h3 id="streakHeader" style:color={streakHeaderColor}>{streakHeaderText}</h3>
+		<p id="keepStreakText" bind:innerHTML={streakText} contenteditable="false">
+			Support us by watching an ad and keep your streak of <span id="streakKeepAmount" class="experienceHighlight"
+				>0</span
+			>
+			!
+		</p>
 	</div>
-	<p id="keepStreakText" bind:innerHTML={streakText} contenteditable="false">
-		Support us by watching an ad and keep your streak of <span id="streakKeepAmount" class="experienceHighlight">0</span
+	<div class="buttonBox">
+		<button
+			class="standardButton white streakAdDismiss {streakAdDismissEnabled ? '' : 'disabled'}"
+			onclick={() => {
+				playSound("basic_button");
+				toggleStreakWindow(0, false);
+			}}>Close</button
 		>
-		!
-	</p>
-	<button
-		id="streakWatchAd"
-		class="streakButton standardButton closeButton"
-		onclick={showStreakAd}
-		bind:this={streakWatchAd}
-	>
-		Keep streak
-		<img src="/img/streak_icon.png" class="socialIcon streakIcon" alt="Streak Icon" />
-	</button>
-	<button
-		class="standardButton closeButton white streakAdDismiss {streakAdDismissEnabled ? '' : 'disabled'}"
-		onclick={() => {
-			playSound("basic_button");
-			toggleStreakWindow(0, false);
-		}}>Close</button
-	>
+		<button id="streakWatchAd" class="streakButton standardButton" onclick={showStreakAd} bind:this={streakWatchAd}>
+			Keep streak
+			<img src="/img/streak_icon.png" class="socialIcon streakIcon" alt="Streak Icon" />
+		</button>
+	</div>
 </div>
 
 <style>
 	#endScreenStreakRevive {
-		margin-top: auto;
-		margin-left: 0;
-		margin-right: auto;
-		margin-bottom: 10px;
-		z-index: 11;
-		font-size: 25px;
-		padding: 35px;
-		padding-top: 15px;
-		padding-bottom: 5px;
+		z-index: 16;
+		padding: 8px;
 		border-radius: 10px;
 		max-height: 1000px;
 		transition:
 			filter 250ms ease,
 			max-height 250ms ease;
 		user-select: none;
-		color: white;
-		background-color: var(--panel-color);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
 		overflow: hidden;
 		display: none; /* changed in code together with max-height */
 		pointer-events: auto;
+		position: fixed;
+		bottom: 10px;
+		left: 10px;
 	}
 
-	#streakWatchAd {
-		padding: 10px 20px;
+	.textBox {
+		padding: 10px;
+		padding-inline: 12px;
+		border-radius: 8px;
+		background-color: var(--box-color);
 	}
 
-	.streakAdDismiss {
-		padding: 10px 20px;
-		height: 53px;
-		margin-left: auto;
-		margin-right: 10px;
+	.buttonBox {
+		display: flex;
+		justify-content: flex-end;
+		align-items: center;
+		margin-top: 20px;
+		gap: 8px;
 	}
 
 	.streakIcon {
@@ -166,28 +160,18 @@
 	}
 
 	#keepStreakText {
-		max-width: 350px;
+		width: 300px;
 	}
 
 	#streakHeader {
 		transition: color 350ms ease;
+		margin-bottom: 5px;
+		font-size: 25px;
 	}
 
-	@media all and (max-width: 1200px) {
-		#streakHeader {
-			font-size: 30px;
-		}
-
+	@media (max-width: 500px) {
 		#endScreenStreakRevive {
-			padding-top: 10px;
-		}
-
-		#streakWatchAd {
-			margin-top: 20px;
-		}
-
-		.streakAdDismiss {
-			margin-top: 20px;
+			width: calc(100% - 36px);
 		}
 	}
 </style>
