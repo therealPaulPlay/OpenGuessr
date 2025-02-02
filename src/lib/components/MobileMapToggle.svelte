@@ -3,6 +3,7 @@
 	import { mapExpanded, mapVisible } from "$lib/stores/context-specific/mapStore";
 	import { get } from "svelte/store";
 	import { playSound } from "$lib/utils/soundManager";
+	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	let toggleMapButton = $state();
 
 	function toggleMapClick() {
@@ -19,7 +20,7 @@
 
 <div
 	class="floatingMapButton"
-	style:visibility={$mapVisible ? "visible" : "hidden"}
+	style:visibility={$mapVisible && !$resultScreenEnabled ? "visible" : "hidden"}
 	style={$mapExpanded ? "margin-bottom: 8px;" : ""}
 >
 	<button
