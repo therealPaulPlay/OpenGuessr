@@ -46,96 +46,94 @@
 	});
 </script>
 
-<div id="EndOverlay" class:resultScreenHidden={!Boolean($resultScreenEnabled)}>
-	<div id="endBottomArea">
-		<StreakRestore />
-		<div id="endBottomBar">
+<div id="endBottomArea" class:resultScreenHidden={!Boolean($resultScreenEnabled)}>
+	<StreakRestore />
+	<div id="endBottomBar">
+		<div
+			class="floatingResultLeaderboardArea"
+			style:display={$supporterLevel >= 2 || !$resultScreenEnabled || $adsDisabled ? "none" : ""}
+		>
+			<div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
+			<!-- id is necessary for ad script! -->
+			<RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." learnMore="true" />
+		</div>
+		<div id="resultBox" class="barMenu">
+			<div class="resultField resultFieldHigh" id="motivationText">
+				<p>{$motivationText}</p>
+			</div>
 			<div
-				class="floatingResultLeaderboardArea"
+				id="mobileResultLeaderboardAdArea"
+				class="resultField resultFieldHigh"
 				style:display={$supporterLevel >= 2 || !$resultScreenEnabled || $adsDisabled ? "none" : ""}
 			>
-				<div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
-				<!-- id is necessary for ad script! -->
-				<RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." learnMore="true" />
+				<div id="mobileResultLeaderboardAd"></div>
+				<RemoveAdsText text="Go Ad-Free." learnMore="true" />
 			</div>
-			<div id="resultBox">
-				<p class="resultField" id="motivationText">{$motivationText}</p>
-				<div
-					id="mobileResultLeaderboardAdArea"
-					class="resultField"
-					style:display={$supporterLevel >= 2 || !$resultScreenEnabled || $adsDisabled ? "none" : ""}
-				>
-					<div id="mobileResultLeaderboardAd"></div>
-					<RemoveAdsText text="Go Ad-Free." learnMore="true" />
-				</div>
-				<div class="resultField">
-					<img src="/img/distance_icon.png" alt="Distance icon" id="distanceIcon" />
-					<p id="distanceText">{$distanceText}</p>
-				</div>
-				{#if $isAuthenticated}
-					<div id="XParea" class="resultField">
-						<div id="supporterBoost" bind:this={$supporterBoost}>
-							<p id="supporterBoostText" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
-						</div>
-						<p id="endScreenLevelDisplay">Lvl. {level}</p>
-						<div id="endScreenXPbar">
-							<div
-								class="XPbarResource"
-								id="endScreenXPbarResource"
-								class:XPbarAnimate={$experienceBarAnimated}
-								style:width={percentageWidth}
-							></div>
-						</div>
-						<p id="endScreenXP">{$animatedExperience.toFixed(0)} XP</p>
-						{#if $showStreakDisplay}
-							<div id="streakDisplay">
-								<img id="streakIcon" src="/img/streak_icon.png" alt="country streak" />
-								<p id="endScreenStreakText">{$streakText}</p>
-							</div>
-						{/if}
+			<div class="resultField">
+				<img src="/img/distance_icon.png" alt="Distance icon" id="distanceIcon" />
+				<p id="distanceText">{$distanceText}</p>
+			</div>
+			{#if $isAuthenticated}
+				<div id="XParea" class="resultField">
+					<div id="supporterBoost" bind:this={$supporterBoost}>
+						<p id="supporterBoostText" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
 					</div>
-				{:else}
-					<div id="XPbarNoAccount" class="resultField">
-						<p id="signupPromptText">See & save your earned points!</p>
-						<button
-							id="resultSignupPrompt"
-							class="standardButton white"
-							onclick={() => {
-								playSound("basic_button");
-								signupPrompt();
-							}}>Sign up</button
-						>
+					<p id="endScreenLevelDisplay">Lvl. {level}</p>
+					<div id="endScreenXPbar">
+						<div
+							class="XPbarResource"
+							id="endScreenXPbarResource"
+							class:XPbarAnimate={$experienceBarAnimated}
+							style:width={percentageWidth}
+						></div>
 					</div>
-				{/if}
-				<div id="nextRoundArea">
+					<p id="endScreenXP">{$animatedExperience.toFixed(0)} XP</p>
+					{#if $showStreakDisplay}
+						<div id="streakDisplay">
+							<img id="streakIcon" src="/img/streak_icon.png" alt="country streak" />
+							<p id="endScreenStreakText">{$streakText}</p>
+						</div>
+					{/if}
+				</div>
+			{:else}
+				<div id="XPbarNoAccount" class="resultField">
+					<p id="signupPromptText">See & save your earned points!</p>
 					<button
-						id="endScreenOpenLocation"
-						class="standardButton white"
+						class="standardButton white continueButton smallSignupButton"
 						onclick={() => {
 							playSound("basic_button");
-							openLocationOnMaps(get(currentLocationLatitude), get(currentLocationLongitude));
-						}}
+							signupPrompt();
+						}}>Sign up</button
 					>
-						<img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
-					</button>
-					<button
-						id="nextRound"
-						class="standardButton white"
-						style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
-						style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
-						onclick={() => {
-							playSound("basic_button");
-							transitionToStart();
-						}}
-					>
-						<p class="nextRoundText">
-							{$continueText}
-						</p>
-						<img id="nextRoundArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
-					</button>
 				</div>
-			</div>
+			{/if}
 		</div>
+	</div>
+	<div id="nextRoundArea" class="barMenu">
+		<button
+			class="standardButton white continueButton"
+			onclick={() => {
+				playSound("basic_button");
+				openLocationOnMaps(get(currentLocationLatitude), get(currentLocationLongitude));
+			}}
+		>
+			<img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
+		</button>
+		<button
+			id="nextRound"
+			class="standardButton white continueButton"
+			style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
+			style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
+			onclick={() => {
+				playSound("basic_button");
+				transitionToStart();
+			}}
+		>
+			<p class="nextRoundText">
+				{$continueText}
+			</p>
+			<img id="nextRoundArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
+		</button>
 	</div>
 </div>
 
@@ -149,27 +147,11 @@
 />
 
 <style>
-	#EndOverlay {
-		overflow: hidden;
-		color: #eee;
-		text-align: center;
-		position: fixed;
-		width: 100%;
-		height: 100%;
-		z-index: 13;
-		top: 0;
-		display: flex;
-		justify-content: center;
-		align-items: flex-end;
-		pointer-events: none;
-		transition: opacity 250ms ease-out;
-	}
-
 	.directionArrowIcon {
-		width: 22px;
-		height: 22px;
+		width: 20px;
+		height: 20px;
 		transform: rotate(270deg);
-		vertical-align: -3px;
+		vertical-align: -2px;
 		margin-right: -10px;
 	}
 
@@ -182,44 +164,45 @@
 		pointer-events: none !important;
 	}
 
-	#endScreenOpenLocation {
-		padding: 10px;
-		height: 100%;
-		border-radius: 7px;
-		font-size: 25px;
-	}
-
-	#endScreenOpenLocation:hover {
-		filter: brightness(70%);
-	}
-
 	#streetviewIcon {
 		vertical-align: -2px;
+	}
+
+	.smallSignupButton {
+		margin: 0;
+		line-height: 5px;
+		max-height: 35px !important;
+		min-height: 35px !important;
+		margin-top: -4px;
+		margin-bottom: -4px;
+		margin-right: -4px;
+	}
+
+	#nextRound {
+		padding-inline: 25px;
+		flex-grow: 1;
 	}
 
 	#resultBox {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		margin: 20px 20px;
 		color: white;
-		font-size: 25px;
-		height: fit-content;
-		max-width: 735px;
+		max-width: 750px;
 		flex-wrap: wrap;
-		width: calc(100% - 20px);
 		gap: 10px;
+		padding: 8px;
+		margin-inline: 10px;
 	}
 
 	.resultField {
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: rgba(0, 0, 0, 0.1);
-		border-radius: 7px;
+		background-color: rgba(255, 255, 255, 0.075);
+		border-radius: 5px;
 		padding: 10px;
 		flex-grow: 10;
-		height: 40px;
 		position: relative;
 		transition:
 			width 250ms ease,
@@ -227,9 +210,14 @@
 		overflow: hidden;
 	}
 
+	.resultFieldHigh {
+		min-height: 40px;
+	}
+
 	#distanceIcon {
-		width: 30px;
-		height: 30px;
+		width: 25px;
+		height: 25px;
+		margin-bottom: -3px;
 		margin-right: 10px;
 	}
 
@@ -239,37 +227,38 @@
 		align-items: center;
 		height: fit-content;
 		flex: 1;
-		border-radius: 10px;
-		background-color: var(--panel-color);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
 		pointer-events: auto;
+		position: fixed;
+		bottom: 10px;
+		left: 0;
+		right: 0;
 	}
 
 	#endBottomArea {
-		position: sticky;
+		position: fixed;
 		height: fit-content;
 		display: flex;
-		bottom: 10px;
-		margin-inline: 10px;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		top: 0;
 		flex-direction: column;
-		width: 100%;
 		overflow: hidden;
 		z-index: 13;
+		transition: opacity 250ms ease-out;
+		pointer-events: none;
 	}
 
 	#motivationText {
-		color: white;
 		flex-grow: 100;
+		min-width: 40%;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
-		min-width: 40%;
 	}
 
 	#mobileResultLeaderboardAdArea {
 		min-width: 330px;
-		max-width: 380px;
 		height: 50px;
 		max-height: 60px;
 		padding: 5px;
@@ -311,15 +300,9 @@
 	}
 
 	#XParea {
-		display: flex;
-		align-items: center;
-		padding: 10px;
-		background-color: rgba(0, 0, 0, 0.1);
-		border-radius: 7px;
 		position: relative;
 		flex-grow: 100;
 		min-width: 300px;
-		height: 40px;
 	}
 
 	@keyframes XPFade {
@@ -398,18 +381,8 @@
 	}
 
 	#XPbarNoAccount {
-		color: white;
-		text-align: center;
-		background-color: rgba(0, 0, 0, 0.2);
-		line-height: 38px;
 		justify-content: space-between;
-	}
-
-	#resultSignupPrompt {
-		margin: 0;
-		padding-top: 0;
-		padding-bottom: 0;
-		margin-right: -2px;
+		max-height: 30px;
 	}
 
 	#signupPromptText {
@@ -453,7 +426,7 @@
 
 	#streakIcon {
 		width: 25px;
-		height: auto;
+		height: 25px;
 	}
 
 	#streakDisplay {
@@ -483,31 +456,26 @@
 		text-overflow: ellipsis;
 	}
 
-	#nextRound {
-		font-size: 25px;
-		border-radius: 7px;
-		opacity: 100%;
-		padding: 10px 30px;
-	}
-
 	#nextRoundArea {
 		z-index: 15;
-		margin: 15px 15px;
-		position: absolute;
-		bottom: 5px;
-		right: 5px;
+		position: fixed;
+		bottom: 10px;
+		right: 10px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 10px;
-	}
-
-	#nextRound:hover {
-		filter: brightness(0.7);
+		gap: 5px;
+		max-width: 750px;
+		margin-inline: auto;
 	}
 
 	.nextRoundText {
 		display: inline;
+	}
+
+	.continueButton {
+		min-height: 42px;
+		background-color: var(--panel-button-color);
 	}
 
 	@media (min-width: 1900px) {
@@ -519,30 +487,23 @@
 			display: none;
 		}
 
-		#endBottomArea {
-			overflow: visible;
+		.resultFieldHigh {
+			min-height: unset;
+		}
+
+		#resultBox {
+			width: 720px;
 		}
 	}
 
 	@media all and (max-width: 1350px) {
-		#resultBox {
-			font-size: 22px;
-		}
-
-		#motivationText {
-			font-size: 22px;
-		}
-
-		#endScreenXP {
-			font-size: 20px;
-		}
-
 		#nextRoundArea {
-			position: relative;
-			right: 0;
-			margin-bottom: 0;
-			margin-top: 10px;
-			width: calc(100% - 20px);
+			width: calc(100% - 32px);
+			left: 10px;
+		}
+
+		#resultBox {
+			margin-bottom: 65px;
 		}
 	}
 </style>
