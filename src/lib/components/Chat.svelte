@@ -148,8 +148,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: var(--box-color);
-		backdrop-filter: blur(20px);
+		background-color: var(--menu-background);
 		color: white;
 		opacity: 0;
 		z-index: 2;
