@@ -179,7 +179,7 @@
 	}
 
 	#nextRound {
-		padding-inline: 25px;
+		padding-inline: 35px;
 		flex-grow: 1;
 	}
 
