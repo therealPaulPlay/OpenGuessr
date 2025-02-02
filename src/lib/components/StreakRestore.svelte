@@ -134,7 +134,7 @@
 	.textBox {
 		padding: 10px;
 		padding-inline: 12px;
-		border-radius: 8px;
+		border-radius: 5px;
 		background-color: var(--box-color);
 	}
 
