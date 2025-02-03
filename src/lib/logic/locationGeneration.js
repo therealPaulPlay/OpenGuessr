@@ -42,7 +42,7 @@ async function getJSONCoords(category) {
             return pickRandomLocations();
 
         } catch (error) {
-            //choose standard and instantly reload (if categories get renamed / get deleted-> this happens)
+            // Choose standard and instantly reload (if categories get renamed / get deleted-> this happens)
             localStorage.setItem("selectedCategory", "standard");
             window.location.reload();
             console.error(error);
@@ -54,54 +54,85 @@ async function getJSONCoords(category) {
 
 // Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
 
+const locationEndpoint = "https://locations.openguessr.com/locations/";
+const locationLengthEndpoint = "https://locations.openguessr.com/location-length";
+
 async function getCoordsFromLocationServer() {
-    if (loadedMapCategory !== "standard") {
-        try {
+    try {
+        if (loadedMapCategory !== "standard") {
             previousGuessesIndexes = [];
             loadedMapCategory = "standard";
-            let locationEndpoint = "https://locations.openguessr.com/locations";
+            currentlyLoadedLocationsArray.set([]); // Empty
+        }
 
-            // Create an AbortController for the timeout
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2000); // timeout
+        // Get random index
+        const totalAmount = await getStandardLocationAmount();
+        const newIndex = getUniqueLocationIndex(totalAmount);
 
-            try {
-                const response = await fetch(locationEndpoint, {
-                    method: 'GET',
-                    headers: { 'Content-Type': 'application/json' },
-                    signal: controller.signal
-                });
+        // Create an AbortController for the timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1000); // timeout
 
-                // Clear the timeout since we got a response
-                clearTimeout(timeoutId);
+        try {
+            const response = await fetch(locationEndpoint + newIndex, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                signal: controller.signal
+            });
 
-                // Check if the response is successful
-                if (response.ok) {
-                    const data = await response.json();
-                    const standardLocations = data.locations;
-                    currentlyLoadedLocationsArray.set(standardLocations);
-                    return pickRandomLocations();
-                } else {
-                    console.error("Location fetch failed. Server returned error:", response.status);
-                    return await loadBackupLocations(response.status);
-                }
-            } catch (error) {
-                // Clear the timeout in case of error
-                clearTimeout(timeoutId);
+            // Check if the response is successful
+            if (response.ok) {
+                const data = await response.json();
+                const resultLat = Number(data?.location?.[0]);
+                const resultLong = Number(data?.location?.[1]);
+                return [resultLat, resultLong];
 
-                if (error.name === 'AbortError') {
-                    console.error("Request timed out.");
-                    return await loadBackupLocations("Request timeout");
-                }
-                throw error; // Re-throw other errors to be caught by outer try-catch
+            } else {
+                throw new Error("Location fetch failed. Server returned error: " + response.status);
             }
         } catch (error) {
-            console.error("Error occurred while fetching locations from server: ", error);
-            return await loadBackupLocations(error);
+            throw error; // Re-throw other errors to be caught by outer try-catch
+        } finally {
+            clearTimeout(timeoutId);
         }
-    } else {
-        return pickRandomLocations();
+    } catch (error) {
+        console.error("Error occurred while fetching locations from server: ", error);
+        return await loadBackupLocations(error);
     }
+}
+
+let standardLocationAmount;
+
+async function getStandardLocationAmount() {
+    if (!standardLocationAmount) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1000); // timeout
+
+        try {
+            const response = await fetch(locationLengthEndpoint, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                signal: controller.signal
+            });
+
+            // Clear the timeout since we got a response
+            clearTimeout(timeoutId);
+
+            // Check if the response is successful
+            if (response.ok) {
+                const data = await response.json();
+                standardLocationAmount = Number(data?.length);
+            } else {
+                throw new Error("Standard location amount returned not-okay status: " + response.status);
+            }
+        } catch (error) {
+            throw new Error("Error occured fetching standard location amount: " + error); // Re-throw
+        } finally {
+            clearTimeout(timeoutId);
+        }
+    }
+
+    return standardLocationAmount;
 }
 
 // in case the location server does not respond, load the backup, formerly daily locations (just totally random locations) instead
@@ -151,28 +182,29 @@ async function getCommunityMapCoordinates() {
 
 function pickRandomLocations() {
     try {
-        let guessIndex;
-
-        do {
-            guessIndex = Math.floor(Math.random() * get(currentlyLoadedLocationsArray)?.length);
-        } while (previousGuessesIndexes.includes(guessIndex));
-
-        previousGuessesIndexes.unshift(guessIndex); // add guessIndex at the front of the array
-
-        if (previousGuessesIndexes.length > get(currentlyLoadedLocationsArray)?.length / 2) {
-            previousGuessesIndexes.pop(); // if the array is longer than half of the total amount, pop last one out
-        }
+        let guessIndex = getUniqueLocationIndex(get(currentlyLoadedLocationsArray)?.length);
 
         const resultLat = Number(get(currentlyLoadedLocationsArray)[guessIndex][0]);
         const resultLong = Number(get(currentlyLoadedLocationsArray)[guessIndex][1]);
         const additionalProperty = get(currentlyLoadedLocationsArray)[guessIndex][2]; // only available for certain modes (like country guesser, image guesser..). This could be the country, the image URL etc.
-
-        const resultLocationsArray = [resultLat, resultLong, additionalProperty];
-        return resultLocationsArray;
+        return [resultLat, resultLong, additionalProperty];
     } catch (error) {
         console.error("Error picking random locations in locationGeneration.js: " + error);
         return [];
     }
+}
+
+function getUniqueLocationIndex(locationAmount) {
+    let index;
+    do {
+        index = Math.floor(Math.random() * locationAmount);
+    } while (previousGuessesIndexes.includes(index));
+
+    previousGuessesIndexes.unshift(index); // add guessIndex at the front of the array
+
+    // if the array is longer than half of the total amount, pop last one out
+    if (previousGuessesIndexes.length > locationAmount / 2) previousGuessesIndexes.pop();
+    return index;
 }
 
 // Get Competition coordinates ---------------------------------------------------------------------------------------------
