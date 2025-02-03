@@ -175,7 +175,7 @@ export async function createPeerInstance() {
 
             let playerAdded;
 
-            get(peer).onEvent('storageUpdate', (storage) => {
+            get(peer).onEvent('storageUpdated', (storage) => {
                 // Sync game info
                 if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.restriction) {
                     roundAmount.set(storage?.roundAmount);
@@ -197,7 +197,10 @@ export async function createPeerInstance() {
 
                 if (typeof storage.overlay !== "undefined" && storage.overlay != get(multiplayerOverlay)) storage.overlay ? showMultiplayerOverlay(true) : showMultiplayerOverlay(false);
 
-                if (storage.players) updateMultiplayerTableArray();
+                if (storage.players) {
+                    updateMultiplayerTableArray();
+                    if (get(multiplayer) && playingDuels && !friendDuel && storage.players.length <= 1) removeRankedLeavePenalty();
+                }
 
                 if (storage.chats) loadChat(storage.chats || []);
 
@@ -224,11 +227,6 @@ export async function createPeerInstance() {
                         .filter((player) => !confirmedIDs.has(player[0]))
                         .map((player) => truncate(player[1]));
                     remainingPlayers.set(remaining); // Set the remainingPlayers to the usernames
-                }
-
-                // Start new round
-                if (storage.startRound && get(peer)?.isHost) {
-                    setTimeout(startMultiplayerRound, storage?.firstRoundPlayed ? 1500 : 0);
                 }
 
                 // Control result screen
@@ -264,14 +262,20 @@ export async function createPeerInstance() {
                 }
 
                 if (storage.rematch && get(peer)?.isHost) multiplayerPerformRematch();
+
+                if (storage.startRound && get(peer)?.isHost) {
+                    setTimeout(startMultiplayerRound, storage?.firstRoundPlayed ? 1500 : 0);
+                }
             });
 
-            get(peer).onEvent('destroy', () => {
-                if (get(matchmakingActive)) deleteRoomCodeFromMatchmakingServer();
-                if (!get(multiplayer)) return; // If already left, do not make further changes
+            get(peer).onEvent('hostMigrated', () => {
+                // Check if round should be started, as previous host might not have
+                if (get(peer)?.getStorage?.startRound && get(peer)?.isHost) setTimeout(startMultiplayerRound, 1500);
+            });
 
-                // If destroyed by system (e.g error)...
-                removeRankedLeavePenalty();
+            get(peer).onEvent('instanceDestroyed', () => {
+                if (get(matchmakingActive)) deleteRoomCodeFromMatchmakingServer(); // If error...
+                if (!get(multiplayer)) return; // If already left, do not make further changes
                 leaveMultiplayerRound(false);
             });
 
@@ -318,7 +322,6 @@ export async function findDuel() {
             `Unfortunately, you are banned from playing duels for "${get(banReportEntryData)?.reason}" until ${get(banReportEntryData)?.expires_at ? new Date(get(banReportEntryData)?.expires_at)?.toLocaleDateString() : "forever"}. 
             Please contact the moderators on Discord if you think this was a mistake.`
         );
-
         return;
     }
 
@@ -453,10 +456,10 @@ async function startMultiplayerRound() {
     get(peer)?.updateStorage("timeReducedOverlay", false); // Ensure no reduced timer from before interferes
 
     // Countdown
-    get(peer).updateStorage("startRound", false); // Round started successfully
     get(peer)?.updateStorage("countdownActive", true);
     get(peer)?.updateStorage("currentRound", get(peer)?.getStorage?.currentRound + 1);
     get(peer)?.updateStorageArray("chats", "add", `System: Starting round ${get(peer)?.getStorage?.currentRound}.`);
+    get(peer).updateStorage("startRound", false); // Round started successfully
 }
 
 // Peer Logic -----------------------------------------------------------------------------------------------------------------
