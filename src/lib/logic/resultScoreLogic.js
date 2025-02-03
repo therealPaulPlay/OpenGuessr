@@ -182,7 +182,7 @@ export async function loadResultScreenXP(distance) {
         // Apply XP visually and server-wise ----------------------------------
 
         experienceBarAnimated.set(false);
-        earnedExperience.set(earnedBasicXP);
+        earnedExperience.set(earnedBasicXP || 0);
 
         if (earnedXP > 0 && get(isAuthenticated)) {
             setUserXP(currentXP + earnedXP); // Save XP to database
@@ -199,7 +199,7 @@ export async function loadResultScreenXP(distance) {
             if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
                 supporterXpBoostAnimation(supporterMultiplier);
                 animateSupporterBoostTimeout = setTimeout(() => {
-                    earnedExperience.set(earnedXP);
+                    earnedExperience.set(earnedXP || 0);
                 }, 3500);
             }
         }, 10);

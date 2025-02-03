@@ -53,7 +53,7 @@
 										}
 									}}
 								>
-									{username} ({elo || 0} Elo)
+									{username} ({elo || "Error"} Elo)
 									<div class="multiplayerBadge">
 										{#if badge}
 											<Badge interactive={false} display={true} id={badge} />

@@ -90,8 +90,7 @@ async function sendRoomCodeToMatchmakingServer() {
         if (response.ok) {
             setTimeout(() => {
                 if (get(matchmakingActive)) {
-                    matchmakingActive.set(false);
-                    leaveMultiplayerRound(); // Deletes code from matchmaking server too
+                    leaveMultiplayerRound(); // Sets matchmaking active to false & destroys peer, which calls the delete room code function
                     multiplayerStatus.set("No match found. Please retry.");
                 }
             }, 10000); // After 10 seconds, as the room code is now expired, leave the multiplayer round and show the retry button
