@@ -8,6 +8,7 @@ import { isTokenExpired } from "$lib/utils/isTokenExpired.js";
 import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { get } from "svelte/store";
 import { supportedAmount } from "$lib/stores/accountStore.js";
+import { showNotification } from "$lib/utils/notifications";
 
 // Authentication -----------------------------------------------------------------------------------------------------------------------
 
@@ -19,13 +20,12 @@ export async function checkAuthenticationStatus() {
     if (!isTokenExpired(bearerToken)) {
       isAuthenticated.set(true);
       await loadUserInfo();
-    }
-    else {
+    } else {
       isAuthenticated.set(false);
       resetLocalSave();
+      showNotification("Your session has expired.");
     }
-  }
-  else {
+  } else {
     isAuthenticated.set(false);
   }
 

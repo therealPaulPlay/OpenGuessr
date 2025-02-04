@@ -21,7 +21,7 @@ export async function getLocationCoordinates(type) {
     }
 }
 
-let loadedMapCategory;
+let loadedMapCategory; // Exclusive to location generation, not a general variable!
 let previousGuessesIndexes = [];
 
 // Get Location from JSON (Legacy/Custom Map creation method) ----------------------------------------------------------------------------------------------------
@@ -54,46 +54,53 @@ async function getJSONCoords(category) {
 
 // Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
 
-const locationEndpoint = "https://locations.openguessr.com/locations/";
+const locationEndpoint = "https://locations.openguessr.com/locations-batch";
 const locationLengthEndpoint = "https://locations.openguessr.com/location-length";
+let cachedLocations = [];
 
 async function getCoordsFromLocationServer() {
     try {
         if (loadedMapCategory !== "standard") {
             previousGuessesIndexes = [];
             loadedMapCategory = "standard";
-            currentlyLoadedLocationsArray.set([]); // Empty
+            currentlyLoadedLocationsArray.set([]); // Empty for default boundaries
         }
 
-        // Get random index
-        const totalAmount = await getStandardLocationAmount();
-        const newIndex = getUniqueLocationIndex(totalAmount);
+        // If cache is empty, fetch 5 new locations
+        if (cachedLocations.length === 0) {
+            const totalAmount = await getStandardLocationAmount();
+            const indexes = Array.from({ length: 5 }, () => getUniqueLocationIndex(totalAmount));
 
-        // Create an AbortController for the timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1000); // timeout
+            const controller = new AbortController();
+            const timeoutId = setTimeout(() => controller.abort(), 1500); // Abort slow requests
 
-        try {
-            const response = await fetch(locationEndpoint + newIndex, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-                signal: controller.signal
-            });
+            try {
+                const response = await fetch(`${locationEndpoint}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ indexes }),
+                    signal: controller.signal
+                });
 
-            // Check if the response is successful
-            if (response.ok) {
-                const data = await response.json();
-                const resultLat = Number(data?.location?.[0]);
-                const resultLong = Number(data?.location?.[1]);
-                return [resultLat, resultLong];
-
-            } else {
-                throw new Error("Location fetch failed. Server returned error: " + response.status);
+                if (response.ok) {
+                    const data = await response.json();
+                    cachedLocations = data.locations;
+                } else {
+                    throw new Error("Location fetch failed. Server returned error: " + response.status);
+                }
+            } finally {
+                clearTimeout(timeoutId);
             }
-        } catch (error) {
-            throw error; // Re-throw other errors to be caught by outer try-catch
-        } finally {
-            clearTimeout(timeoutId);
+        }
+
+        // Return and remove one location from cache
+        if (cachedLocations.length > 0) {
+            const location = cachedLocations.shift();
+            const resultLat = Number(location[0]);
+            const resultLong = Number(location[1]);
+            return [resultLat, resultLong];
+        } else {
+            throw new Error("No locations available in cache!");
         }
     } catch (error) {
         console.error("Error occurred while fetching locations from server: ", error);
@@ -139,7 +146,6 @@ async function getStandardLocationAmount() {
 async function loadBackupLocations(error) {
     console.log("Loading backup locations.");
     errorPopup("Location server error", "Loading local backup locations instead. ", "Error: " + error);
-
     return await getJSONCoords("backup");
 }
 
