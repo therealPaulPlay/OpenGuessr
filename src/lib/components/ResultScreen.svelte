@@ -97,7 +97,7 @@
 				</div>
 			{:else}
 				<div id="XPbarNoAccount" class="resultField">
-					<p id="signupPromptText">See & save your earned points!</p>
+					<p id="signupPromptText">See & save your score!</p>
 					<button
 						class="standardButton white continueButton smallSignupButton"
 						onclick={() => {
