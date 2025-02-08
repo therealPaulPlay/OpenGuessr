@@ -18,7 +18,7 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { goto } from "$app/navigation";
 	import { onDestroy, onMount } from "svelte";
-	import { scale, slide } from "svelte/transition";
+	import { fade, scale, slide } from "svelte/transition";
 	import { bounceInOut } from "svelte/easing";
 	import { getEloLeaderboard } from "$lib/logic/userAPI";
 	import { ChevronDown, ChevronUp } from "lucide-svelte";
@@ -220,7 +220,7 @@
 	</div>
 	<div class="friendBox" style:min-height={$loadedFriendsData ? "50px" : "80px"}>
 		{#if $loadedFriendsData && $isAuthenticated}
-			<div class="innerFriendBox">
+			<div class="innerFriendBox" transition:fade={{ duration: 150 }}>
 				{#each $loadedFriendsData as entry}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<div
