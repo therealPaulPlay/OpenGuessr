@@ -151,8 +151,8 @@
 </div>
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="leaderboardContainer">
-	<div class="item-container">
-		{#if mainSectionEntries}
+	{#if mainSectionEntries}
+		<div class="item-container" transition:fade={{ duration: 150 }}>
 			{#each mainSectionEntries.slice(3) as entry, i}
 				<div
 					class="rankedItem"
@@ -174,10 +174,10 @@
 					<p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
 				</div>
 			{/each}
-		{:else}
-			<p class="loadingText">Loading...</p>
-		{/if}
-	</div>
+		</div>
+	{:else}
+		<p class="loadingText">Loading...</p>
+	{/if}
 	{#if userSectionEntries}
 		<div id="threeDotsContainer" class="threeDotsContainer" transition:fade={{ duration: 250 }}>
 			<div class="circleDot"></div>
@@ -257,7 +257,6 @@
 		white-space: nowrap;
 		color: white;
 		font-size: 25px;
-		transition: opacity 250ms ease;
 	}
 
 	.rankedItemSupporter {

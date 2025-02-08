@@ -568,7 +568,7 @@
 		padding: 10px;
 		padding-inline: 15px;
 		box-sizing: border-box;
-		animation: fadeIn 100ms ease-in-out;
+		animation: fadeIn 150ms ease-in-out;
 		user-select: none;
 		flex-grow: 1;
 		flex-basis: 30%;
