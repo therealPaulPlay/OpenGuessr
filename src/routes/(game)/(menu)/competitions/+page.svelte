@@ -1162,7 +1162,7 @@
 	}
 
 	.fadeInItem {
-		animation: fadeIn 100ms ease-in-out;
+		animation: fadeIn 150ms ease-in-out;
 	}
 
 	.youBar {

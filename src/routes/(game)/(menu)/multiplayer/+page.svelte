@@ -164,7 +164,7 @@
 		</button>
 
 		{#if isExpanded}
-			<div class="divisionLeaderboardContainer" transition:slide={{ duration: 250 }}>
+			<div class="divisionLeaderboardContainer" transition:slide={{ duration: 150 }}>
 				{#if divisionLeaderboard?.length > 0}
 					{#each divisionLeaderboard as entry}
 						<div
@@ -342,7 +342,6 @@
 		width: 100%;
 		box-sizing: border-box;
 		overflow: hidden;
-		animation: fadeIn 100ms ease-in-out;
 	}
 
 	.divisionLeaderboardEntryYou {
@@ -488,21 +487,11 @@
 		max-width: 250px;
 		overflow: hidden;
 		margin: 0;
-		animation: fadeIn 100ms ease-in-out;
 	}
 
 	@media (max-width: 800px) {
 		.friendItem {
 			max-width: 400px;
-		}
-	}
-
-	@keyframes fadeIn {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
 		}
 	}
 
