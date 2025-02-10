@@ -21,7 +21,7 @@ export async function getLocationCoordinates(type) {
     }
 }
 
-let loadedMapCategory;
+let loadedMapCategory; // Exclusive to location generation, not a general variable!
 let previousGuessesIndexes = [];
 
 // Get Location from JSON (Legacy/Custom Map creation method) ----------------------------------------------------------------------------------------------------
@@ -42,7 +42,7 @@ async function getJSONCoords(category) {
             return pickRandomLocations();
 
         } catch (error) {
-            //choose standard and instantly reload (if categories get renamed / get deleted-> this happens)
+            // Choose standard and instantly reload (if categories get renamed / get deleted-> this happens)
             localStorage.setItem("selectedCategory", "standard");
             window.location.reload();
             console.error(error);
@@ -54,61 +54,98 @@ async function getJSONCoords(category) {
 
 // Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
 
+const locationEndpoint = "https://locations.openguessr.com/locations-batch";
+const locationLengthEndpoint = "https://locations.openguessr.com/location-length";
+let cachedLocations = [];
+
 async function getCoordsFromLocationServer() {
-    if (loadedMapCategory !== "standard") {
-        try {
+    try {
+        if (loadedMapCategory !== "standard") {
             previousGuessesIndexes = [];
             loadedMapCategory = "standard";
-            let locationEndpoint = "https://locations.openguessr.com/locations";
+            currentlyLoadedLocationsArray.set([]); // Empty for default boundaries
+        }
 
-            // Create an AbortController for the timeout
+        // If cache is empty, fetch 5 new locations
+        if (cachedLocations.length === 0) {
+            const totalAmount = await getStandardLocationAmount();
+            const indexes = Array.from({ length: 5 }, () => getUniqueLocationIndex(totalAmount));
+
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 2000); // timeout
+            const timeoutId = setTimeout(() => controller.abort(), 1500); // Abort slow requests
 
             try {
-                const response = await fetch(locationEndpoint, {
-                    method: 'GET',
+                const response = await fetch(`${locationEndpoint}`, {
+                    method: 'PUT',
                     headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ indexes }),
                     signal: controller.signal
                 });
 
-                // Clear the timeout since we got a response
-                clearTimeout(timeoutId);
-
-                // Check if the response is successful
                 if (response.ok) {
                     const data = await response.json();
-                    const standardLocations = data.locations;
-                    currentlyLoadedLocationsArray.set(standardLocations);
-                    return pickRandomLocations();
+                    cachedLocations = data.locations;
                 } else {
-                    console.error("Location fetch failed. Server returned error:", response.status);
-                    return await loadBackupLocations(response.status);
+                    throw new Error("Location fetch failed. Server returned error: " + response.status);
                 }
-            } catch (error) {
-                // Clear the timeout in case of error
+            } finally {
                 clearTimeout(timeoutId);
+            }
+        }
 
-                if (error.name === 'AbortError') {
-                    console.error("Request timed out.");
-                    return await loadBackupLocations("Request timeout");
-                }
-                throw error; // Re-throw other errors to be caught by outer try-catch
+        // Return and remove one location from cache
+        if (cachedLocations.length > 0) {
+            const location = cachedLocations.shift();
+            const resultLat = Number(location[0]);
+            const resultLong = Number(location[1]);
+            return [resultLat, resultLong];
+        } else {
+            throw new Error("No locations available in cache!");
+        }
+    } catch (error) {
+        console.error("Error occurred while fetching locations from server: ", error);
+        return await loadBackupLocations(error);
+    }
+}
+
+let standardLocationAmount;
+
+async function getStandardLocationAmount() {
+    if (!standardLocationAmount) {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 1000); // timeout
+
+        try {
+            const response = await fetch(locationLengthEndpoint, {
+                method: 'GET',
+                headers: { 'Content-Type': 'application/json' },
+                signal: controller.signal
+            });
+
+            // Clear the timeout since we got a response
+            clearTimeout(timeoutId);
+
+            // Check if the response is successful
+            if (response.ok) {
+                const data = await response.json();
+                standardLocationAmount = Number(data?.length);
+            } else {
+                throw new Error("Standard location amount returned not-okay status: " + response.status);
             }
         } catch (error) {
-            console.error("Error occurred while fetching locations from server: ", error);
-            return await loadBackupLocations(error);
+            throw new Error("Error occured fetching standard location amount: " + error); // Re-throw
+        } finally {
+            clearTimeout(timeoutId);
         }
-    } else {
-        return pickRandomLocations();
     }
+
+    return standardLocationAmount;
 }
 
 // in case the location server does not respond, load the backup, formerly daily locations (just totally random locations) instead
 async function loadBackupLocations(error) {
     console.log("Loading backup locations.");
     errorPopup("Location server error", "Loading local backup locations instead. ", "Error: " + error);
-
     return await getJSONCoords("backup");
 }
 
@@ -151,28 +188,29 @@ async function getCommunityMapCoordinates() {
 
 function pickRandomLocations() {
     try {
-        let guessIndex;
-
-        do {
-            guessIndex = Math.floor(Math.random() * get(currentlyLoadedLocationsArray)?.length);
-        } while (previousGuessesIndexes.includes(guessIndex));
-
-        previousGuessesIndexes.unshift(guessIndex); // add guessIndex at the front of the array
-
-        if (previousGuessesIndexes.length > get(currentlyLoadedLocationsArray)?.length / 2) {
-            previousGuessesIndexes.pop(); // if the array is longer than half of the total amount, pop last one out
-        }
+        let guessIndex = getUniqueLocationIndex(get(currentlyLoadedLocationsArray)?.length);
 
         const resultLat = Number(get(currentlyLoadedLocationsArray)[guessIndex][0]);
         const resultLong = Number(get(currentlyLoadedLocationsArray)[guessIndex][1]);
         const additionalProperty = get(currentlyLoadedLocationsArray)[guessIndex][2]; // only available for certain modes (like country guesser, image guesser..). This could be the country, the image URL etc.
-
-        const resultLocationsArray = [resultLat, resultLong, additionalProperty];
-        return resultLocationsArray;
+        return [resultLat, resultLong, additionalProperty];
     } catch (error) {
         console.error("Error picking random locations in locationGeneration.js: " + error);
         return [];
     }
+}
+
+function getUniqueLocationIndex(locationAmount) {
+    let index;
+    do {
+        index = Math.floor(Math.random() * locationAmount);
+    } while (previousGuessesIndexes.includes(index));
+
+    previousGuessesIndexes.unshift(index); // add guessIndex at the front of the array
+
+    // if the array is longer than half of the total amount, pop last one out
+    if (previousGuessesIndexes.length > locationAmount / 2) previousGuessesIndexes.pop();
+    return index;
 }
 
 // Get Competition coordinates ---------------------------------------------------------------------------------------------

@@ -139,15 +139,15 @@ export async function createPeerInstance() {
                 }
             }));
 
-            // Initialize and open peer
-            await get(peer).init();
-
             // Register event listeners
             get(peer).onEvent('status', status => multiplayerStatus.set(status));
             get(peer).onEvent('status', status => console.log(status)); // !TODO remove debug (future)
             get(peer).onEvent('error', (error) => {
                 if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system (PlayPeerJS) reports an error.", error);
             });
+
+            // Initialize and open peer
+            await get(peer).init();
 
             // New peer connected to host...
             get(peer).onEvent('incomingPeerConnected', (id) => {

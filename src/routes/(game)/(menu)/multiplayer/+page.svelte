@@ -18,7 +18,7 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { goto } from "$app/navigation";
 	import { onDestroy, onMount } from "svelte";
-	import { scale, slide } from "svelte/transition";
+	import { fade, scale, slide } from "svelte/transition";
 	import { bounceInOut } from "svelte/easing";
 	import { getEloLeaderboard } from "$lib/logic/userAPI";
 	import { ChevronDown, ChevronUp } from "lucide-svelte";
@@ -164,7 +164,7 @@
 		</button>
 
 		{#if isExpanded}
-			<div class="divisionLeaderboardContainer" transition:slide={{ duration: 250 }}>
+			<div class="divisionLeaderboardContainer" transition:slide={{ duration: 150 }}>
 				{#if divisionLeaderboard?.length > 0}
 					{#each divisionLeaderboard as entry}
 						<div
@@ -220,7 +220,7 @@
 	</div>
 	<div class="friendBox" style:min-height={$loadedFriendsData ? "50px" : "80px"}>
 		{#if $loadedFriendsData && $isAuthenticated}
-			<div class="innerFriendBox">
+			<div class="innerFriendBox" transition:fade={{ duration: 150 }}>
 				{#each $loadedFriendsData as entry}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<div
@@ -342,7 +342,6 @@
 		width: 100%;
 		box-sizing: border-box;
 		overflow: hidden;
-		animation: fadeIn 100ms ease-in-out;
 	}
 
 	.divisionLeaderboardEntryYou {
@@ -488,21 +487,11 @@
 		max-width: 250px;
 		overflow: hidden;
 		margin: 0;
-		animation: fadeIn 100ms ease-in-out;
 	}
 
 	@media (max-width: 800px) {
 		.friendItem {
 			max-width: 400px;
-		}
-	}
-
-	@keyframes fadeIn {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
 		}
 	}
 

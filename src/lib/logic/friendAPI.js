@@ -6,6 +6,7 @@ import { errorPopup } from "$lib/utils/errorHandling";
 import { linkJoinPopup } from "$lib/stores/uiStore";
 import { setPlayingDuels, setFriendDuel, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
+import { changeCategory } from "$lib/utils/changeCategory";
 
 // Inbox -----------------------------------------------------------------------------------------------------------------------------------
 export async function loadInbox() {
@@ -177,6 +178,7 @@ export async function sendMatchInvite(recipientId, duel) {
         setPlayingDuels(true);
         setFriendDuel(true);
         linkJoinPopup.set(true);
+        if (localStorage.getItem("selectedCategory") && localStorage.getItem("selectedCategory") !== "standard") await changeCategory("standard", true); // Regenerate to update the bounds (await to ensure bounds are ready)
         await setupMultiplayerRoom(5, 60, 2);
         multiplayerStatus.set("Waiting for response from friend...");
     }

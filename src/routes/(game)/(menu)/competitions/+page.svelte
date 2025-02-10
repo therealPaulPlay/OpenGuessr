@@ -784,7 +784,7 @@
 				onclick={() => {
 					playSound("basic_button");
 					getCompetitionsFromServer(false, false, false, hideEntered);
-				}}>Show more <span class="plusSpan"><Plus size={20} /></span></button
+				}}>Show more <Plus size={20} strokeWidth={2.75} style="margin-bottom: -3px; margin-left: 2px;" /></button
 			>
 		{/if}
 	</div>
@@ -823,7 +823,7 @@
 				onclick={() => {
 					playSound("basic_button");
 					getCompetitionsFromServer(true);
-				}}>Show more <span class="plusSpan"><Plus size={20} /></span></button
+				}}>Show more <Plus size={20} strokeWidth={2.75} style="margin-bottom: -3px;  margin-left: 2px;" /></button
 			>
 		{/if}
 	</div>
@@ -967,10 +967,6 @@
 		overflow: hidden;
 		max-height: 60px;
 		margin-inline: 10px;
-	}
-
-	.plusSpan {
-		vertical-align: -3px;
 	}
 
 	.competitionAuthor {
@@ -1166,7 +1162,7 @@
 	}
 
 	.fadeInItem {
-		animation: fadeIn 100ms ease-in-out;
+		animation: fadeIn 150ms ease-in-out;
 	}
 
 	.youBar {

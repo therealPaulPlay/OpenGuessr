@@ -17,6 +17,6 @@
 	"dependencies": {
 		"@sveltejs/adapter-static": "^3.0.6",
 		"lucide-svelte": "^0.456.0",
-		"playpeerjs": "^1.2.6"
+		"playpeerjs": "^1.3.1"
 	}
 }

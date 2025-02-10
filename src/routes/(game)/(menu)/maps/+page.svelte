@@ -512,7 +512,7 @@
 				onclick={() => {
 					playSound("basic_button");
 					loadCommunityMaps(currentFetchIndex + 50, loadMoreCategoryParam, loadMoreQueryParam);
-				}}>More <span class="loadMoreIconSpan"><Plus strokeWidth={2.5} /></span></button
+				}}>More <span class="loadMoreIconSpan"><Plus strokeWidth={2.75} size={20} /></span></button
 			>
 		{/if}
 		{#if errorMessageShown}
@@ -533,7 +533,7 @@
 	}
 
 	.loadMoreIconSpan {
-		margin-top: 7px;
+		margin-top: 6px;
 	}
 
 	.largeHeaderMargin {
@@ -568,7 +568,7 @@
 		padding: 10px;
 		padding-inline: 15px;
 		box-sizing: border-box;
-		animation: fadeIn 100ms ease-in-out;
+		animation: fadeIn 150ms ease-in-out;
 		user-select: none;
 		flex-grow: 1;
 		flex-basis: 30%;
