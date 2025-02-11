@@ -55,14 +55,14 @@ export async function checkGenerationTypeAndGenerate() {
         singleplayer.set(true);
 
         // Pick between json and maps api loading depending on the category type
-        if (mapCategory != "standard" && mapCategory != "country guesser" && mapCategory != "image guesser" && !mapCategory.includes("community")) {
+        if (mapCategory != "standard" && mapCategory != "country guessr" && mapCategory != "image guessr" && !mapCategory.includes("community")) {
             await generateNewLocation("JSON");
 
-        } else if (mapCategory == "country guesser") {
+        } else if (mapCategory == "country guessr") {
             setCountryGuesserMode(true);
             await generateNewLocation("JSON");
 
-        } else if (mapCategory == "image guesser") {
+        } else if (mapCategory == "image guessr") {
             setImageGuesserMode(true);
             await generateNewLocation("JSON");
 

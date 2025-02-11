@@ -3,6 +3,7 @@ import { competitionData, competitionRound } from "$lib/stores/context-specific/
 import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { peer } from "$lib/stores/context-specific/multiplayerStore";
+import { changeCategory } from "$lib/utils/changeCategory";
 
 // This is THE function to get locations (all others here are NOT export) - not the functino to start a new round! (look for newLocation.js for that)
 export async function getLocationCoordinates(type) {
@@ -42,10 +43,10 @@ async function getJSONCoords(category) {
             return pickRandomLocations();
 
         } catch (error) {
-            // Choose standard and instantly reload (if categories get renamed / get deleted-> this happens)
-            localStorage.setItem("selectedCategory", "standard");
-            window.location.reload();
             console.error(error);
+            // Choose standard and refresh (happens e.g. if categories are renamed)
+            changeCategory("standard", true);
+            console.warning("Switching to standard as category wasn't found...");
         }
     } else {
         return pickRandomLocations();
@@ -192,7 +193,7 @@ function pickRandomLocations() {
 
         const resultLat = Number(get(currentlyLoadedLocationsArray)[guessIndex][0]);
         const resultLong = Number(get(currentlyLoadedLocationsArray)[guessIndex][1]);
-        const additionalProperty = get(currentlyLoadedLocationsArray)[guessIndex][2]; // only available for certain modes (like country guesser, image guesser..). This could be the country, the image URL etc.
+        const additionalProperty = get(currentlyLoadedLocationsArray)[guessIndex][2]; // only available for certain modes (like country guessr, image guessr..). This could be the country, the image URL etc.
         return [resultLat, resultLong, additionalProperty];
     } catch (error) {
         console.error("Error picking random locations in locationGeneration.js: " + error);

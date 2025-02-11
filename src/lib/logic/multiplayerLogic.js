@@ -526,7 +526,7 @@ export function leaveMultiplayerRound(destroy = true) {
     setMultiplayerUI();
     showMultiplayerOverlay(false);
     updateMinimapWithTeamMarkers([]); // clean up multiplayer minimap markers
-    if (localStorage.getItem("selectedMap") !== "country guesser") mapVisible.set(true);
+    if (localStorage.getItem("selectedMap") !== "country guessr") mapVisible.set(true);
 
     if (wasMultiplayerEnabled) checkGenerationTypeAndGenerate(); // Regenerate location
 }
@@ -607,7 +607,7 @@ function showMultiplayerOverlay(show) {
         if (get(peer)?.getStorage?.currentRound >= get(roundAmount)) determineWinner(get(multiplayerTableArray), isTeams, isTeams ? teams : undefined); // Win / Lose
 
     } else {
-        if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country guesser") {
+        if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country guessr") {
             mapVisible.set(true);
         }
     }
