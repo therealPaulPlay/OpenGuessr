@@ -844,7 +844,6 @@
 		align-items: center;
 		border-radius: 10px;
 		padding: 8px;
-		margin-top: 5px;
 		margin-bottom: 20px;
 		background-color: var(--box-color);
 	}
