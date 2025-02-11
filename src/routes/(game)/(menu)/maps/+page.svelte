@@ -433,42 +433,42 @@
 				}
 			}}>+ Create</button
 		>
-		<div class="categoriesSearchArea">
-			<div class="categoriesBar">
-				<button id="categoryAll" class="selected categoryButton standardButton">All</button>
-				<button class="categoryButton standardButton">Nature</button>
-				<button class="categoryButton standardButton">Architecture</button>
-				<button class="categoryButton standardButton">Urban</button>
-				<button class="categoryButton standardButton">Regions</button>
-				<button class="categoryButton standardButton">Sports</button>
-				<button class="categoryButton standardButton">Transport</button>
-				<button class="categoryButton standardButton">Miscellaneous</button>
-			</div>
-			<search class="searchContainer">
-				<input
-					id="mapSearch"
-					placeholder="Search Maps..."
-					onkeydown={(e) => {
-						if (e.key === "Enter") e.preventDefault();
-					}}
-					onkeyup={(event) => {
-						if (event.key === "Enter") {
-							startSearch();
-						}
-					}}
-				/>
-				<button
-					id="startSearch"
-					class="standardButton white"
-					onclick={() => {
-						playSound("basic_button");
-						startSearch();
-					}}
-				>
-					<img src="/img/find_icon.png" alt="start search" id="searchIcon" />
-				</button>
-			</search>
+	</div>
+	<div class="categoriesSearchArea">
+		<div class="categoriesBar">
+			<button id="categoryAll" class="selected categoryButton standardButton">All</button>
+			<button class="categoryButton standardButton">Nature</button>
+			<button class="categoryButton standardButton">Architecture</button>
+			<button class="categoryButton standardButton">Urban</button>
+			<button class="categoryButton standardButton">Regions</button>
+			<button class="categoryButton standardButton">Sports</button>
+			<button class="categoryButton standardButton">Transport</button>
+			<button class="categoryButton standardButton">Miscellaneous</button>
 		</div>
+		<search class="searchContainer">
+			<input
+				id="mapSearch"
+				placeholder="Search Maps..."
+				onkeydown={(e) => {
+					if (e.key === "Enter") e.preventDefault();
+				}}
+				onkeyup={(event) => {
+					if (event.key === "Enter") {
+						startSearch();
+					}
+				}}
+			/>
+			<button
+				id="startSearch"
+				class="standardButton white"
+				onclick={() => {
+					playSound("basic_button");
+					startSearch();
+				}}
+			>
+				<img src="/img/find_icon.png" alt="start search" id="searchIcon" />
+			</button>
+		</search>
 	</div>
 	<div id="community-maps" class="map-container">
 		<!-- Community maps will be injected here -->
@@ -719,7 +719,6 @@
 
 	#community-maps {
 		margin-bottom: 50px;
-		margin-top: 10px;
 	}
 
 	.nothingFound {
@@ -808,13 +807,13 @@
 		display: flex;
 		justify-content: space-between;
 		flex-wrap: wrap;
-		width: 100%;
+		width: calc(100% - 16px);
 		min-width: 280px;
 		gap: 10px;
 		align-items: center;
 		border-radius: 10px;
 		padding: 8px;
-		margin-top: 5px;
+		margin-bottom: 20px;
 		background-color: var(--box-color);
 	}
 
