@@ -35,7 +35,7 @@ export async function loadResultMap(playersLat, playersLong) {
     let pointList;
     let polyList;
 
-    // Check if NOT in Country Guesser (or if IN multiplayer) --------------------------------------------------
+    // Check if NOT in Country Guessr (or if IN multiplayer) --------------------------------------------------
     if (!get(countryGuesser) || get(multiplayer)) {
         playerLatLng = new L.LatLng(playersLat, playersLong);
         polyList = [curLatLng, playerLatLng];
@@ -68,7 +68,7 @@ export async function loadResultMap(playersLat, playersLong) {
             return [...markers, polyline];
         });
     } else {
-        // If Country Guesser is being played, show the destination zoomed out as the starting frame
+        // If Country Guessr is being played, show the destination zoomed out as the starting frame
         get(map).setView([get(currentLocationLatitude), get(currentLocationLongitude)], 2);
     }
 

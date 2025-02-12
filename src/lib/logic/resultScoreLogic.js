@@ -90,11 +90,11 @@ async function calculateXPGain(distance, category, supporterLevelParam, freeSupp
         await streakCalculation();
         returnXP = Math.round((5000 * ((0.9985) ** distance)) * getStreakMultiplierAdjustedToGamemode());
 
-    } else if (category == "famous places" || category == "image guesser") {
+    } else if (category == "famous places" || category == "image guessr") {
         await streakCalculation();
         returnXP = Math.round((1500 * ((0.9982) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 1500 xp, with streak up to 1800sth
 
-    } else if (category == "country guesser") {
+    } else if (category == "country guessr") {
         returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
     } else {

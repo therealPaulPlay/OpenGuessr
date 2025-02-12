@@ -1,5 +1,6 @@
 import { checkedForBan, isAuthenticated, banReportEntryData, isBanned, checkedForWarning, warnReportEntryData, isWarned } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
+import { errorPopup } from "./errorHandling";
 
 export async function fetchBlacklistStatus() {
     if (!get(isAuthenticated) || get(checkedForBan)) return;
@@ -13,10 +14,12 @@ export async function fetchBlacklistStatus() {
             banReportEntryData.set(data?.entry);
             checkedForBan.set(true);
         } else {
-            console.error("Error checking banlist status: " + response.status);
+            console.error("Blacklist endpoint returned response error: " + response.status);
+            checkedForBan.set(true); // Still allow to play - a non-200 status is likely related to a backend error
         }
     } catch (error) {
         console.error("Error occurred while checking banlist status:", error);
+        errorPopup("Failed to check blacklist status", "The blacklist status could not be fetched.", error);
     }
 }
 

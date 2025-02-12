@@ -7,8 +7,8 @@ export const basicMaps = readable([
 ]);
 
 export const specialModes = readable([
-    "country guesser",
-    "image guesser"
+    "country guessr",
+    "image guessr"
 ]);
 
 export const continentMaps = readable([
