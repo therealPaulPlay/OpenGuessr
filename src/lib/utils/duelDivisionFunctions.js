@@ -94,7 +94,7 @@ async function applyLeavePenalty(opponentId) {
         });
 
         if (!response.ok) {
-            throw new Error('Failed to apply penalty with status' + response?.status);
+            throw new Error('Failed to apply penalty with status ' + response?.status);
         }
 
         const parsedResponse = await response.json();

@@ -4,12 +4,6 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { RefreshCcw } from "lucide-svelte";
 	import { onMount } from "svelte";
-	import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
-
-	onMount(() => {
-		// Check blacklist if logged in and not already (async)
-		fetchBlacklistStatus();
-	});
 </script>
 
 <svelte:head>
@@ -31,7 +25,7 @@
 			onclick={() => {
 				playSound("basic_button");
 				findDuel();
-			}}>Search <span class="refreshIcon"><RefreshCcw strokeWidth={3} size={18} /></span></button
+			}}>Try again <span class="refreshIcon"><RefreshCcw strokeWidth={3} size={18} /></span></button
 		>
 	</div>
 </div>

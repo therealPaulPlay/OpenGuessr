@@ -115,12 +115,7 @@
 					href="/multiplayer/duel"
 					onclick={() => {
 						playSound("basic_button");
-						if ($isAuthenticated) {
-							goto("/multiplayer/duel");
-							findDuel();
-						} else {
-							signupPrompt();
-						}
+						findDuel();
 					}}
 				>
 					Find Duel
