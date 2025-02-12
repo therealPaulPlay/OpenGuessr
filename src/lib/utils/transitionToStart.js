@@ -19,7 +19,7 @@ export function transitionToStart() {
   }
 
   if (get(crazyGames)) potentialCrazyGamesAd(); // Crazy Games Ad
-  setTimeout(socialPopupProbability, 650); // Social Media CTA
+  if (!get(multiplayer)) setTimeout(socialPopupProbability, 650); // Social Media CTA (too stressful in multiplayer)
 }
 
 let adIndex = 0;

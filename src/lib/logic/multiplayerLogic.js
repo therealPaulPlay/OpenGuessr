@@ -40,6 +40,8 @@ import PlayPeer from "playpeerjs";
 import { buildTeamDisplayText } from "$lib/utils/buildTeamDisplayText";
 import { getMapBounds } from "$lib/utils/getMapBounds";
 import { getServerTimestamp } from "$lib/utils/timeUtil";
+import { signupPrompt } from "$lib/utils/signupPrompt";
+import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
 
 export function getTeamFromPeerId(id) {
     const playerArray = get(peer)?.getStorage?.players?.find(item => item[0] === id);
@@ -315,19 +317,20 @@ export function setFriendDuel(state) {
 
 // This initiates the find duel system
 export async function findDuel() {
-    if (!get(checkedForBan)) await new Promise(resolve => setTimeout(resolve, 1000));
+    if (!get(isAuthenticated)) return signupPrompt();
+    if (!get(checkedForBan)) await fetchBlacklistStatus();
+    if (!get(checkedForBan)) return multiplayerStatus.set("Failed to fetch blacklist status.");
     if (get(isBanned)) {
-        errorPopup(
+        return errorPopup(
             "You are banned",
             `Unfortunately, you are banned from playing duels for "${get(banReportEntryData)?.reason}" until ${get(banReportEntryData)?.expires_at ? new Date(get(banReportEntryData)?.expires_at)?.toLocaleDateString() : "forever"}. 
             Please contact the moderators on Discord if you think this was a mistake.`
         );
-        return;
     }
 
+    goto("/multiplayer/duel"); // Visit duel load page
     roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     playingDuels = true;
-    multiplayerStatus.set("Starting...");
     matchmakingActive.set(true);
     attemptDuelJoin(roomIndex);
 }
