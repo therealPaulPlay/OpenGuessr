@@ -1,7 +1,6 @@
 <script>
 	import { initializeAds } from "$lib/utils/ads";
 	import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
-	import { checkRankedLeavePenalty } from "$lib/utils/duelDivisionFunctions";
 	import { onMount } from "svelte";
 
 	let { children } = $props();
@@ -53,7 +52,6 @@
 	onMount(() => {
 		checkGenerationTypeAndGenerate();
 		initializeAds();
-		checkRankedLeavePenalty();
 
 		// Prevent automatic "last button press" with space bar or enter key
 		try {
