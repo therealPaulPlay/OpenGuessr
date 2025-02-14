@@ -22,12 +22,46 @@ export const generateDuelUUID = () => {
     });
 };
 
+export async function registerDivisionDuel(uuid) {
+    try {
+        const response = await fetch(`https://friends.openguessr.com/multiplayer/duel-register/${uuid}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("bearer")}`
+            },
+            body: JSON.stringify({
+                id: localStorage.getItem("id")
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error('Duel registration error:', data.error);
+            errorPopup("Duel registration error", "Failed to register the duel.", data.error);
+            return false;
+        }
+
+        return true;
+
+    } catch (error) {
+        console.error('Failed to register duel:', error);
+        errorPopup(
+            'Duel registration error (Network)',
+            'Failed to connect to server.',
+            'Please check your internet connection and try again'
+        );
+        return false;
+    }
+}
+
 // Won = true means the player won, won = false means they lost
 export async function sendDuelDivisionResult(won, uuid) {
     duelResultTitle.set(won ? "Victory!" : "Defeat!"); // Save the win state for later (the popup which triggers on websocket server response)
 
     try {
-        const response = await fetch(`https://friends.openguessr.com/multiplayer/duel-elo-result/${uuid}`, {
+        const response = await fetch(`https://friends.openguessr.com/multiplayer/duel-result/${uuid}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,48 +93,3 @@ export async function sendDuelDivisionResult(won, uuid) {
         return false;
     }
 }
-
-export async function checkRankedLeavePenalty() {
-    if (localStorage.getItem("activeDuel")) {
-        // Timeout to avoid this triggering during a reload, causing the popup to show for a few milliseconds only
-        setTimeout(async () => {
-            const opponentId = Number(localStorage.getItem("activeDuel")) || null;
-            const penalty = await applyLeavePenalty(opponentId);
-            removeRankedLeavePenalty();
-
-            // Show popup
-            duelResultTitle.set("Leave penalty!");
-            duelResultPopup.set(true);
-            eloChange.set(Number(penalty));
-            elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
-        }, 1000);
-    }
-}
-
-export function removeRankedLeavePenalty() {
-    localStorage.removeItem("activeDuel");
-}
-
-// Penalty for players that leave duels, substracts Elo
-async function applyLeavePenalty(opponentId) {
-    try {
-        const response = await fetch('https://friends.openguessr.com/multiplayer/penalty', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('bearer')}`
-            },
-            body: JSON.stringify({ id: localStorage.getItem("id"), opponentId })
-        });
-
-        if (!response.ok) {
-            throw new Error('Failed to apply penalty with status ' + response?.status);
-        }
-
-        const parsedResponse = await response.json();
-        return parsedResponse.penalty;
-    } catch (error) {
-        console.error('Error applying duel leave penalty:', error);
-        return false;
-    }
-};

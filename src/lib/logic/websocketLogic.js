@@ -54,16 +54,13 @@ export async function initializeWebsocketConnection() {
                     eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
                     elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
 
-                } else if (data.type === "duel-result-error") {
-                    if (data?.message?.includes("null")) {
-                        errorPopup("Elo remains unchanged", "Your opponent left early and the Elo handshake could not be completed. Once they come back online, the Elo will be applied.", data?.message);
-                    } else {
-                        errorPopup("Elo remains unchanged", "You or your opponent submitted a fake result in an attempt to cheat.", data?.message);
-                    }
+                } else if (data.type === "duel-registration-error") {
+                    errorPopup("Duel not registered", "Your opponent failed to register the duel, meaning, it won't affect your elo. You can leave penalty-free.", data?.message);
 
-                } else if (data.type === "penalty-elo-gain") {
-                    showNotification(`Received ${data.eloGain} Elo from leaver.`);
-                    if (data.eloGain) elo.set(get(elo) + data.eloGain);
+                } else if (data.type === "duel-late-result") {
+                    eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
+                    elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
+                    showNotification(`Received ${get(eloChange)} Elo from previous game.`);
                 }
             };
 
