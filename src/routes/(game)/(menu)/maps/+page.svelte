@@ -271,23 +271,23 @@
 			>
 				<div class="mapInfo">
 					<div class="map-name">
-						Quizzes <span class="educationBadge">Edu</span>
+						Quizzes <span class="linkBadge">Edu</span>
 						<span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
 					</div>
 				</div>
 			</div>
 			<div
-				class="map-item map-item-slim"
+				class="map-item map-item-slim map-item-long-link"
 				role="button"
 				tabindex="0"
 				onclick={() => {
 					playSound("button_juicy");
-					window.open("https://education.openguessr.com/guides", "_blank").focus();
+					window.open("https://autoguessr.com", "_blank").focus();
 				}}
 			>
 				<div class="mapInfo">
 					<div class="map-name">
-						Guides <span class="educationBadge">Edu</span>
+						Auto Guessr <span class="linkBadge orangeBadge">Auto</span>
 						<span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
 					</div>
 				</div>
@@ -433,42 +433,42 @@
 				}
 			}}>+ Create</button
 		>
-		<div class="categoriesSearchArea">
-			<div class="categoriesBar">
-				<button id="categoryAll" class="selected categoryButton standardButton">All</button>
-				<button class="categoryButton standardButton">Nature</button>
-				<button class="categoryButton standardButton">Architecture</button>
-				<button class="categoryButton standardButton">Urban</button>
-				<button class="categoryButton standardButton">Regions</button>
-				<button class="categoryButton standardButton">Sports</button>
-				<button class="categoryButton standardButton">Transport</button>
-				<button class="categoryButton standardButton">Miscellaneous</button>
-			</div>
-			<search class="searchContainer">
-				<input
-					id="mapSearch"
-					placeholder="Search Maps..."
-					onkeydown={(e) => {
-						if (e.key === "Enter") e.preventDefault();
-					}}
-					onkeyup={(event) => {
-						if (event.key === "Enter") {
-							startSearch();
-						}
-					}}
-				/>
-				<button
-					id="startSearch"
-					class="standardButton white"
-					onclick={() => {
-						playSound("basic_button");
-						startSearch();
-					}}
-				>
-					<img src="/img/find_icon.png" alt="start search" id="searchIcon" />
-				</button>
-			</search>
+	</div>
+	<div class="categoriesSearchArea">
+		<div class="categoriesBar">
+			<button id="categoryAll" class="selected categoryButton standardButton">All</button>
+			<button class="categoryButton standardButton">Nature</button>
+			<button class="categoryButton standardButton">Architecture</button>
+			<button class="categoryButton standardButton">Urban</button>
+			<button class="categoryButton standardButton">Regions</button>
+			<button class="categoryButton standardButton">Sports</button>
+			<button class="categoryButton standardButton">Transport</button>
+			<button class="categoryButton standardButton">Miscellaneous</button>
 		</div>
+		<search class="searchContainer">
+			<input
+				id="mapSearch"
+				placeholder="Search Maps..."
+				onkeydown={(e) => {
+					if (e.key === "Enter") e.preventDefault();
+				}}
+				onkeyup={(event) => {
+					if (event.key === "Enter") {
+						startSearch();
+					}
+				}}
+			/>
+			<button
+				id="startSearch"
+				class="standardButton white"
+				onclick={() => {
+					playSound("basic_button");
+					startSearch();
+				}}
+			>
+				<img src="/img/find_icon.png" alt="start search" id="searchIcon" />
+			</button>
+		</search>
 	</div>
 	<div id="community-maps" class="map-container">
 		<!-- Community maps will be injected here -->
@@ -612,6 +612,15 @@
 		max-width: 140px;
 	}
 
+	.map-item-long-link .map-name {
+		max-width: 180px;
+		min-width: 160px;
+	}
+
+	.map-item-long-link {
+		min-width: 180px;
+	}
+
 	.map-item-bookmark .map-name {
 		max-width: 110px;
 	}
@@ -719,7 +728,6 @@
 
 	#community-maps {
 		margin-bottom: 50px;
-		margin-top: 10px;
 	}
 
 	.nothingFound {
@@ -734,15 +742,19 @@
 		margin-left: 10px;
 	}
 
-	.educationBadge {
+	.linkBadge {
 		border-radius: 3px;
-		background-color: rgba(255, 0, 0, 0.75);
+		background-color: rgb(224, 2, 2);
 		padding-inline: 2px;
 		font-style: italic;
 		font-size: 16px;
 		padding-right: 5px;
 		vertical-align: 1px;
 		margin-left: 1px;
+	}
+
+	.orangeBadge {
+		background-color: rgb(225, 98, 3);
 	}
 
 	#mapSearch {
@@ -808,13 +820,13 @@
 		display: flex;
 		justify-content: space-between;
 		flex-wrap: wrap;
-		width: 100%;
+		width: calc(100% - 16px);
 		min-width: 280px;
 		gap: 10px;
 		align-items: center;
 		border-radius: 10px;
 		padding: 8px;
-		margin-top: 5px;
+		margin-bottom: 20px;
 		background-color: var(--box-color);
 	}
 

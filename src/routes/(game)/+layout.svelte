@@ -46,6 +46,7 @@
 	import CrazyGames from "$lib/components/CrazyGames.svelte";
 	import DuelResultPopup from "$lib/components/DuelResultPopup.svelte";
 	import ReportIframePopup from "$lib/components/ReportIframePopup.svelte";
+	import FlagPickerPopup from "$lib/components/FlagPickerPopup.svelte";
 
 	// Start ads
 	onMount(() => {
@@ -99,6 +100,7 @@
 <ProfilePopup />
 <BadgePopup />
 <PinPopup />
+<FlagPickerPopup />
 <SupporterPopup />
 <FriendBrowserPopup />
 <InboxPopup />

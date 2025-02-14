@@ -697,9 +697,9 @@
 	</div>
 	<div class="competitionElement competitionBox">
 		<div class="headerContainer">
-			<h2 class="header">Active</h2>
+			<h2 class="header marginTopAuto">Active</h2>
 			<button
-				class="standardButton white createButton"
+				class="standardButton white createButton marginTopAuto"
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) {
@@ -844,7 +844,6 @@
 		align-items: center;
 		border-radius: 10px;
 		padding: 8px;
-		margin-top: 5px;
 		margin-bottom: 20px;
 		background-color: var(--box-color);
 	}
@@ -863,6 +862,10 @@
 		margin-bottom: 100px;
 		width: 100%;
 		flex-direction: column;
+	}
+
+	.marginTopAuto {
+		margin-top: auto;
 	}
 
 	.emptyLeaderboardBox {

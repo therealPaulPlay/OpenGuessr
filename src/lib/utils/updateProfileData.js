@@ -3,7 +3,7 @@ import { selectedBadge, selectedPinIndex } from "$lib/stores/accountStore";
 import { profileId, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 import { get } from "svelte/store";
 
-export async function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin, newBadge) {
+async function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin, newBadge, newFlag) {
     try {
         const data = await getProfileData(localStorage.getItem("id"));
         const yourLoadedProfileData = data.profileData || {};
@@ -29,9 +29,9 @@ export async function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWo
         if (addCompetitionsPlayed) competitionsPlayed += addCompetitionsPlayed;
 
         // streak
-        let newStreak;
-        newStreak = yourLoadedProfileData?.highestStreak || 0;
-        if (setHighestStreak && newStreak < setHighestStreak) newStreak = setHighestStreak;
+        let streak;
+        streak = yourLoadedProfileData?.highestStreak || 0;
+        if (setHighestStreak && streak < setHighestStreak) streak = setHighestStreak;
 
         // pin
         let pin;
@@ -43,14 +43,20 @@ export async function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWo
         badge = yourLoadedProfileData?.badge || null;
         if (newBadge) badge = newBadge;
 
+        // flag
+        let flag;
+        flag = yourLoadedProfileData?.flag || null;
+        if (newFlag || newFlag === null) flag = newFlag;
+
         const profileData = {
             about: aboutText,
-            duelsPlayed: duelsPlayed,
-            duelsWon: duelsWon,
-            competitionsPlayed: competitionsPlayed,
-            highestStreak: newStreak,
-            pin: pin,
-            badge: badge
+            duelsPlayed,
+            duelsWon,
+            competitionsPlayed,
+            highestStreak: streak,
+            pin,
+            badge,
+            flag,
         }
 
         submitProfileData(profileData);
@@ -92,6 +98,10 @@ export async function setProfileBadge(badge) {
     if (badge == get(selectedBadge)) return; // Detect if the new selection is different from the current one
     selectedBadge.set(badge);
     updateProfileData(null, null, null, null, null, null, badge);
+}
+
+export async function setProfileFlag(flag) {
+    updateProfileData(null, null, null, null, null, null, null, flag);
 }
 
 async function submitProfileData(profileDataObject) {

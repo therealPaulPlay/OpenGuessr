@@ -46,7 +46,7 @@ export async function loadResultMap(playersLat, playersLong) {
     let playerLatLng;
     let pointList;
 
-    // Check if NOT in Country Guesser (or if IN multiplayer) --------------------------------------------------
+    // Check if NOT in Country Guessr (or if IN multiplayer) --------------------------------------------------
     if (!get(countryGuesser) || get(multiplayer)) {
         playerLatLng = new google.maps.LatLng(playersLat, playersLong);
         pointList = new google.maps.LatLngBounds();
