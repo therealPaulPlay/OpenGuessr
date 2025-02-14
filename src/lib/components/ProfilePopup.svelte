@@ -68,8 +68,8 @@
 	<Popup z={970}>
 		<div class="popup-title">
 			<div class="profileNameArea">
-				<h1 id="profileViewName">
-					{$profileName}
+				<div id="profileViewName">
+					<h1>{$profileName}</h1>
 					<!-- Profile Flag -->
 					{#if $profileData?.flag && FlagIcons[$profileData.flag]}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -87,7 +87,7 @@
 							<SquarePlus size={20} strokeWidth={2} />
 						</button>
 					{/if}
-				</h1>
+				</div>
 				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 				<div id="profileNameBox">
 					{#if $profileId == localStorage.getItem("id") && !$profileData?.badge}
@@ -376,13 +376,18 @@
 	}
 
 	#profileViewName {
-		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;
 		margin-left: 10px;
-		display: flex;
+		margin-right: 20px;
+		display: inline-flex;
 		justify-content: center;
 		gap: 8px;
+	}
+
+	#profileViewName h1 {
+		text-overflow: ellipsis;
+		overflow: hidden;
 	}
 
 	#profileNameBox {
@@ -567,7 +572,7 @@
 		.flag-container {
 			height: 18px;
 			width: 18px;
-			margin-top: 14px;
+			margin-top: 15px;
 		}
 
 		#profileAbout {
