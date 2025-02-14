@@ -251,7 +251,7 @@
 
 	.flagSelected {
 		outline: 3px solid white;
-		border-radius: 5px;
+		border-radius: 3px;
 	}
 
 	.flagSelector {
