@@ -29,7 +29,7 @@ import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonS
 import { loadChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
-import { generateDuelUUID, sendDuelDivisionResult, checkRankedLeavePenalty, removeRankedLeavePenalty } from "$lib/utils/duelDivisionFunctions";
+import { generateDuelUUID, registerDivisionDuel, sendDuelDivisionResult } from "$lib/utils/duelDivisionFunctions";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { generateFunnyGuestName, generateRandomCode } from "$lib/utils/codeGenerationUtil";
 import { get } from "svelte/store";
@@ -199,10 +199,7 @@ export async function createPeerInstance() {
 
                 if (typeof storage.overlay !== "undefined" && storage.overlay != get(multiplayerOverlay)) storage.overlay ? showMultiplayerOverlay(true) : showMultiplayerOverlay(false);
 
-                if (storage.players) {
-                    updateMultiplayerTableArray();
-                    if (get(multiplayer) && playingDuels && !friendDuel && storage.players.length <= 1) removeRankedLeavePenalty();
-                }
+                if (storage.players) updateMultiplayerTableArray();
 
                 if (storage.chats) loadChat(storage.chats || []);
 
@@ -502,9 +499,6 @@ export function leaveMultiplayerRound(destroy = true) {
     screenEscapeDisabled.set(false); // Make Back and Close visible
     duelRetryEnabled.set(false); // Make Duel retry button disabled (Standard)
 
-    // Apply leave penalty if in division game
-    checkRankedLeavePenalty();
-
     // Reset to default settings
     roundLength.set(60);
     roundAmount.set(3);
@@ -598,10 +592,10 @@ function showMultiplayerOverlay(show) {
     if (show) {
         if (get(peer)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(peer)?.getStorage?.currentRound);
         if (!get(peer)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
+        if (!get(peer)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (localStorage.getItem("selectedCategory") || "standard").replace("community_", "") + ")");
         overlayShowSubtitle.set(playingDuels && get(peer)?.getStorage?.currentRound >= 3 && get(peer)?.getStorage?.currentRound < 5);
 
         showEndscreenUI(false); // Default to no endscreen UI
-        if (!get(peer)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (localStorage.getItem("selectedCategory") || "standard").replace("community_", "") + ")");
 
         const isTeams = get(teamAmount) > 1;
 
@@ -627,7 +621,6 @@ function determineWinner(array, teams, teamsObject) {
     } else {
         const winningPlayerData = array[0];
         const followUpPlayerData = array[1] || undefined;
-        removeRankedLeavePenalty(); // Remove leave penalty notice
 
         if (followUpPlayerData && winningPlayerData[3] == followUpPlayerData[3]) {
             // Draw
@@ -661,6 +654,11 @@ async function multiplayerOverlayCountdown() {
 
     let countdown = 3;
 
+    // If this is the first countodwn to occur, register the duel
+    if (playingDuels && !friendDuel && !get(peer)?.getStorage?.firstRoundPlayed) {
+        registerDivisionDuel(get(peer)?.getStorage?.uuid);
+    }
+
     countdownInterval = setInterval(async function () {
         if (countdown > 0) {
             multiplayerOverlayTitle.set(`Starting... ${countdown}`);
@@ -678,12 +676,6 @@ async function multiplayerOverlayCountdown() {
             // Timer
             const serverTime = await getServerTimestamp();
             get(peer)?.updateStorage("timerStart", { timestamp: serverTime, length: get(roundLength) });
-
-            // Leave penalty
-            if (playingDuels && !friendDuel) {
-                const opponentId = get(peer)?.getStorage?.players?.find(e => e[5] !== localStorage.getItem("id"))?.[5];
-                if (opponentId) localStorage.setItem("activeDuel", opponentId);
-            }
         }
     }, 1000);
 }
