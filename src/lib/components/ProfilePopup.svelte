@@ -496,7 +496,7 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		border-radius: 5px;
-		max-height: calc(100dvh - 350px);
+		max-height: calc(100dvh - 400px);
 		min-height: 250px;
 		scrollbar-width: none;
 		transition: max-height 250ms ease-in-out;
