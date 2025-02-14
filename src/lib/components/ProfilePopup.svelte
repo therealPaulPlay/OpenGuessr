@@ -15,6 +15,9 @@
 	import { saveProfileAboutIfYourProfileAndChanges } from "$lib/utils/updateProfileData";
 	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
+	import * as FlagIcons from "svelte-flag-icons";
+	import { flagPickerPopup } from "$lib/stores/uiStore";
+	import { Plus, PlusCircle, SquarePlus } from "lucide-svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
@@ -57,13 +60,34 @@
 		const profileFromURL = $page.url.searchParams.get("profile-id");
 		if (profileFromURL != null) loadProfileFromId(profileFromURL, true);
 	});
+
+	let ProfileFlag = $derived(FlagIcons[$profileData?.flag] || undefined);
 </script>
 
 {#if $profilePopup}
 	<Popup z={970}>
 		<div class="popup-title">
 			<div class="profileNameArea">
-				<h1 id="profileViewName">{$profileName}</h1>
+				<h1 id="profileViewName">
+					{$profileName}
+					<!-- Profile Flag -->
+					{#if $profileData?.flag && FlagIcons[$profileData.flag]}
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<span
+							class="flag-container"
+							tabindex="0"
+							role="button"
+							onclick={() => flagPickerPopup.set(true)}
+							class:profileFlagNotInteractive={$profileId != localStorage.getItem("id")}
+						>
+							<ProfileFlag />
+						</span>
+					{:else if $profileId == localStorage.getItem("id")}
+						<button class="flag-container addFlagButton" onclick={() => flagPickerPopup.set(true)}>
+							<SquarePlus size={20} strokeWidth={2} />
+						</button>
+					{/if}
+				</h1>
 				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 				<div id="profileNameBox">
 					{#if $profileId == localStorage.getItem("id") && !$profileData?.badge}
@@ -222,7 +246,7 @@
 								);
 							}}
 						>
-							<Edit size="16" />
+							<Edit size={20} style="margin-bottom: -2px;" />
 							Name
 						</button>
 					</div>
@@ -242,7 +266,7 @@
 							);
 						}}
 					>
-						<Trash2 size="16" />
+						<Trash2 size={20} style="margin-bottom: -1px;" />
 						Delete</button
 					>
 					<button
@@ -308,6 +332,33 @@
 		scale: 0.98;
 	}
 
+	.flag-container {
+		display: inline-flex;
+		align-items: center;
+		width: 25px;
+		margin-top: 12px;
+		cursor: pointer;
+	}
+
+	.profileFlagNotInteractive {
+		pointer-events: none;
+	}
+
+	.addFlagButton {
+		transition: opacity 250ms ease;
+		opacity: 0.75;
+		width: 22px;
+	}
+
+	.addFlagButton:hover {
+		opacity: 1;
+	}
+
+	:global(.flag-container svg) {
+		height: 100%;
+		width: auto;
+	}
+
 	#badgeButton {
 		background: linear-gradient(0.6turn, rgb(144, 147, 151), #646575);
 		color: white;
@@ -329,6 +380,9 @@
 		overflow: hidden;
 		text-wrap: nowrap;
 		margin-left: 10px;
+		display: flex;
+		justify-content: center;
+		gap: 8px;
 	}
 
 	#profileNameBox {
@@ -508,6 +562,12 @@
 	@media all and (max-width: 1200px) {
 		#profileViewName {
 			font-size: 32px;
+		}
+
+		.flag-container {
+			height: 18px;
+			width: 18px;
+			margin-top: 14px;
 		}
 
 		#profileAbout {

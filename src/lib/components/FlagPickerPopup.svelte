@@ -1,0 +1,293 @@
+<script>
+	import Popup from "$lib/components/Popup.svelte";
+	import { playSound } from "$lib/utils/soundManager";
+	import { flagPickerPopup } from "$lib/stores/uiStore";
+	import { profileData } from "$lib/stores/context-specific/profileStore";
+	import * as FlagIcons from "svelte-flag-icons";
+	import { setProfileFlag } from "$lib/utils/updateProfileData";
+	import { Trash2 } from "lucide-svelte";
+
+	// Organize flags by continent
+	const continentFlags = {
+		Europe: [
+			"Ad",
+			"Al",
+			"At",
+			"Ba",
+			"Be",
+			"Bg",
+			"By",
+			"Ch",
+			"Cy",
+			"Cz",
+			"De",
+			"Dk",
+			"Ee",
+			"Es",
+			"Fi",
+			"Fr",
+			"Gb",
+			"Gr",
+			"Hr",
+			"Hu",
+			"Ie",
+			"Is",
+			"It",
+			"Li",
+			"Lt",
+			"Lu",
+			"Lv",
+			"Mc",
+			"Md",
+			"Me",
+			"Mk",
+			"Mt",
+			"Nl",
+			"No",
+			"Pl",
+			"Pt",
+			"Ro",
+			"Rs",
+			"Se",
+			"Si",
+			"Sk",
+			"Sm",
+			"Va",
+		],
+		Asia: [
+			"Af",
+			"Am",
+			"Az",
+			"Bd",
+			"Bn",
+			"Bt",
+			"Cn",
+			"Ge",
+			"Hk",
+			"Id",
+			"In",
+			"Jp",
+			"Kg",
+			"Kh",
+			"Kr",
+			"Kz",
+			"La",
+			"Lk",
+			"Mm",
+			"Mn",
+			"My",
+			"Np",
+			"Ph",
+			"Pk",
+			"Sg",
+			"Th",
+			"Tj",
+			"Tl",
+			"Tm",
+			"Tw",
+			"Uz",
+			"Vn",
+		],
+		Africa: [
+			"Ao",
+			"Bf",
+			"Bi",
+			"Bj",
+			"Bw",
+			"Cd",
+			"Cf",
+			"Cg",
+			"Ci",
+			"Cm",
+			"Cv",
+			"Dj",
+			"Dz",
+			"Eg",
+			"Er",
+			"Et",
+			"Ga",
+			"Gh",
+			"Gm",
+			"Gn",
+			"Gq",
+			"Ke",
+			"Lr",
+			"Ls",
+			"Ly",
+			"Ma",
+			"Mg",
+			"Ml",
+			"Mr",
+			"Mu",
+			"Mw",
+			"Mz",
+			"Na",
+			"Ne",
+			"Ng",
+			"Rw",
+			"Sd",
+			"Sl",
+			"Sn",
+			"So",
+			"St",
+			"Sz",
+			"Td",
+			"Tg",
+			"Tn",
+			"Tz",
+			"Ug",
+			"Za",
+			"Zm",
+			"Zw",
+		],
+		"North America": [
+			"Ag",
+			"Bb",
+			"Bm",
+			"Bs",
+			"Bz",
+			"Ca",
+			"Cr",
+			"Cu",
+			"Dm",
+			"Do",
+			"Gd",
+			"Gt",
+			"Hn",
+			"Ht",
+			"Jm",
+			"Kn",
+			"Lc",
+			"Mx",
+			"Ni",
+			"Pa",
+			"Sv",
+			"Tt",
+			"Us",
+			"Vc",
+		],
+		"South America": ["Ar", "Bo", "Br", "Cl", "Co", "Ec", "Gy", "Pe", "Py", "Sr", "Uy", "Ve"],
+		Oceania: ["Au", "Fj", "Fm", "Ki", "Mh", "Nr", "Nu", "Nz", "Pg", "Pw", "Sb", "To", "Tv", "Vu", "Ws"],
+	};
+
+	function handleFlagClick(countryCode, buttonSound = false) {
+		// Update profile data with selected flag
+		if (!buttonSound) playSound("item_select");
+		if (buttonSound) playSound("basic_button");
+		if ($profileData?.flag == countryCode) return; // Prevent update if it's already set to that flag
+		setProfileFlag(countryCode);
+		profileData.update((data) => {
+			return { ...data, flag: countryCode };
+		});
+	}
+</script>
+
+{#if $flagPickerPopup}
+	<Popup z={971} verySlim="true">
+		<div class="popup-title">
+			<h1 id="pinPopupWindow">Flags</h1>
+		</div>
+		<div class="flag-container">
+			{#each Object.entries(continentFlags) as [continent, countries]}
+				<div class="continent-section">
+					<p class="continentTitle">{continent}</p>
+					<div class="flagSelector">
+						{#each countries as countryCode}
+							{#if FlagIcons[countryCode]}
+								<button
+									class="flagButton"
+									onclick={() => handleFlagClick(countryCode)}
+									title={countryCode}
+									class:flagSelected={$profileData?.["flag"] == countryCode}
+								>
+									<svelte:component this={FlagIcons[countryCode]} />
+								</button>
+							{/if}
+						{/each}
+					</div>
+				</div>
+			{/each}
+			<button
+				class="standardButton white"
+				onclick={() => {
+					handleFlagClick(null, true);
+				}}
+			>
+				Remove Flag <Trash2 size={20} style="margin-bottom: -2px;" />
+			</button>
+		</div>
+		<button
+			class="standardButton white closeButton"
+			onclick={() => {
+				playSound("basic_button");
+				flagPickerPopup.set(false);
+			}}
+		>
+			Close
+		</button>
+	</Popup>
+{/if}
+
+<style>
+	.flag-container {
+		max-height: calc(90dvh - 250px);
+		overflow-y: auto;
+		padding: 0 10px;
+	}
+
+	.continentTitle {
+		padding: 3px;
+		background-color: var(--box-color);
+		border-radius: 5px;
+		text-align: left;
+		padding-left: 10px;
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
+	}
+
+	.continent-section {
+		margin-bottom: 30px;
+	}
+
+	.flagSelected {
+		outline: 3px solid white;
+		border-radius: 5px;
+	}
+
+	.flagSelector {
+		display: flex;
+		justify-content: flex-start;
+		align-items: center;
+		width: fit-content;
+		margin-left: 0;
+		padding: 8px;
+		background-color: rgba(30, 31, 44, 0.5);
+		border-radius: 5px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
+		gap: 10px;
+		flex-wrap: wrap;
+	}
+
+	.flagButton {
+		background: none;
+		border: none;
+		cursor: pointer;
+		padding: 5px;
+		transition: transform 250ms;
+		width: 40px;
+		height: 30px;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+	}
+
+	.flagButton:hover {
+		transform: scale(1.1);
+	}
+
+	:global(.flagButton svg) {
+		width: 100%;
+		height: 100%;
+	}
+</style>
