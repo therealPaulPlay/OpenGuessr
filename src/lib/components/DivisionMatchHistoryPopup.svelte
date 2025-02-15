@@ -229,6 +229,10 @@
 	.playerName {
 		cursor: pointer;
 		transition: opacity 250ms ease;
+		max-width: 200px;
+		text-wrap: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.playerName:hover {
