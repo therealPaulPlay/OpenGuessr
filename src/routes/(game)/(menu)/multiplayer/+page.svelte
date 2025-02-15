@@ -91,7 +91,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/join");
-					}}>Join <span class="groupIcons"><Unplug size="19" /></span></button
+					}}>Join <span class="groupIcons"><Unplug size={19} strokeWidth={2.5} /></span></button
 				>
 				<button
 					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
@@ -101,7 +101,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/host");
-					}}>Host <span class="groupIcons"><PlusCircle size="19" /></span></button
+					}}>Host <span class="groupIcons"><PlusCircle size={19} strokeWidth={2.5} /></span></button
 				>
 			</div>
 		</div>
