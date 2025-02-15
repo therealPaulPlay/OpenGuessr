@@ -147,7 +147,7 @@
 			onclick={() => {
 				playSound("basic_button");
 				divisionMatchHistoryPopup.set(true);
-			}}>Match History <History size={20} strokeWidth={2.5} style="margin-bottom: -3px; margin-left: 2px" /></button
+			}}>Division History <History size={20} strokeWidth={2.5} style="margin-bottom: -3px; margin-left: 2px" /></button
 		>
 	</div>
 	<DuelDivisionDisplay />
