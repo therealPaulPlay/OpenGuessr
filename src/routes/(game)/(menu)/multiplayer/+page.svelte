@@ -132,23 +132,23 @@
 	</div>
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Duel Divisions</h2>
-	</div>
-	<div class="infoContainer">
-		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
-		<p>
-			Elo &gt2000 will be reset on {nextMonth.toLocaleDateString("en-US", {
-				month: "long",
-				day: "numeric",
-				year: "numeric",
-			})}.
-		</p>
 		<button
 			class="standardButton white matchHistoryButton"
 			onclick={() => {
 				playSound("basic_button");
 				divisionMatchHistoryPopup.set(true);
-			}}>Division History <History size={20} strokeWidth={2.5} style="margin-bottom: -3px; margin-left: 2px" /></button
+			}}>Duel History <History size={20} strokeWidth={2.5} style="margin-bottom: -3px; margin-left: 2px" /></button
 		>
+	</div>
+	<div class="infoContainer">
+		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+		<p>
+			Elo above 2000 will be reset on {nextMonth.toLocaleDateString("en-US", {
+				month: "long",
+				day: "numeric",
+				year: "numeric",
+			})}.
+		</p>
 	</div>
 	<DuelDivisionDisplay />
 	<!-- Division leaderboard -->
@@ -303,7 +303,6 @@
 		align-items: center;
 		background-color: var(--box-color);
 		margin-bottom: 15px;
-		flex-wrap: wrap;
 		gap: 5px;
 	}
 
@@ -333,8 +332,9 @@
 	}
 
 	.matchHistoryButton {
-		margin-left: auto;
-		flex-grow: 1;
+		min-height: 50px;
+		padding-inline: 15px;
+		border-radius: 10px;
 	}
 
 	.divisionLeaderboardEntry {
