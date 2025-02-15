@@ -83,7 +83,12 @@
 		<div class="historyBox">
 			{#if matchResults && matchResults.duels && matchResults.duels.length > 0}
 				{#each matchResults.duels as entry}
-					<div class="matchHistoryItem" class:matchInvalid={entry.player1?.left && entry.player2?.left}>
+					<div
+						class="matchHistoryItem"
+						class:matchInvalid={entry.player1?.left && entry.player2?.left}
+						class:yourMatch={entry.player1?.id == localStorage.getItem("id") ||
+							entry.player2?.id == localStorage.getItem("id")}
+					>
 						<div class="playerInfo">
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<span
@@ -209,6 +214,10 @@
 		text-decoration: line-through;
 		text-decoration-thickness: 2px;
 		opacity: 0.5;
+	}
+
+	.yourMatch {
+		background-color: rgba(255, 255, 255, 0.2);
 	}
 
 	.playerInfo {
