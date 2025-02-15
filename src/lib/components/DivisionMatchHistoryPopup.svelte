@@ -74,7 +74,7 @@
 {#if $divisionMatchHistoryPopup}
 	<Popup z={960} slim="true">
 		<div class="popup-title">
-			<h1>Division History</h1>
+			<h1>Duel History</h1>
 		</div>
 		<div class="infoBox">
 			<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
