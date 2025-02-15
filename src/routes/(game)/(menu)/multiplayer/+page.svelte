@@ -1,6 +1,6 @@
 <script>
 	import { PlusCircle, Unplug, Swords, ContactRound, TriangleAlert } from "lucide-svelte";
-	import { friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
+	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import {
 		checkedForBan,
@@ -21,7 +21,7 @@
 	import { fade, scale, slide } from "svelte/transition";
 	import { bounceInOut } from "svelte/easing";
 	import { getEloLeaderboard } from "$lib/logic/userAPI";
-	import { ChevronDown, ChevronUp } from "lucide-svelte";
+	import { ChevronDown, ChevronUp, History } from "lucide-svelte";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { fetchBlacklistStatus, fetchWarnlistStatus } from "$lib/utils/checkBanStatus";
 	import { get } from "svelte/store";
@@ -136,12 +136,19 @@
 	<div class="infoContainer">
 		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
 		<p>
-			Elo above 2000 will be reset on {nextMonth.toLocaleDateString("en-US", {
+			Elo &gt2000 will be reset on {nextMonth.toLocaleDateString("en-US", {
 				month: "long",
 				day: "numeric",
 				year: "numeric",
 			})}.
 		</p>
+		<button
+			class="standardButton white matchHistoryButton"
+			onclick={() => {
+				playSound("basic_button");
+				divisionMatchHistoryPopup.set(true);
+			}}>Match History <History size={20} strokeWidth={2.5} style="margin-bottom: -3px; margin-left: 2px" /></button
+		>
 	</div>
 	<DuelDivisionDisplay />
 	<!-- Division leaderboard -->
@@ -296,6 +303,8 @@
 		align-items: center;
 		background-color: var(--box-color);
 		margin-bottom: 15px;
+		flex-wrap: wrap;
+		gap: 5px;
 	}
 
 	.warnInfo {
@@ -321,6 +330,11 @@
 		overflow-y: auto;
 		max-height: 285px;
 		scrollbar-width: none;
+	}
+
+	.matchHistoryButton {
+		margin-left: auto;
+		flex-grow: 1;
 	}
 
 	.divisionLeaderboardEntry {
@@ -408,6 +422,7 @@
 
 	.infoContainer p {
 		opacity: 0.5;
+		flex-grow: 100;
 	}
 
 	.main-container {
