@@ -57,11 +57,11 @@
 		min-width: 300px;
 		max-width: 800px;
 		max-height: 90%;
-		font-size: 25px;
 		padding: 25px 25px 10px;
 		border-radius: 10px;
 		text-align: left;
 		z-index: 900;
+		font-size: 22px;
 		overflow-x: hidden;
 		overflow-y: auto;
 		background-color: var(--menu-background);
@@ -89,12 +89,6 @@
 
 		100% {
 			transform: scale(1);
-		}
-	}
-
-	@media all and (max-width: 1200px) {
-		.uiWindow {
-			font-size: 22px;
 		}
 	}
 </style>

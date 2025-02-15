@@ -85,7 +85,7 @@
 
 <style>
 	.friendSearchItem {
-		background-color: rgba(255, 255, 255, 0.1);
+		background-color: var(--box-color);
 		border-radius: 5px;
 		width: calc(100% - 30px);
 		position: relative;
@@ -101,7 +101,7 @@
 	}
 
 	.friendSearchItem:hover {
-		background-color: rgba(255, 255, 255, 0.2);
+		background-color: rgba(255, 255, 255, 0.1);
 	}
 
 	.noResultsText {
