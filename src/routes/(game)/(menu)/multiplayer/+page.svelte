@@ -81,7 +81,7 @@
 	{/if}
 	<div class="playBox">
 		<div class="groupPartyButtons">
-			<h3 class="playButtonsHeader">Custom</h3>
+			<p class="playButtonsHeader">Custom</p>
 			<div class="groupPartyContent">
 				<button
 					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
@@ -106,7 +106,7 @@
 			</div>
 		</div>
 		<div class="groupPartyButtons">
-			<h3 class="playButtonsHeader">Matchmaking</h3>
+			<p class="playButtonsHeader">Matchmaking</p>
 			<div class="groupPartyContent">
 				<button
 					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
@@ -455,10 +455,9 @@
 	}
 
 	.playButtonsHeader {
-		width: calc(100% - 20px);
-		font-size: 25px;
+		width: calc(100% - 10px);
 		opacity: 0.5;
-		padding-inline: 10px;
+		padding-inline: 5px;
 	}
 
 	.moreContainer {
