@@ -637,7 +637,7 @@
 					openLeaderboard(id);
 				}}
 				>Results
-				<img class="textIcon" src="/img/leaderboards_icon.png" alt="Leaderboards for OpenGuessr" />
+				<img class="leaderboardIcon" src="/img/leaderboards_icon.png" alt="Leaderboards for OpenGuessr" />
 			</button>
 			{#if !expired}
 				<button
@@ -989,9 +989,9 @@
 		opacity: 0.25;
 	}
 
-	.textIcon {
-		width: 25px;
-		height: 25px;
+	.leaderboardIcon {
+		width: 22px;
+		height: 22px;
 		vertical-align: -2px;
 	}
 

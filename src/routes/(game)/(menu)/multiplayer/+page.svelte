@@ -395,8 +395,8 @@
 	}
 
 	.duelLeaderboardIcon {
-		width: 25px;
-		height: 25px;
+		width: 22px;
+		height: 22px;
 	}
 
 	.sectionButton:hover {
