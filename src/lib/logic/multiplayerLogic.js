@@ -172,7 +172,7 @@ export async function createPeerInstance() {
                 get(peer)?.updateStorageArray("chats", "add", `System: ${name} left - changing host.`);
                 removeConnectedPeerById(id);
                 connectionCount.set(get(peer)?.connectionCount);
-                if (!get(peer)?.getStorage?.gameOngoing) startRoom(); // If the host leaves and the game is still in the hosting phase, start
+                if (!get(peer)?.getStorage?.gameOngoing && get(multiplayer)) startRoom(); // If the host leaves and the game is still in the hosting phase, start
             });
 
             let playerAdded;

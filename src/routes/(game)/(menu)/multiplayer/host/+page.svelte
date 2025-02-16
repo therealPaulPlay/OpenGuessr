@@ -40,7 +40,7 @@
 	let publicTooltipShown = $state(false);
 	let tooltipTimout;
 
-	hostStage.subscribe((value) => {
+	const unsubscribeFromHostStage = hostStage.subscribe((value) => {
 		if (value == 2) {
 			clearTimeout(tooltipTimout);
 			tooltipTimout = setTimeout(() => {
@@ -48,10 +48,13 @@
 				publicTooltipShown = true;
 				localStorage.setItem("publicRoomTooltip", "shown");
 			}, 3000);
+		} else {
+			clearTimeout(tooltipTimout);
 		}
 	});
 
 	onDestroy(() => {
+		unsubscribeFromHostStage();
 		clearInterval(roomOpenAddInterval);
 		clearTimeout(tooltipTimout);
 		if (roomOpened) deletePublicRoom();
@@ -173,7 +176,7 @@
 								});
 						}}
 					>
-						<Link strokeWidth="2.5" size="18" />
+						<Link strokeWidth="2.75" size="18" />
 					</button>
 					<button
 						class="standardButton white makeRoomPublicButton"
@@ -196,18 +199,18 @@
 									);
 								}, 5000);
 								roomOpened = true;
-								showNotification("Room is now public.");
+								showNotification("Room set to public.");
 							} else {
-								await deletePublicRoom($roomcode);
+								await deletePublicRoom();
 								roomOpened = false;
-								showNotification("Room is now private.");
+								showNotification("Room set to private.");
 							}
 						}}
 					>
 						{#if roomOpened}
-							<EyeOff strokeWidth={2.5} style="margin-bottom: -4px;" />
+							<EyeOff strokeWidth={2.5} size={20} style="margin-bottom: -2px;" />
 						{:else}
-							<Eye strokeWidth={2.5} style="margin-bottom: -4px;" />
+							<Eye strokeWidth={2.5} size={20} style="margin-bottom: -2px;" />
 						{/if}
 					</button>
 				{/if}
@@ -275,7 +278,6 @@
 
 	.codeDisplayText {
 		opacity: 0.5;
-		font-size: 20px;
 		width: 100%;
 		text-align: center;
 	}

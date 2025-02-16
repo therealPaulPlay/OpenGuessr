@@ -34,8 +34,8 @@
 <div class="main-container">
 	<div class="inputCenterBox">
 		<div class="multiplayerJoinField">
-			<p id="multiplayerJoinInfo" class="multiplayerInputInfo">{$multiplayerStatus || "Input a code."}</p>
-			<input type="text" class="multiplayerInput" placeholder="Room code" bind:value={roomCodeInput} />
+			<p class="multiplayerInputInfo">{$multiplayerStatus || "Input a code."}</p>
+			<input type="text" class="multiplayerInput" placeholder="e.g. 1234xy" bind:value={roomCodeInput} />
 		</div>
 		<button
 			id="multiplayerJoin"
@@ -60,7 +60,7 @@
 	<div class="publicRoomBox" transition:blur>
 		{#each openRooms as room}
 			<div class="publicRoomItem">
-				<p>{room?.player_count} <Users strokeWidth={2.5} style="margin-bottom: -3px;" /></p>
+				<p>{room?.player_count} <Users strokeWidth={2.25} style="margin-bottom: -3px;" /></p>
 				<p class="roomItemMapName">Map: {room?.map}</p>
 				<button
 					class="standardButton white"
@@ -153,6 +153,10 @@
 		border-radius: 10px;
 		min-height: 50px;
 		padding-inline: 20px;
+	}
+
+	.multiplayerInput::placeholder {
+		opacity: 0.35;
 	}
 
 	.multiplayerJoinField {
