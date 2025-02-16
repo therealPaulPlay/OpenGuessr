@@ -2,8 +2,29 @@
 	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { joinRoom } from "$lib/logic/multiplayerLogic";
+	import { Copy, Unplug, Users } from "lucide-svelte";
+	import { blur, slide } from "svelte/transition";
+	import { onDestroy, onMount } from "svelte";
+	import { fetchPublicRooms } from "$lib/utils/publicRooms";
 
 	let roomCodeInput = $state("");
+	let openRooms = $state([]);
+
+	let fetchRoomsInterval;
+
+	onMount(async () => {
+		clearInterval(fetchRoomsInterval);
+		const rooms = await fetchPublicRooms();
+		openRooms = rooms?.rooms;
+		fetchRoomsInterval = setInterval(async () => {
+			const rooms = await fetchPublicRooms();
+			openRooms = rooms?.rooms;
+		}, 10000);
+	});
+
+	onDestroy(() => {
+		clearInterval(fetchRoomsInterval);
+	});
 </script>
 
 <svelte:head>
@@ -13,8 +34,8 @@
 <div class="main-container">
 	<div class="inputCenterBox">
 		<div class="multiplayerJoinField">
-			<p id="multiplayerJoinInfo" class="multiplayerInputInfo">{$multiplayerStatus || "Input a room code."}</p>
-			<input type="text" class="multiplayerInput" placeholder="Room code" bind:value={roomCodeInput} />
+			<p class="multiplayerInputInfo">{$multiplayerStatus || "Input a code."}</p>
+			<input type="text" class="multiplayerInput" placeholder="e.g. 1234xy" bind:value={roomCodeInput} />
 		</div>
 		<button
 			id="multiplayerJoin"
@@ -34,6 +55,27 @@
 		>
 	</div>
 </div>
+{#if openRooms?.length > 0}
+	<p class="publicRoomTitle" transition:blur>Public Rooms:</p>
+	<div class="publicRoomBox" transition:blur>
+		{#each openRooms as room}
+			<div class="publicRoomItem">
+				<p>{room?.player_count} <Users strokeWidth={2.25} style="margin-bottom: -3px;" /></p>
+				<p class="roomItemMapName">Map: {room?.map}</p>
+				<button
+					class="standardButton white"
+					onclick={() => {
+						playSound("basic_button");
+						roomCodeInput = room?.room_code?.replace("openguessr_", "");
+						joinRoom(roomCodeInput);
+					}}
+				>
+					<Unplug strokeWidth={2.5} size={22} style="margin-bottom: -3px;" />
+				</button>
+			</div>
+		{/each}
+	</div>
+{/if}
 
 <style>
 	.main-container {
@@ -41,6 +83,55 @@
 		flex-direction: column;
 		align-items: center;
 		min-height: 50dvh;
+	}
+
+	.publicRoomTitle {
+		max-width: 440px;
+		margin-inline: auto;
+		width: calc(100% - 60px);
+		margin-top: 100px;
+		opacity: 0.5;
+	}
+
+	.publicRoomBox {
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: space-around;
+		align-items: center;
+		gap: 10px;
+		margin-inline: auto;
+		margin-top: 10px;
+		max-width: 460px;
+		width: calc(100% - 40px);
+		max-height: 275px;
+		overflow-y: auto;
+		scrollbar-width: none;
+	}
+
+	.publicRoomItem {
+		background-color: rgba(255, 255, 255, 0.1);
+		border: none;
+		border-radius: 10px;
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		padding: 5px;
+		padding-left: 15px;
+		flex-grow: 1;
+		width: 100%;
+		opacity: 0.5;
+		transition: opacity 250ms ease;
+	}
+
+	.roomItemMapName {
+		max-width: 50%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		text-wrap: nowrap;
+	}
+
+	.publicRoomItem:hover {
+		opacity: 1;
 	}
 
 	.buttonDisabled {
@@ -64,6 +155,10 @@
 		padding-inline: 20px;
 	}
 
+	.multiplayerInput::placeholder {
+		opacity: 0.35;
+	}
+
 	.multiplayerJoinField {
 		width: calc(100% - 20px);
 		padding: 10px;
@@ -83,11 +178,9 @@
 
 	.multiplayerInputInfo {
 		padding: 0;
-		color: rgba(255, 255, 255, 0.5);
 		overflow: hidden;
 		width: calc(100% - 40px);
 		text-overflow: ellipsis;
-		padding-inline: 20px;
-		font-size: 20px;
+		opacity: 0.5;
 	}
 </style>

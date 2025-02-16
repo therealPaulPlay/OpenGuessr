@@ -177,12 +177,12 @@
 		padding-inline: 15px;
 		width: calc(100% - 30px);
 		transition: background-color 250ms ease;
-		background-color: rgba(255, 255, 255, 0.1);
+		background-color: var(--box-color);
 	}
 
 	.friendSearchItem:hover {
 		cursor: pointer;
-		background-color: rgba(255, 255, 255, 0.2);
+		background-color: rgba(255, 255, 255, 0.1);
 	}
 
 	.entryName {

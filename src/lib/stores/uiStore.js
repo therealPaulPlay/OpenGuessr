@@ -20,3 +20,4 @@ export const friendBrowserPopup = writable(false);
 export const inboxPopup = writable(false);
 export const duelResultPopup = writable(false);
 export const reportPopup = writable(false);
+export const divisionMatchHistoryPopup = writable(false);

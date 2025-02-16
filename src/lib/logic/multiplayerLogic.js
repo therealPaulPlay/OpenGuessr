@@ -172,7 +172,7 @@ export async function createPeerInstance() {
                 get(peer)?.updateStorageArray("chats", "add", `System: ${name} left - changing host.`);
                 removeConnectedPeerById(id);
                 connectionCount.set(get(peer)?.connectionCount);
-                if (!get(peer)?.getStorage?.gameOngoing) startRoom(); // If the host leaves and the game is still in the hosting phase, start
+                if (!get(peer)?.getStorage?.gameOngoing && get(multiplayer)) startRoom(); // If the host leaves and the game is still in the hosting phase, start
             });
 
             let playerAdded;
@@ -207,8 +207,8 @@ export async function createPeerInstance() {
 
                 // Set multiplayer category
                 if (storage.category && localStorage.getItem("selectedCategory") !== storage.category) {
+                    if (localStorage.getItem("selectedCategory")) showNotification("Map changed to " + storage?.category?.replaceAll("community_", "") + ".");
                     changeCategory(storage?.category);
-                    showNotification("Map changed to " + storage?.category?.replaceAll("community_", "") + ".");
                 }
 
                 if (storage.currentRound && storage.restriction) {

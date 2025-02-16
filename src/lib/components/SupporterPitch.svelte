@@ -51,7 +51,6 @@
 	}
 
 	.supporterArea p {
-		font-size: 25px;
 		padding-right: 5px;
 		display: inline;
 	}

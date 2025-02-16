@@ -1,6 +1,6 @@
 <script>
 	import { PlusCircle, Unplug, Swords, ContactRound, TriangleAlert } from "lucide-svelte";
-	import { friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
+	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import {
 		checkedForBan,
@@ -21,7 +21,7 @@
 	import { fade, scale, slide } from "svelte/transition";
 	import { bounceInOut } from "svelte/easing";
 	import { getEloLeaderboard } from "$lib/logic/userAPI";
-	import { ChevronDown, ChevronUp } from "lucide-svelte";
+	import { ChevronDown, ChevronUp, History } from "lucide-svelte";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { fetchBlacklistStatus, fetchWarnlistStatus } from "$lib/utils/checkBanStatus";
 	import { get } from "svelte/store";
@@ -81,7 +81,7 @@
 	{/if}
 	<div class="playBox">
 		<div class="groupPartyButtons">
-			<h3 class="playButtonsHeader">Custom</h3>
+			<p class="playButtonsHeader">Custom</p>
 			<div class="groupPartyContent">
 				<button
 					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
@@ -91,7 +91,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/join");
-					}}>Join <span class="groupIcons"><Unplug size="19" /></span></button
+					}}>Join <span class="groupIcons"><Unplug size={19} strokeWidth={2.5} /></span></button
 				>
 				<button
 					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
@@ -101,12 +101,12 @@
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/host");
-					}}>Host <span class="groupIcons"><PlusCircle size="19" /></span></button
+					}}>Host <span class="groupIcons"><PlusCircle size={19} strokeWidth={2.5} /></span></button
 				>
 			</div>
 		</div>
 		<div class="groupPartyButtons">
-			<h3 class="playButtonsHeader">Matchmaking</h3>
+			<p class="playButtonsHeader">Matchmaking</p>
 			<div class="groupPartyContent">
 				<button
 					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
@@ -132,6 +132,13 @@
 	</div>
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Duel Divisions</h2>
+		<button
+			class="standardButton white matchHistoryButton"
+			onclick={() => {
+				playSound("basic_button");
+				divisionMatchHistoryPopup.set(true);
+			}}>Duel History <History size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 2px" /></button
+		>
 	</div>
 	<div class="infoContainer">
 		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
@@ -296,6 +303,7 @@
 		align-items: center;
 		background-color: var(--box-color);
 		margin-bottom: 15px;
+		gap: 5px;
 	}
 
 	.warnInfo {
@@ -321,6 +329,12 @@
 		overflow-y: auto;
 		max-height: 285px;
 		scrollbar-width: none;
+	}
+
+	.matchHistoryButton {
+		min-height: 50px;
+		padding-inline: 15px;
+		border-radius: 10px;
 	}
 
 	.divisionLeaderboardEntry {
@@ -381,8 +395,8 @@
 	}
 
 	.duelLeaderboardIcon {
-		width: 25px;
-		height: 25px;
+		width: 22px;
+		height: 22px;
 	}
 
 	.sectionButton:hover {
@@ -408,6 +422,7 @@
 
 	.infoContainer p {
 		opacity: 0.5;
+		flex-grow: 100;
 	}
 
 	.main-container {
@@ -440,10 +455,9 @@
 	}
 
 	.playButtonsHeader {
-		width: calc(100% - 20px);
-		font-size: 25px;
+		width: calc(100% - 10px);
 		opacity: 0.5;
-		padding-inline: 10px;
+		padding-inline: 5px;
 	}
 
 	.moreContainer {

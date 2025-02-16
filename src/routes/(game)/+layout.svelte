@@ -46,6 +46,7 @@
 	import DuelResultPopup from "$lib/components/DuelResultPopup.svelte";
 	import ReportIframePopup from "$lib/components/ReportIframePopup.svelte";
 	import FlagPickerPopup from "$lib/components/FlagPickerPopup.svelte";
+	import DivisionMatchHistoryPopup from "$lib/components/DivisionMatchHistoryPopup.svelte";
 
 	// Start ads
 	onMount(() => {
@@ -101,6 +102,7 @@
 <FlagPickerPopup />
 <SupporterPopup />
 <FriendBrowserPopup />
+<DivisionMatchHistoryPopup />
 <InboxPopup />
 <BeforeExitPopup />
 <HelpPopup />
