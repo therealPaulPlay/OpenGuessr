@@ -248,7 +248,6 @@
 	.vs {
 		align-self: center;
 		margin: 5px 0;
-		opacity: 0.75;
 		border-radius: 5px;
 		padding-inline: 5px;
 		background-color: var(--box-color);

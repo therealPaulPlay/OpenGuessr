@@ -664,169 +664,168 @@
 		</div>
 	</div>
 {/snippet}
-<div class="main">
-	<div class="competitionElement competitionBox">
-		<div class="headerContainer">
-			<h2 class="header">Competitions</h2>
-		</div>
-		<div id="dailyCompetitionArea" class="competitionArea">
-			<!-- daily competitions will be inserted here -->
-			{#if dailyCompetitionData?.length > 0}
-				{#each dailyCompetitionData as entry}
-					{@render competitionItem(
-						entry.id,
-						entry.name,
-						entry.author,
-						entry.author_id,
-						entry.playercount,
-						entry.restriction,
-						entry.duration,
-						entry.remainingDuration,
-						entry.location_amount,
-						entry.round_length,
-						entry.description,
-						entry.expired,
-						entry.entered,
-						true,
-					)}
-				{/each}
-			{:else}
-				<p class="errorText">{dailyCompetitionError}</p>
-			{/if}
-		</div>
+
+<div class="competitionElement competitionBox">
+	<div class="headerContainer">
+		<h2 class="header">Competitions</h2>
 	</div>
-	<div class="competitionElement competitionBox">
-		<div class="headerContainer">
-			<h2 class="header marginTopAuto">Active</h2>
-			<button
-				class="standardButton white createButton marginTopAuto"
-				onclick={() => {
-					playSound("basic_button");
-					if ($isAuthenticated) {
-						goto("/competitions/create");
-					} else {
-						signupPrompt();
-					}
-				}}>+ Create</button
-			>
-		</div>
-		<div class="buttonToolbar">
-			<search>
-				<form>
-					<input
-						id="competitionSearch"
-						bind:value={searchQuery}
-						placeholder="Search active Competitions..."
-						onkeydown={(event) => {
-							if (event.key === "Enter") {
-								event.preventDefault();
-							}
-						}}
-						onkeyup={(event) => {
-							if (event.key === "Enter") {
-								startSearch();
-							}
-						}}
-					/>
-				</form>
-				<button
-					id="startSearch"
-					class="standardButton white"
-					onclick={() => {
-						playSound("basic_button");
-						startSearch();
+	<div id="dailyCompetitionArea" class="competitionArea">
+		<!-- daily competitions will be inserted here -->
+		{#if dailyCompetitionData?.length > 0}
+			{#each dailyCompetitionData as entry}
+				{@render competitionItem(
+					entry.id,
+					entry.name,
+					entry.author,
+					entry.author_id,
+					entry.playercount,
+					entry.restriction,
+					entry.duration,
+					entry.remainingDuration,
+					entry.location_amount,
+					entry.round_length,
+					entry.description,
+					entry.expired,
+					entry.entered,
+					true,
+				)}
+			{/each}
+		{:else}
+			<p class="errorText">{dailyCompetitionError}</p>
+		{/if}
+	</div>
+</div>
+<div class="competitionElement competitionBox">
+	<div class="headerContainer">
+		<h2 class="header marginTopAuto">Active</h2>
+		<button
+			class="standardButton white createButton marginTopAuto"
+			onclick={() => {
+				playSound("basic_button");
+				if ($isAuthenticated) {
+					goto("/competitions/create");
+				} else {
+					signupPrompt();
+				}
+			}}>+ Create</button
+		>
+	</div>
+	<div class="buttonToolbar">
+		<search>
+			<form>
+				<input
+					id="competitionSearch"
+					bind:value={searchQuery}
+					placeholder="Search active Competitions..."
+					onkeydown={(event) => {
+						if (event.key === "Enter") {
+							event.preventDefault();
+						}
 					}}
-				>
-					<img src="/img/find_icon.png" alt="start search" id="searchIcon" />
-				</button>
-				<button
-					id="hideEntered"
-					class="standardButton white"
-					onclick={() => {
-						playSound("basic_button");
-						activeCompetitionsData = []; // Reset loaded data
-						hideEntered = !hideEntered;
-						notExpiredIndex = 0;
-						getCompetitionsFromServer(false, false, false, hideEntered);
-					}}>{hideEntered ? "Show entered" : "Hide entered"}</button
-				>
-			</search>
-		</div>
-		<div id="competitionArea" class="competitionArea">
-			<!-- active competitions will be inserted here -->
-			{#if activeCompetitionsData?.length > 0}
-				{#each activeCompetitionsData as entry}
-					{@render competitionItem(
-						entry.id,
-						entry.name,
-						entry.author,
-						entry.author_id,
-						entry.playercount,
-						entry.restriction,
-						entry.duration,
-						entry.remainingDuration,
-						entry.location_amount,
-						entry.round_length,
-						entry.description,
-						entry.expired,
-						entry.entered,
-						false,
-					)}
-				{/each}
-			{:else}
-				<p class="errorText">{activeCompetitionError}</p>
-			{/if}
-		</div>
-		{#if loadMoreActive}
+					onkeyup={(event) => {
+						if (event.key === "Enter") {
+							startSearch();
+						}
+					}}
+				/>
+			</form>
 			<button
-				id="loadMoreActive"
-				class="loadMore standardButton white"
+				id="startSearch"
+				class="standardButton white"
 				onclick={() => {
 					playSound("basic_button");
+					startSearch();
+				}}
+			>
+				<img src="/img/find_icon.png" alt="start search" id="searchIcon" />
+			</button>
+			<button
+				id="hideEntered"
+				class="standardButton white"
+				onclick={() => {
+					playSound("basic_button");
+					activeCompetitionsData = []; // Reset loaded data
+					hideEntered = !hideEntered;
+					notExpiredIndex = 0;
 					getCompetitionsFromServer(false, false, false, hideEntered);
-				}}>Show more <Plus size={20} strokeWidth={2.75} style="margin-bottom: -3px; margin-left: 2px;" /></button
+				}}>{hideEntered ? "Show entered" : "Hide entered"}</button
 			>
+		</search>
+	</div>
+	<div id="competitionArea" class="competitionArea">
+		<!-- active competitions will be inserted here -->
+		{#if activeCompetitionsData?.length > 0}
+			{#each activeCompetitionsData as entry}
+				{@render competitionItem(
+					entry.id,
+					entry.name,
+					entry.author,
+					entry.author_id,
+					entry.playercount,
+					entry.restriction,
+					entry.duration,
+					entry.remainingDuration,
+					entry.location_amount,
+					entry.round_length,
+					entry.description,
+					entry.expired,
+					entry.entered,
+					false,
+				)}
+			{/each}
+		{:else}
+			<p class="errorText">{activeCompetitionError}</p>
 		{/if}
 	</div>
-	<div class="competitionElement competitionBox expiredBox">
-		<div class="headerContainer">
-			<h2 class="header">Recently ended</h2>
-		</div>
-		<div id="expiredCompetitionArea" class="competitionArea">
-			<!-- expired competitions will be inserted here -->
-			{#if expiredCompetitionData?.length > 0}
-				{#each expiredCompetitionData as entry}
-					{@render competitionItem(
-						entry.id,
-						entry.name,
-						entry.author,
-						entry.author_id,
-						entry.playercount,
-						entry.restriction,
-						entry.duration,
-						entry.remainingDuration,
-						entry.location_amount,
-						entry.round_length,
-						entry.description,
-						entry.expired,
-						entry.entered,
-						false,
-					)}
-				{/each}
-			{:else}
-				<p class="errorText">{expiredCompetitionsError}</p>
-			{/if}
-		</div>
-		{#if loadMoreExpired}
-			<button
-				class="loadMore standardButton white"
-				onclick={() => {
-					playSound("basic_button");
-					getCompetitionsFromServer(true);
-				}}>Show more <Plus size={20} strokeWidth={2.75} style="margin-bottom: -3px;  margin-left: 2px;" /></button
-			>
+	{#if loadMoreActive}
+		<button
+			id="loadMoreActive"
+			class="loadMore standardButton white"
+			onclick={() => {
+				playSound("basic_button");
+				getCompetitionsFromServer(false, false, false, hideEntered);
+			}}>Show more <Plus size={20} strokeWidth={2.75} style="margin-bottom: -3px; margin-left: 2px;" /></button
+		>
+	{/if}
+</div>
+<div class="competitionElement competitionBox expiredBox">
+	<div class="headerContainer">
+		<h2 class="header">Recently ended</h2>
+	</div>
+	<div id="expiredCompetitionArea" class="competitionArea">
+		<!-- expired competitions will be inserted here -->
+		{#if expiredCompetitionData?.length > 0}
+			{#each expiredCompetitionData as entry}
+				{@render competitionItem(
+					entry.id,
+					entry.name,
+					entry.author,
+					entry.author_id,
+					entry.playercount,
+					entry.restriction,
+					entry.duration,
+					entry.remainingDuration,
+					entry.location_amount,
+					entry.round_length,
+					entry.description,
+					entry.expired,
+					entry.entered,
+					false,
+				)}
+			{/each}
+		{:else}
+			<p class="errorText">{expiredCompetitionsError}</p>
 		{/if}
 	</div>
+	{#if loadMoreExpired}
+		<button
+			class="loadMore standardButton white"
+			onclick={() => {
+				playSound("basic_button");
+				getCompetitionsFromServer(true);
+			}}>Show more <Plus size={20} strokeWidth={2.75} style="margin-bottom: -3px;  margin-left: 2px;" /></button
+		>
+	{/if}
 </div>
 
 <svelte:head>
@@ -856,12 +855,6 @@
 		overflow: hidden;
 		height: 300px;
 		margin-bottom: 20px;
-	}
-
-	.main {
-		margin-bottom: 100px;
-		width: 100%;
-		flex-direction: column;
 	}
 
 	.marginTopAuto {

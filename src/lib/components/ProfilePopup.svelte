@@ -336,7 +336,7 @@
 		display: inline-flex;
 		align-items: center;
 		width: 25px;
-		margin-top: 12px;
+		margin-top: 8px;
 		cursor: pointer;
 	}
 
