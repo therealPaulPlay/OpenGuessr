@@ -137,7 +137,7 @@
 			onclick={() => {
 				playSound("basic_button");
 				divisionMatchHistoryPopup.set(true);
-			}}>Duel History <History size={20} strokeWidth={2.5} style="margin-bottom: -3px; margin-left: 2px" /></button
+			}}>Duel History <History size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 2px" /></button
 		>
 	</div>
 	<div class="infoContainer">
