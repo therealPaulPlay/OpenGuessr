@@ -30,7 +30,7 @@
 	import { fade, scale, slide } from "svelte/transition";
 
 	function getFormattedCategory() {
-		if (typeof window === "undefined") return;
+		if (typeof window === "undefined") return "loading...";
 		const category = localStorage.getItem("selectedCategory") || "standard";
 		return category.replace("community_", "");
 	}
