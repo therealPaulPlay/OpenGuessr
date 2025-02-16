@@ -169,8 +169,8 @@
 		position: relative;
 		width: calc(100% - 13px);
 		border-radius: 5px;
-		max-height: 40dvh;
-		min-height: 40dvh;
+		max-height: calc(60dvh - 200px);
+		min-height: calc(60dvh - 200px);
 		overflow-x: hidden;
 		overflow-y: auto;
 		padding: 2px;
