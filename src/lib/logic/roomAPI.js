@@ -10,7 +10,7 @@ export async function deleteRoomCodeFromMatchmakingServer() {
             id: localStorage.getItem("id")
         }
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/delete/" + get(roomcode).replace("openguessr_", ""), {
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/delete-duel/" + get(roomcode).replace("openguessr_", ""), {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -37,7 +37,7 @@ export async function attemptDuelJoin(index) {
 
     try {
         // Get Roomcode from server
-        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/" + index, {
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/join-duel/" + index, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ async function sendRoomCodeToMatchmakingServer() {
             id: localStorage.getItem("id")
         }
 
-        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/host/" + get(roomcode).replace("openguessr_", ""), {
+        const response = await fetch("https://accounts.openguessr.com/accounts/rooms/host-duel/" + get(roomcode).replace("openguessr_", ""), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
