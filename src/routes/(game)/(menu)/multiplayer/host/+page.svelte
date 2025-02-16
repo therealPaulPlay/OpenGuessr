@@ -187,6 +187,7 @@
 									$connectionCount + 1,
 									localStorage.getItem("selectedCategory") || "standard",
 								);
+								clearInterval(roomOpenAddInterval);
 								roomOpenAddInterval = setInterval(async () => {
 									await addPublicRoom(
 										$roomcode,
