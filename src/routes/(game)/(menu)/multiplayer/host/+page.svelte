@@ -1,5 +1,5 @@
 <script>
-	import { Link } from "lucide-svelte";
+	import { Eye, EyeOff, Link } from "lucide-svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
@@ -22,12 +22,40 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import Ticker from "$lib/components/Ticker.svelte";
 	import { goto } from "$app/navigation";
+	import { errorPopup } from "$lib/utils/errorHandling";
+	import { addPublicRoom, deletePublicRoom } from "$lib/utils/publicRooms";
+	import { onDestroy, onMount } from "svelte";
+	import { isAuthenticated } from "$lib/stores/accountStore";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
+	import { fade, scale, slide } from "svelte/transition";
 
 	function getFormattedCategory() {
 		if (typeof window === "undefined") return;
 		const category = localStorage.getItem("selectedCategory") || "standard";
 		return category.replace("community_", "");
 	}
+
+	let roomOpened = $state(false);
+	let roomOpenAddInterval = $state();
+	let publicTooltipShown = $state(false);
+	let tooltipTimout;
+
+	hostStage.subscribe((value) => {
+		if (value == 2) {
+			clearTimeout(tooltipTimout);
+			tooltipTimout = setTimeout(() => {
+				if (localStorage.getItem("publicRoomTooltip")) return;
+				publicTooltipShown = true;
+				localStorage.setItem("publicRoomTooltip", "shown");
+			}, 3000);
+		}
+	});
+
+	onDestroy(() => {
+		clearInterval(roomOpenAddInterval);
+		clearTimeout(tooltipTimout);
+		if (roomOpened) deletePublicRoom();
+	});
 </script>
 
 <svelte:head>
@@ -118,6 +146,7 @@
 				</div>
 			{/if}
 		{/if}
+		<!-- button area -->
 		<div class="multiplayerHostSubmitArea">
 			<div id="innerSubmitAreaBlock">
 				{#if $hostStage == 2}
@@ -146,6 +175,40 @@
 					>
 						<Link strokeWidth="2.5" size="18" />
 					</button>
+					<button
+						class="standardButton white makeRoomPublicButton"
+						onclick={async () => {
+							playSound("basic_button");
+							publicTooltipShown = false;
+							if (!$isAuthenticated) return signupPrompt();
+							if (!roomOpened) {
+								await addPublicRoom(
+									$roomcode,
+									$connectionCount + 1,
+									localStorage.getItem("selectedCategory") || "standard",
+								);
+								roomOpenAddInterval = setInterval(async () => {
+									await addPublicRoom(
+										$roomcode,
+										$connectionCount + 1,
+										localStorage.getItem("selectedCategory") || "standard",
+									);
+								}, 5000);
+								roomOpened = true;
+								showNotification("Room is now public.");
+							} else {
+								await deletePublicRoom($roomcode);
+								roomOpened = false;
+								showNotification("Room is now private.");
+							}
+						}}
+					>
+						{#if roomOpened}
+							<EyeOff strokeWidth={2.5} style="margin-bottom: -4px;" />
+						{:else}
+							<Eye strokeWidth={2.5} style="margin-bottom: -4px;" />
+						{/if}
+					</button>
 				{/if}
 				<button
 					id="multiplayerHost"
@@ -166,6 +229,24 @@
 				>
 			</div>
 		</div>
+		{#if publicTooltipShown && $hostStage == 2}
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+			<div in:slide out:slide>
+				<div
+					class="publicRoomTooltip"
+					transition:scale={{ delay: 250 }}
+					role="tooltip"
+					onclick={() => {
+						publicTooltipShown = false;
+					}}
+				>
+					<div class="innerRoomTooltip">
+						<p>Need more players?</p>
+					</div>
+				</div>
+			</div>
+		{/if}
 	</div>
 </div>
 
@@ -198,6 +279,12 @@
 		text-align: center;
 	}
 
+	.makeRoomPublicButton {
+		border-radius: 10px;
+		min-height: 50px;
+		position: relative;
+	}
+
 	.sendIcon {
 		vertical-align: -2px;
 		width: 20px;
@@ -216,8 +303,45 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding-inline: 5px;
+		padding: 5px;
 		flex-grow: 1;
+	}
+
+	.publicRoomTooltip {
+		position: relative;
+		display: block;
+		cursor: pointer;
+		margin-top: 20px;
+	}
+
+	/* The tooltip bubble */
+	.publicRoomTooltip .innerRoomTooltip {
+		position: absolute;
+		left: -18px;
+		transform: translateX(-50%);
+		background-color: rgba(255, 255, 255, 0.15);
+		padding: 8px 12px;
+		border-radius: 10px;
+		text-wrap: nowrap;
+		z-index: 10;
+	}
+
+	/* Show the tooltip when hovering */
+	.publicRoomTooltip:hover .innerRoomTooltip {
+		opacity: 1;
+		visibility: visible;
+	}
+
+	/* The upward-pointing arrow */
+	.publicRoomTooltip .innerRoomTooltip::before {
+		content: "";
+		position: absolute;
+		top: -10px; /* Position the arrow above the tooltip bubble */
+		left: 50%;
+		transform: translateX(-50%);
+		border-width: 0 10px 10px 10px; /* No top border; bottom border creates the arrow */
+		border-style: solid;
+		border-color: transparent transparent rgba(255, 255, 255, 0.15) transparent;
 	}
 
 	.friendsRoomEntryText {

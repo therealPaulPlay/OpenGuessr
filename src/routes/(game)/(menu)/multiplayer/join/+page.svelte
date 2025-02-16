@@ -2,34 +2,24 @@
 	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { joinRoom } from "$lib/logic/multiplayerLogic";
-	import { Users } from "lucide-svelte";
+	import { Copy, Unplug, Users } from "lucide-svelte";
 	import { blur, slide } from "svelte/transition";
 	import { onDestroy, onMount } from "svelte";
+	import { fetchPublicRooms } from "$lib/utils/publicRooms";
 
 	let roomCodeInput = $state("");
 	let openRooms = $state([]);
 
-	async function fetchOpenRooms() {
-		try {
-			const response = await fetch("https://accounts.openguessr.com/accounts/rooms/list-open-rooms");
-
-			if (response.ok) {
-				const data = await response.json();
-				openRooms = data || [];
-			} else {
-				console.error("Failed to load open rooms: " + response.status);
-			}
-		} catch (error) {
-			console.error("Failed ro load open rooms (Network): ", error);
-		}
-	}
-
 	let fetchRoomsInterval;
 
-	onMount(() => {
-		fetchOpenRooms();
+	onMount(async () => {
 		clearInterval(fetchRoomsInterval);
-		fetchRoomsInterval = setInterval(fetchOpenRooms, 10000);
+		const rooms = await fetchPublicRooms();
+		openRooms = rooms?.rooms;
+		fetchRoomsInterval = setInterval(async () => {
+			const rooms = await fetchPublicRooms();
+			openRooms = rooms?.rooms;
+		}, 10000);
 	});
 
 	onDestroy(() => {
@@ -66,21 +56,21 @@
 	</div>
 </div>
 {#if openRooms?.length > 0}
-	<p class="openRoomsTitle" transition:slide>Open Rooms:</p>
-	<div class="openRoomBox" transition:blur>
+	<p class="publicRoomTitle" transition:blur>Public Rooms:</p>
+	<div class="publicRoomBox" transition:blur>
 		{#each openRooms as room}
-			<div class="openRoomItem">
-				<p>{room?.player_count} <Users strokeWidth={2.5} /></p>
-				<p>Map: {room?.map}</p>
+			<div class="publicRoomItem">
+				<p>{room?.player_count} <Users strokeWidth={2.5} style="margin-bottom: -3px;" /></p>
+				<p class="roomItemMapName">Map: {room?.map}</p>
 				<button
 					class="standardButton white"
 					onclick={() => {
 						playSound("basic_button");
-						roomCodeInput = room?.room_code;
+						roomCodeInput = room?.room_code?.replace("openguessr_", "");
 						joinRoom(roomCodeInput);
 					}}
 				>
-					Join
+					<Unplug strokeWidth={2.5} size={22} style="margin-bottom: -3px;" />
 				</button>
 			</div>
 		{/each}
@@ -95,39 +85,53 @@
 		min-height: 50dvh;
 	}
 
-	.openRoomsTitle {
-		max-width: 460px;
+	.publicRoomTitle {
+		max-width: 440px;
 		margin-inline: auto;
-		width: calc(100% - 50px);
+		width: calc(100% - 60px);
 		margin-top: 100px;
 		opacity: 0.5;
 	}
 
-	.openRoomBox {
+	.publicRoomBox {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-around;
 		align-items: center;
-		gap: 5px;
-		background-color: var(--box-color);
-		border-radius: 15px;
+		gap: 10px;
 		margin-inline: auto;
-		padding: 10px;
-		padding-top: 10px;
 		margin-top: 10px;
-		max-width: 440px;
-		width: calc(100% - 60px);
+		max-width: 460px;
+		width: calc(100% - 40px);
+		max-height: 275px;
+		overflow-y: auto;
+		scrollbar-width: none;
 	}
 
-	.openRoomItem {
+	.publicRoomItem {
 		background-color: rgba(255, 255, 255, 0.1);
 		border: none;
 		border-radius: 10px;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding-inline: 5px;
+		padding: 5px;
+		padding-left: 15px;
 		flex-grow: 1;
+		width: 100%;
+		opacity: 0.5;
+		transition: opacity 250ms ease;
+	}
+
+	.roomItemMapName {
+		max-width: 50%;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		text-wrap: nowrap;
+	}
+
+	.publicRoomItem:hover {
+		opacity: 1;
 	}
 
 	.buttonDisabled {
@@ -173,7 +177,6 @@
 		overflow: hidden;
 		width: calc(100% - 40px);
 		text-overflow: ellipsis;
-		padding-inline: 20px;
 		opacity: 0.5;
 	}
 </style>

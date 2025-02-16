@@ -207,8 +207,8 @@ export async function createPeerInstance() {
 
                 // Set multiplayer category
                 if (storage.category && localStorage.getItem("selectedCategory") !== storage.category) {
+                    if (localStorage.getItem("selectedCategory")) showNotification("Map changed to " + storage?.category?.replaceAll("community_", "") + ".");
                     changeCategory(storage?.category);
-                    showNotification("Map changed to " + storage?.category?.replaceAll("community_", "") + ".");
                 }
 
                 if (storage.currentRound && storage.restriction) {
