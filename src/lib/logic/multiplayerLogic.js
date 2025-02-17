@@ -592,7 +592,7 @@ function showMultiplayerOverlay(show) {
     if (show) {
         if (get(peer)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(peer)?.getStorage?.currentRound);
         if (!get(peer)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
-        if (!get(peer)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (localStorage.getItem("selectedCategory") || "standard").replace("community_", "") + ")");
+        if (!get(peer)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (get(peer)?.getStorage?.category)?.replace("community_", "") + ")");
         overlayShowSubtitle.set(playingDuels && get(peer)?.getStorage?.currentRound >= 3 && get(peer)?.getStorage?.currentRound < 5);
 
         showEndscreenUI(false); // Default to no endscreen UI
