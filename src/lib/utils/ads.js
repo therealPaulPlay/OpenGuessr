@@ -9,14 +9,14 @@ export function initializeAds() {
 
             // Main bottom bar ad
             scope.Config.buildPlacement((configBuilder) => {
-                scope.Config.setBreakPoint("desktop", "(min-width:1375px)");
+                scope.Config.setBreakPoint("desktop", "(min-width:1500px)");
 
                 configBuilder.add("leaderboard");
 
                 configBuilder
                     .addDefaultOrUnique("mobile_banner")
                     .setBreakPoint({
-                        mediaQuery: "max-width: 1375px",
+                        mediaQuery: "max-width: 1500px",
                     });
             }, "main").display("bottomFooterAds");
 
