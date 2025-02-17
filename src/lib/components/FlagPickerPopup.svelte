@@ -193,6 +193,16 @@
 		],
 		"South America": ["Ar", "Bo", "Br", "Cl", "Co", "Ec", "Gy", "Pe", "Py", "Sr", "Uy", "Ve"],
 		Oceania: ["Au", "Fj", "Fm", "Ki", "Mh", "Nr", "Nu", "Nz", "Pg", "Pw", "Sb", "To", "Tv", "Vu", "Ws"],
+		Unassigned: [
+			"Ck", // Cook Islands
+			"Gw", // Guinea-Bissau
+			"Km", // Comoros
+			"Mv", // Maldives
+			"Sc", // Seychelles
+			"Ss", // South Sudan
+			"Tr", // Turkey
+			"Ye", // Yemen
+		],
 	};
 
 	function handleFlagClick(countryCode, buttonSound = false) {

@@ -124,7 +124,7 @@
 	}
 
 	.roomItemMapName {
-		max-width: 50%;
+		max-width: 30%;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
