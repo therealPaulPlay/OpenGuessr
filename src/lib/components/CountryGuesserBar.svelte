@@ -25,7 +25,7 @@
 {#if $countryGuesser && !$multiplayer && !$competition}
 	<div id="countryGuesserSelector" class="barMenu" onkeyup={clickConfirm} role="menu" tabindex="0">
 		<button
-			class="countryGuesserHolder standardButton"
+			class="countryGuesserHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 1}
 			onclick={() => {
 				selectCountry(1);
@@ -35,7 +35,7 @@
 			<p id="countryTag1" class="countryGuesserTag">Country 1</p>
 		</button>
 		<button
-			class="countryGuesserHolder standardButton"
+			class="countryGuesserHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 2}
 			onclick={() => {
 				selectCountry(2);
@@ -45,7 +45,7 @@
 			<p id="countryTag2" class="countryGuesserTag">Country 2</p>
 		</button>
 		<button
-			class="countryGuesserHolder standardButton"
+			class="countryGuesserHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 3}
 			onclick={() => {
 				selectCountry(3);
@@ -55,7 +55,7 @@
 			<p id="countryTag3" class="countryGuesserTag">Country 3</p>
 		</button>
 		<button
-			class="countryGuesserHolder standardButton"
+			class="countryGuesserHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 4}
 			onclick={() => {
 				selectCountry(4);
@@ -65,7 +65,7 @@
 			<p id="countryTag4" class="countryGuesserTag">Country 4</p>
 		</button>
 		<button
-			class="countryGuesserHolder standardButton"
+			class="countryGuesserHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 5}
 			onclick={() => {
 				selectCountry(5);
@@ -75,7 +75,7 @@
 			<p id="countryTag5" class="countryGuesserTag">Country 5</p>
 		</button>
 		<button
-			class="countryGuesserHolder standardButton"
+			class="countryGuesserHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 6}
 			onclick={() => {
 				selectCountry(6);
