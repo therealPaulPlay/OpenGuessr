@@ -184,6 +184,7 @@
 							playSound("basic_button");
 							publicTooltipShown = false;
 							if (!$isAuthenticated) return signupPrompt();
+							if (!$roomcode || $roomcode.includes("loading")) return showNotification("Not initialized yet.");
 							if (!roomOpened) {
 								await addPublicRoom(
 									$roomcode,
