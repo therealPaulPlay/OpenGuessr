@@ -297,7 +297,7 @@
 		width: fit-content;
 		margin-left: 0;
 		padding: 8px;
-		min-width: (100% - 16px);
+		min-width: calc(100% - 16px);
 		background-color: rgba(30, 31, 44, 0.5);
 		border-radius: 5px;
 		border-top-left-radius: 0;
