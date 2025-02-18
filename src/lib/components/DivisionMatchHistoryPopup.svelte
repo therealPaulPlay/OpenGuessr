@@ -8,20 +8,26 @@
 	import { ArrowLeft, ArrowRight } from "lucide-svelte";
 
 	// local state variables
-	let matchResults;
-	let currentPage = 1;
+	let matchResults = $state([]);
+	let currentPage = $state(1);
 	const limit = 50; // must match the backend limit
+
+	let filterId = $state("");
 
 	// Fetch duel entries for the current page.
 	async function fetchEntries() {
 		matchResults = undefined;
 		try {
-			const response = await fetch(`https://friends.openguessr.com/multiplayer/duel-history?page=${currentPage}`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
+			const response = await fetch(
+				`https://friends.openguessr.com/multiplayer/duel-history?page=${currentPage}` +
+					(filterId ? `&id=${filterId}` : ""),
+				{
+					method: "GET",
+					headers: {
+						"Content-Type": "application/json",
+					},
 				},
-			});
+			);
 
 			if (response.ok) {
 				const data = await response.json();
@@ -51,7 +57,10 @@
 	}
 
 	divisionMatchHistoryPopup.subscribe((value) => {
-		if (value) fetchEntries();
+		if (value) {
+			filterId = localStorage.getItem("id");
+			fetchEntries();
+		}
 	});
 
 	// Handlers for pagination
@@ -76,9 +85,15 @@
 		<div class="popup-title">
 			<h1>Duel History</h1>
 		</div>
-		<div class="infoBox">
-			<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
-			<p>Entries process up to 10 minutes before showing up.</p>
+		<div class="topPopupFlex">
+			<div class="infoBox">
+				<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+				<p>Entries process up to 10 minutes before showing up.</p>
+			</div>
+			<div class="filterBox">
+				<p>Filter: user-</p>
+				<input placeholder="all" class="filterInput" bind:value={filterId} onchange={fetchEntries} />
+			</div>
 		</div>
 		<div class="historyBox">
 			{#if matchResults && matchResults.duels && matchResults.duels.length > 0}
@@ -86,8 +101,8 @@
 					<div
 						class="matchHistoryItem"
 						class:matchInvalid={entry.player1?.left && entry.player2?.left}
-						class:yourMatch={entry.player1?.id == localStorage.getItem("id") ||
-							entry.player2?.id == localStorage.getItem("id")}
+						class:yourMatch={!filterId &&
+							(entry.player1?.id == localStorage.getItem("id") || entry.player2?.id == localStorage.getItem("id"))}
 					>
 						<div class="playerInfo">
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -165,12 +180,40 @@
 		transform: translate(-50%, -50%);
 	}
 
+	.filterInput {
+		border-radius: 5px;
+		max-width: 60px;
+		padding-inline: 10px;
+	}
+
+	.filterBox {
+		border-radius: 10px;
+		padding: 5px;
+		padding-inline: 10px;
+		background-color: var(--box-color);
+		display: flex;
+		gap: 5px;
+		justify-content: center;
+		align-items: center;
+		flex-grow: 1;
+	}
+
+	.filterBox p {
+		color: rgba(255, 255, 255, 0.5);
+	}
+
+	.topPopupFlex {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 10px;
+	}
+
 	.historyBox {
 		position: relative;
 		width: calc(100% - 13px);
 		border-radius: 5px;
-		max-height: calc(60dvh - 200px);
-		min-height: calc(60dvh - 200px);
+		max-height: calc(60dvh - 250px);
+		min-height: calc(60dvh - 250px);
 		overflow-x: hidden;
 		overflow-y: auto;
 		padding: 2px;
@@ -256,6 +299,7 @@
 	.infoBox {
 		padding: 10px;
 		border-radius: 10px;
+		flex-grow: 5;
 		background-color: var(--box-color);
 		display: flex;
 		align-items: center;
