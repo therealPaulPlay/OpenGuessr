@@ -109,7 +109,5 @@ async function sendRoomCodeToMatchmakingServer() {
 }
 
 matchmakingActive.subscribe((value) => {
-    if (!value) {
-        screenEscapeDisabled.set(false);
-    }
+    if (!value) screenEscapeDisabled.set(false);
 });
