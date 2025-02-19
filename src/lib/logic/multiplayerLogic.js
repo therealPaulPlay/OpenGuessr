@@ -281,7 +281,7 @@ export async function createPeerInstance() {
             resolve(get(peer).id);
         } catch (error) {
             console.error("Error creating peer instance:", error);
-            reject(new Error("Failed to create peer instance."))
+            reject(new Error("Failed to create peer instance."));
         }
     });
 }
@@ -414,6 +414,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
 
     } catch (error) {
         console.error("Error setting up room:", error);
+        matchmakingActive.set(false);
         errorPopup("Error creating room", "Error occured trying to set up PlayPeerJS room.", error);
     }
 }
@@ -467,7 +468,10 @@ export async function joinRoom(code) {
     try {
         code = "openguessr_" + code.replaceAll(" ", "").toLowerCase(); // Remove whitespaces and lowercase
         disableResultScreen(); // Edge case
-        await createPeerInstance();
+        try { await createPeerInstance(); } catch (error) {
+            matchmakingActive.set(false);
+            throw new Error(error);
+        }
         await get(peer).joinRoom(code);
         multiplayer.set(true);
         matchmakingActive.set(false);
