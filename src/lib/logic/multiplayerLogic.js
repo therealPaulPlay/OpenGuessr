@@ -127,7 +127,7 @@ export async function createPeerInstance() {
         generateFunnyGuestName();
     }
 
-    return new Promise(async (resolve) => {
+    return new Promise(async (resolve, reject) => {
         // Create the new Peer instance
         try {
             peer.set(new PlayPeer(uniqueUserID, {
