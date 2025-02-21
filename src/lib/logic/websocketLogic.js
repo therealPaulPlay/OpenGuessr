@@ -57,6 +57,9 @@ export async function initializeWebsocketConnection() {
                 } else if (data.type === "duel-registration-error") {
                     errorPopup("Duel not registered", "Your opponent failed to register the duel, meaning, it won't affect your elo. You can leave penalty-free.", data?.message);
 
+                } else if (data.type === "duel-result-error") {
+                    errorPopup("Duel submission failed", "Please refer to the error message.", data?.message);
+
                 } else if (data.type === "duel-late-result") {
                     eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
                     elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
