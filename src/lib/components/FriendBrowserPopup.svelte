@@ -206,7 +206,6 @@
 
 	#playerSearch {
 		margin-bottom: 20px;
-		margin-top: 20px;
 		height: 45px;
 	}
 
