@@ -122,7 +122,7 @@
 				private: isPrivate,
 			};
 
-			const response = await fetch("https://competitions.openguessr.com/competitions/create", {
+			const response = await fetch("https://accounts.openguessr.com/competitions/create", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

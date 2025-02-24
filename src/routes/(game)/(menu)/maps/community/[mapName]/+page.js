@@ -3,7 +3,7 @@ export async function load({ params }) {
   const { mapName } = params; // Extract mapName from the route
 
   try {
-    const response = await fetch(`https://maps.openguessr.com/maps/${mapName.replaceAll("_", " ")}`);
+    const response = await fetch(`https://accounts.openguessr.com/maps/${mapName.replaceAll("_", " ")}`);
 
     if (!response.ok) {
       throw new Error('Failed to fetch map data');

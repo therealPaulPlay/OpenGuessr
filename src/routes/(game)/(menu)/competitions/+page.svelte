@@ -12,7 +12,7 @@
 	import { Frown, Plus, Smile, TriangleAlert } from "lucide-svelte";
 	import { onMount } from "svelte";
 
-	const competitionsEndpoint = "https://competitions.openguessr.com/competitions";
+	const competitionsEndpoint = "https://accounts.openguessr.com/competitions";
 
 	// Format Duration of Competitions ---------------------------------------------------------------
 	function formatDuration(seconds) {
@@ -422,7 +422,7 @@
 				updateFactor: factor,
 			};
 
-			const response = await fetch("https://competitions.openguessr.com/competitions/ranking", {
+			const response = await fetch(competitionsEndpoint + "/ranking", {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ` + localStorage.getItem("bearer"),

@@ -51,7 +51,7 @@
   async function likeOrDislikeMap(mapName) {
     if (get(isAuthenticated)) {
       try {
-        const response = await fetch(`https://maps.openguessr.com/maps/like/${mapName}`, {
+        const response = await fetch(`https://accounts.openguessr.com/maps/like/${mapName}`, {
           method: "POST",
           headers: {
             Authorization: "Bearer " + localStorage.getItem("bearer"),
@@ -79,7 +79,7 @@
     try {
       const playerId = localStorage.getItem("id") || null;
 
-      const response = await fetch(`https://maps.openguessr.com/maps/rating/${name}`, {
+      const response = await fetch(`https://accounts.openguessr.com/maps/rating/${name}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +115,7 @@
       };
 
       // Send POST request to the server
-      const response = await fetch("https://maps.openguessr.com/maps/" + mapName, {
+      const response = await fetch("https://accounts.openguessr.com/maps/" + mapName, {
         method: "DELETE",
         headers: {
           Authorization: `Bearer ` + localStorage.getItem("bearer"),
@@ -172,7 +172,7 @@
       };
 
       // Send POST request to the server
-      const response = await fetch("https://maps.openguessr.com/maps", {
+      const response = await fetch("https://accounts.openguessr.com/maps", {
         method: "PUT",
         headers: {
           Authorization: `Bearer ` + localStorage.getItem("bearer"),
