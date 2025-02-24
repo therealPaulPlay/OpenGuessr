@@ -107,7 +107,7 @@ async function submitCompetitionResult(id, score, supporterLevel, token) {
             supporter_level: supporterLevel || 0
         };
 
-        const response = await fetch("https://competitions.openguessr.com/competitions/submit/" + id, {
+        const response = await fetch("https://accounts.openguessr.com/competitions/submit/" + id, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

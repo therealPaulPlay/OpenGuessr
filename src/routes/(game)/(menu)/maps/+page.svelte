@@ -56,7 +56,7 @@
 				indexAdd = "/" + index;
 			}
 
-			const response = await fetch("https://maps.openguessr.com/maps/" + categoryAdd + queryAdd + indexAdd + favAdd);
+			const response = await fetch("https://accounts.openguessr.com/maps/" + categoryAdd + queryAdd + indexAdd + favAdd);
 			const data = await response.json();
 
 			if (response.ok) {

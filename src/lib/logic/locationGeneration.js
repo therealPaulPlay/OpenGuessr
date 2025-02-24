@@ -156,7 +156,7 @@ async function getCommunityMapCoordinates() {
 
     if (loadedMapCategory !== localStorage.getItem("selectedCategory")) {
         try {
-            const response = await fetch("https://maps.openguessr.com/maps/" + localStorage.getItem("selectedCategory").replace("community_", ""), {
+            const response = await fetch("https://accounts.openguessr.com/maps/" + localStorage.getItem("selectedCategory").replace("community_", ""), {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });
