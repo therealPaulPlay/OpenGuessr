@@ -64,7 +64,7 @@
 
 		try {
 			// Send POST request to the server
-			const response = await fetch("https://maps.openguessr.com/maps", {
+			const response = await fetch("https://accounts.openguessr.com/maps", {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ` + localStorage.getItem("bearer"),
