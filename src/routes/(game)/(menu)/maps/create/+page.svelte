@@ -210,7 +210,7 @@
 			<p id="fileName">{fileName}</p>
 		</button>
 	</div>
-	<div class="buttonBoxRight fullWidth">
+	<div class="buttonBoxRight fullWidth noMarginTop">
 		<button
 			id="uploadConfirm"
 			class="standardButton closeButton submitButton"
@@ -411,5 +411,9 @@
 
 	#uploadMapData {
 		margin-bottom: 5px;
+	}
+
+	.noMarginTop {
+		margin-top: 0;
 	}
 </style>
