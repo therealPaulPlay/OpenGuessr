@@ -510,7 +510,7 @@
 		box-shadow: none;
 		gap: 3px;
 		flex-grow: 1;
-		max-width: 300px;
+		max-width: 225px;
 		overflow: hidden;
 		margin: 0;
 	}
