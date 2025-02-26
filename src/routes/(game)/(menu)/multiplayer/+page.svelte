@@ -510,7 +510,7 @@
 		box-shadow: none;
 		gap: 3px;
 		flex-grow: 1;
-		max-width: 250px;
+		max-width: 300px;
 		overflow: hidden;
 		margin: 0;
 	}
@@ -632,6 +632,7 @@
 		max-height: 250px;
 		margin-top: 10px;
 		position: relative;
+		scrollbar-width: none;
 	}
 
 	.innerFriendBox {
