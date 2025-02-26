@@ -12,7 +12,7 @@
 	let currentPage = $state(1);
 	const limit = 50; // must match the backend limit
 
-	let filterId = $state("");
+	let filterId = $state();
 
 	// Fetch duel entries for the current page.
 	async function fetchEntries() {
@@ -58,7 +58,7 @@
 
 	divisionMatchHistoryPopup.subscribe((value) => {
 		if (value) {
-			filterId = localStorage.getItem("id");
+			filterId = localStorage.getItem("id") || null;
 			fetchEntries();
 		}
 	});

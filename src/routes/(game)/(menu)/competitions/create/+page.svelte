@@ -332,7 +332,7 @@
 			maxlength="50000"
 		></textarea>
 	</div>
-	<div class="buttonBoxRight fullWidth">
+	<div class="buttonBoxRight fullWidth noMarginTop">
 		<button
 			id="uploadConfirm"
 			class="standardButton closeButton submitButton"
@@ -357,6 +357,10 @@
 
 	#uploadHeader {
 		margin-bottom: 30px;
+	}
+
+	.noMarginTop {
+		margin-top: 0;
 	}
 
 	.textHeaderLeft {
