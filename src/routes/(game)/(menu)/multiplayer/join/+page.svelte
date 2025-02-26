@@ -1,5 +1,5 @@
 <script>
-	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
+	import { multiplayerStatus, roomcode } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { joinRoom } from "$lib/logic/multiplayerLogic";
 	import { Copy, Unplug, Users } from "lucide-svelte";
@@ -67,6 +67,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						roomCodeInput = room?.room_code?.replace("openguessr_", "");
+						if (!roomCodeInput) return console.warn("Roomcode is not set.");
 						joinRoom(roomCodeInput);
 					}}
 				>
