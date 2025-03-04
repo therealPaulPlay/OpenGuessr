@@ -143,7 +143,7 @@
 	.bottomBarIcon {
 		width: 20px !important;
 		height: 20px !important;
-		vertical-align: -2px;
+		vertical-align: -3px;
 	}
 
 	.bottomFooterAds {
