@@ -106,7 +106,16 @@
 			</div>
 		</div>
 		<div class="groupPartyButtons">
-			<p class="playButtonsHeader">Matchmaking</p>
+			<div class="playButtonsHeader playButtonsHeaderFlex">
+				<p>Matchmaking</p>
+				<button
+					class="standardButton white matchHistoryButton"
+					onclick={() => {
+						playSound("basic_button");
+						divisionMatchHistoryPopup.set(true);
+					}}>History <History size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 2px" /></button
+				>
+			</div>
 			<div class="groupPartyContent">
 				<button
 					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
@@ -132,13 +141,6 @@
 	</div>
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Duel Divisions</h2>
-		<button
-			class="standardButton white matchHistoryButton"
-			onclick={() => {
-				playSound("basic_button");
-				divisionMatchHistoryPopup.set(true);
-			}}>Duel History <History size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 2px" /></button
-		>
 	</div>
 	<div class="infoContainer">
 		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
@@ -276,6 +278,7 @@
 		<h2 class="header">More</h2>
 	</div>
 	<div class="moreContainer">
+		<p class="troubleshootingText">Experiencing issues?</p>
 		<button
 			class="white standardButton"
 			id="troubleshootGuideButton"
@@ -332,9 +335,11 @@
 	}
 
 	.matchHistoryButton {
-		min-height: 50px;
-		padding-inline: 15px;
-		border-radius: 10px;
+		background-color: var(--box-color);
+		padding-top: 0;
+		padding-bottom: 0;
+		border: none;
+		margin: 0;
 	}
 
 	.divisionLeaderboardEntry {
@@ -458,12 +463,24 @@
 		width: calc(100% - 10px);
 		opacity: 0.5;
 		padding-inline: 5px;
+		max-height: 28px;
+	}
+
+	.playButtonsHeaderFlex {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
 
 	.moreContainer {
-		width: 100%;
+		width: calc(100% - 20px);
 		display: flex;
 		flex-wrap: wrap;
+		justify-content: space-between;
+		background-color: var(--box-color);
+		border-radius: 15px;
+		gap: 10px;
+		padding: 10px;
 	}
 
 	.headerMarginTop {
@@ -493,7 +510,7 @@
 		box-shadow: none;
 		gap: 3px;
 		flex-grow: 1;
-		max-width: 250px;
+		max-width: 225px;
 		overflow: hidden;
 		margin: 0;
 	}
@@ -533,6 +550,7 @@
 		justify-content: center;
 		align-items: center;
 		flex-grow: 1.5;
+		flex-basis: 0;
 		background-color: var(--box-color);
 		padding: 10px;
 		padding: 10px;
@@ -614,6 +632,7 @@
 		max-height: 250px;
 		margin-top: 10px;
 		position: relative;
+		scrollbar-width: none;
 	}
 
 	.innerFriendBox {
@@ -633,6 +652,15 @@
 	#troubleshootGuideButton {
 		min-height: 50px;
 		border-radius: 10px;
+		flex-grow: 1;
+	}
+
+	.troubleshootingText {
+		opacity: 0.5;
+		padding-inline: 10px;
+		margin-top: auto;
+		margin-bottom: auto;
+		flex-grow: 30;
 	}
 
 	@keyframes duelButtonGlint {

@@ -57,7 +57,7 @@ async function loadUserInfo() {
       supportedAmount.set(user?.supported_amount);
       selectedPinIndex.set(user?.profile_data?.pin || 0);
       selectedBadge.set(user?.profile_data?.badge || null);
-      elo.set(user?.elo);
+      elo.set(user?.elo || 1000);
 
       if (get(resultScreenEnabled) && get(lastExperienceCalculationAborted)) loadResultScreenXP(get(lastDistance));
       if (user?.new_requests) { inboxIconNew.set(true); }
