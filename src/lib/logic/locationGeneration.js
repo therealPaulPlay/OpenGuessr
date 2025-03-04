@@ -4,6 +4,7 @@ import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { peer } from "$lib/stores/context-specific/multiplayerStore";
 import { changeCategory } from "$lib/utils/changeCategory";
+import { accountUrl, locationUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 // This is THE function to get locations (all others here are NOT export) - not the functino to start a new round! (look for newLocation.js for that)
 export async function getLocationCoordinates(type) {
@@ -55,8 +56,8 @@ async function getJSONCoords(category) {
 
 // Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
 
-const locationEndpoint = "https://locations.openguessr.com/locations-batch";
-const locationLengthEndpoint = "https://locations.openguessr.com/location-length";
+const locationEndpoint = get(locationUrl) + "/locations-batch";
+const locationLengthEndpoint = get(locationUrl) + "/location-length";
 let cachedLocations = [];
 
 async function getCoordsFromLocationServer() {
@@ -156,7 +157,7 @@ async function getCommunityMapCoordinates() {
 
     if (loadedMapCategory !== localStorage.getItem("selectedCategory")) {
         try {
-            const response = await fetch("https://accounts.openguessr.com/maps/" + localStorage.getItem("selectedCategory").replace("community_", ""), {
+            const response = await fetch(get(accountUrl) + "/maps/" + localStorage.getItem("selectedCategory").replace("community_", ""), {
                 method: 'GET',
                 headers: { 'Content-Type': 'application/json' }
             });

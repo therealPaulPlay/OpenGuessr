@@ -1,12 +1,13 @@
 import { checkedForBan, isAuthenticated, banReportEntryData, isBanned, checkedForWarning, warnReportEntryData, isWarned } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
 import { errorPopup } from "./errorHandling";
+import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 export async function fetchBlacklistStatus() {
     if (!get(isAuthenticated) || get(checkedForBan)) return;
 
     try {
-        const response = await fetch("https://accounts.openguessr.com/accounts/check-blacklist/" + localStorage.getItem("id"));
+        const response = await fetch(get(accountUrl) + "/accounts/check-blacklist/" + localStorage.getItem("id"));
 
         if (response.ok) {
             const data = await response.json();
@@ -27,7 +28,7 @@ export async function fetchWarnlistStatus() {
     if (!get(isAuthenticated) || get(checkedForBan)) return;
 
     try {
-        const response = await fetch("https://accounts.openguessr.com/accounts/check-warnlist/" + localStorage.getItem("id"));
+        const response = await fetch(get(accountUrl) + "/accounts/check-warnlist/" + localStorage.getItem("id"));
 
         if (response.ok) {
             const data = await response.json();

@@ -4,6 +4,7 @@
 	import { onMount } from "svelte";
 	import { ArrowRight } from "lucide-svelte";
 	import { page } from "$app/stores";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	let creator = $state("No creator");
 
@@ -18,7 +19,7 @@
 
 		if (creator) {
 			try {
-				await fetch("https://accounts.openguessr.com/creators/creator-link-statistic", {
+				await fetch($accountUrl + "/creators/creator-link-statistic", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",

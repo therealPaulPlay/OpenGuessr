@@ -31,6 +31,10 @@
 		opacity: 0.5;
 	}
 
+	.infoIcon {
+		margin-right: 10px;
+	}
+
 	.infoBox {
 		padding: 10px;
 		width: calc(100% - 20px);

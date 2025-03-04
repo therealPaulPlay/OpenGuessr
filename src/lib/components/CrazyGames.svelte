@@ -1,11 +1,7 @@
 <!-- This component handles the SDK stuff, and checks if the crazy-games query is being used -->
 <script>
 	import { onMount } from "svelte";
-	import {
-		roundAmount,
-		roundLength,
-		hostStage,
-	} from "$lib/stores/context-specific/multiplayerStore";
+	import { roundAmount, roundLength, hostStage } from "$lib/stores/context-specific/multiplayerStore";
 	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import {
 		adsDisabled,
@@ -21,6 +17,7 @@
 	import { helpPopup } from "$lib/stores/uiStore";
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	onMount(async () => {
 		try {
@@ -111,7 +108,7 @@
 		}
 
 		try {
-			const response = await fetch("https://accounts.openguessr.com/accounts/cg-authenticate", {
+			const response = await fetch($accountUrl + "/accounts/cg-authenticate", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json", // Set content type to JSON

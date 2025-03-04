@@ -7,6 +7,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
 	import Popup from "$lib/components/Popup.svelte";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	let competitionSubmittedSuccessfully = false;
 	let successPopup = $state(false);
@@ -122,7 +123,7 @@
 				private: isPrivate,
 			};
 
-			const response = await fetch("https://accounts.openguessr.com/competitions/create", {
+			const response = await fetch($accountUrl + "/competitions/create", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

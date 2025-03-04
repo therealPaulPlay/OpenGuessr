@@ -5,6 +5,7 @@ import { get } from "svelte/store";
 import { duelResultPopup } from "$lib/stores/uiStore";
 import { elo } from "$lib/stores/accountStore";
 import { eloChange } from "$lib/stores/context-specific/duelResultStore";
+import { friendUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 export function calculateDivision(elo) {
     if (elo < 1200) return 4;      // V   (index 0 in the UI)
@@ -24,7 +25,7 @@ export const generateDuelUUID = () => {
 
 export async function registerDivisionDuel(uuid) {
     try {
-        const response = await fetch(`https://friends.openguessr.com/multiplayer/duel-register/${uuid}`, {
+        const response = await fetch(get(friendUrl) + `/multiplayer/duel-register/${uuid}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -61,7 +62,7 @@ export async function sendDuelDivisionResult(won, uuid) {
     duelResultTitle.set(won ? "Victory!" : "Defeat!"); // Save the win state for later (the popup which triggers on websocket server response)
 
     try {
-        const response = await fetch(`https://friends.openguessr.com/multiplayer/duel-result/${uuid}`, {
+        const response = await fetch(get(friendUrl) + `/multiplayer/duel-result/${uuid}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

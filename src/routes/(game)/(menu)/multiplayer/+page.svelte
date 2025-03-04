@@ -318,6 +318,10 @@
 		opacity: 0.5;
 	}
 
+	.infoIcon {
+		margin-right: 5px;
+	}
+
 	.divisionLeaderboardContainer {
 		display: flex;
 		align-items: center;
@@ -510,7 +514,7 @@
 		box-shadow: none;
 		gap: 3px;
 		flex-grow: 1;
-		max-width: 225px;
+		max-width: 350px;
 		overflow: hidden;
 		margin: 0;
 	}

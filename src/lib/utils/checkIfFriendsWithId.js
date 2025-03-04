@@ -1,4 +1,5 @@
 import { isAuthenticated } from "$lib/stores/accountStore";
+import { friendUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { get } from "svelte/store";
 
 export async function checkIfFriendsWithId(id) {
@@ -8,7 +9,7 @@ export async function checkIfFriendsWithId(id) {
                 id: localStorage.getItem("id"),
             };
 
-            const response = await fetch("https://friends.openguessr.com/friends/friends", {
+            const response = await fetch(get(friendUrl) + "/friends/friends", {
                 method: "POST",
                 headers: {
                     Authorization: "Bearer " + localStorage.getItem("bearer"),
