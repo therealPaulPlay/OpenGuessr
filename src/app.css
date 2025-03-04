@@ -312,8 +312,7 @@ li {
     width: 30px;
     height: 30px;
     opacity: 0.5;
-    margin-left: 3px;
-    margin-right: 10px;
+    margin-inline: 3px;
 }
 
 textarea {

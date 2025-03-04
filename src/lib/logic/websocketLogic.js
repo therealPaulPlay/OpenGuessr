@@ -9,6 +9,7 @@ import { get } from "svelte/store";
 import { duelResultPopup } from "$lib/stores/uiStore";
 import { eloChange } from "$lib/stores/context-specific/duelResultStore";
 import { goto } from "$app/navigation";
+import { friendUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 export async function initializeWebsocketConnection() {
     let ws;
@@ -118,7 +119,7 @@ async function acceptDuelInvite(recipientId) {
             senderName: get(username)
         };
 
-        const response = await fetch("https://friends.openguessr.com/friends/accept-invite", {
+        const response = await fetch(get(friendUrl) + "/friends/accept-invite", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -149,7 +150,7 @@ async function declineMatchInvite(recipientId) {
             senderName: get(username)
         };
 
-        const response = await fetch("https://friends.openguessr.com/friends/decline-invite", {
+        const response = await fetch(get(friendUrl) + "/friends/decline-invite", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),

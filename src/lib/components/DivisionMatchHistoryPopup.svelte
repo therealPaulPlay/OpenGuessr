@@ -6,6 +6,7 @@
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { onMount } from "svelte";
 	import { ArrowLeft, ArrowRight } from "lucide-svelte";
+	import { friendUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	// local state variables
 	let matchResults = $state([]);
@@ -19,8 +20,7 @@
 		matchResults = undefined;
 		try {
 			const response = await fetch(
-				`https://friends.openguessr.com/multiplayer/duel-history?page=${currentPage}` +
-					(filterId ? `&id=${filterId}` : ""),
+				$friendUrl + `/multiplayer/duel-history?page=${currentPage}` + (filterId ? `&id=${filterId}` : ""),
 				{
 					method: "GET",
 					headers: {
@@ -88,7 +88,7 @@
 		<div class="topPopupFlex">
 			<div class="infoBox">
 				<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
-				<p>Entries process up to 10 minutes before showing up.</p>
+				<p class="infoText">Entries process up to 10 minutes before showing up.</p>
 			</div>
 			<div class="filterBox">
 				<p>Filter: user-</p>
@@ -178,6 +178,10 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+	.infoText {
+		padding-inline: 5px;
 	}
 
 	.filterInput {

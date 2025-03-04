@@ -21,26 +21,39 @@
 		>
 			<img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
 		</button>
-		<button
-			class="standardButton bottomBarButton bottomSocialItem white"
-			id="discordButton"
-			onclick={() => {
-				playSound("basic_button");
-				window.open("https://discord.gg/CSc3MbDrZ8", "_blank").focus();
-			}}
-		>
-			<img src="/img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" id="discordIcon" />
-		</button>
-		<button
-			class="standardButton bottomBarButton bottomSocialItem white"
-			id="redditButton"
-			onclick={() => {
-				playSound("basic_button");
-				window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
-			}}
-		>
-			<img src="/img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
-		</button>
+		<!-- Links -->
+		<div class="socialLinkArea">
+			<button
+				class="bottomSocialItem linkItem"
+				id="discordButton"
+				onclick={() => {
+					playSound("basic_button");
+					window.open("https://discord.gg/CSc3MbDrZ8", "_blank").focus();
+				}}
+			>
+				<img src="/img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" />
+			</button>
+			<button
+				class="bottomSocialItem linkItem"
+				id="redditButton"
+				onclick={() => {
+					playSound("basic_button");
+					window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
+				}}
+			>
+				<img src="/img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
+			</button>
+			<button
+				class="bottomSocialItem linkItem"
+				id="blueskyButton"
+				onclick={() => {
+					playSound("basic_button");
+					window.open("https://bsky.app/profile/paulplay.bsky.social", "_blank").focus();
+				}}
+			>
+				<img src="/img/bluesky.png" alt="Bluesky Logo" class="socialIcon bottomBarIcon" />
+			</button>
+		</div>
 	</div>
 	<div class="barMenu bottomRightMenu">
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -52,7 +65,6 @@
 			onclick={confirmButtonClicks}
 		>
 			<button
-				class="socialItem"
 				id="helpButton"
 				class:innerConfirmButtonDisabled={$confirmButtonActive}
 				onclick={(element) => {
@@ -97,6 +109,31 @@
 		pointer-events: none;
 	}
 
+	.socialLinkArea {
+		border-radius: 5px;
+		border: 3px solid rgba(255, 255, 255, 0.1);
+		box-sizing: border-box;
+		background-color: var(--panel-button-color);
+		display: flex;
+		gap: 3px;
+		padding: 3px;
+		user-select: none;
+		box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
+		text-align: center;
+		margin: 2px;
+	}
+
+	.linkItem {
+		border-radius: 3px;
+		padding: 4px;
+		padding-inline: 6px;
+		height: 30px;
+		transition:
+			background-color 250ms ease,
+			color 250ms ease;
+		background-color: rgba(43, 43, 57, 0.2);
+	}
+
 	.bottomBarButton {
 		background-color: var(--panel-button-color);
 		pointer-events: auto;
@@ -104,8 +141,9 @@
 	}
 
 	.bottomBarIcon {
-		width: 21px !important;
-		height: 21px !important;
+		width: 20px !important;
+		height: 20px !important;
+		vertical-align: -3px;
 	}
 
 	.bottomFooterAds {
@@ -117,15 +155,6 @@
 		margin-right: auto;
 		padding: 0;
 		z-index: 8;
-	}
-
-	.socialItem {
-		min-width: 40px;
-		height: 70%;
-		margin-inline: 0;
-		border-radius: 5px;
-		max-width: 60px;
-		background-color: rgba(56, 56, 79, 0.2);
 	}
 
 	.confirmButton {
@@ -157,7 +186,12 @@
 	}
 
 	#discordButton:hover {
-		background-color: #8c2aed;
+		background-color: #a33ae9;
+		filter: none;
+	}
+
+	#blueskyButton:hover {
+		background-color: #2286c9;
 		filter: none;
 	}
 
@@ -168,12 +202,17 @@
 	}
 
 	#helpButton {
+		min-width: 40px;
+		margin-inline: 0;
+		max-width: 60px;
+		background-color: rgba(43, 43, 57, 0.2);
 		pointer-events: auto;
 		transition:
 			filter 250ms ease,
 			opacity 250ms ease;
-		margin-left: -6px;
+		margin-left: -7px;
 		font-size: 20px;
+		border-radius: 3px;
 		height: 30px;
 	}
 
@@ -195,7 +234,7 @@
 	}
 
 	@media all and (max-width: 1200px) {
-		.bottomSocialItem {
+		.socialLinkArea {
 			display: none;
 		}
 	}
