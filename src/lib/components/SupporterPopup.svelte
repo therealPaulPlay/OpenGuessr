@@ -8,6 +8,7 @@
 	import { supporterPopupVisible } from "$lib/stores/context-specific/supporterPopupStore";
 	import { onMount } from "svelte";
 	import { playSound } from "$lib/utils/soundManager";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	const basePrices = [2.99, 6.99, 14.99, 24.99];
 
@@ -47,7 +48,7 @@
 			const id = localStorage.getItem("id");
 
 			// Call the server to create a Checkout Session
-			const response = await fetch("https://accounts.openguessr.com/stripe/create-checkout-session", {
+			const response = await fetch($accountUrl + "/stripe/create-checkout-session", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

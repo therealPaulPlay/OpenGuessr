@@ -84,6 +84,10 @@
 		gap: 5px;
 	}
 
+	.infoIcon {
+		margin-right: 10px;
+	}
+
 	.infoBox p {
 		opacity: 0.5;
 		flex-grow: 3;

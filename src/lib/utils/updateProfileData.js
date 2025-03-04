@@ -2,6 +2,7 @@ import { getProfileData } from "$lib/utils/getProfileData";
 import { selectedBadge, selectedPinIndex } from "$lib/stores/accountStore";
 import { profileId, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 import { get } from "svelte/store";
+import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 async function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin, newBadge, newFlag) {
     try {
@@ -112,7 +113,7 @@ async function submitProfileData(profileDataObject) {
         }
 
         // Make the PUT request using Fetch API
-        const response = await fetch("https://accounts.openguessr.com/accounts/profile/update", {
+        const response = await fetch(get(accountUrl) + "/accounts/profile/update", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

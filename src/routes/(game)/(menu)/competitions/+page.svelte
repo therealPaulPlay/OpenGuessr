@@ -11,8 +11,9 @@
 	import { goto } from "$app/navigation";
 	import { Frown, Plus, Smile, TriangleAlert } from "lucide-svelte";
 	import { onMount } from "svelte";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
-	const competitionsEndpoint = "https://accounts.openguessr.com/competitions";
+	const competitionsEndpoint = $accountUrl + "/competitions";
 
 	// Format Duration of Competitions ---------------------------------------------------------------
 	function formatDuration(seconds) {

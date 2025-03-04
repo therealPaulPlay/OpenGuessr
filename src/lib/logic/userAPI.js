@@ -2,8 +2,10 @@ import { errorPopup } from "$lib/utils/errorHandling";
 import { experience } from "$lib/stores/accountStore";
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import inIframe from "$lib/utils/checkIframe";
+import { get } from "svelte/store";
+import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
-export const backendURL = "https://accounts.openguessr.com/accounts";
+export const backendURL = get(accountUrl) + "/accounts";
 export const loginEndpoint = `${backendURL}/login`;
 export const deleteAccountEndpoint = `${backendURL}/delete`;
 export const registrationEndpoint = `${backendURL}/register`;

@@ -318,6 +318,10 @@
 		opacity: 0.5;
 	}
 
+	.infoIcon {
+		margin-right: 5px;
+	}
+
 	.divisionLeaderboardContainer {
 		display: flex;
 		align-items: center;

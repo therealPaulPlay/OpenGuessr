@@ -6,6 +6,7 @@
 	import { preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	// Before Exit Popup ---------------------------------------------------------------
 	let showExitIntentPopup = $state(false);
@@ -24,7 +25,7 @@
 
 	async function loadMonthlySupportedAmount() {
 		try {
-			const response = await fetch("https://accounts.openguessr.com/stripe/statistics/current-month", {
+			const response = await fetch($accountUrl + "/stripe/statistics/current-month", {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",

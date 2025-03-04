@@ -1,3 +1,6 @@
+import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { get } from "svelte/store";
+
 let lastFetchedLocalTime = 0; // Stores local Date.now() when last fetch happened
 let lastServerTimestamp = 0;  // Stores server timestamp at that fetch
 
@@ -15,7 +18,7 @@ export async function getServerTimestamp() {
     const timeout = setTimeout(() => controller.abort(), 1000);
 
     try {
-        const response = await fetch('https://accounts.openguessr.com/accounts/rooms/time/timestamp', {
+        const response = await fetch(get(accountUrl) + '/accounts/rooms/time/timestamp', {
             signal: controller.signal
         });
 

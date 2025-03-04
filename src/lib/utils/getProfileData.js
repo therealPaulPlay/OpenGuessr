@@ -1,9 +1,11 @@
+import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { errorPopup } from "$lib/utils/errorHandling";
+import { get } from "svelte/store";
 
 export async function getProfileData(id) {
 
     try {
-        const response = await fetch(`https://accounts.openguessr.com/accounts/profile/${id}`, {
+        const response = await fetch(get(accountUrl) + `/accounts/profile/${id}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

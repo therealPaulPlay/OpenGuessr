@@ -8,6 +8,7 @@
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
 	import { showNotification } from "$lib/utils/notifications";
 	import { get } from "svelte/store";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	let jsonPopup = $state(false);
 	let fileName = $state("Pick file");
@@ -64,7 +65,7 @@
 
 		try {
 			// Send POST request to the server
-			const response = await fetch("https://accounts.openguessr.com/maps", {
+			const response = await fetch($accountUrl + "/maps", {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ` + localStorage.getItem("bearer"),
