@@ -7,7 +7,7 @@ import { linkJoinPopup } from "$lib/stores/uiStore";
 import { setPlayingDuels, setFriendDuel, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { changeCategory } from "$lib/utils/changeCategory";
-import { accountUrl, friendUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { friendUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 // Inbox -----------------------------------------------------------------------------------------------------------------------------------
 export async function loadInbox() {
@@ -193,7 +193,7 @@ export async function sendMatchInvite(recipientId, duel) {
             isDuel: duel
         };
 
-        const response = await fetch(get(accountUrl) + "/friends/send-invite", {
+        const response = await fetch(get(friendUrl) + "/friends/send-invite", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
