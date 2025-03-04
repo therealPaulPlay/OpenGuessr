@@ -181,7 +181,7 @@
 	}
 
 	.infoText {
-		padding-inline: 10px;
+		padding-inline: 5px;
 	}
 
 	.filterInput {

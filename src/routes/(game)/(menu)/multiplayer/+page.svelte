@@ -514,7 +514,7 @@
 		box-shadow: none;
 		gap: 3px;
 		flex-grow: 1;
-		max-width: 225px;
+		max-width: 350px;
 		overflow: hidden;
 		margin: 0;
 	}
