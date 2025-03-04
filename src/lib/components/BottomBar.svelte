@@ -51,7 +51,7 @@
 					window.open("https://bsky.app/profile/paulplay.bsky.social", "_blank").focus();
 				}}
 			>
-				<img src="/img/bluesky.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
+				<img src="/img/bluesky.png" alt="Bluesky Logo" class="socialIcon bottomBarIcon" />
 			</button>
 		</div>
 	</div>
