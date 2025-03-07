@@ -1,6 +1,5 @@
 <!-- previously known as the End Overlay, this screen shows the Result -->
 <script>
-	import StreakRestore from "$lib/components/StreakRestore.svelte";
 	import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
@@ -27,6 +26,7 @@
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
 	import { get } from "svelte/store";
+	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -47,7 +47,7 @@
 </script>
 
 <div id="endBottomArea" class:resultScreenHidden={!Boolean($resultScreenEnabled)}>
-	<StreakRestore />
+	<ResultScreenSlideup />
 	<div id="endBottomBar">
 		<div
 			class="floatingResultLeaderboardArea"

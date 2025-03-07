@@ -1,7 +1,6 @@
 import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
 import { setCheckNewHighestStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, freeSupporterBoostEnabled, supporterLevel, experience } from "$lib/stores/accountStore";
 import { streakText, showStreakDisplay, lastDistance, lastExperienceCalculationAborted, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
@@ -16,6 +15,7 @@ import { playSound } from "$lib/utils/soundManager";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
 import { get } from "svelte/store";
 import { getMapBounds } from "$lib/utils/getMapBounds";
+import { toggleStreakWindow } from "$lib/utils/streakRestore";
 
 // Streak ----------------------------------------------------------------------------------------------------------------------------------------------------
 let streak = 0;
@@ -54,7 +54,7 @@ async function streakCalculation() {
         if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
             streak++;
         } else {
-            if (streak >= 2) get(toggleStreakRestoreWindow)(streak, false);
+            if (streak >= 2) toggleStreakWindow(streak, false);
 
             setCheckNewHighestStreak(streak); // checks if this was the highest streak yet and 
             streak = 0; //reset country streak ( = Streak lost, but still restorable wit ad)

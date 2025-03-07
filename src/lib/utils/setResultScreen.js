@@ -11,8 +11,8 @@ import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
 import { earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
 import { shrinkMapIfMobile } from "./shrinkMinimapIfMobile";
-import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
 import { timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { showSlideup } from "$lib/stores/context-specific/resultScreenSlideupStore";
 
 export function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (!get(resultScreenEnabled)) {
@@ -56,7 +56,7 @@ export function disableResultScreen() {
 
         // UI resets
         shrinkMapIfMobile();
-        get(toggleStreakRestoreWindow)(0, true);
+        showSlideup.set(false);
         timerText.set("00:00"); // Reset timer text
 
         earnedExperience.set(0); // Reset the earned experience, to trigger a new "tick up" animation on the next result load
