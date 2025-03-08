@@ -15,7 +15,7 @@
     --box-color: rgba(255, 255, 255, 0.05);
     --dark-background: rgba(30, 30, 30, 0.7);
     --panel-button-color: rgba(168, 168, 187, 0.3);
-    --supporter-highlight: rgba(125, 189, 144, 0.5);
+    --supporter-gradient: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(17, 217, 49, 0.7));
 }
 
 html {

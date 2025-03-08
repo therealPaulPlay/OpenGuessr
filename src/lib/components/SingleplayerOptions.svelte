@@ -201,10 +201,10 @@
 		display: flex;
 		align-items: center;
 		justify-content: safe center;
-		gap: 5px;
+		gap: 10px;
 		flex-direction: column;
 		overflow-y: auto;
-		max-height: 150px;
+		max-height: 165px;
 		padding-top: 10px;
 		padding-bottom: 0;
 		scrollbar-width: none;
@@ -232,7 +232,7 @@
 	}
 
 	.roundLogItem {
-		background-color: rgba(255, 255, 255, 0.1);
+		background-color: var(--box-color);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;

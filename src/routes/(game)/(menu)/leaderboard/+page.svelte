@@ -260,15 +260,14 @@
 	}
 
 	.rankedItemSupporter {
-		background-color: rgba(118, 236, 164, 0.4);
 		box-sizing: border-box;
-		border: 3px solid rgba(118, 236, 164, 0.4);
+		border: 3px solid rgba(83, 255, 106, 0.5);
 		position: relative;
 	}
 
 	.rankedItemSupporter::before {
 		animation: supporterGlint 5s 2s infinite;
-		background: linear-gradient(90deg, #00ff1c00 1%, #73ff96 50%, #00ff3400);
+		background: linear-gradient(90deg, #00ff1c00 1%, rgba(17, 217, 49, 0.7) 50%, #00ff3400);
 		border-radius: inherit;
 		content: "";
 		height: 3px;

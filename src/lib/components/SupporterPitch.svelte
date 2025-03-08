@@ -33,7 +33,7 @@
 
 	.supporterArea {
 		border-radius: 10px;
-		background: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(25, 215, 70, 0.7));
+		background: var(--supporter-gradient);
 		color: white;
 		display: flex;
 		flex-wrap: wrap;

@@ -8,15 +8,25 @@
 		slideupButtonText,
 		slideupButtonDisabled,
 		slideupTitleColor,
+		monthlySupportAmount,
 	} from "$lib/stores/context-specific/resultScreenSlideupStore";
 	import { playSound } from "$lib/utils/soundManager";
+	import { HandHeart } from "lucide-svelte";
 	import { slide } from "svelte/transition";
 </script>
 
 {#if $showSlideup}
 	<div class="endscreenSlideupContainer barMenu" transition:slide>
-		<div class="textBox">
+		<div class="textBox textBoxTop">
 			<h3 id="slideupTitle" style:color={$slideupTitleColor}>{$slideupTitle}</h3>
+		</div>
+		{#if $slideupButtonText == "Support"}
+			<div class="textBox supporterStatBox">
+				<p>+${$monthlySupportAmount ?? "..."} this month</p>
+				<div class="supporterStatBar" style:width={Math.min(1, $monthlySupportAmount / 500) * 100 + "%"}></div>
+			</div>
+		{/if}
+		<div class="textBox">
 			<p id="slideupText" bind:innerHTML={$slideupText} contenteditable="false"></p>
 		</div>
 		<div class="buttonBox">
@@ -36,7 +46,11 @@
 				class:disabled={$slideupButtonDisabled}
 			>
 				{$slideupButtonText}
-				<img src="/img/streak_icon.png" class="socialIcon streakIcon" alt="Streak Icon" />
+				{#if $slideupButtonText == "Restore"}
+					<img src="/img/streak_icon.png" class="socialIcon streakIcon" alt="Streak Icon" />
+				{:else if $slideupButtonText == "Support"}
+					<HandHeart style="margin-bottom: -4px;" />
+				{/if}
 			</button>
 		</div>
 	</div>
@@ -63,11 +77,30 @@
 		opacity: 0.5;
 	}
 
+	.textBoxTop {
+		margin-bottom: 10px;
+	}
+
 	.textBox {
 		padding: 10px;
 		padding-inline: 12px;
 		border-radius: 5px;
 		background-color: var(--box-color);
+	}
+
+	.supporterStatBox {
+		margin-bottom: 10px;
+		position: relative;
+		overflow: hidden;
+		text-align: center;
+	}
+
+	.supporterStatBar {
+		position: absolute;
+		left: 0;
+		top: 0;
+		bottom: 0;
+		background-color: rgba(255, 255, 255, 0.15);
 	}
 
 	.buttonBox {
@@ -91,7 +124,7 @@
 	}
 
 	.streakButton {
-		background-color: #01a001;
+		background-color: #00ac00;
 	}
 
 	#slideupText {
@@ -101,7 +134,6 @@
 
 	#slideupTitle {
 		transition: color 350ms ease;
-		margin-bottom: 5px;
 		font-size: 25px;
 	}
 
