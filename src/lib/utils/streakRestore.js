@@ -10,7 +10,7 @@ let formerStreak = 0;
 
 function restoreStreak() {
 	slideupButtonDisabled.set(true);
-	slideupText.set(`<p>You have restored your streak of <span id="streakKeepAmount" class="highlight">${formerStreak}</span> !</p>`);
+	slideupText.set(`<p>You have restored your streak of <span id="streakKeepAmount" class="highlight">${formerStreak}</span>!</p>`);
 	slideupTitle.set("Streak restored!")
 	restoreOldStreak(formerStreak); // This is in accountLogic.js
 }
