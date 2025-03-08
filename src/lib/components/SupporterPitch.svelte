@@ -8,7 +8,7 @@
 
 <div id="supporterArea" class="supporterArea">
 	<div class="supporterPitchText">
-		<p id="supporterPitch">{$supporterLevel > 0 ? "Thank you." : "Purchase a supporter tier."}</p>
+		<p id="supporterPitch">{$supporterLevel >= 1 ? "Thank you." : "Purchase a supporter tier."}</p>
 		<span id="supporterTextSecondary"
 			>{$supporterLevel > 0 ? "Contributions keep the game free." : "Your contribution keeps the game free."}</span
 		>
@@ -33,7 +33,7 @@
 
 	.supporterArea {
 		border-radius: 10px;
-		background: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(25, 215, 70, 0.7));
+		background: var(--supporter-gradient);
 		color: white;
 		display: flex;
 		flex-wrap: wrap;

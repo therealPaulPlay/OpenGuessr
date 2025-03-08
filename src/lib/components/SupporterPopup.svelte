@@ -18,8 +18,8 @@
 
 	function getTierPrice(tier) {
 		if ($supporterLevel >= tier) return "Unlocked";
-		if ($supporterLevel == 0) return basePrices[tier - 1] + " $";
-		return Math.round(Math.max(basePrices[tier - 1] - $supportedAmount - 0.01, 0) * 100) / 100 + " $";
+		if ($supporterLevel == 0) return "$ " + basePrices[tier - 1];
+		return "$ " + Math.round(Math.max(basePrices[tier - 1] - $supportedAmount - 0.01, 0) * 100) / 100;
 	}
 
 	// Initialize Stripe
@@ -184,7 +184,7 @@
 				<p id="freeSupporterBoostText" bind:textContent={freeSupporterBoostText} contenteditable="false"></p>
 				<button
 					id="freeSupporterBoost"
-					class="standardButton"
+					class="standardButton white"
 					class:freeSupporterBoostDisabled={$freeSupporterBoostEnabled}
 					bind:this={freeSupporterBoostButton}
 					onclick={() => {
@@ -194,13 +194,13 @@
 				>
 			</div>
 			<div class="tierBox">
-				<p class="tierBoxTier">Tier 1</p>
+				<div class="tierBoxTier"><p class="tierNumber">Tier 1</p></div>
 				<ul class="tierBenefits">
 					<li>Highlighted on leaderboards</li>
-					<li>Supporter Icon in profile</li>
-					<li>Special Supporter Pin</li>
-					<li>Tier 1 Supporter Badge</li>
-					<li>10% Supporter XP Boost</li>
+					<li>Supporter profile icon</li>
+					<li>Special Supporter pin</li>
+					<li>Tier 1 Supporter badge</li>
+					<li>10% Supporter XP boost</li>
 				</ul>
 				<button
 					id="tierPrice1"
@@ -210,12 +210,12 @@
 				>
 			</div>
 			<div class="tierBox">
-				<p class="tierBoxTier">Tier 2</p>
+				<div class="tierBoxTier"><p class="tierNumber">Tier 2</p></div>
 				<ul class="tierBenefits">
 					<li>All previous benefits</li>
 					<li>Ad-free experience</li>
-					<li>Tier 2 Supporter Badge</li>
-					<li>15% Supporter XP Boost</li>
+					<li>Tier 2 Supporter badge</li>
+					<li>15% Supporter XP boost</li>
 				</ul>
 				<button
 					id="tierPrice2"
@@ -229,11 +229,11 @@
 				</button>
 			</div>
 			<div class="tierBox">
-				<p class="tierBoxTier">Tier 3</p>
+				<div class="tierBoxTier"><p class="tierNumber">Tier 3</p></div>
 				<ul class="tierBenefits">
 					<li>All previous benefits</li>
-					<li>Tier 3 Supporter Badge</li>
-					<li>20% Supporter XP Boost</li>
+					<li>Tier 3 Supporter badge</li>
+					<li>20% Supporter XP boost</li>
 				</ul>
 				<button
 					id="tierPrice3"
@@ -247,11 +247,11 @@
 				>
 			</div>
 			<div class="tierBox">
-				<p class="tierBoxTier">Tier 4</p>
+				<div class="tierBoxTier"><p class="tierNumber">Tier 4</p></div>
 				<ul class="tierBenefits">
 					<li>All previous benefits</li>
-					<li>Tier 4 Supporter Badge</li>
-					<li>25% Supporter XP Boost</li>
+					<li>Tier 4 Supporter badge</li>
+					<li>25% Supporter XP boost</li>
 				</ul>
 				<button
 					id="tierPrice4"
@@ -288,11 +288,8 @@
 
 <style>
 	#freeSupporterBoost {
-		background: linear-gradient(30deg, rgba(143, 168, 148, 0.5), rgba(168, 198, 175, 0.6));
 		flex-grow: 1;
-		border-radius: 4px;
 		margin-right: 2px;
-		border: none;
 	}
 
 	.freeSupporterBoostDisabled {
@@ -306,10 +303,17 @@
 		font-size: 22px;
 	}
 
+	.tierNumber {
+		background-color: rgba(0, 0, 0, 0.1);
+		border-radius: 3px;
+		padding: 2px !important;
+		padding-inline: 8px !important;
+	}
+
 	#adTierBox {
 		border-radius: 10px;
 		margin: 0;
-		background: rgb(80, 90, 91);
+		background: var(--box-color);
 		transition:
 			background-color 250ms ease,
 			filter 250ms ease;
@@ -334,9 +338,11 @@
 	}
 
 	.tierBoxTier {
-		background-color: rgba(41, 208, 91, 0.2);
-		text-align: center;
-		width: 120%;
+		background-color: var(--box-color);
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		width: 125%;
 		padding-top: 10px;
 		padding-bottom: 10px;
 		margin-bottom: 20px;
@@ -371,10 +377,10 @@
 
 	.tierBuyButton {
 		flex-grow: 1;
-		background: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(25, 215, 70, 0.7));
+		background: var(--supporter-gradient);
+		border-color: rgba(255, 255, 255, 0.3);
 		width: 100%;
 		margin-bottom: 15px;
-		border: none;
 	}
 
 	.shiftTitle {
@@ -408,7 +414,7 @@
 		position: relative;
 	}
 
-	.tierBox:hover {
+	.tierBox:hover .tierBuyButton {
 		filter: brightness(1.2);
 	}
 
@@ -446,7 +452,7 @@
 	}
 
 	.supporterBoxHighlight {
-		background-color: rgba(255, 255, 255, 0.1);
+		background-color: var(--box-color);
 		width: calc(100% - 30px);
 		padding-inline: 15px;
 		display: flex;
@@ -484,7 +490,7 @@
 
 		21% {
 			opacity: 0;
-			transform: translate(100%, 340px);
+			transform: translate(100%, 353px);
 		}
 
 		30% {
@@ -493,7 +499,7 @@
 
 		40% {
 			opacity: 0;
-			transform: translateY(340px);
+			transform: translateY(353px);
 		}
 
 		41% {

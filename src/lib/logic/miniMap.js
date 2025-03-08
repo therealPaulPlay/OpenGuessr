@@ -12,7 +12,6 @@ import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { mapHovered } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
-import { multiplayer } from "$lib/stores/modeStore";
 
 // Google Maps init --------------------------------------------------------------------------------------
 
@@ -280,26 +279,26 @@ export function updateMinimapWithTeamMarkers(markerArray) {
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
             if (miniMarkerId != get(peerId) && miniMarkerTeam === get(yourTeam)) {
                 const multiplayerLatLng = new google.maps.LatLng(miniMarkerLat, miniMarkerLong);
-              
-                    const newMultiplayerIcon = {
-                        url: '/img/your_marker' + miniMarkerPinIndex + '.png',
-                        size: new google.maps.Size(25, 25),
-                        anchor: new google.maps.Point(15, 24),
-                        origin: new google.maps.Point(0, 0),
-                        scaledSize: new google.maps.Size(25, 25),
-                    };
 
-                    let marker = new google.maps.Marker({
-                        position: multiplayerLatLng,
-                        map: get(map),
-                        icon: newMultiplayerIcon,
-                        clickable: false
-                    });
+                const newMultiplayerIcon = {
+                    url: '/img/your_marker' + miniMarkerPinIndex + '.png',
+                    size: new google.maps.Size(25, 25),
+                    anchor: new google.maps.Point(15, 24),
+                    origin: new google.maps.Point(0, 0),
+                    scaledSize: new google.maps.Size(25, 25),
+                };
 
-                    addedMarkers.update((markers) => {
-                        markers = markers || [];
-                        return [...markers, marker]
-                    });
+                let marker = new google.maps.Marker({
+                    position: multiplayerLatLng,
+                    map: get(map),
+                    icon: newMultiplayerIcon,
+                    clickable: false
+                });
+
+                addedMarkers.update((markers) => {
+                    markers = markers || [];
+                    return [...markers, marker]
+                });
 
                 multiplayerMiniMarkers.push(marker);
             }

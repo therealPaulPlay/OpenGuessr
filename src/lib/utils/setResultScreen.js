@@ -11,10 +11,11 @@ import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
 import { earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
 import { shrinkMapIfMobile } from "./shrinkMinimapIfMobile";
-import { toggleStreakRestoreWindow } from "$lib/stores/context-specific/toggleStreakRestoreStore";
 import { timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { showSlideup } from "$lib/stores/context-specific/resultScreenSlideupStore";
+import { supporterSlideupProbability } from "./showSupporterSlideup";
 
-export function enableResultScreen(guessLat = 0, guessLong = 0) {
+export async function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (!get(resultScreenEnabled)) {
         resultScreenEnabled.set(true);
 
@@ -23,8 +24,6 @@ export function enableResultScreen(guessLat = 0, guessLong = 0) {
         const resultStrings = compareDistances(distance) || {};
         let resultString = resultStrings.resultAsString;
         let extraMessage = resultStrings.extraMsg;
-
-        loadResultScreenXP(distance);
 
         // Reset the map, before loading the result map
         resetMap();
@@ -46,6 +45,10 @@ export function enableResultScreen(guessLat = 0, guessLong = 0) {
         loadResultMap(guessLat, guessLong);
         playSound("confirm");
         refreshPlacements();
+
+        // Load XP
+        await loadResultScreenXP(distance);
+        if (!get(showSlideup)) supporterSlideupProbability();
     }
 }
 
@@ -56,7 +59,7 @@ export function disableResultScreen() {
 
         // UI resets
         shrinkMapIfMobile();
-        get(toggleStreakRestoreWindow)(0, true);
+        showSlideup.set(false);
         timerText.set("00:00"); // Reset timer text
 
         earnedExperience.set(0); // Reset the earned experience, to trigger a new "tick up" animation on the next result load

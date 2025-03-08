@@ -28,7 +28,6 @@
 	import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
 	import CountryGuesserBar from "$lib/components/CountryGuesserBar.svelte";
 	import ResultScreen from "$lib/components/ResultScreen.svelte";
-	import BeforeExitPopup from "$lib/components/BeforeExitPopup.svelte";
 	import CaptchaPopup from "$lib/components/CaptchaPopup.svelte";
 	import Authenticate from "$lib/components/Authenticate.svelte";
 	import ProfilePopup from "$lib/components/ProfilePopup.svelte";
@@ -104,7 +103,6 @@
 <FriendBrowserPopup />
 <DivisionMatchHistoryPopup />
 <InboxPopup />
-<BeforeExitPopup />
 <HelpPopup />
 <DuelResultPopup />
 <SignupIframe />

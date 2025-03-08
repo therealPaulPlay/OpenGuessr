@@ -1039,7 +1039,7 @@
 	}
 
 	.rankItem {
-		background-color: rgba(255, 255, 255, 0.1);
+		background-color: var(--box-color);
 		border-radius: 5px;
 		width: calc(100% - 20px);
 		display: flex;
@@ -1190,7 +1190,10 @@
 	}
 
 	.leaderboardSupporterEntry {
-		background-color: var(--supporter-highlight);
+		border: 3px solid rgba(17, 217, 49, 0.7);
+		width: 100%;
+		border-radius: 7px;
+		box-sizing: border-box;
 	}
 
 	.centerEntry {

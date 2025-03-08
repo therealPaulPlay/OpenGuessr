@@ -75,27 +75,6 @@
 		`linear-gradient(to right, var(--brand-color) 0%, var(--brand-color) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) 100%)`,
 	);
 
-	// Exit Popup Setting ---------------------
-	let exitPopupButtonText = $state("Default");
-
-	$effect(() => {
-		if ($settingsPopup) {
-			exitPopupButtonText = Number(localStorage.getItem("hideExitPopup")) ? "Disabled" : "Enabled";
-		}
-	});
-
-	function toggleExitPopup() {
-		playSound("basic_button");
-
-		if (localStorage.getItem("hideExitPopup") == "1") {
-			localStorage.setItem("hideExitPopup", "0");
-			exitPopupButtonText = "Enabled";
-		} else {
-			localStorage.setItem("hideExitPopup", "1");
-			exitPopupButtonText = "Disabled";
-		}
-	}
-
 	// Fullscreen Setting ---------------------
 
 	let fullscreenButtonText = $state("Fullscreen");
@@ -193,14 +172,6 @@
 					}}>Read</button
 				>
 			</div>
-			{#if !$preventExitPopup}
-				<div class="settingsBox">
-					<p class="slightBottomMargin">Exit Popup:</p>
-					<button class="standardButton white" id="exitPopupSetting" onclick={toggleExitPopup}
-						>{exitPopupButtonText}</button
-					>
-				</div>
-			{/if}
 		</div>
 		<button id="settingsClose" class="standardButton white closeButton" onclick={closeSettingsButton}>Close</button>
 	</Popup>

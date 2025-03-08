@@ -190,15 +190,15 @@
 	}
 
 	.badgeStageSupporter1 {
-		background: linear-gradient(0.6turn, #419d42, #4a684a);
+		background: linear-gradient(0.6turn, #419d42, #4d684a);
 	}
 
 	.badgeStageSupporter2 {
-		background: linear-gradient(0.6turn, #319532, #518852);
+		background: linear-gradient(0.6turn, #319532, #568851);
 	}
 
 	.badgeStageSupporter3 {
-		background: linear-gradient(0.6turn, #19ae1b, #379338);
+		background: linear-gradient(0.6turn, #19ae1b, #459337);
 	}
 
 	.badgeStageSupporter4 {
