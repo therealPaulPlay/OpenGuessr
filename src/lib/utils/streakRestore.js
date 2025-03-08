@@ -3,7 +3,7 @@ import { restoreOldStreak } from "$lib/logic/resultScoreLogic";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 import { initializeRewardedAd } from "$lib/utils/rewardedAds";
-import { showSlideup, slideupButtonDisabled, slideupButtonText, slideupCallback, slideupText, slideupTitle, slideupTitleColor } from "$lib/stores/context-specific/resultScreenSlideupStore";
+import { showSlideup, slideupButtonDisabled, slideupButtonText, slideupCallback, slideupText, slideupTitle } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { get } from "svelte/store";
 
 let formerStreak = 0;
@@ -45,11 +45,6 @@ function streakDismissRewardedAd(notAvailable, rewardClaimed) {
 		if (!rewardClaimed) {
 			errorPopup("Ad dismissed", "Video ad dismissed. ", "", false, true);
 			slideupButtonDisabled.set(false);
-		} else {
-			slideupTitleColor.set("#00cf22");
-			setTimeout(() => {
-				slideupTitleColor.set("white");
-			}, 700);
 		}
 	}
 }
