@@ -227,7 +227,7 @@
 		align-items: center;
 		height: fit-content;
 		flex: 1;
-		pointer-events: auto;
+		pointer-events: none;
 		position: fixed;
 		bottom: 10px;
 		left: 0;
