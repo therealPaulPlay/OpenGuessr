@@ -8,7 +8,7 @@
 
 <div id="supporterArea" class="supporterArea">
 	<div class="supporterPitchText">
-		<p id="supporterPitch">{$supporterLevel > 0 ? "Thank you." : "Purchase a supporter tier."}</p>
+		<p id="supporterPitch">{$supporterLevel >= 1 ? "Thank you." : "Purchase a supporter tier."}</p>
 		<span id="supporterTextSecondary"
 			>{$supporterLevel > 0 ? "Contributions keep the game free." : "Your contribution keeps the game free."}</span
 		>

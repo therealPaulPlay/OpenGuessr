@@ -7,6 +7,7 @@ import { monthlySupportAmount, showSlideup, slideupButtonDisabled, slideupButton
 import { get } from "svelte/store";
 import { supporterWindowIfAuthenticated } from "./showSupporterPopup";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { supporterLevel } from "$lib/stores/accountStore";
 
 function showSupporterSlideup() {
     slideupCallback.set(supporterWindowIfAuthenticated);
@@ -19,7 +20,7 @@ function showSupporterSlideup() {
 }
 
 export function supporterSlideupProbability() {
-    if (Math.random() < 0.1) {
+    if (Math.random() < 0.1 && get(supporterLevel) == 0) {
         showSupporterSlideup();
     }
 }
