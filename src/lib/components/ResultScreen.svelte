@@ -459,7 +459,6 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 5px;
 		max-width: 750px;
 		margin-inline: auto;
 	}
