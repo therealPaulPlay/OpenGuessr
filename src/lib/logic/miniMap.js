@@ -264,31 +264,10 @@ function onMapClick(latLng) {
 export function updateMinimapWithTeamMarkers(markerArray) {
     // Remove existing mini markers
     multiplayerMiniMarkers.forEach(existingMarker => {
-        const position = existingMarker.getPosition();
-        existingMarkerPositions.set(`${position.lat()},${position.lng()}`, existingMarker);
+        existingMarker?.setMap(null);
     });
 
     try {
-        // Remove markers that no longer exist in markerArray
-        multiplayerMiniMarkers.forEach(existingMarker => {
-            const position = existingMarker.getPosition();
-            const markerPositionKey = `${position.lat()},${position.lng()}`;
-
-            // Check if current marker exists in the updated markerArray
-            const markerExists = markerArray.some(element => {
-                let miniMarkerLat = element[1];
-                let miniMarkerLong = element[2];
-                return miniMarkerLat == position.lat() && miniMarkerLong == position.lng();
-            });
-
-            // If marker doesn't exist in markerArray, remove it
-            if (!markerExists) {
-                existingMarker.setMap(null);
-                multiplayerMiniMarkers = multiplayerMiniMarkers.filter(m => m !== existingMarker);
-                existingMarkerPositions.delete(markerPositionKey);
-            }
-        });
-
         // Add new markers from markerArray that belong to yourTeam
         markerArray.forEach(element => {
             let miniMarkerId = element.id;
@@ -298,27 +277,23 @@ export function updateMinimapWithTeamMarkers(markerArray) {
             let miniMarkerTeam = element.team;
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
-            // and miniMarkerTeam matches yourTeam
             if (miniMarkerId != get(peerId) && miniMarkerTeam === get(yourTeam)) {
                 const multiplayerLatLng = new google.maps.LatLng(miniMarkerLat, miniMarkerLong);
-                const markerPositionKey = `${multiplayerLatLng.lat()},${multiplayerLatLng.lng()}`;
 
-                if (!existingMarkerPositions.has(markerPositionKey)) {
-                    // Marker doesn't exist, create new marker
-                    const newMultiplayerIcon = {
-                        url: '/img/your_marker' + miniMarkerPinIndex + '.png',
-                        size: new google.maps.Size(25, 25),
-                        anchor: new google.maps.Point(15, 24),
-                        origin: new google.maps.Point(0, 0),
-                        scaledSize: new google.maps.Size(25, 25),
-                    };
+                const newMultiplayerIcon = {
+                    url: '/img/your_marker' + miniMarkerPinIndex + '.png',
+                    size: new google.maps.Size(25, 25),
+                    anchor: new google.maps.Point(15, 24),
+                    origin: new google.maps.Point(0, 0),
+                    scaledSize: new google.maps.Size(25, 25),
+                };
 
-                    let marker = new google.maps.Marker({
-                        position: multiplayerLatLng,
-                        map: get(map),
-                        icon: newMultiplayerIcon,
-                        clickable: false
-                    });
+                let marker = new google.maps.Marker({
+                    position: multiplayerLatLng,
+                    map: get(map),
+                    icon: newMultiplayerIcon,
+                    clickable: false
+                });
 
                 addedMarkers.update((markers) => {
                     markers = markers || [];
