@@ -342,7 +342,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		width: 120%;
+		width: 125%;
 		padding-top: 10px;
 		padding-bottom: 10px;
 		margin-bottom: 20px;
