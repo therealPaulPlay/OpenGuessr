@@ -18,8 +18,8 @@
 
 	function getTierPrice(tier) {
 		if ($supporterLevel >= tier) return "Unlocked";
-		if ($supporterLevel == 0) return basePrices[tier - 1] + " $";
-		return Math.round(Math.max(basePrices[tier - 1] - $supportedAmount - 0.01, 0) * 100) / 100 + " $";
+		if ($supporterLevel == 0) return "$ " + basePrices[tier - 1];
+		return "$ " + Math.round(Math.max(basePrices[tier - 1] - $supportedAmount - 0.01, 0) * 100) / 100;
 	}
 
 	// Initialize Stripe
