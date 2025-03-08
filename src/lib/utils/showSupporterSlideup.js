@@ -3,7 +3,7 @@ import { restoreOldStreak } from "$lib/logic/resultScoreLogic";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 import { initializeRewardedAd } from "$lib/utils/rewardedAds";
-import { monthlySupportAmount, showSlideup, slideupButtonDisabled, slideupButtonText, slideupCallback, slideupText, slideupTitle, slideupTitleColor } from "$lib/stores/context-specific/resultScreenSlideupStore";
+import { monthlySupportAmount, showSlideup, slideupButtonDisabled, slideupButtonText, slideupCallback, slideupText, slideupTitle } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { get } from "svelte/store";
 import { supporterWindowIfAuthenticated } from "./showSupporterPopup";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";

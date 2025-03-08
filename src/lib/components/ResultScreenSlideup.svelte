@@ -7,7 +7,6 @@
 		showSlideup,
 		slideupButtonText,
 		slideupButtonDisabled,
-		slideupTitleColor,
 		monthlySupportAmount,
 	} from "$lib/stores/context-specific/resultScreenSlideupStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -18,7 +17,7 @@
 {#if $showSlideup}
 	<div class="endscreenSlideupContainer barMenu" transition:slide>
 		<div class="textBox textBoxTop">
-			<h3 id="slideupTitle" style:color={$slideupTitleColor}>{$slideupTitle}</h3>
+			<h3 id="slideupTitle">{$slideupTitle}</h3>
 		</div>
 		{#if $slideupButtonText == "Support"}
 			<div class="textBox supporterStatBox">
