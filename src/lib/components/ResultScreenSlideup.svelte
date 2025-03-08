@@ -21,7 +21,7 @@
 		</div>
 		{#if $slideupButtonText == "Support"}
 			<div class="textBox supporterStatBox">
-				<p>+${$monthlySupportAmount ?? "..."} this month</p>
+				<p class="supporterStatText">${$monthlySupportAmount ?? "..."} supported this month</p>
 				<div class="supporterStatBar" style:width={Math.min(1, $monthlySupportAmount / 500) * 100 + "%"}></div>
 			</div>
 		{/if}
@@ -48,7 +48,7 @@
 				{#if $slideupButtonText == "Restore"}
 					<img src="/img/streak_icon.png" class="socialIcon streakIcon" alt="Streak Icon" />
 				{:else if $slideupButtonText == "Support"}
-					<HandHeart style="margin-bottom: -4px;" />
+					<HandHeart style="margin-bottom: -3px;" size={20} />
 				{/if}
 			</button>
 		</div>
@@ -70,6 +70,10 @@
 		bottom: 10px;
 		left: 10px;
 	}
+
+    .supporterStatText {
+        opacity: 0.75;
+    }
 
 	.disabled {
 		pointer-events: none;
