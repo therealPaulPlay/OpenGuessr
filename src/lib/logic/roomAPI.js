@@ -39,7 +39,7 @@ export async function attemptDuelJoin(index) {
     try {
         // Get Roomcode from server
         const response = await fetch(get(accountUrl) + "/accounts/rooms/join-duel/" + index, {
-            method: 'GET',
+            method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
                 Authorization: "Bearer " + localStorage.getItem("bearer"),
