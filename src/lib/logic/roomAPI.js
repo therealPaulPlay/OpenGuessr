@@ -41,8 +41,10 @@ export async function attemptDuelJoin(index) {
         const response = await fetch(get(accountUrl) + "/accounts/rooms/join-duel/" + index, {
             method: 'GET',
             headers: {
-                'Content-Type': 'application/json'
-            }
+                'Content-Type': 'application/json',
+                Authorization: "Bearer " + localStorage.getItem("bearer"),
+            },
+            body: JSON.stringify({ id: localStorage.getItem("id") }),
         });
 
         if (response.ok) {
