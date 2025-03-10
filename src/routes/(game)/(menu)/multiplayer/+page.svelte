@@ -426,7 +426,7 @@
 	}
 
 	.leaderboardSupporter {
-		border: 3px solid rgba(17, 217, 49, 0.7);
+		border: 3px solid var(--supporter-green);
 		padding-top: 2px;
 		padding-bottom: 2px;
 	}

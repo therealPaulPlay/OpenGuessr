@@ -261,13 +261,13 @@
 
 	.rankedItemSupporter {
 		box-sizing: border-box;
-		border: 3px solid rgba(83, 255, 106, 0.5);
+		border: 3px solid var(--supporter-green);
 		position: relative;
 	}
 
 	.rankedItemSupporter::before {
 		animation: supporterGlint 5s 2s infinite;
-		background: linear-gradient(90deg, #00ff1c00 1%, rgba(17, 217, 49, 0.7) 50%, #00ff3400);
+		background: linear-gradient(90deg, #00ff1c00 1%, rgb(196, 255, 206) 50%, #00ff3400);
 		border-radius: inherit;
 		content: "";
 		height: 3px;
