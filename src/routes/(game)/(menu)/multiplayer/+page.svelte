@@ -140,7 +140,7 @@
 		</div>
 	</div>
 	<div class="headerContainer headerMarginTop">
-		<h2 class="header">Duel Divisions</h2>
+		<h2 class="header">Divisions</h2>
 	</div>
 	<div class="infoContainer">
 		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
@@ -453,7 +453,6 @@
 		width: 100%;
 		display: flex;
 		justify-content: flex-start;
-		margin-top: 5px;
 		gap: 15px;
 		flex-wrap: wrap;
 	}
