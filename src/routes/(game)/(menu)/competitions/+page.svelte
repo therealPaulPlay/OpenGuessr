@@ -668,7 +668,7 @@
 
 <div class="competitionElement competitionBox">
 	<div class="headerContainer">
-		<h2 class="header">Competitions</h2>
+		<h2 class="header">Official</h2>
 	</div>
 	<div id="dailyCompetitionArea" class="competitionArea">
 		<!-- daily competitions will be inserted here -->
@@ -1190,7 +1190,7 @@
 	}
 
 	.leaderboardSupporterEntry {
-		border: 3px solid rgba(17, 217, 49, 0.7);
+		border: 3px solid var(--supporter-green);
 		width: 100%;
 		border-radius: 7px;
 		box-sizing: border-box;

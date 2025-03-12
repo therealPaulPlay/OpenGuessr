@@ -140,7 +140,7 @@
 		</div>
 	</div>
 	<div class="headerContainer headerMarginTop">
-		<h2 class="header">Duel Divisions</h2>
+		<h2 class="header">Divisions</h2>
 	</div>
 	<div class="infoContainer">
 		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
@@ -334,7 +334,7 @@
 		margin-top: 15px;
 		overflow: hidden;
 		overflow-y: auto;
-		max-height: 285px;
+		max-height: 290px;
 		scrollbar-width: none;
 	}
 
@@ -426,7 +426,7 @@
 	}
 
 	.leaderboardSupporter {
-		border: 3px solid rgba(17, 217, 49, 0.7);
+		border: 3px solid var(--supporter-green);
 		padding-top: 2px;
 		padding-bottom: 2px;
 	}
@@ -453,7 +453,6 @@
 		width: 100%;
 		display: flex;
 		justify-content: flex-start;
-		margin-top: 5px;
 		gap: 15px;
 		flex-wrap: wrap;
 	}

@@ -32,7 +32,7 @@
 	} from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Edit, Trash2, TriangleAlert } from "lucide-svelte";
+	import { Edit, Trash2, TriangleAlert, Pencil } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { page } from "$app/stores";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
@@ -116,16 +116,25 @@
 						</div>
 					{/if}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<img
-						id="selectedProfilePin"
-						alt="map pin"
-						src={`/img/your_marker${Number($profileData?.pin) || 0}.png`}
+					<div
+						class="profilePinArea"
+						role="button"
+						tabindex="0"
 						style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
 						onclick={() => {
 							playSound("basic_button");
 							pinPopup.set(true);
 						}}
-					/>
+					>
+						<img id="selectedProfilePin" alt="map pin" src={`/img/your_marker${Number($profileData?.pin) || 0}.png`} />
+						{#if $profileId == localStorage.getItem("id")}
+							<Pencil
+								style="opacity: 0.5; margin-bottom: 4px; margin-right: 5px; margin-left: 3px;"
+								size={18}
+								strokeWidth={2.75}
+							/>
+						{/if}
+					</div>
 					{#if $profileSupporterLevel >= 1}
 						<div id="supporterTag">
 							<p id="supporterTagText">Tier {$profileSupporterLevel}</p>
@@ -446,8 +455,7 @@
 		max-width: 120px;
 	}
 
-	#selectedProfilePin {
-		width: 29px;
+	.profilePinArea {
 		height: 29px;
 		background-color: rgba(255, 255, 255, 0.1);
 		border-radius: 5px;
@@ -456,8 +464,13 @@
 		transition: background-color 250ms ease;
 	}
 
-	#selectedProfilePin:hover {
+	.profilePinArea:hover {
 		background-color: rgba(255, 255, 255, 0.2);
+	}
+
+	#selectedProfilePin {
+		width: 29px;
+		height: 29px;
 	}
 
 	#supporterIcon {
