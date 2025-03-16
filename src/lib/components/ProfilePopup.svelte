@@ -129,8 +129,8 @@
 						<img id="selectedProfilePin" alt="map pin" src={`/img/your_marker${Number($profileData?.pin) || 0}.png`} />
 						{#if $profileId == localStorage.getItem("id")}
 							<Pencil
-								style="opacity: 0.5; margin-bottom: 4px; margin-right: 5px; margin-left: 3px;"
-								size={18}
+								style="opacity: 0.5; margin-bottom: 5px; margin-right: 5px; margin-left: 2px;"
+								size={17}
 								strokeWidth={2.75}
 							/>
 						{/if}

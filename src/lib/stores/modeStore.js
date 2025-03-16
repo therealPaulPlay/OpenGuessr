@@ -9,8 +9,8 @@ export const singleplayer = writable(true);
 export const multiplayer = writable(false);
 export const competition = writable(false);
 
-// More Options -----------------------------------------------------
+// Mode Options -----------------------------------------------------
 
 // Singleplayer
-export const timeout = writable(0);
+export const singleplayerTimeout = writable(0);
 export const isSingleplayerNMPZ = writable(false);
