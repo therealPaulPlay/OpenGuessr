@@ -5,26 +5,49 @@
 	import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
 	import { formatDistance } from "$lib/utils/distanceFunctions";
 	import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
-	import { timerCountdownOverlay } from "$lib/stores/context-specific/timerCountdownOverlayStore";
-	import { isSingleplayerNMPZ, timeout } from "$lib/stores/modeStore";
+	import { isSingleplayerNMPZ, singleplayerTimeout } from "$lib/stores/modeStore";
 	import { roundLog } from "$lib/stores/locationStore";
 	import { onMount } from "svelte";
+	import { ChevronLeft, ChevronRight } from "lucide-svelte";
 
 	// Singleplayer Options UI ----------------------------------------------------------------------------------------
 
 	let timerSliderValue = $state(0);
 
-	let timerSliderText = $derived(
-		timerSliderValue == 0 || !timerSliderValue ? "No Timer" : timerSliderValue + " Seconds",
-	);
+	// Timer values dictionary
+	const timerValues = [
+		{ slider: 0, actual: 0, text: "No Timer" },
+		{ slider: 1, actual: 0.1, text: "One blink" },
+	];
+	try {
+		for (let i = 1; i <= 120; i++) {
+			timerValues.push({ slider: i + 1, actual: i, text: `${i} Seconds` });
+		}
+	} catch (error) {
+		console.error("Error filling up timer value array:", error);
+	}
+
+	// Get display text based on slider value
+	let timerSliderText = $derived(timerValues.find((t) => t?.slider === timerSliderValue)?.text);
+
+	// Increase or decrease the timer value by one step
+	function adjustTimer(increment) {
+		playSound("basic_button");
+		const newValue = timerSliderValue + (increment ? 1 : -1);
+		if (newValue >= 0 && newValue <= 121) {
+			timerSliderValue = newValue;
+			changeTimeout();
+		}
+	}
 
 	// Timer Slider ---------------------------------------------------------------------------------------------------------------------------
+	let changeRegenerationTimeout;
 	function changeTimeout() {
-		$timeout = Number(timerSliderValue);
-		localStorage.setItem("singleplayerTimer", $timeout);
-		$timerCountdownOverlay = $timeout ? "visible" : "hidden";
-
-		checkGenerationTypeAndGenerate();
+		const timerSetting = timerValues.find((t) => t.slider === timerSliderValue);
+		$singleplayerTimeout = timerSetting ? timerSetting.actual : 0;
+		localStorage.setItem("singleplayerTimer", $singleplayerTimeout);
+		clearTimeout(changeRegenerationTimeout);
+		changeRegenerationTimeout = setTimeout(checkGenerationTypeAndGenerate, 250);
 	}
 
 	// Toggle Singleplayer Restrictions -----------------------------------------------------------------------------------
@@ -45,11 +68,18 @@
 
 	// Apply singleplayer settings ----------------------------------------------------------------------------------
 	onMount(() => {
-		localStorage.getItem("singleplayerTimer") != null ? Number(localStorage.getItem("singleplayerTimer")) : 0;
+		const savedTimer =
+			localStorage.getItem("singleplayerTimer") != null ? Number(localStorage.getItem("singleplayerTimer")) : 0;
+
+		// Find the corresponding slider value for the saved actual timer value
+		const timerSetting = timerValues.find((t) => Math.abs(t.actual - savedTimer) < 0.01);
+		$singleplayerTimeout = timerSetting?.actual ?? 0;
 	});
 
 	$effect(() => {
-		timerSliderValue = $timeout || 0;
+		// Find the corresponding slider value for the current timeout value
+		const timerSetting = timerValues.find((t) => Math.abs(t.actual - ($singleplayerTimeout || 0)) < 0.01);
+		timerSliderValue = timerSetting?.slider ?? 0;
 	});
 
 	// Round Log ---------------------------------------------------------------------------------------------------------------
@@ -72,16 +102,27 @@
 				<div class="settingsBox">
 					<p class="slightBottomMargin">Timer:</p>
 					<div class="timerSliderBox">
-						<input
-							type="range"
-							min="0"
-							max="300"
-							step="1"
-							class="slider"
-							id="timerSlider"
-							onchange={changeTimeout}
-							bind:value={timerSliderValue}
-						/>
+						<div class="timerControlsWrapper">
+							<button class="arrowButton standardButton white" onclick={() => adjustTimer(false)}>
+								<ChevronLeft size={20} strokeWidth={2.5} />
+							</button>
+
+							<input
+								type="range"
+								min="0"
+								max="121"
+								step="1"
+								class="slider"
+								id="timerSlider"
+								onchange={changeTimeout}
+								bind:value={timerSliderValue}
+							/>
+
+							<button class="arrowButton standardButton white" onclick={() => adjustTimer(true)}>
+								<ChevronRight size={20} strokeWidth={2.5} />
+							</button>
+						</div>
+
 						<div class="timerTextBox">
 							<img alt="timer icon" class="timerIcon" src="/img/timer_icon.png" />
 							<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
@@ -172,6 +213,27 @@
 		align-items: center;
 	}
 
+	#timerSlider {
+		min-width: 80px;
+		flex-grow: 1;
+	}
+
+	.timerControlsWrapper {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		width: fit-content;
+		flex-basis: 60%;
+		flex-grow: 1;
+	}
+
+	.arrowButton {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 5px;
+	}
+
 	.settingsScrollArea {
 		max-height: calc(100dvh - 250px);
 		width: 100%;
@@ -189,7 +251,7 @@
 		padding: 5px;
 		padding-inline: 10px;
 		border-radius: 5px;
-		min-width: 140px;
+		min-width: 130px;
 		text-align: center;
 	}
 

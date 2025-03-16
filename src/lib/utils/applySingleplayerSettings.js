@@ -4,7 +4,7 @@ import {
     timerCountdownOverlayTitle,
     timerCountdownOverlaySubtitle,
 } from "$lib/stores/context-specific/timerCountdownOverlayStore";
-import { singleplayer, timeout, isSingleplayerNMPZ } from "$lib/stores/modeStore";
+import { singleplayer, singleplayerTimeout, isSingleplayerNMPZ } from "$lib/stores/modeStore";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { get } from "svelte/store";
 import { startTimer } from "$lib/utils/timer";
@@ -32,7 +32,7 @@ export function applySingleplayerSettings() {
     if (get(singleplayer)) {
         
         // Timer
-        if (get(timeout)) {
+        if (get(singleplayerTimeout)) {
             mapModeIndicatorVisible.set(true);
             modeText.set("Singleplayer");
 
@@ -49,15 +49,15 @@ export function applySingleplayerSettings() {
                 }, 700);
 
                 startTimeoutVariable = setTimeout(() => {
-                    resolve("start");
                     clearInterval(intervalTimeoutVariable);
-                }, 2000);
+                    resolve("start");
+                }, 2100);
             });
 
             startHardModePromise.then(function () {
                 timerCountdownOverlay.set(false);
 
-                timer = startTimer(get(timeout), () => {
+                timer = startTimer(get(singleplayerTimeout), () => {
                     timerCountdownOverlay.set(true);
                     timerCountdownOverlayTitle.set("The time is up!");
                     timerCountdownOverlaySubtitle.set("Please take your guess.");

@@ -23,7 +23,7 @@
 		position: fixed;
 		top: 0;
 		z-index: 3;
-		transition: opacity 500ms ease;
+		transition: opacity 250ms ease;
 		opacity: 0;
 		overflow: hidden;
 		backdrop-filter: blur(50px);

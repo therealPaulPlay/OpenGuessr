@@ -10,14 +10,12 @@ let activeTimer = null;
 
 export function startTimer(durationInSeconds, onTimerExpired) {
     // If there's an active timer, stop it first
-    if (activeTimer) {
-        activeTimer.stopTimer();
-    }
+    if (activeTimer) activeTimer.stopTimer();
 
     let currentTimerIntervalId;
     let isRunning = false;
     let timer = durationInSeconds;
-    let onChangeCallback = null;
+    let intervalDuration = durationInSeconds < 1 ? 0.1 : 1;
 
     currentTimerIntervalId = setInterval(function () {
         isRunning = true;
@@ -27,10 +25,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
 
         timerText.set(formattedTime);
 
-        // Call the onTimerChange callback with just the seconds if it exists
-        if (typeof onChangeCallback === 'function') onChangeCallback(timer);
-
-        if (timer < 10) {
+        if (timer < 10 && timer % 1 == 0) {
             indicatorFading.set(true);
             playSound("ticking_timer", "timerSound");
             littleTimeVignette.set(true);
@@ -39,11 +34,13 @@ export function startTimer(durationInSeconds, onTimerExpired) {
             littleTimeVignette.set(false);
         }
 
-        if (--timer < 0) {
+        timer -= intervalDuration;
+
+        if (timer < 0) {
             stopTimer();
             timerExpired();
         }
-    }, 1000);
+    }, intervalDuration * 1000);
 
     function timerExpired() {
         if (typeof onTimerExpired === 'function') {
@@ -73,16 +70,10 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         return isRunning;
     }
 
-    function onTimerChange(callback) {
-        onChangeCallback = callback;
-        return this;
-    }
-
     const timerInstance = {
         getRemainingTime,
         stopTimer,
-        isTimerRunning,
-        onTimerChange
+        isTimerRunning
     };
 
     // Set this as the active timer
