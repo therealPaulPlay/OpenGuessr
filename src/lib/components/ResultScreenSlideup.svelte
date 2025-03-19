@@ -1,5 +1,6 @@
 <!-- Sliding up alert message for result screen (streak, support...) -->
 <script>
+	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
 		slideupText,
 		slideupCallback,
@@ -14,7 +15,7 @@
 	import { slide } from "svelte/transition";
 </script>
 
-{#if $showSlideup}
+{#if $showSlideup && !$crazyGames}
 	<div class="endscreenSlideupContainer barMenu" transition:slide>
 		<div class="textBox textBoxTop">
 			<h3 id="slideupTitle">{$slideupTitle}</h3>
@@ -71,9 +72,9 @@
 		left: 10px;
 	}
 
-    .supporterStatText {
-        opacity: 0.75;
-    }
+	.supporterStatText {
+		opacity: 0.75;
+	}
 
 	.disabled {
 		pointer-events: none;
