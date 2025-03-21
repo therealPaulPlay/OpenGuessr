@@ -1,5 +1,5 @@
 <script>
-	import { Eye, EyeOff, Link } from "lucide-svelte";
+	import { Eye, EyeOff, Link, Users } from "lucide-svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
@@ -16,7 +16,7 @@
 		peer,
 		roomcode,
 		connectionCount,
-		teamsDisplayText,
+		multiplayerTableArray,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { toggleMultiplayerRestriction, setupMultiplayerRoom, startRoom } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
@@ -59,6 +59,18 @@
 		clearTimeout(tooltipTimout);
 		if (roomOpened) deletePublicRoom();
 	});
+
+	function updatePlayerTeam(playerId, newTeamIndex) {
+		const playerIndex = get(peer)?.getStorage?.players?.findIndex((player) => player[0] === playerId);
+
+		if (playerIndex !== -1) {
+			const thisPlayer = get(peer)?.getStorage?.players[playerIndex];
+			let newPlayer = [...thisPlayer];
+			newPlayer[4] = parseInt(newTeamIndex); // Update team index at position 4
+
+			get(peer)?.updateStorageArray("players", "update-matching", thisPlayer, newPlayer);
+		}
+	}
 </script>
 
 <svelte:head>
@@ -110,14 +122,57 @@
 			</div>
 		{/if}
 		{#if $hostStage == 2}
+			<!-- Room code-->
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p class="codeDisplayText">Join with code:</p>
 				<h1 id="roomCodeDisplay">{$roomcode?.replace("openguessr_", "")}</h1>
 			</div>
+
+			<!-- Team and player display -->
 			<div class="roomCreationModule multiplayerHostSettings teamsDisplay">
-				<p id="teamsDisplayText" bind:innerHTML={$teamsDisplayText} contenteditable="false"></p>
+				{#if $teamAmount === 1}
+					<p class="playerBoxElement">
+						<span>No team:</span>
+						{#if $multiplayerTableArray?.length > 0}
+							{#each $multiplayerTableArray as player, i}
+								<span class="playerNameInline"
+									>{player[1]}{#if i < $multiplayerTableArray.length - 1}<span>,&nbsp;</span>{/if}
+								</span>
+							{/each}
+						{:else}
+							<span class="teamEmpty">No players</span>
+						{/if}
+					</p>
+				{:else}
+					{#each Object.values($multiplayerTableArray) as team}
+						{@const teamIndex = team.teamIndex}
+						<p class="playerBoxElement playerBoxTeams">
+							<span>{teamIndex !== 0 ? `Team ${teamIndex}:` : `No team:`}</span>
+							{#if team.players?.length > 0}
+								{#each team.players as player, i (player[0])}
+									<span class="playerNameInline">
+										{player[1]}
+										<select
+											name="teams"
+											class="teamSelector standardButton white"
+											onchange={(e) => updatePlayerTeam(player[0], e.target.value)}
+										>
+											{#each Object.values($multiplayerTableArray) as teamObject}
+												{@const index = teamObject.teamIndex}
+												<option value={index} selected={player[4] == index}>{index}</option>
+											{/each}
+										</select>{#if i < team.players.length - 1}<span>,&nbsp;</span>{/if}
+									</span>
+								{/each}
+							{:else}
+								<span class="teamEmpty">No players</span>
+							{/if}
+						</p>
+					{/each}
+				{/if}
 				<p id="smallJoinCounter">{$connectionCount + 1}</p>
 			</div>
+			<!-- Friend invite display -->
 			{#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online)?.length >= 1}
 				<div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
 					<div id="roomCreationFriendsBox" class="roomCreationFriendsBox">
@@ -149,7 +204,7 @@
 				</div>
 			{/if}
 		{/if}
-		<!-- button area -->
+		<!-- Bottom button area -->
 		<div class="multiplayerHostSubmitArea">
 			<div id="innerSubmitAreaBlock">
 				{#if $hostStage == 2}
@@ -234,6 +289,7 @@
 				>
 			</div>
 		</div>
+		<!-- Tooltip for public rooms -->
 		{#if publicTooltipShown && $hostStage == 2}
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -266,6 +322,13 @@
 	.teamsDisplay {
 		position: relative;
 		min-height: 27px;
+		font-size: 22px;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	.teamsDisplay p {
+		color: rgba(255, 255, 255, 0.5);
 	}
 
 	.multiplayerCreationArea {
@@ -309,6 +372,33 @@
 		align-items: center;
 		padding: 5px;
 		flex-grow: 1;
+	}
+
+	.playerBoxElement {
+		width: calc(100% - 85px);
+		text-align: center;
+	}
+
+	.playerBoxElement.playerBoxTeams {
+		margin-bottom: 2px;
+		line-height: 32px;
+	}
+
+	.playerNameInline {
+		display: inline-block;
+	}
+
+	.teamSelector {
+		padding: 0px 4px;
+		vertical-align: 2px;
+		min-height: 5px;
+		font-size: 18px;
+		margin: 0;
+		margin-right: 2px;
+	}
+
+	.teamEmpty {
+		opacity: 0.75;
 	}
 
 	.publicRoomTooltip {
@@ -400,18 +490,10 @@
 		width: 30px;
 		border-radius: 10px;
 		text-align: center;
-		color: rgba(255, 255, 255, 0.75);
+		color: rgba(255, 255, 255, 0.5);
 		font-size: 22px;
 		text-overflow: ellipsis;
 		overflow: hidden;
-	}
-
-	#teamsDisplayText {
-		padding-inline: 40px;
-		opacity: 0.5;
-		font-size: 22px;
-		overflow: hidden;
-		text-overflow: ellipsis;
 	}
 
 	#innerSubmitAreaBlock {
