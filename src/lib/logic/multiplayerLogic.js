@@ -37,7 +37,6 @@ import { goto } from "$app/navigation";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { showNotification } from "$lib/utils/notifications";
 import PlayPeer from "playpeerjs";
-import { buildTeamDisplayText } from "$lib/utils/buildTeamDisplayText";
 import { getMapBounds } from "$lib/utils/getMapBounds";
 import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -216,8 +215,6 @@ export async function createPeerInstance() {
                     setRestriction(storage.restriction);
                     if (storage.restriction !== "standard" && storage.restriction) modeText.set(get(modeText) + " (" + storage.restriction + ")");
                 }
-
-                if (storage.players) buildTeamDisplayText(get(peer)?.getStorage?.players);
 
                 if (storage.confirmedArray && storage.players) {
                     const confirmedIDs = new Set(storage.confirmedArray); // Convert confirmedArray to a Set for efficient lookups
@@ -559,6 +556,7 @@ function getTeamColorName(teamIndex) {
 
 let teams = [];
 
+// Sort teams
 function updateMultiplayerTableArray() {
     const players = get(peer)?.getStorage?.players;
 
@@ -567,6 +565,7 @@ function updateMultiplayerTableArray() {
         return;
     }
 
+    // Group players by team
     const groupedTeams = players.reduce((acc, player) => {
         const teamIndex = player[4];
         if (!acc[teamIndex]) {
@@ -577,6 +576,16 @@ function updateMultiplayerTableArray() {
         return acc;
     }, {});
 
+    // Ensure all team numbers from 1 to teamAmount exist (even empty teams)
+    const totalTeamAmount = get(teamAmount);
+    for (let i = 1; i <= totalTeamAmount; i++) {
+        if (!groupedTeams[i]) {
+            teams[i] = { color: generateColorForTeam(i), colorName: getTeamColorName(i) };
+            groupedTeams[i] = { ...teams[i], teamIndex: i, players: [] };
+        }
+    }
+
+    // Sort and set the array
     multiplayerTableArray.set(
         Object.values(groupedTeams)
             .map(team => ({
