@@ -369,6 +369,7 @@
 		align-items: center;
 		width: 100%;
 		margin-top: 20px;
+		margin-bottom: 30px;
 		padding: 5px;
 		padding-inline: 0;
 		max-width: 850px;

@@ -86,10 +86,6 @@
 		vertical-align: -5px;
 	}
 
-	.backButton:hover {
-		filter: brightness(0.7);
-	}
-
 	.menuNavBar {
 		position: fixed;
 		top: 0;
@@ -112,7 +108,6 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding-bottom: 30px;
 	}
 
 	.container {
