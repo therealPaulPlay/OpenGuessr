@@ -316,7 +316,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		min-height: 50dvh;
+		min-height: calc(100dvh - 120px);
 	}
 
 	.teamsDisplay {
@@ -332,12 +332,13 @@
 	}
 
 	.multiplayerCreationArea {
-		margin-top: auto;
 		display: flex;
 		align-items: center;
 		flex-direction: column;
 		width: 100%;
 		max-width: 500px;
+		margin-top: auto;
+		margin-bottom: auto;
 	}
 
 	.codeDisplayText {

@@ -45,7 +45,7 @@
 	}
 
 	.pinHolder:hover {
-		scale: 1.03;
+		scale: 0.97;
 		filter: brightness(1.3);
 	}
 

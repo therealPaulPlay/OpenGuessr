@@ -113,7 +113,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						divisionMatchHistoryPopup.set(true);
-					}}>History <History size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 2px" /></button
+					}}>History <History size={19} strokeWidth={2.5} style="margin-bottom: -3px; margin-left: 2px" /></button
 				>
 			</div>
 			<div class="groupPartyContent">
@@ -300,8 +300,8 @@
 <style>
 	.infoContainer {
 		display: flex;
-		padding: 10px;
-		width: calc(100% - 20px);
+		padding: 8px;
+		width: calc(100% - 16px);
 		border-radius: 15px;
 		align-items: center;
 		background-color: var(--box-color);
@@ -319,6 +319,7 @@
 	}
 
 	.infoIcon {
+		margin-inline: 1px;
 		margin-right: 5px;
 	}
 
@@ -326,11 +327,10 @@
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
-		padding: 10px;
-		width: calc(100% - 20px);
+		width: calc(100% - 10px);
 		border-radius: 8px;
 		gap: 10px;
-		background-color: var(--box-color);
+		padding: 5px;
 		margin-top: 15px;
 		overflow: hidden;
 		overflow-y: auto;
@@ -341,9 +341,10 @@
 	.matchHistoryButton {
 		background-color: var(--box-color);
 		padding-top: 0;
-		padding-bottom: 0;
+		padding-bottom: 3px;
 		border: none;
 		margin: 0;
+		min-height: 20px;
 	}
 
 	.divisionLeaderboardEntry {
@@ -367,10 +368,10 @@
 	}
 
 	.leaderboardSection {
-		width: calc(100% - 20px);
+		width: calc(100% - 16px);
 		background-color: var(--box-color);
 		border-radius: 15px;
-		padding: 10px;
+		padding: 8px;
 		min-height: 30px;
 		display: flex;
 		flex-wrap: wrap;
@@ -478,14 +479,15 @@
 	}
 
 	.moreContainer {
-		width: calc(100% - 20px);
+		width: calc(100% - 16px);
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-between;
 		background-color: var(--box-color);
 		border-radius: 15px;
 		gap: 10px;
-		padding: 10px;
+		padding: 8px;
+		margin-bottom: 20px;
 	}
 
 	.headerMarginTop {
@@ -508,14 +510,14 @@
 		padding: 10px;
 		padding-inline: 5px !important;
 		padding-left: 12px;
+		padding-bottom: 11px;
 		height: 50px;
 		align-items: center;
 		justify-content: space-between;
 		border: none;
-		box-shadow: none;
 		gap: 3px;
 		flex-grow: 1;
-		max-width: 350px;
+		max-width: 40%;
 		overflow: hidden;
 		margin: 0;
 	}
@@ -557,15 +559,14 @@
 		flex-grow: 1.5;
 		flex-basis: 0;
 		background-color: var(--box-color);
-		padding: 10px;
-		padding: 10px;
+		padding: 8px;
 		border-radius: 15px;
 	}
 
 	.groupPartyContent {
 		width: 100%;
 		display: flex;
-		gap: 10px;
+		gap: 8px;
 	}
 
 	.multiplayerSelect {

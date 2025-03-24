@@ -194,7 +194,7 @@
 					}}
 				></textarea>
 			{/if}
-			<h3>User Stats:</h3>
+			<h3 class="categoryHeader">User Stats:</h3>
 			<div id="profileStats" class="statisticView">
 				<div class="statisticsEnclosure">
 					<p class="statsLabel">Experience:</p>
@@ -236,7 +236,7 @@
 				</div>
 			</div>
 			{#if $profileId == localStorage.getItem("id")}
-				<h3 id="accountManagementHeader">Account Management:</h3>
+				<h3 class="categoryHeader">Account Management:</h3>
 				<div id="accountManagementArea" class="managementBox">
 					<div class="editNameSection">
 						<button
@@ -384,6 +384,10 @@
 		margin-top: 10px;
 	}
 
+	.categoryHeader {
+		margin-top: 15px;
+	}
+
 	#profileViewName {
 		overflow: hidden;
 		text-wrap: nowrap;
@@ -487,7 +491,6 @@
 		color: white;
 		padding: 15px;
 		margin-top: 5px;
-		margin-bottom: 10px;
 		font-size: 25px;
 		scrollbar-width: none;
 	}

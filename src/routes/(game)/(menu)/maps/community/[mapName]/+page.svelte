@@ -546,7 +546,7 @@
 		flex-wrap: wrap;
 		width: 100%;
 		border-radius: 10px;
-		padding: 10px;
+		padding: 8px;
 		gap: 10px;
 		background-color: var(--box-color);
 		position: relative;
