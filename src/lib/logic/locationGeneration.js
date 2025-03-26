@@ -74,7 +74,7 @@ async function getCoordsFromLocationServer() {
             const indexes = Array.from({ length: 5 }, () => getUniqueLocationIndex(totalAmount));
 
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 1500); // Abort slow requests
+            const timeoutId = setTimeout(() => controller.abort("Locations took longer than 1.5s to load."), 1500); // Abort slow requests
 
             try {
                 const response = await fetch(`${locationEndpoint}`, {
@@ -115,7 +115,7 @@ let standardLocationAmount;
 async function getStandardLocationAmount() {
     if (!standardLocationAmount) {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 1000); // timeout
+        const timeoutId = setTimeout(() => controller.abort("Location count took longer than 1s to load."), 1000); // timeout
 
         try {
             const response = await fetch(locationLengthEndpoint, {
