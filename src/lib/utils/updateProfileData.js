@@ -12,7 +12,7 @@ async function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addC
         // about text
         let aboutText;
         aboutText = yourLoadedProfileData?.about || "";
-        if (newAboutText) aboutText = newAboutText;
+        if (newAboutText != null) aboutText = newAboutText;
 
         // duels played
         let duelsPlayed;
@@ -66,8 +66,8 @@ async function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addC
     }
 }
 
-export async function saveProfileAboutIfYourProfileAndChanges(newAbout) {
-    if (get(profileId) == localStorage.getItem("id") && get(unsavedAboutChanges)) {
+export async function saveProfileAboutIfChanges(newAbout) {
+    if (get(unsavedAboutChanges)) {
         updateProfileData(newAbout);
         unsavedAboutChanges.set(false);
     }

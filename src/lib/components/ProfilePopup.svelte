@@ -12,7 +12,7 @@
 	import { confirmPasswordValue, confirmUsernameValue } from "$lib/stores/context-specific/confirmPopupStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { filterProfanity } from "$lib/utils/profanityCheck";
-	import { saveProfileAboutIfYourProfileAndChanges } from "$lib/utils/updateProfileData";
+	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
 	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
 	import * as FlagIcons from "svelte-flag-icons";
@@ -194,7 +194,7 @@
 					}}
 				></textarea>
 			{/if}
-			<h3 class="categoryHeader">User Stats:</h3>
+			<h3 class="categoryHeader categoryHeaderNoMarginTop">User Stats:</h3>
 			<div id="profileStats" class="statisticView">
 				<div class="statisticsEnclosure">
 					<p class="statsLabel">Experience:</p>
@@ -300,7 +300,7 @@
 			class="standardButton white closeButton"
 			onclick={() => {
 				playSound("basic_button");
-				if (textarea) saveProfileAboutIfYourProfileAndChanges(textarea.value);
+				if ($profileId == localStorage.getItem("id")) saveProfileAboutIfChanges(textarea?.value?.trim());
 				profilePopup.set(false);
 			}}>Close</button
 		>
@@ -386,6 +386,10 @@
 
 	.categoryHeader {
 		margin-top: 15px;
+	}
+
+	.categoryHeaderNoMarginTop {
+		margin-top: 0;
 	}
 
 	#profileViewName {
@@ -491,6 +495,7 @@
 		color: white;
 		padding: 15px;
 		margin-top: 5px;
+		margin-bottom: 15px;
 		font-size: 25px;
 		scrollbar-width: none;
 	}
