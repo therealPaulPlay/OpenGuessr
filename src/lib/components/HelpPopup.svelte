@@ -74,7 +74,7 @@
 		</div>
 
 		<button class="standardButton closeButton white" onclick={handleNext}>
-			{currentSlide === slides.length - 1 ? "Let's go!" : "Next"}
+			{`${currentSlide != 2 ? "Next" : "Let's go!"} (${currentSlide + 1}/${slides.length})`}
 		</button>
 	</Popup>
 {/if}
