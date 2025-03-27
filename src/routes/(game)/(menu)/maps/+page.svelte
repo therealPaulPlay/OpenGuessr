@@ -227,7 +227,7 @@
 		{/each}
 	</div>
 	<div class="headerContainer">
-		<h2 class="header">Special Games</h2>
+		<h2 class="header">Special Modes</h2>
 	</div>
 	<div class="map-container">
 		{#each $specialModes as map}

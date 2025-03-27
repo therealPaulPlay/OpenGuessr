@@ -286,7 +286,7 @@
 				playSound("basic_button");
 				troubleshootPopup.set(true);
 			}}
-			>Troubleshooting Guide
+			>Troubleshooting guide
 			<img
 				class="multiplayerMenuIcon"
 				src="/img/error_icon.png"
