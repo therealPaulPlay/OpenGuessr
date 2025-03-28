@@ -6,6 +6,7 @@
 
 	import { settingsPopup } from "$lib/stores/uiStore";
 	import { Scan } from "lucide-svelte";
+	import Tabs from "./Tabs.svelte";
 
 	// Settings - Window ---------------------------------------------------------------------------------------
 	function closeSettingsButton() {
@@ -14,40 +15,14 @@
 	}
 
 	// Unit switch between kilometers and miles ------------------
-	let kilometersButtonOpacity = $state(1);
-	let milesButtonOpacity = $state(1);
+	let selectedUnit = $state("Metric");
 
 	onMount(() => {
 		const tempStorageDistanceUnit = localStorage.getItem("distanceUnit");
-
 		if (tempStorageDistanceUnit != null) {
-			setDistanceUnitButtons(tempStorageDistanceUnit);
-		} else {
-			setDistanceUnitButtons("kilometers");
+			selectedUnit = tempStorageDistanceUnit == "kilometers" ? "Metric" : "Imperial";
 		}
 	});
-
-	function setDistanceUnitButtons(unit) {
-		if (unit == "miles") {
-			kilometersButtonOpacity = 0.5;
-			milesButtonOpacity = 1;
-		} else {
-			milesButtonOpacity = 0.5;
-			kilometersButtonOpacity = 1;
-		}
-	}
-
-	function setUnitKilometers() {
-		setDistanceUnitButtons("kilometers");
-		playSound("basic_button");
-		localStorage.setItem("distanceUnit", "kilometers");
-	}
-
-	function setUnitMiles() {
-		setDistanceUnitButtons("miles");
-		playSound("basic_button");
-		localStorage.setItem("distanceUnit", "miles");
-	}
 
 	// SFX Volume -----------------------------
 
@@ -124,18 +99,14 @@
 		<div class="settingsCanvas">
 			<div class="settingsBox">
 				<p class="slightBottomMargin">Unit System:</p>
-				<button
-					id="unitSwitchKilometers"
-					class="standardButton white"
-					style:opacity={kilometersButtonOpacity}
-					onclick={setUnitKilometers}>Metric</button
-				>
-				<button
-					id="unitSwitchMiles"
-					class="standardButton white"
-					style:opacity={milesButtonOpacity}
-					onclick={setUnitMiles}>Imperial</button
-				>
+				<Tabs
+					tabs={["Metric", "Imperial"]}
+					bind:selected={selectedUnit}
+					onchange={(tab) => {
+						playSound("basic_button");
+						localStorage.setItem("distanceUnit", tab == "Metric" ? "kilometers" : "miles");
+					}}
+				/>
 			</div>
 			<div class="settingsBox">
 				<p>SFX Volume:</p>
@@ -144,7 +115,7 @@
 					min="0"
 					max="1"
 					step="0.01"
-					class="slider"
+					class="slider sliderMarginTop"
 					bind:value={sfxVolumeSliderValue}
 					style:background={sfxSliderBg}
 					oninput={inputSFXVolumeSlider}
@@ -200,5 +171,9 @@
 
 	.fullscreenIcon {
 		margin-right: 3px;
+	}
+
+	.sliderMarginTop {
+		margin-top: 20px;
 	}
 </style>
