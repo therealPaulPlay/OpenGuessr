@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { badgePopup } from "$lib/stores/uiStore";
 	import { ArrowRight } from "lucide-svelte";
@@ -99,10 +99,7 @@
 
 <style>
 	.badgeContainer {
-		width: calc(100% - 10px);
-		padding: 10px;
-		padding-top: 7px;
-		padding-bottom: 7px;
+		width: 100%;
 		max-height: calc(90dvh - 250px);
 		overflow-x: hidden;
 		overflow-y: auto;
@@ -118,7 +115,7 @@
 		background-color: var(--box-color);
 		border-radius: 5px;
 		text-align: left;
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 		padding-left: 10px;
 		display: flex;
 		justify-content: space-between;
@@ -131,11 +128,12 @@
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		padding: 7px;
-		width: calc(100% - 14px);
+		padding: var(--box-margin);
+		width: 100%;
+		box-sizing: border-box;
 		flex-wrap: wrap;
-		gap: 7px;
-		margin-bottom: 10px;
+		gap: var(--box-margin);
+		margin-bottom: var(--box-margin);
 	}
 
 	.unlockBadgeStatus {

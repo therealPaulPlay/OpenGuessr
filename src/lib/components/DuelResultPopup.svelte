@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { duelResultPopup, friendBrowserPopup } from "$lib/stores/uiStore";
 	import { eloChange, duelResultTitle } from "$lib/stores/context-specific/duelResultStore";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";

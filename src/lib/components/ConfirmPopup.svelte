@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import {
 		confirmPopupVisible,
 		confirmUsernameInput,
@@ -77,6 +77,6 @@
 		padding: 5px 15px;
 		font-family: Barlow;
 		width: 40%;
-		margin-top: 15px;
+		margin-top: var(--layout-margin);
 	}
 </style>

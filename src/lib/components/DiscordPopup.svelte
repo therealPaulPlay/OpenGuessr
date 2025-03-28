@@ -1,7 +1,7 @@
 <script>
 	import { discordPopup } from "$lib/stores/uiStore";
 	import { setUserXP } from "$lib/utils/setUserXP";
-	import Popup from "./Popup.svelte";
+	import Popup from "./ui/Popup.svelte";
 	import { experience } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";

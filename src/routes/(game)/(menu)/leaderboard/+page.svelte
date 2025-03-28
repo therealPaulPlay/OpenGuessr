@@ -5,7 +5,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { fade } from "svelte/transition";
-	import Tabs from "$lib/components/Tabs.svelte";
+	import Tabs from "$lib/components/ui/Tabs.svelte";
 
 	// Add leaderboar entries --------------------------------------------------------------------------------------------------------
 	let mainSectionEntries = $state();
@@ -216,7 +216,7 @@
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
 		background: none;
-		margin-bottom: -18px;
+		margin-bottom: -10px;
 	}
 
 	:global(.leaderboardTabs) {
@@ -235,7 +235,6 @@
 		background-color: rgba(255, 255, 255, 0.1);
 		box-sizing: border-box;
 		border-radius: 8px;
-		margin: 10px 0px;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -354,7 +353,7 @@
 		justify-content: center;
 		align-items: center;
 		width: 100%;
-		margin-top: 20px;
+		margin-top: 18px;
 		margin-bottom: 30px;
 		padding: 5px;
 		padding-inline: 0;
@@ -466,6 +465,9 @@
 
 	.item-container {
 		width: 100%;
+		gap: var(--box-margin);
+		display: flex;
+		flex-direction: column;
 	}
 
 	.threeDotsContainer {
@@ -484,20 +486,12 @@
 	}
 
 	@media all and (orientation: portrait) {
-		p {
-			font-size: 20px;
-		}
-
 		.podium-item {
 			border-radius: 10px;
 		}
 
 		.podium-item .rank {
 			font-size: 20px;
-		}
-
-		.podium-item .name {
-			font-size: 25px;
 		}
 
 		.podium-item .podiumExp {
@@ -520,10 +514,6 @@
 			width: 85vw;
 			height: 150px;
 			gap: 5px;
-		}
-
-		.podium-item .name {
-			font-size: 20px;
 		}
 
 		.maxlength {

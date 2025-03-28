@@ -40,10 +40,10 @@
 		justify-content: space-between;
 		align-items: center;
 		transition: filter 250ms ease;
-		gap: 10px;
+		gap: var(--box-margin);
 		padding: 5px;
 		width: calc(100% - 10px);
-		margin-bottom: 15px;
+		margin-bottom: var(--layout-margin);
 	}
 
 	.supporterArea:hover {

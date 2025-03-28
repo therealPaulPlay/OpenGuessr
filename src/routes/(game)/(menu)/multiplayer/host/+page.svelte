@@ -20,7 +20,7 @@
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { toggleMultiplayerRestriction, setupMultiplayerRoom, startRoom } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
-	import Ticker from "$lib/components/Ticker.svelte";
+	import Ticker from "$lib/components/ui/Ticker.svelte";
 	import { goto } from "$app/navigation";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { addPublicRoom, deletePublicRoom } from "$lib/utils/publicRooms";
@@ -175,7 +175,7 @@
 			<!-- Friend invite display -->
 			{#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online)?.length >= 1}
 				<div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
-					<div id="roomCreationFriendsBox" class="roomCreationFriendsBox">
+					<div class="roomCreationFriendsBox">
 						<!-- online players will be added here programmatically -->
 						{#each $loadedFriendsData.filter((value) => value.online) as entry}
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -231,7 +231,7 @@
 								});
 						}}
 					>
-						<Link strokeWidth="2.75" size="18" />
+						<Link strokeWidth={2.75} size={18} />
 					</button>
 					<button
 						class="standardButton white makeRoomPublicButton"
@@ -337,8 +337,13 @@
 		flex-direction: column;
 		width: 100%;
 		max-width: 500px;
+		gap: var(--layout-margin);
 		margin-top: auto;
 		margin-bottom: auto;
+	}
+
+	#friendsInviteDisplay {
+		padding: var(--box-margin-buttons);
 	}
 
 	.codeDisplayText {
@@ -447,18 +452,17 @@
 	}
 
 	.roomCreationModule {
-		margin-top: 8px;
 		padding-top: 10px;
 		padding-bottom: 10px;
 	}
 
-	#roomCreationFriendsBox {
+	.roomCreationFriendsBox {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
 		max-height: 130px;
 		overflow: auto;
-		gap: 5px;
+		gap: var(--box-margin-buttons);
 		width: 100%;
 		transition: max-height 250ms ease;
 	}
@@ -468,13 +472,12 @@
 		flex-wrap: wrap;
 		justify-content: space-around;
 		align-items: center;
-		gap: 5px;
+		gap: var(--box-margin);
 		background-color: var(--box-color);
 		border-radius: 15px;
-		padding: 10px;
+		padding: var(--box-margin);
 		padding-top: 10px;
-		margin-top: 10px;
-		width: calc(100% - 20px);
+		width: calc(100% - var(--box-margin) * 2);
 	}
 
 	#toggleRestrictions {
@@ -501,8 +504,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		margin-top: 10px;
-		gap: 10px;
+		gap: var(--box-margin);
 	}
 
 	.copyLinkButton {
@@ -520,8 +522,6 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		padding: 10px;
-		padding-bottom: 0;
 	}
 
 	#roomCodeDisplay {
@@ -537,7 +537,7 @@
 
 	.selectedMapField {
 		display: flex;
-		gap: 10px;
+		gap: var(--box-margin);
 		border-radius: 10px;
 		justify-content: left;
 		padding: 4px;

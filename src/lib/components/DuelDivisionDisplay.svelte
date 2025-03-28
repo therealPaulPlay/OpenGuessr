@@ -51,7 +51,7 @@
 		border-radius: 15px;
 		background-color: var(--box-color);
 		padding-inline: 25px;
-		margin-bottom: 15px;
+		margin-bottom: var(--layout-margin);
 	}
 
 	.progressBarWrapper {

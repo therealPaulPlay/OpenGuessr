@@ -3,7 +3,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { errorPopup } from "$lib/utils/errorHandling";
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { competitionData } from "$lib/stores/context-specific/competitionStore";
 	import { loadCompetition } from "$lib/logic/competitionLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
@@ -838,13 +838,13 @@
 		display: flex;
 		justify-content: space-between;
 		flex-wrap: wrap;
-		width: calc(100% - 16px);
+		box-sizing: border-box;
 		min-width: 280px;
-		gap: 10px;
+		gap: var(--box-margin);
 		align-items: center;
 		border-radius: 10px;
-		padding: 8px;
-		margin-bottom: 20px;
+		padding: var(--box-margin-buttons);
+		margin-bottom: var(--layout-margin);
 		background-color: var(--box-color);
 	}
 
@@ -899,9 +899,8 @@
 		width: calc(25% - 60px);
 		flex-grow: 1;
 		min-width: 220px;
-		padding: 20px;
+		padding: var(--layout-margin);
 		overflow: hidden;
-		height: fit-content;
 		flex-basis: 25%;
 	}
 
@@ -941,10 +940,10 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 		flex-wrap: wrap;
 		border-radius: 5px;
-		gap: 10px;
+		gap: var(--box-margin);
 	}
 
 	.propertyItem {
@@ -1004,8 +1003,8 @@
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
-		gap: 20px;
-		padding-bottom: 20px;
+		gap: var(--layout-margin);
+		margin-bottom: var(--layout-margin);
 		justify-content: flex-start;
 	}
 
@@ -1025,17 +1024,16 @@
 		display: flex;
 		justify-content: safe center;
 		flex-direction: column;
-		width: calc(100% - 10px);
-		border-radius: 5px;
-		max-height: calc(70dvh - 250px);
+		box-sizing: border-box;
+		border-radius: 10px;
+		max-height: calc(70dvh - 245px);
 		overflow-x: hidden;
 		overflow-y: auto;
 		scrollbar-width: none;
-		padding: 5px;
 		background-color: var(--box-color);
-		gap: 10px;
+		gap: var(--box-margin);
 		margin-top: 30px;
-		outline: 5px solid var(--box-color);
+		border: var(--box-margin) solid transparent;
 	}
 
 	.rankItem {
@@ -1103,7 +1101,7 @@
 	.loadMore {
 		border-radius: 10px;
 		width: 200px;
-		padding: 10px;
+		padding: var(--box-margin);
 		margin-bottom: 30px;
 		margin-left: calc(50% - 100px);
 	}

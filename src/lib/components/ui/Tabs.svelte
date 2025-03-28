@@ -17,10 +17,7 @@
 
 <div class="tabs-group {className}">
 	{#each tabs as tab}
-		<button
-			class="tab-button standardButton white {selected === tab ? 'active' : ''}"
-			onclick={() => selectTab(tab)}
-		>
+		<button class="tab-button standardButton white {selected === tab ? 'active' : ''}" onclick={() => selectTab(tab)}>
 			{tab}
 		</button>
 	{/each}
@@ -30,13 +27,14 @@
 	.tabs-group {
 		border-radius: 5px;
 		width: fit-content;
+        margin: 2px;
 		display: flex;
 		overflow: hidden;
 		border: 3px solid rgba(255, 255, 255, 0.3);
 		box-sizing: border-box;
 		box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
 		transition: transform 150ms ease;
-		max-width: 100%;
+		max-width: calc(100% - 4px);
 	}
 
 	.tabs-group:has(button:active) {

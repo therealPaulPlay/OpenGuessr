@@ -1,12 +1,12 @@
 <script>
-	import Popup from "./Popup.svelte";
+	import Popup from "./ui/Popup.svelte";
 	import { onMount, onDestroy } from "svelte";
 	import { setSoundsVolume, playSound } from "$lib/utils/soundManager";
 	import { preventFullscreen, preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
 
 	import { settingsPopup } from "$lib/stores/uiStore";
 	import { Scan } from "lucide-svelte";
-	import Tabs from "./Tabs.svelte";
+	import Tabs from "./ui/Tabs.svelte";
 
 	// Settings - Window ---------------------------------------------------------------------------------------
 	function closeSettingsButton() {
@@ -98,7 +98,7 @@
 		</div>
 		<div class="settingsCanvas">
 			<div class="settingsBox">
-				<p class="slightBottomMargin">Unit System:</p>
+				<p class="textMargin">Unit System:</p>
 				<Tabs
 					tabs={["Metric", "Imperial"]}
 					bind:selected={selectedUnit}
@@ -109,7 +109,7 @@
 				/>
 			</div>
 			<div class="settingsBox">
-				<p>SFX Volume:</p>
+				<p class="textMargin">SFX Volume:</p>
 				<input
 					type="range"
 					min="0"
@@ -123,7 +123,7 @@
 			</div>
 			{#if !$preventFullscreen}
 				<div class="settingsBox">
-					<p class="slightBottomMargin">Toggle Fullscreen:</p>
+					<p class="textMargin">Toggle Fullscreen:</p>
 					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
 						<span class="fullscreenIcon">
 							<Scan size="17" strokeWidth={3} />
@@ -133,7 +133,7 @@
 				</div>
 			{/if}
 			<div class="settingsBox">
-				<p class="slightBottomMargin">Legal Information:</p>
+				<p class="textMargin">Legal Information:</p>
 				<button
 					class="standardButton white"
 					id="privacyButton"
@@ -152,7 +152,7 @@
 	.settingsBox {
 		background-color: var(--box-color);
 		border-radius: 10px;
-		padding: 15px;
+		padding: var(--box-margin);
 		height: 80px;
 		overflow: hidden;
 		flex-grow: 1;
@@ -162,11 +162,16 @@
 	.settingsCanvas {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 10px;
+		gap: 15px;
 		justify-content: flex-start;
 		align-items: center;
 		max-height: calc(100dvh - 250px);
 		overflow-y: auto;
+	}
+
+	.textMargin {
+		margin-inline: 5px;
+		margin-bottom: 10px;
 	}
 
 	.fullscreenIcon {
@@ -175,5 +180,6 @@
 
 	.sliderMarginTop {
 		margin-top: 20px;
+		margin-left: 5px;
 	}
 </style>

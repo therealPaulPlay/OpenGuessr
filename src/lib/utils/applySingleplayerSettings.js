@@ -30,7 +30,7 @@ export function applySingleplayerSettings() {
 
     // Now, enable what's needed if in Singleplayer
     if (get(singleplayer)) {
-        
+
         // Timer
         if (get(singleplayerTimeout)) {
             mapModeIndicatorVisible.set(true);

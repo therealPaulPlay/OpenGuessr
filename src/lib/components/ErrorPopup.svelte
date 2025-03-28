@@ -10,7 +10,7 @@
 		closeButtonText,
 	} from "$lib/stores/context-specific/errorPopupStore";
 
-	import Popup from "./Popup.svelte";
+	import Popup from "./ui/Popup.svelte";
 	import { get } from "svelte/store"; // Import get from svelte/store
 
 	function closePopup() {
@@ -54,7 +54,7 @@
 		font-size: 14px;
 		line-height: 22px;
 		font-family: monospace;
-		margin-top: 20px;
+		margin-top: 10px;
 	}
 
 	#errorPopupDisable {

@@ -8,7 +8,7 @@
 	import { changeCategory } from "$lib/utils/changeCategory";
 	import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Dices } from "lucide-svelte";
 	import { playSound } from "$lib/utils/soundManager";
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
 	import { panoramaKey } from "$lib/stores/locationStore";
 	import { onMount } from "svelte";
@@ -239,9 +239,9 @@
 			}}
 		>
 			{#if isLiked}
-				<HeartOff />
+				<HeartOff style="margin-top: 2px;" />
 			{:else}
-				<Heart />
+				<Heart style="margin-top: 2px;" />
 			{/if}
 			<p id="likesText">{likesCount}</p>
 		</button>
@@ -265,7 +265,7 @@
 						});
 				}}
 			>
-				<Link strokeWidth={2} size={18} />
+				<Link strokeWidth={2.75} size={18} />
 			</button>
 			{#if mapAuthorId == playerId && playerId}
 				<button
@@ -274,7 +274,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						deleteMapScreen(mapName);
-					}}><Trash2 size={18} /></button
+					}}><Trash2 size={18} strokeWidth={2.75} /></button
 				>
 				<button
 					id="manageUpdate"
@@ -283,7 +283,7 @@
 						playSound("basic_button");
 						updatePopup = true;
 						showStatus = false;
-					}}><Replace size={18} /></button
+					}}><Replace size={18} strokeWidth={2.75} /></button
 				>
 			{/if}
 		</div>
@@ -304,7 +304,7 @@
 	<div class="information">
 		<div class="locationAmountInfo infoElement">
 			<div class="pinIconContainer">
-				<MapPin size={100} strokeWidth={1} />
+				<MapPin size={100} strokeWidth={0.75} />
 			</div>
 			<h2 class="locationAmountText">{mapLocationAmount.toLocaleString()} Locations</h2>
 		</div>
@@ -519,7 +519,7 @@
 	.information {
 		width: 100%;
 		display: flex;
-		gap: 20px;
+		gap: var(--layout-margin);
 	}
 
 	.nameContainer {
@@ -539,15 +539,15 @@
 
 	.buttonToolbar {
 		margin-top: 50px;
-		margin-bottom: 20px;
+		margin-bottom: var(--layout-margin);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		flex-wrap: wrap;
 		width: 100%;
 		border-radius: 10px;
-		padding: 8px;
-		gap: 10px;
+		padding: var(--box-margin-buttons);
+		gap: var(--box-margin-buttons);
 		background-color: var(--box-color);
 		position: relative;
 	}
@@ -580,7 +580,7 @@
 		max-height: 650px;
 		border-radius: 10px;
 		overflow: hidden;
-		margin-bottom: 20px;
+		margin-bottom: var(--layout-margin);
 		opacity: 0.8;
 		position: relative;
 		background-color: rgb(27, 27, 37);
@@ -591,25 +591,18 @@
 		height: 100%;
 	}
 
-	#likesText {
-		opacity: 0.5;
-		margin-top: 5px;
-		margin-bottom: 3px;
-		margin-left: 12px;
-		font-size: 22px;
-	}
-
 	#likeMap {
 		margin-left: auto;
 		padding-inline: 12px;
+		border-radius: 10px;
 		display: flex;
+		gap: var(--box-margin);
+		min-height: 50px;
 		align-items: center;
 		padding-bottom: 5px;
 		padding-top: 5px;
 		margin-top: auto;
 		margin-bottom: auto;
-		background-color: var(--box-color);
-		border: none;
 	}
 
 	.playButton {

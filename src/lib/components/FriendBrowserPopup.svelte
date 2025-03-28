@@ -1,6 +1,6 @@
 <!-- A popup where you can search for other players and send out friend requests -->
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { friendBrowserPopup } from "$lib/stores/uiStore";
 	import { errorPopup } from "$lib/utils/errorHandling";
@@ -53,7 +53,7 @@
 		<div class="popup-title">
 			<h1 id="friendBrowserHeader">Search players</h1>
 		</div>
-		<search id="playerSearch">
+		<search class="playerSearch">
 			<input
 				maxlength="255"
 				type="text"
@@ -138,18 +138,15 @@
 
 	.playerSearchBox {
 		position: relative;
-		width: calc(100% - 13px);
-		border-radius: 5px;
+		box-sizing: border-box;
+		border-radius: 10px;
 		max-height: 50vh;
 		min-height: 20vh;
 		overflow-x: hidden;
 		overflow-y: auto;
-		padding: 2px;
 		background-color: var(--box-color);
-		gap: 10px;
-		margin-top: 10px;
-		margin-inline: 5px;
-		outline: 5px solid var(--box-color);
+		margin-top: var(--box-margin);
+		border: var(--box-margin) solid transparent;
 		scrollbar-width: none;
 	}
 
@@ -169,14 +166,14 @@
 
 	.friendSearchItem {
 		display: flex;
-		gap: 5px;
-		margin-bottom: 10px;
+		gap: var(--box-margin-buttons);
+		margin-bottom: var(--box-margin);
 		justify-content: space-between;
 		align-items: center;
 		border-radius: 5px;
-		padding: 5px;
-		padding-inline: 15px;
-		width: calc(100% - 30px);
+		padding: var(--box-margin-buttons);
+		padding-inline: 20px;
+		width: calc(100% - 40px);
 		transition: background-color 250ms ease;
 		background-color: var(--box-color);
 	}
@@ -205,9 +202,10 @@
 		flex-grow: 1;
 	}
 
-	#playerSearch {
-		margin-bottom: 20px;
+	.playerSearch {
+		margin-bottom: var(--layout-margin);
 		height: 45px;
+		gap: var(--layout-margin);
 	}
 
 	#startFriendSearch {

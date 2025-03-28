@@ -53,11 +53,11 @@
 	}
 
 	.uiWindow {
-		width: 45%;
+		width: 65%;
 		min-width: 300px;
 		max-width: 800px;
 		max-height: 90%;
-		padding: 25px 25px 10px;
+		padding: 25px;
 		border-radius: 10px;
 		text-align: left;
 		z-index: 900;

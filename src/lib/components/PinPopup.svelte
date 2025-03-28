@@ -1,6 +1,6 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
-	import PinHolder from "./pinHolder.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
+	import PinHolder from "./PinHolder.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { pinPopup } from "$lib/stores/uiStore";
 	import { profileData, profileExperience, profileSupporterLevel } from "$lib/stores/context-specific/profileStore";
@@ -47,8 +47,8 @@
 		margin-left: 0;
 		background-color: rgba(30, 31, 44, 0.5);
 		border-radius: 10px;
-		gap: 10px;
-		border: solid 10px transparent;
+		gap: var(--box-margin);
+		border: solid var(--box-margin) transparent;
 		box-sizing: border-box;
 		flex-wrap: wrap;
 	}

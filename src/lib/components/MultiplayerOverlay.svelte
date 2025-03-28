@@ -212,13 +212,12 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		flex-direction: column;
-		gap: 5px;
+		gap: var(--box-margin);
 	}
 
 	.multiplayerOverlayEntry {
 		background-color: rgba(0, 0, 0, 0.1);
 		border-radius: 5px;
-		margin-bottom: 5px;
 		width: 100%;
 	}
 
@@ -230,7 +229,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		gap: 5px;
+		gap: var(--box-margin);
 		padding-inline: 20px;
 		text-wrap: nowrap;
 		overflow: hidden;
