@@ -688,4 +688,10 @@
 			margin-top: 15px;
 		}
 	}
+
+	@media all and (max-width: 768px) {
+		#profileAbout { 
+			height: 85px;
+		}
+	}
 </style>

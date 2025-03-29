@@ -42,9 +42,7 @@
 		justify-content: flex-start;
 		align-items: center;
 		max-width: 100%;
-		margin: 10px;
 		width: fit-content;
-		margin-left: 0;
 		background-color: rgba(30, 31, 44, 0.5);
 		border-radius: 10px;
 		gap: var(--box-margin);

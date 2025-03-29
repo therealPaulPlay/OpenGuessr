@@ -273,7 +273,7 @@
 	.continentTitle {
 		padding: 3px;
 		background-color: var(--box-color);
-		border-radius: 5px;
+		border-radius: 10px;
 		text-align: left;
 		padding-left: 10px;
 		border-bottom-right-radius: 0;
@@ -281,7 +281,7 @@
 	}
 
 	.continent-section {
-		margin-bottom: 30px;
+		margin-bottom: var(--layout-margin);
 	}
 
 	.flagSelected {
@@ -296,10 +296,10 @@
 		align-items: center;
 		width: fit-content;
 		margin-left: 0;
-		padding: 8px;
+		padding: var(--box-margin-buttons);
 		min-width: calc(100% - 16px);
 		background-color: rgba(30, 31, 44, 0.5);
-		border-radius: 5px;
+		border-radius: 10px;
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
 		gap: 10px;
