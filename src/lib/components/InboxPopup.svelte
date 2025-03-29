@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { inboxPopup } from "$lib/stores/uiStore";
 	import { inboxIconNew, inboxContent } from "$lib/stores/context-specific/inboxStore";
 	import { loadInbox } from "$lib/logic/friendAPI";
@@ -92,11 +92,11 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 5px;
+		padding: var(--box-margin-buttons);
 		padding-inline: 15px;
 		margin-bottom: 10px;
 		transition: background-color 250ms ease;
-		gap: 10px;
+		gap: var(--box-margin-buttons);
 		cursor: pointer;
 	}
 
@@ -116,19 +116,16 @@
 	}
 
 	.playerSearchBox {
-		width: calc(100% - 13px);
-		border-radius: 5px;
 		position: relative;
+		box-sizing: border-box;
+		border-radius: 10px;
 		max-height: 50vh;
 		min-height: 20vh;
 		overflow-x: hidden;
 		overflow-y: auto;
-		padding: 2px;
 		background-color: var(--box-color);
-		gap: 10px;
-		margin-top: 10px;
-		margin-inline: 5px;
-		outline: 5px solid var(--box-color);
+		margin-top: var(--box-margin);
+		border: var(--box-margin) solid transparent;
 		scrollbar-width: none;
 	}
 
@@ -143,7 +140,7 @@
 		display: flex;
 		width: fit-content;
 		overflow: hidden;
-		gap: 5px;
+		gap: var(--box-margin-buttons);
 		margin-right: -7px;
 		flex-grow: 5;
 		max-width: fit-content;

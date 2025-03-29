@@ -5,6 +5,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { fade } from "svelte/transition";
+	import Tabs from "$lib/components/ui/Tabs.svelte";
 
 	// Add leaderboar entries --------------------------------------------------------------------------------------------------------
 	let mainSectionEntries = $state();
@@ -61,18 +62,18 @@
 
 	// Filter / Sort Options -------------------------------------------------------------------------------------------------
 
-	let filter = $state("all");
+	let filter = $state("All");
 
 	function loadCorrectLeaderboard() {
 		mainSectionEntries = undefined;
 		userSectionEntries = undefined;
 
 		switch (filter) {
-			case "all":
+			case "All":
 				loadLeaderboard("experience");
 				potentialUserLeaderboardType = "experience";
 				break;
-			case "supporter":
+			case "Supporters":
 				loadLeaderboard("experience-supporter");
 				potentialUserLeaderboardType = "none";
 				break;
@@ -128,26 +129,15 @@
 	</div>
 </div>
 <div class="optionBar">
-	<button
-		id="filterAll"
-		class="standardButton white optionButton"
-		class:optionButtonSelected={filter == "all"}
-		onclick={() => {
-			filter = "all";
-			playSound("basic_button");
+	<Tabs
+		tabs={["All", "Supporters"]}
+		class="leaderboardTabs"
+		onchange={(selection) => {
+			filter = selection;
 			loadCorrectLeaderboard();
-		}}>All</button
-	>
-	<button
-		id="filterSupporter"
-		class="standardButton white optionButton"
-		class:optionButtonSelected={filter == "supporter"}
-		onclick={() => {
-			filter = "supporter";
 			playSound("basic_button");
-			loadCorrectLeaderboard();
-		}}>Supporters</button
-	>
+		}}
+	/>
 </div>
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="leaderboardContainer">
@@ -222,25 +212,21 @@
 		padding: 8px;
 		overflow-x: auto;
 		margin-inline: auto;
-		margin-bottom: 18px;
 		width: fit-content;
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
 		background: none;
-		margin-bottom: -22px;
+		margin-bottom: -10px;
 	}
 
-	.optionButton {
-		border-radius: 7px;
+	:global(.leaderboardTabs) {
+		border-radius: 10px !important;
+	}
+
+	:global(.leaderboardTabs button) {
 		min-height: 25px;
 		opacity: 0.5;
 		width: 130px;
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	.optionButtonSelected {
-		opacity: 1;
 	}
 
 	.rankedItem {
@@ -249,7 +235,6 @@
 		background-color: rgba(255, 255, 255, 0.1);
 		box-sizing: border-box;
 		border-radius: 8px;
-		margin: 10px 0px;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -368,7 +353,7 @@
 		justify-content: center;
 		align-items: center;
 		width: 100%;
-		margin-top: 20px;
+		margin-top: 18px;
 		margin-bottom: 30px;
 		padding: 5px;
 		padding-inline: 0;
@@ -480,6 +465,9 @@
 
 	.item-container {
 		width: 100%;
+		gap: var(--box-margin);
+		display: flex;
+		flex-direction: column;
 	}
 
 	.threeDotsContainer {
@@ -498,21 +486,12 @@
 	}
 
 	@media all and (orientation: portrait) {
-		p,
-		.optionButton {
-			font-size: 20px;
-		}
-
 		.podium-item {
 			border-radius: 10px;
 		}
 
 		.podium-item .rank {
 			font-size: 20px;
-		}
-
-		.podium-item .name {
-			font-size: 25px;
 		}
 
 		.podium-item .podiumExp {
@@ -535,10 +514,6 @@
 			width: 85vw;
 			height: 150px;
 			gap: 5px;
-		}
-
-		.podium-item .name {
-			font-size: 20px;
 		}
 
 		.maxlength {

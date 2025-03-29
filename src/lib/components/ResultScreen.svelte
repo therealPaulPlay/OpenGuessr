@@ -190,8 +190,8 @@
 		color: white;
 		max-width: 750px;
 		flex-wrap: wrap;
-		gap: 10px;
-		padding: 8px;
+		gap: var(--box-margin-buttons);
+		padding: var(--box-margin-buttons);
 		margin-inline: 10px;
 	}
 
@@ -201,7 +201,7 @@
 		align-items: center;
 		background-color: rgba(255, 255, 255, 0.075);
 		border-radius: 5px;
-		padding: 10px;
+		padding: var(--box-margin);
 		flex-grow: 10;
 		position: relative;
 		transition:

@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { helpPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { Search, Goal, Users } from "lucide-svelte";
@@ -74,7 +74,7 @@
 		</div>
 
 		<button class="standardButton closeButton white" onclick={handleNext}>
-			{currentSlide === slides.length - 1 ? "Let's go!" : "Next"}
+			{`${currentSlide != 2 ? "Next" : "Let's go!"} (${currentSlide + 1}/${slides.length})`}
 		</button>
 	</Popup>
 {/if}
@@ -90,7 +90,7 @@
 	.slide-description {
 		margin-left: 35px;
 		opacity: 0.75;
-		margin-bottom: 15px;
+		margin-bottom: var(--layout-margin);
 	}
 
 	.slide-image {
@@ -105,7 +105,7 @@
 		flex-wrap: wrap;
 		align-items: center;
 		gap: 10px;
-		margin-top: 15px;
+		margin-top: var(--layout-margin);
 	}
 
 	.indicator-container {

@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { divisionMatchHistoryPopup } from "$lib/stores/uiStore";
 	import { errorPopup } from "$lib/utils/errorHandling";
@@ -209,7 +209,7 @@
 	.topPopupFlex {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 10px;
+		gap: var(--layout-margin);
 	}
 
 	.historyBox {
@@ -222,10 +222,10 @@
 		overflow-y: auto;
 		padding: 2px;
 		background-color: var(--box-color);
-		margin-top: 15px;
+		margin-top: 20px;
 		margin-inline: 5px;
 		outline: 5px solid var(--box-color);
-		gap: 10px;
+		gap: var(--box-margin);
 		display: flex;
 		flex-direction: column;
 		scrollbar-width: none;

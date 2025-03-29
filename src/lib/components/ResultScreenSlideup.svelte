@@ -59,7 +59,7 @@
 <style>
 	.endscreenSlideupContainer {
 		z-index: 16;
-		padding: 8px;
+		padding: var(--box-margin-buttons);
 		border-radius: 10px;
 		max-height: 1000px;
 		transition: filter 250ms ease;
@@ -82,7 +82,7 @@
 	}
 
 	.textBoxTop {
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 	}
 
 	.textBox {
@@ -111,8 +111,8 @@
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
-		margin-top: 10px;
-		gap: 8px;
+		margin-top: var(--box-margin);
+		gap: var(--box-margin-buttons);
 	}
 
 	.buttonBox .standardButton {

@@ -1,11 +1,12 @@
 <script>
-	import Popup from "./Popup.svelte";
+	import Popup from "./ui/Popup.svelte";
 	import { onMount, onDestroy } from "svelte";
 	import { setSoundsVolume, playSound } from "$lib/utils/soundManager";
 	import { preventFullscreen, preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
 
 	import { settingsPopup } from "$lib/stores/uiStore";
 	import { Scan } from "lucide-svelte";
+	import Tabs from "./ui/Tabs.svelte";
 
 	// Settings - Window ---------------------------------------------------------------------------------------
 	function closeSettingsButton() {
@@ -14,40 +15,14 @@
 	}
 
 	// Unit switch between kilometers and miles ------------------
-	let kilometersButtonOpacity = $state(1);
-	let milesButtonOpacity = $state(1);
+	let selectedUnit = $state("Metric");
 
 	onMount(() => {
 		const tempStorageDistanceUnit = localStorage.getItem("distanceUnit");
-
 		if (tempStorageDistanceUnit != null) {
-			setDistanceUnitButtons(tempStorageDistanceUnit);
-		} else {
-			setDistanceUnitButtons("kilometers");
+			selectedUnit = tempStorageDistanceUnit == "kilometers" ? "Metric" : "Imperial";
 		}
 	});
-
-	function setDistanceUnitButtons(unit) {
-		if (unit == "miles") {
-			kilometersButtonOpacity = 0.5;
-			milesButtonOpacity = 1;
-		} else {
-			milesButtonOpacity = 0.5;
-			kilometersButtonOpacity = 1;
-		}
-	}
-
-	function setUnitKilometers() {
-		setDistanceUnitButtons("kilometers");
-		playSound("basic_button");
-		localStorage.setItem("distanceUnit", "kilometers");
-	}
-
-	function setUnitMiles() {
-		setDistanceUnitButtons("miles");
-		playSound("basic_button");
-		localStorage.setItem("distanceUnit", "miles");
-	}
 
 	// SFX Volume -----------------------------
 
@@ -123,28 +98,24 @@
 		</div>
 		<div class="settingsCanvas">
 			<div class="settingsBox">
-				<p class="slightBottomMargin">Unit System:</p>
-				<button
-					id="unitSwitchKilometers"
-					class="standardButton white"
-					style:opacity={kilometersButtonOpacity}
-					onclick={setUnitKilometers}>Metric</button
-				>
-				<button
-					id="unitSwitchMiles"
-					class="standardButton white"
-					style:opacity={milesButtonOpacity}
-					onclick={setUnitMiles}>Imperial</button
-				>
+				<p class="textMargin">Unit System:</p>
+				<Tabs
+					tabs={["Metric", "Imperial"]}
+					bind:selected={selectedUnit}
+					onchange={(tab) => {
+						playSound("basic_button");
+						localStorage.setItem("distanceUnit", tab == "Metric" ? "kilometers" : "miles");
+					}}
+				/>
 			</div>
 			<div class="settingsBox">
-				<p>SFX Volume:</p>
+				<p class="textMargin">SFX Volume:</p>
 				<input
 					type="range"
 					min="0"
 					max="1"
 					step="0.01"
-					class="slider"
+					class="slider sliderMarginTop"
 					bind:value={sfxVolumeSliderValue}
 					style:background={sfxSliderBg}
 					oninput={inputSFXVolumeSlider}
@@ -152,7 +123,7 @@
 			</div>
 			{#if !$preventFullscreen}
 				<div class="settingsBox">
-					<p class="slightBottomMargin">Toggle Fullscreen:</p>
+					<p class="textMargin">Toggle Fullscreen:</p>
 					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
 						<span class="fullscreenIcon">
 							<Scan size="17" strokeWidth={3} />
@@ -162,7 +133,7 @@
 				</div>
 			{/if}
 			<div class="settingsBox">
-				<p class="slightBottomMargin">Legal Information:</p>
+				<p class="textMargin">Legal Information:</p>
 				<button
 					class="standardButton white"
 					id="privacyButton"
@@ -181,7 +152,7 @@
 	.settingsBox {
 		background-color: var(--box-color);
 		border-radius: 10px;
-		padding: 15px;
+		padding: var(--box-margin);
 		height: 80px;
 		overflow: hidden;
 		flex-grow: 1;
@@ -191,14 +162,24 @@
 	.settingsCanvas {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 10px;
+		gap: 15px;
 		justify-content: flex-start;
 		align-items: center;
 		max-height: calc(100dvh - 250px);
 		overflow-y: auto;
 	}
 
+	.textMargin {
+		margin-inline: 5px;
+		margin-bottom: 10px;
+	}
+
 	.fullscreenIcon {
 		margin-right: 3px;
+	}
+
+	.sliderMarginTop {
+		margin-top: 20px;
+		margin-left: 5px;
 	}
 </style>

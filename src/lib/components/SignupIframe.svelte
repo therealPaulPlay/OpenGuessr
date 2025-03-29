@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { signupPopup } from "$lib/stores/uiStore";
 	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
 

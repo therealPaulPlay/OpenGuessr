@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { troubleshootPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 </script>
@@ -7,7 +7,7 @@
 {#if $troubleshootPopup}
 	<Popup z={910} verySlim="true">
 		<div class="popup-title">
-			<h1>Troubleshooting Guide</h1>
+			<h1>Troubleshooting guide</h1>
 		</div>
 		<p>
 			OpenGuessr uses a peer2peer connection system via WebRTC Datachannels. Follow these steps to ensure a smooth
