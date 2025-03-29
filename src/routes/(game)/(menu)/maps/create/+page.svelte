@@ -307,6 +307,7 @@
 
 	.submitButton {
 		border-radius: 10px;
+		margin-top: 5px;
 	}
 
 	.infoNoteBox {
@@ -390,8 +391,8 @@
 	}
 
 	.dropdown {
-		margin-bottom: 15px;
-		margin-top: 5px;
+		margin-bottom: 20px;
+		margin-top: 10px;
 		width: 150px;
 		background-color: rgba(255, 255, 255, 0.1);
 		border-radius: 10px;
