@@ -205,7 +205,7 @@
 						.catch(function (error) {
 							showNotification("Error: " + error);
 						});
-				}}><Link size="16" /> Copy Both</button
+				}}><Link size="16" strokeWidth={2.5} style="margin-right: 3px;" /> Copy Both</button
 			>
 			<div class="buttonBoxRight">
 				<button
@@ -374,6 +374,7 @@
 
 	.submitButton {
 		border-radius: 10px;
+		margin-top: 0;
 	}
 
 	.infoNoteBox {

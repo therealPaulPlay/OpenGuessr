@@ -1035,7 +1035,7 @@
 		flex-direction: column;
 		box-sizing: border-box;
 		border-radius: 10px;
-		max-height: calc(70dvh - 245px);
+		max-height: calc(80dvh - 235px);
 		overflow-x: hidden;
 		overflow-y: auto;
 		scrollbar-width: none;
@@ -1098,7 +1098,7 @@
 	}
 
 	.bottomMarginItem {
-		margin-bottom: 20px;
+		margin-bottom: var(--layout-margin);
 	}
 
 	#visibilityInfo {
@@ -1176,7 +1176,7 @@
 
 	.youLabel {
 		border-radius: 5px;
-		background-color: rgba(255, 255, 255, 0.1);
+		background-color: var(--box-color);
 		padding: 5px;
 		padding-inline: 10px;
 	}
@@ -1230,9 +1230,9 @@
 		justify-content: space-between;
 		align-items: center;
 		flex-wrap: wrap;
-		margin-top: 20px;
-		padding: 5px;
-		gap: 10px;
+		margin-top: var(--layout-margin);
+		padding: var(--box-margin-buttons);
+		gap: var(--box-margin-buttons);
 		width: calc(100% - 10px);
 	}
 
@@ -1242,7 +1242,7 @@
 
 	.rateButton {
 		background-color: rgba(255, 255, 255, 0.2);
-		padding: 5px;
+		padding-inline: 5px;
 		margin: 0;
 	}
 
