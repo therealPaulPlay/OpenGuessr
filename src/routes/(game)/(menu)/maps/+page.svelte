@@ -566,7 +566,7 @@
 		background-color: rgba(255, 255, 255, 0.1);
 		color: white;
 		border-radius: 10px;
-		padding: 10px;
+		padding: var(--box-margin);
 		padding-inline: 15px;
 		box-sizing: border-box;
 		animation: fadeIn 150ms ease-in-out;
@@ -639,7 +639,7 @@
 		display: flex;
 		align-items: flex-start;
 		position: relative;
-		gap: 15px;
+		gap: var(--layout-margin);
 		flex-wrap: wrap;
 		width: 100%;
 		margin-bottom: 20px;
@@ -793,7 +793,7 @@
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
-		gap: 10px;
+		gap: var(--box-margin);
 		scrollbar-width: none;
 	}
 
@@ -823,10 +823,10 @@
 		flex-wrap: wrap;
 		width: calc(100% - 16px);
 		min-width: 280px;
-		gap: 10px;
+		gap: var(--box-margin);
 		align-items: center;
-		border-radius: 10px;
-		padding: 8px;
+		border-radius: 15px;
+		padding: var(--box-margin);
 		margin-bottom: 20px;
 		background-color: var(--box-color);
 	}

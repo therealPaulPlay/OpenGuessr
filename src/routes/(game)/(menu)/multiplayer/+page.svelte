@@ -300,12 +300,13 @@
 <style>
 	.infoContainer {
 		display: flex;
-		padding: 8px;
-		width: calc(100% - 16px);
+		padding: var(--box-margin);
+		width: 100%;
+		box-sizing: border-box;
 		border-radius: 15px;
 		align-items: center;
 		background-color: var(--box-color);
-		margin-bottom: 15px;
+		margin-bottom: var(--layout-margin);
 		gap: 5px;
 	}
 
@@ -327,14 +328,12 @@
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
-		width: calc(100% - 10px);
 		border-radius: 8px;
-		gap: 10px;
-		padding: 5px;
-		margin-top: 15px;
+		gap: var(--box-margin);
+		margin-top: var(--layout-margin);
 		overflow: hidden;
 		overflow-y: auto;
-		max-height: 290px;
+		max-height: 300px;
 		scrollbar-width: none;
 	}
 
@@ -368,10 +367,11 @@
 	}
 
 	.leaderboardSection {
-		width: calc(100% - 16px);
+		width: 100%;
+		box-sizing: border-box;
 		background-color: var(--box-color);
 		border-radius: 15px;
-		padding: 8px;
+		padding: var(--box-margin);
 		min-height: 30px;
 		display: flex;
 		flex-wrap: wrap;
@@ -454,7 +454,7 @@
 		width: 100%;
 		display: flex;
 		justify-content: flex-start;
-		gap: 15px;
+		gap: var(--layout-margin);
 		flex-wrap: wrap;
 	}
 
@@ -485,8 +485,8 @@
 		justify-content: space-between;
 		background-color: var(--box-color);
 		border-radius: 15px;
-		gap: 10px;
-		padding: 8px;
+		gap: var(--box-margin-buttons);
+		padding: var(--box-margin-buttons);
 		margin-bottom: 20px;
 	}
 
@@ -500,7 +500,7 @@
 
 	.friendButtonBox {
 		display: flex;
-		gap: 10px;
+		gap: var(--box-margin);
 	}
 
 	.friendItem {
@@ -559,14 +559,14 @@
 		flex-grow: 1.5;
 		flex-basis: 0;
 		background-color: var(--box-color);
-		padding: 8px;
+		padding: var(--box-margin);
 		border-radius: 15px;
 	}
 
 	.groupPartyContent {
 		width: 100%;
 		display: flex;
-		gap: 8px;
+		gap: var(--box-margin-buttons);
 	}
 
 	.multiplayerSelect {
@@ -631,12 +631,11 @@
 		width: calc(100% - 20px);
 		transition: max-height 150ms ease;
 		background-color: var(--box-color);
-		border-radius: 10px;
-		outline: 10px solid var(--box-color);
+		border-radius: 15px;
+		border: var(--box-margin) solid transparent;
 		overflow: hidden;
 		overflow-y: auto;
 		max-height: 250px;
-		margin-top: 10px;
 		position: relative;
 		scrollbar-width: none;
 	}
@@ -645,7 +644,7 @@
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
-		gap: 10px;
+		gap: var(--box-margin);
 	}
 
 	#inboxIcon {

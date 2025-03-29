@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { duelResultPopup, friendBrowserPopup } from "$lib/stores/uiStore";
 	import { eloChange, duelResultTitle } from "$lib/stores/context-specific/duelResultStore";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
@@ -24,12 +24,12 @@
 	<Popup slim={true}>
 		<div class="popup-title">
 			<h1 id="socialHeader">{$duelResultTitle}</h1>
-			<div class="eloChangeDisplay">
-				<p class="eloChangeText">{$eloChange >= 0 ? "+" : ""}{$animatedElo.toFixed(0)} Elo</p>
-				<p>You now have {$elo} Elo.</p>
-			</div>
-			<DuelDivisionDisplay />
 		</div>
+		<div class="eloChangeDisplay">
+			<h1 class="eloChangeText">{$eloChange >= 0 ? "+" : ""}{$animatedElo.toFixed(0)} Elo</h1>
+			<p>You now have {$elo} Elo.</p>
+		</div>
+		<DuelDivisionDisplay inPage={true} />
 		<div class="infoBox">
 			<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
 			<p>To report a player, open their profile and click on "Report".</p>
@@ -58,10 +58,10 @@
 	.eloChangeDisplay {
 		width: 100%;
 		height: 100px;
-		margin-bottom: 15px;
-		margin-top: 15px;
+		margin-bottom: var(--layout-margin);
+		margin-top: var(--layout-margin);
 		display: flex;
-		border-radius: 15px;
+		border-radius: 10px;
 		background-color: var(--box-color);
 		justify-content: center;
 		align-items: center;
@@ -75,17 +75,18 @@
 	}
 
 	.infoBox {
-		padding: 10px;
+		padding: var(--box-margin-buttons);
 		border-radius: 10px;
 		background-color: var(--box-color);
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
-		gap: 5px;
+		gap: var(--box-margin-buttons);
 	}
 
 	.infoIcon {
-		margin-right: 10px;
+		margin-left: 8px;
+		margin-right: 0;
 	}
 
 	.infoBox p {
@@ -96,6 +97,5 @@
 	.eloChangeText {
 		width: 100%;
 		text-align: center;
-		font-size: 45px;
 	}
 </style>

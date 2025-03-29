@@ -462,14 +462,14 @@
 
 	.switchFormBox {
 		display: flex;
-		gap: 10px;
+		gap: var(--box-margin-buttons);
 		align-items: center;
 		justify-content: space-between;
 		min-width: 250px;
 		background-color: rgba(255, 255, 255, 0.1);
 		border-radius: 5px;
-		padding: 8px;
-		padding-inline: 16px;
+		padding: var(--box-margin-buttons);
+		padding-inline: 15px;
 		padding-right: 8px;
 		margin-top: 50px;
 	}

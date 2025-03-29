@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
 	import { profileData } from "$lib/stores/context-specific/profileStore";

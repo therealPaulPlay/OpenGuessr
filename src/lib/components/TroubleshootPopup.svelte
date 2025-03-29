@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { troubleshootPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 </script>

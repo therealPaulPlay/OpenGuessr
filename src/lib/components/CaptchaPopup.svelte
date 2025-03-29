@@ -1,6 +1,6 @@
 <!-- Captcha popup (currently using Cloudflare Turnstile) -->
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { renderCaptcha } from "$lib/utils/renderCaptcha";
 	import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupStore";
 

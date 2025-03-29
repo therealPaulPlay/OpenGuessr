@@ -6,7 +6,7 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	let competitionSubmittedSuccessfully = false;

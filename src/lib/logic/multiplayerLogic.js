@@ -488,10 +488,8 @@ export function leaveMultiplayerRound(destroy = true) {
     const wasMultiplayerEnabled = get(multiplayer);
     multiplayer.set(false);
 
-    get(peer)?.destroy(); // Destroy peer
-
-    // Result screen timer (sometimes not set, therefore catch)
-    try { multiplayerTimer?.stopTimer() } catch { };
+    if (destroy) get(peer)?.destroy(); // Destroy peer
+    try { multiplayerTimer?.stopTimer() } catch { }; // Result screen timer (sometimes not set, therefore catch)
 
     // Clear running intervals
     clearInterval(countdownInterval);
@@ -518,7 +516,6 @@ export function leaveMultiplayerRound(destroy = true) {
 
     // Reset restriction
     restrictionButtonText.set("Standard");
-    setRestriction("standard");
 
     // UI functions
     setMultiplayerUI();
@@ -526,7 +523,10 @@ export function leaveMultiplayerRound(destroy = true) {
     updateMinimapWithTeamMarkers([]); // clean up multiplayer minimap markers
     if (localStorage.getItem("selectedMap") !== "country guessr") mapVisible.set(true);
 
-    if (wasMultiplayerEnabled) checkGenerationTypeAndGenerate(); // Regenerate location
+    if (wasMultiplayerEnabled) {
+        setRestriction("standard");
+        checkGenerationTypeAndGenerate();
+    } // Regenerate location
 }
 
 // Panorama Overlay UI ------------------------------------------------------------------------------------------------------------------------------------------

@@ -2,6 +2,8 @@
 	import { calculateDivision } from "$lib/utils/duelDivisionFunctions";
 	import { elo } from "$lib/stores/accountStore";
 
+	let { inPage = false } = $props();
+
 	// Divisions
 	let fillPercentage = $derived.by(() => {
 		const value = $elo;
@@ -19,7 +21,7 @@
 	const circlePositions = [0, 25, 50, 75, 100];
 </script>
 
-<div class="progressContainer">
+<div class="progressContainer" style:border-radius={inPage ? "10px" : ""}>
 	<div class="progressBarWrapper">
 		<div class="progressBar">
 			<div class="progressBarFill" style="width: {fillPercentage}%"></div>
@@ -51,7 +53,7 @@
 		border-radius: 15px;
 		background-color: var(--box-color);
 		padding-inline: 25px;
-		margin-bottom: 15px;
+		margin-bottom: var(--layout-margin);
 	}
 
 	.progressBarWrapper {

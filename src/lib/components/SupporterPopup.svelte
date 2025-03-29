@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { loadAndInitializeLibrary } from "$lib/utils/scriptLoader";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
@@ -303,6 +303,10 @@
 		font-size: 22px;
 	}
 
+	.infoIcon {
+		margin-left: 5px;
+	}
+
 	.tierNumber {
 		background-color: rgba(0, 0, 0, 0.1);
 		border-radius: 3px;
@@ -321,7 +325,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		padding: 5px;
+		padding: var(--box-margin-buttons);
 		flex-wrap: wrap;
 	}
 
@@ -406,7 +410,7 @@
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
-		padding: 10px;
+		padding: var(--box-margin);
 		padding-inline: 25px;
 		overflow: hidden;
 		flex-grow: 1;
@@ -436,7 +440,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		gap: 20px;
+		gap: var(--layout-margin);
 		margin-top: 10px;
 		max-height: calc(100dvh - 300px);
 		overflow-x: hidden;
@@ -453,8 +457,8 @@
 
 	.supporterBoxHighlight {
 		background-color: var(--box-color);
-		width: calc(100% - 30px);
-		padding-inline: 15px;
+		width: calc(100% - 20px);
+		padding-inline: var(--box-margin);
 		display: flex;
 		align-items: center;
 	}
@@ -466,8 +470,9 @@
 	#adBoostTimeLimitIcon {
 		width: 30px;
 		height: 30px;
-		margin-left: 12px;
+		margin-left: 5px;
 		opacity: 0.5;
+		margin-top: 1px;
 	}
 
 	.supporterLegalText {

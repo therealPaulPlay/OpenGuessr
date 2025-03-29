@@ -64,7 +64,6 @@
 		width: fit-content;
 		height: 50px;
 		border-radius: 10px;
-		margin: 10px;
 		text-decoration: none;
 		line-height: 35px;
 		pointer-events: auto;
@@ -93,6 +92,8 @@
 		right: 0;
 		display: flex;
 		padding: 15px;
+		margin: 5px;
+		gap: 11px;
 		z-index: 99;
 		pointer-events: none;
 	}

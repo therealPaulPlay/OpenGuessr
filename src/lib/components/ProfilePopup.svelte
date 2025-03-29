@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { checkIfFriendsWithId } from "$lib/utils/checkIfFriendsWithId";
 	import SupporterPitch from "$lib/components/SupporterPitch.svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
@@ -17,7 +17,7 @@
 	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
-	import { Plus, PlusCircle, SquarePlus } from "lucide-svelte";
+	import { Flame, Plus, PlusCircle, SquarePlus } from "lucide-svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
@@ -32,15 +32,32 @@
 	} from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Edit, Trash2, TriangleAlert, Pencil } from "lucide-svelte";
+	import {
+		Edit,
+		Trash2,
+		TriangleAlert,
+		Pencil,
+		Award,
+		Swords,
+		TrendingUp,
+		Medal,
+		Calendar,
+		User,
+		Shield,
+		BarChart3,
+		Trophy,
+		Crown,
+	} from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { page } from "$app/stores";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { reportUserId } from "$lib/stores/context-specific/reportPopupStore";
 	import { scale } from "svelte/transition";
+	import Tabs from "./ui/Tabs.svelte";
 
 	let textarea = $state();
 	let isFriendsWithId = $state(true);
+	let selectedTabIndex = $state(0);
 
 	profilePopup.subscribe(async (value) => {
 		isFriendsWithId = true;
@@ -62,6 +79,80 @@
 	});
 
 	let ProfileFlag = $derived(FlagIcons[$profileData?.flag] || undefined);
+
+	// Define stat categories with their icons and display data
+	const statCategories = [
+		{
+			name: "XP",
+			cards: [
+				{
+					title: "Level",
+					getValue: () => experienceCalculations($profileExperience)?.level,
+					icon: Award,
+				},
+				{
+					title: "Total XP",
+					getValue: () => $profileExperience?.toLocaleString() + " XP",
+					icon: BarChart3,
+				},
+				{
+					title: "Until level-up",
+					getValue: () => experienceCalculations($profileExperience)?.requiredForLevelUpgrade?.toLocaleString() + " XP",
+					icon: TrendingUp,
+				},
+			],
+		},
+		{
+			name: "Duels",
+			cards: [
+				{
+					title: "Duels played",
+					getValue: () => $profileData?.duelsPlayed?.toLocaleString() || "0",
+					icon: Swords,
+				},
+				{
+					title: "Duels won",
+					getValue: () => $profileData?.duelsWon?.toLocaleString() || "0",
+					icon: Trophy,
+				},
+				{
+					title: "Elo rating",
+					getValue: () => $profileElo,
+					icon: Crown,
+				},
+			],
+		},
+		{
+			name: "Misc.",
+			cards: [
+				{
+					title: "Competitions entered",
+					getValue: () => $profileData?.competitionsPlayed?.toLocaleString() || "0",
+					icon: Medal,
+				},
+				{
+					title: "Highest streak",
+					getValue: () => $profileData?.highestStreak?.toLocaleString() || "0",
+					icon: Flame,
+				},
+			],
+		},
+		{
+			name: "User",
+			cards: [
+				{
+					title: "User ID",
+					getValue: () => "user-" + $profileId,
+					icon: User,
+				},
+				{
+					title: "Joined date",
+					getValue: () => formatDateTime($joinedDate),
+					icon: Calendar,
+				},
+			],
+		},
+	];
 </script>
 
 {#if $profilePopup}
@@ -141,7 +232,6 @@
 							<img id="supporterIcon" alt="supporter tag" src="/img/supporter_icon.png" />
 						</div>
 					{/if}
-					<p id="levelTextProfile">Lvl. {experienceCalculations($profileExperience)?.level}</p>
 					{#if $profileId != localStorage.getItem("id")}
 						<button
 							class="standardButton white"
@@ -194,50 +284,41 @@
 					}}
 				></textarea>
 			{/if}
-			<h3 class="categoryHeader categoryHeaderNoMarginTop">User Stats:</h3>
-			<div id="profileStats" class="statisticView">
-				<div class="statisticsEnclosure">
-					<p class="statsLabel">Experience:</p>
-					<p id="statisticExperience">{$profileExperience?.toLocaleString()}</p>
-				</div>
-				<div class="statisticsEnclosure">
-					<p class="statsLabel">Until Level-Up:</p>
-					<p id="statisticUpgradeExperience">
-						{experienceCalculations($profileExperience)?.requiredForLevelUpgrade?.toLocaleString()} XP
-					</p>
-				</div>
-				<div class="statisticsEnclosure">
-					<p class="statsLabel">Duels played:</p>
-					<p id="statisticDuelsPlayed">{$profileData?.duelsPlayed?.toLocaleString() || 0}</p>
-				</div>
-				<div class="statisticsEnclosure">
-					<p class="statsLabel">Duels won:</p>
-					<p id="statisticDuelsWon">{$profileData?.duelsWon?.toLocaleString() || 0}</p>
-				</div>
-				<div class="statisticsEnclosure">
-					<p class="statsLabel">Elo:</p>
-					<p id="statisticExperience">{$profileElo}</p>
-				</div>
-				<div class="statisticsEnclosure">
-					<p class="statsLabel">Competitions entered:</p>
-					<p id="statisticCompetitionsEntered">{$profileData?.competitionsPlayed?.toLocaleString() || 0}</p>
-				</div>
-				<div class="statisticsEnclosure">
-					<p class="statsLabel">Highest ended streak:</p>
-					<p id="statisticHighestStreak">{$profileData?.highestStreak?.toLocaleString() || 0}</p>
-				</div>
-				<div class="statisticsEnclosure">
-					<p class="statsLabel">ID:</p>
-					<p id="statisticExperience">user-{$profileId}</p>
-				</div>
-				<div class="statisticsEnclosure">
-					<p class="statsLabel">Joined:</p>
-					<p id="statisticJoinedDate">{formatDateTime($joinedDate)}</p>
+
+			<h3>Statistics:</h3>
+
+			<!-- Stats Carousel Section -->
+			<div class="stat-switch">
+				<Tabs
+					tabs={statCategories.map((cat) => cat.name)}
+					selected={statCategories[selectedTabIndex].name}
+					bind:selectedIndex={selectedTabIndex}
+					onchange={() => playSound("basic_button")}
+				/>
+			</div>
+			<div class="stats-container">
+				<div class="stats-carousel" style="transform: translateX(calc(-{selectedTabIndex} * 100%));">
+					{#each statCategories as category, catIndex}
+						<div class="carousel-slide" class:active={selectedTabIndex === catIndex}>
+							{#each category.cards as card}
+								<div class="stat-card">
+									<div class="card-icon">
+										<card.icon size={24} strokeWidth={2} />
+									</div>
+									<div class="card-content">
+										<span>{card.title}</span>
+										<p>{card.getValue()}</p>
+									</div>
+								</div>
+							{/each}
+						</div>
+					{/each}
 				</div>
 			</div>
+
 			{#if $profileId == localStorage.getItem("id")}
-				<h3 class="categoryHeader">Account Management:</h3>
-				<div id="accountManagementArea" class="managementBox">
+				<h3>Management:</h3>
+				<div class="managementBox">
 					<div class="editNameSection">
 						<button
 							class="standardButton white"
@@ -380,18 +461,6 @@
 		box-sizing: border-box;
 	}
 
-	#profileStats {
-		margin-top: 10px;
-	}
-
-	.categoryHeader {
-		margin-top: 15px;
-	}
-
-	.categoryHeaderNoMarginTop {
-		margin-top: 0;
-	}
-
 	#profileViewName {
 		overflow: hidden;
 		text-wrap: nowrap;
@@ -400,6 +469,11 @@
 		display: inline-flex;
 		justify-content: center;
 		gap: 8px;
+	}
+
+	#profileSignoutButton {
+		max-width: 60px;
+		flex-grow: 1;
 	}
 
 	#profileViewName h1 {
@@ -412,29 +486,15 @@
 		margin-left: 5px;
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: var(--layout-margin);
 		flex-wrap: wrap;
-	}
-
-	#levelTextProfile {
-		background-color: rgba(255, 255, 255, 0.1);
-		color: white;
-		font-size: 18px;
-		border-radius: 5px;
-		padding: 8px;
-		text-align: center;
-		min-width: 20px;
-		text-wrap: nowrap;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		user-select: none;
 	}
 
 	.logoutImage {
 		width: 22px;
 		height: 22px;
-		margin-left: 3px;
 		vertical-align: -3px;
+		margin-right: -3px;
 	}
 
 	#supporterTag {
@@ -490,13 +550,11 @@
 	#profileAbout {
 		resize: none;
 		width: calc(100% - 30px);
-		height: 65px;
+		height: 55px;
 		transition: background-color 250ms ease;
 		color: white;
 		padding: 15px;
-		margin-top: 5px;
-		margin-bottom: 15px;
-		font-size: 25px;
+		margin-bottom: 20px;
 		scrollbar-width: none;
 	}
 
@@ -518,41 +576,75 @@
 		overflow-y: auto;
 		border-radius: 5px;
 		max-height: calc(100dvh - 400px);
-		min-height: 250px;
 		scrollbar-width: none;
 		transition: max-height 250ms ease-in-out;
 	}
 
-	.statisticView {
+	:global(.stat-switch) {
+		margin-top: 8px;
 		border-radius: 10px;
+		max-width: 100%;
+		box-sizing: border-box;
 		background-color: var(--box-color);
+		padding: var(--box-margin-buttons);
+	}
+
+	.stats-carousel {
+		position: relative;
+		width: 100%;
 		display: flex;
-		padding: 10px;
-		margin-bottom: 10px;
-		gap: 10px;
+		transition: transform 250ms ease;
+	}
+
+	.stats-container {
+		border-radius: 10px;
+		padding: var(--layout-margin) 0 10px 0;
+		margin-bottom: var(--layout-margin);
+	}
+
+	.carousel-slide {
+		min-width: 100%;
+		box-sizing: border-box;
+		display: flex;
 		flex-wrap: wrap;
-		width: calc(100% - 20px);
-		overflow: auto;
-		height: fit-content;
+		gap: var(--layout-margin);
+		justify-content: center;
+		overflow: hidden;
 	}
 
-	.statsLabel {
+	.stat-card {
+		background-color: var(--box-color);
+		border-radius: 10px;
 		padding: 5px;
-		padding-inline: 10px;
-		width: fit-content;
-		background-color: rgba(185, 185, 185, 0.1);
-		border-radius: 5px;
-		margin-right: 10px;
+		min-width: 200px;
+		display: flex;
+		flex: 1;
+		align-items: center;
+		gap: 15px;
+		transition: transform 250ms ease;
 	}
 
-	.statisticsEnclosure {
+	.card-icon {
 		display: flex;
-		background-color: rgba(255, 255, 255, 0.1);
-		border-radius: 5px;
-		padding-right: 15px;
 		align-items: center;
-		font-size: 22px;
-		flex-grow: 1;
+		justify-content: center;
+		width: 40px;
+		height: 40px;
+		border-radius: 100%;
+		margin-left: 8px;
+		background-color: rgba(255, 255, 255, 0.1);
+	}
+
+	.card-content span {
+		opacity: 0.5;
+		font-size: 18px;
+	}
+	.card-content p {
+		margin-bottom: 5px;
+		max-width: 150px;
+		text-wrap: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.managementBox {
@@ -563,9 +655,9 @@
 		max-height: 300px;
 		overflow-x: hidden;
 		overflow-y: auto;
-		padding: 8px;
-		gap: 8px;
-		margin-top: 10px;
+		padding: var(--box-margin-buttons);
+		gap: var(--box-margin-buttons);
+		margin-top: 8px;
 		align-items: center;
 		flex-wrap: wrap;
 	}
@@ -594,10 +686,6 @@
 			height: 18px;
 			width: 18px;
 			margin-top: 15px;
-		}
-
-		#profileAbout {
-			font-size: 22px;
 		}
 	}
 </style>

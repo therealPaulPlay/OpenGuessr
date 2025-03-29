@@ -149,7 +149,6 @@
 		left: 50%;
 		top: 50%;
 		transform: translate(-50%, -50%);
-		font-size: 50px;
 		color: white;
 	}
 
@@ -183,7 +182,7 @@
 		margin-top: 100px;
 	}
 
-	@media all and (orientation: portrait) {
+	@media all and (max-width: 768px) {
 		#text {
 			width: 80%;
 		}

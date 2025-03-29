@@ -1,5 +1,5 @@
 <script>
-	import Popup from "$lib/components/Popup.svelte";
+	import Popup from "$lib/components/ui/Popup.svelte";
 	import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 	import { playSound } from "$lib/utils/soundManager";
 	import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
@@ -100,7 +100,7 @@
 		<div class="settingsScrollArea">
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="settingsBox">
-					<p class="slightBottomMargin">Timer:</p>
+					<p class="textMargin">Timer:</p>
 					<div class="timerSliderBox">
 						<div class="timerControlsWrapper">
 							<button class="arrowButton standardButton white" onclick={() => adjustTimer(false)}>
@@ -132,9 +132,9 @@
 			</div>
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="settingsBox">
-					<p class="slightBottomMargin">NMPZ:</p>
+					<p class="textMargin">NMPZ:</p>
 					<div class="timerSliderBox">
-						<p class="singleplayerDesc">Prevent Move, Pan and Zoom:</p>
+						<p class="singleplayerDesc textMargin">Prevent Move, Pan and Zoom:</p>
 						<button id="setSingleplayerNMPZ" class="standardButton white" onclick={toggleSingleplayerNMPZ}
 							>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
 						>
@@ -143,7 +143,7 @@
 			</div>
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="settingsBox roundLogContainer">
-					<p class="slightBottomMargin">Round Log:</p>
+					<p class="textMargin textMarginRoundLog">Round Log:</p>
 					<div class="roundLogBox" id="roundLogBox">
 						<!-- round log will be automatically generated here -->
 						{#if $roundLog.length > 0}
@@ -190,7 +190,7 @@
 	.settingsCanvas {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 10px;
+		gap: var(--box-margin);
 		justify-content: flex-start;
 		align-items: center;
 	}
@@ -198,7 +198,7 @@
 	.settingsBox {
 		background-color: var(--box-color);
 		border-radius: 10px;
-		padding: 15px;
+		padding: var(--box-margin);
 		overflow: hidden;
 		flex-grow: 1;
 		min-width: 150px;
@@ -206,7 +206,7 @@
 
 	.timerSliderBox {
 		display: flex;
-		gap: 15px;
+		gap: var(--box-margin);
 		margin-top: 5px;
 		flex-wrap: wrap;
 		justify-content: space-between;
@@ -221,7 +221,7 @@
 	.timerControlsWrapper {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: var(--box-margin);
 		width: fit-content;
 		flex-basis: 60%;
 		flex-grow: 1;
@@ -239,6 +239,15 @@
 		width: 100%;
 		overflow: hidden;
 		overflow-y: auto;
+	}
+
+	.textMargin {
+		margin-inline: 5px;
+		margin-bottom: 10px;
+	}
+
+	.textMarginRoundLog {
+		margin-bottom: 15px;
 	}
 
 	.timerTextBox {
@@ -263,11 +272,11 @@
 		display: flex;
 		align-items: center;
 		justify-content: safe center;
-		gap: 10px;
+		gap: var(--box-margin);
 		flex-direction: column;
 		overflow-y: auto;
-		max-height: 165px;
-		padding-top: 10px;
+		max-height: 170px;
+		margin-top: 5px;
 		padding-bottom: 0;
 		scrollbar-width: none;
 	}
@@ -283,7 +292,6 @@
 
 	.roundLogContainer {
 		height: fit-content;
-		padding-bottom: 15px;
 	}
 
 	.centerLogText {
@@ -291,6 +299,7 @@
 		width: 100%;
 		opacity: 50%;
 		font-size: 22px;
+		margin-bottom: 15px;
 	}
 
 	.roundLogItem {
@@ -298,7 +307,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 8px;
+		padding: var(--box-margin);
 		padding-inline: 15px;
 		border-radius: 5px;
 		width: calc(100% - 30px);

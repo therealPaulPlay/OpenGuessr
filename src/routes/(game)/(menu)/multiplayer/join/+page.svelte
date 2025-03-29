@@ -99,9 +99,9 @@
 		flex-wrap: wrap;
 		justify-content: space-around;
 		align-items: center;
-		gap: 10px;
+		gap: var(--layout-margin);
 		margin-inline: auto;
-		margin-top: 10px;
+		margin-top: var(--box-margin);
 		max-width: 460px;
 		width: calc(100% - 40px);
 		max-height: 275px;
@@ -162,19 +162,19 @@
 
 	.multiplayerJoinField {
 		width: calc(100% - 20px);
-		padding: 10px;
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
 		flex-wrap: wrap;
 		display: flex;
-		gap: 10px;
+		gap: var(--box-margin);
 	}
 
 	#multiplayerJoin {
 		min-height: 50px;
 		border-radius: 10px;
 		padding-inline: 50px;
+		margin-top: var(--layout-margin);
 	}
 
 	.multiplayerInputInfo {
