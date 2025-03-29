@@ -450,7 +450,9 @@
 
 {#if leaderboardPopup}
 	<Popup slim={true}>
-		<h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for {leaderboardName}</h1>
+		<div class="popup-title">
+			<h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for {leaderboardName}</h1>
+		</div>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<div id="rankingDisplay" class="rankingDisplay">
@@ -1039,13 +1041,12 @@
 		scrollbar-width: none;
 		background-color: var(--box-color);
 		gap: var(--box-margin);
-		margin-top: 30px;
 		border: var(--box-margin) solid transparent;
 	}
 
 	.rankItem {
 		background-color: var(--box-color);
-		border-radius: 10px;
+		border-radius: 5px;
 		width: calc(100% - 20px);
 		display: flex;
 		justify-content: space-between;
