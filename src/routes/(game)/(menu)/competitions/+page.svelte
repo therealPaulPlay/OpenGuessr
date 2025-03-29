@@ -457,7 +457,7 @@
 		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<div id="rankingDisplay" class="rankingDisplay">
 			{#if yourEntry}
-				<div class="youBar bottomMarginItem">
+				<div class="youBar">
 					<p class="youLabel">You:</p>
 					<div class="rankItem" class:leaderboardSupporterEntry={yourEntry.supporter_level > 0}>
 						<p class="leaderboardTextEntry">#{yourEntry.position}</p>
@@ -1095,10 +1095,6 @@
 
 	#uploadCompetitionDescription {
 		max-width: 500px;
-	}
-
-	.bottomMarginItem {
-		margin-bottom: var(--layout-margin);
 	}
 
 	#visibilityInfo {
