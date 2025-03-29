@@ -459,9 +459,9 @@
 
 	.infoElement {
 		background-color: var(--box-color);
-		border-radius: 10px;
+		border-radius: 15px;
 		display: flex;
-		padding: 10px;
+		padding: var(--box-margin);
 		flex-grow: 1;
 		height: 200px;
 		min-width: 300px;
@@ -545,7 +545,7 @@
 		align-items: center;
 		flex-wrap: wrap;
 		width: 100%;
-		border-radius: 10px;
+		border-radius: 15px;
 		padding: var(--box-margin-buttons);
 		gap: var(--box-margin-buttons);
 		background-color: var(--box-color);

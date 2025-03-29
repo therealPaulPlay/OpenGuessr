@@ -842,7 +842,7 @@
 		min-width: 280px;
 		gap: var(--box-margin);
 		align-items: center;
-		border-radius: 10px;
+		border-radius: 15px;
 		padding: var(--box-margin-buttons);
 		margin-bottom: var(--layout-margin);
 		background-color: var(--box-color);
@@ -856,6 +856,11 @@
 		overflow: hidden;
 		height: 300px;
 		margin-bottom: 20px;
+	}
+
+	.competitionButtonBox {
+		margin-top: auto !important;
+		padding-top: 60px;
 	}
 
 	.marginTopAuto {
@@ -902,6 +907,8 @@
 		padding: var(--layout-margin);
 		overflow: hidden;
 		flex-basis: 25%;
+		display: flex;
+		flex-direction: column;
 	}
 
 	.label {
@@ -1038,7 +1045,7 @@
 
 	.rankItem {
 		background-color: var(--box-color);
-		border-radius: 5px;
+		border-radius: 10px;
 		width: calc(100% - 20px);
 		display: flex;
 		justify-content: space-between;

@@ -190,7 +190,7 @@
 		color: white;
 		max-width: 750px;
 		flex-wrap: wrap;
-		gap: var(--box-margin);
+		gap: var(--box-margin-buttons);
 		padding: var(--box-margin-buttons);
 		margin-inline: 10px;
 	}

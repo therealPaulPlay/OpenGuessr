@@ -299,6 +299,7 @@
 		width: 100%;
 		opacity: 50%;
 		font-size: 22px;
+		margin-bottom: 15px;
 	}
 
 	.roundLogItem {

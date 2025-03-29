@@ -293,7 +293,7 @@
 		{#if publicTooltipShown && $hostStage == 2}
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-			<div in:slide out:slide>
+			<div transition:slide>
 				<div
 					class="publicRoomTooltip"
 					transition:scale={{ delay: 250 }}
@@ -411,7 +411,7 @@
 		position: relative;
 		display: block;
 		cursor: pointer;
-		margin-top: 20px;
+		margin-top: 10px;
 	}
 
 	/* The tooltip bubble */

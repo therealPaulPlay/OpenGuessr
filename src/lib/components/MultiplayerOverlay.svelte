@@ -244,7 +244,7 @@
 		user-select: none;
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: var(--box-margin);
 		overflow: hidden;
 	}
 

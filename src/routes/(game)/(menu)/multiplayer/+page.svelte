@@ -328,14 +328,12 @@
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
-		width: calc(100% - 10px);
 		border-radius: 8px;
 		gap: var(--box-margin);
-		padding: 5px;
 		margin-top: var(--layout-margin);
 		overflow: hidden;
 		overflow-y: auto;
-		max-height: 290px;
+		max-height: 300px;
 		scrollbar-width: none;
 	}
 
