@@ -34,7 +34,7 @@
 </script>
 
 {#if $confirmPopupVisible}
-	<Popup verySlim="true" z={982}>
+	<Popup verySlim={true} z={982}>
 		<h1 id="confirmTitle" class="popup-title">{$confirmTitle}</h1>
 		<div id="confirmDescription" class="popup-description">{$confirmDescription}</div>
 		{#if $confirmPasswordInput}

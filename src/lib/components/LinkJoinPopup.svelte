@@ -8,7 +8,7 @@
 </script>
 
 {#if $linkJoinPopup}
-	<Popup verySlim="true">
+	<Popup verySlim={true}>
 		<div class="popup-title">
 			<h1 id="socialHeader">Room</h1>
 		</div>
