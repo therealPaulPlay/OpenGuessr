@@ -93,7 +93,7 @@
 </script>
 
 {#if $singleplayerOptionsPopup}
-	<Popup verySlim="true">
+	<Popup verySlim={true}>
 		<div class="popup-title">
 			<h1>Singleplayer</h1>
 		</div>

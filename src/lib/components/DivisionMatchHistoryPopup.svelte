@@ -81,7 +81,7 @@
 </script>
 
 {#if $divisionMatchHistoryPopup}
-	<Popup z={960} slim="true">
+	<Popup z={960} slim={true}>
 		<div class="popup-title">
 			<h1>Duel History</h1>
 		</div>

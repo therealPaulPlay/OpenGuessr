@@ -156,7 +156,7 @@
 </script>
 
 {#if $profilePopup}
-	<Popup z={970}>
+	<Popup z={970} slim={true}>
 		<div class="popup-title">
 			<div class="profileNameArea">
 				<div id="profileViewName">
@@ -293,6 +293,7 @@
 					tabs={statCategories.map((cat) => cat.name)}
 					selected={statCategories[selectedTabIndex].name}
 					bind:selectedIndex={selectedTabIndex}
+					class="stat-tabs-grow"
 					onchange={() => playSound("basic_button")}
 				/>
 			</div>
@@ -587,6 +588,11 @@
 		box-sizing: border-box;
 		background-color: var(--box-color);
 		padding: var(--box-margin-buttons);
+		display: flex;
+	}
+
+	:global(.stat-tabs-grow) {
+		flex-grow: 1;
 	}
 
 	.stats-carousel {
@@ -690,7 +696,7 @@
 	}
 
 	@media all and (max-width: 768px) {
-		#profileAbout { 
+		#profileAbout {
 			height: 85px;
 		}
 	}

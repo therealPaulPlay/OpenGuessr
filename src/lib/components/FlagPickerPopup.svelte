@@ -218,7 +218,7 @@
 </script>
 
 {#if $flagPickerPopup}
-	<Popup z={971} verySlim="true">
+	<Popup z={971} verySlim={true}>
 		<div class="popup-title">
 			<h1 id="pinPopupWindow">Flags</h1>
 		</div>

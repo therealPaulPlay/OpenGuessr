@@ -182,7 +182,7 @@
 </script>
 
 {#if successPopup}
-	<Popup verySlim="true">
+	<Popup verySlim={true}>
 		<h1 id="submitConfirmHeader" class="textHeaderLeft">Success!</h1>
 		<p>Thank you for creating a competition! Share these direct links with your friends:</p>
 		<div class="spacer"></div>

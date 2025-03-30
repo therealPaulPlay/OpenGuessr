@@ -50,6 +50,7 @@
 		margin: 0;
 		text-overflow: ellipsis;
 		overflow: hidden;
+		flex-grow: 1;
 	}
 
 	.tab-button:active {

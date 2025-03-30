@@ -24,7 +24,7 @@
 </script>
 
 {#if $popupOpen}
-	<Popup z={999} verySlim="true">
+	<Popup z={999} verySlim={true}>
 		<div id="errorTitle" class="popup-title">
 			<h2>{$title}</h2>
 		</div>
