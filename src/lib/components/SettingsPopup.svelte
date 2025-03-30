@@ -92,7 +92,7 @@
 </script>
 
 {#if $settingsPopup}
-	<Popup verySlim="true">
+	<Popup verySlim={true}>
 		<div class="popup-title">
 			<h1>Settings</h1>
 		</div>

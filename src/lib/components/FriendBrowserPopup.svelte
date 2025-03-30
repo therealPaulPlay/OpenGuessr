@@ -49,7 +49,7 @@
 </script>
 
 {#if $friendBrowserPopup}
-	<Popup z={960} slim="true">
+	<Popup z={960} slim={true}>
 		<div class="popup-title">
 			<h1 id="friendBrowserHeader">Search players</h1>
 		</div>

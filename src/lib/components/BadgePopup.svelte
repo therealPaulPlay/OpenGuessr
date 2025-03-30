@@ -13,7 +13,7 @@
 </script>
 
 {#if $badgePopup}
-	<Popup z={971} slim="true">
+	<Popup z={971} slim={true}>
 		<div class="popup-title">
 			<h1 id="badgePopupHeader">Badges</h1>
 		</div>

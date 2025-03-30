@@ -7,7 +7,7 @@
 </script>
 
 {#if $pinPopup}
-	<Popup z={971} verySlim="true">
+	<Popup z={971} verySlim={true}>
 		<div class="popup-title">
 			<h1 id="pinPopupWindow">Pins</h1>
 		</div>
