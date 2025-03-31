@@ -22,13 +22,7 @@ let streak = 0;
 let streakMultiplier = 1;
 
 function calculateMultiplier(streakParam) {
-    if (streakParam === 0) {
-        return 1;
-    } else if (streakParam >= 9) {
-        return 1.5;
-    } else {
-        return Math.round((1 + (streakParam / 9) * 0.5) * 100) / 100;
-    }
+    return streak === 0 ? 1 : streak >= 9 ? 1.5 : Math.round((1 + (streak / 9) * 0.5) * 100) / 100;
 }
 
 export function restoreOldStreak(oldStreak) {
@@ -39,14 +33,16 @@ export function restoreOldStreak(oldStreak) {
 }
 
 async function streakCalculation() {
+    if (!get(singleplayer) || !get(isAuthenticated)) return;
+
     streak = Number(localStorage.getItem("streak") || 0); // Load streak from localstorage
 
     if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
         streak++;
     } else {
         if (streak >= 2) toggleStreakWindow(streak, false);
-        setCheckNewHighestStreak(streak);
-        streak = 0; //reset country streak ( = Streak lost, but still restorable wit ad)
+        if (streak >= 1) setCheckNewHighestStreak(streak);
+        streak = 0; // Reset country streak ( = Streak lost, but still restorable wit ad)
     }
 
     streakMultiplier = calculateMultiplier(streak);
@@ -55,8 +51,8 @@ async function streakCalculation() {
     localStorage.setItem("streak", streak);
 }
 
-function getStreakMultiplierAdjustedToGamemode() {
-    return get(singleplayer) ? streakMultiplier : 1;
+function getStreakMultiplier() {
+    return (get(singleplayer) && get(isAuthenticated)) ? streakMultiplier : 1;
 }
 
 // Adjust XP calculation parameter to diameter (map size)
@@ -65,20 +61,19 @@ function calculateExponentialModifier(mapDiameter) {
 }
 
 // Calculate XP gain --------------------------------------------------------------------------------------------------------------------------------
-
 async function calculateXPGain(distance, category, supporterLevelParam, freeSupporterBoost) {
     let returnXP = 0;
 
     if (category == "famous places" || category == "image guessr") {
-        if (get(singleplayer)) await streakCalculation();
-        returnXP = Math.round((1500 * ((0.9982) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 1500 xp, with streak up to 1800sth
+        await streakCalculation();
+        returnXP = Math.round((1500 * ((0.9982) ** distance)) * getStreakMultiplier()); // 1500 xp, with streak up to 1800sth
 
     } else if (category == "country guessr") {
         returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
     } else {
-        if (getMapBounds().diameter > 250 && get(singleplayer)) await streakCalculation(); // If the map is big enough, calculate the country streak
-        returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance) * getStreakMultiplierAdjustedToGamemode());
+        if (getMapBounds().diameter > 250) await streakCalculation(); // If the map is big enough, calculate the country streak
+        returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance) * getStreakMultiplier());
     }
 
     let supporterMultiplier = 1;
@@ -100,7 +95,6 @@ async function calculateXPGain(distance, category, supporterLevelParam, freeSupp
     }
 
     if (freeSupporterBoost && supporterMultiplier < 1.2) supporterMultiplier = 1.2;
-
     return { earnedXP: Math.round(returnXP * supporterMultiplier), earnedXPWithoutSupporterBoost: returnXP, supporterMultiplier: supporterMultiplier };
 }
 
@@ -110,67 +104,60 @@ let animateSupporterBoostTimeout;
 // Load Experience stats on result screen -----------------------------------------------------------------------------------------------------------------------------
 export async function loadResultScreenXP(distance) {
 
+    // (Re-)sets
     let supporterMultiplier = 1;
     clearTimeout(animateSupporterBoostTimeout);
+    showStreakDisplay.set(false);
+    let currentXP = Number(get(experience)) || 0;
 
+    // Post-signin saves -----------------------------------------------------
     if (!get(isAuthenticated) && !get(multiplayer)) {
-        lastDistance.set(distance); // Used for post sign-in calculation
+        lastDistance.set(distance);
         lastExperienceCalculationAborted.set(true);
     } else {
         lastExperienceCalculationAborted.set(false);
     }
 
     // Save played round to log ------------------------------------------------
-    let mode = "Singleplayer";
-    if (get(multiplayer)) mode = "Multiplayer";
-    if (get(competition)) mode = "Competition";
+    let mode = get(singleplayer) ? "Singleplayer" : get(multiplayer) ? "Multiplayer" : get(competition) ? "Competition" : "Unknown";
     saveRoundToLog(mode, distance, [get(currentLocationLatitude), get(currentLocationLongitude)]);
 
-    // If Authenticated or in Multiplayer, show XP thing ------------------------------
-    if (get(isAuthenticated) || get(multiplayer)) {
+    // Calculate experience and streak --------------------------------------
+    let earnedXP;
+    let earnedBasicXP; // Without supporter mutliplier, that will be applied later (this is just for visuals)
+    const selectedCategory = localStorage.getItem("selectedCategory") || "standard";
 
-        // Hide streak display
-        showStreakDisplay.set(false);
-        let currentXP = Number(get(experience)) || 0;
+    // XP calculation formulas -------------------------------------------------
+    if (get(singleplayer) || get(multiplayer)) {
+        const adjustedSupporterLevel = get(multiplayer) ? get(peer)?.getStorage?.highestSupporterLevel : get(supporterLevel);
+        const calculatedXP = await calculateXPGain(distance, selectedCategory, adjustedSupporterLevel, get(singleplayer) ? get(freeSupporterBoostEnabled) : undefined);
+        earnedXP = calculatedXP.earnedXP;
+        earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
+        supporterMultiplier = calculatedXP.supporterMultiplier;
 
-        let earnedXP;
-        let earnedBasicXP; // Without supporter mutliplier, that will be applied later (this is just for visuals)
+        // Add XP to score
+        if (get(multiplayer)) updatePeerScore(earnedXP);
 
-        const selectedCategory = localStorage.getItem("selectedCategory") || "standard";
+    } else if (get(competition)) {
+        const calculatedXP = await calculateXPGain(distance, "standard");
+        earnedXP = calculatedXP.earnedXP;
+        earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost; // Supporter multiplier omitted because it should stay 1 (disabled)
+        addResultToCompetitionScore(earnedXP);
+    }
 
-        // XP calculation formulas -------------------------------------------------
-        if (get(singleplayer) || get(multiplayer)) {
-            const adjustedSupporterLevel = get(multiplayer) ? get(peer)?.getStorage?.highestSupporterLevel : get(supporterLevel);
+    // Apply XP visually and server-wise ----------------------------------
+    experienceBarAnimated.set(false);
+    earnedExperience.set(earnedBasicXP || 0);
 
-            const calculatedXP = await calculateXPGain(distance, selectedCategory, adjustedSupporterLevel, get(singleplayer) ? get(freeSupporterBoostEnabled) : undefined);
-            earnedXP = calculatedXP.earnedXP;
-            earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
-            supporterMultiplier = calculatedXP.supporterMultiplier;
+    if (earnedXP > 0 && get(isAuthenticated)) setUserXP(currentXP + earnedXP); // Save XP to database
+    if (earnedBasicXP > 50 && get(isAuthenticated)) setTimeout(playScoreincreaseSound, 500);
+    if (earnedXP > 0) experienceBarAnimated.set(true);
 
-            if (get(multiplayer)) updatePeerScore(earnedXP); // Add XP to score
-
-        } else if (get(competition)) {
-            const calculatedXP = await calculateXPGain(distance, "standard");
-            earnedXP = calculatedXP.earnedXP;
-            earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost; // supporter multiplier omitted because it should stay 1 (disabled)
-            addResultToCompetitionScore(earnedXP);
-        }
-
-        // Apply XP visually and server-wise ----------------------------------
-        experienceBarAnimated.set(false);
-        earnedExperience.set(earnedBasicXP || 0);
-
-        if (earnedXP > 0 && get(isAuthenticated)) setUserXP(currentXP + earnedXP); // Save XP to database
-        if (earnedXP > 0) experienceBarAnimated.set(true);
-        if (earnedBasicXP > 50 && get(isAuthenticated)) setTimeout(playScoreincreaseSound, 500);
-
-        if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
-            supporterXpBoostAnimation(supporterMultiplier);
-            animateSupporterBoostTimeout = setTimeout(() => {
-                earnedExperience.set(earnedXP || 0);
-            }, 3500);
-        }
-
+    if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
+        supporterXpBoostAnimation(supporterMultiplier);
+        animateSupporterBoostTimeout = setTimeout(() => {
+            earnedExperience.set(earnedXP || 0);
+        }, 3500);
     }
 }
 
