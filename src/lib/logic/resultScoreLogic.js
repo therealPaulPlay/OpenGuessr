@@ -21,14 +21,6 @@ import { toggleStreakWindow } from "$lib/utils/streakRestore";
 let streak = 0;
 let streakMultiplier = 1;
 
-function loadStreak() {
-    let tempLoadedStreak = Number(localStorage.getItem("streak") || 0);
-
-    if (tempLoadedStreak) {
-        streak = tempLoadedStreak;
-    }
-}
-
 function calculateMultiplier(streakParam) {
     if (streakParam === 0) {
         return 1;
@@ -43,30 +35,24 @@ export function restoreOldStreak(oldStreak) {
     streak = oldStreak;
     localStorage.setItem("streak", streak);
     streakMultiplier = calculateMultiplier(streak);
-
     streakText.set(streak + " (" + streakMultiplier + "x)");
 }
 
 async function streakCalculation() {
-    if (get(singleplayer)) {
-        loadStreak(); // Load streak from localstorage
+    streak = Number(localStorage.getItem("streak") || 0); // Load streak from localstorage
 
-        if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
-            streak++;
-        } else {
-            if (streak >= 2) toggleStreakWindow(streak, false);
-
-            setCheckNewHighestStreak(streak); // checks if this was the highest streak yet and 
-            streak = 0; //reset country streak ( = Streak lost, but still restorable wit ad)
-        }
-
-        localStorage.setItem("streak", streak);
-
-        streakMultiplier = calculateMultiplier(streak);
-        streakText.set(streak + " (" + streakMultiplier + "x)");
-
-        showStreakDisplay.set(true);
+    if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
+        streak++;
+    } else {
+        if (streak >= 2) toggleStreakWindow(streak, false);
+        setCheckNewHighestStreak(streak);
+        streak = 0; //reset country streak ( = Streak lost, but still restorable wit ad)
     }
+
+    streakMultiplier = calculateMultiplier(streak);
+    streakText.set(streak + " (" + streakMultiplier + "x)");
+    showStreakDisplay.set(true);
+    localStorage.setItem("streak", streak);
 }
 
 function getStreakMultiplierAdjustedToGamemode() {
@@ -75,10 +61,7 @@ function getStreakMultiplierAdjustedToGamemode() {
 
 // Adjust XP calculation parameter to diameter (map size)
 function calculateExponentialModifier(mapDiameter) {
-    const A = 0.9982;
-    const B = 0.08;
-    const C = 0.06;
-    return A - B * Math.exp(-C * mapDiameter);
+    return 0.9982 - 0.08 * Math.exp(-0.06 * mapDiameter);
 }
 
 // Calculate XP gain --------------------------------------------------------------------------------------------------------------------------------
@@ -86,20 +69,16 @@ function calculateExponentialModifier(mapDiameter) {
 async function calculateXPGain(distance, category, supporterLevelParam, freeSupporterBoost) {
     let returnXP = 0;
 
-    if (!category || category == "standard" || category == "capital cities") {
-        await streakCalculation();
-        returnXP = Math.round((5000 * ((0.9985) ** distance)) * getStreakMultiplierAdjustedToGamemode());
-
-    } else if (category == "famous places" || category == "image guessr") {
-        await streakCalculation();
+    if (category == "famous places" || category == "image guessr") {
+        if (get(singleplayer)) await streakCalculation();
         returnXP = Math.round((1500 * ((0.9982) ** distance)) * getStreakMultiplierAdjustedToGamemode()); // 1500 xp, with streak up to 1800sth
 
     } else if (category == "country guessr") {
         returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
     } else {
-        if (getMapBounds().diameter > 250) await streakCalculation(); // If the map is big enough, calculate the country streak
-        returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance));
+        if (getMapBounds().diameter > 250 && get(singleplayer)) await streakCalculation(); // If the map is big enough, calculate the country streak
+        returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance) * getStreakMultiplierAdjustedToGamemode());
     }
 
     let supporterMultiplier = 1;
@@ -120,9 +99,7 @@ async function calculateXPGain(distance, category, supporterLevelParam, freeSupp
         }
     }
 
-    if (freeSupporterBoost && supporterMultiplier < 1.2) {
-        supporterMultiplier = 1.2;
-    }
+    if (freeSupporterBoost && supporterMultiplier < 1.2) supporterMultiplier = 1.2;
 
     return { earnedXP: Math.round(returnXP * supporterMultiplier), earnedXPWithoutSupporterBoost: returnXP, supporterMultiplier: supporterMultiplier };
 }
@@ -136,16 +113,17 @@ export async function loadResultScreenXP(distance) {
     let supporterMultiplier = 1;
     clearTimeout(animateSupporterBoostTimeout);
 
-    lastDistance.set(distance);
-
-    if (!get(isAuthenticated) && !get(multiplayer)) lastExperienceCalculationAborted.set(true);
+    if (!get(isAuthenticated) && !get(multiplayer)) {
+        lastDistance.set(distance); // Used for post sign-in calculation
+        lastExperienceCalculationAborted.set(true);
+    } else {
+        lastExperienceCalculationAborted.set(false);
+    }
 
     // Save played round to log ------------------------------------------------
     let mode = "Singleplayer";
-
     if (get(multiplayer)) mode = "Multiplayer";
     if (get(competition)) mode = "Competition";
-
     saveRoundToLog(mode, distance, [get(currentLocationLatitude), get(currentLocationLongitude)]);
 
     // If Authenticated or in Multiplayer, show XP thing ------------------------------
@@ -153,7 +131,6 @@ export async function loadResultScreenXP(distance) {
 
         // Hide streak display
         showStreakDisplay.set(false);
-        lastExperienceCalculationAborted.set(false);
         let currentXP = Number(get(experience)) || 0;
 
         let earnedXP;
@@ -180,29 +157,19 @@ export async function loadResultScreenXP(distance) {
         }
 
         // Apply XP visually and server-wise ----------------------------------
-
         experienceBarAnimated.set(false);
         earnedExperience.set(earnedBasicXP || 0);
 
-        if (earnedXP > 0 && get(isAuthenticated)) {
-            setUserXP(currentXP + earnedXP); // Save XP to database
-            experienceBarAnimated.set(true);
-        }
+        if (earnedXP > 0 && get(isAuthenticated)) setUserXP(currentXP + earnedXP); // Save XP to database
+        if (earnedXP > 0) experienceBarAnimated.set(true);
+        if (earnedBasicXP > 50 && get(isAuthenticated)) setTimeout(playScoreincreaseSound, 500);
 
-        if (earnedBasicXP > 50) {
-            setTimeout(() => {
-                playScoreincreaseSound();
-            }, 500);
+        if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
+            supporterXpBoostAnimation(supporterMultiplier);
+            animateSupporterBoostTimeout = setTimeout(() => {
+                earnedExperience.set(earnedXP || 0);
+            }, 3500);
         }
-
-        setTimeout(function () {
-            if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
-                supporterXpBoostAnimation(supporterMultiplier);
-                animateSupporterBoostTimeout = setTimeout(() => {
-                    earnedExperience.set(earnedXP || 0);
-                }, 3500);
-            }
-        }, 10);
 
     }
 }
