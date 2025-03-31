@@ -27,6 +27,7 @@
 	import { cubicOut } from "svelte/easing";
 	import { get } from "svelte/store";
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
+	import ResultFullscreenMessage from "./ResultFullscreenMessage.svelte";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -47,6 +48,9 @@
 </script>
 
 <div id="endBottomArea" class:resultScreenHidden={!Boolean($resultScreenEnabled)}>
+	<!-- Animations for great scores -->
+	<ResultFullscreenMessage />
+
 	<ResultScreenSlideup />
 	<div id="endBottomBar">
 		<div
