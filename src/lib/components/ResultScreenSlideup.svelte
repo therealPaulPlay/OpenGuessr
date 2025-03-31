@@ -111,7 +111,7 @@
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
-		margin-top: var(--box-margin);
+		margin-top: var(--box-margin-buttons);
 		gap: var(--box-margin-buttons);
 	}
 
