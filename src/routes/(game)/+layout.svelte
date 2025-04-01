@@ -47,6 +47,7 @@
 	import ReportIframePopup from "$lib/components/ReportIframePopup.svelte";
 	import FlagPickerPopup from "$lib/components/FlagPickerPopup.svelte";
 	import DivisionMatchHistoryPopup from "$lib/components/DivisionMatchHistoryPopup.svelte";
+	import { playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 
 	// Start ads
 	onMount(() => {
@@ -67,14 +68,32 @@
 			console.warn("Error during keydown listener to prevent unwanted last button press:", error);
 		}
 	});
+
+	// Load Playlight
+	onMount(async () => {
+		try {
+			const module = await import("https://sdk.playlight.dev/playlight-sdk.es.js");
+			$playlightSDK = module.default;
+			await $playlightSDK.init({
+				button: {
+					visible: false,
+				},
+			});
+		} catch (error) {
+			console.error("Error loading the Playlight SDK:", error);
+		}
+	});
 </script>
 
 <svelte:head>
 	<!-- Ad script -->
 	<script src="https://hb.vntsm.com/v4/live/vms/sites/openguessr.com/index.js" async></script>
 
-	<!-- Leaflet Map -->
+	<!-- Leaflet CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
+
+	<!-- Playlight CSS -->
+	<link rel="stylesheet" href="https://sdk.playlight.dev/playlight-sdk.css" />
 </svelte:head>
 
 <!-- Keywords -->
@@ -123,10 +142,8 @@
 <MultiplayerOverlay />
 <ReportIframePopup />
 <ImageGuesser />
-<div class="viewContainer">
-	<PanoramaIframe />
-	<CountryGuesserBar />
-</div>
+<PanoramaIframe />
+<CountryGuesserBar />
 <MapHolder>
 	<MapAttribution />
 	<MobileMapToggle />
