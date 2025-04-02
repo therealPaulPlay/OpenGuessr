@@ -4,7 +4,6 @@ import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 import { disableResultScreen } from "$lib/utils/setResultScreen";
 import { multiplayer, singleplayer } from "$lib/stores/modeStore";
 import { peer, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
-import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 import { get } from "svelte/store";
 
 export function transitionToStart() {
@@ -18,21 +17,5 @@ export function transitionToStart() {
     if (get(peer)?.getStorage?.currentRound < get(roundAmount)) get(peer).updateStorage("startRound", true); // Start new round
   }
 
-  if (get(crazyGames)) potentialCrazyGamesAd(); // Crazy Games Ad
   if (!get(multiplayer)) setTimeout(socialPopupProbability, 650); // Social Media CTA (too stressful in multiplayer)
-}
-
-let adIndex = 0;
-
-function potentialCrazyGamesAd() {
-  if (!get(singleplayer)) return;
-  adIndex++;
-
-  if (adIndex % 10 == 0) {
-    try {
-      window.CrazyGames.SDK.ad.requestAd("midgame");
-    } catch (error) {
-      console.error("Error showing crazy games midgame ad:", error);
-    }
-  }
 }
