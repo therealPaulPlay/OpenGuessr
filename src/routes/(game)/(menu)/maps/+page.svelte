@@ -2,7 +2,7 @@
 	import { Plus, XCircle, ExternalLinkIcon } from "lucide-svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { disableExternalLinks } from "$lib/stores/context-specific/platformSettingsStore";
+	import { crazyGames, disableExternalLinks } from "$lib/stores/context-specific/platformSettingsStore";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -226,6 +226,7 @@
 			</div>
 		{/each}
 	</div>
+	<!-- Special game modes and OpenGuessr sites -->
 	<div class="headerContainer">
 		<h2 class="header">Special Modes</h2>
 	</div>
@@ -295,6 +296,7 @@
 			</div>
 		{/if}
 	</div>
+	<!-- Expandable country section -->
 	<div class="headerContainer">
 		<h2 class="header">Countries</h2>
 	</div>
@@ -326,10 +328,13 @@
 		<img class="arrowExpand" class:arrowExpandRotate={countrySectionExpanded} alt="arrow" src="/img/arrow_icon.png" />
 	</button>
 	<!-- Playlight section -->
-	<div class="headerContainer no-bottom-padding">
-		<h2 class="header">Featured Games</h2>
-	</div>
-	<div class="map-container playlight-widget-carousel smaller-bottom-margin"></div>
+	{#if !$crazyGames}
+		<div class="headerContainer no-bottom-padding">
+			<h2 class="header">Featured Games</h2>
+		</div>
+		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style="height: 330px;"></div>
+	{/if}
+	<!-- Continents -->
 	<div class="headerContainer">
 		<h2 class="header">Continents</h2>
 	</div>

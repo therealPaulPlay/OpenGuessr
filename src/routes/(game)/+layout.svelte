@@ -72,9 +72,13 @@
 	// Load Playlight
 	onMount(async () => {
 		try {
+			if (new URLSearchParams(window.location.search).get("crazy-games")) return; // Don't load Playlight on CG
 			const module = await import("https://sdk.playlight.dev/playlight-sdk.es.js");
 			$playlightSDK = module.default;
 			await $playlightSDK.init({
+				exitIntent: {
+					enabled: false,
+				},
 				button: {
 					visible: false,
 				},

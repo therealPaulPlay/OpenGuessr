@@ -8,7 +8,8 @@
 	import { isSingleplayerNMPZ, singleplayerTimeout } from "$lib/stores/modeStore";
 	import { roundLog } from "$lib/stores/locationStore";
 	import { onMount } from "svelte";
-	import { ChevronLeft, ChevronRight } from "lucide-svelte";
+	import { ChevronLeft, ChevronRight, Gamepad2 } from "lucide-svelte";
+	import { playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 
 	// Singleplayer Options UI ----------------------------------------------------------------------------------------
 
@@ -98,6 +99,18 @@
 			<h1>Singleplayer</h1>
 		</div>
 		<div class="settingsScrollArea">
+			<div class="settingsCanvas slightBottomMargin">
+				<div class="playlight-pitch">
+					<p class="game-pitch-text">Looking for other exciting games?</p>
+					<button
+						class="standardButton white game-pitch-button"
+						onclick={() => {
+							playSound("basic_button");
+							$playlightSDK?.setDiscovery();
+						}}>Discover <Gamepad2 style="margin-bottom: -5px; margin-left: 2px;" /></button
+					>
+				</div>
+			</div>
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="settingsBox">
 					<p class="textMargin">Timer:</p>
@@ -215,6 +228,28 @@
 
 	#timerSlider {
 		min-width: 80px;
+		flex-grow: 1;
+	}
+
+	.playlight-pitch {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		width: 100%;
+		gap: var(--box-margin);
+		padding: var(--box-margin-buttons);
+		background-color: rgba(255, 255, 255, 0.15);
+		border-radius: 10px;
+		flex-wrap: wrap;
+	}
+
+	.game-pitch-text {
+		margin-left: 5px;
+		text-wrap: nowrap;
+		flex-grow: 20;
+	}
+
+	.game-pitch-button {
 		flex-grow: 1;
 	}
 
