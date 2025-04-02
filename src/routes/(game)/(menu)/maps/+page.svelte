@@ -2,7 +2,7 @@
 	import { Plus, XCircle, ExternalLinkIcon } from "lucide-svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { disableExternalLinks } from "$lib/stores/context-specific/platformSettingsStore";
+	import { crazyGames, disableExternalLinks } from "$lib/stores/context-specific/platformSettingsStore";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -226,6 +226,7 @@
 			</div>
 		{/each}
 	</div>
+	<!-- Special game modes and OpenGuessr sites -->
 	<div class="headerContainer">
 		<h2 class="header">Special Modes</h2>
 	</div>
@@ -278,23 +279,24 @@
 				</div>
 			</div>
 			<div
-				class="map-item map-item-slim map-item-long-link"
+				class="map-item map-item-slim"
 				role="button"
 				tabindex="0"
 				onclick={() => {
 					playSound("button_juicy");
-					window.open("https://autoguessr.com", "_blank").focus();
+					window.open("https://education.openguessr.com/guides", "_blank").focus();
 				}}
 			>
 				<div class="mapInfo">
 					<div class="map-name">
-						Auto Guessr <span class="linkBadge orangeBadge">Auto</span>
+						Guides <span class="linkBadge">Edu</span>
 						<span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
 					</div>
 				</div>
 			</div>
 		{/if}
 	</div>
+	<!-- Expandable country section -->
 	<div class="headerContainer">
 		<h2 class="header">Countries</h2>
 	</div>
@@ -325,6 +327,14 @@
 		>{countrySectionExpanded ? "Show less" : "Show all"}
 		<img class="arrowExpand" class:arrowExpandRotate={countrySectionExpanded} alt="arrow" src="/img/arrow_icon.png" />
 	</button>
+	<!-- Playlight section -->
+	{#if !$crazyGames}
+		<div class="headerContainer no-bottom-padding">
+			<h2 class="header">Featured Games</h2>
+		</div>
+		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style="height: 330px;"></div>
+	{/if}
+	<!-- Continents -->
 	<div class="headerContainer">
 		<h2 class="header">Continents</h2>
 	</div>
@@ -347,7 +357,7 @@
 	</div>
 	<!-- Saved Community Maps -->
 	<div class="headerContainer">
-		<h2 class="header">Bookmarked Maps</h2>
+		<h2 class="header">Bookmarked</h2>
 	</div>
 	<div class="map-container">
 		{#if addedCommunityMapsArray.length > 0}
@@ -558,6 +568,10 @@
 		margin-left: 5px;
 	}
 
+	.no-bottom-padding {
+		padding-bottom: 0;
+	}
+
 	.map-item {
 		display: flex;
 		justify-content: space-between;
@@ -613,15 +627,6 @@
 		max-width: 140px;
 	}
 
-	.map-item-long-link .map-name {
-		max-width: 180px;
-		min-width: 160px;
-	}
-
-	.map-item-long-link {
-		min-width: 180px;
-	}
-
 	.map-item-bookmark .map-name {
 		max-width: 110px;
 	}
@@ -655,6 +660,10 @@
 		mask-image: linear-gradient(to bottom, rgba(0, 0, 0, 1) 70%, rgba(0, 0, 0, 0) 100%);
 		mask-composite: intersect;
 		max-height: 300px;
+	}
+
+	.smaller-bottom-margin {
+		margin-bottom: 10px;
 	}
 
 	.expandButton {
@@ -752,10 +761,6 @@
 		padding-right: 5px;
 		vertical-align: 1px;
 		margin-left: 1px;
-	}
-
-	.orangeBadge {
-		background-color: rgb(225, 98, 3);
 	}
 
 	#mapSearch {

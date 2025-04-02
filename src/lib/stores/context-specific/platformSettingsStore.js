@@ -10,3 +10,4 @@ export const disableAutoAuthentication = writable(false);
 
 // Platforms
 export const crazyGames = writable(false);
+export const playlightSDK = writable();
