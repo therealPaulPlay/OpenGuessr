@@ -1,7 +1,7 @@
 <script>
 	import Popup from "./ui/Popup.svelte";
 	import { onMount, onDestroy } from "svelte";
-	import { setSoundsVolume, playSound } from "$lib/utils/soundManager";
+	import { setSoundsVolume, playSound, setMusicVolume } from "$lib/utils/soundManager";
 	import { preventFullscreen, preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
 
 	import { settingsPopup } from "$lib/stores/uiStore";
@@ -25,32 +25,32 @@
 	});
 
 	// SFX Volume -----------------------------
-
 	let sfxVolumeSliderValue = $state(0.5);
+	let sfxSliderBgPercentage = $state(100);
 
 	function inputSFXVolumeSlider() {
 		setSoundsVolume(sfxVolumeSliderValue);
-		updateSliderBackground();
-	}
-
-	let sfxSliderBgPercentage = $state(100);
-
-	function updateSliderBackground() {
 		sfxSliderBgPercentage = sfxVolumeSliderValue * 100;
 	}
 
 	onMount(() => {
-		let tempLocalstorageSoundVolume = localStorage.getItem("soundVolume") ? localStorage.getItem("soundVolume") : 0.5;
-		setSoundsVolume(tempLocalstorageSoundVolume);
-		sfxVolumeSliderValue = tempLocalstorageSoundVolume;
-		updateSliderBackground();
+		const savedSoundVolume = localStorage.getItem("soundVolume") ? localStorage.getItem("soundVolume") : 0.5;
+		setSoundsVolume(savedSoundVolume);
+		sfxVolumeSliderValue = savedSoundVolume;
+		sfxSliderBgPercentage = sfxVolumeSliderValue * 100;
 	});
 
 	let sfxSliderBg = $derived(
 		`linear-gradient(to right, var(--brand-color) 0%, var(--brand-color) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) 100%)`,
 	);
 
-	// Fullscreen Setting ---------------------
+	// Music Volume ----------------------------------------------------
+	onMount(() => {
+		const savedMusicVolume = localStorage.getItem("musicVolume") ? localStorage.getItem("musicVolume") : 0.5;
+		setMusicVolume(parseFloat(savedMusicVolume));
+	});
+
+	// Fullscreen Setting ----------------------------------------------------
 
 	let fullscreenButtonText = $state("Fullscreen");
 
@@ -61,16 +61,6 @@
 			fullscreenButtonText = "Exit Fullscreen";
 		}
 	};
-
-	onMount(() => {
-		document.addEventListener("fullscreenchange", fullscreenChangeCheck);
-	});
-
-	onDestroy(() => {
-		try {
-			document.removeEventListener("fullscreenchange", fullscreenChangeCheck);
-		} catch {}
-	});
 
 	function toggleFullscreen() {
 		playSound("basic_button");
@@ -90,6 +80,8 @@
 		}
 	}
 </script>
+
+<svelte:document onfullscreenchange={fullscreenChangeCheck} />
 
 {#if $settingsPopup}
 	<Popup verySlim={true}>

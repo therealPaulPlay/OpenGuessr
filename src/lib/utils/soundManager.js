@@ -1,46 +1,111 @@
-// Object to keep track of sounds by tag
+import { Howl, Howler } from 'howler';
+
 const sounds = {};
+let currentMusic = null;
+let currentVariant = null;
+let sfxVolume = 1.0;
+let musicVolume = 1.0;
 
-// Global volume variable, default is 1 (max volume)
-let globalVolume = 1.0;
-
-// Function to set the global volume
+// SFX ---------------------------------------------------------------------------------------------
 export function setSoundsVolume(volume) {
-    globalVolume = Math.max(0, Math.min(volume, 1)); // Ensure the volume is between 0 and 1
-    localStorage.setItem("soundVolume", globalVolume);
-    // Update the volume for all currently playing sounds
+    sfxVolume = Math.max(0, Math.min(volume, 1));
+    localStorage.setItem("soundVolume", sfxVolume);
     try {
-        for (let tag in sounds) {
-            if (sounds.hasOwnProperty(tag)) {
-                sounds[tag].volume = globalVolume * 0.5;
-            }
-        }
+        for (let tag in sounds)
+            if (sounds.hasOwnProperty(tag)) sounds[tag].volume(sfxVolume);
     } catch (error) {
         console.error("Couldn't set global volume for sounds: " + error);
     }
 }
 
-// Function to play a sound and assign it a tag
 export function playSound(fileName, tag) {
     try {
-        let sound = new Audio("/sounds/" + fileName + ".ogg");
-        sound.volume = globalVolume * 0.5; // Set the sound volume to the global volume
-        sound.play();
+        const sound = new Howl({
+            src: [`/sounds/${fileName}.ogg`],
+            volume: sfxVolume
+        });
+
+        if (sfxVolume > 0) sound.play();
         sounds[tag] = sound;
     } catch (error) {
         console.error("Error playing sound: " + error);
     }
 }
 
-// Function to stop a sound by tag
 export function stopSound(tag) {
     try {
         if (sounds[tag]) {
-            sounds[tag].pause();
-            sounds[tag].currentTime = 0; // Reset the sound
+            sounds[tag].stop();
             delete sounds[tag];
         }
     } catch (error) {
         console.error("Couldn't stop sound: " + error);
+    }
+}
+
+// Music ---------------------------------------------------------------------------------------
+let musicTrack = null;
+
+export function setMusicVolume(volume) {
+    musicVolume = Math.max(0, Math.min(volume, 1));
+    localStorage.setItem("musicVolume", musicVolume);
+
+    if (musicTrack) {
+        const vol = currentVariant === "chill" ? musicVolume * 0.25 : musicVolume;
+        musicTrack.volume(vol);
+
+        if (musicVolume === 0) musicTrack.pause();
+        else if (!musicTrack.playing()) musicTrack.play();
+    }
+}
+
+export function playMusic(variant) {
+    if (variant === currentVariant) return;
+
+    try {
+        const targetVol = variant === "chill" ? musicVolume * 0.25 : musicVolume;
+
+        // Get current position if we have a track playing
+        let position = 0;
+        if (musicTrack && musicTrack.playing()) position = musicTrack.seek();
+
+        // Save reference to old track
+        const oldTrack = musicTrack;
+        const fadeTime = 1000; // 1 second fade
+
+        // Create new track - intentionally NOT starting at 0 volume
+        const track = new Howl({
+            src: [`/music/music1_${variant}.ogg`],
+            html5: true,
+            loop: true,
+            volume: targetVol,
+            onload: function () {
+                if (position > 0) this.seek(position); // Set position if available
+
+                // Only play if volume allows
+                if (musicVolume > 0) {
+                    this.play();
+
+                    // If we have an old track, fade it out
+                    if (oldTrack) {
+                        oldTrack.fade(oldTrack.volume(), 0, fadeTime); // Fade volume
+
+                        // Stop old track after fade
+                        setTimeout(() => {
+                            oldTrack.stop();
+                        }, fadeTime + 50);
+                    }
+                }
+            }
+        });
+
+        track.fade(0.0, targetVol, fadeTime);
+
+        // Update references immediately
+        currentVariant = variant;
+        musicTrack = track;
+
+    } catch (error) {
+        console.error("Error playing music:", error);
     }
 }
