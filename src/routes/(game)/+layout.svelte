@@ -98,10 +98,11 @@
 
 <!-- Keywords -->
 <h1 style:display="none">
-	Openguessr - GeoGuessr free. Free Geoguesser alternative free open source geography geographie Geotastic world map
-	geoguessr Geo Quiz kostenlos google streetview rainbolt zi8gzag travel geographie education spiel videospiel guess
-	Multiplayer which country play with friends challenges karte rate welches land more than 5 minutes unlimited free play
-	unendlich freies spiel without subscription pro with Duels
+	Openguessr is like GeoGuessr free and unlimited. A free GeoGuesser alternative like Geotastic, open source, best for
+	geography learners (in German Geographie). Place the pin on the world map in this geoguessr-inspired geo quiz.
+	Kostenlos (free) with Google Street View or streetview. Geography and travel creators like Rainbolt and Zi8gZag are
+	popular in the education world. Can you guess where you are without a subscription, in multiplayer with friends or in
+	online duels? Guess the country, rate das Land!
 </h1>
 
 <!-- 3rd party -->

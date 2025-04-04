@@ -62,7 +62,7 @@ export function disableResultScreen() {
         showSlideup.set(false);
         timerText.set("00:00"); // Reset timer text
 
-        earnedExperience.set(0); // Reset the earned experience, to trigger a new "tick up" animation on the next result load
+        earnedExperience.set(0); // Reset earned experience
         resetMap(); // Reset the map for the next round
     }
 }
