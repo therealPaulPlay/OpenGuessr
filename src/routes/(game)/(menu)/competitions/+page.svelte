@@ -719,7 +719,7 @@
 				<input
 					id="competitionSearch"
 					bind:value={searchQuery}
-					placeholder="Search active Competitions..."
+					placeholder="Search competitions..."
 					onkeydown={(event) => {
 						if (event.key === "Enter") {
 							event.preventDefault();
