@@ -13,10 +13,8 @@
 	});
 
 	$effect(() => {
-		const expValue = $earnedExperience;
-
-		if (expValue >= 5000 && $resultScreenEnabled && !alreadyShown) {
-			currentScore = Math.floor(expValue / 1000);
+		if ($earnedExperience >= 5000 && $resultScreenEnabled && !alreadyShown) {
+			currentScore = Math.floor($earnedExperience / 1000);
 			clearTimeout(animationTimeout);
 			showAnimation = true;
 			alreadyShown = true;
