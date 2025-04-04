@@ -35,7 +35,11 @@
 	});
 
 	$effect(() => {
-		animatedExperience.set($earnedExperience);
+		if ($resultScreenEnabled) {
+			animatedExperience.set($earnedExperience);
+		} else {
+			animatedExperience.set(0);
+		}
 	});
 
 	let level = $state(1);
