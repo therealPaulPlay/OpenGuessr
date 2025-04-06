@@ -1,12 +1,13 @@
 <script>
 	import Popup from "./ui/Popup.svelte";
 	import { onMount, onDestroy } from "svelte";
-	import { setSoundsVolume, playSound } from "$lib/utils/soundManager";
+	import { setSoundsVolume, playSound, setMusicVolume } from "$lib/utils/soundManager";
 	import { preventFullscreen, preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
 
 	import { settingsPopup } from "$lib/stores/uiStore";
-	import { Scan } from "lucide-svelte";
+	import { InfoIcon, Scan } from "lucide-svelte";
 	import Tabs from "./ui/Tabs.svelte";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 
 	// Settings - Window ---------------------------------------------------------------------------------------
 	function closeSettingsButton() {
@@ -25,32 +26,46 @@
 	});
 
 	// SFX Volume -----------------------------
-
 	let sfxVolumeSliderValue = $state(0.5);
+	let sfxSliderBgPercentage = $state(100);
 
 	function inputSFXVolumeSlider() {
 		setSoundsVolume(sfxVolumeSliderValue);
-		updateSliderBackground();
-	}
-
-	let sfxSliderBgPercentage = $state(100);
-
-	function updateSliderBackground() {
-		sfxSliderBgPercentage = sfxVolumeSliderValue * 100;
+		sfxSliderBgPercentage = Math.round(sfxVolumeSliderValue * 100);
 	}
 
 	onMount(() => {
-		let tempLocalstorageSoundVolume = localStorage.getItem("soundVolume") ? localStorage.getItem("soundVolume") : 0.5;
-		setSoundsVolume(tempLocalstorageSoundVolume);
-		sfxVolumeSliderValue = tempLocalstorageSoundVolume;
-		updateSliderBackground();
+		const savedSoundVolume = localStorage.getItem("soundVolume") ? localStorage.getItem("soundVolume") : 0.5;
+		setSoundsVolume(savedSoundVolume);
+		sfxVolumeSliderValue = savedSoundVolume;
+		sfxSliderBgPercentage = Math.round(sfxVolumeSliderValue * 100);
 	});
 
 	let sfxSliderBg = $derived(
 		`linear-gradient(to right, var(--brand-color) 0%, var(--brand-color) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) 100%)`,
 	);
 
-	// Fullscreen Setting ---------------------
+	// Music Volume ----------------------------------------------------
+	let musicVolumeSliderValue = $state(0.5);
+	let musicSliderBgPercentage = $state(100);
+
+	function inputMusicVolumeSlider() {
+		setMusicVolume(musicVolumeSliderValue);
+		musicSliderBgPercentage = Math.round(musicVolumeSliderValue * 100);
+	}
+
+	onMount(() => {
+		const savedMusicVolume = localStorage.getItem("musicVolume") ? localStorage.getItem("musicVolume") : 0.5;
+		setMusicVolume(parseFloat(savedMusicVolume));
+		musicVolumeSliderValue = savedMusicVolume;
+		musicSliderBgPercentage = Math.round(musicVolumeSliderValue * 100);
+	});
+
+	let musicSliderBg = $derived(
+		`linear-gradient(to right, var(--brand-color) 0%, var(--brand-color) ${musicSliderBgPercentage}%, rgba(255, 255, 255, 0.1) ${musicSliderBgPercentage}%, rgba(255, 255, 255, 0.1) 100%)`,
+	);
+
+	// Fullscreen Setting ----------------------------------------------------
 
 	let fullscreenButtonText = $state("Fullscreen");
 
@@ -61,16 +76,6 @@
 			fullscreenButtonText = "Exit Fullscreen";
 		}
 	};
-
-	onMount(() => {
-		document.addEventListener("fullscreenchange", fullscreenChangeCheck);
-	});
-
-	onDestroy(() => {
-		try {
-			document.removeEventListener("fullscreenchange", fullscreenChangeCheck);
-		} catch {}
-	});
 
 	function toggleFullscreen() {
 		playSound("basic_button");
@@ -91,6 +96,8 @@
 	}
 </script>
 
+<svelte:document onfullscreenchange={fullscreenChangeCheck} />
+
 {#if $settingsPopup}
 	<Popup verySlim={true}>
 		<div class="popup-title">
@@ -98,7 +105,7 @@
 		</div>
 		<div class="settingsCanvas">
 			<div class="settingsBox">
-				<p class="textMargin">Unit System:</p>
+				<p class="textMargin">Unit system:</p>
 				<Tabs
 					tabs={["Metric", "Imperial"]}
 					bind:selected={selectedUnit}
@@ -109,21 +116,56 @@
 				/>
 			</div>
 			<div class="settingsBox">
-				<p class="textMargin">SFX Volume:</p>
-				<input
-					type="range"
-					min="0"
-					max="1"
-					step="0.01"
-					class="slider sliderMarginTop"
-					bind:value={sfxVolumeSliderValue}
-					style:background={sfxSliderBg}
-					oninput={inputSFXVolumeSlider}
-				/>
+				<p class="textMargin">SFX volume:</p>
+				<div class="sliderBox">
+					<input
+						type="range"
+						min="0"
+						max="1"
+						step="0.01"
+						class="slider shortSlider"
+						bind:value={sfxVolumeSliderValue}
+						style:background={sfxSliderBg}
+						oninput={inputSFXVolumeSlider}
+					/>
+					<p>{sfxSliderBgPercentage}%</p>
+				</div>
+			</div>
+			<div class="settingsBox">
+				<p class="textMargin">Music volume:</p>
+				<div class="sliderBox">
+					<input
+						type="range"
+						min="0"
+						max="1"
+						step="0.01"
+						class="slider shortSlider"
+						bind:value={musicVolumeSliderValue}
+						style:background={musicSliderBg}
+						oninput={inputMusicVolumeSlider}
+					/>
+					<p>{musicSliderBgPercentage}%</p>
+					<button
+						class="standardButton white creditsButton"
+						onclick={() => {
+							playSound("basic_button");
+							showConfirmPopup(
+								"Credits",
+								"The music was composed by Lazy Bugatti. Check out his Spotify account :-)",
+								false,
+								false,
+								false,
+								true,
+							);
+						}}
+					>
+						<InfoIcon strokeWidth={2.5} size={18} />
+					</button>
+				</div>
 			</div>
 			{#if !$preventFullscreen}
 				<div class="settingsBox">
-					<p class="textMargin">Toggle Fullscreen:</p>
+					<p class="textMargin">View:</p>
 					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
 						<span class="fullscreenIcon">
 							<Scan size="17" strokeWidth={3} />
@@ -133,7 +175,7 @@
 				</div>
 			{/if}
 			<div class="settingsBox">
-				<p class="textMargin">Legal Information:</p>
+				<p class="textMargin">Legal info:</p>
 				<button
 					class="standardButton white"
 					id="privacyButton"
@@ -178,8 +220,28 @@
 		margin-right: 3px;
 	}
 
-	.sliderMarginTop {
-		margin-top: 20px;
+	.sliderBox {
+		display: flex;
+		margin-top: 18px;
 		margin-left: 5px;
+		align-items: center;
+	}
+
+	.sliderBox p {
+		min-width: 45px;
+		margin-left: 10px;
+		opacity: 0.75;
+	}
+
+	.shortSlider {
+		width: 175px;
+	}
+
+	.creditsButton {
+		padding: 3px;
+		min-height: 0;
+		padding-inline: 5px;
+		display: flex;
+		align-items: center;
 	}
 </style>
