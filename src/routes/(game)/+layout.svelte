@@ -48,6 +48,7 @@
 	import FlagPickerPopup from "$lib/components/FlagPickerPopup.svelte";
 	import DivisionMatchHistoryPopup from "$lib/components/DivisionMatchHistoryPopup.svelte";
 	import { playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
+	import MusicController from "$lib/components/MusicController.svelte";
 
 	// Start ads
 	onMount(() => {
@@ -118,6 +119,9 @@
 <!-- Logo and Navbar -->
 <TopLeftLogo />
 <NavigationBar />
+
+<!-- Music -->
+<MusicController />
 
 <LoadingFade />
 <ErrorPopup />
