@@ -63,7 +63,7 @@ export function playMusic(variant) {
     if (variant === currentVariant) return;
 
     try {
-        const targetVol = variant === "chill" ? musicVolume * 0.25 : musicVolume;
+        const targetVol = variant === "chill" ? musicVolume * 0.35 : musicVolume;
 
         // Get current position if we have a track playing
         let position = 0;

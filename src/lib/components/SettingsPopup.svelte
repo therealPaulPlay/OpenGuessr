@@ -5,8 +5,9 @@
 	import { preventFullscreen, preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
 
 	import { settingsPopup } from "$lib/stores/uiStore";
-	import { Scan } from "lucide-svelte";
+	import { InfoIcon, Scan } from "lucide-svelte";
 	import Tabs from "./ui/Tabs.svelte";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 
 	// Settings - Window ---------------------------------------------------------------------------------------
 	function closeSettingsButton() {
@@ -144,6 +145,22 @@
 						oninput={inputMusicVolumeSlider}
 					/>
 					<p>{musicSliderBgPercentage}%</p>
+					<button
+						class="standardButton white creditsButton"
+						onclick={() => {
+							playSound("basic_button");
+							showConfirmPopup(
+								"Credits",
+								"Music by Lazy Bugatti. Go listen to his tracks on Spotify :-)",
+								false,
+								false,
+								false,
+								true,
+							);
+						}}
+					>
+						<InfoIcon strokeWidth={2.5} size={18} />
+					</button>
 				</div>
 			</div>
 			{#if !$preventFullscreen}
@@ -205,7 +222,6 @@
 
 	.sliderBox {
 		display: flex;
-		gap: var(--box-margin);
 		margin-top: 20px;
 		margin-left: 5px;
 		align-items: center;
@@ -213,6 +229,15 @@
 
 	.sliderBox p {
 		min-width: 45px;
+		margin-left: 10px;
 		opacity: 0.75;
+	}
+
+	.creditsButton {
+		padding: 3px;
+		min-height: 0;
+		padding-inline: 5px;
+		display: flex;
+		align-items: center;
 	}
 </style>
