@@ -138,7 +138,7 @@
 			],
 		},
 		{
-			name: "User",
+			name: "Info",
 			cards: [
 				{
 					title: "User ID",
