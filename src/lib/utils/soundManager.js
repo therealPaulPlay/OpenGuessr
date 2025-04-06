@@ -78,6 +78,7 @@ export function playMusic(variant) {
             src: [`/music/music1_${variant}.ogg`],
             html5: true,
             loop: true,
+            preload: 'metadata',  // Only preload metadata, not the entire file
             volume: targetVol,
             onload: function () {
                 if (position > 0) this.seek(position); // Set position if available

@@ -123,7 +123,7 @@
 						min="0"
 						max="1"
 						step="0.01"
-						class="slider sliderMarginTop"
+						class="slider shortSlider"
 						bind:value={sfxVolumeSliderValue}
 						style:background={sfxSliderBg}
 						oninput={inputSFXVolumeSlider}
@@ -139,7 +139,7 @@
 						min="0"
 						max="1"
 						step="0.01"
-						class="slider"
+						class="slider shortSlider"
 						bind:value={musicVolumeSliderValue}
 						style:background={musicSliderBg}
 						oninput={inputMusicVolumeSlider}
@@ -151,7 +151,7 @@
 							playSound("basic_button");
 							showConfirmPopup(
 								"Credits",
-								"Music by Lazy Bugatti. Go listen to his tracks on Spotify :-)",
+								"The music was composed by Lazy Bugatti. Check out his Spotify account :-)",
 								false,
 								false,
 								false,
@@ -175,7 +175,7 @@
 				</div>
 			{/if}
 			<div class="settingsBox">
-				<p class="textMargin">Legal information:</p>
+				<p class="textMargin">Legal info:</p>
 				<button
 					class="standardButton white"
 					id="privacyButton"
@@ -222,7 +222,7 @@
 
 	.sliderBox {
 		display: flex;
-		margin-top: 20px;
+		margin-top: 18px;
 		margin-left: 5px;
 		align-items: center;
 	}
@@ -231,6 +231,10 @@
 		min-width: 45px;
 		margin-left: 10px;
 		opacity: 0.75;
+	}
+
+	.shortSlider {
+		width: 175px;
 	}
 
 	.creditsButton {
