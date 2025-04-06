@@ -30,14 +30,14 @@
 
 	function inputSFXVolumeSlider() {
 		setSoundsVolume(sfxVolumeSliderValue);
-		sfxSliderBgPercentage = sfxVolumeSliderValue * 100;
+		sfxSliderBgPercentage = Math.round(sfxVolumeSliderValue * 100);
 	}
 
 	onMount(() => {
 		const savedSoundVolume = localStorage.getItem("soundVolume") ? localStorage.getItem("soundVolume") : 0.5;
 		setSoundsVolume(savedSoundVolume);
 		sfxVolumeSliderValue = savedSoundVolume;
-		sfxSliderBgPercentage = sfxVolumeSliderValue * 100;
+		sfxSliderBgPercentage = Math.round(sfxVolumeSliderValue * 100);
 	});
 
 	let sfxSliderBg = $derived(
@@ -45,10 +45,24 @@
 	);
 
 	// Music Volume ----------------------------------------------------
+	let musicVolumeSliderValue = $state(0.5);
+	let musicSliderBgPercentage = $state(100);
+
+	function inputMusicVolumeSlider() {
+		setMusicVolume(musicVolumeSliderValue);
+		musicSliderBgPercentage = Math.round(musicVolumeSliderValue * 100);
+	}
+
 	onMount(() => {
 		const savedMusicVolume = localStorage.getItem("musicVolume") ? localStorage.getItem("musicVolume") : 0.5;
 		setMusicVolume(parseFloat(savedMusicVolume));
+		musicVolumeSliderValue = savedMusicVolume;
+		musicSliderBgPercentage = Math.round(musicVolumeSliderValue * 100);
 	});
+
+	let musicSliderBg = $derived(
+		`linear-gradient(to right, var(--brand-color) 0%, var(--brand-color) ${musicSliderBgPercentage}%, rgba(255, 255, 255, 0.1) ${musicSliderBgPercentage}%, rgba(255, 255, 255, 0.1) 100%)`,
+	);
 
 	// Fullscreen Setting ----------------------------------------------------
 
@@ -90,7 +104,7 @@
 		</div>
 		<div class="settingsCanvas">
 			<div class="settingsBox">
-				<p class="textMargin">Unit System:</p>
+				<p class="textMargin">Unit system:</p>
 				<Tabs
 					tabs={["Metric", "Imperial"]}
 					bind:selected={selectedUnit}
@@ -101,21 +115,40 @@
 				/>
 			</div>
 			<div class="settingsBox">
-				<p class="textMargin">SFX Volume:</p>
-				<input
-					type="range"
-					min="0"
-					max="1"
-					step="0.01"
-					class="slider sliderMarginTop"
-					bind:value={sfxVolumeSliderValue}
-					style:background={sfxSliderBg}
-					oninput={inputSFXVolumeSlider}
-				/>
+				<p class="textMargin">SFX volume:</p>
+				<div class="sliderBox">
+					<input
+						type="range"
+						min="0"
+						max="1"
+						step="0.01"
+						class="slider sliderMarginTop"
+						bind:value={sfxVolumeSliderValue}
+						style:background={sfxSliderBg}
+						oninput={inputSFXVolumeSlider}
+					/>
+					<p>{sfxSliderBgPercentage}%</p>
+				</div>
+			</div>
+			<div class="settingsBox">
+				<p class="textMargin">Music volume:</p>
+				<div class="sliderBox">
+					<input
+						type="range"
+						min="0"
+						max="1"
+						step="0.01"
+						class="slider"
+						bind:value={musicVolumeSliderValue}
+						style:background={musicSliderBg}
+						oninput={inputMusicVolumeSlider}
+					/>
+					<p>{musicSliderBgPercentage}%</p>
+				</div>
 			</div>
 			{#if !$preventFullscreen}
 				<div class="settingsBox">
-					<p class="textMargin">Toggle Fullscreen:</p>
+					<p class="textMargin">View:</p>
 					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
 						<span class="fullscreenIcon">
 							<Scan size="17" strokeWidth={3} />
@@ -125,7 +158,7 @@
 				</div>
 			{/if}
 			<div class="settingsBox">
-				<p class="textMargin">Legal Information:</p>
+				<p class="textMargin">Legal information:</p>
 				<button
 					class="standardButton white"
 					id="privacyButton"
@@ -170,8 +203,16 @@
 		margin-right: 3px;
 	}
 
-	.sliderMarginTop {
+	.sliderBox {
+		display: flex;
+		gap: var(--box-margin);
 		margin-top: 20px;
 		margin-left: 5px;
+		align-items: center;
+	}
+
+	.sliderBox p {
+		min-width: 45px;
+		opacity: 0.75;
 	}
 </style>
