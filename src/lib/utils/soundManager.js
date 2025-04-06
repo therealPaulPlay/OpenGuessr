@@ -51,7 +51,7 @@ export function setMusicVolume(volume) {
     localStorage.setItem("musicVolume", musicVolume);
 
     if (musicTrack) {
-        const vol = currentVariant === "chill" ? musicVolume * 0.25 : musicVolume;
+        const vol = currentVariant === "chill" ? musicVolume * 0.35 : musicVolume;
         musicTrack.volume(vol);
 
         if (musicVolume === 0) musicTrack.pause();
