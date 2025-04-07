@@ -21,7 +21,7 @@
 	});
 
 	resultScreenEnabled.subscribe((value) => {
-		if (value) gameStart = true;
+		if (value && !gameStart) setTimeout(() => (gameStart = true), 250); // Slight delay to ensure result map loads first
 	});
 
 	$effect(() => {
