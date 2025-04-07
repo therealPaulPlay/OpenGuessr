@@ -64,58 +64,40 @@ export function playMusic(variant) {
 
     try {
         const targetVol = variant === "chill" ? musicVolume * 0.35 : musicVolume;
+
         // Get current position if we have a track playing
         let position = 0;
         if (musicTrack && musicTrack.playing()) position = musicTrack.seek();
+
         // Save reference to old track
         const oldTrack = musicTrack;
         const fadeTime = 1000; // 1 second fade
 
-        // Manual fade function
-        const manualFade = (sound, startVol, endVol, duration, onComplete) => {
-            let currentVol = startVol;
-            const fadeSteps = 20;
-            const stepInterval = duration / fadeSteps;
-            const volStep = (endVol - startVol) / fadeSteps;
-            let steps = 0;
-
-            const fadeInterval = setInterval(() => {
-                steps++;
-                currentVol += volStep;
-
-                if (steps >= fadeSteps) {
-                    currentVol = endVol;
-                    clearInterval(fadeInterval);
-                    if (onComplete) onComplete();
-                }
-
-                // Set the volume directly
-                sound.volume(currentVol);
-            }, stepInterval);
-
-            return fadeInterval;
-        };
-
-        // Create new track
+        // Create new track - intentionally NOT starting at 0 volume
         const track = new Howl({
             src: [`/music/music1_${variant}.ogg`],
             html5: true,
             loop: true,
-            preload: 'metadata',
-            volume: 0,
+            preload: 'metadata',  // Only preload metadata, not the entire file
+            volume: 0.01,
             onload: function () {
-                if (position > 0) this.seek(position);
+                if (position > 0) this.seek(position); // Set position if available
 
+                // Only play if volume allows
                 if (musicVolume > 0) {
-                    this.play();
-                    manualFade(this, 0., targetVol, fadeTime);
+                    setTimeout(() => {
+                        this.play();
+                        setTimeout(() => { track.fade(0, targetVol, fadeTime) }, 100);
+                    }, 100);
 
-                    // Handle the old track
+                    // If we have an old track, fade it out
                     if (oldTrack) {
-                        // Use manual fade for old track too
-                        manualFade(oldTrack, oldTrack.volume(), 0, fadeTime, () => {
+                        oldTrack.fade(oldTrack.volume(), 0, fadeTime); // Fade volume
+
+                        // Stop old track after fade
+                        setTimeout(() => {
                             oldTrack.stop();
-                        });
+                        }, fadeTime + 250);
                     }
                 }
             }
