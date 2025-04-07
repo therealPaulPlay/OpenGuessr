@@ -79,7 +79,7 @@ export function playMusic(variant) {
             html5: true,
             loop: true,
             preload: 'metadata',  // Only preload metadata, not the entire file
-            volume: targetVol,
+            volume: 0.01,
             onload: function () {
                 if (position > 0) this.seek(position); // Set position if available
 
@@ -87,6 +87,7 @@ export function playMusic(variant) {
                 if (musicVolume > 0) {
                     setTimeout(() => {
                         this.play();
+                        setTimeout(() => { track.fade(0, targetVol, fadeTime) }, 100);
                     }, 100);
 
                     // If we have an old track, fade it out
@@ -96,13 +97,11 @@ export function playMusic(variant) {
                         // Stop old track after fade
                         setTimeout(() => {
                             oldTrack.stop();
-                        }, fadeTime + 150);
+                        }, fadeTime + 250);
                     }
                 }
             }
         });
-
-        track.fade(0, targetVol, fadeTime);
 
         // Update references immediately
         currentVariant = variant;
