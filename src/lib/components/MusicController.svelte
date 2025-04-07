@@ -5,6 +5,7 @@
 	import { playMusic } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
+	import { multiplayerOverlay } from "$lib/stores/context-specific/multiplayerStore";
 
 	let siteLoaded = $state(false);
 	let gameStart = $state(false);
@@ -20,13 +21,19 @@
 		}
 	});
 
+	// If the player places the first pin, start music
 	resultScreenEnabled.subscribe((value) => {
 		if (value && !gameStart) setTimeout(() => (gameStart = true), 250); // Slight delay to ensure result map loads first
 	});
 
+	// If player starts with multiplayer or competitions, start music
+	singleplayer.subscribe((value) => {
+		if (!value && !gameStart) gameStart = true;
+	});
+
 	$effect(() => {
 		if (!siteLoaded || !gameStart) return; // Load music after page has finished loading to not slow it down
-		if ($resultScreenEnabled || page.url.pathname !== "/") {
+		if ($resultScreenEnabled || page.url.pathname !== "/" || $multiplayerOverlay) {
 			playMusic("regular", 0.35);
 		} else {
 			$singleplayer ? playMusic("regular") : playMusic("intense");
