@@ -61,20 +61,18 @@ export function setMusicVolume(volume) {
 
 export function playMusic(variant) {
     if (variant === currentVariant) return;
-
     try {
         const targetVol = variant === "chill" ? musicVolume * 0.35 : musicVolume;
 
         let position = 0;
         if (musicTrack && musicTrack.playing()) position = musicTrack.seek(); // Get current position if we have a track playing
 
-        // Save reference to old track
         const oldTrack = musicTrack;
         const fadeTime = 1000; // 1 second fade
 
         // Create new track - intentionally NOT starting at 0 volume
         const track = new Howl({
-            src: [`/music/music1_${variant}.ogg`],
+            src: [`/music/music1_${variant == "chill" ? "regular" : variant}.ogg`],
             loop: true,
             volume: 0,
             onload: function () {
