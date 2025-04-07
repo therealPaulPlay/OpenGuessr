@@ -7,6 +7,7 @@
 	import { onMount } from "svelte";
 
 	let siteLoaded = $state(false);
+	let gameStart = $state(false);
 
 	onMount(() => {
 		if (document.readyState === "complete") {
@@ -19,8 +20,12 @@
 		}
 	});
 
+	resultScreenEnabled.subscribe((value) => {
+		if (value) gameStart = true;
+	});
+
 	$effect(() => {
-		if (!siteLoaded) return; // Load music after page has finished loading to not slow it down
+		if (!siteLoaded || !gameStart) return; // Load music after page has finished loading to not slow it down
 		if ($resultScreenEnabled || page.url.pathname !== "/") {
 			playMusic("chill");
 		} else {
