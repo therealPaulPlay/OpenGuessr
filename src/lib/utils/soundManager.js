@@ -45,61 +45,53 @@ export function stopSound(tag) {
 
 // Music ---------------------------------------------------------------------------------------
 let musicTrack = null;
+let currentVolumeFactor = 1;
+const fadeTime = 1500;
 
 export function setMusicVolume(volume) {
     musicVolume = Math.max(0, Math.min(volume, 1));
     localStorage.setItem("musicVolume", musicVolume);
 
     if (musicTrack) {
-        const vol = currentVariant === "chill" ? musicVolume * 0.35 : musicVolume;
-        musicTrack.volume(vol);
+        musicTrack.volume(musicVolume * currentVolumeFactor);
 
         if (musicVolume === 0) musicTrack.pause();
         else if (!musicTrack.playing()) musicTrack.play();
     }
 }
 
-export function playMusic(variant) {
-    if (variant === currentVariant) return;
+export function playMusic(variant, volumeFactor = 1) {
     try {
-        const targetVol = variant === "chill" ? musicVolume * 0.35 : musicVolume;
+        currentVolumeFactor = volumeFactor;
 
-        let position = 0;
-        if (musicTrack && musicTrack.playing()) position = musicTrack.seek(); // Get current position if we have a track playing
+        if (variant === currentVariant) {
+            if (musicTrack) musicTrack.fade(musicTrack.volume(), musicVolume * volumeFactor, fadeTime)
+            return;
+        }
 
-        const oldTrack = musicTrack;
-        const fadeTime = 1000; // 1 second fade
-
-        // Create new track - intentionally NOT starting at 0 volume
+        // Create new track
         const track = new Howl({
-            src: [`/music/music1_${variant == "chill" ? "regular" : variant}.ogg`],
+            src: [`/music/music1_${variant}.ogg`],
             loop: true,
             volume: 0,
             onload: function () {
-                if (position > 0) this.seek(position); // Set position if available
-
-                // Only play if volume allows
                 if (musicVolume > 0) {
                     this.play();
-                    track.fade(0, targetVol, fadeTime);
-
-                    // If we have an old track, fade it out
-                    if (oldTrack) {
-                        oldTrack.fade(oldTrack.volume(), 0, fadeTime); // Fade volume
-
-                        // Stop old track after fade
-                        setTimeout(() => {
-                            oldTrack.stop();
-                        }, fadeTime + 50);
-                    }
+                    this.fade(0, musicVolume * volumeFactor, fadeTime);
                 }
             }
         });
 
-        // Update references immediately
+        // Fade out old track
+        const oldTrack = musicTrack;
+        if (oldTrack) {
+            oldTrack.fade(oldTrack.volume(), 0, fadeTime);
+            setTimeout(() => oldTrack.stop(), fadeTime + 50);
+        }
+
+        // Update references
         currentVariant = variant;
         musicTrack = track;
-
     } catch (error) {
         console.error("Error playing music:", error);
     }

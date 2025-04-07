@@ -4,6 +4,7 @@
 	import { page } from "$app/state";
 	import { playMusic } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
+	import { singleplayer } from "$lib/stores/modeStore";
 
 	let siteLoaded = $state(false);
 	let gameStart = $state(false);
@@ -26,9 +27,9 @@
 	$effect(() => {
 		if (!siteLoaded || !gameStart) return; // Load music after page has finished loading to not slow it down
 		if ($resultScreenEnabled || page.url.pathname !== "/") {
-			playMusic("chill");
+			playMusic("regular", 0.35);
 		} else {
-			playMusic("regular");
+			$singleplayer ? playMusic("regular") : playMusic("intense");
 		}
 	});
 </script>

@@ -512,6 +512,7 @@
 							class="standardButton rateButton"
 							id="rateGood"
 							onclick={() => {
+								playSound("basic_button");
 								submitRating(5);
 							}}
 						>
@@ -521,6 +522,7 @@
 							class="standardButton rateButton"
 							id="rateBad"
 							onclick={() => {
+								playSound("basic_button");
 								submitRating(-3);
 							}}
 						>
@@ -530,6 +532,7 @@
 							class="standardButton rateButton"
 							id="rateBroken"
 							onclick={() => {
+								playSound("basic_button");
 								submitRating(-10);
 							}}
 						>
