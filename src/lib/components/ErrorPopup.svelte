@@ -25,9 +25,7 @@
 
 {#if $popupOpen}
 	<Popup z={999} verySlim={true}>
-		<div id="errorTitle" class="popup-title">
-			<h2>{$title}</h2>
-		</div>
+		<h1 class="popup-title">{$title}</h1>
 		<div>
 			<p class="slightBottomMargin">{$description}</p>
 			{#if $errorCode}
