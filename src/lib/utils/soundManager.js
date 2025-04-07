@@ -85,7 +85,9 @@ export function playMusic(variant) {
 
                 // Only play if volume allows
                 if (musicVolume > 0) {
-                    this.play();
+                    setTimeout(() => {
+                        this.play();
+                    }, 100);
 
                     // If we have an old track, fade it out
                     if (oldTrack) {
@@ -94,13 +96,13 @@ export function playMusic(variant) {
                         // Stop old track after fade
                         setTimeout(() => {
                             oldTrack.stop();
-                        }, fadeTime + 50);
+                        }, fadeTime + 150);
                     }
                 }
             }
         });
 
-        track.fade(0.0, targetVol, fadeTime);
+        track.fade(0, targetVol, fadeTime);
 
         // Update references immediately
         currentVariant = variant;
