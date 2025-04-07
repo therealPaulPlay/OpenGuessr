@@ -65,9 +65,8 @@ export function playMusic(variant) {
     try {
         const targetVol = variant === "chill" ? musicVolume * 0.35 : musicVolume;
 
-        // Get current position if we have a track playing
         let position = 0;
-        if (musicTrack && musicTrack.playing()) position = musicTrack.seek();
+        if (musicTrack && musicTrack.playing()) position = musicTrack.seek(); // Get current position if we have a track playing
 
         // Save reference to old track
         const oldTrack = musicTrack;
