@@ -1038,6 +1038,7 @@
 		flex-direction: column;
 		box-sizing: border-box;
 		border-radius: 10px;
+		width: 100%; /* Fix for Safari */
 		max-height: calc(80dvh - 235px);
 		overflow-x: hidden;
 		overflow-y: auto;
