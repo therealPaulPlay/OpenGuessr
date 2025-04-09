@@ -578,6 +578,7 @@
 		border-radius: 5px;
 		max-height: calc(100dvh - 400px);
 		scrollbar-width: none;
+		width: 100%;
 		transition: max-height 250ms ease-in-out;
 	}
 
