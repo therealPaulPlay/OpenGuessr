@@ -22,17 +22,16 @@ function checkLinkMap() {
 
     try {
         let urlParams = new URLSearchParams(window.location.search);
-        let mapFromLink = urlParams.get("play-map").toLowerCase();
+        let mapFromLink = urlParams.get("play-map").toLowerCase().replaceAll("-", " ");
 
         if (mapFromLink) {
+            console.log("changing");
             if (get(countryMaps).includes(mapFromLink) || get(continentMaps).includes(mapFromLink)) {
                 changeCategory(mapFromLink);
             } else {
                 errorPopup("Map not available", "Unfortunately, this map doesn't exist yet. It will likely be released in the future! Feel free to search for similar community maps.", "Map not found", false, true);
             }
         }
-
-        history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
     } catch { }
 }
 
@@ -41,8 +40,8 @@ function checkLinkMap() {
 export async function checkGenerationTypeAndGenerate() {
     loadingScreenVisible.set(true); // Show loading screen
 
-    const mapCategory = localStorage.getItem("selectedCategory") || "standard";
     if (!checkedForMapLink) checkLinkMap();
+    const mapCategory = localStorage.getItem("selectedCategory") || "standard";
 
     // Competition timer reset
     stopCompetitionTimer();

@@ -2,7 +2,7 @@
 // This allows all maps to only show the area on the minimap that is really needed
 import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
-import { multiplayer } from "$lib/stores/modeStore";
+import { competition, multiplayer } from "$lib/stores/modeStore";
 import { peer } from "$lib/stores/context-specific/multiplayerStore";
 
 let previousLocationArray = [];
@@ -13,7 +13,7 @@ let currentZoom = 2;
 
 export function getMapBounds() {
     // If no locations are loaded, set the map to the default
-    if (get(multiplayer) || !get(currentlyLoadedLocationsArray)?.length) {
+    if (get(multiplayer) || get(competition) || !get(currentlyLoadedLocationsArray)?.length) {
         if (get(multiplayer) && get(peer)?.getStorage?.mapBounds) return get(peer)?.getStorage?.mapBounds;
         return { zoom: 2, lat: 0, lng: 0, diameter: 360 }
     }
