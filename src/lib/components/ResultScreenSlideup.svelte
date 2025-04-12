@@ -82,7 +82,7 @@
 	}
 
 	.textBoxTop {
-		margin-bottom: var(--box-margin);
+		margin-bottom: var(--box-margin-buttons);
 	}
 
 	.textBox {
@@ -93,7 +93,7 @@
 	}
 
 	.supporterStatBox {
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin-buttons);
 		position: relative;
 		overflow: hidden;
 		text-align: center;
