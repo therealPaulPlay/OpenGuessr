@@ -96,7 +96,7 @@
 {#if $singleplayerOptionsPopup}
 	<Popup verySlim={true}>
 		<div class="popup-title">
-			<h1>Singleplayer</h1>
+			<h1>Game options</h1>
 		</div>
 		<div class="settingsScrollArea">
 			<div class="settingsCanvas slightBottomMargin">
@@ -156,7 +156,7 @@
 			</div>
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="settingsBox roundLogContainer">
-					<p class="textMargin textMarginRoundLog">Round Log:</p>
+					<p class="textMargin textMarginRoundLog">Round log:</p>
 					<div class="roundLogBox" id="roundLogBox">
 						<!-- round log will be automatically generated here -->
 						{#if $roundLog.length > 0}
