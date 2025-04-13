@@ -6,7 +6,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 
 	let link = $derived(
-		`https://openreport.dev/report?type=user&reference-id=user-${$reportUserId}&key=838c115d03441bbdbc2b5fbdccaf2d4b&link=https%3A%2F%2Fopenguessr.com%3Fprofile-id%3D${$reportUserId}&reasons=Misconduct%2C+Cheating%2C+Googling`,
+		`https://openreport.dev/report?type=user&reference-id=user-${$reportUserId}&key=838c115d03441bbdbc2b5fbdccaf2d4b&link=https%3A%2F%2Fopenguessr.com%3Fprofile-id%3D${$reportUserId}&reasons=Misconduct%2CCheating%2CGoogling`,
 	);
 </script>
 
