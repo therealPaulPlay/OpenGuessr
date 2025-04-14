@@ -186,7 +186,7 @@
 						</div>
 					{/each}
 				{:else}
-					<p class="divisionLeaderboardError">Division leaderboard not loaded.</p>
+					<p class="divisionLeaderboardLoading">Division leaderboard is loading...</p>
 				{/if}
 			</div>
 		{/if}
@@ -314,8 +314,7 @@
 		flex-wrap: wrap;
 	}
 
-	.divisionLeaderboardError {
-		margin-inline: auto;
+	.divisionLeaderboardLoading {
 		opacity: 0.5;
 	}
 
@@ -376,6 +375,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
+		justify-content: center;
 	}
 
 	:global(.triangleAlertMarginRight) {
@@ -390,7 +390,6 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 10px;
-		padding-inline: 5px;
 		color: white;
 		font-size: 25px;
 		justify-content: space-between;
