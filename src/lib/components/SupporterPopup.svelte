@@ -174,7 +174,7 @@
 	<Popup z={971} slim={true}>
 		<div class="popup-title">
 			<h1 class="shiftTitle">
-				Supporter Tiers
+				Supporter tiers
 				<img id="supporterIconTitle" alt="supporter tag" src="/img/supporter_icon.png" />
 			</h1>
 		</div>

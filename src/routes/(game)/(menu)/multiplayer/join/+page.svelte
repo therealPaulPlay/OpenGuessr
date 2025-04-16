@@ -56,7 +56,7 @@
 	</div>
 </div>
 {#if openRooms?.length > 0}
-	<p class="publicRoomTitle" transition:blur>Public Rooms:</p>
+	<p class="publicRoomTitle" transition:blur>Public rooms:</p>
 	<div class="publicRoomBox" transition:blur>
 		{#each openRooms as room}
 			<div class="publicRoomItem">
