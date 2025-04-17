@@ -9,7 +9,7 @@
 		banReportEntryData,
 		warnReportEntryData,
 	} from "$lib/stores/accountStore";
-	import { loadedFriendsData, hostStage } from "$lib/stores/context-specific/multiplayerStore";
+	import { loadedFriendsData, hostStage, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
 	import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
 	import { loadFriends, removeFriend, sendMatchInvite } from "$lib/logic/friendAPI";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
@@ -25,6 +25,7 @@
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { fetchBlacklistStatus, fetchWarnlistStatus } from "$lib/utils/checkBanStatus";
 	import { get } from "svelte/store";
+	import Tabs from "$lib/components/ui/Tabs.svelte";
 
 	let friendsRefreshInterval;
 
@@ -57,6 +58,9 @@
 
 	const nextMonth = new Date();
 	nextMonth.setMonth(nextMonth.getMonth() + 1, 1); // Set to first day of next month
+
+	// Skill based toggle
+	let skillBasedTabsValue = $derived($skillBasedMatchmaking ? 1 : 0);
 </script>
 
 <svelte:head>
@@ -81,7 +85,23 @@
 	{/if}
 	<div class="playBox">
 		<div class="groupPartyButtons">
-			<p class="playButtonsHeader">Custom</p>
+			<p class="playButtonsHeader">
+				Custom
+				<button
+					class="white standardButton transparentPillButton"
+					onclick={() => {
+						playSound("basic_button");
+						troubleshootPopup.set(true);
+					}}
+					>Troubleshooting
+					<img
+						class="multiplayerMenuIcon"
+						src="/img/error_icon.png"
+						alt="Lightning error symbol"
+						style="opacity: 60%; width: 18px;"
+					/></button
+				>
+			</p>
 			<div class="groupPartyContent">
 				<button
 					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
@@ -106,15 +126,31 @@
 			</div>
 		</div>
 		<div class="groupPartyButtons">
-			<div class="playButtonsHeader playButtonsHeaderFlex">
+			<div class="playButtonsHeader">
 				<p>Matchmaking</p>
-				<button
-					class="standardButton white matchHistoryButton"
-					onclick={() => {
-						playSound("basic_button");
-						divisionMatchHistoryPopup.set(true);
-					}}>History <History size={19} strokeWidth={2.5} style="margin-bottom: -3px; margin-left: 2px" /></button
-				>
+				<div class="duelOptionsContainer">
+					<button
+						class="standardButton white transparentPillButton"
+						onclick={() => {
+							playSound("basic_button");
+							divisionMatchHistoryPopup.set(true);
+						}}
+						><span class="historyButtonText">History </span><History
+							size={19}
+							strokeWidth={2.5}
+							style="margin-bottom: -3px;"
+						/></button
+					>
+					<Tabs
+						tabs={["Any", "Skill-based"]}
+						class="skillBasedToggle"
+						selectedIndex={skillBasedTabsValue}
+						onchange={(_, selectionIndex) => {
+							playSound("basic_button");
+							$skillBasedMatchmaking = selectionIndex != 0;
+						}}
+					/>
+				</div>
 			</div>
 			<div class="groupPartyContent">
 				<button
@@ -129,7 +165,6 @@
 				>
 					Find Duel
 					<img
-						id="findIcon"
 						class="multiplayerMenuIcon"
 						style="margin-left: 5px;"
 						src="/img/find_icon.png"
@@ -186,7 +221,7 @@
 						</div>
 					{/each}
 				{:else}
-					<p class="divisionLeaderboardError">Division leaderboard not loaded.</p>
+					<p class="divisionLeaderboardLoading">Division leaderboard is loading...</p>
 				{/if}
 			</div>
 		{/if}
@@ -274,27 +309,6 @@
 			<p class="noFriendsText">Added friends show up here.</p>
 		{/if}
 	</div>
-	<div class="headerContainer headerMarginTop">
-		<h2 class="header">More</h2>
-	</div>
-	<div class="moreContainer">
-		<p class="troubleshootingText">Experiencing issues?</p>
-		<button
-			class="white standardButton"
-			id="troubleshootGuideButton"
-			onclick={() => {
-				playSound("basic_button");
-				troubleshootPopup.set(true);
-			}}
-			>Troubleshooting guide
-			<img
-				class="multiplayerMenuIcon"
-				src="/img/error_icon.png"
-				alt="Lightning error symbol"
-				style="opacity: 60%;"
-			/></button
-		>
-	</div>
 </div>
 
 <style>
@@ -310,18 +324,37 @@
 		gap: 5px;
 	}
 
+	:global(.skillBasedToggle) {
+		border: none !important;
+		min-height: 0 !important;
+		margin: 0 !important;
+	}
+
+	:global(.skillBasedToggle button) {
+		padding-top: 0 !important;
+		padding-bottom: 3px !important;
+		min-height: 20px;
+		background-color: rgba(255, 255, 255, 0.1);
+	}
+
 	.warnInfo {
 		flex-wrap: wrap;
 	}
 
-	.divisionLeaderboardError {
-		margin-inline: auto;
+	.divisionLeaderboardLoading {
 		opacity: 0.5;
 	}
 
 	.infoIcon {
 		margin-inline: 1px;
 		margin-right: 5px;
+	}
+
+	.duelOptionsContainer {
+		display: flex;
+		gap: var(--box-margin);
+		justify-content: center;
+		align-items: center;
 	}
 
 	.divisionLeaderboardContainer {
@@ -337,7 +370,7 @@
 		scrollbar-width: none;
 	}
 
-	.matchHistoryButton {
+	.transparentPillButton {
 		background-color: var(--box-color);
 		padding-top: 0;
 		padding-bottom: 3px;
@@ -376,6 +409,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
+		justify-content: center;
 	}
 
 	:global(.triangleAlertMarginRight) {
@@ -390,7 +424,6 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 10px;
-		padding-inline: 5px;
 		color: white;
 		font-size: 25px;
 		justify-content: space-between;
@@ -470,24 +503,11 @@
 		opacity: 0.5;
 		padding-inline: 5px;
 		max-height: 28px;
-	}
-
-	.playButtonsHeaderFlex {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-	}
-
-	.moreContainer {
-		width: calc(100% - 16px);
-		display: flex;
-		flex-wrap: wrap;
-		justify-content: space-between;
-		background-color: var(--box-color);
-		border-radius: 15px;
 		gap: var(--box-margin-buttons);
-		padding: var(--box-margin-buttons);
-		margin-bottom: 20px;
+		overflow: hidden;
 	}
 
 	.headerMarginTop {
@@ -561,6 +581,7 @@
 		background-color: var(--box-color);
 		padding: var(--box-margin);
 		border-radius: 15px;
+		max-width: calc(100% - 20px);
 	}
 
 	.groupPartyContent {
@@ -598,14 +619,9 @@
 		pointer-events: none;
 	}
 
-	#findIcon {
-		margin-right: 0;
-	}
-
 	.multiplayerMenuIcon {
 		width: 20px;
 		height: auto;
-		margin-inline: 2px;
 		margin-bottom: -2px;
 	}
 
@@ -654,18 +670,14 @@
 		margin-left: 5px;
 	}
 
-	#troubleshootGuideButton {
-		min-height: 50px;
-		border-radius: 10px;
-		flex-grow: 1;
+	.historyButtonText {
+		margin-right: 5px;
 	}
 
-	.troubleshootingText {
-		opacity: 0.5;
-		padding-inline: 10px;
-		margin-top: auto;
-		margin-bottom: auto;
-		flex-grow: 30;
+	@media (max-width: 768px) {
+		.historyButtonText {
+			display: none;
+		}
 	}
 
 	@keyframes duelButtonGlint {

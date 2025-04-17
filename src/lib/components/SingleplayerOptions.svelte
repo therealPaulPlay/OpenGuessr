@@ -9,7 +9,7 @@
 	import { roundLog } from "$lib/stores/locationStore";
 	import { onMount } from "svelte";
 	import { ChevronLeft, ChevronRight, Gamepad2 } from "lucide-svelte";
-	import { playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
+	import { crazyGames, playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 
 	// Singleplayer Options UI ----------------------------------------------------------------------------------------
 
@@ -99,18 +99,20 @@
 			<h1>Game options</h1>
 		</div>
 		<div class="settingsScrollArea">
-			<div class="settingsCanvas slightBottomMargin">
-				<div class="playlight-pitch">
-					<p class="game-pitch-text">Looking for other exciting games?</p>
-					<button
-						class="standardButton white game-pitch-button"
-						onclick={() => {
-							playSound("basic_button");
-							$playlightSDK?.setDiscovery();
-						}}>Discover <Gamepad2 style="margin-bottom: -5px; margin-left: 2px;" /></button
-					>
+			{#if !$crazyGames}
+				<div class="settingsCanvas slightBottomMargin">
+					<div class="playlight-pitch">
+						<p class="game-pitch-text">Looking for other exciting games?</p>
+						<button
+							class="standardButton white game-pitch-button"
+							onclick={() => {
+								playSound("basic_button");
+								$playlightSDK?.setDiscovery();
+							}}>Discover <Gamepad2 style="margin-bottom: -5px; margin-left: 2px;" /></button
+						>
+					</div>
 				</div>
-			</div>
+			{/if}
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="settingsBox">
 					<p class="textMargin">Timer:</p>

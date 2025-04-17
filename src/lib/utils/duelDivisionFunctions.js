@@ -51,7 +51,7 @@ export async function registerDivisionDuel(uuid) {
         errorPopup(
             'Duel registration error (Network)',
             'Failed to connect to server.',
-            'Please check your internet connection and try again'
+            'Please check your internet connection and try again.'
         );
         return false;
     }
@@ -89,7 +89,7 @@ export async function sendDuelDivisionResult(won, uuid) {
         errorPopup(
             'Duel submission error (Network)',
             'Failed to connect to server.',
-            'Please check your internet connection and try again'
+            'Please check your internet connection and try again.'
         );
         return false;
     }

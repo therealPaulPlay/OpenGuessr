@@ -53,7 +53,7 @@
 									acceptFriendRequest(entry.id);
 								}}
 							>
-								<Check size="17" strokeWidth="4" />
+								<Check size="17" strokeWidth="3.5" />
 							</button>
 							<button
 								class="standardButton white"
@@ -63,7 +63,7 @@
 									declineFriendRequest(entry.id);
 								}}
 							>
-								<X size="17" strokeWidth="4" />
+								<X size="17" strokeWidth="3.5" />
 							</button>
 						</div>
 					</div>

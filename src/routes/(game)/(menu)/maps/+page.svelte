@@ -207,7 +207,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="main-container">
 	<div class="headerContainer">
-		<h2 class="header">Base Maps</h2>
+		<h2 class="header">Base maps</h2>
 	</div>
 	<div class="map-container">
 		{#each $basicMaps as map}
@@ -228,7 +228,7 @@
 	</div>
 	<!-- Special game modes and OpenGuessr sites -->
 	<div class="headerContainer">
-		<h2 class="header">Special Modes</h2>
+		<h2 class="header">Special modes</h2>
 	</div>
 	<div class="map-container">
 		{#each $specialModes as map}
@@ -330,7 +330,7 @@
 	<!-- Playlight section -->
 	{#if !$crazyGames}
 		<div class="headerContainer no-bottom-padding">
-			<h2 class="header">Featured Games</h2>
+			<h2 class="header">Featured games</h2>
 		</div>
 		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style="height: 330px;"></div>
 	{/if}
@@ -392,7 +392,7 @@
 	</div>
 	<!-- Featured Maps -->
 	<div class="headerContainer largeHeaderMargin">
-		<h2 class="header">Community Spotlight</h2>
+		<h2 class="header">Community spotlight</h2>
 	</div>
 	<div class="map-container">
 		{#each loadedSpotlightMaps as map}
@@ -431,7 +431,7 @@
 	</div>
 	<!-- All Community Maps -->
 	<div class="headerContainer">
-		<h2 class="header mediumHeaderMargin">Community Maps</h2>
+		<h2 class="header mediumHeaderMargin">Community maps</h2>
 		<button
 			id="uploadButton"
 			class="standardButton white"
