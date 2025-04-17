@@ -42,8 +42,10 @@ export async function initializeWebsocketConnection() {
 
                 } else if (data.type === 'invite-declined') {
                     showNotification(`${data.name} declined your invite.`);
-                    leaveMultiplayerRound(); // Close the room
-                    linkJoinPopup.set(false);
+                    if (get(linkJoinPopup)) {
+                        leaveMultiplayerRound();
+                        linkJoinPopup.set(false);
+                    }
 
                 } else if (data.type === 'friend-request-received') {
                     showNotification(`${data.name} sent you a friend request.`, () => {
