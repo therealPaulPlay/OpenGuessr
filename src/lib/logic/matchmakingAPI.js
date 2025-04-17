@@ -5,6 +5,7 @@ import { leaveMultiplayerRound, setupMultiplayerRoom, joinRoom } from "$lib/logi
 import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { elo } from "$lib/stores/accountStore";
+import { showNotification } from "$lib/utils/notifications";
 
 export async function deleteRoomCodeFromMatchmakingServer() {
     try {
@@ -77,6 +78,7 @@ export async function attemptDuelJoin(index, skillBased) {
 
 async function sendRoomCodeToMatchmakingServer(skillBased) {
     try {
+        if (get(roomcode)?.includes("loading")) throw new Error("Room code not loaded.");
         const requestBody = {
             id: localStorage.getItem("id"),
             skillBased
@@ -107,7 +109,7 @@ async function sendRoomCodeToMatchmakingServer(skillBased) {
 
     } catch (error) {
         console.error('Failed making a post request to the server: ', error);
-        multiplayerStatus.set("Error making a request to server: " + error);
+        multiplayerStatus.set("Error sending request: " + error);
         matchmakingActive.set(false);
     }
 }

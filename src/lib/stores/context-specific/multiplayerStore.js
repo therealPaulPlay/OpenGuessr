@@ -22,7 +22,6 @@ export const currentScreen = writable("main");
 export const hostStage = writable(1);
 export const screenEscapeDisabled = writable(false); // Set the Close and Back buttons disabled (e.g. when establishing connection)
 export const duelRetryEnabled = writable(false);
-export const restrictionButtonText = writable("Standard");
 
 // UI - Host
 export const connectionCount = writable(0);

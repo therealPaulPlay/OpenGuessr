@@ -18,7 +18,6 @@
 <div class="main-container">
 	<div class="duelCenterBox">
 		<p
-			id="multiplayerDuelInfo"
 			class="multiplayerDuelStatus"
 			class:loading={$multiplayerStatus && $multiplayerStatus?.toLowerCase()?.includes("wait")}
 		>
@@ -112,8 +111,7 @@
 		text-wrap: wrap;
 		font-size: 30px;
 		color: white;
-		min-height: 60px;
-		margin-top: 10px;
+		margin-bottom: var(--layout-margin);
 		max-width: 400px;
 		overflow: hidden;
 		text-overflow: ellipsis;

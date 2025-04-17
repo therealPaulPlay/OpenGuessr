@@ -12,13 +12,12 @@
 		teamAmount,
 		roundAmount,
 		roundLength,
-		restrictionButtonText,
 		peer,
 		roomcode,
 		connectionCount,
 		multiplayerTableArray,
 	} from "$lib/stores/context-specific/multiplayerStore";
-	import { toggleMultiplayerRestriction, setupMultiplayerRoom, startRoom } from "$lib/logic/multiplayerLogic";
+	import { setupMultiplayerRoom, startRoom } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
 	import Ticker from "$lib/components/ui/Ticker.svelte";
 	import { goto } from "$app/navigation";
@@ -71,6 +70,17 @@
 			get(peer)?.updateStorageArray("players", "update-matching", thisPlayer, newPlayer);
 		}
 	}
+
+	// Restriction Toggle
+	let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
+	let restrictionsText = ["Standard", "NMPZ", "Grayscale", "Invert Colors", "Hue Shift", "Blink (Fade)"];
+	let currentRestrictionIndex = 0;
+	let restrictionButtonText = $state("Standard");
+
+	function toggleMultiplayerRestriction() {
+		currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
+		restrictionButtonText = restrictionsText[currentRestrictionIndex];
+	}
 </script>
 
 <svelte:head>
@@ -96,7 +106,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						toggleMultiplayerRestriction();
-					}}>{$restrictionButtonText}</button
+					}}>{restrictionButtonText}</button
 				>
 			</div>
 			<div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
@@ -280,7 +290,7 @@
 
 						// Switch to stage 2 (host code area) if on stage 1 (after the create room function!!)
 						if ($hostStage == 1) {
-							setupMultiplayerRoom(get(roundAmount), get(roundLength));
+							setupMultiplayerRoom(get(roundAmount), get(roundLength), null, restrictions[currentRestrictionIndex]);
 							hostStage.set(2);
 						} else {
 							startRoom();

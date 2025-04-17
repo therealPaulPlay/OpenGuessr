@@ -352,7 +352,7 @@
 
 	.duelOptionsContainer {
 		display: flex;
-		gap: var(--box-margin-buttons);
+		gap: var(--box-margin);
 		justify-content: center;
 		align-items: center;
 	}

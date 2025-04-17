@@ -17,7 +17,7 @@ import { linkJoinPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
-    duelRetryEnabled, multiplayerStatus, restrictionButtonText, savedGuestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
+    duelRetryEnabled, multiplayerStatus, savedGuestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
     multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray,
     matchmakingActive, peer,
     roomcode,
@@ -46,19 +46,6 @@ import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
 export function getTeamFromPeerId(id) {
     const playerArray = get(peer)?.getStorage?.players?.find(item => item[0] === id);
     return playerArray?.[4];
-}
-
-// Restriction Toggle -------------------------------------------------------------------------------------------------------------------------------
-let multiplayerRestriction = "standard";
-let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
-let restrictionsText = ["Standard", "NMPZ", "Grayscale", "Invert Colors", "Hue Shift", "Blink (Fade)"];
-let currentRestrictionIndex = 0;
-
-export function toggleMultiplayerRestriction() {
-    if (get(restrictionButtonText) == "Standard") currentRestrictionIndex = 0; // Start from the beginning if text reset
-    currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
-    multiplayerRestriction = restrictions[currentRestrictionIndex];
-    restrictionButtonText.set(restrictionsText[currentRestrictionIndex]);
 }
 
 // Game UI ----------------------------------------------------------------------------------------------------------------------------------
@@ -351,7 +338,6 @@ async function showTimeReducedOverlay(time, show) {
         try {
             timeReducedOverlay.set(true);
             playSound("time_reduced");
-
             setTimeout(() => {
                 timeReducedOverlay.set(false);
                 get(peer)?.updateStorage("timeReducedOverlay", false);
@@ -369,7 +355,7 @@ function removeConnectedPeerById(peerId) {
     }
 }
 
-export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit) {
+export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit, restriction) {
     try {
         disableResultScreen(); // Edge case
         await createPeerInstance(); // Get new peer instance
@@ -391,7 +377,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             roundLength: get(roundLength),
             teamAmount: get(teamAmount),
             highestSupporterLevel: get(supporterLevel) || 0,
-            restriction: multiplayerRestriction,
+            restriction: restriction || "standard",
             category: localStorage.getItem("selectedCategory") || "standard",
             mapBounds: getMapBounds(),
             location: [35.7072457, 139.863412], // Default panorama to prevent blackscreen
@@ -506,7 +492,6 @@ export function leaveMultiplayerRound(destroy = true) {
     teamAmount.set(1);
     roomcode.set("loading...");
     connectionCount.set(0);
-    multiplayerRestriction = "standard";
     startedRound = false;
     playingDuels = false;
     friendDuel = false;
@@ -515,9 +500,6 @@ export function leaveMultiplayerRound(destroy = true) {
     // General UI resets
     continueText.set("Continue");
     multiplayerStatus.set(); // Undefined -> show default msgs
-
-    // Reset restriction
-    restrictionButtonText.set("Standard");
 
     // UI functions
     setMultiplayerUI();
@@ -535,8 +517,7 @@ export function leaveMultiplayerRound(destroy = true) {
 function showEndscreenUI(show) {
     if (show) {
         leaveMatchButtonVisible.set(true); // show leave / end button
-        if (playingDuels && !friendDuel) return; // Do not rematch option in ranked duel
-        rematchButtonVisible.set(true);
+        if (!playingDuels || friendDuel) rematchButtonVisible.set(true); // Don't show rematch button in non-friend duels
     } else {
         rematchButtonVisible.set(false);
         leaveMatchButtonVisible.set(false);
