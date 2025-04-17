@@ -23,12 +23,13 @@ import {
     roomcode,
     connectionCount,
     remainingPlayers,
-    overlayShowSubtitle
+    overlayShowSubtitle,
+    skillBasedMatchmaking
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
-import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
+import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/matchmakingAPI";
 import { generateDuelUUID, registerDivisionDuel, sendDuelDivisionResult } from "$lib/utils/duelDivisionFunctions";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { generateFunnyGuestName, generateRandomCode } from "$lib/utils/codeGenerationUtil";
@@ -326,14 +327,14 @@ export async function findDuel() {
     roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     playingDuels = true;
     matchmakingActive.set(true);
-    attemptDuelJoin(roomIndex);
+    attemptDuelJoin(roomIndex, get(skillBasedMatchmaking));
 }
 
 // This occurs when the peer connect returns an error like peer_unavailable (means = doesn't exist)
 function findNextDuel() {
     if (roomIndex < 10) {
         roomIndex++;
-        attemptDuelJoin(roomIndex);
+        attemptDuelJoin(roomIndex, get(skillBasedMatchmaking));
     } else {
         matchmakingActive.set(false);
         multiplayerStatus.set("Couldn't connect to any room.");
@@ -383,7 +384,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
         roundAmount.set(AmountOfRounds);
         roundLength.set(LengthOfRounds);
 
-        roomcode.set(await get(peer)?.createRoom({
+        const code = await get(peer)?.createRoom({
             players: [],
             roundAmount: get(roundAmount),
             currentRound: 0,
@@ -406,7 +407,8 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             gameOngoing: false, // True after the room was started once and is not in creation phase
             countdownActive: false,
             timerStart: false
-        }, sizeLimit));
+        }, sizeLimit);
+        roomcode.set(code);
         if (get(matchmakingActive)) multiplayerStatus.set("Room created. Please wait <10s"); // Wait status
 
     } catch (error) {

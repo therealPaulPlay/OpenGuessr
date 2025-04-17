@@ -10,6 +10,7 @@ export const teamAmount = writable(1);
 
 // Matchmaking and Duels
 export const matchmakingActive = writable(false);
+export const skillBasedMatchmaking = writable(false);
 
 // Data
 export const savedGuestName = writable("Guest (Default)");
