@@ -10,6 +10,7 @@ export const teamAmount = writable(1);
 
 // Matchmaking and Duels
 export const matchmakingActive = writable(false);
+export const skillBasedMatchmaking = writable(false);
 
 // Data
 export const savedGuestName = writable("Guest (Default)");
@@ -21,7 +22,6 @@ export const currentScreen = writable("main");
 export const hostStage = writable(1);
 export const screenEscapeDisabled = writable(false); // Set the Close and Back buttons disabled (e.g. when establishing connection)
 export const duelRetryEnabled = writable(false);
-export const restrictionButtonText = writable("Standard");
 
 // UI - Host
 export const connectionCount = writable(0);

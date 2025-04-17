@@ -68,7 +68,7 @@
 				<Badge id="streakBadge4" interactive="true" unlocked={$profileData?.highestStreak >= 100} />
 			</div>
 			<div class="badgeLabel">
-				<p>For Supporter Tiers:</p>
+				<p>For Supporter tiers:</p>
 				<p id="supporterBadgeStatus" class="unlockBadgeStatus">
 					1 <ArrowRight size="13" /> 2 <ArrowRight size="13" /> 3 <ArrowRight size="13" /> 4
 				</p>

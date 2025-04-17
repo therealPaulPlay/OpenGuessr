@@ -17,18 +17,19 @@ import { linkJoinPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
-    duelRetryEnabled, multiplayerStatus, restrictionButtonText, savedGuestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
+    duelRetryEnabled, multiplayerStatus, savedGuestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
     multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray,
     matchmakingActive, peer,
     roomcode,
     connectionCount,
     remainingPlayers,
-    overlayShowSubtitle
+    overlayShowSubtitle,
+    skillBasedMatchmaking
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
-import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/roomAPI";
+import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/matchmakingAPI";
 import { generateDuelUUID, registerDivisionDuel, sendDuelDivisionResult } from "$lib/utils/duelDivisionFunctions";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { generateFunnyGuestName, generateRandomCode } from "$lib/utils/codeGenerationUtil";
@@ -45,19 +46,6 @@ import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
 export function getTeamFromPeerId(id) {
     const playerArray = get(peer)?.getStorage?.players?.find(item => item[0] === id);
     return playerArray?.[4];
-}
-
-// Restriction Toggle -------------------------------------------------------------------------------------------------------------------------------
-let multiplayerRestriction = "standard";
-let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
-let restrictionsText = ["Standard", "NMPZ", "Grayscale", "Invert Colors", "Hue Shift", "Blink (Fade)"];
-let currentRestrictionIndex = 0;
-
-export function toggleMultiplayerRestriction() {
-    if (get(restrictionButtonText) == "Standard") currentRestrictionIndex = 0; // Start from the beginning if text reset
-    currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
-    multiplayerRestriction = restrictions[currentRestrictionIndex];
-    restrictionButtonText.set(restrictionsText[currentRestrictionIndex]);
 }
 
 // Game UI ----------------------------------------------------------------------------------------------------------------------------------
@@ -326,14 +314,14 @@ export async function findDuel() {
     roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     playingDuels = true;
     matchmakingActive.set(true);
-    attemptDuelJoin(roomIndex);
+    attemptDuelJoin(roomIndex, get(skillBasedMatchmaking));
 }
 
 // This occurs when the peer connect returns an error like peer_unavailable (means = doesn't exist)
 function findNextDuel() {
     if (roomIndex < 10) {
         roomIndex++;
-        attemptDuelJoin(roomIndex);
+        attemptDuelJoin(roomIndex, get(skillBasedMatchmaking));
     } else {
         matchmakingActive.set(false);
         multiplayerStatus.set("Couldn't connect to any room.");
@@ -350,7 +338,6 @@ async function showTimeReducedOverlay(time, show) {
         try {
             timeReducedOverlay.set(true);
             playSound("time_reduced");
-
             setTimeout(() => {
                 timeReducedOverlay.set(false);
                 get(peer)?.updateStorage("timeReducedOverlay", false);
@@ -368,7 +355,7 @@ function removeConnectedPeerById(peerId) {
     }
 }
 
-export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit) {
+export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit, restriction) {
     try {
         disableResultScreen(); // Edge case
         await createPeerInstance(); // Get new peer instance
@@ -383,14 +370,14 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
         roundAmount.set(AmountOfRounds);
         roundLength.set(LengthOfRounds);
 
-        roomcode.set(await get(peer)?.createRoom({
+        const code = await get(peer)?.createRoom({
             players: [],
             roundAmount: get(roundAmount),
             currentRound: 0,
             roundLength: get(roundLength),
             teamAmount: get(teamAmount),
             highestSupporterLevel: get(supporterLevel) || 0,
-            restriction: multiplayerRestriction,
+            restriction: restriction || "standard",
             category: localStorage.getItem("selectedCategory") || "standard",
             mapBounds: getMapBounds(),
             location: [35.7072457, 139.863412], // Default panorama to prevent blackscreen
@@ -406,7 +393,8 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             gameOngoing: false, // True after the room was started once and is not in creation phase
             countdownActive: false,
             timerStart: false
-        }, sizeLimit));
+        }, sizeLimit);
+        roomcode.set(code);
         if (get(matchmakingActive)) multiplayerStatus.set("Room created. Please wait <10s"); // Wait status
 
     } catch (error) {
@@ -504,7 +492,6 @@ export function leaveMultiplayerRound(destroy = true) {
     teamAmount.set(1);
     roomcode.set("loading...");
     connectionCount.set(0);
-    multiplayerRestriction = "standard";
     startedRound = false;
     playingDuels = false;
     friendDuel = false;
@@ -513,9 +500,6 @@ export function leaveMultiplayerRound(destroy = true) {
     // General UI resets
     continueText.set("Continue");
     multiplayerStatus.set(); // Undefined -> show default msgs
-
-    // Reset restriction
-    restrictionButtonText.set("Standard");
 
     // UI functions
     setMultiplayerUI();
@@ -533,8 +517,7 @@ export function leaveMultiplayerRound(destroy = true) {
 function showEndscreenUI(show) {
     if (show) {
         leaveMatchButtonVisible.set(true); // show leave / end button
-        if (playingDuels && !friendDuel) return; // Do not rematch option in ranked duel
-        rematchButtonVisible.set(true);
+        if (!playingDuels || friendDuel) rematchButtonVisible.set(true); // Don't show rematch button in non-friend duels
     } else {
         rematchButtonVisible.set(false);
         leaveMatchButtonVisible.set(false);

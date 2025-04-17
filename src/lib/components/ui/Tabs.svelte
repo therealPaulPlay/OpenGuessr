@@ -1,8 +1,8 @@
 <script>
 	let {
 		tabs = [],
-		selected = $bindable(tabs[0]), // Bindable selected tab as a prop
 		selectedIndex = $bindable(0),
+		selected = $bindable(tabs[selectedIndex || 0]), // Bindable selected tab as a prop
 		onchange,
 		class: className = "", // Alias for HTML class attribute
 	} = $props();
@@ -16,7 +16,7 @@
 </script>
 
 <div class="tabs-group {className}">
-	{#each tabs as tab}
+	{#each tabs as tab, i}
 		<button class="tab-button standardButton white {selected === tab ? 'active' : ''}" onclick={() => selectTab(tab)}>
 			{tab}
 		</button>
@@ -27,7 +27,7 @@
 	.tabs-group {
 		border-radius: 5px;
 		width: fit-content;
-        margin: 2px;
+		margin: 2px;
 		display: flex;
 		overflow: hidden;
 		border: 3px solid rgba(255, 255, 255, 0.3);
