@@ -502,7 +502,6 @@
 		width: calc(100% - 10px);
 		opacity: 0.5;
 		padding-inline: 5px;
-		max-height: 28px;
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
