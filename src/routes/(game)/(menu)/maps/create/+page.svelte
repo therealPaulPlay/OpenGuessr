@@ -109,7 +109,7 @@
 	<h1 class="header" id="uploadHeader">Create a Map</h1>
 	<div class="infoNoteBox">
 		<img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
-		<h2 class="uploadFirstText">Important Rules:</h2>
+		<h2 class="uploadFirstText">Important rules:</h2>
 		<ul>
 			<li>You can only upload max. 3 maps per day.</li>
 			<li>Maps must at least have 50 unique locations.</li>
