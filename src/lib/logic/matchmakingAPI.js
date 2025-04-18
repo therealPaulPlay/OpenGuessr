@@ -1,7 +1,7 @@
 // Multiplayer room matchmaking APIs, for Duels
-import { matchmakingActive, multiplayerStatus, screenEscapeDisabled, roomcode } from "$lib/stores/context-specific/multiplayerStore";
+import { matchmakingActive, multiplayerStatus, screenEscapeDisabled, roomcode, matchmakingHosting } from "$lib/stores/context-specific/multiplayerStore";
 import { changeCategory } from "$lib/utils/changeCategory";
-import { leaveMultiplayerRound, setupMultiplayerRoom, joinRoom } from "$lib/logic/multiplayerLogic";
+import { setupMultiplayerRoom, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { elo } from "$lib/stores/accountStore";
@@ -49,36 +49,29 @@ export async function attemptDuelJoin(index, skillBased) {
             body: JSON.stringify({ id: localStorage.getItem("id") }),
         });
 
-        if (response.ok) {
-            receivedRoomCode = await response.json();
-            receivedRoomCode = receivedRoomCode.code?.replace("openguessr_", "");
+        if (response.ok) receivedRoomCode = await response.json().then(data => data.code?.replace("openguessr_", ""));
+        if (!response.ok) throw new Error(response.status);
+
+        // Attempt to join if there is a code, otherwise create room
+        if (receivedRoomCode) {
+            joinRoom(receivedRoomCode); // Duel status will be set in this function
         } else {
-            console.error('Error fetching room code:', response.status);
-            multiplayerStatus.set("Bad Get Request response: " + response.status);
-            matchmakingActive.set(false);
+            if (localStorage.getItem("selectedCategory") && localStorage.getItem("selectedCategory") !== "standard") await changeCategory("standard", true); // Regenerate to update the bounds (await to ensure bounds are ready)
+            await setupMultiplayerRoom(5, 60, 2);
+            sendRoomCodeToMatchmakingServer(skillBased);
+            matchmakingHosting.set(true); // Enable hosting
         }
 
     } catch (error) {
-        console.error('Error occurred when trying to fetch room code: ', error);
-        multiplayerStatus.set("Couldn't send get request");
-        matchmakingActive.set(false); // if there is no sever response, stop the matchmaking process
-    }
-
-    // Attempt to join if there is a code, otherwise create room
-    if (receivedRoomCode != null) {
-        joinRoom(receivedRoomCode); // Duel status will be set in this function as well
-
-    } else if (receivedRoomCode == null) {
-        // Create room
-        if (localStorage.getItem("selectedCategory") && localStorage.getItem("selectedCategory") !== "standard") await changeCategory("standard", true); // Regenerate to update the bounds (await to ensure bounds are ready)
-        await setupMultiplayerRoom(5, 60, 2);
-        sendRoomCodeToMatchmakingServer(skillBased);
+        console.error('Error fetching room code: ', error);
+        multiplayerStatus.set("Couldn't fetch room code: " + error);
+        matchmakingActive.set(false);
     }
 }
 
 async function sendRoomCodeToMatchmakingServer(skillBased) {
     try {
-        if (get(roomcode)?.includes("loading")) throw new Error("Room code not loaded.");
+        if (get(roomcode)?.includes("loading")) return console.warn("Room code not loaded, not sending room code to server.");
         const requestBody = {
             id: localStorage.getItem("id"),
             skillBased
@@ -95,25 +88,20 @@ async function sendRoomCodeToMatchmakingServer(skillBased) {
 
         if (response.ok) {
             setTimeout(() => {
-                if (get(matchmakingActive)) {
-                    leaveMultiplayerRound(); // Sets matchmaking active to false & destroys peer, which calls the delete room code function
-                    multiplayerStatus.set("No match found. Please retry.");
-                }
-            }, 10000); // After 10 seconds, as the room code is now expired, leave the multiplayer round and show the retry button
-
+                if (get(matchmakingActive)) sendRoomCodeToMatchmakingServer(skillBased);
+            }, 10000); // After 10 seconds, resubmit as code will expire
         } else {
-            console.error("Failed sending the Room Code to the server: " + response.status);
-            multiplayerStatus.set("Error sending roomcode to server: " + response.status);
-            matchmakingActive.set(false);
+            throw new Error(response.status);
         }
 
     } catch (error) {
-        console.error('Failed making a post request to the server: ', error);
-        multiplayerStatus.set("Error sending request: " + error);
+        console.error('Failed sending room code to server: ', error);
+        multiplayerStatus.set("Error submitting room code: " + error);
         matchmakingActive.set(false);
     }
 }
 
 matchmakingActive.subscribe((value) => {
     screenEscapeDisabled.set(value);
+    if (!value) matchmakingHosting.set(false);
 });

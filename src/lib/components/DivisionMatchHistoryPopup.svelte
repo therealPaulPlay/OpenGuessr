@@ -319,7 +319,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 10px;
+		gap: var(--layout-margin);
 		margin-top: 20px;
 	}
 

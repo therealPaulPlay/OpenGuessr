@@ -239,9 +239,9 @@
 			}}
 		>
 			{#if isLiked}
-				<HeartOff style="margin-top: 2px;" />
+				<HeartOff strokeWidth={2.25} style="margin-top: 2px;" />
 			{:else}
-				<Heart style="margin-top: 2px;" />
+				<Heart strokeWidth={2.25} style="margin-top: 2px;" />
 			{/if}
 			<p id="likesText">{likesCount}</p>
 		</button>

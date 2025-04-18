@@ -394,12 +394,13 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             countdownActive: false,
             timerStart: false
         }, sizeLimit);
+
         roomcode.set(code);
-        if (get(matchmakingActive)) multiplayerStatus.set("Room created. Please wait <10s"); // Wait status
+        if (get(matchmakingActive)) multiplayerStatus.set("Waiting for opponent..."); // Wait status
 
     } catch (error) {
-        console.error("Error setting up room:", error);
         matchmakingActive.set(false);
+        console.error("Error setting up room:", error);
         errorPopup("Error creating room", "Error occured trying to set up PlayPeerJS room.", error);
     }
 }
@@ -470,11 +471,11 @@ export async function joinRoom(code) {
 }
 
 // Multiplayer leave ----------------------------------------------------------------------------------
-
 export function leaveMultiplayerRound(destroy = true) {
-    // Disable Multiplayer
+    // Disable Multiplayer & Matchmaking
     const wasMultiplayerEnabled = get(multiplayer);
     multiplayer.set(false);
+    matchmakingActive.set(false);
 
     if (destroy) get(peer)?.destroy(); // Destroy peer
     try { multiplayerTimer?.stopTimer() } catch { }; // Result screen timer (sometimes not set, therefore catch)
@@ -490,12 +491,11 @@ export function leaveMultiplayerRound(destroy = true) {
     roundLength.set(60);
     roundAmount.set(3);
     teamAmount.set(1);
-    roomcode.set("loading...");
     connectionCount.set(0);
     startedRound = false;
     playingDuels = false;
     friendDuel = false;
-    matchmakingActive.set(false);
+    roomcode.set("loading...");
 
     // General UI resets
     continueText.set("Continue");

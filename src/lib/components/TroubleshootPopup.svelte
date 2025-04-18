@@ -10,21 +10,20 @@
 			<h1>Troubleshooting</h1>
 		</div>
 		<p>
-			OpenGuessr uses a peer2peer connection system via WebRTC Datachannels. Follow these steps to ensure a smooth
-			experience:
+			OpenGuessr uses a peer-to-peer system with WebRTC data channels. Follow these steps to ensure a smooth experience:
 			<br />
 			<br />
 		</p>
 		<ul>
 			<li>
-				<p>Disable VPNs or Proxies: Certain VPNs or Proxies, often browser extensions, block WebRTC connections.</p>
+				<p>Disable VPNs or Proxies.</p>
 			</li>
 			<li>
-				<p>Disable Firewalls: Some restrictive firewall settings or wifi routers can block WebRTC.</p>
+				<p>Disable Firewalls and ensure that your router doesn't restrict peer-2-peer.</p>
 			</li>
 			<li>
 				<p>
-					Check if the TURN servers are online: We use turn servers from <a
+					Check if the TURN servers are online – we use turn servers from <a
 						href="https://fastturn.net/status"
 						target="_blank"
 					>
@@ -33,13 +32,10 @@
 				</p>
 			</li>
 			<li>
-				<p>Check if your browser supports WebRTC: Open chrome://webrtc-internals/ or about:webrtc for Firefox.</p>
+				<p>Open chrome://webrtc-internals/ or about:webrtc for Firefox to inspect WebRTC errors.</p>
 			</li>
 		</ul>
-		<p>
-			If multiplayer still does not work after following these steps, consider using a different wifi, cellular data or
-			switch the host.
-		</p>
+		<p>If multiplayer still does not work, consider using a different wifi, cellular data or switch the host.</p>
 		<button
 			id="troubleshootClose"
 			class="standardButton white closeButton"

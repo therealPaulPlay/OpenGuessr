@@ -63,7 +63,7 @@
 </script>
 
 <div class="chatContainer" style:display={$chatVisible ? "flex" : "none"}>
-	<div id="multiplayerChat" style:height="{chatHeight}px">
+	<div class="multiplayerChat barMenu" style:height="{chatHeight}px">
 		<!-- svelte-ignore a11y_role_has_required_aria_props -->
 		<!-- svelte-ignore a11y_interactive_supports_focus -->
 		<div
@@ -73,11 +73,11 @@
 			class:active={isResizing}
 			role="scrollbar"
 		>
-			<MoveVertical size={16} />
+			<MoveVertical size={16} strokeWidth={3} />
 		</div>
 		<RemainingGuessesDisplay />
-		<div id="multiplayerChatMessages" bind:this={multiplayerChatMessages}>
-			<p id="multiplayerMessageBox" contenteditable="false">
+		<div class="multiplayerChatMessages" bind:this={multiplayerChatMessages}>
+			<p>
 				{#if $chatArray}
 					{#each $chatArray as chat}
 						{#if chat.startsWith("System")}
@@ -90,7 +90,7 @@
 				{/if}
 			</p>
 		</div>
-		<div id="bottomMultiplayerChatArea">
+		<div class="bottomMultiplayerChatArea">
 			<input
 				maxlength="100"
 				type="text"
@@ -121,21 +121,15 @@
 </div>
 
 <style>
-	#multiplayerChat {
+	.multiplayerChat {
 		width: 100%;
 		min-height: 150px;
 		max-height: 500px;
-		border-radius: 10px;
 		overflow: hidden;
-		flex-direction: column;
-		align-items: center;
-		display: flex;
+		display: block !important;
+		padding: var(--box-margin-buttons);
 		background-color: var(--panel-color);
 		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
-		font-size: 20px;
-		position: relative;
 	}
 
 	.resize-handle {
@@ -143,7 +137,7 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		height: 35px;
+		height: 36px;
 		cursor: ns-resize;
 		display: flex;
 		justify-content: center;
@@ -163,64 +157,55 @@
 	.chatContainer {
 		left: 10px;
 		bottom: 76px;
-		justify-content: flex-end;
-		align-items: center;
 		z-index: 10;
 		position: fixed;
 		height: fit-content;
-		flex-direction: column;
 		width: 300px;
 		gap: 8px;
 	}
 
-	#bottomMultiplayerChatArea {
+	.bottomMultiplayerChatArea {
 		display: flex;
-		justify-content: space-around;
 		align-items: center;
-		width: 100%;
+		overflow: hidden;
+		gap: var(--box-margin-buttons);
 	}
 
-	#multiplayerChatMessages {
-		height: 100%;
-		width: 100%;
-		overflow-y: scroll;
+	.multiplayerChatMessages {
+		width: calc(100% - 6px);
+		line-height: 1.6;
 		display: flex;
+		overflow-y: scroll;
 		scrollbar-width: none;
-		flex-direction: column;
-		margin-top: 5px;
+		height: calc(100% - 46px);
+		padding-inline: 3px;
+		margin-bottom: 8px;
+		position: relative;
 	}
 
-	#multiplayerMessageBox {
-		color: white;
-		margin: 10px;
-		line-height: 1.7;
+	.multiplayerChatMessages p {
 		margin-top: auto;
-		font-size: 20px;
 	}
 
 	#multiplayerSendButton {
 		height: 38px;
-		margin: 8px;
-		margin-left: 8px;
+		margin: 0;
 		padding-inline: 12px;
 	}
 
 	#multiplayerMessageInput {
 		padding: 10px;
-		border: none;
 		border-radius: 5px;
-		font-size: 20px;
 		height: 17px;
-		overflow: scroll;
-		text-wrap: wrap;
 		flex-grow: 1;
-		margin: 8px;
-		margin-right: 0px;
+		width: 0;
+		overflow-x: auto;
+		text-wrap: wrap;
 	}
 
 	@media all and (max-width: 1200px) {
-		#multiplayerChat {
-			display: none;
+		.multiplayerChat {
+			display: none !important;
 		}
 	}
 </style>
