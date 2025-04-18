@@ -3,12 +3,14 @@
 		multiplayerStatus,
 		matchmakingActive,
 		skillBasedMatchmaking,
+		matchmakingHosting,
 	} from "$lib/stores/context-specific/multiplayerStore";
-	import { findDuel } from "$lib/logic/multiplayerLogic";
+	import { findDuel, leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
 	import { RefreshCcw } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
+	import { deleteRoomCodeFromMatchmakingServer } from "$lib/logic/matchmakingAPI";
 </script>
 
 <svelte:head>
@@ -17,13 +19,10 @@
 
 <div class="main-container">
 	<div class="duelCenterBox">
-		<p
-			class="multiplayerDuelStatus"
-			class:loading={$multiplayerStatus && $multiplayerStatus?.toLowerCase()?.includes("wait")}
-		>
+		<p class="multiplayerDuelStatus" class:loading={$multiplayerStatus && $matchmakingHosting}>
 			{$multiplayerStatus || "No match found."}
 		</p>
-		{#if $skillBasedMatchmaking && !$matchmakingActive}
+		{#if $skillBasedMatchmaking}
 			<div class="infoContainer" transition:slide>
 				<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
 				<p>Skill-based matchmaking has longer waiting times.</p>
@@ -31,14 +30,20 @@
 		{/if}
 		<button
 			class="standardButton tryButton"
-			class:buttonDisabled={$matchmakingActive}
+			class:buttonDisabled={$matchmakingActive && !$matchmakingHosting}
 			onclick={() => {
-				playSound("basic_button");
-				findDuel();
+				if (!$matchmakingActive) {
+					playSound("basic_button");
+					findDuel();
+				} else {
+					deleteRoomCodeFromMatchmakingServer();
+					leaveMultiplayerRound();
+				}
 			}}
-			>Try again <span class="refreshIcon"
-				><RefreshCcw strokeWidth={3} size={18} class={$matchmakingActive ? "rotateDuelRefreshIcon" : ""} /></span
-			></button
+			>{$matchmakingActive ? "Cancel" : "Try again"}
+			{#if !$matchmakingActive}
+				<span class="refreshIcon"><RefreshCcw strokeWidth={3} size={18} /></span>
+			{/if}</button
 		>
 	</div>
 </div>
@@ -75,10 +80,6 @@
 	.buttonDisabled {
 		pointer-events: none !important;
 		opacity: 0.5;
-	}
-
-	:global(.rotateDuelRefreshIcon) {
-		animation: rotateFindCircle 2s infinite;
 	}
 
 	.multiplayerDuelStatus.loading {
@@ -129,16 +130,6 @@
 
 		100% {
 			color: white;
-		}
-	}
-
-	@keyframes rotateFindCircle {
-		0% {
-			transform: rotate(0deg);
-		}
-
-		100% {
-			transform: rotate(360deg);
 		}
 	}
 </style>

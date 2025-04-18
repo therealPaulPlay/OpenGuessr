@@ -586,6 +586,7 @@
 	.groupPartyContent {
 		width: 100%;
 		display: flex;
+		margin-top: -2px;
 		gap: var(--box-margin-buttons);
 	}
 

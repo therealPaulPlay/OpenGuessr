@@ -73,7 +73,7 @@
 			class:active={isResizing}
 			role="scrollbar"
 		>
-			<MoveVertical size={16} />
+			<MoveVertical size={16} strokeWidth={3} />
 		</div>
 		<RemainingGuessesDisplay />
 		<div class="multiplayerChatMessages" bind:this={multiplayerChatMessages}>
@@ -137,7 +137,7 @@
 		top: 0;
 		left: 0;
 		right: 0;
-		height: 35px;
+		height: 36px;
 		cursor: ns-resize;
 		display: flex;
 		justify-content: center;
@@ -173,12 +173,18 @@
 
 	.multiplayerChatMessages {
 		width: calc(100% - 6px);
-		line-height: 1.7;
+		line-height: 1.6;
+		display: flex;
 		overflow-y: scroll;
 		scrollbar-width: none;
-		height: calc(100% - 44px);
+		height: calc(100% - 46px);
 		padding-inline: 3px;
-		margin-bottom: 6px;
+		margin-bottom: 8px;
+		position: relative;
+	}
+
+	.multiplayerChatMessages p {
+		margin-top: auto;
 	}
 
 	#multiplayerSendButton {
@@ -199,7 +205,7 @@
 
 	@media all and (max-width: 1200px) {
 		.multiplayerChat {
-			display: none;
+			display: none !important;
 		}
 	}
 </style>
