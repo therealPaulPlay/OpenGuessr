@@ -49,17 +49,19 @@
 <style>
 	.remainingGuessesDisplay {
 		border-radius: 10px;
-		background-color: var(--box-color);
+		position: fixed;
+		top: 0;
+		background-color: var(--menu-background);
 		padding: 5px;
 		padding-inline: 10px;
+		margin-left: -8px;
 		width: calc(100% - 20px);
-		font-size: 20px;
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
+		z-index: 1;
+		user-select: none;
 	}
-	.remainingGuessesDisplay p {
-		font-size: 20px;
-	}
+
 	.dimmed {
 		opacity: 0.75;
 	}

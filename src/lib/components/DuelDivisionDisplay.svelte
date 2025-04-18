@@ -68,7 +68,7 @@
 		top: 50%;
 		transform: translateY(-50%);
 		width: 100%;
-		height: 10px;
+		height: var(--box-margin-buttons);
 		background: rgba(255, 255, 255, 0.1);
 		border-radius: 6px;
 		overflow: hidden;
