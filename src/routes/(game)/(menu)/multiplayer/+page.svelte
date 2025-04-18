@@ -536,14 +536,14 @@
 		border: none;
 		gap: 3px;
 		flex-grow: 1;
-		max-width: 40%;
+		max-width: 25%;
 		overflow: hidden;
 		margin: 0;
 	}
 
 	@media (max-width: 800px) {
 		.friendItem {
-			max-width: 400px;
+			max-width: none;
 		}
 	}
 
