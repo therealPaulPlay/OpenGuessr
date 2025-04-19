@@ -18,24 +18,17 @@ import { getMapBounds } from "$lib/utils/getMapBounds";
 import { toggleStreakWindow } from "$lib/utils/streakRestore";
 
 // Streak ----------------------------------------------------------------------------------------------------------------------------------------------------
-let streak = 0;
-let streakMultiplier = 1;
-
 function calculateMultiplier(streakParam) {
-    return streak === 0 ? 1 : streak >= 9 ? 1.5 : Math.round((1 + (streak / 9) * 0.5) * 100) / 100;
+    return streakParam === 0 ? 1 : streakParam >= 9 ? 1.5 : Math.round((1 + (streakParam / 9) * 0.5) * 100) / 100;
 }
 
 export function restoreOldStreak(oldStreak) {
-    streak = oldStreak;
-    localStorage.setItem("streak", streak);
-    streakMultiplier = calculateMultiplier(streak);
-    streakText.set(streak + " (" + streakMultiplier + "x)");
+    localStorage.setItem("streak", oldStreak);
+    streakText.set(oldStreak + " (" + calculateMultiplier(oldStreak) + "x)");
 }
 
 async function streakCalculation() {
-    if (!get(singleplayer) || !get(isAuthenticated)) return;
-
-    streak = Number(localStorage.getItem("streak") || 0); // Load streak from localstorage
+    let streak = Number(localStorage.getItem("streak") || 0); // Load streak from localstorage
 
     if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
         streak++;
@@ -45,14 +38,11 @@ async function streakCalculation() {
         streak = 0; // Reset country streak ( = Streak lost, but still restorable wit ad)
     }
 
-    streakMultiplier = calculateMultiplier(streak);
+    const streakMultiplier = calculateMultiplier(streak);
     streakText.set(streak + " (" + streakMultiplier + "x)");
     showStreakDisplay.set(true);
     localStorage.setItem("streak", streak);
-}
-
-function getStreakMultiplier() {
-    return (get(singleplayer) && get(isAuthenticated)) ? streakMultiplier : 1;
+    return streakMultiplier;
 }
 
 // Adjust XP calculation parameter to diameter (map size)
@@ -63,17 +53,19 @@ function calculateExponentialModifier(mapDiameter) {
 // Calculate XP gain --------------------------------------------------------------------------------------------------------------------------------
 async function calculateXPGain(distance, category, supporterLevelParam, freeSupporterBoost) {
     let returnXP = 0;
+    if (distance < 10) distance = 0; // Treat small distances as 0 to be more friendly with 5ks
+
+    // If the map is big enough to encompass many countries, calculate the country streak
+    const streakMultiplier = (getMapBounds().diameter > 250 && get(singleplayer) && get(isAuthenticated) && category !== "country guessr") ? await streakCalculation() : 1;
 
     if (category == "famous places" || category == "image guessr") {
-        await streakCalculation();
-        returnXP = Math.round((1500 * ((0.9982) ** distance)) * getStreakMultiplier()); // 1500 xp, with streak up to 1800sth
+        returnXP = Math.round((1500 * ((0.9982) ** distance)) * streakMultiplier); // 1500 xp, with streak up to 1800sth
 
     } else if (category == "country guessr") {
         returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
 
     } else {
-        if (getMapBounds().diameter > 250) await streakCalculation(); // If the map is big enough, calculate the country streak
-        returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance) * getStreakMultiplier());
+        returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance) * streakMultiplier);
     }
 
     let supporterMultiplier = 1;
