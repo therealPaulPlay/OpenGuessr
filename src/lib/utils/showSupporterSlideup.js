@@ -1,5 +1,3 @@
-
-import { restoreOldStreak } from "$lib/logic/resultScoreLogic";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 import { initializeRewardedAd } from "$lib/utils/rewardedAds";
