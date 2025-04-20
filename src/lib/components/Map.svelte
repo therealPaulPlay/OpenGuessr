@@ -91,6 +91,10 @@
 		outline: none;
 	}
 
+	#map:hover {
+		opacity: 100%;
+	}
+
 	#map * {
 		font-family: Roboto;
 	}
@@ -166,10 +170,6 @@
 	:global(.gm-style-iw-d) {
 		overflow: visible !important;
 		margin-right: 20px !important;
-	}
-
-	#map:hover {
-		opacity: 100%;
 	}
 
 	:global(map::selection) {

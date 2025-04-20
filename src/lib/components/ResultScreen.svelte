@@ -117,7 +117,7 @@
 			{/if}
 		</div>
 	</div>
-	<div id="nextRoundArea" class="barMenu">
+	<div class="barMenu nextRoundArea">
 		<button
 			class="standardButton white continueButton"
 			onclick={() => {
@@ -459,7 +459,7 @@
 		text-overflow: ellipsis;
 	}
 
-	#nextRoundArea {
+	.nextRoundArea {
 		z-index: 15;
 		position: fixed;
 		bottom: 10px;
@@ -467,7 +467,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		max-width: 750px;
+		max-width: 754px;
 		margin-inline: auto;
 	}
 
@@ -499,7 +499,7 @@
 	}
 
 	@media all and (max-width: 1350px) {
-		#nextRoundArea {
+		.nextRoundArea {
 			width: calc(100% - 32px);
 			left: 10px;
 		}

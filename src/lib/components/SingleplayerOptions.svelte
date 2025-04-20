@@ -169,7 +169,7 @@
 										<p>{formatDistance(distance)} away</p>
 									</div>
 									<button
-										class="standardButton logItemButton"
+										class="standardButton white"
 										onclick={() => {
 											playSound("basic_button");
 											openLocationOnMaps(coordinates[0], coordinates[1]);
@@ -281,6 +281,7 @@
 	.textMargin {
 		margin-inline: 5px;
 		margin-bottom: 10px;
+		margin-top: auto;
 	}
 
 	.textMarginRoundLog {
@@ -316,10 +317,6 @@
 		margin-top: 5px;
 		padding-bottom: 0;
 		scrollbar-width: none;
-	}
-
-	.logItemButton {
-		background-color: rgba(255, 255, 255, 0.1);
 	}
 
 	.logItemMode {
