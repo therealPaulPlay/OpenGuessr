@@ -393,6 +393,7 @@
 		width: 100%;
 		box-sizing: border-box;
 		overflow: hidden;
+		text-wrap: nowrap;
 	}
 
 	.divisionLeaderboardEntryYou {
@@ -452,7 +453,6 @@
 		max-width: 50%;
 		transition: opacity 250ms ease;
 		cursor: pointer;
-		text-wrap: nowrap;
 	}
 
 	.leaderboardUserName:hover {

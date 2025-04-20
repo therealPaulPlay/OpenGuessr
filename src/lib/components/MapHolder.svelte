@@ -20,9 +20,9 @@
 	.mapHolder {
 		position: fixed;
 		display: flex;
-		right: 60px;
+		right: 62px;
 		bottom: 76px;
-		padding-inline: 10px;
+		padding-inline: var(--box-margin-buttons);
 		min-width: 212px;
 		min-height: 150px;
 		align-items: flex-end;

@@ -79,7 +79,7 @@ h3 {
     font-size: 25px;
 }
 
-@media (orientation: portrait) and (max-width: 800px) {
+@media (max-width: 800px) {
     h1 {
         font-size: 35px;
     }
