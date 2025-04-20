@@ -102,9 +102,10 @@
 	}
 
 	.countryGuesserFlag {
-		font-size: 50px;
+		font-size: 45px;
 		margin-bottom: auto;
-		margin-top: 10px;
+		margin-top: 5px;
+		margin-bottom: 5px;
 		width: 100%;
 		line-height: 0.7;
 	}
@@ -133,18 +134,12 @@
 		display: flex;
 		border-radius: 12px;
 		pointer-events: auto;
-		flex-wrap: wrap;
 		justify-content: space-between;
 		z-index: 10;
+		flex-wrap: wrap;
 	}
 
-	@media (orientation: portrait) and (max-width: 800px) {
-		#countryGuesserSelector {
-			bottom: 135px;
-		}
-	}
-
-	@media all and (max-width: 1200px) {
+	@media all and (max-width: 1500px) {
 		.countryGuesserFlag {
 			font-size: 25px;
 		}
@@ -155,13 +150,23 @@
 
 		.countryGuesserHolder {
 			height: 75px;
-			width: 31%;
+			width: 100px;
 			border-radius: 7px;
 			flex-grow: 1;
 		}
 
 		#countryGuesserSelector {
-			min-width: calc(100% - 40px);
+			bottom: 76px;
+			max-width: calc(100% - 32px);
+		}
+	}
+
+	@media (orientation: portrait) and (max-width: 800px) {
+		#countryGuesserSelector {
+			bottom: 136px;
+		}
+		#countryGuesserSelector {
+			width: calc(100% - 32px);
 			margin-inline: 10px;
 		}
 	}

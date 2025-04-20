@@ -266,9 +266,5 @@
 		.bottomRightMenu {
 			width: calc(25% - 8px);
 		}
-
-		.bottomSocialItem {
-			display: none;
-		}
 	}
 </style>
