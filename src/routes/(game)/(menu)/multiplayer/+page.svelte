@@ -652,6 +652,7 @@
 		overflow: hidden;
 		overflow-y: auto;
 		max-height: 250px;
+		margin-bottom: 50px;
 		position: relative;
 		scrollbar-width: none;
 	}
