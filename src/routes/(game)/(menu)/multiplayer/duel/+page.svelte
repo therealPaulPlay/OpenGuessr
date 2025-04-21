@@ -7,7 +7,7 @@
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { findDuel, leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
-	import { RefreshCcw } from "lucide-svelte";
+	import { Info, RefreshCcw } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
 	import { deleteRoomCodeFromMatchmakingServer } from "$lib/logic/matchmakingAPI";
@@ -22,9 +22,9 @@
 		<p class="multiplayerDuelStatus" class:loading={$multiplayerStatus && $matchmakingHosting}>
 			{$multiplayerStatus || "No match found."}
 		</p>
-		{#if $skillBasedMatchmaking}
+		{#if $skillBasedMatchmaking || true}
 			<div class="infoContainer" transition:slide>
-				<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+				<Info strokeWidth={2.25} size={30} color="white" style="opacity: 50%; margin-right: 5px; margin-left: 2px;" />
 				<p>Skill-based matchmaking has longer waiting times.</p>
 			</div>
 		{/if}
@@ -54,11 +54,6 @@
 		flex-direction: column;
 		align-items: center;
 		min-height: 50dvh;
-	}
-
-	.infoIcon {
-		margin-inline: 1px;
-		margin-right: 5px;
 	}
 
 	.infoContainer {
