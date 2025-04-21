@@ -7,7 +7,7 @@
 	import { elo } from "$lib/stores/accountStore";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
-	import { Search } from "lucide-svelte";
+	import { Info, Search } from "lucide-svelte";
 
 	// Animate number starting from 0
 	const animatedElo = tweened(0, {
@@ -31,7 +31,7 @@
 		</div>
 		<DuelDivisionDisplay inPage={true} />
 		<div class="infoBox">
-			<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+			<Info strokeWidth={2.25} size={24} color="white" style="opacity: 50%; margin-left: 5px; margin-right: 2px;" />
 			<p>To report a player, open their profile and click on "Report".</p>
 			<button
 				class="standardButton white growSearch"
@@ -82,11 +82,6 @@
 		align-items: center;
 		flex-wrap: wrap;
 		gap: var(--box-margin-buttons);
-	}
-
-	.infoIcon {
-		margin-left: 8px;
-		margin-right: 0;
 	}
 
 	.infoBox p {

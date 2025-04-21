@@ -223,8 +223,7 @@
 <div class="mainContainer">
 	<h1 class="header" id="uploadHeader">Create a Competition</h1>
 	<div class="infoNoteBox">
-		<img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
-		<p class="uploadFirstText">Information and Rules:</p>
+		<p class="uploadFirstText">Information and rules:</p>
 		<ul class="verticalMarginUl">
 			<li class="helpItem">Ensure that your competition names and author names are familiy-friendly.</li>
 			<li class="helpItem">Keep all details in english.</li>
@@ -246,7 +245,7 @@
 			placeholder="Name of your competition..."
 			maxlength="30"
 		/>
-		<p>Competition Description:</p>
+		<p>Competition description:</p>
 		<input
 			id="uploadCompetitionDescription"
 			bind:value={competitionDescription}
@@ -256,7 +255,6 @@
 			maxlength="70"
 		/>
 		<div class="infoNoteBox marginBottom">
-			<img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
 			<p class="uploadFirstText">Information regarding private competitions:</p>
 			<p id="visibilityInfo">
 				Competitions are public by default, meaning they appear on the site for everyone. Private competitions can only
@@ -306,7 +304,6 @@
 		/>
 		<div class="spacer"></div>
 		<div class="infoNoteBox marginBottom">
-			<img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
 			<p class="uploadFirstText">How to add locations:</p>
 			<ol>
 				<li class="helpItem">
@@ -402,6 +399,7 @@
 
 	.uploadFirstText {
 		margin-bottom: 15px;
+		margin-top: 10px;
 		font-size: 22px;
 	}
 
@@ -457,14 +455,5 @@
 		border-radius: 10px;
 		min-height: 50px;
 		min-width: 150px;
-	}
-
-	#infoNoteIcon {
-		width: 35px;
-		height: 35px;
-		margin-bottom: 20px;
-		margin-top: 5px;
-		opacity: 0.5;
-		margin-left: -5px;
 	}
 </style>
