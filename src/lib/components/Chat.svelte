@@ -167,7 +167,6 @@
 	.bottomMultiplayerChatArea {
 		display: flex;
 		align-items: center;
-		overflow: hidden;
 		gap: var(--box-margin-buttons);
 	}
 
