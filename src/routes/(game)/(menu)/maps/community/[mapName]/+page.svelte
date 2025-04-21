@@ -310,7 +310,7 @@
 		</div>
 		<div class="descriptionInfo infoElement">
 			<div class="descriptionScroll">
-				<h2 class="descHeader">About "{mapName}"</h2>
+				<h2 class="descHeader">About <i>{mapName}</i></h2>
 				<p>
 					{mapDescription}
 				</p>
