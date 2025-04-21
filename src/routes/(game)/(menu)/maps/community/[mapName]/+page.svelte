@@ -298,7 +298,7 @@
 				changeCategory("community_" + mapName.toLowerCase(), true);
 			}}
 		>
-			Play {mapName}
+			Play <i>{mapName}</i>
 		</a>
 	</div>
 	<div class="information">
