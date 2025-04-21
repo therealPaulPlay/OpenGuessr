@@ -22,9 +22,9 @@
 		<p class="multiplayerDuelStatus" class:loading={$multiplayerStatus && $matchmakingHosting}>
 			{$multiplayerStatus || "No match found."}
 		</p>
-		{#if $skillBasedMatchmaking || true}
+		{#if $skillBasedMatchmaking}
 			<div class="infoContainer" transition:slide>
-				<Info strokeWidth={2.25} size={30} color="white" style="opacity: 50%; margin-right: 5px; margin-left: 2px;" />
+				<Info strokeWidth={2.25} size={34} color="white" style="opacity: 50%; margin-right: 5px; margin-left: 2px;" />
 				<p>Skill-based matchmaking has longer waiting times.</p>
 			</div>
 		{/if}
