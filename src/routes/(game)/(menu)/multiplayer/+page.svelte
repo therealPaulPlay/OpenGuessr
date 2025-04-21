@@ -1,5 +1,5 @@
 <script>
-	import { PlusCircle, Unplug, Swords, ContactRound, TriangleAlert } from "lucide-svelte";
+	import { PlusCircle, Unplug, Swords, ContactRound, TriangleAlert, Info } from "lucide-svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import {
@@ -137,7 +137,7 @@
 						}}
 						><span class="historyButtonText">History </span><History
 							size={19}
-							strokeWidth={2.5}
+							strokeWidth={3}
 							style="margin-bottom: -3px;"
 						/></button
 					>
@@ -178,7 +178,7 @@
 		<h2 class="header">Divisions</h2>
 	</div>
 	<div class="infoContainer">
-		<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+		<Info strokeWidth={2.25} size={24} color="white" style="opacity: 50%; margin-right: 5px; margin-left: 2px;" />
 		<p>
 			Elo above 2000 will be reset on {nextMonth.toLocaleDateString("en-US", {
 				month: "long",
@@ -196,9 +196,9 @@
 				<p>Leaderboard</p>
 			</span>
 			{#if isExpanded}
-				<ChevronUp size={20} strokeWidth={3} />
+				<ChevronUp size={20} strokeWidth={2.75} />
 			{:else}
-				<ChevronDown size={20} strokeWidth={3} />
+				<ChevronDown size={20} strokeWidth={2.75} />
 			{/if}
 		</button>
 
@@ -343,11 +343,6 @@
 
 	.divisionLeaderboardLoading {
 		opacity: 0.5;
-	}
-
-	.infoIcon {
-		margin-inline: 1px;
-		margin-right: 5px;
 	}
 
 	.duelOptionsContainer {

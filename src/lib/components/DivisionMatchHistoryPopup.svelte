@@ -5,7 +5,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { onMount } from "svelte";
-	import { ArrowLeft, ArrowRight } from "lucide-svelte";
+	import { ArrowLeft, ArrowRight, Info } from "lucide-svelte";
 	import { friendUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	// local state variables
@@ -87,7 +87,7 @@
 		</div>
 		<div class="topPopupFlex">
 			<div class="infoBox">
-				<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
+				<Info strokeWidth={2.25} size={24} color="white" style="opacity: 50%; margin-left: 2px;" />
 				<p class="infoText">Entries process up to 10 minutes before showing up.</p>
 			</div>
 			<div class="filterBox">

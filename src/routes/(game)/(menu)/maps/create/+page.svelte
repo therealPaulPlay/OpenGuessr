@@ -9,6 +9,7 @@
 	import { showNotification } from "$lib/utils/notifications";
 	import { get } from "svelte/store";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { Info } from "lucide-svelte";
 
 	let jsonPopup = $state(false);
 	let fileName = $state("Pick file");
@@ -108,7 +109,6 @@
 <div class="mainContainer">
 	<h1 class="header" id="uploadHeader">Create a Map</h1>
 	<div class="infoNoteBox">
-		<img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
 		<h2 class="uploadFirstText">Important rules:</h2>
 		<ul>
 			<li>You can only upload max. 3 maps per day.</li>
@@ -130,7 +130,7 @@
 			placeholder="Name of your map..."
 			maxlength="17"
 		/>
-		<p>Map Category:</p>
+		<p>Map category:</p>
 		<select id="categoryDropdown" class="dropdown" bind:value={categoryValue}>
 			<option value="none">Select one...</option>
 			<option value="Nature">Nature</option>
@@ -141,7 +141,7 @@
 			<option value="Transport">Transport</option>
 			<option value="Miscellaneous">Miscellaneous</option>
 		</select>
-		<p>Map Description:</p>
+		<p>Map description:</p>
 		<input
 			id="uploadMapDescription"
 			class="uploadInfo"
@@ -151,7 +151,6 @@
 			bind:value={mapDescription}
 		/>
 		<div class="infoNoteBox">
-			<img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
 			<p class="uploadFirstText">How to add locations:</p>
 			<ol>
 				<li>Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer.</li>
@@ -175,8 +174,7 @@
 			maxlength="5000000"
 		></textarea>
 		<div class="infoNoteBox infoNoteBoxConverter">
-			<img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
-			<p id="infoTextMapConverter">
+			<p>
 				You can generate a map using a tool like Map-Generator and then convert it to the
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -226,14 +224,13 @@
 		>
 	</div>
 	{#if jsonPopup}
-		<Popup>
+		<Popup verySlim={true}>
 			<h1 class="popup-title">JSON Format</h1>
 			<p id="jsonFormatTextInfo">
 				OpenGuessr uses a JSON format to load its locations. Here is an example of how that looks like:
 			</p>
 			<br />
-			<div class="infoNoteBox">
-				<img id="infoNoteIcon" src="/img/info_icon.png" alt="Information Icon" />
+			<div class="preBox">
 				<pre>
         &lbrace;
           "locations": [
@@ -243,8 +240,7 @@
                   ...
                   [latitude, longitude]
               ]
-        &rbrace;
-                      </pre>
+        &rbrace;</pre>
 			</div>
 			<div class="buttonBoxRight">
 				<button
@@ -289,6 +285,7 @@
 
 	.uploadFirstText {
 		margin-bottom: 15px;
+		margin-top: 10px;
 		font-size: 22px;
 	}
 
@@ -319,6 +316,16 @@
 		justify-content: flex-start;
 		flex-direction: column;
 		width: calc(100% - 40px);
+	}
+
+	.preBox {
+		background-color: rgba(0, 0, 0, 0.1);
+		border-radius: 10px;
+		display: flex;
+		padding: var(--box-margin);
+		width: calc(100% - 20px);
+		justify-content: flex-start;
+		flex-direction: column;
 	}
 
 	#inputArea {
@@ -366,28 +373,16 @@
 		font-size: 22px;
 	}
 
-	#infoNoteIcon {
-		width: 35px;
-		height: 35px;
-		margin-bottom: 20px;
-		margin-top: 5px;
-		opacity: 0.5;
-		margin-left: -5px;
-	}
-
 	pre {
 		font-family: monospace;
 		white-space: pre-wrap;
 		font-size: 15px;
+		padding: var(--box-margin);
 	}
 
 	.infoNoteBoxConverter {
 		margin-top: 25px;
 		margin-bottom: 15px;
-	}
-
-	#infoTextMapConverter {
-		margin-bottom: 20px;
 	}
 
 	.dropdown {

@@ -261,10 +261,11 @@
 				</div>
 			</div>
 		</div>
-		{#if $profileId == localStorage.getItem("id") && !$crazyGames}
-			<SupporterPitch />
-		{/if}
 		<div id="profileScrollSection">
+			{#if $profileId == localStorage.getItem("id") && !$crazyGames}
+				<SupporterPitch />
+			{/if}
+			
 			{#if $profileId == localStorage.getItem("id") || $profileData?.about}
 				<textarea
 					id="profileAbout"

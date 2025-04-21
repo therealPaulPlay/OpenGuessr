@@ -264,16 +264,11 @@
 					{/if}</button
 				>
 			</div>
-			<div class="supporterBox supporterBoxHighlight">
-				<img alt="info icon" class="infoIcon" src="/img/info_icon.png" />
-				<p id="supporterInfoText">
-					All purchases are one-time payments.
-					<span class="supporterLegalText">
-						<a href="/legal" target="_blank">Terms and conditions</a>
-						apply.
-					</span>
-				</p>
-			</div>
+			<p id="supporterInfoText">
+				All purchases are one-time payments.
+				<a href="/legal" target="_blank">Terms and conditions</a>
+				apply.
+			</p>
 		</div>
 		<button
 			id="supporterClose"
@@ -301,10 +296,6 @@
 		flex-grow: 10;
 		max-width: 75%;
 		font-size: 22px;
-	}
-
-	.infoIcon {
-		margin-left: 5px;
 	}
 
 	.tierNumber {
@@ -455,14 +446,6 @@
 		border-radius: 10px;
 	}
 
-	.supporterBoxHighlight {
-		background-color: var(--box-color);
-		width: calc(100% - 20px);
-		padding-inline: var(--box-margin);
-		display: flex;
-		align-items: center;
-	}
-
 	.supporterBox p {
 		padding: 7px;
 	}
@@ -475,12 +458,11 @@
 		margin-top: 1px;
 	}
 
-	.supporterLegalText {
-		opacity: 0.6;
-	}
-
 	#supporterInfoText {
+		opacity: 0.5;
 		font-size: 22px;
+		text-align: center;
+		margin-inline: auto;
 	}
 
 	@keyframes supporterGlintTierBox {
