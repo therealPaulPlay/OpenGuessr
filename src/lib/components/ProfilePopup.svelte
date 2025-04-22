@@ -54,6 +54,7 @@
 	import { reportUserId } from "$lib/stores/context-specific/reportPopupStore";
 	import { scale } from "svelte/transition";
 	import Tabs from "./ui/Tabs.svelte";
+	import TitleSeparator from "./ui/TitleSeparator.svelte";
 
 	let textarea = $state();
 	let isFriendsWithId = $state(true);
@@ -265,7 +266,7 @@
 			{#if $profileId == localStorage.getItem("id") && !$crazyGames}
 				<SupporterPitch />
 			{/if}
-			
+
 			{#if $profileId == localStorage.getItem("id") || $profileData?.about}
 				<textarea
 					id="profileAbout"
@@ -286,9 +287,8 @@
 				></textarea>
 			{/if}
 
-			<h3>Statistics:</h3>
-
 			<!-- Stats Carousel Section -->
+			<TitleSeparator text="Statistics" />
 			<div class="stat-switch">
 				<Tabs
 					tabs={statCategories.map((cat) => cat.name)}
@@ -319,7 +319,7 @@
 			</div>
 
 			{#if $profileId == localStorage.getItem("id")}
-				<h3>Management:</h3>
+				<TitleSeparator text="Management" />
 				<div class="managementBox">
 					<div class="editNameSection">
 						<button
@@ -401,7 +401,7 @@
 		flex-wrap: wrap;
 		overflow: hidden;
 		margin-bottom: 20px;
-		background-color: rgba(30, 31, 44, 0.5);
+		background-color: var(--box-color-dark);
 		padding: 15px;
 		padding-inline: 12px;
 		width: calc(100% + 26px);
@@ -555,7 +555,7 @@
 		transition: background-color 250ms ease;
 		color: white;
 		padding: 15px;
-		margin-bottom: 20px;
+		margin-bottom: var(--layout-margin);
 		scrollbar-width: none;
 	}
 
@@ -664,7 +664,6 @@
 		overflow-y: auto;
 		padding: var(--box-margin-buttons);
 		gap: var(--box-margin-buttons);
-		margin-top: 8px;
 		align-items: center;
 		flex-wrap: wrap;
 	}

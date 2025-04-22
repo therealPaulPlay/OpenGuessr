@@ -53,7 +53,7 @@
 				>. With your consent, we use Google Analytics and cookies to track how you interact with OpenGuessr.
 				<br /><br />
 				If you register an account, we collect your username, IP address (to ensure multiplayer security and prevent cheating),
-				game-realted statistics and your email.By creating an account you accept that we may share non-sensitive information
+				game-realted statistics and your email. By creating an account you accept that we may share non-sensitive information
 				with other users. We also store game-related details like your account level. Purchasing items involves data processed
 				by Stripe—please see their
 				<a href="https://stripe.com/privacy" target="_blank">privacy policy</a>.

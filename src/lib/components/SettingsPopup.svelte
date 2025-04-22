@@ -105,7 +105,7 @@
 		</div>
 		<div class="settingsCanvas">
 			<div class="settingsBox">
-				<p class="textMargin">Unit system:</p>
+				<p class="textMargin">Unit system</p>
 				<Tabs
 					tabs={["Metric", "Imperial"]}
 					bind:selected={selectedUnit}
@@ -116,7 +116,7 @@
 				/>
 			</div>
 			<div class="settingsBox">
-				<p class="textMargin">SFX volume:</p>
+				<p class="textMargin">SFX volume</p>
 				<div class="sliderBox">
 					<input
 						type="range"
@@ -132,7 +132,7 @@
 				</div>
 			</div>
 			<div class="settingsBox">
-				<p class="textMargin">Music volume:</p>
+				<p class="textMargin">Music volume</p>
 				<div class="sliderBox">
 					<input
 						type="range"
@@ -165,7 +165,7 @@
 			</div>
 			{#if !$preventFullscreen}
 				<div class="settingsBox">
-					<p class="textMargin">View:</p>
+					<p class="textMargin">View</p>
 					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
 						<span class="fullscreenIcon">
 							<Scan size="17" strokeWidth={3} />
@@ -175,7 +175,7 @@
 				</div>
 			{/if}
 			<div class="settingsBox">
-				<p class="textMargin">Legal info:</p>
+				<p class="textMargin">Legal info</p>
 				<button
 					class="standardButton white"
 					id="privacyButton"
