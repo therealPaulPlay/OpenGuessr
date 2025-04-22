@@ -10,6 +10,7 @@
 	import { onMount } from "svelte";
 	import { ChevronLeft, ChevronRight, Gamepad2 } from "lucide-svelte";
 	import { crazyGames, playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
+	import TitleSeparator from "./ui/TitleSeparator.svelte";
 
 	// Singleplayer Options UI ----------------------------------------------------------------------------------------
 
@@ -113,9 +114,9 @@
 					</div>
 				</div>
 			{/if}
+			<TitleSeparator text="Timer" />
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="settingsBox">
-					<p class="textMargin">Timer:</p>
 					<div class="timerSliderBox">
 						<div class="timerControlsWrapper">
 							<button class="arrowButton standardButton white" onclick={() => adjustTimer(false)}>
@@ -145,20 +146,20 @@
 					</div>
 				</div>
 			</div>
+			<TitleSeparator text="NMPZ" />
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="settingsBox">
-					<p class="textMargin">NMPZ:</p>
 					<div class="timerSliderBox">
-						<p class="singleplayerDesc textMargin">Prevent Move, Pan and Zoom:</p>
+						<p class="singleplayerDesc textMargin">Prevent Move, Pan and Zoom.</p>
 						<button id="setSingleplayerNMPZ" class="standardButton white" onclick={toggleSingleplayerNMPZ}
 							>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
 						>
 					</div>
 				</div>
 			</div>
+			<TitleSeparator text="Round log" />
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="settingsBox roundLogContainer">
-					<p class="textMargin textMarginRoundLog">Round log:</p>
 					<div class="roundLogBox" id="roundLogBox">
 						<!-- round log will be automatically generated here -->
 						{#if $roundLog.length > 0}
@@ -222,7 +223,6 @@
 	.timerSliderBox {
 		display: flex;
 		gap: var(--box-margin);
-		margin-top: 5px;
 		flex-wrap: wrap;
 		justify-content: space-between;
 		align-items: center;
@@ -284,10 +284,6 @@
 		margin-top: auto;
 	}
 
-	.textMarginRoundLog {
-		margin-bottom: 15px;
-	}
-
 	.timerTextBox {
 		border: 5px;
 		display: flex;
@@ -314,7 +310,6 @@
 		flex-direction: column;
 		overflow-y: auto;
 		max-height: 170px;
-		margin-top: 5px;
 		padding-bottom: 0;
 		scrollbar-width: none;
 	}

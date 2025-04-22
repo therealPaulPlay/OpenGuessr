@@ -103,7 +103,6 @@
 		max-height: calc(90dvh - 250px);
 		overflow-x: hidden;
 		overflow-y: auto;
-		border-radius: 5px;
 	}
 
 	.spacerBadge {
@@ -113,9 +112,10 @@
 	.badgeLabel {
 		padding: 3px;
 		background-color: var(--box-color);
-		border-radius: 5px;
+		border-radius: 10px;
+		border-bottom-left-radius: 0;
+		border-bottom-right-radius: 0;
 		text-align: left;
-		margin-bottom: var(--box-margin);
 		padding-left: 10px;
 		display: flex;
 		justify-content: space-between;
@@ -123,8 +123,10 @@
 	}
 
 	.badgeBox {
-		background-color: rgba(30, 31, 44, 0.5);
-		border-radius: 8px;
+		background-color: var(--box-color-dark);
+		border-radius: 10px;
+		border-top-left-radius: 0;
+		border-top-right-radius: 0;
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
@@ -133,14 +135,14 @@
 		box-sizing: border-box;
 		flex-wrap: wrap;
 		gap: var(--box-margin);
-		margin-bottom: var(--box-margin);
+		margin-bottom: var(--layout-margin);
 	}
 
 	.unlockBadgeStatus {
 		background-color: rgba(0, 0, 0, 0.1);
 		padding: 3px;
 		padding-inline: 7px;
-		border-radius: 5px;
+		border-radius: 8px;
 		font-size: 20px;
 		color: rgba(255, 255, 255, 0.75);
 	}

@@ -214,17 +214,15 @@
 
 	.historyBox {
 		position: relative;
-		width: calc(100% - 13px);
-		border-radius: 5px;
+		width: calc(100% - 20px);
+		border-radius: 2px;
 		max-height: calc(60dvh - 250px);
-		min-height: calc(60dvh - 250px);
 		overflow-x: hidden;
 		overflow-y: auto;
-		padding: 2px;
 		background-color: var(--box-color);
-		margin-top: 20px;
-		margin-inline: 5px;
-		outline: 5px solid var(--box-color);
+		margin-top: 25px;
+		margin-inline: var(--box-margin);
+		outline: var(--box-margin) solid var(--box-color);
 		gap: var(--box-margin);
 		display: flex;
 		flex-direction: column;

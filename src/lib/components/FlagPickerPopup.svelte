@@ -209,7 +209,11 @@
 		// Update profile data with selected flag
 		if (!buttonSound) playSound("item_select");
 		if (buttonSound) playSound("basic_button");
-		if ($profileData?.flag == countryCode) return; // Prevent update if it's already set to that flag
+		if ($profileData?.flag == countryCode) {
+			// If this is the selected flag, remove it
+			handleFlagClick(null, true);
+			return;
+		}
 		setProfileFlag(countryCode);
 		profileData.update((data) => {
 			return { ...data, flag: countryCode };
@@ -242,14 +246,6 @@
 					</div>
 				</div>
 			{/each}
-			<button
-				class="standardButton white"
-				onclick={() => {
-					handleFlagClick(null, true);
-				}}
-			>
-				Remove Flag <Trash2 size={20} style="margin-bottom: -2px;" />
-			</button>
 		</div>
 		<button
 			class="standardButton white closeButton"
@@ -298,7 +294,7 @@
 		margin-left: 0;
 		padding: var(--box-margin-buttons);
 		min-width: calc(100% - 16px);
-		background-color: rgba(30, 31, 44, 0.5);
+		background-color: var(--box-color-dark);
 		border-radius: 10px;
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;

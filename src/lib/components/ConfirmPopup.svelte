@@ -36,7 +36,7 @@
 {#if $confirmPopupVisible}
 	<Popup verySlim={true} z={982}>
 		<h1 id="confirmTitle" class="popup-title">{$confirmTitle}</h1>
-		<div id="confirmDescription" class="popup-description">{$confirmDescription}</div>
+		<div id="confirmDescription" class="popup-description marginBottom">{$confirmDescription}</div>
 		{#if $confirmPasswordInput}
 			<input
 				id="accountDeletePassword"
@@ -78,5 +78,9 @@
 		font-family: Barlow;
 		width: 40%;
 		margin-top: var(--layout-margin);
+	}
+
+	.marginBottom {
+		margin-bottom: var(--box-margin);
 	}
 </style>

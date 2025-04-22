@@ -43,7 +43,7 @@
 		align-items: center;
 		max-width: 100%;
 		width: fit-content;
-		background-color: rgba(30, 31, 44, 0.5);
+		background-color: var(--box-color-dark);
 		border-radius: 10px;
 		gap: var(--box-margin);
 		border: solid var(--box-margin) transparent;
