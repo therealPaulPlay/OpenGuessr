@@ -550,7 +550,7 @@
 		gap: var(--box-margin);
 		border-radius: 10px;
 		justify-content: left;
-		padding: 4px;
+		padding: 5px;
 		width: fit-content;
 		align-items: center;
 		margin-bottom: 10px;
