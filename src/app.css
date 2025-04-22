@@ -13,6 +13,7 @@
     --panel-color: hsla(236, 25%, 20%, 0.7);
     --menu-background: rgba(39, 41, 53, 0.9);
     --box-color: rgba(255, 255, 255, 0.05);
+    --box-color-dark: rgba(30, 31, 44, 0.5);
     --dark-background: rgba(30, 30, 30, 0.7);
     --panel-button-color: rgba(168, 168, 187, 0.3);
     --supporter-gradient: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(17, 217, 49, 0.7));

@@ -34,7 +34,7 @@
 		min-height: 80px;
 		min-width: 80px;
 		flex-grow: 1;
-		border-radius: 7px;
+		border-radius: 5px;
 		background-color: rgba(255, 255, 255, 0.1);
 		display: flex;
 		flex-direction: column;
@@ -50,7 +50,7 @@
 	}
 
 	.pinLock {
-		border-radius: 7px;
+		border-radius: 5px;
 		background-color: rgba(4, 8, 15, 0.25);
 		width: 100%;
 		height: 100%;

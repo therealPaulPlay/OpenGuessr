@@ -53,7 +53,7 @@
 
 		<div class="flexSlideTitle">
 			{#if CurrentIcon}
-				<CurrentIcon />
+				<CurrentIcon strokeWidth={2.25} />
 			{/if}
 			<h3 class="slide-title">
 				{slides[currentSlide].title}
