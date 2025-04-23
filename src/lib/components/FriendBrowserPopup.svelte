@@ -6,7 +6,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
-	import { friendUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	let userSearchResults = $state();
 	let searchQuery = $state("");
@@ -26,7 +26,7 @@
 				return;
 			}
 
-			const response = await fetch($friendUrl + "/friends/search/" + query, {
+			const response = await fetch($accountUrl + "/friends/search/" + query, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
