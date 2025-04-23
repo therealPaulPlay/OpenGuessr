@@ -1,6 +1,6 @@
 import { getUser } from "./userAPI";
 import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
-import { initializeWebsocketConnection } from "$lib/logic/websocketLogic";
+import { initializeSSEConnection } from "$lib/logic/sseLogic";
 import { resultScreenEnabled, lastDistance, lastExperienceCalculationAborted } from "$lib/stores/context-specific/resultScreenStore";
 import { isAuthenticated, supporterLevel, experience, username, selectedPinIndex, selectedBadge, elo } from "$lib/stores/accountStore";
 import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
@@ -62,7 +62,7 @@ async function loadUserInfo() {
       if (get(resultScreenEnabled) && get(lastExperienceCalculationAborted)) loadResultScreenXP(get(lastDistance));
       if (user?.new_requests) { inboxIconNew.set(true); }
 
-      initializeWebsocketConnection();
+      initializeSSEConnection();
     });
   } catch (error) {
     console.error("Error getting user data in loadUserInfo:", error);
