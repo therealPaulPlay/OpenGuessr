@@ -1,0 +1,191 @@
+import { showNotification } from "$lib/utils/notifications";
+import { username, elo } from "$lib/stores/accountStore";
+import { acceptFriendRequest } from "$lib/logic/friendAPI";
+import { errorPopup } from "$lib/utils/errorHandling";
+import { leaveCompetition } from "$lib/logic/competitionLogic";
+import { linkJoinPopup } from "$lib/stores/uiStore";
+import { leaveMultiplayerRound, setPlayingDuels, setFriendDuel, joinRoom } from "$lib/logic/multiplayerLogic";
+import { get } from "svelte/store";
+import { duelResultPopup } from "$lib/stores/uiStore";
+import { eloChange } from "$lib/stores/context-specific/duelResultStore";
+import { goto } from "$app/navigation";
+import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+
+export async function initializeSSEConnection() {
+    let eventSource;
+    let reconnectAttempts = 0;
+    const maxReconnectAttempts = 5;
+    const userId = localStorage.getItem("id");
+    if (!userId) return console.error("Can't init SSE with no user id.");
+
+    async function connectSSE() {
+        try {
+            if (eventSource) eventSource.close();
+
+            // Create a new EventSource connection with the user ID as a query parameter
+            eventSource = new EventSource(`${get(accountUrl)}/events?userId=${userId}`);
+
+            eventSource.onopen = () => {
+                reconnectAttempts = 0; // Reset the reconnect attempts on successful connection
+            };
+
+            // Handle incoming messages
+            eventSource.onmessage = (event) => {
+                try {
+                    const data = JSON.parse(event.data);
+
+                    // Handle different event types
+                    switch (data.type) {
+                        case 'room-invite':
+                            const roomOrDuel = data.duel ? "Duel" : "Room";
+                            showNotification(`${roomOrDuel} invite from ${data.name}.`, () => {
+                                joinRoomFromNotification(data.roomcode, data.from, data.duel);
+                            }, () => {
+                                declineMatchInvite(data.from);
+                            }, true);
+                            break;
+
+                        case 'invite-accepted':
+                            showNotification(`${data.name} accepted your invite.`);
+                            goto("/"); // Go to main game page
+                            break;
+
+                        case 'invite-declined':
+                            showNotification(`${data.name} declined your invite.`);
+                            if (get(linkJoinPopup)) {
+                                leaveMultiplayerRound();
+                                linkJoinPopup.set(false);
+                            }
+                            break;
+
+                        case 'friend-request-received':
+                            showNotification(`${data.name} sent you a friend request.`, () => {
+                                acceptFriendRequest(data.from);
+                            }, false, true);
+                            break;
+
+                        case 'duel-result':
+                            duelResultPopup.set(true);
+                            eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
+                            elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
+                            break;
+
+                        case 'duel-registration-error':
+                            errorPopup("Duel not registered", "Your opponent failed to register the duel, meaning, it won't affect your elo. You can leave penalty-free.", data?.message);
+                            break;
+
+                        case 'duel-result-error':
+                            errorPopup("Duel submission failed", "Please refer to the error message.", data?.message);
+                            break;
+
+                        case 'duel-late-result':
+                            eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
+                            elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
+                            showNotification(`Received ${get(eloChange)} Elo from previous game.`);
+                            break;
+                    }
+                } catch (error) {
+                    console.error('Error parsing SSE message:', error);
+                }
+            };
+
+            // Handle errors
+            eventSource.onerror = (error) => {
+                console.error('SSE connection error:', error);
+
+                if (reconnectAttempts < maxReconnectAttempts) {
+                    reconnectAttempts++;
+                } else {
+                    // If we've exceeded max attempts, close current connection and try again after a longer delay
+                    eventSource.close();
+                    console.error('Browser reconnection failed repeatedly. Attempting manual reconnection in about a minute.');
+                    setTimeout(() => {
+                        reconnectAttempts = 0;
+                        connectSSE();
+                    }, 60000 + Math.floor(Math.random() * 5000));
+                }
+            };
+        } catch (error) {
+            console.error("Error setting up SSE connection:", error);
+        }
+    }
+
+    connectSSE();
+}
+
+// Related functions --------------------------------------------------------------------------------------------------------
+function joinRoomFromNotification(roomcode, recipientId, duel) {
+    if (duel) acceptDuelInvite(recipientId); // Informs the host that they accepted
+    leaveMultiplayerRound();
+    leaveCompetition(false);
+
+    if (duel) {
+        setPlayingDuels(true);
+        setFriendDuel(true);
+    }
+
+    linkJoinPopup.set(true);
+    joinRoom(roomcode.replace("openguessr_", ""));
+}
+
+async function acceptDuelInvite(recipientId) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            friend_id: recipientId,
+            senderName: get(username)
+        };
+
+        const response = await fetch(get(accountUrl) + "/friends/accept-invite", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+
+        } else {
+            const data = await response.json();
+            console.error("Error accepting invite: " + response.status);
+            errorPopup("Error accepting invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while sending/accepting/declining invite: ', error);
+        errorPopup("Network error sending/accepting/declining invite", "The invite couldn't be sent / accepted / declined.", error, false, false);
+    }
+}
+
+async function declineMatchInvite(recipientId) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            friend_id: recipientId,
+            senderName: get(username)
+        };
+
+        const response = await fetch(get(accountUrl) + "/friends/decline-invite", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+
+        } else {
+            const data = await response.json();
+            console.error("Error declining invite: " + response.status);
+            errorPopup("Error declining invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while sending/accepting/declining invite: ', error);
+        errorPopup("Network error sending/accepting/declining invite", "The invite couldn't be sent / accepted / declined.", error, false, false);
+    }
+}

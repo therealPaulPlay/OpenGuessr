@@ -7,7 +7,7 @@ import { linkJoinPopup } from "$lib/stores/uiStore";
 import { setPlayingDuels, setFriendDuel, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { changeCategory } from "$lib/utils/changeCategory";
-import { friendUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 // Inbox -----------------------------------------------------------------------------------------------------------------------------------
 export async function loadInbox() {
@@ -19,7 +19,7 @@ export async function loadInbox() {
             recipientId: localStorage.getItem("id")
         };
 
-        const response = await fetch(get(friendUrl) + "/friends/requests", {
+        const response = await fetch(get(accountUrl) + "/friends/requests", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -53,7 +53,7 @@ export async function acceptFriendRequest(senderId) {
             recipientId: localStorage.getItem("id")
         };
 
-        const response = await fetch(get(friendUrl) + "/friends/accept", {
+        const response = await fetch(get(accountUrl) + "/friends/accept", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -87,7 +87,7 @@ export async function declineFriendRequest(senderId) {
             recipientId: localStorage.getItem("id")
         };
 
-        const response = await fetch(get(friendUrl) + "/friends/decline", {
+        const response = await fetch(get(accountUrl) + "/friends/decline", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -119,7 +119,7 @@ export async function loadFriends() {
             id: localStorage.getItem("id")
         };
 
-        const response = await fetch(get(friendUrl) + "/friends/friends", {
+        const response = await fetch(get(accountUrl) + "/friends/friends", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -149,7 +149,7 @@ export async function removeFriend(friendId) {
             friendId: friendId
         };
 
-        const response = await fetch(get(friendUrl) + "/friends/remove", {
+        const response = await fetch(get(accountUrl) + "/friends/remove", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -193,7 +193,7 @@ export async function sendMatchInvite(recipientId, duel) {
             isDuel: duel
         };
 
-        const response = await fetch(get(friendUrl) + "/friends/send-invite", {
+        const response = await fetch(get(accountUrl) + "/friends/send-invite", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
