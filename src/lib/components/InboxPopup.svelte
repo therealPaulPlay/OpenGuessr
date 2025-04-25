@@ -92,7 +92,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: var(--box-margin-buttons);
+		padding: var(--box-margin);
 		padding-inline: 15px;
 		margin-bottom: 10px;
 		transition: background-color 250ms ease;
@@ -141,7 +141,7 @@
 		width: fit-content;
 		overflow: hidden;
 		gap: var(--box-margin-buttons);
-		margin-right: -7px;
+		margin-right: -5px;
 		flex-grow: 5;
 		max-width: fit-content;
 	}
