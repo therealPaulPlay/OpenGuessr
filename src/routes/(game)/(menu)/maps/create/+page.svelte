@@ -115,7 +115,7 @@
 			<li>Maps must at least have 50 unique locations.</li>
 			<li>Ensure that your map names and author names are familiy-friendly.</li>
 			<li>Keep all details in english.</li>
-			<li>Pick a descriptive map name (e. g. not "My Map").</li>
+			<li>Pick a descriptive map name (e.g. not "My Map").</li>
 			<li>A maximum of 2,000 locations is recommended, up to 15,000 are possible.</li>
 		</ul>
 	</div>

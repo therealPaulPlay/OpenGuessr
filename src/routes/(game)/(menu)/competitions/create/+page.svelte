@@ -227,7 +227,7 @@
 		<ul class="verticalMarginUl">
 			<li class="helpItem">Ensure that your competition names and author names are familiy-friendly.</li>
 			<li class="helpItem">Keep all details in english.</li>
-			<li class="helpItem">Pick a descriptive competition name (e. g. not "My Competition").</li>
+			<li class="helpItem">Pick a descriptive competition name (e.g. not "My Competition").</li>
 			<li class="helpItem">Competitions will be deleted 7 days after they have ended.</li>
 			<li class="helpItem">Competitions cannot be edited.</li>
 			<li class="helpItem">The duration must be between 10min and 7d.</li>
