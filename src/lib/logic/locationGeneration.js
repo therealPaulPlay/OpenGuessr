@@ -5,6 +5,7 @@ import { get } from "svelte/store";
 import { peer } from "$lib/stores/context-specific/multiplayerStore";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { accountUrl, locationUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { showNotification } from "$lib/utils/notifications";
 
 // This is THE function to get locations (all others here are NOT export) - not the functino to start a new round! (look for newLocation.js for that)
 export async function getLocationCoordinates(type) {
@@ -55,7 +56,6 @@ async function getJSONCoords(category) {
 }
 
 // Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
-
 const locationEndpoint = get(locationUrl) + "/locations-batch";
 const locationLengthEndpoint = get(locationUrl) + "/location-length";
 let cachedLocations = [];
@@ -74,7 +74,7 @@ async function getCoordsFromLocationServer() {
             const indexes = Array.from({ length: 5 }, () => getUniqueLocationIndex(totalAmount));
 
             const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort("Locations took longer than 1.5s to load."), 1500); // Abort slow requests
+            const timeoutId = setTimeout(() => controller.abort("Locations took too long to load."), 2000); // Abort slow requests
 
             try {
                 const response = await fetch(`${locationEndpoint}`, {
@@ -105,8 +105,7 @@ async function getCoordsFromLocationServer() {
             throw new Error("No locations available in cache!");
         }
     } catch (error) {
-        console.error("Error occurred while fetching locations from server: ", error);
-        return await loadBackupLocations(error);
+        return await loadBackupLocations(error.message || error); // This also logs the error
     }
 }
 
@@ -115,7 +114,7 @@ let standardLocationAmount;
 async function getStandardLocationAmount() {
     if (!standardLocationAmount) {
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort("Location count took longer than 1.5s to load."), 1500); // Abort slow location amount requests
+        const timeoutId = setTimeout(() => controller.abort(), 2000); // Abort slow location amount requests
 
         try {
             const response = await fetch(locationLengthEndpoint, {
@@ -132,12 +131,12 @@ async function getStandardLocationAmount() {
                 const data = await response.json();
                 standardLocationAmount = Number(data?.length);
             } else {
-                throw new Error("Standard location amount returned not-okay status: " + response.status);
+                throw new Error("Error fetching Standard location amount: " + response.status);
             }
         } catch (error) {
-            throw new Error("Error occured fetching standard location amount: " + error); // Re-throw
-        } finally {
             clearTimeout(timeoutId);
+            if (error.name === 'AbortError') throw new Error("Location amount took too long to load.");
+            else throw new Error("Error fetching standard location amount: " + error);
         }
     }
 
@@ -146,8 +145,8 @@ async function getStandardLocationAmount() {
 
 // in case the location server does not respond, load the backup, formerly daily locations (just totally random locations) instead
 async function loadBackupLocations(error) {
-    console.log("Loading backup locations.");
-    errorPopup("Location server error", "Loading local backup locations instead. ", "Error: " + error);
+    console.warn("Loading backup locations:", error);
+    showNotification("Loading backup: " + error);
     return await getJSONCoords("backup");
 }
 
