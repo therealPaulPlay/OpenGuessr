@@ -163,6 +163,7 @@ export async function createPeerInstance() {
             });
 
             let playerAdded;
+            let startMultiplayerRoundTimeout;
 
             get(peer).onEvent('storageUpdated', (storage) => {
                 // Sync game info
@@ -223,7 +224,12 @@ export async function createPeerInstance() {
                     } else {
                         disableResultScreen();
                         get(peer)?.updateStorage("overlay", true);
-                        if (storage.currentRound < get(roundAmount)) setTimeout(startMultiplayerRound, 1500); // Start new round
+
+                        // Start new round
+                        if (storage.currentRound < get(roundAmount)) {
+                            clearTimeout(startMultiplayerRoundTimeout); // Prevent multiple calls
+                            startMultiplayerRoundTimeout = setTimeout(startMultiplayerRound, 1500);
+                        }
                     }
                 }
 
