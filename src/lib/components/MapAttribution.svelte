@@ -39,7 +39,7 @@
 
 	#mapAttribution {
 		bottom: 0;
-		right: 8px;
+		right: var(--box-margin);
 		opacity: 0.8;
 		border-bottom-right-radius: 10px;
 		gap: 1px;

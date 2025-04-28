@@ -20,14 +20,13 @@
 	.mapHolder {
 		position: fixed;
 		display: flex;
-		right: 62px;
+		right: 60px;
 		bottom: 76px;
-		padding-inline: var(--box-margin-buttons);
+		padding-inline: var(--box-margin);
 		min-width: 212px;
 		min-height: 150px;
 		align-items: flex-end;
 		flex-direction: column;
-		max-height: 100%;
 		z-index: 9;
 		pointer-events: none;
 	}
@@ -39,7 +38,6 @@
 			height 150ms ease,
 			width 150ms ease,
 			opacity 250ms ease,
-			max-height 250ms ease,
 			margin 250ms ease;
 	}
 
@@ -56,7 +54,6 @@
 		opacity: 100% !important;
 		visibility: visible !important;
 		border-radius: 0 !important;
-		max-height: 100% !important;
 		transition: none !important;
 	}
 
@@ -87,7 +84,7 @@
 	/* Shift up to fit ad */
 	@media (orientation: portrait) and (max-width: 800px) {
 		.mapHolderAdShift {
-			bottom: 135px;
+			bottom: 136px;
 		}
 	}
 </style>
