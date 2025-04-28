@@ -77,9 +77,9 @@ function endMultiplayerRound() {
     // Storage events after enabling result! (otherwise, result might trigger multiple times)
     get(peer)?.updateStorage("timerStart", false);
     get(peer)?.updateStorage("confirmedArray", []); // Reset confirmed guesses to prevent double-end
-    startedRound = false;
 }
 
+// Utility -----------------------------------------------------------------------------------------------------------------------------------
 export function multiplayerStateToGuessed() {
     get(peer)?.updateStorageArray("confirmedArray", "add", get(peer)?.id);
     if (playingDuels) get(peer)?.updateStorage("timeReducedOverlay", true); // Reduce time in duels
@@ -223,6 +223,7 @@ export async function createPeerInstance() {
                     } else {
                         disableResultScreen();
                         get(peer)?.updateStorage("overlay", true);
+                        if (storage.currentRound < get(roundAmount)) setTimeout(startMultiplayerRound, 1500); // Start new round
                     }
                 }
 
@@ -246,15 +247,6 @@ export async function createPeerInstance() {
                 }
 
                 if (storage.rematch && get(peer)?.isHost) multiplayerPerformRematch();
-
-                if (storage.startRound && get(peer)?.isHost) {
-                    setTimeout(startMultiplayerRound, storage?.firstRoundPlayed ? 1500 : 0);
-                }
-            });
-
-            get(peer).onEvent('hostMigrated', () => {
-                // Check if round should be started, as previous host might not have
-                if (get(peer)?.getStorage?.startRound && get(peer)?.isHost) setTimeout(startMultiplayerRound, 1500);
             });
 
             get(peer).onEvent('instanceDestroyed', () => {
@@ -389,7 +381,6 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             overlay: true,
             timeReducedOverlay: false,
             showResult: false,
-            startRound: false,
             gameOngoing: false, // True after the room was started once and is not in creation phase
             countdownActive: false,
             timerStart: false
@@ -410,9 +401,9 @@ export function startRoom() {
     multiplayer.set(true);
     setMultiplayerUI();
     matchmakingActive.set(false);
-    if (!get(peer)?.getStorage?.firstRoundPlayed) goto("/"); // Creation page -> home
+    goto("/"); // Creation page -> home
     get(peer)?.updateStorage("gameOngoing", true);
-    get(peer).updateStorage("startRound", true);
+    startMultiplayerRound();
 }
 
 function multiplayerPerformRematch() {
@@ -429,14 +420,8 @@ function multiplayerPerformRematch() {
     startRoom();
 }
 
-// Start the first / next round (HOST only)
-let startedRound = false;
-
 async function startMultiplayerRound() {
-    // If round is already started, exit
-    if (startedRound) return;
-    startedRound = true;
-
+    if (!get(peer)?.isHost) return;
     await checkGenerationTypeAndGenerate();
     get(peer)?.updateStorage("location", [get(currentLocationLatitude), get(currentLocationLongitude)]); // Set coordinates
     get(peer)?.updateStorage("guessLocationsArray", []); // Reset guesses
@@ -446,7 +431,6 @@ async function startMultiplayerRound() {
     get(peer)?.updateStorage("countdownActive", true);
     get(peer)?.updateStorage("currentRound", get(peer)?.getStorage?.currentRound + 1);
     get(peer)?.updateStorageArray("chats", "add", `System: Starting round ${get(peer)?.getStorage?.currentRound}.`);
-    get(peer).updateStorage("startRound", false); // Round started successfully
 }
 
 // Peer Logic -----------------------------------------------------------------------------------------------------------------
@@ -492,7 +476,6 @@ export function leaveMultiplayerRound(destroy = true) {
     roundAmount.set(3);
     teamAmount.set(1);
     connectionCount.set(0);
-    startedRound = false;
     playingDuels = false;
     friendDuel = false;
     roomcode.set("loading...");
@@ -545,41 +528,40 @@ function updateMultiplayerTableArray() {
 
     if (get(teamAmount) <= 1) {
         multiplayerTableArray.set([...players].sort((a, b) => b[3] - a[3]));
-        return;
-    }
+    } else {
+        // Group players by team
+        const groupedTeams = players.reduce((acc, player) => {
+            const teamIndex = player[4];
+            if (!acc[teamIndex]) {
+                teams[teamIndex] = { color: generateColorForTeam(teamIndex), colorName: getTeamColorName(teamIndex) };
+                acc[teamIndex] = { ...teams[teamIndex], teamIndex, players: [] };
+            }
+            acc[teamIndex].players.push(player);
+            return acc;
+        }, {});
 
-    // Group players by team
-    const groupedTeams = players.reduce((acc, player) => {
-        const teamIndex = player[4];
-        if (!acc[teamIndex]) {
-            teams[teamIndex] = { color: generateColorForTeam(teamIndex), colorName: getTeamColorName(teamIndex) };
-            acc[teamIndex] = { ...teams[teamIndex], teamIndex, players: [] };
+        // Ensure all team numbers from 1 to teamAmount exist (even empty teams)
+        const totalTeamAmount = get(teamAmount);
+        for (let i = 1; i <= totalTeamAmount; i++) {
+            if (!groupedTeams[i]) {
+                teams[i] = { color: generateColorForTeam(i), colorName: getTeamColorName(i) };
+                groupedTeams[i] = { ...teams[i], teamIndex: i, players: [] };
+            }
         }
-        acc[teamIndex].players.push(player);
-        return acc;
-    }, {});
 
-    // Ensure all team numbers from 1 to teamAmount exist (even empty teams)
-    const totalTeamAmount = get(teamAmount);
-    for (let i = 1; i <= totalTeamAmount; i++) {
-        if (!groupedTeams[i]) {
-            teams[i] = { color: generateColorForTeam(i), colorName: getTeamColorName(i) };
-            groupedTeams[i] = { ...teams[i], teamIndex: i, players: [] };
-        }
+        // Sort & set
+        multiplayerTableArray.set(
+            Object.values(groupedTeams)
+                .map(team => ({
+                    ...team,
+                    players: team.players.sort((a, b) => b[3] - a[3])
+                }))
+                .sort((a, b) =>
+                    b.players.reduce((s, p) => s + p[3], 0) -
+                    a.players.reduce((s, p) => s + p[3], 0)
+                )
+        );
     }
-
-    // Sort and set the array
-    multiplayerTableArray.set(
-        Object.values(groupedTeams)
-            .map(team => ({
-                ...team,
-                players: team.players.sort((a, b) => b[3] - a[3])
-            }))
-            .sort((a, b) =>
-                b.players.reduce((s, p) => s + p[3], 0) -
-                a.players.reduce((s, p) => s + p[3], 0)
-            )
-    );
 }
 
 function showMultiplayerOverlay(show) {
@@ -600,9 +582,7 @@ function showMultiplayerOverlay(show) {
         if (get(peer)?.getStorage?.currentRound >= get(roundAmount)) determineWinner(get(multiplayerTableArray), isTeams, isTeams ? teams : undefined); // Win / Lose
 
     } else {
-        if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country guessr") {
-            mapVisible.set(true);
-        }
+        if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country guessr") mapVisible.set(true);
     }
 }
 
@@ -663,7 +643,7 @@ async function multiplayerOverlayCountdown() {
             playSound("match_countdown");
         } else {
             clearInterval(countdownInterval); // Stop the countdown
-            countdownInterval = undefined;
+            countdownInterval = null;
 
             get(peer)?.updateStorage("overlay", false); // Hide overlay (round starts)
             get(peer)?.updateStorage("firstRoundPlayed", true);
