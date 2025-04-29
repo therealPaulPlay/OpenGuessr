@@ -575,7 +575,6 @@
 	#profileScrollSection {
 		overflow-x: hidden;
 		overflow-y: auto;
-		border-radius: 5px;
 		max-height: calc(100dvh - 300px);
 		scrollbar-width: none;
 		width: 100%;
