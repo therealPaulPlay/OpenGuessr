@@ -57,7 +57,7 @@ function setMultiplayerUI() {
             playSound("leave_round");
         });
 
-        modeText.set("Multiplayer (Awaiting info..)");
+        modeText.set("Multiplayer (Awaiting info...)");
         chatVisible.set(true);
         linkJoinPopup.set(false);
     } else {
@@ -602,21 +602,21 @@ function determineWinner(array, teams, teamsObject) {
 
     } else {
         const winningPlayerData = array[0];
-        const followUpPlayerData = array[1] || undefined;
+        const followUpPlayerData = array[1] || null;
 
-        if (followUpPlayerData && winningPlayerData[3] == followUpPlayerData[3]) {
+        if (followUpPlayerData && winningPlayerData?.[3] == followUpPlayerData?.[3]) {
             // Draw
             multiplayerOverlayTitle.set("It's a draw!");
             if (playingDuels && get(isAuthenticated) && !friendDuel) addDuelPlayed();
 
         } else {
             // Clear Winner
-            multiplayerOverlayTitle.set(winningPlayerData[1] + " won!");
-            get(peer)?.id == winningPlayerData[0] ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
+            multiplayerOverlayTitle.set(winningPlayerData?.[1] + " won!");
+            get(peer)?.id == winningPlayerData?.[0] ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
 
             // Check if you won in duels or just played
             if (playingDuels && !friendDuel) {
-                const won = winningPlayerData[5] == localStorage.getItem("id");
+                const won = winningPlayerData?.[5] == localStorage.getItem("id");
                 won ? addDuelWon() : addDuelPlayed();
                 sendDuelDivisionResult(won, get(peer)?.getStorage?.uuid);
             }
