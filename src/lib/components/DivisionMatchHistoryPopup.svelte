@@ -317,7 +317,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: var(--layout-margin);
+		gap: var(--box-margin);
 		margin-top: 20px;
 	}
 

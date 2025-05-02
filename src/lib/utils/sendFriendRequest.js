@@ -13,8 +13,7 @@ export async function sendFriendRequest(targetUserId, button) {
         const requestBody = {
             id: localStorage.getItem("id"),
             senderId: localStorage.getItem("id"),
-            recipientId: targetUserId,
-            senderName: get(username)
+            recipientId: targetUserId
         };
 
         const response = await fetch(get(accountUrl) + "/friends/send", {

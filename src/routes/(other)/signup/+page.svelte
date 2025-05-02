@@ -7,7 +7,6 @@
 	import { fade, scale } from "svelte/transition";
 
 	// Export error / success functions --------------------------------------------------------------------------------------------------------------
-
 	let timeout;
 	let errorMessage = $state();
 
@@ -36,15 +35,12 @@
 	}
 
 	// Toggle between login, signup, newPassword and reset ---------------------------------------------------------------------------------------------
-
 	let formType = $state("login");
 
 	// Password reset screen -------------------------------------------------------------------------------------------------------------------------------------
-
 	let resetEmail = $state();
 
 	// Password reset via auth link ------------------------------------------------------------------------------------------------------------------------------
-
 	let resetBearerToken;
 
 	onMount(() => {
@@ -68,7 +64,6 @@
 	}
 
 	// Back to OpenGuessr Button ---------------------------------------------------------------------------------------------------------------------------------
-
 	function backToPrevious() {
 		if (inIframe()) {
 			window.parent.postMessage("close", "*");
@@ -82,7 +77,6 @@
 	}
 
 	// Signup UI Logic and Captcha ------------------------------------------------------------------------------------------------------------------------------
-
 	let signupButtonSignupPage = $state();
 	let signupArea = $state();
 
@@ -168,7 +162,6 @@
 	}
 
 	// Toggle password field visability ----------------------------------------------------
-
 	let passwordInputType = $state("password");
 
 	function togglePasswordVisibility() {
@@ -200,8 +193,8 @@
 			<img class="logo" src="/img/openguessr.svg" alt="OpenGuessr Logo" />
 			{#if formType == "newPassword"}
 				<div id="newPasswordForm">
-					<div>
-						<input bind:value={resetPasswordValue} type="password" placeholder="New Password" /><br /><br />
+					<div class="flex-input-box">
+						<input bind:value={resetPasswordValue} type="password" placeholder="New Password" />
 						<button id="changePassword" class="standardButton" onclick={changePasswordIfValuesProvided}
 							>Set new password</button
 						>
@@ -220,8 +213,8 @@
 			{/if}
 			{#if formType == "reset"}
 				<div id="resetForm">
-					<div>
-						<input bind:value={resetEmail} type="email" placeholder="Email" /><br /><br />
+					<div class="flex-input-box">
+						<input bind:value={resetEmail} type="email" placeholder="Email" />
 						<button
 							id="reset"
 							class="standardButton"
@@ -242,9 +235,9 @@
 			{/if}
 			{#if formType == "login"}
 				<div id="loginForm">
-					<div>
-						<input id="login_email" type="email" bind:value={loginEmail} placeholder="Email" /><br /><br />
-						<input id="login_password" type="password" bind:value={loginPassword} placeholder="Password" /><br /><br />
+					<div class="flex-input-box">
+						<input id="login_email" type="email" bind:value={loginEmail} placeholder="Email" />
+						<input id="login_password" type="password" bind:value={loginPassword} placeholder="Password" />
 						<button id="login" class="standardButton" bind:this={loginButtonSignupPage} onclick={logInAction}
 							>Log in</button
 						>
@@ -274,9 +267,9 @@
 			{#if formType == "signup"}
 				<div id="signupForm">
 					<div>
-						<div id="signup_area" bind:this={signupArea}>
-							<input id="signup_username" type="text" bind:value={signupUsername} placeholder="Username" /><br /><br />
-							<input id="signup_email" type="email" bind:value={signupEmail} placeholder="Email" /><br /><br />
+						<div class="flex-input-box" id="signup_area" bind:this={signupArea}>
+							<input id="signup_username" type="text" bind:value={signupUsername} placeholder="Username" />
+							<input id="signup_email" type="email" bind:value={signupEmail} placeholder="Email" />
 							<div class="password-container">
 								<input
 									id="signup_password"
@@ -293,10 +286,10 @@
 									{/if}
 								</button>
 							</div>
+							<button id="signup" class="standardButton" bind:this={signupButtonSignupPage} onclick={signUpAction}
+								>Sign up</button
+							>
 						</div>
-						<button id="signup" class="standardButton" bind:this={signupButtonSignupPage} onclick={signUpAction}
-							>Sign up</button
-						>
 					</div>
 					<p class="switchFormBox">
 						Already signed up?
@@ -390,6 +383,13 @@
 		backdrop-filter: blur(100px);
 	}
 
+	.flex-input-box {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		gap: var(--layout-margin);
+	}
+
 	.orb {
 		position: absolute;
 		width: 1500px;
@@ -445,7 +445,7 @@
 	#privacyNotice {
 		opacity: 50%;
 		margin-bottom: 0;
-		margin-top: 20px;
+		margin-top: var(--layout-margin);
 		font-size: 20px;
 	}
 
@@ -453,11 +453,12 @@
 		width: calc(80% - 20px);
 		font-size: 18px;
 		padding: 15px;
+		border-radius: 10px;
 	}
 
 	.password-container {
 		position: relative;
-		margin-bottom: 20px;
+		width: 100%;
 	}
 
 	.switchFormBox {
@@ -466,17 +467,16 @@
 		align-items: center;
 		justify-content: space-between;
 		min-width: 250px;
-		background-color: rgba(255, 255, 255, 0.1);
-		border-radius: 5px;
+		background-color: rgba(255, 255, 255, 0.15);
+		border-radius: 10px;
 		padding: var(--box-margin-buttons);
-		padding-inline: 15px;
-		padding-right: 8px;
+		padding-left: 15px;
 		margin-top: 50px;
 	}
 
 	.toggle-password {
 		position: absolute;
-		right: -14px;
+		right: -20px;
 		top: 50%;
 		transform: translateY(-50%);
 		cursor: pointer;
@@ -484,6 +484,8 @@
 		height: auto;
 		opacity: 0.5;
 		color: white;
+		display: flex;
+		align-content: center;
 	}
 
 	.wrapper {
@@ -515,7 +517,7 @@
 		border-radius: 5px;
 		width: 100%;
 		margin-bottom: 0;
-		margin-top: 20px;
+		margin-top: var(--layout-margin);
 		user-select: none;
 	}
 

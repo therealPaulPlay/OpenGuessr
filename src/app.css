@@ -23,6 +23,7 @@
     --layout-margin: 15px;
     --box-margin: 10px;
     --box-margin-buttons: 8px;
+    --box-gap-buttons: 6px;
 }
 
 html {

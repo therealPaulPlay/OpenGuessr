@@ -112,7 +112,7 @@
 		justify-content: flex-end;
 		align-items: center;
 		margin-top: var(--box-margin-buttons);
-		gap: var(--box-margin-buttons);
+		gap: var(--box-gap-buttons);
 	}
 
 	.buttonBox .standardButton {
