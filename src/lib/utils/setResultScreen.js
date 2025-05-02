@@ -26,7 +26,7 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
         let extraMessage = resultStrings.extraMsg;
 
         // Reset the map, before loading the result map
-        resetMap(true);
+        resetMap();
 
         distanceText.set(resultString);
         motivationText.set(extraMessage);
