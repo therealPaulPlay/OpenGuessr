@@ -1119,7 +1119,7 @@
 		justify-content: start;
 		width: 100%;
 		max-width: 450px;
-		gap: 5px;
+		gap: var(--box-gap-buttons);
 	}
 
 	search form {
