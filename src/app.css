@@ -366,7 +366,7 @@ textarea {
 search {
     display: flex;
     justify-content: center;
-    gap: 10px;
+    gap: var(--box-margin);
 }
 
 @keyframes rotation {

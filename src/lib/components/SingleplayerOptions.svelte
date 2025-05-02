@@ -13,7 +13,6 @@
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 
 	// Singleplayer Options UI ----------------------------------------------------------------------------------------
-
 	let timerSliderValue = $state(0);
 
 	// Timer values dictionary
@@ -116,50 +115,46 @@
 			{/if}
 			<TitleSeparator text="Timer" />
 			<div class="settingsCanvas slightBottomMargin">
-				<div class="settingsBox">
-					<div class="timerSliderBox">
-						<div class="timerControlsWrapper">
-							<button class="arrowButton standardButton white" onclick={() => adjustTimer(false)}>
-								<ChevronLeft size={20} strokeWidth={2.5} />
-							</button>
+				<div class="optionFlexBox">
+					<div class="timerControlsWrapper">
+						<button class="arrowButton standardButton white" onclick={() => adjustTimer(false)}>
+							<ChevronLeft size={20} strokeWidth={2.5} />
+						</button>
 
-							<input
-								type="range"
-								min="0"
-								max="121"
-								step="1"
-								class="slider"
-								id="timerSlider"
-								onchange={changeTimeout}
-								bind:value={timerSliderValue}
-							/>
+						<input
+							type="range"
+							min="0"
+							max="121"
+							step="1"
+							class="slider"
+							id="timerSlider"
+							onchange={changeTimeout}
+							bind:value={timerSliderValue}
+						/>
 
-							<button class="arrowButton standardButton white" onclick={() => adjustTimer(true)}>
-								<ChevronRight size={20} strokeWidth={2.5} />
-							</button>
-						</div>
+						<button class="arrowButton standardButton white" onclick={() => adjustTimer(true)}>
+							<ChevronRight size={20} strokeWidth={2.5} />
+						</button>
+					</div>
 
-						<div class="timerTextBox">
-							<img alt="timer icon" class="timerIcon" src="/img/timer_icon.png" />
-							<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
-						</div>
+					<div class="timerTextBox">
+						<img alt="timer icon" class="timerIcon" src="/img/timer_icon.png" />
+						<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
 					</div>
 				</div>
 			</div>
 			<TitleSeparator text="NMPZ" />
 			<div class="settingsCanvas slightBottomMargin">
-				<div class="settingsBox">
-					<div class="timerSliderBox">
-						<p class="singleplayerDesc textMargin">Prevent Move, Pan and Zoom.</p>
-						<button id="setSingleplayerNMPZ" class="standardButton white" onclick={toggleSingleplayerNMPZ}
-							>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
-						>
-					</div>
+				<div class="optionFlexBox">
+					<p class="singleplayerDesc textMarginInline">Prevent Move, Pan and Zoom.</p>
+					<button id="setSingleplayerNMPZ" class="standardButton white" onclick={toggleSingleplayerNMPZ}
+						>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
+					>
 				</div>
 			</div>
 			<TitleSeparator text="Round log" />
 			<div class="settingsCanvas slightBottomMargin">
-				<div class="settingsBox roundLogContainer">
+				<div class="optionBox roundLogContainer">
 					<div class="roundLogBox" id="roundLogBox">
 						<!-- round log will be automatically generated here -->
 						{#if $roundLog.length > 0}
@@ -211,18 +206,23 @@
 		align-items: center;
 	}
 
-	.settingsBox {
+	.optionBox {
 		background-color: var(--box-color);
 		border-radius: 10px;
-		padding: var(--box-margin);
+		padding: var(--box-margin-buttons);
 		overflow: hidden;
 		flex-grow: 1;
 		min-width: 150px;
 	}
 
-	.timerSliderBox {
+	.optionFlexBox {
 		display: flex;
-		gap: var(--box-margin);
+		gap: var(--box-margin-buttons);
+		padding: var(--box-margin-buttons);
+		background-color: var(--box-color);
+		min-width: 150px;
+		flex-grow: 1;
+		border-radius: 10px;
 		flex-wrap: wrap;
 		justify-content: space-between;
 		align-items: center;
@@ -278,10 +278,8 @@
 		overflow-y: auto;
 	}
 
-	.textMargin {
+	.textMarginInline {
 		margin-inline: 5px;
-		margin-bottom: 10px;
-		margin-top: auto;
 	}
 
 	.timerTextBox {
@@ -296,6 +294,9 @@
 		border-radius: 5px;
 		min-width: 130px;
 		text-align: center;
+		margin-bottom: auto;
+		margin-top: auto;
+		margin-right: 2px;
 	}
 
 	.singleplayerDesc {
@@ -321,6 +322,7 @@
 
 	.roundLogContainer {
 		height: fit-content;
+		padding: var(--box-margin);
 	}
 
 	.centerLogText {
