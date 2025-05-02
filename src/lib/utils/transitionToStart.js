@@ -12,10 +12,7 @@ export function transitionToStart() {
     disableResultScreen();
   }
 
-  if (get(multiplayer)) {
-    get(peer)?.updateStorage("showResult", false); // Disable result screen
-    if (get(peer)?.getStorage?.currentRound < get(roundAmount)) get(peer).updateStorage("startRound", true); // Start new round
-  }
+  if (get(multiplayer)) get(peer)?.updateStorage("showResult", false); // Disable result screen
 
   if (!get(multiplayer)) setTimeout(socialPopupProbability, 650); // Social Media CTA (too stressful in multiplayer)
 }

@@ -547,7 +547,7 @@
 		width: 100%;
 		border-radius: 15px;
 		padding: var(--box-margin-buttons);
-		gap: var(--box-margin-buttons);
+		gap: var(--box-gap-buttons);
 		background-color: var(--box-color);
 		position: relative;
 	}
@@ -555,7 +555,7 @@
 	.toolbarLeft {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: var(--box-gap-buttons);
 	}
 
 	.authorText {

@@ -1198,8 +1198,9 @@
 	.leaderboardSupporterEntry {
 		border: 3px solid var(--supporter-green);
 		width: 100%;
-		border-radius: 7px;
 		box-sizing: border-box;
+		padding: 2px;
+		padding-inline: 7px;
 	}
 
 	.centerEntry {

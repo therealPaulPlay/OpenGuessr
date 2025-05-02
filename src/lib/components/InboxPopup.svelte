@@ -140,7 +140,7 @@
 		display: flex;
 		width: fit-content;
 		overflow: hidden;
-		gap: var(--box-margin-buttons);
+		gap: var(--box-gap-buttons);
 		margin-right: -7px;
 		flex-grow: 5;
 		max-width: fit-content;

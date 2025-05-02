@@ -80,6 +80,6 @@
 	}
 
 	.selectedPin {
-		border: solid 4px white;
+		border: solid 3px white;
 	}
 </style>
