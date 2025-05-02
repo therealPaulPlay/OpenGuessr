@@ -44,7 +44,7 @@ export async function loadInbox() {
     }
 }
 
-// accept friend request
+// Accept friend request
 export async function acceptFriendRequest(senderId) {
     try {
         const requestBody = {
@@ -77,7 +77,7 @@ export async function acceptFriendRequest(senderId) {
     }
 }
 
-// accept friend request
+// Decline friend request
 export async function declineFriendRequest(senderId) {
     try {
 
@@ -189,7 +189,6 @@ export async function sendMatchInvite(recipientId, duel) {
             id: localStorage.getItem("id"),
             friend_id: recipientId,
             roomcode: get(roomcode),
-            senderName: get(username),
             isDuel: duel
         };
 
@@ -211,7 +210,67 @@ export async function sendMatchInvite(recipientId, duel) {
         }
 
     } catch (error) {
-        console.error('Error occurred while sending/accepting/declining invite (Network):', error);
+        console.error('Error occurred while sending invite (Network):', error);
         errorPopup("Error sending invite (Network)", "The invite couldn't be sent due to a network problem.", error, false, false);
+    }
+}
+
+export async function acceptDuelInvite(recipientId) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            friend_id: recipientId
+        };
+
+        const response = await fetch(get(accountUrl) + "/friends/accept-invite", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+
+        } else {
+            const data = await response.json();
+            console.error("Error accepting invite: " + response.status);
+            errorPopup("Error accepting invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while accepting invite: ', error);
+        errorPopup("Network error accepting invite", "The invite couldn't be sent / accepted / declined.", error, false, false);
+    }
+}
+
+export async function declineMatchInvite(recipientId) {
+    try {
+        const requestBody = {
+            id: localStorage.getItem("id"),
+            friend_id: recipientId
+        };
+
+        const response = await fetch(get(accountUrl) + "/friends/decline-invite", {
+            method: 'POST',
+            headers: {
+                'Authorization': "Bearer " + localStorage.getItem("bearer"),
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(requestBody)
+        });
+
+        if (response.ok) {
+
+        } else {
+            const data = await response.json();
+            console.error("Error declining invite: " + response.status);
+            errorPopup("Error declining invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+        }
+
+    } catch (error) {
+        console.error('Fetch/Network error occurred while declining invite: ', error);
+        errorPopup("Network error declining invite", "The invite couldn't be sent / accepted / declined.", error, false, false);
     }
 }

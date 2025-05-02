@@ -576,7 +576,6 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		max-height: calc(100dvh - 300px);
-		scrollbar-width: none;
 		width: 100%;
 		transition: max-height 250ms ease-in-out;
 	}
@@ -662,7 +661,7 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		padding: var(--box-margin-buttons);
-		gap: var(--box-margin-buttons);
+		gap: var(--box-gap-buttons);
 		align-items: center;
 		flex-wrap: wrap;
 	}

@@ -215,6 +215,6 @@
 	}
 
 	.sendFriendRequestBrowser {
-		margin-right: -8px;
+		margin-right: -10px;
 	}
 </style>
