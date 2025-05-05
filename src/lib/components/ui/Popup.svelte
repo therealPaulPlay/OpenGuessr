@@ -58,7 +58,7 @@
 		max-width: 800px;
 		max-height: 90%;
 		padding: 25px;
-		border-radius: 10px;
+		border-radius: 15px;
 		text-align: left;
 		z-index: 900;
 		font-size: 22px;

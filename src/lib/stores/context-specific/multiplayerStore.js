@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
 
 // Peer
-export const peer = writable();
+export const socket = writable();
 
 // Settings
 export const roundAmount = writable(3);

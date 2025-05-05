@@ -37,10 +37,8 @@
 	// Toggle between login, signup, newPassword and reset ---------------------------------------------------------------------------------------------
 	let formType = $state("login");
 
-	// Password reset screen -------------------------------------------------------------------------------------------------------------------------------------
+	// Password reset ----------------------------------------------------------------------------------------------------------------------------------
 	let resetEmail = $state();
-
-	// Password reset via auth link ------------------------------------------------------------------------------------------------------------------------------
 	let resetBearerToken;
 
 	onMount(() => {
@@ -109,7 +107,6 @@
 	}
 
 	// Signup and login ----------------------------------------------------------------------------------------------------------
-
 	let loginEmail = $state();
 	let loginPassword = $state();
 
@@ -148,9 +145,7 @@
 	}
 
 	$effect(() => {
-		if (captchaVisible) {
-			renderCaptcha("#captchaContainer", window.onSignupTurnstileCompleted);
-		}
+		if (captchaVisible) renderCaptcha("#captchaContainer", window.onSignupTurnstileCompleted);
 	});
 
 	if (typeof window !== "undefined") {
@@ -222,7 +217,7 @@
 						>
 					</div>
 					<p class="switchFormBox">
-						Recovered Password?
+						Recovered password?
 						<button
 							id="loginSwitchReset"
 							class="standardButton white"
@@ -376,7 +371,7 @@
 		justify-content: center;
 		align-items: center;
 		background-color: rgba(255, 255, 255, 0.3);
-		border-radius: 10px;
+		border-radius: 15px;
 		padding: 20px;
 		width: 300px;
 		text-align: center;
@@ -497,7 +492,7 @@
 		margin: 0;
 		background-color: rgba(255, 255, 255, 0.1);
 		color: white;
-		border-radius: 7px;
+		border-radius: 10px;
 		width: 100%;
 		min-height: 50px;
 		border: none;

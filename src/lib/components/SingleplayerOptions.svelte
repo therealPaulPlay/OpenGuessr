@@ -43,6 +43,7 @@
 
 	// Timer Slider ---------------------------------------------------------------------------------------------------------------------------
 	let changeRegenerationTimeout;
+	
 	function changeTimeout() {
 		const timerSetting = timerValues.find((t) => t.slider === timerSliderValue);
 		$singleplayerTimeout = timerSetting ? timerSetting.actual : 0;

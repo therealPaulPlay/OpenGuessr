@@ -17,7 +17,8 @@
 	let mapModeText = $state();
 
 	function checkMapmodeindicatorOverflow() {
-		let positionInfo = mapModeTextContainer.getBoundingClientRect();
+		if (!mapModeTextContainer) return;
+		let positionInfo = mapModeTextContainer?.getBoundingClientRect();
 		let width = positionInfo.width;
 		scrollModeText =
 			width < 150 || (width < 235 && mapModeText.length > 25) || (width < 295 && mapModeText.length > 31);
@@ -26,10 +27,7 @@
 	let resizeObserver;
 
 	$effect(() => {
-		if (resizeObserver) {
-			resizeObserver.disconnect();
-		}
-
+		if (resizeObserver) resizeObserver.disconnect();
 		if (mapModeTextContainer) {
 			try {
 				resizeObserver = new ResizeObserver(checkMapmodeindicatorOverflow);

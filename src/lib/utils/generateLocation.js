@@ -1,6 +1,6 @@
 // This generates a new location, but keep in mind that this is NOT the function to present the user with a new location! This does not check the selected map etc.
 import { getLocationCoordinates } from '$lib/logic/locationGeneration';
-import { peer } from "$lib/stores/context-specific/multiplayerStore"
+import { socket } from "$lib/stores/context-specific/multiplayerStore"
 import { countryGuesser, multiplayer, imageGuesser } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from '$lib/stores/locationStore';
 import { setCountryGuesserCountry } from '$lib/utils/countryGuesserFunctions';
@@ -39,6 +39,6 @@ export async function generateNewLocation(type) {
 
     loadPanorama(get(currentLocationLatitude), get(currentLocationLongitude));
 
-    // Rest Map
+    // Reset Map
     if (!get(resultScreenEnabled)) resetMap();
 }

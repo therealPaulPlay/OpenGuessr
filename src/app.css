@@ -185,7 +185,7 @@ input[type="checkbox"] {
     color: white;
     width: 20px;
     height: 20px;
-    border: 0.15em solid white;
+    border: 2px solid white;
     border-radius: 5px;
     transform: translateY(5px);
     display: grid;

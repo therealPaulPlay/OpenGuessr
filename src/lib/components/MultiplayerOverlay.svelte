@@ -8,7 +8,7 @@
 		overlayTitleElement,
 		multiplayerTableArray,
 		teamAmount,
-		peer,
+		socket,
 		overlayShowSubtitle,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import Badge from "$lib/components/Badge.svelte";
@@ -38,7 +38,7 @@
 						<div
 							transition:slide
 							class="multiplayerOverlayEntry"
-							class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peer)?.id}
+							class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(socket)?.id}
 							style:background-image={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
 						>
 							<div class="multiplayerEntryPlayerInfo">
@@ -71,7 +71,7 @@
 					<div
 						transition:slide
 						class="multiplayerOverlayEntry"
-						class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peer)?.id}
+						class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(socket)?.id}
 					>
 						<div class="multiplayerEntryPlayerInfo">
 							<div
@@ -106,7 +106,7 @@
 			class="standardButton"
 			onclick={() => {
 				playSound("basic_button");
-				get(peer)?.updateStorage("rematch", true);
+				get(socket)?.updateStorage("rematch", true);
 			}}>Play again</button
 		>
 	{/if}

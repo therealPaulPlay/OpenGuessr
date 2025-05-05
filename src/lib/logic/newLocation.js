@@ -5,7 +5,7 @@ import { setCountryGuesserMode } from "$lib/utils/countryGuesserFunctions";
 import { setImageGuesserMode } from "$lib/utils/imageGuesserFunctions";
 import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
-import { peer } from "$lib/stores/context-specific/multiplayerStore";
+import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { countryMaps, continentMaps } from "$lib/stores/context-specific/officialMapsStore";
 import { changeCategory } from "$lib/utils/changeCategory";
@@ -25,7 +25,6 @@ function checkLinkMap() {
         let mapFromLink = urlParams.get("play-map").toLowerCase().replaceAll("-", " ");
 
         if (mapFromLink) {
-            console.log("changing");
             if (get(countryMaps).includes(mapFromLink) || get(continentMaps).includes(mapFromLink)) {
                 changeCategory(mapFromLink);
             } else {
@@ -50,9 +49,7 @@ export async function checkGenerationTypeAndGenerate() {
     setCountryGuesserMode(false);
     setImageGuesserMode(false);
 
-    if (!get(multiplayer) && !get(competition)) {
-        singleplayer.set(true);
-
+    if (get(singleplayer)) {
         // Pick between json and maps api loading depending on the category type
         if (mapCategory != "standard" && mapCategory != "country guessr" && mapCategory != "image guessr" && !mapCategory.includes("community")) {
             await generateNewLocation("JSON");
@@ -75,9 +72,7 @@ export async function checkGenerationTypeAndGenerate() {
             console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
         }
     } else if (get(multiplayer)) {
-        singleplayer.set(false); // Don't apply singleplayer settings
-
-        if (get(peer)?.isHost) {
+        if (get(socket)?.isHost) {
             try {
                 if (mapCategory && mapCategory != "standard" && !mapCategory.includes("community")) {
                     await generateNewLocation("JSON");
@@ -97,10 +92,6 @@ export async function checkGenerationTypeAndGenerate() {
         }
 
     } else if (get(competition)) {
-        singleplayer.set(false); // Don't apply singleplayer settings
-
-        if (checkCompetitionRoundStatus()) {
-            await generateNewLocation("COMPETITION");
-        }
+        if (checkCompetitionRoundStatus()) await generateNewLocation("COMPETITION");
     }
 }
