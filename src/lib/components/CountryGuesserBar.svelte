@@ -1,5 +1,5 @@
 <script>
-	import { countryGuesser, multiplayer, competition } from "$lib/stores/modeStore";
+	import { countryGuessr, multiplayer, competition } from "$lib/stores/modeStore";
 	import { selectedCountryField } from "$lib/stores/context-specific/countryGuesserStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
@@ -22,7 +22,7 @@
 	}
 </script>
 
-{#if $countryGuesser && !$multiplayer && !$competition}
+{#if $countryGuessr && !$multiplayer && !$competition}
 	<div id="countryGuesserSelector" class="barMenu" onkeyup={clickConfirm} role="menu" tabindex="0">
 		<button
 			class="countryGuesserHolder standardButton white"

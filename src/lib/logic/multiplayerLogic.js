@@ -231,7 +231,6 @@ export async function createPeerInstance() {
 
                 // Set coordinates
                 if (storage.location && storage.currentRound >= 1 && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1]) && !get(socket)?.isHost) {
-                    console.log("Generating to adjust coords");
                     checkGenerationTypeAndGenerate();
                 }
 

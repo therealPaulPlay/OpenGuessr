@@ -1,5 +1,5 @@
 <script>
-	import { imageGuesser } from "$lib/stores/modeStore.js";
+	import { imageGuessr } from "$lib/stores/modeStore.js";
 	import { imageGuesserImage, imageGuesserBackground } from "$lib/stores/context-specific/imageGuesserStore";
 
 	function scaleUp(event) {
@@ -15,9 +15,9 @@
 
 <div
 	id="imageGuesserOverlay"
-	style:display={$imageGuesser ? "flex" : "none"}
-	style:opacity={$imageGuesser ? "1" : "0"}
-	style:pointerEvents={$imageGuesser ? "auto" : "none"}
+	style:display={$imageGuessr ? "flex" : "none"}
+	style:opacity={$imageGuessr ? "1" : "0"}
+	style:pointerEvents={$imageGuessr ? "auto" : "none"}
 >
 	<div
 		id="imageGuesserImage"

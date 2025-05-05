@@ -6,7 +6,6 @@
 	import {
 		adsDisabled,
 		crazyGames,
-		preventExitPopup,
 		disableExternalLinks,
 		preventFullscreen,
 		disableAutoAuthentication,
@@ -27,13 +26,10 @@
 			if (crazyGamesEnabled) {
 				// Platform settings
 				adsDisabled.set(true);
-				preventExitPopup.set(true);
 				disableExternalLinks.set(true);
 				preventFullscreen.set(true);
 				disableAutoAuthentication.set(true);
-
-				// Enable platform
-				crazyGames.set(true);
+				crazyGames.set(true); // Enable platform
 
 				// Show Help Popup
 				if (!localStorage.getItem("helpPopupCompleted")) {
@@ -42,69 +38,55 @@
 				}
 
 				// Load and initialize SDK
-				try {
-					await new Promise((resolve, reject) => {
-						const script = document.createElement("script");
-						script.src = "https://sdk.crazygames.com/crazygames-sdk-v3.js";
-						script.onload = () => {
-							resolve();
-						};
-						script.onerror = reject;
-						document.head.appendChild(script);
-					});
+				await new Promise((resolve, reject) => {
+					const script = document.createElement("script");
+					script.src = "https://sdk.crazygames.com/crazygames-sdk-v3.js";
+					script.onload = () => {
+						resolve();
+					};
+					script.onerror = reject;
+					document.head.appendChild(script);
+				});
 
-					await window.CrazyGames.SDK.init();
-					window.CrazyGames.SDK.game.loadingStart();
+				await window.CrazyGames.SDK.init();
+				window.CrazyGames.SDK.game.loadingStart();
 
-					setTimeout(() => {
-						window.CrazyGames.SDK.game.loadingStop();
-						window.CrazyGames.SDK.game.gameplayStart();
+				setTimeout(() => {
+					window.CrazyGames.SDK.game.loadingStop();
+					window.CrazyGames.SDK.game.gameplayStart();
+					const roomCode = window.CrazyGames.SDK.game.getInviteParam("join");
+					if (roomCode) joinFromLink(roomCode);
 
-						try {
-							const roomCode = window.CrazyGames.SDK.game.getInviteParam("join");
-							if (roomCode) joinFromLink(roomCode);
-						} catch {
-							console.error("Failed to retrieve Crazy Games Link Parameters. Is the SDK loaded?");
-						}
-
-						if (window.CrazyGames.SDK.game.isInstantJoin) {
-							goto("/multiplayer/host");
-							setupMultiplayerRoom(get(roundAmount), get(roundLength));
-							hostStage.set(2); // Go to second stage
-						}
-					}, 150);
-				} catch (error) {
-					console.error("Error loading CrazyGames SDK:", error);
-				}
+					if (window.CrazyGames.SDK.game.isInstantJoin) {
+						goto("/multiplayer/host");
+						setupMultiplayerRoom(get(roundAmount), get(roundLength));
+						hostStage.set(2); // Go to second stage
+					}
+				}, 150);
 
 				// Automatic signup / login (if user is not authenticated)
 				authenticateWithCrazyGames();
-
-				// Attach auth listener for if the user signs up mid play
-				window.CrazyGames.SDK.user.addAuthListener(authenticateWithCrazyGames);
+				window.CrazyGames.SDK.user.addAuthListener(authenticateWithCrazyGames); // Attach auth listener for if the user signs up mid play
 
 				resultScreenEnabled.subscribe((value) => {
-					if (value) {
-						window.CrazyGames.SDK.game.gameplayStop();
-					} else {
-						window.CrazyGames.SDK.game.gameplayStart();
-					}
+					if (value) window.CrazyGames.SDK.game.gameplayStop();
+					else window.CrazyGames.SDK.game.gameplayStart();
 				});
 			}
-		} catch {}
+		} catch (error) {
+			console.error("Error loading and starting CrazyGames SDK:", error);
+		}
 	});
 
 	// This will attempt registration and/or login only using a crazy games id.
 	async function authenticateWithCrazyGames() {
 		if ($isAuthenticated) return; // Exit if user is already authenticated (e.g. with bearer token from openguessr.com)
-
 		let token;
 
 		try {
 			token = await window.CrazyGames.SDK.user.getUserToken();
 		} catch (e) {
-			console.error("Error obtaining CrazyGames Token (likely, user is not logged in):", e);
-			return;
+			return console.error("Error obtaining CrazyGames Token (likely, user is not logged in):", e);
 		}
 
 		try {

@@ -35,63 +35,64 @@ function checkLinkMap() {
 }
 
 // Location Generation with correct Type ---------------------------------------------------------------------------------------------------------
+let queue = Promise.resolve(); // Qeue handler
 
+// Function to add a task to the queue
 export async function checkGenerationTypeAndGenerate() {
-    loadingScreenVisible.set(true); // Show loading screen
-
-    if (!checkedForMapLink) checkLinkMap();
-    const mapCategory = localStorage.getItem("selectedCategory") || "standard";
-
-    // Competition timer reset
-    stopCompetitionTimer();
-
-    // Reset Mode specific UI
-    setCountryGuesserMode(false);
-    setImageGuesserMode(false);
-
-    if (get(singleplayer)) {
+  // Create a new promise that will only execute after the current queue is done
+  queue = queue.then(async () => {
+    try {
+      // The actual function logic
+      loadingScreenVisible.set(true); // Show loading screen
+      if (!checkedForMapLink) checkLinkMap();
+      const mapCategory = localStorage.getItem("selectedCategory") || "standard";
+      // Competition timer reset
+      stopCompetitionTimer();
+      // Reset Mode specific UI
+      setCountryGuesserMode(false);
+      setImageGuesserMode(false);
+      
+      if (get(singleplayer)) {
         // Pick between json and maps api loading depending on the category type
         if (mapCategory != "standard" && mapCategory != "country guessr" && mapCategory != "image guessr" && !mapCategory.includes("community")) {
-            await generateNewLocation("JSON");
-
+          await generateNewLocation("JSON");
         } else if (mapCategory == "country guessr") {
-            setCountryGuesserMode(true);
-            await generateNewLocation("JSON");
-
+          setCountryGuesserMode(true);
+          await generateNewLocation("JSON");
         } else if (mapCategory == "image guessr") {
-            setImageGuesserMode(true);
-            await generateNewLocation("JSON");
-
+          setImageGuesserMode(true);
+          await generateNewLocation("JSON");
         } else if (mapCategory == "standard") {
-            await generateNewLocation("SDK");
-
+          await generateNewLocation("SDK");
         } else if (mapCategory.includes("community")) {
-            await generateNewLocation("COMMUNITY");
-
+          await generateNewLocation("COMMUNITY");
         } else {
-            console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
+          console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
         }
-    } else if (get(multiplayer)) {
+      } else if (get(multiplayer)) {
         if (get(socket)?.isHost) {
-            try {
-                if (mapCategory && mapCategory != "standard" && !mapCategory.includes("community")) {
-                    await generateNewLocation("JSON");
-
-                } else if (mapCategory == "standard" || !mapCategory) {
-                    await generateNewLocation("SDK");
-
-                } else if (mapCategory.includes("community")) {
-                    await generateNewLocation("COMMUNITY");
-                }
-
-            } catch (error) {
-                console.error("Error loading multiplayer location in newLocation. Error: ", error)
+          try {
+            if (mapCategory && mapCategory != "standard" && !mapCategory.includes("community")) {
+              await generateNewLocation("JSON");
+            } else if (mapCategory == "standard" || !mapCategory) {
+              await generateNewLocation("SDK");
+            } else if (mapCategory.includes("community")) {
+              await generateNewLocation("COMMUNITY");
             }
+          } catch (error) {
+            console.error("Error loading multiplayer location in newLocation. Error: ", error)
+          }
         } else {
-            await generateNewLocation("FROMHOST");
+          await generateNewLocation("FROMHOST");
         }
-
-    } else if (get(competition)) {
+      } else if (get(competition)) {
         if (checkCompetitionRoundStatus()) await generateNewLocation("COMPETITION");
+      }
+    } catch (error) {
+      console.error("Error in generation queue:", error);
     }
+  });
+  
+  // Wait for the task to complete before returning
+  return queue;
 }

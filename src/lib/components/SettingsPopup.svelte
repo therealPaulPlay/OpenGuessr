@@ -2,7 +2,7 @@
 	import Popup from "./ui/Popup.svelte";
 	import { onMount, onDestroy } from "svelte";
 	import { setSoundsVolume, playSound, setMusicVolume } from "$lib/utils/soundManager";
-	import { preventFullscreen, preventExitPopup } from "$lib/stores/context-specific/platformSettingsStore";
+	import { preventFullscreen } from "$lib/stores/context-specific/platformSettingsStore";
 
 	import { settingsPopup } from "$lib/stores/uiStore";
 	import { InfoIcon, Scan } from "lucide-svelte";

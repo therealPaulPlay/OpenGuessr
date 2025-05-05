@@ -1,7 +1,7 @@
 import { map, addedMarkers } from "$lib/stores/context-specific/mapStore";
 import { selectedPinIndex } from "$lib/stores/accountStore";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
-import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
+import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { clamp } from "$lib/utils/clamp";
 import { get } from "svelte/store";
@@ -34,7 +34,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     let polyList;
 
     // Check if NOT in Country Guessr (or if IN multiplayer) --------------------------------------------------
-    if (!get(countryGuesser) || get(multiplayer)) {
+    if (!get(countryGuessr) || get(multiplayer)) {
         playerLatLng = new L.LatLng(guessLat, guessLong);
         polyList = [curLatLng, playerLatLng];
         pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
@@ -127,7 +127,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     }
 
     // Fit the map bounds to show all markers and lines (with padding)
-    if (!get(countryGuesser) || get(multiplayer)) {
+    if (!get(countryGuessr) || get(multiplayer)) {
         get(map).fitBounds(pointList, {
             animate: false
         });
