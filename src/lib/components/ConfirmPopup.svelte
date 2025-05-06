@@ -35,35 +35,25 @@
 
 {#if $confirmPopupVisible}
 	<Popup verySlim={true} z={982}>
-		<h1 id="confirmTitle" class="popup-title">{$confirmTitle}</h1>
-		<div id="confirmDescription" class="popup-description marginBottom">{$confirmDescription}</div>
+		<h1 class="popup-title">{$confirmTitle}</h1>
+		<div class="popup-description marginBottom">{$confirmDescription}</div>
 		{#if $confirmPasswordInput}
-			<input
-				id="accountDeletePassword"
-				class="confirmPopupInput"
-				type="password"
-				placeholder="Password"
-				bind:value={$confirmPasswordValue}
-			/>
+			<input class="confirmPopupInput" type="password" placeholder="Your password" bind:value={$confirmPasswordValue} />
 		{/if}
 		{#if $confirmUsernameInput}
 			<input
 				type="text"
-				id="usernameInput"
 				class="confirmPopupInput"
 				placeholder="New username"
 				maxlength="50"
 				bind:value={$confirmUsernameValue}
 			/>
 		{/if}
-		<div class="buttonBoxRight">
-			<button id="confirmCancel" class="standardButton white closeButton" onclick={closeConfirmPopup}>Close</button>
+		<div class="buttonBoxRight marginTop">
+			<button class="standardButton white closeButton" onclick={closeConfirmPopup}>Close</button>
 			{#if $confirmShowConfirm}
-				<button
-					id="confirmProceed"
-					class="standardButton closeButton"
-					onclick={confirm}
-					style:background-color={$confirmConfirmColor}>{$confirmConfirmText}</button
+				<button class="standardButton closeButton" onclick={confirm} style:background-color={$confirmConfirmColor}
+					>{$confirmConfirmText}</button
 				>
 			{/if}
 		</div>
@@ -72,11 +62,12 @@
 
 <style>
 	.confirmPopupInput {
-		border-radius: 5px;
-		font-size: 22px;
 		padding: 5px 15px;
-		font-family: Barlow;
 		width: 40%;
+		margin-top: var(--layout-margin);
+	}
+
+	.marginTop {
 		margin-top: var(--layout-margin);
 	}
 

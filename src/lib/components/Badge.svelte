@@ -155,7 +155,6 @@
 		font-style: italic;
 		position: relative;
 		color: white;
-		background-color: rgb(152, 152, 152);
 		font-size: 20px;
 		text-wrap: nowrap;
 		padding-inline: 10px;

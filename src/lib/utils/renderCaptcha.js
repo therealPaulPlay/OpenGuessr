@@ -1,6 +1,6 @@
 export function renderCaptcha(elementId, callback) {
     try {
-        turnstile.render(elementId, {
+        window.turnstile.render(elementId, {
             sitekey: "0x4AAAAAAAi-FhzOg4nXIP3z",
             callback: callback, // Ensure this callback function is defined globally (window.functionName)
         });

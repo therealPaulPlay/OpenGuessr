@@ -350,7 +350,7 @@
 							playSound("basic_button");
 							showConfirmPopup(
 								"Delete your account",
-								"Please input your password to confirm the account deletion. Make sure to delete user-created content before proceeding, if you wish to remove that from the platform.",
+								"Please make sure to delete user-created content before proceeding, if you wish to remove that from the platform.",
 								() => {
 									submitAccountDeletion($confirmPasswordValue);
 								},

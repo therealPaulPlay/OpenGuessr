@@ -53,14 +53,15 @@
 										}
 									}}
 								>
-									{username} ({elo || "Error"} Elo)
-									<div class="multiplayerBadge">
-										{#if badge}
-											<Badge interactive={false} display={true} id={badge} />
-										{/if}
-									</div>
+									{username}
+									{#if badge}
+										<Badge interactive={false} display={true} id={badge} />
+									{/if}
+									{#if id}
+										{@render eloDisplay(elo)}
+									{/if}
 								</div>
-								<div class="multiplayerEntryPlayerScore">Score: {score?.toLocaleString()}</div>
+								<div class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</div>
 							</div>
 						</div>
 					{/each}
@@ -85,14 +86,15 @@
 									}
 								}}
 							>
-								{username} ({elo || 0} Elo)
-								<div class="multiplayerBadge">
-									{#if badge}
-										<Badge interactive={false} display={true} id={badge} />
-									{/if}
-								</div>
+								{username}
+								{#if badge}
+									<Badge interactive={false} display={true} id={badge} />
+								{/if}
+								{#if id}
+									{@render eloDisplay(elo)}
+								{/if}
 							</div>
-							<div class="multiplayerEntryPlayerScore">Score: {score?.toLocaleString()}</div>
+							<div class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</div>
 						</div>
 					</div>
 				{/each}
@@ -103,7 +105,7 @@
 	{#if $rematchButtonVisible}
 		<button
 			id="endMultiplayerRematchButton"
-			class="standardButton"
+			class="standardButton white"
 			onclick={() => {
 				playSound("basic_button");
 				get(socket)?.updateStorage("rematch", true);
@@ -121,6 +123,12 @@
 		>
 	{/if}
 </div>
+
+{#snippet eloDisplay(elo)}
+	<div class="eloDisplay">
+		<p>{elo || "Error"} Elo</p>
+	</div>
+{/snippet}
 
 <style>
 	#multiplayerFade {
@@ -143,32 +151,39 @@
 		user-select: none;
 	}
 
+	.eloDisplay {
+		padding: 7px;
+		border-radius: 5px;
+		font-style: italic;
+		position: relative;
+		color: white;
+		text-wrap: nowrap;
+		padding-inline: 10px;
+		box-sizing: border-box;
+		user-select: none;
+		background-color: rgba(255, 255, 255, 0.15);
+	}
+
+	.eloDisplay p {
+		font-size: 20px !important;
+	}
+
 	.buttonSpacer {
 		width: 100%;
 		height: 20px;
 	}
 
-	.multiplayerBadge {
-		width: fit-content;
-	}
-
-	:global(.multiplayerBadge p) {
-		font-size: 20px !important;
-	}
-
 	#endMultiplayerRoundButton {
 		min-width: 150px;
 		height: 50px;
-		font-size: 25px;
-		margin-top: 10px;
+		margin-top: var(--layout-margin);
+		border-radius: 10px;
 	}
 
 	#endMultiplayerRematchButton {
 		min-width: 150px;
 		height: 50px;
-		font-size: 25px;
-		color: white;
-		background-color: rgba(255, 255, 255, 0.2);
+		border-radius: 10px;
 	}
 
 	.multiplayerTitle {
@@ -217,7 +232,7 @@
 
 	.multiplayerOverlayEntry {
 		background-color: rgba(0, 0, 0, 0.1);
-		border-radius: 5px;
+		border-radius: var(--box-margin);
 		width: 100%;
 	}
 
@@ -244,8 +259,9 @@
 		user-select: none;
 		display: flex;
 		align-items: center;
-		gap: var(--box-margin);
+		gap: var(--box-margin-buttons);
 		overflow: hidden;
+		mask-image: linear-gradient(to right, black 95%, transparent 100%);
 	}
 
 	.multiplayerEntryPlayerName:hover {
@@ -257,6 +273,6 @@
 	}
 
 	.multiplayerEntryPlayerScore {
-		margin-left: 10px;
+		margin-left: var(--box-margin);
 	}
 </style>

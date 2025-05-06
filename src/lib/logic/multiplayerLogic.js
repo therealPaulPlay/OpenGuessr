@@ -13,18 +13,19 @@ import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
-import { linkJoinPopup } from "$lib/stores/uiStore";
+import { guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
-    duelRetryEnabled, multiplayerStatus, savedGuestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
+    duelRetryEnabled, multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
     multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray,
     matchmakingActive, socket,
     roomcode,
     connectionCount,
     remainingPlayers,
     overlayShowSubtitle,
-    skillBasedMatchmaking
+    skillBasedMatchmaking,
+    guestNamePromise
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadChat } from "$lib/utils/chatFunctions.js";
@@ -32,7 +33,6 @@ import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/matchmakingAPI";
 import { generateDuelUUID, registerDivisionDuel, sendDuelDivisionResult } from "$lib/utils/duelDivisionFunctions";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-import { generateFunnyGuestName, generateRandomCode } from "$lib/utils/codeGenerationUtil";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
 import { changeCategory } from "$lib/utils/changeCategory";
@@ -90,7 +90,7 @@ export function addMultiplayerGuessMarker() {
     // Remove previous guess entry (if exists)
     const yourElement = get(socket)?.getStorage?.guessLocationsArray?.find((element) => element.id == get(socket)?.id);
     if (yourElement) get(socket)?.updateStorageArray("guessLocationsArray", "remove-matching", yourElement);
-    get(socket)?.updateStorageArray("guessLocationsArray", "add", { id: get(socket)?.id, lat: get(mapPinLat), long: get(mapPinLng), pin: get(selectedPinIndex), username: get(username) || get(savedGuestName), team: getTeamFromPeerId(get(socket)?.id) });
+    get(socket)?.updateStorageArray("guessLocationsArray", "add", { id: get(socket)?.id, lat: get(mapPinLat), long: get(mapPinLng), pin: get(selectedPinIndex), username: get(username) || get(guestName), team: getTeamFromPeerId(get(socket)?.id) });
 }
 
 export function updatePeerScore(addScore) {
@@ -108,18 +108,23 @@ export function updatePeerScore(addScore) {
 export async function createPeerInstance() {
     let uniqueUserID;
 
-    if (localStorage.getItem("id")) {
-        uniqueUserID = "openguessr_" + Number(localStorage.getItem("id")).toString(16) + generateRandomCode(2);
+    if (get(isAuthenticated) && localStorage.getItem("id")) {
+        uniqueUserID = "openguessr_" + Number(localStorage.getItem("id")).toString(36) + Math.random().toString(36).substring(2, 4);
     } else {
-        uniqueUserID = "openguessr_" + "g" + generateRandomCode(7);
-        generateFunnyGuestName();
+        uniqueUserID = "openguessr_g" + Math.random().toString(36).substring(2, 8);
+        if (!get(guestNamePromise)) {
+            guestNamePickerPopup.set(true);
+            await new Promise((resolve) => guestNamePromise.set(resolve));
+        }
     }
 
     return new Promise(async (resolve, reject) => {
         // Create the new Peer instance
         try {
+            let customData = get(isAuthenticated) ? { bearer: localStorage.getItem("bearer") } : undefined;
             socket.set(new PlaySocket(uniqueUserID, {
-                endpoint: `${get(accountUrl)}/socket`
+                endpoint: `${get(accountUrl)}/socket`,
+                customData
             }));
 
             // Register event listeners
@@ -143,8 +148,8 @@ export async function createPeerInstance() {
             get(socket).onEvent('clientDisconnected', (id) => {
                 const name = get(socket)?.getStorage?.players?.find((p) => p[0] == id)?.[1] || "Unknown";
                 if (get(socket)?.isHost) get(socket)?.updateStorageArray("chats", "add", `System: ${name} left.`);
-                removePlayerById(id);
                 connectionCount.set(get(socket)?.connectionCount);
+                removePlayerById(id);
             });
 
             get(socket).onEvent('hostMigrated', () => {
@@ -172,7 +177,7 @@ export async function createPeerInstance() {
                     const playerCount = get(socket)?.getStorage?.players.length;
                     const teamNumber = get(teamAmount) <= 1 ? 1 : ((playerCount % get(teamAmount)) + 1);
 
-                    get(socket)?.updateStorageArray("players", "add-unique", [get(socket)?.id, get(username) || get(savedGuestName), get(elo), 0, teamNumber, localStorage.getItem("id"), get(selectedBadge)]);
+                    get(socket)?.updateStorageArray("players", "add-unique", [get(socket)?.id, get(username) || get(guestName), get(elo), 0, teamNumber, localStorage.getItem("id"), get(selectedBadge)]);
                     if (get(socket)?.getStorage?.highestSupporterLevel < (get(supporterLevel) || 0)) get(socket)?.updateStorage("highestSupporterLevel", get(supporterLevel));
                 }
 
@@ -446,7 +451,7 @@ export async function joinRoom(code) {
         matchmakingActive.set(false);
         setMultiplayerUI();
         goto("/");
-        get(socket)?.updateStorageArray("chats", "add", `System: ${get(username) || get(savedGuestName)} joined.`);
+        get(socket)?.updateStorageArray("chats", "add", `System: ${get(username) || get(guestName)} joined.`);
     } catch (error) {
         multiplayer.set(false);
         console.error("Error occured joining room:", error); // Status will be set by playpeerjs / playsocketjs
