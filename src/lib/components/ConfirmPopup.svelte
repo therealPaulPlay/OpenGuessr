@@ -36,7 +36,7 @@
 {#if $confirmPopupVisible}
 	<Popup verySlim={true} z={982}>
 		<h1 class="popup-title">{$confirmTitle}</h1>
-		<div class="popup-description marginBottom">{$confirmDescription}</div>
+		<div class="popup-description">{$confirmDescription}</div>
 		{#if $confirmPasswordInput}
 			<input class="confirmPopupInput" type="password" placeholder="Your password" bind:value={$confirmPasswordValue} />
 		{/if}
@@ -69,9 +69,5 @@
 
 	.marginTop {
 		margin-top: var(--layout-margin);
-	}
-
-	.marginBottom {
-		margin-bottom: var(--box-margin);
 	}
 </style>

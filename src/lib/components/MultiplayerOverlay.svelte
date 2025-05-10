@@ -28,7 +28,7 @@
 	{#if $overlayShowSubtitle}
 		<h2 class="multiplayerTitle">1.5x Multiplier</h2>
 	{/if}
-	<div id="multiplayerTable">
+	<div class="multiplayerTable">
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		{#if $multiplayerTableArray.length > 0}
 			{#if $teamAmount > 1}
@@ -53,7 +53,7 @@
 										}
 									}}
 								>
-									{username}
+									<span class="usernameSpan">{username}</span>
 									{#if badge}
 										<Badge interactive={false} display={true} id={badge} />
 									{/if}
@@ -86,7 +86,7 @@
 									}
 								}}
 							>
-								{username}
+								<span class="usernameSpan">{username}</span>
 								{#if badge}
 									<Badge interactive={false} display={true} id={badge} />
 								{/if}
@@ -151,6 +151,10 @@
 		user-select: none;
 	}
 
+	.usernameSpan {
+		margin-right: 3px;
+	}
+
 	.eloDisplay {
 		padding: 7px;
 		border-radius: 5px;
@@ -170,7 +174,7 @@
 
 	.buttonSpacer {
 		width: 100%;
-		height: 20px;
+		height: 25px;
 	}
 
 	#endMultiplayerRoundButton {
@@ -184,6 +188,7 @@
 		min-width: 150px;
 		height: 50px;
 		border-radius: 10px;
+		margin-bottom: 0;
 	}
 
 	.multiplayerTitle {
@@ -210,12 +215,12 @@
 	}
 
 	:global(#multiplayerFade p),
-	:global(#multiplayerTable p) {
+	:global(.multiplayerTable p) {
 		font-size: 30px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 	}
 
-	#multiplayerTable {
+	.multiplayerTable {
 		display: flex;
 		justify-content: safe center;
 		align-items: safe flex-start;
@@ -227,7 +232,7 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		flex-direction: column;
-		gap: var(--box-margin);
+		gap: var(--layout-margin);
 	}
 
 	.multiplayerOverlayEntry {

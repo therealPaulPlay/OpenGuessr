@@ -20,11 +20,10 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
         popupAnchor: [1, -34]
     });
 
-    const greenIcon = new L.Icon({
+    const resultIcon = new L.Icon({
         iconUrl: '/img/result_marker.png',
         iconSize: [35, 35],
-        iconAnchor: [17.5, 34],
-        popupAnchor: [1, -34]
+        iconAnchor: [17.5, 34]
     });
 
     // Create LatLng objects for current and player positions
@@ -134,7 +133,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     }
 
     // Place the "correct" marker reflecting the target location
-    let destinationMarker = new L.Marker([correctLat, correctLong], { icon: greenIcon });
+    let destinationMarker = new L.Marker([correctLat, correctLong], { icon: resultIcon });
     destinationMarker.addTo(get(map));
 
     addedMarkers.update((markers) => {

@@ -22,7 +22,7 @@ export async function getProfileData(id) {
             errorPopup("Failed to get profile data", "Couldn't load the user's profile.", response.status, false, false);
         }
     } catch (error) {
-        console.error('Error occurred while fetching the user: ', error);
-        errorPopup("Error occured while loading Profile data", "Couldn't load the user's profile due to network error.", error, false, false);
+        console.error('Error occurred loading profile: ', error);
+        errorPopup("Error occured loading profile:", "Couldn't load the user's profile due to network error.", error, false, false);
     }
 }

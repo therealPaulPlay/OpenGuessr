@@ -82,7 +82,7 @@ function endMultiplayerRound() {
 
 // Utility -----------------------------------------------------------------------------------------------------------------------------------
 export function multiplayerStateToGuessed() {
-    get(socket)?.updateStorageArray("confirmedArray", "add", get(socket)?.id);
+    get(socket)?.updateStorageArray("confirmedArray", "add-unique", get(socket)?.id);
     if (playingDuels) get(socket)?.updateStorage("timeReducedOverlay", true); // Reduce time in duels
 }
 
@@ -93,10 +93,10 @@ export function addMultiplayerGuessMarker() {
     get(socket)?.updateStorageArray("guessLocationsArray", "add", { id: get(socket)?.id, lat: get(mapPinLat), long: get(mapPinLng), pin: get(selectedPinIndex), username: get(username) || get(guestName), team: getTeamFromPeerId(get(socket)?.id) });
 }
 
-export function updatePeerScore(addScore) {
-    const peerIndex = get(socket)?.getStorage?.players?.findIndex(findPeer => findPeer[0] === get(socket)?.id);
-    if (peerIndex !== -1) {
-        const thisPlayer = get(socket)?.getStorage?.players[peerIndex];
+export function updateMultiplayerScore(addScore) {
+    const playerIndex = get(socket)?.getStorage?.players?.findIndex(player => player[0] === get(socket)?.id);
+    if (playerIndex !== -1) {
+        const thisPlayer = get(socket)?.getStorage?.players[playerIndex];
         let newPlayer = [...thisPlayer];
         if (playingDuels && get(socket)?.getStorage?.currentRound > 3) addScore = Math.round(addScore * 1.5); // Duel Multiplayer for round 4 + 5
         newPlayer[3] = newPlayer[3] + addScore;
@@ -104,8 +104,16 @@ export function updatePeerScore(addScore) {
     }
 }
 
+function removePlayerById(id) {
+    const index = get(socket)?.getStorage?.players?.findIndex(entry => entry[0] === id);
+    if (index >= 0) {
+        const contentToRemove = get(socket)?.getStorage?.players[index];
+        get(socket)?.updateStorageArray("players", "remove-matching", contentToRemove);
+    }
+}
+
 // Create multiplayer instance -----------------------------------------------------------------------------------------------------------------------
-export async function createPeerInstance() {
+export async function createMultiplayerInstance() {
     let uniqueUserID;
 
     if (get(isAuthenticated) && localStorage.getItem("id")) {
@@ -119,7 +127,7 @@ export async function createPeerInstance() {
     }
 
     return new Promise(async (resolve, reject) => {
-        // Create the new Peer instance
+        // Create the new instance
         try {
             let customData = get(isAuthenticated) ? { bearer: localStorage.getItem("bearer") } : undefined;
             socket.set(new PlaySocket(uniqueUserID, {
@@ -160,8 +168,7 @@ export async function createPeerInstance() {
             let startMultiplayerRoundTimeout;
 
             get(socket).onEvent('storageUpdated', (storage) => {
-                storage = JSON.parse(JSON.stringify(storage));
-                console.log(storage);
+
                 // Sync game info
                 if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.restriction) {
                     roundAmount.set(storage?.roundAmount);
@@ -181,9 +188,9 @@ export async function createPeerInstance() {
                     if (get(socket)?.getStorage?.highestSupporterLevel < (get(supporterLevel) || 0)) get(socket)?.updateStorage("highestSupporterLevel", get(supporterLevel));
                 }
 
-                if (typeof storage.overlay !== "undefined" && storage.overlay != get(multiplayerOverlay)) storage.overlay ? showMultiplayerOverlay(true) : showMultiplayerOverlay(false);
+                if (storage.players) updateMultiplayerTableArray(); // Do this before showing the overlay
 
-                if (storage.players) updateMultiplayerTableArray();
+                if (typeof storage.overlay !== "undefined" && storage.overlay != get(multiplayerOverlay)) storage.overlay ? showMultiplayerOverlay(true) : showMultiplayerOverlay(false);
 
                 if (storage.chats) loadChat(storage.chats || []);
 
@@ -259,8 +266,8 @@ export async function createPeerInstance() {
 
             resolve(get(socket).id);
         } catch (error) {
-            console.error("Error creating peer instance:", error);
-            reject(new Error("Failed to create peer instance."));
+            console.error("Error creating multiplayer instance:", error);
+            reject(new Error("Failed to create multiplayer instance."));
         }
     });
 }
@@ -311,7 +318,7 @@ export async function findDuel() {
     attemptDuelJoin(roomIndex, get(skillBasedMatchmaking));
 }
 
-// This occurs when the peer connect returns an error like peer_unavailable (means = doesn't exist)
+// This occurs when the multiplayer system's connect/join returns an error
 function findNextDuel() {
     if (roomIndex < 10) {
         roomIndex++;
@@ -321,6 +328,8 @@ function findNextDuel() {
         multiplayerStatus.set("Couldn't connect to any room.");
     }
 }
+
+// Game logic -----------------------------------------------------------------------------------------------------------------
 
 // Duel Guess Time Reduce Overlay & reduce remaining time
 async function showTimeReducedOverlay(time, show) {
@@ -340,19 +349,10 @@ async function showTimeReducedOverlay(time, show) {
     }
 }
 
-// Host Logic ----------------------------------------------------------------------------------------------
-function removePlayerById(id) {
-    const index = get(socket)?.getStorage?.players?.findIndex(entry => entry[0] === id);
-    if (index >= 0) {
-        const contentToRemove = get(socket)?.getStorage?.players[index];
-        get(socket)?.updateStorageArray("players", "remove-matching", contentToRemove);
-    }
-}
-
 export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit, restriction) {
     try {
         disableResultScreen(); // Edge case
-        await createPeerInstance(); // Get new peer instance
+        await createMultiplayerInstance(); // Get new multiplayer instance
 
         // Check if map is valid for multiplayer
         if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
@@ -409,10 +409,9 @@ export function startRoom() {
 }
 
 function multiplayerPerformRematch() {
-    console.log("Rematching");
     get(socket)?.updateStorage("rematch", false);
     get(socket)?.updateStorage("firstRoundPlayed", false);
-    get(socket).updateStorage("currentRound", 0);
+    get(socket)?.updateStorage("currentRound", 0);
 
     // Reset player scores
     const playersArray = get(socket)?.getStorage?.players;
@@ -436,12 +435,11 @@ async function startMultiplayerRound() {
     get(socket)?.updateStorageArray("chats", "add", `System: Starting round ${get(socket)?.getStorage?.currentRound}.`);
 }
 
-// Peer Logic -----------------------------------------------------------------------------------------------------------------
 export async function joinRoom(code) {
     try {
         code = "openguessr_" + code.replaceAll(" ", "").toLowerCase(); // Remove whitespaces and lowercase
         disableResultScreen(); // Edge case
-        try { await createPeerInstance(); } catch (error) {
+        try { await createMultiplayerInstance(); } catch (error) {
             matchmakingActive.set(false);
             throw new Error(error);
         }
