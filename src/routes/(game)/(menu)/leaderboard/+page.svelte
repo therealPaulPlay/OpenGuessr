@@ -1,11 +1,77 @@
 <script>
-	import { getLeaderboard, getUserLeaderboard, getSupporterLeaderboard } from "$lib/logic/userAPI";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { isAuthenticated, username } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { fade } from "svelte/transition";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+
+	// API ----------------------------------------------------------------------------------------------------------------------------
+	async function getLeaderboard() {
+		try {
+			const response = await fetch(`${$accountUrl}/leaderboard/experience`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+				return data;
+			} else {
+				throw new Error(response.status);
+			}
+		} catch (error) {
+			console.error("Failed to fetch the experience leaderboard: ", error);
+		}
+	}
+
+	async function getUserLeaderboard() {
+		try {
+			let id = localStorage.getItem("id");
+
+			const response = await fetch(`${$accountUrl}/leaderboard/experience-user-section/${id}`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+				return data;
+			} else {
+				throw new Error(response.status);
+			}
+		} catch (error) {
+			console.error("Failed to fetch the experience user section of the leaderboard: ", error);
+		}
+	}
+
+	async function getSupporterLeaderboard() {
+		try {
+			const response = await fetch(`${$accountUrl}/leaderboard/experience-supporter`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+				return data;
+			} else {
+				console.error("Fetch failed:", response.status);
+			}
+		} catch (error) {
+			console.error("Error occurred while fetching the user: ", error);
+		}
+	}
 
 	// Add leaderboar entries --------------------------------------------------------------------------------------------------------
 	let mainSectionEntries = $state();

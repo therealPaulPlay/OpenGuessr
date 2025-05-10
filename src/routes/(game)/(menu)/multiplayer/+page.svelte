@@ -20,14 +20,36 @@
 	import { onDestroy, onMount } from "svelte";
 	import { fade, scale, slide } from "svelte/transition";
 	import { bounceInOut } from "svelte/easing";
-	import { getEloLeaderboard } from "$lib/logic/userAPI";
 	import { ChevronDown, ChevronUp, History } from "lucide-svelte";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { fetchBlacklistStatus, fetchWarnlistStatus } from "$lib/utils/checkBanStatus";
 	import { get } from "svelte/store";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	let friendsRefreshInterval;
+
+	// Fetch elo leaderboard
+	async function getEloLeaderboard() {
+		try {
+			const response = await fetch(`${$accountUrl}/leaderboard/elo`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+				return data;
+			} else {
+				throw new Error(response.status);
+			}
+		} catch (error) {
+			console.error("Failed to fetch the elo leaderboard: ", error);
+		}
+	}
 
 	onMount(async () => {
 		hostStage.set(1); // Reset host stage
