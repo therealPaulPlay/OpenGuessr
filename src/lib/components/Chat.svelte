@@ -44,22 +44,18 @@
 	function stopResize() {
 		isResizing = false;
 		document.removeEventListener("mousemove", handleResize);
-		document.removeEventListener("mouseup", stopResize);
+		document.removeEventListener("touchmove", handleResize);
 		document.removeEventListener("mouseup", stopResize);
 		document.removeEventListener("touchend", stopResize);
 	}
 
-	chatArray.subscribe((value) => {
-		try {
-			if (multiplayerChatMessages) {
-				setTimeout(() => {
-					multiplayerChatMessages.scrollTop = multiplayerChatMessages.scrollHeight;
-				}, 1);
-			}
-		} catch (error) {
-			console.error("Error setting chat box scroll value:", error);
+	// Watch for changes to chatArray and scroll to bottom automatically
+	$effect(() => {
+		if ($chatArray && multiplayerChatMessages) {
+			multiplayerChatMessages.scrollTop = multiplayerChatMessages.scrollHeight;
 		}
 	});
+	
 </script>
 
 <div class="chatContainer" style:display={$chatVisible ? "flex" : "none"}>
