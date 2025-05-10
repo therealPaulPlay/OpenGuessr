@@ -5,7 +5,7 @@
 	import { isAuthenticated, experience, supporterLevel, username } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
-	import { competition, multiplayer, singleplayer } from "$lib/stores/modeStore";
+	import { singleplayer } from "$lib/stores/modeStore";
 	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
@@ -47,8 +47,7 @@
 	});
 
 	// Prevent exiting mulitplayer etc. by starting using a conflicting feature -----------------------------------------------------------------------------
-
-	let preventNavigateOut = $derived($competition || $multiplayer);
+	let preventNavigateOut = $derived(!$singleplayer);
 
 	// Level indicator (progress ring) -----------------------------------------------------------------------------------------
 	let progressRingLevel = $state(0);
@@ -120,8 +119,7 @@
 						signupPrompt();
 					}}><span class="mobileSigninIcon"><UserRoundPlus strokeWidth={3} size={20} /></span></button
 				>
-			{/if}
-			{#if $isAuthenticated}
+			{:else}
 				<button
 					id="mobileProfileButton"
 					class="standardButton accountButton white"
@@ -136,6 +134,7 @@
 			<a
 				id="mobileLeaderboardButton"
 				class="standardButton accountButton white"
+				class:preventNavigateOut
 				href="/leaderboard"
 				onclick={() => {
 					playSound("basic_button");

@@ -251,7 +251,7 @@
 	}
 
 	.bottomRightMenu {
-		width: calc(20% - 8px);
+		width: calc(20% - var(--box-margin-buttons));
 		min-width: 200px;
 		margin-right: 60px;
 	}
@@ -264,7 +264,7 @@
 
 	@media all and (orientation: landscape) and (max-width: 1200px) {
 		.bottomRightMenu {
-			width: calc(25% - 8px);
+			width: calc(25% - var(--box-margin-buttons));
 		}
 	}
 </style>

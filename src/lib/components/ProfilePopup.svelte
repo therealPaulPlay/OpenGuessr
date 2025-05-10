@@ -575,7 +575,7 @@
 	#profileScrollSection {
 		overflow-x: hidden;
 		overflow-y: auto;
-		max-height: calc(100dvh - 300px);
+		max-height: calc(100dvh - 350px);
 		width: 100%;
 		transition: max-height 250ms ease-in-out;
 	}
