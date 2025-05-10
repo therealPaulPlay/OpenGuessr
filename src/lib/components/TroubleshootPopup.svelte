@@ -19,7 +19,7 @@
 				<p>Disable VPNs or Proxies.</p>
 			</li>
 			<li>
-				<p>Disable Firewalls on your computer & router.</p>
+				<p>Disable firewalls on your computer & router.</p>
 			</li>
 			<li>
 				<p>Try using a different wlan network or use cellular data.</p>

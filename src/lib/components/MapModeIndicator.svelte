@@ -40,13 +40,13 @@
 </script>
 
 <div
-	id="mapModeIndicator"
+	class="barMenu mapModeIndicator"
 	class:fading={Boolean($indicatorFading)}
 	style:display={$mapModeIndicatorVisible && !$resultScreenEnabled ? "" : "none"}
 >
 	{#if $leaveFunction}
 		<button
-			class="leaveButton standardButton"
+			class="standardButton"
 			onclick={() => {
 				playSound("leave_round");
 				get(leaveFunction)();
@@ -68,42 +68,22 @@
 </div>
 
 <style>
-	#mapModeIndicator {
+	.mapModeIndicator {
 		pointer-events: auto;
-		background-color: var(--panel-color);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
 		box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
-		height: 48px;
 		width: 100%;
-		border-radius: 10px;
-		display: flex;
-		align-items: center;
-		justify-content: flex-start;
-		color: white;
-		font-size: 22px;
 		transition:
 			width 250ms ease,
 			margin 250ms ease;
 		z-index: 10;
-		padding-top: 3px;
-		padding-bottom: 2px;
 		user-select: none;
-		margin-top: 8px;
+		margin-top: var(--box-margin-buttons);
 		flex-shrink: 0;
+		width: calc(100% - 12px);
 	}
 
-	:global(#mapModeIndicator.fading) {
+	:global(.mapModeIndicator.fading) {
 		animation: divFade 1s infinite;
-	}
-
-	.leaveButton {
-		margin: 0;
-		padding: 6px;
-		padding-inline: 10px;
-		line-height: 0.9;
-		margin-left: 8px;
-		min-height: unset;
 	}
 
 	.mapModeTextContainer {

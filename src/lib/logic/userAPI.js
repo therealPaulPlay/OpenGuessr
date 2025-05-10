@@ -5,18 +5,15 @@ import inIframe from "$lib/utils/checkIframe";
 import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
-const backendURL = get(accountUrl) + "/accounts";
-const loginEndpoint = `${backendURL}/login`;
-const deleteAccountEndpoint = `${backendURL}/delete`;
-const registrationEndpoint = `${backendURL}/register`;
-const userUpdateEndpoint = `${backendURL}/update`;
-const userGetEndpoint = `${backendURL}/user`;
-const leaderboardEndpoint = `${backendURL}/leaderboard`;
-const userLeaderboardEndpoint = `${backendURL}/user-leaderboard`;
-const passwordResetEmailEndpoint = `${backendURL}/reset-password-request`;
-const passwordChangeEndpoint = `${backendURL}/reset-password`;
-const supporterLeaderboardEndpoint = `${backendURL}/supporter-leaderboard`;
-const eloLeaderboardEndpoint = `${backendURL}/elo-leaderboard`;
+const accountRoute = get(accountUrl) + "/accounts";
+const loginEndpoint = `${accountRoute}/login`;
+const deleteAccountEndpoint = `${accountRoute}/delete`;
+const registrationEndpoint = `${accountRoute}/register`;
+const userUpdateEndpoint = `${accountRoute}/update`;
+const userGetEndpoint = `${accountRoute}/user`;
+const passwordResetEmailEndpoint = `${accountRoute}/reset-password-request`;
+const passwordChangeEndpoint = `${accountRoute}/reset-password`;
+const supporterLeaderboardEndpoint = `${accountRoute}/supporter-leaderboard`;
 
 // Login and registration -----------------------------------------------------------------------------------
 export async function loginUser(email, password, errorSource, errorElement) {
@@ -237,99 +234,6 @@ export async function getUser(token, id, errorSource, errorElement) {
   } catch (error) {
     console.error('Error occurred while fetching the user: ', error);
     displayError("Error occurred while fetching the user: " + error, errorSource, errorElement);
-  }
-}
-
-export async function getLeaderboard() {
-  try {
-
-    const response = await fetch(`${leaderboardEndpoint}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    // Check if the response is successful
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-
-    } else {
-      console.error('Fetch failed:', response.status);
-    }
-  } catch (error) {
-    console.error('Error occurred while fetching the user: ', error);
-  }
-}
-
-export async function getUserLeaderboard() {
-  try {
-    let id = localStorage.getItem("id");
-    let editLeaderboardEndpoint = `${userLeaderboardEndpoint}/${id}`;
-
-    const response = await fetch(`${editLeaderboardEndpoint}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    // Check if the response is successful
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-
-    } else {
-      console.error('Fetch failed:', response.status);
-    }
-  } catch (error) {
-    console.error('Error occurred while fetching the user: ', error);
-  }
-}
-
-export async function getSupporterLeaderboard() {
-  try {
-    const response = await fetch(supporterLeaderboardEndpoint, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    // Check if the response is successful
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-    } else {
-      console.error('Fetch failed:', response.status);
-    }
-    
-  } catch (error) {
-    console.error('Error occurred while fetching the user: ', error);
-  }
-}
-
-export async function getEloLeaderboard() {
-  try {
-
-    const response = await fetch(`${eloLeaderboardEndpoint}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    });
-
-    // Check if the response is successful
-    if (response.ok) {
-      const data = await response.json();
-      return data;
-
-    } else {
-      console.error('Fetch failed:', response.status);
-    }
-  } catch (error) {
-    console.error('Error occurred while fetching the user: ', error);
   }
 }
 
