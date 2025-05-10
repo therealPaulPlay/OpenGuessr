@@ -20,9 +20,8 @@
 	.mapHolder {
 		position: fixed;
 		display: flex;
-		right: 60px;
+		right: 70px;
 		bottom: 76px;
-		padding-inline: var(--box-margin);
 		min-width: 212px;
 		min-height: 150px;
 		align-items: flex-end;
@@ -76,8 +75,8 @@
 	@media (orientation: portrait) and (max-width: 1200px) {
 		.mapHolder {
 			height: 50%;
-			width: calc(100% - 20px);
-			right: 0 !important;
+			width: calc(100% - calc(var(--box-margin) * 2));
+			right: var(--box-margin) !important;
 		}
 	}
 

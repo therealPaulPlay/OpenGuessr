@@ -291,13 +291,9 @@
 							onclick={(e) => {
 								e.stopPropagation();
 								playSound("basic_button");
-								showConfirmPopup(
-									"Remove friend?",
-									"You are about to remove your friend from your list. Your friend will see this and might not like it. Use this at our own risk.",
-									() => {
-										removeFriend(entry.id);
-									},
-								);
+								showConfirmPopup("Remove friend?", "You are about to remove your friend from your list.", () => {
+									removeFriend(entry.id);
+								});
 							}}
 						>
 							<img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
