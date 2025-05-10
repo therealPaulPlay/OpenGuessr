@@ -1,7 +1,7 @@
 import { writable } from "svelte/store";
 
 // Peer
-export const peer = writable();
+export const socket = writable();
 
 // Settings
 export const roundAmount = writable(3);
@@ -13,8 +13,9 @@ export const matchmakingActive = writable(false);
 export const skillBasedMatchmaking = writable(false);
 export const matchmakingHosting = writable(false);
 
-// Data
-export const savedGuestName = writable("Guest (Default)");
+// Guest-exclusive
+export const guestName = writable("Guest (Default)");
+export const guestNamePromise = writable();
 
 // UI
 export const multiplayerStatus = writable(); // Status for Duel, Join, Linjoin etc.

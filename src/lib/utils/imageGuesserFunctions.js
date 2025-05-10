@@ -1,4 +1,4 @@
-import { imageGuesser } from "$lib/stores/modeStore.js";
+import { imageGuessr } from "$lib/stores/modeStore.js";
 import { imageGuesserImage, imageGuesserBackground } from "$lib/stores/context-specific/imageGuesserStore";
 import { get } from "svelte/store";
 
@@ -21,7 +21,7 @@ export function loadImageFromUrl(url) {
 }
 
 export function setImageGuesserMode(enable) {
-    imageGuesser.set(enable);
+    imageGuessr.set(enable);
 
     if (enable) {
         get(imageGuesserImage).style.transform = "rotate(" + Math.floor(Math.random() * 10 - 5) + "deg)";

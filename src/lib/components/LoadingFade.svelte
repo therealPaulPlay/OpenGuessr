@@ -1,8 +1,9 @@
 <script>
+	import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupStore";
 	import { loadingScreenVisible } from "$lib/stores/uiStore";
 </script>
 
-<div id="BeforeOverlay" style:opacity={$loadingScreenVisible ? "100%" : "0%"}>
+<div class="loadingOverlay" style:opacity={$loadingScreenVisible ? "100%" : "0%"}>
 	<img
 		src="/img/compass_spinner.png"
 		alt="Loading new streetview"
@@ -13,7 +14,7 @@
 </div>
 
 <style>
-	#BeforeOverlay {
+	.loadingOverlay {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -32,8 +33,7 @@
 
 	#loadingText {
 		color: white;
-		opacity: 0.3;
-		font-size: 25px;
+		opacity: 0.35;
 		text-align: center;
 	}
 </style>

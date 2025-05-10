@@ -43,6 +43,7 @@
 		flex-grow: 1;
 		background-color: rgba(0, 0, 0, 0.2);
 		position: relative;
+		border-radius: 5px;
 	}
 
 	#pageBrowserLoading {

@@ -1,14 +1,12 @@
 import { map, addedMarkers } from "$lib/stores/context-specific/mapStore";
 import { selectedPinIndex } from "$lib/stores/accountStore";
-import { peer } from "$lib/stores/context-specific/multiplayerStore";
-import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
+import { socket } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { clamp } from "$lib/utils/clamp";
 import { get } from "svelte/store";
 
-export async function loadResultMap(playersLat, playersLong) {
-
+export async function loadResultMap(guessLat, guessLong, correctLat, correctLong) {
     if (!get(map)) {
         console.error("Map not properly inizialized - exiting result map load function.");
         return;
@@ -22,22 +20,21 @@ export async function loadResultMap(playersLat, playersLong) {
         popupAnchor: [1, -34]
     });
 
-    const greenIcon = new L.Icon({
+    const resultIcon = new L.Icon({
         iconUrl: '/img/result_marker.png',
         iconSize: [35, 35],
-        iconAnchor: [17.5, 34],
-        popupAnchor: [1, -34]
+        iconAnchor: [17.5, 34]
     });
 
     // Create LatLng objects for current and player positions
-    let curLatLng = new L.LatLng(get(currentLocationLatitude), get(currentLocationLongitude));
+    let curLatLng = new L.LatLng(correctLat, correctLong);
     let playerLatLng;
     let pointList;
     let polyList;
 
     // Check if NOT in Country Guessr (or if IN multiplayer) --------------------------------------------------
-    if (!get(countryGuesser) || get(multiplayer)) {
-        playerLatLng = new L.LatLng(playersLat, playersLong);
+    if (!get(countryGuessr) || get(multiplayer)) {
+        playerLatLng = new L.LatLng(guessLat, guessLong);
         polyList = [curLatLng, playerLatLng];
         pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
 
@@ -69,12 +66,12 @@ export async function loadResultMap(playersLat, playersLong) {
         });
     } else {
         // If Country Guessr is being played, show the destination zoomed out as the starting frame
-        get(map).setView([get(currentLocationLatitude), get(currentLocationLongitude)], 2);
+        get(map).setView([correctLat, correctLong], 2);
     }
 
     // Handle multiplayer markers --------------------------------------------------------------------------
     if (get(multiplayer)) {
-        get(peer)?.getStorage?.guessLocationsArray?.forEach(function (element) {
+        get(socket)?.getStorage?.guessLocationsArray?.forEach(function (element) {
             let newMarkerLat = element.lat;
             let newMarkerLong = element.long;
             let newMarkerPinIndex = element.pin;
@@ -88,7 +85,7 @@ export async function loadResultMap(playersLat, playersLong) {
             }
 
             // Place multiplayer markers if not player's marker
-            if (element.id !== get(peer)?.id) {
+            if (element.id !== get(socket)?.id) {
 
                 let newMultiplayerIcon = new L.Icon({
                     iconUrl: "/img/your_marker" + newMarkerPinIndex + ".png",
@@ -129,14 +126,14 @@ export async function loadResultMap(playersLat, playersLong) {
     }
 
     // Fit the map bounds to show all markers and lines (with padding)
-    if (!get(countryGuesser) || get(multiplayer)) {
+    if (!get(countryGuessr) || get(multiplayer)) {
         get(map).fitBounds(pointList, {
             animate: false
         });
     }
 
     // Place the "correct" marker reflecting the target location
-    let destinationMarker = new L.Marker([get(currentLocationLatitude), get(currentLocationLongitude)], { icon: greenIcon });
+    let destinationMarker = new L.Marker([correctLat, correctLong], { icon: resultIcon });
     destinationMarker.addTo(get(map));
 
     addedMarkers.update((markers) => {
@@ -145,10 +142,10 @@ export async function loadResultMap(playersLat, playersLong) {
     });
 
     // Fly to the destination marker after a delay
-    setTimeout(flyToDestination, 1500);
+    setTimeout(() => flyToLocation(correctLat, correctLong), 1500);
 }
 
-function flyToDestination() {
+function flyToLocation(lat, long) {
     // Check if EndOverlay is fully visible before flying to the destination
     if (get(resultScreenEnabled)) {
         const zoom = clamp(get(map).getZoom() + 2, 0, 18);
@@ -157,6 +154,6 @@ function flyToDestination() {
             duration: 0.75
         };
 
-        get(map).flyTo([get(currentLocationLatitude), get(currentLocationLongitude)], zoom, animate);
+        get(map).flyTo([lat, long], zoom, animate);
     }
 }

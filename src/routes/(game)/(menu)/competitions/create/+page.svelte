@@ -184,7 +184,7 @@
 {#if successPopup}
 	<Popup verySlim={true}>
 		<h1 id="submitConfirmHeader" class="textHeaderLeft">Success!</h1>
-		<p>Thank you for creating a competition! Share these direct links with your friends:</p>
+		<p>Thank you for creating a competition! Share these direct links with your friends.</p>
 		<div class="spacer"></div>
 		<div class="linkBox">
 			<p>Enter link:</p>
@@ -205,7 +205,7 @@
 						.catch(function (error) {
 							showNotification("Error: " + error);
 						});
-				}}><Link size="16" strokeWidth={2.5} style="margin-right: 3px;" /> Copy Both</button
+				}}><Link size="16" strokeWidth={2.5} style="margin-right: 3px;" /> Copy both</button
 			>
 			<div class="buttonBoxRight">
 				<button
@@ -254,32 +254,6 @@
 			placeholder="Description..."
 			maxlength="70"
 		/>
-		<div class="infoNoteBox marginBottom">
-			<p class="uploadFirstText">Information regarding private competitions:</p>
-			<p id="visibilityInfo">
-				Competitions are public by default, meaning they appear on the site for everyone. Private competitions can only
-				be accessed via the link, so make sure not to lose it.
-			</p>
-		</div>
-		<div class="spacer"></div>
-		<p>Visibility:</p>
-		<button
-			class="standardButton white toggleButton"
-			onclick={() => {
-				playSound("basic_button");
-				competitionPrivate = !competitionPrivate;
-			}}>{competitionPrivate ? "Private" : "Public"}</button
-		>
-		<div class="spacer"></div>
-		<p>Restriction:</p>
-		<button
-			class="standardButton white toggleButton"
-			onclick={() => {
-				playSound("basic_button");
-				togglecompetitionRestriction();
-			}}>{competitionRestrictionText}</button
-		>
-		<div class="spacer"></div>
 		<p>Round length (seconds):</p>
 		<div class="extendedInputBox">
 			<input
@@ -302,6 +276,23 @@
 			placeholder="2d"
 			maxlength="30"
 		/>
+		<p>Visibility:</p>
+		<button
+			class="standardButton white toggleButton"
+			onclick={() => {
+				playSound("basic_button");
+				competitionPrivate = !competitionPrivate;
+			}}>{competitionPrivate ? "Private" : "Public"}</button
+		>
+		<div class="spacer"></div>
+		<p>Restriction:</p>
+		<button
+			class="standardButton white toggleButton"
+			onclick={() => {
+				playSound("basic_button");
+				togglecompetitionRestriction();
+			}}>{competitionRestrictionText}</button
+		>
 		<div class="spacer"></div>
 		<div class="infoNoteBox marginBottom">
 			<p class="uploadFirstText">How to add locations:</p>
@@ -321,16 +312,15 @@
 			class="uploadInfo locationTextbox"
 			type="text"
 			rows="20"
-			placeholder="
-  https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
-  
-  https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6!1e1!3m4!1scgVGr1HY1alolDg8gfwrzA!2e0!7i16384!8i8192?coh=205409&entry=ttu
-  
-  https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu"
+			placeholder="https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
+      
+https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6!1e1!3m4!1scgVGr1HY1alolDg8gfwrzA!2e0!7i16384!8i8192?coh=205409&entry=ttu
+      
+https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu"
 			maxlength="50000"
 		></textarea>
 	</div>
-	<div class="buttonBoxRight fullWidth noMarginTop">
+	<div class="buttonBoxRight fullWidth">
 		<button
 			id="uploadConfirm"
 			class="standardButton closeButton submitButton"
@@ -357,10 +347,6 @@
 		margin-bottom: 30px;
 	}
 
-	.noMarginTop {
-		margin-top: 0;
-	}
-
 	.textHeaderLeft {
 		margin-bottom: 15px;
 	}
@@ -371,7 +357,8 @@
 
 	.submitButton {
 		border-radius: 10px;
-		margin-top: 0;
+		margin-top: var(--box-margin);
+		margin-bottom: var(--layout-margin);
 	}
 
 	.infoNoteBox {
@@ -393,10 +380,6 @@
 		margin-top: 15px;
 	}
 
-	#visibilityInfo {
-		margin-bottom: 10px;
-	}
-
 	.uploadFirstText {
 		margin-bottom: 15px;
 		margin-top: 10px;
@@ -410,30 +393,26 @@
 
 	.uploadInfo {
 		border-radius: 10px;
-		outline: none;
-		background-color: rgba(255, 255, 255, 0.1);
-		color: white;
 		width: 75%;
-		font-size: 22px;
 		min-height: 30px;
-		font-family: Barlow;
 		border: none;
 		padding: 10px;
 		padding-inline: 20px;
 		margin-bottom: 20px;
-		margin-top: 10px;
-		transition: background-color 250ms ease;
-	}
-
-	.uploadInfo:focus {
-		background-color: rgba(255, 255, 255, 0.2);
+		margin-top: var(--box-margin);
+		color: white;
 	}
 
 	.locationTextbox {
 		min-height: 350px;
-		font-size: 12px;
+		font-size: 16px;
 		width: calc(100% - 30px);
-		padding: 15px;
+		padding: 20px;
+		transition: background-color 250ms ease;
+	}
+
+	.locationTextbox:focus {
+		background-color: rgba(255, 255, 255, 0.2);
 	}
 
 	.marginTop {

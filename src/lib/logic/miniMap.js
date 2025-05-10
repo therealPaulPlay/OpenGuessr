@@ -1,4 +1,4 @@
-import { peer } from "$lib/stores/context-specific/multiplayerStore";
+import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { addMultiplayerGuessMarker, getTeamFromPeerId } from "$lib/logic/multiplayerLogic";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { playSound } from "$lib/utils/soundManager.js";
@@ -150,7 +150,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
             let miniMarkerTeam = element.team;
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
-            if (miniMarkerId != get(peer)?.id && miniMarkerTeam === getTeamFromPeerId(get(peer)?.id)) {
+            if (miniMarkerId != get(socket)?.id && miniMarkerTeam === getTeamFromPeerId(get(socket)?.id)) {
                 const multiplayerLatLng = new L.LatLng(miniMarkerLat, miniMarkerLong);
 
                 let newMultiplayerIcon = new L.Icon({

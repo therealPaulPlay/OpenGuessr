@@ -1,6 +1,6 @@
 // Gamemode where you guess the country (not on the map)
 import { mapVisible } from "$lib/stores/context-specific/mapStore";
-import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
+import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { selectedCountryField, selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuesserStore";
 import { get } from "svelte/store";
 
@@ -8,7 +8,7 @@ let correctCountryField = null; // 1-6
 
 export function setCountryGuesserMode(enabled) {
     if (enabled) {
-        countryGuesser.set(true);
+        countryGuessr.set(true);
         
         // hide map
         if (!get(multiplayer)) {
@@ -16,7 +16,7 @@ export function setCountryGuesserMode(enabled) {
         }
 
     } else {
-        countryGuesser.set(false);
+        countryGuessr.set(false);
 
         // show map
         if (!get(multiplayer)) {
@@ -40,7 +40,7 @@ export async function setCountryGuesserCountry(country) {
     selectedCountryField.set(0); // Clear country field selection
 
     try {
-        if (get(countryGuesser)) {
+        if (get(countryGuessr)) {
             let takenLocations = []; // To avoid duplicates amongst the 6 random / wrong ones (one of them will be replaced by the correct one)
             for (let i = 1; i <= 6; i++) {
                 let countryItem = document.getElementById("countryTag" + i);

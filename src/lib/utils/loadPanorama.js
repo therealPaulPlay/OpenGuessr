@@ -1,13 +1,13 @@
 // Load a panorama for the iframe
 import { panoramaLink, iframeElement, initialIframeLoad, panoramaKey } from "$lib/stores/locationStore";
 import { loadingScreenVisible } from "$lib/stores/uiStore";
-import { imageGuesser, multiplayer } from "$lib/stores/modeStore";
+import { imageGuessr, multiplayer } from "$lib/stores/modeStore";
 import { playSound } from "$lib/utils/soundManager";
 import { get } from "svelte/store";
 
 export function loadPanorama(lat, long) {
     try {
-        if (!get(imageGuesser) || get(multiplayer)) {
+        if (!get(imageGuessr) || get(multiplayer)) {
             panoramaLink.set(
                 "https://www.google.com/maps/embed/v1/streetview?location=" +
                 lat +

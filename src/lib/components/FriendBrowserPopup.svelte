@@ -82,7 +82,7 @@
 				<img src="/img/find_icon.png" alt="start search" id="playerSearchIcon" />
 			</button>
 		</search>
-		<div id="playerSearchBox" class="playerSearchBox">
+		<div class="playerSearchBox">
 			{#if userSearchResults}
 				{#each userSearchResults as entry}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -138,6 +138,7 @@
 
 	.playerSearchBox {
 		position: relative;
+		width: 100%;
 		box-sizing: border-box;
 		border-radius: 10px;
 		max-height: 50vh;

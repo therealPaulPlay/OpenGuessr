@@ -12,7 +12,7 @@
 		teamAmount,
 		roundAmount,
 		roundLength,
-		peer,
+		socket,
 		roomcode,
 		connectionCount,
 		multiplayerTableArray,
@@ -60,14 +60,14 @@
 	});
 
 	function updatePlayerTeam(playerId, newTeamIndex) {
-		const playerIndex = get(peer)?.getStorage?.players?.findIndex((player) => player[0] === playerId);
+		const playerIndex = get(socket)?.getStorage?.players?.findIndex((player) => player[0] === playerId);
 
 		if (playerIndex !== -1) {
-			const thisPlayer = get(peer)?.getStorage?.players[playerIndex];
+			const thisPlayer = get(socket)?.getStorage?.players[playerIndex];
 			let newPlayer = [...thisPlayer];
 			newPlayer[4] = parseInt(newTeamIndex); // Update team index at position 4
 
-			get(peer)?.updateStorageArray("players", "update-matching", thisPlayer, newPlayer);
+			get(socket)?.updateStorageArray("players", "update-matching", thisPlayer, newPlayer);
 		}
 	}
 
