@@ -1,9 +1,8 @@
 import { map, addedMarkers } from "$lib/stores/context-specific/mapStore";
 import { initializeMapIfNotAlready } from "$lib/logic/miniMap";
 import { selectedPinIndex } from "$lib/stores/accountStore";
-import { peer } from "$lib/stores/context-specific/multiplayerStore";
-import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
+import { socket } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
 
@@ -11,7 +10,7 @@ async function awaitMapInit() {
     return new Promise(resolve => document.addEventListener("mapInitialized", () => { resolve(); }));
 }
 
-export async function loadResultMap(playersLat, playersLong) {
+export async function loadResultMap(guessLat, guessLong, correctLat, correctLong) {
 
     if (!get(map)) {
         // Trigger the captcha popup, which results in a map load, then await the map load
@@ -33,7 +32,7 @@ export async function loadResultMap(playersLat, playersLong) {
         scaledSize: new google.maps.Size(35, 35)
     };
 
-    let greenIcon = {
+    let resultIcon = {
         url: '/img/result_marker.png',
         size: new google.maps.Size(35, 35),
         origin: new google.maps.Point(0, 0),
@@ -42,12 +41,12 @@ export async function loadResultMap(playersLat, playersLong) {
     };
 
     // Create LatLng objects for current and player positions
-    let curLatLng = new google.maps.LatLng(get(currentLocationLatitude), get(currentLocationLongitude));
+    let curLatLng = new google.maps.LatLng(correctLat, correctLong);
     let playerLatLng;
     let pointList;
 
     // Check if NOT in Country Guessr (or if IN multiplayer) --------------------------------------------------
-    if (!get(countryGuesser) || get(multiplayer)) {
+    if (!get(countryGuessr) || get(multiplayer)) {
         playerLatLng = new google.maps.LatLng(playersLat, playersLong);
         pointList = new google.maps.LatLngBounds();
         pointList.extend(curLatLng);
@@ -87,14 +86,14 @@ export async function loadResultMap(playersLat, playersLong) {
             return [...markers, polyline];
         });
     } else {
-        // If Country Guesser is being played, show the destination zoomed out as the starting frame
-        get(map).setCenter({ lat: get(currentLocationLatitude), lng: get(currentLocationLongitude) });
+        // If Country Guessr is being played, show the destination zoomed out as the starting frame
+        get(map).setCenter({ lat: correctLat), lng: correctLong });
         get(map).setZoom(3);
     }
 
     // Handle multiplayer markers --------------------------------------------------------------------------
     if (get(multiplayer)) {
-        get(peer)?.getStorage?.guessLocationsArray?.forEach(function (element) {
+        get(socket)?.getStorage?.guessLocationsArray?.forEach(function (element) {
             let newMarkerLat = element.lat;
             let newMarkerLong = element.long;
             let newMarkerPinIndex = element.pin;
@@ -108,7 +107,7 @@ export async function loadResultMap(playersLat, playersLong) {
             }
 
             // Place multiplayer markers if not player's marker
-            if (element.id !== get(peer)?.id) {
+            if (element.id !== get(socket)?.id) {
 
                 let newMultiplayerIcon = {
                     url: "/img/your_marker" + newMarkerPinIndex + ".png",
@@ -158,7 +157,7 @@ export async function loadResultMap(playersLat, playersLong) {
     }
 
     // Fit the map bounds to show all markers and lines (with padding)
-    if (!get(countryGuesser) || get(multiplayer)) {
+    if (!get(countryGuessr) || get(multiplayer)) {
         get(map).fitBounds(pointList, { padding: { top: 150, right: 250, bottom: 150, left: 250 } });
         if (get(map).getZoom() > 4) {
             get(map).setZoom(get(map).getZoom() - 2);
@@ -169,9 +168,9 @@ export async function loadResultMap(playersLat, playersLong) {
 
     // Place the "correct" marker reflecting the target location
     let destinationMarker = new google.maps.Marker({
-        position: { lat: get(currentLocationLatitude), lng: get(currentLocationLongitude) },
+        position: { lat: correctLat, lng: correctLong },
         map: get(map),
-        icon: greenIcon
+        icon: resultIcon
     });
 
     addedMarkers.update((markers) => {
@@ -180,16 +179,16 @@ export async function loadResultMap(playersLat, playersLong) {
     });
 
     // Fly to the destination marker after a delay
-    setTimeout(flyToDestination, 1500);
+    setTimeout(() => flyToLocation(correctLat, correctLong), 1500);
 }
 
-function flyToDestination() {
+function flyToLocation(lat, long) {
     // Check if EndOverlay is fully visible before flying to the destination
     if (get(resultScreenEnabled)) {
         let currentZoom = get(map).getZoom();
         let newZoom = Math.min(currentZoom + 2, get(map).maxZoom || 21); // Adjust 2 to the desired zoom increment and 21 to the max zoom level if you have a custom max
 
-        let latLng = { lat: get(currentLocationLatitude), lng: get(currentLocationLongitude) };
+        let latLng = { lat: correctLat, lng: correctLong };
 
         get(map).setZoom(newZoom);
         get(map).setCenter(latLng);

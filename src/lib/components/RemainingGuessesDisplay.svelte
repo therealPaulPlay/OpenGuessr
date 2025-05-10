@@ -1,6 +1,6 @@
 <!-- For Multiplayer - Shows, who still hasn't guessed -->
 <script>
-	import { peer, remainingPlayers } from "$lib/stores/context-specific/multiplayerStore";
+	import { socket, remainingPlayers } from "$lib/stores/context-specific/multiplayerStore";
 	import { fade } from "svelte/transition";
 
 	// Format the waiting message based on number of remaining players
@@ -28,7 +28,7 @@
 	);
 </script>
 
-{#if $remainingPlayers.length > 0 && $peer?.getStorage?.confirmedArray?.includes($peer?.id)}
+{#if $remainingPlayers.length > 0 && $socket?.getStorage?.confirmedArray?.includes($socket?.id)}
 	<div class="remainingGuessesDisplay" transition:fade={{ duration: 250 }}>
 		<p transition:fade={{ duration: 250 }}>
 			<span class="dimmed">{waitingMessage.prefix}</span>

@@ -1,6 +1,6 @@
 import { resultScreenEnabled, distanceText, motivationText } from "$lib/stores/context-specific/resultScreenStore";
 import { calculateDistances, compareDistances } from "$lib/utils/distanceFunctions";
-import { countryGuesser } from "$lib/stores/modeStore";
+import { countryGuessr } from "$lib/stores/modeStore";
 import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuesserStore";
 import { refreshPlacements } from "$lib/utils/ads";
 import { playSound } from "$lib/utils/soundManager";
@@ -14,6 +14,7 @@ import { shrinkMapIfMobile } from "./shrinkMinimapIfMobile";
 import { timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { showSlideup } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { supporterSlideupProbability } from "./showSupporterSlideup";
+import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 
 export async function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (!get(resultScreenEnabled)) {
@@ -31,7 +32,7 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
         distanceText.set(resultString);
         motivationText.set(extraMessage);
 
-        if (get(countryGuesser)) {
+        if (get(countryGuessr)) {
             if (checkIfGuessWasCorrect()) {
                 distanceText.set("Correct!");
                 motivationText.set("The country is " + get(selectedCountryGuesserCountry) + ".");
@@ -42,7 +43,7 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
         }
 
         // Load result on the map
-        loadResultMap(guessLat, guessLong);
+        loadResultMap(guessLat, guessLong, get(currentLocationLatitude), get(currentLocationLongitude));
         playSound("confirm");
         refreshPlacements();
 

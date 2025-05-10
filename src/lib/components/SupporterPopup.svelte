@@ -9,6 +9,7 @@
 	import { onMount } from "svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { Clock9 } from "lucide-svelte";
 
 	const basePrices = [2.99, 6.99, 14.99, 24.99];
 
@@ -180,7 +181,7 @@
 		</div>
 		<div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
 			<div id="adTierBox" class="adTierBox supporterArea" class:adTierBoxDisabled={$freeSupporterBoostEnabled}>
-				<img alt="time limited" id="adBoostTimeLimitIcon" src="/img/time_limited.png" />
+				<Clock9 strokeWidth={2.25} size={24} color="white" style="opacity: 50%; margin-left: 5px; margin-right: 3px;" />
 				<p id="freeSupporterBoostText" bind:textContent={freeSupporterBoostText} contenteditable="false"></p>
 				<button
 					id="freeSupporterBoost"
@@ -448,14 +449,6 @@
 
 	.supporterBox p {
 		padding: 7px;
-	}
-
-	#adBoostTimeLimitIcon {
-		width: 30px;
-		height: 30px;
-		margin-left: 5px;
-		opacity: 0.5;
-		margin-top: 1px;
 	}
 
 	#supporterInfoText {

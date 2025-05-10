@@ -41,6 +41,7 @@
 		height: 100%;
 		background-color: rgba(0, 0, 0, 0.2);
 		position: relative;
+		border-radius: 10px;
 	}
 
 	#pageBrowserLoading {
@@ -62,7 +63,7 @@
 		overflow: hidden;
 		background: transparent;
 		outline: 5px solid rgba(75, 75, 75, 0.25);
-		border-radius: 5px;
+		border-radius: 10px;
 		position: relative;
 		z-index: 2;
 	}

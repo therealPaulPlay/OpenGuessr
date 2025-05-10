@@ -6,6 +6,7 @@
 	let { children } = $props();
 
 	// Component Imports
+	import { playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 	import LoadingFade from "$lib/components/LoadingFade.svelte";
 	import ImageGuesser from "$lib/components/ImageGuesser.svelte";
 	import ErrorPopup from "$lib/components/ErrorPopup.svelte";
@@ -46,8 +47,8 @@
 	import ReportIframePopup from "$lib/components/ReportIframePopup.svelte";
 	import FlagPickerPopup from "$lib/components/FlagPickerPopup.svelte";
 	import DivisionMatchHistoryPopup from "$lib/components/DivisionMatchHistoryPopup.svelte";
-	import { playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 	import MusicController from "$lib/components/MusicController.svelte";
+	import GuestNamePickerPopup from "$lib/components/GuestNamePickerPopup.svelte";
 
 	// Start ads
 	onMount(() => {
@@ -59,13 +60,11 @@
 			document.addEventListener("keydown", function (event) {
 				var tag = event.target.tagName.toLowerCase();
 				if (event.key === "Enter" || event.key === " ") {
-					if (tag === "button") {
-						event.preventDefault();
-					}
+					if (tag === "button") event.preventDefault();
 				}
 			});
 		} catch (error) {
-			console.warn("Error during keydown listener to prevent unwanted last button press:", error);
+			console.warn("Error adding keydown listener to prevent unwanted last button press:", error);
 		}
 	});
 
@@ -139,6 +138,7 @@
 <SingleplayerOptions />
 <DiscordPopup />
 <LinkJoinPopup />
+<GuestNamePickerPopup />
 <ResultScreen />
 <BlinkRestrictionFade />
 <LittleTimeVignette />

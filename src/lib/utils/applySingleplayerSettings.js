@@ -19,19 +19,13 @@ let startHardModePromise;
 export function applySingleplayerSettings() {
     // Disable all here, then enable what should be enabled
     timerCountdownOverlay.set(false);
-
-    try {
-        timer.stopTimer();
-    } catch { }
+    try { timer.stopTimer() } catch { }
 
     clearTimeout(timeoutVariable);
     clearTimeout(startTimeoutVariable);
     clearInterval(intervalTimeoutVariable);
 
-    // Now, enable what's needed if in Singleplayer
     if (get(singleplayer)) {
-
-        // Timer
         if (get(singleplayerTimeout)) {
             mapModeIndicatorVisible.set(true);
             modeText.set("Singleplayer");
@@ -56,7 +50,6 @@ export function applySingleplayerSettings() {
 
             startHardModePromise.then(function () {
                 timerCountdownOverlay.set(false);
-
                 timer = startTimer(get(singleplayerTimeout), () => {
                     timerCountdownOverlay.set(true);
                     timerCountdownOverlayTitle.set("The time is up!");
@@ -67,11 +60,7 @@ export function applySingleplayerSettings() {
             mapModeIndicatorVisible.set(false); // Hide MapMpdeIndicator
         }
 
-
-        // Reset restriction
-        setRestriction("standard");
-
-        // If NMPZ
-        if (get(isSingleplayerNMPZ)) setRestriction("nmpz");
+        // Set singleplayer restriction
+        (get(isSingleplayerNMPZ)) ? setRestriction("nmpz") : setRestriction("standard");
     }
 }

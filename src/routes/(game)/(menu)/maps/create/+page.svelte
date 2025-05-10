@@ -119,7 +119,7 @@
 			<li>A maximum of 2,000 locations is recommended, up to 15,000 are possible.</li>
 		</ul>
 	</div>
-	<div id="inputArea">
+	<div class="inputArea">
 		<p class="marginTop">Map name:</p>
 		<input
 			id="uploadMapName"
@@ -165,12 +165,11 @@
 			class="uploadInfo locationTextbox"
 			type="text"
 			rows="20"
-			placeholder="
-      https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
+			placeholder="https://www.google.de/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=!3m6!1e1!3m4!1sux2El-iXh3zIk2rVfhDP5w!2e0!7i13312!8i6656?coh=205409&entry=ttu
       
-      https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6!1e1!3m4!1scgVGr1HY1alolDg8gfwrzA!2e0!7i16384!8i8192?coh=205409&entry=ttu
+https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6!1e1!3m4!1scgVGr1HY1alolDg8gfwrzA!2e0!7i16384!8i8192?coh=205409&entry=ttu
       
-      https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu"
+https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu"
 			maxlength="5000000"
 		></textarea>
 		<div class="infoNoteBox infoNoteBoxConverter">
@@ -209,7 +208,7 @@
 			<p id="fileName">{fileName}</p>
 		</button>
 	</div>
-	<div class="buttonBoxRight fullWidth noMarginTop">
+	<div class="buttonBoxRight fullWidth">
 		<button
 			id="uploadConfirm"
 			class="standardButton closeButton submitButton"
@@ -225,7 +224,7 @@
 	</div>
 	{#if jsonPopup}
 		<Popup verySlim={true}>
-			<h1 class="popup-title">JSON Format</h1>
+			<h1 class="popup-title">JSON format</h1>
 			<p id="jsonFormatTextInfo">
 				OpenGuessr uses a JSON format to load its locations. Here is an example of how that looks like:
 			</p>
@@ -304,7 +303,8 @@
 
 	.submitButton {
 		border-radius: 10px;
-		margin-top: 5px;
+		margin-top: var(--box-margin);
+		margin-bottom: var(--layout-margin);
 	}
 
 	.infoNoteBox {
@@ -328,7 +328,7 @@
 		flex-direction: column;
 	}
 
-	#inputArea {
+	.inputArea {
 		display: flex;
 		justify-content: flex-start;
 		flex-direction: column;
@@ -338,30 +338,26 @@
 
 	.uploadInfo {
 		border-radius: 10px;
-		outline: none;
-		background-color: rgba(255, 255, 255, 0.1);
-		color: white;
 		width: 75%;
-		font-size: 22px;
 		min-height: 30px;
-		font-family: Barlow;
 		border: none;
 		padding: 10px;
 		padding-inline: 20px;
 		margin-bottom: 20px;
-		margin-top: 10px;
-		transition: background-color 250ms ease;
-	}
-
-	.uploadInfo:focus {
-		background-color: rgba(255, 255, 255, 0.2);
+		margin-top: var(--box-margin);
+		color: white;
 	}
 
 	.locationTextbox {
 		min-height: 350px;
 		font-size: 16px;
 		width: calc(100% - 30px);
-		padding: 15px;
+		padding: 20px;
+		transition: background-color 250ms ease;
+	}
+
+	.locationTextbox:focus {
+		background-color: rgba(255, 255, 255, 0.2);
 	}
 
 	.marginTop {
@@ -407,9 +403,5 @@
 
 	#uploadMapData {
 		margin-bottom: 5px;
-	}
-
-	.noMarginTop {
-		margin-top: 0;
 	}
 </style>

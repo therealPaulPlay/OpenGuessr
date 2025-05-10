@@ -439,8 +439,8 @@
 
 	.randomizeLocationButton {
 		position: absolute;
-		top: 15px;
-		right: 15px;
+		top: var(--layout-margin);
+		right: var(--layout-margin);
 		background-color: rgba(32, 32, 32, 0.75);
 		backdrop-filter: blur(5px);
 	}

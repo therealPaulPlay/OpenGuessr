@@ -1,13 +1,16 @@
-import { writable } from "svelte/store";
+import { writable, derived } from "svelte/store";
+import { get } from "svelte/store";
 
 // Modes
-export const imageGuesser = writable(false);
-export const countryGuesser = writable(false);
+export const imageGuessr = writable(false);
+export const countryGuessr = writable(false);
 
 // Singleplayer, Multiplayer or Competition
-export const singleplayer = writable(true);
 export const multiplayer = writable(false);
 export const competition = writable(false);
+export const singleplayer = derived([multiplayer, competition], ([$multiplayer, $competition]) => {
+    return !($multiplayer || $competition);
+});
 
 // Mode Options -----------------------------------------------------
 

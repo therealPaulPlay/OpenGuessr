@@ -2,7 +2,7 @@ import { errorPopup } from "$lib/utils/errorHandling";
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
-import { peer } from "$lib/stores/context-specific/multiplayerStore";
+import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { accountUrl, locationUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { showNotification } from "$lib/utils/notifications";
@@ -14,7 +14,7 @@ export async function getLocationCoordinates(type) {
     } else if (type == "SDK") {
         return await getCoordsFromLocationServer();
     } else if (type == "FROMHOST") {
-        return get(peer)?.getStorage?.location;
+        return get(socket)?.getStorage?.location;
     } else if (type == "COMMUNITY") {
         return await getCommunityMapCoordinates();
     } else if (type == "COMPETITION") {

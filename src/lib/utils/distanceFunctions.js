@@ -1,5 +1,5 @@
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
-import { multiplayer, countryGuesser } from "$lib/stores/modeStore";
+import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
@@ -50,7 +50,7 @@ export function compareDistances(distance) {
     //Ddistance number formatting (km or m)
     resultAsString = formatDistance(distance);
 
-    if (countryGuesser && !multiplayer) {
+    if (countryGuessr && !multiplayer) {
         if (checkIfGuessWasCorrect()) {
             extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
         } else {

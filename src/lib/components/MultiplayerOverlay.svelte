@@ -8,7 +8,7 @@
 		overlayTitleElement,
 		multiplayerTableArray,
 		teamAmount,
-		peer,
+		socket,
 		overlayShowSubtitle,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import Badge from "$lib/components/Badge.svelte";
@@ -28,7 +28,7 @@
 	{#if $overlayShowSubtitle}
 		<h2 class="multiplayerTitle">1.5x Multiplier</h2>
 	{/if}
-	<div id="multiplayerTable">
+	<div class="multiplayerTable">
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		{#if $multiplayerTableArray.length > 0}
 			{#if $teamAmount > 1}
@@ -38,7 +38,7 @@
 						<div
 							transition:slide
 							class="multiplayerOverlayEntry"
-							class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peer)?.id}
+							class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(socket)?.id}
 							style:background-image={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
 						>
 							<div class="multiplayerEntryPlayerInfo">
@@ -53,14 +53,15 @@
 										}
 									}}
 								>
-									{username} ({elo || "Error"} Elo)
-									<div class="multiplayerBadge">
-										{#if badge}
-											<Badge interactive={false} display={true} id={badge} />
-										{/if}
-									</div>
+									<span class="usernameSpan">{username}</span>
+									{#if badge}
+										<Badge interactive={false} display={true} id={badge} />
+									{/if}
+									{#if id}
+										{@render eloDisplay(elo)}
+									{/if}
 								</div>
-								<div class="multiplayerEntryPlayerScore">Score: {score?.toLocaleString()}</div>
+								<div class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</div>
 							</div>
 						</div>
 					{/each}
@@ -71,7 +72,7 @@
 					<div
 						transition:slide
 						class="multiplayerOverlayEntry"
-						class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(peer)?.id}
+						class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(socket)?.id}
 					>
 						<div class="multiplayerEntryPlayerInfo">
 							<div
@@ -85,14 +86,15 @@
 									}
 								}}
 							>
-								{username} ({elo || 0} Elo)
-								<div class="multiplayerBadge">
-									{#if badge}
-										<Badge interactive={false} display={true} id={badge} />
-									{/if}
-								</div>
+								<span class="usernameSpan">{username}</span>
+								{#if badge}
+									<Badge interactive={false} display={true} id={badge} />
+								{/if}
+								{#if id}
+									{@render eloDisplay(elo)}
+								{/if}
 							</div>
-							<div class="multiplayerEntryPlayerScore">Score: {score?.toLocaleString()}</div>
+							<div class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</div>
 						</div>
 					</div>
 				{/each}
@@ -103,10 +105,10 @@
 	{#if $rematchButtonVisible}
 		<button
 			id="endMultiplayerRematchButton"
-			class="standardButton"
+			class="standardButton white"
 			onclick={() => {
 				playSound("basic_button");
-				get(peer)?.updateStorage("rematch", true);
+				get(socket)?.updateStorage("rematch", true);
 			}}>Play again</button
 		>
 	{/if}
@@ -121,6 +123,12 @@
 		>
 	{/if}
 </div>
+
+{#snippet eloDisplay(elo)}
+	<div class="eloDisplay">
+		<p>{elo || "Error"} Elo</p>
+	</div>
+{/snippet}
 
 <style>
 	#multiplayerFade {
@@ -143,32 +151,44 @@
 		user-select: none;
 	}
 
+	.usernameSpan {
+		margin-right: 3px;
+	}
+
+	.eloDisplay {
+		padding: 7px;
+		border-radius: 5px;
+		font-style: italic;
+		position: relative;
+		color: white;
+		text-wrap: nowrap;
+		padding-inline: 10px;
+		box-sizing: border-box;
+		user-select: none;
+		background-color: rgba(255, 255, 255, 0.15);
+	}
+
+	.eloDisplay p {
+		font-size: 20px !important;
+	}
+
 	.buttonSpacer {
 		width: 100%;
-		height: 20px;
-	}
-
-	.multiplayerBadge {
-		width: fit-content;
-	}
-
-	:global(.multiplayerBadge p) {
-		font-size: 20px !important;
+		height: 25px;
 	}
 
 	#endMultiplayerRoundButton {
 		min-width: 150px;
 		height: 50px;
-		font-size: 25px;
-		margin-top: 10px;
+		margin-top: var(--layout-margin);
+		border-radius: 10px;
 	}
 
 	#endMultiplayerRematchButton {
 		min-width: 150px;
 		height: 50px;
-		font-size: 25px;
-		color: white;
-		background-color: rgba(255, 255, 255, 0.2);
+		border-radius: 10px;
+		margin-bottom: 0;
 	}
 
 	.multiplayerTitle {
@@ -195,12 +215,12 @@
 	}
 
 	:global(#multiplayerFade p),
-	:global(#multiplayerTable p) {
+	:global(.multiplayerTable p) {
 		font-size: 30px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 	}
 
-	#multiplayerTable {
+	.multiplayerTable {
 		display: flex;
 		justify-content: safe center;
 		align-items: safe flex-start;
@@ -212,12 +232,12 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		flex-direction: column;
-		gap: var(--box-margin);
+		gap: var(--layout-margin);
 	}
 
 	.multiplayerOverlayEntry {
 		background-color: rgba(0, 0, 0, 0.1);
-		border-radius: 5px;
+		border-radius: var(--box-margin);
 		width: 100%;
 	}
 
@@ -244,8 +264,9 @@
 		user-select: none;
 		display: flex;
 		align-items: center;
-		gap: var(--box-margin);
+		gap: var(--box-margin-buttons);
 		overflow: hidden;
+		mask-image: linear-gradient(to right, black 95%, transparent 100%);
 	}
 
 	.multiplayerEntryPlayerName:hover {
@@ -257,6 +278,6 @@
 	}
 
 	.multiplayerEntryPlayerScore {
-		margin-left: 10px;
+		margin-left: var(--box-margin);
 	}
 </style>

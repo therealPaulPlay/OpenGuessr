@@ -1,7 +1,7 @@
 // This generates a new location, but keep in mind that this is NOT the function to present the user with a new location! This does not check the selected map etc.
 import { getLocationCoordinates } from '$lib/logic/locationGeneration';
-import { peer } from "$lib/stores/context-specific/multiplayerStore"
-import { countryGuesser, multiplayer, imageGuesser } from "$lib/stores/modeStore";
+import { socket } from "$lib/stores/context-specific/multiplayerStore"
+import { countryGuessr, multiplayer, imageGuessr } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from '$lib/stores/locationStore';
 import { setCountryGuesserCountry } from '$lib/utils/countryGuesserFunctions';
 import { loadPanorama } from '$lib/utils/loadPanorama';
@@ -11,7 +11,6 @@ import { resetMap } from '$lib/logic/miniMap';
 import { resultScreenEnabled } from '$lib/stores/context-specific/resultScreenStore';
 
 // Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
-
 export async function generateNewLocation(type) {
     let newLocationArray;
 
@@ -25,11 +24,13 @@ export async function generateNewLocation(type) {
         currentLocationLatitude.set(Number(newLocationArray[0]));
         currentLocationLongitude.set(Number(newLocationArray[1]));
 
-        if (get(countryGuesser) && !get(multiplayer)) {
+        // Set country guesser country
+        if (get(countryGuessr) && !get(multiplayer)) {
             setCountryGuesserCountry(newLocationArray[2]);
         }
 
-        if (get(imageGuesser) && !get(multiplayer)) {
+        // Set image guesser image
+        if (get(imageGuessr) && !get(multiplayer)) {
             loadImageFromUrl(newLocationArray[2]);
         }
 
@@ -38,7 +39,5 @@ export async function generateNewLocation(type) {
     }
 
     loadPanorama(get(currentLocationLatitude), get(currentLocationLongitude));
-
-    // Rest Map
-    if (!get(resultScreenEnabled)) resetMap();
+    if (!get(resultScreenEnabled)) resetMap(); // Reset Map
 }

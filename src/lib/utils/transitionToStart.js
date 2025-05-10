@@ -2,8 +2,8 @@
 import { socialPopupProbability } from "$lib/utils/socialPopupProbability";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 import { disableResultScreen } from "$lib/utils/setResultScreen";
-import { multiplayer, singleplayer } from "$lib/stores/modeStore";
-import { peer, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayer } from "$lib/stores/modeStore";
+import { socket, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
 import { get } from "svelte/store";
 
 export function transitionToStart() {
@@ -12,7 +12,7 @@ export function transitionToStart() {
     disableResultScreen();
   }
 
-  if (get(multiplayer)) get(peer)?.updateStorage("showResult", false); // Disable result screen
+  if (get(multiplayer)) get(socket)?.updateStorage("showResult", false); // Disable result screen
 
   if (!get(multiplayer)) setTimeout(socialPopupProbability, 650); // Social Media CTA (too stressful in multiplayer)
 }

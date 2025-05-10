@@ -5,18 +5,18 @@ import inIframe from "$lib/utils/checkIframe";
 import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
-export const backendURL = get(accountUrl) + "/accounts";
-export const loginEndpoint = `${backendURL}/login`;
-export const deleteAccountEndpoint = `${backendURL}/delete`;
-export const registrationEndpoint = `${backendURL}/register`;
-export const userUpdateEndpoint = `${backendURL}/update`;
-export const userGetEndpoint = `${backendURL}/user`;
-export const leaderboardEndpoint = `${backendURL}/leaderboard`;
-export const userLeaderboardEndpoint = `${backendURL}/user-leaderboard`;
-export const passwordResetEmailEndpoint = `${backendURL}/reset-password-request`;
-export const passwordChangeEndpoint = `${backendURL}/reset-password`;
-export const supporterLeaderboardEndpoint = `${backendURL}/supporter-leaderboard`;
-export const eloLeaderboardEndpoint = `${backendURL}/elo-leaderboard`;
+const backendURL = get(accountUrl) + "/accounts";
+const loginEndpoint = `${backendURL}/login`;
+const deleteAccountEndpoint = `${backendURL}/delete`;
+const registrationEndpoint = `${backendURL}/register`;
+const userUpdateEndpoint = `${backendURL}/update`;
+const userGetEndpoint = `${backendURL}/user`;
+const leaderboardEndpoint = `${backendURL}/leaderboard`;
+const userLeaderboardEndpoint = `${backendURL}/user-leaderboard`;
+const passwordResetEmailEndpoint = `${backendURL}/reset-password-request`;
+const passwordChangeEndpoint = `${backendURL}/reset-password`;
+const supporterLeaderboardEndpoint = `${backendURL}/supporter-leaderboard`;
+const eloLeaderboardEndpoint = `${backendURL}/elo-leaderboard`;
 
 // Login and registration -----------------------------------------------------------------------------------
 export async function loginUser(email, password, errorSource, errorElement) {
@@ -301,10 +301,10 @@ export async function getSupporterLeaderboard() {
     if (response.ok) {
       const data = await response.json();
       return data;
-
     } else {
       console.error('Fetch failed:', response.status);
     }
+    
   } catch (error) {
     console.error('Error occurred while fetching the user: ', error);
   }
@@ -406,25 +406,16 @@ export async function updateUsername(token, id, requestedUsername, errorSource, 
 let timeout;
 
 export function displayError(error, source, errorMessageElement, errorMsg) {
-  if (!error) {
-    error = "";
-  }
-
-  if (!errorMsg) {
-    errorMsg = "";
-  }
+  if (!error) error = "";
+  if (!errorMsg) errorMsg = "";
 
   if (source == "signup") {
-
-    if (!errorMessageElement) {
-      console.error("No errorMessageElement in displayError function! Needed for Signup-Page errors.");
-      return;
-    }
+    if (!errorMessageElement) return console.error("No errorMessageElement in displayError function! Needed for Signup-Page errors.");
 
     try {
       errorMessageElement.innerHTML = error + " - " + errorMsg;
 
-      // make error message visible in case it isn't
+      // Make error message visible in case it isn't
       clearTimeout(timeout);
       errorMessageElement.style.maxHeight = "100px";
       errorMessageElement.style.marginTop = "20px";
@@ -432,9 +423,7 @@ export function displayError(error, source, errorMessageElement, errorMsg) {
       errorMessageElement.style.opacity = "1";
       errorMessageElement.style.color = "#ffaeae";
 
-      if (!errorMsg) {
-        errorMessageElement.innerHTML = error;
-      }
+      if (!errorMsg) errorMessageElement.innerHTML = error;
 
       timeout = setTimeout(() => {
         errorMessageElement.style.maxHeight = "0";
@@ -445,14 +434,11 @@ export function displayError(error, source, errorMessageElement, errorMsg) {
 
   } else if (source == "index") {
     if (!errorMsg) {
-      errorPopup("Account Backend Error", "The API reports an unknown error. Please check your internet connection and the site's server status.", error, false);
+      errorPopup("Backend error", "The API reports an unknown error. Please check your internet connection and the site's server status.", error, false);
     } else {
-      errorPopup("Account Backend Error", "Error: " + errorMsg, error, false);
+      errorPopup("Backend error", errorMsg, error, false);
     }
 
-  } else {
-    //error will be displayed anyway - see functions above
-    console.log("No element for displaying the error passed as an argument.");
   }
 }
 
