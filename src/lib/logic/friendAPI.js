@@ -231,9 +231,7 @@ export async function acceptDuelInvite(recipientId) {
             body: JSON.stringify(requestBody)
         });
 
-        if (response.ok) {
-
-        } else {
+        if (!response.ok) {
             const data = await response.json();
             console.error("Error accepting invite: " + response.status);
             errorPopup("Error accepting invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
@@ -261,9 +259,7 @@ export async function declineMatchInvite(recipientId) {
             body: JSON.stringify(requestBody)
         });
 
-        if (response.ok) {
-
-        } else {
+        if (!response.ok) {
             const data = await response.json();
             console.error("Error declining invite: " + response.status);
             errorPopup("Error declining invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
