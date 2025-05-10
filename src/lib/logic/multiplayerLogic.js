@@ -44,7 +44,7 @@ import { signupPrompt } from "$lib/utils/signupPrompt";
 import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
-export function getTeamFromPeerId(id) {
+export function getTeamFromMultiplayerId(id) {
     const playerArray = get(socket)?.getStorage?.players?.find(item => item[0] === id);
     return playerArray?.[4];
 }
@@ -90,7 +90,7 @@ export function addMultiplayerGuessMarker() {
     // Remove previous guess entry (if exists)
     const yourElement = get(socket)?.getStorage?.guessLocationsArray?.find((element) => element.id == get(socket)?.id);
     if (yourElement) get(socket)?.updateStorageArray("guessLocationsArray", "remove-matching", yourElement);
-    get(socket)?.updateStorageArray("guessLocationsArray", "add", { id: get(socket)?.id, lat: get(mapPinLat), long: get(mapPinLng), pin: get(selectedPinIndex), username: get(username) || get(guestName), team: getTeamFromPeerId(get(socket)?.id) });
+    get(socket)?.updateStorageArray("guessLocationsArray", "add", { id: get(socket)?.id, lat: get(mapPinLat), long: get(mapPinLng), pin: get(selectedPinIndex), username: get(username) || get(guestName), team: getTeamFromMultiplayerId(get(socket)?.id) });
 }
 
 export function updateMultiplayerScore(addScore) {
