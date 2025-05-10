@@ -105,7 +105,7 @@
 								sendFriendRequest(entry.id, e.target);
 							}}
 						>
-							Friend request <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
+							Add <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
 						</button>
 					</div>
 				{/each}
@@ -185,7 +185,7 @@
 	}
 
 	.entryName {
-		max-width: 50%;
+		max-width: 60%;
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
