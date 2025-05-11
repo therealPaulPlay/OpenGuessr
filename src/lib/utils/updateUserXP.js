@@ -3,11 +3,11 @@ import { experience } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
 import { errorPopup } from "./errorHandling";
 
-export async function addUserXP(addExperience = 0) {
+export async function addUserXP(addExperience) {
     try {
         const requestBody = {
             id: localStorage.getItem("id"),
-            addedExperience: addExperience
+            experience: addExperience
         };
 
         // Make the PUT request using Fetch API
