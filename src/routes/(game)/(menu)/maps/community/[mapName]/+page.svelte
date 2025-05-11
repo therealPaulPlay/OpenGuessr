@@ -306,7 +306,7 @@
 			<div class="pinIconContainer">
 				<MapPin size={100} strokeWidth={0.75} />
 			</div>
-			<h2 class="locationAmountText">{mapLocationAmount.toLocaleString()} Locations</h2>
+			<p class="locationAmountText">{mapLocationAmount.toLocaleString()} Locations</p>
 		</div>
 		<div class="descriptionInfo infoElement">
 			<div class="descriptionScroll">

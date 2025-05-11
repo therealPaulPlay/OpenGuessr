@@ -237,39 +237,6 @@ export async function getUser(token, id, errorSource, errorElement) {
   }
 }
 
-export async function updateExperience(token, id, experienceParam, errorSource, errorElement) {
-  try {
-    const requestBody = {
-      id: id,
-      experience: experienceParam
-    };
-
-    const experienceEndpoint = userUpdateEndpoint + "/experience";
-    // Make the PUT request using Fetch API
-    const response = await fetch(experienceEndpoint, {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${token}`
-      },
-      body: JSON.stringify(requestBody)
-    });
-
-    // Check if the response is successful
-    if (response.ok) {
-      const data = await response.json();
-      experience.set(data?.user?.experience);
-    } else {
-      let responseError = await attemptExtractErrorFromResponse(response);
-      console.error('User update failed:', response.status);
-      displayError("User update failed: " + response.status, errorSource, errorElement, responseError);
-    }
-  } catch (error) {
-    console.error('Error occurred during user update: ', error);
-    displayError("Error occured during user update: " + error, errorSource, errorElement);
-  }
-}
-
 export async function updateUsername(token, id, requestedUsername, errorSource, errorElement) {
   try {
 
