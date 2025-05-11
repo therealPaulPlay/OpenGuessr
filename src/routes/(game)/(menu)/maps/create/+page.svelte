@@ -103,11 +103,11 @@
 </script>
 
 <svelte:head>
-	<title>Create a Map</title>
+	<title>Create a map</title>
 </svelte:head>
 
 <div class="mainContainer">
-	<h1 class="header" id="uploadHeader">Create a Map</h1>
+	<h1 class="header" id="uploadHeader">Create a map</h1>
 	<div class="infoNoteBox">
 		<h2 class="uploadFirstText">Important rules:</h2>
 		<ul>

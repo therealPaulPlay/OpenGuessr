@@ -135,7 +135,7 @@
 
 	// Leaderboard ---------------------------------------------------------------------------------------------------------
 	let leaderboardPopup = $state(false);
-	let showRatingsBox = $state(false);
+	let showRatingBox = $state(false);
 	let leaderboardCompetitionId;
 
 	function openLeaderboard(id, showRatingBox) {
@@ -256,7 +256,6 @@
 	});
 
 	// Load competitions ----------------------------------------------------------------------------------------------------------------------------
-
 	let notExpiredIndex = 0;
 	let expiredIndex = 0;
 
@@ -407,9 +406,9 @@
 	let ratingsButtonBox = $state(false);
 
 	function displayRatingBox() {
-		showRatingsBox = true;
+		showRatingBox = true;
 		ratingsButtonBox = true;
-		ratingText = "Rate this competition.";
+		ratingText = "Consider rating this competition.";
 	}
 
 	async function submitRating(factor) {
@@ -451,7 +450,7 @@
 {#if leaderboardPopup}
 	<Popup slim={true}>
 		<div class="popup-title">
-			<h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for {leaderboardName}</h1>
+			<h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for <i>{leaderboardName}</i></h1>
 		</div>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -503,9 +502,9 @@
 				</div>
 			{/if}
 		</div>
-		{#if showRatingsBox}
+		{#if showRatingBox}
 			<div id="ratingBox">
-				<p id="ratingText">{ratingText}</p>
+				<p id="ratingText">{ratingText || "Default rating text."}</p>
 				{#if ratingsButtonBox}
 					<div class="ratingButtonBox" id="ratingButtonBox">
 						<button
@@ -547,7 +546,7 @@
 			class="standardButton white closeButton"
 			onclick={() => {
 				playSound("basic_button");
-				showRatingsBox = false;
+				showRatingBox = false;
 				leaderboardPopup = false;
 			}}>Close</button
 		>
@@ -624,7 +623,6 @@
 			role="button"
 			tabindex="0"
 			onclick={() => {
-				playSound("basic_button");
 				showConfirmPopup("About", description, false, false, false, true);
 			}}
 		>
@@ -722,7 +720,7 @@
 				<input
 					id="competitionSearch"
 					bind:value={searchQuery}
-					placeholder="Search competitions..."
+					placeholder="Search competitions"
 					onkeydown={(event) => {
 						if (event.key === "Enter") {
 							event.preventDefault();
@@ -1234,22 +1232,22 @@
 		margin-top: var(--layout-margin);
 		padding: var(--box-margin-buttons);
 		gap: var(--box-margin-buttons);
-		width: calc(100% - 10px);
+		width: calc(100% - calc(var(--box-margin-buttons * 2)));
 	}
 
 	#ratingBox p {
-		padding-inline: 5px;
+		padding-inline: var(--box-margin-buttons);
+		opacity: 0.5;
 	}
 
 	.rateButton {
 		background-color: rgba(255, 255, 255, 0.2);
 		padding-inline: 5px;
-		margin: 0;
 	}
 
 	.ratingButtonBox {
 		display: flex;
-		gap: 5px;
+		gap: var(--box-gap-buttons);
 		justify-content: center;
 		align-items: center;
 	}

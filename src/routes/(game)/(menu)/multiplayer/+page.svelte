@@ -212,7 +212,13 @@
 	<DuelDivisionDisplay />
 	<!-- Division leaderboard -->
 	<div class="leaderboardSection">
-		<button class="sectionButton" onclick={() => (isExpanded = !isExpanded)}>
+		<button
+			class="sectionButton"
+			onclick={() => {
+				isExpanded = !isExpanded;
+				playSound("floating_button");
+			}}
+		>
 			<span class="flexSectionSpan">
 				<img class="duelLeaderboardIcon" src="/img/leaderboards_icon.png" alt="duel leaderboard" />
 				<p>Leaderboard</p>
