@@ -210,7 +210,7 @@
 				randomLocationIndex = Number(Math.floor(Math.random() * mapLocationAmount));
 			}}
 		>
-			<Dices size={18}></Dices>
+			<Dices size={18} strokeWidth={2.75}></Dices>
 		</button>
 		<!-- svelte-ignore a11y_missing_attribute -->
 		<iframe class="mapIframe" referrerpolicy="no-referrer-when-downgrade" frameborder="0" src={iframeSource}></iframe>
@@ -464,7 +464,7 @@
 		padding: var(--box-margin);
 		flex-grow: 1;
 		height: 200px;
-		min-width: 300px;
+		min-width: 25%;
 		color: white;
 	}
 

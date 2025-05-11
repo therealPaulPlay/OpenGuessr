@@ -39,9 +39,9 @@
 					matchResults = { duels: [] };
 				}
 			} else {
-				console.error("Error loading match results: " + response.status);
+				console.error("Error loading history: " + response.status);
 				errorPopup(
-					"Error loading division matches",
+					"Error loading history",
 					"An error occurred loading matches in the division history popup.",
 					response.status,
 				);
@@ -49,8 +49,8 @@
 		} catch (error) {
 			console.error("Fetch/Network error occurred while loading match results: ", error);
 			errorPopup(
-				"Error loading matches (Network)",
-				"A network error occurred loading matches in the division history popup.",
+				"Error loading history (Network)",
+				"A network error occurred loading matches in the duel history popup.",
 				error,
 			);
 		}

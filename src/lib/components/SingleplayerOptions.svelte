@@ -247,7 +247,7 @@
 	}
 
 	.game-pitch-text {
-		margin-left: 5px;
+		margin-left: var(--box-margin-buttons);
 		text-wrap: nowrap;
 		flex-grow: 20;
 	}
@@ -280,7 +280,7 @@
 	}
 
 	.textMarginInline {
-		margin-inline: 5px;
+		margin-inline: var(--box-margin-buttons);
 	}
 
 	.timerTextBox {

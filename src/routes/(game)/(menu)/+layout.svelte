@@ -67,6 +67,7 @@
 		text-decoration: none;
 		line-height: 35px;
 		pointer-events: auto;
+		margin: 0;
 	}
 
 	.homeButtonIcon {
@@ -93,7 +94,7 @@
 		display: flex;
 		padding: 15px;
 		margin: 5px;
-		gap: 11px;
+		gap: var(--layout-margin);
 		z-index: 99;
 		pointer-events: none;
 	}
