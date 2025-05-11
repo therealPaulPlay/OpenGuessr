@@ -4,9 +4,8 @@
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
-	import { initMap } from "$lib/logic/miniMap";
+	import { initializeMapIfNotAlready } from "$lib/logic/miniMap";
 	import { get } from "svelte/store";
-	import { onMount } from "svelte";
 
 	let mapResizeTimeout;
 
@@ -29,24 +28,6 @@
 			}
 		}
 	}
-
-	function onMapHover() {
-		get(map).invalidateSize();
-	}
-
-	onMount(async () => {
-		const module = await import("leaflet");
-		// let L = module.default;
-		// window.L = L; seemingly, leaflet attaches L to the window element when being loaded anyway
-
-		initMap();
-
-		try {
-			new ResizeObserver(onMapHover).observe(document.getElementById("map"));
-		} catch (error) {
-			console.error("Resize oberser unsupported. Err: " + error);
-		}
-	});
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -60,6 +41,8 @@
 	onmouseleave={handleMapUnhover}
 	onkeyup={spaceBarGuess}
 	style:visibility={$mapVisible ? "" : "hidden"}
+	onmouseover={initializeMapIfNotAlready}
+	ontouchstart={initializeMapIfNotAlready}
 	style:max-height={$mapExpanded ? "100%" : "0%"}
 	class:mapFullOpacityResult={Boolean($resultScreenEnabled)}
 >
