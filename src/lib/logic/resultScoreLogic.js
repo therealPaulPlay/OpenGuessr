@@ -8,7 +8,7 @@ import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { updateMultiplayerScore } from "$lib/logic/multiplayerLogic";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
-import { setUserXP } from "$lib/utils/setUserXP";
+import { addUserXP } from "$lib/utils/updateUserXP";
 import { saveRoundToLog } from "$lib/utils/saveRoundToLog";
 import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates";
 import { playSound } from "$lib/utils/soundManager";
@@ -100,7 +100,6 @@ export async function loadResultScreenXP(distance) {
     let supporterMultiplier = 1;
     clearTimeout(animateSupporterBoostTimeout);
     showStreakDisplay.set(false);
-    let currentXP = Number(get(experience)) || 0;
 
     // Post-signin saves -----------------------------------------------------
     if (!get(isAuthenticated) && get(singleplayer)) {
@@ -141,7 +140,7 @@ export async function loadResultScreenXP(distance) {
     experienceBarAnimated.set(false);
     earnedExperience.set(earnedBasicXP || 0);
 
-    if (earnedXP > 0 && get(isAuthenticated)) setUserXP(currentXP + earnedXP); // Save XP to database
+    if (earnedXP > 0 && get(isAuthenticated)) addUserXP(earnedXP); // Save XP to database
     if (earnedBasicXP > 50 && get(isAuthenticated)) setTimeout(playScoreincreaseSound, 500);
     if (earnedXP > 0) experienceBarAnimated.set(true);
 

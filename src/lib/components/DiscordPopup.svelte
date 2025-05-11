@@ -1,6 +1,6 @@
 <script>
 	import { discordPopup } from "$lib/stores/uiStore";
-	import { setUserXP } from "$lib/utils/setUserXP";
+	import { addUserXP } from "$lib/utils/updateUserXP";
 	import Popup from "./ui/Popup.svelte";
 	import { experience } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -12,8 +12,8 @@
 
 		setTimeout(async function () {
 			closePopup();
-			await setUserXP(get(experience) + 7500);
-		}, 200);
+			await addUserXP(7500);
+		}, 250);
 	}
 
 	function closePopup() {
