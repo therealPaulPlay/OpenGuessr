@@ -12,6 +12,7 @@
 	import { Frown, Plus, Smile, TriangleAlert } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import Tabs from "$lib/components/ui/Tabs.svelte";
 
 	const competitionsEndpoint = $accountUrl + "/competitions";
 
@@ -743,17 +744,17 @@
 			>
 				<img src="/img/find_icon.png" alt="start search" id="searchIcon" />
 			</button>
-			<button
-				id="hideEntered"
-				class="standardButton white"
-				onclick={() => {
+			<Tabs
+				tabs={["All", "Not entered"]}
+				class="hideEnteredCompsToggle"
+				onchange={(_, selectionIndex) => {
 					playSound("basic_button");
 					activeCompetitionsData = []; // Reset loaded data
-					hideEntered = !hideEntered;
+					hideEntered = Boolean(selectionIndex); // 0 = false, 1 = true
 					notExpiredIndex = 0;
 					getCompetitionsFromServer(false, false, false, hideEntered);
-				}}>{hideEntered ? "Show entered" : "Hide entered"}</button
-			>
+				}}
+			/>
 		</search>
 	</div>
 	<div id="competitionArea" class="competitionArea">
@@ -1121,7 +1122,7 @@
 	}
 
 	search form {
-		width: 55%;
+		width: 45%;
 		margin: 2.5px;
 	}
 
@@ -1216,8 +1217,7 @@
 		cursor: pointer;
 	}
 
-	#hideEntered {
-		max-width: 35%;
+	:global(.hideEnteredCompsToggle) {
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}

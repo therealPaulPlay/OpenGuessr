@@ -111,7 +111,6 @@
 	}
 
 	.countryGuesserHolder:hover {
-		scale: 1.03;
 		filter: brightness(1.3);
 	}
 

@@ -66,7 +66,6 @@
 	);
 
 	// Fullscreen Setting ----------------------------------------------------
-
 	let fullscreenButtonText = $state("Fullscreen");
 
 	const fullscreenChangeCheck = function () {
@@ -82,13 +81,9 @@
 
 		try {
 			if (!document.fullscreenElement) {
-				if (document.documentElement.requestFullscreen) {
-					document.documentElement.requestFullscreen();
-				}
+				if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
 			} else {
-				if (document.exitFullscreen) {
-					document.exitFullscreen();
-				}
+				if (document.exitFullscreen) document.exitFullscreen();
 			}
 		} catch (error) {
 			console.error("Error entering / exiting fullscreen: " + error);
@@ -108,6 +103,7 @@
 				<p class="textMargin">Unit system</p>
 				<Tabs
 					tabs={["Metric", "Imperial"]}
+					class="settingsNoButtonMargin"
 					bind:selected={selectedUnit}
 					onchange={(tab) => {
 						playSound("basic_button");
@@ -146,7 +142,7 @@
 					/>
 					<p>{musicSliderBgPercentage}%</p>
 					<button
-						class="standardButton white creditsButton"
+						class="standardButton white creditsButton settingsNoButtonMargin"
 						onclick={() => {
 							playSound("basic_button");
 							showConfirmPopup(
@@ -166,7 +162,7 @@
 			{#if !$preventFullscreen}
 				<div class="settingsBox">
 					<p class="textMargin">View</p>
-					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
+					<button id="fullscreenButton" class="standardButton white settingsNoButtonMargin" onclick={toggleFullscreen}>
 						<span class="fullscreenIcon">
 							<Scan size="17" strokeWidth={3} />
 						</span>
@@ -177,7 +173,7 @@
 			<div class="settingsBox">
 				<p class="textMargin">Legal info</p>
 				<button
-					class="standardButton white"
+					class="standardButton white settingsNoButtonMargin"
 					id="privacyButton"
 					onclick={() => {
 						playSound("basic_button");
@@ -195,7 +191,6 @@
 		background-color: var(--box-color);
 		border-radius: 10px;
 		padding: var(--box-margin);
-		height: 80px;
 		overflow: hidden;
 		flex-grow: 1;
 		min-width: 150px;
@@ -214,6 +209,10 @@
 	.textMargin {
 		margin-inline: 5px;
 		margin-bottom: 10px;
+	}
+
+	:global(.settingsNoButtonMargin) {
+		margin: 0 !important;
 	}
 
 	.fullscreenIcon {
