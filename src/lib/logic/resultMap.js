@@ -85,10 +85,6 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
             markers = markers || [];
             return [...markers, polyline];
         });
-    } else {
-        // If Country Guessr is being played, show the destination zoomed out as the starting frame
-        get(map).setCenter({ lat: correctLat), lng: correctLong });
-        get(map).setZoom(3);
     }
 
     // Handle multiplayer markers --------------------------------------------------------------------------

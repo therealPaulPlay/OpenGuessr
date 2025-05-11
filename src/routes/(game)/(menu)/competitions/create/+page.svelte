@@ -53,7 +53,6 @@
 	}
 
 	// Get seconds from string time input -------------------------------------------------------------------------------
-
 	function convertToSeconds(input) {
 		try {
 			const pattern = /(\d+)\s*d|(\d+)\s*h|(\d+)\s*min|(\d+)\s*s|\d+/gi;
@@ -83,7 +82,6 @@
 	}
 
 	// Toggle Restrictions & Visibility ---------------------------------------------------------------------------------------------
-
 	let competitionRestrictionText = $state("Standard");
 
 	let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
@@ -98,7 +96,6 @@
 	}
 
 	// Submission function ------------------------------------------------------------------------------------------------------
-
 	async function submitCompetition(
 		name,
 		author,
@@ -181,6 +178,10 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Create a competition</title>
+</svelte:head>
+
 {#if successPopup}
 	<Popup verySlim={true}>
 		<h1 id="submitConfirmHeader" class="textHeaderLeft">Success!</h1>
@@ -221,7 +222,7 @@
 {/if}
 
 <div class="mainContainer">
-	<h1 class="header" id="uploadHeader">Create a Competition</h1>
+	<h1 class="header" id="uploadHeader">Create a competition</h1>
 	<div class="infoNoteBox">
 		<p class="uploadFirstText">Information and rules:</p>
 		<ul class="verticalMarginUl">

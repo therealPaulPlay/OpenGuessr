@@ -20,11 +20,10 @@ import { username } from "$lib/stores/accountStore";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
-
 let competitionCombinedScore = 0;
 let competitionTimer;
 
-// Called in category menu before generating so that these values are set before they are needed!
+// Called on the competition page when entering
 export function loadCompetition() {
     competitionRound.set(0); // Reset round index
     competitionCombinedScore = 0; // Reset combined score
@@ -72,9 +71,7 @@ export function checkStartCompetitionRound() {
 }
 
 export function stopCompetitionTimer() {
-    try {
-        competitionTimer.stopTimer();
-    } catch { }
+    try { competitionTimer.stopTimer(); } catch { }
 }
 
 // Score logic ------------------------------------------------------------------------------------------------------
@@ -124,13 +121,8 @@ async function submitCompetitionResult(id, score, supporterLevel, token) {
                 responseData = await response.json();
                 let errorMessages = [];
 
-                if (responseData.error) {
-                    errorMessages.push(responseData.error);
-                }
-
-                if (responseData.message) {
-                    errorMessages.push(responseData.message);
-                }
+                if (responseData.error) errorMessages.push(responseData.error);
+                if (responseData.message) errorMessages.push(responseData.message);
 
                 if (responseData.errors && Array.isArray(responseData.errors)) {
                     responseData.errors.forEach(err => {
@@ -156,13 +148,11 @@ async function submitCompetitionResult(id, score, supporterLevel, token) {
 }
 
 // Check round status and end if needed ----------------------------------------------------------------------------------
-
 export function checkCompetitionRoundStatus() {
     stopCompetitionTimer(); // Stop the timer
 
     if (get(competitionRound) == get(competitionData)?.roundAmount) {
         leaveCompetition(true);
-
         return false;
     } else {
         return true;

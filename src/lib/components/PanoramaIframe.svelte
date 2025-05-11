@@ -12,7 +12,7 @@
 				applySingleplayerSettings(); // Apply singleplayer options / settings (NMPZ, timer etc.) if Singleplayer, otherwise disable all
 				checkStartCompetitionRound(); // Check if currently playing competition and start timer + new round if so
 			} catch (error) {
-				console.error("Error after Iframe Load (in handleLoad function):", error);
+				console.error("Error in main iframe-loaded callback:", error);
 			}
 		}
 

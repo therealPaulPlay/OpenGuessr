@@ -459,7 +459,7 @@
 		<search class="searchContainer">
 			<input
 				id="mapSearch"
-				placeholder="Search Maps..."
+				placeholder="Search maps"
 				onkeydown={(e) => {
 					if (e.key === "Enter") e.preventDefault();
 				}}
