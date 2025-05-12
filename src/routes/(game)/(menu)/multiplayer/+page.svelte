@@ -694,7 +694,7 @@
 		margin-right: 5px;
 	}
 
-	@media (max-width: 768px) {
+	@media (max-width: 800px) {
 		.historyButtonText {
 			display: none;
 		}

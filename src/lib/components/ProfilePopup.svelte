@@ -685,17 +685,17 @@
 		#profileViewName {
 			font-size: 32px;
 		}
+	}
+
+	@media all and (max-width: 800px) {
+		#profileAbout {
+			height: 85px;
+		}
 
 		.flag-container {
 			height: 18px;
 			width: 18px;
 			margin-top: 15px;
-		}
-	}
-
-	@media all and (max-width: 768px) {
-		#profileAbout {
-			height: 85px;
 		}
 	}
 </style>

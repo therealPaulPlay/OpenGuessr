@@ -182,7 +182,7 @@
 		margin-top: 100px;
 	}
 
-	@media all and (max-width: 768px) {
+	@media all and (max-width: 800px) {
 		#text {
 			width: 80%;
 		}
