@@ -1262,6 +1262,10 @@
 			flex-grow: 1;
 		}
 
+		search form {
+			width: 30%;
+		}
+
 		.competitionButton {
 			flex-grow: 1;
 		}
