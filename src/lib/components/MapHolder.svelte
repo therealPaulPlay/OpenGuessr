@@ -83,7 +83,7 @@
 	/* Shift up to fit ad */
 	@media (orientation: portrait) and (max-width: 800px) {
 		.mapHolderAdShift {
-			bottom: 136px;
+			bottom: 134px;
 		}
 	}
 </style>

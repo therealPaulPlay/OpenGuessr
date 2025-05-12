@@ -1,4 +1,4 @@
-import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
+import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
 import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";

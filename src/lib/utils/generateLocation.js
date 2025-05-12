@@ -3,7 +3,7 @@ import { getLocationCoordinates } from '$lib/logic/locationGeneration';
 import { socket } from "$lib/stores/context-specific/multiplayerStore"
 import { countryGuessr, multiplayer, imageGuessr } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from '$lib/stores/locationStore';
-import { setCountryGuesserCountry } from '$lib/utils/countryGuesserFunctions';
+import { setCountryGuesserCountry } from '$lib/utils/countryGuessrFunctions';
 import { loadPanorama } from '$lib/utils/loadPanorama';
 import { loadImageFromUrl } from '$lib/utils/imageGuesserFunctions';
 import { get } from 'svelte/store';

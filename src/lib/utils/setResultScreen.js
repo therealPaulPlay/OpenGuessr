@@ -1,13 +1,13 @@
 import { resultScreenEnabled, distanceText, motivationText } from "$lib/stores/context-specific/resultScreenStore";
 import { calculateDistances, compareDistances } from "$lib/utils/distanceFunctions";
 import { countryGuessr } from "$lib/stores/modeStore";
-import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuesserStore";
+import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
 import { refreshPlacements } from "$lib/utils/ads";
 import { playSound } from "$lib/utils/soundManager";
 import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { resetMap } from "$lib/logic/miniMap";
 import { loadResultMap } from "$lib/logic/resultMap";
-import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
+import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
 import { earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
 import { shrinkMapIfMobile } from "./shrinkMinimapIfMobile";

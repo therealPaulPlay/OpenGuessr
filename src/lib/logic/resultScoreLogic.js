@@ -12,7 +12,7 @@ import { addUserXP } from "$lib/utils/updateUserXP";
 import { saveRoundToLog } from "$lib/utils/saveRoundToLog";
 import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates";
 import { playSound } from "$lib/utils/soundManager";
-import { checkIfGuessWasCorrect } from "$lib/utils/countryGuesserFunctions";
+import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
 import { get } from "svelte/store";
 import { getMapBounds } from "$lib/utils/getMapBounds";
 import { toggleStreakWindow } from "$lib/utils/streakRestore";
