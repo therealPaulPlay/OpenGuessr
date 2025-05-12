@@ -1,7 +1,7 @@
 // Gamemode where you guess the country (not on the map)
 import { mapVisible } from "$lib/stores/context-specific/mapStore";
 import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
-import { selectedCountryField, selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuesserStore";
+import { selectedCountryField, selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
 import { get } from "svelte/store";
 
 let correctCountryField = null; // 1-6

@@ -1,6 +1,6 @@
 <script>
 	import { countryGuessr, multiplayer, competition } from "$lib/stores/modeStore";
-	import { selectedCountryField } from "$lib/stores/context-specific/countryGuesserStore";
+	import { selectedCountryField } from "$lib/stores/context-specific/countryGuessrStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
@@ -23,72 +23,72 @@
 </script>
 
 {#if $countryGuessr && !$multiplayer && !$competition}
-	<div id="countryGuesserSelector" class="barMenu" onkeyup={clickConfirm} role="menu" tabindex="0">
+	<div class="countryGuessrSelector barMenu" onkeyup={clickConfirm} role="menu" tabindex="0">
 		<button
-			class="countryGuesserHolder standardButton white"
+			class="countryGuessrHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 1}
 			onclick={() => {
 				selectCountry(1);
 			}}
 		>
-			<p id="countryFlag1" class="countryGuesserFlag">🇦🇽</p>
-			<p id="countryTag1" class="countryGuesserTag">Country 1</p>
+			<p id="countryFlag1" class="countryGuessrFlag">🇦🇽</p>
+			<p id="countryTag1" class="countryGuessrTag">Country 1</p>
 		</button>
 		<button
-			class="countryGuesserHolder standardButton white"
+			class="countryGuessrHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 2}
 			onclick={() => {
 				selectCountry(2);
 			}}
 		>
-			<p id="countryFlag2" class="countryGuesserFlag">🇦🇽</p>
-			<p id="countryTag2" class="countryGuesserTag">Country 2</p>
+			<p id="countryFlag2" class="countryGuessrFlag">🇦🇽</p>
+			<p id="countryTag2" class="countryGuessrTag">Country 2</p>
 		</button>
 		<button
-			class="countryGuesserHolder standardButton white"
+			class="countryGuessrHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 3}
 			onclick={() => {
 				selectCountry(3);
 			}}
 		>
-			<p id="countryFlag3" class="countryGuesserFlag">🇦🇽</p>
-			<p id="countryTag3" class="countryGuesserTag">Country 3</p>
+			<p id="countryFlag3" class="countryGuessrFlag">🇦🇽</p>
+			<p id="countryTag3" class="countryGuessrTag">Country 3</p>
 		</button>
 		<button
-			class="countryGuesserHolder standardButton white"
+			class="countryGuessrHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 4}
 			onclick={() => {
 				selectCountry(4);
 			}}
 		>
-			<p id="countryFlag4" class="countryGuesserFlag">🇦🇽</p>
-			<p id="countryTag4" class="countryGuesserTag">Country 4</p>
+			<p id="countryFlag4" class="countryGuessrFlag">🇦🇽</p>
+			<p id="countryTag4" class="countryGuessrTag">Country 4</p>
 		</button>
 		<button
-			class="countryGuesserHolder standardButton white"
+			class="countryGuessrHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 5}
 			onclick={() => {
 				selectCountry(5);
 			}}
 		>
-			<p id="countryFlag5" class="countryGuesserFlag">🇦🇽</p>
-			<p id="countryTag5" class="countryGuesserTag">Country 5</p>
+			<p id="countryFlag5" class="countryGuessrFlag">🇦🇽</p>
+			<p id="countryTag5" class="countryGuessrTag">Country 5</p>
 		</button>
 		<button
-			class="countryGuesserHolder standardButton white"
+			class="countryGuessrHolder standardButton white"
 			class:selectedCountry={$selectedCountryField == 6}
 			onclick={() => {
 				selectCountry(6);
 			}}
 		>
-			<p id="countryFlag6" class="countryGuesserFlag">🇦🇽</p>
-			<p id="countryTag6" class="countryGuesserTag">Country 6</p>
+			<p id="countryFlag6" class="countryGuessrFlag">🇦🇽</p>
+			<p id="countryTag6" class="countryGuessrTag">Country 6</p>
 		</button>
 	</div>
 {/if}
 
 <style>
-	.countryGuesserHolder {
+	.countryGuessrHolder {
 		position: relative;
 		height: 85px;
 		width: 150px;
@@ -101,7 +101,7 @@
 		border: solid 3px white;
 	}
 
-	.countryGuesserFlag {
+	.countryGuessrFlag {
 		font-size: 45px;
 		margin-bottom: auto;
 		margin-top: 5px;
@@ -110,11 +110,11 @@
 		line-height: 0.7;
 	}
 
-	.countryGuesserHolder:hover {
+	.countryGuessrHolder:hover {
 		filter: brightness(1.3);
 	}
 
-	.countryGuesserTag {
+	.countryGuessrTag {
 		margin-top: auto;
 		margin-bottom: 5px;
 		font-size: 22px;
@@ -124,7 +124,7 @@
 		overflow: hidden;
 	}
 
-	#countryGuesserSelector {
+	.countryGuessrSelector {
 		position: fixed;
 		bottom: 115px;
 		left: 0;
@@ -139,32 +139,32 @@
 	}
 
 	@media all and (max-width: 1500px) {
-		.countryGuesserFlag {
+		.countryGuessrFlag {
 			font-size: 25px;
 		}
 
-		.countryGuesserTag {
+		.countryGuessrTag {
 			font-size: 18px;
 		}
 
-		.countryGuesserHolder {
+		.countryGuessrHolder {
 			height: 75px;
 			width: 100px;
 			border-radius: 7px;
 			flex-grow: 1;
 		}
 
-		#countryGuesserSelector {
+		.countryGuessrSelector {
 			bottom: 76px;
 			max-width: calc(100% - 32px);
 		}
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {
-		#countryGuesserSelector {
-			bottom: 136px;
+		.countryGuessrSelector {
+			bottom: 134px;
 		}
-		#countryGuesserSelector {
+		.countryGuessrSelector {
 			width: calc(100% - 32px);
 			margin-inline: 10px;
 		}
