@@ -1,4 +1,3 @@
-import { loadAndInitializeLibrary } from "$lib/utils/scriptLoader";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScreen.js";
 import { startTimer } from "$lib/utils/timer.js";
