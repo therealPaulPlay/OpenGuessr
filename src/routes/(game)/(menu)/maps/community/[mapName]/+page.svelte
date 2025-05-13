@@ -37,20 +37,10 @@
 	let mapLocationAmount = $state(data.map_data?.locations.length);
 	let mapLocationData = $state(data.map_data);
 
-	let locationsArrayForSvgMap = $derived.by(() => {
-		if (mapLocationData?.locations?.length > 500) {
-			const originalLength = mapLocationData?.locations.length;
-			const skipFactor = Math.ceil(originalLength / 500);
-			return mapLocationData?.locations.filter((_, index) => index % skipFactor === 0);
-		} else {
-			return mapLocationData?.locations;
-		}
-	});
-
 	let playerId = $state(0);
 
 	onMount(() => {
-		playerId = localStorage.getItem("id") || -1;
+		playerId = localStorage.getItem("id");
 	});
 
 	// Like Functionality ------------------------------------------------------------------------------
@@ -171,7 +161,7 @@
 			let newLocations = inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData);
 			let newMapData = newLocations;
 
-			// If add instead of overwrite is selected, add the new locations to the old ones.
+			// If add instead of overwrite is selected, add the new locations to the old ones
 			if (addInsteadOfOverwrite) {
 				newMapData = JSON.stringify({
 					locations: [...mapLocationData?.locations, ...JSON.parse(newLocations)?.locations],
@@ -206,6 +196,38 @@
 			return "A network error occurred while updating the map: " + error;
 		}
 	}
+
+	// SVG Map-related ---------------------------------------------------------------------------------------------------------------------
+	let locationsArrayForSvgMap = $derived.by(() => {
+		if (mapLocationData?.locations?.length > 500) {
+			const originalLength = mapLocationData?.locations.length;
+			const skipFactor = Math.ceil(originalLength / 500);
+			return mapLocationData?.locations.filter((_, index) => index % skipFactor === 0);
+		} else {
+			return mapLocationData?.locations;
+		}
+	});
+
+	// Calculate map center based on locations
+	let mapCenter = $derived.by(() => {
+		if (!locationsArrayForSvgMap || locationsArrayForSvgMap.length < 2) return;
+
+		// Find bounds
+		const bounds = locationsArrayForSvgMap.reduce(
+			(acc, [lat, long]) => ({
+				minLat: Math.min(acc.minLat, lat),
+				maxLat: Math.max(acc.maxLat, lat),
+				minLong: Math.min(acc.minLong, long),
+				maxLong: Math.max(acc.maxLong, long),
+			}),
+			{ minLat: 90, maxLat: -90, minLong: 180, maxLong: -180 },
+		);
+		if (bounds.maxLong - bounds.minLong > 180 || bounds.maxLat - bounds.minLat > 90) return; // Use default if locations cover most of the world
+		return {
+			lat: (bounds.minLat + bounds.maxLat) / 2,
+			long: (bounds.minLong + bounds.maxLong) / 2,
+		};
+	});
 </script>
 
 <svelte:head>
@@ -222,13 +244,14 @@
 	{#if locationsArrayForSvgMap?.length}
 		<div class="mapContainer">
 			{#if mapLocationAmount > 500}
-			<div class="locationsTrimNote">
-				<p>Limited location view for performance.</p>
-			</div>
+				<div class="locationsTrimNote">
+					<p>Limited location view for performance.</p>
+				</div>
 			{/if}
 			<SvgMap
 				locationList={locationsArrayForSvgMap}
 				zoom={1.25}
+				center={mapCenter}
 				onclick={(coordinates) => {
 					const mapLocations = $state.snapshot(locationsArrayForSvgMap);
 					const index = mapLocations?.findIndex(([lat, long]) => {
@@ -289,7 +312,7 @@
 			>
 				<Link strokeWidth={2.75} size={18} />
 			</button>
-			{#if mapAuthorId == playerId && playerId}
+			{#if mapAuthorId == playerId && playerId != null}
 				<button
 					id="manageDelete"
 					class="standardButton white mapButton"
@@ -440,6 +463,7 @@
 		position: absolute;
 		bottom: var(--box-margin);
 		left: var(--box-margin);
+		max-width: calc(100% - 40px);
 		border-radius: 5px;
 		background-color: var(--dark-background);
 		backdrop-filter: blur(5px);
@@ -452,6 +476,9 @@
 	.locationsTrimNote p {
 		opacity: 0.5;
 		font-size: 20px;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		text-wrap: nowrap;
 	}
 
 	.descriptionScroll {
@@ -539,6 +566,7 @@
 		display: flex;
 		gap: var(--layout-margin);
 		margin-top: var(--layout-margin);
+		margin-bottom: 50px;
 	}
 
 	.nameContainer {

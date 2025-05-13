@@ -9,6 +9,10 @@
 		zoom = $bindable(1),
 		width = 800,
 		height = 250,
+		center = {
+			lat: 35,
+			long: 0,
+		},
 		interactive = true,
 		notHighlightedColor = "rgba(125,125,125, 0.2)",
 		locationList,
@@ -63,11 +67,6 @@
 	}
 
 	async function updateProjection() {
-		const center = {
-			lat: 35,
-			long: 0,
-		};
-
 		// Calculate the scale based on the map container size and region zoom
 		const minDimension = Math.min(width, height);
 		const scale = (minDimension / 2) * zoom;
