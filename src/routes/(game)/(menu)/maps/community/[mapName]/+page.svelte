@@ -36,7 +36,16 @@
 	let mapDescription = $state(data.description);
 	let mapLocationAmount = $state(data.map_data?.locations.length);
 	let mapLocationData = $state(data.map_data);
-	let mapLocationArray = $state(data.map_data?.locations);
+
+	let locationsArrayForSvgMap = $derived.by(() => {
+		if (mapLocationData?.locations?.length > 500) {
+			const originalLength = mapLocationData?.locations.length;
+			const skipFactor = Math.ceil(originalLength / 500);
+			return mapLocationData?.locations.filter((_, index) => index % skipFactor === 0);
+		} else {
+			return mapLocationData?.locations;
+		}
+	});
 
 	let playerId = $state(0);
 
@@ -210,13 +219,18 @@
 		<iframe class="mapIframe" referrerpolicy="no-referrer-when-downgrade" frameborder="0" src={iframeSource}></iframe>
 	</div>
 	<!-- Location Map (shows which spots are on the map)-->
-	{#if mapLocationArray?.length}
+	{#if locationsArrayForSvgMap?.length}
 		<div class="mapContainer">
+			{#if mapLocationAmount > 500}
+			<div class="locationsTrimNote">
+				<p>Limited location view for performance.</p>
+			</div>
+			{/if}
 			<SvgMap
-				locationList={mapLocationArray}
+				locationList={locationsArrayForSvgMap}
 				zoom={1.25}
 				onclick={(coordinates) => {
-					const mapLocations = $state.snapshot(mapLocationArray);
+					const mapLocations = $state.snapshot(locationsArrayForSvgMap);
 					const index = mapLocations?.findIndex(([lat, long]) => {
 						return lat == coordinates.lat && long == coordinates.long;
 					});
@@ -349,7 +363,6 @@
 			rows="20"
 			bind:value={textareaValue}
 			placeholder="https://www.google.com/maps..."
-			maxlength="5000000"
 		></textarea>
 		<p>...or upload a JSON in the OpenGuessr format:</p>
 		<button
@@ -420,6 +433,25 @@
 		background-color: var(--box-color);
 		overflow: hidden;
 		margin-bottom: 50px;
+		position: relative;
+	}
+
+	.locationsTrimNote {
+		position: absolute;
+		bottom: var(--box-margin);
+		left: var(--box-margin);
+		border-radius: 5px;
+		background-color: var(--dark-background);
+		backdrop-filter: blur(5px);
+		padding: 5px;
+		padding-inline: var(--box-margin);
+		z-index: 10;
+		pointer-events: none;
+	}
+
+	.locationsTrimNote p {
+		opacity: 0.5;
+		font-size: 20px;
 	}
 
 	.descriptionScroll {
@@ -583,6 +615,7 @@
 		justify-content: center;
 		align-items: center;
 		display: flex;
+		margin: 0;
 	}
 
 	@media (max-width: 800px) {
