@@ -331,19 +331,19 @@
 					}}><Replace size={18} strokeWidth={2.75} /></button
 				>
 			{/if}
-			<a
-				class="standardButton playButton mapButton"
-				href="/"
+			<button
+				class="standardButton mapButton"
 				onclick={() => {
 					playSound("basic_button");
 					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 					addedCommunityMaps.push(mapName);
 					localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
 					changeCategory("community_" + mapName.toLowerCase(), true);
+					goto("/");
 				}}
 			>
 				<Play strokeWidth={2.5} />
-			</a>
+			</button>
 		</div>
 	</div>
 
