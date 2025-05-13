@@ -192,6 +192,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 			id="jsonUploadButton"
 			class="standardButton white"
 			onclick={() => {
+				playSound("basic_button");
 				jsonUpload.click();
 			}}
 		>

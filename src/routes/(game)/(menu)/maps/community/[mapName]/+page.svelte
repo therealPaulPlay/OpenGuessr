@@ -392,6 +392,7 @@
 			id="jsonUpdateButton"
 			class="standardButton white"
 			onclick={() => {
+				playSound("basic_button");
 				filePicker.click(); // Simulate click on filePicker to make the file picker UI nicer (default picker is hidden)
 			}}
 		>
@@ -423,6 +424,7 @@
 				id="updateProceed"
 				class="standardButton closeButton"
 				onclick={async () => {
+					playSound("basic_button");
 					showStatus = true;
 					statusText = "Updating...";
 					statusText = "Status: " + (await updateMap(mapName));
