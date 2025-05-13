@@ -583,6 +583,7 @@
 		align-items: center;
 		flex-wrap: wrap;
 		gap: var(--layout-margin);
+		margin-bottom: 5px;
 	}
 
 	.authorText {
