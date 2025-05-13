@@ -302,6 +302,7 @@ input[type="checkbox"]:focus {
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
+    /* with and height transitions for e.g. the mapModeIndicator */
     transition: opacity 250ms ease, transform 250ms ease, width 150ms ease, height 150ms ease, filter 250ms ease;
     border-radius: 10px;
     width: fit-content;

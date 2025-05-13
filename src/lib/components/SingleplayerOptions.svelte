@@ -295,9 +295,7 @@
 		border-radius: 5px;
 		min-width: 130px;
 		text-align: center;
-		margin-bottom: auto;
-		margin-top: auto;
-		margin-right: 2px;
+		margin: 2px;
 	}
 
 	.singleplayerDesc {

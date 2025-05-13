@@ -148,7 +148,7 @@
 
 	.bottomFooterAds {
 		position: fixed;
-		bottom: 12px;
+		bottom: 10px;
 		left: 0px;
 		right: 0px;
 		margin-left: auto;
@@ -242,11 +242,11 @@
 	/* Ad shift */
 	@media (orientation: portrait) and (max-width: 800px) {
 		.bottomFooterAds {
-			bottom: 12px;
+			bottom: 10px;
 		}
 
 		.BottomBarAdShift {
-			padding-bottom: 60px;
+			padding-bottom: 58px;
 		}
 	}
 

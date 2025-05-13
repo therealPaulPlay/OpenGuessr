@@ -1,7 +1,7 @@
 // Use this to present the player with a new location. This strongly depends on locationGeneration.js and generateLocation.js and feeds the generator with the right settings
 import { timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { stopCompetitionTimer } from "$lib/logic/competitionLogic";
-import { setCountryGuesserMode } from "$lib/utils/countryGuesserFunctions";
+import { setCountryGuesserMode } from "$lib/utils/countryGuessrFunctions";
 import { setImageGuesserMode } from "$lib/utils/imageGuesserFunctions";
 import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
