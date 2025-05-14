@@ -292,7 +292,7 @@
 		backdrop-filter: blur(10px);
 		-webkit-backdrop-filter: blur(10px);
 		position: absolute;
-		top: -110px;
+		top: calc(-100px - var(--panel-margin));
 		left: 50%;
 		transform: translate(-50%, 0);
 		padding: 5px;
