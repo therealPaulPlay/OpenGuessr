@@ -64,7 +64,7 @@
 		justify-content: space-between;
 		align-items: center;
 		color: white;
-		padding: 6px;
+		padding: var(--panel-margin);
 		gap: 15px;
 		font-size: 22px;
 		backdrop-filter: blur(10px);
@@ -98,7 +98,7 @@
 		display: flex;
 		align-items: center;
 		width: fit-content;
-		gap: 4px;
+		gap: var(--panel-margin);
 	}
 
 	.dismissIcon {

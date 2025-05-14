@@ -31,7 +31,12 @@
 		</div>
 		<DuelDivisionDisplay inPage={true} />
 		<div class="infoBox">
-			<Info strokeWidth={2.25} size={24} color="white" style="opacity: 50%; margin-left: 5px; margin-right: 2px;" />
+			<Info
+				strokeWidth={2.25}
+				size={24}
+				color="white"
+				style="opacity: 50%; margin-left: 5px; margin-right: 2px; margin-top: 2px;"
+			/>
 			<p>To report a player, open their profile and click on <i>Report</i>.</p>
 			<button
 				class="standardButton white growSearch"
@@ -75,13 +80,13 @@
 	}
 
 	.infoBox {
-		padding: var(--box-margin-buttons);
+		padding: var(--box-margin);
 		border-radius: 10px;
 		background-color: var(--box-color);
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
-		gap: var(--box-margin-buttons);
+		gap: var(--box-margin);
 	}
 
 	.infoBox p {

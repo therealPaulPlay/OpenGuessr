@@ -42,6 +42,7 @@ import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { signupPrompt } from "$lib/utils/signupPrompt";
 import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
 
 export function getTeamFromMultiplayerId(id) {
     const playerArray = get(socket)?.getStorage?.players?.find(item => item[0] === id);
@@ -51,6 +52,7 @@ export function getTeamFromMultiplayerId(id) {
 // Game UI ----------------------------------------------------------------------------------------------------------------------------------
 function setMultiplayerUI() {
     if (get(multiplayer)) {
+        try { get(singleplayerTimer).stopTimer() } catch { } // Mostly cosmetic, it looks weird if it continues running on the waiting screen
         mapModeIndicatorVisible.set(true);
         leaveFunction.set(() => {
             showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
@@ -359,9 +361,11 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             await changeCategory("standard", true); // Regenerate to update locations array
         }
 
-        // set round and length parameters
+        // Set round and length parameters
         roundAmount.set(AmountOfRounds);
         roundLength.set(LengthOfRounds);
+
+        multiplayer.set(true); // Set multiplayer
 
         const code = await get(socket)?.createRoom({
             players: [],
@@ -399,7 +403,6 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
 
 // Start room (HOST function)
 export function startRoom() {
-    multiplayer.set(true);
     setMultiplayerUI();
     matchmakingActive.set(false);
     goto("/"); // Creation page -> home
@@ -442,8 +445,8 @@ export async function joinRoom(code) {
             matchmakingActive.set(false);
             throw new Error(error);
         }
-        modeText.set("Multiplayer (...)");
         multiplayer.set(true);
+        modeText.set("Multiplayer (...)");
         await get(socket).joinRoom(code);
         matchmakingActive.set(false);
         setMultiplayerUI();
@@ -481,21 +484,17 @@ export function leaveMultiplayerRound(destroy = true) {
     playingDuels = false;
     friendDuel = false;
     roomcode.set("loading...");
-
-    // General UI resets
-    continueText.set("Continue");
     multiplayerStatus.set(); // Undefined -> show default msgs
+    continueText.set("Continue");
 
-    // UI functions
-    setMultiplayerUI();
-    showMultiplayerOverlay(false);
-    updateMinimapWithTeamMarkers([]); // clean up multiplayer minimap markers
-    if (localStorage.getItem("selectedMap") !== "country guessr") mapVisible.set(true);
-
+    // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
+        showMultiplayerOverlay(false); // This also brings back the map
+        updateMinimapWithTeamMarkers([]); // clean up multiplayer minimap markers
+        setMultiplayerUI();
         setRestriction("standard");
         checkGenerationTypeAndGenerate();
-    } // Regenerate location
+    }
 }
 
 // Panorama Overlay UI ------------------------------------------------------------------------------------------------------------------------------------------

@@ -142,7 +142,7 @@
 					/>
 					<p>{musicSliderBgPercentage}%</p>
 					<button
-						class="standardButton white creditsButton settingsNoButtonMargin"
+						class="standardButton white creditsButton"
 						onclick={() => {
 							playSound("basic_button");
 							showConfirmPopup(
@@ -162,7 +162,7 @@
 			{#if !$preventFullscreen}
 				<div class="settingsBox">
 					<p class="textMargin">View</p>
-					<button id="fullscreenButton" class="standardButton white settingsNoButtonMargin" onclick={toggleFullscreen}>
+					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
 						<span class="fullscreenIcon">
 							<Scan size="17" strokeWidth={3} />
 						</span>
@@ -173,7 +173,7 @@
 			<div class="settingsBox">
 				<p class="textMargin">Legal info</p>
 				<button
-					class="standardButton white settingsNoButtonMargin"
+					class="standardButton white"
 					id="privacyButton"
 					onclick={() => {
 						playSound("basic_button");
@@ -209,10 +209,6 @@
 	.textMargin {
 		margin-inline: 5px;
 		margin-bottom: 10px;
-	}
-
-	:global(.settingsNoButtonMargin) {
-		margin: 0 !important;
 	}
 
 	.fullscreenIcon {

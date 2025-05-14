@@ -22,8 +22,7 @@
     /* Margins or Gaps */
     --layout-margin: 15px;
     --box-margin: 10px;
-    --box-margin-buttons: 8px;
-    --box-gap-buttons: 6px;
+    --panel-margin: 8px;
 }
 
 html {
@@ -128,7 +127,6 @@ input:focus {
     white-space: nowrap;
     transition: filter 250ms ease, box-shadow 250ms ease, transform 150ms ease, color 250ms ease, background-color 250ms ease, opacity 250ms ease;
     border-radius: 5px;
-    margin: 2px;
     user-select: none;
     background-color: var(--brand-color);
     border: 3px solid rgba(255, 255, 255, 0.2);
@@ -294,7 +292,7 @@ input[type="checkbox"]:focus {
     display: flex;
     flex-wrap: wrap;
     justify-content: flex-end;
-    gap: var(--box-margin-buttons);
+    gap: var(--box-margin);
 }
 
 .barMenu {
@@ -309,8 +307,8 @@ input[type="checkbox"]:focus {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 4px;
-    padding: 6px;
+    gap: var(--panel-margin);
+    padding: var(--panel-margin);
     pointer-events: auto;
 }
 

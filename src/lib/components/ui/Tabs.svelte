@@ -27,14 +27,14 @@
 	.tabs-group {
 		border-radius: 5px;
 		width: fit-content;
-		margin: 2px;
 		display: flex;
 		overflow: hidden;
 		border: 3px solid rgba(255, 255, 255, 0.3);
 		box-sizing: border-box;
 		box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
 		transition: transform 150ms ease;
-		max-width: calc(100% - 4px);
+		max-width: 100%;
+		max-height: 39px;
 	}
 
 	.tabs-group:has(button:active) {
@@ -45,9 +45,10 @@
 		opacity: 0.5;
 		border: none;
 		border-radius: 0;
+		padding-top: 0;
+		padding-bottom: 2px;
 		outline: none;
 		box-shadow: none;
-		margin: 0;
 		text-overflow: ellipsis;
 		overflow: hidden;
 		flex-grow: 1;

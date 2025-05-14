@@ -183,7 +183,7 @@
 
 	:global(.leaflet-touch .leaflet-control-layers) {
 		border: none !important;
-		margin: var(--box-margin-buttons);
+		margin: var(--box-margin);
 	}
 
 	:global(.leaflet-touch .leaflet-control-layers-toggle) {

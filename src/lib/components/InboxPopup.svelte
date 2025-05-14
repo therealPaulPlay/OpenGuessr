@@ -92,11 +92,11 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: var(--box-margin-buttons);
+		padding: var(--box-margin);
 		padding-inline: 15px;
 		margin-bottom: 10px;
 		transition: background-color 250ms ease;
-		gap: var(--box-margin-buttons);
+		gap: var(--box-margin);
 		cursor: pointer;
 	}
 
@@ -140,8 +140,8 @@
 		display: flex;
 		width: fit-content;
 		overflow: hidden;
-		gap: var(--box-gap-buttons);
-		margin-right: -7px;
+		gap: var(--box-margin);
+		margin-right: -5px;
 		flex-grow: 5;
 		max-width: fit-content;
 	}

@@ -21,7 +21,7 @@
 <div
 	class="floatingMapButton"
 	style:visibility={$mapVisible && !$resultScreenEnabled ? "visible" : "hidden"}
-	style={$mapExpanded ? "margin-bottom: var(--box-margin-buttons);" : ""}
+	style={$mapExpanded ? "margin-bottom: var(--box-margin);" : ""}
 >
 	<button
 		id="floatingMapButton"
@@ -39,7 +39,7 @@
 		pointer-events: auto;
 		margin-top: auto;
 		z-index: 10;
-		padding: 6px;
+		padding: var(--panel-margin);
 		border-radius: 10px;
 		color: white;
 		background-color: var(--panel-color);

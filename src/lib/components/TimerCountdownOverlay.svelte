@@ -27,7 +27,6 @@
 		opacity: 0;
 		overflow: hidden;
 		backdrop-filter: blur(50px);
-		-webkit-backdrop-filter: blur(50px);
 		background-color: rgba(0, 0, 0, 0.2);
 		display: flex;
 		justify-content: center;
@@ -41,7 +40,7 @@
 	#timerCountdown h1 {
 		font-size: 75px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
-		margin-bottom: 20px;
+		margin-bottom: var(--layout-margin);
 	}
 
 	#timerCountdown p {

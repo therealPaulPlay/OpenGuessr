@@ -212,7 +212,6 @@
 	}
 
 	// Query Links - Enter and Load leaderboard --------------------------------------------------------------------------------------------------------
-
 	onMount(() => {
 		if (typeof window === "undefined") return; // Exit if not in browser environment
 		let urlParams = new URLSearchParams(window.location.search);
@@ -387,7 +386,6 @@
 	});
 
 	// Search Competitions -------------------------------------------------------------------------------------------------
-
 	let searchQuery = $state();
 
 	function startSearch() {
@@ -402,7 +400,6 @@
 	}
 
 	// Rating -------------------------------------------------------------------------------------------
-
 	let ratingText = $state();
 	let ratingsButtonBox = $state(false);
 
@@ -509,7 +506,7 @@
 				{#if ratingsButtonBox}
 					<div class="ratingButtonBox" id="ratingButtonBox">
 						<button
-							class="standardButton rateButton"
+							class="standardButton white rateButton"
 							id="rateGood"
 							onclick={() => {
 								playSound("basic_button");
@@ -519,7 +516,7 @@
 							<Smile size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
 						</button>
 						<button
-							class="standardButton rateButton"
+							class="standardButton white rateButton"
 							id="rateBad"
 							onclick={() => {
 								playSound("basic_button");
@@ -529,7 +526,7 @@
 							<Frown size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
 						</button>
 						<button
-							class="standardButton rateButton"
+							class="standardButton white rateButton"
 							id="rateBroken"
 							onclick={() => {
 								playSound("basic_button");
@@ -846,8 +843,8 @@
 		min-width: 280px;
 		gap: var(--box-margin);
 		align-items: center;
-		border-radius: 15px;
-		padding: var(--box-margin-buttons);
+		border-radius: 10px;
+		padding: var(--box-margin);
 		margin-bottom: var(--layout-margin);
 		background-color: var(--box-color);
 	}
@@ -1118,12 +1115,11 @@
 		justify-content: start;
 		width: 100%;
 		max-width: 450px;
-		gap: var(--box-gap-buttons);
+		gap: var(--box-margin);
 	}
 
 	search form {
 		width: 45%;
-		margin: 2.5px;
 	}
 
 	#competitionSearch {
@@ -1131,9 +1127,8 @@
 		max-width: 700px;
 		transition: background-color 250ms ease;
 		font-size: 22px;
-		padding: 5px;
 		padding-inline: 10px;
-		height: 28px;
+		height: 100%;
 		text-overflow: ellipsis;
 	}
 
@@ -1230,24 +1225,23 @@
 		align-items: center;
 		flex-wrap: wrap;
 		margin-top: var(--layout-margin);
-		padding: var(--box-margin-buttons);
-		gap: var(--box-margin-buttons);
+		padding: var(--box-margin);
+		gap: var(--box-margin);
 		width: calc(100% - calc(var(--box-margin-buttons * 2)));
 	}
 
 	#ratingBox p {
-		padding-inline: var(--box-margin-buttons);
+		padding-inline: var(--panel-margin);
 		opacity: 0.5;
 	}
 
 	.rateButton {
-		background-color: rgba(255, 255, 255, 0.2);
 		padding-inline: 5px;
 	}
 
 	.ratingButtonBox {
 		display: flex;
-		gap: var(--box-gap-buttons);
+		gap: var(--box-margin);
 		justify-content: center;
 		align-items: center;
 	}

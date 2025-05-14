@@ -58,7 +58,7 @@
 		gap: 10px;
 		border-radius: 10px;
 		justify-content: left;
-		padding: 5px;
+		padding: var(--panel-margin);
 		width: fit-content;
 		align-items: center;
 		margin-bottom: 10px;
