@@ -654,7 +654,7 @@
 	.friendOnlineBar {
 		width: 6px;
 		border-radius: 5px;
-		height: 30%;
+		height: 10px;
 		background-color: #00cc00;
 		margin-top: 4px;
 		margin-right: 3px;
