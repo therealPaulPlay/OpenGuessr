@@ -21,13 +21,13 @@ function checkLinkMap() {
 
   try {
     let urlParams = new URLSearchParams(window.location.search);
-    let mapFromLink = urlParams.get("play-map").toLowerCase().replaceAll("-", " ");
+    let mapFromLink = urlParams.get("play-map").toLowerCase().replaceAll("-", " ").replaceAll("_", " ").replaceAll("–", " ");
 
     if (mapFromLink) {
       if (get(countryMaps).includes(mapFromLink) || get(continentMaps).includes(mapFromLink)) {
         changeCategory(mapFromLink);
       } else {
-        errorPopup("Map not available", "Unfortunately, this map doesn't exist yet. It will likely be released in the future! Feel free to search for similar community maps.", "Map not found", false, true);
+        errorPopup("Map not available", "Unfortunately, this map doesn't exist. Feel free to search for similar community maps.", "Map not found", false, true);
       }
     }
   } catch { }
