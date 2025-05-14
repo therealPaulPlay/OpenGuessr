@@ -547,10 +547,7 @@
 		border-radius: 10px;
 		display: flex;
 		background-color: rgba(255, 255, 255, 0.1);
-		padding: 10px;
 		padding-inline: 6px !important;
-		padding-left: 12px;
-		padding-bottom: 12px;
 		height: 50px;
 		align-items: center;
 		justify-content: space-between;
