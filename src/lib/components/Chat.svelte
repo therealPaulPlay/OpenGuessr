@@ -55,7 +55,6 @@
 			multiplayerChatMessages.scrollTop = multiplayerChatMessages.scrollHeight;
 		}
 	});
-	
 </script>
 
 <div class="chatContainer" style:display={$chatVisible ? "flex" : "none"}>
@@ -123,9 +122,10 @@
 		max-height: 500px;
 		overflow: hidden;
 		display: block !important;
-		padding: var(--box-margin-buttons);
+		padding: var(--panel-margin);
 		background-color: var(--panel-color);
 		backdrop-filter: blur(10px);
+		transition: opacity 250ms ease;
 	}
 
 	.resize-handle {
@@ -163,7 +163,7 @@
 	.bottomMultiplayerChatArea {
 		display: flex;
 		align-items: center;
-		gap: var(--box-margin-buttons);
+		gap: var(--box-margin);
 	}
 
 	.multiplayerChatMessages {
@@ -184,7 +184,6 @@
 
 	#multiplayerSendButton {
 		height: 38px;
-		margin: 0;
 		padding-inline: 12px;
 	}
 

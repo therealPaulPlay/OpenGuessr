@@ -177,7 +177,6 @@
 	}
 
 	.smallSignupButton {
-		margin: 0;
 		line-height: 5px;
 		max-height: 35px !important;
 		min-height: 35px !important;
@@ -198,8 +197,8 @@
 		color: white;
 		max-width: 750px;
 		flex-wrap: wrap;
-		gap: var(--box-margin-buttons);
-		padding: var(--box-margin-buttons);
+		gap: var(--panel-margin);
+		padding: var(--panel-margin);
 		margin-inline: 10px;
 	}
 
@@ -467,7 +466,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		max-width: 754px;
+		max-width: 750px;
 		margin-inline: auto;
 	}
 
@@ -494,13 +493,13 @@
 		}
 
 		#resultBox {
-			width: 720px;
+			width: 722px;
 		}
 	}
 
 	@media all and (max-width: 1350px) {
 		.nextRoundArea {
-			width: calc(100% - 32px);
+			width: calc(100% - 36px);
 			left: 10px;
 		}
 

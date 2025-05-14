@@ -455,7 +455,6 @@
 		color: white;
 		border: none;
 		padding-inline: 12px;
-		margin: 0;
 		font-size: 20px;
 		padding-top: 0px;
 		padding-bottom: 0px;
@@ -562,14 +561,12 @@
 	#profileAddFriend {
 		padding: 5px;
 		font-size: 20px;
-		margin: 0;
 	}
 
 	#profileReportButton {
 		padding: 5px;
 		padding-inline: 8px;
 		font-size: 20px;
-		margin: 0;
 	}
 
 	#profileScrollSection {
@@ -586,7 +583,7 @@
 		max-width: 100%;
 		box-sizing: border-box;
 		background-color: var(--box-color);
-		padding: var(--box-margin-buttons);
+		padding: var(--box-margin);
 		display: flex;
 	}
 
@@ -660,8 +657,8 @@
 		max-height: 300px;
 		overflow-x: hidden;
 		overflow-y: auto;
-		padding: var(--box-margin-buttons);
-		gap: var(--box-gap-buttons);
+		padding: var(--box-margin);
+		gap: var(--box-margin);
 		align-items: center;
 		flex-wrap: wrap;
 	}

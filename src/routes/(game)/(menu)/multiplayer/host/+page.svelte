@@ -267,6 +267,7 @@
 								roomOpened = true;
 								showNotification("Room set to public.");
 							} else {
+								clearInterval(roomOpenAddInterval);
 								await deletePublicRoom();
 								roomOpened = false;
 								showNotification("Room set to private.");
@@ -353,7 +354,7 @@
 	}
 
 	#friendsInviteDisplay {
-		padding: var(--box-margin-buttons);
+		padding: var(--box-margin);
 	}
 
 	.codeDisplayText {
@@ -386,7 +387,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 5px;
+		padding: var(--panel-margin);
 		flex-grow: 1;
 	}
 
@@ -409,7 +410,6 @@
 		vertical-align: 2px;
 		min-height: 5px;
 		font-size: 18px;
-		margin: 0;
 		margin-right: 2px;
 	}
 
@@ -472,7 +472,7 @@
 		align-items: center;
 		max-height: 130px;
 		overflow: auto;
-		gap: var(--box-margin-buttons);
+		gap: var(--box-margin);
 		width: 100%;
 		transition: max-height 250ms ease;
 	}
@@ -514,7 +514,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: var(--box-margin);
+		gap: var(--layout-margin);
 	}
 
 	.copyLinkButton {
@@ -550,7 +550,7 @@
 		gap: var(--box-margin);
 		border-radius: 10px;
 		justify-content: left;
-		padding: 5px;
+		padding: var(--panel-margin);
 		width: fit-content;
 		align-items: center;
 		margin-bottom: 10px;

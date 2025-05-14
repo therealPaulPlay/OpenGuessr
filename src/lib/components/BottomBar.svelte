@@ -120,7 +120,6 @@
 		user-select: none;
 		box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
 		text-align: center;
-		margin: 2px;
 	}
 
 	.linkItem {
@@ -251,7 +250,7 @@
 	}
 
 	.bottomRightMenu {
-		width: calc(20% - var(--box-margin-buttons));
+		width: calc(20% - calc(var(--box-margin) + 2px));
 		min-width: 200px;
 		margin-right: 60px;
 	}
@@ -264,7 +263,7 @@
 
 	@media all and (orientation: landscape) and (max-width: 1200px) {
 		.bottomRightMenu {
-			width: calc(25% - var(--box-margin-buttons));
+			width: calc(25% - calc(var(--box-margin) + 2px));
 		}
 	}
 </style>

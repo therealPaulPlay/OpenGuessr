@@ -3,6 +3,7 @@ import {
     timerCountdownOverlay,
     timerCountdownOverlayTitle,
     timerCountdownOverlaySubtitle,
+    singleplayerTimer,
 } from "$lib/stores/context-specific/timerCountdownOverlayStore";
 import { singleplayer, singleplayerTimeout, isSingleplayerNMPZ } from "$lib/stores/modeStore";
 import { setRestriction } from "$lib/utils/setRestriction";
@@ -13,13 +14,12 @@ let timeoutVariable;
 let startTimeoutVariable;
 let intervalTimeoutVariable;
 
-let timer;
 let startHardModePromise;
 
 export function applySingleplayerSettings() {
     // Disable all here, then enable what should be enabled
     timerCountdownOverlay.set(false);
-    try { timer.stopTimer() } catch { }
+    try { get(singleplayerTimer).stopTimer() } catch { }
 
     clearTimeout(timeoutVariable);
     clearTimeout(startTimeoutVariable);
@@ -50,11 +50,11 @@ export function applySingleplayerSettings() {
 
             startHardModePromise.then(function () {
                 timerCountdownOverlay.set(false);
-                timer = startTimer(get(singleplayerTimeout), () => {
+                singleplayerTimer.set(startTimer(get(singleplayerTimeout), () => {
                     timerCountdownOverlay.set(true);
                     timerCountdownOverlayTitle.set("The time is up!");
                     timerCountdownOverlaySubtitle.set("Please take your guess.");
-                });
+                }));
             });
         } else {
             mapModeIndicatorVisible.set(false); // Hide MapMpdeIndicator

@@ -410,7 +410,7 @@
 		{#if showStatus}
 			<p class="marginTop" id="updateMapStatus">{statusText}</p>
 		{/if}
-		<div class="buttonBoxRight">
+		<div class="buttonBoxRight buttonBoxGap">
 			<button
 				id="updateClose"
 				class="standardButton closeButton white"
@@ -475,6 +475,10 @@
 		pointer-events: none;
 	}
 
+	.buttonBoxGap {
+		gap: var(--layout-margin);
+	}
+
 	.locationsTrimNote p {
 		opacity: 0.5;
 		font-size: 20px;
@@ -502,7 +506,7 @@
 	}
 
 	.marginBottom {
-		margin-bottom: var(--box-margin-buttons);
+		margin-bottom: var(--box-margin);
 	}
 
 	#updateMapStatus {
@@ -646,7 +650,6 @@
 		justify-content: center;
 		align-items: center;
 		display: flex;
-		margin: 0;
 	}
 
 	@media (max-width: 800px) {

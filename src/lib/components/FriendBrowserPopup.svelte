@@ -167,12 +167,12 @@
 
 	.friendSearchItem {
 		display: flex;
-		gap: var(--box-margin-buttons);
+		gap: var(--box-margin);
 		margin-bottom: var(--box-margin);
 		justify-content: space-between;
 		align-items: center;
 		border-radius: 5px;
-		padding: var(--box-margin-buttons);
+		padding: var(--box-margin);
 		padding-inline: 20px;
 		width: calc(100% - 40px);
 		transition: background-color 250ms ease;
@@ -211,7 +211,6 @@
 
 	#startFriendSearch {
 		width: fit-content;
-		margin: 0;
 		border-radius: 10px;
 	}
 
