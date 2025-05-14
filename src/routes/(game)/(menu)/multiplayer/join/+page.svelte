@@ -150,10 +150,10 @@
 	}
 
 	.multiplayerInput {
-		width: calc(100% - 60px);
+		width: calc(100% - 50px);
 		border-radius: 10px;
 		min-height: 50px;
-		padding-inline: 20px;
+		padding-inline: 15px;
 	}
 
 	.multiplayerInput::placeholder {
