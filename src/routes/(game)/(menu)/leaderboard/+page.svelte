@@ -531,7 +531,7 @@
 
 	.item-container {
 		width: 100%;
-		gap: var(--box-margin);
+		gap: var(--layout-margin);
 		display: flex;
 		flex-direction: column;
 	}

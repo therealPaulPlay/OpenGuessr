@@ -190,7 +190,6 @@
 		<div class="linkBox">
 			<p>Enter link:</p>
 			<p class="linkField">{enterLink}</p>
-			<div class="spacer"></div>
 			<p>Leaderboard link:</p>
 			<p class="linkField">{leaderboardLink}</p>
 			<button
@@ -355,6 +354,10 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		width: 100%;
 	}
 
+	.linkField {
+		margin-bottom: var(--layout-margin);
+	}
+
 	.submitButton {
 		border-radius: 10px;
 		margin-top: var(--box-margin);
@@ -420,7 +423,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	}
 
 	.copyButton {
-		margin-top: 25px;
 		margin-left: 0;
 	}
 

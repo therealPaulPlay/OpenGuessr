@@ -315,7 +315,7 @@
 						</button>
 						<button
 							id="removeFriend"
-							class="standardButton friendItemButtons white"
+							class="standardButton friendItemButtons white friendButtonLeft"
 							onclick={(e) => {
 								e.stopPropagation();
 								playSound("basic_button");
@@ -351,7 +351,6 @@
 	:global(.skillBasedToggle) {
 		border: none !important;
 		min-height: 0 !important;
-		margin: 0 !important;
 	}
 
 	:global(.skillBasedToggle button) {
@@ -376,6 +375,10 @@
 		align-items: center;
 	}
 
+	.friendButtonLeft {
+		margin-left: 4px;
+	}
+
 	.divisionLeaderboardContainer {
 		display: flex;
 		align-items: center;
@@ -394,7 +397,6 @@
 		padding-top: 0;
 		padding-bottom: 3px;
 		border: none;
-		margin: 0;
 		min-height: 20px;
 	}
 
@@ -524,7 +526,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		gap: var(--box-margin-buttons);
+		gap: var(--box-margin);
 		overflow: hidden;
 	}
 
@@ -538,7 +540,7 @@
 
 	.friendButtonBox {
 		display: flex;
-		gap: var(--box-margin);
+		gap: var(--layout-margin);
 	}
 
 	.friendItem {
@@ -546,9 +548,9 @@
 		display: flex;
 		background-color: rgba(255, 255, 255, 0.1);
 		padding: 10px;
-		padding-inline: 5px !important;
+		padding-inline: 6px !important;
 		padding-left: 12px;
-		padding-bottom: 11px;
+		padding-bottom: 12px;
 		height: 50px;
 		align-items: center;
 		justify-content: space-between;
@@ -557,7 +559,6 @@
 		flex-grow: 1;
 		max-width: 25%;
 		overflow: hidden;
-		margin: 0;
 	}
 
 	@media (max-width: 800px) {
@@ -606,7 +607,7 @@
 		width: 100%;
 		display: flex;
 		margin-top: -2px;
-		gap: var(--box-margin-buttons);
+		gap: var(--box-margin);
 	}
 
 	.multiplayerSelect {

@@ -77,9 +77,10 @@
 			margin 250ms ease;
 		z-index: 10;
 		user-select: none;
-		margin-top: var(--box-margin-buttons);
+		margin-top: var(--panel-margin);
 		flex-shrink: 0;
-		width: calc(100% - 12px);
+		height: 39px;
+		width: calc(100% - calc(var(--box-margin) + 6px));
 	}
 
 	:global(.mapModeIndicator.fading) {
@@ -99,7 +100,7 @@
 
 	.modeTextRight {
 		margin-left: auto;
-		margin-right: 25px;
+		margin-right: var(--layout-margin);
 	}
 
 	@keyframes divFade {

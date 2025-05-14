@@ -22,7 +22,7 @@
 		display: flex;
 		right: 70px;
 		bottom: 76px;
-		min-width: 212px;
+		min-width: 216px;
 		min-height: 150px;
 		align-items: flex-end;
 		flex-direction: column;

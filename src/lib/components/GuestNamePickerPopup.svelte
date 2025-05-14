@@ -56,7 +56,7 @@
 		font-size: 22px;
 		padding: 5px 15px;
 		width: 40%;
-		margin-top: 25px;
+		margin-top: var(--layout-margin);
 	}
 
 	.buttonDisabled {

@@ -54,12 +54,10 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         indicatorFading.set(false);
         littleTimeVignette.set(false);
         stopSound("timerSound");
-        setTimeout(() => { if (!activeTimer) timerText.set("00:00") }, 1000);
 
         // Clear active timer reference if this is the active timer
-        if (activeTimer === timerInstance) {
-            activeTimer = null;
-        }
+        if (activeTimer === timerInstance) activeTimer = null;
+        if (!activeTimer) timerText.set("00:00") 
     }
 
     function getRemainingTime() {

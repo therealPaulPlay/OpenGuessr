@@ -219,6 +219,7 @@
 		max-height: calc(60dvh - 250px);
 		overflow-x: hidden;
 		overflow-y: auto;
+		min-height: 50px;
 		background-color: var(--box-color);
 		margin-top: 25px;
 		margin-inline: var(--box-margin);
@@ -317,8 +318,8 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: var(--box-margin);
-		margin-top: 20px;
+		gap: var(--layout-margin);
+		margin-top: 25px;
 	}
 
 	.paginationControls button {

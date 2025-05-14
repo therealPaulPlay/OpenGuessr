@@ -67,7 +67,6 @@
 		text-decoration: none;
 		line-height: 35px;
 		pointer-events: auto;
-		margin: 0;
 	}
 
 	.homeButtonIcon {

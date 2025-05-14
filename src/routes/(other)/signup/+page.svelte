@@ -458,13 +458,13 @@
 
 	.switchFormBox {
 		display: flex;
-		gap: var(--box-margin-buttons);
+		gap: var(--box-margin);
 		align-items: center;
 		justify-content: space-between;
 		min-width: 250px;
 		background-color: rgba(255, 255, 255, 0.15);
 		border-radius: 10px;
-		padding: var(--box-margin-buttons);
+		padding: var(--box-margin);
 		padding-left: 15px;
 		margin-top: 50px;
 	}
@@ -489,7 +489,6 @@
 	}
 
 	#backButton {
-		margin: 0;
 		background-color: rgba(255, 255, 255, 0.1);
 		color: white;
 		border-radius: 10px;

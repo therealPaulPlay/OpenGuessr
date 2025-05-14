@@ -59,7 +59,7 @@
 <style>
 	.endscreenSlideupContainer {
 		z-index: 16;
-		padding: var(--box-margin-buttons);
+		padding: var(--panel-margin);
 		border-radius: 10px;
 		max-height: 1000px;
 		transition: filter 250ms ease;
@@ -82,7 +82,7 @@
 	}
 
 	.textBoxTop {
-		margin-bottom: var(--box-margin-buttons);
+		margin-bottom: var(--panel-margin);
 	}
 
 	.textBox {
@@ -93,7 +93,7 @@
 	}
 
 	.supporterStatBox {
-		margin-bottom: var(--box-margin-buttons);
+		margin-bottom: var(--panel-margin);
 		position: relative;
 		overflow: hidden;
 		text-align: center;
@@ -111,8 +111,8 @@
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
-		margin-top: var(--box-margin-buttons);
-		gap: var(--box-gap-buttons);
+		margin-top: var(--panel-margin);
+		gap: var(--panel-margin);
 	}
 
 	.buttonBox .standardButton {

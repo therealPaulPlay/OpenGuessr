@@ -29,6 +29,7 @@
 		outline: 3px solid rgba(255, 255, 255, 0.5);
 		flex-grow: 1;
 		border: none;
+		margin: 2px;
 	}
 
 	.supporterArea {

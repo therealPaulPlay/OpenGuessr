@@ -116,7 +116,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 5px;
+		padding: var(--panel-margin);
 		padding-left: 15px;
 		flex-grow: 1;
 		width: 100%;

@@ -331,19 +331,19 @@
 					}}><Replace size={18} strokeWidth={2.75} /></button
 				>
 			{/if}
-			<a
-				class="standardButton playButton mapButton"
-				href="/"
+			<button
+				class="standardButton mapButton"
 				onclick={() => {
 					playSound("basic_button");
 					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 					addedCommunityMaps.push(mapName);
 					localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
 					changeCategory("community_" + mapName.toLowerCase(), true);
+					goto("/");
 				}}
 			>
 				<Play strokeWidth={2.5} />
-			</a>
+			</button>
 		</div>
 	</div>
 
@@ -392,6 +392,7 @@
 			id="jsonUpdateButton"
 			class="standardButton white"
 			onclick={() => {
+				playSound("basic_button");
 				filePicker.click(); // Simulate click on filePicker to make the file picker UI nicer (default picker is hidden)
 			}}
 		>
@@ -409,7 +410,7 @@
 		{#if showStatus}
 			<p class="marginTop" id="updateMapStatus">{statusText}</p>
 		{/if}
-		<div class="buttonBoxRight">
+		<div class="buttonBoxRight buttonBoxGap">
 			<button
 				id="updateClose"
 				class="standardButton closeButton white"
@@ -423,6 +424,7 @@
 				id="updateProceed"
 				class="standardButton closeButton"
 				onclick={async () => {
+					playSound("basic_button");
 					showStatus = true;
 					statusText = "Updating...";
 					statusText = "Status: " + (await updateMap(mapName));
@@ -473,6 +475,10 @@
 		pointer-events: none;
 	}
 
+	.buttonBoxGap {
+		gap: var(--layout-margin);
+	}
+
 	.locationsTrimNote p {
 		opacity: 0.5;
 		font-size: 20px;
@@ -500,7 +506,7 @@
 	}
 
 	.marginBottom {
-		margin-bottom: var(--box-margin-buttons);
+		margin-bottom: var(--box-margin);
 	}
 
 	#updateMapStatus {
@@ -583,6 +589,7 @@
 		align-items: center;
 		flex-wrap: wrap;
 		gap: var(--layout-margin);
+		margin-bottom: 5px;
 	}
 
 	.authorText {
@@ -643,7 +650,6 @@
 		justify-content: center;
 		align-items: center;
 		display: flex;
-		margin: 0;
 	}
 
 	@media (max-width: 800px) {

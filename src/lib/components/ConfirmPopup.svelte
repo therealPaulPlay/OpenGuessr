@@ -49,7 +49,7 @@
 				bind:value={$confirmUsernameValue}
 			/>
 		{/if}
-		<div class="buttonBoxRight marginTop">
+		<div class="buttonBoxRight marginTop largerSpacing">
 			<button class="standardButton white closeButton" onclick={closeConfirmPopup}>Close</button>
 			{#if $confirmShowConfirm}
 				<button class="standardButton closeButton" onclick={confirm} style:background-color={$confirmConfirmColor}
@@ -69,5 +69,9 @@
 
 	.marginTop {
 		margin-top: var(--layout-margin);
+	}
+
+	.largerSpacing {
+		gap: var(--layout-margin);
 	}
 </style>

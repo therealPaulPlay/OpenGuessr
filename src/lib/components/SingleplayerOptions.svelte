@@ -210,7 +210,7 @@
 	.optionBox {
 		background-color: var(--box-color);
 		border-radius: 10px;
-		padding: var(--box-margin-buttons);
+		padding: var(--box-margin);
 		overflow: hidden;
 		flex-grow: 1;
 		min-width: 150px;
@@ -218,8 +218,8 @@
 
 	.optionFlexBox {
 		display: flex;
-		gap: var(--box-margin-buttons);
-		padding: var(--box-margin-buttons);
+		gap: var(--box-margin);
+		padding: var(--box-margin);
 		background-color: var(--box-color);
 		min-width: 150px;
 		flex-grow: 1;
@@ -240,14 +240,14 @@
 		align-items: center;
 		width: 100%;
 		gap: var(--box-margin);
-		padding: var(--box-margin-buttons);
+		padding: var(--box-margin);
 		background-color: rgba(255, 255, 255, 0.15);
 		border-radius: 10px;
 		flex-wrap: wrap;
 	}
 
 	.game-pitch-text {
-		margin-left: var(--box-margin-buttons);
+		margin-left: var(--panel-margin);
 		text-wrap: nowrap;
 		flex-grow: 20;
 	}
@@ -280,7 +280,7 @@
 	}
 
 	.textMarginInline {
-		margin-inline: var(--box-margin-buttons);
+		margin-inline: var(--panel-margin);
 	}
 
 	.timerTextBox {
@@ -295,7 +295,6 @@
 		border-radius: 5px;
 		min-width: 130px;
 		text-align: center;
-		margin: 2px;
 	}
 
 	.singleplayerDesc {

@@ -264,7 +264,7 @@
 		user-select: none;
 		display: flex;
 		align-items: center;
-		gap: var(--box-margin-buttons);
+		gap: var(--panel-margin);
 		overflow: hidden;
 		mask-image: linear-gradient(to right, black 95%, transparent 100%);
 	}

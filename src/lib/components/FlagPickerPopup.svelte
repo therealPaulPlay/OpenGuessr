@@ -292,7 +292,7 @@
 		align-items: center;
 		width: fit-content;
 		margin-left: 0;
-		padding: var(--box-margin-buttons);
+		padding: var(--panel-margin);
 		min-width: calc(100% - 16px);
 		background-color: var(--box-color-dark);
 		border-radius: 10px;

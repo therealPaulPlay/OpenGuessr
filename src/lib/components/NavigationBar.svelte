@@ -343,7 +343,6 @@
 		border-radius: 5px;
 		padding-left: 10px;
 		height: 40px;
-		margin-inline: 2px;
 		max-height: 40px;
 		background-color: var(--panel-button-color);
 		box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
@@ -354,7 +353,6 @@
 			transform 150ms ease;
 		cursor: pointer;
 		display: flex;
-		grid: 5px;
 		justify-content: center;
 		align-items: center;
 	}
@@ -417,7 +415,7 @@
 	}
 
 	.mobileScrollBarMenu {
-		gap: 4px;
+		gap: var(--panel-margin);
 		overflow-x: auto;
 		display: flex;
 		transition: mask 0.3s ease-in-out;

@@ -20,7 +20,7 @@
 		"d3-geo": "^3.1.1",
 		"howler": "^2.2.4",
 		"lucide-svelte": "^0.456.0",
-		"playsocketjs": "^1.1.5",
+		"playsocketjs": "^1.1.6",
 		"topojson-client": "^3.1.0"
 	}
 }
