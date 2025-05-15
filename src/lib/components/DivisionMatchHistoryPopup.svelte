@@ -5,7 +5,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { onMount } from "svelte";
-	import { ArrowLeft, ArrowRight, Info } from "lucide-svelte";
+	import { ArrowLeft, ArrowRight } from "lucide-svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	// local state variables
@@ -86,10 +86,6 @@
 			<h1>Duel history</h1>
 		</div>
 		<div class="topPopupFlex">
-			<div class="infoBox">
-				<Info strokeWidth={2.25} size={24} color="white" style="opacity: 50%; margin-left: 2px;" />
-				<p class="infoText">Entries process up to 10 minutes before showing up.</p>
-			</div>
 			<div class="filterBox">
 				<p>Filter: user-</p>
 				<input placeholder="all" class="filterInput" bind:value={filterId} onchange={fetchEntries} />
@@ -180,20 +176,16 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.infoText {
-		padding-inline: 5px;
-	}
-
 	.filterInput {
 		border-radius: 5px;
-		max-width: 60px;
+		max-width: 65px;
 		padding-inline: 10px;
 	}
 
 	.filterBox {
 		border-radius: 10px;
-		padding: 5px;
-		padding-inline: 10px;
+		padding: var(--box-margin);
+		max-width: fit-content;
 		background-color: var(--box-color);
 		display: flex;
 		gap: 5px;
@@ -297,21 +289,6 @@
 		border-radius: 5px;
 		padding-inline: 5px;
 		background-color: var(--box-color);
-	}
-
-	.infoBox {
-		padding: 10px;
-		border-radius: 10px;
-		flex-grow: 5;
-		background-color: var(--box-color);
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		gap: 5px;
-	}
-
-	.infoBox p {
-		opacity: 0.5;
 	}
 
 	.paginationControls {

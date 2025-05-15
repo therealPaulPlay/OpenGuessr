@@ -7,7 +7,7 @@ import { linkJoinPopup } from "$lib/stores/uiStore";
 import { leaveMultiplayerRound, setPlayingDuels, setFriendDuel, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { duelResultPopup } from "$lib/stores/uiStore";
-import { eloChange } from "$lib/stores/context-specific/duelResultStore";
+import { duelResultTitle, eloChange } from "$lib/stores/context-specific/duelResultStore";
 import { goto } from "$app/navigation";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
@@ -66,22 +66,17 @@ export async function initializeSSEConnection() {
 
                         case 'duel-result':
                             duelResultPopup.set(true);
+                            duelResultTitle.set(localStorage.getItem("id") == data?.winnerId ? "Victory!" : "Defeat!");
                             eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
                             elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
                             break;
 
                         case 'duel-registration-error':
-                            errorPopup("Duel not registered", "Your opponent failed to register the duel, meaning, it won't affect your elo. You can leave penalty-free.", data?.message);
+                            errorPopup("Duel not registered", "Your opponent failed to register the duel and it won't affect your elo. You can leave penalty-free.", data?.message);
                             break;
 
                         case 'duel-result-error':
                             errorPopup("Duel submission failed", "Please refer to the error message.", data?.message);
-                            break;
-
-                        case 'duel-late-result':
-                            eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
-                            elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
-                            showNotification(`Received ${get(eloChange)} Elo from previous game.`);
                             break;
                     }
                 } catch (error) {
