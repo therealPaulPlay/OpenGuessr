@@ -575,7 +575,7 @@ function showMultiplayerOverlay(show) {
         overlayShowSubtitle.set(playingDuels && get(socket)?.getStorage?.currentRound >= 3 && get(socket)?.getStorage?.currentRound < 5);
 
         showEndscreenUI(false); // Default to no endscreen UI
-
+        
         const isTeams = get(teamAmount) > 1;
 
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)

@@ -1,6 +1,5 @@
 // Ranked Duels logic and API
 import { errorPopup } from "$lib/utils/errorHandling";
-import { duelResultTitle } from "$lib/stores/context-specific/duelResultStore";
 import { get } from "svelte/store";
 import { duelResultPopup } from "$lib/stores/uiStore";
 import { elo } from "$lib/stores/accountStore";
@@ -59,8 +58,6 @@ export async function registerDivisionDuel(uuid) {
 
 // Won = true means the player won, won = false means they lost
 export async function sendDuelDivisionResult(won, uuid) {
-    duelResultTitle.set(won ? "Victory!" : "Defeat!"); // Save the win state for later (the popup which triggers on websocket server response)
-
     try {
         const response = await fetch(get(accountUrl) + `/duels/duel-result/${uuid}`, {
             method: 'POST',
@@ -78,7 +75,7 @@ export async function sendDuelDivisionResult(won, uuid) {
 
         if (!response.ok) {
             console.error('Duel submission error:', data.error);
-            errorPopup("Duel division submission error", "Failed to submit duel division result.", data.error);
+            errorPopup("Duel submission error", "Failed to submit duel division result.", data.error);
             return false;
         }
 
