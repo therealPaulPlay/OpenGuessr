@@ -16,7 +16,7 @@
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
-	import { slide } from "svelte/transition";
+	import { blur, slide } from "svelte/transition";
 </script>
 
 <div
@@ -101,26 +101,29 @@
 			{/if}
 		{/if}
 	</div>
-	<div class="buttonSpacer"></div>
-	{#if $rematchButtonVisible}
-		<button
-			id="endMultiplayerRematchButton"
-			class="standardButton white"
-			onclick={() => {
-				playSound("basic_button");
-				get(socket)?.updateStorage("rematch", true);
-			}}>Play again</button
-		>
-	{/if}
-	{#if $leaveMatchButtonVisible}
-		<button
-			id="endMultiplayerRoundButton"
-			class="standardButton"
-			onclick={() => {
-				playSound("basic_button");
-				leaveMultiplayerRound();
-			}}>Exit</button
-		>
+	{#if $rematchButtonVisible || $leaveMatchButtonVisible}
+		<div class="buttonBox" in:blur={{ delay: 500 }}>
+			{#if $rematchButtonVisible}
+				<button
+					id="endMultiplayerRematchButton"
+					class="standardButton white"
+					onclick={() => {
+						playSound("basic_button");
+						get(socket)?.updateStorage("rematch", true);
+					}}>Play again</button
+				>
+			{/if}
+			{#if $leaveMatchButtonVisible}
+				<button
+					id="endMultiplayerRoundButton"
+					class="standardButton"
+					onclick={() => {
+						playSound("basic_button");
+						leaveMultiplayerRound();
+					}}>Exit</button
+				>
+			{/if}
+		</div>
 	{/if}
 </div>
 
@@ -172,15 +175,19 @@
 		font-size: 20px !important;
 	}
 
-	.buttonSpacer {
-		width: 100%;
-		height: 25px;
+	.buttonBox {
+		margin-top: 25px;
+		gap: var(--layout-margin);
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: center;
+		align-items: center;
+		padding-inline: var(--box-margin);
 	}
 
 	#endMultiplayerRoundButton {
 		min-width: 150px;
 		height: 50px;
-		margin-top: var(--layout-margin);
 		border-radius: 10px;
 	}
 
@@ -188,7 +195,6 @@
 		min-width: 150px;
 		height: 50px;
 		border-radius: 10px;
-		margin-bottom: 0;
 	}
 
 	.multiplayerTitle {
