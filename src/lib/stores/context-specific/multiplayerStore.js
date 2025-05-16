@@ -13,6 +13,10 @@ export const matchmakingActive = writable(false);
 export const skillBasedMatchmaking = writable(false);
 export const matchmakingHosting = writable(false);
 
+// Duels
+export const isFriendDuel = writable(false);
+export const playingDuel = writable(false);
+
 // Guest-exclusive
 export const guestName = writable("Guest (Default)");
 export const guestNamePromise = writable();
