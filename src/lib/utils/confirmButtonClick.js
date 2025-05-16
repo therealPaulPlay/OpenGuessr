@@ -6,8 +6,8 @@ import { playSound } from "$lib/utils/soundManager";
 import { mapVisible, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore"
 import { enableResultScreen } from "$lib/utils/setResultScreen";
 import { stopCompetitionTimer } from "$lib/logic/competitionLogic";
-import { multiplayerStateToGuessed } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
+import { playingDuel, socket } from "$lib/stores/context-specific/multiplayerStore";
 
 export function confirmButtonClicks() {
     playSound("basic_button");
@@ -19,7 +19,8 @@ export function confirmButtonClicks() {
         enableResultScreen(get(mapPinLat), get(mapPinLng));
     } else {
         mapVisible.set(false);
-        multiplayerStateToGuessed();
+        get(socket)?.updateStorageArray("confirmedArray", "add-unique", get(socket)?.id);
+        if (get(playingDuel)) get(socket)?.updateStorage("timeReducedOverlay", true); // Reduce time in duels
     }
 
     confirmButtonActive.set(false); // Disable confirm button (make it greyed out) – will be re-enabled when placing pin

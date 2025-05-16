@@ -1,10 +1,10 @@
 import { isAuthenticated, username } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
-import { loadedFriendsData, multiplayerStatus, roomcode } from "$lib/stores/context-specific/multiplayerStore";
+import { isFriendDuel, loadedFriendsData, multiplayerStatus, playingDuel, roomcode } from "$lib/stores/context-specific/multiplayerStore";
 import { inboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { linkJoinPopup } from "$lib/stores/uiStore";
-import { setPlayingDuels, setFriendDuel, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
+import { setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -176,8 +176,8 @@ export async function removeFriend(friendId) {
 export async function sendMatchInvite(recipientId, duel) {
     if (duel) {
         // If Duel, create a room first
-        setPlayingDuels(true);
-        setFriendDuel(true);
+        playingDuel.set(true);
+        isFriendDuel.set(true);
         linkJoinPopup.set(true);
         if (localStorage.getItem("selectedCategory") && localStorage.getItem("selectedCategory") !== "standard") await changeCategory("standard", true); // Regenerate to update the bounds (await to ensure bounds are ready)
         await setupMultiplayerRoom(5, 60, 2);
