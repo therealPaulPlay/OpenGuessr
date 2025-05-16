@@ -66,10 +66,31 @@
 				const data = await response.json();
 				return data;
 			} else {
-				console.error("Fetch failed:", response.status);
+				throw new Error(response.status);
 			}
 		} catch (error) {
 			console.error("Error occurred while fetching the user: ", error);
+		}
+	}
+
+	async function getEloLeaderboard() {
+		try {
+			const response = await fetch(`${$accountUrl}/leaderboard/elo`, {
+				method: "GET",
+				headers: {
+					"Content-Type": "application/json",
+				},
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+				return data;
+			} else {
+				throw new Error(response.status);
+			}
+		} catch (error) {
+			console.error("Failed to fetch the elo leaderboard: ", error);
 		}
 	}
 
@@ -80,6 +101,9 @@
 	// Load leaderboard data -------------------------------------------------------------------------------------------------------
 	async function loadLeaderboard(leaderboardType) {
 		switch (leaderboardType) {
+			case "elo":
+				mainSectionEntries = await getEloLeaderboard();
+				break;
 			case "experience":
 				mainSectionEntries = await getLeaderboard();
 				break;
@@ -107,17 +131,7 @@
 	}
 
 	// Check if user section is in view -------------------------------------------------------------------------------------
-
 	let scrollTimeout;
-
-	if (typeof window !== "undefined") {
-		document.addEventListener("scroll", () => {
-			clearTimeout(scrollTimeout);
-			scrollTimeout = setTimeout(() => {
-				checkIfUserSectionIsInView();
-			}, 150);
-		});
-	}
 
 	function checkIfUserSectionIsInView() {
 		// If the user has scrolled down more than 1000px, load the user leaderboard section (which is at the end)
@@ -127,26 +141,40 @@
 	}
 
 	// Filter / Sort Options -------------------------------------------------------------------------------------------------
-
-	let filter = $state("All");
+	let filter = $state("Elo");
+	let valueKey = $state("");
+	let unitName = $state("");
 
 	function loadCorrectLeaderboard() {
 		mainSectionEntries = undefined;
 		userSectionEntries = undefined;
 
 		switch (filter) {
-			case "All":
+			case "Elo":
+				loadLeaderboard("elo");
+				valueKey = "elo";
+				unitName = " Elo";
+				potentialUserLeaderboardType = "none";
+				break;
+			case "XP":
 				loadLeaderboard("experience");
+				valueKey = "experience";
+				unitName = " XP";
 				potentialUserLeaderboardType = "experience";
 				break;
-			case "Supporters":
+			case "XP (Supp.)":
 				loadLeaderboard("experience-supporter");
+				valueKey = "experience";
+				unitName = " XP";
 				potentialUserLeaderboardType = "none";
 				break;
 		}
 	}
 
+	let userId = $state();
+
 	onMount(() => {
+		userId = localStorage.getItem("id");
 		loadCorrectLeaderboard();
 	});
 </script>
@@ -154,6 +182,15 @@
 <svelte:head>
 	<title>Leaderboard</title>
 </svelte:head>
+
+<svelte:document
+	onscroll={() => {
+		clearTimeout(scrollTimeout);
+		scrollTimeout = setTimeout(() => {
+			checkIfUserSectionIsInView();
+		}, 150);
+	}}
+/>
 
 <div class="podium-container">
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -167,7 +204,7 @@
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[1]?.user_name || "Guest"}</div>
-			<div class="podiumExp">{mainSectionEntries?.[1]?.experience.toLocaleString() || "0 XP"}</div>
+			<div class="podiumExp">{(mainSectionEntries?.[1]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
 			<div class="rank">#2</div>
 		</div>
 		<div
@@ -178,7 +215,7 @@
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[0]?.user_name || "Guest"}</div>
-			<div class="podiumExp">{mainSectionEntries?.[0]?.experience?.toLocaleString() || "0 XP"}</div>
+			<div class="podiumExp">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
 			<div class="rank">#1</div>
 		</div>
 		<div
@@ -189,14 +226,14 @@
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[2]?.user_name || "Guest"}</div>
-			<div class="podiumExp">{mainSectionEntries?.[2]?.experience?.toLocaleString() || "0 XP"}</div>
+			<div class="podiumExp">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
 			<div class="rank">#3</div>
 		</div>
 	</div>
 </div>
 <div class="optionBar">
 	<Tabs
-		tabs={["All", "Supporters"]}
+		tabs={["Elo", "XP", "XP (Supp.)"]}
 		class="leaderboardTabs"
 		onchange={(selection) => {
 			filter = selection;
@@ -214,7 +251,7 @@
 					class="rankedItem"
 					role="button"
 					tabindex="0"
-					class:yourItem={entry.user_name == $username && $isAuthenticated}
+					class:yourItem={entry.id == userId && $isAuthenticated}
 					class:rankedItemSupporter={entry.supporter_level >= 1}
 				>
 					<p class="maxlength rankedItemLeft">#{entry.position}</p>
@@ -227,7 +264,7 @@
 					>
 						{entry.user_name}
 					</p>
-					<p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
+					<p class="maxlength rankedItemRight">{entry?.[valueKey]?.toLocaleString() + unitName}</p>
 				</div>
 			{/each}
 		</div>
@@ -246,7 +283,7 @@
 					class="rankedItem"
 					role="button"
 					tabindex="0"
-					class:yourItem={entry.user_name == $username && $isAuthenticated}
+					class:yourItem={entry.id == userId && $isAuthenticated}
 					class:rankedItemSupporter={entry.supporter_level >= 1}
 					onclick={() => {
 						loadProfileFromId(entry.id, true);
@@ -254,7 +291,7 @@
 				>
 					<p class="maxlength rankedItemLeft">#{entry.position}</p>
 					<p class="middle maxlength">{entry.user_name}</p>
-					<p class="maxlength rankedItemRight">{entry.experience.toLocaleString()} XP</p>
+					<p class="maxlength rankedItemRight">{entry?.[valueKey]?.toLocaleString() + unitName}</p>
 				</div>
 			{/each}
 		</div>
@@ -274,15 +311,10 @@
 	.optionBar {
 		display: flex;
 		align-items: center;
-		gap: 8px;
-		padding: 8px;
-		overflow-x: auto;
+		padding: var(--panel-margin);
 		margin-inline: auto;
 		width: fit-content;
-		border-bottom-right-radius: 0;
-		border-bottom-left-radius: 0;
-		background: none;
-		margin-bottom: -10px;
+		max-width: 80%;
 	}
 
 	:global(.leaderboardTabs) {
@@ -419,10 +451,8 @@
 		justify-content: center;
 		align-items: center;
 		width: 100%;
-		margin-top: 18px;
+		margin-top: 22px;
 		margin-bottom: 30px;
-		padding: 5px;
-		padding-inline: 0;
 		max-width: 850px;
 		margin-inline: auto;
 	}

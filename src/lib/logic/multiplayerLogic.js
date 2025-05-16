@@ -265,7 +265,7 @@ export async function createMultiplayerInstance() {
             resolve(get(socket).id);
         } catch (error) {
             console.error("Error creating multiplayer instance:", error);
-            reject(new Error("Failed to create multiplayer instance."));
+            reject(new Error("Failed to create multiplayer instance: " + error.message));
         }
     });
 }
@@ -489,7 +489,7 @@ export function leaveMultiplayerRound(destroy = true) {
 function showEndscreenUI(show) {
     if (show) {
         leaveMatchButtonVisible.set(true); // show leave / end button
-        if (!get(playingDuel)|| get(isFriendDuel)) rematchButtonVisible.set(true); // Don't show rematch button in non-friend duels
+        if (!get(playingDuel) || get(isFriendDuel)) rematchButtonVisible.set(true); // Don't show rematch button in non-friend duels
     } else {
         rematchButtonVisible.set(false);
         leaveMatchButtonVisible.set(false);
