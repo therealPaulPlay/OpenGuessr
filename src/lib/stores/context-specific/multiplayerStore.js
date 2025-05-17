@@ -16,6 +16,7 @@ export const matchmakingHosting = writable(false);
 // Duels
 export const isFriendDuel = writable(false);
 export const playingDuel = writable(false);
+export const matchResultDetermined = writable(false);
 
 // Guest-exclusive
 export const guestName = writable("Guest (Default)");

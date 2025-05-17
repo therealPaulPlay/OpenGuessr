@@ -129,7 +129,7 @@
 						}}
 						><span class="historyButtonText">History </span><History
 							size={19}
-							strokeWidth={3}
+							strokeWidth={2.25}
 							style="margin-bottom: -3px;"
 						/></button
 					>
