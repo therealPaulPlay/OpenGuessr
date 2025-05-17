@@ -276,7 +276,7 @@
 
 	:global(.skillBasedToggle) {
 		border: none !important;
-		min-height: 0 !important;
+		height: fit-content !important;
 	}
 
 	:global(.skillBasedToggle button) {

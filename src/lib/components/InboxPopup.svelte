@@ -93,8 +93,7 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: var(--box-margin);
-		padding-inline: 15px;
-		margin-bottom: 10px;
+		padding-inline: var(--layout-margin);
 		transition: background-color 250ms ease;
 		gap: var(--box-margin);
 		cursor: pointer;
@@ -120,6 +119,7 @@
 		box-sizing: border-box;
 		border-radius: 10px;
 		max-height: 50vh;
+		width: 100%;
 		min-height: 20vh;
 		overflow-x: hidden;
 		overflow-y: auto;
@@ -127,6 +127,9 @@
 		margin-top: var(--box-margin);
 		border: var(--box-margin) solid transparent;
 		scrollbar-width: none;
+		display: flex;
+		flex-direction: column;
+		gap: var(--box-margin);
 	}
 
 	.friendSearchItem p {

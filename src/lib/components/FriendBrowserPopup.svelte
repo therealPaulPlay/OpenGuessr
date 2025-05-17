@@ -149,6 +149,10 @@
 		margin-top: var(--box-margin);
 		border: var(--box-margin) solid transparent;
 		scrollbar-width: none;
+		display: flex;
+		width: 100%;
+		flex-direction: column;
+		gap: var(--box-margin);
 	}
 
 	#playerSearchIcon {
@@ -168,7 +172,6 @@
 	.friendSearchItem {
 		display: flex;
 		gap: var(--box-margin);
-		margin-bottom: var(--box-margin);
 		justify-content: space-between;
 		align-items: center;
 		border-radius: 5px;

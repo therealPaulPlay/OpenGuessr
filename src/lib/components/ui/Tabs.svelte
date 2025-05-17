@@ -34,7 +34,7 @@
 		box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
 		transition: transform 150ms ease;
 		max-width: 100%;
-		max-height: 39px;
+		height: 39px;
 	}
 
 	.tabs-group:has(button:active) {
