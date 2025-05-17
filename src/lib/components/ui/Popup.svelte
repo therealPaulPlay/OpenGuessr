@@ -56,7 +56,6 @@
 		width: 65%;
 		min-width: 300px;
 		max-width: 800px;
-		max-height: 90%;
 		padding: 25px;
 		border-radius: 15px;
 		text-align: left;

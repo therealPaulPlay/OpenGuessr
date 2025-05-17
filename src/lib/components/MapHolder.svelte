@@ -60,13 +60,6 @@
 		display: none !important;
 	}
 
-	@media all and (orientation: landscape) and (max-width: 1200px) {
-		.mapHolder {
-			width: 25%;
-			height: 25%;
-		}
-	}
-
 	.mapHover {
 		width: 55%;
 		height: 55%;

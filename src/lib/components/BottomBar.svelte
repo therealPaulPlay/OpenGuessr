@@ -232,10 +232,11 @@
 		z-index: 7;
 	}
 
-	@media all and (max-width: 1200px) {
-		.socialLinkArea {
-			display: none;
-		}
+	.bottomRightMenu {
+		width: calc(20% - (var(--box-margin) + 2px));
+		min-width: 200px;
+		margin-right: 60px;
+		margin-left: var(--panel-margin);
 	}
 
 	/* Ad shift */
@@ -247,23 +248,19 @@
 		.BottomBarAdShift {
 			padding-bottom: 58px;
 		}
-	}
 
-	.bottomRightMenu {
-		width: calc(20% - calc(var(--box-margin) + 2px));
-		min-width: 200px;
-		margin-right: 60px;
+		.socialLinkArea {
+			display: none;
+		}
+
+		.bottomRightMenu {
+			flex-grow: 1;
+		}
 	}
 
 	@media (orientation: portrait) and (max-width: 1200px) {
 		.bottomRightMenu {
 			margin-right: 0;
-		}
-	}
-
-	@media all and (orientation: landscape) and (max-width: 1200px) {
-		.bottomRightMenu {
-			width: calc(25% - calc(var(--box-margin) + 2px));
 		}
 	}
 </style>
