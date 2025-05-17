@@ -26,7 +26,8 @@ import {
     skillBasedMatchmaking,
     guestNamePromise,
     playingDuel,
-    isFriendDuel
+    isFriendDuel,
+    matchResultDetermined
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadChat } from "$lib/utils/chatFunctions.js";
@@ -70,7 +71,7 @@ function setMultiplayerUI() {
 }
 
 // End round ---------------------------------------------------------------------------------------------------------------------------------
-function endMultiplayerRound() {
+function endRoundAndShowResult() {
     // Minimum result screen text in lobbies with others
     if (get(socket)?.getStorage?.players?.length > 1) {
         continueText.set("Wait 5s...");
@@ -81,7 +82,6 @@ function endMultiplayerRound() {
     enableResultScreen(get(mapPinLat), get(mapPinLng));
     get(socket)?.updateStorage("timerStart", false);
     get(socket)?.updateStorage("confirmedArray", []); // Reset confirmed guesses AFTER result to prevent multiple triggers
-    if (get(socket)?.getStorage?.currentRound >= get(roundAmount)) get(socket)?.updateStorage("gameEnded", true);
 }
 
 // Utility -----------------------------------------------------------------------------------------------------------------------------------
@@ -221,15 +221,20 @@ export async function createMultiplayerInstance() {
                         // Ensure the coords are set, in case they join during result screen
                         currentLocationLatitude.set(storage?.location[0]);
                         currentLocationLongitude.set(storage?.location[1]);
-                        endMultiplayerRound();
+                        endRoundAndShowResult();
+
                     } else {
                         disableResultScreen();
                         get(socket)?.updateStorage("overlay", true);
 
-                        // Start new round
                         if (storage.currentRound < get(roundAmount)) {
+                            // Start new round
                             clearTimeout(startMultiplayerRoundTimeout); // Prevent multiple calls
                             startMultiplayerRoundTimeout = setTimeout(startMultiplayerRound, 1500);
+                        } else {
+                            // If the game has ended, determine the winner & loser (and submit result if it's a duel)
+                            determineWinner(get(multiplayerTableArray));
+                            matchResultDetermined.set(true); // If the result was rolled, set this
                         }
                     }
                 }
@@ -401,7 +406,6 @@ function multiplayerPerformRematch() {
     get(socket)?.updateStorage("rematch", false);
     get(socket)?.updateStorage("firstRoundPlayed", false);
     get(socket)?.updateStorage("currentRound", 0);
-    get(socket)?.updateStorage("gameEnded", false);
 
     // Reset player scores
     const playersArray = get(socket)?.getStorage?.players;
@@ -474,6 +478,7 @@ export function leaveMultiplayerRound(destroy = true) {
     roomcode.set("loading...");
     multiplayerStatus.set(); // Undefined -> show default msgs
     continueText.set("Continue");
+    matchResultDetermined.set(false);
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
@@ -563,10 +568,6 @@ function showMultiplayerOverlay(show) {
         showEndscreenUI(false); // Default to no endscreen UI
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
         mapVisible.set(false); // Hide map
-
-        // If the game has ended, determine the winner & loser
-        if (get(socket)?.getStorage?.gameEnded) determineWinner(get(multiplayerTableArray));
-
     } else {
         if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country guessr") mapVisible.set(true);
     }

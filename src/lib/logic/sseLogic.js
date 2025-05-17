@@ -11,7 +11,7 @@ import { duelResultTitle, eloChange } from "$lib/stores/context-specific/duelRes
 import { goto } from "$app/navigation";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { multiplayer } from "$lib/stores/modeStore";
-import { isFriendDuel, playingDuel, roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
+import { matchResultDetermined, isFriendDuel, playingDuel, roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
 
 export async function initializeSSEConnection() {
     let eventSource;
@@ -71,7 +71,7 @@ export async function initializeSSEConnection() {
                             eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
                             elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
                             duelResultPopup.set(true);
-                            if (get(multiplayer) && !get(socket)?.getStorage?.gameEnded) leaveMultiplayerRound(); // If the game is still ongoing, leave
+                            if (get(multiplayer) && !get(matchResultDetermined) && get(playingDuel) && !get(isFriendDuel)) leaveMultiplayerRound(); // If the duel is still ongoing, leave
                             break;
 
                         case 'duel-registration-error':
