@@ -20,7 +20,7 @@
 
 		if (operationMessage.includes("success")) {
 			goto("/maps/community/" + mapName.replaceAll(" ", "_").toLowerCase()); // Open the map page after submitting
-			showNotification("Thank you for contributing!");
+			showNotification("Map created!");
 		} else {
 			errorPopup("Error occured uploading a map", "Please refer to the error code below.", operationMessage);
 		}
