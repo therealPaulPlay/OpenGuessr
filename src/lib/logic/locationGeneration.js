@@ -98,8 +98,8 @@ async function getCoordsFromLocationServer() {
         // Return and remove one location from cache
         if (cachedLocations.length > 0) {
             const location = cachedLocations.shift();
-            const resultLat = Number(location[0]);
-            const resultLong = Number(location[1]);
+            const resultLat = location[0];
+            const resultLong = location[1];
             return [resultLat, resultLong];
         } else {
             throw new Error("No locations available in cache!");
@@ -199,8 +199,8 @@ function pickRandomLocations() {
     try {
         let guessIndex = getUniqueLocationIndex(get(currentlyLoadedLocationsArray)?.length);
 
-        const resultLat = Number(get(currentlyLoadedLocationsArray)[guessIndex][0]);
-        const resultLong = Number(get(currentlyLoadedLocationsArray)[guessIndex][1]);
+        const resultLat = get(currentlyLoadedLocationsArray)[guessIndex][0];
+        const resultLong = get(currentlyLoadedLocationsArray)[guessIndex][1];
         const additionalProperty = get(currentlyLoadedLocationsArray)[guessIndex][2]; // only available for certain modes (like country guessr, image guessr..). This could be the country, the image URL etc.
         return [resultLat, resultLong, additionalProperty];
     } catch (error) {
