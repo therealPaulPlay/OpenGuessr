@@ -151,9 +151,7 @@ async function loadBackupLocations(error) {
 }
 
 // Get community map coordinates ---------------------------------------------------------------------------
-
 async function getCommunityMapCoordinates() {
-
     if (loadedMapCategory !== localStorage.getItem("selectedCategory")) {
         try {
             const response = await fetch(get(accountUrl) + "/maps/" + localStorage.getItem("selectedCategory").replace("community_", ""), {
@@ -164,20 +162,31 @@ async function getCommunityMapCoordinates() {
             // Check if the response is successful
             if (response.ok) {
                 const data = await response.json();
+
+                // Throw error if no map data URL is provided
+                if (!data.map_data_url) throw new Error("No map data URL provided!");
+
+                const mapContentResponse = await fetch(data.map_data_url);
+                if (!mapContentResponse.ok) throw new Error(`Failed to fetch map content from object storage: ${mapContentResponse.status}`);
+                const mapContent = await mapContentResponse.json();
+
                 loadedMapCategory = localStorage.getItem("selectedCategory");
                 previousGuessesIndexes = [];
-                currentlyLoadedLocationsArray.set(data.map_data.locations); // the array is in locations: {}
+                currentlyLoadedLocationsArray.set(mapContent.locations); // the array is in locations: [...]
                 return pickRandomLocations(); // pick one new location for playing
 
             } else {
                 console.error("Community map fetch failed. Server returned error:", response.status);
-                if (response.status == 404) errorPopup("Community map was deleted", "This map was likely deleted and cannot be found.", response.status, true);
-                if (response.status != 404) errorPopup("Error loading community map", "An error occured on the maps server.", response.status, true);
-                return [];
+                if (response.status == 404) {
+                    errorPopup("Community map was deleted", "This map was likely deleted and cannot be found.", response.status, true);
+                    return [];
+                } else {
+                    throw new Error(response.status);
+                }
             }
         } catch (error) {
             console.error("Error occurred while fetching map from server: ", error);
-            errorPopup("Error loading community map", "The maps server can't be reached.", error, true);
+            errorPopup("Error loading community map", "An error occured loading the map.", error.message, true);
             return [];
         }
     } else {
@@ -186,7 +195,6 @@ async function getCommunityMapCoordinates() {
 }
 
 // Universal function to pick random coordinates ---------------------------------------------------------------------------
-
 function pickRandomLocations() {
     try {
         let guessIndex = getUniqueLocationIndex(get(currentlyLoadedLocationsArray)?.length);
@@ -217,7 +225,7 @@ function getUniqueLocationIndex(locationAmount) {
 // Get Competition coordinates ---------------------------------------------------------------------------------------------
 
 async function getCompetitionCoordinates() {
-    let resultLocationsArray = [];
+    let resultLocationsArray;
 
     try {
         const resultLat = get(competitionData)?.locations[get(competitionRound)][0];
@@ -228,5 +236,5 @@ async function getCompetitionCoordinates() {
         console.error("Error in locationGeneration.js in getCompetitionCoordinates: " + error);
     }
 
-    return resultLocationsArray;
+    return resultLocationsArray || [];
 }

@@ -128,7 +128,7 @@
 			type="text"
 			style="width: 180px"
 			placeholder="Name of your map..."
-			maxlength="17"
+			maxlength="25"
 		/>
 		<p>Map category:</p>
 		<select id="categoryDropdown" class="dropdown" bind:value={categoryValue}>
