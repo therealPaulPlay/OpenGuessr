@@ -618,7 +618,7 @@
 	.map-name {
 		font-size: 22px;
 		white-space: nowrap;
-		max-width: 200px;
+		max-width: 210px;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}

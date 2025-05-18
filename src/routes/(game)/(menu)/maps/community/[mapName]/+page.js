@@ -8,22 +8,32 @@ export async function load({ params }) {
   try {
     const response = await fetch(get(accountUrl) + `/maps/${mapName.replaceAll("_", " ")}`);
 
-    if (!response.ok) {
-      throw new Error('Failed to fetch map data');
-    }
+    if (!response.ok) throw new Error('Failed to fetch map data');
 
     const mapData = await response.json();
 
-    // Return the map data to be available in the page
-    return mapData;
+    try {
+      // Second fetch: Get the actual map JSON data from the Spaces URL
+      if (!mapData.map_data_url) throw new Error("No map data URL provided");
+      const mapContentResponse = await fetch(mapData.map_data_url);
+      if (!mapContentResponse.ok) throw new Error('Failed to fetch map content from object storage');
 
+      // Parse the JSON response
+      const mapContent = await mapContentResponse.json();
+      mapData.map_data = mapContent; // Add the map content to the mapData object
+
+    } catch (error) {
+      throw new Error('Failed to load map json: ' + error.message);
+    }
+
+    // Return the complete map data to be available in the page
+    return mapData;
   } catch (error) {
     console.error('Error loading map data:', error);
-
     // Handle error gracefully (e.g., show error page or fallback)
     return {
       status: 500,
-      error: new Error('Could not load the map data.')
+      error: new Error('Failed to load map data: ' + error.message)
     };
   }
 }
