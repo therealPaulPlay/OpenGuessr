@@ -57,6 +57,7 @@
 		border-radius: 10px;
 		margin-top: 100px;
 		text-decoration: none;
+		height: unset;
 	}
 
 	@media (max-width: 800px) {

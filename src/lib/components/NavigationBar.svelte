@@ -340,7 +340,7 @@
 			}}
 		>
 			Map
-			<img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
+			<img class="socialBarIcons noMarginRight" src="/img/mobile_maps_icon.png" alt="Map Categories" />
 		</a>
 		<button
 			class="standardButton accountButton white"
@@ -421,6 +421,10 @@
 			transform: translateX(calc(-100% + 75px));
 			/* adjust second param to be max-width of element minus about 5px */
 		}
+	}
+
+	.noMarginRight {
+		margin-right: 0 !important;
 	}
 
 	.topButtonArea {
@@ -523,15 +527,8 @@
 	}
 
 	.accountButton {
-		min-height: 40px;
-		max-height: 40px;
 		background-color: var(--panel-button-color);
 		text-decoration: none;
-	}
-
-	.loginButton {
-		min-height: 40px;
-		max-height: 40px;
 	}
 
 	.progressContainer {

@@ -21,7 +21,7 @@
 		position: fixed;
 		display: flex;
 		right: 70px;
-		bottom: 76px;
+		bottom: 74px;
 		min-width: 216px;
 		min-height: 150px;
 		align-items: flex-end;
@@ -76,7 +76,7 @@
 	/* Shift up to fit ad */
 	@media (orientation: portrait) and (max-width: 800px) {
 		.mapHolderAdShift {
-			bottom: 134px;
+			bottom: 132px;
 		}
 	}
 </style>

@@ -41,13 +41,18 @@
 </script>
 
 {#if $notificationVisible}
-	<div id="notificationBar" style:top={belowNavbar ? "80px" : "15px"} transition:fly={{ y: -20, duration: 250 }}>
+	<div
+		id="notificationBar"
+		class="barMenu"
+		style:top={belowNavbar ? "80px" : "var(--layout-margin)"}
+		transition:fly={{ y: -20, duration: 250 }}
+	>
 		<p id="notificationText">{$notificationText}</p>
 		<div class="notificationButtonBox">
 			{#if $showAcceptButton}
-				<button id="notificationAccept" class="standardButton white" onclick={accept}>{$acceptText}</button>
+				<button id="notificationAccept" class="standardButton panelButton white" onclick={accept}>{$acceptText}</button>
 			{/if}
-			<button id="notificationDismiss" class="standardButton white" onclick={dismiss}>
+			<button id="notificationDismiss" class="standardButton panelButton white" onclick={dismiss}>
 				<img alt="dismiss notification" class="dismissIcon" src="/img/delete_icon.png" />
 			</button>
 		</div>
@@ -58,32 +63,32 @@
 	#notificationBar {
 		position: fixed;
 		top: 0;
-		border-radius: 10px;
-		background-color: var(--panel-color);
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		color: white;
-		padding: var(--panel-margin);
-		gap: 15px;
-		font-size: 22px;
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
-		box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
+		gap: var(--layout-margin);
 		transition: all 200ms ease;
 		pointer-events: auto;
-		margin-inline: 10px;
 		max-width: 80vw;
 		z-index: 999;
 	}
 
+	@media (max-width: 1200px) {
+		#notificationBar {
+			top: var(--box-margin) !important;
+		}
+	}
+
+	.panelButton {
+		background-color: var(--panel-button-color);
+	}
+
 	#notificationAccept {
 		min-width: 45px;
+		min-height: 40px;
 	}
 
 	#notificationDismiss,
 	#notificationAccept {
 		padding-inline: 10px;
+		min-height: 40px;
 	}
 
 	#notificationText {

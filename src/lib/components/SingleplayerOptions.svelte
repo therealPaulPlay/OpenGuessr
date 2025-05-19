@@ -289,6 +289,7 @@
 		justify-content: space-between;
 		align-items: center;
 		gap: 5px;
+		height: 30px;
 		background-color: rgba(255, 255, 255, 0.1);
 		padding: 5px;
 		padding-inline: 10px;
