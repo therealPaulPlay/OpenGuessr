@@ -194,6 +194,7 @@
 		overflow: hidden;
 		flex-grow: 1;
 		min-width: 150px;
+		height: 77px;
 	}
 
 	.settingsCanvas {
@@ -234,9 +235,9 @@
 
 	.creditsButton {
 		padding: 3px;
-		min-height: 0;
 		padding-inline: 5px;
 		display: flex;
 		align-items: center;
+		height: 30px;
 	}
 </style>

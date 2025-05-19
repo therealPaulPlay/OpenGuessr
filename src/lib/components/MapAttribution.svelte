@@ -6,7 +6,7 @@
 </script>
 
 {#if $mapVisible && $mapExpanded && !$resultScreenEnabled}
-	<div id="mapAttribution" class="mapAttribution" style:bottom={$mapModeIndicatorVisible ? "63px" : ""}>
+	<div id="mapAttribution" class="mapAttribution" style:bottom={$mapModeIndicatorVisible ? "64px" : ""}>
 		<p>Map Data ©{new Date().getFullYear()} Google</p>
 		<p style="border-bottom-right-radius: 10px">
 			<a

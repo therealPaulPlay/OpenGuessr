@@ -30,6 +30,7 @@
 		flex-grow: 1;
 		border: none;
 		margin: 2px;
+		height: 35px;
 	}
 
 	.supporterArea {

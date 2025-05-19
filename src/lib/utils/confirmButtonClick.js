@@ -10,7 +10,6 @@ import { get } from "svelte/store";
 import { playingDuel, socket } from "$lib/stores/context-specific/multiplayerStore";
 
 export function confirmButtonClicks() {
-    playSound("basic_button");
     continueText.set("Continue");
 
     if (get(competition)) stopCompetitionTimer(); // If in competition, end round timer

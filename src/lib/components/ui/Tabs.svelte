@@ -34,7 +34,7 @@
 		box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
 		transition: transform 150ms ease;
 		max-width: 100%;
-		height: 39px;
+		height: 40px;
 	}
 
 	.tabs-group:has(button:active) {
@@ -52,6 +52,7 @@
 		text-overflow: ellipsis;
 		overflow: hidden;
 		flex-grow: 1;
+		height: 35px;
 	}
 
 	.tab-button:active {

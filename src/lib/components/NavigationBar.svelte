@@ -523,15 +523,8 @@
 	}
 
 	.accountButton {
-		min-height: 40px;
-		max-height: 40px;
 		background-color: var(--panel-button-color);
 		text-decoration: none;
-	}
-
-	.loginButton {
-		min-height: 40px;
-		max-height: 40px;
 	}
 
 	.progressContainer {
