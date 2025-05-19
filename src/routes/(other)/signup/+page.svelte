@@ -465,7 +465,7 @@
 		background-color: rgba(255, 255, 255, 0.15);
 		border-radius: 10px;
 		padding: var(--box-margin);
-		padding-left: 15px;
+		padding-left: calc(var(--box-margin) + var(--panel-margin));
 		margin-top: 50px;
 	}
 

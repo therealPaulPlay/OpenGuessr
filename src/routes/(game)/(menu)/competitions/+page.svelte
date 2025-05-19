@@ -1107,6 +1107,7 @@
 		width: 200px;
 		padding: var(--box-margin);
 		margin-bottom: 30px;
+		height: 50px;
 		margin-left: calc(50% - 100px);
 	}
 

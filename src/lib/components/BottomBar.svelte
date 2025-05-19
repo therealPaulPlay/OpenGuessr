@@ -8,6 +8,8 @@
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { supporterLevel } from "$lib/stores/accountStore";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
+	import { showNotification } from "$lib/utils/notifications";
+	import { mapVisible } from "$lib/stores/context-specific/mapStore";
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
@@ -62,7 +64,11 @@
 			class="standardButton bottomBarButton confirmButton white"
 			id="confirmButton"
 			class:confirmActive={$confirmButtonActive}
-			onclick={confirmButtonClicks}
+			onclick={() => {
+				playSound("basic_button");
+				if ($confirmButtonActive) confirmButtonClicks();
+				else if ($mapVisible) showNotification("Place your pin first.");
+			}}
 		>
 			<button
 				id="helpButton"
@@ -126,7 +132,7 @@
 		border-radius: 3px;
 		padding: 4px;
 		padding-inline: 6px;
-		height: 30px;
+		height: 28px;
 		transition:
 			background-color 250ms ease,
 			color 250ms ease;
@@ -159,18 +165,17 @@
 	.confirmButton {
 		width: fit-content;
 		position: relative;
-		pointer-events: none;
 		padding-left: 10px;
 		padding-right: 30px;
 		width: 100%;
 		display: flex;
 		align-items: center;
 		gap: 12px;
-		min-height: 0;
 	}
 
 	.confirmActive {
 		pointer-events: auto;
+		opacity: 1;
 		background-color: var(--brand-color);
 	}
 
@@ -220,9 +225,8 @@
 	}
 
 	#resetButtonImg {
-		height: auto;
 		width: 21px;
-		vertical-align: 1px;
+		vertical-align: 2px;
 	}
 
 	.bottomFooterAdText {
@@ -232,10 +236,11 @@
 		z-index: 7;
 	}
 
-	@media all and (max-width: 1200px) {
-		.socialLinkArea {
-			display: none;
-		}
+	.bottomRightMenu {
+		width: calc(20% - (var(--box-margin) + 2px));
+		min-width: 200px;
+		margin-right: 60px;
+		margin-left: var(--panel-margin);
 	}
 
 	/* Ad shift */
@@ -247,23 +252,19 @@
 		.BottomBarAdShift {
 			padding-bottom: 58px;
 		}
-	}
 
-	.bottomRightMenu {
-		width: calc(20% - calc(var(--box-margin) + 2px));
-		min-width: 200px;
-		margin-right: 60px;
+		.socialLinkArea {
+			display: none;
+		}
+
+		.bottomRightMenu {
+			flex-grow: 1;
+		}
 	}
 
 	@media (orientation: portrait) and (max-width: 1200px) {
 		.bottomRightMenu {
 			margin-right: 0;
-		}
-	}
-
-	@media all and (orientation: landscape) and (max-width: 1200px) {
-		.bottomRightMenu {
-			width: calc(25% - calc(var(--box-margin) + 2px));
 		}
 	}
 </style>

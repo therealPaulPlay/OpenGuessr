@@ -21,7 +21,7 @@
 		position: fixed;
 		display: flex;
 		right: 70px;
-		bottom: 76px;
+		bottom: 74px;
 		min-width: 216px;
 		min-height: 150px;
 		align-items: flex-end;
@@ -60,13 +60,6 @@
 		display: none !important;
 	}
 
-	@media all and (orientation: landscape) and (max-width: 1200px) {
-		.mapHolder {
-			width: 25%;
-			height: 25%;
-		}
-	}
-
 	.mapHover {
 		width: 55%;
 		height: 55%;
@@ -83,7 +76,7 @@
 	/* Shift up to fit ad */
 	@media (orientation: portrait) and (max-width: 800px) {
 		.mapHolderAdShift {
-			bottom: 134px;
+			bottom: 132px;
 		}
 	}
 </style>

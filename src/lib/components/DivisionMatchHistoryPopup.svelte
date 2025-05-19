@@ -140,7 +140,7 @@
 
 		<div class="paginationControls">
 			<button class="standardButton white" onclick={prevPage} class:disabledButton={currentPage === 1}>
-				<ArrowLeft size={20} strokeWidth={2.5} style="margin-bottom: -2px" />
+				<ArrowLeft size={20} strokeWidth={2.5} />
 			</button>
 			<span class="pageCounter">{currentPage}</span>
 			<button
@@ -148,7 +148,7 @@
 				onclick={nextPage}
 				class:disabledButton={!(matchResults && matchResults.duels && matchResults.duels.length === limit)}
 			>
-				<ArrowRight size={20} strokeWidth={2.5} style="margin-bottom: -2px" />
+				<ArrowRight size={20} strokeWidth={2.5} />
 			</button>
 		</div>
 
@@ -208,10 +208,9 @@
 		position: relative;
 		width: calc(100% - 20px);
 		border-radius: 2px;
-		max-height: calc(60dvh - 250px);
+		height: calc(60dvh - 250px);
 		overflow-x: hidden;
 		overflow-y: auto;
-		min-height: 50px;
 		background-color: var(--box-color);
 		margin-top: 25px;
 		margin-inline: var(--box-margin);

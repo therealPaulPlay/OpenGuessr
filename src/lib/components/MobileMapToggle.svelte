@@ -24,7 +24,6 @@
 	style={$mapExpanded ? "margin-bottom: var(--box-margin);" : ""}
 >
 	<button
-		id="floatingMapButton"
 		class="standardButton white floatingButtonColor"
 		bind:this={toggleMapButton}
 		onclick={toggleMapClick}
@@ -51,6 +50,7 @@
 
 	.floatingButtonColor {
 		background-color: var(--panel-button-color);
+		height: unset;
 	}
 
 	#toggleMapImage {

@@ -20,7 +20,7 @@
 
 		if (operationMessage.includes("success")) {
 			goto("/maps/community/" + mapName.replaceAll(" ", "_").toLowerCase()); // Open the map page after submitting
-			showNotification("Thank you for contributing!");
+			showNotification("Map created!");
 		} else {
 			errorPopup("Error occured uploading a map", "Please refer to the error code below.", operationMessage);
 		}
@@ -128,7 +128,7 @@
 			type="text"
 			style="width: 180px"
 			placeholder="Name of your map..."
-			maxlength="17"
+			maxlength="25"
 		/>
 		<p>Map category:</p>
 		<select id="categoryDropdown" class="dropdown" bind:value={categoryValue}>

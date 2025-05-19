@@ -28,6 +28,7 @@
 	import { get } from "svelte/store";
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
 	import ResultFullscreenMessage from "./ResultFullscreenMessage.svelte";
+	import { CircleUser, Flame, RulerDimensionLine } from "lucide-svelte";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -78,7 +79,7 @@
 				<RemoveAdsText text="Go Ad-Free." />
 			</div>
 			<div class="resultField">
-				<img src="/img/distance_icon.png" alt="Distance icon" id="distanceIcon" />
+				<RulerDimensionLine style="margin-right: 8px;" size={22} strokeWidth={2.25} />
 				<p id="distanceText">{$distanceText}</p>
 			</div>
 			{#if $isAuthenticated}
@@ -98,28 +99,24 @@
 					<p id="endScreenXP">{$animatedExperience.toFixed(0)} XP</p>
 					{#if $showStreakDisplay}
 						<div id="streakDisplay">
-							<img id="streakIcon" src="/img/streak_icon.png" alt="country streak" />
+							<Flame style="margin-right: 5px;" size={22} strokeWidth={2.25} />
 							<p id="endScreenStreakText">{$streakText}</p>
 						</div>
 					{/if}
 				</div>
 			{:else}
 				<div id="XPbarNoAccount" class="resultField">
-					<p id="signupPromptText">See & save your score!</p>
-					<button
-						class="standardButton white continueButton smallSignupButton"
-						onclick={() => {
-							playSound("basic_button");
-							signupPrompt();
-						}}>Sign up</button
-					>
+					<p id="signupPromptText">
+						<CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see &
+						save your score!
+					</p>
 				</div>
 			{/if}
 		</div>
 	</div>
 	<div class="barMenu nextRoundArea">
 		<button
-			class="standardButton white continueButton"
+			class="standardButton white panelButton"
 			onclick={() => {
 				playSound("basic_button");
 				openLocationOnMaps(get(currentLocationLatitude), get(currentLocationLongitude));
@@ -129,7 +126,7 @@
 		</button>
 		<button
 			id="nextRound"
-			class="standardButton white continueButton"
+			class="standardButton white panelButton"
 			style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
 			style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
 			onclick={() => {
@@ -176,15 +173,6 @@
 		vertical-align: -2px;
 	}
 
-	.smallSignupButton {
-		line-height: 5px;
-		max-height: 35px !important;
-		min-height: 35px !important;
-		margin-top: -4px;
-		margin-bottom: -4px;
-		margin-right: -4px;
-	}
-
 	#nextRound {
 		padding-inline: 35px;
 		flex-grow: 1;
@@ -219,13 +207,6 @@
 
 	.resultFieldHigh {
 		min-height: 40px;
-	}
-
-	#distanceIcon {
-		width: 25px;
-		height: 25px;
-		margin-bottom: -3px;
-		margin-right: 10px;
 	}
 
 	#endBottomBar {
@@ -388,10 +369,11 @@
 	}
 
 	#signupPromptText {
-		padding-inline: 10px;
+		margin-inline: auto;
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		opacity: 0.5;
 	}
 
 	.XPbarResource {
@@ -422,13 +404,7 @@
 		vertical-align: middle;
 		text-align: center;
 		color: white;
-		margin-left: 3px;
 		text-wrap: nowrap;
-	}
-
-	#streakIcon {
-		width: 25px;
-		height: 25px;
 	}
 
 	#streakDisplay {
@@ -474,8 +450,7 @@
 		display: inline;
 	}
 
-	.continueButton {
-		min-height: 42px;
+	.panelButton {
 		background-color: var(--panel-button-color);
 	}
 
@@ -504,7 +479,7 @@
 		}
 
 		#resultBox {
-			margin-bottom: 65px;
+			margin-bottom: 64px;
 		}
 	}
 </style>

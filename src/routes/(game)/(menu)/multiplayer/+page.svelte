@@ -276,13 +276,13 @@
 
 	:global(.skillBasedToggle) {
 		border: none !important;
-		min-height: 0 !important;
+		height: fit-content !important;
 	}
 
 	:global(.skillBasedToggle button) {
 		padding-top: 0 !important;
 		padding-bottom: 3px !important;
-		min-height: 20px;
+		height: 30px !important;
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
@@ -306,7 +306,7 @@
 		padding-top: 0;
 		padding-bottom: 3px;
 		border: none;
-		min-height: 20px;
+		height: 30px;
 	}
 
 	:global(.triangleAlertMarginRight) {

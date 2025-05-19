@@ -91,8 +91,7 @@
 		left: 0;
 		right: 0;
 		display: flex;
-		padding: 15px;
-		margin: 5px;
+		padding: 20px;
 		gap: var(--layout-margin);
 		z-index: 99;
 		pointer-events: none;

@@ -378,6 +378,7 @@
 	.sendInviteButton {
 		padding: 0;
 		padding-inline: 5px;
+		height: 35px !important;
 	}
 
 	.roomCreationFriendItem {
@@ -385,6 +386,7 @@
 		border: none;
 		border-radius: 10px;
 		display: flex;
+		height: fit-content;
 		justify-content: space-between;
 		align-items: center;
 		padding: var(--panel-margin);
@@ -455,7 +457,7 @@
 	}
 
 	.friendsRoomEntryText {
-		padding-inline: 10px;
+		padding-inline: var(--box-margin);
 		overflow: hidden;
 		text-overflow: ellipsis;
 		max-width: 150px;

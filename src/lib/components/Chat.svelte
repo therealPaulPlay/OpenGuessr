@@ -102,14 +102,14 @@
 			/>
 			<button
 				id="multiplayerSendButton"
-				class="standardButton"
+				class="standardButton white"
 				onclick={() => {
 					playSound("basic_button");
 					manuallySendChat(inputValue);
 					inputValue = "";
 				}}
 			>
-				<SendHorizonal strokeWidth={2.5} size={22} style="margin-right: -2px; margin-top: 2px" />
+				<SendHorizonal strokeWidth={2.5} size={22} style="margin-right: -2px; margin-top: 3px" />
 			</button>
 		</div>
 	</div>
@@ -152,7 +152,7 @@
 
 	.chatContainer {
 		left: 10px;
-		bottom: 76px;
+		bottom: 74px;
 		z-index: 10;
 		position: fixed;
 		height: fit-content;
@@ -163,7 +163,7 @@
 	.bottomMultiplayerChatArea {
 		display: flex;
 		align-items: center;
-		gap: var(--box-margin);
+		gap: var(--panel-margin);
 	}
 
 	.multiplayerChatMessages {
@@ -172,7 +172,7 @@
 		display: flex;
 		overflow-y: scroll;
 		scrollbar-width: none;
-		height: calc(100% - 46px);
+		height: calc(100% - 48px);
 		padding-inline: 3px;
 		margin-bottom: 8px;
 		position: relative;
@@ -183,14 +183,13 @@
 	}
 
 	#multiplayerSendButton {
-		height: 38px;
 		padding-inline: 12px;
 	}
 
 	#multiplayerMessageInput {
 		padding: 10px;
 		border-radius: 5px;
-		height: 17px;
+		height: 20px;
 		flex-grow: 1;
 		width: 0;
 		overflow-x: auto;
