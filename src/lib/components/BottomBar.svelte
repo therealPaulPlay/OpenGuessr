@@ -67,7 +67,7 @@
 			onclick={() => {
 				playSound("basic_button");
 				if ($confirmButtonActive) confirmButtonClicks();
-				else if ($mapVisible) showNotification("Place a pin first.");
+				else if ($mapVisible) showNotification("Place your pin first.");
 			}}
 		>
 			<button
