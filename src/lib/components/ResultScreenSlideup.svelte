@@ -11,7 +11,7 @@
 		monthlySupportAmount,
 	} from "$lib/stores/context-specific/resultScreenSlideupStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { HandHeart } from "lucide-svelte";
+	import { Flame, HandHeart } from "lucide-svelte";
 	import { slide } from "svelte/transition";
 </script>
 
@@ -47,7 +47,7 @@
 			>
 				{$slideupButtonText}
 				{#if $slideupButtonText == "Restore"}
-					<img src="/img/streak_icon.png" class="socialIcon streakIcon" alt="Streak Icon" />
+					<Flame size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
 				{:else if $slideupButtonText == "Support"}
 					<HandHeart style="margin-bottom: -3px;" size={20} />
 				{/if}
@@ -121,10 +121,6 @@
 
 	.dismissButton {
 		background-color: var(--panel-button-color);
-	}
-
-	.streakIcon {
-		vertical-align: -4px !important;
 	}
 
 	.streakButton {

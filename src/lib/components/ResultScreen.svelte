@@ -28,7 +28,7 @@
 	import { get } from "svelte/store";
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
 	import ResultFullscreenMessage from "./ResultFullscreenMessage.svelte";
-	import { CircleUser, RulerDimensionLine } from "lucide-svelte";
+	import { CircleUser, Flame, RulerDimensionLine } from "lucide-svelte";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -99,7 +99,7 @@
 					<p id="endScreenXP">{$animatedExperience.toFixed(0)} XP</p>
 					{#if $showStreakDisplay}
 						<div id="streakDisplay">
-							<img id="streakIcon" src="/img/streak_icon.png" alt="country streak" />
+							<Flame style="margin-right: 5px;" size={22} strokeWidth={2.25} />
 							<p id="endScreenStreakText">{$streakText}</p>
 						</div>
 					{/if}
@@ -404,13 +404,7 @@
 		vertical-align: middle;
 		text-align: center;
 		color: white;
-		margin-left: 3px;
 		text-wrap: nowrap;
-	}
-
-	#streakIcon {
-		width: 25px;
-		height: 25px;
 	}
 
 	#streakDisplay {
