@@ -33,7 +33,14 @@
 					>this page</a
 				>.
 			</p>
-			<br /> <br />
+			<br />
+			<p>Need to adjust your cookie settings?</p>
+			<button
+				class="consentButton"
+				onclick={() => googlefc.callbackQueue.push({ CONSENT_DATA_READY: () => googlefc.showRevocationMessage() })}
+				>Manage consent</button
+			>
+			<br /><br />
 
 			<h1>Privacy Policy</h1>
 			<br />
@@ -43,7 +50,6 @@
 				improve the Service. Your data will not be shared except as detailed in this Privacy Policy.
 			</p>
 			<br />
-
 			<h2>What data we collect</h2>
 			<p>
 				Partners such as Google and Stripe collect browser details and site usage data via page tagging techniques.
@@ -64,8 +70,6 @@
 				- Time spent on each page<br />
 				- How you arrived at the site<br />
 				- Actions taken on the site<br />
-				<br />
-				We anonymize IP addresses in Google Analytics and do not combine this data to directly identify users.
 			</p>
 			<br /> <br />
 
@@ -103,7 +107,7 @@
 				Changes to this privacy notice will update the 'last updated' date below. Any updates will apply immediately. If
 				significant changes affect data processing, reasonable efforts will be made to notify users.
 				<br /> <br />
-				Last updated: 9 January 2025
+				Last updated: 21st of May, 2025
 			</p>
 			<br /> <br />
 			<h2>Contact</h2>
@@ -116,13 +120,6 @@
 </div>
 
 <style>
-	p {
-		color: white;
-		font-size: 25px;
-		margin: 0 auto;
-		box-sizing: border-box;
-	}
-
 	.center {
 		display: flex;
 		justify-content: center;
@@ -152,21 +149,7 @@
 		color: white;
 	}
 
-	h1,
 	h2 {
-		font-family: Barlow, Futura, sans-serif;
-		color: rgb(255, 255, 255);
-	}
-
-	h1 {
-		text-align: center;
-		font-size: 50px;
-		margin-bottom: 12px;
-	}
-
-	h2 {
-		text-align: left;
-		font-size: 35px;
 		margin-bottom: 10px;
 	}
 
@@ -180,6 +163,13 @@
 		display: flex;
 		justify-content: center;
 		margin-top: 100px;
+	}
+
+	.consentButton {
+		font-size: 22px;
+		color: white;
+		text-decoration: underline;
+		text-decoration-thickness: 2px;
 	}
 
 	@media all and (max-width: 800px) {
