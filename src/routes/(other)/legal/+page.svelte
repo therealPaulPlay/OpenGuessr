@@ -2,13 +2,36 @@
 	import PageBack from "$lib/components/PageBack.svelte";
 
 	function openConsentManager() {
-		// TCF v2 API to open the consent UI
-		if (typeof window.__tcfapi === "function") {
-			window.__tcfapi("displayConsentUi", 2, function () {
-				console.log("Consent UI display requested");
+		// Try direct gtag approach to force consent UI
+		if (typeof window.gtag === "function") {
+			// Force reopen consent UI by revoking all consent
+			window.gtag("consent", "update", {
+				ad_storage: "denied",
+				analytics_storage: "denied",
+				ad_user_data: "denied",
+				ad_personalization: "denied",
+				wait_for_update: 0,
+			});
+
+			// Then immediately request default state which should trigger UI
+			setTimeout(() => {
+				window.gtag("consent", "default", {
+					ad_storage: "denied",
+					analytics_storage: "denied",
+					ad_user_data: "denied",
+					ad_personalization: "denied",
+					wait_for_update: 500,
+				});
+			}, 100);
+		} else if (window.dataLayer) {
+			// Alternative approach using dataLayer directly
+			window.dataLayer.push({
+				event: "consent_update",
+				consent_action: "revoke",
 			});
 		} else {
-			console.error("TCF API not available");
+			console.error("No Google tag APIs available");
+			alert("Unable to open consent manager. Please clear your cookies and reload the page.");
 		}
 	}
 </script>
