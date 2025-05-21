@@ -1,5 +1,16 @@
 <script>
 	import PageBack from "$lib/components/PageBack.svelte";
+
+	function openConsentManager() {
+		// TCF v2 API to open the consent UI
+		if (typeof window.__tcfapi === "function") {
+			window.__tcfapi("displayConsentUi", 2, function () {
+				console.log("Consent UI display requested");
+			});
+		} else {
+			console.error("TCF API not available");
+		}
+	}
 </script>
 
 <svelte:head>
@@ -35,11 +46,7 @@
 			</p>
 			<br />
 			<p>Need to adjust your cookie settings?</p>
-			<button
-				class="consentButton"
-				onclick={() => googlefc.callbackQueue.push({ CONSENT_DATA_READY: () => googlefc.showRevocationMessage() })}
-				>Manage consent</button
-			>
+			<button class="consentButton" onclick={openConsentManager}>Manage consent</button>
 			<br /><br />
 
 			<h1>Privacy Policy</h1>
