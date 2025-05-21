@@ -3,11 +3,11 @@
 	import { onMount, onDestroy } from "svelte";
 	import { setSoundsVolume, playSound, setMusicVolume } from "$lib/utils/soundManager";
 	import { preventFullscreen } from "$lib/stores/context-specific/platformSettingsStore";
-
 	import { settingsPopup } from "$lib/stores/uiStore";
 	import { InfoIcon, Scan } from "lucide-svelte";
 	import Tabs from "./ui/Tabs.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { goto } from "$app/navigation";
 
 	// Settings - Window ---------------------------------------------------------------------------------------
 	function closeSettingsButton() {
@@ -177,7 +177,8 @@
 					id="privacyButton"
 					onclick={() => {
 						playSound("basic_button");
-						window.open("/legal", "_blank").focus();
+						goto("/legal");
+						$settingsPopup = false;
 					}}>Read</button
 				>
 			</div>

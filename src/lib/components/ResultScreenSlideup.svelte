@@ -49,7 +49,7 @@
 				{#if $slideupButtonText == "Restore"}
 					<Flame size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
 				{:else if $slideupButtonText == "Support"}
-					<HandHeart style="margin-bottom: -3px;" size={20} />
+					<HandHeart style="margin-bottom: -3px;" size={20} strokeWidth={2.25} />
 				{/if}
 			</button>
 		</div>

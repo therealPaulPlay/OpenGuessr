@@ -14,7 +14,6 @@ import { mapHovered } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
 
 // Google Maps init --------------------------------------------------------------------------------------
-
 let captchaToken;
 
 async function loadGoogleMapsApi(apiKey) {
@@ -47,7 +46,7 @@ async function loadGoogleMapsApi(apiKey) {
     });
 }
 
-// ensure that the user has not exceeded a certain limit of map loads
+// Ensure that the user has not exceeded a certain limit of map loads
 async function requestMapLoad() {
     showNotification("Loading minimap..");
 
@@ -159,7 +158,6 @@ async function initMap() {
 }
 
 // Trigger map initialization delayed --------------------------------------------------------------
-
 let mapInitialized = false;
 let currentlyInitializing = false;
 
@@ -186,7 +184,6 @@ if (typeof window !== "undefined") {
 }
 
 // Reset map ---------------------------------------------------------------------------------------
-
 let multiplayerMiniMarkers = []; // team markers
 
 // Reset the map - used for going to the next round. 
