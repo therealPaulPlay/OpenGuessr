@@ -297,7 +297,7 @@
 						>
 					</p>
 					<p id="privacyNotice">
-						Our <a href="/legal">policies</a> apply.
+						Our <a href="/legal" target="_blank">policies</a> apply.
 					</p>
 				</div>
 			{/if}
