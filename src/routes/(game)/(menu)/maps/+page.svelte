@@ -1,5 +1,5 @@
 <script>
-	import { Plus, XCircle, ExternalLinkIcon } from "lucide-svelte";
+	import { Plus, XCircle, ExternalLinkIcon, User } from "lucide-svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { crazyGames, disableExternalLinks } from "$lib/stores/context-specific/platformSettingsStore";
@@ -16,6 +16,7 @@
 	let currentFetchIndex = 0;
 	let loadMoreCategoryParam = undefined;
 	let loadMoreQueryParam = undefined;
+	let byUserParam = undefined;
 
 	// UI
 	let showLoadMore = $state(false);
@@ -33,31 +34,34 @@
 		addedCommunityMapsArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 	});
 
-	async function loadCommunityMaps(index, category, query, fav) {
+	async function loadCommunityMaps(index, category, query, byUserId, fav) {
 		try {
 			showLoadMore = false;
 			showNothingFound = false;
 			errorMessageText = "Loading...";
 			errorMessageShown = true;
 
+			// Set these for further loadCommunityMaps() calls
 			loadMoreCategoryParam = category;
 			loadMoreQueryParam = query;
+			byUserParam = byUserId;
+			currentFetchIndex = index;
 
 			// If a new loading method is being used, reset the current input
-			if (index == 0 || index == undefined) {
-				loadedCommunityMaps = [];
-			}
+			if (index == 0 || index == null) loadedCommunityMaps = [];
 
-			let indexAdd = index != undefined ? "index/" + index : "";
+			let indexAdd =
+				index != null && !(category || query || byUserId)
+					? "index/" + index
+					: category || query || byUserId
+						? "/" + index
+						: "";
 			const categoryAdd = category ? "category/" + category : "";
 			const queryAdd = query ? "search/" + query : "";
 			const favAdd = fav ? "favourites" : "";
+			const byIdAdd = byUserId ? "by-user/" + byUserId : "";
 
-			if (category || query) {
-				indexAdd = "/" + index;
-			}
-
-			const response = await fetch($accountUrl + "/maps/" + categoryAdd + queryAdd + indexAdd + favAdd);
+			const response = await fetch($accountUrl + "/maps/" + categoryAdd + queryAdd + byIdAdd + indexAdd + favAdd);
 			const data = await response.json();
 
 			if (response.ok) {
@@ -88,7 +92,6 @@
 	}
 
 	// Play Map --------------------------------------------------------------------------------------------------------------
-
 	function selectCategory(name, community) {
 		playSound("button_juicy");
 		const communityAppendix = community ? "community_" : "";
@@ -145,19 +148,25 @@
 		}
 	}
 
-	// Search and categories ------------------------------------------------------------------------
+	// Search and categories ------------------------------------------------------------------------------------------
+	let searchValue = $state("");
+	let selectedCategoryIndex = $state(0);
+	let categoriesArray = [
+		"All",
+		"By you",
+		"Nature",
+		"Architecture",
+		"Urban",
+		"Regions",
+		"Sports",
+		"Transport",
+		"Miscellaneous",
+	];
 
 	function startSearch() {
-		let query = document.getElementById("mapSearch").value.toLowerCase();
-		if (query == "") {
-			query = undefined; // so the undefined check works in the load function
-		}
-		currentSelection = document.getElementById("categoryAll");
-		categoryButtons.forEach((button) => {
-			button.classList.remove("selected");
-		});
-		document.getElementById("categoryAll").classList.add("selected");
-
+		let query = searchValue?.toLowerCase();
+		if (!query) query = undefined; // so that the undefined check works in the load function
+		selectedCategoryIndex = 0;
 		loadCommunityMaps(0, undefined, query);
 	}
 
@@ -165,35 +174,22 @@
 	let currentSelection;
 	let categoryButtons;
 
-	onMount(() => {
-		currentSelection = document.getElementById("categoryAll");
-
-		categoryButtons = document.querySelectorAll(".categoryButton");
-		categoryButtons.forEach((button) => {
-			button.addEventListener("click", handleCategoryButtonClick);
-		});
-	});
-
-	function handleCategoryButtonClick(event) {
-		if (currentSelection) {
-			currentSelection.classList.remove("selected");
-		}
-
-		event.target.classList.add("selected");
-		currentSelection = event.target;
-		const selectedCategory = currentSelection.textContent.toLowerCase();
-
-		if (selectedCategory != "all") {
-			loadCommunityMaps(0, selectedCategory);
-		} else {
+	function handleCategoryButtonClick(index) {
+		selectedCategoryIndex = index;
+		const selectedCategoryName = categoriesArray?.[selectedCategoryIndex]?.toLowerCase();
+		if (selectedCategoryName == "all") {
 			loadCommunityMaps(0);
+		} else if (selectedCategoryName == "by you") {
+			loadCommunityMaps(0, null, null, localStorage.getItem("id"));
+		} else {
+			loadCommunityMaps(0, selectedCategoryName);
 		}
 	}
 
 	onMount(() => {
 		// Call the function to load community maps
 		loadCommunityMaps(0);
-		loadCommunityMaps(undefined, undefined, undefined, true); // load favourite maps / load spotlight section
+		loadCommunityMaps(undefined, undefined, undefined, undefined, true); // load favourite maps / load spotlight section
 	});
 
 	// Toggle Enlarge Country section ---------------------------------------------------------------------------------
@@ -447,26 +443,31 @@
 	</div>
 	<div class="categoriesSearchArea">
 		<div class="categoriesBar">
-			<button id="categoryAll" class="selected categoryButton standardButton">All</button>
-			<button class="categoryButton standardButton">Nature</button>
-			<button class="categoryButton standardButton">Architecture</button>
-			<button class="categoryButton standardButton">Urban</button>
-			<button class="categoryButton standardButton">Regions</button>
-			<button class="categoryButton standardButton">Sports</button>
-			<button class="categoryButton standardButton">Transport</button>
-			<button class="categoryButton standardButton">Miscellaneous</button>
+			{#each categoriesArray as category, index}
+				{#if index !== 1 || $isAuthenticated}
+					<button
+						class="categoryButton standardButton"
+						class:selected={selectedCategoryIndex == index}
+						onclick={() => handleCategoryButtonClick(index)}
+					>
+						{category.replace("Miscellaneous", "Misc.")}
+						{#if index == 1}
+							<User size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
+						{/if}
+					</button>
+				{/if}
+			{/each}
 		</div>
 		<search class="searchContainer">
 			<input
 				id="mapSearch"
 				placeholder="Search maps"
+				bind:value={searchValue}
 				onkeydown={(e) => {
 					if (e.key === "Enter") e.preventDefault();
 				}}
 				onkeyup={(event) => {
-					if (event.key === "Enter") {
-						startSearch();
-					}
+					if (event.key === "Enter") startSearch();
 				}}
 			/>
 			<button
@@ -522,7 +523,7 @@
 				class="map-item"
 				onclick={() => {
 					playSound("basic_button");
-					loadCommunityMaps(currentFetchIndex + 50, loadMoreCategoryParam, loadMoreQueryParam);
+					loadCommunityMaps(currentFetchIndex + 50, loadMoreCategoryParam, loadMoreQueryParam, byUserParam, null);
 				}}>More <span class="loadMoreIconSpan"><Plus strokeWidth={2.75} size={20} /></span></button
 			>
 		{/if}
@@ -765,17 +766,16 @@
 
 	#mapSearch {
 		transition: background-color 250ms ease;
-		font-size: 22px;
 		flex-grow: 1;
 		padding: 5px;
-		padding-inline: 10px;
+		padding-inline: var(--box-margin);
+		width: 100px;
 		text-overflow: ellipsis;
 	}
 
 	.searchContainer {
 		display: flex;
 		flex-grow: 1;
-		height: 39px;
 	}
 
 	#startSearch {
@@ -823,7 +823,7 @@
 		display: flex;
 		justify-content: space-between;
 		flex-wrap: wrap;
-		width: calc(100% - 16px);
+		width: calc(100% - var(--box-margin) * 2);
 		min-width: 280px;
 		gap: var(--box-margin);
 		align-items: center;
