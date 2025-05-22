@@ -55,8 +55,8 @@ async function loadUserInfo() {
       username.set(user?.userName);
       supporterLevel.set(user?.supporter_level);
       supportedAmount.set(user?.supported_amount);
-      selectedPinIndex.set(user?.profile_data?.pin || 0);
-      selectedBadge.set(user?.profile_data?.badge || null);
+      selectedPinIndex.set(user?.pin || 0);
+      selectedBadge.set(user?.badge || null);
       elo.set(user?.elo || 1000);
 
       if (get(resultScreenEnabled) && get(lastExperienceCalculationAborted)) loadResultScreenXP(get(lastDistance));

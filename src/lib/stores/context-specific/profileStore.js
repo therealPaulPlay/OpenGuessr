@@ -1,11 +1,8 @@
 import { writable } from "svelte/store";
 
 export const profileData = writable();
-export const profileName = writable("Default User");
 export const profileExperience = writable(0);
-export const joinedDate = writable(0);
 export const profileSupporterLevel = writable(0);
 export const profileId = writable(-1);  // -1, so that this default cannot be a user
-export const profileElo = writable(1000);
 
 export const unsavedAboutChanges = writable(false); // Stores whether there are unsaved changes to the about text

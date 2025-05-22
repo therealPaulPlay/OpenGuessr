@@ -4,7 +4,6 @@ import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 import { playSound } from "$lib/utils/soundManager";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { setRestriction } from "$lib/utils/setRestriction";
-import { addCompetitionPlayed } from "$lib/utils/updateProfileData";
 import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 import { supporterLevel } from "$lib/stores/accountStore";
 import { competition } from "$lib/stores/modeStore";
@@ -34,7 +33,6 @@ export function loadCompetition() {
         disableResultScreen(); // In case result screen is enabled
         setCompetitionUI(true);
         setRestriction(get(competitionData)?.restriction || "standard");
-        addCompetitionPlayed();
 
         setTimeout(() => {
             playSound("match_start");

@@ -20,9 +20,9 @@
 			<PinHolder pinId="5" pinLockText="5,000,000 XP" unlocked={$profileExperience >= 5000000} />
 			<PinHolder pinId="6" pinLockText="10,000,000 XP" unlocked={$profileExperience >= 10000000} />
 			<PinHolder pinId="7" pinLockText="75 Duel Wins" unlocked={$profileData?.duelsWon >= 75} />
-			<PinHolder pinId="8" pinLockText="50 Comp. Entries" unlocked={$profileData?.competitionsPlayed >= 50} />
-			<PinHolder pinId="9" pinLockText="10 Streak" unlocked={$profileData?.highestStreak >= 10} />
-			<PinHolder pinId="10" pinLockText="250 Comp. Entries" unlocked={$profileData?.competitionsPlayed >= 250} />
+			<PinHolder pinId="8" pinLockText="50 Comp. Entries" unlocked={$profileData?.competitionsEntered >= 50} />
+			<PinHolder pinId="9" pinLockText="10 Streak" unlocked={$profileData?.highestCountryStreak >= 10} />
+			<PinHolder pinId="10" pinLockText="250 Comp. Entries" unlocked={$profileData?.competitionsEntered >= 250} />
 			<PinHolder pinId="11" pinLockText="Supporter" unlocked={$profileSupporterLevel >= 1} />
 		</div>
 		<button

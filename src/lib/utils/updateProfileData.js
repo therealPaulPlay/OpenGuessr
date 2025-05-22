@@ -1,119 +1,20 @@
 import { getProfileData } from "$lib/utils/getProfileData";
 import { selectedBadge, selectedPinIndex } from "$lib/stores/accountStore";
-import { profileId, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
+import { profileId, profileData, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { errorPopup } from "./errorHandling";
 
-async function updateProfileData(newAboutText, addDuelsPlayed, addDuelsWon, addCompetitionsPlayed, setHighestStreak, newPin, newBadge, newFlag) {
-    try {
-        const data = await getProfileData(localStorage.getItem("id"));
-        const yourLoadedProfileData = data.profileData || {};
-
-        // about text
-        let aboutText;
-        aboutText = yourLoadedProfileData?.about || "";
-        if (newAboutText != null) aboutText = newAboutText;
-
-        // duels played
-        let duelsPlayed;
-        duelsPlayed = yourLoadedProfileData?.duelsPlayed || 0;
-        if (addDuelsPlayed) duelsPlayed += addDuelsPlayed;
-
-        // duels won
-        let duelsWon;
-        duelsWon = yourLoadedProfileData?.duelsWon || 0;
-        if (addDuelsWon) duelsWon += addDuelsWon;
-
-        // competitions played
-        let competitionsPlayed;
-        competitionsPlayed = yourLoadedProfileData?.competitionsPlayed || 0;
-        if (addCompetitionsPlayed) competitionsPlayed += addCompetitionsPlayed;
-
-        // streak
-        let streak;
-        streak = yourLoadedProfileData?.highestStreak || 0;
-        if (setHighestStreak && streak < setHighestStreak) streak = setHighestStreak;
-
-        // pin
-        let pin;
-        pin = yourLoadedProfileData?.pin || 0;
-        if (newPin) pin = newPin;
-
-        // badge
-        let badge;
-        badge = yourLoadedProfileData?.badge || null;
-        if (newBadge) badge = newBadge;
-
-        // flag
-        let flag;
-        flag = yourLoadedProfileData?.flag || null;
-        if (newFlag || newFlag === null) flag = newFlag;
-
-        const profileData = {
-            about: aboutText,
-            duelsPlayed,
-            duelsWon,
-            competitionsPlayed,
-            highestStreak: streak,
-            pin,
-            badge,
-            flag,
-        }
-
-        submitProfileData(profileData);
-    } catch (error) {
-        console.error("Error in updateProfileData:", error);
-    }
-}
-
-export async function saveProfileAboutIfChanges(newAbout) {
-    if (get(unsavedAboutChanges)) {
-        updateProfileData(newAbout);
-        unsavedAboutChanges.set(false);
-    }
-}
-
-export async function addDuelPlayed() {
-    updateProfileData(null, 1);
-}
-
-export async function addDuelWon() { // also adds 1 to duel played
-    updateProfileData(null, 1, 1);
-}
-
-export async function addCompetitionPlayed() {
-    updateProfileData(null, null, null, 1);
-}
-
-export async function setCheckNewHighestStreak(streak) {
-    updateProfileData(null, null, null, null, streak);
-}
-
-export async function setSelectedProfilePin(pinId) {
-    if (pinId == get(selectedPinIndex)) return; // Detect if the new selection is different from the current one
-    selectedPinIndex.set(pinId);
-    updateProfileData(null, null, null, null, null, pinId);
-}
-
-export async function setProfileBadge(badge) {
-    if (badge == get(selectedBadge)) return; // Detect if the new selection is different from the current one
-    selectedBadge.set(badge);
-    updateProfileData(null, null, null, null, null, null, badge);
-}
-
-export async function setProfileFlag(flag) {
-    updateProfileData(null, null, null, null, null, null, null, flag);
-}
-
-async function submitProfileData(profileDataObject) {
+// Generic function to update a single profile field
+async function updateSingleProfileField(type, value) {
     try {
         const requestBody = {
             id: localStorage.getItem("id"),
-            profileData: JSON.stringify(profileDataObject)
-        }
+            type,
+            value
+        };
 
-        // Make the PUT request using Fetch API
-        const response = await fetch(get(accountUrl) + "/accounts/profile/update", {
+        const response = await fetch(get(accountUrl) + "/accounts/profile/update-replace", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -122,16 +23,68 @@ async function submitProfileData(profileDataObject) {
             body: JSON.stringify(requestBody)
         });
 
-        // Check if the response is successful
-        if (response.ok) {
-
-        } else {
+        if (!response.ok) {
             console.error('Profile update failed: ', response.status);
             errorPopup("Profile update failed", "The server returned an error for the profile update.", response.status, false, false);
+            return false;
         }
 
+        return true;
     } catch (error) {
         console.error('Error occurred during profile update: ', error);
         errorPopup("Profile update failed", "The profile update failed due to a network error.", error, false, false);
+        return false;
+    }
+}
+
+// Save about text if there are unsaved changes
+export async function saveProfileAboutIfChanges(newAbout) {
+    if (get(unsavedAboutChanges)) {
+        unsavedAboutChanges.set(false);
+        const success = await updateSingleProfileField('about', newAbout);
+    }
+}
+
+// Update selected pin
+export async function setSelectedProfilePin(pinId) {
+    if (pinId == get(selectedPinIndex)) return; // Check if the new selection is different from the current one
+    profileData.update((value) => {
+        const newObject = value;
+        newObject["pin"] = pinId;
+        return newObject;
+    });
+    selectedPinIndex.set(pinId);
+    const success = await updateSingleProfileField('pin', pinId);
+}
+
+// Update selected badge
+export async function setProfileBadge(badge) {
+    if (badge == get(selectedBadge)) return; // Check if the new selection is different from the current one
+    profileData.update((value) => {
+        const newObject = value;
+        newObject["badge"] = badge;
+        return newObject;
+    });
+    selectedBadge.set(badge);
+    const success = await updateSingleProfileField('badge', badge);
+}
+
+// Update flag
+export async function setProfileFlag(flag) {
+    await updateSingleProfileField('flag', flag);
+}
+
+// Check and set new highest country streak (only if higher than current)
+export async function setCheckNewHighestCountryStreak(streak) {
+    try {
+        // Get current profile data to check existing highest streak
+        const data = await getProfileData(localStorage.getItem("id"));
+        const currentHighest = data.highestCountryStreak || 0;
+
+        // Only update if the new streak is higher
+        if (streak > currentHighest) await updateSingleProfileField('highest_country_streak', streak);
+
+    } catch (error) {
+        console.error("Error checking/setting country streak:", error);
     }
 }
