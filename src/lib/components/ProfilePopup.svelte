@@ -209,7 +209,8 @@
 					{/if}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<div
-						class="profilePinArea"
+						class="profilePinArea standardButton white"
+						class:pinDisplayOnly={$profileId != localStorage.getItem("id")}
 						role="button"
 						tabindex="0"
 						style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
@@ -221,7 +222,7 @@
 						<img id="selectedProfilePin" alt="map pin" src={`/img/your_marker${Number($profileData?.pin) || 0}.png`} />
 						{#if $profileId == localStorage.getItem("id")}
 							<Pencil
-								style="opacity: 0.5; margin-bottom: 5px; margin-right: 5px; margin-left: 2px;"
+								style="opacity: 0.75; margin-bottom: 5px; margin-right: 5px; margin-left: 2px;"
 								size={17}
 								strokeWidth={2.75}
 							/>
@@ -402,11 +403,11 @@
 		overflow: hidden;
 		margin-bottom: 20px;
 		background-color: var(--box-color-dark);
-		padding: 15px;
-		padding-inline: 12px;
-		width: calc(100% + 26px);
+		padding: var(--layout-margin);
+		width: calc(100% + 20px);
 		margin-left: -25px;
 		margin-top: -25px;
+		gap: var(--box-margin);
 	}
 
 	.buttonDisabled {
@@ -482,12 +483,11 @@
 	}
 
 	#profileNameBox {
-		padding: 5px;
-		margin-left: 5px;
 		display: flex;
 		align-items: center;
 		gap: var(--layout-margin);
 		flex-wrap: wrap;
+		padding-inline: var(--box-margin);
 	}
 
 	.logoutImage {
@@ -504,8 +504,8 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		height: 38px;
-		padding-inline: 10px;
+		height: 40px;
+		padding-inline: var(--panel-margin);
 	}
 
 	#supporterTag p {
@@ -516,6 +516,7 @@
 		transition: max-width 350ms ease-in-out;
 		transition-delay: 100ms;
 		width: 45px;
+		text-align: center;
 		text-wrap: nowrap;
 	}
 
@@ -524,21 +525,20 @@
 	}
 
 	.profilePinArea {
-		height: 29px;
-		background-color: rgba(255, 255, 255, 0.1);
-		border-radius: 5px;
-		padding: 4.5px;
-		cursor: pointer;
-		transition: background-color 250ms ease;
+		padding-inline: 5px;
 	}
 
-	.profilePinArea:hover {
-		background-color: rgba(255, 255, 255, 0.2);
+	.pinDisplayOnly {
+		border: none;
+		background-color: rgba(255, 255, 255, 0.1);
+		box-shadow: none;
+		display: flex;
+		align-items: center;
 	}
 
 	#selectedProfilePin {
-		width: 29px;
-		height: 29px;
+		width: 28px;
+		height: 28px;
 	}
 
 	#supporterIcon {
