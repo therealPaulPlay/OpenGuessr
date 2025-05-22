@@ -59,7 +59,7 @@
 				type="text"
 				id="friendBrowserInput"
 				bind:value={searchQuery}
-				placeholder="Search for a name..."
+				placeholder="Search for a name"
 				onkeydown={(event) => {
 					if (event.key === "Enter") {
 						event.preventDefault();

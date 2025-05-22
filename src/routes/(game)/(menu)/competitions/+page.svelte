@@ -840,10 +840,10 @@
 		justify-content: space-between;
 		flex-wrap: wrap;
 		box-sizing: border-box;
-		min-width: 280px;
 		gap: var(--box-margin);
 		align-items: center;
 		border-radius: 10px;
+		width: calc(100%);
 		padding: var(--box-margin);
 		margin-bottom: var(--layout-margin);
 		background-color: var(--box-color);
@@ -1108,6 +1108,7 @@
 		padding: var(--box-margin);
 		margin-bottom: 30px;
 		height: 50px;
+		line-height: 1;
 		margin-left: calc(50% - 100px);
 	}
 
