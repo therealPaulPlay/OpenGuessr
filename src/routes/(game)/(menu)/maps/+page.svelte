@@ -45,7 +45,6 @@
 			loadMoreCategoryParam = category;
 			loadMoreQueryParam = query;
 			byUserParam = byUserId;
-			currentFetchIndex = index;
 
 			// If a new loading method is being used, reset the current input
 			if (index == 0 || index == null) loadedCommunityMaps = [];
@@ -67,7 +66,7 @@
 			if (response.ok) {
 				errorMessageShown = false;
 
-				if (index) currentFetchIndex = index;
+				if (index != null) currentFetchIndex = index;
 				if (data.communityMaps.length == 50 && !fav) showLoadMore = true;
 
 				let nothingFound = true;
