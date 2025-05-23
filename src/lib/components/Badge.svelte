@@ -116,7 +116,6 @@
 		if (unlocked) {
 			playSound("item_select");
 			setProfileBadge(id);
-			$profileData["badge"] = id;
 		} else {
 			playSound("item_locked");
 		}
@@ -129,7 +128,6 @@
 <style>
 	.badgeLocked {
 		opacity: 0.35;
-		pointer-events: none;
 	}
 
 	.badgeSelected {

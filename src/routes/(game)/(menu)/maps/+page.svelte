@@ -531,7 +531,7 @@
 			<p class="nothingFound">{errorMessageText}</p>
 		{/if}
 		{#if showNothingFound}
-			<p class="nothingFound">No map matches the search query.</p>
+			<p class="nothingFound">No map matches the filter.</p>
 		{/if}
 	</div>
 </div>

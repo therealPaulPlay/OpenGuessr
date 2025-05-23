@@ -413,6 +413,7 @@
 		min-height: 5px;
 		font-size: 18px;
 		margin-right: 2px;
+		height: unset;
 	}
 
 	.teamEmpty {

@@ -22,10 +22,7 @@
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
 		profileData,
-		profileName,
 		profileExperience,
-		profileElo,
-		joinedDate,
 		profileId,
 		profileSupporterLevel,
 		unsavedAboutChanges,
@@ -61,17 +58,17 @@
 	let selectedTabIndex = $state(0);
 
 	profilePopup.subscribe(async (value) => {
-		isFriendsWithId = true;
-		isFriendsWithId = await checkIfFriendsWithId($profileId);
+		if (value == true) {
+			isFriendsWithId = true;
+			isFriendsWithId = await checkIfFriendsWithId($profileId);
+		}
 	});
 
 	let filteredAbout = $state("");
 
 	$effect(async () => {
 		filteredAbout = "";
-		if ($profileData?.about) {
-			filteredAbout = await filterProfanity($profileData?.about);
-		}
+		if ($profileData?.about) filteredAbout = await filterProfanity($profileData?.about);
 	});
 
 	onMount(() => {
@@ -107,8 +104,8 @@
 			name: "Duels",
 			cards: [
 				{
-					title: "Duels played",
-					getValue: () => $profileData?.duelsPlayed?.toLocaleString() || "0",
+					title: "Duels lost",
+					getValue: () => $profileData?.duelsLost?.toLocaleString() || "0",
 					icon: Swords,
 				},
 				{
@@ -117,8 +114,13 @@
 					icon: Trophy,
 				},
 				{
+					title: "Streak",
+					getValue: () => $profileData?.currentDuelWinStreak?.toLocaleString() || "0",
+					icon: Flame,
+				},
+				{
 					title: "Elo rating",
-					getValue: () => $profileElo,
+					getValue: () => $profileData?.elo,
 					icon: Crown,
 				},
 			],
@@ -128,12 +130,12 @@
 			cards: [
 				{
 					title: "Competitions entered",
-					getValue: () => $profileData?.competitionsPlayed?.toLocaleString() || "0",
+					getValue: () => $profileData?.competitionsEntered?.toLocaleString() || "0",
 					icon: Medal,
 				},
 				{
-					title: "Highest streak",
-					getValue: () => $profileData?.highestStreak?.toLocaleString() || "0",
+					title: "Highest country streak",
+					getValue: () => $profileData?.highestCountryStreak?.toLocaleString() || "0",
 					icon: Flame,
 				},
 			],
@@ -148,7 +150,7 @@
 				},
 				{
 					title: "Joined date",
-					getValue: () => formatDateTime($joinedDate),
+					getValue: () => formatDateTime($profileData?.joinedDate),
 					icon: Calendar,
 				},
 			],
@@ -161,7 +163,7 @@
 		<div class="popup-title">
 			<div class="profileNameArea">
 				<div id="profileViewName">
-					<h1>{$profileName}</h1>
+					<h1>{$profileData.username}</h1>
 					<!-- Profile Flag -->
 					{#if $profileData?.flag && FlagIcons[$profileData.flag]}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -281,9 +283,7 @@
 						if (!$unsavedAboutChanges) unsavedAboutChanges.set(true);
 					}}
 					onkeypress={(e) => {
-						if (e.key == "Enter") {
-							e.preventDefault();
-						}
+						if (e.key == "Enter") e.preventDefault();
 					}}
 				></textarea>
 			{/if}
@@ -309,7 +309,7 @@
 										<card.icon size={24} strokeWidth={2} />
 									</div>
 									<div class="card-content">
-										<span>{card.title}</span>
+										<div>{card.title}</div>
 										<p>{card.getValue()}</p>
 									</div>
 								</div>
@@ -618,7 +618,7 @@
 		background-color: var(--box-color);
 		border-radius: 10px;
 		padding: 5px;
-		min-width: 200px;
+		min-width: 150px;
 		display: flex;
 		flex: 1;
 		align-items: center;
@@ -637,9 +637,15 @@
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
-	.card-content span {
+	.card-content {
+		flex-grow: 1;
+		overflow: hidden;
+	}
+
+	.card-content div {
 		opacity: 0.5;
 		font-size: 18px;
+		text-wrap: nowrap;
 	}
 	.card-content p {
 		margin-bottom: 5px;

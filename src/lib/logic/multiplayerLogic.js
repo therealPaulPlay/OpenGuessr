@@ -7,7 +7,6 @@ import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
 import { mapSupportsMultiplayer } from "$lib/utils/doesMapSupportMultiplayer.js";
 import { playSound } from "$lib/utils/soundManager.js";
-import { addDuelPlayed, addDuelWon } from "$lib/utils/updateProfileData.js";
 import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/mapStore.js";
@@ -590,7 +589,6 @@ function determineWinner(array) {
         if (followUpPlayerData && winningPlayerData?.[3] == followUpPlayerData?.[3]) {
             // Draw
             multiplayerOverlayTitle.set("It's a draw!");
-            if (get(playingDuel) && get(isAuthenticated) && !get(isFriendDuel)) addDuelPlayed();
 
         } else {
             // Clear Winner
@@ -600,7 +598,6 @@ function determineWinner(array) {
             // Check if you won in duels or just played
             if (get(playingDuel) && !get(isFriendDuel)) {
                 const won = winningPlayerData?.[5] == localStorage.getItem("id");
-                won ? addDuelWon() : addDuelPlayed();
                 sendDuelDivisionResult(won, get(socket)?.getStorage?.uuid);
             }
         }
