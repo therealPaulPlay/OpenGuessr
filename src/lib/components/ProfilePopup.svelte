@@ -17,7 +17,7 @@
 	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
-	import { Flame, Plus, PlusCircle, SquarePlus } from "lucide-svelte";
+	import { Flame, Plus, PlusCircle, Skull, SquarePlus } from "lucide-svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
@@ -106,7 +106,7 @@
 				{
 					title: "Duels lost",
 					getValue: () => $profileData?.duelsLost?.toLocaleString() || "0",
-					icon: Swords,
+					icon: Skull,
 				},
 				{
 					title: "Duels won",
@@ -114,7 +114,7 @@
 					icon: Trophy,
 				},
 				{
-					title: "Streak",
+					title: "Win streak",
 					getValue: () => $profileData?.currentDuelWinStreak?.toLocaleString() || "0",
 					icon: Flame,
 				},
