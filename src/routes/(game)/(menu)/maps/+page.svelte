@@ -66,7 +66,7 @@
 			if (response.ok) {
 				errorMessageShown = false;
 
-				if (index) currentFetchIndex = index;
+				if (index != null) currentFetchIndex = index;
 				if (data.communityMaps.length == 50 && !fav) showLoadMore = true;
 
 				let nothingFound = true;
