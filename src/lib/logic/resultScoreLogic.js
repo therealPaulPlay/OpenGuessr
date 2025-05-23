@@ -1,7 +1,7 @@
 import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-import { setCheckNewHighestStreak } from "$lib/utils/updateProfileData";
+import { setCheckNewHighestCountryStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, freeSupporterBoostEnabled, supporterLevel, experience } from "$lib/stores/accountStore";
 import { streakText, showStreakDisplay, lastDistance, lastExperienceCalculationAborted, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
@@ -34,7 +34,7 @@ async function streakCalculation() {
         streak++;
     } else {
         if (streak >= 2) toggleStreakWindow(streak, false);
-        if (streak >= 1) setCheckNewHighestStreak(streak);
+        if (streak >= 1) setCheckNewHighestCountryStreak(streak);
         streak = 0; // Reset country streak ( = Streak lost, but still restorable wit ad)
     }
 

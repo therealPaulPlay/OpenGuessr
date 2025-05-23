@@ -50,10 +50,10 @@
 				</p>
 			</div>
 			<div class="badgeBox">
-				<Badge id="compBadge1" interactive="true" unlocked={$profileData?.competitionsPlayed >= 10} />
-				<Badge id="compBadge2" interactive="true" unlocked={$profileData?.competitionsPlayed >= 50} />
-				<Badge id="compBadge3" interactive="true" unlocked={$profileData?.competitionsPlayed >= 100} />
-				<Badge id="compBadge4" interactive="true" unlocked={$profileData?.competitionsPlayed >= 500} />
+				<Badge id="compBadge1" interactive="true" unlocked={$profileData?.competitionsEntered >= 10} />
+				<Badge id="compBadge2" interactive="true" unlocked={$profileData?.competitionsEntered >= 50} />
+				<Badge id="compBadge3" interactive="true" unlocked={$profileData?.competitionsEntered >= 100} />
+				<Badge id="compBadge4" interactive="true" unlocked={$profileData?.competitionsEntered >= 500} />
 			</div>
 			<div class="badgeLabel">
 				<p>For Streaks finished:</p>
@@ -62,10 +62,10 @@
 				</p>
 			</div>
 			<div class="badgeBox">
-				<Badge id="streakBadge1" interactive="true" unlocked={$profileData?.highestStreak >= 5} />
-				<Badge id="streakBadge2" interactive="true" unlocked={$profileData?.highestStreak >= 15} />
-				<Badge id="streakBadge3" interactive="true" unlocked={$profileData?.highestStreak >= 50} />
-				<Badge id="streakBadge4" interactive="true" unlocked={$profileData?.highestStreak >= 100} />
+				<Badge id="streakBadge1" interactive="true" unlocked={$profileData?.highestCountryStreak >= 5} />
+				<Badge id="streakBadge2" interactive="true" unlocked={$profileData?.highestCountryStreak >= 15} />
+				<Badge id="streakBadge3" interactive="true" unlocked={$profileData?.highestCountryStreak >= 50} />
+				<Badge id="streakBadge4" interactive="true" unlocked={$profileData?.highestCountryStreak >= 100} />
 			</div>
 			<div class="badgeLabel">
 				<p>For Supporter tiers:</p>

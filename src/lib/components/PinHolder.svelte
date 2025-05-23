@@ -13,7 +13,6 @@
 		if (unlocked) {
 			playSound("item_select");
 			setSelectedProfilePin(pinId);
-			$profileData["pin"] = pinId;
 		} else {
 			playSound("item_locked");
 		}

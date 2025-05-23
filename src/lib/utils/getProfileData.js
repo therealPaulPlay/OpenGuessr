@@ -14,15 +14,13 @@ export async function getProfileData(id) {
 
         if (response.ok) {
             const data = await response.json();
-
             return data;
 
         } else {
-            console.error('Failed to load profile:', response.status);
-            errorPopup("Failed to get profile data", "Couldn't load the user's profile.", response.status, false, false);
+            throw new Error(response.status);
         }
     } catch (error) {
-        console.error('Error occurred loading profile: ', error);
-        errorPopup("Error occured loading profile:", "Couldn't load the user's profile due to network error.", error, false, false);
+        console.error('Error loading profile: ', error);
+        errorPopup("Error loading profile:", "Couldn't load the user's profile.", error, false, false);
     }
 }
