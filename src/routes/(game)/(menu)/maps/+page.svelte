@@ -45,7 +45,6 @@
 			loadMoreCategoryParam = category;
 			loadMoreQueryParam = query;
 			byUserParam = byUserId;
-			currentFetchIndex = index;
 
 			// If a new loading method is being used, reset the current input
 			if (index == 0 || index == null) loadedCommunityMaps = [];
