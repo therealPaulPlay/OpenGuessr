@@ -13,6 +13,7 @@
 	import { EllipsisVertical, UserRoundPlus, X } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { blur, slide } from "svelte/transition";
+	import { goto } from "$app/navigation";
 
 	function openSettings() {
 		playSound("basic_button");
@@ -116,8 +117,7 @@
 			>
 				{#if !$isAuthenticated}
 					<button
-						id="mobileLoginButton"
-						class="standardButton loginButton"
+						class="standardButton"
 						onclick={() => {
 							playSound("basic_button");
 							signupPrompt();
@@ -125,7 +125,6 @@
 					>
 				{:else}
 					<button
-						id="mobileProfileButton"
 						class="standardButton accountButton white"
 						onclick={() => {
 							loadProfileFromId(localStorage.getItem("id"), true);
@@ -135,8 +134,16 @@
 						<img class="socialBarIcons" src="/img/profile_icon.png" alt="Your profile" />
 					</button>
 				{/if}
+				<button
+					class="standardButton accountButton white"
+					onclick={() => {
+						playSound("basic_button");
+						goto("/shop");
+					}}
+				>
+					<img class="socialBarIcons" src="/img/shop_icon.png" alt="Shop" />
+				</button>
 				<a
-					id="mobileLeaderboardButton"
 					class="standardButton accountButton white"
 					class:preventNavigateOut
 					href="/leaderboard"
@@ -147,7 +154,6 @@
 					<img class="socialBarIcons" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
 				</a>
 				<a
-					id="mobileMultiplayerButton"
 					class="standardButton accountButton white"
 					class:preventNavigateOut
 					href="/multiplayer"
@@ -158,7 +164,6 @@
 					<img class="socialBarIcons" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
 				</a>
 				<a
-					id="mobileCompetitionsButton"
 					class="standardButton accountButton white"
 					class:preventNavigateOut
 					href="/competitions"
@@ -169,7 +174,6 @@
 					<img class="socialBarIcons" src="/img/competitions_icon.png" alt="Competitions symbol" />
 				</a>
 				<a
-					id="mobileCategoryButton"
 					class="standardButton accountButton white"
 					class:preventNavigateOut
 					href="/maps"
@@ -181,7 +185,6 @@
 				</a>
 				<button
 					class="standardButton accountButton white"
-					id="singleplayerOptionsButton"
 					class:preventNavigateOut
 					onclick={() => {
 						playSound("basic_button");
@@ -220,8 +223,7 @@
 	<div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
 		{#if !$isAuthenticated}
 			<button
-				class="standardButton loginButton"
-				id="loginButton"
+				class="standardButton"
 				alt="sign up or log in"
 				onclick={() => {
 					playSound("basic_button");
@@ -272,16 +274,12 @@
 		{#if $isAuthenticated}
 			<button
 				class="standardButton accountButton white"
-				class:signoutDisabled={$crazyGames || !$singleplayer}
-				id="logoutButton"
-				alt="log out"
 				onclick={() => {
 					playSound("basic_button");
-					resetLocalSave();
-					checkAuthenticationStatus();
+					goto("/shop");
 				}}
 			>
-				<img class="logoutImage" src="/img/signout.png" alt="Log out" />
+				<img class="socialBarIcons" src="/img/shop_icon.png" alt="Shop" />
 			</button>
 		{/if}
 	</div>
@@ -377,12 +375,6 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-	}
-
-	/* On certain platforms, signout might be disabled */
-	.signoutDisabled {
-		pointer-events: none;
-		opacity: 0.5;
 	}
 
 	/* Disable certain buttons in Competitions, Multiplayer etc. to prevent users from leaving accidentally */
@@ -506,11 +498,6 @@
 		margin-right: 5px;
 	}
 
-	#mobileLoginButton {
-		background-color: var(--brand-color);
-		color: white;
-	}
-
 	#accountNameArea {
 		max-width: 80px;
 		overflow: hidden;
@@ -558,13 +545,6 @@
 		font-size: 15px;
 		color: white;
 		user-select: none;
-	}
-
-	.logoutImage {
-		width: 22px;
-		height: 22px;
-		margin-left: 3px;
-		margin-top: 4px;
 	}
 
 	.topBarExpand {

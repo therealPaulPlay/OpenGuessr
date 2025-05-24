@@ -14,14 +14,14 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
 
     // Define custom icons for markers
     const yourIcon = new L.Icon({
-        iconUrl: '/img/your_marker' + get(selectedPinIndex) + '.png',
+        iconUrl: '/img/pins/player_pin' + get(selectedPinIndex) + '.png',
         iconSize: [35, 35],
         iconAnchor: [17.5, 34],
         popupAnchor: [1, -34]
     });
 
     const resultIcon = new L.Icon({
-        iconUrl: '/img/result_marker.png',
+        iconUrl: '/img/pins/result_pin.png',
         iconSize: [35, 35],
         iconAnchor: [17.5, 34]
     });
@@ -85,7 +85,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
             if (element.id !== get(socket)?.id) {
 
                 let newMultiplayerIcon = new L.Icon({
-                    iconUrl: "/img/your_marker" + newMarkerPinIndex + ".png",
+                    iconUrl: "/img/pins/player_pin" + newMarkerPinIndex + ".png",
                     iconSize: [35, 35],
                     iconAnchor: [17.5, 34],
                     popupAnchor: [1, -34],

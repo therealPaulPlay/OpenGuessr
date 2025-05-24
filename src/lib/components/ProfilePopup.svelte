@@ -221,7 +221,7 @@
 							pinPopup.set(true);
 						}}
 					>
-						<img id="selectedProfilePin" alt="map pin" src={`/img/your_marker${Number($profileData?.pin) || 0}.png`} />
+						<img id="selectedProfilePin" alt="map pin" src={`/img/pins/player_pin${Number($profileData?.pin) || 0}.png`} />
 						{#if $profileId == localStorage.getItem("id")}
 							<Pencil
 								style="opacity: 0.75; margin-bottom: 5px; margin-right: 5px; margin-left: 2px;"
