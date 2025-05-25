@@ -29,25 +29,25 @@
 
 	const tokenOffers = {
 		free: {
-			imageSrc: "/img/token_stack_med.png",
+			imageSrc: "/img/token_stack_free.png",
 			price: "Free",
 			symbol: "",
 			amount: 15,
 		},
 		small: {
-			imageSrc: "/img/token_stack_med.png",
+			imageSrc: "/img/token_stack_small.png",
 			price: "2.99",
 			symbol: "$",
 			amount: 550,
 		},
 		medium: {
-			imageSrc: "/img/token_stack_med.png",
+			imageSrc: "/img/token_stack_medium.png",
 			price: "5.99",
 			symbol: "$",
 			amount: 1350,
 		},
 		large: {
-			imageSrc: "/img/token_stack_med.png",
+			imageSrc: "/img/token_stack_large.png",
 			price: "9.99",
 			symbol: "$",
 			amount: 2850,
@@ -151,11 +151,11 @@
 			<div class="tokenShop">
 				{#each Object.values(tokenOffers) as offer}
 					<div class="shopOffer">
+						<div class="shopOfferInfo">
+							<h2>{offer.amount?.toLocaleString()} Tokens</h2>
+						</div>
 						<div class="shopOfferGraphic">
 							<img alt="token graphic" src={offer.imageSrc} class="tokenGraphic" />
-						</div>
-						<div class="shopOfferInfo">
-							<p>{offer.amount?.toLocaleString()} Tokens</p>
 						</div>
 						<button class="standardButton shopOfferButton white"> {offer.symbol + offer.price} </button>
 					</div>
@@ -281,10 +281,10 @@
 		flex-direction: column;
 		align-items: center;
 		flex-grow: 1;
-		max-height: 50%;
 		overflow: hidden;
 		flex-basis: 40%;
 		position: relative;
+		height: calc(50% - var(--box-margin) / 2);
 	}
 
 	.shopOffer:hover .tokenGraphic {
@@ -292,13 +292,13 @@
 	}
 
 	.shopOfferInfo {
-		border-radius: 5px;
-		padding-inline: var(--box-margin);
 		max-width: calc(100% - var(--box-margin) * 2);
-		background-color: var(--box-color);
+		position: absolute;
+		top: var(--layout-margin);
+		mask-image: linear-gradient(to bottom, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0.5) 100%);
 	}
 
-	.shopOfferInfo p {
+	.shopOfferInfo h2 {
 		text-wrap: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
@@ -309,15 +309,16 @@
 	}
 
 	.tokenGraphic {
-		width: 100px;
-		height: auto;
+		height: 135px;
+		width: auto;
 		transition: scale 250ms ease;
+        margin-top: auto;
+		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
 	}
 
 	.shopOfferGraphic {
-		border-radius: 5px;
-		box-sizing: border-box;
 		flex-grow: 1;
+		display: flex;
 	}
 
 	.splitContainer {
@@ -371,6 +372,10 @@
 		position: relative;
 	}
 
+	.specialOfferTitle {
+		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
+	}
+
 	.specialOffer:hover .specialOfferItems {
 		scale: 1.02;
 	}
@@ -408,10 +413,6 @@
 	:global(.specialOfferItems .pinHolder) {
 		border-radius: var(--box-margin);
 		pointer-events: none;
-	}
-
-	.specialOfferTitle {
-		font-style: italic;
 	}
 
 	.specialOfferRarityDisplay {
