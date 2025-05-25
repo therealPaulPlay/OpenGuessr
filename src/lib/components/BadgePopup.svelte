@@ -100,7 +100,7 @@
 <style>
 	.badgeContainer {
 		width: 100%;
-		max-height: calc(90dvh - 250px);
+		max-height: calc(100dvh - 250px);
 		overflow-x: hidden;
 		overflow-y: auto;
 	}

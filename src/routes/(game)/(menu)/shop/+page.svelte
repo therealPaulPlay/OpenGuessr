@@ -1,6 +1,6 @@
 <script>
 	import PinHolder from "$lib/components/PinHolder.svelte";
-	import { tokens } from "$lib/stores/accountStore";
+	import { purchasedPins, tokens } from "$lib/stores/accountStore";
 	import { Clock } from "lucide-svelte";
 	import { scale } from "svelte/transition";
 
@@ -54,7 +54,7 @@
 		},
 	};
 
-	let specialOfferPins = $state([101, 102, 103, 104]);
+	let specialOfferPins = $state([201, 202, 203, 204]);
 	let specialOfferPrice = $state(500);
 	let specialOfferRarity = $state("rare");
 
@@ -103,7 +103,13 @@
 	<div class="splitContainer">
 		<div class="leftSide" in:scale={{ start: 0.9, duration: 250 }}>
 			{#if specialOfferPins}
-				<div class="specialOffer">
+				<div
+					class="specialOffer"
+					class:commonGradient={specialOfferRarity == "common"}
+					class:rareGradient={specialOfferRarity == "rare"}
+					class:epicGradient={specialOfferRarity == "epic"}
+					class:legendaryGradient={specialOfferRarity == "legendary"}
+				>
 					<div
 						class="specialOfferRarityDisplay"
 						class:commonColor={specialOfferRarity == "common"}
@@ -163,7 +169,13 @@
 	<div class="allPinsContainer">
 		{#each Object.values(pinRarities) as rarity}
 			{#each rarity?.pinIndexes as index}
-				<PinHolder pinId={index} shop={true} rarity={rarity.name} price={rarity.price} />
+				<PinHolder
+					pinId={index}
+					shop={true}
+					rarity={rarity.name}
+					price={rarity.price}
+					unlocked={$purchasedPins.includes(index)}
+				/>
 			{/each}
 		{/each}
 	</div>
@@ -351,7 +363,6 @@
 	.specialOffer {
 		width: 100%;
 		height: 100%;
-		background: linear-gradient(0.6turn, rgba(255, 63, 243, 0.2), var(--box-color));
 		border-radius: 5px;
 		display: flex;
 		justify-content: center;
@@ -362,6 +373,22 @@
 
 	.specialOffer:hover .specialOfferItems {
 		scale: 1.02;
+	}
+
+	.commonGradient {
+		background: linear-gradient(0.6turn, rgba(208, 136, 136, 0.2), var(--box-color));
+	}
+
+	.rareGradient {
+		background: linear-gradient(0.6turn, rgba(255, 68, 243, 0.2), var(--box-color));
+	}
+
+	.epicGradient {
+		background: linear-gradient(0.6turn, rgba(75, 234, 255, 0.2), var(--box-color));
+	}
+
+	.legendaryGradient {
+		background: linear-gradient(0.6turn, rgba(255, 214, 51, 0.2), var(--box-color));
 	}
 
 	.specialOfferItems {

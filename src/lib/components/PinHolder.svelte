@@ -1,13 +1,14 @@
 <script>
-	let { pinId, pinLockText = "default", unlocked = false, shop = false, price = 100, rarity } = $props();
+	let { pinId, pinLockText = "Default", unlocked = false, shop = false, price = 100, rarity } = $props();
 	import { isAuthenticated, selectedPinIndex, tokens } from "$lib/stores/accountStore";
 	import { profileData } from "$lib/stores/context-specific/profileStore";
 	import { setSelectedProfilePin } from "$lib/utils/updateProfileData";
 	import { playSound } from "$lib/utils/soundManager";
-	import { slide } from "svelte/transition";
+	import { blur, slide } from "svelte/transition";
 	import { showNotification } from "$lib/utils/notifications";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
+	import { Check } from "lucide-svelte";
 
 	let isHovered = $state(false);
 </script>
@@ -79,6 +80,11 @@
 			</div>
 		{/if}
 	</div>
+	{#if unlocked && shop}
+		<div class="purchasedIconContainer" transition:blur>
+			<Check style="color: white;" size={32} strokeWidth={2.25} />
+		</div>
+	{/if}
 </div>
 
 <style>
@@ -101,6 +107,18 @@
 
 	.pinHolder:hover {
 		scale: 0.97;
+	}
+
+	.purchasedIconContainer {
+		position: absolute;
+		width: 100%;
+		height: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 2;
+		background-color: rgba(41, 42, 51, 0.7);
+		border-radius: 5px;
 	}
 
 	.rarityDisplay {
@@ -154,7 +172,6 @@
 
 	.disabled {
 		pointer-events: none;
-		opacity: 0.5;
 	}
 
 	.centerButton {

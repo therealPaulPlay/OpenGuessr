@@ -574,7 +574,6 @@
 		overflow-y: auto;
 		max-height: calc(100dvh - 350px);
 		width: 100%;
-		transition: max-height 250ms ease-in-out;
 	}
 
 	:global(.stat-switch) {
