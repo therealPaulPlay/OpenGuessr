@@ -4,7 +4,6 @@ export const isAuthenticated = writable(false);
 
 // Supporter Data
 export const supportedAmount = writable(0);
-export const freeSupporterBoostEnabled = writable(false);
 
 // Account Data
 export const experience = writable(0);
