@@ -23,7 +23,6 @@
 	style:width={shop ? "120px" : ""}
 	style:height={shop ? "100px" : ""}
 	class:selectedPin={$selectedPinIndex == pinId && !shop}
-	class:disabled={unlocked && shop}
 	onpointerenter={() => (isHovered = true)}
 	onpointerleave={() => (isHovered = false)}
 	onclick={() => {
@@ -64,6 +63,7 @@
 			<div class="shopButtonBox" transition:slide={{ axis: "y", duration: 250 }}>
 				<button
 					class="standardButton white centerButton"
+					class:disabled={unlocked}
 					onclick={() => {
 						playSound("basic_button");
 						if (!$isAuthenticated) return signupPrompt();
@@ -74,17 +74,16 @@
 						}
 					}}
 				>
-					<img class="tokenIcon" alt="token" src="/img/token_icon_white.png" />
-					{price}</button
-				>
+					{#if !unlocked}
+						<img class="tokenIcon" alt="token" src="/img/token_icon_white.png" />
+						{price}
+					{:else}
+						Owned <Check size={18} strokeWidth={3.25} style="min-width: 18px; margin-bottom: -3px; margin-left: 5px;" />
+					{/if}
+				</button>
 			</div>
 		{/if}
 	</div>
-	{#if unlocked && shop}
-		<div class="purchasedIconContainer" transition:blur>
-			<Check style="color: white;" size={32} strokeWidth={2.25} />
-		</div>
-	{/if}
 </div>
 
 <style>
@@ -107,18 +106,6 @@
 
 	.pinHolder:hover {
 		scale: 0.97;
-	}
-
-	.purchasedIconContainer {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		z-index: 2;
-		background-color: rgba(41, 42, 51, 0.7);
-		border-radius: 5px;
 	}
 
 	.rarityDisplay {
@@ -172,6 +159,7 @@
 
 	.disabled {
 		pointer-events: none;
+		opacity: 0.5;
 	}
 
 	.centerButton {
