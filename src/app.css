@@ -19,6 +19,12 @@
     --supporter-gradient: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(17, 217, 49, 0.7));
     --supporter-green: rgba(17, 217, 49, 0.7);
 
+    /* Rarities */
+    --common-color: rgba(99, 106, 115, 0.75);
+    --rare-color: rgba(255, 34, 240, 0.75);
+    --epic-color: rgba(13, 195, 204, 0.75);
+    --legendary-color: rgba(214, 175, 0, 0.75);
+
     /* Margins or Gaps */
     --layout-margin: 15px;
     --box-margin: 10px;

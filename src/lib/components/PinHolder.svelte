@@ -1,12 +1,13 @@
 <script>
-	let { pinId, pinLockText = "default", unlocked = false, shop = false, price = 100, rarity = "rare" } = $props();
-	import { selectedPinIndex, tokens } from "$lib/stores/accountStore";
+	let { pinId, pinLockText = "default", unlocked = false, shop = false, price = 100, rarity } = $props();
+	import { isAuthenticated, selectedPinIndex, tokens } from "$lib/stores/accountStore";
 	import { profileData } from "$lib/stores/context-specific/profileStore";
 	import { setSelectedProfilePin } from "$lib/utils/updateProfileData";
 	import { playSound } from "$lib/utils/soundManager";
 	import { slide } from "svelte/transition";
 	import { showNotification } from "$lib/utils/notifications";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
 
 	let isHovered = $state(false);
 </script>
@@ -39,7 +40,7 @@
 			<p class="pinLockText">{pinLockText}</p>
 		</div>
 	{/if}
-	{#if shop && !isHovered}
+	{#if rarity && !isHovered}
 		<div
 			transition:slide={{ duration: 250 }}
 			class="rarityDisplay"
@@ -63,6 +64,8 @@
 				<button
 					class="standardButton white centerButton"
 					onclick={() => {
+						playSound("basic_button");
+						if (!$isAuthenticated) return signupPrompt();
 						if (price > $tokens) {
 							showNotification("Not enough tokens!");
 						} else {
@@ -107,6 +110,7 @@
 		top: 0;
 		right: 0;
 		padding-inline: var(--panel-margin);
+		user-select: none;
 	}
 
 	.tokenIcon {
@@ -118,19 +122,19 @@
 	}
 
 	.commonColor {
-		background-color: rgba(99, 106, 115, 0.75);
+		background-color: var(--common-color);
 	}
 
 	.rareColor {
-		background-color: rgba(255, 34, 240, 0.75);
+		background-color: var(--rare-color);
 	}
 
 	.epicColor {
-		background-color: rgba(13, 195, 204, 0.75);
+		background-color: var(--epic-color);
 	}
 
 	.legendaryColor {
-		background-color: rgba(198, 149, 2, 0.75);
+		background-color: var(--legendary-color);
 	}
 
 	.rarityDisplay p {
@@ -193,6 +197,7 @@
 		height: 40px;
 		width: 40px;
 		z-index: 1;
+		user-select: none;
 		transition:
 			width 250ms ease,
 			height 250ms ease,

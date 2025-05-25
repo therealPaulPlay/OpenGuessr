@@ -373,7 +373,7 @@
 
 	.tierBuyButton {
 		flex-grow: 1;
-		background: var(--supporter-gradient);
+		background-color: var(--supporter-green);
 		border-color: rgba(255, 255, 255, 0.3);
 		width: 100%;
 		margin-bottom: 15px;
