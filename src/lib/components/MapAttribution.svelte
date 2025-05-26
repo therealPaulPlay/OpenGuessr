@@ -51,7 +51,8 @@
 		padding-inline: 10px;
 	}
 
-	#mapAttribution p {
+	#mapAttribution p,
+	#mapAttribution a {
 		font-family: Roboto !important;
 		font-size: 10px;
 		color: black;

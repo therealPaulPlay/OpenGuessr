@@ -62,7 +62,13 @@ a:link,
 a:hover {
     text-decoration: underline;
     color: #ffffff;
-    text-decoration-thickness: 2px;
+    font-size: 22px;
+}
+
+a,
+span,
+p {
+    text-decoration-thickness: 2px !important;
 }
 
 h1,

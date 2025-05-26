@@ -362,7 +362,6 @@
 	.specialOfferCrossedOut {
 		text-decoration: line-through;
 		opacity: 0.5;
-		text-decoration-thickness: 2px;
 		margin-right: 3px;
 	}
 

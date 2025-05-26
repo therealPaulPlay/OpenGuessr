@@ -183,9 +183,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 						jsonPopup = true;
 					}}>OpenGuessr JSON format</span
 				>. Check out the official converter
-				<a target="_blank" href="https://education.openguessr.com/tools/map-converter" class="linkToMapConverter"
-					>here</a
-				>.
+				<a target="_blank" href="https://education.openguessr.com/tools/map-converter">here</a>.
 			</p>
 		</div>
 		<button
@@ -286,11 +284,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		margin-bottom: 15px;
 		margin-top: 10px;
 		font-size: 22px;
-	}
-
-	.linkToMapConverter {
-		cursor: pointer;
-		text-decoration: underline;
 	}
 
 	#jsonUpload {

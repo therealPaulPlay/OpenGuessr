@@ -140,7 +140,7 @@
 	}
 
 	.activeDivision {
-		background-color: rgb(143, 145, 151);
+		background-color: rgb(160, 162, 166);
 	}
 
 	@media (max-width: 800px) {

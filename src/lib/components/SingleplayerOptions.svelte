@@ -9,7 +9,6 @@
 	import { roundLog } from "$lib/stores/locationStore";
 	import { onMount } from "svelte";
 	import { ChevronLeft, ChevronRight, Gamepad2 } from "lucide-svelte";
-	import { crazyGames, playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 
 	// Singleplayer Options UI ----------------------------------------------------------------------------------------
@@ -43,7 +42,7 @@
 
 	// Timer Slider ---------------------------------------------------------------------------------------------------------------------------
 	let changeRegenerationTimeout;
-	
+
 	function changeTimeout() {
 		const timerSetting = timerValues.find((t) => t.slider === timerSliderValue);
 		$singleplayerTimeout = timerSetting ? timerSetting.actual : 0;
@@ -100,20 +99,6 @@
 			<h1>Game options</h1>
 		</div>
 		<div class="settingsScrollArea">
-			{#if !$crazyGames}
-				<div class="settingsCanvas slightBottomMargin">
-					<div class="playlight-pitch">
-						<p class="game-pitch-text">Looking for other exciting games?</p>
-						<button
-							class="standardButton white game-pitch-button"
-							onclick={() => {
-								playSound("basic_button");
-								$playlightSDK?.setDiscovery();
-							}}>Discover <Gamepad2 style="margin-bottom: -5px; margin-left: 2px;" /></button
-						>
-					</div>
-				</div>
-			{/if}
 			<TitleSeparator text="Timer" />
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="optionFlexBox">
@@ -231,28 +216,6 @@
 
 	#timerSlider {
 		min-width: 80px;
-		flex-grow: 1;
-	}
-
-	.playlight-pitch {
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		width: 100%;
-		gap: var(--box-margin);
-		padding: var(--box-margin);
-		background-color: rgba(255, 255, 255, 0.15);
-		border-radius: 10px;
-		flex-wrap: wrap;
-	}
-
-	.game-pitch-text {
-		margin-left: var(--panel-margin);
-		text-wrap: nowrap;
-		flex-grow: 20;
-	}
-
-	.game-pitch-button {
 		flex-grow: 1;
 	}
 
