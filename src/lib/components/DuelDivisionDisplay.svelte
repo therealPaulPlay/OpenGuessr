@@ -1,6 +1,7 @@
 <script>
 	import { calculateDivision } from "$lib/utils/duelDivisionFunctions";
-	import { elo } from "$lib/stores/accountStore";
+	import { elo, isAuthenticated } from "$lib/stores/accountStore";
+	import { blur } from "svelte/transition";
 
 	let { inPage = false } = $props();
 
@@ -30,16 +31,15 @@
 		{#each divisions as division, index}
 			<div class="divisionMarker" style="left: {circlePositions[index]}%">
 				<div class="divisionCircle" class:activeDivision={4 - index === currentDivision}>
-					<div class="divisionCircleBackground"></div>
 					<span class="divisionText">{division}</span>
 				</div>
 			</div>
 		{/each}
 
-		{#if fillPercentage > 0 && fillPercentage < 100}
-			<div class="eloIndicator" style="left: {fillPercentage}%">
+		{#if $isAuthenticated}
+			<div class="eloIndicator" style="left: {fillPercentage}%" transition:blur>
 				<div class="eloLine"></div>
-				<div class="eloValue">{Math.round($elo)} ELO</div>
+				<div class="eloValue">{Math.round($elo)} Elo</div>
 			</div>
 		{/if}
 	</div>
@@ -49,7 +49,7 @@
 	.progressContainer {
 		position: relative;
 		width: calc(100% - 50px);
-		height: 100px;
+		height: 120px;
 		border-radius: 15px;
 		background-color: var(--box-color);
 		padding-inline: 25px;
@@ -78,7 +78,7 @@
 		height: 100%;
 		background: var(--brand-color);
 		border-radius: 6px;
-		transition: width 0.3s ease;
+		transition: width 300ms ease;
 	}
 
 	.divisionMarker {
@@ -97,14 +97,7 @@
 		align-items: center;
 		justify-content: center;
 		z-index: 10;
-	}
-
-	.divisionCircleBackground {
-		position: absolute;
-		width: 100%;
-		height: 100%;
-		background: rgb(114, 115, 119);
-		border-radius: 50%;
+		background-color: rgb(114, 115, 119);
 	}
 
 	.divisionText {
@@ -123,11 +116,12 @@
 		align-items: center;
 		height: 50%;
 		z-index: -1;
+		transition: left 300ms ease;
 	}
 
 	.eloLine {
 		width: 2px;
-		height: 6px;
+		height: 14px;
 		background: var(--brand-color);
 		margin-top: 15px;
 		border-radius: 5px;
@@ -146,7 +140,7 @@
 	}
 
 	.activeDivision {
-		border: 3px solid rgba(255, 255, 255, 0.8);
+		background-color: rgb(143, 145, 151);
 	}
 
 	@media (max-width: 800px) {
