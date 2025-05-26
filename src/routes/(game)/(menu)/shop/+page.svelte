@@ -127,10 +127,10 @@
 							<PinHolder pinId={pinIndex} shop={true} />
 						{/each}
 					</div>
-					<button class="standardButton white specialOfferButton">
+					<button class="standardButton white specialOfferButton" class:disabled={specialOfferPrice == 0}>
 						<img class="tokenIconWhite" alt="token" src="/img/token_icon_white.png" />
 						<span class="specialOfferCrossedOut">{calculateRegularBundlePrice(specialOfferPins)}</span>
-						{specialOfferPrice}
+						{specialOfferPrice != 0 ? specialOfferPrice : "Owned"}
 					</button>
 				</div>
 			{:else}
@@ -312,7 +312,7 @@
 		height: 135px;
 		width: auto;
 		transition: scale 250ms ease;
-        margin-top: auto;
+		margin-top: auto;
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
 	}
 
@@ -352,6 +352,11 @@
 		min-height: 50px;
 		border-radius: var(--box-margin);
 		padding-inline: 20px;
+	}
+
+	.disabled {
+		pointer-events: none;
+		opacity: 0;
 	}
 
 	.specialOfferCrossedOut {
