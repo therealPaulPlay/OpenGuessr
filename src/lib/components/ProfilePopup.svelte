@@ -52,6 +52,7 @@
 	import { scale } from "svelte/transition";
 	import Tabs from "./ui/Tabs.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
+	import { errorPopup } from "$lib/utils/errorHandling";
 
 	let textarea = $state();
 	let isFriendsWithId = $state(true);
@@ -332,7 +333,8 @@
 									"Update your username",
 									"Input your new name into the box and click confirm.",
 									() => {
-										updateProfileUsername($confirmUsernameValue);
+										if ($confirmUsernameValue) updateProfileUsername($confirmUsernameValue);
+										else errorPopup("New username is invalid", "Please specify a valid new username.");
 									},
 									false,
 									true,
@@ -353,7 +355,8 @@
 								"Delete your account",
 								"Please make sure to delete user-created content before proceeding, if you wish to remove that from the platform.",
 								() => {
-									submitAccountDeletion($confirmPasswordValue);
+									if ($confirmPasswordValue) submitAccountDeletion($confirmPasswordValue);
+									else errorPopup("Password required", "Your password is required for deleting your account.");
 								},
 								true,
 							);
