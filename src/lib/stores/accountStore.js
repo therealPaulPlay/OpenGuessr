@@ -15,7 +15,7 @@ export const elo = writable(1000);
 export const tokens = writable(0);
 export const selectedPinIndex = writable(0); // Number representing the selected pin
 export const selectedBadge = writable(null);
-export const purchasedPins = writable([404, 401, 206, 204]);
+export const purchasedPins = writable([]);
 
 
 // Moderation related

@@ -1,6 +1,14 @@
 <script>
-	let { pinId, pinLockText = "Default", unlocked = false, shop = false, price = 100, rarity } = $props();
-	import { isAuthenticated, selectedPinIndex, tokens } from "$lib/stores/accountStore";
+	let {
+		pinId,
+		pinLockText = "Default",
+		unlocked = false,
+		shop = false,
+		price = 100,
+		rarity,
+		disabled = false,
+	} = $props();
+	import { selectedPinIndex } from "$lib/stores/accountStore";
 	import { profileData } from "$lib/stores/context-specific/profileStore";
 	import { setSelectedProfilePin } from "$lib/utils/updateProfileData";
 	import { playSound } from "$lib/utils/soundManager";
@@ -9,6 +17,7 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { Check } from "lucide-svelte";
+	import { handleShopPurchase } from "$lib/utils/shopHelper";
 
 	let isHovered = $state(false);
 </script>
@@ -20,9 +29,9 @@
 	role="button"
 	tabindex={0}
 	style:scale={shop ? "1" : ""}
-	style:width={shop ? "120px" : ""}
-	style:height={shop ? "100px" : ""}
+	class:biggerSize={shop}
 	class:selectedPin={$selectedPinIndex == pinId && !shop}
+	class:disabled
 	onpointerenter={() => (isHovered = true)}
 	onpointerleave={() => (isHovered = false)}
 	onclick={() => {
@@ -66,12 +75,7 @@
 					class:disabled={unlocked}
 					onclick={() => {
 						playSound("basic_button");
-						if (!$isAuthenticated) return signupPrompt();
-						if (price > $tokens) {
-							showNotification("Not enough tokens!");
-						} else {
-							showConfirmPopup("Purchase?", `Do you want to purchase this pin for ${price} tokens?`);
-						}
+						handleShopPurchase("pin", price, pinId);
 					}}
 				>
 					{#if !unlocked}
@@ -101,11 +105,17 @@
 		flex-grow: 1;
 		transition:
 			scale 250ms ease,
+			opacity 250ms ease,
 			filter 250ms ease;
 	}
 
 	.pinHolder:hover {
 		scale: 0.97;
+	}
+
+	.biggerSize {
+		min-width: 120px;
+		min-height: 100px;
 	}
 
 	.rarityDisplay {
@@ -116,6 +126,11 @@
 		right: 0;
 		padding-inline: var(--panel-margin);
 		user-select: none;
+	}
+
+	.disabled {
+		opacity: 0.5;
+		pointer-events: none;
 	}
 
 	.tokenIcon {

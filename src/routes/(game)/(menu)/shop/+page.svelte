@@ -1,9 +1,33 @@
 <script>
 	import PinHolder from "$lib/components/PinHolder.svelte";
-	import { purchasedPins, tokens } from "$lib/stores/accountStore";
+	import { isAuthenticated, purchasedPins, tokens } from "$lib/stores/accountStore";
+	import {
+		specialOfferLoadingText,
+		specialOfferPins,
+		specialOfferPrice,
+		specialOfferRarity,
+	} from "$lib/stores/context-specific/shopStore";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { Clock } from "lucide-svelte";
-	import { scale } from "svelte/transition";
+	import { onMount } from "svelte";
+	import { get } from "svelte/store";
+	import { blur, scale } from "svelte/transition";
+	import { fetchSpecialOffer, handleShopPurchase } from "$lib/utils/shopHelper";
+	import { playSound } from "$lib/utils/soundManager";
+	import { tweened } from "svelte/motion";
+	import { cubicOut } from "svelte/easing";
 
+	// Tween the token value for a nicer look
+	const animatedTokens = tweened(0, {
+		duration: 500,
+		easing: cubicOut,
+	});
+
+	tokens.subscribe((value) => {
+		animatedTokens.set(value);
+	});
+
+	// Available pins
 	const pinRarities = {
 		common: {
 			name: "common",
@@ -12,7 +36,7 @@
 		},
 		rare: {
 			name: "rare",
-			pinIndexes: [200, 201, 202, 203, 204, 205, 206],
+			pinIndexes: [200, 201, 202, 203, 204, 205, 206, 207],
 			price: 500,
 		},
 		epic: {
@@ -27,6 +51,7 @@
 		},
 	};
 
+	// Token offerings
 	const tokenOffers = {
 		free: {
 			imageSrc: "/img/token_stack_free.png",
@@ -54,9 +79,7 @@
 		},
 	};
 
-	let specialOfferPins = $state([201, 202, 203, 204]);
-	let specialOfferPrice = $state(500);
-	let specialOfferRarity = $state("rare");
+	onMount(fetchSpecialOffer);
 
 	function calculateRegularBundlePrice(arrayOfPins = []) {
 		let regPrice = 0;
@@ -102,39 +125,47 @@
 	</div>
 	<div class="splitContainer">
 		<div class="leftSide" in:scale={{ start: 0.9, duration: 250 }}>
-			{#if specialOfferPins}
+			{#if $specialOfferPins}
 				<div
 					class="specialOffer"
-					class:commonGradient={specialOfferRarity == "common"}
-					class:rareGradient={specialOfferRarity == "rare"}
-					class:epicGradient={specialOfferRarity == "epic"}
-					class:legendaryGradient={specialOfferRarity == "legendary"}
+					transition:blur
+					class:commonGradient={$specialOfferRarity == "common"}
+					class:rareGradient={$specialOfferRarity == "rare"}
+					class:epicGradient={$specialOfferRarity == "epic"}
+					class:legendaryGradient={$specialOfferRarity == "legendary"}
 				>
 					<div
 						class="specialOfferRarityDisplay"
-						class:commonColor={specialOfferRarity == "common"}
-						class:rareColor={specialOfferRarity == "rare"}
-						class:epicColor={specialOfferRarity == "epic"}
-						class:legendaryColor={specialOfferRarity == "legendary"}
+						class:commonColor={$specialOfferRarity == "common"}
+						class:rareColor={$specialOfferRarity == "rare"}
+						class:epicColor={$specialOfferRarity == "epic"}
+						class:legendaryColor={$specialOfferRarity == "legendary"}
 					>
-						<p>{specialOfferRarity}</p>
+						<p>{$specialOfferRarity}</p>
 					</div>
 					<h1 class="specialOfferTitle">
-						{specialOfferRarity?.[0]?.toUpperCase() + specialOfferRarity.slice(1) || "Default"} bundle!
+						{$specialOfferRarity?.[0]?.toUpperCase() + $specialOfferRarity.slice(1) || "Default"} bundle!
 					</h1>
 					<div class="specialOfferItems">
-						{#each specialOfferPins as pinIndex}
-							<PinHolder pinId={pinIndex} shop={true} />
+						{#each $specialOfferPins as pinIndex}
+							<PinHolder pinId={pinIndex} shop={true} disabled={$purchasedPins?.includes(pinIndex)} />
 						{/each}
 					</div>
-					<button class="standardButton white specialOfferButton" class:disabled={specialOfferPrice == 0}>
+					<button
+						class="standardButton white specialOfferButton"
+						class:disabled={$specialOfferPrice == 0}
+						onclick={() => {
+							playSound("basic_button");
+							handleShopPurchase("bundle", $specialOfferPrice);
+						}}
+					>
 						<img class="tokenIconWhite" alt="token" src="/img/token_icon_white.png" />
-						<span class="specialOfferCrossedOut">{calculateRegularBundlePrice(specialOfferPins)}</span>
-						{specialOfferPrice != 0 ? specialOfferPrice : "Owned"}
+						<span class="specialOfferCrossedOut">{calculateRegularBundlePrice($specialOfferPins)}</span>
+						{$specialOfferPrice != 0 ? $specialOfferPrice : "Owned"}
 					</button>
 				</div>
 			{:else}
-				<p class="loadingText">Loading...</p>
+				<p class="loadingText">{$specialOfferLoadingText}</p>
 			{/if}
 		</div>
 		<div class="rightSide" in:scale={{ start: 0.9, delay: 100, duration: 250 }}>
@@ -144,7 +175,7 @@
 					<p>Restock in {timeUntilUTCMidnight()}</p>
 				</div>
 				<div class="shopInfoSection">
-					<p>{$tokens} Tokens</p>
+					<p>{Math.round($animatedTokens)?.toLocaleString()} Tokens</p>
 					<img class="tokenIcon" alt="token" src="/img/token_icon.png" />
 				</div>
 			</div>
@@ -174,7 +205,7 @@
 					shop={true}
 					rarity={rarity.name}
 					price={rarity.price}
-					unlocked={$purchasedPins.includes(index)}
+					unlocked={$purchasedPins?.includes(index)}
 				/>
 			{/each}
 		{/each}
@@ -192,7 +223,6 @@
 	.leftSide {
 		border-radius: var(--layout-margin);
 		flex-grow: 1;
-		height: 100%;
 		max-width: 100%;
 		display: flex;
 		justify-content: center;
@@ -201,10 +231,13 @@
 		padding: var(--box-margin);
 		box-sizing: border-box;
 		height: 500px;
+		flex-basis: calc(50% - 150px);
 	}
 
 	.loadingText {
 		opacity: 0.5;
+		margin-inline: var(--box-margin);
+		text-align: center;
 	}
 
 	.tokenIconWhite {
@@ -215,7 +248,6 @@
 	.rightSide {
 		border-radius: var(--layout-margin);
 		flex-grow: 1;
-		height: 100%;
 		background-color: var(--box-color);
 		display: flex;
 		flex-direction: column;
@@ -335,12 +367,11 @@
 		width: 100%;
 		height: fit-content;
 		padding: var(--box-margin);
-		display: flex;
-		align-items: center;
+		display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		gap: var(--box-margin);
-		flex-wrap: wrap;
 		box-sizing: border-box;
 	}
 
@@ -356,7 +387,7 @@
 
 	.disabled {
 		pointer-events: none;
-		opacity: 0;
+		opacity: 0.5;
 	}
 
 	.specialOfferCrossedOut {

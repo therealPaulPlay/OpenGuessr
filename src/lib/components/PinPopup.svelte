@@ -15,7 +15,7 @@
 		</div>
 		<div class="pinScroll">
 			<TitleSeparator text="Progression" />
-			<div id="pinSelector">
+			<div class="pinSelector">
 				<PinHolder pinId="0" pinLockText="0 XP" unlocked={$profileExperience >= 0} />
 				<PinHolder pinId="1" pinLockText="5,000 XP" unlocked={$profileExperience >= 5000} />
 				<PinHolder pinId="2" pinLockText="30,000 XP" unlocked={$profileExperience >= 30000} />
@@ -30,7 +30,7 @@
 				<PinHolder pinId="11" pinLockText="Supporter" unlocked={$profileSupporterLevel >= 1} />
 			</div>
 			<TitleSeparator text="Purchased" />
-			<div id="pinSelector">
+			<div class="pinSelector">
 				{#if $purchasedPins?.length}
 					{#each $purchasedPins as pinId}
 						<PinHolder {pinId} unlocked={true} />
@@ -52,10 +52,7 @@
 {/if}
 
 <style>
-	#pinSelector {
-		display: flex;
-		justify-content: flex-start;
-		align-items: center;
+	.pinSelector {
 		max-width: 100%;
 		width: 100%;
 		background-color: var(--box-color-dark);
@@ -63,7 +60,8 @@
 		gap: var(--box-margin);
 		border: solid var(--box-margin) transparent;
 		box-sizing: border-box;
-		flex-wrap: wrap;
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
 	}
 
 	.noPurchasedPins {

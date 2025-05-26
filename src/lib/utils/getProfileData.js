@@ -20,7 +20,7 @@ export async function getProfileData(id) {
             throw new Error(response.status);
         }
     } catch (error) {
-        console.error('Error loading profile: ', error);
+        console.error('Error loading profile:', error);
         errorPopup("Error loading profile:", "Couldn't load the user's profile.", error, false, false);
     }
 }
