@@ -71,12 +71,14 @@
 			price: "5.99",
 			symbol: "$",
 			amount: 1350,
+			savingsPercentage: 23,
 		},
 		large: {
 			imageSrc: "/img/token_stack_large.png",
-			price: "9.99",
+			price: "11.99",
 			symbol: "$",
-			amount: 2850,
+			amount: 3150,
+			savingsPercentage: 43,
 		},
 	};
 
@@ -189,7 +191,12 @@
 						<div class="shopOfferGraphic">
 							<img alt="token graphic" src={offer.imageSrc} class="tokenGraphic" />
 						</div>
-						<button class="standardButton shopOfferButton white"> {offer.symbol + offer.price} </button>
+						<button class="standardButton shopOfferButton white">
+							{offer.symbol + offer.price}
+							{#if offer.savingsPercentage}
+								<span class="tokenSavings">-{offer.savingsPercentage}%</span>
+							{/if}
+						</button>
 					</div>
 				{/each}
 			</div>
@@ -339,6 +346,10 @@
 
 	.shopOfferButton {
 		width: 100%;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: 5px;
 	}
 
 	.tokenGraphic {
@@ -395,6 +406,14 @@
 		text-decoration: line-through;
 		opacity: 0.5;
 		margin-right: 3px;
+	}
+
+	.tokenSavings {
+		background-color: rgba(255, 255, 255, 0.15);
+		color: white;
+		padding-inline: 3px;
+		font-size: 18px;
+		border-radius: 3px;
 	}
 
 	.specialOffer {
