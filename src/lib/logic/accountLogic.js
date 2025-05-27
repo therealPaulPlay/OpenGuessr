@@ -9,6 +9,7 @@ import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { get } from "svelte/store";
 import { supportedAmount } from "$lib/stores/accountStore.js";
 import { showNotification } from "$lib/utils/notifications";
+import { freeDailyTokensClaimed } from "$lib/stores/context-specific/shopStore";
 
 // Authentication -----------------------------------------------------------------------------------------------------------------------
 
@@ -63,6 +64,7 @@ async function loadUserInfo() {
       elo.set(user.elo);
       tokens.set(user.tokens);
       purchasedPins.set(user.purchased_pins || []);
+      freeDailyTokensClaimed.set(user.free_tokens_claimed || false);
 
       if (get(resultScreenEnabled) && get(lastExperienceCalculationAborted)) loadResultScreenXP(get(lastDistance));
       if (user.new_requests) { inboxIconNew.set(true); }

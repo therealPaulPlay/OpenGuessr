@@ -1,5 +1,9 @@
 <script>
-	import { shopPurchaseAnimation, shopAnimationImages } from "$lib/stores/context-specific/shopStore";
+	import {
+		shopPurchaseAnimation,
+		shopAnimationImages,
+		shopPurchaseAnimationTitle,
+	} from "$lib/stores/context-specific/shopStore";
 	import { blur } from "svelte/transition";
 </script>
 
@@ -13,7 +17,7 @@
 		onclick={() => ($shopPurchaseAnimation = false)}
 		role="alert"
 	>
-		<h1 class="purchaseAnimationTitle">Great choice!</h1>
+		<h1 class="purchaseAnimationTitle">{$shopPurchaseAnimationTitle || "Default"}</h1>
 		<div class="animationItemContainer" transition:blur={{ duration: 250 }}>
 			{#each $shopAnimationImages as src}
 				<div class="animationItemBox">

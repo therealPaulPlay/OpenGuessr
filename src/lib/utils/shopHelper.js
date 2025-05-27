@@ -4,7 +4,7 @@ import { showConfirmPopup } from "./confirmPopup";
 import { signupPrompt } from "./signupPrompt";
 import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { shopAnimationImages, shopPurchaseAnimation, specialOfferLoadingText, specialOfferPins, specialOfferPrice, specialOfferRarity } from "$lib/stores/context-specific/shopStore";
+import { freeDailyTokensClaimed, shopAnimationImages, shopPurchaseAnimation, shopPurchaseAnimationTitle, specialOfferLoadingText, specialOfferPins, specialOfferPrice, specialOfferRarity } from "$lib/stores/context-specific/shopStore";
 import { errorPopup } from "./errorHandling";
 
 export function handleShopPurchase(type = "pin", price, pinId) {
@@ -13,6 +13,36 @@ export function handleShopPurchase(type = "pin", price, pinId) {
         showNotification("Not enough tokens!");
     } else {
         showConfirmPopup("Purchase?", `Do you want to purchase this item for ${price?.toLocaleString()} tokens?`, () => (sendPurchaseRequest(type, price, pinId)));
+    }
+}
+
+export async function handleShopFreeTokens() {
+    try {
+        const response = await fetch(
+            get(accountUrl) + `/shop/claim-free-tokens`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${localStorage.getItem("bearer")}`
+                },
+                body: JSON.stringify({
+                    id: localStorage.getItem("id")
+                })
+            },
+        );
+
+        if (!response.ok) throw new Error(response.status);
+        const data = await response.json();
+        tokens.set(get(tokens) + data.count);
+        freeDailyTokensClaimed.set(true);
+        shopAnimationImages.set(["/img/token_stack_free_icon.png"]);
+        shopPurchaseAnimationTitle.set("Cool!");
+        shopPurchaseAnimation.set(true);
+
+    } catch (error) {
+        console.error("Error claiming tokens:", error);
+        errorPopup("Error claiming tokens", "An error occured claiming tokens.", error);
     }
 }
 
@@ -83,6 +113,7 @@ function showPurchaseCelebration(pinIds) {
         imageSrcArray.push(`/img/pins/player_pin${id}.png`);
     });
     shopAnimationImages.set(imageSrcArray);
+    shopPurchaseAnimationTitle.set("Great choice!");
     shopPurchaseAnimation.set(true);
 }
 

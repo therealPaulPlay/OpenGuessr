@@ -2,6 +2,7 @@
 	import PinHolder from "$lib/components/PinHolder.svelte";
 	import { isAuthenticated, purchasedPins, tokens } from "$lib/stores/accountStore";
 	import {
+		freeDailyTokensClaimed,
 		shopPurchaseAnimation,
 		specialOfferLoadingText,
 		specialOfferPins,
@@ -13,10 +14,13 @@
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 	import { blur, scale } from "svelte/transition";
-	import { fetchSpecialOffer, handleShopPurchase } from "$lib/utils/shopHelper";
+	import { fetchSpecialOffer, handleShopFreeTokens, handleShopPurchase } from "$lib/utils/shopHelper";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
+	import { initializeRewardedAd } from "$lib/utils/rewardedAds";
+	import { errorPopup } from "$lib/utils/errorHandling";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
 
 	// Tween the token value for a nicer look
 	const animatedTokens = tweened(0, {
@@ -56,26 +60,26 @@
 	const tokenOffers = {
 		free: {
 			imageSrc: "/img/token_stack_free.png",
-			price: "Free",
+			price: 0,
 			symbol: "",
 			amount: 15,
 		},
 		small: {
 			imageSrc: "/img/token_stack_small.png",
-			price: "2.99",
+			price: 2.99,
 			symbol: "$",
 			amount: 550,
 		},
 		medium: {
 			imageSrc: "/img/token_stack_medium.png",
-			price: "5.99",
+			price: 5.99,
 			symbol: "$",
 			amount: 1350,
 			savingsPercentage: 23,
 		},
 		large: {
 			imageSrc: "/img/token_stack_large.png",
-			price: "11.99",
+			price: 11.99,
 			symbol: "$",
 			amount: 3150,
 			savingsPercentage: 43,
@@ -115,6 +119,12 @@
 		const hours = Math.floor(diff / (1000 * 60 * 60));
 		const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 		return `${hours}h, ${minutes}min`;
+	}
+
+	function freeTokenAdDismissed(notAvailable, rewardClaimed) {
+		if (notAvailable)
+			errorPopup("No ad available", "Please try again later or disable Ad Blockers.", "No ads", false, false);
+		else if (!rewardClaimed) errorPopup("Ad dismissed", "Video ad dismissed. ", "", false, true);
 	}
 </script>
 
@@ -191,8 +201,20 @@
 						<div class="shopOfferGraphic">
 							<img alt="token graphic" src={offer.imageSrc} class="tokenGraphic" />
 						</div>
-						<button class="standardButton shopOfferButton white">
-							{offer.symbol + offer.price}
+						<button
+							class="standardButton shopOfferButton white"
+							class:disabled={offer.price == 0 && $freeDailyTokensClaimed}
+							onclick={() => {
+								playSound("basic_button");
+								if (offer.price == 0) {
+									if (!$isAuthenticated) return signupPrompt();
+									initializeRewardedAd(freeTokenAdDismissed, handleShopFreeTokens);
+								} else {
+									// Check out with stripe
+								}
+							}}
+						>
+							{offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free (Ad)"))}
 							{#if offer.savingsPercentage}
 								<span class="tokenSavings">-{offer.savingsPercentage}%</span>
 							{/if}
