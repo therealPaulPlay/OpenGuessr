@@ -1,7 +1,6 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { errorPopup } from "$lib/utils/errorHandling";
-	import { loadAndInitializeLibrary } from "$lib/utils/scriptLoader";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { initializeRewardedAd } from "$lib/utils/rewardedAds";
 	import { supporterLevel, supportedAmount } from "$lib/stores/accountStore";
@@ -10,12 +9,10 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { Clock9 } from "lucide-svelte";
+	import { getStripe } from "$lib/utils/getStripe";
+	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 
 	const basePrices = [2.99, 6.99, 14.99, 24.99];
-
-	function closeSupporterWindow() {
-		supporterPopupVisible.set(false);
-	}
 
 	function getTierPrice(tier) {
 		if ($supporterLevel >= tier) return "Unlocked";
@@ -23,29 +20,11 @@
 		return "$ " + Math.round(Math.max(basePrices[tier - 1] - $supportedAmount - 0.01, 0) * 100) / 100;
 	}
 
-	// Initialize Stripe
-	const stripeLivePubKey =
-		"pk_live_51Ple5q1DTHjmMID9LrSuKNuwlN0Ls0issp2PTRO9QWGPdmKpLspMUXvKZQnXtHT5u0SxYZDBVSDsadzy3lAq5T2j00X9uGEJdr";
-
-	let stripe;
-
-	// Load stripe
-	async function getStripe() {
-		stripe = await loadAndInitializeLibrary("https://js.stripe.com/v3/", "Stripe", (Stripe) =>
-			Stripe(stripeLivePubKey),
-		);
-
-		return stripe;
-	}
-
 	// Function to handle buy button click
 	async function handleBuyClick(productId) {
-		if (!stripe) {
-			await getStripe();
-		}
+		const stripe = await getStripe();
 
 		try {
-			// Fetch the current user's ID (you need to implement this based on your authentication system)
 			const id = localStorage.getItem("id");
 
 			// Call the server to create a Checkout Session
@@ -65,45 +44,36 @@
 				sessionId: sessionId,
 			});
 
-			if (result.error) {
-				console.error("Error occured during request to stripe:", result.error.message);
-				errorPopup(
-					"Stripe request failed",
-					"The server returned an error from your purchase request.",
-					error,
-					false,
-					false,
-				);
-			}
+			if (result.error) throw new Error(result.error);
 		} catch (error) {
-			console.error("Error occured when trying to send request to stripe:", error);
-			errorPopup("Error sending stripe request", "Your purchase request couldn't be sent.", error, false, false);
+			console.error("Error occured during checkout:", error);
+			errorPopup("Checkout error", "Failed to create the checkout session.", error, false, false);
 		}
 	}
 
 	function startPurchase(productId) {
-		handleBuyClick(productId);
+		if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
+		handleBuyClick("supporter_tier_" + productId);
 		playSound("basic_button");
 	}
 
-	// Thank you window after purchase for stripe
+	// Thank you window after purchase
 	onMount(() => {
 		let urlParams = new URLSearchParams(window.location.search);
-
 		let stripeSessionFinished;
 
 		try {
-			stripeSessionFinished = urlParams.get("payment_completed");
+			stripeSessionFinished = urlParams.get("payment-completed");
 			if (stripeSessionFinished) {
 				showConfirmPopup(
 					"Thank you!",
-					"You are now a supporter - thank you for your contribution! Supporters like you keep the game free and open for everyone.",
+					"Thank you for your purchase! People like you keep the game free and open for everyone.",
 					false,
 					false,
 					false,
 					true,
 				);
-				history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
+				history.replaceState({}, document.title, window.location.pathname); // Reset query in the address bar
 			}
 		} catch {}
 	});
@@ -200,7 +170,7 @@
 			class="standardButton white closeButton"
 			onclick={() => {
 				playSound("basic_button");
-				closeSupporterWindow();
+				supporterPopupVisible.set(false);
 			}}>Close</button
 		>
 	</Popup>
@@ -251,7 +221,7 @@
 		font-style: italic;
 		border-radius: 3px;
 		margin-left: 5px;
-		background-color: rgba(0, 0, 0, 0.15);
+		background-color: rgba(0, 0, 0, 0.1);
 		vertical-align: 1px;
 	}
 

@@ -6,6 +6,7 @@ import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { freeDailyTokensClaimed, shopAnimationImages, shopPurchaseAnimation, shopPurchaseAnimationTitle, specialOfferLoadingText, specialOfferPins, specialOfferPrice, specialOfferRarity } from "$lib/stores/context-specific/shopStore";
 import { errorPopup } from "./errorHandling";
+import { getStripe } from "./getStripe";
 
 export function handleShopPurchase(type = "pin", price, pinId) {
     if (!get(isAuthenticated)) return signupPrompt();
@@ -43,6 +44,37 @@ export async function handleShopFreeTokens() {
     } catch (error) {
         console.error("Error claiming tokens:", error);
         errorPopup("Error claiming tokens", "An error occured claiming tokens.", error);
+    }
+}
+
+export async function shopPurchaseTokenTier(tier) {
+    const stripe = await getStripe();
+    const productId = "token_tier_" + tier;
+
+    try {
+        const id = localStorage.getItem("id");
+
+        // Call the server to create a Checkout Session
+        const response = await fetch(get(accountUrl) + "/stripe/create-checkout-session", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + localStorage.getItem("bearer"),
+            },
+            body: JSON.stringify({ productId, id }),
+        });
+
+        const { sessionId } = await response.json();
+
+        // Redirect to Stripe Checkout
+        const result = await stripe.redirectToCheckout({
+            sessionId: sessionId,
+        });
+
+        if (result.error) throw new Error(result.error);
+    } catch (error) {
+        console.error("Error occured during checkout:", error);
+        errorPopup("Checkout error", "An error occured tryint to create a checkout session.", error, false, false);
     }
 }
 

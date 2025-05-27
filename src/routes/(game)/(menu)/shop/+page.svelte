@@ -14,13 +14,19 @@
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 	import { blur, scale } from "svelte/transition";
-	import { fetchSpecialOffer, handleShopFreeTokens, handleShopPurchase } from "$lib/utils/shopHelper";
+	import {
+		fetchSpecialOffer,
+		handleShopFreeTokens,
+		handleShopPurchase,
+		shopPurchaseTokenTier,
+	} from "$lib/utils/shopHelper";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
 	import { initializeRewardedAd } from "$lib/utils/rewardedAds";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
+	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 
 	// Tween the token value for a nicer look
 	const animatedTokens = tweened(0, {
@@ -69,6 +75,7 @@
 			price: 2.99,
 			symbol: "$",
 			amount: 550,
+			tier: 1,
 		},
 		medium: {
 			imageSrc: "/img/token_stack_medium.png",
@@ -76,6 +83,7 @@
 			symbol: "$",
 			amount: 1350,
 			savingsPercentage: 23,
+			tier: 2,
 		},
 		large: {
 			imageSrc: "/img/token_stack_large.png",
@@ -83,6 +91,7 @@
 			symbol: "$",
 			amount: 3150,
 			savingsPercentage: 43,
+			tier: 3,
 		},
 	};
 
@@ -206,12 +215,10 @@
 							class:disabled={offer.price == 0 && $freeDailyTokensClaimed}
 							onclick={() => {
 								playSound("basic_button");
-								if (offer.price == 0) {
-									if (!$isAuthenticated) return signupPrompt();
-									initializeRewardedAd(freeTokenAdDismissed, handleShopFreeTokens);
-								} else {
-									// Check out with stripe
-								}
+								if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
+								if (!$isAuthenticated) return signupPrompt();
+								if (offer.price == 0) initializeRewardedAd(freeTokenAdDismissed, handleShopFreeTokens);
+								else shopPurchaseTokenTier(offer.tier);
 							}}
 						>
 							{offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free (Ad)"))}

@@ -267,7 +267,7 @@
 			</div>
 		</div>
 		<div id="profileScrollSection">
-			{#if $profileId == localStorage.getItem("id") && !$crazyGames}
+			{#if $profileId == localStorage.getItem("id")}
 				<SupporterPitch />
 			{/if}
 
