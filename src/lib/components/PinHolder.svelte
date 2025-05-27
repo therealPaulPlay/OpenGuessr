@@ -20,7 +20,12 @@
 	import { handleShopPurchase } from "$lib/utils/shopHelper";
 
 	let isHovered = $state(false);
+	let pinHolderElement = $state();
 </script>
+
+<svelte:document onpointerdown={(e) => {
+	if (!pinHolderElement.contains(e.target)) isHovered = false;
+}} />
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -28,14 +33,19 @@
 	class="pinHolder"
 	role="button"
 	tabindex={0}
+	bind:this={pinHolderElement}
 	style:scale={shop ? "1" : ""}
 	class:biggerSize={shop}
 	class:selectedPin={$selectedPinIndex == pinId && !shop}
 	class:disabled
-	onpointerenter={() => (isHovered = true)}
-	onpointerleave={() => (isHovered = false)}
+	onpointerenter={(e) => {
+		if (e.pointerType !== "touch") isHovered = true;
+	}}
+	onpointerleave={(e) => {
+		if (e.pointerType !== "touch") isHovered = false;
+	}}
 	onclick={() => {
-		if (shop) return;
+		if (shop) return (isHovered = true);
 		if (unlocked) {
 			playSound("item_select");
 			setSelectedProfilePin(pinId);
