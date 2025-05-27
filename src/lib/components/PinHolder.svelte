@@ -128,11 +128,6 @@
 		user-select: none;
 	}
 
-	.disabled {
-		opacity: 0.5;
-		pointer-events: none;
-	}
-
 	.tokenIcon {
 		width: 25px;
 		height: 25px;

@@ -2,6 +2,7 @@
 	import PinHolder from "$lib/components/PinHolder.svelte";
 	import { isAuthenticated, purchasedPins, tokens } from "$lib/stores/accountStore";
 	import {
+		shopPurchaseAnimation,
 		specialOfferLoadingText,
 		specialOfferPins,
 		specialOfferPrice,
@@ -327,7 +328,7 @@
 		max-width: calc(100% - var(--box-margin) * 2);
 		position: absolute;
 		top: var(--layout-margin);
-		mask-image: linear-gradient(to bottom, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0.5) 100%);
+		mask-image: linear-gradient(to bottom, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0.6) 100%);
 	}
 
 	.shopOfferInfo h2 {
@@ -368,7 +369,7 @@
 		height: fit-content;
 		padding: var(--box-margin);
 		display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		gap: var(--box-margin);

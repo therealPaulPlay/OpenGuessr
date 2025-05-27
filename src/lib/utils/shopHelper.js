@@ -4,7 +4,7 @@ import { showConfirmPopup } from "./confirmPopup";
 import { signupPrompt } from "./signupPrompt";
 import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { specialOfferLoadingText, specialOfferPins, specialOfferPrice, specialOfferRarity } from "$lib/stores/context-specific/shopStore";
+import { shopAnimationImages, shopPurchaseAnimation, specialOfferLoadingText, specialOfferPins, specialOfferPrice, specialOfferRarity } from "$lib/stores/context-specific/shopStore";
 import { errorPopup } from "./errorHandling";
 
 export function handleShopPurchase(type = "pin", price, pinId) {
@@ -39,7 +39,7 @@ async function sendPurchaseRequest(type, price, pinId) {
 
             tokens.set(get(tokens) - price);
             purchasedPins.set([...get(purchasedPins), pinId]);
-            showPurchaseCelebration();
+            showPurchaseCelebration([pinId]);
             fetchSpecialOffer(); // Re-fetch in case price was updated
 
         } catch (error) {
@@ -67,7 +67,7 @@ async function sendPurchaseRequest(type, price, pinId) {
             const data = await response.json();
             tokens.set(get(tokens) - price);
             purchasedPins.set([...get(purchasedPins), ...(data.pinsAdded || [])]);
-            showPurchaseCelebration();
+            showPurchaseCelebration(data.pinsAdded);
             fetchSpecialOffer(); // Re-fetch to set status to owned
 
         } catch (error) {
@@ -77,8 +77,13 @@ async function sendPurchaseRequest(type, price, pinId) {
     }
 }
 
-function showPurchaseCelebration() {
-
+function showPurchaseCelebration(pinIds) {
+    const imageSrcArray = [];
+    pinIds?.forEach((id) => {
+        imageSrcArray.push(`/img/pins/player_pin${id}.png`);
+    });
+    shopAnimationImages.set(imageSrcArray);
+    shopPurchaseAnimation.set(true);
 }
 
 export async function fetchSpecialOffer() {

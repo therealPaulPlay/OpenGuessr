@@ -330,7 +330,7 @@
 							onclick={() => {
 								playSound("basic_button");
 								showConfirmPopup(
-									"Update your username",
+									"Update username",
 									"Input your new name into the box and click confirm.",
 									() => {
 										if ($confirmUsernameValue) updateProfileUsername($confirmUsernameValue);
@@ -352,7 +352,7 @@
 						onclick={() => {
 							playSound("basic_button");
 							showConfirmPopup(
-								"Delete your account",
+								"Delete account",
 								"Please make sure to delete user-created content before proceeding, if you wish to remove that from the platform.",
 								() => {
 									if ($confirmPasswordValue) submitAccountDeletion($confirmPasswordValue);
