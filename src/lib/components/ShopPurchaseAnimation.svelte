@@ -55,7 +55,6 @@
 		overflow: visible;
 		pointer-events: none;
 		position: fixed;
-		inset: -50lvmax -50dlvmax; /* Shorthand for Top, Right, Bottom, Left */
 		transform-origin: center;
 	}
 
