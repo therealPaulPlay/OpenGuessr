@@ -165,6 +165,7 @@ function showPurchaseCelebration(pinIds) {
 }
 
 export async function fetchSpecialOffer() {
+    specialOfferLoadingText.set("Loading...");
     try {
         const response = await fetch(
             get(accountUrl) + `/shop/bundle${get(isAuthenticated) ? "?user-id=" + localStorage.getItem("id") : ""}`,
