@@ -215,6 +215,7 @@
 	#startFriendSearch {
 		width: fit-content;
 		border-radius: 10px;
+		height: 45px;
 	}
 
 	.sendFriendRequestBrowser {
