@@ -56,7 +56,7 @@
 				<Badge id="compBadge4" interactive="true" unlocked={$profileData?.competitionsEntered >= 500} />
 			</div>
 			<div class="badgeLabel">
-				<p>For Streaks finished:</p>
+				<p>For Country streaks finished:</p>
 				<p id="streakBadgeStatus" class="unlockBadgeStatus">
 					5 <ArrowRight size="13" /> 15 <ArrowRight size="13" /> 50 <ArrowRight size="13" /> 100
 				</p>
@@ -100,7 +100,7 @@
 <style>
 	.badgeContainer {
 		width: 100%;
-		max-height: calc(90dvh - 250px);
+		max-height: calc(100dvh - 250px);
 		overflow-x: hidden;
 		overflow-y: auto;
 	}

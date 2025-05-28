@@ -2,7 +2,7 @@ import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { setCheckNewHighestCountryStreak } from "$lib/utils/updateProfileData";
-import { isAuthenticated, freeSupporterBoostEnabled, supporterLevel, experience } from "$lib/stores/accountStore";
+import { isAuthenticated, supporterLevel, experience } from "$lib/stores/accountStore";
 import { streakText, showStreakDisplay, lastDistance, lastExperienceCalculationAborted, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { updateMultiplayerScore } from "$lib/logic/multiplayerLogic";
@@ -51,7 +51,7 @@ function calculateExponentialModifier(mapDiameter) {
 }
 
 // Calculate XP gain --------------------------------------------------------------------------------------------------------------------------------
-async function calculateXPGain(distance, category, supporterLevelParam, freeSupporterBoost) {
+async function calculateXPGain(distance, category, supporterLevelParam) {
     let returnXP = 0;
     if (distance < 0.005) distance = 0; // Treat distances < 5m as 0 to be more friendly with 5ks
 
@@ -86,7 +86,6 @@ async function calculateXPGain(distance, category, supporterLevelParam, freeSupp
         }
     }
 
-    if (freeSupporterBoost && supporterMultiplier < 1.2) supporterMultiplier = 1.2;
     return { earnedXP: Math.round(returnXP * supporterMultiplier), earnedXPWithoutSupporterBoost: returnXP, supporterMultiplier: supporterMultiplier };
 }
 
@@ -121,7 +120,7 @@ export async function loadResultScreenXP(distance) {
     // XP calculation formulas -------------------------------------------------
     if (get(singleplayer) || get(multiplayer)) {
         const adjustedSupporterLevel = get(multiplayer) ? get(socket)?.getStorage?.highestSupporterLevel : get(supporterLevel);
-        const calculatedXP = await calculateXPGain(distance, selectedCategory, adjustedSupporterLevel, get(singleplayer) ? get(freeSupporterBoostEnabled) : undefined);
+        const calculatedXP = await calculateXPGain(distance, selectedCategory, adjustedSupporterLevel);
         earnedXP = calculatedXP.earnedXP;
         earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
         supporterMultiplier = calculatedXP.supporterMultiplier;

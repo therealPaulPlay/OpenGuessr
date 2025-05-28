@@ -116,7 +116,7 @@ function onMapClick(latLng) {
         mapPinLng.set(latLng.lng);
 
         let yourIcon = new L.Icon({
-            iconUrl: '/img/your_marker' + get(selectedPinIndex) + '.png',
+            iconUrl: '/img/pins/player_pin' + get(selectedPinIndex) + '.png',
             iconSize: [35, 35],
             iconAnchor: [17.5, 34],
             popupAnchor: [1, -34]
@@ -156,7 +156,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
                 const multiplayerLatLng = new L.LatLng(miniMarkerLat, miniMarkerLong);
 
                 let newMultiplayerIcon = new L.Icon({
-                    iconUrl: "/img/your_marker" + miniMarkerPinIndex + ".png",
+                    iconUrl: "/img/pins/player_pin" + miniMarkerPinIndex + ".png",
                     iconSize: [35, 35],
                     iconAnchor: [17.5, 34],
                     popupAnchor: [1, -34]

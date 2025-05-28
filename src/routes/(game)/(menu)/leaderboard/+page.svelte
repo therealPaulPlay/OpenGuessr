@@ -7,6 +7,8 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
+	let loadingText = $state("Loading...");
+
 	// API ----------------------------------------------------------------------------------------------------------------------------
 	async function getLeaderboard() {
 		try {
@@ -26,6 +28,7 @@
 			}
 		} catch (error) {
 			console.error("Failed to fetch the experience leaderboard: ", error);
+			loadingText = "Error: " + error.message;
 		}
 	}
 
@@ -70,6 +73,7 @@
 			}
 		} catch (error) {
 			console.error("Error occurred while fetching the user: ", error);
+			loadingText = "Error: " + error.message;
 		}
 	}
 
@@ -91,6 +95,7 @@
 			}
 		} catch (error) {
 			console.error("Failed to fetch the elo leaderboard: ", error);
+			loadingText = "Error: " + error.message;
 		}
 	}
 
@@ -100,6 +105,7 @@
 
 	// Load leaderboard data -------------------------------------------------------------------------------------------------------
 	async function loadLeaderboard(leaderboardType) {
+		loadingText = "Loading...";
 		switch (leaderboardType) {
 			case "elo":
 				mainSectionEntries = await getEloLeaderboard();
@@ -269,7 +275,7 @@
 			{/each}
 		</div>
 	{:else}
-		<p class="loadingText">Loading...</p>
+		<p class="loadingText">{loadingText}</p>
 	{/if}
 	{#if userSectionEntries}
 		<div id="threeDotsContainer" class="threeDotsContainer" transition:fade={{ duration: 250 }}>

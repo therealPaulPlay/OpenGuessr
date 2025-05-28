@@ -52,6 +52,7 @@
 	import { scale } from "svelte/transition";
 	import Tabs from "./ui/Tabs.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
+	import { errorPopup } from "$lib/utils/errorHandling";
 
 	let textarea = $state();
 	let isFriendsWithId = $state(true);
@@ -221,7 +222,7 @@
 							pinPopup.set(true);
 						}}
 					>
-						<img id="selectedProfilePin" alt="map pin" src={`/img/your_marker${Number($profileData?.pin) || 0}.png`} />
+						<img id="selectedProfilePin" alt="pin" src={`/img/pins/player_pin${Number($profileData?.pin) || 0}.png`} />
 						{#if $profileId == localStorage.getItem("id")}
 							<Pencil
 								style="opacity: 0.75; margin-bottom: 5px; margin-right: 5px; margin-left: 2px;"
@@ -266,7 +267,7 @@
 			</div>
 		</div>
 		<div id="profileScrollSection">
-			{#if $profileId == localStorage.getItem("id") && !$crazyGames}
+			{#if $profileId == localStorage.getItem("id")}
 				<SupporterPitch />
 			{/if}
 
@@ -329,10 +330,11 @@
 							onclick={() => {
 								playSound("basic_button");
 								showConfirmPopup(
-									"Update your username",
+									"Update username",
 									"Input your new name into the box and click confirm.",
 									() => {
-										updateProfileUsername($confirmUsernameValue);
+										if ($confirmUsernameValue) updateProfileUsername($confirmUsernameValue);
+										else errorPopup("New username is invalid", "Please specify a valid new username.");
 									},
 									false,
 									true,
@@ -350,10 +352,11 @@
 						onclick={() => {
 							playSound("basic_button");
 							showConfirmPopup(
-								"Delete your account",
+								"Delete account",
 								"Please make sure to delete user-created content before proceeding, if you wish to remove that from the platform.",
 								() => {
-									submitAccountDeletion($confirmPasswordValue);
+									if ($confirmPasswordValue) submitAccountDeletion($confirmPasswordValue);
+									else errorPopup("Password required", "Your password is required for deleting your account.");
 								},
 								true,
 							);
@@ -574,7 +577,6 @@
 		overflow-y: auto;
 		max-height: calc(100dvh - 350px);
 		width: 100%;
-		transition: max-height 250ms ease-in-out;
 	}
 
 	:global(.stat-switch) {

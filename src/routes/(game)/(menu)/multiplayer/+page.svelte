@@ -170,9 +170,9 @@
 		<h2 class="header">Divisions</h2>
 	</div>
 	<div class="infoContainer">
-		<Info strokeWidth={2.25} size={24} color="white" style="opacity: 50%; margin-right: 5px; margin-left: 2px;" />
+		<Info strokeWidth={2.25} size={24} color="white" style="opacity: 50%; margin-right: 5px; margin-left: 2px; min-width: 24px;" />
 		<p>
-			Elo above 2000 will be reset on {nextMonth.toLocaleDateString("en-US", {
+			Elo above 2000 will be converted into tokens on {nextMonth.toLocaleDateString("en-US", {
 				month: "long",
 				day: "numeric",
 				year: "numeric",

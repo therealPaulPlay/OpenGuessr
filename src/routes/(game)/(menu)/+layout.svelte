@@ -14,6 +14,9 @@
 </script>
 
 <nav class="menuNavBar">
+	<div class="centerNotifications">
+			<Notification belowNavbar={false} />
+	</div>
 	<button
 		class="backButton standardButton white"
 		class:buttonDisabled={$screenEscapeDisabled}
@@ -42,7 +45,6 @@
 <div class="background"></div>
 
 <main class="content">
-	<Notification belowNavbar={false} />
 	<div class="container">
 		{@render children?.()}
 	</div>
@@ -58,6 +60,14 @@
 		background: rgba(18, 18, 28, 0.9);
 		z-index: 90;
 		backdrop-filter: blur(15px);
+	}
+
+	.centerNotifications {
+		width: 100%;
+		display: flex;
+		justify-content: center;
+		position: absolute;
+		display: flex;
 	}
 
 	.backButton {
