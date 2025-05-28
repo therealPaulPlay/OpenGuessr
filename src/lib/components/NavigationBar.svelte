@@ -136,6 +136,7 @@
 				{/if}
 				<button
 					class="standardButton accountButton white"
+					class:preventNavigateOut
 					onclick={() => {
 						playSound("basic_button");
 						goto("/shop");
@@ -274,6 +275,7 @@
 		{#if $isAuthenticated}
 			<button
 				class="standardButton accountButton white"
+				class:preventNavigateOut
 				onclick={() => {
 					playSound("basic_button");
 					goto("/shop");
