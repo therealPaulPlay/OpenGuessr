@@ -178,7 +178,7 @@
 						class:disabled={$specialOfferPrice == 0}
 						onclick={() => {
 							playSound("basic_button");
-							handleShopPurchase("bundle", $specialOfferPrice);
+							handleShopPurchase("bundle", $specialOfferPrice, undefined, $specialOfferPins);
 						}}
 					>
 						<img class="tokenIconWhite" alt="token" src="/img/token_icon_white.png" />

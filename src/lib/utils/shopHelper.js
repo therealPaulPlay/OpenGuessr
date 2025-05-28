@@ -8,12 +8,12 @@ import { freeDailyTokensClaimed, shopAnimationImages, shopPurchaseAnimation, sho
 import { errorPopup } from "./errorHandling";
 import { getStripe } from "./getStripe";
 
-export function handleShopPurchase(type = "pin", price, pinId) {
+export function handleShopPurchase(type = "pin", price, pinId, bundleItems) {
     if (!get(isAuthenticated)) return signupPrompt();
     if (price > get(tokens)) {
         showNotification("Not enough tokens!");
     } else {
-        showConfirmPopup("Purchase?", `Do you want to purchase this item for ${price?.toLocaleString()} tokens?`, () => (sendPurchaseRequest(type, price, pinId)));
+        showConfirmPopup("Purchase?", `Do you want to purchase this item for ${price?.toLocaleString()} tokens?`, () => (sendPurchaseRequest(type, price, pinId, bundleItems)));
     }
 }
 
@@ -78,7 +78,7 @@ export async function shopPurchaseTokenTier(tier) {
     }
 }
 
-async function sendPurchaseRequest(type, price, pinId) {
+async function sendPurchaseRequest(type, price, pinId, bundleItems) {
     if (type == "pin") {
         if (!pinId) return console.error("No pinId provided!");
         try {
@@ -92,12 +92,19 @@ async function sendPurchaseRequest(type, price, pinId) {
                     },
                     body: JSON.stringify({
                         id: localStorage.getItem("id"),
-                        pinId,
+                        pinId
                     })
                 },
             );
 
-            if (!response.ok) throw new Error(response.status);
+            if (!response.ok) {
+                let error = response.status;
+                try {
+                    const data = await response.json();
+                    if (data.error) error = data.error;
+                } catch { }
+                throw new Error(error);
+            }
 
             tokens.set(get(tokens) - price);
             purchasedPins.set([...get(purchasedPins), pinId]);
@@ -119,12 +126,20 @@ async function sendPurchaseRequest(type, price, pinId) {
                         'Authorization': `Bearer ${localStorage.getItem("bearer")}`
                     },
                     body: JSON.stringify({
-                        id: localStorage.getItem("id")
+                        id: localStorage.getItem("id"),
+                        bundleItems
                     })
                 },
             );
 
-            if (!response.ok) throw new Error(response.status);
+            if (!response.ok) {
+                let error = response.status;
+                try {
+                    const data = await response.json();
+                    if (data.error) error = data.error;
+                } catch { }
+                throw new Error(error);
+            }
 
             const data = await response.json();
             tokens.set(get(tokens) - price);

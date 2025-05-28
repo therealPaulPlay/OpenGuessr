@@ -16,7 +16,7 @@
 
 	// Timer values dictionary
 	const timerValues = [
-		{ slider: 0, actual: 0, text: "No Timer" },
+		{ slider: 0, actual: 0, text: "No timer" },
 		{ slider: 1, actual: 0.1, text: "One blink" },
 	];
 	try {
