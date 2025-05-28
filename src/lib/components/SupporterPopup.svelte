@@ -1,21 +1,18 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { errorPopup } from "$lib/utils/errorHandling";
-	import { loadAndInitializeLibrary } from "$lib/utils/scriptLoader";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { initializeRewardedAd } from "$lib/utils/rewardedAds";
-	import { supporterLevel, supportedAmount, freeSupporterBoostEnabled } from "$lib/stores/accountStore";
+	import { supporterLevel, supportedAmount } from "$lib/stores/accountStore";
 	import { supporterPopupVisible } from "$lib/stores/context-specific/supporterPopupStore";
 	import { onMount } from "svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { Clock9 } from "lucide-svelte";
+	import { getStripe } from "$lib/utils/getStripe";
+	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 
 	const basePrices = [2.99, 6.99, 14.99, 24.99];
-
-	function closeSupporterWindow() {
-		supporterPopupVisible.set(false);
-	}
 
 	function getTierPrice(tier) {
 		if ($supporterLevel >= tier) return "Unlocked";
@@ -23,29 +20,11 @@
 		return "$ " + Math.round(Math.max(basePrices[tier - 1] - $supportedAmount - 0.01, 0) * 100) / 100;
 	}
 
-	// Initialize Stripe
-	const stripeLivePubKey =
-		"pk_live_51Ple5q1DTHjmMID9LrSuKNuwlN0Ls0issp2PTRO9QWGPdmKpLspMUXvKZQnXtHT5u0SxYZDBVSDsadzy3lAq5T2j00X9uGEJdr";
-
-	let stripe;
-
-	// Load stripe
-	async function getStripe() {
-		stripe = await loadAndInitializeLibrary("https://js.stripe.com/v3/", "Stripe", (Stripe) =>
-			Stripe(stripeLivePubKey),
-		);
-
-		return stripe;
-	}
-
 	// Function to handle buy button click
 	async function handleBuyClick(productId) {
-		if (!stripe) {
-			await getStripe();
-		}
+		const stripe = await getStripe();
 
 		try {
-			// Fetch the current user's ID (you need to implement this based on your authentication system)
 			const id = localStorage.getItem("id");
 
 			// Call the server to create a Checkout Session
@@ -65,110 +44,39 @@
 				sessionId: sessionId,
 			});
 
-			if (result.error) {
-				console.error("Error occured during request to stripe:", result.error.message);
-				errorPopup(
-					"Stripe request failed",
-					"The server returned an error from your purchase request.",
-					error,
-					false,
-					false,
-				);
-			}
+			if (result.error) throw new Error(result.error);
 		} catch (error) {
-			console.error("Error occured when trying to send request to stripe:", error);
-			errorPopup("Error sending stripe request", "Your purchase request couldn't be sent.", error, false, false);
+			console.error("Error occured during checkout:", error);
+			errorPopup("Checkout error", "Failed to create the checkout session.", error, false, false);
 		}
 	}
 
 	function startPurchase(productId) {
-		handleBuyClick(productId);
+		if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
+		handleBuyClick("supporter_tier_" + productId);
 		playSound("basic_button");
 	}
 
-	// Thank you window after purchase for stripe
+	// Thank you window after purchase
 	onMount(() => {
 		let urlParams = new URLSearchParams(window.location.search);
-
 		let stripeSessionFinished;
 
 		try {
-			stripeSessionFinished = urlParams.get("payment_completed");
+			stripeSessionFinished = urlParams.get("payment-completed");
 			if (stripeSessionFinished) {
 				showConfirmPopup(
 					"Thank you!",
-					"You are now a supporter - thank you for your contribution! Supporters like you keep the game free and open for everyone.",
+					"Thank you for your purchase! People like you keep the game free and open for everyone.",
 					false,
 					false,
 					false,
 					true,
 				);
-				history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
+				history.replaceState({}, document.title, window.location.pathname); // Reset query in the address bar
 			}
 		} catch {}
 	});
-
-	// Free ad-supported experience boost --------------------------------------------------------------------------
-
-	let freeSupporterBoostButton = $state();
-
-	function supporterBoostAdDismiss(adNotAvailable, rewardClaimed) {
-		if (adNotAvailable) {
-			errorPopup("No ad available", "Please try again later or disable Ad Blockers.", "No ads", false, false);
-		} else {
-			if (!rewardClaimed) {
-				errorPopup("Ad dismissed", "Video ad dismissed. ", "", false, true);
-			}
-		}
-	}
-
-	function enableSupporterAdBoost() {
-		startAdSupporterTimer();
-		$freeSupporterBoostEnabled = true;
-	}
-
-	let freeSupporterBoostText = $state();
-	let boostTimerRunning = $state(false);
-
-	$effect(() => {
-		if (!boostTimerRunning) {
-			freeSupporterBoostText = $freeSupporterBoostEnabled
-				? "Experience boost activated."
-				: "Free 20% experience boost.";
-		}
-	});
-
-	async function startAdSupporterTimer(prefix = "Boost active. Remaining: ") {
-		boostTimerRunning = true;
-		let t = 180;
-
-		function timer() {
-			let timeText = t > 59 ? Math.floor(t / 60) + ":" + (t % 60).toString().padStart(2, "0") + " min" : t + "s";
-			freeSupporterBoostText = prefix + timeText;
-
-			if (t > 0) {
-				setTimeout(timer, 1000);
-				t--;
-			} else {
-				$freeSupporterBoostEnabled = false;
-				boostTimerRunning = false;
-				showConfirmPopup(
-					"Boost expired",
-					"Your free experience boost has expired. Do you want to reactivate it?",
-					() => {
-						initializeRewardedAd(supporterBoostAdDismiss, enableSupporterAdBoost);
-					},
-					false,
-					false,
-					false,
-					"Reactivate",
-					"#588e6b",
-				);
-			}
-		}
-
-		timer();
-	}
 </script>
 
 {#if $supporterPopupVisible}
@@ -180,20 +88,6 @@
 			</h1>
 		</div>
 		<div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
-			<div id="adTierBox" class="adTierBox supporterArea" class:adTierBoxDisabled={$freeSupporterBoostEnabled}>
-				<Clock9 strokeWidth={2.25} size={24} color="white" style="opacity: 50%; margin-left: 5px; margin-right: 3px;" />
-				<p id="freeSupporterBoostText" bind:textContent={freeSupporterBoostText} contenteditable="false"></p>
-				<button
-					id="freeSupporterBoost"
-					class="standardButton white"
-					class:freeSupporterBoostDisabled={$freeSupporterBoostEnabled}
-					bind:this={freeSupporterBoostButton}
-					onclick={() => {
-						playSound("basic_button");
-						initializeRewardedAd(supporterBoostAdDismiss, enableSupporterAdBoost);
-					}}>Watch ad to activate</button
-				>
-			</div>
 			<div class="tierBox">
 				<div class="tierBoxTier"><p class="tierNumber">Tier 1</p></div>
 				<ul class="tierBenefits">
@@ -276,54 +170,18 @@
 			class="standardButton white closeButton"
 			onclick={() => {
 				playSound("basic_button");
-				closeSupporterWindow();
+				supporterPopupVisible.set(false);
 			}}>Close</button
 		>
 	</Popup>
 {/if}
 
 <style>
-	#freeSupporterBoost {
-		flex-grow: 1;
-		margin-right: 2px;
-	}
-
-	.freeSupporterBoostDisabled {
-		opacity: 0.5;
-		pointer-events: none;
-	}
-
-	#freeSupporterBoostText {
-		flex-grow: 10;
-		max-width: 75%;
-		font-size: 22px;
-	}
-
 	.tierNumber {
 		background-color: rgba(0, 0, 0, 0.1);
 		border-radius: 3px;
 		padding: 2px !important;
 		padding-inline: 8px !important;
-	}
-
-	#adTierBox {
-		border-radius: 10px;
-		margin: 0;
-		background: var(--box-color);
-		transition:
-			background-color 250ms ease,
-			filter 250ms ease;
-		width: 100%;
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: var(--box-margin);
-		flex-wrap: wrap;
-	}
-
-	.adTierBoxDisabled {
-		pointer-events: none;
-		background: rgba(255, 255, 255, 0.1);
 	}
 
 	#supporterIconTitle {
@@ -363,7 +221,7 @@
 		font-style: italic;
 		border-radius: 3px;
 		margin-left: 5px;
-		background-color: rgba(0, 0, 0, 0.15);
+		background-color: rgba(0, 0, 0, 0.1);
 		vertical-align: 1px;
 	}
 
@@ -373,7 +231,7 @@
 
 	.tierBuyButton {
 		flex-grow: 1;
-		background: var(--supporter-gradient);
+		background-color: var(--supporter-green);
 		border-color: rgba(255, 255, 255, 0.3);
 		width: 100%;
 		margin-bottom: 15px;

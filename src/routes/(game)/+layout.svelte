@@ -49,6 +49,7 @@
 	import DivisionMatchHistoryPopup from "$lib/components/DivisionMatchHistoryPopup.svelte";
 	import MusicController from "$lib/components/MusicController.svelte";
 	import GuestNamePickerPopup from "$lib/components/GuestNamePickerPopup.svelte";
+	import ShopPurchaseAnimation from "$lib/components/ShopPurchaseAnimation.svelte";
 
 	// Start ads
 	onMount(() => {
@@ -122,6 +123,7 @@
 <ErrorPopup />
 <ConfirmPopup />
 <CaptchaPopup />
+<ShopPurchaseAnimation />
 <ProfilePopup />
 <BadgePopup />
 <PinPopup />

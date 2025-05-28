@@ -220,20 +220,21 @@ export async function getUser(token, id, errorSource, errorElement) {
 
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
-      console.error('Fetch failed:', response.status);
+
       if (response.status == 404) {
-        showConfirmPopup("Account removed", "This account was removed by an admin. If this was a test account, it was likely modifed / re-created by staff during tests. Your locally saved account data should be deleted to avoid issues. Continue?", () => {
+        showConfirmPopup("Account removed", "This account was removed. Your locally saved account data should be deleted to avoid issues. Continue?", () => {
           localStorage.removeItem("id");
           localStorage.removeItem("bearer");
           window.location.reload();
         }, false, false, false, "Continue");
       } else {
-        displayError("Fetch failed: " + response.status, errorSource, errorElement, responseError);
+        throw new Error(responseError || response.status);
       }
+
     }
   } catch (error) {
-    console.error('Error occurred while fetching the user: ', error);
-    displayError("Error occurred while fetching the user: " + error, errorSource, errorElement);
+    console.error('Error fetching the user: ', error);
+    displayError("Error fetching the user: " + error, errorSource, errorElement);
   }
 }
 
@@ -305,7 +306,7 @@ export function displayError(error, source, errorMessageElement, errorMsg) {
 
   } else if (source == "index") {
     if (!errorMsg) {
-      errorPopup("Backend error", "The API reports an unknown error. Please check your internet connection and the site's server status.", error, false);
+      errorPopup("Backend error", "The server could not be reached. Please check your internet connection and the status page.", error, false);
     } else {
       errorPopup("Backend error", errorMsg, error, false);
     }

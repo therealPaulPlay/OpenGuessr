@@ -22,10 +22,10 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
             return;
         }
     }
-  
+
     // Define custom icons for markers
     let yourIcon = {
-        url: '/img/your_marker' + get(selectedPinIndex) + '.png',
+        url: '/img/pins/player_pin' + get(selectedPinIndex) + '.png',
         size: new google.maps.Size(35, 35),
         origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(17.5, 34),
@@ -33,7 +33,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     };
 
     let resultIcon = {
-        url: '/img/result_marker.png',
+        url: '/img/pins/result_pin.png',
         size: new google.maps.Size(35, 35),
         origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(17.5, 34),
@@ -106,7 +106,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
             if (element.id !== get(socket)?.id) {
 
                 let newMultiplayerIcon = {
-                    url: "/img/your_marker" + newMarkerPinIndex + ".png",
+                    url: "/img/pins/player_pin" + newMarkerPinIndex + ".png",
                     size: new google.maps.Size(35, 35),
                     origin: new google.maps.Point(0, 0),
                     anchor: new google.maps.Point(17.5, 34),

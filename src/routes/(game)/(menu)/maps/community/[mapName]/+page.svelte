@@ -105,7 +105,7 @@
 
 	// Map deletion -------------------------------------------------------------------------------------------------
 	function deleteMapScreen(name) {
-		showConfirmPopup("Are you sure?", "Deleting a map cannot be undone.", () => {
+		showConfirmPopup("Delete map?", "Deleting a map cannot be undone.", () => {
 			deleteMap(name);
 		});
 	}
@@ -468,7 +468,7 @@
 		max-width: calc(100% - 40px);
 		border-radius: 5px;
 		background-color: var(--dark-background);
-		backdrop-filter: blur(5px);
+		backdrop-filter: blur(10px);
 		padding: 5px;
 		padding-inline: var(--box-margin);
 		z-index: 10;

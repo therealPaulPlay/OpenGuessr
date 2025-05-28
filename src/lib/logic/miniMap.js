@@ -232,8 +232,8 @@ function onMapClick(latLng) {
         mapPinLat.set(latLng.lat());
         mapPinLng.set(latLng.lng());
 
-        var yourIcon = {
-            url: '/img/your_marker' + get(selectedPinIndex) + '.png',
+        let yourIcon = {
+            url: '/img/pins/player_pin' + get(selectedPinIndex) + '.png',
             size: new google.maps.Size(35, 35),
             anchor: new google.maps.Point(17.5, 34),
             origin: new google.maps.Point(0, 0),
@@ -278,7 +278,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
                 const multiplayerLatLng = new google.maps.LatLng(miniMarkerLat, miniMarkerLong);
 
                 const newMultiplayerIcon = {
-                    url: '/img/your_marker' + miniMarkerPinIndex + '.png',
+                    url: '/img/pins/player_pin' + miniMarkerPinIndex + '.png',
                     size: new google.maps.Size(25, 25),
                     anchor: new google.maps.Point(15, 24),
                     origin: new google.maps.Point(0, 0),

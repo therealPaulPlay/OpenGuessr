@@ -325,7 +325,10 @@
 	<!-- Playlight section -->
 	{#if !$crazyGames}
 		<div class="headerContainer no-bottom-padding">
-			<h2 class="header">Featured games</h2>
+			<div>
+				<h2 class="header">Featured games</h2>
+				<a target="_blank" href="https://playlight.dev" class="playlightLink">by Playlight</a>
+			</div>
 		</div>
 		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style="height: 330px;"></div>
 	{/if}
@@ -562,6 +565,16 @@
 		to {
 			opacity: 1;
 		}
+	}
+
+	.playlightLink {
+		text-decoration: none;
+		opacity: 0.5;
+		transition: opacity 250ms ease;
+	}
+
+	.playlightLink:hover {
+		opacity: 0.25;
 	}
 
 	.linkSpan {
