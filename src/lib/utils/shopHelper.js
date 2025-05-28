@@ -74,7 +74,7 @@ export async function shopPurchaseTokenTier(tier) {
         if (result.error) throw new Error(result.error);
     } catch (error) {
         console.error("Error occured during checkout:", error);
-        errorPopup("Checkout error", "An error occured tryint to create a checkout session.", error, false, false);
+        errorPopup("Checkout error", "An error occured trying to create a checkout session.", error, false, false);
     }
 }
 

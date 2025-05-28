@@ -91,9 +91,9 @@
 
 	function checkIfBarScrollable() {
 		mobileBarFadeRight =
-			mobileBarScroll.scrollWidth > mobileBarScroll.clientWidth &&
-			mobileBarScroll.scrollLeft + mobileBarScroll.clientWidth < mobileBarScroll.scrollWidth;
-		mobileBarFadeLeft = mobileBarScroll.scrollWidth > mobileBarScroll.clientWidth && mobileBarScroll.scrollLeft > 0;
+			mobileBarScroll?.scrollWidth > mobileBarScroll?.clientWidth &&
+			mobileBarScroll?.scrollLeft + mobileBarScroll?.clientWidth < mobileBarScroll?.scrollWidth;
+		mobileBarFadeLeft = mobileBarScroll?.scrollWidth > mobileBarScroll?.clientWidth && mobileBarScroll?.scrollLeft > 0;
 	}
 
 	$effect(() => {
