@@ -73,7 +73,7 @@ export function initMap() {
 
 let multiplayerMiniMarkers = []; // team markers
 
-//reset the map - used for going to the next round. 
+// Reset the map and the confirm button
 export function resetMap(keepSize) {
     if (get(map)) {
         mapHovered.set(false);
@@ -86,14 +86,14 @@ export function resetMap(keepSize) {
         if (!keepSize) adjustMapToCountry();
     }
 
-    // reset the guess button as well
+    // Reset the guess button as well
     confirmButtonActive.set(false);
 }
 
 // For most maps, adjust the boundaries to the map's locations
 async function adjustMapToCountry() {
     const mapCenterAndZoom = getMapBounds();
-    get(map).setView(new L.LatLng(mapCenterAndZoom.lat, mapCenterAndZoom.lng), mapCenterAndZoom.zoom)
+    get(map).setView(new L.LatLng(mapCenterAndZoom.lat, mapCenterAndZoom.lng), mapCenterAndZoom.zoom);
 }
 
 // Placing the marker on the minimap ------------------------------------------------------------------------
