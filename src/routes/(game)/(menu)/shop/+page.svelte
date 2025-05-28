@@ -309,7 +309,7 @@
 		display: flex;
 		align-items: center;
 		gap: 5px;
-		max-width: 60%;
+		max-width: 50%;
 		text-wrap: nowrap;
 		overflow: hidden;
 	}
