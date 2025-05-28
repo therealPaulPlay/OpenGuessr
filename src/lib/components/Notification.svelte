@@ -67,7 +67,7 @@
 		transition: all 200ms ease;
 		pointer-events: auto;
 		max-width: 80vw;
-		z-index: 999;
+		z-index: 100;
 	}
 
 	@media (max-width: 1200px) {

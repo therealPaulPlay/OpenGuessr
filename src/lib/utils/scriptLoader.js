@@ -1,5 +1,5 @@
 // Generic script loader and initializer
-export function loadAndInitializeLibrary(url, globalVar, initFunction) {
+export function loadIifeScript(url, globalVar, initFunction) {
     return new Promise((resolve, reject) => {
 
         // Caching - Use the cached global variable if available
