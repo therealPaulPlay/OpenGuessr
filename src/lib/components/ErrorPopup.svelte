@@ -9,18 +9,9 @@
 		popupOpen,
 		closeButtonText,
 	} from "$lib/stores/context-specific/errorPopupStore";
-
+	import { playSound } from "$lib/utils/soundManager";
 	import Popup from "./ui/Popup.svelte";
 	import { get } from "svelte/store"; // Import get from svelte/store
-
-	function closePopup() {
-		popupOpen.set(false);
-
-		if (get(reload)) {
-			localStorage.setItem("selectedCategory", "standard");
-			location.reload();
-		}
-	}
 </script>
 
 {#if $popupOpen}
@@ -38,7 +29,18 @@
 				<input type="checkbox" id="hideErrors" bind:checked={$hideErrors} />
 			</div>
 		{/if}
-		<button class="standardButton white closeButton" onclick={closePopup}>{$closeButtonText}</button>
+		<button
+			class="standardButton white closeButton"
+			onclick={() => {
+				playSound("basic_button");
+				popupOpen.set(false);
+
+				if (get(reload)) {
+					localStorage.setItem("selectedCategory", "standard");
+					window.location.reload();
+				}
+			}}>{$closeButtonText}</button
+		>
 	</Popup>
 {/if}
 

@@ -399,6 +399,7 @@
 				role="button"
 				tabindex="0"
 				onclick={() => {
+					playSound("basic_button");
 					goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
 				}}
 			>
@@ -492,6 +493,7 @@
 				role="button"
 				tabindex="0"
 				onclick={() => {
+					playSound("basic_button");
 					goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
 				}}
 			>

@@ -2,7 +2,7 @@ import { getUser } from "./userAPI";
 import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
 import { initializeSSEConnection } from "$lib/logic/sseLogic";
 import { resultScreenEnabled, lastDistance, lastExperienceCalculationAborted } from "$lib/stores/context-specific/resultScreenStore";
-import { isAuthenticated, supporterLevel, experience, username, selectedPinIndex, selectedBadge, elo, tokens, purchasedPins } from "$lib/stores/accountStore";
+import { isAuthenticated, supporterLevel, experience, username, selectedPinIndex, selectedBadge, elo, tokens, purchasedPins, accountDataLoaded } from "$lib/stores/accountStore";
 import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
 import { isTokenExpired } from "$lib/utils/isTokenExpired.js";
 import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
@@ -45,6 +45,7 @@ export function resetLocalSave() {
   selectedBadge.set(null);
   inboxIconNew.set(false);
   experience.set(0);
+  accountDataLoaded.set(false);
 }
 
 // Load user data ---------------------------------------------------------------------------------------------------------------------------
@@ -70,6 +71,7 @@ async function loadUserInfo() {
       if (user.new_requests) { inboxIconNew.set(true); }
 
       initializeSSEConnection();
+      accountDataLoaded.set(true);
     });
   } catch (error) {
     console.error("Error getting user data in loadUserInfo:", error);

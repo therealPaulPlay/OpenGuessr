@@ -202,7 +202,7 @@ export function resetMap() {
         get(map).overlayMapTypes.clear();
     }
 
-    // reset the guess button as well
+    // Reset the guess button as well
     confirmButtonActive.set(false);
 }
 

@@ -1,6 +1,6 @@
 <script>
 	import PinHolder from "$lib/components/PinHolder.svelte";
-	import { isAuthenticated, purchasedPins, tokens } from "$lib/stores/accountStore";
+	import { accountDataLoaded, isAuthenticated, purchasedPins, tokens } from "$lib/stores/accountStore";
 	import {
 		freeDailyTokensClaimed,
 		shopPurchaseAnimation,
@@ -13,11 +13,12 @@
 	import { Clock } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
-	import { blur, scale } from "svelte/transition";
+	import { blur, scale, slide } from "svelte/transition";
 	import {
 		fetchSpecialOffer,
 		handleShopFreeTokens,
 		handleShopPurchase,
+		handleShopYouTubePin,
 		shopPurchaseTokenTier,
 	} from "$lib/utils/shopHelper";
 	import { playSound } from "$lib/utils/soundManager";
@@ -68,29 +69,29 @@
 			imageSrc: "/img/token_stack_free.png",
 			price: 0,
 			symbol: "",
-			amount: 15,
+			amount: 20,
 		},
 		small: {
 			imageSrc: "/img/token_stack_small.png",
-			price: 2.99,
+			price: 1.99,
 			symbol: "$",
-			amount: 550,
+			amount: 900,
 			tier: 1,
 		},
 		medium: {
 			imageSrc: "/img/token_stack_medium.png",
-			price: 5.99,
+			price: 2.99,
 			symbol: "$",
-			amount: 1350,
-			savingsPercentage: 23,
+			amount: 1650,
+			savingsPercentage: 10,
 			tier: 2,
 		},
 		large: {
 			imageSrc: "/img/token_stack_large.png",
-			price: 11.99,
+			price: 5.99,
 			symbol: "$",
-			amount: 3150,
-			savingsPercentage: 43,
+			amount: 3600,
+			savingsPercentage: 33,
 			tier: 3,
 		},
 	};
@@ -145,6 +146,7 @@
 	<div class="headerContainer">
 		<h1 class="header">Shop</h1>
 	</div>
+	<!-- Split container with token offers and bundle -->
 	<div class="splitContainer">
 		<div class="leftSide" in:scale={{ start: 0.9, duration: 250 }}>
 			{#if $specialOfferPins}
@@ -193,12 +195,12 @@
 		<div class="rightSide" in:scale={{ start: 0.9, delay: 100, duration: 250 }}>
 			<div class="tokenDisplay">
 				<div class="shopInfoSection">
-					<Clock style="color: white; margin-right: 3px; min-width: fit-content;" strokeWidth={2.25} size={22} />
+					<Clock style="color: white; margin-right: 3px; min-width: fit-content; margin-bottom: -1px;" strokeWidth={2.25} size={22} />
 					<p>Restock in {timeUntilUTCMidnight()}</p>
 				</div>
 				<div class="shopInfoSection">
 					<p>{Math.round($animatedTokens)?.toLocaleString()} Tokens</p>
-					<img class="tokenIcon" alt="token" src="/img/token_icon.png" />
+					<img class="tokenIcon" alt="token" src="/img/token_icon_white.png" />
 				</div>
 			</div>
 			<div class="tokenShop">
@@ -231,9 +233,30 @@
 			</div>
 		</div>
 	</div>
+	<!-- All pins -->
 	<div class="headerContainer">
 		<h1 class="header">All pins</h1>
 	</div>
+	<!-- YouTube pitch-->
+	{#if !$purchasedPins?.includes(500) && $accountDataLoaded}
+		<div class="freeSocialPinContainer" transition:slide={{ axis: "y" }}>
+			<p class="socialPinText">
+				Not subscribed yet? <span class="socialPinSpan">Follow our YouTube channel to claim a free pin!</span
+				>
+			</p>
+			<button
+				class="standardButton white socialPinButton"
+				onclick={() => {
+					playSound("basic_button");
+					window.open("https://www.youtube.com/@OpenGuessrOfficial?sub_confirmation=true", "_blank").focus();
+					setTimeout(handleShopYouTubePin, 250);
+				}}
+			>
+				<img alt="YouTube pin" src="/img/pins/player_pin500.png" class="socialPinIcon" />
+				Subscribe
+			</button>
+		</div>
+	{/if}
 	<div class="allPinsContainer">
 		{#each Object.values(pinRarities) as rarity}
 			{#each rarity?.pinIndexes as index}
@@ -255,6 +278,56 @@
 		flex-direction: column;
 		align-items: center;
 		margin-bottom: 75px;
+	}
+
+	.freeSocialPinContainer {
+		width: 100%;
+		box-sizing: border-box;
+		padding: var(--box-margin);
+		border-radius: 15px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: var(--box-margin);
+		background-color: var(--box-color);
+		margin-bottom: var(--layout-margin);
+		flex-wrap: wrap;
+	}
+
+	.socialPinText {
+		margin-left: var(--panel-margin);
+		text-align: center;
+		margin-right: auto;
+	}
+
+	.socialPinButton {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.socialPinSpan {
+		opacity: 0.5;
+		margin-left: var(--panel-margin);
+	}
+
+	.socialPinIcon {
+		width: 50px;
+		height: 50px;
+		transform: rotate(-15deg);
+		margin-left: -12px;
+		margin-right: 5px;
+		animation: socialPinAnimation 1.5s ease-in-out infinite alternate;
+		transform-origin: bottom;
+	}
+
+	@keyframes socialPinAnimation {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(-15deg);
+		}
 	}
 
 	.leftSide {
@@ -309,7 +382,7 @@
 		display: flex;
 		align-items: center;
 		gap: 5px;
-		max-width: 60%;
+		max-width: 50%;
 		text-wrap: nowrap;
 		overflow: hidden;
 	}
@@ -320,9 +393,9 @@
 	}
 
 	.tokenIcon {
-		width: 32px;
-		height: 32px;
-		margin-top: 1px;
+		width: 25px;
+		height: 25px;
+		margin-top: 2px;
 	}
 
 	.tokenShop {
