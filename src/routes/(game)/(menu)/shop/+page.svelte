@@ -195,12 +195,12 @@
 		<div class="rightSide" in:scale={{ start: 0.9, delay: 100, duration: 250 }}>
 			<div class="tokenDisplay">
 				<div class="shopInfoSection">
-					<Clock style="color: white; margin-right: 3px; min-width: fit-content;" strokeWidth={2.25} size={22} />
+					<Clock style="color: white; margin-right: 3px; min-width: fit-content; margin-bottom: -1px;" strokeWidth={2.25} size={22} />
 					<p>Restock in {timeUntilUTCMidnight()}</p>
 				</div>
 				<div class="shopInfoSection">
 					<p>{Math.round($animatedTokens)?.toLocaleString()} Tokens</p>
-					<img class="tokenIcon" alt="token" src="/img/token_icon.png" />
+					<img class="tokenIcon" alt="token" src="/img/token_icon_white.png" />
 				</div>
 			</div>
 			<div class="tokenShop">
@@ -393,9 +393,9 @@
 	}
 
 	.tokenIcon {
-		width: 32px;
-		height: 32px;
-		margin-top: 1px;
+		width: 25px;
+		height: 25px;
+		margin-top: 2px;
 	}
 
 	.tokenShop {
