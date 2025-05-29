@@ -47,6 +47,32 @@ export async function handleShopFreeTokens() {
     }
 }
 
+export async function handleShopYouTubePin() {
+    try {
+        const response = await fetch(
+            get(accountUrl) + `/shop/claim-youtube-pin`,
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    'Authorization': `Bearer ${localStorage.getItem("bearer")}`
+                },
+                body: JSON.stringify({
+                    id: localStorage.getItem("id")
+                })
+            },
+        );
+
+        if (!response.ok) throw new Error(response.status);
+        purchasedPins.set([...get(purchasedPins), 500]); // Add pin (id 500) to locally-stored purchased pins
+        showPurchaseCelebration([500], "Thank you!");
+
+    } catch (error) {
+        console.error("Error claiming tokens:", error);
+        errorPopup("Error claiming tokens", "An error occured claiming tokens.", error);
+    }
+}
+
 export async function shopPurchaseTokenTier(tier) {
     const stripe = await getStripe();
     const productId = "token_tier_" + tier;
@@ -154,13 +180,13 @@ async function sendPurchaseRequest(type, price, pinId, bundleItems) {
     }
 }
 
-function showPurchaseCelebration(pinIds) {
+function showPurchaseCelebration(pinIds, title = "Great choice!") {
     const imageSrcArray = [];
     pinIds?.forEach((id) => {
         imageSrcArray.push(`/img/pins/player_pin${id}.png`);
     });
     shopAnimationImages.set(imageSrcArray);
-    shopPurchaseAnimationTitle.set("Great choice!");
+    shopPurchaseAnimationTitle.set(title);
     shopPurchaseAnimation.set(true);
 }
 

@@ -1,6 +1,6 @@
 <script>
 	import PinHolder from "$lib/components/PinHolder.svelte";
-	import { isAuthenticated, purchasedPins, tokens } from "$lib/stores/accountStore";
+	import { accountDataLoaded, isAuthenticated, purchasedPins, tokens } from "$lib/stores/accountStore";
 	import {
 		freeDailyTokensClaimed,
 		shopPurchaseAnimation,
@@ -13,11 +13,12 @@
 	import { Clock } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
-	import { blur, scale } from "svelte/transition";
+	import { blur, scale, slide } from "svelte/transition";
 	import {
 		fetchSpecialOffer,
 		handleShopFreeTokens,
 		handleShopPurchase,
+		handleShopYouTubePin,
 		shopPurchaseTokenTier,
 	} from "$lib/utils/shopHelper";
 	import { playSound } from "$lib/utils/soundManager";
@@ -145,6 +146,7 @@
 	<div class="headerContainer">
 		<h1 class="header">Shop</h1>
 	</div>
+	<!-- Split container with token offers and bundle -->
 	<div class="splitContainer">
 		<div class="leftSide" in:scale={{ start: 0.9, duration: 250 }}>
 			{#if $specialOfferPins}
@@ -231,9 +233,30 @@
 			</div>
 		</div>
 	</div>
+	<!-- All pins -->
 	<div class="headerContainer">
 		<h1 class="header">All pins</h1>
 	</div>
+	<!-- YouTube pitch-->
+	{#if !$purchasedPins?.includes(500) && $accountDataLoaded}
+		<div class="freeSocialPinContainer" transition:slide={{ axis: "y" }}>
+			<p class="socialPinText">
+				Not subscribed yet? <span class="socialPinSpan">Follow our YouTube channel to claim a free pin!</span
+				>
+			</p>
+			<button
+				class="standardButton white socialPinButton"
+				onclick={() => {
+					playSound("basic_button");
+					window.open("https://www.youtube.com/@OpenGuessrOfficial?sub_confirmation=true", "_blank").focus();
+					setTimeout(handleShopYouTubePin, 250);
+				}}
+			>
+				<img alt="YouTube pin" src="/img/pins/player_pin500.png" class="socialPinIcon" />
+				Subscribe
+			</button>
+		</div>
+	{/if}
 	<div class="allPinsContainer">
 		{#each Object.values(pinRarities) as rarity}
 			{#each rarity?.pinIndexes as index}
@@ -255,6 +278,56 @@
 		flex-direction: column;
 		align-items: center;
 		margin-bottom: 75px;
+	}
+
+	.freeSocialPinContainer {
+		width: 100%;
+		box-sizing: border-box;
+		padding: var(--box-margin);
+		border-radius: 15px;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: var(--box-margin);
+		background-color: var(--box-color);
+		margin-bottom: var(--layout-margin);
+		flex-wrap: wrap;
+	}
+
+	.socialPinText {
+		margin-left: var(--panel-margin);
+		text-align: center;
+		margin-right: auto;
+	}
+
+	.socialPinButton {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+	}
+
+	.socialPinSpan {
+		opacity: 0.5;
+		margin-left: var(--panel-margin);
+	}
+
+	.socialPinIcon {
+		width: 50px;
+		height: 50px;
+		transform: rotate(-15deg);
+		margin-left: -12px;
+		margin-right: 5px;
+		animation: socialPinAnimation 1.5s ease-in-out infinite alternate;
+		transform-origin: bottom;
+	}
+
+	@keyframes socialPinAnimation {
+		0% {
+			transform: rotate(0deg);
+		}
+		100% {
+			transform: rotate(-15deg);
+		}
 	}
 
 	.leftSide {
