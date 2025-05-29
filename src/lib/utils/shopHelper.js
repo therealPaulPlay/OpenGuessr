@@ -64,8 +64,9 @@ export async function handleShopYouTubePin() {
         );
 
         if (!response.ok) throw new Error(response.status);
-        purchasedPins.set([...get(purchasedPins), 500]); // Add pin (id 500) to locally-stored purchased pins
-        showPurchaseCelebration([500], "Thank you!");
+        const data = await response.json();
+        purchasedPins.set([...get(purchasedPins), data.pinId]); // Add pin to locally-stored purchased pins
+        showPurchaseCelebration([data.pinId], "Thank you!");
 
     } catch (error) {
         console.error("Error claiming tokens:", error);
