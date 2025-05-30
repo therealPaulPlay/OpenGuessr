@@ -19,8 +19,7 @@ export function handleShopPurchase(type = "pin", price, pinId, bundleItems) {
 
 export async function handleShopFreeTokens() {
     try {
-        const response = await fetch(
-            get(accountUrl) + `/shop/claim-free-tokens`,
+        const response = await fetch(get(accountUrl) + "/shop/claim-free-tokens",
             {
                 method: "POST",
                 headers: {
@@ -49,8 +48,7 @@ export async function handleShopFreeTokens() {
 
 export async function handleShopYouTubePin() {
     try {
-        const response = await fetch(
-            get(accountUrl) + `/shop/claim-youtube-pin`,
+        const response = await fetch(get(accountUrl) + "/shop/claim-youtube-pin",
             {
                 method: "POST",
                 headers: {
@@ -69,8 +67,8 @@ export async function handleShopYouTubePin() {
         showPurchaseCelebration([data.pinId], "Thank you!");
 
     } catch (error) {
-        console.error("Error claiming tokens:", error);
-        errorPopup("Error claiming tokens", "An error occured claiming tokens.", error);
+        console.error("Error claiming pin:", error);
+        errorPopup("Error claiming pin", "An error occured claiming a pin.", error);
     }
 }
 
@@ -109,8 +107,7 @@ async function sendPurchaseRequest(type, price, pinId, bundleItems) {
     if (type == "pin") {
         if (!pinId) return console.error("No pinId provided!");
         try {
-            const response = await fetch(
-                get(accountUrl) + `/shop/purchase-pin`,
+            const response = await fetch(get(accountUrl) + "/shop/purchase-pin",
                 {
                     method: "POST",
                     headers: {
@@ -194,8 +191,7 @@ function showPurchaseCelebration(pinIds, title = "Great choice!") {
 export async function fetchSpecialOffer() {
     specialOfferLoadingText.set("Loading...");
     try {
-        const response = await fetch(
-            get(accountUrl) + `/shop/bundle${get(isAuthenticated) ? "?user-id=" + localStorage.getItem("id") : ""}`,
+        const response = await fetch(get(accountUrl) + `/shop/bundle${get(isAuthenticated) ? "?user-id=" + localStorage.getItem("id") : ""}`,
             {
                 method: "GET",
                 headers: {
