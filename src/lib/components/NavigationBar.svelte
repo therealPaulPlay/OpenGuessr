@@ -6,7 +6,6 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
 	import { singleplayer } from "$lib/stores/modeStore";
-	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";

@@ -34,17 +34,24 @@ export async function checkAuthenticationStatus() {
 }
 
 export function resetLocalSave() {
-  // Localstorage
+  // Localstorage resets
   localStorage.removeItem("bearer");
   localStorage.removeItem("id");
-  localStorage.removeItem("experience");
 
-  // Stores
+  // Store resets
   username.set("Guest");
   selectedPinIndex.set(0);
   selectedBadge.set(null);
   inboxIconNew.set(false);
   experience.set(0);
+  supportedAmount.set(0);
+  supporterLevel.set(0);
+  elo.set(1000);
+  tokens.set(0);
+  purchasedPins.set([]);
+  freeDailyTokensClaimed.set(false);
+
+  // Set account loaded to false
   accountDataLoaded.set(false);
 }
 
