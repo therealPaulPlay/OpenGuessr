@@ -589,13 +589,14 @@ function determineWinner(array) {
         if (followUpPlayerData && winningPlayerData?.[3] == followUpPlayerData?.[3]) {
             // Draw
             multiplayerOverlayTitle.set("It's a draw!");
+            if (get(playingDuel) && !get(isFriendDuel)) sendDuelDivisionResult(false, get(socket)?.getStorage?.uuid); // If it's a draw, both players submit won = false
 
         } else {
             // Clear Winner
             multiplayerOverlayTitle.set(winningPlayerData?.[1] + " won!");
             get(socket)?.id == winningPlayerData?.[0] ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
 
-            // Check if you won in duels or just played
+            // Check if in division duels
             if (get(playingDuel) && !get(isFriendDuel)) {
                 const won = winningPlayerData?.[5] == localStorage.getItem("id");
                 sendDuelDivisionResult(won, get(socket)?.getStorage?.uuid);

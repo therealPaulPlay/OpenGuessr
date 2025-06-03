@@ -1,7 +1,6 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { reportPopup } from "$lib/stores/uiStore";
-	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import { reportUserId } from "$lib/stores/context-specific/reportPopupStore";
 	import { playSound } from "$lib/utils/soundManager";
 
