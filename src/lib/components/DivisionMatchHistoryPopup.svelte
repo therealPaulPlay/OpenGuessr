@@ -96,7 +96,7 @@
 				{#each matchResults.duels as entry}
 					<div
 						class="matchHistoryItem"
-						class:matchInvalid={entry.player1?.left && entry.player2?.left}
+						class:matchInvalid={entry.player1?.won == entry.player2?.won}
 						class:yourMatch={!filterId &&
 							(entry.player1?.id == localStorage.getItem("id") || entry.player2?.id == localStorage.getItem("id"))}
 					>
@@ -111,7 +111,7 @@
 								{entry.player1?.name}
 							</span>
 							<span class="playerStatus">
-								{entry.player1?.won ? "W" : "L"}
+								{entry.player1?.won ? "W" : entry.player2?.won ? "L" : "D"}
 								{entry.player1?.left ? " (left)" : ""}
 							</span>
 						</div>
@@ -127,7 +127,7 @@
 								{entry.player2?.name}
 							</span>
 							<span class="playerStatus">
-								{entry.player2?.won ? "W" : "L"}
+								{entry.player2?.won ? "W" : entry.player1?.won ? "L" : "D"}
 								{entry.player2?.left ? " (left)" : ""}
 							</span>
 						</div>
