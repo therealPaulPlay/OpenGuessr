@@ -25,28 +25,30 @@
 		<div class="popup-title">
 			<h1 id="socialHeader">{$duelResultTitle}</h1>
 		</div>
-		<div class="eloChangeDisplay">
-			<h1 class="eloChangeText">{$eloChange >= 0 ? "+" : ""}{$animatedElo.toFixed(0)} Elo</h1>
-			<p>You now have {$elo} Elo.</p>
-		</div>
-		<DuelDivisionDisplay inPage={true} />
-		<div class="infoBox">
-			<Info
-				strokeWidth={2.25}
-				size={24}
-				color="white"
-				style="opacity: 50%; margin-left: 5px; margin-right: 2px; margin-top: 2px;"
-			/>
-			<p>To report a player, open their profile and click on <i>Report</i>.</p>
-			<button
-				class="standardButton white growSearch"
-				onclick={() => {
-					playSound("basic_button");
-					friendBrowserPopup.set(true);
-				}}
-			>
-				Players <Search size={18} strokeWidth={3} style="margin-bottom: -4x; margin-left: 2px;" /></button
-			>
+		<div class="duelResultScroll">
+			<div class="eloChangeDisplay">
+				<h1 class="eloChangeText">{$eloChange >= 0 ? "+" : ""}{$animatedElo.toFixed(0)} Elo</h1>
+				<p>You now have {$elo} Elo.</p>
+			</div>
+			<DuelDivisionDisplay inPage={true} />
+			<div class="infoBox">
+				<Info
+					strokeWidth={2.25}
+					size={24}
+					color="white"
+					style="opacity: 50%; margin-left: 5px; margin-right: 2px; margin-top: 2px;"
+				/>
+				<p>To report a player, open their profile and click on <i>Report</i>.</p>
+				<button
+					class="standardButton white growSearch"
+					onclick={() => {
+						playSound("basic_button");
+						friendBrowserPopup.set(true);
+					}}
+				>
+					Players <Search size={18} strokeWidth={3} style="margin-bottom: -4x; margin-left: 2px;" /></button
+				>
+			</div>
 		</div>
 		<button
 			class="standardButton closeButton white"
@@ -77,6 +79,11 @@
 
 	.growSearch {
 		flex-grow: 1;
+	}
+
+	.duelResultScroll {
+		max-height: calc(100dvh - 250px);
+		overflow-y: auto;
 	}
 
 	.infoBox {
