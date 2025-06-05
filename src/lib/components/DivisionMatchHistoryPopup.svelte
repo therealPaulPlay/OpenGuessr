@@ -218,7 +218,6 @@
 		gap: var(--box-margin);
 		display: flex;
 		flex-direction: column;
-		scrollbar-width: none;
 	}
 
 	.disabledButton {
