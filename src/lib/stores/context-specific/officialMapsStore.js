@@ -50,6 +50,7 @@ export const countryMaps = readable([
     "ghana",
     "greece",
     "guatemala",
+    "hong kong",
     "hungary",
     "iceland",
     "india",
@@ -59,8 +60,10 @@ export const countryMaps = readable([
     "italy",
     "japan",
     "jordan",
+    "kazakhstan",
     "kenya",
     "latvia",
+    "lebanon",
     "lesotho",
     "lithuania",
     "luxembourg",
@@ -70,6 +73,7 @@ export const countryMaps = readable([
     "monaco",
     "mongolia",
     "montenegro",
+    "namibia",
     "netherlands",
     "new zealand",
     "nigeria",
@@ -85,6 +89,7 @@ export const countryMaps = readable([
     "rwanda",
     "russia",
     "san marino",
+    "sao tome and principe",
     "senegal",
     "serbia",
     "singapore",
@@ -104,5 +109,6 @@ export const countryMaps = readable([
     "united arab emirates",
     "united kingdom",
     "united states",
-    "uruguay"
+    "uruguay",
+    "qatar"
 ]);
