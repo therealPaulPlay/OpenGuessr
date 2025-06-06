@@ -129,7 +129,7 @@
 
 {#snippet eloDisplay(elo)}
 	<div class="eloDisplay">
-		<p>{elo || "Error"} Elo</p>
+		<p>{elo} Elo</p>
 	</div>
 {/snippet}
 
