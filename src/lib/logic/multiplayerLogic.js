@@ -43,7 +43,7 @@ import { getMapBounds } from "$lib/utils/getMapBounds";
 import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { signupPrompt } from "$lib/utils/signupPrompt";
 import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { accountUrl, websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
 
 export function getTeamFromMultiplayerId(id) {
@@ -129,7 +129,7 @@ export async function createMultiplayerInstance() {
         try {
             let customData = get(isAuthenticated) ? { bearer: localStorage.getItem("bearer") } : undefined;
             socket.set(new PlaySocket(uniqueUserID, {
-                endpoint: `${get(accountUrl)}/socket`,
+                endpoint: get(websocketUrl),
                 customData
             }));
 
