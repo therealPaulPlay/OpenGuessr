@@ -202,6 +202,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		gap: 15px;
+		width: 100%;
 		justify-content: flex-start;
 		align-items: center;
 		max-height: calc(100dvh - 250px);
