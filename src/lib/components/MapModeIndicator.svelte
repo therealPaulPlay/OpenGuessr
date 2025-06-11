@@ -53,7 +53,7 @@
 			}}>Leave</button
 		>
 	{/if}
-	<div bind:this={mapModeTextContainer} class="mapModeTextContainer">
+	<div bind:this={mapModeTextContainer} class="mapModeTextContainer" class:modeTextFade={scrollModeText}>
 		<p
 			class="mapModeText {scrollModeText ? 'modetextScroll' : ''}"
 			bind:textContent={mapModeText}
@@ -91,6 +91,10 @@
 		overflow: hidden;
 		white-space: nowrap;
 		flex-grow: 1;
+	}
+
+	.modeTextFade {
+		mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
 	}
 
 	.mapModeText {

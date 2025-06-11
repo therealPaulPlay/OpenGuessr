@@ -98,7 +98,7 @@
 		<div class="popup-title">
 			<h1>Game options</h1>
 		</div>
-		<div class="settingsScrollArea">
+		<div class="settingsScrollArea of-top of-bottom">
 			<TitleSeparator text="Timer" />
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="optionFlexBox">
@@ -141,7 +141,7 @@
 			<TitleSeparator text="Round log" />
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="optionBox roundLogContainer">
-					<div class="roundLogBox" id="roundLogBox">
+					<div class="roundLogBox of-top of-bottom" id="roundLogBox">
 						<!-- round log will be automatically generated here -->
 						{#if $roundLog.length > 0}
 							{#each $roundLog as [mode, distance, coordinates], index}

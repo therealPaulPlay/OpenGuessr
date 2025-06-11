@@ -178,12 +178,19 @@
 
 	:global(.leaflet-control-layers-toggle) {
 		background-image: url("/img/map_layer_icon.png") !important;
+		filter: invert();
 		background-size: 23px 23px !important;
 	}
 
 	:global(.leaflet-touch .leaflet-control-layers) {
 		border: none !important;
 		margin: var(--box-margin);
+	}
+
+	:global(.leaflet-control-layers) {
+		background-color: var(--panel-color);
+		backdrop-filter: blur(5px);
+		color: white;
 	}
 
 	:global(.leaflet-touch .leaflet-control-layers-toggle) {

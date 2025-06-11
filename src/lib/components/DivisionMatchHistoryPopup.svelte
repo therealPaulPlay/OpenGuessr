@@ -92,50 +92,52 @@
 			</div>
 		</div>
 		<div class="historyBox">
-			{#if matchResults && matchResults.duels && matchResults.duels.length > 0}
-				{#each matchResults.duels as entry}
-					<div
-						class="matchHistoryItem"
-						class:matchInvalid={entry.player1?.won == entry.player2?.won}
-						class:yourMatch={!filterId &&
-							(entry.player1?.id == localStorage.getItem("id") || entry.player2?.id == localStorage.getItem("id"))}
-					>
-						<div class="playerInfo">
-							<!-- svelte-ignore a11y_click_events_have_key_events -->
-							<span
-								class="playerName"
-								role="button"
-								tabindex="0"
-								onclick={() => loadProfileFromId(entry.player1.id, true)}
-							>
-								{entry.player1?.name}
-							</span>
-							<span class="playerStatus">
-								{entry.player1?.won ? "W" : entry.player2?.won ? "L" : "D"}
-								{entry.player1?.left ? " (left)" : ""}
-							</span>
+			<div class="historyBoxScroll of-top of-bottom">
+				{#if matchResults && matchResults.duels && matchResults.duels.length > 0}
+					{#each matchResults.duels as entry}
+						<div
+							class="matchHistoryItem"
+							class:matchInvalid={entry.player1?.won == entry.player2?.won}
+							class:yourMatch={!filterId &&
+								(entry.player1?.id == localStorage.getItem("id") || entry.player2?.id == localStorage.getItem("id"))}
+						>
+							<div class="playerInfo">
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<span
+									class="playerName"
+									role="button"
+									tabindex="0"
+									onclick={() => loadProfileFromId(entry.player1.id, true)}
+								>
+									{entry.player1?.name}
+								</span>
+								<span class="playerStatus">
+									{entry.player1?.won ? "W" : entry.player2?.won ? "L" : "D"}
+									{entry.player1?.left ? " (left)" : ""}
+								</span>
+							</div>
+							<span class="vs">vs.</span>
+							<div class="playerInfo">
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<span
+									class="playerName"
+									role="button"
+									tabindex="0"
+									onclick={() => loadProfileFromId(entry.player2?.id, true)}
+								>
+									{entry.player2?.name}
+								</span>
+								<span class="playerStatus">
+									{entry.player2?.won ? "W" : entry.player1?.won ? "L" : "D"}
+									{entry.player2?.left ? " (left)" : ""}
+								</span>
+							</div>
 						</div>
-						<span class="vs">vs.</span>
-						<div class="playerInfo">
-							<!-- svelte-ignore a11y_click_events_have_key_events -->
-							<span
-								class="playerName"
-								role="button"
-								tabindex="0"
-								onclick={() => loadProfileFromId(entry.player2?.id, true)}
-							>
-								{entry.player2?.name}
-							</span>
-							<span class="playerStatus">
-								{entry.player2?.won ? "W" : entry.player1?.won ? "L" : "D"}
-								{entry.player2?.left ? " (left)" : ""}
-							</span>
-						</div>
-					</div>
-				{/each}
-			{:else}
-				<p class="playerSearchError">No matches in the history.</p>
-			{/if}
+					{/each}
+				{:else}
+					<p class="playerSearchError">No matches in the history.</p>
+				{/if}
+			</div>
 		</div>
 
 		<div class="paginationControls">
@@ -207,17 +209,20 @@
 	.historyBox {
 		position: relative;
 		width: calc(100% - 20px);
-		border-radius: 2px;
-		height: calc(60dvh - 250px);
-		overflow-x: hidden;
-		overflow-y: auto;
+		border-radius: 10px;
 		background-color: var(--box-color);
 		margin-top: 25px;
-		margin-inline: var(--box-margin);
-		outline: var(--box-margin) solid var(--box-color);
+		padding: var(--box-margin);
+	}
+
+	.historyBoxScroll {
 		gap: var(--box-margin);
 		display: flex;
 		flex-direction: column;
+		overflow-x: hidden;
+		overflow-y: auto;
+		height: calc(60dvh - 250px);
+		width: 100%;
 	}
 
 	.disabledButton {

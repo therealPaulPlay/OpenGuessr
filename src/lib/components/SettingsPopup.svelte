@@ -98,7 +98,7 @@
 		<div class="popup-title">
 			<h1>Settings</h1>
 		</div>
-		<div class="settingsCanvas">
+		<div class="settingsCanvas of-top of-bottom">
 			<div class="settingsBox">
 				<p class="textMargin">Unit system</p>
 				<Tabs

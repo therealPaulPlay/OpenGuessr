@@ -13,7 +13,7 @@
 		<div class="popup-title">
 			<h1 id="pinPopupWindow">Pins</h1>
 		</div>
-		<div class="pinScroll">
+		<div class="pinScroll of-top of-bottom">
 			<TitleSeparator text="Progression" />
 			<div class="pinSelector">
 				<PinHolder pinId="0" pinLockText="0 XP" unlocked={$profileExperience >= 0} />

@@ -266,7 +266,7 @@
 				</div>
 			</div>
 		</div>
-		<div id="profileScrollSection">
+		<div id="profileScrollSection" class="of-top of-bottom">
 			{#if $profileId == localStorage.getItem("id")}
 				<SupporterPitch />
 			{/if}

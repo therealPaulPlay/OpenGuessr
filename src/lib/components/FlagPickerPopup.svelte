@@ -226,7 +226,7 @@
 		<div class="popup-title">
 			<h1 id="pinPopupWindow">Flags</h1>
 		</div>
-		<div class="flag-container">
+		<div class="flag-container of-top of-bottom">
 			{#each Object.entries(continentFlags) as [continent, countries]}
 				<div class="continent-section">
 					<p class="continentTitle">{continent}</p>

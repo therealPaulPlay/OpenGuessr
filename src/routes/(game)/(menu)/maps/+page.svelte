@@ -445,7 +445,7 @@
 		>
 	</div>
 	<div class="categoriesSearchArea">
-		<div class="categoriesBar">
+		<div class="categoriesBar of-left of-right">
 			{#each categoriesArray as category, index}
 				{#if index !== 1 || $isAuthenticated}
 					<button

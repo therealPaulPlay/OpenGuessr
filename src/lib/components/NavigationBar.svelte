@@ -82,22 +82,8 @@
 		}
 	}
 
-	// Mobile bar fadeout & toggle -----------------------------------------------------------------------------------------------------
-	let mobileBarScroll = $state(0);
-	let mobileBarFadeRight = $state(false);
-	let mobileBarFadeLeft = $state(false);
+	// Mobile bar toggle -----------------------------------------------------------------------------------------------------
 	let mobileBarExtended = $state(false);
-
-	function checkIfBarScrollable() {
-		mobileBarFadeRight =
-			mobileBarScroll?.scrollWidth > mobileBarScroll?.clientWidth &&
-			mobileBarScroll?.scrollLeft + mobileBarScroll?.clientWidth < mobileBarScroll?.scrollWidth;
-		mobileBarFadeLeft = mobileBarScroll?.scrollWidth > mobileBarScroll?.clientWidth && mobileBarScroll?.scrollLeft > 0;
-	}
-
-	$effect(() => {
-		if (mobileBarExtended) checkIfBarScrollable();
-	});
 </script>
 
 <svelte:window onresize={checkIfBarScrollable} />
@@ -106,14 +92,7 @@
 <nav class="mobileButtonArea topButtonArea">
 	<div class="barMenu mobileBarMenu">
 		{#if mobileBarExtended}
-			<div
-				transition:slide={{ axis: "x", duration: 150 }}
-				class="mobileScrollBarMenu"
-				bind:this={mobileBarScroll}
-				onscroll={checkIfBarScrollable}
-				class:mobileScrollBarFadeRight={mobileBarFadeRight}
-				class:mobileScrollBarFadeLeft={mobileBarFadeLeft}
-			>
+			<div transition:slide={{ axis: "x", duration: 150 }} class="mobileScrollBarMenu of-left of-right">
 				{#if !$isAuthenticated}
 					<button
 						class="standardButton"
@@ -243,7 +222,7 @@
 				playSound("basic_button");
 			}}
 		>
-			<div id="accountNameArea">
+			<div id="accountNameArea" class:accountNameAreaFade={scrollNameText}>
 				<p id="accountName" contenteditable="false" class:namescroll={scrollNameText}>
 					{$username || "Guest"}
 				</p>
@@ -441,24 +420,6 @@
 		scrollbar-width: none;
 	}
 
-	.mobileScrollBarFadeLeft {
-		mask-image: linear-gradient(to right, rgba(0, 0, 0, 0) 0%, rgba(0, 0, 0, 1) 10%, rgba(0, 0, 0, 1) 100%);
-	}
-
-	.mobileScrollBarFadeRight {
-		mask-image: linear-gradient(to right, rgba(0, 0, 0, 1) 0%, rgba(0, 0, 0, 1) 90%, rgba(0, 0, 0, 0) 100%);
-	}
-
-	.mobileScrollBarFadeLeft.mobileScrollBarFadeRight {
-		mask-image: linear-gradient(
-			to right,
-			rgba(0, 0, 0, 0) 0%,
-			rgba(0, 0, 0, 1) 10%,
-			rgba(0, 0, 0, 1) 90%,
-			rgba(0, 0, 0, 0) 100%
-		);
-	}
-
 	.sideMenuDisabled {
 		opacity: 0.8;
 		transform: scale(0.95);
@@ -504,6 +465,10 @@
 		overflow: hidden;
 		white-space: nowrap;
 		margin-top: 2px;
+	}
+
+	.accountNameAreaFade {
+		mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
 	}
 
 	#accountName {

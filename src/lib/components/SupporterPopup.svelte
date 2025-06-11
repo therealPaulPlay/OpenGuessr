@@ -87,7 +87,7 @@
 				<img id="supporterIconTitle" alt="supporter tag" src="/img/supporter_icon.png" />
 			</h1>
 		</div>
-		<div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
+		<div class="supporterBox supporterBoxFlex of-top of-bottom">
 			<div class="tierBox">
 				<div class="tierBoxTier"><p class="tierNumber">Tier 1</p></div>
 				<ul class="tierBenefits">
@@ -291,7 +291,7 @@
 		align-items: center;
 		gap: var(--layout-margin);
 		margin-top: 10px;
-		max-height: calc(100dvh - 300px);
+		max-height: calc(100dvh - 250px);
 		overflow-x: hidden;
 		overflow-y: auto;
 		border-radius: 5px;

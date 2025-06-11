@@ -452,53 +452,55 @@
 		</div>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-		<div id="rankingDisplay" class="rankingDisplay">
-			{#if yourEntry}
-				<div class="youBar">
-					<p class="youLabel">You:</p>
-					<div class="rankItem" class:leaderboardSupporterEntry={yourEntry.supporter_level > 0}>
-						<p class="leaderboardTextEntry">#{yourEntry.position}</p>
-						<p
-							id="yourUsername"
-							class="leaderboardTextEntry centerEntry"
-							onclick={() => {
-								loadProfileFromId(localStorage.getItem("id"), true);
-							}}
-						>
-							{yourEntry.userName}
-						</p>
-						<p class="leaderboardTextEntry">{yourEntry.score.toLocaleString()} Pts.</p>
+		<div class="rankingDisplay">
+			<div class="rankingDisplayScroll of-top of-bottom">
+				{#if yourEntry}
+					<div class="youBar">
+						<p class="youLabel">You:</p>
+						<div class="rankItem" class:leaderboardSupporterEntry={yourEntry.supporter_level > 0}>
+							<p class="leaderboardTextEntry">#{yourEntry.position}</p>
+							<p
+								id="yourUsername"
+								class="leaderboardTextEntry centerEntry"
+								onclick={() => {
+									loadProfileFromId(localStorage.getItem("id"), true);
+								}}
+							>
+								{yourEntry.userName}
+							</p>
+							<p class="leaderboardTextEntry">{yourEntry.score.toLocaleString()} Pts.</p>
+						</div>
 					</div>
-				</div>
-			{/if}
-			{#if leaderboardEntries?.length > 0}
-				{#each leaderboardEntries as entry}
-					<div
-						class="rankItem"
-						class:leaderboardSupporterEntry={entry.supporter_level > 0}
-						class:rankYou={entry.id == localStorage.getItem("id")}
-					>
-						<p class="leaderboardTextEntry">#{entry.position}</p>
-						<p
-							class="leaderboardTextEntry centerEntry"
-							onclick={() => {
-								loadProfileFromId(entry.id, true);
-							}}
+				{/if}
+				{#if leaderboardEntries?.length > 0}
+					{#each leaderboardEntries as entry}
+						<div
+							class="rankItem"
+							class:leaderboardSupporterEntry={entry.supporter_level > 0}
+							class:rankYou={entry.id == localStorage.getItem("id")}
 						>
-							{entry.userName}
-						</p>
-						<p class="leaderboardTextEntry">{entry.score.toLocaleString()} Pts.</p>
+							<p class="leaderboardTextEntry">#{entry.position}</p>
+							<p
+								class="leaderboardTextEntry centerEntry"
+								onclick={() => {
+									loadProfileFromId(entry.id, true);
+								}}
+							>
+								{entry.userName}
+							</p>
+							<p class="leaderboardTextEntry">{entry.score.toLocaleString()} Pts.</p>
+						</div>
+					{/each}
+				{:else}
+					<div class="emptyLeaderboardBox">
+						{#if leaderboardEntries}
+							<p class="errorText">No entries yet.</p>
+						{:else}
+							<p class="errorText">Loading...</p>
+						{/if}
 					</div>
-				{/each}
-			{:else}
-				<div class="emptyLeaderboardBox">
-					{#if leaderboardEntries}
-						<p class="errorText">No entries yet.</p>
-					{:else}
-						<p class="errorText">Loading...</p>
-					{/if}
-				</div>
-			{/if}
+				{/if}
+			</div>
 		</div>
 		{#if showRatingBox}
 			<div id="ratingBox">
@@ -1029,19 +1031,24 @@
 	}
 
 	.rankingDisplay {
-		display: flex;
-		justify-content: safe center;
-		flex-direction: column;
 		box-sizing: border-box;
 		border-radius: 10px;
 		width: 100%; /* Fix for Safari */
-		max-height: calc(80dvh - 235px);
+		background-color: var(--box-color);
+		padding: var(--box-margin);
+		position: relative;
+	}
+
+	.rankingDisplayScroll {
 		overflow-x: hidden;
 		overflow-y: auto;
-		scrollbar-width: none;
-		background-color: var(--box-color);
 		gap: var(--box-margin);
-		border: var(--box-margin) solid transparent;
+		display: flex;
+		scrollbar-width: none;
+		width: 100%;
+		max-height: calc(80dvh - 235px);
+		justify-content: safe center;
+		flex-direction: column;
 	}
 
 	.rankItem {

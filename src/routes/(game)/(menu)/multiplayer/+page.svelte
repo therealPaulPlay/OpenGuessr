@@ -18,7 +18,7 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { goto } from "$app/navigation";
 	import { onDestroy, onMount } from "svelte";
-	import { fade, scale, slide } from "svelte/transition";
+	import { blur, fade, scale, slide } from "svelte/transition";
 	import { bounceInOut } from "svelte/easing";
 	import { ChevronDown, ChevronUp, History } from "lucide-svelte";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
@@ -170,7 +170,12 @@
 		<h2 class="header">Divisions</h2>
 	</div>
 	<div class="infoContainer">
-		<Info strokeWidth={2.25} size={24} color="white" style="opacity: 50%; margin-right: 5px; margin-left: 2px; min-width: 24px;" />
+		<Info
+			strokeWidth={2.25}
+			size={24}
+			color="white"
+			style="opacity: 50%; margin-right: 5px; margin-left: 2px; min-width: 24px;"
+		/>
 		<p>
 			Elo above 2000 will be converted into tokens on {nextMonth.toLocaleDateString("en-US", {
 				month: "long",
@@ -212,52 +217,54 @@
 		</div>
 	</div>
 	<div class="friendBox" style:min-height={$loadedFriendsData ? "50px" : "80px"}>
-		{#if $loadedFriendsData && $isAuthenticated}
-			<div class="innerFriendBox" transition:fade={{ duration: 150 }}>
-				{#each $loadedFriendsData as entry}
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<div
-						class="standardButton white friendItem"
-						role="menu"
-						tabindex="0"
-						onclick={() => {
-							loadProfileFromId(entry.id, true);
-						}}
-					>
-						{#if entry.online}
-							<div class="friendOnlineBar"></div>
-						{/if}
-						<p>{entry.user_name}</p>
-						<button
-							id="duelFriend"
-							class="standardButton friendItemButtons white"
-							onclick={(e) => {
-								e.stopPropagation();
-								playSound("basic_button");
-								sendMatchInvite(entry.id, true);
+		<div class="friendBoxScroll of-top of-bottom">
+			{#if $loadedFriendsData && $isAuthenticated}
+				<div class="innerFriendBox" transition:blur={{ duration: 150 }}>
+					{#each $loadedFriendsData as entry}
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<div
+							class="standardButton white friendItem"
+							role="menu"
+							tabindex="0"
+							onclick={() => {
+								loadProfileFromId(entry.id, true);
 							}}
 						>
-							<Swords strokeWidth={3} size={17} />
-						</button>
-						<button
-							id="removeFriend"
-							class="standardButton friendItemButtons white friendButtonLeft"
-							onclick={(e) => {
-								e.stopPropagation();
-								playSound("basic_button");
-								showConfirmPopup("Remove friend?", "You are about to remove your friend from your list.", () => {
-									removeFriend(entry.id);
-								});
-							}}
-						>
-							<img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
-						</button>
-					</div>
-				{/each}
-			</div>
-		{:else}
-			<p class="noFriendsText">Added friends show up here.</p>
-		{/if}
+							{#if entry.online}
+								<div class="friendOnlineBar"></div>
+							{/if}
+							<p>{entry.user_name}</p>
+							<button
+								id="duelFriend"
+								class="standardButton friendItemButtons white"
+								onclick={(e) => {
+									e.stopPropagation();
+									playSound("basic_button");
+									sendMatchInvite(entry.id, true);
+								}}
+							>
+								<Swords strokeWidth={3} size={17} />
+							</button>
+							<button
+								id="removeFriend"
+								class="standardButton friendItemButtons white friendButtonLeft"
+								onclick={(e) => {
+									e.stopPropagation();
+									playSound("basic_button");
+									showConfirmPopup("Remove friend?", "You are about to remove your friend from your list.", () => {
+										removeFriend(entry.id);
+									});
+								}}
+							>
+								<img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
+							</button>
+						</div>
+					{/each}
+				</div>
+			{:else}
+				<p class="noFriendsText">Added friends show up here.</p>
+			{/if}
+		</div>
 	</div>
 </div>
 
@@ -495,13 +502,16 @@
 		transition: max-height 150ms ease;
 		background-color: var(--box-color);
 		border-radius: 15px;
-		border: var(--box-margin) solid transparent;
-		overflow: hidden;
-		overflow-y: auto;
-		max-height: 250px;
+		padding: var(--box-margin);
 		margin-bottom: 50px;
 		position: relative;
 		scrollbar-width: none;
+	}
+
+	.friendBoxScroll {
+		overflow-y: auto;
+		max-height: 250px;
+		width: 100%;
 	}
 
 	.innerFriendBox {

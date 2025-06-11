@@ -71,7 +71,7 @@
 			<MoveVertical size={16} strokeWidth={3} />
 		</div>
 		<RemainingGuessesDisplay />
-		<div class="multiplayerChatMessages" bind:this={multiplayerChatMessages}>
+		<div class="multiplayerChatMessages of-top of-bottom" bind:this={multiplayerChatMessages}>
 			<p>
 				{#if $chatArray}
 					{#each $chatArray as chat}

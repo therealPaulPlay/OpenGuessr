@@ -31,46 +31,48 @@
 		<div class="popup-title">
 			<h1 id="inboxPopupHeader">Inbox</h1>
 		</div>
-		<div id="friendInbox" class="playerSearchBox">
-			{#if $inboxContent}
-				{#each $inboxContent as entry}
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<div
-						class="friendSearchItem"
-						role="menu"
-						tabindex="0"
-						onclick={() => {
-							loadProfileFromId(entry.id, true);
-						}}
-					>
-						<p>{entry.user_name}</p>
-						<div class="inboxItemButtons">
-							<button
-								class="standardButton white"
-								onclick={(e) => {
-									e.stopPropagation();
-									playSound("basic_button");
-									acceptFriendRequest(entry.id);
-								}}
-							>
-								<Check size="17" strokeWidth="3.5" />
-							</button>
-							<button
-								class="standardButton white"
-								onclick={(e) => {
-									e.stopPropagation();
-									playSound("basic_button");
-									declineFriendRequest(entry.id);
-								}}
-							>
-								<X size="17" strokeWidth="3.5" />
-							</button>
+		<div class="containerBox">
+			<div class="containerBoxScroll of-top of-bottom">
+				{#if $inboxContent}
+					{#each $inboxContent as entry}
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<div
+							class="friendSearchItem"
+							role="menu"
+							tabindex="0"
+							onclick={() => {
+								loadProfileFromId(entry.id, true);
+							}}
+						>
+							<p>{entry.user_name}</p>
+							<div class="inboxItemButtons">
+								<button
+									class="standardButton white"
+									onclick={(e) => {
+										e.stopPropagation();
+										playSound("basic_button");
+										acceptFriendRequest(entry.id);
+									}}
+								>
+									<Check size="17" strokeWidth="3.5" />
+								</button>
+								<button
+									class="standardButton white"
+									onclick={(e) => {
+										e.stopPropagation();
+										playSound("basic_button");
+										declineFriendRequest(entry.id);
+									}}
+								>
+									<X size="17" strokeWidth="3.5" />
+								</button>
+							</div>
 						</div>
-					</div>
-				{/each}
-			{:else}
-				<p class="noResultsText">Your inbox is empty.</p>
-			{/if}
+					{/each}
+				{:else}
+					<p class="noResultsText">Your inbox is empty.</p>
+				{/if}
+			</div>
 		</div>
 		<button
 			id="friendInboxClose"
@@ -114,20 +116,24 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.playerSearchBox {
+	.containerBox {
 		position: relative;
+		width: 100%;
 		box-sizing: border-box;
 		border-radius: 10px;
-		max-height: 50vh;
-		width: 100%;
-		min-height: 20vh;
-		overflow-x: hidden;
-		overflow-y: auto;
 		background-color: var(--box-color);
 		margin-top: var(--box-margin);
-		border: var(--box-margin) solid transparent;
+		padding: var(--box-margin);
+	}
+
+	.containerBoxScroll {
+		max-height: calc(80dvh - 400px);
+		min-height: 20vh;
 		scrollbar-width: none;
 		display: flex;
+		overflow-x: hidden;
+		overflow-y: auto;
+		width: 100%;
 		flex-direction: column;
 		gap: var(--box-margin);
 	}

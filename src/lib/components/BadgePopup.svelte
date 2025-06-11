@@ -17,7 +17,7 @@
 		<div class="popup-title">
 			<h1 id="badgePopupHeader">Badges</h1>
 		</div>
-		<div id="badgeContainer" class="badgeContainer">
+		<div class="badgeContainer of-top of-bottom">
 			<div class="spacerBadge"></div>
 			<div class="badgeLabel">
 				<p>For Experience gained:</p>

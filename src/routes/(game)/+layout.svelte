@@ -2,6 +2,7 @@
 	import { initializeAds } from "$lib/utils/ads";
 	import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 	import { onMount } from "svelte";
+	import initOverfade from "overfade";
 
 	let { children } = $props();
 
@@ -68,6 +69,9 @@
 		} catch (error) {
 			console.warn("Error adding keydown listener to prevent unwanted last button press:", error);
 		}
+
+		// Init overfade
+		initOverfade();
 	});
 
 	// Load Playlight

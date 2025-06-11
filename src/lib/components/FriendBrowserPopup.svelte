@@ -82,36 +82,38 @@
 				<img src="/img/find_icon.png" alt="start search" id="playerSearchIcon" />
 			</button>
 		</search>
-		<div class="playerSearchBox">
-			{#if userSearchResults}
-				{#each userSearchResults as entry}
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<div
-						class="friendSearchItem"
-						onclick={() => {
-							loadProfileFromId(entry.id, true);
-						}}
-						role="menu"
-						tabindex="0"
-					>
-						<p class="entryName">{entry.user_name}</p>
-						<button
-							id="sendFriendRequest"
-							class="sendFriendRequestBrowser standardButton white"
-							class:friendSearchYou={entry.id == yourId}
-							onclick={(e) => {
-								e.stopPropagation();
-								playSound("basic_button");
-								sendFriendRequest(entry.id, e.target);
+		<div class="containerBox">
+			<div class="containerBoxScroll of-top of-bottom">
+				{#if userSearchResults}
+					{#each userSearchResults as entry}
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<div
+							class="friendSearchItem"
+							onclick={() => {
+								loadProfileFromId(entry.id, true);
 							}}
+							role="menu"
+							tabindex="0"
 						>
-							Add <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
-						</button>
-					</div>
-				{/each}
-			{:else}
-				<p class="playerSearchError">Search returned no results.</p>
-			{/if}
+							<p class="entryName">{entry.user_name}</p>
+							<button
+								id="sendFriendRequest"
+								class="sendFriendRequestBrowser standardButton white"
+								class:friendSearchYou={entry.id == yourId}
+								onclick={(e) => {
+									e.stopPropagation();
+									playSound("basic_button");
+									sendFriendRequest(entry.id, e.target);
+								}}
+							>
+								Add <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
+							</button>
+						</div>
+					{/each}
+				{:else}
+					<p class="playerSearchError">Search returned no results.</p>
+				{/if}
+			</div>
 		</div>
 		<button
 			id="friendBrowserClose"
@@ -136,20 +138,23 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.playerSearchBox {
+	.containerBox {
 		position: relative;
 		width: 100%;
 		box-sizing: border-box;
 		border-radius: 10px;
-		max-height: 50vh;
-		min-height: 20vh;
-		overflow-x: hidden;
-		overflow-y: auto;
 		background-color: var(--box-color);
 		margin-top: var(--box-margin);
-		border: var(--box-margin) solid transparent;
+		padding: var(--box-margin);
+	}
+
+	.containerBoxScroll {
+		max-height: calc(80dvh - 400px);
+		min-height: 20vh;
 		scrollbar-width: none;
 		display: flex;
+		overflow-x: hidden;
+		overflow-y: auto;
 		width: 100%;
 		flex-direction: column;
 		gap: var(--box-margin);
@@ -200,7 +205,6 @@
 	}
 
 	#friendBrowserInput {
-		border-radius: 10px;
 		padding-inline: 10px;
 		font-size: 22px;
 		flex-grow: 1;
@@ -214,7 +218,6 @@
 
 	#startFriendSearch {
 		width: fit-content;
-		border-radius: 10px;
 		height: 45px;
 	}
 
