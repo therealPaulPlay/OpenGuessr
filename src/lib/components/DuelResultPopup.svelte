@@ -20,7 +20,7 @@
 	});
 </script>
 
-{#if $duelResultPopup || true}
+{#if $duelResultPopup}
 	<Popup slim={true}>
 		<div class="popup-title">
 			<h1 id="socialHeader">{$duelResultTitle}</h1>
