@@ -160,6 +160,7 @@
 
 	.eloDisplay {
 		padding: 7px;
+		box-shadow: var(--bulb-shadow);
 		border-radius: 5px;
 		font-style: italic;
 		position: relative;
@@ -260,7 +261,6 @@
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		min-height: 50px;
 	}
 
 	.multiplayerEntryPlayerName {
@@ -271,7 +271,7 @@
 		display: flex;
 		align-items: center;
 		gap: var(--panel-margin);
-		overflow: hidden;
+		padding: var(--panel-margin);
 		mask-image: linear-gradient(to right, black 95%, transparent 100%);
 	}
 

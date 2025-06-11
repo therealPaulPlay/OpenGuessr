@@ -408,7 +408,7 @@
 					<div class="map-author">by {map.author || "Bugsnacker"}</div>
 				</div>
 				<button
-					class="add-button"
+					class="add-button standardButton white"
 					onclick={(e) => {
 						e.stopPropagation();
 						playSound("basic_button");
@@ -502,7 +502,7 @@
 					<div class="map-author">by {map.author || "Bugsnacker"}</div>
 				</div>
 				<button
-					class="add-button"
+					class="add-button standardButton white"
 					onclick={(e) => {
 						e.stopPropagation();
 						playSound("basic_button");
@@ -590,6 +590,7 @@
 	.map-item {
 		display: flex;
 		justify-content: space-between;
+		box-shadow: var(--box-shadow);
 		text-decoration: none;
 		align-items: center;
 		background-color: rgba(255, 255, 255, 0.1);
@@ -598,7 +599,7 @@
 		padding: var(--box-margin);
 		padding-inline: 15px;
 		box-sizing: border-box;
-		animation: fadeIn 150ms ease-in-out;
+		animation: fadeIn 250ms ease-in-out;
 		user-select: none;
 		flex-grow: 1;
 		flex-basis: 30%;
@@ -710,23 +711,8 @@
 	}
 
 	.add-button {
-		background-color: rgba(255, 255, 255, 0.15);
-		border: none;
 		border-radius: 5px;
-		padding: 5px 7px;
-		cursor: pointer;
-		user-select: none;
-		margin-left: 10px;
-		margin-right: 4px;
-		font-size: 25px;
-		width: 35px;
-		line-height: 0.9;
-		outline: 3px solid rgba(255, 255, 255, 0.25);
-		transition: background-color 250ms ease;
-	}
-
-	.add-button:hover {
-		background-color: rgba(255, 255, 255, 0.25);
+		padding: 5px 8px;
 	}
 
 	.remove-button {
@@ -818,7 +804,7 @@
 
 	.categoryButton {
 		background-color: rgba(255, 255, 255, 0.1);
-		box-shadow: none;
+		box-shadow: var(--bulb-shadow);
 		border: none;
 		color: white;
 		height: 39px;
@@ -836,6 +822,7 @@
 	.categoriesSearchArea {
 		display: flex;
 		justify-content: space-between;
+		box-shadow: var(--box-shadow);
 		flex-wrap: wrap;
 		width: calc(100% - var(--box-margin) * 2);
 		min-width: 280px;

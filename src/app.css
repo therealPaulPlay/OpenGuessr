@@ -10,14 +10,14 @@
 
 :root {
     --brand-color: #ff0808;
-    --panel-color: hsla(236, 25%, 20%, 0.7);
-    --menu-background: rgba(39, 41, 53, 0.9);
+    --panel-color: rgba(30, 34, 53, 0.7);
     --box-color: rgba(255, 255, 255, 0.05);
-    --box-color-dark: rgba(30, 31, 44, 0.5);
+    --box-color-dark: rgba(11, 12, 19, 0.3);
     --dark-background: rgba(30, 30, 30, 0.7);
     --panel-button-color: rgba(168, 168, 187, 0.3);
     --supporter-gradient: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(17, 217, 49, 0.7));
     --supporter-green: rgba(17, 217, 49, 0.7);
+    --supporter-green-soft: rgba(17, 217, 49, 0.5);
 
     /* Rarities */
     --common-color: rgba(145, 111, 111, 0.75);
@@ -29,6 +29,11 @@
     --layout-margin: 15px;
     --box-margin: 10px;
     --panel-margin: 8px;
+
+    /* Box shadows */
+    --button-shadow: 0 3px 1px rgba(0, 0, 0, 0.1), inset 0 0.1rem 5px hsla(0, 0%, 100%, 0.3), inset 0 -0.25rem 5px rgba(0, 0, 2, 0.15);
+    --box-shadow: inset 0 0.075rem 0 hsla(0, 0%, 100%, 0.15), inset 0 -0.075rem 0 rgba(0, 0, 2, 0.35);
+    --bulb-shadow: 0 0 20px rgba(0, 0, 0, 0.3), inset 0 0.075rem 3px hsla(0, 0%, 100%, 0.4), inset 0 -0.2rem 5px rgba(0, 0, 5, 0.3);
 }
 
 html {
@@ -105,12 +110,12 @@ p {
 
 input {
     color: white;
+    box-shadow: var(--button-shadow);
     background-color: rgba(255, 255, 255, 0.1);
     transition: background-color 250ms ease;
     border-radius: 5px;
     font-size: 22px;
     outline: none;
-    box-shadow: none;
     border: none;
     padding: 0;
 }
@@ -125,10 +130,6 @@ input:focus {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.neumorphic-menu {
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), inset 0 0.075rem 0 hsla(0, 0%, 100%, 0.2), inset 0 -0.1rem 0 rgba(0, 0, 0, 0.15);
-}
-
 .standardButton {
     cursor: pointer;
     width: fit-content;
@@ -141,11 +142,12 @@ input:focus {
     border-radius: 5px;
     user-select: none;
     background-color: var(--brand-color);
-    border: 3px solid rgba(255, 255, 255, 0.2);
+    border-top: 3px solid rgba(255, 255, 255, 0.2);
+    border: 3px solid rgba(205, 205, 205, 0.2);
     box-sizing: border-box;
     color: white;
     opacity: 100%;
-    box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
+    box-shadow: var(--button-shadow);
 }
 
 .standardButton:hover {
@@ -159,7 +161,6 @@ input:focus {
 
 .white {
     background-color: rgba(255, 255, 255, 0.2);
-    border: 3px solid rgba(255, 255, 255, 0.1);
 }
 
 .header {
@@ -179,7 +180,8 @@ input:focus {
 }
 
 .spinner {
-    opacity: 0.3;
+    opacity: 0.5;
+    filter: drop-shadow(0 0 30px rgba(255, 255, 255, 0.75));
     animation: rotation 1.5s infinite linear;
     width: 100px;
     height: 100px;
@@ -270,7 +272,7 @@ input[type="checkbox"]:focus {
     border: none;
     cursor: pointer;
     margin-top: -5px;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), inset 0 0.075rem 0 hsla(0, 0%, 100%, 0.2), inset 0 -0.1rem 0 rgba(0, 0, 0, 0.15);
+    box-shadow: var(--bulb-shadow);
 }
 
 .slider::-moz-range-thumb {
@@ -280,7 +282,7 @@ input[type="checkbox"]:focus {
     border-radius: 50%;
     border: none;
     cursor: pointer;
-    box-shadow: 0 0 20px rgba(0, 0, 0, 0.3), inset 0 0.075rem 0 hsla(0, 0%, 100%, 0.2), inset 0 -0.1rem 0 rgba(0, 0, 0, 0.15);
+    box-shadow: var(--bulb-shadow);
 }
 
 .slider::-webkit-slider-runnable-track {
@@ -311,7 +313,7 @@ input[type="checkbox"]:focus {
     background-color: var(--panel-color);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3);
+    box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3), inset 0 0.075rem 0 hsla(0, 0%, 100%, 0.3), inset 0 -0.1rem 0 rgba(0, 0, 2, 0.15) !important;
     /* with and height transitions for e.g. the mapModeIndicator */
     transition: opacity 250ms ease, transform 250ms ease, width 150ms ease, height 150ms ease, filter 250ms ease;
     border-radius: 10px;
@@ -372,6 +374,11 @@ textarea {
 .viewContainer {
     display: flex;
     justify-content: center;
+}
+
+select {
+    appearance: none;
+    padding-inline: 12px;
 }
 
 search {

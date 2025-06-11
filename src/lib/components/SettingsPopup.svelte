@@ -192,6 +192,7 @@
 		background-color: var(--box-color);
 		border-radius: 10px;
 		padding: var(--box-margin);
+		box-shadow: var(--box-shadow);
 		overflow: hidden;
 		flex-grow: 1;
 		min-width: 150px;

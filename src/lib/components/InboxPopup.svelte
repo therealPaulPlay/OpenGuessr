@@ -37,7 +37,7 @@
 					{#each $inboxContent as entry}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<div
-							class="friendSearchItem"
+							class="inboxItem"
 							role="menu"
 							tabindex="0"
 							onclick={() => {
@@ -86,8 +86,9 @@
 {/if}
 
 <style>
-	.friendSearchItem {
+	.inboxItem {
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		border-radius: 5px;
 		width: calc(100% - 30px);
 		position: relative;
@@ -101,7 +102,7 @@
 		cursor: pointer;
 	}
 
-	.friendSearchItem:hover {
+	.inboxItem:hover {
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
@@ -118,6 +119,7 @@
 
 	.containerBox {
 		position: relative;
+		box-shadow: var(--box-shadow);
 		width: 100%;
 		box-sizing: border-box;
 		border-radius: 10px;
@@ -138,7 +140,7 @@
 		gap: var(--box-margin);
 	}
 
-	.friendSearchItem p {
+	.inboxItem p {
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -148,7 +150,6 @@
 	.inboxItemButtons {
 		display: flex;
 		width: fit-content;
-		overflow: hidden;
 		gap: var(--box-margin);
 		margin-right: -5px;
 		flex-grow: 5;

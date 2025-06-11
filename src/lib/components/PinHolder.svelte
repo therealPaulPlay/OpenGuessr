@@ -23,9 +23,11 @@
 	let pinHolderElement = $state();
 </script>
 
-<svelte:document onpointerdown={(e) => {
-	if (!pinHolderElement.contains(e.target)) isHovered = false;
-}} />
+<svelte:document
+	onpointerdown={(e) => {
+		if (!pinHolderElement.contains(e.target)) isHovered = false;
+	}}
+/>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <!-- svelte-ignore a11y_no_static_element_interactions -->
@@ -111,11 +113,13 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
+		box-shadow: var(--button-shadow);
 		cursor: pointer;
 		flex-grow: 1;
 		transition:
 			scale 250ms ease,
 			opacity 250ms ease,
+			background-color 250ms ease,
 			filter 250ms ease;
 	}
 
@@ -215,6 +219,7 @@
 		color: white;
 		line-height: 0.9;
 		padding-inline: 2px;
+		user-select: none;
 		text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
 	}
 
@@ -236,6 +241,7 @@
 	}
 
 	.selectedPin {
-		border: solid 3px white;
+		filter: brightness(1.2);
+		background-color: rgba(255, 255, 255, 0.3);
 	}
 </style>

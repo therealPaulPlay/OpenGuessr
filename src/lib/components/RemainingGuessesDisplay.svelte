@@ -51,7 +51,7 @@
 		border-radius: 10px;
 		position: fixed;
 		top: 0;
-		background-color: var(--menu-background);
+		background-color: var(--panel-color);
 		padding: 5px;
 		padding-inline: 10px;
 		margin-left: -8px;

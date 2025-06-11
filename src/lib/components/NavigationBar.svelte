@@ -213,9 +213,8 @@
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
-			class="profileInfo"
+			class="profileInfo standardButton white"
 			class:notSignedIn={!$isAuthenticated}
-			id="profileInfo"
 			class:profileInfoSupporter={$supporterLevel >= 1}
 			onclick={() => {
 				loadProfileFromId(localStorage.getItem("id"), true);
@@ -340,18 +339,7 @@
 
 <style>
 	.profileInfo {
-		border-radius: 5px;
-		padding-left: 10px;
-		height: 40px;
-		max-height: 40px;
-		background-color: var(--panel-button-color);
-		box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
-		border: 3px solid rgba(255, 255, 255, 0.1);
 		box-sizing: border-box;
-		transition:
-			filter 250ms ease,
-			transform 150ms ease;
-		cursor: pointer;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -366,14 +354,6 @@
 	.mobileSigninIcon {
 		vertical-align: -1px;
 		margin-left: 2px;
-	}
-
-	.profileInfo:hover {
-		filter: brightness(0.7);
-	}
-
-	.profileInfo:active {
-		transform: scale(0.95);
 	}
 
 	.profileInfoSupporter {
@@ -464,7 +444,6 @@
 		max-width: 80px;
 		overflow: hidden;
 		white-space: nowrap;
-		margin-top: 2px;
 	}
 
 	.accountNameAreaFade {
@@ -488,7 +467,7 @@
 		position: relative;
 		width: 30px;
 		height: 30px;
-		margin-inline: 10px;
+		margin-left: 10px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -498,6 +477,8 @@
 
 	.progressRing {
 		transform: rotate(-90deg);
+		box-shadow: var(--bulb-shadow);
+		border-radius: 100%;
 	}
 
 	.progressRingCircle {
@@ -515,7 +496,7 @@
 
 	.topBarExpand {
 		max-width: 0px;
-		transition: max-width 400ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
+		transition: max-width 500ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
 		overflow: hidden;
 		display: inline-block;
 		vertical-align: bottom;

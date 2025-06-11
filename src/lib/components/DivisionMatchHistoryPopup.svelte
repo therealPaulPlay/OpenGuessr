@@ -186,6 +186,7 @@
 
 	.filterBox {
 		border-radius: 10px;
+		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
 		max-width: fit-content;
 		background-color: var(--box-color);
@@ -208,6 +209,7 @@
 
 	.historyBox {
 		position: relative;
+		box-shadow: var(--box-shadow);
 		width: calc(100% - 20px);
 		border-radius: 10px;
 		background-color: var(--box-color);
@@ -232,6 +234,8 @@
 
 	.pageCounter {
 		padding: 5px;
+		box-shadow: var(--bulb-shadow);
+		user-select: none;
 		padding-inline: 10px;
 		border-radius: 5px;
 		min-width: 50px;
@@ -242,6 +246,7 @@
 
 	.matchHistoryItem {
 		display: flex;
+		box-shadow: var(--box-shadow);
 		flex-wrap: wrap;
 		gap: 5px;
 		padding: 5px 15px;
@@ -288,6 +293,7 @@
 
 	.vs {
 		align-self: center;
+		box-shadow: var(--bulb-shadow);
 		margin: 5px 0;
 		border-radius: 5px;
 		padding-inline: 5px;

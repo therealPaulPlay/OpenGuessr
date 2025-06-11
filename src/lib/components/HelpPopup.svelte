@@ -74,7 +74,7 @@
 		</div>
 
 		<button class="standardButton closeButton white" onclick={handleNext}>
-			{`${currentSlide != 2 ? "Next" : "Let's go!"} (${currentSlide + 1}/${slides.length})`}
+			{`${currentSlide != 2 ? "Continue" : "Let's go!"}`}
 		</button>
 	</Popup>
 {/if}
@@ -82,6 +82,7 @@
 <style>
 	.image-container {
 		overflow: hidden;
+		box-sizing: border-box;
 		border-radius: 10px;
 		margin-bottom: 10px;
 		position: relative;
@@ -110,6 +111,7 @@
 
 	.indicator-container {
 		display: flex;
+		box-shadow: var(--bulb-shadow);
 		gap: 0.5rem;
 		position: absolute;
 		bottom: 15px;

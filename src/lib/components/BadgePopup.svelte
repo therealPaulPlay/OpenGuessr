@@ -118,12 +118,14 @@
 		text-align: left;
 		padding-left: 10px;
 		display: flex;
+		box-shadow: var(--box-shadow);
 		justify-content: space-between;
 		flex-wrap: wrap;
 	}
 
 	.badgeBox {
 		background-color: var(--box-color-dark);
+		box-shadow: var(--box-shadow);
 		border-radius: 10px;
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;

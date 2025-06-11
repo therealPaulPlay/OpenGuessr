@@ -272,21 +272,23 @@
 			{/if}
 
 			{#if $profileId == localStorage.getItem("id") || $profileData?.about}
-				<textarea
-					id="profileAbout"
-					readonly={$profileId != localStorage.getItem("id")}
-					maxlength="150"
-					spellcheck="false"
-					value={filteredAbout}
-					bind:this={textarea}
-					placeholder="Share a few facts about yourself with others..."
-					oninput={() => {
-						if (!$unsavedAboutChanges) unsavedAboutChanges.set(true);
-					}}
-					onkeypress={(e) => {
-						if (e.key == "Enter") e.preventDefault();
-					}}
-				></textarea>
+				<div class="aboutSection">
+					<textarea
+						class="profileAbout of-top of-bottom"
+						readonly={$profileId != localStorage.getItem("id")}
+						maxlength="150"
+						spellcheck="false"
+						value={filteredAbout}
+						bind:this={textarea}
+						placeholder="Share a few facts about yourself with others..."
+						oninput={() => {
+							if (!$unsavedAboutChanges) unsavedAboutChanges.set(true);
+						}}
+						onkeypress={(e) => {
+							if (e.key == "Enter") e.preventDefault();
+						}}
+					></textarea>
+				</div>
 			{/if}
 
 			<!-- Stats Carousel Section -->
@@ -363,7 +365,7 @@
 						}}
 					>
 						<Trash2 size={20} style="margin-bottom: -1px;" />
-						Delete</button
+						Account</button
 					>
 					<button
 						id="profileSignoutButton"
@@ -400,6 +402,7 @@
 <style>
 	.profileNameArea {
 		display: flex;
+		box-shadow: var(--box-shadow);
 		align-items: center;
 		justify-content: space-between;
 		flex-wrap: wrap;
@@ -502,6 +505,7 @@
 
 	#supporterTag {
 		background-color: rgba(255, 255, 255, 0.1);
+		box-shadow: var(--box-shadow);
 		border-radius: 5px;
 		overflow: hidden;
 		display: flex;
@@ -534,7 +538,7 @@
 	.pinDisplayOnly {
 		border: none;
 		background-color: rgba(255, 255, 255, 0.1);
-		box-shadow: none;
+		box-shadow: var(--box-shadow);
 		display: flex;
 		align-items: center;
 	}
@@ -550,15 +554,22 @@
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
 	}
 
-	#profileAbout {
-		resize: none;
-		width: calc(100% - 30px);
-		height: 55px;
+	.aboutSection {
+		width: 100%;
+		min-height: 55px;
+		border-radius: 10px;
+		margin-bottom: var(--layout-margin);
+		box-shadow: var(--box-shadow);
 		transition: background-color 250ms ease;
+	}
+
+	.profileAbout {
+		resize: none;
+		width: 100%;
 		color: white;
 		padding: 15px;
-		margin-bottom: var(--layout-margin);
 		scrollbar-width: none;
+		box-sizing: border-box;
 	}
 
 	#profileAddFriend {
@@ -582,6 +593,7 @@
 	:global(.stat-switch) {
 		margin-top: 8px;
 		border-radius: 10px;
+		box-shadow: var(--box-shadow);
 		max-width: 100%;
 		box-sizing: border-box;
 		background-color: var(--box-color);
@@ -618,6 +630,7 @@
 
 	.stat-card {
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		border-radius: 10px;
 		padding: 5px;
 		min-width: 150px;
@@ -660,6 +673,7 @@
 	.managementBox {
 		border-radius: 10px;
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		display: flex;
 		justify-content: flex-start;
 		max-height: 300px;
@@ -693,8 +707,8 @@
 	}
 
 	@media all and (max-width: 800px) {
-		#profileAbout {
-			height: 85px;
+		.aboutSection {
+			max-height: 85px;
 		}
 
 		.flag-container {

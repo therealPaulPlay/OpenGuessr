@@ -336,6 +336,7 @@
 	.rankedItem {
 		width: 100%;
 		height: 45px;
+		box-shadow: var(--box-shadow);
 		background-color: rgba(255, 255, 255, 0.1);
 		box-sizing: border-box;
 		border-radius: 8px;
@@ -351,6 +352,7 @@
 	.rankedItemSupporter {
 		box-sizing: border-box;
 		border: 3px solid var(--supporter-green);
+		border-bottom: 3px solid var(--supporter-green-soft);
 		position: relative;
 	}
 
@@ -431,7 +433,8 @@
 	}
 
 	.yourItem {
-		border: solid 3px white;
+		box-shadow: var(--bulb-shadow);
+		background-color: rgba(255, 255, 255, 0.3);
 	}
 
 	.maxlength {
@@ -495,6 +498,7 @@
 		flex-grow: 1;
 		margin: 0 10px;
 		display: flex;
+		box-shadow: var(--button-shadow);
 		flex-direction: column;
 		align-items: center;
 		border-radius: 15px;
@@ -504,7 +508,6 @@
 			height 250ms ease,
 			width 250ms ease;
 		border: solid 3px rgba(255, 255, 255, 0.2);
-		box-shadow: 0 0 40px rgba(0, 0, 0, 0.2);
 		max-width: 25%;
 	}
 
@@ -585,6 +588,7 @@
 		padding: 6px;
 		border-radius: 50%;
 		background-color: rgba(255, 255, 255, 0.1);
+		box-shadow: var(--bulb-shadow);
 	}
 
 	@media all and (orientation: portrait) {

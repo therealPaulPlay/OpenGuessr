@@ -179,7 +179,8 @@
 <style>
 	.tierNumber {
 		background-color: rgba(0, 0, 0, 0.1);
-		border-radius: 3px;
+		box-shadow: var(--bulb-shadow);
+		border-radius: 5px;
 		padding: 2px !important;
 		padding-inline: 8px !important;
 	}
@@ -193,6 +194,7 @@
 
 	.tierBoxTier {
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -255,6 +257,7 @@
 	.tierBox {
 		background-color: rgba(255, 255, 255, 0.1);
 		border-radius: 10px;
+		box-shadow: var(--box-shadow);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -276,7 +279,7 @@
 		background: linear-gradient(90deg, #00ff1c00 1%, #cfffd754 50%, #c0ffcd00);
 		border-radius: inherit;
 		content: "";
-		height: 4px;
+		height: 2px;
 		inset: 0;
 		opacity: 0;
 		position: absolute;

@@ -21,12 +21,12 @@
 			<h3 id="slideupTitle">{$slideupTitle}</h3>
 		</div>
 		{#if $slideupButtonText == "Support"}
-			<div class="textBox supporterStatBox">
+			<div class="textBox supporterStatBox solidBox">
 				<p class="supporterStatText">${$monthlySupportAmount ?? "..."} supported this month</p>
 				<div class="supporterStatBar" style:width={Math.min(1, $monthlySupportAmount / 500) * 100 + "%"}></div>
 			</div>
 		{/if}
-		<div class="textBox">
+		<div class="textBox solidBox">
 			<p id="slideupText" bind:innerHTML={$slideupText} contenteditable="false"></p>
 		</div>
 		<div class="buttonBox">
@@ -83,13 +83,19 @@
 
 	.textBoxTop {
 		margin-bottom: var(--panel-margin);
+		padding: 5px !important;
+		padding-inline: 5px !important;
 	}
 
 	.textBox {
 		padding: 10px;
 		padding-inline: 12px;
+	}
+
+	.solidBox {
 		border-radius: 5px;
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 	}
 
 	.supporterStatBox {
@@ -105,6 +111,7 @@
 		top: 0;
 		bottom: 0;
 		background-color: rgba(255, 255, 255, 0.15);
+		box-shadow: var(--bulb-shadow);
 	}
 
 	.buttonBox {

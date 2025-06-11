@@ -272,6 +272,7 @@
 	.infoContainer {
 		display: flex;
 		padding: var(--box-margin);
+		box-shadow: var(--box-shadow);
 		width: 100%;
 		box-sizing: border-box;
 		border-radius: 15px;
@@ -384,6 +385,7 @@
 		border-radius: 10px;
 		display: flex;
 		background-color: rgba(255, 255, 255, 0.1);
+		box-shadow: var(--bulb-shadow);
 		padding-inline: 6px !important;
 		height: 50px;
 		align-items: center;
@@ -433,6 +435,7 @@
 		flex-basis: 0;
 		background-color: var(--box-color);
 		padding: var(--box-margin);
+		box-shadow: var(--box-shadow);
 		border-radius: 15px;
 		max-width: calc(100% - 20px);
 	}
@@ -459,8 +462,9 @@
 	}
 
 	#multiplayerSelectDuels::before {
-		animation: duelButtonGlint 4s 0.5s infinite;
+		animation: duelButtonGlint 4s 0.75s infinite;
 		background: white;
+		filter: blur(15px);
 		content: "";
 		opacity: 0;
 		position: absolute;
@@ -501,6 +505,7 @@
 		width: calc(100% - 20px);
 		transition: max-height 150ms ease;
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		border-radius: 15px;
 		padding: var(--box-margin);
 		margin-bottom: 50px;
@@ -540,18 +545,18 @@
 
 	@keyframes duelButtonGlint {
 		0% {
-			opacity: 0.5;
+			opacity: 0.7;
 			margin-left: -60px;
 			visibility: visible;
 		}
 
 		20% {
-			opacity: 0.3;
+			opacity: 0.5;
 			margin-left: calc(100% + 60px);
 		}
 
 		100% {
-			opacity: 0.3;
+			opacity: 0.5;
 			margin-left: calc(100% + 60px);
 		}
 	}

@@ -111,6 +111,7 @@
 
 	.publicRoomItem {
 		background-color: rgba(255, 255, 255, 0.1);
+		box-shadow: var(--box-shadow);
 		border: none;
 		border-radius: 10px;
 		display: flex;

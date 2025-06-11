@@ -141,7 +141,7 @@
 			<TitleSeparator text="Round log" />
 			<div class="settingsCanvas slightBottomMargin">
 				<div class="optionBox roundLogContainer">
-					<div class="roundLogBox of-top of-bottom" id="roundLogBox">
+					<div class="roundLogBox of-top of-bottom of-length-1.5" id="roundLogBox">
 						<!-- round log will be automatically generated here -->
 						{#if $roundLog.length > 0}
 							{#each $roundLog as [mode, distance, coordinates], index}
@@ -194,6 +194,7 @@
 
 	.optionBox {
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		border-radius: 10px;
 		padding: var(--box-margin);
 		overflow: hidden;
@@ -206,6 +207,7 @@
 		gap: var(--box-margin);
 		padding: var(--box-margin);
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		min-width: 150px;
 		flex-grow: 1;
 		border-radius: 10px;
@@ -250,9 +252,10 @@
 		border: 5px;
 		display: flex;
 		justify-content: space-between;
+		box-shadow: var(--box-shadow);
 		align-items: center;
 		gap: 5px;
-		height: 30px;
+		height: 31px;
 		background-color: rgba(255, 255, 255, 0.1);
 		padding: 5px;
 		padding-inline: 10px;
@@ -296,6 +299,7 @@
 
 	.roundLogItem {
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;

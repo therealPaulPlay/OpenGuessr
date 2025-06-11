@@ -6,7 +6,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 </script>
 
-<div id="supporterArea" class="supporterArea">
+<div class="supporterArea">
 	<div class="supporterPitchText">
 		<p id="supporterPitch">{$supporterLevel >= 1 ? "Thank you." : "Purchase a supporter tier."}</p>
 		<span id="supporterTextSecondary"
@@ -25,7 +25,7 @@
 
 <style>
 	#viewSupporterBenefits {
-		background-color: rgba(255, 255, 255, 0.2);
+		background-color: rgba(126, 210, 140, 0.65);
 		outline: 3px solid rgba(255, 255, 255, 0.5);
 		flex-grow: 1;
 		border: none;
@@ -39,6 +39,7 @@
 		color: white;
 		display: flex;
 		flex-wrap: wrap;
+		box-shadow: var(--button-shadow);
 		justify-content: space-between;
 		align-items: center;
 		transition: filter 250ms ease;

@@ -48,7 +48,6 @@
 		padding-top: 0;
 		padding-bottom: 2px;
 		outline: none;
-		box-shadow: none;
 		text-overflow: ellipsis;
 		overflow: hidden;
 		flex-grow: 1;

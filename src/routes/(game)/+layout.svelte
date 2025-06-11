@@ -28,7 +28,7 @@
 	import DiscordPopup from "$lib/components/DiscordPopup.svelte";
 	import SingleplayerOptions from "$lib/components/SingleplayerOptions.svelte";
 	import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
-	import CountryGuesserBar from "$lib/components/CountryGuesserBar.svelte";
+	import CountryGuesserBar from "$lib/components/CountryGuessrBar.svelte";
 	import ResultScreen from "$lib/components/ResultScreen.svelte";
 	import CaptchaPopup from "$lib/components/CaptchaPopup.svelte";
 	import Authenticate from "$lib/components/Authenticate.svelte";

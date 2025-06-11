@@ -138,7 +138,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		background-color: var(--menu-background);
+		background-color: var(--panel-color);
 		color: white;
 		opacity: 0;
 		z-index: 2;

@@ -13,6 +13,7 @@
 	import { onMount } from "svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
+	import { blur } from "svelte/transition";
 
 	const competitionsEndpoint = $accountUrl + "/competitions";
 
@@ -144,7 +145,7 @@
 		leaderboardPopup = true;
 		leaderboardEntries = undefined;
 		yourEntry = undefined;
-		leaderboardName = "Loading...";
+		leaderboardName = "...";
 
 		// Load data from endpoint using id here
 		loadLeaderboardFromServer(id);
@@ -457,7 +458,7 @@
 				{#if yourEntry}
 					<div class="youBar">
 						<p class="youLabel">You:</p>
-						<div class="rankItem" class:leaderboardSupporterEntry={yourEntry.supporter_level > 0}>
+						<div class="rankItem yourItem" class:leaderboardSupporterEntry={yourEntry.supporter_level > 0}>
 							<p class="leaderboardTextEntry">#{yourEntry.position}</p>
 							<p
 								id="yourUsername"
@@ -476,6 +477,7 @@
 					{#each leaderboardEntries as entry}
 						<div
 							class="rankItem"
+							transition:blur
 							class:leaderboardSupporterEntry={entry.supporter_level > 0}
 							class:rankYou={entry.id == localStorage.getItem("id")}
 						>
@@ -840,6 +842,7 @@
 	.buttonToolbar {
 		display: flex;
 		justify-content: space-between;
+		box-shadow: var(--box-shadow);
 		flex-wrap: wrap;
 		box-sizing: border-box;
 		gap: var(--box-margin);
@@ -890,6 +893,7 @@
 
 	.competitionDescription {
 		border-radius: 10px;
+		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
 		padding: 7px;
 		padding-inline: 4px;
@@ -900,6 +904,7 @@
 	.competitionItem {
 		border-radius: 15px;
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		transition:
 			background-color 250ms ease,
 			filter 250ms ease,
@@ -916,6 +921,7 @@
 
 	.label {
 		padding: 3px;
+		box-shadow: var(--bulb-shadow);
 		padding-inline: 10px;
 		width: fit-content;
 		background-color: rgba(255, 255, 255, 0.1);
@@ -958,6 +964,7 @@
 
 	.propertyItem {
 		flex-grow: 1;
+		box-shadow: var(--box-shadow);
 		border-radius: 10px;
 		padding: 3px;
 		overflow: hidden;
@@ -1032,6 +1039,7 @@
 
 	.rankingDisplay {
 		box-sizing: border-box;
+		box-shadow: var(--box-shadow);
 		border-radius: 10px;
 		width: 100%; /* Fix for Safari */
 		background-color: var(--box-color);
@@ -1053,6 +1061,7 @@
 
 	.rankItem {
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		border-radius: 5px;
 		width: calc(100% - 20px);
 		display: flex;
@@ -1060,6 +1069,10 @@
 		align-items: center;
 		padding: 5px;
 		padding-inline: 10px;
+	}
+
+	.yourItem {
+		box-shadow: var(--bulb-shadow);
 	}
 
 	.rankYou {
@@ -1168,7 +1181,7 @@
 	}
 
 	.fadeInItem {
-		animation: fadeIn 150ms ease-in-out;
+		animation: fadeIn 250ms ease-in-out;
 	}
 
 	.youBar {
@@ -1178,6 +1191,7 @@
 	}
 
 	.youLabel {
+		box-shadow: var(--bulb-shadow);
 		border-radius: 5px;
 		background-color: var(--box-color);
 		padding: 5px;
@@ -1200,6 +1214,7 @@
 
 	.leaderboardSupporterEntry {
 		border: 3px solid var(--supporter-green);
+		border-bottom: 3px solid var(--supporter-green-soft);
 		width: 100%;
 		box-sizing: border-box;
 		padding: 2px;
@@ -1228,6 +1243,7 @@
 
 	#ratingBox {
 		border-radius: 10px;
+		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
 		display: flex;
 		justify-content: space-between;

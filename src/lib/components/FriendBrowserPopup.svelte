@@ -140,6 +140,7 @@
 
 	.containerBox {
 		position: relative;
+		box-shadow: var(--box-shadow);
 		width: 100%;
 		box-sizing: border-box;
 		border-radius: 10px;
@@ -176,6 +177,7 @@
 
 	.friendSearchItem {
 		display: flex;
+		box-shadow: var(--box-shadow);
 		gap: var(--box-margin);
 		justify-content: space-between;
 		align-items: center;
@@ -205,7 +207,7 @@
 	}
 
 	#friendBrowserInput {
-		padding-inline: 10px;
+		padding-inline: var(--layout-margin);
 		font-size: 22px;
 		flex-grow: 1;
 	}

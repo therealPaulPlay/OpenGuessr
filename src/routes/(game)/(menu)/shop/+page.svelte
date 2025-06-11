@@ -195,7 +195,11 @@
 		<div class="rightSide" in:scale={{ start: 0.9, delay: 100, duration: 250 }}>
 			<div class="tokenDisplay">
 				<div class="shopInfoSection">
-					<Clock style="color: white; margin-right: 3px; min-width: fit-content; margin-bottom: -1px;" strokeWidth={2.25} size={22} />
+					<Clock
+						style="color: white; margin-right: 3px; min-width: fit-content; margin-bottom: -1px;"
+						strokeWidth={2.25}
+						size={22}
+					/>
 					<p>Restock in {timeUntilUTCMidnight()}</p>
 				</div>
 				<div class="shopInfoSection">
@@ -241,8 +245,7 @@
 	{#if !$purchasedPins?.includes(500) && $accountDataLoaded}
 		<div class="freeSocialPinContainer" transition:slide={{ axis: "y" }}>
 			<p class="socialPinText">
-				Not subscribed yet? <span class="socialPinSpan">Follow our YouTube channel to claim a free pin!</span
-				>
+				Not subscribed yet? <span class="socialPinSpan">Follow our YouTube channel to claim a free pin!</span>
 			</p>
 			<button
 				class="standardButton white socialPinButton"
@@ -283,6 +286,7 @@
 	.freeSocialPinContainer {
 		width: 100%;
 		box-sizing: border-box;
+		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
 		border-radius: 15px;
 		display: flex;
@@ -332,6 +336,7 @@
 
 	.leftSide {
 		border-radius: var(--layout-margin);
+		box-shadow: var(--box-shadow);
 		flex-grow: 1;
 		max-width: 100%;
 		display: flex;
@@ -357,6 +362,7 @@
 
 	.rightSide {
 		border-radius: var(--layout-margin);
+		box-shadow: var(--box-shadow);
 		flex-grow: 1;
 		background-color: var(--box-color);
 		display: flex;
@@ -400,6 +406,7 @@
 
 	.tokenShop {
 		width: 100%;
+		box-shadow: var(--bulb-shadow);
 		flex-grow: 1;
 		display: flex;
 		flex-wrap: wrap;
@@ -409,13 +416,13 @@
 		padding: var(--box-margin);
 		border-radius: var(--layout-margin);
 		gap: var(--box-margin);
-		box-shadow: 0 -15px 40px rgba(0, 0, 0, 0.2);
 		overflow: hidden;
 	}
 
 	.shopOffer {
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
 		box-sizing: border-box;
 		gap: var(--box-margin);
@@ -480,6 +487,7 @@
 	.allPinsContainer {
 		width: 100%;
 		height: fit-content;
+		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -521,6 +529,7 @@
 	.specialOffer {
 		width: 100%;
 		height: 100%;
+		box-shadow: var(--box-shadow);
 		border-radius: 5px;
 		display: flex;
 		justify-content: center;
@@ -574,6 +583,7 @@
 
 	.specialOfferRarityDisplay {
 		position: absolute;
+		box-shadow: var(--bulb-shadow);
 		border-top-right-radius: 5px;
 		border-bottom-left-radius: 5px;
 		top: 0;
