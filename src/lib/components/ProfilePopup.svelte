@@ -480,6 +480,7 @@
 
 	#profileSignoutButton {
 		max-width: 60px;
+		padding-inline: var(--panel-margin);
 		flex-grow: 1;
 	}
 
