@@ -214,13 +214,11 @@
 
 	.playerSearch {
 		margin-bottom: var(--layout-margin);
-		height: 45px;
 		gap: var(--layout-margin);
 	}
 
 	#startFriendSearch {
 		width: fit-content;
-		height: 45px;
 	}
 
 	.sendFriendRequestBrowser {

@@ -95,7 +95,7 @@
 	.solidBox {
 		border-radius: 5px;
 		background-color: var(--box-color);
-		box-shadow: var(--button-shadow);
+		box-shadow: var(--box-shadow);
 	}
 
 	.supporterStatBox {
