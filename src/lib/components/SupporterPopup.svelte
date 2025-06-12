@@ -295,7 +295,7 @@
 		align-items: center;
 		gap: var(--layout-margin);
 		margin-top: 10px;
-		max-height: calc(100dvh - 250px);
+		max-height: calc(100dvh - 300px);
 		overflow-x: hidden;
 		overflow-y: auto;
 		border-radius: 5px;
