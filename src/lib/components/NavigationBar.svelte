@@ -384,7 +384,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 10px;
+		gap: var(--box-margin);
 		transition: all 250ms ease;
 		z-index: 14;
 		pointer-events: none;

@@ -13,20 +13,21 @@
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
-	<div class="barMenu">
-		<button
-			class="standardButton bottomBarButton white"
-			id="resetButton"
-			onclick={() => {
-				reloadPanorama(); // No sound, as the reload sound will play
-			}}
-		>
-			<img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
-		</button>
-		<!-- Links -->
-		<div class="socialLinkArea">
+	<div class="bottomLeftMenu">
+		<div class="barMenu">
 			<button
-				class="bottomSocialItem linkItem"
+				class="standardButton bottomBarButton white"
+				id="resetButton"
+				onclick={() => {
+					reloadPanorama(); // No sound, as the reload sound will play
+				}}
+			>
+				<img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
+			</button>
+		</div>
+		<div class="barMenu socialBar">
+			<button
+				class="linkItem standardButton bottomBarButton white"
 				id="discordButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -36,7 +37,7 @@
 				<img src="/img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" />
 			</button>
 			<button
-				class="bottomSocialItem linkItem"
+				class="linkItem standardButton bottomBarButton white"
 				id="redditButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -46,7 +47,7 @@
 				<img src="/img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
 			</button>
 			<button
-				class="bottomSocialItem linkItem"
+				class="linkItem standardButton bottomBarButton white"
 				id="blueskyButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -115,41 +116,25 @@
 		pointer-events: none;
 	}
 
-	.socialLinkArea {
-		border-radius: 5px;
-		border: 3px solid rgba(255, 255, 255, 0.1);
-		box-sizing: border-box;
-		background-color: var(--panel-button-color);
-		box-shadow: var(--button-shadow);
-		display: flex;
-		gap: 3px;
-		padding: 3px;
-		user-select: none;
-		text-align: center;
-	}
-
 	.linkItem {
-		border-radius: 3px;
 		padding: 4px;
 		padding-inline: 6px;
-		height: 28px;
-		transition:
-			background-color 250ms ease,
-			color 250ms ease;
-		background-color: rgba(43, 43, 57, 0.2);
-		box-shadow: var(--bulb-shadow);
+	}
+
+	.bottomLeftMenu {
+		display: flex;
+		align-items: center;
+		gap: var(--box-margin);
 	}
 
 	.bottomBarButton {
 		background-color: var(--panel-button-color);
-		pointer-events: auto;
-		font-size: 25px;
 	}
 
 	.bottomBarIcon {
 		width: 20px !important;
 		height: 20px !important;
-		vertical-align: -3px;
+		vertical-align: -2px;
 	}
 
 	.bottomFooterAds {
@@ -208,13 +193,15 @@
 
 	.helpButton {
 		min-width: 40px;
-		box-shadow: var(--bulb-shadow) !important;
+		box-shadow: none !important;
 		border: none;
 		background-color: transparent;
 		padding: 0;
 		pointer-events: auto;
-		margin-left: -8px;
-		height: 30px;
+		margin-left: -10px;
+		height: 34px;
+		background-color: var(--box-color-dark-soft);
+		border-radius: 2px;
 	}
 
 	.helpButton:hover {
@@ -223,7 +210,6 @@
 
 	#resetButtonImg {
 		width: 21px;
-		vertical-align: 2px;
 	}
 
 	.bottomFooterAdText {
@@ -250,7 +236,7 @@
 			padding-bottom: 58px;
 		}
 
-		.socialLinkArea {
+		.socialBar {
 			display: none;
 		}
 
