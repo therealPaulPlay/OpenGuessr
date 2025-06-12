@@ -197,7 +197,7 @@
 		background-color: rgba(255, 255, 255, 0.075);
 		border-radius: 5px;
 		padding: var(--box-margin);
-		box-shadow: var(--button-shadow);
+		box-shadow: var(--box-shadow);
 		flex-grow: 10;
 		position: relative;
 		transition:

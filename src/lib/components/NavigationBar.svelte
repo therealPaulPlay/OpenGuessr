@@ -396,6 +396,8 @@
 		display: flex;
 		transition: mask 0.3s ease-in-out;
 		scrollbar-width: none;
+		padding-top: var(--panel-margin);
+		padding-bottom: var(--panel-margin);
 	}
 
 	.sideMenuDisabled {
@@ -425,6 +427,9 @@
 		max-width: calc(100% - (var(--box-margin) * 2 + var(--panel-margin) * 2));
 		margin-left: auto;
 		margin-right: var(--box-margin);
+		padding-top: 0;
+		padding-bottom: 0;
+		min-height: calc(40px + var(--panel-margin) * 2);
 	}
 
 	.socialBarIcons {

@@ -8,7 +8,7 @@
 	import { isSingleplayerNMPZ, singleplayerTimeout } from "$lib/stores/modeStore";
 	import { roundLog } from "$lib/stores/locationStore";
 	import { onMount } from "svelte";
-	import { ChevronLeft, ChevronRight, Gamepad2 } from "lucide-svelte";
+	import { ChevronLeft, ChevronRight, Gamepad2, Timer } from "lucide-svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 
 	// Singleplayer Options UI ----------------------------------------------------------------------------------------
@@ -124,7 +124,7 @@
 					</div>
 
 					<div class="timerTextBox">
-						<img alt="timer icon" class="timerIcon" src="/img/timer_icon.png" />
+						<Timer />
 						<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
 					</div>
 				</div>
@@ -307,11 +307,5 @@
 		padding-inline: 15px;
 		border-radius: 5px;
 		width: calc(100% - 30px);
-	}
-
-	.timerIcon {
-		width: 23px;
-		height: 23px;
-		opacity: 0.5;
 	}
 </style>
