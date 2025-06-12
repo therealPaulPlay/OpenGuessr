@@ -1213,12 +1213,10 @@
 	}
 
 	.leaderboardSupporterEntry {
-		border: 3px solid var(--supporter-green);
-		border-bottom: 3px solid var(--supporter-green-soft);
 		width: 100%;
 		box-sizing: border-box;
-		padding: 2px;
-		padding-inline: 7px;
+		box-shadow: var(--box-shadow-supporter);
+		background-color: var(--supporter-green-tint);
 	}
 
 	.centerEntry {
