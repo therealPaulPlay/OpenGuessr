@@ -55,6 +55,7 @@
 		line-height: 22px;
 		font-family: monospace;
 		margin-top: 10px;
+		box-shadow: var(--box-shadow);
 	}
 
 	#errorPopupDisable {

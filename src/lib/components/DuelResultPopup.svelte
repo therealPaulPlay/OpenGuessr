@@ -75,6 +75,7 @@
 		flex-wrap: wrap;
 		padding-top: 10px;
 		padding-bottom: 10px;
+		box-shadow: var(--box-shadow);
 	}
 
 	.growSearch {
@@ -94,6 +95,7 @@
 		align-items: center;
 		flex-wrap: wrap;
 		gap: var(--box-margin);
+		box-shadow: var(--box-shadow);
 	}
 
 	.infoBox p {

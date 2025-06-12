@@ -79,6 +79,7 @@
 		user-select: none;
 		margin-top: var(--panel-margin);
 		flex-shrink: 0;
+		height: 40px;
 		width: calc(100% - calc(var(--box-margin) + 6px));
 	}
 

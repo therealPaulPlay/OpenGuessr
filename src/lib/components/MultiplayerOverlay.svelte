@@ -246,6 +246,7 @@
 		background-color: rgba(0, 0, 0, 0.1);
 		border-radius: var(--box-margin);
 		width: 100%;
+		box-shadow: var(--box-shadow);
 	}
 
 	.yourMultiplayerOverlay {
@@ -273,6 +274,7 @@
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);
 		mask-image: linear-gradient(to right, black 95%, transparent 100%);
+		overflow: hidden;
 	}
 
 	.multiplayerEntryPlayerName:hover {

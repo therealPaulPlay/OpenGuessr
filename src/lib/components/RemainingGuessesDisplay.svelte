@@ -60,6 +60,7 @@
 		border-bottom-right-radius: 0;
 		z-index: 1;
 		user-select: none;
+		box-shadow: var(--box-shadow);
 	}
 
 	.dimmed {
