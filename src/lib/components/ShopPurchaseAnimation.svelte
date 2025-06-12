@@ -72,8 +72,10 @@
 		padding: var(--layout-margin);
 		background-color: var(--box-color);
 		border-radius: 10px;
-		box-shadow: 0 0 50px rgba(0, 0, 0, 0.3);
-		border: 3px solid var(--box-color);
+		box-shadow:
+			0 0 50px rgba(0, 0, 0, 0.3),
+			inset 0 0.1rem 5px hsla(0, 0%, 100%, 0.3),
+			inset 0 -0.25rem 5px rgba(0, 0, 2, 0.15);
 		position: relative;
 		transition:
 			scale 250ms ease,

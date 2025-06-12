@@ -25,7 +25,7 @@
 		<div class="popup-title">
 			<h1 id="socialHeader">{$duelResultTitle}</h1>
 		</div>
-		<div class="duelResultScroll">
+		<div class="duelResultScroll of-top of-bottom">
 			<div class="eloChangeDisplay">
 				<h1 class="eloChangeText">{$eloChange >= 0 ? "+" : ""}{$animatedElo.toFixed(0)} Elo</h1>
 				<p>You now have {$elo} Elo.</p>
@@ -75,6 +75,7 @@
 		flex-wrap: wrap;
 		padding-top: 10px;
 		padding-bottom: 10px;
+		box-shadow: var(--box-shadow);
 	}
 
 	.growSearch {
@@ -94,6 +95,7 @@
 		align-items: center;
 		flex-wrap: wrap;
 		gap: var(--box-margin);
+		box-shadow: var(--box-shadow);
 	}
 
 	.infoBox p {

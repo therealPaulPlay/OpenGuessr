@@ -2,25 +2,16 @@
 
 <script>
 	import { onMount, onDestroy } from "svelte";
-	import { fade } from "svelte/transition";
+	import { backOut } from "svelte/easing";
+	import { fade, scale } from "svelte/transition";
 
 	let { children, z, frameLess, slim, verySlim } = $props();
-
-	let animateClass = $state("");
-
-	onMount(() => {
-		// Trigger the popup animation
-		animateClass = "animate";
-	});
-
-	onDestroy(() => {
-		animateClass = "";
-	});
 </script>
 
-<div class="popupHolder" style:z-index={z} transition:fade={{ duration: 50 }}>
+<div class="popupHolder" style:z-index={z} transition:fade={{ duration: 100 }}>
 	<div
-		class="uiWindow {animateClass}"
+		class="uiWindow"
+		transition:scale={{ easing: backOut, duration: 250, start: 0.9 }}
 		class:frameLess={Boolean(frameLess)}
 		style:max-width={Boolean(verySlim) ? "550px" : Boolean(slim) ? "700px" : ""}
 	>
@@ -63,31 +54,16 @@
 		font-size: 22px;
 		overflow-x: hidden;
 		overflow-y: auto;
-		background-color: var(--menu-background);
+		background-color: var(--panel-color);
 		backdrop-filter: blur(10px);
-		box-shadow: 0 2px 100px rgba(5, 6, 10, 0.5);
+		box-shadow:
+			0 2px 100px rgba(5, 6, 10, 0.5),
+			inset 0 0.05rem 1px hsla(0, 0%, 100%, 0.2),
+			inset 0 -0.2rem 1px rgba(0, 0, 2, 0.2) !important;
 		color: white;
 		pointer-events: auto;
 		transition:
 			opacity 250ms ease,
 			transform 250ms ease;
-	}
-
-	.animate {
-		animation: popupFadeIn 250ms ease-in-out;
-	}
-
-	@keyframes popupFadeIn {
-		0% {
-			transform: scale(0.99);
-		}
-
-		50% {
-			transform: scale(1.02);
-		}
-
-		100% {
-			transform: scale(1);
-		}
 	}
 </style>

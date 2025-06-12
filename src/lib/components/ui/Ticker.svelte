@@ -22,7 +22,7 @@
 			if (Number(value) < Number(minimum)) value = Number(minimum);
 		}}>-</button
 	>
-	<p id="roundAmountText" class="tickerText">{value !== minimum ? value : lowerLimitText ? lowerLimitText : value}</p>
+	<p class="tickerText">{value !== minimum ? value : lowerLimitText ? lowerLimitText : value}</p>
 	{#if note}
 		<p class="tickerNote">{note}</p>
 	{/if}
@@ -40,6 +40,7 @@
 <style>
 	.tickerText {
 		background-color: rgba(255, 255, 255, 0.1);
+		box-shadow: var(--bulb-shadow);
 		padding: 5px;
 		padding-left: 10px;
 		padding-right: 10px;
@@ -56,6 +57,7 @@
 	.ticker {
 		display: flex;
 		gap: 10px;
+		box-shadow: var(--box-shadow);
 		border-radius: 10px;
 		justify-content: left;
 		padding: var(--panel-margin);

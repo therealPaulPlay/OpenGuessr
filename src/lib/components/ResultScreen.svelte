@@ -59,7 +59,7 @@
 	<ResultScreenSlideup />
 	<div id="endBottomBar">
 		<div
-			class="floatingResultLeaderboardArea"
+			class="floatingResultLeaderboardArea barMenu"
 			style:display={$supporterLevel >= 2 || !$resultScreenEnabled || $adsDisabled ? "none" : ""}
 		>
 			<div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
@@ -197,6 +197,7 @@
 		background-color: rgba(255, 255, 255, 0.075);
 		border-radius: 5px;
 		padding: var(--box-margin);
+		box-shadow: var(--button-shadow);
 		flex-grow: 10;
 		position: relative;
 		transition:
@@ -268,13 +269,9 @@
 		display: none;
 		justify-content: center;
 		align-items: center;
-		border-radius: 10px;
-		background-color: var(--panel-color);
-		backdrop-filter: blur(10px);
-		-webkit-backdrop-filter: blur(10px);
 		position: absolute;
-		top: calc(-100px - var(--panel-margin));
 		left: 50%;
+		top: calc(-100px - var(--panel-margin));
 		transform: translate(-50%, 0);
 		padding: 5px;
 		pointer-events: auto;
@@ -358,7 +355,7 @@
 	#endScreenXPbar {
 		flex-grow: 10;
 		height: 15px;
-		background-color: #ccc;
+		background-color: rgba(255, 255, 255, 0.2);
 		border-radius: 7px;
 		transition: none;
 	}
@@ -382,6 +379,7 @@
 		background-color: #00cc00;
 		width: 0%;
 		transition: none;
+		box-shadow: var(--bulb-shadow);
 	}
 
 	:global(.XPbarAnimate) {
@@ -428,6 +426,7 @@
 		margin-left: 8px;
 		color: white;
 		background-color: #00cc00;
+		box-shadow: var(--bulb-shadow);
 		border-radius: 7px;
 		text-wrap: nowrap;
 		overflow: hidden;

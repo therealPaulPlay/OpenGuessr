@@ -71,7 +71,7 @@
 			}}
 		>
 			<button
-				id="helpButton"
+				class="helpButton standardButton white"
 				class:innerConfirmButtonDisabled={$confirmButtonActive}
 				onclick={(element) => {
 					element.stopPropagation();
@@ -120,11 +120,11 @@
 		border: 3px solid rgba(255, 255, 255, 0.1);
 		box-sizing: border-box;
 		background-color: var(--panel-button-color);
+		box-shadow: var(--button-shadow);
 		display: flex;
 		gap: 3px;
 		padding: 3px;
 		user-select: none;
-		box-shadow: 0 3px 1px rgba(0, 0, 0, 0.1);
 		text-align: center;
 	}
 
@@ -137,6 +137,7 @@
 			background-color 250ms ease,
 			color 250ms ease;
 		background-color: rgba(43, 43, 57, 0.2);
+		box-shadow: var(--bulb-shadow);
 	}
 
 	.bottomBarButton {
@@ -205,22 +206,18 @@
 		transform: translate(-50%, 0);
 	}
 
-	#helpButton {
+	.helpButton {
 		min-width: 40px;
-		margin-inline: 0;
-		max-width: 60px;
-		background-color: rgba(43, 43, 57, 0.2);
+		box-shadow: var(--bulb-shadow) !important;
+		border: none;
+		background-color: transparent;
+		padding: 0;
 		pointer-events: auto;
-		transition:
-			filter 250ms ease,
-			opacity 250ms ease;
-		margin-left: -7px;
-		font-size: 20px;
-		border-radius: 3px;
+		margin-left: -8px;
 		height: 30px;
 	}
 
-	#helpButton:hover {
+	.helpButton:hover {
 		filter: brightness(0.7);
 	}
 

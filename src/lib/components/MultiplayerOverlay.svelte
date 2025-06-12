@@ -28,7 +28,7 @@
 	{#if $overlayShowSubtitle}
 		<h2 class="multiplayerTitle">1.5x Multiplier</h2>
 	{/if}
-	<div class="multiplayerTable">
+	<div class="multiplayerTable of-top of-bottom of-length-1.5">
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		{#if $multiplayerTableArray.length > 0}
 			{#if $teamAmount > 1}
@@ -160,6 +160,7 @@
 
 	.eloDisplay {
 		padding: 7px;
+		box-shadow: var(--bulb-shadow);
 		border-radius: 5px;
 		font-style: italic;
 		position: relative;
@@ -245,6 +246,7 @@
 		background-color: rgba(0, 0, 0, 0.1);
 		border-radius: var(--box-margin);
 		width: 100%;
+		box-shadow: var(--box-shadow);
 	}
 
 	.yourMultiplayerOverlay {
@@ -260,7 +262,7 @@
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		min-height: 50px;
+		height: 54px;
 	}
 
 	.multiplayerEntryPlayerName {
@@ -271,8 +273,9 @@
 		display: flex;
 		align-items: center;
 		gap: var(--panel-margin);
-		overflow: hidden;
+		padding: var(--panel-margin);
 		mask-image: linear-gradient(to right, black 95%, transparent 100%);
+		overflow: hidden;
 	}
 
 	.multiplayerEntryPlayerName:hover {

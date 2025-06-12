@@ -1,5 +1,5 @@
 import { imageGuessr } from "$lib/stores/modeStore.js";
-import { imageGuesserImage, imageGuesserBackground } from "$lib/stores/context-specific/imageGuesserStore";
+import { imageGuessrImage, imageGuessrBackground } from "$lib/stores/context-specific/imageGuessrStore";
 import { get } from "svelte/store";
 
 export function loadImageFromUrl(url) {
@@ -9,13 +9,13 @@ export function loadImageFromUrl(url) {
 
     img.onload = function () {
         // Set the background image once it's loaded
-        get(imageGuesserImage).style.backgroundImage = `url(${url})`;
-        get(imageGuesserBackground).style.backgroundImage = `url(${url})`;
+        get(imageGuessrImage).style.backgroundImage = `url(${url})`;
+        get(imageGuessrBackground).style.backgroundImage = `url(${url})`;
 
         // Remove the loading class to apply any transitions
         setTimeout(() => {
-            get(imageGuesserImage).classList.remove("guessImageLoading");
-            get(imageGuesserBackground).classList.remove("guessImageLoading");
+            get(imageGuessrImage).classList.remove("guessImageLoading");
+            get(imageGuessrBackground).classList.remove("guessImageLoading");
         }, 200);
     };
 }
@@ -24,14 +24,14 @@ export function setImageGuesserMode(enable) {
     imageGuessr.set(enable);
 
     if (enable) {
-        get(imageGuesserImage).style.transform = "rotate(" + Math.floor(Math.random() * 10 - 5) + "deg)";
+        get(imageGuessrImage).style.transform = "rotate(" + Math.floor(Math.random() * 10 - 5) + "deg)";
 
         // Apply image loading styles
-        get(imageGuesserImage).classList.add("guessImageLoading");
-        get(imageGuesserBackground).classList.add("guessImageLoading");
+        get(imageGuessrImage).classList.add("guessImageLoading");
+        get(imageGuessrBackground).classList.add("guessImageLoading");
 
         // Clear the background styles
-        get(imageGuesserImage).style.backgroundImage = "";
-        get(imageGuesserBackground).style.backgroundImage = "";
+        get(imageGuessrImage).style.backgroundImage = "";
+        get(imageGuessrBackground).style.backgroundImage = "";
     }
 }

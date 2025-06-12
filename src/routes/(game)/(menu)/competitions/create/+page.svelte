@@ -373,6 +373,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		justify-content: flex-start;
 		flex-direction: column;
 		width: calc(100% - 40px);
+		box-shadow: var(--box-shadow);
 	}
 
 	#inputArea {
@@ -412,6 +413,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		width: calc(100% - 30px);
 		padding: 20px;
 		transition: background-color 250ms ease;
+		box-shadow: var(--button-shadow);
 	}
 
 	.locationTextbox:focus {

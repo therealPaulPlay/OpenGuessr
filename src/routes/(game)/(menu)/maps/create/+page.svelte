@@ -9,7 +9,7 @@
 	import { showNotification } from "$lib/utils/notifications";
 	import { get } from "svelte/store";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { Info } from "lucide-svelte";
+	import { ArrowDown, Info } from "lucide-svelte";
 
 	let jsonPopup = $state(false);
 	let fileName = $state("Pick file");
@@ -131,8 +131,8 @@
 			maxlength="25"
 		/>
 		<p>Map category:</p>
-		<select id="categoryDropdown" class="dropdown" bind:value={categoryValue}>
-			<option value="none">Select one...</option>
+		<select id="categoryDropdown" class="dropdown standardButton white" bind:value={categoryValue}>
+			<option value="none">Click to select</option>
 			<option value="Nature">Nature</option>
 			<option value="Architecture">Architecture</option>
 			<option value="Urban">Urban</option>
@@ -309,6 +309,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		justify-content: flex-start;
 		flex-direction: column;
 		width: calc(100% - 40px);
+		box-shadow: var(--box-shadow);
 	}
 
 	.preBox {
@@ -319,6 +320,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		width: calc(100% - 20px);
 		justify-content: flex-start;
 		flex-direction: column;
+		box-shadow: var(--box-shadow);
 	}
 
 	.inputArea {
@@ -347,6 +349,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		width: calc(100% - 30px);
 		padding: 20px;
 		transition: background-color 250ms ease;
+		box-shadow: var(--button-shadow);
 	}
 
 	.locationTextbox:focus {
@@ -378,15 +381,8 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		margin-bottom: 20px;
 		margin-top: 10px;
 		width: 150px;
-		background-color: rgba(255, 255, 255, 0.1);
-		border-radius: 10px;
 		min-height: 50px;
-		color: white;
-		border: none;
-		font-size: 22px;
-		font-family: inherit;
-		padding: 5px;
-		cursor: pointer;
+		border-radius: 10px;
 	}
 
 	select option {

@@ -98,7 +98,7 @@
 		<div class="popup-title">
 			<h1>Settings</h1>
 		</div>
-		<div class="settingsCanvas">
+		<div class="settingsCanvas of-top of-bottom">
 			<div class="settingsBox">
 				<p class="textMargin">Unit system</p>
 				<Tabs
@@ -170,8 +170,8 @@
 					</button>
 				</div>
 			{/if}
-			<div class="settingsBox">
-				<p class="textMargin">Legal info</p>
+			<div class="settingsBox settingsFlexBox">
+				<p class="settingsFlexBoxTitle">Legal info</p>
 				<button
 					class="standardButton white"
 					id="privacyButton"
@@ -192,16 +192,30 @@
 		background-color: var(--box-color);
 		border-radius: 10px;
 		padding: var(--box-margin);
+		box-shadow: var(--box-shadow);
 		overflow: hidden;
 		flex-grow: 1;
 		min-width: 150px;
 		height: 77px;
 	}
 
+	.settingsFlexBox {
+		display: flex;
+		gap: var(--box-margin);
+		justify-content: space-between;
+		align-items: center;
+		height: unset;
+	}
+
+	.settingsFlexBoxTitle {
+		margin-left: var(--panel-margin);
+	}
+
 	.settingsCanvas {
 		display: flex;
 		flex-wrap: wrap;
 		gap: 15px;
+		width: 100%;
 		justify-content: flex-start;
 		align-items: center;
 		max-height: calc(100dvh - 250px);

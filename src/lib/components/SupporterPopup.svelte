@@ -87,7 +87,7 @@
 				<img id="supporterIconTitle" alt="supporter tag" src="/img/supporter_icon.png" />
 			</h1>
 		</div>
-		<div id="supporterTierScrollBox" class="supporterBox supporterBoxFlex">
+		<div class="supporterBox supporterBoxFlex of-top of-bottom">
 			<div class="tierBox">
 				<div class="tierBoxTier"><p class="tierNumber">Tier 1</p></div>
 				<ul class="tierBenefits">
@@ -179,7 +179,8 @@
 <style>
 	.tierNumber {
 		background-color: rgba(0, 0, 0, 0.1);
-		border-radius: 3px;
+		box-shadow: var(--bulb-shadow);
+		border-radius: 5px;
 		padding: 2px !important;
 		padding-inline: 8px !important;
 	}
@@ -193,6 +194,7 @@
 
 	.tierBoxTier {
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		display: flex;
 		align-items: center;
 		justify-content: center;
@@ -223,6 +225,7 @@
 		margin-left: 5px;
 		background-color: rgba(0, 0, 0, 0.1);
 		vertical-align: 1px;
+		box-shadow: var(--bulb-shadow);
 	}
 
 	.tierBenefits li {
@@ -255,6 +258,7 @@
 	.tierBox {
 		background-color: rgba(255, 255, 255, 0.1);
 		border-radius: 10px;
+		box-shadow: var(--box-shadow);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -276,7 +280,7 @@
 		background: linear-gradient(90deg, #00ff1c00 1%, #cfffd754 50%, #c0ffcd00);
 		border-radius: inherit;
 		content: "";
-		height: 4px;
+		height: 2px;
 		inset: 0;
 		opacity: 0;
 		position: absolute;
@@ -291,7 +295,7 @@
 		align-items: center;
 		gap: var(--layout-margin);
 		margin-top: 10px;
-		max-height: calc(100dvh - 300px);
+		max-height: calc(100dvh - 250px);
 		overflow-x: hidden;
 		overflow-y: auto;
 		border-radius: 5px;

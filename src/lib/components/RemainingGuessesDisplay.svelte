@@ -51,7 +51,7 @@
 		border-radius: 10px;
 		position: fixed;
 		top: 0;
-		background-color: var(--menu-background);
+		background-color: var(--panel-color);
 		padding: 5px;
 		padding-inline: 10px;
 		margin-left: -8px;
@@ -60,6 +60,7 @@
 		border-bottom-right-radius: 0;
 		z-index: 1;
 		user-select: none;
+		box-shadow: var(--box-shadow);
 	}
 
 	.dimmed {

@@ -18,7 +18,7 @@
 
 <style>
 	#page-content {
-		height: 100dvh;
+		height: 100vh;
 		display: flex;
 		flex-direction: column;
 		justify-content: center;

@@ -2,6 +2,7 @@
 	import { initializeAds } from "$lib/utils/ads";
 	import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
 	import { onMount } from "svelte";
+	import initOverfade from "overfade";
 
 	let { children } = $props();
 
@@ -27,7 +28,7 @@
 	import DiscordPopup from "$lib/components/DiscordPopup.svelte";
 	import SingleplayerOptions from "$lib/components/SingleplayerOptions.svelte";
 	import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
-	import CountryGuesserBar from "$lib/components/CountryGuesserBar.svelte";
+	import CountryGuesserBar from "$lib/components/CountryGuessrBar.svelte";
 	import ResultScreen from "$lib/components/ResultScreen.svelte";
 	import CaptchaPopup from "$lib/components/CaptchaPopup.svelte";
 	import Authenticate from "$lib/components/Authenticate.svelte";
@@ -68,6 +69,9 @@
 		} catch (error) {
 			console.warn("Error adding keydown listener to prevent unwanted last button press:", error);
 		}
+
+		// Init overfade
+		initOverfade();
 	});
 
 	// Load Playlight

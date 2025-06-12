@@ -54,6 +54,7 @@
 		background-color: var(--box-color);
 		padding-inline: 25px;
 		margin-bottom: var(--layout-margin);
+		box-shadow: var(--box-shadow);
 	}
 
 	.progressBarWrapper {
@@ -77,6 +78,7 @@
 	.progressBarFill {
 		height: 100%;
 		background: var(--brand-color);
+		box-shadow: var(--bulb-shadow);
 		border-radius: 6px;
 		transition: width 300ms ease;
 	}
@@ -98,6 +100,7 @@
 		justify-content: center;
 		z-index: 10;
 		background-color: rgb(114, 115, 119);
+		box-shadow: var(--bulb-shadow);
 	}
 
 	.divisionText {
@@ -129,6 +132,7 @@
 
 	.eloValue {
 		color: var(--brand-color);
+		box-shadow: var(--box-shadow);
 		font-size: 18px;
 		margin-top: 4px;
 		text-wrap: nowrap;

@@ -111,6 +111,7 @@
 	tabindex="0"
 	class="badge {'badgeStage' + badges[id]?.stage}"
 	class:badgeLocked={!unlocked && !display}
+	class:badgeSelected={$selectedBadge == id && !display}
 	style:pointer-events={Boolean(interactive) ? "auto" : "none"}
 	onclick={() => {
 		if (unlocked) {
@@ -122,7 +123,6 @@
 	}}
 >
 	{badges[id]?.title}
-	<div class:badgeSelected={$selectedBadge == id && !display}></div>
 </div>
 
 <style>
@@ -131,20 +131,7 @@
 	}
 
 	.badgeSelected {
-		border: 3px solid rgba(255, 255, 255, 0.75);
-		box-sizing: border-box;
-		padding-top: 3px;
-		padding-bottom: 3px;
-		padding-inline: 7px;
-		width: 100%;
-		height: 100%;
-		border-radius: 5px;
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		z-index: 2;
+		filter: brightness(1.5);
 	}
 
 	.badge {
@@ -156,6 +143,7 @@
 		font-size: 20px;
 		text-wrap: nowrap;
 		padding-inline: 10px;
+		box-shadow: var(--button-shadow);
 		cursor: pointer;
 		transition:
 			opacity 250ms ease,
