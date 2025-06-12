@@ -11,7 +11,7 @@
 	<h1>{$page.status} - {$page.error.message}</h1>
 	<p>The page you requested does not exist or experienced an error.</p>
 	<a class="returnButton standardButton" href="/">
-		<ArrowLeft size="18" />
+		<ArrowLeft style="min-width: 22px; margin-bottom: -3px;" strokeWidth={2.5}/>
 		Return to OpenGuessr</a
 	>
 </div>
