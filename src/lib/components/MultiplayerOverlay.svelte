@@ -28,7 +28,7 @@
 	{#if $overlayShowSubtitle}
 		<h2 class="multiplayerTitle">1.5x Multiplier</h2>
 	{/if}
-	<div class="multiplayerTable">
+	<div class="multiplayerTable of-top of-bottom of-length-1.5">
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		{#if $multiplayerTableArray.length > 0}
 			{#if $teamAmount > 1}
