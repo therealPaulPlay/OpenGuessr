@@ -262,6 +262,7 @@
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
+		height: 54px;
 	}
 
 	.multiplayerEntryPlayerName {
