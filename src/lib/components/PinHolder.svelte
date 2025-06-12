@@ -140,6 +140,7 @@
 		right: 0;
 		padding-inline: var(--panel-margin);
 		user-select: none;
+		box-shadow: var(--bulb-shadow);
 	}
 
 	.tokenIcon {

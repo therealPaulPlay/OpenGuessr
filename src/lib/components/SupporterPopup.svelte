@@ -225,6 +225,7 @@
 		margin-left: 5px;
 		background-color: rgba(0, 0, 0, 0.1);
 		vertical-align: 1px;
+		box-shadow: var(--bulb-shadow);
 	}
 
 	.tierBenefits li {

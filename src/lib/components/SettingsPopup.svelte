@@ -170,8 +170,8 @@
 					</button>
 				</div>
 			{/if}
-			<div class="settingsBox">
-				<p class="textMargin">Legal info</p>
+			<div class="settingsBox settingsFlexBox">
+				<p class="settingsFlexBoxTitle">Legal info</p>
 				<button
 					class="standardButton white"
 					id="privacyButton"
@@ -197,6 +197,18 @@
 		flex-grow: 1;
 		min-width: 150px;
 		height: 77px;
+	}
+
+	.settingsFlexBox {
+		display: flex;
+		gap: var(--box-margin);
+		justify-content: space-between;
+		align-items: center;
+		height: unset;
+	}
+
+	.settingsFlexBoxTitle {
+		margin-left: var(--panel-margin);
 	}
 
 	.settingsCanvas {

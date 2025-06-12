@@ -58,7 +58,7 @@
 		backdrop-filter: blur(10px);
 		box-shadow:
 			0 2px 100px rgba(5, 6, 10, 0.5),
-			inset 0 0.075rem 1px hsla(0, 0%, 100%, 0.2),
+			inset 0 0.05rem 1px hsla(0, 0%, 100%, 0.2),
 			inset 0 -0.2rem 1px rgba(0, 0, 2, 0.2) !important;
 		color: white;
 		pointer-events: auto;
