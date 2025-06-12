@@ -205,6 +205,7 @@
 		justify-content: space-between;
 		align-items: center;
 		height: unset;
+		width: 100%;
 	}
 
 	.settingsFlexBoxTitle {
