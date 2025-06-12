@@ -356,7 +356,7 @@
 			<p class="locationAmountText">{mapLocationAmount.toLocaleString()} Locations</p>
 		</div>
 		<div class="descriptionInfo infoElement">
-			<div class="descriptionScroll">
+			<div class="descriptionScroll of-top of-bottom">
 				<h2 class="descHeader">About <i>{mapName}</i></h2>
 				<p>
 					{mapDescription}
@@ -463,6 +463,7 @@
 
 	.locationsTrimNote {
 		position: absolute;
+		box-shadow: var(--box-shadow);
 		bottom: var(--box-margin);
 		left: var(--box-margin);
 		max-width: calc(100% - 40px);
@@ -519,6 +520,7 @@
 
 	.infoElement {
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		border-radius: 15px;
 		display: flex;
 		padding: var(--box-margin);

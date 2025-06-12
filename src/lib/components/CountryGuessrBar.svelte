@@ -98,7 +98,8 @@
 	}
 
 	:global(.selectedCountry) {
-		border: solid 3px white;
+		filter: brightness(1.2);
+		background-color: rgba(255, 255, 255, 0.3) !important;
 	}
 
 	.countryGuessrFlag {

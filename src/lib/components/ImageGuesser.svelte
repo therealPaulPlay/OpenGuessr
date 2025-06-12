@@ -1,6 +1,6 @@
 <script>
 	import { imageGuessr } from "$lib/stores/modeStore.js";
-	import { imageGuesserImage, imageGuesserBackground } from "$lib/stores/context-specific/imageGuesserStore";
+	import { imageGuessrImage, imageGuessrBackground } from "$lib/stores/context-specific/imageGuessrStore";
 
 	function scaleUp(event) {
 		const image = event.target;
@@ -14,27 +14,27 @@
 </script>
 
 <div
-	id="imageGuesserOverlay"
+	id="imageGuessrOverlay"
 	style:display={$imageGuessr ? "flex" : "none"}
 	style:opacity={$imageGuessr ? "1" : "0"}
 	style:pointerEvents={$imageGuessr ? "auto" : "none"}
 >
 	<div
-		id="imageGuesserImage"
+		id="imageGuessrImage"
 		class="guessImageLoading"
-		bind:this={$imageGuesserImage}
+		bind:this={$imageGuessrImage}
 		onmouseenter={scaleUp}
 		onmouseleave={scaleDown}
 		role="img"
 	></div>
-	<p id="imageGuesserAttribution">
+	<p id="imageGuessrAttribution">
 		CC0 Images by <a class="noTextDecoration" href="https://commons.wikimedia.org/" target="_blank">Wikimedia</a>
 	</p>
-	<div id="imageGuesserBackground" class="guessImageLoading" bind:this={$imageGuesserBackground}></div>
+	<div id="imageGuessrBackground" class="guessImageLoading" bind:this={$imageGuessrBackground}></div>
 </div>
 
 <style>
-	#imageGuesserOverlay {
+	#imageGuessrOverlay {
 		width: 100%;
 		height: 100%;
 		position: fixed;
@@ -54,7 +54,7 @@
 		background-color: rgb(22, 22, 22);
 	}
 
-	#imageGuesserImage {
+	#imageGuessrImage {
 		max-width: 40%;
 		max-height: 70%;
 		width: 100%;
@@ -73,7 +73,7 @@
 			drop-shadow(-10px 0px 0px rgb(255, 255, 255)) drop-shadow(0px -10px 0px rgb(255, 255, 255));
 	}
 
-	#imageGuesserAttribution {
+	#imageGuessrAttribution {
 		font-size: 22px;
 		color: white;
 		opacity: 0.5;
@@ -82,18 +82,18 @@
 		margin-top: 10px;
 	}
 
-	#imageGuesserBackground {
+	#imageGuessrBackground {
 		position: fixed;
 		width: 100%;
 		height: 100%;
 		z-index: 1;
-		filter: brightness(0.5) blur(50px);
+		filter: brightness(0.5) blur(25px);
 		background-size: cover;
 		transition: opacity 500ms ease;
 		opacity: 1;
 	}
 
-	#imageGuesserAttribution {
+	#imageGuessrAttribution {
 		font-size: 20px;
 	}
 
@@ -102,7 +102,7 @@
 	}
 
 	@media all and (max-width: 1200px) {
-		#imageGuesserImage {
+		#imageGuessrImage {
 			max-width: 80%;
 			max-height: 40%;
 		}

@@ -467,6 +467,7 @@
 	.roomCreationModule {
 		padding-top: 10px;
 		padding-bottom: 10px;
+		box-shadow: var(--box-shadow);
 	}
 
 	.roomCreationFriendsBox {
@@ -499,6 +500,7 @@
 
 	#smallJoinCounter {
 		position: absolute;
+		box-shadow: var(--bulb-shadow);
 		top: 5px;
 		right: 5px;
 		padding: 5px;
@@ -551,6 +553,7 @@
 	.selectedMapField {
 		display: flex;
 		gap: var(--box-margin);
+		box-shadow: var(--box-shadow);
 		border-radius: 10px;
 		justify-content: left;
 		padding: var(--panel-margin);

@@ -13,7 +13,7 @@
 		<div class="popup-title">
 			<h1 id="pinPopupWindow">Pins</h1>
 		</div>
-		<div class="pinScroll">
+		<div class="pinScroll of-top of-bottom">
 			<TitleSeparator text="Progression" />
 			<div class="pinSelector">
 				<PinHolder pinId="0" pinLockText="0 XP" unlocked={$profileExperience >= 0} />
@@ -58,8 +58,9 @@
 		background-color: var(--box-color-dark);
 		border-radius: 10px;
 		gap: var(--box-margin);
-		border: solid var(--box-margin) transparent;
+		padding: var(--box-margin);
 		box-sizing: border-box;
+		box-shadow: var(--box-shadow);
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
 	}

@@ -44,5 +44,6 @@
 		padding-inline: 15px;
 		display: flex;
 		align-items: center;
+		box-shadow: var(--box-shadow);
 	}
 </style>

@@ -35,6 +35,7 @@
 		transition: transform 150ms ease;
 		max-width: 100%;
 		height: 40px;
+		box-shadow: var(--button-shadow);
 	}
 
 	.tabs-group:has(button:active) {
@@ -48,11 +49,11 @@
 		padding-top: 0;
 		padding-bottom: 2px;
 		outline: none;
-		box-shadow: none;
 		text-overflow: ellipsis;
 		overflow: hidden;
 		flex-grow: 1;
 		height: 35px;
+		box-shadow: none !important;
 	}
 
 	.tab-button:active {

@@ -161,12 +161,32 @@
 
 	:global(.leaflet-control-layers-toggle) {
 		background-image: url("/img/map_layer_icon.png") !important;
+		filter: invert();
 		background-size: 23px 23px !important;
+	}
+
+	:global(.leaflet-control-layers-list) {
+		padding-inline: var(--panel-margin);
+	}
+
+	:global(.leaflet-control-layers-selector[type="radio"]) {
+		margin-right: 5px;
+	}
+
+	:global(.leaflet-control-layers-selector[type="radio"]:checked) {
+		accent-color: var(--brand-color);
 	}
 
 	:global(.leaflet-touch .leaflet-control-layers) {
 		border: none !important;
 		margin: var(--box-margin);
+	}
+
+	:global(.leaflet-control-layers) {
+		background-color: var(--panel-color);
+		box-shadow: var(--bulb-shadow) !important;
+		backdrop-filter: blur(5px);
+		color: white;
 	}
 
 	:global(.leaflet-touch .leaflet-control-layers-toggle) {

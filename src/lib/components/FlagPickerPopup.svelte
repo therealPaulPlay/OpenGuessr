@@ -226,7 +226,7 @@
 		<div class="popup-title">
 			<h1 id="pinPopupWindow">Flags</h1>
 		</div>
-		<div class="flag-container">
+		<div class="flag-container of-top of-bottom">
 			{#each Object.entries(continentFlags) as [continent, countries]}
 				<div class="continent-section">
 					<p class="continentTitle">{continent}</p>
@@ -269,6 +269,7 @@
 	.continentTitle {
 		padding: 3px;
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		border-radius: 10px;
 		text-align: left;
 		padding-left: 10px;
@@ -281,9 +282,10 @@
 	}
 
 	.flagSelected {
-		outline: 3px solid rgba(255, 255, 255, 0.75);
-		border-radius: 3px;
+		border-radius: 5px;
 		background-color: rgba(255, 255, 255, 0.2) !important;
+		box-shadow: var(--bulb-shadow);
+		filter: brightness(1.5);
 	}
 
 	.flagSelector {
@@ -294,6 +296,7 @@
 		margin-left: 0;
 		padding: var(--panel-margin);
 		min-width: calc(100% - 16px);
+		box-shadow: var(--box-shadow);
 		background-color: var(--box-color-dark);
 		border-radius: 10px;
 		border-top-left-radius: 0;
@@ -307,7 +310,7 @@
 		border: none;
 		cursor: pointer;
 		padding: 5px;
-		transition: transform 250ms;
+		transition: transform 250ms ease, filter 250ms ease;
 		width: 40px;
 		height: 30px;
 		display: flex;

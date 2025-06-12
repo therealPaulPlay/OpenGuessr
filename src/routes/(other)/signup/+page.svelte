@@ -304,7 +304,7 @@
 			<p id="errorMessage" bind:this={errorMessage}>This is an error message box.</p>
 		</div>
 		<div class="container containerBottom neumorphic-menu">
-			<button id="backButton" onclick={backToPrevious} class="standardButton">⭠ Go back</button>
+			<button onclick={backToPrevious} class="standardButton backButton">⭠ Go back</button>
 		</div>
 	</div>
 	<div class="orb"></div>
@@ -332,6 +332,13 @@
 		justify-content: center;
 		align-items: center;
 		overflow: hidden;
+	}
+
+	.neumorphic-menu {
+		box-shadow:
+			0 0 20px rgba(0, 0, 0, 0.3),
+			inset 0 0.075rem 0 hsla(0, 0%, 100%, 0.2),
+			inset 0 -0.1rem 0 rgba(0, 0, 0, 0.15) !important;
 	}
 
 	.captchaHeader {
@@ -459,6 +466,7 @@
 	.switchFormBox {
 		display: flex;
 		gap: var(--box-margin);
+		box-shadow: var(--button-shadow);
 		align-items: center;
 		justify-content: space-between;
 		min-width: 250px;
@@ -488,13 +496,14 @@
 		padding-bottom: 10px;
 	}
 
-	#backButton {
+	.backButton {
 		background-color: rgba(255, 255, 255, 0.1);
 		color: white;
 		border-radius: 10px;
 		width: 100%;
 		min-height: 50px;
 		border: none;
+		box-shadow: var(--button-shadow);
 	}
 
 	.containerBottom {

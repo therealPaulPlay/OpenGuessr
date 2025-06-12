@@ -15,7 +15,7 @@
 
 <nav class="menuNavBar">
 	<div class="centerNotifications">
-			<Notification belowNavbar={false} />
+		<Notification belowNavbar={false} />
 	</div>
 	<button
 		class="backButton standardButton white"
@@ -57,7 +57,7 @@
 		bottom: 0;
 		left: 0;
 		right: 0;
-		background: rgba(18, 18, 28, 0.9);
+		background: rgba(13, 15, 28, 0.9);
 		z-index: 90;
 		backdrop-filter: blur(15px);
 	}

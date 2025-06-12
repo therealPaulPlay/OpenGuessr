@@ -366,6 +366,7 @@
 	}
 
 	.map-container {
+		box-shadow: var(--bulb-shadow);
 		position: relative;
 		overflow: hidden;
 		height: 100%;
