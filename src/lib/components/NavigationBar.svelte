@@ -86,8 +86,6 @@
 	let mobileBarExtended = $state(false);
 </script>
 
-<svelte:window onresize={checkIfBarScrollable} />
-
 <!-- mobile top nav bar -->
 <nav class="mobileButtonArea topButtonArea">
 	<div class="barMenu mobileBarMenu">
