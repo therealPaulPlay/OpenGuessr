@@ -10,6 +10,7 @@
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { mapVisible } from "$lib/stores/context-specific/mapStore";
+	import { tooltip } from "$lib/utils/tooltip";
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
@@ -18,6 +19,7 @@
 			<button
 				class="standardButton white"
 				id="resetButton"
+				use:tooltip={{ text: "Back to start" }}
 				onclick={() => {
 					reloadPanorama(); // No sound, as the reload sound will play
 				}}

@@ -61,6 +61,11 @@
 		background-color: #8e44f0;
 	}
 
+	.experienceHighlight {
+		color: rgb(198, 255, 198);
+		text-shadow: 0 0 10px #00cc00;
+	}
+
 	.discordIconJoin {
 		vertical-align: -1px;
 	}
