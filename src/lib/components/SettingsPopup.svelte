@@ -205,6 +205,7 @@
 		justify-content: space-between;
 		align-items: center;
 		height: unset;
+		width: 100%;
 	}
 
 	.settingsFlexBoxTitle {
@@ -250,7 +251,7 @@
 
 	.creditsButton {
 		padding: 3px;
-		padding-inline: 5px;
+		padding-inline: 6px;
 		display: flex;
 		align-items: center;
 		height: 30px;

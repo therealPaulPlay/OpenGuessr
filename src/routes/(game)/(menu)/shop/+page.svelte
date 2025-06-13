@@ -573,6 +573,8 @@
 		margin-top: 30px;
 		margin-bottom: 40px;
 		transition: scale 250ms ease;
+		padding-bottom: 5px;
+		padding-top: 5px;
 		overflow: auto;
 	}
 

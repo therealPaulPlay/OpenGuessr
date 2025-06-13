@@ -161,7 +161,6 @@
 
 	:global(.leaflet-control-layers-toggle) {
 		background-image: url("/img/map_layer_icon.png") !important;
-		filter: invert();
 		background-size: 23px 23px !important;
 	}
 
@@ -182,11 +181,11 @@
 		margin: var(--box-margin);
 	}
 
-	:global(.leaflet-control-layers) {
-		background-color: var(--panel-color);
-		box-shadow: var(--bulb-shadow) !important;
-		backdrop-filter: blur(5px);
-		color: white;
+	:global(.leaflet-control-layers, .leaflet-control-layers-expanded) {
+		background-color: var(--panel-color) !important;
+		box-shadow: var(--button-shadow) !important;
+		backdrop-filter: blur(5px) !important;
+		color: white !important;
 	}
 
 	:global(.leaflet-touch .leaflet-control-layers-toggle) {

@@ -223,7 +223,7 @@
 					{#each $loadedFriendsData as entry}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<div
-							class="standardButton white friendItem"
+							class="friendItem"
 							role="menu"
 							tabindex="0"
 							onclick={() => {
@@ -310,7 +310,7 @@
 	}
 
 	.transparentPillButton {
-		background-color: var(--box-color);
+		background-color: rgba(255, 255, 255, 0.1);
 		padding-top: 0;
 		padding-bottom: 3px;
 		border: none;
@@ -385,16 +385,32 @@
 		border-radius: 10px;
 		display: flex;
 		background-color: rgba(255, 255, 255, 0.1);
-		box-shadow: var(--bulb-shadow);
+		box-shadow: var(--box-shadow);
 		padding-inline: 6px !important;
+		transition:
+			filter 250ms ease,
+			transform 250ms ease,
+			scale 250ms ease;
 		height: 50px;
 		align-items: center;
 		justify-content: space-between;
 		border: none;
 		gap: 3px;
+		padding-bottom: 1px;
 		flex-grow: 1;
 		max-width: 25%;
 		overflow: hidden;
+		text-wrap: nowrap;
+		cursor: pointer;
+	}
+
+	.friendItem:hover {
+		filter: brightness(70%);
+	}
+
+	.friendItem:active {
+		/* Shrink effect when pressed */
+		transform: scale(0.95);
 	}
 
 	@media (max-width: 800px) {

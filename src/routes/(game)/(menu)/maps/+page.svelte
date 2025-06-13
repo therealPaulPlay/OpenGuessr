@@ -713,6 +713,8 @@
 	.add-button {
 		border-radius: 5px;
 		padding: 5px 8px;
+		display: flex;
+		align-items: center;
 	}
 
 	.remove-button {
@@ -733,8 +735,7 @@
 
 	.selection-icon {
 		width: 22px;
-		height: auto;
-		vertical-align: -1px;
+		height: 22px;
 	}
 
 	#community-maps {

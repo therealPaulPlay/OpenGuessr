@@ -101,7 +101,7 @@
 					>
 				{:else}
 					<button
-						class="standardButton accountButton white"
+						class="standardButton white"
 						onclick={() => {
 							loadProfileFromId(localStorage.getItem("id"), true);
 							playSound("basic_button");
@@ -111,7 +111,7 @@
 					</button>
 				{/if}
 				<button
-					class="standardButton accountButton white"
+					class="standardButton white"
 					class:preventNavigateOut
 					onclick={() => {
 						playSound("basic_button");
@@ -120,48 +120,48 @@
 				>
 					<img class="socialBarIcons" src="/img/shop_icon.png" alt="Shop" />
 				</button>
-				<a
-					class="standardButton accountButton white"
+				<button
+					class="standardButton white"
 					class:preventNavigateOut
-					href="/leaderboard"
 					onclick={() => {
 						playSound("basic_button");
+						goto("/leaderboard");
 					}}
 				>
 					<img class="socialBarIcons" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
-				</a>
-				<a
-					class="standardButton accountButton white"
+				</button>
+				<button
+					class="standardButton white"
 					class:preventNavigateOut
-					href="/multiplayer"
 					onclick={() => {
+						goto("/multiplayer");
 						playSound("basic_button");
 					}}
 				>
 					<img class="socialBarIcons" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
-				</a>
-				<a
-					class="standardButton accountButton white"
+				</button>
+				<button
+					class="standardButton white"
 					class:preventNavigateOut
-					href="/competitions"
 					onclick={() => {
+						goto("/competitions");
 						playSound("basic_button");
 					}}
 				>
 					<img class="socialBarIcons" src="/img/competitions_icon.png" alt="Competitions symbol" />
-				</a>
-				<a
-					class="standardButton accountButton white"
+				</button>
+				<button
+					class="standardButton white"
 					class:preventNavigateOut
-					href="/maps"
 					onclick={() => {
+						goto("/maps");
 						playSound("basic_button");
 					}}
 				>
 					<img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
-				</a>
+				</button>
 				<button
-					class="standardButton accountButton white"
+					class="standardButton white"
 					class:preventNavigateOut
 					onclick={() => {
 						playSound("basic_button");
@@ -170,13 +170,13 @@
 				>
 					<img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
 				</button>
-				<button class="standardButton accountButton white" id="settingsButtonMobile" onclick={openSettings}>
+				<button class="standardButton white" id="settingsButtonMobile" onclick={openSettings}>
 					<img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
 				</button>
 			</div>
 		{/if}
 		<button
-			class="standardButton accountButton white"
+			class="standardButton white"
 			onclick={() => {
 				mobileBarExtended = !mobileBarExtended;
 				playSound("basic_button");
@@ -249,11 +249,11 @@
 		</div>
 		{#if $isAuthenticated}
 			<button
-				class="standardButton accountButton white"
+				class="standardButton white"
 				class:preventNavigateOut
 				onclick={() => {
-					playSound("basic_button");
 					goto("/shop");
+					playSound("basic_button");
 				}}
 			>
 				<img class="socialBarIcons" src="/img/shop_icon.png" alt="Shop" />
@@ -263,24 +263,24 @@
 	<!-- svelte-ignore a11y_interactive_supports_focus -->
 	<!-- svelte-ignore a11y_mouse_events_have_key_events -->
 	<div class="barMenu topBarDesktop gameModeMenu" onmouseover={centerMouseOver} onmouseout={centerMouseOut} role="menu">
-		<a
+		<button
 			id="leaderboardButton"
-			class="standardButton accountButton white"
+			class="standardButton white"
 			class:preventNavigateOut
-			href="/leaderboard"
 			onclick={() => {
+				goto("/leaderboard");
 				playSound("basic_button");
 			}}
 		>
 			<span class="topBarExpand">Leaderboard</span>
 			<img class="socialBarIcons shiftedSocialbarIcon" src="/img/leaderboards_icon.png" alt="Experience Leaderboard" />
-		</a>
-		<a
+		</button>
+		<button
 			id="multiplayerButton"
-			class="accountButton standardButton white"
+			class="standardButton white"
 			class:preventNavigateOut
-			href="/multiplayer"
 			onclick={() => {
+				goto("/multiplayer");
 				playSound("basic_button");
 			}}
 		>
@@ -290,35 +290,35 @@
 				src="/img/multiplayer_icon.png"
 				alt="Open the multiplayer menu"
 			/>
-		</a>
-		<a
+		</button>
+		<button
 			id="competitionsButton"
-			class="standardButton accountButton white"
+			class="standardButton white"
 			class:preventNavigateOut
-			href="/competitions"
 			onclick={() => {
+				goto("/competitions");
 				playSound("basic_button");
 			}}
 		>
 			<span class="topBarExpand">Competitions</span>
 			<img class="socialBarIcons shiftedSocialbarIcon" src="/img/competitions_icon.png" alt="Competitions symbol" />
-		</a>
+		</button>
 	</div>
 	<div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
-		<a
-			class="standardButton accountButton white"
+		<button
+			class="standardButton white"
 			id="categoryMenuButton"
 			class:preventNavigateOut
-			href="/maps"
 			onclick={() => {
+				goto("/maps");
 				playSound("basic_button");
 			}}
 		>
 			Map
 			<img class="socialBarIcons noMarginRight" src="/img/mobile_maps_icon.png" alt="Map Categories" />
-		</a>
+		</button>
 		<button
-			class="standardButton accountButton white"
+			class="standardButton white"
 			id="singleplayerOptionsButton"
 			class:preventNavigateOut
 			onclick={() => {
@@ -328,7 +328,7 @@
 		>
 			<img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
 		</button>
-		<button class="standardButton accountButton white" id="settingsButton" onclick={openSettings}>
+		<button class="standardButton white" id="settingsButton" onclick={openSettings}>
 			<img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
 		</button>
 	</div>
@@ -384,7 +384,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 10px;
+		gap: var(--box-margin);
 		transition: all 250ms ease;
 		z-index: 14;
 		pointer-events: none;
@@ -396,6 +396,8 @@
 		display: flex;
 		transition: mask 0.3s ease-in-out;
 		scrollbar-width: none;
+		padding-top: var(--panel-margin);
+		padding-bottom: var(--panel-margin);
 	}
 
 	.sideMenuDisabled {
@@ -425,13 +427,16 @@
 		max-width: calc(100% - (var(--box-margin) * 2 + var(--panel-margin) * 2));
 		margin-left: auto;
 		margin-right: var(--box-margin);
+		padding-top: 0;
+		padding-bottom: 0;
+		min-height: calc(40px + var(--panel-margin) * 2);
 	}
 
 	.socialBarIcons {
 		width: 20px;
 		height: auto;
 		margin-inline: 2px;
-		margin-bottom: -2px;
+		margin-bottom: -1px;
 	}
 
 	.shiftedSocialbarIcon {
@@ -456,11 +461,6 @@
 		font-size: 22px;
 	}
 
-	.accountButton {
-		background-color: var(--panel-button-color);
-		text-decoration: none;
-	}
-
 	.progressContainer {
 		position: relative;
 		width: 30px;
@@ -475,7 +475,6 @@
 
 	.progressRing {
 		transform: rotate(-90deg);
-		box-shadow: var(--bulb-shadow);
 		border-radius: 100%;
 	}
 

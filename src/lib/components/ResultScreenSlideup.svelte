@@ -31,7 +31,7 @@
 		</div>
 		<div class="buttonBox">
 			<button
-				class="standardButton white dismissButton"
+				class="standardButton white"
 				onclick={() => {
 					playSound("basic_button");
 					$showSlideup = false;
@@ -95,7 +95,7 @@
 	.solidBox {
 		border-radius: 5px;
 		background-color: var(--box-color);
-		box-shadow: var(--button-shadow);
+		box-shadow: var(--box-shadow);
 	}
 
 	.supporterStatBox {
@@ -124,10 +124,6 @@
 
 	.buttonBox .standardButton {
 		height: 42px;
-	}
-
-	.dismissButton {
-		background-color: var(--panel-button-color);
 	}
 
 	.streakButton {

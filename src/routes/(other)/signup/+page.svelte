@@ -368,10 +368,6 @@
 		align-items: center;
 	}
 
-	input {
-		background-color: rgba(55, 27, 31, 0.35);
-	}
-
 	.container {
 		display: flex;
 		flex-direction: column;

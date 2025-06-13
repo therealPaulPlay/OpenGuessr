@@ -23,7 +23,7 @@
 		width: 100%;
 		height: 100%;
 		z-index: 6;
-		box-shadow: 0 0 700px rgba(165, 176, 251, 0.3) inset;
+		box-shadow: 0 0 500px rgba(165, 176, 251, 0.25) inset;
 	}
 
 	#loadingText {
