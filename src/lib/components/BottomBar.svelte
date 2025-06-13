@@ -16,7 +16,7 @@
 	<div class="bottomLeftMenu">
 		<div class="barMenu">
 			<button
-				class="standardButton bottomBarButton white"
+				class="standardButton white"
 				id="resetButton"
 				onclick={() => {
 					reloadPanorama(); // No sound, as the reload sound will play
@@ -27,7 +27,7 @@
 		</div>
 		<div class="barMenu socialBar">
 			<button
-				class="linkItem standardButton bottomBarButton white"
+				class="linkItem standardButton white"
 				id="discordButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -37,7 +37,7 @@
 				<img src="/img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" />
 			</button>
 			<button
-				class="linkItem standardButton bottomBarButton white"
+				class="linkItem standardButton white"
 				id="redditButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -47,7 +47,7 @@
 				<img src="/img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
 			</button>
 			<button
-				class="linkItem standardButton bottomBarButton white"
+				class="linkItem standardButton white"
 				id="blueskyButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -62,7 +62,7 @@
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
-			class="standardButton bottomBarButton confirmButton white"
+			class="standardButton confirmButton white"
 			id="confirmButton"
 			class:confirmActive={$confirmButtonActive}
 			onclick={() => {
@@ -125,10 +125,6 @@
 		display: flex;
 		align-items: center;
 		gap: var(--box-margin);
-	}
-
-	.bottomBarButton {
-		background-color: var(--panel-button-color);
 	}
 
 	.bottomBarIcon {
@@ -195,13 +191,12 @@
 		min-width: 40px;
 		box-shadow: none !important;
 		border: none;
-		background-color: transparent;
 		padding: 0;
 		pointer-events: auto;
 		margin-left: -10px;
 		height: 34px;
 		background-color: var(--box-color-dark-soft);
-		border-radius: 2px;
+		border-radius: 2px 0 0 2px;
 	}
 
 	.helpButton:hover {

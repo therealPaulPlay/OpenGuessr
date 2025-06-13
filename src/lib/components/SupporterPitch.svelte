@@ -39,7 +39,7 @@
 		color: white;
 		display: flex;
 		flex-wrap: wrap;
-		box-shadow: var(--button-shadow);
+		box-shadow: var(--bulb-shadow);
 		justify-content: space-between;
 		align-items: center;
 		transition: filter 250ms ease;

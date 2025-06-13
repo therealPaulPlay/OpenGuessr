@@ -77,6 +77,7 @@
 		text-decoration: none;
 		line-height: 35px;
 		pointer-events: auto;
+		backdrop-filter: blur(15px);
 	}
 
 	.homeButtonIcon {
@@ -125,11 +126,5 @@
 		padding: 20px;
 		padding-top: 100px;
 		width: calc(100% - 40px);
-	}
-
-	@media (max-width: 1500px) {
-		.backButton {
-			background-color: rgb(78, 77, 87); /* Switch to solid color, to avoid transparent overlaps */
-		}
 	}
 </style>

@@ -49,7 +49,6 @@
 	}
 
 	.floatingButtonColor {
-		background-color: var(--panel-button-color);
 		height: unset;
 	}
 

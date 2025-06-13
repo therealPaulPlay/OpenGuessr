@@ -93,7 +93,6 @@
 		height: 85px;
 		width: 150px;
 		border-radius: 7px;
-		background-color: var(--panel-button-color);
 		text-align: center;
 	}
 

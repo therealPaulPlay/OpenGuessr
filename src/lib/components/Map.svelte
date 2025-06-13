@@ -200,7 +200,7 @@
 
 	:global(.leaflet-control-layers, .leaflet-control-layers-expanded) {
 		background-color: var(--panel-color) !important;
-		box-shadow: var(--bulb-shadow) !important;
+		box-shadow: var(--button-shadow) !important;
 		backdrop-filter: blur(5px) !important;
 		color: white !important;
 	}
