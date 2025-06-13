@@ -353,6 +353,7 @@
 		box-sizing: border-box;
 		border: 3px solid var(--supporter-green);
 		border-bottom: 3px solid var(--supporter-green-soft);
+		box-shadow: none;
 		position: relative;
 	}
 
