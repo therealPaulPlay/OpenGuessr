@@ -389,6 +389,17 @@ search {
     gap: var(--box-margin);
 }
 
+[popover] {
+    border: none;
+    color: white;
+    font-size: 20px;
+    border-radius: 5px;
+    background-color: var(--panel-color);
+    box-shadow: var(--button-shadow);
+    padding-inline: var(--box-margin);
+    backdrop-filter: blur(5px);
+}
+
 @keyframes rotation {
     from {
         transform: rotate(0deg);

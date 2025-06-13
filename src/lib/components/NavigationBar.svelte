@@ -13,27 +13,7 @@
 	import { onMount } from "svelte";
 	import { blur, slide } from "svelte/transition";
 	import { goto } from "$app/navigation";
-
-	function openSettings() {
-		playSound("basic_button");
-		settingsPopup.set(true);
-	}
-
-	// Fade out the left / right bar elements when the center is enlarged --------------------------------------------------
-	let gamemodeTransitionTimeout;
-	let sideMenusDisabled = $state(false);
-
-	function centerMouseOut() {
-		clearTimeout(gamemodeTransitionTimeout);
-		gamemodeTransitionTimeout = setTimeout(() => {
-			sideMenusDisabled = false;
-		}, 200);
-	}
-
-	function centerMouseOver() {
-		clearTimeout(gamemodeTransitionTimeout);
-		sideMenusDisabled = true;
-	}
+	import { tooltip } from "$lib/utils/tooltip";
 
 	// Check if the username should be scrolled automatically (happens when it is too long) -------------------------------------------
 	let scrollNameText = $state(false);
@@ -170,7 +150,14 @@
 				>
 					<img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
 				</button>
-				<button class="standardButton white" id="settingsButtonMobile" onclick={openSettings}>
+				<button
+					class="standardButton white"
+					id="settingsButtonMobile"
+					onclick={() => {
+						playSound("basic_button");
+						settingsPopup.set(true);
+					}}
+				>
 					<img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
 				</button>
 			</div>
@@ -197,7 +184,7 @@
 
 <!-- Desktop top nav bar -->
 <nav id="topButtonArea" class="topButtonArea">
-	<div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
+	<div class="barMenu topBarSides topBarDesktop">
 		{#if !$isAuthenticated}
 			<button
 				class="standardButton"
@@ -214,6 +201,7 @@
 			class="profileInfo standardButton white"
 			class:notSignedIn={!$isAuthenticated}
 			class:profileInfoSupporter={$supporterLevel >= 1}
+			use:tooltip={{ text: "Profile" }}
 			onclick={() => {
 				loadProfileFromId(localStorage.getItem("id"), true);
 				playSound("basic_button");
@@ -251,6 +239,7 @@
 			<button
 				class="standardButton white"
 				class:preventNavigateOut
+				use:tooltip={{ text: "Shop" }}
 				onclick={() => {
 					goto("/shop");
 					playSound("basic_button");
@@ -262,31 +251,31 @@
 	</div>
 	<!-- svelte-ignore a11y_interactive_supports_focus -->
 	<!-- svelte-ignore a11y_mouse_events_have_key_events -->
-	<div class="barMenu topBarDesktop gameModeMenu" onmouseover={centerMouseOver} onmouseout={centerMouseOut} role="menu">
+	<div class="barMenu topBarDesktop gameModeMenu" role="menu">
 		<button
 			id="leaderboardButton"
 			class="standardButton white"
 			class:preventNavigateOut
+			use:tooltip={{ text: "Leaderboard" }}
 			onclick={() => {
 				goto("/leaderboard");
 				playSound("basic_button");
 			}}
 		>
-			<span class="topBarExpand">Leaderboard</span>
-			<img class="socialBarIcons shiftedSocialbarIcon" src="/img/leaderboards_icon.png" alt="Experience Leaderboard" />
+			<img class="socialBarIcons centralSocialBarIcon" src="/img/leaderboards_icon.png" alt="Experience Leaderboard" />
 		</button>
 		<button
 			id="multiplayerButton"
 			class="standardButton white"
 			class:preventNavigateOut
+			use:tooltip={{ text: "Multiplayer" }}
 			onclick={() => {
 				goto("/multiplayer");
 				playSound("basic_button");
 			}}
 		>
-			<span class="topBarExpand">Multiplayer</span>
 			<img
-				class="socialBarIcons shiftedSocialbarIcon"
+				class="socialBarIcons centralSocialBarIcon"
 				src="/img/multiplayer_icon.png"
 				alt="Open the multiplayer menu"
 			/>
@@ -295,20 +284,21 @@
 			id="competitionsButton"
 			class="standardButton white"
 			class:preventNavigateOut
+			use:tooltip={{ text: "Competitions" }}
 			onclick={() => {
 				goto("/competitions");
 				playSound("basic_button");
 			}}
 		>
-			<span class="topBarExpand">Competitions</span>
-			<img class="socialBarIcons shiftedSocialbarIcon" src="/img/competitions_icon.png" alt="Competitions symbol" />
+			<img class="socialBarIcons centralSocialBarIcon" src="/img/competitions_icon.png" alt="Competitions symbol" />
 		</button>
 	</div>
-	<div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
+	<div class="barMenu topBarSides topBarDesktop">
 		<button
 			class="standardButton white"
 			id="categoryMenuButton"
 			class:preventNavigateOut
+			use:tooltip={{ text: "Maps" }}
 			onclick={() => {
 				goto("/maps");
 				playSound("basic_button");
@@ -321,6 +311,7 @@
 			class="standardButton white"
 			id="singleplayerOptionsButton"
 			class:preventNavigateOut
+			use:tooltip={{ text: "Game options" }}
 			onclick={() => {
 				playSound("basic_button");
 				singleplayerOptionsPopup.set(true);
@@ -328,7 +319,15 @@
 		>
 			<img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
 		</button>
-		<button class="standardButton white" id="settingsButton" onclick={openSettings}>
+		<button
+			class="standardButton white"
+			id="settingsButton"
+			onclick={() => {
+				playSound("basic_button");
+				settingsPopup.set(true);
+			}}
+			use:tooltip={{ text: "Settings" }}
+		>
 			<img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
 		</button>
 	</div>
@@ -400,12 +399,6 @@
 		padding-bottom: var(--panel-margin);
 	}
 
-	.sideMenuDisabled {
-		opacity: 0.8;
-		transform: scale(0.95);
-		filter: blur(1px);
-	}
-
 	.notSignedIn {
 		opacity: 50%;
 		pointer-events: none;
@@ -439,8 +432,8 @@
 		margin-bottom: -1px;
 	}
 
-	.shiftedSocialbarIcon {
-		margin-right: 5px;
+	.centralSocialBarIcon {
+		margin-inline: 5px;
 	}
 
 	#accountNameArea {
@@ -489,18 +482,6 @@
 		font-size: 15px;
 		color: white;
 		user-select: none;
-	}
-
-	.topBarExpand {
-		max-width: 0px;
-		transition: max-width 500ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
-		overflow: hidden;
-		display: inline-block;
-		vertical-align: bottom;
-	}
-
-	.gameModeMenu:hover .topBarExpand {
-		max-width: 1000px;
 	}
 
 	@media all and (max-width: 1200px) {
