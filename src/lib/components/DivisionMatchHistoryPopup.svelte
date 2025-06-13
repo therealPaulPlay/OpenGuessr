@@ -234,7 +234,7 @@
 
 	.pageCounter {
 		padding: 5px;
-		box-shadow: var(--bulb-shadow);
+		box-shadow: var(--box-shadow);
 		user-select: none;
 		padding-inline: 10px;
 		border-radius: 5px;

@@ -921,7 +921,7 @@
 
 	.label {
 		padding: 3px;
-		box-shadow: var(--bulb-shadow);
+		box-shadow: var(--box-shadow);
 		padding-inline: 10px;
 		width: fit-content;
 		background-color: rgba(255, 255, 255, 0.1);

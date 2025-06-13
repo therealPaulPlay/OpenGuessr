@@ -116,7 +116,7 @@
 	</div>
 	<div class="barMenu nextRoundArea">
 		<button
-			class="standardButton white panelButton"
+			class="standardButton white"
 			onclick={() => {
 				playSound("basic_button");
 				openLocationOnMaps(get(currentLocationLatitude), get(currentLocationLongitude));
@@ -126,7 +126,7 @@
 		</button>
 		<button
 			id="nextRound"
-			class="standardButton white panelButton"
+			class="standardButton white"
 			style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
 			style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
 			onclick={() => {
@@ -447,10 +447,6 @@
 
 	.nextRoundText {
 		display: inline;
-	}
-
-	.panelButton {
-		background-color: var(--panel-button-color);
 	}
 
 	@media (min-width: 1900px) {

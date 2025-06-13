@@ -50,9 +50,9 @@
 		<p id="notificationText">{$notificationText}</p>
 		<div class="notificationButtonBox">
 			{#if $showAcceptButton}
-				<button id="notificationAccept" class="standardButton panelButton white" onclick={accept}>{$acceptText}</button>
+				<button id="notificationAccept" class="standardButton white" onclick={accept}>{$acceptText}</button>
 			{/if}
-			<button id="notificationDismiss" class="standardButton panelButton white" onclick={dismiss}>
+			<button id="notificationDismiss" class="standardButton white" onclick={dismiss}>
 				<img alt="dismiss notification" class="dismissIcon" src="/img/delete_icon.png" />
 			</button>
 		</div>
@@ -74,10 +74,6 @@
 		#notificationBar {
 			top: var(--box-margin) !important;
 		}
-	}
-
-	.panelButton {
-		background-color: var(--panel-button-color);
 	}
 
 	#notificationAccept {
