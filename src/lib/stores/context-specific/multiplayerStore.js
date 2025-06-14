@@ -7,15 +7,18 @@ export const socket = writable();
 export const roundAmount = writable(3);
 export const roundLength = writable(60);
 export const teamAmount = writable(1);
+export const multiplayerRestriction = writable("standard");
+
+// Style
+export const multiplayerStyle = writable("standard");
 
 // Matchmaking and Duels
 export const matchmakingActive = writable(false);
 export const skillBasedMatchmaking = writable(false);
 export const matchmakingHosting = writable(false);
 
-// Duels
-export const isFriendDuel = writable(false);
-export const playingDuel = writable(false);
+// Divisions (Ranked duels)
+export const isDivisionRoom = writable(false);
 export const matchResultDetermined = writable(false);
 
 // Guest-exclusive

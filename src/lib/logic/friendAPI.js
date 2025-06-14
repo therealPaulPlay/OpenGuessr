@@ -1,10 +1,8 @@
 import { isAuthenticated, username } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
-import { isFriendDuel, loadedFriendsData, multiplayerStatus, playingDuel, roomcode } from "$lib/stores/context-specific/multiplayerStore";
+import { loadedFriendsData, multiplayerStatus, roomcode } from "$lib/stores/context-specific/multiplayerStore";
 import { inboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
-import { linkJoinPopup } from "$lib/stores/uiStore";
-import { setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -173,23 +171,12 @@ export async function removeFriend(friendId) {
 }
 
 // Match invites -------------------------------------------------------------------------------------------------------------
-export async function sendMatchInvite(recipientId, duel) {
-    if (duel) {
-        // If Duel, create a room first
-        playingDuel.set(true);
-        isFriendDuel.set(true);
-        linkJoinPopup.set(true);
-        if (localStorage.getItem("selectedCategory") && localStorage.getItem("selectedCategory") !== "standard") await changeCategory("standard", true); // Regenerate to update the bounds (await to ensure bounds are ready)
-        await setupMultiplayerRoom(5, 60, 2);
-        multiplayerStatus.set("Waiting for response from friend...");
-    }
-
+export async function sendMatchInvite(recipientId) {
     try {
         const requestBody = {
             id: localStorage.getItem("id"),
             friend_id: recipientId,
-            roomcode: get(roomcode),
-            isDuel: duel
+            roomcode: get(roomcode)
         };
 
         const response = await fetch(get(accountUrl) + "/friends/send-invite", {
@@ -215,7 +202,7 @@ export async function sendMatchInvite(recipientId, duel) {
     }
 }
 
-export async function acceptDuelInvite(recipientId) {
+export async function acceptMatchInvite(recipientId) {
     try {
         const requestBody = {
             id: localStorage.getItem("id"),
