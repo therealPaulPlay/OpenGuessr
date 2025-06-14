@@ -27,6 +27,7 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { fade, scale, slide } from "svelte/transition";
+	import { tooltip } from "$lib/utils/tooltip";
 
 	function getFormattedCategory() {
 		if (typeof window === "undefined") return "loading...";
@@ -36,26 +37,9 @@
 
 	let roomOpened = $state(false);
 	let roomOpenAddInterval = $state();
-	let publicTooltipShown = $state(false);
-	let tooltipTimout;
-
-	const unsubscribeFromHostStage = hostStage.subscribe((value) => {
-		if (value == 2) {
-			clearTimeout(tooltipTimout);
-			tooltipTimout = setTimeout(() => {
-				if (localStorage.getItem("publicRoomTooltip")) return;
-				publicTooltipShown = true;
-				localStorage.setItem("publicRoomTooltip", "shown");
-			}, 3000);
-		} else {
-			clearTimeout(tooltipTimout);
-		}
-	});
 
 	onDestroy(() => {
-		unsubscribeFromHostStage();
 		clearInterval(roomOpenAddInterval);
-		clearTimeout(tooltipTimout);
 		if (roomOpened) deletePublicRoom();
 	});
 
@@ -200,6 +184,7 @@
 								<p class="friendsRoomEntryText">{entry.user_name}</p>
 								<button
 									class="standardButton white sendInviteButton"
+									use:tooltip={{ text: "Invite" }}
 									onclick={(e) => {
 										e.stopPropagation();
 										playSound("basic_button");
@@ -221,6 +206,7 @@
 					<button
 						id="roomcodeLink"
 						class="copyLinkButton standardButton white"
+						use:tooltip={{ text: "Copy link" }}
 						onclick={() => {
 							playSound("basic_button");
 							const roomId = get(roomcode)?.replace("openguessr_", "");
@@ -245,9 +231,9 @@
 					</button>
 					<button
 						class="standardButton white makeRoomPublicButton"
+						use:tooltip={{ text: "Toggle room visibility" }}
 						onclick={async () => {
 							playSound("basic_button");
-							publicTooltipShown = false;
 							if (!$isAuthenticated) return signupPrompt();
 							if (!$roomcode || $roomcode.includes("loading")) return showNotification("Not initialized yet.");
 							if (!roomOpened) {
@@ -300,25 +286,6 @@
 				>
 			</div>
 		</div>
-		<!-- Tooltip for public rooms -->
-		{#if publicTooltipShown && $hostStage == 2}
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-			<div transition:slide>
-				<div
-					class="publicRoomTooltip"
-					transition:scale={{ delay: 250 }}
-					role="tooltip"
-					onclick={() => {
-						publicTooltipShown = false;
-					}}
-				>
-					<div class="innerRoomTooltip">
-						<p>Need more players?</p>
-					</div>
-				</div>
-			</div>
-		{/if}
 	</div>
 </div>
 
@@ -418,43 +385,6 @@
 
 	.teamEmpty {
 		opacity: 0.75;
-	}
-
-	.publicRoomTooltip {
-		position: relative;
-		display: block;
-		cursor: pointer;
-		margin-top: 10px;
-	}
-
-	/* The tooltip bubble */
-	.publicRoomTooltip .innerRoomTooltip {
-		position: absolute;
-		left: -18px;
-		transform: translateX(-50%);
-		background-color: rgba(255, 255, 255, 0.15);
-		padding: 8px 12px;
-		border-radius: 10px;
-		text-wrap: nowrap;
-		z-index: 10;
-	}
-
-	/* Show the tooltip when hovering */
-	.publicRoomTooltip:hover .innerRoomTooltip {
-		opacity: 1;
-		visibility: visible;
-	}
-
-	/* The upward-pointing arrow */
-	.publicRoomTooltip .innerRoomTooltip::before {
-		content: "";
-		position: absolute;
-		top: -10px; /* Position the arrow above the tooltip bubble */
-		left: 50%;
-		transform: translateX(-50%);
-		border-width: 0 10px 10px 10px; /* No top border; bottom border creates the arrow */
-		border-style: solid;
-		border-color: transparent transparent rgba(255, 255, 255, 0.15) transparent;
 	}
 
 	.friendsRoomEntryText {

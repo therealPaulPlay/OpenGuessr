@@ -231,7 +231,7 @@
 							}}
 						>
 							{#if entry.online}
-								<div class="friendOnlineBar"></div>
+								<div transition:scale class="friendOnlineBar"></div>
 							{/if}
 							<p>{entry.user_name}</p>
 							<button
