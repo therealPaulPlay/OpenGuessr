@@ -20,7 +20,7 @@
 
 	function checkTextLength(text) {
 		const textLength = text.length;
-		scrollNameText = textLength > 9;
+		scrollNameText = textLength > 8;
 	}
 
 	username.subscribe((value) => {
@@ -128,7 +128,7 @@
 						playSound("basic_button");
 					}}
 				>
-					<img class="socialBarIcons" src="/img/competitions_icon.png" alt="Competitions symbol" />
+					<img class="socialBarIcons" src="/img/competitions_icon.png" alt="Competitions" />
 				</button>
 				<button
 					class="standardButton white"
@@ -138,7 +138,7 @@
 						playSound("basic_button");
 					}}
 				>
-					<img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
+					<img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Maps" />
 				</button>
 				<button
 					class="standardButton white"
@@ -148,7 +148,7 @@
 						singleplayerOptionsPopup.set(true);
 					}}
 				>
-					<img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
+					<img src="/img/joystick_icon.png" alt="Game options" id="joystickIcon" class="socialBarIcons" />
 				</button>
 				<button
 					class="standardButton white"
@@ -158,7 +158,7 @@
 						settingsPopup.set(true);
 					}}
 				>
-					<img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
+					<img src="/img/settings_icon.png" alt="Settings" class="socialBarIcons" id="settingsIcon" />
 				</button>
 			</div>
 		{/if}
@@ -188,11 +188,11 @@
 		{#if !$isAuthenticated}
 			<button
 				class="standardButton"
-				alt="sign up or log in"
+				use:tooltip={{ text: "Sign up or log in" }}
 				onclick={() => {
 					playSound("basic_button");
 					signupPrompt();
-				}}>Sign up</button
+				}}><UserRoundPlus strokeWidth={3} size={20} style="margin-left: 6px; margin-right: 4px;" /></button
 			>
 		{/if}
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -245,7 +245,7 @@
 					playSound("basic_button");
 				}}
 			>
-				<img class="socialBarIcons" src="/img/shop_icon.png" alt="Shop" />
+				<img class="socialBarIcons wideSocialBarIcon" src="/img/shop_icon.png" alt="Shop" />
 			</button>
 		{/if}
 	</div>
@@ -262,7 +262,7 @@
 				playSound("basic_button");
 			}}
 		>
-			<img class="socialBarIcons centralSocialBarIcon" src="/img/leaderboards_icon.png" alt="Experience Leaderboard" />
+			<img class="socialBarIcons wideSocialBarIcon" src="/img/leaderboards_icon.png" alt="Leaderboard" />
 		</button>
 		<button
 			id="multiplayerButton"
@@ -274,11 +274,7 @@
 				playSound("basic_button");
 			}}
 		>
-			<img
-				class="socialBarIcons centralSocialBarIcon"
-				src="/img/multiplayer_icon.png"
-				alt="Open the multiplayer menu"
-			/>
+			<img class="socialBarIcons wideSocialBarIcon" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
 		</button>
 		<button
 			id="competitionsButton"
@@ -290,7 +286,7 @@
 				playSound("basic_button");
 			}}
 		>
-			<img class="socialBarIcons centralSocialBarIcon" src="/img/competitions_icon.png" alt="Competitions symbol" />
+			<img class="socialBarIcons wideSocialBarIcon" src="/img/competitions_icon.png" alt="Competitions" />
 		</button>
 	</div>
 	<div class="barMenu topBarSides topBarDesktop">
@@ -304,8 +300,7 @@
 				playSound("basic_button");
 			}}
 		>
-			Map
-			<img class="socialBarIcons noMarginRight" src="/img/mobile_maps_icon.png" alt="Map Categories" />
+			<img class="socialBarIcons wideSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Maps" />
 		</button>
 		<button
 			class="standardButton white"
@@ -317,7 +312,7 @@
 				singleplayerOptionsPopup.set(true);
 			}}
 		>
-			<img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
+			<img src="/img/joystick_icon.png" alt="Singleplayer Options" class="socialBarIcons wideSocialBarIcon" />
 		</button>
 		<button
 			class="standardButton white"
@@ -328,7 +323,7 @@
 			}}
 			use:tooltip={{ text: "Settings" }}
 		>
-			<img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
+			<img src="/img/settings_icon.png" alt="settings" class="socialBarIcons wideSocialBarIcon" />
 		</button>
 	</div>
 	<Notification />
@@ -340,6 +335,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		padding-inline: var(--panel-margin);
 	}
 
 	/* Disable certain buttons in Competitions, Multiplayer etc. to prevent users from leaving accidentally */
@@ -367,13 +363,9 @@
 		}
 
 		100% {
-			transform: translateX(calc(-100% + 75px));
+			transform: translateX(calc(-100% + 63px));
 			/* adjust second param to be max-width of element minus about 5px */
 		}
-	}
-
-	.noMarginRight {
-		margin-right: 0 !important;
 	}
 
 	.topButtonArea {
@@ -432,14 +424,15 @@
 		margin-bottom: -1px;
 	}
 
-	.centralSocialBarIcon {
+	.wideSocialBarIcon {
 		margin-inline: 5px;
 	}
 
 	#accountNameArea {
-		max-width: 80px;
+		width: 68px;
 		overflow: hidden;
 		white-space: nowrap;
+		text-align: start;
 	}
 
 	.accountNameAreaFade {
@@ -458,7 +451,7 @@
 		position: relative;
 		width: 30px;
 		height: 30px;
-		margin-left: 10px;
+		margin-left: var(--panel-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;

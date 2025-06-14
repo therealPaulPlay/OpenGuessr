@@ -1,102 +1,89 @@
 import { computePosition, flip, shift, offset, arrow } from "@floating-ui/dom";
 
-export function tooltip(node, { text, ...options }) {
-    let tooltipElement;
-    let arrowElement;
-    let visible = false;
+let openTooltipCount = 0;
+
+export function tooltip(node, { text, delay = 500, ...options }) {
+    let tooltipElement, arrowElement, visible = false, showTimeout;
 
     function createTooltip() {
         tooltipElement = document.createElement('div');
         tooltipElement.textContent = text;
         tooltipElement.setAttribute('popover', '');
         tooltipElement.setAttribute('role', 'tooltip');
-        tooltipElement.style.position = 'relative'; // Important for arrow positioning
+        tooltipElement.style.position = 'relative';
 
-        // Create arrow element
         arrowElement = document.createElement('div');
         arrowElement.className = 'tooltip-arrow';
         tooltipElement.appendChild(arrowElement);
 
-        // Set initial scale for animation
-        tooltipElement.style.transform = 'scale(0)';
-        tooltipElement.style.opacity = '0%';
-        tooltipElement.style.filter = 'blur(15px)';
-        tooltipElement.style.transition = 'transform 150ms ease, opacity 150ms ease, filter 150ms ease';
+        Object.assign(tooltipElement.style, {
+            transform: 'scale(0)',
+            opacity: '0%',
+            filter: 'blur(15px)',
+            transition: 'transform 150ms ease, opacity 150ms ease, filter 150ms ease'
+        });
 
         document.body.appendChild(tooltipElement);
     }
 
-    async function showTooltip() {
+    function actuallyShowTooltip() {
         if (!tooltipElement) createTooltip();
         visible = true;
+        openTooltipCount++;
         tooltipElement.showPopover();
 
         computePosition(node, tooltipElement, {
             placement: "top",
-            middleware: [
-                offset(18), // Reduced offset since arrow will extend out
-                flip(),
-                shift({ padding: 5 }),
-                arrow({ element: arrowElement, padding: 4 })
-            ],
+            middleware: [offset(18), flip(), shift({ padding: 5 }), arrow({ element: arrowElement, padding: 4 })]
         }).then(({ x, y, placement, middlewareData }) => {
-            Object.assign(tooltipElement.style, {
-                left: `${x}px`,
-                top: `${y}px`,
-            });
+            Object.assign(tooltipElement.style, { left: `${x}px`, top: `${y}px` });
 
-            // Position arrow relative to tooltip
             const { x: arrowX, y: arrowY } = middlewareData.arrow;
             const side = placement.split('-')[0];
 
-            // Reset all arrow positioning
-            Object.assign(arrowElement.style, {
-                left: '',
-                top: '',
-                right: '',
-                bottom: '',
-            });
+            Object.assign(arrowElement.style, { left: '', top: '', right: '', bottom: '' });
 
-            // Position arrow based on placement
-            switch (side) {
-                case 'top':
-                    arrowElement.style.left = `${arrowX}px`;
-                    arrowElement.style.bottom = '-6px'; // Arrow extends below tooltip
-                    break;
-                case 'bottom':
-                    arrowElement.style.left = `${arrowX}px`;
-                    arrowElement.style.top = '-6px'; // Arrow extends above tooltip
-                    break;
-                case 'left':
-                    arrowElement.style.top = `${arrowY}px`;
-                    arrowElement.style.right = '-6px'; // Arrow extends right of tooltip
-                    break;
-                case 'right':
-                    arrowElement.style.top = `${arrowY}px`;
-                    arrowElement.style.left = '-6px'; // Arrow extends left of tooltip
-                    break;
-            }
+            if (side === 'top') Object.assign(arrowElement.style, { left: `${arrowX}px`, bottom: '-6px' });
+            else if (side === 'bottom') Object.assign(arrowElement.style, { left: `${arrowX}px`, top: '-6px' });
+            else if (side === 'left') Object.assign(arrowElement.style, { top: `${arrowY}px`, right: '-6px' });
+            else if (side === 'right') Object.assign(arrowElement.style, { top: `${arrowY}px`, left: '-6px' });
 
             arrowElement.setAttribute('data-placement', side);
 
-            // Trigger scale animation
             requestAnimationFrame(() => {
-                tooltipElement.style.transform = 'scale(1)';
-                tooltipElement.style.opacity = '100%';
-                tooltipElement.style.filter = 'blur(0px)';
+                Object.assign(tooltipElement.style, {
+                    transform: 'scale(1)',
+                    opacity: '100%',
+                    filter: 'blur(0px)'
+                });
             });
         });
     }
 
+    function showTooltip() {
+        clearTimeout(showTimeout);
+
+        if (openTooltipCount > 0) {
+            actuallyShowTooltip();
+        } else {
+            showTimeout = setTimeout(actuallyShowTooltip, delay);
+        }
+    }
+
     function hideTooltip() {
-        if (!tooltipElement) return;
+        clearTimeout(showTimeout);
+        if (!tooltipElement || !visible) return;
+
         visible = false;
-        tooltipElement.style.transform = 'scale(0)';
-        tooltipElement.style.opacity = '0%';
-        tooltipElement.style.filter = 'blur(15px)';
+        Object.assign(tooltipElement.style, {
+            transform: 'scale(0)',
+            opacity: '0%',
+            filter: 'blur(15px)'
+        });
 
         setTimeout(() => {
             tooltipElement?.hidePopover();
+            openTooltipCount--;
         }, 150);
     }
 
@@ -105,12 +92,14 @@ export function tooltip(node, { text, ...options }) {
 
     return {
         destroy() {
+            clearTimeout(showTimeout);
             node.removeEventListener('mouseenter', showTooltip);
             node.removeEventListener('mouseleave', hideTooltip);
+            if (visible) openTooltipCount--;
             tooltipElement?.remove();
         },
-        update(newOptions) {
-            if (tooltipElement && newOptions.text !== text) tooltipElement.textContent = newOptions.text;
+        update(newProps) {
+            if (tooltipElement && newProps.text !== text) tooltipElement.textContent = newProps.text;
         }
     };
 }
