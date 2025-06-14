@@ -1,13 +1,13 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
-	import { duelResultPopup, friendBrowserPopup } from "$lib/stores/uiStore";
+	import { divisionMatchHistoryPopup, duelResultPopup } from "$lib/stores/uiStore";
 	import { eloChange, duelResultTitle } from "$lib/stores/context-specific/duelResultStore";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { elo } from "$lib/stores/accountStore";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
-	import { Info, Search } from "lucide-svelte";
+	import { Info, History } from "lucide-svelte";
 
 	// Animate number starting from 0
 	const animatedElo = tweened(0, {
@@ -43,10 +43,10 @@
 					class="standardButton white growSearch"
 					onclick={() => {
 						playSound("basic_button");
-						friendBrowserPopup.set(true);
+						divisionMatchHistoryPopup.set(true);
 					}}
 				>
-					Players <Search size={18} strokeWidth={3} style="margin-bottom: -4x; margin-left: 2px;" /></button
+					History <History size={20} strokeWidth={2.5} style="margin-bottom: -3px; margin-left: 2px;" /></button
 				>
 			</div>
 		</div>

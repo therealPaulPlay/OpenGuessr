@@ -651,6 +651,7 @@
 		border-radius: 100%;
 		margin-left: 8px;
 		background-color: rgba(255, 255, 255, 0.1);
+		box-shadow: var(--box-shadow);
 	}
 
 	.card-content {
