@@ -10,6 +10,7 @@
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { mapVisible } from "$lib/stores/context-specific/mapStore";
+	import { tooltip } from "$lib/utils/tooltip";
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
@@ -18,6 +19,7 @@
 			<button
 				class="standardButton white"
 				id="resetButton"
+				use:tooltip={{ text: "Back to start" }}
 				onclick={() => {
 					reloadPanorama(); // No sound, as the reload sound will play
 				}}
@@ -74,6 +76,7 @@
 			<button
 				class="helpButton standardButton white"
 				class:innerConfirmButtonDisabled={$confirmButtonActive}
+				use:tooltip={{ text: "How to play" }}
 				onclick={(element) => {
 					element.stopPropagation();
 					playSound("basic_button");
@@ -130,7 +133,7 @@
 	.bottomBarIcon {
 		width: 20px !important;
 		height: 20px !important;
-		vertical-align: -2px;
+		vertical-align: -1px;
 	}
 
 	.bottomFooterAds {

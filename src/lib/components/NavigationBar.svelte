@@ -13,34 +13,14 @@
 	import { onMount } from "svelte";
 	import { blur, slide } from "svelte/transition";
 	import { goto } from "$app/navigation";
-
-	function openSettings() {
-		playSound("basic_button");
-		settingsPopup.set(true);
-	}
-
-	// Fade out the left / right bar elements when the center is enlarged --------------------------------------------------
-	let gamemodeTransitionTimeout;
-	let sideMenusDisabled = $state(false);
-
-	function centerMouseOut() {
-		clearTimeout(gamemodeTransitionTimeout);
-		gamemodeTransitionTimeout = setTimeout(() => {
-			sideMenusDisabled = false;
-		}, 200);
-	}
-
-	function centerMouseOver() {
-		clearTimeout(gamemodeTransitionTimeout);
-		sideMenusDisabled = true;
-	}
+	import { tooltip } from "$lib/utils/tooltip";
 
 	// Check if the username should be scrolled automatically (happens when it is too long) -------------------------------------------
 	let scrollNameText = $state(false);
 
 	function checkTextLength(text) {
 		const textLength = text.length;
-		scrollNameText = textLength > 9;
+		scrollNameText = textLength > 8;
 	}
 
 	username.subscribe((value) => {
@@ -148,7 +128,7 @@
 						playSound("basic_button");
 					}}
 				>
-					<img class="socialBarIcons" src="/img/competitions_icon.png" alt="Competitions symbol" />
+					<img class="socialBarIcons" src="/img/competitions_icon.png" alt="Competitions" />
 				</button>
 				<button
 					class="standardButton white"
@@ -158,7 +138,7 @@
 						playSound("basic_button");
 					}}
 				>
-					<img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Map Categories" />
+					<img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Maps" />
 				</button>
 				<button
 					class="standardButton white"
@@ -168,10 +148,17 @@
 						singleplayerOptionsPopup.set(true);
 					}}
 				>
-					<img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
+					<img src="/img/joystick_icon.png" alt="Game options" id="joystickIcon" class="socialBarIcons" />
 				</button>
-				<button class="standardButton white" id="settingsButtonMobile" onclick={openSettings}>
-					<img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
+				<button
+					class="standardButton white"
+					id="settingsButtonMobile"
+					onclick={() => {
+						playSound("basic_button");
+						settingsPopup.set(true);
+					}}
+				>
+					<img src="/img/settings_icon.png" alt="Settings" class="socialBarIcons" id="settingsIcon" />
 				</button>
 			</div>
 		{/if}
@@ -197,15 +184,15 @@
 
 <!-- Desktop top nav bar -->
 <nav id="topButtonArea" class="topButtonArea">
-	<div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
+	<div class="barMenu topBarSides topBarDesktop">
 		{#if !$isAuthenticated}
 			<button
 				class="standardButton"
-				alt="sign up or log in"
+				use:tooltip={{ text: "Sign up or log in" }}
 				onclick={() => {
 					playSound("basic_button");
 					signupPrompt();
-				}}>Sign up</button
+				}}><UserRoundPlus strokeWidth={3} size={20} style="margin-left: 6px; margin-right: 4px;" /></button
 			>
 		{/if}
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -214,6 +201,7 @@
 			class="profileInfo standardButton white"
 			class:notSignedIn={!$isAuthenticated}
 			class:profileInfoSupporter={$supporterLevel >= 1}
+			use:tooltip={{ text: "Profile" }}
 			onclick={() => {
 				loadProfileFromId(localStorage.getItem("id"), true);
 				playSound("basic_button");
@@ -251,85 +239,91 @@
 			<button
 				class="standardButton white"
 				class:preventNavigateOut
+				use:tooltip={{ text: "Shop" }}
 				onclick={() => {
 					goto("/shop");
 					playSound("basic_button");
 				}}
 			>
-				<img class="socialBarIcons" src="/img/shop_icon.png" alt="Shop" />
+				<img class="socialBarIcons wideSocialBarIcon" src="/img/shop_icon.png" alt="Shop" />
 			</button>
 		{/if}
 	</div>
 	<!-- svelte-ignore a11y_interactive_supports_focus -->
 	<!-- svelte-ignore a11y_mouse_events_have_key_events -->
-	<div class="barMenu topBarDesktop gameModeMenu" onmouseover={centerMouseOver} onmouseout={centerMouseOut} role="menu">
+	<div class="barMenu topBarDesktop gameModeMenu" role="menu">
 		<button
 			id="leaderboardButton"
 			class="standardButton white"
 			class:preventNavigateOut
+			use:tooltip={{ text: "Leaderboard" }}
 			onclick={() => {
 				goto("/leaderboard");
 				playSound("basic_button");
 			}}
 		>
-			<span class="topBarExpand">Leaderboard</span>
-			<img class="socialBarIcons shiftedSocialbarIcon" src="/img/leaderboards_icon.png" alt="Experience Leaderboard" />
+			<img class="socialBarIcons wideSocialBarIcon" src="/img/leaderboards_icon.png" alt="Leaderboard" />
 		</button>
 		<button
 			id="multiplayerButton"
 			class="standardButton white"
 			class:preventNavigateOut
+			use:tooltip={{ text: "Multiplayer" }}
 			onclick={() => {
 				goto("/multiplayer");
 				playSound("basic_button");
 			}}
 		>
-			<span class="topBarExpand">Multiplayer</span>
-			<img
-				class="socialBarIcons shiftedSocialbarIcon"
-				src="/img/multiplayer_icon.png"
-				alt="Open the multiplayer menu"
-			/>
+			<img class="socialBarIcons wideSocialBarIcon" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
 		</button>
 		<button
 			id="competitionsButton"
 			class="standardButton white"
 			class:preventNavigateOut
+			use:tooltip={{ text: "Competitions" }}
 			onclick={() => {
 				goto("/competitions");
 				playSound("basic_button");
 			}}
 		>
-			<span class="topBarExpand">Competitions</span>
-			<img class="socialBarIcons shiftedSocialbarIcon" src="/img/competitions_icon.png" alt="Competitions symbol" />
+			<img class="socialBarIcons wideSocialBarIcon" src="/img/competitions_icon.png" alt="Competitions" />
 		</button>
 	</div>
-	<div class="barMenu topBarSides topBarDesktop" class:sideMenuDisabled={sideMenusDisabled}>
+	<div class="barMenu topBarSides topBarDesktop">
 		<button
 			class="standardButton white"
 			id="categoryMenuButton"
 			class:preventNavigateOut
+			use:tooltip={{ text: "Maps" }}
 			onclick={() => {
 				goto("/maps");
 				playSound("basic_button");
 			}}
 		>
-			Map
-			<img class="socialBarIcons noMarginRight" src="/img/mobile_maps_icon.png" alt="Map Categories" />
+			<img class="socialBarIcons wideSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Maps" />
 		</button>
 		<button
 			class="standardButton white"
 			id="singleplayerOptionsButton"
 			class:preventNavigateOut
+			use:tooltip={{ text: "Game options" }}
 			onclick={() => {
 				playSound("basic_button");
 				singleplayerOptionsPopup.set(true);
 			}}
 		>
-			<img src="/img/joystick_icon.png" alt="Singleplayer Options" id="joystickIcon" class="socialBarIcons" />
+			<img src="/img/joystick_icon.png" alt="Singleplayer Options" class="socialBarIcons wideSocialBarIcon" />
 		</button>
-		<button class="standardButton white" id="settingsButton" onclick={openSettings}>
-			<img src="/img/settings_icon.png" alt="settings" class="socialBarIcons" id="settingsIcon" />
+		<button
+			class="standardButton white"
+			id="settingsButton"
+			onclick={() => {
+				playSound("basic_button");
+				settingsPopup.set(true);
+			}}
+			use:tooltip={{ text: "Settings" }}
+		>
+			<img src="/img/settings_icon.png" alt="settings" class="socialBarIcons wideSocialBarIcon" />
 		</button>
 	</div>
 	<Notification />
@@ -341,6 +335,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+		padding-inline: var(--panel-margin);
 	}
 
 	/* Disable certain buttons in Competitions, Multiplayer etc. to prevent users from leaving accidentally */
@@ -368,13 +363,9 @@
 		}
 
 		100% {
-			transform: translateX(calc(-100% + 75px));
+			transform: translateX(calc(-100% + 63px));
 			/* adjust second param to be max-width of element minus about 5px */
 		}
-	}
-
-	.noMarginRight {
-		margin-right: 0 !important;
 	}
 
 	.topButtonArea {
@@ -398,12 +389,6 @@
 		scrollbar-width: none;
 		padding-top: var(--panel-margin);
 		padding-bottom: var(--panel-margin);
-	}
-
-	.sideMenuDisabled {
-		opacity: 0.8;
-		transform: scale(0.95);
-		filter: blur(1px);
 	}
 
 	.notSignedIn {
@@ -439,14 +424,15 @@
 		margin-bottom: -1px;
 	}
 
-	.shiftedSocialbarIcon {
-		margin-right: 5px;
+	.wideSocialBarIcon {
+		margin-inline: 5px;
 	}
 
 	#accountNameArea {
-		max-width: 80px;
+		width: 68px;
 		overflow: hidden;
 		white-space: nowrap;
+		text-align: start;
 	}
 
 	.accountNameAreaFade {
@@ -465,7 +451,7 @@
 		position: relative;
 		width: 30px;
 		height: 30px;
-		margin-left: 10px;
+		margin-left: var(--panel-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -489,18 +475,6 @@
 		font-size: 15px;
 		color: white;
 		user-select: none;
-	}
-
-	.topBarExpand {
-		max-width: 0px;
-		transition: max-width 500ms cubic-bezier(0.45, 0.05, 0.55, 0.95);
-		overflow: hidden;
-		display: inline-block;
-		vertical-align: bottom;
-	}
-
-	.gameModeMenu:hover .topBarExpand {
-		max-width: 1000px;
 	}
 
 	@media all and (max-width: 1200px) {
