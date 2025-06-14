@@ -56,7 +56,6 @@ export async function attemptDuelJoin(index, skillBased) {
         if (receivedRoomCode) {
             joinRoom(receivedRoomCode); // Duel status will be set in this function
         } else {
-            if (localStorage.getItem("selectedCategory") && localStorage.getItem("selectedCategory") !== "standard") await changeCategory("standard", true); // Regenerate to update the bounds (await to ensure bounds are ready)
             multiplayerStyle.set("duel"); // Set style to duel
             await setupMultiplayerRoom(5, 60, 2);
             sendRoomCodeToMatchmakingServer(skillBased);

@@ -195,11 +195,6 @@ export async function createMultiplayerInstance() {
 
                 if (get(teamAmount) > 1 && storage.guessLocationsArray && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
 
-                // Set multiplayer category
-                if (storage.category && localStorage.getItem("selectedCategory") !== storage.category) {
-                    if (localStorage.getItem("selectedCategory")) showNotification("Map changed to " + storage?.category?.replaceAll("community_", "") + ".");
-                    changeCategory(storage?.category);
-                }
 
                 if (storage.currentRound && storage.restriction) {
                     modeText.set("Multiplayer (Round: " + get(socket)?.getStorage?.currentRound + "/" + get(roundAmount) + ")");
@@ -354,9 +349,16 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             await changeCategory("standard", true); // Regenerate to update locations array
         }
 
+        // If it's a divison game, ensure standard is selected
+        if (get(isDivisionRoom) && localStorage.getItem("selectedCategory") && localStorage.getItem("selectedCategory") !== "standard") {
+            showNotification("Map changed to standard for duel.")
+            await changeCategory("standard", true);
+        }
+
         // Set round and length parameters
         roundAmount.set(AmountOfRounds);
         roundLength.set(LengthOfRounds);
+        const mapBounds = getMapBounds(); // Get bounds BEFORE setting multiplayer to true
 
         multiplayer.set(true); // Set multiplayer
 
@@ -370,7 +372,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             highestSupporterLevel: get(supporterLevel) || 0,
             restriction: get(multiplayerRestriction) || "standard",
             category: localStorage.getItem("selectedCategory") || "standard",
-            mapBounds: getMapBounds(),
+            mapBounds,
             location: [35.7072457, 139.863412], // Default panorama to prevent blackscreen
             guessLocationsArray: [], // Guesses from players (with location data)
             confirmedArray: [], // Player ids that have confirmed their guess
@@ -566,7 +568,7 @@ function showMultiplayerOverlay(show) {
     if (show) {
         if (get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(socket)?.getStorage?.currentRound);
         if (!get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
-        if (!get(socket)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (get(socket)?.getStorage?.category)?.replace("community_", "") + ")");
+        if (!get(socket)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (get(socket)?.getStorage?.category)?.replace("community_", "") + ")"); // Display map name
         overlayShowSubtitle.set(get(multiplayerStyle) == "duel" && get(socket)?.getStorage?.currentRound >= 3 && get(socket)?.getStorage?.currentRound < get(socket)?.getStorage?.roundAmount);
         showEndscreenUI(false); // Default to no endscreen UI
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
