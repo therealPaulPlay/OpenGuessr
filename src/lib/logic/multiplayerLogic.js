@@ -23,10 +23,11 @@ import {
     remainingPlayers,
     overlayShowSubtitle,
     skillBasedMatchmaking,
+    multiplayerStyle,
     guestNamePromise,
-    playingDuel,
-    isFriendDuel,
-    matchResultDetermined
+    isDivisionRoom,
+    matchResultDetermined,
+    multiplayerRestriction
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadChat } from "$lib/utils/chatFunctions.js";
@@ -96,7 +97,7 @@ export function updateMultiplayerScore(addScore) {
     if (playerIndex !== -1) {
         const thisPlayer = get(socket)?.getStorage?.players[playerIndex];
         let newPlayer = [...thisPlayer];
-        if (get(playingDuel) && get(socket)?.getStorage?.currentRound > 3) addScore = Math.round(addScore * 1.5); // Duel Multiplayer for round 4 + 5
+        if (get(multiplayerStyle) == "duel" && get(socket)?.getStorage?.currentRound > 3) addScore = Math.round(addScore * 1.5); // Duel Multiplier from round 3 onwards
         newPlayer[3] = newPlayer[3] + addScore;
         get(socket)?.updateStorageArray("players", "update-matching", thisPlayer, newPlayer);
     }
@@ -146,7 +147,7 @@ export async function createMultiplayerInstance() {
             // Someone connected...
             get(socket).onEvent('clientConnected', (id) => {
                 if (get(matchmakingActive)) deleteRoomCodeFromMatchmakingServer(); // Delete roomcode from server
-                if (get(playingDuel) && !get(socket)?.getStorage?.gameStarted) startRoom(); // Immediately start on first connection
+                if (get(isDivisionRoom) && !get(socket)?.getStorage?.gameStarted) startRoom(); // Immediately start on first connection
                 connectionCount.set(get(socket)?.connectionCount);
             });
 
@@ -167,10 +168,11 @@ export async function createMultiplayerInstance() {
 
             get(socket).onEvent('storageUpdated', (storage) => {
                 // Sync game info
-                if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.restriction) {
-                    roundAmount.set(storage?.roundAmount);
-                    roundLength.set(storage?.roundLength);
-                    teamAmount.set(storage?.teamAmount);
+                if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.restriction && storage.style) {
+                    roundAmount.set(storage.roundAmount);
+                    roundLength.set(storage.roundLength);
+                    teamAmount.set(storage.teamAmount);
+                    multiplayerStyle.set(storage.style);
                 }
 
                 // If player is not already in the room, add player info
@@ -253,7 +255,7 @@ export async function createMultiplayerInstance() {
                 if (storage.timerStart) startMultiplayerTimer(storage.timerStart?.length, storage.timerStart?.timestamp); // Set timer if not running
                 if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) try { multiplayerTimer?.stopTimer(); } catch { }; // Stop multiplayer timer
 
-                if (storage.timeReducedOverlay && storage.timeReducedOverlay !== get(timeReducedOverlay) && storage?.confirmedArray?.length === 1) {
+                if (storage.timeReducedOverlay && storage.timeReducedOverlay !== get(timeReducedOverlay) && storage?.confirmedArray?.length == 1) {
                     showTimeReducedOverlay(15, !storage?.confirmedArray?.includes(get(socket)?.id));
                 }
 
@@ -305,7 +307,7 @@ export async function findDuel() {
 
     goto("/multiplayer/duel"); // Visit duel load page
     roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
-    playingDuel.set(true);
+    isDivisionRoom.set(true);
     matchmakingActive.set(true);
     attemptDuelJoin(roomIndex, get(skillBasedMatchmaking));
 }
@@ -341,7 +343,7 @@ async function showTimeReducedOverlay(time, show) {
     }
 }
 
-export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit, restriction) {
+export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit) {
     try {
         disableResultScreen(); // Edge case
         await createMultiplayerInstance(); // Get new multiplayer instance
@@ -364,8 +366,9 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             currentRound: 0,
             roundLength: get(roundLength),
             teamAmount: get(teamAmount),
+            style: get(multiplayerStyle),
             highestSupporterLevel: get(supporterLevel) || 0,
-            restriction: restriction || "standard",
+            restriction: get(multiplayerRestriction) || "standard",
             category: localStorage.getItem("selectedCategory") || "standard",
             mapBounds: getMapBounds(),
             location: [35.7072457, 139.863412], // Default panorama to prevent blackscreen
@@ -472,12 +475,13 @@ export function leaveMultiplayerRound(destroy = true) {
     roundAmount.set(3);
     teamAmount.set(1);
     connectionCount.set(0);
-    playingDuel.set(false);
-    isFriendDuel.set(false);
+    multiplayerStyle.set("standard");
+    isDivisionRoom.set(false);
     roomcode.set("loading...");
     multiplayerStatus.set(); // Undefined -> show default msgs
     continueText.set("Continue");
     matchResultDetermined.set(false);
+    multiplayerRestriction.set("standard");
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
@@ -493,7 +497,7 @@ export function leaveMultiplayerRound(destroy = true) {
 function showEndscreenUI(show) {
     if (show) {
         leaveMatchButtonVisible.set(true); // show leave / end button
-        if (!get(playingDuel) || get(isFriendDuel)) rematchButtonVisible.set(true); // Don't show rematch button in non-friend duels
+        if (!get(isDivisionRoom)) rematchButtonVisible.set(true); // Don't show rematch button in non-friend duels
     } else {
         rematchButtonVisible.set(false);
         leaveMatchButtonVisible.set(false);
@@ -563,7 +567,7 @@ function showMultiplayerOverlay(show) {
         if (get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(socket)?.getStorage?.currentRound);
         if (!get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
         if (!get(socket)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (get(socket)?.getStorage?.category)?.replace("community_", "") + ")");
-        overlayShowSubtitle.set(get(playingDuel) && get(socket)?.getStorage?.currentRound >= 3 && get(socket)?.getStorage?.currentRound < 5);
+        overlayShowSubtitle.set(get(multiplayerStyle) == "duel" && get(socket)?.getStorage?.currentRound >= 3 && get(socket)?.getStorage?.currentRound < get(socket)?.getStorage?.roundAmount);
         showEndscreenUI(false); // Default to no endscreen UI
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
         mapVisible.set(false); // Hide map
@@ -589,7 +593,7 @@ function determineWinner(array) {
         if (followUpPlayerData && winningPlayerData?.[3] == followUpPlayerData?.[3]) {
             // Draw
             multiplayerOverlayTitle.set("It's a draw!");
-            if (get(playingDuel) && !get(isFriendDuel)) sendDuelDivisionResult(false, get(socket)?.getStorage?.uuid); // If it's a draw, both players submit won = false
+            if (get(isDivisionRoom)) sendDuelDivisionResult(false, get(socket)?.getStorage?.uuid); // If it's a draw, both players submit won = false
 
         } else {
             // Clear Winner
@@ -597,7 +601,7 @@ function determineWinner(array) {
             get(socket)?.id == winningPlayerData?.[0] ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
 
             // Check if in division duels
-            if (get(playingDuel) && !get(isFriendDuel)) {
+            if (get(isDivisionRoom)) {
                 const won = winningPlayerData?.[5] == localStorage.getItem("id");
                 sendDuelDivisionResult(won, get(socket)?.getStorage?.uuid);
             }
@@ -616,7 +620,7 @@ async function multiplayerOverlayCountdown() {
     let countdown = 3;
 
     // If this is the first countodwn to occur, register the duel
-    if (get(playingDuel) && !get(isFriendDuel) && !get(socket)?.getStorage?.firstRoundPlayed) registerDivisionDuel(get(socket)?.getStorage?.uuid);
+    if (get(isDivisionRoom) && !get(socket)?.getStorage?.firstRoundPlayed) registerDivisionDuel(get(socket)?.getStorage?.uuid);
 
     countdownInterval = setInterval(async function () {
         if (countdown > 0) {

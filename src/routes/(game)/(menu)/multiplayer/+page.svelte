@@ -1,5 +1,5 @@
 <script>
-	import { PlusCircle, Unplug, Swords, ContactRound, TriangleAlert, Info } from "lucide-svelte";
+	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info } from "lucide-svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import {
@@ -11,7 +11,7 @@
 	} from "$lib/stores/accountStore";
 	import { loadedFriendsData, hostStage, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
 	import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
-	import { loadFriends, removeFriend, sendMatchInvite } from "$lib/logic/friendAPI";
+	import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { findDuel } from "$lib/logic/multiplayerLogic";
@@ -235,17 +235,6 @@
 							{/if}
 							<p>{entry.user_name}</p>
 							<button
-								id="duelFriend"
-								class="standardButton friendItemButtons white"
-								onclick={(e) => {
-									e.stopPropagation();
-									playSound("basic_button");
-									sendMatchInvite(entry.id, true);
-								}}
-							>
-								<Swords strokeWidth={3} size={17} />
-							</button>
-							<button
 								id="removeFriend"
 								class="standardButton friendItemButtons white friendButtonLeft"
 								onclick={(e) => {
@@ -313,7 +302,7 @@
 	}
 
 	.friendButtonLeft {
-		margin-left: 4px;
+		margin-left: auto;
 	}
 
 	.transparentPillButton {
@@ -379,10 +368,6 @@
 		margin-top: 50px;
 	}
 
-	#duelFriend {
-		margin-left: auto;
-	}
-
 	.friendButtonBox {
 		display: flex;
 		gap: var(--layout-margin);
@@ -430,7 +415,6 @@
 		padding-inline: 5px;
 		text-overflow: ellipsis;
 		overflow: hidden;
-		max-width: 50%;
 	}
 
 	.friendItemButtons {
@@ -520,8 +504,8 @@
 		border-radius: 5px;
 		height: 10px;
 		background-color: #00cc00;
-		margin-top: 4px;
-		margin-right: 3px;
+		margin-top: 3px;
+		margin-left: 5px;
 	}
 
 	.friendBox {

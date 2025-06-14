@@ -16,6 +16,8 @@
 		roomcode,
 		connectionCount,
 		multiplayerTableArray,
+		multiplayerStyle,
+		multiplayerRestriction,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { setupMultiplayerRoom, startRoom } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
@@ -55,15 +57,23 @@
 		}
 	}
 
-	// Restriction Toggle
+	// Restriction toggle
 	let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
 	let restrictionsText = ["Standard", "NMPZ", "Grayscale", "Invert Colors", "Hue Shift", "Blink (Fade)"];
-	let currentRestrictionIndex = 0;
 	let restrictionButtonText = $state("Standard");
 
 	function toggleMultiplayerRestriction() {
-		currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
+		const currentRestrictionIndex =
+			(restrictions.findIndex((e) => e == get(multiplayerRestriction)) + 1) % restrictions.length;
+		multiplayerRestriction.set(restrictions[currentRestrictionIndex]);
 		restrictionButtonText = restrictionsText[currentRestrictionIndex];
+	}
+
+	// Style toggle
+	let styles = ["standard", "duel"];
+	function toggleMultiplayerStyle() {
+		const currentStyleIndex = (styles.findIndex((e) => e == get(multiplayerStyle)) + 1) % styles.length;
+		multiplayerStyle.set(styles[currentStyleIndex]);
 	}
 </script>
 
@@ -85,8 +95,7 @@
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
 				<p>Restriction:</p>
 				<button
-					id="toggleRestrictions"
-					class="standardButton white"
+					class="standardButton white toggleSwitch"
 					onclick={() => {
 						playSound("basic_button");
 						toggleMultiplayerRestriction();
@@ -98,6 +107,16 @@
 				<div class="ticker">
 					<Ticker limit={5} lowerLimitText="no" note="teams" initialValue={1} bind:value={$teamAmount} />
 				</div>
+			</div>
+			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
+				<p>Style:</p>
+				<button
+					class="standardButton white toggleSwitch"
+					onclick={() => {
+						playSound("basic_button");
+						toggleMultiplayerStyle();
+					}}>{$multiplayerStyle?.[0]?.toUpperCase() + $multiplayerStyle?.slice(1)}</button
+				>
 			</div>
 			<div id="roomCreationMap" class="roomCreationModule multiplayerHostSettings">
 				<p>Selected Map:</p>
@@ -188,7 +207,7 @@
 									onclick={(e) => {
 										e.stopPropagation();
 										playSound("basic_button");
-										sendMatchInvite(entry.id, false);
+										sendMatchInvite(entry.id);
 									}}
 								>
 									<img src="/img/send_icon.png" alt="send invite" class="sendIcon" />
@@ -277,7 +296,7 @@
 
 						// Switch to stage 2 (host code area) if on stage 1 (after the create room function!!)
 						if ($hostStage == 1) {
-							setupMultiplayerRoom(get(roundAmount), get(roundLength), null, restrictions[currentRestrictionIndex]);
+							setupMultiplayerRoom(get(roundAmount), get(roundLength));
 							hostStage.set(2);
 						} else {
 							startRoom();
@@ -424,7 +443,7 @@
 		width: calc(100% - var(--box-margin) * 2);
 	}
 
-	#toggleRestrictions {
+	.toggleSwitch {
 		min-width: 170px;
 	}
 
