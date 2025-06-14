@@ -298,6 +298,13 @@
 		flex-wrap: wrap;
 	}
 
+	:global(.infoIcon) {
+		width: 30px;
+		height: 30px;
+		opacity: 0.5;
+		margin-inline: 3px;
+	}
+
 	.duelOptionsContainer {
 		display: flex;
 		gap: var(--box-margin);

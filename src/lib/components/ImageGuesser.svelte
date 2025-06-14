@@ -28,7 +28,7 @@
 		role="img"
 	></div>
 	<p id="imageGuessrAttribution">
-		CC0 Images by <a class="noTextDecoration" href="https://commons.wikimedia.org/" target="_blank">Wikimedia</a>
+		CC0 Images by <a href="https://commons.wikimedia.org/" target="_blank">Wikimedia</a>
 	</p>
 	<div id="imageGuessrBackground" class="guessImageLoading" bind:this={$imageGuessrBackground}></div>
 </div>
