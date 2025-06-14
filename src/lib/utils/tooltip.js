@@ -26,7 +26,7 @@ export function tooltip(node, { text, delay = 500, ...options }) {
         document.body.appendChild(tooltipElement);
     }
 
-    function actuallyShowTooltip() {
+    function showTooltip() {
         if (!tooltipElement) createTooltip();
         visible = true;
         openTooltipCount++;
@@ -60,20 +60,19 @@ export function tooltip(node, { text, delay = 500, ...options }) {
         });
     }
 
-    function showTooltip() {
+    function showTooltipDelayed(e) {
         clearTimeout(showTimeout);
+        if (e.pointerType == "touch") return;
 
-        if (openTooltipCount > 0) {
-            actuallyShowTooltip();
-        } else {
-            showTimeout = setTimeout(actuallyShowTooltip, delay);
-        }
+        if (openTooltipCount > 0) showTooltip();
+        else showTimeout = setTimeout(showTooltip, delay);
     }
 
-    function hideTooltip() {
+    function hideTooltip(e) {
         clearTimeout(showTimeout);
-        if (!tooltipElement || !visible) return;
+        if (e.pointerType == "touch") return;
 
+        if (!tooltipElement || !visible) return;
         visible = false;
         Object.assign(tooltipElement.style, {
             transform: 'scale(0)',
@@ -87,14 +86,14 @@ export function tooltip(node, { text, delay = 500, ...options }) {
         }, 150);
     }
 
-    node.addEventListener('mouseenter', showTooltip);
-    node.addEventListener('mouseleave', hideTooltip);
+    node.addEventListener('pointerenter', showTooltipDelayed);
+    node.addEventListener('pointerleave', hideTooltip);
 
     return {
         destroy() {
             clearTimeout(showTimeout);
-            node.removeEventListener('mouseenter', showTooltip);
-            node.removeEventListener('mouseleave', hideTooltip);
+            node.removeEventListener('pointerenter', showTooltipDelayed);
+            node.removeEventListener('pointerleave', hideTooltip);
             if (visible) openTooltipCount--;
             tooltipElement?.remove();
         },
