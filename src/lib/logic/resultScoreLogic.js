@@ -115,7 +115,7 @@ export async function loadResultScreenXP(distance) {
     // Calculate experience and streak --------------------------------------
     let earnedXP;
     let earnedBasicXP; // Without supporter mutliplier, that will be applied later (this is just for visuals)
-    const selectedCategory = localStorage.getItem("selectedCategory") || "standard";
+    const selectedCategory = !get(multiplayer) ? localStorage.getItem("selectedCategory") || "standard" : get(socket)?.getStorage?.category;
 
     // XP calculation formulas -------------------------------------------------
     if (get(singleplayer) || get(multiplayer)) {

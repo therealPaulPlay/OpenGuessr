@@ -4,6 +4,7 @@ import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { competition, multiplayer } from "$lib/stores/modeStore";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
+import { errorPopup } from "./errorHandling";
 
 let previousLocationArray = [];
 let currentCenterLat = 0;
@@ -12,11 +13,13 @@ let currentCenterLong = 0;
 let currentZoom = 2;
 
 export function getMapBounds() {
-    // If no locations are loaded, set the map to the default
-    if (get(multiplayer) || get(competition) || !get(currentlyLoadedLocationsArray)?.length) {
-        if (get(multiplayer) && get(socket)?.getStorage?.mapBounds) return get(socket)?.getStorage?.mapBounds;
-        return { zoom: 2, lat: 0, lng: 0, diameter: 360 }
+    if (get(multiplayer)) {
+        if (get(socket)?.getStorage?.mapBounds) return get(socket)?.getStorage?.mapBounds;
+        else errorPopup("Bounds error", "No multiplayer map bounds provided!", "No bounds.");
     }
+    
+    // If no locations are loaded or in a competition, set the map to the default
+    if (get(competition) || !get(currentlyLoadedLocationsArray)?.length) return { zoom: 2, lat: 0, lng: 0, diameter: 360 }
 
     if (get(currentlyLoadedLocationsArray) == previousLocationArray) {
         return { zoom: currentZoom, lat: currentCenterLat, lng: currentCenterLong }; // If the location array has not changed, re-use the calculated values
