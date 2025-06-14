@@ -1,6 +1,6 @@
 import { showNotification } from "$lib/utils/notifications";
 import { username, elo } from "$lib/stores/accountStore";
-import { acceptFriendRequest, declineMatchInvite, acceptDuelInvite } from "$lib/logic/friendAPI";
+import { acceptFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
 import { linkJoinPopup } from "$lib/stores/uiStore";
@@ -8,10 +8,9 @@ import { leaveMultiplayerRound, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { duelResultPopup } from "$lib/stores/uiStore";
 import { duelResultTitle, eloChange } from "$lib/stores/context-specific/duelResultStore";
-import { goto } from "$app/navigation";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { multiplayer } from "$lib/stores/modeStore";
-import { matchResultDetermined, isFriendDuel, playingDuel, roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
+import { matchResultDetermined, isDivisionRoom, roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
 
 export async function initializeSSEConnection() {
     let eventSource;
@@ -39,9 +38,8 @@ export async function initializeSSEConnection() {
                     // Handle different event types
                     switch (data.type) {
                         case 'room-invite':
-                            const roomOrDuel = data.duel ? "Duel" : "Room";
-                            showNotification(`${roomOrDuel} invite from ${data.name}.`, () => {
-                                joinRoomFromNotification(data.roomcode, data.from, data.duel);
+                            showNotification(`Room invite from ${data.name}.`, () => {
+                                joinRoomFromNotification(data.roomcode, data.from);
                             }, () => {
                                 declineMatchInvite(data.from);
                             }, true);
@@ -49,15 +47,10 @@ export async function initializeSSEConnection() {
 
                         case 'invite-accepted':
                             showNotification(`${data.name} accepted your invite.`);
-                            goto("/"); // Go to main game page
                             break;
 
                         case 'invite-declined':
                             showNotification(`${data.name} declined your invite.`);
-                            if (get(linkJoinPopup)) {
-                                leaveMultiplayerRound();
-                                linkJoinPopup.set(false);
-                            }
                             break;
 
                         case 'friend-request-received':
@@ -71,7 +64,7 @@ export async function initializeSSEConnection() {
                             eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
                             elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
                             duelResultPopup.set(true);
-                            if (get(multiplayer) && !get(matchResultDetermined) && get(playingDuel) && !get(isFriendDuel)) leaveMultiplayerRound(); // If the duel is still ongoing, leave
+                            if (get(multiplayer) && !get(matchResultDetermined) && get(isDivisionRoom)) leaveMultiplayerRound(); // If the duel is still ongoing, leave
                             break;
 
                         case 'duel-registration-error':
@@ -112,15 +105,10 @@ export async function initializeSSEConnection() {
 }
 
 // Related functions --------------------------------------------------------------------------------------------------------
-function joinRoomFromNotification(roomcode, recipientId, duel) {
-    if (duel) acceptDuelInvite(recipientId); // Informs the host that they accepted
+function joinRoomFromNotification(roomcode, recipientId) {
+    acceptMatchInvite(recipientId); // Informs the host that they accepted
     leaveMultiplayerRound();
     leaveCompetition(false);
-
-    if (duel) {
-        playingDuel.set(true);
-        isFriendDuel.set(true);
-    }
 
     linkJoinPopup.set(true);
     joinRoom(roomcode.replace("openguessr_", ""));

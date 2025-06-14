@@ -1,5 +1,5 @@
 // Multiplayer room matchmaking APIs, for Duels
-import { matchmakingActive, multiplayerStatus, screenEscapeDisabled, roomcode, matchmakingHosting } from "$lib/stores/context-specific/multiplayerStore";
+import { matchmakingActive, multiplayerStatus, screenEscapeDisabled, roomcode, matchmakingHosting, multiplayerStyle } from "$lib/stores/context-specific/multiplayerStore";
 import { changeCategory } from "$lib/utils/changeCategory";
 import { setupMultiplayerRoom, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
@@ -56,7 +56,7 @@ export async function attemptDuelJoin(index, skillBased) {
         if (receivedRoomCode) {
             joinRoom(receivedRoomCode); // Duel status will be set in this function
         } else {
-            if (localStorage.getItem("selectedCategory") && localStorage.getItem("selectedCategory") !== "standard") await changeCategory("standard", true); // Regenerate to update the bounds (await to ensure bounds are ready)
+            multiplayerStyle.set("duel"); // Set style to duel
             await setupMultiplayerRoom(5, 60, 2);
             sendRoomCodeToMatchmakingServer(skillBased);
             matchmakingHosting.set(true); // Enable hosting

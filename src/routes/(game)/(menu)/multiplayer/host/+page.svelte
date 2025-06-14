@@ -16,6 +16,8 @@
 		roomcode,
 		connectionCount,
 		multiplayerTableArray,
+		multiplayerStyle,
+		multiplayerRestriction,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { setupMultiplayerRoom, startRoom } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
@@ -27,6 +29,7 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { fade, scale, slide } from "svelte/transition";
+	import { tooltip } from "$lib/utils/tooltip";
 
 	function getFormattedCategory() {
 		if (typeof window === "undefined") return "loading...";
@@ -36,26 +39,9 @@
 
 	let roomOpened = $state(false);
 	let roomOpenAddInterval = $state();
-	let publicTooltipShown = $state(false);
-	let tooltipTimout;
-
-	const unsubscribeFromHostStage = hostStage.subscribe((value) => {
-		if (value == 2) {
-			clearTimeout(tooltipTimout);
-			tooltipTimout = setTimeout(() => {
-				if (localStorage.getItem("publicRoomTooltip")) return;
-				publicTooltipShown = true;
-				localStorage.setItem("publicRoomTooltip", "shown");
-			}, 3000);
-		} else {
-			clearTimeout(tooltipTimout);
-		}
-	});
 
 	onDestroy(() => {
-		unsubscribeFromHostStage();
 		clearInterval(roomOpenAddInterval);
-		clearTimeout(tooltipTimout);
 		if (roomOpened) deletePublicRoom();
 	});
 
@@ -71,15 +57,23 @@
 		}
 	}
 
-	// Restriction Toggle
+	// Restriction toggle
 	let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
 	let restrictionsText = ["Standard", "NMPZ", "Grayscale", "Invert Colors", "Hue Shift", "Blink (Fade)"];
-	let currentRestrictionIndex = 0;
 	let restrictionButtonText = $state("Standard");
 
 	function toggleMultiplayerRestriction() {
-		currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
+		const currentRestrictionIndex =
+			(restrictions.findIndex((e) => e == get(multiplayerRestriction)) + 1) % restrictions.length;
+		multiplayerRestriction.set(restrictions[currentRestrictionIndex]);
 		restrictionButtonText = restrictionsText[currentRestrictionIndex];
+	}
+
+	// Style toggle
+	let styles = ["standard", "duel"];
+	function toggleMultiplayerStyle() {
+		const currentStyleIndex = (styles.findIndex((e) => e == get(multiplayerStyle)) + 1) % styles.length;
+		multiplayerStyle.set(styles[currentStyleIndex]);
 	}
 </script>
 
@@ -101,8 +95,7 @@
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
 				<p>Restriction:</p>
 				<button
-					id="toggleRestrictions"
-					class="standardButton white"
+					class="standardButton white toggleSwitch"
 					onclick={() => {
 						playSound("basic_button");
 						toggleMultiplayerRestriction();
@@ -114,6 +107,16 @@
 				<div class="ticker">
 					<Ticker limit={5} lowerLimitText="no" note="teams" initialValue={1} bind:value={$teamAmount} />
 				</div>
+			</div>
+			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
+				<p>Style:</p>
+				<button
+					class="standardButton white toggleSwitch"
+					onclick={() => {
+						playSound("basic_button");
+						toggleMultiplayerStyle();
+					}}>{$multiplayerStyle?.[0]?.toUpperCase() + $multiplayerStyle?.slice(1)}</button
+				>
 			</div>
 			<div id="roomCreationMap" class="roomCreationModule multiplayerHostSettings">
 				<p>Selected Map:</p>
@@ -200,10 +203,11 @@
 								<p class="friendsRoomEntryText">{entry.user_name}</p>
 								<button
 									class="standardButton white sendInviteButton"
+									use:tooltip={{ text: "Invite" }}
 									onclick={(e) => {
 										e.stopPropagation();
 										playSound("basic_button");
-										sendMatchInvite(entry.id, false);
+										sendMatchInvite(entry.id);
 									}}
 								>
 									<img src="/img/send_icon.png" alt="send invite" class="sendIcon" />
@@ -221,6 +225,7 @@
 					<button
 						id="roomcodeLink"
 						class="copyLinkButton standardButton white"
+						use:tooltip={{ text: "Copy link" }}
 						onclick={() => {
 							playSound("basic_button");
 							const roomId = get(roomcode)?.replace("openguessr_", "");
@@ -245,9 +250,9 @@
 					</button>
 					<button
 						class="standardButton white makeRoomPublicButton"
+						use:tooltip={{ text: "Toggle room visibility" }}
 						onclick={async () => {
 							playSound("basic_button");
-							publicTooltipShown = false;
 							if (!$isAuthenticated) return signupPrompt();
 							if (!$roomcode || $roomcode.includes("loading")) return showNotification("Not initialized yet.");
 							if (!roomOpened) {
@@ -291,7 +296,7 @@
 
 						// Switch to stage 2 (host code area) if on stage 1 (after the create room function!!)
 						if ($hostStage == 1) {
-							setupMultiplayerRoom(get(roundAmount), get(roundLength), null, restrictions[currentRestrictionIndex]);
+							setupMultiplayerRoom(get(roundAmount), get(roundLength));
 							hostStage.set(2);
 						} else {
 							startRoom();
@@ -300,25 +305,6 @@
 				>
 			</div>
 		</div>
-		<!-- Tooltip for public rooms -->
-		{#if publicTooltipShown && $hostStage == 2}
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-			<div transition:slide>
-				<div
-					class="publicRoomTooltip"
-					transition:scale={{ delay: 250 }}
-					role="tooltip"
-					onclick={() => {
-						publicTooltipShown = false;
-					}}
-				>
-					<div class="innerRoomTooltip">
-						<p>Need more players?</p>
-					</div>
-				</div>
-			</div>
-		{/if}
 	</div>
 </div>
 
@@ -420,43 +406,6 @@
 		opacity: 0.75;
 	}
 
-	.publicRoomTooltip {
-		position: relative;
-		display: block;
-		cursor: pointer;
-		margin-top: 10px;
-	}
-
-	/* The tooltip bubble */
-	.publicRoomTooltip .innerRoomTooltip {
-		position: absolute;
-		left: -18px;
-		transform: translateX(-50%);
-		background-color: rgba(255, 255, 255, 0.15);
-		padding: 8px 12px;
-		border-radius: 10px;
-		text-wrap: nowrap;
-		z-index: 10;
-	}
-
-	/* Show the tooltip when hovering */
-	.publicRoomTooltip:hover .innerRoomTooltip {
-		opacity: 1;
-		visibility: visible;
-	}
-
-	/* The upward-pointing arrow */
-	.publicRoomTooltip .innerRoomTooltip::before {
-		content: "";
-		position: absolute;
-		top: -10px; /* Position the arrow above the tooltip bubble */
-		left: 50%;
-		transform: translateX(-50%);
-		border-width: 0 10px 10px 10px; /* No top border; bottom border creates the arrow */
-		border-style: solid;
-		border-color: transparent transparent rgba(255, 255, 255, 0.15) transparent;
-	}
-
 	.friendsRoomEntryText {
 		padding-inline: var(--box-margin);
 		overflow: hidden;
@@ -494,7 +443,7 @@
 		width: calc(100% - var(--box-margin) * 2);
 	}
 
-	#toggleRestrictions {
+	.toggleSwitch {
 		min-width: 170px;
 	}
 
