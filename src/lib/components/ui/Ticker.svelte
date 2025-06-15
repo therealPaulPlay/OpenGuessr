@@ -47,7 +47,7 @@
 		text-align: center;
 		border-radius: 5px;
 		font-size: 20px;
-		min-width: 50px;
+		min-width: 30px;
 	}
 
 	.tickerNote {
