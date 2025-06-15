@@ -20,7 +20,7 @@
 </script>
 
 <div
-	id="multiplayerFade"
+	class="multiplayerFade"
 	style:opacity={$multiplayerOverlay ? "1" : "0"}
 	style:pointer-events={$multiplayerOverlay ? "auto" : "none"}
 >
@@ -134,11 +134,9 @@
 {/snippet}
 
 <style>
-	#multiplayerFade {
-		width: 100%;
-		height: 100%;
+	.multiplayerFade {
 		position: fixed;
-		top: 0;
+		inset: 0 0 0 0;
 		z-index: 4;
 		transition: opacity 250ms ease;
 		overflow: hidden;
@@ -208,20 +206,20 @@
 		color: white;
 	}
 
-	#multiplayerFade h1 {
+	.multiplayerFade h1 {
 		font-size: 50px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: 20px;
 	}
 
-	#multiplayerFade h2 {
+	.multiplayerFade h2 {
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: 20px;
 		margin-top: -20px;
 		opacity: 0.75;
 	}
 
-	:global(#multiplayerFade p),
+	:global(.multiplayerFade p),
 	:global(.multiplayerTable p) {
 		font-size: 30px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);

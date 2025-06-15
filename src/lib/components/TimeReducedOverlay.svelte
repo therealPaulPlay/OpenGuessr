@@ -4,7 +4,7 @@
 </script>
 
 <div
-	id="duelsOverlay"
+	class="duelsOverlay"
 	style:opacity={$timeReducedOverlay ? "1" : "0"}
 	style:scale={$timeReducedOverlay ? "1.03" : "1"}
 	style:filter={$timeReducedOverlay ? "none" : "blur(5px)"}
@@ -14,11 +14,9 @@
 </div>
 
 <style>
-	#duelsOverlay {
-		width: 100%;
-		height: 100%;
+	.duelsOverlay {
 		position: fixed;
-		top: 0;
+		inset: 0 0 0 0;
 		z-index: 1;
 		transition:
 			opacity 500ms ease,
@@ -35,7 +33,7 @@
 		user-select: none;
 	}
 
-	#duelsOverlay h1 {
+	.duelsOverlay h1 {
 		font-size: 75px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: 20px;
@@ -44,7 +42,7 @@
 		margin-bottom: 10px;
 	}
 
-	#duelsOverlay p {
+	.duelsOverlay p {
 		font-size: 35px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: 20px;
@@ -53,11 +51,11 @@
 	}
 
 	@media all and (max-width: 1200px) {
-		#duelsOverlay h1 {
+		.duelsOverlay h1 {
 			font-size: 45px;
 		}
 
-		#duelsOverlay p {
+		.duelsOverlay p {
 			font-size: 25px;
 		}
 	}
