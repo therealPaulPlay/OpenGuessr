@@ -58,15 +58,8 @@ async function calculateXPGain(distance, category, supporterLevelParam) {
     // If the map is big enough to encompass many countries, calculate the country streak
     const streakMultiplier = (getMapBounds().diameter > 250 && get(singleplayer) && get(isAuthenticated) && category !== "country guessr") ? await streakCalculation() : 1;
 
-    if (category == "famous places" || category == "image guessr") {
-        returnXP = Math.round((1500 * ((0.9982) ** distance)) * streakMultiplier); // 1500 xp, with streak up to 1800sth
-
-    } else if (category == "country guessr") {
-        returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
-
-    } else {
-        returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance) * streakMultiplier);
-    }
+    if (category == "country guessr") returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
+    else returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance) * streakMultiplier);
 
     let supporterMultiplier = 1;
 
