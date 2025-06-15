@@ -460,10 +460,10 @@
 					<div class="youBar">
 						<p class="youLabel">You:</p>
 						<div class="rankItem yourItem">
-							<p class="leaderboardTextEntry">#{yourEntry.position}</p>
+							<p>#{yourEntry.position}</p>
 							<p
 								id="yourUsername"
-								class="leaderboardTextEntry centerEntry"
+								class="centerEntry"
 								onclick={() => {
 									loadProfileFromId(localStorage.getItem("id"), true);
 								}}
@@ -473,16 +473,16 @@
 									<SupporterTag />
 								{/if}
 							</p>
-							<p class="leaderboardTextEntry">{yourEntry.score.toLocaleString()} Pts.</p>
+							<p>{yourEntry.score.toLocaleString()} Pts.</p>
 						</div>
 					</div>
 				{/if}
 				{#if leaderboardEntries?.length > 0}
 					{#each leaderboardEntries as entry}
 						<div class="rankItem" transition:blur class:rankYou={entry.id == localStorage.getItem("id")}>
-							<p class="leaderboardTextEntry">#{entry.position}</p>
+							<p>#{entry.position}</p>
 							<p
-								class="leaderboardTextEntry centerEntry"
+								class="centerEntry"
 								onclick={() => {
 									loadProfileFromId(entry.id, true);
 								}}
@@ -492,7 +492,7 @@
 									<SupporterTag />
 								{/if}
 							</p>
-							<p class="leaderboardTextEntry">{entry.score.toLocaleString()} Pts.</p>
+							<p>{entry.score.toLocaleString()} Pts.</p>
 						</div>
 					{/each}
 				{:else}
@@ -1071,6 +1071,11 @@
 		align-items: center;
 		padding: 5px;
 		padding-inline: 10px;
+		gap: var(--box-margin);
+	}
+
+	.rankItem p {
+		text-wrap: nowrap;
 	}
 
 	.yourItem {
@@ -1206,12 +1211,6 @@
 
 	#contentSelection {
 		overflow: hidden;
-	}
-
-	.leaderboardTextEntry {
-		overflow: hidden;
-		text-wrap: nowrap;
-		text-overflow: ellipsis;
 	}
 
 	.centerEntry {
