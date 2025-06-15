@@ -379,9 +379,7 @@
 	}
 
 	.maxlength {
-		max-width: 42%;
-		text-overflow: ellipsis;
-		overflow: hidden;
+		max-width: 40%;
 		flex-grow: 1;
 		flex-basis: 0;
 	}
