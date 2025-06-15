@@ -14,6 +14,7 @@
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { blur } from "svelte/transition";
+	import SupporterTag from "$lib/components/SupporterTag.svelte";
 
 	const competitionsEndpoint = $accountUrl + "/competitions";
 
@@ -458,39 +459,40 @@
 				{#if yourEntry}
 					<div class="youBar">
 						<p class="youLabel">You:</p>
-						<div class="rankItem yourItem" class:leaderboardSupporterEntry={yourEntry.supporter_level > 0}>
-							<p class="leaderboardTextEntry">#{yourEntry.position}</p>
+						<div class="rankItem yourItem">
+							<p>#{yourEntry.position}</p>
 							<p
 								id="yourUsername"
-								class="leaderboardTextEntry centerEntry"
+								class="centerEntry"
 								onclick={() => {
 									loadProfileFromId(localStorage.getItem("id"), true);
 								}}
 							>
 								{yourEntry.userName}
+								{#if entry.supporter_level > 0}
+									<SupporterTag />
+								{/if}
 							</p>
-							<p class="leaderboardTextEntry">{yourEntry.score.toLocaleString()} Pts.</p>
+							<p>{yourEntry.score.toLocaleString()} Pts.</p>
 						</div>
 					</div>
 				{/if}
 				{#if leaderboardEntries?.length > 0}
 					{#each leaderboardEntries as entry}
-						<div
-							class="rankItem"
-							transition:blur
-							class:leaderboardSupporterEntry={entry.supporter_level > 0}
-							class:rankYou={entry.id == localStorage.getItem("id")}
-						>
-							<p class="leaderboardTextEntry">#{entry.position}</p>
+						<div class="rankItem" transition:blur class:rankYou={entry.id == localStorage.getItem("id")}>
+							<p>#{entry.position}</p>
 							<p
-								class="leaderboardTextEntry centerEntry"
+								class="centerEntry"
 								onclick={() => {
 									loadProfileFromId(entry.id, true);
 								}}
 							>
 								{entry.userName}
+								{#if entry.supporter_level > 0}
+									<SupporterTag />
+								{/if}
 							</p>
-							<p class="leaderboardTextEntry">{entry.score.toLocaleString()} Pts.</p>
+							<p>{entry.score.toLocaleString()} Pts.</p>
 						</div>
 					{/each}
 				{:else}
@@ -1069,6 +1071,11 @@
 		align-items: center;
 		padding: 5px;
 		padding-inline: 10px;
+		gap: var(--box-margin);
+	}
+
+	.rankItem p {
+		text-wrap: nowrap;
 	}
 
 	.yourItem {
@@ -1206,24 +1213,13 @@
 		overflow: hidden;
 	}
 
-	.leaderboardTextEntry {
-		overflow: hidden;
-		text-wrap: nowrap;
-		text-overflow: ellipsis;
-	}
-
-	.leaderboardSupporterEntry {
-		width: 100%;
-		box-sizing: border-box;
-		box-shadow: var(--box-shadow-supporter);
-		background-color: var(--supporter-green-tint);
-	}
-
 	.centerEntry {
-		max-width: 50%;
+		width: 50%;
+		text-align: center;
 		transition: opacity 250ms ease;
 		cursor: pointer;
 		user-select: none;
+		mask-image: linear-gradient(to right, transparent, black 0%, black 90%, transparent);
 	}
 
 	.centerEntry:hover {

@@ -6,6 +6,7 @@
 	import { fade } from "svelte/transition";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import SupporterTag from "$lib/components/SupporterTag.svelte";
 
 	let loadingText = $state("Loading...");
 
@@ -253,13 +254,7 @@
 	{#if mainSectionEntries}
 		<div class="item-container" transition:fade={{ duration: 150 }}>
 			{#each mainSectionEntries.slice(3) as entry, i}
-				<div
-					class="rankedItem"
-					role="button"
-					tabindex="0"
-					class:yourItem={entry.id == userId && $isAuthenticated}
-					class:rankedItemSupporter={entry.supporter_level >= 1}
-				>
+				<div class="rankedItem" role="button" tabindex="0" class:yourItem={entry.id == userId && $isAuthenticated}>
 					<p class="maxlength rankedItemLeft">#{entry.position}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<p
@@ -269,6 +264,9 @@
 						}}
 					>
 						{entry.user_name}
+						{#if entry.supporter_level >= 1}
+							<SupporterTag />
+						{/if}
 					</p>
 					<p class="maxlength rankedItemRight">{entry?.[valueKey]?.toLocaleString() + unitName}</p>
 				</div>
@@ -285,18 +283,20 @@
 		</div>
 		<div id="yourLeagueContainer" class="item-container">
 			{#each userSectionEntries as entry, i}
-				<div
-					class="rankedItem"
-					role="button"
-					tabindex="0"
-					class:yourItem={entry.id == userId && $isAuthenticated}
-					class:rankedItemSupporter={entry.supporter_level >= 1}
-					onclick={() => {
-						loadProfileFromId(entry.id, true);
-					}}
-				>
+				<div class="rankedItem" role="button" tabindex="0" class:yourItem={entry.id == userId && $isAuthenticated}>
 					<p class="maxlength rankedItemLeft">#{entry.position}</p>
-					<p class="middle maxlength">{entry.user_name}</p>
+					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+					<p
+						class="middle maxlength"
+						onclick={() => {
+							loadProfileFromId(entry.id, true);
+						}}
+					>
+						{entry.user_name}
+						{#if entry.supporter_level >= 1}
+							<SupporterTag />
+						{/if}
+					</p>
 					<p class="maxlength rankedItemRight">{entry?.[valueKey]?.toLocaleString() + unitName}</p>
 				</div>
 			{/each}
@@ -349,72 +349,12 @@
 		font-size: 25px;
 	}
 
-	.rankedItemSupporter {
-		box-sizing: border-box;
-		border: 3px solid var(--supporter-green);
-		border-bottom: 3px solid var(--supporter-green-soft);
-		box-shadow: none;
-		position: relative;
-	}
-
-	.rankedItemSupporter::before {
-		animation: supporterGlint 5s 2s infinite;
-		background: linear-gradient(90deg, #00ff1c00 1%, rgb(196, 255, 206) 50%, #00ff3400);
-		border-radius: inherit;
-		content: "";
-		height: 3px;
-		inset: -3px;
-		opacity: 0;
-		position: absolute;
-		transform: translate(0);
-		width: 50%;
-		z-index: 1;
-	}
-
-	@keyframes supporterGlint {
-		10% {
-			opacity: 1;
-		}
-
-		20% {
-			opacity: 0;
-			transform: translate(100%);
-		}
-
-		21% {
-			opacity: 0;
-			transform: translate(100%, 42px);
-		}
-
-		30% {
-			opacity: 1;
-		}
-
-		40% {
-			opacity: 0;
-			transform: translateY(42px);
-		}
-
-		41% {
-			opacity: 0;
-			transform: translate(0);
-		}
-
-		50% {
-			opacity: 1;
-		}
-
-		60% {
-			opacity: 0;
-			transform: translate(100%);
-		}
-	}
-
 	.middle {
 		transition: opacity 250ms ease;
 		cursor: pointer;
 		user-select: none;
 		text-align: center;
+		mask-image: linear-gradient(to right, transparent, black 0%, black 90%, transparent);
 	}
 
 	.middle:hover {
@@ -439,9 +379,7 @@
 	}
 
 	.maxlength {
-		max-width: 42%;
-		text-overflow: ellipsis;
-		overflow: hidden;
+		max-width: 40%;
 		flex-grow: 1;
 		flex-basis: 0;
 	}
