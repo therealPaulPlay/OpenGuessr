@@ -111,7 +111,7 @@
 	}
 
 	.countryGuessrHolder:hover {
-		filter: brightness(1.3);
+		transform: scale(0.98);
 	}
 
 	.countryGuessrTag {
