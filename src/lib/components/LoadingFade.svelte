@@ -19,9 +19,7 @@
 		background-color: #11121f;
 		transition: opacity 150ms ease;
 		position: fixed;
-		top: 0;
-		width: 100%;
-		height: 100%;
+		inset: 0 0 0 0; /* Top, right, bottom, left */
 		z-index: 6;
 		box-shadow: 0 0 500px rgba(165, 176, 251, 0.25) inset;
 	}
