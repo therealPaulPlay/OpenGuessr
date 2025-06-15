@@ -89,7 +89,7 @@
 				<Ticker limit={10} minimum={2} initialValue={3} bind:value={$roundAmount} />
 			</div>
 			<div class="roomCreationModule multiplayerHostSettings">
-				<p>Round Length:</p>
+				<p>Round length:</p>
 				<Ticker limit={300} step={10} minimum={10} note="sec" initialValue={60} bind:value={$roundLength} />
 			</div>
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
@@ -119,7 +119,7 @@
 				>
 			</div>
 			<div id="roomCreationMap" class="roomCreationModule multiplayerHostSettings">
-				<p>Selected Map:</p>
+				<p>Map:</p>
 				<div class="selectedMapField">
 					<p id="multiplayerMapDisplay">
 						{getFormattedCategory()}
