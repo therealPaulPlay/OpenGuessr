@@ -469,7 +469,7 @@
 								}}
 							>
 								{yourEntry.userName}
-								{#if entry.supporter_level > 0}
+								{#if yourEntry.supporter_level > 0}
 									<SupporterTag />
 								{/if}
 							</p>
