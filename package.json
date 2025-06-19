@@ -23,7 +23,7 @@
 		"leaflet": "^1.9.4",
 		"lucide-svelte": "^0.511.0",
 		"overfade": "^0.0.4",
-		"playsocketjs": "^1.1.12",
+		"playsocketjs": "^1.1.13",
 		"topojson-client": "^3.1.0"
 	}
 }
