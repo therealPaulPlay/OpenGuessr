@@ -13,3 +13,7 @@ export const supporterBoostText = writable();
 
 export const experienceBarAnimated = writable(true);
 export const showStreakDisplay = writable(true);
+
+// Result screen fullscreen celebration
+export const showFullscreenCelebration = writable(false);
+export const fullscreenCelebrationNumber = writable(0);

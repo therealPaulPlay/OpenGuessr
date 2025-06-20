@@ -1,34 +1,15 @@
 <script>
-	import { earnedExperience, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+	import {
+		fullscreenCelebrationNumber,
+		showFullscreenCelebration,
+	} from "$lib/stores/context-specific/resultScreenStore";
 	import { blur } from "svelte/transition";
-	import { onMount } from "svelte";
-
-	let animationTimeout;
-	let showAnimation = $state(false);
-	let currentScore = $state(0);
-	let alreadyShown = false;
-
-	resultScreenEnabled.subscribe((value) => {
-		if (!value) alreadyShown = false;
-	});
-
-	$effect(() => {
-		if ($earnedExperience >= 5000 && $resultScreenEnabled && !alreadyShown) {
-			currentScore = Math.floor($earnedExperience / 1000);
-			clearTimeout(animationTimeout);
-			showAnimation = true;
-			alreadyShown = true;
-			animationTimeout = setTimeout(() => (showAnimation = false), 1000);
-		}
-	});
-
-	onMount(() => () => clearTimeout(animationTimeout));
 </script>
 
-{#if showAnimation}
+{#if $showFullscreenCelebration}
 	<div class="resultTakeover" transition:blur={{ duration: 250 }}>
 		<h1 class="animateTitle">
-			<span class="digit">{currentScore}</span>
+			<span class="digit">{$fullscreenCelebrationNumber}</span>
 			<span class="k">K</span>
 		</h1>
 	</div>
