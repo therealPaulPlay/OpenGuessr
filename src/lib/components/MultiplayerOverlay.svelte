@@ -233,8 +233,9 @@
 		min-width: 350px;
 		max-width: 750px;
 		font-size: 25px;
-		max-height: 350px;
+		max-height: calc(55dvh - 150px);
 		overflow-x: hidden;
+		scrollbar-width: none;
 		overflow-y: auto;
 		flex-direction: column;
 		gap: var(--layout-margin);
@@ -286,5 +287,12 @@
 
 	.multiplayerEntryPlayerScore {
 		margin-left: var(--box-margin);
+	}
+
+	/* Shift up table on mobile where the indicator bar spans across the device width */
+	@media (orientation: portrait) and (max-width: 800px) {
+		.multiplayerFade {
+			padding-bottom: 150px;
+		}
 	}
 </style>
