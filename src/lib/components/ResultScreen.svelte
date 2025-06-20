@@ -27,7 +27,7 @@
 	import { cubicOut } from "svelte/easing";
 	import { get } from "svelte/store";
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
-	import ResultFullscreenMessage from "./ResultFullscreenMessage.svelte";
+	import ResultFullscreenMessage from "./ResultFullscreenCelebration.svelte";
 	import { CircleUser, Flame, RulerDimensionLine } from "lucide-svelte";
 
 	const animatedExperience = tweened(0, {
@@ -36,11 +36,8 @@
 	});
 
 	$effect(() => {
-		if ($resultScreenEnabled) {
-			animatedExperience.set($earnedExperience);
-		} else {
-			animatedExperience.set(0);
-		}
+		if ($resultScreenEnabled) animatedExperience.set($earnedExperience);
+		else animatedExperience.set(0);
 	});
 
 	let level = $state(1);
