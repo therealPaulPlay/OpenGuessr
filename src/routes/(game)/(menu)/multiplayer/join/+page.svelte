@@ -66,7 +66,7 @@
 					class="standardButton white"
 					onclick={() => {
 						playSound("basic_button");
-						roomCodeInput = room?.room_code?.replace("openguessr_", "");
+						roomCodeInput = room?.room_code;
 						if (!roomCodeInput) return console.warn("Roomcode is not set.");
 						joinRoom(roomCodeInput);
 					}}
