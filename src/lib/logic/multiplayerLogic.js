@@ -430,7 +430,7 @@ async function startMultiplayerRound() {
 
 export async function joinRoom(code) {
     try {
-        code = code.replaceAll(" ", "").replaceAll("-", "").toUpperCase(); // Remove whitespaces and lowercase
+        code = code.replaceAll(" ", "").replaceAll("-", "").toUpperCase(); // Remove whitespaces, dashes, and uppercase
         disableResultScreen(); // Edge case
         try { await createMultiplayerInstance(); } catch (error) {
             matchmakingActive.set(false);
@@ -474,7 +474,7 @@ export function leaveMultiplayerRound(destroy = true) {
     connectionCount.set(0);
     multiplayerStyle.set("standard");
     isDivisionRoom.set(false);
-    roomcode.set("loading...");
+    roomcode.set("......");
     multiplayerStatus.set(); // Undefined -> show default msgs
     continueText.set("Continue");
     matchResultDetermined.set(false);

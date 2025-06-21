@@ -333,7 +333,7 @@
 		align-items: center;
 		flex-direction: column;
 		width: 100%;
-		max-width: 500px;
+		max-width: 400px;
 		gap: var(--layout-margin);
 		margin-top: auto;
 		margin-bottom: auto;

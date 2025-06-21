@@ -9,8 +9,43 @@
 
 	let roomCodeInput = $state("");
 	let openRooms = $state([]);
+	let inputRefs = []; // Store references to input elements
+	let segments = $state(["", "", "", "", "", ""]); // 6 segments for XXX-XXX
 
 	let fetchRoomsInterval;
+
+	// Update roomCodeInput when segments change
+	$effect(() => {
+		roomCodeInput = segments.slice(0, 3).join("") + segments.slice(3, 6).join("");
+	});
+
+	function handleInput(index, event) {
+		const value = event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
+		segments[index] = value.slice(-1); // Only keep last character
+		if (value && index < 5) inputRefs[index + 1]?.focus(); // Move to next input
+	}
+
+	function handleKeydown(index, event) {
+		if (event.key === "Backspace" && !segments[index] && index > 0) {
+			inputRefs[index - 1]?.focus(); // Move to previous input on backspace
+		} else if (event.key === "Enter" && roomCodeInput.length === 6) {
+			event.preventDefault();
+			joinRoom(roomCodeInput);
+		}
+	}
+
+	function handlePaste(event) {
+		event.preventDefault();
+		const paste = event.clipboardData
+			.getData("text")
+			.toUpperCase()
+			.replace(/[^A-Z0-9]/g, "");
+		if (paste.length <= 6) {
+			for (let i = 0; i < 6; i++) {
+				segments[i] = paste[i] || "";
+			}
+		}
+	}
 
 	onMount(async () => {
 		clearInterval(fetchRoomsInterval);
@@ -35,12 +70,29 @@
 	<div class="inputCenterBox">
 		<div class="multiplayerJoinField">
 			<p class="multiplayerInputInfo">{$multiplayerStatus || "Input a code."}</p>
-			<input type="text" class="multiplayerInput" placeholder="e.g. 1234xy" bind:value={roomCodeInput} />
+			<div class="segmentedInputBox" onpaste={handlePaste}>
+				{#each segments as segment, i}
+					{@const placeholder = ["A", "B", "C", "1", "2", "3"]}
+					<input
+						type="text"
+						class="segmentInput"
+						placeholder={placeholder[i]}
+						bind:this={inputRefs[i]}
+						bind:value={segments[i]}
+						oninput={(e) => handleInput(i, e)}
+						onkeydown={(e) => handleKeydown(i, e)}
+						maxlength={1}
+					/>
+					{#if i === 2}
+						<span class="dash">-</span>
+					{/if}
+				{/each}
+			</div>
 		</div>
 		<button
 			id="multiplayerJoin"
 			class="standardButton"
-			class:buttonDisabled={!Boolean(roomCodeInput)}
+			class:buttonDisabled={roomCodeInput.length !== 6}
 			onclick={() => {
 				playSound("start_button");
 				joinRoom(roomCodeInput);
@@ -66,9 +118,12 @@
 					class="standardButton white"
 					onclick={() => {
 						playSound("basic_button");
-						roomCodeInput = room?.room_code;
-						if (!roomCodeInput) return console.warn("Roomcode is not set.");
-						joinRoom(roomCodeInput);
+						const code = room?.room_code;
+						if (!code) return console.warn("Roomcode is not set.");
+						for (let i = 0; i < 6; i++) {
+							segments[i] = code[i] || "";
+						}
+						joinRoom(code);
 					}}
 				>
 					<Unplug strokeWidth={2.5} size={22} style="margin-bottom: -3px;" />
@@ -87,9 +142,9 @@
 	}
 
 	.publicRoomTitle {
-		max-width: 440px;
+		max-width: 390px;
 		margin-inline: auto;
-		width: calc(100% - 60px);
+		width: calc(100% - 10px);
 		margin-top: 100px;
 		opacity: 0.5;
 	}
@@ -102,8 +157,8 @@
 		gap: var(--layout-margin);
 		margin-inline: auto;
 		margin-top: var(--box-margin);
-		max-width: 460px;
-		width: calc(100% - 40px);
+		max-width: 400px;
+		width: 100%;
 		max-height: 275px;
 		overflow-y: auto;
 		scrollbar-width: none;
@@ -147,22 +202,35 @@
 		align-items: center;
 		flex-direction: column;
 		width: 100%;
-		max-width: 500px;
+		max-width: 320px;
 	}
 
-	.multiplayerInput {
-		width: calc(100% - 50px);
+	.segmentedInputBox {
+		display: flex;
+		align-items: center;
+		gap: var(--box-margin);
+		justify-content: center;
+	}
+
+	.segmentInput {
+		width: 38px;
+		height: 50px;
 		border-radius: 10px;
-		min-height: 50px;
-		padding-inline: 15px;
+		text-align: center;
+		text-transform: uppercase;
 	}
 
-	.multiplayerInput::placeholder {
-		opacity: 0.35;
+	.segmentInput::placeholder {
+		opacity: 0.25 !important;
+	}
+
+	.dash {
+		opacity: 0.5;
+		color: white;
+		font-size: 22px;
 	}
 
 	.multiplayerJoinField {
-		width: calc(100% - 20px);
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
@@ -181,7 +249,7 @@
 	.multiplayerInputInfo {
 		padding: 0;
 		overflow: hidden;
-		width: calc(100% - 40px);
+		width: calc(100% - 10px);
 		text-overflow: ellipsis;
 		opacity: 0.5;
 	}
