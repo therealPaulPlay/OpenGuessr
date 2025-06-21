@@ -20,9 +20,7 @@
 
 	onMount(() => {
 		const tempStorageDistanceUnit = localStorage.getItem("distanceUnit");
-		if (tempStorageDistanceUnit != null) {
-			selectedUnit = tempStorageDistanceUnit == "kilometers" ? "Metric" : "Imperial";
-		}
+		if (tempStorageDistanceUnit != null) selectedUnit = tempStorageDistanceUnit == "kilometers" ? "Metric" : "Imperial";
 	});
 
 	// SFX Volume -----------------------------
