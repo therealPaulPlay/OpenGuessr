@@ -15,6 +15,7 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { blur } from "svelte/transition";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
+	import { page } from "$app/state";
 
 	const competitionsEndpoint = $accountUrl + "/competitions";
 
@@ -90,49 +91,30 @@
 					loadCompetition();
 					goto("/");
 				} catch (error) {
-					console.error("Error parsing competition details: " + error);
+					throw new Error("Error parsing competition details: " + error);
 				}
 			} else {
 				let responseData = null;
 
-				try {
-					responseData = await response.json();
+				responseData = await response.json();
 
-					let errorMessages = [];
+				let errorMessages = [];
 
-					if (responseData.error) errorMessages.push(responseData.error);
-					if (responseData.message) errorMessages.push(responseData.message);
+				if (responseData.error) errorMessages.push(responseData.error);
+				if (responseData.message) errorMessages.push(responseData.message);
 
-					if (responseData.errors && Array.isArray(responseData.errors)) {
-						responseData.errors.forEach((err) => {
-							if (err.msg) {
-								errorMessages.push(err.msg);
-							} else {
-								errorMessages.push(JSON.stringify(err));
-							}
-						});
-					}
-
-					errorPopup(
-						"Error entering Competition",
-						"An error occured trying to enter a competition.",
-						errorMessages.join(" "),
-					);
-				} catch {
-					errorPopup(
-						"Unknown Competition Error",
-						"An error without a proper error message occured entering the competition.",
-						"No error - Please check the browser console and request response",
-					);
+				if (responseData.errors && Array.isArray(responseData.errors)) {
+					responseData.errors.forEach((err) => {
+						if (err.msg) errorMessages.push(err.msg);
+						else errorMessages.push(JSON.stringify(err));
+					});
 				}
+
+				throw new Error(errorMessages.join(" ") || "Unknown error - please check the network tab.");
 			}
 		} catch (error) {
-			console.error("Error occurred during competition details fetch ", error);
-			errorPopup(
-				"Error entering Competition (Network)",
-				"A network error occured trying to enter a competition",
-				error,
-			);
+			console.error("Error occurred trying to enter a competition:", error);
+			errorPopup("Error entering competition", "An error occured trying to enter a competition", error.message);
 		}
 	}
 
@@ -151,9 +133,7 @@
 		// Load data from endpoint using id here
 		loadLeaderboardFromServer(id);
 
-		if (showRatingBox) {
-			displayRatingBox();
-		}
+		if (showRatingBox) displayRatingBox();
 	}
 
 	let leaderboardEntries = $state([]);
@@ -216,7 +196,7 @@
 	// Query Links - Enter and Load leaderboard --------------------------------------------------------------------------------------------------------
 	onMount(() => {
 		if (typeof window === "undefined") return; // Exit if not in browser environment
-		let urlParams = new URLSearchParams(window.location.search);
+		let urlParams = new URLSearchParams(page.url.search);
 
 		let leaderboardIdFromLink;
 		let leaderboardIdFromLinkAfterSubmit;
@@ -224,17 +204,15 @@
 		// Load leaderboard via link
 		try {
 			leaderboardIdFromLink = urlParams.get("leaderboard");
-
 			if (leaderboardIdFromLink) {
 				openLeaderboard(leaderboardIdFromLink);
-				history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
+				history.replaceState({}, document.title, page.url.pathname); // reset query in the address bar
 			}
 
 			leaderboardIdFromLinkAfterSubmit = urlParams.get("leaderboard-submit");
-
 			if (leaderboardIdFromLinkAfterSubmit) {
 				openLeaderboard(leaderboardIdFromLinkAfterSubmit, true);
-				history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
+				history.replaceState({}, document.title, page.url.pathname); // reset query in the address bar
 			}
 		} catch {}
 
@@ -252,7 +230,7 @@
 						enterCompetition(competitionIdFromLink);
 					},
 				);
-				history.replaceState({}, document.title, window.location.pathname); //reset query in the address bar
+				history.replaceState({}, document.title, page.url.pathname); //reset query in the address bar
 			}
 		} catch {}
 	});
@@ -260,6 +238,7 @@
 	// Load competitions ----------------------------------------------------------------------------------------------------------------------------
 	let notExpiredIndex = 0;
 	let expiredIndex = 0;
+	let expiredTabsSelection = $state("All");
 
 	// Competition "Don't show entered Competitions" Filter
 	let hideEntered = $state(false);
@@ -391,6 +370,7 @@
 	let searchQuery = $state();
 
 	function startSearch() {
+		expiredTabsSelection = "All";
 		let query = searchQuery.toLowerCase();
 		activeCompetitionsData = [];
 		if (hideEntered) hideEntered = false;
@@ -750,9 +730,11 @@
 			<Tabs
 				tabs={["All", "Not entered"]}
 				class="hideEnteredCompsToggle"
+				bind:selected={expiredTabsSelection}
 				onchange={(_, selectionIndex) => {
 					playSound("basic_button");
 					activeCompetitionsData = []; // Reset loaded data
+					searchQuery = ""; // Reset search query
 					hideEntered = Boolean(selectionIndex); // 0 = false, 1 = true
 					notExpiredIndex = 0;
 					getCompetitionsFromServer(false, false, false, hideEntered);

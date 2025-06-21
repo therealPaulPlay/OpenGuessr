@@ -15,9 +15,9 @@ let currentZoom = 2;
 export function getMapBounds() {
     if (get(multiplayer)) {
         if (get(socket)?.getStorage?.mapBounds) return get(socket)?.getStorage?.mapBounds;
-        else errorPopup("Bounds error", "No multiplayer map bounds provided!", "No bounds.");
+        else if (get(socket)?.getStorage?.gameStarted) errorPopup("Bounds error", "No multiplayer map bounds provided!", "No bounds.");
     }
-    
+
     // If no locations are loaded or in a competition, set the map to the default
     if (get(competition) || !get(currentlyLoadedLocationsArray)?.length) return { zoom: 2, lat: 0, lng: 0, diameter: 360 }
 
