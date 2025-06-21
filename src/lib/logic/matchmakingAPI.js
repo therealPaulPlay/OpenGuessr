@@ -49,7 +49,7 @@ export async function attemptDuelJoin(index, skillBased) {
             body: JSON.stringify({ id: localStorage.getItem("id") }),
         });
 
-        if (response.ok) receivedRoomCode = await response.json().then(data => data.code?.replace("openguessr_", ""));
+        if (response.ok) receivedRoomCode = await response.json().then(data => data.code);
         if (!response.ok) throw new Error(response.status);
 
         // Attempt to join if there is a code, otherwise create room

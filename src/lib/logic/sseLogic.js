@@ -111,5 +111,5 @@ function joinRoomFromNotification(roomcode, recipientId) {
     leaveCompetition(false);
 
     linkJoinPopup.set(true);
-    joinRoom(roomcode.replace("openguessr_", ""));
+    joinRoom(roomcode);
 }

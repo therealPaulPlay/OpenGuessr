@@ -113,12 +113,7 @@ function removePlayerById(id) {
 
 // Create multiplayer instance -----------------------------------------------------------------------------------------------------------------------
 export async function createMultiplayerInstance() {
-    let uniqueUserID;
-
-    if (get(isAuthenticated) && localStorage.getItem("id")) {
-        uniqueUserID = "openguessr_" + Number(localStorage.getItem("id")).toString(36) + Math.random().toString(36).substring(2, 4);
-    } else {
-        uniqueUserID = "openguessr_g" + Math.random().toString(36).substring(2, 8);
+    if (!get(isAuthenticated)) {
         if (!get(guestNamePromise)) {
             guestNamePickerPopup.set(true);
             await new Promise((resolve) => guestNamePromise.set(resolve));
@@ -129,7 +124,7 @@ export async function createMultiplayerInstance() {
         // Create the new instance
         try {
             let customData = get(isAuthenticated) ? { bearer: localStorage.getItem("bearer") } : undefined;
-            socket.set(new PlaySocket(uniqueUserID, {
+            socket.set(new PlaySocket(null, {
                 endpoint: get(websocketUrl),
                 customData
             }));
@@ -435,7 +430,7 @@ async function startMultiplayerRound() {
 
 export async function joinRoom(code) {
     try {
-        code = "openguessr_" + code.replaceAll(" ", "").toLowerCase(); // Remove whitespaces and lowercase
+        code = code.replaceAll(" ", "").replaceAll("-", "").toUpperCase(); // Remove whitespaces, dashes, and uppercase
         disableResultScreen(); // Edge case
         try { await createMultiplayerInstance(); } catch (error) {
             matchmakingActive.set(false);
@@ -479,7 +474,7 @@ export function leaveMultiplayerRound(destroy = true) {
     connectionCount.set(0);
     multiplayerStyle.set("standard");
     isDivisionRoom.set(false);
-    roomcode.set("loading...");
+    roomcode.set("......");
     multiplayerStatus.set(); // Undefined -> show default msgs
     continueText.set("Continue");
     matchResultDetermined.set(false);

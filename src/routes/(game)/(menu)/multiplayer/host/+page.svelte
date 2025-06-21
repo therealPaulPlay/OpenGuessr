@@ -138,7 +138,7 @@
 			<!-- Room code-->
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p class="codeDisplayText">Join with code:</p>
-				<h1 id="roomCodeDisplay">{$roomcode?.replace("openguessr_", "")}</h1>
+				<h1 id="roomCodeDisplay">{$roomcode?.slice(0, 3)}<span style="opacity: 50%">-</span>{$roomcode?.slice(3)}</h1>
 			</div>
 
 			<!-- Team and player display -->
@@ -228,7 +228,7 @@
 						use:tooltip={{ text: "Copy link" }}
 						onclick={() => {
 							playSound("basic_button");
-							const roomId = get(roomcode)?.replace("openguessr_", "");
+							const roomId = get(roomcode);
 
 							// Use regular or Crazy Games link for invitation
 							const link = $crazyGames
@@ -333,7 +333,7 @@
 		align-items: center;
 		flex-direction: column;
 		width: 100%;
-		max-width: 500px;
+		max-width: 400px;
 		gap: var(--layout-margin);
 		margin-top: auto;
 		margin-bottom: auto;
