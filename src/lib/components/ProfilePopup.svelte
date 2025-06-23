@@ -276,7 +276,9 @@
 						spellcheck="false"
 						value={filteredAbout}
 						bind:this={textarea}
-						placeholder="Share a few facts about yourself with others..."
+						placeholder={$profileId == localStorage.getItem("id")
+							? "Share a few facts about yourself with others..."
+							: "Loading..."}
 						oninput={() => {
 							if (!$unsavedAboutChanges) unsavedAboutChanges.set(true);
 						}}
