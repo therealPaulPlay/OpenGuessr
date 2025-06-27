@@ -9,9 +9,7 @@
 <div class="supporterArea">
 	<div class="supporterPitchText">
 		<p id="supporterPitch">{$supporterLevel >= 1 ? "Thank you." : "Purchase a supporter tier."}</p>
-		<span id="supporterTextSecondary"
-			>{$supporterLevel > 0 ? "Contributions keep the game free." : "Your contribution keeps the game free."}</span
-		>
+		<span id="supporterTextSecondary">Contributions keep the game free.</span>
 	</div>
 	<button
 		id="viewSupporterBenefits"
@@ -67,19 +65,11 @@
 		padding-inline: 10px;
 	}
 
-	#viewSupporterBenefits {
-		font-size: 22px;
-	}
-
 	#supporterTextSecondary {
 		opacity: 0.75;
 	}
 
-	@media all and (max-width: 1200px) {
-		.supporterPitchText p {
-			font-size: 22px;
-		}
-
+	@media all and (max-width: 1000px) {
 		#supporterTextSecondary {
 			display: none !important;
 		}
