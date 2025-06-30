@@ -46,7 +46,7 @@
 
 	#pageBrowserIframe {
 		width: 100%;
-		height: 800px;
+		height: min(800px, calc(100dvh - 75px));
 		background: transparent;
 		border-radius: 12px;
 		position: relative;

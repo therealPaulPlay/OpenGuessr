@@ -154,6 +154,7 @@
 
 	.usernameSpan {
 		margin-right: 3px;
+		font-size: 25px;
 	}
 
 	.eloDisplay {

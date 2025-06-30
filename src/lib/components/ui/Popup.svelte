@@ -64,7 +64,7 @@
 		right: -12px;
 		padding: 5px;
 		z-index: 10;
-		backdrop-filter: blur(5px);
+		backdrop-filter: blur(10px);
 	}
 
 	.frameLess {

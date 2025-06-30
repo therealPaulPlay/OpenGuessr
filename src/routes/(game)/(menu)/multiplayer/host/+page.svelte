@@ -324,10 +324,6 @@
 		text-overflow: ellipsis;
 	}
 
-	.teamsDisplay p {
-		color: rgba(255, 255, 255, 0.5);
-	}
-
 	.multiplayerCreationArea {
 		display: flex;
 		align-items: center;
@@ -382,6 +378,10 @@
 	.playerBoxElement {
 		width: calc(100% - 85px);
 		text-align: center;
+	}
+
+	.playerBoxElement span {
+		color: rgba(255, 255, 255, 0.5) !important;
 	}
 
 	.playerBoxElement.playerBoxTeams {
