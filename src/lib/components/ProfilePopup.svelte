@@ -577,7 +577,6 @@
 	.stats-container {
 		border-radius: 10px;
 		padding: var(--layout-margin) 0 10px 0;
-		margin-bottom: var(--layout-margin);
 	}
 
 	.carousel-slide {
