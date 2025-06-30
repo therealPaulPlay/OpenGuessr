@@ -158,7 +158,7 @@
 	}
 
 	.eloDisplay {
-		padding: 7px;
+		padding: 8px;
 		box-shadow: var(--bulb-shadow);
 		border-radius: 5px;
 		position: relative;

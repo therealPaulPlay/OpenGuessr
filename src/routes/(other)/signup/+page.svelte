@@ -1,33 +1,26 @@
 <script>
-	import { displayError, loginUser, registerUser, sendPasswordResetEmail, changePassword } from "$lib/logic/userAPI";
+	import { displayError, loginUser, registerUser, sendPasswordResetEmail, changePassword } from "$lib/logic/accountAPI";
 	import { Eye, EyeClosed } from "lucide-svelte";
 	import { renderCaptcha } from "$lib/utils/renderCaptcha";
 	import inIframe from "$lib/utils/checkIframe";
 	import { onMount } from "svelte";
-	import { fade, scale } from "svelte/transition";
+	import { fade, scale, slide } from "svelte/transition";
+	import { signupMessageColor, signupMessageShown, signupMessageText } from "$lib/stores/context-specific/signupStore";
 
 	// Export error / success functions --------------------------------------------------------------------------------------------------------------
 	let timeout;
-	let errorMessage = $state();
 
 	function displaySuccess(text) {
 		try {
 			clearTimeout(timeout);
-			errorMessage.innerHTML = text;
-			errorMessage.style.maxHeight = "100px";
-			errorMessage.style.marginTop = "20px";
-			errorMessage.style.marginBottom = "20px";
-			errorMessage.style.opacity = "1";
-			errorMessage.style.color = "#64c681";
-
-			// Change to log in
-			formType = "login";
+			signupMessageText.set(text);
+			signupMessageColor.set("#64c681");
+			signupMessageShown.set(true);
+			formType = "login"; // Change to log in
 
 			// Hide error again
 			timeout = setTimeout(() => {
-				errorMessage.style.maxHeight = "0";
-				errorMessage.style.opacity = "0";
-				errorMessage.style.margin = "0";
+				signupMessageShown.set(false);
 			}, 4000);
 		} catch (error) {
 			console.error("Error occured displaying success:", error);
@@ -54,11 +47,8 @@
 	let resetPasswordValue = $state("");
 
 	function changePasswordIfValuesProvided() {
-		if (resetPasswordValue) {
-			changePassword(resetBearerToken, resetPasswordValue, "signup", displaySuccess, errorMessage);
-		} else {
-			displayError("Please input a new password.", "signup", errorMessage);
-		}
+		if (resetPasswordValue) changePassword(resetBearerToken, resetPasswordValue, "signup", displaySuccess);
+		else displayError("Please input a new password.", "signup");
 	}
 
 	// Signup UI Logic and Captcha ------------------------------------------------------------------------------------------------------------------------------
@@ -76,18 +66,14 @@
 			if (signupUsername && signupPassword && validateEmail(signupEmail)) {
 				return true;
 			} else {
-				displayError("Please check your input.", "signup", errorMessage);
+				displayError("Please check your input.", "signup");
 				return false;
 			}
 		} else {
 			if (validateEmail(loginEmail) && loginPassword) {
 				return true;
 			} else {
-				displayError(
-					"Please check your input. The first field should contain a valid email address!",
-					"signup",
-					errorMessage,
-				);
+				displayError("Please check your input. The first field should contain a valid email address!", "signup");
 				return false;
 			}
 		}
@@ -113,7 +99,7 @@
 	async function logInAction() {
 		if (checkEmptyFields(false)) {
 			loginButtonSignupPage.textContent = "Wait...";
-			await loginUser(loginEmail, loginPassword, "signup", errorMessage);
+			await loginUser(loginEmail, loginPassword, "signup");
 			loginButtonSignupPage.textContent = "Log in";
 		}
 	}
@@ -135,7 +121,7 @@
 
 	if (typeof window !== "undefined") {
 		window.onSignupTurnstileCompleted = function (token) {
-			registerUser(signupUsername, signupEmail, signupPassword, token, "signup", displaySuccess, errorMessage);
+			registerUser(signupUsername, signupEmail, signupPassword, token, "signup", displaySuccess);
 			loginEmail = signupEmail;
 			captchaVisible = false;
 		};
@@ -198,7 +184,7 @@
 						<button
 							id="reset"
 							class="standardButton"
-							onclick={() => sendPasswordResetEmail(resetEmail, "signup", displaySuccess, errorMessage)}>Reset</button
+							onclick={() => sendPasswordResetEmail(resetEmail, "signup", displaySuccess)}>Reset</button
 						>
 					</div>
 					<p class="switchFormBox">
@@ -286,7 +272,11 @@
 					</p>
 				</div>
 			{/if}
-			<p id="errorMessage" bind:this={errorMessage}>This is an error message box.</p>
+			{#if $signupMessageShown}
+				<p class="errorMessage" transition:slide={{ axis: "y" }} style:color={$signupMessageColor}>
+					{$signupMessageText}
+				</p>
+			{/if}
 		</div>
 	</div>
 	<div class="orb"></div>
@@ -391,17 +381,11 @@
 		left: 10%;
 	}
 
-	#errorMessage {
-		color: red;
+	.errorMessage {
 		display: inline;
-		transition:
-			max-height 250ms ease,
-			opacity 250ms ease,
-			margin 250ms ease;
 		overflow: hidden;
-		max-height: 0px;
-		margin: 0;
-		opacity: 0;
+		margin-top: var(--layout-margin);
+		margin-bottom: var(--layout-margin);
 	}
 
 	@keyframes floatOrb {
