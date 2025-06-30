@@ -9,7 +9,7 @@
 	const slides = [
 		{
 			icon: Search,
-			title: "Look at the panorama image",
+			title: "Look at the panorama",
 			description: "Explore its surroundings and study all clues.",
 			image: "/img/help_image_1.jpg", // Replace with actual image path
 		},
@@ -45,39 +45,37 @@
 	let CurrentIcon = $derived(slides[currentSlide].icon);
 </script>
 
-{#if $helpPopup}
-	<Popup verySlim={true}>
-		<div class="popup-title">
-			<h1>How to play</h1>
+<Popup verySlim={true} bind:open={$helpPopup}>
+	<div class="popup-title">
+		<h1>How to play</h1>
+	</div>
+
+	<div class="flexSlideTitle">
+		{#if CurrentIcon}
+			<CurrentIcon strokeWidth={2.25} />
+		{/if}
+		<h3 class="slide-title">
+			{slides[currentSlide].title}
+		</h3>
+	</div>
+
+	<p class="slide-description">
+		{slides[currentSlide].description}
+	</p>
+
+	<div class="image-container">
+		<img src={slides[currentSlide].image} alt={slides[currentSlide].title} class="slide-image" />
+		<div class="indicator-container">
+			{#each slides as _, i}
+				<div class="indicator-dot" class:active={i === currentSlide}></div>
+			{/each}
 		</div>
+	</div>
 
-		<div class="flexSlideTitle">
-			{#if CurrentIcon}
-				<CurrentIcon strokeWidth={2.25} />
-			{/if}
-			<h3 class="slide-title">
-				{slides[currentSlide].title}
-			</h3>
-		</div>
-
-		<p class="slide-description">
-			{slides[currentSlide].description}
-		</p>
-
-		<div class="image-container">
-			<img src={slides[currentSlide].image} alt={slides[currentSlide].title} class="slide-image" />
-			<div class="indicator-container">
-				{#each slides as _, i}
-					<div class="indicator-dot" class:active={i === currentSlide}></div>
-				{/each}
-			</div>
-		</div>
-
-		<button class="standardButton closeButton white" onclick={handleNext}>
-			{`${currentSlide != 2 ? "Continue" : "Let's go!"}`}
-		</button>
-	</Popup>
-{/if}
+	<button class="standardButton largeButton white" onclick={handleNext}>
+		{`${currentSlide != 2 ? "Continue" : "Let's go!"}`}
+	</button>
+</Popup>
 
 <style>
 	.image-container {
@@ -103,7 +101,6 @@
 
 	.flexSlideTitle {
 		display: flex;
-		flex-wrap: wrap;
 		align-items: center;
 		gap: 10px;
 		margin-top: var(--layout-margin);

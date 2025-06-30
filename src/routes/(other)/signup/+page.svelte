@@ -303,9 +303,6 @@
 			{/if}
 			<p id="errorMessage" bind:this={errorMessage}>This is an error message box.</p>
 		</div>
-		<div class="container containerBottom neumorphic-menu">
-			<button onclick={backToPrevious} class="standardButton backButton">⭠ Go back</button>
-		</div>
 	</div>
 	<div class="orb"></div>
 	<div id="secondOrb" class="orb"></div>
@@ -325,7 +322,6 @@
 		margin: 0;
 		padding: 0;
 		font-family: Barlow, Futura, Arial, sans-serif;
-		font-size: 20px;
 		font-weight: 400;
 		background-color: #07071e;
 		display: flex;
@@ -444,12 +440,10 @@
 		opacity: 50%;
 		margin-bottom: 0;
 		margin-top: var(--layout-margin);
-		font-size: 20px;
 	}
 
 	input {
 		width: calc(80% - 20px);
-		font-size: 18px;
 		padding: 15px;
 		border-radius: 10px;
 	}
@@ -492,26 +486,9 @@
 		padding-bottom: 10px;
 	}
 
-	.backButton {
-		background-color: rgba(255, 255, 255, 0.1);
-		color: white;
-		border-radius: 10px;
-		width: 100%;
-		min-height: 50px;
-		border: none;
-		box-shadow: var(--button-shadow);
-	}
-
-	.containerBottom {
-		margin-top: 10px;
-		padding: 5px;
-		min-width: 330px;
-	}
-
 	#passwordResetOption {
 		color: rgba(255, 255, 255, 0.5);
 		transition: color 250ms ease;
-		font-size: 20px;
 		cursor: pointer;
 		border-radius: 5px;
 		width: 100%;

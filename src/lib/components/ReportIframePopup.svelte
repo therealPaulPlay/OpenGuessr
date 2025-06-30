@@ -9,45 +9,24 @@
 	);
 </script>
 
-{#if $reportPopup}
-	<Popup z={971} verySlim={true}>
-		<div id="browserIframeHolder">
-			<div class="absoluteCenter">
-				<img src="/img/compass_spinner.png" alt="Loading iframe" class="spinner" id="pageBrowserLoading" />
-			</div>
-			<!-- svelte-ignore a11y_missing_attribute -->
-			<iframe
-				id="pageBrowserIframe"
-				allowtransparency="true"
-				frameborder="0"
-				referrerpolicy="no-referrer-when-downgrade"
-				src={link}
-			></iframe>
-		</div>
-		<button
-			class="standardButton white closeButton"
-			onclick={() => {
-				playSound("basic_button");
-				reportPopup.set(false);
-			}}>Close</button
-		>
-	</Popup>
-{/if}
+<Popup z={971} verySlim={true} bind:open={$reportPopup} frameless={true}>
+	<div class="absoluteCenter">
+		<img src="/img/compass_spinner.png" alt="Loading iframe" class="spinner" id="pageBrowserLoading" />
+	</div>
+	<!-- svelte-ignore a11y_missing_attribute -->
+	<iframe
+		id="pageBrowserIframe"
+		allowtransparency="true"
+		frameborder="0"
+		referrerpolicy="no-referrer-when-downgrade"
+		src={link}
+	></iframe>
+</Popup>
 
 <style>
-	#browserIframeHolder {
-		width: 100%;
-		height: calc(100dvh - 250px);
-		max-height: 600px;
-		flex-grow: 1;
-		background-color: rgba(0, 0, 0, 0.2);
-		position: relative;
-		border-radius: 5px;
-	}
-
 	#pageBrowserLoading {
 		margin: 0;
-		opacity: 0.15;
+		opacity: 0.25;
 	}
 
 	.absoluteCenter {
@@ -60,11 +39,9 @@
 
 	#pageBrowserIframe {
 		width: 100%;
-		height: 100%;
-		overflow: hidden;
+		height: 600px;
 		background: transparent;
-		outline: 5px solid rgba(75, 75, 75, 0.25);
-		border-radius: 5px;
+		border-radius: 12px;
 		position: relative;
 		z-index: 2;
 	}

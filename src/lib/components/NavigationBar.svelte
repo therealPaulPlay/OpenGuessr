@@ -188,6 +188,7 @@
 		{#if !$isAuthenticated}
 			<button
 				class="standardButton"
+				aria-label="Log in or Sign up"
 				use:tooltip={{ text: "Sign up or log in" }}
 				onclick={() => {
 					playSound("basic_button");
@@ -249,9 +250,7 @@
 			</button>
 		{/if}
 	</div>
-	<!-- svelte-ignore a11y_interactive_supports_focus -->
-	<!-- svelte-ignore a11y_mouse_events_have_key_events -->
-	<div class="barMenu topBarDesktop gameModeMenu" role="menu">
+	<div class="barMenu topBarDesktop gameModeMenu">
 		<button
 			id="leaderboardButton"
 			class="standardButton white"

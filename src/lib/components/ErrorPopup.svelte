@@ -7,42 +7,37 @@
 		description,
 		errorCode,
 		popupOpen,
-		closeButtonText,
 	} from "$lib/stores/context-specific/errorPopupStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import Popup from "./ui/Popup.svelte";
 	import { get } from "svelte/store"; // Import get from svelte/store
 </script>
 
-{#if $popupOpen}
-	<Popup z={999} verySlim={true}>
-		<h1 class="popup-title">{$title}</h1>
-		<div>
-			<p class="slightBottomMargin">{$description}</p>
-			{#if $errorCode}
-				<p class="errorCode">{$errorCode}</p>
-			{/if}
-		</div>
-		{#if !$hideDisableOption}
-			<div id="errorPopupDisable">
-				<p>Never show again:</p>
-				<input type="checkbox" id="hideErrors" bind:checked={$hideErrors} />
-			</div>
+<Popup
+	z={999}
+	verySlim={true}
+	bind:open={$popupOpen}
+	onclose={() => {
+		if (get(reload)) {
+			localStorage.setItem("selectedCategory", "standard");
+			window.location.reload();
+		}
+	}}
+>
+	<h1 class="popup-title">{$title}</h1>
+	<div>
+		<p class="slightBottomMargin">{$description}</p>
+		{#if $errorCode}
+			<p class="errorCode">{$errorCode}</p>
 		{/if}
-		<button
-			class="standardButton white closeButton"
-			onclick={() => {
-				playSound("basic_button");
-				popupOpen.set(false);
-
-				if (get(reload)) {
-					localStorage.setItem("selectedCategory", "standard");
-					window.location.reload();
-				}
-			}}>{$closeButtonText}</button
-		>
-	</Popup>
-{/if}
+	</div>
+	{#if !$hideDisableOption}
+		<div id="errorPopupDisable">
+			<p>Never show again:</p>
+			<input type="checkbox" id="hideErrors" bind:checked={$hideErrors} />
+		</div>
+	{/if}
+</Popup>
 
 <style>
 	.errorCode {

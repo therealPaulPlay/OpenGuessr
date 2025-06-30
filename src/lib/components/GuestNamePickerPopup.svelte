@@ -1,5 +1,7 @@
 <script>
+	import { goto } from "$app/navigation";
 	import Popup from "$lib/components/ui/Popup.svelte";
+	import { leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
 	import { guestName, guestNamePromise } from "$lib/stores/context-specific/multiplayerStore";
 	import { guestNamePickerPopup } from "$lib/stores/uiStore";
 	import { filterProfanity } from "$lib/utils/profanityCheck";
@@ -28,28 +30,34 @@
 	}
 
 	onMount(generateFunnyGuestName);
+
+	async function setName() {
+		$guestName = $guestName.trim();
+		$guestName = await filterProfanity($guestName);
+		$guestNamePromise?.();
+		$guestNamePromise = true; // True means, that the popup won't show up again
+	}
 </script>
 
-{#if $guestNamePickerPopup}
-	<Popup verySlim={true} z={980}>
-		<h1 class="popup-title">Pick a name</h1>
-		<div class="popup-description">Please choose a temporary name for multiplayer.</div>
-		<div class="fullWidth">
-			<input type="text" class="namePopupInput" placeholder="Guest name" maxlength="30" bind:value={$guestName} />
-		</div>
-		<button
-			class="standardButton closeButton"
-			class:buttonDisabled={$guestName?.length < 3}
-			onclick={async () => {
-                $guestName = $guestName.trim();
-                $guestName = await filterProfanity($guestName);
-				$guestNamePickerPopup = false;
-				$guestNamePromise?.();
-                $guestNamePromise = true; // True means, that the popup won't show up again
-			}}>Confirm</button
-		>
-	</Popup>
-{/if}
+<Popup verySlim={true} z={980} bind:open={$guestNamePickerPopup} onclose={() => {
+	$guestNamePromise = null;
+	leaveMultiplayerRound();
+	goto("/multiplayer");
+}}>
+	<h1 class="popup-title">Pick a name</h1>
+	<p class="popup-description">Please choose a temporary name for multiplayer.</p>
+	<div class="fullWidth">
+		<input type="text" class="namePopupInput" placeholder="Guest name" maxlength="30" bind:value={$guestName} />
+	</div>
+	<button
+		class="standardButton largeButton"
+		class:buttonDisabled={$guestName?.length < 3}
+		onclick={async () => {
+			await setName();
+			$guestNamePickerPopup = false;
+		}}>Confirm</button
+	>
+</Popup>
 
 <style>
 	.namePopupInput {

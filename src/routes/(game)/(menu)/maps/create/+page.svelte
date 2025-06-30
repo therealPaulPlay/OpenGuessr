@@ -206,10 +206,10 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 			<p id="fileName">{fileName}</p>
 		</button>
 	</div>
-	<div class="buttonBoxRight fullWidth">
+	<div class="buttonContainer">
 		<button
 			id="uploadConfirm"
-			class="standardButton closeButton submitButton"
+			class="standardButton largeButton submitButton"
 			onclick={() => {
 				playSound("basic_button");
 				showConfirmPopup(
@@ -220,15 +220,16 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 			}}>Submit</button
 		>
 	</div>
-	{#if jsonPopup}
-		<Popup verySlim={true}>
-			<h1 class="popup-title">JSON format</h1>
-			<p id="jsonFormatTextInfo">
-				OpenGuessr uses a JSON format to load its locations. Here is an example of how that looks like:
-			</p>
-			<br />
-			<div class="preBox">
-				<pre>
+</div>
+
+<Popup verySlim={true} bind:open={jsonPopup}>
+	<h1 class="popup-title">JSON format</h1>
+	<p id="jsonFormatTextInfo">
+		OpenGuessr uses a JSON format to load its locations. Here is an example of how that looks like:
+	</p>
+	<br />
+	<div class="preBox">
+		<pre>
         &lbrace;
           "locations": [
                   [latitude, longitude],
@@ -238,20 +239,8 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
                   [latitude, longitude]
               ]
         &rbrace;</pre>
-			</div>
-			<div class="buttonBoxRight">
-				<button
-					id="jsonInfoClose"
-					class="standardButton closeButton white"
-					onclick={() => {
-						playSound("basic_button");
-						jsonPopup = false;
-					}}>Close</button
-				>
-			</div>
-		</Popup>
-	{/if}
-</div>
+	</div>
+</Popup>
 
 <style>
 	.mainContainer {
@@ -290,8 +279,11 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		display: none;
 	}
 
-	.fullWidth {
+	.buttonContainer {
 		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
 	}
 
 	.submitButton {

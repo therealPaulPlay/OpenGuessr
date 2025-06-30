@@ -135,14 +135,14 @@
 	}
 
 	.badge {
-		padding: 7px;
+		padding: var(--panel-margin);
 		border-radius: 5px;
 		font-style: italic;
 		position: relative;
 		color: white;
 		font-size: 20px;
 		text-wrap: nowrap;
-		padding-inline: 10px;
+		padding-inline: 12px;
 		box-shadow: var(--button-shadow);
 		cursor: pointer;
 		transition:
