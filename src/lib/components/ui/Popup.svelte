@@ -73,7 +73,7 @@
 	.content {
 		overflow-y: auto;
 		overflow-x: hidden;
-		max-height: min(900px, calc(100dvh - var(--layout-margin) * 2 - var(--box-margin) - 50px));
+		max-height: min(900px, calc(100dvh - var(--layout-margin) * 2 - 50px));
 		width: 100%;
 	}
 
@@ -83,7 +83,7 @@
 	}
 
 	.uiWindow {
-		width: calc(100vw - var(--layout-margin) * 2 - var(--box-margin));
+		width: calc(100vw - var(--layout-margin) * 2);
 		box-sizing: border-box;
 		padding: 25px;
 		padding-bottom: 30px;
