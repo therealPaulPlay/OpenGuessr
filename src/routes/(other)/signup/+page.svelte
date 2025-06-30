@@ -61,19 +61,6 @@
 		}
 	}
 
-	// Back to OpenGuessr Button ---------------------------------------------------------------------------------------------------------------------------------
-	function backToPrevious() {
-		if (inIframe()) {
-			window.parent.postMessage("close", "*");
-		} else {
-			if (document.referrer) {
-				window.history.back();
-			} else {
-				window.location.href = "/"; // Fallback if no referrer
-			}
-		}
-	}
-
 	// Signup UI Logic and Captcha ------------------------------------------------------------------------------------------------------------------------------
 	let signupButtonSignupPage = $state();
 	let signupArea = $state();
@@ -119,9 +106,7 @@
 
 	// This is the function that runs when the user click on signup or presses enter.
 	function signUpAction() {
-		if (checkEmptyFields(true)) {
-			captchaVisible = true;
-		}
+		if (checkEmptyFields(true)) captchaVisible = true;
 	}
 
 	// This is the function that runs when the user click on login or presses enter.
