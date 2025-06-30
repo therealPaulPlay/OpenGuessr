@@ -1,13 +1,14 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
 	import { username } from "$lib/stores/accountStore";
-	import { Link } from "lucide-svelte";
+	import { Copy, Link } from "lucide-svelte";
 	import { showNotification } from "$lib/utils/notifications";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { goto } from "$app/navigation";
 
 	let competitionSubmittedSuccessfully = false;
 	let successPopup = $state(false);
@@ -145,16 +146,10 @@
 
 				try {
 					responseData = await response.json();
-
 					let errorMessages = [];
 
-					if (responseData.error) {
-						errorMessages.push(responseData.error);
-					}
-
-					if (responseData.message) {
-						errorMessages.push(responseData.message);
-					}
+					if (responseData.error) errorMessages.push(responseData.error);
+					if (responseData.message) errorMessages.push(responseData.message);
 
 					if (responseData.errors && Array.isArray(responseData.errors)) {
 						responseData.errors.forEach((err) => {
@@ -182,30 +177,57 @@
 	<title>Create a competition</title>
 </svelte:head>
 
-<Popup verySlim={true} bind:open={successPopup}>
+<Popup
+	verySlim={true}
+	bind:open={successPopup}
+	onclose={() => {
+		goto("/competitions");
+	}}
+>
 	<h1 id="submitConfirmHeader" class="textHeaderLeft">Competition created!</h1>
-	<p>Thank you for creating a competition! Share these direct links with your friends.</p>
+	<p>
+		Thank you for creating a competition! Share these links with others and save them if your competition is private.
+	</p>
 	<div class="spacer"></div>
-	<div class="linkBox">
+	<div>
 		<p>Enter link:</p>
-		<p class="linkField">{enterLink}</p>
+		<div class="linkBox">
+			<p>{enterLink}</p>
+			<button
+				id="copyLinksButton"
+				class="standardButton white"
+				onclick={() => {
+					playSound("basic_button");
+					navigator.clipboard
+						.writeText(enterLink)
+						.then(function () {
+							showNotification("Copied!");
+						})
+						.catch(function (error) {
+							showNotification("Error: " + error);
+						});
+				}}><Copy size="18" strokeWidth={2.5} /></button
+			>
+		</div>
 		<p>Leaderboard link:</p>
-		<p class="linkField">{leaderboardLink}</p>
-		<button
-			id="copyLinksButton"
-			class="standardButton white copyButton"
-			onclick={() => {
-				playSound("basic_button");
-				navigator.clipboard
-					.writeText(enterLink + " " + leaderboardLink)
-					.then(function () {
-						showNotification("Copied!");
-					})
-					.catch(function (error) {
-						showNotification("Error: " + error);
-					});
-			}}><Link size="16" strokeWidth={2.5} style="margin-right: 3px;" /> Copy both</button
-		>
+		<div class="linkBox">
+			<p>{leaderboardLink}</p>
+			<button
+				id="copyLinksButton"
+				class="standardButton white"
+				onclick={() => {
+					playSound("basic_button");
+					navigator.clipboard
+						.writeText(leaderboardLink)
+						.then(function () {
+							showNotification("Copied!");
+						})
+						.catch(function (error) {
+							showNotification("Error: " + error);
+						});
+				}}><Copy size="18" strokeWidth={2.5} /></button
+			>
+		</div>
 	</div>
 </Popup>
 
@@ -346,10 +368,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		justify-content: flex-end;
 	}
 
-	.linkField {
-		margin-bottom: var(--layout-margin);
-	}
-
 	.submitButton {
 		border-radius: 10px;
 		margin-top: var(--box-margin);
@@ -366,6 +384,27 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		flex-direction: column;
 		width: calc(100% - 40px);
 		box-shadow: var(--box-shadow);
+	}
+
+	.linkBox {
+		display: flex;
+		align-items: center;
+		gap: var(--box-margin);
+		margin-bottom: var(--layout-margin);
+		padding: var(--box-margin);
+		background-color: var(--box-color);
+		border-radius: 10px;
+		margin-top: var(--box-margin);
+		width: fit-content;
+		box-shadow: var(--box-shadow);
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	.linkBox p {
+		text-overflow: ellipsis;
+		overflow: hidden;
+		text-wrap: nowrap;
 	}
 
 	#inputArea {
@@ -414,10 +453,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 
 	.marginTop {
 		margin-top: 15px;
-	}
-
-	.copyButton {
-		margin-left: 0;
 	}
 
 	li {

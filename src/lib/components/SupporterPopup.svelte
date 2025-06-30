@@ -118,7 +118,7 @@
 				class:tierBuyButtonUnlocked={$supporterLevel >= 2}
 				>{getTierPrice(2)}
 				{#if $supporterLevel >= 1 && $supporterLevel < 2}
-					<span class="discountBadge">Upgrade Discount</span>
+					<span class="discountBadge">Upgrade</span>
 				{/if}
 			</button>
 		</div>
@@ -136,7 +136,7 @@
 				class:tierBuyButtonUnlocked={$supporterLevel >= 3}
 				>{getTierPrice(3)}
 				{#if $supporterLevel >= 1 && $supporterLevel < 3}
-					<span class="discountBadge">Upgrade Discount</span>
+					<span class="discountBadge">Upgrade</span>
 				{/if}</button
 			>
 		</div>
@@ -154,7 +154,7 @@
 				class:tierBuyButtonUnlocked={$supporterLevel >= 4}
 				>{getTierPrice(4)}
 				{#if $supporterLevel >= 1 && $supporterLevel < 4}
-					<span class="discountBadge">Upgrade Discount</span>
+					<span class="discountBadge">Upgrade</span>
 				{/if}</button
 			>
 		</div>
@@ -212,10 +212,9 @@
 		padding-right: 9px;
 		font-style: italic;
 		border-radius: 3px;
-		margin-left: 5px;
+		margin-left: 2px;
 		background-color: rgba(0, 0, 0, 0.1);
-		vertical-align: 1px;
-		box-shadow: var(--bulb-shadow);
+		vertical-align: 2px;
 	}
 
 	.tierBenefits li {
