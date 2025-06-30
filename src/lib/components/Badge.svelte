@@ -155,7 +155,7 @@
 	}
 
 	.badge:hover {
-		transform: scale(0.98);
+		transform: scale(0.97);
 	}
 
 	.badgeStage1 {

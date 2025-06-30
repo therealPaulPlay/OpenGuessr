@@ -1,6 +1,5 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
-	import { checkIfFriendsWithId } from "$lib/utils/checkIfFriendsWithId";
 	import SupporterPitch from "$lib/components/SupporterPitch.svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { isAuthenticated } from "$lib/stores/accountStore";
@@ -17,7 +16,7 @@
 	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
-	import { Flame, Plus, PlusCircle, Skull, SquarePlus } from "lucide-svelte";
+	import { Check, CheckCheck, Flame, Plus, PlusCircle, Skull, SquarePlus } from "lucide-svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
@@ -49,21 +48,12 @@
 	import { page } from "$app/stores";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { reportUserId } from "$lib/stores/context-specific/reportPopupStore";
-	import { scale } from "svelte/transition";
 	import Tabs from "./ui/Tabs.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { errorPopup } from "$lib/utils/errorHandling";
 
 	let textarea = $state();
-	let isFriendsWithId = $state(true);
 	let selectedTabIndex = $state(0);
-
-	profilePopup.subscribe(async (value) => {
-		if (value == true) {
-			isFriendsWithId = true;
-			isFriendsWithId = await checkIfFriendsWithId($profileId);
-		}
-	});
 
 	let filteredAbout = $state("");
 
@@ -252,17 +242,21 @@
 					Report <TriangleAlert size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 2px;" />
 				</button>
 			{/if}
-			{#if $profileId != localStorage.getItem("id") && $isAuthenticated && !isFriendsWithId}
+			{#if $profileId != localStorage.getItem("id") && $isAuthenticated}
 				<button
 					class="standardButton white"
-					transition:scale
+					class:disabled={$profileData?.areFriends}
 					onclick={(e) => {
 						playSound("basic_button");
 						sendFriendRequest($profileId, e.target); // This also shows a notification
 					}}
 				>
 					Friend
-					<img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
+					{#if !$profileData?.areFriends}
+						<img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
+					{:else}
+						<CheckCheck style="margin-bottom: -4px; margin-left: 2px;" strokeWidth={2.25} />
+					{/if}
 				</button>
 			{/if}
 		</div>
@@ -493,6 +487,11 @@
 		width: 22px;
 		height: 22px;
 		vertical-align: -3px;
+	}
+
+	.disabled {
+		opacity: 0.5;
+		pointer-events: none;
 	}
 
 	#supporterTag {

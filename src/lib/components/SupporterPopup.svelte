@@ -261,7 +261,7 @@
 		position: relative;
 	}
 
-	.tierBox:hover .tierBuyButton {
+	.tierBuyButton:hover {
 		filter: brightness(1.2);
 	}
 
