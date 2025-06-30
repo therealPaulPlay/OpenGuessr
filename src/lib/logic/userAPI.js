@@ -291,7 +291,7 @@ export function displayError(error, source, errorMessageElement, errorMsg) {
       clearTimeout(timeout);
       errorMessageElement.style.maxHeight = "100px";
       errorMessageElement.style.marginTop = "20px";
-      errorMessageElement.style.marginBottom = "20px";
+      errorMessageElement.style.marginBottom = "10px";
       errorMessageElement.style.opacity = "1";
       errorMessageElement.style.color = "#ffaeae";
 
@@ -305,11 +305,8 @@ export function displayError(error, source, errorMessageElement, errorMsg) {
     } catch { }
 
   } else if (source == "index") {
-    if (!errorMsg) {
-      errorPopup("Backend error", "The server could not be reached. Please check your internet connection and the status page.", error, false);
-    } else {
-      errorPopup("Backend error", errorMsg, error, false);
-    }
+    if (!errorMsg) errorPopup("Backend error", "The server could not be reached. Please check your internet connection and the status page.", error, false);
+    else errorPopup("Backend error", errorMsg, error, false);
 
   }
 }
