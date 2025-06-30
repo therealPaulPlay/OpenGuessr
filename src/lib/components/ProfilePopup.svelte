@@ -16,7 +16,7 @@
 	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
-	import { Check, CheckCheck, Flame, Plus, PlusCircle, Skull, SquarePlus } from "lucide-svelte";
+	import { Check, Flame, Plus, PlusCircle, Skull, SquarePlus, UserRoundCheck } from "lucide-svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
@@ -239,7 +239,7 @@
 						reportPopup.set(true);
 					}}
 				>
-					Report <TriangleAlert size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 2px;" />
+					Report <TriangleAlert size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: 2px;" />
 				</button>
 			{/if}
 			{#if $profileId != localStorage.getItem("id") && $isAuthenticated}
@@ -255,7 +255,7 @@
 					{#if !$profileData?.areFriends}
 						<img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
 					{:else}
-						<CheckCheck style="margin-bottom: -4px; margin-left: 2px;" strokeWidth={2.25} />
+						<UserRoundCheck style="margin-bottom: -1px; margin-left: 2px;" size={20} strokeWidth={2.25} />
 					{/if}
 				</button>
 			{/if}

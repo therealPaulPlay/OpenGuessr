@@ -60,11 +60,10 @@
 		border-radius: 10px;
 		background-color: var(--panel-color-soft);
 		position: absolute;
-		top: -12px;
-		right: -12px;
+		top: var(--layout-margin);
+		right: var(--layout-margin);
 		padding: 5px;
 		z-index: 10;
-		backdrop-filter: blur(10px);
 	}
 
 	.frameLess {
