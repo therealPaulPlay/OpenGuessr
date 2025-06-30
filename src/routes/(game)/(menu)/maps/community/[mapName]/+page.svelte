@@ -326,6 +326,7 @@
 					class="standardButton white mapButton"
 					onclick={() => {
 						playSound("basic_button");
+						fileName = "Pick file"; // Reset file name input
 						updatePopup = true;
 						showStatus = false;
 					}}><Replace size={18} strokeWidth={2.75} /></button
@@ -366,73 +367,62 @@
 	</div>
 </div>
 
-{#if updatePopup}
-	<Popup>
-		<div class="popup-title">
-			<h1 id="mapUpdateHeader">Update locations</h1>
-		</div>
-		<p class="marginBottom">Locations:</p>
-		<Tabs
-			tabs={["Overwrite all", "Add"]}
-			onchange={(_, tabIndex) => {
-				playSound("basic_button");
-				addInsteadOfOverwrite = tabIndex != 0;
+<Popup bind:open={updatePopup}>
+	<div class="popup-title">
+		<h1 id="mapUpdateHeader">Update locations</h1>
+	</div>
+	<p class="marginBottom">Locations:</p>
+	<Tabs
+		tabs={["Overwrite all", "Add"]}
+		onchange={(_, tabIndex) => {
+			playSound("basic_button");
+			addInsteadOfOverwrite = tabIndex != 0;
+		}}
+	/>
+	<textarea
+		id="updateMapData"
+		class="uploadInfo"
+		type="text"
+		rows="20"
+		bind:value={textareaValue}
+		placeholder="https://www.google.com/maps..."
+	></textarea>
+	<p>...or upload a JSON in the OpenGuessr format:</p>
+	<button
+		id="jsonUpdateButton"
+		class="standardButton white"
+		onclick={() => {
+			playSound("basic_button");
+			filePicker.click(); // Simulate click on filePicker to make the file picker UI nicer (default picker is hidden)
+		}}
+	>
+		<input
+			type="file"
+			id="jsonUpdate"
+			accept="application/json"
+			bind:this={filePicker}
+			onchange={(e) => {
+				fileName = e.target.files.length > 0 ? e.target.files[0].name : "Pick file";
 			}}
 		/>
-		<textarea
-			id="updateMapData"
-			class="uploadInfo"
-			type="text"
-			rows="20"
-			bind:value={textareaValue}
-			placeholder="https://www.google.com/maps..."
-		></textarea>
-		<p>...or upload a JSON in the OpenGuessr format:</p>
+		<p id="fileNameUpdate">{fileName}</p>
+	</button>
+	{#if showStatus}
+		<p class="marginTop" id="updateMapStatus">{statusText}</p>
+	{/if}
+	<div class="buttonBoxGap">
 		<button
-			id="jsonUpdateButton"
-			class="standardButton white"
-			onclick={() => {
+			id="updateProceed"
+			class="standardButton largeButton"
+			onclick={async () => {
 				playSound("basic_button");
-				filePicker.click(); // Simulate click on filePicker to make the file picker UI nicer (default picker is hidden)
-			}}
+				showStatus = true;
+				statusText = "Updating...";
+				statusText = "Status: " + (await updateMap(mapName));
+			}}>Update</button
 		>
-			<input
-				type="file"
-				id="jsonUpdate"
-				accept="application/json"
-				bind:this={filePicker}
-				onchange={(e) => {
-					fileName = e.target.files.length > 0 ? e.target.files[0].name : "Pick file";
-				}}
-			/>
-			<p id="fileNameUpdate">{fileName}</p>
-		</button>
-		{#if showStatus}
-			<p class="marginTop" id="updateMapStatus">{statusText}</p>
-		{/if}
-		<div class="buttonBoxRight buttonBoxGap">
-			<button
-				id="updateClose"
-				class="standardButton closeButton white"
-				onclick={() => {
-					playSound("basic_button");
-					fileName = "Pick file"; // Reset file name input
-					updatePopup = false;
-				}}>Close</button
-			>
-			<button
-				id="updateProceed"
-				class="standardButton closeButton"
-				onclick={async () => {
-					playSound("basic_button");
-					showStatus = true;
-					statusText = "Updating...";
-					statusText = "Status: " + (await updateMap(mapName));
-				}}>Update</button
-			>
-		</div>
-	</Popup>
-{/if}
+	</div>
+</Popup>
 
 <style>
 	.mainContainer {

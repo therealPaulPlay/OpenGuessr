@@ -26,64 +26,54 @@
 	});
 </script>
 
-{#if $inboxPopup}
-	<Popup z={960} slim={true}>
-		<div class="popup-title">
-			<h1 id="inboxPopupHeader">Inbox</h1>
-		</div>
-		<div class="containerBox">
-			<div class="containerBoxScroll of-top of-bottom">
-				{#if $inboxContent}
-					{#each $inboxContent as entry}
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<div
-							class="inboxItem"
-							role="menu"
-							tabindex="0"
-							onclick={() => {
-								loadProfileFromId(entry.id, true);
-							}}
-						>
-							<p>{entry.user_name}</p>
-							<div class="inboxItemButtons">
-								<button
-									class="standardButton white"
-									onclick={(e) => {
-										e.stopPropagation();
-										playSound("basic_button");
-										acceptFriendRequest(entry.id);
-									}}
-								>
-									<Check size="17" strokeWidth="3.5" />
-								</button>
-								<button
-									class="standardButton white"
-									onclick={(e) => {
-										e.stopPropagation();
-										playSound("basic_button");
-										declineFriendRequest(entry.id);
-									}}
-								>
-									<X size="17" strokeWidth="3.5" />
-								</button>
-							</div>
+<Popup z={960} slim={true} bind:open={$inboxPopup}>
+	<div class="popup-title">
+		<h1 id="inboxPopupHeader">Inbox</h1>
+	</div>
+	<div class="containerBox">
+		<div class="containerBoxScroll of-top of-bottom">
+			{#if $inboxContent}
+				{#each $inboxContent as entry}
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<div
+						class="inboxItem"
+						role="menu"
+						tabindex="0"
+						onclick={() => {
+							loadProfileFromId(entry.id, true);
+						}}
+					>
+						<p>{entry.user_name}</p>
+						<div class="inboxItemButtons">
+							<button
+								class="standardButton white"
+								onclick={(e) => {
+									e.stopPropagation();
+									playSound("basic_button");
+									acceptFriendRequest(entry.id);
+								}}
+							>
+								<Check size="17" strokeWidth="3.5" />
+							</button>
+							<button
+								class="standardButton white"
+								onclick={(e) => {
+									e.stopPropagation();
+									playSound("basic_button");
+									declineFriendRequest(entry.id);
+								}}
+							>
+								<X size="17" strokeWidth="3.5" />
+							</button>
 						</div>
-					{/each}
-				{:else}
-					<p class="noResultsText">Your inbox is empty.</p>
-				{/if}
-			</div>
+					</div>
+				{/each}
+			{:else}
+				<p class="noResultsText">Your inbox is empty.</p>
+			{/if}
 		</div>
-		<button
-			id="friendInboxClose"
-			class="standardButton white closeButton"
-			onclick={() => {
-				playSound("basic_button");
-				inboxPopup.set(false);
-			}}>Close</button
-		>
-	</Popup>
-{/if}
+	</div>
+</Popup>
 
 <style>
 	.inboxItem {
@@ -129,8 +119,8 @@
 	}
 
 	.containerBoxScroll {
-		max-height: calc(80dvh - 400px);
-		min-height: 20vh;
+		max-height: min(500px, calc(100dvh - 300px));
+		min-height: 20dvh;
 		scrollbar-width: none;
 		display: flex;
 		overflow-x: hidden;

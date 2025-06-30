@@ -39,33 +39,31 @@
 	});
 </script>
 
-<div
-	class="barMenu mapModeIndicator"
-	class:fading={Boolean($indicatorFading)}
-	style:display={$mapModeIndicatorVisible && !$resultScreenEnabled ? "" : "none"}
->
-	{#if $leaveFunction}
-		<button
-			class="standardButton"
-			onclick={() => {
-				playSound("leave_round");
-				get(leaveFunction)();
-			}}>Leave</button
-		>
-	{/if}
-	<div bind:this={mapModeTextContainer} class="mapModeTextContainer" class:modeTextFade={scrollModeText}>
-		<p
-			class="mapModeText {scrollModeText ? 'modetextScroll' : ''}"
-			bind:textContent={mapModeText}
-			contenteditable="false"
-		>
-			{$modeText}
+{#if $mapModeIndicatorVisible && !$resultScreenEnabled}
+	<div class="barMenu mapModeIndicator" class:fading={Boolean($indicatorFading)}>
+		{#if $leaveFunction}
+			<button
+				class="standardButton"
+				onclick={() => {
+					playSound("leave_round");
+					get(leaveFunction)();
+				}}>Leave</button
+			>
+		{/if}
+		<div bind:this={mapModeTextContainer} class="mapModeTextContainer" class:modeTextFade={scrollModeText}>
+			<p
+				class="mapModeText {scrollModeText ? 'modetextScroll' : ''}"
+				bind:textContent={mapModeText}
+				contenteditable="false"
+			>
+				{$modeText}
+			</p>
+		</div>
+		<p id="mapTimer" class="mapModeText modeTextRight {$indicatorFading ? 'fading' : ''}">
+			{$timerText}
 		</p>
 	</div>
-	<p id="mapTimer" class="mapModeText modeTextRight {$indicatorFading ? 'fading' : ''}">
-		{$timerText}
-	</p>
-</div>
+{/if}
 
 <style>
 	.mapModeIndicator {

@@ -5,7 +5,6 @@
 
 <div class="loadingOverlay" style:opacity={$loadingScreenVisible ? "100%" : "0%"}>
 	<img src="/img/compass_spinner.png" alt="Loading new streetview" class="spinner" />
-	<p id="loadingText">Loading...</p>
 </div>
 
 <style>
@@ -22,12 +21,5 @@
 		inset: 0 0 0 0; /* Top, right, bottom, left */
 		z-index: 6;
 		box-shadow: 0 0 500px rgba(165, 176, 251, 0.25) inset;
-	}
-
-	#loadingText {
-		color: white;
-		opacity: 0.35;
-		text-align: center;
-		filter: drop-shadow(0 0 30px white);
 	}
 </style>

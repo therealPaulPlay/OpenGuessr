@@ -143,6 +143,7 @@
 		opacity: 0;
 		z-index: 2;
 		transition: opacity 250ms ease;
+		box-shadow: var(--button-shadow);
 	}
 
 	.resize-handle:hover,

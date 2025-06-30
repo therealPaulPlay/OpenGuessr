@@ -55,7 +55,7 @@ export function getTeamFromMultiplayerId(id) {
 // Game UI ----------------------------------------------------------------------------------------------------------------------------------
 function setMultiplayerUI() {
     if (get(multiplayer)) {
-        try { get(singleplayerTimer).stopTimer() } catch { } // Mostly cosmetic, it looks weird if it continues running on the waiting screen
+        get(singleplayerTimer)?.stopTimer();
         mapModeIndicatorVisible.set(true);
         leaveFunction.set(() => {
             showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
@@ -243,7 +243,7 @@ export async function createMultiplayerInstance() {
                 if (storage.countdownActive) multiplayerOverlayCountdown(); // Activate countdown
 
                 if (storage.timerStart) startMultiplayerTimer(storage.timerStart?.length, storage.timerStart?.timestamp); // Set timer if not running
-                if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) try { multiplayerTimer?.stopTimer(); } catch { }; // Stop multiplayer timer
+                if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) multiplayerTimer?.stopTimer(); // Stop multiplayer timer
 
                 if (storage.timeReducedOverlay && storage.timeReducedOverlay !== get(timeReducedOverlay) && storage?.confirmedArray?.length == 1) {
                     showTimeReducedOverlay(15, !storage?.confirmedArray?.includes(get(socket)?.id));
@@ -458,7 +458,7 @@ export function leaveMultiplayerRound(destroy = true) {
     matchmakingActive.set(false);
 
     if (destroy) get(socket)?.destroy(); // Destroy peer
-    try { multiplayerTimer?.stopTimer() } catch { }; // Result screen timer (sometimes not set, therefore catch)
+    multiplayerTimer?.stopTimer();
 
     // Clear running intervals
     clearInterval(countdownInterval);

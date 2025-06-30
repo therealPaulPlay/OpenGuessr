@@ -1,23 +1,45 @@
 <!-- Universal Popup component, used as the "enclosure" for (basically) all Popups -->
 
 <script>
-	import { onMount, onDestroy } from "svelte";
+	import { X } from "lucide-svelte";
 	import { backOut } from "svelte/easing";
 	import { fade, scale } from "svelte/transition";
 
-	let { children, z, frameLess, slim, verySlim } = $props();
+	let { children, z, frameless, slim, verySlim, open = $bindable(false), onclose } = $props();
+
+	function close() {
+		onclose?.();
+		open = false;
+	}
 </script>
 
-<div class="popupHolder" style:z-index={z} transition:fade={{ duration: 100 }}>
+{#if open}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="uiWindow"
-		transition:scale={{ easing: backOut, duration: 250, start: 0.9 }}
-		class:frameLess={Boolean(frameLess)}
-		style:max-width={Boolean(verySlim) ? "550px" : Boolean(slim) ? "700px" : ""}
+		class="popupHolder"
+		style:z-index={z}
+		transition:fade={{ duration: 100 }}
+		onclick={(e) => {
+			if (e.target == e.currentTarget) close();
+		}}
+		role="dialog"
+		tabindex={0}
 	>
-		{@render children?.()}
+		<div
+			class="uiWindow"
+			transition:scale={{ easing: backOut, duration: 250, start: 0.9 }}
+			class:frameLess={Boolean(frameless)}
+			style:max-width={Boolean(verySlim) ? "600px" : Boolean(slim) ? "750px" : "850px"}
+		>
+			<button class="closePopupButton standardButton white" aria-label="close" onclick={close}
+				><X strokeWidth={2.25} /></button
+			>
+			<div class="content of-top of-bottom" class:content-frameless={frameless}>
+				{@render children?.()}
+			</div>
+		</div>
 	</div>
-</div>
+{/if}
 
 <style>
 	.popupHolder {
@@ -34,26 +56,42 @@
 		z-index: 100; /* Default Z-Index, can be changed with Prop */
 	}
 
+	.closePopupButton {
+		border-radius: 10px;
+		background-color: var(--panel-color-soft);
+		position: absolute;
+		top: -12px;
+		right: -12px;
+		padding: 5px;
+		z-index: 10;
+		backdrop-filter: blur(10px);
+	}
+
 	.frameLess {
-		width: calc(99% - 25px) !important ;
-		height: calc(98% - 25px) !important ;
-		overflow: hidden;
 		padding: 5px !important;
-		max-width: 600px !important;
-		max-height: 750px !important;
+	}
+
+	.content {
+		overflow-y: auto;
+		overflow-x: hidden;
+		max-height: min(900px, calc(100dvh - var(--layout-margin) * 2 - var(--box-margin) - 50px));
+		width: 100%;
+	}
+
+	.content-frameless {
+		max-height: calc(100dvh - var(--layout-margin) * 2 - var(--box-margin) - 10px);
+		margin-bottom: -4px;
 	}
 
 	.uiWindow {
-		width: 65%;
-		min-width: 300px;
-		max-width: 800px;
+		width: calc(100vw - var(--layout-margin) * 2 - var(--box-margin));
+		box-sizing: border-box;
 		padding: 25px;
+		padding-bottom: 30px;
 		border-radius: 15px;
 		text-align: left;
 		z-index: 900;
-		font-size: 22px;
-		overflow-x: hidden;
-		overflow-y: auto;
+		position: relative;
 		background-color: var(--panel-color);
 		backdrop-filter: blur(10px);
 		box-shadow:

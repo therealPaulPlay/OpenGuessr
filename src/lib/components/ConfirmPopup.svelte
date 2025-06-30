@@ -16,13 +16,9 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
 
-	function closeConfirmPopup() {
+	function confirm() {
 		playSound("basic_button");
 		confirmPopupVisible.set(false);
-	}
-
-	function confirm() {
-		closeConfirmPopup();
 		try {
 			if (get(confirmExecuteFunction)) {
 				get(confirmExecuteFunction)();
@@ -33,32 +29,29 @@
 	}
 </script>
 
-{#if $confirmPopupVisible}
-	<Popup verySlim={true} z={982}>
-		<h1 class="popup-title">{$confirmTitle}</h1>
-		<div class="popup-description">{$confirmDescription}</div>
-		{#if $confirmPasswordInput}
-			<input class="confirmPopupInput" type="password" placeholder="Your password" bind:value={$confirmPasswordValue} />
+<Popup verySlim={true} z={982} bind:open={$confirmPopupVisible}>
+	<h1 class="popup-title">{$confirmTitle}</h1>
+	<p class="popup-description">{$confirmDescription}</p>
+	{#if $confirmPasswordInput}
+		<input class="confirmPopupInput" type="password" placeholder="Your password" bind:value={$confirmPasswordValue} />
+	{/if}
+	{#if $confirmUsernameInput}
+		<input
+			type="text"
+			class="confirmPopupInput"
+			placeholder="New username"
+			maxlength="50"
+			bind:value={$confirmUsernameValue}
+		/>
+	{/if}
+	<div class="marginTop largerSpacing">
+		{#if $confirmShowConfirm}
+			<button class="standardButton largeButton" onclick={confirm} style:background-color={$confirmConfirmColor}
+				>{$confirmConfirmText}</button
+			>
 		{/if}
-		{#if $confirmUsernameInput}
-			<input
-				type="text"
-				class="confirmPopupInput"
-				placeholder="New username"
-				maxlength="50"
-				bind:value={$confirmUsernameValue}
-			/>
-		{/if}
-		<div class="buttonBoxRight marginTop largerSpacing">
-			<button class="standardButton white closeButton" onclick={closeConfirmPopup}>Close</button>
-			{#if $confirmShowConfirm}
-				<button class="standardButton closeButton" onclick={confirm} style:background-color={$confirmConfirmColor}
-					>{$confirmConfirmText}</button
-				>
-			{/if}
-		</div>
-	</Popup>
-{/if}
+	</div>
+</Popup>
 
 <style>
 	.confirmPopupInput {

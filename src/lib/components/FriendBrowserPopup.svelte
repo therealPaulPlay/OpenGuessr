@@ -48,83 +48,73 @@
 	}
 </script>
 
-{#if $friendBrowserPopup}
-	<Popup z={960} slim={true}>
-		<div class="popup-title">
-			<h1 id="friendBrowserHeader">Search players</h1>
-		</div>
-		<search class="playerSearch">
-			<input
-				maxlength="255"
-				type="text"
-				id="friendBrowserInput"
-				bind:value={searchQuery}
-				placeholder="Search for a name"
-				onkeydown={(event) => {
-					if (event.key === "Enter") {
-						event.preventDefault();
-					}
-				}}
-				onkeyup={(event) => {
-					if (event.key === "Enter") {
-						startSearch();
-					}
-				}}
-			/>
-			<button
-				id="startFriendSearch"
-				class="standardButton white"
-				onclick={() => {
-					playSound("basic_button");
+<Popup z={960} slim={true} bind:open={$friendBrowserPopup}>
+	<div class="popup-title">
+		<h1 id="friendBrowserHeader">Search players</h1>
+	</div>
+	<search class="playerSearch">
+		<input
+			maxlength="255"
+			type="text"
+			id="friendBrowserInput"
+			bind:value={searchQuery}
+			placeholder="Search for a name"
+			onkeydown={(event) => {
+				if (event.key === "Enter") {
+					event.preventDefault();
+				}
+			}}
+			onkeyup={(event) => {
+				if (event.key === "Enter") {
 					startSearch();
-				}}
-			>
-				<img src="/img/find_icon.png" alt="start search" id="playerSearchIcon" />
-			</button>
-		</search>
-		<div class="containerBox">
-			<div class="containerBoxScroll of-top of-bottom">
-				{#if userSearchResults}
-					{#each userSearchResults as entry}
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<div
-							class="friendSearchItem"
-							onclick={() => {
-								loadProfileFromId(entry.id, true);
-							}}
-							role="menu"
-							tabindex="0"
-						>
-							<p class="entryName">{entry.user_name}</p>
-							<button
-								id="sendFriendRequest"
-								class="sendFriendRequestBrowser standardButton white"
-								class:friendSearchYou={entry.id == yourId}
-								onclick={(e) => {
-									e.stopPropagation();
-									playSound("basic_button");
-									sendFriendRequest(entry.id, e.target);
-								}}
-							>
-								Add <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
-							</button>
-						</div>
-					{/each}
-				{:else}
-					<p class="playerSearchError">Search returned no results.</p>
-				{/if}
-			</div>
-		</div>
+				}
+			}}
+		/>
 		<button
-			id="friendBrowserClose"
-			class="standardButton white closeButton"
+			id="startFriendSearch"
+			class="standardButton white"
 			onclick={() => {
 				playSound("basic_button");
-				friendBrowserPopup.set(false);
-			}}>Close</button
+				startSearch();
+			}}
 		>
-	</Popup>
-{/if}
+			<img src="/img/find_icon.png" alt="start search" id="playerSearchIcon" />
+		</button>
+	</search>
+	<div class="containerBox">
+		<div class="containerBoxScroll of-top of-bottom">
+			{#if userSearchResults}
+				{#each userSearchResults as entry}
+					<!-- svelte-ignore a11y_click_events_have_key_events -->
+					<div
+						class="friendSearchItem"
+						onclick={() => {
+							loadProfileFromId(entry.id, true);
+						}}
+						role="menu"
+						tabindex="0"
+					>
+						<p class="entryName">{entry.user_name}</p>
+						<button
+							id="sendFriendRequest"
+							class="sendFriendRequestBrowser standardButton white"
+							class:friendSearchYou={entry.id == yourId}
+							onclick={(e) => {
+								e.stopPropagation();
+								playSound("basic_button");
+								sendFriendRequest(entry.id, e.target);
+							}}
+						>
+							Add <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
+						</button>
+					</div>
+				{/each}
+			{:else}
+				<p class="playerSearchError">Search returned no results.</p>
+			{/if}
+		</div>
+	</div>
+</Popup>
 
 <style>
 	.playerSearchError {
@@ -150,8 +140,8 @@
 	}
 
 	.containerBoxScroll {
-		max-height: calc(80dvh - 400px);
-		min-height: 20vh;
+		max-height: min(500px, calc(100dvh - 300px));
+		min-height: 20dvh;
 		scrollbar-width: none;
 		display: flex;
 		overflow-x: hidden;

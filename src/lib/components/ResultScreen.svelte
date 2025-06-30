@@ -134,7 +134,7 @@
 			<p class="nextRoundText">
 				{$continueText}
 			</p>
-			<img id="nextRoundArrow" src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
+			<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
 		</button>
 	</div>
 </div>

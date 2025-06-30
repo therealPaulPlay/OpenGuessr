@@ -23,30 +23,18 @@
 	}
 </script>
 
-{#if $signupPopup}
-	<Popup z={961} frameLess="true">
-		<div id="browserIframeHolder">
-			<div class="absoluteCenter">
-				<img src="/img/compass_spinner.png" alt="Loading new streetview" class="spinner" id="pageBrowserLoading" />
-			</div>
-			<!-- svelte-ignore a11y_missing_attribute -->
-			<iframe id="pageBrowserIframe" allowtransparency="true" frameborder="0" src="/signup"></iframe>
-		</div>
-	</Popup>
-{/if}
+<Popup z={961} frameless={true} bind:open={$signupPopup} verySlim={true}>
+	<div class="absoluteCenter">
+		<img src="/img/compass_spinner.png" alt="Loading new streetview" class="spinner" id="pageBrowserLoading" />
+	</div>
+	<!-- svelte-ignore a11y_missing_attribute -->
+	<iframe id="pageBrowserIframe" allowtransparency="true" frameborder="0" src="/signup"></iframe>
+</Popup>
 
 <style>
-	#browserIframeHolder {
-		width: 100%;
-		height: 100%;
-		background-color: rgba(0, 0, 0, 0.2);
-		position: relative;
-		border-radius: 10px;
-	}
-
 	#pageBrowserLoading {
 		margin: 0;
-		opacity: 0.15;
+		opacity: 0.25;
 	}
 
 	.absoluteCenter {
@@ -58,11 +46,9 @@
 
 	#pageBrowserIframe {
 		width: 100%;
-		height: 100%;
-		overflow: hidden;
+		height: min(800px, calc(100dvh - 75px));
 		background: transparent;
-		outline: 5px solid rgba(75, 75, 75, 0.25);
-		border-radius: 10px;
+		border-radius: 12px;
 		position: relative;
 		z-index: 2;
 	}

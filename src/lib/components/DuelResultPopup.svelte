@@ -20,46 +20,42 @@
 	});
 </script>
 
-{#if $duelResultPopup}
-	<Popup slim={true}>
-		<div class="popup-title">
-			<h1 id="socialHeader">{$duelResultTitle}</h1>
+<Popup
+	slim={true}
+	bind:open={$duelResultPopup}
+	onclick={() => {
+		eloChange.set(0); // Reset to make UI number animation start from 0 again
+	}}
+>
+	<div class="popup-title">
+		<h1 id="socialHeader">{$duelResultTitle}</h1>
+	</div>
+	<div class="duelResultScroll of-top of-bottom">
+		<div class="eloChangeDisplay">
+			<h1 class="eloChangeText">{$eloChange >= 0 ? "+" : ""}{$animatedElo.toFixed(0)} Elo</h1>
+			<p>You now have {$elo} Elo.</p>
 		</div>
-		<div class="duelResultScroll of-top of-bottom">
-			<div class="eloChangeDisplay">
-				<h1 class="eloChangeText">{$eloChange >= 0 ? "+" : ""}{$animatedElo.toFixed(0)} Elo</h1>
-				<p>You now have {$elo} Elo.</p>
-			</div>
-			<DuelDivisionDisplay inPage={true} />
-			<div class="infoBox">
-				<Info
-					strokeWidth={2.25}
-					size={24}
-					color="white"
-					style="opacity: 50%; margin-left: 5px; margin-right: 2px; margin-top: 2px;"
-				/>
-				<p>To report a player, open their profile and click on <i>Report</i>.</p>
-				<button
-					class="standardButton white growSearch"
-					onclick={() => {
-						playSound("basic_button");
-						divisionMatchHistoryPopup.set(true);
-					}}
-				>
-					History <History size={20} strokeWidth={2.5} style="margin-bottom: -3px; margin-left: 2px;" /></button
-				>
-			</div>
+		<DuelDivisionDisplay inPage={true} />
+		<div class="infoBox">
+			<Info
+				strokeWidth={2.25}
+				size={24}
+				color="white"
+				style="opacity: 50%; margin-left: 5px; margin-right: 2px; margin-top: 2px;"
+			/>
+			<p>To report a player, open their profile and click on <i>Report</i>.</p>
+			<button
+				class="standardButton white growSearch"
+				onclick={() => {
+					playSound("basic_button");
+					divisionMatchHistoryPopup.set(true);
+				}}
+			>
+				History <History size={20} strokeWidth={2.5} style="margin-bottom: -3px; margin-left: 2px;" /></button
+			>
 		</div>
-		<button
-			class="standardButton closeButton white"
-			onclick={() => {
-				playSound("basic_button");
-				duelResultPopup.set(false);
-				eloChange.set(0); // Reset to make UI number animation start from 0 again
-			}}>Close</button
-		>
-	</Popup>
-{/if}
+	</div>
+</Popup>
 
 <style>
 	.eloChangeDisplay {

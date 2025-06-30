@@ -182,43 +182,32 @@
 	<title>Create a competition</title>
 </svelte:head>
 
-{#if successPopup}
-	<Popup verySlim={true}>
-		<h1 id="submitConfirmHeader" class="textHeaderLeft">Competition created!</h1>
-		<p>Thank you for creating a competition! Share these direct links with your friends.</p>
-		<div class="spacer"></div>
-		<div class="linkBox">
-			<p>Enter link:</p>
-			<p class="linkField">{enterLink}</p>
-			<p>Leaderboard link:</p>
-			<p class="linkField">{leaderboardLink}</p>
-			<button
-				id="copyLinksButton"
-				class="standardButton white copyButton"
-				onclick={() => {
-					playSound("basic_button");
-					navigator.clipboard
-						.writeText(enterLink + " " + leaderboardLink)
-						.then(function () {
-							showNotification("Copied!");
-						})
-						.catch(function (error) {
-							showNotification("Error: " + error);
-						});
-				}}><Link size="16" strokeWidth={2.5} style="margin-right: 3px;" /> Copy both</button
-			>
-			<div class="buttonBoxRight">
-				<button
-					class="standardButton closeButton white"
-					onclick={() => {
-						playSound("basic_button");
-						successPopup = false;
-					}}>Close</button
-				>
-			</div>
-		</div>
-	</Popup>
-{/if}
+<Popup verySlim={true} bind:open={successPopup}>
+	<h1 id="submitConfirmHeader" class="textHeaderLeft">Competition created!</h1>
+	<p>Thank you for creating a competition! Share these direct links with your friends.</p>
+	<div class="spacer"></div>
+	<div class="linkBox">
+		<p>Enter link:</p>
+		<p class="linkField">{enterLink}</p>
+		<p>Leaderboard link:</p>
+		<p class="linkField">{leaderboardLink}</p>
+		<button
+			id="copyLinksButton"
+			class="standardButton white copyButton"
+			onclick={() => {
+				playSound("basic_button");
+				navigator.clipboard
+					.writeText(enterLink + " " + leaderboardLink)
+					.then(function () {
+						showNotification("Copied!");
+					})
+					.catch(function (error) {
+						showNotification("Error: " + error);
+					});
+			}}><Link size="16" strokeWidth={2.5} style="margin-right: 3px;" /> Copy both</button
+		>
+	</div>
+</Popup>
 
 <div class="mainContainer">
 	<h1 class="header" id="uploadHeader">Create a competition</h1>
@@ -319,10 +308,10 @@ https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6
 https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu"
 		></textarea>
 	</div>
-	<div class="buttonBoxRight fullWidth">
+	<div class="buttonContainer">
 		<button
 			id="uploadConfirm"
-			class="standardButton closeButton submitButton"
+			class="standardButton largeButton submitButton"
 			onclick={() => {
 				playSound("basic_button");
 				showConfirmPopup("Submit?", "Competitions cannot be edited or deleted.", () => {
@@ -350,8 +339,11 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		margin-bottom: 15px;
 	}
 
-	.fullWidth {
+	.buttonContainer {
 		width: 100%;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
 	}
 
 	.linkField {

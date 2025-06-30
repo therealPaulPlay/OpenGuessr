@@ -11,11 +11,11 @@
 :root {
     --brand-color: #ff0808;
     --panel-color: rgba(30, 34, 53, 0.7);
+    --panel-color-soft: rgba(53, 56, 72, 0.5);
     --box-color: rgba(255, 255, 255, 0.05);
     --box-color-dark-soft: rgba(11, 12, 19, 0.15);
     --box-color-dark: rgba(11, 12, 19, 0.3);
     --dark-background: rgba(30, 30, 30, 0.7);
-    --panel-button-color: rgba(168, 168, 187, 0.3);
     --supporter-gradient: linear-gradient(30deg, rgba(37, 201, 72, 0.5), rgba(17, 217, 49, 0.7));
     --supporter-green: rgba(17, 217, 49, 0.7);
     --supporter-green-soft: rgba(17, 217, 49, 0.5);
@@ -106,7 +106,8 @@ h3 {
     }
 }
 
-p {
+p,
+span {
     font-size: 22px;
     color: white;
 }
@@ -295,13 +296,6 @@ input[type="checkbox"]:focus {
     border-radius: 15px;
 }
 
-.buttonBoxRight {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: flex-end;
-    gap: var(--box-margin);
-}
-
 .barMenu {
     background-color: var(--panel-color);
     backdrop-filter: blur(10px);
@@ -350,7 +344,7 @@ textarea {
     border-radius: 10px;
 }
 
-.closeButton {
+.largeButton {
     float: right;
     margin-top: 30px;
     padding: 10px 25px;

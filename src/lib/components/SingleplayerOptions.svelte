@@ -93,91 +93,79 @@
 	});
 </script>
 
-{#if $singleplayerOptionsPopup}
-	<Popup verySlim={true}>
-		<div class="popup-title">
-			<h1>Game options</h1>
-		</div>
-		<div class="settingsScrollArea of-top of-bottom">
-			<TitleSeparator text="Timer" />
-			<div class="settingsCanvas slightBottomMargin">
-				<div class="optionFlexBox">
-					<div class="timerControlsWrapper">
-						<button class="arrowButton standardButton white" onclick={() => adjustTimer(false)}>
-							<ChevronLeft size={20} strokeWidth={2.5} />
-						</button>
+<Popup verySlim={true} bind:open={$singleplayerOptionsPopup}>
+	<div class="popup-title">
+		<h1>Game options</h1>
+	</div>
+	<TitleSeparator text="Timer" />
+	<div class="settingsCanvas slightBottomMargin">
+		<div class="optionFlexBox">
+			<div class="timerControlsWrapper">
+				<button class="arrowButton standardButton white" onclick={() => adjustTimer(false)}>
+					<ChevronLeft size={20} strokeWidth={2.5} />
+				</button>
 
-						<input
-							type="range"
-							min="0"
-							max="121"
-							step="1"
-							class="slider"
-							id="timerSlider"
-							onchange={changeTimeout}
-							bind:value={timerSliderValue}
-						/>
+				<input
+					type="range"
+					min="0"
+					max="121"
+					step="1"
+					class="slider"
+					id="timerSlider"
+					onchange={changeTimeout}
+					bind:value={timerSliderValue}
+				/>
 
-						<button class="arrowButton standardButton white" onclick={() => adjustTimer(true)}>
-							<ChevronRight size={20} strokeWidth={2.5} />
-						</button>
-					</div>
-
-					<div class="timerTextBox">
-						<Timer />
-						<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
-					</div>
-				</div>
+				<button class="arrowButton standardButton white" onclick={() => adjustTimer(true)}>
+					<ChevronRight size={20} strokeWidth={2.5} />
+				</button>
 			</div>
-			<TitleSeparator text="NMPZ" />
-			<div class="settingsCanvas slightBottomMargin">
-				<div class="optionFlexBox">
-					<p class="singleplayerDesc textMarginInline">Prevent Move, Pan and Zoom.</p>
-					<button id="setSingleplayerNMPZ" class="standardButton white" onclick={toggleSingleplayerNMPZ}
-						>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
-					>
-				</div>
-			</div>
-			<TitleSeparator text="Round log" />
-			<div class="settingsCanvas slightBottomMargin">
-				<div class="optionBox roundLogContainer">
-					<div class="roundLogBox of-top of-bottom of-length-1.5" id="roundLogBox">
-						<!-- round log will be automatically generated here -->
-						{#if $roundLog.length > 0}
-							{#each $roundLog as [mode, distance, coordinates], index}
-								<div class="roundLogItem">
-									<div>
-										<p class="logItemMode">{mode}</p>
-										<p>{formatDistance(distance)} away</p>
-									</div>
-									<button
-										class="standardButton white"
-										onclick={() => {
-											playSound("basic_button");
-											openLocationOnMaps(coordinates[0], coordinates[1]);
-										}}
-									>
-										View
-									</button>
-								</div>
-							{/each}
-						{:else}
-							<p class="centerLogText">No saved rounds.</p>
-						{/if}
-					</div>
-				</div>
+
+			<div class="timerTextBox">
+				<Timer />
+				<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
 			</div>
 		</div>
-		<button
-			id="singleplayerOptionsClose"
-			class="standardButton white closeButton"
-			onclick={() => {
-				playSound("basic_button");
-				$singleplayerOptionsPopup = false;
-			}}>Close</button
-		>
-	</Popup>
-{/if}
+	</div>
+	<TitleSeparator text="NMPZ" />
+	<div class="settingsCanvas slightBottomMargin">
+		<div class="optionFlexBox">
+			<p class="singleplayerDesc textMarginInline">Prevent Move, Pan and Zoom.</p>
+			<button id="setSingleplayerNMPZ" class="standardButton white" onclick={toggleSingleplayerNMPZ}
+				>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
+			>
+		</div>
+	</div>
+	<TitleSeparator text="Round log" />
+	<div class="settingsCanvas">
+		<div class="optionBox roundLogContainer">
+			<div class="roundLogBox of-top of-bottom of-length-1.5" id="roundLogBox">
+				<!-- round log will be automatically generated here -->
+				{#if $roundLog.length > 0}
+					{#each $roundLog as [mode, distance, coordinates], index}
+						<div class="roundLogItem">
+							<div>
+								<p class="logItemMode">{mode}</p>
+								<p>{formatDistance(distance)} away</p>
+							</div>
+							<button
+								class="standardButton white"
+								onclick={() => {
+									playSound("basic_button");
+									openLocationOnMaps(coordinates[0], coordinates[1]);
+								}}
+							>
+								View
+							</button>
+						</div>
+					{/each}
+				{:else}
+					<p class="centerLogText">No saved rounds.</p>
+				{/if}
+			</div>
+		</div>
+	</div>
+</Popup>
 
 <div style="display: none;">
 	<!-- Ensure this component is always mounted, so that the logic inside loads -->
@@ -235,13 +223,6 @@
 		align-items: center;
 		justify-content: center;
 		padding: 5px;
-	}
-
-	.settingsScrollArea {
-		max-height: calc(100dvh - 250px);
-		width: 100%;
-		overflow: hidden;
-		overflow-y: auto;
 	}
 
 	.textMarginInline {

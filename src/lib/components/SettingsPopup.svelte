@@ -91,99 +91,96 @@
 
 <svelte:document onfullscreenchange={fullscreenChangeCheck} />
 
-{#if $settingsPopup}
-	<Popup verySlim={true}>
-		<div class="popup-title">
-			<h1>Settings</h1>
+<Popup verySlim={true} bind:open={$settingsPopup}>
+	<div class="popup-title">
+		<h1>Settings</h1>
+	</div>
+	<div class="settingsCanvas">
+		<div class="settingsBox">
+			<p class="textMargin">Unit system</p>
+			<Tabs
+				tabs={["Metric", "Imperial"]}
+				class="settingsNoButtonMargin"
+				bind:selected={selectedUnit}
+				onchange={(tab) => {
+					playSound("basic_button");
+					localStorage.setItem("distanceUnit", tab == "Metric" ? "kilometers" : "miles");
+				}}
+			/>
 		</div>
-		<div class="settingsCanvas of-top of-bottom">
-			<div class="settingsBox">
-				<p class="textMargin">Unit system</p>
-				<Tabs
-					tabs={["Metric", "Imperial"]}
-					class="settingsNoButtonMargin"
-					bind:selected={selectedUnit}
-					onchange={(tab) => {
-						playSound("basic_button");
-						localStorage.setItem("distanceUnit", tab == "Metric" ? "kilometers" : "miles");
-					}}
+		<div class="settingsBox">
+			<p class="textMargin">SFX volume</p>
+			<div class="sliderBox">
+				<input
+					type="range"
+					min="0"
+					max="1"
+					step="0.01"
+					class="slider shortSlider"
+					bind:value={sfxVolumeSliderValue}
+					style:background={sfxSliderBg}
+					oninput={inputSFXVolumeSlider}
 				/>
+				<p>{sfxSliderBgPercentage}%</p>
 			</div>
-			<div class="settingsBox">
-				<p class="textMargin">SFX volume</p>
-				<div class="sliderBox">
-					<input
-						type="range"
-						min="0"
-						max="1"
-						step="0.01"
-						class="slider shortSlider"
-						bind:value={sfxVolumeSliderValue}
-						style:background={sfxSliderBg}
-						oninput={inputSFXVolumeSlider}
-					/>
-					<p>{sfxSliderBgPercentage}%</p>
-				</div>
-			</div>
-			<div class="settingsBox">
-				<p class="textMargin">Music volume</p>
-				<div class="sliderBox">
-					<input
-						type="range"
-						min="0"
-						max="1"
-						step="0.01"
-						class="slider shortSlider"
-						bind:value={musicVolumeSliderValue}
-						style:background={musicSliderBg}
-						oninput={inputMusicVolumeSlider}
-					/>
-					<p>{musicSliderBgPercentage}%</p>
-					<button
-						class="standardButton white creditsButton"
-						onclick={() => {
-							playSound("basic_button");
-							showConfirmPopup(
-								"Credits",
-								'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM" :-)',
-								false,
-								false,
-								false,
-								true,
-							);
-						}}
-					>
-						<InfoIcon strokeWidth={2.5} size={18} />
-					</button>
-				</div>
-			</div>
-			{#if !$preventFullscreen}
-				<div class="settingsBox">
-					<p class="textMargin">View</p>
-					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
-						<span class="fullscreenIcon">
-							<Scan size="17" strokeWidth={3} />
-						</span>
-						<span id="fullscreenText">{fullscreenButtonText}</span>
-					</button>
-				</div>
-			{/if}
-			<div class="settingsBox settingsFlexBox">
-				<p class="settingsFlexBoxTitle">Legal info</p>
+		</div>
+		<div class="settingsBox">
+			<p class="textMargin">Music volume</p>
+			<div class="sliderBox">
+				<input
+					type="range"
+					min="0"
+					max="1"
+					step="0.01"
+					class="slider shortSlider"
+					bind:value={musicVolumeSliderValue}
+					style:background={musicSliderBg}
+					oninput={inputMusicVolumeSlider}
+				/>
+				<p>{musicSliderBgPercentage}%</p>
 				<button
-					class="standardButton white"
-					id="privacyButton"
+					class="standardButton white creditsButton"
 					onclick={() => {
 						playSound("basic_button");
-						goto("/legal");
-						$settingsPopup = false;
-					}}>Read</button
+						showConfirmPopup(
+							"Credits",
+							'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM" :-)',
+							false,
+							false,
+							false,
+							true,
+						);
+					}}
 				>
+					<InfoIcon strokeWidth={2.5} size={18} />
+				</button>
 			</div>
 		</div>
-		<button id="settingsClose" class="standardButton white closeButton" onclick={closeSettingsButton}>Close</button>
-	</Popup>
-{/if}
+		{#if !$preventFullscreen}
+			<div class="settingsBox">
+				<p class="textMargin">View</p>
+				<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
+					<span class="fullscreenIcon">
+						<Scan size="17" strokeWidth={3} />
+					</span>
+					<span id="fullscreenText">{fullscreenButtonText}</span>
+				</button>
+			</div>
+		{/if}
+		<div class="settingsBox settingsFlexBox">
+			<p class="settingsFlexBoxTitle">Legal info</p>
+			<button
+				class="standardButton white"
+				id="privacyButton"
+				onclick={() => {
+					playSound("basic_button");
+					goto("/legal");
+					$settingsPopup = false;
+				}}>Read</button
+			>
+		</div>
+	</div>
+</Popup>
 
 <style>
 	.settingsBox {
@@ -213,12 +210,10 @@
 	.settingsCanvas {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 15px;
+		gap: var(--layout-margin);
 		width: 100%;
 		justify-content: flex-start;
 		align-items: center;
-		max-height: calc(100dvh - 250px);
-		overflow-y: auto;
 	}
 
 	.textMargin {

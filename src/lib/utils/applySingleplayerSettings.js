@@ -2,13 +2,13 @@ import { modeText, mapModeIndicatorVisible } from "$lib/stores/context-specific/
 import {
     timerCountdownOverlay,
     timerCountdownOverlayTitle,
-    timerCountdownOverlaySubtitle,
     singleplayerTimer,
 } from "$lib/stores/context-specific/timerCountdownOverlayStore";
 import { singleplayer, singleplayerTimeout, isSingleplayerNMPZ } from "$lib/stores/modeStore";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { get } from "svelte/store";
 import { startTimer } from "$lib/utils/timer";
+import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 
 let timeoutVariable;
 let startTimeoutVariable;
@@ -19,7 +19,7 @@ let startHardModePromise;
 export function applySingleplayerSettings() {
     // Disable all here, then enable what should be enabled
     timerCountdownOverlay.set(false);
-    try { get(singleplayerTimer).stopTimer() } catch { }
+    get(singleplayerTimer)?.stopTimer();
 
     clearTimeout(timeoutVariable);
     clearTimeout(startTimeoutVariable);
@@ -32,20 +32,19 @@ export function applySingleplayerSettings() {
 
             startHardModePromise = new Promise((resolve, reject) => {
                 timerCountdownOverlay.set(true);
-                timerCountdownOverlaySubtitle.set("Get ready...");
-                timerCountdownOverlayTitle.set("Starting in 3");
+                timerCountdownOverlayTitle.set(3);
 
                 let loopIndex = 2;
 
                 intervalTimeoutVariable = setInterval(() => {
-                    timerCountdownOverlayTitle.set("Starting in " + loopIndex);
+                    timerCountdownOverlayTitle.set(loopIndex);
                     loopIndex--;
-                }, 700);
+                }, 800);
 
                 startTimeoutVariable = setTimeout(() => {
                     clearInterval(intervalTimeoutVariable);
                     resolve("start");
-                }, 2100);
+                }, 2400);
             });
 
             startHardModePromise.then(function () {
@@ -53,7 +52,6 @@ export function applySingleplayerSettings() {
                 singleplayerTimer.set(startTimer(get(singleplayerTimeout), () => {
                     timerCountdownOverlay.set(true);
                     timerCountdownOverlayTitle.set("The time is up!");
-                    timerCountdownOverlaySubtitle.set("Please take your guess.");
                 }));
             });
         } else {
@@ -64,3 +62,7 @@ export function applySingleplayerSettings() {
         (get(isSingleplayerNMPZ)) ? setRestriction("nmpz") : setRestriction("standard");
     }
 }
+
+resultScreenEnabled.subscribe((value) => {
+    if (value && get(singleplayerTimer)) get(singleplayerTimer)?.stopTimer();
+});

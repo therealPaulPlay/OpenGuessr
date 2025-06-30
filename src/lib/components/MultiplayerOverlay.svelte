@@ -154,17 +154,17 @@
 
 	.usernameSpan {
 		margin-right: 3px;
+		font-size: 25px;
 	}
 
 	.eloDisplay {
 		padding: 7px;
 		box-shadow: var(--bulb-shadow);
 		border-radius: 5px;
-		font-style: italic;
 		position: relative;
 		color: white;
 		text-wrap: nowrap;
-		padding-inline: 10px;
+		padding-inline: 12px;
 		box-sizing: border-box;
 		user-select: none;
 		background-color: rgba(255, 255, 255, 0.15);
