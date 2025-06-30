@@ -4,7 +4,7 @@ import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import inIframe from "$lib/utils/checkIframe";
 import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { signupMessageColor, signupMessageShown, signupMessageText } from "$lib/stores/context-specific/signupStore";
+import { signupMessageColor, signupMessageShown, signupMessageText, signupMessageTimeout } from "$lib/stores/context-specific/signupStore";
 
 const accountRoute = get(accountUrl) + "/accounts";
 const loginEndpoint = `${accountRoute}/login`;
@@ -275,18 +275,16 @@ export async function updateUsername(token, id, requestedUsername, errorSource) 
 }
 
 // Error catching ----------------------------------------------------------------------------------------
-let timeout;
-
 export function displayError(errorTitle = "", source, errorMsg = "") {
   if (source == "signup") {
-    clearTimeout(timeout);
+    clearTimeout(get(signupMessageTimeout));
     signupMessageShown.set(true);
     signupMessageColor.set("#ffaeae");
     signupMessageText.set(errorTitle + (errorMsg ? " – " + errorMsg : ""));
 
-    timeout = setTimeout(() => {
+    signupMessageTimeout.set(setTimeout(() => {
       signupMessageShown.set(false);
-    }, 7000);
+    }, 7000));
 
   } else if (source == "index") {
     if (!errorMsg) errorPopup("Backend error", "The server could not be reached. Please check your internet connection and the status page.", errorTitle, false);

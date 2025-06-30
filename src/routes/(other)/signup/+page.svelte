@@ -5,21 +5,19 @@
 	import inIframe from "$lib/utils/checkIframe";
 	import { onMount } from "svelte";
 	import { fade, scale, slide } from "svelte/transition";
-	import { signupMessageColor, signupMessageShown, signupMessageText } from "$lib/stores/context-specific/signupStore";
+	import { signupMessageColor, signupMessageShown, signupMessageText, signupMessageTimeout } from "$lib/stores/context-specific/signupStore";
 
 	// Export error / success functions --------------------------------------------------------------------------------------------------------------
-	let timeout;
-
 	function displaySuccess(text) {
 		try {
-			clearTimeout(timeout);
+			clearTimeout($signupMessageTimeout);
 			signupMessageText.set(text);
 			signupMessageColor.set("#64c681");
 			signupMessageShown.set(true);
 			formType = "login"; // Change to log in
 
 			// Hide error again
-			timeout = setTimeout(() => {
+			$signupMessageTimeout = setTimeout(() => {
 				signupMessageShown.set(false);
 			}, 4000);
 		} catch (error) {
