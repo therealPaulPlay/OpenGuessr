@@ -195,7 +195,7 @@
 						>
 					</div>
 					<p class="switchFormBox">
-						Recovered password?
+						Remembered?
 						<button
 							id="loginSwitchChange"
 							class="standardButton white"
@@ -217,7 +217,7 @@
 						>
 					</div>
 					<p class="switchFormBox">
-						Recovered password?
+						Remembered?
 						<button
 							id="loginSwitchReset"
 							class="standardButton white"
@@ -372,7 +372,7 @@
 		background-color: rgba(255, 255, 255, 0.3);
 		border-radius: 15px;
 		padding: 20px;
-		width: 300px;
+		width: 280px;
 		text-align: center;
 		backdrop-filter: blur(100px);
 	}
