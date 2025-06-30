@@ -11,7 +11,7 @@
 :root {
     --brand-color: #ff0808;
     --panel-color: rgba(30, 34, 53, 0.7);
-    --panel-color-soft: rgba(53, 56, 72, 0.5);
+    --panel-color-soft: rgba(50, 53, 69, 0.7);
     --box-color: rgba(255, 255, 255, 0.05);
     --box-color-dark-soft: rgba(11, 12, 19, 0.15);
     --box-color-dark: rgba(11, 12, 19, 0.3);
