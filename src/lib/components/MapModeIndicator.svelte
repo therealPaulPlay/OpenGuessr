@@ -2,9 +2,9 @@
 	// This component displays the timer, mode, restrictions
 	import {
 		mapModeIndicatorVisible,
-		modeText,
+		mapModeIndicatorText,
 		leaveFunction,
-		indicatorFading,
+		mapModeIndicatorFading,
 		timerText,
 	} from "$lib/stores/context-specific/mapModeIndicatorStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
@@ -40,7 +40,7 @@
 </script>
 
 {#if $mapModeIndicatorVisible && !$resultScreenEnabled}
-	<div class="barMenu mapModeIndicator" class:fading={Boolean($indicatorFading)}>
+	<div class="barMenu mapModeIndicator" class:fading={Boolean($mapModeIndicatorFading)}>
 		{#if $leaveFunction}
 			<button
 				class="standardButton"
@@ -56,10 +56,10 @@
 				bind:textContent={mapModeText}
 				contenteditable="false"
 			>
-				{$modeText}
+				{$mapModeIndicatorText}
 			</p>
 		</div>
-		<p id="mapTimer" class="mapModeText modeTextRight {$indicatorFading ? 'fading' : ''}">
+		<p id="mapTimer" class="mapModeText modeTextRight {$mapModeIndicatorFading ? 'fading' : ''}">
 			{$timerText}
 		</p>
 	</div>
@@ -152,7 +152,7 @@
 		}
 
 		100% {
-			transform: translateX(calc(-60%));
+			transform: translateX(calc(-100%)); /* this is not precise at all */
 		}
 	}
 </style>
