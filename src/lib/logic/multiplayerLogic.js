@@ -1,8 +1,7 @@
 import { errorPopup } from "$lib/utils/errorHandling";
 import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScreen.js";
 import { startTimer } from "$lib/utils/timer.js";
-import { checkedForBan, isAuthenticated, isBanned, banReportEntryData } from "$lib/stores/accountStore";
-import { selectedBadge, selectedPinIndex, supporterLevel, username, elo } from "$lib/stores/accountStore.js";
+import { selectedBadge, selectedPinIndex, supporterLevel, username, elo, isAuthenticated } from "$lib/stores/accountStore.js";
 import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
 import { mapSupportsMultiplayer } from "$lib/utils/doesMapSupportMultiplayer.js";
@@ -43,7 +42,6 @@ import PlaySocket from "playsocketjs";
 import { getMapBounds } from "$lib/utils/getMapBounds";
 import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { signupPrompt } from "$lib/utils/signupPrompt";
-import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
 import { accountUrl, websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
 
@@ -284,16 +282,6 @@ let roomIndex = 0;
 // This initiates the find duel system
 export async function findDuel() {
     if (!get(isAuthenticated)) return signupPrompt();
-    if (!get(checkedForBan)) await fetchBlacklistStatus();
-    if (!get(checkedForBan)) return multiplayerStatus.set("Failed to fetch blacklist status.");
-    if (get(isBanned)) {
-        return errorPopup(
-            "You are banned",
-            `Unfortunately, you are banned from playing duels for "${get(banReportEntryData)?.reason}" until ${get(banReportEntryData)?.expires_at ? new Date(get(banReportEntryData)?.expires_at)?.toLocaleDateString() : "forever"}. 
-            Please contact the moderators on Discord if you think this was a mistake.`
-        );
-    }
-
     goto("/multiplayer/duel"); // Visit duel load page
     roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     isDivisionRoom.set(true);

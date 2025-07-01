@@ -20,10 +20,10 @@
 		let positionInfo = mapModeTextContainer.getBoundingClientRect();
 		let width = positionInfo.width;
 		scrollModeText =
-			width < 150 || (width < 235 && $mapModeIndicatorText.length > 25) || (width < 295 && $mapModeIndicatorText.length > 31);
+			width < 180 || (width < 235 && $mapModeIndicatorText.length > 25) || (width < 295 && $mapModeIndicatorText.length > 31);
 
 		if (scrollModeText) {
-			const scrollDistance = mapModeTextElement.scrollWidth - width + 20;
+			const scrollDistance = mapModeTextElement.scrollWidth - width + 10;
 			mapModeTextContainer.style.setProperty("--scroll-distance", `-${scrollDistance}px`);
 		}
 	}

@@ -13,15 +13,10 @@ export async function loadChat(chats) {
     try {
         for (const chat of chats) {
             const text = await filterProfanity(chat);
-            const sanitizedText = sanitizeHTML(text);
-            tempArray.push(sanitizedText);
+            tempArray.push(text);
         }
         chatArray.set(tempArray);
     } catch (error) {
         console.error("Error loading chat:", error);
     }
-}
-
-function sanitizeHTML(text) {
-    return text.replace(/<[^>]*>?/gm, ""); // Strip malicious HTML (security)
 }

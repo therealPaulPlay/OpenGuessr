@@ -3,10 +3,7 @@
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import {
-		checkedForBan,
 		isAuthenticated,
-		isBanned,
-		banReportEntryData,
 		warnReportEntryData,
 	} from "$lib/stores/accountStore";
 	import { loadedFriendsData, hostStage, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
@@ -22,7 +19,7 @@
 	import { bounceInOut } from "svelte/easing";
 	import { ChevronDown, ChevronUp, History } from "lucide-svelte";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
-	import { fetchBlacklistStatus, fetchWarnlistStatus } from "$lib/utils/checkBanStatus";
+	import { fetchWarnlistStatus } from "$lib/utils/checkReportStatus";
 	import { get } from "svelte/store";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -39,8 +36,7 @@
 			loadFriends();
 		}, 15000);
 
-		// Check blacklist & warnlist if logged in and not already (async)
-		fetchBlacklistStatus();
+		// Check warnlist if logged in and not already (async)
 		fetchWarnlistStatus();
 	});
 
