@@ -26,12 +26,7 @@
 	}
 
 	function handleKeydown(index, event) {
-		if (event.key === "Backspace" && !segments[index] && index > 0) {
-			inputRefs[index - 1]?.focus(); // Move to previous input on backspace
-		} else if (event.key === "Enter" && roomCodeInput.length === 6) {
-			event.preventDefault();
-			joinRoom(roomCodeInput);
-		}
+		if (event.key === "Backspace" && !segments[index] && index > 0) inputRefs[index - 1]?.focus(); // Move to previous input on backspace
 	}
 
 	function handlePaste(event) {
@@ -96,13 +91,6 @@
 			onclick={() => {
 				playSound("start_button");
 				joinRoom(roomCodeInput);
-			}}
-			onkeypress={(e) => {
-				if (e.key == "Enter") {
-					e.preventDefault();
-					playSound("start_button");
-					joinRoom(roomCodeInput);
-				}
 			}}>Join</button
 		>
 	</div>

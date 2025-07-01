@@ -22,11 +22,5 @@ export const purchasedPins = writable([]);
 
 
 // Moderation related
-export const isBanned = writable(false);
-export const isWarned = writable(false);
-
-export const banReportEntryData = writable();
 export const warnReportEntryData = writable();
-
-export const checkedForBan = writable(false);
 export const checkedForWarning = writable(false);
