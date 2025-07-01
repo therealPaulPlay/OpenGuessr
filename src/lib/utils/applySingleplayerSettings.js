@@ -1,4 +1,4 @@
-import { modeText, mapModeIndicatorVisible } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { mapModeIndicatorText, mapModeIndicatorVisible } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     timerCountdownOverlay,
     timerCountdownOverlayTitle,
@@ -28,7 +28,7 @@ export function applySingleplayerSettings() {
     if (get(singleplayer)) {
         if (get(singleplayerTimeout)) {
             mapModeIndicatorVisible.set(true);
-            modeText.set("Singleplayer");
+            mapModeIndicatorText.set("Singleplayer");
 
             startHardModePromise = new Promise((resolve, reject) => {
                 timerCountdownOverlay.set(true);

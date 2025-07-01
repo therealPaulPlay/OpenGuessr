@@ -11,7 +11,7 @@ import { competitionData, competitionRound } from "$lib/stores/context-specific/
 import { goto } from "$app/navigation";
 import {
     mapModeIndicatorVisible,
-    modeText,
+    mapModeIndicatorText,
     leaveFunction
 } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { get } from "svelte/store";
@@ -46,7 +46,7 @@ export function loadCompetition() {
 export function setCompetitionUI(enable) {
     if (enable) {
         mapModeIndicatorVisible.set(true);
-        modeText.set("Competition");
+        mapModeIndicatorText.set("Competition");
 
     } else {
         mapModeIndicatorVisible.set(false);
@@ -58,10 +58,10 @@ export function setCompetitionUI(enable) {
 export function checkStartCompetitionRound() {
     if (get(competition)) {
         competitionRound.set(get(competitionRound) + 1);
-        modeText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ")");
+        mapModeIndicatorText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ")");
 
         if (get(competitionData)?.restriction && get(competitionData)?.restriction != "standard") {
-            modeText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ") (" + get(competitionData)?.restriction + ")");
+            mapModeIndicatorText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ") (" + get(competitionData)?.restriction + ")");
         }
 
         competitionTimer = startTimer(get(competitionData)?.roundLength, confirmButtonClicks);

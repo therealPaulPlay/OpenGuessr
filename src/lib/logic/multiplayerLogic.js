@@ -12,7 +12,7 @@ import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/
 import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
 import { guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
-import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { mapModeIndicatorVisible, leaveFunction, mapModeIndicatorText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
     duelRetryEnabled, multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
@@ -192,9 +192,8 @@ export async function createMultiplayerInstance() {
 
 
                 if (storage.currentRound && storage.restriction) {
-                    modeText.set("Multiplayer (Round: " + get(socket)?.getStorage?.currentRound + "/" + get(roundAmount) + ")");
+                    mapModeIndicatorText.set(`Multiplayer (Round: ${storage.currentRound}/${get(roundAmount)})` + (storage.restriction !== "standard" ? ` (${storage.restriction})` : ""));
                     setRestriction(storage.restriction);
-                    if (storage.restriction !== "standard" && storage.restriction) modeText.set(get(modeText) + " (" + storage.restriction + ")");
                 }
 
                 if (storage.confirmedArray && storage.players) {
@@ -437,7 +436,7 @@ export async function joinRoom(code) {
             throw new Error(error);
         }
         multiplayer.set(true);
-        modeText.set("Multiplayer (...)");
+        mapModeIndicatorText.set("Multiplayer (...)");
         await get(socket).joinRoom(code);
         matchmakingActive.set(false);
         setMultiplayerUI();
@@ -561,9 +560,12 @@ function showMultiplayerOverlay(show) {
     multiplayerOverlay.set(show);
 
     if (show) {
-        if (get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(socket)?.getStorage?.currentRound);
-        if (!get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
-        if (!get(socket)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (get(socket)?.getStorage?.category)?.replace("community_", "") + ")"); // Display map name
+        if (!get(socket)?.getStorage?.firstRoundPlayed) {
+            multiplayerOverlayTitle.set("Waiting...");
+            mapModeIndicatorText.set("Multiplayer (" + (get(socket)?.getStorage?.category)?.replace("community_", "") + ")")
+        } else {
+            multiplayerOverlayTitle.set("Results from round " + get(socket)?.getStorage?.currentRound);
+        }
         overlayShowSubtitle.set(get(multiplayerStyle) == "duel" && get(socket)?.getStorage?.currentRound >= 3 && get(socket)?.getStorage?.currentRound < get(socket)?.getStorage?.roundAmount);
         showEndscreenUI(false); // Default to no endscreen UI
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
