@@ -86,7 +86,7 @@ export async function leaveCompetition(showResult) {
         setRestriction("standard");
 
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
-        await submitCompetitionResult(get(competitionData).id, competitionCombinedScore, get(supporterLevel), localStorage.getItem("bearer"));
+        await submitCompetitionResult(get(competitionData).id, competitionCombinedScore);
 
         if (showResult) {
             goto("/competitions?leaderboard-submit=" + get(competitionData).id);
@@ -94,54 +94,31 @@ export async function leaveCompetition(showResult) {
     }
 }
 
-async function submitCompetitionResult(id, score, supporterLevel, token) {
+async function submitCompetitionResult(compId, score) {
     try {
         const requestBody = {
-            username: get(username),
             id: localStorage.getItem("id"),
-            score: score,
-            supporter_level: supporterLevel || 0
+            score: score
         };
 
-        const response = await fetch(get(accountUrl) + "/competitions/submit/" + id, {
+        const response = await fetch(get(accountUrl) + "/competitions/submit/" + compId, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${localStorage.getItem("bearer")}`
             },
             body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
             let responseData = null;
-
-            try {
-                responseData = await response.json();
-                let errorMessages = [];
-
-                if (responseData.error) errorMessages.push(responseData.error);
-                if (responseData.message) errorMessages.push(responseData.message);
-
-                if (responseData.errors && Array.isArray(responseData.errors)) {
-                    responseData.errors.forEach(err => {
-                        if (err.msg) {
-                            errorMessages.push(err.msg);
-                        } else {
-                            errorMessages.push(JSON.stringify(err));
-                        }
-                    });
-                }
-
-                console.error("Error during competition result submission: " + errorMessages.join(' '));
-                errorPopup("Competition submission failed", "The result could not be submitted.", errorMessages.join(' '));
-            } catch {
-                console.error("Error occured when submitting result on server and response did not include a json response.");
-                errorPopup("Competition submission failed", "Competition server did not include error messages in the response.", response.status);
-            }
+            responseData = await response.json();
+            if (responseData.error) throw new Error(responseData.error);
+            else throw new Error("No error provided in response.");
         }
     } catch (error) {
-        console.error("Error occurred during competition result submission: " + error);
-        errorPopup("Competition submission failed (Network)", "The comptition server could not be reached. Please check your internet connection and submit a bug report in the Discord if it persists.", error);
+        console.error("Error submitting competition result: " + error);
+        errorPopup("Competition submission failed", "An error occured submitting a competition result.", error);
     }
 }
 
