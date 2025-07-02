@@ -46,8 +46,11 @@
 	{/if}
 	<div class="marginTop largerSpacing">
 		{#if $confirmShowConfirm}
-			<button class="standardButton largeButton" onclick={confirm} style:background-color={$confirmConfirmColor}
-				>{$confirmConfirmText}</button
+			<button
+				class="standardButton largeButton"
+				onclick={confirm}
+				style:background-color={$confirmConfirmColor}
+				class:disabled={$confirmUsernameInput && $confirmUsernameValue?.length < 1}>{$confirmConfirmText}</button
 			>
 		{/if}
 	</div>
@@ -66,5 +69,10 @@
 
 	.largerSpacing {
 		gap: var(--layout-margin);
+	}
+
+	.disabled {
+		pointer-events: none;
+		opacity: 0.5;
 	}
 </style>
