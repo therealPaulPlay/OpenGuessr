@@ -149,8 +149,8 @@
 
 	@media (max-width: 800px) {
 		.divisionCircle {
-			width: 30px;
-			height: 30px;
+			width: 40px;
+			height: 40px;
 		}
 	}
 </style>

@@ -29,9 +29,18 @@
 	.animateTitle {
 		color: white;
 		filter: drop-shadow(0 0 50px rgba(0, 0, 0, 0.5));
-		font-size: 200px;
 		display: flex;
 		gap: 10px;
+	}
+
+	.animateTitle span {
+		font-size: 200px;
+	}
+
+	@media (max-width: 1200px) {
+		.animateTitle span {
+			font-size: 175px;
+		}
 	}
 
 	.digit,
