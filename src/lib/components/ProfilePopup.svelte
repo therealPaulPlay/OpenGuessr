@@ -158,7 +158,7 @@
 	}}
 >
 	<div class="profileNameArea">
-		<div id="profileViewName">
+		<div class="profileViewName">
 			<h1>{$profileData.username}</h1>
 			<!-- Profile Flag -->
 			{#if $profileData?.flag && FlagIcons[$profileData.flag]}
@@ -451,17 +451,17 @@
 		box-sizing: border-box;
 	}
 
-	#profileViewName {
+	.profileViewName {
 		overflow: hidden;
 		text-wrap: nowrap;
 		margin-left: 10px;
-		margin-right: 20px;
+		margin-right: 50px;
 		display: inline-flex;
 		justify-content: center;
 		gap: 8px;
 	}
 
-	#profileViewName h1 {
+	.profileViewName h1 {
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
@@ -664,7 +664,7 @@
 	}
 
 	@media all and (max-width: 1200px) {
-		#profileViewName {
+		.profileViewName {
 			font-size: 32px;
 		}
 	}
