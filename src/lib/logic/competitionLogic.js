@@ -118,7 +118,7 @@ async function submitCompetitionResult(compId, score) {
         }
     } catch (error) {
         console.error("Error submitting competition result: " + error);
-        errorPopup("Competition submission failed", "An error occured submitting a competition result.", error);
+        errorPopup("Competition submission failed", "Failed to submit the competition result.", error.message);
     }
 }
 

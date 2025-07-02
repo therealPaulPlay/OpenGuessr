@@ -332,8 +332,7 @@
 								"Update username",
 								"Input your new name into the box and click confirm.",
 								() => {
-									if ($confirmUsernameValue) updateProfileUsername($confirmUsernameValue);
-									else errorPopup("New username is invalid", "Please specify a valid new username.");
+									updateProfileUsername($confirmUsernameValue);
 								},
 								false,
 								true,
