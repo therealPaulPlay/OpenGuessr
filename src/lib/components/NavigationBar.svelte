@@ -175,7 +175,7 @@
 				</span>
 			{:else}
 				<span in:blur={{ duration: 150 }}>
-					<X style="margin-top: 3px;" strokeWidth={2.75} size={22} />
+					<X style="margin-top: 3px;" strokeWidth={2.5} size={22} />
 				</span>
 			{/if}
 		</button>

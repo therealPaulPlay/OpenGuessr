@@ -25,14 +25,10 @@ export async function generateNewLocation(type) {
         currentLocationLongitude.set(Number(newLocationArray[1]));
 
         // Set country guesser country
-        if (get(countryGuessr) && !get(multiplayer)) {
-            setCountryGuesserCountry(newLocationArray[2]);
-        }
+        if (get(countryGuessr)) setCountryGuesserCountry(newLocationArray[2]);
 
         // Set image guesser image
-        if (get(imageGuessr) && !get(multiplayer)) {
-            loadImageFromUrl(newLocationArray[2]);
-        }
+        if (get(imageGuessr)) loadImageFromUrl(newLocationArray[2]);
 
     } catch {
         console.error("The coordinates to load the iframe from are not defined. " + "Lat: " + get(currentLocationLatitude) + " Long: " + get(currentLocationLongitude));

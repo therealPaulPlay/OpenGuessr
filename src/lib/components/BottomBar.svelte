@@ -4,13 +4,16 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { reloadPanorama } from "$lib/utils/loadPanorama";
 	import { helpPopup } from "$lib/stores/uiStore";
-	import { confirmButtonActive, confirmButtonText } from "$lib/stores/context-specific/confirmButtonStore";
+	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { supporterLevel } from "$lib/stores/accountStore";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification } from "$lib/utils/notifications";
-	import { mapVisible } from "$lib/stores/context-specific/mapStore";
+	import { mapExpanded, mapInteractive } from "$lib/stores/context-specific/mapStore";
 	import { tooltip } from "$lib/utils/tooltip";
+	import { countryGuessr } from "$lib/stores/modeStore";
+	import { fade } from "svelte/transition";
+	import { ArrowUp, Map } from "lucide-svelte";
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
@@ -60,32 +63,41 @@
 			</button>
 		</div>
 	</div>
-	<div class="barMenu bottomRightMenu">
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<div
-			class="standardButton confirmButton white"
-			id="confirmButton"
-			class:confirmActive={$confirmButtonActive}
-			onclick={() => {
-				playSound("basic_button");
-				if ($confirmButtonActive) confirmButtonClicks();
-				else if ($mapVisible) showNotification("Place your pin first.");
-			}}
-		>
-			<button
-				class="helpButton standardButton white"
-				class:innerConfirmButtonDisabled={$confirmButtonActive}
-				use:tooltip={{ text: "How to play" }}
-				onclick={(element) => {
-					element.stopPropagation();
+	{#if !$countryGuessr}
+		<div class="barMenu bottomRightMenu" transition:fade={{ duration: 250 }}>
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div
+				class="standardButton confirmButton white"
+				id="confirmButton"
+				class:confirmActive={$confirmButtonActive}
+				onclick={() => {
 					playSound("basic_button");
-					$helpPopup = true;
-				}}>?</button
+					if (!$mapExpanded) return ($mapExpanded = true);
+					if ($confirmButtonActive) confirmButtonClicks();
+					else if ($mapInteractive) showNotification("Place your pin first.");
+				}}
 			>
-			<p id="guessText">{$confirmButtonText}</p>
+				<button
+					class="helpButton standardButton white"
+					class:innerConfirmButtonDisabled={$confirmButtonActive}
+					use:tooltip={{ text: "How to play" }}
+					onclick={(element) => {
+						element.stopPropagation();
+						playSound("basic_button");
+						$helpPopup = true;
+					}}>?</button
+				>
+				<p id="guessText">
+					{#if $mapExpanded}
+						Guess
+					{:else}
+						Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2.5} />
+					{/if}
+				</p>
+			</div>
 		</div>
-	</div>
+	{/if}
 </div>
 <div
 	id="bottomFooterAds"

@@ -33,7 +33,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     let polyList;
 
     // Check if NOT in Country Guessr (or if IN multiplayer) --------------------------------------------------
-    if (!get(countryGuessr) || get(multiplayer)) {
+    if (!get(countryGuessr)) {
         playerLatLng = new L.LatLng(guessLat, guessLong);
         polyList = [curLatLng, playerLatLng];
         pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
@@ -123,7 +123,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     }
 
     // Fit the map bounds to show all markers and lines (with padding)
-    if (!get(countryGuessr) || get(multiplayer)) {
+    if (!get(countryGuessr)) {
         get(map).fitBounds(pointList, {
             animate: false
         });

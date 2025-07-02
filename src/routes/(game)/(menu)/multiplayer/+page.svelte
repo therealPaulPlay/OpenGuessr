@@ -1,5 +1,5 @@
 <script>
-	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info, UserRoundSearch, Earth } from "lucide-svelte";
+	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info, Earth, BicepsFlexed } from "lucide-svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
@@ -21,6 +21,7 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { showNotification } from "$lib/utils/notifications";
+	import { tooltip } from "$lib/utils/tooltip";
 
 	let friendsRefreshInterval;
 
@@ -44,9 +45,6 @@
 
 	const nextMonth = new Date();
 	nextMonth.setMonth(nextMonth.getMonth() + 1, 1); // Set to first day of next month
-
-	// Skill based toggle
-	let skillBasedTabsValue = $derived($skillBasedMatchmaking ? 1 : 0);
 </script>
 
 <svelte:head>
@@ -120,6 +118,7 @@
 				</button>
 				<button
 					class="standardButton white multiplayerSelect"
+					use:tooltip={{ text: "Skill-based / Everyone" }}
 					style:flex-grow={0}
 					onclick={() => {
 						$skillBasedMatchmaking = !$skillBasedMatchmaking;
@@ -127,13 +126,14 @@
 					}}
 				>
 					{#if $skillBasedMatchmaking}
-						<UserRoundSearch strokeWidth={2.25} style="margin-bottom: -3px;" />
+						<BicepsFlexed strokeWidth={2.25} style="margin-bottom: -3px;" />
 					{:else}
 						<Earth strokeWidth={2.25} style="margin-bottom: -3px;" />
 					{/if}
 				</button>
 				<button
 					class="standardButton white multiplayerSelect"
+					use:tooltip={{ text: "History" }}
 					style:flex-grow={0}
 					onclick={() => {
 						playSound("basic_button");

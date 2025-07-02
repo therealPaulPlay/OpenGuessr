@@ -1,32 +1,20 @@
 <script>
-	import { countryGuessr, multiplayer, competition } from "$lib/stores/modeStore";
+	import { countryGuessr } from "$lib/stores/modeStore";
 	import { selectedCountryField } from "$lib/stores/context-specific/countryGuessrStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 
 	function selectCountry(fieldNr) {
 		playSound("item_select");
 		selectedCountryField.set(fieldNr);
-		confirmButtonActive.set(true);
-	}
-
-	function clickConfirm(event) {
-		if (event.key === " ") {
-			if ($confirmButtonActive) {
-				confirmButtonClicks();
-			} else {
-				console.warn("Cannot click on confirm button - pointer events is none.");
-			}
-		}
+		confirmButtonClicks();
 	}
 </script>
 
-{#if $countryGuessr && !$multiplayer && !$competition}
-	<div class="countryGuessrSelector barMenu" onkeyup={clickConfirm} role="menu" tabindex="0">
+{#if $countryGuessr}
+	<div class="countryGuessrSelector barMenu" role="menu" tabindex="0">
 		<button
 			class="countryGuessrHolder standardButton white"
-			class:selectedCountry={$selectedCountryField == 1}
 			onclick={() => {
 				selectCountry(1);
 			}}
@@ -36,7 +24,6 @@
 		</button>
 		<button
 			class="countryGuessrHolder standardButton white"
-			class:selectedCountry={$selectedCountryField == 2}
 			onclick={() => {
 				selectCountry(2);
 			}}
@@ -46,7 +33,6 @@
 		</button>
 		<button
 			class="countryGuessrHolder standardButton white"
-			class:selectedCountry={$selectedCountryField == 3}
 			onclick={() => {
 				selectCountry(3);
 			}}
@@ -56,7 +42,6 @@
 		</button>
 		<button
 			class="countryGuessrHolder standardButton white"
-			class:selectedCountry={$selectedCountryField == 4}
 			onclick={() => {
 				selectCountry(4);
 			}}
@@ -66,7 +51,6 @@
 		</button>
 		<button
 			class="countryGuessrHolder standardButton white"
-			class:selectedCountry={$selectedCountryField == 5}
 			onclick={() => {
 				selectCountry(5);
 			}}
@@ -76,7 +60,6 @@
 		</button>
 		<button
 			class="countryGuessrHolder standardButton white"
-			class:selectedCountry={$selectedCountryField == 6}
 			onclick={() => {
 				selectCountry(6);
 			}}
@@ -94,11 +77,6 @@
 		width: 150px;
 		border-radius: 7px;
 		text-align: center;
-	}
-
-	:global(.selectedCountry) {
-		filter: brightness(1.2);
-		background-color: rgba(255, 255, 255, 0.3) !important;
 	}
 
 	.countryGuessrFlag {

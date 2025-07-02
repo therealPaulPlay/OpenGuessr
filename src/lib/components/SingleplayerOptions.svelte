@@ -1,6 +1,6 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
-	import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
+	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 	import { playSound } from "$lib/utils/soundManager";
 	import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
 	import { formatDistance } from "$lib/utils/distanceFunctions";

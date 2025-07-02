@@ -2,13 +2,13 @@ import { errorPopup } from "$lib/utils/errorHandling";
 import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScreen.js";
 import { startTimer } from "$lib/utils/timer.js";
 import { selectedBadge, selectedPinIndex, supporterLevel, username, elo, isAuthenticated } from "$lib/stores/accountStore.js";
-import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation.js";
+import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
 import { mapSupportsMultiplayer } from "$lib/utils/doesMapSupportMultiplayer.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
-import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/mapStore.js";
+import { mapPinLat, mapPinLng, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
 import { guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
 import { mapModeIndicatorVisible, leaveFunction, mapModeIndicatorText } from "$lib/stores/context-specific/mapModeIndicatorStore";
@@ -327,7 +327,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
 
         // Check if map is valid for multiplayer
         if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
-            showNotification("Unsupported map changed to Standard.")
+            showNotification("Map not supported in multiplayer.")
             await changeCategory("standard", true); // Regenerate to update locations array
         }
 
@@ -469,7 +469,7 @@ export function leaveMultiplayerRound(destroy = true) {
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
-        showMultiplayerOverlay(false); // This also brings back the map
+        showMultiplayerOverlay(false); // Also makes map interactive
         updateMinimapWithTeamMarkers([]); // clean up multiplayer minimap markers
         setMultiplayerUI();
         setRestriction("standard");
@@ -557,9 +557,9 @@ function showMultiplayerOverlay(show) {
         overlayShowSubtitle.set(get(multiplayerStyle) == "duel" && get(socket)?.getStorage?.currentRound >= 3 && get(socket)?.getStorage?.currentRound < get(socket)?.getStorage?.roundAmount);
         showEndscreenUI(false); // Default to no endscreen UI
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
-        mapVisible.set(false); // Hide map
+        mapInteractive.set(false); // Disable map
     } else {
-        if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country guessr") mapVisible.set(true);
+        mapInteractive.set(true);
     }
 }
 

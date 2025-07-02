@@ -1,6 +1,6 @@
 <script>
 	import { initializeAds } from "$lib/utils/ads";
-	import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
+	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 	import { onMount } from "svelte";
 	import initOverfade from "overfade";
 
