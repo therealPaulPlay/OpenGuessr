@@ -192,7 +192,7 @@
 	}
 
 	:global(.leaflet-control-layers-selector[type="radio"]:checked) {
-		accent-color: black;
+		accent-color: var(--brand-color);
 	}
 
 	:global(.leaflet-touch .leaflet-control-layers) {

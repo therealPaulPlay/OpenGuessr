@@ -101,8 +101,7 @@ async function adjustMapToCountry() {
 let marker;
 
 function onMapClick(latLng) {
-    if (get(resultScreenEnabled)) return; // Placing a pin is disabled on result screen
-    if (!get(mapInteractive)) return showNotification("Cannot place a pin now.");
+    if (get(resultScreenEnabled) || !get(mapInteractive)) return; // Placing a pin is disabled on result screen or when the map is not interactive
 
     try {
         confirmButtonActive.set(true);

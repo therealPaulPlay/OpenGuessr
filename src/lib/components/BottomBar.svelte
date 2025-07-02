@@ -71,6 +71,7 @@
 				class="standardButton confirmButton white"
 				id="confirmButton"
 				class:confirmActive={$confirmButtonActive}
+				style:opacity={$mapInteractive || !$mapExpanded ? "" : "0.5"}
 				onclick={() => {
 					playSound("basic_button");
 					if (!$mapExpanded) return ($mapExpanded = true);
@@ -89,10 +90,12 @@
 					}}>?</button
 				>
 				<p id="guessText">
-					{#if $mapExpanded}
+					{#if $mapExpanded && $mapInteractive}
 						Guess
-					{:else}
+					{:else if !$mapExpanded}
 						Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2.5} />
+					{:else if !$mapInteractive}
+						Locked in
 					{/if}
 				</p>
 			</div>
