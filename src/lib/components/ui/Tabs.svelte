@@ -53,7 +53,7 @@
 		border-radius: 0;
 		padding-top: 0;
 		padding-bottom: 0;
-		height: 34px;
+		height: 100%;
 		outline: none;
 		text-overflow: ellipsis;
 		overflow: hidden;

@@ -35,7 +35,6 @@
 	import ProfilePopup from "$lib/components/ProfilePopup.svelte";
 	import PinPopup from "$lib/components/PinPopup.svelte";
 	import BadgePopup from "$lib/components/BadgePopup.svelte";
-	import TroubleshootPopup from "$lib/components/TroubleshootPopup.svelte";
 	import LinkJoinPopup from "$lib/components/LinkJoinPopup.svelte";
 	import FriendBrowserPopup from "$lib/components/FriendBrowserPopup.svelte";
 	import InboxPopup from "$lib/components/InboxPopup.svelte";
@@ -143,7 +142,6 @@
 <HelpPopup />
 <DuelResultPopup />
 <SignupIframe />
-<TroubleshootPopup />
 <SettingsPopup />
 <SingleplayerOptions />
 <DiscordPopup />

@@ -225,8 +225,8 @@
 
 			if (competitionIdFromLink) {
 				showConfirmPopup(
-					"Enter competition from link?",
-					"This will start the game immediately. You can only enter a competition once.",
+					"Enter competition?",
+					"This will start the competition from your link immediately. You can only enter a competition once.",
 					() => {
 						enterCompetition(competitionIdFromLink);
 					},
