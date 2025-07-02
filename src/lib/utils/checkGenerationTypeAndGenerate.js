@@ -1,9 +1,7 @@
 // Use this to present the player with a new location. This strongly depends on locationGeneration.js and generateLocation.js and feeds the generator with the right settings
 import { timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
-import { stopCompetitionTimer } from "$lib/logic/competitionLogic";
-import { setCountryGuesserMode } from "$lib/utils/countryGuessrFunctions";
-import { setImageGuesserMode } from "$lib/utils/imageGuesserFunctions";
-import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
+import { enableImageGuessr } from "$lib/utils/imageGuesserFunctions";
+import { multiplayer, competition, singleplayer, countryGuessr, imageGuessr } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
@@ -24,11 +22,8 @@ function checkLinkMap() {
     let mapFromLink = urlParams.get("play-map").toLowerCase().replaceAll("-", " ").replaceAll("_", " ").replaceAll("–", " ");
 
     if (mapFromLink) {
-      if (get(countryMaps).includes(mapFromLink) || get(continentMaps).includes(mapFromLink)) {
-        changeCategory(mapFromLink);
-      } else {
-        errorPopup("Map not available", "Unfortunately, this map doesn't exist. Feel free to search for similar community maps.", "Map not found", false, true);
-      }
+      if (get(countryMaps).includes(mapFromLink) || get(continentMaps).includes(mapFromLink)) changeCategory(mapFromLink);
+      else errorPopup("Map not available", "Unfortunately, this map doesn't exist. Feel free to search for similar community maps.", "Map not found", false, true);
     }
   } catch { }
 }
@@ -36,20 +31,18 @@ function checkLinkMap() {
 // Location Generation with correct Type ---------------------------------------------------------------------------------------------------------
 let queue = Promise.resolve(); // Qeue handler
 
-// Function to add a task to the queue
 export async function checkGenerationTypeAndGenerate() {
+  if (!checkedForMapLink) checkLinkMap();
+
   // Create a new promise that will only execute after the current queue is done
   queue = queue.then(async () => {
     try {
-      // The actual function logic
       loadingScreenVisible.set(true); // Show loading screen
-      if (!checkedForMapLink) checkLinkMap();
       const mapCategory = localStorage.getItem("selectedCategory") || "standard";
-      // Competition timer reset
-      stopCompetitionTimer();
-      // Reset Mode specific UI
-      setCountryGuesserMode(false);
-      setImageGuesserMode(false);
+      
+      // Disable map-related modes (will be enabled later based on the map choice)
+      countryGuessr.set(false);
+      imageGuessr.set(false);
 
       if (get(singleplayer)) {
         // Pick between json and maps api loading depending on the category type
@@ -57,11 +50,12 @@ export async function checkGenerationTypeAndGenerate() {
           await generateNewLocation("JSON");
 
         } else if (mapCategory == "country guessr") {
-          setCountryGuesserMode(true);
+          countryGuessr.set(true);
           await generateNewLocation("JSON");
 
         } else if (mapCategory == "image guessr") {
-          setImageGuesserMode(true);
+          imageGuessr.set(true);
+          enableImageGuessr(true);
           await generateNewLocation("JSON");
 
         } else if (mapCategory == "standard") {

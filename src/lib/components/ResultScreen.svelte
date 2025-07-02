@@ -49,95 +49,97 @@
 	});
 </script>
 
-<div id="endBottomArea" class:resultScreenHidden={!Boolean($resultScreenEnabled)}>
-	<!-- Animations for great scores -->
-	<ResultFullscreenMessage />
+{#if $resultScreenEnabled}
+	<div class="endBottomArea">
+		<!-- Animations for great scores -->
+		<ResultFullscreenMessage />
 
-	<ResultScreenSlideup />
-	<div id="endBottomBar">
-		<div
-			class="floatingResultLeaderboardArea barMenu"
-			style:display={$supporterLevel >= 2 || !$resultScreenEnabled || $adsDisabled ? "none" : ""}
-		>
-			<div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
-			<!-- id is necessary for ad script! -->
-			<RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." />
-		</div>
-		<div id="resultBox" class="barMenu">
-			<div class="resultField resultFieldHigh" id="motivationText">
-				<p>{$motivationText}</p>
-			</div>
+		<ResultScreenSlideup />
+		<div class="endBottomBar">
 			<div
-				id="mobileResultLeaderboardAdArea"
-				class="resultField resultFieldHigh"
+				class="floatingResultLeaderboardArea barMenu"
 				style:display={$supporterLevel >= 2 || !$resultScreenEnabled || $adsDisabled ? "none" : ""}
 			>
-				<div id="mobileResultLeaderboardAd"></div>
-				<RemoveAdsText text="Go Ad-Free." />
+				<div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
+				<!-- id is necessary for ad script! -->
+				<RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." />
 			</div>
-			<div class="resultField">
-				<RulerDimensionLine style="margin-right: 8px;" size={22} strokeWidth={2.25} />
-				<p id="distanceText">{$distanceText}</p>
-			</div>
-			{#if $isAuthenticated}
-				<div id="XParea" class="resultField">
-					<div id="supporterBoost" bind:this={$supporterBoost}>
-						<p id="supporterBoostText" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
-					</div>
-					<p id="endScreenLevelDisplay">Lvl. {level}</p>
-					<div id="endScreenXPbar">
-						<div
-							class="XPbarResource"
-							id="endScreenXPbarResource"
-							class:XPbarAnimate={$experienceBarAnimated}
-							style:width={percentageWidth}
-						></div>
-					</div>
-					<p id="endScreenXP">{$animatedExperience.toFixed(0)} XP</p>
-					{#if $showStreakDisplay}
-						<div id="streakDisplay">
-							<Flame style="margin-right: 5px;" size={22} strokeWidth={2.25} />
-							<p id="endScreenStreakText">{$streakText}</p>
+			<div id="resultBox" class="barMenu">
+				<div class="resultField resultFieldHigh" id="motivationText">
+					<p>{$motivationText}</p>
+				</div>
+				<div
+					id="mobileResultLeaderboardAdArea"
+					class="resultField resultFieldHigh"
+					style:display={$supporterLevel >= 2 || !$resultScreenEnabled || $adsDisabled ? "none" : ""}
+				>
+					<div id="mobileResultLeaderboardAd"></div>
+					<RemoveAdsText text="Go Ad-Free." />
+				</div>
+				<div class="resultField">
+					<RulerDimensionLine style="margin-right: 8px;" size={22} strokeWidth={2.25} />
+					<p id="distanceText">{$distanceText}</p>
+				</div>
+				{#if $isAuthenticated}
+					<div id="XParea" class="resultField">
+						<div id="supporterBoost" bind:this={$supporterBoost}>
+							<p id="supporterBoostText" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
 						</div>
-					{/if}
-				</div>
-			{:else}
-				<div id="XPbarNoAccount" class="resultField">
-					<p id="signupPromptText">
-						<CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see &
-						save your score!
-					</p>
-				</div>
-			{/if}
+						<p id="endScreenLevelDisplay">Lvl. {level}</p>
+						<div id="endScreenXPbar">
+							<div
+								class="XPbarResource"
+								id="endScreenXPbarResource"
+								class:XPbarAnimate={$experienceBarAnimated}
+								style:width={percentageWidth}
+							></div>
+						</div>
+						<p id="endScreenXP">{$animatedExperience.toFixed(0)} XP</p>
+						{#if $showStreakDisplay}
+							<div id="streakDisplay">
+								<Flame style="margin-right: 5px;" size={22} strokeWidth={2.25} />
+								<p id="endScreenStreakText">{$streakText}</p>
+							</div>
+						{/if}
+					</div>
+				{:else}
+					<div id="XPbarNoAccount" class="resultField">
+						<p id="signupPromptText">
+							<CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see
+							& save your score!
+						</p>
+					</div>
+				{/if}
+			</div>
+		</div>
+		<div class="barMenu nextRoundArea">
+			<button
+				class="standardButton white"
+				onclick={() => {
+					playSound("basic_button");
+					openLocationOnMaps(get(currentLocationLatitude), get(currentLocationLongitude));
+				}}
+			>
+				<img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
+			</button>
+			<button
+				id="nextRound"
+				class="standardButton white"
+				style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
+				style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
+				onclick={() => {
+					playSound("basic_button");
+					transitionToStart();
+				}}
+			>
+				<p class="nextRoundText">
+					{$continueText}
+				</p>
+				<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
+			</button>
 		</div>
 	</div>
-	<div class="barMenu nextRoundArea">
-		<button
-			class="standardButton white"
-			onclick={() => {
-				playSound("basic_button");
-				openLocationOnMaps(get(currentLocationLatitude), get(currentLocationLongitude));
-			}}
-		>
-			<img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
-		</button>
-		<button
-			id="nextRound"
-			class="standardButton white"
-			style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
-			style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
-			onclick={() => {
-				playSound("basic_button");
-				transitionToStart();
-			}}
-		>
-			<p class="nextRoundText">
-				{$continueText}
-			</p>
-			<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
-		</button>
-	</div>
-</div>
+{/if}
 
 <svelte:window
 	onkeypress={(event) => {
@@ -155,15 +157,6 @@
 		transform: rotate(270deg);
 		vertical-align: -2px;
 		margin-right: -10px;
-	}
-
-	.resultScreenHidden {
-		pointer-events: none !important;
-		opacity: 0 !important;
-	}
-
-	.resultScreenHidden * {
-		pointer-events: none !important;
 	}
 
 	#streetviewIcon {
@@ -207,7 +200,7 @@
 		min-height: 40px;
 	}
 
-	#endBottomBar {
+	.endBottomBar {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -220,7 +213,7 @@
 		right: 0;
 	}
 
-	#endBottomArea {
+	.endBottomArea {
 		position: fixed;
 		height: fit-content;
 		display: flex;
@@ -231,7 +224,6 @@
 		flex-direction: column;
 		overflow: hidden;
 		z-index: 13;
-		transition: opacity 250ms ease-out;
 		pointer-events: none;
 	}
 

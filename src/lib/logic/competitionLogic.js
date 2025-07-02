@@ -1,6 +1,6 @@
 import { startTimer } from "$lib/utils/timer";
 import { disableResultScreen } from "$lib/utils/setResultScreen";
-import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
+import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 import { playSound } from "$lib/utils/soundManager";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { setRestriction } from "$lib/utils/setRestriction";
@@ -17,6 +17,7 @@ import {
 import { get } from "svelte/store";
 import { username } from "$lib/stores/accountStore";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
 let competitionCombinedScore = 0;
@@ -43,7 +44,7 @@ export function loadCompetition() {
 }
 
 // Set competition UI ----------------------------------------------------------------------------------------------------
-export function setCompetitionUI(enable) {
+function setCompetitionUI(enable) {
     if (enable) {
         mapModeIndicatorVisible.set(true);
         mapModeIndicatorText.set("Competition");
@@ -66,10 +67,6 @@ export function checkStartCompetitionRound() {
 
         competitionTimer = startTimer(get(competitionData)?.roundLength, confirmButtonClicks);
     }
-}
-
-export function stopCompetitionTimer() {
-    try { competitionTimer.stopTimer(); } catch { }
 }
 
 // Score logic ------------------------------------------------------------------------------------------------------
@@ -124,12 +121,13 @@ async function submitCompetitionResult(compId, score) {
 
 // Check round status and end if needed ----------------------------------------------------------------------------------
 export function checkCompetitionRoundStatus() {
-    stopCompetitionTimer(); // Stop the timer
-
     if (get(competitionRound) == get(competitionData)?.roundAmount) {
         leaveCompetition(true);
         return false;
-    } else {
-        return true;
-    }
+    } else return true;
 }
+
+// Stop timer on result screen ----------------------------------------------------------------------------------------
+resultScreenEnabled.subscribe((value) => {
+    if (value) competitionTimer?.stopTimer();
+});

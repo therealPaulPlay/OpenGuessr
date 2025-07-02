@@ -3,12 +3,13 @@ import { addMultiplayerGuessMarker, getTeamFromMultiplayerId } from "$lib/logic/
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore.js";
-import { mapPinLat, mapPinLng, map, addedMarkers } from "$lib/stores/context-specific/mapStore.js";
+import { mapPinLat, mapPinLng, map, addedMarkers, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { mapHovered } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
 import { multiplayer } from "$lib/stores/modeStore";
+import { showNotification } from "$lib/utils/notifications";
 
 // Initialize the map
 export function initMap() {
@@ -101,9 +102,9 @@ let marker;
 
 function onMapClick(latLng) {
     if (get(resultScreenEnabled)) return; // Placing a pin is disabled on result screen
+    if (!get(mapInteractive)) return showNotification("Cannot place a pin now.");
 
     try {
-
         confirmButtonActive.set(true);
         playSound("pin_drop", "pin");
 

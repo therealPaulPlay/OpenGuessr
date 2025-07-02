@@ -4,7 +4,7 @@ import { writable } from "svelte/store";
 export const map = writable();
 
 // Visuals
-export const mapVisible = writable(true);
+export const mapInteractive = writable(true);
 export const mapExpanded = writable(true);
 export const mapHovered = writable(false);
 
