@@ -1,5 +1,5 @@
 import { resultScreenEnabled, distanceText, motivationText } from "$lib/stores/context-specific/resultScreenStore";
-import { calculateDistances, compareDistances } from "$lib/utils/distanceFunctions";
+import { calculateDistances, motivationalResultMessage, formatDistance } from "$lib/utils/distanceFunctions";
 import { countryGuessr } from "$lib/stores/modeStore";
 import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
 import { refreshPlacements } from "$lib/utils/ads";
@@ -23,24 +23,18 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
 
         // Obtain contents
         const distance = calculateDistances(guessLat, guessLong);
-        const resultStrings = compareDistances(distance) || {};
-        let resultString = resultStrings.resultAsString;
-        let extraMessage = resultStrings.extraMsg;
+        const motivationalMessage = motivationalResultMessage(distance);
+        const resultString = formatDistance(distance);
 
         // Reset the map, before loading the result map
         resetMap(true);
 
+        motivationText.set(motivationalMessage);
         distanceText.set(resultString);
-        motivationText.set(extraMessage);
 
         if (get(countryGuessr)) {
-            if (checkIfGuessWasCorrect()) {
-                distanceText.set("Correct!");
-                motivationText.set("The country is " + get(selectedCountryGuesserCountry) + ".");
-            } else {
-                distanceText.set("Wrong!");
-                motivationText.set("The country was " + get(selectedCountryGuesserCountry) + ".");
-            }
+            if (checkIfGuessWasCorrect()) distanceText.set("Correct!");
+            else distanceText.set("Wrong!");
         }
 
         // Load result on the map
