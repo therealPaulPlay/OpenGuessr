@@ -79,7 +79,9 @@
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/join");
-					}}>Join <span class="groupIcons"><Unplug size={19} strokeWidth={2.5} /></span></button
+					}}
+					>Join <span class="groupIcons"><Unplug size={20} strokeWidth={2.5} style="margin-bottom: -1px;" /></span
+					></button
 				>
 				<button
 					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
@@ -89,7 +91,9 @@
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/host");
-					}}>Host <span class="groupIcons"><PlusCircle size={19} strokeWidth={2.5} /></span></button
+					}}
+					>Host <span class="groupIcons"><PlusCircle size={20} strokeWidth={2.5} style="margin-bottom: -1px;" /></span
+					></button
 				>
 			</div>
 		</div>
@@ -138,7 +142,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						divisionMatchHistoryPopup.set(true);
-					}}><History strokeWidth={2.25} style="margin-bottom: -3px;" /></button
+					}}><History strokeWidth={2.25} style="margin-bottom: -4px;" /></button
 				>
 			</div>
 		</div>
@@ -175,7 +179,7 @@
 					} else {
 						signupPrompt();
 					}
-				}}><p class="addFriendText">Add friend <ContactRound strokeWidth={2.35} size={20} /></p></button
+				}}><p class="addFriendText">Add friend <ContactRound strokeWidth={2.5} size={22} /></p></button
 			>
 			<button
 				class="standardButton white friendActionButton"
@@ -490,9 +494,9 @@
 	}
 
 	#inboxIcon {
-		width: 18px;
-		height: 18px;
-		vertical-align: -2px;
+		width: 20px;
+		height: 20px;
+		vertical-align: -3px;
 		margin-left: 5px;
 	}
 
