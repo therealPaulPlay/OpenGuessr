@@ -42,7 +42,7 @@ export function compareDistances(distance) {
     else if (distance < 1000) extraMsg = closeDistances[Math.floor(Math.random() * closeDistances.length)];
     else extraMsg = farDistances[Math.floor(Math.random() * farDistances.length)];
 
-    //Ddistance number formatting (km or m)
+    // Distance number formatting (km or m)
     resultAsString = formatDistance(distance);
 
     if (countryGuessr) {
