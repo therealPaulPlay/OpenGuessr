@@ -3,6 +3,7 @@ import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
+import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
 
 let veryCloseDistances;
 let closeDistances;
@@ -30,7 +31,7 @@ export function calculateDistances(mapsLat = 0, mapsLong = 0) {
     return distance;
 }
 
-export function compareDistances(distance) {
+export function motivationalResultMessage(distance) {
     let resultAsString;
 
     veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Do you have an A in geography?", "Wow.", "Time for a screenshot.", "Seriously impressive."];
@@ -42,15 +43,9 @@ export function compareDistances(distance) {
     else if (distance < 1000) extraMsg = closeDistances[Math.floor(Math.random() * closeDistances.length)];
     else extraMsg = farDistances[Math.floor(Math.random() * farDistances.length)];
 
-    // Distance number formatting (km or m)
-    resultAsString = formatDistance(distance);
-
-    if (countryGuessr) {
-        if (checkIfGuessWasCorrect()) extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
-        else extraMsg = farDistances[Math.floor(Math.random() * farDistances.length)];
-    }
-
-    return { resultAsString: resultAsString, extraMsg: extraMsg };
+    // In Country guessr, tell the country
+    if (get(countryGuessr)) extraMsg = "The country is " + get(selectedCountryGuesserCountry) + ".";
+    return extraMsg;
 }
 
 // This function neatly formats a distance in meters into a readable string (e.g. 500 km or 15 miles)
