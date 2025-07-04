@@ -54,6 +54,7 @@
 		background-color: var(--dark-background);
 		pointer-events: auto;
 		z-index: 100; /* Default Z-Index, can be changed with Prop */
+		backdrop-filter: blur(3px);
 	}
 
 	.closePopupButton {

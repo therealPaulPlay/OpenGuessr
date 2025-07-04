@@ -337,7 +337,7 @@
 				onclick={() => {
 					playSound("basic_button");
 					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
-					addedCommunityMaps.push(mapName);
+					if (!addedCommunityMaps.includes(mapName)) addedCommunityMaps.push(mapName);
 					localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
 					changeCategory("community_" + mapName.toLowerCase(), true);
 					goto("/");
