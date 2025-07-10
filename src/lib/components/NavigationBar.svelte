@@ -17,6 +17,7 @@
 
 	// Check if the username should be scrolled automatically (happens when it is too long) -------------------------------------------
 	let scrollNameText = $state(false);
+	let circleElement = $state();
 
 	function checkTextLength(text) {
 		const textLength = text.length;
@@ -44,19 +45,17 @@
 	});
 
 	function setProgress(factor) {
-		if (typeof window == "undefined") return;
-
 		try {
+			if (!circleElement) return;
 			if (factor < 0.05 && factor != 0) factor = 0.05;
-			const circle = document.getElementById("progressRingCircle");
-			const radius = circle.r.baseVal.value;
+			const radius = circleElement?.r?.baseVal?.value;
 			const circumference = 2 * Math.PI * radius;
 
-			circle.style.strokeDasharray = `${circumference} ${circumference}`;
-			circle.style.strokeDashoffset = `${circumference}`;
+			circleElement.style.strokeDasharray = `${circumference} ${circumference}`;
+			circleElement.style.strokeDashoffset = `${circumference}`;
 
 			const offset = circumference - factor * circumference;
-			circle.style.strokeDashoffset = offset;
+			circleElement.style.strokeDashoffset = offset;
 		} catch (error) {
 			console.warn("Error setting progress:", error);
 		}
@@ -223,6 +222,7 @@
 					</defs>
 					<circle
 						id="progressRingCircle"
+						bind:this={circleElement}
 						class="progressRingCircle"
 						style="stroke-dasharray: 81.6814px, 81.6814px; stroke-dashoffset: 81.6814px;"
 						stroke="url('#ringGradient')"

@@ -21,3 +21,4 @@ export const duelResultPopup = writable(false);
 export const reportPopup = writable(false);
 export const divisionMatchHistoryPopup = writable(false);
 export const guestNamePickerPopup = writable(false);
+export const bugspotPopup = writable(false);

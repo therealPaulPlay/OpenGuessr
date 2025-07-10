@@ -3,7 +3,7 @@
 	import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { reloadPanorama } from "$lib/utils/loadPanorama";
-	import { helpPopup } from "$lib/stores/uiStore";
+	import { bugspotPopup, helpPopup } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { supporterLevel } from "$lib/stores/accountStore";
@@ -13,7 +13,7 @@
 	import { tooltip } from "$lib/utils/tooltip";
 	import { countryGuessr } from "$lib/stores/modeStore";
 	import { fade } from "svelte/transition";
-	import { ArrowUp, Map } from "lucide-svelte";
+	import { ArrowUp, Bug, Map } from "lucide-svelte";
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
@@ -33,6 +33,16 @@
 		<div class="barMenu socialBar">
 			<button
 				class="linkItem standardButton white"
+				use:tooltip={{ text: "Report a bug" }}
+				onclick={() => {
+					playSound("basic_button");
+					$bugspotPopup = true;
+				}}
+			>
+				<Bug size={21} strokeWidth={2.25} style="margin-bottom: -2px;" />
+			</button>
+			<button
+				class="linkItem standardButton white"
 				id="discordButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -50,16 +60,6 @@
 				}}
 			>
 				<img src="/img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
-			</button>
-			<button
-				class="linkItem standardButton white"
-				id="blueskyButton"
-				onclick={() => {
-					playSound("basic_button");
-					window.open("https://bsky.app/profile/paulplay.bsky.social", "_blank").focus();
-				}}
-			>
-				<img src="/img/bluesky.png" alt="Bluesky Logo" class="socialIcon bottomBarIcon" />
 			</button>
 		</div>
 	</div>
@@ -191,11 +191,6 @@
 
 	#discordButton:hover {
 		background-color: #a33ae9;
-		filter: none;
-	}
-
-	#blueskyButton:hover {
-		background-color: #2286c9;
 		filter: none;
 	}
 

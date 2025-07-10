@@ -51,6 +51,7 @@
 	import MusicController from "$lib/components/MusicController.svelte";
 	import GuestNamePickerPopup from "$lib/components/GuestNamePickerPopup.svelte";
 	import ShopPurchaseAnimation from "$lib/components/ShopPurchaseAnimation.svelte";
+	import BugspotIframePopup from "$lib/components/BugspotIframePopup.svelte";
 
 	// Start ads
 	onMount(() => {
@@ -154,6 +155,7 @@
 <TimeReducedOverlay />
 <MultiplayerOverlay />
 <ReportIframePopup />
+<BugspotIframePopup />
 <ImageGuesser />
 <PanoramaIframe />
 <CountryGuesserBar />
