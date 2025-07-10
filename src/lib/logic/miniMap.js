@@ -9,7 +9,6 @@ import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { mapHovered } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
 import { multiplayer } from "$lib/stores/modeStore";
-import { showNotification } from "$lib/utils/notifications";
 
 // Initialize the map
 export function initMap() {
