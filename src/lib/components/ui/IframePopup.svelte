@@ -1,9 +1,9 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
-	let { open = $bindable(false), src } = $props();
+	let { open = $bindable(false), src, wide = false } = $props();
 </script>
 
-<Popup z={971} frameless={true} bind:open verySlim={true}>
+<Popup z={971} frameless={true} bind:open verySlim={!wide}>
 	<div class="absoluteCenter">
 		<img src="/img/compass_spinner.png" alt="Loading" class="spinner" id="pageBrowserLoading" />
 	</div>

@@ -112,7 +112,7 @@
 						findDuel();
 					}}
 				>
-					Find Duel
+					Find duel
 					<img
 						class="multiplayerMenuIcon"
 						style="margin-left: 5px;"
