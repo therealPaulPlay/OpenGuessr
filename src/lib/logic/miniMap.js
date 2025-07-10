@@ -101,7 +101,7 @@ async function requestMapLoad() {
         }
     } catch (error) {
         console.error('Error occurred while checking for the map load limit: ' + error);
-        errorPopup("Failed to validate minimap load", "The system that validates minimap loads didn't respond. Check your internet connection and consider reporting the issue on Discord if it persists.", error, false, false);
+        errorPopup("Failed to validate minimap load", "The system that validates minimap loads didn't respond.", "Network error.", false, false);
         return false;
     }
 }
