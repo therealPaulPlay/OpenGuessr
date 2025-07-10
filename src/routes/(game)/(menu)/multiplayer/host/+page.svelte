@@ -138,7 +138,9 @@
 			<!-- Room code-->
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p class="codeDisplayText">Join with code:</p>
-				<h1 id="roomCodeDisplay">{$roomcode?.slice(0, 3)}<span style="opacity: 50%">-</span>{$roomcode?.slice(3)}</h1>
+				<h1 id="roomCodeDisplay">
+					{$roomcode?.slice(0, 3)}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomcode?.slice(3)}
+				</h1>
 			</div>
 
 			<!-- Team and player display -->
@@ -324,10 +326,6 @@
 		text-overflow: ellipsis;
 	}
 
-	.teamsDisplay p {
-		color: rgba(255, 255, 255, 0.5);
-	}
-
 	.multiplayerCreationArea {
 		display: flex;
 		align-items: center;
@@ -382,6 +380,10 @@
 	.playerBoxElement {
 		width: calc(100% - 85px);
 		text-align: center;
+	}
+
+	.playerBoxElement span {
+		color: rgba(255, 255, 255, 0.5) !important;
 	}
 
 	.playerBoxElement.playerBoxTeams {

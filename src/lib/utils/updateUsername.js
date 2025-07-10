@@ -1,5 +1,5 @@
 import { username } from "$lib/stores/accountStore";
-import { updateUsername } from "$lib/logic/userAPI";
+import { updateUsername } from "$lib/logic/accountAPI";
 import { profileData } from "$lib/stores/context-specific/profileStore";
 
 export async function updateProfileUsername(newUsername) {

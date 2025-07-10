@@ -4,6 +4,7 @@ import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import inIframe from "$lib/utils/checkIframe";
 import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { signupMessageColor, signupMessageShown, signupMessageText, signupMessageTimeout } from "$lib/stores/context-specific/signupStore";
 
 const accountRoute = get(accountUrl) + "/accounts";
 const loginEndpoint = `${accountRoute}/login`;
@@ -16,7 +17,7 @@ const passwordChangeEndpoint = `${accountRoute}/reset-password`;
 const supporterLeaderboardEndpoint = `${accountRoute}/supporter-leaderboard`;
 
 // Login and registration -----------------------------------------------------------------------------------
-export async function loginUser(email, password, errorSource, errorElement) {
+export async function loginUser(email, password, errorSource) {
   try {
     const requestBody = {
       email: email,
@@ -57,15 +58,15 @@ export async function loginUser(email, password, errorSource, errorElement) {
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Login failed:', response.status);
-      displayError("Login failed: " + response.status, errorSource, errorElement, responseError);
+      displayError("Login failed: " + response.status, errorSource, responseError);
     }
   } catch (error) {
     console.error('Error occurred during login: ', error);
-    displayError("Error occured during login: " + error, errorSource, errorElement);
+    displayError("Error occured during login: " + error, errorSource);
   }
 }
 
-export async function registerUser(userName, email, password, token, errorSource, successFunction, errorElement) {
+export async function registerUser(userName, email, password, token, errorSource, successFunction) {
   try {
     // Define the request body
     const requestBody = {
@@ -87,21 +88,21 @@ export async function registerUser(userName, email, password, token, errorSource
     // Check if the response is successful
     if (response.ok) {
       const data = await response.json();
-      if (typeof successFunction == "function") successFunction("Registration successful! Please log in.");
+      if (typeof successFunction == "function") successFunction?.("Registration successful!");
 
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Registration failed: ', response.status);
-      displayError("Registration failed: " + response.status, errorSource, errorElement, responseError);
+      displayError("Registration failed: " + response.status, errorSource, responseError);
     }
   } catch (error) {
     console.error('Error occurred during registration: ', error);
-    displayError("Error occured during registration: " + error, errorSource, errorElement);
+    displayError("Error occured during registration: " + error, errorSource);
   }
 }
 
 // Delete user 
-export async function deleteUser(id, password, errorSource, errorElement) {
+export async function deleteUser(id, password, errorSource) {
   try {
     const requestBody = {
       id: id,
@@ -125,18 +126,18 @@ export async function deleteUser(id, password, errorSource, errorElement) {
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Account deletion failed:', response.status);
-      displayError("Account deletion failed: " + response.status, errorSource, errorElement, responseError);
+      displayError("Account deletion failed: " + response.status, errorSource, responseError);
       return false;
     }
   } catch (error) {
     console.error('Error occurred during account deletion: ', error);
-    displayError("Error occured during account deletion: " + error, errorElement, errorSource);
+    displayError("Error occured during account deletion: " + error, errorSource);
     return false;
   }
 }
 
 // Send reset email
-export async function sendPasswordResetEmail(email, errorSource, successFunction, errorElement) {
+export async function sendPasswordResetEmail(email, errorSource, successFunction) {
   try {
     const requestBody = {
       email: email
@@ -155,21 +156,21 @@ export async function sendPasswordResetEmail(email, errorSource, successFunction
     if (response.ok) {
       const data = await response.json();
       if (typeof successFunction != "function") return;
-      successFunction("Password reset email sent!");
+      successFunction?.("Password reset email sent!");
 
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Password reset request failed:', response.status);
-      displayError("Password reset request failed: " + response.status, errorSource, errorElement, responseError);
+      displayError("Password reset request failed: " + response.status, errorSource, responseError);
     }
   } catch (error) {
     console.error('Error occurred during password reset request: ', error);
-    displayError("Error occured during password reset request: " + error, errorSource, errorElement);
+    displayError("Error occured during password reset request: " + error, errorSource);
   }
 }
 
 // Change password with reset token
-export async function changePassword(token, newPassword, errorSource, successFunction, errorElement) {
+export async function changePassword(token, newPassword, errorSource, successFunction) {
   try {
     const requestBody = {
       token: token,
@@ -189,21 +190,21 @@ export async function changePassword(token, newPassword, errorSource, successFun
     if (response.ok) {
       const data = await response.json();
       if (typeof successFunction != "function") return;
-      successFunction("Password changed successfully!");
+      successFunction?.("Password changed successfully!");
 
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
       console.error('Password change failed:', response.status);
-      displayError("Password change failed: " + response.status, errorSource, errorElement, responseError);
+      displayError("Password change failed: " + response.status, errorSource, responseError);
     }
   } catch (error) {
     console.error('Password change failed: ', error);
-    displayError("Password change failed: " + error, errorSource, errorElement);
+    displayError("Password change failed: " + error, errorSource);
   }
 }
 
 // Get and Set game-related user info -----------------------------------------------------------------------------
-export async function getUser(token, id, errorSource, errorElement) {
+export async function getUser(token, id, errorSource) {
   try {
     const response = await fetch(`${userGetEndpoint}/${id}`, {
       method: 'GET',
@@ -230,15 +231,14 @@ export async function getUser(token, id, errorSource, errorElement) {
       } else {
         throw new Error(responseError || response.status);
       }
-
     }
   } catch (error) {
     console.error('Error fetching the user: ', error);
-    displayError("Error fetching the user: " + error, errorSource, errorElement);
+    displayError("Error fetching the user: " + error, errorSource);
   }
 }
 
-export async function updateUsername(token, id, requestedUsername, errorSource, errorElement) {
+export async function updateUsername(token, id, requestedUsername, errorSource) {
   try {
 
     const requestBody = {
@@ -262,55 +262,33 @@ export async function updateUsername(token, id, requestedUsername, errorSource, 
       localStorage.setItem("username", data['user']['userName']);
     } else {
       let responseError = await attemptExtractErrorFromResponse(response);
-      console.error('User update failed: ', response.status);
-      displayError("User update failed: " + response.status, errorSource, errorElement, responseError);
+      console.error('Username update failed: ', response.status);
+      displayError("Username update failed: " + response.status, errorSource, responseError);
     }
 
     return (response.ok); // return true / false
 
   } catch (error) {
-    console.error('Error occurred during user update: ', error);
-    displayError("Error occured during user update " + error, errorSource, errorElement);
+    console.error('Error occurred during username update: ', error);
+    displayError("Error occured during username update " + error, errorSource);
   }
 }
 
 // Error catching ----------------------------------------------------------------------------------------
-let timeout;
-
-export function displayError(error, source, errorMessageElement, errorMsg) {
-  if (!error) error = "";
-  if (!errorMsg) errorMsg = "";
-
+export function displayError(errorTitle = "", source, errorMsg = "") {
   if (source == "signup") {
-    if (!errorMessageElement) return console.error("No errorMessageElement in displayError function! Needed for Signup-Page errors.");
+    clearTimeout(get(signupMessageTimeout));
+    signupMessageShown.set(true);
+    signupMessageColor.set("#ffaeae");
+    signupMessageText.set(errorTitle + (errorMsg ? " – " + errorMsg : ""));
 
-    try {
-      errorMessageElement.innerHTML = error + " - " + errorMsg;
-
-      // Make error message visible in case it isn't
-      clearTimeout(timeout);
-      errorMessageElement.style.maxHeight = "100px";
-      errorMessageElement.style.marginTop = "20px";
-      errorMessageElement.style.marginBottom = "20px";
-      errorMessageElement.style.opacity = "1";
-      errorMessageElement.style.color = "#ffaeae";
-
-      if (!errorMsg) errorMessageElement.innerHTML = error;
-
-      timeout = setTimeout(() => {
-        errorMessageElement.style.maxHeight = "0";
-        errorMessageElement.style.opacity = "0";
-        errorMessageElement.style.margin = "0";
-      }, 7000);
-    } catch { }
+    signupMessageTimeout.set(setTimeout(() => {
+      signupMessageShown.set(false);
+    }, 7000));
 
   } else if (source == "index") {
-    if (!errorMsg) {
-      errorPopup("Backend error", "The server could not be reached. Please check your internet connection and the status page.", error, false);
-    } else {
-      errorPopup("Backend error", errorMsg, error, false);
-    }
-
+    if (!errorMsg) errorPopup("Backend error", "The server could not be reached. Please check your internet connection and the status page.", errorTitle, false);
+    else errorPopup("Backend error", errorMsg, errorTitle, false);
   }
 }
 

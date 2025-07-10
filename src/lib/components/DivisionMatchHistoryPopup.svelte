@@ -80,91 +80,79 @@
 	}
 </script>
 
-{#if $divisionMatchHistoryPopup}
-	<Popup z={960} slim={true}>
-		<div class="popup-title">
-			<h1>Duel history</h1>
+<Popup z={960} slim={true} bind:open={$divisionMatchHistoryPopup}>
+	<div class="popup-title">
+		<h1>Duel history</h1>
+	</div>
+	<div class="topPopupFlex">
+		<div class="filterBox">
+			<p>Filter: user-</p>
+			<input placeholder="all" class="filterInput" bind:value={filterId} onchange={fetchEntries} />
 		</div>
-		<div class="topPopupFlex">
-			<div class="filterBox">
-				<p>Filter: user-</p>
-				<input placeholder="all" class="filterInput" bind:value={filterId} onchange={fetchEntries} />
-			</div>
-		</div>
-		<div class="historyBox">
-			<div class="historyBoxScroll of-top of-bottom">
-				{#if matchResults && matchResults.duels && matchResults.duels.length > 0}
-					{#each matchResults.duels as entry}
-						<div
-							class="matchHistoryItem"
-							class:matchInvalid={entry.player1?.won == entry.player2?.won}
-							class:yourMatch={!filterId &&
-								(entry.player1?.id == localStorage.getItem("id") || entry.player2?.id == localStorage.getItem("id"))}
-						>
-							<div class="playerInfo">
-								<!-- svelte-ignore a11y_click_events_have_key_events -->
-								<span
-									class="playerName"
-									role="button"
-									tabindex="0"
-									onclick={() => loadProfileFromId(entry.player1.id, true)}
-								>
-									{entry.player1?.name}
-								</span>
-								<span class="playerStatus">
-									{entry.player1?.won ? "W" : entry.player2?.won ? "L" : "D"}
-									{entry.player1?.left ? " (left)" : ""}
-								</span>
-							</div>
-							<span class="vs">vs.</span>
-							<div class="playerInfo">
-								<!-- svelte-ignore a11y_click_events_have_key_events -->
-								<span
-									class="playerName"
-									role="button"
-									tabindex="0"
-									onclick={() => loadProfileFromId(entry.player2?.id, true)}
-								>
-									{entry.player2?.name}
-								</span>
-								<span class="playerStatus">
-									{entry.player2?.won ? "W" : entry.player1?.won ? "L" : "D"}
-									{entry.player2?.left ? " (left)" : ""}
-								</span>
-							</div>
+	</div>
+	<div class="historyBox">
+		<div class="historyBoxScroll of-top of-bottom">
+			{#if matchResults && matchResults.duels && matchResults.duels.length > 0}
+				{#each matchResults.duels as entry}
+					<div
+						class="matchHistoryItem"
+						class:matchInvalid={entry.player1?.won == entry.player2?.won}
+						class:yourMatch={!filterId &&
+							(entry.player1?.id == localStorage.getItem("id") || entry.player2?.id == localStorage.getItem("id"))}
+					>
+						<div class="playerInfo">
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
+							<span
+								class="playerName"
+								role="button"
+								tabindex="0"
+								onclick={() => loadProfileFromId(entry.player1.id, true)}
+							>
+								{entry.player1?.name}
+							</span>
+							<span class="playerStatus">
+								{entry.player1?.won ? "W" : entry.player2?.won ? "L" : "D"}
+								{entry.player1?.left ? " (left)" : ""}
+							</span>
 						</div>
-					{/each}
-				{:else}
-					<p class="playerSearchError">No matches in the history.</p>
-				{/if}
-			</div>
+						<span class="vs">vs.</span>
+						<div class="playerInfo">
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
+							<span
+								class="playerName"
+								role="button"
+								tabindex="0"
+								onclick={() => loadProfileFromId(entry.player2?.id, true)}
+							>
+								{entry.player2?.name}
+							</span>
+							<span class="playerStatus">
+								{entry.player2?.won ? "W" : entry.player1?.won ? "L" : "D"}
+								{entry.player2?.left ? " (left)" : ""}
+							</span>
+						</div>
+					</div>
+				{/each}
+			{:else}
+				<p class="playerSearchError">No matches in the history.</p>
+			{/if}
 		</div>
+	</div>
 
-		<div class="paginationControls">
-			<button class="standardButton white" onclick={prevPage} class:disabledButton={currentPage === 1}>
-				<ArrowLeft size={20} strokeWidth={2.5} />
-			</button>
-			<span class="pageCounter">{currentPage}</span>
-			<button
-				class="standardButton white"
-				onclick={nextPage}
-				class:disabledButton={!(matchResults && matchResults.duels && matchResults.duels.length === limit)}
-			>
-				<ArrowRight size={20} strokeWidth={2.5} />
-			</button>
-		</div>
-
-		<button
-			class="standardButton white closeButton"
-			onclick={() => {
-				playSound("basic_button");
-				divisionMatchHistoryPopup.set(false);
-			}}
-		>
-			Close
+	<div class="paginationControls">
+		<button class="standardButton white" onclick={prevPage} class:disabledButton={currentPage === 1}>
+			<ArrowLeft size={20} strokeWidth={2.5} />
 		</button>
-	</Popup>
-{/if}
+		<span class="pageCounter">{currentPage}</span>
+		<button
+			class="standardButton white"
+			onclick={nextPage}
+			class:disabledButton={!(matchResults && matchResults.duels && matchResults.duels.length === limit)}
+		>
+			<ArrowRight size={20} strokeWidth={2.5} />
+		</button>
+	</div>
+</Popup>
 
 <style>
 	.playerSearchError {
@@ -223,7 +211,7 @@
 		flex-direction: column;
 		overflow-x: hidden;
 		overflow-y: auto;
-		height: calc(60dvh - 250px);
+		height: min(500px, calc(100dvh - 350px));
 		width: 100%;
 	}
 

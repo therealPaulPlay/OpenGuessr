@@ -1,4 +1,4 @@
-import { deleteUser } from "$lib/logic/userAPI";
+import { deleteUser } from "$lib/logic/accountAPI";
 import { profilePopup } from "$lib/stores/uiStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { checkAuthenticationStatus, resetLocalSave } from "$lib/logic/accountLogic";
@@ -12,7 +12,7 @@ export async function submitAccountDeletion(password) {
 
         setTimeout(() => {
             profilePopup.set(false); // Close profile popup
-            errorPopup("Account deleted successfully", "You have deleted your OpenGuessr account.", "Successfully deleted.", false, true);
+            errorPopup("Account deleted", "You have deleted your OpenGuessr account.", "Successfully deleted.", false, true);
         }, 250);
     }
 }

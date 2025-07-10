@@ -1,33 +1,24 @@
 <script>
-	import { displayError, loginUser, registerUser, sendPasswordResetEmail, changePassword } from "$lib/logic/userAPI";
+	import { displayError, loginUser, registerUser, sendPasswordResetEmail, changePassword } from "$lib/logic/accountAPI";
 	import { Eye, EyeClosed } from "lucide-svelte";
 	import { renderCaptcha } from "$lib/utils/renderCaptcha";
 	import inIframe from "$lib/utils/checkIframe";
 	import { onMount } from "svelte";
-	import { fade, scale } from "svelte/transition";
+	import { fade, scale, slide } from "svelte/transition";
+	import { signupMessageColor, signupMessageShown, signupMessageText, signupMessageTimeout } from "$lib/stores/context-specific/signupStore";
 
 	// Export error / success functions --------------------------------------------------------------------------------------------------------------
-	let timeout;
-	let errorMessage = $state();
-
 	function displaySuccess(text) {
 		try {
-			clearTimeout(timeout);
-			errorMessage.innerHTML = text;
-			errorMessage.style.maxHeight = "100px";
-			errorMessage.style.marginTop = "20px";
-			errorMessage.style.marginBottom = "20px";
-			errorMessage.style.opacity = "1";
-			errorMessage.style.color = "#64c681";
-
-			// Change to log in
-			formType = "login";
+			clearTimeout($signupMessageTimeout);
+			signupMessageText.set(text);
+			signupMessageColor.set("#64c681");
+			signupMessageShown.set(true);
+			formType = "login"; // Change to log in
 
 			// Hide error again
-			timeout = setTimeout(() => {
-				errorMessage.style.maxHeight = "0";
-				errorMessage.style.opacity = "0";
-				errorMessage.style.margin = "0";
+			$signupMessageTimeout = setTimeout(() => {
+				signupMessageShown.set(false);
 			}, 4000);
 		} catch (error) {
 			console.error("Error occured displaying success:", error);
@@ -54,24 +45,8 @@
 	let resetPasswordValue = $state("");
 
 	function changePasswordIfValuesProvided() {
-		if (resetPasswordValue) {
-			changePassword(resetBearerToken, resetPasswordValue, "signup", displaySuccess, errorMessage);
-		} else {
-			displayError("Please input a new password.", "signup", errorMessage);
-		}
-	}
-
-	// Back to OpenGuessr Button ---------------------------------------------------------------------------------------------------------------------------------
-	function backToPrevious() {
-		if (inIframe()) {
-			window.parent.postMessage("close", "*");
-		} else {
-			if (document.referrer) {
-				window.history.back();
-			} else {
-				window.location.href = "/"; // Fallback if no referrer
-			}
-		}
+		if (resetPasswordValue) changePassword(resetBearerToken, resetPasswordValue, "signup", displaySuccess);
+		else displayError("Please input a new password.", "signup");
 	}
 
 	// Signup UI Logic and Captcha ------------------------------------------------------------------------------------------------------------------------------
@@ -89,18 +64,14 @@
 			if (signupUsername && signupPassword && validateEmail(signupEmail)) {
 				return true;
 			} else {
-				displayError("Please check your input.", "signup", errorMessage);
+				displayError("Please check your input.", "signup");
 				return false;
 			}
 		} else {
 			if (validateEmail(loginEmail) && loginPassword) {
 				return true;
 			} else {
-				displayError(
-					"Please check your input. The first field should contain a valid email address!",
-					"signup",
-					errorMessage,
-				);
+				displayError("Please check your input. The first field should contain a valid email address!", "signup");
 				return false;
 			}
 		}
@@ -119,16 +90,14 @@
 
 	// This is the function that runs when the user click on signup or presses enter.
 	function signUpAction() {
-		if (checkEmptyFields(true)) {
-			captchaVisible = true;
-		}
+		if (checkEmptyFields(true)) captchaVisible = true;
 	}
 
 	// This is the function that runs when the user click on login or presses enter.
 	async function logInAction() {
 		if (checkEmptyFields(false)) {
 			loginButtonSignupPage.textContent = "Wait...";
-			await loginUser(loginEmail, loginPassword, "signup", errorMessage);
+			await loginUser(loginEmail, loginPassword, "signup");
 			loginButtonSignupPage.textContent = "Log in";
 		}
 	}
@@ -150,7 +119,7 @@
 
 	if (typeof window !== "undefined") {
 		window.onSignupTurnstileCompleted = function (token) {
-			registerUser(signupUsername, signupEmail, signupPassword, token, "signup", displaySuccess, errorMessage);
+			registerUser(signupUsername, signupEmail, signupPassword, token, "signup", displaySuccess);
 			loginEmail = signupEmail;
 			captchaVisible = false;
 		};
@@ -195,7 +164,7 @@
 						>
 					</div>
 					<p class="switchFormBox">
-						Recovered password?
+						Remembered?
 						<button
 							id="loginSwitchChange"
 							class="standardButton white"
@@ -213,11 +182,11 @@
 						<button
 							id="reset"
 							class="standardButton"
-							onclick={() => sendPasswordResetEmail(resetEmail, "signup", displaySuccess, errorMessage)}>Reset</button
+							onclick={() => sendPasswordResetEmail(resetEmail, "signup", displaySuccess)}>Reset</button
 						>
 					</div>
 					<p class="switchFormBox">
-						Recovered password?
+						Remembered?
 						<button
 							id="loginSwitchReset"
 							class="standardButton white"
@@ -301,10 +270,11 @@
 					</p>
 				</div>
 			{/if}
-			<p id="errorMessage" bind:this={errorMessage}>This is an error message box.</p>
-		</div>
-		<div class="container containerBottom neumorphic-menu">
-			<button onclick={backToPrevious} class="standardButton backButton">⭠ Go back</button>
+			{#if $signupMessageShown}
+				<p class="errorMessage" transition:slide={{ axis: "y" }} style:color={$signupMessageColor}>
+					{$signupMessageText}
+				</p>
+			{/if}
 		</div>
 	</div>
 	<div class="orb"></div>
@@ -325,7 +295,6 @@
 		margin: 0;
 		padding: 0;
 		font-family: Barlow, Futura, Arial, sans-serif;
-		font-size: 20px;
 		font-weight: 400;
 		background-color: #07071e;
 		display: flex;
@@ -376,7 +345,7 @@
 		background-color: rgba(255, 255, 255, 0.3);
 		border-radius: 15px;
 		padding: 20px;
-		width: 300px;
+		width: 280px;
 		text-align: center;
 		backdrop-filter: blur(100px);
 	}
@@ -410,17 +379,11 @@
 		left: 10%;
 	}
 
-	#errorMessage {
-		color: red;
+	.errorMessage {
 		display: inline;
-		transition:
-			max-height 250ms ease,
-			opacity 250ms ease,
-			margin 250ms ease;
 		overflow: hidden;
-		max-height: 0px;
-		margin: 0;
-		opacity: 0;
+		margin-top: var(--layout-margin);
+		margin-bottom: var(--layout-margin);
 	}
 
 	@keyframes floatOrb {
@@ -444,12 +407,10 @@
 		opacity: 50%;
 		margin-bottom: 0;
 		margin-top: var(--layout-margin);
-		font-size: 20px;
 	}
 
 	input {
 		width: calc(80% - 20px);
-		font-size: 18px;
 		padding: 15px;
 		border-radius: 10px;
 	}
@@ -475,7 +436,7 @@
 
 	.toggle-password {
 		position: absolute;
-		right: -20px;
+		right: -16px;
 		top: 50%;
 		transform: translateY(-50%);
 		cursor: pointer;
@@ -492,26 +453,9 @@
 		padding-bottom: 10px;
 	}
 
-	.backButton {
-		background-color: rgba(255, 255, 255, 0.1);
-		color: white;
-		border-radius: 10px;
-		width: 100%;
-		min-height: 50px;
-		border: none;
-		box-shadow: var(--button-shadow);
-	}
-
-	.containerBottom {
-		margin-top: 10px;
-		padding: 5px;
-		min-width: 330px;
-	}
-
 	#passwordResetOption {
 		color: rgba(255, 255, 255, 0.5);
 		transition: color 250ms ease;
-		font-size: 20px;
 		cursor: pointer;
 		border-radius: 5px;
 		width: 100%;

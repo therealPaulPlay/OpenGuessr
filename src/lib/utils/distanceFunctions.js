@@ -3,6 +3,7 @@ import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
+import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
 
 let veryCloseDistances;
 let closeDistances;
@@ -25,13 +26,12 @@ export function calculateDistances(mapsLat = 0, mapsLong = 0) {
         Math.sin(dLon / 2) * Math.sin(dLon / 2);
 
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
     const distance = R * c; // Distance in kilometers
 
     return distance;
 }
 
-export function compareDistances(distance) {
+export function motivationalResultMessage(distance) {
     let resultAsString;
 
     veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Do you have an A in geography?", "Wow.", "Time for a screenshot.", "Seriously impressive."];
@@ -39,26 +39,13 @@ export function compareDistances(distance) {
     farDistances = ["Distance is relative. Here, relatively big.", "You'll get it next time!", "At least it was on the correct planet.", "It could have been worse."];
 
     // Motivational quotes
-    if (distance < 5) {
-        extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
-    } else if (distance < 1000) {
-        extraMsg = closeDistances[Math.floor(Math.random() * closeDistances.length)];
-    } else {
-        extraMsg = farDistances[Math.floor(Math.random() * farDistances.length)];
-    }
+    if (distance < 5) extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
+    else if (distance < 1000) extraMsg = closeDistances[Math.floor(Math.random() * closeDistances.length)];
+    else extraMsg = farDistances[Math.floor(Math.random() * farDistances.length)];
 
-    //Ddistance number formatting (km or m)
-    resultAsString = formatDistance(distance);
-
-    if (countryGuessr && !multiplayer) {
-        if (checkIfGuessWasCorrect()) {
-            extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
-        } else {
-            extraMsg = farDistances[Math.floor(Math.random() * farDistances.length)];
-        }
-    }
-
-    return { resultAsString: resultAsString, extraMsg: extraMsg };
+    // In Country guessr, tell the country
+    if (get(countryGuessr)) extraMsg = "The country is " + get(selectedCountryGuesserCountry) + ".";
+    return extraMsg;
 }
 
 // This function neatly formats a distance in meters into a readable string (e.g. 500 km or 15 miles)
@@ -67,35 +54,24 @@ export function formatDistance(distance) {
     let resultString;
 
     const distanceUnit = localStorage.getItem("distanceUnit") || "kilometers";
-
     distance = Number(distance); // For error prevention
 
     if (distance < 5) {
         finalResult = Math.round(distance * 1000);
-        if (distanceUnit == "miles") {
-            finalResult = Math.round(finalResult * 1.09361);
-        }
+        if (distanceUnit == "miles") finalResult = Math.round(finalResult * 1.09361);
         finalResult = finalResult.toLocaleString();
 
-        if (distanceUnit == "miles") {
-            resultString = finalResult + " yards";
-        } else {
-            resultString = finalResult + " m";
-        }
-    }
-    else {
+        if (distanceUnit == "miles") resultString = finalResult + " yards";
+        else resultString = finalResult + " m";
+
+    } else {
         finalResult = Math.round(distance * 10) / 10;
-        if (distanceUnit == "miles") {
-            finalResult = Math.round(finalResult * 0.621371 * 10) / 10;
-        }
+        if (distanceUnit == "miles") finalResult = Math.round(finalResult * 0.621371 * 10) / 10;
 
         finalResult = finalResult.toLocaleString();
 
-        if (distanceUnit == "miles") {
-            resultString = finalResult + " miles";
-        } else {
-            resultString = finalResult + " km";
-        }
+        if (distanceUnit == "miles") resultString = finalResult + " miles";
+        else resultString = finalResult + " km";
     }
 
     return resultString;

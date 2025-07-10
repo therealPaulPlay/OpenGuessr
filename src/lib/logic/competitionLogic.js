@@ -1,6 +1,6 @@
 import { startTimer } from "$lib/utils/timer";
 import { disableResultScreen } from "$lib/utils/setResultScreen";
-import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
+import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 import { playSound } from "$lib/utils/soundManager";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { setRestriction } from "$lib/utils/setRestriction";
@@ -11,12 +11,13 @@ import { competitionData, competitionRound } from "$lib/stores/context-specific/
 import { goto } from "$app/navigation";
 import {
     mapModeIndicatorVisible,
-    modeText,
+    mapModeIndicatorText,
     leaveFunction
 } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { get } from "svelte/store";
 import { username } from "$lib/stores/accountStore";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
 let competitionCombinedScore = 0;
@@ -43,10 +44,10 @@ export function loadCompetition() {
 }
 
 // Set competition UI ----------------------------------------------------------------------------------------------------
-export function setCompetitionUI(enable) {
+function setCompetitionUI(enable) {
     if (enable) {
         mapModeIndicatorVisible.set(true);
-        modeText.set("Competition");
+        mapModeIndicatorText.set("Competition");
 
     } else {
         mapModeIndicatorVisible.set(false);
@@ -58,18 +59,14 @@ export function setCompetitionUI(enable) {
 export function checkStartCompetitionRound() {
     if (get(competition)) {
         competitionRound.set(get(competitionRound) + 1);
-        modeText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ")");
+        mapModeIndicatorText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ")");
 
         if (get(competitionData)?.restriction && get(competitionData)?.restriction != "standard") {
-            modeText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ") (" + get(competitionData)?.restriction + ")");
+            mapModeIndicatorText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ") (" + get(competitionData)?.restriction + ")");
         }
 
         competitionTimer = startTimer(get(competitionData)?.roundLength, confirmButtonClicks);
     }
-}
-
-export function stopCompetitionTimer() {
-    try { competitionTimer.stopTimer(); } catch { }
 }
 
 // Score logic ------------------------------------------------------------------------------------------------------
@@ -86,7 +83,7 @@ export async function leaveCompetition(showResult) {
         setRestriction("standard");
 
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
-        await submitCompetitionResult(get(competitionData).id, competitionCombinedScore, get(supporterLevel), localStorage.getItem("bearer"));
+        await submitCompetitionResult(get(competitionData).id, competitionCombinedScore);
 
         if (showResult) {
             goto("/competitions?leaderboard-submit=" + get(competitionData).id);
@@ -94,65 +91,43 @@ export async function leaveCompetition(showResult) {
     }
 }
 
-async function submitCompetitionResult(id, score, supporterLevel, token) {
+async function submitCompetitionResult(compId, score) {
     try {
         const requestBody = {
-            username: get(username),
             id: localStorage.getItem("id"),
-            score: score,
-            supporter_level: supporterLevel || 0
+            score: score
         };
 
-        const response = await fetch(get(accountUrl) + "/competitions/submit/" + id, {
+        const response = await fetch(get(accountUrl) + "/competitions/submit/" + compId, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
+                'Authorization': `Bearer ${localStorage.getItem("bearer")}`
             },
             body: JSON.stringify(requestBody)
         });
 
         if (!response.ok) {
             let responseData = null;
-
-            try {
-                responseData = await response.json();
-                let errorMessages = [];
-
-                if (responseData.error) errorMessages.push(responseData.error);
-                if (responseData.message) errorMessages.push(responseData.message);
-
-                if (responseData.errors && Array.isArray(responseData.errors)) {
-                    responseData.errors.forEach(err => {
-                        if (err.msg) {
-                            errorMessages.push(err.msg);
-                        } else {
-                            errorMessages.push(JSON.stringify(err));
-                        }
-                    });
-                }
-
-                console.error("Error during competition result submission: " + errorMessages.join(' '));
-                errorPopup("Competition submission failed", "The result could not be submitted.", errorMessages.join(' '));
-            } catch {
-                console.error("Error occured when submitting result on server and response did not include a json response.");
-                errorPopup("Competition submission failed", "Competition server did not include error messages in the response.", response.status);
-            }
+            responseData = await response.json();
+            if (responseData.error) throw new Error(responseData.error);
+            else throw new Error("No error provided in response.");
         }
     } catch (error) {
-        console.error("Error occurred during competition result submission: " + error);
-        errorPopup("Competition submission failed (Network)", "The comptition server could not be reached. Please check your internet connection and submit a bug report in the Discord if it persists.", error);
+        console.error("Error submitting competition result: " + error);
+        errorPopup("Competition submission failed", "Failed to submit the competition result.", error.message);
     }
 }
 
 // Check round status and end if needed ----------------------------------------------------------------------------------
 export function checkCompetitionRoundStatus() {
-    stopCompetitionTimer(); // Stop the timer
-
     if (get(competitionRound) == get(competitionData)?.roundAmount) {
         leaveCompetition(true);
         return false;
-    } else {
-        return true;
-    }
+    } else return true;
 }
+
+// Stop timer on result screen ----------------------------------------------------------------------------------------
+resultScreenEnabled.subscribe((value) => {
+    if (value) competitionTimer?.stopTimer();
+});

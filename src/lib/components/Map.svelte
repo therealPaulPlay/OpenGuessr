@@ -1,11 +1,13 @@
 <script>
-	import { mapExpanded, mapVisible, mapHovered, map } from "$lib/stores/context-specific/mapStore";
+	import { mapExpanded, mapHovered, map, mapInteractive } from "$lib/stores/context-specific/mapStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { initializeMapIfNotAlready } from "$lib/logic/miniMap";
 	import { get } from "svelte/store";
+	import { onMount } from "svelte";
+	import { countryGuessr } from "$lib/stores/modeStore";
 
 	let mapResizeTimeout;
 
@@ -40,14 +42,14 @@
 	onmouseenter={handleMapHover}
 	onmouseleave={handleMapUnhover}
 	onkeyup={spaceBarGuess}
-	style:visibility={$mapVisible ? "" : "hidden"}
 	onmouseover={initializeMapIfNotAlready}
 	ontouchstart={initializeMapIfNotAlready}
 	style:max-height={$mapExpanded ? "100%" : "0%"}
 	class:mapFullOpacityResult={Boolean($resultScreenEnabled)}
+	class:hidden={$countryGuessr && !$resultScreenEnabled}
 >
-	{#if !$map && $mapVisible}
-		<div id="mapPlaceholderBeforeLoad"></div>
+	{#if !$map}
+		<div class="mapPlaceholderBeforeLoad"></div>!
 	{/if}
 </div>
 
@@ -68,9 +70,6 @@
 			max-height 250ms ease,
 			margin 250ms ease;
 		overflow: hidden;
-	}
-
-	#map:focus {
 		outline: none;
 	}
 
@@ -82,6 +81,11 @@
 		font-family: Roboto;
 	}
 
+	.hidden {
+		opacity: 0 !important;
+		pointer-events: none !important;
+	}
+
 	.mapFullOpacityResult {
 		opacity: 1 !important;
 		border-radius: 0 !important;
@@ -90,12 +94,12 @@
 		visibility: visible !important;
 		max-height: calc(100% + 60px) !important;
 		height: calc(100% + 60px) !important;
+		pointer-events: auto !important;
 	}
 
-	#mapPlaceholderBeforeLoad {
+	.mapPlaceholderBeforeLoad {
 		width: 100%;
 		height: 100%;
-		left: 10px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -103,7 +107,6 @@
 		background-size: cover;
 		background-position: center;
 		transition: opacity 500ms ease;
-		pointer-events: none;
 	}
 
 	:global(.mk-map-view) {
@@ -202,8 +205,8 @@
 		line-height: 30px !important;
 	}
 
+	/* On mobile, the map doesn't fade out if it's not being hovered over */
 	@media (orientation: portrait) and (max-width: 1200px) {
-		/* On mobile, the map doesn't fade out if it's not being hovered over */
 		#map {
 			opacity: 100%;
 		}

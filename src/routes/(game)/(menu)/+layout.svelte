@@ -77,7 +77,7 @@
 		text-decoration: none;
 		line-height: 35px;
 		pointer-events: auto;
-		backdrop-filter: blur(15px);
+		backdrop-filter: blur(10px);
 	}
 
 	.homeButtonIcon {

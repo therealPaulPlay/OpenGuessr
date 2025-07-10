@@ -1,6 +1,5 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
-	import { checkIfFriendsWithId } from "$lib/utils/checkIfFriendsWithId";
 	import SupporterPitch from "$lib/components/SupporterPitch.svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { isAuthenticated } from "$lib/stores/accountStore";
@@ -17,7 +16,7 @@
 	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
-	import { Flame, Plus, PlusCircle, Skull, SquarePlus } from "lucide-svelte";
+	import { Check, Flame, Plus, PlusCircle, Skull, SquarePlus, UserRoundCheck } from "lucide-svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
@@ -49,21 +48,12 @@
 	import { page } from "$app/stores";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { reportUserId } from "$lib/stores/context-specific/reportPopupStore";
-	import { scale } from "svelte/transition";
 	import Tabs from "./ui/Tabs.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { errorPopup } from "$lib/utils/errorHandling";
 
 	let textarea = $state();
-	let isFriendsWithId = $state(true);
 	let selectedTabIndex = $state(0);
-
-	profilePopup.subscribe(async (value) => {
-		if (value == true) {
-			isFriendsWithId = true;
-			isFriendsWithId = await checkIfFriendsWithId($profileId);
-		}
-	});
 
 	let filteredAbout = $state("");
 
@@ -159,237 +149,237 @@
 	];
 </script>
 
-{#if $profilePopup}
-	<Popup z={970} slim={true}>
-		<div class="popup-title">
-			<div class="profileNameArea">
-				<div id="profileViewName">
-					<h1>{$profileData.username}</h1>
-					<!-- Profile Flag -->
-					{#if $profileData?.flag && FlagIcons[$profileData.flag]}
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<span
-							class="flag-container"
-							tabindex="0"
-							role="button"
-							onclick={() => flagPickerPopup.set(true)}
-							class:profileFlagNotInteractive={$profileId != localStorage.getItem("id")}
-						>
-							<ProfileFlag />
-						</span>
-					{:else if $profileId == localStorage.getItem("id")}
-						<button class="flag-container addFlagButton" onclick={() => flagPickerPopup.set(true)}>
-							<SquarePlus size={20} strokeWidth={2.25} />
-						</button>
-					{/if}
-				</div>
-				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-				<div id="profileNameBox">
-					{#if $profileId == localStorage.getItem("id") && !$profileData?.badge}
-						<button
-							id="badgeButton"
-							class="standardButton"
-							onclick={() => {
-								playSound("basic_button");
-								badgePopup.set(true);
-							}}>+ Badge</button
-						>
-					{/if}
-					{#if $profileData?.badge}
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<div
-							id="badgeArea"
-							role="button"
-							tabindex="0"
-							style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
-							onclick={() => {
-								playSound("basic_button");
-								badgePopup.set(true);
-							}}
-						>
-							<Badge id={$profileData?.badge} interactive={false} display="true" />
-						</div>
-					{/if}
-					<!-- svelte-ignore a11y_click_events_have_key_events -->
-					<div
-						class="profilePinArea standardButton white"
-						class:pinDisplayOnly={$profileId != localStorage.getItem("id")}
-						role="button"
-						tabindex="0"
-						style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
-						onclick={() => {
-							playSound("basic_button");
-							pinPopup.set(true);
-						}}
-					>
-						<img id="selectedProfilePin" alt="pin" src={`/img/pins/player_pin${Number($profileData?.pin) || 0}.png`} />
-						{#if $profileId == localStorage.getItem("id")}
-							<Pencil style="opacity: 0.75; margin-right: 5px; margin-left: 2px;" size={17} strokeWidth={2.75} />
-						{/if}
-					</div>
-					{#if $profileSupporterLevel >= 1}
-						<div id="supporterTag">
-							<p id="supporterTagText">Tier {$profileSupporterLevel}</p>
-							<img id="supporterIcon" alt="supporter tag" src="/img/supporter_icon.png" />
-						</div>
-					{/if}
-					{#if $profileId != localStorage.getItem("id")}
-						<button
-							class="standardButton white"
-							id="profileReportButton"
-							onclick={(e) => {
-								playSound("basic_button");
-								reportUserId.set($profileId);
-								reportPopup.set(true);
-							}}
-						>
-							Report <TriangleAlert size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 2px;" />
-						</button>
-					{/if}
-					{#if $profileId != localStorage.getItem("id") && $isAuthenticated && !isFriendsWithId}
-						<button
-							class="standardButton white"
-							transition:scale
-							id="profileAddFriend"
-							onclick={(e) => {
-								playSound("basic_button");
-								sendFriendRequest($profileId, e.target); // This also shows a notification
-							}}
-						>
-							<img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
-						</button>
-					{/if}
-				</div>
-			</div>
+<Popup
+	z={970}
+	slim={true}
+	bind:open={$profilePopup}
+	onclose={() => {
+		if ($profileId == localStorage.getItem("id")) saveProfileAboutIfChanges(textarea?.value?.trim());
+	}}
+>
+	<div class="profileNameArea">
+		<div class="profileViewName">
+			<h1>{$profileData.username}</h1>
+			<!-- Profile Flag -->
+			{#if $profileData?.flag && FlagIcons[$profileData.flag]}
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<span
+					class="flag-container"
+					tabindex="0"
+					role="button"
+					onclick={() => flagPickerPopup.set(true)}
+					class:profileFlagNotInteractive={$profileId != localStorage.getItem("id")}
+				>
+					<ProfileFlag />
+				</span>
+			{:else if $profileId == localStorage.getItem("id")}
+				<button class="flag-container addFlagButton" onclick={() => flagPickerPopup.set(true)}>
+					<SquarePlus size={20} strokeWidth={2.25} />
+				</button>
+			{/if}
 		</div>
-		<div id="profileScrollSection" class="of-top of-bottom">
-			{#if $profileId == localStorage.getItem("id")}
-				<SupporterPitch />
+	</div>
+	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+	<div class="profileNameBox">
+		<div class="profileNameBoxContent of-left of-right">
+			{#if $profileId == localStorage.getItem("id") && !$profileData?.badge}
+				<button
+					id="badgeButton"
+					class="standardButton"
+					onclick={() => {
+						playSound("basic_button");
+						badgePopup.set(true);
+					}}>+ Badge</button
+				>
 			{/if}
-
-			{#if $profileId == localStorage.getItem("id") || $profileData?.about}
-				<div class="aboutSection">
-					<textarea
-						class="profileAbout of-top of-bottom"
-						readonly={$profileId != localStorage.getItem("id")}
-						maxlength="150"
-						spellcheck="false"
-						value={filteredAbout}
-						bind:this={textarea}
-						placeholder="Share a few facts about yourself with others..."
-						oninput={() => {
-							if (!$unsavedAboutChanges) unsavedAboutChanges.set(true);
-						}}
-						onkeypress={(e) => {
-							if (e.key == "Enter") e.preventDefault();
-						}}
-					></textarea>
+			{#if $profileData?.badge}
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<div
+					id="badgeArea"
+					role="button"
+					tabindex="0"
+					style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
+					onclick={() => {
+						playSound("basic_button");
+						badgePopup.set(true);
+					}}
+				>
+					<Badge id={$profileData?.badge} interactive={false} display="true" />
 				</div>
 			{/if}
-
-			<!-- Stats Carousel Section -->
-			<TitleSeparator text="Statistics" />
-			<div class="stat-switch">
-				<Tabs
-					tabs={statCategories.map((cat) => cat.name)}
-					selected={statCategories[selectedTabIndex].name}
-					bind:selectedIndex={selectedTabIndex}
-					class="stat-tabs-grow"
-					onchange={() => playSound("basic_button")}
-				/>
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<div
+				class="profilePinArea standardButton white"
+				class:pinDisplayOnly={$profileId != localStorage.getItem("id")}
+				role="button"
+				tabindex="0"
+				style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
+				onclick={() => {
+					playSound("basic_button");
+					pinPopup.set(true);
+				}}
+			>
+				<img id="selectedProfilePin" alt="pin" src={`/img/pins/player_pin${Number($profileData?.pin) || 0}.png`} />
+				{#if $profileId == localStorage.getItem("id")}
+					<Pencil style="opacity: 0.75; margin-right: 5px; margin-left: 2px;" size={17} strokeWidth={2.75} />
+				{/if}
 			</div>
-			<div class="stats-container">
-				<div class="stats-carousel" style="transform: translateX(calc(-{selectedTabIndex} * 100%));">
-					{#each statCategories as category, catIndex}
-						<div class="carousel-slide" class:active={selectedTabIndex === catIndex}>
-							{#each category.cards as card}
-								<div class="stat-card">
-									<div class="card-icon">
-										<card.icon size={24} strokeWidth={2} />
-									</div>
-									<div class="card-content">
-										<div>{card.title}</div>
-										<p>{card.getValue()}</p>
-									</div>
-								</div>
-							{/each}
+			{#if $profileSupporterLevel >= 1}
+				<div id="supporterTag">
+					<p id="supporterTagText">Tier {$profileSupporterLevel}</p>
+					<img id="supporterIcon" alt="supporter tag" src="/img/supporter_icon.png" />
+				</div>
+			{/if}
+			{#if $profileId != localStorage.getItem("id")}
+				<button
+					class="standardButton white"
+					onclick={(e) => {
+						playSound("basic_button");
+						reportUserId.set($profileId);
+						reportPopup.set(true);
+					}}
+				>
+					Report <TriangleAlert size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: 2px;" />
+				</button>
+			{/if}
+			{#if $profileId != localStorage.getItem("id") && $isAuthenticated}
+				<button
+					class="standardButton white"
+					class:disabled={$profileData?.areFriends}
+					onclick={(e) => {
+						playSound("basic_button");
+						sendFriendRequest($profileId, e.target); // This also shows a notification
+					}}
+				>
+					Friend
+					{#if !$profileData?.areFriends}
+						<img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
+					{:else}
+						<UserRoundCheck style="margin-bottom: -1px; margin-left: 2px;" size={20} strokeWidth={2.25} />
+					{/if}
+				</button>
+			{/if}
+		</div>
+	</div>
+	{#if $profileId == localStorage.getItem("id")}
+		<SupporterPitch />
+	{/if}
+
+	{#if $profileId == localStorage.getItem("id") || $profileData?.about}
+		<div class="aboutSection">
+			<textarea
+				class="profileAbout of-top of-bottom"
+				readonly={$profileId != localStorage.getItem("id")}
+				maxlength="150"
+				spellcheck="false"
+				value={filteredAbout}
+				bind:this={textarea}
+				placeholder={$profileId == localStorage.getItem("id")
+					? "Share a few facts about yourself with others..."
+					: "Loading..."}
+				oninput={() => {
+					if (!$unsavedAboutChanges) unsavedAboutChanges.set(true);
+				}}
+				onkeypress={(e) => {
+					if (e.key == "Enter") e.preventDefault();
+				}}
+			></textarea>
+		</div>
+	{/if}
+
+	<!-- Stats Carousel Section -->
+	<TitleSeparator text="Statistics" />
+	<div class="stat-switch">
+		<Tabs
+			tabs={statCategories.map((cat) => cat.name)}
+			selected={statCategories[selectedTabIndex].name}
+			bind:selectedIndex={selectedTabIndex}
+			class="stat-tabs-grow"
+			onchange={() => playSound("basic_button")}
+		/>
+	</div>
+	<div class="stats-container">
+		<div class="stats-carousel" style="transform: translateX(calc(-{selectedTabIndex} * 100%));">
+			{#each statCategories as category, catIndex}
+				<div class="carousel-slide" class:active={selectedTabIndex === catIndex}>
+					{#each category.cards as card}
+						<div class="stat-card">
+							<div class="card-icon">
+								<card.icon size={24} strokeWidth={2} />
+							</div>
+							<div class="card-content">
+								<div>{card.title}</div>
+								<p>{card.getValue()}</p>
+							</div>
 						</div>
 					{/each}
 				</div>
-			</div>
+			{/each}
+		</div>
+	</div>
 
-			{#if $profileId == localStorage.getItem("id")}
-				<TitleSeparator text="Management" />
-				<div class="managementBox">
-					<div class="editNameSection">
-						<button
-							class="standardButton white"
-							id="editUsername"
-							onclick={() => {
-								playSound("basic_button");
-								showConfirmPopup(
-									"Update username",
-									"Input your new name into the box and click confirm.",
-									() => {
-										if ($confirmUsernameValue) updateProfileUsername($confirmUsernameValue);
-										else errorPopup("New username is invalid", "Please specify a valid new username.");
-									},
-									false,
-									true,
-								);
-							}}
-						>
-							<Edit size={20} style="margin-bottom: -2px;" />
-							Name
-						</button>
-					</div>
+	{#if $profileId == localStorage.getItem("id")}
+		<TitleSeparator text="Management" />
+		<div class="managementBox">
+			<div class="managementBoxContent of-left of-right">
+				<div class="editNameSection">
 					<button
-						id="accountDeleteButton"
 						class="standardButton white"
-						class:buttonDisabled={$crazyGames}
+						id="editUsername"
 						onclick={() => {
 							playSound("basic_button");
 							showConfirmPopup(
-								"Delete account",
-								"Please make sure to delete user-created content before proceeding, if you wish to remove that from the platform.",
+								"Update username",
+								"Input your new name into the box and click confirm.",
 								() => {
-									if ($confirmPasswordValue) submitAccountDeletion($confirmPasswordValue);
-									else errorPopup("Password required", "Your password is required for deleting your account.");
+									updateProfileUsername($confirmUsernameValue);
 								},
+								false,
 								true,
 							);
 						}}
 					>
-						<Trash2 size={20} style="margin-bottom: -1px;" />
-						Account</button
-					>
-					<button
-						id="profileSignoutButton"
-						class="standardButton white"
-						class:buttonDisabled={$crazyGames || !$singleplayer}
-						onclick={() => {
-							playSound("basic_button");
-							resetLocalSave();
-							checkAuthenticationStatus();
-							profilePopup.set(false);
-						}}
-					>
-						<img class="logoutImage" src="/img/signout.png" alt="Log out." />
+						<Edit size={20} style="margin-bottom: -2px;" />
+						Name
 					</button>
 				</div>
-			{/if}
+				<button
+					id="accountDeleteButton"
+					class="standardButton white"
+					class:buttonDisabled={$crazyGames}
+					onclick={() => {
+						playSound("basic_button");
+						showConfirmPopup(
+							"Delete account",
+							"Please make sure to delete user-created content before proceeding, if you wish to remove that from the platform.",
+							() => {
+								if ($confirmPasswordValue) submitAccountDeletion($confirmPasswordValue);
+								else errorPopup("Password required", "Your password is required for deleting your account.");
+							},
+							true,
+						);
+					}}
+				>
+					<Trash2 size={20} style="margin-bottom: -1px;" />
+					Account</button
+				>
+				<button
+					class="standardButton white"
+					class:buttonDisabled={$crazyGames || !$singleplayer}
+					onclick={() => {
+						playSound("basic_button");
+						resetLocalSave();
+						checkAuthenticationStatus();
+						profilePopup.set(false);
+					}}
+				>
+					<img class="logoutImage" src="/img/signout.png" alt="Log out." />
+					Sign out
+				</button>
+			</div>
 		</div>
-		<button
-			id="profileClose"
-			class="standardButton white closeButton"
-			onclick={() => {
-				playSound("basic_button");
-				if ($profileId == localStorage.getItem("id")) saveProfileAboutIfChanges(textarea?.value?.trim());
-				profilePopup.set(false);
-			}}>Close</button
-		>
-	</Popup>
-{/if}
+	{/if}
+</Popup>
 
 <div style="display: none;">
 	<!-- Ensure the component is always mounted, for the URL load to work -->
@@ -398,17 +388,14 @@
 <style>
 	.profileNameArea {
 		display: flex;
-		box-shadow: var(--box-shadow);
 		align-items: center;
 		justify-content: space-between;
 		flex-wrap: wrap;
 		overflow: hidden;
-		margin-bottom: 20px;
-		background-color: var(--box-color-dark);
 		padding: var(--layout-margin);
 		width: calc(100% + 20px);
 		margin-left: -25px;
-		margin-top: -25px;
+		margin-top: -20px;
 		gap: var(--box-margin);
 	}
 
@@ -458,78 +445,69 @@
 		color: white;
 		border: none;
 		padding-inline: 12px;
-		font-size: 20px;
 		padding-top: 0px;
 		padding-bottom: 0px;
 		box-sizing: border-box;
 	}
 
-	#profileViewName {
+	.profileViewName {
 		overflow: hidden;
 		text-wrap: nowrap;
 		margin-left: 10px;
-		margin-right: 20px;
+		margin-right: 50px;
 		display: inline-flex;
 		justify-content: center;
 		gap: 8px;
 	}
 
-	#profileSignoutButton {
-		max-width: 60px;
-		padding-inline: var(--panel-margin);
-		flex-grow: 1;
-	}
-
-	#profileViewName h1 {
+	.profileViewName h1 {
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
 
-	#profileNameBox {
+	.profileNameBox {
+		margin-bottom: var(--layout-margin);
+		border-radius: 10px;
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+		max-width: fit-content;
+	}
+
+	.profileNameBoxContent {
 		display: flex;
 		align-items: center;
-		gap: var(--layout-margin);
-		flex-wrap: wrap;
-		padding-inline: var(--box-margin);
+		padding: var(--box-margin);
+		gap: var(--box-margin);
+		overflow-x: auto;
+		scrollbar-width: none;
 	}
 
 	.logoutImage {
 		width: 22px;
 		height: 22px;
 		vertical-align: -3px;
-		margin-right: -3px;
+	}
+
+	.disabled {
+		opacity: 0.5;
+		pointer-events: none;
 	}
 
 	#supporterTag {
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
 		border-radius: 5px;
-		overflow: hidden;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		height: 40px;
-		padding-inline: var(--panel-margin);
-	}
-
-	#supporterTag p {
-		font-size: 18px;
-		overflow: hidden;
-		text-overflow: ellipsis;
-		max-width: 0;
-		transition: max-width 350ms ease-in-out;
-		transition-delay: 100ms;
-		width: 45px;
-		text-align: center;
+		gap: 5px;
+		padding-inline: var(--box-margin);
 		text-wrap: nowrap;
 	}
 
-	#supporterTag:hover p {
-		max-width: 120px;
-	}
-
 	.profilePinArea {
-		padding-inline: 5px;
+		padding-inline: var(--panel-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -545,13 +523,13 @@
 	}
 
 	#selectedProfilePin {
-		width: 28px;
-		height: 28px;
+		width: 30px;
+		height: 30px;
 	}
 
 	#supporterIcon {
-		width: 25px;
-		height: 25px;
+		width: 30px;
+		height: 30px;
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
 	}
 
@@ -571,24 +549,6 @@
 		padding: 15px;
 		scrollbar-width: none;
 		box-sizing: border-box;
-	}
-
-	#profileAddFriend {
-		padding: 5px;
-		font-size: 20px;
-	}
-
-	#profileReportButton {
-		padding: 5px;
-		padding-inline: 8px;
-		font-size: 20px;
-	}
-
-	#profileScrollSection {
-		overflow-x: hidden;
-		overflow-y: auto;
-		max-height: calc(100dvh - 350px);
-		width: 100%;
 	}
 
 	:global(.stat-switch) {
@@ -616,7 +576,6 @@
 	.stats-container {
 		border-radius: 10px;
 		padding: var(--layout-margin) 0 10px 0;
-		margin-bottom: var(--layout-margin);
 	}
 
 	.carousel-slide {
@@ -676,15 +635,16 @@
 		border-radius: 10px;
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
+	}
+
+	.managementBoxContent {
 		display: flex;
 		justify-content: flex-start;
-		max-height: 300px;
-		overflow-x: hidden;
 		overflow-y: auto;
 		padding: var(--box-margin);
 		gap: var(--box-margin);
 		align-items: center;
-		flex-wrap: wrap;
+		scrollbar-width: none;
 	}
 
 	.editNameSection {
@@ -703,7 +663,7 @@
 	}
 
 	@media all and (max-width: 1200px) {
-		#profileViewName {
+		.profileViewName {
 			font-size: 32px;
 		}
 	}

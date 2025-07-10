@@ -1,13 +1,14 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
 	import { username } from "$lib/stores/accountStore";
-	import { Link } from "lucide-svelte";
+	import { Copy, Link } from "lucide-svelte";
 	import { showNotification } from "$lib/utils/notifications";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { goto } from "$app/navigation";
 
 	let competitionSubmittedSuccessfully = false;
 	let successPopup = $state(false);
@@ -145,16 +146,10 @@
 
 				try {
 					responseData = await response.json();
-
 					let errorMessages = [];
 
-					if (responseData.error) {
-						errorMessages.push(responseData.error);
-					}
-
-					if (responseData.message) {
-						errorMessages.push(responseData.message);
-					}
+					if (responseData.error) errorMessages.push(responseData.error);
+					if (responseData.message) errorMessages.push(responseData.message);
 
 					if (responseData.errors && Array.isArray(responseData.errors)) {
 						responseData.errors.forEach((err) => {
@@ -182,43 +177,59 @@
 	<title>Create a competition</title>
 </svelte:head>
 
-{#if successPopup}
-	<Popup verySlim={true}>
-		<h1 id="submitConfirmHeader" class="textHeaderLeft">Competition created!</h1>
-		<p>Thank you for creating a competition! Share these direct links with your friends.</p>
-		<div class="spacer"></div>
+<Popup
+	verySlim={true}
+	bind:open={successPopup}
+	onclose={() => {
+		goto("/competitions");
+	}}
+>
+	<h1 id="submitConfirmHeader" class="textHeaderLeft">Competition created!</h1>
+	<p>
+		Thank you for creating a competition! Share these links with others and save them if your competition is private.
+	</p>
+	<div class="spacer"></div>
+	<div>
+		<p>Enter link:</p>
 		<div class="linkBox">
-			<p>Enter link:</p>
-			<p class="linkField">{enterLink}</p>
-			<p>Leaderboard link:</p>
-			<p class="linkField">{leaderboardLink}</p>
+			<p>{enterLink}</p>
 			<button
 				id="copyLinksButton"
-				class="standardButton white copyButton"
+				class="standardButton white"
 				onclick={() => {
 					playSound("basic_button");
 					navigator.clipboard
-						.writeText(enterLink + " " + leaderboardLink)
+						.writeText(enterLink)
 						.then(function () {
 							showNotification("Copied!");
 						})
 						.catch(function (error) {
 							showNotification("Error: " + error);
 						});
-				}}><Link size="16" strokeWidth={2.5} style="margin-right: 3px;" /> Copy both</button
+				}}><Copy size="18" strokeWidth={2.5} /></button
 			>
-			<div class="buttonBoxRight">
-				<button
-					class="standardButton closeButton white"
-					onclick={() => {
-						playSound("basic_button");
-						successPopup = false;
-					}}>Close</button
-				>
-			</div>
 		</div>
-	</Popup>
-{/if}
+		<p>Leaderboard link:</p>
+		<div class="linkBox">
+			<p>{leaderboardLink}</p>
+			<button
+				id="copyLinksButton"
+				class="standardButton white"
+				onclick={() => {
+					playSound("basic_button");
+					navigator.clipboard
+						.writeText(leaderboardLink)
+						.then(function () {
+							showNotification("Copied!");
+						})
+						.catch(function (error) {
+							showNotification("Error: " + error);
+						});
+				}}><Copy size="18" strokeWidth={2.5} /></button
+			>
+		</div>
+	</div>
+</Popup>
 
 <div class="mainContainer">
 	<h1 class="header" id="uploadHeader">Create a competition</h1>
@@ -319,10 +330,10 @@ https://www.google.de/maps/@50.3874953,11.2149744,3a,75y,327.9h,88.34t/data=!3m6
 https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m6!1e1!3m4!1sUaKFi34dUCFjIgkE5dQw1Q!2e0!7i16384!8i8192?coh=205409&entry=ttu"
 		></textarea>
 	</div>
-	<div class="buttonBoxRight fullWidth">
+	<div class="buttonContainer">
 		<button
 			id="uploadConfirm"
-			class="standardButton closeButton submitButton"
+			class="standardButton largeButton submitButton"
 			onclick={() => {
 				playSound("basic_button");
 				showConfirmPopup("Submit?", "Competitions cannot be edited or deleted.", () => {
@@ -350,12 +361,11 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		margin-bottom: 15px;
 	}
 
-	.fullWidth {
+	.buttonContainer {
 		width: 100%;
-	}
-
-	.linkField {
-		margin-bottom: var(--layout-margin);
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
 	}
 
 	.submitButton {
@@ -374,6 +384,27 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		flex-direction: column;
 		width: calc(100% - 40px);
 		box-shadow: var(--box-shadow);
+	}
+
+	.linkBox {
+		display: flex;
+		align-items: center;
+		gap: var(--box-margin);
+		margin-bottom: var(--layout-margin);
+		padding: var(--box-margin);
+		background-color: var(--box-color);
+		border-radius: 10px;
+		margin-top: var(--box-margin);
+		width: fit-content;
+		box-shadow: var(--box-shadow);
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+
+	.linkBox p {
+		text-overflow: ellipsis;
+		overflow: hidden;
+		text-wrap: nowrap;
 	}
 
 	#inputArea {
@@ -422,10 +453,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 
 	.marginTop {
 		margin-top: 15px;
-	}
-
-	.copyButton {
-		margin-left: 0;
 	}
 
 	li {

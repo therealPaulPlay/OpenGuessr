@@ -46,11 +46,10 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     let pointList;
 
     // Check if NOT in Country Guessr (or if IN multiplayer) --------------------------------------------------
-    if (!get(countryGuessr) || get(multiplayer)) {
-        playerLatLng = new google.maps.LatLng(playersLat, playersLong);
-        pointList = new google.maps.LatLngBounds();
-        pointList.extend(curLatLng);
-        pointList.extend(playerLatLng);
+    if (!get(countryGuessr)) {
+        playerLatLng = new L.LatLng(guessLat, guessLong);
+        polyList = [curLatLng, playerLatLng];
+        pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
 
         // Place the player marker (where the player thinks the location is)
         let playerMarker = new google.maps.Marker({
@@ -153,13 +152,10 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     }
 
     // Fit the map bounds to show all markers and lines (with padding)
-    if (!get(countryGuessr) || get(multiplayer)) {
-        get(map).fitBounds(pointList, { padding: { top: 150, right: 250, bottom: 150, left: 250 } });
-        if (get(map).getZoom() > 4) {
-            get(map).setZoom(get(map).getZoom() - 2);
-        } else {
-            get(map).setZoom(get(map).getZoom() - 1);
-        }
+    if (!get(countryGuessr)) {
+        get(map).fitBounds(pointList, {
+            animate: false
+        });
     }
 
     // Place the "correct" marker reflecting the target location

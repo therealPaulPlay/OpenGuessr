@@ -79,102 +79,92 @@
 	});
 </script>
 
-{#if $supporterPopupVisible}
-	<Popup z={971} slim={true}>
-		<div class="popup-title">
-			<h1 class="shiftTitle">
-				Supporter tiers
-				<img id="supporterIconTitle" alt="supporter tag" src="/img/supporter_icon.png" />
-			</h1>
+<Popup z={971} slim={true} bind:open={$supporterPopupVisible}>
+	<div class="popup-title">
+		<h1 class="shiftTitle">
+			Supporter tiers
+			<img id="supporterIconTitle" alt="supporter tag" src="/img/supporter_icon.png" />
+		</h1>
+	</div>
+	<div class="supporterBoxFlex">
+		<div class="tierBox">
+			<div class="tierBoxTier"><p class="tierNumber">Tier 1</p></div>
+			<ul class="tierBenefits">
+				<li>Highlighted on leaderboards</li>
+				<li>Supporter profile icon</li>
+				<li>Special Supporter pin</li>
+				<li>Tier 1 Supporter badge</li>
+				<li>10% Supporter XP boost</li>
+			</ul>
+			<button
+				id="tierPrice1"
+				class="standardButton tierBuyButton"
+				onclick={() => startPurchase(1)}
+				class:tierBuyButtonUnlocked={$supporterLevel >= 1}>{getTierPrice(1)}</button
+			>
 		</div>
-		<div class="supporterBox supporterBoxFlex of-top of-bottom">
-			<div class="tierBox">
-				<div class="tierBoxTier"><p class="tierNumber">Tier 1</p></div>
-				<ul class="tierBenefits">
-					<li>Highlighted on leaderboards</li>
-					<li>Supporter profile icon</li>
-					<li>Special Supporter pin</li>
-					<li>Tier 1 Supporter badge</li>
-					<li>10% Supporter XP boost</li>
-				</ul>
-				<button
-					id="tierPrice1"
-					class="standardButton tierBuyButton"
-					onclick={() => startPurchase(1)}
-					class:tierBuyButtonUnlocked={$supporterLevel >= 1}>{getTierPrice(1)}</button
-				>
-			</div>
-			<div class="tierBox">
-				<div class="tierBoxTier"><p class="tierNumber">Tier 2</p></div>
-				<ul class="tierBenefits">
-					<li>All previous benefits</li>
-					<li>Ad-free experience</li>
-					<li>Tier 2 Supporter badge</li>
-					<li>15% Supporter XP boost</li>
-				</ul>
-				<button
-					id="tierPrice2"
-					class="standardButton tierBuyButton"
-					onclick={() => startPurchase(2)}
-					class:tierBuyButtonUnlocked={$supporterLevel >= 2}
-					>{getTierPrice(2)}
-					{#if $supporterLevel >= 1 && $supporterLevel < 2}
-						<span class="discountBadge">Upgrade Discount</span>
-					{/if}
-				</button>
-			</div>
-			<div class="tierBox">
-				<div class="tierBoxTier"><p class="tierNumber">Tier 3</p></div>
-				<ul class="tierBenefits">
-					<li>All previous benefits</li>
-					<li>Tier 3 Supporter badge</li>
-					<li>20% Supporter XP boost</li>
-				</ul>
-				<button
-					id="tierPrice3"
-					class="standardButton tierBuyButton"
-					onclick={() => startPurchase(3)}
-					class:tierBuyButtonUnlocked={$supporterLevel >= 3}
-					>{getTierPrice(3)}
-					{#if $supporterLevel >= 1 && $supporterLevel < 3}
-						<span class="discountBadge">Upgrade Discount</span>
-					{/if}</button
-				>
-			</div>
-			<div class="tierBox">
-				<div class="tierBoxTier"><p class="tierNumber">Tier 4</p></div>
-				<ul class="tierBenefits">
-					<li>All previous benefits</li>
-					<li>Tier 4 Supporter badge</li>
-					<li>25% Supporter XP boost</li>
-				</ul>
-				<button
-					id="tierPrice4"
-					class="standardButton tierBuyButton"
-					onclick={() => startPurchase(4)}
-					class:tierBuyButtonUnlocked={$supporterLevel >= 4}
-					>{getTierPrice(4)}
-					{#if $supporterLevel >= 1 && $supporterLevel < 4}
-						<span class="discountBadge">Upgrade Discount</span>
-					{/if}</button
-				>
-			</div>
-			<p id="supporterInfoText">
-				All purchases are one-time payments.
-				<a href="/legal" target="_blank">Terms and conditions</a>
-				apply.
-			</p>
+		<div class="tierBox">
+			<div class="tierBoxTier"><p class="tierNumber">Tier 2</p></div>
+			<ul class="tierBenefits">
+				<li>All previous benefits</li>
+				<li>Ad-free experience</li>
+				<li>Tier 2 Supporter badge</li>
+				<li>15% Supporter XP boost</li>
+			</ul>
+			<button
+				id="tierPrice2"
+				class="standardButton tierBuyButton"
+				onclick={() => startPurchase(2)}
+				class:tierBuyButtonUnlocked={$supporterLevel >= 2}
+				>{getTierPrice(2)}
+				{#if $supporterLevel >= 1 && $supporterLevel < 2}
+					<span class="discountBadge">Upgrade</span>
+				{/if}
+			</button>
 		</div>
-		<button
-			id="supporterClose"
-			class="standardButton white closeButton"
-			onclick={() => {
-				playSound("basic_button");
-				supporterPopupVisible.set(false);
-			}}>Close</button
-		>
-	</Popup>
-{/if}
+		<div class="tierBox">
+			<div class="tierBoxTier"><p class="tierNumber">Tier 3</p></div>
+			<ul class="tierBenefits">
+				<li>All previous benefits</li>
+				<li>Tier 3 Supporter badge</li>
+				<li>20% Supporter XP boost</li>
+			</ul>
+			<button
+				id="tierPrice3"
+				class="standardButton tierBuyButton"
+				onclick={() => startPurchase(3)}
+				class:tierBuyButtonUnlocked={$supporterLevel >= 3}
+				>{getTierPrice(3)}
+				{#if $supporterLevel >= 1 && $supporterLevel < 3}
+					<span class="discountBadge">Upgrade</span>
+				{/if}</button
+			>
+		</div>
+		<div class="tierBox">
+			<div class="tierBoxTier"><p class="tierNumber">Tier 4</p></div>
+			<ul class="tierBenefits">
+				<li>All previous benefits</li>
+				<li>Tier 4 Supporter badge</li>
+				<li>25% Supporter XP boost</li>
+			</ul>
+			<button
+				id="tierPrice4"
+				class="standardButton tierBuyButton"
+				onclick={() => startPurchase(4)}
+				class:tierBuyButtonUnlocked={$supporterLevel >= 4}
+				>{getTierPrice(4)}
+				{#if $supporterLevel >= 1 && $supporterLevel < 4}
+					<span class="discountBadge">Upgrade</span>
+				{/if}</button
+			>
+		</div>
+		<p id="supporterInfoText">
+			All purchases are one-time payments.
+			<a href="/legal" target="_blank">Terms and conditions</a>
+			apply.
+		</p>
+	</div>
+</Popup>
 
 <style>
 	.tierNumber {
@@ -222,10 +212,9 @@
 		padding-right: 9px;
 		font-style: italic;
 		border-radius: 3px;
-		margin-left: 5px;
+		margin-left: 2px;
 		background-color: rgba(0, 0, 0, 0.1);
-		vertical-align: 1px;
-		box-shadow: var(--bulb-shadow);
+		vertical-align: 2px;
 	}
 
 	.tierBenefits li {
@@ -271,7 +260,7 @@
 		position: relative;
 	}
 
-	.tierBox:hover .tierBuyButton {
+	.tierBuyButton:hover {
 		filter: brightness(1.2);
 	}
 
@@ -294,21 +283,10 @@
 		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--layout-margin);
-		margin-top: 10px;
-		max-height: calc(100dvh - 300px);
-		overflow-x: hidden;
-		overflow-y: auto;
-		border-radius: 5px;
-		border-radius: 5px;
+		padding-top: 5px;
 	}
 
-	.supporterBox {
-		padding: 10px;
-		width: calc(100% - 20px);
-		border-radius: 10px;
-	}
-
-	.supporterBox p {
+	.supporterBoxFlex p {
 		padding: 7px;
 	}
 

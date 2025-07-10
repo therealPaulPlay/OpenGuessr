@@ -1,18 +1,17 @@
 import { errorPopup } from "$lib/utils/errorHandling";
 import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScreen.js";
 import { startTimer } from "$lib/utils/timer.js";
-import { checkedForBan, isAuthenticated, isBanned, banReportEntryData } from "$lib/stores/accountStore";
-import { selectedBadge, selectedPinIndex, supporterLevel, username, elo } from "$lib/stores/accountStore.js";
-import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation.js";
+import { selectedBadge, selectedPinIndex, supporterLevel, username, elo, isAuthenticated } from "$lib/stores/accountStore.js";
+import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
 import { mapSupportsMultiplayer } from "$lib/utils/doesMapSupportMultiplayer.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
-import { mapPinLat, mapPinLng, mapVisible } from "$lib/stores/context-specific/mapStore.js";
+import { mapPinLat, mapPinLng, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
 import { guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
-import { mapModeIndicatorVisible, leaveFunction, modeText } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { mapModeIndicatorVisible, leaveFunction, mapModeIndicatorText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
     duelRetryEnabled, multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
@@ -43,7 +42,6 @@ import PlaySocket from "playsocketjs";
 import { getMapBounds } from "$lib/utils/getMapBounds";
 import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { signupPrompt } from "$lib/utils/signupPrompt";
-import { fetchBlacklistStatus } from "$lib/utils/checkBanStatus";
 import { accountUrl, websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
 
@@ -55,7 +53,7 @@ export function getTeamFromMultiplayerId(id) {
 // Game UI ----------------------------------------------------------------------------------------------------------------------------------
 function setMultiplayerUI() {
     if (get(multiplayer)) {
-        try { get(singleplayerTimer).stopTimer() } catch { } // Mostly cosmetic, it looks weird if it continues running on the waiting screen
+        get(singleplayerTimer)?.stopTimer();
         mapModeIndicatorVisible.set(true);
         leaveFunction.set(() => {
             showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
@@ -192,9 +190,8 @@ export async function createMultiplayerInstance() {
 
 
                 if (storage.currentRound && storage.restriction) {
-                    modeText.set("Multiplayer (Round: " + get(socket)?.getStorage?.currentRound + "/" + get(roundAmount) + ")");
+                    mapModeIndicatorText.set(`Multiplayer (Round: ${storage.currentRound}/${get(roundAmount)})` + (storage.restriction !== "standard" ? ` (${storage.restriction})` : ""));
                     setRestriction(storage.restriction);
-                    if (storage.restriction !== "standard" && storage.restriction) modeText.set(get(modeText) + " (" + storage.restriction + ")");
                 }
 
                 if (storage.confirmedArray && storage.players) {
@@ -243,7 +240,7 @@ export async function createMultiplayerInstance() {
                 if (storage.countdownActive) multiplayerOverlayCountdown(); // Activate countdown
 
                 if (storage.timerStart) startMultiplayerTimer(storage.timerStart?.length, storage.timerStart?.timestamp); // Set timer if not running
-                if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) try { multiplayerTimer?.stopTimer(); } catch { }; // Stop multiplayer timer
+                if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) multiplayerTimer?.stopTimer(); // Stop multiplayer timer
 
                 if (storage.timeReducedOverlay && storage.timeReducedOverlay !== get(timeReducedOverlay) && storage?.confirmedArray?.length == 1) {
                     showTimeReducedOverlay(15, !storage?.confirmedArray?.includes(get(socket)?.id));
@@ -285,16 +282,6 @@ let roomIndex = 0;
 // This initiates the find duel system
 export async function findDuel() {
     if (!get(isAuthenticated)) return signupPrompt();
-    if (!get(checkedForBan)) await fetchBlacklistStatus();
-    if (!get(checkedForBan)) return multiplayerStatus.set("Failed to fetch blacklist status.");
-    if (get(isBanned)) {
-        return errorPopup(
-            "You are banned",
-            `Unfortunately, you are banned from playing duels for "${get(banReportEntryData)?.reason}" until ${get(banReportEntryData)?.expires_at ? new Date(get(banReportEntryData)?.expires_at)?.toLocaleDateString() : "forever"}. 
-            Please contact the moderators on Discord if you think this was a mistake.`
-        );
-    }
-
     goto("/multiplayer/duel"); // Visit duel load page
     roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     isDivisionRoom.set(true);
@@ -340,7 +327,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
 
         // Check if map is valid for multiplayer
         if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
-            showNotification("Unsupported map changed to Standard.")
+            showNotification("Map not supported in multiplayer.")
             await changeCategory("standard", true); // Regenerate to update locations array
         }
 
@@ -437,7 +424,7 @@ export async function joinRoom(code) {
             throw new Error(error);
         }
         multiplayer.set(true);
-        modeText.set("Multiplayer (...)");
+        mapModeIndicatorText.set("Multiplayer (...)");
         await get(socket).joinRoom(code);
         matchmakingActive.set(false);
         setMultiplayerUI();
@@ -458,7 +445,7 @@ export function leaveMultiplayerRound(destroy = true) {
     matchmakingActive.set(false);
 
     if (destroy) get(socket)?.destroy(); // Destroy peer
-    try { multiplayerTimer?.stopTimer() } catch { }; // Result screen timer (sometimes not set, therefore catch)
+    multiplayerTimer?.stopTimer();
 
     // Clear running intervals
     clearInterval(countdownInterval);
@@ -482,7 +469,7 @@ export function leaveMultiplayerRound(destroy = true) {
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
-        showMultiplayerOverlay(false); // This also brings back the map
+        showMultiplayerOverlay(false); // Also makes map interactive
         updateMinimapWithTeamMarkers([]); // clean up multiplayer minimap markers
         setMultiplayerUI();
         setRestriction("standard");
@@ -561,15 +548,18 @@ function showMultiplayerOverlay(show) {
     multiplayerOverlay.set(show);
 
     if (show) {
-        if (get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(socket)?.getStorage?.currentRound);
-        if (!get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
-        if (!get(socket)?.getStorage?.firstRoundPlayed) modeText.set("Multiplayer (" + (get(socket)?.getStorage?.category)?.replace("community_", "") + ")"); // Display map name
+        if (!get(socket)?.getStorage?.firstRoundPlayed) {
+            multiplayerOverlayTitle.set("Waiting...");
+            mapModeIndicatorText.set("Multiplayer (" + (get(socket)?.getStorage?.category)?.replace("community_", "") + ")")
+        } else {
+            multiplayerOverlayTitle.set("Results from round " + get(socket)?.getStorage?.currentRound);
+        }
         overlayShowSubtitle.set(get(multiplayerStyle) == "duel" && get(socket)?.getStorage?.currentRound >= 3 && get(socket)?.getStorage?.currentRound < get(socket)?.getStorage?.roundAmount);
         showEndscreenUI(false); // Default to no endscreen UI
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
-        mapVisible.set(false); // Hide map
+        mapInteractive.set(false); // Disable map
     } else {
-        if (get(multiplayer) || localStorage.getItem("selectedCategory") !== "country guessr") mapVisible.set(true);
+        mapInteractive.set(true);
     }
 }
 

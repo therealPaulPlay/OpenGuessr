@@ -6,7 +6,7 @@ import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { errorPopup } from "$lib/utils/errorHandling.js";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore.js";
-import { mapPinLat, mapPinLng, map, addedMarkers } from "$lib/stores/context-specific/mapStore.js";
+import { mapPinLat, mapPinLng, map, addedMarkers, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupStore.js";
 import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
@@ -101,7 +101,7 @@ async function requestMapLoad() {
         }
     } catch (error) {
         console.error('Error occurred while checking for the map load limit: ' + error);
-        errorPopup("Failed to validate minimap load", "The system that validates minimap loads didn't respond. Check your internet connection and consider reporting the issue on Discord if it persists.", error, false, false);
+        errorPopup("Failed to validate minimap load", "The system that validates minimap loads didn't respond.", "Network error.", false, false);
         return false;
     }
 }
@@ -217,10 +217,9 @@ async function adjustMapToCountry() {
 let marker;
 
 function onMapClick(latLng) {
-    if (get(resultScreenEnabled)) return; // Placing a pin is disabled on result screen
+    if (get(resultScreenEnabled) || !get(mapInteractive)) return; // Placing a pin is disabled on result screen or when the map is not interactive
 
     try {
-
         confirmButtonActive.set(true);
         playSound("pin_drop", "pin");
 

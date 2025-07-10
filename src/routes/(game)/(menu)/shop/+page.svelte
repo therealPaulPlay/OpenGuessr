@@ -420,7 +420,7 @@
 	}
 
 	.shopOffer {
-		border-radius: var(--box-margin);
+		border-radius: 5px;
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);

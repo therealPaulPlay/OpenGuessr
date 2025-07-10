@@ -1,10 +1,9 @@
 <script>
-	// This component displays the timer, mode, restrictions
 	import {
 		mapModeIndicatorVisible,
-		modeText,
+		mapModeIndicatorText,
 		leaveFunction,
-		indicatorFading,
+		mapModeIndicatorFading,
 		timerText,
 	} from "$lib/stores/context-specific/mapModeIndicatorStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
@@ -12,20 +11,24 @@
 	import { get } from "svelte/store";
 
 	let mapModeTextContainer = $state();
+	let mapModeTextElement = $state();
 	let scrollModeText = $state(false);
 
-	let mapModeText = $state();
-
 	function checkMapmodeindicatorOverflow() {
-		if (!mapModeTextContainer) return;
-		let positionInfo = mapModeTextContainer?.getBoundingClientRect();
+		if (!mapModeTextContainer || !mapModeTextElement) return;
+
+		let positionInfo = mapModeTextContainer.getBoundingClientRect();
 		let width = positionInfo.width;
 		scrollModeText =
-			width < 150 || (width < 235 && mapModeText.length > 25) || (width < 295 && mapModeText.length > 31);
+			width < 180 || (width < 235 && $mapModeIndicatorText.length > 25) || (width < 295 && $mapModeIndicatorText.length > 31);
+
+		if (scrollModeText) {
+			const scrollDistance = mapModeTextElement.scrollWidth - width + 10;
+			mapModeTextContainer.style.setProperty("--scroll-distance", `-${scrollDistance}px`);
+		}
 	}
 
 	let resizeObserver;
-
 	$effect(() => {
 		if (resizeObserver) resizeObserver.disconnect();
 		if (mapModeTextContainer) {
@@ -39,33 +42,31 @@
 	});
 </script>
 
-<div
-	class="barMenu mapModeIndicator"
-	class:fading={Boolean($indicatorFading)}
-	style:display={$mapModeIndicatorVisible && !$resultScreenEnabled ? "" : "none"}
->
-	{#if $leaveFunction}
-		<button
-			class="standardButton"
-			onclick={() => {
-				playSound("leave_round");
-				get(leaveFunction)();
-			}}>Leave</button
-		>
-	{/if}
-	<div bind:this={mapModeTextContainer} class="mapModeTextContainer" class:modeTextFade={scrollModeText}>
-		<p
-			class="mapModeText {scrollModeText ? 'modetextScroll' : ''}"
-			bind:textContent={mapModeText}
-			contenteditable="false"
-		>
-			{$modeText}
+{#if $mapModeIndicatorVisible && !$resultScreenEnabled}
+	<div class="barMenu mapModeIndicator" class:fading={Boolean($mapModeIndicatorFading)}>
+		{#if $leaveFunction}
+			<button
+				class="standardButton"
+				onclick={() => {
+					playSound("leave_round");
+					get(leaveFunction)();
+				}}>Leave</button
+			>
+		{/if}
+		<div bind:this={mapModeTextContainer} class="mapModeTextContainer" class:modeTextFade={scrollModeText}>
+			<p
+				bind:this={mapModeTextElement}
+				class:modeTextScroll={scrollModeText}
+				contenteditable="false"
+			>
+				{$mapModeIndicatorText}
+			</p>
+		</div>
+		<p id="mapTimer" class="mapModeText modeTextRight {$mapModeIndicatorFading ? 'fading' : ''}">
+			{$timerText}
 		</p>
 	</div>
-	<p id="mapTimer" class="mapModeText modeTextRight {$indicatorFading ? 'fading' : ''}">
-		{$timerText}
-	</p>
-</div>
+{/if}
 
 <style>
 	.mapModeIndicator {
@@ -111,17 +112,15 @@
 		0% {
 			background-color: var(--panel-color);
 		}
-
 		50% {
 			background-color: hsla(298, 25%, 20%, 0.7);
 		}
-
 		100% {
 			background-color: var(--panel-color);
 		}
 	}
 
-	:global(.modetextScroll) {
+	:global(.modeTextScroll) {
 		animation: scrollModeText 5s ease-in-out infinite alternate;
 	}
 
@@ -129,11 +128,9 @@
 		0% {
 			color: white;
 		}
-
 		50% {
 			color: red;
 		}
-
 		100% {
 			color: white;
 		}
@@ -152,9 +149,8 @@
 		0% {
 			transform: translateX(5px);
 		}
-
 		100% {
-			transform: translateX(calc(-60%));
+			transform: translateX(var(--scroll-distance, -100%));
 		}
 	}
 </style>

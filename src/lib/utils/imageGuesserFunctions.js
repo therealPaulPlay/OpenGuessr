@@ -20,18 +20,14 @@ export function loadImageFromUrl(url) {
     };
 }
 
-export function setImageGuesserMode(enable) {
-    imageGuessr.set(enable);
+export function enableImageGuessr() {
+    get(imageGuessrImage).style.transform = "rotate(" + Math.floor(Math.random() * 10 - 5) + "deg)";
 
-    if (enable) {
-        get(imageGuessrImage).style.transform = "rotate(" + Math.floor(Math.random() * 10 - 5) + "deg)";
+    // Apply image loading styles
+    get(imageGuessrImage).classList.add("guessImageLoading");
+    get(imageGuessrBackground).classList.add("guessImageLoading");
 
-        // Apply image loading styles
-        get(imageGuessrImage).classList.add("guessImageLoading");
-        get(imageGuessrBackground).classList.add("guessImageLoading");
-
-        // Clear the background styles
-        get(imageGuessrImage).style.backgroundImage = "";
-        get(imageGuessrBackground).style.backgroundImage = "";
-    }
+    // Clear the background styles
+    get(imageGuessrImage).style.backgroundImage = "";
+    get(imageGuessrBackground).style.backgroundImage = "";
 }

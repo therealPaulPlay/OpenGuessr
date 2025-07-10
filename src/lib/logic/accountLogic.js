@@ -1,4 +1,4 @@
-import { getUser } from "./userAPI";
+import { getUser } from "./accountAPI";
 import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
 import { initializeSSEConnection } from "$lib/logic/sseLogic";
 import { resultScreenEnabled, lastDistance, lastExperienceCalculationAborted } from "$lib/stores/context-specific/resultScreenStore";

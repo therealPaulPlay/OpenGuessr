@@ -7,21 +7,9 @@
 	import { playSound } from "$lib/utils/soundManager";
 </script>
 
-{#if $linkJoinPopup}
-	<Popup verySlim={true}>
-		<div class="popup-title">
-			<h1 id="socialHeader">Room</h1>
-		</div>
-		<p id="linkjoinStatus">Status: {$multiplayerStatus || "No status."}</p>
-		<br />
-		<button
-			id="linkJoinClose"
-			class="standardButton white closeButton"
-			onclick={() => {
-				linkJoinPopup.set(false);
-				leaveMultiplayerRound();
-				playSound("basic_button");
-			}}>Cancel</button
-		>
-	</Popup>
-{/if}
+<Popup verySlim={true} bind:open={$linkJoinPopup} onclose={leaveMultiplayerRound}>
+	<div class="popup-title">
+		<h1 id="socialHeader">Room</h1>
+	</div>
+	<p>Status: {$multiplayerStatus || "Joining..."}</p>
+</Popup>

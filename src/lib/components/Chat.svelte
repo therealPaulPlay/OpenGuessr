@@ -5,7 +5,7 @@
 	import RemainingGuessesDisplay from "$lib/components/RemainingGuessesDisplay.svelte";
 	import { MoveVertical, SendHorizonal } from "lucide-svelte";
 
-	let multiplayerChatMessages = $state();
+	let chatMessageBoxElement = $state();
 	let inputValue = $state();
 	let chatHeight = $state(150); // Default height
 	let isResizing = $state(false);
@@ -51,8 +51,8 @@
 
 	// Watch for changes to chatArray and scroll to bottom automatically
 	$effect(() => {
-		if ($chatArray && multiplayerChatMessages) {
-			multiplayerChatMessages.scrollTop = multiplayerChatMessages.scrollHeight;
+		if ($chatArray && chatMessageBoxElement) {
+			chatMessageBoxElement.scrollTop = chatMessageBoxElement.scrollHeight;
 		}
 	});
 </script>
@@ -71,7 +71,7 @@
 			<MoveVertical size={16} strokeWidth={3} />
 		</div>
 		<RemainingGuessesDisplay />
-		<div class="multiplayerChatMessages of-top of-bottom" bind:this={multiplayerChatMessages}>
+		<div class="multiplayerChatMessages of-top of-bottom" bind:this={chatMessageBoxElement}>
 			<p>
 				{#if $chatArray}
 					{#each $chatArray as chat}
@@ -143,6 +143,7 @@
 		opacity: 0;
 		z-index: 2;
 		transition: opacity 250ms ease;
+		box-shadow: var(--button-shadow);
 	}
 
 	.resize-handle:hover,

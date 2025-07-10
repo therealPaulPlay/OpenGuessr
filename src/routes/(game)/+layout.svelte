@@ -1,6 +1,6 @@
 <script>
 	import { initializeAds } from "$lib/utils/ads";
-	import { checkGenerationTypeAndGenerate } from "$lib/logic/newLocation";
+	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 	import { onMount } from "svelte";
 	import initOverfade from "overfade";
 
@@ -35,7 +35,6 @@
 	import ProfilePopup from "$lib/components/ProfilePopup.svelte";
 	import PinPopup from "$lib/components/PinPopup.svelte";
 	import BadgePopup from "$lib/components/BadgePopup.svelte";
-	import TroubleshootPopup from "$lib/components/TroubleshootPopup.svelte";
 	import LinkJoinPopup from "$lib/components/LinkJoinPopup.svelte";
 	import FriendBrowserPopup from "$lib/components/FriendBrowserPopup.svelte";
 	import InboxPopup from "$lib/components/InboxPopup.svelte";
@@ -51,6 +50,7 @@
 	import MusicController from "$lib/components/MusicController.svelte";
 	import GuestNamePickerPopup from "$lib/components/GuestNamePickerPopup.svelte";
 	import ShopPurchaseAnimation from "$lib/components/ShopPurchaseAnimation.svelte";
+	import BugspotIframePopup from "$lib/components/BugspotIframePopup.svelte";
 
 	// Start ads
 	onMount(() => {
@@ -139,7 +139,6 @@
 <HelpPopup />
 <DuelResultPopup />
 <SignupIframe />
-<TroubleshootPopup />
 <SettingsPopup />
 <SingleplayerOptions />
 <DiscordPopup />
@@ -152,6 +151,7 @@
 <TimeReducedOverlay />
 <MultiplayerOverlay />
 <ReportIframePopup />
+<BugspotIframePopup />
 <ImageGuesser />
 <PanoramaIframe />
 <CountryGuesserBar />

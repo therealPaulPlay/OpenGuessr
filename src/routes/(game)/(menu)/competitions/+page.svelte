@@ -123,7 +123,7 @@
 	let showRatingBox = $state(false);
 	let leaderboardCompetitionId;
 
-	function openLeaderboard(id, showRatingBox) {
+	function openLeaderboard(id, displaywRatingBox = false) {
 		leaderboardCompetitionId = id; // Used for e.g. the ratings requests
 		leaderboardPopup = true;
 		leaderboardEntries = undefined;
@@ -133,7 +133,8 @@
 		// Load data from endpoint using id here
 		loadLeaderboardFromServer(id);
 
-		if (showRatingBox) displayRatingBox();
+		if (!displaywRatingBox) showRatingBox = false;
+		if (displaywRatingBox) displayRatingBox();
 	}
 
 	let leaderboardEntries = $state([]);
@@ -224,8 +225,8 @@
 
 			if (competitionIdFromLink) {
 				showConfirmPopup(
-					"Enter competition from link?",
-					"This will start the game immediately. You can only enter a competition once.",
+					"Enter competition?",
+					"This will start the competition from your link immediately. You can only enter a competition once.",
 					() => {
 						enterCompetition(competitionIdFromLink);
 					},
@@ -427,115 +428,104 @@
 	}
 </script>
 
-{#if leaderboardPopup}
-	<Popup slim={true}>
-		<div class="popup-title">
-			<h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for <i>{leaderboardName}</i></h1>
+<Popup slim={true} bind:open={leaderboardPopup}>
+	<div class="popup-title">
+		<h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for <i>{leaderboardName}</i></h1>
+	</div>
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+	<div class="rankingDisplay">
+		<div class="rankingDisplayScroll of-top of-bottom">
+			{#if yourEntry}
+				<div class="youBar">
+					<p class="youLabel">You:</p>
+					<div class="rankItem yourItem">
+						<p>#{yourEntry.position}</p>
+						<p
+							id="yourUsername"
+							class="centerEntry"
+							onclick={() => {
+								loadProfileFromId(localStorage.getItem("id"), true);
+							}}
+						>
+							{yourEntry.userName}
+							{#if yourEntry.supporter_level > 0}
+								<SupporterTag />
+							{/if}
+						</p>
+						<p>{yourEntry.score.toLocaleString()} Pts.</p>
+					</div>
+				</div>
+			{/if}
+			{#if leaderboardEntries?.length > 0}
+				{#each leaderboardEntries as entry}
+					<div class="rankItem" transition:blur class:rankYou={entry.id == localStorage.getItem("id")}>
+						<p>#{entry.position}</p>
+						<p
+							class="centerEntry"
+							onclick={() => {
+								loadProfileFromId(entry.id, true);
+							}}
+						>
+							{entry.userName}
+							{#if entry.supporter_level > 0}
+								<SupporterTag />
+							{/if}
+						</p>
+						<p>{entry.score.toLocaleString()} Pts.</p>
+					</div>
+				{/each}
+			{:else}
+				<div class="emptyLeaderboardBox">
+					{#if leaderboardEntries}
+						<p class="errorText">No entries yet.</p>
+					{:else}
+						<p class="errorText">Loading...</p>
+					{/if}
+				</div>
+			{/if}
 		</div>
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-		<div class="rankingDisplay">
-			<div class="rankingDisplayScroll of-top of-bottom">
-				{#if yourEntry}
-					<div class="youBar">
-						<p class="youLabel">You:</p>
-						<div class="rankItem yourItem">
-							<p>#{yourEntry.position}</p>
-							<p
-								id="yourUsername"
-								class="centerEntry"
-								onclick={() => {
-									loadProfileFromId(localStorage.getItem("id"), true);
-								}}
-							>
-								{yourEntry.userName}
-								{#if yourEntry.supporter_level > 0}
-									<SupporterTag />
-								{/if}
-							</p>
-							<p>{yourEntry.score.toLocaleString()} Pts.</p>
-						</div>
-					</div>
-				{/if}
-				{#if leaderboardEntries?.length > 0}
-					{#each leaderboardEntries as entry}
-						<div class="rankItem" transition:blur class:rankYou={entry.id == localStorage.getItem("id")}>
-							<p>#{entry.position}</p>
-							<p
-								class="centerEntry"
-								onclick={() => {
-									loadProfileFromId(entry.id, true);
-								}}
-							>
-								{entry.userName}
-								{#if entry.supporter_level > 0}
-									<SupporterTag />
-								{/if}
-							</p>
-							<p>{entry.score.toLocaleString()} Pts.</p>
-						</div>
-					{/each}
-				{:else}
-					<div class="emptyLeaderboardBox">
-						{#if leaderboardEntries}
-							<p class="errorText">No entries yet.</p>
-						{:else}
-							<p class="errorText">Loading...</p>
-						{/if}
-					</div>
-				{/if}
-			</div>
+	</div>
+	{#if showRatingBox}
+		<div id="ratingBox">
+			<p id="ratingText">{ratingText || "Default rating text."}</p>
+			{#if ratingsButtonBox}
+				<div class="ratingButtonBox" id="ratingButtonBox">
+					<button
+						class="standardButton white rateButton"
+						id="rateGood"
+						onclick={() => {
+							playSound("basic_button");
+							submitRating(5);
+						}}
+					>
+						<Smile size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
+					</button>
+					<button
+						class="standardButton white rateButton"
+						id="rateBad"
+						onclick={() => {
+							playSound("basic_button");
+							submitRating(-3);
+						}}
+					>
+						<Frown size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
+					</button>
+					<button
+						class="standardButton white rateButton"
+						id="rateBroken"
+						onclick={() => {
+							playSound("basic_button");
+							submitRating(-10);
+						}}
+					>
+						<TriangleAlert size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
+					</button>
+				</div>
+			{/if}
 		</div>
-		{#if showRatingBox}
-			<div id="ratingBox">
-				<p id="ratingText">{ratingText || "Default rating text."}</p>
-				{#if ratingsButtonBox}
-					<div class="ratingButtonBox" id="ratingButtonBox">
-						<button
-							class="standardButton white rateButton"
-							id="rateGood"
-							onclick={() => {
-								playSound("basic_button");
-								submitRating(5);
-							}}
-						>
-							<Smile size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
-						</button>
-						<button
-							class="standardButton white rateButton"
-							id="rateBad"
-							onclick={() => {
-								playSound("basic_button");
-								submitRating(-3);
-							}}
-						>
-							<Frown size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
-						</button>
-						<button
-							class="standardButton white rateButton"
-							id="rateBroken"
-							onclick={() => {
-								playSound("basic_button");
-								submitRating(-10);
-							}}
-						>
-							<TriangleAlert size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
-						</button>
-					</div>
-				{/if}
-			</div>
-		{/if}
-		<button
-			id="leaderboardClose"
-			class="standardButton white closeButton"
-			onclick={() => {
-				playSound("basic_button");
-				showRatingBox = false;
-				leaderboardPopup = false;
-			}}>Close</button
-		>
-	</Popup>
-{/if}
+	{/if}
+</Popup>
 
 <!-- Competition Item Component -->
 {#snippet competitionItem(
@@ -617,7 +607,7 @@
 				{description}
 			</p>
 		</div>
-		<div class="buttonBoxRight competitionButtonBox">
+		<div class="competitionButtonBox">
 			<button
 				class="standardButton competitionButton white"
 				onclick={() => {
@@ -851,6 +841,10 @@
 	.competitionButtonBox {
 		margin-top: auto !important;
 		padding-top: 60px;
+		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
+		gap: var(--box-margin);
 	}
 
 	.marginTopAuto {
@@ -1038,7 +1032,7 @@
 		display: flex;
 		scrollbar-width: none;
 		width: 100%;
-		max-height: calc(80dvh - 235px);
+		max-height: min(600px, calc(100dvh - 300px));
 		justify-content: safe center;
 		flex-direction: column;
 	}

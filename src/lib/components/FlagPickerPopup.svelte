@@ -221,48 +221,35 @@
 	}
 </script>
 
-{#if $flagPickerPopup}
-	<Popup z={971} verySlim={true}>
-		<div class="popup-title">
-			<h1 id="pinPopupWindow">Flags</h1>
-		</div>
-		<div class="flag-container of-top of-bottom">
-			{#each Object.entries(continentFlags) as [continent, countries]}
-				<div class="continent-section">
-					<p class="continentTitle">{continent}</p>
-					<div class="flagSelector">
-						{#each countries as countryCode}
-							{#if FlagIcons[countryCode]}
-								<button
-									class="flagButton"
-									onclick={() => handleFlagClick(countryCode)}
-									title={countryCode}
-									class:flagSelected={$profileData?.["flag"] == countryCode}
-								>
-									<svelte:component this={FlagIcons[countryCode]} />
-								</button>
-							{/if}
-						{/each}
-					</div>
+<Popup z={971} verySlim={true} bind:open={$flagPickerPopup}>
+	<div class="popup-title">
+		<h1 id="pinPopupWindow">Flags</h1>
+	</div>
+	<div class="flag-container">
+		{#each Object.entries(continentFlags) as [continent, countries]}
+			<div class="continent-section">
+				<p class="continentTitle">{continent}</p>
+				<div class="flagSelector">
+					{#each countries as countryCode}
+						{#if FlagIcons[countryCode]}
+							<button
+								class="flagButton"
+								onclick={() => handleFlagClick(countryCode)}
+								title={countryCode}
+								class:flagSelected={$profileData?.["flag"] == countryCode}
+							>
+								<svelte:component this={FlagIcons[countryCode]} />
+							</button>
+						{/if}
+					{/each}
 				</div>
-			{/each}
-		</div>
-		<button
-			class="standardButton white closeButton"
-			onclick={() => {
-				playSound("basic_button");
-				flagPickerPopup.set(false);
-			}}
-		>
-			Close
-		</button>
-	</Popup>
-{/if}
+			</div>
+		{/each}
+	</div>
+</Popup>
 
 <style>
 	.flag-container {
-		max-height: calc(90dvh - 250px);
-		overflow-y: auto;
 		padding: 0 10px;
 	}
 
@@ -310,7 +297,9 @@
 		border: none;
 		cursor: pointer;
 		padding: 5px;
-		transition: transform 250ms ease, filter 250ms ease;
+		transition:
+			transform 250ms ease,
+			filter 250ms ease;
 		width: 40px;
 		height: 30px;
 		display: flex;

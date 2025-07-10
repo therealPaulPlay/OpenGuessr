@@ -9,8 +9,7 @@ OpenGuessr now uses [Svelte](https://svelte.dev).
 ## CSS
 
 The app.css file contains a bunch of default styles. Only if there is **no applicable predefined class**, create a new 
-one inside of a component or page. For example, use the classes standardButton and white for a regular, white button. Or use
-buttonBoxRight for a button container, in which buttons should be shifted to the right side. 
+one inside of a component or page. For example, use the classes standardButton and white for a regular, white button. Make sure to use the CSS variables for common margins, such as `--box-margin` for the margin of a regular container. 
 
 ## Developing
 

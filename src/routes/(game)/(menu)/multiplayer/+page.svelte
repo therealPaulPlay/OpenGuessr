@@ -1,14 +1,8 @@
 <script>
-	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info } from "lucide-svelte";
-	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup, troubleshootPopup } from "$lib/stores/uiStore";
+	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info, Earth, BicepsFlexed } from "lucide-svelte";
+	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import {
-		checkedForBan,
-		isAuthenticated,
-		isBanned,
-		banReportEntryData,
-		warnReportEntryData,
-	} from "$lib/stores/accountStore";
+	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
 	import { loadedFriendsData, hostStage, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
 	import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
 	import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
@@ -22,10 +16,12 @@
 	import { bounceInOut } from "svelte/easing";
 	import { ChevronDown, ChevronUp, History } from "lucide-svelte";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
-	import { fetchBlacklistStatus, fetchWarnlistStatus } from "$lib/utils/checkBanStatus";
+	import { fetchWarnlistStatus } from "$lib/utils/checkReportStatus";
 	import { get } from "svelte/store";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { showNotification } from "$lib/utils/notifications";
+	import { tooltip } from "$lib/utils/tooltip";
 
 	let friendsRefreshInterval;
 
@@ -39,8 +35,7 @@
 			loadFriends();
 		}, 15000);
 
-		// Check blacklist & warnlist if logged in and not already (async)
-		fetchBlacklistStatus();
+		// Check warnlist if logged in and not already (async)
 		fetchWarnlistStatus();
 	});
 
@@ -50,9 +45,6 @@
 
 	const nextMonth = new Date();
 	nextMonth.setMonth(nextMonth.getMonth() + 1, 1); // Set to first day of next month
-
-	// Skill based toggle
-	let skillBasedTabsValue = $derived($skillBasedMatchmaking ? 1 : 0);
 </script>
 
 <svelte:head>
@@ -77,23 +69,7 @@
 	{/if}
 	<div class="playBox">
 		<div class="groupPartyButtons">
-			<p class="playButtonsHeader">
-				Custom
-				<button
-					class="white standardButton transparentPillButton"
-					onclick={() => {
-						playSound("basic_button");
-						troubleshootPopup.set(true);
-					}}
-					>Troubleshooting
-					<img
-						class="multiplayerMenuIcon"
-						src="/img/error_icon.png"
-						alt="Lightning error symbol"
-						style="opacity: 60%; width: 18px;"
-					/></button
-				>
-			</p>
+			<p class="playButtonsHeader">Custom</p>
 			<div class="groupPartyContent">
 				<button
 					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
@@ -103,7 +79,9 @@
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/join");
-					}}>Join <span class="groupIcons"><Unplug size={19} strokeWidth={2.5} /></span></button
+					}}
+					>Join <span class="groupIcons"><Unplug size={20} strokeWidth={2.5} style="margin-bottom: -1px;" /></span
+					></button
 				>
 				<button
 					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
@@ -113,36 +91,15 @@
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/host");
-					}}>Host <span class="groupIcons"><PlusCircle size={19} strokeWidth={2.5} /></span></button
+					}}
+					>Host <span class="groupIcons"><PlusCircle size={20} strokeWidth={2.5} style="margin-bottom: -1px;" /></span
+					></button
 				>
 			</div>
 		</div>
 		<div class="groupPartyButtons">
 			<div class="playButtonsHeader">
 				<p>Matchmaking</p>
-				<div class="duelOptionsContainer">
-					<button
-						class="standardButton white transparentPillButton"
-						onclick={() => {
-							playSound("basic_button");
-							divisionMatchHistoryPopup.set(true);
-						}}
-						><span class="historyButtonText">History </span><History
-							size={19}
-							strokeWidth={2.25}
-							style="margin-bottom: -3px;"
-						/></button
-					>
-					<Tabs
-						tabs={["Any", "Skill-based"]}
-						class="skillBasedToggle"
-						selectedIndex={skillBasedTabsValue}
-						onchange={(_, selectionIndex) => {
-							playSound("basic_button");
-							$skillBasedMatchmaking = selectionIndex != 0;
-						}}
-					/>
-				</div>
 			</div>
 			<div class="groupPartyContent">
 				<button
@@ -155,7 +112,7 @@
 						findDuel();
 					}}
 				>
-					Find Duel
+					Find duel
 					<img
 						class="multiplayerMenuIcon"
 						style="margin-left: 5px;"
@@ -163,6 +120,30 @@
 						alt="Lightning error symbol"
 					/>
 				</button>
+				<button
+					class="standardButton white multiplayerSelect"
+					use:tooltip={{ text: "Skill-based / Everyone" }}
+					style:flex-grow={0}
+					onclick={() => {
+						$skillBasedMatchmaking = !$skillBasedMatchmaking;
+						showNotification("Matchmaking set to " + ($skillBasedMatchmaking ? "skill-based." : "everyone."));
+					}}
+				>
+					{#if $skillBasedMatchmaking}
+						<BicepsFlexed strokeWidth={2.25} style="margin-bottom: -3px;" />
+					{:else}
+						<Earth strokeWidth={2.25} style="margin-bottom: -3px;" />
+					{/if}
+				</button>
+				<button
+					class="standardButton white multiplayerSelect"
+					use:tooltip={{ text: "History" }}
+					style:flex-grow={0}
+					onclick={() => {
+						playSound("basic_button");
+						divisionMatchHistoryPopup.set(true);
+					}}><History strokeWidth={2.25} style="margin-bottom: -4px;" /></button
+				>
 			</div>
 		</div>
 	</div>
@@ -198,7 +179,7 @@
 					} else {
 						signupPrompt();
 					}
-				}}><p class="addFriendText">Add friend <ContactRound strokeWidth={2.5} size={20} /></p></button
+				}}><p class="addFriendText">Add friend <ContactRound strokeWidth={2.5} size={22} /></p></button
 			>
 			<button
 				class="standardButton white friendActionButton"
@@ -272,15 +253,9 @@
 	}
 
 	:global(.skillBasedToggle) {
-		border: none !important;
-		height: fit-content !important;
-	}
-
-	:global(.skillBasedToggle button) {
-		padding-top: 0 !important;
-		padding-bottom: 3px !important;
-		height: 30px !important;
-		background-color: rgba(255, 255, 255, 0.1);
+		flex-grow: 0;
+		border-radius: 10px !important;
+		height: 50px !important;
 	}
 
 	.warnInfo {
@@ -294,23 +269,8 @@
 		margin-inline: 3px;
 	}
 
-	.duelOptionsContainer {
-		display: flex;
-		gap: var(--box-margin);
-		justify-content: center;
-		align-items: center;
-	}
-
 	.friendButtonLeft {
 		margin-left: auto;
-	}
-
-	.transparentPillButton {
-		background-color: rgba(255, 255, 255, 0.1);
-		padding-top: 0;
-		padding-bottom: 3px;
-		border: none;
-		height: 30px;
 	}
 
 	:global(.triangleAlertMarginRight) {
@@ -538,16 +498,6 @@
 		height: 20px;
 		vertical-align: -3px;
 		margin-left: 5px;
-	}
-
-	.historyButtonText {
-		margin-right: 5px;
-	}
-
-	@media (max-width: 800px) {
-		.historyButtonText {
-			display: none;
-		}
 	}
 
 	@keyframes duelButtonGlint {

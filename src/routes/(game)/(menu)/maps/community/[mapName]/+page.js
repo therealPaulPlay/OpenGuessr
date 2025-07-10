@@ -1,34 +1,37 @@
 import { accountUrl } from '$lib/stores/context-specific/apiConfigStore.js';
 import { get } from 'svelte/store';
+import { error } from '@sveltejs/kit';
 
 // Load Map data
-export async function load({ params }) {
+export async function load({ params, fetch }) {
   const { mapName } = params; // Extract mapName from the route
 
   try {
+    // Use SvelteKit's fetch for better SSR/hydration compatibility
     const response = await fetch(get(accountUrl) + `/maps/${mapName.replaceAll("_", " ")}`);
-    if (!response.ok) throw new Error('Failed to fetch map data');
+    if (!response.ok) throw error(response.status, `Map not found`);
 
     const mapData = await response.json();
+    if (!mapData.map_data_url) throw error(500, 'Map data URL missing!');
 
     try {
-      // Second fetch: Get the actual map JSON data from the Spaces URL
-      if (!mapData.map_data_url) throw new Error("No map data URL provided");
       const mapContentResponse = await fetch(mapData.map_data_url);
-      if (!mapContentResponse.ok) throw new Error('Failed to fetch map content from object storage');
+      if (!mapContentResponse.ok) throw error(500, 'Failed to fetch map content from object storage');
 
-      // Parse the JSON response
+      // Parse response as json
       const mapContent = await mapContentResponse.json();
-      mapData.map_data = mapContent; // Add the map content to the mapData object
+      mapData.map_data = mapContent;
 
-    } catch (error) {
-      throw new Error('Failed to load map content json: ' + error.message);
+      return mapData;
+
+    } catch (fetchError) {
+      console.error('Map content fetch error:', fetchError);
+      throw error(500, 'Failed to load map content');
     }
 
-    // Return the complete map data to be available in the page
-    return mapData;
   } catch (error) {
-    console.error('Error loading map data:', error);
-    throw error;
+    console.error('Load function error:', error);
+    if (error.status) throw error; // Re-throw SvelteKit errors
+    throw error(500, 'Failed to load map data');
   }
 }
