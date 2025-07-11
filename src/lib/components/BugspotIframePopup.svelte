@@ -14,7 +14,13 @@
 					originals[i].apply(console, args);
 					// Skip iframe logs
 					if (window === window.top) {
-						const msg = args.map((a) => (typeof a === "object" ? JSON.stringify(a) : String(a))).join(" ");
+						const msg = args
+							.map((a) => {
+								if (a instanceof Error) return a.message;
+								if (typeof a === "object" && a !== null) return `[${a.constructor?.name || "Object"}]`;
+								return String(a);
+							})
+							.join(" ");
 						consoleLogs.push(`${method.charAt(0).toUpperCase() + method.slice(1)}: ${msg}`);
 						if (consoleLogs.length > 50) consoleLogs = consoleLogs.slice(-50);
 					}

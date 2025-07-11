@@ -423,7 +423,7 @@
 	.switchFormBox {
 		display: flex;
 		gap: var(--box-margin);
-		box-shadow: var(--button-shadow);
+		box-shadow: var(--box-shadow);
 		align-items: center;
 		justify-content: space-between;
 		min-width: 250px;

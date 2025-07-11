@@ -538,7 +538,6 @@
 		min-height: 55px;
 		border-radius: 10px;
 		margin-bottom: var(--layout-margin);
-		box-shadow: var(--box-shadow);
 		transition: background-color 250ms ease;
 	}
 

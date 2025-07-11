@@ -189,7 +189,6 @@
 
 	#multiplayerMessageInput {
 		padding: 10px;
-		border-radius: 5px;
 		height: 20px;
 		flex-grow: 1;
 		width: 0;
