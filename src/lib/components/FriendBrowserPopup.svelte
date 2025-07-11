@@ -7,6 +7,7 @@
 	import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { Search } from "lucide-svelte";
 
 	let userSearchResults = $state();
 	let searchQuery = $state("");
@@ -78,7 +79,7 @@
 				startSearch();
 			}}
 		>
-			<img src="/img/find_icon.png" alt="start search" id="playerSearchIcon" />
+			<Search size={20} strokeWidth={2.5} style="margin-top: 3px;" />
 		</button>
 	</search>
 	<div class="containerBox">
@@ -151,12 +152,6 @@
 		gap: var(--box-margin);
 	}
 
-	#playerSearchIcon {
-		width: 20px;
-		height: 20px;
-		vertical-align: -1px;
-	}
-
 	#addFriendIcon {
 		width: 22px;
 		height: 22px;
@@ -198,13 +193,15 @@
 
 	#friendBrowserInput {
 		padding-inline: var(--layout-margin);
-		font-size: 22px;
 		flex-grow: 1;
+		min-width: 0;
 	}
 
 	.playerSearch {
 		margin-bottom: var(--layout-margin);
 		gap: var(--layout-margin);
+		display: flex;
+		justify-content: end;
 	}
 
 	#startFriendSearch {

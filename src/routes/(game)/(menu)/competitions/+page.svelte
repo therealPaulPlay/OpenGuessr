@@ -9,7 +9,7 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
-	import { Frown, Plus, Smile, TriangleAlert } from "lucide-svelte";
+	import { Frown, Plus, Search, Smile, TriangleAlert } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
@@ -689,24 +689,35 @@
 		>
 	</div>
 	<div class="buttonToolbar">
+		<Tabs
+			tabs={["All", "Not entered"]}
+			class="hideEnteredCompsToggle"
+			bind:selected={expiredTabsSelection}
+			onchange={(_, selectionIndex) => {
+				playSound("basic_button");
+				activeCompetitionsData = []; // Reset loaded data
+				searchQuery = ""; // Reset search query
+				hideEntered = Boolean(selectionIndex); // 0 = false, 1 = true
+				notExpiredIndex = 0;
+				getCompetitionsFromServer(false, false, false, hideEntered);
+			}}
+		/>
 		<search>
-			<form>
-				<input
-					id="competitionSearch"
-					bind:value={searchQuery}
-					placeholder="Search competitions"
-					onkeydown={(event) => {
-						if (event.key === "Enter") {
-							event.preventDefault();
-						}
-					}}
-					onkeyup={(event) => {
-						if (event.key === "Enter") {
-							startSearch();
-						}
-					}}
-				/>
-			</form>
+			<input
+				id="competitionSearch"
+				bind:value={searchQuery}
+				placeholder="Search competitions"
+				onkeydown={(event) => {
+					if (event.key === "Enter") {
+						event.preventDefault();
+					}
+				}}
+				onkeyup={(event) => {
+					if (event.key === "Enter") {
+						startSearch();
+					}
+				}}
+			/>
 			<button
 				id="startSearch"
 				class="standardButton white"
@@ -715,21 +726,8 @@
 					startSearch();
 				}}
 			>
-				<img src="/img/find_icon.png" alt="start search" id="searchIcon" />
+				<Search size={20} strokeWidth={2.5} />
 			</button>
-			<Tabs
-				tabs={["All", "Not entered"]}
-				class="hideEnteredCompsToggle"
-				bind:selected={expiredTabsSelection}
-				onchange={(_, selectionIndex) => {
-					playSound("basic_button");
-					activeCompetitionsData = []; // Reset loaded data
-					searchQuery = ""; // Reset search query
-					hideEntered = Boolean(selectionIndex); // 0 = false, 1 = true
-					notExpiredIndex = 0;
-					getCompetitionsFromServer(false, false, false, hideEntered);
-				}}
-			/>
 		</search>
 	</div>
 	<div id="competitionArea" class="competitionArea">
@@ -1119,27 +1117,19 @@
 	search {
 		display: flex;
 		justify-content: start;
-		width: 100%;
-		max-width: 450px;
 		gap: var(--box-margin);
-	}
-
-	search form {
-		width: 45%;
+		overflow: hidden;
 	}
 
 	#competitionSearch {
-		width: calc(100% - 20px);
-		max-width: 700px;
 		transition: background-color 250ms ease;
-		font-size: 22px;
 		padding-inline: 10px;
-		height: 100%;
+		min-width: 0;
+		flex-grow: 1;
 		text-overflow: ellipsis;
 	}
 
 	#startSearch {
-		max-width: 40px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -1252,8 +1242,8 @@
 			flex-grow: 1;
 		}
 
-		search form {
-			width: 30%;
+		search {
+			flex-grow: 1;
 		}
 
 		.competitionButton {

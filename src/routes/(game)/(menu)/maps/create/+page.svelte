@@ -13,59 +13,58 @@
 
 	let jsonPopup = $state(false);
 	let fileName = $state("Pick file");
-
-	async function uploadMap() {
-		// if successful, close underlying menu
-		let operationMessage = await submitMap();
-
-		if (operationMessage.includes("success")) {
-			goto("/maps/community/" + mapName.replaceAll(" ", "_").toLowerCase()); // Open the map page after submitting
-			showNotification("Map created!");
-		} else {
-			errorPopup("Error occured uploading a map", "Please refer to the error code below.", operationMessage);
-		}
-	}
-
 	let filePicker = $state();
 	let mapName = $state();
 	let mapDescription = $state();
 	let uploadMapDataValue = $state();
 	let categoryValue = $state();
 
+	async function combineMapData() {
+		const locations = [];
+
+		// Add locations from textarea
+		if (uploadMapDataValue?.trim()) {
+			const textLocations = extractCoordinates(uploadMapDataValue);
+			locations.push(...JSON.parse(textLocations).locations);
+		}
+
+		// Add locations from file
+		if (filePicker?.files?.[0]) {
+			const fileLocations = await getJsonStringFromFile(filePicker.files[0]);
+			locations.push(...JSON.parse(fileLocations).locations);
+		}
+
+		return JSON.stringify({ locations });
+	}
+
+	async function uploadMap() {
+		const operationMessage = await submitMap();
+		if (operationMessage.includes("success")) {
+			goto("/maps/community/" + mapName.replaceAll(" ", "_").toLowerCase());
+			showNotification("Map created!");
+		} else {
+			errorPopup("Error occured uploading a map", "Please refer to the error code below.", operationMessage);
+		}
+	}
+
 	async function submitMap() {
-		let inputFromFilepicker = false;
 		const name = mapName;
 		const description = mapDescription;
-		const mapData = filePicker.value ? filePicker.files[0] : uploadMapDataValue;
-		inputFromFilepicker = filePicker.value ? true : false;
-
 		const author = get(username);
 		const id = localStorage.getItem("id");
 		const category = categoryValue;
 
-		// Validate inputs
-		if (!name || !description || !mapData || !author || !id || category == "none") {
+		if (!name || !description || !author || !id || category == "none") {
 			return "All fields and a selected category are required.";
 		}
 
-		// Construct the payload
-		let payload;
-		try {
-			payload = {
-				id,
-				name,
-				author,
-				description,
-				mapData: inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData), // assuming mapData is a JSON string
-				category: category,
-			};
-		} catch (error) {
-			console.error("Error creating payload and extracting coordinates: " + error);
-			return "Error extracting the cordinates: " + error;
-		}
+		if (!uploadMapDataValue?.trim() && !filePicker?.files?.[0])
+			return "Please provide locations either as text or upload a file.";
 
 		try {
-			// Send POST request to the server
+			const mapData = await combineMapData();
+			const payload = { id, name, author, description, mapData, category };
+
 			const response = await fetch($accountUrl + "/maps", {
 				method: "POST",
 				headers: {
@@ -75,29 +74,20 @@
 				body: JSON.stringify(payload),
 			});
 
-			// Parse the response
 			const result = await response.json();
 
-			// Return the success or error message
 			if (response.ok) {
-				return `Map submitted successfully!`; // must include "success"
+				return `Map submitted successfully!`; // Must include success!
 			} else {
 				let resultErrors = "";
-				try {
-					result.errors.forEach((e) => {
-						resultErrors += e.msg;
-						resultErrors += " ";
-					});
-				} catch (e) {}
-				if (result.error != undefined || result.error != null) {
-					resultErrors += result.error;
-				}
-				console.error("Errors occured during map submission on the server: " + resultErrors);
+				result.errors?.forEach((e) => (resultErrors += e.msg + " "));
+				if (result.error) resultErrors += result.error;
+				console.error("Error(s) occured trying to submit a map: " + resultErrors);
 				return resultErrors || "Failed to submit map.";
 			}
 		} catch (error) {
 			console.error("Error submitting map:", error);
-			return "A network error occurred while submitting the map. Please try again.";
+			return "Error submitting map: " + error;
 		}
 	}
 </script>
@@ -191,7 +181,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 			class="standardButton white"
 			onclick={() => {
 				playSound("basic_button");
-				jsonUpload.click();
+				filePicker.click();
 			}}
 		>
 			<input
@@ -341,7 +331,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		width: calc(100% - 30px);
 		padding: 20px;
 		transition: background-color 250ms ease;
-		box-shadow: var(--button-shadow);
 	}
 
 	.locationTextbox:focus {

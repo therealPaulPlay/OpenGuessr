@@ -30,7 +30,9 @@
 </script>
 
 <Popup verySlim={true} z={982} bind:open={$confirmPopupVisible}>
-	<h1 class="popup-title">{$confirmTitle}</h1>
+	<div class="popup-title">
+		<h1>{$confirmTitle}</h1>
+	</div>
 	<p class="popup-description">{$confirmDescription}</p>
 	{#if $confirmPasswordInput}
 		<input class="confirmPopupInput" type="password" placeholder="Your password" bind:value={$confirmPasswordValue} />
