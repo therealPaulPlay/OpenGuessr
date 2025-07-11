@@ -1130,7 +1130,6 @@
 	}
 
 	#startSearch {
-		padding-inline: var(--panel-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;
