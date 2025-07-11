@@ -39,12 +39,19 @@
 	}
 </script>
 
-<Popup verySlim={true} z={980} bind:open={$guestNamePickerPopup} onclose={() => {
-	$guestNamePromise = null;
-	leaveMultiplayerRound();
-	goto("/multiplayer");
-}}>
-	<h1 class="popup-title">Pick a name</h1>
+<Popup
+	verySlim={true}
+	z={980}
+	bind:open={$guestNamePickerPopup}
+	onclose={() => {
+		$guestNamePromise = null;
+		leaveMultiplayerRound();
+		goto("/multiplayer");
+	}}
+>
+	<div class="popup-title">
+		<h1>Pick a name</h1>
+	</div>
 	<p class="popup-description">Please choose a temporary name for multiplayer.</p>
 	<div class="fullWidth">
 		<input type="text" class="namePopupInput" placeholder="Guest name" maxlength="30" bind:value={$guestName} />
