@@ -1,5 +1,5 @@
 <script>
-	import { Plus, XCircle, ExternalLinkIcon, User } from "lucide-svelte";
+	import { Plus, XCircle, ExternalLinkIcon, User, Search } from "lucide-svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { crazyGames, disableExternalLinks } from "$lib/stores/context-specific/platformSettingsStore";
@@ -481,7 +481,7 @@
 					startSearch();
 				}}
 			>
-				<img src="/img/find_icon.png" alt="start search" id="searchIcon" />
+				<Search size={20} strokeWidth={2.5} />
 			</button>
 		</search>
 	</div>
@@ -840,11 +840,6 @@
 		min-height: 69px;
 		justify-content: center;
 		gap: 10px;
-	}
-
-	#searchIcon {
-		width: 20px;
-		height: 20px;
 	}
 
 	@media (max-width: 800px) {

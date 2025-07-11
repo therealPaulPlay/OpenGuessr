@@ -1,5 +1,5 @@
 <script>
-	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info, Earth, BicepsFlexed } from "lucide-svelte";
+	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info, Earth, BicepsFlexed, Search } from "lucide-svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
@@ -113,12 +113,7 @@
 					}}
 				>
 					Find duel
-					<img
-						class="multiplayerMenuIcon"
-						style="margin-left: 5px;"
-						src="/img/find_icon.png"
-						alt="Lightning error symbol"
-					/>
+					<Search size={20} strokeWidth={2.75} style="margin-bottom: -2px; margin-left: 1px;" />
 				</button>
 				<button
 					class="standardButton white multiplayerSelect"
@@ -442,12 +437,6 @@
 		left: 0;
 		transform: rotate(30deg);
 		pointer-events: none;
-	}
-
-	.multiplayerMenuIcon {
-		width: 20px;
-		height: auto;
-		margin-bottom: -2px;
 	}
 
 	.noFriendsText {
