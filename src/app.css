@@ -114,7 +114,7 @@ span {
 
 input {
     color: white;
-    box-shadow: var(--button-shadow);
+    box-shadow: var(--box-shadow);
     background-color: rgba(255, 255, 255, 0.1);
     transition: background-color 250ms ease;
     border-radius: 5px;
@@ -337,6 +337,7 @@ li {
 
 textarea {
     background-color: var(--box-color);
+    box-shadow: var(--box-shadow);
     outline: none !important;
     border: none;
     resize: none;

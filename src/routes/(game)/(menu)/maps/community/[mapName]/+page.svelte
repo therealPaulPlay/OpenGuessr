@@ -149,29 +149,42 @@
 	let showStatus = $state(false);
 	let statusText = $state("Default...");
 	let textareaValue = $state();
+	let addInsteadOfOverwrite = $state(false);
 
-	let addInsteadOfOverwrite = $state(false); // Add locations instead of overwriting the old ones
+	async function combineUpdateData() {
+		const locations = [];
+
+		// Add locations from textarea
+		if (textareaValue?.trim()) {
+			const textLocations = extractCoordinates(textareaValue);
+			locations.push(...JSON.parse(textLocations).locations);
+		}
+
+		// Add locations from file
+		if (filePicker?.files?.[0]) {
+			const fileLocations = await getJsonStringFromFile(filePicker.files[0]);
+			locations.push(...JSON.parse(fileLocations).locations);
+		}
+
+		return locations;
+	}
 
 	async function updateMap(mapName) {
-		let inputFromFilepicker = false;
-		const mapData = filePicker.value ? filePicker.files[0] : textareaValue;
-		inputFromFilepicker = filePicker.value ? true : false;
-
 		try {
-			let newLocations = inputFromFilepicker ? await getJsonStringFromFile(mapData) : extractCoordinates(mapData);
-			let newMapData = newLocations;
+			const newLocations = await combineUpdateData();
+			if (newLocations.length === 0) return "Please provide locations either as text or upload a file.";
 
-			// If add instead of overwrite is selected, add the new locations to the old ones
+			let finalLocations = newLocations;
+
+			// If add instead of overwrite, combine with existing locations
 			if (addInsteadOfOverwrite) {
-				newMapData = JSON.stringify({
-					locations: [...mapLocationData?.locations, ...JSON.parse(newLocations)?.locations],
-				});
+				finalLocations = [...mapLocationData?.locations, ...newLocations];
 			}
 
 			const body = {
 				id: localStorage.getItem("id"),
 				name: mapName,
-				mapData: newMapData,
+				mapData: JSON.stringify({ locations: finalLocations }),
 			};
 
 			// Send POST request to the server
