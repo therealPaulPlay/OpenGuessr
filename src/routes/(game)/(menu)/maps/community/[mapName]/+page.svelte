@@ -456,7 +456,7 @@
 	.mapContainer {
 		width: 100%;
 		height: 250px;
-		max-height: 25dvh;
+		max-height: 25svh;
 		border-radius: 15px;
 		background-color: var(--box-color);
 		overflow: hidden;
@@ -616,7 +616,7 @@
 	.mapViewIframe {
 		width: 100%;
 		height: 400px;
-		max-height: 35dvh;
+		max-height: 35svh;
 		border-radius: 15px;
 		overflow: hidden;
 		margin-bottom: calc(var(--layout-margin) * -2);
