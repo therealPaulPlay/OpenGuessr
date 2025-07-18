@@ -46,15 +46,7 @@
 	});
 
 	function updatePlayerTeam(playerId, newTeamIndex) {
-		const playerIndex = get(socket)?.getStorage?.players?.findIndex((player) => player[0] === playerId);
-
-		if (playerIndex !== -1) {
-			const thisPlayer = get(socket)?.getStorage?.players[playerIndex];
-			let newPlayer = [...thisPlayer];
-			newPlayer[4] = parseInt(newTeamIndex); // Update team index at position 4
-
-			get(socket)?.updateStorageArray("players", "update-matching", thisPlayer, newPlayer);
-		}
+		get(socket)?.sendRequest("playersUpdateTeam", { newTeamIndex: parseInt(newTeamIndex), playerClientId: playerId });
 	}
 
 	// Restriction toggle
@@ -74,6 +66,11 @@
 	function toggleMultiplayerStyle() {
 		const currentStyleIndex = (styles.findIndex((e) => e == get(multiplayerStyle)) + 1) % styles.length;
 		multiplayerStyle.set(styles[currentStyleIndex]);
+	}
+
+	// Truncate name
+	function truncatePlayerName(text, max = 10) {
+		return text?.length > max ? text?.slice(0, max) + "…" : text;
 	}
 </script>
 
@@ -151,7 +148,7 @@
 						{#if $multiplayerTableArray?.length > 0}
 							{#each $multiplayerTableArray as player, i}
 								<span class="playerNameInline"
-									>{player[1]}{#if i < $multiplayerTableArray.length - 1}<span>,&nbsp;</span>{/if}
+									>{truncatePlayerName(player[1])}{#if i < $multiplayerTableArray.length - 1}<span>,&nbsp;</span>{/if}
 								</span>
 							{/each}
 						{:else}
@@ -166,7 +163,7 @@
 							{#if team.players?.length > 0}
 								{#each team.players as player, i (player[0])}
 									<span class="playerNameInline">
-										{player[1]}
+										{truncatePlayerName(player[1])}
 										<select
 											name="teams"
 											class="teamSelector standardButton white"
@@ -174,7 +171,7 @@
 										>
 											{#each Object.values($multiplayerTableArray) as teamObject}
 												{@const index = teamObject.teamIndex}
-												<option value={index} selected={player[4] == index}>{index}</option>
+												<option value={index} selected={player[4] == index}>Team {index}</option>
 											{/each}
 										</select>{#if i < team.players.length - 1}<span>,&nbsp;</span>{/if}
 									</span>
