@@ -5,7 +5,7 @@ import { filterProfanity } from "$lib/utils/profanityCheck";
 
 export function manuallySendChat(text) {
     if (!text) return;
-    get(socket)?.updateStorageArray("chats", "add", (get(username) || get(guestName)) + ": " + text);
+    get(socket)?.updateStorage("chats", "array-add", (get(username) || get(guestName)) + ": " + text);
 }
 
 export async function loadChat(chats) {
