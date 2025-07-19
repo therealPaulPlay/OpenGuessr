@@ -78,35 +78,20 @@ function endRoundAndShowResult() {
         continueText.set("Continue");
     }
     enableResultScreen(get(mapPinLat), get(mapPinLng));
-    get(socket)?.updateStorage("timerStart", false);
-    get(socket)?.updateStorage("confirmedArray", []); // Reset confirmed guesses AFTER result to prevent multiple triggers
+    get(socket)?.updateStorage("timerStart", "set", false);
+    get(socket)?.updateStorage("confirmedArray", "set", []); // Reset confirmed guesses AFTER result to prevent multiple triggers
 }
 
 // Utility -----------------------------------------------------------------------------------------------------------------------------------
 export function addMultiplayerGuessMarker() {
     // Remove previous guess entry (if exists)
     const yourElement = get(socket)?.getStorage?.guessLocationsArray?.find((element) => element.id == get(socket)?.id);
-    if (yourElement) get(socket)?.updateStorageArray("guessLocationsArray", "remove-matching", yourElement);
-    get(socket)?.updateStorageArray("guessLocationsArray", "add", { id: get(socket)?.id, lat: get(mapPinLat), long: get(mapPinLng), pin: get(selectedPinIndex), username: get(username) || get(guestName), team: getTeamFromMultiplayerId(get(socket)?.id) });
+    if (yourElement) get(socket)?.updateStorage("guessLocationsArray", "array-remove-matching", yourElement);
+    get(socket)?.updateStorage("guessLocationsArray", "array-add", { id: get(socket)?.id, lat: get(mapPinLat), long: get(mapPinLng), pin: get(selectedPinIndex), username: get(username) || get(guestName), team: getTeamFromMultiplayerId(get(socket)?.id) });
 }
 
 export function updateMultiplayerScore(addScore) {
-    const playerIndex = get(socket)?.getStorage?.players?.findIndex(player => player[0] === get(socket)?.id);
-    if (playerIndex !== -1) {
-        const thisPlayer = get(socket)?.getStorage?.players[playerIndex];
-        let newPlayer = [...thisPlayer];
-        if (get(multiplayerStyle) == "duel" && get(socket)?.getStorage?.currentRound > 3) addScore = Math.round(addScore * 1.5); // Duel Multiplier from round 3 onwards
-        newPlayer[3] = newPlayer[3] + addScore;
-        get(socket)?.updateStorageArray("players", "update-matching", thisPlayer, newPlayer);
-    }
-}
-
-function removePlayerById(id) {
-    const index = get(socket)?.getStorage?.players?.findIndex(entry => entry[0] === id);
-    if (index >= 0) {
-        const contentToRemove = get(socket)?.getStorage?.players[index];
-        get(socket)?.updateStorageArray("players", "remove-matching", contentToRemove);
-    }
+    get(socket).sendRequest("playersAddScore", addScore);
 }
 
 // Create multiplayer instance -----------------------------------------------------------------------------------------------------------------------
@@ -146,17 +131,13 @@ export async function createMultiplayerInstance() {
 
             // Someone disconnected...
             get(socket).onEvent('clientDisconnected', (id) => {
-                const name = get(socket)?.getStorage?.players?.find((p) => p[0] == id)?.[1] || "Unknown";
-                if (get(socket)?.isHost) get(socket)?.updateStorageArray("chats", "add", `System: ${name} left.`);
                 connectionCount.set(get(socket)?.connectionCount);
-                removePlayerById(id);
             });
 
             get(socket).onEvent('hostMigrated', () => {
                 if (!get(socket)?.getStorage?.gameStarted && get(multiplayer) && get(socket)?.isHost) startRoom();
             });
 
-            let playerAdded;
             let startMultiplayerRoundTimeout;
 
             get(socket).onEvent('storageUpdated', (storage) => {
@@ -169,15 +150,9 @@ export async function createMultiplayerInstance() {
                 }
 
                 // If player is not already in the room, add player info
-                if (!playerAdded && get(socket)?.getStorage?.players?.findIndex((player) => player[0] == get(socket)?.id) == -1) {
-                    playerAdded = true;
-
-                    // Calculate the team
-                    const playerCount = get(socket)?.getStorage?.players.length;
-                    const teamNumber = get(teamAmount) <= 1 ? 1 : ((playerCount % get(teamAmount)) + 1);
-
-                    get(socket)?.updateStorageArray("players", "add-unique", [get(socket)?.id, get(username) || get(guestName), get(elo), 0, teamNumber, localStorage.getItem("id"), get(selectedBadge)]);
-                    if (get(socket)?.getStorage?.highestSupporterLevel < (get(supporterLevel) || 0)) get(socket)?.updateStorage("highestSupporterLevel", get(supporterLevel));
+                if (get(socket)?.getStorage?.players?.findIndex((player) => player[0] == get(socket)?.id) == -1) {
+                    get(socket).sendRequest("playersAdd", { teamAmount: get(teamAmount), guestName: get(guestName) || null });
+                    if (get(socket)?.getStorage?.highestSupporterLevel < (get(supporterLevel) || 0)) get(socket)?.updateStorage("highestSupporterLevel", "set", get(supporterLevel));
                 }
 
                 if (storage.players) updateMultiplayerTableArray(); // Do this before showing the overlay
@@ -213,7 +188,7 @@ export async function createMultiplayerInstance() {
 
                     } else {
                         disableResultScreen();
-                        get(socket)?.updateStorage("overlay", true);
+                        get(socket)?.updateStorage("overlay", "set", true);
 
                         if (storage.currentRound < get(roundAmount)) {
                             // Start new round
@@ -229,7 +204,7 @@ export async function createMultiplayerInstance() {
 
                 // Check if all guesses are in, and if so, end round
                 if (storage.players?.length && storage.confirmedArray?.length >= storage.players?.length && get(resultScreenEnabled) == false && !storage?.showResult) {
-                    get(socket)?.updateStorage("showResult", true);
+                    get(socket)?.updateStorage("showResult", "set", true);
                 }
 
                 // Set coordinates
@@ -306,7 +281,7 @@ function findNextDuel() {
 async function showTimeReducedOverlay(time, show) {
     if (time && multiplayerTimer?.getRemainingTime() > 15) {
         const serverTime = await getServerTimestamp();
-        get(socket)?.updateStorage("timerStart", { timestamp: serverTime, length: time }); // Start timer with new time
+        get(socket)?.updateStorage("timerStart", "set", { timestamp: serverTime, length: time }); // Start timer with new time
     }
     if (show && !get(timeReducedOverlay)) {
         try {
@@ -314,7 +289,7 @@ async function showTimeReducedOverlay(time, show) {
             playSound("time_reduced");
             setTimeout(() => {
                 timeReducedOverlay.set(false);
-                get(socket)?.updateStorage("timeReducedOverlay", false);
+                get(socket)?.updateStorage("timeReducedOverlay", "set", false);
             }, 3000)
         } catch (error) { console.warn("Error showing time reduce overlay:", error) }
     }
@@ -384,35 +359,35 @@ export function startRoom() {
     setMultiplayerUI();
     matchmakingActive.set(false);
     goto("/"); // Creation page -> home
-    get(socket)?.updateStorage("gameStarted", true);
+    get(socket)?.updateStorage("gameStarted", "set", true);
     startMultiplayerRound();
 }
 
 function multiplayerPerformRematch() {
-    get(socket)?.updateStorage("rematch", false);
-    get(socket)?.updateStorage("firstRoundPlayed", false);
-    get(socket)?.updateStorage("currentRound", 0);
+    get(socket)?.updateStorage("rematch", "set", false);
+    get(socket)?.updateStorage("firstRoundPlayed", "set", false);
+    get(socket)?.updateStorage("currentRound", "set", 0);
 
     // Reset player scores
     const playersArray = get(socket)?.getStorage?.players;
     playersArray.forEach((element) => {
         element[3] = 0;
     });
-    get(socket)?.updateStorage("players", playersArray);
+    get(socket)?.sendRequest("playersResetScores");
     startRoom();
 }
 
 async function startMultiplayerRound() {
     if (!get(socket)?.isHost) return;
     await checkGenerationTypeAndGenerate();
-    get(socket)?.updateStorage("location", [get(currentLocationLatitude), get(currentLocationLongitude)]); // Set coordinates
-    get(socket)?.updateStorage("guessLocationsArray", []); // Reset guesses
-    get(socket)?.updateStorage("timeReducedOverlay", false); // Ensure no reduced timer from before interferes
+    get(socket)?.updateStorage("location", "set", [get(currentLocationLatitude), get(currentLocationLongitude)]); // Set coordinates
+    get(socket)?.updateStorage("guessLocationsArray", "set", []); // Reset guesses
+    get(socket)?.updateStorage("timeReducedOverlay", "set", false); // Ensure no reduced timer from before interferes
 
     // Countdown
-    get(socket)?.updateStorage("countdownActive", true);
-    get(socket)?.updateStorage("currentRound", get(socket)?.getStorage?.currentRound + 1);
-    get(socket)?.updateStorageArray("chats", "add", `System: Starting round ${get(socket)?.getStorage?.currentRound}.`);
+    get(socket)?.updateStorage("countdownActive", "set", true);
+    get(socket)?.updateStorage("currentRound", "set", get(socket)?.getStorage?.currentRound + 1);
+    get(socket)?.updateStorage("chats", "array-add", `System: Starting round ${get(socket)?.getStorage?.currentRound}.`);
 }
 
 export async function joinRoom(code) {
@@ -429,7 +404,6 @@ export async function joinRoom(code) {
         matchmakingActive.set(false);
         setMultiplayerUI();
         goto("/");
-        get(socket)?.updateStorageArray("chats", "add", `System: ${get(username) || get(guestName)} joined.`);
     } catch (error) {
         multiplayer.set(false);
         console.error("Error occured joining room:", error); // Status will be set by playpeerjs / playsocketjs
@@ -612,20 +586,20 @@ async function multiplayerOverlayCountdown() {
     countdownInterval = setInterval(async function () {
         if (countdown > 0) {
             multiplayerOverlayTitle.set(`Starting... ${countdown}`);
-            get(socket)?.updateStorage("countdownActive", false);
+            get(socket)?.updateStorage("countdownActive", "set", false);
             playSound("match_countdown");
             countdown--;
         } else {
             clearInterval(countdownInterval); // Stop the countdown
             countdownInterval = null;
 
-            get(socket)?.updateStorage("overlay", false); // Hide overlay (round starts)
-            get(socket)?.updateStorage("firstRoundPlayed", true);
+            get(socket)?.updateStorage("overlay", "set", false); // Hide overlay (round starts)
+            get(socket)?.updateStorage("firstRoundPlayed", "set", true);
             playSound("match_countdown_start");
 
             // Timer
             const serverTime = await getServerTimestamp();
-            get(socket)?.updateStorage("timerStart", { timestamp: serverTime, length: get(roundLength) });
+            get(socket)?.updateStorage("timerStart", "set", { timestamp: serverTime, length: get(roundLength) });
         }
     }, 1000);
 }
@@ -645,6 +619,6 @@ function multiplayerTimerExpired() {
     const hasSubmittedMarker = get(socket)?.getStorage?.guessLocationsArray?.find((element) => element.id == get(socket)?.id);
     if (!hasSubmittedMarker) addMultiplayerGuessMarker(); // Only add default / previous marker if the player actually hasnt guessed yet...
     setTimeout(() => {
-        get(socket)?.updateStorage("showResult", true);
+        get(socket)?.updateStorage("showResult", "set", true);
     }, 1000); // Wait for guesses to arrive
 }

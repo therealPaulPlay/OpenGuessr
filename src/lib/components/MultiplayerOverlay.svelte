@@ -48,9 +48,7 @@
 									role="cell"
 									tabindex="0"
 									onclick={() => {
-										if (id) {
-											loadProfileFromId(id, true);
-										}
+										if (id) loadProfileFromId(id, true);
 									}}
 								>
 									<span class="usernameSpan">{username}</span>
@@ -81,9 +79,7 @@
 								role="cell"
 								tabindex="0"
 								onclick={() => {
-									if (id) {
-										loadProfileFromId(id, true);
-									}
+									if (id) loadProfileFromId(id, true);
 								}}
 							>
 								<span class="usernameSpan">{username}</span>
@@ -109,7 +105,7 @@
 					class="standardButton white"
 					onclick={() => {
 						playSound("basic_button");
-						get(socket)?.updateStorage("rematch", true);
+						get(socket)?.updateStorage("rematch", "set", true);
 					}}>Play again</button
 				>
 			{/if}
