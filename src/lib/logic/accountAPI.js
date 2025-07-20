@@ -287,7 +287,7 @@ export function displayError(errorTitle = "", source, errorMsg = "") {
     }, 7000));
 
   } else if (source == "index") {
-    if (!errorMsg) errorPopup("Backend error", "The server could not be reached. Please check your internet connection and the status page.", errorTitle, false);
+    if (!errorMsg) errorPopup("Backend error", "The server experienced an error. Please check your internet connection and the status page.", errorTitle, false);
     else errorPopup("Backend error", errorMsg, errorTitle, false);
   }
 }
