@@ -90,17 +90,18 @@ export function addMultiplayerGuessMarker() {
     get(socket)?.updateStorage("guessLocationsArray", "array-add", { id: get(socket)?.id, lat: get(mapPinLat), long: get(mapPinLng), pin: get(selectedPinIndex), username: get(username) || get(guestName), team: getTeamFromMultiplayerId(get(socket)?.id) });
 }
 
-export function updateMultiplayerScore(addScore) {
-    get(socket).sendRequest("playersAddScore", addScore);
-}
-
 // Create multiplayer instance -----------------------------------------------------------------------------------------------------------------------
 export async function createMultiplayerInstance() {
-    if (!get(isAuthenticated)) {
-        if (!get(guestNamePromise)) {
-            guestNamePickerPopup.set(true);
-            await new Promise((resolve) => guestNamePromise.set(resolve));
-        }
+    // If existant, destroy old instance
+    if (get(socket)) {
+        try {
+            get(socket)?.destroy();
+        } catch (error) { console.error("Error in createMultiplayerInstance trying to destroy old instance:", error); }
+    }
+
+    if (!get(isAuthenticated) && !get(guestNamePromise)) {
+        guestNamePickerPopup.set(true);
+        await new Promise((resolve) => guestNamePromise.set(resolve));
     }
 
     return new Promise(async (resolve, reject) => {
@@ -117,6 +118,7 @@ export async function createMultiplayerInstance() {
             get(socket).onEvent('status', status => console.log(status)); // !TODO remove debug (future)
             get(socket).onEvent('error', (error) => {
                 if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system reports an error.", error);
+                else multiplayerStatus.set("An error occured.");
             });
 
             // Initialize and open connection
@@ -350,7 +352,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
     } catch (error) {
         matchmakingActive.set(false);
         console.error("Error setting up room:", error);
-        errorPopup("Error creating room", "Error occured trying to set up room.", error);
+        errorPopup("Error creating room", null, error.message);
     }
 }
 
@@ -396,6 +398,7 @@ export async function joinRoom(code) {
         disableResultScreen(); // Edge case
         try { await createMultiplayerInstance(); } catch (error) {
             matchmakingActive.set(false);
+            errorPopup("Error joining room", null, error.message);
             throw new Error(error);
         }
         multiplayer.set(true);
@@ -406,7 +409,7 @@ export async function joinRoom(code) {
         goto("/");
     } catch (error) {
         multiplayer.set(false);
-        console.error("Error occured joining room:", error); // Status will be set by playpeerjs / playsocketjs
+        console.error("Error joining room:", error); // Status will be set by playpeerjs / playsocketjs
         if (get(matchmakingActive)) findNextDuel();
     }
 }
@@ -418,10 +421,13 @@ export function leaveMultiplayerRound(destroy = true) {
     multiplayer.set(false);
     matchmakingActive.set(false);
 
-    if (destroy) get(socket)?.destroy(); // Destroy peer
-    multiplayerTimer?.stopTimer();
+    if (destroy) {
+        get(socket)?.destroy(); // Destroy peer
+        socket.set(null); // Remove reference
+    }
 
     // Clear running intervals
+    multiplayerTimer?.stopTimer();
     clearInterval(countdownInterval);
     countdownInterval = undefined; // Tell overlay countdown it is not running
 

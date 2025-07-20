@@ -5,7 +5,6 @@ import { setCheckNewHighestCountryStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, supporterLevel, experience } from "$lib/stores/accountStore";
 import { streakText, showStreakDisplay, lastDistance, lastExperienceCalculationAborted, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
-import { updateMultiplayerScore } from "$lib/logic/multiplayerLogic";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
 import { addUserXP } from "$lib/utils/updateUserXP";
@@ -119,7 +118,7 @@ export async function loadResultScreenXP(distance) {
         supporterMultiplier = calculatedXP.supporterMultiplier;
 
         // Add XP to score
-        if (get(multiplayer)) updateMultiplayerScore(earnedXP);
+        if (get(multiplayer)) get(socket)?.sendRequest("playersAddScore", earnedXP);
 
     } else if (get(competition)) {
         const calculatedXP = await calculateXPGain(distance, "standard");

@@ -225,6 +225,7 @@
 		flex-wrap: wrap;
 		display: flex;
 		gap: var(--box-margin);
+		width: 300px;
 	}
 
 	#multiplayerJoin {
