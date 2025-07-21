@@ -56,28 +56,6 @@
 		}
 	}
 
-	async function getSupporterLeaderboard() {
-		try {
-			const response = await fetch(`${$accountUrl}/leaderboard/experience-supporter`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-
-			// Check if the response is successful
-			if (response.ok) {
-				const data = await response.json();
-				return data;
-			} else {
-				throw new Error(response.status);
-			}
-		} catch (error) {
-			console.error("Error occurred while fetching the user: ", error);
-			loadingText = "Error: " + error.message;
-		}
-	}
-
 	async function getEloLeaderboard() {
 		try {
 			const response = await fetch(`${$accountUrl}/leaderboard/elo`, {
@@ -113,9 +91,6 @@
 				break;
 			case "experience":
 				mainSectionEntries = await getLeaderboard();
-				break;
-			case "experience-supporter":
-				mainSectionEntries = await getSupporterLeaderboard();
 				break;
 		}
 	}
@@ -168,12 +143,6 @@
 				valueKey = "experience";
 				unitName = " XP";
 				potentialUserLeaderboardType = "experience";
-				break;
-			case "XP (Supp.)":
-				loadLeaderboard("experience-supporter");
-				valueKey = "experience";
-				unitName = " XP";
-				potentialUserLeaderboardType = "none";
 				break;
 		}
 	}
@@ -240,7 +209,7 @@
 </div>
 <div class="optionBar">
 	<Tabs
-		tabs={["Elo", "XP", "XP (Supp.)"]}
+		tabs={["Elo", "XP"]}
 		class="leaderboardTabs"
 		onchange={(selection) => {
 			filter = selection;
