@@ -13,10 +13,20 @@
 	import { filterProfanity } from "$lib/utils/profanityCheck";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
 	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
-	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
+	import { pinPopup, badgePopup, reportPopup, roundLogPopup } from "$lib/stores/uiStore";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
-	import { Check, Flame, Plus, PlusCircle, Skull, SquarePlus, UserRoundCheck } from "lucide-svelte";
+	import {
+		Check,
+		Flame,
+		History,
+		Plus,
+		PlusCircle,
+		Skull,
+		SquarePlus,
+		UserRoundCheck,
+		UserRoundPlus,
+	} from "lucide-svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
@@ -221,9 +231,18 @@
 			>
 				<img id="selectedProfilePin" alt="pin" src={`/img/pins/player_pin${Number($profileData?.pin) || 0}.png`} />
 				{#if $profileId == localStorage.getItem("id")}
-					<Pencil style="opacity: 0.75; margin-right: 5px; margin-left: 2px;" size={17} strokeWidth={2.75} />
+					<Pencil style="opacity: 0.75; margin-right: 5px; margin-left: 2px;" size={17} strokeWidth={2.25} />
 				{/if}
 			</div>
+			{#if $profileId == localStorage.getItem("id")}
+				<button
+					class="standardButton white"
+					onclick={() => {
+						playSound("basic_button");
+						$roundLogPopup = true;
+					}}><History strokeWidth={2} style="vertical-align: -4.25px;" /></button
+				>
+			{/if}
 			{#if $profileSupporterLevel >= 1}
 				<div id="supporterTag">
 					<p id="supporterTagText">Tier {$profileSupporterLevel}</p>
@@ -253,7 +272,7 @@
 				>
 					Friend
 					{#if !$profileData?.areFriends}
-						<img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
+						<UserRoundPlus style="margin-bottom: -1px; margin-left: 2px;" size={19} strokeWidth={2.25} />
 					{:else}
 						<UserRoundCheck style="margin-bottom: -1px; margin-left: 2px;" size={20} strokeWidth={2.25} />
 					{/if}
@@ -651,14 +670,6 @@
 		flex-wrap: wrap;
 		align-items: center;
 		gap: 5px;
-	}
-
-	#addFriendIcon {
-		width: 22px;
-		height: 22px;
-		vertical-align: -3px;
-		padding-left: 4px;
-		pointer-events: none;
 	}
 
 	@media all and (max-width: 1200px) {

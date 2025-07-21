@@ -1,8 +1,8 @@
 <script>
-	let { text = "Default" } = $props();
+	let { text = "Default", noMargin = false } = $props();
 </script>
 
-<div class="flexContainer">
+<div class="flexContainer" class:noMargin>
 	<p>{text}</p>
 	<div class="line"></div>
 </div>
@@ -24,6 +24,10 @@
 		margin-top: var(--layout-margin);
 		margin-bottom: var(--layout-margin);
 		align-items: center;
+	}
+
+	.noMargin {
+		margin: 0;
 	}
 
 	.flexContainer p {

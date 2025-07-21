@@ -273,22 +273,6 @@
 					</div>
 				</div>
 			</div>
-			<div
-				class="map-item map-item-slim"
-				role="button"
-				tabindex="0"
-				onclick={() => {
-					playSound("button_juicy");
-					window.open("https://education.openguessr.com/guides", "_blank").focus();
-				}}
-			>
-				<div class="mapInfo">
-					<div class="map-name">
-						Guides <span class="linkBadge">Edu</span>
-						<span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
-					</div>
-				</div>
-			</div>
 		{/if}
 	</div>
 	<!-- Expandable country section -->

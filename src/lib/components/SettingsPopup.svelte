@@ -4,10 +4,13 @@
 	import { setSoundsVolume, playSound, setMusicVolume } from "$lib/utils/soundManager";
 	import { preventFullscreen } from "$lib/stores/context-specific/platformSettingsStore";
 	import { settingsPopup } from "$lib/stores/uiStore";
-	import { InfoIcon, Scan } from "lucide-svelte";
+	import { InfoIcon, Scan, ChevronLeft, ChevronRight, Timer } from "lucide-svelte";
 	import Tabs from "./ui/Tabs.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
+	import TitleSeparator from "./ui/TitleSeparator.svelte";
+	import { isSingleplayerNMPZ, singleplayerTimeout } from "$lib/stores/modeStore";
+	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 
 	// Settings - Window ---------------------------------------------------------------------------------------
 	function closeSettingsButton() {
@@ -87,6 +90,59 @@
 			console.error("Error entering / exiting fullscreen: " + error);
 		}
 	}
+
+	// Singleplayer timer ---------------------------------------------------------
+	let timerSliderValue = $state(0);
+
+	// Timer values dictionary
+	const timerValues = [
+		{ slider: 0, actual: 0, text: "No timer" },
+		{ slider: 1, actual: 0.1, text: "One blink" },
+	];
+	try {
+		for (let i = 1; i <= 120; i++) {
+			timerValues.push({ slider: i + 1, actual: i, text: `${i} Seconds` });
+		}
+	} catch (error) {
+		console.error("Error filling up timer value array:", error);
+	}
+
+	// Get display text based on slider value
+	let timerSliderText = $derived(timerValues.find((t) => t?.slider === timerSliderValue)?.text);
+
+	// Increase or decrease the timer value by one step
+	function adjustTimer(increment) {
+		playSound("basic_button");
+		const newValue = timerSliderValue + (increment ? 1 : -1);
+		if (newValue >= 0 && newValue <= 121) {
+			timerSliderValue = newValue;
+			changeTimeout();
+		}
+	}
+
+	// Find the corresponding slider value for the current timeout value
+	$effect(() => {
+		const timerSetting = timerValues.find((t) => Math.abs(t.actual - ($singleplayerTimeout || 0)) < 0.01);
+		timerSliderValue = timerSetting?.slider ?? 0;
+	});
+
+	let changeRegenerationTimeout;
+
+	function changeTimeout() {
+		const timerSetting = timerValues.find((t) => t.slider === timerSliderValue);
+		$singleplayerTimeout = timerSetting ? timerSetting.actual : 0;
+		localStorage.setItem("singleplayerTimer", $singleplayerTimeout);
+		clearTimeout(changeRegenerationTimeout);
+		changeRegenerationTimeout = setTimeout(checkGenerationTypeAndGenerate, 250);
+	}
+
+	// Toggle NMPZ ------------------------------------------------------------------
+	function toggleSingleplayerNMPZ() {
+		playSound("basic_button");
+		$isSingleplayerNMPZ = !$isSingleplayerNMPZ;
+		localStorage.setItem("singleplayerNMPZ", $isSingleplayerNMPZ ? "true" : "");
+		checkGenerationTypeAndGenerate();
+	}
 </script>
 
 <svelte:document onfullscreenchange={fullscreenChangeCheck} />
@@ -96,91 +152,127 @@
 		<h1>Settings</h1>
 	</div>
 	<div class="settingsCanvas">
-		<div class="settingsBox">
-			<p class="textMargin">Unit system</p>
-			<Tabs
-				tabs={["Metric", "Imperial"]}
-				class="settingsNoButtonMargin"
-				bind:selected={selectedUnit}
-				onchange={(tab) => {
-					playSound("basic_button");
-					localStorage.setItem("distanceUnit", tab == "Metric" ? "kilometers" : "miles");
-				}}
-			/>
-		</div>
-		<div class="settingsBox">
-			<p class="textMargin">SFX volume</p>
-			<div class="sliderBox">
-				<input
-					type="range"
-					min="0"
-					max="1"
-					step="0.01"
-					class="slider shortSlider"
-					bind:value={sfxVolumeSliderValue}
-					style:background={sfxSliderBg}
-					oninput={inputSFXVolumeSlider}
-				/>
-				<p>{sfxSliderBgPercentage}%</p>
+		<TitleSeparator text="Singleplayer" noMargin={true} />
+		<div class="settingsCanvas slightBottomMargin">
+			<div class="settingsBox settingsBoxFlex">
+				<div class="timerTextBox">
+					<Timer />
+					<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
+				</div>
+				<div class="timerControlsWrapper">
+					<button class="arrowButton standardButton white" onclick={() => adjustTimer(false)}>
+						<ChevronLeft size={20} strokeWidth={2.5} />
+					</button>
+
+					<input
+						type="range"
+						min="0"
+						max="121"
+						step="1"
+						class="slider timerSlider"
+						onchange={changeTimeout}
+						bind:value={timerSliderValue}
+					/>
+
+					<button class="arrowButton standardButton white" onclick={() => adjustTimer(true)}>
+						<ChevronRight size={20} strokeWidth={2.5} />
+					</button>
+				</div>
 			</div>
-		</div>
-		<div class="settingsBox">
-			<p class="textMargin">Music volume</p>
-			<div class="sliderBox">
-				<input
-					type="range"
-					min="0"
-					max="1"
-					step="0.01"
-					class="slider shortSlider"
-					bind:value={musicVolumeSliderValue}
-					style:background={musicSliderBg}
-					oninput={inputMusicVolumeSlider}
+			<div class="settingsBox settingsBoxFlex noFlexWrap">
+				<p class="settingsBoxFlexTitle">No Move, Pan or Zoom (NMPZ)</p>
+				<button class="standardButton white" onclick={toggleSingleplayerNMPZ}
+					>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
+				>
+			</div>
+			<TitleSeparator text="Music & Sounds" noMargin={true} />
+			<div class="settingsBox">
+				<p class="textMargin">SFX volume</p>
+				<div class="sliderBox">
+					<input
+						type="range"
+						min="0"
+						max="1"
+						step="0.01"
+						class="slider shortSlider"
+						bind:value={sfxVolumeSliderValue}
+						style:background={sfxSliderBg}
+						oninput={inputSFXVolumeSlider}
+					/>
+					<p>{sfxSliderBgPercentage}%</p>
+				</div>
+			</div>
+			<div class="settingsBox">
+				<p class="textMargin">Music volume</p>
+				<div class="sliderBox">
+					<input
+						type="range"
+						min="0"
+						max="1"
+						step="0.01"
+						class="slider shortSlider"
+						bind:value={musicVolumeSliderValue}
+						style:background={musicSliderBg}
+						oninput={inputMusicVolumeSlider}
+					/>
+					<p>{musicSliderBgPercentage}%</p>
+					<button
+						class="standardButton white creditsButton"
+						onclick={() => {
+							playSound("basic_button");
+							showConfirmPopup(
+								"Credits",
+								'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM" :-)',
+								false,
+								false,
+								false,
+								true,
+							);
+						}}
+					>
+						<InfoIcon strokeWidth={2.5} size={18} />
+					</button>
+				</div>
+			</div>
+			<TitleSeparator text="General" noMargin={true} />
+			<div class="settingsBox settingsBoxFlex">
+				<p class="settingsBoxFlexTitle">Unit system</p>
+				<Tabs
+					tabs={["Metric", "Imperial"]}
+					class="settingsNoButtonMargin"
+					bind:selected={selectedUnit}
+					onchange={(tab) => {
+						playSound("basic_button");
+						localStorage.setItem("distanceUnit", tab == "Metric" ? "kilometers" : "miles");
+					}}
 				/>
-				<p>{musicSliderBgPercentage}%</p>
+			</div>
+			{#if !$preventFullscreen}
+				<div class="settingsBox settingsBoxFlex">
+					<p class="settingsBoxFlexTitle">View</p>
+					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
+						<span class="fullscreenIcon">
+							<Scan size="17" strokeWidth={3} />
+						</span>
+						<span id="fullscreenText">{fullscreenButtonText}</span>
+					</button>
+				</div>
+			{/if}
+			<div class="settingsBox settingsBoxFlex">
+				<p class="settingsBoxFlexTitle">Legal info</p>
 				<button
-					class="standardButton white creditsButton"
+					class="standardButton white"
+					id="privacyButton"
 					onclick={() => {
 						playSound("basic_button");
-						showConfirmPopup(
-							"Credits",
-							'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM" :-)',
-							false,
-							false,
-							false,
-							true,
-						);
-					}}
+						goto("/legal");
+						$settingsPopup = false;
+					}}>Read</button
 				>
-					<InfoIcon strokeWidth={2.5} size={18} />
-				</button>
 			</div>
 		</div>
-		{#if !$preventFullscreen}
-			<div class="settingsBox">
-				<p class="textMargin">View</p>
-				<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
-					<span class="fullscreenIcon">
-						<Scan size="17" strokeWidth={3} />
-					</span>
-					<span id="fullscreenText">{fullscreenButtonText}</span>
-				</button>
-			</div>
-		{/if}
-		<div class="settingsBox settingsFlexBox">
-			<p class="settingsFlexBoxTitle">Legal info</p>
-			<button
-				class="standardButton white"
-				id="privacyButton"
-				onclick={() => {
-					playSound("basic_button");
-					goto("/legal");
-					$settingsPopup = false;
-				}}>Read</button
-			>
-		</div>
-	</div>
-</Popup>
+	</div></Popup
+>
 
 <style>
 	.settingsBox {
@@ -194,17 +286,56 @@
 		height: 77px;
 	}
 
-	.settingsFlexBox {
+	.timerControlsWrapper {
+		display: flex;
+		align-items: center;
+		gap: var(--box-margin);
+		width: fit-content;
+		flex-basis: 60%;
+		flex-grow: 1;
+	}
+
+	.arrowButton {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		padding: 5px;
+	}
+
+	.timerTextBox {
+		border: 5px;
+		display: flex;
+		justify-content: space-between;
+		box-shadow: var(--box-shadow);
+		align-items: center;
+		gap: 5px;
+		height: 31px;
+		background-color: rgba(255, 255, 255, 0.1);
+		padding: 5px;
+		padding-inline: 10px;
+		border-radius: 5px;
+		min-width: 125px;
+		text-align: center;
+	}
+
+	.settingsBoxFlex {
 		display: flex;
 		gap: var(--box-margin);
 		justify-content: space-between;
 		align-items: center;
 		height: unset;
-		width: 100%;
+		flex-wrap: wrap;
 	}
 
-	.settingsFlexBoxTitle {
+	.timerSlider {
+		flex-grow: 1;
+	}
+
+	.settingsBoxFlexTitle {
 		margin-left: var(--panel-margin);
+		text-wrap: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	.settingsCanvas {
@@ -230,6 +361,7 @@
 		margin-top: 18px;
 		margin-left: 5px;
 		align-items: center;
+		justify-content: space-between;
 	}
 
 	.sliderBox p {
@@ -239,7 +371,11 @@
 	}
 
 	.shortSlider {
-		width: 175px;
+		width: 150px;
+	}
+
+	.noFlexWrap {
+		flex-wrap: nowrap;
 	}
 
 	.creditsButton {

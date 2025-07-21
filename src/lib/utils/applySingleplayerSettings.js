@@ -13,8 +13,10 @@ import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenSt
 let timeoutVariable;
 let startTimeoutVariable;
 let intervalTimeoutVariable;
+let startSingleplayerTimerPromise;
 
-let startHardModePromise;
+let hasRestoredSavedNMPZstate = false;
+let hasRestoredSavedTimeout = false;
 
 export function applySingleplayerSettings() {
     // Disable all here, then enable what should be enabled
@@ -25,12 +27,18 @@ export function applySingleplayerSettings() {
     clearTimeout(startTimeoutVariable);
     clearInterval(intervalTimeoutVariable);
 
+    // Get singleplayer timer duration from storage
+    if (!hasRestoredSavedTimeout) {
+        singleplayerTimeout.set(localStorage.getItem("singleplayerTimer") != null ? Number(localStorage.getItem("singleplayerTimer")) : 0);
+        hasRestoredSavedTimeout = true;
+    }
+
     if (get(singleplayer)) {
         if (get(singleplayerTimeout)) {
             mapModeIndicatorVisible.set(true);
             mapModeIndicatorText.set("Singleplayer");
 
-            startHardModePromise = new Promise((resolve, reject) => {
+            startSingleplayerTimerPromise = new Promise((resolve, reject) => {
                 timerCountdownOverlay.set(true);
                 timerCountdownOverlayTitle.set(3);
 
@@ -47,7 +55,7 @@ export function applySingleplayerSettings() {
                 }, 2400);
             });
 
-            startHardModePromise.then(function () {
+            startSingleplayerTimerPromise.then(function () {
                 timerCountdownOverlay.set(false);
                 singleplayerTimer.set(startTimer(get(singleplayerTimeout), () => {
                     timerCountdownOverlay.set(true);
@@ -58,7 +66,13 @@ export function applySingleplayerSettings() {
             mapModeIndicatorVisible.set(false); // Hide MapMpdeIndicator
         }
 
-        // Set singleplayer restriction
+        // Load & Set singleplayer restriction
+        if (!hasRestoredSavedNMPZstate) {
+            isSingleplayerNMPZ.set(localStorage.getItem("singleplayerNMPZ")
+                ? Boolean(localStorage.getItem("singleplayerNMPZ"))
+                : false);
+            hasRestoredSavedNMPZstate = true;
+        }
         (get(isSingleplayerNMPZ)) ? setRestriction("nmpz") : setRestriction("standard");
     }
 }
