@@ -185,7 +185,7 @@
 					>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
 				>
 			</div>
-			<TitleSeparator text="Music & Sounds" noMargin={true} />
+			<TitleSeparator text="Audio" noMargin={true} />
 			<div class="settingsBox">
 				<p class="textMargin">SFX volume</p>
 				<div class="sliderBox">
