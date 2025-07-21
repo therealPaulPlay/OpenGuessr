@@ -679,7 +679,7 @@
 						<button
 							class="expiredDailyToggle"
 							onclick={() => {
-								playSound("basic_button");
+								playSound("floating_button");
 								showExpiredDaily = !showExpiredDaily;
 							}}
 						>
