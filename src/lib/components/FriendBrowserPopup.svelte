@@ -7,7 +7,7 @@
 	import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { Search } from "lucide-svelte";
+	import { Search, UserRoundPlus } from "lucide-svelte";
 
 	let userSearchResults = $state();
 	let searchQuery = $state("");
@@ -106,7 +106,7 @@
 								sendFriendRequest(entry.id, e.target);
 							}}
 						>
-							Add <img src="/img/add_friend_icon.png" alt="send friend request" id="addFriendIcon" />
+							Add <UserRoundPlus style="margin-bottom: -1px; margin-left: 2px;" size={20} strokeWidth={2.25} />
 						</button>
 					</div>
 				{/each}
@@ -150,14 +150,6 @@
 		width: 100%;
 		flex-direction: column;
 		gap: var(--box-margin);
-	}
-
-	#addFriendIcon {
-		width: 22px;
-		height: 22px;
-		vertical-align: -4px;
-		padding-left: 4px;
-		pointer-events: none;
 	}
 
 	.friendSearchItem {

@@ -26,7 +26,6 @@
 	import HelpPopup from "$lib/components/HelpPopup.svelte";
 	import SignupIframe from "$lib/components/SignupIframe.svelte";
 	import DiscordPopup from "$lib/components/DiscordPopup.svelte";
-	import SingleplayerOptions from "$lib/components/SingleplayerOptions.svelte";
 	import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
 	import CountryGuesserBar from "$lib/components/CountryGuessrBar.svelte";
 	import ResultScreen from "$lib/components/ResultScreen.svelte";
@@ -51,6 +50,7 @@
 	import GuestNamePickerPopup from "$lib/components/GuestNamePickerPopup.svelte";
 	import ShopPurchaseAnimation from "$lib/components/ShopPurchaseAnimation.svelte";
 	import BugspotIframePopup from "$lib/components/BugspotIframePopup.svelte";
+	import RoundLogPopup from "$lib/components/RoundLogPopup.svelte";
 
 	// Start ads
 	onMount(() => {
@@ -140,9 +140,9 @@
 <DuelResultPopup />
 <SignupIframe />
 <SettingsPopup />
-<SingleplayerOptions />
 <DiscordPopup />
 <LinkJoinPopup />
+<RoundLogPopup />
 <GuestNamePickerPopup />
 <ResultScreen />
 <BlinkRestrictionFade />

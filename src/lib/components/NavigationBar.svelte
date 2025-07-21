@@ -4,7 +4,6 @@
 	import Notification from "$lib/components/Notification.svelte";
 	import { isAuthenticated, experience, supporterLevel, username } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { singleplayerOptionsPopup } from "$lib/stores/uiStore";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
@@ -144,10 +143,10 @@
 					class:preventNavigateOut
 					onclick={() => {
 						playSound("basic_button");
-						singleplayerOptionsPopup.set(true);
+						window.open("https://education.openguessr.com", "_blank");
 					}}
 				>
-					<img src="/img/joystick_icon.png" alt="Game options" id="joystickIcon" class="socialBarIcons" />
+					<img src="/img/education_icon.png" alt="Learn" class="socialBarIcons" />
 				</button>
 				<button
 					class="standardButton white"
@@ -252,7 +251,6 @@
 	</div>
 	<div class="barMenu topBarDesktop gameModeMenu">
 		<button
-			id="leaderboardButton"
 			class="standardButton white"
 			class:preventNavigateOut
 			use:tooltip={{ text: "Leaderboard" }}
@@ -264,7 +262,6 @@
 			<img class="socialBarIcons wideSocialBarIcon" src="/img/leaderboards_icon.png" alt="Leaderboard" />
 		</button>
 		<button
-			id="multiplayerButton"
 			class="standardButton white"
 			class:preventNavigateOut
 			use:tooltip={{ text: "Multiplayer" }}
@@ -276,7 +273,6 @@
 			<img class="socialBarIcons wideSocialBarIcon" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
 		</button>
 		<button
-			id="competitionsButton"
 			class="standardButton white"
 			class:preventNavigateOut
 			use:tooltip={{ text: "Competitions" }}
@@ -291,7 +287,6 @@
 	<div class="barMenu topBarSides topBarDesktop">
 		<button
 			class="standardButton white"
-			id="categoryMenuButton"
 			class:preventNavigateOut
 			use:tooltip={{ text: "Maps" }}
 			onclick={() => {
@@ -303,19 +298,17 @@
 		</button>
 		<button
 			class="standardButton white"
-			id="singleplayerOptionsButton"
 			class:preventNavigateOut
-			use:tooltip={{ text: "Game options" }}
+			use:tooltip={{ text: "Education" }}
 			onclick={() => {
 				playSound("basic_button");
-				singleplayerOptionsPopup.set(true);
+				window.open("https://education.openguessr.com", "_blank");
 			}}
 		>
-			<img src="/img/joystick_icon.png" alt="Singleplayer Options" class="socialBarIcons wideSocialBarIcon" />
+			<img src="/img/education_icon.png" alt="Learn" class="socialBarIcons wideSocialBarIcon" />
 		</button>
 		<button
 			class="standardButton white"
-			id="settingsButton"
 			onclick={() => {
 				playSound("basic_button");
 				settingsPopup.set(true);
