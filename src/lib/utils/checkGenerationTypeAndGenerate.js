@@ -23,7 +23,7 @@ function checkLinkMap() {
 
     if (mapFromLink) {
       if (get(countryMaps).includes(mapFromLink) || get(continentMaps).includes(mapFromLink)) changeCategory(mapFromLink);
-      else errorPopup("Map not available", "Unfortunately, this map doesn't exist. Feel free to search for similar community maps.", "Map not found", false, true);
+      else errorPopup("Map not available", "Unfortunately, this map doesn't exist. Feel free to search for similar community maps.", "Map not found!", false, true);
     }
   } catch { }
 }
