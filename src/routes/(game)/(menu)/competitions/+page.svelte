@@ -675,29 +675,32 @@
 					)}
 				{:else}
 					<div class="dailyCompetitionExpiredBox fadeInItem">
-						<p style:margin-left="var(--panel-margin)">View yesterday's daily competition.</p>
-						<button
-							class="expiredDailyToggle"
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<div
+							class="toggleButtonBar"
+							role="button"
+							tabindex={0}
 							onclick={() => {
 								playSound("floating_button");
 								showExpiredDaily = !showExpiredDaily;
 							}}
 						>
-							<div>
+							<p style:margin-left="var(--panel-margin)">View yesterday's daily competition.</p>
+							<div class="expiredDailyIcon">
 								<ChevronDown
 									style="margin-bottom: -4px; transition: transform 250ms ease; {showExpiredDaily
 										? 'transform: rotate(180deg)'
 										: ''}"
 								/>
-							</div></button
-						>
+							</div>
+						</div>
 						{#if showExpiredDaily}
 							<div
 								class="expiredDailySpacer"
 								in:slide={{ duration: 50 }}
-								out:slide={{ duration: 50, delay: 250 }}
+								out:slide={{ duration: 50, delay: 175 }}
 							></div>
-							<div class="expiredDailyContainer" transition:slide>
+							<div class="expiredDailyContainer" transition:slide={{ duration: 250 }}>
 								{@render competitionItem(
 									entry.id,
 									entry.name,
@@ -884,7 +887,6 @@
 		border-radius: 15px;
 		background-color: var(--box-color);
 		display: flex;
-		justify-content: space-between;
 		align-items: center;
 		flex-wrap: wrap;
 	}
@@ -899,16 +901,23 @@
 		width: 100%;
 	}
 
-	.expiredDailyToggle {
-		transition: opacity 250ms ease;
+	.expiredDailyIcon {
 		color: white;
 		padding: 5px;
-		flex-grow: 1;
-		text-align: right;
 		padding-inline: var(--panel-margin);
 	}
 
-	.expiredDailyToggle:hover {
+	.toggleButtonBar {
+		display: flex;
+		width: 100%;
+		gap: var(--box-margin);
+		transition: opacity 250ms ease;
+		justify-content: space-between;
+		align-items: center;
+		cursor: pointer;
+	}
+
+	.toggleButtonBar:hover {
 		opacity: 0.5;
 	}
 
