@@ -889,6 +889,7 @@
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
+		box-sizing: border-box;
 	}
 
 	.expiredDailyContainer {
