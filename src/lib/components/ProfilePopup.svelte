@@ -240,7 +240,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						$roundLogPopup = true;
-					}}><History strokeWidth={2} style="vertical-align: -4.5px;" /></button
+					}}><History strokeWidth={2} style="vertical-align: -3.5px;" /></button
 				>
 			{/if}
 			{#if $profileSupporterLevel >= 1}
