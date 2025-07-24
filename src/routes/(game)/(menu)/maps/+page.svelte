@@ -738,6 +738,7 @@
 		font-size: 25px;
 		line-height: 0.9;
 		opacity: 0.75;
+		color: white;
 		transition: opacity 250ms ease;
 	}
 
