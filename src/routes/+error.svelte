@@ -1,23 +1,23 @@
 <script>
 	import { ArrowLeft } from "lucide-svelte";
-	import { page } from "$app/stores";
+	import { page } from "$app/state";
 </script>
 
 <svelte:head>
 	<title>OpenGuessr - Error</title>
 </svelte:head>
 
-<div id="page-content">
-	<h1>{$page.status} - {$page.error.message}</h1>
+<div class="page-content">
+	<h1>{page.status} - {page.error.message}</h1>
 	<p>The page you requested does not exist or experienced an error.</p>
 	<a class="returnButton standardButton" href="/">
-		<ArrowLeft style="min-width: 22px; margin-bottom: -3px;" strokeWidth={2.5}/>
+		<ArrowLeft style="min-width: 22px; margin-bottom: -3px;" strokeWidth={2.5} />
 		Return to OpenGuessr</a
 	>
 </div>
 
 <style>
-	#page-content {
+	.page-content {
 		height: 100vh;
 		display: flex;
 		flex-direction: column;
@@ -27,11 +27,9 @@
 
 	h1 {
 		font-size: 70px;
-		font-weight: 500;
 		word-wrap: break-word;
 		text-wrap: wrap;
 		text-align: center;
-		color: white;
 		padding-inline: 20px;
 	}
 
@@ -40,7 +38,6 @@
 		margin-top: 40px;
 		max-width: 400px;
 		font-size: 30px;
-		color: white;
 		padding-inline: 20px;
 	}
 
