@@ -70,11 +70,8 @@
 	let fullscreenButtonText = $state("Fullscreen");
 
 	const fullscreenChangeCheck = function () {
-		if (!document.fullscreenElement) {
-			fullscreenButtonText = "Fullscreen";
-		} else {
-			fullscreenButtonText = "Exit Fullscreen";
-		}
+		if (!document.fullscreenElement) fullscreenButtonText = "Fullscreen";
+		else fullscreenButtonText = "Exit";
 	};
 
 	function toggleFullscreen() {
