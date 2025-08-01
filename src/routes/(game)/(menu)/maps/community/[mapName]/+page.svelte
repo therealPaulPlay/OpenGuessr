@@ -129,7 +129,7 @@
 
 			// Return the success or error message. No need to parse the response
 			if (response.ok) {
-				showConfirmPopup("Map deleted", "The map was deleted successfully.", false, false, false, true);
+				showConfirmPopup("Map deleted", "The map was deleted successfully.");
 				goto("/maps");
 				return "Map deleted successfully.";
 			} else {

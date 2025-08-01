@@ -9,7 +9,6 @@
 		confirmConfirmText,
 		confirmConfirmColor,
 		confirmExecuteFunction,
-		confirmShowConfirm,
 		confirmPasswordValue,
 		confirmUsernameValue,
 	} from "$lib/stores/context-specific/confirmPopupStore";
@@ -20,9 +19,7 @@
 		playSound("basic_button");
 		confirmPopupVisible.set(false);
 		try {
-			if (get(confirmExecuteFunction)) {
-				get(confirmExecuteFunction)();
-			}
+			get(confirmExecuteFunction)?.();
 		} catch (error) {
 			console.error("Error executing confirm callback:", error);
 		}
@@ -47,7 +44,7 @@
 		/>
 	{/if}
 	<div class="marginTop largerSpacing">
-		{#if $confirmShowConfirm}
+		{#if $confirmExecuteFunction}
 			<button
 				class="standardButton largeButton"
 				onclick={confirm}

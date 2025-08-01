@@ -220,10 +220,6 @@
 							showConfirmPopup(
 								"Credits",
 								'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM" :-)',
-								false,
-								false,
-								false,
-								true,
 							);
 						}}
 					>

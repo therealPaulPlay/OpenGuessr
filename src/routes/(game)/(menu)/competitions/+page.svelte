@@ -50,9 +50,8 @@
 				() => {
 					signupPrompt();
 				},
-				undefined,
-				undefined,
-				undefined,
+				null,
+				null,
 				"Sign up",
 			);
 
@@ -602,7 +601,7 @@
 			role="button"
 			tabindex="0"
 			onclick={() => {
-				showConfirmPopup("About", description, false, false, false, true);
+				showConfirmPopup("About", description);
 			}}
 		>
 			<div class="label" class:expiredCompetitionColor={expired} role="button" tabindex="0">
