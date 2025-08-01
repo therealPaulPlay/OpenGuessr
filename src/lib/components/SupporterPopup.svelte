@@ -68,10 +68,6 @@
 				showConfirmPopup(
 					"Thank you!",
 					"Thank you for your purchase! People like you keep the game free and open for everyone.",
-					false,
-					false,
-					false,
-					true,
 				);
 				history.replaceState({}, document.title, window.location.pathname); // Reset query in the address bar
 			}

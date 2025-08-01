@@ -16,9 +16,8 @@ export function supporterWindowIfAuthenticated() {
             () => {
                 signupPrompt();
             },
-            undefined,
-            undefined,
-            undefined,
+            null,
+            null,
             "Sign up",
         );
         return false;

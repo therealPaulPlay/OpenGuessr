@@ -7,6 +7,8 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
+	import { Info } from "lucide-svelte";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 
 	let loadingText = $state("Loading...");
 
@@ -217,6 +219,18 @@
 			playSound("basic_button");
 		}}
 	/>
+	<button
+		class="standardButton white resetInfoButton"
+		onclick={() => {
+			playSound("basic_button");
+			showConfirmPopup(
+				"Resets",
+				"Elo above 2000 is reset and converted into tokens at the start of each month. Experience over 100M is reset at the start of each month.",
+			);
+		}}
+	>
+		<Info style="vertical-align: -3px" />
+	</button>
 </div>
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="leaderboardContainer">
@@ -290,6 +304,7 @@
 		margin-inline: auto;
 		width: fit-content;
 		max-width: 80%;
+		gap: var(--layout-margin);
 	}
 
 	:global(.leaderboardTabs) {
@@ -372,6 +387,11 @@
 		margin-bottom: 30px;
 		max-width: 850px;
 		margin-inline: auto;
+	}
+
+	.resetInfoButton {
+		border-radius: var(--box-margin);
+		padding-inline: var(--panel-margin);
 	}
 
 	.podium-container {

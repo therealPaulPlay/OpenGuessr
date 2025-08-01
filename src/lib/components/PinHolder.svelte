@@ -14,7 +14,6 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { blur, slide } from "svelte/transition";
 	import { showNotification } from "$lib/utils/notifications";
-	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { Check } from "lucide-svelte";
 	import { handleShopPurchase } from "$lib/utils/shopHelper";
