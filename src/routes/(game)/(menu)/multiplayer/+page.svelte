@@ -1,5 +1,5 @@
 <script>
-	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info, Earth, BicepsFlexed, Search } from "lucide-svelte";
+	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info, Earth, BicepsFlexed, Search, X } from "lucide-svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
@@ -221,7 +221,7 @@
 									});
 								}}
 							>
-								<img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
+								<X size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
 							</button>
 						</div>
 					{/each}
@@ -374,12 +374,6 @@
 
 	.friendItemButtons {
 		padding-inline: 5px;
-	}
-
-	.friendRemoveIcon {
-		width: 25px;
-		height: 25px;
-		vertical-align: -4px;
 	}
 
 	.groupIcons {
