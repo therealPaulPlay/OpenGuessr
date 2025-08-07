@@ -456,6 +456,7 @@ function showMultiplayerOverlay(show) {
             if (get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(socket)?.getStorage?.currentRound);
         } else {
             determineWinner(get(multiplayerTableArray));
+            matchResultDetermined.set(true);
             showEndscreenUI(true); // Display "Play again" & "Exit"
         }
 
