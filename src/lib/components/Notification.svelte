@@ -9,6 +9,7 @@
 	} from "$lib/stores/context-specific/notificationStore";
 	import { hideNotification } from "$lib/utils/notifications";
 	import { playSound } from "$lib/utils/soundManager";
+	import { X } from "lucide-svelte";
 	import { fly } from "svelte/transition";
 
 	let { belowNavbar = true } = $props();
@@ -53,7 +54,7 @@
 				<button id="notificationAccept" class="standardButton white" onclick={accept}>{$acceptText}</button>
 			{/if}
 			<button id="notificationDismiss" class="standardButton white" onclick={dismiss}>
-				<img alt="dismiss notification" class="dismissIcon" src="/img/delete_icon.png" />
+				<X size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
 			</button>
 		</div>
 	</div>
@@ -100,11 +101,5 @@
 		align-items: center;
 		width: fit-content;
 		gap: var(--panel-margin);
-	}
-
-	.dismissIcon {
-		width: 25px;
-		height: 25px;
-		vertical-align: -4px;
 	}
 </style>
