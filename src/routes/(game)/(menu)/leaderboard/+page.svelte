@@ -225,7 +225,7 @@
 			playSound("basic_button");
 			showConfirmPopup(
 				"Resets",
-				"Elo above 2000 is reset and converted into tokens at the start of each month. Experience over 100M is reset at the start of each month.",
+				"Elo above 2000 is reset and converted into tokens at the start of each month. Experience over 100M is halved at the start of each month.",
 			);
 		}}
 	>

@@ -6,7 +6,6 @@ import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonS
 import { mapPinLat, mapPinLng, map, addedMarkers, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
-import { mapHovered } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
 import { multiplayer } from "$lib/stores/modeStore";
 
@@ -76,8 +75,6 @@ let multiplayerMiniMarkers = []; // team markers
 // Reset the map and the confirm button
 export function resetMap(keepSize) {
     if (get(map)) {
-        mapHovered.set(false);
-
         get(addedMarkers)?.forEach(marker => {
             get(map).removeLayer(marker);
         });

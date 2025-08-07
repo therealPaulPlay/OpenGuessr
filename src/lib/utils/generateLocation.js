@@ -35,5 +35,5 @@ export async function generateNewLocation(type) {
     }
 
     loadPanorama(get(currentLocationLatitude), get(currentLocationLongitude));
-    if (!get(resultScreenEnabled)) resetMap(); // Reset Map
+    if (!get(resultScreenEnabled)) resetMap(); // Reset minimap for when the category was changed mid-game
 }
