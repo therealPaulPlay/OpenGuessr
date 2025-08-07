@@ -79,7 +79,7 @@
 				startSearch();
 			}}
 		>
-			<Search size={20} strokeWidth={2.5} style="margin-top: 3px;" />
+			<Search size={20} strokeWidth={2.25} style="margin-top: 3px;" />
 		</button>
 	</search>
 	<div class="containerBox">
