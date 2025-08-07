@@ -354,7 +354,7 @@
 	}
 
 	.bronze {
-		background-color: rgba(132, 66, 66, 0.5);
+		background-color: rgba(189, 87, 87, 0.5);
 	}
 
 	.yourItem {
