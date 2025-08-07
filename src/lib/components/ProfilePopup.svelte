@@ -20,6 +20,7 @@
 		Check,
 		Flame,
 		History,
+		Link,
 		Plus,
 		PlusCircle,
 		Skull,
@@ -55,12 +56,13 @@
 		Crown,
 	} from "lucide-svelte";
 	import { onMount } from "svelte";
-	import { page } from "$app/stores";
+	import { page } from "$app/state";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { reportUserId } from "$lib/stores/context-specific/reportPopupStore";
 	import Tabs from "./ui/Tabs.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { errorPopup } from "$lib/utils/errorHandling";
+	import { showNotification } from "$lib/utils/notifications";
 
 	let textarea = $state();
 	let selectedTabIndex = $state(0);
@@ -73,7 +75,7 @@
 	});
 
 	onMount(() => {
-		const profileFromURL = $page.url.searchParams.get("profile-id");
+		const profileFromURL = page.url.searchParams.get("profile-id");
 		if (profileFromURL != null) loadProfileFromId(profileFromURL, true);
 	});
 
@@ -240,8 +242,24 @@
 					onclick={() => {
 						playSound("basic_button");
 						$roundLogPopup = true;
-					}}><History strokeWidth={2} style="vertical-align: -3.5px;" /></button
+					}}><History strokeWidth={2} style="vertical-align: -3.75px;" size={23} /></button
 				>
+				<button
+					class="standardButton white"
+					onclick={() => {
+						playSound("basic_button");
+						navigator.clipboard
+							.writeText(page.url.origin + "?profile-id=" + $profileId)
+							.then(function () {
+								showNotification("Copied!");
+							})
+							.catch(function (error) {
+								showNotification("Error: " + error);
+							});
+					}}
+				>
+					<Link strokeWidth={2.15} style="vertical-align: -2.4px;" size={20} />
+				</button>
 			{/if}
 			{#if $profileSupporterLevel >= 1}
 				<div id="supporterTag">
