@@ -52,7 +52,7 @@ function calculateExponentialModifier(mapDiameter) {
 // Calculate XP gain --------------------------------------------------------------------------------------------------------------------------------
 async function calculateXPGain(distance, category, supporterLevelParam) {
     let returnXP = 0;
-    if (distance < 0.005) distance = 0; // Treat distances < 5m as 0 to be more friendly with 5ks
+    if (distance < 0.025) distance = 0; // Treat distances < 25m as 0 to be more friendly with 5ks
 
     // If the map is big enough to encompass many countries, calculate the country streak
     const streakMultiplier = (getMapBounds().diameter > 250 && get(singleplayer) && get(isAuthenticated) && category !== "country guessr") ? await streakCalculation() : 1;
