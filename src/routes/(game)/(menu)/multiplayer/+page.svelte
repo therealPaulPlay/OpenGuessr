@@ -80,7 +80,7 @@
 						playSound("basic_button");
 						goto("/multiplayer/join");
 					}}
-					>Join <span class="groupIcons"><Unplug size={20} strokeWidth={2.5} style="margin-bottom: -1px;" /></span
+					>Join <span class="groupIcons"><Unplug size={20} strokeWidth={2.25} style="margin-bottom: -1px;" /></span
 					></button
 				>
 				<button
@@ -92,7 +92,7 @@
 						playSound("basic_button");
 						goto("/multiplayer/host");
 					}}
-					>Host <span class="groupIcons"><PlusCircle size={20} strokeWidth={2.5} style="margin-bottom: -1px;" /></span
+					>Host <span class="groupIcons"><PlusCircle size={20} strokeWidth={2.25} style="margin-bottom: -1px;" /></span
 					></button
 				>
 			</div>
@@ -125,9 +125,9 @@
 					}}
 				>
 					{#if $skillBasedMatchmaking}
-						<BicepsFlexed strokeWidth={2.25} style="margin-bottom: -3px;" />
+						<BicepsFlexed strokeWidth={1.75} style="margin-bottom: -3px;" />
 					{:else}
-						<Earth strokeWidth={2.25} style="margin-bottom: -3px;" />
+						<Earth strokeWidth={1.75} style="margin-bottom: -3px;" />
 					{/if}
 				</button>
 				<button
@@ -137,7 +137,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						divisionMatchHistoryPopup.set(true);
-					}}><History strokeWidth={2.25} style="margin-bottom: -4px;" /></button
+					}}><History strokeWidth={2} style="margin-bottom: -4px;" /></button
 				>
 			</div>
 		</div>
@@ -174,7 +174,7 @@
 					} else {
 						signupPrompt();
 					}
-				}}><p class="addFriendText">Add friend <ContactRound strokeWidth={2.5} size={22} /></p></button
+				}}><p class="addFriendText">Add friend <ContactRound strokeWidth={2} size={22} /></p></button
 			>
 			<button
 				class="standardButton white friendActionButton"
@@ -477,9 +477,9 @@
 	}
 
 	#inboxIcon {
-		width: 20px;
-		height: 20px;
-		vertical-align: -3px;
+		width: 18px;
+		height: 18px;
+		vertical-align: -2px;
 		margin-left: 5px;
 	}
 
