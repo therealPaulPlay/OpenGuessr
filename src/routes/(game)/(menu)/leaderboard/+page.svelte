@@ -346,15 +346,15 @@
 	}
 
 	.gold {
-		background-color: #e8ad00;
+		background-color: rgba(255, 191, 0, 0.85);
 	}
 
 	.silver {
-		background-color: #9c9ca4;
+		background-color: rgba(223, 227, 238, 0.5);
 	}
 
 	.bronze {
-		background-color: #6f2c35;
+		background-color: rgba(132, 66, 66, 0.5);
 	}
 
 	.yourItem {
