@@ -5,14 +5,12 @@ let lastFetchedLocalTime = 0; // Stores local Date.now() when last fetch happene
 let lastServerTimestamp = 0; // Stores server timestamp at that fetch
 let pendingPromise = null; // Stores in-flight promise for concurrent calls
 
-// In seconds, unix timestamp
+// In milliseconds, unix timestamp
 export async function getServerTimestamp() {
     const now = Date.now(); // Current local time in ms
 
     // If last fetch was within 120 seconds, estimate time using the stored offset
-    if (now - lastFetchedLocalTime < 120000) {
-        return lastServerTimestamp + Math.round((now - lastFetchedLocalTime) / 1000);
-    }
+    if (now - lastFetchedLocalTime < 120000) return lastServerTimestamp + Math.round((now - lastFetchedLocalTime));
 
     // If there's already a pending request, return that promise instead of creating a new one
     if (pendingPromise) return pendingPromise;
@@ -34,14 +32,14 @@ export async function getServerTimestamp() {
 
             // Store the fetched server time and local time for accurate estimation
             lastFetchedLocalTime = Date.now();
-            lastServerTimestamp = Math.round(data?.timestamp / 1000);
+            lastServerTimestamp = Math.round(data?.timestamp);
             return lastServerTimestamp;
         } catch (error) {
             console.error("Error getting time from server:", error);
             // Fallback: Use previous estimated time if available, otherwise local time
             return lastServerTimestamp
-                ? lastServerTimestamp + Math.round((now - lastFetchedLocalTime) / 1000)
-                : Math.round(now / 1000);
+                ? lastServerTimestamp + Math.round((now - lastFetchedLocalTime))
+                : Math.round(now);
         } finally {
             clearTimeout(timeout); // Ensure timeout is cleared
             pendingPromise = null; // Clear the pending promise when done

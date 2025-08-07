@@ -1,10 +1,10 @@
-import { panoramaFilter, nmpz, blink } from "$lib/stores/context-specific/restrictionStore";
+import { panoramaFilter, nmpz, fadePanorama } from "$lib/stores/context-specific/restrictionStore";
 
 export function setRestriction(restriction) {
     // Disable all, then enable what is needed
     panoramaFilter.set();
     nmpz.set(false);
-    blink.set(false);
+    fadePanorama.set(false);
 
     switch (restriction) {
         case "nmpz":
@@ -20,7 +20,7 @@ export function setRestriction(restriction) {
             panoramaFilter.set("hue-rotate(90deg)");
             break;
         case "fade":
-            blink.set(true);
+            fadePanorama.set(true);
             break;
         case "standard":
         default:

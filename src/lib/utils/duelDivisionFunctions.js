@@ -14,14 +14,6 @@ export function calculateDivision(elo) {
     return 0;                       // I   (index 4 in the UI)
 }
 
-export const generateDuelUUID = () => {
-    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
-        const r = Math.random() * 16 | 0;
-        const v = c === 'x' ? r : (r & 0x3 | 0x8);
-        return v.toString(16);
-    });
-};
-
 export async function registerDivisionDuel(uuid) {
     try {
         const response = await fetch(get(accountUrl) + `/duels/duel-register/${uuid}`, {
