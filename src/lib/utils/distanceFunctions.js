@@ -11,12 +11,12 @@ let farDistances;
 let extraMsg;
 
 // Haversine formula, takes spherical nature of planet into account
-export function calculateDistances(mapsLat = 0, mapsLong = 0) {
+export function calculateDistances(mapsLat = 0, mapsLon = 0) {
     const R = 6371; // Radius of the Earth in km
     const lat1 = get(currentLocationLatitude) * Math.PI / 180; // Convert degrees to radians
     const lon1 = get(currentLocationLongitude) * Math.PI / 180;
     const lat2 = mapsLat * Math.PI / 180;
-    const lon2 = mapsLong * Math.PI / 180;
+    const lon2 = mapsLon * Math.PI / 180;
 
     const dLat = lat2 - lat1;
     const dLon = lon2 - lon1;

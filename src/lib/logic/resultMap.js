@@ -6,7 +6,7 @@ import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenSt
 import { clamp } from "$lib/utils/clamp";
 import { get } from "svelte/store";
 
-export async function loadResultMap(guessLat, guessLong, correctLat, correctLong) {
+export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) {
     if (!get(map)) {
         console.error("Map not properly inizialized - exiting result map load function.");
         return;
@@ -27,14 +27,14 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     });
 
     // Create LatLng objects for current and player positions
-    let curLatLng = new L.LatLng(correctLat, correctLong);
+    let curLatLng = new L.LatLng(correctLat, correctLon);
     let playerLatLng;
     let pointList;
     let polyList;
 
     // Check if NOT in Country Guessr (or if IN multiplayer) --------------------------------------------------
     if (!get(countryGuessr)) {
-        playerLatLng = new L.LatLng(guessLat, guessLong);
+        playerLatLng = new L.LatLng(guessLat, guessLon);
         polyList = [curLatLng, playerLatLng];
         pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
 
@@ -70,15 +70,15 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     if (get(multiplayer)) {
         get(socket)?.getStorage?.guessLocationsArray?.forEach(function (element) {
             let newMarkerLat = element.lat;
-            let newMarkerLong = element.long;
+            let newMarkerLon = element.lon;
             let newMarkerPinIndex = element.pin;
             let associatedPlayerName = element.username;
 
             // Handle edge cases
             if (newMarkerPinIndex == null) newMarkerPinIndex = 0;
-            if (newMarkerLat == null || newMarkerLong == null || isNaN(newMarkerLat)) {
+            if (newMarkerLat == null || newMarkerLon == null || isNaN(newMarkerLat)) {
                 newMarkerLat = 0;
-                newMarkerLong = 0;
+                newMarkerLon = 0;
             }
 
             // Place multiplayer markers if not player's marker
@@ -91,7 +91,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
                     popupAnchor: [1, -34],
                 });
 
-                let multiplayerLatLng = new L.LatLng(newMarkerLat, newMarkerLong);
+                let multiplayerLatLng = new L.LatLng(newMarkerLat, newMarkerLon);
 
                 let multiplayerMarker = new L.Marker(multiplayerLatLng, { icon: newMultiplayerIcon });
                 multiplayerMarker.bindTooltip(associatedPlayerName,
@@ -130,7 +130,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     }
 
     // Place the "correct" marker reflecting the target location
-    let destinationMarker = new L.Marker([correctLat, correctLong], { icon: resultIcon });
+    let destinationMarker = new L.Marker([correctLat, correctLon], { icon: resultIcon });
     destinationMarker.addTo(get(map));
 
     addedMarkers.update((markers) => {
@@ -139,10 +139,10 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     });
 
     // Fly to the destination marker after a delay
-    setTimeout(() => flyToLocation(correctLat, correctLong), 1500);
+    setTimeout(() => flyToLocation(correctLat, correctLon), 1500);
 }
 
-function flyToLocation(lat, long) {
+function flyToLocation(lat, lon) {
     // Check if EndOverlay is fully visible before flying to the destination
     if (get(resultScreenEnabled)) {
         const zoom = clamp(get(map).getZoom() + 2, 0, 18);
@@ -151,6 +151,6 @@ function flyToLocation(lat, long) {
             duration: 0.75
         };
 
-        get(map).flyTo([lat, long], zoom, animate);
+        get(map).flyTo([lat, lon], zoom, animate);
     }
 }

@@ -10,11 +10,11 @@ export function extractCoordinates(text) {
 
         while ((match = regex.exec(text)) !== null) {
             const lat = parseFloat(match[1]);
-            const long = parseFloat(match[2]);
-            const coordPair = `${lat},${long}`;
+            const lon = parseFloat(match[2]);
+            const coordPair = `${lat},${lon}`;
 
             if (!seenCoordinates.has(coordPair)) {
-                coordinates.push([lat, long]);
+                coordinates.push([lat, lon]);
                 seenCoordinates.add(coordPair);
             }
         }

@@ -11,7 +11,7 @@
 		height = 250,
 		center = {
 			lat: 35,
-			long: 0,
+			lon: 0,
 		},
 		interactive = true,
 		notHighlightedColor = "rgba(125,125,125, 0.2)",
@@ -71,7 +71,7 @@
 		const minDimension = Math.min(width, height);
 		const scale = (minDimension / 2) * zoom;
 
-		projection.scale(scale).center([center.long, center.lat]).translate([translateX, translateY]);
+		projection.scale(scale).center([center.lon, center.lat]).translate([translateX, translateY]);
 		path = geoPath().projection(projection);
 	}
 
@@ -269,14 +269,14 @@
 			features = geoData.features; // Init features
 
 			// Init points
-			points = (locationList || []).map(([lat, long], index) => {
-				const [x, y] = projection([long, lat]);
-				const initX = long;
+			points = (locationList || []).map(([lat, lon], index) => {
+				const [x, y] = projection([lon, lat]);
+				const initX = lon;
 				const initY = lat;
 				return {
 					type: "Point",
 					uniqueKey: `point-${index}`,
-					properties: { lat, long },
+					properties: { lat, lon },
 					x,
 					y,
 					initX,

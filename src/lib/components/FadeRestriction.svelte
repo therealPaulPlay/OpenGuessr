@@ -1,20 +1,20 @@
 <script>
-	import { blink } from "$lib/stores/context-specific/restrictionStore";
+	import { fadePanorama } from "$lib/stores/context-specific/restrictionStore";
 </script>
 
-{#if $blink}
-	<div id="blinkBackground"></div>
+{#if $fadePanorama}
+	<div class="fadeBackground"></div>
 {/if}
 
 <style>
-	#blinkBackground {
+	.fadeBackground {
 		position: fixed;
 		overflow: hidden;
 		width: 100%;
 		height: 100%;
 		z-index: 1;
-		animation: restrictionFade 2s infinite;
-		transition: oapcity 500ms ease;
+		animation: restrictionFade 3s infinite;
+		transition: oapcity 1000ms ease;
 		pointer-events: none;
 		top: 0;
 		background-color: black;

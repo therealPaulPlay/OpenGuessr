@@ -1,5 +1,5 @@
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
-import { addMultiplayerGuessMarker, getTeamFromMultiplayerId } from "$lib/logic/multiplayerLogic";
+import { getTeamFromMultiplayerId } from "$lib/logic/multiplayerLogic";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore.js";
@@ -129,7 +129,7 @@ function onMapClick(latLng) {
             return [...markers, marker]
         });
 
-        if (get(multiplayer)) addMultiplayerGuessMarker();
+        if (get(multiplayer)) get(socket).sendRequest("addGuessMarker", { lat: get(mapPinLat), lon: get(mapPinLng) });
     } catch (error) {
         console.error("Error in onMapClick function:", error)
     }
@@ -146,13 +146,13 @@ export function updateMinimapWithTeamMarkers(markerArray) {
         markerArray.forEach(element => {
             let miniMarkerId = element.id;
             let miniMarkerLat = element.lat;
-            let miniMarkerLong = element.long;
+            let miniMarkerLon = element.lon;
             let miniMarkerPinIndex = element.pin;
             let miniMarkerTeam = element.team;
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
             if (miniMarkerId != get(socket)?.id && miniMarkerTeam === getTeamFromMultiplayerId(get(socket)?.id)) {
-                const multiplayerLatLng = new L.LatLng(miniMarkerLat, miniMarkerLong);
+                const multiplayerLatLng = new L.LatLng(miniMarkerLat, miniMarkerLon);
 
                 let newMultiplayerIcon = new L.Icon({
                     iconUrl: "/img/pins/player_pin" + miniMarkerPinIndex + ".png",

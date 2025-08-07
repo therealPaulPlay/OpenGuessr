@@ -16,6 +16,7 @@ import { showSlideup } from "$lib/stores/context-specific/resultScreenSlideupSto
 import { supporterSlideupProbability } from "./showSupporterSlideup";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration";
+import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 
 export async function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (!get(resultScreenEnabled)) {
@@ -58,6 +59,8 @@ export function disableResultScreen() {
         shrinkMapIfMobile();
         showSlideup.set(false);
         timerText.set("00:00"); // Reset timer text
+        mapPinLat.set(0); // Reset placed map pin latitude
+        mapPinLng.set(0); // Reset placed map pin longitude
 
         earnedExperience.set(0); // Reset earned experience
         resetMap(); // Reset the map for the next round

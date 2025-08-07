@@ -23,9 +23,9 @@
 	let locationIndex = $state(0);
 	let iframeSource = $derived(
 		"https://www.google.com/maps/embed/v1/streetview?location=" +
-			data.map_data.locations[locationIndex][0] +
+			locationsArrayForSvgMap[locationIndex][0] +
 			"," +
-			data.map_data.locations[locationIndex][1] +
+			locationsArrayForSvgMap[locationIndex][1] +
 			"&key=" +
 			get(panoramaKey) +
 			"&fov=90",
@@ -227,18 +227,18 @@
 
 		// Find bounds
 		const bounds = locationsArrayForSvgMap.reduce(
-			(acc, [lat, long]) => ({
+			(acc, [lat, lon]) => ({
 				minLat: Math.min(acc.minLat, lat),
 				maxLat: Math.max(acc.maxLat, lat),
-				minLong: Math.min(acc.minLong, long),
-				maxLong: Math.max(acc.maxLong, long),
+				minLon: Math.min(acc.minLon, lon),
+				maxLon: Math.max(acc.maxLon, lon),
 			}),
-			{ minLat: 90, maxLat: -90, minLong: 180, maxLong: -180 },
+			{ minLat: 90, maxLat: -90, minLon: 180, maxLon: -180 },
 		);
-		if (bounds.maxLong - bounds.minLong > 180 || bounds.maxLat - bounds.minLat > 90) return; // Use default if locations cover most of the world
+		if (bounds.maxLon - bounds.minLon > 180 || bounds.maxLat - bounds.minLat > 90) return; // Use default if locations cover most of the world
 		return {
 			lat: (bounds.minLat + bounds.maxLat) / 2,
-			long: (bounds.minLong + bounds.maxLong) / 2,
+			lon: (bounds.minLon + bounds.maxLon) / 2,
 		};
 	});
 </script>
@@ -267,11 +267,10 @@
 				center={mapCenter}
 				onclick={(coordinates) => {
 					const mapLocations = $state.snapshot(locationsArrayForSvgMap);
-					const index = mapLocations?.findIndex(([lat, long]) => {
-						return lat == coordinates.lat && long == coordinates.long;
+					const index = mapLocations?.findIndex(([lat, lon]) => {
+						return lat == coordinates.lat && lon == coordinates.lon;
 					});
 					if (index >= 0) locationIndex = index;
-					console.log(index);
 				}}
 			/>
 		</div>
