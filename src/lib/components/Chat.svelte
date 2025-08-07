@@ -144,6 +144,7 @@
 		z-index: 2;
 		transition: opacity 250ms ease;
 		box-shadow: var(--button-shadow);
+		backdrop-filter: blur(10px);
 	}
 
 	.resize-handle:hover,

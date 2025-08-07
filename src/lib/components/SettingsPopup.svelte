@@ -70,11 +70,8 @@
 	let fullscreenButtonText = $state("Fullscreen");
 
 	const fullscreenChangeCheck = function () {
-		if (!document.fullscreenElement) {
-			fullscreenButtonText = "Fullscreen";
-		} else {
-			fullscreenButtonText = "Exit Fullscreen";
-		}
+		if (!document.fullscreenElement) fullscreenButtonText = "Fullscreen";
+		else fullscreenButtonText = "Exit";
 	};
 
 	function toggleFullscreen() {
@@ -185,7 +182,7 @@
 					>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
 				>
 			</div>
-			<TitleSeparator text="Music & Sounds" noMargin={true} />
+			<TitleSeparator text="Audio" noMargin={true} />
 			<div class="settingsBox">
 				<p class="textMargin">SFX volume</p>
 				<div class="sliderBox">
@@ -223,10 +220,6 @@
 							showConfirmPopup(
 								"Credits",
 								'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM" :-)',
-								false,
-								false,
-								false,
-								true,
 							);
 						}}
 					>

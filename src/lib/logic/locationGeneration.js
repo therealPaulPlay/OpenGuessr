@@ -99,8 +99,8 @@ async function getCoordsFromLocationServer() {
         if (cachedLocations.length > 0) {
             const location = cachedLocations.shift();
             const resultLat = location[0];
-            const resultLong = location[1];
-            return [resultLat, resultLong];
+            const resultLon = location[1];
+            return [resultLat, resultLon];
         } else {
             throw new Error("No locations available in cache!");
         }
@@ -200,9 +200,9 @@ function pickRandomLocations() {
         let guessIndex = getUniqueLocationIndex(get(currentlyLoadedLocationsArray)?.length);
 
         const resultLat = get(currentlyLoadedLocationsArray)[guessIndex][0];
-        const resultLong = get(currentlyLoadedLocationsArray)[guessIndex][1];
+        const resultLon = get(currentlyLoadedLocationsArray)[guessIndex][1];
         const additionalProperty = get(currentlyLoadedLocationsArray)[guessIndex][2]; // only available for certain modes (like country guessr, image guessr..). This could be the country, the image URL etc.
-        return [resultLat, resultLong, additionalProperty];
+        return [resultLat, resultLon, additionalProperty];
     } catch (error) {
         console.error("Error picking random locations in locationGeneration.js: " + error);
         return [];
@@ -229,9 +229,9 @@ async function getCompetitionCoordinates() {
 
     try {
         const resultLat = get(competitionData)?.locations[get(competitionRound)][0];
-        const resultLong = get(competitionData)?.locations[get(competitionRound)][1];
+        const resultLon = get(competitionData)?.locations[get(competitionRound)][1];
 
-        resultLocationsArray = [resultLat, resultLong];
+        resultLocationsArray = [resultLat, resultLon];
     } catch (error) {
         console.error("Error in locationGeneration.js in getCompetitionCoordinates: " + error);
     }

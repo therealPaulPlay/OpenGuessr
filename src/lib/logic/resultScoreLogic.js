@@ -46,7 +46,7 @@ async function streakCalculation() {
 
 // Adjust XP calculation parameter to diameter (map size)
 function calculateExponentialModifier(mapDiameter) {
-    return 0.9982 - 0.08 * Math.exp(-0.06 * mapDiameter);
+    return 0.999 - 0.08 * Math.exp(-0.06 * mapDiameter);
 }
 
 // Calculate XP gain --------------------------------------------------------------------------------------------------------------------------------
@@ -118,7 +118,7 @@ export async function loadResultScreenXP(distance) {
         supporterMultiplier = calculatedXP.supporterMultiplier;
 
         // Add XP to score
-        if (get(multiplayer)) get(socket)?.sendRequest("playersAddScore", earnedXP);
+        if (get(multiplayer)) get(socket)?.sendRequest("addToScore", earnedXP);
 
     } else if (get(competition)) {
         const calculatedXP = await calculateXPGain(distance, "standard");

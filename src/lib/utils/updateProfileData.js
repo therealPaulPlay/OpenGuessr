@@ -79,10 +79,10 @@ export async function setCheckNewHighestCountryStreak(streak) {
     try {
         // Get current profile data to check existing highest streak
         const data = await getProfileData(localStorage.getItem("id"));
-        const currentHighest = data.highestCountryStreak || 0;
-
-        // Only update if the new streak is higher
-        if (streak > currentHighest) await updateSingleProfileField('highest_country_streak', streak);
+        if (data) {
+            const currentHighest = data?.highestCountryStreak || 0;
+            if (streak > currentHighest) await updateSingleProfileField('highest_country_streak', streak); // Only update if the new streak is higher
+        }
 
     } catch (error) {
         console.error("Error checking/setting country streak:", error);

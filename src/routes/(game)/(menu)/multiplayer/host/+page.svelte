@@ -46,7 +46,7 @@
 	});
 
 	function updatePlayerTeam(playerId, newTeamIndex) {
-		get(socket)?.sendRequest("playersUpdateTeam", { newTeamIndex: parseInt(newTeamIndex), playerClientId: playerId });
+		get(socket)?.sendRequest("updateTeam", { newTeamIndex: parseInt(newTeamIndex), playerClientId: playerId });
 	}
 
 	// Restriction toggle

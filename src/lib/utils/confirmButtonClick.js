@@ -15,8 +15,7 @@ export function confirmButtonClicks() {
         enableResultScreen(get(mapPinLat), get(mapPinLng));
     } else {
         mapInteractive.set(false);
-        get(socket)?.updateStorage("confirmedArray", "array-add-unique", get(socket)?.id);
-        if (get(multiplayerStyle) == "duel") get(socket)?.updateStorage("timeReducedOverlay", "set", true); // Reduce time in duels
+        get(socket)?.sendRequest("confirmGuess");
     }
 
     confirmButtonActive.set(false); // Disable confirm button (make it greyed out) – will be re-enabled when placing pin

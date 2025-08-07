@@ -240,7 +240,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						$roundLogPopup = true;
-					}}><History strokeWidth={2} style="vertical-align: -4.25px;" /></button
+					}}><History strokeWidth={2} style="vertical-align: -3.5px;" /></button
 				>
 			{/if}
 			{#if $profileSupporterLevel >= 1}
@@ -344,7 +344,7 @@
 				<div class="editNameSection">
 					<button
 						class="standardButton white"
-						id="editUsername"
+						class:buttonDisabled={!$singleplayer}
 						onclick={() => {
 							playSound("basic_button");
 							showConfirmPopup(
@@ -363,9 +363,8 @@
 					</button>
 				</div>
 				<button
-					id="accountDeleteButton"
 					class="standardButton white"
-					class:buttonDisabled={$crazyGames}
+					class:buttonDisabled={$crazyGames || !$singleplayer}
 					onclick={() => {
 						playSound("basic_button");
 						showConfirmPopup(

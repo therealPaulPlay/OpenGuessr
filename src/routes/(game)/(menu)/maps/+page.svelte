@@ -216,14 +216,14 @@
 				}}
 			>
 				<div class="mapInfo">
-					<div class="map-name">{idToMapName(map) || "Name not loaded"}</div>
+					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
 				</div>
 			</div>
 		{/each}
 	</div>
 	<!-- Special game modes and OpenGuessr sites -->
 	<div class="headerContainer">
-		<h2 class="header">Special modes</h2>
+		<h2 class="header">Special</h2>
 	</div>
 	<div class="map-container">
 		{#each $specialModes as map}
@@ -237,7 +237,7 @@
 				}}
 			>
 				<div class="mapInfo">
-					<div class="map-name">{idToMapName(map) || "Name not loaded"}</div>
+					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
 				</div>
 			</div>
 		{/each}
@@ -251,14 +251,16 @@
 			}}
 		>
 			<div class="mapInfo">
-				<div class="map-name">
-					Competitions <span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
-				</div>
+				<p class="map-name">
+					Competitions <span class="linkSpan"
+						><ExternalLinkIcon size={20} strokeWidth={2.25} style="margin-bottom: -2px;" /></span
+					>
+				</p>
 			</div>
 		</div>
 		{#if !$disableExternalLinks}
 			<div
-				class="map-item map-item-slim"
+				class="map-item-link map-item"
 				role="button"
 				tabindex="0"
 				onclick={() => {
@@ -266,12 +268,20 @@
 					window.open("https://education.openguessr.com/quiz", "_blank").focus();
 				}}
 			>
-				<div class="mapInfo">
-					<div class="map-name">
-						Quizzes <span class="linkBadge">Edu</span>
-						<span class="linkSpan"><ExternalLinkIcon size={16} strokeWidth={2} /></span>
-					</div>
-				</div>
+				<p class="map-name">Geo Quizzes</p>
+				<p class="link-badge">Education</p>
+			</div>
+			<div
+				class="map-item-link map-item"
+				role="button"
+				tabindex="0"
+				onclick={() => {
+					playSound("button_juicy");
+					window.open("https://geometas.com", "_blank").focus();
+				}}
+			>
+				<p class="map-name">Meta Quizzes</p>
+				<p class="link-badge">Geometas</p>
 			</div>
 		{/if}
 	</div>
@@ -291,7 +301,7 @@
 				}}
 			>
 				<div class="mapInfo">
-					<div class="map-name">{idToMapName(map) || "Name not loaded"}</div>
+					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
 				</div>
 			</div>
 		{/each}
@@ -332,7 +342,7 @@
 				}}
 			>
 				<div class="mapInfo">
-					<div class="map-name">{idToMapName(map) || "Name not loaded"}</div>
+					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
 				</div>
 			</div>
 		{/each}
@@ -354,7 +364,7 @@
 					}}
 				>
 					<div class="mapInfo">
-						<div class="map-name">{map || "Name not loaded"}</div>
+						<p class="map-name">{map || "Name not loaded"}</p>
 					</div>
 					<button
 						class="remove-button"
@@ -388,8 +398,8 @@
 				}}
 			>
 				<div class="mapInfo">
-					<div class="map-name">{map.name || "Name not loaded"}</div>
-					<div class="map-author">by {map.author || "Bugsnacker"}</div>
+					<p class="map-name">{map.name || "Name not loaded"}</p>
+					<p class="map-author">by {map.author || "Bugsnacker"}</p>
 				</div>
 				<button
 					class="add-button standardButton white"
@@ -482,8 +492,8 @@
 				}}
 			>
 				<div class="mapInfo">
-					<div class="map-name">{map.name || "Name not loaded"}</div>
-					<div class="map-author">by {map.author || "Bugsnacker"}</div>
+					<p class="map-name">{map.name || "Name not loaded"}</p>
+					<p class="map-author">by {map.author || "Bugsnacker"}</p>
 				</div>
 				<button
 					class="add-button standardButton white"
@@ -512,11 +522,13 @@
 				onclick={() => {
 					playSound("basic_button");
 					loadCommunityMaps(currentFetchIndex + 50, loadMoreCategoryParam, loadMoreQueryParam, byUserParam, null);
-				}}>More <span class="loadMoreIconSpan"><Plus strokeWidth={2.75} size={20} /></span></button
+				}}
+				><p>More</p>
+				<span class="loadMoreIconSpan"><Plus strokeWidth={2.75} size={20} /></span></button
 			>
 		{/if}
 		{#if errorMessageShown}
-			<p class="nothingFound">{errorMessageText}</p>
+			<p class="nothingFound minimumCommunityLoadingHeight">{errorMessageText}</p>
 		{/if}
 		{#if showNothingFound}
 			<p class="nothingFound">No map matches the filter.</p>
@@ -571,6 +583,18 @@
 		padding-bottom: 0;
 	}
 
+	.link-badge {
+		font-size: 18px;
+		font-style: italic;
+		border-radius: 5px;
+		background-color: rgb(224, 2, 2);
+		padding: 2px;
+		margin-right: -1px;
+		padding-inline: var(--panel-margin);
+		box-shadow: var(--bulb-shadow);
+		margin-left: var(--panel-margin);
+	}
+
 	.map-item {
 		display: flex;
 		justify-content: space-between;
@@ -578,7 +602,6 @@
 		text-decoration: none;
 		align-items: center;
 		background-color: rgba(255, 255, 255, 0.1);
-		color: white;
 		border-radius: 10px;
 		padding: var(--box-margin);
 		padding-inline: 15px;
@@ -595,6 +618,11 @@
 			opacity 250ms ease,
 			scale 250ms ease,
 			background-color 250ms ease;
+	}
+
+	.map-item-link {
+		min-width: 220px;
+		flex-basis: 0;
 	}
 
 	.map-item:hover {
@@ -710,6 +738,7 @@
 		font-size: 25px;
 		line-height: 0.9;
 		opacity: 0.75;
+		color: white;
 		transition: opacity 250ms ease;
 	}
 
@@ -733,20 +762,13 @@
 		text-align: center;
 	}
 
+	.minimumCommunityLoadingHeight {
+		margin-bottom: 1000px;
+	}
+
 	.noSavedMaps {
 		text-align: start;
 		margin-left: 10px;
-	}
-
-	.linkBadge {
-		border-radius: 3px;
-		background-color: rgb(224, 2, 2);
-		padding-inline: 2px;
-		font-style: italic;
-		font-size: 16px;
-		padding-right: 5px;
-		vertical-align: 1px;
-		margin-left: 1px;
 	}
 
 	#mapSearch {

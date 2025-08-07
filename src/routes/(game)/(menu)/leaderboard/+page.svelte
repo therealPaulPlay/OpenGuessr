@@ -7,6 +7,8 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
+	import { Info } from "lucide-svelte";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 
 	let loadingText = $state("Loading...");
 
@@ -56,28 +58,6 @@
 		}
 	}
 
-	async function getSupporterLeaderboard() {
-		try {
-			const response = await fetch(`${$accountUrl}/leaderboard/experience-supporter`, {
-				method: "GET",
-				headers: {
-					"Content-Type": "application/json",
-				},
-			});
-
-			// Check if the response is successful
-			if (response.ok) {
-				const data = await response.json();
-				return data;
-			} else {
-				throw new Error(response.status);
-			}
-		} catch (error) {
-			console.error("Error occurred while fetching the user: ", error);
-			loadingText = "Error: " + error.message;
-		}
-	}
-
 	async function getEloLeaderboard() {
 		try {
 			const response = await fetch(`${$accountUrl}/leaderboard/elo`, {
@@ -113,9 +93,6 @@
 				break;
 			case "experience":
 				mainSectionEntries = await getLeaderboard();
-				break;
-			case "experience-supporter":
-				mainSectionEntries = await getSupporterLeaderboard();
 				break;
 		}
 	}
@@ -168,12 +145,6 @@
 				valueKey = "experience";
 				unitName = " XP";
 				potentialUserLeaderboardType = "experience";
-				break;
-			case "XP (Supp.)":
-				loadLeaderboard("experience-supporter");
-				valueKey = "experience";
-				unitName = " XP";
-				potentialUserLeaderboardType = "none";
 				break;
 		}
 	}
@@ -240,7 +211,7 @@
 </div>
 <div class="optionBar">
 	<Tabs
-		tabs={["Elo", "XP", "XP (Supp.)"]}
+		tabs={["Elo", "XP"]}
 		class="leaderboardTabs"
 		onchange={(selection) => {
 			filter = selection;
@@ -248,6 +219,18 @@
 			playSound("basic_button");
 		}}
 	/>
+	<button
+		class="standardButton white resetInfoButton"
+		onclick={() => {
+			playSound("basic_button");
+			showConfirmPopup(
+				"Resets",
+				"Elo above 2000 is reset and converted into tokens at the start of each month. Experience over 100M is reset at the start of each month.",
+			);
+		}}
+	>
+		<Info style="vertical-align: -3px" />
+	</button>
 </div>
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="leaderboardContainer">
@@ -321,6 +304,7 @@
 		margin-inline: auto;
 		width: fit-content;
 		max-width: 80%;
+		gap: var(--layout-margin);
 	}
 
 	:global(.leaderboardTabs) {
@@ -403,6 +387,11 @@
 		margin-bottom: 30px;
 		max-width: 850px;
 		margin-inline: auto;
+	}
+
+	.resetInfoButton {
+		border-radius: var(--box-margin);
+		padding-inline: var(--panel-margin);
 	}
 
 	.podium-container {

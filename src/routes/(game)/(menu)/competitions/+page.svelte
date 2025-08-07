@@ -9,11 +9,11 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
-	import { Frown, Plus, Search, Smile, TriangleAlert } from "lucide-svelte";
+	import { ChevronDown, Frown, Plus, Search, Smile, TriangleAlert } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import { blur } from "svelte/transition";
+	import { blur, slide } from "svelte/transition";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import { page } from "$app/state";
 
@@ -50,9 +50,8 @@
 				() => {
 					signupPrompt();
 				},
-				undefined,
-				undefined,
-				undefined,
+				null,
+				null,
 				"Sign up",
 			);
 
@@ -426,6 +425,9 @@
 			ratingText = "Network error.";
 		}
 	}
+
+	// Collapsible daily --------------------------------------------
+	let showExpiredDaily = $state(false);
 </script>
 
 <Popup slim={true} bind:open={leaderboardPopup}>
@@ -544,19 +546,21 @@
 	entered,
 	daily,
 )}
-	<div class="competitionItem fadeInItem">
-		<h2 class="competitionItemHeader">{name}</h2>
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-		<p
-			class="competitionAuthor"
-			onclick={() => {
-				const id = authorId == 0 ? 2 : authorId; // Set to 2 (PaulPlay) if created by System (0)
-				loadProfileFromId(id, true);
-			}}
-		>
-			hosted by {author}
-		</p>
+	<div class="competitionItem fadeInItem" style:border-radius={daily && expired ? "8px" : ""}>
+		<div>
+			<h2 class="competitionItemHeader">{name}</h2>
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+			<p
+				class="competitionAuthor"
+				onclick={() => {
+					const id = authorId == 0 ? 2 : authorId; // Set to 2 (PaulPlay) if created by System (0)
+					loadProfileFromId(id, true);
+				}}
+			>
+				hosted by {author}
+			</p>
+		</div>
 		<div class="competitionPropertiesBox">
 			<div class="propertyItem">
 				<div class="label">
@@ -597,7 +601,7 @@
 			role="button"
 			tabindex="0"
 			onclick={() => {
-				showConfirmPopup("About", description, false, false, false, true);
+				showConfirmPopup("About", description);
 			}}
 		>
 			<div class="label" class:expiredCompetitionColor={expired} role="button" tabindex="0">
@@ -651,22 +655,71 @@
 		<!-- daily competitions will be inserted here -->
 		{#if dailyCompetitionData?.length > 0}
 			{#each dailyCompetitionData as entry}
-				{@render competitionItem(
-					entry.id,
-					entry.name,
-					entry.author,
-					entry.author_id,
-					entry.playercount,
-					entry.restriction,
-					entry.duration,
-					entry.remainingDuration,
-					entry.location_amount,
-					entry.round_length,
-					entry.description,
-					entry.expired,
-					entry.entered,
-					true,
-				)}
+				{#if !entry.expired}
+					{@render competitionItem(
+						entry.id,
+						entry.name,
+						entry.author,
+						entry.author_id,
+						entry.playercount,
+						entry.restriction,
+						entry.duration,
+						entry.remainingDuration,
+						entry.location_amount,
+						entry.round_length,
+						entry.description,
+						entry.expired,
+						entry.entered,
+						true,
+					)}
+				{:else}
+					<div class="dailyCompetitionExpiredBox fadeInItem">
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<div
+							class="toggleButtonBar"
+							role="button"
+							tabindex={0}
+							onclick={() => {
+								playSound("floating_button");
+								showExpiredDaily = !showExpiredDaily;
+							}}
+						>
+							<p style:margin-left="var(--panel-margin)">View yesterday's daily competition.</p>
+							<div class="expiredDailyIcon">
+								<ChevronDown
+									style="margin-bottom: -4px; transition: transform 250ms ease; {showExpiredDaily
+										? 'transform: rotate(180deg)'
+										: ''}"
+								/>
+							</div>
+						</div>
+						{#if showExpiredDaily}
+							<div
+								class="expiredDailySpacer"
+								in:slide={{ duration: 50 }}
+								out:slide={{ duration: 50, delay: 175 }}
+							></div>
+							<div class="expiredDailyContainer" transition:slide={{ duration: 250 }}>
+								{@render competitionItem(
+									entry.id,
+									entry.name,
+									entry.author,
+									entry.author_id,
+									entry.playercount,
+									entry.restriction,
+									entry.duration,
+									entry.remainingDuration,
+									entry.location_amount,
+									entry.round_length,
+									entry.description,
+									entry.expired,
+									entry.entered,
+									true,
+								)}
+							</div>
+						{/if}
+					</div>
+				{/if}
 			{/each}
 		{:else}
 			<p class="errorText">{dailyCompetitionError}</p>
@@ -826,6 +879,48 @@
 		background-color: var(--box-color);
 	}
 
+	.dailyCompetitionExpiredBox {
+		padding: var(--layout-margin);
+		width: 100%;
+		box-shadow: var(--box-shadow);
+		border-radius: 15px;
+		background-color: var(--box-color);
+		display: flex;
+		align-items: center;
+		flex-wrap: wrap;
+		box-sizing: border-box;
+	}
+
+	.expiredDailyContainer {
+		display: flex;
+		width: 100%;
+	}
+
+	.expiredDailySpacer {
+		height: var(--box-margin);
+		width: 100%;
+	}
+
+	.expiredDailyIcon {
+		color: white;
+		padding: 5px;
+		padding-inline: var(--panel-margin);
+	}
+
+	.toggleButtonBar {
+		display: flex;
+		width: 100%;
+		gap: var(--box-margin);
+		transition: opacity 250ms ease;
+		justify-content: space-between;
+		align-items: center;
+		cursor: pointer;
+	}
+
+	.toggleButtonBar:hover {
+		opacity: 0.5;
+	}
+
 	.competitionElement {
 		transition:
 			background-color 250ms ease,
@@ -878,7 +973,7 @@
 	}
 
 	.competitionItem {
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		transition:
@@ -1011,6 +1106,7 @@
 		width: 100%;
 		text-align: center;
 		opacity: 0.5;
+		margin-top: var(--layout-margin);
 	}
 
 	.rankingDisplay {

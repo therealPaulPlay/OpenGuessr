@@ -10,8 +10,7 @@ async function awaitMapInit() {
     return new Promise(resolve => document.addEventListener("mapInitialized", () => { resolve(); }));
 }
 
-export async function loadResultMap(guessLat, guessLong, correctLat, correctLong) {
-
+export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) {
     if (!get(map)) {
         // Trigger the captcha popup, which results in a map load, then await the map load
         initializeMapIfNotAlready();
@@ -41,13 +40,13 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     };
 
     // Create LatLng objects for current and player positions
-    let curLatLng = new google.maps.LatLng(correctLat, correctLong);
+    let curLatLng = new google.maps.LatLng(correctLat, correctLon);
     let playerLatLng;
     let pointList;
 
     // Check if NOT in Country Guessr (or if IN multiplayer) --------------------------------------------------
     if (!get(countryGuessr)) {
-        playerLatLng = new L.LatLng(guessLat, guessLong);
+        playerLatLng = new L.LatLng(guessLat, guessLon);
         polyList = [curLatLng, playerLatLng];
         pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
 
@@ -90,20 +89,19 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     if (get(multiplayer)) {
         get(socket)?.getStorage?.guessLocationsArray?.forEach(function (element) {
             let newMarkerLat = element.lat;
-            let newMarkerLong = element.long;
+            let newMarkerLon = element.lon;
             let newMarkerPinIndex = element.pin;
             let associatedPlayerName = element.username;
 
             // Handle edge cases
             if (newMarkerPinIndex == null) newMarkerPinIndex = 0;
-            if (newMarkerLat == null || newMarkerLong == null || isNaN(newMarkerLat)) {
+            if (newMarkerLat == null || newMarkerLon == null || isNaN(newMarkerLat)) {
                 newMarkerLat = 0;
-                newMarkerLong = 0;
+                newMarkerLon = 0;
             }
 
             // Place multiplayer markers if not player's marker
             if (element.id !== get(socket)?.id) {
-
                 let newMultiplayerIcon = {
                     url: "/img/pins/player_pin" + newMarkerPinIndex + ".png",
                     size: new google.maps.Size(35, 35),
@@ -112,7 +110,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
                     scaledSize: new google.maps.Size(35, 35)
                 };
 
-                let multiplayerLatLng = new google.maps.LatLng(newMarkerLat, newMarkerLong);
+                let multiplayerLatLng = new google.maps.LatLng(newMarkerLat, newMarkerLon);
 
                 let multiplayerMarker = new google.maps.Marker({
                     position: multiplayerLatLng,
@@ -160,7 +158,7 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
 
     // Place the "correct" marker reflecting the target location
     let destinationMarker = new google.maps.Marker({
-        position: { lat: correctLat, lng: correctLong },
+        position: { lat: correctLat, lng: correctLon },
         map: get(map),
         icon: resultIcon
     });
@@ -171,16 +169,16 @@ export async function loadResultMap(guessLat, guessLong, correctLat, correctLong
     });
 
     // Fly to the destination marker after a delay
-    setTimeout(() => flyToLocation(correctLat, correctLong), 1500);
+    setTimeout(() => flyToLocation(correctLat, correctLon), 1500);
 }
 
-function flyToLocation(lat, long) {
+function flyToLocation(lat, lon) {
     // Check if EndOverlay is fully visible before flying to the destination
     if (get(resultScreenEnabled)) {
         let currentZoom = get(map).getZoom();
         let newZoom = Math.min(currentZoom + 2, get(map).maxZoom || 21); // Adjust 2 to the desired zoom increment and 21 to the max zoom level if you have a custom max
 
-        let latLng = { lat: correctLat, lng: correctLong };
+        let latLng = { lat: correctLat, lng: correctLon };
 
         get(map).setZoom(newZoom);
         get(map).setCenter(latLng);

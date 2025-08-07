@@ -61,6 +61,7 @@
 		z-index: 1;
 		user-select: none;
 		box-shadow: var(--box-shadow);
+		backdrop-filter: blur(10px);
 	}
 
 	.dimmed {
