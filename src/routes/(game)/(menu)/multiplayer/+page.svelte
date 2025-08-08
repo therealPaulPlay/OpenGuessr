@@ -216,7 +216,7 @@
 								onclick={(e) => {
 									e.stopPropagation();
 									playSound("basic_button");
-									showConfirmPopup("Remove friend?", "You are about to remove your friend from your list.", () => {
+									showConfirmPopup("Remove friend?", "You are about to remove this friend.", () => {
 										removeFriend(entry.id);
 									});
 								}}
@@ -373,7 +373,7 @@
 	}
 
 	.friendItemButtons {
-		padding-inline: 5px;
+		padding-inline: var(--panel-margin);
 	}
 
 	.groupIcons {
