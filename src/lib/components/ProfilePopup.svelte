@@ -186,7 +186,7 @@
 				</span>
 			{:else if $profileId == localStorage.getItem("id")}
 				<button class="flag-container addFlagButton" onclick={() => flagPickerPopup.set(true)}>
-					<SquarePlus size={20} strokeWidth={2.25} />
+					<SquarePlus size={20} strokeWidth={2} />
 				</button>
 			{/if}
 		</div>

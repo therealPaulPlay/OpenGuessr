@@ -10,7 +10,7 @@ import { duelResultPopup } from "$lib/stores/uiStore";
 import { duelResultTitle, eloChange } from "$lib/stores/context-specific/duelResultStore";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { multiplayer } from "$lib/stores/modeStore";
-import { matchResultDetermined, isDivisionRoom, roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
+import { roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
 
 export async function initializeSSEConnection() {
     let eventSource;
@@ -60,11 +60,16 @@ export async function initializeSSEConnection() {
                             break;
 
                         case 'duel-result':
-                            duelResultTitle.set(localStorage.getItem("id") == data?.winnerId ? "Victory!" : "Defeat!");
-                            eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
-                            elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
-                            duelResultPopup.set(true);
-                            if (get(multiplayer) && !get(matchResultDetermined) && get(isDivisionRoom)) leaveMultiplayerRound(); // If the duel is still ongoing, leave
+                            const showResult = () => {
+                                duelResultTitle.set(localStorage.getItem("id") == data?.winnerId ? "Victory!" : "Defeat!");
+                                eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
+                                elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
+                                duelResultPopup.set(true);
+                            }
+                            if (get(multiplayer)) get(socket)?.onEvent("instanceDestroyed", showResult);
+                            else showResult();
+
+                            if (get(multiplayer) && !get(socket)?.getStorage?.gameEnded) leaveMultiplayerRound(); // If the duel is still ongoing, leave
                             break;
 
                         case 'duel-registration-error':

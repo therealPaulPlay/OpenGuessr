@@ -57,7 +57,7 @@ export async function attemptDuelJoin(index, skillBased) {
             joinRoom(receivedRoomCode); // Duel status will be set in this function
         } else {
             multiplayerStyle.set("duel"); // Set style to duel
-            await setupMultiplayerRoom(5, 60, 2);
+            await setupMultiplayerRoom(5, 60, 2, true);
             sendRoomCodeToMatchmakingServer(skillBased);
             matchmakingHosting.set(true); // Enable hosting
         }
