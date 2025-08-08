@@ -17,10 +17,6 @@ export const matchmakingActive = writable(false);
 export const skillBasedMatchmaking = writable(false);
 export const matchmakingHosting = writable(false);
 
-// Divisions (Ranked duels)
-export const isDivisionRoom = writable(false);
-export const matchResultDetermined = writable(false);
-
 // Guest-exclusive
 export const guestName = writable("Guest (Default)");
 export const guestNamePromise = writable();

@@ -440,7 +440,7 @@
 	}
 
 	.podium-item:hover {
-		filter: brightness(1.2);
+		filter: brightness(1.1);
 	}
 
 	#first-place {

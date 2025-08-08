@@ -20,7 +20,7 @@
 		matchResults = undefined;
 		try {
 			const response = await fetch(
-				$accountUrl + `/duels/duel-history?page=${currentPage}` + (filterId ? `&id=${filterId}` : ""),
+				$accountUrl + `/divisions/duel-history?page=${currentPage}` + (filterId ? `&id=${filterId}` : ""),
 				{
 					method: "GET",
 					headers: {
@@ -112,7 +112,6 @@
 							</span>
 							<span class="playerStatus">
 								{entry.player1?.won ? "W" : entry.player2?.won ? "L" : "D"}
-								{entry.player1?.left ? " (left)" : ""}
 							</span>
 						</div>
 						<span class="vs">vs.</span>
@@ -128,7 +127,6 @@
 							</span>
 							<span class="playerStatus">
 								{entry.player2?.won ? "W" : entry.player1?.won ? "L" : "D"}
-								{entry.player2?.left ? " (left)" : ""}
 							</span>
 						</div>
 					</div>
