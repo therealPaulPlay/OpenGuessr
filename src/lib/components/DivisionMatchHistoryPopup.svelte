@@ -209,6 +209,7 @@
 		flex-direction: column;
 		overflow-x: hidden;
 		overflow-y: auto;
+		scrollbar-width: none;
 		height: min(500px, calc(100dvh - 350px));
 		width: 100%;
 	}
