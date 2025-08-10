@@ -346,7 +346,7 @@
 	}
 
 	.gold {
-		background-color: rgba(255, 191, 0, 0.85);
+		background-color: rgba(255, 205, 0, 0.85);
 	}
 
 	.silver {
