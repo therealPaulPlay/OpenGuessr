@@ -18,6 +18,10 @@
 	$effect(() => {
 		animatedElo.set($eloChange);
 	});
+
+	duelResultPopup.subscribe((value) => {
+		if (!value) $eloChange = 0;
+	});
 </script>
 
 <Popup

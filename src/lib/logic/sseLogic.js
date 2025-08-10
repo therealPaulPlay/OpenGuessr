@@ -66,10 +66,17 @@ export async function initializeSSEConnection() {
                                 elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
                                 duelResultPopup.set(true);
                             }
+
+                            // If the duel is still ongoing, leave
+                            if (get(multiplayer) && !get(socket)?.getStorage?.gameEnded) {
+                                showNotification("Your opponent left.");
+                                leaveMultiplayerRound();
+                            }
+
+                            // Show result on destroy if still in multiplayer, otherwise, show immediately
                             if (get(multiplayer)) get(socket)?.onEvent("instanceDestroyed", showResult);
                             else showResult();
 
-                            if (get(multiplayer) && !get(socket)?.getStorage?.gameEnded) leaveMultiplayerRound(); // If the duel is still ongoing, leave
                             break;
 
                         case 'duel-registration-error':
