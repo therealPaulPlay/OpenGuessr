@@ -10,147 +10,24 @@
 	import { specialModes, continentMaps, countryMaps, basicMaps } from "$lib/stores/context-specific/officialMapsStore";
 	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
-	// Load community maps  ---------------------------------------------------------------------------------------------------------
-
-	// Fetch
+	// State
 	let currentFetchIndex = 0;
-	let loadMoreCategoryParam = undefined;
-	let loadMoreQueryParam = undefined;
-	let byUserParam = undefined;
-
-	// UI
+	let currentCategory, currentQuery, currentByUserId;
 	let showLoadMore = $state(false);
 	let showNothingFound = $state(false);
 	let errorMessageText = $state("Loading...");
 	let errorMessageShown = $state(true);
-
-	// Data
 	let loadedCommunityMaps = $state([]);
 	let loadedSpotlightMaps = $state([]);
-
-	let addedCommunityMapsArray = $state([]); // Array of community maps that have been added "+" to the users quick access
-
-	onMount(() => {
-		addedCommunityMapsArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
-	});
-
-	async function loadCommunityMaps(index, category, query, byUserId, fav) {
-		try {
-			showLoadMore = false;
-			showNothingFound = false;
-			errorMessageText = "Loading...";
-			errorMessageShown = true;
-
-			// Set these for further loadCommunityMaps() calls
-			loadMoreCategoryParam = category;
-			loadMoreQueryParam = query;
-			byUserParam = byUserId;
-
-			// If a new loading method is being used, reset the current input
-			if (index == 0 || index == null) loadedCommunityMaps = [];
-
-			let indexAdd =
-				index != null && !(category || query || byUserId)
-					? "index/" + index
-					: category || query || byUserId
-						? "/" + index
-						: "";
-			const categoryAdd = category ? "category/" + category : "";
-			const queryAdd = query ? "search/" + query : "";
-			const favAdd = fav ? "favourites" : "";
-			const byIdAdd = byUserId ? "by-user/" + byUserId : "";
-
-			const response = await fetch($accountUrl + "/maps/" + categoryAdd + queryAdd + byIdAdd + indexAdd + favAdd);
-			const data = await response.json();
-
-			if (response.ok) {
-				errorMessageShown = false;
-
-				if (index != null) currentFetchIndex = index;
-				if (data.communityMaps.length == 50 && !fav) showLoadMore = true;
-
-				let nothingFound = true;
-
-				if (!fav) loadedCommunityMaps = [...loadedCommunityMaps, ...data.communityMaps.filter((map) => !map.favourite)];
-				if (fav) loadedSpotlightMaps = [...loadedSpotlightMaps, ...data.communityMaps];
-
-				if (loadedCommunityMaps.length > 0) nothingFound = false;
-
-				// If no results were found (and these are not the spotlight (fav, favourite) maps, show the "nothing found" text)
-				if (nothingFound && !fav) showNothingFound = true;
-			} else {
-				console.error("Error loading community maps: " + response.status);
-				errorMessageShown = true;
-				errorMessageText = "Error: " + response.status;
-			}
-		} catch (error) {
-			console.error("Error loading community maps: " + error);
-			errorMessageShown = true;
-			errorMessageText = "Error: " + error;
-		}
-	}
-
-	// Play Map --------------------------------------------------------------------------------------------------------------
-	function selectCategory(name, community) {
-		playSound("button_juicy");
-		const communityAppendix = community ? "community_" : "";
-		changeCategory(communityAppendix + name.toLowerCase(), true);
-		goto("/");
-	}
-
-	function checkIfSelected(name, community) {
-		if (typeof window === "undefined") return;
-
-		const selectedMap = localStorage.getItem("selectedCategory");
-		if (community) name = "community_" + name;
-		if (selectedMap == name.toLowerCase()) return true;
-		if (name.toLowerCase() == "standard" && !selectedMap) return true; // Select Standard as the default, if no selection was saved in storage
-		return false;
-	}
-
-	// Manage added community maps -------------------------------------------------------------------------------------------
-
-	// Add / Remove from user section
-	function addSelectedMap(name) {
-		try {
-			if (!addedCommunityMapsArray.includes(name)) {
-				addedCommunityMapsArray.push(name);
-				localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMapsArray));
-			}
-		} catch (error) {
-			console.error("Error adding community map: " + error);
-		}
-	}
-
-	function removeSelectedMap(name) {
-		try {
-			const index = addedCommunityMapsArray.indexOf(name);
-			if (index !== -1) {
-				addedCommunityMapsArray.splice(index, 1);
-				localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMapsArray));
-			}
-		} catch (error) {
-			console.error("Error removing community map: " + error);
-		}
-	}
-
-	function idToMapName(str) {
-		try {
-			return str
-				.replace("community_", "")
-				.split(" ")
-				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-				.join(" ");
-		} catch (error) {
-			console.error("Error converting ID to map name:", error);
-			return "Error (?)";
-		}
-	}
-
-	// Search and categories ------------------------------------------------------------------------------------------
+	let addedCommunityMapsArray = $state([]);
 	let searchValue = $state("");
 	let selectedCategoryIndex = $state(0);
-	let categoriesArray = [
+	let countrySectionExpanded = $state(false);
+
+	let currentController;
+	let currentFavController;
+
+	const categoriesArray = [
 		"All",
 		"By you",
 		"Nature",
@@ -162,37 +39,167 @@
 		"Miscellaneous",
 	];
 
+	onMount(() => {
+		addedCommunityMapsArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
+		loadCommunityMaps(0);
+		loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+	});
+
+	async function loadCommunityMaps(index, category, query, byUserId, fav) {
+		try {
+			if (!fav) {
+				if (currentController) currentController.abort();
+				currentController = new AbortController();
+			} else {
+				if (currentFavController) currentFavController.abort();
+				currentFavController = new AbortController();
+			}
+
+			showLoadMore = false;
+			showNothingFound = false;
+			errorMessageText = "Loading...";
+			errorMessageShown = true;
+
+			[currentCategory, currentQuery, currentByUserId] = [category, query, byUserId];
+
+			if (index == 0 || index == null) loadedCommunityMaps = [];
+
+			// Build URL parts
+			const hasFilters = category || query || byUserId;
+			const indexAdd = index != null && !hasFilters ? `index/${index}` : hasFilters ? `/${index}` : "";
+			const parts = [
+				category && `category/${category}`,
+				query && `search/${query}`,
+				byUserId && `by-user/${byUserId}`,
+				indexAdd,
+				fav && "favourites",
+			].filter(Boolean);
+
+			const response = await fetch($accountUrl + "/maps/" + parts.join(""), {
+				signal: fav ? currentFavController.signal : currentController.signal,
+			});
+
+			if (!response.ok) throw new Error(response.status);
+			if (response.ok) {
+				const data = await response.json();
+				errorMessageShown = false;
+				if (index != null) currentFetchIndex = index;
+				if (data.communityMaps.length == 50 && !fav) showLoadMore = true;
+
+				if (!fav) loadedCommunityMaps = [...loadedCommunityMaps, ...data.communityMaps.filter((map) => !map.favourite)];
+				if (fav) loadedSpotlightMaps = [...loadedSpotlightMaps, ...data.communityMaps];
+
+				if (loadedCommunityMaps.length == 0 && !fav) showNothingFound = true;
+			}
+		} catch (error) {
+			if (error.name !== "AbortError") {
+				console.error("Error loading community maps:", error);
+				errorMessageShown = true;
+				errorMessageText = "Error: " + error;
+			} else {
+				errorMessageShown = false;
+			}
+		} finally {
+			fav ? (currentFavController = null) : (currentController = null);
+		}
+	}
+
+	function selectCategory(name, community = false) {
+		playSound("button_juicy");
+		changeCategory((community ? "community_" : "") + name.toLowerCase(), true);
+		goto("/");
+	}
+
+	function checkIfSelected(name, community = false) {
+		if (typeof window === "undefined") return false;
+		const selectedMap = localStorage.getItem("selectedCategory");
+		if (community) name = "community_" + name;
+		return selectedMap == name.toLowerCase() || (name.toLowerCase() == "standard" && !selectedMap);
+	}
+
+	function addSelectedMap(name) {
+		try {
+			if (!addedCommunityMapsArray.includes(name)) {
+				addedCommunityMapsArray.push(name);
+				localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMapsArray));
+			}
+		} catch (error) {
+			console.error("Error adding community map:", error);
+		}
+	}
+
+	function removeSelectedMap(name) {
+		try {
+			const index = addedCommunityMapsArray.indexOf(name);
+			if (index !== -1) {
+				addedCommunityMapsArray.splice(index, 1);
+				localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMapsArray));
+			}
+		} catch (error) {
+			console.error("Error removing community map:", error);
+		}
+	}
+
+	function idToMapName(str) {
+		try {
+			return str
+				.replace("community_", "")
+				.split(" ")
+				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+				.join(" ");
+		} catch {
+			return "Error (?)";
+		}
+	}
+
 	function startSearch() {
-		let query = searchValue?.toLowerCase();
-		if (!query) query = undefined; // so that the undefined check works in the load function
+		const query = searchValue?.toLowerCase() || undefined;
 		selectedCategoryIndex = 0;
 		loadCommunityMaps(0, undefined, query);
 	}
 
-	// Add event listeners to all category buttons
-	let currentSelection;
-	let categoryButtons;
-
 	function handleCategoryButtonClick(index) {
 		selectedCategoryIndex = index;
-		const selectedCategoryName = categoriesArray?.[selectedCategoryIndex]?.toLowerCase();
-		if (selectedCategoryName == "all") {
-			loadCommunityMaps(0);
-		} else if (selectedCategoryName == "by you") {
-			loadCommunityMaps(0, null, null, localStorage.getItem("id"));
-		} else {
-			loadCommunityMaps(0, selectedCategoryName);
-		}
+		const category = categoriesArray[index]?.toLowerCase();
+		if (category == "all") loadCommunityMaps(0);
+		else if (category == "by you") loadCommunityMaps(0, null, null, localStorage.getItem("id"));
+		else loadCommunityMaps(0, category);
 	}
 
-	onMount(() => {
-		// Call the function to load community maps
-		loadCommunityMaps(0);
-		loadCommunityMaps(undefined, undefined, undefined, undefined, true); // load favourite maps / load spotlight section
-	});
-
-	// Toggle Enlarge Country section ---------------------------------------------------------------------------------
-	let countrySectionExpanded = $state(false);
+	// Snapshot for state restoration
+	export const snapshot = {
+		capture: () => ({
+			scrollY: window.scrollY,
+			currentFetchIndex,
+			loadMoreCategoryParam: currentCategory,
+			loadMoreQueryParam: currentQuery,
+			byUserParam: currentByUserId,
+			showLoadMore,
+			showNothingFound,
+			searchValue,
+			selectedCategoryIndex,
+			loadedCommunityMaps,
+			loadedSpotlightMaps,
+		}),
+		restore: (data) => {
+			if (!data.loadedSpotlightMaps?.length || !data.loadedCommunityMaps?.length) return;
+			if (currentController) currentController.abort();
+			if (currentFavController) currentFavController.abort();
+			currentFetchIndex = data.currentFetchIndex;
+			currentCategory = data.loadMoreCategoryParam;
+			currentQuery = data.loadMoreQueryParam;
+			currentByUserId = data.byUserParam;
+			showLoadMore = data.showLoadMore;
+			showNothingFound = data.showNothingFound;
+			searchValue = data.searchValue;
+			selectedCategoryIndex = data.selectedCategoryIndex;
+			loadedCommunityMaps = data.loadedCommunityMaps;
+			loadedSpotlightMaps = data.loadedSpotlightMaps;
+			setTimeout(() => {
+				window.scrollTo({ top: data.scrollY });
+			}, 0);
+		},
+	};
 </script>
 
 <svelte:head>
@@ -387,40 +394,44 @@
 		<h2 class="header">Community spotlight</h2>
 	</div>
 	<div class="map-container">
-		{#each loadedSpotlightMaps as map}
-			<div
-				class="map-item"
-				role="button"
-				tabindex="0"
-				onclick={() => {
-					playSound("basic_button");
-					goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
-				}}
-			>
-				<div class="mapInfo">
-					<p class="map-name">{map.name || "Name not loaded"}</p>
-					<p class="map-author">by {map.author || "Bugsnacker"}</p>
-				</div>
-				<button
-					class="add-button standardButton white"
-					onclick={(e) => {
-						e.stopPropagation();
+		{#if loadedSpotlightMaps.length}
+			{#each loadedSpotlightMaps as map}
+				<div
+					class="map-item"
+					role="button"
+					tabindex="0"
+					onclick={() => {
 						playSound("basic_button");
-						if (addedCommunityMapsArray.includes(map.name)) {
-							removeSelectedMap(map.name);
-						} else {
-							addSelectedMap(map.name);
-						}
+						goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
 					}}
 				>
-					<img
-						src={addedCommunityMapsArray.includes(map.name) ? "/img/disselect_icon.png" : "/img/select_icon.png"}
-						alt="add / remove map"
-						class="selection-icon"
-					/>
-				</button>
-			</div>
-		{/each}
+					<div class="mapInfo">
+						<p class="map-name">{map.name || "Name not loaded"}</p>
+						<p class="map-author">by {map.author || "Bugsnacker"}</p>
+					</div>
+					<button
+						class="add-button standardButton white"
+						onclick={(e) => {
+							e.stopPropagation();
+							playSound("basic_button");
+							if (addedCommunityMapsArray.includes(map.name)) {
+								removeSelectedMap(map.name);
+							} else {
+								addSelectedMap(map.name);
+							}
+						}}
+					>
+						<img
+							src={addedCommunityMapsArray.includes(map.name) ? "/img/disselect_icon.png" : "/img/select_icon.png"}
+							alt="add / remove map"
+							class="selection-icon"
+						/>
+					</button>
+				</div>
+			{/each}
+		{:else}
+			<p class="nothingFound">Loading...</p>
+		{/if}
 	</div>
 	<!-- All Community Maps -->
 	<div class="headerContainer">
@@ -521,7 +532,7 @@
 				class="map-item"
 				onclick={() => {
 					playSound("basic_button");
-					loadCommunityMaps(currentFetchIndex + 50, loadMoreCategoryParam, loadMoreQueryParam, byUserParam, null);
+					loadCommunityMaps(currentFetchIndex + 50, currentCategory, currentQuery, currentByUserId, null);
 				}}
 				><p>More</p>
 				<span class="loadMoreIconSpan"><Plus strokeWidth={2.75} size={20} /></span></button
