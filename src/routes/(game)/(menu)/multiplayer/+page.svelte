@@ -433,6 +433,24 @@
 		pointer-events: none;
 	}
 
+	@keyframes duelButtonGlint {
+		0% {
+			opacity: 0.7;
+			margin-left: -60px;
+			visibility: visible;
+		}
+
+		20% {
+			opacity: 0.5;
+			margin-left: calc(100% + 60px);
+		}
+
+		100% {
+			opacity: 0.5;
+			margin-left: calc(100% + 60px);
+		}
+	}
+
 	.noFriendsText {
 		opacity: 0.5;
 		text-align: center;
@@ -481,23 +499,5 @@
 		height: 18px;
 		vertical-align: -2px;
 		margin-left: 5px;
-	}
-
-	@keyframes duelButtonGlint {
-		0% {
-			opacity: 0.7;
-			margin-left: -60px;
-			visibility: visible;
-		}
-
-		20% {
-			opacity: 0.5;
-			margin-left: calc(100% + 60px);
-		}
-
-		100% {
-			opacity: 0.5;
-			margin-left: calc(100% + 60px);
-		}
 	}
 </style>

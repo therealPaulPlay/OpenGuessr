@@ -20,7 +20,9 @@ export const selectedPinIndex = writable(0); // Number representing the selected
 export const selectedBadge = writable(null);
 export const purchasedPins = writable([]);
 
-
 // Moderation related
 export const warnReportEntryData = writable();
 export const checkedForWarning = writable(false);
+
+// Special stats
+export const duelWinStreak = writable(0);
