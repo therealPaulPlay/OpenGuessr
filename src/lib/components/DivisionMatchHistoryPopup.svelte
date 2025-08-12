@@ -139,7 +139,7 @@
 
 	<div class="paginationControls">
 		<button class="standardButton white" onclick={prevPage} class:disabledButton={currentPage === 1}>
-			<ArrowLeft size={20} strokeWidth={2.5} />
+			<ArrowLeft size={20} strokeWidth={2} />
 		</button>
 		<span class="pageCounter">{currentPage}</span>
 		<button
@@ -147,7 +147,7 @@
 			onclick={nextPage}
 			class:disabledButton={!(matchResults && matchResults.duels && matchResults.duels.length === limit)}
 		>
-			<ArrowRight size={20} strokeWidth={2.5} />
+			<ArrowRight size={20} strokeWidth={2} />
 		</button>
 	</div>
 </Popup>

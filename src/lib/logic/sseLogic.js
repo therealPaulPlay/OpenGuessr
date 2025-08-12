@@ -1,13 +1,12 @@
 import { showNotification } from "$lib/utils/notifications";
-import { username, elo } from "$lib/stores/accountStore";
+import { username, elo, duelWinStreak, tokens } from "$lib/stores/accountStore";
 import { acceptFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
-import { errorPopup } from "$lib/utils/errorHandling";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
 import { linkJoinPopup } from "$lib/stores/uiStore";
 import { leaveMultiplayerRound, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { duelResultPopup } from "$lib/stores/uiStore";
-import { duelResultTitle, eloChange } from "$lib/stores/context-specific/duelResultStore";
+import { duelResultTitle, eloChange, tokenGain } from "$lib/stores/context-specific/duelResultStore";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { multiplayer } from "$lib/stores/modeStore";
 import { roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
@@ -61,9 +60,19 @@ export async function initializeSSEConnection() {
 
                         case 'duel-result':
                             const showResult = () => {
-                                duelResultTitle.set(localStorage.getItem("id") == data?.winnerId ? "Victory!" : "Defeat!");
+                                const didWin = localStorage.getItem("id") == data?.winnerId;
+
+                                // For visual representation
+                                duelResultTitle.set(didWin ? "Victory!" : "Defeat!");
                                 eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
+                                tokenGain.set(didWin ? data.tokenGain : 0);
+
+                                // Update data
                                 elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
+                                tokens.set(get(tokens) + get(tokenGain));
+                                duelWinStreak.set(didWin ? get(duelWinStreak) + 1 : 0);
+
+                                // Show result popup
                                 duelResultPopup.set(true);
                             }
 
@@ -77,14 +86,6 @@ export async function initializeSSEConnection() {
                             if (get(multiplayer)) get(socket)?.onEvent("instanceDestroyed", showResult);
                             else showResult();
 
-                            break;
-
-                        case 'duel-registration-error':
-                            errorPopup("Duel not registered", "Your opponent failed to register the duel and it won't affect your elo. You can leave penalty-free.", data?.message);
-                            break;
-
-                        case 'duel-result-error':
-                            errorPopup("Duel submission failed", "Please refer to the error message.", data?.message);
                             break;
                     }
                 } catch (error) {
