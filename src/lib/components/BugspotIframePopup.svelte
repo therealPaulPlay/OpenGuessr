@@ -4,16 +4,17 @@
 	import IframePopup from "./ui/IframePopup.svelte";
 
 	let consoleLogs = $state([]);
+	let frozenUrl; // Store frozen URL when popup opens
+	const bugspotFormUrl = "https://bugspot.dev/form/7c145412-d318-4683-b504-681d630a08ee";
 
 	onMount(() => {
 		try {
 			const originals = [console.log, console.error, console.warn];
-
 			["log", "error", "warn"].forEach((method, i) => {
 				console[method] = function (...args) {
 					originals[i].apply(console, args);
-					// Skip iframe logs
 					if (window === window.top) {
+						// Skip iframe logs
 						const msg = args
 							.map((a) => {
 								if (a instanceof Error) return a.message;
@@ -26,24 +27,22 @@
 					}
 				};
 			});
-
 			return () => originals.forEach((orig, i) => (console[["log", "error", "warn"][i]] = orig));
 		} catch (error) {
 			console.error("Failed to set up console listeners:", error);
 		}
 	});
 
-	let customData = $derived.by(() => {
-		if (!$bugspotPopup) return undefined;
-
-		const userId = localStorage.getItem("id");
-		const userIdText = userId ? `User ID: ${parseInt(userId)}\n` : "";
-
-		return `${userIdText}Console logs:\n${consoleLogs.join("\n")}`;
+	let url = $derived.by(() => {
+		if ($bugspotPopup && !frozenUrl) {
+			const userId = localStorage.getItem("id"); // Only fetch when popup opens
+			const userIdText = userId ? `User ID: ${parseInt(userId)}\n` : "";
+			const customData = `${userIdText}Console logs:\n${consoleLogs.join("\n")}`;
+			frozenUrl = `${bugspotFormUrl}?custom-data=${encodeURIComponent(customData)}`;
+		}
+		if (!$bugspotPopup) frozenUrl = null // Reset when closed
+		return frozenUrl || bugspotFormUrl;
 	});
-	let url = $derived(
-		`https://bugspot.dev/form/7c145412-d318-4683-b504-681d630a08ee${customData ? `?custom-data=${encodeURIComponent(customData)}` : ""}`,
-	);
 </script>
 
 <IframePopup src={url} bind:open={$bugspotPopup} wide={true} />
