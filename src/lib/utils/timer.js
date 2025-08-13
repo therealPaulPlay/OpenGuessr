@@ -5,11 +5,9 @@ import {
 } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { littleTimeVignette } from "$lib/stores/uiStore";
 
-// Keep track of active timer to ensure proper cleanup
 let activeTimer = null;
 
 export function startTimer(durationInSeconds, onTimerExpired) {
-    // If there's an active timer, stop it first
     if (activeTimer) activeTimer.stopTimer();
 
     let currentTimerIntervalId;
@@ -17,12 +15,27 @@ export function startTimer(durationInSeconds, onTimerExpired) {
     let timer = durationInSeconds;
     let intervalDuration = durationInSeconds < 1 ? 0.1 : 1;
 
+    // Display initial time immediately
+    updateDisplay();
+
     currentTimerIntervalId = setInterval(function () {
         isRunning = true;
+        timer -= intervalDuration;
+
+        // Check expiration after decrementing
+        if (timer <= 0) {
+            stopTimer();
+            timerExpired();
+            return;
+        }
+
+        updateDisplay();
+    }, intervalDuration * 1000);
+
+    function updateDisplay() {
         const minutes = parseInt(timer / 60, 10);
         const seconds = parseInt(timer % 60, 10);
         const formattedTime = `${minutes < 10 ? "0" + minutes : minutes}:${seconds < 10 ? "0" + seconds : seconds}`;
-
         timerText.set(formattedTime);
 
         if (timer < 10 && timer % 1 == 0) {
@@ -33,19 +46,10 @@ export function startTimer(durationInSeconds, onTimerExpired) {
             mapModeIndicatorFading.set(false);
             littleTimeVignette.set(false);
         }
-
-        timer -= intervalDuration;
-
-        if (timer < 0) {
-            stopTimer();
-            timerExpired();
-        }
-    }, intervalDuration * 1000);
+    }
 
     function timerExpired() {
-        if (typeof onTimerExpired === 'function') {
-            onTimerExpired();
-        }
+        if (typeof onTimerExpired === 'function') onTimerExpired();
     }
 
     function stopTimer() {
@@ -54,10 +58,8 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         mapModeIndicatorFading.set(false);
         littleTimeVignette.set(false);
         stopSound("timerSound");
-
-        // Clear active timer reference if this is the active timer
         if (activeTimer === timerInstance) activeTimer = null;
-        if (!activeTimer) timerText.set("00:00") 
+        if (!activeTimer) timerText.set("00:00");
     }
 
     function getRemainingTime() {
@@ -74,8 +76,6 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         isTimerRunning
     };
 
-    // Set this as the active timer
     activeTimer = timerInstance;
-
     return timerInstance;
 }

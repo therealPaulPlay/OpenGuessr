@@ -225,7 +225,7 @@
 			playSound("basic_button");
 			showConfirmPopup(
 				"Resets",
-				"Elo above 2000 is reset and converted into tokens at the start of each month. Experience over 100M is reset at the start of each month.",
+				"Elo above 2000 is reset and converted into tokens at the start of each month. Experience over 100M is halved at the start of each month.",
 			);
 		}}
 	>
@@ -346,15 +346,15 @@
 	}
 
 	.gold {
-		background-color: #caa128;
+		background-color: rgba(255, 205, 0, 0.85);
 	}
 
 	.silver {
-		background-color: #898993;
+		background-color: rgba(223, 227, 238, 0.5);
 	}
 
 	.bronze {
-		background-color: #803b3b;
+		background-color: rgba(189, 87, 87, 0.5);
 	}
 
 	.yourItem {
@@ -440,7 +440,7 @@
 	}
 
 	.podium-item:hover {
-		filter: brightness(1.2);
+		filter: brightness(1.1);
 	}
 
 	#first-place {

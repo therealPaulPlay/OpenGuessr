@@ -20,7 +20,7 @@
 		matchResults = undefined;
 		try {
 			const response = await fetch(
-				$accountUrl + `/duels/duel-history?page=${currentPage}` + (filterId ? `&id=${filterId}` : ""),
+				$accountUrl + `/divisions/duel-history?page=${currentPage}` + (filterId ? `&id=${filterId}` : ""),
 				{
 					method: "GET",
 					headers: {
@@ -112,7 +112,6 @@
 							</span>
 							<span class="playerStatus">
 								{entry.player1?.won ? "W" : entry.player2?.won ? "L" : "D"}
-								{entry.player1?.left ? " (left)" : ""}
 							</span>
 						</div>
 						<span class="vs">vs.</span>
@@ -128,7 +127,6 @@
 							</span>
 							<span class="playerStatus">
 								{entry.player2?.won ? "W" : entry.player1?.won ? "L" : "D"}
-								{entry.player2?.left ? " (left)" : ""}
 							</span>
 						</div>
 					</div>
@@ -141,7 +139,7 @@
 
 	<div class="paginationControls">
 		<button class="standardButton white" onclick={prevPage} class:disabledButton={currentPage === 1}>
-			<ArrowLeft size={20} strokeWidth={2.5} />
+			<ArrowLeft size={20} strokeWidth={2} />
 		</button>
 		<span class="pageCounter">{currentPage}</span>
 		<button
@@ -149,7 +147,7 @@
 			onclick={nextPage}
 			class:disabledButton={!(matchResults && matchResults.duels && matchResults.duels.length === limit)}
 		>
-			<ArrowRight size={20} strokeWidth={2.5} />
+			<ArrowRight size={20} strokeWidth={2} />
 		</button>
 	</div>
 </Popup>
@@ -211,6 +209,7 @@
 		flex-direction: column;
 		overflow-x: hidden;
 		overflow-y: auto;
+		scrollbar-width: none;
 		height: min(500px, calc(100dvh - 350px));
 		width: 100%;
 	}

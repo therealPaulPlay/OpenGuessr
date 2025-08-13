@@ -10,7 +10,6 @@ import { mapPinLat, mapPinLng, map, addedMarkers, mapInteractive } from "$lib/st
 import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupStore.js";
 import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
-import { mapHovered } from "$lib/stores/context-specific/mapStore.js";
 import { get } from "svelte/store";
 import { multiplayer } from "$lib/stores/modeStore";
 
@@ -190,8 +189,6 @@ let multiplayerMiniMarkers = []; // team markers
 // Reset the map - used for going to the next round. 
 export function resetMap() {
     if (get(map)) {
-        mapHovered.set(false);
-
         if (get(addedMarkers)) {
             for (let i = 0; i < get(addedMarkers).length; i++) {
                 get(addedMarkers)[i].setMap(null);

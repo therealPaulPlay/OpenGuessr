@@ -1,5 +1,5 @@
 <script>
-	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info, Earth, BicepsFlexed, Search } from "lucide-svelte";
+	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info, Earth, BicepsFlexed, Search, X } from "lucide-svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
@@ -80,7 +80,7 @@
 						playSound("basic_button");
 						goto("/multiplayer/join");
 					}}
-					>Join <span class="groupIcons"><Unplug size={20} strokeWidth={2.5} style="margin-bottom: -1px;" /></span
+					>Join <span class="groupIcons"><Unplug size={20} strokeWidth={2.25} style="margin-bottom: -1px;" /></span
 					></button
 				>
 				<button
@@ -92,7 +92,7 @@
 						playSound("basic_button");
 						goto("/multiplayer/host");
 					}}
-					>Host <span class="groupIcons"><PlusCircle size={20} strokeWidth={2.5} style="margin-bottom: -1px;" /></span
+					>Host <span class="groupIcons"><PlusCircle size={20} strokeWidth={2.25} style="margin-bottom: -1px;" /></span
 					></button
 				>
 			</div>
@@ -125,9 +125,9 @@
 					}}
 				>
 					{#if $skillBasedMatchmaking}
-						<BicepsFlexed strokeWidth={2.25} style="margin-bottom: -3px;" />
+						<BicepsFlexed strokeWidth={1.75} style="margin-bottom: -3px;" />
 					{:else}
-						<Earth strokeWidth={2.25} style="margin-bottom: -3px;" />
+						<Earth strokeWidth={1.75} style="margin-bottom: -3px;" />
 					{/if}
 				</button>
 				<button
@@ -137,7 +137,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						divisionMatchHistoryPopup.set(true);
-					}}><History strokeWidth={2.25} style="margin-bottom: -4px;" /></button
+					}}><History strokeWidth={2} style="margin-bottom: -4px;" /></button
 				>
 			</div>
 		</div>
@@ -174,7 +174,7 @@
 					} else {
 						signupPrompt();
 					}
-				}}><p class="addFriendText">Add friend <ContactRound strokeWidth={2.5} size={22} /></p></button
+				}}><p class="addFriendText">Add friend <ContactRound strokeWidth={2} size={22} /></p></button
 			>
 			<button
 				class="standardButton white friendActionButton"
@@ -216,12 +216,12 @@
 								onclick={(e) => {
 									e.stopPropagation();
 									playSound("basic_button");
-									showConfirmPopup("Remove friend?", "You are about to remove your friend from your list.", () => {
+									showConfirmPopup("Remove friend?", "You are about to remove this friend.", () => {
 										removeFriend(entry.id);
 									});
 								}}
 							>
-								<img alt="remove friend" class="friendRemoveIcon" src="/img/delete_icon.png" />
+								<X size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
 							</button>
 						</div>
 					{/each}
@@ -373,13 +373,7 @@
 	}
 
 	.friendItemButtons {
-		padding-inline: 5px;
-	}
-
-	.friendRemoveIcon {
-		width: 25px;
-		height: 25px;
-		vertical-align: -4px;
+		padding-inline: var(--panel-margin);
 	}
 
 	.groupIcons {
@@ -439,6 +433,24 @@
 		pointer-events: none;
 	}
 
+	@keyframes duelButtonGlint {
+		0% {
+			opacity: 0.7;
+			margin-left: -60px;
+			visibility: visible;
+		}
+
+		20% {
+			opacity: 0.5;
+			margin-left: calc(100% + 60px);
+		}
+
+		100% {
+			opacity: 0.5;
+			margin-left: calc(100% + 60px);
+		}
+	}
+
 	.noFriendsText {
 		opacity: 0.5;
 		text-align: center;
@@ -483,27 +495,9 @@
 	}
 
 	#inboxIcon {
-		width: 20px;
-		height: 20px;
-		vertical-align: -3px;
+		width: 18px;
+		height: 18px;
+		vertical-align: -2px;
 		margin-left: 5px;
-	}
-
-	@keyframes duelButtonGlint {
-		0% {
-			opacity: 0.7;
-			margin-left: -60px;
-			visibility: visible;
-		}
-
-		20% {
-			opacity: 0.5;
-			margin-left: calc(100% + 60px);
-		}
-
-		100% {
-			opacity: 0.5;
-			margin-left: calc(100% + 60px);
-		}
 	}
 </style>
