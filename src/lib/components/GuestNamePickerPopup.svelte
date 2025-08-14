@@ -5,6 +5,7 @@
 	import { guestName, guestNamePromise } from "$lib/stores/context-specific/multiplayerStore";
 	import { guestNamePickerPopup } from "$lib/stores/uiStore";
 	import { filterProfanity } from "$lib/utils/profanityCheck";
+	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 
 	function generateFunnyGuestName() {
@@ -60,6 +61,7 @@
 		class="standardButton largeButton"
 		class:buttonDisabled={$guestName?.length < 3}
 		onclick={async () => {
+			playSound("basic_button");
 			await setName();
 			$guestNamePickerPopup = false;
 		}}>Confirm</button
