@@ -1,4 +1,3 @@
-import { getUser } from "./accountAPI";
 import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
 import { initializeSSEConnection } from "$lib/logic/sseLogic";
 import { resultScreenEnabled, lastDistance, lastExperienceCalculationAborted } from "$lib/stores/context-specific/resultScreenStore";
@@ -10,6 +9,9 @@ import { get } from "svelte/store";
 import { supportedAmount } from "$lib/stores/accountStore.js";
 import { showNotification } from "$lib/utils/notifications";
 import { freeDailyTokensClaimed } from "$lib/stores/context-specific/shopStore";
+import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { showConfirmPopup } from "$lib/utils/confirmPopup";
+import { errorPopup } from "$lib/utils/errorHandling";
 
 // Authentication -----------------------------------------------------------------------------------------------------------------------
 
@@ -58,7 +60,7 @@ export function resetLocalSave() {
 // Load user data ---------------------------------------------------------------------------------------------------------------------------
 async function loadUserInfo() {
   try {
-    await getUser(localStorage.getItem("bearer"), localStorage.getItem("id"), "index").then((user) => {
+    await getUser().then((user) => {
 
       if (!user) return; // If an error occured and no data is provided, exit
 
@@ -83,5 +85,43 @@ async function loadUserInfo() {
     });
   } catch (error) {
     console.error("Error getting user data in loadUserInfo:", error);
+  }
+}
+
+async function getUser() {
+  try {
+    const response = await fetch(`${get(accountUrl)}/accounts/user/${localStorage.getItem("id")}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${localStorage.getItem("bearer")}`
+      },
+    });
+
+    // Check if the response is successful
+    if (response.ok) {
+      const data = await response.json();
+      return data.user;
+
+    } else {
+      let responseError = response.status;
+      try {
+        const data = await response.json();
+        if (data.error) responseError = data.error;
+      } catch { }
+
+      if (response.status == 404) {
+        showConfirmPopup("Account removed", "This account was removed. Your locally saved account data should be deleted to avoid issues. Continue?", () => {
+          localStorage.removeItem("id");
+          localStorage.removeItem("bearer");
+          window.location.reload();
+        }, false, false, false, "Continue");
+      } else {
+        throw new Error(responseError);
+      }
+    }
+  } catch (error) {
+    console.error('Error fetching the user: ', error);
+    errorPopup("Error fetching user", "An error occured trying to fetch user info.", error.message);
   }
 }
