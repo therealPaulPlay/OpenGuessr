@@ -1,28 +1,174 @@
 <script>
-	import { displayError, loginUser, registerUser, sendPasswordResetEmail, changePassword } from "$lib/logic/accountAPI";
 	import { Eye, EyeClosed } from "lucide-svelte";
 	import { renderCaptcha } from "$lib/utils/renderCaptcha";
 	import inIframe from "$lib/utils/checkIframe";
 	import { onMount } from "svelte";
 	import { fade, scale, slide } from "svelte/transition";
-	import { signupMessageColor, signupMessageShown, signupMessageText, signupMessageTimeout } from "$lib/stores/context-specific/signupStore";
+	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { goto } from "$app/navigation";
+
+	let signupMessageColor = $state("white");
+	let signupMessageShown = $state(false);
+	let signupMessageText = $state("Empty");
+	let signupMessageTimeout = $state();
+
+	// API requests -------------------------------------------------------------------------------------------------------
+	async function loginUser(email, password) {
+		try {
+			// Make the POST request using Fetch API
+			const response = await fetch(`${$accountUrl}/accounts/login`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({
+					email: email,
+					password: password,
+				}),
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+
+				// Important: Save the Token and ID, to enable future requests
+				if (data["token"] && data["id"]) {
+					localStorage.setItem("bearer", data["token"]);
+					localStorage.setItem("id", data["id"]);
+				}
+
+				if (inIframe()) {
+					window.parent.postMessage("loadAccountStatus", "*");
+					window.parent.postMessage(`id ${data["id"]}`, "*");
+					window.parent.postMessage(`token ${data["token"]}`, "*");
+					window.parent.postMessage("close", "*");
+				} else {
+					if (document.referrer) window.history.back();
+					else goto("/"); // Fallback if no referrer
+				}
+			} else {
+				let responseError = response.status;
+				try {
+					const data = await response.json();
+					if (data.error) responseError = data.error;
+				} catch {}
+				throw new Error(responseError);
+			}
+		} catch (error) {
+			console.error("Login failed ", error);
+			displayError("Login failed", error.message);
+		}
+	}
+
+	async function registerUser(userName, email, password, captchaToken, successFunction) {
+		try {
+			// Make the POST request using Fetch API
+			const response = await fetch(`${$accountUrl}/accounts/register`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+					"cf-turnstile-response": captchaToken,
+				},
+				body: JSON.stringify({ userName: userName, email, password }),
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+				if (typeof successFunction == "function") successFunction?.("Registration successful!");
+			} else {
+				let responseError = response.status;
+				try {
+					const data = await response.json();
+					if (data.error) responseError = data.error;
+				} catch {}
+				throw new Error(responseError);
+			}
+		} catch (error) {
+			console.error("Registration failed:", error);
+			displayError("Registration failed", error.message);
+		}
+	}
+
+	// Send reset email
+	async function sendPasswordResetEmail(email, successFunction) {
+		try {
+			// Make the POST request using Fetch API
+			const response = await fetch(`${$accountUrl}/accounts/reset-password-request`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ email }),
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+				if (typeof successFunction != "function") return;
+				successFunction?.("Password reset email sent!");
+			} else {
+				throw new Error(response.status);
+			}
+		} catch (error) {
+			console.error("Sending password reset request failed:", error);
+			displayError("Password reset request failed", error.message);
+		}
+	}
+
+	// Change password with reset token
+	async function changePassword(token, newPassword, successFunction) {
+		try {
+			// Make the POST request using Fetch API
+			const response = await fetch(`${$accountUrl}/accounts/reset-password`, {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ token, newPassword }),
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+				if (typeof successFunction != "function") return;
+				successFunction?.("Password changed successfully!");
+			} else {
+				throw new Error(response.status);
+			}
+		} catch (error) {
+			console.error("Password change failed:", error);
+			displayError("Password change failed", error.message);
+		}
+	}
 
 	// Export error / success functions --------------------------------------------------------------------------------------------------------------
 	function displaySuccess(text) {
 		try {
-			clearTimeout($signupMessageTimeout);
-			signupMessageText.set(text);
-			signupMessageColor.set("#64c681");
-			signupMessageShown.set(true);
+			clearTimeout(signupMessageTimeout);
+			signupMessageText = text;
+			signupMessageColor = "#64c681";
+			signupMessageShown = true;
 			formType = "login"; // Change to log in
 
 			// Hide error again
-			$signupMessageTimeout = setTimeout(() => {
-				signupMessageShown.set(false);
+			signupMessageTimeout = setTimeout(() => {
+				signupMessageShown = false;
 			}, 4000);
 		} catch (error) {
 			console.error("Error occured displaying success:", error);
 		}
+	}
+
+	function displayError(errorTitle = "", errorMsg = "") {
+		clearTimeout(signupMessageTimeout);
+		signupMessageShown = true;
+		signupMessageColor = "#ffaeae";
+		signupMessageText = errorTitle + (errorMsg ? " – " + errorMsg : "");
+
+		signupMessageTimeout = setTimeout(() => {
+			signupMessageShown = false;
+		}, 7000);
 	}
 
 	// Toggle between login, signup, newPassword and reset ---------------------------------------------------------------------------------------------
@@ -45,8 +191,8 @@
 	let resetPasswordValue = $state("");
 
 	function changePasswordIfValuesProvided() {
-		if (resetPasswordValue) changePassword(resetBearerToken, resetPasswordValue, "signup", displaySuccess);
-		else displayError("Please input a new password.", "signup");
+		if (resetPasswordValue) changePassword(resetBearerToken, resetPasswordValue, displaySuccess);
+		else displayError("Please input a new password.");
 	}
 
 	// Signup UI Logic and Captcha ------------------------------------------------------------------------------------------------------------------------------
@@ -64,14 +210,14 @@
 			if (signupUsername && signupPassword && validateEmail(signupEmail)) {
 				return true;
 			} else {
-				displayError("Please check your input.", "signup");
+				displayError("Please check your input.");
 				return false;
 			}
 		} else {
 			if (validateEmail(loginEmail) && loginPassword) {
 				return true;
 			} else {
-				displayError("Please check your input. The first field should contain a valid email address!", "signup");
+				displayError("Please check your input. The first field should contain a valid email address!");
 				return false;
 			}
 		}
@@ -97,7 +243,7 @@
 	async function logInAction() {
 		if (checkEmptyFields(false)) {
 			loginButtonSignupPage.textContent = "Wait...";
-			await loginUser(loginEmail, loginPassword, "signup");
+			await loginUser(loginEmail, loginPassword);
 			loginButtonSignupPage.textContent = "Log in";
 		}
 	}
@@ -119,7 +265,7 @@
 
 	if (typeof window !== "undefined") {
 		window.onSignupTurnstileCompleted = function (token) {
-			registerUser(signupUsername, signupEmail, signupPassword, token, "signup", displaySuccess);
+			registerUser(signupUsername, signupEmail, signupPassword, token, displaySuccess);
 			loginEmail = signupEmail;
 			captchaVisible = false;
 		};
@@ -179,10 +325,8 @@
 				<div id="resetForm">
 					<div class="flex-input-box">
 						<input bind:value={resetEmail} type="email" placeholder="Email" />
-						<button
-							id="reset"
-							class="standardButton"
-							onclick={() => sendPasswordResetEmail(resetEmail, "signup", displaySuccess)}>Reset</button
+						<button id="reset" class="standardButton" onclick={() => sendPasswordResetEmail(resetEmail, displaySuccess)}
+							>Reset</button
 						>
 					</div>
 					<p class="switchFormBox">
@@ -270,9 +414,9 @@
 					</p>
 				</div>
 			{/if}
-			{#if $signupMessageShown}
-				<p class="errorMessage" transition:slide={{ axis: "y" }} style:color={$signupMessageColor}>
-					{$signupMessageText}
+			{#if signupMessageShown}
+				<p class="errorMessage" transition:slide={{ axis: "y" }} style:color={signupMessageColor}>
+					{signupMessageText}
 				</p>
 			{/if}
 		</div>
