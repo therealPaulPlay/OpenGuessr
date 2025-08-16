@@ -1,72 +1,32 @@
 <script>
 	import { countryGuessr } from "$lib/stores/modeStore";
-	import { selectedCountryField } from "$lib/stores/context-specific/countryGuessrStore";
+	import { countryGuessrCountriesArray, selectedCountryField } from "$lib/stores/context-specific/countryGuessrStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
+	import * as FlagIcons from "svelte-flag-icons";
 
-	function selectCountry(fieldNr) {
+	function selectCountry(index) {
 		playSound("item_select");
-		selectedCountryField.set(fieldNr);
+		selectedCountryField.set(index);
 		confirmButtonClicks();
 	}
 </script>
 
 {#if $countryGuessr}
 	<div class="countryGuessrSelector barMenu" role="menu" tabindex="0">
-		<button
-			class="countryGuessrHolder standardButton white"
-			onclick={() => {
-				selectCountry(1);
-			}}
-		>
-			<p id="countryFlag1" class="countryGuessrFlag">🇦🇽</p>
-			<p id="countryTag1" class="countryGuessrTag">Country 1</p>
-		</button>
-		<button
-			class="countryGuessrHolder standardButton white"
-			onclick={() => {
-				selectCountry(2);
-			}}
-		>
-			<p id="countryFlag2" class="countryGuessrFlag">🇦🇽</p>
-			<p id="countryTag2" class="countryGuessrTag">Country 2</p>
-		</button>
-		<button
-			class="countryGuessrHolder standardButton white"
-			onclick={() => {
-				selectCountry(3);
-			}}
-		>
-			<p id="countryFlag3" class="countryGuessrFlag">🇦🇽</p>
-			<p id="countryTag3" class="countryGuessrTag">Country 3</p>
-		</button>
-		<button
-			class="countryGuessrHolder standardButton white"
-			onclick={() => {
-				selectCountry(4);
-			}}
-		>
-			<p id="countryFlag4" class="countryGuessrFlag">🇦🇽</p>
-			<p id="countryTag4" class="countryGuessrTag">Country 4</p>
-		</button>
-		<button
-			class="countryGuessrHolder standardButton white"
-			onclick={() => {
-				selectCountry(5);
-			}}
-		>
-			<p id="countryFlag5" class="countryGuessrFlag">🇦🇽</p>
-			<p id="countryTag5" class="countryGuessrTag">Country 5</p>
-		</button>
-		<button
-			class="countryGuessrHolder standardButton white"
-			onclick={() => {
-				selectCountry(6);
-			}}
-		>
-			<p id="countryFlag6" class="countryGuessrFlag">🇦🇽</p>
-			<p id="countryTag6" class="countryGuessrTag">Country 6</p>
-		</button>
+		{#each $countryGuessrCountriesArray as country, index}
+			<button
+				class="countryGuessrHolder standardButton white"
+				onclick={() => {
+					selectCountry(index);
+				}}
+			>
+				<div class="countryGuessrFlag">
+					{#if FlagIcons[country.flag]}<svelte:component this={FlagIcons[country.flag]} size={35} />{/if}
+				</div>
+				<p class="countryGuessrTag">{country.name}</p>
+			</button>
+		{/each}
 	</div>
 {/if}
 
@@ -80,12 +40,10 @@
 	}
 
 	.countryGuessrFlag {
-		font-size: 45px;
-		margin-bottom: auto;
-		margin-top: 5px;
-		margin-bottom: 5px;
+		height: 38px;
 		width: 100%;
-		line-height: 0.7;
+		margin-top: 3px;
+		text-align: center;
 	}
 
 	.countryGuessrHolder:hover {
