@@ -144,8 +144,7 @@
 			>
 		</div>
 		<p id="supporterInfoText">
-			The
-			<a href="/legal" target="_blank">terms of use</a>
+			<a href="/legal" target="_blank">Terms and conditions</a>
 			apply.
 		</p>
 	</div>
