@@ -12,7 +12,7 @@
 	import { mapExpanded, mapInteractive } from "$lib/stores/context-specific/mapStore";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { countryGuessr } from "$lib/stores/modeStore";
-	import { fade } from "svelte/transition";
+	import { blur, fade } from "svelte/transition";
 	import { ArrowUp, Bug, Map } from "lucide-svelte";
 </script>
 
@@ -102,17 +102,12 @@
 		</div>
 	{/if}
 </div>
-<div
-	id="bottomFooterAds"
-	class="bottomFooterAds leaderboardAds"
-	style:display={$supporterLevel >= 2 || $adsDisabled ? "none" : ""}
-></div>
-<div
-	class="bottomFooterAds leaderboardAds bottomFooterAdText barMenu"
-	style:display={$supporterLevel >= 2 || $adsDisabled ? "none" : ""}
->
-	<RemoveAdsText text="Ads keep OpenGuessr free." />
-</div>
+{#if $supporterLevel <= 1 && !$adsDisabled}
+	<div id="bottomFooterAds" class="bottomFooterAds leaderboardAds" transition:blur></div>
+	<div class="bottomFooterAds leaderboardAds bottomFooterAdText barMenu" transition:blur>
+		<RemoveAdsText text="Ads keep OpenGuessr free." />
+	</div>
+{/if}
 
 <style>
 	.BottomBar {
