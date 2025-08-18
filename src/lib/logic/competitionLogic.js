@@ -5,7 +5,6 @@ import { playSound } from "$lib/utils/soundManager";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
-import { supporterLevel } from "$lib/stores/accountStore";
 import { competition } from "$lib/stores/modeStore";
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 import { goto } from "$app/navigation";
