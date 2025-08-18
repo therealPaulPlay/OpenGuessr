@@ -71,10 +71,8 @@ async function calculateXPGain(distance, category, supporterLevelParam) {
                 supporterMultiplier = 1.15;
                 break;
             case 3:
-                supporterMultiplier = 1.2;
-                break;
-            case 4:
                 supporterMultiplier = 1.25;
+                break;
         }
     }
 

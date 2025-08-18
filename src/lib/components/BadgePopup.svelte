@@ -68,14 +68,13 @@
 	<div class="badgeLabel">
 		<p>For Supporter tiers:</p>
 		<p id="supporterBadgeStatus" class="unlockBadgeStatus">
-			1 <ArrowRight size="13" /> 2 <ArrowRight size="13" /> 3 <ArrowRight size="13" /> 4
+			1 <ArrowRight size="13" /> 2 <ArrowRight size="13" /> 3
 		</p>
 	</div>
 	<div class="badgeBox">
 		<Badge id="supporterBadge1" interactive="true" unlocked={$profileSupporterLevel >= 1} />
 		<Badge id="supporterBadge2" interactive="true" unlocked={$profileSupporterLevel >= 2} />
 		<Badge id="supporterBadge3" interactive="true" unlocked={$profileSupporterLevel >= 3} />
-		<Badge id="supporterBadge4" interactive="true" unlocked={$profileSupporterLevel >= 4} />
 	</div>
 	<div class="badgeLabel">
 		<p>Miscellaneous:</p>
