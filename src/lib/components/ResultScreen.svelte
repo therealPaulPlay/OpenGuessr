@@ -29,6 +29,7 @@
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
 	import ResultFullscreenMessage from "./ResultFullscreenCelebration.svelte";
 	import { CircleUser, Flame, RulerDimensionLine } from "lucide-svelte";
+	import { blur } from "svelte/transition";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -56,26 +57,22 @@
 
 		<ResultScreenSlideup />
 		<div class="endBottomBar">
-			<div
-				class="floatingResultLeaderboardArea barMenu"
-				style:display={$supporterLevel >= 2 || !$resultScreenEnabled || $adsDisabled ? "none" : ""}
-			>
-				<div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
-				<!-- id is necessary for ad script! -->
-				<RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." />
-			</div>
+			{#if $supporterLevel <= 1 && !$adsDisabled}
+				<div class="floatingResultLeaderboardArea barMenu" transition:blur>
+					<div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
+					<RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." />
+				</div>
+			{/if}
 			<div id="resultBox" class="barMenu">
-				<div class="resultField resultFieldHigh" id="motivationText">
+				<div class="resultField" class:resultFieldHigh={$supporterLevel <= 1 && !$adsDisabled} id="motivationText">
 					<p>{$motivationText}</p>
 				</div>
-				<div
-					id="mobileResultLeaderboardAdArea"
-					class="resultField resultFieldHigh"
-					style:display={$supporterLevel >= 2 || !$resultScreenEnabled || $adsDisabled ? "none" : ""}
-				>
-					<div id="mobileResultLeaderboardAd"></div>
-					<RemoveAdsText text="Go Ad-Free." />
-				</div>
+				{#if $supporterLevel <= 1 && !$adsDisabled}
+					<div id="mobileResultLeaderboardAdArea" class="resultField resultFieldHigh">
+						<div id="mobileResultLeaderboardAd"></div>
+						<RemoveAdsText text="Go Ad-Free." />
+					</div>
+				{/if}
 				<div class="resultField">
 					<RulerDimensionLine style="margin-right: 8px;" size={22} strokeWidth={2.25} />
 					<p id="distanceText">{$distanceText}</p>
@@ -173,7 +170,7 @@
 		justify-content: center;
 		align-items: center;
 		color: white;
-		max-width: 750px;
+		width: 750px;
 		flex-wrap: wrap;
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);

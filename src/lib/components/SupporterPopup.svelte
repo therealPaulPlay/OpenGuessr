@@ -91,8 +91,8 @@
 					<div class="tierBenefitsScroll of-top of-bottom of-length-2">
 						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Ad-free experience</li>
 						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />15% XP boost</li>
-						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Supporter Pin</li>
-						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Tier 2 Badge</li>
+						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Supporter pin</li>
+						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Tier 2 badge</li>
 						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Highlighted name</li>
 					</div>
 				</ul>
@@ -116,7 +116,7 @@
 				<li style="opacity: 50%;">Tier 2 benefits, but:</li>
 				<li><CircleMinus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Ad-supported</li>
 				<li><CircleArrowDown size={20} style="margin-right: 10px; margin-bottom: -2px;" />10% XP boost</li>
-				<li><CircleArrowDown size={20} style="margin-right: 10px; margin-bottom: -2px;" />Tier 1 Badge</li>
+				<li><CircleArrowDown size={20} style="margin-right: 10px; margin-bottom: -2px;" />Tier 1 badge</li>
 			</ul>
 			<button
 				id="tierPrice1"
@@ -130,7 +130,7 @@
 			<ul class="tierBenefits">
 				<li style="opacity: 50%;">Tier 2 benefits, plus:</li>
 				<li><CircleArrowUp size={20} style="margin-right: 10px; margin-bottom: -2px;" />25% XP boost</li>
-				<li><CircleArrowUp size={20} style="margin-right: 10px; margin-bottom: -2px;" />Tier 3 Badge</li>
+				<li><CircleArrowUp size={20} style="margin-right: 10px; margin-bottom: -2px;" />Tier 3 badge</li>
 			</ul>
 			<button
 				id="tierPrice3"
@@ -144,8 +144,7 @@
 			>
 		</div>
 		<p id="supporterInfoText">
-			The
-			<a href="/legal" target="_blank">terms of use</a>
+			<a href="/legal" target="_blank">Terms and conditions</a>
 			apply.
 		</p>
 	</div>
