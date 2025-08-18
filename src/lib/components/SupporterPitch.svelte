@@ -33,7 +33,7 @@
 
 	.supporterArea {
 		border-radius: 10px;
-		background: var(--supporter-gradient);
+		background: var(--supporter-green);
 		color: white;
 		display: flex;
 		flex-wrap: wrap;

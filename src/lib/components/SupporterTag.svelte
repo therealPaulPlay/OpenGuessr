@@ -3,7 +3,7 @@
 <style>
 	.supporterSpan {
 		border-radius: 5px;
-		background: var(--supporter-gradient);
+		background: var(--supporter-green);
 		padding-inline: 5px;
 		font-size: 18px;
 		margin-left: 3px;

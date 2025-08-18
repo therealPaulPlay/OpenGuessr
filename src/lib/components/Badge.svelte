@@ -73,18 +73,14 @@
 			stage: 4,
 		},
 		supporterBadge1: {
-			title: "New Supporter",
-			stage: "Supporter1",
-		},
-		supporterBadge2: {
 			title: "Kind Contributor",
 			stage: "Supporter2",
 		},
-		supporterBadge3: {
+		supporterBadge2: {
 			title: "Generous Benefactor",
 			stage: "Supporter3",
 		},
-		supporterBadge4: {
+		supporterBadge3: {
 			title: "Ultimate Patron",
 			stage: "Supporter4",
 		},

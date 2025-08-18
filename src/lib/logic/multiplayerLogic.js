@@ -1,7 +1,7 @@
 import { errorPopup } from "$lib/utils/errorHandling";
 import { disableResultScreen, enableResultScreen } from "$lib/utils/setResultScreen.js";
 import { startTimer } from "$lib/utils/timer.js";
-import { selectedBadge, selectedPinIndex, supporterLevel, username, elo, isAuthenticated } from "$lib/stores/accountStore.js";
+import { isAuthenticated } from "$lib/stores/accountStore.js";
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
 import { mapSupportsMultiplayer } from "$lib/utils/doesMapSupportMultiplayer.js";
