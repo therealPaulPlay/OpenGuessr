@@ -31,7 +31,7 @@ export const duelRetryEnabled = writable(false);
 
 // UI - Host
 export const connectionCount = writable(0);
-export const roomcode = writable("......");
+export const roomcode = writable(null);
 
 // UI - Time reduced Overlay for Duels
 export const timeReducedOverlay = writable(false);

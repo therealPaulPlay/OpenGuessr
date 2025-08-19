@@ -30,6 +30,7 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { fade, scale, slide } from "svelte/transition";
 	import { tooltip } from "$lib/utils/tooltip";
+	import { page } from "$app/state";
 
 	function getFormattedCategory() {
 		if (typeof window === "undefined") return "loading...";
@@ -136,7 +137,7 @@
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p class="codeDisplayText">Join with code:</p>
 				<h1 id="roomCodeDisplay">
-					{$roomcode?.slice(0, 3)}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomcode?.slice(3)}
+					{$roomcode?.slice(0, 3) || "..."}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomcode?.slice(3) || "..."}
 				</h1>
 			</div>
 
@@ -232,7 +233,7 @@
 							// Use regular or Crazy Games link for invitation
 							const link = $crazyGames
 								? window.CrazyGames.SDK.game.inviteLink({ join: roomId })
-								: window.location.origin + "/?join=" + roomId;
+								: page.url.origin + "/?join=" + roomId;
 
 							// Copy to Clipboard
 							navigator.clipboard
@@ -253,7 +254,7 @@
 						onclick={async () => {
 							playSound("basic_button");
 							if (!$isAuthenticated) return signupPrompt();
-							if (!$roomcode || $roomcode.includes("loading")) return showNotification("Not initialized yet.");
+							if (!$roomcode) return showNotification("Not initialized yet.");
 							if (!roomOpened) {
 								await addPublicRoom(
 									$roomcode,

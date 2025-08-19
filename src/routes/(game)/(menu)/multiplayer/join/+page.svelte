@@ -1,5 +1,5 @@
 <script>
-	import { multiplayerStatus, roomcode } from "$lib/stores/context-specific/multiplayerStore";
+	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { joinRoom } from "$lib/logic/multiplayerLogic";
 	import { Copy, Unplug, Users } from "lucide-svelte";

@@ -323,6 +323,7 @@ export async function joinRoom(code) {
         multiplayer.set(true);
         mapModeIndicatorText.set("Multiplayer (...)");
         await get(socket).joinRoom(code);
+        roomcode.set(code);
         matchmakingActive.set(false);
         setMultiplayerUI();
         goto("/");
@@ -359,7 +360,7 @@ export function leaveMultiplayerRound(destroy = true) {
     teamAmount.set(1);
     connectionCount.set(0);
     multiplayerStyle.set("standard");
-    roomcode.set("......");
+    roomcode.set(null);
     multiplayerStatus.set(); // Undefined -> show default msgs
     continueText.set("Continue");
     multiplayerRestriction.set("standard");
