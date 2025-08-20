@@ -76,7 +76,7 @@
 				roomcode.subscribe((value) => {
 					if (value && !get(socket)?.getStorage?.divisionRoom) {
 						window.CrazyGames.SDK.game.showInviteButton({
-							join: $roomcode,
+							join: value,
 						});
 					} else window.CrazyGames.SDK.game.hideInviteButton();
 				});
