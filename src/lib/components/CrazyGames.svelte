@@ -1,7 +1,7 @@
 <!-- This component handles the SDK stuff, and checks if the crazy-games query is being used -->
 <script>
 	import { onMount } from "svelte";
-	import { roundAmount, roundLength, hostStage } from "$lib/stores/context-specific/multiplayerStore";
+	import { roundAmount, roundLength, hostStage, roomcode, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import {
 		adsDisabled,
@@ -71,6 +71,14 @@
 				resultScreenEnabled.subscribe((value) => {
 					if (value) window.CrazyGames.SDK.game.gameplayStop();
 					else window.CrazyGames.SDK.game.gameplayStart();
+				});
+
+				roomcode.subscribe((value) => {
+					if (value && !get(socket)?.getStorage?.divisionRoom) {
+						window.CrazyGames.SDK.game.showInviteButton({
+							join: value,
+						});
+					} else window.CrazyGames.SDK.game.hideInviteButton();
 				});
 			}
 		} catch (error) {
