@@ -59,9 +59,9 @@ export async function initializeSSEConnection() {
                             break;
 
                         case 'duel-result':
+                            const didWin = localStorage.getItem("id") == data?.winnerId;
+                            
                             const showResult = () => {
-                                const didWin = localStorage.getItem("id") == data?.winnerId;
-
                                 // For visual representation
                                 duelResultTitle.set(didWin ? "Victory!" : "Defeat!");
                                 eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
@@ -78,7 +78,7 @@ export async function initializeSSEConnection() {
 
                             // If the duel is still ongoing, leave
                             if (get(multiplayer) && !get(socket)?.getStorage?.gameEnded) {
-                                showNotification("Your opponent left.");
+                                didWin ? showNotification("Your opponent disconnected.") : showNotification("You disconnected.");
                                 leaveMultiplayerRound();
                             }
 
