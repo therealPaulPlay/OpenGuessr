@@ -9,8 +9,8 @@ let pendingPromise = null; // Stores in-flight promise for concurrent calls
 export async function getServerTimestamp() {
     const now = Date.now(); // Current local time in ms
 
-    // If last fetch was within 120 seconds, estimate time using the stored offset
-    if (now - lastFetchedLocalTime < 120000) return lastServerTimestamp + Math.round((now - lastFetchedLocalTime));
+    // If last fetch was within 5 minutes, estimate time using the stored offset
+    if (now - lastFetchedLocalTime < 300000) return lastServerTimestamp + Math.round((now - lastFetchedLocalTime));
 
     // If there's already a pending request, return that promise instead of creating a new one
     if (pendingPromise) return pendingPromise;

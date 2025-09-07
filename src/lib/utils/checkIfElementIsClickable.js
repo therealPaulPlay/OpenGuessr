@@ -1,5 +1,4 @@
 // Check if an element is clickable. This is neat for keyboard shortcuts that should only work if that element could be clicked.
-
 export function isElementClickable(element) {
     if (!element || element.offsetParent === null || getComputedStyle(element).visibility == "hidden" || getComputedStyle(element).pointerEvents == "none") {
         return false;
