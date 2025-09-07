@@ -8,6 +8,11 @@ import { elo } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
 
 export async function deleteRoomCodeFromMatchmakingServer() {
+    if (!get(roomcode)) {
+        // Sometimes, e.g. when creating the multiplayer instance failed and a leave is triggered, this is null
+        console.warn("Can't delete room code from server as it is null.");
+        return;
+    }
     try {
         const requestBody = {
             id: localStorage.getItem("id")
