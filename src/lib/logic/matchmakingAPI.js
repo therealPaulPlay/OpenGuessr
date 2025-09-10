@@ -1,6 +1,5 @@
 // Multiplayer room matchmaking APIs, for Duels
 import { matchmakingActive, multiplayerStatus, screenEscapeDisabled, roomcode, matchmakingHosting, multiplayerStyle } from "$lib/stores/context-specific/multiplayerStore";
-import { changeCategory } from "$lib/utils/changeCategory";
 import { setupMultiplayerRoom, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";

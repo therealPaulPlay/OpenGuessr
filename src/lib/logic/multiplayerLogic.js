@@ -250,7 +250,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
         await createMultiplayerInstance(); // Get new multiplayer instance
 
         // Check if map is valid for multiplayer
-        if (localStorage.getItem("selectedCategory") == "country_guessr") {
+        if (localStorage.getItem("selectedCategory") == "country_guessr" || localStorage.getItem("selectedCategory") == "image_guessr") {
             showNotification("Map not supported in multiplayer.")
             await changeCategory("standard", true); // Regenerate to update locations array
         }
