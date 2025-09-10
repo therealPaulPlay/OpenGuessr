@@ -17,9 +17,11 @@ let loadedMapCategory; // Exclusive to location generation, not a general variab
 let cachedLocations = [];
 
 async function getCoordsFromServer() {
+    const selectedCategory = localStorage.getItem("selectedCategory") || "standard";
+
     // Reset local cache if category was changed
-    if (loadedMapCategory !== localStorage.getItem("selectedCategory")) {
-        loadedMapCategory = localStorage.getItem("selectedCategory");
+    if (loadedMapCategory !== selectedCategory) {
+        loadedMapCategory = selectedCategory;
         cachedLocations = [];
     }
 
