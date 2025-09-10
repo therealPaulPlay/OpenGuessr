@@ -1,7 +1,6 @@
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 import { get } from "svelte/store";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
-import { changeCategory } from "$lib/utils/changeCategory";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { showNotification } from "$lib/utils/notifications";
 import { savedMapBounds } from "$lib/stores/locationStore";
