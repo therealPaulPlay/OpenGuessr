@@ -9,8 +9,8 @@ export const initialIframeLoad = writable(true);
 export const currentLocationLatitude = writable(0);
 export const currentLocationLongitude = writable(0);
 
-// Location Maps
-export const currentlyLoadedLocationsArray = writable();
+// Bounds
+export const savedMapBounds = writable({ zoom: 2, lat: 0, lng: 0, diameter: 360 });
 
 // Round Log
 export const roundLog = writable([]);

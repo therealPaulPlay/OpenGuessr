@@ -55,9 +55,9 @@ async function calculateXPGain(distance, category, supporterLevelParam) {
     if (distance < 0.025) distance = 0; // Treat distances < 25m as 0 to be more friendly with 5ks
 
     // If the map is big enough to encompass many countries, calculate the country streak
-    const streakMultiplier = (getMapBounds().diameter > 250 && get(singleplayer) && get(isAuthenticated) && category !== "country guessr") ? await streakCalculation() : 1;
+    const streakMultiplier = (getMapBounds().diameter > 250 && get(singleplayer) && get(isAuthenticated) && category !== "country_guessr") ? await streakCalculation() : 1;
 
-    if (category == "country guessr") returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
+    if (category == "country_guessr") returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
     else returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance) * streakMultiplier);
 
     let supporterMultiplier = 1;

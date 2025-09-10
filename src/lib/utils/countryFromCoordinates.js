@@ -8,7 +8,7 @@ let extendedCoastal = false;
 async function loadWorldData() {
     if (worldData) return;
     try {
-        const response = await fetch("/json/countries-70m.json");
+        const response = await fetch("/json/topojson/countries-70m.json");
         worldData = await response.json();
         countriesGeo = topojson.feature(worldData, worldData.objects.countries).features; // Convert TopoJSON to GeoJSON
     } catch (error) {

@@ -21,15 +21,6 @@
 	let { data } = $props();
 
 	let locationIndex = $state(0);
-	let iframeSource = $derived(
-		"https://www.google.com/maps/embed/v1/streetview?location=" +
-			locationsArrayForSvgMap[locationIndex][0] +
-			"," +
-			locationsArrayForSvgMap[locationIndex][1] +
-			"&key=" +
-			get(panoramaKey) +
-			"&fov=90",
-	);
 	let mapName = $state(data.name);
 	let mapAuthor = $state(data.author);
 	let mapAuthorId = $state(data.authorId);
@@ -38,6 +29,24 @@
 	let mapLocationData = $state(data.map_data);
 
 	let playerId = $state(0);
+
+	let locationsArrayForSvgMap = $derived.by(() => {
+		if (mapLocationData?.locations?.length > 500) {
+			const originalLength = mapLocationData?.locations.length;
+			const skipFactor = Math.ceil(originalLength / 500);
+			return mapLocationData?.locations.filter((_, index) => index % skipFactor === 0);
+		} else return mapLocationData?.locations;
+	});
+
+	let iframeSource = $derived(
+		"https://www.google.com/maps/embed/v1/streetview?location=" +
+			locationsArrayForSvgMap?.[locationIndex]?.[0] +
+			"," +
+			locationsArrayForSvgMap?.[locationIndex]?.[1] +
+			"&key=" +
+			get(panoramaKey) +
+			"&fov=90",
+	);
 
 	onMount(() => {
 		playerId = localStorage.getItem("id");
@@ -211,16 +220,6 @@
 	}
 
 	// SVG Map-related ---------------------------------------------------------------------------------------------------------------------
-	let locationsArrayForSvgMap = $derived.by(() => {
-		if (mapLocationData?.locations?.length > 500) {
-			const originalLength = mapLocationData?.locations.length;
-			const skipFactor = Math.ceil(originalLength / 500);
-			return mapLocationData?.locations.filter((_, index) => index % skipFactor === 0);
-		} else {
-			return mapLocationData?.locations;
-		}
-	});
-
 	// Calculate map center based on locations
 	let mapCenter = $derived.by(() => {
 		if (!locationsArrayForSvgMap || locationsArrayForSvgMap.length < 2) return;

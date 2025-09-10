@@ -143,7 +143,7 @@
 	function idToMapName(str) {
 		try {
 			return str
-				.replace("community_", "")
+				.replaceAll("_", " ")
 				.split(" ")
 				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
 				.join(" ");
