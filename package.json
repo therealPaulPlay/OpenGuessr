@@ -19,11 +19,12 @@
 	"dependencies": {
 		"@floating-ui/dom": "^1.7.1",
 		"d3-geo": "^3.1.1",
+		"fast-profanity-filter": "^0.0.5",
 		"howler": "^2.2.4",
 		"leaflet": "^1.9.4",
 		"lucide-svelte": "^0.511.0",
 		"overfade": "^0.0.6",
-		"playsocketjs": "^2.5.4",
+		"playsocketjs": "^2.5.5",
 		"topojson-client": "^3.1.0"
 	}
 }

@@ -1,18 +1,18 @@
 import { chatArray, socket, guestName } from "$lib/stores/context-specific/multiplayerStore";
 import { username } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
-import { filterProfanity } from "$lib/utils/profanityCheck";
+import { censor } from "fast-profanity-filter";
 
 export function manuallySendChat(text) {
     if (!text) return;
     get(socket)?.updateStorage("chats", "array-add", (get(username) || get(guestName)) + ": " + text);
 }
 
-export async function loadChat(chats) {
+export function loadChat(chats) {
     const tempArray = [];
     try {
         for (const chat of chats) {
-            const text = await filterProfanity(chat);
+            const text = censor(chat);
             tempArray.push(text);
         }
         chatArray.set(tempArray);
