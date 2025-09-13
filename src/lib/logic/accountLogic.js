@@ -66,7 +66,7 @@ async function loadUserInfo() {
 
       // Extract profile data
       experience.set(user.experience);
-      username.set(user.userName);
+      username.set(user.username);
       supporterLevel.set(user.supporter_level);
       supportedAmount.set(user.supported_amount);
       selectedPinIndex.set(user.pin || 0);

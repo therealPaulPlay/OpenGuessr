@@ -4,8 +4,8 @@
 	import { leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
 	import { guestName, guestNamePromise } from "$lib/stores/context-specific/multiplayerStore";
 	import { guestNamePickerPopup } from "$lib/stores/uiStore";
-	import { filterProfanity } from "$lib/utils/profanityCheck";
 	import { playSound } from "$lib/utils/soundManager";
+	import { censor } from "fast-profanity-filter";
 	import { onMount } from "svelte";
 
 	function generateFunnyGuestName() {
@@ -34,7 +34,7 @@
 
 	async function setName() {
 		$guestName = $guestName.trim();
-		$guestName = await filterProfanity($guestName);
+		$guestName = censor($guestName);
 		$guestNamePromise?.();
 		$guestNamePromise = true; // True means, that the popup won't show up again
 	}

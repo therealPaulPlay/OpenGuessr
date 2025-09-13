@@ -60,7 +60,7 @@
 		}
 	}
 
-	async function registerUser(userName, email, password, captchaToken, successFunction) {
+	async function registerUser(username, email, password, captchaToken, successFunction) {
 		try {
 			// Make the POST request using Fetch API
 			const response = await fetch(`${$accountUrl}/accounts/register`, {
@@ -69,7 +69,7 @@
 					"Content-Type": "application/json",
 					"cf-turnstile-response": captchaToken,
 				},
-				body: JSON.stringify({ userName: userName, email, password }),
+				body: JSON.stringify({ username, email, password }),
 			});
 
 			// Check if the response is successful

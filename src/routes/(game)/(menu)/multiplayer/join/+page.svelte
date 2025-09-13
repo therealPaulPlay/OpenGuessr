@@ -114,7 +114,7 @@
 						joinRoom(code);
 					}}
 				>
-					<Unplug strokeWidth={2.5} size={22} style="margin-bottom: -3px;" />
+					<Unplug strokeWidth={2} size={22} style="margin-bottom: -3px;" />
 				</button>
 			</div>
 		{/each}

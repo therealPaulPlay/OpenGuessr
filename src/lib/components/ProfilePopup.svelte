@@ -10,7 +10,6 @@
 	import { submitAccountDeletion } from "$lib/utils/deleteAccount";
 	import { confirmPasswordValue, confirmUsernameValue } from "$lib/stores/context-specific/confirmPopupStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
-	import { filterProfanity } from "$lib/utils/profanityCheck";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
 	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import { pinPopup, badgePopup, reportPopup, roundLogPopup } from "$lib/stores/uiStore";
@@ -63,15 +62,16 @@
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showNotification } from "$lib/utils/notifications";
+	import { censor } from "fast-profanity-filter";
 
 	let textarea = $state();
 	let selectedTabIndex = $state(0);
 
 	let filteredAbout = $state("");
 
-	$effect(async () => {
+	$effect(() => {
 		filteredAbout = "";
-		if ($profileData?.about) filteredAbout = await filterProfanity($profileData?.about);
+		if ($profileData?.about) filteredAbout = censor($profileData?.about);
 	});
 
 	onMount(() => {

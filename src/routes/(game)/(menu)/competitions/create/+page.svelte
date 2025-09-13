@@ -32,7 +32,6 @@
 	async function submitCompetitionWithDetails() {
 		let operationMessage = await submitCompetition(
 			competitionName,
-			$username,
 			localStorage.getItem("id"),
 			competitionRestriction,
 			convertToSeconds(competitionDuration),
@@ -99,7 +98,6 @@
 	// Submission function ------------------------------------------------------------------------------------------------------
 	async function submitCompetition(
 		name,
-		author,
 		authorId,
 		restriction,
 		duration,
@@ -111,7 +109,6 @@
 		try {
 			const requestBody = {
 				name: name,
-				author: author,
 				id: authorId,
 				restriction: restriction,
 				duration: duration,
@@ -153,11 +150,8 @@
 
 					if (responseData.errors && Array.isArray(responseData.errors)) {
 						responseData.errors.forEach((err) => {
-							if (err.msg) {
-								errorMessages.push(err.msg);
-							} else {
-								errorMessages.push(JSON.stringify(err));
-							}
+							if (err.msg) errorMessages.push(err.msg);
+							else errorMessages.push(JSON.stringify(err));
 						});
 					}
 
@@ -236,7 +230,6 @@
 	<div class="infoNoteBox">
 		<p class="uploadFirstText">Information and rules:</p>
 		<ul class="verticalMarginUl">
-			<li class="helpItem">Ensure that your competition names and author names are familiy-friendly.</li>
 			<li class="helpItem">Keep all details in english.</li>
 			<li class="helpItem">Pick a descriptive competition name (e.g. not "My Competition").</li>
 			<li class="helpItem">Competitions will be deleted 7 days after they have ended.</li>
