@@ -250,15 +250,9 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
         await createMultiplayerInstance(); // Get new multiplayer instance
 
         // Check if map is valid for multiplayer
-        if (localStorage.getItem("selectedCategory") == "country_guessr" || localStorage.getItem("selectedCategory") == "image_guessr") {
+        if (localStorage.getItem("selectedCategory") == "country_guessr") {
             showNotification("Map not supported in multiplayer.")
             await changeCategory("standard", true); // Regenerate to update locations array
-        }
-
-        // If it's a divison game, ensure standard is selected
-        if (divisionRoom && localStorage.getItem("selectedCategory") && localStorage.getItem("selectedCategory") !== "standard") {
-            showNotification("Map changed to standard for duel.")
-            await changeCategory("standard", true);
         }
 
         // Set round and length parameters
@@ -274,7 +268,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             teamAmount: get(teamAmount),
             style: get(multiplayerStyle),
             restriction: get(multiplayerRestriction) || "standard",
-            category: localStorage.getItem("selectedCategory") || "standard",
+            category: divisionRoom ? "standard" : localStorage.getItem("selectedCategory") || "standard",
             divisionRoom,
         }, sizeLimit);
 

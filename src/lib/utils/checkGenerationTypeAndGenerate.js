@@ -46,7 +46,7 @@ export async function checkGenerationTypeAndGenerate() {
   queue = queue.then(async () => {
     try {
       loadingScreenVisible.set(true); // Show loading screen
-      const mapCategory = localStorage.getItem("selectedCategory") || "standard";
+      const mapCategory = get(multiplayer) ? get(socket)?.getStorage?.category : (localStorage.getItem("selectedCategory") || "standard");
 
       // Disable map-related modes (will be enabled later based on the map choice)
       countryGuessr.set(false);
