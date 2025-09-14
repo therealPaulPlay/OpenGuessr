@@ -1,240 +1,66 @@
-import { errorPopup } from "$lib/utils/errorHandling";
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
-import { currentlyLoadedLocationsArray } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
-import { changeCategory } from "$lib/utils/changeCategory";
-import { accountUrl, locationUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { showNotification } from "$lib/utils/notifications";
+import { savedMapBounds } from "$lib/stores/locationStore";
 
-// This is THE function to get locations (all others here are NOT export) - not the functino to start a new round! (look for newLocation.js for that)
+// This is THE function to get locations (all others here are NOT export) - not the function to start a new round!
 export async function getLocationCoordinates(type) {
-    if (type == "JSON") {
-        return await getJSONCoords(localStorage.getItem("selectedCategory"));
-    } else if (type == "SDK") {
-        return await getCoordsFromLocationServer();
-    } else if (type == "FROMHOST") {
-        return get(socket)?.getStorage?.location;
-    } else if (type == "COMMUNITY") {
-        return await getCommunityMapCoordinates();
-    } else if (type == "COMPETITION") {
-        return await getCompetitionCoordinates();
-    } else {
-        console.error("Incorrect Location type set in locationGeneration.js");
-    }
+    if (type == "MAP") return await getCoordsFromServer();
+    else if (type == "MULTIPLAYER") return get(socket)?.getStorage?.location;
+    else if (type == "COMPETITION") return await getCompetitionCoordinates();
+    else throw new Error("Incorrect location type set in locationGeneration.js!");
 }
 
 let loadedMapCategory; // Exclusive to location generation, not a general variable!
-let previousGuessesIndexes = [];
-
-// Get Location from JSON (Legacy/Custom Map creation method) ----------------------------------------------------------------------------------------------------
-
-// Load location JSON files
-async function getJSONCoords(category) {
-    if (loadedMapCategory !== category) {
-        try {
-            let response = null;
-            loadedMapCategory = category;
-            previousGuessesIndexes = [];
-
-            response = await fetch("/json/" + category.replaceAll(" ", "_") + "Locations.json");
-            if (!response.ok) throw new Error("JSON fetch failed.");
-
-            const jsonResponse = await response.json();
-            currentlyLoadedLocationsArray.set(jsonResponse.locations);
-            return pickRandomLocations();
-
-        } catch (error) {
-            console.error(error);
-            // Choose standard and refresh (happens e.g. if categories are renamed)
-            changeCategory("standard", true);
-            console.warning("Switching to standard as category wasn't found...");
-        }
-    } else {
-        return pickRandomLocations();
-    }
-}
-
-// Get Locations from google maps js API node.js SERVER (new method - unlimited locations) -------------------------------------------------------------------------------
-const locationEndpoint = get(locationUrl) + "/locations-batch";
-const locationLengthEndpoint = get(locationUrl) + "/location-length";
 let cachedLocations = [];
 
-async function getCoordsFromLocationServer() {
-    try {
-        if (loadedMapCategory !== "standard") {
-            previousGuessesIndexes = [];
-            loadedMapCategory = "standard";
-            currentlyLoadedLocationsArray.set([]); // Empty for default boundaries
-        }
+async function getCoordsFromServer() {
+    const selectedCategory = localStorage.getItem("selectedCategory") || "standard";
 
-        // If cache is empty, fetch 5 new locations
-        if (cachedLocations.length === 0) {
-            const totalAmount = await getStandardLocationAmount();
-            const indexes = Array.from({ length: 5 }, () => getUniqueLocationIndex(totalAmount));
+    // Reset local cache if category was changed
+    if (loadedMapCategory !== selectedCategory) {
+        loadedMapCategory = selectedCategory;
+        cachedLocations = [];
+    }
 
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort("Locations took too long to load."), 2000); // Abort slow requests
+    // If cache is empty, fetch 5 new locations
+    if (cachedLocations.length === 0) {
+        const response = await fetch(get(accountUrl) + `/locations/${loadedMapCategory}`, {
+            method: 'PUT',
+            headers: { 'Content-Type': 'application/json' }
+        });
 
-            try {
-                const response = await fetch(`${locationEndpoint}`, {
-                    method: 'PUT',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ indexes }),
-                    signal: controller.signal
-                });
-
-                if (response.ok) {
-                    const data = await response.json();
-                    cachedLocations = data.locations;
-                } else {
-                    throw new Error("Location fetch failed. Server returned error: " + response.status);
-                }
-            } finally {
-                clearTimeout(timeoutId);
-            }
-        }
-
-        // Return and remove one location from cache
-        if (cachedLocations.length > 0) {
-            const location = cachedLocations.shift();
-            const resultLat = location[0];
-            const resultLon = location[1];
-            return [resultLat, resultLon];
+        if (response.ok) {
+            const data = await response.json();
+            savedMapBounds.set(data.bounds);
+            cachedLocations = data.locations;
         } else {
-            throw new Error("No locations available in cache!");
-        }
-    } catch (error) {
-        return await loadBackupLocations(error.message || error); // This also logs the error
-    }
-}
-
-let standardLocationAmount;
-
-async function getStandardLocationAmount() {
-    if (!standardLocationAmount) {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 2000); // Abort slow location amount requests
-
-        try {
-            const response = await fetch(locationLengthEndpoint, {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' },
-                signal: controller.signal
-            });
-
-            // Clear the timeout since we got a response
-            clearTimeout(timeoutId);
-
-            // Check if the response is successful
-            if (response.ok) {
+            let errorMessage = response.status;
+            try {
                 const data = await response.json();
-                standardLocationAmount = Number(data?.length);
-            } else {
-                throw new Error("Error fetching Standard location amount: " + response.status);
-            }
-        } catch (error) {
-            clearTimeout(timeoutId);
-            if (error.name === 'AbortError') throw new Error("Location amount took too long to load.");
-            else throw new Error("Error fetching standard location amount: " + error);
+                if (data.error) errorMessage = data.error;
+            } catch { }
+            throw new Error(errorMessage);
         }
     }
 
-    return standardLocationAmount;
-}
-
-// in case the location server does not respond, load the backup, formerly daily locations (just totally random locations) instead
-async function loadBackupLocations(error) {
-    console.warn("Loading backup locations:", error);
-    showNotification("Loading backup: " + error);
-    return await getJSONCoords("backup");
-}
-
-// Get community map coordinates ---------------------------------------------------------------------------
-async function getCommunityMapCoordinates() {
-    if (loadedMapCategory !== localStorage.getItem("selectedCategory")) {
-        try {
-            const response = await fetch(get(accountUrl) + "/maps/" + localStorage.getItem("selectedCategory").replace("community_", ""), {
-                method: 'GET',
-                headers: { 'Content-Type': 'application/json' }
-            });
-
-            // Check if the response is successful
-            if (response.ok) {
-                const data = await response.json();
-
-                // Throw error if no map data URL is provided
-                if (!data.map_data_url) throw new Error("No map data URL provided!");
-
-                const mapContentResponse = await fetch(data.map_data_url);
-                if (!mapContentResponse.ok) throw new Error(`Failed to fetch map content from object storage: ${mapContentResponse.status}`);
-                const mapContent = await mapContentResponse.json();
-
-                loadedMapCategory = localStorage.getItem("selectedCategory");
-                previousGuessesIndexes = [];
-                currentlyLoadedLocationsArray.set(mapContent.locations); // the array is in locations: [...]
-                return pickRandomLocations(); // pick one new location for playing
-
-            } else {
-                console.error("Community map fetch failed. Server returned error:", response.status);
-                if (response.status == 404) {
-                    errorPopup("Community map was deleted", "This map was likely deleted and cannot be found.", response.status, true);
-                    return [];
-                } else {
-                    throw new Error(response.status);
-                }
-            }
-        } catch (error) {
-            console.error("Error occurred while fetching map from server: ", error);
-            errorPopup("Error loading community map", "An error occured loading the map.", error.message, true);
-            return [];
-        }
-    } else {
-        return pickRandomLocations(); // pick one new location for playing
-    }
-}
-
-// Universal function to pick random coordinates ---------------------------------------------------------------------------
-function pickRandomLocations() {
-    try {
-        let guessIndex = getUniqueLocationIndex(get(currentlyLoadedLocationsArray)?.length);
-
-        const resultLat = get(currentlyLoadedLocationsArray)[guessIndex][0];
-        const resultLon = get(currentlyLoadedLocationsArray)[guessIndex][1];
-        const additionalProperty = get(currentlyLoadedLocationsArray)[guessIndex][2]; // only available for certain modes (like country guessr, image guessr..). This could be the country, the image URL etc.
+    // Return and remove one location from cache
+    if (cachedLocations.length > 0) {
+        const location = cachedLocations.shift();
+        const resultLat = location[0];
+        const resultLon = location[1];
+        const additionalProperty = location[2] ?? null;
         return [resultLat, resultLon, additionalProperty];
-    } catch (error) {
-        console.error("Error picking random locations in locationGeneration.js: " + error);
-        return [];
+    } else {
+        throw new Error("No locations available in cache!");
     }
 }
-
-function getUniqueLocationIndex(locationAmount) {
-    let index;
-    do {
-        index = Math.floor(Math.random() * locationAmount);
-    } while (previousGuessesIndexes.includes(index));
-
-    previousGuessesIndexes.unshift(index); // add guessIndex at the front of the array
-
-    // if the array is longer than half of the total amount, pop last one out
-    if (previousGuessesIndexes.length > locationAmount / 2) previousGuessesIndexes.pop();
-    return index;
-}
-
-// Get Competition coordinates ---------------------------------------------------------------------------------------------
 
 async function getCompetitionCoordinates() {
-    let resultLocationsArray;
-
-    try {
-        const resultLat = get(competitionData)?.locations[get(competitionRound)][0];
-        const resultLon = get(competitionData)?.locations[get(competitionRound)][1];
-
-        resultLocationsArray = [resultLat, resultLon];
-    } catch (error) {
-        console.error("Error in locationGeneration.js in getCompetitionCoordinates: " + error);
-    }
-
+    const resultLat = get(competitionData)?.locations[get(competitionRound)][0];
+    const resultLon = get(competitionData)?.locations[get(competitionRound)][1];
+    const resultLocationsArray = [resultLat, resultLon];
     return resultLocationsArray || [];
 }

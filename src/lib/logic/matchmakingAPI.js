@@ -1,6 +1,5 @@
 // Multiplayer room matchmaking APIs, for Duels
 import { matchmakingActive, multiplayerStatus, screenEscapeDisabled, roomcode, matchmakingHosting, multiplayerStyle } from "$lib/stores/context-specific/multiplayerStore";
-import { changeCategory } from "$lib/utils/changeCategory";
 import { setupMultiplayerRoom, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -8,6 +7,11 @@ import { elo } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
 
 export async function deleteRoomCodeFromMatchmakingServer() {
+    if (!get(roomcode)) {
+        // Sometimes, e.g. when creating the multiplayer instance failed and a leave is triggered, this is null
+        console.warn("Can't delete room code from server as it is null.");
+        return;
+    }
     try {
         const requestBody = {
             id: localStorage.getItem("id")

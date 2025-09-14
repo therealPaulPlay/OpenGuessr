@@ -4,7 +4,6 @@ import { loadedFriendsData, multiplayerStatus, roomcode } from "$lib/stores/cont
 import { inboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { get } from "svelte/store";
-import { changeCategory } from "$lib/utils/changeCategory";
 import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 // Inbox -----------------------------------------------------------------------------------------------------------------------------------

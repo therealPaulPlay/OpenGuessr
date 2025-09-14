@@ -4,7 +4,6 @@ import { startTimer } from "$lib/utils/timer.js";
 import { isAuthenticated } from "$lib/stores/accountStore.js";
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate.js";
 import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
-import { mapSupportsMultiplayer } from "$lib/utils/doesMapSupportMultiplayer.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
@@ -115,7 +114,6 @@ export async function createMultiplayerInstance() {
                 if (!get(socket)?.getStorage?.gameStarted && get(multiplayer)) startRoom();
             });
 
-            let startMultiplayerRoundTimeout;
             let playerAddRequestSent = false; // Avoid sending this multiple times
 
             get(socket).onEvent('storageUpdated', (storage) => {
@@ -170,17 +168,11 @@ export async function createMultiplayerInstance() {
                         currentLocationLongitude.set(storage?.location[1]);
                         enableResultScreen(get(mapPinLat), get(mapPinLng));
 
-                    } else {
-                        disableResultScreen();
-                        if (storage.currentRound < get(roundAmount)) {
-                            clearTimeout(startMultiplayerRoundTimeout); // Prevent multiple calls
-                            startMultiplayerRoundTimeout = setTimeout(startMultiplayerRound, 1500); // Start new round
-                        }
-                    }
+                    } else disableResultScreen();
                 }
 
                 // Set coordinates
-                if (storage.location && storage.currentRound >= 1 && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1]) && !get(socket)?.isHost) checkGenerationTypeAndGenerate();
+                if (storage.location && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1])) checkGenerationTypeAndGenerate();
 
                 if (storage.countdownActive) multiplayerOverlayCountdown(); // Display countdown
 
@@ -258,23 +250,17 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
         await createMultiplayerInstance(); // Get new multiplayer instance
 
         // Check if map is valid for multiplayer
-        if (!mapSupportsMultiplayer(localStorage.getItem("selectedCategory") || "standard")) {
+        if (localStorage.getItem("selectedCategory") == "country_guessr") {
             showNotification("Map not supported in multiplayer.")
             await changeCategory("standard", true); // Regenerate to update locations array
-        }
-
-        // If it's a divison game, ensure standard is selected
-        if (divisionRoom && localStorage.getItem("selectedCategory") && localStorage.getItem("selectedCategory") !== "standard") {
-            showNotification("Map changed to standard for duel.")
-            await changeCategory("standard", true);
         }
 
         // Set round and length parameters
         roundAmount.set(AmountOfRounds);
         roundLength.set(LengthOfRounds);
-        const mapBounds = getMapBounds(); // Get bounds BEFORE setting multiplayer to true
 
-        multiplayer.set(true); // Set multiplayer
+        // Set multiplayer
+        multiplayer.set(true);
 
         const code = await get(socket)?.createRoom({
             roundAmount: get(roundAmount),
@@ -282,8 +268,7 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             teamAmount: get(teamAmount),
             style: get(multiplayerStyle),
             restriction: get(multiplayerRestriction) || "standard",
-            category: localStorage.getItem("selectedCategory") || "standard",
-            mapBounds,
+            category: divisionRoom ? "standard" : localStorage.getItem("selectedCategory") || "standard",
             divisionRoom,
         }, sizeLimit);
 
@@ -302,13 +287,7 @@ export function startRoom() {
     setMultiplayerUI();
     matchmakingActive.set(false);
     goto("/"); // Creation page -> home
-    startMultiplayerRound();
-}
-
-async function startMultiplayerRound() {
-    if (!get(socket)?.isHost) return;
-    await checkGenerationTypeAndGenerate();
-    get(socket)?.sendRequest("startRound", { lat: get(currentLocationLatitude), lon: get(currentLocationLongitude) });
+    get(socket)?.sendRequest("startRoom");
 }
 
 export async function joinRoom(code) {

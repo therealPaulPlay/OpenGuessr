@@ -9,18 +9,14 @@ import { loadImageFromUrl } from '$lib/utils/imageGuesserFunctions';
 import { get } from 'svelte/store';
 import { resetMap } from '$lib/logic/miniMap';
 import { resultScreenEnabled } from '$lib/stores/context-specific/resultScreenStore';
+import { errorPopup } from './errorHandling';
+import { showConfirmPopup } from './confirmPopup';
+import { changeCategory } from './changeCategory';
 
 // Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
 export async function generateNewLocation(type) {
-    let newLocationArray;
-
     try {
-        newLocationArray = await getLocationCoordinates(type);
-    } catch (error) {
-        console.error("Invalid location generation type in generateNewLocation function. Error:", error);
-    }
-
-    try {
+        const newLocationArray = await getLocationCoordinates(type);
         currentLocationLatitude.set(Number(newLocationArray[0]));
         currentLocationLongitude.set(Number(newLocationArray[1]));
 
@@ -30,8 +26,12 @@ export async function generateNewLocation(type) {
         // Set image guesser image
         if (get(imageGuessr)) loadImageFromUrl(newLocationArray[2]);
 
-    } catch {
-        console.error("The coordinates to load the iframe from are not defined. " + "Lat: " + get(currentLocationLatitude) + " Long: " + get(currentLocationLongitude));
+    } catch (error) {
+        console.error("The coordinates for the panorama are not defined. " + "Lat: " + get(currentLocationLatitude) + " Long: " + get(currentLocationLongitude));
+        errorPopup("Error loading locations", "Failed to retrieve locations from the server.", error.message);
+        showConfirmPopup("Reset to Standard map?", "Your selected map was potentially removed or renamed.", () => {
+            changeCategory("standard", true);
+        });
     }
 
     loadPanorama(get(currentLocationLatitude), get(currentLocationLongitude));

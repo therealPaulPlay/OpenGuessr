@@ -50,20 +50,17 @@
 	async function submitMap() {
 		const name = mapName;
 		const description = mapDescription;
-		const author = get(username);
 		const id = localStorage.getItem("id");
 		const category = categoryValue;
 
-		if (!name || !description || !author || !id || category == "none") {
-			return "All fields and a selected category are required.";
+		if (!name || !description || !id || category == "none") return "All fields and a selected category are required.";
+		if (!uploadMapDataValue?.trim() && !filePicker?.files?.[0]) {
+			return "Please provide locations either as text or a file.";
 		}
-
-		if (!uploadMapDataValue?.trim() && !filePicker?.files?.[0])
-			return "Please provide locations either as text or upload a file.";
 
 		try {
 			const mapData = await combineMapData();
-			const payload = { id, name, author, description, mapData, category };
+			const payload = { id, name, description, mapData, category };
 
 			const response = await fetch($accountUrl + "/maps", {
 				method: "POST",

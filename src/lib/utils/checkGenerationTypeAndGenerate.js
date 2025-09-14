@@ -11,7 +11,7 @@ import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
 import { loadingScreenVisible } from "$lib/stores/uiStore";
 
-// Check for Play URLs that include a map ---------------------------------------------------------------------------
+// Check for ?play-map= URLs that include a map ---------------------------------------------------------------------------
 let checkedForMapLink = false;
 
 function checkLinkMap() {
@@ -19,7 +19,7 @@ function checkLinkMap() {
 
   try {
     let urlParams = new URLSearchParams(window.location.search);
-    let mapFromLink = urlParams.get("play-map").toLowerCase().replaceAll("-", " ").replaceAll("_", " ").replaceAll("–", " ");
+    let mapFromLink = urlParams.get("play-map").toLowerCase().replaceAll("-", " ").split(" ").join("_");
 
     if (mapFromLink) {
       if (get(countryMaps).includes(mapFromLink) || get(continentMaps).includes(mapFromLink)) changeCategory(mapFromLink);
@@ -31,6 +31,14 @@ function checkLinkMap() {
 // Location Generation with correct Type ---------------------------------------------------------------------------------------------------------
 let queue = Promise.resolve(); // Qeue handler
 
+async function setMapSpecifics(category) {
+  if (category == "country_guessr") countryGuessr.set(true);
+  if (category == "image_guessr") {
+    imageGuessr.set(true);
+    enableImageGuessr(true);
+  }
+}
+
 export async function checkGenerationTypeAndGenerate() {
   if (!checkedForMapLink) checkLinkMap();
 
@@ -38,61 +46,29 @@ export async function checkGenerationTypeAndGenerate() {
   queue = queue.then(async () => {
     try {
       loadingScreenVisible.set(true); // Show loading screen
-      const mapCategory = localStorage.getItem("selectedCategory") || "standard";
-      
+      const mapCategory = get(multiplayer) ? get(socket)?.getStorage?.category : (localStorage.getItem("selectedCategory") || "standard");
+
       // Disable map-related modes (will be enabled later based on the map choice)
       countryGuessr.set(false);
       imageGuessr.set(false);
 
+      // Singleplayer
       if (get(singleplayer)) {
-        // Pick between json and maps api loading depending on the category type
-        if (mapCategory != "standard" && mapCategory != "country guessr" && mapCategory != "image guessr" && !mapCategory.includes("community")) {
-          await generateNewLocation("JSON");
-
-        } else if (mapCategory == "country guessr") {
-          countryGuessr.set(true);
-          await generateNewLocation("JSON");
-
-        } else if (mapCategory == "image guessr") {
-          imageGuessr.set(true);
-          enableImageGuessr(true);
-          await generateNewLocation("JSON");
-
-        } else if (mapCategory == "standard") {
-          await generateNewLocation("SDK");
-
-        } else if (mapCategory.includes("community")) {
-          await generateNewLocation("COMMUNITY");
-
-        } else {
-          console.error("Incorrect mapCategory set in categoryMenu.js under checkGenerationTypeAndGenerate.")
-        }
-
-      } else if (get(multiplayer)) {
-        if (get(socket)?.isHost) {
-          try {
-            if (mapCategory && mapCategory != "standard" && !mapCategory.includes("community")) {
-              await generateNewLocation("JSON");
-
-            } else if (mapCategory == "standard" || !mapCategory) {
-              await generateNewLocation("SDK");
-
-            } else if (mapCategory.includes("community")) {
-              await generateNewLocation("COMMUNITY");
-            }
-          } catch (error) {
-            console.error("Error loading multiplayer location in newLocation. Error: ", error)
-          }
-        } else {
-          await generateNewLocation("FROMHOST");
-        }
-
-      } else if (get(competition)) {
-        if (checkCompetitionRoundStatus()) await generateNewLocation("COMPETITION");
+        setMapSpecifics(mapCategory);
+        await generateNewLocation("MAP");
       }
 
+      // Multiplayer
+      if (get(multiplayer)) {
+        setMapSpecifics(mapCategory);
+        generateNewLocation("MULTIPLAYER");
+      }
+
+      // Competition
+      if (get(competition) && checkCompetitionRoundStatus()) await generateNewLocation("COMPETITION");
+
     } catch (error) {
-      console.error("Error in generation queue:", error);
+      console.error("Error in location generation queue:", error);
     }
   });
 

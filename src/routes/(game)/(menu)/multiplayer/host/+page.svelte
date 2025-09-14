@@ -137,7 +137,8 @@
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p class="codeDisplayText">Join with code:</p>
 				<h1 id="roomCodeDisplay">
-					{$roomcode?.slice(0, 3) || "..."}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomcode?.slice(3) || "..."}
+					{$roomcode?.slice(0, 3) || "..."}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomcode?.slice(3) ||
+						"..."}
 				</h1>
 			</div>
 

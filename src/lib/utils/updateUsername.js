@@ -29,7 +29,7 @@ async function updateUsername(requestedUsername) {
             },
             body: JSON.stringify({
                 id: localStorage.getItem("id"),
-                userName: requestedUsername
+                username: requestedUsername
             })
         });
 

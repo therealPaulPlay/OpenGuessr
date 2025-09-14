@@ -196,7 +196,7 @@
 		<div class="friendBoxScroll of-top of-bottom" style:min-height={$loadedFriendsData ? "50px" : "80px"}>
 			{#if $loadedFriendsData && $isAuthenticated}
 				<div class="innerFriendBox" transition:blur={{ duration: 150 }}>
-					{#each $loadedFriendsData as entry}
+					{#each $loadedFriendsData as entry (entry.id)}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<div
 							class="friendItem"
@@ -207,7 +207,7 @@
 							}}
 						>
 							{#if entry.online}
-								<div transition:scale class="friendOnlineBar"></div>
+								<div transition:slide={{ axis: "x" }} class="friendOnlineBar"></div>
 							{/if}
 							<p>{entry.user_name}</p>
 							<button

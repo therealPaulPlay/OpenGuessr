@@ -106,7 +106,6 @@
 					onclick={() => {
 						playSound("basic_button");
 						get(socket)?.sendRequest("rematch");
-						startRoom();
 					}}>Play again</button
 				>
 			{/if}

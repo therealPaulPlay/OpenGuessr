@@ -10,13 +10,12 @@ import { loadResultMap } from "$lib/logic/resultMap";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
 import { earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
-import { shrinkMapIfMobile } from "./shrinkMinimapIfMobile";
 import { timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { showSlideup } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { supporterSlideupProbability } from "./showSupporterSlideup";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration";
-import { mapHovered, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
+import { mapExpanded, mapHovered, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 
 export async function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (!get(resultScreenEnabled)) {
@@ -56,7 +55,7 @@ export function disableResultScreen() {
         refreshPlacements();
 
         // UI resets
-        shrinkMapIfMobile();
+        if (window.innerHeight > window.innerWidth) mapExpanded.set(false); // On mobile, collapse map
         showSlideup.set(false);
         mapHovered.set(false);
         timerText.set("00:00"); // Reset timer text
