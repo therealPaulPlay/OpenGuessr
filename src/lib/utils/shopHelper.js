@@ -3,7 +3,7 @@ import { showNotification } from "./notifications";
 import { showConfirmPopup } from "./confirmPopup";
 import { signupPrompt } from "./signupPrompt";
 import { get } from "svelte/store";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { freeDailyTokensClaimed, shopAnimationImages, shopPurchaseAnimation, shopPurchaseAnimationTitle, specialOfferLoadingText, specialOfferPins, specialOfferPrice, specialOfferRarity } from "$lib/stores/context-specific/shopStore";
 import { errorPopup } from "./errorHandling";
 import { getStripe } from "./getStripe";
@@ -19,7 +19,7 @@ export function handleShopPurchase(type = "pin", price, pinId, bundleItems) {
 
 export async function handleShopFreeTokens() {
     try {
-        const response = await fetch(get(accountUrl) + "/shop/claim-free-tokens",
+        const response = await fetch(get(apiUrl) + "/shop/claim-free-tokens",
             {
                 method: "POST",
                 headers: {
@@ -48,7 +48,7 @@ export async function handleShopFreeTokens() {
 
 export async function handleShopYouTubePin() {
     try {
-        const response = await fetch(get(accountUrl) + "/shop/claim-youtube-pin",
+        const response = await fetch(get(apiUrl) + "/shop/claim-youtube-pin",
             {
                 method: "POST",
                 headers: {
@@ -80,7 +80,7 @@ export async function shopPurchaseTokenTier(tier) {
         const id = localStorage.getItem("id");
 
         // Call the server to create a Checkout Session
-        const response = await fetch(get(accountUrl) + "/stripe/create-checkout-session", {
+        const response = await fetch(get(apiUrl) + "/stripe/create-checkout-session", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -107,7 +107,7 @@ async function sendPurchaseRequest(type, price, pinId, bundleItems) {
     if (type == "pin") {
         if (!pinId) return console.error("No pinId provided!");
         try {
-            const response = await fetch(get(accountUrl) + "/shop/purchase-pin",
+            const response = await fetch(get(apiUrl) + "/shop/purchase-pin",
                 {
                     method: "POST",
                     headers: {
@@ -142,7 +142,7 @@ async function sendPurchaseRequest(type, price, pinId, bundleItems) {
     } else if (type == "bundle") {
         try {
             const response = await fetch(
-                get(accountUrl) + `/shop/purchase-bundle`,
+                get(apiUrl) + `/shop/purchase-bundle`,
                 {
                     method: "POST",
                     headers: {
@@ -191,7 +191,7 @@ function showPurchaseCelebration(pinIds, title = "Great choice!") {
 export async function fetchSpecialOffer() {
     specialOfferLoadingText.set("Loading...");
     try {
-        const response = await fetch(get(accountUrl) + `/shop/bundle${get(isAuthenticated) ? "?user-id=" + localStorage.getItem("id") : ""}`,
+        const response = await fetch(get(apiUrl) + `/shop/bundle${get(isAuthenticated) ? "?user-id=" + localStorage.getItem("id") : ""}`,
             {
                 method: "GET",
                 headers: {

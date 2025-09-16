@@ -11,13 +11,13 @@
 	import { goto } from "$app/navigation";
 	import { ChevronDown, Frown, Plus, Search, Smile, TriangleAlert } from "lucide-svelte";
 	import { onMount } from "svelte";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { blur, slide } from "svelte/transition";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import { page } from "$app/state";
 
-	const competitionsEndpoint = $accountUrl + "/competitions";
+	const competitionsEndpoint = $apiUrl + "/competitions";
 
 	// Format Duration of Competitions ---------------------------------------------------------------
 	function formatDuration(seconds) {

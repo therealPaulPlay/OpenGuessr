@@ -1,13 +1,13 @@
 import { isAuthenticated, checkedForWarning, warnReportEntryData } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
 import { errorPopup } from "./errorHandling";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 export async function fetchWarnlistStatus() {
     if (!get(isAuthenticated) || get(checkedForWarning)) return;
 
     try {
-        const response = await fetch(get(accountUrl) + "/accounts/check-warnlist/" + localStorage.getItem("id"));
+        const response = await fetch(get(apiUrl) + "/accounts/check-warnlist/" + localStorage.getItem("id"));
 
         if (response.ok) {
             const data = await response.json();

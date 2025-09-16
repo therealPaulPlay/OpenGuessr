@@ -16,7 +16,7 @@
 	import { helpPopup } from "$lib/stores/uiStore";
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	onMount(async () => {
 		try {
@@ -98,7 +98,7 @@
 		}
 
 		try {
-			const response = await fetch($accountUrl + "/accounts/cg-authenticate", {
+			const response = await fetch($apiUrl + "/accounts/cg-authenticate", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json", // Set content type to JSON

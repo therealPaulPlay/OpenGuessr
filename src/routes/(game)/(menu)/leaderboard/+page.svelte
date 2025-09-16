@@ -5,7 +5,7 @@
 	import { onMount } from "svelte";
 	import { fade } from "svelte/transition";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import { Info } from "lucide-svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
@@ -15,7 +15,7 @@
 	// API ----------------------------------------------------------------------------------------------------------------------------
 	async function getLeaderboard() {
 		try {
-			const response = await fetch(`${$accountUrl}/leaderboard/experience`, {
+			const response = await fetch(`${$apiUrl}/leaderboard/experience`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -39,7 +39,7 @@
 		try {
 			let id = localStorage.getItem("id");
 
-			const response = await fetch(`${$accountUrl}/leaderboard/experience-user-section/${id}`, {
+			const response = await fetch(`${$apiUrl}/leaderboard/experience-user-section/${id}`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -60,7 +60,7 @@
 
 	async function getEloLeaderboard() {
 		try {
-			const response = await fetch(`${$accountUrl}/leaderboard/elo`, {
+			const response = await fetch(`${$apiUrl}/leaderboard/elo`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",

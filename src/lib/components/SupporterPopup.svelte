@@ -7,7 +7,7 @@
 	import { supporterPopupVisible } from "$lib/stores/context-specific/supporterPopupStore";
 	import { onMount } from "svelte";
 	import { playSound } from "$lib/utils/soundManager";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { CircleArrowDown, CircleArrowUp, CircleMinus, CirclePlus, Clock9 } from "lucide-svelte";
 	import { getStripe } from "$lib/utils/getStripe";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
@@ -29,7 +29,7 @@
 			const id = localStorage.getItem("id");
 
 			// Call the server to create a Checkout Session
-			const response = await fetch($accountUrl + "/stripe/create-checkout-session", {
+			const response = await fetch($apiUrl + "/stripe/create-checkout-session", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",

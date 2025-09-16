@@ -8,7 +8,7 @@
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
 	import { showNotification } from "$lib/utils/notifications";
 	import { get } from "svelte/store";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { ArrowDown, Info } from "lucide-svelte";
 
 	let jsonPopup = $state(false);
@@ -62,7 +62,7 @@
 			const mapData = await combineMapData();
 			const payload = { id, name, description, mapData, category };
 
-			const response = await fetch($accountUrl + "/maps", {
+			const response = await fetch($apiUrl + "/maps", {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ` + localStorage.getItem("bearer"),

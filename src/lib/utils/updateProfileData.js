@@ -2,7 +2,7 @@ import { getProfileData } from "$lib/utils/getProfileData";
 import { selectedBadge, selectedPinIndex } from "$lib/stores/accountStore";
 import { profileId, profileData, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 import { get } from "svelte/store";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { errorPopup } from "./errorHandling";
 
 // Generic function to update a single profile field
@@ -14,7 +14,7 @@ async function updateSingleProfileField(type, value) {
             value
         };
 
-        const response = await fetch(get(accountUrl) + "/accounts/profile/update-replace", {
+        const response = await fetch(get(apiUrl) + "/accounts/profile/update-replace", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

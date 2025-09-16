@@ -8,7 +8,7 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { changeCategory } from "$lib/utils/changeCategory";
 	import { specialModes, continentMaps, countryMaps, basicMaps } from "$lib/stores/context-specific/officialMapsStore";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	// State
 	let currentFetchIndex = 0;
@@ -75,7 +75,7 @@
 				fav && "favourites",
 			].filter(Boolean);
 
-			const response = await fetch($accountUrl + "/maps/" + parts.join(""), {
+			const response = await fetch($apiUrl + "/maps/" + parts.join(""), {
 				signal: fav ? currentFavController.signal : currentController.signal,
 			});
 

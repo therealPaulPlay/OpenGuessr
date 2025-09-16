@@ -2,7 +2,7 @@
 import { matchmakingActive, multiplayerStatus, screenEscapeDisabled, roomcode, matchmakingHosting, multiplayerStyle } from "$lib/stores/context-specific/multiplayerStore";
 import { setupMultiplayerRoom, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { elo } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
 
@@ -17,7 +17,7 @@ export async function deleteRoomCodeFromMatchmakingServer() {
             id: localStorage.getItem("id")
         }
 
-        const response = await fetch(get(accountUrl) + "/accounts/rooms/delete-duel/" + get(roomcode), {
+        const response = await fetch(get(apiUrl) + "/accounts/rooms/delete-duel/" + get(roomcode), {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -44,7 +44,7 @@ export async function attemptDuelJoin(index, skillBased) {
 
     try {
         // Get Roomcode from server
-        const response = await fetch(get(accountUrl) + "/accounts/rooms/join-duel/" + index + `?elo=${get(elo)}&skill-based=${skillBased ?? false}`, {
+        const response = await fetch(get(apiUrl) + "/accounts/rooms/join-duel/" + index + `?elo=${get(elo)}&skill-based=${skillBased ?? false}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -81,7 +81,7 @@ async function sendRoomCodeToMatchmakingServer(skillBased) {
             skillBased
         }
 
-        const response = await fetch(get(accountUrl) + "/accounts/rooms/host-duel/" + get(roomcode), {
+        const response = await fetch(get(apiUrl) + "/accounts/rooms/host-duel/" + get(roomcode), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

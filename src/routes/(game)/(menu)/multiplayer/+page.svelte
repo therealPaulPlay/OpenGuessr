@@ -1,5 +1,16 @@
 <script>
-	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info, Earth, BicepsFlexed, Search, X } from "lucide-svelte";
+	import {
+		PlusCircle,
+		Unplug,
+		ContactRound,
+		TriangleAlert,
+		Info,
+		Earth,
+		BicepsFlexed,
+		Search,
+		X,
+		ExternalLink,
+	} from "lucide-svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
@@ -19,9 +30,10 @@
 	import { fetchWarnlistStatus } from "$lib/utils/checkReportStatus";
 	import { get } from "svelte/store";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl, discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { tooltip } from "$lib/utils/tooltip";
+	import TournamentOverview from "$lib/components/TournamentOverview.svelte";
 
 	let friendsRefreshInterval;
 
@@ -42,9 +54,6 @@
 	onDestroy(() => {
 		clearInterval(friendsRefreshInterval);
 	});
-
-	const nextMonth = new Date();
-	nextMonth.setMonth(nextMonth.getMonth() + 1, 1); // Set to first day of next month
 </script>
 
 <svelte:head>
@@ -142,9 +151,6 @@
 			</div>
 		</div>
 	</div>
-	<div class="headerContainer headerMarginTop">
-		<h2 class="header">Divisions</h2>
-	</div>
 	<div class="infoContainer">
 		<Info
 			strokeWidth={2.25}
@@ -153,14 +159,17 @@
 			style="opacity: 50%; margin-right: 5px; margin-left: 2px; min-width: 24px;"
 		/>
 		<p>
-			Elo above 2000 will be converted into tokens on {nextMonth.toLocaleDateString("en-US", {
-				month: "long",
-				day: "numeric",
-				year: "numeric",
-			})}.
+			Looking for someone to play with? <a target="_blank" href={$discordInviteUrl}>Join the Discord server!</a>
 		</p>
 	</div>
+	<div class="headerContainer headerMarginTop">
+		<h2 class="header">Divisions</h2>
+	</div>
 	<DuelDivisionDisplay />
+	<div class="headerContainer headerMarginTop">
+		<h2 class="header">Tournaments</h2>
+	</div>
+	<TournamentOverview />
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Friends</h2>
 		<!-- Inbox and Friend request buttons-->
@@ -174,7 +183,7 @@
 					} else {
 						signupPrompt();
 					}
-				}}><p class="addFriendText">Add friend <ContactRound strokeWidth={2} size={22} /></p></button
+				}}><p class="addFriendText">Add <ContactRound strokeWidth={2} size={22} /></p></button
 			>
 			<button
 				class="standardButton white friendActionButton"
@@ -243,7 +252,7 @@
 		border-radius: 15px;
 		align-items: center;
 		background-color: var(--box-color);
-		margin-bottom: var(--layout-margin);
+		margin-top: var(--layout-margin);
 		gap: 5px;
 	}
 
@@ -325,7 +334,14 @@
 
 	.friendButtonBox {
 		display: flex;
-		gap: var(--layout-margin);
+		gap: var(--box-margin);
+		margin-inline: var(--layout-margin);
+		padding: var(--box-margin);
+		border-top-left-radius: var(--layout-margin);
+		background-color: var(--box-color);
+		margin-bottom: calc(-1 * var(--layout-margin));
+		border-top-right-radius: var(--layout-margin);
+		box-shadow: var(--box-shadow);
 	}
 
 	.friendItem {
@@ -485,6 +501,7 @@
 		overflow-y: auto;
 		max-height: 250px;
 		width: 100%;
+		scrollbar-width: none;
 	}
 
 	.innerFriendBox {

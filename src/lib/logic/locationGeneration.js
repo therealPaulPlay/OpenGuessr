@@ -1,7 +1,7 @@
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 import { get } from "svelte/store";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { showNotification } from "$lib/utils/notifications";
 import { savedMapBounds } from "$lib/stores/locationStore";
 
@@ -27,7 +27,7 @@ async function getCoordsFromServer() {
 
     // If cache is empty, fetch 5 new locations
     if (cachedLocations.length === 0) {
-        const response = await fetch(get(accountUrl) + `/locations/${loadedMapCategory}`, {
+        const response = await fetch(get(apiUrl) + `/locations/${loadedMapCategory}`, {
             method: 'PUT',
             headers: { 'Content-Type': 'application/json' }
         });

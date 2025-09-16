@@ -6,7 +6,7 @@
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { onMount } from "svelte";
 	import { ArrowLeft, ArrowRight } from "lucide-svelte";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	// local state variables
 	let matchResults = $state([]);
@@ -20,7 +20,7 @@
 		matchResults = undefined;
 		try {
 			const response = await fetch(
-				$accountUrl + `/divisions/duel-history?page=${currentPage}` + (filterId ? `&id=${filterId}` : ""),
+				$apiUrl + `/divisions/duel-history?page=${currentPage}` + (filterId ? `&id=${filterId}` : ""),
 				{
 					method: "GET",
 					headers: {

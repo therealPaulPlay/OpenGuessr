@@ -43,12 +43,10 @@
 			</div>
 		{/each}
 
-		{#if $isAuthenticated}
-			<div class="eloIndicator" style="left: {fillPercentage}%" transition:blur>
-				<div class="eloLine"></div>
-				<div class="eloValue">{Math.round($elo)} Elo</div>
-			</div>
-		{/if}
+		<div class="eloIndicator" style="left: {fillPercentage}%">
+			<div class="eloLine"></div>
+			<div class="eloValue">{Math.round($elo)} Elo</div>
+		</div>
 	</div>
 </div>
 
@@ -97,8 +95,8 @@
 	}
 
 	.divisionCircle {
-		width: 50px;
-		height: 50px;
+		width: 45px;
+		height: 45px;
 		border-radius: 50%;
 		overflow: hidden;
 		position: relative;

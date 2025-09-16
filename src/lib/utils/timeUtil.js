@@ -1,4 +1,4 @@
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { get } from "svelte/store";
 
 let lastFetchedLocalTime = 0; // Stores local Date.now() when last fetch happened
@@ -22,7 +22,7 @@ export async function getServerTimestamp() {
         const timeout = setTimeout(() => controller.abort(), 1000);
 
         try {
-            const response = await fetch(get(accountUrl) + '/accounts/rooms/time/timestamp', {
+            const response = await fetch(get(apiUrl) + '/accounts/rooms/time/timestamp', {
                 signal: controller.signal
             });
 

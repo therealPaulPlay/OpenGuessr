@@ -7,7 +7,7 @@ import { leaveMultiplayerRound, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { duelResultPopup } from "$lib/stores/uiStore";
 import { duelResultTitle, eloChange, tokenGain } from "$lib/stores/context-specific/duelResultStore";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { multiplayer } from "$lib/stores/modeStore";
 import { roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
 
@@ -23,7 +23,7 @@ export async function initializeSSEConnection() {
             if (eventSource) eventSource.close();
 
             // Create a new EventSource connection with the user ID as a query parameter
-            eventSource = new EventSource(`${get(accountUrl)}/events?userId=${userId}`);
+            eventSource = new EventSource(`${get(apiUrl)}/events?userId=${userId}`);
 
             eventSource.onopen = () => {
                 reconnectAttempts = 0; // Reset the reconnect attempts on successful connection

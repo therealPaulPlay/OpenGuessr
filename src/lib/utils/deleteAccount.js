@@ -1,7 +1,7 @@
 import { profilePopup } from "$lib/stores/uiStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { checkAuthenticationStatus, resetLocalSave } from "$lib/logic/accountLogic";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { get } from "svelte/store";
 
 export async function submitAccountDeletion(password) {
@@ -20,7 +20,7 @@ export async function submitAccountDeletion(password) {
 
 async function deleteUser(password) {
     try {
-        const response = await fetch(`${get(accountUrl)}/accounts/delete`, {
+        const response = await fetch(`${get(apiUrl)}/accounts/delete`, {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json'

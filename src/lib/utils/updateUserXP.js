@@ -1,4 +1,4 @@
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { experience } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
 import { errorPopup } from "./errorHandling";
@@ -11,7 +11,7 @@ export async function addUserXP(addExperience) {
         };
 
         // Make the PUT request using Fetch API
-        const response = await fetch(`${get(accountUrl)}/accounts/update/add-experience`, {
+        const response = await fetch(`${get(apiUrl)}/accounts/update/add-experience`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

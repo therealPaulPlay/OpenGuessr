@@ -178,7 +178,7 @@ input:focus {
     width: 100%;
     padding: var(--layout-margin);
     padding-inline: 0;
-    gap: var(--box-margin);
+    gap: var(--layout-margin);
 }
 
 .spinner {

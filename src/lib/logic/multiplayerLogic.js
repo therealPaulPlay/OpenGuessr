@@ -38,7 +38,7 @@ import PlaySocket from "playsocketjs";
 import { getMapBounds } from "$lib/utils/getMapBounds";
 import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { signupPrompt } from "$lib/utils/signupPrompt";
-import { accountUrl, websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl, websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
 
 export function getTeamFromMultiplayerId(id) {

@@ -7,7 +7,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
 	import Popup from "$lib/components/ui/Popup.svelte";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { goto } from "$app/navigation";
 
 	let competitionSubmittedSuccessfully = false;
@@ -118,7 +118,7 @@
 				private: isPrivate,
 			};
 
-			const response = await fetch($accountUrl + "/competitions/create", {
+			const response = await fetch($apiUrl + "/competitions/create", {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
