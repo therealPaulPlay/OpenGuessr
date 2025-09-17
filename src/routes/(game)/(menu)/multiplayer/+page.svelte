@@ -66,7 +66,7 @@
 	</div>
 	{#if $warnReportEntryData}
 		<div class="infoContainer warnInfo" transition:slide>
-			<TriangleAlert color="white" strokeWidth={2.5} class="infoIcon triangleAlertMarginRight" />
+			<TriangleAlert color="white" strokeWidth={2.5} class="infoIconMultiplayer triangleAlertMarginRight" />
 			<p>
 				You are currently on the warnlist and under close observation for "{get(warnReportEntryData)?.reason?.trim()}".
 				Please contact the moderators on Discord if you think this is a mistake. Warnings can quickly turn into bans if
@@ -266,7 +266,7 @@
 		flex-wrap: wrap;
 	}
 
-	:global(.infoIcon) {
+	:global(.infoIconMultiplayer) {
 		width: 30px;
 		height: 30px;
 		opacity: 0.5;
@@ -334,14 +334,7 @@
 
 	.friendButtonBox {
 		display: flex;
-		gap: var(--box-margin);
-		margin-inline: var(--layout-margin);
-		padding: var(--box-margin);
-		border-top-left-radius: var(--layout-margin);
-		background-color: var(--box-color);
-		margin-bottom: calc(-1 * var(--layout-margin));
-		border-top-right-radius: var(--layout-margin);
-		box-shadow: var(--box-shadow);
+		gap: var(--layout-margin);
 	}
 
 	.friendItem {

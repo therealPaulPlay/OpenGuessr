@@ -1,8 +1,8 @@
 <script>
-	let { text = "Default", noMargin = false } = $props();
+	let { text = "Default", noMargin = false, class: classes } = $props();
 </script>
 
-<div class="flexContainer" class:noMargin>
+<div class="flexContainer {classes}" class:noMargin>
 	<p>{text}</p>
 	<div class="line"></div>
 </div>

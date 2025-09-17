@@ -22,3 +22,4 @@ export const divisionMatchHistoryPopup = writable(false);
 export const guestNamePickerPopup = writable(false);
 export const bugspotPopup = writable(false);
 export const roundLogPopup = writable(false);
+export const tournamentInfoPopup = writable(false);

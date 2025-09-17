@@ -1,19 +1,74 @@
 <script>
-	import { Clock, Medal, Ticket, Tickets, Users } from "lucide-svelte";
+	import { selectedTournament } from "$lib/stores/context-specific/tournamentStore";
+	import { tournamentInfoPopup } from "$lib/stores/uiStore";
+	import { playSound } from "$lib/utils/soundManager";
+	import { AlertCircle, Clock, Info, Medal, Ticket, Tickets, Users } from "lucide-svelte";
+	import { blur } from "svelte/transition";
 
-	// !TODO: Fetch tournament data
+	// !TODO: Fetch tournament data for all tournaments
 	let tournamentData = $state([
 		{
 			name: "Weekend tournament",
 			date: "2025-09-26 16:00:00",
-			entered: 239,
+			saves: 239,
 			prize: "500 tokens",
+			status: "ongoing",
+			matches: [],
+			winner: {},
 		},
 		{
 			name: "Fun tournament",
-			date: "2025-10-02 16:00:00",
-			entered: 239,
-			prize: "Supporter Tier 1",
+			date: "2025-10-02 15:00:00",
+			saves: 219,
+			prize: "Supporter tier 1",
+			status: "upcoming",
+			matches: [],
+			winner: {},
+		},
+		{
+			name: "Big tournament",
+			date: "2025-09-07 13:00:00",
+			saves: 160,
+			prize: "750 tokens",
+			status: "finished",
+			matches: [
+				{
+					players: [
+						{ username: "Max F.", id: 232 },
+						{ username: "Szu Wuzu 55", id: 235 },
+						{ username: "I will win against everyone else every time", id: 259 },
+						{ username: "Rungunner", id: 412 },
+						{ username: "Marchel 43", id: 952 },
+						{ username: "Mila five", id: 845 },
+						{ username: "Cool andy", id: 299 },
+						{ username: "Rowell", id: 1254 },
+						{ username: "Hartig Sartig", id: 2344 },
+					],
+				},
+				{
+					players: [
+						{ username: "Marchel 43", id: 952 },
+						{ username: "Mila five", id: 845 },
+						{ username: "Cool andy", id: 299 },
+						{ username: "Rowell", id: 1254 },
+						{ username: "Hartig Sartig", id: 2344 },
+					],
+				},
+				{
+					players: [
+						{ username: "Cool andy", id: 299 },
+						{ username: "Rowell", id: 1254 },
+						{ username: "Hartig Sartig", id: 2344 },
+					],
+				},
+				{
+					players: [
+						{ username: "Cool andy", id: 299 },
+						{ username: "Rowell", id: 1254 },
+					],
+				},
+			],
+			winner: { name: "Rowell", id: 1254 },
 		},
 	]);
 </script>
@@ -29,21 +84,40 @@
 			})}
 
 			<div class="tournamentBox">
-				<h3 class="tournamentNameTitle">{tournament.name}</h3>
-				<div class="tournamentField">
+				<div class="tournamentNameBox">
+					<h3 class="tournamentNameTitle" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
+						{tournament.name}{#if tournament.status == "ongoing"}
+							<span class="ongoingBadge" transition:blur>Ongoing</span>
+						{:else if tournament.status == "starting"}
+							<span class="ongoingBadge" transition:blur>Enter now</span>
+						{/if}
+					</h3>
+				</div>
+				<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
 					<Clock style="margin-top: 1px; opacity: 0.75;" />
-					<p>{readableDate}</p>
+					<p>{tournament.status == "finished" ? "Finished" : readableDate}</p>
 				</div>
-				<div class="tournamentField">
+				<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
 					<Users style="opacity: 0.75;" />
-					<p>{tournament.entered} players</p>
+					<p>{tournament.saves?.toLocaleString()} pre-saves</p>
 				</div>
-				<div class="tournamentField">
+				<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
 					<Medal style="margin-top: 1px; opacity: 0.75;" />
 					<p>{tournament.prize}</p>
 				</div>
-				<button class="tournamentFieldButton standardButton white">
-					<Ticket strokeWidth={1.75} style="margin-bottom: -4px;" />
+				<button
+					class="tournamentFieldButton standardButton white"
+					onclick={() => {
+						playSound("basic_button");
+						$selectedTournament = tournament;
+						$tournamentInfoPopup = true;
+					}}
+				>
+					{#if tournament.status != "finished"}
+						<Ticket strokeWidth={1.75} style="margin-bottom: -4px;" />
+					{:else}
+						<Info strokeWidth={1.75} style="margin-bottom: -3px;" />
+					{/if}
 				</button>
 			</div>
 		{/each}
@@ -67,13 +141,19 @@
 		gap: var(--box-margin);
 	}
 
+	.tournamentNameBox {
+		mask-image: linear-gradient(to right, black 90%, transparent 100%);
+		flex-grow: 2;
+		min-width: 33%;
+	}
+
 	.tournamentNameTitle {
 		margin-right: auto;
-		margin-left: var(--box-margin);
+		margin-left: 5px;
 		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
 		text-overflow: ellipsis;
+		overflow: hidden;
 		text-wrap: nowrap;
-		flex-grow: 10;
 	}
 
 	.tournamentBox {
@@ -86,6 +166,16 @@
 		gap: var(--box-margin);
 		align-items: center;
 		flex-wrap: wrap;
+	}
+
+	.ongoingBadge {
+		padding-inline: 5px;
+		border-radius: 3px;
+		background-color: var(--brand-color);
+		box-shadow: var(--bulb-shadow);
+		font-size: 20px;
+		margin-bottom: 2px;
+		margin-left: var(--panel-margin);
 	}
 
 	.tournamentField {
