@@ -58,7 +58,7 @@
 		border-radius: 15px;
 		background-color: var(--box-color);
 		padding-inline: 25px;
-		margin-bottom: var(--layout-margin);
+		margin-top: var(--layout-margin);
 		box-shadow: var(--box-shadow);
 	}
 

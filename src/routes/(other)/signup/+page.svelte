@@ -556,7 +556,7 @@
 	input {
 		width: calc(80% - 20px);
 		padding: 15px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	.password-container {
@@ -572,7 +572,7 @@
 		justify-content: space-between;
 		min-width: 250px;
 		background-color: rgba(255, 255, 255, 0.15);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: var(--box-margin);
 		padding-left: calc(var(--box-margin) + var(--panel-margin));
 		margin-top: 50px;

@@ -81,7 +81,7 @@
 					<button
 						class="standardButton white"
 						onclick={() => {
-							loadProfileFromId(localStorage.getItem("id"), true);
+							loadProfileFromId(localStorage.getItem("id"));
 							playSound("basic_button");
 						}}
 					>
@@ -202,7 +202,7 @@
 			class:profileInfoSupporter={$supporterLevel >= 1}
 			use:tooltip={{ text: "Profile" }}
 			onclick={() => {
-				loadProfileFromId(localStorage.getItem("id"), true);
+				loadProfileFromId(localStorage.getItem("id"));
 				playSound("basic_button");
 			}}
 		>

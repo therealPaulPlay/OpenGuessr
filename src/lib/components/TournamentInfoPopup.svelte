@@ -1,9 +1,12 @@
 <script>
-	import { selectedTournament } from "$lib/stores/context-specific/tournamentStore";
-	import { tournamentInfoPopup } from "$lib/stores/uiStore";
-	import { Info } from "lucide-svelte";
+	import { selectedTournament, tournamentMatchResultsIndex } from "$lib/stores/context-specific/tournamentStore";
+	import { tournamentInfoPopup, tournamentMatchResultsPopup } from "$lib/stores/uiStore";
+	import { Info, Medal } from "lucide-svelte";
 	import Popup from "./ui/Popup.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
+	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { playSound } from "$lib/utils/soundManager";
+	import { slide } from "svelte/transition";
 
 	let readableDate = $derived.by(() => {
 		const date = new Date($selectedTournament.date).toLocaleString("en-US", {
@@ -50,16 +53,45 @@
 		</p>
 	</div>
 	<div class="match-box">
-		{#if $selectedTournament.matches?.length}
-			{#each $selectedTournament.matches as match, index}
-				<div class="match-entry">
-					<p>Match {index + 1}</p>
-				</div>
-			{/each}
-		{:else}
-			<p class="nothing-text">Match results are not yet available.</p>
-		{/if}
+		<div class="match-box-scroll of-top of-bottom of-length-2">
+			{#if $selectedTournament.matches?.length}
+				{#each $selectedTournament.matches as match, index}
+					<div class="match-entry" transition:slide={{ axis: "y" }}>
+						<p>Match {index + 1}</p>
+						<button
+							class="standardButton white"
+							onclick={() => {
+								$tournamentMatchResultsIndex = index;
+								playSound("basic_button");
+								$tournamentMatchResultsPopup = true;
+							}}
+						>
+							View results
+						</button>
+					</div>
+				{/each}
+			{:else}
+				<p class="nothing-text">Match results will appear here.</p>
+			{/if}
+		</div>
 	</div>
+	{#if $selectedTournament.winner?.name}
+		<div transition:slide={{ axis: "y" }} style:width={"100%"}>
+			<TitleSeparator text="Final result" class="tournament-divider-margin" />
+			<div class="winner-box">
+				<Medal class="big-medal" size={120} strokeWidth={1.25} />
+				<p class="winner-description">And the winner is...</p>
+				<button
+					class="opacity-hover"
+					onclick={() => {
+						loadProfileFromId($selectedTournament.winner?.id);
+					}}
+				>
+					{$selectedTournament.winner?.name}
+				</button>
+			</div>
+		</div>
+	{/if}
 </Popup>
 
 <style>
@@ -71,6 +103,28 @@
 		box-sizing: border-box;
 	}
 
+	:global(.big-medal) {
+		position: absolute;
+		top: -40%;
+		right: 35%;
+		z-index: -1;
+		opacity: 0.05;
+	}
+
+	.opacity-hover {
+		transition: opacity 250ms ease;
+		cursor: pointer;
+		font-size: 25px;
+		text-overflow: ellipsis;
+		max-width: 80%;
+		text-wrap: nowrap;
+		overflow: hidden;
+	}
+
+	.opacity-hover:hover {
+		opacity: 0.5;
+	}
+
 	.match-entry {
 		width: 100%;
 		box-sizing: border-box;
@@ -78,6 +132,14 @@
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
 		background-color: var(--box-color);
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+		align-items: center;
+	}
+
+	.winner-description {
+		opacity: 0.5;
 	}
 
 	:global(.tournament-divider-margin) {
@@ -88,11 +150,34 @@
 		background-color: var(--box-color);
 		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
-		display: flex;
-		flex-direction: column;
 		margin-top: var(--layout-margin);
 		padding: var(--box-margin);
+		width: 100%;
+		box-sizing: border-box;
+	}
+
+	.match-box-scroll {
+		display: flex;
+		flex-direction: column;
 		gap: var(--box-margin);
+		overflow-y: auto;
+		max-height: 180px;
+		scrollbar-width: none;
+	}
+
+	.winner-box {
+		background-color: var(--box-color);
+		border-radius: var(--box-margin);
+		box-shadow: var(--box-shadow);
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		margin-top: var(--layout-margin);
+		padding: var(--box-margin);
+		gap: 5px;
+		padding-bottom: var(--layout-margin);
+		position: relative;
+		overflow: hidden;
 	}
 
 	:global(.info-icon-circular) {
@@ -136,9 +221,9 @@
 		flex-grow: 1;
 	}
 
-    .info-field-pulse {
-        animation: info-fade 2s infinite;
-    }
+	.info-field-pulse {
+		animation: info-fade 2s infinite;
+	}
 
 	@keyframes info-fade {
 		0% {

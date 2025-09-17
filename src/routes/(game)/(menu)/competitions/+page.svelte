@@ -447,7 +447,7 @@
 							id="yourUsername"
 							class="centerEntry"
 							onclick={() => {
-								loadProfileFromId(localStorage.getItem("id"), true);
+								loadProfileFromId(localStorage.getItem("id"));
 							}}
 						>
 							{yourEntry.userName}
@@ -466,7 +466,7 @@
 						<p
 							class="centerEntry"
 							onclick={() => {
-								loadProfileFromId(entry.id, true);
+								loadProfileFromId(entry.id);
 							}}
 						>
 							{entry.userName}
@@ -555,7 +555,7 @@
 				class="competitionAuthor"
 				onclick={() => {
 					const id = authorId == 0 ? 2 : authorId; // Set to 2 (PaulPlay) if created by System (0)
-					loadProfileFromId(id, true);
+					loadProfileFromId(id);
 				}}
 			>
 				hosted by {author}
@@ -872,7 +872,7 @@
 		box-sizing: border-box;
 		gap: var(--box-margin);
 		align-items: center;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		width: calc(100%);
 		padding: var(--box-margin);
 		margin-bottom: var(--layout-margin);
@@ -963,7 +963,7 @@
 	}
 
 	.competitionDescription {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
 		padding: 7px;
@@ -1036,7 +1036,7 @@
 	.propertyItem {
 		flex-grow: 1;
 		box-shadow: var(--box-shadow);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: 3px;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -1112,7 +1112,7 @@
 	.rankingDisplay {
 		box-sizing: border-box;
 		box-shadow: var(--box-shadow);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		width: 100%; /* Fix for Safari */
 		background-color: var(--box-color);
 		padding: var(--box-margin);
@@ -1201,7 +1201,7 @@
 	}
 
 	.loadMore {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		width: 200px;
 		padding: var(--box-margin);
 		margin-bottom: 30px;
@@ -1237,7 +1237,7 @@
 	}
 
 	.createButton {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		min-height: 50px;
 	}
 
@@ -1299,7 +1299,7 @@
 	}
 
 	#ratingBox {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
 		display: flex;

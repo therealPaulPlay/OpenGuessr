@@ -31,9 +31,25 @@
 			saves: 160,
 			prize: "750 tokens",
 			status: "finished",
+			initialPlayers: [
+				{ username: "Max F.", id: 232 },
+				{ username: "Szu Wuzu 55", id: 235 },
+				{ username: "I will win against everyone else every time", id: 259 },
+				{ username: "Rungunner", id: 412 },
+				{ username: "Marchel 43", id: 952 },
+				{ username: "Mila five", id: 845 },
+				{ username: "Cool andy", id: 299 },
+				{ username: "Rowell", id: 1254 },
+				{ username: "Hartig Sartig", id: 2344 },
+				{ username: "Goodguy", id: 3423 },
+				{ username: "Heavy Metal King", id: 773 },
+				{ username: "Frunkinator", id: 3428 },
+				{ username: "Parrol23ROL", id: 949 },
+				{ username: "HeldigHeldig", id: 539 },
+			],
 			matches: [
 				{
-					players: [
+					ascendedPlayers: [
 						{ username: "Max F.", id: 232 },
 						{ username: "Szu Wuzu 55", id: 235 },
 						{ username: "I will win against everyone else every time", id: 259 },
@@ -46,7 +62,7 @@
 					],
 				},
 				{
-					players: [
+					ascendedPlayers: [
 						{ username: "Marchel 43", id: 952 },
 						{ username: "Mila five", id: 845 },
 						{ username: "Cool andy", id: 299 },
@@ -55,17 +71,20 @@
 					],
 				},
 				{
-					players: [
+					ascendedPlayers: [
 						{ username: "Cool andy", id: 299 },
 						{ username: "Rowell", id: 1254 },
 						{ username: "Hartig Sartig", id: 2344 },
 					],
 				},
 				{
-					players: [
+					ascendedPlayers: [
 						{ username: "Cool andy", id: 299 },
 						{ username: "Rowell", id: 1254 },
 					],
+				},
+				{
+					ascendedPlayers: [{ username: "Rowell", id: 1254 }],
 				},
 			],
 			winner: { name: "Rowell", id: 1254 },

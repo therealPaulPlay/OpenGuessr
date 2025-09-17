@@ -613,7 +613,7 @@
 		text-decoration: none;
 		align-items: center;
 		background-color: rgba(255, 255, 255, 0.1);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: var(--box-margin);
 		padding-inline: 15px;
 		box-sizing: border-box;
@@ -707,7 +707,7 @@
 
 	.expandButton {
 		margin-inline: auto;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding-inline: 30px;
 		margin-bottom: 10px;
 		transition:
@@ -804,7 +804,7 @@
 	}
 
 	#uploadButton {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		text-decoration: none;
 		margin-top: auto;
 		min-height: 50px;
@@ -846,7 +846,7 @@
 		min-width: 280px;
 		gap: var(--box-margin);
 		align-items: center;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: var(--box-margin);
 		margin-bottom: 20px;
 		background-color: var(--box-color);

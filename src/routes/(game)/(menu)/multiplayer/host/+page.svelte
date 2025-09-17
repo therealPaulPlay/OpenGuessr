@@ -198,7 +198,7 @@
 								role="menu"
 								tabindex="0"
 								onclick={() => {
-									loadProfileFromId(entry.id, true);
+									loadProfileFromId(entry.id);
 								}}
 							>
 								<p class="friendsRoomEntryText">{entry.user_name}</p>
@@ -347,7 +347,7 @@
 	}
 
 	.makeRoomPublicButton {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		min-height: 50px;
 		position: relative;
 	}
@@ -367,7 +367,7 @@
 	.roomCreationFriendItem {
 		background-color: rgba(255, 255, 255, 0.1);
 		border: none;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		display: flex;
 		height: fit-content;
 		justify-content: space-between;
@@ -457,7 +457,7 @@
 		background-color: rgba(255, 255, 255, 0.1);
 		height: 27px;
 		width: 30px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		text-align: center;
 		color: rgba(255, 255, 255, 0.5);
 		font-size: 22px;
@@ -474,12 +474,12 @@
 
 	.copyLinkButton {
 		min-height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	#multiplayerHost {
 		padding-inline: 20px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		min-height: 50px;
 	}
 
@@ -504,7 +504,7 @@
 		display: flex;
 		gap: var(--box-margin);
 		box-shadow: var(--box-shadow);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		justify-content: left;
 		padding: var(--panel-margin);
 		width: fit-content;

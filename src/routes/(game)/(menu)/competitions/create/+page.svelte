@@ -362,14 +362,14 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	}
 
 	.submitButton {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		margin-top: var(--box-margin);
 		margin-bottom: var(--layout-margin);
 	}
 
 	.infoNoteBox {
 		background-color: rgba(0, 0, 0, 0.1);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: 10px;
 		padding-inline: 20px;
 		display: flex;
@@ -386,7 +386,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		margin-bottom: var(--layout-margin);
 		padding: var(--box-margin);
 		background-color: var(--box-color);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		margin-top: var(--box-margin);
 		width: fit-content;
 		box-shadow: var(--box-shadow);
@@ -420,7 +420,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	}
 
 	.uploadInfo {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		width: 75%;
 		min-height: 30px;
 		border: none;
@@ -454,7 +454,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 
 	.toggleButton {
 		margin-top: 10px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		min-height: 50px;
 		min-width: 150px;
 	}

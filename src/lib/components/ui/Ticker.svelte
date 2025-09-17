@@ -58,7 +58,7 @@
 		display: flex;
 		gap: 10px;
 		box-shadow: var(--box-shadow);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		justify-content: left;
 		padding: var(--panel-margin);
 		width: fit-content;

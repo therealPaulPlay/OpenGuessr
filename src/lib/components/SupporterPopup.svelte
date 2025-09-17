@@ -159,7 +159,7 @@
 	}
 
 	.tierBenefitsLarge {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		padding: var(--layout-margin);
 		box-shadow: var(--box-shadow);
@@ -231,7 +231,7 @@
 
 	.tierBox {
 		background-color: var(--box-color);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		display: flex;
 		flex-direction: column;
@@ -246,7 +246,7 @@
 	.tierBoxLarge {
 		width: 100%;
 		background-color: var(--box-color);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: 20px;
 		box-shadow: var(--box-shadow);
 		display: flex;

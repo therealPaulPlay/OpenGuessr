@@ -60,7 +60,7 @@
 	.endscreenSlideupContainer {
 		z-index: 16;
 		padding: var(--panel-margin);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		max-height: 1000px;
 		transition: filter 250ms ease;
 		user-select: none;

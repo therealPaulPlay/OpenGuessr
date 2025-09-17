@@ -61,6 +61,7 @@ button {
     font: inherit;
     cursor: pointer;
     outline: inherit;
+    font-size: 22px;
 }
 
 a,
@@ -81,7 +82,7 @@ p {
 h1,
 h2,
 h3 {
-    font-weight: 500;
+    font-weight: 400;
     font-size: 22px;
     color: white;
 }
@@ -302,7 +303,7 @@ input[type="checkbox"]:focus {
     box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3), inset 0 0.05rem 1px hsla(0, 0%, 100%, 0.3), inset 0 -0.1rem 1px rgba(0, 0, 2, 0.3) !important;
     /* with and height transitions for e.g. the mapModeIndicator */
     transition: opacity 250ms ease, transform 250ms ease, width 150ms ease, height 150ms ease, filter 250ms ease;
-    border-radius: 10px;
+    border-radius: var(--box-margin);
     width: fit-content;
     display: flex;
     justify-content: center;
@@ -341,7 +342,7 @@ textarea {
     border: none;
     resize: none;
     font-size: 22px;
-    border-radius: 10px;
+    border-radius: var(--box-margin);
 }
 
 .largeButton {

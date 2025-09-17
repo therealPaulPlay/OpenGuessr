@@ -92,7 +92,7 @@
 	.badgeLabel {
 		padding: 3px;
 		background-color: var(--box-color);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
 		text-align: left;
@@ -106,7 +106,7 @@
 	.badgeBox {
 		background-color: var(--box-color-dark);
 		box-shadow: var(--box-shadow);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
 		display: flex;
@@ -124,7 +124,7 @@
 		background-color: rgba(0, 0, 0, 0.1);
 		padding: 3px;
 		padding-inline: 7px;
-		border-radius: 8px;
+		border-radius: var(--panel-margin);
 		font-size: 20px;
 		color: rgba(255, 255, 255, 0.75);
 	}

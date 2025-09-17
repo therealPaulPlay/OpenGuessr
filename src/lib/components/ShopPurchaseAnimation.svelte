@@ -71,7 +71,7 @@
 		backdrop-filter: blur(10px);
 		padding: var(--layout-margin);
 		background-color: var(--box-color);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		box-shadow:
 			0 0 50px rgba(0, 0, 0, 0.3),
 			inset 0 0.1rem 5px hsla(0, 0%, 100%, 0.3),

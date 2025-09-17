@@ -283,7 +283,7 @@
 			<p
 				class="authorText"
 				onclick={() => {
-					loadProfileFromId(mapAuthorId, true);
+					loadProfileFromId(mapAuthorId);
 				}}
 			>
 				by {mapAuthor}
@@ -514,7 +514,7 @@
 	#updateMapStatus {
 		background-color: var(--box-color);
 		padding: 5px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding-inline: 15px;
 		width: calc(100% - 30px);
 	}
@@ -540,7 +540,7 @@
 	}
 
 	.uploadInfo {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		width: calc(100% - 40px);
 		font-size: 16px;
 		padding: var(--box-margin);
@@ -649,7 +649,7 @@
 
 	.mapButton {
 		min-height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		justify-content: center;
 		align-items: center;
 		display: flex;

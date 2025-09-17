@@ -178,7 +178,7 @@
 			class="podium-item silver"
 			id="second-place"
 			onclick={() => {
-				loadProfileFromId(mainSectionEntries?.[1]?.id, true);
+				loadProfileFromId(mainSectionEntries?.[1]?.id);
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[1]?.user_name || "Guest"}</div>
@@ -189,7 +189,7 @@
 			class="podium-item gold"
 			id="first-place"
 			onclick={() => {
-				loadProfileFromId(mainSectionEntries?.[0]?.id, true);
+				loadProfileFromId(mainSectionEntries?.[0]?.id);
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[0]?.user_name || "Guest"}</div>
@@ -200,7 +200,7 @@
 			class="podium-item bronze"
 			id="third-place"
 			onclick={() => {
-				loadProfileFromId(mainSectionEntries?.[2]?.id, true);
+				loadProfileFromId(mainSectionEntries?.[2]?.id);
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[2]?.user_name || "Guest"}</div>
@@ -243,7 +243,7 @@
 					<p
 						class="middle maxlength"
 						onclick={() => {
-							loadProfileFromId(entry.id, true);
+							loadProfileFromId(entry.id);
 						}}
 					>
 						{entry.user_name}
@@ -272,7 +272,7 @@
 					<p
 						class="middle maxlength"
 						onclick={() => {
-							loadProfileFromId(entry.id, true);
+							loadProfileFromId(entry.id);
 						}}
 					>
 						{entry.user_name}
@@ -323,7 +323,7 @@
 		box-shadow: var(--box-shadow);
 		background-color: rgba(255, 255, 255, 0.1);
 		box-sizing: border-box;
-		border-radius: 8px;
+		border-radius: var(--box-margin);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -521,7 +521,7 @@
 
 	@media all and (orientation: portrait) {
 		.podium-item {
-			border-radius: 10px;
+			border-radius: var(--box-margin);
 		}
 
 		.podium-item .rank {

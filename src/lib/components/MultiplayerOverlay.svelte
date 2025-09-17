@@ -48,7 +48,7 @@
 									role="cell"
 									tabindex="0"
 									onclick={() => {
-										if (id) loadProfileFromId(id, true);
+										if (id) loadProfileFromId(id);
 									}}
 								>
 									<span class="usernameSpan">{username}</span>
@@ -79,7 +79,7 @@
 								role="cell"
 								tabindex="0"
 								onclick={() => {
-									if (id) loadProfileFromId(id, true);
+									if (id) loadProfileFromId(id);
 								}}
 							>
 								<span class="usernameSpan">{username}</span>
@@ -183,13 +183,13 @@
 	#endMultiplayerRoundButton {
 		min-width: 150px;
 		height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	#endMultiplayerRematchButton {
 		min-width: 150px;
 		height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	.multiplayerTitle {

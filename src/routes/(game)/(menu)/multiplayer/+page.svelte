@@ -151,20 +151,6 @@
 			</div>
 		</div>
 	</div>
-	<div class="infoContainer">
-		<Info
-			strokeWidth={2.25}
-			size={24}
-			color="white"
-			style="opacity: 50%; margin-right: 5px; margin-left: 2px; min-width: 24px;"
-		/>
-		<p>
-			Looking for someone to play with? <a target="_blank" href={$discordInviteUrl}>Join the Discord server!</a>
-		</p>
-	</div>
-	<div class="headerContainer headerMarginTop">
-		<h2 class="header">Divisions</h2>
-	</div>
 	<DuelDivisionDisplay />
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Tournaments</h2>
@@ -212,7 +198,7 @@
 							role="menu"
 							tabindex="0"
 							onclick={() => {
-								loadProfileFromId(entry.id, true);
+								loadProfileFromId(entry.id);
 							}}
 						>
 							{#if entry.online}
@@ -314,7 +300,7 @@
 		justify-content: center !important;
 		min-height: 50px;
 		padding-inline: 15px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	.playButtonsHeader {
@@ -338,7 +324,7 @@
 	}
 
 	.friendItem {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		display: flex;
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
@@ -416,7 +402,7 @@
 		height: 50px;
 		width: auto;
 		flex-grow: 1;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	#multiplayerSelectDuels {

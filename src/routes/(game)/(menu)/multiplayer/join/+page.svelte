@@ -156,7 +156,7 @@
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
 		border: none;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -203,7 +203,7 @@
 	.segmentInput {
 		width: 38px;
 		height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		text-align: center;
 		text-transform: uppercase;
 	}
@@ -230,7 +230,7 @@
 
 	#multiplayerJoin {
 		min-height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding-inline: 50px;
 		margin-top: var(--layout-margin);
 	}

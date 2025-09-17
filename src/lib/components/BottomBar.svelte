@@ -122,7 +122,7 @@
 		align-items: end;
 		justify-content: space-between;
 		margin: auto;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		margin-inline: 10px;
 		flex: 1;
 		z-index: 10;

@@ -13,7 +13,7 @@
 		background-color: white;
 		opacity: 0.15;
 		flex-grow: 1;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		margin-top: 5px;
 	}
 

@@ -111,7 +111,7 @@
 	}
 
 	.playButton {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		min-height: 50px;
 		padding-inline: 15px;
 	}

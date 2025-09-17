@@ -106,7 +106,7 @@
 								class="playerName"
 								role="button"
 								tabindex="0"
-								onclick={() => loadProfileFromId(entry.player1.id, true)}
+								onclick={() => loadProfileFromId(entry.player1.id)}
 							>
 								{entry.player1?.name}
 							</span>
@@ -121,7 +121,7 @@
 								class="playerName"
 								role="button"
 								tabindex="0"
-								onclick={() => loadProfileFromId(entry.player2?.id, true)}
+								onclick={() => loadProfileFromId(entry.player2?.id)}
 							>
 								{entry.player2?.name}
 							</span>
@@ -171,7 +171,7 @@
 	}
 
 	.filterBox {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
 		max-width: fit-content;
@@ -197,7 +197,7 @@
 		position: relative;
 		box-shadow: var(--box-shadow);
 		width: calc(100% - 20px);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		margin-top: 25px;
 		padding: var(--box-margin);
