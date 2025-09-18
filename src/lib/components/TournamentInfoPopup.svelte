@@ -98,6 +98,13 @@
 			</div>
 		</div>
 	{/if}
+	{#if $selectedTournament?.status == "starting" || $selectedTournament?.status == "upcoming"}
+		<TitleSeparator text="Account requirements" class="tournament-divider-margin" />
+		<div class="info-container warnInfo">
+			<Info color="white" strokeWidth={2} class="info-icon-circular" />
+			<p>You need to have at least 1100 Elo and an account older than one week to enter a tournament.</p>
+		</div>
+	{/if}
 	{#if $selectedTournament?.status == "starting"}
 		<button
 			class="standardButton largeButton"
@@ -110,7 +117,7 @@
 		</button>
 	{:else if $selectedTournament?.status == "upcoming"}
 		<button
-			class="standardButton largeButton white {$selectedTournament?.saved ? "disabled" : ""}"
+			class="standardButton largeButton white {$selectedTournament?.saved ? 'disabled' : ''}"
 			onclick={() => {
 				playSound("basic_button");
 
@@ -153,10 +160,10 @@
 		opacity: 0.05;
 	}
 
-    .disabled {
-        opacity: 0.5;
-        pointer-events: none;
-    }
+	.disabled {
+		opacity: 0.5;
+		pointer-events: none;
+	}
 
 	.opacity-hover {
 		transition: opacity 250ms ease;

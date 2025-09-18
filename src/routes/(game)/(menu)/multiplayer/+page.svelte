@@ -478,7 +478,7 @@
 
 	.friendBoxScroll {
 		overflow-y: auto;
-		max-height: 250px;
+		max-height: 255px;
 		width: 100%;
 		scrollbar-width: none;
 	}

@@ -58,7 +58,7 @@
 						$tournamentInfoPopup = true;
 					}}
 				>
-					{#if tournament.status != "finished"}
+					{#if tournament.status != "finished" && tournament.status != "ongoing"}
 						<Ticket strokeWidth={1.75} style="margin-bottom: -4px;" />
 					{:else}
 						<Info strokeWidth={1.75} style="margin-bottom: -3px;" />
