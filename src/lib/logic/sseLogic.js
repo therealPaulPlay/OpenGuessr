@@ -12,6 +12,8 @@ import { multiplayer } from "$lib/stores/modeStore";
 import { roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
 import { goto } from "$app/navigation";
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
+import { page } from "$app/state";
+import { fetchTournaments } from "$lib/utils/tournamentUtils";
 
 export async function initializeSSEConnection() {
     let eventSource;
@@ -104,6 +106,10 @@ export async function initializeSSEConnection() {
                         case 'tournament-won':
                             leaveMultiplayerRound();
                             showConfirmPopup("You won!", "Congratulations, you won the tournament! Some prizes may require refreshing the website to be applied.")
+                            break;
+
+                        case 'tournament-updated':
+                            if (page.url.pathname == "/multiplayer") fetchTournaments();
                             break;
                     }
                 } catch (error) {

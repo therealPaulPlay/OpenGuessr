@@ -10,7 +10,7 @@
 	import { idToMapName } from "$lib/utils/idToMapName";
 
 	let readableDate = $derived.by(() => {
-		const date = new Date($selectedTournament.date + "Z").toLocaleString("en-US", {
+		const date = new Date($selectedTournament?.date + "Z").toLocaleString("en-US", {
 			// Z for UTC
 			month: "long",
 			day: "numeric",
@@ -23,7 +23,7 @@
 
 <Popup bind:open={$tournamentInfoPopup} slim={true}>
 	<div class="popup-title">
-		<h1>{$selectedTournament.name || "Default title"}</h1>
+		<h1>{$selectedTournament?.name || "Default title"}</h1>
 	</div>
 	<div class="info-area">
 		<div class="info-field">
@@ -32,22 +32,22 @@
 		</div>
 		<div class="info-field">
 			<p class="info-title">Calendar saves</p>
-			<p>{$selectedTournament.saves?.toLocaleString()}</p>
+			<p>{$selectedTournament?.saves?.toLocaleString()}</p>
 		</div>
 		<div class="info-field">
 			<p class="info-title">Prize</p>
-			<p>{$selectedTournament.prize}</p>
+			<p>{$selectedTournament?.prize}</p>
 		</div>
 		<div class="info-field">
 			<p class="info-title">Map</p>
-			<p>{idToMapName($selectedTournament.map)}</p>
+			<p>{idToMapName($selectedTournament?.map)}</p>
 		</div>
 		<div
 			class="info-field"
-			class:info-field-pulse={$selectedTournament.status == "ongoing" || $selectedTournament.status == "starting"}
+			class:info-field-pulse={$selectedTournament?.status == "ongoing" || $selectedTournament?.status == "starting"}
 		>
 			<p class="info-title">Status</p>
-			<p>{$selectedTournament.status?.slice(0, 1)?.toUpperCase() + $selectedTournament.status?.slice(1)}</p>
+			<p>{$selectedTournament?.status?.slice(0, 1)?.toUpperCase() + $selectedTournament?.status?.slice(1)}</p>
 		</div>
 	</div>
 	<TitleSeparator text="Match results" class="tournament-divider-margin" />
@@ -60,8 +60,8 @@
 	</div>
 	<div class="match-box">
 		<div class="match-box-scroll of-top of-bottom of-length-2">
-			{#if $selectedTournament.matches?.length}
-				{#each $selectedTournament.matches as match, index}
+			{#if $selectedTournament?.matches?.length}
+				{#each $selectedTournament?.matches as match, index}
 					<div class="match-entry" transition:slide={{ axis: "y" }}>
 						<p>Match {index + 1}</p>
 						<button
@@ -81,7 +81,7 @@
 			{/if}
 		</div>
 	</div>
-	{#if $selectedTournament.winner?.name}
+	{#if $selectedTournament?.winner?.name}
 		<div transition:slide={{ axis: "y" }} style:width={"100%"}>
 			<TitleSeparator text="Final result" class="tournament-divider-margin" />
 			<div class="winner-box">
@@ -90,15 +90,15 @@
 				<button
 					class="opacity-hover"
 					onclick={() => {
-						loadProfileFromId($selectedTournament.winner?.id);
+						loadProfileFromId($selectedTournament?.winner?.id);
 					}}
 				>
-					{$selectedTournament.winner?.name}
+					{$selectedTournament?.winner?.name}
 				</button>
 			</div>
 		</div>
 	{/if}
-	{#if $selectedTournament.status == "starting"}
+	{#if $selectedTournament?.status == "starting"}
 		<button
 			class="standardButton largeButton"
 			onclick={() => {
@@ -108,15 +108,15 @@
 		>
 			Enter
 		</button>
-	{:else if $selectedTournament.status == "upcoming"}
+	{:else if $selectedTournament?.status == "upcoming"}
 		<button
-			class="standardButton largeButton white"
+			class="standardButton largeButton white {$selectedTournament?.saved ? "disabled" : ""}"
 			onclick={() => {
 				playSound("basic_button");
 
 				// !TODO: Send request to increment pre-save
 
-				const date = new Date($selectedTournament.date + "Z"); // Add Z for UTC
+				const date = new Date($selectedTournament?.date + "Z"); // Add Z for UTC
 				const startTime = date
 					.toISOString()
 					.replace(/[-:]/g, "")
@@ -126,7 +126,7 @@
 					.replace(/[-:]/g, "")
 					.replace(/\.\d{3}/, ""); // +1 hour
 
-				const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent($selectedTournament.name || "Tournament")}&dates=${startTime}/${endTime}&details=${encodeURIComponent("Tournament event")}`;
+				const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent($selectedTournament?.name + " (OpenGuessr)")}&dates=${startTime}/${endTime}&details=${encodeURIComponent("Tournament")}`;
 
 				window.open(calendarUrl, "_blank");
 			}}
@@ -152,6 +152,11 @@
 		z-index: -1;
 		opacity: 0.05;
 	}
+
+    .disabled {
+        opacity: 0.5;
+        pointer-events: none;
+    }
 
 	.opacity-hover {
 		transition: opacity 250ms ease;

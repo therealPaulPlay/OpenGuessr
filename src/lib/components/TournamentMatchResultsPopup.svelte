@@ -11,9 +11,9 @@
 		<h1>Match {$tournamentMatchResultsIndex + 1}</h1>
 	</div>
 	<TitleSeparator
-		text="Ascended ({$selectedTournament.matches?.[$tournamentMatchResultsIndex]?.ascendedPlayers?.length})"
+		text="Ascended ({$selectedTournament?.matches?.[$tournamentMatchResultsIndex]?.ascendedPlayers?.length})"
 	/>
-	{#each $selectedTournament.matches?.[$tournamentMatchResultsIndex]?.ascendedPlayers as player}
+	{#each $selectedTournament?.matches?.[$tournamentMatchResultsIndex]?.ascendedPlayers as player}
 		<div class="player-item">
 			<button
 				class="hover-text"
@@ -24,9 +24,9 @@
 		</div>
 	{/each}
 	<TitleSeparator
-		text="Eliminated ({$selectedTournament.matches?.[$tournamentMatchResultsIndex]?.eliminatedPlayers?.length})"
+		text="Eliminated ({$selectedTournament?.matches?.[$tournamentMatchResultsIndex]?.eliminatedPlayers?.length})"
 	/>
-	{#each $selectedTournament.matches?.[$tournamentMatchResultsIndex]?.eliminatedPlayers as player}
+	{#each $selectedTournament?.matches?.[$tournamentMatchResultsIndex]?.eliminatedPlayers as player}
 		<div class="player-item">
 			<button
 				class="hover-text"
