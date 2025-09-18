@@ -269,6 +269,7 @@
 		align-items: center;
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);
+		padding-left: 0;
 		mask-image: linear-gradient(to right, black 95%, transparent 100%);
 		overflow: hidden;
 	}

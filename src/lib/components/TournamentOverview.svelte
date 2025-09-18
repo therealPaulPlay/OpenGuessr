@@ -1,6 +1,8 @@
 <script>
+	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { selectedTournament } from "$lib/stores/context-specific/tournamentStore";
 	import { tournamentInfoPopup } from "$lib/stores/uiStore";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { playSound } from "$lib/utils/soundManager";
 	import { AlertCircle, Clock, Info, Medal, Ticket, Tickets, Users } from "lucide-svelte";
 	import { blur } from "svelte/transition";
@@ -15,6 +17,7 @@
 			status: "ongoing",
 			matches: [],
 			winner: {},
+			map: "standard",
 		},
 		{
 			name: "Fun tournament",
@@ -24,6 +27,7 @@
 			status: "upcoming",
 			matches: [],
 			winner: {},
+			map: "famous_places",
 		},
 		{
 			name: "Big tournament",
@@ -31,6 +35,7 @@
 			saves: 160,
 			prize: "750 tokens",
 			status: "finished",
+			map: "standard",
 			matches: [
 				{
 					ascendedPlayers: [
@@ -95,7 +100,7 @@
 	{#if tournamentData.length}
 		{#each tournamentData as tournament}
 			{@const readableDate = new Date(tournament.date + "Z").toLocaleString("en-US", {
-                // Z for UTC time
+				// Z for UTC time
 				month: "long",
 				day: "numeric",
 				hour: "numeric",
@@ -118,7 +123,7 @@
 				</div>
 				<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
 					<Users style="opacity: 0.75;" />
-					<p>{tournament.saves?.toLocaleString()} pre-saves</p>
+					<p>{tournament.saves?.toLocaleString()} calendar saves</p>
 				</div>
 				<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
 					<Medal style="margin-top: 1px; opacity: 0.75;" />
@@ -129,6 +134,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						$selectedTournament = tournament;
+                        if (!$isAuthenticated) return signupPrompt();
 						$tournamentInfoPopup = true;
 					}}
 				>

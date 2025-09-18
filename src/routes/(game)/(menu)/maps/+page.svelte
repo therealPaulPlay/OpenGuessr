@@ -9,6 +9,7 @@
 	import { changeCategory } from "$lib/utils/changeCategory";
 	import { specialModes, continentMaps, countryMaps, basicMaps } from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { idToMapName } from "$lib/utils/idToMapName.js";
 
 	// State
 	let currentFetchIndex = 0;
@@ -137,18 +138,6 @@
 			}
 		} catch (error) {
 			console.error("Error removing community map:", error);
-		}
-	}
-
-	function idToMapName(str) {
-		try {
-			return str
-				.replaceAll("_", " ")
-				.split(" ")
-				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-				.join(" ");
-		} catch {
-			return "Error (?)";
 		}
 	}
 

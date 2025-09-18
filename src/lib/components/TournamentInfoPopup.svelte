@@ -7,6 +7,7 @@
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { slide } from "svelte/transition";
+	import { idToMapName } from "$lib/utils/idToMapName";
 
 	let readableDate = $derived.by(() => {
 		const date = new Date($selectedTournament.date + "Z").toLocaleString("en-US", {
@@ -30,12 +31,16 @@
 			<p>{readableDate}</p>
 		</div>
 		<div class="info-field">
-			<p class="info-title">Pre-saves</p>
+			<p class="info-title">Calendar saves</p>
 			<p>{$selectedTournament.saves?.toLocaleString()}</p>
 		</div>
 		<div class="info-field">
 			<p class="info-title">Prize</p>
 			<p>{$selectedTournament.prize}</p>
+		</div>
+		<div class="info-field">
+			<p class="info-title">Map</p>
+			<p>{idToMapName($selectedTournament.map)}</p>
 		</div>
 		<div
 			class="info-field"
@@ -94,17 +99,22 @@
 		</div>
 	{/if}
 	{#if $selectedTournament.status == "starting"}
-		<button class="standardButton largeButton" onclick={() => {
-            playSound("basic_button");
-            // !TODO: Get code & join room here
-        }}> Enter </button>
+		<button
+			class="standardButton largeButton"
+			onclick={() => {
+				playSound("basic_button");
+				// !TODO: Get code & join room here
+			}}
+		>
+			Enter
+		</button>
 	{:else if $selectedTournament.status == "upcoming"}
 		<button
 			class="standardButton largeButton white"
 			onclick={() => {
 				playSound("basic_button");
 
-                // !TODO: Send request to increment pre-save
+				// !TODO: Send request to increment pre-save
 
 				const date = new Date($selectedTournament.date + "Z"); // Add Z for UTC
 				const startTime = date

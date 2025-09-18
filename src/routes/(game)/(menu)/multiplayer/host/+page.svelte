@@ -31,11 +31,12 @@
 	import { fade, scale, slide } from "svelte/transition";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { page } from "$app/state";
+	import { idToMapName } from "$lib/utils/idToMapName";
 
 	function getFormattedCategory() {
 		if (typeof window === "undefined") return "loading...";
 		const category = localStorage.getItem("selectedCategory") || "standard";
-		return category.replace("community_", "");
+		return idToMapName(category);
 	}
 
 	let roomOpened = $state(false);
@@ -134,7 +135,7 @@
 		{/if}
 		{#if $hostStage == 2}
 			<!-- Room code-->
-			<div class="roomCreationModule multiplayerHostSettings">
+			<div class="roomCreationModule multiplayerHostSettings noGap">
 				<p class="codeDisplayText">Join with code:</p>
 				<h1 id="roomCodeDisplay">
 					{$roomcode?.slice(0, 3) || "..."}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomcode?.slice(3) ||
@@ -517,5 +518,9 @@
 
 	.selectedMapField p {
 		margin-inline: 10px;
+	}
+
+	.noGap {
+		gap: unset;
 	}
 </style>

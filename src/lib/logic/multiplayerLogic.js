@@ -40,6 +40,7 @@ import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { signupPrompt } from "$lib/utils/signupPrompt";
 import { apiUrl, websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
+import { idToMapName } from "$lib/utils/idToMapName";
 
 export function getTeamFromMultiplayerId(id) {
     const playerArray = get(socket)?.getStorage?.players?.find(item => item[0] === id);
@@ -427,7 +428,7 @@ function showMultiplayerOverlay(show) {
     if (show) {
         if (!get(socket)?.getStorage?.firstRoundPlayed) {
             multiplayerOverlayTitle.set("Waiting...");
-            mapModeIndicatorText.set("Multiplayer (" + (get(socket)?.getStorage?.category)?.replace("community_", "") + ")")
+            mapModeIndicatorText.set("Multiplayer (" + idToMapName(get(socket)?.getStorage?.category) + ")")
         }
 
         if (!get(socket)?.getStorage?.gameEnded) {
