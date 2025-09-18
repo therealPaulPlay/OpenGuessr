@@ -94,7 +94,8 @@
 <div class="tournamentsContainer">
 	{#if tournamentData.length}
 		{#each tournamentData as tournament}
-			{@const readableDate = new Date(tournament.date).toLocaleString("en-US", {
+			{@const readableDate = new Date(tournament.date + "Z").toLocaleString("en-US", {
+                // Z for UTC time
 				month: "long",
 				day: "numeric",
 				hour: "numeric",
@@ -124,7 +125,7 @@
 					<p>{tournament.prize}</p>
 				</div>
 				<button
-					class="tournamentFieldButton standardButton white"
+					class="tournamentFieldButton standardButton {tournament.status == 'starting' ? '' : 'white'}"
 					onclick={() => {
 						playSound("basic_button");
 						$selectedTournament = tournament;

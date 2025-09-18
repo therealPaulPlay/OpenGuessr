@@ -1,7 +1,7 @@
 <script>
 	import { selectedTournament, tournamentMatchResultsIndex } from "$lib/stores/context-specific/tournamentStore";
 	import { tournamentInfoPopup, tournamentMatchResultsPopup } from "$lib/stores/uiStore";
-	import { Info, Medal } from "lucide-svelte";
+	import { CalendarPlus, Info, Medal } from "lucide-svelte";
 	import Popup from "./ui/Popup.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
@@ -9,7 +9,8 @@
 	import { slide } from "svelte/transition";
 
 	let readableDate = $derived.by(() => {
-		const date = new Date($selectedTournament.date).toLocaleString("en-US", {
+		const date = new Date($selectedTournament.date + "Z").toLocaleString("en-US", {
+			// Z for UTC
 			month: "long",
 			day: "numeric",
 			hour: "numeric",
@@ -91,6 +92,37 @@
 				</button>
 			</div>
 		</div>
+	{/if}
+	{#if $selectedTournament.status == "starting"}
+		<button class="standardButton largeButton" onclick={() => {
+            playSound("basic_button");
+            // !TODO: Get code & join room here
+        }}> Enter </button>
+	{:else if $selectedTournament.status == "upcoming"}
+		<button
+			class="standardButton largeButton white"
+			onclick={() => {
+				playSound("basic_button");
+
+                // !TODO: Send request to increment pre-save
+
+				const date = new Date($selectedTournament.date + "Z"); // Add Z for UTC
+				const startTime = date
+					.toISOString()
+					.replace(/[-:]/g, "")
+					.replace(/\.\d{3}/, "");
+				const endTime = new Date(date.getTime() + 60 * 60 * 1000)
+					.toISOString()
+					.replace(/[-:]/g, "")
+					.replace(/\.\d{3}/, ""); // +1 hour
+
+				const calendarUrl = `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent($selectedTournament.name || "Tournament")}&dates=${startTime}/${endTime}&details=${encodeURIComponent("Tournament event")}`;
+
+				window.open(calendarUrl, "_blank");
+			}}
+		>
+			<CalendarPlus style="margin-bottom: -3px;" /> Add to calendar
+		</button>
 	{/if}
 </Popup>
 
