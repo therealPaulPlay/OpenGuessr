@@ -4,18 +4,6 @@
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import Popup from "./ui/Popup.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
-
-	let eliminatedPlayers = $derived.by(() => {
-		if ($tournamentMatchResultsIndex == 0) {
-			return $selectedTournament?.initialPlayers?.filter(
-				(i) => !$selectedTournament.matches?.[$tournamentMatchResultsIndex]?.ascendedPlayers?.some((e) => e.id == i.id),
-			);
-		} else {
-			return $selectedTournament.matches?.[$tournamentMatchResultsIndex - 1]?.ascendedPlayers?.filter(
-				(i) => !$selectedTournament.matches?.[$tournamentMatchResultsIndex]?.ascendedPlayers?.some((e) => e.id == i.id),
-			);
-		}
-	});
 </script>
 
 <Popup verySlim={true} bind:open={$tournamentMatchResultsPopup}>
@@ -31,18 +19,20 @@
 				class="hover-text"
 				onclick={() => {
 					loadProfileFromId(player.id);
-				}}>{player.username}</button
+				}}>{player.username} <span class="score-span">{player.score?.toLocaleString()}</span></button
 			>
 		</div>
 	{/each}
-	<TitleSeparator text="Eliminated ({eliminatedPlayers?.length})" />
-	{#each eliminatedPlayers as player}
+	<TitleSeparator
+		text="Eliminated ({$selectedTournament.matches?.[$tournamentMatchResultsIndex]?.eliminatedPlayers?.length})"
+	/>
+	{#each $selectedTournament.matches?.[$tournamentMatchResultsIndex]?.eliminatedPlayers as player}
 		<div class="player-item">
 			<button
 				class="hover-text"
 				onclick={() => {
 					loadProfileFromId(player.id);
-				}}>{player.username}</button
+				}}>{player.username} <span class="score-span">{player.score?.toLocaleString()}</span></button
 			>
 		</div>
 	{/each}
@@ -60,6 +50,10 @@
 		box-sizing: border-box;
 		padding: 5px;
 		margin-bottom: var(--box-margin);
+	}
+
+	.score-span {
+		opacity: 0.5 !important;
 	}
 
 	.hover-text {
