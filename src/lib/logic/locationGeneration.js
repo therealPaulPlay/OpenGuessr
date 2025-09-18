@@ -2,7 +2,6 @@ import { competitionData, competitionRound } from "$lib/stores/context-specific/
 import { get } from "svelte/store";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { showNotification } from "$lib/utils/notifications";
 import { savedMapBounds } from "$lib/stores/locationStore";
 
 // This is THE function to get locations (all others here are NOT export) - not the function to start a new round!

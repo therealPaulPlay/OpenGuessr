@@ -4,7 +4,6 @@ import { setupMultiplayerRoom, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { elo } from "$lib/stores/accountStore";
-import { showNotification } from "$lib/utils/notifications";
 
 export async function deleteRoomCodeFromMatchmakingServer() {
     if (!get(roomcode)) {

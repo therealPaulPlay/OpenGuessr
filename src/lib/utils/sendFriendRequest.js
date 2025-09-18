@@ -26,7 +26,7 @@ export async function sendFriendRequest(targetUserId, button) {
         });
 
         if (response.ok) {
-            showNotification("Friend request sent.", false, false, false);
+            showNotification("Friend request sent.");
 
             try {
                 button.style.opacity = "0.5";

@@ -10,6 +10,8 @@ import { duelResultTitle, eloChange, tokenGain } from "$lib/stores/context-speci
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { multiplayer } from "$lib/stores/modeStore";
 import { roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
+import { goto } from "$app/navigation";
+import { showConfirmPopup } from "$lib/utils/confirmPopup";
 
 export async function initializeSSEConnection() {
     let eventSource;
@@ -41,7 +43,7 @@ export async function initializeSSEConnection() {
                                 joinRoomFromNotification(data.roomcode, data.from);
                             }, () => {
                                 declineMatchInvite(data.from);
-                            }, true);
+                            });
                             break;
 
                         case 'invite-accepted':
@@ -55,12 +57,12 @@ export async function initializeSSEConnection() {
                         case 'friend-request-received':
                             showNotification(`${data.name} sent you a friend request.`, () => {
                                 acceptFriendRequest(data.from);
-                            }, false, true);
+                            });
                             break;
 
                         case 'duel-result':
                             const didWin = localStorage.getItem("id") == data?.winnerId;
-                            
+
                             const showResult = () => {
                                 // For visual representation
                                 duelResultTitle.set(didWin ? "Victory!" : "Defeat!");
@@ -86,6 +88,22 @@ export async function initializeSSEConnection() {
                             if (get(multiplayer)) get(socket)?.onEvent("instanceDestroyed", showResult);
                             else showResult();
 
+                            break;
+
+                        case 'tournament-starting':
+                            showNotification(`A tournament is starting soon!`, () => {
+                                goto("/multiplayer");
+                            }, false, true);
+                            break;
+
+                        case 'tournament-eliminated':
+                            leaveMultiplayerRound();
+                            showConfirmPopup("Eliminated!", "Thank you for participating in the tournament. Better luck next time!")
+                            break;
+
+                        case 'tournament-won':
+                            leaveMultiplayerRound();
+                            showConfirmPopup("You won!", "Congratulations, you won the tournament! Some prizes may require refreshing the website to be applied.")
                             break;
                     }
                 } catch (error) {
