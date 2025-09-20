@@ -10,8 +10,11 @@
 	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";
 
+	let noTournamentsText = $state("No tournaments scheduled.");
+
 	onMount(async () => {
-		fetchTournaments();
+		const error = await fetchTournaments();
+		if (error) noTournamentsText = "Error: " + error;
 	});
 </script>
 
@@ -67,7 +70,7 @@
 			</div>
 		{/each}
 	{:else}
-		<p class="noTournamentsText">No tournaments scheduled.</p>
+		<p class="noTournamentsText">{noTournamentsText}</p>
 	{/if}
 </div>
 

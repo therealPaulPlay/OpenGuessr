@@ -199,15 +199,16 @@ export async function createMultiplayerInstance() {
     });
 }
 
-// Joining via Links ----------------------------------------------------------------------------------------------------------------
+// Joining via Links or from other places ----------------------------------------------------------------------------------------------------------------
 // Called in accountLogic after account data was loaded
 export function attemptJoinViaLink() {
     let urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get("join");
-    if (roomCode) joinFromLink(roomCode);
+    if (roomCode) joinFromAnywhere(roomCode);
 }
 
-export function joinFromLink(roomcode) {
+// Join with a popup, without having to go to the join screen
+export function joinFromAnywhere(roomcode) {
     linkJoinPopup.set(true);
     joinRoom(roomcode);
 }
@@ -359,7 +360,7 @@ export function leaveMultiplayerRound(destroy = true) {
 function showEndscreenUI(show) {
     if (show) {
         leaveMatchButtonVisible.set(true); // show leave / end button
-        if (!get(socket)?.getStorage?.divisionRoom && get(socket)?.isHost) rematchButtonVisible.set(true); // Don't show rematch button in non-friend duels & only if host
+        if (!get(socket)?.getStorage?.divisionRoom && !get(socket)?.getStorage?.tournamentRoom && get(socket)?.isHost) rematchButtonVisible.set(true); // Don't show rematch button in non-friend duels & only if host
     } else {
         rematchButtonVisible.set(false);
         leaveMatchButtonVisible.set(false);

@@ -10,7 +10,7 @@
 		preventFullscreen,
 		disableAutoAuthentication,
 	} from "$lib/stores/context-specific/platformSettingsStore";
-	import { joinFromLink, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
+	import { joinFromAnywhere, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { helpPopup } from "$lib/stores/uiStore";
@@ -55,7 +55,7 @@
 					window.CrazyGames.SDK.game.loadingStop();
 					window.CrazyGames.SDK.game.gameplayStart();
 					const roomCode = window.CrazyGames.SDK.game.getInviteParam("join");
-					if (roomCode) joinFromLink(roomCode);
+					if (roomCode) joinFromAnywhere(roomCode);
 
 					if (window.CrazyGames.SDK.game.isInstantJoin) {
 						goto("/multiplayer/host");

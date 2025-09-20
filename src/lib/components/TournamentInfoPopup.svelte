@@ -8,6 +8,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { slide } from "svelte/transition";
 	import { idToMapName } from "$lib/utils/idToMapName";
+	import { joinFromAnywhere } from "$lib/logic/multiplayerLogic";
 
 	let readableDate = $derived.by(() => {
 		const date = new Date($selectedTournament?.date + "Z").toLocaleString("en-US", {
@@ -19,6 +20,66 @@
 		});
 		return date;
 	});
+
+	async function enterTournament(tournamentId) {
+		try {
+			const response = await fetch(`${get(apiUrl)}/tournaments/enter/${tournamentId}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${localStorage.getItem("bearer")}`,
+				},
+				body: JSON.stringify({
+					id: localStorage.getItem("id"),
+				}),
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+				return data.roomId;
+			} else {
+				let responseError = response.status;
+				try {
+					const data = await response.json();
+					if (data.error) responseError = data.error;
+				} catch {}
+				throw new Error(responseError);
+			}
+		} catch (error) {
+			console.error("Failed to enter tournament:", error);
+			errorPopup("Failed to enter tournament", "An error occured attempting to enter the tournament.", error.message);
+		}
+	}
+
+	async function trackCalendarSave(tournamentId) {
+		try {
+			const response = await fetch(`${get(apiUrl)}/tournaments/calendar-save/${tournamentId}`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: `Bearer ${localStorage.getItem("bearer")}`,
+				},
+				body: JSON.stringify({
+					id: localStorage.getItem("id"),
+				}),
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+			} else {
+				throw new Error(response.status);
+			}
+		} catch (error) {
+			console.error("Failed to track calendar save:", error);
+			errorPopup(
+				"Failed to track calendar save",
+				"An error occured attempting to track the calendar save.",
+				error.message,
+			);
+		}
+	}
 </script>
 
 <Popup bind:open={$tournamentInfoPopup} slim={true}>
@@ -108,9 +169,13 @@
 	{#if $selectedTournament?.status == "starting"}
 		<button
 			class="standardButton largeButton"
-			onclick={() => {
+			onclick={async () => {
 				playSound("basic_button");
-				// !TODO: Get code & join room here
+				const roomcode = await enterTournament($selectedTournament?.id);
+				if (roomcode) {
+					$tournamentInfoPopup = false;
+					joinFromAnywhere(roomcode);
+				}
 			}}
 		>
 			Enter
@@ -118,10 +183,9 @@
 	{:else if $selectedTournament?.status == "upcoming"}
 		<button
 			class="standardButton largeButton white {$selectedTournament?.saved ? 'disabled' : ''}"
-			onclick={() => {
+			onclick={async () => {
 				playSound("basic_button");
-
-				// !TODO: Send request to increment pre-save
+				await trackCalendarSave($selectedTournament?.id);
 
 				const date = new Date($selectedTournament?.date + "Z"); // Add Z for UTC
 				const startTime = date
