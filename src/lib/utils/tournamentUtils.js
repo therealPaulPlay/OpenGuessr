@@ -2,9 +2,9 @@ import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { tournamentData } from "$lib/stores/context-specific/tournamentStore";
 import { get } from "svelte/store";
 
-export function fetchTournaments() {
+export async function fetchTournaments() {
     try {
-        const response = await fetch(`${get(apiUrl)}/tournaments/all-tournaments${localStorage.getItem("id") ? `?=user-id${localStorage.getItem("id")}` : ""})}`);
+        const response = await fetch(`${get(apiUrl)}/tournaments/all-tournaments${localStorage.getItem("id") ? "?user-id=" + localStorage.getItem("id") : ""}`);
 
         // Check if the response is successful
         if (response.ok) {
@@ -16,6 +16,6 @@ export function fetchTournaments() {
         }
     } catch (error) {
         console.error('Error fetching tournaments:', error);
-        return error;
+        return error.message;
     }
 }

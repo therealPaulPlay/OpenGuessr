@@ -9,10 +9,13 @@
 	import { slide } from "svelte/transition";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { joinFromAnywhere } from "$lib/logic/multiplayerLogic";
+	import { get } from "svelte/store";
+	import { errorPopup } from "$lib/utils/errorHandling";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { fetchTournaments } from "$lib/utils/tournamentUtils";
 
 	let readableDate = $derived.by(() => {
-		const date = new Date($selectedTournament?.date + "Z").toLocaleString("en-US", {
-			// Z for UTC
+		const date = new Date($selectedTournament?.date).toLocaleString("en-US", {
 			month: "long",
 			day: "numeric",
 			hour: "numeric",
@@ -55,7 +58,7 @@
 	async function trackCalendarSave(tournamentId) {
 		try {
 			const response = await fetch(`${get(apiUrl)}/tournaments/calendar-save/${tournamentId}`, {
-				method: "PUT",
+				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
 					Authorization: `Bearer ${localStorage.getItem("bearer")}`,
@@ -186,8 +189,9 @@
 			onclick={async () => {
 				playSound("basic_button");
 				await trackCalendarSave($selectedTournament?.id);
+				await fetchTournaments();
 
-				const date = new Date($selectedTournament?.date + "Z"); // Add Z for UTC
+				const date = new Date($selectedTournament?.date);
 				const startTime = date
 					.toISOString()
 					.replace(/[-:]/g, "")
@@ -202,7 +206,8 @@
 				window.open(calendarUrl, "_blank");
 			}}
 		>
-			<CalendarPlus style="margin-bottom: -3px;" /> Add to calendar
+			<CalendarPlus style="margin-bottom: -3px;" />
+			{$selectedTournament?.saved ? "Added" : "Add"} to calendar
 		</button>
 	{/if}
 </Popup>

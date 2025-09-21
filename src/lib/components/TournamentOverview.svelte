@@ -18,57 +18,58 @@
 	});
 </script>
 
-<div class="tournamentsContainer">
+<div class="tournamentsContainer" class:containerMinHeight={!$tournamentData?.length}>
 	{#if $tournamentData?.length}
-		{#each $tournamentData as tournament}
-			{@const readableDate = new Date(tournament.date + "Z").toLocaleString("en-US", {
-				// Z for UTC time
-				month: "long",
-				day: "numeric",
-				hour: "numeric",
-				minute: "2-digit",
-			})}
+		<div transition:blur class="innerTournamentsContainer">
+			{#each $tournamentData as tournament (tournament.id)}
+				{@const readableDate = new Date(tournament.date).toLocaleString("en-US", {
+					month: "long",
+					day: "numeric",
+					hour: "numeric",
+					minute: "2-digit",
+				})}
 
-			<div class="tournamentBox">
-				<div class="tournamentNameBox">
-					<h3 class="tournamentNameTitle" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
-						{tournament.name}{#if tournament.status == "ongoing"}
-							<span class="ongoingBadge" transition:blur>Ongoing</span>
-						{:else if tournament.status == "starting"}
-							<span class="ongoingBadge" transition:blur>Enter now</span>
+				<div class="tournamentBox">
+					<div class="tournamentNameBox">
+						<h3 class="tournamentNameTitle" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
+							{tournament.name}{#if tournament.status == "ongoing"}
+								<span class="ongoingBadge" transition:blur>Ongoing</span>
+							{:else if tournament.status == "starting"}
+								<span class="ongoingBadge" transition:blur>Enter now</span>
+							{/if}
+						</h3>
+					</div>
+					<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
+						<Clock style="margin-top: 1px; opacity: 0.75;" />
+						<p>{tournament.status == "finished" ? "Finished" : readableDate}</p>
+					</div>
+					<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
+						<Users style="opacity: 0.75;" />
+						<p>{tournament.saves?.toLocaleString()} calendar saves</p>
+					</div>
+					<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
+						<Medal style="margin-top: 1px; opacity: 0.75;" />
+						<p>{tournament.prize}</p>
+					</div>
+					<button
+						class="tournamentFieldButton standardButton {tournament.status == 'starting' ? '' : 'white'}"
+						use:tooltip={{ text: "View details" }}
+						onclick={() => {
+							playSound("basic_button");
+							$selectedTournamentId = tournament.id;
+							if (!$isAuthenticated) return signupPrompt();
+							$tournamentInfoPopup = true;
+						}}
+					>
+						{#if tournament.status != "finished" && tournament.status != "ongoing"}
+							<Ticket strokeWidth={1.75} style="margin-bottom: -4px;" />
+						{:else}
+							<Info strokeWidth={1.75} style="margin-bottom: -3px;" />
 						{/if}
-					</h3>
+					</button>
 				</div>
-				<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
-					<Clock style="margin-top: 1px; opacity: 0.75;" />
-					<p>{tournament.status == "finished" ? "Finished" : readableDate}</p>
-				</div>
-				<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
-					<Users style="opacity: 0.75;" />
-					<p>{tournament.saves?.toLocaleString()} calendar saves</p>
-				</div>
-				<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
-					<Medal style="margin-top: 1px; opacity: 0.75;" />
-					<p>{tournament.prize}</p>
-				</div>
-				<button
-					class="tournamentFieldButton standardButton {tournament.status == 'starting' ? '' : 'white'}"
-					use:tooltip={{ text: "View details" }}
-					onclick={() => {
-						playSound("basic_button");
-						$selectedTournamentId = tournament.id;
-						if (!$isAuthenticated) return signupPrompt();
-						$tournamentInfoPopup = true;
-					}}
-				>
-					{#if tournament.status != "finished" && tournament.status != "ongoing"}
-						<Ticket strokeWidth={1.75} style="margin-bottom: -4px;" />
-					{:else}
-						<Info strokeWidth={1.75} style="margin-bottom: -3px;" />
-					{/if}
-				</button>
-			</div>
-		{/each}
+			{/each}
+		</div>
 	{:else}
 		<p class="noTournamentsText">{noTournamentsText}</p>
 	{/if}
@@ -78,15 +79,22 @@
 	.tournamentsContainer {
 		position: relative;
 		width: calc(100% - 20px);
-		min-height: 80px;
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		margin-bottom: var(--layout-margin);
 		box-shadow: var(--box-shadow);
+		padding: var(--box-margin);
+	}
+
+	.innerTournamentsContainer {
 		display: flex;
 		flex-direction: column;
-		padding: var(--box-margin);
 		gap: var(--box-margin);
+		width: 100%;
+	}
+
+	.containerMinHeight {
+		min-height: 80px;
 	}
 
 	.tournamentNameBox {
