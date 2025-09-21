@@ -34,28 +34,28 @@
 			{#if $teamAmount > 1}
 				<!-- Teams version -->
 				{#each $multiplayerTableArray as team}
-					{#each team.players as [entryPeerId, username, elo, score, teamIndex, id, badge]}
+					{#each team.players as { clientId, username, elo, score, teamIndex, userId, badge }}
 						<div
 							transition:slide
 							class="multiplayerOverlayEntry"
-							class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(socket)?.id}
+							class:yourMultiplayerOverlay={clientId && clientId == get(socket)?.id}
 							style:background-image={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
 						>
 							<div class="multiplayerEntryPlayerInfo">
 								<div
 									class="multiplayerEntryPlayerName"
-									class:entryNotClickable={!id}
+									class:entryNotClickable={!userId}
 									role="cell"
 									tabindex="0"
 									onclick={() => {
-										if (id) loadProfileFromId(id);
+										if (userId) loadProfileFromId(userId);
 									}}
 								>
 									<span class="usernameSpan">{username}</span>
 									{#if badge}
 										<Badge interactive={false} display={true} id={badge} />
 									{/if}
-									{#if id}
+									{#if userId}
 										{@render eloDisplay(elo)}
 									{/if}
 								</div>
@@ -66,27 +66,27 @@
 				{/each}
 			{:else}
 				<!-- No teams version -->
-				{#each $multiplayerTableArray as [entryPeerId, username, elo, score, teamIndex, id, badge]}
+				{#each $multiplayerTableArray as { clientId, username, elo, score, teamIndex, userId, badge }}
 					<div
 						transition:slide
 						class="multiplayerOverlayEntry"
-						class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(socket)?.id}
+						class:yourMultiplayerOverlay={clientId && clientId == get(socket)?.id}
 					>
 						<div class="multiplayerEntryPlayerInfo">
 							<div
 								class="multiplayerEntryPlayerName"
-								class:entryNotClickable={!id}
+								class:entryNotClickable={!userId}
 								role="cell"
 								tabindex="0"
 								onclick={() => {
-									if (id) loadProfileFromId(id);
+									if (userId) loadProfileFromId(userId);
 								}}
 							>
 								<span class="usernameSpan">{username}</span>
 								{#if badge}
 									<Badge interactive={false} display={true} id={badge} />
 								{/if}
-								{#if id}
+								{#if userId}
 									{@render eloDisplay(elo)}
 								{/if}
 							</div>

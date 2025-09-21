@@ -99,13 +99,15 @@ export async function initializeSSEConnection() {
                             break;
 
                         case 'tournament-eliminated':
-                            leaveMultiplayerRound();
-                            showConfirmPopup("Eliminated!", "Thank you for participating in the tournament. Better luck next time!")
+                            showConfirmPopup("Eliminated!", "You can still stay in the tournament as a spectator.")
                             break;
 
                         case 'tournament-won':
-                            leaveMultiplayerRound();
                             showConfirmPopup("You won!", "Congratulations, you won the tournament! Some prizes may require refreshing the website to be applied.")
+                            break;
+
+                        case 'tournament-winner-announced':
+                            showConfirmPopup(`${data.winnerName} won!`, "Thank you for participating in the tournament!");
                             break;
 
                         case 'tournament-updated':

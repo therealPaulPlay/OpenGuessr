@@ -43,8 +43,8 @@ import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOv
 import { idToMapName } from "$lib/utils/idToMapName";
 
 export function getTeamFromMultiplayerId(id) {
-    const playerArray = get(socket)?.getStorage?.players?.find(item => item[0] === id);
-    return playerArray?.[4];
+    const playerArray = get(socket)?.getStorage?.players?.find(item => item.clientId === id);
+    return playerArray?.teamIndex;
 }
 
 // Game UI ----------------------------------------------------------------------------------------------------------------------------------
@@ -128,7 +128,7 @@ export async function createMultiplayerInstance() {
                 }
 
                 // If player is not already in the room, add player info
-                if (get(socket)?.getStorage?.players?.findIndex((player) => player[0] == get(socket)?.id) == -1 && !playerAddRequestSent) {
+                if (get(socket)?.getStorage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerAddRequestSent) {
                     get(socket).sendRequest("addPlayer", { guestName: get(guestName) || null });
                     playerAddRequestSent = true;
                 }
@@ -159,10 +159,9 @@ export async function createMultiplayerInstance() {
                 if (storage.showResult != null && storage.showResult !== get(resultScreenEnabled)) {
                     if (storage.showResult == true) {
                         // Wait result screen continue text in lobbies with others
-                        if (get(socket)?.getStorage?.players?.length > 1) {
-                            continueText.set("Wait 5s...");
-                            setTimeout(() => continueText.set("Continue"), 5000);
-                        } else continueText.set("Continue");
+                        const continueTimeout = get(socket)?.getStorage?.players?.length > 1 ? (get(socket)?.getStorage?.tournamentRoom ? 10_000 : 5000) : 0;
+                        continueText.set(`Wait ${continueTimeout / 1000}s...`);
+                        setTimeout(() => continueText.set("Continue"), continueTimeout);
 
                         // Ensure the coords are set, in case user joins during result screen
                         currentLocationLatitude.set(storage?.location[0]);
@@ -359,7 +358,7 @@ export function leaveMultiplayerRound(destroy = true) {
 // Panorama Overlay UI ------------------------------------------------------------------------------------------------------------------------------------------
 function showEndscreenUI(show) {
     if (show) {
-        leaveMatchButtonVisible.set(true); // show leave / end button
+        if (!get(socket)?.getStorage?.tournamentRoom) leaveMatchButtonVisible.set(true); // Show large exit button
         if (!get(socket)?.getStorage?.divisionRoom && !get(socket)?.getStorage?.tournamentRoom && get(socket)?.isHost) rematchButtonVisible.set(true); // Don't show rematch button in non-friend duels & only if host
     } else {
         rematchButtonVisible.set(false);
@@ -386,11 +385,11 @@ function updateMultiplayerTableArray() {
     const players = get(socket)?.getStorage?.players;
 
     if (get(teamAmount) <= 1) {
-        multiplayerTableArray.set([...players].sort((a, b) => b[3] - a[3]));
+        multiplayerTableArray.set([...players].sort((a, b) => b.score - a.score));
     } else {
         // Group players by team
         const groupedTeams = players.reduce((acc, player) => {
-            const teamIndex = player[4];
+            const teamIndex = player.teamIndex;
             if (!acc[teamIndex]) {
                 teams[teamIndex] = { color: generateColorForTeam(teamIndex), colorName: getTeamColorName(teamIndex) };
                 acc[teamIndex] = { ...teams[teamIndex], teamIndex, players: [] };
@@ -401,6 +400,7 @@ function updateMultiplayerTableArray() {
 
         // Ensure all team numbers from 1 to teamAmount exist (even empty teams)
         const totalTeamAmount = get(teamAmount);
+
         for (let i = 1; i <= totalTeamAmount; i++) {
             if (!groupedTeams[i]) {
                 teams[i] = { color: generateColorForTeam(i), colorName: getTeamColorName(i) };
@@ -413,11 +413,11 @@ function updateMultiplayerTableArray() {
             Object.values(groupedTeams)
                 .map(team => ({
                     ...team,
-                    players: team.players.sort((a, b) => b[3] - a[3])
+                    players: team.players.sort((a, b) => b.score - a.score)
                 }))
                 .sort((a, b) =>
-                    b.players.reduce((s, p) => s + p[3], 0) -
-                    a.players.reduce((s, p) => s + p[3], 0)
+                    b.players.reduce((s, p) => s + p.score, 0) -
+                    a.players.reduce((s, p) => s + p.score, 0)
                 )
         );
     }
@@ -455,7 +455,7 @@ function determineWinner(array) {
         const winningTeamIndex = array[0]?.teamIndex;
         let teamColorName = teams[winningTeamIndex]?.colorName;
         multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
-        const yourTeam = (get(socket)?.getStorage?.players?.find((e) => e[0] == get(socket)?.id))[4];
+        const yourTeam = (get(socket)?.getStorage?.players?.find((e) => e.clientId == get(socket)?.id))?.teamIndex;
         yourTeam == winningTeamIndex ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
 
     } else {

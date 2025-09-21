@@ -151,7 +151,7 @@
 						{#if $multiplayerTableArray?.length > 0}
 							{#each $multiplayerTableArray as player, i}
 								<span class="playerNameInline"
-									>{truncatePlayerName(player[1])}{#if i < $multiplayerTableArray.length - 1}<span>,&nbsp;</span>{/if}
+									>{truncatePlayerName(player.username)}{#if i < $multiplayerTableArray.length - 1}<span>,&nbsp;</span>{/if}
 								</span>
 							{/each}
 						{:else}
@@ -164,17 +164,17 @@
 						<p class="playerBoxElement playerBoxTeams">
 							<span>{teamIndex !== 0 ? `Team ${teamIndex}:` : `No team:`}</span>
 							{#if team.players?.length > 0}
-								{#each team.players as player, i (player[0])}
+								{#each team.players as player, i (player.clientId)}
 									<span class="playerNameInline">
-										{truncatePlayerName(player[1])}
+										{truncatePlayerName(player.username)}
 										<select
 											name="teams"
 											class="teamSelector standardButton white"
-											onchange={(e) => updatePlayerTeam(player[0], e.target.value)}
+											onchange={(e) => updatePlayerTeam(player.clientId, e.target.value)}
 										>
 											{#each Object.values($multiplayerTableArray) as teamObject}
 												{@const index = teamObject.teamIndex}
-												<option value={index} selected={player[4] == index}>Team {index}</option>
+												<option value={index} selected={player.username == index}>Team {index}</option>
 											{/each}
 										</select>{#if i < team.players.length - 1}<span>,&nbsp;</span>{/if}
 									</span>
