@@ -75,7 +75,7 @@
 						onclick={() => {
 							playSound("basic_button");
 							signupPrompt();
-						}}><span class="mobileSigninIcon"><UserRoundPlus strokeWidth={3} size={20} /></span></button
+						}}><span class="mobileSigninIcon"><UserRoundPlus strokeWidth={2.5} size={20} /></span></button
 					>
 				{:else}
 					<button
@@ -191,7 +191,7 @@
 				onclick={() => {
 					playSound("basic_button");
 					signupPrompt();
-				}}><UserRoundPlus strokeWidth={3} size={20} style="margin-left: 6px; margin-right: 4px;" /></button
+				}}><UserRoundPlus strokeWidth={2.5} size={20} style="margin-left: 6px; margin-right: 4px;" /></button
 			>
 		{/if}
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
