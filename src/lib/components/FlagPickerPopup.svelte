@@ -257,7 +257,7 @@
 		padding: 3px;
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		text-align: left;
 		padding-left: 10px;
 		border-bottom-right-radius: 0;
@@ -285,7 +285,7 @@
 		min-width: calc(100% - 16px);
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color-dark);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
 		gap: 10px;

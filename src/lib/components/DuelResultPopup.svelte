@@ -86,8 +86,6 @@
 		align-items: center;
 		flex-wrap: wrap;
 		gap: var(--layout-margin);
-		min-height: 80px;
-		margin-bottom: var(--layout-margin);
 	}
 
 	.duelResultFlex div {
@@ -100,7 +98,7 @@
 		height: 38px;
 		flex-wrap: wrap;
 		display: flex;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		justify-content: center;
 		align-items: center;
@@ -114,13 +112,14 @@
 
 	.infoBox {
 		padding: var(--box-margin);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;
 		gap: var(--box-margin);
 		box-shadow: var(--box-shadow);
+		margin-top: var(--layout-margin);
 	}
 
 	.infoBox p {

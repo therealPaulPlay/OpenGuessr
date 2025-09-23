@@ -73,7 +73,7 @@
 	.backButton {
 		width: fit-content;
 		height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		text-decoration: none;
 		line-height: 35px;
 		pointer-events: auto;

@@ -14,6 +14,7 @@
 	import { countryGuessr } from "$lib/stores/modeStore";
 	import { blur, fade } from "svelte/transition";
 	import { ArrowUp, Bug, Map } from "lucide-svelte";
+	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
@@ -46,7 +47,7 @@
 				id="discordButton"
 				onclick={() => {
 					playSound("basic_button");
-					window.open("https://discord.gg/CSc3MbDrZ8", "_blank").focus();
+					window.open($discordInviteUrl, "_blank").focus();
 				}}
 			>
 				<img src="/img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" />
@@ -121,7 +122,7 @@
 		align-items: end;
 		justify-content: space-between;
 		margin: auto;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		margin-inline: 10px;
 		flex: 1;
 		z-index: 10;

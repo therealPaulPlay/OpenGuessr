@@ -9,7 +9,7 @@ import { get } from "svelte/store";
 import { supportedAmount } from "$lib/stores/accountStore.js";
 import { showNotification } from "$lib/utils/notifications";
 import { freeDailyTokensClaimed } from "$lib/stores/context-specific/shopStore";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { errorPopup } from "$lib/utils/errorHandling";
 
@@ -90,7 +90,7 @@ async function loadUserInfo() {
 
 async function getUser() {
   try {
-    const response = await fetch(`${get(accountUrl)}/accounts/user/${localStorage.getItem("id")}`, {
+    const response = await fetch(`${get(apiUrl)}/accounts/user/${localStorage.getItem("id")}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

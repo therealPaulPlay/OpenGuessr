@@ -1,5 +1,16 @@
 <script>
-	import { PlusCircle, Unplug, ContactRound, TriangleAlert, Info, Earth, BicepsFlexed, Search, X } from "lucide-svelte";
+	import {
+		PlusCircle,
+		Unplug,
+		ContactRound,
+		TriangleAlert,
+		Info,
+		Earth,
+		BicepsFlexed,
+		Search,
+		X,
+		ExternalLink,
+	} from "lucide-svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
@@ -19,9 +30,10 @@
 	import { fetchWarnlistStatus } from "$lib/utils/checkReportStatus";
 	import { get } from "svelte/store";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl, discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { tooltip } from "$lib/utils/tooltip";
+	import TournamentOverview from "$lib/components/TournamentOverview.svelte";
 
 	let friendsRefreshInterval;
 
@@ -42,9 +54,6 @@
 	onDestroy(() => {
 		clearInterval(friendsRefreshInterval);
 	});
-
-	const nextMonth = new Date();
-	nextMonth.setMonth(nextMonth.getMonth() + 1, 1); // Set to first day of next month
 </script>
 
 <svelte:head>
@@ -57,7 +66,7 @@
 	</div>
 	{#if $warnReportEntryData}
 		<div class="infoContainer warnInfo" transition:slide>
-			<TriangleAlert color="white" strokeWidth={2.5} class="infoIcon triangleAlertMarginRight" />
+			<TriangleAlert color="white" strokeWidth={2.25} class="infoIconMultiplayer triangleAlertMarginRight" />
 			<p>
 				You are currently on the warnlist and under close observation for "{get(warnReportEntryData)?.reason?.trim()}".
 				Please contact the moderators on Discord if you think this is a mistake. Warnings can quickly turn into bans if
@@ -113,7 +122,7 @@
 					}}
 				>
 					Find duel
-					<Search size={20} strokeWidth={2.75} style="margin-bottom: -2px; margin-left: 1px;" />
+					<Search size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 1px;" />
 				</button>
 				<button
 					class="standardButton white multiplayerSelect"
@@ -125,9 +134,9 @@
 					}}
 				>
 					{#if $skillBasedMatchmaking}
-						<BicepsFlexed strokeWidth={1.75} style="margin-bottom: -3px;" />
+						<BicepsFlexed strokeWidth={1.85} style="margin-bottom: -3px;" />
 					{:else}
-						<Earth strokeWidth={1.75} style="margin-bottom: -3px;" />
+						<Earth strokeWidth={1.85} style="margin-bottom: -3px;" />
 					{/if}
 				</button>
 				<button
@@ -137,30 +146,16 @@
 					onclick={() => {
 						playSound("basic_button");
 						divisionMatchHistoryPopup.set(true);
-					}}><History strokeWidth={2} style="margin-bottom: -4px;" /></button
+					}}><History strokeWidth={1.85} style="margin-bottom: -4px;" /></button
 				>
 			</div>
 		</div>
 	</div>
-	<div class="headerContainer headerMarginTop">
-		<h2 class="header">Divisions</h2>
-	</div>
-	<div class="infoContainer">
-		<Info
-			strokeWidth={2.25}
-			size={24}
-			color="white"
-			style="opacity: 50%; margin-right: 5px; margin-left: 2px; min-width: 24px;"
-		/>
-		<p>
-			Elo above 2000 will be converted into tokens on {nextMonth.toLocaleDateString("en-US", {
-				month: "long",
-				day: "numeric",
-				year: "numeric",
-			})}.
-		</p>
-	</div>
 	<DuelDivisionDisplay />
+	<div class="headerContainer headerMarginTop">
+		<h2 class="header">Tournaments</h2>
+	</div>
+	<TournamentOverview />
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Friends</h2>
 		<!-- Inbox and Friend request buttons-->
@@ -174,7 +169,7 @@
 					} else {
 						signupPrompt();
 					}
-				}}><p class="addFriendText">Add friend <ContactRound strokeWidth={2} size={22} /></p></button
+				}}><p class="addFriendText">Add <ContactRound strokeWidth={2} size={22} /></p></button
 			>
 			<button
 				class="standardButton white friendActionButton"
@@ -203,7 +198,7 @@
 							role="menu"
 							tabindex="0"
 							onclick={() => {
-								loadProfileFromId(entry.id, true);
+								loadProfileFromId(entry.id);
 							}}
 						>
 							{#if entry.online}
@@ -257,7 +252,7 @@
 		flex-wrap: wrap;
 	}
 
-	:global(.infoIcon) {
+	:global(.infoIconMultiplayer) {
 		width: 30px;
 		height: 30px;
 		opacity: 0.5;
@@ -305,7 +300,7 @@
 		justify-content: center !important;
 		min-height: 50px;
 		padding-inline: 15px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	.playButtonsHeader {
@@ -329,7 +324,7 @@
 	}
 
 	.friendItem {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		display: flex;
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
@@ -407,7 +402,7 @@
 		height: 50px;
 		width: auto;
 		flex-grow: 1;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	#multiplayerSelectDuels {
@@ -483,8 +478,9 @@
 
 	.friendBoxScroll {
 		overflow-y: auto;
-		max-height: 250px;
+		max-height: 255px;
 		width: 100%;
+		scrollbar-width: none;
 	}
 
 	.innerFriendBox {

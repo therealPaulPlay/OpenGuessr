@@ -81,7 +81,7 @@
 	.image-container {
 		overflow: hidden;
 		box-sizing: border-box;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		margin-bottom: 10px;
 		position: relative;
 	}

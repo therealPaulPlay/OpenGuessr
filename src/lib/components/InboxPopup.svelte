@@ -40,7 +40,7 @@
 						role="menu"
 						tabindex="0"
 						onclick={() => {
-							loadProfileFromId(entry.id, true);
+							loadProfileFromId(entry.id);
 						}}
 					>
 						<p>{entry.user_name}</p>
@@ -112,7 +112,7 @@
 		box-shadow: var(--box-shadow);
 		width: 100%;
 		box-sizing: border-box;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		margin-top: var(--box-margin);
 		padding: var(--box-margin);

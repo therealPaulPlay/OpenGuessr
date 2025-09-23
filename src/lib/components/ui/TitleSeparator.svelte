@@ -1,8 +1,8 @@
 <script>
-	let { text = "Default", noMargin = false } = $props();
+	let { text = "Default", noMargin = false, class: classes } = $props();
 </script>
 
-<div class="flexContainer" class:noMargin>
+<div class="flexContainer {classes}" class:noMargin>
 	<p>{text}</p>
 	<div class="line"></div>
 </div>
@@ -13,7 +13,7 @@
 		background-color: white;
 		opacity: 0.15;
 		flex-grow: 1;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		margin-top: 5px;
 	}
 

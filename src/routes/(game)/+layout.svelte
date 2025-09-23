@@ -51,6 +51,8 @@
 	import ShopPurchaseAnimation from "$lib/components/ShopPurchaseAnimation.svelte";
 	import BugspotIframePopup from "$lib/components/BugspotIframePopup.svelte";
 	import RoundLogPopup from "$lib/components/RoundLogPopup.svelte";
+	import TournamentInfoPopup from "$lib/components/TournamentInfoPopup.svelte";
+	import TournamentMatchResultsPopup from "$lib/components/TournamentMatchResultsPopup.svelte";
 
 	// Start ads
 	onMount(() => {
@@ -135,6 +137,8 @@
 <SupporterPopup />
 <FriendBrowserPopup />
 <DivisionMatchHistoryPopup />
+<TournamentInfoPopup />
+<TournamentMatchResultsPopup />
 <InboxPopup />
 <HelpPopup />
 <DuelResultPopup />

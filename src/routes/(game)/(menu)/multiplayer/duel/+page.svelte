@@ -89,7 +89,7 @@
 	.tryButton {
 		min-height: 50px;
 		padding-inline: 20px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	.duelCenterBox {

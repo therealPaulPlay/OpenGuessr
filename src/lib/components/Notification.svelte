@@ -3,7 +3,6 @@
 		notificationVisible,
 		notificationText,
 		acceptText,
-		showAcceptButton,
 		dismissFunction,
 		acceptFunction,
 	} from "$lib/stores/context-specific/notificationStore";
@@ -50,7 +49,7 @@
 	>
 		<p id="notificationText">{$notificationText}</p>
 		<div class="notificationButtonBox">
-			{#if $showAcceptButton}
+			{#if $acceptFunction}
 				<button id="notificationAccept" class="standardButton white" onclick={accept}>{$acceptText}</button>
 			{/if}
 			<button id="notificationDismiss" class="standardButton white" onclick={dismiss}>

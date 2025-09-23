@@ -270,7 +270,7 @@
 <style>
 	.settingsBox {
 		background-color: var(--box-color);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		overflow: hidden;

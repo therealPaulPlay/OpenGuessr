@@ -1,12 +1,12 @@
 import { isAuthenticated } from "$lib/stores/accountStore";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { get } from "svelte/store";
 
 export async function getProfileData(id) {
 
     try {
-        const response = await fetch(get(accountUrl) + `/accounts/profile/${id}${get(isAuthenticated) && id !== localStorage.getItem("id") ? `?id=${localStorage.getItem("id")}` : ''}`, {
+        const response = await fetch(get(apiUrl) + `/accounts/profile/${id}${get(isAuthenticated) && id !== localStorage.getItem("id") ? `?id=${localStorage.getItem("id")}` : ''}`, {
             method: 'GET',
             headers: {
                 'Content-Type': 'application/json'

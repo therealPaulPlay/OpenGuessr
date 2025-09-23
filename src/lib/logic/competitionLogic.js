@@ -15,7 +15,7 @@ import {
 } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { get } from "svelte/store";
 import { username } from "$lib/stores/accountStore";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
@@ -97,7 +97,7 @@ async function submitCompetitionResult(compId, score) {
             score: score
         };
 
-        const response = await fetch(get(accountUrl) + "/competitions/submit/" + compId, {
+        const response = await fetch(get(apiUrl) + "/competitions/submit/" + compId, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

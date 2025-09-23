@@ -4,7 +4,7 @@ import { initializeRewardedAd } from "$lib/utils/rewardedAds";
 import { monthlySupportAmount, showSlideup, slideupButtonDisabled, slideupButtonText, slideupCallback, slideupText, slideupTitle } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { get } from "svelte/store";
 import { supporterWindowIfAuthenticated } from "./showSupporterPopup";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { supporterLevel } from "$lib/stores/accountStore";
 
 function showSupporterSlideup() {
@@ -27,7 +27,7 @@ async function getMonthlySupportedAmount() {
     if (get(monthlySupportAmount) != null) return get(monthlySupportAmount);
 
     try {
-        const response = await fetch(get(accountUrl) + "/stripe/statistics/current-month", {
+        const response = await fetch(get(apiUrl) + "/stripe/statistics/current-month", {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",

@@ -69,7 +69,7 @@
 	.roundLogContainer {
 		height: fit-content;
 		padding: var(--box-margin);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 	}

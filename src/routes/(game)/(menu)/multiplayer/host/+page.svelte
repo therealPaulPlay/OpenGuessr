@@ -31,11 +31,12 @@
 	import { fade, scale, slide } from "svelte/transition";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { page } from "$app/state";
+	import { idToMapName } from "$lib/utils/idToMapName";
 
 	function getFormattedCategory() {
 		if (typeof window === "undefined") return "loading...";
 		const category = localStorage.getItem("selectedCategory") || "standard";
-		return category.replace("community_", "");
+		return idToMapName(category);
 	}
 
 	let roomOpened = $state(false);
@@ -134,7 +135,7 @@
 		{/if}
 		{#if $hostStage == 2}
 			<!-- Room code-->
-			<div class="roomCreationModule multiplayerHostSettings">
+			<div class="roomCreationModule multiplayerHostSettings noGap">
 				<p class="codeDisplayText">Join with code:</p>
 				<h1 id="roomCodeDisplay">
 					{$roomcode?.slice(0, 3) || "..."}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomcode?.slice(3) ||
@@ -150,7 +151,8 @@
 						{#if $multiplayerTableArray?.length > 0}
 							{#each $multiplayerTableArray as player, i}
 								<span class="playerNameInline"
-									>{truncatePlayerName(player[1])}{#if i < $multiplayerTableArray.length - 1}<span>,&nbsp;</span>{/if}
+									>{truncatePlayerName(player.username)}{#if i < $multiplayerTableArray.length - 1}<span>,&nbsp;</span
+										>{/if}
 								</span>
 							{/each}
 						{:else}
@@ -163,17 +165,18 @@
 						<p class="playerBoxElement playerBoxTeams">
 							<span>{teamIndex !== 0 ? `Team ${teamIndex}:` : `No team:`}</span>
 							{#if team.players?.length > 0}
-								{#each team.players as player, i (player[0])}
+								{#each team.players as player, i (player.clientId)}
 									<span class="playerNameInline">
-										{truncatePlayerName(player[1])}
+										{truncatePlayerName(player.username)}
 										<select
 											name="teams"
 											class="teamSelector standardButton white"
-											onchange={(e) => updatePlayerTeam(player[0], e.target.value)}
+											onchange={(e) => updatePlayerTeam(player.clientId, e.target.value)}
 										>
+											<!-- Generate select options for every team -->
 											{#each Object.values($multiplayerTableArray) as teamObject}
 												{@const index = teamObject.teamIndex}
-												<option value={index} selected={player[4] == index}>Team {index}</option>
+												<option value={index} selected={player.teamIndex == index}>Team {index}</option>
 											{/each}
 										</select>{#if i < team.players.length - 1}<span>,&nbsp;</span>{/if}
 									</span>
@@ -198,7 +201,7 @@
 								role="menu"
 								tabindex="0"
 								onclick={() => {
-									loadProfileFromId(entry.id, true);
+									loadProfileFromId(entry.id);
 								}}
 							>
 								<p class="friendsRoomEntryText">{entry.user_name}</p>
@@ -347,7 +350,7 @@
 	}
 
 	.makeRoomPublicButton {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		min-height: 50px;
 		position: relative;
 	}
@@ -367,7 +370,7 @@
 	.roomCreationFriendItem {
 		background-color: rgba(255, 255, 255, 0.1);
 		border: none;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		display: flex;
 		height: fit-content;
 		justify-content: space-between;
@@ -457,7 +460,7 @@
 		background-color: rgba(255, 255, 255, 0.1);
 		height: 27px;
 		width: 30px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		text-align: center;
 		color: rgba(255, 255, 255, 0.5);
 		font-size: 22px;
@@ -474,12 +477,12 @@
 
 	.copyLinkButton {
 		min-height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	#multiplayerHost {
 		padding-inline: 20px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		min-height: 50px;
 	}
 
@@ -504,7 +507,7 @@
 		display: flex;
 		gap: var(--box-margin);
 		box-shadow: var(--box-shadow);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		justify-content: left;
 		padding: var(--panel-margin);
 		width: fit-content;
@@ -517,5 +520,9 @@
 
 	.selectedMapField p {
 		margin-inline: 10px;
+	}
+
+	.noGap {
+		gap: unset;
 	}
 </style>
