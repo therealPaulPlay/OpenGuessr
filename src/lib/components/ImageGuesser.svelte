@@ -57,22 +57,16 @@
 
 <svelte:window onresize={resetTransformAndZoom} />
 
-<div
-	id="imageGuessrOverlay"
-	style:display={$imageGuessr ? "flex" : "none"}
-	style:opacity={$imageGuessr ? "1" : "0"}
-	style:pointerEvents={$imageGuessr ? "auto" : "none"}
-	onwheel={handleWheel}
->
-	<div id="imageGuessrImage" class="guessImageLoading" bind:this={$imageGuessrImage} role="img"></div>
-	<p id="imageGuessrAttribution">
+<div class="imageGuessrOverlay" onwheel={handleWheel} style:display={$imageGuessr ? "flex" : "none"}>
+	<div class="imageGuessrImage guessImageLoading" bind:this={$imageGuessrImage} role="img"></div>
+	<p class="imageGuessrAttribution">
 		CC0 Images by <a href="https://commons.wikimedia.org/" target="_blank">Wikimedia</a>
 	</p>
-	<div id="imageGuessrBackground" class="guessImageLoading" bind:this={$imageGuessrBackground}></div>
+	<div class="imageGuessrBackground guessImageLoading" bind:this={$imageGuessrBackground}></div>
 </div>
 
 <style>
-	#imageGuessrOverlay {
+	.imageGuessrOverlay {
 		width: 100%;
 		height: 100%;
 		position: fixed;
@@ -92,7 +86,7 @@
 		background-color: rgb(22, 22, 22);
 	}
 
-	#imageGuessrImage {
+	.imageGuessrImage {
 		max-width: 40%;
 		max-height: 70%;
 		width: 100%;
@@ -111,16 +105,16 @@
 			drop-shadow(-10px 0px 0px rgb(255, 255, 255)) drop-shadow(0px -10px 0px rgb(255, 255, 255));
 	}
 
-	#imageGuessrAttribution {
-		font-size: 22px;
+	.imageGuessrAttribution {
 		color: white;
 		opacity: 0.5;
 		z-index: 2;
 		margin-bottom: 10vh;
 		margin-top: 10px;
+		font-size: 20px;
 	}
 
-	#imageGuessrBackground {
+	.imageGuessrBackground {
 		position: fixed;
 		width: 100%;
 		height: 100%;
@@ -131,16 +125,12 @@
 		opacity: 1;
 	}
 
-	#imageGuessrAttribution {
-		font-size: 20px;
-	}
-
 	:global(.guessImageLoading) {
 		opacity: 0 !important;
 	}
 
 	@media all and (max-width: 1200px) {
-		#imageGuessrImage {
+		.imageGuessrImage {
 			max-width: 80%;
 			max-height: 40%;
 		}
