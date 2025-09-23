@@ -151,7 +151,8 @@
 						{#if $multiplayerTableArray?.length > 0}
 							{#each $multiplayerTableArray as player, i}
 								<span class="playerNameInline"
-									>{truncatePlayerName(player.username)}{#if i < $multiplayerTableArray.length - 1}<span>,&nbsp;</span>{/if}
+									>{truncatePlayerName(player.username)}{#if i < $multiplayerTableArray.length - 1}<span>,&nbsp;</span
+										>{/if}
 								</span>
 							{/each}
 						{:else}
@@ -172,9 +173,10 @@
 											class="teamSelector standardButton white"
 											onchange={(e) => updatePlayerTeam(player.clientId, e.target.value)}
 										>
+											<!-- Generate select options for every team -->
 											{#each Object.values($multiplayerTableArray) as teamObject}
 												{@const index = teamObject.teamIndex}
-												<option value={index} selected={player.username == index}>Team {index}</option>
+												<option value={index} selected={player.teamIndex == index}>Team {index}</option>
 											{/each}
 										</select>{#if i < team.players.length - 1}<span>,&nbsp;</span>{/if}
 									</span>
