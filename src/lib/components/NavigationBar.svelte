@@ -8,7 +8,7 @@
 	import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import { EllipsisVertical, UserRoundPlus, X } from "lucide-svelte";
+	import { CircleUserRound, EllipsisVertical, UserRound, UserRoundPlus, X } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { blur, slide } from "svelte/transition";
 	import { goto } from "$app/navigation";
@@ -75,7 +75,7 @@
 						onclick={() => {
 							playSound("basic_button");
 							signupPrompt();
-						}}><span class="mobileSigninIcon"><UserRoundPlus strokeWidth={2.5} size={20} /></span></button
+						}}><span class="mobileUserIcon"><UserRoundPlus strokeWidth={2.5} size={20} /></span></button
 					>
 				{:else}
 					<button
@@ -85,8 +85,8 @@
 							playSound("basic_button");
 						}}
 					>
-						<img class="socialBarIcons" src="/img/profile_icon.png" alt="Your profile" />
-					</button>
+						<span class="mobileUserIcon"><CircleUserRound strokeWidth={2.25} size={20} /> </span></button
+					>
 				{/if}
 				<button
 					class="standardButton white"
@@ -336,9 +336,9 @@
 		opacity: 0.5 !important;
 	}
 
-	.mobileSigninIcon {
+	.mobileUserIcon {
 		vertical-align: -1px;
-		margin-left: 2px;
+		margin-inline: 2px;
 	}
 
 	.profileInfoSupporter {
