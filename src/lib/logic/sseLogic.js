@@ -68,8 +68,8 @@ export async function initializeSSEConnection() {
                             const showResult = () => {
                                 // For visual representation
                                 duelResultTitle.set(didWin ? "Victory!" : "Defeat!");
-                                eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
-                                tokenGain.set(didWin ? data.tokenGain : null);
+                                eloChange.set(data?.eloChanges?.[localStorage.getItem("id")] || 0);
+                                tokenGain.set(didWin ? data.tokenGain : 0);
 
                                 // Update data (Only apply updates if values are not null – they can be null for e.g. a draw!)
                                 if (get(eloChange)) elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
