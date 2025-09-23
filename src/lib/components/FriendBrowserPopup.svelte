@@ -6,7 +6,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { Search, UserRoundPlus } from "lucide-svelte";
 
 	let userSearchResults = $state();
@@ -27,7 +27,7 @@
 				return;
 			}
 
-			const response = await fetch($accountUrl + "/friends/search/" + query, {
+			const response = await fetch($apiUrl + "/friends/search/" + query, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -90,7 +90,7 @@
 					<div
 						class="friendSearchItem"
 						onclick={() => {
-							loadProfileFromId(entry.id, true);
+							loadProfileFromId(entry.id);
 						}}
 						role="menu"
 						tabindex="0"
@@ -134,7 +134,7 @@
 		box-shadow: var(--box-shadow);
 		width: 100%;
 		box-sizing: border-box;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		margin-top: var(--box-margin);
 		padding: var(--box-margin);

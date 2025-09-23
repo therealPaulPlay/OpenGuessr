@@ -1,4 +1,4 @@
-import { accountUrl } from '$lib/stores/context-specific/apiConfigStore.js';
+import { apiUrl } from '$lib/stores/context-specific/apiConfigStore.js';
 import { get } from 'svelte/store';
 import { error } from '@sveltejs/kit';
 
@@ -8,7 +8,7 @@ export async function load({ params, fetch }) {
 
   try {
     // Use SvelteKit's fetch for better SSR/hydration compatibility
-    const response = await fetch(get(accountUrl) + `/maps/${mapName.replaceAll("_", " ")}`);
+    const response = await fetch(get(apiUrl) + `/maps/${mapName.replaceAll("_", " ")}`);
     if (!response.ok) throw error(response.status, `Map not found`);
 
     const mapData = await response.json();

@@ -32,7 +32,7 @@
 	}
 
 	.supporterArea {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background: var(--supporter-green);
 		color: white;
 		display: flex;

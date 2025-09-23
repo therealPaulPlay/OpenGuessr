@@ -8,7 +8,8 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { changeCategory } from "$lib/utils/changeCategory";
 	import { specialModes, continentMaps, countryMaps, basicMaps } from "$lib/stores/context-specific/officialMapsStore";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { idToMapName } from "$lib/utils/idToMapName.js";
 
 	// State
 	let currentFetchIndex = 0;
@@ -75,7 +76,7 @@
 				fav && "favourites",
 			].filter(Boolean);
 
-			const response = await fetch($accountUrl + "/maps/" + parts.join(""), {
+			const response = await fetch($apiUrl + "/maps/" + parts.join(""), {
 				signal: fav ? currentFavController.signal : currentController.signal,
 			});
 
@@ -137,18 +138,6 @@
 			}
 		} catch (error) {
 			console.error("Error removing community map:", error);
-		}
-	}
-
-	function idToMapName(str) {
-		try {
-			return str
-				.replaceAll("_", " ")
-				.split(" ")
-				.map((word) => word.charAt(0).toUpperCase() + word.slice(1))
-				.join(" ");
-		} catch {
-			return "Error (?)";
 		}
 	}
 
@@ -613,7 +602,7 @@
 		text-decoration: none;
 		align-items: center;
 		background-color: rgba(255, 255, 255, 0.1);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: var(--box-margin);
 		padding-inline: 15px;
 		box-sizing: border-box;
@@ -707,7 +696,7 @@
 
 	.expandButton {
 		margin-inline: auto;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding-inline: 30px;
 		margin-bottom: 10px;
 		transition:
@@ -804,7 +793,7 @@
 	}
 
 	#uploadButton {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		text-decoration: none;
 		margin-top: auto;
 		min-height: 50px;
@@ -846,7 +835,7 @@
 		min-width: 280px;
 		gap: var(--box-margin);
 		align-items: center;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: var(--box-margin);
 		margin-bottom: 20px;
 		background-color: var(--box-color);

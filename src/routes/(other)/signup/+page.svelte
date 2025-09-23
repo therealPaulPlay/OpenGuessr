@@ -4,7 +4,7 @@
 	import inIframe from "$lib/utils/checkIframe";
 	import { onMount } from "svelte";
 	import { fade, scale, slide } from "svelte/transition";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { goto } from "$app/navigation";
 
 	let signupMessageColor = $state("white");
@@ -16,7 +16,7 @@
 	async function loginUser(email, password) {
 		try {
 			// Make the POST request using Fetch API
-			const response = await fetch(`${$accountUrl}/accounts/login`, {
+			const response = await fetch(`${$apiUrl}/accounts/login`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -63,7 +63,7 @@
 	async function registerUser(username, email, password, captchaToken, successFunction) {
 		try {
 			// Make the POST request using Fetch API
-			const response = await fetch(`${$accountUrl}/accounts/register`, {
+			const response = await fetch(`${$apiUrl}/accounts/register`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -94,7 +94,7 @@
 	async function sendPasswordResetEmail(email, successFunction) {
 		try {
 			// Make the POST request using Fetch API
-			const response = await fetch(`${$accountUrl}/accounts/reset-password-request`, {
+			const response = await fetch(`${$apiUrl}/accounts/reset-password-request`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -120,7 +120,7 @@
 	async function changePassword(token, newPassword, successFunction) {
 		try {
 			// Make the POST request using Fetch API
-			const response = await fetch(`${$accountUrl}/accounts/reset-password`, {
+			const response = await fetch(`${$apiUrl}/accounts/reset-password`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -556,7 +556,7 @@
 	input {
 		width: calc(80% - 20px);
 		padding: 15px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	.password-container {
@@ -572,7 +572,7 @@
 		justify-content: space-between;
 		min-width: 250px;
 		background-color: rgba(255, 255, 255, 0.15);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: var(--box-margin);
 		padding-left: calc(var(--box-margin) + var(--panel-margin));
 		margin-top: 50px;

@@ -1,7 +1,7 @@
 import { username } from "$lib/stores/accountStore";
 import { profileData } from "$lib/stores/context-specific/profileStore";
 import { get } from "svelte/store";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { errorPopup } from "./errorHandling";
 
 export async function updateProfileUsername(newUsername) {
@@ -21,7 +21,7 @@ export async function updateProfileUsername(newUsername) {
 
 async function updateUsername(requestedUsername) {
     try {
-        const response = await fetch(`${get(accountUrl)}/accounts/update/username`, {
+        const response = await fetch(`${get(apiUrl)}/accounts/update/username`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

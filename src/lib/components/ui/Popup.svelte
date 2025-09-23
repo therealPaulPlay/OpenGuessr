@@ -57,7 +57,7 @@
 	}
 
 	.closePopupButton {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--panel-color-soft);
 		position: absolute;
 		top: var(--layout-margin);

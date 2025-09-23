@@ -8,7 +8,7 @@
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
 	import { showNotification } from "$lib/utils/notifications";
 	import { get } from "svelte/store";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { ArrowDown, Info } from "lucide-svelte";
 
 	let jsonPopup = $state(false);
@@ -62,7 +62,7 @@
 			const mapData = await combineMapData();
 			const payload = { id, name, description, mapData, category };
 
-			const response = await fetch($accountUrl + "/maps", {
+			const response = await fetch($apiUrl + "/maps", {
 				method: "POST",
 				headers: {
 					Authorization: `Bearer ` + localStorage.getItem("bearer"),
@@ -246,7 +246,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		margin-top: 10px;
 		padding-top: 2px;
 		padding-bottom: 2px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		min-height: 50px;
 		min-width: 150px;
 	}
@@ -274,14 +274,14 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	}
 
 	.submitButton {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		margin-top: var(--box-margin);
 		margin-bottom: var(--layout-margin);
 	}
 
 	.infoNoteBox {
 		background-color: rgba(0, 0, 0, 0.1);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: 10px;
 		padding-inline: 20px;
 		display: flex;
@@ -293,7 +293,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 
 	.preBox {
 		background-color: rgba(0, 0, 0, 0.1);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		display: flex;
 		padding: var(--box-margin);
 		width: calc(100% - 20px);
@@ -311,7 +311,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	}
 
 	.uploadInfo {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		width: 75%;
 		min-height: 30px;
 		border: none;
@@ -360,7 +360,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		margin-top: 10px;
 		width: 150px;
 		min-height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	select option {

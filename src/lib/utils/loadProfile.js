@@ -5,7 +5,7 @@ import { showConfirmPopup } from "./confirmPopup";
 import { checkAuthenticationStatus, resetLocalSave } from "$lib/logic/accountLogic";
 import { signupPrompt } from "./signupPrompt";
 
-export async function loadProfileFromId(id, view) {
+export async function loadProfileFromId(id) {
     // Reset data
     profileData.set();
     profileExperience.set(0);
@@ -29,7 +29,7 @@ export async function loadProfileFromId(id, view) {
     }
 
     // Show profile Popup
-    if (view && data) profilePopup.set(true);
+    if (data) profilePopup.set(true);
 
     return true;
 }

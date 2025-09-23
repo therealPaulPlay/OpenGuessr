@@ -34,29 +34,33 @@
 			{#if $teamAmount > 1}
 				<!-- Teams version -->
 				{#each $multiplayerTableArray as team}
-					{#each team.players as [entryPeerId, username, elo, score, teamIndex, id, badge]}
+					{#each team.players as { clientId, username, elo, score, teamIndex, userId, badge, spectator }}
 						<div
 							transition:slide
 							class="multiplayerOverlayEntry"
-							class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(socket)?.id}
+							class:halfTransparent={spectator}
+							class:yourMultiplayerOverlay={clientId && clientId == get(socket)?.id}
 							style:background-image={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
 						>
 							<div class="multiplayerEntryPlayerInfo">
 								<div
 									class="multiplayerEntryPlayerName"
-									class:entryNotClickable={!id}
+									class:entryNotClickable={!userId}
 									role="cell"
 									tabindex="0"
 									onclick={() => {
-										if (id) loadProfileFromId(id, true);
+										if (userId) loadProfileFromId(userId);
 									}}
 								>
 									<span class="usernameSpan">{username}</span>
 									{#if badge}
 										<Badge interactive={false} display={true} id={badge} />
 									{/if}
-									{#if id}
+									{#if userId}
 										{@render eloDisplay(elo)}
+									{/if}
+									{#if spectator}
+										{@render spectatorDisplay()}
 									{/if}
 								</div>
 								<div class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</div>
@@ -66,28 +70,32 @@
 				{/each}
 			{:else}
 				<!-- No teams version -->
-				{#each $multiplayerTableArray as [entryPeerId, username, elo, score, teamIndex, id, badge]}
+				{#each $multiplayerTableArray as { clientId, username, elo, score, teamIndex, userId, badge, spectator }}
 					<div
 						transition:slide
 						class="multiplayerOverlayEntry"
-						class:yourMultiplayerOverlay={entryPeerId && entryPeerId == get(socket)?.id}
+						class:halfTransparent={spectator}
+						class:yourMultiplayerOverlay={clientId && clientId == get(socket)?.id}
 					>
 						<div class="multiplayerEntryPlayerInfo">
 							<div
 								class="multiplayerEntryPlayerName"
-								class:entryNotClickable={!id}
+								class:entryNotClickable={!userId}
 								role="cell"
 								tabindex="0"
 								onclick={() => {
-									if (id) loadProfileFromId(id, true);
+									if (userId) loadProfileFromId(userId);
 								}}
 							>
 								<span class="usernameSpan">{username}</span>
 								{#if badge}
 									<Badge interactive={false} display={true} id={badge} />
 								{/if}
-								{#if id}
+								{#if userId}
 									{@render eloDisplay(elo)}
+								{/if}
+								{#if spectator}
+									{@render spectatorDisplay()}
 								{/if}
 							</div>
 							<div class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</div>
@@ -126,6 +134,12 @@
 {#snippet eloDisplay(elo)}
 	<div class="eloDisplay">
 		<p>{elo} Elo</p>
+	</div>
+{/snippet}
+
+{#snippet spectatorDisplay()}
+	<div class="eloDisplay">
+		<p>Spectator</p>
 	</div>
 {/snippet}
 
@@ -170,6 +184,10 @@
 		font-size: 20px !important;
 	}
 
+	.halfTransparent {
+		opacity: 0.5;
+	}
+
 	.buttonBox {
 		margin-top: 25px;
 		gap: var(--layout-margin);
@@ -183,13 +201,13 @@
 	#endMultiplayerRoundButton {
 		min-width: 150px;
 		height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	#endMultiplayerRematchButton {
 		min-width: 150px;
 		height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	.multiplayerTitle {
@@ -269,6 +287,7 @@
 		align-items: center;
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);
+		padding-left: 0;
 		mask-image: linear-gradient(to right, black 95%, transparent 100%);
 		overflow: hidden;
 	}

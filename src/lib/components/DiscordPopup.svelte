@@ -5,10 +5,11 @@
 	import { experience } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
+	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	function clickJoin() {
 		playSound("basic_button");
-		window.open("https://discord.gg/CSc3MbDrZ8", "_blank").focus();
+		window.open($discordInviteUrl, "_blank").focus();
 
 		setTimeout(async function () {
 			closePopup();

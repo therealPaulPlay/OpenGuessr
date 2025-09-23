@@ -44,7 +44,7 @@
 		max-width: 100%;
 		width: 100%;
 		background-color: var(--box-color-dark);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		gap: var(--box-margin);
 		padding: var(--box-margin);
 		box-sizing: border-box;

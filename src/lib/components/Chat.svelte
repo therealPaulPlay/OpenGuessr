@@ -76,9 +76,9 @@
 				{#if $chatArray}
 					{#each $chatArray as chat}
 						{#if chat.startsWith("System")}
-							<span style="opacity: 0.75">{chat}</span>
+							<span style="opacity: 0.75; overflow-wrap: break-word;">{chat}</span>
 						{:else}
-							{chat}
+							<span style="overflow-wrap: break-word;">{chat}</span>
 						{/if}
 						<br />
 					{/each}
@@ -182,6 +182,7 @@
 
 	.multiplayerChatMessages p {
 		margin-top: auto;
+		max-width: 100%;
 	}
 
 	#multiplayerSendButton {

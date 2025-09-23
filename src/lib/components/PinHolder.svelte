@@ -13,7 +13,6 @@
 	import { setSelectedProfilePin } from "$lib/utils/updateProfileData";
 	import { playSound } from "$lib/utils/soundManager";
 	import { blur, slide } from "svelte/transition";
-	import { showNotification } from "$lib/utils/notifications";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { Check } from "lucide-svelte";
 	import { handleShopPurchase } from "$lib/utils/shopHelper";

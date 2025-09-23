@@ -36,7 +36,7 @@
 	.infoBox {
 		padding: var(--box-margin);
 		width: calc(100% - 20px);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		width: calc(100% - 30px);
 		padding-inline: 15px;

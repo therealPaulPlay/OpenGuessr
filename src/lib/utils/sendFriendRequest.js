@@ -2,7 +2,7 @@ import { showNotification } from "$lib/utils/notifications";
 import { username } from "$lib/stores/accountStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { get } from "svelte/store";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 export async function sendFriendRequest(targetUserId, button) {
     try {
@@ -16,7 +16,7 @@ export async function sendFriendRequest(targetUserId, button) {
             recipientId: targetUserId
         };
 
-        const response = await fetch(get(accountUrl) + "/friends/send", {
+        const response = await fetch(get(apiUrl) + "/friends/send", {
             method: 'POST',
             headers: {
                 'Authorization': "Bearer " + localStorage.getItem("bearer"),
@@ -26,7 +26,7 @@ export async function sendFriendRequest(targetUserId, button) {
         });
 
         if (response.ok) {
-            showNotification("Friend request sent.", false, false, false);
+            showNotification("Friend request sent.");
 
             try {
                 button.style.opacity = "0.5";

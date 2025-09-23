@@ -1,6 +1,6 @@
 import { get } from "svelte/store";
 import { errorPopup } from "./errorHandling";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 let lastPublicRoomCode = "";
 
@@ -8,7 +8,7 @@ export async function addPublicRoom(code, playerCount = 0, map = "default") {
     lastPublicRoomCode = code;
 
     try {
-        const response = await fetch(get(accountUrl) + "/accounts/rooms/open-room/" + code, {
+        const response = await fetch(get(apiUrl) + "/rooms/open-room/" + code, {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
@@ -30,7 +30,7 @@ export async function addPublicRoom(code, playerCount = 0, map = "default") {
 
 export async function deletePublicRoom() {
     try {
-        const response = await fetch(get(accountUrl) + "/accounts/rooms/open-room/" + lastPublicRoomCode, {
+        const response = await fetch(get(apiUrl) + "/rooms/open-room/" + lastPublicRoomCode, {
             method: "DELETE",
             headers: {
                 "Content-Type": "application/json",
@@ -49,7 +49,7 @@ export async function deletePublicRoom() {
 
 export async function fetchPublicRooms() {
     try {
-        const response = await fetch(get(accountUrl) + "/accounts/rooms/list-open-rooms");
+        const response = await fetch(get(apiUrl) + "/rooms/list-open-rooms");
 
         if (response.ok) {
             const data = await response.json();
