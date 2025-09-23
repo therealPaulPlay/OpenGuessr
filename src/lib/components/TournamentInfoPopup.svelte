@@ -141,7 +141,7 @@
 					</div>
 				{/each}
 			{:else}
-				<p class="nothing-text">Match results will appear here.</p>
+				<p class="nothing-text">No matches to display.</p>
 			{/if}
 		</div>
 	</div>
@@ -166,7 +166,7 @@
 		<TitleSeparator text="Account requirements" class="tournament-divider-margin" />
 		<div class="info-container warnInfo">
 			<Info color="white" strokeWidth={2} class="info-icon-circular" />
-			<p>You need to have at least 1100 Elo and an account older than one week to enter a tournament.</p>
+			<p>You need to have at least 1100 Elo and an account older than 1 week.</p>
 		</div>
 	{/if}
 	{#if $selectedTournament?.status == "starting"}
@@ -305,7 +305,6 @@
 
 	:global(.info-icon-circular) {
 		margin-right: auto;
-		margin-bottom: 5px;
 		width: 25px;
 		height: 25px;
 		opacity: 0.5;
@@ -322,7 +321,7 @@
 		align-items: center;
 		background-color: var(--box-color);
 		margin-top: var(--layout-margin);
-		gap: 5px;
+		gap: var(--panel-margin);
 		flex-wrap: wrap;
 	}
 

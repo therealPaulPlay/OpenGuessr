@@ -242,7 +242,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						$roundLogPopup = true;
-					}}><History strokeWidth={2} style="vertical-align: -3.75px;" size={23} /></button
+					}}><History strokeWidth={1.85} style="vertical-align: -3.75px;" size={23} /></button
 				>
 				<button
 					class="standardButton white"
@@ -258,7 +258,7 @@
 							});
 					}}
 				>
-					<Link strokeWidth={2.15} style="vertical-align: -2.4px;" size={20} />
+					<Link strokeWidth={2} style="vertical-align: -2.4px;" size={20} />
 				</button>
 			{/if}
 			{#if $profileSupporterLevel >= 1}

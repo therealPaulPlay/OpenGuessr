@@ -16,7 +16,7 @@ export async function deleteRoomCodeFromMatchmakingServer() {
             id: localStorage.getItem("id")
         }
 
-        const response = await fetch(get(apiUrl) + "/accounts/rooms/delete-duel/" + get(roomcode), {
+        const response = await fetch(get(apiUrl) + "/rooms/delete-duel/" + get(roomcode), {
             method: 'DELETE',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export async function attemptDuelJoin(index, skillBased) {
 
     try {
         // Get Roomcode from server
-        const response = await fetch(get(apiUrl) + "/accounts/rooms/join-duel/" + index + `?elo=${get(elo)}&skill-based=${skillBased ?? false}`, {
+        const response = await fetch(get(apiUrl) + "/rooms/join-duel/" + index + `?elo=${get(elo)}&skill-based=${skillBased ?? false}`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -80,7 +80,7 @@ async function sendRoomCodeToMatchmakingServer(skillBased) {
             skillBased
         }
 
-        const response = await fetch(get(apiUrl) + "/accounts/rooms/host-duel/" + get(roomcode), {
+        const response = await fetch(get(apiUrl) + "/rooms/host-duel/" + get(roomcode), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

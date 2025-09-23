@@ -34,10 +34,11 @@
 			{#if $teamAmount > 1}
 				<!-- Teams version -->
 				{#each $multiplayerTableArray as team}
-					{#each team.players as { clientId, username, elo, score, teamIndex, userId, badge }}
+					{#each team.players as { clientId, username, elo, score, teamIndex, userId, badge, spectator }}
 						<div
 							transition:slide
 							class="multiplayerOverlayEntry"
+							class:halfTransparent={spectator}
 							class:yourMultiplayerOverlay={clientId && clientId == get(socket)?.id}
 							style:background-image={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
 						>
@@ -58,6 +59,9 @@
 									{#if userId}
 										{@render eloDisplay(elo)}
 									{/if}
+									{#if spectator}
+										{@render spectatorDisplay()}
+									{/if}
 								</div>
 								<div class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</div>
 							</div>
@@ -66,10 +70,11 @@
 				{/each}
 			{:else}
 				<!-- No teams version -->
-				{#each $multiplayerTableArray as { clientId, username, elo, score, teamIndex, userId, badge }}
+				{#each $multiplayerTableArray as { clientId, username, elo, score, teamIndex, userId, badge, spectator }}
 					<div
 						transition:slide
 						class="multiplayerOverlayEntry"
+						class:halfTransparent={spectator}
 						class:yourMultiplayerOverlay={clientId && clientId == get(socket)?.id}
 					>
 						<div class="multiplayerEntryPlayerInfo">
@@ -88,6 +93,9 @@
 								{/if}
 								{#if userId}
 									{@render eloDisplay(elo)}
+								{/if}
+								{#if spectator}
+									{@render spectatorDisplay()}
 								{/if}
 							</div>
 							<div class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</div>
@@ -126,6 +134,12 @@
 {#snippet eloDisplay(elo)}
 	<div class="eloDisplay">
 		<p>{elo} Elo</p>
+	</div>
+{/snippet}
+
+{#snippet spectatorDisplay()}
+	<div class="eloDisplay">
+		<p>Spectator</p>
 	</div>
 {/snippet}
 
@@ -168,6 +182,10 @@
 
 	.eloDisplay p {
 		font-size: 20px !important;
+	}
+
+	.halfTransparent {
+		opacity: 0.5;
 	}
 
 	.buttonBox {

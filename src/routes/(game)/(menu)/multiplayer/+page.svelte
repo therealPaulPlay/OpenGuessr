@@ -66,7 +66,7 @@
 	</div>
 	{#if $warnReportEntryData}
 		<div class="infoContainer warnInfo" transition:slide>
-			<TriangleAlert color="white" strokeWidth={2.5} class="infoIconMultiplayer triangleAlertMarginRight" />
+			<TriangleAlert color="white" strokeWidth={2.25} class="infoIconMultiplayer triangleAlertMarginRight" />
 			<p>
 				You are currently on the warnlist and under close observation for "{get(warnReportEntryData)?.reason?.trim()}".
 				Please contact the moderators on Discord if you think this is a mistake. Warnings can quickly turn into bans if
@@ -122,7 +122,7 @@
 					}}
 				>
 					Find duel
-					<Search size={20} strokeWidth={2.75} style="margin-bottom: -2px; margin-left: 1px;" />
+					<Search size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 1px;" />
 				</button>
 				<button
 					class="standardButton white multiplayerSelect"
@@ -134,9 +134,9 @@
 					}}
 				>
 					{#if $skillBasedMatchmaking}
-						<BicepsFlexed strokeWidth={1.75} style="margin-bottom: -3px;" />
+						<BicepsFlexed strokeWidth={1.85} style="margin-bottom: -3px;" />
 					{:else}
-						<Earth strokeWidth={1.75} style="margin-bottom: -3px;" />
+						<Earth strokeWidth={1.85} style="margin-bottom: -3px;" />
 					{/if}
 				</button>
 				<button
@@ -146,7 +146,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						divisionMatchHistoryPopup.set(true);
-					}}><History strokeWidth={2} style="margin-bottom: -4px;" /></button
+					}}><History strokeWidth={1.85} style="margin-bottom: -4px;" /></button
 				>
 			</div>
 		</div>
@@ -238,7 +238,7 @@
 		border-radius: 15px;
 		align-items: center;
 		background-color: var(--box-color);
-		margin-top: var(--layout-margin);
+		margin-bottom: var(--layout-margin);
 		gap: 5px;
 	}
 

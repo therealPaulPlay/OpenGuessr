@@ -59,7 +59,8 @@ export async function setSelectedProfilePin(pinId) {
 
 // Update selected badge
 export async function setProfileBadge(badge) {
-    if (badge == get(selectedBadge)) return; // Check if the new selection is different from the current one
+    if (badge == get(selectedBadge)) badge = null; // If the user clicks on the selected badge again, deselect it
+
     profileData.update((value) => {
         const newObject = value;
         newObject["badge"] = badge;

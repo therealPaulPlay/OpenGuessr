@@ -148,10 +148,10 @@ export async function createMultiplayerInstance() {
 
                 if (storage.confirmedArray && storage.players) {
                     const confirmedIDs = new Set(storage.confirmedArray); // Convert confirmedArray to a Set for efficient lookups
-                    const truncate = (name) => name.length > 10 ? `${name.slice(0, 7)}...` : name;
+                    const truncate = (nameString) => nameString.length > 10 ? `${nameString.slice(0, 7)}...` : nameString;
                     const remaining = storage.players
-                        .filter((player) => !confirmedIDs.has(player[0]))
-                        .map((player) => truncate(player[1]));
+                        .filter((player) => !confirmedIDs.has(player.clientId))
+                        .map((player) => truncate(player.username));
                     remainingPlayers.set(remaining); // Set the remainingPlayers to the usernames
                 }
 
@@ -385,7 +385,12 @@ function updateMultiplayerTableArray() {
     const players = get(socket)?.getStorage?.players;
 
     if (get(teamAmount) <= 1) {
-        multiplayerTableArray.set([...players].sort((a, b) => b.score - a.score));
+        multiplayerTableArray.set([...players].sort((a, b) => {
+            // Sort non-spectators first, then spectators, both by score
+            if (a.spectator && !b.spectator) return 1;
+            if (!a.spectator && b.spectator) return -1;
+            return b.score - a.score;
+        }));
     } else {
         // Group players by team
         const groupedTeams = players.reduce((acc, player) => {
@@ -462,12 +467,12 @@ function determineWinner(array) {
         const winningPlayerData = array[0];
         const followUpPlayerData = array[1] || null;
 
-        if (followUpPlayerData && winningPlayerData?.[3] == followUpPlayerData?.[3]) {
+        if (followUpPlayerData && winningPlayerData?.score == followUpPlayerData?.score) {
             multiplayerOverlayTitle.set("It's a draw!");
 
         } else {
-            multiplayerOverlayTitle.set(winningPlayerData?.[1] + " won!");
-            get(socket)?.id == winningPlayerData?.[0] ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
+            multiplayerOverlayTitle.set(winningPlayerData?.username + " won!");
+            get(socket)?.id == winningPlayerData?.clientId ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
         }
     }
 }

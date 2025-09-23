@@ -33,22 +33,22 @@
 					<div class="tournamentNameBox">
 						<h3 class="tournamentNameTitle" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
 							{tournament.name}{#if tournament.status == "ongoing"}
-								<span class="ongoingBadge" transition:blur>Ongoing</span>
+								<span class="ongoingBadge">Ongoing</span>
 							{:else if tournament.status == "starting"}
-								<span class="ongoingBadge" transition:blur>Enter now</span>
+								<span class="ongoingBadge">Enter now</span>
 							{/if}
 						</h3>
 					</div>
 					<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
-						<Clock style="margin-top: 1px; opacity: 0.75;" />
+						<Clock style="margin-top: 1px; opacity: 0.75;" strokeWidth={1.75} />
 						<p>{tournament.status == "finished" ? "Finished" : readableDate}</p>
 					</div>
 					<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
-						<Users style="opacity: 0.75;" />
+						<Users style="opacity: 0.75;" strokeWidth={1.75} />
 						<p>{tournament.saves?.toLocaleString()} calendar saves</p>
 					</div>
 					<div class="tournamentField" style:opacity={tournament.status == "finished" ? 0.5 : 1}>
-						<Medal style="margin-top: 1px; opacity: 0.75;" />
+						<Medal style="margin-top: 1px; opacity: 0.75;" strokeWidth={1.5} />
 						<p>{tournament.prize}</p>
 					</div>
 					<button

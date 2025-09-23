@@ -1,5 +1,5 @@
 import { showNotification } from "$lib/utils/notifications";
-import { username, elo, duelWinStreak, tokens } from "$lib/stores/accountStore";
+import { username, elo, duelWinStreak, tokens, supporterLevel } from "$lib/stores/accountStore";
 import { acceptFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
 import { linkJoinPopup } from "$lib/stores/uiStore";
@@ -69,11 +69,11 @@ export async function initializeSSEConnection() {
                                 // For visual representation
                                 duelResultTitle.set(didWin ? "Victory!" : "Defeat!");
                                 eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
-                                tokenGain.set(didWin ? data.tokenGain : 0);
+                                tokenGain.set(didWin ? data.tokenGain : null);
 
-                                // Update data
-                                elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
-                                tokens.set(get(tokens) + get(tokenGain));
+                                // Update data (Only apply updates if values are not null – they can be null for e.g. a draw!)
+                                if (get(eloChange)) elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
+                                if (get(tokenGain)) tokens.set(get(tokens) + get(tokenGain));
                                 duelWinStreak.set(didWin ? get(duelWinStreak) + 1 : 0);
 
                                 // Show result popup
@@ -93,17 +93,22 @@ export async function initializeSSEConnection() {
                             break;
 
                         case 'tournament-starting':
-                            showNotification(`A tournament is starting soon!`, () => {
-                                goto("/multiplayer");
-                            }, false, true);
+                            // Only show if not already on the page
+                            if (page.url.pathname !== "/multiplayer") {
+                                showNotification(`A tournament is starting soon!`, () => {
+                                    goto("/multiplayer");
+                                }, false, true);
+                            }
                             break;
 
                         case 'tournament-eliminated':
-                            showConfirmPopup("Eliminated!", "You can still stay in the tournament as a spectator.")
+                            showConfirmPopup("Eliminated!", "You can still stay in the tournament as a spectator.");
                             break;
 
                         case 'tournament-won':
-                            showConfirmPopup("You won!", "Congratulations, you won the tournament! Some prizes may require refreshing the website to be applied.")
+                            showConfirmPopup("You won!", "Congratulations, you won the tournament! Enjoy your prize.");
+                            if (data.tokenGain) tokens.set(get(tokens) + data.tokenGain);
+                            if (data.supporterTier) supporterLevel.set(Math.max(get(supporterLevel), data.supporterTier));
                             break;
 
                         case 'tournament-winner-announced':
@@ -111,7 +116,7 @@ export async function initializeSSEConnection() {
                             break;
 
                         case 'tournament-updated':
-                            if (page.url.pathname == "/multiplayer") fetchTournaments();
+                            if (page.url.pathname === "/multiplayer") fetchTournaments();
                             break;
                     }
                 } catch (error) {
