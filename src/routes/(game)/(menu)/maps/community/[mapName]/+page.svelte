@@ -14,7 +14,7 @@
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore.js";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore.js";
 	import SvgMap from "$lib/components/SvgMap.svelte";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 
@@ -63,7 +63,7 @@
 	async function likeOrDislikeMap(mapName) {
 		if (get(isAuthenticated)) {
 			try {
-				const response = await fetch($accountUrl + `/maps/like/${mapName}`, {
+				const response = await fetch($apiUrl + `/maps/like/${mapName}`, {
 					method: "POST",
 					headers: {
 						Authorization: "Bearer " + localStorage.getItem("bearer"),
@@ -91,7 +91,7 @@
 		try {
 			const playerId = localStorage.getItem("id") || null;
 
-			const response = await fetch($accountUrl + `/maps/rating/${name}`, {
+			const response = await fetch($apiUrl + `/maps/rating/${name}`, {
 				method: "POST",
 				headers: {
 					"Content-Type": "application/json",
@@ -127,7 +127,7 @@
 			};
 
 			// Send POST request to the server
-			const response = await fetch($accountUrl + "/maps/" + mapName, {
+			const response = await fetch($apiUrl + "/maps/" + mapName, {
 				method: "DELETE",
 				headers: {
 					Authorization: `Bearer ` + localStorage.getItem("bearer"),
@@ -197,7 +197,7 @@
 			};
 
 			// Send POST request to the server
-			const response = await fetch($accountUrl + "/maps", {
+			const response = await fetch($apiUrl + "/maps", {
 				method: "PUT",
 				headers: {
 					Authorization: `Bearer ` + localStorage.getItem("bearer"),
@@ -283,7 +283,7 @@
 			<p
 				class="authorText"
 				onclick={() => {
-					loadProfileFromId(mapAuthorId, true);
+					loadProfileFromId(mapAuthorId);
 				}}
 			>
 				by {mapAuthor}
@@ -514,7 +514,7 @@
 	#updateMapStatus {
 		background-color: var(--box-color);
 		padding: 5px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding-inline: 15px;
 		width: calc(100% - 30px);
 	}
@@ -540,7 +540,7 @@
 	}
 
 	.uploadInfo {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		width: calc(100% - 40px);
 		font-size: 16px;
 		padding: var(--box-margin);
@@ -649,7 +649,7 @@
 
 	.mapButton {
 		min-height: 50px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		justify-content: center;
 		align-items: center;
 		display: flex;

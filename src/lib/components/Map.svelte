@@ -77,7 +77,7 @@
 		height: 100%;
 		z-index: 9;
 		opacity: 60%;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		max-height: 100%;
 		background: #e8e4dc;
 		box-shadow: 0 2px 30px rgba(71, 71, 71, 0.5);
@@ -126,7 +126,7 @@
 	}
 
 	:global(.mk-map-view) {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 	}
 
 	:global(.leaflet-bottom, .leaflet-control-attribution) {

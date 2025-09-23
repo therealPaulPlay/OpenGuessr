@@ -4,7 +4,7 @@
 	import { onMount } from "svelte";
 	import { ArrowRight } from "lucide-svelte";
 	import { page } from "$app/stores";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	let creator = $state("No creator");
 
@@ -19,7 +19,7 @@
 
 		if (creator) {
 			try {
-				await fetch($accountUrl + "/creators/creator-link-statistic", {
+				await fetch($apiUrl + "/creators/creator-link-statistic", {
 					method: "POST",
 					headers: {
 						"Content-Type": "application/json",
@@ -111,7 +111,7 @@
 	}
 
 	.playButton {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		min-height: 50px;
 		padding-inline: 15px;
 	}

@@ -5,7 +5,7 @@
 	import { onMount } from "svelte";
 	import { fade } from "svelte/transition";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import { Info } from "lucide-svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
@@ -15,7 +15,7 @@
 	// API ----------------------------------------------------------------------------------------------------------------------------
 	async function getLeaderboard() {
 		try {
-			const response = await fetch(`${$accountUrl}/leaderboard/experience`, {
+			const response = await fetch(`${$apiUrl}/leaderboard/experience`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -39,7 +39,7 @@
 		try {
 			let id = localStorage.getItem("id");
 
-			const response = await fetch(`${$accountUrl}/leaderboard/experience-user-section/${id}`, {
+			const response = await fetch(`${$apiUrl}/leaderboard/experience-user-section/${id}`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -60,7 +60,7 @@
 
 	async function getEloLeaderboard() {
 		try {
-			const response = await fetch(`${$accountUrl}/leaderboard/elo`, {
+			const response = await fetch(`${$apiUrl}/leaderboard/elo`, {
 				method: "GET",
 				headers: {
 					"Content-Type": "application/json",
@@ -178,7 +178,7 @@
 			class="podium-item silver"
 			id="second-place"
 			onclick={() => {
-				loadProfileFromId(mainSectionEntries?.[1]?.id, true);
+				loadProfileFromId(mainSectionEntries?.[1]?.id);
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[1]?.user_name || "Guest"}</div>
@@ -189,7 +189,7 @@
 			class="podium-item gold"
 			id="first-place"
 			onclick={() => {
-				loadProfileFromId(mainSectionEntries?.[0]?.id, true);
+				loadProfileFromId(mainSectionEntries?.[0]?.id);
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[0]?.user_name || "Guest"}</div>
@@ -200,7 +200,7 @@
 			class="podium-item bronze"
 			id="third-place"
 			onclick={() => {
-				loadProfileFromId(mainSectionEntries?.[2]?.id, true);
+				loadProfileFromId(mainSectionEntries?.[2]?.id);
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[2]?.user_name || "Guest"}</div>
@@ -243,7 +243,7 @@
 					<p
 						class="middle maxlength"
 						onclick={() => {
-							loadProfileFromId(entry.id, true);
+							loadProfileFromId(entry.id);
 						}}
 					>
 						{entry.user_name}
@@ -272,7 +272,7 @@
 					<p
 						class="middle maxlength"
 						onclick={() => {
-							loadProfileFromId(entry.id, true);
+							loadProfileFromId(entry.id);
 						}}
 					>
 						{entry.user_name}
@@ -323,7 +323,7 @@
 		box-shadow: var(--box-shadow);
 		background-color: rgba(255, 255, 255, 0.1);
 		box-sizing: border-box;
-		border-radius: 8px;
+		border-radius: var(--box-margin);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -521,7 +521,7 @@
 
 	@media all and (orientation: portrait) {
 		.podium-item {
-			border-radius: 10px;
+			border-radius: var(--box-margin);
 		}
 
 		.podium-item .rank {

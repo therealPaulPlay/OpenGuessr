@@ -76,7 +76,7 @@
 
 	onMount(() => {
 		const profileFromURL = page.url.searchParams.get("profile-id");
-		if (profileFromURL != null) loadProfileFromId(profileFromURL, true);
+		if (profileFromURL != null) loadProfileFromId(profileFromURL);
 	});
 
 	let ProfileFlag = $derived(FlagIcons[$profileData?.flag] || undefined);
@@ -242,7 +242,7 @@
 					onclick={() => {
 						playSound("basic_button");
 						$roundLogPopup = true;
-					}}><History strokeWidth={2} style="vertical-align: -3.75px;" size={23} /></button
+					}}><History strokeWidth={1.85} style="vertical-align: -3.75px;" size={23} /></button
 				>
 				<button
 					class="standardButton white"
@@ -258,7 +258,7 @@
 							});
 					}}
 				>
-					<Link strokeWidth={2.15} style="vertical-align: -2.4px;" size={20} />
+					<Link strokeWidth={2} style="vertical-align: -2.4px;" size={20} />
 				</button>
 			{/if}
 			{#if $profileSupporterLevel >= 1}
@@ -503,7 +503,7 @@
 
 	.profileNameBox {
 		margin-bottom: var(--layout-margin);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		max-width: fit-content;
@@ -572,7 +572,7 @@
 	.aboutSection {
 		width: 100%;
 		min-height: 55px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		margin-bottom: var(--layout-margin);
 		transition: background-color 250ms ease;
 	}
@@ -588,7 +588,7 @@
 
 	:global(.stat-switch) {
 		margin-top: 8px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		max-width: 100%;
 		box-sizing: border-box;
@@ -609,7 +609,7 @@
 	}
 
 	.stats-container {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: var(--layout-margin) 0 10px 0;
 	}
 
@@ -626,7 +626,7 @@
 	.stat-card {
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		padding: 5px;
 		min-width: 150px;
 		display: flex;
@@ -645,7 +645,7 @@
 		border-radius: 100%;
 		margin-left: 8px;
 		background-color: rgba(255, 255, 255, 0.1);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--bulb-shadow);
 	}
 
 	.card-content {
@@ -667,7 +667,7 @@
 	}
 
 	.managementBox {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 	}

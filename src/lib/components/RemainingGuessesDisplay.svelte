@@ -48,7 +48,7 @@
 
 <style>
 	.remainingGuessesDisplay {
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		position: fixed;
 		top: 0;
 		background-color: var(--panel-color);

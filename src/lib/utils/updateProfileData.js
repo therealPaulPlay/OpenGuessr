@@ -2,7 +2,7 @@ import { getProfileData } from "$lib/utils/getProfileData";
 import { selectedBadge, selectedPinIndex } from "$lib/stores/accountStore";
 import { profileId, profileData, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 import { get } from "svelte/store";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { errorPopup } from "./errorHandling";
 
 // Generic function to update a single profile field
@@ -14,7 +14,7 @@ async function updateSingleProfileField(type, value) {
             value
         };
 
-        const response = await fetch(get(accountUrl) + "/accounts/profile/update-replace", {
+        const response = await fetch(get(apiUrl) + "/accounts/profile/update-replace", {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -59,7 +59,8 @@ export async function setSelectedProfilePin(pinId) {
 
 // Update selected badge
 export async function setProfileBadge(badge) {
-    if (badge == get(selectedBadge)) return; // Check if the new selection is different from the current one
+    if (badge == get(selectedBadge)) badge = null; // If the user clicks on the selected badge again, deselect it
+
     profileData.update((value) => {
         const newObject = value;
         newObject["badge"] = badge;

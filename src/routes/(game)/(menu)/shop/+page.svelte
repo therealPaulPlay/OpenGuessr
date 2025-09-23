@@ -9,7 +9,7 @@
 		specialOfferPrice,
 		specialOfferRarity,
 	} from "$lib/stores/context-specific/shopStore";
-	import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { Clock } from "lucide-svelte";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";

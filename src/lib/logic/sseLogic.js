@@ -1,5 +1,5 @@
 import { showNotification } from "$lib/utils/notifications";
-import { username, elo, duelWinStreak, tokens } from "$lib/stores/accountStore";
+import { username, elo, duelWinStreak, tokens, supporterLevel } from "$lib/stores/accountStore";
 import { acceptFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
 import { linkJoinPopup } from "$lib/stores/uiStore";
@@ -7,9 +7,13 @@ import { leaveMultiplayerRound, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { duelResultPopup } from "$lib/stores/uiStore";
 import { duelResultTitle, eloChange, tokenGain } from "$lib/stores/context-specific/duelResultStore";
-import { accountUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { multiplayer } from "$lib/stores/modeStore";
 import { roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
+import { goto } from "$app/navigation";
+import { showConfirmPopup } from "$lib/utils/confirmPopup";
+import { page } from "$app/state";
+import { fetchTournaments } from "$lib/utils/tournamentUtils";
 
 export async function initializeSSEConnection() {
     let eventSource;
@@ -23,7 +27,7 @@ export async function initializeSSEConnection() {
             if (eventSource) eventSource.close();
 
             // Create a new EventSource connection with the user ID as a query parameter
-            eventSource = new EventSource(`${get(accountUrl)}/events?userId=${userId}`);
+            eventSource = new EventSource(`${get(apiUrl)}/events?userId=${userId}`);
 
             eventSource.onopen = () => {
                 reconnectAttempts = 0; // Reset the reconnect attempts on successful connection
@@ -41,7 +45,7 @@ export async function initializeSSEConnection() {
                                 joinRoomFromNotification(data.roomcode, data.from);
                             }, () => {
                                 declineMatchInvite(data.from);
-                            }, true);
+                            });
                             break;
 
                         case 'invite-accepted':
@@ -55,21 +59,21 @@ export async function initializeSSEConnection() {
                         case 'friend-request-received':
                             showNotification(`${data.name} sent you a friend request.`, () => {
                                 acceptFriendRequest(data.from);
-                            }, false, true);
+                            });
                             break;
 
                         case 'duel-result':
                             const didWin = localStorage.getItem("id") == data?.winnerId;
-                            
+
                             const showResult = () => {
                                 // For visual representation
                                 duelResultTitle.set(didWin ? "Victory!" : "Defeat!");
                                 eloChange.set(data?.eloChanges?.[localStorage.getItem("id")]);
-                                tokenGain.set(didWin ? data.tokenGain : 0);
+                                tokenGain.set(didWin ? data.tokenGain : null);
 
-                                // Update data
-                                elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
-                                tokens.set(get(tokens) + get(tokenGain));
+                                // Update data (Only apply updates if values are not null – they can be null for e.g. a draw!)
+                                if (get(eloChange)) elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
+                                if (get(tokenGain)) tokens.set(get(tokens) + get(tokenGain));
                                 duelWinStreak.set(didWin ? get(duelWinStreak) + 1 : 0);
 
                                 // Show result popup
@@ -86,6 +90,33 @@ export async function initializeSSEConnection() {
                             if (get(multiplayer)) get(socket)?.onEvent("instanceDestroyed", showResult);
                             else showResult();
 
+                            break;
+
+                        case 'tournament-starting':
+                            // Only show if not already on the page
+                            if (page.url.pathname !== "/multiplayer") {
+                                showNotification(`A tournament is starting soon!`, () => {
+                                    goto("/multiplayer");
+                                }, false, true);
+                            }
+                            break;
+
+                        case 'tournament-eliminated':
+                            showConfirmPopup("Eliminated!", "You can still stay in the tournament as a spectator.");
+                            break;
+
+                        case 'tournament-won':
+                            showConfirmPopup("You won!", "Congratulations, you won the tournament! Enjoy your prize.");
+                            if (data.tokenGain) tokens.set(get(tokens) + data.tokenGain);
+                            if (data.supporterTier) supporterLevel.set(Math.max(get(supporterLevel), data.supporterTier));
+                            break;
+
+                        case 'tournament-winner-announced':
+                            showConfirmPopup(`${data.winnerName} won!`, "Thank you for participating in the tournament!");
+                            break;
+
+                        case 'tournament-updated':
+                            if (page.url.pathname === "/multiplayer") fetchTournaments();
                             break;
                     }
                 } catch (error) {
