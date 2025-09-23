@@ -2,31 +2,69 @@
 	import { imageGuessr } from "$lib/stores/modeStore.js";
 	import { imageGuessrImage, imageGuessrBackground } from "$lib/stores/context-specific/imageGuessrStore";
 
-	function scaleUp(event) {
-		const image = event.target;
-		image.style.transform += " scale(1.01)";
+	let zoomLevel = $state(1);
+	let translateX = $state(0);
+	let translateY = $state(0);
+
+	let imageUrl;
+
+	$effect(() => {
+		$imageGuessrImage.style.transform = `translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`;
+	});
+
+	function resetTransformAndZoom() {
+		zoomLevel = 1;
+		translateX = 0;
+		translateY = 0;
 	}
 
-	function scaleDown(event) {
-		const image = event.target;
-		image.style.transform = image.style.transform.replace(" scale(1.01)", "");
+	function handleWheel(event) {
+		event.preventDefault();
+
+		if (imageUrl !== $imageGuessrImage.style.backgroundImage) {
+			imageUrl = $imageGuessrImage.style.backgroundImage;
+			resetTransformAndZoom();
+		}
+
+		const delta = event.deltaY > 0 ? -0.2 : 0.2;
+		const newZoom = Math.max(1, Math.min(5, zoomLevel + delta));
+
+		const overlay = event.currentTarget;
+		const overlayRect = overlay.getBoundingClientRect();
+
+		// Calculate the vertical offset due to attribution text
+		const attributionOffset = overlayRect.height * 0.1 + 30; // 10vh + 30px margin
+
+		// Calculate mouse position relative to overlay center
+		const mouseX = event.clientX - overlayRect.left - overlayRect.width / 2;
+		const mouseY = event.clientY - overlayRect.top - overlayRect.height / 2 + attributionOffset / 2;
+
+		// Adjust for current translation to get position in image space
+		const imageSpaceX = mouseX - translateX;
+		const imageSpaceY = mouseY - translateY;
+
+		// Apply zoom scaling
+		if (newZoom == 1) {
+			translateX = 0;
+			translateY = 0;
+		} else {
+			translateX = mouseX - imageSpaceX * (newZoom / zoomLevel);
+			translateY = mouseY - imageSpaceY * (newZoom / zoomLevel);
+		}
+		zoomLevel = newZoom;
 	}
 </script>
+
+<svelte:window onresize={resetTransformAndZoom} />
 
 <div
 	id="imageGuessrOverlay"
 	style:display={$imageGuessr ? "flex" : "none"}
 	style:opacity={$imageGuessr ? "1" : "0"}
 	style:pointerEvents={$imageGuessr ? "auto" : "none"}
+	onwheel={handleWheel}
 >
-	<div
-		id="imageGuessrImage"
-		class="guessImageLoading"
-		bind:this={$imageGuessrImage}
-		onmouseenter={scaleUp}
-		onmouseleave={scaleDown}
-		role="img"
-	></div>
+	<div id="imageGuessrImage" class="guessImageLoading" bind:this={$imageGuessrImage} role="img"></div>
 	<p id="imageGuessrAttribution">
 		CC0 Images by <a href="https://commons.wikimedia.org/" target="_blank">Wikimedia</a>
 	</p>
@@ -64,7 +102,7 @@
 			filter 250ms ease,
 			opacity 500ms ease;
 		pointer-events: auto;
-		z-index: 2;
+		z-index: 3;
 		opacity: 1;
 		background-size: contain; /* Maintain aspect ratio */
 		background-position: center;
