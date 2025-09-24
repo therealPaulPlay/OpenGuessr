@@ -18,7 +18,7 @@ export function initMap() {
 
     const pixelRatio = Math.max(window.devicePixelRatio, 2);
 
-    // Initialize providers
+    // Initialize tile layers
     const standardMap = L.tileLayer("https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, {
         maxZoom: 20,
         subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
@@ -65,23 +65,30 @@ export function initMap() {
         onMapClick(e.latlng);
     });
 
+    leafletMap.whenReady(() => {
+        if (delayedMapReset) {
+            delayedMapReset = false;
+            resetMap();
+        }
+    })
+
     map.set(leafletMap);
 };
 
 // Reset map ---------------------------------------------------------------------------------------
-
+let delayedMapReset = false;
 let multiplayerMiniMarkers = []; // team markers
 
 // Reset the map and the confirm button
 export function resetMap(keepSize) {
-    if (get(map)) {
-        get(addedMarkers)?.forEach(marker => {
-            get(map).removeLayer(marker);
-        });
+    if (!get(map)) return delayedMapReset = true;
 
-        addedMarkers.set([]); // Clear the array
-        if (!keepSize) adjustMapToCountry();
-    }
+    // Clear markers
+    get(addedMarkers)?.forEach(marker => {
+        get(map).removeLayer(marker);
+    });
+    addedMarkers.set([]);
+    if (!keepSize) adjustMapToCountry();
 
     // Reset the guess button as well
     confirmButtonActive.set(false);

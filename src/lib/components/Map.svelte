@@ -36,10 +36,7 @@
 	}
 
 	onMount(async () => {
-		const module = await import("leaflet");
-		// let L = module.default;
-		// window.L = L; seemingly, leaflet attaches L to the window element when being loaded anyway
-
+		const module = await import("leaflet"); // Auto-attaches "L" object to the window element on import
 		initMap();
 
 		try {
