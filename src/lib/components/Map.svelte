@@ -4,7 +4,7 @@
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
-	import { initMap } from "$lib/logic/miniMap";
+	import { initializeMapIfNotAlready } from "$lib/logic/miniMap";
 	import { get } from "svelte/store";
 	import { onMount } from "svelte";
 	import { countryGuessr } from "$lib/stores/modeStore";
@@ -30,21 +30,6 @@
 			}
 		}
 	}
-
-	function onMapHover() {
-		get(map).invalidateSize();
-	}
-
-	onMount(async () => {
-		const module = await import("leaflet"); // Auto-attaches "L" object to the window element on import
-		initMap();
-
-		try {
-			new ResizeObserver(onMapHover).observe(document.getElementById("map"));
-		} catch (error) {
-			console.error("Resize oberser unsupported. Err: " + error);
-		}
-	});
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -57,6 +42,8 @@
 	onmouseenter={handleMapHover}
 	onmouseleave={handleMapUnhover}
 	onkeyup={spaceBarGuess}
+	onmouseover={initializeMapIfNotAlready}
+	ontouchstart={initializeMapIfNotAlready}
 	style:max-height={$mapExpanded ? "100%" : "0%"}
 	class:mapFullOpacityResult={Boolean($resultScreenEnabled)}
 	class:hidden={$countryGuessr && !$resultScreenEnabled}
