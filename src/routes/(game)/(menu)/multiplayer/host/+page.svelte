@@ -230,6 +230,7 @@
 						id="roomcodeLink"
 						class="copyLinkButton standardButton white"
 						use:tooltip={{ text: "Copy link" }}
+						class:buttonDisabled={!$roomcode}
 						onclick={() => {
 							playSound("basic_button");
 							const roomId = get(roomcode);
@@ -255,10 +256,10 @@
 					<button
 						class="standardButton white makeRoomPublicButton"
 						use:tooltip={{ text: "Toggle room visibility" }}
+						class:buttonDisabled={!$roomcode}
 						onclick={async () => {
 							playSound("basic_button");
 							if (!$isAuthenticated) return signupPrompt();
-							if (!$roomcode) return showNotification("Not initialized yet.");
 							if (!roomOpened) {
 								await addPublicRoom(
 									$roomcode,
