@@ -1150,6 +1150,7 @@
 
 	.yourItem {
 		box-shadow: var(--bulb-shadow);
+		background-color: rgba(255, 255, 255, 0.2);
 	}
 
 	.rankYou {
@@ -1263,7 +1264,7 @@
 	.youLabel {
 		box-shadow: var(--bulb-shadow);
 		border-radius: 5px;
-		background-color: var(--box-color);
+		background-color: rgba(255, 255, 255, 0.2);
 		padding: 5px;
 		padding-inline: 10px;
 	}
