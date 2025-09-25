@@ -78,7 +78,6 @@ async function requestMapLoad() {
 
             await new Promise(async (resolve) => {
                 if (data.apiKey.keyString) {
-
                     // Load the Google Maps API with the provided key
                     await loadGoogleMapsApi(data.apiKey.keyString);
                     resolve();

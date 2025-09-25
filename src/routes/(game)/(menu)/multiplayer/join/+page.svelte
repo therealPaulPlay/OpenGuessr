@@ -6,6 +6,7 @@
 	import { blur, slide } from "svelte/transition";
 	import { onDestroy, onMount } from "svelte";
 	import { fetchPublicRooms } from "$lib/utils/publicRooms";
+	import { idToMapName } from "$lib/utils/idToMapName";
 
 	let roomCodeInput = $state("");
 	let openRooms = $state([]);
@@ -101,7 +102,7 @@
 		{#each openRooms as room}
 			<div class="publicRoomItem">
 				<p>{room?.player_count} <Users strokeWidth={2.25} style="margin-bottom: -3px;" /></p>
-				<p class="roomItemMapName">Map: {room?.map}</p>
+				<p class="roomItemMapName">Map: {idToMapName(room?.map)}</p>
 				<button
 					class="standardButton white"
 					onclick={() => {
