@@ -14,6 +14,7 @@ export function confirmButtonClicks() {
     if (!get(multiplayer)) {
         enableResultScreen(get(mapPinLat), get(mapPinLng));
     } else {
+        playSound("lock_guess_in");
         mapInteractive.set(false);
         get(socket)?.sendRequest("confirmGuess");
     }
