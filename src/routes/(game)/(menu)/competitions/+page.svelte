@@ -684,7 +684,7 @@
 								showExpiredDaily = !showExpiredDaily;
 							}}
 						>
-							<p style:margin-left="var(--panel-margin)">View yesterday's daily competition.</p>
+							<p style:margin-left="var(--panel-margin)">Yesterday's daily competition</p>
 							<div class="expiredDailyIcon">
 								<ChevronDown
 									style="margin-bottom: -4px; transition: transform 250ms ease; {showExpiredDaily
@@ -694,12 +694,7 @@
 							</div>
 						</div>
 						{#if showExpiredDaily}
-							<div
-								class="expiredDailySpacer"
-								in:slide={{ duration: 50 }}
-								out:slide={{ duration: 50, delay: 175 }}
-							></div>
-							<div class="expiredDailyContainer" transition:slide={{ duration: 250 }}>
+							<div class="expiredDailyContainer" transition:slide={{ duration: 250 }} style:margin-top={"var(--box-margin)"}>
 								{@render competitionItem(
 									entry.id,
 									entry.name,
@@ -893,11 +888,6 @@
 
 	.expiredDailyContainer {
 		display: flex;
-		width: 100%;
-	}
-
-	.expiredDailySpacer {
-		height: var(--box-margin);
 		width: 100%;
 	}
 
