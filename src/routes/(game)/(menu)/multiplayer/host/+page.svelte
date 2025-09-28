@@ -378,6 +378,7 @@
 		align-items: center;
 		padding: var(--panel-margin);
 		flex-grow: 1;
+		box-shadow: var(--box-shadow);
 	}
 
 	.playerBoxElement {
