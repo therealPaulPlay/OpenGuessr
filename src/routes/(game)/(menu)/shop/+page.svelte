@@ -24,7 +24,6 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
-	import { initializeRewardedAd } from "$lib/utils/rewardedAds";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
@@ -130,12 +129,6 @@
 		const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
 		return `${hours}h, ${minutes}min`;
 	}
-
-	function freeTokenAdDismissed(notAvailable, rewardClaimed) {
-		if (notAvailable)
-			errorPopup("No ad available", "Please try again later or disable Ad Blockers.", "No ads", false, false);
-		else if (!rewardClaimed) errorPopup("Ad dismissed", "Video ad dismissed. ", "", false, true);
-	}
 </script>
 
 <svelte:head>
@@ -223,11 +216,11 @@
 								playSound("basic_button");
 								if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
 								if (!$isAuthenticated) return signupPrompt();
-								if (offer.price == 0) initializeRewardedAd(freeTokenAdDismissed, handleShopFreeTokens);
+								if (offer.price == 0) handleShopFreeTokens();
 								else shopPurchaseTokenTier(offer.tier);
 							}}
 						>
-							{offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free (Ad)"))}
+							{offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free"))}
 							{#if offer.savingsPercentage}
 								<span class="tokenSavings">-{offer.savingsPercentage}%</span>
 							{/if}
