@@ -9,7 +9,6 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { CircleArrowDown, CircleArrowUp, CircleMinus, CirclePlus, Clock9 } from "lucide-svelte";
-	import { getStripe } from "$lib/utils/getStripe";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 
@@ -23,8 +22,6 @@
 
 	// Function to handle buy button click
 	async function handleBuyClick(productId) {
-		const stripe = await getStripe();
-
 		try {
 			const id = localStorage.getItem("id");
 
@@ -38,14 +35,11 @@
 				body: JSON.stringify({ productId, id }),
 			});
 
-			const { sessionId } = await response.json();
+			if (response.ok) {
+				const { checkoutUrl } = await response.json();
+				window.location = checkoutUrl; // Redirect to Stripe Checkout
+			} else throw new Error(response.status);
 
-			// Redirect to Stripe Checkout
-			const result = await stripe.redirectToCheckout({
-				sessionId: sessionId,
-			});
-
-			if (result.error) throw new Error(result.error);
 		} catch (error) {
 			console.error("Error occured during checkout:", error);
 			errorPopup("Checkout error", "Failed to create the checkout session.", error, false, false);

@@ -6,7 +6,6 @@ import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { freeDailyTokensClaimed, shopAnimationImages, shopPurchaseAnimation, shopPurchaseAnimationTitle, specialOfferLoadingText, specialOfferPins, specialOfferPrice, specialOfferRarity } from "$lib/stores/context-specific/shopStore";
 import { errorPopup } from "./errorHandling";
-import { getStripe } from "./getStripe";
 
 export function handleShopPurchase(type = "pin", price, pinId, bundleItems) {
     if (!get(isAuthenticated)) return signupPrompt();
@@ -73,7 +72,6 @@ export async function handleShopYouTubePin() {
 }
 
 export async function shopPurchaseTokenTier(tier) {
-    const stripe = await getStripe();
     const productId = "token_tier_" + tier;
 
     try {
@@ -89,14 +87,11 @@ export async function shopPurchaseTokenTier(tier) {
             body: JSON.stringify({ productId, id }),
         });
 
-        const { sessionId } = await response.json();
+        if (response.ok) {
+            const { checkoutUrl } = await response.json();
+            window.location = checkoutUrl; // Redirect to Stripe Checkout
+        } else throw new Error(response.status);
 
-        // Redirect to Stripe Checkout
-        const result = await stripe.redirectToCheckout({
-            sessionId: sessionId,
-        });
-
-        if (result.error) throw new Error(result.error);
     } catch (error) {
         console.error("Error occured during checkout:", error);
         errorPopup("Checkout error", "An error occured trying to create a checkout session.", error, false, false);
