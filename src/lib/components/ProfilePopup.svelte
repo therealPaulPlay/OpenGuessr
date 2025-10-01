@@ -171,9 +171,9 @@
 >
 	<div class="profileNameArea">
 		<div class="profileViewName">
-			<h1>{$profileData.username}</h1>
+			<h1>{$profileData?.username}</h1>
 			<!-- Profile Flag -->
-			{#if $profileData?.flag && FlagIcons[$profileData.flag]}
+			{#if $profileData?.flag && FlagIcons[$profileData?.flag]}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<span
 					class="flag-container"
