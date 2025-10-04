@@ -35,8 +35,7 @@
 	<br />
 	<p>
 		This service is provided by PaulPlay at no cost and is intended for use as is. By using this Service, you agree to
-		the collection and use of information as described. Personal Information collected is used to provide and improve
-		the Service. Your data will not be shared except as detailed in this Privacy Policy.
+		the collection and use of information as described.
 	</p>
 	<br /><br />
 	<h2>What data we collect</h2>
@@ -48,9 +47,9 @@
 		>. With your consent, we use Google Analytics and cookies to track how you interact with OpenGuessr.
 		<br /><br />
 		If you register an account, we collect your username, IP address (to ensure multiplayer security and prevent cheating),
-		game-realted statistics and data you provide such as, but not limited to, your email. By creating an account you accept that we may share non-sensitive information
-		with other users. We also store game-related details like your account level. Purchasing items involves data processed
-		by Stripe—please see their
+		game-realted statistics and data you provide such as, but not limited to, your email. By creating an account you accept
+		that we may share non-sensitive information with other users. We also store game-related details like your account level.
+		Purchasing items involves data processed by Stripe—please see their
 		<a href="https://stripe.com/privacy" target="_blank">privacy policy</a>.
 		<br /><br />
 		Google Analytics collects:
@@ -100,8 +99,10 @@
 	<br /> <br />
 	<h2>Contact</h2>
 	<p>
-		For questions, contact us via the <a href="https://paulplay.studio/legal" target="_blank">contact form</a> at the bottom
-		of this page.
+		For questions, contact us via the contact form at the bottom of <a
+			href="https://paulplay.studio/legal"
+			target="_blank">our legal page</a
+		>.
 	</p>
 </div>
 
