@@ -15,12 +15,12 @@
 	<TitleSeparator text="Progression" />
 	<div class="pinSelector">
 		<PinHolder pinId="0" pinLockText="0 XP" unlocked={$profileExperience >= 0} />
-		<PinHolder pinId="1" pinLockText="5,000 XP" unlocked={$profileExperience >= 5000} />
-		<PinHolder pinId="2" pinLockText="30,000 XP" unlocked={$profileExperience >= 30000} />
-		<PinHolder pinId="3" pinLockText="100,000 XP" unlocked={$profileExperience >= 100000} />
-		<PinHolder pinId="4" pinLockText="500,000 XP" unlocked={$profileExperience >= 500000} />
-		<PinHolder pinId="5" pinLockText="5,000,000 XP" unlocked={$profileExperience >= 5000000} />
-		<PinHolder pinId="6" pinLockText="10,000,000 XP" unlocked={$profileExperience >= 10000000} />
+		<PinHolder pinId="1" pinLockText="5K XP" unlocked={$profileExperience >= 5000} />
+		<PinHolder pinId="2" pinLockText="30K XP" unlocked={$profileExperience >= 30000} />
+		<PinHolder pinId="3" pinLockText="100K XP" unlocked={$profileExperience >= 100000} />
+		<PinHolder pinId="4" pinLockText="500K XP" unlocked={$profileExperience >= 500000} />
+		<PinHolder pinId="5" pinLockText="5M XP" unlocked={$profileExperience >= 5000000} />
+		<PinHolder pinId="6" pinLockText="10M XP" unlocked={$profileExperience >= 10000000} />
 		<PinHolder pinId="7" pinLockText="75 Duel Wins" unlocked={$profileData?.duelsWon >= 75} />
 		<PinHolder pinId="8" pinLockText="50 Comp. Entries" unlocked={$profileData?.competitionsEntered >= 50} />
 		<PinHolder pinId="9" pinLockText="10 Streak" unlocked={$profileData?.highestCountryStreak >= 10} />
