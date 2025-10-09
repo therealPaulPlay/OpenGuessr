@@ -635,7 +635,7 @@
 		flex-basis: 15%;
 	}
 
-	.map-item-slim:hover {
+	.map-item-slim:hover, .map-item-link:hover {
 		scale: 1.03;
 	}
 
