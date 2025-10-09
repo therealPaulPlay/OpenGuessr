@@ -142,6 +142,9 @@
 									{/if}
 								{/if}
 								{entry.eloChange ?? "N/A"}
+								{#if entry.eloChange != null}
+									{" Elo"}
+								{/if}
 							</p>
 						</div>
 					</div>
