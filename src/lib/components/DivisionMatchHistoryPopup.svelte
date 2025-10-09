@@ -14,11 +14,14 @@
 	const limit = 50; // must match the backend limit
 
 	let filterId = $state();
+	let currentFilterId = $state();
 
 	// Fetch duel entries for the current page.
 	async function fetchEntries() {
 		matchResults = undefined;
 		try {
+			currentFilterId = filterId;
+
 			const response = await fetch(
 				$apiUrl + `/divisions/duel-history?page=${currentPage}` + (filterId ? `&id=${filterId}` : ""),
 				{
@@ -94,40 +97,52 @@
 		<div class="historyBoxScroll of-top of-bottom">
 			{#if matchResults && matchResults.duels && matchResults.duels.length > 0}
 				{#each matchResults.duels as entry}
-					<div
-						class="matchHistoryItem"
-						class:matchInvalid={entry.player1?.won == entry.player2?.won}
-						class:yourMatch={!filterId &&
-							(entry.player1?.id == localStorage.getItem("id") || entry.player2?.id == localStorage.getItem("id"))}
-					>
-						<div class="playerInfo">
-							<!-- svelte-ignore a11y_click_events_have_key_events -->
-							<span
-								class="playerName"
-								role="button"
-								tabindex="0"
-								onclick={() => loadProfileFromId(entry.player1.id)}
-							>
-								{entry.player1?.name}
-							</span>
-							<span class="playerStatus">
-								{entry.player1?.won ? "W" : entry.player2?.won ? "L" : "D"}
-							</span>
+					<div class="matchHistoryItemContainer">
+						<div
+							class="matchHistoryItem of-left of-right"
+							class:matchInvalid={entry.player1?.won == entry.player2?.won}
+							class:yourMatch={!currentFilterId &&
+								(entry.player1?.id == localStorage.getItem("id") || entry.player2?.id == localStorage.getItem("id"))}
+						>
+							<div class="playerInfo">
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<span class="playerName" role="button" tabindex="0" onclick={() => loadProfileFromId(entry.player1.id)}>
+									{entry.player1?.name}
+								</span>
+								<span class="playerStatus">
+									{entry.player1?.won ? "W" : entry.player2?.won ? "L" : "D"}
+								</span>
+							</div>
+							<span class="vs">vs.</span>
+							<div class="playerInfo">
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<span
+									class="playerName"
+									role="button"
+									tabindex="0"
+									onclick={() => loadProfileFromId(entry.player2?.id)}
+								>
+									{entry.player2?.name}
+								</span>
+								<span class="playerStatus">
+									{entry.player2?.won ? "W" : entry.player1?.won ? "L" : "D"}
+								</span>
+							</div>
 						</div>
-						<span class="vs">vs.</span>
-						<div class="playerInfo">
-							<!-- svelte-ignore a11y_click_events_have_key_events -->
-							<span
-								class="playerName"
-								role="button"
-								tabindex="0"
-								onclick={() => loadProfileFromId(entry.player2?.id)}
-							>
-								{entry.player2?.name}
-							</span>
-							<span class="playerStatus">
-								{entry.player2?.won ? "W" : entry.player1?.won ? "L" : "D"}
-							</span>
+						<div class="eloInfo">
+							<p>
+								{#if entry.eloChange != null}
+									{#if entry.player1?.id == currentFilterId || entry.player2?.id == currentFilterId}
+										{(entry.player1?.won && entry.player1?.id == currentFilterId) ||
+										(entry.player2?.won && entry.player2?.id == currentFilterId)
+											? "+"
+											: "-"}
+									{:else}
+										{"+/-"}
+									{/if}
+								{/if}
+								{entry.eloChange ?? "N/A"}
+							</p>
 						</div>
 					</div>
 				{/each}
@@ -162,6 +177,25 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+	.matchHistoryItemContainer {
+		display: flex;
+		gap: var(--box-margin);
+		width: 100%;
+	}
+
+	.eloInfo {
+		border-radius: 5px;
+		box-shadow: var(--box-shadow);
+		padding-inline: var(--panel-margin);
+		display: flex;
+		background-color: var(--box-color);
+		text-wrap: nowrap;
+	}
+
+	.eloInfo p {
+		align-self: center;
 	}
 
 	.filterInput {
@@ -234,13 +268,15 @@
 	.matchHistoryItem {
 		display: flex;
 		box-shadow: var(--box-shadow);
-		flex-wrap: wrap;
-		gap: 5px;
+		gap: var(--box-margin);
 		padding: 5px 15px;
 		border-radius: 5px;
 		justify-content: space-between;
 		transition: background-color 250ms ease;
 		background-color: var(--box-color);
+		flex-grow: 1;
+		overflow-x: auto;
+		scrollbar-width: none;
 	}
 
 	.matchInvalid {
