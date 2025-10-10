@@ -104,7 +104,7 @@
 			<div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
 				<p>Teams:</p>
 				<div class="ticker">
-					<Ticker limit={5} lowerLimitText="no" note="teams" initialValue={1} bind:value={$teamAmount} />
+					<Ticker limit={5} lowerLimitText="No" note="teams" initialValue={1} bind:value={$teamAmount} />
 				</div>
 			</div>
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
