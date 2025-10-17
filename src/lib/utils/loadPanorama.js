@@ -13,8 +13,9 @@ export function loadPanorama(lat, long) {
             long +
             "&key=" +
             get(panoramaKey) +
-            "&fov=90",
-        ); // API key (last part of URL)
+            "&fov=90" +
+            "&language=en" // Force EN since in languages written right to left, street view UI is flipped
+        );
 
         get(iframeElement).setAttribute("src", get(panoramaLink)); // Apply manually, to avoid URL override on move (where the URL changes)
         initialIframeLoad.set(true);

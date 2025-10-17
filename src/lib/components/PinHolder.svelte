@@ -82,7 +82,7 @@
 			<div class="shopButtonBox" transition:slide={{ axis: "y", duration: 250 }}>
 				<button
 					class="standardButton white centerButton"
-					class:disabled={unlocked}
+					disabled={unlocked}
 					onclick={() => {
 						playSound("basic_button");
 						handleShopPurchase("pin", price, pinId);

@@ -3,20 +3,20 @@ import { username } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
 import { censor } from "fast-profanity-filter";
 
-export function manuallySendChat(text) {
+export function sendChat(text) {
     if (!text) return;
-    get(socket)?.updateStorage("chats", "array-add", (get(username) || get(guestName)) + ": " + text);
+    get(socket)?.updateStorage("chats", "array-add", { username: get(username) || get(guestName), clientId: get(socket)?.id, text });
 }
 
-export function loadChat(chats) {
+export function loadAndProfanityCheckChat(chats) {
     const tempArray = [];
     try {
         for (const chat of chats) {
-            const text = censor(chat);
-            tempArray.push(text);
+            chat.text = censor(chat.text);
+            tempArray.push(chat);
         }
         chatArray.set(tempArray);
     } catch (error) {
-        console.error("Error loading chat:", error);
+        console.error("Error loading and censoring chats:", error);
     }
 }
