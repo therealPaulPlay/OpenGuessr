@@ -104,7 +104,7 @@
 			<div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
 				<p>Teams:</p>
 				<div class="ticker">
-					<Ticker limit={5} lowerLimitText="no" note="teams" initialValue={1} bind:value={$teamAmount} />
+					<Ticker limit={5} lowerLimitText="No" note="teams" initialValue={1} bind:value={$teamAmount} />
 				</div>
 			</div>
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
@@ -230,7 +230,7 @@
 						id="roomcodeLink"
 						class="copyLinkButton standardButton white"
 						use:tooltip={{ text: "Copy link" }}
-						class:buttonDisabled={!$roomcode}
+						disabled={!$roomcode}
 						onclick={() => {
 							playSound("basic_button");
 							const roomId = get(roomcode);
@@ -256,7 +256,7 @@
 					<button
 						class="standardButton white makeRoomPublicButton"
 						use:tooltip={{ text: "Toggle room visibility" }}
-						class:buttonDisabled={!$roomcode}
+						disabled={!$roomcode}
 						onclick={async () => {
 							playSound("basic_button");
 							if (!$isAuthenticated) return signupPrompt();
@@ -294,8 +294,7 @@
 				<button
 					id="multiplayerHost"
 					class="standardButton"
-					class:buttonDisabled={$hostStage == 2 &&
-						($connectionCount + 1 < get(teamAmount) || $connectionCount + 1 <= 1)}
+					disabled={$hostStage == 2 && ($connectionCount + 1 < get(teamAmount) || $connectionCount + 1 <= 1)}
 					onclick={() => {
 						playSound("basic_button");
 
@@ -498,11 +497,6 @@
 		font-size: 40px;
 		min-width: 75%;
 		text-align: center;
-	}
-
-	.buttonDisabled {
-		pointer-events: none !important;
-		opacity: 0.5;
 	}
 
 	.selectedMapField {

@@ -19,7 +19,7 @@
 	</div>
 	<button
 		class="backButton standardButton white"
-		class:buttonDisabled={$screenEscapeDisabled}
+		disabled={$screenEscapeDisabled}
 		onclick={() => {
 			playSound("basic_button");
 			goBack();
@@ -31,7 +31,7 @@
 	>
 	<button
 		class="backButton standardButton white"
-		class:buttonDisabled={$screenEscapeDisabled}
+		disabled={$screenEscapeDisabled}
 		onclick={() => {
 			playSound("basic_button");
 			leaveMultiplayerRound();
@@ -82,11 +82,6 @@
 
 	.homeButtonIcon {
 		vertical-align: -6px;
-	}
-
-	.buttonDisabled {
-		pointer-events: none !important;
-		opacity: 0.5;
 	}
 
 	.backButtonArrowIcon {

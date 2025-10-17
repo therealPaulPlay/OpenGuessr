@@ -10,8 +10,6 @@ import { get } from 'svelte/store';
 import { resetMap } from '$lib/logic/miniMap';
 import { resultScreenEnabled } from '$lib/stores/context-specific/resultScreenStore';
 import { errorPopup } from './errorHandling';
-import { showConfirmPopup } from './confirmPopup';
-import { changeCategory } from './changeCategory';
 
 // Load new location (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
 export async function generateNewLocation(type) {
@@ -29,9 +27,6 @@ export async function generateNewLocation(type) {
     } catch (error) {
         console.error("The coordinates for the panorama are not defined. " + "Lat: " + get(currentLocationLatitude) + " Long: " + get(currentLocationLongitude));
         errorPopup("Error loading locations", "Failed to retrieve locations from the server.", error.message);
-        showConfirmPopup("Reset to Standard map?", "Your selected map was potentially removed or renamed.", () => {
-            changeCategory("standard", true);
-        });
     }
 
     loadPanorama(get(currentLocationLatitude), get(currentLocationLongitude));

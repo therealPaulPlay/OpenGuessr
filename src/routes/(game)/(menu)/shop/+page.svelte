@@ -170,7 +170,7 @@
 					</div>
 					<button
 						class="standardButton white specialOfferButton"
-						class:disabled={$specialOfferPrice == 0}
+						disabled={$specialOfferPrice == 0}
 						onclick={() => {
 							playSound("basic_button");
 							handleShopPurchase("bundle", $specialOfferPrice, undefined, $specialOfferPins);
@@ -211,7 +211,7 @@
 						</div>
 						<button
 							class="standardButton shopOfferButton white"
-							class:disabled={offer.price == 0 && $freeDailyTokensClaimed}
+							disabled={offer.price == 0 && $freeDailyTokensClaimed}
 							onclick={() => {
 								playSound("basic_button");
 								if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
@@ -498,11 +498,6 @@
 		min-height: 50px;
 		border-radius: var(--box-margin);
 		padding-inline: 20px;
-	}
-
-	.disabled {
-		pointer-events: none;
-		opacity: 0.5;
 	}
 
 	.specialOfferCrossedOut {

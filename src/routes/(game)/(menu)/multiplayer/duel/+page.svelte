@@ -30,7 +30,7 @@
 		{/if}
 		<button
 			class="standardButton tryButton"
-			class:buttonDisabled={$matchmakingActive && !$matchmakingHosting}
+			disabled={$matchmakingActive && !$matchmakingHosting}
 			onclick={() => {
 				if (!$matchmakingActive) {
 					playSound("basic_button");
@@ -70,11 +70,6 @@
 	.infoContainer p {
 		opacity: 0.5;
 		flex-grow: 100;
-	}
-
-	.buttonDisabled {
-		pointer-events: none !important;
-		opacity: 0.5;
 	}
 
 	.multiplayerDuelStatus.loading {

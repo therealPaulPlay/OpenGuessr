@@ -59,7 +59,7 @@
 	</div>
 	<button
 		class="standardButton largeButton"
-		class:buttonDisabled={$guestName?.length < 3}
+		disabled={$guestName?.length < 3}
 		onclick={async () => {
 			playSound("basic_button");
 			await setName();
@@ -74,11 +74,6 @@
 		padding: 5px 15px;
 		width: 40%;
 		margin-top: var(--layout-margin);
-	}
-
-	.buttonDisabled {
-		pointer-events: none;
-		opacity: 0.5;
 	}
 
 	.fullWidth {

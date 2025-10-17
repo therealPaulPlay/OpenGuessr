@@ -88,7 +88,7 @@
 		<button
 			id="multiplayerJoin"
 			class="standardButton"
-			class:buttonDisabled={roomCodeInput.length !== 6}
+			disabled={roomCodeInput.length !== 6}
 			onclick={() => {
 				playSound("start_button");
 				joinRoom(roomCodeInput);
@@ -178,11 +178,6 @@
 
 	.publicRoomItem:hover {
 		opacity: 1;
-	}
-
-	.buttonDisabled {
-		pointer-events: none !important;
-		opacity: 0.5;
 	}
 
 	.inputCenterBox {

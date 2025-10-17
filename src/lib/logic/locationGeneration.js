@@ -3,6 +3,8 @@ import { get } from "svelte/store";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { savedMapBounds } from "$lib/stores/locationStore";
+import { showConfirmPopup } from "$lib/utils/confirmPopup";
+import { changeCategory } from "$lib/utils/changeCategory";
 
 // This is THE function to get locations (all others here are NOT export) - not the function to start a new round!
 export async function getLocationCoordinates(type) {
@@ -41,6 +43,9 @@ async function getCoordsFromServer() {
                 const data = await response.json();
                 if (data.error) errorMessage = data.error;
             } catch { }
+            showConfirmPopup("Reset to Standard map?", "Your selected map was potentially removed or renamed.", () => {
+                changeCategory("standard", true);
+            });
             throw new Error(errorMessage);
         }
     }

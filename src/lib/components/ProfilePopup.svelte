@@ -171,9 +171,9 @@
 >
 	<div class="profileNameArea">
 		<div class="profileViewName">
-			<h1>{$profileData.username}</h1>
+			<h1>{$profileData?.username}</h1>
 			<!-- Profile Flag -->
-			{#if $profileData?.flag && FlagIcons[$profileData.flag]}
+			{#if $profileData?.flag && FlagIcons[$profileData?.flag]}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<span
 					class="flag-container"
@@ -282,7 +282,7 @@
 			{#if $profileId != localStorage.getItem("id") && $isAuthenticated}
 				<button
 					class="standardButton white"
-					class:disabled={$profileData?.areFriends}
+					disabled={$profileData?.areFriends}
 					onclick={(e) => {
 						playSound("basic_button");
 						sendFriendRequest($profileId, e.target); // This also shows a notification
@@ -362,7 +362,7 @@
 				<div class="editNameSection">
 					<button
 						class="standardButton white"
-						class:buttonDisabled={!$singleplayer}
+						disabled={!$singleplayer}
 						onclick={() => {
 							playSound("basic_button");
 							showConfirmPopup(
@@ -382,7 +382,7 @@
 				</div>
 				<button
 					class="standardButton white"
-					class:buttonDisabled={$crazyGames || !$singleplayer}
+					disabled={$crazyGames || !$singleplayer}
 					onclick={() => {
 						playSound("basic_button");
 						showConfirmPopup(
@@ -401,7 +401,7 @@
 				>
 				<button
 					class="standardButton white"
-					class:buttonDisabled={$crazyGames || !$singleplayer}
+					disabled={$crazyGames || !$singleplayer}
 					onclick={() => {
 						playSound("basic_button");
 						resetLocalSave();
@@ -433,11 +433,6 @@
 		margin-left: -25px;
 		margin-top: -20px;
 		gap: var(--box-margin);
-	}
-
-	.buttonDisabled {
-		pointer-events: none;
-		opacity: 0.5;
 	}
 
 	#badgeArea {
@@ -522,11 +517,6 @@
 		width: 22px;
 		height: 22px;
 		vertical-align: -3px;
-	}
-
-	.disabled {
-		opacity: 0.5;
-		pointer-events: none;
 	}
 
 	#supporterTag {

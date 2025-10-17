@@ -41,6 +41,7 @@ export const multiplayerOverlay = writable(false);
 export const multiplayerOverlayTitle = writable("Default Title");
 export const overlayTitleElement = writable(); // Used for animations
 export const multiplayerTableArray = writable([]); // Array used for the table in the overlay (with all players ranked by XP etc.)
+export const multiplayerSortedPlayersArray = writable([]);
 export const overlayShowSubtitle = writable(false);
 
 export const rematchButtonVisible = writable(false);
@@ -49,4 +50,5 @@ export const leaveMatchButtonVisible = writable(false);
 // UI - Chat
 export const chatArray = writable(); // Inner Chat HTML
 export const chatVisible = writable(false);
+export const chatMutedPlayers = writable([]);
 export const remainingPlayers = writable([]);

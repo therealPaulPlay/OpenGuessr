@@ -22,7 +22,9 @@
 				}}
 			>
 				<div class="countryGuessrFlag">
-					{#if FlagIcons[country.flag]}<svelte:component this={FlagIcons[country.flag]} size={35} />{/if}
+					{#if FlagIcons[country.flag]}
+						<svelte:component this={FlagIcons[country.flag]} size={35} />
+					{/if}
 				</div>
 				<p class="countryGuessrTag">{country.name}</p>
 			</button>

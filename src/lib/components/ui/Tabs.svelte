@@ -4,6 +4,7 @@
 		selectedIndex = $bindable(0),
 		selected = $bindable(tabs[selectedIndex || 0]), // Bindable selected tab as a prop
 		onchange,
+		disabled = false,
 		class: className = "", // Alias for HTML class attribute
 	} = $props();
 
@@ -15,10 +16,18 @@
 	}
 </script>
 
-<div class="tabs-group standardButton {className}">
-	{#each tabs as tab, i}
-		<button class="tab-button standardButton white {selected === tab ? 'active' : ''}" onclick={() => selectTab(tab)}>
-			{tab}
+<div class="tabs-group standardButton {className}" class:disabled>
+	{#each tabs as Tab, i}
+		<button
+			class="tab-button standardButton white {selected === Tab ? 'active' : ''}"
+			onclick={() => selectTab(Tab)}
+			{disabled}
+		>
+			{#if typeof Tab === "function"}
+				<Tab size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
+			{:else}
+				{Tab}
+			{/if}
 		</button>
 	{/each}
 </div>
@@ -37,6 +46,11 @@
 		pointer-events: none;
 		padding: 0;
 		overflow: hidden;
+	}
+
+	.disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 
 	.tabs-group:hover {

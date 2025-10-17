@@ -1,9 +1,11 @@
 <script>
-	import { chatArray, chatVisible } from "$lib/stores/context-specific/multiplayerStore";
-	import { manuallySendChat } from "$lib/utils/chatFunctions";
+	import { chatArray, chatMutedPlayers, chatVisible } from "$lib/stores/context-specific/multiplayerStore";
+	import { sendChat } from "$lib/utils/chatFunctions";
 	import { playSound } from "$lib/utils/soundManager";
 	import RemainingGuessesDisplay from "$lib/components/RemainingGuessesDisplay.svelte";
-	import { MoveVertical, SendHorizonal } from "lucide-svelte";
+	import { MoveVertical, SendHorizonal, UserRoundCog } from "lucide-svelte";
+	import { tooltip } from "$lib/utils/tooltip";
+	import { chatManagePopup } from "$lib/stores/uiStore";
 
 	let chatMessageBoxElement = $state();
 	let inputValue = $state();
@@ -15,24 +17,14 @@
 	// Handle mouse events for resizing
 	function startResize(e) {
 		isResizing = true;
-		// Handle both mouse and touch events
-		startY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY;
+		startY = e.type === "touchstart" ? e.touches[0].clientY : e.clientY; // Handle both mouse and touch events
 		startHeight = chatHeight;
-
-		// Add both mouse and touch event listeners
-		document.addEventListener("mousemove", handleResize);
-		document.addEventListener("touchmove", handleResize, { passive: false });
-		document.addEventListener("mouseup", stopResize);
-		document.addEventListener("touchend", stopResize);
-
-		// Prevent default touch behavior to avoid scrolling
-		if (e.type === "touchstart") e.preventDefault();
+		if (e.type === "touchstart") e.preventDefault(); // Prevent default to stop scrolling during touch
 	}
 
 	function handleResize(e) {
 		if (!isResizing) return;
-		// Prevent default to stop scrolling during touch
-		if (e.type === "touchmove") e.preventDefault();
+		if (e.type === "touchmove") e.preventDefault(); // Prevent default to stop scrolling during touch
 
 		// Get current position from either mouse or touch event
 		const currentY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
@@ -43,19 +35,16 @@
 
 	function stopResize() {
 		isResizing = false;
-		document.removeEventListener("mousemove", handleResize);
-		document.removeEventListener("touchmove", handleResize);
-		document.removeEventListener("mouseup", stopResize);
-		document.removeEventListener("touchend", stopResize);
 	}
 
 	// Watch for changes to chatArray and scroll to bottom automatically
 	$effect(() => {
-		if ($chatArray && chatMessageBoxElement) {
+		if ($chatArray && $chatMutedPlayers && chatMessageBoxElement)
 			chatMessageBoxElement.scrollTop = chatMessageBoxElement.scrollHeight;
-		}
 	});
 </script>
+
+<svelte:document onmousemove={handleResize} ontouchmove={handleResize} onmouseup={stopResize} ontouchend={stopResize} />
 
 <div class="chatContainer" style:display={$chatVisible ? "flex" : "none"}>
 	<div class="multiplayerChat barMenu" style:height="{chatHeight}px">
@@ -75,12 +64,12 @@
 			<p>
 				{#if $chatArray}
 					{#each $chatArray as chat}
-						{#if chat.startsWith("System")}
-							<span style="opacity: 0.75; overflow-wrap: break-word;">{chat}</span>
-						{:else}
-							<span style="overflow-wrap: break-word;">{chat}</span>
+						{#if !$chatMutedPlayers?.includes(chat.clientId)}
+							<span style="overflow-wrap: break-word;" style:opacity={chat.clientId == "server" ? 0.75 : 1}
+								>{chat.username}: {chat.text}</span
+							>
+							<br />
 						{/if}
-						<br />
 					{/each}
 				{/if}
 			</p>
@@ -90,26 +79,37 @@
 				maxlength="100"
 				type="text"
 				id="multiplayerMessageInput"
-				placeholder="Type your message..."
+				placeholder="Your message..."
 				bind:value={inputValue}
 				onkeydown={(event) => {
 					if (event.key == "Enter") {
 						event.preventDefault();
-						manuallySendChat(inputValue);
+						sendChat(inputValue);
 						inputValue = "";
 					}
 				}}
 			/>
 			<button
+				use:tooltip={{ text: "Send message" }}
 				id="multiplayerSendButton"
 				class="standardButton white"
 				onclick={() => {
 					playSound("basic_button");
-					manuallySendChat(inputValue);
+					sendChat(inputValue);
 					inputValue = "";
 				}}
 			>
-				<SendHorizonal strokeWidth={2.5} size={22} style="margin-right: -2px; margin-top: 3px" />
+				<SendHorizonal strokeWidth={2} size={22} style="margin-right: -2px; margin-top: 3px" />
+			</button>
+			<button
+				class="standardButton white"
+				use:tooltip={{ text: "Manage participants" }}
+				onclick={() => {
+					playSound("basic_button");
+					$chatManagePopup = true;
+				}}
+			>
+				<UserRoundCog strokeWidth={2} size={22} style="margin-right: -2px; margin-top: 3px;" />
 			</button>
 		</div>
 	</div>

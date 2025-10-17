@@ -30,6 +30,4 @@ export async function loadProfileFromId(id) {
 
     // Show profile Popup
     if (data) profilePopup.set(true);
-
-    return true;
 }
