@@ -625,7 +625,7 @@
 				<button
 					class="standardButton competitionButton white"
 					class:dailyPrimary={daily}
-					class:buttonDisabled={entered || authorId == localStorage.getItem("id")}
+					disabled={entered || authorId == localStorage.getItem("id")}
 					onclick={() => {
 						playSound("basic_button");
 
@@ -1317,11 +1317,6 @@
 		gap: var(--box-margin);
 		justify-content: center;
 		align-items: center;
-	}
-
-	.buttonDisabled {
-		opacity: 0.5;
-		pointer-events: none;
 	}
 
 	@media all and (max-width: 800px) {

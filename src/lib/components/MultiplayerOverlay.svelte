@@ -63,7 +63,7 @@
 										{@render spectatorDisplay()}
 									{/if}
 								</div>
-								<div class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</div>
+								<p class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</p>
 							</div>
 						</div>
 					{/each}
@@ -98,7 +98,7 @@
 									{@render spectatorDisplay()}
 								{/if}
 							</div>
-							<div class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</div>
+							<p class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</p>
 						</div>
 					</div>
 				{/each}
@@ -233,12 +233,6 @@
 		opacity: 0.75;
 	}
 
-	:global(.multiplayerFade p),
-	:global(.multiplayerTable p) {
-		font-size: 30px;
-		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
-	}
-
 	.multiplayerTable {
 		display: flex;
 		justify-content: safe center;
@@ -246,7 +240,6 @@
 		width: 50%;
 		min-width: 350px;
 		max-width: 750px;
-		font-size: 25px;
 		max-height: calc(55dvh - 150px);
 		overflow-x: hidden;
 		scrollbar-width: none;
@@ -302,6 +295,7 @@
 
 	.multiplayerEntryPlayerScore {
 		margin-left: var(--box-margin);
+		font-size: 25px;
 	}
 
 	/* Shift up table on mobile where the indicator bar spans across the device width */

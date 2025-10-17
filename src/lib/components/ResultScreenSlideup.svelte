@@ -43,7 +43,7 @@
 					playSound("basic_button");
 					$slideupCallback?.();
 				}}
-				class:disabled={$slideupButtonDisabled}
+				disabled={$slideupButtonDisabled}
 			>
 				{$slideupButtonText}
 				{#if $slideupButtonText == "Restore"}
@@ -74,11 +74,6 @@
 
 	.supporterStatText {
 		opacity: 0.75;
-	}
-
-	.disabled {
-		pointer-events: none;
-		opacity: 0.5;
 	}
 
 	.textBoxTop {

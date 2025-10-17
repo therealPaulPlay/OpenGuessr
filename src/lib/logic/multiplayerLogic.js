@@ -23,10 +23,12 @@ import {
     skillBasedMatchmaking,
     multiplayerStyle,
     guestNamePromise,
-    multiplayerRestriction
+    multiplayerRestriction,
+    chatMutedPlayers,
+    multiplayerSortedPlayersArray
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
-import { loadChat } from "$lib/utils/chatFunctions.js";
+import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/matchmakingAPI";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
@@ -133,11 +135,11 @@ export async function createMultiplayerInstance() {
                     playerAddRequestSent = true;
                 }
 
-                if (storage.players) updateMultiplayerTableArray(); // Do this before showing the overlay
+                if (storage.players) updatePlayerArrays(); // Do this before showing the overlay
 
                 if (storage.overlay != null && storage.overlay != get(multiplayerOverlay)) showMultiplayerOverlay(Boolean(storage.overlay));
 
-                if (storage.chats) loadChat(storage.chats || []);
+                if (storage.chats) loadAndProfanityCheckChat(storage.chats || []);
 
                 if (get(teamAmount) > 1 && storage.guessLocationsArray && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
 
@@ -344,6 +346,7 @@ export function leaveMultiplayerRound(destroy = true) {
     multiplayerStatus.set(); // Undefined -> show default msgs
     continueText.set("Continue");
     multiplayerRestriction.set("standard");
+    chatMutedPlayers.set([]);
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
@@ -381,17 +384,20 @@ function getTeamColorName(teamIndex) {
 let teams = [];
 
 // Sort teams
-function updateMultiplayerTableArray() {
+function updatePlayerArrays() {
     const players = get(socket)?.getStorage?.players;
 
-    if (get(teamAmount) <= 1) {
-        multiplayerTableArray.set([...players].sort((a, b) => {
-            // Sort non-spectators first, then spectators, both by score
-            if (a.spectator && !b.spectator) return 1;
-            if (!a.spectator && b.spectator) return -1;
-            return b.score - a.score;
-        }));
-    } else {
+    // Used for chat participants
+    const sortedPlayers = [...players].sort((a, b) => {
+        // Sort non-spectators first, then spectators, both by score
+        if (a.spectator && !b.spectator) return 1;
+        if (!a.spectator && b.spectator) return -1;
+        return b.score - a.score;
+    });
+    multiplayerSortedPlayersArray.set(sortedPlayers);
+
+    if (get(teamAmount) <= 1) multiplayerTableArray.set(sortedPlayers);
+    else {
         // Group players by team
         const groupedTeams = players.reduce((acc, player) => {
             const teamIndex = player.teamIndex;

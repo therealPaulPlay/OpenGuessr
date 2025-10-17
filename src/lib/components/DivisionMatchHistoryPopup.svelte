@@ -156,14 +156,14 @@
 	</div>
 
 	<div class="paginationControls">
-		<button class="standardButton white" onclick={prevPage} class:disabledButton={currentPage === 1}>
+		<button class="standardButton white" onclick={prevPage} disabled={currentPage === 1}>
 			<ArrowLeft size={20} strokeWidth={2} />
 		</button>
 		<span class="pageCounter">{currentPage}</span>
 		<button
 			class="standardButton white"
 			onclick={nextPage}
-			class:disabledButton={!(matchResults && matchResults.duels && matchResults.duels.length === limit)}
+			disabled={!(matchResults && matchResults.duels && matchResults.duels.length === limit)}
 		>
 			<ArrowRight size={20} strokeWidth={2} />
 		</button>
@@ -249,11 +249,6 @@
 		scrollbar-width: none;
 		height: min(500px, calc(100dvh - 350px));
 		width: 100%;
-	}
-
-	.disabledButton {
-		opacity: 0.5;
-		pointer-events: none;
 	}
 
 	.pageCounter {

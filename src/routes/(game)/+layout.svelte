@@ -54,6 +54,7 @@
 	import RoundLogPopup from "$lib/components/RoundLogPopup.svelte";
 	import TournamentInfoPopup from "$lib/components/TournamentInfoPopup.svelte";
 	import TournamentMatchResultsPopup from "$lib/components/TournamentMatchResultsPopup.svelte";
+	import ChatManagePopup from "$lib/components/ChatManagePopup.svelte";
 
 	// Start ads
 	onMount(() => {
@@ -151,6 +152,7 @@
 <DiscordPopup />
 <LinkJoinPopup />
 <RoundLogPopup />
+<ChatManagePopup />
 <GuestNamePickerPopup />
 <ResultScreen />
 <BlinkRestrictionFade />
