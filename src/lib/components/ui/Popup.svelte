@@ -83,7 +83,7 @@
 	}
 
 	.uiWindow {
-		width: calc(100vw - var(--layout-margin) * 2);
+		width: calc(100% - var(--layout-margin) * 2);
 		box-sizing: border-box;
 		padding: 25px;
 		padding-bottom: 30px;

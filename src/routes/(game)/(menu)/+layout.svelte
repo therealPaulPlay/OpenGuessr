@@ -67,6 +67,8 @@
 		display: flex;
 		justify-content: center;
 		position: absolute;
+		left: 0;
+		right: 0;
 		display: flex;
 	}
 

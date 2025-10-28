@@ -134,7 +134,6 @@
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		max-width: 20vw;
 	}
 
 	.inboxItemButtons {

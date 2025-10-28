@@ -406,7 +406,7 @@
 		align-items: flex-end;
 		justify-content: center;
 		height: 250px;
-		width: 70vw;
+		width: 70%;
 		max-width: 650px;
 		gap: 20px;
 		position: relative;
@@ -481,7 +481,7 @@
 		color: white;
 		margin-top: auto;
 		margin-bottom: auto;
-		max-width: 17vw;
+		max-width: 65%;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
@@ -545,7 +545,7 @@
 		}
 
 		.podium {
-			width: 85vw;
+			width: 85%;
 			height: 150px;
 			gap: 5px;
 		}
