@@ -66,8 +66,9 @@
 		gap: var(--layout-margin);
 		transition: all 200ms ease;
 		pointer-events: auto;
-		max-width: 80vw;
 		z-index: 100;
+		max-width: 80%;
+		margin-inline: auto;
 	}
 
 	@media (max-width: 1200px) {
