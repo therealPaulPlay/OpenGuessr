@@ -161,7 +161,7 @@
 	<title>Leaderboard</title>
 </svelte:head>
 
-<svelte:document
+<svelte:window
 	onscroll={() => {
 		clearTimeout(scrollTimeout);
 		scrollTimeout = setTimeout(() => {
