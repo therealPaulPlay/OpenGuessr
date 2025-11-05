@@ -86,7 +86,7 @@
 			$playlightSDK.init({
 				exitIntent: {
 					enabled: false,
-				}
+				},
 			});
 		} catch (error) {
 			console.error("Error loading the Playlight SDK:", error);
