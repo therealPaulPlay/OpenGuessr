@@ -6,11 +6,7 @@ import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { elo } from "$lib/stores/accountStore";
 
 export async function deleteRoomCodeFromMatchmakingServer() {
-    if (!get(roomcode)) {
-        // Sometimes, e.g. when creating the multiplayer instance failed and a leave is triggered, this is null
-        console.warn("Can't delete room code from server as it is null.");
-        return;
-    }
+    if (!get(roomcode)) return console.warn("Can't delete room code from server as it is null.");
     try {
         const requestBody = {
             id: localStorage.getItem("id")
@@ -56,9 +52,8 @@ export async function attemptDuelJoin(index, skillBased) {
         if (!response.ok) throw new Error(response.status);
 
         // Attempt to join if there is a code, otherwise create room
-        if (receivedRoomCode) {
-            joinRoom(receivedRoomCode); // Duel status will be set in this function
-        } else {
+        if (receivedRoomCode) joinRoom(receivedRoomCode); // Duel status will be set in this function
+        else {
             multiplayerStyle.set("duel"); // Set style to duel
             await setupMultiplayerRoom(5, 60, 2, true);
             sendRoomCodeToMatchmakingServer(skillBased);
