@@ -3,7 +3,7 @@ import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { setCheckNewHighestCountryStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, supporterLevel, experience } from "$lib/stores/accountStore";
-import { streakText, showStreakDisplay, lastDistance, lastExperienceCalculationAborted, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
+import { streakText, showStreakDisplay, lastDistance, lastExpCalculationSignedOut, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
@@ -91,12 +91,8 @@ export async function loadResultScreenXP(distance) {
     showStreakDisplay.set(false);
 
     // Post-signin saves -----------------------------------------------------
-    if (!get(isAuthenticated) && get(singleplayer)) {
-        lastDistance.set(distance);
-        lastExperienceCalculationAborted.set(true);
-    } else {
-        lastExperienceCalculationAborted.set(false);
-    }
+    if (!get(isAuthenticated) && get(singleplayer)) lastExpCalculationSignedOut.set(true);
+    else lastExpCalculationSignedOut.set(false);
 
     // Save played round to log ------------------------------------------------
     let mode = get(singleplayer) ? "Singleplayer" : get(multiplayer) ? "Multiplayer" : get(competition) ? "Competition" : "Unknown";
