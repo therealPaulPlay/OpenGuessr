@@ -42,7 +42,7 @@
 		background: #13151c;
 		user-select: none;
 		position: fixed;
-		top: -75px; /* cut off the name display area in the SV */
+		top: -75px; /* Cut off the name display area in the SV */
 		left: 0;
 		bottom: 0;
 		right: 0;

@@ -85,7 +85,9 @@
 							playSound("basic_button");
 						}}
 					>
-						<span class="mobileUserIcon"><CircleUserRound strokeWidth={2.25} size={20} style="margin-bottom: -1px;" /> </span></button
+						<span class="mobileUserIcon"
+							><CircleUserRound strokeWidth={2.25} size={20} style="margin-bottom: -1px;" />
+						</span></button
 					>
 				{/if}
 				<button
