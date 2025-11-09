@@ -31,16 +31,12 @@
 		}
 	}
 
-	function onMapHover() {
-		get(map).invalidateSize();
-	}
-
 	onMount(async () => {
 		const module = await import("leaflet"); // Auto-attaches "L" object to the window element on import
 		initMap();
 
 		try {
-			new ResizeObserver(onMapHover).observe(document.getElementById("map"));
+			new ResizeObserver(() => get(map).invalidateSize()).observe(document.getElementById("map"));
 		} catch (error) {
 			console.error("Resize oberser unsupported. Err: " + error);
 		}
@@ -62,7 +58,7 @@
 	class:hidden={$countryGuessr && !$resultScreenEnabled}
 >
 	{#if !$map}
-		<div class="mapPlaceholderBeforeLoad"></div>!
+		<div class="mapPlaceholderBeforeLoad"></div>
 	{/if}
 </div>
 

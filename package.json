@@ -13,6 +13,7 @@
 		"@sveltejs/kit": "^2.8.1",
 		"@sveltejs/vite-plugin-svelte": "^4.0.4",
 		"svelte": "^5.2.2",
+		"svelte-confetti": "^2.3.2",
 		"svelte-flag-icons": "^2.0.1",
 		"vite": "^5.0.3"
 	},

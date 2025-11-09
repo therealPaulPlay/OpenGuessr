@@ -451,3 +451,9 @@ search {
         height: 50px;
     }
 }
+
+/* View transition animations */
+:root::view-transition-new(root),
+:root::view-transition-old(root) {
+    animation-duration: 150ms;
+}

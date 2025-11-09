@@ -188,8 +188,7 @@ export async function createMultiplayerInstance() {
             });
 
             get(socket).onEvent('instanceDestroyed', () => {
-                if (get(matchmakingActive)) deleteRoomCodeFromMatchmakingServer(); // If error...
-                if (get(multiplayer)) leaveMultiplayerRound(false); // If not already left, leave
+                if (get(multiplayer)) leaveMultiplayerRound(false); // If not already left, leave (e.g. on error)
             });
 
             resolve(get(socket).id);

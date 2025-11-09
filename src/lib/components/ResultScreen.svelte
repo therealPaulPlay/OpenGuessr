@@ -13,6 +13,7 @@
 		streakText,
 		supporterBoost,
 		supporterBoostText,
+		lastDistance,
 	} from "$lib/stores/context-specific/resultScreenStore";
 	import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
 	import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
@@ -30,6 +31,7 @@
 	import ResultFullscreenMessage from "./ResultFullscreenCelebration.svelte";
 	import { CircleUser, Flame, RulerDimensionLine } from "lucide-svelte";
 	import { blur } from "svelte/transition";
+	import { Confetti } from "svelte-confetti";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -43,14 +45,40 @@
 
 	let level = $state(1);
 	let percentageWidth = $state("0%");
+	let showConfetti = $state(false);
 
 	experience.subscribe((value) => {
 		level = getLevel();
 		percentageWidth = Math.max(7, getLevelFraction() * 100) + "%"; // Minimum 7% to prevent weird thin line
 	});
+
+	// Trigger confetti
+	$effect(() => {
+		if ($resultScreenEnabled && $lastDistance < 500) showConfetti = true;
+		else showConfetti = false;
+	});
 </script>
 
 {#if $resultScreenEnabled}
+	{#if showConfetti}
+		<div class="confettiBox">
+			{#each { length: 4 }, index}
+				{@const xVal = 3 + Math.random() * 2}
+				{@const yVal = 3 + Math.random() * 2}
+				{@const delay = 100 + Math.random() * 300}
+				{@const indexFactor = -8 + index * 4}
+				<Confetti
+					noGravity
+					x={[-xVal + indexFactor, xVal + indexFactor]}
+					y={[-yVal, yVal]}
+					amount={100}
+					delay={[delay, delay + 100]}
+					colorRange={[0, 10]}
+					duration={1500}
+				/>
+			{/each}
+		</div>
+	{/if}
 	<div class="endBottomArea">
 		<!-- Animations for great scores -->
 		<ResultFullscreenMessage />
@@ -74,7 +102,7 @@
 					</div>
 				{/if}
 				<div class="resultField">
-					<RulerDimensionLine style="margin-right: 8px;" size={22} strokeWidth={2.25} />
+					<RulerDimensionLine class="distance-icon" style="margin-right: 8px;" size={22} strokeWidth={2.25} />
 					<p id="distanceText">{$distanceText}</p>
 				</div>
 				{#if $isAuthenticated}
@@ -357,6 +385,7 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		opacity: 0.5;
+		padding-inline: var(--box-margin);
 	}
 
 	.XPbarResource {
@@ -433,6 +462,34 @@
 
 	.nextRoundText {
 		display: inline;
+	}
+
+	@keyframes distanceIconJelly {
+		0%,
+		100% {
+			transform: scaleX(1);
+		}
+		40% {
+			transform: scaleX(1.25);
+		}
+		70% {
+			transform: scaleX(0.85);
+		}
+	}
+
+	:global(.distance-icon) {
+		animation: distanceIconJelly 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+	}
+
+	.confettiBox {
+		position: absolute;
+		inset: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		z-index: 13;
+		pointer-events: none;
+		overflow: hidden;
 	}
 
 	@media (min-width: 1900px) {
