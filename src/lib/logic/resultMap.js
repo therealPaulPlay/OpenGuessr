@@ -113,7 +113,7 @@ function flyToLocation(bounds, destLat, destLon) {
     if (!get(resultScreenEnabled)) return;
 
     if (bounds) {
-        const paddedBounds = bounds.pad(0.35);
+        const paddedBounds = bounds.pad(0.25);
         get(map).flyToBounds(paddedBounds, {
             duration: 0.5,
             padding: [0, 250]
