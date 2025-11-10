@@ -5,11 +5,6 @@ import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenSt
 import { get } from "svelte/store";
 import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
 
-let veryCloseDistances;
-let closeDistances;
-let farDistances;
-let extraMsg;
-
 // Haversine formula, takes spherical nature of planet into account
 export function calculateDistances(mapsLat = 0, mapsLon = 0) {
     const R = 6371; // Radius of the Earth in km
@@ -34,18 +29,20 @@ export function calculateDistances(mapsLat = 0, mapsLon = 0) {
 export function motivationalResultMessage(distance) {
     let resultAsString;
 
-    veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Do you have an A in geography?", "Wow.", "Time for a screenshot.", "Seriously impressive."];
-    closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!", "Yup, that was impressive.", "That's how it's done!"];
-    farDistances = ["Distance is relative. Here, relatively big.", "You'll get it next time!", "At least it was on the correct planet.", "It could have been worse."];
+    const veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Do you have an A in geography?", "Wow.", "Time for a screenshot.", "Seriously impressive."];
+    const closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!", "Yup, that was impressive.", "That's how it's done!"];
+    const farDistances = ["Distance is relative. Here, relatively big.", "You'll get it next time!", "At least it was on the correct planet.", "It could have been worse."];
 
-    // Motivational quotes
-    if (distance < 5) extraMsg = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
-    else if (distance < 1000) extraMsg = closeDistances[Math.floor(Math.random() * closeDistances.length)];
-    else extraMsg = farDistances[Math.floor(Math.random() * farDistances.length)];
+    // Motivational messages
+    let message;
+
+    if (distance < 5) message = veryCloseDistances[Math.floor(Math.random() * veryCloseDistances.length)];
+    else if (distance < 1000) message = closeDistances[Math.floor(Math.random() * closeDistances.length)];
+    else message = farDistances[Math.floor(Math.random() * farDistances.length)];
 
     // In Country guessr, tell the country
-    if (get(countryGuessr)) extraMsg = "The country is " + get(selectedCountryGuesserCountry) + ".";
-    return extraMsg;
+    if (get(countryGuessr)) message = "The country is " + get(selectedCountryGuesserCountry) + ".";
+    return message;
 }
 
 // This function neatly formats a distance in meters into a readable string (e.g. 500 km or 15 miles)

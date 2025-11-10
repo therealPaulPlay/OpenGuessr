@@ -32,6 +32,7 @@
 	import { CircleUser, Flame, RulerDimensionLine } from "lucide-svelte";
 	import { blur } from "svelte/transition";
 	import { Confetti } from "svelte-confetti";
+	import { getMapBounds } from "$lib/utils/getMapBounds";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -54,7 +55,7 @@
 
 	// Trigger confetti
 	$effect(() => {
-		if ($resultScreenEnabled && $lastDistance < 500) showConfetti = true;
+		if ($resultScreenEnabled && $lastDistance < 1000 * (getMapBounds().diameter / 360)) showConfetti = true;
 		else showConfetti = false;
 	});
 </script>
