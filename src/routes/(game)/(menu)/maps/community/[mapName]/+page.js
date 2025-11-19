@@ -15,7 +15,7 @@ export async function load({ params, fetch }) {
     if (!mapData.map_data_url) throw error(500, 'Map data URL missing!');
 
     try {
-      const mapContentResponse = await fetch(mapData.map_data_url);
+      const mapContentResponse = await fetch(mapData.map_data_url, { cache: 'no-cache' });
       if (!mapContentResponse.ok) throw error(500, 'Failed to fetch map content from object storage');
 
       // Parse response as json

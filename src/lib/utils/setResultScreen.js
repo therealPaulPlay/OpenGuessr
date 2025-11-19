@@ -1,4 +1,4 @@
-import { resultScreenEnabled, distanceText, motivationText } from "$lib/stores/context-specific/resultScreenStore";
+import { resultScreenEnabled, distanceText, motivationText, lastDistance } from "$lib/stores/context-specific/resultScreenStore";
 import { calculateDistances, motivationalResultMessage, formatDistance } from "$lib/utils/distanceFunctions";
 import { countryGuessr } from "$lib/stores/modeStore";
 import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
@@ -31,6 +31,7 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
 
         motivationText.set(motivationalMessage);
         distanceText.set(resultString);
+        lastDistance.set(distance);
 
         if (get(countryGuessr)) {
             if (checkIfGuessWasCorrect()) distanceText.set("Correct!");
@@ -61,8 +62,8 @@ export function disableResultScreen() {
         timerText.set("00:00"); // Reset timer text
         mapPinLat.set(0); // Reset placed map pin latitude
         mapPinLng.set(0); // Reset placed map pin longitude
-
         earnedExperience.set(0); // Reset earned experience
+
         resetMap(); // Reset the map for the next round
     }
 }

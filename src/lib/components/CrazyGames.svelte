@@ -6,7 +6,6 @@
 	import {
 		adsDisabled,
 		crazyGames,
-		disableExternalLinks,
 		preventFullscreen,
 		disableAutoAuthentication,
 	} from "$lib/stores/context-specific/platformSettingsStore";
@@ -26,7 +25,6 @@
 			if (crazyGamesEnabled) {
 				// Platform settings
 				adsDisabled.set(true);
-				disableExternalLinks.set(true);
 				preventFullscreen.set(true);
 				disableAutoAuthentication.set(true);
 				crazyGames.set(true); // Enable platform

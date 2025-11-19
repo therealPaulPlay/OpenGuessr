@@ -23,7 +23,7 @@
 
 <Popup bind:open={$chatManagePopup} verySlim={true}>
 	<div class="popup-title">
-		<h1>Participants</h1>
+		<h1>Moderation</h1>
 	</div>
 	<div class="general-actions">
 		<div class="general-actions-scroll of-left of-right">

@@ -1,6 +1,6 @@
 import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
 import { initializeSSEConnection } from "$lib/logic/sseLogic";
-import { resultScreenEnabled, lastDistance, lastExperienceCalculationAborted } from "$lib/stores/context-specific/resultScreenStore";
+import { resultScreenEnabled, lastDistance, lastExpCalculationSignedOut } from "$lib/stores/context-specific/resultScreenStore";
 import { isAuthenticated, supporterLevel, experience, username, selectedPinIndex, selectedBadge, elo, tokens, purchasedPins, accountDataLoaded, duelWinStreak } from "$lib/stores/accountStore";
 import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
 import { isTokenExpired } from "$lib/utils/isTokenExpired.js";
@@ -77,7 +77,7 @@ async function loadUserInfo() {
       freeDailyTokensClaimed.set(user.free_tokens_claimed || false);
       duelWinStreak.set(user.current_duel_win_streak || 0);
 
-      if (get(resultScreenEnabled) && get(lastExperienceCalculationAborted)) loadResultScreenXP(get(lastDistance));
+      if (get(resultScreenEnabled) && get(lastExpCalculationSignedOut)) loadResultScreenXP(get(lastDistance));
       if (user.new_requests) { inboxIconNew.set(true); }
 
       initializeSSEConnection();

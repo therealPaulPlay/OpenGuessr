@@ -81,11 +81,11 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
 
         addedMarkers.update((markers) => {
             markers = markers || [];
-            return [...markers, polyline];
+            return [...markers, playerMarker, polyline];
         });
     }
 
-    // Handle multiplayer markers --------------------------------------------------------------------------
+    // Add multiplayer markers
     if (get(multiplayer)) {
         get(socket)?.getStorage?.guessLocationsArray?.forEach(function (element) {
             let newMarkerLat = element.lat;
@@ -168,8 +168,18 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
         return [...markers, destinationMarker];
     });
 
-    // Fly to the destination marker after a delay
-    setTimeout(() => flyToLocation(correctLat, correctLon), 1500);
+    // Set initial view and start fly animation
+    if (!get(countryGuessr)) {
+        // Normal: Start zoomed in on player's guess
+        const boundsZoom = get(map).getBoundsZoom(bounds, false);
+        const startZoom = Math.min(boundsZoom + 1.5, 16);
+        get(map).setView([guessLat, guessLon], startZoom, { animate: false });
+        setTimeout(() => flyToLocation(bounds, correctLat, correctLon), 250);
+    } else {
+        // Country Guesser: Start zoomed out, then zoom in on destination
+        get(map).setView([correctLat, correctLon], 5, { animate: false });
+        setTimeout(() => flyToLocation(null, correctLat, correctLon), 250);
+    }
 }
 
 function flyToLocation(lat, lon) {

@@ -17,7 +17,7 @@
 	import MapModeIndicator from "$lib/components/MapModeIndicator.svelte";
 	import LittleTimeVignette from "$lib/components/LittleTimeVignette.svelte";
 	import MapHolder from "$lib/components/MapHolder.svelte";
-	import MobileMapToggle from "$lib/components/MobileMapToggle.svelte";
+	import MobileMapToggles from "$lib/components/MobileMapToggles.svelte";
 	import Map from "$lib/components/Map.svelte";
 	import SupporterPopup from "$lib/components/SupporterPopup.svelte";
 	import ConfirmPopup from "$lib/components/ConfirmPopup.svelte";
@@ -82,12 +82,9 @@
 			if (new URLSearchParams(window.location.search).get("crazy-games")) return; // Don't load Playlight on CG
 			const module = await import("https://sdk.playlight.dev/playlight-sdk.es.js");
 			$playlightSDK = module.default;
-			await $playlightSDK.init({
+			$playlightSDK.init({
 				exitIntent: {
 					enabled: false,
-				},
-				button: {
-					visible: false,
 				},
 			});
 		} catch (error) {
@@ -162,7 +159,7 @@
 <PanoramaIframe />
 <CountryGuesserBar />
 <MapHolder>
-	<MobileMapToggle />
+	<MobileMapToggles />
 	<Map />
 	<MapModeIndicator />
 </MapHolder>

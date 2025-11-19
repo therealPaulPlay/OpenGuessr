@@ -2,7 +2,7 @@
 	import { Plus, XCircle, ExternalLinkIcon, User, Search } from "lucide-svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { crazyGames, disableExternalLinks } from "$lib/stores/context-specific/platformSettingsStore";
+	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -96,7 +96,7 @@
 			if (error.name !== "AbortError") {
 				console.error("Error loading community maps:", error);
 				errorMessageShown = true;
-				errorMessageText = "Error: " + error;
+				errorMessageText = "Error: " + error.message;
 			} else {
 				errorMessageShown = false;
 			}
@@ -254,32 +254,30 @@
 				</p>
 			</div>
 		</div>
-		{#if !$disableExternalLinks}
-			<div
-				class="map-item-link map-item"
-				role="button"
-				tabindex="0"
-				onclick={() => {
-					playSound("button_juicy");
-					window.open("https://education.openguessr.com/quiz", "_blank").focus();
-				}}
-			>
-				<p class="map-name">Geo Quizzes</p>
-				<p class="link-badge">Education</p>
-			</div>
-			<div
-				class="map-item-link map-item"
-				role="button"
-				tabindex="0"
-				onclick={() => {
-					playSound("button_juicy");
-					window.open("https://geometas.com", "_blank").focus();
-				}}
-			>
-				<p class="map-name">Meta Quizzes</p>
-				<p class="link-badge">Geometas</p>
-			</div>
-		{/if}
+		<div
+			class="map-item-link map-item"
+			role="button"
+			tabindex="0"
+			onclick={() => {
+				playSound("button_juicy");
+				window.open("https://education.openguessr.com/quiz", "_blank").focus();
+			}}
+		>
+			<p class="map-name">Geo Quizzes</p>
+			<p class="link-badge">Education</p>
+		</div>
+		<div
+			class="map-item-link map-item"
+			role="button"
+			tabindex="0"
+			onclick={() => {
+				playSound("button_juicy");
+				window.open("https://geometas.com", "_blank").focus();
+			}}
+		>
+			<p class="map-name">Meta Quizzes</p>
+			<p class="link-badge">Geometas</p>
+		</div>
 	</div>
 	<!-- Expandable country section -->
 	<div class="headerContainer">
@@ -635,7 +633,8 @@
 		flex-basis: 15%;
 	}
 
-	.map-item-slim:hover, .map-item-link:hover {
+	.map-item-slim:hover,
+	.map-item-link:hover {
 		scale: 1.03;
 	}
 

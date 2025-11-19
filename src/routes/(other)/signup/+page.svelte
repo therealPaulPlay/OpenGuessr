@@ -507,8 +507,7 @@
 		height: 1200px;
 		border-radius: 50%;
 		background: radial-gradient(rgba(255, 59, 48, 0.15), rgba(0, 0, 0, 0));
-		filter: blur(12vw);
-		-webkit-filter: blur(12vw);
+		filter: blur(300px);
 		z-index: -1;
 		top: 20%;
 		overflow: hidden;

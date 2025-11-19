@@ -26,7 +26,7 @@
 
 <!-- svelte-ignore a11y_missing_attribute -->
 <iframe
-	id="PanoramaIframe"
+	id="panorama-iframe"
 	referrerpolicy="no-referrer-when-downgrade"
 	style:filter={$panoramaFilter || "none"}
 	style:pointer-events={$nmpz ? "none" : ""}
@@ -37,17 +37,17 @@
 ></iframe>
 
 <style>
-	#PanoramaIframe {
+	#panorama-iframe {
 		transition: all 250ms;
 		background: #13151c;
 		user-select: none;
 		position: fixed;
-		top: -75px;
+		top: -75px; /* Cut off the name display area in the SV */
 		left: 0;
 		bottom: 0;
 		right: 0;
 		width: 100%;
-		height: calc(100% + 75px); /* cut off the name display area on Gmaps */
+		height: calc(100% + 75px);
 		border: none;
 		z-index: 0;
 	}
