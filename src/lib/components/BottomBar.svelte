@@ -230,7 +230,7 @@
 		margin-left: var(--panel-margin);
 	}
 
-	/* Ad shift */
+	/* Mobile adjustments */
 	@media (orientation: portrait) and (max-width: 800px) {
 		.bottomFooterAds {
 			bottom: 10px;
@@ -246,11 +246,6 @@
 
 		.bottomRightMenu {
 			flex-grow: 1;
-		}
-	}
-
-	@media (orientation: portrait) and (max-width: 1200px) {
-		.bottomRightMenu {
 			margin-right: 0;
 		}
 	}

@@ -62,8 +62,8 @@ export function disableResultScreen() {
         timerText.set("00:00"); // Reset timer text
         mapPinLat.set(0); // Reset placed map pin latitude
         mapPinLng.set(0); // Reset placed map pin longitude
-
         earnedExperience.set(0); // Reset earned experience
+
         resetMap(); // Reset the map for the next round
     }
 }
