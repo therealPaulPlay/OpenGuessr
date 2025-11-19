@@ -13,21 +13,19 @@
 </script>
 
 <div class="marginTop">
-	{#if !$resultScreenEnabled && !$countryGuessr}
-		{#if $mapExpanded}
-			<div class="barMenu floatingMapCloseMenu" transition:blur={{ duration: 250 }}>
-				<button
-					class="standardButton white floatingButton"
-					bind:this={toggleMapButton}
-					onclick={() => {
-						mapExpanded.set(false);
-						playSound("floating_button");
-					}}
-				>
-					<ArrowDown strokeWidth={2.25} size={22} />
-				</button>
-			</div>
-		{/if}
+	{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded}
+		<div class="barMenu floatingMapCloseMenu" transition:blur={{ duration: 250 }}>
+			<button
+				class="standardButton white floatingButton"
+				bind:this={toggleMapButton}
+				onclick={() => {
+					mapExpanded.set(false);
+					playSound("floating_button");
+				}}
+			>
+				<ArrowDown strokeWidth={2.25} size={22} />
+			</button>
+		</div>
 		<div class="resize-handle barMenu">
 			<button class="standardButton white centerButton" onclick={() => mapHovered.set(!$mapHovered)}>
 				{#if !$mapHovered}
