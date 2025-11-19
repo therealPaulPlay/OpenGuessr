@@ -96,7 +96,7 @@
 			if (error.name !== "AbortError") {
 				console.error("Error loading community maps:", error);
 				errorMessageShown = true;
-				errorMessageText = "Error: " + error;
+				errorMessageText = "Error: " + error.message;
 			} else {
 				errorMessageShown = false;
 			}
