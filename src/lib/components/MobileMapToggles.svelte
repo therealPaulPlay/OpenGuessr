@@ -12,7 +12,7 @@
 	let toggleMapButton = $state();
 </script>
 
-<div class="marginTop">
+<div class="toggle-container">
 	{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded}
 		<div class="barMenu floatingMapCloseMenu" transition:blur={{ duration: 250 }}>
 			<button
@@ -40,8 +40,8 @@
 
 <style>
 	.resize-handle {
-		margin-bottom: var(--box-margin);
 		margin-right: auto;
+		margin-bottom: var(--panel-margin);
 	}
 
 	.centerButton {
@@ -51,13 +51,13 @@
 	}
 
 	.floatingMapCloseMenu {
-		margin-bottom: var(--box-margin);
 		display: none;
 		pointer-events: auto;
 		margin-left: auto;
+		margin-bottom: var(--panel-margin);
 	}
 
-	.marginTop {
+	.toggle-container {
 		margin-top: auto;
 		width: 100%;
 	}
