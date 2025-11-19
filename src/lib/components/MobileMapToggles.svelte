@@ -29,9 +29,9 @@
 		<div class="resize-handle barMenu">
 			<button class="standardButton white centerButton" onclick={() => mapHovered.set(!$mapHovered)}>
 				{#if !$mapHovered}
-					<ArrowUpLeft />
+					<ArrowUpLeft strokeWidth={2.25} size={22} />
 				{:else}
-					<ArrowDownRight />
+					<ArrowDownRight strokeWidth={2.25} size={22} />
 				{/if}
 			</button>
 		</div>
