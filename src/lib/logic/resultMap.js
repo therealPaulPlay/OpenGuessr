@@ -1,49 +1,83 @@
 import { map, addedMarkers } from "$lib/stores/context-specific/mapStore";
+import { initializeMapIfNotAlready } from "$lib/logic/miniMap";
 import { selectedPinIndex } from "$lib/stores/accountStore";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
-import { clamp } from "$lib/utils/clamp";
 import { get } from "svelte/store";
+
+async function awaitMapInit() {
+    return new Promise(resolve => document.addEventListener("mapInitialized", () => { resolve(); }));
+}
 
 export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) {
     if (!get(map)) {
-        console.error("Map not properly initialized - exiting result map load function.");
-        return;
+        // Trigger the captcha popup, which results in a map load, then await the map load
+        initializeMapIfNotAlready();
+        await awaitMapInit();
+
+        if (!get(map)) {
+            console.error("Map not properly inizialized - exiting result map load function.");
+            return;
+        }
     }
 
     // Define custom icons for markers
-    const yourIcon = new L.Icon({
-        iconUrl: '/img/pins/player_pin' + get(selectedPinIndex) + '.png',
-        iconSize: [35, 35],
-        iconAnchor: [17.5, 34],
-        popupAnchor: [1, -34]
-    });
+    let yourIcon = {
+        url: '/img/pins/player_pin' + get(selectedPinIndex) + '.png',
+        size: new google.maps.Size(35, 35),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17.5, 34),
+        scaledSize: new google.maps.Size(35, 35)
+    };
 
-    const resultIcon = new L.Icon({
-        iconUrl: '/img/pins/result_pin.png',
-        iconSize: [35, 35],
-        iconAnchor: [17.5, 34]
-    });
+    let resultIcon = {
+        url: '/img/pins/result_pin.png',
+        size: new google.maps.Size(35, 35),
+        origin: new google.maps.Point(0, 0),
+        anchor: new google.maps.Point(17.5, 34),
+        scaledSize: new google.maps.Size(35, 35)
+    };
 
-    const correctLatLng = new L.LatLng(correctLat, correctLon);
+    // Create LatLng objects for current and player positions
+    let curLatLng = new google.maps.LatLng(correctLat, correctLon);
+    let playerLatLng;
+    let pointList;
 
-    let bounds = null; // Boundaries adjusted to guess and correct location
-
-    // Add player marker and polyline
+    // Check if NOT in Country Guessr (or if IN multiplayer) --------------------------------------------------
     if (!get(countryGuessr)) {
-        const guessLatLng = new L.LatLng(guessLat, guessLon);
-        bounds = new L.LatLngBounds([correctLatLng, guessLatLng]);
+        playerLatLng = new L.LatLng(guessLat, guessLon);
+        polyList = [curLatLng, playerLatLng];
+        pointList = new L.LatLngBounds([curLatLng, playerLatLng]);
 
-        const playerMarker = new L.Marker(guessLatLng, { icon: yourIcon });
-        if (get(multiplayer)) playerMarker.bindTooltip("You", { permanent: true, direction: 'right' });
-        playerMarker.addTo(get(map));
+        // Place the player marker (where the player thinks the location is)
+        let playerMarker = new google.maps.Marker({
+            position: playerLatLng,
+            map: get(map),
+            icon: yourIcon
+        });
 
-        const polyline = new L.Polyline([correctLatLng, guessLatLng], {
-            color: "black",
-            weight: 1,
-            opacity: 0.75
-        }).addTo(get(map));
+        addedMarkers.update((markers) => {
+            markers = markers || [];
+            return [...markers, playerMarker];
+        });
+
+        // Create InfoWindow for playerMarker
+        let playerInfoWindow = new google.maps.InfoWindow({
+            content: "You" // Replace with dynamic content if needed
+        });
+
+        // Open InfoWindow when marker is clicked
+        playerMarker.addListener('click', function () {
+            playerInfoWindow.open(get(map), playerMarker);
+        });
+
+        let polyline = new google.maps.Polyline({
+            path: [curLatLng, playerLatLng],
+            map: get(map),
+            strokeWeight: 1,
+            strokeColor: "black"
+        });
 
         addedMarkers.update((markers) => {
             markers = markers || [];
@@ -53,42 +87,81 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
 
     // Add multiplayer markers
     if (get(multiplayer)) {
-        get(socket)?.getStorage?.guessLocationsArray?.forEach(element => {
-            // If this is the local one by this player, skip
-            if (element.id === get(socket)?.id) return;
+        get(socket)?.getStorage?.guessLocationsArray?.forEach(function (element) {
+            let newMarkerLat = element.lat;
+            let newMarkerLon = element.lon;
+            let newMarkerPinIndex = element.pin;
+            let associatedPlayerName = element.username;
 
-            // Handle edge cases for coordinates
-            let lat = element.lat ?? 0;
-            let lon = element.lon ?? 0;
-            if (isNaN(lat) || isNaN(lon)) { lat = 0; lon = 0; }
+            // Handle edge cases
+            if (newMarkerPinIndex == null) newMarkerPinIndex = 0;
+            if (newMarkerLat == null || newMarkerLon == null || isNaN(newMarkerLat)) {
+                newMarkerLat = 0;
+                newMarkerLon = 0;
+            }
 
-            const multiplayerIcon = new L.Icon({
-                iconUrl: `/img/pins/player_pin${element.pin ?? 0}.png`,
-                iconSize: [35, 35],
-                iconAnchor: [17.5, 34],
-                popupAnchor: [1, -34]
-            });
+            // Place multiplayer markers if not player's marker
+            if (element.id !== get(socket)?.id) {
+                let newMultiplayerIcon = {
+                    url: "/img/pins/player_pin" + newMarkerPinIndex + ".png",
+                    size: new google.maps.Size(35, 35),
+                    origin: new google.maps.Point(0, 0),
+                    anchor: new google.maps.Point(17.5, 34),
+                    scaledSize: new google.maps.Size(35, 35)
+                };
 
-            const multiplayerMarker = new L.Marker([lat, lon], { icon: multiplayerIcon, opacity: 0.75 });
-            multiplayerMarker.bindTooltip(element.username, { permanent: true, direction: 'right' });
-            multiplayerMarker.addTo(get(map));
+                let multiplayerLatLng = new google.maps.LatLng(newMarkerLat, newMarkerLon);
 
-            const multiplayerPolyline = new L.Polyline([correctLatLng, [lat, lon]], {
-                color: "black",
-                weight: 1,
-                opacity: 0.25
-            }).addTo(get(map));
+                let multiplayerMarker = new google.maps.Marker({
+                    position: multiplayerLatLng,
+                    map: get(map),
+                    icon: newMultiplayerIcon,
+                });
 
-            addedMarkers.update((markers) => {
-                markers = markers || [];
-                return [...markers, multiplayerMarker, multiplayerPolyline];
-            });
+                addedMarkers.update((markers) => {
+                    markers = markers || [];
+                    return [...markers, multiplayerMarker];
+                });
+
+                // Create InfoWindow for multiplayerMarker
+                let multiplayerInfoWindow = new google.maps.InfoWindow({
+                    content: associatedPlayerName // Replace with dynamic content if needed
+                });
+
+                // Open InfoWindow when marker is clicked
+                multiplayerMarker.addListener('click', function () {
+                    multiplayerInfoWindow.open(get(map), multiplayerMarker);
+                });
+
+                let multiplayerPolyline = new google.maps.Polyline({
+                    path: [curLatLng, multiplayerLatLng],
+                    strokeColor: "black",
+                    strokeWeight: 1,
+                    strokeOpacity: 0.25,
+                    map: get(map)
+                });
+
+                addedMarkers.update((markers) => {
+                    markers = markers || [];
+                    return [...markers, multiplayerPolyline];
+                });
+            }
         });
     }
 
-    // Place the destination marker
-    const destinationMarker = new L.Marker([correctLat, correctLon], { icon: resultIcon });
-    destinationMarker.addTo(get(map));
+    // Fit the map bounds to show all markers and lines (with padding)
+    if (!get(countryGuessr)) {
+        get(map).fitBounds(pointList, {
+            animate: false
+        });
+    }
+
+    // Place the "correct" marker reflecting the target location
+    let destinationMarker = new google.maps.Marker({
+        position: { lat: correctLat, lng: correctLon },
+        map: get(map),
+        icon: resultIcon
+    });
 
     addedMarkers.update((markers) => {
         markers = markers || [];
@@ -109,18 +182,15 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
     }
 }
 
-function flyToLocation(bounds, destLat, destLon) {
-    if (!get(resultScreenEnabled)) return;
+function flyToLocation(lat, lon) {
+    // Check if EndOverlay is fully visible before flying to the destination
+    if (get(resultScreenEnabled)) {
+        let currentZoom = get(map).getZoom();
+        let newZoom = Math.min(currentZoom + 2, get(map).maxZoom || 21); // Adjust 2 to the desired zoom increment and 21 to the max zoom level if you have a custom max
 
-    if (bounds) {
-        const paddedBounds = bounds.pad(0.25);
-        get(map).flyToBounds(paddedBounds, {
-            duration: 0.5,
-            padding: [0, 250]
-        });
-    } else {
-        get(map).flyTo([destLat, destLon], 6, {
-            duration: 0.5
-        });
+        let latLng = { lat: correctLat, lng: correctLon };
+
+        get(map).setZoom(newZoom);
+        get(map).setCenter(latLng);
     }
 }
