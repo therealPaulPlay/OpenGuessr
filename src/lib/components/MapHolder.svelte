@@ -7,17 +7,17 @@
 </script>
 
 <div
-	id="mapHolder"
-	class="regularMapSize mapHolder"
-	class:mapHover={$mapHovered}
-	class:mapHolderToResult={$resultScreenEnabled}
-	class:mapHolderAdShift={$supporterLevel < 2 && !$adsDisabled}
+	id="map-holder"
+	class="regular-map-size map-holder"
+	class:map-hover={$mapHovered}
+	class:map-holder-to-result={$resultScreenEnabled}
+	class:map-holder-ad-shift={$supporterLevel < 2 && !$adsDisabled}
 >
 	{@render children?.()}
 </div>
 
 <style>
-	.mapHolder {
+	.map-holder {
 		position: fixed;
 		display: flex;
 		right: 70px;
@@ -30,7 +30,7 @@
 		pointer-events: none;
 	}
 
-	.regularMapSize {
+	.regular-map-size {
 		width: 20%;
 		height: 20%;
 		transition:
@@ -41,7 +41,7 @@
 	}
 
 	/* map Holder class on result screen */
-	:global(.mapHolderToResult) {
+	:global(.map-holder-to-result) {
 		bottom: 0 !important;
 		right: 0 !important;
 		left: 0 !important;
@@ -60,23 +60,27 @@
 		display: none !important;
 	}
 
-	.mapHover {
+	.map-hover {
 		width: 55%;
 		height: 55%;
 	}
 
-	@media (orientation: portrait) and (max-width: 1200px) {
-		.mapHolder {
+	@media (orientation: portrait) and (max-width: 800px) {
+		/* Shift up to fit ad */
+		.map-holder-ad-shift {
+			bottom: 132px;
+		}
+
+		.map-holder {
 			height: 50%;
 			width: calc(100% - calc(var(--box-margin) * 2));
 			right: var(--box-margin) !important;
 		}
 	}
 
-	/* Shift up to fit ad */
-	@media (orientation: portrait) and (max-width: 800px) {
-		.mapHolderAdShift {
-			bottom: 132px;
+	@media (pointer: coarse) {
+		.map-holder {
+			min-height: 250px;
 		}
 	}
 </style>

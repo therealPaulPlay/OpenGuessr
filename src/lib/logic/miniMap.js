@@ -38,7 +38,6 @@ export function initMap() {
     });
 
     const leafletMap = L.map('map', {
-        center: [20, 0],
         zoom: 2,
         minZoom: 2,
         maxBounds: worldBounds,

@@ -9,14 +9,18 @@
 	import { onMount } from "svelte";
 	import { countryGuessr } from "$lib/stores/modeStore";
 
+	let mapElement = $state();
+	let mapResizeObserver;
 	let mapResizeTimeout;
 
 	function handleMapHover() {
+		if (window.matchMedia("(pointer: coarse)").matches) return; // Ignore touch devices
 		clearTimeout(mapResizeTimeout);
 		mapHovered.set(true);
 	}
 
 	function handleMapUnhover() {
+		if (window.matchMedia("(pointer: coarse)").matches) return; // Ignore touch devices
 		mapResizeTimeout = setTimeout(() => {
 			mapHovered.set(false);
 		}, 250);
@@ -32,14 +36,16 @@
 	}
 
 	onMount(async () => {
-		const module = await import("leaflet"); // Auto-attaches "L" object to the window element on import
+		await import("leaflet");
 		initMap();
 
 		try {
-			new ResizeObserver(() => get(map).invalidateSize()).observe(document.getElementById("map"));
+			mapResizeObserver = new ResizeObserver(() => get(map).invalidateSize()).observe(mapElement);
 		} catch (error) {
-			console.error("Resize oberser unsupported. Err: " + error);
+			console.error("Resize observer error: " + error);
 		}
+
+		return () => mapResizeObserver?.disconnect();
 	});
 </script>
 
@@ -50,15 +56,16 @@
 	id="map"
 	role="region"
 	tabindex="0"
+	onkeyup={spaceBarGuess}
 	onmouseenter={handleMapHover}
 	onmouseleave={handleMapUnhover}
-	onkeyup={spaceBarGuess}
+	bind:this={mapElement}
 	style:max-height={$mapExpanded ? "100%" : "0%"}
-	class:mapFullOpacityResult={Boolean($resultScreenEnabled)}
+	class:map-full-opacity-result={Boolean($resultScreenEnabled)}
 	class:hidden={$countryGuessr && !$resultScreenEnabled}
 >
 	{#if !$map}
-		<div class="mapPlaceholderBeforeLoad"></div>
+		<div class="map-placeholder-before-load"></div>
 	{/if}
 </div>
 
@@ -95,7 +102,7 @@
 		pointer-events: none !important;
 	}
 
-	.mapFullOpacityResult {
+	.map-full-opacity-result {
 		opacity: 1 !important;
 		border-radius: 0 !important;
 		top: -60px;
@@ -106,7 +113,7 @@
 		pointer-events: auto !important;
 	}
 
-	.mapPlaceholderBeforeLoad {
+	.map-placeholder-before-load {
 		width: 100%;
 		height: 100%;
 		display: flex;
@@ -215,7 +222,7 @@
 	}
 
 	/* On mobile, the map doesn't fade out if it's not being hovered over */
-	@media (orientation: portrait) and (max-width: 1200px) {
+	@media (orientation: portrait) and (max-width: 800px) {
 		#map {
 			opacity: 100%;
 		}
