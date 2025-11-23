@@ -5,7 +5,7 @@
 	import { screenEscapeDisabled } from "$lib/stores/context-specific/multiplayerStore";
 	import { leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
 	import { goto } from "$app/navigation";
-	import { Home } from "lucide-svelte";
+	import { Home } from "@lucide/svelte";
 
 	function goBack() {
 		if (window.history.length) return window.history.back();

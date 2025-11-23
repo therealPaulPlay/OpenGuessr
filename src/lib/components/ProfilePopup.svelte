@@ -26,19 +26,6 @@
 		SquarePlus,
 		UserRoundCheck,
 		UserRoundPlus,
-	} from "lucide-svelte";
-	import Badge from "$lib/components/Badge.svelte";
-	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import {
-		profileData,
-		profileExperience,
-		profileId,
-		profileSupporterLevel,
-		unsavedAboutChanges,
-	} from "$lib/stores/context-specific/profileStore";
-	import { profilePopup } from "$lib/stores/uiStore";
-	import { playSound } from "$lib/utils/soundManager";
-	import {
 		Edit,
 		Trash2,
 		TriangleAlert,
@@ -53,7 +40,18 @@
 		BarChart3,
 		Trophy,
 		Crown,
-	} from "lucide-svelte";
+	} from "@lucide/svelte";
+	import Badge from "$lib/components/Badge.svelte";
+	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
+	import {
+		profileData,
+		profileExperience,
+		profileId,
+		profileSupporterLevel,
+		unsavedAboutChanges,
+	} from "$lib/stores/context-specific/profileStore";
+	import { profilePopup } from "$lib/stores/uiStore";
+	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { page } from "$app/state";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";

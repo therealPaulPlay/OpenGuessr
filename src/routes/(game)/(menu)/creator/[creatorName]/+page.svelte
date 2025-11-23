@@ -2,7 +2,7 @@
 	import { blur, fly } from "svelte/transition";
 	import { goto } from "$app/navigation";
 	import { onMount } from "svelte";
-	import { ArrowRight } from "lucide-svelte";
+	import { ArrowRight } from "@lucide/svelte";
 	import { page } from "$app/stores";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 

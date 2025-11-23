@@ -39,6 +39,7 @@ export function initMap() {
 
     const leafletMap = L.map('map', {
         zoom: 2,
+        center: [0, 0],
         minZoom: 2,
         maxBounds: worldBounds,
         maxBoundsViscosity: 1.0,  // Makes the bounds restriction strict

@@ -2,7 +2,7 @@
 	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { joinRoom } from "$lib/logic/multiplayerLogic";
-	import { Copy, Unplug, Users } from "lucide-svelte";
+	import { Copy, Unplug, Users } from "@lucide/svelte";
 	import { blur, slide } from "svelte/transition";
 	import { onDestroy, onMount } from "svelte";
 	import { fetchPublicRooms } from "$lib/utils/publicRooms";

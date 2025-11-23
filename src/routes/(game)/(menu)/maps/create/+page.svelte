@@ -9,7 +9,7 @@
 	import { showNotification } from "$lib/utils/notifications";
 	import { get } from "svelte/store";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { ArrowDown, Info } from "lucide-svelte";
+	import { ArrowDown, Info } from "@lucide/svelte";
 
 	let jsonPopup = $state(false);
 	let fileName = $state("Pick file");

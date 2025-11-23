@@ -8,7 +8,7 @@
 	} from "$lib/stores/context-specific/notificationStore";
 	import { hideNotification } from "$lib/utils/notifications";
 	import { playSound } from "$lib/utils/soundManager";
-	import { X } from "lucide-svelte";
+	import { X } from "@lucide/svelte";
 	import { fly } from "svelte/transition";
 
 	let { belowNavbar = true } = $props();

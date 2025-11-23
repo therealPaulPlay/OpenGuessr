@@ -6,7 +6,7 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { showNotification } from "$lib/utils/notifications";
 	import { changeCategory } from "$lib/utils/changeCategory";
-	import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Play } from "lucide-svelte";
+	import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Play } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";

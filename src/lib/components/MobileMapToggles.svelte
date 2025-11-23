@@ -4,10 +4,9 @@
 	import { get } from "svelte/store";
 	import { playSound } from "$lib/utils/soundManager";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
-	import { ArrowDown, X } from "lucide-svelte";
+	import { ArrowDown, X, ArrowDownRight, ArrowUpLeft } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
 	import { countryGuessr } from "$lib/stores/modeStore";
-	import { ArrowDownRight, ArrowUpLeft } from "lucide-svelte";
 
 	let toggleMapButton = $state();
 </script>

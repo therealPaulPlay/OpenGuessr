@@ -7,7 +7,7 @@
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { findDuel, leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Info, RefreshCcw } from "lucide-svelte";
+	import { Info, RefreshCcw } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
 	import { deleteRoomCodeFromMatchmakingServer } from "$lib/logic/matchmakingAPI";

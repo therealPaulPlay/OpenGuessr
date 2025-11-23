@@ -29,7 +29,7 @@
 	import { get } from "svelte/store";
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
 	import ResultFullscreenMessage from "./ResultFullscreenCelebration.svelte";
-	import { CircleUser, Flame, RulerDimensionLine } from "lucide-svelte";
+	import { CircleUser, Flame, RulerDimensionLine } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";

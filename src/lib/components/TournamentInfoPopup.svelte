@@ -1,7 +1,7 @@
 <script>
 	import { selectedTournament, tournamentMatchResultsIndex } from "$lib/stores/context-specific/tournamentStore";
 	import { tournamentInfoPopup, tournamentMatchResultsPopup } from "$lib/stores/uiStore";
-	import { CalendarPlus, Info, Medal } from "lucide-svelte";
+	import { CalendarPlus, Info, Medal } from "@lucide/svelte";
 	import Popup from "./ui/Popup.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";

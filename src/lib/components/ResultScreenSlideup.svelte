@@ -11,7 +11,7 @@
 		monthlySupportAmount,
 	} from "$lib/stores/context-specific/resultScreenSlideupStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Flame, HandHeart } from "lucide-svelte";
+	import { Flame, HandHeart } from "@lucide/svelte";
 	import { slide } from "svelte/transition";
 </script>
 
