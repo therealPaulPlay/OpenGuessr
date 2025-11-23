@@ -1,7 +1,7 @@
 <!-- Universal Popup component, used as the "enclosure" for (basically) all Popups -->
 
 <script>
-	import { X } from "lucide-svelte";
+	import { X } from "@lucide/svelte";
 	import { backOut } from "svelte/easing";
 	import { fade, scale } from "svelte/transition";
 

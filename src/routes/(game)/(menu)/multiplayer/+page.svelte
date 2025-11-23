@@ -10,7 +10,10 @@
 		Search,
 		X,
 		ExternalLink,
-	} from "lucide-svelte";
+		ChevronDown,
+		ChevronUp,
+		History,
+	} from "@lucide/svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
@@ -25,7 +28,6 @@
 	import { onDestroy, onMount } from "svelte";
 	import { blur, fade, scale, slide } from "svelte/transition";
 	import { bounceInOut } from "svelte/easing";
-	import { ChevronDown, ChevronUp, History } from "lucide-svelte";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { fetchWarnlistStatus } from "$lib/utils/checkReportStatus";
 	import { get } from "svelte/store";

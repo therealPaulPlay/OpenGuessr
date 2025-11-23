@@ -7,7 +7,7 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
-	import { Info } from "lucide-svelte";
+	import { Info } from "@lucide/svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 
 	let loadingText = $state("Loading...");

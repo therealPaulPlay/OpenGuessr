@@ -4,7 +4,7 @@
 	import { setSoundsVolume, playSound, setMusicVolume } from "$lib/utils/soundManager";
 	import { preventFullscreen } from "$lib/stores/context-specific/platformSettingsStore";
 	import { settingsPopup } from "$lib/stores/uiStore";
-	import { InfoIcon, Scan, ChevronLeft, ChevronRight, Timer } from "lucide-svelte";
+	import { InfoIcon, Scan, ChevronLeft, ChevronRight, Timer } from "@lucide/svelte";
 	import Tabs from "./ui/Tabs.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";

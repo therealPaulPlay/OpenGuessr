@@ -5,7 +5,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { onMount } from "svelte";
-	import { ArrowLeft, ArrowRight } from "lucide-svelte";
+	import { ArrowLeft, ArrowRight } from "@lucide/svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	// local state variables

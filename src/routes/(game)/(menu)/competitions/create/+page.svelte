@@ -1,7 +1,7 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
 	import { username } from "$lib/stores/accountStore";
-	import { Copy, Link } from "lucide-svelte";
+	import { Copy, Link } from "@lucide/svelte";
 	import { showNotification } from "$lib/utils/notifications";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { errorPopup } from "$lib/utils/errorHandling";
