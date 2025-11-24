@@ -230,7 +230,7 @@
 	<div class="infoNoteBox">
 		<p class="uploadFirstText">Information and rules:</p>
 		<ul class="verticalMarginUl">
-			<li class="helpItem">Keep all details in english.</li>
+			<li class="helpItem">Keep all details in English.</li>
 			<li class="helpItem">Pick a descriptive competition name (e.g. not "My Competition").</li>
 			<li class="helpItem">Competitions will be deleted 7 days after they have ended.</li>
 			<li class="helpItem">Competitions cannot be edited.</li>
