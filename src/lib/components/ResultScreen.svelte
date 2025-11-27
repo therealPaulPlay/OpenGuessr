@@ -72,7 +72,7 @@
 					noGravity
 					x={[-xVal + indexFactor, xVal + indexFactor]}
 					y={[-yVal, yVal]}
-					amount={100}
+					amount={25}
 					delay={[delay, delay + 100]}
 					colorRange={[0, 10]}
 					duration={1500}
