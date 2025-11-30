@@ -8,7 +8,7 @@
 	import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import { CircleUserRound, EllipsisVertical, UserRound, UserRoundPlus, X } from "lucide-svelte";
+	import { CircleUserRound, EllipsisVertical, UserRound, UserRoundPlus, X } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { blur, slide } from "svelte/transition";
 	import { goto } from "$app/navigation";

@@ -12,15 +12,16 @@
 	let mapElement = $state();
 	let mapResizeObserver;
 	let mapResizeTimeout;
+	let lastPointerType = $state("mouse");
 
 	function handleMapHover() {
-		if (window.matchMedia("(pointer: coarse)").matches) return; // Ignore touch devices
+		if (lastPointerType === "touch") return;
 		clearTimeout(mapResizeTimeout);
 		mapHovered.set(true);
 	}
 
 	function handleMapUnhover() {
-		if (window.matchMedia("(pointer: coarse)").matches) return; // Ignore touch devices
+		if (lastPointerType === "touch") return;
 		mapResizeTimeout = setTimeout(() => {
 			mapHovered.set(false);
 		}, 250);
@@ -57,6 +58,9 @@
 	role="region"
 	tabindex="0"
 	onkeyup={spaceBarGuess}
+	onpointerover={(event) => {
+		lastPointerType = event.pointerType;
+	}}
 	onmouseenter={handleMapHover}
 	onmouseleave={handleMapUnhover}
 	bind:this={mapElement}

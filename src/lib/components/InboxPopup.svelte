@@ -6,7 +6,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { acceptFriendRequest, declineFriendRequest } from "$lib/logic/friendAPI";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
-	import { Check, X } from "lucide-svelte";
+	import { Check, X } from "@lucide/svelte";
 
 	let inboxRefreshInterval;
 

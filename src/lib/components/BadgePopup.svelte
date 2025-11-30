@@ -2,7 +2,7 @@
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { badgePopup } from "$lib/stores/uiStore";
-	import { ArrowRight } from "lucide-svelte";
+	import { ArrowRight } from "@lucide/svelte";
 	import {
 		profileData,
 		profileExperience,

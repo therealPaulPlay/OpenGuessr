@@ -2,7 +2,7 @@
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { helpPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Search, Goal, Users } from "lucide-svelte";
+	import { Search, Goal, Users } from "@lucide/svelte";
 
 	let currentSlide = $state(0);
 

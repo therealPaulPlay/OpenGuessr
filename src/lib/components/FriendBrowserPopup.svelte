@@ -7,7 +7,7 @@
 	import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { Search, UserRoundPlus } from "lucide-svelte";
+	import { Search, UserRoundPlus } from "@lucide/svelte";
 
 	let userSearchResults = $state();
 	let searchQuery = $state("");

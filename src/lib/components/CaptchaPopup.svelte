@@ -3,7 +3,7 @@
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { renderCaptcha } from "$lib/utils/renderCaptcha";
 	import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupStore";
-	import { Info } from "lucide-svelte";
+	import { Info } from "@lucide/svelte";
 
 	$effect(() => {
 		if ($captchaPopupVisible) {

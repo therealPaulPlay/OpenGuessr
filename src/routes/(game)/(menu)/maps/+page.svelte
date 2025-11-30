@@ -1,5 +1,5 @@
 <script>
-	import { Plus, XCircle, ExternalLinkIcon, User, Search } from "lucide-svelte";
+	import { Plus, XCircle, ExternalLinkIcon, User, Search } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";

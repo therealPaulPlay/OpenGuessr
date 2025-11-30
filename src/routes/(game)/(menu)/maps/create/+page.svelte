@@ -9,7 +9,7 @@
 	import { showNotification } from "$lib/utils/notifications";
 	import { get } from "svelte/store";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { ArrowDown, Info } from "lucide-svelte";
+	import { ArrowDown, Info } from "@lucide/svelte";
 
 	let jsonPopup = $state(false);
 	let fileName = $state("Pick file");
@@ -101,7 +101,7 @@
 			<li>You can only upload max. 3 maps per day.</li>
 			<li>Maps must at least have 50 unique locations.</li>
 			<li>Ensure that your map names and author names are familiy-friendly.</li>
-			<li>Keep all details in english.</li>
+			<li>Keep all details in English.</li>
 			<li>Pick a descriptive map name (e.g. not "My Map").</li>
 			<li>A maximum of 2,000 locations is recommended, up to 15,000 are possible.</li>
 		</ul>

@@ -1,5 +1,5 @@
 <script>
-	import { Eye, EyeClosed } from "lucide-svelte";
+	import { Eye, EyeClosed } from "@lucide/svelte";
 	import { renderCaptcha } from "$lib/utils/renderCaptcha";
 	import inIframe from "$lib/utils/checkIframe";
 	import { onMount } from "svelte";

@@ -29,7 +29,7 @@
 	import { get } from "svelte/store";
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
 	import ResultFullscreenMessage from "./ResultFullscreenCelebration.svelte";
-	import { CircleUser, Flame, RulerDimensionLine } from "lucide-svelte";
+	import { CircleUser, Flame, RulerDimensionLine } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";
@@ -72,7 +72,7 @@
 					noGravity
 					x={[-xVal + indexFactor, xVal + indexFactor]}
 					y={[-yVal, yVal]}
-					amount={100}
+					amount={25}
 					delay={[delay, delay + 100]}
 					colorRange={[0, 10]}
 					duration={1500}

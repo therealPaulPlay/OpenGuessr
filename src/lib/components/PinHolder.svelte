@@ -14,7 +14,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { blur, slide } from "svelte/transition";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { Check } from "lucide-svelte";
+	import { Check } from "@lucide/svelte";
 	import { handleShopPurchase } from "$lib/utils/shopHelper";
 
 	let isHovered = $state(false);

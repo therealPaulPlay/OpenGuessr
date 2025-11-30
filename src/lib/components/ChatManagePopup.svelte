@@ -1,6 +1,6 @@
 <script>
 	import { chatManagePopup } from "$lib/stores/uiStore";
-	import { Lock, MessageSquareOff, MessageSquare, UserRoundX, LockOpen } from "lucide-svelte";
+	import { Lock, MessageSquareOff, MessageSquare, UserRoundX, LockOpen } from "@lucide/svelte";
 	import Popup from "./ui/Popup.svelte";
 	import {
 		chatMutedPlayers,
