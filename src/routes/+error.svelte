@@ -1,5 +1,5 @@
 <script>
-	import { ArrowLeft } from "lucide-svelte";
+	import { ArrowLeft } from "@lucide/svelte";
 	import { page } from "$app/state";
 </script>
 

@@ -7,7 +7,7 @@
 	import { duelWinStreak, elo } from "$lib/stores/accountStore";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
-	import { Info, History, Flame } from "lucide-svelte";
+	import { Info, History, Flame } from "@lucide/svelte";
 	import TokenRewardDisplay from "./TokenRewardDisplay.svelte";
 
 	// Animate number starting from 0

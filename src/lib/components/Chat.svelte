@@ -3,7 +3,7 @@
 	import { sendChat } from "$lib/utils/chatFunctions";
 	import { playSound } from "$lib/utils/soundManager";
 	import RemainingGuessesDisplay from "$lib/components/RemainingGuessesDisplay.svelte";
-	import { MessageSquareWarning, MoveVertical, SendHorizonal } from "lucide-svelte";
+	import { MessageSquareWarning, MoveVertical, SendHorizonal } from "@lucide/svelte";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { chatManagePopup } from "$lib/stores/uiStore";
 

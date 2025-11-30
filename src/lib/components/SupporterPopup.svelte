@@ -2,13 +2,12 @@
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
-	import { initializeRewardedAd } from "$lib/utils/rewardedAds";
 	import { supporterLevel, supportedAmount } from "$lib/stores/accountStore";
 	import { supporterPopupVisible } from "$lib/stores/context-specific/supporterPopupStore";
 	import { onMount } from "svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { CircleArrowDown, CircleArrowUp, CircleMinus, CirclePlus, Clock9 } from "lucide-svelte";
+	import { CircleArrowDown, CircleArrowUp, CircleMinus, CirclePlus, Clock9 } from "@lucide/svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 

@@ -14,16 +14,11 @@ import { playSound } from "$lib/utils/soundManager";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
 import { get } from "svelte/store";
 import { getMapBounds } from "$lib/utils/getMapBounds";
-import { toggleStreakWindow } from "$lib/utils/streakRestore";
+import { showResultScreenSlideup } from "$lib/utils/resultScreenSlideup";
 
 // Streak ----------------------------------------------------------------------------------------------------------------------------------------------------
 function calculateMultiplier(streakParam) {
     return streakParam === 0 ? 1 : streakParam >= 9 ? 1.5 : Math.round((1 + (streakParam / 9) * 0.5) * 100) / 100;
-}
-
-export function restoreOldStreak(oldStreak) {
-    localStorage.setItem("streak", oldStreak);
-    streakText.set(oldStreak + " (" + calculateMultiplier(oldStreak) + "x)");
 }
 
 async function streakCalculation() {
@@ -32,9 +27,9 @@ async function streakCalculation() {
     if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
         streak++;
     } else {
-        if (streak >= 2) toggleStreakWindow(streak, false);
+        if (streak >= 2) showResultScreenSlideup("Streak lost!", `You lost your streak of ${streak}!`);
         if (streak >= 1) setCheckNewHighestCountryStreak(streak);
-        streak = 0; // Reset country streak ( = Streak lost, but still restorable wit ad)
+        streak = 0; // Reset country streak
     }
 
     const streakMultiplier = calculateMultiplier(streak);
@@ -80,7 +75,6 @@ async function calculateXPGain(distance, category, supporterLevelParam) {
 }
 
 let animateSupporterBoostTimeout;
-
 
 // Load Experience stats on result screen -----------------------------------------------------------------------------------------------------------------------------
 export async function loadResultScreenXP(distance) {

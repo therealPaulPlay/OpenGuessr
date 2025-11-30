@@ -1,25 +1,15 @@
 import { errorPopup } from "$lib/utils/errorHandling";
-import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
-import { initializeRewardedAd } from "$lib/utils/rewardedAds";
-import { monthlySupportAmount, showSlideup, slideupButtonDisabled, slideupButtonText, slideupCallback, slideupText, slideupTitle } from "$lib/stores/context-specific/resultScreenSlideupStore";
+import { monthlySupportAmount } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { get } from "svelte/store";
 import { supporterWindowIfAuthenticated } from "./showSupporterPopup";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { supporterLevel } from "$lib/stores/accountStore";
-
-function showSupporterSlideup() {
-    slideupCallback.set(supporterWindowIfAuthenticated);
-    slideupButtonText.set("Support");
-    slideupButtonDisabled.set(false);
-    slideupTitle.set("Enjoy playing?");
-    showSlideup.set(true);
-    slideupText.set(`Please consider supporting to unlock awesome benefits, including ad-free!`);
-    getMonthlySupportedAmount();
-}
+import { showResultScreenSlideup } from "./resultScreenSlideup";
 
 export function supporterSlideupProbability() {
     if (Math.random() < 0.1 && get(supporterLevel) == 0) {
-        showSupporterSlideup();
+        getMonthlySupportedAmount();
+        showResultScreenSlideup("Enjoy playing?", "Please consider supporting to unlock awesome benefits, including ad-free!", "Support", supporterWindowIfAuthenticated);
     }
 }
 

@@ -6,7 +6,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { fetchTournaments } from "$lib/utils/tournamentUtils";
-	import { AlertCircle, ChevronDown, Clock, Info, Medal, Ticket, Tickets, Users } from "lucide-svelte";
+	import { AlertCircle, ChevronDown, Clock, Info, Medal, Ticket, Tickets, Users } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { blur, slide } from "svelte/transition";
 

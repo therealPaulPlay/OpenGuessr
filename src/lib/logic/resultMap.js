@@ -157,6 +157,10 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
 function flyToLocation(bounds, destLat, destLon) {
     if (!get(resultScreenEnabled)) return;
 
+    // Force map size recalculation to ensure bounds and padding works correctly
+    // The resize observer on the map seems to be paused when the tab goes to the background, this is a safeguard
+    get(map).invalidateSize();
+
     if (bounds) {
         get(map).fitBounds(bounds, {
             bottom: 250,

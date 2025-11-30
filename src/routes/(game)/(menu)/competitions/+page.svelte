@@ -9,7 +9,7 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
-	import { ChevronDown, Frown, Plus, Search, Smile, TriangleAlert } from "lucide-svelte";
+	import { ChevronDown, Frown, Plus, Search, Smile, TriangleAlert } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import Tabs from "$lib/components/ui/Tabs.svelte";

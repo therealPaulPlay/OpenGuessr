@@ -7,11 +7,10 @@
 		slideupTitle,
 		showSlideup,
 		slideupButtonText,
-		slideupButtonDisabled,
 		monthlySupportAmount,
 	} from "$lib/stores/context-specific/resultScreenSlideupStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Flame, HandHeart } from "lucide-svelte";
+	import { Flame, HandHeart } from "@lucide/svelte";
 	import { slide } from "svelte/transition";
 </script>
 
@@ -27,31 +26,33 @@
 			</div>
 		{/if}
 		<div class="textBox solidBox">
-			<p id="slideupText" bind:innerHTML={$slideupText} contenteditable="false"></p>
+			<p id="slideupText" bind:textContent={$slideupText} contenteditable="false"></p>
 		</div>
 		<div class="buttonBox">
 			<button
 				class="standardButton white"
+				style:width={!$slideupCallback ? "100%" : ""}
 				onclick={() => {
 					playSound("basic_button");
 					$showSlideup = false;
 				}}>Close</button
 			>
-			<button
-				class="streakButton standardButton"
-				onclick={() => {
-					playSound("basic_button");
-					$slideupCallback?.();
-				}}
-				disabled={$slideupButtonDisabled}
-			>
-				{$slideupButtonText}
-				{#if $slideupButtonText == "Restore"}
-					<Flame size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
-				{:else if $slideupButtonText == "Support"}
-					<HandHeart style="margin-bottom: -3px;" size={20} strokeWidth={2.25} />
-				{/if}
-			</button>
+			{#if $slideupCallback}
+				<button
+					class="streakButton standardButton"
+					onclick={() => {
+						playSound("basic_button");
+						$slideupCallback?.();
+					}}
+				>
+					{$slideupButtonText}
+					{#if $slideupButtonText == "Restore"}
+						<Flame size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
+					{:else if $slideupButtonText == "Support"}
+						<HandHeart style="margin-bottom: -3px;" size={20} strokeWidth={2.25} />
+					{/if}
+				</button>
+			{/if}
 		</div>
 	</div>
 {/if}

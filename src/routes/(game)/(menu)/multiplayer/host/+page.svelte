@@ -1,10 +1,9 @@
 <script>
-	import { Eye, EyeOff, Link, Users } from "lucide-svelte";
+	import { Eye, EyeOff, Link, Users, ArrowRightLeft } from "@lucide/svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { sendMatchInvite } from "$lib/logic/friendAPI";
-	import { ArrowRightLeft } from "lucide-svelte";
 	import { get } from "svelte/store";
 	import {
 		loadedFriendsData,

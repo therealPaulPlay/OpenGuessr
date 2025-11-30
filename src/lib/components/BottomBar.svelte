@@ -13,7 +13,7 @@
 	import { tooltip } from "$lib/utils/tooltip";
 	import { countryGuessr } from "$lib/stores/modeStore";
 	import { blur, fade } from "svelte/transition";
-	import { ArrowUp, Bug, Map } from "lucide-svelte";
+	import { ArrowUp, Bug, Map } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 </script>
 
