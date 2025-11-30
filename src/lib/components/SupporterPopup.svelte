@@ -2,7 +2,6 @@
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
-	import { initializeRewardedAd } from "$lib/utils/rewardedAds";
 	import { supporterLevel, supportedAmount } from "$lib/stores/accountStore";
 	import { supporterPopupVisible } from "$lib/stores/context-specific/supporterPopupStore";
 	import { onMount } from "svelte";
