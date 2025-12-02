@@ -34,7 +34,7 @@
 		<div class="barMenu socialBar">
 			<button
 				class="linkItem standardButton white"
-				use:tooltip={{ text: "Report a bug" }}
+				use:tooltip={{ text: "Report bug" }}
 				onclick={() => {
 					playSound("basic_button");
 					$bugspotPopup = true;
@@ -44,6 +44,7 @@
 			</button>
 			<button
 				class="linkItem standardButton white"
+				use:tooltip={{ text: "Discord" }}
 				id="discordButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -54,6 +55,7 @@
 			</button>
 			<button
 				class="linkItem standardButton white"
+				use:tooltip={{ text: "Reddit" }}
 				id="redditButton"
 				onclick={() => {
 					playSound("basic_button");

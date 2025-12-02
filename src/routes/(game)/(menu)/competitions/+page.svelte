@@ -261,7 +261,7 @@
 	async function getCompetitionsFromServer(expired, search, daily, filterEntered) {
 		try {
 			let requestBody = {
-				id: localStorage.getItem("id"), // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
+				id: localStorage.getItem("id"), // If this is null, that is fine too (used to evaluate whether a user has already played certain competitions)
 			};
 
 			if (search) requestBody.search = search;
@@ -297,22 +297,17 @@
 					if (!expired && daily) dailyCompetitionData = data.competitions; // Only one, so no need to concatinate arrays here
 
 					if (!daily) {
-						if (!expired) {
-							notExpiredIndex += data.competitions?.length;
-						} else {
-							expiredIndex += data.competitions?.length;
-						}
+						if (!expired) notExpiredIndex += data.competitions?.length;
+						else expiredIndex += data.competitions?.length;
 					}
 
 					if (data.competitions?.length > 0) noContentLoaded = false;
 					let maxAmountLoaded = data.competitions.length == 10;
 
 					if (!daily) {
-						if (expired) {
-							loadMoreExpired = maxAmountLoaded; // if the max amount was loaded, there are likely more available
-						} else {
-							loadMoreActive = maxAmountLoaded;
-						}
+						if (expired)
+							loadMoreExpired = maxAmountLoaded; // Max amount loaded = more available
+						else loadMoreActive = maxAmountLoaded;
 					}
 
 					if (search && noContentLoaded && notExpiredIndex == 0) activeCompetitionError = "Search returned no results.";
@@ -338,11 +333,8 @@
 
 					if (responseData.errors && Array.isArray(responseData.errors)) {
 						responseData.errors.forEach((err) => {
-							if (err.msg) {
-								errorMessages.push(err.msg);
-							} else {
-								errorMessages.push(JSON.stringify(err));
-							}
+							if (err.msg) errorMessages.push(err.msg);
+							else errorMessages.push(JSON.stringify(err));
 						});
 					}
 
@@ -716,6 +708,7 @@
 		<Tabs
 			tabs={["All", "Not entered"]}
 			class="hideEnteredCompsToggle"
+			disabled={!$isAuthenticated}
 			bind:selected={expiredTabsSelection}
 			onchange={(_, selectionIndex) => {
 				playSound("basic_button");
