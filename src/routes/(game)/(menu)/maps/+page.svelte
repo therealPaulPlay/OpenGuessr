@@ -10,6 +10,7 @@
 	import { specialModes, continentMaps, countryMaps, basicMaps } from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { idToMapName } from "$lib/utils/idToMapName.js";
+	import { tooltip } from "$lib/utils/tooltip.js";
 
 	// State
 	let currentFetchIndex = 0;
@@ -326,7 +327,7 @@
 	</div>
 	<!-- Saved Community Maps -->
 	<div class="headerContainer">
-		<h2 class="header">Bookmarked</h2>
+		<h2 class="header">Saved</h2>
 	</div>
 	<div class="map-container">
 		{#if addedCommunityMapsArray.length > 0}
@@ -356,7 +357,7 @@
 				</div>
 			{/each}
 		{:else}
-			<p class="nothingFound noSavedMaps">No saved maps.</p>
+			<p class="nothingFound noSavedMaps">No saved community maps.</p>
 		{/if}
 	</div>
 	<!-- Featured Maps -->
@@ -381,14 +382,12 @@
 					</div>
 					<button
 						class="add-button standardButton white"
+						use:tooltip={{ text: "Save map" }}
 						onclick={(e) => {
 							e.stopPropagation();
 							playSound("basic_button");
-							if (addedCommunityMapsArray.includes(map.name)) {
-								removeSelectedMap(map.name);
-							} else {
-								addSelectedMap(map.name);
-							}
+							if (addedCommunityMapsArray.includes(map.name)) removeSelectedMap(map.name);
+							else addSelectedMap(map.name);
 						}}
 					>
 						<img
@@ -478,14 +477,12 @@
 				</div>
 				<button
 					class="add-button standardButton white"
+					use:tooltip={{ text: "Save map" }}
 					onclick={(e) => {
 						e.stopPropagation();
 						playSound("basic_button");
-						if (addedCommunityMapsArray.includes(map.name)) {
-							removeSelectedMap(map.name);
-						} else {
-							addSelectedMap(map.name);
-						}
+						if (addedCommunityMapsArray.includes(map.name)) removeSelectedMap(map.name);
+						else addSelectedMap(map.name);
 					}}
 				>
 					<img
@@ -553,10 +550,6 @@
 
 	.playlightLink:hover {
 		opacity: 0.25;
-	}
-
-	.linkSpan {
-		margin-left: 5px;
 	}
 
 	.no-bottom-padding {
@@ -747,7 +740,7 @@
 
 	.noSavedMaps {
 		text-align: start;
-		margin-left: 10px;
+		margin-left: var(--box-margin);
 	}
 
 	#mapSearch {

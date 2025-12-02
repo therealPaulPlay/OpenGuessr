@@ -17,6 +17,7 @@
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import { page } from "$app/state";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
+	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 
 	const competitionsEndpoint = $apiUrl + "/competitions";
 
@@ -570,7 +571,7 @@
 				<div class="label">
 					<p>Restriction</p>
 				</div>
-				<p class="itemText">{restriction}</p>
+				<p class="itemText">{$restrictionNames?.[restriction] || "Invalid"}</p>
 			</div>
 			<div class="propertyItem">
 				<div class="label">
@@ -671,7 +672,7 @@
 						true,
 					)}
 				{:else}
-					<Drawer title="Yesterday's daily competition" class="fadeInItem" inPage={false}>
+					<Drawer title="Yesterday's results" class="fadeInItem" inPage={false}>
 						{@render competitionItem(
 							entry.id,
 							entry.name,

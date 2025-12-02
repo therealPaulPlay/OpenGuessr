@@ -129,11 +129,11 @@
 				</button>
 				<button
 					class="standardButton white multiplayerSelect"
-					use:tooltip={{ text: "Skill-based / Everyone" }}
+					use:tooltip={{ text: "Division-based or Everyone" }}
 					style:flex-grow={0}
 					onclick={() => {
 						$skillBasedMatchmaking = !$skillBasedMatchmaking;
-						showNotification("Matchmaking set to " + ($skillBasedMatchmaking ? "skill-based." : "everyone."));
+						showNotification("Matchmaking set to " + ($skillBasedMatchmaking ? "division-based." : "everyone."));
 					}}
 				>
 					{#if $skillBasedMatchmaking}

@@ -81,7 +81,7 @@
 	{/if}
 </div>
 
-<Drawer title="Finished tournaments" bind:isOpen={showOlder}>
+<Drawer title="Recently finished" bind:isOpen={showOlder}>
 	{#each $tournamentData?.filter((i) => i.status === "finished") as tournament (tournament.id)}
 		{@render tournamentItem(tournament)}
 	{/each}

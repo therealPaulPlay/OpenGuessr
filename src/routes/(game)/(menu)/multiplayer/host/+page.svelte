@@ -21,6 +21,7 @@
 	import { setupMultiplayerRoom, startRoom } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
 	import Ticker from "$lib/components/ui/Ticker.svelte";
+	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { goto } from "$app/navigation";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { addPublicRoom, deletePublicRoom } from "$lib/utils/publicRooms";
@@ -31,9 +32,10 @@
 	import { tooltip } from "$lib/utils/tooltip";
 	import { page } from "$app/state";
 	import { idToMapName } from "$lib/utils/idToMapName";
+	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 
 	function getFormattedCategory() {
-		if (typeof window === "undefined") return "loading...";
+		if (typeof window === "undefined") return "Loading...";
 		const category = localStorage.getItem("selectedCategory") || "standard";
 		return idToMapName(category);
 	}
@@ -52,21 +54,13 @@
 
 	// Restriction toggle
 	let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
-	let restrictionsText = ["Standard", "NMPZ", "Grayscale", "Invert Colors", "Hue Shift", "Blink (Fade)"];
 	let restrictionButtonText = $state("Standard");
 
 	function toggleMultiplayerRestriction() {
 		const currentRestrictionIndex =
-			(restrictions.findIndex((e) => e == get(multiplayerRestriction)) + 1) % restrictions.length;
+			(restrictions.findIndex((e) => e == $multiplayerRestriction) + 1) % restrictions.length;
 		multiplayerRestriction.set(restrictions[currentRestrictionIndex]);
-		restrictionButtonText = restrictionsText[currentRestrictionIndex];
-	}
-
-	// Style toggle
-	let styles = ["standard", "duel"];
-	function toggleMultiplayerStyle() {
-		const currentStyleIndex = (styles.findIndex((e) => e == get(multiplayerStyle)) + 1) % styles.length;
-		multiplayerStyle.set(styles[currentStyleIndex]);
+		restrictionButtonText = $restrictionNames[$multiplayerRestriction];
 	}
 
 	// Truncate name
@@ -108,13 +102,13 @@
 			</div>
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
 				<p>Style:</p>
-				<button
-					class="standardButton white toggleSwitch"
-					onclick={() => {
+				<Tabs
+					tabs={["Standard", "Duel"]}
+					onchange={(selected, _index) => {
 						playSound("basic_button");
-						toggleMultiplayerStyle();
-					}}>{$multiplayerStyle?.[0]?.toUpperCase() + $multiplayerStyle?.slice(1)}</button
-				>
+						multiplayerStyle.set(selected.toLowerCase());
+					}}
+				/>
 			</div>
 			<div id="roomCreationMap" class="roomCreationModule multiplayerHostSettings">
 				<p>Map:</p>

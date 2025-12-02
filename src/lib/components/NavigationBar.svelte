@@ -189,7 +189,7 @@
 			<button
 				class="standardButton"
 				aria-label="Log in or Sign up"
-				use:tooltip={{ text: "Sign up or log in" }}
+				use:tooltip={{ text: "Sign up or Log in" }}
 				onclick={() => {
 					playSound("basic_button");
 					signupPrompt();
