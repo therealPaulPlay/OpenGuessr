@@ -36,6 +36,7 @@
 	import { showNotification } from "$lib/utils/notifications";
 	import { tooltip } from "$lib/utils/tooltip";
 	import TournamentOverview from "$lib/components/TournamentOverview.svelte";
+	import Drawer from "$lib/components/ui/Drawer.svelte";
 
 	let friendsRefreshInterval;
 
@@ -153,7 +154,9 @@
 			</div>
 		</div>
 	</div>
-	<DuelDivisionDisplay />
+	<Drawer title="Elo divisions" class="divisions-container">
+		<DuelDivisionDisplay />
+	</Drawer>
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Tournaments</h2>
 	</div>
@@ -497,5 +500,9 @@
 		height: 18px;
 		vertical-align: -2px;
 		margin-left: 5px;
+	}
+
+	:global(.divisions-container) {
+		margin-top: var(--layout-margin);
 	}
 </style>
