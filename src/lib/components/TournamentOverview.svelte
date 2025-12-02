@@ -6,7 +6,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { fetchTournaments } from "$lib/utils/tournamentUtils";
-	import { Clock, Info, Medal, Ticket, Tickets, Users } from "@lucide/svelte";
+	import { CalendarCheck2, Clock, Info, Medal, Ticket, Tickets, Users } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";
 	import Drawer from "./ui/Drawer.svelte";
@@ -22,7 +22,7 @@
 
 {#snippet tournamentItem(tournament)}
 	{@const readableDate = new Date(tournament.date).toLocaleString("en-US", {
-		month: "long",
+		month: "short",
 		day: "numeric",
 		hour: "numeric",
 		minute: "2-digit",
@@ -43,8 +43,8 @@
 			<p>{tournament.status == "finished" ? "Finished" : readableDate}</p>
 		</div>
 		<div class="tournamentField">
-			<Users style="opacity: 0.75;" strokeWidth={1.75} />
-			<p>{tournament.saves?.toLocaleString()} calendar saves</p>
+			<CalendarCheck2 style="opacity: 0.75;" strokeWidth={1.75} />
+			<p>{tournament.saves?.toLocaleString()}</p>
 		</div>
 		<div class="tournamentField">
 			<Medal style="margin-top: 1px; opacity: 0.75;" strokeWidth={1.5} />
@@ -156,7 +156,6 @@
 		gap: var(--panel-margin);
 		padding-inline: var(--box-margin);
 		text-wrap: nowrap;
-		flex-grow: 1;
 		max-width: 100%;
 		box-sizing: border-box;
 	}
@@ -180,5 +179,11 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+	@media (max-width: 1200px) {
+		.tournamentField {
+			flex-grow: 1;
+		}
 	}
 </style>
