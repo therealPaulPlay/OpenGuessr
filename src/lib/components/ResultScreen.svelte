@@ -33,6 +33,7 @@
 	import { blur } from "svelte/transition";
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";
+	import { tooltip } from "$lib/utils/tooltip";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -141,6 +142,7 @@
 		<div class="barMenu nextRoundArea">
 			<button
 				class="standardButton white"
+				use:tooltip={{ text: "View panorama" }}
 				onclick={() => {
 					playSound("basic_button");
 					openLocationOnMaps(get(currentLocationLatitude), get(currentLocationLongitude));

@@ -1,5 +1,5 @@
 <script>
-	import { Plus, XCircle, ExternalLinkIcon, User, Search } from "@lucide/svelte";
+	import { Plus, XCircle, User, Search } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
@@ -237,23 +237,6 @@
 				</div>
 			</div>
 		{/each}
-		<div
-			class="map-item map-item-slim"
-			role="button"
-			tabindex="0"
-			onclick={() => {
-				playSound("button_juicy");
-				goto("/competitions");
-			}}
-		>
-			<div class="mapInfo">
-				<p class="map-name">
-					Competitions <span class="linkSpan"
-						><ExternalLinkIcon size={20} strokeWidth={2.25} style="margin-bottom: -2px;" /></span
-					>
-				</p>
-			</div>
-		</div>
 		<div
 			class="map-item-link map-item"
 			role="button"
@@ -515,8 +498,7 @@
 		{/each}
 		{#if showLoadMore}
 			<button
-				id="loadMore"
-				class="map-item"
+				class="map-item load-more"
 				onclick={() => {
 					playSound("basic_button");
 					loadCommunityMaps(currentFetchIndex + 50, currentCategory, currentQuery, currentByUserId, null);
@@ -606,10 +588,9 @@
 		box-sizing: border-box;
 		animation: fadeIn 250ms ease-in-out;
 		user-select: none;
+		min-width: 300px;
 		flex-grow: 1;
 		flex-basis: 30%;
-		min-width: 300px;
-		text-overflow: ellipsis;
 		overflow: hidden;
 		cursor: pointer;
 		transition:
@@ -619,7 +600,6 @@
 	}
 
 	.map-item-link {
-		min-width: 220px;
 		flex-basis: 0;
 	}
 
@@ -840,7 +820,7 @@
 		background-color: var(--box-color);
 	}
 
-	#loadMore {
+	.load-more {
 		font-size: 22px;
 		min-height: 69px;
 		justify-content: center;

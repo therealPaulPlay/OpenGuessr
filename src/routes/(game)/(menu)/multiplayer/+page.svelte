@@ -154,7 +154,7 @@
 			</div>
 		</div>
 	</div>
-	<Drawer title="Elo divisions" class="divisions-container">
+	<Drawer title="Divisions" class="divisions-container">
 		<DuelDivisionDisplay />
 	</Drawer>
 	<div class="headerContainer headerMarginTop">
