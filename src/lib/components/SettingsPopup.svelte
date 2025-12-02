@@ -78,11 +78,8 @@
 		playSound("basic_button");
 
 		try {
-			if (!document.fullscreenElement) {
-				if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-			} else {
-				if (document.exitFullscreen) document.exitFullscreen();
-			}
+			if (!document.fullscreenElement) if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+			else if (document.exitFullscreen) document.exitFullscreen();
 		} catch (error) {
 			console.error("Error entering / exiting fullscreen: " + error);
 		}

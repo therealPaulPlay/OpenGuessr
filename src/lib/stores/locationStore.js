@@ -1,9 +1,4 @@
-import { writable, readable } from "svelte/store";
-
-export const panoramaLink = writable("/loader");
-
-export const iframeElement = writable();
-export const initialIframeLoad = writable(true);
+import { writable, readable, derived } from "svelte/store";
 
 // Current coordinates (of the current Panorama, Image, etc.)
 export const currentLocationLatitude = writable(0);
@@ -17,3 +12,19 @@ export const roundLog = writable([]);
 
 // Panorama key
 export const panoramaKey = readable("AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs");
+
+// Iframe
+export const iframeElement = writable();
+export const initialIframeLoad = writable(true);
+export const panoramaSrc = derived([currentLocationLatitude, currentLocationLongitude, panoramaKey], ([lat, lon, key], set) => {
+    set(
+        "https://www.google.com/maps/embed/v1/streetview?location=" +
+        lat +
+        "," +
+        lon +
+        "&key=" +
+        key +
+        "&fov=90" +
+        "&language=en" // Force EN since in languages written right to left, street view UI is flipped
+    )
+});

@@ -807,7 +807,7 @@
 		min-width: 280px;
 		gap: var(--box-margin);
 		align-items: center;
-		border-radius: var(--box-margin);
+		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
 		margin-bottom: 20px;
 		background-color: var(--box-color);

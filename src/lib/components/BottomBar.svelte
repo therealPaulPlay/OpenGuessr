@@ -2,8 +2,7 @@
 <script>
 	import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
 	import { playSound } from "$lib/utils/soundManager";
-	import { reloadPanorama } from "$lib/utils/loadPanorama";
-	import { bugspotPopup, helpPopup } from "$lib/stores/uiStore";
+	import { bugspotPopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { supporterLevel } from "$lib/stores/accountStore";
@@ -15,6 +14,16 @@
 	import { blur, fade } from "svelte/transition";
 	import { ArrowUp, Bug, Map } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
+
+	function reloadPanorama() {
+		playSound("reload");
+		$loadingScreenVisible = true
+		$iframeElement.src = $panoramaSrc;
+		window.setTimeout(() => {
+			$loadingScreenVisible = false;
+		}, 400);
+	}
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>

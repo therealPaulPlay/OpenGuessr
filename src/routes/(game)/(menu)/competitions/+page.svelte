@@ -664,7 +664,7 @@
 						true,
 					)}
 				{:else}
-					<Drawer title="Yesterday's results" class="fadeInItem" inPage={false}>
+					<Drawer title="Yesterday's results" class="fadeInItem">
 						{@render competitionItem(
 							entry.id,
 							entry.name,
@@ -836,7 +836,7 @@
 		box-sizing: border-box;
 		gap: var(--box-margin);
 		align-items: center;
-		border-radius: var(--box-margin);
+		border-radius: var(--layout-margin);
 		width: calc(100%);
 		padding: var(--box-margin);
 		margin-bottom: var(--layout-margin);
