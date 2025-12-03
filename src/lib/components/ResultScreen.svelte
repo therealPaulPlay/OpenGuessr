@@ -89,7 +89,7 @@
 			{#if $supporterLevel <= 1 && !$adsDisabled}
 				<div class="floatingResultLeaderboardArea barMenu" transition:blur>
 					<div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
-					<p class="noAdvertsText">Please consider supporting OpenGuessr to go ad-free.</p>
+					<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
 				</div>
 			{/if}
 			<div id="resultBox" class="barMenu">
