@@ -3,7 +3,6 @@ import { selectedPinIndex } from "$lib/stores/accountStore";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
-import { clamp } from "$lib/utils/clamp";
 import { get } from "svelte/store";
 
 export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) {

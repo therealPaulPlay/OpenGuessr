@@ -47,6 +47,7 @@
 	let level = $state(1);
 	let percentageWidth = $state("0%");
 	let showConfetti = $state(false);
+	let nextRoundButtonElement = $state();
 
 	experience.subscribe((value) => {
 		level = getLevel();
@@ -83,7 +84,6 @@
 	<div class="endBottomArea">
 		<!-- Animations for great scores -->
 		<ResultFullscreenMessage />
-
 		<ResultScreenSlideup />
 		<div class="endBottomBar">
 			{#if $supporterLevel <= 1 && !$adsDisabled}
@@ -150,6 +150,7 @@
 				<img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
 			</button>
 			<button
+				bind:this={nextRoundButtonElement}
 				id="nextRound"
 				class="standardButton white"
 				style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
@@ -159,9 +160,7 @@
 					transitionToStart();
 				}}
 			>
-				<p class="nextRoundText">
-					{$continueText}
-				</p>
+				<p class="nextRoundText">{$continueText}</p>
 				<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
 			</button>
 		</div>
@@ -170,7 +169,7 @@
 
 <svelte:window
 	onkeypress={(event) => {
-		if (event.key === " " && isElementClickable(document.getElementById("nextRound")) && $resultScreenEnabled) {
+		if (event.key === " " && isElementClickable(nextRoundButtonElement) && $resultScreenEnabled) {
 			transitionToStart();
 			playSound("basic_button");
 		}

@@ -30,7 +30,12 @@ function checkLinkMap() {
 // Location Generation with correct Type ---------------------------------------------------------------------------------------------------------
 let queue = Promise.resolve(); // Qeue handler
 
-async function setMapSpecifics(category) {
+function disableMapSpecifics() {
+  countryGuessr.set(false);
+  imageGuessr.set(false);
+}
+
+function setMapSpecifics(category) {
   if (category == "country_guessr") countryGuessr.set(true);
   if (category == "image_guessr") {
     imageGuessr.set(true);
@@ -48,8 +53,7 @@ export async function checkGenerationTypeAndGenerate() {
       const mapCategory = get(multiplayer) ? get(multiplayerCategory) : (localStorage.getItem("selectedCategory") || "standard");
 
       // Disable map-related modes (will be enabled later based on the map choice)
-      countryGuessr.set(false);
-      imageGuessr.set(false);
+      disableMapSpecifics();
 
       // Singleplayer
       if (get(singleplayer)) {

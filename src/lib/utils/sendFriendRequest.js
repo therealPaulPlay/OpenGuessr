@@ -6,9 +6,7 @@ import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 export async function sendFriendRequest(targetUserId, button) {
     try {
-        if (!targetUserId) {
-            return;
-        }
+        if (!targetUserId) return;
 
         const requestBody = {
             id: localStorage.getItem("id"),

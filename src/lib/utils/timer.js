@@ -1,8 +1,5 @@
 import { playSound, stopSound } from "./soundManager";
-import {
-    mapModeIndicatorFading,
-    timerText,
-} from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { mapModeIndicatorFading, timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { littleTimeVignette } from "$lib/stores/uiStore";
 
 let activeTimer = null;

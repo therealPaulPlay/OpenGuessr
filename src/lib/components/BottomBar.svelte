@@ -113,6 +113,7 @@
 		</div>
 	{/if}
 </div>
+
 {#if $supporterLevel <= 1 && !$adsDisabled}
 	<div id="bottomFooterAds" class="bottomFooterAds leaderboardAds" transition:blur></div>
 	<div class="bottomFooterAds leaderboardAds bottomFooterAdText barMenu" transition:blur>

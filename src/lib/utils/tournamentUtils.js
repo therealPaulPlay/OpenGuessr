@@ -11,9 +11,7 @@ export async function fetchTournaments() {
             const data = await response.json();
             tournamentData.set(data);
 
-        } else {
-            throw new Error(response.status);
-        }
+        } else throw new Error(response.status);
     } catch (error) {
         console.error('Error fetching tournaments:', error);
         return error.message;

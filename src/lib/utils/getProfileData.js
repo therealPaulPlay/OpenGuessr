@@ -16,9 +16,7 @@ export async function getProfileData(id) {
         if (response.ok) {
             const data = await response.json();
             return data;
-        } else {
-            throw new Error(response.status);
-        }
+        } else throw new Error(response.status);
         
     } catch (error) {
         console.error('Error loading profile:', error);
