@@ -33,7 +33,7 @@
 	{#if isOpen}
 		<div transition:slide={{ duration: 250 }} style:width={"100%"} style:margin-top={"var(--box-margin)"}>
 			<div transition:fade={{ duration: 250 }} class="drawer-content">
-				{@render children()}
+				{@render children?.()}
 			</div>
 		</div>
 	{/if}
