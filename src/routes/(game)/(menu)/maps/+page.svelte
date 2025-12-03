@@ -15,7 +15,6 @@
 		defaultMap,
 	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { idToMapName } from "$lib/utils/idToMapName.js";
 	import { tooltip } from "$lib/utils/tooltip.js";
 
 	// State
@@ -253,7 +252,7 @@
 				}}
 			>
 				<div class="map-info">
-					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
+					<p class="map-name">{map}</p>
 				</div>
 			</div>
 		{/each}
@@ -274,7 +273,7 @@
 				}}
 			>
 				<div class="map-info">
-					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
+					<p class="map-name">{map}</p>
 				</div>
 			</div>
 		{/each}
@@ -319,7 +318,7 @@
 				}}
 			>
 				<div class="map-info">
-					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
+					<p class="map-name">{map}</p>
 				</div>
 			</div>
 		{/each}
@@ -360,7 +359,7 @@
 				}}
 			>
 				<div class="map-info">
-					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
+					<p class="map-name">{map}</p>
 				</div>
 			</div>
 		{/each}
@@ -382,7 +381,7 @@
 					}}
 				>
 					<div class="map-info">
-						<p class="map-name">{map || "Name not loaded"}</p>
+						<p class="map-name">{map}</p>
 					</div>
 					<button
 						class="remove-button"
