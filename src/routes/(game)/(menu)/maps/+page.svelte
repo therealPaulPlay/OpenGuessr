@@ -196,6 +196,40 @@
 	<title>Maps</title>
 </svelte:head>
 
+{#snippet communityMapItem(map)}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div
+		class="map-item"
+		role="button"
+		tabindex="0"
+		onclick={() => {
+			playSound("basic_button");
+			goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
+		}}
+	>
+		<div class="mapInfo">
+			<p class="map-name">{map.name || "Name not loaded"}</p>
+			<p class="map-author">by {map.author || "Bugsnacker"}</p>
+		</div>
+		<button
+			class="add-button standardButton white"
+			use:tooltip={{ text: "Save map" }}
+			onclick={(e) => {
+				e.stopPropagation();
+				playSound("basic_button");
+				if (addedCommunityMapsArray.includes(map.name)) removeSelectedMap(map.name);
+				else addSelectedMap(map.name);
+			}}
+		>
+			<img
+				src={addedCommunityMapsArray.includes(map.name) ? "/img/disselect_icon.png" : "/img/select_icon.png"}
+				alt="add / remove map"
+				class="selection-icon"
+			/>
+		</button>
+	</div>
+{/snippet}
+
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="main-container">
 	<div class="headerContainer">
@@ -367,36 +401,7 @@
 	<div class="map-container">
 		{#if loadedSpotlightMaps.length}
 			{#each loadedSpotlightMaps as map}
-				<div
-					class="map-item"
-					role="button"
-					tabindex="0"
-					onclick={() => {
-						playSound("basic_button");
-						goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
-					}}
-				>
-					<div class="mapInfo">
-						<p class="map-name">{map.name || "Name not loaded"}</p>
-						<p class="map-author">by {map.author || "Bugsnacker"}</p>
-					</div>
-					<button
-						class="add-button standardButton white"
-						use:tooltip={{ text: "Save map" }}
-						onclick={(e) => {
-							e.stopPropagation();
-							playSound("basic_button");
-							if (addedCommunityMapsArray.includes(map.name)) removeSelectedMap(map.name);
-							else addSelectedMap(map.name);
-						}}
-					>
-						<img
-							src={addedCommunityMapsArray.includes(map.name) ? "/img/disselect_icon.png" : "/img/select_icon.png"}
-							alt="add / remove map"
-							class="selection-icon"
-						/>
-					</button>
-				</div>
+				{@render communityMapItem(map)}
 			{/each}
 		{:else}
 			<p class="nothingFound">Loading...</p>
@@ -462,36 +467,7 @@
 	<div id="community-maps" class="map-container">
 		<!-- Community maps will be injected here -->
 		{#each loadedCommunityMaps as map}
-			<div
-				class="map-item"
-				role="button"
-				tabindex="0"
-				onclick={() => {
-					playSound("basic_button");
-					goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
-				}}
-			>
-				<div class="mapInfo">
-					<p class="map-name">{map.name || "Name not loaded"}</p>
-					<p class="map-author">by {map.author || "Bugsnacker"}</p>
-				</div>
-				<button
-					class="add-button standardButton white"
-					use:tooltip={{ text: "Save map" }}
-					onclick={(e) => {
-						e.stopPropagation();
-						playSound("basic_button");
-						if (addedCommunityMapsArray.includes(map.name)) removeSelectedMap(map.name);
-						else addSelectedMap(map.name);
-					}}
-				>
-					<img
-						src={addedCommunityMapsArray.includes(map.name) ? "/img/disselect_icon.png" : "/img/select_icon.png"}
-						alt="add / remove map"
-						class="selection-icon"
-					/>
-				</button>
-			</div>
+			{@render communityMapItem(map)}
 		{/each}
 		{#if showLoadMore}
 			<button
@@ -635,7 +611,7 @@
 		font-size: 20px;
 		color: rgba(255, 255, 255, 0.5);
 		overflow: hidden;
-		max-width: 110px;
+		max-width: 150px;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
