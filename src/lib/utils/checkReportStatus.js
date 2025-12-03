@@ -1,6 +1,5 @@
 import { isAuthenticated, checkedForWarning, warnReportEntryData } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
-import { errorPopup } from "./errorHandling";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 export async function fetchWarnlistStatus() {

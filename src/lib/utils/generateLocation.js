@@ -17,10 +17,10 @@ export async function generateNewLocation(type) {
         currentLocationLatitude.set(Number(newLocationArray[0]));
         currentLocationLongitude.set(Number(newLocationArray[1]));
 
-        // Set country guesser country
+        // Set country
         if (get(countryGuessr)) setCountryGuesserCountry(newLocationArray[2]);
 
-        // Set image guesser image
+        // Set image
         if (get(imageGuessr)) loadImageFromUrl(newLocationArray[2]);
 
     } catch (error) {

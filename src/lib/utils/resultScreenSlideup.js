@@ -1,5 +1,4 @@
 
-import { errorPopup } from "$lib/utils/errorHandling";
 import { showSlideup, slideupButtonText, slideupCallback, slideupText, slideupTitle } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { get } from "svelte/store";
 

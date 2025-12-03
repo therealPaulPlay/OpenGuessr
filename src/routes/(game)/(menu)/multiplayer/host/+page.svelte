@@ -23,7 +23,6 @@
 	import Ticker from "$lib/components/ui/Ticker.svelte";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { goto } from "$app/navigation";
-	import { errorPopup } from "$lib/utils/errorHandling";
 	import { addPublicRoom, deletePublicRoom } from "$lib/utils/publicRooms";
 	import { onDestroy, onMount } from "svelte";
 	import { isAuthenticated } from "$lib/stores/accountStore";
@@ -33,12 +32,7 @@
 	import { page } from "$app/state";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
-
-	function getFormattedCategory() {
-		if (typeof window === "undefined") return "Loading...";
-		const category = localStorage.getItem("selectedCategory") || "standard";
-		return idToMapName(category);
-	}
+	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 
 	let roomOpened = $state(false);
 	let roomOpenAddInterval = $state();
@@ -53,8 +47,8 @@
 	}
 
 	// Restriction toggle
-	let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
-	let restrictionButtonText = $state("Standard");
+	let restrictions = Object.keys($restrictionNames);
+	let restrictionButtonText = $state($restrictionNames[restrictions[0]]);
 
 	function toggleMultiplayerRestriction() {
 		const currentRestrictionIndex =
@@ -114,7 +108,11 @@
 				<p>Map:</p>
 				<div class="selectedMapField">
 					<p id="multiplayerMapDisplay">
-						{getFormattedCategory()}
+						{(() => {
+							if (typeof window === "undefined") return "Loading...";
+							const category = localStorage.getItem("selectedMap") || $defaultMap;
+							return idToMapName(category);
+						})()}
 					</p>
 					<button
 						class="standardButton white"
@@ -257,14 +255,14 @@
 								await addPublicRoom(
 									$roomcode,
 									$connectionCount + 1,
-									localStorage.getItem("selectedCategory") || "standard",
+									localStorage.getItem("selectedMap") || $defaultMap,
 								);
 								clearInterval(roomOpenAddInterval);
 								roomOpenAddInterval = setInterval(async () => {
 									await addPublicRoom(
 										$roomcode,
 										$connectionCount + 1,
-										localStorage.getItem("selectedCategory") || "standard",
+										localStorage.getItem("selectedMap") || $defaultMap,
 									);
 								}, 5000);
 								roomOpened = true;

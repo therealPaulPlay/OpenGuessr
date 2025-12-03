@@ -4,7 +4,8 @@ import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { savedMapBounds } from "$lib/stores/locationStore";
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
-import { changeCategory } from "$lib/utils/changeCategory";
+import { changeMap } from "$lib/utils/changeMap";
+import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 
 // This is THE function to get locations (all others here are NOT export) - not the function to start a new round!
 export async function getLocationCoordinates(type) {
@@ -14,23 +15,26 @@ export async function getLocationCoordinates(type) {
     else throw new Error("Incorrect location type set in locationGeneration.js!");
 }
 
-let loadedMapCategory; // Exclusive to location generation, not a general variable!
+let loadedMap; // Exclusive to location generation, not a general variable!
 let cachedLocations = [];
 
 async function getCoordsFromServer() {
-    const selectedCategory = localStorage.getItem("selectedCategory") || "standard";
+    const selectedMap = localStorage.getItem("selectedMap") || get(defaultMap);
 
     // Reset local cache if category was changed
-    if (loadedMapCategory !== selectedCategory) {
-        loadedMapCategory = selectedCategory;
+    if (loadedMap !== selectedMap) {
+        loadedMap = selectedMap;
         cachedLocations = [];
     }
 
     // If cache is empty, fetch 5 new locations
     if (cachedLocations.length === 0) {
-        const response = await fetch(get(apiUrl) + `/locations/${loadedMapCategory}`, {
+        const response = await fetch(get(apiUrl) + "/locations", {
             method: 'PUT',
-            headers: { 'Content-Type': 'application/json' }
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                mapName: loadedMap
+            })
         });
 
         if (response.ok) {
@@ -43,8 +47,8 @@ async function getCoordsFromServer() {
                 const data = await response.json();
                 if (data.error) errorMessage = data.error;
             } catch { }
-            showConfirmPopup("Reset to Standard map?", "Your selected map was potentially removed or renamed.", () => {
-                changeCategory("standard", true);
+            showConfirmPopup("Reset map?", "Your selected map was potentially removed or renamed.", () => {
+                changeMap(get(defaultMap), true);
             });
             throw new Error(errorMessage);
         }

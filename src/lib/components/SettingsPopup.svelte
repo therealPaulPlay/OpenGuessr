@@ -216,7 +216,7 @@
 							playSound("basic_button");
 							showConfirmPopup(
 								"Credits",
-								'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM" :-)',
+								'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM"!',
 							);
 						}}
 					>

@@ -27,7 +27,7 @@ import {
     chatMutedPlayers,
     multiplayerSortedPlayersArray,
     currentRound,
-    multiplayerCategory
+    multiplayerMap
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
@@ -36,7 +36,7 @@ import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
-import { changeCategory } from "$lib/utils/changeCategory";
+import { changeMap } from "$lib/utils/changeMap";
 import { showNotification } from "$lib/utils/notifications";
 import PlaySocket from "playsocketjs";
 import { getMapBounds } from "$lib/utils/getMapBounds";
@@ -44,7 +44,8 @@ import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { signupPrompt } from "$lib/utils/signupPrompt";
 import { apiUrl, websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
-import { idToMapName } from "$lib/utils/idToMapName";
+import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
+import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 
 export function getTeamFromMultiplayerId(id) {
     const playerArray = get(socket)?.getStorage?.players?.find(item => item.clientId === id);
@@ -121,8 +122,8 @@ export async function createMultiplayerInstance() {
 
             get(socket).onEvent('storageUpdated', (storage) => {
                 // Save game info
-                if (storage.category && storage.roundAmount && storage.roundLength && storage.teamAmount && storage.style && storage.restriction) {
-                    multiplayerCategory.set(storage.category);
+                if (storage.map && storage.roundAmount && storage.roundLength && storage.teamAmount && storage.style && storage.restriction) {
+                    multiplayerMap.set(storage.map);
                     roundAmount.set(storage.roundAmount);
                     roundLength.set(storage.roundLength);
                     teamAmount.set(storage.teamAmount);
@@ -252,9 +253,9 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
         await createMultiplayerInstance(); // Get new multiplayer instance
 
         // Check if map is valid for multiplayer
-        if (localStorage.getItem("selectedCategory") == "country_guessr") {
+        if (localStorage.getItem("selectedMap") == "Country Guessr") {
             showNotification("Map not supported in multiplayer.")
-            await changeCategory("standard", true); // Regenerate to update locations array
+            await changeMap(get(defaultMap), true); // Regenerate to update locations array
         }
 
         // Set round and length parameters
@@ -269,8 +270,8 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             roundLength: get(roundLength),
             teamAmount: get(teamAmount),
             style: get(multiplayerStyle),
-            restriction: get(multiplayerRestriction) || "standard",
-            category: divisionRoom ? "standard" : localStorage.getItem("selectedCategory") || "standard",
+            restriction: get(multiplayerRestriction) || Object.keys(get(restrictionNames))?.[0],
+            map: divisionRoom ? get(defaultMap) : localStorage.getItem("selectedMap") || get(defaultMap),
             divisionRoom,
         }, sizeLimit);
 
@@ -343,18 +344,17 @@ export function leaveMultiplayerRound(destroy = true) {
     roomcode.set(null);
     multiplayerStatus.set(); // Undefined -> show default msgs
     continueText.set("Continue");
-    multiplayerRestriction.set("standard");
+    multiplayerRestriction.set(Object.keys(get(restrictionNames))?.[0]);
     chatMutedPlayers.set([]);
     currentRound.set(0);
-    multiplayerCategory.set(null);
+    multiplayerMap.set(null);
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
         showMultiplayerOverlay(false); // Also makes map interactive
         updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
         setMultiplayerUI();
-        setRestriction("standard");
-        checkGenerationTypeAndGenerate();
+        checkGenerationTypeAndGenerate(); // Also resets the restriction
     }
 }
 

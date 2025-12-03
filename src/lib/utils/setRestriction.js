@@ -1,6 +1,6 @@
 import { panoramaFilter, nmpz, fadePanorama, selectedRestriction } from "$lib/stores/context-specific/restrictionStore";
 
-export function setRestriction(restriction) {
+export function setRestriction(restriction = "standard") {
     selectedRestriction.set(restriction);
     
     // Disable all, then enable what is needed

@@ -27,7 +27,7 @@ export function loadCompetition() {
     if (get(competitionData)) {
         competition.set(true); // Activate Competition mode
         disableResultScreen(); // In case result screen is enabled
-        setRestriction(get(competitionData)?.restriction || "standard");
+        setRestriction(get(competitionData)?.restriction);
 
         setTimeout(() => {
             playSound("match_start");
@@ -55,8 +55,7 @@ export async function leaveCompetition(showResult) {
     if (get(competition)) {
         competition.set(false);
         leaveFunction.set();
-        checkGenerationTypeAndGenerate();
-        setRestriction("standard");
+        checkGenerationTypeAndGenerate(); // Also resets restriction
 
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
         await submitCompetitionResult(get(competitionData).id, competitionCombinedScore);

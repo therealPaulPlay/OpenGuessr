@@ -67,7 +67,7 @@ export function applySingleplayerSettings() {
                 : false);
             hasRestoredSavedNMPZstate = true;
         }
-        (get(isSingleplayerNMPZ)) ? setRestriction("nmpz") : setRestriction("standard");
+        (get(isSingleplayerNMPZ)) ? setRestriction("nmpz") : setRestriction();
     }
 }
 

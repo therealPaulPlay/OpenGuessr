@@ -10,7 +10,7 @@
 	import { goto } from "$app/navigation";
 	import {
 		currentRound,
-		multiplayerCategory,
+		multiplayerMap,
 		roundAmount,
 		socket,
 	} from "$lib/stores/context-specific/multiplayerStore";
@@ -18,13 +18,14 @@
 	import { restrictionNames, selectedRestriction } from "$lib/stores/context-specific/restrictionStore";
 	import { blur } from "svelte/transition";
 	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
+	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 
 	let mapCategoryName = $state("Loading...");
 
 	$effect(() => {
 		if ($currentLocationLatitude && $currentLocationLongitude) {
-			if ($singleplayer) mapCategoryName = idToMapName(localStorage.getItem("selectedCategory") || "Standard");
-			if ($multiplayer) mapCategoryName = idToMapName($multiplayerCategory);
+			if ($singleplayer) mapCategoryName = idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
+			if ($multiplayer) mapCategoryName = idToMapName($multiplayerMap);
 			if ($competition) mapCategoryName = $competitionData?.name;
 		}
 	});

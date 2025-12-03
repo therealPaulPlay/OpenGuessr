@@ -6,8 +6,14 @@
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { changeCategory } from "$lib/utils/changeCategory";
-	import { specialModes, continentMaps, countryMaps, basicMaps } from "$lib/stores/context-specific/officialMapsStore";
+	import { changeMap } from "$lib/utils/changeMap.js";
+	import {
+		specialModes,
+		continentMaps,
+		countryMaps,
+		basicMaps,
+		defaultMap,
+	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { idToMapName } from "$lib/utils/idToMapName.js";
 	import { tooltip } from "$lib/utils/tooltip.js";
@@ -106,20 +112,20 @@
 		}
 	}
 
-	function selectCategory(name, community = false) {
+	function selectMap(name, community = false) {
 		playSound("button_juicy");
-		changeCategory((community ? "community_" : "") + name.toLowerCase(), true);
+		changeMap((community ? "community_" : "") + name, true);
 		goto("/");
 	}
 
 	function checkIfSelected(name, community = false) {
 		if (typeof window === "undefined") return false;
-		const selectedMap = localStorage.getItem("selectedCategory");
+		const selectedMap = localStorage.getItem("selectedMap");
 		if (community) name = "community_" + name;
-		return selectedMap == name.toLowerCase() || (name.toLowerCase() == "standard" && !selectedMap);
+		return selectedMap == name || (name == $defaultMap && !selectedMap);
 	}
 
-	function addSelectedMap(name) {
+	function saveCommunityMap(name) {
 		try {
 			if (!addedCommunityMapsArray.includes(name)) {
 				addedCommunityMapsArray.push(name);
@@ -130,7 +136,7 @@
 		}
 	}
 
-	function removeSelectedMap(name) {
+	function unsaveCommunityMap(name) {
 		try {
 			const index = addedCommunityMapsArray.indexOf(name);
 			if (index !== -1) {
@@ -207,7 +213,7 @@
 			goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
 		}}
 	>
-		<div class="mapInfo">
+		<div class="map-info">
 			<p class="map-name">{map.name || "Name not loaded"}</p>
 			<p class="map-author">by {map.author || "Bugsnacker"}</p>
 		</div>
@@ -217,8 +223,8 @@
 			onclick={(e) => {
 				e.stopPropagation();
 				playSound("basic_button");
-				if (addedCommunityMapsArray.includes(map.name)) removeSelectedMap(map.name);
-				else addSelectedMap(map.name);
+				if (addedCommunityMapsArray.includes(map.name)) unsaveCommunityMap(map.name);
+				else saveCommunityMap(map.name);
 			}}
 		>
 			<img
@@ -243,10 +249,10 @@
 				role="button"
 				tabindex="0"
 				onclick={() => {
-					selectCategory(map);
+					selectMap(map);
 				}}
 			>
-				<div class="mapInfo">
+				<div class="map-info">
 					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
 				</div>
 			</div>
@@ -264,10 +270,10 @@
 				role="button"
 				tabindex="0"
 				onclick={() => {
-					selectCategory(map);
+					selectMap(map);
 				}}
 			>
-				<div class="mapInfo">
+				<div class="map-info">
 					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
 				</div>
 			</div>
@@ -309,10 +315,10 @@
 				role="button"
 				tabindex="0"
 				onclick={() => {
-					selectCategory(map);
+					selectMap(map);
 				}}
 			>
-				<div class="mapInfo">
+				<div class="map-info">
 					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
 				</div>
 			</div>
@@ -350,10 +356,10 @@
 				role="button"
 				tabindex="0"
 				onclick={() => {
-					selectCategory(map);
+					selectMap(map);
 				}}
 			>
-				<div class="mapInfo">
+				<div class="map-info">
 					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
 				</div>
 			</div>
@@ -372,10 +378,10 @@
 					role="button"
 					tabindex="0"
 					onclick={() => {
-						selectCategory(map, true);
+						selectMap(map, true);
 					}}
 				>
-					<div class="mapInfo">
+					<div class="map-info">
 						<p class="map-name">{map || "Name not loaded"}</p>
 					</div>
 					<button
@@ -383,7 +389,7 @@
 						onclick={(e) => {
 							e.stopPropagation();
 							playSound("basic_button");
-							removeSelectedMap(map);
+							unsaveCommunityMap(map);
 						}}
 					>
 						<XCircle size={21} />
@@ -518,6 +524,11 @@
 		}
 	}
 
+	.map-info {
+		flex-grow: 1;
+		overflow: hidden;
+	}
+
 	.playlightLink {
 		text-decoration: none;
 		opacity: 0.5;
@@ -601,10 +612,6 @@
 
 	.map-item-slim .map-name {
 		max-width: 140px;
-	}
-
-	.map-item-bookmark .map-name {
-		max-width: 110px;
 	}
 
 	.map-author {

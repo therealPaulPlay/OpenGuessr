@@ -29,7 +29,7 @@ export const hostStage = writable(1);
 export const screenEscapeDisabled = writable(false); // Set the Close and Back buttons disabled (e.g. when establishing connection)
 export const duelRetryEnabled = writable(false);
 export const currentRound = writable(0);
-export const multiplayerCategory = writable(null);
+export const multiplayerMap = writable(null);
 
 // UI - Host
 export const connectionCount = writable(0);
