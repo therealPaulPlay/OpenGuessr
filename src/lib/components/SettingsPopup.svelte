@@ -9,7 +9,7 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
-	import { isSingleplayerNMPZ, singleplayerTimeout } from "$lib/stores/modeStore";
+	import { isSingleplayerNMPZ, singleplayer, singleplayerTimeout } from "$lib/stores/modeStore";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 
 	// Settings - Window ---------------------------------------------------------------------------------------
@@ -148,7 +148,7 @@
 	<div class="settingsCanvas">
 		<TitleSeparator text="Singleplayer" noMargin={true} />
 		<div class="settingsCanvas slightBottomMargin">
-			<div class="settingsBox settingsBoxFlex">
+			<div class="settingsBox settingsBoxFlex" class:box-disabled={!$singleplayer}>
 				<div class="timerTextBox">
 					<Timer />
 					<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
@@ -173,7 +173,7 @@
 					</button>
 				</div>
 			</div>
-			<div class="settingsBox settingsBoxFlex noFlexWrap">
+			<div class="settingsBox settingsBoxFlex noFlexWrap" class:box-disabled={!$singleplayer}>
 				<p class="settingsBoxFlexTitle">No Move, Pan or Zoom (NMPZ)</p>
 				<button class="standardButton white" onclick={toggleSingleplayerNMPZ}
 					>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
@@ -283,6 +283,11 @@
 		width: fit-content;
 		flex-basis: 60%;
 		flex-grow: 1;
+	}
+
+	.box-disabled {
+		opacity: 0.5;
+		pointer-events: none;
 	}
 
 	.arrowButton {

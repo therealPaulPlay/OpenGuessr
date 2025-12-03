@@ -5,8 +5,10 @@
 		border-radius: 5px;
 		background: var(--supporter-green);
 		padding-inline: 5px;
-		font-size: 18px;
+		font-size: 20px;
 		margin-left: 3px;
+		padding-bottom: 1px;
+		padding-top: 1px;
 		box-shadow: var(--bulb-shadow);
 		position: relative;
 		overflow: hidden;

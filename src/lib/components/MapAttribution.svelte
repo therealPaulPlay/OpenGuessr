@@ -1,6 +1,5 @@
 <!-- Google Maps attribution for TOS compliance -->
 <script>
-	import { mapModeIndicatorVisible } from "$lib/stores/context-specific/mapModeIndicatorStore";
 	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { countryGuessr } from "$lib/stores/modeStore";
@@ -8,14 +7,10 @@
 </script>
 
 {#if $mapExpanded && !$resultScreenEnabled && !$countryGuessr}
-	<div
-		class="mapAttribution mapAttributionContainer"
-		style:bottom={$mapModeIndicatorVisible ? "64px" : ""}
-		transition:fade={{ duration: 250 }}
-	>
+	<div class="mapAttribution mapAttributionContainer" transition:fade={{ duration: 250 }}>
 		<div class="mapAttributionDataBox">
 			<p>Map Data ©{new Date().getFullYear()} Google</p>
-			<p style="border-bottom-right-radius: 10px">
+			<p>
 				<a
 					style="color: black; text-decoration: none; pointer-events: auto; font-family: Roboto;"
 					href="https://www.google.com/intl/en_US/help/terms_maps/"
@@ -46,10 +41,9 @@
 	}
 
 	.mapAttributionContainer {
-		bottom: 0;
+		bottom: 56px;
 		opacity: 0.8;
 		width: 100%;
-		border-bottom-right-radius: 10px;
 		transition: opacity 250ms ease;
 		display: flex;
 	}

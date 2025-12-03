@@ -138,7 +138,7 @@
 						playSound("basic_button");
 					}}
 				>
-					<img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Maps" />
+					<img class="socialBarIcons" src="/img/maps_icon.png" alt="Maps" />
 				</button>
 				<button
 					class="standardButton white"
@@ -296,7 +296,7 @@
 				playSound("basic_button");
 			}}
 		>
-			<img class="socialBarIcons wideSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Maps" />
+			<img class="socialBarIcons wideSocialBarIcon" src="/img/maps_icon.png" alt="Maps" />
 		</button>
 		<button
 			class="standardButton white"

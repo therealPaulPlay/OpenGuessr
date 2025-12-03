@@ -305,7 +305,7 @@ input[type="checkbox"]:focus {
     background-color: var(--panel-color);
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
-    box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3), inset 0 0.05rem 1px hsla(0, 0%, 100%, 0.3), inset 0 -0.1rem 1px rgba(0, 0, 2, 0.3) !important;
+    box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3), inset 0 0.05rem 1px hsla(0, 0%, 100%, 0.3), inset 0 -0.1rem 1px rgba(0, 0, 2, 0.3);
     /* with and height transitions for e.g. the mapModeIndicator */
     transition: opacity 250ms ease, transform 250ms ease, width 150ms ease, height 150ms ease, filter 250ms ease;
     border-radius: var(--box-margin);

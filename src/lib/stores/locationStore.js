@@ -17,6 +17,7 @@ export const panoramaKey = readable("AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs");
 export const iframeElement = writable();
 export const initialIframeLoad = writable(true);
 export const panoramaSrc = derived([currentLocationLatitude, currentLocationLongitude, panoramaKey], ([lat, lon, key], set) => {
+    initialIframeLoad.set(true);
     set(
         "https://www.google.com/maps/embed/v1/streetview?location=" +
         lat +

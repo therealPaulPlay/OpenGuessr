@@ -632,7 +632,7 @@
 	}
 
 	.map-author {
-		font-size: 18px;
+		font-size: 20px;
 		color: rgba(255, 255, 255, 0.5);
 		overflow: hidden;
 		max-width: 110px;

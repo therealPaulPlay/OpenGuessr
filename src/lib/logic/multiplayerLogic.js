@@ -10,7 +10,7 @@ import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/
 import { mapPinLat, mapPinLng, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
 import { guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
-import { mapModeIndicatorVisible, leaveFunction, mapModeIndicatorText } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { leaveFunction } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
     duelRetryEnabled, multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
@@ -25,7 +25,9 @@ import {
     guestNamePromise,
     multiplayerRestriction,
     chatMutedPlayers,
-    multiplayerSortedPlayersArray
+    multiplayerSortedPlayersArray,
+    currentRound,
+    multiplayerCategory
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
@@ -53,15 +55,13 @@ export function getTeamFromMultiplayerId(id) {
 function setMultiplayerUI() {
     if (get(multiplayer)) {
         get(singleplayerTimer)?.stopTimer();
-        mapModeIndicatorVisible.set(true);
         leaveFunction.set(() => {
-            showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
+            showConfirmPopup("Leave?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
             playSound("leave_round");
         });
         chatVisible.set(true);
         linkJoinPopup.set(false);
     } else {
-        mapModeIndicatorVisible.set(false);
         leaveFunction.set(); // Hides leave option too
         chatVisible.set(false);
     }
@@ -121,7 +121,8 @@ export async function createMultiplayerInstance() {
 
             get(socket).onEvent('storageUpdated', (storage) => {
                 // Save game info
-                if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.style && storage.restriction) {
+                if (storage.category && storage.roundAmount && storage.roundLength && storage.teamAmount && storage.style && storage.restriction) {
+                    multiplayerCategory.set(storage.category);
                     roundAmount.set(storage.roundAmount);
                     roundLength.set(storage.roundLength);
                     teamAmount.set(storage.teamAmount);
@@ -143,10 +144,9 @@ export async function createMultiplayerInstance() {
 
                 if (get(teamAmount) > 1 && storage.guessLocationsArray && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
 
-                if (storage.currentRound && storage.restriction) {
-                    mapModeIndicatorText.set(`Multiplayer (Round: ${storage.currentRound}/${get(roundAmount)})` + (storage.restriction !== "standard" ? ` (${storage.restriction})` : ""));
-                    setRestriction(storage.restriction);
-                }
+                if (storage.restriction) setRestriction(storage.restriction);
+
+                if (storage.currentRound) currentRound.set(storage.currentRound);
 
                 if (storage.confirmedArray && storage.players) {
                     const confirmedIDs = new Set(storage.confirmedArray); // Convert confirmedArray to a Set for efficient lookups
@@ -302,7 +302,6 @@ export async function joinRoom(code) {
             throw new Error(error);
         }
         multiplayer.set(true);
-        mapModeIndicatorText.set("Multiplayer (...)");
         await get(socket).joinRoom(code);
         roomcode.set(code);
         matchmakingActive.set(false);
@@ -346,6 +345,8 @@ export function leaveMultiplayerRound(destroy = true) {
     continueText.set("Continue");
     multiplayerRestriction.set("standard");
     chatMutedPlayers.set([]);
+    currentRound.set(0);
+    multiplayerCategory.set(null);
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
@@ -437,10 +438,7 @@ function showMultiplayerOverlay(show) {
     multiplayerOverlay.set(show);
 
     if (show) {
-        if (!get(socket)?.getStorage?.firstRoundPlayed) {
-            multiplayerOverlayTitle.set("Waiting...");
-            mapModeIndicatorText.set("Multiplayer (" + idToMapName(get(socket)?.getStorage?.category) + ")")
-        }
+        if (!get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
 
         if (!get(socket)?.getStorage?.gameEnded) {
             showEndscreenUI(false); // If not at the end, hide endscreen UI

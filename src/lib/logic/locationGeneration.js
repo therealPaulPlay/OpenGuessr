@@ -9,7 +9,7 @@ import { changeCategory } from "$lib/utils/changeCategory";
 // This is THE function to get locations (all others here are NOT export) - not the function to start a new round!
 export async function getLocationCoordinates(type) {
     if (type == "MAP") return await getCoordsFromServer();
-    else if (type == "MULTIPLAYER") return get(socket)?.getStorage?.location;
+    else if (type == "MULTIPLAYER") return get(socket)?.getStorage?.location || [null, null, null];
     else if (type == "COMPETITION") return await getCompetitionCoordinates();
     else throw new Error("Incorrect location type set in locationGeneration.js!");
 }

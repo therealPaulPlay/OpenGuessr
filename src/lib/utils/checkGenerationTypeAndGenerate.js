@@ -1,9 +1,8 @@
 // Use this to present the player with a new location. This strongly depends on locationGeneration.js and generateLocation.js and feeds the generator with the right settings
-import { timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { enableImageGuessr } from "$lib/utils/imageGuesserFunctions";
 import { multiplayer, competition, singleplayer, countryGuessr, imageGuessr } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
-import { socket } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayerCategory, socket } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { countryMaps, continentMaps } from "$lib/stores/context-specific/officialMapsStore";
 import { changeCategory } from "$lib/utils/changeCategory";
@@ -46,7 +45,7 @@ export async function checkGenerationTypeAndGenerate() {
   queue = queue.then(async () => {
     try {
       loadingScreenVisible.set(true); // Show loading screen
-      const mapCategory = get(multiplayer) ? get(socket)?.getStorage?.category : (localStorage.getItem("selectedCategory") || "standard");
+      const mapCategory = get(multiplayer) ? get(multiplayerCategory) : (localStorage.getItem("selectedCategory") || "standard");
 
       // Disable map-related modes (will be enabled later based on the map choice)
       countryGuessr.set(false);

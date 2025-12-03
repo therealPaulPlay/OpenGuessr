@@ -1,6 +1,5 @@
 <!--bottom toolbar with reset button-->
 <script>
-	import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { bugspotPopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
@@ -18,7 +17,7 @@
 
 	function reloadPanorama() {
 		playSound("reload");
-		$loadingScreenVisible = true
+		$loadingScreenVisible = true;
 		$iframeElement.src = $panoramaSrc;
 		window.setTimeout(() => {
 			$loadingScreenVisible = false;
@@ -117,7 +116,7 @@
 {#if $supporterLevel <= 1 && !$adsDisabled}
 	<div id="bottomFooterAds" class="bottomFooterAds leaderboardAds" transition:blur></div>
 	<div class="bottomFooterAds leaderboardAds bottomFooterAdText barMenu" transition:blur>
-		<RemoveAdsText text="Ads keep OpenGuessr free." />
+		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
 	</div>
 {/if}
 
@@ -144,6 +143,16 @@
 	.linkItem {
 		padding: 4px;
 		padding-inline: 6px;
+	}
+
+	.noAdvertsText {
+		text-align: center;
+		color: white;
+		opacity: 0.5;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
 	}
 
 	.bottomLeftMenu {

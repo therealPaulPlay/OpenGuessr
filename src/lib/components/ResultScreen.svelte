@@ -1,6 +1,5 @@
 <!-- previously known as the End Overlay, this screen shows the Result -->
 <script>
-	import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
 		resultScreenEnabled,
@@ -90,7 +89,7 @@
 			{#if $supporterLevel <= 1 && !$adsDisabled}
 				<div class="floatingResultLeaderboardArea barMenu" transition:blur>
 					<div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
-					<RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." />
+					<p class="noAdvertsText">Please consider supporting OpenGuessr to go ad-free.</p>
 				</div>
 			{/if}
 			<div id="resultBox" class="barMenu">
@@ -100,7 +99,7 @@
 				{#if $supporterLevel <= 1 && !$adsDisabled}
 					<div id="mobileResultLeaderboardAdArea" class="resultField resultFieldHigh">
 						<div id="mobileResultLeaderboardAd"></div>
-						<RemoveAdsText text="Go Ad-Free." />
+						<p class="noAdvertsText">Ad.</p>
 					</div>
 				{/if}
 				<div class="resultField">
@@ -206,6 +205,16 @@
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);
 		margin-inline: 10px;
+	}
+
+	.noAdvertsText {
+		text-align: center;
+		color: white;
+		opacity: 0.5;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
 	}
 
 	.resultField {

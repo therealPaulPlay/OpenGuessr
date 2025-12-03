@@ -1,5 +1,9 @@
 import { readable, writable } from "svelte/store";
 
+// Text
+export const selectedRestriction = writable("standard");
+
+// Technical
 export const panoramaFilter = writable();
 export const nmpz = writable(false);
 export const fadePanorama = writable(false);
@@ -12,4 +16,4 @@ export const restrictionNames = readable({
     invert: "Invert colors",
     hue: "Hue shift",
     fade: "Blink"
-})
+});

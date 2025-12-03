@@ -1,4 +1,3 @@
-import { mapModeIndicatorText, mapModeIndicatorVisible } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     timerCountdownOverlay,
     timerCountdownOverlayTitle,
@@ -35,9 +34,6 @@ export function applySingleplayerSettings() {
 
     if (get(singleplayer)) {
         if (get(singleplayerTimeout)) {
-            mapModeIndicatorVisible.set(true);
-            mapModeIndicatorText.set("Singleplayer");
-
             startSingleplayerTimerPromise = new Promise((resolve, reject) => {
                 timerCountdownOverlay.set(true);
                 timerCountdownOverlayTitle.set(3);
@@ -62,8 +58,6 @@ export function applySingleplayerSettings() {
                     timerCountdownOverlayTitle.set("The time is up!");
                 }));
             });
-        } else {
-            mapModeIndicatorVisible.set(false); // Hide MapMpdeIndicator
         }
 
         // Load & Set singleplayer restriction

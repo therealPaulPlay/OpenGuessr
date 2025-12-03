@@ -4,7 +4,7 @@ import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/l
 import { setCheckNewHighestCountryStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, supporterLevel, experience } from "$lib/stores/accountStore";
 import { streakText, showStreakDisplay, lastDistance, lastExpCalculationSignedOut, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
-import { socket } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayerCategory, socket } from "$lib/stores/context-specific/multiplayerStore";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
 import { addUserXP } from "$lib/utils/updateUserXP";
@@ -95,7 +95,7 @@ export async function loadResultScreenXP(distance) {
     // Calculate experience and streak --------------------------------------
     let earnedXP;
     let earnedBasicXP; // Without supporter mutliplier, that will be applied later (this is just for visuals)
-    const selectedCategory = !get(multiplayer) ? localStorage.getItem("selectedCategory") || "standard" : get(socket)?.getStorage?.category;
+    const selectedCategory = !get(multiplayer) ? localStorage.getItem("selectedCategory") || "standard" : get(multiplayerCategory);
 
     // XP calculation formulas -------------------------------------------------
     if (get(singleplayer) || get(multiplayer)) {

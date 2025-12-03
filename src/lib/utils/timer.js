@@ -59,7 +59,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         littleTimeVignette.set(false);
         stopSound("timerSound");
         if (activeTimer === timerInstance) activeTimer = null;
-        if (!activeTimer) timerText.set("00:00");
+        if (!activeTimer) timerText.set(null);
     }
 
     function getRemainingTime() {
