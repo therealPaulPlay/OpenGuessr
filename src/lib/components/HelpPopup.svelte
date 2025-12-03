@@ -29,17 +29,12 @@
 
 	function handleNext() {
 		playSound("basic_button");
-		if (currentSlide < slides.length - 1) {
-			currentSlide++;
-		} else {
-			helpPopup.set(false);
-		}
+		if (currentSlide < slides.length - 1) currentSlide++;
+		else helpPopup.set(false);
 	}
 
 	helpPopup.subscribe((value) => {
-		if (value) {
-			currentSlide = 0;
-		}
+		if (value) currentSlide = 0;
 	});
 
 	let CurrentIcon = $derived(slides[currentSlide].icon);

@@ -4,7 +4,7 @@ import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/l
 import { setCheckNewHighestCountryStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, supporterLevel, experience } from "$lib/stores/accountStore";
 import { streakText, showStreakDisplay, lastDistance, lastExpCalculationSignedOut, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
-import { socket } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayerMap, socket } from "$lib/stores/context-specific/multiplayerStore";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
 import { addUserXP } from "$lib/utils/updateUserXP";
@@ -15,6 +15,7 @@ import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
 import { get } from "svelte/store";
 import { getMapBounds } from "$lib/utils/getMapBounds";
 import { showResultScreenSlideup } from "$lib/utils/resultScreenSlideup";
+import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 
 // Streak ----------------------------------------------------------------------------------------------------------------------------------------------------
 function calculateMultiplier(streakParam) {
@@ -45,14 +46,14 @@ function calculateExponentialModifier(mapDiameter) {
 }
 
 // Calculate XP gain --------------------------------------------------------------------------------------------------------------------------------
-async function calculateXPGain(distance, category, supporterLevelParam) {
+async function calculateXPGain(distance, map, supporterLevelParam) {
     let returnXP = 0;
     if (distance < 0.025) distance = 0; // Treat distances < 25m as 0 to be more friendly with 5ks
 
     // If the map is big enough to encompass many countries, calculate the country streak
-    const streakMultiplier = (getMapBounds().diameter > 250 && get(singleplayer) && get(isAuthenticated) && category !== "country_guessr") ? await streakCalculation() : 1;
+    const streakMultiplier = (getMapBounds().diameter > 250 && get(singleplayer) && get(isAuthenticated) && map !== "Country Guessr") ? await streakCalculation() : 1;
 
-    if (category == "country_guessr") returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
+    if (map == "Country Guessr") returnXP = checkIfGuessWasCorrect() ? 1000 : 0;
     else returnXP = Math.round(5000 * ((calculateExponentialModifier(getMapBounds().diameter)) ** distance) * streakMultiplier);
 
     let supporterMultiplier = 1;
@@ -95,12 +96,12 @@ export async function loadResultScreenXP(distance) {
     // Calculate experience and streak --------------------------------------
     let earnedXP;
     let earnedBasicXP; // Without supporter mutliplier, that will be applied later (this is just for visuals)
-    const selectedCategory = !get(multiplayer) ? localStorage.getItem("selectedCategory") || "standard" : get(socket)?.getStorage?.category;
+    const selectedMap = !get(multiplayer) ? localStorage.getItem("selectedMap") || get(defaultMap) : get(multiplayerMap);
 
     // XP calculation formulas -------------------------------------------------
     if (get(singleplayer) || get(multiplayer)) {
         const adjustedSupporterLevel = get(multiplayer) ? get(socket)?.getStorage?.highestSupporterLevel : get(supporterLevel);
-        const calculatedXP = await calculateXPGain(distance, selectedCategory, adjustedSupporterLevel);
+        const calculatedXP = await calculateXPGain(distance, selectedMap, adjustedSupporterLevel);
         earnedXP = calculatedXP.earnedXP;
         earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;
         supporterMultiplier = calculatedXP.supporterMultiplier;
@@ -109,7 +110,7 @@ export async function loadResultScreenXP(distance) {
         if (get(multiplayer)) get(socket)?.sendRequest("addToScore", earnedXP);
 
     } else if (get(competition)) {
-        const calculatedXP = await calculateXPGain(distance, "standard");
+        const calculatedXP = await calculateXPGain(distance, get(defaultMap));
         earnedXP = calculatedXP.earnedXP;
         earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost; // Supporter multiplier omitted because it should stay 1 (disabled)
         addResultToCompetitionScore(earnedXP);

@@ -32,7 +32,7 @@
 
 	.regular-map-size {
 		width: 20%;
-		height: 20%;
+		height: 23%;
 		transition:
 			height 150ms ease,
 			width 150ms ease,

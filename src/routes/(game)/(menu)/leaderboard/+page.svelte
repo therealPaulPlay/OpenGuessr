@@ -182,7 +182,7 @@
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[1]?.user_name || "Guest"}</div>
-			<div class="podiumExp">{(mainSectionEntries?.[1]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
+			<div class="podiumValue">{(mainSectionEntries?.[1]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
 			<div class="rank">#2</div>
 		</div>
 		<div
@@ -193,7 +193,7 @@
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[0]?.user_name || "Guest"}</div>
-			<div class="podiumExp">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
+			<div class="podiumValue">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
 			<div class="rank">#1</div>
 		</div>
 		<div
@@ -204,7 +204,7 @@
 			}}
 		>
 			<div class="name">{mainSectionEntries?.[2]?.user_name || "Guest"}</div>
-			<div class="podiumExp">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
+			<div class="podiumValue">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
 			<div class="rank">#3</div>
 		</div>
 	</div>
@@ -476,7 +476,7 @@
 		margin-bottom: 20px;
 	}
 
-	.podium-item .podiumExp {
+	.podium-item .podiumValue {
 		font-size: 25px;
 		color: white;
 		margin-top: auto;
@@ -528,7 +528,7 @@
 			font-size: 20px;
 		}
 
-		.podium-item .podiumExp {
+		.podium-item .podiumValue {
 			font-size: 18px;
 		}
 

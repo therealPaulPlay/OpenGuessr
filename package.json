@@ -24,7 +24,7 @@
 		"fast-profanity-filter": "^0.0.5",
 		"howler": "^2.2.4",
 		"leaflet": "^1.9.4",
-		"overfade": "^0.0.6",
+		"overfade": "^0.0.7",
 		"playsocketjs": "^2.6.3",
 		"topojson-client": "^3.1.0"
 	}

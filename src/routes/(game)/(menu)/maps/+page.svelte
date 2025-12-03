@@ -1,15 +1,21 @@
 <script>
-	import { Plus, XCircle, ExternalLinkIcon, User, Search } from "@lucide/svelte";
+	import { Plus, XCircle, User, Search } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { changeCategory } from "$lib/utils/changeCategory";
-	import { specialModes, continentMaps, countryMaps, basicMaps } from "$lib/stores/context-specific/officialMapsStore";
+	import { changeMap } from "$lib/utils/changeMap.js";
+	import {
+		specialModes,
+		continentMaps,
+		countryMaps,
+		basicMaps,
+		defaultMap,
+	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { idToMapName } from "$lib/utils/idToMapName.js";
+	import { tooltip } from "$lib/utils/tooltip.js";
 
 	// State
 	let currentFetchIndex = 0;
@@ -105,20 +111,20 @@
 		}
 	}
 
-	function selectCategory(name, community = false) {
+	function selectMap(name, community = false) {
 		playSound("button_juicy");
-		changeCategory((community ? "community_" : "") + name.toLowerCase(), true);
+		changeMap((community ? "community_" : "") + name, true);
 		goto("/");
 	}
 
 	function checkIfSelected(name, community = false) {
 		if (typeof window === "undefined") return false;
-		const selectedMap = localStorage.getItem("selectedCategory");
+		const selectedMap = localStorage.getItem("selectedMap");
 		if (community) name = "community_" + name;
-		return selectedMap == name.toLowerCase() || (name.toLowerCase() == "standard" && !selectedMap);
+		return selectedMap == name || (name == $defaultMap && !selectedMap);
 	}
 
-	function addSelectedMap(name) {
+	function saveCommunityMap(name) {
 		try {
 			if (!addedCommunityMapsArray.includes(name)) {
 				addedCommunityMapsArray.push(name);
@@ -129,7 +135,7 @@
 		}
 	}
 
-	function removeSelectedMap(name) {
+	function unsaveCommunityMap(name) {
 		try {
 			const index = addedCommunityMapsArray.indexOf(name);
 			if (index !== -1) {
@@ -195,6 +201,40 @@
 	<title>Maps</title>
 </svelte:head>
 
+{#snippet communityMapItem(map)}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
+	<div
+		class="map-item"
+		role="button"
+		tabindex="0"
+		onclick={() => {
+			playSound("basic_button");
+			goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
+		}}
+	>
+		<div class="map-info">
+			<p class="map-name">{map.name || "Name not loaded"}</p>
+			<p class="map-author">by {map.author || "Bugsnacker"}</p>
+		</div>
+		<button
+			class="add-button standardButton white"
+			use:tooltip={{ text: "Save map" }}
+			onclick={(e) => {
+				e.stopPropagation();
+				playSound("basic_button");
+				if (addedCommunityMapsArray.includes(map.name)) unsaveCommunityMap(map.name);
+				else saveCommunityMap(map.name);
+			}}
+		>
+			<img
+				src={addedCommunityMapsArray.includes(map.name) ? "/img/disselect_icon.png" : "/img/select_icon.png"}
+				alt="add / remove map"
+				class="selection-icon"
+			/>
+		</button>
+	</div>
+{/snippet}
+
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="main-container">
 	<div class="headerContainer">
@@ -208,11 +248,11 @@
 				role="button"
 				tabindex="0"
 				onclick={() => {
-					selectCategory(map);
+					selectMap(map);
 				}}
 			>
-				<div class="mapInfo">
-					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
+				<div class="map-info">
+					<p class="map-name">{map}</p>
 				</div>
 			</div>
 		{/each}
@@ -229,31 +269,14 @@
 				role="button"
 				tabindex="0"
 				onclick={() => {
-					selectCategory(map);
+					selectMap(map);
 				}}
 			>
-				<div class="mapInfo">
-					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
+				<div class="map-info">
+					<p class="map-name">{map}</p>
 				</div>
 			</div>
 		{/each}
-		<div
-			class="map-item map-item-slim"
-			role="button"
-			tabindex="0"
-			onclick={() => {
-				playSound("button_juicy");
-				goto("/competitions");
-			}}
-		>
-			<div class="mapInfo">
-				<p class="map-name">
-					Competitions <span class="linkSpan"
-						><ExternalLinkIcon size={20} strokeWidth={2.25} style="margin-bottom: -2px;" /></span
-					>
-				</p>
-			</div>
-		</div>
 		<div
 			class="map-item-link map-item"
 			role="button"
@@ -291,11 +314,11 @@
 				role="button"
 				tabindex="0"
 				onclick={() => {
-					selectCategory(map);
+					selectMap(map);
 				}}
 			>
-				<div class="mapInfo">
-					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
+				<div class="map-info">
+					<p class="map-name">{map}</p>
 				</div>
 			</div>
 		{/each}
@@ -332,18 +355,18 @@
 				role="button"
 				tabindex="0"
 				onclick={() => {
-					selectCategory(map);
+					selectMap(map);
 				}}
 			>
-				<div class="mapInfo">
-					<p class="map-name">{idToMapName(map) || "Name not loaded"}</p>
+				<div class="map-info">
+					<p class="map-name">{map}</p>
 				</div>
 			</div>
 		{/each}
 	</div>
 	<!-- Saved Community Maps -->
 	<div class="headerContainer">
-		<h2 class="header">Bookmarked</h2>
+		<h2 class="header">Saved</h2>
 	</div>
 	<div class="map-container">
 		{#if addedCommunityMapsArray.length > 0}
@@ -354,18 +377,18 @@
 					role="button"
 					tabindex="0"
 					onclick={() => {
-						selectCategory(map, true);
+						selectMap(map, true);
 					}}
 				>
-					<div class="mapInfo">
-						<p class="map-name">{map || "Name not loaded"}</p>
+					<div class="map-info">
+						<p class="map-name">{map}</p>
 					</div>
 					<button
 						class="remove-button"
 						onclick={(e) => {
 							e.stopPropagation();
 							playSound("basic_button");
-							removeSelectedMap(map);
+							unsaveCommunityMap(map);
 						}}
 					>
 						<XCircle size={21} />
@@ -373,7 +396,7 @@
 				</div>
 			{/each}
 		{:else}
-			<p class="nothingFound noSavedMaps">No saved maps.</p>
+			<p class="nothingFound noSavedMaps">No saved community maps.</p>
 		{/if}
 	</div>
 	<!-- Featured Maps -->
@@ -383,38 +406,7 @@
 	<div class="map-container">
 		{#if loadedSpotlightMaps.length}
 			{#each loadedSpotlightMaps as map}
-				<div
-					class="map-item"
-					role="button"
-					tabindex="0"
-					onclick={() => {
-						playSound("basic_button");
-						goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
-					}}
-				>
-					<div class="mapInfo">
-						<p class="map-name">{map.name || "Name not loaded"}</p>
-						<p class="map-author">by {map.author || "Bugsnacker"}</p>
-					</div>
-					<button
-						class="add-button standardButton white"
-						onclick={(e) => {
-							e.stopPropagation();
-							playSound("basic_button");
-							if (addedCommunityMapsArray.includes(map.name)) {
-								removeSelectedMap(map.name);
-							} else {
-								addSelectedMap(map.name);
-							}
-						}}
-					>
-						<img
-							src={addedCommunityMapsArray.includes(map.name) ? "/img/disselect_icon.png" : "/img/select_icon.png"}
-							alt="add / remove map"
-							class="selection-icon"
-						/>
-					</button>
-				</div>
+				{@render communityMapItem(map)}
 			{/each}
 		{:else}
 			<p class="nothingFound">Loading...</p>
@@ -480,43 +472,11 @@
 	<div id="community-maps" class="map-container">
 		<!-- Community maps will be injected here -->
 		{#each loadedCommunityMaps as map}
-			<div
-				class="map-item"
-				role="button"
-				tabindex="0"
-				onclick={() => {
-					playSound("basic_button");
-					goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
-				}}
-			>
-				<div class="mapInfo">
-					<p class="map-name">{map.name || "Name not loaded"}</p>
-					<p class="map-author">by {map.author || "Bugsnacker"}</p>
-				</div>
-				<button
-					class="add-button standardButton white"
-					onclick={(e) => {
-						e.stopPropagation();
-						playSound("basic_button");
-						if (addedCommunityMapsArray.includes(map.name)) {
-							removeSelectedMap(map.name);
-						} else {
-							addSelectedMap(map.name);
-						}
-					}}
-				>
-					<img
-						src={addedCommunityMapsArray.includes(map.name) ? "/img/disselect_icon.png" : "/img/select_icon.png"}
-						alt="add / remove map"
-						class="selection-icon"
-					/>
-				</button>
-			</div>
+			{@render communityMapItem(map)}
 		{/each}
 		{#if showLoadMore}
 			<button
-				id="loadMore"
-				class="map-item"
+				class="map-item load-more"
 				onclick={() => {
 					playSound("basic_button");
 					loadCommunityMaps(currentFetchIndex + 50, currentCategory, currentQuery, currentByUserId, null);
@@ -563,6 +523,11 @@
 		}
 	}
 
+	.map-info {
+		flex-grow: 1;
+		overflow: hidden;
+	}
+
 	.playlightLink {
 		text-decoration: none;
 		opacity: 0.5;
@@ -571,10 +536,6 @@
 
 	.playlightLink:hover {
 		opacity: 0.25;
-	}
-
-	.linkSpan {
-		margin-left: 5px;
 	}
 
 	.no-bottom-padding {
@@ -606,10 +567,9 @@
 		box-sizing: border-box;
 		animation: fadeIn 250ms ease-in-out;
 		user-select: none;
+		min-width: 300px;
 		flex-grow: 1;
 		flex-basis: 30%;
-		min-width: 300px;
-		text-overflow: ellipsis;
 		overflow: hidden;
 		cursor: pointer;
 		transition:
@@ -619,7 +579,6 @@
 	}
 
 	.map-item-link {
-		min-width: 220px;
 		flex-basis: 0;
 	}
 
@@ -654,15 +613,11 @@
 		max-width: 140px;
 	}
 
-	.map-item-bookmark .map-name {
-		max-width: 110px;
-	}
-
 	.map-author {
-		font-size: 18px;
+		font-size: 20px;
 		color: rgba(255, 255, 255, 0.5);
 		overflow: hidden;
-		max-width: 110px;
+		max-width: 150px;
 		text-overflow: ellipsis;
 		white-space: nowrap;
 	}
@@ -767,7 +722,7 @@
 
 	.noSavedMaps {
 		text-align: start;
-		margin-left: 10px;
+		margin-left: var(--box-margin);
 	}
 
 	#mapSearch {
@@ -834,13 +789,13 @@
 		min-width: 280px;
 		gap: var(--box-margin);
 		align-items: center;
-		border-radius: var(--box-margin);
+		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
 		margin-bottom: 20px;
 		background-color: var(--box-color);
 	}
 
-	#loadMore {
+	.load-more {
 		font-size: 22px;
 		min-height: 69px;
 		justify-content: center;

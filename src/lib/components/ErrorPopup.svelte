@@ -18,10 +18,7 @@
 	verySlim={true}
 	bind:open={$popupOpen}
 	onclose={() => {
-		if (get(reload)) {
-			localStorage.setItem("selectedCategory", "standard");
-			window.location.reload();
-		}
+		if (get(reload)) window.location.reload();
 	}}
 >
 	<h1 class="popup-title">{$title}</h1>

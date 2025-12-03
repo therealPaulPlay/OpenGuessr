@@ -41,7 +41,7 @@
 
 		} catch (error) {
 			console.error("Error occured during checkout:", error);
-			errorPopup("Checkout error", "Failed to create the checkout session.", error, false, false);
+			errorPopup("Checkout error", "Failed to create the checkout session.", error);
 		}
 	}
 

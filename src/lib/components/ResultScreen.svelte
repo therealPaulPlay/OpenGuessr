@@ -1,6 +1,5 @@
 <!-- previously known as the End Overlay, this screen shows the Result -->
 <script>
-	import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
 		resultScreenEnabled,
@@ -33,6 +32,7 @@
 	import { blur } from "svelte/transition";
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";
+	import { tooltip } from "$lib/utils/tooltip";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -47,6 +47,7 @@
 	let level = $state(1);
 	let percentageWidth = $state("0%");
 	let showConfetti = $state(false);
+	let nextRoundButtonElement = $state();
 
 	experience.subscribe((value) => {
 		level = getLevel();
@@ -83,13 +84,12 @@
 	<div class="endBottomArea">
 		<!-- Animations for great scores -->
 		<ResultFullscreenMessage />
-
 		<ResultScreenSlideup />
 		<div class="endBottomBar">
 			{#if $supporterLevel <= 1 && !$adsDisabled}
 				<div class="floatingResultLeaderboardArea barMenu" transition:blur>
 					<div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
-					<RemoveAdsText text="Please consider supporting OpenGuessr to go ad-free." />
+					<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
 				</div>
 			{/if}
 			<div id="resultBox" class="barMenu">
@@ -99,7 +99,7 @@
 				{#if $supporterLevel <= 1 && !$adsDisabled}
 					<div id="mobileResultLeaderboardAdArea" class="resultField resultFieldHigh">
 						<div id="mobileResultLeaderboardAd"></div>
-						<RemoveAdsText text="Go Ad-Free." />
+						<p class="noAdvertsText">Ad.</p>
 					</div>
 				{/if}
 				<div class="resultField">
@@ -141,6 +141,7 @@
 		<div class="barMenu nextRoundArea">
 			<button
 				class="standardButton white"
+				use:tooltip={{ text: "View panorama" }}
 				onclick={() => {
 					playSound("basic_button");
 					openLocationOnMaps(get(currentLocationLatitude), get(currentLocationLongitude));
@@ -149,6 +150,7 @@
 				<img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
 			</button>
 			<button
+				bind:this={nextRoundButtonElement}
 				id="nextRound"
 				class="standardButton white"
 				style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
@@ -158,9 +160,7 @@
 					transitionToStart();
 				}}
 			>
-				<p class="nextRoundText">
-					{$continueText}
-				</p>
+				<p class="nextRoundText">{$continueText}</p>
 				<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
 			</button>
 		</div>
@@ -169,7 +169,7 @@
 
 <svelte:window
 	onkeypress={(event) => {
-		if (event.key === " " && isElementClickable(document.getElementById("nextRound")) && $resultScreenEnabled) {
+		if (event.key === " " && isElementClickable(nextRoundButtonElement) && $resultScreenEnabled) {
 			transitionToStart();
 			playSound("basic_button");
 		}
@@ -204,6 +204,16 @@
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);
 		margin-inline: 10px;
+	}
+
+	.noAdvertsText {
+		text-align: center;
+		color: white;
+		opacity: 0.5;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		transform: translate(-50%, -50%);
 	}
 
 	.resultField {

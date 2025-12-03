@@ -61,6 +61,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showNotification } from "$lib/utils/notifications";
 	import { censor } from "fast-profanity-filter";
+	import { tooltip } from "$lib/utils/tooltip";
 
 	let textarea = $state();
 	let selectedTabIndex = $state(0);
@@ -237,6 +238,7 @@
 			{#if $profileId == localStorage.getItem("id")}
 				<button
 					class="standardButton white"
+					use:tooltip={{ text: "Round history" }}
 					onclick={() => {
 						playSound("basic_button");
 						$roundLogPopup = true;
@@ -244,6 +246,7 @@
 				>
 				<button
 					class="standardButton white"
+					use:tooltip={{ text: "Share link" }}
 					onclick={() => {
 						playSound("basic_button");
 						navigator.clipboard
@@ -281,12 +284,12 @@
 				<button
 					class="standardButton white"
 					disabled={$profileData?.areFriends}
+					use:tooltip={{ text: "Send friend request"}}
 					onclick={(e) => {
 						playSound("basic_button");
 						sendFriendRequest($profileId, e.target); // This also shows a notification
 					}}
 				>
-					Friend
 					{#if !$profileData?.areFriends}
 						<UserRoundPlus style="margin-bottom: -1px; margin-left: 2px;" size={19} strokeWidth={2.25} />
 					{:else}
@@ -476,6 +479,7 @@
 		padding-inline: 12px;
 		padding-top: 0px;
 		padding-bottom: 0px;
+		font-size: 20px;
 		box-sizing: border-box;
 	}
 

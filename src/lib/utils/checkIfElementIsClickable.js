@@ -9,21 +9,16 @@ export function isElementClickable(element) {
     const centerY = rect.top + rect.height / 2;
     const topElement = document.elementFromPoint(centerX, centerY);
 
-    // Check if the element or any of its closer parents have pointer-events set to 'auto'
-    let el = element;
-    let closestPointerEventsNoneParent = null;
-    while (el) {
-        if (getComputedStyle(el).pointerEvents === 'none') {
-            closestPointerEventsNoneParent = el;
-        } else if (getComputedStyle(el).pointerEvents === 'auto') {
-            closestPointerEventsNoneParent = null;
+    // If element itself has pointer-events: auto, it overrides any parent's pointer-events: none, so we can skip
+    if (!getComputedStyle(element).pointerEvents === 'auto') {
+        // Check if any parent has pointer-events: none that would block clicks
+        let el = element.parentElement;
+        while (el) {
+            const pointerEvents = getComputedStyle(el).pointerEvents;
+            if (pointerEvents === 'none') return false;
+            else if (pointerEvents === 'auto') break; // Found a parent with 'auto', so we can abort checking elements further up
+            el = el.parentElement; // Go up one element
         }
-        el = el.parentElement;
-    }
-
-    // If there's a closer parent with pointer-events: none, the element is not clickable
-    if (closestPointerEventsNoneParent) {
-        return false;
     }
 
     return topElement === element || element.contains(topElement);

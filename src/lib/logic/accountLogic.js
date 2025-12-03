@@ -28,9 +28,7 @@ export async function checkAuthenticationStatus() {
       resetLocalSave();
       showNotification("Your session has expired.");
     }
-  } else {
-    isAuthenticated.set(false);
-  }
+  } else isAuthenticated.set(false);
 
   attemptJoinViaLink();
 }

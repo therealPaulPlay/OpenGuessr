@@ -6,9 +6,10 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { fetchTournaments } from "$lib/utils/tournamentUtils";
-	import { AlertCircle, ChevronDown, Clock, Info, Medal, Ticket, Tickets, Users } from "@lucide/svelte";
+	import { CalendarCheck2, Clock, Info, Medal, Ticket, Tickets, Users } from "@lucide/svelte";
 	import { onMount } from "svelte";
-	import { blur, slide } from "svelte/transition";
+	import { blur } from "svelte/transition";
+	import Drawer from "./ui/Drawer.svelte";
 
 	let noTournamentsText = $state("No tournaments scheduled.");
 	let showOlder = $state(false);
@@ -21,7 +22,7 @@
 
 {#snippet tournamentItem(tournament)}
 	{@const readableDate = new Date(tournament.date).toLocaleString("en-US", {
-		month: "long",
+		month: "short",
 		day: "numeric",
 		hour: "numeric",
 		minute: "2-digit",
@@ -42,8 +43,8 @@
 			<p>{tournament.status == "finished" ? "Finished" : readableDate}</p>
 		</div>
 		<div class="tournamentField">
-			<Users style="opacity: 0.75;" strokeWidth={1.75} />
-			<p>{tournament.saves?.toLocaleString()} calendar saves</p>
+			<CalendarCheck2 style="opacity: 0.75;" strokeWidth={1.75} />
+			<p>{tournament.saves?.toLocaleString()}</p>
 		</div>
 		<div class="tournamentField">
 			<Medal style="margin-top: 1px; opacity: 0.75;" strokeWidth={1.5} />
@@ -80,54 +81,13 @@
 	{/if}
 </div>
 
-<div class="tournamentsContainer">
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<div
-		class="toggleFinishedBar"
-		role="button"
-		tabindex={0}
-		onclick={() => {
-			playSound("floating_button");
-			showOlder = !showOlder;
-		}}
-	>
-		<p style:margin-left="var(--panel-margin)">Finished tournaments</p>
-		<div class="viewOlderIcon">
-			<ChevronDown
-				style="margin-bottom: -4px; transition: transform 250ms ease; {showOlder ? 'transform: rotate(180deg)' : ''}"
-			/>
-		</div>
-	</div>
-	{#if showOlder}
-		<div transition:slide={{ duration: 250 }} class="innerTournamentsContainer" style:margin-top={"var(--box-margin)"}>
-			{#each $tournamentData?.filter((i) => i.status === "finished") as tournament (tournament.id)}
-				{@render tournamentItem(tournament)}
-			{/each}
-		</div>
-	{/if}
-</div>
+<Drawer title="Recently finished" bind:isOpen={showOlder}>
+	{#each $tournamentData?.filter((i) => i.status === "finished") as tournament (tournament.id)}
+		{@render tournamentItem(tournament)}
+	{/each}
+</Drawer>
 
 <style>
-	.toggleFinishedBar {
-		display: flex;
-		width: 100%;
-		gap: var(--box-margin);
-		transition: opacity 250ms ease;
-		justify-content: space-between;
-		align-items: center;
-		cursor: pointer;
-	}
-
-	.viewOlderIcon {
-		color: white;
-		padding: 5px;
-		padding-inline: var(--panel-margin);
-	}
-
-	.toggleFinishedBar:hover {
-		opacity: 0.5;
-	}
-
 	.tournamentsContainer {
 		position: relative;
 		width: calc(100% - 20px);
@@ -196,7 +156,6 @@
 		gap: var(--panel-margin);
 		padding-inline: var(--box-margin);
 		text-wrap: nowrap;
-		flex-grow: 1;
 		max-width: 100%;
 		box-sizing: border-box;
 	}
@@ -220,5 +179,11 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+	@media (max-width: 1200px) {
+		.tournamentField {
+			flex-grow: 1;
+		}
 	}
 </style>

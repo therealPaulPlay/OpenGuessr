@@ -10,7 +10,7 @@ import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/
 import { mapPinLat, mapPinLng, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
 import { guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
-import { mapModeIndicatorVisible, leaveFunction, mapModeIndicatorText } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { leaveFunction } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
     duelRetryEnabled, multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
@@ -25,7 +25,9 @@ import {
     guestNamePromise,
     multiplayerRestriction,
     chatMutedPlayers,
-    multiplayerSortedPlayersArray
+    multiplayerSortedPlayersArray,
+    currentRound,
+    multiplayerMap
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
@@ -34,7 +36,7 @@ import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
-import { changeCategory } from "$lib/utils/changeCategory";
+import { changeMap } from "$lib/utils/changeMap";
 import { showNotification } from "$lib/utils/notifications";
 import PlaySocket from "playsocketjs";
 import { getMapBounds } from "$lib/utils/getMapBounds";
@@ -42,7 +44,8 @@ import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { signupPrompt } from "$lib/utils/signupPrompt";
 import { apiUrl, websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
-import { idToMapName } from "$lib/utils/idToMapName";
+import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
+import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 
 export function getTeamFromMultiplayerId(id) {
     const playerArray = get(socket)?.getStorage?.players?.find(item => item.clientId === id);
@@ -53,15 +56,13 @@ export function getTeamFromMultiplayerId(id) {
 function setMultiplayerUI() {
     if (get(multiplayer)) {
         get(singleplayerTimer)?.stopTimer();
-        mapModeIndicatorVisible.set(true);
         leaveFunction.set(() => {
-            showConfirmPopup("Leave match?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
+            showConfirmPopup("Leave?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
             playSound("leave_round");
         });
         chatVisible.set(true);
         linkJoinPopup.set(false);
     } else {
-        mapModeIndicatorVisible.set(false);
         leaveFunction.set(); // Hides leave option too
         chatVisible.set(false);
     }
@@ -121,7 +122,8 @@ export async function createMultiplayerInstance() {
 
             get(socket).onEvent('storageUpdated', (storage) => {
                 // Save game info
-                if (storage.roundAmount && storage.roundLength && storage.teamAmount && storage.style && storage.restriction) {
+                if (storage.map && storage.roundAmount && storage.roundLength && storage.teamAmount && storage.style && storage.restriction) {
+                    multiplayerMap.set(storage.map);
                     roundAmount.set(storage.roundAmount);
                     roundLength.set(storage.roundLength);
                     teamAmount.set(storage.teamAmount);
@@ -143,10 +145,9 @@ export async function createMultiplayerInstance() {
 
                 if (get(teamAmount) > 1 && storage.guessLocationsArray && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
 
-                if (storage.currentRound && storage.restriction) {
-                    mapModeIndicatorText.set(`Multiplayer (Round: ${storage.currentRound}/${get(roundAmount)})` + (storage.restriction !== "standard" ? ` (${storage.restriction})` : ""));
-                    setRestriction(storage.restriction);
-                }
+                if (storage.restriction) setRestriction(storage.restriction);
+
+                if (storage.currentRound) currentRound.set(storage.currentRound);
 
                 if (storage.confirmedArray && storage.players) {
                     const confirmedIDs = new Set(storage.confirmedArray); // Convert confirmedArray to a Set for efficient lookups
@@ -252,9 +253,9 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
         await createMultiplayerInstance(); // Get new multiplayer instance
 
         // Check if map is valid for multiplayer
-        if (localStorage.getItem("selectedCategory") == "country_guessr") {
+        if (localStorage.getItem("selectedMap") == "Country Guessr") {
             showNotification("Map not supported in multiplayer.")
-            await changeCategory("standard", true); // Regenerate to update locations array
+            await changeMap(get(defaultMap), true); // Regenerate to update locations array
         }
 
         // Set round and length parameters
@@ -269,8 +270,8 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             roundLength: get(roundLength),
             teamAmount: get(teamAmount),
             style: get(multiplayerStyle),
-            restriction: get(multiplayerRestriction) || "standard",
-            category: divisionRoom ? "standard" : localStorage.getItem("selectedCategory") || "standard",
+            restriction: get(multiplayerRestriction) || Object.keys(get(restrictionNames))?.[0],
+            map: divisionRoom ? get(defaultMap) : localStorage.getItem("selectedMap") || get(defaultMap),
             divisionRoom,
         }, sizeLimit);
 
@@ -302,7 +303,6 @@ export async function joinRoom(code) {
             throw new Error(error);
         }
         multiplayer.set(true);
-        mapModeIndicatorText.set("Multiplayer (...)");
         await get(socket).joinRoom(code);
         roomcode.set(code);
         matchmakingActive.set(false);
@@ -344,16 +344,17 @@ export function leaveMultiplayerRound(destroy = true) {
     roomcode.set(null);
     multiplayerStatus.set(); // Undefined -> show default msgs
     continueText.set("Continue");
-    multiplayerRestriction.set("standard");
+    multiplayerRestriction.set(Object.keys(get(restrictionNames))?.[0]);
     chatMutedPlayers.set([]);
+    currentRound.set(0);
+    multiplayerMap.set(null);
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
         showMultiplayerOverlay(false); // Also makes map interactive
         updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
         setMultiplayerUI();
-        setRestriction("standard");
-        checkGenerationTypeAndGenerate();
+        checkGenerationTypeAndGenerate(); // Also resets the restriction
     }
 }
 
@@ -437,10 +438,7 @@ function showMultiplayerOverlay(show) {
     multiplayerOverlay.set(show);
 
     if (show) {
-        if (!get(socket)?.getStorage?.firstRoundPlayed) {
-            multiplayerOverlayTitle.set("Waiting...");
-            mapModeIndicatorText.set("Multiplayer (" + idToMapName(get(socket)?.getStorage?.category) + ")")
-        }
+        if (!get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
 
         if (!get(socket)?.getStorage?.gameEnded) {
             showEndscreenUI(false); // If not at the end, hide endscreen UI

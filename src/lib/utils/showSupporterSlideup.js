@@ -1,4 +1,3 @@
-import { errorPopup } from "$lib/utils/errorHandling";
 import { monthlySupportAmount } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { get } from "svelte/store";
 import { supporterWindowIfAuthenticated } from "./showSupporterPopup";

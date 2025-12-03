@@ -95,7 +95,7 @@
 			<p>{readableDate}</p>
 		</div>
 		<div class="info-field">
-			<p class="info-title">Calendar saves</p>
+			<p class="info-title">Cal. saves</p>
 			<p>{$selectedTournament?.saves?.toLocaleString()}</p>
 		</div>
 		<div class="info-field">
@@ -114,7 +114,7 @@
 			<p>{$selectedTournament?.status?.slice(0, 1)?.toUpperCase() + $selectedTournament?.status?.slice(1)}</p>
 		</div>
 	</div>
-	<TitleSeparator text="Match results" class="tournament-divider-margin" />
+	<TitleSeparator text="Matches" class="tournament-divider-margin" />
 	<div class="info-container warnInfo">
 		<Info color="white" strokeWidth={2} class="info-icon-circular" />
 		<p>
@@ -206,7 +206,7 @@
 				window.open(calendarUrl, "_blank");
 			}}
 		>
-			<CalendarPlus style="margin-bottom: -3px;" />
+			<CalendarPlus style="margin-bottom: -3px; margin-right: 3px;" />
 			{$selectedTournament?.saved ? "Added" : "Add"} to calendar
 		</button>
 	{/if}

@@ -1,9 +1,7 @@
 import { computePosition, flip, shift, offset, arrow } from "@floating-ui/dom";
 
-let openTooltipCount = 0;
-
-export function tooltip(node, { text, delay = 500, ...options }) {
-    let tooltipElement, arrowElement, visible = false, showTimeout;
+export function tooltip(node, { text, ...options }) {
+    let tooltipElement, arrowElement, visible = false;
 
     function createTooltip() {
         tooltipElement = document.createElement('div');
@@ -26,10 +24,11 @@ export function tooltip(node, { text, delay = 500, ...options }) {
         document.body.appendChild(tooltipElement);
     }
 
-    function showTooltip() {
+    function showTooltip(e) {
+        if (e.pointerType == "touch") return;
+
         if (!tooltipElement) createTooltip();
         visible = true;
-        openTooltipCount++;
         tooltipElement.showPopover();
 
         computePosition(node, tooltipElement, {
@@ -60,16 +59,7 @@ export function tooltip(node, { text, delay = 500, ...options }) {
         });
     }
 
-    function showTooltipDelayed(e) {
-        clearTimeout(showTimeout);
-        if (e.pointerType == "touch") return;
-
-        if (openTooltipCount > 0) showTooltip();
-        else showTimeout = setTimeout(showTooltip, delay);
-    }
-
     function hideTooltip(e) {
-        clearTimeout(showTimeout);
         if (e.pointerType == "touch") return;
 
         if (!tooltipElement || !visible) return;
@@ -82,19 +72,16 @@ export function tooltip(node, { text, delay = 500, ...options }) {
 
         setTimeout(() => {
             tooltipElement?.hidePopover();
-            openTooltipCount--;
         }, 150);
     }
 
-    node.addEventListener('pointerenter', showTooltipDelayed);
+    node.addEventListener('pointerenter', showTooltip);
     node.addEventListener('pointerleave', hideTooltip);
 
     return {
         destroy() {
-            clearTimeout(showTimeout);
-            node.removeEventListener('pointerenter', showTooltipDelayed);
+            node.removeEventListener('pointerenter', showTooltip);
             node.removeEventListener('pointerleave', hideTooltip);
-            if (visible) openTooltipCount--;
             tooltipElement?.remove();
         },
         update(newProps) {

@@ -8,11 +8,7 @@ import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 import { competition } from "$lib/stores/modeStore";
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 import { goto } from "$app/navigation";
-import {
-    mapModeIndicatorVisible,
-    mapModeIndicatorText,
-    leaveFunction
-} from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { leaveFunction } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { get } from "svelte/store";
 import { username } from "$lib/stores/accountStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -31,8 +27,7 @@ export function loadCompetition() {
     if (get(competitionData)) {
         competition.set(true); // Activate Competition mode
         disableResultScreen(); // In case result screen is enabled
-        setCompetitionUI(true);
-        setRestriction(get(competitionData)?.restriction || "standard");
+        setRestriction(get(competitionData)?.restriction);
 
         setTimeout(() => {
             playSound("match_start");
@@ -42,28 +37,10 @@ export function loadCompetition() {
     }
 }
 
-// Set competition UI ----------------------------------------------------------------------------------------------------
-function setCompetitionUI(enable) {
-    if (enable) {
-        mapModeIndicatorVisible.set(true);
-        mapModeIndicatorText.set("Competition");
-
-    } else {
-        mapModeIndicatorVisible.set(false);
-        leaveFunction.set(); // Reset leave function
-    }
-}
-
 // Round Logic ---------------------------------------------------------------------------------------------------------
 export function checkStartCompetitionRound() {
     if (get(competition)) {
         competitionRound.set(get(competitionRound) + 1);
-        mapModeIndicatorText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ")");
-
-        if (get(competitionData)?.restriction && get(competitionData)?.restriction != "standard") {
-            mapModeIndicatorText.set("Competition (Round: " + get(competitionRound) + "/" + get(competitionData)?.roundAmount + ") (" + get(competitionData)?.restriction + ")");
-        }
-
         competitionTimer = startTimer(get(competitionData)?.roundLength, confirmButtonClicks);
     }
 }
@@ -77,9 +54,8 @@ export function addResultToCompetitionScore(scoreToAdd) {
 export async function leaveCompetition(showResult) {
     if (get(competition)) {
         competition.set(false);
-        setCompetitionUI(false);
-        checkGenerationTypeAndGenerate();
-        setRestriction("standard");
+        leaveFunction.set();
+        checkGenerationTypeAndGenerate(); // Also resets restriction
 
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
         await submitCompetitionResult(get(competitionData).id, competitionCombinedScore);
