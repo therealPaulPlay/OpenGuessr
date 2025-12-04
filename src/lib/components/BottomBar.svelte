@@ -19,9 +19,6 @@
 		playSound("reload");
 		$loadingScreenVisible = true;
 		$iframeElement.src = $panoramaSrc;
-		window.setTimeout(() => {
-			$loadingScreenVisible = false;
-		}, 400);
 	}
 </script>
 
