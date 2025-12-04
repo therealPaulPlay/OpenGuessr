@@ -41,7 +41,6 @@
 	import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
 	import MultiplayerOverlay from "$lib/components/MultiplayerOverlay.svelte";
 	import BlinkRestrictionFade from "$lib/components/FadeRestriction.svelte";
-	import MapAttribution from "$lib/components/MapAttribution.svelte";
 	import CrazyGames from "$lib/components/CrazyGames.svelte";
 	import DuelResultPopup from "$lib/components/DuelResultPopup.svelte";
 	import ReportIframePopup from "$lib/components/ReportIframePopup.svelte";
@@ -95,10 +94,7 @@
 <svelte:head>
 	<!-- Ad script -->
 	<script src="https://hb.vntsm.com/v4/live/vms/sites/openguessr.com/index.js" async></script>
-
-	<!-- Leaflet CSS -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
-
+  
 	<!-- Playlight CSS -->
 	<link rel="stylesheet" href="https://sdk.playlight.dev/playlight-sdk.css" />
 </svelte:head>
@@ -161,7 +157,6 @@
 <PanoramaIframe />
 <CountryGuesserBar />
 <MapHolder>
-	<MapAttribution />
 	<MobileMapToggles />
 	<Map />
 	<MapModeIndicator />
