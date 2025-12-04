@@ -36,8 +36,12 @@
 		transition:
 			height 150ms ease,
 			width 150ms ease,
-			opacity 250ms ease,
-			margin 250ms ease;
+			opacity 250ms ease;
+	}
+
+	.map-hover {
+		width: 55%;
+		height: 55%;
 	}
 
 	/* map Holder class on result screen */
@@ -49,7 +53,6 @@
 		z-index: 12 !important;
 		width: 100% !important;
 		height: 100% !important;
-		margin: 0 !important;
 		opacity: 100% !important;
 		visibility: visible !important;
 		border-radius: 0 !important;
@@ -58,11 +61,6 @@
 
 	:global(.mapHolderToResult #floatingMapButton) {
 		display: none !important;
-	}
-
-	.map-hover {
-		width: 55%;
-		height: 55%;
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {

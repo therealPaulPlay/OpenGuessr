@@ -17,51 +17,49 @@ import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration
 import { mapExpanded, mapHovered, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 
 export async function enableResultScreen(guessLat = 0, guessLong = 0) {
-    if (!get(resultScreenEnabled)) {
-        resultScreenEnabled.set(true);
+    if (get(resultScreenEnabled)) return;
+    resultScreenEnabled.set(true);
 
-        // Obtain contents
-        const distance = calculateDistances(guessLat, guessLong);
-        const motivationalMessage = motivationalResultMessage(distance);
-        const resultString = formatDistance(distance);
+    // Obtain contents
+    const distance = calculateDistances(guessLat, guessLong);
+    const motivationalMessage = motivationalResultMessage(distance);
+    const resultString = formatDistance(distance);
 
-        // Reset the map, before loading the result map
-        resetMap(true);
+    // Reset the map, before loading the result map
+    resetMap(true);
 
-        motivationText.set(motivationalMessage);
-        distanceText.set(resultString);
-        lastDistance.set(distance);
+    motivationText.set(motivationalMessage);
+    distanceText.set(resultString);
+    lastDistance.set(distance);
 
-        if (get(countryGuessr)) {
-            if (checkIfGuessWasCorrect()) distanceText.set("Correct!");
-            else distanceText.set("Wrong!");
-        }
-
-        // Load result on the map
-        loadResultMap(guessLat, guessLong, get(currentLocationLatitude), get(currentLocationLongitude));
-        playSound("confirm");
-        refreshPlacements();
-
-        // Load XP
-        await loadResultScreenXP(distance);
-        if (!get(showSlideup)) supporterSlideupProbability();
-        checkDisplayFullscreenCelebration();
+    if (get(countryGuessr)) {
+        if (checkIfGuessWasCorrect()) distanceText.set("Correct!");
+        else distanceText.set("Wrong!");
     }
+
+    // Load result on the map
+    loadResultMap(guessLat, guessLong, get(currentLocationLatitude), get(currentLocationLongitude));
+    playSound("confirm");
+    refreshPlacements();
+
+    // Load XP
+    await loadResultScreenXP(distance);
+    if (!get(showSlideup)) supporterSlideupProbability();
+    checkDisplayFullscreenCelebration();
 }
 
 export function disableResultScreen() {
-    if (get(resultScreenEnabled)) {
-        resultScreenEnabled.set(false);
-        refreshPlacements();
+    if (!get(resultScreenEnabled)) return;
+    resultScreenEnabled.set(false);
+    refreshPlacements();
 
-        // UI resets
-        if (window.innerHeight > window.innerWidth) mapExpanded.set(false); // On mobile, collapse map
-        showSlideup.set(false);
-        mapHovered.set(false);
-        mapPinLat.set(0); // Reset placed map pin latitude
-        mapPinLng.set(0); // Reset placed map pin longitude
-        earnedExperience.set(0); // Reset earned experience
+    // UI resets
+    if (window.innerHeight > window.innerWidth) mapExpanded.set(false); // On mobile, collapse map
+    showSlideup.set(false);
+    mapHovered.set(false);
+    mapPinLat.set(0); // Reset placed map pin latitude
+    mapPinLng.set(0); // Reset placed map pin longitude
+    earnedExperience.set(0); // Reset earned experience
 
-        resetMap(); // Reset the map for the next round
-    }
+    resetMap(); // Reset the map for the next round
 }

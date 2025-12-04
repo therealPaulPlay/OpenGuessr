@@ -19,9 +19,6 @@
 		playSound("reload");
 		$loadingScreenVisible = true;
 		$iframeElement.src = $panoramaSrc;
-		window.setTimeout(() => {
-			$loadingScreenVisible = false;
-		}, 400);
 	}
 </script>
 
@@ -154,6 +151,7 @@
 		left: 50%;
 		top: 50%;
 		user-select: none;
+		text-wrap: nowrap;
 		transform: translate(-50%, -50%);
 	}
 
