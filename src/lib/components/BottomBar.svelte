@@ -113,7 +113,7 @@
 
 {#if $supporterLevel <= 1 && !$adsDisabled}
 	<div class="gameplayAdArea barMenu" transition:blur>
-		<div class="gameplayAd" id="gameplayAd"></div>
+		<div class="gameplayAd" id="gameplayAd" data-fuse="Game_incontent_1"></div>
 		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
 	</div>
 {/if}

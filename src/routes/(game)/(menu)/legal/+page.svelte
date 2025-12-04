@@ -26,10 +26,16 @@
 	<p>
 		EULA: For the End User License Agreement, see <a href="https://paulplay.studio/eula" target="_blank">this page</a>.
 	</p>
+	<br /><br />
+	<h1>Preferences</h1>
 	<br />
-	<p>Need to adjust your cookie settings?</p>
-	<button class="consentButton" onclick={openConsentManager}>Manage consent</button>
-	<br /><br /><br />
+	<p>
+		California Consumer Privacy Act (“CCPA”) Under CCPA, Californian residents have the right to declare their
+		preferences on the sale of data for advertising and marketing purposes. If you wish to change your preferences,
+		click this link to launch our preference portal: (note that ad-blockers may block this)
+	</p>
+	<div data-fuse-privacy-tool></div>
+	<br /><br />
 
 	<h1>Privacy Policy</h1>
 	<br />
@@ -40,24 +46,40 @@
 	<br /><br />
 	<h2>What data we collect</h2>
 	<p>
-		Partners such as Google and Stripe collect browser details and site usage data via page tagging techniques. Google
-		Maps Street View, used in this application, has its own <a
+		Google Maps collects browser details and site data. Please review their <a
 			href="https://policies.google.com/privacy"
 			target="_blank">privacy policy</a
-		>. With your consent, we use Google Analytics and cookies to track how you interact with OpenGuessr.
-		<br /><br />
-		If you register an account, we collect your username, IP address (to ensure multiplayer security and prevent cheating),
-		game-realted statistics and data you provide such as, but not limited to, your email. By creating an account you accept
-		that we may share non-sensitive information with other users. We also store game-related details like your account level.
-		Purchasing items involves data processed by Stripe—please see their
-		<a href="https://stripe.com/privacy" target="_blank">privacy policy</a>.
-		<br /><br />
-		Google Analytics collects:
+		>.
+	</p>
+	<br />
+	<p>
+		With your consent, we use Google Analytics and cookies to track how you interact with OpenGuessr. Google Analytics
+		collects:
 		<br />
 		- Pages you visit on OpenGuessr<br />
 		- Time spent on each page<br />
 		- How you arrived at the site<br />
 		- Actions taken on the site<br />
+	</p>
+	<br />
+	<p>
+		If you register an account, we collect your username, IP address (to ensure multiplayer security and prevent
+		cheating), game-realted statistics and data you provide such as, but not limited to, your email and username. By
+		creating an account you accept that we may share non-sensitive information with other users. We also store
+		game-related details like your account level.
+	</p>
+	<br />
+	<p>
+		We use Stripe for processing payments. Please read their <a href="https://stripe.com/privacy" target="_blank"
+			>privacy policy</a
+		>.
+	</p>
+	<br />
+	<p>
+		We use a third-party to provide monetisation technologies for our site. You can review their <a
+			href="https://publift.com/privacy-policy/"
+			target="_blank">privacy and cookie policy</a
+		>.
 	</p>
 	<br /> <br />
 
@@ -115,12 +137,5 @@
 		margin-inline: auto;
 		margin-bottom: 50px;
 		max-width: 1000px;
-	}
-
-	.consentButton {
-		font-size: 22px;
-		color: white;
-		text-decoration: underline;
-		text-decoration-thickness: 2px;
 	}
 </style>

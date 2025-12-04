@@ -88,7 +88,7 @@
 		<div class="endBottomBar">
 			{#if $supporterLevel <= 1 && !$adsDisabled}
 				<div class="resultAdArea barMenu" transition:blur>
-					<div id="resultAd" class="resultAd"></div>
+					<div id="resultAd" class="resultAd" data-fuse="Game_Result_incontent_1"></div>
 					<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
 				</div>
 			{/if}
@@ -98,7 +98,7 @@
 				</div>
 				{#if $supporterLevel <= 1 && !$adsDisabled}
 					<div class="mobileResultAdArea resultField resultFieldHigh">
-						<div id="mobileResultAd" class="mobileResultAd"></div>
+						<div id="mobileResultAd" class="mobileResultAd" data-fuse="Game_Result_incontent_1"></div>
 						<p class="noAdvertsText">Ad.</p>
 					</div>
 				{/if}

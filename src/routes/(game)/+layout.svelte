@@ -56,9 +56,9 @@
 	import TournamentMatchResultsPopup from "$lib/components/TournamentMatchResultsPopup.svelte";
 	import ChatManagePopup from "$lib/components/ChatManagePopup.svelte";
 
-	// Start ads
+	// Start Generation, Ads, Overfade etc.
 	onMount(() => {
-		initOverfade(); // Init overfade
+		initOverfade();
 		checkGenerationTypeAndGenerate();
 		initializeAds();
 
@@ -93,8 +93,16 @@
 </script>
 
 <svelte:head>
+	<!-- Only needed for staging -->
+	<script>
+		window.googletag = window.googletag || { cmd: [] };
+		googletag.cmd.push(function () {
+			googletag.pubads().set("page_url", "https://openguessr.com/");
+		});
+	</script>
+
 	<!-- Ad script -->
-	<script src="https://hb.vntsm.com/v4/live/vms/sites/openguessr.com/index.js" async></script>
+	<script src="https://cdn.fuseplatform.net/publift/tags/2/4180/fuse.js" async></script>
 
 	<!-- Leaflet CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
