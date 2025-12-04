@@ -322,13 +322,6 @@ li {
     margin-bottom: 20px;
 }
 
-.leaderboardAds {
-    width: 728px;
-    height: 90px;
-    text-align: center;
-    overflow: hidden;
-}
-
 .arrowIcon {
     width: 25px;
     height: 25px;
@@ -421,34 +414,8 @@ search {
 }
 
 @media (orientation: portrait) and (max-width: 800px) {
-    .leaderboardAds {
-        width: 320px;
-        height: 50px;
-    }
-
-
     .header {
         font-size: 35px;
-    }
-}
-
-@media (max-width: 1500px) {
-    .leaderboardAds {
-        width: 320px;
-        height: 50px;
-    }
-}
-
-@media (orientation: landscape) and (max-width: 700px) {
-    .leaderboardAds {
-        display: none !important;
-    }
-}
-
-@media (orientation: portrait) and (max-width: 800px) {
-    .leaderboardAds {
-        width: calc(100% - 20px);
-        height: 50px;
     }
 }
 
