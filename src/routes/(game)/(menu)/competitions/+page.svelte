@@ -276,7 +276,7 @@
 			if (expired) Endpoint = competitionsEndpoint + "/expired/" + expiredIndex;
 			if (search) Endpoint = competitionsEndpoint + "/search/" + notExpiredIndex;
 			if (daily) Endpoint = competitionsEndpoint + "/daily/daily-competition";
-			if (filterEntered) Endpoint = competitionsEndpoint + "/notentered/" + notExpiredIndex;
+			if (filterEntered) Endpoint = competitionsEndpoint + "/not-entered/" + notExpiredIndex;
 
 			const response = await fetch(Endpoint, {
 				method: "PUT",
