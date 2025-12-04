@@ -25,14 +25,14 @@ async function updateSingleProfileField(type, value) {
 
         if (!response.ok) {
             console.error('Profile update failed: ', response.status);
-            errorPopup("Profile update failed", "The server returned an error for the profile update.", response.status, false, false);
+            errorPopup("Profile update failed", "The server returned an error for the profile update.", response.status);
             return false;
         }
 
         return true;
     } catch (error) {
         console.error('Error occurred during profile update: ', error);
-        errorPopup("Profile update failed", "The profile update failed due to a network error.", error, false, false);
+        errorPopup("Profile update failed", "The profile update failed due to a network error.", error);
         return false;
     }
 }

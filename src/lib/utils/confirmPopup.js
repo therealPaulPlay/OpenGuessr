@@ -1,7 +1,6 @@
 import { confirmPopupVisible, confirmTitle, confirmDescription, confirmUsernameInput, confirmPasswordInput, confirmConfirmColor, confirmConfirmText, confirmExecuteFunction, confirmUsernameValue, confirmPasswordValue } from "$lib/stores/context-specific/confirmPopupStore";
 
 export function showConfirmPopup(title, text, executeFunction, accountDelete, nameChange, confirmText, confirmColor) {
-
     confirmTitle.set(title);
     confirmDescription.set(text);
     confirmPasswordInput.set(Boolean(accountDelete));

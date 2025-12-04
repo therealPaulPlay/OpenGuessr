@@ -58,7 +58,7 @@
 		<TokenRewardDisplay tokens={$tokenGain} />
 	</div>
 
-	<DuelDivisionDisplay inPage={true} />
+	<DuelDivisionDisplay />
 	<div class="infoBox">
 		<Info
 			strokeWidth={2.25}
@@ -86,6 +86,7 @@
 		align-items: center;
 		flex-wrap: wrap;
 		gap: var(--layout-margin);
+		margin-bottom: var(--layout-margin);
 	}
 
 	.duelResultFlex div {

@@ -65,12 +65,12 @@ export async function acceptFriendRequest(senderId) {
         } else {
             const data = await response.json();
             console.error("Error accepting / deleting the friend request: " + response.status);
-            errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+            errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", response.status + " - " + data.error);
         }
 
     } catch (error) {
         console.error('Error occurred while sending the friend request (Network):', error);
-        errorPopup("Network error accepting / deleting friend request", "The friend request couldn't be accepted or deleted.", error, false, false);
+        errorPopup("Network error accepting / deleting friend request", "The friend request couldn't be accepted or deleted.", error);
     }
 }
 
@@ -98,12 +98,12 @@ export async function declineFriendRequest(senderId) {
         } else {
             const data = await response.json();
             console.error("Error accepting / deleting the friend request: " + response.status);
-            errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+            errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", response.status + " - " + data.error);
         }
 
     } catch (error) {
         console.error('Error occurred while sending the friend request:', error);
-        errorPopup("Error accepting / deleting friend request (Network)", "The friend request couldn't be accepted or deleted.", error, false, false);
+        errorPopup("Error accepting / deleting friend request (Network)", "The friend request couldn't be accepted or deleted.", error);
     }
 }
 
@@ -160,12 +160,12 @@ export async function removeFriend(friendId) {
         } else {
             const data = await response.json();
             console.error("Error removing friend: " + response.status);
-            errorPopup("Error removing friend", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+            errorPopup("Error removing friend", "The server returned an error for your action.", response.status + " - " + data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while removing friend:', error);
-        errorPopup("Error removing friend (Network)", "The friend request couldn't be accepted or deleted.", error, false, false);
+        errorPopup("Error removing friend (Network)", "The friend request couldn't be accepted or deleted.", error);
     }
 }
 
@@ -197,7 +197,7 @@ export async function sendMatchInvite(recipientId) {
 
     } catch (error) {
         console.error('Error occurred while sending invite (Network):', error);
-        errorPopup("Error sending invite (Network)", "The invite couldn't be sent due to a network problem.", error, false, false);
+        errorPopup("Error sending invite (Network)", "The invite couldn't be sent due to a network problem.", error);
     }
 }
 
@@ -220,12 +220,12 @@ export async function acceptMatchInvite(recipientId) {
         if (!response.ok) {
             const data = await response.json();
             console.error("Error accepting invite: " + response.status);
-            errorPopup("Error accepting invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+            errorPopup("Error accepting invite", "The server returned an error for your action.", response.status + " - " + data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while accepting invite: ', error);
-        errorPopup("Network error accepting invite", "The invite couldn't be sent / accepted / declined.", error, false, false);
+        errorPopup("Network error accepting invite", "The invite couldn't be sent / accepted / declined.", error);
     }
 }
 
@@ -248,11 +248,11 @@ export async function declineMatchInvite(recipientId) {
         if (!response.ok) {
             const data = await response.json();
             console.error("Error declining invite: " + response.status);
-            errorPopup("Error declining invite", "The server returned an error for your action.", response.status + " - " + data.error, false, false);
+            errorPopup("Error declining invite", "The server returned an error for your action.", response.status + " - " + data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while declining invite: ', error);
-        errorPopup("Network error declining invite", "The invite couldn't be sent / accepted / declined.", error, false, false);
+        errorPopup("Network error declining invite", "The invite couldn't be sent / accepted / declined.", error);
     }
 }

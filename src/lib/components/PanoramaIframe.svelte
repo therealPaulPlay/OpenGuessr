@@ -1,6 +1,6 @@
 <!-- The IFrame that the StreetView / Panorama is in -->
 <script>
-	import { iframeElement, initialIframeLoad } from "$lib/stores/locationStore";
+	import { iframeElement, initialIframeLoad, panoramaSrc } from "$lib/stores/locationStore";
 	import { loadingScreenVisible } from "$lib/stores/uiStore";
 	import { applySingleplayerSettings } from "$lib/utils/applySingleplayerSettings";
 	import { checkStartCompetitionRound } from "$lib/logic/competitionLogic";
@@ -12,7 +12,7 @@
 				applySingleplayerSettings(); // Apply singleplayer options / settings (NMPZ, timer etc.) if Singleplayer, otherwise disable all
 				checkStartCompetitionRound(); // Check if currently playing competition and start timer + new round if so
 			} catch (error) {
-				console.error("Error in main iframe-loaded callback:", error);
+				console.error("Error in panorama load callback:", error);
 			}
 		}
 
@@ -32,8 +32,8 @@
 	style:pointer-events={$nmpz ? "none" : ""}
 	frameborder="0"
 	onload={handleLoad}
-	src="/loader"
 	bind:this={$iframeElement}
+	src={$panoramaSrc}
 ></iframe>
 
 <style>

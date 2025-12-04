@@ -82,6 +82,8 @@
 		z-index: 9;
 		opacity: 60%;
 		border-radius: var(--box-margin);
+		border-bottom-right-radius: 0;
+		border-bottom-left-radius: 0;
 		max-height: 100%;
 		background: #e8e4dc;
 		box-shadow: 0 2px 30px rgba(71, 71, 71, 0.5);

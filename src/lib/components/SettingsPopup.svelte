@@ -9,7 +9,7 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
-	import { isSingleplayerNMPZ, singleplayerTimeout } from "$lib/stores/modeStore";
+	import { isSingleplayerNMPZ, singleplayer, singleplayerTimeout } from "$lib/stores/modeStore";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 
 	// Settings - Window ---------------------------------------------------------------------------------------
@@ -78,11 +78,8 @@
 		playSound("basic_button");
 
 		try {
-			if (!document.fullscreenElement) {
-				if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-			} else {
-				if (document.exitFullscreen) document.exitFullscreen();
-			}
+			if (!document.fullscreenElement) if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+			else if (document.exitFullscreen) document.exitFullscreen();
 		} catch (error) {
 			console.error("Error entering / exiting fullscreen: " + error);
 		}
@@ -151,7 +148,7 @@
 	<div class="settingsCanvas">
 		<TitleSeparator text="Singleplayer" noMargin={true} />
 		<div class="settingsCanvas slightBottomMargin">
-			<div class="settingsBox settingsBoxFlex">
+			<div class="settingsBox settingsBoxFlex" class:box-disabled={!$singleplayer}>
 				<div class="timerTextBox">
 					<Timer />
 					<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
@@ -176,7 +173,7 @@
 					</button>
 				</div>
 			</div>
-			<div class="settingsBox settingsBoxFlex noFlexWrap">
+			<div class="settingsBox settingsBoxFlex noFlexWrap" class:box-disabled={!$singleplayer}>
 				<p class="settingsBoxFlexTitle">No Move, Pan or Zoom (NMPZ)</p>
 				<button class="standardButton white" onclick={toggleSingleplayerNMPZ}
 					>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
@@ -219,7 +216,7 @@
 							playSound("basic_button");
 							showConfirmPopup(
 								"Credits",
-								'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM" :-)',
+								'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM"!',
 							);
 						}}
 					>
@@ -245,7 +242,7 @@
 					<p class="settingsBoxFlexTitle">View</p>
 					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
 						<span class="fullscreenIcon">
-							<Scan size="17" strokeWidth={3} />
+							<Scan size="17" strokeWidth={3} style="margin-bottom: -1px;" />
 						</span>
 						<span id="fullscreenText">{fullscreenButtonText}</span>
 					</button>
@@ -286,6 +283,11 @@
 		width: fit-content;
 		flex-basis: 60%;
 		flex-grow: 1;
+	}
+
+	.box-disabled {
+		opacity: 0.5;
+		pointer-events: none;
 	}
 
 	.arrowButton {

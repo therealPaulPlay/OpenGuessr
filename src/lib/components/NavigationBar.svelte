@@ -138,7 +138,7 @@
 						playSound("basic_button");
 					}}
 				>
-					<img class="socialBarIcons" src="/img/mobile_maps_icon.png" alt="Maps" />
+					<img class="socialBarIcons" src="/img/maps_icon.png" alt="Maps" />
 				</button>
 				<button
 					class="standardButton white"
@@ -189,7 +189,7 @@
 			<button
 				class="standardButton"
 				aria-label="Log in or Sign up"
-				use:tooltip={{ text: "Sign up or log in" }}
+				use:tooltip={{ text: "Sign up or Log in" }}
 				onclick={() => {
 					playSound("basic_button");
 					signupPrompt();
@@ -296,7 +296,7 @@
 				playSound("basic_button");
 			}}
 		>
-			<img class="socialBarIcons wideSocialBarIcon" src="/img/mobile_maps_icon.png" alt="Maps" />
+			<img class="socialBarIcons wideSocialBarIcon" src="/img/maps_icon.png" alt="Maps" />
 		</button>
 		<button
 			class="standardButton white"

@@ -1,12 +1,11 @@
 // Use this to present the player with a new location. This strongly depends on locationGeneration.js and generateLocation.js and feeds the generator with the right settings
-import { timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import { enableImageGuessr } from "$lib/utils/imageGuesserFunctions";
 import { multiplayer, competition, singleplayer, countryGuessr, imageGuessr } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
-import { socket } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayerMap, socket } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
-import { countryMaps, continentMaps } from "$lib/stores/context-specific/officialMapsStore";
-import { changeCategory } from "$lib/utils/changeCategory";
+import { countryMaps, continentMaps, defaultMap } from "$lib/stores/context-specific/officialMapsStore";
+import { changeMap } from "$lib/utils/changeMap";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
 import { loadingScreenVisible } from "$lib/stores/uiStore";
@@ -19,11 +18,11 @@ function checkLinkMap() {
 
   try {
     let urlParams = new URLSearchParams(window.location.search);
-    let mapFromLink = urlParams.get("play-map").toLowerCase().replaceAll("-", " ").split(" ").join("_");
+    let mapFromLink = urlParams.get("play-map").replaceAll("-", " ").replaceAll("_", " ");
 
     if (mapFromLink) {
-      if (get(countryMaps).includes(mapFromLink) || get(continentMaps).includes(mapFromLink)) changeCategory(mapFromLink);
-      else errorPopup("Map not available", "Unfortunately, this map doesn't exist. Feel free to search for similar community maps.", "Map not found!", false, true);
+      if (get(countryMaps).includes(mapFromLink) || get(continentMaps).includes(mapFromLink)) changeMap(mapFromLink);
+      else errorPopup("Map not available", "Unfortunately, this map doesn't exist. Feel free to search for similar community maps.", "Map not found!");
     }
   } catch { }
 }
@@ -31,9 +30,14 @@ function checkLinkMap() {
 // Location Generation with correct Type ---------------------------------------------------------------------------------------------------------
 let queue = Promise.resolve(); // Qeue handler
 
-async function setMapSpecifics(category) {
-  if (category == "country_guessr") countryGuessr.set(true);
-  if (category == "image_guessr") {
+function disableMapSpecifics() {
+  countryGuessr.set(false);
+  imageGuessr.set(false);
+}
+
+function setMapSpecifics(category) {
+  if (category == "Country Guessr") countryGuessr.set(true);
+  if (category == "Image Guessr") {
     imageGuessr.set(true);
     enableImageGuessr(true);
   }
@@ -46,21 +50,20 @@ export async function checkGenerationTypeAndGenerate() {
   queue = queue.then(async () => {
     try {
       loadingScreenVisible.set(true); // Show loading screen
-      const mapCategory = get(multiplayer) ? get(socket)?.getStorage?.category : (localStorage.getItem("selectedCategory") || "standard");
+      const map = get(multiplayer) ? get(multiplayerMap) : (localStorage.getItem("selectedMap") || get(defaultMap));
 
       // Disable map-related modes (will be enabled later based on the map choice)
-      countryGuessr.set(false);
-      imageGuessr.set(false);
+      disableMapSpecifics();
 
       // Singleplayer
       if (get(singleplayer)) {
-        setMapSpecifics(mapCategory);
+        setMapSpecifics(map);
         await generateNewLocation("MAP");
       }
 
       // Multiplayer
       if (get(multiplayer)) {
-        setMapSpecifics(mapCategory);
+        setMapSpecifics(map);
         generateNewLocation("MULTIPLAYER");
       }
 

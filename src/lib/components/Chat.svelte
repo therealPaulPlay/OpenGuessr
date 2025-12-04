@@ -9,7 +9,7 @@
 
 	let chatMessageBoxElement = $state();
 	let inputValue = $state();
-	let chatHeight = $state(150); // Default height
+	let chatHeight = $state(172); // Default height
 	let isResizing = $state(false);
 	let startY = $state(0);
 	let startHeight = $state(0);
@@ -29,7 +29,7 @@
 		// Get current position from either mouse or touch event
 		const currentY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
 		const delta = startY - currentY;
-		const newHeight = Math.max(150, Math.min(500, startHeight + delta));
+		const newHeight = Math.max(172, Math.min(500, startHeight + delta));
 		chatHeight = newHeight;
 	}
 
@@ -118,7 +118,7 @@
 <style>
 	.multiplayerChat {
 		width: 100%;
-		min-height: 150px;
+		min-height: 172px;
 		max-height: 500px;
 		overflow: hidden;
 		display: block !important;

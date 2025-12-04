@@ -6,9 +6,7 @@ import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 export async function sendFriendRequest(targetUserId, button) {
     try {
-        if (!targetUserId) {
-            return;
-        }
+        if (!targetUserId) return;
 
         const requestBody = {
             id: localStorage.getItem("id"),
@@ -38,11 +36,11 @@ export async function sendFriendRequest(targetUserId, button) {
         } else {
             const data = await response.json();
             console.error("Error sending the friend request: " + response.status);
-            errorPopup("Error sending friend request", "The server returned an error for your friend request.", response.status + " - " + data.error, false, false);
+            errorPopup("Error sending friend request", "The server returned an error for your friend request.", response.status + " - " + data.error);
         }
 
     } catch (error) {
         console.error('Fetch/Network error occurred while sending the friend request:', error);
-        errorPopup("Network error sending friend request", "The friend request couldn't be sent.", error, false, false);
+        errorPopup("Network error sending friend request", "The friend request couldn't be sent.", error);
     }
 }

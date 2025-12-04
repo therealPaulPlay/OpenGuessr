@@ -9,13 +9,15 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
-	import { ChevronDown, Frown, Plus, Search, Smile, TriangleAlert } from "@lucide/svelte";
+	import { Frown, Plus, Search, Smile, TriangleAlert } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import { blur, slide } from "svelte/transition";
+	import { blur } from "svelte/transition";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import { page } from "$app/state";
+	import Drawer from "$lib/components/ui/Drawer.svelte";
+	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 
 	const competitionsEndpoint = $apiUrl + "/competitions";
 
@@ -259,7 +261,7 @@
 	async function getCompetitionsFromServer(expired, search, daily, filterEntered) {
 		try {
 			let requestBody = {
-				id: localStorage.getItem("id"), // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
+				id: localStorage.getItem("id"), // If this is null, that is fine too (used to evaluate whether a user has already played certain competitions)
 			};
 
 			if (search) requestBody.search = search;
@@ -295,22 +297,17 @@
 					if (!expired && daily) dailyCompetitionData = data.competitions; // Only one, so no need to concatinate arrays here
 
 					if (!daily) {
-						if (!expired) {
-							notExpiredIndex += data.competitions?.length;
-						} else {
-							expiredIndex += data.competitions?.length;
-						}
+						if (!expired) notExpiredIndex += data.competitions?.length;
+						else expiredIndex += data.competitions?.length;
 					}
 
 					if (data.competitions?.length > 0) noContentLoaded = false;
 					let maxAmountLoaded = data.competitions.length == 10;
 
 					if (!daily) {
-						if (expired) {
-							loadMoreExpired = maxAmountLoaded; // if the max amount was loaded, there are likely more available
-						} else {
-							loadMoreActive = maxAmountLoaded;
-						}
+						if (expired)
+							loadMoreExpired = maxAmountLoaded; // Max amount loaded = more available
+						else loadMoreActive = maxAmountLoaded;
 					}
 
 					if (search && noContentLoaded && notExpiredIndex == 0) activeCompetitionError = "Search returned no results.";
@@ -336,11 +333,8 @@
 
 					if (responseData.errors && Array.isArray(responseData.errors)) {
 						responseData.errors.forEach((err) => {
-							if (err.msg) {
-								errorMessages.push(err.msg);
-							} else {
-								errorMessages.push(JSON.stringify(err));
-							}
+							if (err.msg) errorMessages.push(err.msg);
+							else errorMessages.push(JSON.stringify(err));
 						});
 					}
 
@@ -425,9 +419,6 @@
 			ratingText = "Network error.";
 		}
 	}
-
-	// Collapsible daily --------------------------------------------
-	let showExpiredDaily = $state(false);
 </script>
 
 <Popup slim={true} bind:open={leaderboardPopup}>
@@ -572,7 +563,7 @@
 				<div class="label">
 					<p>Restriction</p>
 				</div>
-				<p class="itemText">{restriction}</p>
+				<p class="itemText">{$restrictionNames?.[restriction] || "Invalid"}</p>
 			</div>
 			<div class="propertyItem">
 				<div class="label">
@@ -673,47 +664,24 @@
 						true,
 					)}
 				{:else}
-					<div class="dailyCompetitionExpiredBox fadeInItem">
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<div
-							class="toggleButtonBar"
-							role="button"
-							tabindex={0}
-							onclick={() => {
-								playSound("floating_button");
-								showExpiredDaily = !showExpiredDaily;
-							}}
-						>
-							<p style:margin-left="var(--panel-margin)">Yesterday's daily competition</p>
-							<div class="expiredDailyIcon">
-								<ChevronDown
-									style="margin-bottom: -4px; transition: transform 250ms ease; {showExpiredDaily
-										? 'transform: rotate(180deg)'
-										: ''}"
-								/>
-							</div>
-						</div>
-						{#if showExpiredDaily}
-							<div class="expiredDailyContainer" transition:slide={{ duration: 250 }} style:margin-top={"var(--box-margin)"}>
-								{@render competitionItem(
-									entry.id,
-									entry.name,
-									entry.author,
-									entry.author_id,
-									entry.playercount,
-									entry.restriction,
-									entry.duration,
-									entry.remainingDuration,
-									entry.location_amount,
-									entry.round_length,
-									entry.description,
-									entry.expired,
-									entry.entered,
-									true,
-								)}
-							</div>
-						{/if}
-					</div>
+					<Drawer title="Yesterday's results" class="fadeInItem">
+						{@render competitionItem(
+							entry.id,
+							entry.name,
+							entry.author,
+							entry.author_id,
+							entry.playercount,
+							entry.restriction,
+							entry.duration,
+							entry.remainingDuration,
+							entry.location_amount,
+							entry.round_length,
+							entry.description,
+							entry.expired,
+							entry.entered,
+							true,
+						)}
+					</Drawer>
 				{/if}
 			{/each}
 		{:else}
@@ -740,6 +708,7 @@
 		<Tabs
 			tabs={["All", "Not entered"]}
 			class="hideEnteredCompsToggle"
+			disabled={!$isAuthenticated}
 			bind:selected={expiredTabsSelection}
 			onchange={(_, selectionIndex) => {
 				playSound("basic_button");
@@ -867,48 +836,11 @@
 		box-sizing: border-box;
 		gap: var(--box-margin);
 		align-items: center;
-		border-radius: var(--box-margin);
+		border-radius: var(--layout-margin);
 		width: calc(100%);
 		padding: var(--box-margin);
 		margin-bottom: var(--layout-margin);
 		background-color: var(--box-color);
-	}
-
-	.dailyCompetitionExpiredBox {
-		padding: var(--layout-margin);
-		width: 100%;
-		box-shadow: var(--box-shadow);
-		border-radius: 15px;
-		background-color: var(--box-color);
-		display: flex;
-		align-items: center;
-		flex-wrap: wrap;
-		box-sizing: border-box;
-	}
-
-	.expiredDailyContainer {
-		display: flex;
-		width: 100%;
-	}
-
-	.expiredDailyIcon {
-		color: white;
-		padding: 5px;
-		padding-inline: var(--panel-margin);
-	}
-
-	.toggleButtonBar {
-		display: flex;
-		width: 100%;
-		gap: var(--box-margin);
-		transition: opacity 250ms ease;
-		justify-content: space-between;
-		align-items: center;
-		cursor: pointer;
-	}
-
-	.toggleButtonBar:hover {
-		opacity: 0.5;
 	}
 
 	.competitionElement {
@@ -970,7 +902,6 @@
 			background-color 250ms ease,
 			filter 250ms ease,
 			opacity 250ms ease;
-		width: calc(25% - 60px);
 		flex-grow: 1;
 		min-width: 220px;
 		padding: var(--layout-margin);

@@ -1,6 +1,6 @@
 // Check if the JWT is expired
 
-/* this should decode the token and return expired (true/false) - only works if the token is not encrypted,
+/* This should decode the token and return expired (true/false) - only works if the token is not encrypted,
 otherwise we will need a jwt token verifier (with public key) */
 
 export function isTokenExpired(token) {
