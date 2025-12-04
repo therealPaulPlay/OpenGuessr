@@ -11,7 +11,7 @@ export async function updateProfileUsername(newUsername) {
                 username.set(newUsername);
                 profileData.update((value) => {
                     const data = value;
-                    data["username"] = newUsername;
+                    data.username = newUsername;
                     return data;
                 });
             }

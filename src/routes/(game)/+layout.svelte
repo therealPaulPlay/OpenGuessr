@@ -57,6 +57,7 @@
 
 	// Start ads
 	onMount(() => {
+		initOverfade(); // Init overfade
 		checkGenerationTypeAndGenerate();
 		initializeAds();
 
@@ -71,9 +72,6 @@
 		} catch (error) {
 			console.warn("Error adding keydown listener to prevent unwanted last button press:", error);
 		}
-
-		// Init overfade
-		initOverfade();
 	});
 
 	// Load Playlight

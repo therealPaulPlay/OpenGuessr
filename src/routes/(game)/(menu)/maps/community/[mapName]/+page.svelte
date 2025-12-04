@@ -5,7 +5,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { showNotification } from "$lib/utils/notifications";
-	import { changeCategory } from "$lib/utils/changeCategory";
+	import { changeMap } from "$lib/utils/changeMap.js";
 	import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Play } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import Popup from "$lib/components/ui/Popup.svelte";
@@ -350,7 +350,7 @@
 					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 					if (!addedCommunityMaps.includes(mapName)) addedCommunityMaps.push(mapName);
 					localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
-					changeCategory("community_" + mapName.toLowerCase(), true);
+					changeMap("community_" + mapName, true);
 					goto("/");
 				}}
 			>

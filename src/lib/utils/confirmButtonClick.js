@@ -11,9 +11,8 @@ import { multiplayerStyle, socket } from "$lib/stores/context-specific/multiplay
 export function confirmButtonClicks() {
     continueText.set("Continue");
 
-    if (!get(multiplayer)) {
-        enableResultScreen(get(mapPinLat), get(mapPinLng));
-    } else {
+    if (!get(multiplayer)) enableResultScreen(get(mapPinLat), get(mapPinLng));
+    else {
         playSound("lock_guess_in");
         mapInteractive.set(false);
         get(socket)?.sendRequest("confirmGuess");

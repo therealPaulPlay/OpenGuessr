@@ -9,6 +9,7 @@
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { goto } from "$app/navigation";
+	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 
 	let competitionSubmittedSuccessfully = false;
 	let successPopup = $state(false);
@@ -82,17 +83,15 @@
 	}
 
 	// Toggle Restrictions & Visibility ---------------------------------------------------------------------------------------------
-	let competitionRestrictionText = $state("Standard");
-
-	let restrictions = ["standard", "nmpz", "grayscale", "invert", "hue", "fade"];
-	let restrictionsText = ["Standard", "NMPZ", "Grayscale", "Invert Colors", "Hue Shift", "Blink (Fade)"];
+	let restrictions = Object.keys($restrictionNames);
 	let currentRestrictionIndex = 0;
+	let competitionRestrictionText = $state($restrictionNames[restrictions[0]]);
 
 	function togglecompetitionRestriction() {
 		currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
 
 		competitionRestriction = restrictions[currentRestrictionIndex];
-		competitionRestrictionText = restrictionsText[currentRestrictionIndex];
+		competitionRestrictionText = $restrictionNames[restrictions[currentRestrictionIndex]];
 	}
 
 	// Submission function ------------------------------------------------------------------------------------------------------

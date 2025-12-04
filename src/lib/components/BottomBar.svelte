@@ -1,9 +1,7 @@
 <!--bottom toolbar with reset button-->
 <script>
-	import RemoveAdsText from "$lib/components/RemoveAdsText.svelte";
 	import { playSound } from "$lib/utils/soundManager";
-	import { reloadPanorama } from "$lib/utils/loadPanorama";
-	import { bugspotPopup, helpPopup } from "$lib/stores/uiStore";
+	import { bugspotPopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { supporterLevel } from "$lib/stores/accountStore";
@@ -15,6 +13,16 @@
 	import { blur, fade } from "svelte/transition";
 	import { ArrowUp, Bug, Map } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
+
+	function reloadPanorama() {
+		playSound("reload");
+		$loadingScreenVisible = true;
+		$iframeElement.src = $panoramaSrc;
+		window.setTimeout(() => {
+			$loadingScreenVisible = false;
+		}, 400);
+	}
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
@@ -34,7 +42,7 @@
 		<div class="barMenu socialBar">
 			<button
 				class="linkItem standardButton white"
-				use:tooltip={{ text: "Report a bug" }}
+				use:tooltip={{ text: "Report bug" }}
 				onclick={() => {
 					playSound("basic_button");
 					$bugspotPopup = true;
@@ -44,6 +52,7 @@
 			</button>
 			<button
 				class="linkItem standardButton white"
+				use:tooltip={{ text: "Discord" }}
 				id="discordButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -54,6 +63,7 @@
 			</button>
 			<button
 				class="linkItem standardButton white"
+				use:tooltip={{ text: "Reddit" }}
 				id="redditButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -103,10 +113,11 @@
 		</div>
 	{/if}
 </div>
+
 {#if $supporterLevel <= 1 && !$adsDisabled}
 	<div id="bottomFooterAds" class="bottomFooterAds leaderboardAds" transition:blur></div>
 	<div class="bottomFooterAds leaderboardAds bottomFooterAdText barMenu" transition:blur>
-		<RemoveAdsText text="Ads keep OpenGuessr free." />
+		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
 	</div>
 {/if}
 
@@ -133,6 +144,17 @@
 	.linkItem {
 		padding: 4px;
 		padding-inline: 6px;
+	}
+
+	.noAdvertsText {
+		text-align: center;
+		color: white;
+		opacity: 0.5;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		user-select: none;
+		transform: translate(-50%, -50%);
 	}
 
 	.bottomLeftMenu {

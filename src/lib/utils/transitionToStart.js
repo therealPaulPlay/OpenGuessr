@@ -13,6 +13,5 @@ export function transitionToStart() {
   }
 
   if (get(multiplayer)) get(socket)?.updateStorage("showResult", "set", false); // Disable result screen
-
   if (!get(multiplayer)) setTimeout(socialPopupProbability, 650); // Social Media CTA (too stressful in multiplayer)
 }

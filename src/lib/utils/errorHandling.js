@@ -1,4 +1,3 @@
-// Display custom error messages
 import { hideDisableOption, hideErrors, title, description, errorCode, popupOpen, reload } from "$lib/stores/context-specific/errorPopupStore";
 import { get } from "svelte/store"; // Get values from svelte stores using this
 
@@ -8,10 +7,8 @@ export function errorPopup(popupTitle, popupDescription, popupErrorCode, reloadP
   if (!get(hideErrors) || reloadPopup) { // if errors should be shown or it is a critical error that needs a reload, show the popup
     title.set(popupTitle)
     description.set(popupDescription);
-   
     errorCode.set(popupErrorCode || "");
     reload.set(reloadPopup || false);
-
     popupOpen.set(true);
   }
 }

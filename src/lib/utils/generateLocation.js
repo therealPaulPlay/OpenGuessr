@@ -4,7 +4,6 @@ import { socket } from "$lib/stores/context-specific/multiplayerStore"
 import { countryGuessr, multiplayer, imageGuessr } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from '$lib/stores/locationStore';
 import { setCountryGuesserCountry } from '$lib/utils/countryGuessrFunctions';
-import { loadPanorama } from '$lib/utils/loadPanorama';
 import { loadImageFromUrl } from '$lib/utils/imageGuesserFunctions';
 import { get } from 'svelte/store';
 import { resetMap } from '$lib/logic/miniMap';
@@ -18,10 +17,10 @@ export async function generateNewLocation(type) {
         currentLocationLatitude.set(Number(newLocationArray[0]));
         currentLocationLongitude.set(Number(newLocationArray[1]));
 
-        // Set country guesser country
+        // Set country
         if (get(countryGuessr)) setCountryGuesserCountry(newLocationArray[2]);
 
-        // Set image guesser image
+        // Set image
         if (get(imageGuessr)) loadImageFromUrl(newLocationArray[2]);
 
     } catch (error) {
@@ -29,6 +28,5 @@ export async function generateNewLocation(type) {
         errorPopup("Error loading locations", "Failed to retrieve locations from the server.", error.message);
     }
 
-    loadPanorama(get(currentLocationLatitude), get(currentLocationLongitude));
     if (!get(resultScreenEnabled)) resetMap(); // Reset minimap & re-adjust to potentially new map (only if result screen isn't enabled, since that'd clear it)
 }

@@ -2,8 +2,6 @@
 	import { elo, isAuthenticated } from "$lib/stores/accountStore";
 	import { blur } from "svelte/transition";
 
-	let { inPage = false } = $props();
-
 	// Divisions
 	let fillPercentage = $derived.by(() => {
 		const value = $elo;
@@ -29,7 +27,7 @@
 	const circlePositions = [0, 25, 50, 75, 100];
 </script>
 
-<div class="progressContainer" style:border-radius={inPage ? "10px" : ""}>
+<div class="progressContainer">
 	<div class="progressBarWrapper">
 		<div class="progressBar">
 			<div class="progressBarFill" style="width: {fillPercentage}%"></div>
@@ -55,10 +53,9 @@
 		position: relative;
 		width: calc(100% - 50px);
 		height: 120px;
-		border-radius: 15px;
+		border-radius: 10px;
 		background-color: var(--box-color);
 		padding-inline: 25px;
-		margin-top: var(--layout-margin);
 		box-shadow: var(--box-shadow);
 	}
 
