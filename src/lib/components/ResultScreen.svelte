@@ -213,6 +213,7 @@
 		position: absolute;
 		left: 50%;
 		top: 50%;
+		text-wrap: nowrap;
 		transform: translate(-50%, -50%);
 	}
 
