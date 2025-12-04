@@ -30,9 +30,7 @@
 	// Allow the user to guess with the space bar (instead of clicking on "Guess")
 	function spaceBarGuess(event) {
 		if (event.key === " ") {
-			if (get(confirmButtonActive) && isElementClickable(document.getElementById("map"))) {
-				confirmButtonClicks();
-			}
+			if (get(confirmButtonActive) && isElementClickable(mapElement)) confirmButtonClicks();
 		}
 	}
 </script>
@@ -69,18 +67,16 @@
 		pointer-events: auto;
 		width: 100%;
 		height: 100%;
-		z-index: 9;
 		opacity: 60%;
 		border-radius: var(--box-margin);
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
 		max-height: 100%;
 		background: #e8e4dc;
-		box-shadow: 0 2px 30px rgba(71, 71, 71, 0.5);
+		box-shadow: 0 2px 20px rgba(5, 6, 10, 0.15);
 		transition:
 			opacity 250ms ease,
-			max-height 250ms ease,
-			margin 250ms ease;
+			max-height 250ms ease;
 		overflow: hidden;
 		outline: none;
 	}
@@ -107,6 +103,7 @@
 		max-height: calc(100% + 60px) !important;
 		height: calc(100% + 60px) !important;
 		pointer-events: auto !important;
+		transition: none !important;
 	}
 
 	.map-placeholder-before-load {

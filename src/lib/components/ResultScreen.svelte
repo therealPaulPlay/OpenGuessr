@@ -161,7 +161,7 @@
 				}}
 			>
 				<p class="nextRoundText">{$continueText}</p>
-				<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="directionArrowIcon" />
+				<img src="/img/arrow_icon.png" alt="Arrow" class="directionArrowIcon" />
 			</button>
 		</div>
 	</div>
@@ -213,6 +213,7 @@
 		position: absolute;
 		left: 50%;
 		top: 50%;
+		text-wrap: nowrap;
 		transform: translate(-50%, -50%);
 	}
 

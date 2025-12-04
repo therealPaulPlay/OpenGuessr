@@ -8,7 +8,7 @@
 
 	// Component Imports
 	import { playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
-	import LoadingFade from "$lib/components/LoadingFade.svelte";
+	import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
 	import ImageGuesser from "$lib/components/ImageGuesser.svelte";
 	import ErrorPopup from "$lib/components/ErrorPopup.svelte";
 	import SettingsPopup from "$lib/components/SettingsPopup.svelte";
@@ -121,7 +121,7 @@
 <!-- Music -->
 <MusicController />
 
-<LoadingFade />
+<LoadingOverlay />
 <ErrorPopup />
 <ConfirmPopup />
 <CaptchaPopup />
