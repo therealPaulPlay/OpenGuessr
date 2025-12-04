@@ -151,7 +151,6 @@
 		transition: opacity 250ms ease;
 		overflow: hidden;
 		backdrop-filter: blur(50px);
-		-webkit-backdrop-filter: blur(50px);
 		background-color: rgba(0, 0, 0, 0.4);
 		display: flex;
 		justify-content: center;
