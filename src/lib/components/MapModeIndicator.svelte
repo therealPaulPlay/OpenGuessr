@@ -8,12 +8,7 @@
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { goto } from "$app/navigation";
-	import {
-		currentRound,
-		multiplayerMap,
-		roundAmount,
-		socket,
-	} from "$lib/stores/context-specific/multiplayerStore";
+	import { currentRound, multiplayerMap, roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 	import { restrictionNames, selectedRestriction } from "$lib/stores/context-specific/restrictionStore";
 	import { blur } from "svelte/transition";
@@ -109,8 +104,9 @@
 		z-index: 10;
 		user-select: none;
 		flex-shrink: 0;
-		height: 40px;
-		width: calc(100% - calc(var(--box-margin) + 6px));
+		height: 56px;
+		width: 100%;
+		box-sizing: border-box;
 		position: relative;
 	}
 
