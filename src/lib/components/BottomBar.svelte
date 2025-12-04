@@ -112,8 +112,8 @@
 </div>
 
 {#if $supporterLevel <= 1 && !$adsDisabled}
-	<div id="bottomFooterAds" class="bottomFooterAds leaderboardAds" transition:blur></div>
-	<div class="bottomFooterAds leaderboardAds bottomFooterAdText barMenu" transition:blur>
+	<div class="gameplayAdArea barMenu" transition:blur>
+		<div class="gameplayAd" id="gameplayAd"></div>
 		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
 	</div>
 {/if}
@@ -144,14 +144,15 @@
 	}
 
 	.noAdvertsText {
+		position: absolute;
 		text-align: center;
 		color: white;
 		opacity: 0.5;
-		position: absolute;
 		left: 50%;
 		top: 50%;
 		user-select: none;
 		text-wrap: nowrap;
+		z-index: -1;
 		transform: translate(-50%, -50%);
 	}
 
@@ -167,15 +168,58 @@
 		vertical-align: -1px;
 	}
 
-	.bottomFooterAds {
+	.gameplayAdArea {
 		position: fixed;
+		left: 0;
+		right: 0;
 		bottom: 10px;
-		left: 0px;
-		right: 0px;
-		margin-left: auto;
-		margin-right: auto;
-		padding: 0;
+		padding: 0 !important;
+		margin-inline: auto;
 		z-index: 8;
+		text-align: center !important;
+	}
+
+	.gameplayAdArea,
+	.gameplayAd {
+		width: 728px;
+		height: 90px;
+	}
+
+	.gameplayAd {
+		overflow: hidden;
+	}
+
+	@media (orientation: portrait) and (max-width: 800px) {
+		.gameplayAdArea,
+		.gameplayAd {
+			width: 320px;
+			height: 50px;
+		}
+	}
+
+	@media (max-width: 1500px) {
+		.gameplayAdArea,
+		.gameplayAd {
+			width: 320px;
+			height: 50px;
+		}
+	}
+
+	@media (orientation: landscape) and (max-width: 700px) {
+		.gameplayAdArea {
+			display: none !important;
+		}
+	}
+
+	@media (orientation: portrait) and (max-width: 800px) {
+		.gameplayAdArea,
+		.gameplayAd {
+			height: 50px;
+		}
+
+		.gameplayAdArea {
+			width: calc(100% - 20px);
+		}
 	}
 
 	.confirmButton {
@@ -236,13 +280,6 @@
 		width: 21px;
 	}
 
-	.bottomFooterAdText {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		z-index: 7;
-	}
-
 	.bottomRightMenu {
 		width: calc(20% - (var(--box-margin) + 2px));
 		min-width: 200px;
@@ -252,7 +289,7 @@
 
 	/* Mobile adjustments */
 	@media (orientation: portrait) and (max-width: 800px) {
-		.bottomFooterAds {
+		.gameplayAdArea {
 			bottom: 10px;
 		}
 
