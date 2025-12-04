@@ -87,8 +87,8 @@
 		<ResultScreenSlideup />
 		<div class="endBottomBar">
 			{#if $supporterLevel <= 1 && !$adsDisabled}
-				<div class="floatingResultLeaderboardArea barMenu" transition:blur>
-					<div id="floatingResultLeaderboardAd" class="floatingResultLeaderboardAd"></div>
+				<div class="resultAdArea barMenu" transition:blur>
+					<div id="resultAd" class="resultAd"></div>
 					<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
 				</div>
 			{/if}
@@ -97,8 +97,8 @@
 					<p>{$motivationText}</p>
 				</div>
 				{#if $supporterLevel <= 1 && !$adsDisabled}
-					<div id="mobileResultLeaderboardAdArea" class="resultField resultFieldHigh">
-						<div id="mobileResultLeaderboardAd"></div>
+					<div class="mobileResultAdArea resultField resultFieldHigh">
+						<div id="mobileResultAd" class="mobileResultAd"></div>
 						<p class="noAdvertsText">Ad.</p>
 					</div>
 				{/if}
@@ -207,10 +207,11 @@
 	}
 
 	.noAdvertsText {
+		position: absolute;
 		text-align: center;
 		color: white;
 		opacity: 0.5;
-		position: absolute;
+		z-index: -1;
 		left: 50%;
 		top: 50%;
 		text-wrap: nowrap;
@@ -272,7 +273,7 @@
 		text-wrap: nowrap;
 	}
 
-	#mobileResultLeaderboardAdArea {
+	.mobileResultAdArea {
 		min-width: 330px;
 		height: 50px;
 		max-height: 60px;
@@ -281,15 +282,14 @@
 		position: relative;
 	}
 
-	#mobileResultLeaderboardAd {
-		z-index: 1;
+	.mobileResultAd {
 		overflow: hidden;
 		text-align: center;
 		width: 320px;
 		height: 50px;
 	}
 
-	.floatingResultLeaderboardArea {
+	.resultAdArea {
 		width: 728px;
 		height: 90px;
 		display: none;
@@ -303,8 +303,7 @@
 		pointer-events: auto;
 	}
 
-	.floatingResultLeaderboardAd {
-		z-index: 1;
+	.resultAd {
 		width: 728px;
 		height: 90px;
 		text-align: center;
@@ -505,11 +504,11 @@
 	}
 
 	@media (min-width: 1900px) {
-		.floatingResultLeaderboardArea {
+		.resultAdArea {
 			display: flex;
 		}
 
-		#mobileResultLeaderboardAdArea {
+		.mobileResultAdArea {
 			display: none;
 		}
 

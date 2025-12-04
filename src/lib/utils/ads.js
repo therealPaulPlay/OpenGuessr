@@ -18,11 +18,11 @@ export function initializeAds() {
                     .setBreakPoint({
                         mediaQuery: "max-width: 1500px",
                     });
-            }, "main").display("bottomFooterAds");
+            }, "main").display("gameplayAd");
 
             // Floating banner for bigger screens
             scope.Config.get("leaderboard", "result").display(
-                "floatingResultLeaderboardAd",
+                "resultAd",
             );
 
             // Mobile result banner for smaller screens
@@ -34,7 +34,7 @@ export function initializeAds() {
                     .setBreakPoint({
                         mediaQuery: "max-width: 1900px",
                     });
-            }, "result").display("mobileResultLeaderboardAd");
+            }, "result").display("mobileResultAd");
         } catch (error) {
             console.error("Error creating placements:", error);
         }
