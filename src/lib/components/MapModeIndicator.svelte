@@ -71,14 +71,14 @@
 			{#if currentRoundText != null}
 				<span class="info-tag" transition:blur>
 					<p>
-						<Route size={16} strokeWidth={2.5} style="margin-right: 4px;" />{currentRoundText} / {roundAmountText}
+						<Route size={16} strokeWidth={2.5} style="margin-right: 3px;" />{currentRoundText} / {roundAmountText}
 					</p></span
 				>
 			{/if}
 			{#if $selectedRestriction !== "standard"}
 				<span class="info-tag" transition:blur>
 					<p>
-						<BookAlert size={16} strokeWidth={2.5} style="margin-right: 4px;" />{$restrictionNames[
+						<BookAlert size={16} strokeWidth={2.5} style="margin-right: 3px;" />{$restrictionNames[
 							$selectedRestriction
 						] || "Unknown"}
 					</p></span
