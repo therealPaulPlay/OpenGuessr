@@ -34,6 +34,7 @@
 		preferences on the sale of data for advertising and marketing purposes. If you wish to change your preferences,
 		click this link to launch our preference portal: (note that ad-blockers may block this)
 	</p>
+	<br />
 	<div data-fuse-privacy-tool></div>
 	<br /><br />
 
