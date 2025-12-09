@@ -4,14 +4,14 @@
 
 	function openConsentManager() {
 		try {
-			if (!window.__tfcapi) throw new Error("Not loaded!");
+			if (!window.__tcfapi) throw new Error("Not loaded!");
 			window.__tcfapi("displayConsentUi", 2, function (result) {
 				console.log("Consent UI triggered:", result);
 			});
 		} catch (error) {
-			console.error("TFC API error:", error);
+			console.error("TCF API error:", error);
 			errorPopup(
-				"TFC API not loaded",
+				"TCF API not loaded",
 				"The consent management system is not loaded. This is common when using an ad blocker.",
 			);
 		}
