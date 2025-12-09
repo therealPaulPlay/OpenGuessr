@@ -26,7 +26,13 @@
 			</button>
 		</div>
 		<div class="resize-handle barMenu">
-			<button class="standardButton white centerButton" onclick={() => mapHovered.set(!$mapHovered)}>
+			<button
+				class="standardButton white centerButton"
+				onclick={() => {
+					playSound("basic_button");
+					mapHovered.set(!$mapHovered);
+				}}
+			>
 				{#if !$mapHovered}
 					<ArrowUpLeft strokeWidth={2.25} size={22} />
 				{:else}
