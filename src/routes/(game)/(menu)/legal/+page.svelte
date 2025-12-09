@@ -1,6 +1,20 @@
 <script>
+	import { errorPopup } from "$lib/utils/errorHandling";
+	import { onMount } from "svelte";
+
 	function openConsentManager() {
-		window.googlefc.callbackQueue.push({ CONSENT_DATA_READY: () => window.googlefc.showRevocationMessage() });
+		try {
+			if (!window.__tfcapi) throw new Error("Not loaded!");
+			window.__tcfapi("displayConsentUi", 2, function (result) {
+				console.log("Consent UI triggered:", result);
+			});
+		} catch (error) {
+			console.error("TFC API error:", error);
+			errorPopup(
+				"TFC API not loaded",
+				"The consent management system is not loaded. This is common when using an ad blocker.",
+			);
+		}
 	}
 </script>
 
@@ -30,12 +44,12 @@
 	<h1>Preferences</h1>
 	<br />
 	<p>
-		California Consumer Privacy Act (“CCPA”) Under CCPA, Californian residents have the right to declare their
+		Under CCPA ("California Consumer Privacy Act"), Californian residents have the right to declare their
 		preferences on the sale of data for advertising and marketing purposes. If you wish to change your preferences,
-		click this link to launch our preference portal: (note that ad-blockers may block this)
+		click this button to launch the preference portal:
 	</p>
 	<br />
-	<div data-fuse-privacy-tool></div>
+	<button class="consent-button" onclick={openConsentManager}>Preferences</button>
 	<br /><br />
 
 	<h1>Privacy Policy</h1>
@@ -138,5 +152,12 @@
 		margin-inline: auto;
 		margin-bottom: 50px;
 		max-width: 1000px;
+	}
+
+	.consent-button {
+		font-size: 22px;
+		color: white;
+		text-decoration: underline;
+		text-decoration-thickness: 2px;
 	}
 </style>
