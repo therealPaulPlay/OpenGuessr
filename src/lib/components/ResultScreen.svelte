@@ -16,7 +16,7 @@
 	} from "$lib/stores/context-specific/resultScreenStore";
 	import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
 	import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-	import { supporterLevel, isAuthenticated, experience } from "$lib/stores/accountStore";
+	import { isAuthenticated, experience } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { playSound } from "$lib/utils/soundManager";
 	import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
@@ -29,7 +29,6 @@
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
 	import ResultFullscreenMessage from "./ResultFullscreenCelebration.svelte";
 	import { CircleUser, Flame, RulerDimensionLine } from "@lucide/svelte";
-	import { blur } from "svelte/transition";
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";
 	import { tooltip } from "$lib/utils/tooltip";
@@ -61,47 +60,50 @@
 	});
 </script>
 
+{#if showConfetti}
+	<div class="confettiBox">
+		{#each { length: 4 }, index}
+			{@const xVal = 3 + Math.random() * 2}
+			{@const yVal = 3 + Math.random() * 2}
+			{@const delay = 100 + Math.random() * 300}
+			{@const indexFactor = -8 + index * 4}
+			<Confetti
+				noGravity
+				x={[-xVal + indexFactor, xVal + indexFactor]}
+				y={[-yVal, yVal]}
+				amount={25}
+				delay={[delay, delay + 100]}
+				colorRange={[0, 10]}
+				duration={1500}
+			/>
+		{/each}
+	</div>
+{/if}
+
 {#if $resultScreenEnabled}
-	{#if showConfetti}
-		<div class="confettiBox">
-			{#each { length: 4 }, index}
-				{@const xVal = 3 + Math.random() * 2}
-				{@const yVal = 3 + Math.random() * 2}
-				{@const delay = 100 + Math.random() * 300}
-				{@const indexFactor = -8 + index * 4}
-				<Confetti
-					noGravity
-					x={[-xVal + indexFactor, xVal + indexFactor]}
-					y={[-yVal, yVal]}
-					amount={25}
-					delay={[delay, delay + 100]}
-					colorRange={[0, 10]}
-					duration={1500}
-				/>
-			{/each}
-		</div>
-	{/if}
-	<div class="endBottomArea">
-		<!-- Animations for great scores -->
-		<ResultFullscreenMessage />
-		<ResultScreenSlideup />
-		<div class="endBottomBar">
-			{#if $supporterLevel <= 1 && !$adsDisabled}
-				<div class="resultAdArea barMenu" transition:blur>
-					<div id="resultAd" class="resultAd" data-fuse="Game_Result_incontent_1"></div>
-					<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
+	<ResultFullscreenMessage />
+	<ResultScreenSlideup />
+{/if}
+
+<div class="endBottomArea" style:display={$resultScreenEnabled ? "" : "none"}>
+	<div class="endBottomBar">
+		{#if !$adsDisabled}
+			<div class="resultAdArea barMenu">
+				<div id="resultAd" class="resultAd" data-fuse="Game_Result_incontent_1"></div>
+				<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
+			</div>
+		{/if}
+		<div id="resultBox" class="barMenu">
+			<div class="resultField" class:resultFieldHigh={!$adsDisabled} id="motivationText">
+				<p>{$motivationText}</p>
+			</div>
+			{#if !$adsDisabled}
+				<div class="mobileResultAdArea resultField resultFieldHigh">
+					<div id="mobileResultAd" class="mobileResultAd" data-fuse="Game_Result_Mob_Only"></div>
+					<p class="noAdvertsText">Ad.</p>
 				</div>
 			{/if}
-			<div id="resultBox" class="barMenu">
-				<div class="resultField" class:resultFieldHigh={$supporterLevel <= 1 && !$adsDisabled} id="motivationText">
-					<p>{$motivationText}</p>
-				</div>
-				{#if $supporterLevel <= 1 && !$adsDisabled}
-					<div class="mobileResultAdArea resultField resultFieldHigh">
-						<div id="mobileResultAd" class="mobileResultAd" data-fuse="Game_Result_incontent_1"></div>
-						<p class="noAdvertsText">Ad.</p>
-					</div>
-				{/if}
+			{#if $resultScreenEnabled}
 				<div class="resultField">
 					<RulerDimensionLine class="distance-icon" style="margin-right: 8px;" size={22} strokeWidth={2.25} />
 					<p id="distanceText">{$distanceText}</p>
@@ -136,8 +138,10 @@
 						</p>
 					</div>
 				{/if}
-			</div>
+			{/if}
 		</div>
+	</div>
+	{#if $resultScreenEnabled}
 		<div class="barMenu nextRoundArea">
 			<button
 				class="standardButton white"
@@ -164,8 +168,8 @@
 				<img src="/img/arrow_icon.png" alt="Arrow" class="directionArrowIcon" />
 			</button>
 		</div>
-	</div>
-{/if}
+	{/if}
+</div>
 
 <svelte:window
 	onkeypress={(event) => {

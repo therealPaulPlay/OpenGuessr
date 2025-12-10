@@ -14,6 +14,7 @@
 	import { ArrowUp, Bug, Map } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
+	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 
 	function reloadPanorama() {
 		playSound("reload");
@@ -22,7 +23,7 @@
 	}
 </script>
 
-<div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
+<div id="BottomBar" class="BottomBar" class:BottomBarAdShift={!$adsDisabled}>
 	<div class="bottomLeftMenu">
 		<div class="barMenu">
 			<button
@@ -111,8 +112,8 @@
 	{/if}
 </div>
 
-{#if $supporterLevel <= 1 && !$adsDisabled}
-	<div class="gameplayAdArea barMenu" transition:blur>
+{#if !$adsDisabled}
+	<div class="gameplayAdArea barMenu" transition:blur style:display={$resultScreenEnabled ? "none" : ""}>
 		<div class="gameplayAd" id="gameplayAd" data-fuse="Game_incontent_1"></div>
 		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
 	</div>
