@@ -5,7 +5,7 @@
 
 	function initAnalytics() {
 		try {
-			window["gtag_enable_tcf_support"] = true; // Listen to any CMP (= Consent Management Platform, basically cookie screen) that is tfc enabled, then grab consent from there
+			window["gtag_enable_tcf_support"] = true; // Listen to any TCF-enabled CMP
 
 			window.dataLayer = window.dataLayer || [];
 			function gtag() {
