@@ -96,6 +96,13 @@
 		font-family: Roboto;
 	}
 
+	/* On mobile, the map doesn't fade out if it's not being hovered over */
+	@media (orientation: portrait) and (max-width: 800px) {
+		#map {
+			opacity: 100%;
+		}
+	}
+
 	.hidden {
 		opacity: 0 !important;
 		pointer-events: none !important;
@@ -170,10 +177,6 @@
 		margin-right: 20px !important;
 	}
 
-	:global(map::selection) {
-		outline: none;
-	}
-
 	:global(.leaflet-control-layers-toggle) {
 		background-image: url("/img/map_layer_icon.png") !important;
 		background-size: 23px 23px !important;
@@ -215,12 +218,5 @@
 	:global(.leaflet-control-layers-base) {
 		font-size: 18px !important;
 		line-height: 30px !important;
-	}
-
-	/* On mobile, the map doesn't fade out if it's not being hovered over */
-	@media (orientation: portrait) and (max-width: 800px) {
-		#map {
-			opacity: 100%;
-		}
 	}
 </style>

@@ -638,7 +638,7 @@
 	</div>
 {/snippet}
 
-<div class="competitionElement competitionBox">
+<div class="competitionElement">
 	<div class="headerContainer">
 		<h2 class="header">Official</h2>
 	</div>
@@ -689,7 +689,7 @@
 		{/if}
 	</div>
 </div>
-<div class="competitionElement competitionBox">
+<div class="competitionElement">
 	<div class="headerContainer">
 		<h2 class="header marginTopAuto">Active</h2>
 		<button
@@ -783,7 +783,7 @@
 		>
 	{/if}
 </div>
-<div class="competitionElement competitionBox expiredBox">
+<div class="competitionElement expiredBox">
 	<div class="headerContainer">
 		<h2 class="header">Recently ended</h2>
 	</div>
@@ -849,8 +849,8 @@
 			filter 250ms ease;
 		width: 100%;
 		overflow: hidden;
-		height: 300px;
-		margin-bottom: 20px;
+		height: auto;
+		margin-bottom: calc(2 * var(--layout-margin));
 	}
 
 	.competitionButtonBox {
@@ -871,12 +871,6 @@
 		width: 100%;
 		display: flex;
 		align-items: center;
-	}
-
-	.competitionBox {
-		padding-top: 5px;
-		padding-bottom: 5px;
-		height: auto;
 	}
 
 	#competitionArea,

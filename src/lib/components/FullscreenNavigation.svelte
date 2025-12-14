@@ -140,10 +140,7 @@
 					use:tooltip={{ text: "Settings" }}
 					onclick={() => {
 						playSound("basic_button");
-						$fullscreenNavigation = false;
-						setTimeout(() => {
-							settingsPopup.set(true);
-						}, 150);
+						settingsPopup.set(true);
 					}}
 				>
 					<img src="/img/settings_icon.png" alt="Settings" class="navigation-icon" id="settingsIcon" />
@@ -198,7 +195,7 @@
 		flex-grow: 1;
 		flex-basis: 0;
 		display: flex;
-        gap: var(--box-margin);
+		gap: var(--box-margin);
 		justify-content: space-between;
 		align-items: center;
 		padding-inline: var(--layout-margin);

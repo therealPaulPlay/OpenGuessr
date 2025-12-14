@@ -7,7 +7,7 @@
 		position: fixed;
 		top: 0;
 		left: 0;
-		padding-inline: 20px;
+		padding: calc(var(--layout-margin) + var(--box-margin));
 		z-index: 13;
 		display: flex;
 		align-items: center;
@@ -18,7 +18,7 @@
 
 	.image {
 		width: 165px;
-		height: 80px;
+		height: 35px;
 		filter: drop-shadow(0 0 10px rgba(43, 43, 43, 0.25));
 	}
 
