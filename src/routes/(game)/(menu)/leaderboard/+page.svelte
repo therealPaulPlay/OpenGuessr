@@ -397,7 +397,7 @@
 	.podium-container {
 		display: flex;
 		justify-content: center;
-		margin-top: 120px;
+		margin-top: 80px;
 		margin-bottom: 30px;
 	}
 

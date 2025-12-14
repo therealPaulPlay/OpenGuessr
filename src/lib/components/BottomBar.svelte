@@ -147,7 +147,7 @@
 		position: absolute;
 		text-align: center;
 		color: white;
-		opacity: 0.5;
+		opacity: 0.25;
 		left: 50%;
 		top: 50%;
 		user-select: none;

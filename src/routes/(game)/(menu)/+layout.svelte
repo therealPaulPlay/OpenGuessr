@@ -4,13 +4,28 @@
 	import Notification from "$lib/components/Notification.svelte";
 	import { screenEscapeDisabled } from "$lib/stores/context-specific/multiplayerStore";
 	import { leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
-	import { goto } from "$app/navigation";
+	import { goto, afterNavigate } from "$app/navigation";
 	import { Home } from "@lucide/svelte";
+	import { blur } from "svelte/transition";
+
+	let historyStack = $state([]);
+	let isGoingBack = false;
+
+	afterNavigate(({ type, from, to }) => {
+		if (type === "popstate" || isGoingBack) {
+			if (historyStack.length > 0) historyStack.pop();
+			isGoingBack = false;
+		} else if (from?.url?.pathname && from.url.pathname !== to?.url?.pathname) {
+			historyStack.push(from.url.pathname);
+		}
+	});
 
 	function goBack() {
-		if (window.history.length) return window.history.back();
-		goto("/"); // Fallback if no referrer
+		isGoingBack = true;
+		goto(historyStack.at(-1) || "/");
 	}
+
+	let showHomeButton = $derived(historyStack.at(-1) !== "/");
 </script>
 
 <nav class="menuNavBar">
@@ -22,24 +37,26 @@
 		disabled={$screenEscapeDisabled}
 		onclick={() => {
 			playSound("basic_button");
-			goBack();
 			leaveMultiplayerRound();
+			goBack();
 		}}
 	>
 		<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="backButtonArrowIcon" />
 		Back</button
 	>
-	<button
-		class="backButton standardButton white"
-		disabled={$screenEscapeDisabled}
-		onclick={() => {
-			playSound("basic_button");
-			leaveMultiplayerRound();
-			goto("/");
-		}}
-	>
-		<span class="homeButtonIcon"><Home strokeWidth={2.25} /></span></button
-	>
+	{#if showHomeButton && historyStack.length}
+		<button
+			class="backButton standardButton white"
+			disabled={$screenEscapeDisabled}
+			onclick={() => {
+				playSound("basic_button");
+				leaveMultiplayerRound();
+				goto("/");
+			}}
+		>
+			<span class="homeButtonIcon"><Home strokeWidth={2.25} /></span></button
+		>
+	{/if}
 </nav>
 
 <div class="background"></div>
@@ -123,5 +140,11 @@
 		padding: 20px;
 		padding-top: 100px;
 		width: calc(100% - 40px);
+	}
+
+	@media (min-width: 800px) {
+		.content {
+			margin-inline: 130px;
+		}
 	}
 </style>

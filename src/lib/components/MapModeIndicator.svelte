@@ -4,7 +4,7 @@
 	import { competition, countryGuessr, multiplayer, singleplayer } from "$lib/stores/modeStore";
 	import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { ArrowRightLeft, BookAlert, LogOut, Route, Target, Timer, TimerOff } from "@lucide/svelte";
+	import { ArrowRightLeft, BookAlert, LogOut, Route, Target, Timer } from "@lucide/svelte";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { goto } from "$app/navigation";
@@ -80,17 +80,12 @@
 				>
 			{/if}
 		</div>
-		<p
-			id="map-timer"
-			class="map-mode-text {$mapModeIndicatorFading ? 'fading' : ''}"
-			style:opacity={$timerText ? "" : 0.5}
-		>
-			{#if $timerText}
-				<Timer size={22} /> {$timerText}
-			{:else}
-				<TimerOff size={21} /> 00:00
-			{/if}
-		</p>
+		{#if $timerText}
+			<p id="map-timer" class="map-mode-text {$mapModeIndicatorFading ? 'fading' : ''}" transition:blur>
+				<Timer size={22} />
+				{$timerText || "00:00"}
+			</p>
+		{/if}
 	</div>
 {/if}
 
@@ -101,7 +96,7 @@
 			width 250ms ease,
 			border-radius 250ms ease,
 			margin 250ms ease;
-		z-index: 10;
+		z-index: 1;
 		user-select: none;
 		flex-shrink: 0;
 		height: 56px;

@@ -24,8 +24,6 @@
 		PlusCircle,
 		Skull,
 		SquarePlus,
-		UserRoundCheck,
-		UserRoundPlus,
 		Edit,
 		Trash2,
 		TriangleAlert,
@@ -40,6 +38,8 @@
 		BarChart3,
 		Trophy,
 		Crown,
+		UserStar,
+		UserCheck,
 	} from "@lucide/svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
@@ -291,9 +291,9 @@
 					}}
 				>
 					{#if !$profileData?.areFriends}
-						<UserRoundPlus style="margin-bottom: -1px; margin-left: 2px;" size={19} strokeWidth={2.25} />
+						<UserStar style="margin-bottom: -1px; margin-left: 2px;" size={19} strokeWidth={2.25} />
 					{:else}
-						<UserRoundCheck style="margin-bottom: -1px; margin-left: 2px;" size={20} strokeWidth={2.25} />
+						<UserCheck style="margin-bottom: -1px; margin-left: 2px;" size={20} strokeWidth={2.25} />
 					{/if}
 				</button>
 			{/if}

@@ -53,6 +53,7 @@
 		align-items: center;
 		background-color: var(--dark-background);
 		pointer-events: auto;
+		backdrop-filter: blur(5px);
 		z-index: 100; /* Default Z-Index, can be changed with Prop */
 	}
 
@@ -86,7 +87,6 @@
 		width: calc(100% - var(--layout-margin) * 2);
 		box-sizing: border-box;
 		padding: 25px;
-		padding-bottom: 30px;
 		border-radius: 15px;
 		text-align: left;
 		z-index: 900;
