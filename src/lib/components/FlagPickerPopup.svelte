@@ -225,7 +225,7 @@
 	<div class="popup-title">
 		<h1 id="pinPopupWindow">Flags</h1>
 	</div>
-	<div class="flag-container">
+	<div>
 		{#each Object.entries(continentFlags) as [continent, countries]}
 			<div class="continent-section">
 				<p class="continentTitle">{continent}</p>
@@ -249,10 +249,6 @@
 </Popup>
 
 <style>
-	.flag-container {
-		padding: 0 10px;
-	}
-
 	.continentTitle {
 		padding: 3px;
 		background-color: var(--box-color);
@@ -288,7 +284,7 @@
 		border-radius: var(--box-margin);
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
-		gap: 10px;
+		gap: 9px;
 		flex-wrap: wrap;
 	}
 
