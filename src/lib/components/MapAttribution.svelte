@@ -3,11 +3,10 @@
 	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { countryGuessr } from "$lib/stores/modeStore";
-	import { fade } from "svelte/transition";
 </script>
 
 {#if $mapExpanded && !$resultScreenEnabled && !$countryGuessr}
-	<div class="mapAttribution mapAttributionContainer" transition:fade={{ duration: 250 }}>
+	<div class="mapAttribution mapAttributionContainer">
 		<div class="mapAttributionDataBox">
 			<p>Map Data ©{new Date().getFullYear()} Google</p>
 			<p>
@@ -31,7 +30,7 @@
 <style>
 	.mapAttribution {
 		position: absolute;
-		z-index: 10;
+		z-index: 1;
 		user-select: none;
 	}
 

@@ -111,6 +111,7 @@
 		background-color: var(--panel-color);
 		padding: 5px;
 		border-radius: 5px;
+		backdrop-filter: blur(10px);
 	}
 
 	.indicator-dot {

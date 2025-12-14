@@ -73,9 +73,11 @@
 		width: 100%;
 		height: 100%;
 		opacity: 60%;
-		border-radius: var(--box-margin);
+		z-index: 0; /* Ensure all map tiles stay in this stacking context on z-0 */
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
+		border-top-right-radius: var(--box-margin);
+		border-top-left-radius: var(--box-margin);
 		max-height: 100%;
 		background: #e8e4dc;
 		box-shadow: 0 2px 20px rgba(5, 6, 10, 0.15);
@@ -121,10 +123,6 @@
 		background-size: cover;
 		background-position: center;
 		transition: opacity 500ms ease;
-	}
-
-	:global(.mk-map-view) {
-		border-radius: var(--box-margin);
 	}
 
 	:global(.leaflet-bottom, .leaflet-control-attribution) {
