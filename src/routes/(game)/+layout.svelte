@@ -55,6 +55,7 @@
 	import TournamentInfoPopup from "$lib/components/TournamentInfoPopup.svelte";
 	import TournamentMatchResultsPopup from "$lib/components/TournamentMatchResultsPopup.svelte";
 	import ChatManagePopup from "$lib/components/ChatManagePopup.svelte";
+	import FullscreenNavigation from "$lib/components/FullscreenNavigation.svelte";
 
 	// Start Generation, Ads, Overfade etc.
 	onMount(() => {
@@ -135,6 +136,7 @@
 
 <LoadingOverlay />
 <ErrorPopup />
+<FullscreenNavigation />
 <ConfirmPopup />
 <CaptchaPopup />
 <ShopPurchaseAnimation />

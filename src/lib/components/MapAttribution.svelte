@@ -7,7 +7,7 @@
 </script>
 
 {#if $mapExpanded && !$resultScreenEnabled && !$countryGuessr}
-	<div class="mapAttribution mapAttributionContainer" transition:fade={{ duration: 250 }}>
+	<div class="mapAttribution mapAttributionContainer" transition:fade={{ duration: 150 }}>
 		<div class="mapAttributionDataBox">
 			<p>Map Data ©{new Date().getFullYear()} Google</p>
 			<p>
@@ -31,7 +31,7 @@
 <style>
 	.mapAttribution {
 		position: absolute;
-		z-index: 10;
+		z-index: 1;
 		user-select: none;
 	}
 

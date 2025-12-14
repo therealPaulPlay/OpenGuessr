@@ -214,7 +214,7 @@
 		position: absolute;
 		text-align: center;
 		color: white;
-		opacity: 0.5;
+		opacity: 0.25;
 		z-index: -1;
 		left: 50%;
 		top: 50%;
