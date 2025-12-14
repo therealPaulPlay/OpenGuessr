@@ -37,8 +37,8 @@
 		disabled={$screenEscapeDisabled}
 		onclick={() => {
 			playSound("basic_button");
-			goBack();
 			leaveMultiplayerRound();
+			goBack();
 		}}
 	>
 		<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="backButtonArrowIcon" />
