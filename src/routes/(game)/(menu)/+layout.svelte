@@ -13,9 +13,9 @@
 
 	afterNavigate(({ type, from, to }) => {
 		if (type === "popstate" || isGoingBack) {
-			historyStack.pop();
+			if (historyStack.length > 0) historyStack.pop();
 			isGoingBack = false;
-		} else if (from?.url.pathname !== to?.url.pathname) {
+		} else if (from?.url?.pathname && from.url.pathname !== to?.url?.pathname) {
 			historyStack.push(from.url.pathname);
 		}
 	});
