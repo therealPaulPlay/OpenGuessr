@@ -120,7 +120,7 @@
 						onclick={() => {
 							playSound("basic_button");
 							signupPrompt();
-						}}>Sign in<UserRoundPlus strokeWidth={2.5} size={22} style="margin-inline: 2px;" /></button
+						}}>Log in<UserRoundPlus strokeWidth={2.35} size={20} style="margin-inline: 2px;" /></button
 					>
 				{/if}
 				<button
@@ -185,7 +185,7 @@
 	}
 
 	.navigation-icon {
-		width: 22px;
+		width: 20px;
 		height: auto;
 		margin-inline: 2px;
 		margin-bottom: -1px;
