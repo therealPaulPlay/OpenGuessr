@@ -28,7 +28,7 @@ async function streakCalculation() {
     if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
         streak++;
     } else {
-        if (streak >= 2) showResultScreenSlideup("Streak lost!", `You lost your streak of ${streak}!`);
+        if (streak >= 2) showResultScreenSlideup("Streak lost!", `You lost your streak of ${streak}.`);
         if (streak >= 1) setCheckNewHighestCountryStreak(streak);
         streak = 0; // Reset country streak
     }
