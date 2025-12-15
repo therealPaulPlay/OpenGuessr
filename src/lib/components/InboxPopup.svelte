@@ -9,17 +9,21 @@
 	import { Check, X } from "@lucide/svelte";
 
 	let inboxRefreshInterval;
+	let errorText = $state("Loading...");
 
-	inboxPopup.subscribe((value) => {
+	inboxPopup.subscribe(async (value) => {
 		if (value) {
 			inboxIconNew.set(false);
-			loadInbox();
 
 			// Refetch every X seconds
 			clearInterval(inboxRefreshInterval);
 			inboxRefreshInterval = setInterval(() => {
 				loadInbox();
 			}, 8000);
+
+			errorText = "Loading...";
+			await loadInbox();
+			errorText = "Inbox is empty.";
 		} else {
 			clearInterval(inboxRefreshInterval);
 		}
@@ -69,7 +73,7 @@
 					</div>
 				{/each}
 			{:else}
-				<p class="noResultsText">Your inbox is empty.</p>
+				<p class="noResultsText">{errorText}</p>
 			{/if}
 		</div>
 	</div>
