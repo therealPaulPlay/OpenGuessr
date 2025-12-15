@@ -227,7 +227,7 @@
 					{/each}
 				</div>
 			{:else}
-				<p class="noFriendsText">Added friends show up here.</p>
+				<p class="noFriendsText">Friends show up here.</p>
 			{/if}
 		</div>
 	</div>

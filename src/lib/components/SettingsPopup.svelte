@@ -78,8 +78,9 @@
 		playSound("basic_button");
 
 		try {
-			if (!document.fullscreenElement) if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-			else if (document.exitFullscreen) document.exitFullscreen();
+			if (!document.fullscreenElement)
+				if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
+				else if (document.exitFullscreen) document.exitFullscreen();
 		} catch (error) {
 			console.error("Error entering / exiting fullscreen: " + error);
 		}
@@ -147,122 +148,117 @@
 	</div>
 	<div class="settingsCanvas">
 		<TitleSeparator text="Singleplayer" noMargin={true} />
-		<div class="settingsCanvas slightBottomMargin">
-			<div class="settingsBox settingsBoxFlex" class:box-disabled={!$singleplayer}>
-				<div class="timerTextBox">
-					<Timer />
-					<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
-				</div>
-				<div class="timerControlsWrapper">
-					<button class="arrowButton standardButton white" onclick={() => adjustTimer(false)}>
-						<ChevronLeft size={20} strokeWidth={2.5} />
-					</button>
+		<div class="settingsBox settingsBoxFlex" class:box-disabled={!$singleplayer}>
+			<div class="timerTextBox">
+				<Timer />
+				<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
+			</div>
+			<div class="timerControlsWrapper">
+				<button class="arrowButton standardButton white" onclick={() => adjustTimer(false)}>
+					<ChevronLeft size={20} strokeWidth={2.5} />
+				</button>
 
-					<input
-						type="range"
-						min="0"
-						max="121"
-						step="1"
-						class="slider timerSlider"
-						onchange={changeTimeout}
-						bind:value={timerSliderValue}
-					/>
-
-					<button class="arrowButton standardButton white" onclick={() => adjustTimer(true)}>
-						<ChevronRight size={20} strokeWidth={2.5} />
-					</button>
-				</div>
-			</div>
-			<div class="settingsBox settingsBoxFlex noFlexWrap" class:box-disabled={!$singleplayer}>
-				<p class="settingsBoxFlexTitle">No Move, Pan or Zoom (NMPZ)</p>
-				<button class="standardButton white" onclick={toggleSingleplayerNMPZ}
-					>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
-				>
-			</div>
-			<TitleSeparator text="Audio" noMargin={true} />
-			<div class="settingsBox">
-				<p class="textMargin">SFX volume</p>
-				<div class="sliderBox">
-					<input
-						type="range"
-						min="0"
-						max="1"
-						step="0.01"
-						class="slider shortSlider"
-						bind:value={sfxVolumeSliderValue}
-						style:background={sfxSliderBg}
-						oninput={inputSFXVolumeSlider}
-					/>
-					<p>{sfxSliderBgPercentage}%</p>
-				</div>
-			</div>
-			<div class="settingsBox">
-				<p class="textMargin">Music volume</p>
-				<div class="sliderBox">
-					<input
-						type="range"
-						min="0"
-						max="1"
-						step="0.01"
-						class="slider shortSlider"
-						bind:value={musicVolumeSliderValue}
-						style:background={musicSliderBg}
-						oninput={inputMusicVolumeSlider}
-					/>
-					<p>{musicSliderBgPercentage}%</p>
-					<button
-						class="standardButton white creditsButton"
-						onclick={() => {
-							playSound("basic_button");
-							showConfirmPopup(
-								"Credits",
-								'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM"!',
-							);
-						}}
-					>
-						<InfoIcon strokeWidth={2.5} size={18} />
-					</button>
-				</div>
-			</div>
-			<TitleSeparator text="General" noMargin={true} />
-			<div class="settingsBox settingsBoxFlex">
-				<p class="settingsBoxFlexTitle">Unit system</p>
-				<Tabs
-					tabs={["Metric", "Imperial"]}
-					class="settingsNoButtonMargin"
-					bind:selected={selectedUnit}
-					onchange={(tab) => {
-						playSound("basic_button");
-						localStorage.setItem("distanceUnit", tab == "Metric" ? "kilometers" : "miles");
-					}}
+				<input
+					type="range"
+					min="0"
+					max="121"
+					step="1"
+					class="slider timerSlider"
+					onchange={changeTimeout}
+					bind:value={timerSliderValue}
 				/>
-			</div>
-			{#if !$preventFullscreen}
-				<div class="settingsBox settingsBoxFlex">
-					<p class="settingsBoxFlexTitle">View</p>
-					<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
-						<span class="fullscreenIcon">
-							<Scan size="17" strokeWidth={3} style="margin-bottom: -1px;" />
-						</span>
-						<span id="fullscreenText">{fullscreenButtonText}</span>
-					</button>
-				</div>
-			{/if}
-			<div class="settingsBox settingsBoxFlex">
-				<p class="settingsBoxFlexTitle">Legal info</p>
-				<button
-					class="standardButton white"
-					id="privacyButton"
-					onclick={() => {
-						playSound("basic_button");
-						goto("/legal");
-						$settingsPopup = false;
-					}}>Read</button
-				>
+
+				<button class="arrowButton standardButton white" onclick={() => adjustTimer(true)}>
+					<ChevronRight size={20} strokeWidth={2.5} />
+				</button>
 			</div>
 		</div>
-	</div></Popup
->
+		<div class="settingsBox settingsBoxFlex noFlexWrap" class:box-disabled={!$singleplayer}>
+			<p class="settingsBoxFlexTitle">No Move, Pan or Zoom (NMPZ)</p>
+			<button class="standardButton white" onclick={toggleSingleplayerNMPZ}
+				>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
+			>
+		</div>
+		<TitleSeparator text="Audio" noMargin={true} />
+		<div class="settingsBox">
+			<p class="textMargin">SFX volume</p>
+			<div class="sliderBox">
+				<input
+					type="range"
+					min="0"
+					max="1"
+					step="0.01"
+					class="slider shortSlider"
+					bind:value={sfxVolumeSliderValue}
+					style:background={sfxSliderBg}
+					oninput={inputSFXVolumeSlider}
+				/>
+				<p>{sfxSliderBgPercentage}%</p>
+			</div>
+		</div>
+		<div class="settingsBox">
+			<p class="textMargin">Music volume</p>
+			<div class="sliderBox">
+				<input
+					type="range"
+					min="0"
+					max="1"
+					step="0.01"
+					class="slider shortSlider"
+					bind:value={musicVolumeSliderValue}
+					style:background={musicSliderBg}
+					oninput={inputMusicVolumeSlider}
+				/>
+				<p>{musicSliderBgPercentage}%</p>
+				<button
+					class="standardButton white creditsButton"
+					onclick={() => {
+						playSound("basic_button");
+						showConfirmPopup("Credits", 'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM"!');
+					}}
+				>
+					<InfoIcon strokeWidth={2.5} size={18} />
+				</button>
+			</div>
+		</div>
+		<TitleSeparator text="General" noMargin={true} />
+		<div class="settingsBox settingsBoxFlex">
+			<p class="settingsBoxFlexTitle">Unit system</p>
+			<Tabs
+				tabs={["Metric", "Imperial"]}
+				class="settingsNoButtonMargin"
+				bind:selected={selectedUnit}
+				onchange={(tab) => {
+					playSound("basic_button");
+					localStorage.setItem("distanceUnit", tab == "Metric" ? "kilometers" : "miles");
+				}}
+			/>
+		</div>
+		{#if !$preventFullscreen}
+			<div class="settingsBox settingsBoxFlex">
+				<p class="settingsBoxFlexTitle">View</p>
+				<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
+					<span class="fullscreenIcon">
+						<Scan size="17" strokeWidth={3} style="margin-bottom: -1px;" />
+					</span>
+					<span id="fullscreenText">{fullscreenButtonText}</span>
+				</button>
+			</div>
+		{/if}
+		<div class="settingsBox settingsBoxFlex">
+			<p class="settingsBoxFlexTitle">Legal info</p>
+			<button
+				class="standardButton white"
+				id="privacyButton"
+				onclick={() => {
+					playSound("basic_button");
+					goto("/legal");
+					$settingsPopup = false;
+				}}>Read</button
+			>
+		</div>
+	</div>
+</Popup>
 
 <style>
 	.settingsBox {
@@ -340,6 +336,7 @@
 		width: 100%;
 		justify-content: flex-start;
 		align-items: center;
+		margin-bottom: 5px;
 	}
 
 	.textMargin {

@@ -112,12 +112,12 @@
 	.tournamentNameBox {
 		mask-image: linear-gradient(to right, black 90%, transparent 100%);
 		flex-grow: 2;
-		min-width: 33%;
 	}
 
 	.tournamentNameTitle {
 		margin-right: auto;
 		margin-left: 5px;
+		margin-left: 10px;
 		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
 		text-overflow: ellipsis;
 		overflow: hidden;
