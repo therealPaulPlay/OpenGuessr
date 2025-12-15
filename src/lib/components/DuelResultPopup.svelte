@@ -9,6 +9,7 @@
 	import { cubicOut } from "svelte/easing";
 	import { Info, History, Flame } from "@lucide/svelte";
 	import TokenRewardDisplay from "./TokenRewardDisplay.svelte";
+	import { findDuel } from "$lib/logic/multiplayerLogic";
 
 	// Animate number starting from 0
 	const animatedElo = tweened(0, {
@@ -77,6 +78,16 @@
 			History <History size={20} strokeWidth={2.25} style="margin-bottom: -3px; margin-left: 2px;" /></button
 		>
 	</div>
+	<button
+		class="standardButton largeButton"
+		onclick={() => {
+			playSound("basic_button");
+			$duelResultPopup = false;
+			findDuel();
+		}}
+	>
+		Play again
+	</button>
 </Popup>
 
 <style>
