@@ -113,8 +113,13 @@
 </div>
 
 {#if !$adsDisabled}
-	<div class="gameplayAdArea barMenu" transition:blur style:display={$resultScreenEnabled ? "none" : ""}>
-		<div class="gameplayAd" id="gameplayAd" data-fuse="Game_incontent_1"></div>
+	<div class="gameplayAdArea barMenu" transition:blur>
+		<div
+			class="gameplayAd"
+			id="gameplayAd"
+			data-fuse="Game_incontent_1"
+			style:display={$resultScreenEnabled ? "none" : ""}
+		></div>
 		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
 	</div>
 {/if}

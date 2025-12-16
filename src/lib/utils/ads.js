@@ -15,6 +15,7 @@ export function initializeAds() {
 
 resultScreenEnabled.subscribe((isEnabled) => {
     if (typeof window === "undefined") return;
+    if (!fusetag) return console.warn("Fusetag not initialized yet.");
     window.requestAnimationFrame(() => {
         if (isEnabled) {
             if (window.matchMedia("min-width: 1900px")) fusetag.activateZone("Game_Result_incontent_1");

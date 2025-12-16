@@ -89,7 +89,12 @@
 	<div class="endBottomBar">
 		{#if !$adsDisabled}
 			<div class="resultAdArea barMenu">
-				<div id="resultAd" class="resultAd" data-fuse="Game_Result_incontent_1"></div>
+				<div
+					id="resultAd"
+					class="resultAd"
+					data-fuse="Game_Result_incontent_1"
+					style:display={$resultScreenEnabled ? "" : "none"}
+				></div>
 				<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
 			</div>
 		{/if}
@@ -99,7 +104,12 @@
 			</div>
 			{#if !$adsDisabled}
 				<div class="mobileResultAdArea resultField resultFieldHigh">
-					<div id="mobileResultAd" class="mobileResultAd" data-fuse="Game_Result_Mob_Only"></div>
+					<div
+						id="mobileResultAd"
+						class="mobileResultAd"
+						data-fuse="Game_Result_Mob_Only"
+						style:display={$resultScreenEnabled ? "" : "none"}
+					></div>
 					<p class="noAdvertsText">Ad.</p>
 				</div>
 			{/if}
