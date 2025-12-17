@@ -1,4 +1,5 @@
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+import { tick } from "svelte";
 
 // Initialize Ads
 let fusetag;
@@ -13,14 +14,14 @@ export function initializeAds() {
     });
 }
 
-resultScreenEnabled.subscribe((isEnabled) => {
+resultScreenEnabled.subscribe(async (isEnabled) => {
+    await tick(); // Await UI update to reflect new store value
     if (typeof window === "undefined") return;
     if (!fusetag) return console.warn("Fusetag not initialized yet.");
-    window.requestAnimationFrame(() => {
-        if (isEnabled) {
-            if (window.matchMedia("min-width: 1900px")) fusetag.activateZone("Game_Result_incontent_1");
-            else fusetag.activateZone("Game_Result_Mob_Only");
-
-        } else fusetag.activateZone("Game_incontent_1");
-    });
+    if (isEnabled) {
+        if (window.matchMedia("(min-width: 1900px)")) fusetag.activateZone("resultAd");
+        else fusetag.activateZone("mobileResultAd");
+    } else {
+        fusetag.activateZone("gameplayAd");
+    }
 })
