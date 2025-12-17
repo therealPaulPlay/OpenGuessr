@@ -24,4 +24,4 @@ resultScreenEnabled.subscribe(async (isEnabled) => {
     } else {
         fusetag.activateZone("gameplayAd");
     }
-})
+});
