@@ -1,7 +1,6 @@
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
 import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { get } from "svelte/store";
 import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
 
