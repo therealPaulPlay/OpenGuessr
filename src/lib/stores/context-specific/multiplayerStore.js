@@ -50,7 +50,8 @@ export const rematchButtonVisible = writable(false);
 export const leaveMatchButtonVisible = writable(false);
 
 // UI - Chat
-export const chatArray = writable(); // Inner Chat HTML
+export const chatArray = writable([]); // Chat messages
+export const mobileChatLastOpenedMsgCount = writable(0); // Chat msg maount as the player on mobile has last seen it (display "new message" otherwise)
 export const chatVisible = writable(false);
 export const chatMutedPlayers = writable([]);
 export const remainingPlayers = writable([]);

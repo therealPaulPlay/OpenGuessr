@@ -28,7 +28,9 @@
 
     /* Margins or Gaps */
     --layout-margin: 15px;
+    /* Used for elements inside boxes (containers with box-color, box-shadow etc.) */
     --box-margin: 10px;
+    /* Used for floating UI panels (elements not inside of popups or pages, e.g. chat) */
     --panel-margin: 8px;
 
     /* Box shadows */
@@ -238,15 +240,6 @@ input[type="checkbox"]:focus {
     margin-bottom: var(--layout-margin);
 }
 
-.close {
-    float: none;
-    width: 100%;
-}
-
-.slightBottomMargin {
-    margin-bottom: 15px;
-}
-
 .socialIcon {
     width: 20px;
     height: auto;
@@ -322,17 +315,6 @@ li {
     margin-bottom: 20px;
 }
 
-.arrowIcon {
-    width: 25px;
-    height: 25px;
-    transform: rotate(0deg);
-    transition: transform 250ms ease;
-}
-
-.arrowIconRotated {
-    transform: rotate(180deg);
-}
-
 textarea {
     background-color: var(--box-color);
     box-shadow: var(--box-shadow);
@@ -348,11 +330,6 @@ textarea {
     margin-top: 30px;
     padding: 10px 25px;
     height: unset;
-}
-
-.viewContainer {
-    display: flex;
-    justify-content: center;
 }
 
 select {

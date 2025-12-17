@@ -27,7 +27,8 @@ import {
     chatMutedPlayers,
     multiplayerSortedPlayersArray,
     currentRound,
-    multiplayerMap
+    multiplayerMap,
+    mobileChatLastOpenedMsgCount
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
@@ -348,6 +349,7 @@ export function leaveMultiplayerRound(destroy = true) {
     chatMutedPlayers.set([]);
     currentRound.set(0);
     multiplayerMap.set(null);
+    mobileChatLastOpenedMsgCount.set(0);
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {

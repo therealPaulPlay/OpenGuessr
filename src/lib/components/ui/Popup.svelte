@@ -5,7 +5,7 @@
 	import { backOut } from "svelte/easing";
 	import { fade, scale } from "svelte/transition";
 
-	let { children, z, frameless, slim, verySlim, open = $bindable(false), onclose } = $props();
+	let { children, z = 100, frameless, slim, verySlim, open = $bindable(false), onclose } = $props();
 
 	function close() {
 		onclose?.();
@@ -54,7 +54,6 @@
 		background-color: var(--dark-background);
 		pointer-events: auto;
 		backdrop-filter: blur(5px);
-		z-index: 100; /* Default Z-Index, can be changed with Prop */
 	}
 
 	.closePopupButton {
@@ -89,7 +88,6 @@
 		padding: 25px;
 		border-radius: 15px;
 		text-align: left;
-		z-index: 900;
 		position: relative;
 		background-color: var(--panel-color);
 		backdrop-filter: blur(10px);

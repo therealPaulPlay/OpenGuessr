@@ -23,7 +23,7 @@
 	}
 
 	/* hide logo on screens that don't have room for it */
-	@media (max-width: 800px) {
+	@media (orientation: portrait) and (max-width: 800px) {
 		.logo {
 			display: none;
 		}
