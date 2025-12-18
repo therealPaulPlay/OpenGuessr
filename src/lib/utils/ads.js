@@ -15,7 +15,9 @@ export function initializeAds() {
 }
 
 export function registerGameplayAd() {
-    getFuse().registerZone("gameplayAd");
+    getFuse().que.push(function () {
+        getFuse().registerZone("gameplayAd");
+    });
 }
 
 let prevResultState = false;
