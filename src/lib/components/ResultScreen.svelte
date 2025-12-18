@@ -217,7 +217,7 @@
 		flex-wrap: wrap;
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);
-		margin-inline: 10px;
+		margin-inline: var(--box-margin);
 	}
 
 	.noAdvertsText {
@@ -311,7 +311,7 @@
 		align-items: center;
 		position: absolute;
 		left: 50%;
-		top: calc(-100px - var(--panel-margin));
+		top: calc(-90px - var(--box-margin) * 2);
 		transform: translate(-50%, 0);
 		padding: 5px;
 		pointer-events: auto;
@@ -542,7 +542,7 @@
 		}
 
 		#resultBox {
-			margin-bottom: 64px;
+			margin-bottom: 66px;
 		}
 	}
 </style>

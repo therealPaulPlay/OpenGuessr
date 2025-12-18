@@ -20,9 +20,7 @@
 		position: fixed;
 		display: flex;
 		right: 70px;
-		bottom: 74px;
-		min-width: 216px;
-		min-height: 150px;
+		bottom: 76px;
 		align-items: flex-end;
 		flex-direction: column;
 		z-index: 9;
@@ -30,8 +28,8 @@
 	}
 
 	.regular-map-size {
-		width: 20%;
-		height: 23%;
+		width: max(20%, 216px);
+		height: max(23%, 150px);
 		transition:
 			height 150ms ease,
 			width 150ms ease,
@@ -65,7 +63,7 @@
 	@media (orientation: portrait) and (max-width: 800px) {
 		/* Shift up to fit ad */
 		.map-holder-ad-shift {
-			bottom: 132px;
+			bottom: 136px;
 		}
 
 		.map-holder {

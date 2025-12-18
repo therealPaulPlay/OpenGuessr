@@ -37,7 +37,6 @@
 	import LinkJoinPopup from "$lib/components/LinkJoinPopup.svelte";
 	import FriendBrowserPopup from "$lib/components/FriendBrowserPopup.svelte";
 	import InboxPopup from "$lib/components/InboxPopup.svelte";
-	import Chat from "$lib/components/Chat.svelte";
 	import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
 	import MultiplayerOverlay from "$lib/components/MultiplayerOverlay.svelte";
 	import BlinkRestrictionFade from "$lib/components/FadeRestriction.svelte";
@@ -56,6 +55,8 @@
 	import TournamentMatchResultsPopup from "$lib/components/TournamentMatchResultsPopup.svelte";
 	import ChatManagePopup from "$lib/components/ChatManagePopup.svelte";
 	import FullscreenNavigation from "$lib/components/FullscreenNavigation.svelte";
+	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
+	import ChatHolder from "$lib/components/ChatHolder.svelte";
 
 	// Start Generation, Ads, Overfade etc.
 	onMount(() => {
@@ -158,6 +159,7 @@
 <LinkJoinPopup />
 <RoundLogPopup />
 <ChatManagePopup />
+<ChatMobilePopup />
 <GuestNamePickerPopup />
 <ResultScreen />
 <BlinkRestrictionFade />
@@ -176,7 +178,7 @@
 	<Map />
 	<MapModeIndicator />
 </MapHolder>
-<Chat />
+<ChatHolder />
 <BottomBar />
 
 <!-- Render children such as overlayed pages and menus -->

@@ -1,7 +1,7 @@
 <!--bottom toolbar with reset button-->
 <script>
 	import { playSound } from "$lib/utils/soundManager";
-	import { bugspotPopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
+	import { bugspotPopup, chatMobilePopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { supporterLevel } from "$lib/stores/accountStore";
@@ -9,11 +9,12 @@
 	import { showNotification } from "$lib/utils/notifications";
 	import { mapExpanded, mapInteractive } from "$lib/stores/context-specific/mapStore";
 	import { tooltip } from "$lib/utils/tooltip";
-	import { countryGuessr } from "$lib/stores/modeStore";
+	import { countryGuessr, multiplayer } from "$lib/stores/modeStore";
 	import { blur, fade } from "svelte/transition";
-	import { ArrowUp, Bug, Map } from "@lucide/svelte";
+	import { ArrowUp, Bug, Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
+	import { chatArray, mobileChatLastOpenedMsgCount } from "$lib/stores/context-specific/multiplayerStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 
 	function reloadPanorama() {
@@ -36,6 +37,22 @@
 			>
 				<img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
 			</button>
+			{#if $multiplayer}
+				<button
+					class="standardButton white mobileChatButton"
+					use:tooltip={{ text: "Chat" }}
+					onclick={() => {
+						playSound("basic_button");
+						$chatMobilePopup = true;
+					}}
+				>
+					{#if $chatArray?.filter((i) => i.username != "Server")?.length === $mobileChatLastOpenedMsgCount}
+						<MessageSquareMore size={22} strokeWidth={2} style="margin-top: 3px;" />
+					{:else}
+						<MessageSquareDot size={22} strokeWidth={2} style="margin-top: 3px;" />
+					{/if}
+				</button>
+			{/if}
 		</div>
 		<div class="barMenu socialBar">
 			<button
@@ -102,7 +119,7 @@
 					{#if $mapExpanded && $mapInteractive}
 						Guess
 					{:else if !$mapExpanded}
-						Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2.5} />
+						Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2} />
 					{:else if !$mapInteractive}
 						Locked in
 					{/if}
@@ -127,17 +144,18 @@
 <style>
 	.BottomBar {
 		position: fixed;
-		bottom: 10px;
+		bottom: var(--box-margin);
 		width: calc(100% - 20px);
 		height: 95px;
 		min-height: 95px;
 		max-height: 95px;
+		gap: var(--box-margin);
 		display: flex;
 		align-items: end;
 		justify-content: space-between;
 		margin: auto;
 		border-radius: var(--box-margin);
-		margin-inline: 10px;
+		margin-inline: var(--box-margin);
 		flex: 1;
 		z-index: 10;
 		transition: background-color 250ms ease;
@@ -178,7 +196,7 @@
 		position: fixed;
 		left: 0;
 		right: 0;
-		bottom: 10px;
+		bottom: var(--box-margin);
 		padding: 0 !important;
 		margin-inline: auto;
 		z-index: 8;
@@ -208,12 +226,6 @@
 		.gameplayAd {
 			width: 320px;
 			height: 50px;
-		}
-	}
-
-	@media (orientation: landscape) and (max-width: 700px) {
-		.gameplayAdArea {
-			display: none !important;
 		}
 	}
 
@@ -287,24 +299,31 @@
 	}
 
 	.bottomRightMenu {
-		width: calc(20% - (var(--box-margin) + 2px));
-		min-width: 200px;
+		width: max(calc(20% - (var(--box-margin) + 2px)), 200px);
 		margin-right: 60px;
-		margin-left: var(--panel-margin);
+		overflow: hidden;
+	}
+
+	.mobileChatButton {
+		display: none;
 	}
 
 	/* Mobile adjustments */
 	@media (orientation: portrait) and (max-width: 800px) {
 		.gameplayAdArea {
-			bottom: 10px;
+			bottom: var(--box-margin);
 		}
 
 		.BottomBarAdShift {
-			padding-bottom: 58px;
+			padding-bottom: calc(50px + var(--box-margin)); /* Ad is 50px high */
 		}
 
 		.socialBar {
 			display: none;
+		}
+
+		.mobileChatButton {
+			display: block;
 		}
 
 		.bottomRightMenu {
