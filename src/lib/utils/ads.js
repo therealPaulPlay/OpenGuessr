@@ -1,52 +1,46 @@
+import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+import { tick } from "svelte";
 
-// Initialize Venatus
+// Initialize Ads
+let fusetag;
+
 export function initializeAds() {
-    self.__VM = self.__VM || [];
+    fusetag = window.fusetag || (window.fusetag = { que: [] });
 
-    self.__VM.push((admanager, scope) => {
-        try {
-            if (!admanager || !scope) return;
+    fusetag.que.push(function () {
+        fusetag.pageInit({
+            blockingFuseIds: ["Game_incontent_1"],
+        });
+    });
+}
 
-            // Main bottom bar ad
-            scope.Config.buildPlacement((configBuilder) => {
-                scope.Config.setBreakPoint("desktop", "(min-width:1500px)");
+let prevResultState = false;
+let pendingOperation = 0;
 
-                configBuilder.add("leaderboard");
+resultScreenEnabled.subscribe(async (isEnabled) => {
+    if (typeof window === "undefined") return;
 
-                configBuilder
-                    .addDefaultOrUnique("mobile_banner")
-                    .setBreakPoint({
-                        mediaQuery: "max-width: 1500px",
-                    });
-            }, "main").display("gameplayAd");
+    // Only update on state change
+    if (prevResultState === isEnabled) return;
+    prevResultState = isEnabled;
 
-            // Floating banner for bigger screens
-            scope.Config.get("leaderboard", "result").display(
-                "resultAd",
-            );
+    const operationId = ++pendingOperation;
 
-            // Mobile result banner for smaller screens
-            scope.Config.buildPlacement((configBuilder) => {
-                configBuilder.add("mobile_banner");
+    await tick(); // Await UI update to reflect new store value
 
-                configBuilder
-                    .addDefaultOrUnique("mobile_banner")
-                    .setBreakPoint({
-                        mediaQuery: "max-width: 1900px",
-                    });
-            }, "result").display("mobileResultAd");
-        } catch (error) {
-            console.error("Error creating placements:", error);
+    // Cancel if another operation started while we were waiting
+    if (operationId !== pendingOperation) return;
+
+    // Return if fuse is not initialized
+    if (!fusetag) return console.warn("Fusetag not initialized yet.");
+    try {
+        if (isEnabled) {
+            if (window.matchMedia("(min-width: 1900px)").matches) fusetag.activateZone("resultAd");
+            else fusetag.activateZone("mobileResultAd");
+        } else {
+            fusetag.activateZone("gameplayAd");
         }
-    });
-}
-
-export function refreshPlacements() {
-    self.__VM = self.__VM || [];
-
-    self.__VM.push(function (admanager, scope) {
-        admanager.reload(
-            admanager.placements.filter((p) => p.anyName !== "gpt_reward"),
-        );
-    });
-}
+    } catch (error) {
+        console.error("Error occured activating fuse zones:", error);
+    }
+});
