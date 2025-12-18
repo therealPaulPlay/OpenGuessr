@@ -1,17 +1,21 @@
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { tick } from "svelte";
 
-// Initialize Ads
-let fusetag;
+function getFuse() {
+    return window.fusetag || (window.fusetag = { que: [] });
+}
 
 export function initializeAds() {
-    fusetag = window.fusetag || (window.fusetag = { que: [] });
-
-    fusetag.que.push(function () {
-        fusetag.pageInit({
+    if (typeof window === "undefined") return; // Skip on the server
+    getFuse().que.push(function () {
+        getFuse().pageInit({
             blockingFuseIds: ["Game_incontent_1"],
         });
     });
+}
+
+export function registerGameplayAd() {
+    getFuse().registerZone("gameplayAd");
 }
 
 let prevResultState = false;
@@ -31,14 +35,12 @@ resultScreenEnabled.subscribe(async (isEnabled) => {
     // Cancel if another operation started while we were waiting
     if (operationId !== pendingOperation) return;
 
-    // Return if fuse is not initialized
-    if (!fusetag) return console.warn("Fusetag not initialized yet.");
     try {
         if (isEnabled) {
-            if (window.matchMedia("(min-width: 1900px)").matches) fusetag.activateZone("resultAd");
-            else fusetag.activateZone("mobileResultAd");
+            if (window.matchMedia("(min-width: 1900px)").matches) getFuse().activateZone("resultAd");
+            else getFuse().activateZone("mobileResultAd");
         } else {
-            fusetag.activateZone("gameplayAd");
+            getFuse().activateZone("gameplayAd");
         }
     } catch (error) {
         console.error("Error occured activating fuse zones:", error);

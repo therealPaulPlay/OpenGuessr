@@ -16,12 +16,16 @@
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
 	import { chatArray, mobileChatLastOpenedMsgCount } from "$lib/stores/context-specific/multiplayerStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+	import { onMount } from "svelte";
+	import { registerGameplayAd } from "$lib/utils/ads";
 
 	function reloadPanorama() {
 		playSound("reload");
 		$loadingScreenVisible = true;
 		$iframeElement.src = $panoramaSrc;
 	}
+
+	onMount(registerGameplayAd);
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={!$adsDisabled}>
