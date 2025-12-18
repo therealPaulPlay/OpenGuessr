@@ -11,7 +11,7 @@
 	import { currentRound, multiplayerMap, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
 	import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 	import { restrictionNames, selectedRestriction } from "$lib/stores/context-specific/restrictionStore";
-	import { blur } from "svelte/transition";
+	import { blur, slide } from "svelte/transition";
 	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 
@@ -38,11 +38,12 @@
 	});
 </script>
 
-{#if !$resultScreenEnabled && !$countryGuessr}
+{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded}
 	<div
 		class="barMenu map-mode-indicator"
-		class:no-upper-rounded-corners={$mapExpanded}
 		class:fading={Boolean($mapModeIndicatorFading)}
+		in:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 100 }}
+		out:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 100, delay: 150 }}
 	>
 		{#if $leaveFunction}
 			<button
@@ -54,7 +55,10 @@
 				}}><LogOut size={22} strokeWidth={2} style="margin-top: 3px;" /></button
 			>
 		{/if}
-		<div class="map-mode-text-container" style:margin-inline={$leaveFunction ? "3px" : "var(--panel-margin)"}>
+		<div
+			class="map-mode-text-container of-left of-right"
+			style:margin-inline={$leaveFunction ? "3px" : "var(--panel-margin)"}
+		>
 			<p class="mode-text">
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
 			</p>
@@ -103,9 +107,6 @@
 		width: 100%;
 		box-sizing: border-box;
 		position: relative;
-	}
-
-	.no-upper-rounded-corners {
 		border-top-right-radius: 0;
 		border-top-left-radius: 0;
 	}
@@ -145,8 +146,8 @@
 		align-items: center;
 		padding-top: 5px;
 		padding-bottom: 5px;
-		overflow: hidden;
-		mask-image: linear-gradient(to right, black 90%, transparent);
+		overflow-x: auto;
+		scrollbar-width: none;
 	}
 
 	.map-mode-text-container p {

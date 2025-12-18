@@ -44,7 +44,7 @@
 	<div
 		id="notificationBar"
 		class="barMenu"
-		style:top={belowNavbar ? "80px" : "var(--layout-margin)"}
+		style:top={belowNavbar ? "calc(var(--layout-margin) + 56px + var(--box-margin))" : "var(--layout-margin)"}
 		transition:fly={{ y: -20, duration: 250 }}
 	>
 		<p id="notificationText">{$notificationText}</p>
