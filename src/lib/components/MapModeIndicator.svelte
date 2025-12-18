@@ -43,7 +43,7 @@
 		class="barMenu map-mode-indicator"
 		class:fading={Boolean($mapModeIndicatorFading)}
 		in:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 100 }}
-		out:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 100, delay: 150 }}
+		out:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 100, delay: 200 }}
 	>
 		{#if $leaveFunction}
 			<button

@@ -58,23 +58,11 @@
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
 
-	// Start ads
+	// Load panorama, ads, overfade etc.
 	onMount(() => {
-		initOverfade(); // Init overfade
+		initOverfade();
 		checkGenerationTypeAndGenerate();
 		initializeAds();
-
-		// Prevent automatic "last button press" with space bar or enter key
-		try {
-			document.addEventListener("keydown", function (event) {
-				var tag = event.target.tagName.toLowerCase();
-				if (event.key === "Enter" || event.key === " ") {
-					if (tag === "button") event.preventDefault();
-				}
-			});
-		} catch (error) {
-			console.warn("Error adding keydown listener to prevent unwanted last button press:", error);
-		}
 	});
 
 	// Load Playlight
@@ -104,6 +92,17 @@
 	<!-- Playlight CSS -->
 	<link rel="stylesheet" href="https://sdk.playlight.dev/playlight-sdk.css" />
 </svelte:head>
+
+<!-- Prevent automatic "last button press" on space bar or enter key press -->
+<svelte:document
+	onkeydown={(event) => {
+		const target = event.target;
+		if (!(target instanceof HTMLElement)) return;
+		if (target.tagName === "BUTTON" && (event.key === "Enter" || event.key === " ")) {
+			event.preventDefault();
+		}
+	}}
+/>
 
 <!-- Keywords -->
 <h1 style:display="none">

@@ -46,9 +46,9 @@
 					}}
 				>
 					{#if $chatArray?.filter((i) => i.username != "Server")?.length === $mobileChatLastOpenedMsgCount}
-						<MessageSquareMore size={22} strokeWidth={2} style="margin-top: 3px;" />
+						<MessageSquareMore size={22} strokeWidth={2.25} style="margin-top: 3px;" />
 					{:else}
-						<MessageSquareDot size={22} strokeWidth={2} style="margin-top: 3px;" />
+						<MessageSquareDot size={22} strokeWidth={2.25} style="margin-top: 3px;" />
 					{/if}
 				</button>
 			{/if}
@@ -118,7 +118,7 @@
 					{#if $mapExpanded && $mapInteractive}
 						Guess
 					{:else if !$mapExpanded}
-						Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2} />
+						Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2.25} />
 					{:else if !$mapInteractive}
 						Locked in
 					{/if}
