@@ -21,7 +21,7 @@
 	});
 </script>
 
-<Popup bind:open={$chatManagePopup} verySlim={true}>
+<Popup bind:open={$chatManagePopup} verySlim={true} z={900}>
 	<div class="popup-title">
 		<h1>Moderation</h1>
 	</div>

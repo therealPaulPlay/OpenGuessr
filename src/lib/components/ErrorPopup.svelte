@@ -57,4 +57,8 @@
 		font-size: 22px;
 		opacity: 60%;
 	}
+
+	.slightBottomMargin {
+		margin-bottom: var(--layout-margin);
+	}
 </style>

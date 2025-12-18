@@ -26,3 +26,4 @@ export const roundLogPopup = writable(false);
 export const tournamentInfoPopup = writable(false);
 export const tournamentMatchResultsPopup = writable(false);
 export const chatManagePopup = writable(false);
+export const chatMobilePopup = writable(false);

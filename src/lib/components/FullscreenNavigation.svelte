@@ -166,7 +166,7 @@
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
-		gap: var(--panel-margin);
+		gap: var(--box-margin);
 		max-width: 400px;
 		margin-inline: auto;
 		padding-inline: var(--layout-margin);
