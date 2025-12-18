@@ -7,7 +7,7 @@
 </script>
 
 {#if $mapExpanded && !$resultScreenEnabled && !$countryGuessr}
-	<div class="mapAttribution mapAttributionContainer" transition:fly={{ duration: 150, y: 30 }}>
+	<div class="mapAttribution mapAttributionContainer" transition:fly={{ duration: 150, y: 120 }}>
 		<div class="mapAttributionDataBox">
 			<p>Map Data ©{new Date().getFullYear()} Google</p>
 			<p>
