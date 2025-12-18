@@ -55,6 +55,7 @@
 		<div class="barMenu socialBar">
 			<button
 				class="linkItem standardButton white"
+				aria-label="Report bug"
 				use:tooltip={{ text: "Report bug" }}
 				onclick={() => {
 					playSound("basic_button");

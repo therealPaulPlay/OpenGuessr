@@ -112,7 +112,7 @@
 
 	.map-icon {
 		width: 20px;
-		height: auto;
+		height: 20px;
 		margin-right: 3px;
 		margin-bottom: -3px;
 	}
