@@ -58,7 +58,8 @@
 	}
 
 	.discordIconJoin {
-		vertical-align: -1px;
+		vertical-align: -2px;
+		margin-left: 3px;
 	}
 
 	#discordWidget {
