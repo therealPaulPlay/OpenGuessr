@@ -22,7 +22,7 @@
 					playSound("floating_button");
 				}}
 			>
-				<ArrowDown strokeWidth={2} size={22} />
+				<ArrowDown strokeWidth={2.25} size={22} />
 			</button>
 		</div>
 		<div class="resize-handle barMenu">
@@ -34,9 +34,9 @@
 				}}
 			>
 				{#if !$mapHovered}
-					<ArrowUpLeft strokeWidth={2} size={22} />
+					<ArrowUpLeft strokeWidth={2.25} size={22} />
 				{:else}
-					<ArrowDownRight strokeWidth={2} size={22} />
+					<ArrowDownRight strokeWidth={2.25} size={22} />
 				{/if}
 			</button>
 		</div>
