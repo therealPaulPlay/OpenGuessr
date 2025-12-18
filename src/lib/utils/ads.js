@@ -16,6 +16,7 @@ export function initializeAds() {
 
 export function activateGameplayAd() {
     getFuse().que.push(function () {
+        getFuse().registerZone("gameplayAd"); // Test
         getFuse().activateZone("gameplayAd");
     });
 }
