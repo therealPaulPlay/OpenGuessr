@@ -6,7 +6,6 @@ function getFuse() {
 }
 
 export function initializeAds() {
-    if (typeof window === "undefined") return; // Skip on the server
     getFuse().que.push(function () {
         getFuse().pageInit({
             blockingFuseIds: ["Game_incontent_1"],
@@ -17,12 +16,14 @@ export function initializeAds() {
 export function registerAndActivateGameplayAd() {
     getFuse().que.push(function () {
         getFuse().registerZone("gameplayAd");
-        // getFuse().activateZone("gameplayAd"); Test this as disabled
+        getFuse().activateZone("gameplayAd");
     });
 }
 
 export function registerResultAds() {
     getFuse().que.push(function () {
+        // Both result ads seem to work fine without registration (opposite to the gameplay ad),
+        // but for good measure I'm registering them as well
         getFuse().registerZone("resultAd");
         getFuse().registerZone("mobileResultAd");
     });
