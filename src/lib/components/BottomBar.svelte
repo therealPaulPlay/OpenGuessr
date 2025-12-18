@@ -16,7 +16,7 @@
 	import { chatArray, mobileChatLastOpenedMsgCount } from "$lib/stores/context-specific/multiplayerStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { onMount } from "svelte";
-	import { registerGameplayAd } from "$lib/utils/ads";
+	import { activateGameplayAd } from "$lib/utils/ads";
 
 	function reloadPanorama() {
 		playSound("reload");
@@ -24,7 +24,7 @@
 		$iframeElement.src = $panoramaSrc;
 	}
 
-	onMount(registerGameplayAd);
+	onMount(activateGameplayAd);
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={!$adsDisabled}>

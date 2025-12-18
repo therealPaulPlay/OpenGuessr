@@ -14,9 +14,9 @@ export function initializeAds() {
     });
 }
 
-export function registerGameplayAd() {
+export function activateGameplayAd() {
     getFuse().que.push(function () {
-        getFuse().registerZone("gameplayAd");
+        getFuse().activateZone("gameplayAd");
     });
 }
 
@@ -39,10 +39,19 @@ resultScreenEnabled.subscribe(async (isEnabled) => {
 
     try {
         if (isEnabled) {
-            if (window.matchMedia("(min-width: 1900px)").matches) getFuse().activateZone("resultAd");
-            else getFuse().activateZone("mobileResultAd");
+            if (window.matchMedia("(min-width: 1900px)").matches) {
+                getFuse().que.push(function () {
+                    getFuse().activateZone("resultAd");
+                });
+            } else {
+                getFuse().que.push(function () {
+                    getFuse().activateZone("mobileResultAd");
+                });
+            }
         } else {
-            getFuse().activateZone("gameplayAd");
+            getFuse().que.push(function () {
+                getFuse().activateZone("gameplayAd");
+            });
         }
     } catch (error) {
         console.error("Error occured activating fuse zones:", error);
