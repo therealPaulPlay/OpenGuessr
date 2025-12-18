@@ -4,7 +4,6 @@
 	import { roundAmount, roundLength, hostStage, roomcode, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import {
-		adsDisabled,
 		crazyGames,
 		preventFullscreen,
 		disableAutoAuthentication,
@@ -24,7 +23,6 @@
 
 			if (crazyGamesEnabled) {
 				// Platform settings
-				adsDisabled.set(true);
 				preventFullscreen.set(true);
 				disableAutoAuthentication.set(true);
 				crazyGames.set(true); // Enable platform
