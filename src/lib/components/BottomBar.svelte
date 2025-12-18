@@ -1,4 +1,3 @@
-<!--bottom toolbar with reset button-->
 <script>
 	import { playSound } from "$lib/utils/soundManager";
 	import { bugspotPopup, chatMobilePopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
