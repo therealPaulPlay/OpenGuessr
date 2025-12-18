@@ -54,7 +54,7 @@
 <style>
 	.chatHolder {
 		left: 10px;
-		bottom: 74px;
+		bottom: 76px;
 		z-index: 10;
 		position: fixed;
 		height: fit-content;

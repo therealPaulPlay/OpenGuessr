@@ -21,7 +21,7 @@
 		position: fixed;
 		display: flex;
 		right: 70px;
-		bottom: 74px;
+		bottom: 76px;
 		align-items: flex-end;
 		flex-direction: column;
 		z-index: 9;
@@ -64,7 +64,7 @@
 	@media (orientation: portrait) and (max-width: 800px) {
 		/* Shift up to fit ad */
 		.map-holder-ad-shift {
-			bottom: 132px;
+			bottom: 136px;
 		}
 
 		.map-holder {

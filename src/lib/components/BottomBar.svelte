@@ -143,6 +143,7 @@
 		height: 95px;
 		min-height: 95px;
 		max-height: 95px;
+		gap: var(--box-margin);
 		display: flex;
 		align-items: end;
 		justify-content: space-between;
@@ -176,7 +177,7 @@
 	.bottomLeftMenu {
 		display: flex;
 		align-items: center;
-		gap: var(--panel-margin);
+		gap: var(--box-margin);
 	}
 
 	.bottomBarIcon {
@@ -219,12 +220,6 @@
 		.gameplayAd {
 			width: 320px;
 			height: 50px;
-		}
-	}
-
-	@media (orientation: landscape) and (max-width: 700px) {
-		.gameplayAdArea {
-			display: none !important;
 		}
 	}
 
@@ -300,7 +295,6 @@
 	.bottomRightMenu {
 		width: max(calc(20% - (var(--box-margin) + 2px)), 200px);
 		margin-right: 60px;
-		margin-left: var(--panel-margin);
 		overflow: hidden;
 	}
 
@@ -311,11 +305,11 @@
 	/* Mobile adjustments */
 	@media (orientation: portrait) and (max-width: 800px) {
 		.gameplayAdArea {
-			bottom: 10px;
+			bottom: var(--box-margin);
 		}
 
 		.BottomBarAdShift {
-			padding-bottom: 58px;
+			padding-bottom: calc(50px + var(--box-margin)); /* Ad is 50px high */
 		}
 
 		.socialBar {

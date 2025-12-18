@@ -100,7 +100,7 @@
 
 	@media (orientation: portrait) and (max-width: 800px) {
 		.countryGuessrSelector {
-			bottom: 134px;
+			bottom: 136px;
 		}
 		.countryGuessrSelector {
 			width: calc(100% - 32px);

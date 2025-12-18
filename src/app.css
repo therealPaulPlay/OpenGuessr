@@ -30,7 +30,7 @@
     --layout-margin: 15px;
     /* Used for elements inside boxes (containers with box-color, box-shadow etc.) */
     --box-margin: 10px;
-    /* Used for floating UI panels (elements not inside of popups or pages, e.g. chat) */
+    /* Used inside floating UI panels (elements not inside of popups or pages, e.g. chat) */
     --panel-margin: 8px;
 
     /* Box shadows */
