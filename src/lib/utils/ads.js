@@ -14,10 +14,17 @@ export function initializeAds() {
     });
 }
 
-export function activateGameplayAd() {
+export function registerAndActivateGameplayAd() {
     getFuse().que.push(function () {
-        getFuse().registerZone("gameplayAd"); // Test
-        getFuse().activateZone("gameplayAd");
+        getFuse().registerZone("gameplayAd");
+        // getFuse().activateZone("gameplayAd"); Test this as disabled
+    });
+}
+
+export function registerResultAds() {
+    getFuse().que.push(function () {
+        getFuse().registerZone("resultAd");
+        getFuse().registerZone("mobileResultAd");
     });
 }
 

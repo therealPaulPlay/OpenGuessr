@@ -16,7 +16,7 @@
 	import { chatArray, mobileChatLastOpenedMsgCount } from "$lib/stores/context-specific/multiplayerStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { onMount } from "svelte";
-	import { activateGameplayAd } from "$lib/utils/ads";
+	import { registerAndActivateGameplayAd } from "$lib/utils/ads";
 
 	function reloadPanorama() {
 		playSound("reload");
@@ -24,7 +24,7 @@
 		$iframeElement.src = $panoramaSrc;
 	}
 
-	onMount(activateGameplayAd);
+	onMount(registerAndActivateGameplayAd);
 </script>
 
 <div id="BottomBar" class="BottomBar" class:BottomBarAdShift={!$adsDisabled}>
@@ -132,17 +132,15 @@
 	{/if}
 </div>
 
-{#if !$adsDisabled}
-	<div class="gameplayAdArea barMenu" transition:blur>
-		<div
-			class="gameplayAd"
-			id="gameplayAd"
-			data-fuse="Game_incontent_1"
-			style:display={$resultScreenEnabled ? "none" : ""}
-		></div>
-		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
-	</div>
-{/if}
+<div class="gameplayAdArea barMenu" transition:blur style:display={$adsDisabled ? "none" : ""}>
+	<div
+		class="gameplayAd"
+		id="gameplayAd"
+		data-fuse="Game_incontent_1"
+		style:display={$resultScreenEnabled ? "none" : ""}
+	></div>
+	<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
+</div>
 
 <style>
 	.BottomBar {

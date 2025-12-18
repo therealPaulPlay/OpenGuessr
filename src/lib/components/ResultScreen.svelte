@@ -32,6 +32,7 @@
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";
 	import { tooltip } from "$lib/utils/tooltip";
+	import { registerResultAds } from "$lib/utils/ads";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -58,6 +59,8 @@
 		if ($resultScreenEnabled && $lastDistance < 1000 * (getMapBounds().diameter / 360)) showConfetti = true;
 		else showConfetti = false;
 	});
+
+	onMount(registerResultAds);
 </script>
 
 {#if showConfetti}
@@ -87,32 +90,28 @@
 
 <div class="endBottomArea" style:display={$resultScreenEnabled ? "" : "none"}>
 	<div class="endBottomBar">
-		{#if !$adsDisabled}
-			<div class="resultAdArea barMenu">
-				<div
-					id="resultAd"
-					class="resultAd"
-					data-fuse="Game_Result_incontent_1"
-					style:display={$resultScreenEnabled ? "" : "none"}
-				></div>
-				<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
-			</div>
-		{/if}
+		<div class="resultAdArea barMenu" style:display={$adsDisabled ? "none" : ""}>
+			<div
+				id="resultAd"
+				class="resultAd"
+				data-fuse="Game_Result_incontent_1"
+				style:display={$resultScreenEnabled ? "" : "none"}
+			></div>
+			<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
+		</div>
 		<div id="resultBox" class="barMenu">
 			<div class="resultField" class:resultFieldHigh={!$adsDisabled} id="motivationText">
 				<p>{$motivationText}</p>
 			</div>
-			{#if !$adsDisabled}
-				<div class="mobileResultAdArea resultField resultFieldHigh">
-					<div
-						id="mobileResultAd"
-						class="mobileResultAd"
-						data-fuse="Game_Result_Mob_Only"
-						style:display={$resultScreenEnabled ? "" : "none"}
-					></div>
-					<p class="noAdvertsText">Ad.</p>
-				</div>
-			{/if}
+			<div class="mobileResultAdArea resultField resultFieldHigh" style:display={$adsDisabled ? "none" : ""}>
+				<div
+					id="mobileResultAd"
+					class="mobileResultAd"
+					data-fuse="Game_Result_Mob_Only"
+					style:display={$resultScreenEnabled ? "" : "none"}
+				></div>
+				<p class="noAdvertsText">Ad.</p>
+			</div>
 			{#if $resultScreenEnabled}
 				<div class="resultField">
 					<RulerDimensionLine class="distance-icon" style="margin-right: 8px;" size={22} strokeWidth={2.25} />
