@@ -16,6 +16,7 @@
 		<div class="barMenu floatingMapCloseMenu" transition:blur={{ duration: 250 }}>
 			<button
 				class="standardButton white floatingButton"
+				aria-label="Toggle minimap"
 				bind:this={toggleMapButton}
 				onclick={() => {
 					mapExpanded.set(false);
@@ -28,6 +29,7 @@
 		<div class="resize-handle barMenu">
 			<button
 				class="standardButton white centerButton"
+				aria-label="Resize minimap"
 				onclick={() => {
 					playSound("basic_button");
 					mapHovered.set(!$mapHovered);
