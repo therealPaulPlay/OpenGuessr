@@ -29,17 +29,6 @@ export function registerResultAds() {
     });
 }
 
-let resizeTimeout;
-
-export function debouncedReRegister() {
-    clearTimeout(resizeTimeout);
-    resizeTimeout = setTimeout(() => {
-        getFuse().que.push(function () {
-            getFuse().registerAll();
-        });
-    }, 150);
-}
-
 let prevResultState = false;
 let pendingOperation = 0;
 
