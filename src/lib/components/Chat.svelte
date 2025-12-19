@@ -31,7 +31,7 @@
 			{#each $chatArray as chat}
 				{#if !$chatMutedPlayers?.includes(chat.clientId)}
 					<span style="overflow-wrap: break-word;"
-						><span style:opacity={chat.clientId == "server" ? 0.75 : 1}>{chat.username}</span>:
+						><span style:opacity={chat.clientId == "server" ? 0.75 : 1}>{chat.username}:</span>
 						<span style:opacity={0.75}>{chat.text}</span></span
 					>
 					<br />
