@@ -219,7 +219,7 @@
 
 	.socialBarIcons {
 		width: 20px;
-		height: auto;
+		height: 20px;
 		margin-inline: 2px;
 		margin-bottom: -1px;
 	}
