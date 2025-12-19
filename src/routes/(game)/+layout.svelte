@@ -1,5 +1,5 @@
 <script>
-	import { initializeAds } from "$lib/utils/ads";
+	import { debouncedReRegister, initializeAds } from "$lib/utils/ads";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 	import { onMount } from "svelte";
 	import initOverfade from "overfade";
@@ -111,6 +111,9 @@
 		}
 	}}
 />
+
+<!-- Re-register all ads on resize to ensure formats adjust -->
+<svelte:window onresize={debouncedReRegister} />
 
 <!-- Keywords -->
 <h1 style:display="none">
