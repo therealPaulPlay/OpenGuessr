@@ -101,9 +101,6 @@ export async function createMultiplayerInstance() {
                 else multiplayerStatus.set("An error occured.");
             });
 
-            // Initialize and open connection
-            await get(socket).init();
-
             // Someone connected...
             get(socket).onEvent('clientConnected', (id) => {
                 if (get(matchmakingActive)) deleteRoomCodeFromMatchmakingServer(); // Delete roomcode from server
@@ -194,7 +191,10 @@ export async function createMultiplayerInstance() {
                 if (get(multiplayer)) leaveMultiplayerRound(false); // If not already left, leave (e.g. on error)
             });
 
+            // Initialize and open connection
+            await get(socket).init();
             resolve(get(socket).id);
+            
         } catch (error) {
             console.error("Error creating multiplayer instance:", error);
             reject(new Error("Failed to create multiplayer instance: " + error.message));
