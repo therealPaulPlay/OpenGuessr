@@ -29,9 +29,7 @@
 				clearTimeout(timeoutId);
 				navigationContentClickable = false;
 			};
-		} else {
-			navigationContentClickable = false;
-		}
+		} else navigationContentClickable = false;
 	});
 
 	function checkTextLength(text) {
