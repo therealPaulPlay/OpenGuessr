@@ -90,7 +90,7 @@
 </script>
 
 <svelte:head>
-	<title>Create a map</title>
+	<title>Create map</title>
 </svelte:head>
 
 <div class="mainContainer">

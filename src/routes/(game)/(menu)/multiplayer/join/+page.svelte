@@ -65,7 +65,7 @@
 <div class="main-container">
 	<div class="inputCenterBox">
 		<div class="multiplayerJoinField">
-			<p class="multiplayerInputInfo">{$multiplayerStatus || "Input a code."}</p>
+			<p class="multiplayerInputInfo">{$multiplayerStatus || ""}</p>
 			<div class="segmentedInputBox" onpaste={handlePaste}>
 				{#each segments as segment, i}
 					{@const placeholder = ["A", "B", "C", "1", "2", "3"]}

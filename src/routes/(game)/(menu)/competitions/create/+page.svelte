@@ -167,7 +167,7 @@
 </script>
 
 <svelte:head>
-	<title>Create a competition</title>
+	<title>Create competition</title>
 </svelte:head>
 
 <Popup

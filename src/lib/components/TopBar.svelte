@@ -15,6 +15,7 @@
 
 	function disableIntroductionNote() {
 		showIntroductionNote = false;
+		localStorage.setItem("menuIntroduction", true);
 	}
 </script>
 
