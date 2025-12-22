@@ -41,7 +41,7 @@
 		src="https://discord.com/widget?id=1221841177863651499&theme=dark"
 		sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
 	></iframe>
-	<button id="socialPopupJoin" class="standardButton largeButton white" onclick={clickJoin}>
+	<button id="socialPopupJoin" class="standardButton bottomButton largeButton white" onclick={clickJoin}>
 		Join
 		<img src="/img/discord.png" class="socialIcon discordIconJoin" alt="Discord Icon" />
 	</button>
@@ -67,5 +67,6 @@
 		height: 100%;
 		width: 100%;
 		min-height: 300px;
+		border-radius: var(--box-margin);
 	}
 </style>

@@ -18,7 +18,7 @@
 	</div>
 	<div class="spacerBadge"></div>
 	<div class="badgeLabel">
-		<p>For Experience gained:</p>
+		<p>For experience gained</p>
 		<p id="experienceBadgeStatus" class="unlockBadgeStatus">
 			50,000 <ArrowRight size="13" /> 250,000 <ArrowRight size="13" /> 1M <ArrowRight size="13" /> 10M
 		</p>
@@ -30,7 +30,7 @@
 		<Badge id="expBadge4" interactive="true" unlocked={$profileExperience >= 10000000} />
 	</div>
 	<div class="badgeLabel">
-		<p>For Duels won:</p>
+		<p>For duels won</p>
 		<p id="duelsBadgeStatus" class="unlockBadgeStatus">
 			5 <ArrowRight size="13" /> 50 <ArrowRight size="13" /> 100 <ArrowRight size="13" /> 500
 		</p>
@@ -42,7 +42,7 @@
 		<Badge id="duelBadge4" interactive="true" unlocked={$profileData?.duelsWon >= 500} />
 	</div>
 	<div class="badgeLabel">
-		<p>For Competitions entered:</p>
+		<p>For competitions entered</p>
 		<p id="competitionsBadgeStatus" class="unlockBadgeStatus">
 			10 <ArrowRight size="13" /> 50 <ArrowRight size="13" /> 100 <ArrowRight size="13" /> 500
 		</p>
@@ -54,7 +54,7 @@
 		<Badge id="compBadge4" interactive="true" unlocked={$profileData?.competitionsEntered >= 500} />
 	</div>
 	<div class="badgeLabel">
-		<p>For Country streaks finished:</p>
+		<p>For streaks finished</p>
 		<p id="streakBadgeStatus" class="unlockBadgeStatus">
 			5 <ArrowRight size="13" /> 15 <ArrowRight size="13" /> 50 <ArrowRight size="13" /> 100
 		</p>
@@ -66,7 +66,7 @@
 		<Badge id="streakBadge4" interactive="true" unlocked={$profileData?.highestCountryStreak >= 100} />
 	</div>
 	<div class="badgeLabel">
-		<p>For Supporter tiers:</p>
+		<p>For supporter tiers</p>
 		<p id="supporterBadgeStatus" class="unlockBadgeStatus">
 			1 <ArrowRight size="13" /> 2 <ArrowRight size="13" /> 3
 		</p>
@@ -77,7 +77,7 @@
 		<Badge id="supporterBadge3" interactive="true" unlocked={$profileSupporterLevel >= 3} />
 	</div>
 	<div class="badgeLabel">
-		<p>Miscellaneous:</p>
+		<p>Miscellaneous</p>
 	</div>
 	<div class="badgeBox" style="margin-bottom: 5px">
 		<Badge id="miscBadge1" interactive="true" unlocked={$profileId <= 5} />

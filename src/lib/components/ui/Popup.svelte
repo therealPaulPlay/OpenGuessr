@@ -13,6 +13,12 @@
 	}
 </script>
 
+<svelte:window
+	onkeydown={(e) => {
+		if (e.key == "Escape") open = false;
+	}}
+/>
+
 {#if open}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
@@ -85,8 +91,8 @@
 	.uiWindow {
 		width: calc(100% - var(--layout-margin) * 2);
 		box-sizing: border-box;
-		padding: 25px;
-		border-radius: 15px;
+		padding: calc(var(--layout-margin) + 5px);
+		border-radius: calc(var(--layout-margin) + var(--box-margin));
 		text-align: left;
 		position: relative;
 		background-color: var(--panel-color);

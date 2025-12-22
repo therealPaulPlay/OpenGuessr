@@ -26,8 +26,7 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { goto } from "$app/navigation";
 	import { onDestroy, onMount } from "svelte";
-	import { blur, fade, scale, slide } from "svelte/transition";
-	import { bounceInOut } from "svelte/easing";
+	import { blur, fade, slide } from "svelte/transition";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { fetchWarnlistStatus } from "$lib/utils/checkReportStatus";
 	import { get } from "svelte/store";
@@ -84,9 +83,8 @@
 			<p class="playButtonsHeader">Custom</p>
 			<div class="groupPartyContent">
 				<button
-					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
 					id="multiplayerSelectJoin"
-					class="standardButton multiplayerSelect white"
+					class="standardButton multiplayerSelect white largeButton"
 					href="/multiplayer/join"
 					onclick={() => {
 						playSound("basic_button");
@@ -96,9 +94,8 @@
 					></button
 				>
 				<button
-					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
 					id="multiplayerSelectHost"
-					class="standardButton multiplayerSelect white"
+					class="standardButton multiplayerSelect white largeButton"
 					href="/multiplayer/host"
 					onclick={() => {
 						playSound("basic_button");
@@ -115,9 +112,8 @@
 			</div>
 			<div class="groupPartyContent">
 				<button
-					in:scale={{ duration: 250, start: 0.95, easing: bounceInOut }}
 					id="multiplayerSelectDuels"
-					class="standardButton multiplayerSelect"
+					class="standardButton multiplayerSelect largeButton"
 					href="/multiplayer/duel"
 					onclick={() => {
 						playSound("basic_button");
@@ -128,7 +124,7 @@
 					<Search size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 1px;" />
 				</button>
 				<button
-					class="standardButton white multiplayerSelect"
+					class="standardButton white multiplayerSelect largeButton"
 					use:tooltip={{ text: "Division-based or Everyone" }}
 					style:flex-grow={0}
 					onclick={() => {
@@ -143,7 +139,7 @@
 					{/if}
 				</button>
 				<button
-					class="standardButton white multiplayerSelect"
+					class="standardButton white multiplayerSelect largeButton"
 					use:tooltip={{ text: "History" }}
 					style:flex-grow={0}
 					onclick={() => {
@@ -166,7 +162,7 @@
 		<!-- Inbox and Friend request buttons-->
 		<div class="friendButtonBox">
 			<button
-				class="standardButton white friendActionButton"
+				class="standardButton white friendActionButton largeButton"
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) {
@@ -177,7 +173,7 @@
 				}}><p class="addFriendText">Add <ContactRound strokeWidth={2} size={22} /></p></button
 			>
 			<button
-				class="standardButton white friendActionButton"
+				class="standardButton white friendActionButton largeButton"
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) {
@@ -199,7 +195,7 @@
 					{#each $loadedFriendsData as entry (entry.id)}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<div
-							class="friendItem"
+							class="friendItem largeButton"
 							role="menu"
 							tabindex="0"
 							onclick={() => {
@@ -303,9 +299,7 @@
 
 	.friendActionButton {
 		justify-content: center !important;
-		min-height: 50px;
 		padding-inline: 15px;
-		border-radius: var(--box-margin);
 	}
 
 	.playButtonsHeader {
@@ -329,7 +323,6 @@
 	}
 
 	.friendItem {
-		border-radius: var(--box-margin);
 		display: flex;
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
@@ -338,7 +331,6 @@
 			filter 250ms ease,
 			transform 250ms ease,
 			scale 250ms ease;
-		height: 50px;
 		align-items: center;
 		justify-content: space-between;
 		border: none;
@@ -404,10 +396,9 @@
 	}
 
 	.multiplayerSelect {
-		height: 50px;
-		width: auto;
 		flex-grow: 1;
 		border-radius: var(--box-margin);
+		flex-basis: 0;
 	}
 
 	#multiplayerSelectDuels {

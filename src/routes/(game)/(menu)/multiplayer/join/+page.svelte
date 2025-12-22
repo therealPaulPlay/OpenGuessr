@@ -65,7 +65,7 @@
 <div class="main-container">
 	<div class="inputCenterBox">
 		<div class="multiplayerJoinField">
-			<p class="multiplayerInputInfo">{$multiplayerStatus || "Input a code."}</p>
+			<p class="multiplayerInputInfo">{$multiplayerStatus || ""}</p>
 			<div class="segmentedInputBox" onpaste={handlePaste}>
 				{#each segments as segment, i}
 					{@const placeholder = ["A", "B", "C", "1", "2", "3"]}
@@ -87,7 +87,7 @@
 		</div>
 		<button
 			id="multiplayerJoin"
-			class="standardButton"
+			class="standardButton largeButton"
 			disabled={roomCodeInput.length !== 6}
 			onclick={() => {
 				playSound("start_button");
@@ -97,7 +97,7 @@
 	</div>
 </div>
 {#if openRooms?.length > 0}
-	<p class="publicRoomTitle" transition:blur>Public rooms:</p>
+	<p class="publicRoomTitle" transition:blur>Public rooms</p>
 	<div class="publicRoomBox" transition:blur>
 		{#each openRooms as room}
 			<div class="publicRoomItem">
@@ -225,8 +225,6 @@
 	}
 
 	#multiplayerJoin {
-		min-height: 50px;
-		border-radius: var(--box-margin);
 		padding-inline: 50px;
 		margin-top: var(--layout-margin);
 	}

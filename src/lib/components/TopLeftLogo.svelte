@@ -7,7 +7,7 @@
 		position: fixed;
 		top: 0;
 		left: 0;
-		padding: calc(var(--layout-margin) + var(--box-margin));
+		padding: calc(var(--layout-margin) + 5px);
 		z-index: 13;
 		display: flex;
 		align-items: center;

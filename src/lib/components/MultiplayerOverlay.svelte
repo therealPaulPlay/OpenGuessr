@@ -109,8 +109,7 @@
 		<div class="buttonBox" in:blur={{ delay: 500 }}>
 			{#if $rematchButtonVisible}
 				<button
-					id="endMultiplayerRematchButton"
-					class="standardButton white"
+					class="standardButton white largeButton roundEndButton"
 					onclick={() => {
 						playSound("basic_button");
 						get(socket)?.sendRequest("rematch");
@@ -119,8 +118,7 @@
 			{/if}
 			{#if $leaveMatchButtonVisible}
 				<button
-					id="endMultiplayerRoundButton"
-					class="standardButton"
+					class="standardButton largeButton roundEndButton"
 					onclick={() => {
 						playSound("basic_button");
 						leaveMultiplayerRound();
@@ -188,7 +186,7 @@
 	}
 
 	.buttonBox {
-		margin-top: 25px;
+		margin-top: calc(var(--layout-margin) + var(--box-margin));
 		gap: var(--layout-margin);
 		display: flex;
 		flex-wrap: wrap;
@@ -197,16 +195,12 @@
 		padding-inline: var(--box-margin);
 	}
 
-	#endMultiplayerRoundButton {
+	.roundEndButton {
 		min-width: 150px;
-		height: 50px;
-		border-radius: var(--box-margin);
 	}
 
-	#endMultiplayerRematchButton {
+	.roundEndButton {
 		min-width: 150px;
-		height: 50px;
-		border-radius: var(--box-margin);
 	}
 
 	.multiplayerTitle {
