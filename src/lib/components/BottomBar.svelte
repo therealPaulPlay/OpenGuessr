@@ -22,7 +22,7 @@
 	}
 </script>
 
-<div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
+<div id="bottomBar" class="bottomBar" class:bottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
 	<div class="bottomLeftMenu">
 		<div class="barMenu">
 			<button
@@ -32,7 +32,7 @@
 				}}
 			>
 				<img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
-				Return
+				<span class="resetButtonText">Return</span>
 			</button>
 			{#if $multiplayer}
 				<button
@@ -100,7 +100,7 @@
 {/if}
 
 <style>
-	.BottomBar {
+	.bottomBar {
 		position: fixed;
 		bottom: var(--box-margin);
 		width: calc(100% - 20px);
@@ -233,7 +233,10 @@
 
 	#resetButtonImg {
 		width: 21px;
-		margin-right: var(--panel-margin);
+	}
+
+	.resetButtonText {
+		margin-left: var(--panel-margin);
 	}
 
 	.bottomRightMenu {
@@ -252,7 +255,7 @@
 			bottom: var(--box-margin);
 		}
 
-		.BottomBarAdShift {
+		.bottomBarAdShift {
 			padding-bottom: calc(50px + var(--box-margin)); /* Ad is 50px high */
 		}
 
@@ -263,6 +266,10 @@
 		.bottomRightMenu {
 			flex-grow: 1;
 			margin-right: 0;
+		}
+
+		.resetButtonText {
+			display: none;
 		}
 	}
 </style>

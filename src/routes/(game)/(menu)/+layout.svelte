@@ -7,6 +7,7 @@
 	import { goto, afterNavigate } from "$app/navigation";
 	import { Home } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
+	import { page } from "$app/state";
 
 	let historyStack = $state([]);
 	let isGoingBack = false;
@@ -25,6 +26,10 @@
 		goto(historyStack.at(-1) || "/");
 	}
 
+	function leaveMultiplayerIfReturningFromMultiplayerPage() {
+		if (page.url.pathname.startsWith("/multiplayer")) leaveMultiplayerRound();
+	}
+
 	let showHomeButton = $derived(historyStack.at(-1) !== "/");
 </script>
 
@@ -35,7 +40,7 @@
 		disabled={$screenEscapeDisabled}
 		onclick={() => {
 			playSound("basic_button");
-			leaveMultiplayerRound();
+			leaveMultiplayerIfReturningFromMultiplayerPage();
 			goBack();
 		}}
 	>
@@ -48,7 +53,7 @@
 			disabled={$screenEscapeDisabled}
 			onclick={() => {
 				playSound("basic_button");
-				leaveMultiplayerRound();
+				leaveMultiplayerIfReturningFromMultiplayerPage();
 				goto("/");
 			}}
 		>

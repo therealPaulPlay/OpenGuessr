@@ -2,7 +2,7 @@
 	import { goto } from "$app/navigation";
 	import { isAuthenticated, supporterLevel, username } from "$lib/stores/accountStore";
 	import { singleplayer } from "$lib/stores/modeStore";
-	import { bugspotPopup, fullscreenNavigation, settingsPopup } from "$lib/stores/uiStore";
+	import { bugspotPopup, navigationMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { fade, fly, scale } from "svelte/transition";
@@ -13,11 +13,26 @@
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { page } from "$app/state";
+	import { onMount } from "svelte";
 
 	let preventNavigateOut = $derived(!$singleplayer);
-
 	let scrollNameText = $state(false);
-	let isHoveringTrigger = $state(false);
+	let navigationListEnlarged = $state(false);
+	let navigationContentClickable = $state(false);
+
+	$effect(() => {
+		if (navigationListEnlarged) {
+			const timeoutId = setTimeout(() => {
+				navigationContentClickable = true;
+			}, 250);
+			return () => {
+				clearTimeout(timeoutId);
+				navigationContentClickable = false;
+			};
+		} else {
+			navigationContentClickable = false;
+		}
+	});
 
 	function checkTextLength(text) {
 		const textLength = text.length;
@@ -27,13 +42,19 @@
 	username.subscribe((value) => {
 		if (value) checkTextLength(value);
 	});
+
+	$effect(() => {
+		if ($navigationMenu === false) navigationListEnlarged = false;
+	});
 </script>
 
-<svelte:window onkeydown={(e) => {
-	if (e.key == "Escape") $fullscreenNavigation = false;
-}} />
+<svelte:window
+	onkeydown={(e) => {
+		if (e.key == "Escape" && $navigationMenu) $navigationMenu = false;
+	}}
+/>
 
-{#if $fullscreenNavigation}
+{#if $navigationMenu}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
 		class="fullscreen-navigation-overlay"
@@ -42,7 +63,7 @@
 		role="button"
 		transition:fade={{ duration: 100 }}
 		onclick={(e) => {
-			if (e.target == e.currentTarget) $fullscreenNavigation = false;
+			if (e.target === e.currentTarget) $navigationMenu = false;
 		}}
 	>
 		<div class="navigation-menu">
@@ -156,35 +177,37 @@
 				</button>
 			</div>
 		</div>
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<div
-			class="navigation-list-trigger"
-			onmouseenter={() => {
-				isHoveringTrigger = true;
-			}}
-			onmouseleave={(e) => {
-				if (e.target == e.currentTarget) isHoveringTrigger = false;
-			}}
-		></div>
+		{#if navigationListEnlarged}
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
+			<div
+				class="navigation-list-hover-overlay"
+				transition:fade={{ duration: 150 }}
+				onclick={() => (navigationListEnlarged = false)}
+			></div>
+		{/if}
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
 			class="navigation-list barMenu"
-			class:hovered={isHoveringTrigger}
-			onmouseenter={() => {
-				isHoveringTrigger = true;
+			class:hovered={navigationListEnlarged}
+			onpointerenter={(e) => {
+				if (e.pointerType !== "touch") navigationListEnlarged = true;
 			}}
-			onmouseleave={() => {
-				isHoveringTrigger = false;
+			onpointerleave={(e) => {
+				if (e.pointerType !== "touch") navigationListEnlarged = false;
+			}}
+			onpointerdown={(e) => {
+				if (e.pointerType === "touch") navigationListEnlarged = true;
 			}}
 			in:fly={{ delay: 50, x: -10, y: 100, duration: 350 }}
 		>
-			<div class="navigation-list-content">
+			<div class="navigation-list-content" style:pointer-events={navigationContentClickable ? "auto" : "none"}>
 				<TitleSeparator text="Links" noMargin={true} class="main-menu-list-header" />
 				<button
 					class="list-button"
 					aria-label="Report bug"
 					onclick={() => {
 						playSound("basic_button");
+						navigationListEnlarged = false;
 						$bugspotPopup = true;
 					}}
 				>
@@ -195,6 +218,7 @@
 					class="list-button"
 					onclick={() => {
 						playSound("basic_button");
+						navigationListEnlarged = false;
 						window.open($discordInviteUrl, "_blank").focus();
 					}}
 				>
@@ -205,6 +229,7 @@
 					class="list-button"
 					onclick={() => {
 						playSound("basic_button");
+						navigationListEnlarged = false;
 						window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
 					}}
 				>
@@ -215,6 +240,7 @@
 					class="list-button"
 					onclick={() => {
 						playSound("basic_button");
+						navigationListEnlarged = false;
 						goto("/legal");
 					}}
 				>
@@ -224,6 +250,7 @@
 					class="list-button"
 					onclick={() => {
 						playSound("basic_button");
+						navigationListEnlarged = false;
 						window.open("https://paulplay.studio/openguessr", "_blank").focus();
 					}}
 				>
@@ -312,12 +339,12 @@
 
 	.navigation-list {
 		position: fixed;
+		z-index: 3;
 		height: 240px;
 		display: flex;
 		box-sizing: border-box;
-		bottom: calc(-1 * var(--layout-margin) * 3.75);
+		bottom: calc(-1 * var(--layout-margin) * 4.25);
 		left: var(--layout-margin);
-		display: flex;
 		width: 200px;
 		overflow: hidden;
 		margin-inline: auto;
@@ -330,18 +357,8 @@
 			left 250ms ease;
 	}
 
-	.hovered {
-		rotate: 0deg !important;
-		left: var(--layout-margin);
-		bottom: var(--layout-margin);
-	}
-
-	.hovered > .navigation-list-content {
-		mask-image: none;
-	}
-
 	.navigation-list-content {
-		mask-image: linear-gradient(to bottom, black 40%, rgba(0, 0, 0, 0.15) 80%);
+		mask-image: linear-gradient(to bottom, black 40%, rgba(0, 0, 0, 0.15) 75%);
 		justify-content: start;
 		align-items: start;
 		flex-direction: column;
@@ -351,12 +368,24 @@
 		height: 100%;
 	}
 
-	.navigation-list-trigger {
-		position: fixed;
-		left: 0;
-		bottom: 0;
-		width: 275px;
-		height: 315px;
+	@media (max-width: 1200px) {
+		.navigation-list {
+			bottom: calc(-1 * var(--layout-margin) * 10);
+		}
+
+		.navigation-list-content {
+			mask-image: linear-gradient(to bottom, black 20%, rgba(0, 0, 0, 0.15) 30%);
+		}
+	}
+
+	.hovered {
+		rotate: 0deg !important;
+		left: var(--layout-margin);
+		bottom: var(--layout-margin);
+	}
+
+	.hovered .navigation-list-content {
+		mask-image: none;
 	}
 
 	.list-button {
@@ -364,11 +393,17 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		border-radius: var(--box-margin);
 		color: white;
 		transition:
 			color 250ms ease,
 			opacity 250ms ease;
+	}
+
+	.navigation-list-hover-overlay {
+		position: fixed;
+		inset: 0;
+		z-index: 1;
+		background-color: var(--box-color-dark);
 	}
 
 	.list-button:hover {
@@ -377,14 +412,5 @@
 
 	:global(.main-menu-list-header) {
 		padding-top: 5px;
-	}
-
-	@media (max-width: 1000px) {
-		.navigation-list {
-			display: none;
-		}
-		.navigation-list-trigger {
-			display: none;
-		}
 	}
 </style>

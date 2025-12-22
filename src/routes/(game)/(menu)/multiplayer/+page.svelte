@@ -398,6 +398,7 @@
 	.multiplayerSelect {
 		flex-grow: 1;
 		border-radius: var(--box-margin);
+		flex-basis: 0;
 	}
 
 	#multiplayerSelectDuels {

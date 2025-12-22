@@ -9,7 +9,7 @@ import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapPinLat, mapPinLng, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
-import { fullscreenNavigation, guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
+import { navigationMenu, guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
 import { leaveFunction } from "$lib/stores/context-specific/mapModeIndicatorStore";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
@@ -63,7 +63,7 @@ function setMultiplayerUI() {
         });
         chatVisible.set(true);
         linkJoinPopup.set(false);
-        fullscreenNavigation.set(false);
+        navigationMenu.set(false);
     } else {
         leaveFunction.set(); // Hides leave option too
         chatVisible.set(false);
@@ -354,7 +354,7 @@ export function leaveMultiplayerRound(destroy = true) {
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
-        fullscreenNavigation.set(false);
+        navigationMenu.set(false);
         showMultiplayerOverlay(false); // Also makes map interactive
         updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
         setMultiplayerUI();

@@ -13,7 +13,7 @@ import { get } from "svelte/store";
 import { username } from "$lib/stores/accountStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
-import { fullscreenNavigation } from "$lib/stores/uiStore";
+import { navigationMenu } from "$lib/stores/uiStore";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
 let competitionCombinedScore = 0;
@@ -23,7 +23,7 @@ let competitionTimer;
 export function loadCompetition() {
     if (!get(competitionData)) return errorPopup("Failed to start competition", "No competition data was provided!");
     competition.set(true); // Activate Competition mode
-    fullscreenNavigation.set(false);
+    navigationMenu.set(false);
     competitionRound.set(0); // Reset round index
     competitionCombinedScore = 0; // Reset combined score
     leaveFunction.set(() => leaveCompetition(true)); // Set leave function for mapModeIndicator

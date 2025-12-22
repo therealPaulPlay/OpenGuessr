@@ -1,5 +1,5 @@
 <script>
-	import { fullscreenNavigation } from "$lib/stores/uiStore";
+	import { navigationMenu } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { EllipsisVertical, X } from "@lucide/svelte";
 	import { tooltip } from "$lib/utils/tooltip";
@@ -18,7 +18,7 @@
 		class="standardButton white menu-button"
 		onclick={() => {
 			disableIntroductionNote();
-			$fullscreenNavigation = !$fullscreenNavigation;
+			$navigationMenu = !$navigationMenu;
 			playSound("basic_button");
 		}}
 		><span class="menu-span">Menu</span>
@@ -79,7 +79,7 @@
 	}
 
 	.menu-tooltip-arrow {
-		right: 40px;
+		right: 29px;
 		top: -8px;
 		width: 10px;
 		height: 8px;
@@ -96,7 +96,7 @@
 		margin-bottom: 2px;
 	}
 
-	@media (max-width: 1200px) {
+	@media (max-width: 800px) and (orientation: portrait) {
 		.menu-span {
 			display: none;
 		}
