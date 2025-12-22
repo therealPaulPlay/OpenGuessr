@@ -13,15 +13,20 @@
 	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
 	import { chatArray, mobileChatLastOpenedMsgCount } from "$lib/stores/context-specific/multiplayerStore";
+	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+	import { onMount } from "svelte";
+	import { registerAndActivateGameplayAd } from "$lib/utils/ads";
 
 	function reloadPanorama() {
 		playSound("reload");
 		$loadingScreenVisible = true;
 		$iframeElement.src = $panoramaSrc;
 	}
+
+	onMount(registerAndActivateGameplayAd);
 </script>
 
-<div id="bottomBar" class="bottomBar" class:bottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
+<div id="bottomBar" class="bottomBar" class:bottomBarAdShift={!$adsDisabled}>
 	<div class="bottomLeftMenu">
 		<div class="barMenu">
 			<button
@@ -91,12 +96,15 @@
 	{/if}
 </div>
 
-{#if $supporterLevel <= 1 && !$adsDisabled}
-	<div class="gameplayAdArea barMenu" transition:blur>
-		<div class="gameplayAd" id="gameplayAd"></div>
-		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
-	</div>
-{/if}
+<div class="gameplayAdArea barMenu" transition:blur style:display={$adsDisabled ? "none" : ""}>
+	<div
+		class="gameplayAd"
+		id="gameplayAd"
+		data-fuse="Game_incontent_1"
+		style:display={$resultScreenEnabled ? "none" : ""}
+	></div>
+	<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
+</div>
 
 <style>
 	.bottomBar {
