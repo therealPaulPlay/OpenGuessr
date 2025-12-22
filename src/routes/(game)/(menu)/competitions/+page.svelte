@@ -431,7 +431,7 @@
 		<div class="rankingDisplayScroll of-top of-bottom">
 			{#if yourEntry}
 				<div class="youBar">
-					<p class="youLabel">You:</p>
+					<p class="youLabel">You</p>
 					<div class="rankItem yourItem">
 						<p>#{yourEntry.position}</p>
 						<p

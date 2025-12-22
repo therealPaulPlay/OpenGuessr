@@ -17,6 +17,8 @@ Body text and headings should be written as plain sentences, without random capi
 
 Official map names, competition names, tournament names, and the names of other user-creatable game elements should capitalize each word (for example, “Urban Competition”). However, when users create their own content, they are free to choose their own capitalization and formatting.
 
+Using a colon ":" for lists or labels is not recommended.
+
 ## Developing
 
 Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:

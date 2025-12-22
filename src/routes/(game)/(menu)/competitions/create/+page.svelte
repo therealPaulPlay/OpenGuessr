@@ -183,7 +183,7 @@
 	</p>
 	<div class="spacer"></div>
 	<div>
-		<p>Enter link:</p>
+		<p>Enter link</p>
 		<div class="linkBox">
 			<p>{enterLink}</p>
 			<button
@@ -202,7 +202,7 @@
 				}}><Copy size="18" strokeWidth={2.5} /></button
 			>
 		</div>
-		<p>Leaderboard link:</p>
+		<p>Leaderboard link</p>
 		<div class="linkBox">
 			<p>{leaderboardLink}</p>
 			<button
@@ -227,7 +227,7 @@
 <div class="mainContainer">
 	<h1 class="header" id="uploadHeader">Create a competition</h1>
 	<div class="infoNoteBox">
-		<p class="uploadFirstText">Information and rules:</p>
+		<p class="uploadFirstText">Rules</p>
 		<ul>
 			<li>Keep all details in English.</li>
 			<li>Pick a descriptive competition name.</li>
@@ -238,7 +238,7 @@
 		</ul>
 	</div>
 	<div id="inputArea">
-		<p class="marginTop">Competition name:</p>
+		<p class="marginTop">Competition name</p>
 		<input
 			id="uploadCompetitionName"
 			bind:value={competitionName}
@@ -248,7 +248,7 @@
 			placeholder="Name of your competition..."
 			maxlength="30"
 		/>
-		<p>Competition description:</p>
+		<p>Competition description</p>
 		<input
 			id="uploadCompetitionDescription"
 			bind:value={competitionDescription}
@@ -257,7 +257,7 @@
 			placeholder="Description..."
 			maxlength="70"
 		/>
-		<p>Round length (seconds):</p>
+		<p>Round length (seconds)</p>
 		<div class="extendedInputBox">
 			<input
 				id="uploadCompetitionRoundLength"
@@ -269,7 +269,7 @@
 				maxlength="30"
 			/>
 		</div>
-		<p>Duration (use min, h and d):</p>
+		<p>Duration (min, h & d)</p>
 		<input
 			id="uploadCompetitionDuration"
 			class="uploadInfo"
@@ -279,7 +279,7 @@
 			placeholder="2d"
 			maxlength="30"
 		/>
-		<p>Visibility:</p>
+		<p>Visibility</p>
 		<button
 			class="standardButton white toggleButton largeButton"
 			onclick={() => {
@@ -288,7 +288,7 @@
 			}}>{competitionPrivate ? "Private" : "Public"}</button
 		>
 		<div class="spacer"></div>
-		<p>Restriction:</p>
+		<p>Restriction</p>
 		<button
 			class="standardButton white toggleButton largeButton"
 			onclick={() => {
@@ -298,7 +298,7 @@
 		>
 		<div class="spacer"></div>
 		<div class="infoNoteBox marginBottom">
-			<p class="uploadFirstText">How to add locations:</p>
+			<p class="uploadFirstText">How to add locations</p>
 			<ol>
 				<li>
 					Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer.
@@ -308,7 +308,7 @@
 			</ol>
 		</div>
 		<div class="spacer"></div>
-		<p>Locations (fixed order, max. 20):</p>
+		<p>Locations (fixed order, max. 20)</p>
 		<textarea
 			id="uploadLocationData"
 			bind:value={locationData}

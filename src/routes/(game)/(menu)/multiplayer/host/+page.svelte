@@ -71,15 +71,15 @@
 	<div class="multiplayerCreationArea">
 		{#if $hostStage == 1}
 			<div class="roomCreationModule multiplayerHostSettings">
-				<p>Rounds:</p>
+				<p>Rounds</p>
 				<Ticker limit={10} minimum={2} initialValue={3} bind:value={$roundAmount} />
 			</div>
 			<div class="roomCreationModule multiplayerHostSettings">
-				<p>Round length:</p>
+				<p>Round length</p>
 				<Ticker limit={300} step={10} minimum={10} note="sec" initialValue={60} bind:value={$roundLength} />
 			</div>
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
-				<p>Restriction:</p>
+				<p>Restriction</p>
 				<button
 					class="standardButton white toggleSwitch"
 					onclick={() => {
@@ -89,13 +89,13 @@
 				>
 			</div>
 			<div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
-				<p>Teams:</p>
+				<p>Teams</p>
 				<div class="ticker">
 					<Ticker limit={5} lowerLimitText="No" note="teams" initialValue={1} bind:value={$teamAmount} />
 				</div>
 			</div>
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
-				<p>Style:</p>
+				<p>Style</p>
 				<Tabs
 					tabs={["Standard", "Duel"]}
 					onchange={(selected, _index) => {
@@ -105,7 +105,7 @@
 				/>
 			</div>
 			<div id="roomCreationMap" class="roomCreationModule multiplayerHostSettings">
-				<p>Map:</p>
+				<p>Map</p>
 				<div class="selectedMapField">
 					<p id="multiplayerMapDisplay">
 						{(() => {
@@ -127,7 +127,7 @@
 		{#if $hostStage == 2}
 			<!-- Room code-->
 			<div class="roomCreationModule multiplayerHostSettings noGap">
-				<p class="codeDisplayText">Join with code:</p>
+				<p class="codeDisplayText">Join with code</p>
 				<h1 id="roomCodeDisplay">
 					{$roomcode?.slice(0, 3) || "..."}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomcode?.slice(3) ||
 						"..."}

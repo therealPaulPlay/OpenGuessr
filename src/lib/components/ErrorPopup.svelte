@@ -30,7 +30,7 @@
 	</div>
 	{#if !$hideDisableOption}
 		<div id="errorPopupDisable">
-			<p>Never show again:</p>
+			<p>Never show again</p>
 			<input type="checkbox" id="hideErrors" bind:checked={$hideErrors} />
 		</div>
 	{/if}

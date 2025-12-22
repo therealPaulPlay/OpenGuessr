@@ -106,7 +106,7 @@
 		<div class="tierBox">
 			<div class="tierBoxLargeTier"><p>Tier 1</p></div>
 			<ul class="tierBenefits">
-				<li style="opacity: 50%;">Tier 2 benefits, but:</li>
+				<li style="opacity: 50%;">Same as tier 2, but</li>
 				<li><CircleMinus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Ad-supported</li>
 				<li><CircleArrowDown size={20} style="margin-right: 10px; margin-bottom: -2px;" />10% XP boost</li>
 				<li><CircleArrowDown size={20} style="margin-right: 10px; margin-bottom: -2px;" />Tier 1 badge</li>
@@ -121,7 +121,7 @@
 		<div class="tierBox">
 			<div class="tierBoxLargeTier"><p>Tier 3</p></div>
 			<ul class="tierBenefits">
-				<li style="opacity: 50%;">Tier 2 benefits, plus:</li>
+				<li style="opacity: 50%;">Same as tier 2, plus</li>
 				<li><CircleArrowUp size={20} style="margin-right: 10px; margin-bottom: -2px;" />25% XP boost</li>
 				<li><CircleArrowUp size={20} style="margin-right: 10px; margin-bottom: -2px;" />Tier 3 badge</li>
 			</ul>
@@ -234,6 +234,8 @@
 		transition: filter 250ms ease;
 		position: relative;
 		height: 210px;
+		flex-basis: 0;
+		min-width: 250px;
 	}
 
 	.tierBoxLarge {

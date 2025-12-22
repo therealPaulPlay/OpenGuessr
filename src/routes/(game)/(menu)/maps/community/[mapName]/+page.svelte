@@ -382,7 +382,7 @@
 	<div class="popup-title">
 		<h1 id="mapUpdateHeader">Update locations</h1>
 	</div>
-	<p class="marginBottom">Locations:</p>
+	<p class="marginBottom">Locations</p>
 	<Tabs
 		tabs={["Overwrite all", "Add"]}
 		onchange={(_, tabIndex) => {
@@ -398,9 +398,7 @@
 		bind:value={textareaValue}
 		placeholder="https://www.google.com/maps..."
 	></textarea>
-	<p>...or upload a JSON in the OpenGuessr format:</p>
 	<button
-		id="jsonUpdateButton"
 		class="standardButton white"
 		onclick={() => {
 			playSound("basic_button");
@@ -546,13 +544,9 @@
 		padding: var(--box-margin);
 		padding-inline: 20px;
 		margin-bottom: var(--layout-margin);
-		margin-top: var(--box-margin);
+		margin-top: var(--layout-margin);
 		transition: background-color 250ms ease;
 		color: white;
-	}
-
-	#jsonUpdateButton {
-		margin-top: 10px;
 	}
 
 	.locationAmountInfo {

@@ -96,7 +96,7 @@
 <div class="mainContainer">
 	<h1 class="header" id="uploadHeader">Create a map</h1>
 	<div class="infoNoteBox">
-		<h2 class="uploadFirstText">Important rules:</h2>
+		<h2 class="uploadFirstText">Rules</h2>
 		<ul>
 			<li>You can only upload max. 3 maps per day.</li>
 			<li>Maps must at least have 50 unique locations.</li>
@@ -107,7 +107,7 @@
 		</ul>
 	</div>
 	<div class="inputArea">
-		<p class="marginTop">Map name:</p>
+		<p class="marginTop">Map name</p>
 		<input
 			id="uploadMapName"
 			class="uploadInfo"
@@ -117,7 +117,7 @@
 			placeholder="Name of your map..."
 			maxlength="25"
 		/>
-		<p>Map category:</p>
+		<p>Map category</p>
 		<select id="categoryDropdown" class="dropdown standardButton white largeButton" bind:value={categoryValue}>
 			<option value="none">Click to select</option>
 			<option value="Nature">Nature</option>
@@ -128,7 +128,7 @@
 			<option value="Transport">Transport</option>
 			<option value="Miscellaneous">Miscellaneous</option>
 		</select>
-		<p>Map description:</p>
+		<p>Map description</p>
 		<input
 			id="uploadMapDescription"
 			class="uploadInfo"
@@ -138,14 +138,14 @@
 			bind:value={mapDescription}
 		/>
 		<div class="infoNoteBox">
-			<p class="uploadFirstText">How to add locations:</p>
+			<p class="uploadFirstText">How to add locations</p>
 			<ol>
 				<li>Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer.</li>
 				<li>Drag the orange figure onto the map to open a streetview.</li>
 				<li>Copy the URL from the address bar of your browser into the textbox.</li>
 			</ol>
 		</div>
-		<p class="marginTop">Locations (as links):</p>
+		<p class="marginTop">Locations (as links)</p>
 		<textarea
 			id="uploadMapData"
 			bind:value={uploadMapDataValue}
