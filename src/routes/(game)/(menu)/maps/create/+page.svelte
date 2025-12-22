@@ -90,13 +90,13 @@
 </script>
 
 <svelte:head>
-	<title>Create a map</title>
+	<title>Create map</title>
 </svelte:head>
 
 <div class="mainContainer">
 	<h1 class="header" id="uploadHeader">Create a map</h1>
 	<div class="infoNoteBox">
-		<h2 class="uploadFirstText">Important rules:</h2>
+		<h2 class="uploadFirstText">Rules</h2>
 		<ul>
 			<li>You can only upload max. 3 maps per day.</li>
 			<li>Maps must at least have 50 unique locations.</li>
@@ -107,7 +107,7 @@
 		</ul>
 	</div>
 	<div class="inputArea">
-		<p class="marginTop">Map name:</p>
+		<p class="marginTop">Map name</p>
 		<input
 			id="uploadMapName"
 			class="uploadInfo"
@@ -117,8 +117,8 @@
 			placeholder="Name of your map..."
 			maxlength="25"
 		/>
-		<p>Map category:</p>
-		<select id="categoryDropdown" class="dropdown standardButton white" bind:value={categoryValue}>
+		<p>Map category</p>
+		<select id="categoryDropdown" class="dropdown standardButton white largeButton" bind:value={categoryValue}>
 			<option value="none">Click to select</option>
 			<option value="Nature">Nature</option>
 			<option value="Architecture">Architecture</option>
@@ -128,7 +128,7 @@
 			<option value="Transport">Transport</option>
 			<option value="Miscellaneous">Miscellaneous</option>
 		</select>
-		<p>Map description:</p>
+		<p>Map description</p>
 		<input
 			id="uploadMapDescription"
 			class="uploadInfo"
@@ -138,14 +138,14 @@
 			bind:value={mapDescription}
 		/>
 		<div class="infoNoteBox">
-			<p class="uploadFirstText">How to add locations:</p>
+			<p class="uploadFirstText">How to add locations</p>
 			<ol>
 				<li>Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer.</li>
 				<li>Drag the orange figure onto the map to open a streetview.</li>
 				<li>Copy the URL from the address bar of your browser into the textbox.</li>
 			</ol>
 		</div>
-		<p class="marginTop">Locations (as links):</p>
+		<p class="marginTop">Locations (as links)</p>
 		<textarea
 			id="uploadMapData"
 			bind:value={uploadMapDataValue}
@@ -175,7 +175,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		</div>
 		<button
 			id="jsonUploadButton"
-			class="standardButton white"
+			class="standardButton white largeButton"
 			onclick={() => {
 				playSound("basic_button");
 				filePicker.click();
@@ -196,7 +196,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	<div class="buttonContainer">
 		<button
 			id="uploadConfirm"
-			class="standardButton largeButton submitButton"
+			class="standardButton bottomButton largeButton submitButton"
 			onclick={() => {
 				playSound("basic_button");
 				showConfirmPopup(
@@ -244,10 +244,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 
 	#jsonUploadButton {
 		margin-top: 10px;
-		padding-top: 2px;
-		padding-bottom: 2px;
-		border-radius: var(--box-margin);
-		min-height: 50px;
 		min-width: 150px;
 	}
 
@@ -325,7 +321,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	.locationTextbox {
 		min-height: 350px;
 		font-size: 16px;
-		width: calc(100% - 30px);
+		width: 100%;
 		padding: 20px;
 		transition: background-color 250ms ease;
 	}
@@ -359,8 +355,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		margin-bottom: 20px;
 		margin-top: 10px;
 		width: 150px;
-		min-height: 50px;
-		border-radius: var(--box-margin);
 	}
 
 	select option {

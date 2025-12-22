@@ -30,7 +30,7 @@
 	</div>
 	{#if !$hideDisableOption}
 		<div id="errorPopupDisable">
-			<p>Never show again:</p>
+			<p>Never show again</p>
 			<input type="checkbox" id="hideErrors" bind:checked={$hideErrors} />
 		</div>
 	{/if}
@@ -53,7 +53,7 @@
 	#errorPopupDisable {
 		display: flex;
 		vertical-align: center;
-		margin-top: 20px;
+		margin-top: var(--layout-margin);
 		font-size: 22px;
 		opacity: 60%;
 	}

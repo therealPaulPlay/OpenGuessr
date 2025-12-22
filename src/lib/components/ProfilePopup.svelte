@@ -602,7 +602,7 @@
 
 	.stats-container {
 		border-radius: var(--box-margin);
-		padding: var(--layout-margin) 0 10px 0;
+		margin-top: var(--layout-margin);
 	}
 
 	.carousel-slide {

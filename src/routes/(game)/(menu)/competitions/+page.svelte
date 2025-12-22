@@ -431,7 +431,7 @@
 		<div class="rankingDisplayScroll of-top of-bottom">
 			{#if yourEntry}
 				<div class="youBar">
-					<p class="youLabel">You:</p>
+					<p class="youLabel">You</p>
 					<div class="rankItem yourItem">
 						<p>#{yourEntry.position}</p>
 						<p
@@ -693,7 +693,7 @@
 	<div class="headerContainer">
 		<h2 class="header marginTopAuto">Active</h2>
 		<button
-			class="standardButton white createButton marginTopAuto"
+			class="standardButton white marginTopAuto largeButton"
 			onclick={() => {
 				playSound("basic_button");
 				if ($isAuthenticated) {
@@ -1150,11 +1150,6 @@
 	#searchIcon {
 		width: 20px;
 		height: 20px;
-	}
-
-	.createButton {
-		border-radius: var(--box-margin);
-		min-height: 50px;
 	}
 
 	@keyframes fadeIn {

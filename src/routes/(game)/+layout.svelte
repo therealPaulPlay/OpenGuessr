@@ -12,7 +12,7 @@
 	import ImageGuesser from "$lib/components/ImageGuesser.svelte";
 	import ErrorPopup from "$lib/components/ErrorPopup.svelte";
 	import SettingsPopup from "$lib/components/SettingsPopup.svelte";
-	import NavigationBar from "$lib/components/NavigationBar.svelte";
+	import TopBar from "$lib/components/TopBar.svelte";
 	import TopLeftLogo from "$lib/components/TopLeftLogo.svelte";
 	import MapModeIndicator from "$lib/components/MapModeIndicator.svelte";
 	import LittleTimeVignette from "$lib/components/LittleTimeVignette.svelte";
@@ -54,9 +54,10 @@
 	import TournamentInfoPopup from "$lib/components/TournamentInfoPopup.svelte";
 	import TournamentMatchResultsPopup from "$lib/components/TournamentMatchResultsPopup.svelte";
 	import ChatManagePopup from "$lib/components/ChatManagePopup.svelte";
-	import FullscreenNavigation from "$lib/components/FullscreenNavigation.svelte";
+	import Navigation from "$lib/components/Navigation.svelte";
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
+	import Notification from "$lib/components/Notification.svelte";
 
 	// Load panorama, ads, overfade etc.
 	onMount(() => {
@@ -119,16 +120,17 @@
 <!-- Log user in -->
 <Authenticate />
 
-<!-- Logo and Navbar -->
+<!-- Logo and Nav -->
 <TopLeftLogo />
-<NavigationBar />
+<TopBar />
+<Notification />
 
 <!-- Music -->
 <MusicController />
 
 <LoadingOverlay />
 <ErrorPopup />
-<FullscreenNavigation />
+<Navigation />
 <ConfirmPopup />
 <CaptchaPopup />
 <ShopPurchaseAnimation />

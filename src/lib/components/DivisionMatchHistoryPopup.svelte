@@ -236,7 +236,7 @@
 		width: calc(100% - 20px);
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
-		margin-top: 25px;
+		margin-top: var(--layout-margin);
 		padding: var(--box-margin);
 	}
 
@@ -326,7 +326,7 @@
 		justify-content: center;
 		align-items: center;
 		gap: var(--layout-margin);
-		margin-top: 25px;
+		margin-top: var(--layout-margin);
 	}
 
 	.paginationControls button {

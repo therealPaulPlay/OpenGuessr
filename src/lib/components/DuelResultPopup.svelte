@@ -79,7 +79,7 @@
 		>
 	</div>
 	<button
-		class="standardButton largeButton"
+		class="standardButton bottomButton largeButton"
 		onclick={() => {
 			playSound("basic_button");
 			$duelResultPopup = false;

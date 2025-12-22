@@ -245,18 +245,6 @@
 				</button>
 			</div>
 		{/if}
-		<div class="settingsBox settingsBoxFlex">
-			<p class="settingsBoxFlexTitle">Legal info</p>
-			<button
-				class="standardButton white"
-				id="privacyButton"
-				onclick={() => {
-					playSound("basic_button");
-					goto("/legal");
-					$settingsPopup = false;
-				}}>Read</button
-			>
-		</div>
 	</div>
 </Popup>
 
@@ -294,7 +282,6 @@
 	}
 
 	.timerTextBox {
-		border: 5px;
 		display: flex;
 		justify-content: space-between;
 		box-shadow: var(--box-shadow);
@@ -323,7 +310,7 @@
 	}
 
 	.settingsBoxFlexTitle {
-		margin-left: var(--panel-margin);
+		margin-left: 5px;
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -336,7 +323,6 @@
 		width: 100%;
 		justify-content: flex-start;
 		align-items: center;
-		margin-bottom: 5px;
 	}
 
 	.textMargin {

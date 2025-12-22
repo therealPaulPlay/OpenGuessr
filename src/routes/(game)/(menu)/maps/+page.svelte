@@ -204,7 +204,7 @@
 {#snippet communityMapItem(map)}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="map-item"
+		class="map-item map-item-animate"
 		role="button"
 		tabindex="0"
 		onclick={() => {
@@ -324,7 +324,7 @@
 		{/each}
 	</div>
 	<button
-		class="standardButton white expandButton"
+		class="standardButton white expandButton largeButton"
 		style:margin-top={countrySectionExpanded ? "10px" : "-35px"}
 		onclick={() => {
 			playSound("floating_button");
@@ -416,8 +416,8 @@
 	<div class="headerContainer">
 		<h2 class="header mediumHeaderMargin">Community maps</h2>
 		<button
-			id="uploadButton"
-			class="standardButton white"
+			id="createButton"
+			class="standardButton white largeButton"
 			onclick={() => {
 				playSound("basic_button");
 				if ($isAuthenticated) {
@@ -476,7 +476,7 @@
 		{/each}
 		{#if showLoadMore}
 			<button
-				class="map-item load-more"
+				class="map-item map-item-animate load-more"
 				onclick={() => {
 					playSound("basic_button");
 					loadCommunityMaps(currentFetchIndex + 50, currentCategory, currentQuery, currentByUserId, null);
@@ -565,7 +565,6 @@
 		padding: var(--box-margin);
 		padding-inline: 15px;
 		box-sizing: border-box;
-		animation: fadeIn 250ms ease-in-out;
 		user-select: none;
 		min-width: 300px;
 		flex-grow: 1;
@@ -576,6 +575,10 @@
 			opacity 250ms ease,
 			scale 250ms ease,
 			background-color 250ms ease;
+	}
+
+	.map-item-animate {
+		animation: fadeIn 250ms ease-in-out;
 	}
 
 	.map-item-link {
@@ -650,7 +653,6 @@
 
 	.expandButton {
 		margin-inline: auto;
-		border-radius: var(--box-margin);
 		padding-inline: 30px;
 		margin-bottom: 10px;
 		transition:
@@ -659,7 +661,6 @@
 			transform 150ms ease,
 			background-color 250ms ease,
 			filter 250ms ease;
-		height: 50px;
 		bottom: 0;
 		z-index: 10;
 	}
@@ -746,11 +747,8 @@
 		align-items: center;
 	}
 
-	#uploadButton {
-		border-radius: var(--box-margin);
-		text-decoration: none;
+	#createButton {
 		margin-top: auto;
-		min-height: 50px;
 	}
 
 	.categoriesBar {
