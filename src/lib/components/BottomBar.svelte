@@ -1,6 +1,6 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
-	import { bugspotPopup, chatMobilePopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
+	import { chatMobilePopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { supporterLevel } from "$lib/stores/accountStore";
@@ -10,8 +10,7 @@
 	import { tooltip } from "$lib/utils/tooltip";
 	import { countryGuessr, multiplayer } from "$lib/stores/modeStore";
 	import { blur, fade } from "svelte/transition";
-	import { ArrowUp, Bug, Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
-	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
 	import { chatArray, mobileChatLastOpenedMsgCount } from "$lib/stores/context-specific/multiplayerStore";
 
