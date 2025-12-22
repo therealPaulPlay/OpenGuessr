@@ -368,11 +368,11 @@
 
 	@media (max-width: 1200px) {
 		.navigation-list {
-			bottom: calc(-1 * var(--layout-margin) * 10);
+			bottom: calc(-1 * var(--layout-margin) * 9);
 		}
 
 		.navigation-list-content {
-			mask-image: linear-gradient(to bottom, black 20%, rgba(0, 0, 0, 0.15) 30%);
+			mask-image: linear-gradient(to bottom, black 15%, rgba(0, 0, 0, 0.15) 40%);
 		}
 	}
 
