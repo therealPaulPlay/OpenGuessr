@@ -46,7 +46,7 @@
 	<div class="marginTop largerSpacing">
 		{#if $confirmExecuteFunction}
 			<button
-				class="standardButton largeButton"
+				class="standardButton bottomButton largeButton"
 				onclick={confirm}
 				style:background-color={$confirmConfirmColor}
 				disabled={$confirmUsernameInput && $confirmUsernameValue?.length < 1}>{$confirmConfirmText}</button

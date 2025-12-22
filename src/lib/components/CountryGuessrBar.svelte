@@ -37,7 +37,7 @@
 		position: relative;
 		height: 85px;
 		width: 150px;
-		border-radius: 7px;
+		border-radius: var(--box-margin);
 		text-align: center;
 	}
 
@@ -67,9 +67,9 @@
 		bottom: 115px;
 		left: 0;
 		right: 0;
+		border-radius: var(--layout-margin);
 		margin-inline: auto;
 		display: flex;
-		border-radius: 12px;
 		pointer-events: auto;
 		justify-content: space-between;
 		z-index: 10;

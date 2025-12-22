@@ -53,7 +53,7 @@
 	#errorPopupDisable {
 		display: flex;
 		vertical-align: center;
-		margin-top: 20px;
+		margin-top: var(--layout-margin);
 		font-size: 22px;
 		opacity: 60%;
 	}

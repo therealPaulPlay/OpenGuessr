@@ -27,13 +27,12 @@
 		<div class="barMenu">
 			<button
 				class="standardButton white"
-				id="resetButton"
-				use:tooltip={{ text: "Back to start" }}
 				onclick={() => {
 					reloadPanorama(); // No sound, as the reload sound will play
 				}}
 			>
 				<img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
+				Return
 			</button>
 			{#if $multiplayer}
 				<button
@@ -51,41 +50,6 @@
 					{/if}
 				</button>
 			{/if}
-		</div>
-		<div class="barMenu socialBar">
-			<button
-				class="linkItem standardButton white"
-				aria-label="Report bug"
-				use:tooltip={{ text: "Report bug" }}
-				onclick={() => {
-					playSound("basic_button");
-					$bugspotPopup = true;
-				}}
-			>
-				<Bug size={21} strokeWidth={2.25} style="margin-bottom: -2px;" />
-			</button>
-			<button
-				class="linkItem standardButton white"
-				use:tooltip={{ text: "Discord" }}
-				id="discordButton"
-				onclick={() => {
-					playSound("basic_button");
-					window.open($discordInviteUrl, "_blank").focus();
-				}}
-			>
-				<img src="/img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" />
-			</button>
-			<button
-				class="linkItem standardButton white"
-				use:tooltip={{ text: "Reddit" }}
-				id="redditButton"
-				onclick={() => {
-					playSound("basic_button");
-					window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
-				}}
-			>
-				<img src="/img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
-			</button>
 		</div>
 	</div>
 	{#if !$countryGuessr}
@@ -156,11 +120,6 @@
 		pointer-events: none;
 	}
 
-	.linkItem {
-		padding: 4px;
-		padding-inline: 6px;
-	}
-
 	.noAdvertsText {
 		position: absolute;
 		text-align: center;
@@ -178,12 +137,6 @@
 		display: flex;
 		align-items: center;
 		gap: var(--box-margin);
-	}
-
-	.bottomBarIcon {
-		width: 20px !important;
-		height: 20px !important;
-		vertical-align: -1px;
 	}
 
 	.gameplayAdArea {
@@ -256,16 +209,6 @@
 		opacity: 0.5;
 	}
 
-	#redditButton:hover {
-		background-color: #d45f24;
-		filter: none;
-	}
-
-	#discordButton:hover {
-		background-color: #a33ae9;
-		filter: none;
-	}
-
 	#guessText {
 		position: absolute;
 		left: 50%;
@@ -290,6 +233,7 @@
 
 	#resetButtonImg {
 		width: 21px;
+		margin-right: var(--panel-margin);
 	}
 
 	.bottomRightMenu {
@@ -310,10 +254,6 @@
 
 		.BottomBarAdShift {
 			padding-bottom: calc(50px + var(--box-margin)); /* Ad is 50px high */
-		}
-
-		.socialBar {
-			display: none;
 		}
 
 		.mobileChatButton {

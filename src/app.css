@@ -314,7 +314,12 @@ input[type="checkbox"]:focus {
 }
 
 li {
-    margin-bottom: 20px;
+    margin-bottom: var(--layout-margin);
+}
+
+ul,
+ol {
+    padding-left: 25px;
 }
 
 textarea {
@@ -327,11 +332,14 @@ textarea {
     border-radius: var(--box-margin);
 }
 
-.largeButton {
+.bottomButton {
     float: right;
     margin-top: 30px;
-    padding: 10px 25px;
-    height: unset;
+}
+
+.largeButton {
+    height: 50px;
+    border-radius: var(--box-margin);
 }
 
 select {
@@ -345,7 +353,7 @@ search {
     gap: var(--box-margin);
 }
 
-[popover] {
+.tooltip, [popover] {
     border: none;
     color: white;
     font-size: 22px;

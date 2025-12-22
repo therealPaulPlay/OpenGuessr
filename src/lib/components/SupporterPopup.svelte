@@ -228,7 +228,7 @@
 		box-shadow: var(--box-shadow);
 		display: flex;
 		flex-direction: column;
-		padding: 20px;
+		padding: var(--layout-margin);
 		overflow: hidden;
 		flex-grow: 1;
 		transition: filter 250ms ease;
@@ -240,7 +240,7 @@
 		width: 100%;
 		background-color: var(--box-color);
 		border-radius: var(--box-margin);
-		padding: 20px;
+		padding: var(--layout-margin);
 		box-shadow: var(--box-shadow);
 		display: flex;
 		justify-content: space-between;

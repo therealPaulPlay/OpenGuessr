@@ -2,18 +2,22 @@
 	import { goto } from "$app/navigation";
 	import { isAuthenticated, supporterLevel, username } from "$lib/stores/accountStore";
 	import { singleplayer } from "$lib/stores/modeStore";
-	import { fullscreenNavigation, settingsPopup } from "$lib/stores/uiStore";
+	import { bugspotPopup, fullscreenNavigation, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip";
-	import { fade, scale } from "svelte/transition";
+	import { fade, fly, scale } from "svelte/transition";
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { UserRoundPlus } from "@lucide/svelte";
+	import { Bug, PencilRuler, Section, UserRoundPlus } from "@lucide/svelte";
+	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import TitleSeparator from "./ui/TitleSeparator.svelte";
+	import { page } from "$app/state";
 
 	let preventNavigateOut = $derived(!$singleplayer);
 
 	let scrollNameText = $state(false);
+	let isHoveringTrigger = $state(false);
 
 	function checkTextLength(text) {
 		const textLength = text.length;
@@ -25,21 +29,26 @@
 	});
 </script>
 
+<svelte:window onkeydown={(e) => {
+	if (e.key == "Escape") $fullscreenNavigation = false;
+}} />
+
 {#if $fullscreenNavigation}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
 		class="fullscreen-navigation-overlay"
+		style:display={page.url.pathname !== "/" ? "none" : ""}
 		tabindex="0"
 		role="button"
 		transition:fade={{ duration: 100 }}
 		onclick={(e) => {
-			$fullscreenNavigation = false;
+			if (e.target == e.currentTarget) $fullscreenNavigation = false;
 		}}
 	>
 		<div class="navigation-menu">
 			<div class="navigation-box barMenu" in:scale={{ delay: 0 }}>
 				<button
-					class="standardButton white navigation-button navigation-button-large"
+					class="standardButton white navigation-button navigation-button-large largeButton"
 					disabled={preventNavigateOut}
 					onclick={() => {
 						goto("/multiplayer");
@@ -49,7 +58,7 @@
 					<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
 				</button>
 				<button
-					class="standardButton white navigation-button"
+					class="standardButton white navigation-button largeButton"
 					disabled={preventNavigateOut}
 					onclick={() => {
 						goto("/competitions");
@@ -60,7 +69,7 @@
 					<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
 				</button>
 				<button
-					class="standardButton white navigation-button"
+					class="standardButton white navigation-button largeButton"
 					disabled={preventNavigateOut}
 					onclick={() => {
 						playSound("basic_button");
@@ -72,7 +81,7 @@
 			</div>
 			<div class="navigation-box barMenu" in:scale={{ delay: 50 }}>
 				<button
-					class="standardButton white navigation-button"
+					class="standardButton white navigation-button largeButton"
 					disabled={preventNavigateOut}
 					onclick={() => {
 						goto("/maps");
@@ -83,7 +92,7 @@
 					<img class="navigation-icon" src="/img/maps_icon.png" alt="Maps" />
 				</button>
 				<button
-					class="standardButton white navigation-button navigation-button-small"
+					class="standardButton white navigation-button navigation-button-small largeButton"
 					disabled={preventNavigateOut}
 					use:tooltip={{ text: "Education" }}
 					onclick={() => {
@@ -99,7 +108,7 @@
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				{#if $isAuthenticated}
 					<div
-						class="navigation-button standardButton white"
+						class="navigation-button standardButton white largeButton"
 						class:notSignedIn={!$isAuthenticated}
 						class:profileInfoSupporter={$supporterLevel >= 1}
 						onclick={() => {
@@ -116,7 +125,7 @@
 					</div>
 				{:else}
 					<button
-						class="standardButton navigation-button"
+						class="standardButton navigation-button largeButton"
 						onclick={() => {
 							playSound("basic_button");
 							signupPrompt();
@@ -124,7 +133,7 @@
 					>
 				{/if}
 				<button
-					class="standardButton white navigation-button navigation-button-small"
+					class="standardButton white navigation-button navigation-button-small largeButton"
 					disabled={preventNavigateOut}
 					use:tooltip={{ text: "Shop" }}
 					onclick={() => {
@@ -135,7 +144,7 @@
 					<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
 				</button>
 				<button
-					class="standardButton white navigation-button navigation-button-small"
+					class="standardButton white navigation-button navigation-button-small largeButton"
 					id="settingsButtonMobile"
 					use:tooltip={{ text: "Settings" }}
 					onclick={() => {
@@ -144,6 +153,81 @@
 					}}
 				>
 					<img src="/img/settings_icon.png" alt="Settings" class="navigation-icon" id="settingsIcon" />
+				</button>
+			</div>
+		</div>
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div
+			class="navigation-list-trigger"
+			onmouseenter={() => {
+				isHoveringTrigger = true;
+			}}
+			onmouseleave={(e) => {
+				if (e.target == e.currentTarget) isHoveringTrigger = false;
+			}}
+		></div>
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div
+			class="navigation-list barMenu"
+			class:hovered={isHoveringTrigger}
+			onmouseenter={() => {
+				isHoveringTrigger = true;
+			}}
+			onmouseleave={() => {
+				isHoveringTrigger = false;
+			}}
+			in:fly={{ delay: 50, x: -10, y: 100, duration: 350 }}
+		>
+			<div class="navigation-list-content">
+				<TitleSeparator text="Links" noMargin={true} class="main-menu-list-header" />
+				<button
+					class="list-button"
+					aria-label="Report bug"
+					onclick={() => {
+						playSound("basic_button");
+						$bugspotPopup = true;
+					}}
+				>
+					Report bug
+					<Bug size={21} strokeWidth={2.25} style="margin-bottom: -2px;" />
+				</button>
+				<button
+					class="list-button"
+					onclick={() => {
+						playSound("basic_button");
+						window.open($discordInviteUrl, "_blank").focus();
+					}}
+				>
+					Discord
+					<img src="/img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" />
+				</button>
+				<button
+					class="list-button"
+					onclick={() => {
+						playSound("basic_button");
+						window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
+					}}
+				>
+					Reddit
+					<img src="/img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
+				</button>
+				<button
+					class="list-button"
+					onclick={() => {
+						playSound("basic_button");
+						goto("/legal");
+					}}
+				>
+					Legal <Section size={20} strokeWidth={2.25} />
+				</button>
+				<button
+					class="list-button"
+					onclick={() => {
+						playSound("basic_button");
+						window.open("https://paulplay.studio/openguessr", "_blank").focus();
+					}}
+				>
+					About <PencilRuler size={20} strokeWidth={2.25} />
 				</button>
 			</div>
 		</div>
@@ -174,10 +258,8 @@
 
 	.navigation-box {
 		border-radius: var(--layout-margin);
-		display: flex;
 		justify-content: end;
 		flex-wrap: wrap;
-		gap: var(--panel-margin);
 		flex-grow: 1;
 	}
 
@@ -189,7 +271,6 @@
 	}
 
 	.navigation-button {
-		height: 50px;
 		width: auto;
 		border-radius: var(--box-margin);
 		flex-grow: 1;
@@ -204,11 +285,6 @@
 	.navigation-button-small {
 		justify-content: center;
 		flex-grow: 0;
-	}
-
-	.navigation-button,
-	.navigation-button * {
-		font-size: 22px;
 	}
 
 	.navigation-button-large {
@@ -232,5 +308,83 @@
 
 	.account-name-fade {
 		mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+	}
+
+	.navigation-list {
+		position: fixed;
+		height: 240px;
+		display: flex;
+		box-sizing: border-box;
+		bottom: calc(-1 * var(--layout-margin) * 3.75);
+		left: var(--layout-margin);
+		display: flex;
+		width: 200px;
+		overflow: hidden;
+		margin-inline: auto;
+		border-radius: var(--layout-margin);
+		rotate: 5deg;
+		padding-inline: var(--layout-margin);
+		transition:
+			rotate 250ms ease,
+			bottom 250ms ease,
+			left 250ms ease;
+	}
+
+	.hovered {
+		rotate: 0deg !important;
+		left: var(--layout-margin);
+		bottom: var(--layout-margin);
+	}
+
+	.hovered > .navigation-list-content {
+		mask-image: none;
+	}
+
+	.navigation-list-content {
+		mask-image: linear-gradient(to bottom, black 40%, rgba(0, 0, 0, 0.15) 80%);
+		justify-content: start;
+		align-items: start;
+		flex-direction: column;
+		display: flex;
+		width: 100%;
+		gap: var(--box-margin);
+		height: 100%;
+	}
+
+	.navigation-list-trigger {
+		position: fixed;
+		left: 0;
+		bottom: 0;
+		width: 275px;
+		height: 315px;
+	}
+
+	.list-button {
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		border-radius: var(--box-margin);
+		color: white;
+		transition:
+			color 250ms ease,
+			opacity 250ms ease;
+	}
+
+	.list-button:hover {
+		opacity: 0.5;
+	}
+
+	:global(.main-menu-list-header) {
+		padding-top: 5px;
+	}
+
+	@media (max-width: 1000px) {
+		.navigation-list {
+			display: none;
+		}
+		.navigation-list-trigger {
+			display: none;
+		}
 	}
 </style>

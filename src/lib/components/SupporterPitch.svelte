@@ -43,7 +43,8 @@
 		transition: filter 250ms ease;
 		gap: var(--box-margin);
 		padding: 5px;
-		width: calc(100% - 10px);
+		width: 100%;
+		box-sizing: border-box;
 		margin-bottom: var(--layout-margin);
 	}
 

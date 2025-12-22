@@ -118,7 +118,6 @@
 		margin-right: auto;
 		margin-left: 5px;
 		margin-left: 10px;
-		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
 		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;

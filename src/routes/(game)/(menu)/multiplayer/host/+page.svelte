@@ -219,7 +219,7 @@
 				{#if $hostStage == 2}
 					<button
 						id="roomcodeLink"
-						class="copyLinkButton standardButton white"
+						class="largeButton standardButton white"
 						use:tooltip={{ text: "Copy link" }}
 						disabled={!$roomcode}
 						onclick={() => {
@@ -245,7 +245,7 @@
 						<Link strokeWidth={2.75} size={18} />
 					</button>
 					<button
-						class="standardButton white makeRoomPublicButton"
+						class="standardButton white largeButton"
 						use:tooltip={{ text: "Toggle room visibility" }}
 						disabled={!$roomcode}
 						onclick={async () => {
@@ -284,7 +284,7 @@
 				{/if}
 				<button
 					id="multiplayerHost"
-					class="standardButton"
+					class="standardButton largeButton"
 					disabled={$hostStage == 2 && ($connectionCount + 1 < get(teamAmount) || $connectionCount + 1 <= 1)}
 					onclick={() => {
 						playSound("basic_button");
@@ -338,12 +338,6 @@
 		opacity: 0.5;
 		width: 100%;
 		text-align: center;
-	}
-
-	.makeRoomPublicButton {
-		border-radius: var(--box-margin);
-		min-height: 50px;
-		position: relative;
 	}
 
 	.sendIcon {
@@ -467,15 +461,8 @@
 		gap: var(--layout-margin);
 	}
 
-	.copyLinkButton {
-		min-height: 50px;
-		border-radius: var(--box-margin);
-	}
-
 	#multiplayerHost {
 		padding-inline: 20px;
-		border-radius: var(--box-margin);
-		min-height: 50px;
 	}
 
 	.multiplayerHostSubmitArea {

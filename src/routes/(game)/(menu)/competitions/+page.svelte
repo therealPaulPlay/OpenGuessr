@@ -693,7 +693,7 @@
 	<div class="headerContainer">
 		<h2 class="header marginTopAuto">Active</h2>
 		<button
-			class="standardButton white createButton marginTopAuto"
+			class="standardButton white marginTopAuto largeButton"
 			onclick={() => {
 				playSound("basic_button");
 				if ($isAuthenticated) {
@@ -1150,11 +1150,6 @@
 	#searchIcon {
 		width: 20px;
 		height: 20px;
-	}
-
-	.createButton {
-		border-radius: var(--box-margin);
-		min-height: 50px;
 	}
 
 	@keyframes fadeIn {

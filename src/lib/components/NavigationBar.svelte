@@ -1,259 +1,104 @@
 <script>
-	import { fullscreenNavigation, settingsPopup } from "$lib/stores/uiStore";
+	import { fullscreenNavigation } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import Notification from "$lib/components/Notification.svelte";
-	import { isAuthenticated, experience, supporterLevel, username } from "$lib/stores/accountStore";
-	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { singleplayer } from "$lib/stores/modeStore";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
-	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import { CircleUserRound, EllipsisVertical, UserRound, UserRoundPlus } from "@lucide/svelte";
-	import { onMount } from "svelte";
-	import { blur, slide } from "svelte/transition";
-	import { goto } from "$app/navigation";
+	import { EllipsisVertical, X } from "@lucide/svelte";
 	import { tooltip } from "$lib/utils/tooltip";
-	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
+	import { blur } from "svelte/transition";
 
-	let scrollNameText = $state(false);
+	let showIntroductionNote = $state(true);
 
-	function checkTextLength(text) {
-		const textLength = text.length;
-		scrollNameText = textLength > 8;
+	function disableIntroductionNote() {
+		showIntroductionNote = false;
 	}
-
-	username.subscribe((value) => {
-		if (value) checkTextLength(value);
-	});
-
-	let preventNavigateOut = $derived(!$singleplayer);
 </script>
 
-<!-- mobile top nav bar -->
-<nav class="mobileButtonArea topButtonArea barMenu">
+<!-- Menu -->
+<nav class="menu-button-area barMenu">
 	<button
-		class="standardButton white"
+		class="standardButton white menu-button"
 		onclick={() => {
+			disableIntroductionNote();
 			$fullscreenNavigation = !$fullscreenNavigation;
 			playSound("basic_button");
 		}}
-	>
-		<span in:blur={{ duration: 150 }}>
-			<EllipsisVertical style="margin-top: 2px;" />
-		</span>
+		><span class="menu-span">Menu</span>
+		<EllipsisVertical size={22} />
 	</button>
 </nav>
 
-<!-- Desktop top nav bar -->
-<nav id="topButtonArea" class="topButtonArea">
-	<div class="barMenu topBarSides topBarDesktop">
-		{#if !$isAuthenticated}
-			<button
-				class="standardButton"
-				aria-label="Log in or Sign up"
-				use:tooltip={{ text: "Sign up or Log in" }}
-				onclick={() => {
-					playSound("basic_button");
-					signupPrompt();
-				}}><UserRoundPlus strokeWidth={2.5} size={20} style="margin-left: 6px; margin-right: 4px;" /></button
-			>
-		{/if}
-		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
-		<div
-			class="profileInfo standardButton white"
-			class:notSignedIn={!$isAuthenticated}
-			class:profileInfoSupporter={$supporterLevel >= 1}
-			use:tooltip={{ text: "Profile" }}
-			onclick={() => {
-				loadProfileFromId(localStorage.getItem("id"));
-				playSound("basic_button");
-			}}
+{#if showIntroductionNote}
+	<div class="tooltip menu-tooltip menu-button-area" transition:blur={{ duration: 250 }}>
+		<div class="tooltip-arrow menu-tooltip-arrow" data-placement="bottom"></div>
+		<button
+			class="standardButton white tooltip-close-button"
+			onclick={disableIntroductionNote}
 		>
-			<div id="accountNameArea" class:accountNameAreaFade={scrollNameText}>
-				<p id="accountName" contenteditable="false" class:namescroll={scrollNameText}>
-					{$username || "Guest"}
-				</p>
-			</div>
-			<ExperienceLevelCircle />
-		</div>
-		{#if $isAuthenticated}
-			<button
-				class="standardButton white"
-				disabled={preventNavigateOut}
-				use:tooltip={{ text: "Shop" }}
-				onclick={() => {
-					goto("/shop");
-					playSound("basic_button");
-				}}
-			>
-				<img class="socialBarIcons wideSocialBarIcon" src="/img/shop_icon.png" alt="Shop" />
-			</button>
-		{/if}
+			<X size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
+		</button>
+		<p>Discover multiplayer, competitions, and maps!</p>
 	</div>
-	<div class="barMenu topBarDesktop gameModeMenu">
-		<button
-			class="standardButton white"
-			disabled={preventNavigateOut}
-			use:tooltip={{ text: "Leaderboard" }}
-			onclick={() => {
-				goto("/leaderboard");
-				playSound("basic_button");
-			}}
-		>
-			<img class="socialBarIcons wideSocialBarIcon" src="/img/leaderboards_icon.png" alt="Leaderboard" />
-		</button>
-		<button
-			class="standardButton white"
-			disabled={preventNavigateOut}
-			use:tooltip={{ text: "Multiplayer" }}
-			onclick={() => {
-				goto("/multiplayer");
-				playSound("basic_button");
-			}}
-		>
-			<img class="socialBarIcons wideSocialBarIcon" src="/img/multiplayer_icon.png" alt="Open the multiplayer menu" />
-		</button>
-		<button
-			class="standardButton white"
-			disabled={preventNavigateOut}
-			use:tooltip={{ text: "Competitions" }}
-			onclick={() => {
-				goto("/competitions");
-				playSound("basic_button");
-			}}
-		>
-			<img class="socialBarIcons wideSocialBarIcon" src="/img/competitions_icon.png" alt="Competitions" />
-		</button>
-	</div>
-	<div class="barMenu topBarSides topBarDesktop">
-		<button
-			class="standardButton white"
-			disabled={preventNavigateOut}
-			use:tooltip={{ text: "Maps" }}
-			onclick={() => {
-				goto("/maps");
-				playSound("basic_button");
-			}}
-		>
-			<img class="socialBarIcons wideSocialBarIcon" src="/img/maps_icon.png" alt="Maps" />
-		</button>
-		<button
-			class="standardButton white"
-			disabled={preventNavigateOut}
-			use:tooltip={{ text: "Education" }}
-			onclick={() => {
-				playSound("basic_button");
-				window.open("https://education.openguessr.com", "_blank");
-			}}
-		>
-			<img src="/img/education_icon.png" alt="Learn" class="socialBarIcons wideSocialBarIcon" />
-		</button>
-		<button
-			class="standardButton white"
-			onclick={() => {
-				playSound("basic_button");
-				settingsPopup.set(true);
-			}}
-			use:tooltip={{ text: "Settings" }}
-		>
-			<img src="/img/settings_icon.png" alt="settings" class="socialBarIcons wideSocialBarIcon" />
-		</button>
-	</div>
-	<Notification />
-</nav>
+{/if}
 
 <style>
-	.profileInfo {
-		box-sizing: border-box;
+	.menu-button-area {
 		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding-inline: var(--panel-margin);
-	}
-
-	.profileInfoSupporter {
-		background: linear-gradient(30deg, rgba(133, 230, 153, 0.3), rgba(255, 255, 255, 0.2));
-	}
-
-	:global(.namescroll) {
-		animation: scrollText 5s ease-in-out infinite alternate;
-	}
-
-	@keyframes scrollText {
-		0% {
-			transform: translateX(5px);
-		}
-
-		100% {
-			transform: translateX(calc(-100% + 63px));
-			/* adjust second param to be max-width of element minus about 5px */
-		}
-	}
-
-	.topButtonArea {
+		top: var(--box-margin);
+		margin-left: auto;
+		right: var(--box-margin);
 		position: fixed;
-		width: 100%;
-		top: var(--layout-margin);
+		width: auto;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		gap: var(--box-margin);
 		transition: all 250ms ease;
 		z-index: 14;
-		pointer-events: none;
 	}
 
-	.notSignedIn {
-		opacity: 50%;
-		pointer-events: none;
+	.menu-tooltip {
+		top: 82px;
+		width: 200px;
+		display: flex;
+		flex-direction: column;
+		padding: var(--box-margin);
+		border-radius: var(--box-margin);
 	}
 
-	.mobileButtonArea {
-		display: none;
-		top: var(--box-margin);
+	.tooltip-close-button {
 		margin-left: auto;
-		width: auto;
-		right: var(--box-margin);
-		pointer-events: auto;
+		box-shadow: none;
+		background: none;
+		border: none;
+		padding: 3px;
+		height: unset;
 	}
 
-	.socialBarIcons {
-		width: 20px;
-		height: 20px;
-		margin-inline: 2px;
-		margin-bottom: -1px;
+	.menu-tooltip p,
+	.menu-tooltip button {
+		opacity: 0.75;
 	}
 
-	.wideSocialBarIcon {
-		margin-inline: 5px;
+	.menu-tooltip-arrow {
+		right: 40px;
+		top: -8px;
+		width: 10px;
+		height: 8px;
 	}
 
-	#accountNameArea {
-		width: 68px;
-		overflow: hidden;
-		white-space: nowrap;
-		text-align: start;
+	.menu-button {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		gap: var(--panel-margin);
 	}
 
-	.accountNameAreaFade {
-		mask-image: linear-gradient(to right, transparent, black 5%, black 95%, transparent);
+	.menu-span {
+		margin-bottom: 2px;
 	}
 
-	#accountName {
-		color: white;
-		display: inline-block;
-		width: fit-content;
-		margin-top: -3px;
-		font-size: 22px;
-	}
-
-	@media all and (max-width: 1200px) {
-		.topBarDesktop {
+	@media (max-width: 1200px) {
+		.menu-span {
 			display: none;
-		}
-
-		.mobileButtonArea {
-			display: flex;
 		}
 	}
 </style>

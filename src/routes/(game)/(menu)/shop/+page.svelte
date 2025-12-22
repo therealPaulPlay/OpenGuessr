@@ -169,7 +169,7 @@
 						{/each}
 					</div>
 					<button
-						class="standardButton white specialOfferButton"
+						class="standardButton white specialOfferButton largeButton"
 						disabled={$specialOfferPrice == 0}
 						onclick={() => {
 							playSound("basic_button");
@@ -495,8 +495,6 @@
 		justify-content: center;
 		align-items: center;
 		gap: 3px;
-		min-height: 50px;
-		border-radius: var(--box-margin);
 		padding-inline: 20px;
 	}
 

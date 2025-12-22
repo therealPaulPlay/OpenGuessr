@@ -57,6 +57,7 @@
 	import FullscreenNavigation from "$lib/components/FullscreenNavigation.svelte";
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
+	import Notification from "$lib/components/Notification.svelte";
 
 	// Load panorama, ads, overfade etc.
 	onMount(() => {
@@ -119,9 +120,10 @@
 <!-- Log user in -->
 <Authenticate />
 
-<!-- Logo and Navbar -->
+<!-- Logo and Nav -->
 <TopLeftLogo />
 <NavigationBar />
+<Notification />
 
 <!-- Music -->
 <MusicController />

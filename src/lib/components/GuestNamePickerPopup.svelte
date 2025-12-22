@@ -58,7 +58,7 @@
 		<input type="text" class="namePopupInput" placeholder="Guest name" maxlength="30" bind:value={$guestName} />
 	</div>
 	<button
-		class="standardButton largeButton"
+		class="standardButton bottomButton largeButton"
 		disabled={$guestName?.length < 3}
 		onclick={async () => {
 			playSound("basic_button");

@@ -118,7 +118,7 @@
 			maxlength="25"
 		/>
 		<p>Map category:</p>
-		<select id="categoryDropdown" class="dropdown standardButton white" bind:value={categoryValue}>
+		<select id="categoryDropdown" class="dropdown standardButton white largeButton" bind:value={categoryValue}>
 			<option value="none">Click to select</option>
 			<option value="Nature">Nature</option>
 			<option value="Architecture">Architecture</option>
@@ -175,7 +175,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		</div>
 		<button
 			id="jsonUploadButton"
-			class="standardButton white"
+			class="standardButton white largeButton"
 			onclick={() => {
 				playSound("basic_button");
 				filePicker.click();
@@ -196,7 +196,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	<div class="buttonContainer">
 		<button
 			id="uploadConfirm"
-			class="standardButton largeButton submitButton"
+			class="standardButton bottomButton largeButton submitButton"
 			onclick={() => {
 				playSound("basic_button");
 				showConfirmPopup(
@@ -244,10 +244,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 
 	#jsonUploadButton {
 		margin-top: 10px;
-		padding-top: 2px;
-		padding-bottom: 2px;
-		border-radius: var(--box-margin);
-		min-height: 50px;
 		min-width: 150px;
 	}
 
@@ -325,7 +321,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	.locationTextbox {
 		min-height: 350px;
 		font-size: 16px;
-		width: calc(100% - 30px);
+		width: 100%;
 		padding: 20px;
 		transition: background-color 250ms ease;
 	}
@@ -359,8 +355,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		margin-bottom: 20px;
 		margin-top: 10px;
 		width: 150px;
-		min-height: 50px;
-		border-radius: var(--box-margin);
 	}
 
 	select option {

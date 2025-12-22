@@ -87,7 +87,7 @@
 		</div>
 		<button
 			id="multiplayerJoin"
-			class="standardButton"
+			class="standardButton largeButton"
 			disabled={roomCodeInput.length !== 6}
 			onclick={() => {
 				playSound("start_button");
@@ -225,8 +225,6 @@
 	}
 
 	#multiplayerJoin {
-		min-height: 50px;
-		border-radius: var(--box-margin);
 		padding-inline: 50px;
 		margin-top: var(--layout-margin);
 	}
