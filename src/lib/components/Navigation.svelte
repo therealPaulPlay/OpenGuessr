@@ -15,7 +15,6 @@
 	import { page } from "$app/state";
 	import { onMount } from "svelte";
 
-	let preventNavigateOut = $derived(!$singleplayer);
 	let scrollNameText = $state(false);
 	let navigationListEnlarged = $state(false);
 	let navigationContentClickable = $state(false);
@@ -68,7 +67,7 @@
 			<div class="navigation-box barMenu" in:scale={{ delay: 0 }}>
 				<button
 					class="standardButton white navigation-button navigation-button-large largeButton"
-					disabled={preventNavigateOut}
+					disabled={!$singleplayer}
 					onclick={() => {
 						goto("/multiplayer");
 						playSound("basic_button");
@@ -78,7 +77,7 @@
 				</button>
 				<button
 					class="standardButton white navigation-button largeButton"
-					disabled={preventNavigateOut}
+					disabled={!$singleplayer}
 					onclick={() => {
 						goto("/competitions");
 						playSound("basic_button");
@@ -89,7 +88,7 @@
 				</button>
 				<button
 					class="standardButton white navigation-button largeButton"
-					disabled={preventNavigateOut}
+					disabled={!$singleplayer}
 					onclick={() => {
 						playSound("basic_button");
 						goto("/leaderboard");
@@ -101,7 +100,7 @@
 			<div class="navigation-box barMenu" in:scale={{ delay: 50 }}>
 				<button
 					class="standardButton white navigation-button largeButton"
-					disabled={preventNavigateOut}
+					disabled={!$singleplayer}
 					onclick={() => {
 						goto("/maps");
 						playSound("basic_button");
@@ -112,7 +111,7 @@
 				</button>
 				<button
 					class="standardButton white navigation-button navigation-button-small largeButton"
-					disabled={preventNavigateOut}
+					disabled={!$singleplayer}
 					use:tooltip={{ text: "Education" }}
 					onclick={() => {
 						playSound("basic_button");
@@ -153,7 +152,7 @@
 				{/if}
 				<button
 					class="standardButton white navigation-button navigation-button-small largeButton"
-					disabled={preventNavigateOut}
+					disabled={!$singleplayer}
 					use:tooltip={{ text: "Shop" }}
 					onclick={() => {
 						goto("/shop");

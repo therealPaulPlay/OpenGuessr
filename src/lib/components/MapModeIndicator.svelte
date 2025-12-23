@@ -1,10 +1,10 @@
 <script>
-	import { leaveFunction, mapModeIndicatorFading, timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
+	import { mapModeIndicatorFading, timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { competition, countryGuessr, multiplayer, singleplayer } from "$lib/stores/modeStore";
 	import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { ArrowRightLeft, BookAlert, LogOut, Route, Target, Timer } from "@lucide/svelte";
+	import { ArrowRightLeft, BookAlert, Route, Target, Timer } from "@lucide/svelte";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { goto } from "$app/navigation";
@@ -44,19 +44,8 @@
 		class:fading={Boolean($mapModeIndicatorFading)}
 		transition:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 150 }}
 	>
-		{#if $leaveFunction}
-			<button
-				class="standardButton"
-				use:tooltip={{ text: "Leave" }}
-				onclick={() => {
-					playSound("leave_round");
-					$leaveFunction?.();
-				}}><LogOut size={22} strokeWidth={2} style="margin-top: 3px;" /></button
-			>
-		{/if}
 		<div
 			class="map-mode-text-container of-left of-right"
-			style:margin-inline={$leaveFunction ? "3px" : "var(--panel-margin)"}
 		>
 			<p class="mode-text">
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
@@ -140,6 +129,7 @@
 
 	.map-mode-text-container {
 		flex-grow: 1;
+		margin-inline: var(--panel-margin);
 		display: inline-flex;
 		gap: 5px;
 		align-items: center;

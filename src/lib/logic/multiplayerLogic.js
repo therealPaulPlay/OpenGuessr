@@ -10,7 +10,7 @@ import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/
 import { mapPinLat, mapPinLng, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
 import { navigationMenu, guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
-import { leaveFunction } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { leaveFunction } from "$lib/stores/modeStore.js";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
     duelRetryEnabled, multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
@@ -194,7 +194,7 @@ export async function createMultiplayerInstance() {
             // Initialize and open connection
             await get(socket).init();
             resolve(get(socket).id);
-            
+
         } catch (error) {
             console.error("Error creating multiplayer instance:", error);
             reject(new Error("Failed to create multiplayer instance: " + error.message));
