@@ -52,8 +52,7 @@
 		});
 	});
 
-	function hideHistoryTooltip(e) {
-		if (e.pointerType == "touch") return;
+	function hideHistoryTooltip() {
 		hideTooltipTimeout = setTimeout(() => {
 			showHistoryTooltip = false;
 		}, 150);
@@ -84,7 +83,7 @@
 	<button
 		class="standardButton white menu-button"
 		onpointerenter={displayHistoryTooltip}
-		onpointerleave={hideHistoryTooltip}
+		onmouseleave={hideHistoryTooltip}
 		onclick={() => {
 			disableIntroductionNote();
 			$navigationMenu = !$navigationMenu;
@@ -112,7 +111,7 @@
 		role="tooltip"
 		transition:scale={{ duration: 150, start: 0.95 }}
 		onpointerenter={displayHistoryTooltip}
-		onpointerleave={hideHistoryTooltip}
+		onmouseleave={hideHistoryTooltip}
 	>
 		<div class="tooltip-arrow menu-tooltip-arrow" data-placement="bottom"></div>
 		<TitleSeparator text="Last visited" noMargin={true} />
