@@ -203,7 +203,6 @@
 					class="list-button"
 					aria-label="Report bug"
 					onclick={() => {
-						playSound("basic_button");
 						navigationListEnlarged = false;
 						$bugspotPopup = true;
 					}}
@@ -214,7 +213,6 @@
 				<button
 					class="list-button"
 					onclick={() => {
-						playSound("basic_button");
 						navigationListEnlarged = false;
 						window.open($discordInviteUrl, "_blank").focus();
 					}}
@@ -225,7 +223,6 @@
 				<button
 					class="list-button"
 					onclick={() => {
-						playSound("basic_button");
 						navigationListEnlarged = false;
 						window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
 					}}
@@ -236,7 +233,6 @@
 				<button
 					class="list-button"
 					onclick={() => {
-						playSound("basic_button");
 						navigationListEnlarged = false;
 						goto("/legal");
 					}}
@@ -246,7 +242,6 @@
 				<button
 					class="list-button"
 					onclick={() => {
-						playSound("basic_button");
 						navigationListEnlarged = false;
 						window.open("https://paulplay.studio/openguessr", "_blank").focus();
 					}}
