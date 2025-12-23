@@ -1,13 +1,19 @@
 <script>
 	import { navigationMenu } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { EllipsisVertical, LogOut, X } from "@lucide/svelte";
+	import { EllipsisVertical, ExternalLink, LogOut, X } from "@lucide/svelte";
 	import { tooltip } from "$lib/utils/tooltip";
-	import { blur } from "svelte/transition";
-	import { onMount } from "svelte";
+	import { scale } from "svelte/transition";
+	import { onMount, tick } from "svelte";
 	import { leaveFunction } from "$lib/stores/modeStore.js";
+	import { page } from "$app/state";
+	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
+	import { goto } from "$app/navigation";
 
 	let showIntroductionNote = $state(false);
+	let showHistoryTooltip = $state(false);
+	let navigationHistory = $state([]);
+	let hideTooltipTimeout = null;
 
 	onMount(() => {
 		const showIntroduction = localStorage.getItem("menuIntroduction") == null;
@@ -18,6 +24,48 @@
 	function disableIntroductionNote() {
 		showIntroductionNote = false;
 		localStorage.setItem("menuIntroduction", true);
+	}
+
+	// Load & track page history for quick access
+	onMount(() => {
+		const stored = localStorage.getItem("navigationHistory");
+		if (stored) {
+			try {
+				navigationHistory = JSON.parse(stored);
+			} catch (e) {
+				navigationHistory = [];
+			}
+		}
+	});
+
+	$effect(() => {
+		const currentPath = page.url.pathname;
+		if (currentPath === "/" || !currentPath) return; // Skip root
+		if (navigationHistory.length > 0 && navigationHistory[0]?.path === currentPath) return; // Skip if last one is identical
+
+		// Wait for document title to update
+		tick().then(() => {
+			const currentTitle = document.title;
+			const historyEntry = { path: currentPath, title: currentTitle };
+			navigationHistory = [historyEntry, ...navigationHistory.filter((p) => p.path !== currentPath)].slice(0, 3);
+			localStorage.setItem("navigationHistory", JSON.stringify(navigationHistory));
+		});
+	});
+
+	function hideHistoryTooltip(e) {
+		if (e.pointerType == "touch") return;
+		hideTooltipTimeout = setTimeout(() => {
+			showHistoryTooltip = false;
+		}, 150);
+	}
+
+	function displayHistoryTooltip(e) {
+		if (e.pointerType == "touch") return;
+		if (hideTooltipTimeout) {
+			clearTimeout(hideTooltipTimeout);
+			hideTooltipTimeout = null;
+		}
+		showHistoryTooltip = true;
 	}
 </script>
 
@@ -35,6 +83,8 @@
 	{/if}
 	<button
 		class="standardButton white menu-button"
+		onpointerenter={displayHistoryTooltip}
+		onpointerleave={hideHistoryTooltip}
 		onclick={() => {
 			disableIntroductionNote();
 			$navigationMenu = !$navigationMenu;
@@ -46,13 +96,34 @@
 </nav>
 
 {#if showIntroductionNote}
-	<div class="tooltip menu-tooltip menu-button-area" transition:blur={{ duration: 250 }}>
+	<div class="tooltip menu-tooltip menu-button-area" transition:scale={{ duration: 150, start: 0.95 }}>
 		<div class="tooltip-arrow menu-tooltip-arrow" data-placement="bottom"></div>
 		<button class="standardButton white tooltip-close-button" onclick={disableIntroductionNote}>
 			<X size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
 		</button>
 		<img alt="Menu introcution" src="/img/menu_introduction.png" class="menu-tooltip-image" />
 		<p>Discover multiplayer, maps, competitions & more!</p>
+	</div>
+{/if}
+
+{#if showHistoryTooltip && navigationHistory.length > 0 && !showIntroductionNote}
+	<div
+		class="tooltip menu-tooltip history-tooltip menu-button-area"
+		role="tooltip"
+		transition:scale={{ duration: 150, start: 0.95 }}
+		onpointerenter={displayHistoryTooltip}
+		onpointerleave={hideHistoryTooltip}
+	>
+		<div class="tooltip-arrow menu-tooltip-arrow" data-placement="bottom"></div>
+		<TitleSeparator text="Last visited" noMargin={true} />
+		<div class="history-list">
+			{#each navigationHistory as entry}
+				<button class="history-item standardButton white" onclick={() => goto(entry.path)}
+					><span class="history-item-title">{entry.title}</span>
+					<ExternalLink size={20} style="opacity: 0.5;" />
+				</button>
+			{/each}
+		</div>
 	</div>
 {/if}
 
@@ -88,15 +159,12 @@
 		border: none;
 		padding: 3px;
 		height: unset;
+		opacity: 0.75;
 	}
 
 	.menu-tooltip p {
 		margin-left: 5px;
 		margin-bottom: 5px;
-	}
-
-	.menu-tooltip button {
-		opacity: 0.75;
 	}
 
 	.menu-tooltip-arrow {
@@ -122,6 +190,38 @@
 
 	.menu-span {
 		margin-bottom: 2px;
+	}
+
+	.history-tooltip {
+		width: 150px;
+		padding: var(--layout-margin);
+	}
+
+	.history-list {
+		display: flex;
+		flex-direction: column;
+		gap: var(--panel-margin);
+		width: 100%;
+	}
+
+	.history-item {
+		padding: 0;
+		border: none;
+		box-shadow: none;
+		background: transparent;
+		text-align: start;
+		height: unset;
+		display: flex;
+		align-items: center;
+		gap: var(--panel-margin);
+		width: 100%;
+	}
+
+	.history-item-title {
+		text-overflow: ellipsis;
+		overflow: hidden;
+		max-width: 120px;
+		display: inline-block;
 	}
 
 	@media (max-width: 800px) and (orientation: portrait) {
