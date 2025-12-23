@@ -3,7 +3,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { EllipsisVertical, ExternalLink, LogOut, X } from "@lucide/svelte";
 	import { tooltip } from "$lib/utils/tooltip";
-	import { blur, scale } from "svelte/transition";
+	import { scale } from "svelte/transition";
 	import { onMount, tick } from "svelte";
 	import { leaveFunction } from "$lib/stores/modeStore.js";
 	import { page } from "$app/state";
