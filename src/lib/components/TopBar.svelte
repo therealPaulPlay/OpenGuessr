@@ -10,7 +10,8 @@
 
 	onMount(() => {
 		const showIntroduction = localStorage.getItem("menuIntroduction") == null;
-		if (showIntroduction && !window.matchMedia("(max-width: 800px) and (orientation: portrait)").matches) showIntroductionNote = true;
+		if (showIntroduction && !window.matchMedia("(max-width: 800px) and (orientation: portrait)").matches)
+			showIntroductionNote = true;
 	});
 
 	function disableIntroductionNote() {
@@ -40,7 +41,7 @@
 			<X size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
 		</button>
 		<img alt="Menu introcution" src="/img/menu_introduction.png" class="menu-tooltip-image" />
-		<p>Discover multiplayer, competitions, and maps!</p>
+		<p>Discover multiplayer, maps, competitions & more!</p>
 	</div>
 {/if}
 
