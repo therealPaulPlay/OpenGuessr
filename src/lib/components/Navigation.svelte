@@ -126,7 +126,7 @@
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				{#if $isAuthenticated}
 					<div
-						class="navigation-button standardButton white largeButton"
+						class="navigation-button standardButton white largeButton account-name-button"
 						class:notSignedIn={!$isAuthenticated}
 						class:profileInfoSupporter={$supporterLevel >= 1}
 						onclick={() => {
@@ -135,7 +135,7 @@
 						}}
 					>
 						<div id="account-name-area" class:account-name-fade={scrollNameText}>
-							<p id="account-name" contenteditable="false" class:namescroll={scrollNameText}>
+							<p id="account-name" contenteditable="false" class:name-scroll={scrollNameText}>
 								{$username || "Guest"}
 							</p>
 						</div>
@@ -278,6 +278,7 @@
 		max-width: 400px;
 		margin-inline: auto;
 		padding-inline: var(--layout-margin);
+		overflow: hidden;
 	}
 
 	.navigation-box {
@@ -285,6 +286,7 @@
 		justify-content: end;
 		flex-wrap: wrap;
 		flex-grow: 1;
+		overflow: hidden;
 	}
 
 	.navigation-icon {
@@ -296,9 +298,10 @@
 
 	.navigation-button {
 		width: auto;
+		max-width: 100%;
 		border-radius: var(--box-margin);
 		flex-grow: 1;
-		flex-basis: 0;
+		flex-basis: 60px;
 		display: flex;
 		gap: var(--box-margin);
 		justify-content: space-between;
@@ -317,7 +320,7 @@
 	}
 
 	#account-name-area {
-		width: 100px;
+		flex-grow: 1;
 		overflow: hidden;
 		white-space: nowrap;
 		text-align: start;
@@ -328,6 +331,11 @@
 		display: inline-block;
 		width: fit-content;
 		margin-top: -3px;
+	}
+
+	.account-name-button {
+		overflow: hidden;
+		min-width: 150px;
 	}
 
 	.account-name-fade {
@@ -394,6 +402,21 @@
 		transition:
 			color 250ms ease,
 			opacity 250ms ease;
+	}
+
+	:global(.name-scroll) {
+		animation: scrollText 5s ease-in-out infinite alternate;
+	}
+
+	@keyframes scrollText {
+		0% {
+			transform: translateX(5px);
+		}
+
+		100% {
+			transform: translateX(calc(-100% + 150px));
+			/* adjust second param to be max-width of element minus about 5px */
+		}
 	}
 
 	.navigation-list-hover-overlay {

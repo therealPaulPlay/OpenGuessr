@@ -305,14 +305,11 @@
 				<div id="newPasswordForm">
 					<div class="flex-input-box">
 						<input bind:value={resetPasswordValue} type="password" placeholder="New Password" />
-						<button id="changePassword" class="standardButton" onclick={changePasswordIfValuesProvided}
-							>Set new password</button
-						>
+						<button class="standardButton" onclick={changePasswordIfValuesProvided}>Set new password</button>
 					</div>
 					<p class="switchFormBox">
 						Remembered?
 						<button
-							id="loginSwitchChange"
 							class="standardButton white"
 							onclick={() => {
 								formType = "login";
@@ -322,17 +319,16 @@
 				</div>
 			{/if}
 			{#if formType == "reset"}
-				<div id="resetForm">
+				<div>
 					<div class="flex-input-box">
 						<input bind:value={resetEmail} type="email" placeholder="Email" />
-						<button id="reset" class="standardButton" onclick={() => sendPasswordResetEmail(resetEmail, displaySuccess)}
+						<button class="standardButton" onclick={() => sendPasswordResetEmail(resetEmail, displaySuccess)}
 							>Reset</button
 						>
 					</div>
 					<p class="switchFormBox">
 						Remembered?
 						<button
-							id="loginSwitchReset"
 							class="standardButton white"
 							onclick={() => {
 								formType = "login";
@@ -344,16 +340,13 @@
 			{#if formType == "login"}
 				<div id="loginForm">
 					<div class="flex-input-box">
-						<input id="login_email" type="email" bind:value={loginEmail} placeholder="Email" />
-						<input id="login_password" type="password" bind:value={loginPassword} placeholder="Password" />
-						<button id="login" class="standardButton" bind:this={loginButtonSignupPage} onclick={logInAction}
-							>Log in</button
-						>
+						<input type="email" bind:value={loginEmail} placeholder="Email" />
+						<input type="password" bind:value={loginPassword} placeholder="Password" />
+						<button class="standardButton" bind:this={loginButtonSignupPage} onclick={logInAction}>Log in</button>
 					</div>
 					<p class="switchFormBox">
 						No account yet?
 						<button
-							id="loginSwitch"
 							class="standardButton white"
 							onclick={() => {
 								formType = "signup";
@@ -375,16 +368,11 @@
 			{#if formType == "signup"}
 				<div id="signupForm">
 					<div>
-						<div class="flex-input-box" id="signup_area" bind:this={signupArea}>
-							<input id="signup_username" type="text" bind:value={signupUsername} placeholder="Username" />
-							<input id="signup_email" type="email" bind:value={signupEmail} placeholder="Email" />
+						<div class="flex-input-box" bind:this={signupArea}>
+							<input type="text" bind:value={signupUsername} placeholder="Username" maxlength="255" />
+							<input type="email" bind:value={signupEmail} placeholder="Email" />
 							<div class="password-container">
-								<input
-									id="signup_password"
-									bind:value={signupPassword}
-									type={passwordInputType}
-									placeholder="Password"
-								/>
+								<input bind:value={signupPassword} type={passwordInputType} placeholder="Password" />
 								<!-- svelte-ignore a11y_consider_explicit_label -->
 								<button class="toggle-password" onclick={togglePasswordVisibility}>
 									{#if passwordInputType == "text"}
@@ -394,15 +382,12 @@
 									{/if}
 								</button>
 							</div>
-							<button id="signup" class="standardButton" bind:this={signupButtonSignupPage} onclick={signUpAction}
-								>Sign up</button
-							>
+							<button class="standardButton" bind:this={signupButtonSignupPage} onclick={signUpAction}>Sign up</button>
 						</div>
 					</div>
 					<p class="switchFormBox">
 						Already signed up?
 						<button
-							id="loginSwitchBack"
 							class="standardButton white"
 							onclick={() => {
 								formType = "login";

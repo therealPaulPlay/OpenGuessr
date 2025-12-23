@@ -487,7 +487,7 @@
 		overflow: hidden;
 		text-wrap: nowrap;
 		margin-left: 10px;
-		margin-right: 50px;
+		margin-right: 65px;
 		display: inline-flex;
 		justify-content: center;
 		gap: 8px;
