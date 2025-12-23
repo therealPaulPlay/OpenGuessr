@@ -63,7 +63,6 @@
 		position: relative;
 		width: 30px;
 		height: 30px;
-		margin-left: var(--panel-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;
