@@ -1,10 +1,11 @@
 <script>
 	import { navigationMenu } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { EllipsisVertical, X } from "@lucide/svelte";
+	import { EllipsisVertical, LogOut, X } from "@lucide/svelte";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { blur } from "svelte/transition";
 	import { onMount } from "svelte";
+	import { leaveFunction } from "$lib/stores/modeStore.js";
 
 	let showIntroductionNote = $state(false);
 
@@ -22,6 +23,16 @@
 
 <!-- Menu -->
 <nav class="menu-button-area barMenu">
+	{#if $leaveFunction}
+		<button
+			class="standardButton"
+			use:tooltip={{ text: "Leave" }}
+			onclick={() => {
+				playSound("leave_round");
+				$leaveFunction?.();
+			}}><LogOut size={22} style="margin-top: 3px; margin-right: -2px;" /></button
+		>
+	{/if}
 	<button
 		class="standardButton white menu-button"
 		onclick={() => {

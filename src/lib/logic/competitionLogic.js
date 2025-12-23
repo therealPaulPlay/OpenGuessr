@@ -8,7 +8,7 @@ import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 import { competition } from "$lib/stores/modeStore";
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 import { goto } from "$app/navigation";
-import { leaveFunction } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { leaveFunction } from "$lib/stores/modeStore.js";
 import { get } from "svelte/store";
 import { username } from "$lib/stores/accountStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -55,14 +55,13 @@ export async function leaveCompetition(showResult) {
     if (get(competition)) {
         competition.set(false);
         leaveFunction.set();
+        competitionTimer?.stopTimer();
         checkGenerationTypeAndGenerate(); // Also resets restriction
 
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
         await submitCompetitionResult(get(competitionData).id, competitionCombinedScore);
 
-        if (showResult) {
-            goto("/competitions?leaderboard-submit=" + get(competitionData).id);
-        }
+        if (showResult) goto("/competitions?leaderboard-submit=" + get(competitionData).id);
     }
 }
 

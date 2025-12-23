@@ -17,7 +17,7 @@ let startSingleplayerTimerPromise;
 let hasRestoredSavedNMPZstate = false;
 let hasRestoredSavedTimeout = false;
 
-export function applySingleplayerSettings() {
+export function resetApplySingleplayerOptions() {
     // Disable all here, then enable what should be enabled
     timerCountdownOverlay.set(false);
     get(singleplayerTimer)?.stopTimer();
