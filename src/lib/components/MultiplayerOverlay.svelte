@@ -211,6 +211,10 @@
 			transform 250ms ease,
 			color 250ms ease;
 		color: white;
+		max-width: 750px;
+		width: 75%;
+		text-overflow: ellipsis;
+		text-align: center;
 	}
 
 	.multiplayerFade h1 {
@@ -230,7 +234,7 @@
 		display: flex;
 		justify-content: safe center;
 		align-items: safe flex-start;
-		width: 50%;
+		width: 75%;
 		min-width: 350px;
 		max-width: 750px;
 		max-height: calc(55dvh - 150px);
