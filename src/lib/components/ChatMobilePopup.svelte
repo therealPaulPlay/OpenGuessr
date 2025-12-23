@@ -5,7 +5,8 @@
 	import Popup from "./ui/Popup.svelte";
 
 	$effect(() => {
-		if ($chatMobilePopup) $mobileChatLastOpenedMsgCount = $chatArray?.filter((i) => i.username != "Server")?.length || 0;
+		if ($chatMobilePopup)
+			$mobileChatLastOpenedMsgCount = $chatArray?.filter((i) => i.username != "Server")?.length || 0;
 	});
 </script>
 
@@ -17,6 +18,11 @@
 
 <style>
 	.chat-container {
+		display: flex;
+		flex-direction: column;
+		gap: var(--layout-margin);
+		width: 100%;
 		height: min(500px, calc(100dvh - 200px));
+		overflow: hidden;
 	}
 </style>
