@@ -25,7 +25,7 @@
 		"howler": "^2.2.4",
 		"leaflet": "^1.9.4",
 		"overfade": "^0.0.7",
-		"playsocketjs": "^2.6.3",
+		"playsocketjs": "^2.6.4",
 		"topojson-client": "^3.1.0"
 	}
 }
