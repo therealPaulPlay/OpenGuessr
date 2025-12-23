@@ -119,7 +119,7 @@
 			{#each navigationHistory as entry}
 				<button class="history-item standardButton white" onclick={() => goto(entry.path)}
 					><span class="history-item-title">{entry.title}</span>
-					<ExternalLink size={20} style="opacity: 0.5;" />
+					<ExternalLink size={20} strokeWidth={2.25} style="opacity: 0.5;" />
 				</button>
 			{/each}
 		</div>
