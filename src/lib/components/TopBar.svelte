@@ -67,7 +67,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: var(--box-margin);
+		gap: var(--panel-margin);
 		transition: all 250ms ease;
 		z-index: 14;
 	}
