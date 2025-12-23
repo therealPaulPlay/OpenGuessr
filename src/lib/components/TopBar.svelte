@@ -162,7 +162,7 @@
 	}
 
 	.menu-tooltip p {
-		margin-left: 5px;
+		margin-inline: 5px;
 		margin-bottom: 5px;
 	}
 
