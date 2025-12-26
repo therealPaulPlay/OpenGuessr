@@ -1050,7 +1050,8 @@
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: 5px;
-		width: calc(100% - 20px);
+		width: 100%;
+		box-sizing: border-box;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -1066,6 +1067,7 @@
 	.yourItem {
 		box-shadow: var(--bulb-shadow);
 		background-color: rgba(255, 255, 255, 0.2);
+		overflow: hidden;
 	}
 
 	.rankYou {
