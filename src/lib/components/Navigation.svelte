@@ -18,6 +18,7 @@
 	let scrollNameText = $state(false);
 	let navigationListEnlarged = $state(false);
 	let navigationContentClickable = $state(false);
+	let swipeStartY = $state(null);
 
 	$effect(() => {
 		if (navigationListEnlarged) {
@@ -193,7 +194,17 @@
 				if (e.pointerType !== "touch") navigationListEnlarged = false;
 			}}
 			onpointerdown={(e) => {
-				if (e.pointerType === "touch") navigationListEnlarged = true;
+				if (e.pointerType !== "touch") return;
+				navigationListEnlarged = true;
+				swipeStartY = e.clientY;
+			}}
+			onpointermove={(e) => {
+				if (e.pointerType !== "touch" || swipeStartY === null) return;
+				const deltaY = e.clientY - swipeStartY;
+				if (deltaY > 50) navigationListEnlarged = false;
+			}}
+			onpointerup={() => {
+				swipeStartY = null;
 			}}
 			in:fly={{ delay: 50, x: -10, y: 100, duration: 350 }}
 		>
