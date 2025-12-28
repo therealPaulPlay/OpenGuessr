@@ -40,7 +40,7 @@
 		</div>
 		<div class="tournamentField">
 			<Clock style="margin-top: 1px; opacity: 0.75;" strokeWidth={1.75} />
-			<p>{tournament.status == "finished" ? "Finished" : readableDate}</p>
+			<p>{readableDate}</p>
 		</div>
 		<div class="tournamentField">
 			<CalendarCheck2 style="opacity: 0.75;" strokeWidth={1.75} />
