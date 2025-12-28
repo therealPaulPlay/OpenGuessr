@@ -62,6 +62,7 @@
 		border-radius: 15px;
 		align-items: center;
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		gap: 5px;
 		margin-bottom: var(--layout-margin);
 		max-width: 300px;
