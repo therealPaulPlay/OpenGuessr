@@ -84,7 +84,7 @@
 
 	// This will attempt registration and/or login only using a crazy games id.
 	async function authenticateWithCrazyGames() {
-		if ($isAuthenticated) return; // Exit if user is already authenticated (e.g. with bearer token from openguessr.com)
+		if ($isAuthenticated) return; // Exit if user is already authenticated (e.g. with bearer token from OpenGuessr)
 		let token;
 
 		try {

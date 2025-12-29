@@ -1,3 +1,4 @@
+import { page } from "$app/state";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { tick } from "svelte";
 
@@ -6,6 +7,13 @@ function getFuse() {
 }
 
 export function initializeAds() {
+    if (page.url.hostname !== "openguessr.com") {
+        console.log("Using staging ad setup on: " + page.url.hostname);
+        window.googletag = window.googletag || { cmd: [] };
+        googletag.cmd.push(function () {
+            googletag.pubads().set("page_url", "https://openguessr.com/");
+        });
+    }
     getFuse().que.push(function () {
         getFuse().pageInit({
             blockingFuseIds: ["Game_incontent_1"],
