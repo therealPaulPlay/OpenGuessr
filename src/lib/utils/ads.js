@@ -1,52 +1,76 @@
+import { page } from "$app/state";
+import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+import { tick } from "svelte";
 
-// Initialize Venatus
+function getFuse() {
+    return window.fusetag || (window.fusetag = { que: [] });
+}
+
 export function initializeAds() {
-    self.__VM = self.__VM || [];
+    if (page.url.hostname !== "openguessr.com") {
+        console.log("Using staging ad setup on: " + page.url.hostname);
+        window.googletag = window.googletag || { cmd: [] };
+        googletag.cmd.push(function () {
+            googletag.pubads().set("page_url", "https://openguessr.com/");
+        });
+    }
+    getFuse().que.push(function () {
+        getFuse().pageInit({
+            blockingFuseIds: ["Game_incontent_1"],
+        });
+    });
+}
 
-    self.__VM.push((admanager, scope) => {
-        try {
-            if (!admanager || !scope) return;
+export function registerAndActivateGameplayAd() {
+    getFuse().que.push(function () {
+        getFuse().registerZone("gameplayAd");
+        getFuse().activateZone("gameplayAd");
+    });
+}
 
-            // Main bottom bar ad
-            scope.Config.buildPlacement((configBuilder) => {
-                scope.Config.setBreakPoint("desktop", "(min-width:1500px)");
+export function registerResultAds() {
+    getFuse().que.push(function () {
+        // Both result ads seem to work fine without registration (opposite to the gameplay ad),
+        // but for good measure I'm registering them as well
+        getFuse().registerZone("resultAd");
+        getFuse().registerZone("mobileResultAd");
+    });
+}
 
-                configBuilder.add("leaderboard");
+let prevResultState = false;
+let pendingOperation = 0;
 
-                configBuilder
-                    .addDefaultOrUnique("mobile_banner")
-                    .setBreakPoint({
-                        mediaQuery: "max-width: 1500px",
-                    });
-            }, "main").display("gameplayAd");
+resultScreenEnabled.subscribe(async (isEnabled) => {
+    if (typeof window === "undefined") return;
 
-            // Floating banner for bigger screens
-            scope.Config.get("leaderboard", "result").display(
-                "resultAd",
-            );
+    // Only update on state change
+    if (prevResultState === isEnabled) return;
+    prevResultState = isEnabled;
 
-            // Mobile result banner for smaller screens
-            scope.Config.buildPlacement((configBuilder) => {
-                configBuilder.add("mobile_banner");
+    const operationId = ++pendingOperation;
 
-                configBuilder
-                    .addDefaultOrUnique("mobile_banner")
-                    .setBreakPoint({
-                        mediaQuery: "max-width: 1900px",
-                    });
-            }, "result").display("mobileResultAd");
-        } catch (error) {
-            console.error("Error creating placements:", error);
+    await tick(); // Await UI update to reflect new store value
+
+    // Cancel if another operation started while we were waiting
+    if (operationId !== pendingOperation) return;
+
+    try {
+        if (isEnabled) {
+            if (window.matchMedia("(min-width: 1900px)").matches) {
+                getFuse().que.push(function () {
+                    getFuse().activateZone("resultAd");
+                });
+            } else {
+                getFuse().que.push(function () {
+                    getFuse().activateZone("mobileResultAd");
+                });
+            }
+        } else {
+            getFuse().que.push(function () {
+                getFuse().activateZone("gameplayAd");
+            });
         }
-    });
-}
-
-export function refreshPlacements() {
-    self.__VM = self.__VM || [];
-
-    self.__VM.push(function (admanager, scope) {
-        admanager.reload(
-            admanager.placements.filter((p) => p.anyName !== "gpt_reward"),
-        );
-    });
-}
+    } catch (error) {
+        console.error("Error occured activating fuse zones:", error);
+    }
+});
