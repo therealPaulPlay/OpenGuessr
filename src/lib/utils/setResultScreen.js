@@ -2,7 +2,6 @@ import { resultScreenEnabled, distanceText, motivationText, lastDistance } from 
 import { calculateDistances, motivationalResultMessage, formatDistance } from "$lib/utils/distanceFunctions";
 import { countryGuessr } from "$lib/stores/modeStore";
 import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
-import { refreshPlacements } from "$lib/utils/ads";
 import { playSound } from "$lib/utils/soundManager";
 import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { resetMap } from "$lib/logic/miniMap";
@@ -40,7 +39,6 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
     // Load result on the map
     loadResultMap(guessLat, guessLong, get(currentLocationLatitude), get(currentLocationLongitude));
     playSound("confirm");
-    refreshPlacements();
 
     // Load XP
     await loadResultScreenXP(distance);
@@ -51,7 +49,6 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
 export function disableResultScreen() {
     if (!get(resultScreenEnabled)) return;
     resultScreenEnabled.set(false);
-    refreshPlacements();
 
     // UI resets
     if (window.innerHeight > window.innerWidth) mapExpanded.set(false); // On mobile, collapse map

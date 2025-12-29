@@ -2,7 +2,6 @@
 	let { children } = $props();
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { mapHovered } from "$lib/stores/context-specific/mapStore";
-	import { supporterLevel } from "$lib/stores/accountStore";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 </script>
 
@@ -11,7 +10,7 @@
 	class="regular-map-size map-holder"
 	class:map-hover={$mapHovered}
 	class:map-holder-to-result={$resultScreenEnabled}
-	class:map-holder-ad-shift={$supporterLevel < 2 && !$adsDisabled}
+	class:map-holder-ad-shift={!$adsDisabled}
 >
 	{@render children?.()}
 </div>
