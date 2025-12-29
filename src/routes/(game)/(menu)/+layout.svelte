@@ -7,6 +7,7 @@
 	import { goto, afterNavigate } from "$app/navigation";
 	import { Home } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
+	import { page } from "$app/state";
 
 	let historyStack = $state([]);
 	let isGoingBack = false;
@@ -25,19 +26,21 @@
 		goto(historyStack.at(-1) || "/");
 	}
 
+	function leaveMultiplayerIfReturningFromMultiplayerPage() {
+		if (page.url.pathname.startsWith("/multiplayer")) leaveMultiplayerRound();
+	}
+
 	let showHomeButton = $derived(historyStack.at(-1) !== "/");
 </script>
 
 <nav class="menuNavBar">
-	<div class="centerNotifications">
-		<Notification belowNavbar={false} />
-	</div>
+	<Notification inMenu={true} />
 	<button
-		class="backButton standardButton white"
+		class="backButton standardButton white largeButton"
 		disabled={$screenEscapeDisabled}
 		onclick={() => {
 			playSound("basic_button");
-			leaveMultiplayerRound();
+			leaveMultiplayerIfReturningFromMultiplayerPage();
 			goBack();
 		}}
 	>
@@ -46,15 +49,15 @@
 	>
 	{#if showHomeButton && historyStack.length}
 		<button
-			class="backButton standardButton white"
+			class="backButton standardButton white largeButton"
 			disabled={$screenEscapeDisabled}
 			onclick={() => {
 				playSound("basic_button");
-				leaveMultiplayerRound();
+				leaveMultiplayerIfReturningFromMultiplayerPage();
 				goto("/");
 			}}
 		>
-			<span class="homeButtonIcon"><Home strokeWidth={2.25} /></span></button
+			<Home strokeWidth={2.25} style="margin-bottom: -4px" /></button
 		>
 	{/if}
 </nav>
@@ -79,28 +82,9 @@
 		backdrop-filter: blur(15px);
 	}
 
-	.centerNotifications {
-		width: 100%;
-		display: flex;
-		justify-content: center;
-		position: absolute;
-		left: 0;
-		right: 0;
-		display: flex;
-	}
-
 	.backButton {
-		width: fit-content;
-		height: 50px;
-		border-radius: var(--box-margin);
-		text-decoration: none;
-		line-height: 35px;
 		pointer-events: auto;
 		backdrop-filter: blur(10px);
-	}
-
-	.homeButtonIcon {
-		vertical-align: -6px;
 	}
 
 	.backButtonArrowIcon {
@@ -116,7 +100,7 @@
 		left: 0;
 		right: 0;
 		display: flex;
-		padding: 20px;
+		padding: var(--layout-margin);
 		gap: var(--layout-margin);
 		z-index: 99;
 		pointer-events: none;

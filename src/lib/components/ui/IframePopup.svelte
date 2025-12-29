@@ -8,7 +8,7 @@
 		<img src="/img/compass_spinner.png" alt="Loading" class="spinner" id="pageBrowserLoading" />
 	</div>
 	<!-- svelte-ignore a11y_missing_attribute -->
-	<iframe id="pageBrowserIframe" allowtransparency="true" frameborder="0" {src}></iframe>
+	<iframe class="pageBrowserIframe" allowtransparency="true" frameborder="0" {src}></iframe>
 </Popup>
 
 <style>
@@ -24,11 +24,11 @@
 		transform: translate(-50%, -50%);
 	}
 
-	#pageBrowserIframe {
+	.pageBrowserIframe {
 		width: 100%;
 		height: min(800px, calc(100dvh - 75px));
 		background: transparent;
-		border-radius: 12px;
+		border-radius: 20px;
 		position: relative;
 		z-index: 2;
 	}

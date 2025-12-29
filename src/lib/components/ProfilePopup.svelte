@@ -487,7 +487,7 @@
 		overflow: hidden;
 		text-wrap: nowrap;
 		margin-left: 10px;
-		margin-right: 50px;
+		margin-right: 65px;
 		display: inline-flex;
 		justify-content: center;
 		gap: 8px;
@@ -602,7 +602,7 @@
 
 	.stats-container {
 		border-radius: var(--box-margin);
-		padding: var(--layout-margin) 0 10px 0;
+		margin-top: var(--layout-margin);
 	}
 
 	.carousel-slide {

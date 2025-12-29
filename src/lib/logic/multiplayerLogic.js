@@ -9,8 +9,8 @@ import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { mapPinLat, mapPinLng, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
-import { guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
-import { leaveFunction } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { navigationMenu, guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
+import { leaveFunction } from "$lib/stores/modeStore.js";
 import {
     teamAmount, roundAmount, roundLength, screenEscapeDisabled,
     duelRetryEnabled, multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
@@ -63,6 +63,7 @@ function setMultiplayerUI() {
         });
         chatVisible.set(true);
         linkJoinPopup.set(false);
+        navigationMenu.set(false);
     } else {
         leaveFunction.set(); // Hides leave option too
         chatVisible.set(false);
@@ -99,9 +100,6 @@ export async function createMultiplayerInstance() {
                 if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system reports an error.", error);
                 else multiplayerStatus.set("An error occured.");
             });
-
-            // Initialize and open connection
-            await get(socket).init();
 
             // Someone connected...
             get(socket).onEvent('clientConnected', (id) => {
@@ -193,7 +191,10 @@ export async function createMultiplayerInstance() {
                 if (get(multiplayer)) leaveMultiplayerRound(false); // If not already left, leave (e.g. on error)
             });
 
+            // Initialize and open connection
+            await get(socket).init();
             resolve(get(socket).id);
+
         } catch (error) {
             console.error("Error creating multiplayer instance:", error);
             reject(new Error("Failed to create multiplayer instance: " + error.message));
@@ -353,6 +354,7 @@ export function leaveMultiplayerRound(destroy = true) {
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
+        navigationMenu.set(false);
         showMultiplayerOverlay(false); // Also makes map interactive
         updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
         setMultiplayerUI();

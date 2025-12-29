@@ -29,7 +29,7 @@
 			</div>
 		{/if}
 		<button
-			class="standardButton tryButton"
+			class="standardButton tryButton largeButton"
 			disabled={$matchmakingActive && !$matchmakingHosting}
 			onclick={() => {
 				if (!$matchmakingActive) {
@@ -62,6 +62,7 @@
 		border-radius: 15px;
 		align-items: center;
 		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		gap: 5px;
 		margin-bottom: var(--layout-margin);
 		max-width: 300px;
@@ -82,9 +83,7 @@
 	}
 
 	.tryButton {
-		min-height: 50px;
 		padding-inline: 20px;
-		border-radius: var(--box-margin);
 	}
 
 	.duelCenterBox {

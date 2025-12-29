@@ -171,7 +171,7 @@
 	{/if}
 	{#if $selectedTournament?.status == "starting"}
 		<button
-			class="standardButton largeButton"
+			class="standardButton bottomButton largeButton"
 			onclick={async () => {
 				playSound("basic_button");
 				const roomcode = await enterTournament($selectedTournament?.id);
@@ -185,7 +185,7 @@
 		</button>
 	{:else if $selectedTournament?.status == "upcoming"}
 		<button
-			class="standardButton largeButton white {$selectedTournament?.saved ? 'disabled' : ''}"
+			class="standardButton bottomButton largeButton white {$selectedTournament?.saved ? 'disabled' : ''}"
 			onclick={async () => {
 				playSound("basic_button");
 				await trackCalendarSave($selectedTournament?.id);
@@ -259,6 +259,10 @@
 		justify-content: space-between;
 		flex-wrap: wrap;
 		align-items: center;
+	}
+
+	.match-entry p {
+		margin-left: 5px;
 	}
 
 	.winner-description {

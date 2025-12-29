@@ -40,7 +40,7 @@
 		</div>
 		<div class="tournamentField">
 			<Clock style="margin-top: 1px; opacity: 0.75;" strokeWidth={1.75} />
-			<p>{tournament.status == "finished" ? "Finished" : readableDate}</p>
+			<p>{readableDate}</p>
 		</div>
 		<div class="tournamentField">
 			<CalendarCheck2 style="opacity: 0.75;" strokeWidth={1.75} />
@@ -118,7 +118,6 @@
 		margin-right: auto;
 		margin-left: 5px;
 		margin-left: 10px;
-		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
 		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;

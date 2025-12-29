@@ -43,7 +43,7 @@
 				<p class="creditNote" in:blur={{ duration: 500 }}>Now, let's kick off your geography journey.</p>
 			</div>
 			<button
-				class="standardButton playButton flexButton"
+				class="standardButton flexButton largeButton"
 				in:fly={{ y: 20, duration: 1000 }}
 				onclick={() => {
 					goto("/");
@@ -87,6 +87,7 @@
 		align-items: center;
 		justify-content: center;
 		gap: 5px;
+		padding-inline: 15px;
 	}
 
 	.arrowIconContainer {
@@ -108,12 +109,6 @@
 		mask-size: 100% 100%;
 		mask-repeat: no-repeat;
 		padding-inline: 30px;
-	}
-
-	.playButton {
-		border-radius: var(--box-margin);
-		min-height: 50px;
-		padding-inline: 15px;
 	}
 
 	@media (max-width: 800px) {

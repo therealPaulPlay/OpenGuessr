@@ -49,7 +49,7 @@
 
 			successPopup = true;
 		} else {
-			errorPopup("Error submitting a competition", "An error occured submitting your competition.", operationMessage);
+			errorPopup("Error submitting competition", "An error occured submitting your competition.", operationMessage);
 		}
 	}
 
@@ -167,7 +167,7 @@
 </script>
 
 <svelte:head>
-	<title>Create a competition</title>
+	<title>Create competition</title>
 </svelte:head>
 
 <Popup
@@ -183,7 +183,7 @@
 	</p>
 	<div class="spacer"></div>
 	<div>
-		<p>Enter link:</p>
+		<p>Enter link</p>
 		<div class="linkBox">
 			<p>{enterLink}</p>
 			<button
@@ -202,7 +202,7 @@
 				}}><Copy size="18" strokeWidth={2.5} /></button
 			>
 		</div>
-		<p>Leaderboard link:</p>
+		<p>Leaderboard link</p>
 		<div class="linkBox">
 			<p>{leaderboardLink}</p>
 			<button
@@ -227,18 +227,18 @@
 <div class="mainContainer">
 	<h1 class="header" id="uploadHeader">Create a competition</h1>
 	<div class="infoNoteBox">
-		<p class="uploadFirstText">Information and rules:</p>
-		<ul class="verticalMarginUl">
-			<li class="helpItem">Keep all details in English.</li>
-			<li class="helpItem">Pick a descriptive competition name (e.g. not "My Competition").</li>
-			<li class="helpItem">Competitions will be deleted 7 days after they have ended.</li>
-			<li class="helpItem">Competitions cannot be edited.</li>
-			<li class="helpItem">The duration must be between 10min and 7d.</li>
-			<li class="helpItem">The number of locations equals the amount of rounds.</li>
+		<p class="uploadFirstText">Rules</p>
+		<ul>
+			<li>Keep all details in English.</li>
+			<li>Pick a descriptive competition name.</li>
+			<li>Competitions will be deleted 7 days after they have ended.</li>
+			<li>Competitions cannot be edited.</li>
+			<li>The duration must be between 10min and 7d.</li>
+			<li>The number of locations equals the amount of rounds.</li>
 		</ul>
 	</div>
 	<div id="inputArea">
-		<p class="marginTop">Competition name:</p>
+		<p class="marginTop">Competition name</p>
 		<input
 			id="uploadCompetitionName"
 			bind:value={competitionName}
@@ -248,7 +248,7 @@
 			placeholder="Name of your competition..."
 			maxlength="30"
 		/>
-		<p>Competition description:</p>
+		<p>Competition description</p>
 		<input
 			id="uploadCompetitionDescription"
 			bind:value={competitionDescription}
@@ -257,7 +257,7 @@
 			placeholder="Description..."
 			maxlength="70"
 		/>
-		<p>Round length (seconds):</p>
+		<p>Round length (seconds)</p>
 		<div class="extendedInputBox">
 			<input
 				id="uploadCompetitionRoundLength"
@@ -269,7 +269,7 @@
 				maxlength="30"
 			/>
 		</div>
-		<p>Duration (use min, h and d):</p>
+		<p>Duration (min, h & d)</p>
 		<input
 			id="uploadCompetitionDuration"
 			class="uploadInfo"
@@ -279,18 +279,18 @@
 			placeholder="2d"
 			maxlength="30"
 		/>
-		<p>Visibility:</p>
+		<p>Visibility</p>
 		<button
-			class="standardButton white toggleButton"
+			class="standardButton white toggleButton largeButton"
 			onclick={() => {
 				playSound("basic_button");
 				competitionPrivate = !competitionPrivate;
 			}}>{competitionPrivate ? "Private" : "Public"}</button
 		>
 		<div class="spacer"></div>
-		<p>Restriction:</p>
+		<p>Restriction</p>
 		<button
-			class="standardButton white toggleButton"
+			class="standardButton white toggleButton largeButton"
 			onclick={() => {
 				playSound("basic_button");
 				togglecompetitionRestriction();
@@ -298,17 +298,17 @@
 		>
 		<div class="spacer"></div>
 		<div class="infoNoteBox marginBottom">
-			<p class="uploadFirstText">How to add locations:</p>
+			<p class="uploadFirstText">How to add locations</p>
 			<ol>
-				<li class="helpItem">
+				<li>
 					Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer.
 				</li>
-				<li class="helpItem">Drag the orange figure onto the map to open a streetview.</li>
-				<li class="helpItem">Copy the URL from the address bar of your browser into the textbox.</li>
+				<li>Drag the orange figure onto the map to open a streetview.</li>
+				<li>Copy the URL from the address bar of your browser into the textbox.</li>
 			</ol>
 		</div>
 		<div class="spacer"></div>
-		<p>Locations (fixed order, max. 20):</p>
+		<p>Locations (fixed order, max. 20)</p>
 		<textarea
 			id="uploadLocationData"
 			bind:value={locationData}
@@ -325,7 +325,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	<div class="buttonContainer">
 		<button
 			id="uploadConfirm"
-			class="standardButton largeButton submitButton"
+			class="standardButton bottomButton largeButton submitButton"
 			onclick={() => {
 				playSound("basic_button");
 				showConfirmPopup("Submit?", "Competitions cannot be edited or deleted.", () => {
@@ -433,7 +433,8 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	.locationTextbox {
 		min-height: 350px;
 		font-size: 16px;
-		width: calc(100% - 30px);
+		width: 100%;
+		box-sizing: border-box;
 		padding: 20px;
 		transition: background-color 250ms ease;
 	}
@@ -453,8 +454,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 
 	.toggleButton {
 		margin-top: 10px;
-		border-radius: var(--box-margin);
-		min-height: 50px;
 		min-width: 150px;
 	}
 </style>

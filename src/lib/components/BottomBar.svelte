@@ -1,7 +1,6 @@
-<!--bottom toolbar with reset button-->
 <script>
 	import { playSound } from "$lib/utils/soundManager";
-	import { bugspotPopup, chatMobilePopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
+	import { chatMobilePopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { supporterLevel } from "$lib/stores/accountStore";
@@ -11,30 +10,33 @@
 	import { tooltip } from "$lib/utils/tooltip";
 	import { countryGuessr, multiplayer } from "$lib/stores/modeStore";
 	import { blur, fade } from "svelte/transition";
-	import { ArrowUp, Bug, Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
-	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
 	import { chatArray, mobileChatLastOpenedMsgCount } from "$lib/stores/context-specific/multiplayerStore";
+	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+	import { onMount } from "svelte";
+	import { registerAndActivateGameplayAd } from "$lib/utils/ads";
 
 	function reloadPanorama() {
 		playSound("reload");
 		$loadingScreenVisible = true;
 		$iframeElement.src = $panoramaSrc;
 	}
+
+	onMount(registerAndActivateGameplayAd);
 </script>
 
-<div id="BottomBar" class="BottomBar" class:BottomBarAdShift={$supporterLevel < 2 && !$adsDisabled}>
+<div id="bottomBar" class="bottomBar" class:bottomBarAdShift={!$adsDisabled}>
 	<div class="bottomLeftMenu">
 		<div class="barMenu">
 			<button
 				class="standardButton white"
-				id="resetButton"
-				use:tooltip={{ text: "Back to start" }}
 				onclick={() => {
 					reloadPanorama(); // No sound, as the reload sound will play
 				}}
 			>
 				<img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
+				<span class="resetButtonText">Return</span>
 			</button>
 			{#if $multiplayer}
 				<button
@@ -46,46 +48,12 @@
 					}}
 				>
 					{#if $chatArray?.filter((i) => i.username != "Server")?.length === $mobileChatLastOpenedMsgCount}
-						<MessageSquareMore size={22} strokeWidth={2} style="margin-top: 3px;" />
+						<MessageSquareMore size={22} strokeWidth={2.25} style="margin-top: 3px;" />
 					{:else}
-						<MessageSquareDot size={22} strokeWidth={2} style="margin-top: 3px;" />
+						<MessageSquareDot size={22} strokeWidth={2.25} style="margin-top: 3px;" />
 					{/if}
 				</button>
 			{/if}
-		</div>
-		<div class="barMenu socialBar">
-			<button
-				class="linkItem standardButton white"
-				use:tooltip={{ text: "Report bug" }}
-				onclick={() => {
-					playSound("basic_button");
-					$bugspotPopup = true;
-				}}
-			>
-				<Bug size={21} strokeWidth={2.25} style="margin-bottom: -2px;" />
-			</button>
-			<button
-				class="linkItem standardButton white"
-				use:tooltip={{ text: "Discord" }}
-				id="discordButton"
-				onclick={() => {
-					playSound("basic_button");
-					window.open($discordInviteUrl, "_blank").focus();
-				}}
-			>
-				<img src="/img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" />
-			</button>
-			<button
-				class="linkItem standardButton white"
-				use:tooltip={{ text: "Reddit" }}
-				id="redditButton"
-				onclick={() => {
-					playSound("basic_button");
-					window.open("https://www.reddit.com/r/OpenGuessr/", "_blank").focus();
-				}}
-			>
-				<img src="/img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
-			</button>
 		</div>
 	</div>
 	{#if !$countryGuessr}
@@ -118,7 +86,7 @@
 					{#if $mapExpanded && $mapInteractive}
 						Guess
 					{:else if !$mapExpanded}
-						Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2} />
+						Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2.25} />
 					{:else if !$mapInteractive}
 						Locked in
 					{/if}
@@ -128,15 +96,18 @@
 	{/if}
 </div>
 
-{#if $supporterLevel <= 1 && !$adsDisabled}
-	<div class="gameplayAdArea barMenu" transition:blur>
-		<div class="gameplayAd" id="gameplayAd"></div>
-		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
-	</div>
-{/if}
+<div class="gameplayAdArea barMenu" transition:blur style:display={$adsDisabled ? "none" : ""}>
+	<div
+		class="gameplayAd"
+		id="gameplayAd"
+		data-fuse="Game_incontent_1"
+		style:display={$resultScreenEnabled ? "none" : ""}
+	></div>
+	<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
+</div>
 
 <style>
-	.BottomBar {
+	.bottomBar {
 		position: fixed;
 		bottom: var(--box-margin);
 		width: calc(100% - 20px);
@@ -156,11 +127,6 @@
 		pointer-events: none;
 	}
 
-	.linkItem {
-		padding: 4px;
-		padding-inline: 6px;
-	}
-
 	.noAdvertsText {
 		position: absolute;
 		text-align: center;
@@ -178,12 +144,6 @@
 		display: flex;
 		align-items: center;
 		gap: var(--box-margin);
-	}
-
-	.bottomBarIcon {
-		width: 20px !important;
-		height: 20px !important;
-		vertical-align: -1px;
 	}
 
 	.gameplayAdArea {
@@ -256,16 +216,6 @@
 		opacity: 0.5;
 	}
 
-	#redditButton:hover {
-		background-color: #d45f24;
-		filter: none;
-	}
-
-	#discordButton:hover {
-		background-color: #a33ae9;
-		filter: none;
-	}
-
 	#guessText {
 		position: absolute;
 		left: 50%;
@@ -292,6 +242,10 @@
 		width: 21px;
 	}
 
+	.resetButtonText {
+		margin-left: var(--panel-margin);
+	}
+
 	.bottomRightMenu {
 		width: max(calc(20% - (var(--box-margin) + 2px)), 200px);
 		margin-right: 60px;
@@ -308,12 +262,8 @@
 			bottom: var(--box-margin);
 		}
 
-		.BottomBarAdShift {
+		.bottomBarAdShift {
 			padding-bottom: calc(50px + var(--box-margin)); /* Ad is 50px high */
-		}
-
-		.socialBar {
-			display: none;
 		}
 
 		.mobileChatButton {
@@ -323,6 +273,10 @@
 		.bottomRightMenu {
 			flex-grow: 1;
 			margin-right: 0;
+		}
+
+		.resetButtonText {
+			display: none;
 		}
 	}
 </style>

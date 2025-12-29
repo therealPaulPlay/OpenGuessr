@@ -21,12 +21,12 @@
 	let { data } = $props();
 
 	let locationIndex = $state(0);
-	let mapName = $state(data.name);
-	let mapAuthor = $state(data.author);
-	let mapAuthorId = $state(data.authorId);
-	let mapDescription = $state(data.description);
-	let mapLocationAmount = $state(data.map_data?.locations.length);
-	let mapLocationData = $state(data.map_data);
+	let mapName = $derived(data.name);
+	let mapAuthor = $derived(data.author);
+	let mapAuthorId = $derived(data.authorId);
+	let mapDescription = $derived(data.description);
+	let mapLocationAmount = $derived(data.map_data?.locations.length);
+	let mapLocationData = $derived(data.map_data);
 
 	let playerId = $state(0);
 
@@ -292,7 +292,7 @@
 		<div class="buttonBar">
 			<button
 				id="likeMap"
-				class="standardButton white mapButton"
+				class="standardButton white mapButton largeButton"
 				onclick={() => {
 					playSound("basic_button");
 					likeOrDislikeMap(mapName);
@@ -307,7 +307,7 @@
 			</button>
 			<button
 				id="mapLink"
-				class="standardButton white mapButton"
+				class="standardButton white mapButton largeButton"
 				onclick={() => {
 					playSound("basic_button");
 					navigator.clipboard
@@ -326,7 +326,7 @@
 			{#if mapAuthorId == playerId && playerId != null}
 				<button
 					id="manageDelete"
-					class="standardButton white mapButton"
+					class="standardButton white mapButton largeButton"
 					onclick={() => {
 						playSound("basic_button");
 						deleteMapScreen(mapName);
@@ -334,7 +334,7 @@
 				>
 				<button
 					id="manageUpdate"
-					class="standardButton white mapButton"
+					class="standardButton white mapButton largeButton"
 					onclick={() => {
 						playSound("basic_button");
 						fileName = "Pick file"; // Reset file name input
@@ -344,7 +344,7 @@
 				>
 			{/if}
 			<button
-				class="standardButton mapButton"
+				class="standardButton mapButton largeButton"
 				onclick={() => {
 					playSound("basic_button");
 					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
@@ -382,7 +382,7 @@
 	<div class="popup-title">
 		<h1 id="mapUpdateHeader">Update locations</h1>
 	</div>
-	<p class="marginBottom">Locations:</p>
+	<p class="marginBottom">Locations</p>
 	<Tabs
 		tabs={["Overwrite all", "Add"]}
 		onchange={(_, tabIndex) => {
@@ -398,9 +398,7 @@
 		bind:value={textareaValue}
 		placeholder="https://www.google.com/maps..."
 	></textarea>
-	<p>...or upload a JSON in the OpenGuessr format:</p>
 	<button
-		id="jsonUpdateButton"
 		class="standardButton white"
 		onclick={() => {
 			playSound("basic_button");
@@ -424,7 +422,7 @@
 	<div class="buttonBoxGap">
 		<button
 			id="updateProceed"
-			class="standardButton largeButton"
+			class="standardButton bottomButton largeButton"
 			onclick={async () => {
 				playSound("basic_button");
 				showStatus = true;
@@ -546,13 +544,9 @@
 		padding: var(--box-margin);
 		padding-inline: 20px;
 		margin-bottom: var(--layout-margin);
-		margin-top: var(--box-margin);
+		margin-top: var(--layout-margin);
 		transition: background-color 250ms ease;
 		color: white;
-	}
-
-	#jsonUpdateButton {
-		margin-top: 10px;
 	}
 
 	.locationAmountInfo {
@@ -648,8 +642,6 @@
 	}
 
 	.mapButton {
-		min-height: 50px;
-		border-radius: var(--box-margin);
 		justify-content: center;
 		align-items: center;
 		display: flex;

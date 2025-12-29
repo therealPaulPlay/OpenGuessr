@@ -34,25 +34,27 @@
 
 <svelte:document onmousemove={handleResize} ontouchmove={handleResize} onmouseup={stopResize} ontouchend={stopResize} />
 
-<div class="chatHolder" style:display={$chatVisible ? "flex" : "none"}>
-	<!-- svelte-ignore a11y_interactive_supports_focus -->
-	<div class="multiplayerChat barMenu" style:height="{chatHeight}px">
-		<!-- svelte-ignore a11y_role_has_required_aria_props -->
-		<div
-			class="resize-handle"
-			onmousedown={startResize}
-			ontouchstart={startResize}
-			class:active={isResizing}
-			role="scrollbar"
-		>
-			<MoveVertical size={16} strokeWidth={3} />
+{#if $chatVisible}
+	<div class="chat-holder">
+		<!-- svelte-ignore a11y_interactive_supports_focus -->
+		<div class="multiplayer-chat barMenu" style:height="{chatHeight}px">
+			<!-- svelte-ignore a11y_role_has_required_aria_props -->
+			<div
+				class="resize-handle"
+				onmousedown={startResize}
+				ontouchstart={startResize}
+				class:active={isResizing}
+				role="scrollbar"
+			>
+				<MoveVertical size={16} strokeWidth={3} />
+			</div>
+			<Chat />
 		</div>
-		<Chat />
 	</div>
-</div>
+{/if}
 
 <style>
-	.chatHolder {
+	.chat-holder {
 		left: 10px;
 		bottom: 76px;
 		z-index: 10;
@@ -62,16 +64,12 @@
 		gap: var(--panel-margin);
 	}
 
-	.multiplayerChat {
+	.multiplayer-chat {
 		width: 100%;
 		min-height: 172px;
 		max-height: 500px;
 		overflow: hidden;
-		display: block !important;
-		padding: var(--panel-margin);
-		background-color: var(--panel-color);
-		backdrop-filter: blur(10px);
-		transition: opacity 250ms ease;
+		flex-direction: column;
 	}
 
 	.resize-handle {
@@ -100,7 +98,7 @@
 
 	/* Hide on mobile */
 	@media (orientation: portrait) and (max-width: 800px) {
-		.multiplayerChat {
+		.multiplayer-chat {
 			display: none !important;
 		}
 	}

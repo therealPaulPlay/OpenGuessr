@@ -284,7 +284,7 @@
 		border-radius: var(--box-margin);
 		border-top-left-radius: 0;
 		border-top-right-radius: 0;
-		gap: 9px;
+		gap: var(--box-margin);
 		flex-wrap: wrap;
 	}
 

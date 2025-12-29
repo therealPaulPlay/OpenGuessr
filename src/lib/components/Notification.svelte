@@ -11,7 +11,7 @@
 	import { X } from "@lucide/svelte";
 	import { fly } from "svelte/transition";
 
-	let { belowNavbar = true } = $props();
+	let { inMenu = false } = $props();
 
 	function accept() {
 		if ($acceptFunction) {
@@ -40,35 +40,41 @@
 	}
 </script>
 
-{#if $notificationVisible}
-	<div
-		id="notificationBar"
-		class="barMenu"
-		style:top={belowNavbar ? "calc(var(--layout-margin) + 56px + var(--box-margin))" : "var(--layout-margin)"}
-		transition:fly={{ y: -20, duration: 250 }}
-	>
-		<p id="notificationText">{$notificationText}</p>
-		<div class="notificationButtonBox">
-			{#if $acceptFunction}
-				<button id="notificationAccept" class="standardButton white" onclick={accept}>{$acceptText}</button>
-			{/if}
-			<button id="notificationDismiss" class="standardButton white" onclick={dismiss}>
-				<X size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
-			</button>
+<div class="notification-holder" style:top={inMenu ? "var(--layout-margin)" : ""}>
+	{#if $notificationVisible}
+		<div id="notificationBar" class="barMenu" transition:fly={{ y: -20, duration: 250 }}>
+			<p id="notificationText">{$notificationText}</p>
+			<div class="notificationButtonBox">
+				{#if $acceptFunction}
+					<button id="notificationAccept" class="standardButton white" onclick={accept}>{$acceptText}</button>
+				{/if}
+				<button id="notificationDismiss" class="standardButton white" onclick={dismiss}>
+					<X size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
+				</button>
+			</div>
 		</div>
-	</div>
-{/if}
+	{/if}
+</div>
 
 <style>
 	#notificationBar {
-		position: fixed;
-		top: 0;
 		gap: var(--layout-margin);
 		transition: all 200ms ease;
 		pointer-events: auto;
 		z-index: 100;
 		max-width: 80%;
 		margin-inline: auto;
+	}
+
+	.notification-holder {
+		position: fixed;
+		top: var(--box-margin);
+		left: var(--box-margin);
+		right: var(--box-margin);
+		display: flex;
+		justify-content: center;
+		pointer-events: none;
+		z-index: 16;
 	}
 
 	@media (max-width: 1200px) {

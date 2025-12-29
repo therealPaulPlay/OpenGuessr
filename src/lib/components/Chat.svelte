@@ -19,19 +19,14 @@
 	});
 </script>
 
-<RemainingGuessesDisplay />
-<div
-	class="multiplayerChatMessages of-top of-bottom"
-	bind:this={chatMessageBoxElement}
-	style:height={inPanel ? "calc(100% - 48px)" : "calc(100% - 50px - var(--box-margin) * 2)"}
-	style:margin-bottom={inPanel ? "var(--panel-margin)" : "var(--box-margin)"}
->
+<RemainingGuessesDisplay {inPanel} />
+<div class="multiplayerChatMessages of-top of-bottom" bind:this={chatMessageBoxElement}>
 	<p>
 		{#if $chatArray && Array.isArray($chatArray)}
 			{#each $chatArray as chat}
 				{#if !$chatMutedPlayers?.includes(chat.clientId)}
 					<span style="overflow-wrap: break-word;"
-						><span style:opacity={chat.clientId == "server" ? 0.75 : 1}>{chat.username}</span>:
+						><span style:opacity={chat.clientId == "server" ? 0.75 : 1}>{chat.username}:</span>
 						<span style:opacity={0.75}>{chat.text}</span></span
 					>
 					<br />
@@ -40,7 +35,7 @@
 		{/if}
 	</p>
 </div>
-<div class="chatArea" class:chatAreaInPopup={!inPanel}>
+<div class="chatButtonArea" class:chatButtonAreaInPopup={!inPanel}>
 	<input
 		maxlength="100"
 		type="text"
@@ -80,13 +75,14 @@
 </div>
 
 <style>
-	.chatArea {
+	.chatButtonArea {
 		display: flex;
 		align-items: center;
 		gap: var(--panel-margin);
+		width: 100%;
 	}
 
-	.chatAreaInPopup {
+	.chatButtonAreaInPopup {
 		padding: var(--box-margin);
 		box-sizing: border-box;
 		border-radius: var(--box-margin);

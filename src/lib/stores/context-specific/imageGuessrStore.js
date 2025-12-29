@@ -1,4 +1,4 @@
 import { writable } from "svelte/store";
 
-export const imageGuessrImage = writable();
-export const imageGuessrBackground = writable();
+export const imageGuessrImageSrc = writable("");
+export const imageGuessrLoading = writable(true);

@@ -4,7 +4,6 @@
 	import { roundAmount, roundLength, hostStage, roomcode, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import {
-		adsDisabled,
 		crazyGames,
 		preventFullscreen,
 		disableAutoAuthentication,
@@ -24,7 +23,6 @@
 
 			if (crazyGamesEnabled) {
 				// Platform settings
-				adsDisabled.set(true);
 				preventFullscreen.set(true);
 				disableAutoAuthentication.set(true);
 				crazyGames.set(true); // Enable platform
@@ -86,7 +84,7 @@
 
 	// This will attempt registration and/or login only using a crazy games id.
 	async function authenticateWithCrazyGames() {
-		if ($isAuthenticated) return; // Exit if user is already authenticated (e.g. with bearer token from openguessr.com)
+		if ($isAuthenticated) return; // Exit if user is already authenticated (e.g. with bearer token from OpenGuessr)
 		let token;
 
 		try {

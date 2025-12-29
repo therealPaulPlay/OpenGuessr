@@ -12,7 +12,7 @@ export function supporterWindowIfAuthenticated() {
     } else {
         showConfirmPopup(
             "Account required",
-            "To support OpenGuessr with a one-time payment, an account is required, so that you can enjoy amazing supporter benefits on all devices!",
+            "A one-time payment requires an account so you can enjoy supporter perks on all your devices.",
             () => {
                 signupPrompt();
             },

@@ -199,8 +199,14 @@ export function resetMap() {
         get(map).overlayMapTypes.clear();
     }
 
-    // Reset the guess button as well
+    // Reset the guess button
     confirmButtonActive.set(false);
+
+    // Set map view to focus on current map
+    setTimeout(() => {
+        // Delayed since the result map transition can cause the view to shift
+        if (!keepSize) adjustMapToCountry();
+    }, 150);
 }
 
 // For most maps, adjust the boundaries to the map's locations

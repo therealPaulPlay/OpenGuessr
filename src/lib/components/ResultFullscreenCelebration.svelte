@@ -19,7 +19,7 @@
 	.resultTakeover {
 		position: fixed;
 		inset: 0;
-		z-index: 0;
+		z-index: 17;
 		background-color: var(--dark-background);
 		display: flex;
 		justify-content: center;

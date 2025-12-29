@@ -2,14 +2,14 @@
 <script>
 	import { iframeElement, initialIframeLoad, panoramaSrc } from "$lib/stores/locationStore";
 	import { loadingScreenVisible } from "$lib/stores/uiStore";
-	import { applySingleplayerSettings } from "$lib/utils/applySingleplayerSettings";
+	import { resetApplySingleplayerOptions } from "$lib/utils/applySingleplayerOptions";
 	import { checkStartCompetitionRound } from "$lib/logic/competitionLogic";
 	import { panoramaFilter, nmpz } from "$lib/stores/context-specific/restrictionStore";
 
 	const handleLoad = () => {
 		if ($initialIframeLoad) {
 			try {
-				applySingleplayerSettings(); // Apply singleplayer options / settings (NMPZ, timer etc.) if Singleplayer, otherwise disable all
+				resetApplySingleplayerOptions(); // Apply singleplayer options (NMPZ, timer etc.) if Singleplayer, otherwise disable all
 				checkStartCompetitionRound(); // Check if currently playing competition and start timer + new round if so
 			} catch (error) {
 				console.error("Error in panorama load callback:", error);

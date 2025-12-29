@@ -12,7 +12,7 @@
 	import ImageGuesser from "$lib/components/ImageGuesser.svelte";
 	import ErrorPopup from "$lib/components/ErrorPopup.svelte";
 	import SettingsPopup from "$lib/components/SettingsPopup.svelte";
-	import NavigationBar from "$lib/components/NavigationBar.svelte";
+	import TopBar from "$lib/components/TopBar.svelte";
 	import TopLeftLogo from "$lib/components/TopLeftLogo.svelte";
 	import MapModeIndicator from "$lib/components/MapModeIndicator.svelte";
 	import LittleTimeVignette from "$lib/components/LittleTimeVignette.svelte";
@@ -53,27 +53,16 @@
 	import TournamentInfoPopup from "$lib/components/TournamentInfoPopup.svelte";
 	import TournamentMatchResultsPopup from "$lib/components/TournamentMatchResultsPopup.svelte";
 	import ChatManagePopup from "$lib/components/ChatManagePopup.svelte";
-	import FullscreenNavigation from "$lib/components/FullscreenNavigation.svelte";
+	import Navigation from "$lib/components/Navigation.svelte";
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
+	import Notification from "$lib/components/Notification.svelte";
 
-	// Start ads
+	// Load panorama, ads, overfade etc.
 	onMount(() => {
-		initOverfade(); // Init overfade
+		initOverfade();
 		checkGenerationTypeAndGenerate();
 		initializeAds();
-
-		// Prevent automatic "last button press" with space bar or enter key
-		try {
-			document.addEventListener("keydown", function (event) {
-				var tag = event.target.tagName.toLowerCase();
-				if (event.key === "Enter" || event.key === " ") {
-					if (tag === "button") event.preventDefault();
-				}
-			});
-		} catch (error) {
-			console.warn("Error adding keydown listener to prevent unwanted last button press:", error);
-		}
 	});
 
 	// Load Playlight
@@ -95,11 +84,22 @@
 
 <svelte:head>
 	<!-- Ad script -->
-	<script src="https://hb.vntsm.com/v4/live/vms/sites/openguessr.com/index.js" async></script>
+	<script src="https://cdn.fuseplatform.net/publift/tags/2/4180/fuse.js" async></script>
   
 	<!-- Playlight CSS -->
 	<link rel="stylesheet" href="https://sdk.playlight.dev/playlight-sdk.css" />
 </svelte:head>
+
+<!-- Prevent automatic "last button press" on space bar or enter key press -->
+<svelte:document
+	onkeydown={(event) => {
+		const target = event.target;
+		if (!(target instanceof HTMLElement)) return;
+		if (target.tagName === "BUTTON" && (event.key === "Enter" || event.key === " ")) {
+			event.preventDefault();
+		}
+	}}
+/>
 
 <!-- Keywords -->
 <h1 style:display="none">
@@ -116,16 +116,17 @@
 <!-- Log user in -->
 <Authenticate />
 
-<!-- Logo and Navbar -->
+<!-- Logo and Nav -->
 <TopLeftLogo />
-<NavigationBar />
+<TopBar />
+<Notification />
 
 <!-- Music -->
 <MusicController />
 
 <LoadingOverlay />
 <ErrorPopup />
-<FullscreenNavigation />
+<Navigation />
 <ConfirmPopup />
 <CaptchaPopup />
 <ShopPurchaseAnimation />

@@ -8,11 +8,12 @@ import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 import { competition } from "$lib/stores/modeStore";
 import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 import { goto } from "$app/navigation";
-import { leaveFunction } from "$lib/stores/context-specific/mapModeIndicatorStore";
+import { leaveFunction } from "$lib/stores/modeStore.js";
 import { get } from "svelte/store";
 import { username } from "$lib/stores/accountStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+import { navigationMenu } from "$lib/stores/uiStore";
 
 //  Load and enable Competition  ------------------------------------------------------------------------------------------
 let competitionCombinedScore = 0;
@@ -20,21 +21,20 @@ let competitionTimer;
 
 // Called on the competition page when entering
 export function loadCompetition() {
+    if (!get(competitionData)) return errorPopup("Failed to start competition", "No competition data was provided!");
+    competition.set(true); // Activate Competition mode
+    navigationMenu.set(false);
     competitionRound.set(0); // Reset round index
     competitionCombinedScore = 0; // Reset combined score
     leaveFunction.set(() => leaveCompetition(true)); // Set leave function for mapModeIndicator
+    disableResultScreen(); // In case result screen is enabled
+    setRestriction(get(competitionData)?.restriction);
 
-    if (get(competitionData)) {
-        competition.set(true); // Activate Competition mode
-        disableResultScreen(); // In case result screen is enabled
-        setRestriction(get(competitionData)?.restriction);
+    setTimeout(() => {
+        playSound("match_start");
+    }, 400);
 
-        setTimeout(() => {
-            playSound("match_start");
-        }, 400);
-
-        checkGenerationTypeAndGenerate();
-    }
+    checkGenerationTypeAndGenerate();
 }
 
 // Round Logic ---------------------------------------------------------------------------------------------------------
@@ -55,14 +55,13 @@ export async function leaveCompetition(showResult) {
     if (get(competition)) {
         competition.set(false);
         leaveFunction.set();
+        competitionTimer?.stopTimer();
         checkGenerationTypeAndGenerate(); // Also resets restriction
 
         // Now, submit result so you cant just play again and again - await this, so that your result pops up in the page browser
         await submitCompetitionResult(get(competitionData).id, competitionCombinedScore);
 
-        if (showResult) {
-            goto("/competitions?leaderboard-submit=" + get(competitionData).id);
-        }
+        if (showResult) goto("/competitions?leaderboard-submit=" + get(competitionData).id);
     }
 }
 
