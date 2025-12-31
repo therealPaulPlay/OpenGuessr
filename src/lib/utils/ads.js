@@ -1,7 +1,6 @@
 import { page } from "$app/state";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { tick } from "svelte";
-import { get } from "svelte/store";
 
 function getFuse() {
     return window.fusetag || (window.fusetag = { que: [] });
@@ -78,13 +77,4 @@ function activateCorrectZones(onResultScreen = false) {
     } catch (error) {
         console.error("Error activating fuse zones:", error);
     }
-}
-
-let debounceTimeout;
-
-export function reactivateUponResize() {
-    clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(() => {
-        activateCorrectZones(get(resultScreenEnabled));
-    }, 150);
 }
