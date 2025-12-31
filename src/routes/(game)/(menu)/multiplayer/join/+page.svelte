@@ -2,11 +2,13 @@
 	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { joinRoom } from "$lib/logic/multiplayerLogic";
-	import { Copy, Unplug, Users } from "@lucide/svelte";
+	import { Copy, Unplug, User } from "@lucide/svelte";
 	import { blur, slide } from "svelte/transition";
 	import { onDestroy, onMount } from "svelte";
-	import { fetchPublicRooms } from "$lib/utils/publicRooms";
+	import { fetchOpenRooms } from "$lib/logic/matchmakingAPI";
 	import { idToMapName } from "$lib/utils/idToMapName";
+	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { tooltip } from "$lib/utils/tooltip";
 
 	let roomCodeInput = $state("");
 	let openRooms = $state([]);
@@ -45,10 +47,10 @@
 
 	onMount(async () => {
 		clearInterval(fetchRoomsInterval);
-		const rooms = await fetchPublicRooms();
+		const rooms = await fetchOpenRooms();
 		openRooms = rooms?.rooms;
 		fetchRoomsInterval = setInterval(async () => {
-			const rooms = await fetchPublicRooms();
+			const rooms = await fetchOpenRooms();
 			openRooms = rooms?.rooms;
 		}, 10000);
 	});
@@ -101,13 +103,25 @@
 	<div class="publicRoomBox" transition:blur>
 		{#each openRooms as room}
 			<div class="publicRoomItem">
-				<p>{room?.player_count} <Users strokeWidth={2.25} style="margin-bottom: -3px;" /></p>
-				<p class="roomItemMapName">Map: {idToMapName(room?.map)}</p>
+				<div class="roomItemInfoContainer of-left of-right">
+					<div class="infoBox">
+						<img class="mapIcon" src="/img/maps_icon.png" alt="Maps" />
+						<p>{idToMapName(room?.map)}</p>
+					</div>
+					<div class="infoBox">
+						<User size={20} strokeWidth={2.25} style="margin-bottom: -1px; margin-right: 1px;" />
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<span class="roomItemUser" role="button" tabindex="0" onclick={() => loadProfileFromId(room?.user_id)}
+							>{room?.user_name}</span
+						>
+					</div>
+				</div>
 				<button
 					class="standardButton white"
+					use:tooltip={{ text: "Join" }}
 					onclick={() => {
 						playSound("basic_button");
-						const code = room?.room_code;
+						const code = room?.code;
 						if (!code) return console.warn("Roomcode is not set.");
 						for (let i = 0; i < 6; i++) {
 							segments[i] = code[i] || "";
@@ -162,18 +176,53 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: var(--panel-margin);
-		padding-left: 15px;
+		padding-left: var(--layout-margin);
 		flex-grow: 1;
 		width: 100%;
 		opacity: 0.5;
 		transition: opacity 250ms ease;
+		overflow: hidden;
+		gap: var(--panel-margin);
 	}
 
-	.roomItemMapName {
-		max-width: 30%;
+	.roomItemInfoContainer {
+		gap: var(--layout-margin);
+		display: flex;
+		align-items: center;
+		overflow: hidden;
+		padding-bottom: 3px;
+		padding-top: 3px;
+		overflow-x: auto;
+		scrollbar-width: none;
+	}
+
+	.roomItemInfoContainer p {
 		overflow: hidden;
 		text-overflow: ellipsis;
-		text-wrap: nowrap;
+	}
+
+	.infoBox {
+		border-radius: 5px;
+		background: var(--box-color);
+		padding-inline: 5px;
+		box-shadow: var(--bulb-shadow);
+		white-space: nowrap;
+		display: inline-flex;
+		min-width: fit-content;
+		display: flex;
+		align-items: center;
+		color: white;
+		font-size: 20px;
+		opacity: 0.75;
+	}
+
+	.roomItemUser {
+		transition: opacity 250ms ease;
+		cursor: pointer;
+	}
+
+	.roomItemUser:hover {
+		opacity: 0.5;
 	}
 
 	.publicRoomItem:hover {
@@ -235,5 +284,12 @@
 		width: calc(100% - 10px);
 		text-overflow: ellipsis;
 		opacity: 0.5;
+	}
+
+	.mapIcon {
+		width: 20px;
+		height: 20px;
+		margin-bottom: -1px;
+		margin-right: 3px;
 	}
 </style>

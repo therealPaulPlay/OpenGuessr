@@ -12,7 +12,7 @@
 		overlayShowSubtitle,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import Badge from "$lib/components/Badge.svelte";
-	import { leaveMultiplayerRound, startRoom } from "$lib/logic/multiplayerLogic";
+	import { leaveMultiplayer, startRoom } from "$lib/logic/multiplayerLogic";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
@@ -121,7 +121,7 @@
 					class="standardButton largeButton roundEndButton"
 					onclick={() => {
 						playSound("basic_button");
-						leaveMultiplayerRound();
+						leaveMultiplayer();
 					}}>Exit</button
 				>
 			{/if}
@@ -129,9 +129,9 @@
 	{/if}
 </div>
 
-{#snippet eloDisplay(elo)}
+{#snippet eloDisplay(elo = "Default")}
 	<div class="eloDisplay">
-		<p>{elo} Elo</p>
+		<p>{elo?.toLocaleString()} Elo</p>
 	</div>
 {/snippet}
 

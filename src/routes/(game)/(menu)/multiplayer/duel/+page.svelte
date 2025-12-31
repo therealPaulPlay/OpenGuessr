@@ -5,12 +5,11 @@
 		skillBasedMatchmaking,
 		matchmakingHosting,
 	} from "$lib/stores/context-specific/multiplayerStore";
-	import { findDuel, leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
+	import { findDuel, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
 	import { Info, RefreshCcw } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
-	import { deleteRoomCodeFromMatchmakingServer } from "$lib/logic/matchmakingAPI";
 </script>
 
 <svelte:head>
@@ -35,10 +34,7 @@
 				if (!$matchmakingActive) {
 					playSound("basic_button");
 					findDuel();
-				} else {
-					deleteRoomCodeFromMatchmakingServer();
-					leaveMultiplayerRound();
-				}
+				} else leaveMultiplayer();
 			}}
 			>{$matchmakingActive ? "Cancel" : "Try again"}
 			{#if !$matchmakingActive}

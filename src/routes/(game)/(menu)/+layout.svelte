@@ -3,7 +3,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import Notification from "$lib/components/Notification.svelte";
 	import { screenEscapeDisabled } from "$lib/stores/context-specific/multiplayerStore";
-	import { leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
+	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { goto, afterNavigate } from "$app/navigation";
 	import { Home } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
@@ -27,7 +27,7 @@
 	}
 
 	function leaveMultiplayerIfReturningFromMultiplayerPage() {
-		if (page.url.pathname.startsWith("/multiplayer")) leaveMultiplayerRound();
+		if (page.url.pathname.startsWith("/multiplayer")) leaveMultiplayer();
 	}
 
 	let showHomeButton = $derived(historyStack.at(-1) !== "/");

@@ -1,5 +1,5 @@
 <script>
-	import { Eye, EyeOff, Link, Users, ArrowRightLeft } from "@lucide/svelte";
+	import { Eye, Link, Users, ArrowRightLeft } from "@lucide/svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
@@ -23,7 +23,7 @@
 	import Ticker from "$lib/components/ui/Ticker.svelte";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { goto } from "$app/navigation";
-	import { addPublicRoom, deletePublicRoom } from "$lib/utils/publicRooms";
+	import { submitRoomCode } from "$lib/logic/matchmakingAPI.js";
 	import { onDestroy, onMount } from "svelte";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -35,12 +35,6 @@
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 
 	let roomOpened = $state(false);
-	let roomOpenAddInterval = $state();
-
-	onDestroy(() => {
-		clearInterval(roomOpenAddInterval);
-		if (roomOpened) deletePublicRoom();
-	});
 
 	function updatePlayerTeam(playerId, newTeamIndex) {
 		get(socket)?.sendRequest("updateTeam", { newTeamIndex: parseInt(newTeamIndex), playerClientId: playerId });
@@ -246,40 +240,17 @@
 					</button>
 					<button
 						class="standardButton white largeButton"
-						use:tooltip={{ text: "Toggle room visibility" }}
-						disabled={!$roomcode}
+						use:tooltip={{ text: "Make room public" }}
+						disabled={!$roomcode || roomOpened}
 						onclick={async () => {
 							playSound("basic_button");
 							if (!$isAuthenticated) return signupPrompt();
-							if (!roomOpened) {
-								await addPublicRoom(
-									$roomcode,
-									$connectionCount + 1,
-									localStorage.getItem("selectedMap") || $defaultMap,
-								);
-								clearInterval(roomOpenAddInterval);
-								roomOpenAddInterval = setInterval(async () => {
-									await addPublicRoom(
-										$roomcode,
-										$connectionCount + 1,
-										localStorage.getItem("selectedMap") || $defaultMap,
-									);
-								}, 5000);
-								roomOpened = true;
-								showNotification("Room set to public.");
-							} else {
-								clearInterval(roomOpenAddInterval);
-								await deletePublicRoom();
-								roomOpened = false;
-								showNotification("Room set to private.");
-							}
+							await submitRoomCode("open-room", false, localStorage.getItem("selectedMap") || $defaultMap);
+							roomOpened = true;
+							showNotification("Room set to public.");
 						}}
 					>
-						{#if roomOpened}
-							<EyeOff strokeWidth={2.5} size={20} style="margin-bottom: -2px;" />
-						{:else}
-							<Eye strokeWidth={2.5} size={20} style="margin-bottom: -2px;" />
-						{/if}
+						<Eye strokeWidth={2.5} size={20} style="margin-bottom: -2px;" />
 					</button>
 				{/if}
 				<button

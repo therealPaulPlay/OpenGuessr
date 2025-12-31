@@ -9,7 +9,7 @@
 	style:scale={$timeReducedOverlay ? "1.03" : "1"}
 	style:filter={$timeReducedOverlay ? "none" : "blur(5px)"}
 >
-	<h1>Your opponent has guessed</h1>
+	<h1>A player has guessed</h1>
 	<p id="duelsOverlaySubtitle">Time reduced to max. 15s</p>
 </div>
 

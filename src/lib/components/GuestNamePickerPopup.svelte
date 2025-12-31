@@ -1,7 +1,7 @@
 <script>
 	import { goto } from "$app/navigation";
 	import Popup from "$lib/components/ui/Popup.svelte";
-	import { leaveMultiplayerRound } from "$lib/logic/multiplayerLogic";
+	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { guestName, guestNamePromise } from "$lib/stores/context-specific/multiplayerStore";
 	import { guestNamePickerPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -46,7 +46,7 @@
 	bind:open={$guestNamePickerPopup}
 	onclose={() => {
 		$guestNamePromise = null;
-		leaveMultiplayerRound();
+		leaveMultiplayer();
 		goto("/multiplayer");
 	}}
 >
