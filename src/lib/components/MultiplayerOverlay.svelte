@@ -12,7 +12,7 @@
 		overlayShowSubtitle,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import Badge from "$lib/components/Badge.svelte";
-	import { leaveMultiplayer, startRoom } from "$lib/logic/multiplayerLogic";
+	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
