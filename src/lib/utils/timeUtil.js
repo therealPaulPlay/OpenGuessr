@@ -22,7 +22,7 @@ export async function getServerTimestamp() {
         const timeout = setTimeout(() => controller.abort(), 1000);
 
         try {
-            const response = await fetch(get(apiUrl) + '/rooms/time/timestamp', {
+            const response = await fetch(get(apiUrl) + '/matchmaking/time/timestamp', {
                 signal: controller.signal
             });
 

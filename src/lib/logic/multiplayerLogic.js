@@ -33,7 +33,7 @@ import {
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
-import { attemptDuelJoin, deleteRoomCodeFromMatchmakingServer } from "$lib/logic/matchmakingAPI";
+import { attemptRoomJoin } from "$lib/logic/matchmakingAPI";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
@@ -103,8 +103,6 @@ export async function createMultiplayerInstance() {
 
             // Someone connected...
             get(socket).onEvent('clientConnected', (id) => {
-                if (get(matchmakingActive)) deleteRoomCodeFromMatchmakingServer(); // Delete roomcode from server
-                if (get(socket)?.getStorage?.divisionRoom && !get(socket)?.getStorage?.gameStarted) startRoom(); // Immediately start on first connection
                 connectionCount.set(get(socket)?.connectionCount);
             });
 
@@ -114,7 +112,8 @@ export async function createMultiplayerInstance() {
             });
 
             get(socket).onEvent('hostMigrated', () => {
-                if (!get(socket)?.getStorage?.gameStarted && get(multiplayer)) startRoom();
+                // In a non-division room, start when the host (who is the only one with the start button) leaves
+                if (!get(socket)?.getStorage?.gameStarted && !get(socket)?.getStorage?.divisionRoom || get(multiplayer)) startRoom();
             });
 
             let playerAddRequestSent = false; // Avoid sending this multiple times
@@ -225,14 +224,14 @@ export async function findDuel() {
     goto("/multiplayer/duel"); // Visit duel load page
     roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     matchmakingActive.set(true);
-    attemptDuelJoin(roomIndex, get(skillBasedMatchmaking));
+    attemptRoomJoin(roomIndex, "ranked-duel", get(skillBasedMatchmaking));
 }
 
 // This occurs when the multiplayer system's connect/join returns an error
 function findNextDuel() {
     if (roomIndex < 10) {
         roomIndex++;
-        attemptDuelJoin(roomIndex, get(skillBasedMatchmaking));
+        attemptRoomJoin(roomIndex, "ranked-duel", get(skillBasedMatchmaking));
     } else {
         matchmakingActive.set(false);
         multiplayerStatus.set("Couldn't connect to any room.");

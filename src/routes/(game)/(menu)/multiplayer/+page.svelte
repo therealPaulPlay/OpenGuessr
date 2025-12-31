@@ -5,7 +5,6 @@
 		ContactRound,
 		TriangleAlert,
 		Info,
-		Earth,
 		BicepsFlexed,
 		Search,
 		X,
@@ -13,6 +12,7 @@
 		ChevronDown,
 		ChevronUp,
 		History,
+		Globe,
 	} from "@lucide/svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -135,7 +135,7 @@
 					{#if $skillBasedMatchmaking}
 						<BicepsFlexed strokeWidth={1.85} style="margin-bottom: -3px;" />
 					{:else}
-						<Earth strokeWidth={1.85} style="margin-bottom: -3px;" />
+						<Globe strokeWidth={1.85} style="margin-bottom: -3px;" />
 					{/if}
 				</button>
 				<button

@@ -129,9 +129,9 @@
 	{/if}
 </div>
 
-{#snippet eloDisplay(elo)}
+{#snippet eloDisplay(elo = "Default")}
 	<div class="eloDisplay">
-		<p>{elo} Elo</p>
+		<p>{elo?.toLocaleString()} Elo</p>
 	</div>
 {/snippet}
 
