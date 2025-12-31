@@ -3,7 +3,7 @@ import { username, elo, duelWinStreak, tokens, supporterLevel } from "$lib/store
 import { acceptFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
 import { linkJoinPopup } from "$lib/stores/uiStore";
-import { leaveMultiplayerRound, joinRoom } from "$lib/logic/multiplayerLogic";
+import { leaveMultiplayer, joinRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { duelResultPopup } from "$lib/stores/uiStore";
 import { duelResultTitle, eloChange, tokenGain } from "$lib/stores/context-specific/duelResultStore";
@@ -83,7 +83,7 @@ export async function initializeSSEConnection() {
                             // If the duel is still ongoing, leave
                             if (get(multiplayer) && !get(socket)?.getStorage?.gameEnded) {
                                 didWin ? showNotification("Your opponent disconnected.") : showNotification("You disconnected.");
-                                leaveMultiplayerRound();
+                                leaveMultiplayer();
                             }
 
                             // Show result on destroy if still in multiplayer, otherwise, show immediately
@@ -151,7 +151,7 @@ export async function initializeSSEConnection() {
 // Related functions --------------------------------------------------------------------------------------------------------
 function joinRoomFromNotification(roomcode, recipientId) {
     acceptMatchInvite(recipientId); // Informs the host that they accepted
-    leaveMultiplayerRound();
+    leaveMultiplayer();
     leaveCompetition(false);
 
     linkJoinPopup.set(true);

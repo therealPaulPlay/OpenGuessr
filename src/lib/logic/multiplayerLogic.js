@@ -58,7 +58,7 @@ function setMultiplayerUI() {
     if (get(multiplayer)) {
         get(singleplayerTimer)?.stopTimer();
         leaveFunction.set(() => {
-            showConfirmPopup("Leave?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayerRound);
+            showConfirmPopup("Leave?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayer);
             playSound("leave_round");
         });
         chatVisible.set(true);
@@ -188,7 +188,7 @@ export async function createMultiplayerInstance() {
             });
 
             get(socket).onEvent('instanceDestroyed', () => {
-                if (get(multiplayer)) leaveMultiplayerRound(false); // If not already left, leave (e.g. on error)
+                if (get(multiplayer)) leaveMultiplayer(false); // If not already left, leave (e.g. on error)
             });
 
             // Initialize and open connection
@@ -318,7 +318,7 @@ export async function joinRoom(code) {
 }
 
 // Multiplayer leave ----------------------------------------------------------------------------------
-export function leaveMultiplayerRound(destroy = true) {
+export function leaveMultiplayer(destroy = true) {
     // Disable Multiplayer & Matchmaking
     const wasMultiplayerEnabled = get(multiplayer);
     multiplayer.set(false);
@@ -329,12 +329,12 @@ export function leaveMultiplayerRound(destroy = true) {
         socket.set(null); // Remove reference
     }
 
-    // Clear running intervals
+    // Clear running countdown
     multiplayerTimer?.stopTimer();
     clearInterval(countdownInterval);
-    countdownInterval = undefined; // Tell overlay countdown it is not running
+    countdownInterval = null; // Tell overlay countdown it is not running
 
-    screenEscapeDisabled.set(false); // Make Back and Close visible
+    screenEscapeDisabled.set(false); // Enable back and home buttons in menus
     duelRetryEnabled.set(false); // Make Duel retry button disabled (Standard)
 
     // Reset to default settings
@@ -357,8 +357,8 @@ export function leaveMultiplayerRound(destroy = true) {
         navigationMenu.set(false);
         showMultiplayerOverlay(false); // Also makes map interactive
         updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
-        setMultiplayerUI();
-        checkGenerationTypeAndGenerate(); // Also resets the restriction
+        setMultiplayerUI(); // Disable multiplayer UI
+        checkGenerationTypeAndGenerate(); // Generate new loc (also resets restriction)
     }
 }
 
@@ -455,9 +455,7 @@ function showMultiplayerOverlay(show) {
         overlayShowSubtitle.set(get(multiplayerStyle) == "duel" && get(socket)?.getStorage?.currentRound >= 3 && get(socket)?.getStorage?.currentRound < get(socket)?.getStorage?.roundAmount);
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
         mapInteractive.set(false); // Disable map
-    } else {
-        mapInteractive.set(true);
-    }
+    } else mapInteractive.set(true);
 }
 
 function determineWinner(array) {
