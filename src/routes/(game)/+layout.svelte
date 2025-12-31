@@ -1,5 +1,5 @@
 <script>
-	import { initializeAds } from "$lib/utils/ads";
+	import { initializeAds, reactivateUponResize } from "$lib/utils/ads";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 	import { onMount } from "svelte";
 	import initOverfade from "overfade";
@@ -93,6 +93,9 @@
 	<!-- Playlight CSS -->
 	<link rel="stylesheet" href="https://sdk.playlight.dev/playlight-sdk.css" />
 </svelte:head>
+
+<!-- Re-activate ad zones on resize -->
+<svelte:window onresize={reactivateUponResize} />
 
 <!-- Prevent automatic "last button press" on space bar or enter key press -->
 <svelte:document

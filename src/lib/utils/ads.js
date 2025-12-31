@@ -1,6 +1,7 @@
 import { page } from "$app/state";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { tick } from "svelte";
+import { get } from "svelte/store";
 
 function getFuse() {
     return window.fusetag || (window.fusetag = { que: [] });
@@ -54,8 +55,12 @@ resultScreenEnabled.subscribe(async (isEnabled) => {
     // Cancel if another operation started while we were waiting
     if (operationId !== pendingOperation) return;
 
+    activateCorrectZones(isEnabled);
+});
+
+function activateCorrectZones(onResultScreen = false) {
     try {
-        if (isEnabled) {
+        if (onResultScreen) {
             if (window.matchMedia("(min-width: 1900px)").matches) {
                 getFuse().que.push(function () {
                     getFuse().activateZone("resultAd");
@@ -71,6 +76,15 @@ resultScreenEnabled.subscribe(async (isEnabled) => {
             });
         }
     } catch (error) {
-        console.error("Error occured activating fuse zones:", error);
+        console.error("Error activating fuse zones:", error);
     }
-});
+}
+
+let debounceTimeout;
+
+export function reactivateUponResize() {
+    clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(() => {
+        activateCorrectZones(get(resultScreenEnabled));
+    }, 150);
+}
