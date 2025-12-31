@@ -8,7 +8,6 @@ function getFuse() {
 
 export function initializeAds() {
     if (page.url.hostname !== "openguessr.com") {
-        console.log("Using staging ad setup on: " + page.url.hostname);
         window.googletag = window.googletag || { cmd: [] };
         googletag.cmd.push(function () {
             googletag.pubads().set("page_url", "https://openguessr.com/");

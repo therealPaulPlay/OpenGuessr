@@ -43,7 +43,7 @@
 
 		<div class="eloIndicator" style="left: {fillPercentage}%">
 			<div class="eloLine"></div>
-			<div class="eloValue">{Math.round($elo)} Elo</div>
+			<div class="eloValue">{Math.round($elo)?.toLocaleString()} Elo</div>
 		</div>
 	</div>
 </div>

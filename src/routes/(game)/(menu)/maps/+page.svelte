@@ -333,16 +333,6 @@
 		>{countrySectionExpanded ? "Show less" : "Show all"}
 		<img class="arrowExpand" class:arrowExpandRotate={countrySectionExpanded} alt="arrow" src="/img/arrow_icon.png" />
 	</button>
-	<!-- Playlight section -->
-	{#if !$crazyGames}
-		<div class="headerContainer no-bottom-padding">
-			<div>
-				<h2 class="header">Featured games</h2>
-				<a target="_blank" href="https://playlight.dev" class="playlightLink">by Playlight</a>
-			</div>
-		</div>
-		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style="height: 330px;"></div>
-	{/if}
 	<!-- Continents -->
 	<div class="headerContainer">
 		<h2 class="header">Continents</h2>
@@ -399,6 +389,13 @@
 			<p class="nothingFound noSavedMaps">No saved community maps.</p>
 		{/if}
 	</div>
+	<!-- Playlight section -->
+	{#if !$crazyGames}
+		<div class="headerContainer no-bottom-padding">
+			<h2 class="header">Featured games</h2>
+		</div>
+		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style="height: 330px;"></div>
+	{/if}
 	<!-- Featured Maps -->
 	<div class="headerContainer largeHeaderMargin">
 		<h2 class="header">Community spotlight</h2>
@@ -507,7 +504,7 @@
 	}
 
 	.largeHeaderMargin {
-		margin-top: 80px;
+		margin-top: 75px;
 	}
 
 	.mediumHeaderMargin {
@@ -526,16 +523,6 @@
 	.map-info {
 		flex-grow: 1;
 		overflow: hidden;
-	}
-
-	.playlightLink {
-		text-decoration: none;
-		opacity: 0.5;
-		transition: opacity 250ms ease;
-	}
-
-	.playlightLink:hover {
-		opacity: 0.25;
 	}
 
 	.no-bottom-padding {

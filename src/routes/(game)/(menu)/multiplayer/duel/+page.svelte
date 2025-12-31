@@ -10,7 +10,6 @@
 	import { Info, RefreshCcw } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { slide } from "svelte/transition";
-	import { deleteRoomCodeFromMatchmakingServer } from "$lib/logic/matchmakingAPI";
 </script>
 
 <svelte:head>
@@ -35,10 +34,7 @@
 				if (!$matchmakingActive) {
 					playSound("basic_button");
 					findDuel();
-				} else {
-					deleteRoomCodeFromMatchmakingServer();
-					leaveMultiplayer();
-				}
+				} else leaveMultiplayer();
 			}}
 			>{$matchmakingActive ? "Cancel" : "Try again"}
 			{#if !$matchmakingActive}

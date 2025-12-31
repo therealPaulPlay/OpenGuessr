@@ -40,6 +40,7 @@
 		Crown,
 		UserStar,
 		UserCheck,
+		ArrowUpFromDot,
 	} from "@lucide/svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
@@ -122,7 +123,7 @@
 				},
 				{
 					title: "Elo rating",
-					getValue: () => $profileData?.elo,
+					getValue: () => $profileData?.elo?.toLocaleString() ,
 					icon: Crown,
 				},
 			],
@@ -140,10 +141,15 @@
 					getValue: () => $profileData?.highestCountryStreak?.toLocaleString() || "0",
 					icon: Flame,
 				},
+				{
+					title: "Highest elo",
+					getValue: () => $profileData?.highestElo?.toLocaleString() || "1000",
+					icon: ArrowUpFromDot,
+				},
 			],
 		},
 		{
-			name: "Info",
+			name: "About",
 			cards: [
 				{
 					title: "User ID",
@@ -284,7 +290,7 @@
 				<button
 					class="standardButton white"
 					disabled={$profileData?.areFriends}
-					use:tooltip={{ text: "Send friend request"}}
+					use:tooltip={{ text: "Send friend request" }}
 					onclick={(e) => {
 						playSound("basic_button");
 						sendFriendRequest($profileId, e.target); // This also shows a notification
