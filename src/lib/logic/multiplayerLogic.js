@@ -47,6 +47,7 @@ import { apiUrl, websocketUrl } from "$lib/stores/context-specific/apiConfigStor
 import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
+import { page } from "$app/state";
 
 export function getTeamFromMultiplayerId(id) {
     const playerArray = get(socket)?.getStorage?.players?.find(item => item.clientId === id);
@@ -54,8 +55,8 @@ export function getTeamFromMultiplayerId(id) {
 }
 
 // Game UI ----------------------------------------------------------------------------------------------------------------------------------
-function setMultiplayerUI() {
-    if (get(multiplayer)) {
+function setMultiplayerUI(enable) {
+    if (enable) {
         get(singleplayerTimer)?.stopTimer();
         leaveFunction.set(() => {
             showConfirmPopup("Leave?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayer);
@@ -69,6 +70,10 @@ function setMultiplayerUI() {
         chatVisible.set(false);
     }
 }
+
+multiplayer.subscribe((isMultiplayer) => {
+    setMultiplayerUI(isMultiplayer);
+});
 
 // Create multiplayer instance -----------------------------------------------------------------------------------------------------------------------
 export async function createMultiplayerInstance() {
@@ -113,7 +118,7 @@ export async function createMultiplayerInstance() {
 
             get(socket).onEvent('hostMigrated', () => {
                 // In a non-division room, start when the host (who is the only one with the start button) leaves
-                if (!get(socket)?.getStorage?.gameStarted && !get(socket)?.getStorage?.divisionRoom || get(multiplayer)) startRoom();
+                if (!get(socket)?.getStorage?.gameStarted && !get(socket)?.getStorage?.divisionRoom || get(multiplayer)) get(socket)?.sendRequest("startRoom");
             });
 
             let playerAddRequestSent = false; // Avoid sending this multiple times
@@ -127,6 +132,12 @@ export async function createMultiplayerInstance() {
                     teamAmount.set(storage.teamAmount);
                     multiplayerStyle.set(storage.style);
                     multiplayerRestriction.set(storage.restriction);
+                }
+
+                // Go to "/" if the game has started
+                if (storage.gameStarted && page.url.pathname !== "/") {
+                    matchmakingActive.set(false);
+                    goto("/"); // E.g. host or duel page -> game page
                 }
 
                 // If player is not already in the room, add player info
@@ -275,8 +286,8 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             map: divisionRoom ? get(defaultMap) : localStorage.getItem("selectedMap") || get(defaultMap),
             divisionRoom,
         }, sizeLimit);
-
         roomcode.set(code);
+
         if (get(matchmakingActive)) multiplayerStatus.set("Waiting for opponent..."); // Wait status
 
     } catch (error) {
@@ -284,14 +295,6 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", null, error.message);
     }
-}
-
-// Start room (HOST function)
-export function startRoom() {
-    setMultiplayerUI();
-    matchmakingActive.set(false);
-    goto("/"); // Creation page -> home
-    get(socket)?.sendRequest("startRoom");
 }
 
 export async function joinRoom(code) {
@@ -306,8 +309,9 @@ export async function joinRoom(code) {
         multiplayer.set(true);
         await get(socket).joinRoom(code);
         roomcode.set(code);
+
+        // Go to game page & disable matchmaking
         matchmakingActive.set(false);
-        setMultiplayerUI();
         goto("/");
     } catch (error) {
         multiplayer.set(false);
@@ -356,7 +360,6 @@ export function leaveMultiplayer(destroy = true) {
         navigationMenu.set(false);
         showMultiplayerOverlay(false); // Also makes map interactive
         updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
-        setMultiplayerUI(); // Disable multiplayer UI
         checkGenerationTypeAndGenerate(); // Generate new loc (also resets restriction)
     }
 }
