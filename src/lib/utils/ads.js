@@ -54,8 +54,12 @@ resultScreenEnabled.subscribe(async (isEnabled) => {
     // Cancel if another operation started while we were waiting
     if (operationId !== pendingOperation) return;
 
+    activateCorrectZones(isEnabled);
+});
+
+function activateCorrectZones(onResultScreen = false) {
     try {
-        if (isEnabled) {
+        if (onResultScreen) {
             if (window.matchMedia("(min-width: 1900px)").matches) {
                 getFuse().que.push(function () {
                     getFuse().activateZone("resultAd");
@@ -71,6 +75,6 @@ resultScreenEnabled.subscribe(async (isEnabled) => {
             });
         }
     } catch (error) {
-        console.error("Error occured activating fuse zones:", error);
+        console.error("Error activating fuse zones:", error);
     }
-});
+}
