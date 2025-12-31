@@ -18,7 +18,7 @@
 		multiplayerStyle,
 		multiplayerRestriction,
 	} from "$lib/stores/context-specific/multiplayerStore";
-	import { setupMultiplayerRoom, startRoom } from "$lib/logic/multiplayerLogic";
+	import { setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
 	import Ticker from "$lib/components/ui/Ticker.svelte";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
@@ -265,7 +265,7 @@
 							setupMultiplayerRoom(get(roundAmount), get(roundLength));
 							hostStage.set(2);
 						} else {
-							startRoom();
+							  get(socket)?.sendRequest("startRoom");
 						}
 					}}>{$hostStage == 1 ? "Create room" : "Start"}</button
 				>
