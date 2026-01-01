@@ -2,7 +2,6 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { selectedTournamentId, tournamentData } from "$lib/stores/context-specific/tournamentStore";
 	import { tournamentInfoPopup } from "$lib/stores/uiStore";
-	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { fetchTournaments } from "$lib/utils/tournamentUtils";
@@ -56,7 +55,6 @@
 			onclick={() => {
 				playSound("basic_button");
 				$selectedTournamentId = tournament.id;
-				if (!$isAuthenticated) return signupPrompt();
 				$tournamentInfoPopup = true;
 			}}
 		>
