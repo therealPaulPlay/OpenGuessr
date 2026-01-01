@@ -93,12 +93,12 @@
 				},
 				{
 					title: "Total XP",
-					getValue: () => $profileExperience?.toLocaleString() + " XP",
+					getValue: () => $profileExperience?.toLocaleString(),
 					icon: BarChart3,
 				},
 				{
-					title: "Until level-up",
-					getValue: () => experienceCalculations($profileExperience)?.requiredForLevelUpgrade?.toLocaleString() + " XP",
+					title: "XP until level-up",
+					getValue: () => experienceCalculations($profileExperience)?.requiredForLevelUpgrade?.toLocaleString(),
 					icon: TrendingUp,
 				},
 			],

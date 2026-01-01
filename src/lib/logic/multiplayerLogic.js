@@ -81,7 +81,7 @@ export async function createMultiplayerInstance() {
     if (get(socket)) {
         try {
             get(socket)?.destroy();
-        } catch (error) { console.error("Error in createMultiplayerInstance trying to destroy old instance:", error); }
+        } catch (error) { console.error("Error in createMultiplayerInstance() trying to destroy old instance:", error); }
     }
 
     if (!get(isAuthenticated) && !get(guestNamePromise)) {
@@ -134,11 +134,9 @@ export async function createMultiplayerInstance() {
                     multiplayerRestriction.set(storage.restriction);
                 }
 
-                // Go to "/" if the game has started
-                if (storage.gameStarted && page.url.pathname !== "/") {
-                    matchmakingActive.set(false);
-                    goto("/"); // E.g. host or duel page -> game page
-                }
+                // If game has started, go to game page & disable matchmaking
+                if (storage.gameStarted && page.url.pathname !== "/") goto("/"); // E.g. host or duel page -> game page
+                if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
 
                 // If player is not already in the room, add player info
                 if (get(socket)?.getStorage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerAddRequestSent) {
@@ -309,9 +307,6 @@ export async function joinRoom(code) {
         multiplayer.set(true);
         await get(socket).joinRoom(code);
         roomcode.set(code);
-
-        // Go to game page & disable matchmaking
-        matchmakingActive.set(false);
         goto("/");
     } catch (error) {
         multiplayer.set(false);
