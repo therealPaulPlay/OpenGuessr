@@ -64,7 +64,7 @@
 	</button>
 	<button
 		class="standardButton white"
-		use:tooltip={{ text: "Manage participants" }}
+		use:tooltip={{ text: "Moderation" }}
 		onclick={() => {
 			playSound("basic_button");
 			$chatManagePopup = true;

@@ -13,6 +13,8 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { fetchTournaments } from "$lib/utils/tournamentUtils";
+	import { isAuthenticated } from "$lib/stores/accountStore";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
 
 	let readableDate = $derived.by(() => {
 		const date = new Date($selectedTournament?.date).toLocaleString("en-US", {
@@ -174,6 +176,7 @@
 			class="standardButton bottomButton largeButton"
 			onclick={async () => {
 				playSound("basic_button");
+				if (!$isAuthenticated) return signupPrompt();
 				const roomcode = await enterTournament($selectedTournament?.id);
 				if (roomcode) {
 					$tournamentInfoPopup = false;
@@ -188,6 +191,7 @@
 			class="standardButton bottomButton largeButton white {$selectedTournament?.saved ? 'disabled' : ''}"
 			onclick={async () => {
 				playSound("basic_button");
+				if (!$isAuthenticated) return signupPrompt();
 				await trackCalendarSave($selectedTournament?.id);
 				await fetchTournaments();
 
