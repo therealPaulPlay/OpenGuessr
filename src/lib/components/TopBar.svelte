@@ -97,7 +97,7 @@
 {#if showIntroductionNote}
 	<div class="tooltip menu-tooltip menu-button-area" transition:scale={{ duration: 150, start: 0.95 }}>
 		<div class="tooltip-arrow menu-tooltip-arrow" data-placement="bottom"></div>
-		<button class="standardButton white tooltip-close-button" onclick={disableIntroductionNote}>
+		<button class="standardButton white tooltip-close-button" aria-label="close introduction note" onclick={disableIntroductionNote}>
 			<X size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
 		</button>
 		<img alt="Menu introcution" src="/img/menu_introduction.png" class="menu-tooltip-image" />
