@@ -12,10 +12,12 @@
 	import { blur, fade } from "svelte/transition";
 	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
-	import { chatArray, mobileChatLastOpenedMsgCount } from "$lib/stores/context-specific/multiplayerStore";
+	import { chatArray, mobileChatLastOpenedMsgCount, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { onMount } from "svelte";
 	import { registerAndActivateGameplayAd } from "$lib/utils/ads";
+	import { get } from "svelte/store";
+	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 
 	function reloadPanorama() {
 		playSound("reload");
@@ -47,7 +49,7 @@
 						$chatMobilePopup = true;
 					}}
 				>
-					{#if $chatArray?.filter((i) => i.username != "Server")?.length === $mobileChatLastOpenedMsgCount}
+					{#if $chatArray?.filter((i) => i.username != "Server" && (i.teamIndex == null || i.teamIndex == getTeamFromClientId(get(socket)?.id)))?.length === $mobileChatLastOpenedMsgCount}
 						<MessageSquareMore size={22} strokeWidth={2.25} style="margin-top: 3px;" />
 					{:else}
 						<MessageSquareDot size={22} strokeWidth={2.25} style="margin-top: 3px;" />

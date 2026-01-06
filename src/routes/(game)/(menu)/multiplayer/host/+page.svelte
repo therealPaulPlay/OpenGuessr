@@ -148,7 +148,7 @@
 					{#each Object.values($multiplayerTableArray) as team}
 						{@const teamIndex = team.teamIndex}
 						<p class="playerBoxElement playerBoxTeams">
-							<span>{teamIndex !== 0 ? `Team ${teamIndex}:` : `No team:`}</span>
+							<span>{`Team ${teamIndex + 1}:`}</span>
 							{#if team.players?.length > 0}
 								{#each team.players as player, i (player.clientId)}
 									<span class="playerNameInline">
@@ -161,7 +161,7 @@
 											<!-- Generate select options for every team -->
 											{#each Object.values($multiplayerTableArray) as teamObject}
 												{@const index = teamObject.teamIndex}
-												<option value={index} selected={player.teamIndex == index}>Team {index}</option>
+												<option value={index} selected={player.teamIndex == index}>Team {index + 1}</option>
 											{/each}
 										</select>{#if i < team.players.length - 1}<span>,&nbsp;</span>{/if}
 									</span>
@@ -265,7 +265,7 @@
 							setupMultiplayerRoom(get(roundAmount), get(roundLength));
 							hostStage.set(2);
 						} else {
-							  get(socket)?.sendRequest("startRoom");
+							get(socket)?.sendRequest("startRoom");
 						}
 					}}>{$hostStage == 1 ? "Create room" : "Start"}</button
 				>

@@ -2,11 +2,13 @@
 	import { chatVisible } from "$lib/stores/context-specific/multiplayerStore";
 	import { MoveVertical } from "@lucide/svelte";
 	import Chat from "./Chat.svelte";
+	import ChatTabSwitcher from "./ChatTabSwitcher.svelte";
 
 	let chatHeight = $state(172); // Default height
 	let isResizing = $state(false);
 	let startY = $state(0);
 	let startHeight = $state(0);
+	let isTeamChat = $state(false);
 
 	// Handle mouse events for resizing
 	function startResize(e) {
@@ -23,7 +25,7 @@
 		// Get current position from either mouse or touch event
 		const currentY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
 		const delta = startY - currentY;
-		const newHeight = Math.max(172, Math.min(500, startHeight + delta));
+		const newHeight = Math.max(188, Math.min(508, startHeight + delta));
 		chatHeight = newHeight;
 	}
 
@@ -36,6 +38,7 @@
 
 {#if $chatVisible}
 	<div class="chat-holder">
+		<ChatTabSwitcher bind:isTeamChat inPanel={true} />
 		<!-- svelte-ignore a11y_interactive_supports_focus -->
 		<div class="multiplayer-chat barMenu" style:height="{chatHeight}px">
 			<!-- svelte-ignore a11y_role_has_required_aria_props -->
@@ -48,7 +51,7 @@
 			>
 				<MoveVertical size={16} strokeWidth={3} />
 			</div>
-			<Chat />
+			<Chat {isTeamChat} />
 		</div>
 	</div>
 {/if}
@@ -66,10 +69,12 @@
 
 	.multiplayer-chat {
 		width: 100%;
-		min-height: 172px;
-		max-height: 500px;
+		min-height: 188px;
+		max-height: 508px;
 		overflow: hidden;
 		flex-direction: column;
+		box-sizing: border-box;
+		transition: none;
 	}
 
 	.resize-handle {
@@ -98,7 +103,7 @@
 
 	/* Hide on mobile */
 	@media (orientation: portrait) and (max-width: 800px) {
-		.multiplayer-chat {
+		.chat-holder {
 			display: none !important;
 		}
 	}
