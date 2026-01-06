@@ -1,5 +1,5 @@
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
-import { getTeamFromMultiplayerId } from "$lib/logic/multiplayerLogic";
+import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { showNotification } from "$lib/utils/notifications.js";
 import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
@@ -276,7 +276,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
             let miniMarkerTeam = element.team;
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
-            if (miniMarkerId != get(peerId) && miniMarkerTeam === getTeamFromMultiplayerId(get(socket)?.id)) {
+            if (miniMarkerId != get(peerId) && miniMarkerTeam === getTeamFromClientId(get(socket)?.id)) {
                 const multiplayerLatLng = new google.maps.LatLng(miniMarkerLat, miniMarkerLon);
 
                 const newMultiplayerIcon = {

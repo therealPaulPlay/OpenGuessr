@@ -7,23 +7,13 @@
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { multiplayerOverlay } from "$lib/stores/context-specific/multiplayerStore";
 
-	let siteLoaded = $state(false);
 	let gameStart = $state(false);
+	let gameStartTimeout;
 
-	onMount(() => {
-		if (document.readyState === "complete") {
-			siteLoaded = true;
-		} else {
-			// Wait for the load event if still loading
-			window.addEventListener("load", () => {
-				siteLoaded = true;
-			});
-		}
-	});
-
-	// If the player places the first pin, start music
+	// Start music after first round
 	resultScreenEnabled.subscribe((value) => {
-		if (value && !gameStart) setTimeout(() => (gameStart = true), 250); // Slight delay to ensure result map loads first
+		// Delayed to ensure result map loads first
+		if (value && !gameStart && !gameStartTimeout) gameStartTimeout = setTimeout(() => (gameStart = true), 250);
 	});
 
 	// If player starts with multiplayer or competitions, start music
@@ -32,7 +22,7 @@
 	});
 
 	$effect(() => {
-		if (!siteLoaded || !gameStart) return; // Load music after page has finished loading to not slow it down
+		if (!gameStart) return; // Load music after game has started to not slow down load
 		if ($resultScreenEnabled || page.url.pathname !== "/" || $multiplayerOverlay) {
 			playMusic("regular", 0.35);
 		} else {
