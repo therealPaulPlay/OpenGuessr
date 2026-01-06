@@ -1,37 +1,49 @@
 <script>
-	import { chatArray, chatMutedPlayers } from "$lib/stores/context-specific/multiplayerStore";
+	import { chatArray, chatMutedPlayers, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { sendChat } from "$lib/utils/chatFunctions";
 	import { playSound } from "$lib/utils/soundManager";
 	import RemainingGuessesDisplay from "$lib/components/RemainingGuessesDisplay.svelte";
 	import { MessageSquareWarning, SendHorizonal } from "@lucide/svelte";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { chatManagePopup } from "$lib/stores/uiStore";
+	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
+	import { get } from "svelte/store";
 
-	let { inPanel = true } = $props();
+	let { inPanel = true, isTeamChat = false } = $props();
 
 	let chatMessageBoxElement = $state();
 	let inputValue = $state();
 
 	// Watch for changes to chatArray and scroll to bottom automatically
 	$effect(() => {
+		isTeamChat; // Re-run effect when this changes
 		if ($chatArray && $chatMutedPlayers && chatMessageBoxElement)
 			chatMessageBoxElement.scrollTop = chatMessageBoxElement.scrollHeight;
+	});
+
+	let displayedChatArray = $derived.by(() => {
+		return ($chatArray || []).filter((chat) => {
+			return (
+				!$chatMutedPlayers?.includes(chat.clientId) &&
+				(isTeamChat ? chat.teamIndex == getTeamFromClientId(get(socket)?.id) : chat.teamIndex == null)
+			);
+		});
 	});
 </script>
 
 <RemainingGuessesDisplay {inPanel} />
 <div class="multiplayerChatMessages of-top of-bottom" bind:this={chatMessageBoxElement}>
 	<p>
-		{#if $chatArray && Array.isArray($chatArray)}
-			{#each $chatArray as chat}
-				{#if !$chatMutedPlayers?.includes(chat.clientId)}
-					<span style="overflow-wrap: break-word;"
-						><span style:opacity={chat.clientId == "server" ? 0.75 : 1}>{chat.username}:</span>
-						<span style:opacity={0.75}>{chat.text}</span></span
-					>
-					<br />
-				{/if}
+		{#if displayedChatArray.length}
+			{#each displayedChatArray as chat}
+				<span style="overflow-wrap: break-word;"
+					><span style:opacity={chat.clientId == "server" ? 0.75 : 1}>{chat.username}:</span>
+					<span style:opacity={0.75}>{chat.text}</span></span
+				>
+				<br />
 			{/each}
+		{:else}
+			<span style="opacity: 0.25; font-style: italic; margin: auto;">No messages.</span>
 		{/if}
 	</p>
 </div>
@@ -45,7 +57,7 @@
 		onkeydown={(event) => {
 			if (event.key == "Enter") {
 				event.preventDefault();
-				sendChat(inputValue);
+				sendChat(inputValue, isTeamChat ? getTeamFromClientId(get(socket)?.id) : null);
 				inputValue = "";
 			}
 		}}
@@ -56,7 +68,7 @@
 		class="standardButton white"
 		onclick={() => {
 			playSound("basic_button");
-			sendChat(inputValue);
+			sendChat(inputValue, isTeamChat ? getTeamFromClientId(get(socket)?.id) : null);
 			inputValue = "";
 		}}
 	>

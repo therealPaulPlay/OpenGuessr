@@ -3,9 +3,9 @@ import { username } from "$lib/stores/accountStore";
 import { get } from "svelte/store";
 import { censor } from "fast-profanity-filter";
 
-export function sendChat(text) {
+export function sendChat(text, forTeamindex = null) {
     if (!text) return;
-    get(socket)?.updateStorage("chats", "array-add", { username: get(username) || get(guestName), clientId: get(socket)?.id, text });
+    get(socket)?.updateStorage("chats", "array-add", { username: get(username) || get(guestName), clientId: get(socket)?.id, text, teamIndex: forTeamindex });
 }
 
 export function loadAndProfanityCheckChat(chats) {
