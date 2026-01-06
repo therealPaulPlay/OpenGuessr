@@ -186,7 +186,7 @@
 	}
 
 	.roomItemInfoContainer {
-		gap: var(--layout-margin);
+		gap: var(--panel-margin);
 		display: flex;
 		align-items: center;
 		overflow: hidden;
