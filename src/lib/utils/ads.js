@@ -8,13 +8,6 @@ function getFuse() {
 }
 
 export function initializeAds() {
-    // On test sites, this script needs to run to simulate the real domain
-    if (page.url.hostname !== "openguessr.com") {
-        window.googletag = window.googletag || { cmd: [] };
-        googletag.cmd.push(function () {
-            googletag.pubads().set("page_url", "https://openguessr.com/");
-        });
-    }
     getFuse().que.push(function () {
         getFuse().pageInit({
             blockingFuseIds: ["Game_incontent_1"],
@@ -92,7 +85,7 @@ export function refreshOnResize() {
         if (get(resultScreenEnabled)) registerResultAds();
         else registerGameplayAd();
 
-        // Step 2: Activate currenetly visible ads
+        // Step 2: Activate currently visible ads
         activateCorrectZones(get(resultScreenEnabled));
 
         debounceTimeout = null;
