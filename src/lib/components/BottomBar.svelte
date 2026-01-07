@@ -15,7 +15,7 @@
 	import { chatArray, mobileChatLastOpenedMsgCount, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { onMount } from "svelte";
-	import { registerAndActivateGameplayAd } from "$lib/utils/ads";
+	import { activateGameplayAd, registerGameplayAd } from "$lib/utils/ads";
 	import { get } from "svelte/store";
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 
@@ -25,7 +25,10 @@
 		$iframeElement.src = $panoramaSrc;
 	}
 
-	onMount(registerAndActivateGameplayAd);
+	onMount(() => {
+		registerGameplayAd();
+		activateGameplayAd();
+	});
 </script>
 
 <div id="bottomBar" class="bottomBar" class:bottomBarAdShift={!$adsDisabled}>

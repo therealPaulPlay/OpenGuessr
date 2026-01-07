@@ -1,5 +1,5 @@
 <script>
-	import { initializeAds } from "$lib/utils/ads";
+	import { initializeAds, refreshOnResize } from "$lib/utils/ads";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 	import { onMount } from "svelte";
 	import initOverfade from "overfade";
@@ -104,6 +104,9 @@
 		}
 	}}
 />
+
+<!-- Refresh ads on resize -->
+<svelte:window onresize={refreshOnResize} />
 
 <!-- Keywords -->
 <h1 style:display="none">
