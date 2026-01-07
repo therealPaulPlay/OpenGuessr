@@ -49,7 +49,7 @@ import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 import { page } from "$app/state";
 
-export function getTeamFromMultiplayerId(id) {
+export function getTeamFromClientId(id) {
     const playerArray = get(socket)?.getStorage?.players?.find(item => item.clientId === id);
     return playerArray?.teamIndex;
 }
@@ -373,66 +373,61 @@ function showEndscreenUI(show) {
 // Overlay, Countdown and Winner determination -------------------------------------------------------------------------------------------------------------------------
 function generateColorForTeam(teamIndex) {
     const baseHues = [200, 0, 120, 60, 300]; // Blue, Yellow, Green, Red, Purple
-    const hue = baseHues[(teamIndex - 1) % baseHues.length];
+    const hue = baseHues[(teamIndex) % baseHues.length];
     return `hsla(${hue}, 87.9%, 64.3%, 0.3)`;
 }
 
 function getTeamColorName(teamIndex) {
     const colorNames = ["Blue", "Red", "Green", "Yellow", "Purple"];
-    return colorNames[(teamIndex - 1) % colorNames.length];
+    return colorNames[(teamIndex) % colorNames.length];
 }
 
 let teams = [];
 
-// Sort teams
-function updatePlayerArrays() {
-    const players = get(socket)?.getStorage?.players;
-
-    // Used for chat participants
-    const sortedPlayers = [...players].sort((a, b) => {
-        // Sort non-spectators first, then spectators, both by score
-        if (a.spectator && !b.spectator) return 1;
-        if (!a.spectator && b.spectator) return -1;
+function sortPlayersByScore(players) {
+    return [...players].sort((a, b) => {
+        if (a.spectator !== b.spectator) return a.spectator ? 1 : -1; // Move spectators to the bottom
         return b.score - a.score;
     });
+}
+
+function createTeamData(teamIndex) {
+    const color = generateColorForTeam(teamIndex);
+    const colorName = getTeamColorName(teamIndex);
+    return { color, colorName, teamIndex, players: [] };
+}
+
+function getTeamScore(team) {
+    return team.players.reduce((total, player) => total + player.score, 0);
+}
+
+function updatePlayerArrays() {
+    const players = get(socket)?.getStorage?.players;
+    const sortedPlayers = sortPlayersByScore(players);
     multiplayerSortedPlayersArray.set(sortedPlayers);
 
-    if (get(teamAmount) <= 1) multiplayerTableArray.set(sortedPlayers);
-    else {
-        // Group players by team
-        const groupedTeams = players.reduce((acc, player) => {
-            const teamIndex = player.teamIndex;
-            if (!acc[teamIndex]) {
-                teams[teamIndex] = { color: generateColorForTeam(teamIndex), colorName: getTeamColorName(teamIndex) };
-                acc[teamIndex] = { ...teams[teamIndex], teamIndex, players: [] };
-            }
-            acc[teamIndex].players.push(player);
-            return acc;
-        }, {});
-
-        // Ensure all team numbers from 1 to teamAmount exist (even empty teams)
-        const totalTeamAmount = get(teamAmount);
-
-        for (let i = 1; i <= totalTeamAmount; i++) {
-            if (!groupedTeams[i]) {
-                teams[i] = { color: generateColorForTeam(i), colorName: getTeamColorName(i) };
-                groupedTeams[i] = { ...teams[i], teamIndex: i, players: [] };
-            }
-        }
-
-        // Sort & set
-        multiplayerTableArray.set(
-            Object.values(groupedTeams)
-                .map(team => ({
-                    ...team,
-                    players: team.players.sort((a, b) => b.score - a.score)
-                }))
-                .sort((a, b) =>
-                    b.players.reduce((s, p) => s + p.score, 0) -
-                    a.players.reduce((s, p) => s + p.score, 0)
-                )
-        );
+    if ( get(teamAmount) <= 1) {
+        multiplayerTableArray.set(sortedPlayers);
+        return;
     }
+
+    // Initialize all teams (including empty ones)
+    const groupedTeams = Array.from({ length:  get(teamAmount) }, (_, i) => {
+        teams[i] = createTeamData(i);
+        return teams[i];
+    });
+
+    // Assign players to their teams
+    players.forEach(player => {
+        groupedTeams[player.teamIndex].players.push(player);
+    });
+
+    // Sort players within each team and sort teams by total score
+    const sortedTeams = groupedTeams
+        .map(team => ({ ...team, players: sortPlayersByScore(team.players) }))
+        .sort((a, b) => getTeamScore(b) - getTeamScore(a));
+
+    multiplayerTableArray.set(sortedTeams);
 }
 
 function showMultiplayerOverlay(show) {

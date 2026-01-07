@@ -1,5 +1,5 @@
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
-import { getTeamFromMultiplayerId } from "$lib/logic/multiplayerLogic";
+import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore.js";
@@ -160,7 +160,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
             let miniMarkerTeam = element.team;
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
-            if (miniMarkerId != get(socket)?.id && miniMarkerTeam === getTeamFromMultiplayerId(get(socket)?.id)) {
+            if (miniMarkerId != get(socket)?.id && miniMarkerTeam === getTeamFromClientId(get(socket)?.id)) {
                 const multiplayerLatLng = new L.LatLng(miniMarkerLat, miniMarkerLon);
 
                 let newMultiplayerIcon = new L.Icon({
