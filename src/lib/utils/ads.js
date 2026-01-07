@@ -1,18 +1,13 @@
 import { page } from "$app/state";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { tick } from "svelte";
+import { get } from "svelte/store";
 
 function getFuse() {
     return window.fusetag || (window.fusetag = { que: [] });
 }
 
 export function initializeAds() {
-    if (page.url.hostname !== "openguessr.com") {
-        window.googletag = window.googletag || { cmd: [] };
-        googletag.cmd.push(function () {
-            googletag.pubads().set("page_url", "https://openguessr.com/");
-        });
-    }
     getFuse().que.push(function () {
         getFuse().pageInit({
             blockingFuseIds: ["Game_incontent_1"],
@@ -20,17 +15,20 @@ export function initializeAds() {
     });
 }
 
-export function registerAndActivateGameplayAd() {
+export function registerGameplayAd() {
     getFuse().que.push(function () {
         getFuse().registerZone("gameplayAd");
+    });
+}
+
+export function activateGameplayAd() {
+    getFuse().que.push(function () {
         getFuse().activateZone("gameplayAd");
     });
 }
 
 export function registerResultAds() {
     getFuse().que.push(function () {
-        // Both result ads seem to work fine without registration (opposite to the gameplay ad),
-        // but for good measure I'm registering them as well
         getFuse().registerZone("resultAd");
         getFuse().registerZone("mobileResultAd");
     });
@@ -76,4 +74,20 @@ function activateCorrectZones(onResultScreen = false) {
     } catch (error) {
         console.error("Error activating fuse zones:", error);
     }
+}
+
+let debounceTimeout;
+
+export function refreshOnResize() {
+    if (debounceTimeout) clearTimeout(debounceTimeout);
+    debounceTimeout = setTimeout(() => {
+        // Step 1: Re-register ads
+        if (get(resultScreenEnabled)) registerResultAds();
+        else registerGameplayAd();
+
+        // Step 2: Activate currently visible ads
+        activateCorrectZones(get(resultScreenEnabled));
+
+        debounceTimeout = null;
+    }, 150);
 }
