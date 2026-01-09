@@ -91,5 +91,5 @@ export function refreshOnResize() {
 
         debounceTimeout = null;
         console.log("refreshed ads");
-    }, 2500);
+    }, 150);
 }
