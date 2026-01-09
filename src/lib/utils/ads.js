@@ -79,6 +79,7 @@ function activateCorrectZones(onResultScreen = false) {
 let debounceTimeout;
 
 export function refreshOnResize() {
+    console.log("Refresh detected");
     if (debounceTimeout) clearTimeout(debounceTimeout);
     debounceTimeout = setTimeout(() => {
         // Step 1: Re-register ads
@@ -89,5 +90,6 @@ export function refreshOnResize() {
         activateCorrectZones(get(resultScreenEnabled));
 
         debounceTimeout = null;
-    }, 150);
+        console.log("refreshed ads");
+    }, 2500);
 }
