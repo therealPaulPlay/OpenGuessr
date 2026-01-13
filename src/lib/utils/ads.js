@@ -102,6 +102,6 @@ export function refreshOnResize() {
             activateCorrectZones(get(resultScreenEnabled));
 
             debounceTimeout = null;
-        }, 500);
+        }, 1000);
     }
 }
