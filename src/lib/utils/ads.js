@@ -7,11 +7,14 @@ function getFuse() {
     return window.fusetag || (window.fusetag = { que: [] });
 }
 
+let lastBreakpoint = null;
+
 export function initializeAds() {
     getFuse().que.push(function () {
         getFuse().pageInit({
             blockingFuseIds: ["Game_incontent_1"],
         });
+        lastBreakpoint = getFuse().getCurrentBreakpoint?.()?.name; // Get initial breakpoint
     });
 }
 
@@ -79,15 +82,26 @@ function activateCorrectZones(onResultScreen = false) {
 let debounceTimeout;
 
 export function refreshOnResize() {
-    if (debounceTimeout) clearTimeout(debounceTimeout);
-    debounceTimeout = setTimeout(() => {
-        // Step 1: Re-register ads
-        if (get(resultScreenEnabled)) registerResultAds();
-        else registerGameplayAd();
+    if (lastBreakpoint === null) {
+        console.warn("Last breakpoint from Fuse not initialized yet!");
+        return;
+    }
 
-        // Step 2: Activate currently visible ads
-        activateCorrectZones(get(resultScreenEnabled));
+    const currentBreakpoint = getFuse().getCurrentBreakpoint?.()?.name;
 
-        debounceTimeout = null;
-    }, 150);
+    if (currentBreakpoint !== lastBreakpoint) {
+        lastBreakpoint = currentBreakpoint;
+
+        if (debounceTimeout) clearTimeout(debounceTimeout);
+        debounceTimeout = setTimeout(() => {
+            // Step 1: Re-register ads
+            if (get(resultScreenEnabled)) registerResultAds();
+            else registerGameplayAd();
+
+            // Step 2: Activate currently visible ads
+            activateCorrectZones(get(resultScreenEnabled));
+
+            debounceTimeout = null;
+        }, 500);
+    }
 }
