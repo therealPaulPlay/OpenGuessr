@@ -100,7 +100,7 @@
 </div>
 {#if openRooms?.length > 0}
 	<p class="publicRoomTitle" transition:blur>Public rooms</p>
-	<div class="publicRoomBox" transition:blur>
+	<div class="publicRoomBox of-top of-bottom of-length-2" transition:blur>
 		{#each openRooms as room}
 			<div class="publicRoomItem">
 				<div class="roomItemInfoContainer of-left of-right">

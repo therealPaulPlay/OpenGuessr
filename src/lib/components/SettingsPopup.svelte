@@ -23,7 +23,7 @@
 
 	onMount(() => {
 		const tempStorageDistanceUnit = localStorage.getItem("distanceUnit");
-		if (tempStorageDistanceUnit != null) selectedUnit = tempStorageDistanceUnit == "kilometers" ? "Metric" : "Imperial";
+		if (tempStorageDistanceUnit !== null) selectedUnit = tempStorageDistanceUnit == "kilometers" ? "Metric" : "Imperial";
 	});
 
 	// SFX Volume -----------------------------
@@ -69,20 +69,18 @@
 	// Fullscreen Setting ----------------------------------------------------
 	let fullscreenButtonText = $state("Fullscreen");
 
-	const fullscreenChangeCheck = function () {
+	const adjustFullscreenButtonText = function () {
 		if (!document.fullscreenElement) fullscreenButtonText = "Fullscreen";
 		else fullscreenButtonText = "Exit";
 	};
 
 	function toggleFullscreen() {
-		playSound("basic_button");
-
 		try {
-			if (!document.fullscreenElement)
-				if (document.documentElement.requestFullscreen) document.documentElement.requestFullscreen();
-				else if (document.exitFullscreen) document.exitFullscreen();
+			playSound("basic_button");
+			if (!document.fullscreenElement) document.documentElement?.requestFullscreen();
+			else document?.exitFullscreen();
 		} catch (error) {
-			console.error("Error entering / exiting fullscreen: " + error);
+			console.error("Error entering or exiting fullscreen: " + error);
 		}
 	}
 
@@ -140,7 +138,7 @@
 	}
 </script>
 
-<svelte:document onfullscreenchange={fullscreenChangeCheck} />
+<svelte:document onfullscreenchange={adjustFullscreenButtonText} />
 
 <Popup verySlim={true} bind:open={$settingsPopup}>
 	<div class="popup-title">
