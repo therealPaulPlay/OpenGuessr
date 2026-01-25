@@ -1,3 +1,5 @@
+![OpenGuessr logo](static/img/openguessr.svg)
+
 # OpenGuessr
 
 The free location guessing game.
