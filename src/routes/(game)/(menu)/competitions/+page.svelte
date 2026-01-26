@@ -61,17 +61,15 @@
 		}
 
 		try {
-			const requestBody = {
-				id: localStorage.getItem("id"), // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
-			};
-
 			const response = await fetch(competitionsEndpoint + "/details/" + id, {
 				method: "POST",
 				headers: {
 					Authorization: "Bearer " + localStorage.getItem("bearer"),
 					"Content-Type": "application/json",
 				},
-				body: JSON.stringify(requestBody),
+				body: JSON.stringify({
+					id: localStorage.getItem("id"),
+				}),
 			});
 
 			if (response.ok) {
@@ -115,7 +113,7 @@
 			}
 		} catch (error) {
 			console.error("Error occurred trying to enter a competition:", error);
-			errorPopup("Error entering competition", "An error occured trying to enter a competition", error.message);
+			errorPopup("Error entering competition", null, error.message);
 		}
 	}
 
