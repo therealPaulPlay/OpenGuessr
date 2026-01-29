@@ -15,7 +15,7 @@ export function initializeAds() {
         googletag.cmd.push(function () {
             googletag.pubads().set("page_url", "openguessr.com");
         });
-        console.log("Set Googletag page_url for testing environment");
+        console.log("Set googletag page_url for testing");
     }
 
     getFuse().que.push(function () {
