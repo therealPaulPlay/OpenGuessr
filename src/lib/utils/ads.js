@@ -8,6 +8,16 @@ function getFuse() {
 }
 
 export function initializeAds() {
+
+    // Specify domain for testing environments
+    if (page.url.hostname !== "openguessr.com") {
+        window.googletag = window.googletag || { cmd: [] };
+        googletag.cmd.push(function () {
+            googletag.pubads().set("page_url", "openguessr.com");
+        });
+        console.log("Set Googletag page_url for testing environment");
+    }
+
     getFuse().que.push(function () {
         getFuse().pageInit({
             blockingFuseIds: ["Game_incontent_1"],
