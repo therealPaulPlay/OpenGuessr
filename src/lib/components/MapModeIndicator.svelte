@@ -179,6 +179,7 @@
 		gap: 5px;
 		margin-left: auto;
 		margin-right: var(--panel-margin);
+		font-variant-numeric: tabular-nums;
 	}
 
 	#map-timer.fading {
