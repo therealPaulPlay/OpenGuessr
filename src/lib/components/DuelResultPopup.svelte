@@ -75,7 +75,7 @@
 				divisionMatchHistoryPopup.set(true);
 			}}
 		>
-			History <History size={20} strokeWidth={2.25} style="margin-bottom: -3px; margin-left: 2px;" /></button
+			History <History size={20} strokeWidth={2} style="margin-bottom: -3px; margin-left: 2px;" /></button
 		>
 	</div>
 	<button

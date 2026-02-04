@@ -80,9 +80,11 @@
 </div>
 
 <Drawer title="Recently finished" bind:isOpen={showOlder}>
-	{#each $tournamentData?.filter((i) => i.status === "finished") as tournament (tournament.id)}
-		{@render tournamentItem(tournament)}
-	{/each}
+	<div class="tournamentScrollContainer of-top of-bottom">
+		{#each $tournamentData?.filter((i) => i.status === "finished") as tournament (tournament.id)}
+			{@render tournamentItem(tournament)}
+		{/each}
+	</div>
 </Drawer>
 
 <style>
@@ -94,6 +96,19 @@
 		margin-bottom: var(--layout-margin);
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
+	}
+
+	.tournamentScrollContainer {
+		max-height: 185px;
+		overflow-y: auto;
+		gap: var(--box-margin);
+		display: flex;
+		justify-content: safe center;
+		align-items: safe center;
+		flex-direction: column;
+		box-sizing: border-box;
+		scrollbar-width: none;
+		width: 100%;
 	}
 
 	.innerTournamentsContainer {
@@ -131,6 +146,8 @@
 		gap: var(--box-margin);
 		align-items: center;
 		flex-wrap: wrap;
+		box-sizing: border-box;
+		width: 100%;
 	}
 
 	.ongoingBadge {
