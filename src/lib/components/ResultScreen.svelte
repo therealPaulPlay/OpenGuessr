@@ -1,4 +1,3 @@
-<!-- previously known as the End Overlay, this screen shows the Result -->
 <script>
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import {

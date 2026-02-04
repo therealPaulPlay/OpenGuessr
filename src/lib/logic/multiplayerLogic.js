@@ -354,6 +354,7 @@ export function leaveMultiplayer(destroy = true) {
     if (wasMultiplayerEnabled) {
         navigationMenu.set(false);
         showMultiplayerOverlay(false); // Also makes map interactive
+        updatePlayerArrays(); // Reset multiplayer array to avoid brief pop-in of previous players on subsequent room creations
         updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
         checkGenerationTypeAndGenerate(); // Generate new loc (also resets restriction)
     }
@@ -384,7 +385,7 @@ function getTeamColorName(teamIndex) {
 
 let teams = [];
 
-function sortPlayersByScore(players) {
+function sortPlayersByScore(players = []) {
     return [...players].sort((a, b) => {
         if (a.spectator !== b.spectator) return a.spectator ? 1 : -1; // Move spectators to the bottom
         return b.score - a.score;
@@ -402,17 +403,17 @@ function getTeamScore(team) {
 }
 
 function updatePlayerArrays() {
-    const players = get(socket)?.getStorage?.players;
+    const players = get(socket)?.getStorage?.players || [];
     const sortedPlayers = sortPlayersByScore(players);
     multiplayerSortedPlayersArray.set(sortedPlayers);
 
-    if ( get(teamAmount) <= 1) {
+    if (get(teamAmount) <= 1) {
         multiplayerTableArray.set(sortedPlayers);
         return;
     }
 
     // Initialize all teams (including empty ones)
-    const groupedTeams = Array.from({ length:  get(teamAmount) }, (_, i) => {
+    const groupedTeams = Array.from({ length: get(teamAmount) }, (_, i) => {
         teams[i] = createTeamData(i);
         return teams[i];
     });
