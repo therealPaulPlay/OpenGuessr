@@ -13,9 +13,8 @@
 	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
 	import { chatArray, mobileChatLastOpenedMsgCount, socket } from "$lib/stores/context-specific/multiplayerStore";
-	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { onMount } from "svelte";
-	import { activateGameplayAd, registerGameplayAd } from "$lib/utils/ads";
+	import { registerGameplayAd } from "$lib/utils/ads";
 	import { get } from "svelte/store";
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 
@@ -27,7 +26,6 @@
 
 	onMount(() => {
 		registerGameplayAd();
-		activateGameplayAd();
 	});
 </script>
 
@@ -106,7 +104,6 @@
 		class="gameplayAd"
 		id="gameplayAd"
 		data-fuse="Game_incontent_1"
-		style:display={$resultScreenEnabled ? "none" : ""}
 	></div>
 	<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
 </div>

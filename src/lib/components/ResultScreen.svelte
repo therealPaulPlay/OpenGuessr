@@ -22,7 +22,7 @@
 	import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
 	import { transitionToStart } from "$lib/utils/transitionToStart";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
-	import { onMount } from "svelte";
+	import { onMount, tick } from "svelte";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
 	import { get } from "svelte/store";
@@ -60,7 +60,16 @@
 		else showConfetti = false;
 	});
 
-	onMount(registerResultAds);
+	// Enable ad slots once visible for the first time
+	let resultAdsEnabled = $state(false);
+
+	$effect(async () => {
+		if ($resultScreenEnabled && !resultAdsEnabled) {
+			resultAdsEnabled = true;
+			await tick();
+			registerResultAds();
+		}
+	});
 </script>
 
 {#if showConfetti}
@@ -92,10 +101,9 @@
 	<div class="endBottomBar">
 		<div class="resultAdArea barMenu" style:display={$adsDisabled ? "none" : ""}>
 			<div
-				id="resultAd"
 				class="resultAd"
-				data-fuse="Game_Result_incontent_1"
-				style:display={$resultScreenEnabled ? "" : "none"}
+				id={resultAdsEnabled ? "resultAd" : undefined}
+				data-fuse={resultAdsEnabled ? "Game_Result_incontent_1" : undefined}
 			></div>
 			<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
 		</div>
@@ -105,10 +113,9 @@
 			</div>
 			<div class="mobileResultAdArea resultField resultFieldHigh" style:display={$adsDisabled ? "none" : ""}>
 				<div
-					id="mobileResultAd"
 					class="mobileResultAd"
-					data-fuse="Game_Result_Mob_Only"
-					style:display={$resultScreenEnabled ? "" : "none"}
+					id={resultAdsEnabled ? "mobileResultAd" : undefined}
+					data-fuse={resultAdsEnabled ? "Game_Result_Mob_Only" : undefined}
 				></div>
 				<p class="noAdvertsText">Ad.</p>
 			</div>
