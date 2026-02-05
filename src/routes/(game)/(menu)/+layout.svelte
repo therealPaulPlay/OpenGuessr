@@ -123,7 +123,8 @@
 		max-width: 1100px;
 		padding: 20px;
 		padding-top: 100px;
-		width: calc(100% - 40px);
+		box-sizing: border-box;
+		width: 100%;
 	}
 
 	@media (min-width: 800px) {
