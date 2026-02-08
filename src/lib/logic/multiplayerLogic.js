@@ -13,7 +13,7 @@ import { navigationMenu, guestNamePickerPopup, linkJoinPopup } from "$lib/stores
 import { leaveFunction } from "$lib/stores/modeStore.js";
 import {
     teamAmount, roundAmount, roundLength,
-    duelRetryEnabled, multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
+    multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
     multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray,
     matchmakingActive, socket,
     roomcode,
@@ -29,7 +29,6 @@ import {
     currentRound,
     multiplayerMap,
     mobileChatLastOpenedMsgCount,
-    divisionRoom
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
@@ -117,7 +116,7 @@ export async function createMultiplayerInstance() {
 
             get(socket).onEvent('hostMigrated', () => {
                 // In a non-division room, start when the host (who is the only one with the start button) leaves
-                if (!get(socket)?.storage?.gameStarted && !get(socket)?.storage?.divisionRoom) get(socket)?.sendRequest("startRoom");
+                if (!get(socket)?.storage?.gameStarted && !get(socket)?.storage?.matchmakingRoom) get(socket)?.sendRequest("startRoom");
             });
 
             let playerAddRequestSent = false; // Avoid sending this multiple times
@@ -234,7 +233,7 @@ async function showTimeReducedOverlay() {
     } catch (error) { console.warn("Error showing time reduce overlay:", error) }
 }
 
-export async function createMultiplayerRoom(sizeLimit) {
+export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, divisionRoom = false) {
     try {
         multiplayer.set(true); // Set multiplayer immediately
         disableResultScreen(); // Edge case
@@ -253,7 +252,8 @@ export async function createMultiplayerRoom(sizeLimit) {
             style: get(multiplayerStyle),
             restriction: get(multiplayerRestriction),
             map: get(multiplayerMap),
-            divisionRoom: get(divisionRoom),
+            matchmakingRoom,
+            divisionRoom,
         }, sizeLimit);
         roomcode.set(code);
         participantCount.set(get(socket)?.participantCount);
@@ -299,7 +299,6 @@ export function leaveMultiplayer(destroy = true) {
     // Disable Multiplayer & Matchmaking
     multiplayer.set(false);
     matchmakingActive.set(false);
-    duelRetryEnabled.set(false); // Make Duel retry button disabled (Standard)
 
     if (destroy) {
         get(socket)?.destroy(); // Destroy peer
@@ -318,7 +317,6 @@ export function leaveMultiplayer(destroy = true) {
     participantCount.set(0);
     multiplayerStyle.set("standard");
     roomcode.set(null);
-    divisionRoom.set(false);
     multiplayerStatus.set(); // Undefined -> show default msgs
     continueText.set("Continue");
     multiplayerRestriction.set(Object.keys(get(restrictionNames))?.[0]);
@@ -340,7 +338,7 @@ export function leaveMultiplayer(destroy = true) {
 function showEndscreenUI(show) {
     if (show) {
         if (!get(socket)?.storage?.tournamentRoom) leaveMatchButtonVisible.set(true); // Show large exit button
-        if (!get(socket)?.storage?.divisionRoom && !get(socket)?.storage?.tournamentRoom && get(socket)?.isHost) rematchButtonVisible.set(true); // Don't show rematch button in non-friend duels & only if host
+        if (!get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom && get(socket)?.isHost) rematchButtonVisible.set(true); // Don't show rematch button in matchmaking games, and only if host
     } else {
         rematchButtonVisible.set(false);
         leaveMatchButtonVisible.set(false);

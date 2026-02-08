@@ -50,7 +50,7 @@
 			>
 				<MessageSquare class="chat-action-icon" size={20} strokeWidth={2.25} /> Unmute all
 			</button>
-			{#if get(socket)?.isHost && !get(socket)?.storage?.divisionRoom && !get(socket)?.storage?.tournamentRoom}
+			{#if get(socket)?.isHost && !get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom}
 				<button
 					class="standardButton white"
 					onclick={() => {
@@ -107,7 +107,7 @@
 									else $chatMutedPlayers = [...($chatMutedPlayers || []), clientId];
 								}}
 							/>
-							{#if get(socket)?.isHost && !get(socket)?.storage?.divisionRoom && !get(socket)?.storage?.tournamentRoom}
+							{#if get(socket)?.isHost && !get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom}
 								<button
 									class="standardButton white"
 									disabled={clientId === get(socket)?.id}

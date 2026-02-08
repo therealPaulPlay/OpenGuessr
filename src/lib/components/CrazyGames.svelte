@@ -69,7 +69,7 @@
 				});
 
 				roomcode.subscribe((value) => {
-					if (value && !get(socket)?.storage?.divisionRoom) {
+					if (value && !get(socket)?.storage?.matchmakingRoom) {
 						window.CrazyGames.SDK.game.showInviteButton({
 							join: value,
 						});

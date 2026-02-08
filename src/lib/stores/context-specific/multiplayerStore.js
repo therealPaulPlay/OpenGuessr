@@ -1,7 +1,7 @@
 import { get, writable } from "svelte/store";
 import { restrictionNames } from "./restrictionStore";
 
-// Peer
+// Client
 export const socket = writable();
 
 // Settings
@@ -9,15 +9,12 @@ export const roundAmount = writable(3);
 export const roundLength = writable(60);
 export const teamAmount = writable(1);
 export const multiplayerRestriction = writable(Object.keys(get(restrictionNames))?.[0]);
-
-// Style
 export const multiplayerStyle = writable("standard");
 
 // Matchmaking and Duels
 export const matchmakingActive = writable(false);
 export const skillBasedMatchmaking = writable(false);
 export const matchmakingHosting = writable(false);
-export const divisionRoom = writable(false);
 
 // Guest-exclusive
 export const guestName = writable("Guest (Default)");
@@ -26,8 +23,6 @@ export const guestNamePromise = writable();
 // UI
 export const multiplayerStatus = writable(); // Status for Duel, Join, Linjoin etc.
 export const loadedFriendsData = writable();
-export const currentScreen = writable("main");
-export const duelRetryEnabled = writable(false);
 export const currentRound = writable(0);
 export const multiplayerMap = writable(null);
 

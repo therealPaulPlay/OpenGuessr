@@ -1,5 +1,5 @@
 // Multiplayer room matchmaking APIs, for Duels
-import { matchmakingActive, multiplayerStatus, roomcode, matchmakingHosting, multiplayerStyle, roundAmount, roundLength, divisionRoom, teamAmount, multiplayerMap, multiplayerRestriction, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
+import { matchmakingActive, multiplayerStatus, roomcode, matchmakingHosting, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, multiplayerRestriction, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
 import { createMultiplayerRoom, joinMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -47,16 +47,17 @@ async function createMatchmakingRoom(type, skillBased, roomOptions) {
     if (skillBased === undefined) return console.warn("Skill-based argument not defined!");
     if (!roomOptions || !roomOptions.roundAmount || roomOptions.teamAmount == null || roomOptions.divisionRoom == null) return console.error("Provided room options are lacking:", JSON.stringify(roomOptions));
 
-    // Set room options
+    // Set standard matchmaking room options
     multiplayerStyle.set("duel");
-    teamAmount.set(roomOptions.teamAmount);
-    roundAmount.set(roomOptions.roundAmount);
     roundLength.set(60);
-    divisionRoom.set(roomOptions.divisionRoom);
     multiplayerMap.set(get(defaultMap))
 
+    // Set customizable options
+    teamAmount.set(roomOptions.teamAmount);
+    roundAmount.set(roomOptions.roundAmount);
+
     // Create room and submit code for matchmaking
-    await createMultiplayerRoom(roomOptions.sizeLimit);
+    await createMultiplayerRoom(roomOptions.sizeLimit, true, roomOptions.divisionRoom);
     if (get(matchmakingActive)) multiplayerStatus.set("Waiting for opponent..."); // Wait status
     matchmakingHosting.set(true);
     return submitRoomCode(type, skillBased);
