@@ -1,8 +1,7 @@
 <script>
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import {
-		connectionCount,
-		hostStage,
+		participantCount,
 		loadedFriendsData,
 		multiplayerTableArray,
 		roomcode,
@@ -17,10 +16,16 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { Eye, Link, Users, ArrowRightLeft } from "@lucide/svelte";
-	import { submitRoomCode } from "$lib/logic/matchmakingAPI.js";
+	import { submitRoomCode } from "$lib/logic/matchmakingLogic.js";
 	import { page } from "$app/state";
 	import { get } from "svelte/store";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
+
+	let {
+		showOpenRoom = true,
+		startDisabledCondition,
+		startFunction = () => console.warn("No start function passed!"),
+	} = $props();
 
 	let roomOpened = $state(false);
 
@@ -44,7 +49,7 @@
 
 <!-- Team and player display -->
 <div class="roomCreationModule multiplayerHostSettings teamsDisplay">
-	{#if $teamAmount === 1}
+	{#if $teamAmount === 1 || !$multiplayerTableArray?.length}
 		<p class="playerBoxElement">
 			<span>No team:</span>
 			{#if $multiplayerTableArray?.length > 0}
@@ -85,8 +90,9 @@
 			</p>
 		{/each}
 	{/if}
-	<p id="smallJoinCounter">{$connectionCount + 1}</p>
+	<p id="smallJoinCounter">{$participantCount ?? "?"}</p>
 </div>
+
 <!-- Friend invite display -->
 {#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online)?.length >= 1}
 	<div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
@@ -122,34 +128,34 @@
 
 <!-- Button area -->
 <div class="multiplayerHostSubmitArea">
-	{#if $hostStage == 2}
-		<button
-			id="roomcodeLink"
-			class="largeButton standardButton white"
-			use:tooltip={{ text: "Copy link" }}
-			disabled={!$roomcode}
-			onclick={() => {
-				playSound("basic_button");
-				const roomId = get(roomcode);
+	<button
+		id="roomcodeLink"
+		class="largeButton standardButton white"
+		use:tooltip={{ text: "Copy link" }}
+		disabled={!$roomcode}
+		onclick={() => {
+			playSound("basic_button");
+			const roomId = get(roomcode);
 
-				// Use regular or Crazy Games link for invitation
-				const link = $crazyGames
-					? window.CrazyGames.SDK.game.inviteLink({ join: roomId })
-					: page.url.origin + "/?join=" + roomId;
+			// Use regular or Crazy Games link for invitation
+			const link = $crazyGames
+				? window.CrazyGames.SDK.game.inviteLink({ join: roomId })
+				: page.url.origin + "/?join=" + roomId;
 
-				// Copy to Clipboard
-				navigator.clipboard
-					.writeText(link)
-					.then(function () {
-						showNotification("Copied!");
-					})
-					.catch(function (error) {
-						showNotification("Error: " + error);
-					});
-			}}
-		>
-			<Link strokeWidth={2.75} size={18} />
-		</button>
+			// Copy to Clipboard
+			navigator.clipboard
+				.writeText(link)
+				.then(function () {
+					showNotification("Copied!");
+				})
+				.catch(function (error) {
+					showNotification("Error: " + error);
+				});
+		}}
+	>
+		<Link strokeWidth={2.75} size={18} />
+	</button>
+	{#if showOpenRoom}
 		<button
 			class="standardButton white largeButton"
 			use:tooltip={{ text: "Make room public" }}
@@ -168,10 +174,10 @@
 	<button
 		id="multiplayerHost"
 		class="standardButton largeButton"
-		disabled={$connectionCount + 1 < get(teamAmount) || $connectionCount + 1 <= 1}
+		disabled={startDisabledCondition}
 		onclick={() => {
 			playSound("basic_button");
-			get(socket)?.sendRequest("startRoom");
+			startFunction?.();
 		}}>Start</button
 	>
 </div>

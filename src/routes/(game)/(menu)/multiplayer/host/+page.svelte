@@ -2,7 +2,6 @@
 	import { ArrowRightLeft } from "@lucide/svelte";
 	import { get } from "svelte/store";
 	import {
-		hostStage,
 		teamAmount,
 		roundAmount,
 		roundLength,
@@ -10,8 +9,10 @@
 		roomcode,
 		multiplayerStyle,
 		multiplayerRestriction,
+		multiplayerMap,
+		participantCount,
 	} from "$lib/stores/context-specific/multiplayerStore";
-	import { setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
+	import { createMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
 	import Ticker from "$lib/components/ui/Ticker.svelte";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
@@ -20,6 +21,7 @@
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import MultiplayerHostDisplay from "$lib/components/MultiplayerHostDisplay.svelte";
+	import { multiplayer } from "$lib/stores/modeStore";
 
 	// Restriction toggle
 	let restrictions = Object.keys($restrictionNames);
@@ -39,7 +41,7 @@
 
 <div class="main-container">
 	<div class="multiplayerCreationArea">
-		{#if $hostStage == 1}
+		{#if !$multiplayer}
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p>Rounds</p>
 				<Ticker limit={10} minimum={2} initialValue={3} bind:value={$roundAmount} />
@@ -80,8 +82,7 @@
 					<p id="multiplayerMapDisplay">
 						{(() => {
 							if (typeof window === "undefined") return "Loading...";
-							const category = localStorage.getItem("selectedMap") || $defaultMap;
-							return idToMapName(category);
+							return idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
 						})()}
 					</p>
 					<button
@@ -100,14 +101,18 @@
 					class="standardButton largeButton"
 					onclick={() => {
 						playSound("basic_button");
-						// Switch to stage 2 (host code area) if on stage 1 (after the create room function!!)
-						setupMultiplayerRoom(get(roundAmount), get(roundLength));
-						hostStage.set(2);
+						// Switch to stage 2 (host code area) if on stage 1 (after the setup room function!)
+						multiplayerMap.set(localStorage.getItem("selectedMap") || $defaultMap);
+						createMultiplayerRoom();
 					}}>Create room</button
 				>
 			</div>
-		{:else if $hostStage == 2}
-			<MultiplayerHostDisplay />
+		{:else}
+			<MultiplayerHostDisplay
+				startDisabledCondition={$participantCount < get(teamAmount) || $participantCount <= 1}
+				showOpenRoom={true}
+				startFunction={() => get(socket)?.sendRequest("startRoom")}
+			/>
 		{/if}
 	</div>
 </div>

@@ -2,7 +2,7 @@
 	let { children } = $props();
 	import { playSound } from "$lib/utils/soundManager";
 	import Notification from "$lib/components/Notification.svelte";
-	import { screenEscapeDisabled } from "$lib/stores/context-specific/multiplayerStore";
+	import { matchmakingActive } from "$lib/stores/context-specific/multiplayerStore";
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { goto, afterNavigate } from "$app/navigation";
 	import { Home } from "@lucide/svelte";
@@ -37,7 +37,7 @@
 	<Notification inMenu={true} />
 	<button
 		class="backButton standardButton white largeButton"
-		disabled={$screenEscapeDisabled}
+		disabled={$matchmakingActive}
 		onclick={() => {
 			playSound("basic_button");
 			leaveMultiplayerIfReturningFromMultiplayerPage();
@@ -50,7 +50,7 @@
 	{#if showHomeButton && historyStack.length}
 		<button
 			class="backButton standardButton white largeButton"
-			disabled={$screenEscapeDisabled}
+			disabled={$matchmakingActive}
 			onclick={() => {
 				playSound("basic_button");
 				leaveMultiplayerIfReturningFromMultiplayerPage();

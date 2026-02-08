@@ -17,12 +17,12 @@
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
-	import { loadedFriendsData, hostStage, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
+	import { loadedFriendsData, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
 	import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
 	import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
-	import { findDuel } from "$lib/logic/multiplayerLogic";
+	import { createTeamDuelRoom, findDuel } from "$lib/logic/matchmakingLogic";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { goto } from "$app/navigation";
 	import { onDestroy, onMount } from "svelte";
@@ -40,7 +40,6 @@
 	let friendsRefreshInterval;
 
 	onMount(async () => {
-		hostStage.set(1); // Reset host stage
 		await loadFriends();
 		clearInterval(friendsRefreshInterval);
 
@@ -85,7 +84,6 @@
 				<button
 					id="multiplayerSelectJoin"
 					class="standardButton multiplayerSelect white largeButton"
-					href="/multiplayer/join"
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/join");
@@ -96,7 +94,6 @@
 				<button
 					id="multiplayerSelectHost"
 					class="standardButton multiplayerSelect white largeButton"
-					href="/multiplayer/host"
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/host");
@@ -117,10 +114,9 @@
 					role="button"
 					tabindex="0"
 					class="standardButton multiplayerSelect largeButton"
-					href="/multiplayer/duel"
 					onclick={() => {
 						playSound("basic_button");
-						findDuel();
+						findDuel("ranked-duel");
 					}}
 				>
 					Duel
@@ -155,9 +151,9 @@
 				</div>
 				<button
 					class="standardButton multiplayerSelect largeButton white"
-					href="/multiplayer/duel"
 					onclick={() => {
 						playSound("basic_button");
+						createTeamDuelRoom();
 					}}
 				>
 					2v2

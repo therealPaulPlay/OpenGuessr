@@ -100,7 +100,7 @@ export async function loadResultScreenXP(distance) {
 
     // XP calculation formulas -------------------------------------------------
     if (get(singleplayer) || get(multiplayer)) {
-        const adjustedSupporterLevel = get(multiplayer) ? get(socket)?.getStorage?.highestSupporterLevel : get(supporterLevel);
+        const adjustedSupporterLevel = get(multiplayer) ? get(socket)?.storage?.highestSupporterLevel : get(supporterLevel);
         const calculatedXP = await calculateXPGain(distance, selectedMap, adjustedSupporterLevel);
         earnedXP = calculatedXP.earnedXP;
         earnedBasicXP = calculatedXP.earnedXPWithoutSupporterBoost;

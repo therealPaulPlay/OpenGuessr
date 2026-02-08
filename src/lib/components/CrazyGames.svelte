@@ -1,14 +1,14 @@
 <!-- This component handles the SDK stuff, and checks if the crazy-games query is being used -->
 <script>
 	import { onMount } from "svelte";
-	import { roundAmount, roundLength, hostStage, roomcode, socket } from "$lib/stores/context-specific/multiplayerStore";
+	import { roomcode, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import {
 		crazyGames,
 		preventFullscreen,
 		disableAutoAuthentication,
 	} from "$lib/stores/context-specific/platformSettingsStore";
-	import { joinFromAnywhere, setupMultiplayerRoom } from "$lib/logic/multiplayerLogic";
+	import { joinFromAnywhere, createMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { helpPopup } from "$lib/stores/uiStore";
@@ -55,8 +55,7 @@
 
 					if (window.CrazyGames.SDK.game.isInstantJoin) {
 						goto("/multiplayer/host");
-						setupMultiplayerRoom(get(roundAmount), get(roundLength));
-						hostStage.set(2); // Go to second stage
+						createMultiplayerRoom();
 					}
 				}, 150);
 
@@ -70,7 +69,7 @@
 				});
 
 				roomcode.subscribe((value) => {
-					if (value && !get(socket)?.getStorage?.divisionRoom) {
+					if (value && !get(socket)?.storage?.divisionRoom) {
 						window.CrazyGames.SDK.game.showInviteButton({
 							join: value,
 						});

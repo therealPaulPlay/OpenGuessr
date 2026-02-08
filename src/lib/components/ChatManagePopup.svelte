@@ -14,7 +14,7 @@
 	import { multiplayer } from "$lib/stores/modeStore";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 
-	let roomLocked = $state(get(socket)?.getStorage?.locked);
+	let roomLocked = $state(get(socket)?.storage?.locked);
 
 	multiplayer.subscribe((value) => {
 		if (!value) $chatManagePopup = false;
@@ -29,10 +29,10 @@
 		<div class="general-actions-scroll of-left of-right">
 			<button
 				class="standardButton white"
-				disabled={$chatMutedPlayers?.length === get(socket)?.getStorage?.players?.length - 1}
+				disabled={$chatMutedPlayers?.length === get(socket)?.storage?.players?.length - 1}
 				onclick={() => {
 					playSound("basic_button");
-					$chatMutedPlayers = get(socket)?.getStorage?.players?.reduce((acc, el) => {
+					$chatMutedPlayers = get(socket)?.storage?.players?.reduce((acc, el) => {
 						if (el.clientId !== get(socket)?.id) acc.push(el.clientId);
 						return acc;
 					}, []);
@@ -50,12 +50,12 @@
 			>
 				<MessageSquare class="chat-action-icon" size={20} strokeWidth={2.25} /> Unmute all
 			</button>
-			{#if get(socket)?.isHost && !get(socket)?.getStorage?.divisionRoom && !get(socket)?.getStorage?.tournamentRoom}
+			{#if get(socket)?.isHost && !get(socket)?.storage?.divisionRoom && !get(socket)?.storage?.tournamentRoom}
 				<button
 					class="standardButton white"
 					onclick={() => {
 						playSound("basic_button");
-						const newRoomLockState = !get(socket)?.getStorage?.locked;
+						const newRoomLockState = !get(socket)?.storage?.locked;
 						roomLocked = newRoomLockState;
 						get(socket).sendRequest("setRoomLock", newRoomLockState);
 					}}
@@ -107,7 +107,7 @@
 									else $chatMutedPlayers = [...($chatMutedPlayers || []), clientId];
 								}}
 							/>
-							{#if get(socket)?.isHost && !get(socket)?.getStorage?.divisionRoom && !get(socket)?.getStorage?.tournamentRoom}
+							{#if get(socket)?.isHost && !get(socket)?.storage?.divisionRoom && !get(socket)?.storage?.tournamentRoom}
 								<button
 									class="standardButton white"
 									disabled={clientId === get(socket)?.id}

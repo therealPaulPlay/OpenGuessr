@@ -7,8 +7,8 @@ import { errorPopup } from "./errorHandling";
 
 export function getMapBounds() {
     if (get(multiplayer)) {
-        if (get(socket)?.getStorage?.mapBounds) return get(socket)?.getStorage?.mapBounds;
-        else if (get(socket)?.getStorage?.gameStarted) errorPopup("Bounds error", "No multiplayer map bounds provided!", "No bounds.");
+        if (get(socket)?.storage?.mapBounds) return get(socket)?.storage?.mapBounds;
+        else if (get(socket)?.storage?.gameStarted) errorPopup("Bounds error", "No multiplayer map bounds provided!", "No bounds.");
     }
 
     // If in a competition, set the map to the default

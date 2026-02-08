@@ -9,7 +9,7 @@
 	import { cubicOut } from "svelte/easing";
 	import { Info, History, Flame } from "@lucide/svelte";
 	import TokenRewardDisplay from "./TokenRewardDisplay.svelte";
-	import { findDuel } from "$lib/logic/multiplayerLogic";
+	import { findDuel } from "$lib/logic/matchmakingLogic";
 
 	// Animate number starting from 0
 	const animatedElo = tweened(0, {
