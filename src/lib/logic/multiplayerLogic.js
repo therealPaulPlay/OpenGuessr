@@ -96,6 +96,8 @@ export async function createMultiplayerInstance() {
                 customData
             }));
 
+            let playerAddRequestSent = false;
+
             // Register event listeners
             get(socket).onEvent('status', status => multiplayerStatus.set(status));
             get(socket).onEvent('status', status => console.log(status));
@@ -119,7 +121,9 @@ export async function createMultiplayerInstance() {
                 if (!get(socket)?.storage?.gameStarted && !get(socket)?.storage?.matchmakingRoom) get(socket)?.sendRequest("startRoom");
             });
 
-            let playerAddRequestSent = false; // Avoid sending this multiple times
+            get(socket).onEvent('moved', () => {
+                playerAddRequestSent = false; // Reset so addPlayer is sent for the new room
+            });
 
             get(socket).onEvent('storageUpdated', (storage) => {
                 // Save game info
@@ -139,8 +143,8 @@ export async function createMultiplayerInstance() {
 
                 // If player is not already in the room, add player info
                 if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerAddRequestSent) {
-                    get(socket).sendRequest("addPlayer", { guestName: get(guestName) || null });
                     playerAddRequestSent = true;
+                    get(socket).sendRequest("addPlayer", { guestName: get(guestName) || null });
                 }
 
                 if (storage.players) updatePlayerArrays(); // Do this before showing the overlay

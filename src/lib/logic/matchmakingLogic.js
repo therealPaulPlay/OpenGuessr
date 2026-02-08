@@ -1,22 +1,24 @@
 // Multiplayer room matchmaking APIs, for Duels
 import { matchmakingActive, multiplayerStatus, roomcode, matchmakingHosting, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, multiplayerRestriction, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
-import { createMultiplayerRoom, joinMultiplayerRoom } from "$lib/logic/multiplayerLogic";
+import { createMultiplayerRoom, joinMultiplayerRoom, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { elo } from "$lib/stores/accountStore";
+import { elo, isAuthenticated } from "$lib/stores/accountStore";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
-import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 import { goto } from "$app/navigation";
 import { signupPrompt } from "$lib/utils/signupPrompt";
+import { errorPopup } from "$lib/utils/errorHandling";
 
 // Logic -----------------------
-
-let roomIndex = 0;
 
 const matchmakingRoomConfigs = {
     "ranked-duel": { teamAmount: 1, roundAmount: 5, divisionRoom: true, sizeLimit: 2 },
     "team-duel": { teamAmount: 2, roundAmount: 5, divisionRoom: false, sizeLimit: 4 },
 }
+
+// Ranked duel -----------------------
+
+let roomIndex = 0;
 
 // This initiates the find duel system
 export async function findDuel() {
@@ -38,10 +40,36 @@ function findNextDuel() {
     }
 }
 
+// Team duel -----------------------
+
+let find2v2Interval = null;
+
 export function createTeamDuelRoom() {
+    if (!get(isAuthenticated)) return signupPrompt();
     goto("/multiplayer/team-duel");
     return createMatchmakingRoom("team-duel", false, matchmakingRoomConfigs["team-duel"]);
 }
+
+export function startFind2v2() {
+    if (find2v2Interval) return; // Prevent creating multiple intervals
+    matchmakingActive.set(true);
+    multiplayerStatus.set("Looking for players...");
+    attempt2v2Find();
+}
+
+export function clearFind2v2Interval() {
+    if (find2v2Interval) {
+        clearInterval(find2v2Interval);
+        find2v2Interval = null;
+    }
+}
+
+export function abortFind2v2() {
+    clearFind2v2Interval();
+    leaveMultiplayer();
+}
+
+// Shared -----------------------
 
 async function createMatchmakingRoom(type, skillBased, roomOptions) {
     if (skillBased === undefined) return console.warn("Skill-based argument not defined!");
@@ -60,7 +88,12 @@ async function createMatchmakingRoom(type, skillBased, roomOptions) {
     await createMultiplayerRoom(roomOptions.sizeLimit, true, roomOptions.divisionRoom);
     if (get(matchmakingActive)) multiplayerStatus.set("Waiting for opponent..."); // Wait status
     matchmakingHosting.set(true);
-    return submitRoomCode(type, skillBased);
+
+    const success = await submitRoomCode(type, skillBased);
+    if (!success) {
+        matchmakingActive.set(false);
+        leaveMultiplayer();
+    }
 }
 
 // API --------------------------
@@ -72,7 +105,7 @@ async function attemptDuelJoin(index, skillBased) {
 
     try {
         // Get Roomcode from server
-        const response = await fetch(get(apiUrl) + "/matchmaking/join-room/" + index, {
+        const response = await fetch(get(apiUrl) + "/matchmaking/get-room/" + index, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -100,15 +133,48 @@ async function attemptDuelJoin(index, skillBased) {
 
     } catch (error) {
         console.error('Error fetching room code: ', error);
-        multiplayerStatus.set("Couldn't fetch room code: " + error);
+        multiplayerStatus.set("Couldn't fetch code: " + error.message);
+        matchmakingActive.set(false);
+    }
+}
+
+async function attempt2v2Find() {
+    try {
+        const response = await fetch(get(apiUrl) + "/matchmaking/find-team-duel", {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem("bearer")
+            },
+            body: JSON.stringify({ id: localStorage.getItem("id") })
+        });
+
+        if (!response.ok) throw new Error(response.status);
+
+        const data = await response.json();
+        if (data.matched) {
+            clearFind2v2Interval();
+        } else if (!find2v2Interval) {
+            find2v2Interval = setInterval(attempt2v2Find, 5000); // Start polling
+        }
+    } catch (error) {
+        console.error("Error finding 2v2:", error);
+        clearFind2v2Interval();
+        errorPopup("Failed to find a 2v2", "The request returned an error.", error.message);
         matchmakingActive.set(false);
     }
 }
 
 export async function submitRoomCode(type, skillBased = false, map = get(defaultMap)) {
-    if (!type) return console.error("Room type must be specified for submitting a code!");
+    if (!type) {
+        console.error("Room type must be specified for submitting a code!");
+        return false;
+    }
     try {
-        if (get(roomcode)?.includes("loading")) return console.warn("Room code not loaded, not sending room code to server.");
+        if (get(roomcode)?.includes("loading")) {
+            console.warn("Room code not loaded, not sending room code to server.");
+            return false;
+        }
         const requestBody = {
             id: localStorage.getItem("id"),
             type,
@@ -116,7 +182,7 @@ export async function submitRoomCode(type, skillBased = false, map = get(default
             map
         }
 
-        const response = await fetch(get(apiUrl) + "/matchmaking/host-room/" + get(roomcode), {
+        const response = await fetch(get(apiUrl) + "/matchmaking/submit-room/" + get(roomcode), {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -126,15 +192,14 @@ export async function submitRoomCode(type, skillBased = false, map = get(default
         });
 
         if (!response.ok) throw new Error(response.status);
+        return true; // Success
 
     } catch (error) {
         console.error('Failed sending room code to server: ', error);
-        multiplayerStatus.set("Error submitting room code: " + error);
-        matchmakingActive.set(false);
+        errorPopup("Failed to submit code", "Failed to submit the room code, which is needed for matchmaking.", error.message);
+        return false; // Error
     }
 }
-
-let lastOpenRoomCode;
 
 export async function fetchOpenRooms() {
     try {
@@ -147,7 +212,7 @@ export async function fetchOpenRooms() {
             console.error("Failed to load open rooms: " + response.status);
         }
     } catch (error) {
-        console.error("Failed ro load open rooms (Network): ", error);
+        console.error("Failed to load open rooms (Network): ", error);
     }
 }
 

@@ -5,18 +5,21 @@
 		skillBasedMatchmaking,
 		matchmakingHosting,
 	} from "$lib/stores/context-specific/multiplayerStore";
-	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { playSound } from "$lib/utils/soundManager";
 	import { Info, RefreshCcw } from "@lucide/svelte";
 	import { slide } from "svelte/transition";
 
-	let { supportsSkillbased = true, findFunction = () => console.warn("No find function set!") } = $props();
+	let {
+		showSkillbasedInfo = true,
+		findFunction = () => console.warn("No find function set!"),
+		cancelFunction = () => console.warn("No cancel function set!"),
+	} = $props();
 </script>
 
-<p class="multiplayer-matchmaking-status" class:loading={$multiplayerStatus && $matchmakingHosting}>
+<h2 class="multiplayer-matchmaking-status" class:loading={$multiplayerStatus && $matchmakingHosting}>
 	{$multiplayerStatus || "No match found."}
-</p>
-{#if $skillBasedMatchmaking && supportsSkillbased}
+</h2>
+{#if $skillBasedMatchmaking && showSkillbasedInfo}
 	<div class="info-container" transition:slide>
 		<Info strokeWidth={2.25} size={34} color="white" style="opacity: 50%; margin-right: 5px; margin-left: 2px;" />
 		<p>Skill-based matchmaking has longer waiting times.</p>
@@ -29,7 +32,7 @@
 		if (!$matchmakingActive) {
 			playSound("basic_button");
 			findFunction?.();
-		} else leaveMultiplayer();
+		} else cancelFunction?.();
 	}}
 	>{$matchmakingActive ? "Cancel" : "Try again"}
 	{#if !$matchmakingActive}
@@ -41,13 +44,13 @@
 	.info-container {
 		display: flex;
 		padding: var(--box-margin);
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		align-items: center;
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		gap: 5px;
-		margin-bottom: var(--layout-margin);
 		max-width: 300px;
+		margin-bottom: var(--box-margin);
 	}
 
 	.info-container p {
@@ -72,9 +75,8 @@
 		text-align: center;
 		width: 100%;
 		text-wrap: wrap;
-		font-size: 30px;
 		color: white;
-		margin-bottom: var(--layout-margin);
+		margin-bottom: var(--box-margin);
 		max-width: 400px;
 		overflow: hidden;
 		text-overflow: ellipsis;

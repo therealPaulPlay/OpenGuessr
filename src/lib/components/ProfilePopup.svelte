@@ -123,7 +123,7 @@
 				},
 				{
 					title: "Elo rating",
-					getValue: () => $profileData?.elo?.toLocaleString() ,
+					getValue: () => $profileData?.elo?.toLocaleString(),
 					icon: Crown,
 				},
 			],
@@ -685,12 +685,6 @@
 		flex-wrap: wrap;
 		align-items: center;
 		gap: 5px;
-	}
-
-	@media all and (max-width: 1200px) {
-		.profileViewName {
-			font-size: 32px;
-		}
 	}
 
 	@media all and (max-width: 800px) {
