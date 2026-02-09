@@ -94,7 +94,7 @@ function createMatchmakingRoom(type, skillBased, roomOptions) {
     // Set hosting enabled
     matchmakingHosting.set(true);
 
-    // Create room and submit code for matchmaking
+    // Create room and submit code for matchmaking (and return promise)
     return createMultiplayerRoom(roomOptions.sizeLimit, true, roomOptions.divisionRoom);
 }
 
@@ -140,12 +140,12 @@ async function attemptDuelJoin(index, skillBased) {
 
         // Attempt to join if there is a code, otherwise create room
         if (receivedRoomCode) {
-            const success = joinMultiplayerRoom(receivedRoomCode);
+            const success = await joinMultiplayerRoom(receivedRoomCode);
             if (!success) findNextDuel(); // Code exists but failed to join -> check next code
         } else {
             // Status will be set in this function
-            const success = createMatchmakingRoom("division-duel", skillBased, matchmakingRoomConfigs["division-duel"]);
-            if (success) submitRoomCodeForMatchmaking("division-duel", skillBased);
+            const success = await createMatchmakingRoom("division-duel", skillBased, matchmakingRoomConfigs["division-duel"]);
+            if (success) await submitRoomCodeForMatchmaking("division-duel", skillBased);
         }
 
     } catch (error) {
