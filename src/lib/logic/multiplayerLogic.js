@@ -123,8 +123,9 @@ export async function createMultiplayerInstance() {
                 if (!get(socket)?.storage?.gameStarted && !get(socket)?.storage?.matchmakingRoom) get(socket)?.sendRequest("startRoom");
             });
 
-            get(socket).onEvent('moved', () => {
+            get(socket).onEvent('moved', (newRoomId) => {
                 playerAddRequestSent = false; // Reset so addPlayer is sent for the new room
+                roomCode.set(newRoomId); // Update roomCode to the new room
             });
 
             get(socket).onEvent('storageUpdated', (storage) => {
