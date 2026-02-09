@@ -230,7 +230,7 @@
 						enterCompetition(competitionIdFromLink);
 					},
 				);
-				history.replaceState({}, document.title, page.url.pathname); //reset query in the address bar
+				history.replaceState({}, document.title, page.url.pathname); // reset query in the address bar
 			}
 		} catch {}
 	});
