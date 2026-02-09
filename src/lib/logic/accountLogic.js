@@ -76,7 +76,7 @@ async function loadUserInfo() {
       duelWinStreak.set(user.current_duel_win_streak || 0);
 
       if (get(resultScreenEnabled) && get(lastExpCalculationSignedOut)) loadResultScreenXP(get(lastDistance));
-      if (user.new_requests) { inboxIconNew.set(true); }
+      if (user.new_request) { inboxIconNew.set(true); }
 
       initializeSSEConnection();
       accountDataLoaded.set(true);
