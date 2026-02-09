@@ -35,7 +35,7 @@ import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
-import { goto } from "$app/navigation";
+import { goto, replaceState } from "$app/navigation";
 import { changeMap } from "$lib/utils/changeMap";
 import { showNotification } from "$lib/utils/notifications";
 import PlaySocket from "playsocketjs";
@@ -217,7 +217,10 @@ export async function createMultiplayerInstance() {
 export function attemptJoinViaLink() {
     let urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get("join");
-    if (roomCode) return joinFromAnywhere(roomCode);
+    if (roomCode) {
+        replaceState(window.location.pathname, {});
+        return joinFromAnywhere(roomCode);
+    }
 }
 
 // Join with a popup, without having to go to the join screen
