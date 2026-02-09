@@ -43,6 +43,7 @@ function findNextDuel() {
 // Team duel -----------------------
 
 let find2v2Interval = null;
+let find2v2Active = false;
 
 export function createTeamDuelRoom() {
     if (!get(isAuthenticated)) return signupPrompt();
@@ -51,13 +52,15 @@ export function createTeamDuelRoom() {
 }
 
 export function startFind2v2() {
-    if (find2v2Interval) return; // Prevent creating multiple intervals
+    if (find2v2Active) return;
+    find2v2Active = true;
     matchmakingActive.set(true);
     multiplayerStatus.set("Looking for players...");
     attempt2v2Find();
 }
 
 export function clearFind2v2Interval() {
+    find2v2Active = false;
     if (find2v2Interval) {
         clearInterval(find2v2Interval);
         find2v2Interval = null;
@@ -158,6 +161,7 @@ async function attempt2v2Find() {
             find2v2Interval = setInterval(attempt2v2Find, 5000); // Start polling
         }
     } catch (error) {
+        if (!find2v2Active) return; // Request arrived after match/cancel, ignore
         console.error("Error finding 2v2:", error);
         clearFind2v2Interval();
         errorPopup("Failed to find a 2v2", "The request returned an error.", error.message);

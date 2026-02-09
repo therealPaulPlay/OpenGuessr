@@ -25,7 +25,7 @@
 	<div class="controls-area">
 		{#if $multiplayer && !$matchmakingActive}
 			<div class="info-container">
-				<Info strokeWidth={2.25} size={34} color="white" style="opacity: 50%; margin-right: 5px; margin-left: 2px;" />
+				<Info strokeWidth={2.25} color="white" style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; min-width: 24px;" />
 				<p>Invite a friend, or press start to search for both a teammate and opponents.</p>
 			</div>
 			<MultiplayerHostDisplay showOpenRoom={false} startFunction={startFind2v2} />

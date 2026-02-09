@@ -62,7 +62,6 @@ function setMultiplayerUI(enable) {
             playSound("leave_round");
         });
         chatVisible.set(true);
-        linkJoinPopup.set(false);
     } else {
         leaveFunction.set(); // Hides leave option too
         chatVisible.set(false);
@@ -218,13 +217,14 @@ export async function createMultiplayerInstance() {
 export function attemptJoinViaLink() {
     let urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get("join");
-    if (roomCode) joinFromAnywhere(roomCode);
+    if (roomCode) return joinFromAnywhere(roomCode);
 }
 
 // Join with a popup, without having to go to the join screen
-export function joinFromAnywhere(roomcode) {
+export async function joinFromAnywhere(roomcode) {
     linkJoinPopup.set(true);
-    joinMultiplayerRoom(roomcode);
+    const success = await joinMultiplayerRoom(roomcode);
+    if (success) linkJoinPopup.set(false);
 }
 
 // Game logic -----------------------------------------------------------------------------------------------------------------
