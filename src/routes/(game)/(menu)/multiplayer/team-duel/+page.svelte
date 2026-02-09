@@ -8,14 +8,12 @@
 		abortFindTeamDuel,
 		clearFindTeamDuelInterval,
 	} from "$lib/logic/matchmakingLogic";
-	import { matchmakingActive, matchmakingHosting, participantCount, roomCode } from "$lib/stores/context-specific/multiplayerStore";
-	import { multiplayer } from "$lib/stores/modeStore";
+	import {
+		matchmakingActive,
+		matchmakingHosting,
+		participantCount,
+	} from "$lib/stores/context-specific/multiplayerStore";
 	import { Info } from "@lucide/svelte";
-
-	// Auto-start matchmaking when second player joins
-	$effect(() => {
-		if ($multiplayer && !$matchmakingActive && $participantCount >= 2) startFindTeamDuel();
-	});
 
 	onDestroy(() => {
 		clearFindTeamDuelInterval();
@@ -35,9 +33,13 @@
 					color="white"
 					style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; flex-shrink: 0;"
 				/>
-				<p>Invite a friend, or press start to search for both a teammate and opponents.</p>
+				<p>When starting solo, you'll be paired with a random teammate.</p>
 			</div>
-			<MultiplayerHostDisplay showOpenRoom={false} startFunction={startFindTeamDuel} />
+			<MultiplayerHostDisplay
+				showOpenRoom={false}
+				startFunction={startFindTeamDuel}
+				startDisabledCondition={$participantCount > 2}
+			/>
 		{:else}
 			<MultiplayerMatchmakingDisplay
 				showSkillbasedInfo={false}

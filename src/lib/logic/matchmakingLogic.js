@@ -173,7 +173,7 @@ async function attemptTeamDuelFind() {
         else if (!findTeamDuelInterval) findTeamDuelInterval = setInterval(attemptTeamDuelFind, 5000); // Start polling
 
     } catch (error) {
-        if (!findTeamDuelActive) return; // Request arrived after match/cancel, ignore
+        if (!findTeamDuelActive) return; // Request arrived after match/cancel, ignore (match can start without a client ever calling this endpoint since submitting & waiting for sb else to call it also works)
         abortFindTeamDuel(); // Cancel interval, and leave since the room code is still on the server's matchmaking queue (this also sets matchmakingActive to false)
         console.error("Error finding team duel:", error);
         errorPopup("Failed to find a team duel", "The request returned an error.", error.message);
