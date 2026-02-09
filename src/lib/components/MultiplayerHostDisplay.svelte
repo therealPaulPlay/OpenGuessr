@@ -4,7 +4,7 @@
 		participantCount,
 		loadedFriendsData,
 		multiplayerTableArray,
-		roomcode,
+		roomCode,
 		socket,
 		teamAmount,
 	} from "$lib/stores/context-specific/multiplayerStore";
@@ -43,7 +43,7 @@
 <div class="roomCreationModule multiplayerHostSettings noGap">
 	<p class="codeDisplayText">Join with code</p>
 	<h1 id="roomCodeDisplay">
-		{$roomcode?.slice(0, 3) || "..."}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomcode?.slice(3) || "..."}
+		{$roomCode?.slice(0, 3) || "..."}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomCode?.slice(3) || "..."}
 	</h1>
 </div>
 
@@ -132,10 +132,10 @@
 		id="roomcodeLink"
 		class="largeButton standardButton white"
 		use:tooltip={{ text: "Copy link" }}
-		disabled={!$roomcode}
+		disabled={!$roomCode}
 		onclick={() => {
 			playSound("basic_button");
-			const roomId = get(roomcode);
+			const roomId = get(roomCode);
 
 			// Use regular or Crazy Games link for invitation
 			const link = $crazyGames
@@ -159,7 +159,7 @@
 		<button
 			class="standardButton white largeButton"
 			use:tooltip={{ text: "Make room public" }}
-			disabled={!$roomcode || roomOpened}
+			disabled={!$roomCode || roomOpened}
 			onclick={async () => {
 				playSound("basic_button");
 				if (!$isAuthenticated) return signupPrompt();

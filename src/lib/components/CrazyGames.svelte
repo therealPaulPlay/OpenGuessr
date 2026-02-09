@@ -1,7 +1,7 @@
 <!-- This component handles the SDK stuff, and checks if the crazy-games query is being used -->
 <script>
 	import { onMount } from "svelte";
-	import { roomcode, socket } from "$lib/stores/context-specific/multiplayerStore";
+	import { roomCode, socket } from "$lib/stores/context-specific/multiplayerStore";
 	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
 	import {
 		crazyGames,
@@ -50,8 +50,8 @@
 				setTimeout(() => {
 					window.CrazyGames.SDK.game.loadingStop();
 					window.CrazyGames.SDK.game.gameplayStart();
-					const roomCode = window.CrazyGames.SDK.game.getInviteParam("join");
-					if (roomCode) joinFromAnywhere(roomCode);
+					const code = window.CrazyGames.SDK.game.getInviteParam("join");
+					if (code) joinFromAnywhere(code);
 
 					if (window.CrazyGames.SDK.game.isInstantJoin) {
 						goto("/multiplayer/host");
@@ -68,7 +68,7 @@
 					else window.CrazyGames.SDK.game.gameplayStart();
 				});
 
-				roomcode.subscribe((value) => {
+				roomCode.subscribe((value) => {
 					if (value && !get(socket)?.storage?.matchmakingRoom) {
 						window.CrazyGames.SDK.game.showInviteButton({
 							join: value,

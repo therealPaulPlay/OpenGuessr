@@ -1,6 +1,6 @@
 import { isAuthenticated, username } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
-import { loadedFriendsData, multiplayerStatus, roomcode } from "$lib/stores/context-specific/multiplayerStore";
+import { loadedFriendsData, multiplayerStatus, roomCode } from "$lib/stores/context-specific/multiplayerStore";
 import { inboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { get } from "svelte/store";
@@ -175,7 +175,7 @@ export async function sendMatchInvite(recipientId) {
         const requestBody = {
             id: localStorage.getItem("id"),
             friend_id: recipientId,
-            roomcode: get(roomcode)
+            roomcode: get(roomCode)
         };
 
         const response = await fetch(get(apiUrl) + "/friends/send-invite", {
