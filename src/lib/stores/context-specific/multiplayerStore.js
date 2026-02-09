@@ -1,15 +1,14 @@
-import { writable } from "svelte/store";
+import { get, writable } from "svelte/store";
+import { restrictionNames } from "./restrictionStore";
 
-// Peer
+// Client
 export const socket = writable();
 
 // Settings
 export const roundAmount = writable(3);
 export const roundLength = writable(60);
 export const teamAmount = writable(1);
-export const multiplayerRestriction = writable("standard");
-
-// Style
+export const multiplayerRestriction = writable(Object.keys(get(restrictionNames))?.[0]);
 export const multiplayerStyle = writable("standard");
 
 // Matchmaking and Duels
@@ -24,15 +23,11 @@ export const guestNamePromise = writable();
 // UI
 export const multiplayerStatus = writable(); // Status for Duel, Join, Linjoin etc.
 export const loadedFriendsData = writable();
-export const currentScreen = writable("main");
-export const hostStage = writable(1);
-export const screenEscapeDisabled = writable(false); // Set the Close and Back buttons disabled (e.g. when establishing connection)
-export const duelRetryEnabled = writable(false);
 export const currentRound = writable(0);
 export const multiplayerMap = writable(null);
 
 // UI - Host
-export const connectionCount = writable(0);
+export const participantCount = writable(0);
 export const roomcode = writable(null);
 
 // UI - Time reduced Overlay for Duels

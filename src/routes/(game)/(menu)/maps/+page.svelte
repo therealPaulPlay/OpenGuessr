@@ -497,6 +497,7 @@
 		flex-direction: column;
 		align-items: center;
 		min-height: 2500px; /* avoid searches changing the page size much */
+		max-width: 100%;
 	}
 
 	.loadMoreIconSpan {

@@ -52,7 +52,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
 
     // Add multiplayer markers
     if (get(multiplayer)) {
-        get(socket)?.getStorage?.guessLocationsArray?.forEach(element => {
+        get(socket)?.storage?.guessLocationsArray?.forEach(element => {
             // If this is the local one by this player, skip
             if (element.id === get(socket)?.id) return;
 

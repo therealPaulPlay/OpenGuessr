@@ -1,11 +1,11 @@
 <script>
 	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { joinRoom } from "$lib/logic/multiplayerLogic";
+	import { joinMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 	import { Copy, Unplug, User } from "@lucide/svelte";
 	import { blur, slide } from "svelte/transition";
 	import { onDestroy, onMount } from "svelte";
-	import { fetchOpenRooms } from "$lib/logic/matchmakingAPI";
+	import { fetchOpenRooms } from "$lib/logic/matchmakingLogic";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { tooltip } from "$lib/utils/tooltip";
@@ -93,7 +93,7 @@
 			disabled={roomCodeInput.length !== 6}
 			onclick={() => {
 				playSound("start_button");
-				joinRoom(roomCodeInput);
+				joinMultiplayerRoom(roomCodeInput);
 			}}>Join</button
 		>
 	</div>
@@ -126,7 +126,7 @@
 						for (let i = 0; i < 6; i++) {
 							segments[i] = code[i] || "";
 						}
-						joinRoom(code);
+						joinMultiplayerRoom(code);
 					}}
 				>
 					<Unplug strokeWidth={2} size={22} style="margin-bottom: -3px;" />

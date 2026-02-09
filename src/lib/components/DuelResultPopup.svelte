@@ -9,7 +9,7 @@
 	import { cubicOut } from "svelte/easing";
 	import { Info, History, Flame } from "@lucide/svelte";
 	import TokenRewardDisplay from "./TokenRewardDisplay.svelte";
-	import { findDuel } from "$lib/logic/multiplayerLogic";
+	import { findDuel } from "$lib/logic/matchmakingLogic";
 
 	// Animate number starting from 0
 	const animatedElo = tweened(0, {
@@ -75,7 +75,7 @@
 				divisionMatchHistoryPopup.set(true);
 			}}
 		>
-			History <History size={20} strokeWidth={2.25} style="margin-bottom: -3px; margin-left: 2px;" /></button
+			History <History size={20} strokeWidth={2} style="margin-bottom: -3px; margin-left: 2px;" /></button
 		>
 	</div>
 	<button
