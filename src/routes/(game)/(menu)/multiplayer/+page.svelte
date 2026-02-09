@@ -116,7 +116,7 @@
 					class="standardButton multiplayerSelect largeButton"
 					onclick={() => {
 						playSound("basic_button");
-						findDuel("ranked-duel");
+						findDuel("division-duel");
 					}}
 				>
 					Duel
