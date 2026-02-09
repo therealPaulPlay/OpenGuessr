@@ -62,6 +62,7 @@ function setMultiplayerUI(enable) {
             playSound("leave_round");
         });
         chatVisible.set(true);
+        navigationMenu.set(false); // Disable navigation screen for seamless game entry
     } else {
         leaveFunction.set(); // Hides leave option too
         chatVisible.set(false);
@@ -74,11 +75,13 @@ multiplayer.subscribe((isMultiplayer) => {
 
 // Create multiplayer instance -----------------------------------------------------------------------------------------------------------------------
 export async function createMultiplayerInstance() {
-    // If existant, destroy old instance
+    // If existant, destroy previous instance
     if (get(socket)) {
         try {
             get(socket)?.destroy();
-        } catch (error) { console.error("Error in createMultiplayerInstance() trying to destroy old instance:", error); }
+        } catch (error) {
+            console.error("Error in createMultiplayerInstance() trying to destroy old instance:", error);
+        }
     }
 
     if (!get(isAuthenticated) && !get(guestNamePromise)) {
@@ -138,7 +141,6 @@ export async function createMultiplayerInstance() {
                 // If game has started, go to game page & disable matchmaking
                 if (storage.gameStarted && page.url.pathname !== "/") goto("/"); // E.g. host or duel page -> game page
                 if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
-                if (storage.gameStarted) navigationMenu.set(false); // Disable navigation screen for seamless game entry
 
                 // If player is not already in the room, add player info
                 if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerAddRequestSent) {
@@ -242,7 +244,6 @@ async function showTimeReducedOverlay() {
 
 export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, divisionRoom = false) {
     try {
-        multiplayer.set(true); // Set multiplayer immediately
         disableResultScreen(); // Edge case
         await createMultiplayerInstance(); // Get new multiplayer instance
 
@@ -262,12 +263,11 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, 
             matchmakingRoom,
             divisionRoom,
         }, sizeLimit);
+        multiplayer.set(true); // Set multiplayer after successful creation
         roomcode.set(code);
         participantCount.set(get(socket)?.participantCount);
 
     } catch (error) {
-        multiplayer.set(false); // Since re-generation etc. is not needed if creation failed
-        matchmakingActive.set(false);
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", null, error.message);
     }
@@ -275,7 +275,6 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, 
 
 export async function joinMultiplayerRoom(code) {
     try {
-        multiplayer.set(true); // Set multiplayer immediately
         code = code.replaceAll(" ", "").replaceAll("-", "").toUpperCase(); // Remove whitespaces, dashes, and uppercase
         disableResultScreen(); // Edge case
 
@@ -287,12 +286,12 @@ export async function joinMultiplayerRoom(code) {
         }
 
         await get(socket).joinRoom(code);
+        multiplayer.set(true); // Set multiplayer after successful join
         roomcode.set(code);
         participantCount.set(get(socket)?.participantCount);
         goto("/");
         return true; // Success
     } catch (error) {
-        multiplayer.set(false); // Since re-generation etc. is not needed if join failed
         console.error("Error joining room:", error); // Status will be set by playpeerjs / playsocketjs
         return false; // Failed
     }
