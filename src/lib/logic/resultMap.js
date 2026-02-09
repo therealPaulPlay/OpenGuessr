@@ -24,7 +24,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
 
     // Define custom icons for markers
     const yourIcon = {
-        url: '/img/pins/player_pin' + get(selectedPinIndex) + '.png',
+        url: "/img/pins/player_pin" + get(selectedPinIndex) + ".png",
         size: new google.maps.Size(35, 35),
         origin: new google.maps.Point(0, 0),
         anchor: new google.maps.Point(17.5, 34),
@@ -79,7 +79,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
 
     // Add multiplayer markers
     if (get(multiplayer)) {
-        get(socket)?.getStorage?.guessLocationsArray?.forEach(element => {
+        get(socket)?.storage?.guessLocationsArray?.forEach(element => {
             // If this is the local one by this player, skip
             if (element.id === get(socket)?.id) return;
 
@@ -89,7 +89,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
             if (isNaN(lat) || isNaN(lon)) { lat = 0; lon = 0; }
 
             const multiplayerIcon = {
-                url: `/img/pins/player_pin${element.pin ?? 0}.png`,
+                url: "/img/pins/player_pin" + (element.pin ?? 0) + ".png",
                 size: new google.maps.Size(35, 35),
                 origin: new google.maps.Point(0, 0),
                 anchor: new google.maps.Point(17.5, 34),

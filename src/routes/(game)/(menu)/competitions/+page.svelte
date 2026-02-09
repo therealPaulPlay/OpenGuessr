@@ -230,7 +230,7 @@
 						enterCompetition(competitionIdFromLink);
 					},
 				);
-				history.replaceState({}, document.title, page.url.pathname); //reset query in the address bar
+				history.replaceState({}, document.title, page.url.pathname); // reset query in the address bar
 			}
 		} catch {}
 	});
@@ -932,7 +932,6 @@
 		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;
-		font-size: 35px;
 	}
 
 	.competitionPropertiesBox {
@@ -1250,10 +1249,6 @@
 
 		.competitionButton {
 			flex-grow: 1;
-		}
-
-		.competitionItemHeader {
-			font-size: 27px;
 		}
 	}
 </style>

@@ -5,7 +5,7 @@
 	import { tooltip } from "$lib/utils/tooltip";
 	import { scale } from "svelte/transition";
 	import { onMount, tick } from "svelte";
-	import { leaveFunction } from "$lib/stores/modeStore.js";
+	import { leaveFunction, singleplayer } from "$lib/stores/modeStore.js";
 	import { page } from "$app/state";
 	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
 	import { goto } from "$app/navigation";
@@ -97,7 +97,11 @@
 {#if showIntroductionNote}
 	<div class="tooltip menu-tooltip menu-button-area" transition:scale={{ duration: 150, start: 0.95 }}>
 		<div class="tooltip-arrow menu-tooltip-arrow" data-placement="bottom"></div>
-		<button class="standardButton white tooltip-close-button" aria-label="close introduction note" onclick={disableIntroductionNote}>
+		<button
+			class="standardButton white tooltip-close-button"
+			aria-label="close introduction note"
+			onclick={disableIntroductionNote}
+		>
 			<X size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
 		</button>
 		<img alt="Menu introcution" src="/img/menu_introduction.png" class="menu-tooltip-image" />
@@ -117,7 +121,7 @@
 		<TitleSeparator text="Last visited" noMargin={true} />
 		<div class="history-list">
 			{#each navigationHistory as entry}
-				<button class="history-item standardButton white" onclick={() => goto(entry.path)}
+				<button class="history-item standardButton white" disabled={!$singleplayer} onclick={() => goto(entry.path)}
 					><span class="history-item-title">{entry.title}</span>
 					<ExternalLink size={20} strokeWidth={2.25} style="opacity: 0.5;" />
 				</button>

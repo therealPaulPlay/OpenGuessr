@@ -6,23 +6,23 @@
 		TriangleAlert,
 		Info,
 		BicepsFlexed,
-		Search,
 		X,
 		ExternalLink,
 		ChevronDown,
 		ChevronUp,
 		History,
 		Globe,
+		Handshake,
 	} from "@lucide/svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
-	import { loadedFriendsData, hostStage, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
+	import { loadedFriendsData, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
 	import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
 	import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
-	import { findDuel } from "$lib/logic/multiplayerLogic";
+	import { createTeamDuelRoom, findDuel } from "$lib/logic/matchmakingLogic";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { goto } from "$app/navigation";
 	import { onDestroy, onMount } from "svelte";
@@ -40,7 +40,6 @@
 	let friendsRefreshInterval;
 
 	onMount(async () => {
-		hostStage.set(1); // Reset host stage
 		await loadFriends();
 		clearInterval(friendsRefreshInterval);
 
@@ -80,73 +79,86 @@
 	{/if}
 	<div class="playBox">
 		<div class="groupPartyButtons">
-			<p class="playButtonsHeader">Custom</p>
+			<p class="selectButtonsHeader">Custom</p>
 			<div class="groupPartyContent">
 				<button
 					id="multiplayerSelectJoin"
 					class="standardButton multiplayerSelect white largeButton"
-					href="/multiplayer/join"
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/join");
 					}}
-					>Join <span class="groupIcons"><Unplug size={20} strokeWidth={2.25} style="margin-bottom: -1px;" /></span
+					>Join <span class="groupIcons"><Unplug size={20} strokeWidth={2.25} style="margin-bottom: -2px;" /></span
 					></button
 				>
 				<button
 					id="multiplayerSelectHost"
 					class="standardButton multiplayerSelect white largeButton"
-					href="/multiplayer/host"
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/host");
 					}}
-					>Host <span class="groupIcons"><PlusCircle size={20} strokeWidth={2.25} style="margin-bottom: -1px;" /></span
+					>Host <span class="groupIcons"><PlusCircle size={20} strokeWidth={2.25} style="margin-bottom: -2px;" /></span
 					></button
 				>
 			</div>
 		</div>
 		<div class="groupPartyButtons">
-			<div class="playButtonsHeader">
+			<div class="selectButtonsHeader">
 				<p>Matchmaking</p>
 			</div>
 			<div class="groupPartyContent">
-				<button
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<div
 					id="multiplayerSelectDuels"
+					role="button"
+					tabindex="0"
 					class="standardButton multiplayerSelect largeButton"
-					href="/multiplayer/duel"
 					onclick={() => {
 						playSound("basic_button");
-						findDuel();
+						findDuel("division-duel");
 					}}
 				>
-					Find duel
-					<Search size={20} strokeWidth={2.5} style="margin-bottom: -2px; margin-left: 1px;" />
-				</button>
+					Duel
+					<span class="innerDuelButtonContainer">
+						<button
+							class="standardButton white innerDuelButton"
+							use:tooltip={{ text: "History" }}
+							style:flex-grow={0}
+							onclick={(e) => {
+								e.stopPropagation();
+								playSound("basic_button");
+								divisionMatchHistoryPopup.set(true);
+							}}><History strokeWidth={2.15} size={20} style="margin-bottom: -1px;" /></button
+						>
+						<button
+							class="standardButton white innerDuelButton"
+							use:tooltip={{ text: "Division-based or Everyone" }}
+							style:flex-grow={0}
+							onclick={(e) => {
+								e.stopPropagation();
+								$skillBasedMatchmaking = !$skillBasedMatchmaking;
+								showNotification("Matchmaking set to " + ($skillBasedMatchmaking ? "division-based." : "everyone."));
+							}}
+						>
+							{#if $skillBasedMatchmaking}
+								<BicepsFlexed strokeWidth={2} size={20} style="margin-bottom: -1px;" />
+							{:else}
+								<Globe strokeWidth={2} size={20} style="margin-bottom: -1px;" />
+							{/if}
+						</button>
+					</span>
+				</div>
 				<button
-					class="standardButton white multiplayerSelect largeButton"
-					use:tooltip={{ text: "Division-based or Everyone" }}
-					style:flex-grow={0}
-					onclick={() => {
-						$skillBasedMatchmaking = !$skillBasedMatchmaking;
-						showNotification("Matchmaking set to " + ($skillBasedMatchmaking ? "division-based." : "everyone."));
-					}}
-				>
-					{#if $skillBasedMatchmaking}
-						<BicepsFlexed strokeWidth={1.85} style="margin-bottom: -3px;" />
-					{:else}
-						<Globe strokeWidth={1.85} style="margin-bottom: -3px;" />
-					{/if}
-				</button>
-				<button
-					class="standardButton white multiplayerSelect largeButton"
-					use:tooltip={{ text: "History" }}
-					style:flex-grow={0}
+					class="standardButton multiplayerSelect largeButton white"
 					onclick={() => {
 						playSound("basic_button");
-						divisionMatchHistoryPopup.set(true);
-					}}><History strokeWidth={1.85} style="margin-bottom: -4px;" /></button
+						createTeamDuelRoom();
+					}}
 				>
+					2v2
+					<Handshake size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
+				</button>
 			</div>
 		</div>
 	</div>
@@ -302,7 +314,7 @@
 		padding-inline: 15px;
 	}
 
-	.playButtonsHeader {
+	.selectButtonsHeader {
 		width: calc(100% - 10px);
 		opacity: 0.5;
 		padding-inline: 5px;
@@ -397,8 +409,29 @@
 
 	.multiplayerSelect {
 		flex-grow: 1;
-		border-radius: var(--box-margin);
 		flex-basis: 0;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding-inline: var(--layout-margin);
+		gap: var(--layout-margin);
+	}
+
+	.innerDuelButtonContainer {
+		position: absolute;
+		right: calc(var(--box-margin) / 2);
+		top: calc(var(--box-margin) / 2);
+		gap: calc(var(--box-margin) / 2);
+		bottom: auto;
+		display: flex;
+	}
+
+	.innerDuelButton {
+		box-shadow: none !important;
+		border: none;
+		padding-inline: var(--panel-margin);
+		background-color: var(--box-color-dark-soft);
+		height: 34px;
 	}
 
 	#multiplayerSelectDuels {
@@ -406,6 +439,7 @@
 		color: white;
 		position: relative;
 		overflow: hidden;
+		min-width: 150px;
 	}
 
 	#multiplayerSelectDuels::before {

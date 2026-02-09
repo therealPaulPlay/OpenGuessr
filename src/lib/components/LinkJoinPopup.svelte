@@ -11,5 +11,5 @@
 	<div class="popup-title">
 		<h1 id="socialHeader">Room</h1>
 	</div>
-	<p>Status: {$multiplayerStatus || "Joining..."}</p>
+	<p>{$multiplayerStatus || "Loading..."}</p>
 </Popup>

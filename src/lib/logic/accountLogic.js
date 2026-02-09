@@ -67,16 +67,19 @@ async function loadUserInfo() {
       username.set(user.username);
       supporterLevel.set(user.supporter_level);
       supportedAmount.set(user.supported_amount);
-      selectedPinIndex.set(user.pin || 0);
-      selectedBadge.set(user.badge || null);
       elo.set(user.elo);
       tokens.set(user.tokens);
-      purchasedPins.set(user.purchased_pins || []);
-      freeDailyTokensClaimed.set(user.free_tokens_claimed || false);
-      duelWinStreak.set(user.current_duel_win_streak || 0);
 
+      // Extract optional profile data
+      if (user.pin != null) selectedPinIndex.set(user.pin);
+      if (user.badge != null) selectedBadge.set(user.badge);
+      if (user.purchased_pins) purchasedPins.set(user.purchased_pins);
+      if (user.free_tokens_claimed != null) freeDailyTokensClaimed.set(user.free_tokens_claimed);
+      if (user.current_duel_win_streak != null) duelWinStreak.set(user.current_duel_win_streak);
+      if (user.new_request) { inboxIconNew.set(true); }
+
+      // If the user signed in on the result screen with a pending result, re-run it
       if (get(resultScreenEnabled) && get(lastExpCalculationSignedOut)) loadResultScreenXP(get(lastDistance));
-      if (user.new_requests) { inboxIconNew.set(true); }
 
       initializeSSEConnection();
       accountDataLoaded.set(true);
