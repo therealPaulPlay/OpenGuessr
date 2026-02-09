@@ -13,7 +13,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
 
     // Define custom icons for markers
     const yourIcon = new L.Icon({
-        iconUrl: '/img/pins/player_pin' + get(selectedPinIndex) + '.png',
+        iconUrl: "/img/pins/player_pin" + get(selectedPinIndex) + ".png",
         iconSize: [35, 35],
         iconAnchor: [17.5, 34],
         popupAnchor: [1, -34]
@@ -62,7 +62,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
             if (isNaN(lat) || isNaN(lon)) { lat = 0; lon = 0; }
 
             const multiplayerIcon = new L.Icon({
-                iconUrl: `/img/pins/player_pin${element.pin ?? 0}.png`,
+                iconUrl: "/img/pins/player_pin" + (element.pin ?? 0) + ".png",
                 iconSize: [35, 35],
                 iconAnchor: [17.5, 34],
                 popupAnchor: [1, -34]

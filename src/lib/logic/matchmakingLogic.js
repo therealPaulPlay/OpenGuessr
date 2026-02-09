@@ -78,7 +78,7 @@ export function abortFindTeamDuel() {
 
 // Shared -----------------------
 
-async function createMatchmakingRoom(type, skillBased, roomOptions) {
+function createMatchmakingRoom(type, skillBased, roomOptions) {
     if (skillBased === undefined) return console.warn("Skill-based argument not defined!");
     if (!roomOptions || !roomOptions.roundAmount || roomOptions.teamAmount == null || roomOptions.divisionRoom == null) return console.error("Provided room options are lacking:", JSON.stringify(roomOptions));
 
@@ -91,12 +91,14 @@ async function createMatchmakingRoom(type, skillBased, roomOptions) {
     teamAmount.set(roomOptions.teamAmount);
     roundAmount.set(roomOptions.roundAmount);
 
+    // Set hosting enabled
+    matchmakingHosting.set(true);
+
     // Create room and submit code for matchmaking
-    return await createMultiplayerRoom(roomOptions.sizeLimit, true, roomOptions.divisionRoom);
+    return createMultiplayerRoom(roomOptions.sizeLimit, true, roomOptions.divisionRoom);
 }
 
 async function submitRoomCodeForMatchmaking(type, skillBased) {
-    matchmakingHosting.set(true);
     multiplayerStatus.set("Submitting code...");
 
     const success = await submitRoomCode(type, skillBased);
@@ -172,10 +174,9 @@ async function attemptTeamDuelFind() {
 
     } catch (error) {
         if (!findTeamDuelActive) return; // Request arrived after match/cancel, ignore
-        clearFindTeamDuelInterval();
+        abortFindTeamDuel(); // Cancel interval, and leave since the room code is still on the server's matchmaking queue (this also sets matchmakingActive to false)
         console.error("Error finding team duel:", error);
         errorPopup("Failed to find a team duel", "The request returned an error.", error.message);
-        matchmakingActive.set(false);
     }
 }
 
@@ -185,7 +186,7 @@ export async function submitRoomCode(type, skillBased = false, map = get(default
         return false;
     }
     try {
-        if (get(roomCode) == null || get(roomCode)?.includes("loading")) {
+        if (get(roomCode) == null) {
             console.warn("Room code not loaded, not sending room code to server.");
             return false;
         }

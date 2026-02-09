@@ -33,6 +33,9 @@
 		multiplayerRestriction.set(restrictions[currentRestrictionIndex]);
 		restrictionButtonText = $restrictionNames[$multiplayerRestriction];
 	}
+
+	// Creation state
+	let isCreatingRoom = $state(false);
 </script>
 
 <svelte:head>
@@ -41,7 +44,7 @@
 
 <div class="main-container">
 	<div class="multiplayerCreationArea">
-		{#if !$multiplayer}
+		{#if !$multiplayer && !isCreatingRoom}
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p>Rounds</p>
 				<Ticker limit={10} minimum={2} initialValue={3} bind:value={$roundAmount} />
@@ -99,11 +102,13 @@
 				<button
 					id="multiplayerHost"
 					class="standardButton largeButton"
-					onclick={() => {
+					onclick={async () => {
+						isCreatingRoom = true;
 						playSound("basic_button");
 						// Switch to stage 2 (host code area) if on stage 1 (after the setup room function!)
 						multiplayerMap.set(localStorage.getItem("selectedMap") || $defaultMap);
-						createMultiplayerRoom();
+						await createMultiplayerRoom();
+						isCreatingRoom = false;
 					}}>Create room</button
 				>
 			</div>
