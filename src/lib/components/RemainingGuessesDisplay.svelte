@@ -30,7 +30,7 @@
 	);
 </script>
 
-{#if $remainingPlayers.length > 0 && $socket?.getStorage?.confirmedArray?.includes($socket?.id)}
+{#if $remainingPlayers.length > 0 && $socket?.storage?.confirmedArray?.includes($socket?.id)}
 	<div class="remaining-guesses-display" transition:fade={{ duration: 250 }} class:display-in-panel={inPanel}>
 		<p transition:fade={{ duration: 250 }}>
 			<span class="dimmed">{waitingMessage.prefix}</span>

@@ -12,12 +12,12 @@ import { multiplayer } from "$lib/stores/modeStore";
 import { navigationMenu, guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
 import { leaveFunction } from "$lib/stores/modeStore.js";
 import {
-    teamAmount, roundAmount, roundLength, screenEscapeDisabled,
-    duelRetryEnabled, multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
+    teamAmount, roundAmount, roundLength,
+    multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
     multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray,
     matchmakingActive, socket,
     roomcode,
-    connectionCount,
+    participantCount,
     remainingPlayers,
     overlayShowSubtitle,
     skillBasedMatchmaking,
@@ -28,12 +28,11 @@ import {
     multiplayerSortedPlayersArray,
     currentRound,
     multiplayerMap,
-    mobileChatLastOpenedMsgCount
+    mobileChatLastOpenedMsgCount,
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
-import { attemptRoomJoin } from "$lib/logic/matchmakingAPI";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
@@ -50,7 +49,7 @@ import { restrictionNames } from "$lib/stores/context-specific/restrictionStore"
 import { page } from "$app/state";
 
 export function getTeamFromClientId(id) {
-    const playerArray = get(socket)?.getStorage?.players?.find(item => item.clientId === id);
+    const playerArray = get(socket)?.storage?.players?.find(item => item.clientId === id);
     return playerArray?.teamIndex;
 }
 
@@ -63,8 +62,6 @@ function setMultiplayerUI(enable) {
             playSound("leave_round");
         });
         chatVisible.set(true);
-        linkJoinPopup.set(false);
-        navigationMenu.set(false);
     } else {
         leaveFunction.set(); // Hides leave option too
         chatVisible.set(false);
@@ -98,30 +95,34 @@ export async function createMultiplayerInstance() {
                 customData
             }));
 
+            let playerAddRequestSent = false;
+
             // Register event listeners
             get(socket).onEvent('status', status => multiplayerStatus.set(status));
-            get(socket).onEvent('status', status => console.log(status)); // !TODO remove debug (future)
+            get(socket).onEvent('status', status => console.log(status));
             get(socket).onEvent('error', (error) => {
                 if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system reports an error.", error);
                 else multiplayerStatus.set("An error occured.");
             });
 
             // Someone connected...
-            get(socket).onEvent('clientConnected', (id) => {
-                connectionCount.set(get(socket)?.connectionCount);
+            get(socket).onEvent('clientJoined', (id) => {
+                participantCount.set(get(socket)?.participantCount);
             });
 
             // Someone disconnected...
-            get(socket).onEvent('clientDisconnected', (id) => {
-                connectionCount.set(get(socket)?.connectionCount);
+            get(socket).onEvent('clientLeft', (id) => {
+                participantCount.set(get(socket)?.participantCount);
             });
 
             get(socket).onEvent('hostMigrated', () => {
                 // In a non-division room, start when the host (who is the only one with the start button) leaves
-                if (!get(socket)?.getStorage?.gameStarted && !get(socket)?.getStorage?.divisionRoom || get(multiplayer)) get(socket)?.sendRequest("startRoom");
+                if (!get(socket)?.storage?.gameStarted && !get(socket)?.storage?.matchmakingRoom) get(socket)?.sendRequest("startRoom");
             });
 
-            let playerAddRequestSent = false; // Avoid sending this multiple times
+            get(socket).onEvent('moved', () => {
+                playerAddRequestSent = false; // Reset so addPlayer is sent for the new room
+            });
 
             get(socket).onEvent('storageUpdated', (storage) => {
                 // Save game info
@@ -137,11 +138,12 @@ export async function createMultiplayerInstance() {
                 // If game has started, go to game page & disable matchmaking
                 if (storage.gameStarted && page.url.pathname !== "/") goto("/"); // E.g. host or duel page -> game page
                 if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
+                if (storage.gameStarted) navigationMenu.set(false); // Disable navigation screen for seamless game entry
 
                 // If player is not already in the room, add player info
-                if (get(socket)?.getStorage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerAddRequestSent) {
-                    get(socket).sendRequest("addPlayer", { guestName: get(guestName) || null });
+                if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerAddRequestSent) {
                     playerAddRequestSent = true;
+                    get(socket).sendRequest("addPlayer", { guestName: get(guestName) || null });
                 }
 
                 if (storage.players) updatePlayerArrays(); // Do this before showing the overlay
@@ -169,7 +171,7 @@ export async function createMultiplayerInstance() {
                 if (storage.showResult != null && storage.showResult !== get(resultScreenEnabled)) {
                     if (storage.showResult == true) {
                         // Wait result screen continue text in lobbies with others
-                        const continueTimeout = get(socket)?.getStorage?.players?.length > 1 ? (get(socket)?.getStorage?.tournamentRoom ? 10_000 : 5000) : 0;
+                        const continueTimeout = get(socket)?.storage?.players?.length > 1 ? (get(socket)?.storage?.tournamentRoom ? 10_000 : 5000) : 0;
                         continueText.set(`Wait ${continueTimeout / 1000}s...`);
                         setTimeout(() => continueText.set("Continue"), continueTimeout);
 
@@ -215,36 +217,14 @@ export async function createMultiplayerInstance() {
 export function attemptJoinViaLink() {
     let urlParams = new URLSearchParams(window.location.search);
     const roomCode = urlParams.get("join");
-    if (roomCode) joinFromAnywhere(roomCode);
+    if (roomCode) return joinFromAnywhere(roomCode);
 }
 
 // Join with a popup, without having to go to the join screen
-export function joinFromAnywhere(roomcode) {
+export async function joinFromAnywhere(roomcode) {
     linkJoinPopup.set(true);
-    joinRoom(roomcode);
-}
-
-// Find Duel Logic -------------------------------------------------------------------------------------------------------------------------
-let roomIndex = 0;
-
-// This initiates the find duel system
-export async function findDuel() {
-    if (!get(isAuthenticated)) return signupPrompt();
-    goto("/multiplayer/duel"); // Visit duel load page
-    roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
-    matchmakingActive.set(true);
-    attemptRoomJoin(roomIndex, "ranked-duel", get(skillBasedMatchmaking));
-}
-
-// This occurs when the multiplayer system's connect/join returns an error
-function findNextDuel() {
-    if (roomIndex < 10) {
-        roomIndex++;
-        attemptRoomJoin(roomIndex, "ranked-duel", get(skillBasedMatchmaking));
-    } else {
-        matchmakingActive.set(false);
-        multiplayerStatus.set("Couldn't connect to any room.");
-    }
+    const success = await joinMultiplayerRoom(roomcode);
+    if (success) linkJoinPopup.set(false);
 }
 
 // Game logic -----------------------------------------------------------------------------------------------------------------
@@ -257,8 +237,9 @@ async function showTimeReducedOverlay() {
     } catch (error) { console.warn("Error showing time reduce overlay:", error) }
 }
 
-export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeLimit, divisionRoom = false) {
+export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, divisionRoom = false) {
     try {
+        multiplayer.set(true); // Set multiplayer immediately
         disableResultScreen(); // Edge case
         await createMultiplayerInstance(); // Get new multiplayer instance
 
@@ -268,57 +249,58 @@ export async function setupMultiplayerRoom(AmountOfRounds, LengthOfRounds, sizeL
             await changeMap(get(defaultMap), true); // Regenerate to update locations array
         }
 
-        // Set round and length parameters
-        roundAmount.set(AmountOfRounds);
-        roundLength.set(LengthOfRounds);
-
-        // Set multiplayer
-        multiplayer.set(true);
-
         const code = await get(socket)?.createRoom({
             roundAmount: get(roundAmount),
             roundLength: get(roundLength),
             teamAmount: get(teamAmount),
             style: get(multiplayerStyle),
-            restriction: get(multiplayerRestriction) || Object.keys(get(restrictionNames))?.[0],
-            map: divisionRoom ? get(defaultMap) : localStorage.getItem("selectedMap") || get(defaultMap),
+            restriction: get(multiplayerRestriction),
+            map: get(multiplayerMap),
+            matchmakingRoom,
             divisionRoom,
         }, sizeLimit);
         roomcode.set(code);
-
-        if (get(matchmakingActive)) multiplayerStatus.set("Waiting for opponent..."); // Wait status
+        participantCount.set(get(socket)?.participantCount);
 
     } catch (error) {
+        multiplayer.set(false); // Since re-generation etc. is not needed if creation failed
         matchmakingActive.set(false);
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", null, error.message);
     }
 }
 
-export async function joinRoom(code) {
+export async function joinMultiplayerRoom(code) {
     try {
+        multiplayer.set(true); // Set multiplayer immediately
         code = code.replaceAll(" ", "").replaceAll("-", "").toUpperCase(); // Remove whitespaces, dashes, and uppercase
         disableResultScreen(); // Edge case
+
+        // Create instance
         try { await createMultiplayerInstance(); } catch (error) {
             matchmakingActive.set(false);
             errorPopup("Error joining room", null, error.message);
             throw new Error(error);
         }
-        multiplayer.set(true);
+
         await get(socket).joinRoom(code);
         roomcode.set(code);
+        participantCount.set(get(socket)?.participantCount);
         goto("/");
+        return true; // Success
     } catch (error) {
-        multiplayer.set(false);
+        multiplayer.set(false); // Since re-generation etc. is not needed if join failed
         console.error("Error joining room:", error); // Status will be set by playpeerjs / playsocketjs
-        if (get(matchmakingActive)) findNextDuel();
+        return false; // Failed
     }
 }
 
 // Multiplayer leave ----------------------------------------------------------------------------------
 export function leaveMultiplayer(destroy = true) {
-    // Disable Multiplayer & Matchmaking
+    // Save flag to reset UI & regenerate
     const wasMultiplayerEnabled = get(multiplayer);
+
+    // Disable Multiplayer & Matchmaking
     multiplayer.set(false);
     matchmakingActive.set(false);
 
@@ -332,14 +314,11 @@ export function leaveMultiplayer(destroy = true) {
     clearInterval(countdownInterval);
     countdownInterval = null; // Tell overlay countdown it is not running
 
-    screenEscapeDisabled.set(false); // Enable back and home buttons in menus
-    duelRetryEnabled.set(false); // Make Duel retry button disabled (Standard)
-
     // Reset to default settings
     roundLength.set(60);
     roundAmount.set(3);
     teamAmount.set(1);
-    connectionCount.set(0);
+    participantCount.set(0);
     multiplayerStyle.set("standard");
     roomcode.set(null);
     multiplayerStatus.set(); // Undefined -> show default msgs
@@ -352,8 +331,8 @@ export function leaveMultiplayer(destroy = true) {
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {
-        navigationMenu.set(false);
         showMultiplayerOverlay(false); // Also makes map interactive
+        updatePlayerArrays(); // Reset multiplayer array to avoid brief pop-in of previous players on subsequent room creations
         updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
         checkGenerationTypeAndGenerate(); // Generate new loc (also resets restriction)
     }
@@ -362,8 +341,8 @@ export function leaveMultiplayer(destroy = true) {
 // Panorama Overlay UI ------------------------------------------------------------------------------------------------------------------------------------------
 function showEndscreenUI(show) {
     if (show) {
-        if (!get(socket)?.getStorage?.tournamentRoom) leaveMatchButtonVisible.set(true); // Show large exit button
-        if (!get(socket)?.getStorage?.divisionRoom && !get(socket)?.getStorage?.tournamentRoom && get(socket)?.isHost) rematchButtonVisible.set(true); // Don't show rematch button in non-friend duels & only if host
+        if (!get(socket)?.storage?.tournamentRoom) leaveMatchButtonVisible.set(true); // Show large exit button
+        if (!get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom && get(socket)?.isHost) rematchButtonVisible.set(true); // Don't show rematch button in matchmaking games, and only if host
     } else {
         rematchButtonVisible.set(false);
         leaveMatchButtonVisible.set(false);
@@ -384,7 +363,7 @@ function getTeamColorName(teamIndex) {
 
 let teams = [];
 
-function sortPlayersByScore(players) {
+function sortPlayersByScore(players = []) {
     return [...players].sort((a, b) => {
         if (a.spectator !== b.spectator) return a.spectator ? 1 : -1; // Move spectators to the bottom
         return b.score - a.score;
@@ -402,17 +381,17 @@ function getTeamScore(team) {
 }
 
 function updatePlayerArrays() {
-    const players = get(socket)?.getStorage?.players;
+    const players = get(socket)?.storage?.players || [];
     const sortedPlayers = sortPlayersByScore(players);
     multiplayerSortedPlayersArray.set(sortedPlayers);
 
-    if ( get(teamAmount) <= 1) {
+    if (get(teamAmount) <= 1) {
         multiplayerTableArray.set(sortedPlayers);
         return;
     }
 
     // Initialize all teams (including empty ones)
-    const groupedTeams = Array.from({ length:  get(teamAmount) }, (_, i) => {
+    const groupedTeams = Array.from({ length: get(teamAmount) }, (_, i) => {
         teams[i] = createTeamData(i);
         return teams[i];
     });
@@ -434,17 +413,17 @@ function showMultiplayerOverlay(show) {
     multiplayerOverlay.set(show);
 
     if (show) {
-        if (!get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
+        if (!get(socket)?.storage?.firstRoundPlayed) multiplayerOverlayTitle.set("Waiting...");
 
-        if (!get(socket)?.getStorage?.gameEnded) {
+        if (!get(socket)?.storage?.gameEnded) {
             showEndscreenUI(false); // If not at the end, hide endscreen UI
-            if (get(socket)?.getStorage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(socket)?.getStorage?.currentRound);
+            if (get(socket)?.storage?.firstRoundPlayed) multiplayerOverlayTitle.set("Results from round " + get(socket)?.storage?.currentRound);
         } else {
             determineWinner(get(multiplayerTableArray));
             showEndscreenUI(true); // Display "Play again" & "Exit"
         }
 
-        overlayShowSubtitle.set(get(multiplayerStyle) == "duel" && get(socket)?.getStorage?.currentRound >= 3 && get(socket)?.getStorage?.currentRound < get(socket)?.getStorage?.roundAmount);
+        overlayShowSubtitle.set(get(multiplayerStyle) == "duel" && get(socket)?.storage?.currentRound >= 3 && get(socket)?.storage?.currentRound < get(socket)?.storage?.roundAmount);
         confirmButtonActive.set(false); // Set the confirm button to the grey "inactive" state (when on guess was made yet)
         mapInteractive.set(false); // Disable map
     } else mapInteractive.set(true);
@@ -457,7 +436,7 @@ function determineWinner(array) {
         const winningTeamIndex = array[0]?.teamIndex;
         let teamColorName = teams[winningTeamIndex]?.colorName;
         multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
-        const yourTeam = (get(socket)?.getStorage?.players?.find((e) => e.clientId == get(socket)?.id))?.teamIndex;
+        const yourTeam = (get(socket)?.storage?.players?.find((e) => e.clientId == get(socket)?.id))?.teamIndex;
         yourTeam == winningTeamIndex ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
 
     } else {
