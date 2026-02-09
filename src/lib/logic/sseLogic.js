@@ -2,8 +2,7 @@ import { showNotification } from "$lib/utils/notifications";
 import { username, elo, duelWinStreak, tokens, supporterLevel } from "$lib/stores/accountStore";
 import { acceptFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
-import { linkJoinPopup } from "$lib/stores/uiStore";
-import { leaveMultiplayer, joinMultiplayerRoom } from "$lib/logic/multiplayerLogic";
+import { leaveMultiplayer, joinFromAnywhere } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { duelResultPopup } from "$lib/stores/uiStore";
 import { duelResultTitle, eloChange, tokenGain } from "$lib/stores/context-specific/duelResultStore";
@@ -153,7 +152,5 @@ function joinRoomFromNotification(roomcode, recipientId) {
     acceptMatchInvite(recipientId); // Informs the host that they accepted
     leaveMultiplayer();
     leaveCompetition(false);
-
-    linkJoinPopup.set(true);
-    joinMultiplayerRoom(roomcode);
+    joinFromAnywhere(roomcode);
 }
