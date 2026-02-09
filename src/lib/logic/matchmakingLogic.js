@@ -12,11 +12,11 @@ import { errorPopup } from "$lib/utils/errorHandling";
 // Logic -----------------------
 
 const matchmakingRoomConfigs = {
-    "ranked-duel": { teamAmount: 1, roundAmount: 5, divisionRoom: true, sizeLimit: 2 },
+    "division-duel": { teamAmount: 1, roundAmount: 5, divisionRoom: true, sizeLimit: 2 },
     "team-duel": { teamAmount: 2, roundAmount: 5, divisionRoom: false, sizeLimit: 4 },
 }
 
-// Ranked duel -----------------------
+// Division duel -----------------------
 
 let roomIndex = 0;
 
@@ -116,7 +116,7 @@ async function attemptDuelJoin(index, skillBased) {
             },
             body: JSON.stringify({
                 id: localStorage.getItem("id"),
-                type: "ranked-duel",
+                type: "division-duel",
                 elo: get(elo),
                 skillBased
             }),
@@ -131,7 +131,7 @@ async function attemptDuelJoin(index, skillBased) {
             if (!success) findNextDuel(); // Code exists but failed to join -> check next code
         } else {
             // Status will be set in this function
-            createMatchmakingRoom("ranked-duel", skillBased, matchmakingRoomConfigs["ranked-duel"]);
+            createMatchmakingRoom("division-duel", skillBased, matchmakingRoomConfigs["division-duel"]);
         }
 
     } catch (error) {
