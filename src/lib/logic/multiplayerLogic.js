@@ -16,7 +16,7 @@ import {
     multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
     multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray,
     matchmakingActive, socket,
-    roomcode,
+    roomCode,
     participantCount,
     remainingPlayers,
     overlayShowSubtitle,
@@ -209,7 +209,7 @@ export async function createMultiplayerInstance() {
 
         } catch (error) {
             console.error("Error creating multiplayer instance:", error);
-            reject(new Error("Failed to create multiplayer instance: " + error.message));
+            reject(new Error("Failed to create multiplayer instance: " + error?.message));
         }
     });
 }
@@ -218,10 +218,10 @@ export async function createMultiplayerInstance() {
 // Called in accountLogic after account data was loaded
 export function attemptJoinViaLink() {
     let urlParams = new URLSearchParams(window.location.search);
-    const roomCode = urlParams.get("join");
-    if (roomCode) {
+    const code = urlParams.get("join");
+    if (code) {
         replaceState(window.location.pathname, {});
-        return joinFromAnywhere(roomCode);
+        return joinFromAnywhere(code);
     }
 }
 
@@ -264,12 +264,14 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, 
             divisionRoom,
         }, sizeLimit);
         multiplayer.set(true); // Set multiplayer after successful creation
-        roomcode.set(code);
+        roomCode.set(code);
         participantCount.set(get(socket)?.participantCount);
+        return true; // Success
 
     } catch (error) {
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", null, error.message);
+        return false; // Error
     }
 }
 
@@ -287,13 +289,13 @@ export async function joinMultiplayerRoom(code) {
 
         await get(socket).joinRoom(code);
         multiplayer.set(true); // Set multiplayer after successful join
-        roomcode.set(code);
+        roomCode.set(code);
         participantCount.set(get(socket)?.participantCount);
-        goto("/");
+        goto("/"); // Always move to gameplay scene on join
         return true; // Success
     } catch (error) {
         console.error("Error joining room:", error); // Status will be set by playpeerjs / playsocketjs
-        return false; // Failed
+        return false; // Error
     }
 }
 
@@ -322,7 +324,7 @@ export function leaveMultiplayer(destroy = true) {
     teamAmount.set(1);
     participantCount.set(0);
     multiplayerStyle.set("standard");
-    roomcode.set(null);
+    roomCode.set(null);
     multiplayerStatus.set(); // Undefined -> show default msgs
     continueText.set("Continue");
     multiplayerRestriction.set(Object.keys(get(restrictionNames))?.[0]);

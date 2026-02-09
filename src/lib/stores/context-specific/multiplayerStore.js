@@ -28,7 +28,7 @@ export const multiplayerMap = writable(null);
 
 // UI - Host
 export const participantCount = writable(0);
-export const roomcode = writable(null);
+export const roomCode = writable(null);
 
 // UI - Time reduced Overlay for Duels
 export const timeReducedOverlay = writable(false);

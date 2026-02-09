@@ -21,7 +21,7 @@
 </h2>
 {#if $skillBasedMatchmaking && showSkillbasedInfo}
 	<div class="info-container" transition:slide>
-		<Info strokeWidth={2.25} color="white" style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; min-width: 24px;" />
+		<Info strokeWidth={2.25} color="white" style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; flex-shrink: 0;" />
 		<p>Skill-based matchmaking has longer waiting times.</p>
 	</div>
 {/if}

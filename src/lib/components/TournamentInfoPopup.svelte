@@ -177,10 +177,10 @@
 			onclick={async () => {
 				playSound("basic_button");
 				if (!$isAuthenticated) return signupPrompt();
-				const roomcode = await enterTournament($selectedTournament?.id);
-				if (roomcode) {
+				const code = await enterTournament($selectedTournament?.id);
+				if (code) {
 					$tournamentInfoPopup = false;
-					joinFromAnywhere(roomcode);
+					joinFromAnywhere(code);
 				}
 			}}
 		>
