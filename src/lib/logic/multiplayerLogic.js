@@ -16,7 +16,7 @@ import {
     multiplayerStatus, guestName, chatVisible, timeReducedOverlay, multiplayerOverlay,
     multiplayerOverlayTitle, rematchButtonVisible, leaveMatchButtonVisible, multiplayerTableArray,
     matchmakingActive, socket,
-    roomcode,
+    roomCode,
     participantCount,
     remainingPlayers,
     overlayShowSubtitle,
@@ -35,7 +35,7 @@ import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
-import { goto } from "$app/navigation";
+import { goto, replaceState } from "$app/navigation";
 import { changeMap } from "$lib/utils/changeMap";
 import { showNotification } from "$lib/utils/notifications";
 import PlaySocket from "playsocketjs";
@@ -62,6 +62,7 @@ function setMultiplayerUI(enable) {
             playSound("leave_round");
         });
         chatVisible.set(true);
+        navigationMenu.set(false); // Disable navigation screen for seamless game entry
     } else {
         leaveFunction.set(); // Hides leave option too
         chatVisible.set(false);
@@ -74,11 +75,13 @@ multiplayer.subscribe((isMultiplayer) => {
 
 // Create multiplayer instance -----------------------------------------------------------------------------------------------------------------------
 export async function createMultiplayerInstance() {
-    // If existant, destroy old instance
+    // If existant, destroy previous instance
     if (get(socket)) {
         try {
             get(socket)?.destroy();
-        } catch (error) { console.error("Error in createMultiplayerInstance() trying to destroy old instance:", error); }
+        } catch (error) {
+            console.error("Error in createMultiplayerInstance() trying to destroy old instance:", error);
+        }
     }
 
     if (!get(isAuthenticated) && !get(guestNamePromise)) {
@@ -138,7 +141,6 @@ export async function createMultiplayerInstance() {
                 // If game has started, go to game page & disable matchmaking
                 if (storage.gameStarted && page.url.pathname !== "/") goto("/"); // E.g. host or duel page -> game page
                 if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
-                if (storage.gameStarted) navigationMenu.set(false); // Disable navigation screen for seamless game entry
 
                 // If player is not already in the room, add player info
                 if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerAddRequestSent) {
@@ -207,7 +209,7 @@ export async function createMultiplayerInstance() {
 
         } catch (error) {
             console.error("Error creating multiplayer instance:", error);
-            reject(new Error("Failed to create multiplayer instance: " + error.message));
+            reject(new Error("Failed to create multiplayer instance: " + error?.message));
         }
     });
 }
@@ -216,8 +218,11 @@ export async function createMultiplayerInstance() {
 // Called in accountLogic after account data was loaded
 export function attemptJoinViaLink() {
     let urlParams = new URLSearchParams(window.location.search);
-    const roomCode = urlParams.get("join");
-    if (roomCode) return joinFromAnywhere(roomCode);
+    const code = urlParams.get("join");
+    if (code) {
+        replaceState(window.location.pathname, {});
+        return joinFromAnywhere(code);
+    }
 }
 
 // Join with a popup, without having to go to the join screen
@@ -239,7 +244,6 @@ async function showTimeReducedOverlay() {
 
 export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, divisionRoom = false) {
     try {
-        multiplayer.set(true); // Set multiplayer immediately
         disableResultScreen(); // Edge case
         await createMultiplayerInstance(); // Get new multiplayer instance
 
@@ -259,20 +263,20 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, 
             matchmakingRoom,
             divisionRoom,
         }, sizeLimit);
-        roomcode.set(code);
+        multiplayer.set(true); // Set multiplayer after successful creation
+        roomCode.set(code);
         participantCount.set(get(socket)?.participantCount);
+        return true; // Success
 
     } catch (error) {
-        multiplayer.set(false); // Since re-generation etc. is not needed if creation failed
-        matchmakingActive.set(false);
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", null, error.message);
+        return false; // Error
     }
 }
 
 export async function joinMultiplayerRoom(code) {
     try {
-        multiplayer.set(true); // Set multiplayer immediately
         code = code.replaceAll(" ", "").replaceAll("-", "").toUpperCase(); // Remove whitespaces, dashes, and uppercase
         disableResultScreen(); // Edge case
 
@@ -284,14 +288,14 @@ export async function joinMultiplayerRoom(code) {
         }
 
         await get(socket).joinRoom(code);
-        roomcode.set(code);
+        multiplayer.set(true); // Set multiplayer after successful join
+        roomCode.set(code);
         participantCount.set(get(socket)?.participantCount);
-        goto("/");
+        goto("/"); // Always move to gameplay scene on join
         return true; // Success
     } catch (error) {
-        multiplayer.set(false); // Since re-generation etc. is not needed if join failed
         console.error("Error joining room:", error); // Status will be set by playpeerjs / playsocketjs
-        return false; // Failed
+        return false; // Error
     }
 }
 
@@ -320,7 +324,7 @@ export function leaveMultiplayer(destroy = true) {
     teamAmount.set(1);
     participantCount.set(0);
     multiplayerStyle.set("standard");
-    roomcode.set(null);
+    roomCode.set(null);
     multiplayerStatus.set(); // Undefined -> show default msgs
     continueText.set("Continue");
     multiplayerRestriction.set(Object.keys(get(restrictionNames))?.[0]);
