@@ -33,7 +33,7 @@
 <nav class="menuNavBar">
 	<div class="navigationButtonContainer barMenu">
 		<button
-			class="backButton standardButton white largeButton"
+			class="standardButton white largeButton"
 			disabled={$matchmakingActive}
 			onclick={() => {
 				playSound("basic_button");
@@ -48,7 +48,7 @@
 	{#if showHomeButton}
 		<div class="navigationButtonContainer barMenu">
 			<button
-				class="backButton standardButton white largeButton"
+				class="standardButton white largeButton"
 				disabled={$matchmakingActive}
 				onclick={() => {
 					playSound("basic_button");
@@ -85,11 +85,7 @@
 	.navigationButtonContainer {
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
-	}
-
-	.backButton {
 		pointer-events: auto;
-		backdrop-filter: blur(10px);
 	}
 
 	.backButtonArrowIcon {

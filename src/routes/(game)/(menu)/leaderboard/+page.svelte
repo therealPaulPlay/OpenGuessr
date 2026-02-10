@@ -203,38 +203,50 @@
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div id="podium" class="podium" class:podium-loaded={Boolean(mainSectionEntries)}>
-			<div
-				class="podium-item silver"
-				id="second-place"
-				onclick={() => {
-					loadProfileFromId(mainSectionEntries?.[1]?.id);
-				}}
-			>
-				<div class="name">{mainSectionEntries?.[1]?.user_name || "Guest"}</div>
-				<div class="podiumValue">{(mainSectionEntries?.[1]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
-				<div class="rank">#2</div>
+			<div class="podium-item" id="second-place">
+				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+				<h3
+					class="name"
+					onclick={() => {
+						loadProfileFromId(mainSectionEntries?.[1]?.id);
+					}}
+				>
+					{mainSectionEntries?.[1]?.user_name || "Guest"}
+				</h3>
+				<div class="podium-pedestal silver">
+					<h3 class="podiumValue">{(mainSectionEntries?.[1]?.[valueKey]?.toLocaleString() || "...") + unitName}</h3>
+					<h3 class="rank">#2</h3>
+				</div>
 			</div>
-			<div
-				class="podium-item gold"
-				id="first-place"
-				onclick={() => {
-					loadProfileFromId(mainSectionEntries?.[0]?.id);
-				}}
-			>
-				<div class="name">{mainSectionEntries?.[0]?.user_name || "Guest"}</div>
-				<div class="podiumValue">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
-				<div class="rank">#1</div>
+			<div class="podium-item" id="first-place">
+				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+				<h3
+					class="name"
+					onclick={() => {
+						loadProfileFromId(mainSectionEntries?.[0]?.id);
+					}}
+				>
+					{mainSectionEntries?.[0]?.user_name || "Guest"}
+				</h3>
+				<div class="podium-pedestal gold">
+					<span class="podiumValue">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</span>
+					<h3 class="rank">#1</h3>
+				</div>
 			</div>
-			<div
-				class="podium-item bronze"
-				id="third-place"
-				onclick={() => {
-					loadProfileFromId(mainSectionEntries?.[2]?.id);
-				}}
-			>
-				<div class="name">{mainSectionEntries?.[2]?.user_name || "Guest"}</div>
-				<div class="podiumValue">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
-				<div class="rank">#3</div>
+			<div class="podium-item" id="third-place">
+				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+				<h3
+					class="name"
+					onclick={() => {
+						loadProfileFromId(mainSectionEntries?.[2]?.id);
+					}}
+				>
+					{mainSectionEntries?.[2]?.user_name || "Guest"}
+				</h3>
+				<div class="podium-pedestal bronze">
+					<span class="podiumValue">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</span>
+					<h3 class="rank">#3</h3>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -437,70 +449,82 @@
 
 	.podium-item {
 		flex-grow: 1;
-		margin: 0 10px;
+		margin-inline: 10px;
 		display: flex;
-		box-shadow: var(--button-shadow);
 		flex-direction: column;
 		align-items: center;
-		border-radius: var(--layout-margin);
-		cursor: pointer;
+		flex-basis: 33%;
+		position: relative;
+		overflow: hidden;
+	}
+
+	.podium-pedestal {
+		border: solid 3px rgba(255, 255, 255, 0.2);
+		padding: var(--layout-margin);
+		flex-grow: 1;
+		width: 100%;
+		border-radius: calc(var(--layout-margin) + 5px);
+		display: flex;
+		box-sizing: border-box;
+		flex-direction: column;
+		align-items: center;
+		box-shadow: var(--button-shadow);
+		overflow: hidden;
 		transition:
 			filter 250ms ease,
 			height 250ms ease,
 			width 250ms ease;
-		border: solid 3px rgba(255, 255, 255, 0.2);
-		max-width: 25%;
-	}
-
-	.podium-item:hover {
-		filter: brightness(1.1);
 	}
 
 	#first-place {
-		height: 200px;
-		flex-grow: 1.5;
+		height: 260px;
 	}
 
 	#second-place {
-		height: 170px;
+		height: 220px;
+		margin-left: 0;
 	}
 
 	#third-place {
-		height: 140px;
+		height: 190px;
+		margin-right: 0;
 	}
 
 	.podium-item .name {
 		padding: 5px;
 		text-align: center;
 		color: white;
-		font-size: 25px;
+		margin-top: auto;
 		word-break: break-word;
-		position: relative;
-		top: -55px;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
 		max-width: 100%;
+		cursor: pointer;
+		transition: opacity 250ms ease;
+		margin-bottom: var(--box-margin);
+	}
+
+	.podium-item .name:hover {
+		opacity: 0.5;
 	}
 
 	.podium-item .rank {
-		font-size: 30px;
 		color: white;
-		margin-bottom: 20px;
+		margin-bottom: 5px;
 	}
 
 	.podium-item .podiumValue {
 		font-size: 25px;
 		color: white;
-		margin-top: auto;
-		margin-bottom: auto;
-		max-width: 65%;
+		margin: auto 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
-		opacity: 0.75;
 		border-radius: 5px;
-		background-color: rgba(0, 0, 0, 0.1);
+		opacity: 0.75;
+		max-width: 100%;
+		background-color: var(--box-color-dark-soft);
 		padding-inline: 5px;
 	}
 
@@ -542,23 +566,23 @@
 		}
 
 		.podium-item .podiumValue {
-			font-size: 18px;
+			font-size: 20px;
 		}
 
 		#first-place {
-			height: 160px;
+			height: 200px;
 		}
 
 		#second-place {
-			height: 130px;
+			height: 165px;
 		}
 
 		#third-place {
-			height: 110px;
+			height: 150px;
 		}
 
 		.podium {
-			height: 200px;
+			height: 180px;
 			gap: 5px;
 		}
 

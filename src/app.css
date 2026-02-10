@@ -318,7 +318,7 @@ input[type="checkbox"]:focus {
     align-items: center;
     gap: var(--panel-margin);
     padding: var(--panel-margin);
-    pointer-events: auto;
+    pointer-events: auto; /* Important since often positioned insight of pointer-events-none containers */
 }
 
 li {

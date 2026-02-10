@@ -1244,10 +1244,6 @@
 	}
 
 	@media all and (max-width: 1000px) {
-		.competitionButton {
-			flex-grow: 1;
-		}
-
 		#competitionSearch {
 			max-width: none;
 		}
