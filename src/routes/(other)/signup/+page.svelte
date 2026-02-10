@@ -508,23 +508,6 @@
 		margin-bottom: var(--layout-margin);
 	}
 
-	@keyframes floatOrb {
-		0% {
-			transform: translateY(0) translateX(0);
-			opacity: 0.05;
-		}
-
-		50% {
-			transform: translateY(-200px) translateX(200px);
-			opacity: 0.025;
-		}
-
-		100% {
-			transform: translateY(0) translateX(-200px);
-			opacity: 0.05;
-		}
-	}
-
 	#privacyNotice {
 		opacity: 50%;
 		margin-bottom: 0;
@@ -540,6 +523,11 @@
 	.password-container {
 		position: relative;
 		width: 100%;
+	}
+
+	.password-container input {
+		width: calc(100% - 95px);
+		padding-right: 50px;
 	}
 
 	.switchFormBox {
@@ -567,12 +555,7 @@
 		opacity: 0.5;
 		color: white;
 		display: flex;
-		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
-		border-radius: 5px;
 		align-content: center;
-		box-shadow: 10px;
-		z-index: 50;
 	}
 
 	.wrapper {
