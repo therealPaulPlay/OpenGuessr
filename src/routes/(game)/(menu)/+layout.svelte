@@ -9,27 +9,25 @@
 	import { page } from "$app/state";
 
 	let historyStack = $state([]);
-	let isGoingBack = false;
 
 	afterNavigate(({ type, from, to }) => {
-		if (type === "popstate" || isGoingBack) {
+		if (type === "popstate") {
 			if (historyStack.length > 0) historyStack.pop();
-			isGoingBack = false;
 		} else if (from?.url?.pathname && from.url.pathname !== to?.url?.pathname) {
 			historyStack.push(from.url.pathname);
 		}
 	});
 
 	function goBack() {
-		isGoingBack = true;
-		goto(historyStack.at(-1) || "/");
+		if (historyStack.length > 0) history.back(); // Must use .back to work with snapshots
+		else goto("/");
 	}
 
 	function leaveMultiplayerIfReturningFromMultiplayerPage() {
 		if (page.url.pathname.startsWith("/multiplayer")) leaveMultiplayer();
 	}
 
-	let showHomeButton = $derived(historyStack.at(-1) !== "/");
+	let showHomeButton = $derived(historyStack.length > 0 && historyStack.at(-1) !== "/");
 </script>
 
 <nav class="menuNavBar">
@@ -47,7 +45,7 @@
 			Back</button
 		>
 	</div>
-	{#if showHomeButton && historyStack.length}
+	{#if showHomeButton}
 		<div class="navigationButtonContainer barMenu">
 			<button
 				class="backButton standardButton white largeButton"
