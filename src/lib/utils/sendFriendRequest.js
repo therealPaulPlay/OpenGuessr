@@ -1,5 +1,4 @@
 import { showNotification } from "$lib/utils/notifications";
-import { username } from "$lib/stores/accountStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";

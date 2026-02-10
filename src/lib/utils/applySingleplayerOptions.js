@@ -9,7 +9,6 @@ import { get } from "svelte/store";
 import { startTimer } from "$lib/utils/timer";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 
-let timeoutVariable;
 let startTimeoutVariable;
 let intervalTimeoutVariable;
 let startSingleplayerTimerPromise;
@@ -22,7 +21,6 @@ export function resetApplySingleplayerOptions() {
     timerCountdownOverlay.set(false);
     get(singleplayerTimer)?.stopTimer();
 
-    clearTimeout(timeoutVariable);
     clearTimeout(startTimeoutVariable);
     clearInterval(intervalTimeoutVariable);
 
@@ -34,7 +32,7 @@ export function resetApplySingleplayerOptions() {
 
     if (get(singleplayer)) {
         if (get(singleplayerTimeout)) {
-            startSingleplayerTimerPromise = new Promise((resolve, reject) => {
+            startSingleplayerTimerPromise = new Promise((resolve, _reject) => {
                 timerCountdownOverlay.set(true);
                 timerCountdownOverlayTitle.set(3);
 

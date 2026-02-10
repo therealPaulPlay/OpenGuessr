@@ -1,5 +1,5 @@
 // Multiplayer room matchmaking APIs, for Duels
-import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, multiplayerRestriction, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
+import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
 import { createMultiplayerRoom, joinMultiplayerRoom, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";

@@ -1,7 +1,6 @@
 import { resultScreenEnabled, distanceText, motivationText, lastDistance } from "$lib/stores/context-specific/resultScreenStore";
 import { calculateDistances, motivationalResultMessage, formatDistance } from "$lib/utils/distanceFunctions";
 import { countryGuessr } from "$lib/stores/modeStore";
-import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
 import { playSound } from "$lib/utils/soundManager";
 import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { resetMap } from "$lib/logic/miniMap";

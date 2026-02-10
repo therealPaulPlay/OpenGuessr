@@ -3,7 +3,7 @@ import { socialPopupProbability } from "$lib/utils/socialPopupProbability";
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 import { disableResultScreen } from "$lib/utils/setResultScreen";
 import { multiplayer } from "$lib/stores/modeStore";
-import { socket, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
+import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { get } from "svelte/store";
 
 export function transitionToStart() {

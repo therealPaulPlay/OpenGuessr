@@ -2,8 +2,8 @@ import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { setCheckNewHighestCountryStreak } from "$lib/utils/updateProfileData";
-import { isAuthenticated, supporterLevel, experience } from "$lib/stores/accountStore";
-import { streakText, showStreakDisplay, lastDistance, lastExpCalculationSignedOut, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
+import { isAuthenticated, supporterLevel } from "$lib/stores/accountStore";
+import { streakText, showStreakDisplay, lastExpCalculationSignedOut, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { multiplayerMap, socket } from "$lib/stores/context-specific/multiplayerStore";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
@@ -47,7 +47,7 @@ function calculateExponentialModifier(mapDiameter) {
 
 // Calculate XP gain --------------------------------------------------------------------------------------------------------------------------------
 async function calculateXPGain(distance, map, supporterLevelParam) {
-    let returnXP = 0;
+    let returnXP;
     if (distance < 0.025) distance = 0; // Treat distances < 25m as 0 to be more friendly with 5ks
 
     // If the map is big enough to encompass many countries, calculate the country streak

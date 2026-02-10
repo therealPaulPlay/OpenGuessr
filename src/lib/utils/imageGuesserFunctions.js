@@ -1,6 +1,4 @@
-import { imageGuessr } from "$lib/stores/modeStore.js";
 import { imageGuessrImageSrc, imageGuessrLoading } from "$lib/stores/context-specific/imageGuessrStore";
-import { get } from "svelte/store";
 
 let imageQueue = Promise.resolve(); // Queue handler
 
