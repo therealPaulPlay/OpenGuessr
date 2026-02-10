@@ -98,7 +98,7 @@
 				</div>
 			</div>
 			<!-- Create button -->
-			<div class="multiplayerHostSubmitArea">
+			<div class="multiplayerHostSubmitArea barMenu">
 				<button
 					id="multiplayerHost"
 					class="standardButton largeButton"
@@ -169,9 +169,9 @@
 	}
 
 	.multiplayerHostSubmitArea {
-		display: flex;
-		justify-content: center;
-		align-items: center;
+		box-shadow: var(--box-shadow);
+		background-color: var(--box-color);
+		border-radius: var(--layout-margin);
 	}
 
 	.selectedMapField {

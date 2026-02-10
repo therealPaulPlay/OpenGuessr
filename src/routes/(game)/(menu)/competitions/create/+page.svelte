@@ -431,10 +431,10 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	}
 
 	.locationTextbox {
+		box-sizing: border-box;
 		min-height: 350px;
 		font-size: 16px;
 		width: 100%;
-		box-sizing: border-box;
 		padding: 20px;
 		transition: background-color 250ms ease;
 	}

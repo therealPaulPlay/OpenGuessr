@@ -16,12 +16,9 @@
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
 	import {
-		Check,
 		Flame,
 		History,
 		Link,
-		Plus,
-		PlusCircle,
 		Skull,
 		SquarePlus,
 		Edit,
@@ -38,9 +35,9 @@
 		BarChart3,
 		Trophy,
 		Crown,
-		UserStar,
-		UserCheck,
 		ArrowUpFromDot,
+		UserRoundPlus,
+		UserRoundCheck,
 	} from "@lucide/svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
@@ -297,9 +294,9 @@
 					}}
 				>
 					{#if !$profileData?.areFriends}
-						<UserStar style="margin-bottom: -1px; margin-left: 2px;" size={19} strokeWidth={2.25} />
+						<UserRoundPlus style="margin-bottom: -1px; margin-left: 2px;" size={19} strokeWidth={2.25} />
 					{:else}
-						<UserCheck style="margin-bottom: -1px; margin-left: 2px;" size={20} strokeWidth={2.25} />
+						<UserRoundCheck style="margin-bottom: -1px; margin-left: 2px;" size={20} strokeWidth={2.25} />
 					{/if}
 				</button>
 			{/if}

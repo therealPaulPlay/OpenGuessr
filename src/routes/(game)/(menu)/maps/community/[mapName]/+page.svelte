@@ -17,6 +17,7 @@
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore.js";
 	import SvgMap from "$lib/components/SvgMap.svelte";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
+	import { tooltip } from "$lib/utils/tooltip.js";
 
 	let { data } = $props();
 
@@ -275,7 +276,7 @@
 		</div>
 	{/if}
 	<!-- Author name and Like -->
-	<div class="titleContainer">
+	<div class="headerContainer">
 		<div class="nameContainer">
 			<h1 class="header mapTitle">{mapName}</h1>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -289,9 +290,10 @@
 				by {mapAuthor}
 			</p>
 		</div>
-		<div class="buttonBar">
+		<div class="buttonBar barMenu of-left of-right">
 			<button
 				id="likeMap"
+				use:tooltip={{ text: "Like" }}
 				class="standardButton white mapButton largeButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -307,6 +309,7 @@
 			</button>
 			<button
 				id="mapLink"
+				use:tooltip={{ text: "Copy link" }}
 				class="standardButton white mapButton largeButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -326,6 +329,7 @@
 			{#if mapAuthorId == playerId && playerId != null}
 				<button
 					id="manageDelete"
+					use:tooltip={{ text: "Delete" }}
 					class="standardButton white mapButton largeButton"
 					onclick={() => {
 						playSound("basic_button");
@@ -334,6 +338,7 @@
 				>
 				<button
 					id="manageUpdate"
+					use:tooltip={{ text: "Update" }}
 					class="standardButton white mapButton largeButton"
 					onclick={() => {
 						playSound("basic_button");
@@ -345,6 +350,7 @@
 			{/if}
 			<button
 				class="standardButton mapButton largeButton"
+				use:tooltip={{ text: "Play" }}
 				onclick={() => {
 					playSound("basic_button");
 					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
@@ -568,7 +574,7 @@
 		width: 100%;
 		display: flex;
 		gap: var(--layout-margin);
-		margin-top: var(--layout-margin);
+		margin-top: var(--box-margin);
 		margin-bottom: 50px;
 	}
 
@@ -577,16 +583,6 @@
 		max-width: 75%;
 		align-items: center;
 		flex-wrap: wrap;
-	}
-
-	.titleContainer {
-		width: 100%;
-		display: flex;
-		justify-content: space-between;
-		align-items: center;
-		flex-wrap: wrap;
-		gap: var(--layout-margin);
-		margin-bottom: 5px;
 	}
 
 	.authorText {
@@ -633,12 +629,14 @@
 	}
 
 	.buttonBar {
-		display: flex;
-		gap: var(--layout-margin);
+		box-shadow: var(--box-shadow);
+		border-radius: var(--layout-margin);
+		background-color: var(--box-color);
 		justify-content: safe center;
 		align-items: safe center;
 		max-width: 100%;
-		overflow: auto;
+		overflow-x: auto;
+		scrollbar-width: none;
 	}
 
 	.mapButton {

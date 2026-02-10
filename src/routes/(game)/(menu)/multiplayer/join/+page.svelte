@@ -87,15 +87,17 @@
 				{/each}
 			</div>
 		</div>
-		<button
-			id="multiplayerJoin"
-			class="standardButton largeButton"
-			disabled={roomCodeInput.length !== 6}
-			onclick={() => {
-				playSound("start_button");
-				joinMultiplayerRoom(roomCodeInput);
-			}}>Join</button
-		>
+		<div class="barMenu joinButtonContainer">
+			<button
+				id="multiplayerJoin"
+				class="standardButton largeButton"
+				disabled={roomCodeInput.length !== 6}
+				onclick={() => {
+					playSound("start_button");
+					joinMultiplayerRoom(roomCodeInput);
+				}}>Join</button
+			>
+		</div>
 	</div>
 </div>
 {#if openRooms?.length > 0}
@@ -273,9 +275,15 @@
 		width: 300px;
 	}
 
+	.joinButtonContainer {
+		box-shadow: var(--box-shadow);
+		background-color: var(--box-color);
+		margin-top: calc(var(--layout-margin) + var(--box-margin));
+		border-radius: var(--layout-margin);
+	}
+
 	#multiplayerJoin {
 		padding-inline: 50px;
-		margin-top: var(--layout-margin);
 	}
 
 	.multiplayerInputInfo {

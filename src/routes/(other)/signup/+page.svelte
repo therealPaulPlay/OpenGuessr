@@ -289,7 +289,7 @@
 	<!-- Captcha Popup-->
 	{#if captchaVisible}
 		<div class="popupContainer" transition:fade={{ duration: 150 }}>
-			<div class="container neumorphic-menu" transition:scale>
+			<div class="container" transition:scale>
 				<h2 class="captchaHeader">Captcha</h2>
 				<div id="captchaContainer">
 					<!-- Captcha will be loaded here -->
@@ -299,7 +299,7 @@
 	{/if}
 	<!-- Center Container -->
 	<div class="wrapper">
-		<div class="container neumorphic-menu">
+		<div class="container">
 			<img class="logo" src="/img/openguessr.svg" alt="OpenGuessr Logo" />
 			{#if formType == "newPassword"}
 				<div id="newPasswordForm">
@@ -432,13 +432,6 @@
 		overflow: hidden;
 	}
 
-	.neumorphic-menu {
-		box-shadow:
-			0 0 20px rgba(0, 0, 0, 0.3),
-			inset 0 0.075rem 0 hsla(0, 0%, 100%, 0.2),
-			inset 0 -0.1rem 0 rgba(0, 0, 0, 0.15) !important;
-	}
-
 	.captchaHeader {
 		margin-bottom: 15px;
 	}
@@ -471,8 +464,9 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		background-color: rgba(255, 255, 255, 0.3);
-		border-radius: 15px;
+		background-color: rgba(255, 255, 255, 0.2);
+		box-shadow: var(--box-shadow);
+		border-radius: var(--layout-margin);
 		padding: 20px;
 		width: 280px;
 		text-align: center;
@@ -538,7 +532,7 @@
 	}
 
 	input {
-		width: calc(80% - 20px);
+		width: calc(100% - 60px);
 		padding: 15px;
 		border-radius: var(--box-margin);
 	}
@@ -564,16 +558,21 @@
 
 	.toggle-password {
 		position: absolute;
-		right: -16px;
+		right: 25px;
 		top: 50%;
 		transform: translateY(-50%);
 		cursor: pointer;
-		width: 30px;
+		padding: 3px;
 		height: auto;
 		opacity: 0.5;
 		color: white;
 		display: flex;
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+		border-radius: 5px;
 		align-content: center;
+		box-shadow: 10px;
+		z-index: 50;
 	}
 
 	.wrapper {

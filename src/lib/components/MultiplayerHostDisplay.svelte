@@ -127,7 +127,7 @@
 {/if}
 
 <!-- Button area -->
-<div class="multiplayerHostSubmitArea">
+<div class="multiplayerHostSubmitArea barMenu">
 	<button
 		id="roomcodeLink"
 		class="largeButton standardButton white"
@@ -187,7 +187,9 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: var(--layout-margin);
+		box-shadow: var(--box-shadow);
+		background-color: var(--box-color);
+		border-radius: var(--layout-margin);
 	}
 
 	.multiplayerHostSettings {

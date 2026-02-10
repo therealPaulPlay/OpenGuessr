@@ -238,7 +238,7 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="main-container">
 	<div class="headerContainer">
-		<h2 class="header">Base maps</h2>
+		<h2 class="header">Base</h2>
 	</div>
 	<div class="map-container">
 		{#each $basicMaps as map}
@@ -323,16 +323,17 @@
 			</div>
 		{/each}
 	</div>
-	<button
-		class="standardButton white expandButton largeButton"
-		style:margin-top={countrySectionExpanded ? "10px" : "-35px"}
-		onclick={() => {
-			playSound("floating_button");
-			countrySectionExpanded = !countrySectionExpanded;
-		}}
-		>{countrySectionExpanded ? "Show less" : "Show all"}
-		<img class="arrowExpand" class:arrowExpandRotate={countrySectionExpanded} alt="arrow" src="/img/arrow_icon.png" />
-	</button>
+	<div class="barMenu showAllButtonContainer" style:margin-top={countrySectionExpanded ? "" : "-35px"}>
+		<button
+			class="standardButton white expandButton largeButton"
+			onclick={() => {
+				playSound("floating_button");
+				countrySectionExpanded = !countrySectionExpanded;
+			}}
+			>{countrySectionExpanded ? "Show less" : "Show all"}
+			<img class="arrowExpand" class:arrowExpandRotate={countrySectionExpanded} alt="arrow" src="/img/arrow_icon.png" />
+		</button>
+	</div>
 	<!-- Continents -->
 	<div class="headerContainer">
 		<h2 class="header">Continents</h2>
@@ -392,13 +393,13 @@
 	<!-- Playlight section -->
 	{#if !$crazyGames}
 		<div class="headerContainer no-bottom-padding">
-			<h2 class="header">Featured games</h2>
+			<h2 class="header">Featured</h2>
 		</div>
 		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style="height: 330px;"></div>
 	{/if}
 	<!-- Featured Maps -->
 	<div class="headerContainer largeHeaderMargin">
-		<h2 class="header">Community spotlight</h2>
+		<h2 class="header">Spotlight</h2>
 	</div>
 	<div class="map-container">
 		{#if loadedSpotlightMaps.length}
@@ -411,41 +412,42 @@
 	</div>
 	<!-- All Community Maps -->
 	<div class="headerContainer">
-		<h2 class="header mediumHeaderMargin">Community maps</h2>
-		<button
-			id="createButton"
-			class="standardButton white largeButton"
-			onclick={() => {
-				playSound("basic_button");
-				if ($isAuthenticated) {
-					goto("/maps/create");
-				} else {
-					signupPrompt();
-				}
-			}}>+ Create</button
-		>
+		<h2 class="header mediumHeaderMargin">Community</h2>
 	</div>
 	<div class="categoriesSearchArea">
-		<div class="categoriesBar of-left of-right">
-			{#each categoriesArray as category, index}
-				{#if index !== 1 || $isAuthenticated}
-					<button
-						class="categoryButton standardButton"
-						class:selected={selectedCategoryIndex == index}
-						onclick={() => handleCategoryButtonClick(index)}
-					>
-						{category.replace("Miscellaneous", "Misc.")}
-						{#if index == 1}
-							<User size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
-						{/if}
-					</button>
-				{/if}
-			{/each}
+		<div class="categoriesBar">
+			<button
+				class="standardButton white"
+				onclick={() => {
+					playSound("basic_button");
+					if ($isAuthenticated) {
+						goto("/maps/create");
+					} else {
+						signupPrompt();
+					}
+				}}><Plus size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-right: 2px;" /> Create</button
+			>
+			<div class="categoriesBar of-left of-right">
+				{#each categoriesArray as category, index}
+					{#if index !== 1 || $isAuthenticated}
+						<button
+							class="categoryButton standardButton"
+							class:selected={selectedCategoryIndex == index}
+							onclick={() => handleCategoryButtonClick(index)}
+						>
+							{category.replace("Miscellaneous", "Misc.")}
+							{#if index == 1}
+								<User size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
+							{/if}
+						</button>
+					{/if}
+				{/each}
+			</div>
 		</div>
 		<search class="searchContainer">
 			<input
 				id="mapSearch"
-				placeholder="Search maps"
+				placeholder="Search"
 				bind:value={searchValue}
 				onkeydown={(e) => {
 					if (e.key === "Enter") e.preventDefault();
@@ -505,7 +507,7 @@
 	}
 
 	.largeHeaderMargin {
-		margin-top: 75px;
+		margin-top: calc(var(--layout-margin) + var(--box-margin));
 	}
 
 	.mediumHeaderMargin {
@@ -620,7 +622,7 @@
 		gap: var(--layout-margin);
 		flex-wrap: wrap;
 		width: 100%;
-		margin-bottom: 20px;
+		margin-bottom: calc(var(--layout-margin) + var(--box-margin));
 		overflow: visible; /* On hover, prevent scale up from clipping elements at the borders */
 	}
 
@@ -640,17 +642,18 @@
 	}
 
 	.expandButton {
-		margin-inline: auto;
-		padding-inline: 30px;
+		padding-inline: calc(var(--layout-margin) * 2);
+	}
+
+	.showAllButtonContainer {
 		margin-bottom: 10px;
-		transition:
-			margin 150ms ease,
-			scale 150ms ease,
-			transform 150ms ease,
-			background-color 250ms ease,
-			filter 250ms ease;
+		margin-inline: auto;
+		transition: margin 150ms ease;
 		bottom: 0;
 		z-index: 10;
+		border-radius: var(--layout-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 	}
 
 	.arrowExpand {
@@ -719,7 +722,7 @@
 		flex-grow: 1;
 		padding: 5px;
 		padding-inline: var(--box-margin);
-		width: 100px;
+		width: 225px;
 		text-overflow: ellipsis;
 	}
 
@@ -735,10 +738,6 @@
 		align-items: center;
 	}
 
-	#createButton {
-		margin-top: auto;
-	}
-
 	.categoriesBar {
 		overflow: hidden;
 		overflow-x: scroll;
@@ -747,6 +746,8 @@
 		align-items: center;
 		gap: var(--box-margin);
 		scrollbar-width: none;
+		flex-shrink: 1;
+		min-width: 0;
 	}
 
 	.categoryButton {
@@ -770,14 +771,13 @@
 		display: flex;
 		justify-content: space-between;
 		box-shadow: var(--box-shadow);
-		flex-wrap: wrap;
 		width: calc(100% - var(--box-margin) * 2);
 		min-width: 280px;
 		gap: var(--box-margin);
 		align-items: center;
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
-		margin-bottom: 20px;
+		margin-bottom: var(--layout-margin);
 		background-color: var(--box-color);
 	}
 
@@ -788,9 +788,9 @@
 		gap: 10px;
 	}
 
-	@media (max-width: 800px) {
-		.categoryButton {
-			font-size: 20px;
+	@media (max-width: 1000px) {
+		.categoriesSearchArea {
+			flex-wrap: wrap;
 		}
 	}
 </style>

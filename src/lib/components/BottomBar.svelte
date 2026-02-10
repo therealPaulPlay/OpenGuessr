@@ -100,11 +100,7 @@
 </div>
 
 <div class="gameplayAdArea barMenu" transition:blur style:display={$adsDisabled ? "none" : ""}>
-	<div
-		class="gameplayAd"
-		id="gameplayAd"
-		data-fuse="Game_incontent_1"
-	></div>
+	<div class="gameplayAd" id="gameplayAd" data-fuse="Game_incontent_1"></div>
 	<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
 </div>
 
@@ -112,6 +108,9 @@
 	.bottomBar {
 		position: fixed;
 		bottom: var(--box-margin);
+		left: var(--box-margin);
+		right: var(--box-margin);
+		border-radius: var(--box-margin);
 		width: calc(100% - 20px);
 		height: 95px;
 		min-height: 95px;
@@ -121,8 +120,6 @@
 		align-items: end;
 		justify-content: space-between;
 		margin: auto;
-		border-radius: var(--box-margin);
-		margin-inline: var(--box-margin);
 		flex: 1;
 		z-index: 10;
 		transition: background-color 250ms ease;
@@ -138,6 +135,9 @@
 		top: 50%;
 		user-select: none;
 		text-wrap: nowrap;
+		max-width: calc(100% - var(--layout-margin) * 2);
+		overflow: hidden;
+		text-overflow: ellipsis;
 		z-index: -1;
 		transform: translate(-50%, -50%);
 	}
