@@ -39,7 +39,7 @@
 	}
 </script>
 
-<div class="notification-holder" >
+<div class="notification-holder" style:top={page.url.pathname === "/" ? "var(--box-margin)" : "var(--layout-margin)"}>
 	{#if $notificationVisible}
 		<div id="notificationBar" class="barMenu" transition:fly={{ y: -20, duration: 250 }}>
 			<p id="notificationText">{$notificationText}</p>
@@ -66,7 +66,6 @@
 
 	.notification-holder {
 		position: fixed;
-		top: var(--layout-margin);
 		left: var(--box-margin);
 		right: var(--box-margin);
 		display: flex;

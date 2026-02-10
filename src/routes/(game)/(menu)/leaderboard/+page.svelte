@@ -384,7 +384,7 @@
 		justify-content: center;
 		align-items: center;
 		width: 100%;
-		margin-bottom: 30px;
+		margin-bottom: 80px;
 		max-width: 850px;
 		margin-inline: auto;
 	}
