@@ -107,7 +107,7 @@
 		left: var(--layout-margin);
 		right: var(--layout-margin);
 		display: flex;
-		gap: var(--box-margin);
+		gap: var(--layout-margin);
 		z-index: 99;
 		pointer-events: none;
 	}
