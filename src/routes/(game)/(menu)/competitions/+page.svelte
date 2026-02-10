@@ -424,14 +424,15 @@
 </svelte:head>
 
 {#snippet showMoreButton(callback)}
-	<div class="showMoreContainer barMenu">
-		<button
-			class="loadMore standardButton white largeButton"
-			onclick={() => {
-				callback?.();
-			}}>Show more <Plus size={20} strokeWidth={2.75} style="margin-bottom: -3px; margin-left: 2px;" /></button
-		>
-	</div>
+	<button
+		class="loadMoreItem standardButton white fadeInItem"
+		onclick={() => {
+			callback?.();
+		}}
+	>
+		More
+		<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: 5px;" />
+	</button>
 {/snippet}
 
 <Popup slim={true} bind:open={leaderboardPopup}>
@@ -1115,20 +1116,16 @@
 		margin-bottom: 20px;
 	}
 
-	.showMoreContainer {
+	.loadMoreItem {
+		flex-direction: row;
+		min-height: 80px;
+		justify-content: center;
+		align-items: center;
+		border: none;
+		width: 100%;
 		border-radius: var(--layout-margin);
-		box-sizing: var(--box-shadow);
 		background-color: var(--box-color);
-		margin-bottom: var(--layout-margin);
-		transform: translateX(-50%);
-		margin-left: 50%;
 		box-shadow: var(--box-shadow);
-	}
-
-	.loadMore {
-		line-height: 1;
-		padding-inline: calc(2 * var(--layout-margin));
-		margin-inline: auto;
 	}
 
 	#competitionSearch {

@@ -204,7 +204,7 @@
 {#snippet communityMapItem(map)}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="map-item map-item-animate"
+		class="map-item map-item-hover map-item-animate"
 		role="button"
 		tabindex="0"
 		onclick={() => {
@@ -243,7 +243,7 @@
 	<div class="map-container">
 		{#each $basicMaps as map}
 			<div
-				class="map-item map-item-slim"
+				class="map-item map-item-hover map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -264,7 +264,7 @@
 	<div class="map-container">
 		{#each $specialModes as map}
 			<div
-				class="map-item map-item-slim"
+				class="map-item map-item-hover map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -278,7 +278,7 @@
 			</div>
 		{/each}
 		<div
-			class="map-item-link map-item"
+			class="map-item map-item-hover map-item-link"
 			role="button"
 			tabindex="0"
 			onclick={() => {
@@ -290,7 +290,7 @@
 			<p class="link-badge">Education</p>
 		</div>
 		<div
-			class="map-item-link map-item"
+			class="map-item map-item-hover map-item-link"
 			role="button"
 			tabindex="0"
 			onclick={() => {
@@ -309,7 +309,7 @@
 	<div class="map-container map-container-expand" class:map-container-expand-fadeout={!countrySectionExpanded}>
 		{#each $countryMaps as map}
 			<div
-				class="map-item map-item-slim"
+				class="map-item map-item-hover map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -341,7 +341,7 @@
 	<div class="map-container">
 		{#each $continentMaps as map}
 			<div
-				class="map-item map-item-slim"
+				class="map-item map-item-hover map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -363,7 +363,7 @@
 		{#if addedCommunityMapsArray.length > 0}
 			{#each addedCommunityMapsArray as map}
 				<div
-					class="map-item map-item-slim map-item-bookmark"
+					class="map-item map-item-hover map-item-slim map-item-bookmark"
 					class:selected-map-item={checkIfSelected(map, true)}
 					role="button"
 					tabindex="0"
@@ -475,14 +475,15 @@
 		{/each}
 		{#if showLoadMore}
 			<button
-				class="map-item map-item-animate load-more"
+				class="map-item load-more standardButton white"
 				onclick={() => {
 					playSound("basic_button");
 					loadCommunityMaps(currentFetchIndex + 50, currentCategory, currentQuery, currentByUserId, null);
 				}}
-				><p>More</p>
-				<span class="loadMoreIconSpan"><Plus strokeWidth={2.75} size={20} /></span></button
 			>
+				More
+				<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: 5px;" />
+			</button>
 		{/if}
 		{#if errorMessageShown}
 			<p class="nothingFound minimumCommunityLoadingHeight">{errorMessageText}</p>
@@ -500,10 +501,6 @@
 		align-items: center;
 		min-height: 2500px; /* avoid searches changing the page size much */
 		max-width: 100%;
-	}
-
-	.loadMoreIconSpan {
-		margin-top: 6px;
 	}
 
 	.largeHeaderMargin {
@@ -553,7 +550,7 @@
 		background-color: rgba(255, 255, 255, 0.1);
 		border-radius: var(--box-margin);
 		padding: var(--box-margin);
-		padding-inline: 15px;
+		padding-inline: var(--layout-margin);
 		box-sizing: border-box;
 		user-select: none;
 		min-width: 300px;
@@ -575,7 +572,7 @@
 		flex-basis: 0;
 	}
 
-	.map-item:hover {
+	.map-item-hover:hover {
 		background-color: rgba(255, 255, 255, 0.2);
 		scale: 1.01;
 	}
@@ -583,11 +580,6 @@
 	.map-item-slim {
 		min-width: 150px;
 		flex-basis: 15%;
-	}
-
-	.map-item-slim:hover,
-	.map-item-link:hover {
-		scale: 1.03;
 	}
 
 	.selected-map-item {
@@ -782,10 +774,15 @@
 	}
 
 	.load-more {
-		font-size: 22px;
-		min-height: 69px;
+		height: auto;
+		min-height: 70.5px;
 		justify-content: center;
-		gap: 10px;
+		border: none;
+		transition:
+			filter 250ms ease,
+			box-shadow 250ms ease,
+			transform 150ms ease,
+			opacity 250ms ease;
 	}
 
 	@media (max-width: 1000px) {
