@@ -172,7 +172,7 @@
 			</div>
 		</div>
 		<div class="settingsBox settingsBoxFlex noFlexWrap" class:box-disabled={!$singleplayer}>
-			<p class="settingsBoxFlexTitle">No Move, Pan or Zoom (NMPZ)</p>
+			<p class="settingsBoxFlexTitle">No Move, Pan or Zoom</p>
 			<button class="standardButton white" onclick={toggleSingleplayerNMPZ}
 				>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
 			>
@@ -191,7 +191,7 @@
 					style:background={sfxSliderBg}
 					oninput={inputSFXVolumeSlider}
 				/>
-				<p>{sfxSliderBgPercentage}%</p>
+				<p style:margin-right="auto">{sfxSliderBgPercentage}%</p>
 			</div>
 		</div>
 		<div class="settingsBox">
@@ -207,7 +207,7 @@
 					style:background={musicSliderBg}
 					oninput={inputMusicVolumeSlider}
 				/>
-				<p>{musicSliderBgPercentage}%</p>
+				<p style:margin-right="auto">{musicSliderBgPercentage}%</p>
 				<button
 					class="standardButton white creditsButton"
 					onclick={() => {
@@ -263,7 +263,7 @@
 		align-items: center;
 		gap: var(--box-margin);
 		width: fit-content;
-		flex-basis: 60%;
+		flex-basis: 45%;
 		flex-grow: 1;
 	}
 
@@ -337,6 +337,7 @@
 		margin-top: 18px;
 		margin-left: 5px;
 		align-items: center;
+		gap: 5px;
 		justify-content: space-between;
 	}
 

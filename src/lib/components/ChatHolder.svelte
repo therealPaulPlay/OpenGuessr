@@ -4,7 +4,10 @@
 	import Chat from "./Chat.svelte";
 	import ChatTabSwitcher from "./ChatTabSwitcher.svelte";
 
-	let chatHeight = $state(172); // Default height
+	const CHAT_DEFAULT_HEIGHT = 194;
+	const CHAT_MAX_HEIGHT = 508;
+
+	let chatHeight = $state(CHAT_DEFAULT_HEIGHT); // Default height
 	let isResizing = $state(false);
 	let startY = $state(0);
 	let startHeight = $state(0);
@@ -25,7 +28,7 @@
 		// Get current position from either mouse or touch event
 		const currentY = e.type === "touchmove" ? e.touches[0].clientY : e.clientY;
 		const delta = startY - currentY;
-		const newHeight = Math.max(188, Math.min(508, startHeight + delta));
+		const newHeight = Math.max(CHAT_DEFAULT_HEIGHT, Math.min(CHAT_MAX_HEIGHT, startHeight + delta));
 		chatHeight = newHeight;
 	}
 
@@ -40,7 +43,7 @@
 	<div class="chat-holder">
 		<ChatTabSwitcher bind:isTeamChat inPanel={true} />
 		<!-- svelte-ignore a11y_interactive_supports_focus -->
-		<div class="multiplayer-chat barMenu" style:height="{chatHeight}px">
+		<div class="multiplayer-chat barMenu" style:height="{chatHeight}px" style:min-height="{CHAT_DEFAULT_HEIGHT}px" style:max-height="{CHAT_MAX_HEIGHT}px">
 			<!-- svelte-ignore a11y_role_has_required_aria_props -->
 			<div
 				class="resize-handle"
@@ -69,8 +72,6 @@
 
 	.multiplayer-chat {
 		width: 100%;
-		min-height: 188px;
-		max-height: 508px;
 		overflow: hidden;
 		flex-direction: column;
 		box-sizing: border-box;
