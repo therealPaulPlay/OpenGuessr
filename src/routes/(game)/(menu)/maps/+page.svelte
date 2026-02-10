@@ -3,8 +3,8 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import { onMount } from "svelte";
-	import { goto } from "$app/navigation";
+	import { onMount, getContext } from "svelte";
+	import { goto, beforeNavigate } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { changeMap } from "$lib/utils/changeMap.js";
 	import {
@@ -16,10 +16,15 @@
 	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { tooltip } from "$lib/utils/tooltip.js";
+	import { page } from "$app/state";
+
+	const snapshotStore = getContext("snapshotStore");
 
 	// State
-	let currentFetchIndex = 0;
-	let currentCategory, currentQuery, currentByUserId;
+	let currentFetchIndex = $state(0);
+	let currentCategory = $state();
+	let currentQuery = $state();
+	let currentByUserId = $state();
 	let showLoadMore = $state(false);
 	let showNothingFound = $state(false);
 	let errorMessageText = $state("Loading...");
@@ -48,8 +53,20 @@
 
 	onMount(() => {
 		addedCommunityMapsArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
-		loadCommunityMaps(0);
-		loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+
+		// Check if we should restore snapshot
+		const savedSnapshot = snapshotStore?.get("/maps");
+		if (savedSnapshot && page.state?.restoreSnapshot) restoreSnapshot(savedSnapshot);
+		else {
+			loadCommunityMaps(0);
+			loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+		}
+	});
+
+	// Save snapshot before navigating away
+	beforeNavigate(() => {
+		const data = captureSnapshot();
+		if (data && snapshotStore) snapshotStore.set("/maps", data);
 	});
 
 	async function loadCommunityMaps(index, category, query, byUserId, fav) {
@@ -161,9 +178,9 @@
 		else loadCommunityMaps(0, category);
 	}
 
-	// Snapshot for state restoration
-	export const snapshot = {
-		capture: () => ({
+	// Snapshot functions for state restoration
+	function captureSnapshot() {
+		return {
 			scrollY: window.scrollY,
 			currentFetchIndex,
 			loadMoreCategoryParam: currentCategory,
@@ -175,26 +192,32 @@
 			selectedCategoryIndex,
 			loadedCommunityMaps,
 			loadedSpotlightMaps,
-		}),
-		restore: (data) => {
-			if (!data.loadedSpotlightMaps?.length || !data.loadedCommunityMaps?.length) return;
-			if (currentController) currentController.abort();
-			if (currentFavController) currentFavController.abort();
-			currentFetchIndex = data.currentFetchIndex;
-			currentCategory = data.loadMoreCategoryParam;
-			currentQuery = data.loadMoreQueryParam;
-			currentByUserId = data.byUserParam;
-			showLoadMore = data.showLoadMore;
-			showNothingFound = data.showNothingFound;
-			searchValue = data.searchValue;
-			selectedCategoryIndex = data.selectedCategoryIndex;
-			loadedCommunityMaps = data.loadedCommunityMaps;
-			loadedSpotlightMaps = data.loadedSpotlightMaps;
-			setTimeout(() => {
-				window.scrollTo({ top: data.scrollY });
-			}, 0);
-		},
-	};
+		};
+	}
+
+	function restoreSnapshot(data) {
+		if (!data.loadedSpotlightMaps?.length || !data.loadedCommunityMaps?.length) {
+			loadCommunityMaps(0);
+			loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+			return;
+		}
+		if (currentController) currentController.abort();
+		if (currentFavController) currentFavController.abort();
+		currentFetchIndex = data.currentFetchIndex;
+		currentCategory = data.loadMoreCategoryParam;
+		currentQuery = data.loadMoreQueryParam;
+		currentByUserId = data.byUserParam;
+		showLoadMore = data.showLoadMore;
+		showNothingFound = data.showNothingFound;
+		errorMessageShown = false;
+		searchValue = data.searchValue;
+		selectedCategoryIndex = data.selectedCategoryIndex;
+		loadedCommunityMaps = data.loadedCommunityMaps;
+		loadedSpotlightMaps = data.loadedSpotlightMaps;
+		setTimeout(() => {
+			window.scrollTo({ top: data.scrollY });
+		}, 0);
+	}
 </script>
 
 <svelte:head>

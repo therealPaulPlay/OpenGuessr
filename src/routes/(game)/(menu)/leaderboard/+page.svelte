@@ -459,7 +459,6 @@
 	}
 
 	.podium-pedestal {
-		border: solid 3px rgba(255, 255, 255, 0.2);
 		padding: var(--layout-margin);
 		flex-grow: 1;
 		width: 100%;
@@ -468,7 +467,7 @@
 		box-sizing: border-box;
 		flex-direction: column;
 		align-items: center;
-		box-shadow: var(--button-shadow);
+		box-shadow: var(--box-shadow);
 		overflow: hidden;
 		transition:
 			filter 250ms ease,
