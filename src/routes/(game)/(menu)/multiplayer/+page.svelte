@@ -13,6 +13,7 @@
 		History,
 		Globe,
 		Handshake,
+		Plus,
 	} from "@lucide/svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -172,20 +173,17 @@
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Friends</h2>
 		<!-- Inbox and Friend request buttons-->
-		<div class="friendButtonBox">
+		<div class="friendButtonContainer barMenu">
 			<button
-				class="standardButton white friendActionButton largeButton"
+				class="standardButton white largeButton"
 				onclick={() => {
 					playSound("basic_button");
-					if ($isAuthenticated) {
-						friendBrowserPopup.set(true);
-					} else {
-						signupPrompt();
-					}
-				}}><p class="addFriendText">Add <ContactRound strokeWidth={2} size={22} /></p></button
+					if ($isAuthenticated) friendBrowserPopup.set(true);
+					else signupPrompt();
+				}}><p class="addFriendText"><Plus strokeWidth={2.25} size={22} /></p></button
 			>
 			<button
-				class="standardButton white friendActionButton largeButton"
+				class="standardButton white largeButton"
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) {
@@ -309,9 +307,10 @@
 		flex-wrap: wrap;
 	}
 
-	.friendActionButton {
-		justify-content: center !important;
-		padding-inline: 15px;
+	.friendButtonContainer {
+		border-radius: var(--layout-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 	}
 
 	.selectButtonsHeader {
@@ -327,11 +326,6 @@
 
 	.headerMarginTop {
 		margin-top: 50px;
-	}
-
-	.friendButtonBox {
-		display: flex;
-		gap: var(--layout-margin);
 	}
 
 	.friendItem {

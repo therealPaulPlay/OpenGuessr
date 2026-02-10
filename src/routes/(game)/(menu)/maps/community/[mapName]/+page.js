@@ -31,7 +31,6 @@ export async function load({ params, fetch }) {
 
   } catch (error) {
     console.error('Load function error:', error);
-    if (error.status) throw error; // Re-throw SvelteKit errors
     throw error(500, 'Failed to load map data');
   }
 }

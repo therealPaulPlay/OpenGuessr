@@ -212,7 +212,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 <Popup verySlim={true} bind:open={jsonPopup}>
 	<h1 class="popup-title">JSON format</h1>
 	<p id="jsonFormatTextInfo">
-		OpenGuessr uses a JSON format to load its locations. Here is an example of how that looks like:
+		OpenGuessr uses a JSON format to load its locations. Here is an example of how that looks like.
 	</p>
 	<br />
 	<div class="preBox">
@@ -319,6 +319,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	}
 
 	.locationTextbox {
+		box-sizing: border-box;
 		min-height: 350px;
 		font-size: 16px;
 		width: 100%;

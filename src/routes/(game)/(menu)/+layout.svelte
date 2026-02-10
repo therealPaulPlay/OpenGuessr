@@ -1,7 +1,6 @@
 <script>
 	let { children } = $props();
 	import { playSound } from "$lib/utils/soundManager";
-	import Notification from "$lib/components/Notification.svelte";
 	import { matchmakingActive } from "$lib/stores/context-specific/multiplayerStore";
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { goto, afterNavigate } from "$app/navigation";
@@ -10,55 +9,56 @@
 	import { page } from "$app/state";
 
 	let historyStack = $state([]);
-	let isGoingBack = false;
 
 	afterNavigate(({ type, from, to }) => {
-		if (type === "popstate" || isGoingBack) {
+		if (type === "popstate") {
 			if (historyStack.length > 0) historyStack.pop();
-			isGoingBack = false;
 		} else if (from?.url?.pathname && from.url.pathname !== to?.url?.pathname) {
 			historyStack.push(from.url.pathname);
 		}
 	});
 
 	function goBack() {
-		isGoingBack = true;
-		goto(historyStack.at(-1) || "/");
+		if (historyStack.length > 0) history.back(); // Must use .back to work with snapshots
+		else goto("/");
 	}
 
 	function leaveMultiplayerIfReturningFromMultiplayerPage() {
 		if (page.url.pathname.startsWith("/multiplayer")) leaveMultiplayer();
 	}
 
-	let showHomeButton = $derived(historyStack.at(-1) !== "/");
+	let showHomeButton = $derived(historyStack.length > 0 && historyStack.at(-1) !== "/");
 </script>
 
 <nav class="menuNavBar">
-	<Notification inMenu={true} />
-	<button
-		class="backButton standardButton white largeButton"
-		disabled={$matchmakingActive}
-		onclick={() => {
-			playSound("basic_button");
-			leaveMultiplayerIfReturningFromMultiplayerPage();
-			goBack();
-		}}
-	>
-		<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="backButtonArrowIcon" />
-		Back</button
-	>
-	{#if showHomeButton && historyStack.length}
+	<div class="navigationButtonContainer barMenu">
 		<button
 			class="backButton standardButton white largeButton"
 			disabled={$matchmakingActive}
 			onclick={() => {
 				playSound("basic_button");
 				leaveMultiplayerIfReturningFromMultiplayerPage();
-				goto("/");
+				goBack();
 			}}
 		>
-			<Home strokeWidth={2.25} style="margin-bottom: -4px" /></button
+			<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="backButtonArrowIcon" />
+			Back</button
 		>
+	</div>
+	{#if showHomeButton}
+		<div class="navigationButtonContainer barMenu">
+			<button
+				class="backButton standardButton white largeButton"
+				disabled={$matchmakingActive}
+				onclick={() => {
+					playSound("basic_button");
+					leaveMultiplayerIfReturningFromMultiplayerPage();
+					goto("/");
+				}}
+			>
+				<Home strokeWidth={2.25} style="margin-bottom: -4px" /></button
+			>
+		</div>
 	{/if}
 </nav>
 
@@ -82,6 +82,11 @@
 		backdrop-filter: blur(15px);
 	}
 
+	.navigationButtonContainer {
+		border-radius: var(--layout-margin);
+		background-color: var(--box-color);
+	}
+
 	.backButton {
 		pointer-events: auto;
 		backdrop-filter: blur(10px);
@@ -96,11 +101,10 @@
 
 	.menuNavBar {
 		position: fixed;
-		top: 0;
-		left: 0;
-		right: 0;
+		top: var(--layout-margin);
+		left: var(--layout-margin);
+		right: var(--layout-margin);
 		display: flex;
-		padding: var(--layout-margin);
 		gap: var(--layout-margin);
 		z-index: 99;
 		pointer-events: none;
@@ -121,7 +125,7 @@
 
 	.container {
 		max-width: 1100px;
-		padding: 20px;
+		padding: var(--layout-margin);
 		padding-top: 100px;
 		box-sizing: border-box;
 		width: 100%;

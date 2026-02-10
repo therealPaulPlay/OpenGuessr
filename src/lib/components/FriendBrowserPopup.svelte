@@ -51,7 +51,7 @@
 
 <Popup z={960} slim={true} bind:open={$friendBrowserPopup}>
 	<div class="popup-title">
-		<h1 id="friendBrowserHeader">Search players</h1>
+		<h1 id="friendBrowserHeader">Add friend</h1>
 	</div>
 	<search class="playerSearch">
 		<input
@@ -59,7 +59,7 @@
 			type="text"
 			id="friendBrowserInput"
 			bind:value={searchQuery}
-			placeholder="Search for a name"
+			placeholder="Search for a player"
 			onkeydown={(event) => {
 				if (event.key === "Enter") {
 					event.preventDefault();

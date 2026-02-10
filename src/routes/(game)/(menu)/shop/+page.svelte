@@ -281,7 +281,7 @@
 		box-sizing: border-box;
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;

@@ -108,22 +108,26 @@
 	{#if $rematchButtonVisible || $leaveMatchButtonVisible}
 		<div class="buttonBox" in:blur={{ delay: 500 }}>
 			{#if $rematchButtonVisible}
-				<button
-					class="standardButton white largeButton roundEndButton"
-					onclick={() => {
-						playSound("basic_button");
-						get(socket)?.sendRequest("rematch");
-					}}>Play again</button
-				>
+				<div class="hostButtonContainer barMenu">
+					<button
+						class="standardButton white largeButton roundEndButton"
+						onclick={() => {
+							playSound("basic_button");
+							get(socket)?.sendRequest("rematch");
+						}}>Play again</button
+					>
+				</div>
 			{/if}
 			{#if $leaveMatchButtonVisible}
-				<button
-					class="standardButton largeButton roundEndButton"
-					onclick={() => {
-						playSound("basic_button");
-						leaveMultiplayer();
-					}}>Exit</button
-				>
+				<div class="hostButtonContainer barMenu">
+					<button
+						class="standardButton largeButton roundEndButton"
+						onclick={() => {
+							playSound("basic_button");
+							leaveMultiplayer();
+						}}>Exit</button
+					>
+				</div>
 			{/if}
 		</div>
 	{/if}
@@ -159,6 +163,12 @@
 		user-select: none;
 	}
 
+	.hostButtonContainer {
+		box-shadow: var(--box-shadow);
+		background-color: rgba(255, 255, 255, 0.15);
+		border-radius: var(--layout-margin);
+	}
+
 	.usernameSpan {
 		margin-right: 3px;
 		font-size: 25px;
@@ -189,18 +199,14 @@
 		margin-top: calc(var(--layout-margin) + var(--box-margin));
 		gap: var(--layout-margin);
 		display: flex;
-		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
-		padding-inline: var(--box-margin);
+		margin-inline: var(--layout-margin);
+		flex-wrap: wrap;
 	}
 
 	.roundEndButton {
-		min-width: 150px;
-	}
-
-	.roundEndButton {
-		min-width: 150px;
+		min-width: 130px;
 	}
 
 	.multiplayerTitle {

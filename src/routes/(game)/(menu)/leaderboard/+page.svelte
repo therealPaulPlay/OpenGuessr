@@ -170,70 +170,74 @@
 	}}
 />
 
-<div class="podium-container">
-	<!-- svelte-ignore a11y_click_events_have_key_events -->
-	<!-- svelte-ignore a11y_no_static_element_interactions -->
-	<div id="podium" class="podium" class:podium-loaded={Boolean(mainSectionEntries)}>
-		<div
-			class="podium-item silver"
-			id="second-place"
-			onclick={() => {
-				loadProfileFromId(mainSectionEntries?.[1]?.id);
-			}}
-		>
-			<div class="name">{mainSectionEntries?.[1]?.user_name || "Guest"}</div>
-			<div class="podiumValue">{(mainSectionEntries?.[1]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
-			<div class="rank">#2</div>
-		</div>
-		<div
-			class="podium-item gold"
-			id="first-place"
-			onclick={() => {
-				loadProfileFromId(mainSectionEntries?.[0]?.id);
-			}}
-		>
-			<div class="name">{mainSectionEntries?.[0]?.user_name || "Guest"}</div>
-			<div class="podiumValue">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
-			<div class="rank">#1</div>
-		</div>
-		<div
-			class="podium-item bronze"
-			id="third-place"
-			onclick={() => {
-				loadProfileFromId(mainSectionEntries?.[2]?.id);
-			}}
-		>
-			<div class="name">{mainSectionEntries?.[2]?.user_name || "Guest"}</div>
-			<div class="podiumValue">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
-			<div class="rank">#3</div>
-		</div>
-	</div>
-</div>
-<div class="optionBar">
-	<Tabs
-		tabs={["Elo", "XP"]}
-		class="leaderboardTabs"
-		onchange={(selection) => {
-			filter = selection;
-			loadCorrectLeaderboard();
-			playSound("basic_button");
-		}}
-	/>
-	<button
-		class="standardButton white resetInfoButton"
-		onclick={() => {
-			playSound("basic_button");
-			showConfirmPopup(
-				"Resets",
-				`Elo above ${Number(2000).toLocaleString()} is reset and converted into tokens at the start of each month. Experience over 100M is halved at the start of each month.`,
-			);
-		}}
-	>
-		<Info style="vertical-align: -3px" />
-	</button>
-</div>
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="leaderboardContainer">
+	<div class="podium-container">
+		<div class="optionBarContainer">
+			<div class="optionBarItem barMenu">
+				<button
+					class="standardButton white largeButton"
+					onclick={() => {
+						playSound("basic_button");
+						showConfirmPopup(
+							"Resets",
+							`Elo above ${Number(2000).toLocaleString()} is reset and converted into tokens at the start of each month. Experience over 100M is halved at the start of each month.`,
+						);
+					}}
+				>
+					<Info style="vertical-align: -3px" />
+				</button>
+			</div>
+			<div class="optionBarItem barMenu">
+				<Tabs
+					tabs={["Elo", "XP"]}
+					class="leaderboardTabs"
+					onchange={(selection) => {
+						filter = selection;
+						loadCorrectLeaderboard();
+						playSound("basic_button");
+					}}
+				/>
+			</div>
+		</div>
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div id="podium" class="podium" class:podium-loaded={Boolean(mainSectionEntries)}>
+			<div
+				class="podium-item silver"
+				id="second-place"
+				onclick={() => {
+					loadProfileFromId(mainSectionEntries?.[1]?.id);
+				}}
+			>
+				<div class="name">{mainSectionEntries?.[1]?.user_name || "Guest"}</div>
+				<div class="podiumValue">{(mainSectionEntries?.[1]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
+				<div class="rank">#2</div>
+			</div>
+			<div
+				class="podium-item gold"
+				id="first-place"
+				onclick={() => {
+					loadProfileFromId(mainSectionEntries?.[0]?.id);
+				}}
+			>
+				<div class="name">{mainSectionEntries?.[0]?.user_name || "Guest"}</div>
+				<div class="podiumValue">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
+				<div class="rank">#1</div>
+			</div>
+			<div
+				class="podium-item bronze"
+				id="third-place"
+				onclick={() => {
+					loadProfileFromId(mainSectionEntries?.[2]?.id);
+				}}
+			>
+				<div class="name">{mainSectionEntries?.[2]?.user_name || "Guest"}</div>
+				<div class="podiumValue">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</div>
+				<div class="rank">#3</div>
+			</div>
+		</div>
+	</div>
 	{#if mainSectionEntries}
 		<div class="item-container" transition:fade={{ duration: 150 }}>
 			{#each mainSectionEntries.slice(3) as entry, i}
@@ -297,40 +301,37 @@
 		margin-top: 10px;
 	}
 
-	.optionBar {
-		display: flex;
-		align-items: center;
-		padding: var(--panel-margin);
-		margin-inline: auto;
+	.optionBarItem {
 		width: fit-content;
 		max-width: 80%;
-		gap: var(--layout-margin);
+		border-radius: var(--layout-margin);
+		box-shadow: var(--box-shadow);
+		background-color: var(--box-color);
 	}
 
 	:global(.leaderboardTabs) {
 		border-radius: 10px !important;
+		min-height: 50px;
 	}
 
 	:global(.leaderboardTabs button) {
-		min-height: 25px;
 		opacity: 0.5;
-		width: 130px;
+		width: 65px;
 	}
 
 	.rankedItem {
 		width: 100%;
-		height: 45px;
+		height: 50px;
 		box-shadow: var(--box-shadow);
 		background-color: rgba(255, 255, 255, 0.1);
 		box-sizing: border-box;
-		border-radius: var(--box-margin);
+		border-radius: var(--layout-margin);
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		padding-inline: 25px;
 		white-space: nowrap;
 		color: white;
-		font-size: 25px;
 	}
 
 	.middle {
@@ -383,22 +384,34 @@
 		justify-content: center;
 		align-items: center;
 		width: 100%;
-		margin-top: 22px;
-		margin-bottom: 30px;
+		margin-bottom: 80px;
 		max-width: 850px;
 		margin-inline: auto;
-	}
-
-	.resetInfoButton {
-		border-radius: var(--box-margin);
-		padding-inline: var(--panel-margin);
 	}
 
 	.podium-container {
 		display: flex;
 		justify-content: center;
-		margin-top: 80px;
-		margin-bottom: 30px;
+		margin-bottom: var(--layout-margin);
+		border-radius: calc(var(--layout-margin) * 2);
+		background: linear-gradient(var(--box-color), transparent 50%);
+		padding: var(--layout-margin);
+		padding-bottom: 35px;
+		gap: 50px;
+		position: relative;
+		flex-wrap: wrap;
+		box-shadow: var(--box-shadow-top);
+		width: 100%;
+		overflow: hidden;
+	}
+
+	.optionBarContainer {
+		display: flex;
+		justify-content: end;
+		align-items: center;
+		flex-wrap: wrap;
+		width: 100%;
+		gap: var(--layout-margin);
 	}
 
 	.podium {
@@ -406,9 +419,9 @@
 		align-items: flex-end;
 		justify-content: center;
 		height: 250px;
-		width: 70%;
-		max-width: 650px;
-		gap: 20px;
+		width: 100%;
+		max-width: 600px;
+		gap: var(--layout-margin);
 		position: relative;
 		transform: scale(0.9);
 		opacity: 0.3;
@@ -429,7 +442,7 @@
 		box-shadow: var(--button-shadow);
 		flex-direction: column;
 		align-items: center;
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		cursor: pointer;
 		transition:
 			filter 250ms ease,
@@ -519,7 +532,7 @@
 		box-shadow: var(--bulb-shadow);
 	}
 
-	@media all and (orientation: portrait) {
+	@media (max-width: 800px) {
 		.podium-item {
 			border-radius: var(--box-margin);
 		}
@@ -545,8 +558,7 @@
 		}
 
 		.podium {
-			width: 85%;
-			height: 150px;
+			height: 200px;
 			gap: 5px;
 		}
 
