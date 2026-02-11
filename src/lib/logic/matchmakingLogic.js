@@ -1,5 +1,5 @@
 // Multiplayer room matchmaking APIs, for Duels
-import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, multiplayerRestriction, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
+import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
 import { createMultiplayerRoom, joinMultiplayerRoom, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -31,6 +31,7 @@ export async function findDuel() {
 
 // This occurs when the multiplayer system's connect/join returns an error
 function findNextDuel() {
+    if (!get(matchmakingActive)) return; // Exit the loop if matchmaking was disabled
     if (roomIndex < 10) {
         roomIndex++;
         attemptDuelJoin(roomIndex, get(skillBasedMatchmaking));
@@ -230,10 +231,3 @@ export async function fetchOpenRooms() {
         console.error("Failed to load open rooms (Network): ", error);
     }
 }
-
-// Misc -------------
-
-// If matchmaking is no longer active, also disable matchmakingHosting
-matchmakingActive.subscribe((value) => {
-    if (!value) matchmakingHosting.set(false);
-});

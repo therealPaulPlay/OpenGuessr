@@ -255,7 +255,7 @@
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
 		text-align: left;
-		padding-left: 10px;
+		padding-left: var(--box-margin);
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
 	}
@@ -265,7 +265,7 @@
 	}
 
 	.flagSelected {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: rgba(255, 255, 255, 0.2) !important;
 		box-shadow: var(--bulb-shadow);
 		filter: brightness(1.5);
@@ -292,7 +292,7 @@
 		background: none;
 		border: none;
 		cursor: pointer;
-		padding: 5px;
+		padding: var(--content-margin);
 		transition:
 			transform 250ms ease,
 			filter 250ms ease;

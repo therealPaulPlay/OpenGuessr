@@ -1,6 +1,6 @@
-import { isAuthenticated, username } from "$lib/stores/accountStore";
+import { isAuthenticated } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
-import { loadedFriendsData, multiplayerStatus, roomCode } from "$lib/stores/context-specific/multiplayerStore";
+import { loadedFriendsData, roomCode } from "$lib/stores/context-specific/multiplayerStore";
 import { inboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { get } from "svelte/store";

@@ -1,5 +1,4 @@
-import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
-import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
+import { countryGuessr } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
@@ -26,8 +25,6 @@ export function calculateDistances(mapsLat = 0, mapsLon = 0) {
 }
 
 export function motivationalResultMessage(distance) {
-    let resultAsString;
-
     const veryCloseDistances = ["Rainbolt?", "How?", "Impressive.", "Do you have an A in geography?", "Wow.", "Time for a screenshot.", "Seriously impressive."];
     const closeDistances = ["Wow, that was very close!", "You're good at this.", "Very close!", "Almost there!", "Yup, that was impressive.", "That's how it's done!"];
     const farDistances = ["Distance is relative. Here, relatively big.", "You'll get it next time!", "At least it was on the correct planet.", "It could have been worse."];

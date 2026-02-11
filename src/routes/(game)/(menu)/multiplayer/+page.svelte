@@ -13,6 +13,7 @@
 		History,
 		Globe,
 		Handshake,
+		Plus,
 	} from "@lucide/svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -172,20 +173,17 @@
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Friends</h2>
 		<!-- Inbox and Friend request buttons-->
-		<div class="friendButtonBox">
+		<div class="friendButtonContainer barMenu">
 			<button
-				class="standardButton white friendActionButton largeButton"
+				class="standardButton white largeButton"
 				onclick={() => {
 					playSound("basic_button");
-					if ($isAuthenticated) {
-						friendBrowserPopup.set(true);
-					} else {
-						signupPrompt();
-					}
-				}}><p class="addFriendText">Add <ContactRound strokeWidth={2} size={22} /></p></button
+					if ($isAuthenticated) friendBrowserPopup.set(true);
+					else signupPrompt();
+				}}><p class="addFriendText"><Plus strokeWidth={2.25} size={22} /></p></button
 			>
 			<button
-				class="standardButton white friendActionButton largeButton"
+				class="standardButton white largeButton"
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) {
@@ -248,16 +246,16 @@
 		box-shadow: var(--box-shadow);
 		width: 100%;
 		box-sizing: border-box;
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		align-items: center;
 		background-color: var(--box-color);
 		margin-bottom: var(--layout-margin);
-		gap: 5px;
+		gap: var(--content-margin);
 	}
 
 	:global(.skillBasedToggle) {
 		flex-grow: 0;
-		border-radius: 10px !important;
+		border-radius: var(--box-margin) !important;
 		height: 50px !important;
 	}
 
@@ -278,7 +276,7 @@
 
 	:global(.triangleAlertMarginRight) {
 		margin-right: auto;
-		margin-bottom: 5px;
+		margin-bottom: var(--content-margin);
 		width: 25px;
 		height: 25px;
 	}
@@ -298,7 +296,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 8px;
+		gap: var(--panel-margin);
 	}
 
 	.playBox {
@@ -309,15 +307,16 @@
 		flex-wrap: wrap;
 	}
 
-	.friendActionButton {
-		justify-content: center !important;
-		padding-inline: 15px;
+	.friendButtonContainer {
+		border-radius: var(--layout-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 	}
 
 	.selectButtonsHeader {
 		width: calc(100% - 10px);
 		opacity: 0.5;
-		padding-inline: 5px;
+		padding-inline: var(--content-margin);
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -327,11 +326,6 @@
 
 	.headerMarginTop {
 		margin-top: 50px;
-	}
-
-	.friendButtonBox {
-		display: flex;
-		gap: var(--layout-margin);
 	}
 
 	.friendItem {
@@ -371,7 +365,7 @@
 	}
 
 	.friendItem p {
-		padding-inline: 5px;
+		padding-inline: var(--content-margin);
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
@@ -388,7 +382,7 @@
 	.groupPartyButtons {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 10px;
+		gap: var(--box-margin);
 		justify-content: center;
 		align-items: center;
 		flex-grow: 1.5;
@@ -396,7 +390,7 @@
 		background-color: var(--box-color);
 		padding: var(--box-margin);
 		box-shadow: var(--box-shadow);
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		max-width: calc(100% - 20px);
 	}
 
@@ -487,11 +481,11 @@
 
 	.friendOnlineBar {
 		width: 6px;
-		border-radius: 5px;
-		height: 10px;
+		border-radius: var(--content-margin);
+		height: var(--box-margin);
 		background-color: #00cc00;
 		margin-top: 3px;
-		margin-left: 5px;
+		margin-left: var(--content-margin);
 	}
 
 	.friendBox {
@@ -499,7 +493,7 @@
 		transition: max-height 150ms ease;
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
 		margin-bottom: 50px;
 		position: relative;
@@ -524,7 +518,7 @@
 		width: 18px;
 		height: 18px;
 		vertical-align: -2px;
-		margin-left: 5px;
+		margin-left: var(--content-margin);
 	}
 
 	:global(.divisions-container) {

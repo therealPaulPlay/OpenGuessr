@@ -82,11 +82,11 @@
 				</h2>
 				<ul class="tierBenefits tierBenefitsLarge">
 					<div class="tierBenefitsScroll of-top of-bottom of-length-2">
-						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Ad-free experience</li>
-						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />15% XP boost</li>
-						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Supporter pin</li>
-						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Tier 2 badge</li>
-						<li><CirclePlus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Highlighted name</li>
+						<li><CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Ad-free experience</li>
+						<li><CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />15% XP boost</li>
+						<li><CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Supporter pin</li>
+						<li><CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Tier 2 badge</li>
+						<li><CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Highlighted name</li>
 					</div>
 				</ul>
 				<button
@@ -107,9 +107,9 @@
 			<div class="tierBoxLargeTier"><p>Tier 1</p></div>
 			<ul class="tierBenefits">
 				<li style="opacity: 50%;">Same as tier 2, but</li>
-				<li><CircleMinus size={20} style="margin-right: 10px; margin-bottom: -2px;" />Ad-supported</li>
-				<li><CircleArrowDown size={20} style="margin-right: 10px; margin-bottom: -2px;" />10% XP boost</li>
-				<li><CircleArrowDown size={20} style="margin-right: 10px; margin-bottom: -2px;" />Tier 1 badge</li>
+				<li><CircleMinus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Ad-supported</li>
+				<li><CircleArrowDown size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />10% XP boost</li>
+				<li><CircleArrowDown size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Tier 1 badge</li>
 			</ul>
 			<button
 				id="tierPrice1"
@@ -122,8 +122,8 @@
 			<div class="tierBoxLargeTier"><p>Tier 3</p></div>
 			<ul class="tierBenefits">
 				<li style="opacity: 50%;">Same as tier 2, plus</li>
-				<li><CircleArrowUp size={20} style="margin-right: 10px; margin-bottom: -2px;" />25% XP boost</li>
-				<li><CircleArrowUp size={20} style="margin-right: 10px; margin-bottom: -2px;" />Tier 3 badge</li>
+				<li><CircleArrowUp size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />25% XP boost</li>
+				<li><CircleArrowUp size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Tier 3 badge</li>
 			</ul>
 			<button
 				id="tierPrice3"
@@ -147,7 +147,7 @@
 	.tierBenefits {
 		padding-left: 0px;
 		font-size: 22px;
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 		list-style-type: none;
 	}
 
@@ -169,7 +169,7 @@
 		font-size: 18px;
 		padding: 2px;
 		opacity: 0.9;
-		padding-left: 5px;
+		padding-left: var(--content-margin);
 		padding-right: 9px;
 		font-style: italic;
 		border-radius: 3px;
@@ -179,7 +179,7 @@
 	}
 
 	.tierBenefits li {
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 	}
 
 	.tierBuyButton {
@@ -212,7 +212,7 @@
 	}
 
 	:global(.baseTierPrice) {
-		margin-right: 5px;
+		margin-right: var(--content-margin);
 		color: rgba(255, 255, 255, 0.5);
 		text-decoration: line-through;
 	}
@@ -258,14 +258,14 @@
 		height: 35px;
 		text-align: center;
 		line-height: 35px;
-		border-bottom-left-radius: 10px;
-		border-top-right-radius: 10px;
+		border-bottom-left-radius: var(--box-margin);
+		border-top-right-radius: var(--box-margin);
 		box-shadow: var(--bulb-shadow);
 		background-color: var(--box-color);
 	}
 
 	.tierBoxLargeHeader {
-		padding-bottom: 5px;
+		padding-bottom: var(--content-margin);
 		margin-bottom: auto;
 	}
 
@@ -288,7 +288,7 @@
 		flex-wrap: wrap;
 		align-items: center;
 		gap: var(--layout-margin);
-		padding-top: 5px;
+		padding-top: var(--content-margin);
 	}
 
 	#supporterInfoText {

@@ -132,7 +132,7 @@
 
 	.badge {
 		padding: var(--panel-margin);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		font-style: italic;
 		position: relative;
 		color: white;

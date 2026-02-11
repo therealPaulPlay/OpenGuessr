@@ -86,8 +86,8 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		gap: 5px;
-		padding-inline: 15px;
+		gap: var(--content-margin);
+		padding-inline: var(--layout-margin);
 	}
 
 	.arrowIconContainer {

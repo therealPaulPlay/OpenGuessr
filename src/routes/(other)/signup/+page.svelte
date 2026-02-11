@@ -289,7 +289,7 @@
 	<!-- Captcha Popup-->
 	{#if captchaVisible}
 		<div class="popupContainer" transition:fade={{ duration: 150 }}>
-			<div class="container neumorphic-menu" transition:scale>
+			<div class="container" transition:scale>
 				<h2 class="captchaHeader">Captcha</h2>
 				<div id="captchaContainer">
 					<!-- Captcha will be loaded here -->
@@ -299,7 +299,7 @@
 	{/if}
 	<!-- Center Container -->
 	<div class="wrapper">
-		<div class="container neumorphic-menu">
+		<div class="container">
 			<img class="logo" src="/img/openguessr.svg" alt="OpenGuessr Logo" />
 			{#if formType == "newPassword"}
 				<div id="newPasswordForm">
@@ -432,15 +432,8 @@
 		overflow: hidden;
 	}
 
-	.neumorphic-menu {
-		box-shadow:
-			0 0 20px rgba(0, 0, 0, 0.3),
-			inset 0 0.075rem 0 hsla(0, 0%, 100%, 0.2),
-			inset 0 -0.1rem 0 rgba(0, 0, 0, 0.15) !important;
-	}
-
 	.captchaHeader {
-		margin-bottom: 15px;
+		margin-bottom: var(--layout-margin);
 	}
 
 	.logo {
@@ -448,7 +441,7 @@
 		width: 275px;
 		height: 57px;
 		margin-bottom: 30px;
-		margin-top: 5px;
+		margin-top: var(--content-margin);
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
 	}
 
@@ -471,8 +464,9 @@
 		flex-direction: column;
 		justify-content: center;
 		align-items: center;
-		background-color: rgba(255, 255, 255, 0.3);
-		border-radius: 15px;
+		background-color: rgba(255, 255, 255, 0.2);
+		box-shadow: var(--box-shadow);
+		border-radius: var(--layout-margin);
 		padding: 20px;
 		width: 280px;
 		text-align: center;
@@ -514,23 +508,6 @@
 		margin-bottom: var(--layout-margin);
 	}
 
-	@keyframes floatOrb {
-		0% {
-			transform: translateY(0) translateX(0);
-			opacity: 0.05;
-		}
-
-		50% {
-			transform: translateY(-200px) translateX(200px);
-			opacity: 0.025;
-		}
-
-		100% {
-			transform: translateY(0) translateX(-200px);
-			opacity: 0.05;
-		}
-	}
-
 	#privacyNotice {
 		opacity: 50%;
 		margin-bottom: 0;
@@ -538,14 +515,19 @@
 	}
 
 	input {
-		width: calc(80% - 20px);
-		padding: 15px;
+		width: calc(100% - 60px);
+		padding: var(--layout-margin);
 		border-radius: var(--box-margin);
 	}
 
 	.password-container {
 		position: relative;
 		width: 100%;
+	}
+
+	.password-container input {
+		width: calc(100% - 95px);
+		padding-right: 50px;
 	}
 
 	.switchFormBox {
@@ -564,11 +546,11 @@
 
 	.toggle-password {
 		position: absolute;
-		right: -16px;
+		right: 25px;
 		top: 50%;
 		transform: translateY(-50%);
 		cursor: pointer;
-		width: 30px;
+		padding: 3px;
 		height: auto;
 		opacity: 0.5;
 		color: white;
@@ -577,15 +559,15 @@
 	}
 
 	.wrapper {
-		padding-top: 10px;
-		padding-bottom: 10px;
+		padding-top: var(--box-margin);
+		padding-bottom: var(--box-margin);
 	}
 
 	#passwordResetOption {
 		color: rgba(255, 255, 255, 0.5);
 		transition: color 250ms ease;
 		cursor: pointer;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		width: 100%;
 		margin-bottom: 0;
 		margin-top: var(--layout-margin);

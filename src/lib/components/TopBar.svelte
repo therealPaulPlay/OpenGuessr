@@ -166,8 +166,8 @@
 	}
 
 	.menu-tooltip p {
-		margin-inline: 5px;
-		margin-bottom: 5px;
+		margin-inline: var(--content-margin);
+		margin-bottom: var(--content-margin);
 	}
 
 	.menu-tooltip-arrow {

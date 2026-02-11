@@ -39,7 +39,7 @@
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		width: calc(100% - 30px);
-		padding-inline: 15px;
+		padding-inline: var(--layout-margin);
 		display: flex;
 		align-items: center;
 		box-shadow: var(--box-shadow);

@@ -21,24 +21,30 @@
 </h2>
 {#if $skillBasedMatchmaking && showSkillbasedInfo}
 	<div class="info-container" transition:slide>
-		<Info strokeWidth={2.25} color="white" style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; flex-shrink: 0;" />
+		<Info
+			strokeWidth={2.25}
+			color="white"
+			style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; flex-shrink: 0;"
+		/>
 		<p>Skill-based matchmaking has longer waiting times.</p>
 	</div>
 {/if}
-<button
-	class="standardButton try-button largeButton"
-	disabled={$matchmakingActive && !$matchmakingHosting}
-	onclick={() => {
-		if (!$matchmakingActive) {
-			playSound("basic_button");
-			findFunction?.();
-		} else cancelFunction?.();
-	}}
-	>{$matchmakingActive ? "Cancel" : "Try again"}
-	{#if !$matchmakingActive}
-		<span class="refresh-icon"><RefreshCcw strokeWidth={3} size={18} /></span>
-	{/if}</button
->
+<div class="try-button-container barMenu">
+	<button
+		class="standardButton try-button largeButton"
+		disabled={$matchmakingActive && !$matchmakingHosting}
+		onclick={() => {
+			if (!$matchmakingActive) {
+				playSound("basic_button");
+				findFunction?.();
+			} else cancelFunction?.();
+		}}
+		>{$matchmakingActive ? "Cancel" : "Try again"}
+		{#if !$matchmakingActive}
+			<span class="refresh-icon"><RefreshCcw strokeWidth={3} size={18} /></span>
+		{/if}</button
+	>
+</div>
 
 <style>
 	.info-container {
@@ -48,7 +54,7 @@
 		align-items: center;
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		gap: 5px;
+		gap: var(--content-margin);
 		max-width: 300px;
 		margin-bottom: var(--box-margin);
 	}
@@ -63,8 +69,14 @@
 	}
 
 	.refresh-icon {
-		margin-left: 5px;
+		margin-left: var(--content-margin);
 		vertical-align: -1px;
+	}
+
+	.try-button-container {
+		box-shadow: var(--box-shadow);
+		background-color: var(--box-color);
+		border-radius: var(--layout-margin);
 	}
 
 	.try-button {

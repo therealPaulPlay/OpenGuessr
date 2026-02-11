@@ -419,6 +419,22 @@
 	}
 </script>
 
+<svelte:head>
+	<title>Competitions</title>
+</svelte:head>
+
+{#snippet showMoreButton(callback)}
+	<button
+		class="loadMoreItem standardButton white fadeInItem"
+		onclick={() => {
+			callback?.();
+		}}
+	>
+		More
+		<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: var(--content-margin);" />
+	</button>
+{/snippet}
+
 <Popup slim={true} bind:open={leaderboardPopup}>
 	<div class="popup-title">
 		<h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for <i>{leaderboardName}</i></h1>
@@ -543,7 +559,7 @@
 			<p
 				class="competitionAuthor"
 				onclick={() => {
-					const id = authorId == 0 ? 2 : authorId; // Set to 2 (PaulPlay) if created by System (0)
+					const id = authorId == 0 ? 2 : authorId; // Display as 2 (PaulPlay) if created by System (0)
 					loadProfileFromId(id);
 				}}
 			>
@@ -689,9 +705,11 @@
 </div>
 <div class="competitionElement">
 	<div class="headerContainer">
-		<h2 class="header marginTopAuto">Active</h2>
+		<h2 class="header">Active</h2>
+	</div>
+	<div class="buttonToolbar">
 		<button
-			class="standardButton white marginTopAuto largeButton"
+			class="standardButton white"
 			onclick={() => {
 				playSound("basic_button");
 				if ($isAuthenticated) {
@@ -699,10 +717,8 @@
 				} else {
 					signupPrompt();
 				}
-			}}>+ Create</button
+			}}><Plus size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-right: 2px;" /> Create</button
 		>
-	</div>
-	<div class="buttonToolbar">
 		<Tabs
 			tabs={["All", "Not entered"]}
 			class="hideEnteredCompsToggle"
@@ -721,7 +737,7 @@
 			<input
 				id="competitionSearch"
 				bind:value={searchQuery}
-				placeholder="Search competitions"
+				placeholder="Search"
 				onkeydown={(event) => {
 					if (event.key === "Enter") {
 						event.preventDefault();
@@ -771,14 +787,10 @@
 		{/if}
 	</div>
 	{#if loadMoreActive}
-		<button
-			id="loadMoreActive"
-			class="loadMore standardButton white"
-			onclick={() => {
-				playSound("basic_button");
-				getCompetitionsFromServer(false, false, false, hideEntered);
-			}}>Show more <Plus size={20} strokeWidth={2.75} style="margin-bottom: -3px; margin-left: 2px;" /></button
-		>
+		{@render showMoreButton(() => {
+			playSound("basic_button");
+			getCompetitionsFromServer(false, false, false, hideEntered);
+		})}
 	{/if}
 </div>
 <div class="competitionElement expiredBox">
@@ -811,19 +823,12 @@
 		{/if}
 	</div>
 	{#if loadMoreExpired}
-		<button
-			class="loadMore standardButton white"
-			onclick={() => {
-				playSound("basic_button");
-				getCompetitionsFromServer(true);
-			}}>Show more <Plus size={20} strokeWidth={2.75} style="margin-bottom: -3px;  margin-left: 2px;" /></button
-		>
+		{@render showMoreButton(() => {
+			playSound("basic_button");
+			getCompetitionsFromServer(true);
+		})}
 	{/if}
 </div>
-
-<svelte:head>
-	<title>Competitions</title>
-</svelte:head>
 
 <style>
 	.buttonToolbar {
@@ -858,10 +863,6 @@
 		flex-wrap: wrap;
 		justify-content: flex-end;
 		gap: var(--box-margin);
-	}
-
-	.marginTopAuto {
-		margin-top: auto;
 	}
 
 	.emptyLeaderboardBox {
@@ -906,11 +907,11 @@
 	.label {
 		padding: 3px;
 		box-shadow: var(--box-shadow);
-		padding-inline: 10px;
+		padding-inline: var(--box-margin);
 		width: fit-content;
 		background-color: rgba(255, 255, 255, 0.1);
-		border-radius: 5px;
-		margin-right: 5px;
+		border-radius: var(--content-margin);
+		margin-right: var(--content-margin);
 		margin-left: 4px;
 	}
 
@@ -919,8 +920,8 @@
 	}
 
 	.itemText {
-		margin: 5px;
-		margin-inline: 5px;
+		margin: var(--content-margin);
+		margin-inline: var(--content-margin);
 		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;
@@ -941,7 +942,7 @@
 		align-items: center;
 		margin-bottom: var(--box-margin);
 		flex-wrap: wrap;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		gap: var(--box-margin);
 	}
 
@@ -959,10 +960,10 @@
 	}
 
 	.descText {
-		margin-top: 10px;
+		margin-top: var(--box-margin);
 		overflow: hidden;
 		max-height: 60px;
-		margin-inline: 10px;
+		margin-inline: var(--box-margin);
 	}
 
 	.competitionAuthor {
@@ -1046,14 +1047,14 @@
 	.rankItem {
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		width: 100%;
 		box-sizing: border-box;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 5px;
-		padding-inline: 10px;
+		padding: var(--content-margin);
+		padding-inline: var(--box-margin);
 		gap: var(--box-margin);
 	}
 
@@ -1077,7 +1078,7 @@
 	}
 
 	#inputArea {
-		padding: 10px;
+		padding: var(--box-margin);
 		display: flex;
 		justify-content: flex-start;
 		flex-direction: column;
@@ -1098,7 +1099,7 @@
 
 	#uploadHeader {
 		text-align: left;
-		margin-top: 5px;
+		margin-top: var(--content-margin);
 		margin-bottom: 30px;
 	}
 
@@ -1115,28 +1116,24 @@
 		margin-bottom: 20px;
 	}
 
-	.loadMore {
-		border-radius: var(--box-margin);
-		width: 200px;
-		padding: var(--box-margin);
-		margin-bottom: 30px;
-		height: 50px;
-		line-height: 1;
-		margin-left: calc(50% - 100px);
-	}
-
-	search {
-		display: flex;
-		justify-content: start;
-		gap: var(--box-margin);
-		overflow: hidden;
+	.loadMoreItem {
+		flex-direction: row;
+		min-height: 80px;
+		justify-content: center;
+		align-items: center;
+		border: none;
+		width: 100%;
+		border-radius: var(--layout-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 	}
 
 	#competitionSearch {
 		transition: background-color 250ms ease;
-		padding-inline: 10px;
+		padding-inline: var(--box-margin);
 		min-width: 0;
-		flex-grow: 1;
+		max-width: 225px;
+		flex: 1;
 		text-overflow: ellipsis;
 	}
 
@@ -1144,6 +1141,13 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+
+	search {
+		flex-grow: 1;
+		flex-shrink: 1;
+		min-width: 0;
+		max-width: fit-content;
 	}
 
 	#searchIcon {
@@ -1166,16 +1170,16 @@
 
 	.youBar {
 		display: flex;
-		gap: 10px;
+		gap: var(--box-margin);
 		align-items: center;
 	}
 
 	.youLabel {
 		box-shadow: var(--bulb-shadow);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: rgba(255, 255, 255, 0.2);
-		padding: 5px;
-		padding-inline: 10px;
+		padding: var(--content-margin);
+		padding-inline: var(--box-margin);
 	}
 
 	.dailyPrimary {
@@ -1206,6 +1210,7 @@
 	:global(.hideEnteredCompsToggle) {
 		overflow: hidden;
 		text-overflow: ellipsis;
+		margin-right: auto;
 	}
 
 	#ratingBox {
@@ -1228,7 +1233,7 @@
 	}
 
 	.rateButton {
-		padding-inline: 5px;
+		padding-inline: var(--content-margin);
 	}
 
 	.ratingButtonBox {
@@ -1238,17 +1243,13 @@
 		align-items: center;
 	}
 
-	@media all and (max-width: 800px) {
-		.competitionItem {
-			flex-grow: 1;
+	@media all and (max-width: 1000px) {
+		#competitionSearch {
+			max-width: none;
 		}
 
 		search {
-			flex-grow: 1;
-		}
-
-		.competitionButton {
-			flex-grow: 1;
+			max-width: none;
 		}
 	}
 </style>

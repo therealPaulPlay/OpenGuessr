@@ -1,5 +1,5 @@
 import { showNotification } from "$lib/utils/notifications";
-import { username, elo, duelWinStreak, tokens, supporterLevel } from "$lib/stores/accountStore";
+import { elo, duelWinStreak, tokens, supporterLevel } from "$lib/stores/accountStore";
 import { acceptFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
 import { leaveMultiplayer, joinFromAnywhere } from "$lib/logic/multiplayerLogic";
@@ -8,7 +8,7 @@ import { duelResultPopup } from "$lib/stores/uiStore";
 import { duelResultTitle, eloChange, tokenGain } from "$lib/stores/context-specific/duelResultStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { multiplayer } from "$lib/stores/modeStore";
-import { roundAmount, socket } from "$lib/stores/context-specific/multiplayerStore";
+import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { goto } from "$app/navigation";
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { page } from "$app/state";
@@ -61,7 +61,7 @@ export async function initializeSSEConnection() {
                             });
                             break;
 
-                        case 'duel-result':
+                        case 'duel-result': {
                             const didWin = localStorage.getItem("id") == data?.winnerId;
 
                             const showResult = () => {
@@ -70,7 +70,7 @@ export async function initializeSSEConnection() {
                                 eloChange.set(data?.eloChanges?.[localStorage.getItem("id")] || 0);
                                 tokenGain.set(didWin ? data.tokenGain : 0);
 
-                                // Update data (Only apply updates if values are not null – they can be null for e.g. a draw!)
+                                // Update data (Only apply updates if values are not null – they can be null for e.g. a draw!)
                                 if (get(eloChange)) elo.set(Math.max(0, get(elo) + get(eloChange))); // Prevent elo from becoming negative
                                 if (get(tokenGain)) tokens.set(get(tokens) + get(tokenGain));
                                 duelWinStreak.set(didWin ? get(duelWinStreak) + 1 : 0);
@@ -90,6 +90,7 @@ export async function initializeSSEConnection() {
                             else showResult();
 
                             break;
+                        }
 
                         case 'tournament-starting':
                             // Only show if not already on the page

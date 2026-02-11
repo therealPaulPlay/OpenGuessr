@@ -20,7 +20,6 @@ import {
     participantCount,
     remainingPlayers,
     overlayShowSubtitle,
-    skillBasedMatchmaking,
     multiplayerStyle,
     guestNamePromise,
     multiplayerRestriction,
@@ -29,6 +28,7 @@ import {
     currentRound,
     multiplayerMap,
     mobileChatLastOpenedMsgCount,
+    matchmakingHosting,
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
@@ -39,10 +39,8 @@ import { goto, replaceState } from "$app/navigation";
 import { changeMap } from "$lib/utils/changeMap";
 import { showNotification } from "$lib/utils/notifications";
 import PlaySocket from "playsocketjs";
-import { getMapBounds } from "$lib/utils/getMapBounds";
 import { getServerTimestamp } from "$lib/utils/timeUtil";
-import { signupPrompt } from "$lib/utils/signupPrompt";
-import { apiUrl, websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
+import { websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
@@ -89,130 +87,129 @@ export async function createMultiplayerInstance() {
         await new Promise((resolve) => guestNamePromise.set(resolve));
     }
 
-    return new Promise(async (resolve, reject) => {
-        // Create the new instance
-        try {
-            let customData = get(isAuthenticated) ? { bearer: localStorage.getItem("bearer") } : undefined;
-            socket.set(new PlaySocket(null, {
-                endpoint: get(websocketUrl),
-                customData
-            }));
+    // Create the new instance
+    try {
+        let customData = get(isAuthenticated) ? { bearer: localStorage.getItem("bearer") } : undefined;
 
-            let playerAddRequestSent = false;
+        socket.set(new PlaySocket(null, {
+            endpoint: get(websocketUrl),
+            customData
+        }));
 
-            // Register event listeners
-            get(socket).onEvent('status', status => multiplayerStatus.set(status));
-            get(socket).onEvent('status', status => console.log(status));
-            get(socket).onEvent('error', (error) => {
-                if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system reports an error.", error);
-                else multiplayerStatus.set("An error occured.");
-            });
+        let playerAddRequestSent = false;
 
-            // Someone connected...
-            get(socket).onEvent('clientJoined', (id) => {
-                participantCount.set(get(socket)?.participantCount);
-            });
+        // Register event listeners
+        get(socket).onEvent('status', status => multiplayerStatus.set(status));
+        get(socket).onEvent('status', status => console.log(status));
+        get(socket).onEvent('error', (error) => {
+            if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system reports an error.", error);
+            else multiplayerStatus.set("An error occured.");
+        });
 
-            // Someone disconnected...
-            get(socket).onEvent('clientLeft', (id) => {
-                participantCount.set(get(socket)?.participantCount);
-            });
+        // Someone connected...
+        get(socket).onEvent('clientJoined', (_id) => {
+            participantCount.set(get(socket)?.participantCount);
+        });
 
-            get(socket).onEvent('hostMigrated', () => {
-                // In a non-division room, start when the host (who is the only one with the start button) leaves
-                if (!get(socket)?.storage?.gameStarted && !get(socket)?.storage?.matchmakingRoom) get(socket)?.sendRequest("startRoom");
-            });
+        // Someone disconnected...
+        get(socket).onEvent('clientLeft', (_id) => {
+            participantCount.set(get(socket)?.participantCount);
+        });
 
-            get(socket).onEvent('moved', (newRoomId) => {
-                playerAddRequestSent = false; // Reset so addPlayer is sent for the new room
-                roomCode.set(newRoomId); // Update roomCode to the new room
-            });
+        get(socket).onEvent('hostMigrated', () => {
+            // In a non-division room, start when the host (who is the only one with the start button) leaves
+            if (!get(socket)?.storage?.gameStarted && !get(socket)?.storage?.matchmakingRoom) get(socket)?.sendRequest("startRoom");
+        });
 
-            get(socket).onEvent('storageUpdated', (storage) => {
-                // Save game info
-                if (storage.map && storage.roundAmount && storage.roundLength && storage.teamAmount && storage.style && storage.restriction) {
-                    multiplayerMap.set(storage.map);
-                    roundAmount.set(storage.roundAmount);
-                    roundLength.set(storage.roundLength);
-                    teamAmount.set(storage.teamAmount);
-                    multiplayerStyle.set(storage.style);
-                    multiplayerRestriction.set(storage.restriction);
-                }
+        get(socket).onEvent('moved', (newRoomId) => {
+            playerAddRequestSent = false; // Reset so addPlayer is sent for the new room
+            roomCode.set(newRoomId); // Update roomCode to the new room
+        });
 
-                // If game has started, go to game page & disable matchmaking
-                if (storage.gameStarted && page.url.pathname !== "/") goto("/"); // E.g. host or duel page -> game page
-                if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
+        get(socket).onEvent('storageUpdated', (storage) => {
+            // Save game info
+            if (storage.map && storage.roundAmount && storage.roundLength && storage.teamAmount && storage.style && storage.restriction) {
+                multiplayerMap.set(storage.map);
+                roundAmount.set(storage.roundAmount);
+                roundLength.set(storage.roundLength);
+                teamAmount.set(storage.teamAmount);
+                multiplayerStyle.set(storage.style);
+                multiplayerRestriction.set(storage.restriction);
+            }
 
-                // If player is not already in the room, add player info
-                if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerAddRequestSent) {
-                    playerAddRequestSent = true;
-                    get(socket).sendRequest("addPlayer", { guestName: get(guestName) || null });
-                }
+            // If game has started, go to game page & disable matchmaking
+            if (storage.gameStarted && page.url.pathname !== "/") goto("/"); // E.g. host or duel page -> game page
+            if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
 
-                if (storage.players) updatePlayerArrays(); // Do this before showing the overlay
+            // If player is not already in the room, add player info
+            if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerAddRequestSent) {
+                playerAddRequestSent = true;
+                get(socket).sendRequest("addPlayer", { guestName: get(guestName) || null });
+            }
 
-                if (storage.overlay != null && storage.overlay != get(multiplayerOverlay)) showMultiplayerOverlay(Boolean(storage.overlay));
+            if (storage.players) updatePlayerArrays(); // Do this before showing the overlay
 
-                if (storage.chats) loadAndProfanityCheckChat(storage.chats || []);
+            if (storage.overlay != null && storage.overlay != get(multiplayerOverlay)) showMultiplayerOverlay(Boolean(storage.overlay));
 
-                if (get(teamAmount) > 1 && storage.guessLocationsArray && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
+            if (storage.chats) loadAndProfanityCheckChat(storage.chats || []);
 
-                if (storage.restriction) setRestriction(storage.restriction);
+            if (get(teamAmount) > 1 && storage.guessLocationsArray && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
 
-                if (storage.currentRound) currentRound.set(storage.currentRound);
+            if (storage.restriction) setRestriction(storage.restriction);
 
-                if (storage.confirmedArray && storage.players) {
-                    const confirmedIDs = new Set(storage.confirmedArray); // Convert confirmedArray to a Set for efficient lookups
-                    const truncate = (nameString) => nameString.length > 10 ? `${nameString.slice(0, 7)}...` : nameString;
-                    const remaining = storage.players
-                        .filter((player) => !confirmedIDs.has(player.clientId))
-                        .map((player) => truncate(player.username));
-                    remainingPlayers.set(remaining); // Set the remainingPlayers to the usernames
-                }
+            if (storage.currentRound) currentRound.set(storage.currentRound);
 
-                // Control result screen
-                if (storage.showResult != null && storage.showResult !== get(resultScreenEnabled)) {
-                    if (storage.showResult == true) {
-                        // Wait result screen continue text in lobbies with others
-                        const continueTimeout = get(socket)?.storage?.players?.length > 1 ? (get(socket)?.storage?.tournamentRoom ? 10_000 : 5000) : 0;
-                        continueText.set(`Wait ${continueTimeout / 1000}s...`);
-                        setTimeout(() => continueText.set("Continue"), continueTimeout);
+            if (storage.confirmedArray && storage.players) {
+                const confirmedIDs = new Set(storage.confirmedArray); // Convert confirmedArray to a Set for efficient lookups
+                const truncate = (nameString) => nameString.length > 10 ? `${nameString.slice(0, 7)}...` : nameString;
+                const remaining = storage.players
+                    .filter((player) => !confirmedIDs.has(player.clientId))
+                    .map((player) => truncate(player.username));
+                remainingPlayers.set(remaining); // Set the remainingPlayers to the usernames
+            }
 
-                        // Ensure the coords are set, in case user joins during result screen
-                        currentLocationLatitude.set(storage?.location[0]);
-                        currentLocationLongitude.set(storage?.location[1]);
-                        enableResultScreen(get(mapPinLat), get(mapPinLng));
+            // Control result screen
+            if (storage.showResult != null && storage.showResult !== get(resultScreenEnabled)) {
+                if (storage.showResult == true) {
+                    // Wait result screen continue text in lobbies with others
+                    const continueTimeout = get(socket)?.storage?.players?.length > 1 ? (get(socket)?.storage?.tournamentRoom ? 10_000 : 5000) : 0;
+                    continueText.set(`Wait ${continueTimeout / 1000}s...`);
+                    setTimeout(() => continueText.set("Continue"), continueTimeout);
 
-                    } else disableResultScreen();
-                }
+                    // Ensure the coords are set, in case user joins during result screen
+                    currentLocationLatitude.set(storage?.location[0]);
+                    currentLocationLongitude.set(storage?.location[1]);
+                    enableResultScreen(get(mapPinLat), get(mapPinLng));
 
-                // Set coordinates
-                if (storage.location && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1])) checkGenerationTypeAndGenerate();
+                } else disableResultScreen();
+            }
 
-                if (storage.countdownActive) multiplayerOverlayCountdown(); // Display countdown
+            // Set coordinates
+            if (storage.location && (get(currentLocationLatitude) != storage?.location[0] || get(currentLocationLongitude) != storage?.location[1])) checkGenerationTypeAndGenerate();
 
-                if (storage.timerStart) startMultiplayerTimer(storage.timerStart?.length, storage.timerStart?.timestamp); // Set timer if not running
-                if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) multiplayerTimer?.stopTimer(); // Stop multiplayer timer
+            if (storage.countdownActive) multiplayerOverlayCountdown(); // Display countdown
 
-                if (storage.timeReducedOverlay != null && storage.timeReducedOverlay !== get(timeReducedOverlay)) {
-                    if (storage.timeReducedOverlay && !storage?.confirmedArray?.includes(get(socket)?.id)) showTimeReducedOverlay();
-                    else timeReducedOverlay.set(false);
-                }
-            });
+            if (storage.timerStart) startMultiplayerTimer(storage.timerStart?.length, storage.timerStart?.timestamp); // Set timer if not running
+            if (!storage.timerStart && multiplayerTimer?.isTimerRunning()) multiplayerTimer?.stopTimer(); // Stop multiplayer timer
 
-            get(socket).onEvent('instanceDestroyed', () => {
-                if (get(multiplayer)) leaveMultiplayer(false); // If not already left, leave (e.g. on error)
-            });
+            if (storage.timeReducedOverlay != null && storage.timeReducedOverlay !== get(timeReducedOverlay)) {
+                if (storage.timeReducedOverlay && !storage?.confirmedArray?.includes(get(socket)?.id)) showTimeReducedOverlay();
+                else timeReducedOverlay.set(false);
+            }
+        });
 
-            // Initialize and open connection
-            await get(socket).init();
-            resolve(get(socket).id);
+        get(socket).onEvent('instanceDestroyed', () => {
+            if (get(multiplayer)) leaveMultiplayer(false); // If not already left, leave (e.g. on error)
+        });
 
-        } catch (error) {
-            console.error("Error creating multiplayer instance:", error);
-            reject(new Error("Failed to create multiplayer instance: " + error?.message));
-        }
-    });
+        // Initialize and open connection
+        await get(socket).init();
+        return get(socket).id;
+
+    } catch (error) {
+        console.error("Error creating multiplayer instance:", error);
+        throw error;
+    }
 }
 
 // Joining via Links or from other places ----------------------------------------------------------------------------------------------------------------
@@ -246,7 +243,7 @@ async function showTimeReducedOverlay() {
 export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, divisionRoom = false) {
     try {
         disableResultScreen(); // Edge case
-        await createMultiplayerInstance(); // Get new multiplayer instance
+        await createMultiplayerInstance();
 
         // Check if map is valid for multiplayer
         if (localStorage.getItem("selectedMap") == "Country Guessr") {
@@ -270,6 +267,7 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, 
         return true; // Success
 
     } catch (error) {
+        matchmakingActive.set(false);
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", null, error.message);
         return false; // Error
@@ -283,9 +281,9 @@ export async function joinMultiplayerRoom(code) {
 
         // Create instance
         try { await createMultiplayerInstance(); } catch (error) {
-            matchmakingActive.set(false);
+            matchmakingActive.set(false); // If the instance creation throws, exit matchmaking - if join fails, keep matchmaking active
             errorPopup("Error joining room", null, error.message);
-            throw new Error(error);
+            throw error; // Re-throw
         }
 
         await get(socket).joinRoom(code);
@@ -308,6 +306,7 @@ export function leaveMultiplayer(destroy = true) {
     // Disable Multiplayer & Matchmaking
     multiplayer.set(false);
     matchmakingActive.set(false);
+    matchmakingHosting.set(false); // Needed when matchmakingActive was never set to true, but hosting was
 
     if (destroy) {
         get(socket)?.destroy(); // Destroy peer

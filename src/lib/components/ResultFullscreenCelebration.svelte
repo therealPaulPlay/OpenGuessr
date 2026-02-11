@@ -30,7 +30,7 @@
 		color: white;
 		filter: drop-shadow(0 0 50px rgba(0, 0, 0, 0.5));
 		display: flex;
-		gap: 10px;
+		gap: var(--box-margin);
 	}
 
 	.animateTitle span {

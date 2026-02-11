@@ -1,6 +1,6 @@
 import { getProfileData } from "$lib/utils/getProfileData";
 import { selectedBadge, selectedPinIndex } from "$lib/stores/accountStore";
-import { profileId, profileData, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
+import { profileData, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { errorPopup } from "./errorHandling";
@@ -26,14 +26,12 @@ async function updateSingleProfileField(type, value) {
         if (!response.ok) {
             console.error('Profile update failed: ', response.status);
             errorPopup("Profile update failed", "The server returned an error for the profile update.", response.status);
-            return false;
         }
 
         return true;
     } catch (error) {
         console.error('Error occurred during profile update: ', error);
         errorPopup("Profile update failed", "The profile update failed due to a network error.", error);
-        return false;
     }
 }
 
@@ -41,7 +39,7 @@ async function updateSingleProfileField(type, value) {
 export async function saveProfileAboutIfChanges(newAbout) {
     if (get(unsavedAboutChanges)) {
         unsavedAboutChanges.set(false);
-        const success = await updateSingleProfileField('about', newAbout);
+        await updateSingleProfileField('about', newAbout);
     }
 }
 
@@ -54,7 +52,7 @@ export async function setSelectedProfilePin(pinId) {
         return newObject;
     });
     selectedPinIndex.set(pinId);
-    const success = await updateSingleProfileField('pin', pinId);
+    await updateSingleProfileField('pin', pinId);
 }
 
 // Update selected badge
@@ -67,7 +65,7 @@ export async function setProfileBadge(badge) {
         return newObject;
     });
     selectedBadge.set(badge);
-    const success = await updateSingleProfileField('badge', badge);
+    await updateSingleProfileField('badge', badge);
 }
 
 // Update flag

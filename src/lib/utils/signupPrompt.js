@@ -7,7 +7,7 @@ export async function signupPrompt() {
     // Show crazy games signup - this will trigger an event, that is being listened for in CrazyGames.svelte
     if (get(crazyGames)) {
         try {
-            const user = await window.CrazyGames.SDK.user.showAuthPrompt();
+            await window.CrazyGames.SDK.user.showAuthPrompt();
             return;
         } catch (error) {
             console.error("Error showing CrazyGames signup:", error);

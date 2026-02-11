@@ -1,7 +1,6 @@
-import { Howl, Howler } from 'howler';
+import { Howl } from 'howler';
 
 const sounds = {};
-let currentMusic = null;
 let currentVariant = null;
 let sfxVolume = 1.0;
 let musicVolume = 1.0;
@@ -12,7 +11,7 @@ export function setSoundsVolume(volume) {
     localStorage.setItem("soundVolume", sfxVolume);
     try {
         for (let tag in sounds)
-            if (sounds.hasOwnProperty(tag)) sounds[tag].volume(sfxVolume);
+            if (Object.hasOwn(sounds, tag)) sounds[tag].volume(sfxVolume);
     } catch (error) {
         console.error("Couldn't set global volume for sounds: " + error);
     }

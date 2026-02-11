@@ -92,7 +92,7 @@
 						<img class="tokenIcon" alt="token" src="/img/token_icon_white.png" />
 						{price}
 					{:else}
-						Owned <Check size={18} strokeWidth={3.25} style="min-width: 18px; margin-bottom: -3px; margin-left: 5px;" />
+						Owned <Check size={18} strokeWidth={3.25} style="min-width: 18px; margin-bottom: -3px; margin-left: var(--content-margin);" />
 					{/if}
 				</button>
 			</div>
@@ -106,7 +106,7 @@
 		box-sizing: border-box;
 		min-height: 80px;
 		min-width: 80px;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: rgba(255, 255, 255, 0.1);
 		display: flex;
 		flex-direction: column;
@@ -132,8 +132,8 @@
 
 	.rarityDisplay {
 		position: absolute;
-		border-top-right-radius: 5px;
-		border-bottom-left-radius: 5px;
+		border-top-right-radius: var(--content-margin);
+		border-bottom-left-radius: var(--content-margin);
 		top: 0;
 		right: 0;
 		padding-inline: var(--panel-margin);
@@ -200,7 +200,7 @@
 	}
 
 	.pinLock {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: rgba(4, 8, 15, 0.25);
 		width: 100%;
 		height: 100%;

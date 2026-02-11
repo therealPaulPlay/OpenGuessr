@@ -1,5 +1,4 @@
 // Gamemode where you guess the country (not on the map)
-import { mapInteractive } from "$lib/stores/context-specific/mapStore";
 import { countryGuessrCountriesArray, selectedCountryField, selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
 import { get } from "svelte/store";
 import { countryGuessr, singleplayer } from "$lib/stores/modeStore";

@@ -54,7 +54,7 @@
 
 	.countryGuessrTag {
 		margin-top: auto;
-		margin-bottom: 5px;
+		margin-bottom: var(--content-margin);
 		font-size: 22px;
 		color: white;
 		width: 100%;
@@ -104,7 +104,7 @@
 		}
 		.countryGuessrSelector {
 			width: calc(100% - 32px);
-			margin-inline: 10px;
+			margin-inline: var(--box-margin);
 		}
 	}
 </style>

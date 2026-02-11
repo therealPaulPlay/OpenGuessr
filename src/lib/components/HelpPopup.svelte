@@ -126,11 +126,11 @@
 		box-shadow: var(--bulb-shadow);
 		gap: 0.5rem;
 		position: absolute;
-		bottom: 15px;
-		left: 15px;
+		bottom: var(--layout-margin);
+		left: var(--layout-margin);
 		background-color: var(--panel-color);
-		padding: 5px;
-		border-radius: 5px;
+		padding: var(--content-margin);
+		border-radius: var(--content-margin);
 		backdrop-filter: blur(10px);
 	}
 
@@ -163,7 +163,7 @@
 	.current-icon {
 		opacity: 0.05;
 		rotate: 5deg;
-		top: 5px;
+		top: var(--content-margin);
 		right: 20px;
 		position: absolute;
 	}
