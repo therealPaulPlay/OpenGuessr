@@ -28,6 +28,7 @@ import {
     currentRound,
     multiplayerMap,
     mobileChatLastOpenedMsgCount,
+    matchmakingHosting,
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
@@ -242,7 +243,7 @@ async function showTimeReducedOverlay() {
 export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, divisionRoom = false) {
     try {
         disableResultScreen(); // Edge case
-        await createMultiplayerInstance(); // Get new multiplayer instance
+        await createMultiplayerInstance();
 
         // Check if map is valid for multiplayer
         if (localStorage.getItem("selectedMap") == "Country Guessr") {
@@ -266,6 +267,7 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, 
         return true; // Success
 
     } catch (error) {
+        matchmakingActive.set(false);
         console.error("Error setting up room:", error);
         errorPopup("Error creating room", null, error.message);
         return false; // Error
@@ -279,7 +281,7 @@ export async function joinMultiplayerRoom(code) {
 
         // Create instance
         try { await createMultiplayerInstance(); } catch (error) {
-            matchmakingActive.set(false);
+            matchmakingActive.set(false); // If the instance creation throws, exit matchmaking - if join fails, keep matchmaking active
             errorPopup("Error joining room", null, error.message);
             throw error; // Re-throw
         }
@@ -304,6 +306,7 @@ export function leaveMultiplayer(destroy = true) {
     // Disable Multiplayer & Matchmaking
     multiplayer.set(false);
     matchmakingActive.set(false);
+    matchmakingHosting.set(false); // Needed when matchmakingActive was never set to true, but hosting was
 
     if (destroy) {
         get(socket)?.destroy(); // Destroy peer

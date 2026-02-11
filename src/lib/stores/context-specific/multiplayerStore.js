@@ -16,6 +16,11 @@ export const matchmakingActive = writable(false);
 export const skillBasedMatchmaking = writable(false);
 export const matchmakingHosting = writable(false);
 
+// If matchmaking is disabled, also disable hosting
+matchmakingActive.subscribe((value) => {
+    if (!value) matchmakingHosting.set(false);
+});
+
 // Guest-exclusive
 export const guestName = writable("Guest (Default)");
 export const guestNamePromise = writable();
