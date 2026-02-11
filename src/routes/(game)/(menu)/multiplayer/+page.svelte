@@ -176,6 +176,7 @@
 		<div class="friendButtonContainer barMenu">
 			<button
 				class="standardButton white largeButton"
+				use:tooltip={{ text: "Add friend" }}
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) friendBrowserPopup.set(true);
