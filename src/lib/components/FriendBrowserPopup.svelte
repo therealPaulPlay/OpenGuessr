@@ -51,7 +51,7 @@
 
 <Popup z={960} slim={true} bind:open={$friendBrowserPopup}>
 	<div class="popup-title">
-		<h1 id="friendBrowserHeader">Add friend</h1>
+		<h1 id="friendBrowserHeader">Add a friend</h1>
 	</div>
 	<search class="playerSearch">
 		<input
