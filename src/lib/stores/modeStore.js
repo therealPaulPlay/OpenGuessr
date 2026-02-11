@@ -1,5 +1,4 @@
 import { writable, derived } from "svelte/store";
-import { get } from "svelte/store";
 
 // Modes
 export const imageGuessr = writable(false);

@@ -54,7 +54,7 @@
 		align-items: center;
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		gap: 5px;
+		gap: var(--content-margin);
 		max-width: 300px;
 		margin-bottom: var(--box-margin);
 	}
@@ -69,7 +69,7 @@
 	}
 
 	.refresh-icon {
-		margin-left: 5px;
+		margin-left: var(--content-margin);
 		vertical-align: -1px;
 	}
 

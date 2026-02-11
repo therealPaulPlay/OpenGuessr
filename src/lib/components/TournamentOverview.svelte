@@ -129,8 +129,8 @@
 
 	.tournamentNameTitle {
 		margin-right: auto;
-		margin-left: 5px;
-		margin-left: 10px;
+		margin-left: var(--content-margin);
+		margin-left: var(--box-margin);
 		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;
@@ -151,7 +151,7 @@
 	}
 
 	.ongoingBadge {
-		padding-inline: 5px;
+		padding-inline: var(--content-margin);
 		border-radius: 3px;
 		background-color: var(--brand-color);
 		box-shadow: var(--bulb-shadow);
@@ -161,7 +161,7 @@
 	}
 
 	.tournamentField {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
 		padding: var(--panel-margin);

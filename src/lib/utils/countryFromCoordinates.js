@@ -2,7 +2,6 @@ import * as topojson from 'topojson-client';
 
 let worldData = null;
 let countriesGeo = null;
-let extendedCoastal = false;
 
 // Load the TopoJSON data
 async function loadWorldData() {

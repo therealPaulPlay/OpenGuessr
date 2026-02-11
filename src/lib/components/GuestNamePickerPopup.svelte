@@ -71,7 +71,7 @@
 <style>
 	.namePopupInput {
 		font-size: 22px;
-		padding: 5px 15px;
+		padding: var(--content-margin) 15px;
 		width: 40%;
 		margin-top: var(--layout-margin);
 	}

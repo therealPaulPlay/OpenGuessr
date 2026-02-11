@@ -145,7 +145,7 @@
 
 <style>
 	h2 {
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 	}
 
 	#text {

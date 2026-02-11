@@ -76,7 +76,7 @@
 		align-items: center;
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		gap: 5px;
+		gap: var(--content-margin);
 		box-sizing: border-box;
 		width: 100%;
 	}

@@ -41,11 +41,11 @@
 	.tickerText {
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--bulb-shadow);
-		padding: 5px;
-		padding-left: 10px;
-		padding-right: 10px;
+		padding: var(--content-margin);
+		padding-left: var(--box-margin);
+		padding-right: var(--box-margin);
 		text-align: center;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		font-size: 20px;
 		min-width: 30px;
 	}
@@ -56,15 +56,15 @@
 
 	.ticker {
 		display: flex;
-		gap: 10px;
+		gap: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
 		justify-content: left;
 		padding: var(--panel-margin);
 		width: fit-content;
 		align-items: center;
-		margin-bottom: 10px;
-		margin-top: 10px;
+		margin-bottom: var(--box-margin);
+		margin-top: var(--box-margin);
 		flex-wrap: wrap;
 		background-color: rgba(255, 255, 255, 0.1);
 	}

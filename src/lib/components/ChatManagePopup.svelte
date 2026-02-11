@@ -156,12 +156,12 @@
 		display: flex;
 		justify-content: space-between;
 		gap: var(--layout-margin);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
 		min-height: fit-content;
-		padding-left: 15px;
+		padding-left: var(--layout-margin);
 		align-items: center;
 		overflow-x: auto;
 		scrollbar-width: none;

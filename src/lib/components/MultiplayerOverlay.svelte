@@ -175,9 +175,9 @@
 	}
 
 	.eloDisplay {
-		padding: 8px;
+		padding: var(--panel-margin);
 		box-shadow: var(--bulb-shadow);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		position: relative;
 		color: white;
 		text-wrap: nowrap;

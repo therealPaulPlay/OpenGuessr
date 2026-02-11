@@ -120,7 +120,7 @@
 			</div>
 			{#if $resultScreenEnabled}
 				<div class="resultField">
-					<RulerDimensionLine class="distance-icon" style="margin-right: 8px;" size={22} strokeWidth={2.25} />
+					<RulerDimensionLine class="distance-icon" style="margin-right: var(--panel-margin);" size={22} strokeWidth={2.25} />
 					<p id="distanceText">{$distanceText}</p>
 				</div>
 				{#if $isAuthenticated}
@@ -140,7 +140,7 @@
 						<p id="endScreenXP">{$animatedExperience.toFixed(0)} XP</p>
 						{#if $showStreakDisplay}
 							<div id="streakDisplay">
-								<Flame style="margin-right: 5px;" size={22} strokeWidth={2.25} />
+								<Flame style="margin-right: var(--content-margin);" size={22} strokeWidth={2.25} />
 								<p id="endScreenStreakText">{$streakText}</p>
 							</div>
 						{/if}
@@ -242,7 +242,7 @@
 		justify-content: center;
 		align-items: center;
 		background-color: rgba(255, 255, 255, 0.075);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		padding: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		flex-grow: 10;
@@ -265,7 +265,7 @@
 		flex: 1;
 		pointer-events: none;
 		position: fixed;
-		bottom: 10px;
+		bottom: var(--box-margin);
 		left: 0;
 		right: 0;
 	}
@@ -296,7 +296,7 @@
 		min-width: 330px;
 		height: 50px;
 		max-height: 60px;
-		padding: 5px;
+		padding: var(--content-margin);
 		flex-grow: 1;
 		position: relative;
 	}
@@ -318,7 +318,7 @@
 		left: 50%;
 		top: calc(-90px - var(--box-margin) * 2);
 		transform: translate(-50%, 0);
-		padding: 5px;
+		padding: var(--content-margin);
 		pointer-events: auto;
 	}
 
@@ -398,7 +398,7 @@
 
 	#endScreenXPbar {
 		flex-grow: 10;
-		height: 15px;
+		height: var(--layout-margin);
 		background-color: rgba(255, 255, 255, 0.2);
 		border-radius: 7px;
 		transition: none;
@@ -452,7 +452,7 @@
 
 	#streakDisplay {
 		margin-right: auto;
-		margin-left: 10px;
+		margin-left: var(--box-margin);
 		position: relative;
 		display: flex;
 		align-items: center;
@@ -466,9 +466,9 @@
 		margin-left: auto;
 		vertical-align: middle;
 		text-align: center;
-		padding-inline: 10px;
-		margin-right: 5px;
-		margin-left: 8px;
+		padding-inline: var(--box-margin);
+		margin-right: var(--content-margin);
+		margin-left: var(--panel-margin);
 		color: white;
 		background-color: #00cc00;
 		box-shadow: var(--bulb-shadow);
@@ -481,8 +481,8 @@
 	.nextRoundArea {
 		z-index: 15;
 		position: fixed;
-		bottom: 10px;
-		right: 10px;
+		bottom: var(--box-margin);
+		right: var(--box-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -543,7 +543,7 @@
 	@media all and (max-width: 1350px) {
 		.nextRoundArea {
 			width: calc(100% - 36px);
-			left: 10px;
+			left: var(--box-margin);
 		}
 
 		#resultBox {

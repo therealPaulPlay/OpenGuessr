@@ -83,7 +83,7 @@
 	.inboxItem {
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		width: calc(100% - 30px);
 		position: relative;
 		display: flex;

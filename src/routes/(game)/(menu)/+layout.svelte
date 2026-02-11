@@ -8,19 +8,27 @@
 	import { blur } from "svelte/transition";
 	import { page } from "$app/state";
 
+	import { setContext } from "svelte";
+
+	// Snapshot store for manual snapshot management
+	const snapshotStore = new Map();
+	setContext("snapshotStore", snapshotStore);
+
 	let historyStack = $state([]);
+	let isGoingBack = false; // Distinguishes goBack() from forward navigation since both use goto()
 
 	afterNavigate(({ type, from, to }) => {
-		if (type === "popstate") {
+		if (type === "popstate" || isGoingBack) {
 			if (historyStack.length > 0) historyStack.pop();
+			isGoingBack = false;
 		} else if (from?.url?.pathname && from.url.pathname !== to?.url?.pathname) {
 			historyStack.push(from.url.pathname);
 		}
 	});
 
 	function goBack() {
-		if (historyStack.length > 0) history.back(); // Must use .back to work with snapshots
-		else goto("/");
+		isGoingBack = true;
+		goto(historyStack.at(-1) || "/", { state: { restoreSnapshot: true } });
 	}
 
 	function leaveMultiplayerIfReturningFromMultiplayerPage() {
@@ -33,7 +41,7 @@
 <nav class="menuNavBar">
 	<div class="navigationButtonContainer barMenu">
 		<button
-			class="backButton standardButton white largeButton"
+			class="standardButton white largeButton"
 			disabled={$matchmakingActive}
 			onclick={() => {
 				playSound("basic_button");
@@ -48,7 +56,7 @@
 	{#if showHomeButton}
 		<div class="navigationButtonContainer barMenu">
 			<button
-				class="backButton standardButton white largeButton"
+				class="standardButton white largeButton"
 				disabled={$matchmakingActive}
 				onclick={() => {
 					playSound("basic_button");
@@ -85,11 +93,7 @@
 	.navigationButtonContainer {
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
-	}
-
-	.backButton {
 		pointer-events: auto;
-		backdrop-filter: blur(10px);
 	}
 
 	.backButtonArrowIcon {

@@ -142,8 +142,8 @@
 	}
 
 	.roomCreationModule {
-		padding-top: 10px;
-		padding-bottom: 10px;
+		padding-top: var(--box-margin);
+		padding-bottom: var(--box-margin);
 		box-shadow: var(--box-shadow);
 	}
 
@@ -154,9 +154,9 @@
 		align-items: center;
 		gap: var(--box-margin);
 		background-color: var(--box-color);
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
-		padding-top: 10px;
+		padding-top: var(--box-margin);
 		width: calc(100% - var(--box-margin) * 2);
 	}
 
@@ -183,13 +183,13 @@
 		padding: var(--panel-margin);
 		width: fit-content;
 		align-items: center;
-		margin-bottom: 10px;
-		margin-top: 10px;
+		margin-bottom: var(--box-margin);
+		margin-top: var(--box-margin);
 		flex-wrap: wrap;
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
 	.selectedMapField p {
-		margin-inline: 10px;
+		margin-inline: var(--box-margin);
 	}
 </style>

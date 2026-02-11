@@ -39,7 +39,7 @@
 		margin-bottom: 20px;
 		opacity: 0.75;
 		text-align: center;
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 	}
 
 	.duelsOverlay p {

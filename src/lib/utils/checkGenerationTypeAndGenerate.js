@@ -2,7 +2,7 @@
 import { enableImageGuessr } from "$lib/utils/imageGuesserFunctions";
 import { multiplayer, competition, singleplayer, countryGuessr, imageGuessr } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
-import { multiplayerMap, socket } from "$lib/stores/context-specific/multiplayerStore";
+import { multiplayerMap } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { countryMaps, continentMaps, defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { changeMap } from "$lib/utils/changeMap";

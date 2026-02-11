@@ -1,7 +1,4 @@
 import { page } from "$app/state";
-import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
-import { tick } from "svelte";
-import { get } from "svelte/store";
 
 function getFuse() {
     return window.fusetag || (window.fusetag = { que: [] });

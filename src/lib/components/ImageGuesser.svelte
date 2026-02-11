@@ -117,7 +117,7 @@
 		opacity: 0.5;
 		z-index: 2;
 		margin-bottom: 10vh;
-		margin-top: 10px;
+		margin-top: var(--box-margin);
 		font-size: 20px;
 	}
 

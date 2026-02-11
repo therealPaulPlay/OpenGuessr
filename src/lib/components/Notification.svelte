@@ -87,12 +87,12 @@
 
 	#notificationDismiss,
 	#notificationAccept {
-		padding-inline: 10px;
+		padding-inline: var(--box-margin);
 		min-height: 40px;
 	}
 
 	#notificationText {
-		padding-left: 10px;
+		padding-left: var(--box-margin);
 		max-width: 350px;
 		overflow: hidden;
 		text-overflow: ellipsis;

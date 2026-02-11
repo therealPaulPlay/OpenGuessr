@@ -431,7 +431,7 @@
 		}}
 	>
 		More
-		<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: 5px;" />
+		<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: var(--content-margin);" />
 	</button>
 {/snippet}
 
@@ -907,11 +907,11 @@
 	.label {
 		padding: 3px;
 		box-shadow: var(--box-shadow);
-		padding-inline: 10px;
+		padding-inline: var(--box-margin);
 		width: fit-content;
 		background-color: rgba(255, 255, 255, 0.1);
-		border-radius: 5px;
-		margin-right: 5px;
+		border-radius: var(--content-margin);
+		margin-right: var(--content-margin);
 		margin-left: 4px;
 	}
 
@@ -920,8 +920,8 @@
 	}
 
 	.itemText {
-		margin: 5px;
-		margin-inline: 5px;
+		margin: var(--content-margin);
+		margin-inline: var(--content-margin);
 		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;
@@ -942,7 +942,7 @@
 		align-items: center;
 		margin-bottom: var(--box-margin);
 		flex-wrap: wrap;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		gap: var(--box-margin);
 	}
 
@@ -960,10 +960,10 @@
 	}
 
 	.descText {
-		margin-top: 10px;
+		margin-top: var(--box-margin);
 		overflow: hidden;
 		max-height: 60px;
-		margin-inline: 10px;
+		margin-inline: var(--box-margin);
 	}
 
 	.competitionAuthor {
@@ -1047,14 +1047,14 @@
 	.rankItem {
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		width: 100%;
 		box-sizing: border-box;
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding: 5px;
-		padding-inline: 10px;
+		padding: var(--content-margin);
+		padding-inline: var(--box-margin);
 		gap: var(--box-margin);
 	}
 
@@ -1078,7 +1078,7 @@
 	}
 
 	#inputArea {
-		padding: 10px;
+		padding: var(--box-margin);
 		display: flex;
 		justify-content: flex-start;
 		flex-direction: column;
@@ -1099,7 +1099,7 @@
 
 	#uploadHeader {
 		text-align: left;
-		margin-top: 5px;
+		margin-top: var(--content-margin);
 		margin-bottom: 30px;
 	}
 
@@ -1170,16 +1170,16 @@
 
 	.youBar {
 		display: flex;
-		gap: 10px;
+		gap: var(--box-margin);
 		align-items: center;
 	}
 
 	.youLabel {
 		box-shadow: var(--bulb-shadow);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: rgba(255, 255, 255, 0.2);
-		padding: 5px;
-		padding-inline: 10px;
+		padding: var(--content-margin);
+		padding-inline: var(--box-margin);
 	}
 
 	.dailyPrimary {
@@ -1233,7 +1233,7 @@
 	}
 
 	.rateButton {
-		padding-inline: 5px;
+		padding-inline: var(--content-margin);
 	}
 
 	.ratingButtonBox {
@@ -1244,10 +1244,6 @@
 	}
 
 	@media all and (max-width: 1000px) {
-		.competitionButton {
-			flex-grow: 1;
-		}
-
 		#competitionSearch {
 			max-width: none;
 		}

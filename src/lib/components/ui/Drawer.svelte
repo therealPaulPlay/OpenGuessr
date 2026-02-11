@@ -60,7 +60,7 @@
 
 	.drawer-icon {
 		color: white;
-		padding: 5px;
+		padding: var(--content-margin);
 		padding-inline: var(--panel-margin);
 	}
 

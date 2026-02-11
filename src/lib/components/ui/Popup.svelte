@@ -68,12 +68,12 @@
 		position: absolute;
 		top: var(--layout-margin);
 		right: var(--layout-margin);
-		padding: 5px;
+		padding: var(--content-margin);
 		z-index: 10;
 	}
 
 	.frameLess {
-		padding: 5px !important;
+		padding: var(--content-margin) !important;
 	}
 
 	.content {

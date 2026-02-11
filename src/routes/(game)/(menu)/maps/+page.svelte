@@ -3,8 +3,8 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import { onMount } from "svelte";
-	import { goto } from "$app/navigation";
+	import { onMount, getContext } from "svelte";
+	import { goto, beforeNavigate } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { changeMap } from "$lib/utils/changeMap.js";
 	import {
@@ -16,10 +16,15 @@
 	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { tooltip } from "$lib/utils/tooltip.js";
+	import { page } from "$app/state";
+
+	const snapshotStore = getContext("snapshotStore");
 
 	// State
-	let currentFetchIndex = 0;
-	let currentCategory, currentQuery, currentByUserId;
+	let currentFetchIndex = $state(0);
+	let currentCategory = $state();
+	let currentQuery = $state();
+	let currentByUserId = $state();
 	let showLoadMore = $state(false);
 	let showNothingFound = $state(false);
 	let errorMessageText = $state("Loading...");
@@ -48,8 +53,20 @@
 
 	onMount(() => {
 		addedCommunityMapsArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
-		loadCommunityMaps(0);
-		loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+
+		// Check if we should restore snapshot
+		const savedSnapshot = snapshotStore?.get("/maps");
+		if (savedSnapshot && page.state?.restoreSnapshot) restoreSnapshot(savedSnapshot);
+		else {
+			loadCommunityMaps(0);
+			loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+		}
+	});
+
+	// Save snapshot before navigating away
+	beforeNavigate(() => {
+		const data = captureSnapshot();
+		if (data && snapshotStore) snapshotStore.set("/maps", data);
 	});
 
 	async function loadCommunityMaps(index, category, query, byUserId, fav) {
@@ -161,9 +178,9 @@
 		else loadCommunityMaps(0, category);
 	}
 
-	// Snapshot for state restoration
-	export const snapshot = {
-		capture: () => ({
+	// Snapshot functions for state restoration
+	function captureSnapshot() {
+		return {
 			scrollY: window.scrollY,
 			currentFetchIndex,
 			loadMoreCategoryParam: currentCategory,
@@ -175,26 +192,32 @@
 			selectedCategoryIndex,
 			loadedCommunityMaps,
 			loadedSpotlightMaps,
-		}),
-		restore: (data) => {
-			if (!data.loadedSpotlightMaps?.length || !data.loadedCommunityMaps?.length) return;
-			if (currentController) currentController.abort();
-			if (currentFavController) currentFavController.abort();
-			currentFetchIndex = data.currentFetchIndex;
-			currentCategory = data.loadMoreCategoryParam;
-			currentQuery = data.loadMoreQueryParam;
-			currentByUserId = data.byUserParam;
-			showLoadMore = data.showLoadMore;
-			showNothingFound = data.showNothingFound;
-			searchValue = data.searchValue;
-			selectedCategoryIndex = data.selectedCategoryIndex;
-			loadedCommunityMaps = data.loadedCommunityMaps;
-			loadedSpotlightMaps = data.loadedSpotlightMaps;
-			setTimeout(() => {
-				window.scrollTo({ top: data.scrollY });
-			}, 0);
-		},
-	};
+		};
+	}
+
+	function restoreSnapshot(data) {
+		if (!data.loadedSpotlightMaps?.length || !data.loadedCommunityMaps?.length) {
+			loadCommunityMaps(0);
+			loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+			return;
+		}
+		if (currentController) currentController.abort();
+		if (currentFavController) currentFavController.abort();
+		currentFetchIndex = data.currentFetchIndex;
+		currentCategory = data.loadMoreCategoryParam;
+		currentQuery = data.loadMoreQueryParam;
+		currentByUserId = data.byUserParam;
+		showLoadMore = data.showLoadMore;
+		showNothingFound = data.showNothingFound;
+		errorMessageShown = false;
+		searchValue = data.searchValue;
+		selectedCategoryIndex = data.selectedCategoryIndex;
+		loadedCommunityMaps = data.loadedCommunityMaps;
+		loadedSpotlightMaps = data.loadedSpotlightMaps;
+		setTimeout(() => {
+			window.scrollTo({ top: data.scrollY });
+		}, 0);
+	}
 </script>
 
 <svelte:head>
@@ -482,7 +505,7 @@
 				}}
 			>
 				More
-				<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: 5px;" />
+				<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: var(--content-margin);" />
 			</button>
 		{/if}
 		{#if errorMessageShown}
@@ -532,7 +555,7 @@
 	.link-badge {
 		font-size: 18px;
 		font-style: italic;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: rgb(224, 2, 2);
 		padding: 2px;
 		margin-right: -1px;
@@ -630,7 +653,7 @@
 	}
 
 	.smaller-bottom-margin {
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 	}
 
 	.expandButton {
@@ -638,7 +661,7 @@
 	}
 
 	.showAllButtonContainer {
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 		margin-inline: auto;
 		transition: margin 150ms ease;
 		bottom: 0;
@@ -661,8 +684,8 @@
 	}
 
 	.add-button {
-		border-radius: 5px;
-		padding: 5px 8px;
+		border-radius: var(--content-margin);
+		padding: var(--content-margin) 8px;
 		display: flex;
 		align-items: center;
 	}
@@ -671,7 +694,7 @@
 		border: none;
 		cursor: pointer;
 		user-select: none;
-		margin-left: 10px;
+		margin-left: var(--box-margin);
 		margin-right: -3px;
 		font-size: 25px;
 		line-height: 0.9;
@@ -712,7 +735,7 @@
 	#mapSearch {
 		transition: background-color 250ms ease;
 		flex-grow: 1;
-		padding: 5px;
+		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
 		width: 225px;
 		text-overflow: ellipsis;

@@ -50,7 +50,7 @@
 
 	.returnButton {
 		font-size: 25px;
-		padding: 15px 20px;
+		padding: var(--layout-margin) 20px;
 		border-radius: var(--box-margin);
 		margin-top: 100px;
 		text-decoration: none;

@@ -79,8 +79,8 @@
 		width: 100%;
 		opacity: 50%;
 		font-size: 22px;
-		padding-top: 5px;
-		padding-bottom: 5px;
+		padding-top: var(--content-margin);
+		padding-bottom: var(--content-margin);
 	}
 
 	.roundLogItem {
@@ -90,8 +90,8 @@
 		justify-content: space-between;
 		align-items: center;
 		padding: var(--box-margin);
-		padding-inline: 15px;
-		border-radius: 5px;
+		padding-inline: var(--layout-margin);
+		border-radius: var(--content-margin);
 		width: calc(100% - 30px);
 	}
 </style>
