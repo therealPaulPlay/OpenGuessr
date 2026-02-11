@@ -505,7 +505,7 @@
 				}}
 			>
 				More
-				<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: 5px;" />
+				<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: var(--content-margin);" />
 			</button>
 		{/if}
 		{#if errorMessageShown}
@@ -555,7 +555,7 @@
 	.link-badge {
 		font-size: 18px;
 		font-style: italic;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: rgb(224, 2, 2);
 		padding: 2px;
 		margin-right: -1px;
@@ -653,7 +653,7 @@
 	}
 
 	.smaller-bottom-margin {
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 	}
 
 	.expandButton {
@@ -661,7 +661,7 @@
 	}
 
 	.showAllButtonContainer {
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 		margin-inline: auto;
 		transition: margin 150ms ease;
 		bottom: 0;
@@ -684,8 +684,8 @@
 	}
 
 	.add-button {
-		border-radius: 5px;
-		padding: 5px 8px;
+		border-radius: var(--content-margin);
+		padding: var(--content-margin) 8px;
 		display: flex;
 		align-items: center;
 	}
@@ -694,7 +694,7 @@
 		border: none;
 		cursor: pointer;
 		user-select: none;
-		margin-left: 10px;
+		margin-left: var(--box-margin);
 		margin-right: -3px;
 		font-size: 25px;
 		line-height: 0.9;
@@ -735,7 +735,7 @@
 	#mapSearch {
 		transition: background-color 250ms ease;
 		flex-grow: 1;
-		padding: 5px;
+		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
 		width: 225px;
 		text-overflow: ellipsis;

@@ -446,7 +446,7 @@
 		flex-wrap: wrap;
 		justify-content: center;
 		align-items: center;
-		padding-inline: 10px;
+		padding-inline: var(--box-margin);
 	}
 
 	.mapTitle {
@@ -459,7 +459,7 @@
 		width: 100%;
 		height: 250px;
 		max-height: 25svh;
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		overflow: hidden;
 		margin-bottom: 50px;
@@ -472,10 +472,10 @@
 		bottom: var(--box-margin);
 		left: var(--box-margin);
 		max-width: calc(100% - 40px);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: var(--dark-background);
 		backdrop-filter: blur(10px);
-		padding: 5px;
+		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
 		z-index: 10;
 		pointer-events: none;
@@ -497,14 +497,14 @@
 		width: 100%;
 		overflow-x: hidden;
 		overflow-y: auto;
-		padding: 5px;
-		padding-inline: 10px;
+		padding: var(--content-margin);
+		padding-inline: var(--box-margin);
 		opacity: 0.5;
 	}
 
 	.descHeader {
 		font-size: 25px;
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 	}
 
 	.marginTop {
@@ -517,16 +517,16 @@
 
 	#updateMapStatus {
 		background-color: var(--box-color);
-		padding: 5px;
+		padding: var(--content-margin);
 		border-radius: var(--box-margin);
-		padding-inline: 15px;
+		padding-inline: var(--layout-margin);
 		width: calc(100% - 30px);
 	}
 
 	.infoElement {
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		display: flex;
 		padding: var(--box-margin);
 		flex-grow: 1;
@@ -559,7 +559,7 @@
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
-		gap: 15px;
+		gap: var(--layout-margin);
 	}
 
 	.descriptionInfo {
@@ -605,7 +605,7 @@
 		width: 100%;
 		height: 400px;
 		max-height: 35svh;
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		overflow: hidden;
 		margin-bottom: calc(var(--layout-margin) * -2);
 		position: relative;
@@ -624,8 +624,8 @@
 		display: flex;
 		gap: var(--box-margin);
 		align-items: center;
-		padding-bottom: 5px;
-		padding-top: 5px;
+		padding-bottom: var(--content-margin);
+		padding-top: var(--content-margin);
 	}
 
 	.buttonBar {

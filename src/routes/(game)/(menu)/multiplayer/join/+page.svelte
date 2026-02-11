@@ -204,9 +204,9 @@
 	}
 
 	.infoBox {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background: var(--box-color);
-		padding-inline: 5px;
+		padding-inline: var(--content-margin);
 		box-shadow: var(--bulb-shadow);
 		white-space: nowrap;
 		display: inline-flex;

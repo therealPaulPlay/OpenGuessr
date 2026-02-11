@@ -433,7 +433,7 @@
 	}
 
 	.captchaHeader {
-		margin-bottom: 15px;
+		margin-bottom: var(--layout-margin);
 	}
 
 	.logo {
@@ -441,7 +441,7 @@
 		width: 275px;
 		height: 57px;
 		margin-bottom: 30px;
-		margin-top: 5px;
+		margin-top: var(--content-margin);
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.1));
 	}
 
@@ -516,7 +516,7 @@
 
 	input {
 		width: calc(100% - 60px);
-		padding: 15px;
+		padding: var(--layout-margin);
 		border-radius: var(--box-margin);
 	}
 
@@ -559,15 +559,15 @@
 	}
 
 	.wrapper {
-		padding-top: 10px;
-		padding-bottom: 10px;
+		padding-top: var(--box-margin);
+		padding-bottom: var(--box-margin);
 	}
 
 	#passwordResetOption {
 		color: rgba(255, 255, 255, 0.5);
 		transition: color 250ms ease;
 		cursor: pointer;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		width: 100%;
 		margin-bottom: 0;
 		margin-top: var(--layout-margin);

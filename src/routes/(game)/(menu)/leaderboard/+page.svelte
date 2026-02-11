@@ -310,7 +310,7 @@
 		opacity: 0.5;
 		width: 100%;
 		text-align: center;
-		margin-top: 10px;
+		margin-top: var(--box-margin);
 	}
 
 	.optionBarItem {
@@ -322,7 +322,7 @@
 	}
 
 	:global(.leaderboardTabs) {
-		border-radius: 10px !important;
+		border-radius: var(--box-margin) !important;
 		min-height: 50px;
 	}
 
@@ -449,7 +449,7 @@
 
 	.podium-item {
 		flex-grow: 1;
-		margin-inline: 10px;
+		margin-inline: var(--box-margin);
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -490,7 +490,7 @@
 	}
 
 	.podium-item .name {
-		padding: 5px;
+		padding: var(--content-margin);
 		text-align: center;
 		color: white;
 		margin-top: auto;
@@ -510,7 +510,7 @@
 
 	.podium-item .rank {
 		color: white;
-		margin-bottom: 5px;
+		margin-bottom: var(--content-margin);
 	}
 
 	.podium-item .podiumValue {
@@ -520,11 +520,11 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		opacity: 0.75;
 		max-width: 100%;
 		background-color: var(--box-color-dark-soft);
-		padding-inline: 5px;
+		padding-inline: var(--content-margin);
 	}
 
 	#yourLeagueContainer {
@@ -542,7 +542,7 @@
 	.threeDotsContainer {
 		overflow: hidden;
 		justify-content: center;
-		gap: 15px;
+		gap: var(--layout-margin);
 		width: 100%;
 		margin-top: 25px;
 		display: flex;
@@ -582,7 +582,7 @@
 
 		.podium {
 			height: 180px;
-			gap: 5px;
+			gap: var(--content-margin);
 		}
 
 		.maxlength {

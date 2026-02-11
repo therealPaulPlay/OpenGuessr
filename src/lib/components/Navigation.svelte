@@ -437,6 +437,6 @@
 	}
 
 	:global(.main-menu-list-header) {
-		padding-top: 5px;
+		padding-top: var(--content-margin);
 	}
 </style>

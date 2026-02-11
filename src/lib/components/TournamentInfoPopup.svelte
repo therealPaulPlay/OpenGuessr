@@ -255,7 +255,7 @@
 	.match-entry {
 		width: 100%;
 		box-sizing: border-box;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
 		background-color: var(--box-color);
@@ -266,7 +266,7 @@
 	}
 
 	.match-entry p {
-		margin-left: 5px;
+		margin-left: var(--content-margin);
 	}
 
 	.winner-description {
@@ -305,7 +305,7 @@
 		align-items: center;
 		margin-top: var(--layout-margin);
 		padding: var(--box-margin);
-		gap: 5px;
+		gap: var(--content-margin);
 		padding-bottom: var(--layout-margin);
 		position: relative;
 		overflow: hidden;

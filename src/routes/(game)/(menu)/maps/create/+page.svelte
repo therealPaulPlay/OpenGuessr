@@ -235,7 +235,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		padding-inline: 10px;
+		padding-inline: var(--box-margin);
 	}
 
 	#uploadHeader {
@@ -243,7 +243,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	}
 
 	#jsonUploadButton {
-		margin-top: 10px;
+		margin-top: var(--box-margin);
 		min-width: 150px;
 	}
 
@@ -253,8 +253,8 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	}
 
 	.uploadFirstText {
-		margin-bottom: 15px;
-		margin-top: 10px;
+		margin-bottom: var(--layout-margin);
+		margin-top: var(--box-margin);
 		font-size: 22px;
 	}
 
@@ -278,7 +278,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	.infoNoteBox {
 		background-color: rgba(0, 0, 0, 0.1);
 		border-radius: var(--box-margin);
-		padding: 10px;
+		padding: var(--box-margin);
 		padding-inline: 20px;
 		display: flex;
 		justify-content: flex-start;
@@ -303,7 +303,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		justify-content: flex-start;
 		flex-direction: column;
 		width: 100%;
-		margin-top: 15px;
+		margin-top: var(--layout-margin);
 	}
 
 	.uploadInfo {
@@ -311,7 +311,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 		width: 75%;
 		min-height: 30px;
 		border: none;
-		padding: 10px;
+		padding: var(--box-margin);
 		padding-inline: 20px;
 		margin-bottom: 20px;
 		margin-top: var(--box-margin);
@@ -332,7 +332,7 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	}
 
 	.marginTop {
-		margin-top: 15px;
+		margin-top: var(--layout-margin);
 	}
 
 	li {
@@ -349,12 +349,12 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 
 	.infoNoteBoxConverter {
 		margin-top: 25px;
-		margin-bottom: 15px;
+		margin-bottom: var(--layout-margin);
 	}
 
 	.dropdown {
 		margin-bottom: 20px;
-		margin-top: 10px;
+		margin-top: var(--box-margin);
 		width: 150px;
 	}
 
@@ -364,6 +364,6 @@ https://www.google.de/maps/@50.3876752,11.2149082,3a,75y,13.59h,100.92t/data=!3m
 	}
 
 	#uploadMapData {
-		margin-bottom: 5px;
+		margin-bottom: var(--content-margin);
 	}
 </style>

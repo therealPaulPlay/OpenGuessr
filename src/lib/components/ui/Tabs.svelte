@@ -34,7 +34,7 @@
 
 <style>
 	.tabs-group {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		width: fit-content;
 		display: flex;
 		box-sizing: border-box;

@@ -42,7 +42,7 @@
 		align-items: center;
 		transition: filter 250ms ease;
 		gap: var(--box-margin);
-		padding: 5px;
+		padding: var(--content-margin);
 		width: 100%;
 		box-sizing: border-box;
 		margin-bottom: var(--layout-margin);
@@ -53,7 +53,7 @@
 	}
 
 	.supporterArea p {
-		padding-right: 5px;
+		padding-right: var(--content-margin);
 		display: inline;
 	}
 
@@ -63,7 +63,7 @@
 
 	.supporterPitchText {
 		flex-grow: 10;
-		padding-inline: 10px;
+		padding-inline: var(--box-margin);
 	}
 
 	#supporterTextSecondary {

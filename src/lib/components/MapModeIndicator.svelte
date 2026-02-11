@@ -107,10 +107,10 @@
 	}
 
 	.info-tag {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background: var(--box-color);
-		padding-inline: 5px;
-		margin-left: 5px;
+		padding-inline: var(--content-margin);
+		margin-left: var(--content-margin);
 		box-shadow: var(--bulb-shadow);
 		white-space: nowrap;
 		display: inline-flex;
@@ -131,10 +131,10 @@
 		flex-grow: 1;
 		margin-inline: var(--panel-margin);
 		display: inline-flex;
-		gap: 5px;
+		gap: var(--content-margin);
 		align-items: center;
-		padding-top: 5px;
-		padding-bottom: 5px;
+		padding-top: var(--content-margin);
+		padding-bottom: var(--content-margin);
 		overflow-x: auto;
 		scrollbar-width: none;
 	}
@@ -176,7 +176,7 @@
 		min-width: fit-content;
 		display: flex;
 		align-items: center;
-		gap: 5px;
+		gap: var(--content-margin);
 		margin-left: auto;
 		margin-right: var(--panel-margin);
 		font-variant-numeric: tabular-nums;

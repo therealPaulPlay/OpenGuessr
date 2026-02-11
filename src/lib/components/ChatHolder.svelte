@@ -61,7 +61,7 @@
 
 <style>
 	.chat-holder {
-		left: 10px;
+		left: var(--box-margin);
 		bottom: 76px;
 		z-index: 10;
 		position: fixed;

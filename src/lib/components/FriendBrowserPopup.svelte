@@ -158,7 +158,7 @@
 		gap: var(--box-margin);
 		justify-content: space-between;
 		align-items: center;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		padding: var(--box-margin);
 		padding-inline: 20px;
 		width: calc(100% - 40px);

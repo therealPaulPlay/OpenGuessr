@@ -14,7 +14,7 @@
 		opacity: 0.15;
 		flex-grow: 1;
 		border-radius: var(--box-margin);
-		margin-top: 5px;
+		margin-top: var(--content-margin);
 	}
 
 	.flexContainer {

@@ -69,8 +69,8 @@
 		pointer-events: auto;
 		display: block;
 		position: fixed;
-		bottom: 10px;
-		left: 10px;
+		bottom: var(--box-margin);
+		left: var(--box-margin);
 	}
 
 	.supporterStatText {
@@ -79,17 +79,17 @@
 
 	.textBoxTop {
 		margin-bottom: var(--panel-margin);
-		padding: 5px !important;
-		padding-inline: 5px !important;
+		padding: var(--content-margin) !important;
+		padding-inline: var(--content-margin) !important;
 	}
 
 	.textBox {
-		padding: 10px;
+		padding: var(--box-margin);
 		padding-inline: 12px;
 	}
 
 	.solidBox {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 	}

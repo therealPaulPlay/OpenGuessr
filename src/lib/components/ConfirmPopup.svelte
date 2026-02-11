@@ -57,7 +57,7 @@
 
 <style>
 	.confirmPopupInput {
-		padding: 5px 15px;
+		padding: var(--content-margin) var(--layout-margin);
 		width: 40%;
 		margin-top: var(--layout-margin);
 	}

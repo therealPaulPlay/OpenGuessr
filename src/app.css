@@ -15,8 +15,8 @@
     --panel-color: rgba(30, 34, 53, 0.7);
     --panel-color-soft: rgba(50, 53, 69, 0.7);
     --box-color: rgba(255, 255, 255, 0.05);
-    --box-color-dark-soft: rgba(11, 12, 19, 0.15);
     --box-color-dark: rgba(11, 12, 19, 0.3);
+    --box-color-dark-soft: rgba(11, 12, 19, 0.15);
     --dark-background: rgba(30, 30, 30, 0.7);
     --supporter-green: rgba(17, 217, 49, 0.7);
     --supporter-green-soft: rgba(17, 217, 49, 0.5);
@@ -34,6 +34,8 @@
     --box-margin: 10px;
     /* Used inside floating UI panels (elements not inside of popups or pages, e.g. chat) */
     --panel-margin: 8px;
+    /* Used for controls etc., everything placed inside boxes */
+    --content-margin: 5px;
 
     /* Box shadows */
     --button-shadow: 0 3px 3px rgba(0, 0, 0, 0.2), inset 0 0.1rem 5px hsla(0, 0%, 100%, 0.2), inset 0 -0.25rem 5px rgba(0, 0, 10, 0.1);
@@ -123,7 +125,7 @@ input {
     box-shadow: var(--box-shadow);
     background-color: rgba(255, 255, 255, 0.1);
     transition: background-color 250ms ease;
-    border-radius: 5px;
+    border-radius: var(--content-margin);
     font-size: 22px;
     outline: none;
     border: none;
@@ -155,7 +157,7 @@ input:focus {
     text-align: center;
     white-space: nowrap;
     transition: filter 250ms ease, box-shadow 250ms ease, transform 150ms ease, color 250ms ease, background-color 250ms ease, opacity 250ms ease;
-    border-radius: 5px;
+    border-radius: var(--content-margin);
     user-select: none;
     background-color: var(--brand-color);
     border: 3px solid rgba(205, 205, 205, 0.2);
@@ -218,7 +220,7 @@ input[type="checkbox"] {
     width: 20px;
     height: 20px;
     border: 2px solid white;
-    border-radius: 5px;
+    border-radius: var(--content-margin);
     transform: translateY(5px);
     display: grid;
     place-content: center;
@@ -263,8 +265,8 @@ input[type="checkbox"]:focus {
     background: rgba(255, 255, 255, 0.2);
     outline: none;
     border-radius: 15px;
-    height: 8px;
-    margin: 5px;
+    height: var(--panel-margin);
+    margin: var(--content-margin);
     width: 60%;
     margin-inline: 0;
 }
@@ -318,7 +320,8 @@ input[type="checkbox"]:focus {
     align-items: center;
     gap: var(--panel-margin);
     padding: var(--panel-margin);
-    pointer-events: auto; /* Important since often positioned insight of pointer-events-none containers */
+    pointer-events: auto;
+    /* Important since often positioned insight of pointer-events-none containers */
 }
 
 li {
@@ -366,7 +369,7 @@ search {
     border: none;
     color: white;
     font-size: 22px;
-    border-radius: 5px;
+    border-radius: var(--content-margin);
     background-color: var(--panel-color);
     box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2), inset 0 0.1rem 5px hsla(0, 0%, 100%, 0.2), inset 0 -0.25rem 5px rgba(0, 0, 10, 0.1);
     padding-inline: var(--box-margin);

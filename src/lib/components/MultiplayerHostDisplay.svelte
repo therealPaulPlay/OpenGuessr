@@ -199,15 +199,15 @@
 		align-items: center;
 		gap: var(--box-margin);
 		background-color: var(--box-color);
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
-		padding-top: 10px;
+		padding-top: var(--box-margin);
 		width: calc(100% - var(--box-margin) * 2);
 	}
 
 	.roomCreationModule {
-		padding-top: 10px;
-		padding-bottom: 10px;
+		padding-top: var(--box-margin);
+		padding-bottom: var(--box-margin);
 		box-shadow: var(--box-shadow);
 	}
 
@@ -229,7 +229,7 @@
 
 	.sendInviteButton {
 		padding: 0;
-		padding-inline: 5px;
+		padding-inline: var(--content-margin);
 		height: 35px !important;
 	}
 
@@ -275,7 +275,7 @@
 	.teamSelector {
 		padding: 0px 4px;
 		vertical-align: 2px;
-		min-height: 5px;
+		min-height: var(--content-margin);
 		font-size: 18px;
 		margin-right: 2px;
 		height: unset;
@@ -306,9 +306,9 @@
 	#smallJoinCounter {
 		position: absolute;
 		box-shadow: var(--bulb-shadow);
-		top: 5px;
-		right: 5px;
-		padding: 5px;
+		top: var(--content-margin);
+		right: var(--content-margin);
+		padding: var(--content-margin);
 		background-color: rgba(255, 255, 255, 0.1);
 		height: 27px;
 		width: 30px;

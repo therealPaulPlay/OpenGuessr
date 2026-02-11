@@ -235,7 +235,7 @@
 			>
 				<img id="selectedProfilePin" alt="pin" src={`/img/pins/player_pin${$profileData?.pin ?? 0}.png`} />
 				{#if $profileId == localStorage.getItem("id")}
-					<Pencil style="opacity: 0.75; margin-right: 5px; margin-left: 2px;" size={17} strokeWidth={2.25} />
+					<Pencil style="opacity: 0.75; margin-right: var(--content-margin); margin-left: 2px;" size={17} strokeWidth={2.25} />
 				{/if}
 			</div>
 			{#if $profileId == localStorage.getItem("id")}
@@ -452,7 +452,7 @@
 		display: inline-flex;
 		align-items: center;
 		width: 25px;
-		margin-top: 8px;
+		margin-top: var(--panel-margin);
 		cursor: pointer;
 	}
 
@@ -489,11 +489,11 @@
 	.profileViewName {
 		overflow: hidden;
 		text-wrap: nowrap;
-		margin-left: 10px;
+		margin-left: var(--box-margin);
 		margin-right: 65px;
 		display: inline-flex;
 		justify-content: center;
-		gap: 8px;
+		gap: var(--panel-margin);
 	}
 
 	.profileViewName h1 {
@@ -527,12 +527,12 @@
 	#supporterTag {
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		height: 40px;
-		gap: 5px;
+		gap: var(--content-margin);
 		padding-inline: var(--box-margin);
 		text-wrap: nowrap;
 	}
@@ -542,7 +542,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 5px;
+		gap: var(--content-margin);
 	}
 
 	.pinDisplayOnly {
@@ -576,13 +576,13 @@
 		resize: none;
 		width: 100%;
 		color: white;
-		padding: 15px;
+		padding: var(--layout-margin);
 		scrollbar-width: none;
 		box-sizing: border-box;
 	}
 
 	:global(.stat-switch) {
-		margin-top: 8px;
+		margin-top: var(--panel-margin);
 		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		max-width: 100%;
@@ -622,12 +622,12 @@
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
-		padding: 5px;
+		padding: var(--content-margin);
 		min-width: 150px;
 		display: flex;
 		flex: 1;
 		align-items: center;
-		gap: 15px;
+		gap: var(--layout-margin);
 		transition: transform 250ms ease;
 	}
 
@@ -638,7 +638,7 @@
 		width: 40px;
 		height: 40px;
 		border-radius: 100%;
-		margin-left: 8px;
+		margin-left: var(--panel-margin);
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--bulb-shadow);
 	}
@@ -654,7 +654,7 @@
 		text-wrap: nowrap;
 	}
 	.card-content p {
-		margin-bottom: 5px;
+		margin-bottom: var(--content-margin);
 		max-width: 150px;
 		text-wrap: nowrap;
 		overflow: hidden;
@@ -681,7 +681,7 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		gap: 5px;
+		gap: var(--content-margin);
 	}
 
 	@media all and (max-width: 800px) {
@@ -692,7 +692,7 @@
 		.flag-container {
 			height: 18px;
 			width: 18px;
-			margin-top: 15px;
+			margin-top: var(--layout-margin);
 		}
 	}
 </style>
