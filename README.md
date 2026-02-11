@@ -63,6 +63,8 @@ The `standardButton` is a red primary button by default. To make it secondary, a
 
 The button that commonly sits at the bottom of a popup can be replicated by adding `bottomButton`, `white` (unless a primary action) and `largeButton` to a `standardButton`. 
 
+Buttons should always be placed in a visual container and not just on a blank page or direclty in a popup (unless it's a large button, which aligns well with the Popup's corner radius).
+
 ### Icons
 Lucide is used for icons. At the default icon size (matches the font size), using `2` as the stroke width is suggested. Icons placed inside of buttons commonly look best at size `20`, slightly smaller, for which a stroke width of `2.25` looks best.
 
