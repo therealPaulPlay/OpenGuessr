@@ -235,7 +235,11 @@
 			>
 				<img id="selectedProfilePin" alt="pin" src={`/img/pins/player_pin${$profileData?.pin ?? 0}.png`} />
 				{#if $profileId == localStorage.getItem("id")}
-					<Pencil style="opacity: 0.75; margin-right: var(--content-margin); margin-left: 2px;" size={17} strokeWidth={2.25} />
+					<Pencil
+						style="opacity: 0.75; margin-right: var(--content-margin); margin-left: 2px;"
+						size={17}
+						strokeWidth={2.25}
+					/>
 				{/if}
 			</div>
 			{#if $profileId == localStorage.getItem("id")}
@@ -311,6 +315,7 @@
 			<textarea
 				class="profileAbout of-top of-bottom"
 				readonly={$profileId != localStorage.getItem("id")}
+				style:background-color={$profileId != localStorage.getItem("id") ? "transparent !important" : ""}
 				maxlength="150"
 				spellcheck="false"
 				value={filteredAbout}
@@ -566,19 +571,23 @@
 
 	.aboutSection {
 		width: 100%;
-		min-height: 55px;
 		border-radius: var(--box-margin);
 		margin-bottom: var(--layout-margin);
 		transition: background-color 250ms ease;
+		border-radius: var(--box-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+		box-sizing: border-box;
+		overflow: hidden;
 	}
 
 	.profileAbout {
 		resize: none;
 		width: 100%;
+		min-height: 85px;
 		color: white;
 		padding: var(--layout-margin);
 		scrollbar-width: none;
-		box-sizing: border-box;
 	}
 
 	:global(.stat-switch) {

@@ -13,24 +13,28 @@ OpenGuessr uses [Svelte](https://svelte.dev).
 The `app.css` file contains a bunch of classes. Only if there is **no applicable predefined class**, create a new 
 one inside of a component or page. OpenGuessr uses a `CSS component library` approach for simple components, and only uses Svelte components for complex UI parts that require JS (in `/components/ui`).
 
-As part of OpenGuessr's design philosophy, there's one important rule to follow:
-**Margin, padding and border radius always match.** To make this system easy to follow, there are variables inside `app.css` with the values that should be used. 
+As part of OpenGuessr's design system, margin, padding and border radius should only use variables defined in `app.css`.
 > [!TIP]
 > Exceptions can be made if an icon or text doesn't look properly aligned.
 
-These variables follow a layered approach:
+| Variable | Value | Purpose |
+| -------- | ----- | ------- |
+| --content-margin | 5px | Controls (buttons, labels, inputs) |
+| --panel-margin | 8px | Floating panels fixed to viewport |
+| --box-margin | 10px | Boxes (containers) |
+| --layout-margin | 15px | Layout gaps, box border-radius |
+| 25px | layout + box | Popups, sheets |
 
-| Layer | Purpose | Variable | Value |
-| ----- | ------- | -------- | ----- |
-| 1 | Buttons, labels, text, in-button fields etc. | --content-margin | 5px |
-| 2 | Floating panels, usually fixed to the viewport | --panel-margin | 8px |
-| 3 | Containers inside popups or layout containers | --box-margin | 10px |
-| 4 | Containers inside pages (not already in a 'box') | --layout-margin | 15px |
-| 5 | Popups, sheets | calc(var(--layout-margin) + var(--box-margin)) | 25px |
+**Boxes** always use `--box-margin` for padding and gap. Their border-radius is `--layout-margin` when placed in a page, or `--box-margin` when nested inside a popup or another box.
 
-This means that, for example, a conatiner on a menu page uses `--layout-margin` for the padding and border radius. It's children use `--box-margin` for both padding and border. The children of that inner box (e.g. buttons, standardButton already does) use `--content-margin`. This ensures that rounded corners, spacing etc. always looks consistent.
+**Layouts** use `--layout-margin` as the gap between boxes (and padding, when applicable).
 
-### Containers
+**Panels** use `--panel-margin` for padding and gap. The gap or margin between panels is usually `--box-margin`.
+
+**Popups** and large elements use 25px (`--layout-margin` + `--box-margin`) for border-radius.
+
+### Boxes
+
 Containers, referred to as boxes in the code base, usually need the following styles:
 ```css
 .common-box {
@@ -42,9 +46,10 @@ Containers, referred to as boxes in the code base, usually need the following st
 }
 ``` 
 
-Containers that contain text often look more well-rounded with `padding-inline: var(--layout-margin)` since the font naturally adds a bit of padding towards the top and bottom. This ensures better readability.
+Boxes that contain text often look more well-rounded with `padding-inline: var(--layout-margin)` since the font naturally adds a bit of padding towards the top and bottom. This ensures better readability.
 
 ### Colors
+
 Please refer to the color section in `app.css`, but the most important ones are:
 - `--brand-color` The distinctive red
 - `--panel-color` A more opaque dark blue used for UI floating above the panorama
@@ -66,6 +71,7 @@ The button that commonly sits at the bottom of a popup can be replicated by addi
 Buttons should always be placed in a visual container and not just on a blank page or direclty in a popup (unless it's a large button, which aligns well with the Popup's corner radius).
 
 ### Icons
+
 Lucide is used for icons. At the default icon size (matches the font size), using `2` as the stroke width is suggested. Icons placed inside of buttons commonly look best at size `20`, slightly smaller, for which a stroke width of `2.25` looks best.
 
 Certain Lucide icons are thinner than the rest, for example, the `X`. For those, `.25` is added to the stroke width to make them fit in.
@@ -75,6 +81,21 @@ Certain Lucide icons are thinner than the rest, for example, the `X`. For those,
 - Body text and headings should be written as plain sentences, without random capitalization (for example, “This is a nice location” rather than “This is a nice Location”).
 - Official map names, competition names, tournament names, and the names of other user-creatable game elements should capitalize each word (for example, “Urban Competition”). However, when users create their own content, they are free to choose their own capitalization and formatting.
 - Using a colon ":" for lists or labels is not recommended.
+
+### Overfade
+
+Overfade is a library installed that allows for beautiful scroll containers. It applies a mask-image on the container that overflows depending on the scroll position of the content. For example, when a container that contains overflowing text content is scrolled all the way to the top, the top of the text is not faded out, only the bottom. 
+
+To use it, simply add it's classes:
+- `of-top`: Fade out towards the top (dynamically)
+- `of-bottom`: Fade out towards the bottom (dynamically)
+- `of-left`: Fade out towards the left (dynamically)
+- `of-right`: Fade out towards the right (dynamically)
+- `of-length-x`: Multiply the length of the fade, defaults to 1 (optional, x = factor)
+
+### Opacity values
+
+Opacity values used are typically `0.25`, `0.5`, `0.75` and `1`. Using others such as `0.7` is discouraged. 
 
 ## Developing
 

@@ -24,6 +24,7 @@
 		margin-top: var(--layout-margin);
 		margin-bottom: var(--layout-margin);
 		align-items: center;
+		box-sizing: border-box;
 	}
 
 	.noMargin {

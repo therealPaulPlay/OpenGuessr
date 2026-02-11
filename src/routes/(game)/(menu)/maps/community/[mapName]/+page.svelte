@@ -396,14 +396,9 @@
 			addInsteadOfOverwrite = tabIndex != 0;
 		}}
 	/>
-	<textarea
-		id="updateMapData"
-		class="uploadInfo"
-		type="text"
-		rows="20"
-		bind:value={textareaValue}
-		placeholder="https://www.google.com/maps..."
-	></textarea>
+	<div class="textareaContainer">
+		<textarea type="text" class="of-top of-bottom" rows="10" bind:value={textareaValue} placeholder="https://www.google.com/maps..."></textarea>
+	</div>
 	<button
 		class="standardButton white"
 		onclick={() => {
@@ -500,6 +495,7 @@
 		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
 		opacity: 0.5;
+		scrollbar-width: none;
 	}
 
 	.descHeader {
@@ -543,16 +539,22 @@
 		opacity: 0.5;
 	}
 
-	.uploadInfo {
-		border-radius: var(--box-margin);
-		width: calc(100% - 40px);
-		font-size: 16px;
+	textarea {
+		width: 100%;
+		min-height: 100%;
 		padding: var(--box-margin);
-		padding-inline: 20px;
+		padding-inline: var(--layout-margin);
+	}
+
+	.textareaContainer {
+		border-radius: var(--box-margin);
+		width: 100%;
+		box-sizing: border-box;
 		margin-bottom: var(--layout-margin);
 		margin-top: var(--layout-margin);
-		transition: background-color 250ms ease;
-		color: white;
+		box-shadow: var(--box-shadow);
+		background-color: var(--box-color);
+		overflow: hidden;
 	}
 
 	.locationAmountInfo {
