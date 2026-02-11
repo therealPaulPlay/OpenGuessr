@@ -16,10 +16,9 @@ one inside of a component or page. OpenGuessr uses a `CSS component library` app
 As part of OpenGuessr's design philosophy, there's one important rule to follow:
 **Margin, padding and border radius always match.** To make this system easy to follow, there are variables inside `app.css` with the values that should be used. 
 > [!TIP]
-> Exceptions can be made if e.g. an icon or text doesn't look properly aligned with the 
-> variable's padding.
+> Exceptions can be made if an icon or text doesn't look properly aligned.
 
-These variables follow a layered approach.
+These variables follow a layered approach:
 
 | Layer | Purpose | Variable | Value |
 | ----- | ------- | -------- | ----- |
@@ -29,7 +28,7 @@ These variables follow a layered approach.
 | 4 | Containers inside pages (not already in a 'box') | --layout-margin | 15px |
 | 5 | Popups, sheets | calc(var(--layout-margin) + var(--box-margin)) | 25px |
 
-This means that, for example, a conatiner on a menu page uses `--layout-margin` for the padding and border radius. It's children use `--box-margin` for both padding and border. This ensures that rounded corners, spacing etc. always looks consistent.
+This means that, for example, a conatiner on a menu page uses `--layout-margin` for the padding and border radius. It's children use `--box-margin` for both padding and border. The children of that inner box (e.g. buttons, standardButton already does) use `--content-margin`. This ensures that rounded corners, spacing etc. always looks consistent.
 
 ### Containers
 Containers, referred to as boxes in the code base, usually need the following styles:
@@ -62,7 +61,7 @@ Usually, buttons sit in layer 1. However, sometimes you want large, rounded butt
 
 The `standardButton` is a red primary button by default. To make it secondary, add `white`. 
 
-The button that commonly sits at the bottom of a popup can be replicated by adding `bottomButton` to `standardButton`, `white` (unless a primary action) and `largeButton`. 
+The button that commonly sits at the bottom of a popup can be replicated by adding `bottomButton`, `white` (unless a primary action) and `largeButton` to a `standardButton`. 
 
 ### Icons
 Lucide is used for icons. At the default icon size (matches the font size), using `2` as the stroke width is suggested. Icons placed inside of buttons commonly look best at size `20`, slightly smaller, for which a stroke width of `2.25` looks best.
@@ -83,7 +82,9 @@ Once you've created a project and installed dependencies with `npm install` (or 
 npm run dev
 ```
 
-`ESlint` is used for linting. Run `npm run lint`.
+## Linting
+
+`ESlint` is used for linting. Use it with `npm run lint`.
 
 ## Building
 
