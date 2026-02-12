@@ -10,7 +10,6 @@
 	import { goto } from "$app/navigation";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
-	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
 
 	let successPopup = $state(false);
 
@@ -207,130 +206,134 @@
 	</div>
 </Popup>
 
-<div class="pageContainer">
-	<div class="headerContainer">
-		<h1 class="header">Create a competition</h1>
-	</div>
+<div class="main-container">
+	<div class="contentArea">
+		<div class="formLayout">
+			<!-- Left column: Settings -->
+			<div class="formColumn">
+				<div class="formSection">
+					<h3 class="sectionTitle">Details</h3>
+					<div class="fieldGroup">
+						<p class="fieldLabel">Name</p>
+						<input bind:value={competitionName} type="text" placeholder="My competition" maxlength="30" />
+					</div>
+					<div class="fieldGroup">
+						<p class="fieldLabel">Description</p>
+						<input
+							bind:value={competitionDescription}
+							type="text"
+							placeholder="This competition features..."
+							maxlength="70"
+						/>
+					</div>
+				</div>
 
-	<div class="formLayout">
-		<!-- Left column: Settings -->
-		<div class="formColumn">
-			<div class="formSection">
-				<h3 class="sectionTitle">Details</h3>
-				<div class="fieldGroup">
-					<p class="fieldLabel">Name</p>
-					<input bind:value={competitionName} type="text" placeholder="My competition" maxlength="30" />
+				<div class="formSection">
+					<h3 class="sectionTitle">Settings</h3>
+					<div class="settingsGrid">
+						<div class="fieldGroup">
+							<p class="fieldLabel">Round length (seconds)</p>
+							<input bind:value={roundLength} type="text" placeholder="60" maxlength="30" />
+						</div>
+						<div class="fieldGroup">
+							<p class="fieldLabel">Duration (d, h, min)</p>
+							<input bind:value={competitionDuration} type="text" placeholder="2d 6h" maxlength="30" />
+						</div>
+						<div class="fieldGroup">
+							<p class="fieldLabel">Visibility</p>
+							<button
+								class="standardButton white largeButton toggleButton"
+								onclick={() => {
+									playSound("basic_button");
+									competitionPrivate = !competitionPrivate;
+								}}>{competitionPrivate ? "Private" : "Public"}</button
+							>
+						</div>
+						<div class="fieldGroup">
+							<p class="fieldLabel">Restriction</p>
+							<button
+								class="standardButton white largeButton toggleButton"
+								onclick={() => {
+									playSound("basic_button");
+									togglecompetitionRestriction();
+								}}>{competitionRestrictionText}</button
+							>
+						</div>
+					</div>
 				</div>
-				<div class="fieldGroup">
-					<p class="fieldLabel">Description</p>
-					<input
-						bind:value={competitionDescription}
-						type="text"
-						placeholder="This competition features..."
-						maxlength="70"
-					/>
-				</div>
+
+				<Drawer title="Rules" inPage={true} hasBottomLayoutMargin={false}>
+					<div class="locationInstructions">
+						<ul class="rulesList">
+							<li>Keep all details in English</li>
+							<li>Pick a descriptive competition name</li>
+							<li>Competitions will be deleted 7 days after they have ended</li>
+							<li>Competitions cannot be edited</li>
+							<li>The duration must be between 10min and 7d</li>
+							<li>The number of locations equals the amount of rounds</li>
+						</ul>
+					</div>
+				</Drawer>
 			</div>
 
-			<div class="formSection">
-				<h3 class="sectionTitle">Settings</h3>
-				<div class="settingsGrid">
-					<div class="fieldGroup">
-						<p class="fieldLabel">Round length (seconds)</p>
-						<input bind:value={roundLength} type="text" placeholder="60" maxlength="30" />
+			<!-- Right column: Locations -->
+			<div class="formColumn locationsColumn">
+				<div class="formSection locationsSection">
+					<h3 class="sectionTitle sectionTitleMargin">Locations</h3>
+					<div class="locationInstructions">
+						<p class="instructionsTitle">Instructions</p>
+						<ol>
+							<li>
+								Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer
+							</li>
+							<li>Drag the orange figure onto the map to open a streetview</li>
+							<li>Copy the URL from the address bar into the textbox</li>
+						</ol>
 					</div>
-					<div class="fieldGroup">
-						<p class="fieldLabel">Duration (d, h, min)</p>
-						<input bind:value={competitionDuration} type="text" placeholder="2d 6h" maxlength="30" />
+					<p class="fieldLabel">Street View URLs (fixed order, max. 20)</p>
+					<div class="textAreaBox">
+						<textarea
+							bind:value={locationData}
+							class="of-top of-bottom"
+							rows="5"
+							placeholder="https://www.google.com/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=..."
+						></textarea>
 					</div>
-					<div class="fieldGroup">
-						<p class="fieldLabel">Visibility</p>
-						<button
-							class="standardButton white largeButton toggleButton"
-							onclick={() => {
-								playSound("basic_button");
-								competitionPrivate = !competitionPrivate;
-							}}>{competitionPrivate ? "Private" : "Public"}</button
-						>
-					</div>
-					<div class="fieldGroup">
-						<p class="fieldLabel">Restriction</p>
-						<button
-							class="standardButton white largeButton toggleButton"
-							onclick={() => {
-								playSound("basic_button");
-								togglecompetitionRestriction();
-							}}>{competitionRestrictionText}</button
-						>
-					</div>
-				</div>
-			</div>
-
-			<Drawer title="Rules" inPage={true} hasBottomLayoutMargin={false}>
-				<div class="locationInstructions">
-					<ul class="rulesList">
-						<li>Keep all details in English</li>
-						<li>Pick a descriptive competition name</li>
-						<li>Competitions will be deleted 7 days after they have ended</li>
-						<li>Competitions cannot be edited</li>
-						<li>The duration must be between 10min and 7d</li>
-						<li>The number of locations equals the amount of rounds</li>
-					</ul>
-				</div>
-			</Drawer>
-		</div>
-
-		<!-- Right column: Locations -->
-		<div class="formColumn locationsColumn">
-			<div class="formSection locationsSection">
-				<h3 class="sectionTitle sectionTitleMargin">Locations</h3>
-				<div class="locationInstructions">
-					<p class="instructionsTitle">Instructions</p>
-					<ol>
-						<li>
-							Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer
-						</li>
-						<li>Drag the orange figure onto the map to open a streetview</li>
-						<li>Copy the URL from the address bar into the textbox</li>
-					</ol>
-				</div>
-				<p class="fieldLabel">Street View URLs (fixed order, max. 20)</p>
-				<div class="textAreaBox">
-					<textarea
-						bind:value={locationData}
-						class="of-top of-bottom"
-						rows="5"
-						placeholder="https://www.google.com/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=..."
-					></textarea>
 				</div>
 			</div>
 		</div>
-	</div>
 
-	<div class="submitArea barMenu">
-		<button
-			class="standardButton largeButton"
-			onclick={() => {
-				playSound("basic_button");
-				showConfirmPopup("Submit?", "Competitions cannot be edited or deleted.", () => {
-					submitCompetitionWithDetails();
-				});
-			}}>Submit</button
-		>
+		<div class="submitArea barMenu">
+			<button
+				class="standardButton largeButton"
+				onclick={() => {
+					playSound("basic_button");
+					showConfirmPopup("Submit?", "Competitions cannot be edited or deleted.", () => {
+						submitCompetitionWithDetails();
+					});
+				}}>Submit</button
+			>
+		</div>
 	</div>
 </div>
 
 <style>
-	.pageContainer {
+	.main-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		min-height: calc(100dvh - 120px);
+	}
+
+	.contentArea {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		width: 100%;
+		max-width: 900px;
+		margin-top: auto;
+		margin-bottom: auto;
 		padding-bottom: 50px;
-	}
-
-	:global(.titleSeparatorMargin) {
-		margin-inline: var(--content-margin);
 	}
 
 	.linkTitle {
@@ -356,6 +359,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--layout-margin);
+		min-width: 0;
 	}
 
 	.formSection {
@@ -372,6 +376,7 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--content-margin);
+		min-width: 0;
 	}
 
 	.fieldLabel {
