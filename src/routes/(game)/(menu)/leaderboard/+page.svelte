@@ -462,7 +462,7 @@
 		padding: var(--layout-margin);
 		flex-grow: 1;
 		width: 100%;
-		border-radius: calc(var(--layout-margin) + 5px);
+		border-radius: var(--layout-margin);
 		display: flex;
 		box-sizing: border-box;
 		flex-direction: column;
