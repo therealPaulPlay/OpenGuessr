@@ -110,12 +110,9 @@
 	</div>
 </Popup>
 
-<div class="pageContainer">
-	<div class="headerContainer">
-		<h1 class="header">Create a map</h1>
-	</div>
-
-	<div class="formLayout">
+<div class="main-container">
+	<div class="contentArea">
+		<div class="formLayout">
 		<!-- Left column: Settings -->
 		<div class="formColumn">
 			<div class="formSection">
@@ -217,29 +214,40 @@
 				</div>
 			</div>
 		</div>
-	</div>
+		</div>
 
-	<div class="submitArea barMenu">
-		<button
-			class="standardButton largeButton"
-			onclick={() => {
-				playSound("basic_button");
-				showConfirmPopup(
-					"Submit?",
-					"Some map details cannot be edited later! Violating the rules can result in a ban.",
-					uploadMap,
-				);
-			}}>Submit</button
-		>
+		<div class="submitArea barMenu">
+			<button
+				class="standardButton largeButton"
+				onclick={() => {
+					playSound("basic_button");
+					showConfirmPopup(
+						"Submit?",
+						"Some map details cannot be edited later! Violating the rules can result in a ban.",
+						uploadMap,
+					);
+				}}>Submit</button
+			>
+		</div>
 	</div>
 </div>
 
 <style>
-	.pageContainer {
+	.main-container {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		min-height: calc(100dvh - 120px);
+	}
+
+	.contentArea {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
 		width: 100%;
+		max-width: 900px;
+		margin-top: auto;
+		margin-bottom: auto;
 		padding-bottom: 50px;
 	}
 
@@ -272,12 +280,14 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--box-margin);
+		overflow: hidden;
 	}
 
 	.fieldGroup {
 		display: flex;
 		flex-direction: column;
 		gap: var(--content-margin);
+		min-width: 0;
 	}
 
 	.fieldLabel {
