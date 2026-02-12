@@ -248,7 +248,6 @@
 		max-width: 900px;
 		margin-top: auto;
 		margin-bottom: auto;
-		padding-bottom: 50px;
 	}
 
 	.sectionTitle {
