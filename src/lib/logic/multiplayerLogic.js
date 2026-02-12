@@ -97,6 +97,7 @@ export async function createMultiplayerInstance() {
         }));
 
         let playerAddRequestSent = false;
+        let gameHasStarted = false;
 
         // Register event listeners
         get(socket).onEvent('status', status => multiplayerStatus.set(status));
@@ -123,6 +124,7 @@ export async function createMultiplayerInstance() {
 
         get(socket).onEvent('moved', (newRoomId) => {
             playerAddRequestSent = false; // Reset so addPlayer is sent for the new room
+            gameHasStarted = false;
             roomCode.set(newRoomId); // Update roomCode to the new room
         });
 
@@ -138,7 +140,10 @@ export async function createMultiplayerInstance() {
             }
 
             // If game has started, go to game page & disable matchmaking
-            if (storage.gameStarted && page.url.pathname !== "/") goto("/"); // E.g. host or duel page -> game page
+            if (storage.gameStarted && page.url.pathname !== "/" && !gameHasStarted) { 
+                gameHasStarted = true;
+                goto("/"); // E.g. host or duel page -> game page 
+            }
             if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
 
             // If player is not already in the room, add player info
