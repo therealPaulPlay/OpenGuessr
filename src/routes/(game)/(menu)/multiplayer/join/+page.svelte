@@ -143,7 +143,8 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		min-height: 50dvh;
+		justify-content: center;
+		min-height: calc(100dvh - 120px);
 	}
 
 	.publicRoomTitle {
@@ -232,7 +233,6 @@
 	}
 
 	.inputCenterBox {
-		margin-top: auto;
 		display: flex;
 		align-items: center;
 		flex-direction: column;
