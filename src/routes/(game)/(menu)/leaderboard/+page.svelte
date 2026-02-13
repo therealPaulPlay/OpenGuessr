@@ -37,13 +37,15 @@
 
 	async function getUserLeaderboard() {
 		try {
-			let id = localStorage.getItem("id");
-
-			const response = await fetch(`${$apiUrl}/leaderboard/experience-user-section/${id}`, {
-				method: "GET",
+			const response = await fetch(`${$apiUrl}/leaderboard/experience-user-section`, {
+				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
+					Authorization: "Bearer " + localStorage.getItem("bearer"),
 				},
+				body: JSON.stringify({
+					id: localStorage.getItem("id"),
+				}),
 			});
 
 			// Check if the response is successful

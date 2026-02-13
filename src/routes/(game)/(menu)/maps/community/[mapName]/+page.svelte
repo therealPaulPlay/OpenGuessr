@@ -90,7 +90,7 @@
 
 	async function fetchMapLikeStatus(name) {
 		try {
-			const playerId = localStorage.getItem("id") || null;
+			const playerId = localStorage.getItem("id");
 
 			const response = await fetch($apiUrl + `/maps/rating/${name}`, {
 				method: "POST",
@@ -397,7 +397,13 @@
 		}}
 	/>
 	<div class="textareaContainer">
-		<textarea type="text" class="of-top of-bottom" rows="10" bind:value={textareaValue} placeholder="https://www.google.com/maps..."></textarea>
+		<textarea
+			type="text"
+			class="of-top of-bottom"
+			rows="10"
+			bind:value={textareaValue}
+			placeholder="https://www.google.com/maps..."
+		></textarea>
 	</div>
 	<button
 		class="standardButton white"
