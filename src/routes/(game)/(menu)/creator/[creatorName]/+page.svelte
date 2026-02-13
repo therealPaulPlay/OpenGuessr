@@ -50,7 +50,7 @@
 				}}
 			>
 				Let's go
-				<div class="arrowIconContainer"><ArrowRight strokeWidth={3} /></div>
+				<div class="arrowIconContainer"><ArrowRight strokeWidth={2.25} /></div>
 			</button>
 		</div>
 	{/if}

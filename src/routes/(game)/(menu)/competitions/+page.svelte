@@ -276,11 +276,14 @@
 			if (daily) Endpoint = competitionsEndpoint + "/daily/daily-competition";
 			if (filterEntered) Endpoint = competitionsEndpoint + "/not-entered/" + notExpiredIndex;
 
+			const headers = {
+				"Content-Type": "application/json",
+			};
+			if (localStorage.getItem("id")) headers["Authorization"] = "Bearer " + localStorage.getItem("bearer");
+
 			const response = await fetch(Endpoint, {
 				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
+				headers,
 				body: JSON.stringify(requestBody),
 			});
 
