@@ -183,7 +183,7 @@
 						playSound("basic_button");
 						showConfirmPopup(
 							"Resets",
-							`Elo above ${Number(2000).toLocaleString()} is halved at the start of each month, and the deducted amount is converted into tokens.. Experience over 100M is halved at the start of each month.`,
+							`Elo above ${Number(2000).toLocaleString()} is halved at the start of each month, and the deducted amount is converted into tokens. Experience above 100M is halved at the start of each month.`,
 						);
 					}}
 				>
