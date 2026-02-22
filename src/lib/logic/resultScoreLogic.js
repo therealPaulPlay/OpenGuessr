@@ -3,7 +3,7 @@ import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { setCheckNewHighestCountryStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, supporterLevel } from "$lib/stores/accountStore";
-import { streakText, showStreakDisplay, lastExpCalculationSignedOut, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
+import { streakText, lastExpCalculationSignedOut, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { multiplayerMap, socket } from "$lib/stores/context-specific/multiplayerStore";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
@@ -35,7 +35,6 @@ async function streakCalculation() {
 
     const streakMultiplier = calculateMultiplier(streak);
     streakText.set(streak + " (" + streakMultiplier + "x)");
-    showStreakDisplay.set(true);
     localStorage.setItem("streak", streak);
     return streakMultiplier;
 }
@@ -83,7 +82,7 @@ export async function loadResultScreenXP(distance) {
     // (Re-)sets
     let supporterMultiplier = 1;
     clearTimeout(animateSupporterBoostTimeout);
-    showStreakDisplay.set(false);
+    streakText.set(null);
 
     // Post-signin saves -----------------------------------------------------
     if (!get(isAuthenticated) && get(singleplayer)) lastExpCalculationSignedOut.set(true);
@@ -117,12 +116,10 @@ export async function loadResultScreenXP(distance) {
     }
 
     // Apply XP visually and server-wise ----------------------------------
-    experienceBarAnimated.set(false);
     earnedExperience.set(earnedBasicXP || 0);
 
     if (earnedXP > 0 && get(isAuthenticated)) addUserXP(earnedXP); // Save XP to database
     if (earnedBasicXP > 50 && get(isAuthenticated)) setTimeout(playScoreincreaseSound, 500);
-    if (earnedXP > 0) experienceBarAnimated.set(true);
 
     if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
         supporterXpBoostAnimation(supporterMultiplier);

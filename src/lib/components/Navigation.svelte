@@ -34,7 +34,7 @@
 
 	function checkTextLength(text) {
 		const textLength = text.length;
-		scrollNameText = textLength > 8;
+		scrollNameText = textLength > 16;
 	}
 
 	username.subscribe((value) => {
@@ -337,6 +337,7 @@
 		display: inline-block;
 		width: fit-content;
 		margin-top: -3px;
+		box-sizing: border-box;
 	}
 
 	.account-name-button {
@@ -420,7 +421,7 @@
 		}
 
 		100% {
-			transform: translateX(calc(-100% + 150px));
+			transform: translateX(calc(-100% + 165px));
 			/* adjust second param to be max-width of element minus about 5px */
 		}
 	}
