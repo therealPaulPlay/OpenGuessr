@@ -172,7 +172,7 @@
 			</div>
 		</div>
 		<div class="settingsBox settingsBoxFlex noFlexWrap" class:box-disabled={!$singleplayer}>
-			<p class="settingsBoxFlexTitle">No Move, Pan or Zoom (NMPZ)</p>
+			<p class="settingsBoxFlexTitle">No Move, Pan or Zoom</p>
 			<button class="standardButton white" onclick={toggleSingleplayerNMPZ}
 				>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
 			>
@@ -191,7 +191,7 @@
 					style:background={sfxSliderBg}
 					oninput={inputSFXVolumeSlider}
 				/>
-				<p>{sfxSliderBgPercentage}%</p>
+				<p style:margin-right="auto">{sfxSliderBgPercentage}%</p>
 			</div>
 		</div>
 		<div class="settingsBox">
@@ -207,7 +207,7 @@
 					style:background={musicSliderBg}
 					oninput={inputMusicVolumeSlider}
 				/>
-				<p>{musicSliderBgPercentage}%</p>
+				<p style:margin-right="auto">{musicSliderBgPercentage}%</p>
 				<button
 					class="standardButton white creditsButton"
 					onclick={() => {
@@ -263,7 +263,7 @@
 		align-items: center;
 		gap: var(--box-margin);
 		width: fit-content;
-		flex-basis: 60%;
+		flex-basis: 45%;
 		flex-grow: 1;
 	}
 
@@ -276,7 +276,7 @@
 		display: flex;
 		align-items: center;
 		justify-content: center;
-		padding: 5px;
+		padding: var(--content-margin);
 	}
 
 	.timerTextBox {
@@ -284,12 +284,12 @@
 		justify-content: space-between;
 		box-shadow: var(--box-shadow);
 		align-items: center;
-		gap: 5px;
+		gap: var(--content-margin);
 		height: 31px;
 		background-color: rgba(255, 255, 255, 0.1);
-		padding: 5px;
-		padding-inline: 10px;
-		border-radius: 5px;
+		padding: var(--content-margin);
+		padding-inline: var(--box-margin);
+		border-radius: var(--content-margin);
 		min-width: 125px;
 		text-align: center;
 	}
@@ -308,7 +308,7 @@
 	}
 
 	.settingsBoxFlexTitle {
-		margin-left: 5px;
+		margin-left: var(--content-margin);
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -324,8 +324,8 @@
 	}
 
 	.textMargin {
-		margin-inline: 5px;
-		margin-bottom: 10px;
+		margin-inline: var(--content-margin);
+		margin-bottom: var(--box-margin);
 	}
 
 	.fullscreenIcon {
@@ -335,14 +335,15 @@
 	.sliderBox {
 		display: flex;
 		margin-top: 18px;
-		margin-left: 5px;
+		margin-left: var(--content-margin);
 		align-items: center;
+		gap: var(--content-margin);
 		justify-content: space-between;
 	}
 
 	.sliderBox p {
 		min-width: 45px;
-		margin-left: 10px;
+		margin-left: var(--box-margin);
 		opacity: 0.75;
 	}
 

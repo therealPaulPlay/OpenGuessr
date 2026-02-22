@@ -60,7 +60,7 @@
 		left: 0;
 		right: 0;
 		background-color: var(--panel-color);
-		padding: 5px;
+		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
 		border-radius: var(--box-margin);
 		border-bottom-left-radius: 0;

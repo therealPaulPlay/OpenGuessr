@@ -189,7 +189,7 @@
 	}
 
 	.eloInfo {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		box-shadow: var(--box-shadow);
 		padding-inline: var(--panel-margin);
 		display: flex;
@@ -202,9 +202,9 @@
 	}
 
 	.filterInput {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		max-width: 65px;
-		padding-inline: 10px;
+		padding-inline: var(--box-margin);
 	}
 
 	.filterBox {
@@ -214,7 +214,7 @@
 		max-width: fit-content;
 		background-color: var(--box-color);
 		display: flex;
-		gap: 5px;
+		gap: var(--content-margin);
 		justify-content: center;
 		align-items: center;
 		flex-grow: 1;
@@ -252,11 +252,11 @@
 	}
 
 	.pageCounter {
-		padding: 5px;
+		padding: var(--content-margin);
 		box-shadow: var(--box-shadow);
 		user-select: none;
-		padding-inline: 10px;
-		border-radius: 5px;
+		padding-inline: var(--box-margin);
+		border-radius: var(--content-margin);
 		min-width: 50px;
 		text-align: center;
 		background-color: var(--box-color);
@@ -267,8 +267,8 @@
 		display: flex;
 		box-shadow: var(--box-shadow);
 		gap: var(--box-margin);
-		padding: 5px 15px;
-		border-radius: 5px;
+		padding: var(--content-margin) 15px;
+		border-radius: var(--content-margin);
 		justify-content: space-between;
 		transition: background-color 250ms ease;
 		background-color: var(--box-color);
@@ -290,7 +290,7 @@
 	.playerInfo {
 		display: flex;
 		align-items: center;
-		gap: 10px;
+		gap: var(--box-margin);
 	}
 
 	.playerName {
@@ -315,9 +315,9 @@
 	.vs {
 		align-self: center;
 		box-shadow: var(--bulb-shadow);
-		margin: 5px 0;
-		border-radius: 5px;
-		padding-inline: 5px;
+		margin: var(--content-margin) 0;
+		border-radius: var(--content-margin);
+		padding-inline: var(--content-margin);
 		background-color: var(--box-color);
 	}
 
@@ -330,6 +330,6 @@
 	}
 
 	.paginationControls button {
-		padding: 5px 10px;
+		padding: var(--content-margin) 10px;
 	}
 </style>

@@ -156,7 +156,7 @@
 		justify-content: center;
 		padding-bottom: 0;
 		padding-inline: 0;
-		padding-right: 15px;
+		padding-right: var(--layout-margin);
 	}
 
 	:global(.gm-style-iw-ch) {
@@ -182,7 +182,7 @@
 	}
 
 	:global(.leaflet-control-layers-selector[type="radio"]) {
-		margin-right: 5px;
+		margin-right: var(--content-margin);
 	}
 
 	:global(.leaflet-control-layers-selector[type="radio"]:checked) {

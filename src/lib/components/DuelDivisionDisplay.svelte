@@ -53,7 +53,7 @@
 		position: relative;
 		width: calc(100% - 50px);
 		height: 120px;
-		border-radius: 10px;
+		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		padding-inline: 25px;
 		box-shadow: var(--box-shadow);
@@ -128,8 +128,8 @@
 		width: 2px;
 		height: 14px;
 		background: var(--brand-color);
-		margin-top: 15px;
-		border-radius: 5px;
+		margin-top: var(--layout-margin);
+		border-radius: var(--content-margin);
 	}
 
 	.eloValue {
@@ -140,7 +140,7 @@
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: rgba(0, 0, 0, 0.3);
 		padding-inline: 2px;
 	}

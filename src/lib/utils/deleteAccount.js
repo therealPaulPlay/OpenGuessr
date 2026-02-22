@@ -33,7 +33,7 @@ async function deleteUser(password) {
 
         // Check if the response is successful
         if (response.ok) {
-            const data = await response.json();
+            await response.json();
             return true;
 
         } else {

@@ -281,7 +281,7 @@
 		box-sizing: border-box;
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
-		border-radius: 15px;
+		border-radius: var(--layout-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -313,7 +313,7 @@
 		height: 50px;
 		transform: rotate(-15deg);
 		margin-left: -12px;
-		margin-right: 5px;
+		margin-right: var(--content-margin);
 		animation: socialPinAnimation 1.5s ease-in-out infinite alternate;
 		transform-origin: bottom;
 	}
@@ -372,7 +372,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		gap: 5px;
+		gap: var(--content-margin);
 		padding-inline: var(--layout-margin);
 		box-sizing: border-box;
 	}
@@ -380,7 +380,7 @@
 	.shopInfoSection {
 		display: flex;
 		align-items: center;
-		gap: 5px;
+		gap: var(--content-margin);
 		max-width: 50%;
 		text-wrap: nowrap;
 		overflow: hidden;
@@ -413,7 +413,7 @@
 	}
 
 	.shopOffer {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
@@ -451,7 +451,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		gap: 5px;
+		gap: var(--content-margin);
 	}
 
 	.tokenGraphic {
@@ -516,7 +516,7 @@
 		width: 100%;
 		height: 100%;
 		box-shadow: var(--box-shadow);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -559,8 +559,8 @@
 		margin-top: 30px;
 		margin-bottom: 40px;
 		transition: scale 250ms ease;
-		padding-bottom: 5px;
-		padding-top: 5px;
+		padding-bottom: var(--content-margin);
+		padding-top: var(--content-margin);
 		overflow: auto;
 	}
 
@@ -572,8 +572,8 @@
 	.specialOfferRarityDisplay {
 		position: absolute;
 		box-shadow: var(--bulb-shadow);
-		border-top-right-radius: 5px;
-		border-bottom-left-radius: 5px;
+		border-top-right-radius: var(--content-margin);
+		border-bottom-left-radius: var(--content-margin);
 		top: 0;
 		right: 0;
 		padding-inline: var(--panel-margin);

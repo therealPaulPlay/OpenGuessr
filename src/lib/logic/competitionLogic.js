@@ -10,7 +10,6 @@ import { competitionData, competitionRound } from "$lib/stores/context-specific/
 import { goto } from "$app/navigation";
 import { leaveFunction } from "$lib/stores/modeStore.js";
 import { get } from "svelte/store";
-import { username } from "$lib/stores/accountStore";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 import { navigationMenu } from "$lib/stores/uiStore";

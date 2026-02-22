@@ -65,7 +65,7 @@
 			strokeWidth={2.25}
 			size={24}
 			color="white"
-			style="opacity: 50%; margin-left: 5px; margin-right: 2px; margin-top: 2px;"
+			style="opacity: 50%; margin-left: var(--content-margin); margin-right: 2px; margin-top: 2px;"
 		/>
 		<p>To report a player, open their profile and click on <i>Report</i>.</p>
 		<button

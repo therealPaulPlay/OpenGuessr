@@ -1,6 +1,6 @@
 import { computePosition, flip, shift, offset, arrow } from "@floating-ui/dom";
 
-export function tooltip(node, { text, ...options }) {
+export function tooltip(node, { text }) {
     let tooltipElement, arrowElement, visible = false;
 
     function createTooltip() {

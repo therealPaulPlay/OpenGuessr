@@ -14,7 +14,7 @@
 		opacity: 0.15;
 		flex-grow: 1;
 		border-radius: var(--box-margin);
-		margin-top: 5px;
+		margin-top: var(--content-margin);
 	}
 
 	.flexContainer {
@@ -24,6 +24,7 @@
 		margin-top: var(--layout-margin);
 		margin-bottom: var(--layout-margin);
 		align-items: center;
+		box-sizing: border-box;
 	}
 
 	.noMargin {

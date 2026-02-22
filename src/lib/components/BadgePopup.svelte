@@ -79,14 +79,14 @@
 	<div class="badgeLabel">
 		<p>Miscellaneous</p>
 	</div>
-	<div class="badgeBox" style="margin-bottom: 5px">
+	<div class="badgeBox" style="margin-bottom: var(--content-margin)">
 		<Badge id="miscBadge1" interactive="true" unlocked={$profileId <= 5} />
 	</div>
 </Popup>
 
 <style>
 	.spacerBadge {
-		height: 5px;
+		height: var(--content-margin);
 	}
 
 	.badgeLabel {
@@ -96,7 +96,7 @@
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
 		text-align: left;
-		padding-left: 10px;
+		padding-left: var(--box-margin);
 		display: flex;
 		box-shadow: var(--box-shadow);
 		justify-content: space-between;

@@ -1,7 +1,6 @@
 // This generates a new location, but keep in mind that this is NOT the function to present the user with a new location! This does not check the selected map etc.
 import { getLocationCoordinates } from '$lib/logic/locationGeneration';
-import { socket } from "$lib/stores/context-specific/multiplayerStore"
-import { countryGuessr, multiplayer, imageGuessr } from "$lib/stores/modeStore";
+import { countryGuessr, imageGuessr } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from '$lib/stores/locationStore';
 import { setCountryGuesserCountry } from '$lib/utils/countryGuessrFunctions';
 import { loadImageFromUrl } from '$lib/utils/imageGuesserFunctions';

@@ -48,7 +48,7 @@
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
 		box-sizing: border-box;
-		padding: 5px;
+		padding: var(--content-margin);
 		margin-bottom: var(--box-margin);
 	}
 

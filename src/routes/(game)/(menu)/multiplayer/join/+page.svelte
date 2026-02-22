@@ -87,15 +87,17 @@
 				{/each}
 			</div>
 		</div>
-		<button
-			id="multiplayerJoin"
-			class="standardButton largeButton"
-			disabled={roomCodeInput.length !== 6}
-			onclick={() => {
-				playSound("start_button");
-				joinMultiplayerRoom(roomCodeInput);
-			}}>Join</button
-		>
+		<div class="barMenu joinButtonContainer">
+			<button
+				id="multiplayerJoin"
+				class="standardButton largeButton"
+				disabled={roomCodeInput.length !== 6}
+				onclick={() => {
+					playSound("start_button");
+					joinMultiplayerRoom(roomCodeInput);
+				}}>Join</button
+			>
+		</div>
 	</div>
 </div>
 {#if openRooms?.length > 0}
@@ -141,7 +143,8 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		min-height: 50dvh;
+		justify-content: center;
+		min-height: calc(100dvh - 120px);
 	}
 
 	.publicRoomTitle {
@@ -202,9 +205,9 @@
 	}
 
 	.infoBox {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background: var(--box-color);
-		padding-inline: 5px;
+		padding-inline: var(--content-margin);
 		box-shadow: var(--bulb-shadow);
 		white-space: nowrap;
 		display: inline-flex;
@@ -230,7 +233,6 @@
 	}
 
 	.inputCenterBox {
-		margin-top: auto;
 		display: flex;
 		align-items: center;
 		flex-direction: column;
@@ -273,9 +275,15 @@
 		width: 300px;
 	}
 
+	.joinButtonContainer {
+		box-shadow: var(--box-shadow);
+		background-color: var(--box-color);
+		margin-top: calc(var(--layout-margin) + var(--box-margin));
+		border-radius: var(--layout-margin);
+	}
+
 	#multiplayerJoin {
 		padding-inline: 50px;
-		margin-top: var(--layout-margin);
 	}
 
 	.multiplayerInputInfo {

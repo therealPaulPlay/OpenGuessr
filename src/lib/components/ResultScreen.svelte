@@ -6,8 +6,6 @@
 		motivationText,
 		continueText,
 		earnedExperience,
-		experienceBarAnimated,
-		showStreakDisplay,
 		streakText,
 		supporterBoost,
 		supporterBoostText,
@@ -48,9 +46,31 @@
 	let showConfetti = $state(false);
 	let nextRoundButtonElement = $state();
 
+	let transitionExperienceBar = $state(true);
+	let lastPercentageWidthNumber;
+
 	experience.subscribe((value) => {
 		level = getLevel();
-		percentageWidth = Math.max(7, getLevelFraction() * 100) + "%"; // Minimum 7% to prevent weird thin line
+
+		const percentageWidthNumber = Math.max(7, getLevelFraction() * 100); // Minimum 7% to prevent weird thin line
+		const leveledUp = lastPercentageWidthNumber > percentageWidthNumber;
+		lastPercentageWidthNumber = percentageWidthNumber;
+
+		if (leveledUp) {
+			// On level-up: snap to 0% without transition, then animate to the new value
+			// Double rAF ensures the browser paints the 0% state before the transition starts
+			transitionExperienceBar = false;
+			percentageWidth = "0%";
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					transitionExperienceBar = true;
+					percentageWidth = percentageWidthNumber + "%";
+				});
+			});
+		} else {
+			transitionExperienceBar = true;
+			percentageWidth = percentageWidthNumber + "%";
+		}
 	});
 
 	// Trigger confetti
@@ -120,33 +140,38 @@
 			</div>
 			{#if $resultScreenEnabled}
 				<div class="resultField">
-					<RulerDimensionLine class="distance-icon" style="margin-right: 8px;" size={22} strokeWidth={2.25} />
+					<RulerDimensionLine
+						class="distance-icon"
+						style="margin-right: var(--panel-margin);"
+						size={22}
+						strokeWidth={2.25}
+					/>
 					<p id="distanceText">{$distanceText}</p>
 				</div>
 				{#if $isAuthenticated}
-					<div id="XParea" class="resultField">
+					<div id="experienceArea" class="resultField">
 						<div id="supporterBoost" bind:this={$supporterBoost}>
 							<p id="supporterBoostText" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
 						</div>
 						<p id="endScreenLevelDisplay">Lvl. {level}</p>
-						<div id="endScreenXPbar">
+						<div id="experienceBarContainer">
 							<div
-								class="XPbarResource"
-								id="endScreenXPbarResource"
-								class:XPbarAnimate={$experienceBarAnimated}
+								class="experienceBarResource"
+								class:experienceBarTransition={transitionExperienceBar}
+								class:experienceBarAnimation={$earnedExperience > 0}
 								style:width={percentageWidth}
 							></div>
 						</div>
-						<p id="endScreenXP">{$animatedExperience.toFixed(0)} XP</p>
-						{#if $showStreakDisplay}
+						<p id="experienceNumberText">{$animatedExperience.toFixed(0)} XP</p>
+						{#if $streakText}
 							<div id="streakDisplay">
-								<Flame style="margin-right: 5px;" size={22} strokeWidth={2.25} />
+								<Flame style="margin-right: var(--content-margin);" size={22} strokeWidth={2.25} />
 								<p id="endScreenStreakText">{$streakText}</p>
 							</div>
 						{/if}
 					</div>
 				{:else}
-					<div id="XPbarNoAccount" class="resultField">
+					<div id="experienceBarNotSignedIn" class="resultField">
 						<p id="signupPromptText">
 							<CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see
 							& save your score!
@@ -242,7 +267,7 @@
 		justify-content: center;
 		align-items: center;
 		background-color: rgba(255, 255, 255, 0.075);
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		padding: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		flex-grow: 10;
@@ -265,7 +290,7 @@
 		flex: 1;
 		pointer-events: none;
 		position: fixed;
-		bottom: 10px;
+		bottom: var(--box-margin);
 		left: 0;
 		right: 0;
 	}
@@ -296,7 +321,7 @@
 		min-width: 330px;
 		height: 50px;
 		max-height: 60px;
-		padding: 5px;
+		padding: var(--content-margin);
 		flex-grow: 1;
 		position: relative;
 	}
@@ -318,7 +343,7 @@
 		left: 50%;
 		top: calc(-90px - var(--box-margin) * 2);
 		transform: translate(-50%, 0);
-		padding: 5px;
+		padding: var(--content-margin);
 		pointer-events: auto;
 	}
 
@@ -328,7 +353,7 @@
 		text-align: center;
 	}
 
-	#XParea {
+	#experienceArea {
 		position: relative;
 		flex-grow: 100;
 		min-width: 300px;
@@ -396,15 +421,15 @@
 		animation: supporterBoostTextMove 2s ease-in-out;
 	}
 
-	#endScreenXPbar {
+	#experienceBarContainer {
 		flex-grow: 10;
-		height: 15px;
+		height: var(--layout-margin);
 		background-color: rgba(255, 255, 255, 0.2);
 		border-radius: 7px;
 		transition: none;
 	}
 
-	#XPbarNoAccount {
+	#experienceBarNotSignedIn {
 		justify-content: space-between;
 		max-height: 30px;
 	}
@@ -418,7 +443,7 @@
 		padding-inline: var(--box-margin);
 	}
 
-	.XPbarResource {
+	.experienceBarResource {
 		height: 100%;
 		border-radius: 7px;
 		background-color: #00cc00;
@@ -427,19 +452,24 @@
 		box-shadow: var(--bulb-shadow);
 	}
 
-	:global(.XPbarAnimate) {
+	.experienceBarTransition {
 		transition: width 1s ease;
+	}
+
+	.experienceBarAnimation {
 		animation: XPFade 1s ease-in-out;
 	}
 
-	#endScreenXP {
+	#experienceNumberText {
 		font-size: 22px;
 		width: auto;
 		vertical-align: middle;
 		text-align: center;
 		text-wrap: nowrap;
 		flex-grow: 1;
-		min-width: 115px;
+		min-width: 100px;
+		padding-inline: var(--panel-margin);
+		font-variant-numeric: tabular-nums;
 	}
 
 	#endScreenStreakText {
@@ -452,7 +482,7 @@
 
 	#streakDisplay {
 		margin-right: auto;
-		margin-left: 10px;
+		margin-left: var(--panel-margin);
 		position: relative;
 		display: flex;
 		align-items: center;
@@ -466,9 +496,9 @@
 		margin-left: auto;
 		vertical-align: middle;
 		text-align: center;
-		padding-inline: 10px;
-		margin-right: 5px;
-		margin-left: 8px;
+		padding-inline: var(--box-margin);
+		margin-right: var(--content-margin);
+		margin-left: var(--panel-margin);
 		color: white;
 		background-color: #00cc00;
 		box-shadow: var(--bulb-shadow);
@@ -481,8 +511,8 @@
 	.nextRoundArea {
 		z-index: 15;
 		position: fixed;
-		bottom: 10px;
-		right: 10px;
+		bottom: var(--box-margin);
+		right: var(--box-margin);
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -543,7 +573,7 @@
 	@media all and (max-width: 1350px) {
 		.nextRoundArea {
 			width: calc(100% - 36px);
-			left: 10px;
+			left: var(--box-margin);
 		}
 
 		#resultBox {

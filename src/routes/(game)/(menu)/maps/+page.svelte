@@ -3,8 +3,8 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import { onMount } from "svelte";
-	import { goto } from "$app/navigation";
+	import { onMount, getContext } from "svelte";
+	import { goto, beforeNavigate } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { changeMap } from "$lib/utils/changeMap.js";
 	import {
@@ -16,10 +16,15 @@
 	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { tooltip } from "$lib/utils/tooltip.js";
+	import { page } from "$app/state";
+
+	const snapshotStore = getContext("snapshotStore");
 
 	// State
-	let currentFetchIndex = 0;
-	let currentCategory, currentQuery, currentByUserId;
+	let currentFetchIndex = $state(0);
+	let currentCategory = $state();
+	let currentQuery = $state();
+	let currentByUserId = $state();
 	let showLoadMore = $state(false);
 	let showNothingFound = $state(false);
 	let errorMessageText = $state("Loading...");
@@ -48,8 +53,20 @@
 
 	onMount(() => {
 		addedCommunityMapsArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
-		loadCommunityMaps(0);
-		loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+
+		// Check if we should restore snapshot
+		const savedSnapshot = snapshotStore?.get("/maps");
+		if (savedSnapshot && page.state?.restoreSnapshot) restoreSnapshot(savedSnapshot);
+		else {
+			loadCommunityMaps(0);
+			loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+		}
+	});
+
+	// Save snapshot before navigating away
+	beforeNavigate(() => {
+		const data = captureSnapshot();
+		if (data && snapshotStore) snapshotStore.set("/maps", data);
 	});
 
 	async function loadCommunityMaps(index, category, query, byUserId, fav) {
@@ -161,9 +178,9 @@
 		else loadCommunityMaps(0, category);
 	}
 
-	// Snapshot for state restoration
-	export const snapshot = {
-		capture: () => ({
+	// Snapshot functions for state restoration
+	function captureSnapshot() {
+		return {
 			scrollY: window.scrollY,
 			currentFetchIndex,
 			loadMoreCategoryParam: currentCategory,
@@ -175,26 +192,32 @@
 			selectedCategoryIndex,
 			loadedCommunityMaps,
 			loadedSpotlightMaps,
-		}),
-		restore: (data) => {
-			if (!data.loadedSpotlightMaps?.length || !data.loadedCommunityMaps?.length) return;
-			if (currentController) currentController.abort();
-			if (currentFavController) currentFavController.abort();
-			currentFetchIndex = data.currentFetchIndex;
-			currentCategory = data.loadMoreCategoryParam;
-			currentQuery = data.loadMoreQueryParam;
-			currentByUserId = data.byUserParam;
-			showLoadMore = data.showLoadMore;
-			showNothingFound = data.showNothingFound;
-			searchValue = data.searchValue;
-			selectedCategoryIndex = data.selectedCategoryIndex;
-			loadedCommunityMaps = data.loadedCommunityMaps;
-			loadedSpotlightMaps = data.loadedSpotlightMaps;
-			setTimeout(() => {
-				window.scrollTo({ top: data.scrollY });
-			}, 0);
-		},
-	};
+		};
+	}
+
+	function restoreSnapshot(data) {
+		if (!data.loadedSpotlightMaps?.length || !data.loadedCommunityMaps?.length) {
+			loadCommunityMaps(0);
+			loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+			return;
+		}
+		if (currentController) currentController.abort();
+		if (currentFavController) currentFavController.abort();
+		currentFetchIndex = data.currentFetchIndex;
+		currentCategory = data.loadMoreCategoryParam;
+		currentQuery = data.loadMoreQueryParam;
+		currentByUserId = data.byUserParam;
+		showLoadMore = data.showLoadMore;
+		showNothingFound = data.showNothingFound;
+		errorMessageShown = false;
+		searchValue = data.searchValue;
+		selectedCategoryIndex = data.selectedCategoryIndex;
+		loadedCommunityMaps = data.loadedCommunityMaps;
+		loadedSpotlightMaps = data.loadedSpotlightMaps;
+		setTimeout(() => {
+			window.scrollTo({ top: data.scrollY });
+		}, 0);
+	}
 </script>
 
 <svelte:head>
@@ -204,7 +227,7 @@
 {#snippet communityMapItem(map)}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="map-item map-item-animate"
+		class="map-item map-item-hover map-item-animate"
 		role="button"
 		tabindex="0"
 		onclick={() => {
@@ -238,12 +261,12 @@
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="main-container">
 	<div class="headerContainer">
-		<h2 class="header">Base maps</h2>
+		<h2 class="header">Base</h2>
 	</div>
 	<div class="map-container">
 		{#each $basicMaps as map}
 			<div
-				class="map-item map-item-slim"
+				class="map-item map-item-hover map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -264,7 +287,7 @@
 	<div class="map-container">
 		{#each $specialModes as map}
 			<div
-				class="map-item map-item-slim"
+				class="map-item map-item-hover map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -278,7 +301,7 @@
 			</div>
 		{/each}
 		<div
-			class="map-item-link map-item"
+			class="map-item map-item-hover map-item-link"
 			role="button"
 			tabindex="0"
 			onclick={() => {
@@ -290,7 +313,7 @@
 			<p class="link-badge">Education</p>
 		</div>
 		<div
-			class="map-item-link map-item"
+			class="map-item map-item-hover map-item-link"
 			role="button"
 			tabindex="0"
 			onclick={() => {
@@ -309,7 +332,7 @@
 	<div class="map-container map-container-expand" class:map-container-expand-fadeout={!countrySectionExpanded}>
 		{#each $countryMaps as map}
 			<div
-				class="map-item map-item-slim"
+				class="map-item map-item-hover map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -323,16 +346,17 @@
 			</div>
 		{/each}
 	</div>
-	<button
-		class="standardButton white expandButton largeButton"
-		style:margin-top={countrySectionExpanded ? "10px" : "-35px"}
-		onclick={() => {
-			playSound("floating_button");
-			countrySectionExpanded = !countrySectionExpanded;
-		}}
-		>{countrySectionExpanded ? "Show less" : "Show all"}
-		<img class="arrowExpand" class:arrowExpandRotate={countrySectionExpanded} alt="arrow" src="/img/arrow_icon.png" />
-	</button>
+	<div class="barMenu showAllButtonContainer" style:margin-top={countrySectionExpanded ? "" : "-35px"}>
+		<button
+			class="standardButton white expandButton largeButton"
+			onclick={() => {
+				playSound("floating_button");
+				countrySectionExpanded = !countrySectionExpanded;
+			}}
+			>{countrySectionExpanded ? "Show less" : "Show all"}
+			<img class="arrowExpand" class:arrowExpandRotate={countrySectionExpanded} alt="arrow" src="/img/arrow_icon.png" />
+		</button>
+	</div>
 	<!-- Continents -->
 	<div class="headerContainer">
 		<h2 class="header">Continents</h2>
@@ -340,7 +364,7 @@
 	<div class="map-container">
 		{#each $continentMaps as map}
 			<div
-				class="map-item map-item-slim"
+				class="map-item map-item-hover map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -362,7 +386,7 @@
 		{#if addedCommunityMapsArray.length > 0}
 			{#each addedCommunityMapsArray as map}
 				<div
-					class="map-item map-item-slim map-item-bookmark"
+					class="map-item map-item-hover map-item-slim map-item-bookmark"
 					class:selected-map-item={checkIfSelected(map, true)}
 					role="button"
 					tabindex="0"
@@ -392,13 +416,13 @@
 	<!-- Playlight section -->
 	{#if !$crazyGames}
 		<div class="headerContainer no-bottom-padding">
-			<h2 class="header">Featured games</h2>
+			<h2 class="header">Featured</h2>
 		</div>
 		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style="height: 330px;"></div>
 	{/if}
 	<!-- Featured Maps -->
 	<div class="headerContainer largeHeaderMargin">
-		<h2 class="header">Community spotlight</h2>
+		<h2 class="header">Spotlight</h2>
 	</div>
 	<div class="map-container">
 		{#if loadedSpotlightMaps.length}
@@ -411,41 +435,42 @@
 	</div>
 	<!-- All Community Maps -->
 	<div class="headerContainer">
-		<h2 class="header mediumHeaderMargin">Community maps</h2>
-		<button
-			id="createButton"
-			class="standardButton white largeButton"
-			onclick={() => {
-				playSound("basic_button");
-				if ($isAuthenticated) {
-					goto("/maps/create");
-				} else {
-					signupPrompt();
-				}
-			}}>+ Create</button
-		>
+		<h2 class="header mediumHeaderMargin">Community</h2>
 	</div>
 	<div class="categoriesSearchArea">
-		<div class="categoriesBar of-left of-right">
-			{#each categoriesArray as category, index}
-				{#if index !== 1 || $isAuthenticated}
-					<button
-						class="categoryButton standardButton"
-						class:selected={selectedCategoryIndex == index}
-						onclick={() => handleCategoryButtonClick(index)}
-					>
-						{category.replace("Miscellaneous", "Misc.")}
-						{#if index == 1}
-							<User size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
-						{/if}
-					</button>
-				{/if}
-			{/each}
+		<div class="categoriesBar">
+			<button
+				class="standardButton white"
+				onclick={() => {
+					playSound("basic_button");
+					if ($isAuthenticated) {
+						goto("/maps/create");
+					} else {
+						signupPrompt();
+					}
+				}}><Plus size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-right: 2px;" /> Create</button
+			>
+			<div class="categoriesBar of-left of-right">
+				{#each categoriesArray as category, index}
+					{#if index !== 1 || $isAuthenticated}
+						<button
+							class="categoryButton standardButton"
+							class:selected={selectedCategoryIndex == index}
+							onclick={() => handleCategoryButtonClick(index)}
+						>
+							{category.replace("Miscellaneous", "Misc.")}
+							{#if index == 1}
+								<User size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
+							{/if}
+						</button>
+					{/if}
+				{/each}
+			</div>
 		</div>
 		<search class="searchContainer">
 			<input
 				id="mapSearch"
-				placeholder="Search maps"
+				placeholder="Search"
 				bind:value={searchValue}
 				onkeydown={(e) => {
 					if (e.key === "Enter") e.preventDefault();
@@ -473,14 +498,15 @@
 		{/each}
 		{#if showLoadMore}
 			<button
-				class="map-item map-item-animate load-more"
+				class="map-item load-more standardButton white"
 				onclick={() => {
 					playSound("basic_button");
 					loadCommunityMaps(currentFetchIndex + 50, currentCategory, currentQuery, currentByUserId, null);
 				}}
-				><p>More</p>
-				<span class="loadMoreIconSpan"><Plus strokeWidth={2.75} size={20} /></span></button
 			>
+				More
+				<Plus strokeWidth={2.75} size={20} style="margin-bottom: -4px; margin-left: var(--content-margin);" />
+			</button>
 		{/if}
 		{#if errorMessageShown}
 			<p class="nothingFound minimumCommunityLoadingHeight">{errorMessageText}</p>
@@ -500,12 +526,8 @@
 		max-width: 100%;
 	}
 
-	.loadMoreIconSpan {
-		margin-top: 6px;
-	}
-
 	.largeHeaderMargin {
-		margin-top: 75px;
+		margin-top: calc(var(--layout-margin) + var(--box-margin));
 	}
 
 	.mediumHeaderMargin {
@@ -533,7 +555,7 @@
 	.link-badge {
 		font-size: 18px;
 		font-style: italic;
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background-color: rgb(224, 2, 2);
 		padding: 2px;
 		margin-right: -1px;
@@ -551,7 +573,7 @@
 		background-color: rgba(255, 255, 255, 0.1);
 		border-radius: var(--box-margin);
 		padding: var(--box-margin);
-		padding-inline: 15px;
+		padding-inline: var(--layout-margin);
 		box-sizing: border-box;
 		user-select: none;
 		min-width: 300px;
@@ -573,7 +595,7 @@
 		flex-basis: 0;
 	}
 
-	.map-item:hover {
+	.map-item-hover:hover {
 		background-color: rgba(255, 255, 255, 0.2);
 		scale: 1.01;
 	}
@@ -581,11 +603,6 @@
 	.map-item-slim {
 		min-width: 150px;
 		flex-basis: 15%;
-	}
-
-	.map-item-slim:hover,
-	.map-item-link:hover {
-		scale: 1.03;
 	}
 
 	.selected-map-item {
@@ -620,7 +637,7 @@
 		gap: var(--layout-margin);
 		flex-wrap: wrap;
 		width: 100%;
-		margin-bottom: 20px;
+		margin-bottom: calc(var(--layout-margin) + var(--box-margin));
 		overflow: visible; /* On hover, prevent scale up from clipping elements at the borders */
 	}
 
@@ -636,21 +653,22 @@
 	}
 
 	.smaller-bottom-margin {
-		margin-bottom: 10px;
+		margin-bottom: var(--box-margin);
 	}
 
 	.expandButton {
+		padding-inline: calc(var(--layout-margin) * 2);
+	}
+
+	.showAllButtonContainer {
+		margin-bottom: var(--box-margin);
 		margin-inline: auto;
-		padding-inline: 30px;
-		margin-bottom: 10px;
-		transition:
-			margin 150ms ease,
-			scale 150ms ease,
-			transform 150ms ease,
-			background-color 250ms ease,
-			filter 250ms ease;
+		transition: margin 150ms ease;
 		bottom: 0;
 		z-index: 10;
+		border-radius: var(--layout-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 	}
 
 	.arrowExpand {
@@ -666,8 +684,8 @@
 	}
 
 	.add-button {
-		border-radius: 5px;
-		padding: 5px 8px;
+		border-radius: var(--content-margin);
+		padding: var(--content-margin) 8px;
 		display: flex;
 		align-items: center;
 	}
@@ -676,7 +694,7 @@
 		border: none;
 		cursor: pointer;
 		user-select: none;
-		margin-left: 10px;
+		margin-left: var(--box-margin);
 		margin-right: -3px;
 		font-size: 25px;
 		line-height: 0.9;
@@ -717,9 +735,9 @@
 	#mapSearch {
 		transition: background-color 250ms ease;
 		flex-grow: 1;
-		padding: 5px;
+		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
-		width: 100px;
+		width: 225px;
 		text-overflow: ellipsis;
 	}
 
@@ -735,10 +753,6 @@
 		align-items: center;
 	}
 
-	#createButton {
-		margin-top: auto;
-	}
-
 	.categoriesBar {
 		overflow: hidden;
 		overflow-x: scroll;
@@ -747,6 +761,8 @@
 		align-items: center;
 		gap: var(--box-margin);
 		scrollbar-width: none;
+		flex-shrink: 1;
+		min-width: 0;
 	}
 
 	.categoryButton {
@@ -770,27 +786,31 @@
 		display: flex;
 		justify-content: space-between;
 		box-shadow: var(--box-shadow);
-		flex-wrap: wrap;
 		width: calc(100% - var(--box-margin) * 2);
 		min-width: 280px;
 		gap: var(--box-margin);
 		align-items: center;
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
-		margin-bottom: 20px;
+		margin-bottom: var(--layout-margin);
 		background-color: var(--box-color);
 	}
 
 	.load-more {
-		font-size: 22px;
-		min-height: 69px;
+		height: auto;
+		min-height: 70.5px;
 		justify-content: center;
-		gap: 10px;
+		border: none;
+		transition:
+			filter 250ms ease,
+			box-shadow 250ms ease,
+			transform 150ms ease,
+			opacity 250ms ease;
 	}
 
-	@media (max-width: 800px) {
-		.categoryButton {
-			font-size: 20px;
+	@media (max-width: 1000px) {
+		.categoriesSearchArea {
+			flex-wrap: wrap;
 		}
 	}
 </style>

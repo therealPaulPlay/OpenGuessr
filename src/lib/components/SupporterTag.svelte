@@ -2,9 +2,9 @@
 
 <style>
 	.supporterSpan {
-		border-radius: 5px;
+		border-radius: var(--content-margin);
 		background: var(--supporter-green);
-		padding-inline: 5px;
+		padding-inline: var(--content-margin);
 		font-size: 20px;
 		margin-left: 3px;
 		box-shadow: var(--bulb-shadow);
@@ -19,7 +19,7 @@
 		filter: blur(8px);
 		content: "";
 		position: absolute;
-		width: 10px;
+		width: var(--box-margin);
 		z-index: 1;
 		height: 200%;
 		top: -10px;

@@ -40,13 +40,13 @@
 	.errorCode {
 		opacity: 70%;
 		background-color: rgba(255, 255, 255, 0.1);
-		padding: 10px;
+		padding: var(--box-margin);
 		padding-inline: 20px;
 		border-radius: 7px;
 		font-size: 14px;
 		line-height: 22px;
 		font-family: monospace;
-		margin-top: 10px;
+		margin-top: var(--box-margin);
 		box-shadow: var(--box-shadow);
 	}
 

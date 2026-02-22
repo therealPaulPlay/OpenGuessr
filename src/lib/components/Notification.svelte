@@ -1,4 +1,5 @@
 <script>
+	import { page } from "$app/state";
 	import {
 		notificationVisible,
 		notificationText,
@@ -10,8 +11,6 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { X } from "@lucide/svelte";
 	import { fly } from "svelte/transition";
-
-	let { inMenu = false } = $props();
 
 	function accept() {
 		if ($acceptFunction) {
@@ -40,7 +39,7 @@
 	}
 </script>
 
-<div class="notification-holder" style:top={inMenu ? "var(--layout-margin)" : ""}>
+<div class="notification-holder" style:top={page.url.pathname === "/" ? "var(--box-margin)" : "var(--layout-margin)"}>
 	{#if $notificationVisible}
 		<div id="notificationBar" class="barMenu" transition:fly={{ y: -20, duration: 250 }}>
 			<p id="notificationText">{$notificationText}</p>
@@ -61,20 +60,18 @@
 		gap: var(--layout-margin);
 		transition: all 200ms ease;
 		pointer-events: auto;
-		z-index: 100;
 		max-width: 80%;
 		margin-inline: auto;
 	}
 
 	.notification-holder {
 		position: fixed;
-		top: var(--box-margin);
 		left: var(--box-margin);
 		right: var(--box-margin);
 		display: flex;
 		justify-content: center;
 		pointer-events: none;
-		z-index: 16;
+		z-index: 999;
 	}
 
 	@media (max-width: 1200px) {
@@ -90,12 +87,12 @@
 
 	#notificationDismiss,
 	#notificationAccept {
-		padding-inline: 10px;
+		padding-inline: var(--box-margin);
 		min-height: 40px;
 	}
 
 	#notificationText {
-		padding-left: 10px;
+		padding-left: var(--box-margin);
 		max-width: 350px;
 		overflow: hidden;
 		text-overflow: ellipsis;

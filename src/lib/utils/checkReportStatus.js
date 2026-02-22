@@ -6,7 +6,16 @@ export async function fetchWarnlistStatus() {
     if (!get(isAuthenticated) || get(checkedForWarning)) return;
 
     try {
-        const response = await fetch(get(apiUrl) + "/accounts/check-warnlist/" + localStorage.getItem("id"));
+        const response = await fetch(get(apiUrl) + "/accounts/check-warnlist", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + localStorage.getItem("bearer"),
+            },
+            body: JSON.stringify({
+                id: localStorage.getItem("id")
+            })
+        });
 
         if (response.ok) {
             const data = await response.json();

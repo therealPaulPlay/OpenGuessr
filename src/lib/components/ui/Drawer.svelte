@@ -8,11 +8,16 @@
 		isOpen = $bindable(false),
 		children,
 		class: className = "",
-		inPage = true
+		inPage = true,
+		hasBottomLayoutMargin = true,
 	} = $props();
 </script>
 
-<div class="drawer-container {className}" style:border-radius={inPage ? "var(--layout-margin)" : "var(--box-margin)"}>
+<div
+	class="drawer-container {className}"
+	style:border-radius={inPage ? "var(--layout-margin)" : "var(--box-margin)"}
+	style:margin-bottom={hasBottomLayoutMargin ? "var(--layout-margin)" : "0"}
+>
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
 		class="drawer-toggle"
@@ -23,7 +28,7 @@
 			isOpen = !isOpen;
 		}}
 	>
-		<p style:margin-left="var(--panel-margin)">{title}</p>
+		<p style:margin-left="var(--content-margin)">{title}</p>
 		<div class="drawer-icon">
 			<ChevronDown
 				style="margin-bottom: -4px; transition: transform 250ms ease; {isOpen ? 'transform: rotate(180deg)' : ''}"
@@ -43,7 +48,6 @@
 	.drawer-container {
 		width: calc(100% - 20px);
 		background-color: var(--box-color);
-		margin-bottom: var(--layout-margin);
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
 	}
@@ -60,8 +64,8 @@
 
 	.drawer-icon {
 		color: white;
-		padding: 5px;
-		padding-inline: var(--panel-margin);
+		padding: var(--content-margin);
+		padding-inline: var(--content-margin);
 	}
 
 	.drawer-toggle:hover {
