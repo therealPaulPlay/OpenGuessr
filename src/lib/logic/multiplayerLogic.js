@@ -177,7 +177,7 @@ export async function createMultiplayerInstance() {
             if (storage.showResult != null && storage.showResult !== get(resultScreenEnabled)) {
                 if (storage.showResult == true) {
                     // Wait result screen continue text in lobbies with others
-                    const continueTimeout = get(socket)?.storage?.players?.length > 1 ? (get(socket)?.storage?.tournamentRoom ? 10_000 : 5000) : 0;
+                    const continueTimeout = get(socket)?.storage?.players?.length > 1 ? (get(socket)?.storage?.tournamentRoom ? 10_000 : 5_000) : 0;
                     continueText.set(`Wait ${continueTimeout / 1000}s...`);
                     setTimeout(() => continueText.set("Continue"), continueTimeout);
 
