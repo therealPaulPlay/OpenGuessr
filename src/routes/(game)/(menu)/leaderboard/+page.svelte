@@ -3,7 +3,7 @@
 	import { isAuthenticated, username } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
-	import { fade } from "svelte/transition";
+	import { blur, fade } from "svelte/transition";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
@@ -13,7 +13,7 @@
 	let loadingText = $state("Loading...");
 
 	// API ----------------------------------------------------------------------------------------------------------------------------
-	async function getLeaderboard() {
+	async function getExperienceLeaderboard() {
 		try {
 			const response = await fetch(`${$apiUrl}/leaderboard/experience`, {
 				method: "GET",
@@ -35,7 +35,7 @@
 		}
 	}
 
-	async function getUserLeaderboard() {
+	async function getExperienceUserLeaderboard() {
 		try {
 			const response = await fetch(`${$apiUrl}/leaderboard/experience-user-section`, {
 				method: "PUT",
@@ -57,6 +57,31 @@
 			}
 		} catch (error) {
 			console.error("Failed to fetch the experience user section of the leaderboard: ", error);
+		}
+	}
+
+	async function getEloUserLeaderboard() {
+		try {
+			const response = await fetch(`${$apiUrl}/leaderboard/elo-user-section`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + localStorage.getItem("bearer"),
+				},
+				body: JSON.stringify({
+					id: localStorage.getItem("id"),
+				}),
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+				return data;
+			} else {
+				throw new Error(response.status);
+			}
+		} catch (error) {
+			console.error("Failed to fetch the elo user section of the leaderboard: ", error);
 		}
 	}
 
@@ -94,21 +119,24 @@
 				mainSectionEntries = await getEloLeaderboard();
 				break;
 			case "experience":
-				mainSectionEntries = await getLeaderboard();
+				mainSectionEntries = await getExperienceLeaderboard();
 				break;
 		}
 	}
 
-	let potentialUserLeaderboardType = $state("none");
+	let userLeaderboardType = $state("none");
 
 	// A section to show where the user is at, as well as a few others above them ------------------------------------------------------
 	async function loadUserLeaderboard(leaderboardType) {
-		potentialUserLeaderboardType = "none"; // Reset user leaderboard as it is now (soon) loaded
+		userLeaderboardType = "none"; // Reset user leaderboard as it is now (soon) loaded
 
 		if ($isAuthenticated) {
 			switch (leaderboardType) {
+				case "elo":
+					userSectionEntries = await getEloUserLeaderboard();
+					break;
 				case "experience":
-					userSectionEntries = await getUserLeaderboard();
+					userSectionEntries = await getExperienceUserLeaderboard();
 					break;
 				default:
 					return;
@@ -121,8 +149,8 @@
 
 	function checkIfUserSectionIsInView() {
 		// If the user has scrolled down more than 1000px, load the user leaderboard section (which is at the end)
-		if (window.scrollY > 1000 && potentialUserLeaderboardType) {
-			loadUserLeaderboard(potentialUserLeaderboardType);
+		if (window.scrollY > 1000 && userLeaderboardType) {
+			loadUserLeaderboard(userLeaderboardType);
 		}
 	}
 
@@ -140,13 +168,13 @@
 				loadLeaderboard("elo");
 				valueKey = "elo";
 				unitName = " Elo";
-				potentialUserLeaderboardType = "none";
+				userLeaderboardType = "elo";
 				break;
 			case "XP":
 				loadLeaderboard("experience");
 				valueKey = "experience";
 				unitName = " XP";
-				potentialUserLeaderboardType = "experience";
+				userLeaderboardType = "experience";
 				break;
 		}
 	}
@@ -277,15 +305,15 @@
 		<p class="loadingText">{loadingText}</p>
 	{/if}
 	{#if userSectionEntries}
-		<div id="threeDotsContainer" class="threeDotsContainer" transition:fade={{ duration: 250 }}>
+		<div id="threeDotsContainer" class="threeDotsContainer" transition:blur>
 			<div class="circleDot"></div>
 			<div class="circleDot"></div>
 			<div class="circleDot"></div>
 		</div>
-		<div id="yourLeagueContainer" class="item-container">
+		<div id="yourLeagueContainer" class="item-container" transition:blur>
 			{#each userSectionEntries as entry, i}
 				<div class="rankedItem" role="button" tabindex="0" class:yourItem={entry.id == userId && $isAuthenticated}>
-					<p class="maxlength rankedItemLeft">#{entry.position}</p>
+					<p class="maxlength rankedItemLeft">#~{entry.position?.toLocaleString()}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<p
 						class="middle maxlength"
