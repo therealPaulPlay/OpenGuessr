@@ -142,16 +142,11 @@
 
 	async function loadLeaderboardFromServer(id) {
 		try {
-			const requestBody = {
-				id: localStorage.getItem("id"), // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
-			};
+			const userId = localStorage.getItem("id");
+			const url = competitionsEndpoint + "/leaderboard/" + id + (userId ? "?id=" + userId : "");
 
-			const response = await fetch(competitionsEndpoint + "/leaderboard/" + id, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(requestBody),
+			const response = await fetch(url, {
+				method: "GET",
 			});
 
 			if (response.ok) {
@@ -258,12 +253,6 @@
 
 	async function getCompetitionsFromServer(expired, search, daily, filterEntered) {
 		try {
-			let requestBody = {
-				id: localStorage.getItem("id"), // If this is null, that is fine too (used to evaluate whether a user has already played certain competitions)
-			};
-
-			if (search) requestBody.search = search;
-
 			// Always hide load more bar during loading process
 			if (!expired) loadMoreActive = false;
 			if (expired) loadMoreExpired = false;
@@ -276,15 +265,19 @@
 			if (daily) Endpoint = competitionsEndpoint + "/daily/daily-competition";
 			if (filterEntered) Endpoint = competitionsEndpoint + "/not-entered/" + notExpiredIndex;
 
-			const headers = {
-				"Content-Type": "application/json",
-			};
-			if (localStorage.getItem("id")) headers["Authorization"] = "Bearer " + localStorage.getItem("bearer");
+			// Build query params
+			const params = new URLSearchParams();
+			const userId = localStorage.getItem("id");
+			if (userId) params.set("id", userId);
+			if (search) params.set("search", search);
+			if (params.size > 0) Endpoint += "?" + params.toString();
+
+			const headers = {};
+			if (filterEntered) headers["Authorization"] = "Bearer " + localStorage.getItem("bearer");
 
 			const response = await fetch(Endpoint, {
-				method: "PUT",
+				method: "GET",
 				headers,
-				body: JSON.stringify(requestBody),
 			});
 
 			if (response.ok) {
