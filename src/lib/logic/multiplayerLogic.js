@@ -35,7 +35,7 @@ import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
-import { goto, replaceState } from "$app/navigation";
+import { goto } from "$app/navigation";
 import { changeMap } from "$lib/utils/changeMap";
 import { showNotification } from "$lib/utils/notifications";
 import PlaySocket from "playsocketjs";
@@ -223,7 +223,9 @@ export function attemptJoinViaLink() {
     let urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("join");
     if (code) {
-        replaceState(window.location.pathname, {});
+        // Use native history API instead of SvelteKit's replaceState, which crashes
+        // if the root layout component hasn't been assigned yet (race condition on page load)
+        history.replaceState(history.state, "", window.location.pathname);
         return joinFromAnywhere(code);
     }
 }
