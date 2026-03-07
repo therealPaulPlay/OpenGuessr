@@ -165,8 +165,9 @@
 
 	.hostButtonContainer {
 		box-shadow: var(--box-shadow);
-		background-color: rgba(255, 255, 255, 0.15);
+		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
+		backdrop-filter: none !important;
 	}
 
 	.usernameSpan {
