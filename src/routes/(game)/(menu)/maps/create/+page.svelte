@@ -113,107 +113,109 @@
 <div class="main-container">
 	<div class="contentArea">
 		<div class="formLayout">
-		<!-- Left column: Settings -->
-		<div class="formColumn">
-			<div class="formSection">
-				<h3 class="sectionTitle">Details</h3>
-				<div class="fieldGroup">
-					<p class="fieldLabel">Name</p>
-					<input bind:value={mapName} type="text" placeholder="My map" maxlength="25" />
+			<!-- Left column: Settings -->
+			<div class="formColumn">
+				<div class="formSection">
+					<h3 class="sectionTitle">Details</h3>
+					<div class="fieldGroup">
+						<p class="fieldLabel">Name</p>
+						<input bind:value={mapName} type="text" placeholder="My map" maxlength="25" />
+					</div>
+					<div class="fieldGroup">
+						<p class="fieldLabel">Category</p>
+						<select class="standardButton white largeButton categoryDropdown" bind:value={categoryValue}>
+							<option value="none">Click to select</option>
+							<option value="Nature">Nature</option>
+							<option value="Architecture">Architecture</option>
+							<option value="Urban">Urban</option>
+							<option value="Regions">Regions</option>
+							<option value="Sports">Sports</option>
+							<option value="Transport">Transport</option>
+							<option value="Miscellaneous">Miscellaneous</option>
+						</select>
+					</div>
+					<div class="fieldGroup">
+						<p class="fieldLabel">Description</p>
+						<input bind:value={mapDescription} type="text" placeholder="This map features..." maxlength="300" />
+					</div>
 				</div>
-				<div class="fieldGroup">
-					<p class="fieldLabel">Category</p>
-					<select class="standardButton white largeButton categoryDropdown" bind:value={categoryValue}>
-						<option value="none">Click to select</option>
-						<option value="Nature">Nature</option>
-						<option value="Architecture">Architecture</option>
-						<option value="Urban">Urban</option>
-						<option value="Regions">Regions</option>
-						<option value="Sports">Sports</option>
-						<option value="Transport">Transport</option>
-						<option value="Miscellaneous">Miscellaneous</option>
-					</select>
-				</div>
-				<div class="fieldGroup">
-					<p class="fieldLabel">Description</p>
-					<input bind:value={mapDescription} type="text" placeholder="This map features..." maxlength="300" />
-				</div>
-			</div>
 
-			<div class="formSection">
-				<h3 class="sectionTitle">Locations (JSON)</h3>
-				<div class="locationInstructions">
-					<p>
-						You can generate a map using a tool like Map-Generator and then convert it to the
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-						<span
-							class="jsonLink"
-							role="tooltip"
-							onclick={() => {
-								jsonPopup = true;
-							}}>OpenGuessr JSON format</span
-						>. Check out the official converter
-						<a target="_blank" href="https://education.openguessr.com/tools/map-converter">here</a>.
-					</p>
-				</div>
-				<button
-					class="standardButton white largeButton uploadButton"
-					onclick={() => {
-						playSound("basic_button");
-						filePicker.click();
-					}}
-				>
-					<Upload size={20} strokeWidth={2.25} />
-					<input
-						type="file"
-						bind:this={filePicker}
-						accept="application/json"
-						onchange={(event) => {
-							fileName = event.target.files.length > 0 ? event.target.files[0].name : "Pick file";
+				<Drawer title="Rules" inPage={true} hasBottomLayoutMargin={false}>
+					<div class="locationInstructions">
+						<ul>
+							<li>You are limited to 3 maps per day</li>
+							<li>Maps must have 50 or more unique locations</li>
+							<li>Ensure the map name is family-friendly</li>
+							<li>Keep all details in English</li>
+							<li>Pick a descriptive map name (e.g. not "My Map")</li>
+							<li>A maximum of 2,000 locations is recommended, up to 15,000 are possible</li>
+						</ul>
+					</div>
+				</Drawer>
+
+				<div class="formSection">
+					<h3 class="sectionTitle">Locations (JSON)</h3>
+					<div class="locationInstructions">
+						<p>
+							You can generate a map using a tool like Map-Generator and then convert it to the
+							<!-- svelte-ignore a11y_click_events_have_key_events -->
+							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+							<span
+								class="jsonLink"
+								role="tooltip"
+								onclick={() => {
+									jsonPopup = true;
+								}}>OpenGuessr JSON format</span
+							>. Check out the official converter
+							<a target="_blank" href="https://education.openguessr.com/tools/map-converter">here</a>.
+						</p>
+					</div>
+					<button
+						class="standardButton white largeButton uploadButton"
+						onclick={() => {
+							playSound("basic_button");
+							filePicker.click();
 						}}
-					/>
-					<span>{fileName}</span>
-				</button>
-			</div>
-
-			<Drawer title="Rules" inPage={true} hasBottomLayoutMargin={false}>
-				<div class="locationInstructions">
-					<ul>
-						<li>You can only upload max. 3 maps per day</li>
-						<li>Maps must at least have 50 unique locations</li>
-						<li>Ensure that your map names and author names are family-friendly</li>
-						<li>Keep all details in English</li>
-						<li>Pick a descriptive map name (e.g. not "My Map")</li>
-						<li>A maximum of 2,000 locations is recommended, up to 15,000 are possible</li>
-					</ul>
-				</div>
-			</Drawer>
-		</div>
-
-		<!-- Right column: Locations -->
-		<div class="formColumn locationsColumn">
-			<div class="formSection locationsSection">
-				<h3 class="sectionTitle sectionTitleMargin">Locations (Links)</h3>
-				<div class="locationInstructions">
-					<p class="instructionsTitle">Instructions</p>
-					<ol>
-						<li>Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer</li>
-						<li>Drag the orange figure onto the map to open a streetview</li>
-						<li>Copy the URL from the address bar into the textbox</li>
-					</ol>
-				</div>
-				<p class="fieldLabel">Street View URLs</p>
-				<div class="textAreaBox">
-					<textarea
-						bind:value={uploadMapDataValue}
-						class="of-top of-bottom"
-						rows="5"
-						placeholder="https://www.google.com/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=..."
-					></textarea>
+					>
+						<Upload size={20} strokeWidth={2.25} />
+						<input
+							type="file"
+							bind:this={filePicker}
+							accept="application/json"
+							onchange={(event) => {
+								fileName = event.target.files.length > 0 ? event.target.files[0].name : "Pick file";
+							}}
+						/>
+						<span>{fileName}</span>
+					</button>
 				</div>
 			</div>
-		</div>
+
+			<!-- Right column: Locations -->
+			<div class="formColumn locationsColumn">
+				<div class="formSection locationsSection">
+					<h3 class="sectionTitle sectionTitleMargin">Locations (Links)</h3>
+					<div class="locationInstructions">
+						<p class="instructionsTitle">Instructions</p>
+						<ol>
+							<li>
+								Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer
+							</li>
+							<li>Drag the orange figure onto the map to open a streetview</li>
+							<li>Copy the URL from the address bar into the textbox</li>
+						</ol>
+					</div>
+					<p class="fieldLabel">Street View URLs</p>
+					<div class="textAreaBox">
+						<textarea
+							bind:value={uploadMapDataValue}
+							class="of-top of-bottom"
+							rows="5"
+							placeholder="https://www.google.com/maps/@44.4271593,20.8858906,3a,75y,2.85h,90t/data=..."
+						></textarea>
+					</div>
+				</div>
+			</div>
 		</div>
 
 		<div class="submitArea barMenu">
@@ -260,7 +262,7 @@
 
 	.formLayout {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: 3fr 4fr;
 		gap: var(--layout-margin);
 		width: 100%;
 	}
