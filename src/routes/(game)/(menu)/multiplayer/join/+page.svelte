@@ -100,6 +100,7 @@
 		</div>
 	</div>
 </div>
+
 {#if openRooms?.length > 0}
 	<p class="publicRoomTitle" transition:blur>Public rooms</p>
 	<div class="publicRoomBox of-top of-bottom of-length-2" transition:blur>
@@ -143,8 +144,8 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-		justify-content: center;
-		min-height: calc(100dvh - 120px);
+		justify-content: end;
+		min-height: calc(50dvh - 120px + 151px);
 	}
 
 	.publicRoomTitle {
@@ -166,6 +167,7 @@
 		max-width: 400px;
 		width: 100%;
 		max-height: 275px;
+		margin-bottom: 50px;
 		overflow-y: auto;
 		scrollbar-width: none;
 	}
