@@ -1,5 +1,4 @@
-// Go from the Result screen back to the main View, the start
-import { socialPopupProbability } from "$lib/utils/socialPopupProbability";
+// Go from the result screen back to the main view, the start
 import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 import { disableResultScreen } from "$lib/utils/setResultScreen";
 import { multiplayer } from "$lib/stores/modeStore";
@@ -11,7 +10,5 @@ export function transitionToStart() {
     checkGenerationTypeAndGenerate(); // Generate new location
     disableResultScreen();
   }
-
   if (get(multiplayer)) get(socket)?.updateStorage("showResult", "set", false); // Disable result screen
-  if (!get(multiplayer)) setTimeout(socialPopupProbability, 650); // Social Media CTA (too stressful in multiplayer)
 }
