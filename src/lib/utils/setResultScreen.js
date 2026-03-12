@@ -1,6 +1,6 @@
 import { resultScreenEnabled, distanceText, motivationText, lastDistance } from "$lib/stores/context-specific/resultScreenStore";
 import { calculateDistances, motivationalResultMessage, formatDistance } from "$lib/utils/distanceFunctions";
-import { countryGuessr } from "$lib/stores/modeStore";
+import { countryGuessr, singleplayer } from "$lib/stores/modeStore";
 import { playSound } from "$lib/utils/soundManager";
 import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { resetMap } from "$lib/logic/miniMap";
@@ -13,6 +13,7 @@ import { supporterSlideupProbability } from "./showSupporterSlideup";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration";
 import { mapExpanded, mapHovered, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
+import { socialPopupProbability } from "./socialPopupProbability";
 
 export async function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (get(resultScreenEnabled)) return;
@@ -43,6 +44,9 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
     await loadResultScreenXP(distance);
     if (!get(showSlideup)) supporterSlideupProbability();
     checkDisplayFullscreenCelebration();
+
+    // Social Media CTA
+    if (get(singleplayer)) setTimeout(socialPopupProbability, 1000); // Too stressful in multiplayer
 }
 
 export function disableResultScreen() {
