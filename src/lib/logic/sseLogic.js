@@ -118,6 +118,16 @@ export async function initializeSSEConnection() {
                         case 'tournament-updated':
                             if (page.url.pathname === "/multiplayer") fetchTournaments();
                             break;
+
+                        case 'elo-refunded':
+                            elo.set(get(elo) + data.amount);
+                            showNotification(`You were refunded ${data.amount} elo.`);
+                            break;
+
+                        case 'elo-deducted':
+                            elo.set(Math.max(0, get(elo) - data.amount));
+                            showNotification(`You were deducted ${data.amount} elo.`);
+                            break;
                     }
                 } catch (error) {
                     console.error('Error parsing SSE message:', error);
