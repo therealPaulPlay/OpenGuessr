@@ -214,7 +214,6 @@
 		white-space: nowrap;
 		display: inline-flex;
 		min-width: fit-content;
-		display: flex;
 		align-items: center;
 		color: white;
 		font-size: 20px;
