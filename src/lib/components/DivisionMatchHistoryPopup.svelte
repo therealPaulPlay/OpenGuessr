@@ -145,7 +145,7 @@
 									Elo
 								{/if}
 								{#if entry.refunded}
-									<span class="refundedBox">refunded</span>
+									<span class="refundedBox">Refunded</span>
 								{/if}
 							</p>
 						</div>
