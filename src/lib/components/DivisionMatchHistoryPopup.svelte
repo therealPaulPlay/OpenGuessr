@@ -100,7 +100,6 @@
 					<div class="matchHistoryItemContainer">
 						<div
 							class="matchHistoryItem of-left of-right"
-							class:matchInvalid={entry.player1?.won == entry.player2?.won || entry.refunded}
 							class:yourMatch={!currentFilterId &&
 								(entry.player1?.id == localStorage.getItem("id") || entry.player2?.id == localStorage.getItem("id"))}
 						>
@@ -146,7 +145,7 @@
 									Elo
 								{/if}
 								{#if entry.refunded}
-									<span class="refundedBox">refunded</span>
+									<span class="refundedBox">Refunded</span>
 								{/if}
 							</p>
 						</div>
@@ -291,12 +290,6 @@
 		flex-grow: 1;
 		overflow-x: auto;
 		scrollbar-width: none;
-	}
-
-	.matchInvalid {
-		text-decoration: line-through;
-		text-decoration-thickness: 2px;
-		opacity: 0.5;
 	}
 
 	.yourMatch {
