@@ -424,7 +424,6 @@
 
 	.action-button {
 		margin-bottom: var(--box-margin) !important;
-		padding-inline: calc(var(--layout-margin) + var(--content-margin));
 	}
 
 	.signup-button {
@@ -539,7 +538,7 @@
 	}
 
 	.password-container input {
-		padding-right: 55px;
+		padding-right: 50px;
 	}
 
 	.back-to-login {
