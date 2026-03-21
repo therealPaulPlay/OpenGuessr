@@ -190,8 +190,6 @@
 	}
 
 	// Signup UI Logic and Captcha ------------------------------------------------------------------------------------------------------------------------------
-	let signupButtonSignupPage = $state();
-
 	function validateEmail(email) {
 		var re = /\S+@\S+\.\S+/;
 		return re.test(email);
@@ -248,22 +246,17 @@
 		if (checkEmptyFields(false)) await loginUser(email, password);
 	}
 
-	function handleKeyUp(event) {
-		const keyName = event.key;
-		if (keyName === "Enter") triggerAction();
-	}
-
 	$effect(() => {
 		if (captchaVisible) renderCaptcha("#captchaContainer", window.onSignupTurnstileCompleted);
 	});
 
 	// Register turnstile callback
-	if (typeof window !== "undefined") {
+	onMount(() => {
 		window.onSignupTurnstileCompleted = function (token) {
 			captchaVisible = false;
 			registerUser(username, email, password, token);
 		};
-	}
+	});
 
 	// Toggle password field visability ----------------------------------------------------
 	let passwordInputType = $state("password");
