@@ -151,7 +151,7 @@ async function attemptDuelJoin(index, skillBased) {
 
     } catch (error) {
         console.error('Error fetching room code: ', error);
-        multiplayerStatus.set("Couldn't fetch code: " + error.message);
+        multiplayerStatus.set("Couldn't fetch code: " + error?.message || error);
         matchmakingActive.set(false);
     }
 }
