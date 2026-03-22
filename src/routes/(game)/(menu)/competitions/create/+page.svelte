@@ -228,17 +228,31 @@
 					</div>
 				</div>
 
+				<Drawer title="Rules" inPage={true} hasBottomLayoutMargin={false}>
+					<div class="locationInstructions">
+						<ul class="rulesList">
+							<li>Keep all details in English</li>
+							<li>Pick a descriptive competition name</li>
+							<li>Competitions will be deleted 7 days after they have ended</li>
+							<li>Competitions cannot be edited</li>
+							<li>The duration must be between 10min and 7d</li>
+							<li>The number of locations equals the amount of rounds</li>
+						</ul>
+					</div>
+				</Drawer>
+
 				<div class="formSection">
 					<h3 class="sectionTitle">Settings</h3>
+
+					<div class="fieldGroup">
+						<p class="fieldLabel">Round length (seconds)</p>
+						<input bind:value={roundLength} type="text" placeholder="60" maxlength="30" />
+					</div>
+					<div class="fieldGroup">
+						<p class="fieldLabel">Duration (d, h, min)</p>
+						<input bind:value={competitionDuration} type="text" placeholder="2d 6h" maxlength="30" />
+					</div>
 					<div class="settingsGrid">
-						<div class="fieldGroup">
-							<p class="fieldLabel">Round length (seconds)</p>
-							<input bind:value={roundLength} type="text" placeholder="60" maxlength="30" />
-						</div>
-						<div class="fieldGroup">
-							<p class="fieldLabel">Duration (d, h, min)</p>
-							<input bind:value={competitionDuration} type="text" placeholder="2d 6h" maxlength="30" />
-						</div>
 						<div class="fieldGroup">
 							<p class="fieldLabel">Visibility</p>
 							<button
@@ -261,19 +275,6 @@
 						</div>
 					</div>
 				</div>
-
-				<Drawer title="Rules" inPage={true} hasBottomLayoutMargin={false}>
-					<div class="locationInstructions">
-						<ul class="rulesList">
-							<li>Keep all details in English</li>
-							<li>Pick a descriptive competition name</li>
-							<li>Competitions will be deleted 7 days after they have ended</li>
-							<li>Competitions cannot be edited</li>
-							<li>The duration must be between 10min and 7d</li>
-							<li>The number of locations equals the amount of rounds</li>
-						</ul>
-					</div>
-				</Drawer>
 			</div>
 
 			<!-- Right column: Locations -->
@@ -349,7 +350,7 @@
 
 	.formLayout {
 		display: grid;
-		grid-template-columns: 1fr 1fr;
+		grid-template-columns: 3fr 4fr;
 		gap: var(--layout-margin);
 		width: 100%;
 	}

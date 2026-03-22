@@ -15,7 +15,6 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { blur } from "svelte/transition";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
-	import { page } from "$app/state";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 
@@ -190,8 +189,7 @@
 
 	// Query Links - Enter and Load leaderboard --------------------------------------------------------------------------------------------------------
 	onMount(() => {
-		if (typeof window === "undefined") return; // Exit if not in browser environment
-		let urlParams = new URLSearchParams(page.url.search);
+		let urlParams = new URLSearchParams(window.location.search);
 
 		let leaderboardIdFromLink;
 		let leaderboardIdFromLinkAfterSubmit;
@@ -201,13 +199,13 @@
 			leaderboardIdFromLink = urlParams.get("leaderboard");
 			if (leaderboardIdFromLink) {
 				openLeaderboard(leaderboardIdFromLink);
-				history.replaceState({}, document.title, page.url.pathname); // reset query in the address bar
+				history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
 			}
 
 			leaderboardIdFromLinkAfterSubmit = urlParams.get("leaderboard-submit");
 			if (leaderboardIdFromLinkAfterSubmit) {
 				openLeaderboard(leaderboardIdFromLinkAfterSubmit, true);
-				history.replaceState({}, document.title, page.url.pathname); // reset query in the address bar
+				history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
 			}
 		} catch {}
 
@@ -225,7 +223,7 @@
 						enterCompetition(competitionIdFromLink);
 					},
 				);
-				history.replaceState({}, document.title, page.url.pathname); // reset query in the address bar
+				history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
 			}
 		} catch {}
 	});
