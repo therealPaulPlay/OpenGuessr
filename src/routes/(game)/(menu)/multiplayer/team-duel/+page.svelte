@@ -5,8 +5,8 @@
 	import {
 		createTeamDuelRoom,
 		startFindTeamDuel,
-		abortFindTeamDuel,
 		clearFindTeamDuelInterval,
+		safeCancel,
 	} from "$lib/logic/matchmakingLogic";
 	import {
 		matchmakingActive,
@@ -44,7 +44,7 @@
 			<MultiplayerMatchmakingDisplay
 				showSkillbasedInfo={false}
 				findFunction={createTeamDuelRoom}
-				cancelFunction={abortFindTeamDuel}
+				cancelFunction={safeCancel}
 			/>
 		{/if}
 	</div>

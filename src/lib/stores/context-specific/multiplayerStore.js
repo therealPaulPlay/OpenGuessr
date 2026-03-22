@@ -15,6 +15,7 @@ export const multiplayerStyle = writable("standard");
 export const matchmakingActive = writable(false);
 export const skillBasedMatchmaking = writable(false);
 export const matchmakingHosting = writable(false);
+export const cancellingMatchmaking = writable(false);
 
 // If matchmaking is disabled, also disable hosting
 matchmakingActive.subscribe((value) => {

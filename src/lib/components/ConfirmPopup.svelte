@@ -85,13 +85,13 @@
 		display: flex;
 		padding: var(--box-margin);
 		padding-right: var(--layout-margin);
-		border-radius: var(--content-margin);
+		border-radius: var(--box-margin);
 		align-items: center;
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		gap: var(--content-margin);
 		margin-top: var(--layout-margin);
-		margin-bottom: var(--box-margin);
+		margin-bottom: var(--layout-margin);
 		max-width: fit-content;
 	}
 

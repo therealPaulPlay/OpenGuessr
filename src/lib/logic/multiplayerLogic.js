@@ -29,6 +29,7 @@ import {
     multiplayerMap,
     mobileChatLastOpenedMsgCount,
     matchmakingHosting,
+    cancellingMatchmaking,
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
@@ -103,6 +104,7 @@ export async function createMultiplayerInstance() {
         get(socket).onEvent('status', status => multiplayerStatus.set(status));
         get(socket).onEvent('status', status => console.log(status));
         get(socket).onEvent('error', (error) => {
+            if (get(cancellingMatchmaking) && error?.toLowerCase()?.includes?.("kicked")) return; // Expected, cancelling makes the server kick the player
             if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system reports an error.", error);
             else multiplayerStatus.set("An error occured.");
         });

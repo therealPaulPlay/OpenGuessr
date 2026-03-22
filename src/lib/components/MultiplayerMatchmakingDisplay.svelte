@@ -4,6 +4,7 @@
 		matchmakingActive,
 		skillBasedMatchmaking,
 		matchmakingHosting,
+		cancellingMatchmaking,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { Info, RefreshCcw } from "@lucide/svelte";
@@ -33,14 +34,21 @@
 <div class="try-button-container barMenu">
 	<button
 		class="standardButton try-button largeButton"
-		disabled={$matchmakingActive && !$matchmakingHosting}
-		onclick={() => {
+		disabled={($matchmakingActive && !$matchmakingHosting) || $cancellingMatchmaking}
+		onclick={async () => {
 			if (!$matchmakingActive) {
 				playSound("basic_button");
 				findFunction?.();
-			} else cancelFunction?.();
+			} else {
+				$cancellingMatchmaking = true;
+				try {
+					await cancelFunction?.();
+				} finally {
+					$cancellingMatchmaking = false;
+				}
+			}
 		}}
-		>{$matchmakingActive ? "Cancel" : "Try again"}
+		>{$matchmakingActive ? ($cancellingMatchmaking ? "Cancelling..." : "Cancel") : "Try again"}
 		{#if !$matchmakingActive}
 			<span class="refresh-icon"><RefreshCcw strokeWidth={3} size={18} /></span>
 		{/if}</button
