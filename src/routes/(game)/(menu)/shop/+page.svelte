@@ -305,7 +305,7 @@
 
 	.socialPinSpan {
 		opacity: 0.5;
-		margin-left: var(--panel-margin);
+		margin-left: var(--content-margin);
 	}
 
 	.socialPinIcon {

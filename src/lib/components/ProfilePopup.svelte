@@ -376,7 +376,7 @@
 							playSound("basic_button");
 							showConfirmPopup(
 								"Update username",
-								"Input your new name into the box and click confirm.",
+								"Input your new username and click confirm.",
 								() => {
 									updateProfileUsername($confirmUsernameValue);
 								},

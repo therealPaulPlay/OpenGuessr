@@ -23,8 +23,9 @@
 	<div class="info-container" transition:slide>
 		<Info
 			strokeWidth={2.25}
+			size={22}
 			color="white"
-			style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; flex-shrink: 0;"
+			style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; margin-bottom: -2px; flex-shrink: 0;"
 		/>
 		<p>Skill-based matchmaking has longer waiting times.</p>
 	</div>
