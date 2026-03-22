@@ -5,3 +5,4 @@ export const websocketUrl = readable("wss://accounts.openguessr.com/socket");
 
 // Misc
 export const discordInviteUrl = readable("https://discord.gg/CSc3MbDrZ8");
+export const googleOauthClientId = readable("173042266770-kumghsvt3aaparhacqv9b3g9hr2uvt4h.apps.googleusercontent.com")

@@ -4,13 +4,91 @@
 	import inIframe from "$lib/utils/checkIframe";
 	import { onMount } from "svelte";
 	import { blur, fade, scale, slide } from "svelte/transition";
-	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { apiUrl, googleOauthClientId } from "$lib/stores/context-specific/apiConfigStore";
 	import { goto } from "$app/navigation";
 	import Notification from "$lib/components/Notification.svelte";
 	import { showNotification } from "$lib/utils/notifications";
 	import { playSound } from "$lib/utils/soundManager";
 
 	let actionButtonBusy = $state(false);
+
+	function notifyIframeParent(id, token) {
+		window.parent.postMessage("loadAccountStatus", "*");
+		window.parent.postMessage(`id ${id}`, "*");
+		window.parent.postMessage(`token ${token}`, "*");
+		window.parent.postMessage("close", "*");
+	}
+
+	// Google OAuth --------------------------------------------------------------------------------------------------------
+	function startGoogleLogin() {
+		const params = new URLSearchParams({
+			client_id: $googleOauthClientId,
+			redirect_uri: window.location.origin + window.location.pathname,
+			response_type: "code",
+			scope: "openid email profile",
+			prompt: "select_account",
+		});
+		window.open(`https://accounts.google.com/o/oauth2/v2/auth?${params}`, "google-oauth", "width=500,height=600");
+
+		// Listen for success message from the popup after Google callback completes
+		window.addEventListener("message", function onGoogleSuccess(event) {
+			if (event.data?.type !== "google-oauth-success") return;
+			window.removeEventListener("message", onGoogleSuccess);
+
+			// Token/id are already in localStorage (written by the popup, same origin)
+			if (inIframe()) notifyIframeParent(localStorage.getItem("id"), localStorage.getItem("bearer"));
+			else goto("/");
+		});
+	}
+
+	async function handleGoogleCallback(code) {
+		actionButtonBusy = true;
+
+		try {
+			const response = await fetch(`${$apiUrl}/accounts/google-authenticate`, {
+				method: "POST",
+				headers: { "Content-Type": "application/json" },
+				body: JSON.stringify({ code, redirectUri: window.location.origin + window.location.pathname }),
+			});
+
+			if (response.ok) {
+				const data = await response.json();
+
+				if (data["token"] && data["id"]) {
+					localStorage.setItem("bearer", data["token"]);
+					localStorage.setItem("id", data["id"]);
+				}
+
+				// This page loads inside a popup opened by startGoogleLogin()
+				// The opener may be the /signup page directly, or an iframe embedding it
+				if (window.opener) window.opener.postMessage({ type: "google-oauth-success" }, "*");
+				window.close();
+			} else {
+				let responseError = response.status;
+				try {
+					const data = await response.json();
+					if (data.error) responseError = data.error;
+				} catch {}
+				throw new Error(responseError);
+			}
+		} catch (error) {
+			console.error("Google login failed:", error);
+			showNotification(error.message);
+		} finally {
+			actionButtonBusy = false;
+		}
+	}
+
+	onMount(() => {
+		const params = new URLSearchParams(window.location.search);
+		const googleCode = params.get("code");
+		if (googleCode) {
+			history.replaceState({}, document.title, window.location.pathname);
+			handleGoogleCallback(googleCode);
+		} else if (params.has("error")) {
+			window.close();
+		}
+	});
 
 	// API requests -------------------------------------------------------------------------------------------------------
 	async function loginUser(email, password) {
@@ -39,15 +117,8 @@
 					localStorage.setItem("id", data["id"]);
 				}
 
-				if (inIframe()) {
-					window.parent.postMessage("loadAccountStatus", "*");
-					window.parent.postMessage(`id ${data["id"]}`, "*");
-					window.parent.postMessage(`token ${data["token"]}`, "*");
-					window.parent.postMessage("close", "*");
-				} else {
-					if (document.referrer) window.history.back();
-					else goto("/"); // Fallback if no referrer
-				}
+				if (inIframe()) notifyIframeParent(data["id"], data["token"]);
+				else goto("/");
 			} else {
 				let responseError = response.status;
 				try {
@@ -177,10 +248,14 @@
 	onMount(() => {
 		let urlParams = new URLSearchParams(window.location.search);
 		resetBearerToken = urlParams.get("token");
+		const resetPresent = urlParams.get("reset");
 
 		if (resetBearerToken) {
-			formType = "newPassword";
-			history.replaceState({}, document.title, window.location.pathname); // reset url back to normal one
+			formType = "new-password";
+			history.replaceState({}, document.title, window.location.pathname); // Reset url to remove query
+		} else if (resetPresent) {
+			formType = "reset";
+			history.replaceState({}, document.title, window.location.pathname);
 		}
 	});
 
@@ -224,7 +299,7 @@
 			case "reset":
 				sendPasswordResetEmail(email);
 				break;
-			case "newPassword":
+			case "new-password":
 				changePasswordIfValuesProvided(password);
 				break;
 		}
@@ -288,7 +363,7 @@
 		role="button"
 		transition:slide={{ axis: "y", duration: 150 }}
 	>
-		<ArrowLeft size={20} style="margin-bottom: -3px;" />
+		<ArrowLeft size={20} strokeWidth={2.25} style="margin-bottom: -3px;" />
 		Back to start
 	</span>
 {/snippet}
@@ -321,7 +396,7 @@
 							<input type="email" bind:value={email} placeholder="Email" />
 						</div>
 					{/if}
-					{#if formType == "login" || formType == "signup" || formType == "newPassword"}
+					{#if formType == "login" || formType == "signup" || formType == "new-password"}
 						<div
 							class="password-container container-child-margin-bottom"
 							transition:slide={{ axis: "y", duration: 150 }}
@@ -329,7 +404,7 @@
 							<input
 								bind:value={password}
 								type={passwordInputType}
-								placeholder={formType == "newPassword" ? "New password" : "Password"}
+								placeholder={formType == "new-password" ? "New password" : "Password"}
 							/>
 							<!-- svelte-ignore a11y_consider_explicit_label -->
 							<button class="toggle-password" onclick={togglePasswordVisibility}>
@@ -351,8 +426,8 @@
 						>{(() => {
 							if (formType == "login") return "Log in";
 							if (formType == "signup") return "Sign up";
-							if (formType == "reset") return "Reset";
-							if (formType == "newPassword") return "Set password";
+							if (formType == "reset") return "Send link";
+							if (formType == "new-password") return "Set password";
 						})()}</button
 					>
 				</div>
@@ -368,19 +443,25 @@
 						class="standardButton white signup-button largeButton"
 						onclick={() => {
 							playSound("basic_button");
-							formType = "signup";
+							startGoogleLogin();
 						}}
 					>
-						<Mail size={22} strokeWidth={2} style="margin-bottom: -2px;" /> Sign up with email
-					</button>
-					<!-- <button class="standardButton white signup-button largeButton">
 						<img
 							src="/img/google_logo.png"
 							style="width: 22px; height: 22px; background-color: white; border-radius: 100%; border: 2px solid white;"
 							alt="Google logo"
 						/>
 						Continue with Google
-					</button> -->
+					</button>
+					<button
+						class="standardButton white signup-button largeButton"
+						onclick={() => {
+							playSound("basic_button");
+							formType = "signup";
+						}}
+					>
+						<Mail size={22} strokeWidth={2.25} style="margin-bottom: -2px;" /> Sign up with email
+					</button>
 					<p id="privacy-notice">
 						<a href="/legal" target="_blank">Legal</a>
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
