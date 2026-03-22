@@ -196,7 +196,7 @@ async function attemptTeamDuelFind() {
 
         const data = await response.json();
         if (data.matched) clearFindTeamDuelInterval();
-        else if (!findTeamDuelInterval) findTeamDuelInterval = setInterval(attemptTeamDuelFind, 5000); // Start polling
+        else if (!findTeamDuelInterval && findTeamDuelActive) findTeamDuelInterval = setInterval(attemptTeamDuelFind, 5000); // Start polling (if still active / matchmaking wasn't cancelled)
 
     } catch (error) {
         if (!findTeamDuelActive) return; // Request arrived after match/cancel, ignore (match can start without a client ever calling this endpoint since submitting & waiting for sb else to call it also works)
