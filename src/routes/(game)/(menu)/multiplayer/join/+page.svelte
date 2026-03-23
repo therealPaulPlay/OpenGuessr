@@ -105,7 +105,7 @@
 	<p class="publicRoomTitle" transition:blur>Public rooms</p>
 	<div class="publicRoomBox of-top of-bottom of-length-2" transition:blur>
 		{#each openRooms as room}
-			<div class="publicRoomItem">
+			<div class="publicRoomItem" transition:blur>
 				<div class="roomItemInfoContainer of-left of-right">
 					<div class="infoBox">
 						<img class="mapIcon" src="/img/maps_icon.png" alt="Maps" />
