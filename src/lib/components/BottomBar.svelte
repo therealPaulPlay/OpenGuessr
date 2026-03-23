@@ -242,6 +242,7 @@
 
 	#resetButtonImg {
 		width: 21px;
+		height: 17px;
 	}
 
 	.resetButtonText {
