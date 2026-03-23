@@ -19,7 +19,6 @@
 	import { submitRoomCode } from "$lib/logic/matchmakingLogic.js";
 	import { page } from "$app/state";
 	import { get } from "svelte/store";
-	import { signupPrompt } from "$lib/utils/signupPrompt";
 
 	let {
 		showOpenRoom = true,
@@ -162,7 +161,7 @@
 			disabled={!$roomCode || roomOpened}
 			onclick={async () => {
 				playSound("basic_button");
-				if (!$isAuthenticated) return signupPrompt();
+				if (!$isAuthenticated) return showNotification("Account required for public room creation."); // Don't show signup prompt since the room itself needs to be created signed-in
 				await submitRoomCode("open-room", false, localStorage.getItem("selectedMap") || $defaultMap);
 				roomOpened = true;
 				showNotification("Room set to public.");
