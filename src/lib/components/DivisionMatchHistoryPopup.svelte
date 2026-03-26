@@ -1,10 +1,8 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
-	import { playSound } from "$lib/utils/soundManager";
 	import { divisionMatchHistoryPopup } from "$lib/stores/uiStore";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
-	import { onMount } from "svelte";
 	import { ArrowLeft, ArrowRight } from "@lucide/svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
@@ -137,7 +135,7 @@
 											? "+"
 											: "-"}
 									{:else}
-										{"+/-"}
+										+/-
 									{/if}
 								{/if}
 								{entry.eloChange ?? "N/A"}

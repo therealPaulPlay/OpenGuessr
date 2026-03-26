@@ -89,7 +89,7 @@
 					loadCompetition();
 					goto("/");
 				} catch (error) {
-					throw new Error("Error parsing competition details: " + error);
+					throw new Error("Error parsing competition details", { cause: error });
 				}
 			} else {
 				let responseData = null;
@@ -592,7 +592,6 @@
 				<p class="itemText">{roundLength}s</p>
 			</div>
 		</div>
-		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div
 			id="aboutItem${id}"

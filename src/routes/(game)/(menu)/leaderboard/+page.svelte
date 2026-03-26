@@ -1,6 +1,6 @@
 <script>
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
-	import { isAuthenticated, username } from "$lib/stores/accountStore";
+	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { blur, fade } from "svelte/transition";
@@ -231,7 +231,6 @@
 			</div>
 		</div>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div id="podium" class="podium" class:podium-loaded={Boolean(mainSectionEntries)}>
 			<div class="podium-item" id="second-place">
 				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -282,7 +281,7 @@
 	</div>
 	{#if mainSectionEntries}
 		<div class="item-container" transition:fade={{ duration: 150 }}>
-			{#each mainSectionEntries.slice(3) as entry, i}
+			{#each mainSectionEntries.slice(3) as entry}
 				<div class="rankedItem" role="button" tabindex="0" class:yourItem={entry.id == userId && $isAuthenticated}>
 					<p class="maxlength rankedItemLeft">#{entry.position}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
@@ -311,7 +310,7 @@
 			<div class="circleDot"></div>
 		</div>
 		<div id="yourLeagueContainer" class="item-container" transition:blur>
-			{#each userSectionEntries as entry, i}
+			{#each userSectionEntries as entry}
 				<div class="rankedItem" role="button" tabindex="0" class:yourItem={entry.id == userId && $isAuthenticated}>
 					<p class="maxlength rankedItemLeft">#~{entry.position?.toLocaleString()}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->

@@ -26,6 +26,7 @@
 		"@floating-ui/dom": "^1.7.1",
 		"@lucide/svelte": "^0.554.0",
 		"d3-geo": "^3.1.1",
+		"eslint-plugin-svelte": "^3.16.0",
 		"fast-profanity-filter": "^0.0.5",
 		"globals": "^17.3.0",
 		"howler": "^2.2.4",

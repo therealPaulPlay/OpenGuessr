@@ -1,5 +1,4 @@
 <script>
-	import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { loadingScreenVisible } from "$lib/stores/uiStore";
 </script>

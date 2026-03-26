@@ -1,7 +1,6 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import PinHolder from "./PinHolder.svelte";
-	import { playSound } from "$lib/utils/soundManager";
 	import { pinPopup } from "$lib/stores/uiStore";
 	import { profileData, profileExperience, profileSupporterLevel } from "$lib/stores/context-specific/profileStore";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";

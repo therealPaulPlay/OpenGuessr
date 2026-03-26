@@ -17,7 +17,7 @@
 </script>
 
 <div class="tabs-group standardButton {className}" class:disabled>
-	{#each tabs as Tab, i}
+	{#each tabs as Tab}
 		<button
 			class="tab-button standardButton white {selected === Tab ? 'active' : ''}"
 			onclick={() => selectTab(Tab)}

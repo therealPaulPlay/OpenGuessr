@@ -7,7 +7,7 @@
 	import { onMount } from "svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { CircleArrowDown, CircleArrowUp, CircleMinus, CirclePlus, Clock9 } from "@lucide/svelte";
+	import { CircleArrowDown, CircleArrowUp, CircleMinus, CirclePlus } from "@lucide/svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 

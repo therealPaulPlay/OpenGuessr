@@ -2,9 +2,7 @@
 	import { discordPopup } from "$lib/stores/uiStore";
 	import { addUserXP } from "$lib/utils/updateUserXP";
 	import Popup from "./ui/Popup.svelte";
-	import { experience } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { get } from "svelte/store";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 
 	function clickJoin() {

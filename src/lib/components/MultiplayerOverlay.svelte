@@ -34,7 +34,7 @@
 			{#if $teamAmount > 1}
 				<!-- Teams version -->
 				{#each $multiplayerTableArray as team}
-					{#each team.players as { clientId, username, elo, score, teamIndex, userId, badge, spectator }}
+					{#each team.players as { clientId, username, elo, score, userId, badge, spectator }}
 						<div
 							transition:slide
 							class="multiplayerOverlayEntry"
@@ -70,7 +70,7 @@
 				{/each}
 			{:else}
 				<!-- No teams version -->
-				{#each $multiplayerTableArray as { clientId, username, elo, score, teamIndex, userId, badge, spectator }}
+				{#each $multiplayerTableArray as { clientId, username, elo, score, userId, badge, spectator }}
 					<div
 						transition:slide
 						class="multiplayerOverlayEntry"

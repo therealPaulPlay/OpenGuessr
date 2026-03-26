@@ -2,25 +2,20 @@
 	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { joinMultiplayerRoom } from "$lib/logic/multiplayerLogic";
-	import { Copy, Unplug, User } from "@lucide/svelte";
-	import { blur, slide } from "svelte/transition";
+	import { Unplug, User } from "@lucide/svelte";
+	import { blur } from "svelte/transition";
 	import { onDestroy, onMount } from "svelte";
 	import { fetchOpenRooms } from "$lib/logic/matchmakingLogic";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { loadProfileFromId } from "$lib/utils/loadProfile";
 	import { tooltip } from "$lib/utils/tooltip";
 
-	let roomCodeInput = $state("");
+	let roomCodeInput = $derived(segments.slice(0, 3).join("") + segments.slice(3, 6).join(""));
 	let openRooms = $state([]);
 	let inputRefs = []; // Store references to input elements
 	let segments = $state(["", "", "", "", "", ""]); // 6 segments for XXX-XXX
 
 	let fetchRoomsInterval;
-
-	// Update roomCodeInput when segments change
-	$effect(() => {
-		roomCodeInput = segments.slice(0, 3).join("") + segments.slice(3, 6).join("");
-	});
 
 	function handleInput(index, event) {
 		const value = event.target.value.toUpperCase().replace(/[^A-Z0-9]/g, "");
@@ -69,7 +64,7 @@
 		<div class="multiplayerJoinField">
 			<p class="multiplayerInputInfo">{$multiplayerStatus || ""}</p>
 			<div class="segmentedInputBox" onpaste={handlePaste}>
-				{#each segments as segment, i}
+				{#each segments, i}
 					{@const placeholder = ["A", "B", "C", "1", "2", "3"]}
 					<input
 						type="text"
@@ -105,7 +100,7 @@
 	<p class="publicRoomTitle" transition:blur>Public rooms</p>
 	<div class="publicRoomBox of-top of-bottom of-length-2" transition:blur>
 		{#each openRooms as room}
-			<div class="publicRoomItem">
+			<div class="publicRoomItem" transition:blur>
 				<div class="roomItemInfoContainer of-left of-right">
 					<div class="infoBox">
 						<img class="mapIcon" src="/img/maps_icon.png" alt="Maps" />

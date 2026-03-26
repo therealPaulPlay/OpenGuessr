@@ -13,7 +13,6 @@
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { page } from "$app/state";
-	import { onMount } from "svelte";
 
 	let scrollNameText = $state(false);
 	let navigationListEnlarged = $state(false);

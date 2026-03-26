@@ -24,7 +24,7 @@
 		<div class="roundLogBox of-top of-bottom of-length-1.5">
 			<!-- round log will be automatically generated here -->
 			{#if $roundLog?.length > 0}
-				{#each $roundLog as [mode, distance, coordinates], index}
+				{#each $roundLog as [mode, distance, coordinates]}
 					<div class="roundLogItem">
 						<div>
 							<p class="logItemMode">{mode}</p>

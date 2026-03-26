@@ -1,6 +1,5 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
-	import { playSound } from "$lib/utils/soundManager";
 	import { badgePopup } from "$lib/stores/uiStore";
 	import { ArrowRight } from "@lucide/svelte";
 	import {
@@ -24,10 +23,10 @@
 		</p>
 	</div>
 	<div class="badgeBox">
-		<Badge id="expBadge1" interactive="true" unlocked={$profileExperience >= 50000} />
-		<Badge id="expBadge2" interactive="true" unlocked={$profileExperience >= 250000} />
-		<Badge id="expBadge3" interactive="true" unlocked={$profileExperience >= 1000000} />
-		<Badge id="expBadge4" interactive="true" unlocked={$profileExperience >= 10000000} />
+		<Badge id="expBadge1" interactive={true} unlocked={$profileExperience >= 50000} />
+		<Badge id="expBadge2" interactive={true} unlocked={$profileExperience >= 250000} />
+		<Badge id="expBadge3" interactive={true} unlocked={$profileExperience >= 1000000} />
+		<Badge id="expBadge4" interactive={true} unlocked={$profileExperience >= 10000000} />
 	</div>
 	<div class="badgeLabel">
 		<p>For duels won</p>
@@ -36,10 +35,10 @@
 		</p>
 	</div>
 	<div class="badgeBox">
-		<Badge id="duelBadge1" interactive="true" unlocked={$profileData?.duelsWon >= 5} />
-		<Badge id="duelBadge2" interactive="true" unlocked={$profileData?.duelsWon >= 50} />
-		<Badge id="duelBadge3" interactive="true" unlocked={$profileData?.duelsWon >= 100} />
-		<Badge id="duelBadge4" interactive="true" unlocked={$profileData?.duelsWon >= 500} />
+		<Badge id="duelBadge1" interactive={true} unlocked={$profileData?.duelsWon >= 5} />
+		<Badge id="duelBadge2" interactive={true} unlocked={$profileData?.duelsWon >= 50} />
+		<Badge id="duelBadge3" interactive={true} unlocked={$profileData?.duelsWon >= 100} />
+		<Badge id="duelBadge4" interactive={true} unlocked={$profileData?.duelsWon >= 500} />
 	</div>
 	<div class="badgeLabel">
 		<p>For competitions entered</p>
@@ -48,10 +47,10 @@
 		</p>
 	</div>
 	<div class="badgeBox">
-		<Badge id="compBadge1" interactive="true" unlocked={$profileData?.competitionsEntered >= 10} />
-		<Badge id="compBadge2" interactive="true" unlocked={$profileData?.competitionsEntered >= 50} />
-		<Badge id="compBadge3" interactive="true" unlocked={$profileData?.competitionsEntered >= 100} />
-		<Badge id="compBadge4" interactive="true" unlocked={$profileData?.competitionsEntered >= 500} />
+		<Badge id="compBadge1" interactive={true} unlocked={$profileData?.competitionsEntered >= 10} />
+		<Badge id="compBadge2" interactive={true} unlocked={$profileData?.competitionsEntered >= 50} />
+		<Badge id="compBadge3" interactive={true} unlocked={$profileData?.competitionsEntered >= 100} />
+		<Badge id="compBadge4" interactive={true} unlocked={$profileData?.competitionsEntered >= 500} />
 	</div>
 	<div class="badgeLabel">
 		<p>For streaks finished</p>
@@ -60,10 +59,10 @@
 		</p>
 	</div>
 	<div class="badgeBox">
-		<Badge id="streakBadge1" interactive="true" unlocked={$profileData?.highestCountryStreak >= 5} />
-		<Badge id="streakBadge2" interactive="true" unlocked={$profileData?.highestCountryStreak >= 15} />
-		<Badge id="streakBadge3" interactive="true" unlocked={$profileData?.highestCountryStreak >= 50} />
-		<Badge id="streakBadge4" interactive="true" unlocked={$profileData?.highestCountryStreak >= 100} />
+		<Badge id="streakBadge1" interactive={true} unlocked={$profileData?.highestCountryStreak >= 5} />
+		<Badge id="streakBadge2" interactive={true} unlocked={$profileData?.highestCountryStreak >= 15} />
+		<Badge id="streakBadge3" interactive={true} unlocked={$profileData?.highestCountryStreak >= 50} />
+		<Badge id="streakBadge4" interactive={true} unlocked={$profileData?.highestCountryStreak >= 100} />
 	</div>
 	<div class="badgeLabel">
 		<p>For supporter tiers</p>
@@ -72,15 +71,15 @@
 		</p>
 	</div>
 	<div class="badgeBox">
-		<Badge id="supporterBadge1" interactive="true" unlocked={$profileSupporterLevel >= 1} />
-		<Badge id="supporterBadge2" interactive="true" unlocked={$profileSupporterLevel >= 2} />
-		<Badge id="supporterBadge3" interactive="true" unlocked={$profileSupporterLevel >= 3} />
+		<Badge id="supporterBadge1" interactive={true} unlocked={$profileSupporterLevel >= 1} />
+		<Badge id="supporterBadge2" interactive={true} unlocked={$profileSupporterLevel >= 2} />
+		<Badge id="supporterBadge3" interactive={true} unlocked={$profileSupporterLevel >= 3} />
 	</div>
 	<div class="badgeLabel">
 		<p>Miscellaneous</p>
 	</div>
 	<div class="badgeBox" style="margin-bottom: var(--content-margin)">
-		<Badge id="miscBadge1" interactive="true" unlocked={$profileId <= 5} />
+		<Badge id="miscBadge1" interactive={true} unlocked={$profileId <= 5} />
 	</div>
 </Popup>
 

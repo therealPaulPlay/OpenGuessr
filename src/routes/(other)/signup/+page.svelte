@@ -151,7 +151,7 @@
 
 			// Check if the response is successful
 			if (response.ok) {
-				const data = await response.json();
+				await response.json();
 				showNotification("Registration successful!");
 				formType = "login";
 			} else {
@@ -186,7 +186,7 @@
 
 			// Check if the response is successful
 			if (response.ok) {
-				const data = await response.json();
+				await response.json();
 				showNotification("Password reset email sent!");
 			} else {
 				let responseError = response.status;
@@ -220,7 +220,7 @@
 
 			// Check if the response is successful
 			if (response.ok) {
-				const data = await response.json();
+				await response.json();
 				showNotification("Password changed successfully!");
 				formType = "login";
 			} else {
@@ -406,12 +406,11 @@
 								type={passwordInputType}
 								placeholder={formType == "new-password" ? "New password" : "Password"}
 							/>
-							<!-- svelte-ignore a11y_consider_explicit_label -->
 							<button class="toggle-password" onclick={togglePasswordVisibility}>
 								{#if passwordInputType == "text"}
-									<Eye size={22} />
+									<Eye size={22} strokeWidth={2.25} />
 								{:else}
-									<EyeClosed size={22} />
+									<EyeClosed size={22} strokeWidth={2.25} />
 								{/if}
 							</button>
 						</div>
