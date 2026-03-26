@@ -6,11 +6,7 @@
 	import { page } from "$app/stores";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
-	let creator = $state("No creator");
-
-	$effect(() => {
-		creator = $page.params?.creatorName || "No creator";
-	});
+	let creator = $derived($page.params?.creatorName || "No creator");
 
 	let mounted = $state(false);
 

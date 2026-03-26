@@ -9,11 +9,9 @@
 		disabled = false,
 	} = $props();
 	import { selectedPinIndex } from "$lib/stores/accountStore";
-	import { profileData } from "$lib/stores/context-specific/profileStore";
 	import { setSelectedProfilePin } from "$lib/utils/updateProfileData";
 	import { playSound } from "$lib/utils/soundManager";
-	import { blur, slide } from "svelte/transition";
-	import { signupPrompt } from "$lib/utils/signupPrompt";
+	import { slide } from "svelte/transition";
 	import { Check } from "@lucide/svelte";
 	import { handleShopPurchase } from "$lib/utils/shopHelper";
 
@@ -28,7 +26,6 @@
 />
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_static_element_interactions -->
 <div
 	class="pinHolder"
 	role="button"
@@ -92,7 +89,11 @@
 						<img class="tokenIcon" alt="token" src="/img/token_icon_white.png" />
 						{price}
 					{:else}
-						Owned <Check size={18} strokeWidth={3.25} style="min-width: 18px; margin-bottom: -3px; margin-left: var(--content-margin);" />
+						Owned <Check
+							size={18}
+							strokeWidth={3.25}
+							style="min-width: 18px; margin-bottom: -3px; margin-left: var(--content-margin);"
+						/>
 					{/if}
 				</button>
 			</div>

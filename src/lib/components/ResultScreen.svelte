@@ -14,12 +14,11 @@
 	import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
 	import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 	import { isAuthenticated, experience } from "$lib/stores/accountStore";
-	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { playSound } from "$lib/utils/soundManager";
 	import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
 	import { transitionToStart } from "$lib/utils/transitionToStart";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
-	import { onMount, tick } from "svelte";
+	import { tick } from "svelte";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
 	import { get } from "svelte/store";
@@ -49,7 +48,7 @@
 	let transitionExperienceBar = $state(true);
 	let lastPercentageWidthNumber;
 
-	experience.subscribe((value) => {
+	experience.subscribe((_value) => {
 		level = getLevel();
 
 		const percentageWidthNumber = Math.max(7, getLevelFraction() * 100); // Minimum 7% to prevent weird thin line

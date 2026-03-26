@@ -1,11 +1,10 @@
 <script>
-	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { selectedTournamentId, tournamentData } from "$lib/stores/context-specific/tournamentStore";
 	import { tournamentInfoPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { fetchTournaments } from "$lib/utils/tournamentUtils";
-	import { CalendarCheck2, Clock, Info, Medal, Ticket, Tickets, Users } from "@lucide/svelte";
+	import { CalendarCheck2, Clock, Info, Medal, Ticket } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";
 	import Drawer from "./ui/Drawer.svelte";

@@ -3,7 +3,6 @@
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { page } from "$app/state";
 	import { playMusic } from "$lib/utils/soundManager";
-	import { onMount } from "svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { multiplayerOverlay } from "$lib/stores/context-specific/multiplayerStore";
 

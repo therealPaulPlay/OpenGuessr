@@ -6,9 +6,7 @@
 	import { Info } from "@lucide/svelte";
 
 	$effect(() => {
-		if ($captchaPopupVisible) {
-			renderCaptcha("#captchaContainer", window.onTurnstileCallback);
-		}
+		if ($captchaPopupVisible) renderCaptcha("#captchaContainer", window.onTurnstileCallback);
 	});
 </script>
 
@@ -19,7 +17,7 @@
 		<p class="captchaInfoText">To protect against bot attacks, please solve this captcha.</p>
 	</div>
 	<br />
-	<div id="captchaContainer" class="captchaMarginBottom" bind:this={captchaContainer}>
+	<div id="captchaContainer" class="captchaMarginBottom">
 		<!-- the captcha will be loaded dynamically here -->
 	</div>
 </Popup>

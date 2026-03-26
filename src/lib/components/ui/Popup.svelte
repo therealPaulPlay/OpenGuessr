@@ -34,8 +34,8 @@
 		<div
 			class="uiWindow"
 			transition:scale={{ easing: backOut, duration: 250, start: 0.9 }}
-			class:frameLess={Boolean(frameless)}
-			style:max-width={Boolean(verySlim) ? "600px" : Boolean(slim) ? "750px" : "850px"}
+			class:frameLess={frameless}
+			style:max-width={verySlim ? "600px" : slim ? "750px" : "850px"}
 		>
 			<button class="closePopupButton standardButton white" aria-label="close" onclick={close}
 				><X strokeWidth={2.25} /></button

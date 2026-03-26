@@ -1,7 +1,5 @@
 <script>
 	let { tokens = 5 } = $props();
-	import { onDestroy, onMount } from "svelte";
-	import { fade } from "svelte/transition";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
 

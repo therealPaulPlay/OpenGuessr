@@ -26,12 +26,10 @@
 		TriangleAlert,
 		Pencil,
 		Award,
-		Swords,
 		TrendingUp,
 		Medal,
 		Calendar,
 		User,
-		Shield,
 		BarChart3,
 		Trophy,
 		Crown,
@@ -193,7 +191,6 @@
 			{/if}
 		</div>
 	</div>
-	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 	<div class="profileNameBox">
 		<div class="profileNameBoxContent of-left of-right">
 			{#if $profileId == localStorage.getItem("id") && !$profileData?.badge}
@@ -218,7 +215,7 @@
 						badgePopup.set(true);
 					}}
 				>
-					<Badge id={$profileData?.badge} interactive={false} display="true" />
+					<Badge id={$profileData?.badge} interactive={false} display={true} />
 				</div>
 			{/if}
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -278,7 +275,7 @@
 			{#if $profileId != localStorage.getItem("id")}
 				<button
 					class="standardButton white"
-					onclick={(e) => {
+					onclick={() => {
 						playSound("basic_button");
 						reportUserId.set($profileId);
 						reportPopup.set(true);

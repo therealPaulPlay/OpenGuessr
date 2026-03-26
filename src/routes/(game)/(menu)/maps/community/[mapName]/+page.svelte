@@ -188,7 +188,7 @@
 
 			// If add instead of overwrite, combine with existing locations
 			if (addInsteadOfOverwrite) {
-				finalLocations = [...mapLocationData?.locations, ...newLocations];
+				finalLocations = [...(mapLocationData?.locations || []), ...newLocations];
 			}
 
 			const body = {

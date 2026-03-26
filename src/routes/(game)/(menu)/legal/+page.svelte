@@ -1,6 +1,5 @@
 <script>
 	import { errorPopup } from "$lib/utils/errorHandling";
-	import { onMount } from "svelte";
 
 	function openConsentManager() {
 		try {
@@ -44,9 +43,9 @@
 	<h1>Preferences</h1>
 	<br />
 	<p>
-		Under CCPA ("California Consumer Privacy Act"), Californian residents have the right to declare their
-		preferences on the sale of data for advertising and marketing purposes. If you wish to change your preferences,
-		click this button to launch the preference portal:
+		Under CCPA ("California Consumer Privacy Act"), Californian residents have the right to declare their preferences on
+		the sale of data for advertising and marketing purposes. If you wish to change your preferences, click this button
+		to launch the preference portal:
 	</p>
 	<br />
 	<button class="consent-button" onclick={openConsentManager}>Preferences</button>

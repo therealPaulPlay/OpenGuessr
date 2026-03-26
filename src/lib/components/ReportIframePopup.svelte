@@ -1,7 +1,6 @@
 <script>
 	import { reportPopup } from "$lib/stores/uiStore";
 	import { reportUserId } from "$lib/stores/context-specific/reportPopupStore";
-	import { playSound } from "$lib/utils/soundManager";
 	import IframePopup from "./ui/IframePopup.svelte";
 
 	let link = $derived(

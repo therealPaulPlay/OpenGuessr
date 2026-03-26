@@ -32,7 +32,7 @@
 		if (stored) {
 			try {
 				navigationHistory = JSON.parse(stored);
-			} catch (e) {
+			} catch {
 				navigationHistory = [];
 			}
 		}

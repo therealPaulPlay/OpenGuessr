@@ -4,7 +4,7 @@
 	import { eloChange, duelResultTitle, tokenGain } from "$lib/stores/context-specific/duelResultStore";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { playSound } from "$lib/utils/soundManager";
-	import { duelWinStreak, elo } from "$lib/stores/accountStore";
+	import { duelWinStreak } from "$lib/stores/accountStore";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
 	import { Info, History, Flame } from "@lucide/svelte";
