@@ -1,6 +1,5 @@
 <script>
-	import { elo, isAuthenticated } from "$lib/stores/accountStore";
-	import { blur } from "svelte/transition";
+	import { elo } from "$lib/stores/accountStore";
 
 	// Divisions
 	let fillPercentage = $derived.by(() => {

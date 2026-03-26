@@ -12,7 +12,7 @@
 		setProgress(getLevelFraction());
 	});
 
-	experience.subscribe((value) => {
+	experience.subscribe((_value) => {
 		progressRingLevel = getLevel();
 		setProgress(getLevelFraction());
 	});

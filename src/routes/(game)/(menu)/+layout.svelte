@@ -5,7 +5,6 @@
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { goto, afterNavigate } from "$app/navigation";
 	import { Home } from "@lucide/svelte";
-	import { blur } from "svelte/transition";
 	import { page } from "$app/state";
 
 	import { setContext } from "svelte";

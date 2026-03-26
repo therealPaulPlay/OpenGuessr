@@ -2,7 +2,6 @@
 	// Must pass a "id" prop to load a badge!
 	let { unlocked = false, id, interactive = false, display = false } = $props();
 	import { selectedBadge } from "$lib/stores/accountStore";
-	import { profileData } from "$lib/stores/context-specific/profileStore";
 	import { setProfileBadge } from "$lib/utils/updateProfileData";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
@@ -100,7 +99,6 @@
 </script>
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
-<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <div
 	{id}
 	role="button"
@@ -108,7 +106,7 @@
 	class="badge {'badgeStage' + badges[id]?.stage}"
 	class:badgeLocked={!unlocked && !display}
 	class:badgeSelected={$selectedBadge == id && !display}
-	style:pointer-events={Boolean(interactive) ? "auto" : "none"}
+	style:pointer-events={interactive ? "auto" : "none"}
 	onclick={() => {
 		if (unlocked) {
 			playSound("item_select");

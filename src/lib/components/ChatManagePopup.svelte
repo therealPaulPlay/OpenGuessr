@@ -103,8 +103,9 @@
 								disabled={clientId && clientId === get(socket)?.id}
 								onchange={(_, selectedIndex) => {
 									playSound("basic_button");
-									if (selectedIndex == 1) $chatMutedPlayers = [...$chatMutedPlayers?.filter((i) => i !== clientId)];
-									else $chatMutedPlayers = [...($chatMutedPlayers || []), clientId];
+									if (selectedIndex == 1) {
+										$chatMutedPlayers = [...($chatMutedPlayers?.filter((i) => i !== clientId) || [])];
+									} else $chatMutedPlayers = [...($chatMutedPlayers || []), clientId];
 								}}
 							/>
 							{#if get(socket)?.isHost && !get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom}

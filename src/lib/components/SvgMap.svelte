@@ -2,10 +2,8 @@
 	import { onMount } from "svelte";
 	import { geoPath, geoMercator } from "d3-geo";
 	import { feature } from "topojson-client";
-	import { createEventDispatcher } from "svelte";
 
 	let {
-		region = "World",
 		zoom = $bindable(1),
 		width = 800,
 		height = 250,
@@ -14,7 +12,6 @@
 			lon: 0,
 		},
 		interactive = true,
-		notHighlightedColor = "rgba(125,125,125, 0.2)",
 		locationList,
 		onclick,
 	} = $props();
@@ -25,26 +22,16 @@
 
 	let projection = geoMercator();
 	let path = $state(geoPath().projection(projection));
-	let regionCountries;
 
 	let translateX = 0;
 	let translateY = 0;
-
-	const dispatch = createEventDispatcher();
 
 	const MIN_ZOOM = 0.5;
 	const MAX_ZOOM = 20;
 
 	let loaded = $state(false);
-	let rect;
 
-	function handleRegionClick(svgElement, event) {
-		rect = mapContainer.getBoundingClientRect();
-		const x = (event.clientX - rect.left) * (width / rect.width);
-		const y = (event.clientY - rect.top) * (height / rect.height);
-		let [longitude, latitude] = projection.invert([x, y]);
-		latitude = Math.round(latitude * 100) / 100;
-		longitude = Math.round(longitude * 100) / 100;
+	function handleRegionClick(svgElement, _event) {
 		if (svgElement.isHighlighted) onclick?.(svgElement?.properties);
 	}
 
@@ -76,8 +63,6 @@
 	}
 
 	function generatePaths() {
-		const highlightedCountries = []; // Currently unused
-
 		features = features
 			.map((feature, index) => {
 				const d = path(feature);
@@ -116,7 +101,7 @@
 		if (!interactive) return;
 		event.preventDefault();
 
-		rect = mapContainer.getBoundingClientRect();
+		const rect = mapContainer.getBoundingClientRect();
 
 		const cursorX = (event.clientX - rect.left) * (width / rect.width);
 		const cursorY = (event.clientY - rect.top) * (height / rect.height);
@@ -148,7 +133,7 @@
 	function handleMouseMove(event) {
 		if (!interactive || !isDragging) return;
 		// Store the initial rect for reference
-		rect = mapContainer.getBoundingClientRect();
+		const rect = mapContainer.getBoundingClientRect();
 		translateX += (event.clientX - lastX) * (width / rect.width);
 		translateY += (event.clientY - lastY) * (height / rect.height);
 		lastX = event.clientX;
@@ -184,7 +169,7 @@
 
 		if (isTouching && event.touches.length === 1) {
 			event.preventDefault(); // Prevent page scroll
-			rect = mapContainer.getBoundingClientRect();
+			const rect = mapContainer.getBoundingClientRect();
 
 			const touch = event.touches[0];
 			const deltaX = touch.clientX - lastX;
@@ -210,7 +195,7 @@
 				const pinchMidY = (event.touches[0].clientY + event.touches[1].clientY) / 2;
 
 				// Get bounding rect for accurate translation calculation
-				rect = mapContainer.getBoundingClientRect();
+				const rect = mapContainer.getBoundingClientRect();
 				const pinchMidXInMap = (pinchMidX - rect.left) * (width / rect.width);
 				const pinchMidYInMap = (pinchMidY - rect.top) * (height / rect.height);
 
@@ -231,7 +216,7 @@
 		}
 	}
 
-	function handleTouchEnd(event) {
+	function handleTouchEnd() {
 		isTouching = false;
 		lastTouchDistance = null;
 	}

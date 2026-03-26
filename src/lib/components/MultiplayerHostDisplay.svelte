@@ -15,7 +15,7 @@
 	import { showNotification } from "$lib/utils/notifications";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip";
-	import { Eye, Link, Users, ArrowRightLeft } from "@lucide/svelte";
+	import { Eye, Link } from "@lucide/svelte";
 	import { submitRoomCode } from "$lib/logic/matchmakingLogic.js";
 	import { page } from "$app/state";
 	import { get } from "svelte/store";

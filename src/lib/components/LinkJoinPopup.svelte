@@ -4,7 +4,6 @@
 	import { linkJoinPopup } from "$lib/stores/uiStore";
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { multiplayerStatus } from "$lib/stores/context-specific/multiplayerStore";
-	import { playSound } from "$lib/utils/soundManager";
 </script>
 
 <Popup verySlim={true} bind:open={$linkJoinPopup} onclose={leaveMultiplayer}>

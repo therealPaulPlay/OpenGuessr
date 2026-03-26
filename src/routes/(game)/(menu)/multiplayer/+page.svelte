@@ -2,14 +2,9 @@
 	import {
 		PlusCircle,
 		Unplug,
-		ContactRound,
 		TriangleAlert,
-		Info,
 		BicepsFlexed,
 		X,
-		ExternalLink,
-		ChevronDown,
-		ChevronUp,
 		History,
 		Globe,
 		Handshake,
@@ -27,12 +22,10 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { goto } from "$app/navigation";
 	import { onDestroy, onMount } from "svelte";
-	import { blur, fade, slide } from "svelte/transition";
+	import { blur, slide } from "svelte/transition";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { fetchWarnlistStatus } from "$lib/utils/checkReportStatus";
 	import { get } from "svelte/store";
-	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import { apiUrl, discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { tooltip } from "$lib/utils/tooltip";
 	import TournamentOverview from "$lib/components/TournamentOverview.svelte";

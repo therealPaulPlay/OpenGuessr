@@ -1,5 +1,5 @@
 <script>
-	import { mapExpanded, mapHovered, map, mapInteractive } from "$lib/stores/context-specific/mapStore";
+	import { mapExpanded, mapHovered, map } from "$lib/stores/context-specific/mapStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
@@ -45,7 +45,6 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<!-- svelte-ignore a11y_mouse_events_have_key_events -->
 <div
 	id="map"
 	role="region"

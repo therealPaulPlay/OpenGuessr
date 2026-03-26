@@ -3,7 +3,6 @@
 	import { chatMobilePopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
-	import { supporterLevel } from "$lib/stores/accountStore";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { mapExpanded, mapInteractive } from "$lib/stores/context-specific/mapStore";

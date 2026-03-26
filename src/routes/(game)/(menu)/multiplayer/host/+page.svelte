@@ -6,7 +6,6 @@
 		roundAmount,
 		roundLength,
 		socket,
-		roomCode,
 		multiplayerStyle,
 		multiplayerRestriction,
 		multiplayerMap,
