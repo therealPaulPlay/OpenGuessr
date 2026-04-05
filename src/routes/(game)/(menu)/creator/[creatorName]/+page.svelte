@@ -72,7 +72,7 @@
 
 	.creditBox {
 		width: 100%;
-		margin-top: -15px;
+		margin-top: calc(-1 * var(--box-margin));
 		display: flex;
 		justify-content: center;
 		align-items: center;
