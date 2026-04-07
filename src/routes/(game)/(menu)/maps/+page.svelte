@@ -17,6 +17,7 @@
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { tooltip } from "$lib/utils/tooltip.js";
 	import { page } from "$app/state";
+	import { navigationMenu } from "$lib/stores/uiStore";
 
 	const snapshotStore = getContext("snapshotStore");
 
@@ -38,6 +39,8 @@
 
 	let currentController;
 	let currentFavController;
+
+	let returnAfterChange = $derived(page.url.searchParams.get("return-to-multiplayer"));
 
 	const categoriesArray = [
 		"All",
@@ -130,8 +133,11 @@
 
 	function selectMap(name, community = false) {
 		playSound("button_juicy");
-		changeMap((community ? "community_" : "") + name, true);
-		goto("/");
+		changeMap((community ? "community_" : "") + name, true, returnAfterChange);
+		if (!returnAfterChange) {
+			navigationMenu.set(false);
+			goto("/");
+		}
 	}
 
 	function checkIfSelected(name, community = false) {
@@ -232,7 +238,8 @@
 		tabindex="0"
 		onclick={() => {
 			playSound("basic_button");
-			goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
+			const nameFormattedForUrl = map.name.split(" ").join("_").toLowerCase();
+			goto("/maps/community/" + nameFormattedForUrl + (returnAfterChange ? "?return-to-multiplayer=true" : ""));
 		}}
 	>
 		<div class="map-info">
