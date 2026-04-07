@@ -30,8 +30,8 @@
 		goto(historyStack.at(-1) || "/", { state: { restoreSnapshot: true } });
 	}
 
-	function leaveMultiplayerIfReturningFromMultiplayerPage() {
-		if (page.url.pathname.startsWith("/multiplayer")) leaveMultiplayer();
+	function leaveMultiplayerIfReturningFromMultiplayerPage(goingHome = false) {
+		if (page.url.pathname.startsWith("/multiplayer") || (page.url.searchParams.get("return-to-multiplayer") && goingHome)) leaveMultiplayer();
 	}
 
 	let showHomeButton = $derived(historyStack.length > 0 && historyStack.at(-1) !== "/");
@@ -44,7 +44,7 @@
 			disabled={$matchmakingActive}
 			onclick={() => {
 				playSound("basic_button");
-				leaveMultiplayerIfReturningFromMultiplayerPage();
+				leaveMultiplayerIfReturningFromMultiplayerPage(false);
 				goBack();
 			}}
 		>
@@ -59,7 +59,7 @@
 				disabled={$matchmakingActive}
 				onclick={() => {
 					playSound("basic_button");
-					leaveMultiplayerIfReturningFromMultiplayerPage();
+					leaveMultiplayerIfReturningFromMultiplayerPage(true);
 					goto("/");
 				}}
 			>

@@ -4,6 +4,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import * as FlagIcons from "svelte-flag-icons";
+	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 
 	function selectCountry(index) {
 		playSound("item_select");
@@ -13,7 +14,7 @@
 </script>
 
 {#if $countryGuessr}
-	<div class="countryGuessrSelector barMenu" role="menu" tabindex="0">
+	<div class="countryGuessrSelector barMenu" role="menu" tabindex="0" class:countryGuessrSelectorAdShift={!$adsDisabled}>
 		{#each $countryGuessrCountriesArray as country, index}
 			<button
 				class="countryGuessrHolder standardButton white"
@@ -99,8 +100,8 @@
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {
-		.countryGuessrSelector {
-			bottom: 136px;
+		.countryGuessrSelectorAdShift{
+			bottom: 136px; /* Shift up to fit ad */
 		}
 		.countryGuessrSelector {
 			width: calc(100% - 32px);

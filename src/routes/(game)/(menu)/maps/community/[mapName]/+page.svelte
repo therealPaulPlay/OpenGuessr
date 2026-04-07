@@ -18,6 +18,8 @@
 	import SvgMap from "$lib/components/SvgMap.svelte";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { tooltip } from "$lib/utils/tooltip.js";
+	import { page } from "$app/state";
+	import { navigationMenu } from "$lib/stores/uiStore.js";
 
 	let { data } = $props();
 
@@ -30,6 +32,7 @@
 	let mapLocationData = $derived(data.map_data);
 
 	let playerId = $state(0);
+	let returnAfterChange = $derived(page.url.searchParams.get("return-to-multiplayer"));
 
 	let locationsArrayForSvgMap = $derived.by(() => {
 		if (mapLocationData?.locations?.length > 500) {
@@ -353,11 +356,18 @@
 				use:tooltip={{ text: "Play" }}
 				onclick={() => {
 					playSound("basic_button");
+
+					// Add to bookmarked community maps
 					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 					if (!addedCommunityMaps.includes(mapName)) addedCommunityMaps.push(mapName);
 					localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
-					changeMap("community_" + mapName, true);
-					goto("/");
+					
+					// Change to map
+					changeMap("community_" + mapName, true, returnAfterChange);
+					if (!returnAfterChange) {
+						navigationMenu.set(false);
+						goto("/");
+					}
 				}}
 			>
 				<Play strokeWidth={2.5} />
