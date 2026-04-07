@@ -28,7 +28,7 @@
 	});
 </script>
 
-<div id="bottomBar" class="bottomBar" class:bottomBarAdShift={!$adsDisabled}>
+<div id="bottomBar" class="bottomBar">
 	<div class="bottomLeftMenu">
 		<div class="barMenu">
 			<button
@@ -112,14 +112,11 @@
 		border-radius: var(--box-margin);
 		width: calc(100% - 20px);
 		height: 95px;
-		min-height: 95px;
-		max-height: 95px;
 		gap: var(--box-margin);
 		display: flex;
 		align-items: end;
 		justify-content: space-between;
 		margin: auto;
-		flex: 1;
 		z-index: 10;
 		transition: background-color 250ms ease;
 		pointer-events: none;
@@ -261,11 +258,7 @@
 	/* Mobile adjustments */
 	@media (orientation: portrait) and (max-width: 800px) {
 		.gameplayAdArea {
-			bottom: var(--box-margin);
-		}
-
-		.bottomBarAdShift {
-			padding-bottom: calc(50px + var(--box-margin)); /* Ad is 50px high */
+			bottom: calc(56px + var(--box-margin) * 2); /* Guess button is 56px high */
 		}
 
 		.mobileChatButton {
