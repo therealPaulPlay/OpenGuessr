@@ -190,9 +190,7 @@
 			let finalLocations = newLocations;
 
 			// If add instead of overwrite, combine with existing locations
-			if (addInsteadOfOverwrite) {
-				finalLocations = [...(mapLocationData?.locations || []), ...newLocations];
-			}
+			if (addInsteadOfOverwrite) finalLocations = [...(mapLocationData?.locations || []), ...newLocations];
 
 			const body = {
 				id: localStorage.getItem("id"),
@@ -212,10 +210,20 @@
 
 			// Return the success or error message. No need to parse the response
 			if (response.ok) {
+				// Update local copy so subsequent adds use the latest locations
+				data = { ...data, map_data: { locations: finalLocations } };
 				return `Map updated successfully.`;
 			} else {
-				console.error("Error updating map: " + response.status);
-				return "Failed to update map: " + response.status;
+				let error = response.status;
+
+				// Try extract error
+				try {
+					const jsonResponse = await response.json();
+					if (jsonResponse.error) error = jsonResponse.error;
+				} catch {}
+
+				console.error("Error updating map: " + error);
+				return "Failed to update map: " + error;
 			}
 		} catch (error) {
 			console.error("Error updating map:", error);
@@ -361,7 +369,7 @@
 					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 					if (!addedCommunityMaps.includes(mapName)) addedCommunityMaps.push(mapName);
 					localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
-					
+
 					// Change to map
 					changeMap("community_" + mapName, true, returnAfterChange);
 					if (!returnAfterChange) {
