@@ -42,7 +42,6 @@ export function resetLocalSave() {
   username.set("Guest");
   selectedPinIndex.set(0);
   selectedBadge.set(null);
-  inboxIconNew.set(false);
   experience.set(0);
   supportedAmount.set(0);
   supporterLevel.set(0);
@@ -50,6 +49,8 @@ export function resetLocalSave() {
   tokens.set(0);
   purchasedPins.set([]);
   freeDailyTokensClaimed.set(false);
+  duelWinStreak.set(0);
+  inboxIconNew.set(false);
 
   // Set account loaded to false
   accountDataLoaded.set(false);
