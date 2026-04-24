@@ -184,8 +184,8 @@ export async function createMultiplayerInstance() {
                     setTimeout(() => continueText.set("Continue"), continueTimeout);
 
                     // Ensure the coords are set, in case user joins during result screen
-                    currentLocationLatitude.set(storage?.location[0]);
-                    currentLocationLongitude.set(storage?.location[1]);
+                    currentLocationLatitude.set(storage?.location?.[0]);
+                    currentLocationLongitude.set(storage?.location?.[1]);
                     enableResultScreen(get(mapPinLat), get(mapPinLng));
 
                 } else disableResultScreen();
