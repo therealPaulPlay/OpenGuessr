@@ -8,6 +8,7 @@ import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { goto } from "$app/navigation";
 import { signupPrompt } from "$lib/utils/signupPrompt";
 import { errorPopup } from "$lib/utils/errorHandling";
+import { multiplayer } from "$lib/stores/modeStore";
 
 // Logic -----------------------
 
@@ -54,6 +55,9 @@ let roomIndex = 0;
 // This initiates the find duel system
 export async function findDuel() {
     if (!get(isAuthenticated)) return signupPrompt();
+     // There's a brief delay between goto("/") call and the page navigation, in which the user can click "Try again" even though a duel has been found, 
+     // which causes the multiplayer instance to recreate & the player to lose the game
+    if (get(multiplayer)) return errorPopup("Already in multiplayer", "Finding a duel is only possible outside of multiplayer.");
     goto("/multiplayer/duel"); // Visit duel load page
     roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     matchmakingActive.set(true);
