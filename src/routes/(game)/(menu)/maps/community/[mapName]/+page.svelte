@@ -6,7 +6,7 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { showNotification } from "$lib/utils/notifications";
 	import { changeMap } from "$lib/utils/changeMap.js";
-	import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Play } from "@lucide/svelte";
+	import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Play, FileDown } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
@@ -231,6 +231,12 @@
 		}
 	}
 
+	// Map download -------------------------------------------------------------------------------------------------------------------------
+	let mapDownloadHref = $derived(
+		"data:application/json;charset=utf-8," +
+			encodeURIComponent(JSON.stringify({ locations: mapLocationData?.locations ?? [] }, null, 2)),
+	);
+
 	// SVG Map-related ---------------------------------------------------------------------------------------------------------------------
 	// Calculate map center based on locations
 	let mapCenter = $derived.by(() => {
@@ -358,6 +364,14 @@
 						showStatus = false;
 					}}><Replace size={18} strokeWidth={2.75} /></button
 				>
+				<a
+					id="manageDownload"
+					use:tooltip={{ text: "Download" }}
+					class="standardButton white mapButton largeButton"
+					href={mapDownloadHref}
+					download={`${mapName}.json`}
+					onclick={() => playSound("basic_button")}><FileDown size={18} strokeWidth={2.5} /></a
+				>
 			{/if}
 			<button
 				class="standardButton mapButton largeButton"
@@ -402,11 +416,11 @@
 	</div>
 </div>
 
-<Popup bind:open={updatePopup}>
+<Popup bind:open={updatePopup} verySlim={true}>
 	<div class="popup-title">
 		<h1 id="mapUpdateHeader">Update locations</h1>
 	</div>
-	<p class="marginBottom">Locations</p>
+	<p class="marginBottom">Mode</p>
 	<Tabs
 		tabs={["Overwrite all", "Add"]}
 		onchange={(_, tabIndex) => {
@@ -414,6 +428,7 @@
 			addInsteadOfOverwrite = tabIndex != 0;
 		}}
 	/>
+	<p class="marginTop">Locations (Links)</p>
 	<div class="textareaContainer">
 		<textarea
 			type="text"
@@ -423,6 +438,7 @@
 			placeholder="https://www.google.com/maps..."
 		></textarea>
 	</div>
+	<p class="marginBottom">Locations (JSON)</p>
 	<button
 		class="standardButton white"
 		onclick={() => {
