@@ -577,7 +577,10 @@
 				<div class="label">
 					<p>Duration</p>
 				</div>
-				<p class="itemText">{formatDuration(duration)} ({formatDuration(remainingDuration)} left)</p>
+				<p class="itemText">
+					{formatDuration(duration)}
+					{#if remainingDuration > 0}({formatDuration(remainingDuration)} left){/if}
+				</p>
 			</div>
 			<div class="propertyItem">
 				<div class="label">
