@@ -508,7 +508,6 @@
 	}
 
 	.nextRoundArea {
-		z-index: 15;
 		position: fixed;
 		bottom: var(--box-margin);
 		right: var(--box-margin);

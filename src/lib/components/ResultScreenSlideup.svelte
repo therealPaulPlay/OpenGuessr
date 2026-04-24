@@ -59,7 +59,7 @@
 
 <style>
 	.endscreenSlideupContainer {
-		z-index: 16;
+		z-index: 14;
 		padding: var(--panel-margin);
 		border-radius: var(--box-margin);
 		max-height: 1000px;
