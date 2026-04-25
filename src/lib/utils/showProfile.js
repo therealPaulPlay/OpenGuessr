@@ -4,8 +4,12 @@ import { getProfileData } from "$lib/utils/getProfileData";
 import { showConfirmPopup } from "./confirmPopup";
 import { checkAuthenticationStatus, resetLocalSave } from "$lib/logic/accountLogic";
 import { signupPrompt } from "./signupPrompt";
+import { get } from "svelte/store";
 
 export async function showProfile(userId) {
+    // If already open, play close -> open animation again to avoid jarring data switch
+    if (get(profilePopup)) profilePopup.set(false);
+    
     // Reset data
     profileData.set();
     profileId.set(-1);
