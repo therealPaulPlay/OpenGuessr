@@ -5,7 +5,7 @@
 	import { friendBrowserPopup } from "$lib/stores/uiStore";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { Search, UserRoundPlus } from "@lucide/svelte";
 
@@ -90,7 +90,7 @@
 					<div
 						class="friendSearchItem"
 						onclick={() => {
-							loadProfileFromId(entry.id);
+							showProfile(entry.id);
 						}}
 						role="menu"
 						tabindex="0"

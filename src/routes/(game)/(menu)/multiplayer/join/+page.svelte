@@ -7,7 +7,7 @@
 	import { onDestroy, onMount } from "svelte";
 	import { fetchOpenRooms } from "$lib/logic/matchmakingLogic";
 	import { idToMapName } from "$lib/utils/idToMapName";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { tooltip } from "$lib/utils/tooltip";
 
 	let roomCodeInput = $derived(segments.slice(0, 3).join("") + segments.slice(3, 6).join(""));
@@ -109,7 +109,7 @@
 					<div class="infoBox">
 						<User size={20} strokeWidth={2.25} style="margin-bottom: -1px; margin-right: 1px;" />
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<span class="roomItemUser" role="button" tabindex="0" onclick={() => loadProfileFromId(room?.user_id)}
+						<span class="roomItemUser" role="button" tabindex="0" onclick={() => showProfile(room?.user_id)}
 							>{room?.user_name}</span
 						>
 					</div>

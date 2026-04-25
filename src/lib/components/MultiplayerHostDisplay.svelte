@@ -11,7 +11,7 @@
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import { sendMatchInvite } from "$lib/logic/friendAPI";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { showNotification } from "$lib/utils/notifications";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip";
@@ -104,7 +104,7 @@
 					role="menu"
 					tabindex="0"
 					onclick={() => {
-						loadProfileFromId(entry.id);
+						showProfile(entry.id);
 					}}
 				>
 					<p class="friendsRoomEntryText">{entry.user_name}</p>

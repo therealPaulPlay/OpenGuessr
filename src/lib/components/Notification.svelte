@@ -6,6 +6,8 @@
 		acceptText,
 		dismissFunction,
 		acceptFunction,
+		clickableText,
+		textClickFunction,
 	} from "$lib/stores/context-specific/notificationStore";
 	import { hideNotification } from "$lib/utils/notifications";
 	import { playSound } from "$lib/utils/soundManager";
@@ -37,17 +39,29 @@
 		playSound("basic_button");
 		hideNotification();
 	}
+
+	let notificationTextArray = $derived($clickableText ? $notificationText?.split("%s") : [$notificationText]);
 </script>
 
 <div class="notification-holder" style:top={page.url.pathname === "/" ? "var(--box-margin)" : "var(--layout-margin)"}>
 	{#if $notificationVisible}
-		<div id="notificationBar" class="barMenu" transition:fly={{ y: -20, duration: 250 }}>
-			<p id="notificationText">{$notificationText}</p>
-			<div class="notificationButtonBox">
+		<div id="notification-bar" class="barMenu" transition:fly={{ y: -20, duration: 250 }}>
+			<p id="notification-text">
+				{#each notificationTextArray, index}
+					{notificationTextArray[index]}
+					{#if notificationTextArray.length > index + 1}
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<span class="clickable-text" onclick={$textClickFunction} role="button" tabindex="0"
+							>{$clickableText}</span
+						>
+					{/if}
+				{/each}
+			</p>
+			<div class="notification-button-box">
 				{#if $acceptFunction}
-					<button id="notificationAccept" class="standardButton white" onclick={accept}>{$acceptText}</button>
+					<button id="notification-accept" class="standardButton white" onclick={accept}>{$acceptText}</button>
 				{/if}
-				<button id="notificationDismiss" class="standardButton white" onclick={dismiss}>
+				<button id="notification-dismiss" class="standardButton white" onclick={dismiss}>
 					<X size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
 				</button>
 			</div>
@@ -56,12 +70,21 @@
 </div>
 
 <style>
-	#notificationBar {
+	#notification-bar {
 		gap: var(--layout-margin);
 		transition: all 200ms ease;
 		pointer-events: auto;
 		max-width: 80%;
 		margin-inline: auto;
+	}
+
+	.clickable-text {
+		cursor: pointer;
+		transition: opacity 250ms ease;
+	}
+
+	.clickable-text:hover {
+		opacity: 0.5;
 	}
 
 	.notification-holder {
@@ -72,34 +95,35 @@
 		justify-content: center;
 		pointer-events: none;
 		z-index: 999;
+		transition: top 250ms ease;
 	}
 
 	@media (max-width: 1200px) {
-		#notificationBar {
+		#notification-bar {
 			top: var(--box-margin) !important;
 		}
 	}
 
-	#notificationAccept {
+	#notification-accept {
 		min-width: 45px;
 		min-height: 40px;
 	}
 
-	#notificationDismiss,
-	#notificationAccept {
+	#notification-dismiss,
+	#notification-accept {
 		padding-inline: var(--box-margin);
 		min-height: 40px;
 	}
 
-	#notificationText {
-		padding-left: var(--box-margin);
+	#notification-text {
+		padding-left: var(--panel-margin);
 		max-width: 350px;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
 	}
 
-	.notificationButtonBox {
+	.notification-button-box {
 		display: flex;
 		align-items: center;
 		width: fit-content;

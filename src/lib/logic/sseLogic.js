@@ -13,6 +13,7 @@ import { goto } from "$app/navigation";
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { page } from "$app/state";
 import { fetchTournaments } from "$lib/utils/tournamentUtils";
+import { showProfile } from "$lib/utils/showProfile";
 
 export async function initializeSSEConnection() {
     let eventSource;
@@ -40,25 +41,25 @@ export async function initializeSSEConnection() {
                     // Handle different event types
                     switch (data.type) {
                         case 'room-invite':
-                            showNotification(`Room invite from ${data.name}.`, () => {
+                            showNotification(`Room invite from %s.`, () => {
                                 joinRoomFromNotification(data.roomcode, data.from);
                             }, () => {
                                 declineMatchInvite(data.from);
-                            });
+                            }, false, data.name, () => showProfile(data.from));
                             break;
 
                         case 'invite-accepted':
-                            showNotification(`${data.name} accepted your invite.`);
+                            showNotification(`%s accepted your invite.`, null, null, false, data.name, () => showProfile(data.from));
                             break;
 
                         case 'invite-declined':
-                            showNotification(`${data.name} declined your invite.`);
+                            showNotification(`%s declined your invite.`, null, null, false, data.name, () => showProfile(data.from));
                             break;
 
                         case 'friend-request-received':
-                            showNotification(`${data.name} sent you a friend request.`, () => {
+                            showNotification(`%s sent you a friend request.`, () => {
                                 acceptFriendRequest(data.from);
-                            });
+                            }, null, false, data.name, () => showProfile(data.from));
                             break;
 
                         case 'duel-result': {
@@ -95,7 +96,7 @@ export async function initializeSSEConnection() {
                         case 'tournament-starting':
                             // Only show if not already on the page
                             if (page.url.pathname !== "/multiplayer") {
-                                showNotification(`A tournament is starting soon!`, () => {
+                                showNotification(`A tournament is starting soon.`, () => {
                                     goto("/multiplayer");
                                 }, false, true);
                             }

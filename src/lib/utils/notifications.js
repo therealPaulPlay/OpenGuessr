@@ -1,9 +1,9 @@
-import { notificationVisible, notificationText, acceptText, acceptFunction, dismissFunction } from "$lib/stores/context-specific/notificationStore";
+import { notificationVisible, notificationText, acceptText, acceptFunction, dismissFunction, clickableText, textClickFunction } from "$lib/stores/context-specific/notificationStore";
 import { get } from "svelte/store";
 
 let hideNotificationTimeout;
 
-export async function showNotification(text, acceptFunctionParam, dismissFunctionParam, renameAcceptToView) {
+export async function showNotification(text, acceptFunctionParam, dismissFunctionParam, renameAcceptToView, clickableTextParam, textClickFunctionParam) {
     clearTimeout(hideNotificationTimeout);
 
     // If a notification is already shown, animate that away
@@ -13,10 +13,16 @@ export async function showNotification(text, acceptFunctionParam, dismissFunctio
         await new Promise(resolve => setTimeout(resolve, 250));
     };
 
+    // Show visible
     notificationVisible.set(true);
 
+    // Set notification and button text
     notificationText.set(text);
     acceptText.set("Accept");
+
+    // Clickable text inside notification, e.g. for profiles
+    clickableText.set(clickableTextParam);
+    textClickFunction.set(textClickFunctionParam);
 
     if (acceptFunctionParam) {
         hideNotificationTimeout = setTimeout(() => {
@@ -36,6 +42,7 @@ export async function showNotification(text, acceptFunctionParam, dismissFunctio
         }, 5000); // Shorter expiration for informational notifications
     }
 
+    // Set functions
     acceptFunction.set(acceptFunctionParam);
     dismissFunction.set(dismissFunctionParam);
 }

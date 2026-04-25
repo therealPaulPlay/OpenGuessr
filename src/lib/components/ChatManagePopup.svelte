@@ -12,7 +12,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { slide } from "svelte/transition";
 	import { multiplayer } from "$lib/stores/modeStore";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 
 	let roomLocked = $state(get(socket)?.storage?.locked);
 
@@ -86,7 +86,7 @@
 								role="cell"
 								tabindex="0"
 								onclick={() => {
-									if (userId) loadProfileFromId(userId);
+									if (userId) showProfile(userId);
 								}}
 							>
 								{username}

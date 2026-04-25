@@ -1,5 +1,5 @@
 <script>
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile.js";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { errorPopup } from "$lib/utils/errorHandling";
@@ -301,7 +301,7 @@
 			<p
 				class="authorText"
 				onclick={() => {
-					loadProfileFromId(mapAuthorId);
+					showProfile(mapAuthorId);
 				}}
 			>
 				by {mapAuthor}

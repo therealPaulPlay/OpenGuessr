@@ -41,16 +41,14 @@
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import {
 		profileData,
-		profileExperience,
 		profileId,
-		profileSupporterLevel,
 		unsavedAboutChanges,
 	} from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { page } from "$app/state";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { reportUserId } from "$lib/stores/context-specific/reportPopupStore";
 	import Tabs from "./ui/Tabs.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
@@ -71,7 +69,7 @@
 
 	onMount(() => {
 		const profileFromURL = page.url.searchParams.get("profile-id");
-		if (profileFromURL != null) loadProfileFromId(profileFromURL);
+		if (profileFromURL != null) showProfile(profileFromURL);
 	});
 
 	let ProfileFlag = $derived(FlagIcons[$profileData?.flag] || undefined);
@@ -83,17 +81,17 @@
 			cards: [
 				{
 					title: "Level",
-					getValue: () => experienceCalculations($profileExperience)?.level,
+					getValue: () => experienceCalculations($profileData?.experience)?.level,
 					icon: Award,
 				},
 				{
 					title: "Total XP",
-					getValue: () => $profileExperience?.toLocaleString(),
+					getValue: () => $profileData?.experience?.toLocaleString(),
 					icon: BarChart3,
 				},
 				{
 					title: "XP until level-up",
-					getValue: () => experienceCalculations($profileExperience)?.requiredForLevelUpgrade?.toLocaleString(),
+					getValue: () => experienceCalculations($profileData?.experience)?.requiredForLevelUpgrade?.toLocaleString(),
 					icon: TrendingUp,
 				},
 			],
@@ -266,9 +264,9 @@
 					<Link strokeWidth={2} style="vertical-align: -2.4px;" size={20} />
 				</button>
 			{/if}
-			{#if $profileSupporterLevel >= 1}
+			{#if $profileData?.supporterLevel >= 1}
 				<div id="supporterTag">
-					<p id="supporterTagText">Tier {$profileSupporterLevel}</p>
+					<p id="supporterTagText">Tier {$profileData?.supporterLevel }</p>
 					<img id="supporterIcon" alt="supporter tag" src="/img/supporter_icon.png" />
 				</div>
 			{/if}
@@ -373,7 +371,7 @@
 							playSound("basic_button");
 							showConfirmPopup(
 								"Update username",
-								"Input your new username and click confirm.",
+								"Please input your new username.",
 								() => {
 									updateProfileUsername($confirmUsernameValue);
 								},
