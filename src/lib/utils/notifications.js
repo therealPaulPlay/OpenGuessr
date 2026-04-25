@@ -1,9 +1,9 @@
-import { notificationVisible, notificationText, acceptText, acceptFunction, dismissFunction, clickableText, textClickFunction } from "$lib/stores/context-specific/notificationStore";
+import { notificationVisible, notificationText, viewOnly, acceptFunction, dismissFunction, clickableText, textClickFunction } from "$lib/stores/context-specific/notificationStore";
 import { get } from "svelte/store";
 
 let hideNotificationTimeout;
 
-export async function showNotification(text, acceptFunctionParam, dismissFunctionParam, renameAcceptToView, clickableTextParam, textClickFunctionParam) {
+export async function showNotification(text, acceptAction, dismissAction, viewOnlyParam, clickableTextParam, textClickFunctionParam) {
     clearTimeout(hideNotificationTimeout);
 
     // If a notification is already shown, animate that away
@@ -16,15 +16,19 @@ export async function showNotification(text, acceptFunctionParam, dismissFunctio
     // Show visible
     notificationVisible.set(true);
 
-    // Set notification and button text
+    // Set notification state
     notificationText.set(text);
-    acceptText.set("Accept");
+    viewOnly.set(viewOnlyParam);
 
     // Clickable text inside notification, e.g. for profiles
     clickableText.set(clickableTextParam);
     textClickFunction.set(textClickFunctionParam);
 
-    if (acceptFunctionParam) {
+    if (viewOnlyParam) {
+        hideNotificationTimeout = setTimeout(() => {
+            hideNotification();
+        }, 5000); // Shorter expiration for informational notifications
+    } else if (acceptAction) {
         hideNotificationTimeout = setTimeout(() => {
             hideNotification();
         }, 15000); // Much longer expiration time for notifications that ask for user action
@@ -34,17 +38,9 @@ export async function showNotification(text, acceptFunctionParam, dismissFunctio
         }, 3000);
     }
 
-    if (renameAcceptToView) {
-        acceptText.set("View");
-        clearTimeout(hideNotificationTimeout);
-        hideNotificationTimeout = setTimeout(() => {
-            hideNotification();
-        }, 5000); // Shorter expiration for informational notifications
-    }
-
     // Set functions
-    acceptFunction.set(acceptFunctionParam);
-    dismissFunction.set(dismissFunctionParam);
+    acceptFunction.set(acceptAction);
+    dismissFunction.set(dismissAction);
 }
 
 export function hideNotification() {

@@ -1,6 +1,6 @@
 import { showNotification } from "$lib/utils/notifications";
 import { elo, duelWinStreak, tokens, supporterLevel } from "$lib/stores/accountStore";
-import { acceptFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
+import { acceptFriendRequest, declineFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
 import { leaveMultiplayer, joinFromAnywhere } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
@@ -59,7 +59,17 @@ export async function initializeSSEConnection() {
                         case 'friend-request-received':
                             showNotification(`%s sent you a friend request.`, () => {
                                 acceptFriendRequest(data.from);
-                            }, null, false, data.name, () => showProfile(data.from));
+                            }, () => {
+                                declineFriendRequest(data.from);
+                            }, false, data.name, () => showProfile(data.from));
+                            break;
+
+                        case 'friend-request-accepted':
+                            showNotification(`%s accepted your friend request.`, null, null, false, data.name, () => showProfile(data.from));
+                            break;
+
+                        case 'friend-request-declined':
+                            showNotification(`%s declined your friend request.`, null, null, false, data.name, () => showProfile(data.from));
                             break;
 
                         case 'duel-result': {

@@ -3,7 +3,7 @@
 	import {
 		notificationVisible,
 		notificationText,
-		acceptText,
+		viewOnly,
 		dismissFunction,
 		acceptFunction,
 		clickableText,
@@ -11,7 +11,7 @@
 	} from "$lib/stores/context-specific/notificationStore";
 	import { hideNotification } from "$lib/utils/notifications";
 	import { playSound } from "$lib/utils/soundManager";
-	import { X } from "@lucide/svelte";
+	import { Check, SquareArrowOutUpRight, X } from "@lucide/svelte";
 	import { fly } from "svelte/transition";
 
 	function accept() {
@@ -51,17 +51,26 @@
 					{notificationTextArray[index]}
 					{#if notificationTextArray.length > index + 1}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<span class="clickable-text" onclick={$textClickFunction} role="button" tabindex="0"
-							>{$clickableText}</span
-						>
+						<span class="clickable-text" onclick={$textClickFunction} role="button" tabindex="0">{$clickableText}</span>
 					{/if}
 				{/each}
 			</p>
 			<div class="notification-button-box">
 				{#if $acceptFunction}
-					<button id="notification-accept" class="standardButton white" onclick={accept}>{$acceptText}</button>
+					<button
+						id="notification-accept"
+						class="standardButton white"
+						onclick={accept}
+						aria-label={$viewOnly ? "View" : "Accept"}
+					>
+						{#if $viewOnly}
+							<SquareArrowOutUpRight size={20} strokeWidth={2.25} style="vertical-align: -1px;" />
+						{:else}
+							<Check size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
+						{/if}
+					</button>
 				{/if}
-				<button id="notification-dismiss" class="standardButton white" onclick={dismiss}>
+				<button id="notification-dismiss" class="standardButton white" onclick={dismiss} aria-label="Dismiss">
 					<X size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
 				</button>
 			</div>
