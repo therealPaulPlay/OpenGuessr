@@ -2,7 +2,7 @@
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { divisionMatchHistoryPopup } from "$lib/stores/uiStore";
 	import { errorPopup } from "$lib/utils/errorHandling";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { ArrowLeft, ArrowRight } from "@lucide/svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 
@@ -103,7 +103,7 @@
 						>
 							<div class="playerInfo">
 								<!-- svelte-ignore a11y_click_events_have_key_events -->
-								<span class="playerName" role="button" tabindex="0" onclick={() => loadProfileFromId(entry.player1.id)}>
+								<span class="playerName" role="button" tabindex="0" onclick={() => showProfile(entry.player1.id)}>
 									{entry.player1?.name}
 								</span>
 								<span class="playerStatus">
@@ -117,7 +117,7 @@
 									class="playerName"
 									role="button"
 									tabindex="0"
-									onclick={() => loadProfileFromId(entry.player2?.id)}
+									onclick={() => showProfile(entry.player2?.id)}
 								>
 									{entry.player2?.name}
 								</span>

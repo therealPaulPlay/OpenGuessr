@@ -16,7 +16,7 @@
 	import { loadedFriendsData, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
 	import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
 	import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { createTeamDuelRoom, findDuel } from "$lib/logic/matchmakingLogic";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -203,7 +203,7 @@
 							role="menu"
 							tabindex="0"
 							onclick={() => {
-								loadProfileFromId(entry.id);
+								showProfile(entry.id);
 							}}
 						>
 							{#if entry.online}

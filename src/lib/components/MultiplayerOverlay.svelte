@@ -13,7 +13,7 @@
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import Badge from "$lib/components/Badge.svelte";
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
 	import { blur, slide } from "svelte/transition";
@@ -49,7 +49,7 @@
 									role="cell"
 									tabindex="0"
 									onclick={() => {
-										if (userId) loadProfileFromId(userId);
+										if (userId) showProfile(userId);
 									}}
 								>
 									<span class="usernameSpan">{username}</span>
@@ -84,7 +84,7 @@
 								role="cell"
 								tabindex="0"
 								onclick={() => {
-									if (userId) loadProfileFromId(userId);
+									if (userId) showProfile(userId);
 								}}
 							>
 								<span class="usernameSpan">{username}</span>
