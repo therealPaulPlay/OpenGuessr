@@ -60,7 +60,6 @@ export async function acceptFriendRequest(senderId) {
         });
 
         if (response.ok) {
-            loadInbox();
             loadFriends();
         } else {
             const data = await response.json();
@@ -93,9 +92,7 @@ export async function declineFriendRequest(senderId) {
             body: JSON.stringify(requestBody)
         });
 
-        if (response.ok) {
-            loadInbox();
-        } else {
+        if (!response.ok) {
             const data = await response.json();
             console.error("Error accepting / deleting the friend request: " + response.status);
             errorPopup("Error accepting / deletingfriend request", "The server returned an error for your action.", response.status + " - " + data.error);

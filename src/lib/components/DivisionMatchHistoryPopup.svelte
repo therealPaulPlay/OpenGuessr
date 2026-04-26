@@ -112,7 +112,9 @@
 	</div>
 	<div class="historyBox">
 		<div class="historyBoxScroll of-top of-bottom">
-			{#if matchResults && matchResults.duels && matchResults.duels.length > 0}
+			{#if !matchResults}
+				<p class="playerSearchError">Loading...</p>
+			{:else if matchResults.duels && matchResults.duels.length > 0}
 				{#each matchResults.duels as entry}
 					<div class="matchHistoryItemContainer">
 						<div
