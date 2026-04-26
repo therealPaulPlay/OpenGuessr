@@ -10,7 +10,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
-	import { panoramaKey } from "$lib/stores/locationStore";
+	import { panoramaKey, streetViewURLPrefix } from "$lib/stores/locationStore";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
@@ -43,7 +43,7 @@
 	});
 
 	let iframeSource = $derived(
-		"https://www.google.com/maps/embed/v1/streetview?location=" +
+		$streetViewURLPrefix +
 			locationsArrayForSvgMap?.[locationIndex]?.[0] +
 			"," +
 			locationsArrayForSvgMap?.[locationIndex]?.[1] +
@@ -236,28 +236,6 @@
 		"data:application/json;charset=utf-8," +
 			encodeURIComponent(JSON.stringify({ locations: mapLocationData?.locations ?? [] }, null, 2)),
 	);
-
-	// SVG Map-related ---------------------------------------------------------------------------------------------------------------------
-	// Calculate map center based on locations
-	let mapCenter = $derived.by(() => {
-		if (!locationsArrayForSvgMap || locationsArrayForSvgMap.length < 2) return;
-
-		// Find bounds
-		const bounds = locationsArrayForSvgMap.reduce(
-			(acc, [lat, lon]) => ({
-				minLat: Math.min(acc.minLat, lat),
-				maxLat: Math.max(acc.maxLat, lat),
-				minLon: Math.min(acc.minLon, lon),
-				maxLon: Math.max(acc.maxLon, lon),
-			}),
-			{ minLat: 90, maxLat: -90, minLon: 180, maxLon: -180 },
-		);
-		if (bounds.maxLon - bounds.minLon > 180 || bounds.maxLat - bounds.minLat > 90) return; // Use default if locations cover most of the world
-		return {
-			lat: (bounds.minLat + bounds.maxLat) / 2,
-			lon: (bounds.minLon + bounds.maxLon) / 2,
-		};
-	});
 </script>
 
 <svelte:head>
@@ -280,8 +258,8 @@
 			{/if}
 			<SvgMap
 				locationList={locationsArrayForSvgMap}
-				zoom={1.25}
-				center={mapCenter}
+				framePaddingOffset={{ top: 40 }}
+				class="mapBulbShadow"
 				onclick={(coordinates) => {
 					const mapLocations = $state.snapshot(locationsArrayForSvgMap);
 					const index = mapLocations?.findIndex(([lat, lon]) => {
@@ -499,6 +477,10 @@
 		overflow: hidden;
 		margin-bottom: 50px;
 		position: relative;
+	}
+
+	:global(.mapBulbShadow) {
+		box-shadow: var(--bulb-shadow);
 	}
 
 	.locationsTrimNote {
