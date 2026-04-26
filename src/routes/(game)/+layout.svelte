@@ -58,6 +58,7 @@
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
 	import Notification from "$lib/components/Notification.svelte";
+	import MatchOverviewPopup from "$lib/components/MatchOverviewPopup.svelte";
 
 	// Load panorama, ads, overfade etc.
 	onMount(() => {
@@ -141,6 +142,7 @@
 <SupporterPopup />
 <FriendBrowserPopup />
 <DivisionMatchHistoryPopup />
+<MatchOverviewPopup />
 <TournamentInfoPopup />
 <TournamentMatchResultsPopup />
 <InboxPopup />
