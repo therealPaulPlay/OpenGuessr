@@ -398,7 +398,7 @@
 						<g class="marker-feature" transform={`translate(${marker.x},${marker.y})`}>
 							{#if marker.shape === "flag"}
 								<!-- Lucide flag icon, anchored at the pole base. Drawn in two passes (dark outline, then brand fill) so the halo is uniform on cloth and pole. -->
-								<g transform="translate(-4,-22)" stroke-linecap="round" stroke-linejoin="round">
+								<g transform="translate(-3.2,-17.6) scale(0.8)" stroke-linecap="round" stroke-linejoin="round">
 									<path d={FLAG_CLOTH_PATH} fill="var(--dark-background)" stroke="var(--dark-background)" stroke-width="6" />
 									<line x1="4" x2="4" y1="22" y2="15" stroke="var(--dark-background)" stroke-width="6" />
 									<path d={FLAG_CLOTH_PATH} fill="var(--brand-color)" stroke="var(--brand-color)" stroke-width="2" />
@@ -412,7 +412,7 @@
 								<text
 									class="marker-label"
 									x="0"
-									y={marker.shape === "flag" ? -26 : -14}
+									y={marker.shape === "flag" ? -22 : -14}
 									text-anchor="middle"
 									fill="white"
 								>{marker.label.length > 12 ? marker.label.slice(0, 12) + "…" : marker.label}</text>
