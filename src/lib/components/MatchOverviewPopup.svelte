@@ -160,6 +160,7 @@
 		align-items: stretch;
 		gap: var(--content-margin);
 		border-radius: var(--content-margin);
+		padding-inline: var(--layout-margin);
 	}
 
 	.score-row {
