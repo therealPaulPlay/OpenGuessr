@@ -79,7 +79,7 @@
 		} catch (error) {
 			$matchOverviewPopup = false;
 			console.error("Error loading match:", error);
-			errorPopup("Error loading match", "An error occurred loading the match overview.", error.message ?? error);
+			errorPopup("Error loading match", "An error occurred loading the match overview.", error.message);
 		}
 	}
 
