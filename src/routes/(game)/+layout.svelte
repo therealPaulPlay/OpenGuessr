@@ -109,9 +109,9 @@
 <!-- Keywords -->
 <h1 style:display="none">
 	OpenGuessr is like GeoGuessr, but free and unlimited. It's a free GeoGuesser alternative for anyone learning geography
-	through geo quiz games. Place the pin on the world map without the need for a subscription (kostenlos, gratis!). The
+	through geo quiz games. Place the pin on the world map without the need for a subscription (kostenlos, gratis). The
 	game includes online multiplayer to play with friends, is unblocked, partially open-source and uses Google Street
-	View. Can you guess where you are, and guess the country? If you needs tips for finding the location, check out
+	View. Can you guess where you are, and guess the country? If you need tips for finding the location, check out
 	education & travel creator Rainbolt!
 </h1>
 
