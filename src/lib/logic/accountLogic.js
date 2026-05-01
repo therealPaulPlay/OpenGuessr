@@ -1,5 +1,5 @@
 import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
-import { initializeSSEConnection } from "$lib/logic/sseLogic";
+import { initializeSSEConnection, disconnectSSE } from "$lib/logic/sseLogic";
 import { resultScreenEnabled, lastDistance, lastExpCalculationSignedOut } from "$lib/stores/context-specific/resultScreenStore";
 import { isAuthenticated, supporterLevel, experience, username, selectedPinIndex, selectedBadge, elo, tokens, purchasedPins, accountDataLoaded, duelWinStreak } from "$lib/stores/accountStore";
 import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
@@ -34,6 +34,8 @@ export async function checkAuthenticationStatus() {
 }
 
 export function resetLocalSave() {
+  disconnectSSE(); // Close the SSE connection opened on sign in
+
   // Localstorage resets
   localStorage.removeItem("bearer");
   localStorage.removeItem("id");

@@ -12,7 +12,7 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
 	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
-	import { pinPopup, badgePopup, reportPopup, roundLogPopup } from "$lib/stores/uiStore";
+	import { pinPopup, badgePopup, reportPopup, roundLogPopup, messagesPopup } from "$lib/stores/uiStore";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
 	import {
@@ -36,14 +36,11 @@
 		ArrowUpFromDot,
 		UserRoundPlus,
 		UserRoundCheck,
+		MessageSquare,
 	} from "@lucide/svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import {
-		profileData,
-		profileId,
-		unsavedAboutChanges,
-	} from "$lib/stores/context-specific/profileStore";
+	import { profileData, profileId, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
@@ -266,7 +263,7 @@
 			{/if}
 			{#if $profileData?.supporterLevel >= 1}
 				<div id="supporterTag">
-					<p id="supporterTagText">Tier {$profileData?.supporterLevel }</p>
+					<p id="supporterTagText">Tier {$profileData?.supporterLevel}</p>
 					<img id="supporterIcon" alt="supporter tag" src="/img/supporter_icon.png" />
 				</div>
 			{/if}
@@ -297,6 +294,17 @@
 					{:else}
 						<UserRoundCheck style="margin-bottom: -1px; margin-left: 2px;" size={20} strokeWidth={2.25} />
 					{/if}
+				</button>
+				<button
+					class="standardButton white"
+					use:tooltip={{ text: "Send message" }}
+					onclick={() => {
+						playSound("basic_button");
+						$messagesPopup = true;
+						// TODO open right chat
+					}}
+				>
+					<MessageSquare style="margin-bottom: -1px;" size={20} strokeWidth={2.25} />
 				</button>
 			{/if}
 		</div>

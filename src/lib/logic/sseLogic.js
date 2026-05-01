@@ -14,11 +14,14 @@ import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { page } from "$app/state";
 import { fetchTournaments } from "$lib/utils/tournamentUtils";
 import { showProfile } from "$lib/utils/showProfile";
+import { disposeHeadlessChatClient, initHeadlessChatClientIfNotAlready } from "$lib/components/MessagesPopup.svelte";
+
+let eventSource;
+let reconnectTimeout;
+let reconnectAttempts = 0;
+const maxReconnectAttempts = 5;
 
 export async function initializeSSEConnection() {
-    let eventSource;
-    let reconnectAttempts = 0;
-    const maxReconnectAttempts = 5;
     const userId = localStorage.getItem("id");
     if (!userId) return console.error("Can't init SSE with no user id.");
 
@@ -31,6 +34,7 @@ export async function initializeSSEConnection() {
 
             eventSource.onopen = () => {
                 reconnectAttempts = 0; // Reset the reconnect attempts on successful connection
+                initHeadlessChatClientIfNotAlready();
             };
 
             // Handle incoming messages
@@ -155,7 +159,7 @@ export async function initializeSSEConnection() {
                     // If we've exceeded max attempts, close current connection and try again after a longer delay
                     eventSource.close();
                     console.error('Browser reconnection failed repeatedly. Attempting manual reconnection in about a minute.');
-                    setTimeout(() => {
+                    reconnectTimeout = setTimeout(() => {
                         reconnectAttempts = 0;
                         connectSSE();
                     }, 60000 + Math.floor(Math.random() * 5000));
@@ -167,6 +171,19 @@ export async function initializeSSEConnection() {
     }
 
     connectSSE();
+}
+
+export function disconnectSSE() {
+    if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+        reconnectTimeout = undefined;
+    }
+    if (eventSource) {
+        eventSource.close();
+        eventSource = undefined;
+    }
+    reconnectAttempts = 0;
+    disposeHeadlessChatClient(); // Dispose the instance since it is no longer needed (or functional)
 }
 
 // Related functions --------------------------------------------------------------------------------------------------------
