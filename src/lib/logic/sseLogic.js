@@ -14,7 +14,8 @@ import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { page } from "$app/state";
 import { fetchTournaments } from "$lib/utils/tournamentUtils";
 import { showProfile } from "$lib/utils/showProfile";
-import { disposeHeadlessChatClient, initHeadlessChatClientIfNotAlready } from "$lib/components/MessagesPopup.svelte";
+import { disposeHeadlessChatClient, initHeadlessChatClientIfNotAlready } from "$lib/logic/headlessChatLogic";
+import { hcClient } from "$lib/stores/context-specific/headlessChatStore";
 
 let eventSource;
 let reconnectTimeout;
@@ -44,6 +45,10 @@ export async function initializeSSEConnection() {
 
                     // Handle different event types
                     switch (data.type) {
+                        case 'headless-chat':
+                            get(hcClient)?.receive(data.data);
+                            break;
+
                         case 'room-invite':
                             showNotification(`Room invite from %s.`, () => {
                                 joinRoomFromNotification(data.roomcode, data.from);

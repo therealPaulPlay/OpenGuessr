@@ -180,7 +180,6 @@
 	}
 
 	.tournamentFieldButton {
-		padding-inline: 20px;
 		height: 43px;
 		margin-left: auto;
 	}

@@ -12,7 +12,8 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
 	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
-	import { pinPopup, badgePopup, reportPopup, roundLogPopup, messagesPopup } from "$lib/stores/uiStore";
+	import { pinPopup, badgePopup, reportPopup, roundLogPopup } from "$lib/stores/uiStore";
+	import { openDirectMessageWith } from "$lib/logic/headlessChatLogic";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
 	import {
@@ -300,8 +301,7 @@
 					use:tooltip={{ text: "Send message" }}
 					onclick={() => {
 						playSound("basic_button");
-						$messagesPopup = true;
-						// TODO open right chat
+						openDirectMessageWith($profileId, $profileData?.areFriends);
 					}}
 				>
 					<MessageSquare style="margin-bottom: -1px;" size={20} strokeWidth={2.25} />
