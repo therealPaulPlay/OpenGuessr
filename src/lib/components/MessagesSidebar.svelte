@@ -22,25 +22,21 @@
 	let userId = $derived(localStorage.getItem("id"));
 	let myInvites = $derived($invites.filter((i) => i.toParticipantId === userId));
 
-	// Build a label from a conversation's participants, current user always last
-	// Reads aliasCache (a SvelteMap so reactive), shows "..." for entries not yet loaded
+	// Builds a label from a conversation's participants, excluding the current user
 	function buildTitle(participants) {
 		const me = localStorage.getItem("id");
-		const ordered = [...participants.filter((p) => p !== me), ...participants.filter((p) => p === me)];
-		const aliases = ordered.map((p) => aliasCache.get(p) ?? "...");
+		const others = participants.filter((p) => p !== me);
+		if (!others.length) return "Just you";
 
-		if (!aliases.length) return "Empty conversation";
-		if (aliases.length === 1) return aliases[0];
-		if (aliases.length === 2) return `${aliases[0]} and ${aliases[1]}`;
-		return `${aliases[0]}, ${aliases[1]} and ${aliases.length - 2} more`;
+		return others.map((p) => aliasCache.get(p) ?? "Unknown").join(", ");
 	}
 
 	let conversationTitles = $derived.by(() => {
 		const map = new Map();
 		const missing = new Set();
 		for (const c of $conversations) {
-			map.set(c.conversationId, buildTitle(c.participants));
-			for (const p of c.participants) if (!aliasCache.has(p)) missing.add(p);
+			map.set(c.conversationId, buildTitle(c.participantIds));
+			for (const p of c.participantIds) if (!aliasCache.has(p)) missing.add(p);
 		}
 		// Kick off any missing alias loads, the cache fill triggers a re-derive once they land
 		if (missing.size) loadAliases([...missing]);
@@ -70,7 +66,7 @@
 							onclick={() => {
 								$messagesPopup = false;
 								showProfile(invite.fromParticipantId);
-							}}>{conversationTitles.get(invite.conversation.conversationId) ?? "..."}</button
+							}}>{conversationTitles.get(invite.conversation.conversationId) ?? "Unknown"}</button
 						>
 					</p>
 					<div class="invite-buttons">
@@ -82,11 +78,7 @@
 									await get(hcClient).acceptInvite(invite.conversation.conversationId);
 									$activeConversationId = invite.conversation.conversationId;
 								} catch (error) {
-									errorPopup(
-										"Failed to accept invite",
-										"An error occured trying to accept an invite.",
-										error.message,
-									);
+									errorPopup("Failed to accept invite", "An error occured trying to accept an invite.", error.message);
 								}
 							}}>Accept</button
 						>
@@ -122,13 +114,12 @@
 					tabindex="0"
 					onclick={() => {
 						if ($activeConversationId === c.conversationId) return;
-						playSound("basic_button");
 						$activeConversationId = c.conversationId;
 					}}
 				>
 					<div class="conversation-content">
 						<div class="conversation-title">
-							<span class="conversation-name">{conversationTitles.get(c.conversationId) ?? "..."}</span>
+							<span class="conversation-name">{conversationTitles.get(c.conversationId) ?? "Unknown"}</span>
 						</div>
 						<div class="conversation-preview">
 							{#if hasUnread(c)}
@@ -137,10 +128,12 @@
 							<span class="conversation-preview-text">
 								{#if c.lastMessage?.deleted}
 									Deleted message
+								{:else if c.lastMessage?.systemEvent}
+									System message
 								{:else if c.lastMessage && c.lastMessage.message}
 									{c.lastMessage.message}
 								{:else}
-									No messages yet.
+									No messages
 								{/if}
 							</span>
 						</div>
@@ -234,7 +227,7 @@
 	}
 
 	.conversation-item.active {
-		background-color: rgba(255, 255, 255, 0.2);
+		background-color: rgba(255, 255, 255, 0.15);
 	}
 
 	.conversation-title {

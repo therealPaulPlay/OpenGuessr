@@ -10,7 +10,7 @@
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import { sendMatchInvite } from "$lib/logic/friendAPI";
+	import { loadFriends, sendMatchInvite } from "$lib/logic/friendAPI";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { showNotification } from "$lib/utils/notifications";
 	import { playSound } from "$lib/utils/soundManager";
@@ -19,6 +19,8 @@
 	import { submitRoomCode } from "$lib/logic/matchmakingLogic.js";
 	import { page } from "$app/state";
 	import { get } from "svelte/store";
+	import { onMount } from "svelte";
+	import { blur, slide } from "svelte/transition";
 
 	let {
 		showOpenRoom = true,
@@ -33,9 +35,25 @@
 		return text?.length > max ? text?.slice(0, max) + "…" : text;
 	}
 
+	// Move player to different team
 	function updatePlayerTeam(playerId, newTeamIndex) {
 		get(socket)?.sendRequest("updateTeam", { newTeamIndex: parseInt(newTeamIndex), playerClientId: playerId });
 	}
+
+	// Refresh friends periodically
+	let friendsRefreshInterval;
+
+	onMount(async () => {
+		await loadFriends();
+		clearInterval(friendsRefreshInterval);
+
+		// Re-fetch friends every X seconds
+		friendsRefreshInterval = setInterval(() => {
+			loadFriends();
+		}, 15_000);
+
+		return () => clearInterval(friendsRefreshInterval);
+	});
 </script>
 
 <!-- Room code-->
@@ -94,13 +112,14 @@
 
 <!-- Friend invite display -->
 {#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online)?.length >= 1}
-	<div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
-		<div class="roomCreationFriendsBox">
+	<div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings" transition:slide>
+		<div class="roomCreationFriendsBox of-top of-bottom">
 			<!-- online players will be added here programmatically -->
 			{#each $loadedFriendsData.filter((value) => value.online) as entry}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
 					class="standardButton roomCreationFriendItem"
+					transition:blur
 					role="menu"
 					tabindex="0"
 					onclick={() => {
@@ -295,7 +314,8 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		max-height: 130px;
+		max-height: 135px;
+		scrollbar-width: none;
 		overflow: auto;
 		gap: var(--box-margin);
 		width: 100%;

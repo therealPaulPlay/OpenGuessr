@@ -1,19 +1,14 @@
 <script>
 	import { onDestroy, tick } from "svelte";
+	import { SvelteMap } from "svelte/reactivity";
 	import { get } from "svelte/store";
-	import { X, MailPlus, SendHorizonal } from "@lucide/svelte";
+	import { X, SendHorizonal } from "@lucide/svelte";
 	import Popup from "./ui/Popup.svelte";
 	import MessageItem from "./MessageItem.svelte";
 	import MessagesSidebar from "./MessagesSidebar.svelte";
 	import { messagesPopup } from "$lib/stores/uiStore";
-	import {
-		hcClient,
-		conversations,
-		participantActivities,
-		activeConversationId,
-		aliasCache,
-	} from "$lib/stores/context-specific/headlessChatStore";
-	import { loadConversationsAndInvites, getAliasCached, loadAliases } from "$lib/logic/headlessChatLogic";
+	import { hcClient, activeConversationId, aliasCache } from "$lib/stores/context-specific/headlessChatStore";
+	import { headlessChatInitialLoad, getAliasCached, loadAliases } from "$lib/logic/headlessChatLogic";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { playSound } from "$lib/utils/soundManager";
@@ -24,11 +19,11 @@
 
 	let messages = $state([]);
 	let remainingMore = $state(0);
-	let isLoadingPage = $state(false);
+	let isInitialMessagesLoad = $state(false);
 	let isLoadingMore = $state(false);
 	let indicators = $state([]);
 	let replyTo = $state(null);
-	let replyToAlias = $state("...");
+	let replyToAlias = $state("Unknown");
 	let inputValue = $state("");
 
 	let messagesContainer = $state();
@@ -38,12 +33,21 @@
 	let openGeneration = 0; // Bumped per setActiveConversation call, lets stale runs bail before writing state
 	let lastSyncedConversationId = null; // Last id setActiveConversation has synced to, prevents redundant resyncs
 
-	// Off all event handlers that are conversation specific on unmount
-	onDestroy(offEventHandlers);
+	// Cache for referenced (replied-to) messages that aren't loaded, value is Message | null (null = gone from server)
+	let referenceCache = new SvelteMap();
+	let referenceLoadIds = new Set(); // In-flight dedup for getMessage calls
 
-	// Lazy load conversations / invites the first time the popup opens
-	$effect(() => {
-		if ($messagesPopup) loadConversationsAndInvites();
+	// Off all event handlers that are conversation specific on unmount
+	onDestroy(offConvSpecificEvents);
+
+	messagesPopup.subscribe((value) => {
+		// Load conversations, activity and invites the first time the popup opens
+		if (value) {
+			headlessChatInitialLoad(); // Only runs once
+		} else {
+			activeConversationId.set(null);
+			offConvSpecificEvents(); // Unmount conversation specific handlers on popup close
+		}
 	});
 
 	// Watch the activeConversationId store so external triggers (notifications, profile DM button) sync the popup
@@ -66,22 +70,18 @@
 		remainingMore = 0;
 		replyTo = null;
 		indicators = [];
-		isLoadingPage = Boolean(id);
+		referenceCache.clear();
+		referenceLoadIds.clear();
+		isInitialMessagesLoad = Boolean(id);
 
-		await offEventHandlers();
+		await offConvSpecificEvents();
 		if (id) await openConversation(id, sequence);
 	}
 
 	async function openConversation(conversationId, thisGen) {
 		const client = get(hcClient);
 		if (!client) return;
-
-		// Check if this load is from an old load generation
-		const isStale = () => thisGen !== openGeneration;
-
-		// Preload aliases for everyone currently in the conversation so messages render synchronously
-		const conv = get(conversations).find((c) => c.conversationId === conversationId);
-		if (conv) loadAliases(conv.participants);
+		const isStale = () => thisGen !== openGeneration; // Check if this load is from an old load generation
 
 		try {
 			messageHandler = (m) => mergeIncomingMessage(m);
@@ -93,15 +93,12 @@
 			};
 			await client.onIndicators(conversationId, indicatorHandler);
 
-			const { messages: page, remainingInDirection } = await client.getMessages(conversationId, null, false, PAGE_SIZE);
-			const acts = await client.getParticipantActivities();
-
+			const result = await client.getMessages(conversationId, null, false, PAGE_SIZE);
 			if (isStale()) return; // If no longer the lastest gen, exit
 
-			messages = page;
-			remainingMore = remainingInDirection;
-			$participantActivities = acts;
-			loadMissingAliases(page);
+			messages = result.messages;
+			remainingMore = result.remainingInDirection;
+			await Promise.all([loadMissingAliases(messages), loadMissingReferences(messages)]);
 		} catch (error) {
 			if (!isStale()) {
 				errorPopup(
@@ -111,7 +108,7 @@
 				);
 			}
 		} finally {
-			if (!isStale()) isLoadingPage = false;
+			if (!isStale()) isInitialMessagesLoad = false;
 		}
 	}
 
@@ -123,7 +120,34 @@
 			const sysId = m.systemEvent?.participantId;
 			if (sysId && !aliasCache.has(sysId)) ids.add(sysId);
 		}
-		if (ids.size) loadAliases([...ids]); // Skips any already-fetched (in-flight or already resolved) ones
+		return ids.size ? loadAliases([...ids]) : Promise.resolve(); // Skips any already-fetched (in-flight or already resolved) ones
+	}
+
+	// Bulk-fetch any referenced messages that aren't already in the loaded page or the reference cache
+	async function loadMissingReferences(messageList) {
+		const client = get(hcClient);
+		if (!client) return;
+
+		const toFetch = [];
+		for (const m of messageList) {
+			const refId = m.messageOptions?.referenceMessageId;
+			if (!refId) continue;
+			if (referenceCache.has(refId) || referenceLoadIds.has(refId)) continue;
+			if (messages.some((x) => x.messageId === refId)) continue;
+			toFetch.push(refId);
+		}
+		if (!toFetch.length) return;
+
+		for (const id of toFetch) referenceLoadIds.add(id);
+		try {
+			const fetched = await client.getMessagesByIds(toFetch);
+			const found = new Map(fetched.map((m) => [m.messageId, m]));
+			for (const id of toFetch) referenceCache.set(id, found.get(id) ?? null); // null means gone from database, deleted messages still come back with deleted: true
+		} catch (error) {
+			console.error("Error fetching referenced messages:", error);
+		} finally {
+			for (const id of toFetch) referenceLoadIds.delete(id);
+		}
 	}
 
 	function mergeIncomingMessage(message) {
@@ -134,6 +158,7 @@
 		if (idx === -1) {
 			messages = [...messages, message].sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
 			loadMissingAliases([message]);
+			loadMissingReferences([message]);
 			return;
 		}
 
@@ -142,7 +167,7 @@
 	}
 
 	async function loadOlder() {
-		if (isLoadingMore || isLoadingPage || remainingMore <= 0 || !messages.length) return;
+		if (isLoadingMore || isInitialMessagesLoad || remainingMore <= 0 || !messages.length) return;
 		isLoadingMore = true;
 
 		const oldest = messages[0];
@@ -157,14 +182,19 @@
 			messages = [...older, ...messages];
 			remainingMore = remainingInDirection;
 			loadMissingAliases(older);
+			loadMissingReferences(older);
 		} catch (error) {
 			errorPopup("Failed to load older messages", "An error occured trying to load more messages.", error.message);
 		} finally {
 			isLoadingMore = false;
 		}
+
+		// IntersectionObserver only fires on intersection changes, so manually retrigger if the sentinel is still in view (user out-scrolled this load)
+		await tick();
+		if (messagesContainer && messagesContainer.scrollTop < 500 && remainingMore > 0) loadOlder();
 	}
 
-	async function offEventHandlers() {
+	async function offConvSpecificEvents() {
 		const client = get(hcClient);
 		const promises = [];
 		if (messageHandler) promises.push(client?.offMessage(messageHandler));
@@ -194,25 +224,25 @@
 	let typingParticipants = $derived(
 		indicators.map((i) => ({
 			participantId: i.participantId,
-			alias: aliasCache.get(i.participantId) ?? "...",
+			alias: aliasCache.get(i.participantId) ?? "Unknown",
 		})),
 	);
 
 	// Scroll to the rest position when bottom content changes or right after a conversation finishes loading
 	let lastBottomSignature = "";
 	let wasLoading = false;
-	
+
 	$effect(() => {
 		const signature = `${messages.length}:${indicators.length}`;
-		const finishedLoad = wasLoading && !isLoadingPage;
+		const finishedLoad = wasLoading && !isInitialMessagesLoad;
 		const changed = signature !== lastBottomSignature;
 		lastBottomSignature = signature;
-		wasLoading = isLoadingPage;
-		if (isLoadingPage || !messagesContainer || (!changed && !finishedLoad)) return;
+		wasLoading = isInitialMessagesLoad;
+		if (isInitialMessagesLoad || !messagesContainer || (!changed && !finishedLoad)) return;
 
 		const distanceFromBottom =
 			messagesContainer.scrollHeight - messagesContainer.scrollTop - messagesContainer.clientHeight;
-		if (!finishedLoad && distanceFromBottom > BOTTOM_SLACK_PX + 100) return;
+		if (!finishedLoad && distanceFromBottom > BOTTOM_SLACK_PX + 400) return; // 400px is the margin the user needs to be in for auto-scroll
 
 		tick().then(() => {
 			if (!messagesContainer) return;
@@ -222,7 +252,6 @@
 			});
 		});
 	});
-
 </script>
 
 <Popup z={971} bind:open={$messagesPopup}>
@@ -234,73 +263,76 @@
 		<MessagesSidebar />
 
 		<div class="messages-pane">
-			{#if !$activeConversationId}
-				<div class="empty-state">
-					<MailPlus size={48} strokeWidth={1.5} style="opacity: 0.4;" />
-					<p style="opacity: 0.5;">Select a conversation to start messaging.</p>
-				</div>
-			{:else}
-				<div class="messages-view">
-					{#if isLoadingPage && !messages.length}
-						<p class="loading-text">Loading...</p>
-					{:else if !messages.length}
-						<p class="loading-text">No messages yet.</p>
-					{:else}
-						<div class="messages-view-inner of-top of-bottom of-length-0.5" bind:this={messagesContainer}>
-							{#if remainingMore > 0}
-								<p
-									class="loading-more"
-									{@attach (node) => {
-										const observer = new IntersectionObserver(
-											(entries) => {
-												if (entries[0].isIntersecting) loadOlder();
-											},
-											{ root: messagesContainer, rootMargin: "500px 0px 0px 0px", threshold: 0 },
-										);
-										observer.observe(node);
-										return () => observer.disconnect();
-									}}
-								>
-									Loading...
-								</p>
-							{/if}
+			<div class="messages-view">
+				{#if !$activeConversationId}
+					<p class="loading-text">No conversation selected.</p>
+				{:else if isInitialMessagesLoad}
+					<p class="loading-text">Loading...</p>
+				{:else if !messages.length}
+					<p class="loading-text">No messages yet.</p>
+				{:else}
+					<div class="messages-view-inner of-top of-bottom of-length-0.5" bind:this={messagesContainer}>
+						{#if remainingMore > 0}
+							<p
+								class="loading-more"
+								{@attach (node) => {
+									const observer = new IntersectionObserver(
+										(entries) => {
+											if (entries[0].isIntersecting) loadOlder();
+										},
+										{ root: messagesContainer, rootMargin: "500px 0px 0px 0px", threshold: 0 },
+									);
+									observer.observe(node);
+									return () => observer.disconnect();
+								}}
+							>
+								Loading...
+							</p>
+						{/if}
 
-							{#each messages as message, i (message.messageId)}
-								{#if message.systemEvent}
-									<div class="system-note">
-										<div class="system-note-line"></div>
-										<p>
-											{aliasCache.get(message.systemEvent.participantId) || "..."}
+						{#each messages as message, i (message.messageId)}
+							{#if message.systemEvent}
+								<div class="system-note">
+									<div class="system-note-line"></div>
+									<p>
+										{#if message.systemEvent.type === "messagesRemoved"}
+											Old messages removed
+										{:else}
+											{aliasCache.get(message.systemEvent.participantId) || "Unknown"}
 											{message.systemEvent.type === "participantJoined" ? "joined" : "left"}
-										</p>
-										<div class="system-note-line"></div>
-									</div>
-								{:else}
-									<MessageItem
-										{message}
-										referencedMessage={message.messageOptions?.referenceMessageId
-											? messages.find((m) => m.messageId === message.messageOptions.referenceMessageId)
-											: null}
-										isContinuation={i > 0 && messages[i - 1].participantId === message.participantId}
-										onreply={async (m) => {
-											replyTo = m;
-											replyToAlias = await getAliasCached(m.participantId);
-										}}
-									/>
-								{/if}
-							{/each}
-
-							{#each typingParticipants as participant (participant.participantId)}
+										{/if}
+									</p>
+									<div class="system-note-line"></div>
+								</div>
+							{:else}
 								<MessageItem
-									isTyping
-									isContinuation={messages.at(-1)?.participantId === participant.participantId}
-									message={{ participantId: participant.participantId, reactions: [], deleted: false }}
+									{message}
+									referencedMessage={message.messageOptions?.referenceMessageId
+										? (messages.find((m) => m.messageId === message.messageOptions.referenceMessageId) ??
+											referenceCache.get(message.messageOptions.referenceMessageId) ??
+											null)
+										: null}
+									isContinuation={i > 0 && messages[i - 1].participantId === message.participantId}
+									onreply={async (m) => {
+										replyTo = m;
+										replyToAlias = await getAliasCached(m.participantId);
+									}}
 								/>
-							{/each}
-						</div>
-					{/if}
-				</div>
+							{/if}
+						{/each}
 
+						{#each typingParticipants as participant (participant.participantId)}
+							<MessageItem
+								isTyping
+								isContinuation={messages.at(-1)?.participantId === participant.participantId}
+								message={{ participantId: participant.participantId, reactions: [], deleted: false }}
+							/>
+						{/each}
+					</div>
+				{/if}
+			</div>
+
+			{#if $activeConversationId}
 				<div class="send-box">
 					{#if replyTo}
 						<div class="reply-preview">
@@ -324,7 +356,6 @@
 							type="text"
 							maxlength="2000"
 							placeholder="Your message..."
-							disabled={!$activeConversationId}
 							bind:value={inputValue}
 							onkeydown={async (event) => {
 								if (event.key === "Enter" && !event.shiftKey) {
@@ -425,18 +456,6 @@
 		height: 2px;
 		background-color: white;
 		opacity: 0.15;
-		border-radius: var(--box-margin);
-	}
-
-	.empty-state {
-		flex-grow: 1;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		justify-content: center;
-		gap: var(--box-margin);
-		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
 	}
 

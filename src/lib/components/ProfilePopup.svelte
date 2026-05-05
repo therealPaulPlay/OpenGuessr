@@ -54,6 +54,7 @@
 	import { showNotification } from "$lib/utils/notifications";
 	import { censor } from "fast-profanity-filter";
 	import { tooltip } from "$lib/utils/tooltip";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
 
 	let textarea = $state();
 	let selectedTabIndex = $state(0);
@@ -280,14 +281,27 @@
 					Report <TriangleAlert size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: 2px;" />
 				</button>
 			{/if}
-			{#if $profileId != localStorage.getItem("id") && $isAuthenticated}
+			{#if $profileId != localStorage.getItem("id")}
+				<button
+					class="standardButton white"
+					use:tooltip={{ text: "Send message" }}
+					onclick={() => {
+						playSound("basic_button");
+						if ($isAuthenticated) openDirectMessageWith($profileId, $profileData?.areFriends);
+						else signupPrompt();
+					}}
+				>
+					<MessageSquare style="margin-bottom: -1px;" size={20} strokeWidth={2.25} />
+				</button>
 				<button
 					class="standardButton white"
 					disabled={$profileData?.areFriends}
 					use:tooltip={{ text: "Send friend request" }}
 					onclick={(e) => {
 						playSound("basic_button");
-						sendFriendRequest($profileId, e.target); // This also shows a notification
+						// Send friend request (also shows ingame notification)
+						if ($isAuthenticated) sendFriendRequest($profileId, e.target);
+						else signupPrompt();
 					}}
 				>
 					{#if !$profileData?.areFriends}
@@ -295,16 +309,6 @@
 					{:else}
 						<UserRoundCheck style="margin-bottom: -1px; margin-left: 2px;" size={20} strokeWidth={2.25} />
 					{/if}
-				</button>
-				<button
-					class="standardButton white"
-					use:tooltip={{ text: "Send message" }}
-					onclick={() => {
-						playSound("basic_button");
-						openDirectMessageWith($profileId, $profileData?.areFriends);
-					}}
-				>
-					<MessageSquare style="margin-bottom: -1px;" size={20} strokeWidth={2.25} />
 				</button>
 			{/if}
 		</div>

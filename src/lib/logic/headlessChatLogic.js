@@ -33,57 +33,58 @@ async function dispatch(data) {
 
 const getAuthData = () => localStorage.getItem("bearer");
 
-let conversationsLoaded = false;
+let initialDataLoaded = false;
 
-export async function initHeadlessChatClientIfNotAlready() {
+export async function initHeadlessChatClient() {
     const participantId = localStorage.getItem("id");
     if (!participantId) return console.warn("Tried to init headless chat client with invalid user ID!");
 
+    // Only create instance if not already one created
     let client = get(hcClient);
     if (!client) {
         client = new Client(dispatch, participantId, getAuthData);
         hcClient.set(client);
     }
 
-    // Subscribe to events that are always subscribed (cheap)
+    // Subscribe to events that are always needed or cheap
     await client.onConversation(handleConversationEvent);
     await client.onInvite(handleInviteEvent);
+    await client.onParticipantActivity(handleParticipantActivityEvent);
 }
 
 export function disposeHeadlessChatClient() {
     get(hcClient)?.dispose();
-    hcClient.set(undefined);
+    hcClient.set(null);
     conversations.set([]);
     invites.set([]);
     participantActivities.set([]);
     activeConversationId.set(null);
     aliasCache.clear();
-    conversationsLoaded = false;
+    initialDataLoaded = false;
 }
 
-let convsInvitesLoadPromise = null; // Avoid loading multiple times if load is already active
+let initialLoadPromise = null; // Avoid loading multiple times if load is already active
 
-export async function loadConversationsAndInvites() {
-    if (conversationsLoaded) return;
-    if (convsInvitesLoadPromise) return convsInvitesLoadPromise;
+// Load initial data for conversations + invites + participant activity
+export async function headlessChatInitialLoad() {
+    if (initialDataLoaded) return;
+    if (initialLoadPromise) return initialLoadPromise;
 
     // Exit if not initialized / connected to SSE yet
     const client = get(hcClient);
     if (!client) return errorPopup("Failed to laod conversations", "Headless-chat client is not yet initialized.");
 
-    const userId = localStorage.getItem("id");
-
-    convsInvitesLoadPromise = (async () => {
+    initialLoadPromise = (async () => {
         try {
             const [convs, acts, invs] = await Promise.all([
-                client.getConversations(userId),
+                client.getConversations(),
                 client.getParticipantActivities(),
-                client.getInvites(userId),
+                client.getInvites(),
             ]);
             conversations.set(convs);
             participantActivities.set(acts);
             invites.set(invs);
-            conversationsLoaded = true;
+            initialDataLoaded = true;
         } catch (error) {
             errorPopup(
                 "Failed to load messages",
@@ -91,11 +92,11 @@ export async function loadConversationsAndInvites() {
                 error.message,
             );
         } finally {
-            convsInvitesLoadPromise = null;
+            initialLoadPromise = null;
         }
     })();
 
-    return convsInvitesLoadPromise;
+    return initialLoadPromise;
 }
 
 async function handleConversationEvent({ conversationId, data }) {
@@ -150,7 +151,7 @@ async function handleInviteEvent({ conversationId, toParticipantId, data }) {
 
     // Exit if the invite that was created is outgoing (this user created it), only notify if it's an incoming invite
     const userId = localStorage.getItem("id");
-    if (data.fromParticipantId !== userId) return;
+    if (data.fromParticipantId === userId) return;
 
     // Notify user about incoming invite
     const fromAlias = await getAliasCached(data.fromParticipantId);
@@ -178,6 +179,22 @@ async function handleInviteEvent({ conversationId, toParticipantId, data }) {
     );
 }
 
+function handleParticipantActivityEvent({ conversationId, data }) {
+    // Null means the activity row was deleted (conversation gone or participant removed)
+    if (data == null) {
+        participantActivities.update((list) => list.filter((a) => a.conversationId !== conversationId));
+        return;
+    }
+
+    // Update the activity
+    participantActivities.update((list) => {
+        const idx = list.findIndex(
+            (a) => a.conversationId === data.conversationId && a.participantId === data.participantId,
+        );
+        return idx === -1 ? [...list, data] : list.with(idx, data);
+    });
+}
+
 const aliasLoadPromises = new Map(); // Avoid loading the same alias multiple times if a load is already active
 
 // Batch-load aliases into the cache for a set of participant IDs, skipping any already cached or currently in-flight
@@ -190,11 +207,11 @@ export async function loadAliases(participantIds) {
             const aliases = await get(hcClient).getAliases(toFetch);
             for (const id of toFetch) {
                 const found = aliases?.find((a) => a.participantId === id);
-                aliasCache.set(id, found?.alias || "Error");
+                aliasCache.set(id, found?.alias || "Unknown");
             }
         } catch (error) {
             console.error("Error fetching aliases:", error);
-            for (const id of toFetch) aliasCache.set(id, "Error");
+            for (const id of toFetch) aliasCache.set(id, "Unknown");
         } finally {
             for (const id of toFetch) aliasLoadPromises.delete(id);
         }
@@ -207,7 +224,7 @@ export async function getAliasCached(participantId) {
     if (participantId === "server") return "System";
     if (aliasCache.has(participantId)) return aliasCache.get(participantId);
     await (aliasLoadPromises.get(participantId) ?? loadAliases([participantId]));
-    return aliasCache.get(participantId) ?? "Error";
+    return aliasCache.get(participantId) ?? "Unknown";
 }
 
 // Open a conversation with this participant

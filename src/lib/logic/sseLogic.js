@@ -14,7 +14,7 @@ import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { page } from "$app/state";
 import { fetchTournaments } from "$lib/utils/tournamentUtils";
 import { showProfile } from "$lib/utils/showProfile";
-import { disposeHeadlessChatClient, initHeadlessChatClientIfNotAlready } from "$lib/logic/headlessChatLogic";
+import { disposeHeadlessChatClient, initHeadlessChatClient } from "$lib/logic/headlessChatLogic";
 import { hcClient } from "$lib/stores/context-specific/headlessChatStore";
 
 let eventSource;
@@ -35,7 +35,7 @@ export async function initializeSSEConnection() {
 
             eventSource.onopen = () => {
                 reconnectAttempts = 0; // Reset the reconnect attempts on successful connection
-                initHeadlessChatClientIfNotAlready();
+                initHeadlessChatClient(); // Instance creation is a no-op if already init, but re-subscribing on each connection open is essential!
             };
 
             // Handle incoming messages

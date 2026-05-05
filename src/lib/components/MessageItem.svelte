@@ -1,24 +1,30 @@
 <script>
 	import { get } from "svelte/store";
+	import { computePosition, flip, shift } from "@floating-ui/dom";
 	import { Reply, SmilePlus, Trash2 } from "@lucide/svelte";
 	import { hcClient } from "$lib/stores/context-specific/headlessChatStore";
 	import { getAliasCached } from "$lib/logic/headlessChatLogic";
 	import { errorPopup } from "$lib/utils/errorHandling";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { playSound } from "$lib/utils/soundManager";
 	import { messagesPopup } from "$lib/stores/uiStore";
 
-	const REACTION_EMOJIS = ["👍", "❤️", "😂", "😮", "😢"];
+	const REACTION_EMOJIS = ["👍", "❤️", "😂", "😢"];
+
 
 	let { message, referencedMessage = null, onreply, isTyping = false, isContinuation = false } = $props();
 
 	let userId = localStorage.getItem("id");
 	let isOwn = $derived(message.participantId === userId);
 
-	let alias = $state("...");
-	let referencedAlias = $state("...");
+	let alias = $state("Unknown");
+	let referencedAlias = $state("Unknown");
 	let reactionPickerOpen = $state(false);
+	let reactButtonElement = $state();
+	let reactionPickerElement = $state();
+	let actionsElement = $state();
 
 	$effect(() => {
 		(async () => (alias = await getAliasCached(message.participantId)))();
@@ -31,9 +37,11 @@
 
 	async function toggleReaction(emoji) {
 		reactionPickerOpen = false;
+		const existing = message.reactions.find((r) => r.participantId === userId && r.content === emoji);
 		try {
-			// Server deduplicates
-			await get(hcClient).addReaction(message.messageId, emoji);
+			if (existing)
+				await get(hcClient).removeReaction(existing.reactionId); // Remove, don't replace
+			else await get(hcClient).addReaction(message.messageId, emoji); // Add new reaction
 		} catch (error) {
 			errorPopup("Failed to react", "An error occured trying to update a reaction.", error.message);
 		}
@@ -68,8 +76,18 @@
 			>
 		{/if}
 
-		<div class="bubble-with-actions" class:own-aligned={isOwn}>
-			<div class="bubble" class:own-bubble={isOwn} class:deleted-bubble={message.deleted}>
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
+		<div
+			bind:this={actionsElement}
+			class="bubble-with-actions"
+			class:own-aligned={isOwn}
+			onpointerleave={(e) => {
+				if (!reactionPickerOpen) return;
+				if (actionsElement?.contains(e.relatedTarget) || reactionPickerElement?.contains(e.relatedTarget)) return;
+				reactionPickerOpen = false;
+			}}
+		>
+			<div class="bubble" class:own-bubble={isOwn} class:deleted-bubble={message.deleted} class:has-reference={Boolean(referencedMessage)}>
 				{#if isTyping}
 					<div class="typing-dots">
 						<span class="typing-dot"></span>
@@ -87,11 +105,7 @@
 					{/if}
 
 					<p style:white-space="pre-wrap" style:opacity={message.deleted ? "0.5" : ""}>
-						{#if message.deleted}
-							Deleted message
-						{:else}
-							{message.message}
-						{/if}
+						{message.deleted ? "Deleted message" : message.message}
 					</p>
 				{/if}
 			</div>
@@ -100,33 +114,38 @@
 				<div class="actions" style:flex-direction={isOwn ? "" : "row-reverse"}>
 					<span class="timestamp">{timestamp}</span>
 					<div class="action-buttons">
-						{#if !isOwn}
-							<button
-								class="standardButton white action-button"
-								use:tooltip={{ text: "React" }}
-								onclick={() => {
-									playSound("basic_button");
-									reactionPickerOpen = !reactionPickerOpen;
-								}}
-							>
-								<SmilePlus size={18} strokeWidth={2.25} />
-							</button>
-						{/if}
+						<button
+							bind:this={reactButtonElement}
+							class="standardButton white action-button"
+							use:tooltip={{ text: "React" }}
+							onclick={() => {
+								playSound("basic_button");
+								reactionPickerOpen = !reactionPickerOpen;
+							}}
+						>
+							<SmilePlus size={18} strokeWidth={2.25} />
+						</button>
 						{#if isOwn}
 							<button
 								class="standardButton white action-button"
 								use:tooltip={{ text: "Delete" }}
-								onclick={async () => {
+								onclick={() => {
 									playSound("basic_button");
-									try {
-										await get(hcClient).deleteMessage(message.messageId);
-									} catch (error) {
-										errorPopup(
-											"Failed to delete message",
-											"An error occured trying to delete your message.",
-											error.message,
-										);
-									}
+									showConfirmPopup(
+										"Delete message?",
+										"This will remove the message for everyone in the conversation.",
+										async () => {
+											try {
+												await get(hcClient).deleteMessage(message.messageId);
+											} catch (error) {
+												errorPopup(
+													"Failed to delete message",
+													"An error occured trying to delete your message.",
+													error.message,
+												);
+											}
+										},
+									);
 								}}
 							>
 								<Trash2 size={18} strokeWidth={2.25} />
@@ -144,10 +163,43 @@
 						</button>
 					</div>
 					{#if reactionPickerOpen}
-						<div class="reaction-picker">
-							{#each REACTION_EMOJIS as emoji}
-								<button class="reaction-pick" onclick={() => toggleReaction(emoji)}>{emoji}</button>
-							{/each}
+						<!-- svelte-ignore a11y_no_static_element_interactions -->
+						<div
+							bind:this={reactionPickerElement}
+							class="reaction-picker-wrapper"
+							popover="manual"
+							onpointerleave={(e) => {
+								if (!actionsElement?.contains(e.relatedTarget)) reactionPickerOpen = false;
+							}}
+							{@attach (node) => {
+								const panel = node.querySelector(".reaction-picker");
+								panel.style.cssText =
+									"transform:scale(0);opacity:0;filter:blur(15px);transition:transform 150ms ease,opacity 150ms ease,filter 150ms ease";
+								node.showPopover();
+
+								computePosition(reactButtonElement, node, {
+									placement: "top",
+									middleware: [flip(), shift({ padding: 5 })],
+								}).then(({ x, y }) => {
+									node.style.cssText += `;left:${x}px;top:${y}px`;
+									requestAnimationFrame(() => (panel.style.cssText += ";transform:scale(1);opacity:1;filter:blur(0)"));
+								});
+
+								const onPointerDown = (e) => {
+									if (!node.contains(e.target) && !reactButtonElement?.contains(e.target)) reactionPickerOpen = false;
+								};
+								document.addEventListener("pointerdown", onPointerDown);
+								return () => {
+									document.removeEventListener("pointerdown", onPointerDown);
+									node.hidePopover();
+								};
+							}}
+						>
+							<div class="tooltip reaction-picker">
+								{#each REACTION_EMOJIS as emoji}
+									<button class="reaction-pick" onclick={() => toggleReaction(emoji)}>{emoji}</button>
+								{/each}
+							</div>
 						</div>
 					{/if}
 				</div>
@@ -221,6 +273,10 @@
 		overflow-wrap: anywhere;
 	}
 
+	.has-reference {
+		min-width: 100px;
+	}
+
 	.bubble p {
 		font-size: 20px;
 	}
@@ -271,6 +327,8 @@
 	.reference {
 		display: flex;
 		flex-direction: column;
+		width: 0;
+		min-width: 100%;
 		margin-bottom: var(--content-margin);
 		background-color: var(--box-color-dark);
 		box-shadow: var(--box-shadow);
@@ -278,18 +336,22 @@
 		padding: var(--content-margin);
 		padding-inline: var(--panel-margin);
 		opacity: 0.75;
+		box-sizing: border-box;
 	}
 
 	.reference-author {
 		font-size: 18px;
 		opacity: 0.75;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
 	}
 
 	.reference-text {
 		font-size: 18px;
 		overflow: hidden;
 		text-overflow: ellipsis;
-		text-wrap: nowrap;
+		white-space: nowrap;
 	}
 
 	.reactions {
@@ -305,7 +367,7 @@
 	.reaction-chip {
 		display: flex;
 		align-items: center;
-		gap: var(--content-margin);
+		gap: 3px;
 		background-color: var(--box-color);
 		box-shadow: var(--bulb-shadow);
 		border-radius: var(--box-margin);
@@ -314,13 +376,16 @@
 		transition: background-color 250ms ease;
 	}
 
+	.reaction-chip span {
+		font-size: 16px;
+	}
+
 	.reaction-chip.mine {
 		background-color: rgba(255, 255, 255, 0.2);
 	}
 
 	.reaction-count {
 		opacity: 1;
-		font-size: 16px;
 		padding-right: 3px;
 		font-variant-numeric: tabular-nums;
 	}
@@ -356,18 +421,23 @@
 		border-radius: var(--box-margin);
 	}
 
+	.reaction-picker-wrapper {
+		position: fixed;
+		margin: 0;
+		padding: 0 0 var(--box-margin) 0;
+		background: none;
+		border: none;
+		box-shadow: none;
+		backdrop-filter: none;
+	}
+
 	.reaction-picker {
-		position: absolute;
-		bottom: 100%;
-		margin-bottom: var(--content-margin);
 		display: flex;
 		gap: var(--content-margin);
 		padding: var(--panel-margin);
-		background-color: var(--panel-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
-		backdrop-filter: blur(10px);
-		z-index: 1;
+		transform-origin: bottom;
 	}
 
 	.reaction-pick {

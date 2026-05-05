@@ -1,7 +1,7 @@
 import { isAuthenticated } from "$lib/stores/accountStore";
 import { showNotification } from "$lib/utils/notifications";
 import { loadedFriendsData, roomCode } from "$lib/stores/context-specific/multiplayerStore";
-import { inboxContent } from "$lib/stores/context-specific/inboxStore";
+import { friendRequestInboxContent } from "$lib/stores/context-specific/inboxStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -28,8 +28,8 @@ export async function loadInbox() {
 
         if (response.ok) {
             const data = await response.json();
-            inboxContent.set(data?.requests);
-            if (get(inboxContent).length == 0) inboxContent.set(undefined);
+            friendRequestInboxContent.set(data?.requests);
+            if (get(friendRequestInboxContent).length == 0) friendRequestInboxContent.set(undefined);
 
         } else {
             const data = await response.json();
