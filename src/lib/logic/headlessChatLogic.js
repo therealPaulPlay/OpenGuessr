@@ -38,20 +38,24 @@ export async function initHeadlessChatClient() {
     const participantId = localStorage.getItem("id");
     if (!participantId) return console.warn("Tried to init headless chat client with invalid user ID!");
 
-    // Only create instance if not already one created
-    let client = get(hcClient);
-    if (!client) {
-        client = new Client(dispatch, participantId, getAuthData);
-        hcClient.set(client);
-    }
+    try {
+        // Only create instance if not already one created
+        let client = get(hcClient);
+        if (!client) {
+            client = new Client(dispatch, participantId, getAuthData);
+            hcClient.set(client);
+        }
 
-    // Subscribe to events that are always needed or cheap
-    // Bundled into one envelope with onMany to avoid 3 round-trips via the separate onConversation etc.
-    await client.onMany([
-        { kind: "conversation", handlers: [handleConversationEvent] },
-        { kind: "invite", handlers: [handleInviteEvent] },
-        { kind: "participantActivity", handlers: [handleParticipantActivityEvent] },
-    ]);
+        // Subscribe to events that are always needed or cheap (should always happen, even if client is alr init)
+        // Bundled into one envelope with onMany to avoid 3 round-trips via the separate onConversation etc.
+        await client.onMany([
+            { kind: "conversation", handlers: [handleConversationEvent] },
+            { kind: "invite", handlers: [handleInviteEvent] },
+            { kind: "participantActivity", handlers: [handleParticipantActivityEvent] },
+        ]);
+    } catch (error) {
+        errorPopup("Headless-chat init failed", "Failed to initialize headless-chat and subscribe to events.", error.message);
+    }
 }
 
 export function disposeHeadlessChatClient() {
