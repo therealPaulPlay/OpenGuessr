@@ -15,19 +15,11 @@ import { showNotification } from "$lib/utils/notifications";
 import { showProfile } from "$lib/utils/showProfile";
 
 async function dispatch(data) {
-    try {
-        await fetch(get(apiUrl) + "/headless-chat/receive", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(data),
-        });
-    } catch (error) {
-        errorPopup(
-            "Failed to send headless-chat request",
-            "An error occured trying to communicate with the headless-chat server.",
-            error.message,
-        );
-    }
+    await fetch(get(apiUrl) + "/headless-chat/receive", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    });
 }
 
 const getAuthData = () => localStorage.getItem("bearer");
@@ -241,35 +233,32 @@ export async function getAliasCached(participantId) {
 }
 
 // Open a conversation with this participant
-// Friends auto-accept server-side, non-friends are warned with a confirm popup before the request
+// Friends auto-accept server-side, non-friends get an invite they need to accept before seeing the message
 export async function openDirectMessageWith(participantId) {
-    const openConversation = async () => {
-        try {
-            const response = await fetch(get(apiUrl) + "/headless-chat/conversation-with-user", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    Authorization: "Bearer " + localStorage.getItem("bearer"),
-                },
-                body: JSON.stringify({
-                    id: localStorage.getItem("id"),
-                    targetParticipantId: participantId,
-                }),
-            });
-            if (!response.ok) {
-                const body = await response.json().catch(() => ({}));
-                throw new Error(body.error || response.status);
-            }
-            const { conversationId } = await response.json();
-            activeConversationId.set(conversationId);
-            messagesPopup.set(true);
-        } catch (error) {
-            errorPopup(
-                "Failed to start conversation",
-                "An error occured trying to open a conversation with this user.",
-                error.message,
-            );
+    try {
+        const response = await fetch(get(apiUrl) + "/headless-chat/conversation-with-user", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                Authorization: "Bearer " + localStorage.getItem("bearer"),
+            },
+            body: JSON.stringify({
+                id: localStorage.getItem("id"),
+                targetParticipantId: participantId,
+            }),
+        });
+        if (!response.ok) {
+            const body = await response.json().catch(() => ({}));
+            throw new Error(body.error || response.status);
         }
-    };
-    await openConversation();
+        const { conversationId } = await response.json();
+        activeConversationId.set(conversationId);
+        messagesPopup.set(true);
+    } catch (error) {
+        errorPopup(
+            "Failed to start conversation",
+            "An error occured trying to open a conversation with this user.",
+            error.message,
+        );
+    }
 }
