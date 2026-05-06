@@ -2,7 +2,7 @@
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import PinHolder from "./PinHolder.svelte";
 	import { pinPopup } from "$lib/stores/uiStore";
-	import { profileData, profileExperience, profileSupporterLevel } from "$lib/stores/context-specific/profileStore";
+	import { profileData } from "$lib/stores/context-specific/profileStore";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { purchasedPins } from "$lib/stores/accountStore";
 </script>
@@ -13,18 +13,18 @@
 	</div>
 	<TitleSeparator text="Progression" />
 	<div class="pinSelector">
-		<PinHolder pinId="0" pinLockText="0 XP" unlocked={$profileExperience >= 0} />
-		<PinHolder pinId="1" pinLockText="5K XP" unlocked={$profileExperience >= 5000} />
-		<PinHolder pinId="2" pinLockText="30K XP" unlocked={$profileExperience >= 30000} />
-		<PinHolder pinId="3" pinLockText="100K XP" unlocked={$profileExperience >= 100000} />
-		<PinHolder pinId="4" pinLockText="500K XP" unlocked={$profileExperience >= 500000} />
-		<PinHolder pinId="5" pinLockText="5M XP" unlocked={$profileExperience >= 5000000} />
-		<PinHolder pinId="6" pinLockText="10M XP" unlocked={$profileExperience >= 10000000} />
+		<PinHolder pinId="0" pinLockText="0 XP" unlocked={$profileData?.experience >= 0} />
+		<PinHolder pinId="1" pinLockText="5K XP" unlocked={$profileData?.experience >= 5000} />
+		<PinHolder pinId="2" pinLockText="30K XP" unlocked={$profileData?.experience >= 30000} />
+		<PinHolder pinId="3" pinLockText="100K XP" unlocked={$profileData?.experience >= 100000} />
+		<PinHolder pinId="4" pinLockText="500K XP" unlocked={$profileData?.experience >= 500000} />
+		<PinHolder pinId="5" pinLockText="5M XP" unlocked={$profileData?.experience >= 5000000} />
+		<PinHolder pinId="6" pinLockText="10M XP" unlocked={$profileData?.experience >= 10000000} />
 		<PinHolder pinId="7" pinLockText="75 Duel Wins" unlocked={$profileData?.duelsWon >= 75} />
 		<PinHolder pinId="8" pinLockText="50 Comp. Entries" unlocked={$profileData?.competitionsEntered >= 50} />
 		<PinHolder pinId="9" pinLockText="10 Streak" unlocked={$profileData?.highestCountryStreak >= 10} />
 		<PinHolder pinId="10" pinLockText="250 Comp. Entries" unlocked={$profileData?.competitionsEntered >= 250} />
-		<PinHolder pinId="11" pinLockText="Supporter" unlocked={$profileSupporterLevel >= 1} />
+		<PinHolder pinId="11" pinLockText="Supporter" unlocked={$profileData?.supporterLevel >= 1} />
 	</div>
 	<TitleSeparator text="Purchased" />
 	<div class="pinSelector">

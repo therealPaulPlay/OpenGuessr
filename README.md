@@ -23,7 +23,7 @@ As part of OpenGuessr's design system, margin, padding and border radius should 
 | --panel-margin | 8px | Floating panels fixed to viewport |
 | --box-margin | 10px | Boxes (containers) |
 | --layout-margin | 15px | Layout gaps, box border-radius |
-| 25px | layout + box | Popups, sheets |
+| --layout-margin + --box-margin | 25px | Popups, sheets |
 
 **Boxes** always use `--box-margin` for padding and gap. Their border-radius is `--layout-margin` when placed in a page, or `--box-margin` when nested inside a popup or another box.
 

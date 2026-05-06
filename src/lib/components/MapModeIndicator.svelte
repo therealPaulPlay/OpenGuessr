@@ -11,6 +11,7 @@
 	import { blur, slide } from "svelte/transition";
 	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
+	import Chip from "./ui/Chip.svelte";
 
 	let mapCategoryName = $state("Loading...");
 
@@ -41,32 +42,30 @@
 		class:fading={Boolean($mapModeIndicatorFading)}
 		transition:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 150 }}
 	>
-		<div
-			class="map-mode-text-container of-left of-right"
-		>
+		<div class="map-mode-text-container of-left of-right">
 			<p class="mode-text">
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
 			</p>
-			<span class="info-tag">
+			<Chip class="info-tag">
 				<p>
 					<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />{mapCategoryName}
 				</p>
-			</span>
+			</Chip>
 			{#if currentRoundText != null}
-				<span class="info-tag" transition:blur>
+				<Chip class="info-tag">
 					<p>
-						<Route size={16} strokeWidth={2.5} style="margin-right: 3px;" />{currentRoundText} / {roundAmountText}
-					</p></span
-				>
+						<Route size={16} strokeWidth={2.5} style="margin-right: 3px; margin-bottom: -1px;" />{currentRoundText} / {roundAmountText}
+					</p>
+				</Chip>
 			{/if}
 			{#if $selectedRestriction !== "standard"}
-				<span class="info-tag" transition:blur>
+				<Chip class="info-tag">
 					<p>
-						<BookAlert size={16} strokeWidth={2.5} style="margin-right: 3px;" />{$restrictionNames[
+						<BookAlert size={16} strokeWidth={2.5} style="margin-right: 3px; margin-bottom: -1px;" />{$restrictionNames[
 							$selectedRestriction
 						] || "Unknown"}
-					</p></span
-				>
+					</p>
+				</Chip>
 			{/if}
 		</div>
 		{#if $timerText}
@@ -100,24 +99,12 @@
 		width: 20px;
 		height: 20px;
 		margin-right: 3px;
-		margin-bottom: -3px;
+		margin-bottom: -3.5px;
 	}
 
-	.info-tag {
-		border-radius: var(--content-margin);
-		background: var(--box-color);
-		padding-inline: var(--content-margin);
+	:global(.info-tag) {
 		margin-left: var(--content-margin);
-		box-shadow: var(--bulb-shadow);
-		white-space: nowrap;
-		display: inline-flex;
-		min-width: fit-content;
 		margin-bottom: -2px;
-	}
-
-	.info-tag p {
-		opacity: 0.75;
-		font-size: 20px;
 	}
 
 	:global(.mapModeIndicator.fading) {

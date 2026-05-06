@@ -29,8 +29,8 @@ export async function load({ params, fetch }) {
       throw error(500, 'Failed to load map content');
     }
 
-  } catch (error) {
-    console.error('Load function error:', error);
+  } catch (err) {
+    console.error('Load function error:', err);
     throw error(500, 'Failed to load map data');
   }
 }

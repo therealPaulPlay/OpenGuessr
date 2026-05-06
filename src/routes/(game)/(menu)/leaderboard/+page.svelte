@@ -1,5 +1,5 @@
 <script>
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
@@ -237,7 +237,7 @@
 				<h3
 					class="name"
 					onclick={() => {
-						loadProfileFromId(mainSectionEntries?.[1]?.id);
+						showProfile(mainSectionEntries?.[1]?.id);
 					}}
 				>
 					{mainSectionEntries?.[1]?.user_name || "Guest"}
@@ -252,7 +252,7 @@
 				<h3
 					class="name"
 					onclick={() => {
-						loadProfileFromId(mainSectionEntries?.[0]?.id);
+						showProfile(mainSectionEntries?.[0]?.id);
 					}}
 				>
 					{mainSectionEntries?.[0]?.user_name || "Guest"}
@@ -267,7 +267,7 @@
 				<h3
 					class="name"
 					onclick={() => {
-						loadProfileFromId(mainSectionEntries?.[2]?.id);
+						showProfile(mainSectionEntries?.[2]?.id);
 					}}
 				>
 					{mainSectionEntries?.[2]?.user_name || "Guest"}
@@ -288,7 +288,7 @@
 					<p
 						class="middle maxlength"
 						onclick={() => {
-							loadProfileFromId(entry.id);
+							showProfile(entry.id);
 						}}
 					>
 						{entry.user_name}
@@ -317,7 +317,7 @@
 					<p
 						class="middle maxlength"
 						onclick={() => {
-							loadProfileFromId(entry.id);
+							showProfile(entry.id);
 						}}
 					>
 						{entry.user_name}

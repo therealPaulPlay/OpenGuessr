@@ -4,7 +4,7 @@
 	import { CalendarPlus, Info, Medal } from "@lucide/svelte";
 	import Popup from "./ui/Popup.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { slide } from "svelte/transition";
 	import { idToMapName } from "$lib/utils/idToMapName";
@@ -152,7 +152,7 @@
 				<button
 					class="opacity-hover"
 					onclick={() => {
-						loadProfileFromId($selectedTournament?.winner?.id);
+						showProfile($selectedTournament?.winner?.id);
 					}}
 				>
 					{$selectedTournament?.winner?.name}

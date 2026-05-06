@@ -11,8 +11,6 @@
 		supporterBoostText,
 		lastDistance,
 	} from "$lib/stores/context-specific/resultScreenStore";
-	import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
-	import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 	import { isAuthenticated, experience } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
@@ -21,7 +19,6 @@
 	import { tick } from "svelte";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
-	import { get } from "svelte/store";
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
 	import ResultFullscreenMessage from "./ResultFullscreenCelebration.svelte";
 	import { CircleUser, Flame, RulerDimensionLine } from "@lucide/svelte";
@@ -29,6 +26,7 @@
 	import { getMapBounds } from "$lib/utils/getMapBounds";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { registerResultAds } from "$lib/utils/ads";
+	import { roundLogPopup } from "$lib/stores/uiStore";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -187,7 +185,7 @@
 				use:tooltip={{ text: "View panorama" }}
 				onclick={() => {
 					playSound("basic_button");
-					openLocationOnMaps(get(currentLocationLatitude), get(currentLocationLongitude));
+					$roundLogPopup = true;
 				}}
 			>
 				<img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
@@ -508,7 +506,6 @@
 	}
 
 	.nextRoundArea {
-		z-index: 15;
 		position: fixed;
 		bottom: var(--box-margin);
 		right: var(--box-margin);

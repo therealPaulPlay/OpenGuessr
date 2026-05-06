@@ -14,6 +14,7 @@ import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/l
 import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration";
 import { mapExpanded, mapHovered, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { socialPopupProbability } from "./socialPopupProbability";
+import { saveRoundToLog } from "./saveRoundToLog";
 
 export async function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (get(resultScreenEnabled)) return;
@@ -21,20 +22,20 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
 
     // Obtain contents
     const distance = calculateDistances(guessLat, guessLong);
-    const motivationalMessage = motivationalResultMessage(distance);
-    const resultString = formatDistance(distance);
+    lastDistance.set(distance);
+    motivationText.set(motivationalResultMessage(distance));
+    distanceText.set(formatDistance(distance));
 
     // Reset the map, before loading the result map
     resetMap(true);
-
-    motivationText.set(motivationalMessage);
-    distanceText.set(resultString);
-    lastDistance.set(distance);
 
     if (get(countryGuessr)) {
         if (checkIfGuessWasCorrect()) distanceText.set("Correct!");
         else distanceText.set("Wrong!");
     }
+
+    // Save round to log
+    saveRoundToLog(distance, [get(currentLocationLatitude), get(currentLocationLongitude)]);
 
     // Load result on the map
     loadResultMap(guessLat, guessLong, get(currentLocationLatitude), get(currentLocationLongitude));

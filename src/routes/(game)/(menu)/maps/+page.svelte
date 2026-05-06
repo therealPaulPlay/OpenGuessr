@@ -17,6 +17,8 @@
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { tooltip } from "$lib/utils/tooltip.js";
 	import { page } from "$app/state";
+	import { navigationMenu } from "$lib/stores/uiStore";
+	import Chip from "$lib/components/ui/Chip.svelte";
 
 	const snapshotStore = getContext("snapshotStore");
 
@@ -38,6 +40,8 @@
 
 	let currentController;
 	let currentFavController;
+
+	let returnAfterChange = $derived(page.url.searchParams.get("return-to-multiplayer"));
 
 	const categoriesArray = [
 		"All",
@@ -130,8 +134,11 @@
 
 	function selectMap(name, community = false) {
 		playSound("button_juicy");
-		changeMap((community ? "community_" : "") + name, true);
-		goto("/");
+		changeMap((community ? "community_" : "") + name, true, returnAfterChange);
+		if (!returnAfterChange) {
+			navigationMenu.set(false);
+			goto("/");
+		}
 	}
 
 	function checkIfSelected(name, community = false) {
@@ -232,12 +239,13 @@
 		tabindex="0"
 		onclick={() => {
 			playSound("basic_button");
-			goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
+			const nameFormattedForUrl = map.name.split(" ").join("_").toLowerCase();
+			goto("/maps/community/" + nameFormattedForUrl + (returnAfterChange ? "?return-to-multiplayer=true" : ""));
 		}}
 	>
 		<div class="map-info">
 			<p class="map-name">{map.name || "Name not loaded"}</p>
-			<p class="map-author">by {map.author || "Bugsnacker"}</p>
+			<p class="map-author">by {map.author || "Error"}</p>
 		</div>
 		<button
 			class="add-button standardButton white"
@@ -310,7 +318,7 @@
 			}}
 		>
 			<p class="map-name">Geo Quizzes</p>
-			<p class="link-badge">Education</p>
+			<Chip text="Education" italic={true} red={true} />
 		</div>
 		<div
 			class="map-item map-item-hover map-item-link"
@@ -322,7 +330,7 @@
 			}}
 		>
 			<p class="map-name">Meta Quizzes</p>
-			<p class="link-badge">Geometas</p>
+			<Chip text="Geometas" italic={true} red={true} />
 		</div>
 	</div>
 	<!-- Expandable country section -->
@@ -550,18 +558,6 @@
 
 	.no-bottom-padding {
 		padding-bottom: 0;
-	}
-
-	.link-badge {
-		font-size: 18px;
-		font-style: italic;
-		border-radius: var(--content-margin);
-		background-color: rgb(224, 2, 2);
-		padding: 2px;
-		margin-right: -1px;
-		padding-inline: var(--panel-margin);
-		box-shadow: var(--bulb-shadow);
-		margin-left: var(--panel-margin);
 	}
 
 	.map-item {

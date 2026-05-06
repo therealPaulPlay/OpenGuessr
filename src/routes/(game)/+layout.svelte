@@ -57,6 +57,8 @@
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
 	import Notification from "$lib/components/Notification.svelte";
+	import MatchOverviewPopup from "$lib/components/MatchOverviewPopup.svelte";
+	import MessagesPopup from "$lib/components/MessagesPopup.svelte";
 
 	// Load panorama, ads, overfade etc.
 	onMount(() => {
@@ -103,11 +105,11 @@
 
 <!-- Keywords -->
 <h1 style:display="none">
-	Openguessr is like GeoGuessr free and unlimited. A free GeoGuesser alternative like Geotastic, open source, best for
-	geography learners (in German Geographie). Place the pin on the world map in this geoguessr-inspired geo quiz.
-	Kostenlos (free) with Google Street View or streetview. Geography and travel creators like Rainbolt and Zi8gZag are
-	popular in the education world. Can you guess where you are without a subscription, in multiplayer with friends or in
-	online duels? Guess the country, rate das Land!
+	OpenGuessr is like GeoGuessr, but free and unlimited. It's a free GeoGuessr alternative for anyone learning geography
+	through geo quiz games. Place the pin on the world map without the need for a subscription (kostenlos, gratis). The
+	game includes online multiplayer to play with friends, is unblocked, partially open-source and uses Street View. Can
+	you guess where you are, and guess the country? Also check out education & travel creator Rainbolt who excels at
+	finding the location in the game commonly spelled GeoGuesser!
 </h1>
 
 <!-- 3rd party -->
@@ -130,6 +132,7 @@
 <ConfirmPopup />
 <CaptchaPopup />
 <ShopPurchaseAnimation />
+<MessagesPopup />
 <ProfilePopup />
 <BadgePopup />
 <PinPopup />
@@ -137,6 +140,7 @@
 <SupporterPopup />
 <FriendBrowserPopup />
 <DivisionMatchHistoryPopup />
+<MatchOverviewPopup />
 <TournamentInfoPopup />
 <TournamentMatchResultsPopup />
 <InboxPopup />

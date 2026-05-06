@@ -1,5 +1,5 @@
 <script>
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { errorPopup } from "$lib/utils/errorHandling";
@@ -446,7 +446,7 @@
 							id="yourUsername"
 							class="centerEntry"
 							onclick={() => {
-								loadProfileFromId(localStorage.getItem("id"));
+								showProfile(localStorage.getItem("id"));
 							}}
 						>
 							{yourEntry.userName}
@@ -465,7 +465,7 @@
 						<p
 							class="centerEntry"
 							onclick={() => {
-								loadProfileFromId(entry.id);
+								showProfile(entry.id);
 							}}
 						>
 							{entry.userName}
@@ -554,10 +554,10 @@
 				class="competitionAuthor"
 				onclick={() => {
 					const id = authorId == 0 ? 2 : authorId; // Display as 2 (PaulPlay) if created by System (0)
-					loadProfileFromId(id);
+					showProfile(id);
 				}}
 			>
-				hosted by {author}
+				by {author}
 			</p>
 		</div>
 		<div class="competitionPropertiesBox">
@@ -577,7 +577,10 @@
 				<div class="label">
 					<p>Duration</p>
 				</div>
-				<p class="itemText">{formatDuration(duration)} ({formatDuration(remainingDuration)} left)</p>
+				<p class="itemText">
+					{formatDuration(duration)}
+					{#if remainingDuration > 0}({formatDuration(remainingDuration)} left){/if}
+				</p>
 			</div>
 			<div class="propertyItem">
 				<div class="label">

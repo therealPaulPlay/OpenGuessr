@@ -38,7 +38,7 @@
 				strokeWidth={2.25}
 				size={22}
 				color="white"
-				style="opacity: 50%; margin-right: var(--content-margin); margin-left: 2px; margin-bottom: -2px; flex-shrink: 0;"
+				style="opacity: 50%; margin-right: var(--content-margin); margin-left: 2px; margin-bottom: -1px; flex-shrink: 0;"
 			/>
 			<p>
 				For accounts created without a password, please set one <a href="/signup?reset=true" target="_blank">here</a>.

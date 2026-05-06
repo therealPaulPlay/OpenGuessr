@@ -24,17 +24,18 @@
 
 	// Restriction toggle
 	let restrictions = Object.keys($restrictionNames);
-	let restrictionButtonText = $state($restrictionNames[restrictions[0]]);
+	let restrictionButtonText = $derived($restrictionNames[$multiplayerRestriction]);
 
 	function toggleMultiplayerRestriction() {
 		const currentRestrictionIndex =
 			(restrictions.findIndex((e) => e == $multiplayerRestriction) + 1) % restrictions.length;
 		multiplayerRestriction.set(restrictions[currentRestrictionIndex]);
-		restrictionButtonText = $restrictionNames[$multiplayerRestriction];
 	}
 
 	// Creation state
 	let isCreatingRoom = $state(false);
+
+	const STYLE_TABS = ["Standard", "Duel"];
 </script>
 
 <svelte:head>
@@ -71,7 +72,8 @@
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
 				<p>Style</p>
 				<Tabs
-					tabs={["Standard", "Duel"]}
+					tabs={STYLE_TABS}
+					selectedIndex={STYLE_TABS.findIndex((e) => e.toLowerCase() === $multiplayerStyle) ?? 0}
 					onchange={(selected, _index) => {
 						playSound("basic_button");
 						multiplayerStyle.set(selected.toLowerCase());
@@ -91,7 +93,7 @@
 						class="standardButton white"
 						onclick={() => {
 							playSound("basic_button");
-							goto("/maps");
+							goto("/maps?return-to-multiplayer=true");
 						}}><ArrowRightLeft size={17} strokeWidth={2} /></button
 					>
 				</div>

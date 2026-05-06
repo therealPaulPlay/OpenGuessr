@@ -84,6 +84,7 @@
 	.progress-ring-text {
 		position: absolute;
 		font-size: 15px;
+		margin-bottom: 1px;
 		color: white;
 		user-select: none;
 	}

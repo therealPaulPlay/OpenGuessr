@@ -7,12 +7,13 @@
 	import { onDestroy, onMount } from "svelte";
 	import { fetchOpenRooms } from "$lib/logic/matchmakingLogic";
 	import { idToMapName } from "$lib/utils/idToMapName";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { tooltip } from "$lib/utils/tooltip";
+	import Chip from "$lib/components/ui/Chip.svelte";
 
 	let roomCodeInput = $derived(segments.slice(0, 3).join("") + segments.slice(3, 6).join(""));
 	let openRooms = $state([]);
-	let inputRefs = []; // Store references to input elements
+	let inputRefs = $state([]); // Store references to input elements
 	let segments = $state(["", "", "", "", "", ""]); // 6 segments for XXX-XXX
 
 	let fetchRoomsInterval;
@@ -102,17 +103,17 @@
 		{#each openRooms as room}
 			<div class="publicRoomItem" transition:blur>
 				<div class="roomItemInfoContainer of-left of-right">
-					<div class="infoBox">
+					<Chip mutedOpacity={false}>
 						<img class="mapIcon" src="/img/maps_icon.png" alt="Maps" />
 						<p>{idToMapName(room?.map)}</p>
-					</div>
-					<div class="infoBox">
-						<User size={20} strokeWidth={2.25} style="margin-bottom: -1px; margin-right: 1px;" />
+					</Chip>
+					<Chip mutedOpacity={false}>
+						<User size={18} strokeWidth={2.5} style="margin-right: 2px;" />
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<span class="roomItemUser" role="button" tabindex="0" onclick={() => loadProfileFromId(room?.user_id)}
+						<span class="roomItemUser" role="button" tabindex="0" onclick={() => showProfile(room?.user_id)}
 							>{room?.user_name}</span
 						>
-					</div>
+					</Chip>
 				</div>
 				<button
 					class="standardButton white"
@@ -199,20 +200,6 @@
 	.roomItemInfoContainer p {
 		overflow: hidden;
 		text-overflow: ellipsis;
-	}
-
-	.infoBox {
-		border-radius: var(--content-margin);
-		background: var(--box-color);
-		padding-inline: var(--content-margin);
-		box-shadow: var(--bulb-shadow);
-		white-space: nowrap;
-		display: inline-flex;
-		min-width: fit-content;
-		align-items: center;
-		color: white;
-		font-size: 20px;
-		opacity: 0.75;
 	}
 
 	.roomItemUser {

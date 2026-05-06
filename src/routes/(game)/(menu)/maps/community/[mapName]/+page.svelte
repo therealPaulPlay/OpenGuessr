@@ -1,16 +1,16 @@
 <script>
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile.js";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { showNotification } from "$lib/utils/notifications";
 	import { changeMap } from "$lib/utils/changeMap.js";
-	import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Play } from "@lucide/svelte";
+	import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Play, FileDown } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
-	import { panoramaKey } from "$lib/stores/locationStore";
+	import { panoramaKey, streetViewURLPrefix } from "$lib/stores/locationStore";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
@@ -18,6 +18,8 @@
 	import SvgMap from "$lib/components/SvgMap.svelte";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { tooltip } from "$lib/utils/tooltip.js";
+	import { page } from "$app/state";
+	import { navigationMenu } from "$lib/stores/uiStore.js";
 
 	let { data } = $props();
 
@@ -30,6 +32,7 @@
 	let mapLocationData = $derived(data.map_data);
 
 	let playerId = $state(0);
+	let returnAfterChange = $derived(page.url.searchParams.get("return-to-multiplayer"));
 
 	let locationsArrayForSvgMap = $derived.by(() => {
 		if (mapLocationData?.locations?.length > 500) {
@@ -40,7 +43,7 @@
 	});
 
 	let iframeSource = $derived(
-		"https://www.google.com/maps/embed/v1/streetview?location=" +
+		$streetViewURLPrefix +
 			locationsArrayForSvgMap?.[locationIndex]?.[0] +
 			"," +
 			locationsArrayForSvgMap?.[locationIndex]?.[1] +
@@ -187,9 +190,7 @@
 			let finalLocations = newLocations;
 
 			// If add instead of overwrite, combine with existing locations
-			if (addInsteadOfOverwrite) {
-				finalLocations = [...(mapLocationData?.locations || []), ...newLocations];
-			}
+			if (addInsteadOfOverwrite) finalLocations = [...(mapLocationData?.locations || []), ...newLocations];
 
 			const body = {
 				id: localStorage.getItem("id"),
@@ -209,10 +210,20 @@
 
 			// Return the success or error message. No need to parse the response
 			if (response.ok) {
+				// Update local copy so subsequent adds use the latest locations
+				data = { ...data, map_data: { locations: finalLocations } };
 				return `Map updated successfully.`;
 			} else {
-				console.error("Error updating map: " + response.status);
-				return "Failed to update map: " + response.status;
+				let error = response.status;
+
+				// Try extract error
+				try {
+					const jsonResponse = await response.json();
+					if (jsonResponse.error) error = jsonResponse.error;
+				} catch {}
+
+				console.error("Error updating map: " + error);
+				return "Failed to update map: " + error;
 			}
 		} catch (error) {
 			console.error("Error updating map:", error);
@@ -220,27 +231,11 @@
 		}
 	}
 
-	// SVG Map-related ---------------------------------------------------------------------------------------------------------------------
-	// Calculate map center based on locations
-	let mapCenter = $derived.by(() => {
-		if (!locationsArrayForSvgMap || locationsArrayForSvgMap.length < 2) return;
-
-		// Find bounds
-		const bounds = locationsArrayForSvgMap.reduce(
-			(acc, [lat, lon]) => ({
-				minLat: Math.min(acc.minLat, lat),
-				maxLat: Math.max(acc.maxLat, lat),
-				minLon: Math.min(acc.minLon, lon),
-				maxLon: Math.max(acc.maxLon, lon),
-			}),
-			{ minLat: 90, maxLat: -90, minLon: 180, maxLon: -180 },
-		);
-		if (bounds.maxLon - bounds.minLon > 180 || bounds.maxLat - bounds.minLat > 90) return; // Use default if locations cover most of the world
-		return {
-			lat: (bounds.minLat + bounds.maxLat) / 2,
-			lon: (bounds.minLon + bounds.maxLon) / 2,
-		};
-	});
+	// Map download -------------------------------------------------------------------------------------------------------------------------
+	let mapDownloadHref = $derived(
+		"data:application/json;charset=utf-8," +
+			encodeURIComponent(JSON.stringify({ locations: mapLocationData?.locations ?? [] }, null, 2)),
+	);
 </script>
 
 <svelte:head>
@@ -263,8 +258,8 @@
 			{/if}
 			<SvgMap
 				locationList={locationsArrayForSvgMap}
-				zoom={1.25}
-				center={mapCenter}
+				framePaddingOffset={{ top: 40 }}
+				class="mapBulbShadow"
 				onclick={(coordinates) => {
 					const mapLocations = $state.snapshot(locationsArrayForSvgMap);
 					const index = mapLocations?.findIndex(([lat, lon]) => {
@@ -284,7 +279,7 @@
 			<p
 				class="authorText"
 				onclick={() => {
-					loadProfileFromId(mapAuthorId);
+					showProfile(mapAuthorId);
 				}}
 			>
 				by {mapAuthor}
@@ -347,17 +342,32 @@
 						showStatus = false;
 					}}><Replace size={18} strokeWidth={2.75} /></button
 				>
+				<a
+					id="manageDownload"
+					use:tooltip={{ text: "Download" }}
+					class="standardButton white mapButton largeButton"
+					href={mapDownloadHref}
+					download={`${mapName}.json`}
+					onclick={() => playSound("basic_button")}><FileDown size={18} strokeWidth={2.5} /></a
+				>
 			{/if}
 			<button
 				class="standardButton mapButton largeButton"
 				use:tooltip={{ text: "Play" }}
 				onclick={() => {
 					playSound("basic_button");
+
+					// Add to bookmarked community maps
 					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 					if (!addedCommunityMaps.includes(mapName)) addedCommunityMaps.push(mapName);
 					localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
-					changeMap("community_" + mapName, true);
-					goto("/");
+
+					// Change to map
+					changeMap("community_" + mapName, true, returnAfterChange);
+					if (!returnAfterChange) {
+						navigationMenu.set(false);
+						goto("/");
+					}
 				}}
 			>
 				<Play strokeWidth={2.5} />
@@ -384,11 +394,11 @@
 	</div>
 </div>
 
-<Popup bind:open={updatePopup}>
+<Popup bind:open={updatePopup} verySlim={true}>
 	<div class="popup-title">
 		<h1 id="mapUpdateHeader">Update locations</h1>
 	</div>
-	<p class="marginBottom">Locations</p>
+	<p class="marginBottom">Mode</p>
 	<Tabs
 		tabs={["Overwrite all", "Add"]}
 		onchange={(_, tabIndex) => {
@@ -396,6 +406,7 @@
 			addInsteadOfOverwrite = tabIndex != 0;
 		}}
 	/>
+	<p class="marginTop">Locations (Links)</p>
 	<div class="textareaContainer">
 		<textarea
 			type="text"
@@ -405,6 +416,7 @@
 			placeholder="https://www.google.com/maps..."
 		></textarea>
 	</div>
+	<p class="marginBottom">Locations (JSON)</p>
 	<button
 		class="standardButton white"
 		onclick={() => {
@@ -465,6 +477,10 @@
 		overflow: hidden;
 		margin-bottom: 50px;
 		position: relative;
+	}
+
+	:global(.mapBulbShadow) {
+		box-shadow: var(--bulb-shadow);
 	}
 
 	.locationsTrimNote {

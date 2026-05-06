@@ -1,26 +1,26 @@
 import { profilePopup } from "$lib/stores/uiStore";
-import { profileData, profileExperience, profileId, profileSupporterLevel } from "$lib/stores/context-specific/profileStore";
+import { profileData, profileId } from "$lib/stores/context-specific/profileStore";
 import { getProfileData } from "$lib/utils/getProfileData";
 import { showConfirmPopup } from "./confirmPopup";
 import { checkAuthenticationStatus, resetLocalSave } from "$lib/logic/accountLogic";
 import { signupPrompt } from "./signupPrompt";
+import { get } from "svelte/store";
 
-export async function loadProfileFromId(id) {
+export async function showProfile(userId) {
+    // If already open, play close -> open animation again to avoid jarring data switch
+    if (get(profilePopup)) profilePopup.set(false);
+    
     // Reset data
     profileData.set();
-    profileExperience.set(0);
-    profileSupporterLevel.set(0);
     profileId.set(-1);
 
-    const data = await getProfileData(id);
+    const data = await getProfileData(userId);
 
     // Save data
     if (data) {
         profileData.set(data);
-        profileExperience.set(data.experience);
-        profileSupporterLevel.set(data.supporterLevel);
-        profileId.set(id);
-    } else if (id == localStorage.getItem("id")) {
+        profileId.set(userId);
+    } else if (userId == localStorage.getItem("id")) {
         showConfirmPopup("Sign out?", "Loading your profile failed. If this was due to an authentication issue, signing out and back in might help.", () => {
             resetLocalSave();
             checkAuthenticationStatus();

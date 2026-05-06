@@ -7,7 +7,7 @@
 	import { tooltip } from "$lib/utils/tooltip";
 	import { fade, fly, scale } from "svelte/transition";
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { Bug, PencilRuler, Section, UserRoundPlus } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -130,7 +130,7 @@
 						class:notSignedIn={!$isAuthenticated}
 						class:profileInfoSupporter={$supporterLevel >= 1}
 						onclick={() => {
-							loadProfileFromId(localStorage.getItem("id"));
+							showProfile(localStorage.getItem("id"));
 							playSound("basic_button");
 						}}
 					>
