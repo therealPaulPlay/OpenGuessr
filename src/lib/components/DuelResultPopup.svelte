@@ -63,7 +63,7 @@
 	<div class="infoBox">
 		<Info
 			strokeWidth={2.25}
-			size={24}
+			size={22}
 			color="white"
 			style="opacity: 50%; margin-left: var(--content-margin); margin-right: 2px; margin-top: 2px;"
 		/>
@@ -75,7 +75,7 @@
 				divisionMatchHistoryPopup.set(true);
 			}}
 		>
-			History <History size={20} strokeWidth={2} style="margin-bottom: -3px; margin-left: 2px;" /></button
+			History <History size={20} strokeWidth={2.25} style="margin-bottom: -3px; margin-left: 2px;" /></button
 		>
 	</div>
 	<button
@@ -136,7 +136,7 @@
 
 	.infoBox p {
 		opacity: 0.5;
-		flex-grow: 3;
+		flex-grow: 100;
 	}
 
 	.resultText {

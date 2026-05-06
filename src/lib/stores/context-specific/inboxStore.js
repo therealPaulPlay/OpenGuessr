@@ -1,4 +1,4 @@
 import { writable } from "svelte/store";
 
-export const inboxContent = writable();
-export const inboxIconNew = writable(false);
+export const friendRequestInboxContent = writable();
+export const newFriendRequest = writable(false);

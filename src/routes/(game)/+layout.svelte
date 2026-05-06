@@ -59,6 +59,7 @@
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
 	import Notification from "$lib/components/Notification.svelte";
 	import MatchOverviewPopup from "$lib/components/MatchOverviewPopup.svelte";
+	import MessagesPopup from "$lib/components/MessagesPopup.svelte";
 
 	// Load panorama, ads, overfade etc.
 	onMount(() => {
@@ -135,6 +136,7 @@
 <ConfirmPopup />
 <CaptchaPopup />
 <ShopPurchaseAnimation />
+<MessagesPopup />
 <ProfilePopup />
 <BadgePopup />
 <PinPopup />

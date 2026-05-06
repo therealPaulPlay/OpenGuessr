@@ -28,3 +28,4 @@ export const tournamentMatchResultsPopup = writable(false);
 export const chatManagePopup = writable(false);
 export const chatMobilePopup = writable(false);
 export const matchOverviewPopup = writable(false);
+export const messagesPopup = writable(false);
