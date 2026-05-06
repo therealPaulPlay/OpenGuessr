@@ -186,7 +186,8 @@
 <style>
 	.sidebar {
 		min-width: 35%;
-		width: 200px;
+		min-height: 150px;
+		flex: 1;
 		overflow: hidden;
 		position: relative;
 		background-color: var(--box-color);

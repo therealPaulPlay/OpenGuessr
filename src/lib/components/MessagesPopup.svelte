@@ -47,19 +47,15 @@
 			headlessChatInitialLoad(); // Only runs once
 		} else {
 			activeConversationId.set(null);
+			lastSyncedConversationId = null;
 			offConvSpecificEvents(); // Unmount conversation specific handlers on popup close
 		}
 	});
 
-	// Watch the activeConversationId store so external triggers (notifications, profile DM button) sync the popup
+	// Watch the activeConversationId and set active conversation when changed
 	$effect(() => {
 		const id = $activeConversationId;
-		const popup = $messagesPopup;
-		if (!popup) {
-			lastSyncedConversationId = null; // Always re-sync on re-open of the popup
-			return;
-		}
-		if (id === lastSyncedConversationId) return;
+		if (id === lastSyncedConversationId || !$messagesPopup) return;
 		lastSyncedConversationId = id;
 		setActiveConversation(id);
 	});
@@ -76,25 +72,26 @@
 		isInitialMessagesLoad = Boolean(id);
 
 		await offConvSpecificEvents();
-		if (id) await openConversation(id, sequence);
+		// Verify popup still open
+		if ($messagesPopup) await openConversation(id, sequence);
 	}
 
 	async function openConversation(conversationId, thisGen) {
-		const client = get(hcClient);
-		if (!client) return;
+		if (!get(hcClient)) return console.warn("No headless-chat client defined in openConversation!");
 		const isStale = () => thisGen !== openGeneration; // Check if this load is from an old load generation
 
 		try {
 			messageHandler = (m) => mergeIncomingMessage(m);
-			await client.onMessage(conversationId, messageHandler);
-
 			indicatorHandler = (list) => {
 				const userId = localStorage.getItem("id");
 				indicators = list.filter((i) => i.participantId !== userId);
 			};
-			await client.onIndicators(conversationId, indicatorHandler);
+			await get(hcClient)?.onMany([
+				{ kind: "message", conversationId, handlers: [messageHandler] },
+				{ kind: "indicators", conversationId, handlers: [indicatorHandler] },
+			]);
 
-			const result = await client.getMessages(conversationId, null, false, PAGE_SIZE);
+			const result = await get(hcClient)?.getMessages(conversationId, null, false, PAGE_SIZE);
 			if (isStale()) return; // If no longer the lastest gen, exit
 
 			messages = result.messages;
@@ -126,9 +123,6 @@
 
 	// Bulk-fetch any referenced messages that aren't already in the loaded page or the reference cache
 	async function loadMissingReferences(messageList) {
-		const client = get(hcClient);
-		if (!client) return;
-
 		const toFetch = [];
 		for (const m of messageList) {
 			const refId = m.messageOptions?.referenceMessageId;
@@ -141,7 +135,7 @@
 
 		for (const id of toFetch) referenceLoadIds.add(id);
 		try {
-			const fetched = await client.getMessagesByIds(toFetch);
+			const fetched = await get(hcClient)?.getMessagesByIds(toFetch);
 			const found = new Map(fetched.map((m) => [m.messageId, m]));
 			for (const id of toFetch) referenceCache.set(id, found.get(id) ?? null); // null means gone from database, deleted messages still come back with deleted: true
 		} catch (error) {
@@ -168,6 +162,7 @@
 	}
 
 	async function loadOlder() {
+		if (!get(hcClient)) return console.warn("No headless-chat instance defined in loadOlder!");
 		if (isLoadingMore || isInitialMessagesLoad || remainingMore <= 0 || !messages.length) return;
 		isLoadingMore = true;
 
@@ -196,13 +191,15 @@
 	}
 
 	async function offConvSpecificEvents() {
-		const client = get(hcClient);
-		const promises = [];
-		if (messageHandler) promises.push(client?.offMessage(messageHandler));
-		if (indicatorHandler) promises.push(client?.offIndicators(indicatorHandler));
+		const handlers = [messageHandler, indicatorHandler].filter(Boolean);
 		messageHandler = null;
 		indicatorHandler = null;
-		await Promise.all(promises);
+		if (!handlers.length) return;
+		try {
+			await get(hcClient).offMany(handlers);
+		} catch (error) {
+			console.warn("Failed to off conversation-specific events:", error);
+		}
 	}
 
 	async function sendCurrent() {
@@ -253,7 +250,8 @@
 	let wasLoading = false;
 
 	$effect(() => {
-		const signature = `${messages.length}:${indicators.length}`;
+		const reactionTotal = messages.reduce((n, m) => n + m.reactions.length, 0);
+		const signature = `${messages.length}:${indicators.length}:${reactionTotal}`;
 		const finishedLoad = wasLoading && !isInitialMessagesLoad;
 		const changed = signature !== lastBottomSignature;
 		lastBottomSignature = signature;
@@ -447,11 +445,13 @@
 	}
 
 	.messages-pane {
-		flex-grow: 1;
+		flex-grow: 100;
+		flex-shrink: 1;
 		display: flex;
 		flex-direction: column;
 		gap: var(--box-margin);
 		min-width: 0;
+		min-height: 250px;
 	}
 
 	.messages-view {
@@ -535,6 +535,7 @@
 		margin: auto;
 		text-align: center;
 		max-width: 330px;
+		padding-inline: calc(var(--layout-margin) * 2);
 	}
 
 	.loading-more {

@@ -13,7 +13,6 @@
 
 	const REACTION_EMOJIS = ["👍", "❤️", "😂", "😢"];
 
-
 	let { message, referencedMessage = null, onreply, isTyping = false, isContinuation = false } = $props();
 
 	let userId = localStorage.getItem("id");
@@ -66,13 +65,13 @@
 
 <div class="message-row" class:own={isOwn}>
 	<div class="message-block">
-		{#if !isOwn && !isContinuation}
+		{#if !isContinuation}
 			<button
 				class="alias-button"
 				onclick={() => {
 					$messagesPopup = false;
 					showProfile(message.participantId);
-				}}>{alias}</button
+				}}>{isOwn ? "You" : alias}</button
 			>
 		{/if}
 
@@ -87,7 +86,12 @@
 				reactionPickerOpen = false;
 			}}
 		>
-			<div class="bubble" class:own-bubble={isOwn} class:deleted-bubble={message.deleted} class:has-reference={Boolean(referencedMessage)}>
+			<div
+				class="bubble"
+				class:own-bubble={isOwn}
+				class:deleted-bubble={message.deleted}
+				class:has-reference={Boolean(referencedMessage)}
+			>
 				{#if isTyping}
 					<div class="typing-dots">
 						<span class="typing-dot"></span>
@@ -114,17 +118,19 @@
 				<div class="actions" style:flex-direction={isOwn ? "" : "row-reverse"}>
 					<span class="timestamp">{timestamp}</span>
 					<div class="action-buttons">
-						<button
-							bind:this={reactButtonElement}
-							class="standardButton white action-button"
-							use:tooltip={{ text: "React" }}
-							onclick={() => {
-								playSound("basic_button");
-								reactionPickerOpen = !reactionPickerOpen;
-							}}
-						>
-							<SmilePlus size={18} strokeWidth={2.25} />
-						</button>
+						{#if !isOwn}
+							<button
+								bind:this={reactButtonElement}
+								class="standardButton white action-button"
+								use:tooltip={{ text: "React" }}
+								onclick={() => {
+									playSound("basic_button");
+									reactionPickerOpen = !reactionPickerOpen;
+								}}
+							>
+								<SmilePlus size={18} strokeWidth={2.25} />
+							</button>
+						{/if}
 						{#if isOwn}
 							<button
 								class="standardButton white action-button"
@@ -235,7 +241,6 @@
 		display: flex;
 		flex-direction: column;
 		gap: var(--content-margin);
-		max-width: 75%;
 	}
 
 	.alias-button {
@@ -249,6 +254,13 @@
 		transition: opacity 250ms ease;
 		text-align: left;
 		width: fit-content;
+		margin-left: 3px;
+	}
+
+	.message-row.own .alias-button {
+		align-self: flex-end;
+		margin-left: 0;
+		margin-right: 3px;
 	}
 
 	.alias-button:hover {
@@ -271,6 +283,7 @@
 		border-radius: var(--box-margin);
 		padding: var(--content-margin) var(--panel-margin);
 		overflow-wrap: anywhere;
+		max-width: 250px;
 	}
 
 	.has-reference {

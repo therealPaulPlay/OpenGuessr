@@ -46,9 +46,12 @@ export async function initHeadlessChatClient() {
     }
 
     // Subscribe to events that are always needed or cheap
-    await client.onConversation(handleConversationEvent);
-    await client.onInvite(handleInviteEvent);
-    await client.onParticipantActivity(handleParticipantActivityEvent);
+    // Bundled into one envelope with onMany to avoid 3 round-trips via the separate onConversation etc.
+    await client.onMany([
+        { kind: "conversation", handlers: [handleConversationEvent] },
+        { kind: "invite", handlers: [handleInviteEvent] },
+        { kind: "participantActivity", handlers: [handleParticipantActivityEvent] },
+    ]);
 }
 
 export function disposeHeadlessChatClient() {
@@ -71,7 +74,7 @@ export async function headlessChatInitialLoad() {
 
     // Exit if not initialized / connected to SSE yet
     const client = get(hcClient);
-    if (!client) return errorPopup("Failed to laod conversations", "Headless-chat client is not yet initialized.");
+    if (!client) return errorPopup("Failed to laod conversations", "Headless-chat client instance is not defined.");
 
     initialLoadPromise = (async () => {
         try {

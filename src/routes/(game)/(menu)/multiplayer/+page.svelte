@@ -196,7 +196,7 @@
 		</div>
 	</div>
 	<div class="friendBox">
-		<div class="friendBoxScroll of-top of-bottom" style:min-height={$loadedFriendsData ? "50px" : "80px"}>
+		<div class="friendBoxScroll of-top of-bottom" style:min-height={$loadedFriendsData && $isAuthenticated ? "50px" : "80px"}>
 			{#if $loadedFriendsData && $isAuthenticated}
 				<div class="innerFriendBox" transition:blur={{ duration: 150 }}>
 					{#each $loadedFriendsData as entry (entry.id)}
