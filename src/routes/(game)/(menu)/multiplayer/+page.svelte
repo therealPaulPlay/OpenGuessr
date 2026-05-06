@@ -203,7 +203,6 @@
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<div
 							class="friendItem largeButton"
-							transition:blur
 							role="menu"
 							tabindex="0"
 							onclick={() => {

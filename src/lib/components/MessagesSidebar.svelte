@@ -1,7 +1,7 @@
 <script>
 	import { get } from "svelte/store";
 	import { flip } from "svelte/animate";
-	import { X } from "@lucide/svelte";
+	import { Check, X } from "@lucide/svelte";
 	import { messagesPopup } from "$lib/stores/uiStore";
 	import {
 		hcClient,
@@ -18,6 +18,7 @@
 	import { tooltip } from "$lib/utils/tooltip";
 	import { playSound } from "$lib/utils/soundManager";
 	import Chip from "./ui/Chip.svelte";
+	import TitleSeparator from "./ui/TitleSeparator.svelte";
 
 	let userId = $derived(localStorage.getItem("id"));
 	let myInvites = $derived($invites.filter((i) => i.toParticipantId === userId));
@@ -57,21 +58,25 @@
 <div class="sidebar">
 	<div class="sidebar-inner of-top of-bottom">
 		{#if myInvites.length}
-			<p class="sidebar-heading">Invites</p>
+			<TitleSeparator text="Invites" noMargin={true} class="separator-title" />
 			{#each myInvites as invite (invite.conversation.conversationId)}
 				<div class="invite-item">
 					<p class="invite-text">
-						From <button
-							class="invite-link"
+						From
+						<!-- svelte-ignore a11y_click_events_have_key_events -->
+						<span
+							class="invite-username"
+							role="button"
+							tabindex="0"
 							onclick={() => {
 								$messagesPopup = false;
 								showProfile(invite.fromParticipantId);
-							}}>{conversationTitles.get(invite.conversation.conversationId) ?? "Unknown"}</button
+							}}>{conversationTitles.get(invite.conversation.conversationId) ?? "Unknown"}</span
 						>
 					</p>
 					<div class="invite-buttons">
 						<button
-							class="standardButton"
+							class="standardButton white"
 							onclick={async () => {
 								playSound("basic_button");
 								try {
@@ -80,7 +85,7 @@
 								} catch (error) {
 									errorPopup("Failed to accept invite", "An error occured trying to accept an invite.", error.message);
 								}
-							}}>Accept</button
+							}}><Check size={20} strokeWidth={2.5} style="vertical-align: -2px;" /></button
 						>
 						<button
 							class="standardButton white"
@@ -95,12 +100,12 @@
 										error.message,
 									);
 								}
-							}}><X size={20} strokeWidth={2.25} /></button
+							}}><X size={20} strokeWidth={2.5} style="vertical-align: -2px;" /></button
 						>
 					</div>
 				</div>
 			{/each}
-			<p class="sidebar-heading">Conversations</p>
+			<TitleSeparator text="Conversations" noMargin={true} class="separator-title" />
 		{/if}
 
 		{#if $conversations.length}
@@ -196,13 +201,6 @@
 		box-sizing: border-box;
 	}
 
-	.sidebar-heading {
-		opacity: 0.5;
-		font-size: 18px;
-		padding-inline: var(--content-margin);
-		margin-top: var(--content-margin);
-	}
-
 	.conversation-item {
 		display: flex;
 		align-items: center;
@@ -213,6 +211,11 @@
 		box-shadow: var(--box-shadow);
 		cursor: pointer;
 		transition: background-color 250ms ease;
+	}
+
+	:global(.separator-title) {
+		margin-top: var(--content-margin);
+		margin-bottom: var(--content-margin);
 	}
 
 	.conversation-content {
@@ -258,7 +261,6 @@
 		align-items: center;
 		gap: var(--panel-margin);
 		font-size: 18px;
-		line-height: 28px;
 		min-width: 0;
 	}
 
@@ -272,48 +274,45 @@
 
 	.invite-item {
 		padding: var(--box-margin);
-		border-radius: var(--box-margin);
-		background-color: rgba(255, 255, 255, 0.05);
+		padding-left: var(--layout-margin);
+		border-radius: var(--content-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 		display: flex;
-		flex-direction: column;
-		gap: var(--content-margin);
+		gap: var(--box-margin);
+		justify-content: space-between;
+		align-items: center;
+		overflow: hidden;
+		text-wrap: nowrap;
+	}
+
+	.invite-item button {
+		padding-inline: var(--box-margin);
 	}
 
 	.invite-text {
-		font-size: 18px;
-		overflow-wrap: break-word;
+		text-overflow: ellipsis;
+		overflow: hidden;
 	}
 
-	.invite-link {
-		color: white;
-		background: none;
-		border: none;
-		padding: 0;
+	.invite-username {
+		transition: opacity 250ms ease;
 		cursor: pointer;
-		text-decoration: underline;
+		vertical-align: center;
+	}
+
+	.invite-username:hover {
+		opacity: 0.5;
 	}
 
 	.invite-buttons {
 		display: flex;
-		gap: var(--content-margin);
-	}
-
-	.invite-buttons .standardButton {
-		flex: 1;
-		padding-inline: var(--content-margin);
+		gap: var(--box-margin);
 	}
 
 	.loading-text {
 		opacity: 0.5;
 		margin: auto;
 		text-align: center;
-	}
-
-	@media all and (max-width: 800px) {
-		.sidebar {
-			width: 100%;
-			min-width: 0;
-			max-height: 180px;
-		}
 	}
 </style>

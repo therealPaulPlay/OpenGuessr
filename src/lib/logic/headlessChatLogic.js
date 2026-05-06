@@ -123,7 +123,7 @@ async function handleConversationEvent({ conversationId, data }) {
     const author = await getAliasCached(last.participantId);
     const preview = last.message.length > 10 ? last.message.slice(0, 10) + "…" : last.message;
     showNotification(
-        `Message "${preview}" from %s`,
+        `Message "${preview}" from %s.`,
         () => {
             activeConversationId.set(conversationId);
             messagesPopup.set(true);
@@ -156,7 +156,7 @@ async function handleInviteEvent({ conversationId, toParticipantId, data }) {
     // Notify user about incoming invite
     const fromAlias = await getAliasCached(data.fromParticipantId);
     showNotification(
-        "Conversation invite from %s",
+        "Conversation invite from %s.",
         async () => {
             try {
                 await get(hcClient).acceptInvite(data.conversation.conversationId);
