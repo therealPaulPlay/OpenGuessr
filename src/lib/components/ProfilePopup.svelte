@@ -12,13 +12,12 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
 	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
-	import { pinPopup, badgePopup, reportPopup, roundLogPopup } from "$lib/stores/uiStore";
+	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
 	import { openDirectMessageWith } from "$lib/logic/headlessChatLogic";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
 	import {
 		Flame,
-		History,
 		Link,
 		Skull,
 		SquarePlus,
@@ -237,14 +236,6 @@
 				{/if}
 			</div>
 			{#if $profileId == localStorage.getItem("id")}
-				<button
-					class="standardButton white"
-					use:tooltip={{ text: "Round history" }}
-					onclick={() => {
-						playSound("basic_button");
-						$roundLogPopup = true;
-					}}><History strokeWidth={1.85} style="vertical-align: -3.75px;" size={23} /></button
-				>
 				<button
 					class="standardButton white"
 					use:tooltip={{ text: "Share link" }}

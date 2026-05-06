@@ -8,7 +8,6 @@ import { multiplayerMap, socket } from "$lib/stores/context-specific/multiplayer
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
 import { addUserXP } from "$lib/utils/updateUserXP";
-import { saveRoundToLog } from "$lib/utils/saveRoundToLog";
 import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates";
 import { playSound } from "$lib/utils/soundManager";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
@@ -87,10 +86,6 @@ export async function loadResultScreenXP(distance) {
     // Post-signin saves -----------------------------------------------------
     if (!get(isAuthenticated) && get(singleplayer)) lastExpCalculationSignedOut.set(true);
     else lastExpCalculationSignedOut.set(false);
-
-    // Save played round to log ------------------------------------------------
-    let mode = get(singleplayer) ? "Singleplayer" : get(multiplayer) ? "Multiplayer" : get(competition) ? "Competition" : "Unknown";
-    saveRoundToLog(mode, distance, [get(currentLocationLatitude), get(currentLocationLongitude)]);
 
     // Calculate experience and streak --------------------------------------
     let earnedXP;
