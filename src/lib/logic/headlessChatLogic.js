@@ -12,7 +12,6 @@ import {
 import { messagesPopup } from "$lib/stores/uiStore";
 import { errorPopup } from "$lib/utils/errorHandling";
 import { showNotification } from "$lib/utils/notifications";
-import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { showProfile } from "$lib/utils/showProfile";
 
 async function dispatch(data) {
@@ -229,7 +228,7 @@ export async function getAliasCached(participantId) {
 
 // Open a conversation with this participant
 // Friends auto-accept server-side, non-friends are warned with a confirm popup before the request
-export async function openDirectMessageWith(participantId, isFriend) {
+export async function openDirectMessageWith(participantId) {
     const openConversation = async () => {
         try {
             const response = await fetch(get(apiUrl) + "/headless-chat/conversation-with-user", {
@@ -258,11 +257,5 @@ export async function openDirectMessageWith(participantId, isFriend) {
             );
         }
     };
-
-    if (isFriend) await openConversation();
-    else showConfirmPopup(
-        "Start conversation?",
-        "Since you are not friends, they need to accept your conversation invite before seeing your messages.",
-        openConversation,
-    );
+    await openConversation();
 }

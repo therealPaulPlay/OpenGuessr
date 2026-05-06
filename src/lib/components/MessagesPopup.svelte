@@ -2,14 +2,15 @@
 	import { onDestroy, tick } from "svelte";
 	import { SvelteMap } from "svelte/reactivity";
 	import { get } from "svelte/store";
-	import { X, SendHorizonal } from "@lucide/svelte";
+	import { X, SendHorizonal, Info, MessageSquare } from "@lucide/svelte";
 	import Popup from "./ui/Popup.svelte";
 	import MessageItem from "./MessageItem.svelte";
 	import MessagesSidebar from "./MessagesSidebar.svelte";
 	import { messagesPopup } from "$lib/stores/uiStore";
-	import { hcClient, activeConversationId, aliasCache } from "$lib/stores/context-specific/headlessChatStore";
+	import { hcClient, activeConversationId, aliasCache, invites } from "$lib/stores/context-specific/headlessChatStore";
 	import { headlessChatInitialLoad, getAliasCached, loadAliases } from "$lib/logic/headlessChatLogic";
 	import { errorPopup } from "$lib/utils/errorHandling";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { playSound } from "$lib/utils/soundManager";
 
@@ -228,6 +229,25 @@
 		})),
 	);
 
+	// Outgoing invites still pending acceptance for the active conversation
+	let outgoingInviteRecipients = $derived(
+		$invites
+			.filter(
+				(i) =>
+					i.conversation.conversationId === $activeConversationId && i.fromParticipantId === localStorage.getItem("id"),
+			)
+			.map((i) => ({ participantId: i.toParticipantId, alias: aliasCache.get(i.toParticipantId) ?? "Unknown" })),
+	);
+
+	// Ensure aliases for all outstanding invite recipients are loaded
+	$effect(() => {
+		const missing = $invites
+			.filter((i) => i.fromParticipantId === localStorage.getItem("id"))
+			.map((i) => i.toParticipantId)
+			.filter((id) => !aliasCache.has(id));
+		if (missing.length) loadAliases(missing);
+	});
+
 	// Scroll to the rest position when bottom content changes or right after a conversation finishes loading
 	let lastBottomSignature = "";
 	let wasLoading = false;
@@ -263,9 +283,32 @@
 		<MessagesSidebar />
 
 		<div class="messages-pane">
+			{#if outgoingInviteRecipients.length}
+				<div class="invites-info">
+					<Info strokeWidth={2.25} size={22} color="white" style="opacity: 0.5; flex-shrink: 0;" />
+					<p class="invites-info-text">
+						Awaiting acceptance from {#each outgoingInviteRecipients as { participantId, alias }, i (participantId)}<!-- svelte-ignore a11y_click_events_have_key_events --><span
+								class="invite-name"
+								role="button"
+								tabindex="0"
+								onclick={() => {
+									$messagesPopup = false;
+									showProfile(participantId);
+								}}>{alias}</span
+							>{i < outgoingInviteRecipients.length - 1 ? ", " : ""}{/each}.
+					</p>
+				</div>
+			{/if}
+
 			<div class="messages-view">
 				{#if !$activeConversationId}
-					<p class="loading-text">No conversation selected.</p>
+					<p class="loading-text">
+						To start a new conversation, open a player's profile and click <MessageSquare
+							size={20}
+							strokeWidth={2.5}
+							style="margin-inline: 2px; margin-bottom: -2px;"
+						/>.
+					</p>
 				{:else if isInitialMessagesLoad}
 					<p class="loading-text">Loading...</p>
 				{:else if !messages.length}
@@ -422,6 +465,34 @@
 		box-sizing: border-box;
 	}
 
+	.invites-info {
+		display: flex;
+		align-items: center;
+		gap: var(--box-margin);
+		padding: var(--box-margin);
+		border-radius: var(--box-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+		min-width: 0;
+	}
+
+	.invites-info-text {
+		opacity: 0.5;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+		min-width: 0;
+	}
+
+	.invite-name {
+		cursor: pointer;
+		transition: opacity 250ms ease;
+	}
+
+	.invite-name:hover {
+		opacity: 0.5;
+	}
+
 	.messages-view-inner {
 		width: 100%;
 		height: 100%;
@@ -463,6 +534,7 @@
 		opacity: 0.5;
 		margin: auto;
 		text-align: center;
+		max-width: 330px;
 	}
 
 	.loading-more {

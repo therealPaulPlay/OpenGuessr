@@ -278,7 +278,7 @@
 					use:tooltip={{ text: "Send message" }}
 					onclick={() => {
 						playSound("basic_button");
-						if ($isAuthenticated) openDirectMessageWith($profileId, $profileData?.areFriends);
+						if ($isAuthenticated) openDirectMessageWith($profileId);
 						else signupPrompt();
 					}}
 				>

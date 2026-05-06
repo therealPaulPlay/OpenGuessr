@@ -30,7 +30,7 @@ export async function checkAuthenticationStatus() {
     }
   } else isAuthenticated.set(false);
 
-  attemptJoinViaLink();
+  attemptJoinViaLink(); // Check if the link contains a multiplayer room ID to join
 }
 
 export function resetLocalSave() {

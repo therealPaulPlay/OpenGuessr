@@ -44,6 +44,12 @@
 		return map;
 	});
 
+	// Ensure invite sender aliases are loaded
+	$effect(() => {
+		const missing = myInvites.map((i) => i.fromParticipantId).filter((id) => !aliasCache.has(id));
+		if (missing.length) loadAliases(missing);
+	});
+
 	function hasUnread(conversation) {
 		const last = conversation.lastMessage;
 		if (!last || last.participantId === localStorage.getItem("id")) return false;
@@ -71,7 +77,7 @@
 							onclick={() => {
 								$messagesPopup = false;
 								showProfile(invite.fromParticipantId);
-							}}>{conversationTitles.get(invite.conversation.conversationId) ?? "Unknown"}</span
+							}}>{aliasCache.get(invite.fromParticipantId) ?? "Unknown"}</span
 						>
 					</p>
 					<div class="invite-buttons">
