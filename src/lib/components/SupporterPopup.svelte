@@ -267,6 +267,7 @@
 	.tierBoxLargeHeader {
 		padding-bottom: var(--content-margin);
 		margin-bottom: auto;
+		line-height: 1.1;
 	}
 
 	.supporterPerksImage {

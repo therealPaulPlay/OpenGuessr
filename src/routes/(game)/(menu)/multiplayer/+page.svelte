@@ -9,12 +9,13 @@
 		Globe,
 		Handshake,
 		Plus,
+		MessagesSquare,
 	} from "@lucide/svelte";
-	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
+	import { divisionMatchHistoryPopup, friendBrowserPopup, messagesPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
 	import { loadedFriendsData, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
-	import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
+	import { newFriendRequest } from "$lib/stores/context-specific/inboxStore";
 	import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
@@ -30,6 +31,7 @@
 	import { tooltip } from "$lib/utils/tooltip";
 	import TournamentOverview from "$lib/components/TournamentOverview.svelte";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
+	import Chip from "$lib/components/ui/Chip.svelte";
 
 	let friendsRefreshInterval;
 
@@ -165,35 +167,36 @@
 	<TournamentOverview />
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Friends</h2>
-		<!-- Inbox and Friend request buttons-->
+		<!-- Inbox, friend request and messages buttons-->
 		<div class="friendButtonContainer barMenu">
 			<button
 				class="standardButton white largeButton"
+				use:tooltip={{ text: "Messages" }}
+				onclick={() => {
+					playSound("basic_button");
+					if ($isAuthenticated) messagesPopup.set(true);
+					else signupPrompt();
+				}}><MessagesSquare strokeWidth={2.25} size={22} style="margin-bottom: -2px;" /></button
+			>
+			<button
+				class="standardButton white largeButton friendAddButton"
+				style:position="relative"
 				use:tooltip={{ text: "Add friend" }}
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) friendBrowserPopup.set(true);
 					else signupPrompt();
-				}}><p class="addFriendText"><Plus strokeWidth={2.25} size={22} /></p></button
-			>
-			<button
-				class="standardButton white largeButton"
-				onclick={() => {
-					playSound("basic_button");
-					if ($isAuthenticated) {
-						inboxPopup.set(true);
-					} else {
-						signupPrompt();
-					}
 				}}
 			>
-				Inbox
-				<img alt="inbox icon" src={$inboxIconNew ? "/img/inbox_icon_new.png" : "/img/inbox_icon.png"} id="inboxIcon" />
-			</button>
+				<Plus strokeWidth={2.25} size={22} />
+				{#if $newFriendRequest}
+					<Chip text="New" italic={true} red={true} />
+				{/if}</button
+			>
 		</div>
 	</div>
 	<div class="friendBox">
-		<div class="friendBoxScroll of-top of-bottom" style:min-height={$loadedFriendsData ? "50px" : "80px"}>
+		<div class="friendBoxScroll of-top of-bottom" style:min-height={$loadedFriendsData && $isAuthenticated ? "50px" : "80px"}>
 			{#if $loadedFriendsData && $isAuthenticated}
 				<div class="innerFriendBox" transition:blur={{ duration: 150 }}>
 					{#each $loadedFriendsData as entry (entry.id)}
@@ -207,7 +210,7 @@
 							}}
 						>
 							{#if entry.online}
-								<div transition:slide={{ axis: "x" }} class="friendOnlineBar"></div>
+								<div transition:slide={{ axis: "x" }} class="friendOnlineDot"></div>
 							{/if}
 							<p>{entry.user_name}</p>
 							<button
@@ -257,6 +260,13 @@
 		flex-wrap: wrap;
 	}
 
+	.friendAddButton {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		gap: var(--panel-margin);
+	}
+
 	:global(.infoIconMultiplayer) {
 		width: 30px;
 		height: 30px;
@@ -284,13 +294,6 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-	}
-
-	.addFriendText {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: var(--panel-margin);
 	}
 
 	.playBox {
@@ -326,7 +329,6 @@
 		display: flex;
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
-		padding-inline: 6px !important;
 		transition:
 			filter 250ms ease,
 			transform 250ms ease,
@@ -334,13 +336,14 @@
 		align-items: center;
 		justify-content: space-between;
 		border: none;
-		gap: 3px;
-		padding-bottom: 1px;
+		padding: var(--panel-margin);
+		gap: var(--content-margin);
 		flex-grow: 1;
 		max-width: 25%;
 		overflow: hidden;
 		text-wrap: nowrap;
 		cursor: pointer;
+		height: unset;
 	}
 
 	.friendItem:hover {
@@ -473,10 +476,10 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.friendOnlineBar {
-		width: 6px;
-		border-radius: var(--content-margin);
-		height: var(--box-margin);
+	.friendOnlineDot {
+		width: 7px;
+		height: 7px;
+		border-radius: 100%;
 		background-color: #00cc00;
 		margin-top: 3px;
 		margin-left: var(--content-margin);
@@ -496,7 +499,7 @@
 
 	.friendBoxScroll {
 		overflow-y: auto;
-		max-height: 255px;
+		max-height: 215px;
 		width: 100%;
 		scrollbar-width: none;
 	}
@@ -506,13 +509,6 @@
 		align-items: center;
 		flex-wrap: wrap;
 		gap: var(--box-margin);
-	}
-
-	#inboxIcon {
-		width: 18px;
-		height: 18px;
-		vertical-align: -2px;
-		margin-left: var(--content-margin);
 	}
 
 	:global(.divisions-container) {

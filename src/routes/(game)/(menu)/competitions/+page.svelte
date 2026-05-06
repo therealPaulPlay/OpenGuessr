@@ -557,7 +557,7 @@
 					showProfile(id);
 				}}
 			>
-				hosted by {author}
+				by {author}
 			</p>
 		</div>
 		<div class="competitionPropertiesBox">

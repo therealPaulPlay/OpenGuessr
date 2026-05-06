@@ -1,8 +1,8 @@
 import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
-import { initializeSSEConnection } from "$lib/logic/sseLogic";
+import { initializeSSEConnection, disconnectSSE } from "$lib/logic/sseLogic";
 import { resultScreenEnabled, lastDistance, lastExpCalculationSignedOut } from "$lib/stores/context-specific/resultScreenStore";
 import { isAuthenticated, supporterLevel, experience, username, selectedPinIndex, selectedBadge, elo, tokens, purchasedPins, accountDataLoaded, duelWinStreak } from "$lib/stores/accountStore";
-import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
+import { newFriendRequest } from "$lib/stores/context-specific/inboxStore";
 import { isTokenExpired } from "$lib/utils/isTokenExpired.js";
 import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { get } from "svelte/store";
@@ -30,10 +30,12 @@ export async function checkAuthenticationStatus() {
     }
   } else isAuthenticated.set(false);
 
-  attemptJoinViaLink();
+  attemptJoinViaLink(); // Check if the link contains a multiplayer room ID to join
 }
 
 export function resetLocalSave() {
+  disconnectSSE(); // Close the SSE connection opened on sign in
+
   // Localstorage resets
   localStorage.removeItem("bearer");
   localStorage.removeItem("id");
@@ -50,7 +52,7 @@ export function resetLocalSave() {
   purchasedPins.set([]);
   freeDailyTokensClaimed.set(false);
   duelWinStreak.set(0);
-  inboxIconNew.set(false);
+  newFriendRequest.set(false);
 
   // Set account loaded to false
   accountDataLoaded.set(false);
@@ -77,7 +79,7 @@ async function loadUserInfo() {
       if (user.purchased_pins) purchasedPins.set(user.purchased_pins);
       if (user.free_tokens_claimed != null) freeDailyTokensClaimed.set(user.free_tokens_claimed);
       if (user.current_duel_win_streak != null) duelWinStreak.set(user.current_duel_win_streak);
-      if (user.new_request) { inboxIconNew.set(true); }
+      if (user.new_request) { newFriendRequest.set(true); }
 
       // If the user signed in on the result screen with a pending result, re-run it
       if (get(resultScreenEnabled) && get(lastExpCalculationSignedOut)) loadResultScreenXP(get(lastDistance));

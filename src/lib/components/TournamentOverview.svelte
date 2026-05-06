@@ -50,7 +50,7 @@
 		</div>
 		<button
 			class="tournamentFieldButton standardButton {tournament.status == 'starting' ? '' : 'white'}"
-			use:tooltip={{ text: "View details" }}
+			use:tooltip={{ text: "Details" }}
 			onclick={() => {
 				playSound("basic_button");
 				$selectedTournamentId = tournament.id;
@@ -180,7 +180,6 @@
 	}
 
 	.tournamentFieldButton {
-		padding-inline: 20px;
 		height: 43px;
 		margin-left: auto;
 	}

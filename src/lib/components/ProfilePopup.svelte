@@ -12,12 +12,12 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
 	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
-	import { pinPopup, badgePopup, reportPopup, roundLogPopup } from "$lib/stores/uiStore";
+	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
+	import { openDirectMessageWith } from "$lib/logic/headlessChatLogic";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
 	import {
 		Flame,
-		History,
 		Link,
 		Skull,
 		SquarePlus,
@@ -36,14 +36,11 @@
 		ArrowUpFromDot,
 		UserRoundPlus,
 		UserRoundCheck,
+		MessageSquare,
 	} from "@lucide/svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import {
-		profileData,
-		profileId,
-		unsavedAboutChanges,
-	} from "$lib/stores/context-specific/profileStore";
+	import { profileData, profileId, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
@@ -56,6 +53,7 @@
 	import { showNotification } from "$lib/utils/notifications";
 	import { censor } from "fast-profanity-filter";
 	import { tooltip } from "$lib/utils/tooltip";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
 
 	let textarea = $state();
 	let selectedTabIndex = $state(0);
@@ -240,14 +238,6 @@
 			{#if $profileId == localStorage.getItem("id")}
 				<button
 					class="standardButton white"
-					use:tooltip={{ text: "Round history" }}
-					onclick={() => {
-						playSound("basic_button");
-						$roundLogPopup = true;
-					}}><History strokeWidth={1.85} style="vertical-align: -3.75px;" size={23} /></button
-				>
-				<button
-					class="standardButton white"
 					use:tooltip={{ text: "Share link" }}
 					onclick={() => {
 						playSound("basic_button");
@@ -266,7 +256,7 @@
 			{/if}
 			{#if $profileData?.supporterLevel >= 1}
 				<div id="supporterTag">
-					<p id="supporterTagText">Tier {$profileData?.supporterLevel }</p>
+					<p id="supporterTagText">Tier {$profileData?.supporterLevel}</p>
 					<img id="supporterIcon" alt="supporter tag" src="/img/supporter_icon.png" />
 				</div>
 			{/if}
@@ -282,14 +272,27 @@
 					Report <TriangleAlert size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: 2px;" />
 				</button>
 			{/if}
-			{#if $profileId != localStorage.getItem("id") && $isAuthenticated}
+			{#if $profileId != localStorage.getItem("id")}
+				<button
+					class="standardButton white"
+					use:tooltip={{ text: "Send message" }}
+					onclick={() => {
+						playSound("basic_button");
+						if ($isAuthenticated) openDirectMessageWith($profileId);
+						else signupPrompt();
+					}}
+				>
+					<MessageSquare style="margin-bottom: -1px;" size={20} strokeWidth={2.25} />
+				</button>
 				<button
 					class="standardButton white"
 					disabled={$profileData?.areFriends}
 					use:tooltip={{ text: "Send friend request" }}
 					onclick={(e) => {
 						playSound("basic_button");
-						sendFriendRequest($profileId, e.target); // This also shows a notification
+						// Send friend request (also shows ingame notification)
+						if ($isAuthenticated) sendFriendRequest($profileId, e.target);
+						else signupPrompt();
 					}}
 				>
 					{#if !$profileData?.areFriends}
