@@ -95,7 +95,7 @@ export async function headlessChatInitialLoad() {
         } catch (error) {
             errorPopup(
                 "Failed to load messages",
-                "An error occured trying to load conversations and invites.",
+                "An error occured trying to load conversations, participant activities and invites.",
                 error.message,
             );
         } finally {
