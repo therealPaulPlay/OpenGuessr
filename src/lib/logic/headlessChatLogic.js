@@ -62,6 +62,7 @@ export function disposeHeadlessChatClient() {
     participantActivities.set([]);
     activeConversationId.set(null);
     aliasCache.clear();
+    notifiedMessageIds.clear();
     initialDataLoaded = false;
 }
 
@@ -101,8 +102,11 @@ export async function headlessChatInitialLoad() {
     return initialLoadPromise;
 }
 
+// FIFO of recently notified message ids so reaction/edit re-emits don't re-trigger the notification
+const notifiedMessageIds = new Map();
+
 async function handleConversationEvent({ conversationId, data }) {
-    // If the update is null, remove the conversations (means the convo was deleted)
+    // If the update is null, remove the conversation (means the convo was deleted)
     if (data == null) {
         conversations.update((list) => list.filter((c) => c.conversationId !== conversationId));
         if (get(activeConversationId) === conversationId) activeConversationId.set(null); // Clear active conversation if it was deleted
@@ -119,8 +123,11 @@ async function handleConversationEvent({ conversationId, data }) {
     const last = data.lastMessage;
     if (!last || last.deleted || last.systemEvent) return;
 
-    // Don't notify for the current user's own messages or while the popup is open
+    // Don't notify for own messages, while the popup is open, or for messages we've already notified about
     if (last.participantId === localStorage.getItem("id") || get(messagesPopup)) return;
+    if (notifiedMessageIds.has(last.messageId)) return;
+    notifiedMessageIds.set(last.messageId, true);
+    if (notifiedMessageIds.size > 200) notifiedMessageIds.delete(notifiedMessageIds.keys().next().value);
 
     const author = await getAliasCached(last.participantId);
     const preview = last.message.length > 10 ? last.message.slice(0, 10) + "…" : last.message;
