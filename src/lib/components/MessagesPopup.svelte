@@ -8,7 +8,7 @@
 	import MessagesSidebar from "./MessagesSidebar.svelte";
 	import { messagesPopup } from "$lib/stores/uiStore";
 	import { hcClient, activeConversationId, aliasCache, invites } from "$lib/stores/context-specific/headlessChatStore";
-	import { headlessChatInitialLoad, getAliasCached, loadAliases } from "$lib/logic/headlessChatLogic";
+	import { headlessChatInitialLoad, loadAliases } from "$lib/logic/headlessChatLogic";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { tooltip } from "$lib/utils/tooltip";
@@ -24,7 +24,6 @@
 	let isLoadingMore = $state(false);
 	let indicators = $state([]);
 	let replyTo = $state(null);
-	let replyToAlias = $state("Unknown");
 	let inputValue = $state("");
 
 	let messagesContainer = $state();
@@ -354,10 +353,7 @@
 											null)
 										: null}
 									isContinuation={i > 0 && messages[i - 1].participantId === message.participantId}
-									onreply={async (m) => {
-										replyTo = m;
-										replyToAlias = await getAliasCached(m.participantId);
-									}}
+									onreply={(m) => (replyTo = m)}
 								/>
 							{/if}
 						{/each}
@@ -378,7 +374,9 @@
 					{#if replyTo}
 						<div class="reply-preview">
 							<p class="reply-preview-text">
-								<span style:opacity="0.5">Replying to&nbsp;</span>{replyToAlias}
+								<span style:opacity="0.5">Replying to&nbsp;</span>"{replyTo.message.length > 25
+									? replyTo.message.slice(0, 25) + "…"
+									: replyTo.message}"
 							</p>
 							<button
 								class="standardButton white reply-close"
