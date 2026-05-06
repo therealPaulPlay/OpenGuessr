@@ -1,6 +1,5 @@
 <script>
 	import { get } from "svelte/store";
-	import { slide } from "svelte/transition";
 	import { flip } from "svelte/animate";
 	import { X } from "@lucide/svelte";
 	import { messagesPopup } from "$lib/stores/uiStore";
@@ -18,6 +17,7 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { tooltip } from "$lib/utils/tooltip";
 	import { playSound } from "$lib/utils/soundManager";
+	import Chip from "./ui/Chip.svelte";
 
 	let userId = $derived(localStorage.getItem("id"));
 	let myInvites = $derived($invites.filter((i) => i.toParticipantId === userId));
@@ -38,7 +38,7 @@
 			map.set(c.conversationId, buildTitle(c.participantIds));
 			for (const p of c.participantIds) if (!aliasCache.has(p)) missing.add(p);
 		}
-		// Kick off any missing alias loads, the cache fill triggers a re-derive once they land
+		// Kick off any missing alias loads
 		if (missing.size) loadAliases([...missing]);
 		return map;
 	});
@@ -123,7 +123,7 @@
 						</div>
 						<div class="conversation-preview">
 							{#if hasUnread(c)}
-								<span class="unread-pill" transition:slide={{ axis: "x", duration: 100 }}>New</span>
+								<Chip text="New" italic={true} red={true} />
 							{/if}
 							<span class="conversation-preview-text">
 								{#if c.lastMessage?.deleted}
@@ -167,7 +167,7 @@
 				</div>
 			{/each}
 		{:else}
-			<p class="loading-text">No conversations yet.</p>
+			<p class="loading-text">No conversations.</p>
 		{/if}
 	</div>
 </div>
@@ -241,19 +241,6 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
-	}
-
-	.unread-pill {
-		font-size: 18px;
-		font-style: italic;
-		line-height: normal;
-		border-radius: var(--content-margin);
-		background-color: rgb(224, 2, 2);
-		padding: 2px;
-		padding-inline: var(--panel-margin);
-		padding-left: var(--content-margin);
-		box-shadow: var(--bulb-shadow);
-		flex-shrink: 0;
 	}
 
 	.leave-button {

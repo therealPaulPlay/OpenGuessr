@@ -10,9 +10,8 @@
 		Handshake,
 		Plus,
 		MessagesSquare,
-		Mail,
 	} from "@lucide/svelte";
-	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup, messagesPopup } from "$lib/stores/uiStore";
+	import { divisionMatchHistoryPopup, friendBrowserPopup, messagesPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
 	import { loadedFriendsData, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
@@ -32,6 +31,7 @@
 	import { tooltip } from "$lib/utils/tooltip";
 	import TournamentOverview from "$lib/components/TournamentOverview.svelte";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
+	import Chip from "$lib/components/ui/Chip.svelte";
 
 	let friendsRefreshInterval;
 
@@ -179,29 +179,20 @@
 				}}><MessagesSquare strokeWidth={2.25} size={22} style="margin-bottom: -2px;" /></button
 			>
 			<button
-				class="standardButton white largeButton"
+				class="standardButton white largeButton friendAddButton"
+				style:position="relative"
 				use:tooltip={{ text: "Add friend" }}
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) friendBrowserPopup.set(true);
 					else signupPrompt();
-				}}><Plus strokeWidth={2.25} size={22} style="margin-bottom: -2px;" /></button
-			>
-			<button
-				class="standardButton white largeButton"
-				style:position="relative"
-				use:tooltip={{ text: "Inbox" }}
-				onclick={() => {
-					playSound("basic_button");
-					if ($isAuthenticated) inboxPopup.set(true);
-					else signupPrompt();
 				}}
 			>
+				<Plus strokeWidth={2.25} size={22} />
 				{#if $newFriendRequest}
-					<span class="newRequestDot"></span>
-				{/if}
-				<Mail strokeWidth={2.25} size={22} style="margin-bottom: -2px;" />
-			</button>
+					<Chip text="New" italic={true} red={true} />
+				{/if}</button
+			>
 		</div>
 	</div>
 	<div class="friendBox">
@@ -268,6 +259,13 @@
 
 	.warnInfo {
 		flex-wrap: wrap;
+	}
+
+	.friendAddButton {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		gap: var(--panel-margin);
 	}
 
 	:global(.infoIconMultiplayer) {
@@ -486,16 +484,6 @@
 		background-color: #00cc00;
 		margin-top: 3px;
 		margin-left: var(--content-margin);
-	}
-
-	.newRequestDot {
-		width: 7px;
-		height: 7px;
-		border-radius: 100%;
-		background-color: var(--brand-color);
-		position: absolute;
-		top: 11.5px;
-		right: 11px;
 	}
 
 	.friendBox {

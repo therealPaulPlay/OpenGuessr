@@ -2,12 +2,14 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { playSound } from "$lib/utils/soundManager";
-	import { friendBrowserPopup } from "$lib/stores/uiStore";
+	import { friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { sendFriendRequest } from "$lib/utils/sendFriendRequest";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { Search, UserRoundPlus } from "@lucide/svelte";
+	import { Mail, Search, UserRoundPlus } from "@lucide/svelte";
+	import { newFriendRequest } from "$lib/stores/context-specific/inboxStore";
+	import Chip from "./ui/Chip.svelte";
 
 	let userSearchResults = $state();
 	let searchQuery = $state("");
@@ -111,9 +113,29 @@
 					</div>
 				{/each}
 			{:else}
-				<p class="playerSearchError">Search returned no results.</p>
+				<p class="playerSearchError">No results.</p>
 			{/if}
 		</div>
+	</div>
+	<div class="incomingBox">
+		<p style:margin-right="var(--box-margin)" style:margin-left="var(--content-margin)" style:flex-grow="100">
+			Incoming requests
+			{#if $newFriendRequest}
+				<Chip red={true} italic={true} text="New" class="newChip" />
+			{/if}
+		</p>
+		<button
+			class="standardButton white"
+			style:position="relative"
+			style:flex-grow="1"
+			onclick={() => {
+				playSound("basic_button");
+				inboxPopup.set(true);
+			}}
+		>
+			Inbox
+			<Mail strokeWidth={2.25} size={20} style="margin-bottom: -3px; margin-left: 2px;" />
+		</button>
 	</div>
 </Popup>
 
@@ -129,6 +151,22 @@
 		transform: translate(-50%, -50%);
 	}
 
+	:global(.newChip) {
+		margin-left: var(--content-margin);
+	}
+
+	.incomingBox {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: var(--panel-margin);
+		padding: var(--box-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+		border-radius: var(--box-margin);
+		flex-wrap: wrap;
+	}
+
 	.containerBox {
 		position: relative;
 		box-shadow: var(--box-shadow);
@@ -136,12 +174,12 @@
 		box-sizing: border-box;
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
-		margin-top: var(--box-margin);
 		padding: var(--box-margin);
+		margin-bottom: var(--layout-margin);
 	}
 
 	.containerBoxScroll {
-		max-height: min(500px, calc(100dvh - 300px));
+		max-height: min(500px, calc(100dvh - 350px));
 		min-height: 20dvh;
 		scrollbar-width: none;
 		display: flex;
