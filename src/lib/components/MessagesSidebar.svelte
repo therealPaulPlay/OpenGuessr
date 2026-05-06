@@ -25,8 +25,8 @@
 
 	// Builds a label from a conversation's participants, excluding the current user
 	function buildTitle(participants) {
-		const me = localStorage.getItem("id");
-		const others = participants.filter((p) => p !== me);
+		const userId = localStorage.getItem("id");
+		const others = participants.filter((p) => p !== userId);
 		if (!others.length) return "Just you";
 
 		return others.map((p) => aliasCache.get(p) ?? "Unknown").join(", ");
@@ -52,7 +52,7 @@
 
 	function hasUnread(conversation) {
 		const last = conversation.lastMessage;
-		if (!last || last.participantId === localStorage.getItem("id")) return false;
+		if (!last) return false;
 
 		const activity = $participantActivities.find((a) => a.conversationId === conversation.conversationId);
 		if (!activity) return true;
