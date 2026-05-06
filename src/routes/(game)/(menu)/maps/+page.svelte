@@ -245,7 +245,7 @@
 	>
 		<div class="map-info">
 			<p class="map-name">{map.name || "Name not loaded"}</p>
-			<p class="map-author">by {map.author || "Bugsnacker"}</p>
+			<p class="map-author">by {map.author || "Error"}</p>
 		</div>
 		<button
 			class="add-button standardButton white"
