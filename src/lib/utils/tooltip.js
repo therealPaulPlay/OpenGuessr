@@ -8,7 +8,6 @@ export function tooltip(node, { text }) {
         tooltipElement.textContent = text;
         tooltipElement.setAttribute('popover', '');
         tooltipElement.setAttribute('role', 'tooltip');
-        tooltipElement.style.position = 'relative';
 
         arrowElement = document.createElement('div');
         arrowElement.className = 'tooltip-arrow';

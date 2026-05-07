@@ -81,7 +81,7 @@
 			class="bubble-with-actions"
 			class:own-aligned={isOwn}
 			onpointerleave={(e) => {
-				if (!reactionPickerOpen) return;
+				if (e.pointerType === "touch" || !reactionPickerOpen) return;
 				if (actionsElement?.contains(e.relatedTarget) || reactionPickerElement?.contains(e.relatedTarget)) return;
 				reactionPickerOpen = false;
 			}}
@@ -175,20 +175,25 @@
 							class="reaction-picker-wrapper"
 							popover="manual"
 							onpointerleave={(e) => {
+								if (e.pointerType === "touch") return;
 								if (!actionsElement?.contains(e.relatedTarget)) reactionPickerOpen = false;
 							}}
 							{@attach (node) => {
 								const panel = node.querySelector(".reaction-picker");
-								panel.style.cssText =
-									"transform:scale(0);opacity:0;filter:blur(15px);transition:transform 150ms ease,opacity 150ms ease,filter 150ms ease";
+								Object.assign(panel.style, {
+									transform: "scale(0)",
+									opacity: "0",
+									filter: "blur(15px)",
+									transition: "transform 150ms ease, opacity 150ms ease, filter 150ms ease",
+								});
 								node.showPopover();
 
 								computePosition(reactButtonElement, node, {
 									placement: "top",
 									middleware: [flip(), shift({ padding: 5 })],
 								}).then(({ x, y }) => {
-									node.style.cssText += `;left:${x}px;top:${y}px`;
-									requestAnimationFrame(() => (panel.style.cssText += ";transform:scale(1);opacity:1;filter:blur(0)"));
+									Object.assign(node.style, { left: x + "px", top: y + "px" });
+									requestAnimationFrame(() => Object.assign(panel.style, { transform: "scale(1)", opacity: "1", filter: "blur(0)" }));
 								});
 
 								const onPointerDown = (e) => {
@@ -435,7 +440,6 @@
 	}
 
 	.reaction-picker-wrapper {
-		position: fixed;
 		margin: 0;
 		padding: 0 0 var(--box-margin) 0;
 		background: none;

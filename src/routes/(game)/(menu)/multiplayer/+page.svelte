@@ -190,7 +190,7 @@
 			>
 				<Plus strokeWidth={2.25} size={22} />
 				{#if $newFriendRequest}
-					<Chip text="New" italic={true} red={true} />
+					<Chip text="New" italic={true} red={true} animate={true} />
 				{/if}</button
 			>
 		</div>

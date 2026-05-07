@@ -82,6 +82,7 @@
 	{/if}
 	<button
 		class="standardButton white menu-button"
+		aria-label="Menu"
 		onpointerenter={displayHistoryTooltip}
 		onmouseleave={hideHistoryTooltip}
 		onclick={() => {

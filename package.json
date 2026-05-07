@@ -29,7 +29,7 @@
 		"eslint-plugin-svelte": "^3.16.0",
 		"fast-profanity-filter": "^0.0.5",
 		"globals": "^17.3.0",
-		"headless-chat": "^1.1.0",
+		"headless-chat": "^1.2.2",
 		"howler": "^2.2.4",
 		"leaflet": "^1.9.4",
 		"overfade": "^0.0.11",

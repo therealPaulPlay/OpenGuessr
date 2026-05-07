@@ -26,13 +26,6 @@
 			mapHovered.set(false);
 		}, 250);
 	}
-
-	// Allow the user to guess with the space bar (instead of clicking on "Guess")
-	function spaceBarGuess(event) {
-		if (event.key === " ") {
-			if (get(confirmButtonActive) && isElementClickable(mapElement)) confirmButtonClicks();
-		}
-	}
 </script>
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
@@ -41,14 +34,20 @@
 	id="map"
 	role="region"
 	tabindex="0"
-	onkeyup={spaceBarGuess}
+	onkeyup={(event) => {
+		// Allow for pressing the space bar to guess
+		if (event.key === " ") if (get(confirmButtonActive) && isElementClickable(mapElement)) confirmButtonClicks();
+	}}
 	onpointerover={(event) => {
 		lastPointerType = event.pointerType;
 	}}
 	onmouseenter={handleMapHover}
 	onmouseleave={handleMapUnhover}
 	bind:this={mapElement}
-	onkeyup={spaceBarGuess}
+	onkeyup={(event) => {
+		// Allow for pressing the space bar to guess
+		if (event.key === " ") if (get(confirmButtonActive) && isElementClickable(mapElement)) confirmButtonClicks();
+	}}
 	onmouseover={initializeMapIfNotAlready}
 	ontouchstart={initializeMapIfNotAlready}
 	style:max-height={$mapExpanded ? "100%" : "0%"}
