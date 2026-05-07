@@ -7,7 +7,7 @@
 	let { children } = $props();
 
 	// Component Imports
-	import { disableAutoAuthentication, playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
+	import { playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 	import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
 	import ImageGuesser from "$lib/components/ImageGuesser.svelte";
 	import ErrorPopup from "$lib/components/ErrorPopup.svelte";
@@ -58,14 +58,13 @@
 	import Notification from "$lib/components/Notification.svelte";
 	import MatchOverviewPopup from "$lib/components/MatchOverviewPopup.svelte";
 	import MessagesPopup from "$lib/components/MessagesPopup.svelte";
-	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
+	import Authentication from "$lib/components/Authentication.svelte";
 
 	// Load panorama, ads, overfade etc.
 	onMount(async () => {
 		initOverfade();
 		checkGenerationTypeAndGenerate();
 		initializeAds();
-		if (!$disableAutoAuthentication) checkAuthenticationStatus();
 
 		// Load Playlight
 		try {
@@ -120,6 +119,9 @@
 
 <!-- 3rd party -->
 <CrazyGames />
+
+<!-- Log user in -->
+<Authentication />
 
 <!-- Logo and Nav -->
 <TopLeftLogo />
