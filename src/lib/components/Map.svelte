@@ -44,10 +44,6 @@
 	onmouseenter={handleMapHover}
 	onmouseleave={handleMapUnhover}
 	bind:this={mapElement}
-	onkeyup={(event) => {
-		// Allow for pressing the space bar to guess
-		if (event.key === " ") if (get(confirmButtonActive) && isElementClickable(mapElement)) confirmButtonClicks();
-	}}
 	onmouseover={initializeMapIfNotAlready}
 	ontouchstart={initializeMapIfNotAlready}
 	style:max-height={$mapExpanded ? "100%" : "0%"}
