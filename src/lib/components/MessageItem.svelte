@@ -439,7 +439,6 @@
 	}
 
 	.reaction-picker-wrapper {
-		position: fixed;
 		margin: 0;
 		padding: 0 0 var(--box-margin) 0;
 		background: none;
