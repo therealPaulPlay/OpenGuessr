@@ -25,37 +25,37 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
     // Define custom icons for markers
     const yourIcon = {
         url: "/img/pins/player_pin" + get(selectedPinIndex) + ".png",
-        size: new google.maps.Size(35, 35),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17.5, 34),
-        scaledSize: new google.maps.Size(35, 35)
+        size: new window.google.maps.Size(35, 35),
+        origin: new window.google.maps.Point(0, 0),
+        anchor: new window.google.maps.Point(17.5, 34),
+        scaledSize: new window.google.maps.Size(35, 35)
     };
 
     const resultIcon = {
         url: '/img/pins/result_pin.png',
-        size: new google.maps.Size(35, 35),
-        origin: new google.maps.Point(0, 0),
-        anchor: new google.maps.Point(17.5, 34),
-        scaledSize: new google.maps.Size(35, 35)
+        size: new window.google.maps.Size(35, 35),
+        origin: new window.google.maps.Point(0, 0),
+        anchor: new window.google.maps.Point(17.5, 34),
+        scaledSize: new window.google.maps.Size(35, 35)
     };
 
-    const correctLatLng = new google.maps.LatLng(correctLat, correctLon);
+    const correctLatLng = new window.google.maps.LatLng(correctLat, correctLon);
 
     let bounds = null; // Boundaries adjusted to guess and correct location
 
     // Add player marker and polyline
     if (!get(countryGuessr)) {
-        const guessLatLng = new google.maps.LatLng(guessLat, guessLon);
-        bounds = new google.maps.LatLngBounds(correctLatLng, guessLatLng);
+        const guessLatLng = new window.google.maps.LatLng(guessLat, guessLon);
+        bounds = new window.google.maps.LatLngBounds(correctLatLng, guessLatLng);
 
-        const playerMarker = new google.maps.Marker({
+        const playerMarker = new window.google.maps.Marker({
             position: guessLatLng,
             map: get(map),
             icon: yourIcon
         });
 
         if (get(multiplayer)) {
-            const playerInfoWindow = new google.maps.InfoWindow({
+            const playerInfoWindow = new window.google.maps.InfoWindow({
                 content: "You"
             });
             playerMarker.addListener('click', function () {
@@ -63,7 +63,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
             });
         }
 
-        const polyline = new google.maps.Polyline({
+        const polyline = new window.google.maps.Polyline({
             path: [correctLatLng, guessLatLng],
             map: get(map),
             strokeColor: "black",
@@ -90,28 +90,28 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
 
             const multiplayerIcon = {
                 url: "/img/pins/player_pin" + (element.pin ?? 0) + ".png",
-                size: new google.maps.Size(35, 35),
-                origin: new google.maps.Point(0, 0),
-                anchor: new google.maps.Point(17.5, 34),
-                scaledSize: new google.maps.Size(35, 35)
+                size: new window.google.maps.Size(35, 35),
+                origin: new window.google.maps.Point(0, 0),
+                anchor: new window.google.maps.Point(17.5, 34),
+                scaledSize: new window.google.maps.Size(35, 35)
             };
 
-            const multiplayerMarker = new google.maps.Marker({
-                position: new google.maps.LatLng(lat, lon),
+            const multiplayerMarker = new window.google.maps.Marker({
+                position: new window.google.maps.LatLng(lat, lon),
                 map: get(map),
                 icon: multiplayerIcon,
                 opacity: 0.75
             });
 
-            const multiplayerInfoWindow = new google.maps.InfoWindow({
+            const multiplayerInfoWindow = new window.google.maps.InfoWindow({
                 content: element.username
             });
             multiplayerMarker.addListener('click', function () {
                 multiplayerInfoWindow.open(get(map), multiplayerMarker);
             });
 
-            const multiplayerPolyline = new google.maps.Polyline({
-                path: [correctLatLng, new google.maps.LatLng(lat, lon)],
+            const multiplayerPolyline = new window.google.maps.Polyline({
+                path: [correctLatLng, new window.google.maps.LatLng(lat, lon)],
                 map: get(map),
                 strokeColor: "black",
                 strokeWeight: 1,
@@ -126,7 +126,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
     }
 
     // Place the destination marker
-    const destinationMarker = new google.maps.Marker({
+    const destinationMarker = new window.google.maps.Marker({
         position: { lat: correctLat, lng: correctLon },
         map: get(map),
         icon: resultIcon

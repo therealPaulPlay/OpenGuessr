@@ -1,21 +1,15 @@
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
-import { showNotification } from "$lib/utils/notifications.js";
-import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { playSound } from "$lib/utils/soundManager.js";
-import { errorPopup } from "$lib/utils/errorHandling.js";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore.js";
 import { mapPinLat, mapPinLng, map, addedMarkers, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
-import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupStore.js";
 import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { get } from "svelte/store";
 import { multiplayer } from "$lib/stores/modeStore";
 
 // Google Maps init --------------------------------------------------------------------------------------
-let captchaToken;
-
 async function loadGoogleMapsApi(apiKey) {
     await new Promise((resolve, reject) => {
         // Check if Google Maps is already loaded
@@ -46,71 +40,6 @@ async function loadGoogleMapsApi(apiKey) {
     });
 }
 
-// Ensure that the user has not exceeded a certain limit of map loads
-async function requestMapLoad() {
-    showNotification("Loading minimap..");
-
-    let headers;
-
-    if (localStorage.getItem("bearer")) {
-        headers = {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${localStorage.getItem("bearer")}`,
-            'cf-turnstile-response': captchaToken
-        };
-    } else {
-        headers = {
-            'Content-Type': 'application/json',
-            'cf-turnstile-response': captchaToken
-        };
-    }
-
-    const mapLimitUrl = "https://accounts.openguessr.com/accounts/maplimit?time=" + new Date().getTime();
-
-    try {
-        const response = await fetch(mapLimitUrl, {
-            method: 'GET',
-            headers: headers
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-
-            await new Promise(async (resolve) => {
-                if (data.apiKey.keyString) {
-                    // Load the Google Maps API with the provided key
-                    await loadGoogleMapsApi(data.apiKey.keyString);
-                    resolve();
-                } else {
-                    console.error("No api key returned by the maplimit endpoint.");
-                    resolve();
-                }
-            });
-
-            if (data.rateLimit) {
-                displayMaploadUsage(data.rateLimit.used, data.rateLimit.limit);
-            }
-
-            return true;
-        } else {
-            const data = await response.json();
-            console.error("Map load limit reached: " + data.error);
-            errorPopup("Daily minimap load limit reached", "To prevent extraordinarily high Google API costs, your map load request was denied due to too many refreshes. Become a supporter to increase your limit!", data.error, false, false);
-            return false;
-        }
-    } catch (error) {
-        console.error('Error occurred while checking for the map load limit: ' + error);
-        errorPopup("Failed to validate minimap load", "The system that validates minimap loads didn't respond.", "Network error.", false, false);
-        return false;
-    }
-}
-
-function displayMaploadUsage(used, limit) {
-    showNotification(`(${used}/${limit}) daily minimap loads used.`, () => {
-        showConfirmPopup("What are minimap loads?", "A daily load is only used when you first open the minimap after loading the site, meaning your playtime remains unrestricted. The available amount resets every day.", false, false, false, true);
-    }, false, true, true);
-}
-
 const worldBounds = {
     north: 90,
     south: -90,
@@ -119,74 +48,55 @@ const worldBounds = {
 };
 
 async function initMap() {
-    if (!mapInitialized && await requestMapLoad()) {
-        mapInitialized = true;
+    mapInitialized = true;
 
-        const { Map } = await google.maps.importLibrary("maps");
+    await loadGoogleMapsApi("PLACEHOLDER");
 
-        map.set(
-            new Map(document.getElementById("map"), {
-                center: { lat: 20, lng: 0 },
-                zoom: 2,
-                streetViewControl: false, // Hide Street View control
-                zoomControl: false,       // Hide zoom control
-                fullscreenControl: false, // Hide fullscreen control
-                draggableCursor: "crosshair",
-                mapTypeControlOptions: {
-                    style: google.maps.MapTypeControlStyle.DEFAULT,
-                    mapTypeIds: [
-                        google.maps.MapTypeId.ROADMAP, // Standard view
-                        google.maps.MapTypeId.HYBRID, // Satellite view with labels
-                    ],
-                },
-                clickableIcons: false,
-                restriction: {
-                    latLngBounds: worldBounds,
-                    strictBounds: true, // Enforce the restriction
-                }
-            }));
+    const { Map } = await window.google.maps.importLibrary("maps");
 
-        get(map).addListener("click", function (e) {
-            onMapClick(e.latLng);
-        });
+    map.set(
+        new Map(document.getElementById("map"), {
+            center: { lat: 20, lng: 0 },
+            zoom: 2,
+            streetViewControl: false, // Hide Street View control
+            zoomControl: false,       // Hide zoom control
+            fullscreenControl: false, // Hide fullscreen control
+            draggableCursor: "crosshair",
+            mapTypeControlOptions: {
+                style: window.google.maps.MapTypeControlStyle.DEFAULT,
+                mapTypeIds: [
+                    window.google.maps.MapTypeId.ROADMAP, // Standard view
+                    window.google.maps.MapTypeId.HYBRID, // Satellite view with labels
+                ],
+            },
+            clickableIcons: false,
+            restriction: {
+                latLngBounds: worldBounds,
+                strictBounds: true, // Enforce the restriction
+            }
+        }));
 
-        adjustMapToCountry();
+    get(map).addListener("click", function (e) {
+        onMapClick(e.latLng);
+    });
 
-        document.dispatchEvent(new Event("mapInitialized"));
-    }
+    adjustMapToCountry();
+
+    document.dispatchEvent(new Event("mapInitialized"));
 }
 
 // Trigger map initialization delayed --------------------------------------------------------------
 let mapInitialized = false;
-let currentlyInitializing = false;
 
 export async function initializeMapIfNotAlready() {
-    if (!mapInitialized && !currentlyInitializing && !captchaToken) {
-        captchaPopupVisible.set(true);
-    }
-}
-
-// Callback from the captcha
-if (typeof window !== "undefined") {
-    window.onTurnstileCallback = async function (token) {
-        if (!currentlyInitializing) {
-            currentlyInitializing = true;
-            captchaToken = token;
-
-            captchaPopupVisible.set(false);
-
-            // After acquiring the token, initalize the map
-            await initMap();
-            currentlyInitializing = false;
-        }
-    };
+    if (!mapInitialized) await initMap();
 }
 
 // Reset map ---------------------------------------------------------------------------------------
 let multiplayerMiniMarkers = []; // team markers
 
 // Reset the map - used for going to the next round. 
-export function resetMap() {
+export function resetMap(keepSize) {
     if (get(map)) {
         if (get(addedMarkers)) {
             for (let i = 0; i < get(addedMarkers).length; i++) {
@@ -236,13 +146,13 @@ function onMapClick(latLng) {
 
         let yourIcon = {
             url: "/img/pins/player_pin" + get(selectedPinIndex) + ".png",
-            size: new google.maps.Size(35, 35),
-            anchor: new google.maps.Point(17.5, 34),
-            origin: new google.maps.Point(0, 0),
-            scaledSize: new google.maps.Size(35, 35),
+            size: new window.google.maps.Size(35, 35),
+            anchor: new window.google.maps.Point(17.5, 34),
+            origin: new window.google.maps.Point(0, 0),
+            scaledSize: new window.google.maps.Size(35, 35),
         };
 
-        marker = new google.maps.Marker({
+        marker = new window.google.maps.Marker({
             position: latLng,
             map: get(map),
             icon: yourIcon,
@@ -276,18 +186,18 @@ export function updateMinimapWithTeamMarkers(markerArray) {
             let miniMarkerTeam = element.team;
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
-            if (miniMarkerId != get(peerId) && miniMarkerTeam === getTeamFromClientId(get(socket)?.id)) {
-                const multiplayerLatLng = new google.maps.LatLng(miniMarkerLat, miniMarkerLon);
+            if (miniMarkerId != get(socket)?.id && miniMarkerTeam === getTeamFromClientId(get(socket)?.id)) {
+                const multiplayerLatLng = new window.google.maps.LatLng(miniMarkerLat, miniMarkerLon);
 
                 const newMultiplayerIcon = {
                     url: "/img/pins/player_pin" + (miniMarkerPinIndex ?? 0) + ".png",
-                    size: new google.maps.Size(25, 25),
-                    anchor: new google.maps.Point(15, 24),
-                    origin: new google.maps.Point(0, 0),
-                    scaledSize: new google.maps.Size(25, 25),
+                    size: new window.google.maps.Size(25, 25),
+                    anchor: new window.google.maps.Point(15, 24),
+                    origin: new window.google.maps.Point(0, 0),
+                    scaledSize: new window.google.maps.Size(25, 25),
                 };
 
-                let marker = new google.maps.Marker({
+                let marker = new window.google.maps.Marker({
                     position: multiplayerLatLng,
                     map: get(map),
                     icon: newMultiplayerIcon,
