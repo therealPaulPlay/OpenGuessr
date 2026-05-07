@@ -46,20 +46,20 @@
 			<p class="mode-text">
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
 			</p>
-			<Chip class="info-tag">
+			<Chip class="info-tag" animate={true}>
 				<p>
 					<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />{mapCategoryName}
 				</p>
 			</Chip>
 			{#if currentRoundText != null}
-				<Chip class="info-tag">
+				<Chip class="info-tag" animate={true}>
 					<p>
 						<Route size={16} strokeWidth={2.5} style="margin-right: 3px; margin-bottom: -1px;" />{currentRoundText} / {roundAmountText}
 					</p>
 				</Chip>
 			{/if}
 			{#if $selectedRestriction !== "standard"}
-				<Chip class="info-tag">
+				<Chip class="info-tag" animate={true}>
 					<p>
 						<BookAlert size={16} strokeWidth={2.5} style="margin-right: 3px; margin-bottom: -1px;" />{$restrictionNames[
 							$selectedRestriction
