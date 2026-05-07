@@ -81,7 +81,7 @@
 			class="bubble-with-actions"
 			class:own-aligned={isOwn}
 			onpointerleave={(e) => {
-				if (!reactionPickerOpen) return;
+				if (e.pointerType === "touch" || !reactionPickerOpen) return;
 				if (actionsElement?.contains(e.relatedTarget) || reactionPickerElement?.contains(e.relatedTarget)) return;
 				reactionPickerOpen = false;
 			}}
@@ -175,6 +175,7 @@
 							class="reaction-picker-wrapper"
 							popover="manual"
 							onpointerleave={(e) => {
+								if (e.pointerType === "touch") return;
 								if (!actionsElement?.contains(e.relatedTarget)) reactionPickerOpen = false;
 							}}
 							{@attach (node) => {
