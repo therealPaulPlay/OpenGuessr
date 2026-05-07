@@ -5,16 +5,6 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 
-	function clickJoin() {
-		playSound("basic_button");
-		window.open($discordInviteUrl, "_blank").focus();
-
-		setTimeout(async function () {
-			closePopup();
-			await addUserXP(7500);
-		}, 250);
-	}
-
 	function closePopup() {
 		discordPopup.set(false);
 		localStorage.setItem("discordPopup", "true");
@@ -39,7 +29,19 @@
 		src="https://discord.com/widget?id=1221841177863651499&theme=dark"
 		sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
 	></iframe>
-	<button id="socialPopupJoin" class="standardButton bottomButton largeButton white" onclick={clickJoin}>
+	<button
+		id="socialPopupJoin"
+		class="standardButton bottomButton largeButton white"
+		onclick={() => {
+			playSound("basic_button");
+			window.open($discordInviteUrl, "_blank").focus();
+
+			setTimeout(async function () {
+				closePopup();
+				await addUserXP(7500);
+			}, 250);
+		}}
+	>
 		Join
 		<img src="/img/discord.png" class="socialIcon discordIconJoin" alt="Discord Icon" />
 	</button>

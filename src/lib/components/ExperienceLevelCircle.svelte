@@ -20,7 +20,7 @@
 	function setProgress(factor) {
 		try {
 			if (!circleElement) return;
-			if (factor < 0.05 && factor != 0) factor = 0.05;
+			if (factor < 0.05 && factor != 0) factor = 0.05; // Avoid ultra thin line when barely having more XP than the current level
 			const radius = circleElement?.r?.baseVal?.value;
 			const circumference = 2 * Math.PI * radius;
 

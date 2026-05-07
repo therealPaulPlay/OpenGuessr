@@ -4,19 +4,34 @@
 	let { red = false, text = "Default", italic = false, mutedOpacity = true, animate = false, children, class: classes } = $props();
 </script>
 
-<span
-	class="chip {classes}"
-	class:chip-red={red}
-	class:chip-italic={italic}
-    class:muted-opacity={mutedOpacity}
-	transition:slide={{ axis: "x", duration: animate ? 100 : 0 }}
->
-	{#if !children || typeof children !== "function"}
-		{text}
-	{:else}
-		{@render children()}
-	{/if}
-</span>
+{#if animate}
+	<span
+		class="chip {classes}"
+		class:chip-red={red}
+		class:chip-italic={italic}
+		class:muted-opacity={mutedOpacity}
+		transition:slide={{ axis: "x", duration: 100 }}
+	>
+		{#if !children || typeof children !== "function"}
+			{text}
+		{:else}
+			{@render children()}
+		{/if}
+	</span>
+{:else}
+	<span
+		class="chip {classes}"
+		class:chip-red={red}
+		class:chip-italic={italic}
+		class:muted-opacity={mutedOpacity}
+	>
+		{#if !children || typeof children !== "function"}
+			{text}
+		{:else}
+			{@render children()}
+		{/if}
+	</span>
+{/if}
 
 <style>
 	.chip {

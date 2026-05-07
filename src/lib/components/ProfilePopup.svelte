@@ -46,7 +46,6 @@
 	import { onMount } from "svelte";
 	import { page } from "$app/state";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { reportUserId } from "$lib/stores/context-specific/reportPopupStore";
 	import Tabs from "./ui/Tabs.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { errorPopup } from "$lib/utils/errorHandling";
@@ -265,7 +264,6 @@
 					class="standardButton white"
 					onclick={() => {
 						playSound("basic_button");
-						reportUserId.set($profileId);
 						reportPopup.set(true);
 					}}
 				>
@@ -394,7 +392,7 @@
 						playSound("basic_button");
 						showConfirmPopup(
 							"Delete account",
-							"Please make sure to delete user-created content before proceeding, if you wish to remove that from the platform.",
+							"Some user-created content may persist briefly after deletion.",
 							() => {
 								if ($confirmPasswordValue) submitAccountDeletion($confirmPasswordValue);
 								else errorPopup("Password required", "Your password is required for deleting your account.");

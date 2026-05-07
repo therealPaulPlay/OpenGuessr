@@ -8,7 +8,7 @@
 	style:opacity={$loadingScreenVisible || $resultScreenEnabled ? "100%" : "0%"}
 	style:transition={$resultScreenEnabled ? "none" : "opacity 150ms ease"}
 >
-	<img src="/img/compass_spinner.png" alt="Loading new streetview" class="spinner" />
+	<img src="/img/compass_spinner.png" fetchpriority="high" alt="Loading new streetview" class="spinner" />
 </div>
 
 <style>
