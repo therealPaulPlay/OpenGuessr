@@ -1,7 +1,7 @@
 <script>
 	import { slide } from "svelte/transition";
 
-	let { red = false, text = "Default", italic = false, mutedOpacity = true, children, class: classes } = $props();
+	let { red = false, text = "Default", italic = false, mutedOpacity = true, animate = false, children, class: classes } = $props();
 </script>
 
 <span
@@ -9,7 +9,7 @@
 	class:chip-red={red}
 	class:chip-italic={italic}
     class:muted-opacity={mutedOpacity}
-	transition:slide={{ axis: "x", duration: 100 }}
+	transition:slide={{ axis: "x", duration: animate ? 100 : 0 }}
 >
 	{#if !children || typeof children !== "function"}
 		{text}
