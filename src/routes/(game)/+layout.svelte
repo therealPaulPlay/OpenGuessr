@@ -7,7 +7,7 @@
 	let { children } = $props();
 
 	// Component Imports
-	import { playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
+	import { disableAutoAuthentication, playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 	import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
 	import ImageGuesser from "$lib/components/ImageGuesser.svelte";
 	import ErrorPopup from "$lib/components/ErrorPopup.svelte";
@@ -29,8 +29,6 @@
 	import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
 	import CountryGuesserBar from "$lib/components/CountryGuessrBar.svelte";
 	import ResultScreen from "$lib/components/ResultScreen.svelte";
-	import CaptchaPopup from "$lib/components/CaptchaPopup.svelte";
-	import Authenticate from "$lib/components/Authenticate.svelte";
 	import ProfilePopup from "$lib/components/ProfilePopup.svelte";
 	import PinPopup from "$lib/components/PinPopup.svelte";
 	import BadgePopup from "$lib/components/BadgePopup.svelte";
@@ -60,16 +58,16 @@
 	import Notification from "$lib/components/Notification.svelte";
 	import MatchOverviewPopup from "$lib/components/MatchOverviewPopup.svelte";
 	import MessagesPopup from "$lib/components/MessagesPopup.svelte";
+	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
 
 	// Load panorama, ads, overfade etc.
-	onMount(() => {
+	onMount(async () => {
 		initOverfade();
 		checkGenerationTypeAndGenerate();
 		initializeAds();
-	});
+		if (!$disableAutoAuthentication) checkAuthenticationStatus();
 
-	// Load Playlight
-	onMount(async () => {
+		// Load Playlight
 		try {
 			if (new URLSearchParams(window.location.search).get("crazy-games")) return; // Don't load Playlight on CG
 			const module = await import("https://sdk.playlight.dev/playlight-sdk.es.js");
@@ -123,9 +121,6 @@
 <!-- 3rd party -->
 <CrazyGames />
 
-<!-- Log user in -->
-<Authenticate />
-
 <!-- Logo and Nav -->
 <TopLeftLogo />
 <TopBar />
@@ -138,7 +133,6 @@
 <ErrorPopup />
 <Navigation />
 <ConfirmPopup />
-<CaptchaPopup />
 <ShopPurchaseAnimation />
 <MessagesPopup />
 <ProfilePopup />

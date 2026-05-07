@@ -6,9 +6,9 @@
 	import { guestNamePickerPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { censor } from "fast-profanity-filter";
-	import { onMount } from "svelte";
 
 	function generateFunnyGuestName() {
+		generatedName = true;
 		let animals = [
 			"Giraffe",
 			"Ape",
@@ -30,7 +30,11 @@
 		guestName.set("Guest" + randomAnimal);
 	}
 
-	onMount(generateFunnyGuestName);
+	let generatedName = false;
+
+	guestNamePickerPopup.subscribe((value) => {
+		if (value && !generatedName) generateFunnyGuestName();
+	});
 
 	async function setName() {
 		$guestName = $guestName.trim();

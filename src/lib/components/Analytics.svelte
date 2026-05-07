@@ -8,9 +8,7 @@
 			window["gtag_enable_tcf_support"] = true; // Listen to any TCF-enabled CMP
 
 			window.dataLayer = window.dataLayer || [];
-			function gtag() {
-				window.dataLayer.push(arguments);
-			}
+			const gtag = () => window.dataLayer.push(arguments);
 
 			gtag("js", new Date());
 

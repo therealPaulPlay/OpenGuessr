@@ -27,13 +27,6 @@
 		}, 250);
 	}
 
-	// Allow the user to guess with the space bar (instead of clicking on "Guess")
-	function spaceBarGuess(event) {
-		if (event.key === " ") {
-			if (get(confirmButtonActive) && isElementClickable(mapElement)) confirmButtonClicks();
-		}
-	}
-
 	onMount(async () => {
 		await import("leaflet");
 		initMap();
@@ -49,7 +42,10 @@
 	id="map"
 	role="region"
 	tabindex="0"
-	onkeyup={spaceBarGuess}
+	onkeyup={(event) => {
+		// Allow for pressing the space bar to guess
+		if (event.key === " ") if (get(confirmButtonActive) && isElementClickable(mapElement)) confirmButtonClicks();
+	}}
 	onpointerover={(event) => {
 		lastPointerType = event.pointerType;
 	}}

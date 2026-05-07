@@ -25,7 +25,6 @@ export async function getServerTimestamp() {
             const response = await fetch(get(apiUrl) + '/matchmaking/time/timestamp', {
                 signal: controller.signal
             });
-
             if (!response.ok) throw new Error('Server responded with non-200 status');
 
             const data = await response.json();
