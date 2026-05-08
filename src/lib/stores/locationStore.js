@@ -4,6 +4,9 @@ import { writable, readable, derived, get } from "svelte/store";
 export const currentLocationLatitude = writable(0);
 export const currentLocationLongitude = writable(0);
 
+// Only available on some maps, currently only World
+export const currentLocationHeading = writable(null);
+
 // Bounds
 export const savedMapBounds = writable({ zoom: 2, lat: 0, lng: 0, diameter: 360 });
 
@@ -29,6 +32,7 @@ export const panoramaSrc = derived([currentLocationLatitude, currentLocationLong
         "&key=" +
         key +
         "&fov=90" +
+        (get(currentLocationHeading) ? `&heading=${get(currentLocationHeading)}` : "") +
         "&language=en" // Force EN since in languages written right to left, street view UI is flipped
     )
 });
