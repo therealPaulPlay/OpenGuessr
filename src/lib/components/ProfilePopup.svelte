@@ -250,7 +250,7 @@
 							});
 					}}
 				>
-					<Link strokeWidth={2} style="vertical-align: -2.4px;" size={20} />
+					<Link strokeWidth={2} style="vertical-align: -2px;" size={20} />
 				</button>
 			{/if}
 			{#if $profileData?.supporterLevel >= 1}
