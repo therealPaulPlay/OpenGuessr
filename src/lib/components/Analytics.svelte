@@ -7,9 +7,11 @@
 		try {
 			window["gtag_enable_tcf_support"] = true; // Listen to any TCF-enabled CMP
 			window.dataLayer = window.dataLayer || [];
-			
-			// Used to communicate with the tag manager
-			const gtag = (...args) => window.dataLayer.push(args);
+
+			// Must use legacy arguments, doesn't work with spreading ...args
+			function gtag() {
+				window.dataLayer.push(arguments);
+			}
 
 			gtag("js", new Date());
 
