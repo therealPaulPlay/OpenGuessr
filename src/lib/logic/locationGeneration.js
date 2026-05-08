@@ -56,19 +56,12 @@ async function getCoordsFromServer() {
 
     // Return and remove one location from cache
     if (cachedLocations.length > 0) {
-        const location = cachedLocations.shift();
-        const resultLat = location[0];
-        const resultLon = location[1];
-        const additionalProperty = location[2] ?? null;
-        return [resultLat, resultLon, additionalProperty];
+        return cachedLocations.shift(); // [lat: number, lon: number, additionalData?: object]
     } else {
         throw new Error("No locations available in cache!");
     }
 }
 
 async function getCompetitionCoordinates() {
-    const resultLat = get(competitionData)?.locations[get(competitionRound)][0];
-    const resultLon = get(competitionData)?.locations[get(competitionRound)][1];
-    const resultLocationsArray = [resultLat, resultLon];
-    return resultLocationsArray || [];
+    return get(competitionData)?.locations[get(competitionRound)] ?? [];
 }
