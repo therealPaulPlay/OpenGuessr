@@ -553,7 +553,7 @@
 			<p
 				class="competitionAuthor"
 				onclick={() => {
-					const id = authorId == 0 ? 2 : authorId; // Display as 2 (PaulPlay) if created by System (0)
+					const id = authorId ? authorId : 2; // Display as 2 (PaulPlay) if created by System (meaning, no ID is set)
 					showProfile(id);
 				}}
 			>
