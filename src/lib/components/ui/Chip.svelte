@@ -1,56 +1,32 @@
 <script>
-	import { slide } from "svelte/transition";
-
 	let {
 		red = false,
 		text = "Default",
 		italic = false,
 		mutedOpacity = true,
-		animate = false,
 		children,
 		class: classes,
 		onclick,
 	} = $props();
 </script>
 
-{#if animate}
-	<span
-		class="chip {classes}"
-		class:clickable={onclick}
-		{onclick}
-		role={onclick ? "button" : undefined}
-		class:chip-red={red}
-		class:chip-italic={italic}
-		class:muted-opacity={mutedOpacity}
-		transition:slide={{ axis: "x", duration: 100 }}
-	>
-		<span>
-			{#if !children || typeof children !== "function"}
-				{text}
-			{:else}
-				{@render children()}
-			{/if}
-		</span>
+<span
+	class="chip {classes}"
+	class:clickable={onclick}
+	{onclick}
+	role={onclick ? "button" : ""}
+	class:chip-red={red}
+	class:chip-italic={italic}
+	class:muted-opacity={mutedOpacity}
+>
+	<span>
+		{#if !children || typeof children !== "function"}
+			{text}
+		{:else}
+			{@render children()}
+		{/if}
 	</span>
-{:else}
-	<span
-		class="chip {classes}"
-		class:clickable={onclick}
-		{onclick}
-		role={onclick ? "button" : ""}
-		class:chip-red={red}
-		class:chip-italic={italic}
-		class:muted-opacity={mutedOpacity}
-	>
-		<span>
-			{#if !children || typeof children !== "function"}
-				{text}
-			{:else}
-				{@render children()}
-			{/if}
-		</span>
-	</span>
-{/if}
+</span>
 
 <style>
 	.chip {

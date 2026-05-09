@@ -121,7 +121,7 @@
 		<p style:margin-right="var(--box-margin)" style:margin-left="var(--content-margin)" style:flex-grow="100">
 			Incoming requests
 			{#if $newFriendRequest}
-				<Chip red={true} italic={true} animate={true} mutedOpacity={false} text="New" class="newChip" />
+				<Chip red={true} italic={true} mutedOpacity={false} text="New" class="newChip" />
 			{/if}
 		</p>
 		<button

@@ -32,6 +32,7 @@
 	import TournamentOverview from "$lib/components/TournamentOverview.svelte";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import Chip from "$lib/components/ui/Chip.svelte";
+	import { hasNewMessageOrInvite, hcClient, coldStartHasNew } from "$lib/stores/context-specific/headlessChatStore";
 
 	let friendsRefreshInterval;
 
@@ -50,6 +51,19 @@
 
 	onDestroy(() => {
 		clearInterval(friendsRefreshInterval);
+	});
+
+	// Check if user has new messages or new invites (only if they have a hcClient, and only once)
+	$effect(async () => {
+		if ($hcClient && $hasNewMessageOrInvite === null) {
+			try {
+				$coldStartHasNew = false; // Set non-null to prevent re-runs
+				const result = await $hcClient.getHasNew();
+				$coldStartHasNew = result.hasNewMessages || result.hasNewInvites;
+			} catch (error) {
+				console.error("Failed to get hasNew state from headless-chat:", error);
+			}
+		}
 	});
 </script>
 
@@ -171,12 +185,18 @@
 		<div class="friendButtonContainer barMenu">
 			<button
 				class="standardButton white largeButton"
+				style:position="relative"
 				use:tooltip={{ text: "Messages" }}
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) messagesPopup.set(true);
 					else signupPrompt();
-				}}><MessagesSquare strokeWidth={2.25} size={22} style="margin-bottom: -2px;" /></button
+				}}
+			>
+				{#if $hasNewMessageOrInvite}
+					<div class="newMessagesOrInvitesDot" transition:blur></div>
+				{/if}
+				<MessagesSquare strokeWidth={2.25} size={22} style="margin-bottom: -2px;" /></button
 			>
 			<button
 				class="standardButton white largeButton friendAddButton"
@@ -190,13 +210,16 @@
 			>
 				<Plus strokeWidth={2.25} size={22} />
 				{#if $newFriendRequest}
-					<Chip text="New" italic={true} red={true} animate={true} mutedOpacity={false} />
+					<Chip text="New" italic={true} red={true} mutedOpacity={false} />
 				{/if}</button
 			>
 		</div>
 	</div>
 	<div class="friendBox">
-		<div class="friendBoxScroll of-top of-bottom" style:min-height={$loadedFriendsData && $isAuthenticated ? "50px" : "80px"}>
+		<div
+			class="friendBoxScroll of-top of-bottom"
+			style:min-height={$loadedFriendsData && $isAuthenticated ? "50px" : "80px"}
+		>
 			{#if $loadedFriendsData && $isAuthenticated}
 				<div class="innerFriendBox" transition:blur={{ duration: 150 }}>
 					{#each $loadedFriendsData as entry (entry.id)}
@@ -474,6 +497,16 @@
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
+	}
+
+	.newMessagesOrInvitesDot {
+		width: 7px;
+		height: 7px;
+		border-radius: 100%;
+		background-color: var(--brand-color);
+		position: absolute;
+		top: 9px;
+		right: 16px;
 	}
 
 	.friendOnlineDot {
