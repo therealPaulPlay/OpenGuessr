@@ -1,28 +1,34 @@
 <!-- Appears in duels when the oponnent has guessed and informs the player that the time has been reduced -->
 <script>
 	import { timeReducedOverlay } from "$lib/stores/context-specific/multiplayerStore";
+	import { tick } from "svelte";
+	import { blur } from "svelte/transition";
+
+	let playTransition = $state(false);
+
+	$effect(() => {
+		if ($timeReducedOverlay) {
+			(async () => {
+				await tick();
+				playTransition = true;
+			})();
+		} else playTransition = false;
+	});
 </script>
 
-<div
-	class="duelsOverlay"
-	style:opacity={$timeReducedOverlay ? "1" : "0"}
-	style:scale={$timeReducedOverlay ? "1.03" : "1"}
-	style:filter={$timeReducedOverlay ? "none" : "blur(5px)"}
->
-	<h1>A player has guessed</h1>
-	<p id="duelsOverlaySubtitle">Time reduced to max. 15s</p>
-</div>
+{#if $timeReducedOverlay}
+	<div transition:blur={{ duration: 500 }} class="duelsTimeReduced" style:scale={playTransition ? "1.03" : "1"}>
+		<h1>A player has guessed</h1>
+		<p id="duelsOverlaySubtitle">Time reduced to max. 15s</p>
+	</div>
+{/if}
 
 <style>
-	.duelsOverlay {
+	.duelsTimeReduced {
 		position: fixed;
 		inset: 0 0 0 0;
 		z-index: 1;
-		transition:
-			opacity 500ms ease,
-			scale 2000ms ease,
-			transform 2000ms ease,
-			filter 500ms ease;
+		transition: scale 2000ms ease;
 		overflow: hidden;
 		display: flex;
 		justify-content: center;
@@ -33,7 +39,7 @@
 		user-select: none;
 	}
 
-	.duelsOverlay h1 {
+	.duelsTimeReduced h1 {
 		font-size: 75px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: 20px;
@@ -42,7 +48,7 @@
 		margin-bottom: var(--box-margin);
 	}
 
-	.duelsOverlay p {
+	.duelsTimeReduced p {
 		font-size: 35px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: 20px;
@@ -51,11 +57,11 @@
 	}
 
 	@media all and (max-width: 1200px) {
-		.duelsOverlay h1 {
+		.duelsTimeReduced h1 {
 			font-size: 45px;
 		}
 
-		.duelsOverlay p {
+		.duelsTimeReduced p {
 			font-size: 25px;
 		}
 	}
