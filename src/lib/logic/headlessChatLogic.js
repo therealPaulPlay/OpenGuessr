@@ -9,7 +9,7 @@ import {
     activeConversationId,
     aliasCache,
     initialDataLoaded,
-    coldStartHasNew,
+    initialHasNew,
 } from "$lib/stores/context-specific/headlessChatStore";
 import { messagesPopup } from "$lib/stores/uiStore";
 import { errorPopup } from "$lib/utils/errorHandling";
@@ -60,7 +60,7 @@ export function disposeHeadlessChatClient() {
     aliasCache.clear();
     notifiedMessageIds.clear();
     initialDataLoaded.set(false);
-    coldStartHasNew.set(null);
+    initialHasNew.set(null);
 }
 
 let initialLoadPromise = null; // Avoid loading multiple times if load is already active

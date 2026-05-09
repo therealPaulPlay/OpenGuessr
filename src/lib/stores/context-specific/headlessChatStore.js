@@ -9,14 +9,14 @@ export const invites = writable([]);
 export const participantActivities = writable([]);
 export const initialDataLoaded = writable(false);
 
-// Cold-start seed from getHasNew
-export const coldStartHasNew = writable(null);
+// Initial value from getHasNew (cheap lookup for pre-subscribe "new" state)
+export const initialHasNew = writable(null);
 
-// Reactively derived from the per-domain stores once populated, falls back to the cold-start seed
+// Reactively derived from the per-domain stores once populated, falls back to the initial value
 export const hasNewMessageOrInvite = derived(
-    [conversations, participantActivities, invites, initialDataLoaded, coldStartHasNew],
-    ([convs, activities, invs, loaded, coldStart]) => {
-        if (!loaded) return coldStart; // Exit if conversations, activities or invites aren't loaded yet
+    [conversations, participantActivities, invites, initialDataLoaded, initialHasNew],
+    ([convs, activities, invs, loaded, initialNew]) => {
+        if (!loaded) return initialNew; // Return value from getHasNew() if conversations, activities & invites aren't loaded yet
         const userId = localStorage.getItem("id");
         const newInvites = invs.some((i) => i.toParticipantId === userId && !i.seen);
         const newMessages = convs.some((c) => {

@@ -32,7 +32,7 @@
 	import TournamentOverview from "$lib/components/TournamentOverview.svelte";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import Chip from "$lib/components/ui/Chip.svelte";
-	import { hasNewMessageOrInvite, hcClient, coldStartHasNew } from "$lib/stores/context-specific/headlessChatStore";
+	import { hasNewMessageOrInvite, hcClient, initialHasNew } from "$lib/stores/context-specific/headlessChatStore";
 
 	let friendsRefreshInterval;
 
@@ -57,9 +57,9 @@
 	$effect(async () => {
 		if ($hcClient && $hasNewMessageOrInvite === null) {
 			try {
-				$coldStartHasNew = false; // Set non-null to prevent re-runs (sets the derived hasNewMessageOrInvite to false)
+				$initialHasNew = false; // Set non-null to prevent re-runs (updates the derived hasNewMessageOrInvite)
 				const result = await $hcClient.getHasNew();
-				$coldStartHasNew = result.hasNewMessages || result.hasNewInvites;
+				$initialHasNew = result.hasNewMessages || result.hasNewInvites;
 			} catch (error) {
 				console.error("Failed to get hasNew state from headless-chat:", error);
 			}
