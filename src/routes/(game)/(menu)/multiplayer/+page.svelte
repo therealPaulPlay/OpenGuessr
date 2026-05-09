@@ -57,7 +57,7 @@
 	$effect(async () => {
 		if ($hcClient && $hasNewMessageOrInvite === null) {
 			try {
-				$coldStartHasNew = false; // Set non-null to prevent re-runs
+				$coldStartHasNew = false; // Set non-null to prevent re-runs (sets the derived hasNewMessageOrInvite to false)
 				const result = await $hcClient.getHasNew();
 				$coldStartHasNew = result.hasNewMessages || result.hasNewInvites;
 			} catch (error) {
