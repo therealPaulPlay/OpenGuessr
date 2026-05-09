@@ -8,6 +8,8 @@ import {
     participantActivities,
     activeConversationId,
     aliasCache,
+    initialDataLoaded,
+    initialHasNew,
 } from "$lib/stores/context-specific/headlessChatStore";
 import { messagesPopup } from "$lib/stores/uiStore";
 import { errorPopup } from "$lib/utils/errorHandling";
@@ -23,8 +25,6 @@ async function dispatch(data) {
 }
 
 const getAuthData = () => localStorage.getItem("bearer");
-
-let initialDataLoaded = false;
 
 export async function initHeadlessChatClient() {
     const participantId = localStorage.getItem("id");
@@ -59,14 +59,15 @@ export function disposeHeadlessChatClient() {
     activeConversationId.set(null);
     aliasCache.clear();
     notifiedMessageIds.clear();
-    initialDataLoaded = false;
+    initialDataLoaded.set(false);
+    initialHasNew.set(null);
 }
 
 let initialLoadPromise = null; // Avoid loading multiple times if load is already active
 
 // Load initial data for conversations + invites + participant activity
 export async function headlessChatInitialLoad() {
-    if (initialDataLoaded) return;
+    if (get(initialDataLoaded)) return;
     if (initialLoadPromise) return initialLoadPromise;
 
     // Exit if not initialized / connected to SSE yet
@@ -83,7 +84,8 @@ export async function headlessChatInitialLoad() {
             conversations.set(convs);
             participantActivities.set(acts);
             invites.set(invs);
-            initialDataLoaded = true;
+            // Set only after populating conversations + activities + invites
+            initialDataLoaded.set(true);
         } catch (error) {
             errorPopup(
                 "Failed to load messages",
