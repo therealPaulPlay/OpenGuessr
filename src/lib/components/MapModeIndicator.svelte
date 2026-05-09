@@ -43,28 +43,22 @@
 		transition:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 150 }}
 	>
 		<div class="map-mode-text-container of-left of-right">
-			<p class="mode-text">
+			<p>
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
 			</p>
 			<Chip class="info-tag">
-				<p>
-					<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />{mapCategoryName}
-				</p>
+				<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />{mapCategoryName}
 			</Chip>
 			{#if currentRoundText != null}
 				<Chip class="info-tag">
-					<p>
-						<Route size={16} strokeWidth={2.5} style="margin-right: 3px; margin-bottom: -1px;" />{currentRoundText} / {roundAmountText}
-					</p>
+					<Route size={16} strokeWidth={2.5} style="margin-right: 3px;" />{currentRoundText} / {roundAmountText}
 				</Chip>
 			{/if}
 			{#if $selectedRestriction !== "standard"}
 				<Chip class="info-tag">
-					<p>
-						<BookAlert size={16} strokeWidth={2.5} style="margin-right: 3px; margin-bottom: -1px;" />{$restrictionNames[
-							$selectedRestriction
-						] || "Unknown"}
-					</p>
+					<BookAlert size={16} strokeWidth={2.5} style="margin-right: 3px;" />{$restrictionNames[
+						$selectedRestriction
+					] || "Unknown"}
 				</Chip>
 			{/if}
 		</div>
@@ -99,7 +93,7 @@
 		width: 20px;
 		height: 20px;
 		margin-right: 3px;
-		margin-bottom: -3.5px;
+		margin-bottom: -0.5px;
 	}
 
 	:global(.info-tag) {

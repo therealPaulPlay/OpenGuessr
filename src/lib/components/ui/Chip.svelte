@@ -1,52 +1,67 @@
 <script>
 	import { slide } from "svelte/transition";
 
-	let { red = false, text = "Default", italic = false, mutedOpacity = true, animate = false, children, class: classes } = $props();
+	let {
+		red = false,
+		text = "Default",
+		italic = false,
+		mutedOpacity = true,
+		animate = false,
+		children,
+		class: classes,
+		onclick,
+	} = $props();
 </script>
 
 {#if animate}
 	<span
 		class="chip {classes}"
+		class:clickable={onclick}
+		{onclick}
+		role={onclick ? "button" : undefined}
 		class:chip-red={red}
 		class:chip-italic={italic}
 		class:muted-opacity={mutedOpacity}
 		transition:slide={{ axis: "x", duration: 100 }}
 	>
-		{#if !children || typeof children !== "function"}
-			{text}
-		{:else}
-			{@render children()}
-		{/if}
+		<span>
+			{#if !children || typeof children !== "function"}
+				{text}
+			{:else}
+				{@render children()}
+			{/if}
+		</span>
 	</span>
 {:else}
 	<span
 		class="chip {classes}"
+		class:clickable={onclick}
+		{onclick}
+		role={onclick ? "button" : ""}
 		class:chip-red={red}
 		class:chip-italic={italic}
 		class:muted-opacity={mutedOpacity}
 	>
-		{#if !children || typeof children !== "function"}
-			{text}
-		{:else}
-			{@render children()}
-		{/if}
+		<span>
+			{#if !children || typeof children !== "function"}
+				{text}
+			{:else}
+				{@render children()}
+			{/if}
+		</span>
 	</span>
 {/if}
 
 <style>
 	.chip {
-		line-height: normal;
 		border-radius: var(--content-margin);
 		background: var(--box-color);
 		padding: 2px;
 		padding-inline: var(--content-margin);
 		box-shadow: var(--bulb-shadow);
 		flex-shrink: 0;
-		white-space: nowrap;
-		display: inline-flex;
-		justify-content: center;
+		display: flex;
 		align-items: center;
-		width: fit-content;
 	}
 
 	.chip,
@@ -54,8 +69,18 @@
 		font-size: 18px;
 	}
 
-	:global(.chip.muted-opacity span, .chip.muted-opacity p) {
+	.chip.muted-opacity > span {
 		opacity: 0.75;
+	}
+
+	.chip > span {
+		white-space: nowrap;
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		width: fit-content;
+		line-height: normal;
+		transition: opacity 250ms ease;
 	}
 
 	:global(.chip.chip-red span, .chip.chip-red p) {
@@ -70,5 +95,14 @@
 		font-style: italic;
 		padding-inline: var(--panel-margin);
 		padding-left: calc(var(--panel-margin) - 2px);
+	}
+
+	.clickable {
+		transition: opacity 250ms ease;
+		cursor: pointer;
+	}
+
+	.clickable:hover {
+		opacity: 0.5;
 	}
 </style>

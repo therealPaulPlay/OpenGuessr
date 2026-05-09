@@ -105,14 +105,11 @@
 				<div class="roomItemInfoContainer of-left of-right">
 					<Chip mutedOpacity={false}>
 						<img class="mapIcon" src="/img/maps_icon.png" alt="Maps" />
-						<p>{idToMapName(room?.map)}</p>
+						{idToMapName(room?.map)}
 					</Chip>
-					<Chip mutedOpacity={false}>
+					<Chip mutedOpacity={false} onclick={() => showProfile(room?.user_id)}>
 						<User size={18} strokeWidth={2.5} style="margin-right: 2px;" />
-						<!-- svelte-ignore a11y_click_events_have_key_events -->
-						<span class="roomItemUser" role="button" tabindex="0" onclick={() => showProfile(room?.user_id)}
-							>{room?.user_name}</span
-						>
+						{room?.user_name}
 					</Chip>
 				</div>
 				<button
@@ -197,20 +194,6 @@
 		scrollbar-width: none;
 	}
 
-	.roomItemInfoContainer p {
-		overflow: hidden;
-		text-overflow: ellipsis;
-	}
-
-	.roomItemUser {
-		transition: opacity 250ms ease;
-		cursor: pointer;
-	}
-
-	.roomItemUser:hover {
-		opacity: 0.5;
-	}
-
 	.publicRoomItem:hover {
 		opacity: 1;
 	}
@@ -280,7 +263,6 @@
 	.mapIcon {
 		width: 20px;
 		height: 20px;
-		margin-bottom: -1px;
 		margin-right: 3px;
 	}
 </style>
