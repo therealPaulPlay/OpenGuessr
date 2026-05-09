@@ -1,4 +1,4 @@
-import { writable, readable, derived, get } from "svelte/store";
+import { writable, readable, derived } from "svelte/store";
 
 // Current coordinates (of the current Panorama, Image, etc.)
 export const currentLocationLatitude = writable(0);
@@ -22,17 +22,17 @@ export const panoramaKey = readable("AIzaSyAHt3QJRBDISRaWaqblQl2VwjWiHvjpgIs");
 // Iframe
 export const iframeElement = writable();
 export const initialIframeLoad = writable(true);
-export const panoramaSrc = derived([currentLocationLatitude, currentLocationLongitude, panoramaKey], ([lat, lon, key], set) => {
+export const panoramaSrc = derived([streetViewURLPrefix, currentLocationLatitude, currentLocationLongitude, panoramaKey, currentLocationHeading], ([urlPrefix, lat, lon, key, heading], set) => {
     initialIframeLoad.set(true);
     set(
-        get(streetViewURLPrefix) +
+        urlPrefix +
         lat +
         "," +
         lon +
         "&key=" +
         key +
         "&fov=90" +
-        (get(currentLocationHeading) ? `&heading=${get(currentLocationHeading)}` : "") +
+        (heading ? `&heading=${heading}` : "") +
         "&language=en" // Force EN since in languages written right to left, street view UI is flipped
     )
 });
