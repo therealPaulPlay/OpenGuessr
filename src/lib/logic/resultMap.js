@@ -4,6 +4,7 @@ import { selectedPinIndex } from "$lib/stores/accountStore";
 import { socket } from "$lib/stores/context-specific/multiplayerStore";
 import { multiplayer, countryGuessr } from "$lib/stores/modeStore";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+import { wrapBackLon } from "$lib/logic/miniMap";
 import { get } from "svelte/store";
 
 async function awaitMapInit() {
@@ -87,6 +88,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
             let lat = element.lat ?? 0;
             let lon = element.lon ?? 0;
             if (isNaN(lat) || isNaN(lon)) { lat = 0; lon = 0; }
+            lon = wrapBackLon(lon);
 
             const multiplayerIcon = {
                 url: "/img/pins/player_pin" + (element.pin ?? 0) + ".png",

@@ -134,7 +134,7 @@
 						</div>
 						<div class="conversation-preview">
 							{#if hasUnread(c)}
-								<Chip text="New" italic={true} red={true} animate={true} />
+								<Chip text="New" italic={true} red={true} mutedOpacity={false} />
 							{/if}
 							<span class="conversation-preview-text">
 								{#if c.lastMessage?.deleted}

@@ -1,5 +1,5 @@
 <script>
-	import { Plus, XCircle, User, Search } from "@lucide/svelte";
+	import { Plus, XCircle, User, Search, Info } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
@@ -19,6 +19,7 @@
 	import { page } from "$app/state";
 	import { navigationMenu } from "$lib/stores/uiStore";
 	import Chip from "$lib/components/ui/Chip.svelte";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 
 	const snapshotStore = getContext("snapshotStore");
 
@@ -275,6 +276,7 @@
 		{#each $basicMaps as map}
 			<div
 				class="map-item map-item-hover map-item-slim"
+				style:padding-right={map === $defaultMap ? "var(--box-margin)" : ""}
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -282,8 +284,23 @@
 					selectMap(map);
 				}}
 			>
-				<div class="map-info">
+				<div class="map-info {map === $defaultMap ? 'map-info-flex' : ''}">
 					<p class="map-name">{map}</p>
+					{#if map === $defaultMap}
+						<Chip
+							mutedOpacity={!checkIfSelected(map)}
+							onclick={(e) => {
+								e.stopPropagation();
+								showConfirmPopup(
+									"Live-generated",
+									"The world map is continuously regenerated to feature a complete list of fresh locations every couple of hours.",
+								);
+							}}
+						>
+							<Info size={17} strokeWidth={2.25} style="margin-right: var(--content-margin); margin-bottom: -2px;" />
+							Live
+						</Chip>
+					{/if}
 				</div>
 			</div>
 		{/each}
@@ -310,6 +327,7 @@
 		{/each}
 		<div
 			class="map-item map-item-hover map-item-link"
+			style:padding-right="var(--box-margin)"
 			role="button"
 			tabindex="0"
 			onclick={() => {
@@ -318,10 +336,11 @@
 			}}
 		>
 			<p class="map-name">Geo Quizzes</p>
-			<Chip text="Education" italic={true} red={true} />
+			<Chip text="Education" italic={true} red={true} mutedOpacity={false} />
 		</div>
 		<div
 			class="map-item map-item-hover map-item-link"
+			style:padding-right="var(--box-margin)"
 			role="button"
 			tabindex="0"
 			onclick={() => {
@@ -330,7 +349,7 @@
 			}}
 		>
 			<p class="map-name">Meta Quizzes</p>
-			<Chip text="Geometas" italic={true} red={true} />
+			<Chip text="Geometas" italic={true} red={true} mutedOpacity={false} />
 		</div>
 	</div>
 	<!-- Expandable country section -->
@@ -553,7 +572,11 @@
 
 	.map-info {
 		flex-grow: 1;
-		overflow: hidden;
+	}
+
+	.map-info-flex {
+		display: flex;
+		justify-content: space-between;
 	}
 
 	.no-bottom-padding {
@@ -602,7 +625,7 @@
 	}
 
 	.selected-map-item {
-		background-image: linear-gradient(20deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.35));
+		background-color: rgba(255, 255, 255, 0.3);
 	}
 
 	.map-name {
