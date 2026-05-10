@@ -9,6 +9,11 @@ import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { get } from "svelte/store";
 import { multiplayer } from "$lib/stores/modeStore";
 
+// Canonicalize a wrapped-world longitude back
+export function wrapBackLon(lon) {
+    return lon - Math.round(lon / 360) * 360;
+}
+
 // Initialize the map
 export function initMap() {
     const worldBounds = L.latLngBounds(
@@ -161,7 +166,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
             if (miniMarkerId != get(socket)?.id && miniMarkerTeam === getTeamFromClientId(get(socket)?.id)) {
-                const multiplayerLatLng = new L.LatLng(miniMarkerLat, miniMarkerLon);
+                const multiplayerLatLng = new L.LatLng(miniMarkerLat, wrapBackLon(miniMarkerLon));
 
                 let newMultiplayerIcon = new L.Icon({
                     iconUrl: "/img/pins/player_pin" + (miniMarkerPinIndex ?? 0) + ".png",
