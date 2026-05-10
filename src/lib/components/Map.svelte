@@ -132,6 +132,11 @@
 		display: none;
 	}
 
+	/* Smoother zoom animation compared to default cubic-bezier */
+	:global(.leaflet-zoom-anim .leaflet-zoom-animated) {
+		transition: transform 0.25s linear !important;
+	}
+
 	:global(.leaflet-tooltip) {
 		padding: 1px;
 		padding-inline: 6px;
