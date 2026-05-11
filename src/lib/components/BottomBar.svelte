@@ -194,7 +194,6 @@
 
 	.confirmButton {
 		width: fit-content;
-		position: relative;
 		padding-left: var(--box-margin);
 		padding-right: 30px;
 		width: 100%;

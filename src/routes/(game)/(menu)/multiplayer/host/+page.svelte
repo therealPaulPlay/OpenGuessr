@@ -47,7 +47,7 @@
 		{#if !$multiplayer && !isCreatingRoom}
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p>Rounds</p>
-				<Ticker maximum={10} minimum={2} initialValue={3} bind:value={$roundAmount} />
+				<Ticker maximum={10} minimum={1} initialValue={3} bind:value={$roundAmount} />
 			</div>
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p>Round length</p>

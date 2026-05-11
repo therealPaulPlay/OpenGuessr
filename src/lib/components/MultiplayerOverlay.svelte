@@ -16,7 +16,7 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
-	import { blur, fade, slide } from "svelte/transition";
+	import { fade, slide } from "svelte/transition";
 </script>
 
 {#if $multiplayerOverlay}
@@ -103,7 +103,7 @@
 			{/if}
 		</div>
 		{#if $rematchButtonVisible || $leaveMatchButtonVisible}
-			<div class="buttonBox" in:blur={{ delay: 500 }}>
+			<div class="buttonBox" transition:slide={{ axis: "y" }}>
 				{#if $rematchButtonVisible}
 					<div class="hostButtonContainer barMenu">
 						<button
