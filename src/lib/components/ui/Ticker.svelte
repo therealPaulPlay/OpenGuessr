@@ -3,11 +3,11 @@
 	let {
 		note,
 		step = 1,
-		limit = 5,
+		maximum = 5,
 		minimum = 1,
 		initialValue = 1,
 		value = $bindable(initialValue),
-		lowerLimitText,
+		minimumText,
 	} = $props();
 	import { playSound } from "$lib/utils/soundManager";
 </script>
@@ -16,23 +16,25 @@
 	<button
 		id="roundMinus"
 		class="standardButton white"
+		disabled={Number(value) === Number(minimum)}
 		onclick={() => {
 			playSound("change_value");
 			value = Number(value) - Number(step);
 			if (Number(value) < Number(minimum)) value = Number(minimum);
 		}}>-</button
 	>
-	<p class="tickerText">{value !== minimum ? value : lowerLimitText ? lowerLimitText : value}</p>
+	<p class="tickerText">{value !== minimum ? value : minimumText ? minimumText : value}</p>
 	{#if note}
 		<p class="tickerNote">{note}</p>
 	{/if}
 	<button
 		id="roundPlus"
 		class="standardButton white"
+		disabled={Number(value) === Number(maximum)}
 		onclick={() => {
 			playSound("change_value");
 			value = Number(value) + Number(step);
-			if (Number(value) > Number(limit)) value = Number(limit);
+			if (Number(value) > Number(maximum)) value = Number(maximum);
 		}}>+</button
 	>
 </div>
