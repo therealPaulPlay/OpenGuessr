@@ -47,11 +47,11 @@
 		{#if !$multiplayer && !isCreatingRoom}
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p>Rounds</p>
-				<Ticker limit={10} minimum={2} initialValue={3} bind:value={$roundAmount} />
+				<Ticker maximum={10} minimum={2} initialValue={3} bind:value={$roundAmount} />
 			</div>
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p>Round length</p>
-				<Ticker limit={300} step={10} minimum={10} note="sec" initialValue={60} bind:value={$roundLength} />
+				<Ticker maximum={300} step={10} minimum={10} note="sec" initialValue={60} bind:value={$roundLength} />
 			</div>
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
 				<p>Restriction</p>
@@ -66,7 +66,7 @@
 			<div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
 				<p>Teams</p>
 				<div class="ticker">
-					<Ticker limit={5} lowerLimitText="No" note="teams" initialValue={1} bind:value={$teamAmount} />
+					<Ticker maximum={5} minimumText="No" note="teams" initialValue={1} bind:value={$teamAmount} />
 				</div>
 			</div>
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
