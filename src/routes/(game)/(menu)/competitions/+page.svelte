@@ -626,7 +626,7 @@
 				<button
 					class="standardButton competitionButton white"
 					class:dailyPrimary={daily}
-					disabled={entered || authorId == localStorage.getItem("id")}
+					disabled={entered || (authorId != null && authorId == localStorage.getItem("id"))}
 					onclick={() => {
 						playSound("basic_button");
 
@@ -641,7 +641,12 @@
 						} else {
 							signupPrompt();
 						}
-					}}>{entered ? "Already entered" : authorId == localStorage.getItem("id") ? "Hosted by you" : "Enter"}</button
+					}}
+					>{entered
+						? "Already entered"
+						: authorId != null && authorId == localStorage.getItem("id")
+							? "Hosted by you"
+							: "Enter"}</button
 				>
 			{/if}
 		</div>
