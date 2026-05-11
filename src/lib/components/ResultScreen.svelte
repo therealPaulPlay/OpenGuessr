@@ -124,10 +124,10 @@
 			<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
 		</div>
 		<div id="resultBox" class="barMenu">
-			<div class="resultField" class:resultFieldHigh={!$adsDisabled} id="motivationText">
+			<div class="resultField" id="motivationText">
 				<p>{$motivationText}</p>
 			</div>
-			<div class="mobileResultAdArea resultField resultFieldHigh" style:display={$adsDisabled ? "none" : ""}>
+			<div class="mobileResultAdArea resultField" style:display={$adsDisabled ? "none" : ""}>
 				<div
 					class="mobileResultAd"
 					id={resultAdsEnabled ? "mobileResultAd" : undefined}
@@ -238,7 +238,8 @@
 	#resultBox {
 		display: flex;
 		justify-content: center;
-		align-items: center;
+		/* Stretch to ensure each result field fills the vertical space available */
+		align-items: stretch;
 		color: white;
 		width: 750px;
 		flex-wrap: wrap;
@@ -273,10 +274,6 @@
 			width 250ms ease,
 			height 250ms ease;
 		overflow: hidden;
-	}
-
-	.resultFieldHigh {
-		min-height: 40px;
 	}
 
 	.endBottomBar {
@@ -315,12 +312,8 @@
 	}
 
 	.mobileResultAdArea {
-		min-width: 330px;
-		height: 50px;
-		max-height: 60px;
 		padding: var(--content-margin);
 		flex-grow: 1;
-		position: relative;
 	}
 
 	.mobileResultAd {
@@ -421,7 +414,7 @@
 	#experienceBarContainer {
 		flex-grow: 10;
 		height: var(--layout-margin);
-		background-color: rgba(255, 255, 255, 0.2);
+		background-color: rgba(255, 255, 255, 0.15);
 		border-radius: 7px;
 		transition: none;
 	}
@@ -555,10 +548,6 @@
 
 		.mobileResultAdArea {
 			display: none;
-		}
-
-		.resultFieldHigh {
-			min-height: unset;
 		}
 
 		#resultBox {
