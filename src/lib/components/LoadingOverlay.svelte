@@ -6,7 +6,7 @@
 
 {#if $loadingScreenVisible || $resultScreenEnabled}
 	<div class="loadingOverlay" transition:fade={{ duration: 150 }}>
-		<img src="/img/compass_spinner.png" fetchpriority="high" alt="Loading new streetview" class="spinner" />
+		<img src="/img/compass_spinner.png" fetchpriority="high" alt="Loading" class="spinner" />
 	</div>
 {/if}
 

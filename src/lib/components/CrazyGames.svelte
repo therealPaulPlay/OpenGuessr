@@ -2,7 +2,7 @@
 <script>
 	import { onMount } from "svelte";
 	import { roomCode, socket } from "$lib/stores/context-specific/multiplayerStore";
-	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
+	import { checkAuthentication } from "$lib/logic/accountLogic";
 	import {
 		crazyGames,
 		preventFullscreen,
@@ -115,7 +115,7 @@
 			localStorage.setItem("bearer", data.token);
 
 			// Now, set UI status and fetch user info
-			checkAuthenticationStatus();
+			checkAuthentication();
 		} catch (error) {
 			console.error("Error authenticating with CrazyGames:", error);
 		}

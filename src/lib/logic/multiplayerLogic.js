@@ -142,7 +142,7 @@ export async function createMultiplayerInstance() {
             }
 
             // If game has started, go to game page & disable matchmaking
-            if (storage.gameStarted && page.url.pathname !== "/" && !gameHasStarted) { 
+            if (storage.gameStarted && page.url.pathname !== "/" && !gameHasStarted) {
                 gameHasStarted = true;
                 goto("/"); // E.g. host or duel page -> game page 
             }

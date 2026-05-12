@@ -7,7 +7,6 @@
 		confirmTitle,
 		confirmDescription,
 		confirmConfirmText,
-		confirmConfirmColor,
 		confirmExecuteFunction,
 		confirmPasswordValue,
 		confirmUsernameValue,
@@ -60,7 +59,6 @@
 			<button
 				class="standardButton bottomButton largeButton"
 				onclick={confirm}
-				style:background-color={$confirmConfirmColor}
 				disabled={$confirmUsernameInput && $confirmUsernameValue?.length < 1}>{$confirmConfirmText}</button
 			>
 		{/if}

@@ -11,7 +11,7 @@
 	import { confirmPasswordValue, confirmUsernameValue } from "$lib/stores/context-specific/confirmPopupStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
-	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
+	import { signOut } from "$lib/logic/accountLogic";
 	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
 	import { openDirectMessageWith } from "$lib/logic/headlessChatLogic";
 	import * as FlagIcons from "svelte-flag-icons";
@@ -409,8 +409,7 @@
 					disabled={$crazyGames || !$singleplayer}
 					onclick={() => {
 						playSound("basic_button");
-						resetLocalSave();
-						checkAuthenticationStatus();
+						signOut();
 						profilePopup.set(false);
 					}}
 				>
