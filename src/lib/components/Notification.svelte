@@ -113,15 +113,9 @@
 		}
 	}
 
-	#notification-accept {
-		min-width: 45px;
-		min-height: 40px;
-	}
-
 	#notification-dismiss,
 	#notification-accept {
 		padding-inline: var(--box-margin);
-		min-height: 40px;
 	}
 
 	#notification-text {

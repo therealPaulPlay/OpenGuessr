@@ -135,7 +135,7 @@ function onMapClick(latLng) {
             popupAnchor: [1, -34]
         });
 
-        marker = new L.Marker([latLng.lat, latLng.lng], { icon: yourIcon });
+        marker = new L.Marker([latLng.lat, latLng.lng], { icon: yourIcon, alt: "" });
         marker.addTo(get(map));
 
         addedMarkers.update((markers) => {
@@ -175,7 +175,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
                     popupAnchor: [1, -34]
                 });
 
-                let marker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon });
+                let marker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon, alt: "" });
                 marker.setOpacity(0.65);
                 marker.addTo(get(map));
 

@@ -35,7 +35,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
         const guessLatLng = new L.LatLng(guessLat, wrapBackLon(guessLon));
         bounds = new L.LatLngBounds([correctLatLng, guessLatLng]);
 
-        const playerMarker = new L.Marker(guessLatLng, { icon: yourIcon });
+        const playerMarker = new L.Marker(guessLatLng, { icon: yourIcon, alt: "" });
         if (get(multiplayer)) playerMarker.bindTooltip("You", { permanent: true, direction: 'right' });
         playerMarker.addTo(get(map));
 
@@ -70,7 +70,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
                 popupAnchor: [1, -34]
             });
 
-            const multiplayerMarker = new L.Marker([lat, lon], { icon: multiplayerIcon, opacity: 0.75 });
+            const multiplayerMarker = new L.Marker([lat, lon], { icon: multiplayerIcon, opacity: 0.75, alt: "" });
             multiplayerMarker.bindTooltip(element.username, { permanent: true, direction: 'right' });
             multiplayerMarker.addTo(get(map));
 
@@ -88,7 +88,7 @@ export async function loadResultMap(guessLat, guessLon, correctLat, correctLon) 
     }
 
     // Place the destination marker
-    const destinationMarker = new L.Marker([correctLat, correctLon], { icon: resultIcon });
+    const destinationMarker = new L.Marker([correctLat, correctLon], { icon: resultIcon, alt: "" });
     destinationMarker.addTo(get(map));
 
     addedMarkers.update((markers) => {

@@ -68,7 +68,7 @@
 			{#each myInvites as invite (invite.conversation.conversationId)}
 				<div class="invite-item">
 					<p class="invite-text">
-						From
+						<span style:opacity="0.5">From</span>
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<span
 							class="invite-username"
