@@ -291,6 +291,7 @@
 		align-items: center;
 		overflow: hidden;
 		text-wrap: nowrap;
+		flex-shrink: 0;
 	}
 
 	.invite-item button {
@@ -305,7 +306,6 @@
 	.invite-username {
 		transition: opacity 250ms ease;
 		cursor: pointer;
-		vertical-align: center;
 	}
 
 	.invite-username:hover {
