@@ -7,7 +7,6 @@
 	let { children } = $props();
 
 	// Component Imports
-	import { playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 	import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
 	import ImageGuesser from "$lib/components/ImageGuesser.svelte";
 	import ErrorPopup from "$lib/components/ErrorPopup.svelte";
@@ -65,20 +64,6 @@
 		initOverfade();
 		checkGenerationTypeAndGenerate();
 		initializeAds();
-
-		// Load Playlight
-		try {
-			if (new URLSearchParams(window.location.search).get("crazy-games")) return; // Don't load Playlight on CG
-			const module = await import("https://sdk.playlight.dev/playlight-sdk.es.js");
-			$playlightSDK = module.default;
-			$playlightSDK.init({
-				exitIntent: {
-					enabled: false,
-				},
-			});
-		} catch (error) {
-			console.error("Error loading the Playlight SDK:", error);
-		}
 	});
 </script>
 
@@ -88,9 +73,6 @@
 
 	<!-- Leaflet CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
-
-	<!-- Playlight CSS -->
-	<link rel="stylesheet" href="https://sdk.playlight.dev/playlight-sdk.css" />
 </svelte:head>
 
 <!-- Prevent automatic "last button press" on space bar or enter key press -->

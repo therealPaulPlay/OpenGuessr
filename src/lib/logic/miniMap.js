@@ -10,6 +10,7 @@ import { get } from "svelte/store";
 import { multiplayer } from "$lib/stores/modeStore";
 
 // Canonicalize a wrapped-world longitude back
+// For example, if lon is 185 degrees, lon/360 >= 0.5, so it wraps it back by 360, making that -175 in this case
 export function wrapBackLon(lon) {
     return lon - Math.round(lon / 360) * 360;
 }
