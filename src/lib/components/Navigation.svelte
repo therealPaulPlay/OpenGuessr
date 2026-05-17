@@ -4,7 +4,7 @@
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { bugspotPopup, navigationMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { fade, fly, scale } from "svelte/transition";
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
@@ -112,7 +112,7 @@
 				<button
 					class="standardButton white navigation-button navigation-button-small largeButton"
 					disabled={!$singleplayer}
-					use:tooltip={{ text: "Education" }}
+					{@attach tooltip({ text: "Education" })}
 					onclick={() => {
 						playSound("basic_button");
 						window.open("https://education.openguessr.com", "_blank");
@@ -153,7 +153,7 @@
 				<button
 					class="standardButton white navigation-button navigation-button-small largeButton"
 					disabled={!$singleplayer}
-					use:tooltip={{ text: "Shop" }}
+					{@attach tooltip({ text: "Shop" })}
 					onclick={() => {
 						goto("/shop");
 						playSound("basic_button");
@@ -164,7 +164,7 @@
 				<button
 					class="standardButton white navigation-button navigation-button-small largeButton"
 					id="settingsButtonMobile"
-					use:tooltip={{ text: "Settings" }}
+					{@attach tooltip({ text: "Settings" })}
 					onclick={() => {
 						playSound("basic_button");
 						settingsPopup.set(true);

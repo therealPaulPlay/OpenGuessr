@@ -36,7 +36,8 @@
 		padding-inline: var(--content-margin);
 		box-shadow: var(--bulb-shadow);
 		flex-shrink: 0;
-		display: flex;
+		max-width: fit-content;
+		display: inline-flex;
 		align-items: center;
 	}
 

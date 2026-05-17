@@ -14,7 +14,7 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import { showNotification } from "$lib/utils/notifications";
 	import { playSound } from "$lib/utils/soundManager";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { Eye, Link } from "@lucide/svelte";
 	import { submitRoomCode } from "$lib/logic/matchmakingLogic.js";
 	import { page } from "$app/state";
@@ -129,7 +129,7 @@
 					<p class="friendsRoomEntryText">{entry.user_name}</p>
 					<button
 						class="standardButton white sendInviteButton"
-						use:tooltip={{ text: "Invite" }}
+						{@attach tooltip({ text: "Invite" })}
 						onclick={(e) => {
 							e.stopPropagation();
 							playSound("basic_button");
@@ -149,7 +149,7 @@
 	<button
 		id="roomcodeLink"
 		class="largeButton standardButton white"
-		use:tooltip={{ text: "Copy link" }}
+		{@attach tooltip({ text: "Copy link" })}
 		disabled={!$roomCode}
 		onclick={() => {
 			playSound("basic_button");
@@ -176,7 +176,7 @@
 	{#if showOpenRoom}
 		<button
 			class="standardButton white largeButton"
-			use:tooltip={{ text: "Make room public" }}
+			{@attach tooltip({ text: "Make room public" })}
 			disabled={!$roomCode || roomOpened}
 			onclick={async () => {
 				playSound("basic_button");

@@ -7,7 +7,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { messagesPopup } from "$lib/stores/uiStore";
 
@@ -122,7 +122,7 @@
 							<button
 								bind:this={reactButtonElement}
 								class="standardButton white action-button"
-								use:tooltip={{ text: "React" }}
+								{@attach tooltip({ text: "React" })}
 								onclick={() => {
 									playSound("basic_button");
 									reactionPickerOpen = !reactionPickerOpen;
@@ -134,7 +134,7 @@
 						{#if isOwn}
 							<button
 								class="standardButton white action-button"
-								use:tooltip={{ text: "Delete" }}
+								{@attach tooltip({ text: "Delete" })}
 								onclick={() => {
 									playSound("basic_button");
 									showConfirmPopup(
@@ -159,7 +159,7 @@
 						{/if}
 						<button
 							class="standardButton white action-button"
-							use:tooltip={{ text: "Reply" }}
+							{@attach tooltip({ text: "Reply" })}
 							onclick={() => {
 								playSound("basic_button");
 								onreply?.(message);

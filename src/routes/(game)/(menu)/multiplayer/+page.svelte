@@ -28,7 +28,7 @@
 	import { fetchWarnlistStatus } from "$lib/utils/checkReportStatus";
 	import { get } from "svelte/store";
 	import { showNotification } from "$lib/utils/notifications";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import TournamentOverview from "$lib/components/TournamentOverview.svelte";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import Chip from "$lib/components/ui/Chip.svelte";
@@ -133,7 +133,7 @@
 					<span class="innerDuelButtonContainer">
 						<button
 							class="standardButton white innerDuelButton"
-							use:tooltip={{ text: "History" }}
+							{@attach tooltip({ text: "History" })}
 							style:flex-grow={0}
 							onclick={(e) => {
 								e.stopPropagation();
@@ -143,7 +143,7 @@
 						>
 						<button
 							class="standardButton white innerDuelButton"
-							use:tooltip={{ text: "Division-based or Everyone" }}
+							{@attach tooltip({ text: "Division-based or Everyone" })}
 							style:flex-grow={0}
 							onclick={(e) => {
 								e.stopPropagation();
@@ -186,7 +186,7 @@
 			<button
 				class="standardButton white largeButton"
 				style:position="relative"
-				use:tooltip={{ text: "Messages" }}
+				{@attach tooltip({ text: "Messages" })}
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) messagesPopup.set(true);
@@ -201,7 +201,7 @@
 			<button
 				class="standardButton white largeButton friendAddButton"
 				style:position="relative"
-				use:tooltip={{ text: "Add friend" }}
+				{@attach tooltip({ text: "Add friend" })}
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) friendBrowserPopup.set(true);

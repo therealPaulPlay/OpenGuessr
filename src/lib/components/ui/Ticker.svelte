@@ -10,6 +10,7 @@
 		minimumText,
 	} = $props();
 	import { playSound } from "$lib/utils/soundManager";
+	import { Minus, Plus } from "@lucide/svelte";
 </script>
 
 <div class="ticker">
@@ -21,7 +22,7 @@
 			playSound("change_value");
 			value = Number(value) - Number(step);
 			if (Number(value) < Number(minimum)) value = Number(minimum);
-		}}>-</button
+		}}><Minus size={18} strokeWidth={2.5} /></button
 	>
 	<p class="tickerText">{value !== minimum ? value : minimumText ? minimumText : value}</p>
 	{#if note}
@@ -35,7 +36,7 @@
 			playSound("change_value");
 			value = Number(value) + Number(step);
 			if (Number(value) > Number(maximum)) value = Number(maximum);
-		}}>+</button
+		}}><Plus size={18} strokeWidth={2.5} /></button
 	>
 </div>
 

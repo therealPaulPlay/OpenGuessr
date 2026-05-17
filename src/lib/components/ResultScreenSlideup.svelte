@@ -108,6 +108,7 @@
 		bottom: 0;
 		background-color: rgba(255, 255, 255, 0.15);
 		box-shadow: var(--bulb-shadow);
+		transition: width 250ms ease;
 	}
 
 	.buttonBox {

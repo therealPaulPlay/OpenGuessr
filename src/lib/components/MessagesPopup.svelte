@@ -11,7 +11,7 @@
 	import { headlessChatInitialLoad, loadAliases } from "$lib/logic/headlessChatLogic";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 
 	const PAGE_SIZE = 50;
@@ -338,7 +338,16 @@
 										{#if message.systemEvent.type === "messagesRemoved"}
 											Old messages removed
 										{:else}
-											{aliasCache.get(message.systemEvent.participantId) || "Unknown"}
+											<!-- svelte-ignore a11y_click_events_have_key_events -->
+											<span
+												class="system-note-name"
+												role="button"
+												tabindex="0"
+												onclick={() => {
+													$messagesPopup = false;
+													showProfile(message.systemEvent.participantId);
+												}}>{aliasCache.get(message.systemEvent.participantId) || "Unknown"}</span
+											>
 											{message.systemEvent.type === "participantJoined" ? "joined" : "left"}
 										{/if}
 									</p>
@@ -415,7 +424,7 @@
 						/>
 						<button
 							class="standardButton white"
-							use:tooltip={{ text: "Send message" }}
+							{@attach tooltip({ text: "Send message" })}
 							disabled={!inputValue.trim()}
 							onclick={() => {
 								playSound("basic_button");
@@ -518,6 +527,15 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
+	}
+
+	.system-note-name {
+		cursor: pointer;
+		transition: opacity 250ms ease;
+	}
+
+	.system-note-name:hover {
+		opacity: 0.5;
 	}
 
 	.system-note-line {

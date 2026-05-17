@@ -43,7 +43,7 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
 
     // Load XP
     await loadResultScreenXP(distance);
-    if (!get(showSlideup)) supporterSlideupProbability();
+    if (get(singleplayer)) supporterSlideupProbability(); // Only show in singleplayer
     checkDisplayFullscreenCelebration();
 
     // Social Media CTA
@@ -56,7 +56,7 @@ export function disableResultScreen() {
 
     // UI resets
     if (window.innerHeight > window.innerWidth) mapExpanded.set(false); // On mobile, collapse map
-    showSlideup.set(false);
+    showSlideup.set(false); // Hide slideup
     mapHovered.set(false);
     mapPinLat.set(0); // Reset placed map pin latitude
     mapPinLng.set(0); // Reset placed map pin longitude

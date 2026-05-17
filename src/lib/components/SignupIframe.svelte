@@ -1,6 +1,6 @@
 <script>
 	import { signupPopup } from "$lib/stores/uiStore";
-	import { checkAuthenticationStatus } from "$lib/logic/accountLogic";
+	import { checkAuthentication } from "$lib/logic/accountLogic";
 	import IframePopup from "./ui/IframePopup.svelte";
 	import { showNotification } from "$lib/utils/notifications";
 
@@ -15,7 +15,7 @@
 						break;
 					case data === "loadAccountStatus":
 						showNotification("You're now logged in.");
-						checkAuthenticationStatus();
+						checkAuthentication();
 						break;
 				}
 			} catch (error) {

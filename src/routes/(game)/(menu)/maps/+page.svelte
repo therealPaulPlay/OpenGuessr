@@ -2,7 +2,7 @@
 	import { Plus, XCircle, User, Search, Info } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
+	import { crazyGames, playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 	import { onMount, getContext } from "svelte";
 	import { goto, beforeNavigate } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -15,7 +15,7 @@
 		defaultMap,
 	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { tooltip } from "$lib/utils/tooltip.js";
+	import { tooltip } from "$lib/utils/tooltip.svelte.js";
 	import { page } from "$app/state";
 	import { navigationMenu } from "$lib/stores/uiStore";
 	import Chip from "$lib/components/ui/Chip.svelte";
@@ -56,6 +56,7 @@
 		"Miscellaneous",
 	];
 
+	// Load saved maps, restore site snapshot (if user went back to this page) or start initial load
 	onMount(() => {
 		addedCommunityMapsArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 
@@ -65,6 +66,22 @@
 		else {
 			loadCommunityMaps(0);
 			loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+		}
+	});
+
+	// Load Playlight
+	onMount(async () => {
+		try {
+			if (new URLSearchParams(window.location.search).get("crazy-games")) return; // Don't load Playlight on CG
+			const module = await import("https://sdk.playlight.dev/playlight-sdk.es.js");
+			$playlightSDK = module.default;
+			$playlightSDK.init({
+				exitIntent: {
+					enabled: false,
+				},
+			});
+		} catch (error) {
+			console.error("Error loading the Playlight SDK:", error);
 		}
 	});
 
@@ -230,6 +247,8 @@
 
 <svelte:head>
 	<title>Maps</title>
+	<!-- Playlight CSS -->
+	<link rel="stylesheet" href="https://sdk.playlight.dev/playlight-sdk.css" />
 </svelte:head>
 
 {#snippet communityMapItem(map)}
@@ -250,7 +269,7 @@
 		</div>
 		<button
 			class="add-button standardButton white"
-			use:tooltip={{ text: "Save map" }}
+			{@attach tooltip({ text: "Save map" })}
 			onclick={(e) => {
 				e.stopPropagation();
 				playSound("basic_button");

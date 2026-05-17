@@ -1,4 +1,5 @@
 import * as topojson from 'topojson-client';
+import { wrapBackLon } from '$lib/logic/miniMap';
 
 let worldData = null;
 let countriesGeo = null;
@@ -36,9 +37,7 @@ function pointInPolygon(point, polygon) {
 export async function getCountryFromCoords(lat, lon) {
     if (!countriesGeo) await loadWorldData();
 
-    // Canonicalize lon
-    // For example, if lon is 185 degrees, lon/360 >= 0.5, so it wraps it back by 360, making that -175 in this case
-    lon = lon - Math.round(lon / 360) * 360;
+    lon = wrapBackLon(lon);
 
     const point = [lon, lat];
 

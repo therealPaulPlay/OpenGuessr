@@ -1,5 +1,3 @@
-import { attemptJoinViaLink } from "$lib/logic/multiplayerLogic";
-import { initializeSSEConnection, disconnectSSE } from "$lib/logic/sseLogic";
 import { resultScreenEnabled, lastDistance, lastExpCalculationSignedOut } from "$lib/stores/context-specific/resultScreenStore";
 import { isAuthenticated, supporterLevel, experience, username, selectedPinIndex, selectedBadge, elo, tokens, purchasedPins, accountDataLoaded, duelWinStreak } from "$lib/stores/accountStore";
 import { newFriendRequest } from "$lib/stores/context-specific/inboxStore";
@@ -15,8 +13,10 @@ import { errorPopup } from "$lib/utils/errorHandling";
 
 // Authentication -----------------------------------------------------------------------------------------------------------------------
 
+let callbacks = new Set();
+
 // Global function that changes everything to logged in or signed out
-export async function checkAuthenticationStatus() {
+export async function checkAuthentication() {
   const bearerToken = localStorage.getItem("bearer");
 
   if (bearerToken) {
@@ -30,12 +30,22 @@ export async function checkAuthenticationStatus() {
     }
   } else isAuthenticated.set(false);
 
-  attemptJoinViaLink(); // Check if the link contains a multiplayer room ID to join
+  // Run callbacks
+  callbacks.forEach(async (funcItem) => {
+    try {
+      await funcItem(get(isAuthenticated));
+    } catch (error) {
+      console.error("Error in checkAuthentication callback:", error);
+    }
+  });
 }
 
-export function resetLocalSave() {
-  disconnectSSE(); // Close the SSE connection opened on sign in
+export function signOut() {
+  resetLocalSave();
+  checkAuthentication();
+}
 
+function resetLocalSave() {
   // Localstorage resets
   localStorage.removeItem("bearer");
   localStorage.removeItem("id");
@@ -56,6 +66,17 @@ export function resetLocalSave() {
 
   // Set account loaded to false
   accountDataLoaded.set(false);
+}
+
+// Register a callback, returns an unsubscribe function
+export function onAuthenticationUpdated(callback) {
+  if (!callback || typeof callback !== "function") {
+    console.warn("Called onAuthenticationUpdated without a valid callback function!");
+    return () => { };
+  }
+  if (callbacks.has(callback)) console.error("Callback already registered.");
+  callbacks.add(callback);
+  return () => callbacks.delete(callback);
 }
 
 // Load user data ---------------------------------------------------------------------------------------------------------------------------
@@ -84,48 +105,42 @@ async function loadUserInfo() {
       // If the user signed in on the result screen with a pending result, re-run it
       if (get(resultScreenEnabled) && get(lastExpCalculationSignedOut)) loadResultScreenXP(get(lastDistance));
 
-      initializeSSEConnection();
       accountDataLoaded.set(true);
     });
   } catch (error) {
     console.error("Error getting user data in loadUserInfo:", error);
+    if (error.message === "404") {
+      showConfirmPopup("Account removed", "This account was removed. Delete locally saved data?", () => {
+        resetLocalSave();
+        window.location.reload();
+      });
+    } else {
+      errorPopup("Error getting user data", "An error occured trying to fetch user info.", error.message);
+    }
   }
 }
 
 async function getUser() {
-  try {
-    const response = await fetch(`${get(apiUrl)}/accounts/user/${localStorage.getItem("id")}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${localStorage.getItem("bearer")}`
-      },
-    });
+  const response = await fetch(`${get(apiUrl)}/accounts/user/${localStorage.getItem("id")}`, {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${localStorage.getItem("bearer")}`
+    },
+  });
 
-    // Check if the response is successful
-    if (response.ok) {
+  // Check if the response is successful
+  if (response.ok) {
+    const data = await response.json();
+    return data.user;
+
+  } else {
+    let responseError = response.status;
+    if (response.status == 404) throw new Error("404");
+    try {
       const data = await response.json();
-      return data.user;
-
-    } else {
-      let responseError = response.status;
-      try {
-        const data = await response.json();
-        if (data.error) responseError = data.error;
-      } catch { }
-
-      if (response.status == 404) {
-        showConfirmPopup("Account removed", "This account was removed. Your locally saved account data should be deleted to avoid issues. Continue?", () => {
-          localStorage.removeItem("id");
-          localStorage.removeItem("bearer");
-          window.location.reload();
-        }, false, false, false, "Continue");
-      } else {
-        throw new Error(responseError);
-      }
-    }
-  } catch (error) {
-    console.error('Error fetching the user: ', error);
-    errorPopup("Error fetching user", "An error occured trying to fetch user info.", error.message);
+      if (data.error) responseError = data.error;
+    } catch { }
+    throw new Error(responseError);
   }
 }

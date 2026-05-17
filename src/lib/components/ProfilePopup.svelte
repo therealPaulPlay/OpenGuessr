@@ -11,7 +11,7 @@
 	import { confirmPasswordValue, confirmUsernameValue } from "$lib/stores/context-specific/confirmPopupStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
-	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
+	import { signOut } from "$lib/logic/accountLogic";
 	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
 	import { openDirectMessageWith } from "$lib/logic/headlessChatLogic";
 	import * as FlagIcons from "svelte-flag-icons";
@@ -51,7 +51,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showNotification } from "$lib/utils/notifications";
 	import { censor } from "fast-profanity-filter";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 
 	let textarea = $state();
@@ -237,7 +237,7 @@
 			{#if $profileId == localStorage.getItem("id")}
 				<button
 					class="standardButton white"
-					use:tooltip={{ text: "Share link" }}
+					{@attach tooltip({ text: "Share link" })}
 					onclick={() => {
 						playSound("basic_button");
 						navigator.clipboard
@@ -273,7 +273,7 @@
 			{#if $profileId != localStorage.getItem("id")}
 				<button
 					class="standardButton white"
-					use:tooltip={{ text: "Send message" }}
+					{@attach tooltip({ text: "Send message" })}
 					onclick={() => {
 						playSound("basic_button");
 						if ($isAuthenticated) openDirectMessageWith($profileId);
@@ -285,7 +285,7 @@
 				<button
 					class="standardButton white"
 					disabled={$profileData?.areFriends}
-					use:tooltip={{ text: "Send friend request" }}
+					{@attach tooltip({ text: "Send friend request" })}
 					onclick={(e) => {
 						playSound("basic_button");
 						// Send friend request (also shows ingame notification)
@@ -409,8 +409,7 @@
 					disabled={$crazyGames || !$singleplayer}
 					onclick={() => {
 						playSound("basic_button");
-						resetLocalSave();
-						checkAuthenticationStatus();
+						signOut();
 						profilePopup.set(false);
 					}}
 				>

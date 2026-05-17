@@ -387,6 +387,7 @@ search {
     padding-inline: var(--box-margin);
     backdrop-filter: blur(5px);
     overflow: visible;
+    max-width: 225px;
 }
 
 .tooltip-arrow {
@@ -412,6 +413,41 @@ search {
 
 .tooltip-arrow[data-placement="right"] {
     clip-path: polygon(0% 50%, 100% 0%, 100% 100%);
+}
+
+.tooltip-with-image {
+    padding: var(--box-margin);
+    border-radius: var(--box-margin);
+    display: flex;
+    flex-direction: column;
+}
+
+.tooltip-with-image .tooltip-text {
+    margin-inline: var(--content-margin);
+    margin-block: var(--content-margin);
+}
+
+.tooltip-image {
+    height: auto;
+    width: 100%;
+}
+
+.tooltip-close {
+    margin-left: auto;
+    padding: 3px;
+    opacity: 0.75;
+    transition: opacity 250ms ease;
+}
+
+.tooltip-close:hover {
+    opacity: 0.5;
+}
+
+.tooltip-close-floating {
+    position: absolute;
+    top: var(--box-margin);
+    right: var(--box-margin);
+    margin-left: 0;
 }
 
 @keyframes rotation {

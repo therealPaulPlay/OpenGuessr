@@ -6,7 +6,7 @@
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { mapExpanded, mapInteractive } from "$lib/stores/context-specific/mapStore";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { countryGuessr, multiplayer } from "$lib/stores/modeStore";
 	import { blur, fade } from "svelte/transition";
 	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
@@ -43,7 +43,7 @@
 			{#if $multiplayer}
 				<button
 					class="standardButton white mobileChatButton"
-					use:tooltip={{ text: "Chat" }}
+					{@attach tooltip({ text: "Chat" })}
 					onclick={() => {
 						playSound("basic_button");
 						$chatMobilePopup = true;
@@ -77,7 +77,7 @@
 				<button
 					class="helpButton standardButton white"
 					class:innerConfirmButtonDisabled={$confirmButtonActive}
-					use:tooltip={{ text: "How to play" }}
+					{@attach tooltip({ text: "How to play" })}
 					onclick={(element) => {
 						element.stopPropagation();
 						playSound("basic_button");

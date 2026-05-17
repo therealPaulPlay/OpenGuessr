@@ -2,6 +2,7 @@
 	import { matchOverviewPopup } from "$lib/stores/uiStore";
 	import { matchData } from "$lib/stores/context-specific/matchOverviewStore";
 	import { panoramaKey, streetViewURLPrefix } from "$lib/stores/locationStore";
+	import { wrapBackLon } from "$lib/logic/miniMap";
 	import { playSound } from "$lib/utils/soundManager";
 	import { showProfile } from "$lib/utils/showProfile";
 	import Popup from "./ui/Popup.svelte";
@@ -30,16 +31,16 @@
 	let markerList = $derived(
 		currentRound
 			? [
-					{ lat: currentRound.location.lat, lon: currentRound.location.lon, shape: "flag" },
-					...currentRound.guesses.map((g) => ({ lat: g.lat, lon: g.lon, label: g.username })),
+					{ lat: currentRound.location.lat, lon: wrapBackLon(currentRound.location.lon), shape: "flag" },
+					...currentRound.guesses.map((g) => ({ lat: g.lat, lon: wrapBackLon(g.lon), label: g.username })),
 				]
 			: [],
 	);
 	let lineList = $derived(
 		currentRound
 			? currentRound.guesses.map((g) => ({
-					from: { lat: g.lat, lon: g.lon },
-					to: { lat: currentRound.location.lat, lon: currentRound.location.lon },
+					from: { lat: g.lat, lon: wrapBackLon(g.lon) },
+					to: { lat: currentRound.location.lat, lon: wrapBackLon(currentRound.location.lon) },
 				}))
 			: [],
 	);

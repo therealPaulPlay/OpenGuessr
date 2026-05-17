@@ -15,7 +15,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import Chip from "./ui/Chip.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
@@ -68,7 +68,7 @@
 			{#each myInvites as invite (invite.conversation.conversationId)}
 				<div class="invite-item">
 					<p class="invite-text">
-						From
+						<span style:opacity="0.5">From</span>
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<span
 							class="invite-username"
@@ -151,7 +151,7 @@
 					</div>
 					<button
 						class="standardButton white leave-button"
-						use:tooltip={{ text: "Leave" }}
+						{@attach tooltip({ text: "Leave" })}
 						onclick={(e) => {
 							e.stopPropagation();
 							playSound("basic_button");
@@ -291,6 +291,7 @@
 		align-items: center;
 		overflow: hidden;
 		text-wrap: nowrap;
+		flex-shrink: 0;
 	}
 
 	.invite-item button {
@@ -305,7 +306,6 @@
 	.invite-username {
 		transition: opacity 250ms ease;
 		cursor: pointer;
-		vertical-align: center;
 	}
 
 	.invite-username:hover {
