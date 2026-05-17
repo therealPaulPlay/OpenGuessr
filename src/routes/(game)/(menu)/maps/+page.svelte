@@ -15,7 +15,7 @@
 		defaultMap,
 	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { tooltip } from "$lib/utils/tooltip.js";
+	import { tooltip } from "$lib/utils/tooltip.svelte.js";
 	import { page } from "$app/state";
 	import { navigationMenu } from "$lib/stores/uiStore";
 	import Chip from "$lib/components/ui/Chip.svelte";
@@ -269,7 +269,7 @@
 		</div>
 		<button
 			class="add-button standardButton white"
-			use:tooltip={{ text: "Save map" }}
+			{@attach tooltip({ text: "Save map" })}
 			onclick={(e) => {
 				e.stopPropagation();
 				playSound("basic_button");

@@ -24,9 +24,10 @@
 	import { CircleUser, Flame, RulerDimensionLine } from "@lucide/svelte";
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { registerResultAds } from "$lib/utils/ads";
 	import { roundLogPopup } from "$lib/stores/uiStore";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -170,8 +171,10 @@
 				{:else}
 					<div id="experienceBarNotSignedIn" class="resultField">
 						<p id="signupPromptText">
-							<CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see
-							& save your score!
+							<button class="signupButton" onclick={signupPrompt}
+								><CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see
+								& save your score!
+							</button>
 						</p>
 					</div>
 				{/if}
@@ -182,7 +185,7 @@
 		<div class="barMenu nextRoundArea">
 			<button
 				class="standardButton white"
-				use:tooltip={{ text: "View panorama" }}
+				{@attach tooltip({ text: "View panorama" })}
 				onclick={() => {
 					playSound("basic_button");
 					$roundLogPopup = true;
@@ -246,6 +249,15 @@
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);
 		margin-inline: var(--box-margin);
+	}
+
+	.signupButton {
+		transition: opacity 250ms ease;
+		cursor: pointer;
+	}
+
+	.signupButton:hover {
+		opacity: 0.5;
 	}
 
 	.noAdvertsText {

@@ -2,11 +2,12 @@
 	import { selectedTournamentId, tournamentData } from "$lib/stores/context-specific/tournamentStore";
 	import { tournamentInfoPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { fetchTournaments } from "$lib/utils/tournamentUtils";
 	import { CalendarCheck2, Clock, Info, Medal, Ticket } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";
+	import Chip from "./ui/Chip.svelte";
 	import Drawer from "./ui/Drawer.svelte";
 
 	let noTournamentsText = $state("No tournaments scheduled.");
@@ -30,9 +31,9 @@
 		<div class="tournamentNameBox">
 			<h3 class="tournamentNameTitle">
 				{tournament.name}{#if tournament.status == "ongoing"}
-					<span class="ongoingBadge">Ongoing</span>
+					<Chip text="Ongoing" red={true} italic={true} mutedOpacity={false} class="statusChip" />
 				{:else if tournament.status == "starting"}
-					<span class="ongoingBadge">Enter now</span>
+					<Chip text="Enter now" red={true} italic={true} mutedOpacity={false} class="statusChip" />
 				{/if}
 			</h3>
 		</div>
@@ -50,7 +51,7 @@
 		</div>
 		<button
 			class="tournamentFieldButton standardButton {tournament.status == 'starting' ? '' : 'white'}"
-			use:tooltip={{ text: "Details" }}
+			{@attach tooltip({ text: "Details" })}
 			onclick={() => {
 				playSound("basic_button");
 				$selectedTournamentId = tournament.id;
@@ -149,13 +150,7 @@
 		width: 100%;
 	}
 
-	.ongoingBadge {
-		padding-inline: var(--content-margin);
-		border-radius: 3px;
-		background-color: var(--brand-color);
-		box-shadow: var(--bulb-shadow);
-		font-size: 20px;
-		margin-bottom: 2px;
+	:global(.statusChip) {
 		margin-left: var(--panel-margin);
 	}
 

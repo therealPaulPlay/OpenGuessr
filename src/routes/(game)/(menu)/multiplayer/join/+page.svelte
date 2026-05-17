@@ -8,7 +8,7 @@
 	import { fetchOpenRooms } from "$lib/logic/matchmakingLogic";
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import Chip from "$lib/components/ui/Chip.svelte";
 
 	let roomCodeInput = $derived(segments.slice(0, 3).join("") + segments.slice(3, 6).join(""));
@@ -114,7 +114,7 @@
 				</div>
 				<button
 					class="standardButton white"
-					use:tooltip={{ text: "Join" }}
+					{@attach tooltip({ text: "Join" })}
 					onclick={() => {
 						playSound("basic_button");
 						const code = room?.code;
