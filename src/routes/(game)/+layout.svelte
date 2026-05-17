@@ -37,7 +37,6 @@
 	import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
 	import MultiplayerOverlay from "$lib/components/MultiplayerOverlay.svelte";
 	import BlinkRestrictionFade from "$lib/components/FadeRestriction.svelte";
-	import MapAttribution from "$lib/components/MapAttribution.svelte";
 	import CrazyGames from "$lib/components/CrazyGames.svelte";
 	import DuelResultPopup from "$lib/components/DuelResultPopup.svelte";
 	import ReportIframePopup from "$lib/components/ReportIframePopup.svelte";
@@ -70,9 +69,6 @@
 <svelte:head>
 	<!-- Ad script -->
 	<script src="https://cdn.fuseplatform.net/publift/tags/2/4180/fuse.js" async></script>
-
-	<!-- Leaflet CSS -->
-	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
 </svelte:head>
 
 <!-- Prevent automatic "last button press" on space bar or enter key press -->
@@ -152,7 +148,6 @@
 <PanoramaIframe />
 <CountryGuesserBar />
 <MapHolder>
-	<MapAttribution />
 	<MobileMapToggles />
 	<Map />
 	<MapModeIndicator />

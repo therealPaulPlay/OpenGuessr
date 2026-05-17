@@ -15,85 +15,105 @@ export function wrapBackLon(lon) {
     return lon - Math.round(lon / 360) * 360;
 }
 
-// Initialize the map
-export function initMap() {
-    const worldBounds = L.latLngBounds(
-        L.latLng(-135, -315), // Southwest corner
-        L.latLng(135, 315)    // Northeast corner
-    );
-
-    const pixelRatio = Math.max(window.devicePixelRatio, 2);
-
-    // Initialize tile layers
-    const standardMap = L.tileLayer("https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, {
-        maxZoom: 20,
-        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-        bounds: worldBounds
-    });
-
-    const terrainMap = L.tileLayer("https://{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, {
-        maxZoom: 20,
-        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-        bounds: worldBounds
-    });
-
-    const satelliteMap = L.tileLayer("https://{s}.google.com/vt/lyrs=s,h&x={x}&y={y}&z={z}&hl=en&scale=" + pixelRatio, {
-        maxZoom: 20,
-        subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
-        bounds: worldBounds
-    });
-
-    const leafletMap = L.map('map', {
-        zoom: 2,
-        center: [0, 0],
-        minZoom: 2,
-        maxBounds: worldBounds,
-        maxBoundsViscosity: 1.0,  // Makes the bounds restriction strict
-        zoomControl: false,       // Hide zoom control
-        cursor: 'crosshair'
-    });
-
-    // Set up the layer control
-    const baseMaps = {
-        "Standard": standardMap,
-        "Terrain": terrainMap,
-        "Satellite": satelliteMap
-    };
-
-    standardMap.addTo(leafletMap);
-
-    // Add layer control (similar to mapTypeControl in Google Maps)
-    L.control.layers(baseMaps, {}, {
-        position: 'topleft'
-    }).addTo(leafletMap);
-
-    leafletMap.on('click', (e) => {
-        onMapClick(e.latlng);
-    });
-
-    leafletMap.whenReady(() => {
-        if (delayedMapReset) {
-            delayedMapReset = false;
-            resetMap();
+// Google Maps init --------------------------------------------------------------------------------------
+async function loadGoogleMapsApi(apiKey) {
+    await new Promise((resolve, reject) => {
+        // Check if Google Maps is already loaded
+        if (window.google && window.google.maps) {
+            resolve(window.google.maps);
+            return;
         }
-    })
 
-    map.set(leafletMap);
+        // Create a script element to load the API
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}&v=weekly`;
+        script.async = true;
+
+        // Resolve the promise when the script loads
+        script.onload = () => {
+            if (window.google && window.google.maps) {
+                resolve(window.google.maps);
+            } else {
+                reject(new Error('Google Maps API script loaded, but no google.maps object found.'));
+            }
+        };
+
+        script.onerror = () => {
+            reject(new Error('Failed to load the Google Maps API script.'));
+        };
+
+        document.head.appendChild(script);
+    });
+}
+
+const worldBounds = {
+    north: 90,
+    south: -90,
+    west: -190,
+    east: 190
 };
 
+async function initMap() {
+    mapInitialized = true;
+
+    await loadGoogleMapsApi("PLACEHOLDER");
+
+    const { Map } = await window.google.maps.importLibrary("maps");
+
+    map.set(
+        new Map(document.getElementById("map"), {
+            center: { lat: 20, lng: 0 },
+            zoom: 2,
+            streetViewControl: false, // Hide Street View control
+            zoomControl: false,       // Hide zoom control
+            fullscreenControl: false, // Hide fullscreen control
+            draggableCursor: "crosshair",
+            mapTypeControlOptions: {
+                style: window.google.maps.MapTypeControlStyle.DEFAULT,
+                mapTypeIds: [
+                    window.google.maps.MapTypeId.ROADMAP, // Standard view
+                    window.google.maps.MapTypeId.HYBRID, // Satellite view with labels
+                ],
+            },
+            clickableIcons: false,
+            restriction: {
+                latLngBounds: worldBounds,
+                strictBounds: true, // Enforce the restriction
+            }
+        }));
+
+    get(map).addListener("click", function (e) {
+        onMapClick(e.latLng);
+    });
+
+    adjustMapToCountry();
+
+    document.dispatchEvent(new Event("mapInitialized"));
+}
+
+// Trigger map initialization delayed --------------------------------------------------------------
+let mapInitialized = false;
+
+export async function initializeMapIfNotAlready() {
+    if (!mapInitialized) await initMap();
+}
+
 // Reset map ---------------------------------------------------------------------------------------
-let delayedMapReset = false;
 let multiplayerMiniMarkers = []; // team markers
 
-// Reset the map and the confirm button
+// Reset the map - used for going to the next round. 
 export function resetMap(keepSize) {
-    if (!get(map)) return delayedMapReset = true;
+    if (get(map)) {
+        if (get(addedMarkers)) {
+            for (let i = 0; i < get(addedMarkers).length; i++) {
+                get(addedMarkers)[i].setMap(null);
+            }
+        }
 
-    // Clear markers
-    get(addedMarkers)?.forEach(marker => {
-        get(map).removeLayer(marker);
-    });
-    addedMarkers.set([]);
+        addedMarkers.set([]); // Clear the array
+        adjustMapToCountry();
+        get(map).overlayMapTypes.clear();
+    }
 
     // Reset the guess button
     confirmButtonActive.set(false);
@@ -108,7 +128,8 @@ export function resetMap(keepSize) {
 // For most maps, adjust the boundaries to the map's locations
 async function adjustMapToCountry() {
     const mapCenterAndZoom = getMapBounds();
-    get(map).setView(new L.LatLng(mapCenterAndZoom.lat, mapCenterAndZoom.lng), mapCenterAndZoom.zoom);
+    get(map).panTo({ lat: mapCenterAndZoom.lat, lng: mapCenterAndZoom.lng });
+    get(map).setZoom(mapCenterAndZoom.zoom);
 }
 
 // Placing the marker on the minimap ------------------------------------------------------------------------
@@ -122,22 +143,27 @@ function onMapClick(latLng) {
         playSound("pin_drop", "pin");
 
         if (marker) {
-            get(map).removeLayer(marker);
+            marker.setMap(null);
         }
 
         // Set Map Marker Position to user input
-        mapPinLat.set(latLng.lat);
-        mapPinLng.set(latLng.lng);
+        mapPinLat.set(latLng.lat());
+        mapPinLng.set(latLng.lng());
 
-        let yourIcon = new L.Icon({
-            iconUrl: "/img/pins/player_pin" + get(selectedPinIndex) + ".png",
-            iconSize: [35, 35],
-            iconAnchor: [17.5, 34],
-            popupAnchor: [1, -34]
+        let yourIcon = {
+            url: "/img/pins/player_pin" + get(selectedPinIndex) + ".png",
+            size: new window.google.maps.Size(35, 35),
+            anchor: new window.google.maps.Point(17.5, 34),
+            origin: new window.google.maps.Point(0, 0),
+            scaledSize: new window.google.maps.Size(35, 35),
+        };
+
+        marker = new window.google.maps.Marker({
+            position: latLng,
+            map: get(map),
+            icon: yourIcon,
+            clickable: false
         });
-
-        marker = new L.Marker([latLng.lat, latLng.lng], { icon: yourIcon, alt: "" });
-        marker.addTo(get(map));
 
         addedMarkers.update((markers) => {
             markers = markers || [];
@@ -153,7 +179,7 @@ function onMapClick(latLng) {
 export function updateMinimapWithTeamMarkers(markerArray) {
     // Remove existing mini markers
     multiplayerMiniMarkers.forEach(existingMarker => {
-        get(map)?.removeLayer(existingMarker);
+        existingMarker?.setMap(null);
     });
 
     try {
@@ -167,18 +193,22 @@ export function updateMinimapWithTeamMarkers(markerArray) {
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
             if (miniMarkerId != get(socket)?.id && miniMarkerTeam === getTeamFromClientId(get(socket)?.id)) {
-                const multiplayerLatLng = new L.LatLng(miniMarkerLat, wrapBackLon(miniMarkerLon));
+                const multiplayerLatLng = new window.google.maps.LatLng(miniMarkerLat, miniMarkerLon);
 
-                let newMultiplayerIcon = new L.Icon({
-                    iconUrl: "/img/pins/player_pin" + (miniMarkerPinIndex ?? 0) + ".png",
-                    iconSize: [35, 35],
-                    iconAnchor: [17.5, 34],
-                    popupAnchor: [1, -34]
+                const newMultiplayerIcon = {
+                    url: "/img/pins/player_pin" + (miniMarkerPinIndex ?? 0) + ".png",
+                    size: new window.google.maps.Size(25, 25),
+                    anchor: new window.google.maps.Point(15, 24),
+                    origin: new window.google.maps.Point(0, 0),
+                    scaledSize: new window.google.maps.Size(25, 25),
+                };
+
+                let marker = new window.google.maps.Marker({
+                    position: multiplayerLatLng,
+                    map: get(map),
+                    icon: newMultiplayerIcon,
+                    clickable: false
                 });
-
-                let marker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon, alt: "" });
-                marker.setOpacity(0.65);
-                marker.addTo(get(map));
 
                 addedMarkers.update((markers) => {
                     markers = markers || [];
