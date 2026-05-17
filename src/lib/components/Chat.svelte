@@ -4,7 +4,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import RemainingGuessesDisplay from "$lib/components/RemainingGuessesDisplay.svelte";
 	import { MessageSquareWarning, SendHorizonal } from "@lucide/svelte";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { chatManagePopup } from "$lib/stores/uiStore";
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 	import { get } from "svelte/store";
@@ -63,7 +63,7 @@
 		}}
 	/>
 	<button
-		use:tooltip={{ text: "Send message" }}
+		{@attach tooltip({ text: "Send message" })}
 		id="multiplayerSendButton"
 		class="standardButton white"
 		onclick={() => {
@@ -76,7 +76,7 @@
 	</button>
 	<button
 		class="standardButton white"
-		use:tooltip={{ text: "Moderation" }}
+		{@attach tooltip({ text: "Moderation" })}
 		onclick={() => {
 			playSound("basic_button");
 			$chatManagePopup = true;

@@ -1,8 +1,8 @@
 <script>
 	import { navigationMenu } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { EllipsisVertical, ExternalLink, LogOut, X } from "@lucide/svelte";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { EllipsisVertical, ExternalLink, LogOut } from "@lucide/svelte";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { scale } from "svelte/transition";
 	import { onMount, tick } from "svelte";
 	import { leaveFunction, singleplayer } from "$lib/stores/modeStore.js";
@@ -10,7 +10,7 @@
 	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
 	import { goto } from "$app/navigation";
 
-	let showIntroductionNote = $state(false);
+	let introductionNote = $state({ visible: false });
 	let showHistoryTooltip = $state(false);
 	let navigationHistory = $state([]);
 	let hideTooltipTimeout = null;
@@ -18,13 +18,8 @@
 	onMount(() => {
 		const showIntroduction = localStorage.getItem("menuIntroduction") == null;
 		if (showIntroduction && !window.matchMedia("(max-width: 800px) and (orientation: portrait)").matches)
-			showIntroductionNote = true;
+			introductionNote.visible = true;
 	});
-
-	function disableIntroductionNote() {
-		showIntroductionNote = false;
-		localStorage.setItem("menuIntroduction", true);
-	}
 
 	// Load & track page history for quick access
 	onMount(() => {
@@ -73,7 +68,7 @@
 	{#if $leaveFunction}
 		<button
 			class="standardButton"
-			use:tooltip={{ text: "Leave" }}
+			{@attach tooltip({ text: "Leave" })}
 			onclick={() => {
 				playSound("leave_round");
 				$leaveFunction?.();
@@ -85,8 +80,18 @@
 		aria-label="Menu"
 		onpointerenter={displayHistoryTooltip}
 		onmouseleave={hideHistoryTooltip}
+		{@attach tooltip({
+			text: "Discover multiplayer, maps, competitions & more!",
+			imageSrc: "/img/menu_introduction.png",
+			imagePosition: "above",
+			state: introductionNote,
+			showClose: true,
+			floatingClose: true,
+			onClose: () => localStorage.setItem("menuIntroduction", true),
+		})}
 		onclick={() => {
-			disableIntroductionNote();
+			introductionNote.visible = false;
+			localStorage.setItem("menuIntroduction", true);
 			$navigationMenu = !$navigationMenu;
 			playSound("basic_button");
 		}}
@@ -95,22 +100,7 @@
 	</button>
 </nav>
 
-{#if showIntroductionNote}
-	<div class="tooltip menu-tooltip menu-button-area" transition:scale={{ duration: 150, start: 0.95 }}>
-		<div class="tooltip-arrow menu-tooltip-arrow" data-placement="bottom"></div>
-		<button
-			class="standardButton white tooltip-close-button"
-			aria-label="close introduction note"
-			onclick={disableIntroductionNote}
-		>
-			<X size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
-		</button>
-		<img alt="Menu introcution" src="/img/menu_introduction.png" class="menu-tooltip-image" />
-		<p>Discover multiplayer, maps, competitions & more!</p>
-	</div>
-{/if}
-
-{#if showHistoryTooltip && navigationHistory.length > 0 && !showIntroductionNote}
+{#if showHistoryTooltip && navigationHistory.length > 0 && !introductionNote.visible}
 	<div
 		class="tooltip menu-tooltip history-tooltip menu-button-area"
 		role="tooltip"
@@ -148,7 +138,7 @@
 	}
 
 	.menu-tooltip {
-		top: 82px;
+		top: 76px;
 		width: 225px;
 		display: flex;
 		flex-direction: column;
@@ -156,33 +146,9 @@
 		border-radius: var(--box-margin);
 	}
 
-	.tooltip-close-button {
-		margin-left: auto;
-		box-shadow: none;
-		background: none;
-		border: none;
-		padding: 3px;
-		height: unset;
-		opacity: 0.75;
-	}
-
-	.menu-tooltip p {
-		margin-inline: var(--content-margin);
-		margin-bottom: var(--content-margin);
-	}
-
 	.menu-tooltip-arrow {
-		right: 29px;
-		top: -8px;
-		width: 10px;
-		height: 8px;
-	}
-
-	.menu-tooltip-image {
-		height: 105px;
-		width: 225px;
-		margin-top: -40px;
-		margin-bottom: -5px;
+		right: 30px;
+		top: -6px;
 	}
 
 	.menu-button {

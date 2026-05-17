@@ -24,7 +24,7 @@
 	import { CircleUser, Flame, RulerDimensionLine } from "@lucide/svelte";
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { registerResultAds } from "$lib/utils/ads";
 	import { roundLogPopup } from "$lib/stores/uiStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -185,7 +185,7 @@
 		<div class="barMenu nextRoundArea">
 			<button
 				class="standardButton white"
-				use:tooltip={{ text: "View panorama" }}
+				{@attach tooltip({ text: "View panorama" })}
 				onclick={() => {
 					playSound("basic_button");
 					$roundLogPopup = true;

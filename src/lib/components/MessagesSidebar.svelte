@@ -15,7 +15,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import Chip from "./ui/Chip.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
@@ -151,7 +151,7 @@
 					</div>
 					<button
 						class="standardButton white leave-button"
-						use:tooltip={{ text: "Leave" }}
+						{@attach tooltip({ text: "Leave" })}
 						onclick={(e) => {
 							e.stopPropagation();
 							playSound("basic_button");

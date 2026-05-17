@@ -11,7 +11,7 @@
 	import { headlessChatInitialLoad, loadAliases } from "$lib/logic/headlessChatLogic";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showProfile } from "$lib/utils/showProfile";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 
 	const PAGE_SIZE = 50;
@@ -424,7 +424,7 @@
 						/>
 						<button
 							class="standardButton white"
-							use:tooltip={{ text: "Send message" }}
+							{@attach tooltip({ text: "Send message" })}
 							disabled={!inputValue.trim()}
 							onclick={() => {
 								playSound("basic_button");

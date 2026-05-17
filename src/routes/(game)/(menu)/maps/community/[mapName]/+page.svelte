@@ -17,7 +17,7 @@
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore.js";
 	import SvgMap from "$lib/components/SvgMap.svelte";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import { tooltip } from "$lib/utils/tooltip.js";
+	import { tooltip } from "$lib/utils/tooltip.svelte.js";
 	import { page } from "$app/state";
 	import { navigationMenu } from "$lib/stores/uiStore.js";
 
@@ -288,7 +288,7 @@
 		<div class="buttonBar barMenu of-left of-right">
 			<button
 				id="likeMap"
-				use:tooltip={{ text: "Like" }}
+				{@attach tooltip({ text: "Like" })}
 				class="standardButton white mapButton largeButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -304,7 +304,7 @@
 			</button>
 			<button
 				id="mapLink"
-				use:tooltip={{ text: "Copy link" }}
+				{@attach tooltip({ text: "Copy link" })}
 				class="standardButton white mapButton largeButton"
 				onclick={() => {
 					playSound("basic_button");
@@ -324,7 +324,7 @@
 			{#if mapAuthorId == playerId && playerId != null}
 				<button
 					id="manageDelete"
-					use:tooltip={{ text: "Delete" }}
+					{@attach tooltip({ text: "Delete" })}
 					class="standardButton white mapButton largeButton"
 					onclick={() => {
 						playSound("basic_button");
@@ -333,7 +333,7 @@
 				>
 				<button
 					id="manageUpdate"
-					use:tooltip={{ text: "Update" }}
+					{@attach tooltip({ text: "Update" })}
 					class="standardButton white mapButton largeButton"
 					onclick={() => {
 						playSound("basic_button");
@@ -344,7 +344,7 @@
 				>
 				<a
 					id="manageDownload"
-					use:tooltip={{ text: "Download" }}
+					{@attach tooltip({ text: "Download" })}
 					class="standardButton white mapButton largeButton"
 					href={mapDownloadHref}
 					download={`${mapName}.json`}
@@ -353,7 +353,7 @@
 			{/if}
 			<button
 				class="standardButton mapButton largeButton"
-				use:tooltip={{ text: "Play" }}
+				{@attach tooltip({ text: "Play" })}
 				onclick={() => {
 					playSound("basic_button");
 
