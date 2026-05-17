@@ -1,13 +1,13 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
-	import { chatMobilePopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
+	import { chatMobilePopup, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { mapExpanded, mapInteractive } from "$lib/stores/context-specific/mapStore";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
-	import { countryGuessr, multiplayer } from "$lib/stores/modeStore";
+	import { countryGuessr, multiplayer, tutorial } from "$lib/stores/modeStore";
 	import { blur, fade } from "svelte/transition";
 	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
@@ -26,6 +26,13 @@
 	onMount(() => {
 		registerGameplayAd();
 	});
+
+	let returnTutorialHint = $state({ visible: false });
+
+	tutorial.subscribe((value) => {
+		if (value) returnTutorialHint.visible = true;
+		else if (!value && returnTutorialHint.visible) returnTutorialHint.visible = false;
+	});
 </script>
 
 <div id="bottomBar" class="bottomBar">
@@ -33,7 +40,15 @@
 		<div class="barMenu">
 			<button
 				class="standardButton white"
+				{@attach tooltip({
+					text: "Click here to return to the spawn.",
+					state: returnTutorialHint,
+					imageSrc: "/img/tutorial/tutorial_return.png",
+					maxWidth: 175,
+					showDelay: 2000,
+				})}
 				onclick={() => {
+					if (returnTutorialHint.visible) returnTutorialHint.visible = false;
 					reloadPanorama(); // No sound, as the reload sound will play
 				}}
 			>
@@ -74,25 +89,13 @@
 					else if ($mapInteractive) showNotification("Place your pin first.");
 				}}
 			>
-				<button
-					class="helpButton standardButton white"
-					class:innerConfirmButtonDisabled={$confirmButtonActive}
-					{@attach tooltip({ text: "How to play" })}
-					onclick={(element) => {
-						element.stopPropagation();
-						playSound("basic_button");
-						$helpPopup = true;
-					}}>?</button
-				>
-				<p id="guessText">
-					{#if $mapExpanded && $mapInteractive}
-						Guess
-					{:else if !$mapExpanded}
-						Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2.25} />
-					{:else if !$mapInteractive}
-						Locked in
-					{/if}
-				</p>
+				{#if $mapExpanded && $mapInteractive}
+					Guess
+				{:else if !$mapExpanded}
+					Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2.25} />
+				{:else if !$mapInteractive}
+					Locked in
+				{/if}
 			</div>
 		</div>
 	{/if}
@@ -193,13 +196,9 @@
 	}
 
 	.confirmButton {
-		width: fit-content;
-		padding-left: var(--box-margin);
-		padding-right: 30px;
+		min-width: fit-content;
 		width: 100%;
-		display: flex;
-		align-items: center;
-		gap: 12px;
+		justify-content: center;
 	}
 
 	.confirmActive {
@@ -211,28 +210,6 @@
 	:global(.innerConfirmButtonDisabled) {
 		pointer-events: none !important;
 		opacity: 0.5;
-	}
-
-	#guessText {
-		position: absolute;
-		left: 50%;
-		transform: translate(-50%, 0);
-	}
-
-	.helpButton {
-		min-width: 40px;
-		box-shadow: none !important;
-		border: none;
-		padding: 0;
-		pointer-events: auto;
-		margin-left: -10px;
-		height: 34px;
-		background-color: var(--box-color-dark-soft);
-		border-radius: 2px 0 0 2px;
-	}
-
-	.helpButton:hover {
-		filter: brightness(0.7);
 	}
 
 	#resetButtonImg {
@@ -247,7 +224,6 @@
 	.bottomRightMenu {
 		width: max(calc(20% - (var(--box-margin) + 2px)), 200px);
 		margin-right: 60px;
-		overflow: hidden;
 	}
 
 	.mobileChatButton {

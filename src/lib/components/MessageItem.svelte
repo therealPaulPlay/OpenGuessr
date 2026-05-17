@@ -251,7 +251,6 @@
 	.alias-button {
 		background: none;
 		border: none;
-		color: white;
 		cursor: pointer;
 		padding: 0;
 		opacity: 0.5;

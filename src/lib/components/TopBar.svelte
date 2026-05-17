@@ -5,10 +5,12 @@
 	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { scale } from "svelte/transition";
 	import { onMount, tick } from "svelte";
-	import { leaveFunction, singleplayer } from "$lib/stores/modeStore.js";
+	import { leaveFunction, singleplayer, tutorial } from "$lib/stores/modeStore.js";
 	import { page } from "$app/state";
 	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
 	import { goto } from "$app/navigation";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { leaveTutorial } from "./TutorialOverlay.svelte";
 
 	let introductionNote = $state({ visible: false });
 	let showHistoryTooltip = $state(false);
@@ -82,25 +84,31 @@
 		onmouseleave={hideHistoryTooltip}
 		{@attach tooltip({
 			text: "Discover multiplayer, maps, competitions & more!",
-			imageSrc: "/img/menu_introduction.png",
-			imagePosition: "above",
+			imageSrc: "/img/tutorial/menu_introduction.png",
 			state: introductionNote,
-			showClose: true,
-			floatingClose: true,
 			onClose: () => localStorage.setItem("menuIntroduction", true),
 		})}
 		onclick={() => {
-			introductionNote.visible = false;
-			localStorage.setItem("menuIntroduction", true);
-			$navigationMenu = !$navigationMenu;
 			playSound("basic_button");
+			const showNav = () => {
+				introductionNote.visible = false;
+				localStorage.setItem("menuIntroduction", true);
+				$navigationMenu = true;
+			};
+			if ($tutorial) {
+				return showConfirmPopup("Leave tour?", "To explore on your own, you need to leave the tour.", () => {
+					leaveTutorial();
+					showNav();
+				});
+			}
+			showNav();
 		}}
 		><span class="menu-span">Menu</span>
 		<EllipsisVertical size={22} />
 	</button>
 </nav>
 
-{#if showHistoryTooltip && navigationHistory.length > 0 && !introductionNote.visible}
+{#if showHistoryTooltip && navigationHistory.length > 0 && !introductionNote.visible && !$tutorial}
 	<div
 		class="tooltip menu-tooltip history-tooltip menu-button-area"
 		role="tooltip"

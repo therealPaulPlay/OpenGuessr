@@ -4,9 +4,10 @@ import { supporterWindowIfAuthenticated } from "./showSupporterPopup";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { supporterLevel } from "$lib/stores/accountStore";
 import { showResultScreenSlideup } from "./resultScreenSlideup";
+import { tutorial } from "$lib/stores/modeStore";
 
 export function supporterSlideupProbability() {
-    if (!get(showSlideup) && Math.random() < 0.1 && get(supporterLevel) == 0) {
+    if (!get(showSlideup) && Math.random() < 0.1 && get(supporterLevel) == 0 && !get(tutorial)) {
         getMonthlySupportedAmount();
         showResultScreenSlideup("Enjoy playing?", "Please consider supporting to unlock awesome benefits, including ad-free!", "Support", supporterWindowIfAuthenticated);
     }

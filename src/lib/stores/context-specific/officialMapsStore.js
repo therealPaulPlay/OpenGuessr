@@ -2,6 +2,8 @@ import { readable } from "svelte/store";
 
 export const defaultMap = readable("World");
 
+export const tutorialMap = readable("Tutorial");
+
 export const basicMaps = readable([
     "World",
     "Capital Cities",

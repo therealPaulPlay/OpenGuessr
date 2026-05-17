@@ -3,6 +3,7 @@ import { writable, derived } from "svelte/store";
 // Modes
 export const imageGuessr = writable(false);
 export const countryGuessr = writable(false);
+export const tutorial = writable(false);
 
 // Singleplayer, Multiplayer or Competition
 export const multiplayer = writable(false);

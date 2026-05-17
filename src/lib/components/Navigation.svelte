@@ -404,7 +404,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		color: white;
 		transition:
 			color 250ms ease,
 			opacity 250ms ease;

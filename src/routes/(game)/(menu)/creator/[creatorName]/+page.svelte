@@ -31,6 +31,10 @@
 	});
 </script>
 
+<svelte:head>
+	<title>Creator link</title>
+</svelte:head>
+
 <div class="main-container">
 	{#if mounted}
 		<div class="centerBox">
@@ -39,14 +43,14 @@
 				<p class="creditNote" in:blur={{ duration: 500 }}>Now, let's kick off your geography journey.</p>
 			</div>
 			<button
-				class="standardButton flexButton largeButton"
+				class="standardButton largeButton"
 				in:fly={{ y: 20, duration: 1000 }}
 				onclick={() => {
 					goto("/");
 				}}
 			>
 				Let's go
-				<div class="arrowIconContainer"><ArrowRight strokeWidth={2.25} /></div>
+				<ArrowRight strokeWidth={2.25} size={22} style="margin-bottom: -3px; margin-left: 3px;" />
 			</button>
 		</div>
 	{/if}
@@ -64,7 +68,7 @@
 		opacity: 0.65;
 		padding: 50px;
 		padding-top: 0px;
-		padding-bottom: 20px;
+		padding-bottom: calc(var(--layout-margin) + var(--content-margin));
 		text-align: center;
 		font-size: 25px;
 		max-width: 400px;
@@ -78,30 +82,17 @@
 		align-items: center;
 	}
 
-	.flexButton {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: var(--content-margin);
-		padding-inline: var(--layout-margin);
-	}
-
-	.arrowIconContainer {
-		margin-top: 6px;
-	}
-
 	.centerBox {
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
-		gap: 20px;
+		gap: calc(var(--layout-margin) + var(--content-margin));
 	}
 
 	.welcomeHeader {
 		width: 100%;
 		text-align: center;
 		font-size: 75px;
-		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
 		mask-size: 100% 100%;
 		mask-repeat: no-repeat;
 		padding-inline: 30px;

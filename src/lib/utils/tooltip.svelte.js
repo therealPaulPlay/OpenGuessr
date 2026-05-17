@@ -1,40 +1,42 @@
 import { computePosition, flip, shift, offset, arrow, autoUpdate } from "@floating-ui/dom";
 
-export function tooltip({ text, imageSrc, imagePosition = "above", state, showClose = false, floatingClose = false, onClose }) {
+export function tooltip({ text, imageSrc, state, onClose, maxWidth = 225, zIndex, showDelay = 0 }) {
     return (node) => {
         let tooltipElement, arrowElement, textElement, imageElement, closeElement;
         let visible = false;
         let cleanupAutoUpdate;
+        let showTimeout = null;
         const persistent = Boolean(state);
-        const closedScale = imageSrc ? 0.9 : 0;
+        const closedScale = imageSrc ? 0.75 : 0;
 
         function createTooltip() {
             tooltipElement = document.createElement('div');
-            tooltipElement.setAttribute('popover', 'manual');
+            if (!persistent) tooltipElement.setAttribute('popover', 'manual');
             tooltipElement.setAttribute('role', 'tooltip');
             tooltipElement.className = imageSrc ? 'tooltip tooltip-with-image' : 'tooltip';
+            if (persistent) tooltipElement.style.position = 'absolute';
 
             arrowElement = document.createElement('div');
             arrowElement.className = 'tooltip-arrow';
             tooltipElement.appendChild(arrowElement);
 
-            if (persistent && showClose) appendCloseButton();
+            if (persistent && imageSrc) appendCloseButton();
 
-            if (imageSrc && imagePosition === "above") appendImage();
+            if (imageSrc) appendImage();
 
             textElement = document.createElement('p');
             textElement.textContent = text;
             textElement.className = 'tooltip-text';
             tooltipElement.appendChild(textElement);
 
-            if (imageSrc && imagePosition === "below") appendImage();
-
             Object.assign(tooltipElement.style, {
                 transform: `scale(${closedScale})`,
                 opacity: '0%',
                 filter: 'blur(15px)',
-                transition: 'transform 150ms ease, opacity 150ms ease, filter 150ms ease'
+                transition: 'transform 150ms ease, opacity 150ms ease, filter 150ms ease',
+                maxWidth: `${maxWidth}px`
             });
+            if (zIndex !== undefined) tooltipElement.style.zIndex = zIndex;
 
             document.body.appendChild(tooltipElement);
         }
@@ -49,7 +51,7 @@ export function tooltip({ text, imageSrc, imagePosition = "above", state, showCl
 
         function appendCloseButton() {
             closeElement = document.createElement('button');
-            closeElement.className = floatingClose ? 'tooltip-close tooltip-close-floating' : 'tooltip-close';
+            closeElement.className = 'tooltip-close';
             closeElement.setAttribute('aria-label', 'Close');
             closeElement.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
             closeElement.addEventListener('click', () => {
@@ -86,11 +88,21 @@ export function tooltip({ text, imageSrc, imagePosition = "above", state, showCl
         }
 
         function show() {
-            if (visible) return;
+            if (visible || showTimeout) return;
+            if (showDelay > 0) {
+                showTimeout = setTimeout(() => {
+                    showTimeout = null;
+                    showNow();
+                }, showDelay);
+            } else showNow();
+        }
+
+        function showNow() {
             if (!tooltipElement) createTooltip();
 
             visible = true;
-            tooltipElement.showPopover();
+            if (persistent) tooltipElement.style.display = '';
+            else tooltipElement.showPopover();
 
             position().then(() => {
                 requestAnimationFrame(() => {
@@ -107,6 +119,11 @@ export function tooltip({ text, imageSrc, imagePosition = "above", state, showCl
         }
 
         function hide() {
+            // Cancel any pending show
+            if (showTimeout) {
+                clearTimeout(showTimeout);
+                showTimeout = null;
+            }
             if (!tooltipElement || !visible) return;
 
             visible = false;
@@ -120,7 +137,9 @@ export function tooltip({ text, imageSrc, imagePosition = "above", state, showCl
             cleanupAutoUpdate = null;
 
             setTimeout(() => {
-                if (!visible) tooltipElement?.hidePopover();
+                if (visible || !tooltipElement) return;
+                if (persistent) tooltipElement.style.display = 'none';
+                else tooltipElement.hidePopover();
             }, 150);
         }
 
@@ -149,6 +168,7 @@ export function tooltip({ text, imageSrc, imagePosition = "above", state, showCl
                 node.removeEventListener('pointerenter', onPointerEnter);
                 node.removeEventListener('pointerleave', onPointerLeave);
             }
+            if (showTimeout) clearTimeout(showTimeout);
             cleanupAutoUpdate?.();
             tooltipElement?.remove();
         };

@@ -20,6 +20,7 @@
 		if (!value && !gameStart) gameStart = true;
 	});
 
+	// Adjust volume to screen
 	$effect(() => {
 		if (!gameStart) return; // Load music after game has started to not slow down load
 		if ($resultScreenEnabled || page.url.pathname !== "/" || $multiplayerOverlay) {
