@@ -1,6 +1,6 @@
 import { computePosition, flip, shift, offset, arrow, autoUpdate } from "@floating-ui/dom";
 
-export function tooltip({ text, imageSrc, state, onClose, maxWidth = 225, zIndex, showDelay = 0 }) {
+export function tooltip({ text, imageSrc, state, onClose, maxWidth = 150, zIndex, showDelay = 0 }) {
     return (node) => {
         let tooltipElement, arrowElement, textElement, imageElement, closeElement;
         let visible = false;

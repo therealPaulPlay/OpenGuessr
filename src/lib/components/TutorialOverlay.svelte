@@ -2,6 +2,7 @@
 	let step = $state(0);
 
 	export function leaveTutorial() {
+		clearTimeout(finishTimeout);
 		step = 0;
 		localStorage.setItem("tutorialCompleted", true);
 
@@ -11,9 +12,21 @@
 			changeMap(get(defaultMap), true);
 		}
 	}
+
+	let finishTimeout;
+
+	export function finishTutorial() {
+		finishTimeout = setTimeout(() => {
+			step = 3;
+			localStorage.setItem("tutorialCompleted", true);
+			tutorial.set(false);
+		}, 1500);
+	}
 </script>
 
 <script>
+	import { goto } from "$app/navigation";
+
 	import { defaultMap, tutorialMap } from "$lib/stores/context-specific/officialMapsStore";
 	import { tutorial } from "$lib/stores/modeStore";
 	import { changeMap } from "$lib/utils/changeMap";
@@ -22,6 +35,7 @@
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 	import { blur, fly } from "svelte/transition";
+	import Chip from "./ui/Chip.svelte";
 
 	let howToImage = $state(0);
 
@@ -35,6 +49,51 @@
 			image: "/img/help_image_2.jpg",
 			title: "Guess where you are",
 			description: "Pinpoint the location on the map — the closer, the higher the score.",
+		},
+	];
+
+	const paths = [
+		{
+			title: "Learn with fun",
+			imageSrc: "/img/tutorial/tutorial_beginner.png",
+			options: [
+				{
+					title: "Play on Famous Places",
+					action: () => changeMap("Famous Places", true),
+				},
+				{
+					title: "Guess the country",
+					action: () => changeMap("Country Guessr", true),
+				},
+			],
+		},
+		{
+			title: "Discover the world",
+			imageSrc: "/img/tutorial/tutorial_maps.png",
+			options: [
+				{
+					title: "Play on World",
+					action: () => changeMap(get(defaultMap), true),
+				},
+				{
+					title: "All maps",
+					action: () => goto("/maps"),
+				},
+			],
+		},
+		{
+			title: "Get competitive",
+			imageSrc: "/img/tutorial/tutorial_competitions.png",
+			options: [
+				{
+					title: "Play multiplayer",
+					action: () => goto("/multiplayer"),
+				},
+				{
+					title: "Enter a competition",
+					action: () => goto("/competitions"),
+				},
+			],
 		},
 	];
 
@@ -98,6 +157,42 @@
 						<ArrowRight strokeWidth={2.25} size={22} style="margin-bottom: -3px; margin-left: 3px;" />
 					</button>
 				</div>
+			{:else if step == 3}
+				<h1 class="title" in:fly={{ y: -20, duration: 1000 }}>Great work!</h1>
+				<div class="subtitle-container">
+					<p class="subtitle" in:blur|global={{ duration: 500 }}>Now, choose your next path.</p>
+				</div>
+				<div class="path-container of-top of-bottom of-length-2">
+					{#each paths as section, secIdx}
+						<div class="path-section barMenu">
+							<p class="section-title">{section.title}</p>
+							<img
+								alt="section graphic"
+								class="section-image"
+								style:top={secIdx == 0 ? "-110px" : secIdx == 1 ? "-85px" : "-80px"}
+								style:right={secIdx == 0 ? "-75px" : secIdx == 2 ? "-90px" : ""}
+								style:left={secIdx == 1 ? "-110px" : ""}
+								style:transform={secIdx == 1 ? "rotate(-15deg)" : secIdx == 2 ? "rotate(30deg)" : ""}
+								src={section.imageSrc}
+							/>
+							{#each section.options as option, optIdx}
+								<div class="path-option">
+									<p style:margin-left="var(--content-margin)">{option.title} {#if secIdx == 0 && optIdx == 0 }<Chip red italic text="Suggested" mutedOpacity={false} style="margin-left: var(--content-margin);" /> {/if}</p>
+									<button
+										class="standardButton"
+										class:white={!(optIdx == 0 && secIdx == 0)}
+										style:z-index="1"
+										onclick={() => {
+											playSound("basic_button");
+											step = 0;
+											option.action();
+										}}><ArrowRight style="margin-bottom: -3px;" /></button
+									>
+								</div>
+							{/each}
+						</div>
+					{/each}
+				</div>
 			{/if}
 		</div>
 	</div>
@@ -121,6 +216,61 @@
 		align-items: center;
 		gap: var(--layout-margin);
 		flex-direction: column;
+	}
+
+	.path-container {
+		display: flex;
+		justify-content: stretch;
+		align-items: center;
+		gap: var(--layout-margin);
+		overflow-y: auto;
+		max-height: 500px;
+		scrollbar-width: none;
+		flex-direction: column;
+		padding: 100px;
+		padding-inline: 150px;
+		margin-top: -100px;
+		margin-bottom: -100px;
+		margin-inline: -150px;
+		z-index: 1;
+	}
+
+	.path-section {
+		align-items: center;
+		box-shadow: var(--bulb-shadow);
+		width: 500px;
+		border-radius: var(--layout-margin);
+		flex-direction: column;
+		backdrop-filter: none;
+		position: relative;
+	}
+
+	.section-title {
+		text-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
+		opacity: 0.75;
+		padding: var(--content-margin);
+	}
+
+	.section-image {
+		position: absolute;
+		height: 200px;
+		width: 200px;
+		pointer-events: none;
+		opacity: 0.9;
+		user-select: none;
+	}
+
+	.path-option {
+		border-radius: var(--box-margin);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background-color: var(--box-color);
+		padding: var(--box-margin);
+		box-shadow: var(--box-shadow);
+		gap: var(--box-margin);
+		width: 100%;
+		box-sizing: border-box;
 	}
 
 	.subtle-button {

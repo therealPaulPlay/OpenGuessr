@@ -86,7 +86,9 @@
 			text: "Discover multiplayer, maps, competitions & more!",
 			imageSrc: "/img/tutorial/menu_introduction.png",
 			state: introductionNote,
+			maxWidth: 225,
 			onClose: () => localStorage.setItem("menuIntroduction", true),
+			zIndex: 14,
 		})}
 		onclick={() => {
 			playSound("basic_button");

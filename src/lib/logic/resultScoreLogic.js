@@ -1,7 +1,7 @@
 import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-import { setCheckNewHighestCountryStreak } from "$lib/utils/updateProfileData";
+import { updateProfileIfNewBestStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, supporterLevel } from "$lib/stores/accountStore";
 import { streakText, lastExpCalculationSignedOut, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { multiplayerMap, socket } from "$lib/stores/context-specific/multiplayerStore";
@@ -28,8 +28,8 @@ async function streakCalculation() {
         streak++;
     } else {
         if (streak >= 2) showResultScreenSlideup("Streak lost", `You lost your streak of ${streak}.`);
-        if (streak >= 1) setCheckNewHighestCountryStreak(streak);
-        streak = 0; // Reset country streak
+        if (streak >= 1) updateProfileIfNewBestStreak(streak);
+        streak = 0; // Reset streak
     }
 
     const streakMultiplier = calculateMultiplier(streak);

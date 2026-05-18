@@ -16,6 +16,7 @@
 	import { registerGameplayAd } from "$lib/utils/ads";
 	import { get } from "svelte/store";
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
+	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 
 	function reloadPanorama() {
 		playSound("reload");
@@ -27,11 +28,16 @@
 		registerGameplayAd();
 	});
 
-	let returnTutorialHint = $state({ visible: false });
+	let returnTutorialNote = $state({ visible: false });
+	let hasShownTutorialNote = false;
 
-	tutorial.subscribe((value) => {
-		if (value) returnTutorialHint.visible = true;
-		else if (!value && returnTutorialHint.visible) returnTutorialHint.visible = false;
+	$effect(() => {
+		if ($tutorial && !hasShownTutorialNote) {
+			returnTutorialNote.visible = true;
+			hasShownTutorialNote = true;
+		}
+		if (!$tutorial && returnTutorialNote.visible) returnTutorialNote.visible = false;
+		if ($resultScreenEnabled && returnTutorialNote.visible) returnTutorialNote.visible = false;
 	});
 </script>
 
@@ -41,14 +47,14 @@
 			<button
 				class="standardButton white"
 				{@attach tooltip({
-					text: "Click here to return to the spawn.",
-					state: returnTutorialHint,
+					text: "Click to return to the spawn.",
+					state: returnTutorialNote,
 					imageSrc: "/img/tutorial/tutorial_return.png",
-					maxWidth: 175,
+					zIndex: 10,
 					showDelay: 2000,
 				})}
 				onclick={() => {
-					if (returnTutorialHint.visible) returnTutorialHint.visible = false;
+					if (returnTutorialNote.visible) returnTutorialNote.visible = false;
 					reloadPanorama(); // No sound, as the reload sound will play
 				}}
 			>

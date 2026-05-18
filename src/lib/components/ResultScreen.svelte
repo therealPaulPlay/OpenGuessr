@@ -28,6 +28,8 @@
 	import { registerResultAds } from "$lib/utils/ads";
 	import { roundLogPopup } from "$lib/stores/uiStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
+	import { tutorial } from "$lib/stores/modeStore";
+	import { finishTutorial } from "./TutorialOverlay.svelte";
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -77,6 +79,36 @@
 		else showConfetti = false;
 	});
 
+	// Show streak explanation on first streak load
+	let streakExplanationNote = $state({ visible: false });
+
+	$effect(() => {
+		if ($resultScreenEnabled && $streakText && !$streakText.startsWith("0")) {
+			const hasSeenStreakExplanation = localStorage.getItem("streakExplanation") !== null;
+			if (!hasSeenStreakExplanation) {
+				localStorage.setItem("streakExplanation", true);
+				streakExplanationNote.visible = true;
+			}
+		}
+	});
+
+	// Tutorial note for going to the next round
+	let hasShownNextRoundTutorialNote = $state(false);
+	let nextRoundTutorialNote = $state({ visible: false });
+
+	$effect(() => {
+		if ($tutorial && $resultScreenEnabled && !hasShownNextRoundTutorialNote) {
+			hasShownNextRoundTutorialNote = true;
+			nextRoundTutorialNote.visible = true;
+		}
+		if (!$resultScreenEnabled && nextRoundTutorialNote.visible) nextRoundTutorialNote.visible = false;
+	});
+
+	resultScreenEnabled.subscribe((value) => {
+		// Finish tutorial on second result open
+		if (value && hasShownNextRoundTutorialNote) finishTutorial();
+	});
+
 	// Enable ad slots once visible for the first time
 	let resultAdsEnabled = $state(false);
 
@@ -100,7 +132,7 @@
 				noGravity
 				x={[-xVal + indexFactor, xVal + indexFactor]}
 				y={[-yVal, yVal]}
-				amount={25}
+				amount={50}
 				delay={[delay, delay + 100]}
 				colorRange={[0, 10]}
 				duration={1500}
@@ -162,7 +194,16 @@
 						</div>
 						<p id="experienceNumberText">{$animatedExperience.toFixed(0)} XP</p>
 						{#if $streakText}
-							<div id="streakDisplay">
+							<div
+								id="streakDisplay"
+								{@attach tooltip({
+									text: "Getting the country right increases your streak and multiplier.",
+									imageSrc: "/img/tutorial/tutorial_streak.png",
+									state: streakExplanationNote,
+									zIndex: 13,
+									maxWidth: 200,
+								})}
+							>
 								<Flame style="margin-right: var(--content-margin);" size={22} strokeWidth={2.25} />
 								<p id="endScreenStreakText">{$streakText}</p>
 							</div>
@@ -199,6 +240,14 @@
 				class="standardButton white"
 				style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
 				style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
+				{@attach tooltip({
+					text: "Ready for the next location?",
+					imageSrc: "/img/tutorial/tutorial_next_round.png",
+					state: nextRoundTutorialNote,
+					zIndex: 13,
+					maxWidth: 125,
+					showDelay: 2000,
+				})}
 				onclick={() => {
 					playSound("basic_button");
 					transitionToStart();
