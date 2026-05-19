@@ -8,7 +8,7 @@
 	import { mapExpanded, mapInteractive } from "$lib/stores/context-specific/mapStore";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { countryGuessr, multiplayer, tutorial } from "$lib/stores/modeStore";
-	import { blur, fade } from "svelte/transition";
+	import { blur } from "svelte/transition";
 	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
 	import { chatArray, mobileChatLastOpenedMsgCount, socket } from "$lib/stores/context-specific/multiplayerStore";
@@ -80,7 +80,7 @@
 		</div>
 	</div>
 	{#if !$countryGuessr}
-		<div class="barMenu bottomRightMenu" transition:fade={{ duration: 250 }}>
+		<div class="barMenu bottomRightMenu" transition:blur={{ duration: 150 }}>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
@@ -107,7 +107,7 @@
 	{/if}
 </div>
 
-<div class="gameplayAdArea barMenu" transition:blur style:display={$adsDisabled ? "none" : ""}>
+<div class="gameplayAdArea barMenu" transition:blur={{ duration: 150 }} style:display={$adsDisabled ? "none" : ""}>
 	<div class="gameplayAd" id="gameplayAd" data-fuse="Game_incontent_1"></div>
 	<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
 </div>

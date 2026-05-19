@@ -29,7 +29,9 @@
 	import { roundLogPopup } from "$lib/stores/uiStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { tutorial } from "$lib/stores/modeStore";
-	import { finishTutorial } from "./TutorialOverlay.svelte";
+	import { finalizeTutorial } from "./TutorialOverlay.svelte";
+
+	// Animate experience and level ----------------------------------------------------------------
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -79,6 +81,8 @@
 		else showConfetti = false;
 	});
 
+	// Tutorials / Explanations --------------------------------------------------------------------------
+
 	// Show streak explanation on first streak load
 	let streakExplanationNote = $state({ visible: false });
 
@@ -93,21 +97,16 @@
 	});
 
 	// Tutorial note for going to the next round
-	let hasShownNextRoundTutorialNote = $state(false);
+	let isFirstTutorialRound = $state(true);
 	let nextRoundTutorialNote = $state({ visible: false });
 
 	$effect(() => {
-		if ($tutorial && $resultScreenEnabled && !hasShownNextRoundTutorialNote) {
-			hasShownNextRoundTutorialNote = true;
-			nextRoundTutorialNote.visible = true;
-		}
+		if (!$tutorial) isFirstTutorialRound = true; // Reset to default on tutorial end
+		if ($tutorial && $resultScreenEnabled && isFirstTutorialRound) nextRoundTutorialNote.visible = true;
 		if (!$resultScreenEnabled && nextRoundTutorialNote.visible) nextRoundTutorialNote.visible = false;
 	});
 
-	resultScreenEnabled.subscribe((value) => {
-		// Finish tutorial on second result open
-		if (value && hasShownNextRoundTutorialNote) finishTutorial();
-	});
+	// Ads ------------------------------------------------------------------------------------------
 
 	// Enable ad slots once visible for the first time
 	let resultAdsEnabled = $state(false);
@@ -119,6 +118,15 @@
 			registerResultAds();
 		}
 	});
+
+	// Next round ---------------------------------------------------------------------------------
+
+	// Go to next round
+	function nextRound() {
+		if ($tutorial && isFirstTutorialRound) isFirstTutorialRound = false;
+		else if ($tutorial && !isFirstTutorialRound) finalizeTutorial();
+		transitionToStart();
+	}
 </script>
 
 {#if showConfetti}
@@ -250,7 +258,7 @@
 				})}
 				onclick={() => {
 					playSound("basic_button");
-					transitionToStart();
+					nextRound();
 				}}
 			>
 				<p class="nextRoundText">{$continueText}</p>
@@ -262,10 +270,7 @@
 
 <svelte:window
 	onkeypress={(event) => {
-		if (event.key === " " && isElementClickable(nextRoundButtonElement) && $resultScreenEnabled) {
-			transitionToStart();
-			playSound("basic_button");
-		}
+		if (event.key === " " && isElementClickable(nextRoundButtonElement) && $resultScreenEnabled) nextRound();
 	}}
 />
 

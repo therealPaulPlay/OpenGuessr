@@ -1,3 +1,7 @@
+<script module>
+	export let menuIntroductionNote = $state({ visible: false });
+</script>
+
 <script>
 	import { navigationMenu } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -12,16 +16,9 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { leaveTutorial } from "./TutorialOverlay.svelte";
 
-	let introductionNote = $state({ visible: false });
 	let showHistoryTooltip = $state(false);
 	let navigationHistory = $state([]);
 	let hideTooltipTimeout = null;
-
-	onMount(() => {
-		const showIntroduction = localStorage.getItem("menuIntroduction") == null;
-		if (showIntroduction && !window.matchMedia("(max-width: 800px) and (orientation: portrait)").matches)
-			introductionNote.visible = true;
-	});
 
 	// Load & track page history for quick access
 	onMount(() => {
@@ -84,17 +81,16 @@
 		onmouseleave={hideHistoryTooltip}
 		{@attach tooltip({
 			text: "Discover multiplayer, maps, competitions & more!",
-			imageSrc: "/img/tutorial/menu_introduction.png",
-			state: introductionNote,
+			imageSrc: "/img/tutorial/tutorial_menu.png",
+			state: menuIntroductionNote,
 			maxWidth: 225,
-			onClose: () => localStorage.setItem("menuIntroduction", true),
+			showDelay: 2000,
 			zIndex: 14,
 		})}
 		onclick={() => {
 			playSound("basic_button");
 			const showNav = () => {
-				introductionNote.visible = false;
-				localStorage.setItem("menuIntroduction", true);
+				menuIntroductionNote.visible = false;
 				$navigationMenu = true;
 			};
 			if ($tutorial) {
@@ -110,7 +106,7 @@
 	</button>
 </nav>
 
-{#if showHistoryTooltip && navigationHistory.length > 0 && !introductionNote.visible && !$tutorial}
+{#if showHistoryTooltip && navigationHistory.length > 0 && !menuIntroductionNote.visible}
 	<div
 		class="tooltip menu-tooltip history-tooltip menu-button-area"
 		role="tooltip"
@@ -122,7 +118,10 @@
 		<TitleSeparator text="Last visited" noMargin={true} />
 		<div class="history-list">
 			{#each navigationHistory as entry}
-				<button class="history-item standardButton white" disabled={!$singleplayer} onclick={() => goto(entry.path)}
+				<button
+					class="history-item standardButton white"
+					disabled={!$singleplayer || $tutorial}
+					onclick={() => goto(entry.path)}
 					><span class="history-item-title">{entry.title}</span>
 					<ExternalLink size={20} strokeWidth={2.25} style="opacity: 0.5;" />
 				</button>

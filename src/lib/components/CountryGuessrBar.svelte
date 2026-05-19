@@ -5,6 +5,7 @@
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
+	import { blur } from "svelte/transition";
 
 	function selectCountry(index) {
 		playSound("item_select");
@@ -14,7 +15,7 @@
 </script>
 
 {#if $countryGuessr}
-	<div class="countryGuessrSelector barMenu" role="menu" tabindex="0" class:countryGuessrSelectorAdShift={!$adsDisabled}>
+	<div class="countryGuessrSelector barMenu" role="menu" tabindex="0" class:countryGuessrSelectorAdShift={!$adsDisabled} transition:blur={{ duration: 150 }}>
 		{#each $countryGuessrCountriesArray as country, index}
 			<button
 				class="countryGuessrHolder standardButton white"

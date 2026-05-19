@@ -14,13 +14,24 @@
 	}
 
 	let finishTimeout;
+	let finalizeOnNewRound = false;
 
-	export function finishTutorial() {
-		finishTimeout = setTimeout(() => {
-			step = 3;
-			localStorage.setItem("tutorialCompleted", true);
-			tutorial.set(false);
-		}, 1500);
+	// Check for finalization for each round start
+	resultScreenEnabled.subscribe((value) => {
+		if (!value && finalizeOnNewRound) {
+			finalizeOnNewRound = false;
+			finishTimeout = setTimeout(() => {
+				step = 3;
+				localStorage.setItem("tutorialCompleted", true);
+				tutorial.set(false);
+			}, 150);
+		}
+	});
+
+	export function finalizeTutorial() {
+		if (!get(tutorial)) console.warn("Cannot finalize tutorial, not active.");
+		changeMap(get(defaultMap)); // Change to default without regenerating
+		finalizeOnNewRound = true;
 	}
 </script>
 
@@ -28,26 +39,65 @@
 	import { goto } from "$app/navigation";
 
 	import { defaultMap, tutorialMap } from "$lib/stores/context-specific/officialMapsStore";
-	import { tutorial } from "$lib/stores/modeStore";
+	import { singleplayer, tutorial } from "$lib/stores/modeStore";
 	import { changeMap } from "$lib/utils/changeMap";
 	import { playSound } from "$lib/utils/soundManager";
-	import { ArrowRight } from "@lucide/svelte";
+	import { ArrowRight, ChevronDown, ChevronUp, Play } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 	import { blur, fly } from "svelte/transition";
 	import Chip from "./ui/Chip.svelte";
+	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+	import { menuIntroductionNote } from "./TopBar.svelte";
 
 	let howToImage = $state(0);
+	let focusedPath = $state(0);
+	let wheelLock = false;
+	let swipeStartY = null;
+	let focusedSectionEl = $state();
+	let focusedSectionHeight = $state(0);
+
+	$effect(() => {
+		if (!focusedSectionEl) return;
+		focusedSectionHeight = focusedSectionEl.offsetHeight;
+	});
+
+	function navigatePath(direction) {
+		const next = focusedPath + direction;
+		if (next < 0 || next >= paths.length) return;
+		focusedPath = next;
+	}
+
+	function onPathWheel(e) {
+		if (wheelLock) return;
+		e.preventDefault();
+		wheelLock = true;
+		setTimeout(() => (wheelLock = false), 300);
+		navigatePath(e.deltaY > 0 ? 1 : -1);
+	}
+
+	function onPathPointerDown(e) {
+		if (e.pointerType !== "touch") return;
+		swipeStartY = e.clientY;
+	}
+
+	function onPathPointerUp(e) {
+		if (e.pointerType !== "touch" || swipeStartY === null) return;
+		const dy = e.clientY - swipeStartY;
+		swipeStartY = null;
+		if (Math.abs(dy) < 30) return;
+		navigatePath(dy < 0 ? 1 : -1);
+	}
 
 	const howToSlides = [
 		{
 			image: "/img/help_image_1.jpg",
-			title: "Look at the panorama",
+			alt: "Look at the panorama",
 			description: "Look for clues in the panorama.",
 		},
 		{
 			image: "/img/help_image_2.jpg",
-			title: "Guess where you are",
+			alt: "Guess where you are",
 			description: "Pinpoint the location on the map — the closer, the higher the score.",
 		},
 	];
@@ -59,10 +109,12 @@
 			options: [
 				{
 					title: "Play on Famous Places",
+					isPlay: true,
 					action: () => changeMap("Famous Places", true),
 				},
 				{
-					title: "Guess the country",
+					title: "Play Country Guessr",
+					isPlay: true,
 					action: () => changeMap("Country Guessr", true),
 				},
 			],
@@ -73,10 +125,16 @@
 			options: [
 				{
 					title: "Play on World",
-					action: () => changeMap(get(defaultMap), true),
+					isPlay: true,
+					action: () => {
+						// Only regenerate if not already on World - tutorial end usually defaults to World
+						const selectedMap = localStorage.getItem("selectedMap");
+						if (selectedMap && selectedMap !== $defaultMap) changeMap($defaultMap, true);
+					},
 				},
 				{
-					title: "All maps",
+					title: "Browse maps",
+					isPlay: false,
 					action: () => goto("/maps"),
 				},
 			],
@@ -86,25 +144,34 @@
 			imageSrc: "/img/tutorial/tutorial_competitions.png",
 			options: [
 				{
-					title: "Play multiplayer",
+					title: "Multiplayer & friends",
+					isPlay: false,
 					action: () => goto("/multiplayer"),
 				},
 				{
 					title: "Enter a competition",
+					isPlay: false,
 					action: () => goto("/competitions"),
 				},
 			],
 		},
 	];
 
+	// Check for tutorial state & start
 	onMount(() => {
 		const tutorialCompleted = !(localStorage.getItem("tutorialCompleted") === null);
 		if (!tutorialCompleted) step = 1;
 	});
 </script>
 
+<svelte:window
+	onwheel={(e) => step === 3 && onPathWheel(e)}
+	onpointerdown={(e) => step === 3 && onPathPointerDown(e)}
+	onpointerup={(e) => step === 3 && onPathPointerUp(e)}
+/>
+
 {#if step > 0}
-	<div class="tutorial-overlay" transition:blur>
+	<div class="tutorial-overlay" in:blur out:blur={{ duration: 250 }}>
 		<div class="content">
 			{#if step == 1}
 				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Welcome, explorer!</h1>
@@ -115,6 +182,7 @@
 					<button
 						class="standardButton largeButton"
 						in:fly|global={{ y: 20, duration: 1000 }}
+						disabled={!$singleplayer}
 						onclick={() => {
 							playSound("basic_button");
 							step = 2;
@@ -132,7 +200,7 @@
 				{#key howToImage}
 					<div class="how-to-slide">
 						<div class="how-to-image-container" in:blur|global={{ duration: 500 }}>
-							<img class="how-to-image" src={howToSlides[howToImage].image} alt={howToSlides[howToImage].title} />
+							<img class="how-to-image" src={howToSlides[howToImage].image} alt={howToSlides[howToImage].alt} />
 							<p class="how-to-subtitle" in:blur|global={{ duration: 500 }}>
 								{howToSlides[howToImage].description}
 							</p>
@@ -158,26 +226,77 @@
 					</button>
 				</div>
 			{:else if step == 3}
-				<h1 class="title" in:fly={{ y: -20, duration: 1000 }}>Great work!</h1>
+				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Tour completed!</h1>
 				<div class="subtitle-container">
-					<p class="subtitle" in:blur|global={{ duration: 500 }}>Now, choose your next path.</p>
+					<p class="subtitle" in:blur|global={{ duration: 500 }}>Choose what to explore next.</p>
 				</div>
-				<div class="path-container of-top of-bottom of-length-2">
+				<div
+					class="path-container"
+					in:fly|global={{ y: 20, duration: 1000 }}
+					style:--focused-section-height="{focusedSectionHeight}px"
+				>
+					{#each { length: 2 }, index}
+						{@const isUp = index === 0}
+						<div class="path-nav-container barMenu" class:path-nav-up={isUp} class:path-nav-down={!isUp}>
+							<button
+								class="standardButton white largeButton"
+								disabled={isUp ? focusedPath === 0 : focusedPath === paths.length - 1}
+								aria-label={isUp ? "Previous path" : "Next path"}
+								onclick={() => {
+									playSound("basic_button");
+									navigatePath(isUp ? -1 : 1);
+								}}
+							>
+								{#if isUp}
+									<ChevronUp size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
+								{:else}
+									<ChevronDown size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
+								{/if}
+							</button>
+						</div>
+					{/each}
 					{#each paths as section, secIdx}
-						<div class="path-section barMenu">
+						{@const delta = secIdx - focusedPath}
+						{@const isFocused = delta === 0}
+						<div
+							{@attach (node) => {
+								if (isFocused) focusedSectionEl = node;
+							}}
+							class="path-section barMenu"
+							class:focused={isFocused}
+							style:transform="translate(-50%, calc(-50% + {delta * 110}%)) scale({isFocused ? 1 : 0.85})"
+							style:opacity={Math.abs(delta) > 1 ? 0 : isFocused ? 1 : 0.5}
+							style:filter={isFocused ? "" : "blur(3px) brightness(0.5)"}
+						>
 							<p class="section-title">{section.title}</p>
 							<img
 								alt="section graphic"
 								class="section-image"
-								style:top={secIdx == 0 ? "-110px" : secIdx == 1 ? "-85px" : "-80px"}
-								style:right={secIdx == 0 ? "-75px" : secIdx == 2 ? "-90px" : ""}
-								style:left={secIdx == 1 ? "-110px" : ""}
+								style:top={secIdx == 0 ? "-110px" : secIdx == 1 ? "-100px" : "-100px"}
+								style:right={secIdx == 0 ? "-75px" : secIdx == 2 ? "-85px" : ""}
+								style:left={secIdx == 1 ? "-85px" : ""}
 								style:transform={secIdx == 1 ? "rotate(-15deg)" : secIdx == 2 ? "rotate(30deg)" : ""}
 								src={section.imageSrc}
 							/>
 							{#each section.options as option, optIdx}
 								<div class="path-option">
-									<p style:margin-left="var(--content-margin)">{option.title} {#if secIdx == 0 && optIdx == 0 }<Chip red italic text="Suggested" mutedOpacity={false} style="margin-left: var(--content-margin);" /> {/if}</p>
+									<p class="path-option-text of-left of-right">
+										{option.title}
+										{#if secIdx == 0 && optIdx == 0}<Chip
+												red
+												italic
+												text="Suggested"
+												mutedOpacity={false}
+												style="margin-left: var(--content-margin);"
+											/>
+										{/if}
+										{#if secIdx == 1 && optIdx == 0}<Chip
+												italic
+												text="Classic"
+												style="margin-left: var(--content-margin);"
+											/>
+										{/if}
+									</p>
 									<button
 										class="standardButton"
 										class:white={!(optIdx == 0 && secIdx == 0)}
@@ -185,9 +304,16 @@
 										onclick={() => {
 											playSound("basic_button");
 											step = 0;
+											if (option.isPlay) menuIntroductionNote.visible = true;
 											option.action();
-										}}><ArrowRight style="margin-bottom: -3px;" /></button
+										}}
 									>
+										{#if option.isPlay}
+											<Play style="margin-bottom: -2px;" size={22} strokeWidth={2.25} />
+										{:else}
+											<ArrowRight style="margin-bottom: -2px;" size={22} strokeWidth={2.25} />
+										{/if}
+									</button>
 								</div>
 							{/each}
 						</div>
@@ -219,34 +345,66 @@
 	}
 
 	.path-container {
-		display: flex;
-		justify-content: stretch;
-		align-items: center;
-		gap: var(--layout-margin);
-		overflow-y: auto;
-		max-height: 500px;
-		scrollbar-width: none;
-		flex-direction: column;
-		padding: 100px;
-		padding-inline: 150px;
-		margin-top: -100px;
-		margin-bottom: -100px;
-		margin-inline: -150px;
+		position: relative;
+		width: 100%;
+		height: 450px;
+		max-height: max(375px, 50dvh);
 		z-index: 1;
+		touch-action: pan-y;
+		mask-image: linear-gradient(
+			to bottom,
+			transparent 0%,
+			rgba(0, 0, 0, 0.3) 4%,
+			rgba(0, 0, 0, 0.75) 9%,
+			black 15%,
+			black 85%,
+			rgba(0, 0, 0, 0.75) 91%,
+			rgba(0, 0, 0, 0.3) 96%,
+			transparent 100%
+		);
+	}
+
+	.path-nav-container {
+		position: absolute;
+		left: 50%;
+		transform: translateX(-50%);
+		z-index: 2;
+		border-radius: var(--layout-margin);
+	}
+
+	.path-nav-up {
+		bottom: calc(50% + var(--focused-section-height) / 2 + var(--layout-margin) + var(--content-margin));
+	}
+
+	.path-nav-down {
+		top: calc(50% + var(--focused-section-height) / 2 + var(--layout-margin) + var(--content-margin));
 	}
 
 	.path-section {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		display: flex;
 		align-items: center;
 		box-shadow: var(--bulb-shadow);
-		width: 500px;
+		width: min(500px, calc(100vw - 4 * var(--layout-margin) - 2 * var(--box-margin)));
+		box-sizing: border-box;
 		border-radius: var(--layout-margin);
 		flex-direction: column;
 		backdrop-filter: none;
-		position: relative;
+		transition:
+			transform 350ms ease,
+			opacity 350ms ease,
+			filter 350ms ease;
+		will-change: transform, opacity, filter;
+		pointer-events: none;
+	}
+
+	.path-section.focused {
+		pointer-events: auto;
 	}
 
 	.section-title {
-		text-shadow: 0 0 20px rgba(0, 0, 0, 0.25);
 		opacity: 0.75;
 		padding: var(--content-margin);
 	}
@@ -256,8 +414,8 @@
 		height: 200px;
 		width: 200px;
 		pointer-events: none;
-		opacity: 0.9;
 		user-select: none;
+		filter: brightness(0.9);
 	}
 
 	.path-option {
@@ -271,6 +429,14 @@
 		gap: var(--box-margin);
 		width: 100%;
 		box-sizing: border-box;
+		overflow: hidden;
+	}
+
+	.path-option-text {
+		margin-left: var(--content-margin);
+		text-wrap: nowrap;
+		overflow-x: auto;
+		scrollbar-width: none;
 	}
 
 	.subtle-button {
@@ -278,7 +444,7 @@
 		opacity: 0.5;
 		cursor: pointer;
 		transition: opacity 250ms ease;
-		text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+		text-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
 	}
 
 	.subtle-button:hover {
@@ -300,7 +466,7 @@
 		text-align: center;
 		font-size: 25px;
 		max-width: 400px;
-		text-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+		text-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
 	}
 
 	.subtitle-container {
@@ -315,7 +481,7 @@
 		width: 100%;
 		text-align: center;
 		font-size: 75px;
-		text-shadow: 0 0 30px rgba(0, 0, 0, 0.5);
+		text-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
 		mask-size: 100% 100%;
 		mask-repeat: no-repeat;
 		padding-inline: 30px;
@@ -378,13 +544,15 @@
 		transform: translateX(-50%);
 		text-align: center;
 		max-width: 375px;
-		padding-inline: var(--layout-margin);
+		padding-inline: calc(var(--layout-margin) * 2);
+		width: 100%;
+		box-sizing: border-box;
 		text-shadow: 0 0 var(--layout-margin) black;
 	}
 
 	@media (max-width: 800px) {
 		.title {
-			font-size: 55px;
+			font-size: 45px;
 		}
 
 		.subtitle {

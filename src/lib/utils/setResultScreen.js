@@ -1,6 +1,6 @@
 import { resultScreenEnabled, distanceText, motivationText, lastDistance } from "$lib/stores/context-specific/resultScreenStore";
 import { calculateDistances, motivationalResultMessage, formatDistance } from "$lib/utils/distanceFunctions";
-import { countryGuessr, singleplayer } from "$lib/stores/modeStore";
+import { countryGuessr, singleplayer, tutorial } from "$lib/stores/modeStore";
 import { playSound } from "$lib/utils/soundManager";
 import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { resetMap } from "$lib/logic/miniMap";
@@ -43,7 +43,7 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
 
     // Load XP
     await loadResultScreenXP(distance);
-    if (get(singleplayer)) supporterSlideupProbability(); // Only show in singleplayer
+    if (get(singleplayer) && !get(tutorial)) supporterSlideupProbability(); // Only show in singleplayer and not in tutorial
     checkDisplayFullscreenCelebration();
 
     // Social Media CTA

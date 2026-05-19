@@ -101,6 +101,7 @@
 	.hidden {
 		opacity: 0 !important;
 		pointer-events: none !important;
+		max-height: 0 !important;
 	}
 
 	.map-full-opacity-result {

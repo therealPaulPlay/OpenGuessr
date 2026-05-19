@@ -57,7 +57,7 @@ function setMultiplayerUI(enable) {
     if (enable) {
         get(singleplayerTimer)?.stopTimer();
         leaveFunction.set(() => {
-            showConfirmPopup("Leave?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayer);
+            showConfirmPopup("Leave room?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayer);
             playSound("leave_round");
         });
         chatVisible.set(true);
@@ -254,7 +254,7 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, 
         disableResultScreen(); // Edge case
         await createMultiplayerInstance();
 
-        // Check if map is valid for multiplayer
+        // Check if map is invalid for multiplayer
         if (localStorage.getItem("selectedMap") == "Country Guessr") {
             showNotification("Map not supported in multiplayer.")
             await changeMap(get(defaultMap), true); // Regenerate to update locations array

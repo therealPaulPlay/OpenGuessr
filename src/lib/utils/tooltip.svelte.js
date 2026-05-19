@@ -1,13 +1,15 @@
 import { computePosition, flip, shift, offset, arrow, autoUpdate } from "@floating-ui/dom";
 
-export function tooltip({ text, imageSrc, state, onClose, maxWidth = 150, zIndex, showDelay = 0 }) {
+export function tooltip({ text, imageSrc, state, onClose, maxWidth = imageSrc ? 150 : 300, zIndex, showDelay = 0 }) {
     return (node) => {
         let tooltipElement, arrowElement, textElement, imageElement, closeElement;
         let visible = false;
         let cleanupAutoUpdate;
         let showTimeout = null;
+        
         const persistent = Boolean(state);
-        const closedScale = imageSrc ? 0.75 : 0;
+        const closedScale = imageSrc ? 0.85 : 0;
+        const animationDuration = imageSrc ? 250 : 150;
 
         function createTooltip() {
             tooltipElement = document.createElement('div');
@@ -33,7 +35,7 @@ export function tooltip({ text, imageSrc, state, onClose, maxWidth = 150, zIndex
                 transform: `scale(${closedScale})`,
                 opacity: '0%',
                 filter: 'blur(15px)',
-                transition: 'transform 150ms ease, opacity 150ms ease, filter 150ms ease',
+                transition: `transform ${animationDuration}ms ease, opacity ${animationDuration}ms ease, filter ${animationDuration}ms ease`,
                 maxWidth: `${maxWidth}px`
             });
             if (zIndex !== undefined) tooltipElement.style.zIndex = zIndex;
@@ -140,7 +142,7 @@ export function tooltip({ text, imageSrc, state, onClose, maxWidth = 150, zIndex
                 if (visible || !tooltipElement) return;
                 if (persistent) tooltipElement.style.display = 'none';
                 else tooltipElement.hidePopover();
-            }, 150);
+            }, animationDuration);
         }
 
         function onPointerEnter(e) {
