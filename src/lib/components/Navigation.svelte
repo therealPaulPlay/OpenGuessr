@@ -272,7 +272,7 @@
 		align-content: center;
 		display: block;
 		background-color: var(--dark-background);
-		backdrop-filter: blur(5px);
+		backdrop-filter: blur(var(--weak-blur));
 	}
 
 	.navigation-menu {

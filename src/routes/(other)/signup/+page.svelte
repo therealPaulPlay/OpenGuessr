@@ -529,7 +529,7 @@
 		right: 0;
 		top: 0;
 		bottom: 0;
-		backdrop-filter: blur(10px);
+		backdrop-filter: blur(var(--normal-blur));
 		background-color: rgba(0, 0, 0, 0.5);
 		z-index: 10;
 		display: flex;

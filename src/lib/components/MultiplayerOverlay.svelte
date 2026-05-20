@@ -149,7 +149,7 @@
 		inset: 0 0 0 0;
 		z-index: 4;
 		overflow: hidden;
-		backdrop-filter: blur(50px);
+		backdrop-filter: blur(var(--strong-blur));
 		background-color: rgba(0, 0, 0, 0.4);
 		display: flex;
 		justify-content: center;

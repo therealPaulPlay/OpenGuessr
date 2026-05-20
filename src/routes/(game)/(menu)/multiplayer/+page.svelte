@@ -459,7 +459,7 @@
 	#multiplayerSelectDuels::before {
 		animation: duelButtonGlint 4s 0.75s infinite;
 		background: white;
-		filter: blur(15px);
+		filter: blur(var(--elevated-blur));
 		content: "";
 		opacity: 0;
 		position: absolute;

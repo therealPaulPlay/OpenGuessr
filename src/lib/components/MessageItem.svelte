@@ -183,7 +183,7 @@
 								Object.assign(panel.style, {
 									transform: "scale(0)",
 									opacity: "0",
-									filter: "blur(15px)",
+									filter: "blur(var(--elevated-blur))",
 									transition: "transform 150ms ease, opacity 150ms ease, filter 150ms ease",
 								});
 								node.showPopover();

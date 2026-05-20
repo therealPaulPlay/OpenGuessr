@@ -34,7 +34,7 @@ export function tooltip({ text, imageSrc, state, onClose, maxWidth = imageSrc ? 
             Object.assign(tooltipElement.style, {
                 transform: `scale(${closedScale})`,
                 opacity: '0%',
-                filter: 'blur(15px)',
+                filter: 'blur(var(--elevated-blur))',
                 transition: `transform ${animationDuration}ms ease, opacity ${animationDuration}ms ease, filter ${animationDuration}ms ease`,
                 maxWidth: `${maxWidth}px`
             });
@@ -111,7 +111,7 @@ export function tooltip({ text, imageSrc, state, onClose, maxWidth = imageSrc ? 
                     Object.assign(tooltipElement.style, {
                         transform: 'scale(1)',
                         opacity: '100%',
-                        filter: 'blur(0px)'
+                        filter: 'blur(0)'
                     });
                 });
             });
@@ -132,7 +132,7 @@ export function tooltip({ text, imageSrc, state, onClose, maxWidth = imageSrc ? 
             Object.assign(tooltipElement.style, {
                 transform: `scale(${closedScale})`,
                 opacity: '0%',
-                filter: 'blur(15px)'
+                filter: 'blur(var(--elevated-blur))'
             });
 
             cleanupAutoUpdate?.();

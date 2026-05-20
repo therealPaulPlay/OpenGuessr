@@ -491,7 +491,7 @@
 		max-width: calc(100% - 40px);
 		border-radius: var(--content-margin);
 		background-color: var(--dark-background);
-		backdrop-filter: blur(10px);
+		backdrop-filter: blur(var(--normal-blur));
 		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
 		z-index: 10;
