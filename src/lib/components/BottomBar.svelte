@@ -1,6 +1,6 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
-	import { chatMobilePopup, loadingScreenVisible } from "$lib/stores/uiStore";
+	import { chatMobilePopup, loadingScreenVisible, tutorialStep } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
@@ -32,7 +32,7 @@
 	let hasShownTutorialNote = false;
 
 	$effect(() => {
-		if ($tutorial && !hasShownTutorialNote) {
+		if ($tutorial && $tutorialStep == 0 && !hasShownTutorialNote) {
 			returnTutorialNote.visible = true;
 			hasShownTutorialNote = true;
 		}

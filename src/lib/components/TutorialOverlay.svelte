@@ -1,9 +1,7 @@
 <script module>
-	let step = $state(0);
-
 	export function leaveTutorial() {
 		clearTimeout(finishTimeout);
-		step = 0;
+		tutorialStep.set(0);
 		localStorage.setItem("tutorialCompleted", true);
 
 		// If tutorial was true, regenerate with default map
@@ -21,7 +19,7 @@
 		if (!value && finalizeOnNewRound) {
 			finalizeOnNewRound = false;
 			finishTimeout = setTimeout(() => {
-				step = 3;
+				tutorialStep.set(3);
 				localStorage.setItem("tutorialCompleted", true);
 				tutorial.set(false);
 			}, 150);
@@ -49,6 +47,7 @@
 	import Chip from "./ui/Chip.svelte";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { menuIntroductionNote } from "./TopBar.svelte";
+	import { tutorialStep } from "$lib/stores/uiStore";
 
 	let howToImage = $state(0);
 	let focusedPath = $state(0);
@@ -160,20 +159,20 @@
 	// Check for tutorial state & start
 	onMount(() => {
 		const tutorialCompleted = !(localStorage.getItem("tutorialCompleted") === null);
-		if (!tutorialCompleted) step = 1;
+		if (!tutorialCompleted) $tutorialStep = 1;
 	});
 </script>
 
 <svelte:window
-	onwheel={(e) => step === 3 && onPathWheel(e)}
-	onpointerdown={(e) => step === 3 && onPathPointerDown(e)}
-	onpointerup={(e) => step === 3 && onPathPointerUp(e)}
+	onwheel={(e) => $tutorialStep === 3 && onPathWheel(e)}
+	onpointerdown={(e) => $tutorialStep === 3 && onPathPointerDown(e)}
+	onpointerup={(e) => $tutorialStep === 3 && onPathPointerUp(e)}
 />
 
-{#if step > 0}
+{#if $tutorialStep > 0}
 	<div class="tutorial-overlay" in:blur out:blur={{ duration: 250 }}>
 		<div class="content">
-			{#if step == 1}
+			{#if $tutorialStep == 1}
 				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Welcome, explorer!</h1>
 				<div class="subtitle-container">
 					<p class="subtitle" in:blur|global={{ duration: 500 }}>Fancy a quick intro to OpenGuessr?</p>
@@ -185,7 +184,8 @@
 						disabled={!$singleplayer}
 						onclick={() => {
 							playSound("basic_button");
-							step = 2;
+							$tutorial = true; // Set tutorial to disable notification accept and others ways to leave & end up in unintended states
+							$tutorialStep = 2;
 						}}
 					>
 						Start the tour
@@ -195,7 +195,7 @@
 						No, skip tour
 					</button>
 				</div>
-			{:else if step == 2}
+			{:else if $tutorialStep == 2}
 				<h1 class="title" in:fly={{ y: -20, duration: 1000 }}>How to play</h1>
 				{#key howToImage}
 					<div class="how-to-slide">
@@ -216,8 +216,7 @@
 							if (howToImage < howToSlides.length - 1) howToImage++;
 							else {
 								changeMap($tutorialMap, true);
-								step = 0;
-								$tutorial = true;
+								$tutorialStep = 0;
 							}
 						}}
 					>
@@ -225,7 +224,7 @@
 						<ArrowRight strokeWidth={2.25} size={22} style="margin-bottom: -3px; margin-left: 3px;" />
 					</button>
 				</div>
-			{:else if step == 3}
+			{:else if $tutorialStep == 3}
 				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Tour completed!</h1>
 				<div class="subtitle-container">
 					<p class="subtitle" in:blur|global={{ duration: 500 }}>Choose what to explore next.</p>
@@ -304,7 +303,7 @@
 										style:z-index="1"
 										onclick={() => {
 											playSound("basic_button");
-											step = 0;
+											$tutorialStep = 0;
 											if (option.isPlay) menuIntroductionNote.visible = true;
 											option.action();
 										}}
