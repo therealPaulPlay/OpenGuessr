@@ -272,10 +272,11 @@
 							<img
 								alt="section graphic"
 								class="section-image"
+								class:section-image-focused={isFocused}
 								style:top={secIdx == 0 ? "-110px" : secIdx == 1 ? "-100px" : "-100px"}
 								style:right={secIdx == 0 ? "-75px" : secIdx == 2 ? "-85px" : ""}
 								style:left={secIdx == 1 ? "-85px" : ""}
-								style:transform={secIdx == 1 ? "rotate(-15deg)" : secIdx == 2 ? "rotate(30deg)" : ""}
+								style:rotate={secIdx == 1 ? "-15deg" : secIdx == 2 ? "30deg" : ""}
 								src={section.imageSrc}
 							/>
 							{#each section.options as option, optIdx}
@@ -416,6 +417,23 @@
 		pointer-events: none;
 		user-select: none;
 		filter: brightness(0.9);
+	}
+
+	.section-image-focused {
+		/* Backwards holds the 0% state during the delay so there is no abrupt snap */
+		animation: section-image-pop 350ms 300ms ease-out backwards;
+	}
+
+	@keyframes section-image-pop {
+		0% {
+			scale: 0.95;
+		}
+		55% {
+			scale: 1.05;
+		}
+		100% {
+			scale: 1;
+		}
 	}
 
 	.path-option {
