@@ -81,20 +81,7 @@
 		else showConfetti = false;
 	});
 
-	// Tutorials / Explanations --------------------------------------------------------------------------
-
-	// Show streak explanation on first streak load
-	let streakExplanationNote = $state({ visible: false });
-
-	$effect(() => {
-		if ($resultScreenEnabled && $streakText && !$streakText.startsWith("0")) {
-			const hasSeenStreakExplanation = localStorage.getItem("streakExplanation") !== null;
-			if (!hasSeenStreakExplanation) {
-				localStorage.setItem("streakExplanation", true);
-				streakExplanationNote.visible = true;
-			}
-		}
-	});
+	// Tutorial next round note --------------------------------------------------------------------------
 
 	// Tutorial note for going to the next round
 	let isFirstTutorialRound = $state(true);
@@ -211,16 +198,7 @@
 						</div>
 						<p id="experienceNumberText">{$animatedExperience.toFixed(0)} XP</p>
 						{#if $streakText}
-							<div
-								id="streakDisplay"
-								{@attach tooltip({
-									text: "Getting the country right increases your streak and multiplier.",
-									imageSrc: "/img/tutorial/tutorial_streak.png",
-									state: streakExplanationNote,
-									zIndex: 13,
-									maxWidth: 200,
-								})}
-							>
+							<div id="streakDisplay">
 								<Flame style="margin-right: var(--content-margin);" size={22} strokeWidth={2.25} />
 								<p id="endScreenStreakText">{$streakText}</p>
 							</div>
