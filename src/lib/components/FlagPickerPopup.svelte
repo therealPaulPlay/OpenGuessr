@@ -5,7 +5,6 @@
 	import { profileData } from "$lib/stores/context-specific/profileStore";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { setProfileFlag } from "$lib/utils/updateProfileData";
-	import { Trash2 } from "@lucide/svelte";
 
 	// Organize flags by continent
 	const continentFlags = {

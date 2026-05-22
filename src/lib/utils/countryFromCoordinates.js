@@ -1,4 +1,5 @@
 import * as topojson from 'topojson-client';
+import { wrapBackLon } from '$lib/logic/miniMap';
 
 let worldData = null;
 let countriesGeo = null;
@@ -35,6 +36,8 @@ function pointInPolygon(point, polygon) {
 // Get country from coordinates with nearest neighbor fallback
 export async function getCountryFromCoords(lat, lon) {
     if (!countriesGeo) await loadWorldData();
+
+    lon = wrapBackLon(lon);
 
     const point = [lon, lat];
 

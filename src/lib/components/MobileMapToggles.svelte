@@ -1,10 +1,8 @@
 <script>
-	import { onMount } from "svelte";
 	import { mapExpanded, mapHovered } from "$lib/stores/context-specific/mapStore";
-	import { get } from "svelte/store";
 	import { playSound } from "$lib/utils/soundManager";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
-	import { ArrowDown, X, ArrowDownRight, ArrowUpLeft } from "@lucide/svelte";
+	import { ArrowDown, ArrowDownRight, ArrowUpLeft } from "@lucide/svelte";
 	import { blur } from "svelte/transition";
 	import { countryGuessr } from "$lib/stores/modeStore";
 

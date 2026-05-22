@@ -9,6 +9,12 @@ import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { get } from "svelte/store";
 import { multiplayer } from "$lib/stores/modeStore";
 
+// Canonicalize a wrapped-world longitude back
+// For example, if lon is 185 degrees, lon/360 >= 0.5, so it wraps it back by 360, making that -175 in this case
+export function wrapBackLon(lon) {
+    return lon - Math.round(lon / 360) * 360;
+}
+
 // Initialize the map
 export function initMap() {
     const worldBounds = L.latLngBounds(
@@ -130,7 +136,7 @@ function onMapClick(latLng) {
             popupAnchor: [1, -34]
         });
 
-        marker = new L.Marker([latLng.lat, latLng.lng], { icon: yourIcon });
+        marker = new L.Marker([latLng.lat, latLng.lng], { icon: yourIcon, alt: "" });
         marker.addTo(get(map));
 
         addedMarkers.update((markers) => {
@@ -161,7 +167,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
 
             // Only add new marker if miniMarkerId is not equal to peerId (meaning the marker is your own marker)
             if (miniMarkerId != get(socket)?.id && miniMarkerTeam === getTeamFromClientId(get(socket)?.id)) {
-                const multiplayerLatLng = new L.LatLng(miniMarkerLat, miniMarkerLon);
+                const multiplayerLatLng = new L.LatLng(miniMarkerLat, wrapBackLon(miniMarkerLon));
 
                 let newMultiplayerIcon = new L.Icon({
                     iconUrl: "/img/pins/player_pin" + (miniMarkerPinIndex ?? 0) + ".png",
@@ -170,7 +176,7 @@ export function updateMinimapWithTeamMarkers(markerArray) {
                     popupAnchor: [1, -34]
                 });
 
-                let marker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon });
+                let marker = new L.marker(multiplayerLatLng, { icon: newMultiplayerIcon, alt: "" });
                 marker.setOpacity(0.65);
                 marker.addTo(get(map));
 

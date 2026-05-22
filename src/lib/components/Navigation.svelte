@@ -4,16 +4,15 @@
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { bugspotPopup, navigationMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { fade, fly, scale } from "svelte/transition";
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { Bug, PencilRuler, Section, UserRoundPlus } from "@lucide/svelte";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { page } from "$app/state";
-	import { onMount } from "svelte";
 
 	let scrollNameText = $state(false);
 	let navigationListEnlarged = $state(false);
@@ -34,7 +33,7 @@
 
 	function checkTextLength(text) {
 		const textLength = text.length;
-		scrollNameText = textLength > 8;
+		scrollNameText = textLength > 16;
 	}
 
 	username.subscribe((value) => {
@@ -113,7 +112,7 @@
 				<button
 					class="standardButton white navigation-button navigation-button-small largeButton"
 					disabled={!$singleplayer}
-					use:tooltip={{ text: "Education" }}
+					{@attach tooltip({ text: "Education" })}
 					onclick={() => {
 						playSound("basic_button");
 						window.open("https://education.openguessr.com", "_blank");
@@ -131,7 +130,7 @@
 						class:notSignedIn={!$isAuthenticated}
 						class:profileInfoSupporter={$supporterLevel >= 1}
 						onclick={() => {
-							loadProfileFromId(localStorage.getItem("id"));
+							showProfile(localStorage.getItem("id"));
 							playSound("basic_button");
 						}}
 					>
@@ -154,7 +153,7 @@
 				<button
 					class="standardButton white navigation-button navigation-button-small largeButton"
 					disabled={!$singleplayer}
-					use:tooltip={{ text: "Shop" }}
+					{@attach tooltip({ text: "Shop" })}
 					onclick={() => {
 						goto("/shop");
 						playSound("basic_button");
@@ -165,7 +164,7 @@
 				<button
 					class="standardButton white navigation-button navigation-button-small largeButton"
 					id="settingsButtonMobile"
-					use:tooltip={{ text: "Settings" }}
+					{@attach tooltip({ text: "Settings" })}
 					onclick={() => {
 						playSound("basic_button");
 						settingsPopup.set(true);
@@ -273,7 +272,7 @@
 		align-content: center;
 		display: block;
 		background-color: var(--dark-background);
-		backdrop-filter: blur(5px);
+		backdrop-filter: blur(var(--weak-blur));
 	}
 
 	.navigation-menu {
@@ -337,6 +336,7 @@
 		display: inline-block;
 		width: fit-content;
 		margin-top: -3px;
+		box-sizing: border-box;
 	}
 
 	.account-name-button {
@@ -404,7 +404,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		color: white;
 		transition:
 			color 250ms ease,
 			opacity 250ms ease;
@@ -420,7 +419,7 @@
 		}
 
 		100% {
-			transform: translateX(calc(-100% + 150px));
+			transform: translateX(calc(-100% + 165px));
 			/* adjust second param to be max-width of element minus about 5px */
 		}
 	}

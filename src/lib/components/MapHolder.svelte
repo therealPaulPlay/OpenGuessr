@@ -61,9 +61,8 @@
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {
-		/* Shift up to fit ad */
 		.map-holder-ad-shift {
-			bottom: 136px;
+			bottom: 136px; /* Shift up to fit ad */
 		}
 
 		.map-holder {

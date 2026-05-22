@@ -8,12 +8,44 @@ import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { goto } from "$app/navigation";
 import { signupPrompt } from "$lib/utils/signupPrompt";
 import { errorPopup } from "$lib/utils/errorHandling";
+import { multiplayer } from "$lib/stores/modeStore";
 
 // Logic -----------------------
 
 const matchmakingRoomConfigs = {
     "division-duel": { teamAmount: 1, roundAmount: 5, divisionRoom: true, sizeLimit: 2 },
     "team-duel": { teamAmount: 2, roundAmount: 5, divisionRoom: false, sizeLimit: 4 },
+}
+
+// Safe cancel: remove from matchmaking queue - if removed, the server destroys the room
+// which triggers instanceDestroyed -> leaveMultiplayer -> matchmakingActive = false; If not removed, the game was already matched
+export async function safeCancel() {
+    const code = get(roomCode);
+    if (!code) return console.warn("safeCancel called without a room code!");
+
+    try {
+        const response = await fetch(get(apiUrl) + "/matchmaking/delete-room/" + code, {
+            method: 'DELETE',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + localStorage.getItem("bearer"),
+            },
+            body: JSON.stringify({ id: localStorage.getItem("id") }),
+        });
+        if (!response.ok) throw new Error(response.status);
+        const data = await response.json();
+
+        if (!data.removed) {
+            multiplayerStatus.set("Room not in matchmaking, cannot cancel."); // Game has started in between player pressing "cancel" & req resolving
+            return;
+        }
+
+        if (findTeamDuelActive) clearFindTeamDuelInterval(); // Stop polling
+    } catch (error) {
+        console.warn("Failed to remove room from matchmaking queue:", error);
+        multiplayerStatus.set("Failed to cancel: " + (error?.message || error));
+        return;
+    }
 }
 
 // Division duel -----------------------
@@ -23,6 +55,9 @@ let roomIndex = 0;
 // This initiates the find duel system
 export async function findDuel() {
     if (!get(isAuthenticated)) return signupPrompt();
+     // There's a brief delay between goto("/") call and the page navigation, in which the user can click "Try again" even though a duel has been found, 
+     // which causes the multiplayer instance to recreate & the player to lose the game
+    if (get(multiplayer)) return errorPopup("Already in multiplayer", "Finding a duel is only possible outside of multiplayer.");
     goto("/multiplayer/duel"); // Visit duel load page
     roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     matchmakingActive.set(true);
@@ -71,12 +106,6 @@ export function clearFindTeamDuelInterval() {
         findTeamDuelInterval = null;
     }
 }
-
-export function abortFindTeamDuel() {
-    clearFindTeamDuelInterval();
-    leaveMultiplayer();
-}
-
 // Shared -----------------------
 
 function createMatchmakingRoom(type, skillBased, roomOptions) {
@@ -151,7 +180,7 @@ async function attemptDuelJoin(index, skillBased) {
 
     } catch (error) {
         console.error('Error fetching room code: ', error);
-        multiplayerStatus.set("Couldn't fetch code: " + error.message);
+        multiplayerStatus.set("Couldn't fetch code: " + (error?.message || error));
         matchmakingActive.set(false);
     }
 }
@@ -171,11 +200,16 @@ async function attemptTeamDuelFind() {
 
         const data = await response.json();
         if (data.matched) clearFindTeamDuelInterval();
-        else if (!findTeamDuelInterval) findTeamDuelInterval = setInterval(attemptTeamDuelFind, 5000); // Start polling
+        else if (!findTeamDuelInterval && findTeamDuelActive) findTeamDuelInterval = setInterval(attemptTeamDuelFind, 5000); // Start polling (if still active / matchmaking wasn't cancelled)
 
     } catch (error) {
         if (!findTeamDuelActive) return; // Request arrived after match/cancel, ignore (match can start without a client ever calling this endpoint since submitting & waiting for sb else to call it also works)
-        abortFindTeamDuel(); // Cancel interval, and leave since the room code is still on the server's matchmaking queue (this also sets matchmakingActive to false)
+
+        // Cancel interval and leave since the room code is still in the server's matchmaking queue (this also sets matchmakingActive to false)
+        clearFindTeamDuelInterval();
+        leaveMultiplayer();
+
+        // Display error
         console.error("Error finding team duel:", error);
         errorPopup("Failed to find a team duel", "The request returned an error.", error.message);
     }

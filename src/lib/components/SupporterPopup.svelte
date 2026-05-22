@@ -7,7 +7,7 @@
 	import { onMount } from "svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { CircleArrowDown, CircleArrowUp, CircleMinus, CirclePlus, Clock9 } from "@lucide/svelte";
+	import { CircleArrowDown, CircleArrowUp, CircleMinus, CirclePlus } from "@lucide/svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 
@@ -192,7 +192,7 @@
 	.tierBuyButtonDisplay::before {
 		animation: supporterGlintButton 5s 2s infinite;
 		background: white;
-		filter: blur(15px);
+		filter: blur(var(--elevated-blur));
 		content: "";
 		opacity: 0;
 		position: absolute;
@@ -267,6 +267,7 @@
 	.tierBoxLargeHeader {
 		padding-bottom: var(--content-margin);
 		margin-bottom: auto;
+		line-height: 1.1;
 	}
 
 	.supporterPerksImage {

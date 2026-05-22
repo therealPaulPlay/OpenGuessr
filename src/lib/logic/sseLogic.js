@@ -1,6 +1,6 @@
 import { showNotification } from "$lib/utils/notifications";
 import { elo, duelWinStreak, tokens, supporterLevel } from "$lib/stores/accountStore";
-import { acceptFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
+import { acceptFriendRequest, declineFriendRequest, declineMatchInvite, acceptMatchInvite } from "$lib/logic/friendAPI";
 import { leaveCompetition } from "$lib/logic/competitionLogic";
 import { leaveMultiplayer, joinFromAnywhere } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
@@ -13,11 +13,16 @@ import { goto } from "$app/navigation";
 import { showConfirmPopup } from "$lib/utils/confirmPopup";
 import { page } from "$app/state";
 import { fetchTournaments } from "$lib/utils/tournamentUtils";
+import { showProfile } from "$lib/utils/showProfile";
+import { disposeHeadlessChatClient, initHeadlessChatClient } from "$lib/logic/headlessChatLogic";
+import { hcClient } from "$lib/stores/context-specific/headlessChatStore";
+
+let eventSource;
+let reconnectTimeout;
+let reconnectAttempts = 0;
+const maxReconnectAttempts = 5;
 
 export async function initializeSSEConnection() {
-    let eventSource;
-    let reconnectAttempts = 0;
-    const maxReconnectAttempts = 5;
     const userId = localStorage.getItem("id");
     if (!userId) return console.error("Can't init SSE with no user id.");
 
@@ -30,6 +35,7 @@ export async function initializeSSEConnection() {
 
             eventSource.onopen = () => {
                 reconnectAttempts = 0; // Reset the reconnect attempts on successful connection
+                initHeadlessChatClient(); // Instance creation is a no-op if already init, but re-subscribing on each connection open is essential!
             };
 
             // Handle incoming messages
@@ -39,26 +45,40 @@ export async function initializeSSEConnection() {
 
                     // Handle different event types
                     switch (data.type) {
+                        case 'headless-chat':
+                            get(hcClient)?.receive(data.data);
+                            break;
+
                         case 'room-invite':
-                            showNotification(`Room invite from ${data.name}.`, () => {
+                            showNotification(`Room invite from %s.`, () => {
                                 joinRoomFromNotification(data.roomcode, data.from);
                             }, () => {
                                 declineMatchInvite(data.from);
-                            });
+                            }, false, data.name, () => showProfile(data.from));
                             break;
 
                         case 'invite-accepted':
-                            showNotification(`${data.name} accepted your invite.`);
+                            showNotification(`%s accepted your invite.`, null, null, false, data.name, () => showProfile(data.from));
                             break;
 
                         case 'invite-declined':
-                            showNotification(`${data.name} declined your invite.`);
+                            showNotification(`%s declined your invite.`, null, null, false, data.name, () => showProfile(data.from));
                             break;
 
                         case 'friend-request-received':
-                            showNotification(`${data.name} sent you a friend request.`, () => {
+                            showNotification(`%s sent you a friend request.`, () => {
                                 acceptFriendRequest(data.from);
-                            });
+                            }, () => {
+                                declineFriendRequest(data.from);
+                            }, false, data.name, () => showProfile(data.from));
+                            break;
+
+                        case 'friend-request-accepted':
+                            showNotification(`%s accepted your friend request.`, null, null, false, data.name, () => showProfile(data.from));
+                            break;
+
+                        case 'friend-request-declined':
+                            showNotification(`%s declined your friend request.`, null, null, false, data.name, () => showProfile(data.from));
                             break;
 
                         case 'duel-result': {
@@ -95,7 +115,7 @@ export async function initializeSSEConnection() {
                         case 'tournament-starting':
                             // Only show if not already on the page
                             if (page.url.pathname !== "/multiplayer") {
-                                showNotification(`A tournament is starting soon!`, () => {
+                                showNotification(`A tournament is starting soon.`, () => {
                                     goto("/multiplayer");
                                 }, false, true);
                             }
@@ -118,6 +138,16 @@ export async function initializeSSEConnection() {
                         case 'tournament-updated':
                             if (page.url.pathname === "/multiplayer") fetchTournaments();
                             break;
+
+                        case 'elo-refunded':
+                            elo.set(get(elo) + data.amount);
+                            showNotification(`You were refunded ${data.amount} elo.`);
+                            break;
+
+                        case 'elo-deducted':
+                            elo.set(Math.max(0, get(elo) - data.amount));
+                            showNotification(`You were deducted ${data.amount} elo.`);
+                            break;
                     }
                 } catch (error) {
                     console.error('Error parsing SSE message:', error);
@@ -134,7 +164,7 @@ export async function initializeSSEConnection() {
                     // If we've exceeded max attempts, close current connection and try again after a longer delay
                     eventSource.close();
                     console.error('Browser reconnection failed repeatedly. Attempting manual reconnection in about a minute.');
-                    setTimeout(() => {
+                    reconnectTimeout = setTimeout(() => {
                         reconnectAttempts = 0;
                         connectSSE();
                     }, 60000 + Math.floor(Math.random() * 5000));
@@ -146,6 +176,19 @@ export async function initializeSSEConnection() {
     }
 
     connectSSE();
+}
+
+export function disconnectSSE() {
+    if (reconnectTimeout) {
+        clearTimeout(reconnectTimeout);
+        reconnectTimeout = undefined;
+    }
+    if (eventSource) {
+        eventSource.close();
+        eventSource = undefined;
+    }
+    reconnectAttempts = 0;
+    disposeHeadlessChatClient(); // Dispose the instance since it is no longer needed (or functional)
 }
 
 // Related functions --------------------------------------------------------------------------------------------------------

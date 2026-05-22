@@ -1,14 +1,15 @@
 <script>
 	import { goto } from "$app/navigation";
+	import { page } from "$app/state";
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { guestName, guestNamePromise } from "$lib/stores/context-specific/multiplayerStore";
 	import { guestNamePickerPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { censor } from "fast-profanity-filter";
-	import { onMount } from "svelte";
 
 	function generateFunnyGuestName() {
+		generatedName = true;
 		let animals = [
 			"Giraffe",
 			"Ape",
@@ -30,7 +31,11 @@
 		guestName.set("Guest" + randomAnimal);
 	}
 
-	onMount(generateFunnyGuestName);
+	let generatedName = false;
+
+	guestNamePickerPopup.subscribe((value) => {
+		if (value && !generatedName) generateFunnyGuestName();
+	});
 
 	async function setName() {
 		$guestName = $guestName.trim();
@@ -47,7 +52,7 @@
 	onclose={() => {
 		$guestNamePromise = null;
 		leaveMultiplayer();
-		goto("/multiplayer");
+		if (page.url.pathname.startsWith("/multiplayer/")) goto("/multiplayer"); // If on host or other multiplayer child page, return to multiplayer home
 	}}
 >
 	<div class="popup-title">

@@ -1,6 +1,6 @@
 // Used for map submissions, competition submissions etc.
 
-// Convert streetview links to json file:
+// Convert streetview links to json file
 export function extractCoordinates(text) {
     try {
         const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/g;

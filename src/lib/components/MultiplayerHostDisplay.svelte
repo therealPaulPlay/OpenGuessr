@@ -10,16 +10,17 @@
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import { sendMatchInvite } from "$lib/logic/friendAPI";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { loadFriends, sendMatchInvite } from "$lib/logic/friendAPI";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { showNotification } from "$lib/utils/notifications";
 	import { playSound } from "$lib/utils/soundManager";
-	import { tooltip } from "$lib/utils/tooltip";
-	import { Eye, Link, Users, ArrowRightLeft } from "@lucide/svelte";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
+	import { Eye, Link } from "@lucide/svelte";
 	import { submitRoomCode } from "$lib/logic/matchmakingLogic.js";
 	import { page } from "$app/state";
 	import { get } from "svelte/store";
-	import { signupPrompt } from "$lib/utils/signupPrompt";
+	import { onMount } from "svelte";
+	import { blur, slide } from "svelte/transition";
 
 	let {
 		showOpenRoom = true,
@@ -34,9 +35,25 @@
 		return text?.length > max ? text?.slice(0, max) + "…" : text;
 	}
 
+	// Move player to different team
 	function updatePlayerTeam(playerId, newTeamIndex) {
 		get(socket)?.sendRequest("updateTeam", { newTeamIndex: parseInt(newTeamIndex), playerClientId: playerId });
 	}
+
+	// Refresh friends periodically
+	let friendsRefreshInterval;
+
+	onMount(async () => {
+		await loadFriends();
+		clearInterval(friendsRefreshInterval);
+
+		// Re-fetch friends every X seconds
+		friendsRefreshInterval = setInterval(() => {
+			loadFriends();
+		}, 15_000);
+
+		return () => clearInterval(friendsRefreshInterval);
+	});
 </script>
 
 <!-- Room code-->
@@ -95,23 +112,24 @@
 
 <!-- Friend invite display -->
 {#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online)?.length >= 1}
-	<div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings">
-		<div class="roomCreationFriendsBox">
+	<div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings" transition:slide>
+		<div class="roomCreationFriendsBox of-top of-bottom">
 			<!-- online players will be added here programmatically -->
 			{#each $loadedFriendsData.filter((value) => value.online) as entry}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
 					class="standardButton roomCreationFriendItem"
+					transition:blur
 					role="menu"
 					tabindex="0"
 					onclick={() => {
-						loadProfileFromId(entry.id);
+						showProfile(entry.id);
 					}}
 				>
 					<p class="friendsRoomEntryText">{entry.user_name}</p>
 					<button
 						class="standardButton white sendInviteButton"
-						use:tooltip={{ text: "Invite" }}
+						{@attach tooltip({ text: "Invite" })}
 						onclick={(e) => {
 							e.stopPropagation();
 							playSound("basic_button");
@@ -131,7 +149,7 @@
 	<button
 		id="roomcodeLink"
 		class="largeButton standardButton white"
-		use:tooltip={{ text: "Copy link" }}
+		{@attach tooltip({ text: "Copy link" })}
 		disabled={!$roomCode}
 		onclick={() => {
 			playSound("basic_button");
@@ -158,11 +176,11 @@
 	{#if showOpenRoom}
 		<button
 			class="standardButton white largeButton"
-			use:tooltip={{ text: "Make room public" }}
+			{@attach tooltip({ text: "Make room public" })}
 			disabled={!$roomCode || roomOpened}
 			onclick={async () => {
 				playSound("basic_button");
-				if (!$isAuthenticated) return signupPrompt();
+				if (!$isAuthenticated) return showNotification("Account required for public room creation."); // Don't show signup prompt since the room itself needs to be created signed-in
 				await submitRoomCode("open-room", false, localStorage.getItem("selectedMap") || $defaultMap);
 				roomOpened = true;
 				showNotification("Room set to public.");
@@ -296,7 +314,8 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		max-height: 130px;
+		max-height: 135px;
+		scrollbar-width: none;
 		overflow: auto;
 		gap: var(--box-margin);
 		width: 100%;

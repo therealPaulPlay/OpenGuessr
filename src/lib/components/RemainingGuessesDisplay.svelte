@@ -66,7 +66,7 @@
 		border-bottom-left-radius: 0;
 		border-bottom-right-radius: 0;
 		box-shadow: var(--box-shadow);
-		backdrop-filter: blur(10px);
+		backdrop-filter: blur(var(--normal-blur));
 	}
 
 	.dimmed {

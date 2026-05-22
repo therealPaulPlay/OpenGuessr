@@ -2,41 +2,37 @@
 	import {
 		PlusCircle,
 		Unplug,
-		ContactRound,
 		TriangleAlert,
-		Info,
 		BicepsFlexed,
 		X,
-		ExternalLink,
-		ChevronDown,
-		ChevronUp,
 		History,
 		Globe,
 		Handshake,
 		Plus,
+		MessagesSquare,
 	} from "@lucide/svelte";
-	import { divisionMatchHistoryPopup, friendBrowserPopup, inboxPopup } from "$lib/stores/uiStore";
+	import { divisionMatchHistoryPopup, friendBrowserPopup, messagesPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated, warnReportEntryData } from "$lib/stores/accountStore";
 	import { loadedFriendsData, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
-	import { inboxIconNew } from "$lib/stores/context-specific/inboxStore";
+	import { newFriendRequest } from "$lib/stores/context-specific/inboxStore";
 	import { loadFriends, removeFriend } from "$lib/logic/friendAPI";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { createTeamDuelRoom, findDuel } from "$lib/logic/matchmakingLogic";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { goto } from "$app/navigation";
 	import { onDestroy, onMount } from "svelte";
-	import { blur, fade, slide } from "svelte/transition";
+	import { blur, slide } from "svelte/transition";
 	import DuelDivisionDisplay from "$lib/components/DuelDivisionDisplay.svelte";
 	import { fetchWarnlistStatus } from "$lib/utils/checkReportStatus";
 	import { get } from "svelte/store";
-	import Tabs from "$lib/components/ui/Tabs.svelte";
-	import { apiUrl, discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { showNotification } from "$lib/utils/notifications";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import TournamentOverview from "$lib/components/TournamentOverview.svelte";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
+	import Chip from "$lib/components/ui/Chip.svelte";
+	import { hasNewMessageOrInvite, hcClient, initialHasNew } from "$lib/stores/context-specific/headlessChatStore";
 
 	let friendsRefreshInterval;
 
@@ -55,6 +51,19 @@
 
 	onDestroy(() => {
 		clearInterval(friendsRefreshInterval);
+	});
+
+	// Check if user has new messages or new invites (only if they have a hcClient, and only once)
+	$effect(async () => {
+		if ($hcClient && $hasNewMessageOrInvite === null) {
+			try {
+				$initialHasNew = false; // Set non-null to prevent re-runs (updates the derived hasNewMessageOrInvite)
+				const result = await $hcClient.getHasNew();
+				$initialHasNew = result.hasNewMessages || result.hasNewInvites;
+			} catch (error) {
+				console.error("Failed to get hasNew state from headless-chat:", error);
+			}
+		}
 	});
 </script>
 
@@ -124,7 +133,7 @@
 					<span class="innerDuelButtonContainer">
 						<button
 							class="standardButton white innerDuelButton"
-							use:tooltip={{ text: "History" }}
+							{@attach tooltip({ text: "History" })}
 							style:flex-grow={0}
 							onclick={(e) => {
 								e.stopPropagation();
@@ -134,7 +143,7 @@
 						>
 						<button
 							class="standardButton white innerDuelButton"
-							use:tooltip={{ text: "Division-based or Everyone" }}
+							{@attach tooltip({ text: "Division-based or Everyone" })}
 							style:flex-grow={0}
 							onclick={(e) => {
 								e.stopPropagation();
@@ -172,34 +181,45 @@
 	<TournamentOverview />
 	<div class="headerContainer headerMarginTop">
 		<h2 class="header">Friends</h2>
-		<!-- Inbox and Friend request buttons-->
+		<!-- Inbox, friend request and messages buttons-->
 		<div class="friendButtonContainer barMenu">
 			<button
 				class="standardButton white largeButton"
+				style:position="relative"
+				{@attach tooltip({ text: "Messages" })}
+				onclick={() => {
+					playSound("basic_button");
+					if ($isAuthenticated) messagesPopup.set(true);
+					else signupPrompt();
+				}}
+			>
+				{#if $hasNewMessageOrInvite}
+					<div class="newMessagesOrInvitesDot" transition:blur></div>
+				{/if}
+				<MessagesSquare strokeWidth={2.25} size={22} style="margin-bottom: -2px;" /></button
+			>
+			<button
+				class="standardButton white largeButton friendAddButton"
+				style:position="relative"
+				{@attach tooltip({ text: "Add friend" })}
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) friendBrowserPopup.set(true);
 					else signupPrompt();
-				}}><p class="addFriendText"><Plus strokeWidth={2.25} size={22} /></p></button
-			>
-			<button
-				class="standardButton white largeButton"
-				onclick={() => {
-					playSound("basic_button");
-					if ($isAuthenticated) {
-						inboxPopup.set(true);
-					} else {
-						signupPrompt();
-					}
 				}}
 			>
-				Inbox
-				<img alt="inbox icon" src={$inboxIconNew ? "/img/inbox_icon_new.png" : "/img/inbox_icon.png"} id="inboxIcon" />
-			</button>
+				<Plus strokeWidth={2.25} size={22} />
+				{#if $newFriendRequest}
+					<Chip text="New" italic={true} red={true} mutedOpacity={false} />
+				{/if}</button
+			>
 		</div>
 	</div>
 	<div class="friendBox">
-		<div class="friendBoxScroll of-top of-bottom" style:min-height={$loadedFriendsData ? "50px" : "80px"}>
+		<div
+			class="friendBoxScroll of-top of-bottom"
+			style:min-height={$loadedFriendsData && $isAuthenticated ? "50px" : "80px"}
+		>
 			{#if $loadedFriendsData && $isAuthenticated}
 				<div class="innerFriendBox" transition:blur={{ duration: 150 }}>
 					{#each $loadedFriendsData as entry (entry.id)}
@@ -209,11 +229,11 @@
 							role="menu"
 							tabindex="0"
 							onclick={() => {
-								loadProfileFromId(entry.id);
+								showProfile(entry.id);
 							}}
 						>
 							{#if entry.online}
-								<div transition:slide={{ axis: "x" }} class="friendOnlineBar"></div>
+								<div transition:slide={{ axis: "x" }} class="friendOnlineDot"></div>
 							{/if}
 							<p>{entry.user_name}</p>
 							<button
@@ -263,6 +283,13 @@
 		flex-wrap: wrap;
 	}
 
+	.friendAddButton {
+		display: inline-flex;
+		justify-content: center;
+		align-items: center;
+		gap: var(--panel-margin);
+	}
+
 	:global(.infoIconMultiplayer) {
 		width: 30px;
 		height: 30px;
@@ -290,13 +317,6 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
-	}
-
-	.addFriendText {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		gap: var(--panel-margin);
 	}
 
 	.playBox {
@@ -332,7 +352,6 @@
 		display: flex;
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
-		padding-inline: 6px !important;
 		transition:
 			filter 250ms ease,
 			transform 250ms ease,
@@ -340,13 +359,14 @@
 		align-items: center;
 		justify-content: space-between;
 		border: none;
-		gap: 3px;
-		padding-bottom: 1px;
+		padding: var(--panel-margin);
+		gap: var(--content-margin);
 		flex-grow: 1;
 		max-width: 25%;
 		overflow: hidden;
 		text-wrap: nowrap;
 		cursor: pointer;
+		height: unset;
 	}
 
 	.friendItem:hover {
@@ -439,7 +459,7 @@
 	#multiplayerSelectDuels::before {
 		animation: duelButtonGlint 4s 0.75s infinite;
 		background: white;
-		filter: blur(15px);
+		filter: blur(var(--elevated-blur));
 		content: "";
 		opacity: 0;
 		position: absolute;
@@ -479,10 +499,20 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.friendOnlineBar {
-		width: 6px;
-		border-radius: var(--content-margin);
-		height: var(--box-margin);
+	.newMessagesOrInvitesDot {
+		width: 7px;
+		height: 7px;
+		border-radius: 100%;
+		background-color: var(--brand-color);
+		position: absolute;
+		top: 9px;
+		right: 16px;
+	}
+
+	.friendOnlineDot {
+		width: 7px;
+		height: 7px;
+		border-radius: 100%;
 		background-color: #00cc00;
 		margin-top: 3px;
 		margin-left: var(--content-margin);
@@ -502,7 +532,7 @@
 
 	.friendBoxScroll {
 		overflow-y: auto;
-		max-height: 255px;
+		max-height: 215px;
 		width: 100%;
 		scrollbar-width: none;
 	}
@@ -512,13 +542,6 @@
 		align-items: center;
 		flex-wrap: wrap;
 		gap: var(--box-margin);
-	}
-
-	#inboxIcon {
-		width: 18px;
-		height: 18px;
-		vertical-align: -2px;
-		margin-left: var(--content-margin);
 	}
 
 	:global(.divisions-container) {

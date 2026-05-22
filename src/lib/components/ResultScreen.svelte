@@ -6,32 +6,32 @@
 		motivationText,
 		continueText,
 		earnedExperience,
-		experienceBarAnimated,
-		showStreakDisplay,
 		streakText,
 		supporterBoost,
 		supporterBoostText,
 		lastDistance,
 	} from "$lib/stores/context-specific/resultScreenStore";
-	import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
-	import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 	import { isAuthenticated, experience } from "$lib/stores/accountStore";
-	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { playSound } from "$lib/utils/soundManager";
 	import { getLevel, getLevelFraction } from "$lib/utils/experienceCalculations";
 	import { transitionToStart } from "$lib/utils/transitionToStart";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
-	import { onMount, tick } from "svelte";
+	import { tick } from "svelte";
 	import { tweened } from "svelte/motion";
 	import { cubicOut } from "svelte/easing";
-	import { get } from "svelte/store";
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
 	import ResultFullscreenMessage from "./ResultFullscreenCelebration.svelte";
 	import { CircleUser, Flame, RulerDimensionLine } from "@lucide/svelte";
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { registerResultAds } from "$lib/utils/ads";
+	import { roundLogPopup } from "$lib/stores/uiStore";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
+	import { finalizeTutorial } from "./TutorialOverlay.svelte";
+	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
+
+	// Animate experience and level ----------------------------------------------------------------
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -48,9 +48,31 @@
 	let showConfetti = $state(false);
 	let nextRoundButtonElement = $state();
 
-	experience.subscribe((value) => {
+	let transitionExperienceBar = $state(true);
+	let lastPercentageWidthNumber;
+
+	experience.subscribe((_value) => {
 		level = getLevel();
-		percentageWidth = Math.max(7, getLevelFraction() * 100) + "%"; // Minimum 7% to prevent weird thin line
+
+		const percentageWidthNumber = Math.max(7, getLevelFraction() * 100); // Minimum 7% to prevent weird thin line
+		const leveledUp = lastPercentageWidthNumber > percentageWidthNumber;
+		lastPercentageWidthNumber = percentageWidthNumber;
+
+		if (leveledUp) {
+			// On level-up: snap to 0% without transition, then animate to the new value
+			// Double rAF ensures the browser paints the 0% state before the transition starts
+			transitionExperienceBar = false;
+			percentageWidth = "0%";
+			requestAnimationFrame(() => {
+				requestAnimationFrame(() => {
+					transitionExperienceBar = true;
+					percentageWidth = percentageWidthNumber + "%";
+				});
+			});
+		} else {
+			transitionExperienceBar = true;
+			percentageWidth = percentageWidthNumber + "%";
+		}
 	});
 
 	// Trigger confetti
@@ -59,16 +81,64 @@
 		else showConfetti = false;
 	});
 
-	// Enable ad slots once visible for the first time
-	let resultAdsEnabled = $state(false);
+	// Tutorials / Explanations --------------------------------------------------------------------------
+
+	// Show streak explanation on first streak load
+	let streakExplanationNote = $state({ visible: false });
+
+	$effect(() => {
+		if ($resultScreenEnabled && $streakText && !$streakText.startsWith("0")) {
+			const hasSeenStreakExplanation = localStorage.getItem("streakExplanation") !== null;
+			if (!hasSeenStreakExplanation) {
+				localStorage.setItem("streakExplanation", true);
+				streakExplanationNote.visible = true;
+			}
+		}
+	});
+
+	// Tutorial note for going to the next round
+	let isFirstTutorialRound = $state(true);
+	let nextRoundTutorialNote = $state({ visible: false });
+
+	$effect(() => {
+		if (!$tutorial) isFirstTutorialRound = true; // Reset to default on tutorial end
+		if ($tutorial && $resultScreenEnabled && isFirstTutorialRound) nextRoundTutorialNote.visible = true;
+		if (!$resultScreenEnabled && nextRoundTutorialNote.visible) nextRoundTutorialNote.visible = false;
+	});
+
+	// Ads ------------------------------------------------------------------------------------------
+
+	// Register result ads when the result screen has at least been visible once
+	let resultEnabledOnceSinceAdsEnabled = $state(false);
+	let showResultAd = $derived(!$adsDisabled && resultEnabledOnceSinceAdsEnabled);
+
+	$effect(() => {
+		// Effect since this should also fire if user is currently on the result screen and adsDisabled becomes false
+		if ($resultScreenEnabled && !$adsDisabled && !resultEnabledOnceSinceAdsEnabled) {
+			resultEnabledOnceSinceAdsEnabled = true;
+		}
+	});
+
+	adsDisabled.subscribe((value) => {
+		// Disable if ads are disabled, so that when ads are re-enabled, the re-registration happens when the result is open
+		if (!value) resultEnabledOnceSinceAdsEnabled = false;
+	});
 
 	$effect(async () => {
-		if ($resultScreenEnabled && !resultAdsEnabled) {
-			resultAdsEnabled = true;
+		if (showResultAd) {
 			await tick();
 			registerResultAds();
 		}
 	});
+
+	// Next round ---------------------------------------------------------------------------------
+
+	// Go to next round
+	function nextRound() {
+		if ($tutorial && isFirstTutorialRound) isFirstTutorialRound = false;
+		else if ($tutorial && !isFirstTutorialRound) finalizeTutorial();
+		transitionToStart();
+	}
 </script>
 
 {#if showConfetti}
@@ -82,7 +152,7 @@
 				noGravity
 				x={[-xVal + indexFactor, xVal + indexFactor]}
 				y={[-yVal, yVal]}
-				amount={25}
+				amount={35}
 				delay={[delay, delay + 100]}
 				colorRange={[0, 10]}
 				duration={1500}
@@ -98,58 +168,71 @@
 
 <div class="endBottomArea" style:display={$resultScreenEnabled ? "" : "none"}>
 	<div class="endBottomBar">
-		<div class="resultAdArea barMenu" style:display={$adsDisabled ? "none" : ""}>
-			<div
-				class="resultAd"
-				id={resultAdsEnabled ? "resultAd" : undefined}
-				data-fuse={resultAdsEnabled ? "Game_Result_incontent_1" : undefined}
-			></div>
-			<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
-		</div>
+		<!-- No transition since it would awkwardly trigger on the first result-open -->
+		{#if showResultAd}
+			<div class="resultAdArea barMenu">
+				<div class="resultAd" id="resultAd" data-fuse="Game_Result_incontent_1"></div>
+				<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
+			</div>
+		{/if}
 		<div id="resultBox" class="barMenu">
-			<div class="resultField" class:resultFieldHigh={!$adsDisabled} id="motivationText">
+			<div class="resultField" id="motivationText">
 				<p>{$motivationText}</p>
 			</div>
-			<div class="mobileResultAdArea resultField resultFieldHigh" style:display={$adsDisabled ? "none" : ""}>
-				<div
-					class="mobileResultAd"
-					id={resultAdsEnabled ? "mobileResultAd" : undefined}
-					data-fuse={resultAdsEnabled ? "Game_Result_Mob_Only" : undefined}
-				></div>
-				<p class="noAdvertsText">Ad.</p>
-			</div>
+			{#if showResultAd}
+				<div class="mobileResultAdArea resultField">
+					<div class="mobileResultAd" id="mobileResultAd" data-fuse="Game_Result_Mob_Only"></div>
+					<p class="noAdvertsText">Ad.</p>
+				</div>
+			{/if}
 			{#if $resultScreenEnabled}
 				<div class="resultField">
-					<RulerDimensionLine class="distance-icon" style="margin-right: var(--panel-margin);" size={22} strokeWidth={2.25} />
+					<RulerDimensionLine
+						class="distance-icon"
+						style="margin-right: var(--panel-margin);"
+						size={22}
+						strokeWidth={2.25}
+					/>
 					<p id="distanceText">{$distanceText}</p>
 				</div>
 				{#if $isAuthenticated}
-					<div id="XParea" class="resultField">
+					<div id="experienceArea" class="resultField">
 						<div id="supporterBoost" bind:this={$supporterBoost}>
 							<p id="supporterBoostText" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
 						</div>
 						<p id="endScreenLevelDisplay">Lvl. {level}</p>
-						<div id="endScreenXPbar">
+						<div id="experienceBarContainer">
 							<div
-								class="XPbarResource"
-								id="endScreenXPbarResource"
-								class:XPbarAnimate={$experienceBarAnimated}
+								class="experienceBarResource"
+								class:experienceBarTransition={transitionExperienceBar}
+								class:experienceBarAnimation={$earnedExperience > 0}
 								style:width={percentageWidth}
 							></div>
 						</div>
-						<p id="endScreenXP">{$animatedExperience.toFixed(0)} XP</p>
-						{#if $showStreakDisplay}
-							<div id="streakDisplay">
+						<p id="experienceNumberText">{$animatedExperience.toFixed(0)} XP</p>
+						{#if $streakText}
+							<div
+								id="streakDisplay"
+								{@attach tooltip({
+									text: "Getting the country right increases your streak and multiplier.",
+									imageSrc: "/img/tutorial/tutorial_streak.png",
+									state: streakExplanationNote,
+									zIndex: 13,
+									maxWidth: 200,
+								})}
+							>
 								<Flame style="margin-right: var(--content-margin);" size={22} strokeWidth={2.25} />
 								<p id="endScreenStreakText">{$streakText}</p>
 							</div>
 						{/if}
 					</div>
 				{:else}
-					<div id="XPbarNoAccount" class="resultField">
+					<div id="experienceBarNotSignedIn" class="resultField">
 						<p id="signupPromptText">
-							<CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see
-							& save your score!
+							<button class="signupButton" onclick={signupPrompt}
+								><CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see
+								& save your score!
+							</button>
 						</p>
 					</div>
 				{/if}
@@ -160,10 +243,10 @@
 		<div class="barMenu nextRoundArea">
 			<button
 				class="standardButton white"
-				use:tooltip={{ text: "View panorama" }}
+				{@attach tooltip({ text: "View panorama" })}
 				onclick={() => {
 					playSound("basic_button");
-					openLocationOnMaps(get(currentLocationLatitude), get(currentLocationLongitude));
+					$roundLogPopup = true;
 				}}
 			>
 				<img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
@@ -174,9 +257,17 @@
 				class="standardButton white"
 				style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
 				style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
+				{@attach tooltip({
+					text: "Ready for the next location?",
+					imageSrc: "/img/tutorial/tutorial_next_round.png",
+					state: nextRoundTutorialNote,
+					zIndex: 13,
+					maxWidth: 125,
+					showDelay: 3000,
+				})}
 				onclick={() => {
 					playSound("basic_button");
-					transitionToStart();
+					nextRound();
 				}}
 			>
 				<p class="nextRoundText">{$continueText}</p>
@@ -188,10 +279,7 @@
 
 <svelte:window
 	onkeypress={(event) => {
-		if (event.key === " " && isElementClickable(nextRoundButtonElement) && $resultScreenEnabled) {
-			transitionToStart();
-			playSound("basic_button");
-		}
+		if (event.key === " " && isElementClickable(nextRoundButtonElement) && $resultScreenEnabled) nextRound();
 	}}
 />
 
@@ -216,13 +304,23 @@
 	#resultBox {
 		display: flex;
 		justify-content: center;
-		align-items: center;
+		/* Stretch to ensure each result field fills the vertical space available */
+		align-items: stretch;
 		color: white;
 		width: 750px;
 		flex-wrap: wrap;
 		gap: var(--panel-margin);
 		padding: var(--panel-margin);
 		margin-inline: var(--box-margin);
+	}
+
+	.signupButton {
+		transition: opacity 250ms ease;
+		cursor: pointer;
+	}
+
+	.signupButton:hover {
+		opacity: 0.5;
 	}
 
 	.noAdvertsText {
@@ -251,10 +349,6 @@
 			width 250ms ease,
 			height 250ms ease;
 		overflow: hidden;
-	}
-
-	.resultFieldHigh {
-		min-height: 40px;
 	}
 
 	.endBottomBar {
@@ -293,12 +387,8 @@
 	}
 
 	.mobileResultAdArea {
-		min-width: 330px;
-		height: 50px;
-		max-height: 60px;
 		padding: var(--content-margin);
 		flex-grow: 1;
-		position: relative;
 	}
 
 	.mobileResultAd {
@@ -328,7 +418,7 @@
 		text-align: center;
 	}
 
-	#XParea {
+	#experienceArea {
 		position: relative;
 		flex-grow: 100;
 		min-width: 300px;
@@ -396,15 +486,15 @@
 		animation: supporterBoostTextMove 2s ease-in-out;
 	}
 
-	#endScreenXPbar {
+	#experienceBarContainer {
 		flex-grow: 10;
 		height: var(--layout-margin);
-		background-color: rgba(255, 255, 255, 0.2);
+		background-color: rgba(255, 255, 255, 0.15);
 		border-radius: 7px;
 		transition: none;
 	}
 
-	#XPbarNoAccount {
+	#experienceBarNotSignedIn {
 		justify-content: space-between;
 		max-height: 30px;
 	}
@@ -418,7 +508,7 @@
 		padding-inline: var(--box-margin);
 	}
 
-	.XPbarResource {
+	.experienceBarResource {
 		height: 100%;
 		border-radius: 7px;
 		background-color: #00cc00;
@@ -427,19 +517,24 @@
 		box-shadow: var(--bulb-shadow);
 	}
 
-	:global(.XPbarAnimate) {
+	.experienceBarTransition {
 		transition: width 1s ease;
+	}
+
+	.experienceBarAnimation {
 		animation: XPFade 1s ease-in-out;
 	}
 
-	#endScreenXP {
+	#experienceNumberText {
 		font-size: 22px;
 		width: auto;
 		vertical-align: middle;
 		text-align: center;
 		text-wrap: nowrap;
 		flex-grow: 1;
-		min-width: 115px;
+		min-width: 100px;
+		padding-inline: var(--panel-margin);
+		font-variant-numeric: tabular-nums;
 	}
 
 	#endScreenStreakText {
@@ -452,7 +547,7 @@
 
 	#streakDisplay {
 		margin-right: auto;
-		margin-left: var(--box-margin);
+		margin-left: var(--panel-margin);
 		position: relative;
 		display: flex;
 		align-items: center;
@@ -479,7 +574,6 @@
 	}
 
 	.nextRoundArea {
-		z-index: 15;
 		position: fixed;
 		bottom: var(--box-margin);
 		right: var(--box-margin);
@@ -529,10 +623,6 @@
 
 		.mobileResultAdArea {
 			display: none;
-		}
-
-		.resultFieldHigh {
-			min-height: unset;
 		}
 
 		#resultBox {

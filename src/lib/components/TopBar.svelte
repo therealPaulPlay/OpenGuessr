@@ -1,30 +1,25 @@
+<script module>
+	export let menuIntroductionNote = $state({ visible: false });
+</script>
+
 <script>
 	import { navigationMenu } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { EllipsisVertical, ExternalLink, LogOut, X } from "@lucide/svelte";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { EllipsisVertical, ExternalLink, LogOut } from "@lucide/svelte";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { scale } from "svelte/transition";
 	import { onMount, tick } from "svelte";
 	import { leaveFunction, singleplayer } from "$lib/stores/modeStore.js";
 	import { page } from "$app/state";
 	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
 	import { goto } from "$app/navigation";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
+	import { leaveTutorial } from "./TutorialOverlay.svelte";
 
-	let showIntroductionNote = $state(false);
 	let showHistoryTooltip = $state(false);
 	let navigationHistory = $state([]);
 	let hideTooltipTimeout = null;
-
-	onMount(() => {
-		const showIntroduction = localStorage.getItem("menuIntroduction") == null;
-		if (showIntroduction && !window.matchMedia("(max-width: 800px) and (orientation: portrait)").matches)
-			showIntroductionNote = true;
-	});
-
-	function disableIntroductionNote() {
-		showIntroductionNote = false;
-		localStorage.setItem("menuIntroduction", true);
-	}
 
 	// Load & track page history for quick access
 	onMount(() => {
@@ -32,7 +27,7 @@
 		if (stored) {
 			try {
 				navigationHistory = JSON.parse(stored);
-			} catch (e) {
+			} catch {
 				navigationHistory = [];
 			}
 		}
@@ -73,7 +68,7 @@
 	{#if $leaveFunction}
 		<button
 			class="standardButton"
-			use:tooltip={{ text: "Leave" }}
+			{@attach tooltip({ text: "Leave" })}
 			onclick={() => {
 				playSound("leave_round");
 				$leaveFunction?.();
@@ -82,34 +77,37 @@
 	{/if}
 	<button
 		class="standardButton white menu-button"
+		aria-label="Menu"
 		onpointerenter={displayHistoryTooltip}
 		onmouseleave={hideHistoryTooltip}
+		{@attach tooltip({
+			text: "Discover multiplayer, maps, competitions & more!",
+			imageSrc: "/img/tutorial/tutorial_menu.png",
+			state: menuIntroductionNote,
+			maxWidth: 225,
+			showDelay: 10_000,
+			zIndex: 14,
+		})}
 		onclick={() => {
-			disableIntroductionNote();
-			$navigationMenu = !$navigationMenu;
 			playSound("basic_button");
+			const showNav = () => {
+				menuIntroductionNote.visible = false;
+				$navigationMenu = true;
+			};
+			if ($tutorial) {
+				return showConfirmPopup("Leave tour?", "To explore on your own, you need to leave the tour.", () => {
+					leaveTutorial();
+					showNav();
+				});
+			}
+			showNav();
 		}}
 		><span class="menu-span">Menu</span>
 		<EllipsisVertical size={22} />
 	</button>
 </nav>
 
-{#if showIntroductionNote}
-	<div class="tooltip menu-tooltip menu-button-area" transition:scale={{ duration: 150, start: 0.95 }}>
-		<div class="tooltip-arrow menu-tooltip-arrow" data-placement="bottom"></div>
-		<button
-			class="standardButton white tooltip-close-button"
-			aria-label="close introduction note"
-			onclick={disableIntroductionNote}
-		>
-			<X size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
-		</button>
-		<img alt="Menu introcution" src="/img/menu_introduction.png" class="menu-tooltip-image" />
-		<p>Discover multiplayer, maps, competitions & more!</p>
-	</div>
-{/if}
-
-{#if showHistoryTooltip && navigationHistory.length > 0 && !showIntroductionNote}
+{#if showHistoryTooltip && navigationHistory.length > 0 && !menuIntroductionNote.visible}
 	<div
 		class="tooltip menu-tooltip history-tooltip menu-button-area"
 		role="tooltip"
@@ -121,7 +119,10 @@
 		<TitleSeparator text="Last visited" noMargin={true} />
 		<div class="history-list">
 			{#each navigationHistory as entry}
-				<button class="history-item standardButton white" disabled={!$singleplayer} onclick={() => goto(entry.path)}
+				<button
+					class="history-item standardButton white"
+					disabled={!$singleplayer || $tutorial}
+					onclick={() => goto(entry.path)}
 					><span class="history-item-title">{entry.title}</span>
 					<ExternalLink size={20} strokeWidth={2.25} style="opacity: 0.5;" />
 				</button>
@@ -147,7 +148,7 @@
 	}
 
 	.menu-tooltip {
-		top: 82px;
+		top: 76px;
 		width: 225px;
 		display: flex;
 		flex-direction: column;
@@ -155,33 +156,9 @@
 		border-radius: var(--box-margin);
 	}
 
-	.tooltip-close-button {
-		margin-left: auto;
-		box-shadow: none;
-		background: none;
-		border: none;
-		padding: 3px;
-		height: unset;
-		opacity: 0.75;
-	}
-
-	.menu-tooltip p {
-		margin-inline: var(--content-margin);
-		margin-bottom: var(--content-margin);
-	}
-
 	.menu-tooltip-arrow {
-		right: 29px;
-		top: -8px;
-		width: 10px;
-		height: 8px;
-	}
-
-	.menu-tooltip-image {
-		height: 105px;
-		width: 225px;
-		margin-top: -40px;
-		margin-bottom: -5px;
+		right: 30px;
+		top: -6px;
 	}
 
 	.menu-button {

@@ -6,7 +6,6 @@
 		roundAmount,
 		roundLength,
 		socket,
-		roomCode,
 		multiplayerStyle,
 		multiplayerRestriction,
 		multiplayerMap,
@@ -22,20 +21,22 @@
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import MultiplayerHostDisplay from "$lib/components/MultiplayerHostDisplay.svelte";
 	import { multiplayer } from "$lib/stores/modeStore";
+	import { showNotification } from "$lib/utils/notifications";
 
 	// Restriction toggle
 	let restrictions = Object.keys($restrictionNames);
-	let restrictionButtonText = $state($restrictionNames[restrictions[0]]);
+	let restrictionButtonText = $derived($restrictionNames[$multiplayerRestriction]);
 
 	function toggleMultiplayerRestriction() {
 		const currentRestrictionIndex =
 			(restrictions.findIndex((e) => e == $multiplayerRestriction) + 1) % restrictions.length;
 		multiplayerRestriction.set(restrictions[currentRestrictionIndex]);
-		restrictionButtonText = $restrictionNames[$multiplayerRestriction];
 	}
 
 	// Creation state
 	let isCreatingRoom = $state(false);
+
+	const STYLE_TABS = ["Standard", "Duel"];
 </script>
 
 <svelte:head>
@@ -47,11 +48,11 @@
 		{#if !$multiplayer && !isCreatingRoom}
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p>Rounds</p>
-				<Ticker limit={10} minimum={2} initialValue={3} bind:value={$roundAmount} />
+				<Ticker maximum={10} minimum={1} initialValue={3} bind:value={$roundAmount} />
 			</div>
 			<div class="roomCreationModule multiplayerHostSettings">
 				<p>Round length</p>
-				<Ticker limit={300} step={10} minimum={10} note="sec" initialValue={60} bind:value={$roundLength} />
+				<Ticker maximum={300} step={10} minimum={10} note="sec" initialValue={60} bind:value={$roundLength} />
 			</div>
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
 				<p>Restriction</p>
@@ -66,13 +67,14 @@
 			<div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
 				<p>Teams</p>
 				<div class="ticker">
-					<Ticker limit={5} lowerLimitText="No" note="teams" initialValue={1} bind:value={$teamAmount} />
+					<Ticker maximum={5} minimumText="No" note="teams" initialValue={1} bind:value={$teamAmount} />
 				</div>
 			</div>
 			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
 				<p>Style</p>
 				<Tabs
-					tabs={["Standard", "Duel"]}
+					tabs={STYLE_TABS}
+					selectedIndex={STYLE_TABS.findIndex((e) => e.toLowerCase() === $multiplayerStyle) ?? 0}
 					onchange={(selected, _index) => {
 						playSound("basic_button");
 						multiplayerStyle.set(selected.toLowerCase());
@@ -92,7 +94,7 @@
 						class="standardButton white"
 						onclick={() => {
 							playSound("basic_button");
-							goto("/maps");
+							goto("/maps?return-to-multiplayer=true");
 						}}><ArrowRightLeft size={17} strokeWidth={2} /></button
 					>
 				</div>
@@ -105,7 +107,14 @@
 					onclick={async () => {
 						isCreatingRoom = true;
 						playSound("basic_button");
-						// Switch to stage 2 (host code area) if on stage 1 (after the setup room function!)
+						
+						// Check if map is invalid for multiplayer
+						if (["Country Guessr", "Tutorial"].includes(localStorage.getItem("selectedMap"))) {
+							showNotification("Map not supported in multiplayer.");
+							isCreatingRoom = false;
+							return;
+						}
+
 						multiplayerMap.set(localStorage.getItem("selectedMap") || $defaultMap);
 						await createMultiplayerRoom();
 						isCreatingRoom = false;
@@ -127,6 +136,7 @@
 		display: flex;
 		flex-direction: column;
 		align-items: center;
+		justify-content: center;
 		min-height: calc(100dvh - 120px);
 	}
 
@@ -137,8 +147,6 @@
 		width: 100%;
 		max-width: 400px;
 		gap: var(--layout-margin);
-		margin-top: auto;
-		margin-bottom: auto;
 	}
 
 	.roomCreationModule {

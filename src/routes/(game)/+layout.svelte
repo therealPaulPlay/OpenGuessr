@@ -7,7 +7,6 @@
 	let { children } = $props();
 
 	// Component Imports
-	import { playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 	import LoadingOverlay from "$lib/components/LoadingOverlay.svelte";
 	import ImageGuesser from "$lib/components/ImageGuesser.svelte";
 	import ErrorPopup from "$lib/components/ErrorPopup.svelte";
@@ -23,14 +22,11 @@
 	import ConfirmPopup from "$lib/components/ConfirmPopup.svelte";
 	import BottomBar from "$lib/components/BottomBar.svelte";
 	import PanoramaIframe from "$lib/components/PanoramaIframe.svelte";
-	import HelpPopup from "$lib/components/HelpPopup.svelte";
 	import SignupIframe from "$lib/components/SignupIframe.svelte";
 	import DiscordPopup from "$lib/components/DiscordPopup.svelte";
 	import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
 	import CountryGuesserBar from "$lib/components/CountryGuessrBar.svelte";
 	import ResultScreen from "$lib/components/ResultScreen.svelte";
-	import CaptchaPopup from "$lib/components/CaptchaPopup.svelte";
-	import Authenticate from "$lib/components/Authenticate.svelte";
 	import ProfilePopup from "$lib/components/ProfilePopup.svelte";
 	import PinPopup from "$lib/components/PinPopup.svelte";
 	import BadgePopup from "$lib/components/BadgePopup.svelte";
@@ -40,7 +36,6 @@
 	import TimeReducedOverlay from "$lib/components/TimeReducedOverlay.svelte";
 	import MultiplayerOverlay from "$lib/components/MultiplayerOverlay.svelte";
 	import BlinkRestrictionFade from "$lib/components/FadeRestriction.svelte";
-	import MapAttribution from "$lib/components/MapAttribution.svelte";
 	import CrazyGames from "$lib/components/CrazyGames.svelte";
 	import DuelResultPopup from "$lib/components/DuelResultPopup.svelte";
 	import ReportIframePopup from "$lib/components/ReportIframePopup.svelte";
@@ -58,28 +53,16 @@
 	import ChatMobilePopup from "$lib/components/ChatMobilePopup.svelte";
 	import ChatHolder from "$lib/components/ChatHolder.svelte";
 	import Notification from "$lib/components/Notification.svelte";
+	import MatchOverviewPopup from "$lib/components/MatchOverviewPopup.svelte";
+	import MessagesPopup from "$lib/components/MessagesPopup.svelte";
+	import Authentication from "$lib/components/Authentication.svelte";
+	import TutorialOverlay from "$lib/components/TutorialOverlay.svelte";
 
 	// Load panorama, ads, overfade etc.
-	onMount(() => {
+	onMount(async () => {
 		initOverfade();
 		checkGenerationTypeAndGenerate();
 		initializeAds();
-	});
-
-	// Load Playlight
-	onMount(async () => {
-		try {
-			if (new URLSearchParams(window.location.search).get("crazy-games")) return; // Don't load Playlight on CG
-			const module = await import("https://sdk.playlight.dev/playlight-sdk.es.js");
-			$playlightSDK = module.default;
-			$playlightSDK.init({
-				exitIntent: {
-					enabled: false,
-				},
-			});
-		} catch (error) {
-			console.error("Error loading the Playlight SDK:", error);
-		}
 	});
 </script>
 
@@ -89,9 +72,6 @@
 
 	<!-- Leaflet CSS -->
 	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css" />
-
-	<!-- Playlight CSS -->
-	<link rel="stylesheet" href="https://sdk.playlight.dev/playlight-sdk.css" />
 </svelte:head>
 
 <!-- Prevent automatic "last button press" on space bar or enter key press -->
@@ -107,18 +87,22 @@
 
 <!-- Keywords -->
 <h1 style:display="none">
-	Openguessr is like GeoGuessr free and unlimited. A free GeoGuesser alternative like Geotastic, open source, best for
-	geography learners (in German Geographie). Place the pin on the world map in this geoguessr-inspired geo quiz.
-	Kostenlos (free) with Google Street View or streetview. Geography and travel creators like Rainbolt and Zi8gZag are
-	popular in the education world. Can you guess where you are without a subscription, in multiplayer with friends or in
-	online duels? Guess the country, rate das Land!
+	Free GeoGuessr alternative with unlimited playtime and multiplayer. Play GeoGuessr free of charge and learn geography
+	by guessing where you are!
 </h1>
+
+<h2 style:display="none">
+	OpenGuessr is like GeoGuessr, but free and unlimited, enabling you to guess the location without a subscription
+	(kostenlos, gratis). The game includes online multiplayer to play with friends, is unblocked, partially open-source,
+	and uses Google Street View. Can you guess the country, or even guess where you are? Travel across the world map today
+	and become the next Rainbolt.
+</h2>
 
 <!-- 3rd party -->
 <CrazyGames />
 
 <!-- Log user in -->
-<Authenticate />
+<Authentication />
 
 <!-- Logo and Nav -->
 <TopLeftLogo />
@@ -132,8 +116,8 @@
 <ErrorPopup />
 <Navigation />
 <ConfirmPopup />
-<CaptchaPopup />
 <ShopPurchaseAnimation />
+<MessagesPopup />
 <ProfilePopup />
 <BadgePopup />
 <PinPopup />
@@ -141,10 +125,11 @@
 <SupporterPopup />
 <FriendBrowserPopup />
 <DivisionMatchHistoryPopup />
+<MatchOverviewPopup />
 <TournamentInfoPopup />
 <TournamentMatchResultsPopup />
 <InboxPopup />
-<HelpPopup />
+<TutorialOverlay />
 <DuelResultPopup />
 <SignupIframe />
 <SettingsPopup />
@@ -166,7 +151,6 @@
 <PanoramaIframe />
 <CountryGuesserBar />
 <MapHolder>
-	<MapAttribution />
 	<MobileMapToggles />
 	<Map />
 	<MapModeIndicator />

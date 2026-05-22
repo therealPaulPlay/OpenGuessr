@@ -1,14 +1,13 @@
 import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
 import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-import { setCheckNewHighestCountryStreak } from "$lib/utils/updateProfileData";
+import { updateProfileIfNewBestStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, supporterLevel } from "$lib/stores/accountStore";
-import { streakText, showStreakDisplay, lastExpCalculationSignedOut, experienceBarAnimated, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
+import { streakText, lastExpCalculationSignedOut, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
 import { multiplayerMap, socket } from "$lib/stores/context-specific/multiplayerStore";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
 import { addUserXP } from "$lib/utils/updateUserXP";
-import { saveRoundToLog } from "$lib/utils/saveRoundToLog";
 import { getCountryFromCoords } from "$lib/utils/countryFromCoordinates";
 import { playSound } from "$lib/utils/soundManager";
 import { checkIfGuessWasCorrect } from "$lib/utils/countryGuessrFunctions";
@@ -29,13 +28,12 @@ async function streakCalculation() {
         streak++;
     } else {
         if (streak >= 2) showResultScreenSlideup("Streak lost", `You lost your streak of ${streak}.`);
-        if (streak >= 1) setCheckNewHighestCountryStreak(streak);
-        streak = 0; // Reset country streak
+        if (streak >= 1) updateProfileIfNewBestStreak(streak);
+        streak = 0; // Reset streak
     }
 
     const streakMultiplier = calculateMultiplier(streak);
     streakText.set(streak + " (" + streakMultiplier + "x)");
-    showStreakDisplay.set(true);
     localStorage.setItem("streak", streak);
     return streakMultiplier;
 }
@@ -83,15 +81,11 @@ export async function loadResultScreenXP(distance) {
     // (Re-)sets
     let supporterMultiplier = 1;
     clearTimeout(animateSupporterBoostTimeout);
-    showStreakDisplay.set(false);
+    streakText.set(null);
 
     // Post-signin saves -----------------------------------------------------
     if (!get(isAuthenticated) && get(singleplayer)) lastExpCalculationSignedOut.set(true);
     else lastExpCalculationSignedOut.set(false);
-
-    // Save played round to log ------------------------------------------------
-    let mode = get(singleplayer) ? "Singleplayer" : get(multiplayer) ? "Multiplayer" : get(competition) ? "Competition" : "Unknown";
-    saveRoundToLog(mode, distance, [get(currentLocationLatitude), get(currentLocationLongitude)]);
 
     // Calculate experience and streak --------------------------------------
     let earnedXP;
@@ -117,12 +111,10 @@ export async function loadResultScreenXP(distance) {
     }
 
     // Apply XP visually and server-wise ----------------------------------
-    experienceBarAnimated.set(false);
     earnedExperience.set(earnedBasicXP || 0);
 
     if (earnedXP > 0 && get(isAuthenticated)) addUserXP(earnedXP); // Save XP to database
     if (earnedBasicXP > 50 && get(isAuthenticated)) setTimeout(playScoreincreaseSound, 500);
-    if (earnedXP > 0) experienceBarAnimated.set(true);
 
     if (supporterMultiplier > 1 && earnedXP > earnedBasicXP) { // check if multiplier is greater than 1 + if it would actually make a difference
         supporterXpBoostAnimation(supporterMultiplier);

@@ -59,7 +59,7 @@
 
 <style>
 	.endscreenSlideupContainer {
-		z-index: 16;
+		z-index: 14;
 		padding: var(--panel-margin);
 		border-radius: var(--box-margin);
 		max-height: 1000px;
@@ -108,6 +108,7 @@
 		bottom: 0;
 		background-color: rgba(255, 255, 255, 0.15);
 		box-shadow: var(--bulb-shadow);
+		transition: width 250ms ease;
 	}
 
 	.buttonBox {

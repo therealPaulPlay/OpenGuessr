@@ -6,6 +6,8 @@
 	import { formatDistance } from "$lib/utils/distanceFunctions";
 	import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
 	import { playSound } from "$lib/utils/soundManager";
+	import TitleSeparator from "./ui/TitleSeparator.svelte";
+	import { ExternalLink } from "@lucide/svelte";
 
 	onMount(() => {
 		try {
@@ -18,14 +20,14 @@
 
 <Popup verySlim={true} bind:open={$roundLogPopup} z={971}>
 	<div class="popup-title">
-		<h1>Round history</h1>
+		<h1>Rounds</h1>
 	</div>
 	<div class="roundLogContainer">
 		<div class="roundLogBox of-top of-bottom of-length-1.5">
 			<!-- round log will be automatically generated here -->
 			{#if $roundLog?.length > 0}
 				{#each $roundLog as [mode, distance, coordinates], index}
-					<div class="roundLogItem">
+					<div class="roundLogItem" class:current={index === 0}>
 						<div>
 							<p class="logItemMode">{mode}</p>
 							<p>{formatDistance(distance)} away</p>
@@ -37,9 +39,15 @@
 								openLocationOnMaps(coordinates[0], coordinates[1]);
 							}}
 						>
-							View
+							View <ExternalLink size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: 2px;" />
 						</button>
 					</div>
+					{#if index === 0}
+						<TitleSeparator text="Previous" noMargin={true} />
+						{#if $roundLog?.length == 1}
+							<p class="centerLogText extraMarginBottom">No previous rounds.</p>
+						{/if}
+					{/if}
 				{/each}
 			{:else}
 				<p class="centerLogText">No saved rounds.</p>
@@ -56,7 +64,7 @@
 		gap: var(--box-margin);
 		flex-direction: column;
 		overflow-y: auto;
-		max-height: min(350px, calc(100dvh - 200px));
+		max-height: min(330px, calc(100dvh - 200px));
 		padding-bottom: 0;
 		scrollbar-width: none;
 	}
@@ -79,8 +87,12 @@
 		width: 100%;
 		opacity: 50%;
 		font-size: 22px;
-		padding-top: var(--content-margin);
-		padding-bottom: var(--content-margin);
+		padding-top: var(--box-margin);
+		padding-bottom: var(--box-margin);
+	}
+
+	.extraMarginBottom {
+		padding-bottom: calc(var(--layout-margin) + var(--content-margin));
 	}
 
 	.roundLogItem {
@@ -93,5 +105,10 @@
 		padding-inline: var(--layout-margin);
 		border-radius: var(--content-margin);
 		width: calc(100% - 30px);
+	}
+
+	.current {
+		background-color: rgba(255, 255, 255, 0.1);
+		margin-bottom: var(--content-margin);
 	}
 </style>

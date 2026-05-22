@@ -1,16 +1,14 @@
 <script>
-	import { captchaPopupVisible } from "$lib/stores/context-specific/captchaPopupStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { loadingScreenVisible } from "$lib/stores/uiStore";
+	import { fade } from "svelte/transition";
 </script>
 
-<div
-	class="loadingOverlay"
-	style:opacity={$loadingScreenVisible || $resultScreenEnabled ? "100%" : "0%"}
-	style:transition={$resultScreenEnabled ? "none" : "opacity 150ms ease"}
->
-	<img src="/img/compass_spinner.png" alt="Loading new streetview" class="spinner" />
-</div>
+{#if $loadingScreenVisible || $resultScreenEnabled}
+	<div class="loadingOverlay" transition:fade={{ duration: 150 }}>
+		<img src="/img/compass_spinner.png" fetchpriority="high" alt="Loading" class="spinner" />
+	</div>
+{/if}
 
 <style>
 	.loadingOverlay {
@@ -18,7 +16,6 @@
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
-		opacity: 0%;
 		pointer-events: none;
 		background-color: #11121f;
 		position: fixed;

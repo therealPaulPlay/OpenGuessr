@@ -2,20 +2,8 @@
 	import { discordPopup } from "$lib/stores/uiStore";
 	import { addUserXP } from "$lib/utils/updateUserXP";
 	import Popup from "./ui/Popup.svelte";
-	import { experience } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { get } from "svelte/store";
 	import { discordInviteUrl } from "$lib/stores/context-specific/apiConfigStore";
-
-	function clickJoin() {
-		playSound("basic_button");
-		window.open($discordInviteUrl, "_blank").focus();
-
-		setTimeout(async function () {
-			closePopup();
-			await addUserXP(7500);
-		}, 250);
-	}
 
 	function closePopup() {
 		discordPopup.set(false);
@@ -41,7 +29,19 @@
 		src="https://discord.com/widget?id=1221841177863651499&theme=dark"
 		sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
 	></iframe>
-	<button id="socialPopupJoin" class="standardButton bottomButton largeButton white" onclick={clickJoin}>
+	<button
+		id="socialPopupJoin"
+		class="standardButton bottomButton largeButton white"
+		onclick={() => {
+			playSound("basic_button");
+			window.open($discordInviteUrl, "_blank").focus();
+
+			setTimeout(async function () {
+				closePopup();
+				await addUserXP(7500);
+			}, 250);
+		}}
+	>
 		Join
 		<img src="/img/discord.png" class="socialIcon discordIconJoin" alt="Discord Icon" />
 	</button>

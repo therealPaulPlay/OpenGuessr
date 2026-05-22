@@ -1,7 +1,6 @@
 <script>
 	import MultiplayerMatchmakingDisplay from "$lib/components/MultiplayerMatchmakingDisplay.svelte";
-	import { findDuel } from "$lib/logic/matchmakingLogic";
-	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
+	import { findDuel, safeCancel } from "$lib/logic/matchmakingLogic";
 </script>
 
 <svelte:head>
@@ -10,7 +9,7 @@
 
 <div class="main-container">
 	<div class="duelCenterBox">
-		<MultiplayerMatchmakingDisplay findFunction={findDuel} cancelFunction={leaveMultiplayer} supportsSkillbased={true} />
+		<MultiplayerMatchmakingDisplay findFunction={findDuel} cancelFunction={safeCancel} supportsSkillbased={true} />
 	</div>
 </div>
 

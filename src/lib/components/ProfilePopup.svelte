@@ -11,13 +11,13 @@
 	import { confirmPasswordValue, confirmUsernameValue } from "$lib/stores/context-specific/confirmPopupStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
-	import { resetLocalSave, checkAuthenticationStatus } from "$lib/logic/accountLogic";
-	import { pinPopup, badgePopup, reportPopup, roundLogPopup } from "$lib/stores/uiStore";
+	import { signOut } from "$lib/logic/accountLogic";
+	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
+	import { openDirectMessageWith } from "$lib/logic/headlessChatLogic";
 	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
 	import {
 		Flame,
-		History,
 		Link,
 		Skull,
 		SquarePlus,
@@ -26,40 +26,33 @@
 		TriangleAlert,
 		Pencil,
 		Award,
-		Swords,
 		TrendingUp,
 		Medal,
 		Calendar,
 		User,
-		Shield,
 		BarChart3,
 		Trophy,
 		Crown,
 		ArrowUpFromDot,
 		UserRoundPlus,
 		UserRoundCheck,
+		MessageSquare,
 	} from "@lucide/svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
-	import {
-		profileData,
-		profileExperience,
-		profileId,
-		profileSupporterLevel,
-		unsavedAboutChanges,
-	} from "$lib/stores/context-specific/profileStore";
+	import { profileData, profileId, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
 	import { page } from "$app/state";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
-	import { reportUserId } from "$lib/stores/context-specific/reportPopupStore";
+	import { showProfile } from "$lib/utils/showProfile";
 	import Tabs from "./ui/Tabs.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showNotification } from "$lib/utils/notifications";
 	import { censor } from "fast-profanity-filter";
-	import { tooltip } from "$lib/utils/tooltip";
+	import { tooltip } from "$lib/utils/tooltip.svelte";
+	import { signupPrompt } from "$lib/utils/signupPrompt";
 
 	let textarea = $state();
 	let selectedTabIndex = $state(0);
@@ -73,7 +66,7 @@
 
 	onMount(() => {
 		const profileFromURL = page.url.searchParams.get("profile-id");
-		if (profileFromURL != null) loadProfileFromId(profileFromURL);
+		if (profileFromURL != null) showProfile(profileFromURL);
 	});
 
 	let ProfileFlag = $derived(FlagIcons[$profileData?.flag] || undefined);
@@ -85,17 +78,17 @@
 			cards: [
 				{
 					title: "Level",
-					getValue: () => experienceCalculations($profileExperience)?.level,
+					getValue: () => experienceCalculations($profileData?.experience)?.level,
 					icon: Award,
 				},
 				{
 					title: "Total XP",
-					getValue: () => $profileExperience?.toLocaleString(),
+					getValue: () => $profileData?.experience?.toLocaleString(),
 					icon: BarChart3,
 				},
 				{
 					title: "XP until level-up",
-					getValue: () => experienceCalculations($profileExperience)?.requiredForLevelUpgrade?.toLocaleString(),
+					getValue: () => experienceCalculations($profileData?.experience)?.requiredForLevelUpgrade?.toLocaleString(),
 					icon: TrendingUp,
 				},
 			],
@@ -193,7 +186,6 @@
 			{/if}
 		</div>
 	</div>
-	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 	<div class="profileNameBox">
 		<div class="profileNameBoxContent of-left of-right">
 			{#if $profileId == localStorage.getItem("id") && !$profileData?.badge}
@@ -218,7 +210,7 @@
 						badgePopup.set(true);
 					}}
 				>
-					<Badge id={$profileData?.badge} interactive={false} display="true" />
+					<Badge id={$profileData?.badge} interactive={false} display={true} />
 				</div>
 			{/if}
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -235,21 +227,17 @@
 			>
 				<img id="selectedProfilePin" alt="pin" src={`/img/pins/player_pin${$profileData?.pin ?? 0}.png`} />
 				{#if $profileId == localStorage.getItem("id")}
-					<Pencil style="opacity: 0.75; margin-right: var(--content-margin); margin-left: 2px;" size={17} strokeWidth={2.25} />
+					<Pencil
+						style="opacity: 0.75; margin-right: var(--content-margin); margin-left: 2px;"
+						size={17}
+						strokeWidth={2.25}
+					/>
 				{/if}
 			</div>
 			{#if $profileId == localStorage.getItem("id")}
 				<button
 					class="standardButton white"
-					use:tooltip={{ text: "Round history" }}
-					onclick={() => {
-						playSound("basic_button");
-						$roundLogPopup = true;
-					}}><History strokeWidth={1.85} style="vertical-align: -3.75px;" size={23} /></button
-				>
-				<button
-					class="standardButton white"
-					use:tooltip={{ text: "Share link" }}
+					{@attach tooltip({ text: "Share link" })}
 					onclick={() => {
 						playSound("basic_button");
 						navigator.clipboard
@@ -262,35 +250,47 @@
 							});
 					}}
 				>
-					<Link strokeWidth={2} style="vertical-align: -2.4px;" size={20} />
+					<Link strokeWidth={2} style="vertical-align: -2px;" size={20} />
 				</button>
 			{/if}
-			{#if $profileSupporterLevel >= 1}
+			{#if $profileData?.supporterLevel >= 1}
 				<div id="supporterTag">
-					<p id="supporterTagText">Tier {$profileSupporterLevel}</p>
+					<p id="supporterTagText">Tier {$profileData?.supporterLevel}</p>
 					<img id="supporterIcon" alt="supporter tag" src="/img/supporter_icon.png" />
 				</div>
 			{/if}
 			{#if $profileId != localStorage.getItem("id")}
 				<button
 					class="standardButton white"
-					onclick={(e) => {
+					onclick={() => {
 						playSound("basic_button");
-						reportUserId.set($profileId);
 						reportPopup.set(true);
 					}}
 				>
 					Report <TriangleAlert size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: 2px;" />
 				</button>
 			{/if}
-			{#if $profileId != localStorage.getItem("id") && $isAuthenticated}
+			{#if $profileId != localStorage.getItem("id")}
+				<button
+					class="standardButton white"
+					{@attach tooltip({ text: "Send message" })}
+					onclick={() => {
+						playSound("basic_button");
+						if ($isAuthenticated) openDirectMessageWith($profileId);
+						else signupPrompt();
+					}}
+				>
+					<MessageSquare style="margin-bottom: -1px;" size={20} strokeWidth={2.25} />
+				</button>
 				<button
 					class="standardButton white"
 					disabled={$profileData?.areFriends}
-					use:tooltip={{ text: "Send friend request" }}
+					{@attach tooltip({ text: "Send friend request" })}
 					onclick={(e) => {
 						playSound("basic_button");
-						sendFriendRequest($profileId, e.target); // This also shows a notification
+						// Send friend request (also shows ingame notification)
+						if ($isAuthenticated) sendFriendRequest($profileId, e.target);
+						else signupPrompt();
 					}}
 				>
 					{#if !$profileData?.areFriends}
@@ -311,6 +311,7 @@
 			<textarea
 				class="profileAbout of-top of-bottom"
 				readonly={$profileId != localStorage.getItem("id")}
+				style:background-color={$profileId != localStorage.getItem("id") ? "transparent !important" : ""}
 				maxlength="150"
 				spellcheck="false"
 				value={filteredAbout}
@@ -371,7 +372,7 @@
 							playSound("basic_button");
 							showConfirmPopup(
 								"Update username",
-								"Input your new name into the box and click confirm.",
+								"Please input your new username.",
 								() => {
 									updateProfileUsername($confirmUsernameValue);
 								},
@@ -391,7 +392,7 @@
 						playSound("basic_button");
 						showConfirmPopup(
 							"Delete account",
-							"Please make sure to delete user-created content before proceeding, if you wish to remove that from the platform.",
+							"Some user-created content may persist briefly after deletion.",
 							() => {
 								if ($confirmPasswordValue) submitAccountDeletion($confirmPasswordValue);
 								else errorPopup("Password required", "Your password is required for deleting your account.");
@@ -408,8 +409,7 @@
 					disabled={$crazyGames || !$singleplayer}
 					onclick={() => {
 						playSound("basic_button");
-						resetLocalSave();
-						checkAuthenticationStatus();
+						signOut();
 						profilePopup.set(false);
 					}}
 				>
@@ -566,19 +566,23 @@
 
 	.aboutSection {
 		width: 100%;
-		min-height: 55px;
 		border-radius: var(--box-margin);
 		margin-bottom: var(--layout-margin);
 		transition: background-color 250ms ease;
+		border-radius: var(--box-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+		box-sizing: border-box;
+		overflow: hidden;
 	}
 
 	.profileAbout {
 		resize: none;
 		width: 100%;
+		min-height: 85px;
 		color: white;
 		padding: var(--layout-margin);
 		scrollbar-width: none;
-		box-sizing: border-box;
 	}
 
 	:global(.stat-switch) {

@@ -4,6 +4,7 @@
 		matchmakingActive,
 		skillBasedMatchmaking,
 		matchmakingHosting,
+		cancellingMatchmaking,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { Info, RefreshCcw } from "@lucide/svelte";
@@ -23,8 +24,9 @@
 	<div class="info-container" transition:slide>
 		<Info
 			strokeWidth={2.25}
+			size={22}
 			color="white"
-			style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; flex-shrink: 0;"
+			style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; margin-bottom: -2px; flex-shrink: 0;"
 		/>
 		<p>Skill-based matchmaking has longer waiting times.</p>
 	</div>
@@ -32,14 +34,21 @@
 <div class="try-button-container barMenu">
 	<button
 		class="standardButton try-button largeButton"
-		disabled={$matchmakingActive && !$matchmakingHosting}
-		onclick={() => {
+		disabled={($matchmakingActive && !$matchmakingHosting) || $cancellingMatchmaking}
+		onclick={async () => {
 			if (!$matchmakingActive) {
 				playSound("basic_button");
 				findFunction?.();
-			} else cancelFunction?.();
+			} else {
+				$cancellingMatchmaking = true;
+				try {
+					await cancelFunction?.();
+				} finally {
+					$cancellingMatchmaking = false;
+				}
+			}
 		}}
-		>{$matchmakingActive ? "Cancel" : "Try again"}
+		>{$matchmakingActive ? ($cancellingMatchmaking ? "Cancelling..." : "Cancel") : "Try again"}
 		{#if !$matchmakingActive}
 			<span class="refresh-icon"><RefreshCcw strokeWidth={3} size={18} /></span>
 		{/if}</button

@@ -5,14 +5,11 @@ export const distanceText = writable("Distance not loaded.") // Distance, e.g. 1
 export const motivationText = writable("Default Motivation!"); // Result screen text that comments on the result, e.g. "Very close!"
 export const continueText = writable("Continue");
 export const earnedExperience = writable(0);
-export const streakText = writable("1 (default)");
+export const streakText = writable("0 (default)");
 export const lastDistance = writable();
 export const lastExpCalculationSignedOut = writable(false);
 export const supporterBoost = writable();
 export const supporterBoostText = writable();
-
-export const experienceBarAnimated = writable(true);
-export const showStreakDisplay = writable(true);
 
 // Result screen fullscreen celebration
 export const showFullscreenCelebration = writable(false);

@@ -1,6 +1,6 @@
 import { profilePopup } from "$lib/stores/uiStore";
 import { errorPopup } from "$lib/utils/errorHandling";
-import { checkAuthenticationStatus, resetLocalSave } from "$lib/logic/accountLogic";
+import { signOut } from "$lib/logic/accountLogic";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { get } from "svelte/store";
 
@@ -8,8 +8,7 @@ export async function submitAccountDeletion(password) {
     let successState = await deleteUser(password);
     // If success, continue (errors are caught and displayed in deleteUser)
     if (successState) {
-        resetLocalSave();
-        checkAuthenticationStatus();
+        signOut();
 
         setTimeout(() => {
             profilePopup.set(false); // Close profile popup

@@ -1,11 +1,11 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { inboxPopup } from "$lib/stores/uiStore";
-	import { inboxIconNew, inboxContent } from "$lib/stores/context-specific/inboxStore";
+	import { newFriendRequest, friendRequestInboxContent } from "$lib/stores/context-specific/inboxStore";
 	import { loadInbox } from "$lib/logic/friendAPI";
 	import { playSound } from "$lib/utils/soundManager";
 	import { acceptFriendRequest, declineFriendRequest } from "$lib/logic/friendAPI";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { Check, X } from "@lucide/svelte";
 
 	let inboxRefreshInterval;
@@ -13,7 +13,7 @@
 
 	inboxPopup.subscribe(async (value) => {
 		if (value) {
-			inboxIconNew.set(false);
+			newFriendRequest.set(false);
 
 			// Refetch every X seconds
 			clearInterval(inboxRefreshInterval);
@@ -23,7 +23,7 @@
 
 			errorText = "Loading...";
 			await loadInbox();
-			errorText = "Inbox is empty.";
+			errorText = "No incoming friend requests.";
 		} else {
 			clearInterval(inboxRefreshInterval);
 		}
@@ -36,15 +36,15 @@
 	</div>
 	<div class="containerBox">
 		<div class="containerBoxScroll of-top of-bottom">
-			{#if $inboxContent}
-				{#each $inboxContent as entry}
+			{#if $friendRequestInboxContent}
+				{#each $friendRequestInboxContent as entry}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<div
 						class="inboxItem"
 						role="menu"
 						tabindex="0"
 						onclick={() => {
-							loadProfileFromId(entry.id);
+							showProfile(entry.id);
 						}}
 					>
 						<p>{entry.user_name}</p>

@@ -1,37 +1,31 @@
-<!-- Used for the singleplayer timer countdown  - formerly known as the hardmode fade (when hardmode was still a thing) -->
+<!-- Used for the singleplayer timer countdown -->
 <script>
+	import { page } from "$app/state";
 	import {
 		timerCountdownOverlay,
 		timerCountdownOverlayTitle,
 	} from "$lib/stores/context-specific/timerCountdownOverlayStore";
+	import { fade } from "svelte/transition";
 </script>
 
-<div
-	id="timerCountdown"
-	style:opacity={$timerCountdownOverlay ? "1" : "0"}
-	style:pointer-events={$timerCountdownOverlay ? "auto" : "none"}
->
-	<h1 id="hardModeTitle">{$timerCountdownOverlayTitle}</h1>
-</div>
+{#if $timerCountdownOverlay}
+	<div transition:fade={{ duration: 150 }} id="timerCountdown" style:display={page.url.pathname !== "/" ? "none" : ""}>
+		<h1>{$timerCountdownOverlayTitle}</h1>
+	</div>
+{/if}
 
 <style>
 	#timerCountdown {
-		width: 100%;
-		height: 100%;
 		position: fixed;
-		top: 0;
+		inset: 0;
 		z-index: 3;
-		transition: opacity 250ms ease;
-		opacity: 0;
 		overflow: hidden;
-		backdrop-filter: blur(50px);
+		backdrop-filter: blur(var(--strong-blur));
 		background-color: rgba(0, 0, 0, 0.2);
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
-		color: white;
-		pointer-events: none;
 		user-select: none;
 	}
 

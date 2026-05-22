@@ -1,7 +1,7 @@
 <script>
 	import { selectedTournament, tournamentMatchResultsIndex } from "$lib/stores/context-specific/tournamentStore";
 	import { tournamentMatchResultsPopup } from "$lib/stores/uiStore";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import Popup from "./ui/Popup.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 </script>
@@ -18,7 +18,7 @@
 			<button
 				class="hover-text"
 				onclick={() => {
-					loadProfileFromId(player.id);
+					showProfile(player.id);
 				}}>{player.username} <span class="score-span">{player.score?.toLocaleString()}</span></button
 			>
 		</div>
@@ -31,7 +31,7 @@
 			<button
 				class="hover-text"
 				onclick={() => {
-					loadProfileFromId(player.id);
+					showProfile(player.id);
 				}}>{player.username} <span class="score-span">{player.score?.toLocaleString()}</span></button
 			>
 		</div>

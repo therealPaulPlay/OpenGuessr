@@ -3,26 +3,31 @@
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { page } from "$app/state";
 	import { playMusic } from "$lib/utils/soundManager";
-	import { onMount } from "svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { multiplayerOverlay } from "$lib/stores/context-specific/multiplayerStore";
+	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
 
-	let gameStart = $state(false);
-	let gameStartTimeout;
+	let musicStarted = $state(false);
+	let startMusicTimeout;
 
-	// Start music after first round
+	// Start music after first round, with slight delay to avoid impacting result map load speed
 	resultScreenEnabled.subscribe((value) => {
-		// Delayed to ensure result map loads first
-		if (value && !gameStart && !gameStartTimeout) gameStartTimeout = setTimeout(() => (gameStart = true), 250);
+		if (value && !musicStarted && !startMusicTimeout) startMusicTimeout = setTimeout(() => (musicStarted = true), 250);
+	});
+
+	// Start music when the first tutorial round starts (tutorial active, but tutorial overlay hidden since step is zero)
+	tutorialStep.subscribe((value) => {
+		if (value === 0 && $tutorial && !musicStarted && !startMusicTimeout) musicStarted = true;
 	});
 
 	// If player starts with multiplayer or competitions, start music
 	singleplayer.subscribe((value) => {
-		if (!value && !gameStart) gameStart = true;
+		if (!value && !musicStarted) musicStarted = true;
 	});
 
+	// Adjust volume to screen
 	$effect(() => {
-		if (!gameStart) return; // Load music after game has started to not slow down load
+		if (!musicStarted) return;
 		if ($resultScreenEnabled || page.url.pathname !== "/" || $multiplayerOverlay) {
 			playMusic("regular", 0.35);
 		} else {

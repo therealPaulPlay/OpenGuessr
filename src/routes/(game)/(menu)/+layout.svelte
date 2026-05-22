@@ -5,7 +5,6 @@
 	import { leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 	import { goto, afterNavigate } from "$app/navigation";
 	import { Home } from "@lucide/svelte";
-	import { blur } from "svelte/transition";
 	import { page } from "$app/state";
 
 	import { setContext } from "svelte";
@@ -31,8 +30,8 @@
 		goto(historyStack.at(-1) || "/", { state: { restoreSnapshot: true } });
 	}
 
-	function leaveMultiplayerIfReturningFromMultiplayerPage() {
-		if (page.url.pathname.startsWith("/multiplayer")) leaveMultiplayer();
+	function leaveMultiplayerIfReturningFromMultiplayerPage(goingHome = false) {
+		if (page.url.pathname.startsWith("/multiplayer") || (page.url.searchParams.get("return-to-multiplayer") && goingHome)) leaveMultiplayer();
 	}
 
 	let showHomeButton = $derived(historyStack.length > 0 && historyStack.at(-1) !== "/");
@@ -45,7 +44,7 @@
 			disabled={$matchmakingActive}
 			onclick={() => {
 				playSound("basic_button");
-				leaveMultiplayerIfReturningFromMultiplayerPage();
+				leaveMultiplayerIfReturningFromMultiplayerPage(false);
 				goBack();
 			}}
 		>
@@ -60,7 +59,7 @@
 				disabled={$matchmakingActive}
 				onclick={() => {
 					playSound("basic_button");
-					leaveMultiplayerIfReturningFromMultiplayerPage();
+					leaveMultiplayerIfReturningFromMultiplayerPage(true);
 					goto("/");
 				}}
 			>
@@ -87,7 +86,7 @@
 		right: 0;
 		background: rgba(13, 15, 28, 0.9);
 		z-index: 90;
-		backdrop-filter: blur(15px);
+		backdrop-filter: blur(var(--elevated-blur));
 	}
 
 	.navigationButtonContainer {

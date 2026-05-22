@@ -4,7 +4,7 @@
 	import { CalendarPlus, Info, Medal } from "@lucide/svelte";
 	import Popup from "./ui/Popup.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { slide } from "svelte/transition";
 	import { idToMapName } from "$lib/utils/idToMapName";
@@ -71,11 +71,7 @@
 			});
 
 			// Check if the response is successful
-			if (response.ok) {
-				const data = await response.json();
-			} else {
-				throw new Error(response.status);
-			}
+			if (!response.ok) throw new Error(response.status);
 		} catch (error) {
 			console.error("Failed to track calendar save:", error);
 			errorPopup(
@@ -127,7 +123,7 @@
 	<div class="match-box">
 		<div class="match-box-scroll of-top of-bottom of-length-2">
 			{#if $selectedTournament?.matches?.length}
-				{#each $selectedTournament?.matches as match, index}
+				{#each $selectedTournament?.matches, index}
 					<div class="match-entry" transition:slide={{ axis: "y" }}>
 						<p>Match {index + 1}</p>
 						<button
@@ -148,7 +144,7 @@
 		</div>
 	</div>
 	{#if $selectedTournament?.winner?.name}
-		<div transition:slide={{ axis: "y" }} style:width={"100%"}>
+		<div transition:slide={{ axis: "y" }} style:width="100%">
 			<TitleSeparator text="Final result" class="tournament-divider-margin" />
 			<div class="winner-box">
 				<Medal class="big-medal" size={120} strokeWidth={1.25} />
@@ -156,7 +152,7 @@
 				<button
 					class="opacity-hover"
 					onclick={() => {
-						loadProfileFromId($selectedTournament?.winner?.id);
+						showProfile($selectedTournament?.winner?.id);
 					}}
 				>
 					{$selectedTournament?.winner?.name}

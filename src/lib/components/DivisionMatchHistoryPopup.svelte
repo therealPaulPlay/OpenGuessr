@@ -1,12 +1,12 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
-	import { playSound } from "$lib/utils/soundManager";
-	import { divisionMatchHistoryPopup } from "$lib/stores/uiStore";
+	import { divisionMatchHistoryPopup, matchOverviewPopup } from "$lib/stores/uiStore";
+	import { matchData } from "$lib/stores/context-specific/matchOverviewStore";
 	import { errorPopup } from "$lib/utils/errorHandling";
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
-	import { onMount } from "svelte";
-	import { ArrowLeft, ArrowRight } from "@lucide/svelte";
+	import { showProfile } from "$lib/utils/showProfile";
+	import { ArrowLeft, ArrowRight, Info } from "@lucide/svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { playSound } from "$lib/utils/soundManager";
 
 	// local state variables
 	let matchResults = $state([]);
@@ -66,6 +66,23 @@
 		}
 	});
 
+	async function openMatchOverview(uuid) {
+		matchData.set(null);
+		$matchOverviewPopup = true;
+		try {
+			const response = await fetch($apiUrl + `/divisions/duel-rounds/${uuid}`, {
+				method: "GET",
+				headers: { "Content-Type": "application/json" },
+			});
+			if (!response.ok) throw new Error(response.status);
+			matchData.set(await response.json());
+		} catch (error) {
+			$matchOverviewPopup = false;
+			console.error("Error loading match:", error);
+			errorPopup("Error loading match", "An error occurred loading the match overview.", error.message);
+		}
+	}
+
 	// Handlers for pagination
 	function prevPage() {
 		if (currentPage > 1) {
@@ -95,18 +112,19 @@
 	</div>
 	<div class="historyBox">
 		<div class="historyBoxScroll of-top of-bottom">
-			{#if matchResults && matchResults.duels && matchResults.duels.length > 0}
+			{#if !matchResults}
+				<p class="playerSearchError">Loading...</p>
+			{:else if matchResults.duels && matchResults.duels.length > 0}
 				{#each matchResults.duels as entry}
 					<div class="matchHistoryItemContainer">
 						<div
 							class="matchHistoryItem of-left of-right"
-							class:matchInvalid={entry.player1?.won == entry.player2?.won}
 							class:yourMatch={!currentFilterId &&
 								(entry.player1?.id == localStorage.getItem("id") || entry.player2?.id == localStorage.getItem("id"))}
 						>
 							<div class="playerInfo">
 								<!-- svelte-ignore a11y_click_events_have_key_events -->
-								<span class="playerName" role="button" tabindex="0" onclick={() => loadProfileFromId(entry.player1.id)}>
+								<span class="playerName" role="button" tabindex="0" onclick={() => showProfile(entry.player1.id)}>
 									{entry.player1?.name}
 								</span>
 								<span class="playerStatus">
@@ -116,12 +134,7 @@
 							<span class="vs">vs.</span>
 							<div class="playerInfo">
 								<!-- svelte-ignore a11y_click_events_have_key_events -->
-								<span
-									class="playerName"
-									role="button"
-									tabindex="0"
-									onclick={() => loadProfileFromId(entry.player2?.id)}
-								>
+								<span class="playerName" role="button" tabindex="0" onclick={() => showProfile(entry.player2?.id)}>
 									{entry.player2?.name}
 								</span>
 								<span class="playerStatus">
@@ -130,7 +143,7 @@
 							</div>
 						</div>
 						<div class="eloInfo">
-							<p>
+							<p style:padding-right="2px">
 								{#if entry.eloChange != null}
 									{#if entry.player1?.id == currentFilterId || entry.player2?.id == currentFilterId}
 										{(entry.player1?.won && entry.player1?.id == currentFilterId) ||
@@ -138,14 +151,26 @@
 											? "+"
 											: "-"}
 									{:else}
-										{"+/-"}
+										+/-
 									{/if}
 								{/if}
 								{entry.eloChange ?? "N/A"}
 								{#if entry.eloChange != null}
-									{" Elo"}
+									Elo
+								{/if}
+								{#if entry.refunded}
+									<span class="refundedBox">Refunded</span>
 								{/if}
 							</p>
+							<button
+								class="standardButton white infoButton"
+								aria-label="Match overview"
+								onclick={() => {
+									playSound("basic_button");
+									openMatchOverview(entry.uuid); }}
+							>
+								<Info size={20} strokeWidth={2.25} />
+							</button>
 						</div>
 					</div>
 				{/each}
@@ -191,10 +216,13 @@
 	.eloInfo {
 		border-radius: var(--content-margin);
 		box-shadow: var(--box-shadow);
+		padding: var(--content-margin);
 		padding-inline: var(--panel-margin);
 		display: flex;
 		background-color: var(--box-color);
 		text-wrap: nowrap;
+		gap: var(--box-margin);
+		box-sizing: border-box;
 	}
 
 	.eloInfo p {
@@ -205,6 +233,19 @@
 		border-radius: var(--content-margin);
 		max-width: 65px;
 		padding-inline: var(--box-margin);
+	}
+
+	.refundedBox {
+		border-radius: var(--content-margin);
+		background: var(--box-color);
+		padding-inline: var(--content-margin);
+		box-shadow: var(--bulb-shadow);
+		white-space: nowrap;
+		display: inline;
+		color: white;
+		margin-left: 3px;
+		font-size: 20px;
+		opacity: 0.75;
 	}
 
 	.filterBox {
@@ -247,7 +288,7 @@
 		overflow-x: hidden;
 		overflow-y: auto;
 		scrollbar-width: none;
-		height: min(500px, calc(100dvh - 350px));
+		height: min(525px, calc(100dvh - 350px));
 		width: 100%;
 	}
 
@@ -275,12 +316,6 @@
 		flex-grow: 1;
 		overflow-x: auto;
 		scrollbar-width: none;
-	}
-
-	.matchInvalid {
-		text-decoration: line-through;
-		text-decoration-thickness: 2px;
-		opacity: 0.5;
 	}
 
 	.yourMatch {
@@ -330,6 +365,16 @@
 	}
 
 	.paginationControls button {
-		padding: var(--content-margin) 10px;
+		padding: var(--content-margin) var(--box-margin);
+	}
+
+	.infoButton {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		height: calc(100% - var(--panel-margin));
+		margin-top: auto;
+		margin-bottom: auto;
+		padding: var(--panel-margin);
 	}
 </style>

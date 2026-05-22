@@ -7,7 +7,6 @@ export const littleTimeVignette = writable(false);
 
 // Popup Visibility
 export const settingsPopup = writable(false);
-export const helpPopup = writable(false);
 export const signupPopup = writable(false);
 export const discordPopup = writable(false);
 export const profilePopup = writable(false);
@@ -27,3 +26,5 @@ export const tournamentInfoPopup = writable(false);
 export const tournamentMatchResultsPopup = writable(false);
 export const chatManagePopup = writable(false);
 export const chatMobilePopup = writable(false);
+export const matchOverviewPopup = writable(false);
+export const messagesPopup = writable(false);

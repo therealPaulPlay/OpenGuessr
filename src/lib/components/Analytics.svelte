@@ -6,10 +6,11 @@
 	function initAnalytics() {
 		try {
 			window["gtag_enable_tcf_support"] = true; // Listen to any TCF-enabled CMP
-
 			window.dataLayer = window.dataLayer || [];
+
+			// Must use legacy arguments, doesn't work with spreading ...args
 			function gtag() {
-				dataLayer.push(arguments);
+				window.dataLayer.push(arguments);
 			}
 
 			gtag("js", new Date());

@@ -1,6 +1,6 @@
 import { resultScreenEnabled, distanceText, motivationText, lastDistance } from "$lib/stores/context-specific/resultScreenStore";
 import { calculateDistances, motivationalResultMessage, formatDistance } from "$lib/utils/distanceFunctions";
-import { countryGuessr } from "$lib/stores/modeStore";
+import { countryGuessr, singleplayer } from "$lib/stores/modeStore";
 import { playSound } from "$lib/utils/soundManager";
 import { loadResultScreenXP } from "$lib/logic/resultScoreLogic";
 import { resetMap } from "$lib/logic/miniMap";
@@ -13,6 +13,9 @@ import { supporterSlideupProbability } from "./showSupporterSlideup";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration";
 import { mapExpanded, mapHovered, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
+import { socialPopupProbability } from "./socialPopupProbability";
+import { saveRoundToLog } from "./saveRoundToLog";
+import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 
 export async function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (get(resultScreenEnabled)) return;
@@ -20,20 +23,20 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
 
     // Obtain contents
     const distance = calculateDistances(guessLat, guessLong);
-    const motivationalMessage = motivationalResultMessage(distance);
-    const resultString = formatDistance(distance);
+    lastDistance.set(distance);
+    motivationText.set(motivationalResultMessage(distance));
+    distanceText.set(formatDistance(distance));
 
     // Reset the map, before loading the result map
     resetMap(true);
-
-    motivationText.set(motivationalMessage);
-    distanceText.set(resultString);
-    lastDistance.set(distance);
 
     if (get(countryGuessr)) {
         if (checkIfGuessWasCorrect()) distanceText.set("Correct!");
         else distanceText.set("Wrong!");
     }
+
+    // Save round to log
+    saveRoundToLog(distance, [get(currentLocationLatitude), get(currentLocationLongitude)]);
 
     // Load result on the map
     loadResultMap(guessLat, guessLong, get(currentLocationLatitude), get(currentLocationLongitude));
@@ -41,8 +44,11 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
 
     // Load XP
     await loadResultScreenXP(distance);
-    if (!get(showSlideup)) supporterSlideupProbability();
+    if (get(singleplayer) && !get(tutorial)) supporterSlideupProbability(); // Only show in singleplayer and not in tutorial
     checkDisplayFullscreenCelebration();
+
+    // Social Media CTA
+    if (get(singleplayer)) setTimeout(socialPopupProbability, 1000); // Too stressful in multiplayer
 }
 
 export function disableResultScreen() {
@@ -51,7 +57,7 @@ export function disableResultScreen() {
 
     // UI resets
     if (window.innerHeight > window.innerWidth) mapExpanded.set(false); // On mobile, collapse map
-    showSlideup.set(false);
+    showSlideup.set(false); // Hide slideup
     mapHovered.set(false);
     mapPinLat.set(0); // Reset placed map pin latitude
     mapPinLng.set(0); // Reset placed map pin longitude

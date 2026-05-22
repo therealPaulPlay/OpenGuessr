@@ -1,7 +1,9 @@
-// Save round to round log (visible in Singleplayer Menus)
 import { roundLog } from "$lib/stores/locationStore";
+import { competition, multiplayer, singleplayer } from "$lib/stores/modeStore";
+import { get } from "svelte/store";
 
-export function saveRoundToLog(mode, distance, coordinates) {
+export function saveRoundToLog(distance, coordinates) {
+    const mode = get(singleplayer) ? "Singleplayer" : get(multiplayer) ? "Multiplayer" : get(competition) ? "Competition" : "Unknown";
     try {
         let roundLogFromStorage = localStorage.getItem("roundLog");
         roundLogFromStorage = roundLogFromStorage ? JSON.parse(roundLogFromStorage) : [];

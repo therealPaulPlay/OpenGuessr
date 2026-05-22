@@ -29,20 +29,18 @@ import {
     multiplayerMap,
     mobileChatLastOpenedMsgCount,
     matchmakingHosting,
+    cancellingMatchmaking,
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
-import { goto, replaceState } from "$app/navigation";
-import { changeMap } from "$lib/utils/changeMap";
-import { showNotification } from "$lib/utils/notifications";
+import { goto } from "$app/navigation";
 import PlaySocket from "playsocketjs";
 import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
-import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 import { page } from "$app/state";
 
@@ -56,7 +54,7 @@ function setMultiplayerUI(enable) {
     if (enable) {
         get(singleplayerTimer)?.stopTimer();
         leaveFunction.set(() => {
-            showConfirmPopup("Leave?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayer);
+            showConfirmPopup("Leave room?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayer);
             playSound("leave_round");
         });
         chatVisible.set(true);
@@ -97,11 +95,13 @@ export async function createMultiplayerInstance() {
         }));
 
         let playerAddRequestSent = false;
+        let gameHasStarted = false;
 
         // Register event listeners
         get(socket).onEvent('status', status => multiplayerStatus.set(status));
         get(socket).onEvent('status', status => console.log(status));
         get(socket).onEvent('error', (error) => {
+            if (get(cancellingMatchmaking) && error?.toLowerCase()?.includes?.("kicked")) return; // Expected, cancelling makes the server kick the player
             if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system reports an error.", error);
             else multiplayerStatus.set("An error occured.");
         });
@@ -123,6 +123,7 @@ export async function createMultiplayerInstance() {
 
         get(socket).onEvent('moved', (newRoomId) => {
             playerAddRequestSent = false; // Reset so addPlayer is sent for the new room
+            gameHasStarted = false;
             roomCode.set(newRoomId); // Update roomCode to the new room
         });
 
@@ -138,7 +139,10 @@ export async function createMultiplayerInstance() {
             }
 
             // If game has started, go to game page & disable matchmaking
-            if (storage.gameStarted && page.url.pathname !== "/") goto("/"); // E.g. host or duel page -> game page
+            if (storage.gameStarted && page.url.pathname !== "/" && !gameHasStarted) {
+                gameHasStarted = true;
+                goto("/"); // E.g. host or duel page -> game page 
+            }
             if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
 
             // If player is not already in the room, add player info
@@ -172,13 +176,13 @@ export async function createMultiplayerInstance() {
             if (storage.showResult != null && storage.showResult !== get(resultScreenEnabled)) {
                 if (storage.showResult == true) {
                     // Wait result screen continue text in lobbies with others
-                    const continueTimeout = get(socket)?.storage?.players?.length > 1 ? (get(socket)?.storage?.tournamentRoom ? 10_000 : 5000) : 0;
+                    const continueTimeout = get(socket)?.storage?.players?.length > 1 ? (get(socket)?.storage?.tournamentRoom ? 10_000 : 5_000) : 0;
                     continueText.set(`Wait ${continueTimeout / 1000}s...`);
                     setTimeout(() => continueText.set("Continue"), continueTimeout);
 
                     // Ensure the coords are set, in case user joins during result screen
-                    currentLocationLatitude.set(storage?.location[0]);
-                    currentLocationLongitude.set(storage?.location[1]);
+                    currentLocationLatitude.set(storage?.location?.[0]);
+                    currentLocationLongitude.set(storage?.location?.[1]);
                     enableResultScreen(get(mapPinLat), get(mapPinLng));
 
                 } else disableResultScreen();
@@ -218,7 +222,9 @@ export function attemptJoinViaLink() {
     let urlParams = new URLSearchParams(window.location.search);
     const code = urlParams.get("join");
     if (code) {
-        replaceState(window.location.pathname, {});
+        // Use native history API instead of SvelteKit's replaceState, which crashes
+        // if the root layout component hasn't been assigned yet (race condition on page load)
+        history.replaceState(history.state, "", window.location.pathname);
         return joinFromAnywhere(code);
     }
 }
@@ -244,12 +250,6 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, 
     try {
         disableResultScreen(); // Edge case
         await createMultiplayerInstance();
-
-        // Check if map is valid for multiplayer
-        if (localStorage.getItem("selectedMap") == "Country Guessr") {
-            showNotification("Map not supported in multiplayer.")
-            await changeMap(get(defaultMap), true); // Regenerate to update locations array
-        }
 
         const code = await get(socket)?.createRoom({
             roundAmount: get(roundAmount),
@@ -303,7 +303,7 @@ export function leaveMultiplayer(destroy = true) {
     // Save flag to reset UI & regenerate
     const wasMultiplayerEnabled = get(multiplayer);
 
-    // Disable Multiplayer & Matchmaking
+    // Disable Multiplayer & matchmaking
     multiplayer.set(false);
     matchmakingActive.set(false);
     matchmakingHosting.set(false); // Needed when matchmakingActive was never set to true, but hosting was
@@ -332,6 +332,9 @@ export function leaveMultiplayer(destroy = true) {
     currentRound.set(0);
     multiplayerMap.set(null);
     mobileChatLastOpenedMsgCount.set(0);
+
+    // Hide linkjoin popup if open
+    linkJoinPopup.set(false);
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {

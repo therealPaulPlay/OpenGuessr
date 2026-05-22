@@ -1,5 +1,5 @@
 <script>
-	import { mapExpanded, mapHovered, map, mapInteractive } from "$lib/stores/context-specific/mapStore";
+	import { mapExpanded, mapHovered, map } from "$lib/stores/context-specific/mapStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { isElementClickable } from "$lib/utils/checkIfElementIsClickable";
@@ -27,13 +27,6 @@
 		}, 250);
 	}
 
-	// Allow the user to guess with the space bar (instead of clicking on "Guess")
-	function spaceBarGuess(event) {
-		if (event.key === " ") {
-			if (get(confirmButtonActive) && isElementClickable(mapElement)) confirmButtonClicks();
-		}
-	}
-
 	onMount(async () => {
 		await import("leaflet");
 		initMap();
@@ -45,12 +38,14 @@
 
 <!-- svelte-ignore a11y_no_noninteractive_tabindex -->
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-<!-- svelte-ignore a11y_mouse_events_have_key_events -->
 <div
 	id="map"
 	role="region"
 	tabindex="0"
-	onkeyup={spaceBarGuess}
+	onkeyup={(event) => {
+		// Allow for pressing the space bar to guess
+		if (event.key === " ") if (get(confirmButtonActive) && isElementClickable(mapElement)) confirmButtonClicks();
+	}}
 	onpointerover={(event) => {
 		lastPointerType = event.pointerType;
 	}}
@@ -106,6 +101,7 @@
 	.hidden {
 		opacity: 0 !important;
 		pointer-events: none !important;
+		max-height: 0 !important;
 	}
 
 	.map-full-opacity-result {
@@ -135,6 +131,11 @@
 	:global(.leaflet-bottom, .leaflet-control-attribution) {
 		pointer-events: none;
 		display: none;
+	}
+
+	/* Smoother zoom animation compared to default cubic-bezier */
+	:global(.leaflet-zoom-anim .leaflet-zoom-animated) {
+		transition: transform 0.25s linear !important;
 	}
 
 	:global(.leaflet-tooltip) {
@@ -187,11 +188,37 @@
 	}
 
 	:global(.leaflet-control-layers-selector[type="radio"]) {
+		appearance: none;
+		box-sizing: border-box;
+		box-shadow: none;
 		margin-right: var(--content-margin);
+		width: 16px;
+		height: 16px;
+		border: 2px solid white;
+		border-radius: 50%;
+		display: inline-grid;
+		place-content: center;
+		vertical-align: middle;
+		background-color: transparent;
+		transition: background-color 250ms ease;
 	}
 
-	:global(.leaflet-control-layers-selector[type="radio"]:checked) {
-		accent-color: var(--brand-color);
+	:global(.leaflet-control-layers-selector[type="radio"]:hover) {
+		background-color: var(--box-color-dark);
+	}
+
+	:global(.leaflet-control-layers-selector[type="radio"]::before) {
+		content: "";
+		width: 8px;
+		height: 8px;
+		border-radius: 100%;
+		background-color: var(--brand-color);
+		opacity: 0;
+		transition: opacity 250ms ease;
+	}
+
+	:global(.leaflet-control-layers-selector[type="radio"]:checked::before) {
+		opacity: 1;
 	}
 
 	:global(.leaflet-touch .leaflet-control-layers) {
@@ -199,10 +226,10 @@
 		margin: var(--box-margin);
 	}
 
-	:global(.leaflet-control-layers, .leaflet-control-layers-expanded) {
+	:global(.leaflet-control-layers) {
 		background-color: var(--panel-color) !important;
 		box-shadow: var(--button-shadow) !important;
-		backdrop-filter: blur(5px) !important;
+		backdrop-filter: blur(var(--weak-blur)) !important;
 		color: white !important;
 	}
 

@@ -2,6 +2,7 @@
 	import { teamAmount } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import Tabs from "./ui/Tabs.svelte";
+	// eslint-disable-next-line no-useless-assignment
 	let { isTeamChat = $bindable(false), inPanel = true } = $props();
 
 	// Revert if team amount changes to 1

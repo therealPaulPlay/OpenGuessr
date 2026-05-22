@@ -1,22 +1,15 @@
 <script>
 	import Popup from "./ui/Popup.svelte";
-	import { onMount, onDestroy } from "svelte";
+	import { onMount } from "svelte";
 	import { setSoundsVolume, playSound, setMusicVolume } from "$lib/utils/soundManager";
 	import { preventFullscreen } from "$lib/stores/context-specific/platformSettingsStore";
 	import { settingsPopup } from "$lib/stores/uiStore";
 	import { InfoIcon, Scan, ChevronLeft, ChevronRight, Timer } from "@lucide/svelte";
 	import Tabs from "./ui/Tabs.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
-	import { goto } from "$app/navigation";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { isSingleplayerNMPZ, singleplayer, singleplayerTimeout } from "$lib/stores/modeStore";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
-
-	// Settings - Window ---------------------------------------------------------------------------------------
-	function closeSettingsButton() {
-		playSound("basic_button");
-		settingsPopup.set(false);
-	}
 
 	// Unit switch between kilometers and miles ------------------
 	let selectedUnit = $state("Metric");

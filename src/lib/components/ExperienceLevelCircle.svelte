@@ -12,7 +12,7 @@
 		setProgress(getLevelFraction());
 	});
 
-	experience.subscribe((value) => {
+	experience.subscribe((_value) => {
 		progressRingLevel = getLevel();
 		setProgress(getLevelFraction());
 	});
@@ -20,7 +20,7 @@
 	function setProgress(factor) {
 		try {
 			if (!circleElement) return;
-			if (factor < 0.05 && factor != 0) factor = 0.05;
+			if (factor < 0.05 && factor != 0) factor = 0.05; // Avoid ultra thin line when barely having more XP than the current level
 			const radius = circleElement?.r?.baseVal?.value;
 			const circumference = 2 * Math.PI * radius;
 
@@ -84,6 +84,7 @@
 	.progress-ring-text {
 		position: absolute;
 		font-size: 15px;
+		margin-bottom: 1px;
 		color: white;
 		user-select: none;
 	}

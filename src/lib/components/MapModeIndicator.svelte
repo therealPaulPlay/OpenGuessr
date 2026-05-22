@@ -3,17 +3,16 @@
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { competition, countryGuessr, multiplayer, singleplayer } from "$lib/stores/modeStore";
 	import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
-	import { playSound } from "$lib/utils/soundManager";
-	import { ArrowRightLeft, BookAlert, Route, Target, Timer } from "@lucide/svelte";
+	import { BookAlert, Route, Timer } from "@lucide/svelte";
 	import { idToMapName } from "$lib/utils/idToMapName";
-	import { tooltip } from "$lib/utils/tooltip";
-	import { goto } from "$app/navigation";
 	import { currentRound, multiplayerMap, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
 	import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 	import { restrictionNames, selectedRestriction } from "$lib/stores/context-specific/restrictionStore";
-	import { blur, slide } from "svelte/transition";
+	import { blur, fade, slide } from "svelte/transition";
 	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
+	import Chip from "./ui/Chip.svelte";
+	import MapAttribution from "./MapAttribution.svelte";
 
 	let mapCategoryName = $state("Loading...");
 
@@ -44,32 +43,28 @@
 		class:fading={Boolean($mapModeIndicatorFading)}
 		transition:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 150 }}
 	>
-		<div
-			class="map-mode-text-container of-left of-right"
-		>
-			<p class="mode-text">
+		<!-- Needed for TOS compliance -->
+		<div transition:fade={{ duration: $resultScreenEnabled ? 0 : 150, delay: $resultScreenEnabled ? 0 : 150 }}>
+			<MapAttribution />
+		</div>
+		<div class="map-mode-text-container of-left of-right">
+			<p>
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
 			</p>
-			<span class="info-tag">
-				<p>
-					<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />{mapCategoryName}
-				</p>
-			</span>
+			<Chip class="info-tag">
+				<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />{mapCategoryName}
+			</Chip>
 			{#if currentRoundText != null}
-				<span class="info-tag" transition:blur>
-					<p>
-						<Route size={16} strokeWidth={2.5} style="margin-right: 3px;" />{currentRoundText} / {roundAmountText}
-					</p></span
-				>
+				<Chip class="info-tag">
+					<Route size={16} strokeWidth={2.5} style="margin-right: 3px;" />{currentRoundText} / {roundAmountText}
+				</Chip>
 			{/if}
 			{#if $selectedRestriction !== "standard"}
-				<span class="info-tag" transition:blur>
-					<p>
-						<BookAlert size={16} strokeWidth={2.5} style="margin-right: 3px;" />{$restrictionNames[
-							$selectedRestriction
-						] || "Unknown"}
-					</p></span
-				>
+				<Chip class="info-tag">
+					<BookAlert size={16} strokeWidth={2.5} style="margin-right: 3px;" />{$restrictionNames[
+						$selectedRestriction
+					] || "Unknown"}
+				</Chip>
 			{/if}
 		</div>
 		{#if $timerText}
@@ -97,30 +92,19 @@
 		position: relative;
 		border-top-right-radius: 0;
 		border-top-left-radius: 0;
+		position: relative;
 	}
 
 	.map-icon {
 		width: 20px;
 		height: 20px;
 		margin-right: 3px;
-		margin-bottom: -3px;
+		margin-bottom: -0.5px;
 	}
 
-	.info-tag {
-		border-radius: var(--content-margin);
-		background: var(--box-color);
-		padding-inline: var(--content-margin);
+	:global(.info-tag) {
 		margin-left: var(--content-margin);
-		box-shadow: var(--bulb-shadow);
-		white-space: nowrap;
-		display: inline-flex;
-		min-width: fit-content;
 		margin-bottom: -2px;
-	}
-
-	.info-tag p {
-		opacity: 0.75;
-		font-size: 20px;
 	}
 
 	:global(.mapModeIndicator.fading) {

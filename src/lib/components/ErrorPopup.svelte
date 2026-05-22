@@ -8,7 +8,6 @@
 		errorCode,
 		popupOpen,
 	} from "$lib/stores/context-specific/errorPopupStore";
-	import { playSound } from "$lib/utils/soundManager";
 	import Popup from "./ui/Popup.svelte";
 	import { get } from "svelte/store"; // Import get from svelte/store
 </script>

@@ -1,9 +1,9 @@
 <script>
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
-	import { isAuthenticated, username } from "$lib/stores/accountStore";
+	import { showProfile } from "$lib/utils/showProfile";
+	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { onMount } from "svelte";
-	import { fade } from "svelte/transition";
+	import { blur, fade } from "svelte/transition";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
@@ -13,7 +13,7 @@
 	let loadingText = $state("Loading...");
 
 	// API ----------------------------------------------------------------------------------------------------------------------------
-	async function getLeaderboard() {
+	async function getExperienceLeaderboard() {
 		try {
 			const response = await fetch(`${$apiUrl}/leaderboard/experience`, {
 				method: "GET",
@@ -35,15 +35,17 @@
 		}
 	}
 
-	async function getUserLeaderboard() {
+	async function getExperienceUserLeaderboard() {
 		try {
-			let id = localStorage.getItem("id");
-
-			const response = await fetch(`${$apiUrl}/leaderboard/experience-user-section/${id}`, {
-				method: "GET",
+			const response = await fetch(`${$apiUrl}/leaderboard/experience-user-section`, {
+				method: "PUT",
 				headers: {
 					"Content-Type": "application/json",
+					Authorization: "Bearer " + localStorage.getItem("bearer"),
 				},
+				body: JSON.stringify({
+					id: localStorage.getItem("id"),
+				}),
 			});
 
 			// Check if the response is successful
@@ -55,6 +57,31 @@
 			}
 		} catch (error) {
 			console.error("Failed to fetch the experience user section of the leaderboard: ", error);
+		}
+	}
+
+	async function getEloUserLeaderboard() {
+		try {
+			const response = await fetch(`${$apiUrl}/leaderboard/elo-user-section`, {
+				method: "PUT",
+				headers: {
+					"Content-Type": "application/json",
+					Authorization: "Bearer " + localStorage.getItem("bearer"),
+				},
+				body: JSON.stringify({
+					id: localStorage.getItem("id"),
+				}),
+			});
+
+			// Check if the response is successful
+			if (response.ok) {
+				const data = await response.json();
+				return data;
+			} else {
+				throw new Error(response.status);
+			}
+		} catch (error) {
+			console.error("Failed to fetch the elo user section of the leaderboard: ", error);
 		}
 	}
 
@@ -92,21 +119,24 @@
 				mainSectionEntries = await getEloLeaderboard();
 				break;
 			case "experience":
-				mainSectionEntries = await getLeaderboard();
+				mainSectionEntries = await getExperienceLeaderboard();
 				break;
 		}
 	}
 
-	let potentialUserLeaderboardType = $state("none");
+	let userLeaderboardType = $state("none");
 
 	// A section to show where the user is at, as well as a few others above them ------------------------------------------------------
 	async function loadUserLeaderboard(leaderboardType) {
-		potentialUserLeaderboardType = "none"; // Reset user leaderboard as it is now (soon) loaded
+		userLeaderboardType = "none"; // Reset user leaderboard as it is now (soon) loaded
 
 		if ($isAuthenticated) {
 			switch (leaderboardType) {
+				case "elo":
+					userSectionEntries = await getEloUserLeaderboard();
+					break;
 				case "experience":
-					userSectionEntries = await getUserLeaderboard();
+					userSectionEntries = await getExperienceUserLeaderboard();
 					break;
 				default:
 					return;
@@ -119,8 +149,8 @@
 
 	function checkIfUserSectionIsInView() {
 		// If the user has scrolled down more than 1000px, load the user leaderboard section (which is at the end)
-		if (window.scrollY > 1000 && potentialUserLeaderboardType) {
-			loadUserLeaderboard(potentialUserLeaderboardType);
+		if (window.scrollY > 1000 && userLeaderboardType) {
+			loadUserLeaderboard(userLeaderboardType);
 		}
 	}
 
@@ -138,13 +168,13 @@
 				loadLeaderboard("elo");
 				valueKey = "elo";
 				unitName = " Elo";
-				potentialUserLeaderboardType = "none";
+				userLeaderboardType = "elo";
 				break;
 			case "XP":
 				loadLeaderboard("experience");
 				valueKey = "experience";
 				unitName = " XP";
-				potentialUserLeaderboardType = "experience";
+				userLeaderboardType = "experience";
 				break;
 		}
 	}
@@ -181,7 +211,7 @@
 						playSound("basic_button");
 						showConfirmPopup(
 							"Resets",
-							`Elo above ${Number(2000).toLocaleString()} is reset and converted into tokens at the start of each month. Experience over 100M is halved at the start of each month.`,
+							`Elo above ${Number(2000).toLocaleString()} is halved at the start of each month, and the deducted amount is converted into tokens. Experience above 100M is halved at the start of each month.`,
 						);
 					}}
 				>
@@ -201,14 +231,13 @@
 			</div>
 		</div>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
-		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div id="podium" class="podium" class:podium-loaded={Boolean(mainSectionEntries)}>
 			<div class="podium-item" id="second-place">
 				<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 				<h3
 					class="name"
 					onclick={() => {
-						loadProfileFromId(mainSectionEntries?.[1]?.id);
+						showProfile(mainSectionEntries?.[1]?.id);
 					}}
 				>
 					{mainSectionEntries?.[1]?.user_name || "Guest"}
@@ -223,7 +252,7 @@
 				<h3
 					class="name"
 					onclick={() => {
-						loadProfileFromId(mainSectionEntries?.[0]?.id);
+						showProfile(mainSectionEntries?.[0]?.id);
 					}}
 				>
 					{mainSectionEntries?.[0]?.user_name || "Guest"}
@@ -238,7 +267,7 @@
 				<h3
 					class="name"
 					onclick={() => {
-						loadProfileFromId(mainSectionEntries?.[2]?.id);
+						showProfile(mainSectionEntries?.[2]?.id);
 					}}
 				>
 					{mainSectionEntries?.[2]?.user_name || "Guest"}
@@ -252,14 +281,14 @@
 	</div>
 	{#if mainSectionEntries}
 		<div class="item-container" transition:fade={{ duration: 150 }}>
-			{#each mainSectionEntries.slice(3) as entry, i}
+			{#each mainSectionEntries.slice(3) as entry}
 				<div class="rankedItem" role="button" tabindex="0" class:yourItem={entry.id == userId && $isAuthenticated}>
 					<p class="maxlength rankedItemLeft">#{entry.position}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<p
 						class="middle maxlength"
 						onclick={() => {
-							loadProfileFromId(entry.id);
+							showProfile(entry.id);
 						}}
 					>
 						{entry.user_name}
@@ -275,20 +304,20 @@
 		<p class="loadingText">{loadingText}</p>
 	{/if}
 	{#if userSectionEntries}
-		<div id="threeDotsContainer" class="threeDotsContainer" transition:fade={{ duration: 250 }}>
+		<div id="threeDotsContainer" class="threeDotsContainer" transition:blur>
 			<div class="circleDot"></div>
 			<div class="circleDot"></div>
 			<div class="circleDot"></div>
 		</div>
-		<div id="yourLeagueContainer" class="item-container">
-			{#each userSectionEntries as entry, i}
+		<div id="yourLeagueContainer" class="item-container" transition:blur>
+			{#each userSectionEntries as entry}
 				<div class="rankedItem" role="button" tabindex="0" class:yourItem={entry.id == userId && $isAuthenticated}>
-					<p class="maxlength rankedItemLeft">#{entry.position}</p>
+					<p class="maxlength rankedItemLeft">#~{entry.position?.toLocaleString()}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<p
 						class="middle maxlength"
 						onclick={() => {
-							loadProfileFromId(entry.id);
+							showProfile(entry.id);
 						}}
 					>
 						{entry.user_name}
@@ -462,7 +491,7 @@
 		padding: var(--layout-margin);
 		flex-grow: 1;
 		width: 100%;
-		border-radius: calc(var(--layout-margin) + 5px);
+		border-radius: var(--layout-margin);
 		display: flex;
 		box-sizing: border-box;
 		flex-direction: column;

@@ -1,5 +1,5 @@
 <script>
-	import { loadProfileFromId } from "$lib/utils/loadProfile";
+	import { showProfile } from "$lib/utils/showProfile";
 	import { playSound } from "$lib/utils/soundManager";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { errorPopup } from "$lib/utils/errorHandling";
@@ -15,7 +15,6 @@
 	import Tabs from "$lib/components/ui/Tabs.svelte";
 	import { blur } from "svelte/transition";
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
-	import { page } from "$app/state";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 
@@ -90,7 +89,7 @@
 					loadCompetition();
 					goto("/");
 				} catch (error) {
-					throw new Error("Error parsing competition details: " + error);
+					throw new Error("Error parsing competition details", { cause: error });
 				}
 			} else {
 				let responseData = null;
@@ -142,16 +141,11 @@
 
 	async function loadLeaderboardFromServer(id) {
 		try {
-			const requestBody = {
-				id: localStorage.getItem("id"), // if this is null, that is fine too. This is used to evaluate whether a user has already played certain competitions.
-			};
+			const userId = localStorage.getItem("id");
+			const url = competitionsEndpoint + "/leaderboard/" + id + (userId ? "?id=" + userId : "");
 
-			const response = await fetch(competitionsEndpoint + "/leaderboard/" + id, {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(requestBody),
+			const response = await fetch(url, {
+				method: "GET",
 			});
 
 			if (response.ok) {
@@ -195,8 +189,7 @@
 
 	// Query Links - Enter and Load leaderboard --------------------------------------------------------------------------------------------------------
 	onMount(() => {
-		if (typeof window === "undefined") return; // Exit if not in browser environment
-		let urlParams = new URLSearchParams(page.url.search);
+		let urlParams = new URLSearchParams(window.location.search);
 
 		let leaderboardIdFromLink;
 		let leaderboardIdFromLinkAfterSubmit;
@@ -206,13 +199,13 @@
 			leaderboardIdFromLink = urlParams.get("leaderboard");
 			if (leaderboardIdFromLink) {
 				openLeaderboard(leaderboardIdFromLink);
-				history.replaceState({}, document.title, page.url.pathname); // reset query in the address bar
+				history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
 			}
 
 			leaderboardIdFromLinkAfterSubmit = urlParams.get("leaderboard-submit");
 			if (leaderboardIdFromLinkAfterSubmit) {
 				openLeaderboard(leaderboardIdFromLinkAfterSubmit, true);
-				history.replaceState({}, document.title, page.url.pathname); // reset query in the address bar
+				history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
 			}
 		} catch {}
 
@@ -230,7 +223,7 @@
 						enterCompetition(competitionIdFromLink);
 					},
 				);
-				history.replaceState({}, document.title, page.url.pathname); // reset query in the address bar
+				history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
 			}
 		} catch {}
 	});
@@ -258,12 +251,6 @@
 
 	async function getCompetitionsFromServer(expired, search, daily, filterEntered) {
 		try {
-			let requestBody = {
-				id: localStorage.getItem("id"), // If this is null, that is fine too (used to evaluate whether a user has already played certain competitions)
-			};
-
-			if (search) requestBody.search = search;
-
 			// Always hide load more bar during loading process
 			if (!expired) loadMoreActive = false;
 			if (expired) loadMoreExpired = false;
@@ -276,12 +263,19 @@
 			if (daily) Endpoint = competitionsEndpoint + "/daily/daily-competition";
 			if (filterEntered) Endpoint = competitionsEndpoint + "/not-entered/" + notExpiredIndex;
 
+			// Build query params
+			const params = new URLSearchParams();
+			const userId = localStorage.getItem("id");
+			if (userId) params.set("id", userId);
+			if (search) params.set("search", search);
+			if (params.size > 0) Endpoint += "?" + params.toString();
+
+			const headers = {};
+			if (filterEntered) headers["Authorization"] = "Bearer " + localStorage.getItem("bearer");
+
 			const response = await fetch(Endpoint, {
-				method: "PUT",
-				headers: {
-					"Content-Type": "application/json",
-				},
-				body: JSON.stringify(requestBody),
+				method: "GET",
+				headers,
 			});
 
 			if (response.ok) {
@@ -452,7 +446,7 @@
 							id="yourUsername"
 							class="centerEntry"
 							onclick={() => {
-								loadProfileFromId(localStorage.getItem("id"));
+								showProfile(localStorage.getItem("id"));
 							}}
 						>
 							{yourEntry.userName}
@@ -471,7 +465,7 @@
 						<p
 							class="centerEntry"
 							onclick={() => {
-								loadProfileFromId(entry.id);
+								showProfile(entry.id);
 							}}
 						>
 							{entry.userName}
@@ -559,11 +553,11 @@
 			<p
 				class="competitionAuthor"
 				onclick={() => {
-					const id = authorId == 0 ? 2 : authorId; // Display as 2 (PaulPlay) if created by System (0)
-					loadProfileFromId(id);
+					const id = authorId ? authorId : 2; // Display as 2 (PaulPlay) if created by System (meaning, no ID is set)
+					showProfile(id);
 				}}
 			>
-				hosted by {author}
+				by {author}
 			</p>
 		</div>
 		<div class="competitionPropertiesBox">
@@ -583,7 +577,10 @@
 				<div class="label">
 					<p>Duration</p>
 				</div>
-				<p class="itemText">{formatDuration(duration)} ({formatDuration(remainingDuration)} left)</p>
+				<p class="itemText">
+					{formatDuration(duration)}
+					{#if remainingDuration > 0}({formatDuration(remainingDuration)} left){/if}
+				</p>
 			</div>
 			<div class="propertyItem">
 				<div class="label">
@@ -598,7 +595,6 @@
 				<p class="itemText">{roundLength}s</p>
 			</div>
 		</div>
-		<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div
 			id="aboutItem${id}"
@@ -630,7 +626,7 @@
 				<button
 					class="standardButton competitionButton white"
 					class:dailyPrimary={daily}
-					disabled={entered || authorId == localStorage.getItem("id")}
+					disabled={entered || (authorId != null && authorId == localStorage.getItem("id"))}
 					onclick={() => {
 						playSound("basic_button");
 
@@ -645,7 +641,12 @@
 						} else {
 							signupPrompt();
 						}
-					}}>{entered ? "Already entered" : authorId == localStorage.getItem("id") ? "Hosted by you" : "Enter"}</button
+					}}
+					>{entered
+						? "Already entered"
+						: authorId != null && authorId == localStorage.getItem("id")
+							? "Hosted by you"
+							: "Enter"}</button
 				>
 			{/if}
 		</div>

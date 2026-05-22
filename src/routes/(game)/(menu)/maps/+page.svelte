@@ -1,8 +1,8 @@
 <script>
-	import { Plus, XCircle, User, Search } from "@lucide/svelte";
+	import { Plus, XCircle, User, Search, Info } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
-	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
+	import { crazyGames, playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
 	import { onMount, getContext } from "svelte";
 	import { goto, beforeNavigate } from "$app/navigation";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -15,8 +15,11 @@
 		defaultMap,
 	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-	import { tooltip } from "$lib/utils/tooltip.js";
+	import { tooltip } from "$lib/utils/tooltip.svelte.js";
 	import { page } from "$app/state";
+	import { navigationMenu } from "$lib/stores/uiStore";
+	import Chip from "$lib/components/ui/Chip.svelte";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 
 	const snapshotStore = getContext("snapshotStore");
 
@@ -39,6 +42,8 @@
 	let currentController;
 	let currentFavController;
 
+	let returnAfterChange = $derived(page.url.searchParams.get("return-to-multiplayer"));
+
 	const categoriesArray = [
 		"All",
 		"By you",
@@ -51,6 +56,7 @@
 		"Miscellaneous",
 	];
 
+	// Load saved maps, restore site snapshot (if user went back to this page) or start initial load
 	onMount(() => {
 		addedCommunityMapsArray = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 
@@ -60,6 +66,22 @@
 		else {
 			loadCommunityMaps(0);
 			loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+		}
+	});
+
+	// Load Playlight
+	onMount(async () => {
+		try {
+			if (new URLSearchParams(window.location.search).get("crazy-games")) return; // Don't load Playlight on CG
+			const module = await import("https://sdk.playlight.dev/playlight-sdk.es.js");
+			$playlightSDK = module.default;
+			$playlightSDK.init({
+				exitIntent: {
+					enabled: false,
+				},
+			});
+		} catch (error) {
+			console.error("Error loading the Playlight SDK:", error);
 		}
 	});
 
@@ -130,8 +152,11 @@
 
 	function selectMap(name, community = false) {
 		playSound("button_juicy");
-		changeMap((community ? "community_" : "") + name, true);
-		goto("/");
+		changeMap((community ? "community_" : "") + name, true, returnAfterChange);
+		if (!returnAfterChange) {
+			navigationMenu.set(false);
+			goto("/");
+		}
 	}
 
 	function checkIfSelected(name, community = false) {
@@ -222,6 +247,8 @@
 
 <svelte:head>
 	<title>Maps</title>
+	<!-- Playlight CSS -->
+	<link rel="stylesheet" href="https://sdk.playlight.dev/playlight-sdk.css" />
 </svelte:head>
 
 {#snippet communityMapItem(map)}
@@ -232,16 +259,17 @@
 		tabindex="0"
 		onclick={() => {
 			playSound("basic_button");
-			goto("/maps/community/" + map.name.split(" ").join("_").toLowerCase());
+			const nameFormattedForUrl = map.name.split(" ").join("_").toLowerCase();
+			goto("/maps/community/" + nameFormattedForUrl + (returnAfterChange ? "?return-to-multiplayer=true" : ""));
 		}}
 	>
 		<div class="map-info">
 			<p class="map-name">{map.name || "Name not loaded"}</p>
-			<p class="map-author">by {map.author || "Bugsnacker"}</p>
+			<p class="map-author">by {map.author || "Error"}</p>
 		</div>
 		<button
 			class="add-button standardButton white"
-			use:tooltip={{ text: "Save map" }}
+			{@attach tooltip({ text: "Save map" })}
 			onclick={(e) => {
 				e.stopPropagation();
 				playSound("basic_button");
@@ -267,6 +295,7 @@
 		{#each $basicMaps as map}
 			<div
 				class="map-item map-item-hover map-item-slim"
+				style:padding-right={map === $defaultMap ? "var(--box-margin)" : ""}
 				class:selected-map-item={checkIfSelected(map)}
 				role="button"
 				tabindex="0"
@@ -274,8 +303,23 @@
 					selectMap(map);
 				}}
 			>
-				<div class="map-info">
+				<div class="map-info {map === $defaultMap ? 'map-info-flex' : ''}">
 					<p class="map-name">{map}</p>
+					{#if map === $defaultMap}
+						<Chip
+							mutedOpacity={!checkIfSelected(map)}
+							onclick={(e) => {
+								e.stopPropagation();
+								showConfirmPopup(
+									"Live-generated",
+									"The world map is continuously regenerated to feature a complete list of fresh locations every couple of hours.",
+								);
+							}}
+						>
+							<Info size={17} strokeWidth={2.25} style="margin-right: var(--content-margin); margin-bottom: -2px;" />
+							Live
+						</Chip>
+					{/if}
 				</div>
 			</div>
 		{/each}
@@ -302,6 +346,7 @@
 		{/each}
 		<div
 			class="map-item map-item-hover map-item-link"
+			style:padding-right="var(--box-margin)"
 			role="button"
 			tabindex="0"
 			onclick={() => {
@@ -310,10 +355,11 @@
 			}}
 		>
 			<p class="map-name">Geo Quizzes</p>
-			<p class="link-badge">Education</p>
+			<Chip text="Education" italic={true} red={true} mutedOpacity={false} />
 		</div>
 		<div
 			class="map-item map-item-hover map-item-link"
+			style:padding-right="var(--box-margin)"
 			role="button"
 			tabindex="0"
 			onclick={() => {
@@ -322,7 +368,7 @@
 			}}
 		>
 			<p class="map-name">Meta Quizzes</p>
-			<p class="link-badge">Geometas</p>
+			<Chip text="Geometas" italic={true} red={true} mutedOpacity={false} />
 		</div>
 	</div>
 	<!-- Expandable country section -->
@@ -418,7 +464,7 @@
 		<div class="headerContainer no-bottom-padding">
 			<h2 class="header">Featured</h2>
 		</div>
-		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style="height: 330px;"></div>
+		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style:height="335px"></div>
 	{/if}
 	<!-- Featured Maps -->
 	<div class="headerContainer largeHeaderMargin">
@@ -545,23 +591,15 @@
 
 	.map-info {
 		flex-grow: 1;
-		overflow: hidden;
+	}
+
+	.map-info-flex {
+		display: flex;
+		justify-content: space-between;
 	}
 
 	.no-bottom-padding {
 		padding-bottom: 0;
-	}
-
-	.link-badge {
-		font-size: 18px;
-		font-style: italic;
-		border-radius: var(--content-margin);
-		background-color: rgb(224, 2, 2);
-		padding: 2px;
-		margin-right: -1px;
-		padding-inline: var(--panel-margin);
-		box-shadow: var(--bulb-shadow);
-		margin-left: var(--panel-margin);
 	}
 
 	.map-item {
@@ -606,7 +644,7 @@
 	}
 
 	.selected-map-item {
-		background-image: linear-gradient(20deg, rgba(255, 255, 255, 0.25), rgba(255, 255, 255, 0.35));
+		background-color: rgba(255, 255, 255, 0.3);
 	}
 
 	.map-name {
