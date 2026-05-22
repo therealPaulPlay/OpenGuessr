@@ -313,13 +313,11 @@
 											{#if secIdx == 0 && optIdx == 0}<Chip
 													italic
 													text="Suggested"
-													style="margin: 3px; margin-left: 0;"
 												/>
 											{/if}
 											{#if secIdx == 1 && optIdx == 0}<Chip
 													italic
 													text="Classic"
-													style="margin: 3px; margin-left: 0;"
 												/>
 											{/if}
 										</div>
@@ -494,6 +492,9 @@
 		display: flex;
 		align-items: center;
 		gap: var(--panel-margin);
+		padding-top: var(--content-margin);
+		padding-bottom: var(--content-margin);
+		padding-right: var(--content-margin);
 	}
 
 	.subtle-button {
