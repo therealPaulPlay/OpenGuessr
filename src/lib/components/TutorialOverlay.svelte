@@ -202,24 +202,25 @@
 					<p class="subtitle" in:blur|global={{ duration: 500 }}>Fancy a quick intro to OpenGuessr?</p>
 				</div>
 				<div class="action-container">
-					<button
-						class="standardButton largeButton"
-						in:fly|global={{ y: 20, duration: 1000 }}
-						onclick={() => {
-							playSound("basic_button");
-							$tutorial = true; // Set tutorial to disable notification accept and others ways to leave & end up in unintended states
-							$tutorialStep = 2;
-						}}
-					>
-						Start the tour
-						<ArrowRight strokeWidth={2.25} size={22} style="margin-bottom: -3px; margin-left: 3px;" />
-					</button>
+					<div class="action-button-panel barMenu" in:fly|global={{ y: 20, duration: 1000 }}>
+						<button
+							class="standardButton largeButton"
+							onclick={() => {
+								playSound("basic_button");
+								$tutorial = true; // Set tutorial to disable notification accept and others ways to leave & end up in unintended states
+								$tutorialStep = 2;
+							}}
+						>
+							Start the tour
+							<ArrowRight strokeWidth={2.25} size={22} style="margin-bottom: -3px; margin-left: 3px;" />
+						</button>
+					</div>
 					<button class="subtle-button" in:fly|global={{ y: 20, duration: 1000 }} onclick={leaveTutorial}>
 						No, skip tour
 					</button>
 				</div>
 			{:else if $tutorialStep == 2}
-				<h1 class="title" in:fly={{ y: -20, duration: 1000 }}>How to play</h1>
+				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>How to play</h1>
 				{#key howToImage}
 					<div class="how-to-slide">
 						<div class="how-to-image-container" in:blur|global={{ duration: 500 }}>
@@ -231,21 +232,22 @@
 					</div>
 				{/key}
 				<div class="action-container">
-					<button
-						class="standardButton largeButton"
-						in:fly={{ y: 20, duration: 1000 }}
-						onclick={() => {
-							playSound("basic_button");
-							if (howToImage < howToSlides.length - 1) howToImage++;
-							else {
-								changeMap($tutorialMap, true);
-								$tutorialStep = 0;
-							}
-						}}
-					>
-						{howToImage < howToSlides.length - 1 ? "Next" : "Let's play"}
-						<ArrowRight strokeWidth={2.25} size={22} style="margin-bottom: -3px; margin-left: 3px;" />
-					</button>
+					<div class="action-button-panel barMenu" in:fly|global={{ y: 20, duration: 1000 }}>
+						<button
+							class="standardButton largeButton"
+							onclick={() => {
+								playSound("basic_button");
+								if (howToImage < howToSlides.length - 1) howToImage++;
+								else {
+									changeMap($tutorialMap, true);
+									$tutorialStep = 0;
+								}
+							}}
+						>
+							{howToImage < howToSlides.length - 1 ? "Next" : "Let's play"}
+							<ArrowRight strokeWidth={2.25} size={22} style="margin-bottom: -3px; margin-left: 3px;" />
+						</button>
+					</div>
 				</div>
 			{:else if $tutorialStep == 3}
 				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Tour completed!</h1>
@@ -309,10 +311,8 @@
 												{option.title}
 											</p>
 											{#if secIdx == 0 && optIdx == 0}<Chip
-													red
 													italic
 													text="Suggested"
-													mutedOpacity={false}
 													style="margin: 3px; margin-left: 0;"
 												/>
 											{/if}
@@ -369,6 +369,11 @@
 		align-items: center;
 		gap: var(--layout-margin);
 		flex-direction: column;
+	}
+
+	.action-button-panel {
+		border-radius: var(--layout-margin);
+		backdrop-filter: none;
 	}
 
 	.path-container {

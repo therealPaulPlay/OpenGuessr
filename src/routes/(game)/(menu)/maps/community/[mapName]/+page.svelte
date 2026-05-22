@@ -353,7 +353,6 @@
 			{/if}
 			<button
 				class="standardButton mapButton largeButton"
-				{@attach tooltip({ text: "Play" })}
 				onclick={() => {
 					playSound("basic_button");
 
