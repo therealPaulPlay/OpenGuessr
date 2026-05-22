@@ -14,6 +14,9 @@ export async function generateNewLocation(type) {
     try {
         const newLocationArray = await getLocationCoordinates(type);
 
+        // Guard against missing coords (since Number() turns them into 0)
+        if (newLocationArray?.[0] == null || newLocationArray?.[1] == null) throw new Error("One or both coordinates are null or undefined!");
+
         // Set coordinates
         currentLocationLatitude.set(Number(newLocationArray[0]));
         currentLocationLongitude.set(Number(newLocationArray[1]));

@@ -1,5 +1,6 @@
 <!-- Used for the singleplayer timer countdown -->
 <script>
+	import { page } from "$app/state";
 	import {
 		timerCountdownOverlay,
 		timerCountdownOverlayTitle,
@@ -8,8 +9,8 @@
 </script>
 
 {#if $timerCountdownOverlay}
-	<div transition:fade={{ duration: 150 }} id="timerCountdown">
-		<h1 id="hardModeTitle">{$timerCountdownOverlayTitle}</h1>
+	<div transition:fade={{ duration: 150 }} id="timerCountdown" style:display={page.url.pathname !== "/" ? "none" : ""}>
+		<h1>{$timerCountdownOverlayTitle}</h1>
 	</div>
 {/if}
 

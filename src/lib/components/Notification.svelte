@@ -9,7 +9,6 @@
 		clickableText,
 		textClickFunction,
 	} from "$lib/stores/context-specific/notificationStore";
-	import { tutorial } from "$lib/stores/modeStore";
 	import { hideNotification } from "$lib/utils/notifications";
 	import { playSound } from "$lib/utils/soundManager";
 	import { Check, SquareArrowOutUpRight, X } from "@lucide/svelte";
@@ -61,7 +60,6 @@
 					<button
 						id="notification-accept"
 						class="standardButton white"
-						disabled={$tutorial}
 						onclick={accept}
 						aria-label={$viewOnly ? "View" : "Accept"}
 					>

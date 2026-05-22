@@ -21,6 +21,7 @@
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import MultiplayerHostDisplay from "$lib/components/MultiplayerHostDisplay.svelte";
 	import { multiplayer } from "$lib/stores/modeStore";
+	import { showNotification } from "$lib/utils/notifications";
 
 	// Restriction toggle
 	let restrictions = Object.keys($restrictionNames);
@@ -106,7 +107,14 @@
 					onclick={async () => {
 						isCreatingRoom = true;
 						playSound("basic_button");
-						// Switch to stage 2 (host code area) if on stage 1 (after the setup room function!)
+						
+						// Check if map is invalid for multiplayer
+						if (["Country Guessr", "Tutorial"].includes(localStorage.getItem("selectedMap"))) {
+							showNotification("Map not supported in multiplayer.");
+							isCreatingRoom = false;
+							return;
+						}
+
 						multiplayerMap.set(localStorage.getItem("selectedMap") || $defaultMap);
 						await createMultiplayerRoom();
 						isCreatingRoom = false;

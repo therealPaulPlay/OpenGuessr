@@ -7,7 +7,8 @@
 		// If tutorial was true, regenerate with default map
 		if (get(tutorial)) {
 			tutorial.set(false);
-			changeMap(get(defaultMap), true);
+			// In case leaveTutorial() gets triggered because we enter multiplayer or a comp, don't regenerate and just change the map
+			changeMap(get(defaultMap), get(singleplayer));
 		}
 	}
 
@@ -48,6 +49,7 @@
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { menuIntroductionNote } from "./TopBar.svelte";
 	import { tutorialStep } from "$lib/stores/uiStore";
+	import { page } from "$app/state";
 
 	let howToImage = $state(0);
 	let focusedPath = $state(0);
@@ -159,7 +161,18 @@
 	// Check for tutorial state & start
 	onMount(() => {
 		const tutorialCompleted = !(localStorage.getItem("tutorialCompleted") === null);
+
+		// Temporary backwards-compatability guard (old, now removed menu introduction seen -> count as tutorial played)
+		// TODO remove in 30 days
+		if (localStorage.getItem("menuIntroduction")) return localStorage.setItem("tutorialCompleted", true);
+
 		if (!tutorialCompleted) $tutorialStep = 1;
+	});
+
+	// If the user leaves singleplayer while the overlay is shown or the tutorial is active, leave tutorial
+	// Also needed for linkjoin, for invites (you can sign up via the result screen), and for users that visit pages such as /competitions directly
+	singleplayer.subscribe((value) => {
+		if (!value && ($tutorialStep !== 0 || $tutorial)) leaveTutorial(); // Mark tutorial as completed, users that go straight to e.g. competitions know what they are doing
 	});
 </script>
 
@@ -170,7 +183,12 @@
 />
 
 {#if $tutorialStep > 0}
-	<div class="tutorial-overlay" in:blur out:blur={{ duration: 250 }}>
+	<div
+		class="tutorial-overlay"
+		in:blur
+		out:blur={{ duration: 250 }}
+		style:display={page.url.pathname !== "/" ? "none" : ""}
+	>
 		<div class="content">
 			{#if $tutorialStep == 1}
 				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Welcome, explorer!</h1>
@@ -181,7 +199,6 @@
 					<button
 						class="standardButton largeButton"
 						in:fly|global={{ y: 20, duration: 1000 }}
-						disabled={!$singleplayer}
 						onclick={() => {
 							playSound("basic_button");
 							$tutorial = true; // Set tutorial to disable notification accept and others ways to leave & end up in unintended states
