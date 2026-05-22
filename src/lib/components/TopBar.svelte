@@ -9,11 +9,12 @@
 	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { scale } from "svelte/transition";
 	import { onMount, tick } from "svelte";
-	import { leaveFunction, singleplayer, tutorial } from "$lib/stores/modeStore.js";
+	import { leaveFunction, singleplayer } from "$lib/stores/modeStore.js";
 	import { page } from "$app/state";
 	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
 	import { goto } from "$app/navigation";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { leaveTutorial } from "./TutorialOverlay.svelte";
 
 	let showHistoryTooltip = $state(false);
@@ -84,7 +85,7 @@
 			imageSrc: "/img/tutorial/tutorial_menu.png",
 			state: menuIntroductionNote,
 			maxWidth: 225,
-			showDelay: 2000,
+			showDelay: 10_000,
 			zIndex: 14,
 		})}
 		onclick={() => {

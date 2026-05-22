@@ -7,7 +7,7 @@
 		// If tutorial was true, regenerate with default map
 		if (get(tutorial)) {
 			tutorial.set(false);
-			// In case leaveTutorial() gets triggered because we enter multiplayer or a comp, don't regenerate and just change the map
+			// In case this gets triggered because we enter multiplayer or a comp, don't regenerate and only change the map
 			changeMap(get(defaultMap), get(singleplayer));
 		}
 	}
@@ -38,7 +38,7 @@
 	import { goto } from "$app/navigation";
 
 	import { defaultMap, tutorialMap } from "$lib/stores/context-specific/officialMapsStore";
-	import { singleplayer, tutorial } from "$lib/stores/modeStore";
+	import { singleplayer } from "$lib/stores/modeStore";
 	import { changeMap } from "$lib/utils/changeMap";
 	import { playSound } from "$lib/utils/soundManager";
 	import { ArrowRight, ChevronDown, ChevronUp, Play } from "@lucide/svelte";
@@ -48,8 +48,31 @@
 	import Chip from "./ui/Chip.svelte";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { menuIntroductionNote } from "./TopBar.svelte";
-	import { tutorialStep } from "$lib/stores/uiStore";
 	import { page } from "$app/state";
+	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
+
+	// Check for tutorial state & start
+	onMount(() => {
+		const tutorialCompleted = !(localStorage.getItem("tutorialCompleted") === null);
+
+		// Temporary backwards-compatability guard (old, now removed menu introduction seen -> count as tutorial played)
+		// TODO remove in 30 days
+		if (localStorage.getItem("menuIntroduction")) {
+			localStorage.setItem("tutorialCompleted", true);
+			$tutorialStep = 0;
+			return;
+		}
+
+		$tutorialStep = tutorialCompleted ? 0 : 1; // 0 means off, 1 shows the first step
+	});
+
+	// If the user leaves singleplayer while the overlay is shown or the tutorial is active, leave tutorial
+	// Also needed for linkjoin, for invites (you can sign up via the result screen), and for users that visit pages such as /competitions directly
+	singleplayer.subscribe((value) => {
+		if (!value && ($tutorialStep > 0 || $tutorial)) leaveTutorial(); // Mark tutorial as completed, users that go straight to e.g. competitions know what they are doing
+	});
+
+	// Tour complete / Final slide with path options --------------------------------------------------------------------------
 
 	let howToImage = $state(0);
 	let focusedPath = $state(0);
@@ -157,23 +180,6 @@
 			],
 		},
 	];
-
-	// Check for tutorial state & start
-	onMount(() => {
-		const tutorialCompleted = !(localStorage.getItem("tutorialCompleted") === null);
-
-		// Temporary backwards-compatability guard (old, now removed menu introduction seen -> count as tutorial played)
-		// TODO remove in 30 days
-		if (localStorage.getItem("menuIntroduction")) return localStorage.setItem("tutorialCompleted", true);
-
-		if (!tutorialCompleted) $tutorialStep = 1;
-	});
-
-	// If the user leaves singleplayer while the overlay is shown or the tutorial is active, leave tutorial
-	// Also needed for linkjoin, for invites (you can sign up via the result screen), and for users that visit pages such as /competitions directly
-	singleplayer.subscribe((value) => {
-		if (!value && ($tutorialStep !== 0 || $tutorial)) leaveTutorial(); // Mark tutorial as completed, users that go straight to e.g. competitions know what they are doing
-	});
 </script>
 
 <svelte:window
@@ -271,70 +277,74 @@
 							</button>
 						</div>
 					{/each}
-					{#each paths as section, secIdx}
-						{@const delta = secIdx - focusedPath}
-						{@const isFocused = delta === 0}
-						<div
-							{@attach (node) => {
-								if (isFocused) focusedSectionEl = node;
-							}}
-							class="path-section barMenu"
-							class:focused={isFocused}
-							style:transform="translate(-50%, calc(-50% + {delta * 110}%)) scale({isFocused ? 1 : 0.85})"
-							style:opacity={Math.abs(delta) > 1 ? 0 : isFocused ? 1 : 0.5}
-							style:filter={isFocused ? "" : "blur(3px) brightness(0.5)"}
-						>
-							<p class="section-title">{section.title}</p>
-							<img
-								alt="section graphic"
-								class="section-image"
-								class:section-image-focused={isFocused}
-								style:top={secIdx == 0 ? "-110px" : secIdx == 1 ? "-100px" : "-100px"}
-								style:right={secIdx == 0 ? "-75px" : secIdx == 2 ? "-85px" : ""}
-								style:left={secIdx == 1 ? "-85px" : ""}
-								style:rotate={secIdx == 1 ? "-15deg" : secIdx == 2 ? "30deg" : ""}
-								src={section.imageSrc}
-							/>
-							{#each section.options as option, optIdx}
-								<div class="path-option">
-									<p class="path-option-text of-left of-right">
-										{option.title}
-										{#if secIdx == 0 && optIdx == 0}<Chip
-												red
-												italic
-												text="Suggested"
-												mutedOpacity={false}
-												style="margin-left: var(--content-margin);"
-											/>
-										{/if}
-										{#if secIdx == 1 && optIdx == 0}<Chip
-												italic
-												text="Classic"
-												style="margin-left: var(--content-margin);"
-											/>
-										{/if}
-									</p>
-									<button
-										class="standardButton"
-										class:white={!(optIdx == 0 && secIdx == 0)}
-										style:z-index="1"
-										onclick={() => {
-											playSound("basic_button");
-											$tutorialStep = 0;
-											if (option.isPlay) menuIntroductionNote.visible = true;
-											option.action();
-										}}
-									>
-										{#if option.isPlay}
-											<Play style="margin-bottom: -2px;" size={22} strokeWidth={2.25} />
-										{:else}
-											<ArrowRight style="margin-bottom: -2px;" size={22} strokeWidth={2.25} />
-										{/if}
-									</button>
-								</div>
-							{/each}
-						</div>
-					{/each}
+					<div class="path-sections-box">
+						{#each paths as section, secIdx}
+							{@const delta = secIdx - focusedPath}
+							{@const isFocused = delta === 0}
+							<div
+								{@attach (node) => {
+									if (isFocused) focusedSectionEl = node;
+								}}
+								class="path-section barMenu"
+								class:focused={isFocused}
+								style:transform="translate(-50%, calc(-50% + {delta * 110}%)) scale({isFocused ? 1 : 0.85})"
+								style:opacity={Math.abs(delta) > 1 ? 0 : isFocused ? 1 : 0.5}
+								style:filter={isFocused ? "" : "blur(3px) brightness(0.5)"}
+							>
+								<p class="section-title">{section.title}</p>
+								<img
+									alt="section graphic"
+									class="section-image"
+									class:section-image-focused={isFocused}
+									style:top={secIdx == 0 ? "-110px" : secIdx == 1 ? "-100px" : "-100px"}
+									style:right={secIdx == 0 ? "-75px" : secIdx == 2 ? "-85px" : ""}
+									style:left={secIdx == 1 ? "-85px" : ""}
+									style:rotate={secIdx == 1 ? "-15deg" : secIdx == 2 ? "30deg" : ""}
+									src={section.imageSrc}
+								/>
+								{#each section.options as option, optIdx}
+									<div class="path-option">
+										<div class="path-option-text-container of-left of-right">
+											<p style:text-wrap="nowrap">
+												{option.title}
+											</p>
+											{#if secIdx == 0 && optIdx == 0}<Chip
+													red
+													italic
+													text="Suggested"
+													mutedOpacity={false}
+													style="margin: 3px; margin-left: 0;"
+												/>
+											{/if}
+											{#if secIdx == 1 && optIdx == 0}<Chip
+													italic
+													text="Classic"
+													style="margin: 3px; margin-left: 0;"
+												/>
+											{/if}
+										</div>
+										<button
+											class="standardButton"
+											class:white={!(optIdx == 0 && secIdx == 0)}
+											style:z-index="1"
+											onclick={() => {
+												playSound("basic_button");
+												$tutorialStep = 0;
+												if (option.isPlay) menuIntroductionNote.visible = true;
+												option.action();
+											}}
+										>
+											{#if option.isPlay}
+												<Play style="margin-bottom: -2px;" size={22} strokeWidth={2.25} />
+											{:else}
+												<ArrowRight style="margin-bottom: -2px;" size={22} strokeWidth={2.25} />
+											{/if}
+										</button>
+									</div>
+								{/each}
+							</div>
+						{/each}
+					</div>
 				</div>
 			{/if}
 		</div>
@@ -368,15 +378,22 @@
 		max-height: max(375px, 50dvh);
 		z-index: 1;
 		touch-action: pan-y;
+	}
+
+	.path-sections-box {
+		position: absolute;
+		inset: 0;
 		mask-image: linear-gradient(
 			to bottom,
 			transparent 0%,
-			rgba(0, 0, 0, 0.3) 4%,
-			rgba(0, 0, 0, 0.75) 9%,
-			black 15%,
-			black 85%,
-			rgba(0, 0, 0, 0.75) 91%,
-			rgba(0, 0, 0, 0.3) 96%,
+			rgba(0, 0, 0, 0.15) 4%,
+			rgba(0, 0, 0, 0.45) 9%,
+			rgba(0, 0, 0, 0.8) 14%,
+			black 20%,
+			black 80%,
+			rgba(0, 0, 0, 0.8) 86%,
+			rgba(0, 0, 0, 0.45) 91%,
+			rgba(0, 0, 0, 0.15) 96%,
 			transparent 100%
 		);
 	}
@@ -436,13 +453,12 @@
 	}
 
 	.section-image-focused {
-		/* Backwards holds the 0% state during the delay so there is no abrupt snap */
-		animation: section-image-pop 350ms 300ms ease-out backwards;
+		animation: section-image-pop 350ms 300ms ease-out;
 	}
 
 	@keyframes section-image-pop {
 		0% {
-			scale: 0.95;
+			scale: 1;
 		}
 		55% {
 			scale: 1.05;
@@ -466,11 +482,13 @@
 		overflow: hidden;
 	}
 
-	.path-option-text {
-		margin-left: var(--content-margin);
-		text-wrap: nowrap;
-		overflow-x: auto;
+	.path-option-text-container {
 		scrollbar-width: none;
+		overflow-x: auto;
+		margin-left: var(--content-margin);
+		display: flex;
+		align-items: center;
+		gap: var(--panel-margin);
 	}
 
 	.subtle-button {
@@ -490,6 +508,8 @@
 		justify-content: center;
 		flex-wrap: wrap;
 		gap: calc(var(--layout-margin) + var(--content-margin));
+		padding-top: var(--layout-margin);
+		padding-bottom: var(--layout-margin);
 	}
 
 	.subtitle {
@@ -518,7 +538,7 @@
 		text-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
 		mask-size: 100% 100%;
 		mask-repeat: no-repeat;
-		padding-inline: 30px;
+		padding-inline: calc(var(--layout-margin) * 2);
 	}
 
 	.how-to-slide {

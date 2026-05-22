@@ -4,7 +4,6 @@ import { writable } from 'svelte/store';
 export const navigationMenu = writable(false);
 export const loadingScreenVisible = writable(true);
 export const littleTimeVignette = writable(false);
-export const tutorialStep = writable(0); // 0 = hidden, 1, 2 etc. are different contents displayed
 
 // Popup Visibility
 export const settingsPopup = writable(false);

@@ -28,8 +28,8 @@
 	import { registerResultAds } from "$lib/utils/ads";
 	import { roundLogPopup } from "$lib/stores/uiStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
-	import { tutorial } from "$lib/stores/modeStore";
 	import { finalizeTutorial } from "./TutorialOverlay.svelte";
+	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 
 	// Animate experience and level ----------------------------------------------------------------
 
@@ -108,12 +108,24 @@
 
 	// Ads ------------------------------------------------------------------------------------------
 
-	// Enable ad slots once visible for the first time
-	let resultAdsEnabled = $state(false);
+	// Register result ads when the result screen has at least been visible once
+	let resultEnabledOnceSinceAdsEnabled = $state(false);
+	let showResultAd = $derived(!$adsDisabled && resultEnabledOnceSinceAdsEnabled);
+
+	$effect(() => {
+		// Effect since this should also fire if user is currently on the result screen and adsDisabled becomes false
+		if ($resultScreenEnabled && !$adsDisabled && !resultEnabledOnceSinceAdsEnabled) {
+			resultEnabledOnceSinceAdsEnabled = true;
+		}
+	});
+
+	adsDisabled.subscribe((value) => {
+		// Disable if ads are disabled, so that when ads are re-enabled, the re-registration happens when the result is open
+		if (!value) resultEnabledOnceSinceAdsEnabled = false;
+	});
 
 	$effect(async () => {
-		if ($resultScreenEnabled && !resultAdsEnabled) {
-			resultAdsEnabled = true;
+		if (showResultAd) {
 			await tick();
 			registerResultAds();
 		}
@@ -156,26 +168,23 @@
 
 <div class="endBottomArea" style:display={$resultScreenEnabled ? "" : "none"}>
 	<div class="endBottomBar">
-		<div class="resultAdArea barMenu" style:display={$adsDisabled ? "none" : ""}>
-			<div
-				class="resultAd"
-				id={resultAdsEnabled ? "resultAd" : undefined}
-				data-fuse={resultAdsEnabled ? "Game_Result_incontent_1" : undefined}
-			></div>
-			<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
-		</div>
+		<!-- No transition since it would awkwardly trigger on the first result-open -->
+		{#if showResultAd}
+			<div class="resultAdArea barMenu">
+				<div class="resultAd" id="resultAd" data-fuse="Game_Result_incontent_1"></div>
+				<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
+			</div>
+		{/if}
 		<div id="resultBox" class="barMenu">
 			<div class="resultField" id="motivationText">
 				<p>{$motivationText}</p>
 			</div>
-			<div class="mobileResultAdArea resultField" style:display={$adsDisabled ? "none" : ""}>
-				<div
-					class="mobileResultAd"
-					id={resultAdsEnabled ? "mobileResultAd" : undefined}
-					data-fuse={resultAdsEnabled ? "Game_Result_Mob_Only" : undefined}
-				></div>
-				<p class="noAdvertsText">Ad.</p>
-			</div>
+			{#if showResultAd}
+				<div class="mobileResultAdArea resultField">
+					<div class="mobileResultAd" id="mobileResultAd" data-fuse="Game_Result_Mob_Only"></div>
+					<p class="noAdvertsText">Ad.</p>
+				</div>
+			{/if}
 			{#if $resultScreenEnabled}
 				<div class="resultField">
 					<RulerDimensionLine
@@ -254,7 +263,7 @@
 					state: nextRoundTutorialNote,
 					zIndex: 13,
 					maxWidth: 125,
-					showDelay: 2000,
+					showDelay: 3000,
 				})}
 				onclick={() => {
 					playSound("basic_button");

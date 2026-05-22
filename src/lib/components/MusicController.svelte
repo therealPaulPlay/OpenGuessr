@@ -3,9 +3,9 @@
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { page } from "$app/state";
 	import { playMusic } from "$lib/utils/soundManager";
-	import { singleplayer, tutorial } from "$lib/stores/modeStore";
+	import { singleplayer } from "$lib/stores/modeStore";
 	import { multiplayerOverlay } from "$lib/stores/context-specific/multiplayerStore";
-	import { tutorialStep } from "$lib/stores/uiStore";
+	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
 
 	let musicStarted = $state(false);
 	let startMusicTimeout;
@@ -17,7 +17,7 @@
 
 	// Start music when the first tutorial round starts (tutorial active, but tutorial overlay hidden since step is zero)
 	tutorialStep.subscribe((value) => {
-		if (value == 0 && $tutorial && !musicStarted && !startMusicTimeout) musicStarted = true;
+		if (value === 0 && $tutorial && !musicStarted && !startMusicTimeout) musicStarted = true;
 	});
 
 	// If player starts with multiplayer or competitions, start music
@@ -28,7 +28,7 @@
 	// Adjust volume to screen
 	$effect(() => {
 		if (!musicStarted) return;
-		if ($resultScreenEnabled || page.url.pathname !== "/" || $multiplayerOverlay || $tutorialStep !== 0) {
+		if ($resultScreenEnabled || page.url.pathname !== "/" || $multiplayerOverlay) {
 			playMusic("regular", 0.35);
 		} else {
 			$singleplayer ? playMusic("regular") : playMusic("intense");

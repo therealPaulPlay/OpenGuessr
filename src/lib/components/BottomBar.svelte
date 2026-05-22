@@ -1,43 +1,53 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
-	import { chatMobilePopup, loadingScreenVisible, tutorialStep } from "$lib/stores/uiStore";
+	import { chatMobilePopup, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { mapExpanded, mapInteractive } from "$lib/stores/context-specific/mapStore";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
-	import { countryGuessr, multiplayer, tutorial } from "$lib/stores/modeStore";
+	import { countryGuessr, multiplayer } from "$lib/stores/modeStore";
 	import { blur } from "svelte/transition";
 	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
 	import { chatArray, mobileChatLastOpenedMsgCount, socket } from "$lib/stores/context-specific/multiplayerStore";
-	import { onMount } from "svelte";
 	import { registerGameplayAd } from "$lib/utils/ads";
 	import { get } from "svelte/store";
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
+	import { tick } from "svelte";
 
-	function reloadPanorama() {
-		playSound("reload");
-		$loadingScreenVisible = true;
-		$iframeElement.src = $panoramaSrc;
-	}
-
-	onMount(() => {
-		registerGameplayAd();
-	});
-
+	// Show return when in tutorial ------------------------------------------------------------------
 	let returnTutorialNote = $state({ visible: false });
 	let hasShownTutorialNote = false;
 
 	$effect(() => {
-		if ($tutorial && $tutorialStep == 0 && !hasShownTutorialNote) {
+		if ($tutorial && $tutorialStep === 0 && !hasShownTutorialNote) {
 			returnTutorialNote.visible = true;
 			hasShownTutorialNote = true;
 		}
 		if (!$tutorial && returnTutorialNote.visible) returnTutorialNote.visible = false;
 		if ($resultScreenEnabled && returnTutorialNote.visible) returnTutorialNote.visible = false;
+	});
+
+	// Gameplay ad registration ----------------------------------------------------------------
+	let tutorialHiddenOnce = $state(false);
+	let showGameplayAd = $derived(!$adsDisabled && tutorialHiddenOnce);
+
+	$effect(() => {
+		// Tutorial step is -1 until the check is done, so 0 means disabled + checked
+		// If the tutorial overlay comes up a second time, ignore (only fire once)
+		if ($tutorialStep === 0 && !tutorialHiddenOnce) tutorialHiddenOnce = true;
+	});
+
+	$effect(async () => {
+		// Whenever the gameplay ad gets (re-)mounted, (re-)register
+		if (showGameplayAd) {
+			await tick();
+			registerGameplayAd();
+		}
 	});
 </script>
 
@@ -55,7 +65,9 @@
 				})}
 				onclick={() => {
 					if (returnTutorialNote.visible) returnTutorialNote.visible = false;
-					reloadPanorama(); // No sound, as the reload sound will play
+					playSound("reload");
+					$loadingScreenVisible = true;
+					$iframeElement.src = $panoramaSrc;
 				}}
 			>
 				<img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
@@ -107,10 +119,12 @@
 	{/if}
 </div>
 
-<div class="gameplayAdArea barMenu" transition:blur={{ duration: 150 }} style:display={$adsDisabled ? "none" : ""}>
-	<div class="gameplayAd" id="gameplayAd" data-fuse="Game_incontent_1"></div>
-	<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
-</div>
+{#if showGameplayAd}
+	<div class="gameplayAdArea barMenu" transition:blur={{ duration: 150 }}>
+		<div class="gameplayAd" id="gameplayAd" data-fuse="Game_incontent_1"></div>
+		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
+	</div>
+{/if}
 
 <style>
 	.bottomBar {

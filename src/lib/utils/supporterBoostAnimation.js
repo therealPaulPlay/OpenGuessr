@@ -4,6 +4,8 @@ import { get } from "svelte/store";
 let supporterBoostTimeout;
 
 export async function supporterXpBoostAnimation(factor) {
+    if (!get(supporterBoost) || !get(supporterBoostText)) return;
+
     get(supporterBoost).style.opacity = "0";
     get(supporterBoostText).classList.remove("supporterBoostTextMove");
     clearTimeout(supporterBoostTimeout);
@@ -11,6 +13,8 @@ export async function supporterXpBoostAnimation(factor) {
     await new Promise(resolve => {
         supporterBoostTimeout = setTimeout(resolve, 1500);
     });
+
+    if (!get(supporterBoost) || !get(supporterBoostText)) return;
 
     factor -= 1;
     factor = Math.round(factor * 100);
@@ -22,6 +26,7 @@ export async function supporterXpBoostAnimation(factor) {
     get(supporterBoostText).classList.add("supporterBoostTextMove");
 
     supporterBoostTimeout = setTimeout(() => {
+        if (!get(supporterBoost) || !get(supporterBoostText)) return;
         get(supporterBoost).style.opacity = "0";
         get(supporterBoostText).classList.remove("supporterBoostTextMove");
     }, 2000);
