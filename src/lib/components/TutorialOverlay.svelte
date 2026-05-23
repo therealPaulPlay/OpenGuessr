@@ -310,15 +310,9 @@
 											<p style:text-wrap="nowrap">
 												{option.title}
 											</p>
-											{#if secIdx == 0 && optIdx == 0}<Chip
-													italic
-													text="Suggested"
-												/>
+											{#if secIdx == 0 && optIdx == 0}<Chip italic red mutedOpacity={false} text="Suggested" />
 											{/if}
-											{#if secIdx == 1 && optIdx == 0}<Chip
-													italic
-													text="Classic"
-												/>
+											{#if secIdx == 1 && optIdx == 0}<Chip italic text="Classic" />
 											{/if}
 										</div>
 										<button
