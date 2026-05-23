@@ -5,6 +5,7 @@
 	import { ArrowRight } from "@lucide/svelte";
 	import { page } from "$app/stores";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
+	import { playSound } from "$lib/utils/soundManager";
 
 	let creator = $derived($page.params?.creatorName || "No creator");
 
@@ -42,16 +43,18 @@
 			<div class="creditBox">
 				<p class="creditNote" in:blur={{ duration: 500 }}>Now, let's kick off your geography journey.</p>
 			</div>
-			<button
-				class="standardButton largeButton"
-				in:fly={{ y: 20, duration: 1000 }}
-				onclick={() => {
-					goto("/");
-				}}
-			>
-				Let's go
-				<ArrowRight strokeWidth={2.25} size={22} style="margin-bottom: -3px; margin-left: 3px;" />
-			</button>
+			<div class="barMenu buttonContainer" in:fly={{ y: 20, duration: 1000 }}>
+				<button
+					class="standardButton largeButton"
+					onclick={() => {
+						playSound("basic_button");
+						goto("/");
+					}}
+				>
+					Let's go
+					<ArrowRight strokeWidth={2.25} size={22} style="margin-bottom: -3px; margin-left: 3px;" />
+				</button>
+			</div>
 		</div>
 	{/if}
 </div>
@@ -72,6 +75,14 @@
 		text-align: center;
 		font-size: 25px;
 		max-width: 400px;
+	}
+
+	.buttonContainer {
+		backdrop-filter: none;
+		background-color: var(--box-color);
+		border-radius: var(--layout-margin);
+		box-shadow: var(--box-shadow);
+		margin-top: var(--box-margin);
 	}
 
 	.creditBox {

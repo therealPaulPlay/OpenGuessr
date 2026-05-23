@@ -21,7 +21,7 @@
 	import { cubicOut } from "svelte/easing";
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
 	import ResultFullscreenMessage from "./ResultFullscreenCelebration.svelte";
-	import { CircleUser, Flame, RulerDimensionLine } from "@lucide/svelte";
+	import { CircleUser, Flame, MapPinned, RulerDimensionLine } from "@lucide/svelte";
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
@@ -30,6 +30,7 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { finalizeTutorial } from "./TutorialOverlay.svelte";
 	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
+	import { countryGuessr } from "$lib/stores/modeStore";
 
 	// Animate experience and level ----------------------------------------------------------------
 
@@ -81,20 +82,7 @@
 		else showConfetti = false;
 	});
 
-	// Tutorials / Explanations --------------------------------------------------------------------------
-
-	// Show streak explanation on first streak load
-	let streakExplanationNote = $state({ visible: false });
-
-	$effect(() => {
-		if ($resultScreenEnabled && $streakText && !$streakText.startsWith("0")) {
-			const hasSeenStreakExplanation = localStorage.getItem("streakExplanation") !== null;
-			if (!hasSeenStreakExplanation) {
-				localStorage.setItem("streakExplanation", true);
-				streakExplanationNote.visible = true;
-			}
-		}
-	});
+	// Tutorial next round note --------------------------------------------------------------------------
 
 	// Tutorial note for going to the next round
 	let isFirstTutorialRound = $state(true);
@@ -187,12 +175,17 @@
 			{/if}
 			{#if $resultScreenEnabled}
 				<div class="resultField">
-					<RulerDimensionLine
-						class="distance-icon"
-						style="margin-right: var(--panel-margin);"
-						size={22}
-						strokeWidth={2.25}
-					/>
+					<!-- Distance is usually number + unit, but Country Guessr just has Correct/Wrong -->
+					{#if $countryGuessr}
+						<MapPinned class="distance-icon" style="margin-right: var(--panel-margin)" size={22} strokeWidth={2.25} />
+					{:else}
+						<RulerDimensionLine
+							class="distance-icon"
+							style="margin-right: var(--panel-margin)"
+							size={22}
+							strokeWidth={2.25}
+						/>
+					{/if}
 					<p id="distanceText">{$distanceText}</p>
 				</div>
 				{#if $isAuthenticated}
@@ -211,16 +204,7 @@
 						</div>
 						<p id="experienceNumberText">{$animatedExperience.toFixed(0)} XP</p>
 						{#if $streakText}
-							<div
-								id="streakDisplay"
-								{@attach tooltip({
-									text: "Getting the country right increases your streak and multiplier.",
-									imageSrc: "/img/tutorial/tutorial_streak.png",
-									state: streakExplanationNote,
-									zIndex: 13,
-									maxWidth: 200,
-								})}
-							>
+							<div id="streakDisplay">
 								<Flame style="margin-right: var(--content-margin);" size={22} strokeWidth={2.25} />
 								<p id="endScreenStreakText">{$streakText}</p>
 							</div>
