@@ -85,7 +85,7 @@
 			imageSrc: "/img/tutorial/tutorial_menu.png",
 			state: menuIntroductionNote,
 			maxWidth: 225,
-			showDelay: 10_000,
+			showDelay: 20_000,
 			zIndex: 14,
 		})}
 		onclick={() => {
