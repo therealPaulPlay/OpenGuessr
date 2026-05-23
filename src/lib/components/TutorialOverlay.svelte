@@ -128,7 +128,7 @@
 
 	const paths = [
 		{
-			title: "Learn with fun",
+			title: "Starter picks",
 			imageSrc: "/img/tutorial/tutorial_beginner.png",
 			options: [
 				{
@@ -136,17 +136,6 @@
 					isPlay: true,
 					action: () => changeMap("Famous Places", true),
 				},
-				{
-					title: "Play Country Guessr",
-					isPlay: true,
-					action: () => changeMap("Country Guessr", true),
-				},
-			],
-		},
-		{
-			title: "Discover the world",
-			imageSrc: "/img/tutorial/tutorial_maps.png",
-			options: [
 				{
 					title: "Play on World",
 					isPlay: true,
@@ -156,6 +145,17 @@
 						if (selectedMap && selectedMap !== $defaultMap) changeMap($defaultMap, true);
 					},
 				},
+			],
+		},
+		{
+			title: "Endless adventures",
+			imageSrc: "/img/tutorial/tutorial_maps.png",
+			options: [
+				{
+					title: "Play Country Guessr",
+					isPlay: true,
+					action: () => changeMap("Country Guessr", true),
+				},
 				{
 					title: "Browse maps",
 					isPlay: false,
@@ -164,7 +164,7 @@
 			],
 		},
 		{
-			title: "Get competitive",
+			title: "Competitive play",
 			imageSrc: "/img/tutorial/tutorial_competitions.png",
 			options: [
 				{
@@ -298,7 +298,7 @@
 									alt="section graphic"
 									class="section-image"
 									class:section-image-focused={isFocused}
-									style:top={secIdx == 0 ? "-110px" : secIdx == 1 ? "-100px" : "-100px"}
+									style:top={secIdx == 0 ? "-110px" : secIdx == 1 ? "-105px" : "-100px"}
 									style:right={secIdx == 0 ? "-75px" : secIdx == 2 ? "-85px" : ""}
 									style:left={secIdx == 1 ? "-85px" : ""}
 									style:rotate={secIdx == 1 ? "-15deg" : secIdx == 2 ? "30deg" : ""}
@@ -310,10 +310,8 @@
 											<p style:text-wrap="nowrap">
 												{option.title}
 											</p>
-											{#if secIdx == 0 && optIdx == 0}<Chip italic red mutedOpacity={false} text="Suggested" />
-											{/if}
-											{#if secIdx == 1 && optIdx == 0}<Chip italic text="Classic" />
-											{/if}
+											{#if secIdx == 0 && optIdx == 0}<Chip italic red mutedOpacity={false} text="Suggested" />{/if}
+											{#if secIdx == 1 && optIdx == 0}<Chip italic text="Casual" />{/if}
 										</div>
 										<button
 											class="standardButton"
