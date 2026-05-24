@@ -78,8 +78,14 @@
 	let focusedPath = $state(0);
 	let wheelLock = false;
 	let swipeStartY = null;
+	let swipeStartX = null;
+	let dragOffset = $state(0);
+	let isDragging = $state(false);
 	let focusedSectionEl = $state();
 	let focusedSectionHeight = $state(0);
+
+	const SECTION_PATH_DISTANCE = 110; // % of section height between adjacent path centers
+	const sectionStep = $derived(focusedSectionHeight * (SECTION_PATH_DISTANCE / 100));
 
 	$effect(() => {
 		if (!focusedSectionEl) return;
@@ -87,9 +93,23 @@
 	});
 
 	function navigatePath(direction) {
-		const next = focusedPath + direction;
-		if (next < 0 || next >= paths.length) return;
-		focusedPath = next;
+		focusedPath = Math.max(0, Math.min(paths.length - 1, focusedPath + direction));
+	}
+
+	function resetSwipe() {
+		swipeStartY = null;
+		swipeStartX = null;
+		isDragging = false;
+		dragOffset = 0;
+	}
+
+	// Rubber-band: 1:1 within range, 0.25x resistance once past the first/last section
+	function resistedDy(dy) {
+		const max = focusedPath * sectionStep;
+		const min = -(paths.length - 1 - focusedPath) * sectionStep;
+		if (dy > max) return max + (dy - max) * 0.25;
+		if (dy < min) return min + (dy - min) * 0.25;
+		return dy;
 	}
 
 	function onPathWheel(e) {
@@ -103,14 +123,34 @@
 	function onPathPointerDown(e) {
 		if (e.pointerType !== "touch") return;
 		swipeStartY = e.clientY;
+		swipeStartX = e.clientX;
+	}
+
+	function onPathPointerMove(e) {
+		if (e.pointerType !== "touch" || swipeStartY === null) return;
+		const dy = e.clientY - swipeStartY;
+		const dx = e.clientX - swipeStartX;
+		if (!isDragging) {
+			// Clear 8px deadzone then lock to dominant axis - horizontal-dominant swipes (e.g. across path option content) pass through
+			if (Math.abs(dy) < 8 && Math.abs(dx) < 8) return;
+			if (Math.abs(dx) > Math.abs(dy)) return resetSwipe();
+			swipeStartY = e.clientY; // Re-anchor so drag picks up from 0 past the deadzone
+			isDragging = true;
+			return;
+		}
+		dragOffset = resistedDy(dy);
 	}
 
 	function onPathPointerUp(e) {
 		if (e.pointerType !== "touch" || swipeStartY === null) return;
 		const dy = e.clientY - swipeStartY;
-		swipeStartY = null;
-		if (Math.abs(dy) < 30) return;
-		navigatePath(dy < 0 ? 1 : -1);
+		const wasDragging = isDragging;
+		resetSwipe();
+		if (!wasDragging) return;
+		// Snap to the section closest to release, allowing multi-step skips
+		let steps = Math.round(Math.abs(dy) / sectionStep);
+		if (steps === 0 && Math.abs(dy) >= 30) steps = 1; // Flick that didn't reach half a section
+		if (steps !== 0) navigatePath(dy < 0 ? steps : -steps);
 	}
 
 	const howToSlides = [
@@ -185,7 +225,9 @@
 <svelte:window
 	onwheel={(e) => $tutorialStep === 3 && onPathWheel(e)}
 	onpointerdown={(e) => $tutorialStep === 3 && onPathPointerDown(e)}
+	onpointermove={(e) => $tutorialStep === 3 && onPathPointerMove(e)}
 	onpointerup={(e) => $tutorialStep === 3 && onPathPointerUp(e)}
+	onpointercancel={() => $tutorialStep === 3 && resetSwipe()}
 />
 
 {#if $tutorialStep > 0}
@@ -289,8 +331,9 @@
 								}}
 								class="path-section barMenu"
 								class:focused={isFocused}
-								style:transform="translate(-50%, calc(-50% + {delta * 110}%)) scale({isFocused ? 1 : 0.85})"
-								style:opacity={Math.abs(delta) > 1 ? 0 : isFocused ? 1 : 0.5}
+								class:dragging={isDragging}
+								style:transform="translate(-50%, calc(-50% + {delta * SECTION_PATH_DISTANCE}% + {dragOffset}px)) scale({isFocused ? 1 : 0.85})"
+								style:opacity={isFocused ? 1 : 0.5}
 								style:filter={isFocused ? "" : "blur(3px) brightness(0.5)"}
 							>
 								<p class="section-title">{section.title}</p>
@@ -427,6 +470,10 @@
 			filter 350ms ease;
 		will-change: transform, opacity, filter;
 		pointer-events: none;
+	}
+
+	.path-section.dragging {
+		transition: opacity 350ms ease, filter 350ms ease;
 	}
 
 	.path-section.focused {
