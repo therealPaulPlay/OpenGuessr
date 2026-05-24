@@ -3,7 +3,8 @@ import { writable } from 'svelte/store';
 // Misc UI Parts
 export const navigationMenu = writable(false);
 export const loadingScreenVisible = writable(true);
-export const littleTimeVignette = writable(false);
+export const littleTimeVignetteVisible = writable(false);
+export const gameplayAdVisible = writable(false);
 
 // Popup Visibility
 export const settingsPopup = writable(false);
