@@ -62,6 +62,7 @@
 					imageSrc: "/img/tutorial/tutorial_return.png",
 					zIndex: 10,
 					showDelay: 2000,
+					mobile: false,
 				})}
 				onclick={() => {
 					if (returnTutorialNote.visible) returnTutorialNote.visible = false;

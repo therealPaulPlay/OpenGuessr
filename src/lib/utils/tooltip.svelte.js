@@ -1,6 +1,6 @@
 import { computePosition, flip, shift, offset, arrow, autoUpdate } from "@floating-ui/dom";
 
-export function tooltip({ text, imageSrc, state, onClose, maxWidth = imageSrc ? 150 : 300, zIndex, showDelay = 0 }) {
+export function tooltip({ text, imageSrc, state, onClose, maxWidth = imageSrc ? 150 : 300, zIndex, showDelay = 0, mobile = true }) {
     return (node) => {
         let tooltipElement, arrowElement, textElement, imageElement, closeElement;
         let visible = false;
@@ -89,17 +89,18 @@ export function tooltip({ text, imageSrc, state, onClose, maxWidth = imageSrc ? 
             });
         }
 
-        function show() {
+        function scheduleShow() {
             if (visible || showTimeout) return;
             if (showDelay > 0) {
                 showTimeout = setTimeout(() => {
                     showTimeout = null;
-                    showNow();
+                    show();
                 }, showDelay);
-            } else showNow();
+            } else show();
         }
 
-        function showNow() {
+        function show() {
+            if (!mobile && window.matchMedia("(max-width: 800px)").matches) return;
             if (!tooltipElement) createTooltip();
 
             visible = true;
@@ -147,7 +148,7 @@ export function tooltip({ text, imageSrc, state, onClose, maxWidth = imageSrc ? 
 
         function onPointerEnter(e) {
             if (e.pointerType == "touch") return;
-            show();
+            scheduleShow();
         }
 
         function onPointerLeave(e) {
@@ -157,7 +158,7 @@ export function tooltip({ text, imageSrc, state, onClose, maxWidth = imageSrc ? 
 
         if (persistent) {
             $effect(() => {
-                if (state.visible) show();
+                if (state.visible) scheduleShow();
                 else hide();
             });
         } else {
