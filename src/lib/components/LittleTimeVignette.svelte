@@ -1,10 +1,10 @@
 <!-- Red Vignette, shown when the timer runs low -->
 <script>
-	import { littleTimeVignette } from "$lib/stores/uiStore";
+	import { littleTimeVignetteVisible } from "$lib/stores/uiStore";
 	import { fade } from "svelte/transition";
 </script>
 
-{#if $littleTimeVignette}
+{#if $littleTimeVignetteVisible}
 	<div class="littleTimeVignette" transition:fade={{ duration: 500 }}></div>
 {/if}
 

@@ -248,6 +248,7 @@
 					zIndex: 13,
 					maxWidth: 125,
 					showDelay: 3000,
+					mobile: false,
 				})}
 				onclick={() => {
 					playSound("basic_button");

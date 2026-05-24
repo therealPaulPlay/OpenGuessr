@@ -6,7 +6,7 @@ import { supporterLevel } from "$lib/stores/accountStore";
 import { showResultScreenSlideup } from "./resultScreenSlideup";
 
 export function supporterSlideupProbability() {
-    if (!get(showSlideup) && Math.random() < 0.1 && get(supporterLevel) == 0) {
+    if (!get(showSlideup) && Math.random() < 0.05 && get(supporterLevel) == 0) {
         getMonthlySupportedAmount();
         showResultScreenSlideup("Enjoy playing?", "Please consider supporting to unlock awesome benefits, including ad-free!", "Support", supporterWindowIfAuthenticated);
     }

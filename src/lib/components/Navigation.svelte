@@ -283,7 +283,6 @@
 		max-width: 400px;
 		margin-inline: auto;
 		padding-inline: var(--layout-margin);
-		overflow: hidden;
 	}
 
 	.navigation-box {
