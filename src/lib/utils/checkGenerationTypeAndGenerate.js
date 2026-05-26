@@ -4,7 +4,7 @@ import { multiplayer, competition, singleplayer, countryGuessr, imageGuessr } fr
 import { generateNewLocation } from "$lib/utils/generateLocation";
 import { multiplayerMap } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
-import { countryMaps, continentMaps, defaultMap } from "$lib/stores/context-specific/officialMapsStore";
+import { countryMaps, continentMaps, defaultMap, tutorialMap } from "$lib/stores/context-specific/officialMapsStore";
 import { changeMap } from "$lib/utils/changeMap";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
@@ -27,6 +27,15 @@ function checkLinkMap() {
   } catch { }
 }
 
+// Check if selected map is tutorial (should reset to default if persisted on new pageload) -----------------------------------------------------
+let checkedForTutorialMap = false;
+
+function checkTutorialMap() {
+  checkedForTutorialMap = true;
+  // This happens if a user reloads in the middle of the tutorial (we don't want to keep the map as Tutorial)
+  if (localStorage.getItem("selectedMap") == get(tutorialMap)) changeMap(get(defaultMap));
+}
+
 // Location Generation with correct Type ---------------------------------------------------------------------------------------------------------
 let queue = Promise.resolve(); // Qeue handler
 
@@ -45,6 +54,7 @@ function setMapSpecifics(category) {
 
 export async function checkGenerationTypeAndGenerate() {
   if (!checkedForMapLink) checkLinkMap();
+  if (!checkedForTutorialMap) checkTutorialMap();
 
   // Create a new promise that will only execute after the current queue is done
   queue = queue.then(async () => {

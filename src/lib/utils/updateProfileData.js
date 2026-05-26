@@ -74,7 +74,7 @@ export async function setProfileFlag(flag) {
 }
 
 // Check and set new highest country streak (only if higher than current)
-export async function setCheckNewHighestCountryStreak(streak) {
+export async function updateProfileIfNewBestStreak(streak) {
     try {
         // Get current profile data to check existing highest streak
         const data = await getProfileData(localStorage.getItem("id"));

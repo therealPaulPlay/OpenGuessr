@@ -464,7 +464,7 @@
 		<div class="headerContainer no-bottom-padding">
 			<h2 class="header">Featured</h2>
 		</div>
-		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style="height: 330px;"></div>
+		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style:height="335px"></div>
 	{/if}
 	<!-- Featured Maps -->
 	<div class="headerContainer largeHeaderMargin">

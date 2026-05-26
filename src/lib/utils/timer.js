@@ -1,6 +1,6 @@
 import { playSound, stopSound } from "./soundManager";
 import { mapModeIndicatorFading, timerText } from "$lib/stores/context-specific/mapModeIndicatorStore";
-import { littleTimeVignette } from "$lib/stores/uiStore";
+import { littleTimeVignetteVisible } from "$lib/stores/uiStore";
 
 let activeTimer = null;
 
@@ -38,10 +38,10 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         if (timer < 10 && timer % 1 == 0) {
             mapModeIndicatorFading.set(true);
             playSound("ticking_timer", "timerSound");
-            littleTimeVignette.set(true);
+            littleTimeVignetteVisible.set(true);
         } else {
             mapModeIndicatorFading.set(false);
-            littleTimeVignette.set(false);
+            littleTimeVignetteVisible.set(false);
         }
     }
 
@@ -53,7 +53,7 @@ export function startTimer(durationInSeconds, onTimerExpired) {
         clearInterval(currentTimerIntervalId);
         isRunning = false;
         mapModeIndicatorFading.set(false);
-        littleTimeVignette.set(false);
+        littleTimeVignetteVisible.set(false);
         stopSound("timerSound");
         if (activeTimer === timerInstance) activeTimer = null;
         if (!activeTimer) timerText.set(null);

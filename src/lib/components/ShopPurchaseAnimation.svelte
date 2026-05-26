@@ -41,7 +41,7 @@
 		align-items: center;
 		justify-content: center;
 		flex-direction: column;
-		backdrop-filter: blur(10px);
+		backdrop-filter: blur(var(--normal-blur));
 		background-color: var(--panel-color);
 		gap: var(--layout-margin);
 	}
@@ -68,7 +68,7 @@
 	}
 
 	.animationItemBox {
-		backdrop-filter: blur(10px);
+		backdrop-filter: blur(var(--normal-blur));
 		padding: var(--layout-margin);
 		background-color: var(--box-color);
 		border-radius: var(--box-margin);

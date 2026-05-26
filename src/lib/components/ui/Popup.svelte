@@ -59,7 +59,7 @@
 		align-items: center;
 		background-color: var(--dark-background);
 		pointer-events: auto;
-		backdrop-filter: blur(5px);
+		backdrop-filter: blur(var(--weak-blur));
 	}
 
 	.closePopupButton {
@@ -97,7 +97,7 @@
 		text-align: left;
 		position: relative;
 		background-color: var(--panel-color);
-		backdrop-filter: blur(10px);
+		backdrop-filter: blur(var(--normal-blur));
 		box-shadow:
 			0 2px 100px rgba(5, 6, 10, 0.5),
 			inset 0 0.05rem 1px hsla(0, 0%, 100%, 0.2),

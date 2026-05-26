@@ -86,7 +86,7 @@
 		right: 0;
 		background: rgba(13, 15, 28, 0.9);
 		z-index: 90;
-		backdrop-filter: blur(15px);
+		backdrop-filter: blur(var(--elevated-blur));
 	}
 
 	.navigationButtonContainer {

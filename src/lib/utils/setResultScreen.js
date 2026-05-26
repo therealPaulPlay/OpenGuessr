@@ -15,6 +15,7 @@ import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration
 import { mapExpanded, mapHovered, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { socialPopupProbability } from "./socialPopupProbability";
 import { saveRoundToLog } from "./saveRoundToLog";
+import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 
 export async function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (get(resultScreenEnabled)) return;
@@ -43,7 +44,7 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
 
     // Load XP
     await loadResultScreenXP(distance);
-    if (get(singleplayer)) supporterSlideupProbability(); // Only show in singleplayer
+    if (get(singleplayer) && !get(tutorial)) supporterSlideupProbability(); // Only show in singleplayer and not in tutorial
     checkDisplayFullscreenCelebration();
 
     // Social Media CTA

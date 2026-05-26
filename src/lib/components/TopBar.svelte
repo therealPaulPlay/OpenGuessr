@@ -1,3 +1,7 @@
+<script module>
+	export let menuIntroductionNote = $state({ visible: false });
+</script>
+
 <script>
 	import { navigationMenu } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -9,17 +13,13 @@
 	import { page } from "$app/state";
 	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
 	import { goto } from "$app/navigation";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
+	import { leaveTutorial } from "./TutorialOverlay.svelte";
 
-	let introductionNote = $state({ visible: false });
 	let showHistoryTooltip = $state(false);
 	let navigationHistory = $state([]);
 	let hideTooltipTimeout = null;
-
-	onMount(() => {
-		const showIntroduction = localStorage.getItem("menuIntroduction") == null;
-		if (showIntroduction && !window.matchMedia("(max-width: 800px) and (orientation: portrait)").matches)
-			introductionNote.visible = true;
-	});
 
 	// Load & track page history for quick access
 	onMount(() => {
@@ -82,25 +82,34 @@
 		onmouseleave={hideHistoryTooltip}
 		{@attach tooltip({
 			text: "Discover multiplayer, maps, competitions & more!",
-			imageSrc: "/img/menu_introduction.png",
-			imagePosition: "above",
-			state: introductionNote,
-			showClose: true,
-			floatingClose: true,
-			onClose: () => localStorage.setItem("menuIntroduction", true),
+			imageSrc: "/img/tutorial/tutorial_menu.png",
+			imageAspectRatio: "15 / 7",
+			state: menuIntroductionNote,
+			maxWidth: 225,
+			showDelay: 20_000,
+			zIndex: 14,
+			mobile: false,
 		})}
 		onclick={() => {
-			introductionNote.visible = false;
-			localStorage.setItem("menuIntroduction", true);
-			$navigationMenu = !$navigationMenu;
 			playSound("basic_button");
+			const showNav = () => {
+				menuIntroductionNote.visible = false;
+				$navigationMenu = true;
+			};
+			if ($tutorial) {
+				return showConfirmPopup("Leave tour?", "To explore on your own, you need to leave the tour.", () => {
+					leaveTutorial();
+					showNav();
+				});
+			}
+			showNav();
 		}}
 		><span class="menu-span">Menu</span>
 		<EllipsisVertical size={22} />
 	</button>
 </nav>
 
-{#if showHistoryTooltip && navigationHistory.length > 0 && !introductionNote.visible}
+{#if showHistoryTooltip && navigationHistory.length > 0 && !menuIntroductionNote.visible}
 	<div
 		class="tooltip menu-tooltip history-tooltip menu-button-area"
 		role="tooltip"
@@ -112,7 +121,10 @@
 		<TitleSeparator text="Last visited" noMargin={true} />
 		<div class="history-list">
 			{#each navigationHistory as entry}
-				<button class="history-item standardButton white" disabled={!$singleplayer} onclick={() => goto(entry.path)}
+				<button
+					class="history-item standardButton white"
+					disabled={!$singleplayer || $tutorial}
+					onclick={() => goto(entry.path)}
 					><span class="history-item-title">{entry.title}</span>
 					<ExternalLink size={20} strokeWidth={2.25} style="opacity: 0.5;" />
 				</button>

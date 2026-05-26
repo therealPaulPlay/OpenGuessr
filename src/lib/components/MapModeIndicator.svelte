@@ -8,10 +8,11 @@
 	import { currentRound, multiplayerMap, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
 	import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 	import { restrictionNames, selectedRestriction } from "$lib/stores/context-specific/restrictionStore";
-	import { blur, slide } from "svelte/transition";
+	import { blur, fade, slide } from "svelte/transition";
 	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import Chip from "./ui/Chip.svelte";
+	import MapAttribution from "./MapAttribution.svelte";
 
 	let mapCategoryName = $state("Loading...");
 
@@ -42,6 +43,10 @@
 		class:fading={Boolean($mapModeIndicatorFading)}
 		transition:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 150 }}
 	>
+		<!-- Needed for TOS compliance -->
+		<div transition:fade={{ duration: $resultScreenEnabled ? 0 : 150, delay: $resultScreenEnabled ? 0 : 150 }}>
+			<MapAttribution />
+		</div>
 		<div class="map-mode-text-container of-left of-right">
 			<p>
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
@@ -87,6 +92,7 @@
 		position: relative;
 		border-top-right-radius: 0;
 		border-top-left-radius: 0;
+		position: relative;
 	}
 
 	.map-icon {
