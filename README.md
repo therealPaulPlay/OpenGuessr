@@ -54,9 +54,9 @@ Please refer to the color section in `app.css`, but the most important ones are:
 - `--brand-color` The distinctive red
 - `--panel-color` A more opaque dark blue used for UI floating above the panorama
 - `--panel-color-soft` A slightly lighter version of the panel color, used when UI is overlayed above a dark background and the panorama
-- `box-color` The standard color for containers
-- `box-color-dark` Dark container color, often used for explanations or text-heavy containers
-- `box-color-dark-soft` A lighter dark container color
+- `--box-color` The standard color for containers
+- `--box-color-dark` Dark container color, often used for explanations or text-heavy containers
+- `--box-color-dark-soft` A lighter dark container color
 
 Colors that are only used for one specific thing should not be placed in `app.css` – only commonly used ones. Trying to stick to colors from the `app.css` is however recommended for consistency.
 
@@ -96,6 +96,10 @@ To use it, simply add it's classes:
 ### Opacity values
 
 Opacity values used are typically `0.25`, `0.5`, `0.75` and `1`. Using others such as `0.7` is discouraged. 
+
+### Blur values
+
+Unless an extreme outlier is needed, stick to the provided CSS variables `--weak-blur`, `--normal-blur`, `--elevated-blur` and `--strong-blur`.
 
 ## Developing
 

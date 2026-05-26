@@ -21,13 +21,18 @@
 	import { cubicOut } from "svelte/easing";
 	import ResultScreenSlideup from "./ResultScreenSlideup.svelte";
 	import ResultFullscreenMessage from "./ResultFullscreenCelebration.svelte";
-	import { CircleUser, Flame, RulerDimensionLine } from "@lucide/svelte";
+	import { CircleUser, Flame, MapPinned, RulerDimensionLine } from "@lucide/svelte";
 	import { Confetti } from "svelte-confetti";
 	import { getMapBounds } from "$lib/utils/getMapBounds";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { registerResultAds } from "$lib/utils/ads";
 	import { roundLogPopup } from "$lib/stores/uiStore";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
+	import { finalizeTutorial } from "./TutorialOverlay.svelte";
+	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
+	import { countryGuessr } from "$lib/stores/modeStore";
+
+	// Animate experience and level ----------------------------------------------------------------
 
 	const animatedExperience = tweened(0, {
 		duration: 2000,
@@ -77,16 +82,51 @@
 		else showConfetti = false;
 	});
 
-	// Enable ad slots once visible for the first time
-	let resultAdsEnabled = $state(false);
+	// Tutorial next round note --------------------------------------------------------------------------
+
+	// Tutorial note for going to the next round
+	let isFirstTutorialRound = $state(true);
+	let nextRoundTutorialNote = $state({ visible: false });
+
+	$effect(() => {
+		if (!$tutorial) isFirstTutorialRound = true; // Reset to default on tutorial end
+		if ($tutorial && $resultScreenEnabled && isFirstTutorialRound) nextRoundTutorialNote.visible = true;
+		if (!$resultScreenEnabled && nextRoundTutorialNote.visible) nextRoundTutorialNote.visible = false;
+	});
+
+	// Ads ------------------------------------------------------------------------------------------
+
+	// Register result ads when the result screen has at least been visible once
+	let resultEnabledOnceSinceAdsEnabled = $state(false);
+	let showResultAd = $derived(!$adsDisabled && resultEnabledOnceSinceAdsEnabled);
+
+	$effect(() => {
+		// Effect since this should also fire if user is currently on the result screen and adsDisabled becomes false
+		if ($resultScreenEnabled && !$adsDisabled && !resultEnabledOnceSinceAdsEnabled) {
+			resultEnabledOnceSinceAdsEnabled = true;
+		}
+	});
+
+	adsDisabled.subscribe((value) => {
+		// Disable if ads are disabled, so that when ads are re-enabled, the re-registration happens when the result is open
+		if (!value) resultEnabledOnceSinceAdsEnabled = false;
+	});
 
 	$effect(async () => {
-		if ($resultScreenEnabled && !resultAdsEnabled) {
-			resultAdsEnabled = true;
+		if (showResultAd) {
 			await tick();
 			registerResultAds();
 		}
 	});
+
+	// Next round ---------------------------------------------------------------------------------
+
+	// Go to next round
+	function nextRound() {
+		if ($tutorial && isFirstTutorialRound) isFirstTutorialRound = false;
+		else if ($tutorial && !isFirstTutorialRound) finalizeTutorial();
+		transitionToStart();
+	}
 </script>
 
 {#if showConfetti}
@@ -100,7 +140,7 @@
 				noGravity
 				x={[-xVal + indexFactor, xVal + indexFactor]}
 				y={[-yVal, yVal]}
-				amount={25}
+				amount={35}
 				delay={[delay, delay + 100]}
 				colorRange={[0, 10]}
 				duration={1500}
@@ -116,34 +156,36 @@
 
 <div class="endBottomArea" style:display={$resultScreenEnabled ? "" : "none"}>
 	<div class="endBottomBar">
-		<div class="resultAdArea barMenu" style:display={$adsDisabled ? "none" : ""}>
-			<div
-				class="resultAd"
-				id={resultAdsEnabled ? "resultAd" : undefined}
-				data-fuse={resultAdsEnabled ? "Game_Result_incontent_1" : undefined}
-			></div>
-			<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
-		</div>
+		<!-- No transition since it would awkwardly trigger on the first result-open -->
+		{#if showResultAd}
+			<div class="resultAdArea barMenu">
+				<div class="resultAd" id="resultAd" data-fuse="Game_Result_incontent_1"></div>
+				<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
+			</div>
+		{/if}
 		<div id="resultBox" class="barMenu">
 			<div class="resultField" id="motivationText">
 				<p>{$motivationText}</p>
 			</div>
-			<div class="mobileResultAdArea resultField" style:display={$adsDisabled ? "none" : ""}>
-				<div
-					class="mobileResultAd"
-					id={resultAdsEnabled ? "mobileResultAd" : undefined}
-					data-fuse={resultAdsEnabled ? "Game_Result_Mob_Only" : undefined}
-				></div>
-				<p class="noAdvertsText">Ad.</p>
-			</div>
+			{#if showResultAd}
+				<div class="mobileResultAdArea resultField">
+					<div class="mobileResultAd" id="mobileResultAd" data-fuse="Game_Result_Mob_Only"></div>
+					<p class="noAdvertsText">Ad.</p>
+				</div>
+			{/if}
 			{#if $resultScreenEnabled}
 				<div class="resultField">
-					<RulerDimensionLine
-						class="distance-icon"
-						style="margin-right: var(--panel-margin);"
-						size={22}
-						strokeWidth={2.25}
-					/>
+					<!-- Distance is usually number + unit, but Country Guessr just has Correct/Wrong -->
+					{#if $countryGuessr}
+						<MapPinned class="distance-icon" style="margin-right: var(--panel-margin)" size={22} strokeWidth={2.25} />
+					{:else}
+						<RulerDimensionLine
+							class="distance-icon"
+							style="margin-right: var(--panel-margin)"
+							size={22}
+							strokeWidth={2.25}
+						/>
+					{/if}
 					<p id="distanceText">{$distanceText}</p>
 				</div>
 				{#if $isAuthenticated}
@@ -199,9 +241,18 @@
 				class="standardButton white"
 				style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
 				style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
+				{@attach tooltip({
+					text: "Ready for the next location?",
+					imageSrc: "/img/tutorial/tutorial_next_round.png",
+					state: nextRoundTutorialNote,
+					zIndex: 13,
+					maxWidth: 125,
+					showDelay: 3000,
+					mobile: false,
+				})}
 				onclick={() => {
 					playSound("basic_button");
-					transitionToStart();
+					nextRound();
 				}}
 			>
 				<p class="nextRoundText">{$continueText}</p>
@@ -213,10 +264,7 @@
 
 <svelte:window
 	onkeypress={(event) => {
-		if (event.key === " " && isElementClickable(nextRoundButtonElement) && $resultScreenEnabled) {
-			transitionToStart();
-			playSound("basic_button");
-		}
+		if (event.key === " " && isElementClickable(nextRoundButtonElement) && $resultScreenEnabled) nextRound();
 	}}
 />
 

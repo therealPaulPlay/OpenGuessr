@@ -2,7 +2,7 @@
 	let { children } = $props();
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { mapHovered } from "$lib/stores/context-specific/mapStore";
-	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
+	import { gameplayAdVisible } from "$lib/stores/uiStore";
 </script>
 
 <div
@@ -10,7 +10,7 @@
 	class="regular-map-size map-holder"
 	class:map-hover={$mapHovered}
 	class:map-holder-to-result={$resultScreenEnabled}
-	class:map-holder-ad-shift={!$adsDisabled}
+	class:map-holder-ad-shift={$gameplayAdVisible}
 >
 	{@render children?.()}
 </div>
@@ -33,6 +33,7 @@
 		transition:
 			height 150ms ease,
 			width 150ms ease,
+			bottom 150ms ease,
 			opacity 250ms ease;
 	}
 

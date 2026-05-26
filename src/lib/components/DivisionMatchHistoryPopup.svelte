@@ -7,6 +7,7 @@
 	import { ArrowLeft, ArrowRight, Info } from "@lucide/svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { playSound } from "$lib/utils/soundManager";
+	import Chip from "./ui/Chip.svelte";
 
 	// local state variables
 	let matchResults = $state([]);
@@ -155,11 +156,9 @@
 									{/if}
 								{/if}
 								{entry.eloChange ?? "N/A"}
-								{#if entry.eloChange != null}
-									Elo
-								{/if}
+								{#if entry.eloChange != null}Elo{/if}
 								{#if entry.refunded}
-									<span class="refundedBox">Refunded</span>
+									<Chip text="Refunded" style="margin-left: var(--content-margin)" />
 								{/if}
 							</p>
 							<button
@@ -167,7 +166,8 @@
 								aria-label="Match overview"
 								onclick={() => {
 									playSound("basic_button");
-									openMatchOverview(entry.uuid); }}
+									openMatchOverview(entry.uuid);
+								}}
 							>
 								<Info size={20} strokeWidth={2.25} />
 							</button>
@@ -233,19 +233,6 @@
 		border-radius: var(--content-margin);
 		max-width: 65px;
 		padding-inline: var(--box-margin);
-	}
-
-	.refundedBox {
-		border-radius: var(--content-margin);
-		background: var(--box-color);
-		padding-inline: var(--content-margin);
-		box-shadow: var(--bulb-shadow);
-		white-space: nowrap;
-		display: inline;
-		color: white;
-		margin-left: 3px;
-		font-size: 20px;
-		opacity: 0.75;
 	}
 
 	.filterBox {

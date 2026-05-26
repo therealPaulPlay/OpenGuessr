@@ -1,40 +1,44 @@
 import { computePosition, flip, shift, offset, arrow, autoUpdate } from "@floating-ui/dom";
 
-export function tooltip({ text, imageSrc, imagePosition = "above", state, showClose = false, floatingClose = false, onClose }) {
+export function tooltip({ text, imageSrc, imageAspectRatio = "1 / 1", state, onClose, maxWidth = imageSrc ? 150 : 300, zIndex, showDelay = 0, mobile = true }) {
     return (node) => {
         let tooltipElement, arrowElement, textElement, imageElement, closeElement;
         let visible = false;
         let cleanupAutoUpdate;
+        let showTimeout = null;
+        
         const persistent = Boolean(state);
-        const closedScale = imageSrc ? 0.9 : 0;
+        const closedScale = imageSrc ? 0.85 : 0;
+        const animationDuration = imageSrc ? 250 : 150;
 
         function createTooltip() {
             tooltipElement = document.createElement('div');
-            tooltipElement.setAttribute('popover', 'manual');
+            if (!persistent) tooltipElement.setAttribute('popover', 'manual');
             tooltipElement.setAttribute('role', 'tooltip');
             tooltipElement.className = imageSrc ? 'tooltip tooltip-with-image' : 'tooltip';
+            if (persistent) tooltipElement.style.position = 'absolute';
 
             arrowElement = document.createElement('div');
             arrowElement.className = 'tooltip-arrow';
             tooltipElement.appendChild(arrowElement);
 
-            if (persistent && showClose) appendCloseButton();
+            if (persistent && imageSrc) appendCloseButton();
 
-            if (imageSrc && imagePosition === "above") appendImage();
+            if (imageSrc) appendImage();
 
             textElement = document.createElement('p');
             textElement.textContent = text;
             textElement.className = 'tooltip-text';
             tooltipElement.appendChild(textElement);
 
-            if (imageSrc && imagePosition === "below") appendImage();
-
             Object.assign(tooltipElement.style, {
                 transform: `scale(${closedScale})`,
                 opacity: '0%',
-                filter: 'blur(15px)',
-                transition: 'transform 150ms ease, opacity 150ms ease, filter 150ms ease'
+                filter: 'blur(var(--elevated-blur))',
+                transition: `transform ${animationDuration}ms ease, opacity ${animationDuration}ms ease, filter ${animationDuration}ms ease`,
+                maxWidth: `${maxWidth}px`
             });
+            if (zIndex !== undefined) tooltipElement.style.zIndex = zIndex;
 
             document.body.appendChild(tooltipElement);
         }
@@ -44,12 +48,13 @@ export function tooltip({ text, imageSrc, imagePosition = "above", state, showCl
             imageElement.src = imageSrc;
             imageElement.alt = 'Info graphic';
             imageElement.className = 'tooltip-image';
+            imageElement.style.aspectRatio = imageAspectRatio;
             tooltipElement.appendChild(imageElement);
         }
 
         function appendCloseButton() {
             closeElement = document.createElement('button');
-            closeElement.className = floatingClose ? 'tooltip-close tooltip-close-floating' : 'tooltip-close';
+            closeElement.className = 'tooltip-close';
             closeElement.setAttribute('aria-label', 'Close');
             closeElement.innerHTML = '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>';
             closeElement.addEventListener('click', () => {
@@ -85,19 +90,30 @@ export function tooltip({ text, imageSrc, imagePosition = "above", state, showCl
             });
         }
 
+        function scheduleShow() {
+            if (visible || showTimeout) return;
+            if (showDelay > 0) {
+                showTimeout = setTimeout(() => {
+                    showTimeout = null;
+                    show();
+                }, showDelay);
+            } else show();
+        }
+
         function show() {
-            if (visible) return;
+            if (!mobile && window.matchMedia("(max-width: 800px)").matches) return;
             if (!tooltipElement) createTooltip();
 
             visible = true;
-            tooltipElement.showPopover();
+            if (persistent) tooltipElement.style.display = '';
+            else tooltipElement.showPopover();
 
             position().then(() => {
                 requestAnimationFrame(() => {
                     Object.assign(tooltipElement.style, {
                         transform: 'scale(1)',
                         opacity: '100%',
-                        filter: 'blur(0px)'
+                        filter: 'blur(0)'
                     });
                 });
             });
@@ -107,26 +123,33 @@ export function tooltip({ text, imageSrc, imagePosition = "above", state, showCl
         }
 
         function hide() {
+            // Cancel any pending show
+            if (showTimeout) {
+                clearTimeout(showTimeout);
+                showTimeout = null;
+            }
             if (!tooltipElement || !visible) return;
 
             visible = false;
             Object.assign(tooltipElement.style, {
                 transform: `scale(${closedScale})`,
                 opacity: '0%',
-                filter: 'blur(15px)'
+                filter: 'blur(var(--elevated-blur))'
             });
 
             cleanupAutoUpdate?.();
             cleanupAutoUpdate = null;
 
             setTimeout(() => {
-                if (!visible) tooltipElement?.hidePopover();
-            }, 150);
+                if (visible || !tooltipElement) return;
+                if (persistent) tooltipElement.style.display = 'none';
+                else tooltipElement.hidePopover();
+            }, animationDuration);
         }
 
         function onPointerEnter(e) {
             if (e.pointerType == "touch") return;
-            show();
+            scheduleShow();
         }
 
         function onPointerLeave(e) {
@@ -136,7 +159,7 @@ export function tooltip({ text, imageSrc, imagePosition = "above", state, showCl
 
         if (persistent) {
             $effect(() => {
-                if (state.visible) show();
+                if (state.visible) scheduleShow();
                 else hide();
             });
         } else {
@@ -149,6 +172,7 @@ export function tooltip({ text, imageSrc, imagePosition = "above", state, showCl
                 node.removeEventListener('pointerenter', onPointerEnter);
                 node.removeEventListener('pointerleave', onPointerLeave);
             }
+            if (showTimeout) clearTimeout(showTimeout);
             cleanupAutoUpdate?.();
             tooltipElement?.remove();
         };

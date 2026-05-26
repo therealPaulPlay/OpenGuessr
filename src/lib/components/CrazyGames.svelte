@@ -11,7 +11,6 @@
 	import { joinFromAnywhere, createMultiplayerRoom } from "$lib/logic/multiplayerLogic";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
-	import { helpPopup } from "$lib/stores/uiStore";
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -26,12 +25,6 @@
 				preventFullscreen.set(true);
 				disableAutoAuthentication.set(true);
 				crazyGames.set(true); // Enable platform
-
-				// Show Help Popup
-				if (!localStorage.getItem("helpPopupCompleted")) {
-					helpPopup.set(true);
-					localStorage.setItem("helpPopupCompleted", "true");
-				}
 
 				// Load and initialize SDK
 				await new Promise((resolve, reject) => {
