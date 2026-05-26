@@ -1,6 +1,6 @@
 import { computePosition, flip, shift, offset, arrow, autoUpdate } from "@floating-ui/dom";
 
-export function tooltip({ text, imageSrc, state, onClose, maxWidth = imageSrc ? 150 : 300, zIndex, showDelay = 0, mobile = true }) {
+export function tooltip({ text, imageSrc, imageAspectRatio = "1 / 1", state, onClose, maxWidth = imageSrc ? 150 : 300, zIndex, showDelay = 0, mobile = true }) {
     return (node) => {
         let tooltipElement, arrowElement, textElement, imageElement, closeElement;
         let visible = false;
@@ -48,6 +48,7 @@ export function tooltip({ text, imageSrc, state, onClose, maxWidth = imageSrc ? 
             imageElement.src = imageSrc;
             imageElement.alt = 'Info graphic';
             imageElement.className = 'tooltip-image';
+            imageElement.style.aspectRatio = imageAspectRatio;
             tooltipElement.appendChild(imageElement);
         }
 

@@ -83,6 +83,7 @@
 		{@attach tooltip({
 			text: "Discover multiplayer, maps, competitions & more!",
 			imageSrc: "/img/tutorial/tutorial_menu.png",
+			imageAspectRatio: "15 / 7",
 			state: menuIntroductionNote,
 			maxWidth: 225,
 			showDelay: 20_000,
