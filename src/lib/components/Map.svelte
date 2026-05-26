@@ -30,7 +30,8 @@
 	onMount(async () => {
 		await import("leaflet");
 		initMap();
-		mapResizeObserver = new ResizeObserver(() => get(map).invalidateSize()).observe(mapElement);
+		mapResizeObserver = new ResizeObserver(() => get(map)?.invalidateSize());
+		mapResizeObserver.observe(mapElement);
 
 		return () => mapResizeObserver?.disconnect();
 	});
@@ -55,11 +56,7 @@
 	style:max-height={$mapExpanded ? "100%" : "0%"}
 	class:map-full-opacity-result={Boolean($resultScreenEnabled)}
 	class:hidden={$countryGuessr && !$resultScreenEnabled}
->
-	{#if !$map}
-		<div class="map-placeholder-before-load"></div>
-	{/if}
-</div>
+></div>
 
 <style>
 	#map {
@@ -87,7 +84,7 @@
 		opacity: 100%;
 	}
 
-	#map * {
+	:global(#map *) {
 		font-family: Roboto;
 	}
 
@@ -114,18 +111,6 @@
 		height: calc(100% + 60px) !important;
 		pointer-events: auto !important;
 		transition: none !important;
-	}
-
-	.map-placeholder-before-load {
-		width: 100%;
-		height: 100%;
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		background-image: url("/img/map_preview.webp");
-		background-size: cover;
-		background-position: center;
-		transition: opacity 500ms ease;
 	}
 
 	:global(.leaflet-bottom, .leaflet-control-attribution) {
