@@ -14,14 +14,12 @@
 	import Chip from "./ui/Chip.svelte";
 	import MapAttribution from "./MapAttribution.svelte";
 
-	let mapCategoryName = $state("Loading...");
-
-	$effect(() => {
-		if ($currentLocationLatitude && $currentLocationLongitude) {
-			if ($singleplayer) mapCategoryName = idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
-			if ($multiplayer) mapCategoryName = idToMapName($multiplayerMap);
-			if ($competition) mapCategoryName = $competitionData?.name;
-		}
+	let mapCategoryName = $derived.by(() => {
+		if (!$currentLocationLatitude || !$currentLocationLongitude) return "...";
+		if ($singleplayer) return idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
+		if ($multiplayer) return idToMapName($multiplayerMap);
+		if ($competition) return $competitionData?.name;
+		return "...";
 	});
 
 	let currentRoundText = $derived.by(() => {
