@@ -90,7 +90,7 @@
 
 	const finalPaths = [
 		{
-			title: "Famous Places",
+			title: "Famous places",
 			isPlay: true,
 			action: () => changeMap("Famous Places", true),
 		},
