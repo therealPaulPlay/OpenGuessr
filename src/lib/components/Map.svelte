@@ -84,10 +84,6 @@
 		opacity: 100%;
 	}
 
-	:global(#map *) {
-		font-family: Roboto;
-	}
-
 	/* On mobile, the map doesn't fade out if it's not being hovered over */
 	@media (orientation: portrait) and (max-width: 800px) {
 		#map {

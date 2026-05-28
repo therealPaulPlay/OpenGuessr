@@ -86,7 +86,7 @@
 			imageAspectRatio: "15 / 7",
 			state: menuIntroductionNote,
 			maxWidth: 225,
-			showDelay: 20_000,
+			showDelay: 15_000,
 			zIndex: 14,
 			mobile: false,
 		})}

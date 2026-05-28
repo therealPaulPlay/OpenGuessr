@@ -41,7 +41,7 @@
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { changeMap } from "$lib/utils/changeMap";
 	import { playSound } from "$lib/utils/soundManager";
-	import { ArrowRight, ChevronDown, ChevronUp, Play } from "@lucide/svelte";
+	import { ArrowRight, Play } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 	import { blur, fly } from "svelte/transition";
@@ -50,6 +50,7 @@
 	import { menuIntroductionNote } from "./TopBar.svelte";
 	import { page } from "$app/state";
 	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
+	import { navigationMenu } from "$lib/stores/uiStore";
 
 	// Check for tutorial state & start
 	onMount(() => {
@@ -72,86 +73,7 @@
 		if (!value && ($tutorialStep > 0 || $tutorial)) leaveTutorial(); // Mark tutorial as completed, users that go straight to e.g. competitions know what they are doing
 	});
 
-	// Tour complete / Final slide with path options --------------------------------------------------------------------------
-
 	let howToImage = $state(0);
-	let focusedPath = $state(0);
-	let wheelLock = false;
-	let swipeStartY = null;
-	let swipeStartX = null;
-	let dragOffset = $state(0);
-	let isDragging = $state(false);
-	let focusedSectionEl = $state();
-	let focusedSectionHeight = $state(0);
-
-	const SECTION_PATH_DISTANCE = 110; // % of section height between adjacent path centers
-	const sectionStep = $derived(focusedSectionHeight * (SECTION_PATH_DISTANCE / 100));
-
-	$effect(() => {
-		if (!focusedSectionEl) return;
-		focusedSectionHeight = focusedSectionEl.offsetHeight;
-	});
-
-	function navigatePath(direction) {
-		focusedPath = Math.max(0, Math.min(paths.length - 1, focusedPath + direction));
-	}
-
-	function resetSwipe() {
-		swipeStartY = null;
-		swipeStartX = null;
-		isDragging = false;
-		dragOffset = 0;
-	}
-
-	// Rubber-band: 1:1 within range, 0.25x resistance once past the first/last section
-	function resistedDy(dy) {
-		const max = focusedPath * sectionStep;
-		const min = -(paths.length - 1 - focusedPath) * sectionStep;
-		if (dy > max) return max + (dy - max) * 0.25;
-		if (dy < min) return min + (dy - min) * 0.25;
-		return dy;
-	}
-
-	function onPathWheel(e) {
-		if (wheelLock) return;
-		e.preventDefault();
-		wheelLock = true;
-		setTimeout(() => (wheelLock = false), 300);
-		navigatePath(e.deltaY > 0 ? 1 : -1);
-	}
-
-	function onPathPointerDown(e) {
-		if (e.pointerType !== "touch") return;
-		swipeStartY = e.clientY;
-		swipeStartX = e.clientX;
-	}
-
-	function onPathPointerMove(e) {
-		if (e.pointerType !== "touch" || swipeStartY === null) return;
-		const dy = e.clientY - swipeStartY;
-		const dx = e.clientX - swipeStartX;
-		if (!isDragging) {
-			// Clear 8px deadzone then lock to dominant axis - horizontal-dominant swipes (e.g. across path option content) pass through
-			if (Math.abs(dy) < 8 && Math.abs(dx) < 8) return;
-			if (Math.abs(dx) > Math.abs(dy)) return resetSwipe();
-			swipeStartY = e.clientY; // Re-anchor so drag picks up from 0 past the deadzone
-			isDragging = true;
-			return;
-		}
-		dragOffset = resistedDy(dy);
-	}
-
-	function onPathPointerUp(e) {
-		if (e.pointerType !== "touch" || swipeStartY === null) return;
-		const dy = e.clientY - swipeStartY;
-		const wasDragging = isDragging;
-		resetSwipe();
-		if (!wasDragging) return;
-		// Snap to the section closest to release, allowing multi-step skips
-		let steps = Math.round(Math.abs(dy) / sectionStep);
-		if (steps === 0 && Math.abs(dy) >= 30) steps = 1; // Flick that didn't reach half a section
-		if (steps !== 0) navigatePath(dy < 0 ? steps : -steps);
-	}
 
 	const howToSlides = [
 		{
@@ -166,69 +88,24 @@
 		},
 	];
 
-	const paths = [
+	const finalPaths = [
 		{
-			title: "Starter picks",
-			imageSrc: "/img/tutorial/tutorial_beginner.png",
-			options: [
-				{
-					title: "Play on Famous Places",
-					isPlay: true,
-					action: () => changeMap("Famous Places", true),
-				},
-				{
-					title: "Play on World",
-					isPlay: true,
-					action: () => {
-						// Only regenerate if not already on World - tutorial end usually defaults to World
-						const selectedMap = localStorage.getItem("selectedMap");
-						if (selectedMap && selectedMap !== $defaultMap) changeMap($defaultMap, true);
-					},
-				},
-			],
+			title: "Famous Places",
+			isPlay: true,
+			action: () => changeMap("Famous Places", true),
 		},
 		{
-			title: "Endless adventures",
-			imageSrc: "/img/tutorial/tutorial_maps.png",
-			options: [
-				{
-					title: "Play Country Guessr",
-					isPlay: true,
-					action: () => changeMap("Country Guessr", true),
-				},
-				{
-					title: "Browse maps",
-					isPlay: false,
-					action: () => goto("/maps"),
-				},
-			],
+			title: "Multiplayer & friends",
+			isPlay: false,
+			action: () => goto("/multiplayer"),
 		},
 		{
-			title: "Competitive play",
-			imageSrc: "/img/tutorial/tutorial_competitions.png",
-			options: [
-				{
-					title: "Multiplayer & friends",
-					isPlay: false,
-					action: () => goto("/multiplayer"),
-				},
-				{
-					title: "Enter a competition",
-					isPlay: false,
-					action: () => goto("/competitions"),
-				},
-			],
+			title: "Browse menu",
+			isPlay: false,
+			action: () => setTimeout(() => ($navigationMenu = true), 250),
 		},
 	];
 </script>
-
-<svelte:window
-	onwheel={(e) => $tutorialStep === 3 && onPathWheel(e)}
-	onpointerdown={(e) => $tutorialStep === 3 && onPathPointerDown(e)}
-	onpointermove={(e) => $tutorialStep === 3 && onPathPointerMove(e)}
-	onpointerup={(e) => $tutorialStep === 3 && onPathPointerUp(e)}
-	onpointercancel={() => $tutorialStep === 3 && resetSwipe()}
-/>
 
 {#if $tutorialStep > 0}
 	<div
@@ -241,7 +118,7 @@
 			{#if $tutorialStep == 1}
 				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Welcome, explorer!</h1>
 				<div class="subtitle-container">
-					<p class="subtitle" in:blur|global={{ duration: 500 }}>Fancy a quick intro to OpenGuessr?</p>
+					<p class="subtitle" in:blur|global={{ duration: 500 }}>Fancy a fun introduction to the game?</p>
 				</div>
 				<div class="action-container">
 					<div class="action-button-panel barMenu" in:fly|global={{ y: 20, duration: 1000 }}>
@@ -294,89 +171,47 @@
 			{:else if $tutorialStep == 3}
 				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Tour completed!</h1>
 				<div class="subtitle-container">
-					<p class="subtitle" in:blur|global={{ duration: 500 }}>Choose what to explore next.</p>
+					<p class="subtitle" in:blur|global={{ duration: 500 }}>Pick your next adventure.</p>
 				</div>
-				<div
-					class="path-container"
-					in:fly|global={{ y: 20, duration: 1000 }}
-					style:--focused-section-height="{focusedSectionHeight}px"
-				>
-					{#each { length: 2 }, index}
-						{@const isUp = index === 0}
-						<div class="path-nav-container barMenu" class:path-nav-up={isUp} class:path-nav-down={!isUp}>
+				<div class="path-container barMenu" in:fly|global={{ y: 20, duration: 1000 }}>
+					{#each finalPaths as option, idx}
+						<div class="path-box">
+							<div class="path-box-text-container of-left of-right">
+								<p style:text-wrap="nowrap">{option.title}</p>
+								{#if idx === 0}<Chip italic red mutedOpacity={false} text="Suggested" />{/if}
+							</div>
 							<button
-								class="standardButton white largeButton"
-								disabled={isUp ? focusedPath === 0 : focusedPath === paths.length - 1}
-								aria-label={isUp ? "Previous path" : "Next path"}
+								class="standardButton"
+								class:white={idx !== 0}
+								style:z-index="1"
 								onclick={() => {
 									playSound("basic_button");
-									navigatePath(isUp ? -1 : 1);
+									$tutorialStep = 0;
+									if (option.isPlay) menuIntroductionNote.visible = true;
+									option.action();
 								}}
 							>
-								{#if isUp}
-									<ChevronUp size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
+								{#if option.isPlay}
+									<Play style="margin-bottom: -2px;" size={22} strokeWidth={2.25} />
 								{:else}
-									<ChevronDown size={22} strokeWidth={2.25} style="margin-bottom: -2px;" />
+									<ArrowRight style="margin-bottom: -2px;" size={22} strokeWidth={2.25} />
 								{/if}
 							</button>
 						</div>
 					{/each}
-					<div class="path-sections-box">
-						{#each paths as section, secIdx}
-							{@const delta = secIdx - focusedPath}
-							{@const isFocused = delta === 0}
-							<div
-								{@attach (node) => {
-									if (isFocused) focusedSectionEl = node;
-								}}
-								class="path-section barMenu"
-								class:focused={isFocused}
-								class:dragging={isDragging}
-								style:transform="translate(-50%, calc(-50% + {delta * SECTION_PATH_DISTANCE}% + {dragOffset}px)) scale({isFocused ? 1 : 0.85})"
-								style:opacity={isFocused ? 1 : 0.5}
-								style:filter={isFocused ? "" : "blur(3px) brightness(0.5)"}
-							>
-								<p class="section-title">{section.title}</p>
-								<img
-									alt="section graphic"
-									class="section-image"
-									class:section-image-focused={isFocused}
-									style:top={secIdx == 0 ? "-110px" : secIdx == 1 ? "-105px" : "-100px"}
-									style:right={secIdx == 0 ? "-75px" : secIdx == 2 ? "-85px" : ""}
-									style:left={secIdx == 1 ? "-85px" : ""}
-									style:rotate={secIdx == 1 ? "-15deg" : secIdx == 2 ? "30deg" : ""}
-									src={section.imageSrc}
-								/>
-								{#each section.options as option, optIdx}
-									<div class="path-option">
-										<div class="path-option-text-container of-left of-right">
-											<p style:text-wrap="nowrap">
-												{option.title}
-											</p>
-											{#if secIdx == 0 && optIdx == 0}<Chip italic red mutedOpacity={false} text="Suggested" />{/if}
-											{#if secIdx == 1 && optIdx == 0}<Chip italic text="Casual" />{/if}
-										</div>
-										<button
-											class="standardButton"
-											class:white={!(optIdx == 0 && secIdx == 0)}
-											style:z-index="1"
-											onclick={() => {
-												playSound("basic_button");
-												$tutorialStep = 0;
-												if (option.isPlay) menuIntroductionNote.visible = true;
-												option.action();
-											}}
-										>
-											{#if option.isPlay}
-												<Play style="margin-bottom: -2px;" size={22} strokeWidth={2.25} />
-											{:else}
-												<ArrowRight style="margin-bottom: -2px;" size={22} strokeWidth={2.25} />
-											{/if}
-										</button>
-									</div>
-								{/each}
-							</div>
-						{/each}
+				</div>
+				<div class="action-container">
+					<div class="action-button-panel barMenu" in:fly|global={{ y: 20, duration: 1000 }}>
+						<button
+							class="standardButton white largeButton close-button"
+							onclick={() => {
+								playSound("basic_button");
+								$tutorialStep = 0;
+								menuIntroductionNote.visible = true;
+							}}
+						>
+							Close
+						</button>
 					</div>
 				</div>
 			{/if}
@@ -392,8 +227,9 @@
 		text-align: center;
 		align-content: center;
 		display: block;
+		padding: var(--layout-margin);
 		background-color: var(--dark-background);
-		backdrop-filter: blur(var(--normal-blur));
+		backdrop-filter: blur(var(--weak-blur));
 	}
 
 	.action-container {
@@ -402,115 +238,24 @@
 		align-items: center;
 		gap: var(--layout-margin);
 		flex-direction: column;
+		width: 100%;
 	}
 
 	.action-button-panel {
 		border-radius: var(--layout-margin);
-		backdrop-filter: none;
 	}
 
 	.path-container {
-		position: relative;
-		width: 100%;
-		height: 450px;
-		max-height: max(375px, 50dvh);
-		z-index: 1;
-		touch-action: pan-y;
-	}
-
-	.path-sections-box {
-		position: absolute;
-		inset: 0;
-		mask-image: linear-gradient(
-			to bottom,
-			transparent 0%,
-			rgba(0, 0, 0, 0.15) 4%,
-			rgba(0, 0, 0, 0.45) 9%,
-			rgba(0, 0, 0, 0.8) 14%,
-			black 20%,
-			black 80%,
-			rgba(0, 0, 0, 0.8) 86%,
-			rgba(0, 0, 0, 0.45) 91%,
-			rgba(0, 0, 0, 0.15) 96%,
-			transparent 100%
-		);
-	}
-
-	.path-nav-container {
-		position: absolute;
-		left: 50%;
-		transform: translateX(-50%);
-		z-index: 2;
-		border-radius: var(--layout-margin);
-	}
-
-	.path-nav-up {
-		bottom: calc(50% + var(--focused-section-height) / 2 + var(--layout-margin) + var(--content-margin));
-	}
-
-	.path-nav-down {
-		top: calc(50% + var(--focused-section-height) / 2 + var(--layout-margin) + var(--content-margin));
-	}
-
-	.path-section {
-		position: absolute;
-		left: 50%;
-		top: 50%;
 		display: flex;
-		align-items: center;
-		box-shadow: var(--bulb-shadow);
-		width: min(500px, calc(100vw - 4 * var(--layout-margin) - 2 * var(--box-margin)));
+		flex-direction: column;
+		width: 100%;
+		max-width: 400px;
 		box-sizing: border-box;
 		border-radius: var(--layout-margin);
-		flex-direction: column;
-		backdrop-filter: none;
-		transition:
-			transform 350ms ease,
-			opacity 350ms ease,
-			filter 350ms ease;
-		will-change: transform, opacity, filter;
-		pointer-events: none;
+		margin-bottom: var(--box-margin);
 	}
 
-	.path-section.dragging {
-		transition: opacity 350ms ease, filter 350ms ease;
-	}
-
-	.path-section.focused {
-		pointer-events: auto;
-	}
-
-	.section-title {
-		opacity: 0.75;
-		padding: var(--content-margin);
-	}
-
-	.section-image {
-		position: absolute;
-		height: 200px;
-		width: 200px;
-		pointer-events: none;
-		user-select: none;
-		filter: brightness(0.9);
-	}
-
-	.section-image-focused {
-		animation: section-image-pop 350ms 300ms ease-out;
-	}
-
-	@keyframes section-image-pop {
-		0% {
-			scale: 1;
-		}
-		55% {
-			scale: 1.05;
-		}
-		100% {
-			scale: 1;
-		}
-	}
-
-	.path-option {
+	.path-box {
 		border-radius: var(--box-margin);
 		display: flex;
 		align-items: center;
@@ -524,7 +269,7 @@
 		overflow: hidden;
 	}
 
-	.path-option-text-container {
+	.path-box-text-container {
 		scrollbar-width: none;
 		overflow-x: auto;
 		margin-left: var(--content-margin);
@@ -534,6 +279,10 @@
 		padding-top: var(--content-margin);
 		padding-bottom: var(--content-margin);
 		padding-right: var(--content-margin);
+	}
+
+	.close-button {
+		padding-inline: var(--layout-margin);
 	}
 
 	.subtle-button {
@@ -559,21 +308,19 @@
 
 	.subtitle {
 		opacity: 0.75;
-		padding: 50px;
-		padding-top: 0px;
+		padding-inline: var(--layout-margin);
 		padding-bottom: calc(var(--layout-margin) + var(--layout-margin) + var(--box-margin));
 		text-align: center;
+		margin-inline: auto;
 		font-size: 25px;
 		max-width: 400px;
 		text-shadow: 0 0 20px rgba(0, 0, 0, 0.35);
+		text-wrap: balance;
 	}
 
 	.subtitle-container {
 		width: 100%;
 		margin-top: calc(-1 * var(--box-margin));
-		display: flex;
-		justify-content: center;
-		align-items: center;
 	}
 
 	.title {
@@ -583,7 +330,7 @@
 		text-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
 		mask-size: 100% 100%;
 		mask-repeat: no-repeat;
-		padding-inline: calc(var(--layout-margin) * 2);
+		padding-inline: var(--layout-margin);
 	}
 
 	.how-to-slide {
