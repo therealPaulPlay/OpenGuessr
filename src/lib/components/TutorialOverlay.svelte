@@ -118,7 +118,7 @@
 			{#if $tutorialStep == 1}
 				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Welcome, explorer!</h1>
 				<div class="subtitle-container">
-					<p class="subtitle" in:blur|global={{ duration: 500 }}>Fancy a fun introduction to the game?</p>
+					<p class="subtitle" in:blur|global={{ duration: 500 }}>Fancy a fun introduction to OpenGuessr?</p>
 				</div>
 				<div class="action-container">
 					<div class="action-button-panel barMenu" in:fly|global={{ y: 20, duration: 1000 }}>
