@@ -48,7 +48,6 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import Tabs from "./ui/Tabs.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
-	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showNotification } from "$lib/utils/notifications";
 	import { censor } from "fast-profanity-filter";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
@@ -392,10 +391,9 @@
 						playSound("basic_button");
 						showConfirmPopup(
 							"Delete account",
-							"Some user-created content may persist briefly after deletion.",
+							"Please input your password to confirm the account deletion.",
 							() => {
-								if ($confirmPasswordValue) submitAccountDeletion($confirmPasswordValue);
-								else errorPopup("Password required", "Your password is required for deleting your account.");
+								submitAccountDeletion($confirmPasswordValue);
 							},
 							true,
 						);
