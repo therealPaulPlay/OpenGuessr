@@ -77,12 +77,12 @@
 
 	const howToSlides = [
 		{
-			image: "/img/help_image_1.jpg",
+			image: "/img/tutorial/help_image_1.jpg",
 			alt: "Look at the panorama",
 			description: "Look for clues in the panorama.",
 		},
 		{
-			image: "/img/help_image_2.jpg",
+			image: "/img/tutorial/help_image_2.jpg",
 			alt: "Guess where you are",
 			description: "Pinpoint the location on the map — the closer, the higher the score.",
 		},
