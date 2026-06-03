@@ -20,6 +20,7 @@
 	import { navigationMenu } from "$lib/stores/uiStore";
 	import Chip from "$lib/components/ui/Chip.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { browser } from "$app/environment";
 
 	const snapshotStore = getContext("snapshotStore");
 
@@ -160,7 +161,7 @@
 	}
 
 	function checkIfSelected(name, community = false) {
-		if (typeof window === "undefined") return false;
+		if (!browser) return false;
 		const selectedMap = localStorage.getItem("selectedMap");
 		if (community) name = "community_" + name;
 		return selectedMap == name || (name == $defaultMap && !selectedMap);
