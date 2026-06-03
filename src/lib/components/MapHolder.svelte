@@ -34,6 +34,7 @@
 			height 150ms ease,
 			width 150ms ease,
 			bottom 150ms ease,
+			right 150ms ease,
 			opacity 250ms ease;
 	}
 
@@ -47,13 +48,11 @@
 		bottom: 0 !important;
 		right: 0 !important;
 		left: 0 !important;
-		padding-inline: 0 !important;
 		z-index: 12 !important;
 		width: 100% !important;
 		height: 100% !important;
 		opacity: 100% !important;
 		visibility: visible !important;
-		border-radius: 0 !important;
 		transition: none !important;
 	}
 

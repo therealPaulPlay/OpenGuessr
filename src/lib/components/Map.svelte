@@ -75,6 +75,8 @@
 		box-shadow: 0 2px 20px rgba(5, 6, 10, 0.15);
 		transition:
 			opacity 250ms ease,
+			border-radius 150ms ease,
+			top 150ms ease,
 			max-height 150ms ease;
 		overflow: hidden;
 		outline: none;
