@@ -22,6 +22,7 @@
 	import MultiplayerHostDisplay from "$lib/components/MultiplayerHostDisplay.svelte";
 	import { multiplayer } from "$lib/stores/modeStore";
 	import { showNotification } from "$lib/utils/notifications";
+	import { browser } from "$app/environment";
 
 	// Restriction toggle
 	let restrictions = Object.keys($restrictionNames);
@@ -86,8 +87,8 @@
 				<div class="selectedMapField">
 					<p id="multiplayerMapDisplay">
 						{(() => {
-							if (typeof window === "undefined") return "Loading...";
-							return idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
+							if (browser) return idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
+							else return "...";
 						})()}
 					</p>
 					<button
@@ -107,7 +108,7 @@
 					onclick={async () => {
 						isCreatingRoom = true;
 						playSound("basic_button");
-						
+
 						// Check if map is invalid for multiplayer
 						if (["Country Guessr", "Tutorial"].includes(localStorage.getItem("selectedMap"))) {
 							showNotification("Map not supported in multiplayer.");
