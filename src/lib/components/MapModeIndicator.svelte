@@ -36,15 +36,18 @@
 </script>
 
 {#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded}
+	<!-- Needed for TOS compliance -->
+	<div
+		in:fade={{ duration: $resultScreenEnabled ? 0 : 150, delay: 150 }}
+		out:fade={{ duration: $resultScreenEnabled ? 0 : 50 }}
+	>
+		<MapAttribution />
+	</div>
 	<div
 		class="barMenu map-mode-indicator"
 		class:fading={Boolean($mapModeIndicatorFading)}
 		transition:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 150 }}
 	>
-		<!-- Needed for TOS compliance -->
-		<div transition:fade={{ duration: $resultScreenEnabled ? 0 : 150, delay: $resultScreenEnabled ? 0 : 150 }}>
-			<MapAttribution />
-		</div>
 		<div class="map-mode-text-container of-left of-right">
 			<p>
 				{$singleplayer ? "Singleplayer" : $multiplayer ? "Multiplayer" : $competition ? "Competition" : "Unknown"}
@@ -111,7 +114,7 @@
 
 	.map-mode-text-container {
 		flex-grow: 1;
-		margin-inline: var(--panel-margin);
+		margin-inline: calc(var(--layout-margin) - var(--panel-margin));
 		display: inline-flex;
 		gap: var(--content-margin);
 		align-items: center;

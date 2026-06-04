@@ -170,14 +170,14 @@ async function handleInviteEvent({ conversationId, toParticipantId, data }) {
                 activeConversationId.set(data.conversation.conversationId);
                 messagesPopup.set(true);
             } catch (error) {
-                errorPopup("Failed to accept invite", "An error occured trying to accept an invite.", error.message);
+                errorPopup("Failed to accept invite", "An error occured trying to accept an invite.", "From headless-chat: " + error.message);
             }
         },
         async () => {
             try {
                 await get(hcClient).declineInvite(data.conversation.conversationId);
             } catch (error) {
-                errorPopup("Failed to decline invite", "An error occured trying to decline a conversation invite.", error.message);
+                errorPopup("Failed to decline invite", "An error occured trying to decline a conversation invite.", "From headless-chat: " + error.message);
             }
         },
         false,

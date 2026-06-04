@@ -4,7 +4,6 @@ import { writable } from 'svelte/store';
 export const navigationMenu = writable(false);
 export const loadingScreenVisible = writable(true);
 export const littleTimeVignetteVisible = writable(false);
-export const gameplayAdVisible = writable(false);
 
 // Popup Visibility
 export const settingsPopup = writable(false);

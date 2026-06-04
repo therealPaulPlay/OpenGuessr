@@ -1,6 +1,6 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
-	import { chatMobilePopup, gameplayAdVisible, loadingScreenVisible } from "$lib/stores/uiStore";
+	import { chatMobilePopup, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
@@ -28,26 +28,14 @@
 			returnTutorialNote.visible = true;
 			hasShownTutorialNote = true;
 		}
-		if (!$tutorial && returnTutorialNote.visible) returnTutorialNote.visible = false;
-		if ($resultScreenEnabled && returnTutorialNote.visible) returnTutorialNote.visible = false;
+		if (!$tutorial || $resultScreenEnabled) returnTutorialNote.visible = false;
 	});
 
 	// Gameplay ad registration ----------------------------------------------------------------
-	let tutorialHiddenOnce = $state(false);
-
-	$effect(() => {
-		// Tutorial step is -1 until the check is done, so 0 means disabled + checked
-		// If the tutorial overlay comes up a second time, ignore (only fire once)
-		if ($tutorialStep === 0 && !tutorialHiddenOnce) tutorialHiddenOnce = true;
-	});
-
-	$effect(() => {
-		$gameplayAdVisible = !$adsDisabled && tutorialHiddenOnce;
-	});
 
 	$effect(async () => {
 		// Whenever the gameplay ad gets (re-)mounted, (re-)register
-		if ($gameplayAdVisible) {
+		if (!$adsDisabled) {
 			await tick();
 			registerGameplayAd();
 		}
@@ -123,7 +111,7 @@
 	{/if}
 </div>
 
-{#if $gameplayAdVisible}
+{#if !$adsDisabled}
 	<div class="gameplayAdArea barMenu" transition:blur={{ duration: 150 }}>
 		<div class="gameplayAd" id="gameplayAd" data-fuse="Game_incontent_1"></div>
 		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>

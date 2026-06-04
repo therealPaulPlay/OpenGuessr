@@ -15,7 +15,7 @@ export function initializeAds() {
     }
 
     getFuse().que.push(function () {
-        getFuse().pageInit(); // No blockingFuseIds array since we want to init even if no units are present (tutorial case, allows for faster registration)
+        getFuse().pageInit();
     });
 }
 

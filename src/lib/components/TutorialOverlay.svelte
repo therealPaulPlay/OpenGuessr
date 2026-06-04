@@ -1,4 +1,9 @@
 <script module>
+	export function startTutorial() {
+		tutorial.set(true);
+		tutorialStep.set(1);
+	}
+
 	export function leaveTutorial() {
 		clearTimeout(finishTimeout);
 		tutorialStep.set(0);
@@ -20,7 +25,7 @@
 		if (!value && finalizeOnNewRound) {
 			finalizeOnNewRound = false;
 			finishTimeout = setTimeout(() => {
-				tutorialStep.set(3);
+				tutorialStep.set(2);
 				localStorage.setItem("tutorialCompleted", true);
 				tutorial.set(false);
 			}, 150);
@@ -42,7 +47,6 @@
 	import { changeMap } from "$lib/utils/changeMap";
 	import { playSound } from "$lib/utils/soundManager";
 	import { ArrowRight, Play } from "@lucide/svelte";
-	import { onMount } from "svelte";
 	import { get } from "svelte/store";
 	import { blur, fly } from "svelte/transition";
 	import Chip from "./ui/Chip.svelte";
@@ -51,21 +55,6 @@
 	import { page } from "$app/state";
 	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { navigationMenu } from "$lib/stores/uiStore";
-
-	// Check for tutorial state & start
-	onMount(() => {
-		const tutorialCompleted = !(localStorage.getItem("tutorialCompleted") === null);
-
-		// Temporary backwards-compatability guard (old, now removed menu introduction seen -> count as tutorial played)
-		// TODO remove in 30 days
-		if (localStorage.getItem("menuIntroduction")) {
-			localStorage.setItem("tutorialCompleted", true);
-			$tutorialStep = 0;
-			return;
-		}
-
-		$tutorialStep = tutorialCompleted ? 0 : 1; // 0 means off, 1 shows the first step
-	});
 
 	// If the user leaves singleplayer while the overlay is shown or the tutorial is active, leave tutorial
 	// Also needed for linkjoin, for invites (you can sign up via the result screen), and for users that visit pages such as /competitions directly
@@ -79,12 +68,12 @@
 		{
 			image: "/img/tutorial/help_image_1.jpg",
 			alt: "Look at the panorama",
-			description: "Look for clues in the panorama.",
+			description: "Start by looking for clues in the panorama image.",
 		},
 		{
 			image: "/img/tutorial/help_image_2.jpg",
 			alt: "Guess where you are",
-			description: "Pinpoint the location on the map — the closer, the higher the score.",
+			description: "When ready, pinpoint the location on the map — the closer, the better.",
 		},
 	];
 
@@ -110,43 +99,17 @@
 {#if $tutorialStep > 0}
 	<div
 		class="tutorial-overlay"
-		in:blur
-		out:blur={{ duration: 250 }}
+		transition:blur={{ duration: 250 }}
 		style:display={page.url.pathname !== "/" ? "none" : ""}
 	>
 		<div class="content">
 			{#if $tutorialStep == 1}
-				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Welcome, explorer!</h1>
-				<div class="subtitle-container">
-					<p class="subtitle" in:blur|global={{ duration: 500 }}>Fancy a quick introduction to OpenGuessr?</p>
-				</div>
-				<div class="action-container">
-					<div class="action-button-panel barMenu" in:fly|global={{ y: 20, duration: 1000 }}>
-						<button
-							class="standardButton largeButton"
-							onclick={() => {
-								playSound("basic_button");
-								$tutorial = true; // Set tutorial to disable notification accept and others ways to leave & end up in unintended states
-								$tutorialStep = 2;
-							}}
-						>
-							Start the tour
-							<ArrowRight strokeWidth={2.25} size={22} style="margin-bottom: -3px; margin-left: 3px;" />
-						</button>
-					</div>
-					<button class="subtle-button" in:fly|global={{ y: 20, duration: 1000 }} onclick={leaveTutorial}>
-						No, skip tour
-					</button>
-				</div>
-			{:else if $tutorialStep == 2}
 				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>How to play</h1>
 				{#key howToImage}
 					<div class="how-to-slide">
 						<div class="how-to-image-container" in:blur|global={{ duration: 500 }}>
 							<img class="how-to-image" src={howToSlides[howToImage].image} alt={howToSlides[howToImage].alt} />
-							<p class="how-to-subtitle" in:blur|global={{ duration: 500 }}>
-								{howToSlides[howToImage].description}
-							</p>
+							<p class="how-to-subtitle">{howToSlides[howToImage].description}</p>
 						</div>
 					</div>
 				{/key}
@@ -168,8 +131,8 @@
 						</button>
 					</div>
 				</div>
-			{:else if $tutorialStep == 3}
-				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>Tour completed!</h1>
+			{:else if $tutorialStep == 2}
+				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>You're a natural!</h1>
 				<div class="subtitle-container">
 					<p class="subtitle" in:blur|global={{ duration: 500 }}>Pick your next adventure.</p>
 				</div>
@@ -283,18 +246,6 @@
 
 	.close-button {
 		padding-inline: var(--layout-margin);
-	}
-
-	.subtle-button {
-		padding-inline: var(--content-margin);
-		opacity: 0.5;
-		cursor: pointer;
-		transition: opacity 250ms ease;
-		text-shadow: 0 0 10px rgba(0, 0, 0, 0.35);
-	}
-
-	.subtle-button:hover {
-		opacity: 0.25;
 	}
 
 	.content {

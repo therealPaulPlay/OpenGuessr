@@ -97,7 +97,7 @@
 				$navigationMenu = true;
 			};
 			if ($tutorial) {
-				return showConfirmPopup("Leave tour?", "To explore on your own, you need to leave the tour.", () => {
+				return showConfirmPopup("Leave tutorial?", "To explore on your own, you need to leave the tutorial.", () => {
 					leaveTutorial();
 					showNav();
 				});

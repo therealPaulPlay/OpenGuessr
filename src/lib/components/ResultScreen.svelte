@@ -91,7 +91,7 @@
 	$effect(() => {
 		if (!$tutorial) isFirstTutorialRound = true; // Reset to default on tutorial end
 		if ($tutorial && $resultScreenEnabled && isFirstTutorialRound) nextRoundTutorialNote.visible = true;
-		if (!$resultScreenEnabled && nextRoundTutorialNote.visible) nextRoundTutorialNote.visible = false;
+		if (!$resultScreenEnabled) nextRoundTutorialNote.visible = false;
 	});
 
 	// Ads ------------------------------------------------------------------------------------------
@@ -102,9 +102,7 @@
 
 	$effect(() => {
 		// Effect since this should also fire if user is currently on the result screen and adsDisabled becomes false
-		if ($resultScreenEnabled && !$adsDisabled && !resultEnabledOnceSinceAdsEnabled) {
-			resultEnabledOnceSinceAdsEnabled = true;
-		}
+		if ($resultScreenEnabled && !$adsDisabled) resultEnabledOnceSinceAdsEnabled = true;
 	});
 
 	adsDisabled.subscribe((value) => {
