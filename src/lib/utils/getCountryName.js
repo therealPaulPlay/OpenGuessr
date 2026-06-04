@@ -1,6 +1,6 @@
 const displayNames = new Intl.DisplayNames(["en"], { type: "region" });
 
-// Flag-icon composite codes that aren't real ISO regions, so Intl can't resolve them
+// Region codes from svelte-flag-icons that aren't ISO
 const regionNames = {
     EsCt: "Catalonia",
     EsGa: "Galicia",
