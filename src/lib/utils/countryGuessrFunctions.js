@@ -1,54 +1,56 @@
 // Gamemode where you guess the country (not on the map)
-import { countryGuessrCountriesArray, selectedCountryField, selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
+import { countryGuessrCountriesArray, selectedCountryFieldIndex, selectedCountryGuesserCountryCode } from "$lib/stores/context-specific/countryGuessrStore";
 import { get } from "svelte/store";
 import { countryGuessr, singleplayer } from "$lib/stores/modeStore";
+import { getCountryName } from "$lib/utils/getCountryName";
 
 let correctCountryIndex = null; // 1-6
 
 export function checkIfGuessWasCorrect() {
-    return correctCountryIndex == get(selectedCountryField);
+    return correctCountryIndex == get(selectedCountryFieldIndex);
 }
 
 export async function setCountryGuesserCountry(country) {
     if (!countryCodes) await loadCountryCodes();
 
-    selectedCountryGuesserCountry.set(country);// This can be "South Africa", "United States", "India" and so on
-    selectedCountryField.set(0); // Clear country field selection
+    selectedCountryGuesserCountryCode.set(country); // ISO code of the correct country, e.g. "ZA", "US", "IN"
+    selectedCountryFieldIndex.set(0); // Clear country field selection
     countryGuessrCountriesArray.set([]); // Clear countries array
 
     try {
         let takenLocations = []; // To avoid duplicates amongst the 6 random / wrong ones (one of them will be replaced by the correct one)
 
         for (let i = 1; i <= 6; i++) {
-            let randomCountryIndex = Math.floor(Math.random() * Object.keys(countryCodes).length);
-            let countryObject = {};
+            let randomCountryIndex = Math.floor(Math.random() * countryCodes.length);
 
             // Avoid duplicates and avoid a random country matching the corect country
-            while (Object.keys(countryCodes)[randomCountryIndex] == get(selectedCountryGuesserCountry) || takenLocations.includes(Object.keys(countryCodes)[randomCountryIndex])) {
-                randomCountryIndex = Math.floor(Math.random() * Object.keys(countryCodes).length);
+            while (countryCodes[randomCountryIndex] == get(selectedCountryGuesserCountryCode) || takenLocations.includes(countryCodes[randomCountryIndex])) {
+                randomCountryIndex = Math.floor(Math.random() * countryCodes.length);
             }
 
-            const countryName = Object.keys(countryCodes)[randomCountryIndex];
-            countryObject.name = countryName.length > 17 ? countryName.slice(0, 14) + "..." : countryName;
-            countryObject.flag = countryCodes[countryName];
+            const code = countryCodes[randomCountryIndex];
+            takenLocations.push(code);
 
-            takenLocations.push(countryName);
+            const name = getCountryName(code) || "Unknown";
             countryGuessrCountriesArray.update((value) => {
-                value.push(countryObject);
+                value.push({
+                    name: name.length > 17 ? name.slice(0, 14) + "..." : name,
+                    flag: code.charAt(0).toUpperCase() + code.slice(1).toLowerCase(), // ISO -> svelte-flag-icons key
+                });
                 return value;
             });
         }
 
         // Now make one of them the actual answer (index 0-5)
         correctCountryIndex = Math.floor(Math.random() * 6);
-        let correctCountryObject = {};
 
-        const countryName = get(selectedCountryGuesserCountry);
-        correctCountryObject.name = countryName.length > 17 ? countryName.slice(0, 14) + "..." : countryName;
-        correctCountryObject.flag = countryCodes[countryName];
-
+        const correctCode = get(selectedCountryGuesserCountryCode);
+        const correctName = getCountryName(correctCode) || "Unknown";
         countryGuessrCountriesArray.update((value) => {
-            value[correctCountryIndex] = correctCountryObject;
+            value[correctCountryIndex] = {
+                name: correctName.length > 17 ? correctName.slice(0, 14) + "..." : correctName,
+                flag: correctCode.charAt(0).toUpperCase() + correctCode.slice(1).toLowerCase(),
+            };
             return value;
         });
 
@@ -62,8 +64,8 @@ let countryCodes;
 
 async function loadCountryCodes() {
     try {
-        const countryCodesResponse = await fetch("/json/country-codes/countryCodes.json");
-        countryCodes = await countryCodesResponse.json().then((response) => response.countryCodes);
+        const countryCodesResponse = await fetch("/json/country-codes/country-codes.json");
+        countryCodes = await countryCodesResponse.json();
     } catch (error) {
         console.error("Error loading country codes:", error);
     }

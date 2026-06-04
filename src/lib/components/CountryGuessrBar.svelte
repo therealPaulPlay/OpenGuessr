@@ -1,15 +1,15 @@
 <script>
 	import { countryGuessr } from "$lib/stores/modeStore";
-	import { countryGuessrCountriesArray, selectedCountryField } from "$lib/stores/context-specific/countryGuessrStore";
+	import { countryGuessrCountriesArray, selectedCountryFieldIndex } from "$lib/stores/context-specific/countryGuessrStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
-	import * as FlagIcons from "svelte-flag-icons";
+	import Flag from "./Flag.svelte";
 	import { gameplayAdVisible } from "$lib/stores/uiStore";
 	import { blur } from "svelte/transition";
 
 	function selectCountry(index) {
 		playSound("item_select");
-		selectedCountryField.set(index);
+		selectedCountryFieldIndex.set(index);
 		confirmButtonClicks();
 	}
 </script>
@@ -31,9 +31,7 @@
 					}}
 				>
 					<div class="countryGuessrFlag">
-						{#if FlagIcons[country.flag]}
-							<svelte:component this={FlagIcons[country.flag]} size={35} />
-						{/if}
+						<Flag code={country.flag} size={35} showTooltip={false} />
 					</div>
 					<p class="countryGuessrTag">{country.name}</p>
 				</button>
