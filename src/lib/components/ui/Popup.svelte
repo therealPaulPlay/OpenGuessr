@@ -82,6 +82,7 @@
 		overflow-x: hidden;
 		max-height: min(900px, calc(100dvh - var(--layout-margin) * 2 - 50px));
 		width: 100%;
+		scrollbar-width: none;
 	}
 
 	.content-frameless {

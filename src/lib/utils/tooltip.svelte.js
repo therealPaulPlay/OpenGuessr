@@ -68,7 +68,7 @@ export function tooltip({ text, imageSrc, imageAspectRatio = "1 / 1", state, onC
             tooltipElement.appendChild(closeElement);
         }
 
-        function position() {
+        async function position() {
             const boxMargin = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--box-margin'));
             return computePosition(node, tooltipElement, {
                 placement: "top",
