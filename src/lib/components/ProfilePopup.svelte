@@ -641,6 +641,7 @@
 		margin-left: var(--panel-margin);
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--bulb-shadow);
+		flex-shrink: 0;
 	}
 
 	.card-content {
@@ -652,7 +653,10 @@
 		opacity: 0.5;
 		font-size: 18px;
 		text-wrap: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
+
 	.card-content p {
 		margin-bottom: var(--content-margin);
 		max-width: 150px;

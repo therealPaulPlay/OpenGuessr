@@ -57,7 +57,7 @@
 </script>
 
 <!-- Room code-->
-<div class="roomCreationModule multiplayerHostSettings noGap">
+<div class="multiplayerHostSettings noGap">
 	<p class="codeDisplayText">Join with code</p>
 	<h1 id="roomCodeDisplay">
 		{$roomCode?.slice(0, 3) || "..."}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomCode?.slice(3) || "..."}
@@ -65,7 +65,7 @@
 </div>
 
 <!-- Team and player display -->
-<div class="roomCreationModule multiplayerHostSettings teamsDisplay">
+<div class="multiplayerHostSettings teamsDisplay">
 	{#if $teamAmount === 1 || !$multiplayerTableArray?.length}
 		<p class="playerBoxElement">
 			<span>No team:</span>
@@ -112,7 +112,7 @@
 
 <!-- Friend invite display -->
 {#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online)?.length >= 1}
-	<div id="friendsInviteDisplay" class="roomCreationModule multiplayerHostSettings" transition:slide>
+	<div id="friendsInviteDisplay" class="multiplayerHostSettings" transition:slide>
 		<div class="roomCreationFriendsBox of-top of-bottom">
 			<!-- online players will be added here programmatically -->
 			{#each $loadedFriendsData.filter((value) => value.online) as entry}
@@ -220,13 +220,9 @@
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
 		padding-top: var(--box-margin);
-		width: calc(100% - var(--box-margin) * 2);
-	}
-
-	.roomCreationModule {
-		padding-top: var(--box-margin);
 		padding-bottom: var(--box-margin);
 		box-shadow: var(--box-shadow);
+		width: calc(100% - var(--box-margin) * 2);
 	}
 
 	#friendsInviteDisplay {

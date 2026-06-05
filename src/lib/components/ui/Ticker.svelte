@@ -68,7 +68,6 @@
 		align-items: center;
 		margin-bottom: var(--box-margin);
 		margin-top: var(--box-margin);
-		flex-wrap: wrap;
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 </style>
