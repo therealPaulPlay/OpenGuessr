@@ -14,6 +14,7 @@
 	let mapResizeObserver;
 	let mapResizeTimeout;
 	let lastPointerType = $state("mouse");
+	let mapOpen = $derived($mapExpanded && (!$countryGuessr || $resultScreenEnabled));
 
 	const mobilePortrait = new MediaQuery("(orientation: portrait) and (max-width: 800px)");
 
@@ -56,10 +57,9 @@
 	onmouseenter={handleMapHover}
 	onmouseleave={handleMapUnhover}
 	bind:this={mapElement}
-	style:height={$mapExpanded ? (mobilePortrait.current ? "35dvh" : $mapHovered ? "50dvh" : "max(18dvh, 150px)") : "0"}
-	style:margin-top={$mapExpanded ? undefined : "calc(var(--box-margin) * -1)"}
+	style:height={mapOpen ? (mobilePortrait.current ? "35dvh" : $mapHovered ? "50dvh" : "max(18dvh, 150px)") : "0"}
+	style:margin-top={mapOpen ? undefined : "calc(var(--box-margin) * -1)"}
 	class:map-full-opacity-result={Boolean($resultScreenEnabled)}
-	class:hidden={$countryGuessr && !$resultScreenEnabled}
 ></div>
 
 <style>
@@ -96,25 +96,16 @@
 		}
 	}
 
-	.hidden {
-		opacity: 0 !important;
-		pointer-events: none !important;
-		max-height: 0 !important;
-	}
-
 	.map-full-opacity-result {
 		opacity: 1 !important;
 		border-radius: 0 !important;
 		top: -60px;
 		position: fixed !important;
-		visibility: visible !important;
 		height: calc(100dvh + 60px) !important;
-		pointer-events: auto !important;
 		transition: none !important;
 	}
 
 	:global(.leaflet-bottom, .leaflet-control-attribution) {
-		pointer-events: none;
 		display: none;
 	}
 

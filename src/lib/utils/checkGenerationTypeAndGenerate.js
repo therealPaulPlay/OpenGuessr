@@ -44,9 +44,9 @@ function disableMapSpecifics() {
   imageGuessr.set(false);
 }
 
-function setMapSpecifics(category) {
-  if (category == "Country Guessr") countryGuessr.set(true);
-  if (category == "Image Guessr") {
+function setMapSpecifics(map) {
+  if (map == "Country Guessr") countryGuessr.set(true);
+  if (map == "Image Guessr") {
     imageGuessr.set(true);
     enableImageGuessr(true);
   }
