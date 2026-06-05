@@ -22,7 +22,6 @@
 	import ConfirmPopup from "$lib/components/ConfirmPopup.svelte";
 	import BottomBar from "$lib/components/BottomBar.svelte";
 	import PanoramaIframe from "$lib/components/PanoramaIframe.svelte";
-	import HelpPopup from "$lib/components/HelpPopup.svelte";
 	import SignupIframe from "$lib/components/SignupIframe.svelte";
 	import DiscordPopup from "$lib/components/DiscordPopup.svelte";
 	import TimerCountdown from "$lib/components/TimerCountdownOverlay.svelte";
@@ -57,6 +56,8 @@
 	import MatchOverviewPopup from "$lib/components/MatchOverviewPopup.svelte";
 	import MessagesPopup from "$lib/components/MessagesPopup.svelte";
 	import Authentication from "$lib/components/Authentication.svelte";
+	import TutorialOverlay from "$lib/components/TutorialOverlay.svelte";
+	import TutorialNote from "$lib/components/TutorialNote.svelte";
 
 	// Load panorama, ads, overfade etc.
 	onMount(async () => {
@@ -126,7 +127,7 @@
 <TournamentInfoPopup />
 <TournamentMatchResultsPopup />
 <InboxPopup />
-<HelpPopup />
+<TutorialOverlay />
 <DuelResultPopup />
 <SignupIframe />
 <SettingsPopup />
@@ -149,6 +150,7 @@
 <CountryGuesserBar />
 <MapHolder>
 	<MobileMapToggles />
+	<TutorialNote />
 	<Map />
 	<MapModeIndicator />
 </MapHolder>

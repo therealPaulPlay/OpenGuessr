@@ -3,8 +3,9 @@
 	import { checkAuthentication } from "$lib/logic/accountLogic";
 	import IframePopup from "./ui/IframePopup.svelte";
 	import { showNotification } from "$lib/utils/notifications";
+	import { browser } from "$app/environment";
 
-	if (typeof window !== "undefined") {
+	if (browser) {
 		window.onmessage = function (e) {
 			try {
 				const data = String(e.data); // Ensure data is a string

@@ -37,13 +37,10 @@ import { setRestriction } from "$lib/utils/setRestriction";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
 import { goto } from "$app/navigation";
-import { changeMap } from "$lib/utils/changeMap";
-import { showNotification } from "$lib/utils/notifications";
 import PlaySocket from "playsocketjs";
 import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
-import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 import { page } from "$app/state";
 
@@ -57,7 +54,7 @@ function setMultiplayerUI(enable) {
     if (enable) {
         get(singleplayerTimer)?.stopTimer();
         leaveFunction.set(() => {
-            showConfirmPopup("Leave?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayer);
+            showConfirmPopup("Leave room?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayer);
             playSound("leave_round");
         });
         chatVisible.set(true);
@@ -254,12 +251,6 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, 
         disableResultScreen(); // Edge case
         await createMultiplayerInstance();
 
-        // Check if map is valid for multiplayer
-        if (localStorage.getItem("selectedMap") == "Country Guessr") {
-            showNotification("Map not supported in multiplayer.")
-            await changeMap(get(defaultMap), true); // Regenerate to update locations array
-        }
-
         const code = await get(socket)?.createRoom({
             roundAmount: get(roundAmount),
             roundLength: get(roundLength),
@@ -312,7 +303,7 @@ export function leaveMultiplayer(destroy = true) {
     // Save flag to reset UI & regenerate
     const wasMultiplayerEnabled = get(multiplayer);
 
-    // Disable Multiplayer & Matchmaking
+    // Disable Multiplayer & matchmaking
     multiplayer.set(false);
     matchmakingActive.set(false);
     matchmakingHosting.set(false); // Needed when matchmakingActive was never set to true, but hosting was
@@ -341,6 +332,9 @@ export function leaveMultiplayer(destroy = true) {
     currentRound.set(0);
     multiplayerMap.set(null);
     mobileChatLastOpenedMsgCount.set(0);
+
+    // Hide linkjoin popup if open
+    linkJoinPopup.set(false);
 
     // Regenerate location, reset UI
     if (wasMultiplayerEnabled) {

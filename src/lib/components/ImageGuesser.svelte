@@ -126,7 +126,7 @@
 		width: 100%;
 		height: 100%;
 		z-index: 1;
-		filter: brightness(0.5) blur(25px);
+		filter: brightness(0.5) blur(var(--strong-blur));
 		background-size: cover;
 		transition: opacity 500ms ease;
 		opacity: 1;

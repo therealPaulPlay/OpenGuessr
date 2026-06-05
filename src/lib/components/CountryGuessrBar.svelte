@@ -1,35 +1,44 @@
 <script>
 	import { countryGuessr } from "$lib/stores/modeStore";
-	import { countryGuessrCountriesArray, selectedCountryField } from "$lib/stores/context-specific/countryGuessrStore";
+	import { countryGuessrCountriesArray, selectedCountryFieldIndex } from "$lib/stores/context-specific/countryGuessrStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
-	import * as FlagIcons from "svelte-flag-icons";
+	import Flag from "./Flag.svelte";
+	import { blur } from "svelte/transition";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 
 	function selectCountry(index) {
 		playSound("item_select");
-		selectedCountryField.set(index);
+		selectedCountryFieldIndex.set(index);
 		confirmButtonClicks();
 	}
 </script>
 
 {#if $countryGuessr}
-	<div class="countryGuessrSelector barMenu" role="menu" tabindex="0" class:countryGuessrSelectorAdShift={!$adsDisabled}>
-		{#each $countryGuessrCountriesArray as country, index}
-			<button
-				class="countryGuessrHolder standardButton white"
-				onclick={() => {
-					selectCountry(index);
-				}}
-			>
-				<div class="countryGuessrFlag">
-					{#if FlagIcons[country.flag]}
-						<svelte:component this={FlagIcons[country.flag]} size={35} />
-					{/if}
-				</div>
-				<p class="countryGuessrTag">{country.name}</p>
-			</button>
-		{/each}
+	<div
+		class="countryGuessrSelector barMenu"
+		role="menu"
+		tabindex="0"
+		class:countryGuessrSelectorAdShift={!$adsDisabled}
+		transition:blur={{ duration: 150 }}
+	>
+		{#if $countryGuessrCountriesArray?.length}
+			{#each $countryGuessrCountriesArray as country, index}
+				<button
+					class="countryGuessrHolder standardButton white"
+					onclick={() => {
+						selectCountry(index);
+					}}
+				>
+					<div class="countryGuessrFlag">
+						<Flag code={country.flag} size={35} showTooltip={false} />
+					</div>
+					<p class="countryGuessrTag">{country.name}</p>
+				</button>
+			{/each}
+		{:else}
+			<p class="loadingText">Loading...</p>
+		{/if}
 	</div>
 {/if}
 
@@ -71,10 +80,16 @@
 		border-radius: var(--layout-margin);
 		margin-inline: auto;
 		display: flex;
-		pointer-events: auto;
-		justify-content: space-between;
+		justify-content: center;
+		align-items: center;
 		z-index: 10;
 		flex-wrap: wrap;
+		transition: bottom 150ms ease;
+	}
+
+	.loadingText {
+		opacity: 0.5;
+		padding: var(--content-margin);
 	}
 
 	@media all and (max-width: 1500px) {
@@ -89,7 +104,7 @@
 		.countryGuessrHolder {
 			height: 75px;
 			width: 100px;
-			border-radius: 7px;
+			border-radius: calc(var(--layout-margin) - var(--panel-margin));
 			flex-grow: 1;
 		}
 
@@ -100,7 +115,7 @@
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {
-		.countryGuessrSelectorAdShift{
+		.countryGuessrSelectorAdShift {
 			bottom: 136px; /* Shift up to fit ad */
 		}
 		.countryGuessrSelector {

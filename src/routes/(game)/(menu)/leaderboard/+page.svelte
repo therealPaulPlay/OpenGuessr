@@ -211,7 +211,7 @@
 						playSound("basic_button");
 						showConfirmPopup(
 							"Resets",
-							`Elo above ${Number(2000).toLocaleString()} is halved at the start of each month, and the deducted amount is converted into tokens. Experience above 100M is halved at the start of each month.`,
+							`At the start of each month, elo above 2k and experience above 100M are halved. The deducted elo amount is converted into tokens.`,
 						);
 					}}
 				>

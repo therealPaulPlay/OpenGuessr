@@ -1,7 +1,8 @@
 import { countryGuessr } from "$lib/stores/modeStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { get } from "svelte/store";
-import { selectedCountryGuesserCountry } from "$lib/stores/context-specific/countryGuessrStore";
+import { selectedCountryGuesserCountryCode } from "$lib/stores/context-specific/countryGuessrStore";
+import { getCountryName } from "$lib/utils/getCountryName";
 
 // Haversine formula, takes spherical nature of planet into account
 export function calculateDistances(mapsLat = 0, mapsLon = 0) {
@@ -37,7 +38,7 @@ export function motivationalResultMessage(distance) {
     else message = farDistances[Math.floor(Math.random() * farDistances.length)];
 
     // In Country guessr, tell the country
-    if (get(countryGuessr)) message = "The country is " + get(selectedCountryGuesserCountry) + ".";
+    if (get(countryGuessr)) message = "The country is " + (getCountryName(get(selectedCountryGuesserCountryCode)) || "Unknown") + ".";
     return message;
 }
 

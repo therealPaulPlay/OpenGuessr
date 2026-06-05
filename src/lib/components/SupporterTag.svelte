@@ -16,7 +16,7 @@
 	.supporterSpan::before {
 		animation: 4s supporterGlint 2s infinite;
 		background: white;
-		filter: blur(8px);
+		filter: blur(var(--normal-blur));
 		content: "";
 		position: absolute;
 		width: var(--box-margin);

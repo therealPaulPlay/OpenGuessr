@@ -42,7 +42,11 @@
 				await get(hcClient).removeReaction(existing.reactionId); // Remove, don't replace
 			else await get(hcClient).addReaction(message.messageId, emoji); // Add new reaction
 		} catch (error) {
-			errorPopup("Failed to react", "An error occured trying to update a reaction.", error.message);
+			errorPopup(
+				"Failed to react",
+				"An error occured trying to update a reaction.",
+				"From headless-chat: " + error.message,
+			);
 		}
 	}
 
@@ -147,7 +151,7 @@
 												errorPopup(
 													"Failed to delete message",
 													"An error occured trying to delete your message.",
-													error.message,
+													"From headless-chat: " + error.message,
 												);
 											}
 										},
@@ -183,7 +187,7 @@
 								Object.assign(panel.style, {
 									transform: "scale(0)",
 									opacity: "0",
-									filter: "blur(15px)",
+									filter: "blur(var(--elevated-blur))",
 									transition: "transform 150ms ease, opacity 150ms ease, filter 150ms ease",
 								});
 								node.showPopover();
@@ -193,7 +197,9 @@
 									middleware: [flip(), shift({ padding: 5 })],
 								}).then(({ x, y }) => {
 									Object.assign(node.style, { left: x + "px", top: y + "px" });
-									requestAnimationFrame(() => Object.assign(panel.style, { transform: "scale(1)", opacity: "1", filter: "blur(0)" }));
+									requestAnimationFrame(() =>
+										Object.assign(panel.style, { transform: "scale(1)", opacity: "1", filter: "blur(0)" }),
+									);
 								});
 
 								const onPointerDown = (e) => {
@@ -251,7 +257,6 @@
 	.alias-button {
 		background: none;
 		border: none;
-		color: white;
 		cursor: pointer;
 		padding: 0;
 		opacity: 0.5;

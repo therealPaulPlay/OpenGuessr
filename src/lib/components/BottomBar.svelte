@@ -1,6 +1,6 @@
 <script>
 	import { playSound } from "$lib/utils/soundManager";
-	import { chatMobilePopup, helpPopup, loadingScreenVisible } from "$lib/stores/uiStore";
+	import { chatMobilePopup, loadingScreenVisible } from "$lib/stores/uiStore";
 	import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
@@ -8,23 +8,37 @@
 	import { mapExpanded, mapInteractive } from "$lib/stores/context-specific/mapStore";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { countryGuessr, multiplayer } from "$lib/stores/modeStore";
-	import { blur, fade } from "svelte/transition";
+	import { blur } from "svelte/transition";
 	import { Map, MessageSquareDot, MessageSquareMore } from "@lucide/svelte";
 	import { iframeElement, panoramaSrc } from "$lib/stores/locationStore";
 	import { chatArray, mobileChatLastOpenedMsgCount, socket } from "$lib/stores/context-specific/multiplayerStore";
-	import { onMount } from "svelte";
 	import { registerGameplayAd } from "$lib/utils/ads";
 	import { get } from "svelte/store";
 	import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
+	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
+	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
+	import { tick } from "svelte";
 
-	function reloadPanorama() {
-		playSound("reload");
-		$loadingScreenVisible = true;
-		$iframeElement.src = $panoramaSrc;
-	}
+	// Show return when in tutorial ------------------------------------------------------------------
+	let returnTutorialNote = $state({ visible: false });
+	let hasShownTutorialNote = false;
 
-	onMount(() => {
-		registerGameplayAd();
+	$effect(() => {
+		if ($tutorial && $tutorialStep === 0 && !hasShownTutorialNote) {
+			returnTutorialNote.visible = true;
+			hasShownTutorialNote = true;
+		}
+		if (!$tutorial || $resultScreenEnabled) returnTutorialNote.visible = false;
+	});
+
+	// Gameplay ad registration ----------------------------------------------------------------
+
+	$effect(async () => {
+		// Whenever the gameplay ad gets (re-)mounted, (re-)register
+		if (!$adsDisabled) {
+			await tick();
+			registerGameplayAd();
+		}
 	});
 </script>
 
@@ -33,8 +47,19 @@
 		<div class="barMenu">
 			<button
 				class="standardButton white"
+				{@attach tooltip({
+					text: "Click to return to the spawn.",
+					state: returnTutorialNote,
+					imageSrc: "/img/tutorial/tutorial_return.png",
+					zIndex: 10,
+					showDelay: 2000,
+					mobile: false,
+				})}
 				onclick={() => {
-					reloadPanorama(); // No sound, as the reload sound will play
+					if (returnTutorialNote.visible) returnTutorialNote.visible = false;
+					playSound("reload");
+					$loadingScreenVisible = true;
+					$iframeElement.src = $panoramaSrc;
 				}}
 			>
 				<img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
@@ -59,7 +84,7 @@
 		</div>
 	</div>
 	{#if !$countryGuessr}
-		<div class="barMenu bottomRightMenu" transition:fade={{ duration: 250 }}>
+		<div class="barMenu bottomRightMenu" transition:blur={{ duration: 150 }}>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
@@ -74,34 +99,24 @@
 					else if ($mapInteractive) showNotification("Place your pin first.");
 				}}
 			>
-				<button
-					class="helpButton standardButton white"
-					class:innerConfirmButtonDisabled={$confirmButtonActive}
-					{@attach tooltip({ text: "How to play" })}
-					onclick={(element) => {
-						element.stopPropagation();
-						playSound("basic_button");
-						$helpPopup = true;
-					}}>?</button
-				>
-				<p id="guessText">
-					{#if $mapExpanded && $mapInteractive}
-						Guess
-					{:else if !$mapExpanded}
-						Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2.25} />
-					{:else if !$mapInteractive}
-						Locked in
-					{/if}
-				</p>
+				{#if $mapExpanded && $mapInteractive}
+					Guess
+				{:else if !$mapExpanded}
+					Map <Map style="margin-bottom: -2px;" size={20} strokeWidth={2.25} />
+				{:else if !$mapInteractive}
+					Locked in
+				{/if}
 			</div>
 		</div>
 	{/if}
 </div>
 
-<div class="gameplayAdArea barMenu" transition:blur style:display={$adsDisabled ? "none" : ""}>
-	<div class="gameplayAd" id="gameplayAd" data-fuse="Game_incontent_1"></div>
-	<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
-</div>
+{#if !$adsDisabled}
+	<div class="gameplayAdArea barMenu" transition:blur={{ duration: 150 }}>
+		<div class="gameplayAd" id="gameplayAd" data-fuse="Game_incontent_1"></div>
+		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
+	</div>
+{/if}
 
 <style>
 	.bottomBar {
@@ -193,13 +208,9 @@
 	}
 
 	.confirmButton {
-		width: fit-content;
-		padding-left: var(--box-margin);
-		padding-right: 30px;
+		min-width: fit-content;
 		width: 100%;
-		display: flex;
-		align-items: center;
-		gap: 12px;
+		justify-content: center;
 	}
 
 	.confirmActive {
@@ -211,28 +222,6 @@
 	:global(.innerConfirmButtonDisabled) {
 		pointer-events: none !important;
 		opacity: 0.5;
-	}
-
-	#guessText {
-		position: absolute;
-		left: 50%;
-		transform: translate(-50%, 0);
-	}
-
-	.helpButton {
-		min-width: 40px;
-		box-shadow: none !important;
-		border: none;
-		padding: 0;
-		pointer-events: auto;
-		margin-left: -10px;
-		height: 34px;
-		background-color: var(--box-color-dark-soft);
-		border-radius: 2px 0 0 2px;
-	}
-
-	.helpButton:hover {
-		filter: brightness(0.7);
 	}
 
 	#resetButtonImg {
@@ -247,7 +236,6 @@
 	.bottomRightMenu {
 		width: max(calc(20% - (var(--box-margin) + 2px)), 200px);
 		margin-right: 60px;
-		overflow: hidden;
 	}
 
 	.mobileChatButton {

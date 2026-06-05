@@ -101,7 +101,7 @@
 				errorPopup(
 					"Failed to load messages",
 					"An error occured trying to load messages for this conversation.",
-					error.message,
+					"From headless-chat: " + error.message,
 				);
 			}
 		} finally {
@@ -214,7 +214,11 @@
 		try {
 			await get(hcClient).sendMessage(conversationId, text, { referenceMessageId: reference, isForwarded: false });
 		} catch (error) {
-			errorPopup("Failed to send message", "An error occured trying to send your message.", error.message);
+			errorPopup(
+				"Failed to send message",
+				"An error occured trying to send your message.",
+				"From headless-chat: " + error.message,
+			);
 		}
 	}
 

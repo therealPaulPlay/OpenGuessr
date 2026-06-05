@@ -54,9 +54,9 @@ Please refer to the color section in `app.css`, but the most important ones are:
 - `--brand-color` The distinctive red
 - `--panel-color` A more opaque dark blue used for UI floating above the panorama
 - `--panel-color-soft` A slightly lighter version of the panel color, used when UI is overlayed above a dark background and the panorama
-- `box-color` The standard color for containers
-- `box-color-dark` Dark container color, often used for explanations or text-heavy containers
-- `box-color-dark-soft` A lighter dark container color
+- `--box-color` The standard color for containers
+- `--box-color-dark` Dark container color, often used for explanations or text-heavy containers
+- `--box-color-dark-soft` A lighter dark container color
 
 Colors that are only used for one specific thing should not be placed in `app.css` – only commonly used ones. Trying to stick to colors from the `app.css` is however recommended for consistency.
 
@@ -64,7 +64,7 @@ Colors that are only used for one specific thing should not be placed in `app.cs
 
 Usually, buttons sit in layer 1. However, sometimes you want large, rounded buttons for controls that need to stand out. For that, combine the `standardButton` class with the `largeButton` class - the latter increases the border radius to the box-margin and also increases the other dimensions of the button. 
 
-The `standardButton` is a red primary button by default. To make it secondary, add `white`. 
+The `standardButton` is a red primary button by default. To make it secondary, add `white`. To make it even more subtle, add `dark` instead (use thoughtfully).
 
 The button that commonly sits at the bottom of a popup can be replicated by adding `bottomButton`, `white` (unless a primary action) and `largeButton` to a `standardButton`. 
 
@@ -96,6 +96,10 @@ To use it, simply add it's classes:
 ### Opacity values
 
 Opacity values used are typically `0.25`, `0.5`, `0.75` and `1`. Using others such as `0.7` is discouraged. 
+
+### Blur values
+
+Unless an extreme outlier is needed, stick to the provided CSS variables `--weak-blur`, `--normal-blur`, `--elevated-blur` and `--strong-blur`.
 
 ## Developing
 

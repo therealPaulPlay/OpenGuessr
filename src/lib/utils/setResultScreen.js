@@ -15,6 +15,7 @@ import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration
 import { mapExpanded, mapHovered, mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
 import { socialPopupProbability } from "./socialPopupProbability";
 import { saveRoundToLog } from "./saveRoundToLog";
+import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 
 export async function enableResultScreen(guessLat = 0, guessLong = 0) {
     if (get(resultScreenEnabled)) return;
@@ -43,7 +44,7 @@ export async function enableResultScreen(guessLat = 0, guessLong = 0) {
 
     // Load XP
     await loadResultScreenXP(distance);
-    if (get(singleplayer)) supporterSlideupProbability(); // Only show in singleplayer
+    if (get(singleplayer) && !get(tutorial)) supporterSlideupProbability(); // Only show in singleplayer and not in tutorial
     checkDisplayFullscreenCelebration();
 
     // Social Media CTA
@@ -55,7 +56,7 @@ export function disableResultScreen() {
     resultScreenEnabled.set(false);
 
     // UI resets
-    if (window.innerHeight > window.innerWidth) mapExpanded.set(false); // On mobile, collapse map
+    if (window.matchMedia("(orientation: portrait) and (max-width: 800px)").matches) mapExpanded.set(false); // On mobile, collapse map
     showSlideup.set(false); // Hide slideup
     mapHovered.set(false);
     mapPinLat.set(0); // Reset placed map pin latitude

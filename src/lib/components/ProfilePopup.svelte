@@ -14,7 +14,6 @@
 	import { signOut } from "$lib/logic/accountLogic";
 	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
 	import { openDirectMessageWith } from "$lib/logic/headlessChatLogic";
-	import * as FlagIcons from "svelte-flag-icons";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
 	import {
 		Flame,
@@ -48,11 +47,11 @@
 	import { showProfile } from "$lib/utils/showProfile";
 	import Tabs from "./ui/Tabs.svelte";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
-	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showNotification } from "$lib/utils/notifications";
 	import { censor } from "fast-profanity-filter";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
+	import Flag from "./Flag.svelte";
 
 	let textarea = $state();
 	let selectedTabIndex = $state(0);
@@ -68,8 +67,6 @@
 		const profileFromURL = page.url.searchParams.get("profile-id");
 		if (profileFromURL != null) showProfile(profileFromURL);
 	});
-
-	let ProfileFlag = $derived(FlagIcons[$profileData?.flag] || undefined);
 
 	// Define stat categories with their icons and display data
 	const statCategories = [
@@ -168,16 +165,18 @@
 		<div class="profileViewName">
 			<h1>{$profileData?.username}</h1>
 			<!-- Profile Flag -->
-			{#if $profileData?.flag && FlagIcons[$profileData?.flag]}
+			{#if $profileData?.flag}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<span
 					class="flag-container"
+					style:cursor={$profileId == localStorage.getItem("id") ? "pointer" : undefined}
 					tabindex="0"
 					role="button"
-					onclick={() => flagPickerPopup.set(true)}
-					class:profileFlagNotInteractive={$profileId != localStorage.getItem("id")}
+					onclick={() => {
+						if ($profileId == localStorage.getItem("id")) flagPickerPopup.set(true);
+					}}
 				>
-					<ProfileFlag />
+					<Flag code={$profileData?.flag} />
 				</span>
 			{:else if $profileId == localStorage.getItem("id")}
 				<button class="flag-container addFlagButton" onclick={() => flagPickerPopup.set(true)}>
@@ -392,10 +391,9 @@
 						playSound("basic_button");
 						showConfirmPopup(
 							"Delete account",
-							"Some user-created content may persist briefly after deletion.",
+							"Please input your password to confirm the account deletion.",
 							() => {
-								if ($confirmPasswordValue) submitAccountDeletion($confirmPasswordValue);
-								else errorPopup("Password required", "Your password is required for deleting your account.");
+								submitAccountDeletion($confirmPasswordValue);
 							},
 							true,
 						);
@@ -452,12 +450,10 @@
 		display: inline-flex;
 		align-items: center;
 		width: 25px;
-		margin-top: var(--panel-margin);
-		cursor: pointer;
-	}
-
-	.profileFlagNotInteractive {
-		pointer-events: none;
+		padding-top: var(--panel-margin);
+		height: fit-content;
+		margin-top: auto;
+		margin-bottom: auto;
 	}
 
 	.addFlagButton {
@@ -694,9 +690,7 @@
 		}
 
 		.flag-container {
-			height: 18px;
 			width: 18px;
-			margin-top: var(--layout-margin);
 		}
 	}
 </style>

@@ -43,13 +43,13 @@
 				For accounts created without a password, please set one <a href="/signup?reset=true" target="_blank">here</a>.
 			</p>
 		</div>
-		<input class="confirmPopupInput" type="password" placeholder="Your password" bind:value={$confirmPasswordValue} />
+		<input class="confirmPopupInput" type="password" placeholder="Password" bind:value={$confirmPasswordValue} />
 	{/if}
 	{#if $confirmUsernameInput}
 		<input
 			type="text"
 			class="confirmPopupInput marginTop"
-			placeholder="New username"
+			placeholder="New name"
 			maxlength="50"
 			bind:value={$confirmUsernameValue}
 		/>
@@ -59,7 +59,8 @@
 			<button
 				class="standardButton bottomButton largeButton"
 				onclick={confirm}
-				disabled={$confirmUsernameInput && $confirmUsernameValue?.length < 1}>{$confirmConfirmText}</button
+				disabled={($confirmUsernameInput && $confirmUsernameValue?.length < 1) ||
+					($confirmPasswordInput && $confirmPasswordValue?.length < 1)}>{$confirmConfirmText}</button
 			>
 		{/if}
 	</div>
@@ -67,7 +68,7 @@
 
 <style>
 	.confirmPopupInput {
-		padding: var(--content-margin) var(--layout-margin);
+		padding: var(--content-margin) var(--box-margin);
 		width: 40%;
 	}
 

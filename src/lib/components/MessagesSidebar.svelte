@@ -89,7 +89,11 @@
 									await get(hcClient).acceptInvite(invite.conversation.conversationId);
 									$activeConversationId = invite.conversation.conversationId;
 								} catch (error) {
-									errorPopup("Failed to accept invite", "An error occured trying to accept an invite.", error.message);
+									errorPopup(
+										"Failed to accept invite",
+										"An error occured trying to accept an invite.",
+										"From headless-chat: " + error.message,
+									);
 								}
 							}}><Check size={20} strokeWidth={2.5} style="vertical-align: -2px;" /></button
 						>
@@ -103,7 +107,7 @@
 									errorPopup(
 										"Failed to decline invite",
 										"An error occured trying to decline a conversation invite.",
-										error.message,
+										"From headless-chat: " + error.message,
 									);
 								}
 							}}><X size={20} strokeWidth={2.5} style="vertical-align: -2px;" /></button
@@ -150,7 +154,7 @@
 						</div>
 					</div>
 					<button
-						class="standardButton white leave-button"
+						class="standardButton dark leave-button"
 						{@attach tooltip({ text: "Leave" })}
 						onclick={(e) => {
 							e.stopPropagation();
@@ -166,7 +170,7 @@
 										errorPopup(
 											"Failed to leave conversation",
 											"An error occured trying to leave this conversation.",
-											error.message,
+											"From headless-chat: " + error.message,
 										);
 									}
 								},

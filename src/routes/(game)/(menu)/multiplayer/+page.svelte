@@ -10,6 +10,7 @@
 		Handshake,
 		Plus,
 		MessagesSquare,
+		InfoIcon,
 	} from "@lucide/svelte";
 	import { divisionMatchHistoryPopup, friendBrowserPopup, messagesPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -77,7 +78,7 @@
 	</div>
 	{#if $warnReportEntryData}
 		<div class="infoContainer warnInfo" transition:slide>
-			<TriangleAlert color="white" strokeWidth={2.25} class="infoIconMultiplayer triangleAlertMarginRight" />
+			<TriangleAlert color="white" strokeWidth={2.25} class="multiplayerInfoIcon" />
 			<p>
 				You are currently on the warnlist and under close observation for "{get(warnReportEntryData)?.reason?.trim()}".
 				Please contact the moderators on Discord if you think this is a mistake. Warnings can quickly turn into bans if
@@ -132,7 +133,7 @@
 					Duel
 					<span class="innerDuelButtonContainer">
 						<button
-							class="standardButton white innerDuelButton"
+							class="standardButton dark innerDuelButton"
 							{@attach tooltip({ text: "History" })}
 							style:flex-grow={0}
 							onclick={(e) => {
@@ -142,7 +143,7 @@
 							}}><History strokeWidth={2.15} size={20} style="margin-bottom: -1px;" /></button
 						>
 						<button
-							class="standardButton white innerDuelButton"
+							class="standardButton dark innerDuelButton"
 							{@attach tooltip({ text: "Division-based or Everyone" })}
 							style:flex-grow={0}
 							onclick={(e) => {
@@ -215,6 +216,16 @@
 			>
 		</div>
 	</div>
+	{#if $loadedFriendsData?.length > 90}
+		<div class="infoContainer warnInfo" transition:slide>
+			<InfoIcon color="white" strokeWidth={2.25} class="multiplayerInfoIcon" />
+			<p>
+				You
+				{#if $loadedFriendsData?.length >= 100}have reached{:else}are close to{/if}
+				the maximum allowed number of friends.
+			</p>
+		</div>
+	{/if}
 	<div class="friendBox">
 		<div
 			class="friendBoxScroll of-top of-bottom"
@@ -290,22 +301,15 @@
 		gap: var(--panel-margin);
 	}
 
-	:global(.infoIconMultiplayer) {
-		width: 30px;
-		height: 30px;
-		opacity: 0.5;
-		margin-inline: 3px;
-	}
-
 	.friendButtonLeft {
 		margin-left: auto;
 	}
 
-	:global(.triangleAlertMarginRight) {
-		margin-right: auto;
-		margin-bottom: var(--content-margin);
+	:global(.multiplayerInfoIcon) {
 		width: 25px;
 		height: 25px;
+		opacity: 0.5;
+		margin-inline: 3px;
 	}
 
 	.infoContainer p {
@@ -441,11 +445,9 @@
 	}
 
 	.innerDuelButton {
-		box-shadow: none !important;
-		border: none;
 		padding-inline: var(--panel-margin);
-		background-color: var(--box-color-dark-soft);
 		height: 34px;
+		border: none;
 	}
 
 	#multiplayerSelectDuels {
@@ -459,7 +461,7 @@
 	#multiplayerSelectDuels::before {
 		animation: duelButtonGlint 4s 0.75s infinite;
 		background: white;
-		filter: blur(15px);
+		filter: blur(var(--elevated-blur));
 		content: "";
 		opacity: 0;
 		position: absolute;

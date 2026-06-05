@@ -63,7 +63,7 @@
 
 	async function fetchTopoJSON() {
 		try {
-			const response = await fetch(`/json/topojson/topojson-world-110m.json`);
+			const response = await fetch(`/json/topojson/world-110m.json`);
 			const topology = await response.json();
 
 			let featureData;

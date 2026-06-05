@@ -192,7 +192,7 @@
 	.tierBuyButtonDisplay::before {
 		animation: supporterGlintButton 5s 2s infinite;
 		background: white;
-		filter: blur(15px);
+		filter: blur(var(--elevated-blur));
 		content: "";
 		opacity: 0;
 		position: absolute;

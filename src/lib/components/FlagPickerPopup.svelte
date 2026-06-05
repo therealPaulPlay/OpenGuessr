@@ -3,206 +3,31 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
 	import { profileData } from "$lib/stores/context-specific/profileStore";
-	import * as FlagIcons from "svelte-flag-icons";
 	import { setProfileFlag } from "$lib/utils/updateProfileData";
+	import Flag from "./Flag.svelte";
+	import { fade } from "svelte/transition";
 
-	// Organize flags by continent
-	const continentFlags = {
-		Europe: [
-			"Ad",
-			"Al",
-			"At",
-			"Ba",
-			"Be",
-			"Bg",
-			"By",
-			"Ch",
-			"Cy",
-			"Cz",
-			"De",
-			"Dk",
-			"Ee",
-			"Es",
-			"EsCt",
-			"EsGa",
-			"EsPv",
-			"Fi",
-			"Fr",
-			"Gb",
-			"GbEng",
-			"GbNir",
-			"GbSct",
-			"GbWls",
-			"Gr",
-			"Hr",
-			"Hu",
-			"Ie",
-			"Is",
-			"It",
-			"Li",
-			"Lt",
-			"Lu",
-			"Lv",
-			"Mc",
-			"Md",
-			"Me",
-			"Mk",
-			"Mt",
-			"Nl",
-			"No",
-			"Pl",
-			"Pt",
-			"Ro",
-			"Rs",
-			"Ru",
-			"Se",
-			"Si",
-			"Sk",
-			"Sm",
-			"Ua",
-			"Va",
-			"Xk",
-		],
-		Asia: [
-			"Ae",
-			"Af",
-			"Am",
-			"Az",
-			"Bd",
-			"Bh",
-			"Bn",
-			"Bt",
-			"Cn",
-			"Ge",
-			"Hk",
-			"Id",
-			"Il",
-			"In",
-			"Iq",
-			"Ir",
-			"Jo",
-			"Jp",
-			"Kg",
-			"Kh",
-			"Kp",
-			"Kr",
-			"Kw",
-			"Kz",
-			"La",
-			"Lb",
-			"Lk",
-			"Mm",
-			"Mn",
-			"Mo",
-			"My",
-			"Np",
-			"Om",
-			"Ph",
-			"Pk",
-			"Ps",
-			"Qa",
-			"Sa",
-			"Sg",
-			"Sy",
-			"Th",
-			"Tj",
-			"Tl",
-			"Tm",
-			"Tw",
-			"Uz",
-			"Vn",
-		],
-		Africa: [
-			"Ao",
-			"Bf",
-			"Bi",
-			"Bj",
-			"Bw",
-			"Cd",
-			"Cf",
-			"Cg",
-			"Ci",
-			"Cm",
-			"Cv",
-			"Dj",
-			"Dz",
-			"Eg",
-			"Er",
-			"Et",
-			"Ga",
-			"Gh",
-			"Gm",
-			"Gn",
-			"Gq",
-			"Ke",
-			"Lr",
-			"Ls",
-			"Ly",
-			"Ma",
-			"Mg",
-			"Ml",
-			"Mr",
-			"Mu",
-			"Mw",
-			"Mz",
-			"Na",
-			"Ne",
-			"Ng",
-			"Rw",
-			"Sd",
-			"Sl",
-			"Sn",
-			"So",
-			"St",
-			"Sz",
-			"Td",
-			"Tg",
-			"Tn",
-			"Tz",
-			"Ug",
-			"Za",
-			"Zm",
-			"Zw",
-		],
-		"North America": [
-			"Ag",
-			"Bb",
-			"Bm",
-			"Bs",
-			"Bz",
-			"Ca",
-			"Cr",
-			"Cu",
-			"Dm",
-			"Do",
-			"Gd",
-			"Gt",
-			"Hn",
-			"Ht",
-			"Jm",
-			"Kn",
-			"Lc",
-			"Mx",
-			"Ni",
-			"Pa",
-			"Sv",
-			"Tt",
-			"Us",
-			"Vc",
-		],
-		"South America": ["Ar", "Bo", "Br", "Cl", "Co", "Ec", "Gy", "Pe", "Py", "Sr", "Uy", "Ve"],
-		Oceania: ["Au", "Fj", "Fm", "Ki", "Mh", "Nr", "Nu", "Nz", "Pg", "Pw", "Sb", "To", "Tv", "Vu", "Ws"],
-		Unassigned: [
-			"Ck", // Cook Islands
-			"Gw", // Guinea-Bissau
-			"Km", // Comoros
-			"Mv", // Maldives
-			"Sc", // Seychelles
-			"Ss", // South Sudan
-			"Tr", // Turkey
-			"Ye", // Yemen
-		],
-	};
+	let continentFlags = $state();
+	let jsonLoadErrored = $state(false);
+
+	let once = false;
+
+	// Load once on first open
+	$effect(async () => {
+		if ($flagPickerPopup && !once && !continentFlags) {
+			once = true;
+			continentFlags = await fetch("/json/country-codes/grouped-flag-codes.json")
+				.then((data) => data.json())
+				.catch((error) => {
+					console.error("Error fetching grouped country codes for flags:", error);
+					jsonLoadErrored = true;
+				});
+		}
+		if (!$flagPickerPopup) {
+			once = false;
+			jsonLoadErrored = false;
+		}
+	});
 
 	function handleFlagClick(countryCode, buttonSound = false) {
 		// Update profile data with selected flag
@@ -225,25 +50,26 @@
 		<h1 id="pinPopupWindow">Flags</h1>
 	</div>
 	<div>
-		{#each Object.entries(continentFlags) as [continent, countries]}
-			<div class="continent-section">
-				<p class="continentTitle">{continent}</p>
-				<div class="flagSelector">
-					{#each countries as countryCode}
-						{#if FlagIcons[countryCode]}
+		{#if continentFlags}
+			{#each Object.entries(continentFlags) as [continent, countries]}
+				<div class="continent-section" transition:fade|global={{ duration: 150 }}>
+					<p class="continentTitle">{continent}</p>
+					<div class="flagSelector">
+						{#each countries as countryCode}
 							<button
 								class="flagButton"
 								onclick={() => handleFlagClick(countryCode)}
-								title={countryCode}
 								class:flagSelected={$profileData?.["flag"] == countryCode}
 							>
-								<svelte:component this={FlagIcons[countryCode]} />
+								<Flag code={countryCode} />
 							</button>
-						{/if}
-					{/each}
+						{/each}
+					</div>
 				</div>
-			</div>
-		{/each}
+			{/each}
+		{:else}
+			<p class="loadingText">{jsonLoadErrored ? "Failed to load." : "Loading..."}</p>
+		{/if}
 	</div>
 </Popup>
 
@@ -257,6 +83,14 @@
 		padding-left: var(--box-margin);
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
+	}
+
+	.loadingText {
+		text-align: center;
+		width: 100%;
+		opacity: 0.5;
+		padding-top: var(--layout-margin);
+		padding-bottom: 1000px;
 	}
 
 	.continent-section {

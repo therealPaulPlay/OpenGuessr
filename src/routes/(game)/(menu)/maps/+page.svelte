@@ -20,6 +20,7 @@
 	import { navigationMenu } from "$lib/stores/uiStore";
 	import Chip from "$lib/components/ui/Chip.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { browser } from "$app/environment";
 
 	const snapshotStore = getContext("snapshotStore");
 
@@ -160,7 +161,7 @@
 	}
 
 	function checkIfSelected(name, community = false) {
-		if (typeof window === "undefined") return false;
+		if (!browser) return false;
 		const selectedMap = localStorage.getItem("selectedMap");
 		if (community) name = "community_" + name;
 		return selectedMap == name || (name == $defaultMap && !selectedMap);
@@ -464,7 +465,7 @@
 		<div class="headerContainer no-bottom-padding">
 			<h2 class="header">Featured</h2>
 		</div>
-		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style="height: 330px;"></div>
+		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style:height="335px"></div>
 	{/if}
 	<!-- Featured Maps -->
 	<div class="headerContainer largeHeaderMargin">

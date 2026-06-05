@@ -272,7 +272,7 @@
 		align-content: center;
 		display: block;
 		background-color: var(--dark-background);
-		backdrop-filter: blur(5px);
+		backdrop-filter: blur(var(--weak-blur));
 	}
 
 	.navigation-menu {
@@ -283,7 +283,6 @@
 		max-width: 400px;
 		margin-inline: auto;
 		padding-inline: var(--layout-margin);
-		overflow: hidden;
 	}
 
 	.navigation-box {
@@ -404,7 +403,6 @@
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
-		color: white;
 		transition:
 			color 250ms ease,
 			opacity 250ms ease;

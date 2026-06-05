@@ -8,19 +8,18 @@
 	import { currentRound, multiplayerMap, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
 	import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
 	import { restrictionNames, selectedRestriction } from "$lib/stores/context-specific/restrictionStore";
-	import { blur, slide } from "svelte/transition";
+	import { blur, fade, slide } from "svelte/transition";
 	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 	import Chip from "./ui/Chip.svelte";
+	import MapAttribution from "./MapAttribution.svelte";
 
-	let mapCategoryName = $state("Loading...");
-
-	$effect(() => {
-		if ($currentLocationLatitude && $currentLocationLongitude) {
-			if ($singleplayer) mapCategoryName = idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
-			if ($multiplayer) mapCategoryName = idToMapName($multiplayerMap);
-			if ($competition) mapCategoryName = $competitionData?.name;
-		}
+	let mapCategoryName = $derived.by(() => {
+		if (!$currentLocationLatitude || !$currentLocationLongitude) return "...";
+		if ($singleplayer) return idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
+		if ($multiplayer) return idToMapName($multiplayerMap);
+		if ($competition) return $competitionData?.name;
+		return "...";
 	});
 
 	let currentRoundText = $derived.by(() => {
@@ -37,6 +36,13 @@
 </script>
 
 {#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded}
+	<!-- Needed for TOS compliance -->
+	<div
+		in:fade={{ duration: $resultScreenEnabled ? 0 : 150, delay: 150 }}
+		out:fade={{ duration: $resultScreenEnabled ? 0 : 50 }}
+	>
+		<MapAttribution />
+	</div>
 	<div
 		class="barMenu map-mode-indicator"
 		class:fading={Boolean($mapModeIndicatorFading)}
@@ -87,6 +93,7 @@
 		position: relative;
 		border-top-right-radius: 0;
 		border-top-left-radius: 0;
+		position: relative;
 	}
 
 	.map-icon {
@@ -107,7 +114,7 @@
 
 	.map-mode-text-container {
 		flex-grow: 1;
-		margin-inline: var(--panel-margin);
+		margin-inline: calc(var(--layout-margin) - var(--panel-margin));
 		display: inline-flex;
 		gap: var(--content-margin);
 		align-items: center;

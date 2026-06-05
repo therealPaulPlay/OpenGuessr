@@ -6,6 +6,7 @@
 		mutedOpacity = true,
 		children,
 		class: classes,
+		style,
 		onclick,
 	} = $props();
 </script>
@@ -18,6 +19,7 @@
 	class:chip-red={red}
 	class:chip-italic={italic}
 	class:muted-opacity={mutedOpacity}
+	{style}
 >
 	<span>
 		{#if !children || typeof children !== "function"}
@@ -39,6 +41,7 @@
 		max-width: fit-content;
 		display: inline-flex;
 		align-items: center;
+		user-select: none;
 	}
 
 	.chip,
