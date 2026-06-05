@@ -133,7 +133,7 @@
 					Duel
 					<span class="innerDuelButtonContainer">
 						<button
-							class="standardButton white innerDuelButton"
+							class="standardButton dark innerDuelButton"
 							{@attach tooltip({ text: "History" })}
 							style:flex-grow={0}
 							onclick={(e) => {
@@ -143,7 +143,7 @@
 							}}><History strokeWidth={2.15} size={20} style="margin-bottom: -1px;" /></button
 						>
 						<button
-							class="standardButton white innerDuelButton"
+							class="standardButton dark innerDuelButton"
 							{@attach tooltip({ text: "Division-based or Everyone" })}
 							style:flex-grow={0}
 							onclick={(e) => {
@@ -445,11 +445,9 @@
 	}
 
 	.innerDuelButton {
-		box-shadow: none !important;
-		border: none;
 		padding-inline: var(--panel-margin);
-		background-color: var(--box-color-dark-soft);
 		height: 34px;
+		border: none;
 	}
 
 	#multiplayerSelectDuels {

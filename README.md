@@ -64,7 +64,7 @@ Colors that are only used for one specific thing should not be placed in `app.cs
 
 Usually, buttons sit in layer 1. However, sometimes you want large, rounded buttons for controls that need to stand out. For that, combine the `standardButton` class with the `largeButton` class - the latter increases the border radius to the box-margin and also increases the other dimensions of the button. 
 
-The `standardButton` is a red primary button by default. To make it secondary, add `white`. 
+The `standardButton` is a red primary button by default. To make it secondary, add `white`. To make it even more subtle, add `dark` instead (use thoughtfully).
 
 The button that commonly sits at the bottom of a popup can be replicated by adding `bottomButton`, `white` (unless a primary action) and `largeButton` to a `standardButton`. 
 

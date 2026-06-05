@@ -57,6 +57,7 @@
 	import MessagesPopup from "$lib/components/MessagesPopup.svelte";
 	import Authentication from "$lib/components/Authentication.svelte";
 	import TutorialOverlay from "$lib/components/TutorialOverlay.svelte";
+	import TutorialNote from "$lib/components/TutorialNote.svelte";
 
 	// Load panorama, ads, overfade etc.
 	onMount(async () => {
@@ -152,6 +153,7 @@
 <CountryGuesserBar />
 <MapHolder>
 	<MobileMapToggles />
+	<TutorialNote />
 	<Map />
 	<MapModeIndicator />
 </MapHolder>

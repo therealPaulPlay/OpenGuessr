@@ -4,8 +4,8 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { confirmButtonClicks } from "$lib/utils/confirmButtonClick";
 	import Flag from "./Flag.svelte";
-	import { gameplayAdVisible } from "$lib/stores/uiStore";
 	import { blur } from "svelte/transition";
+	import { adsDisabled } from "$lib/stores/context-specific/platformSettingsStore";
 
 	function selectCountry(index) {
 		playSound("item_select");
@@ -19,7 +19,7 @@
 		class="countryGuessrSelector barMenu"
 		role="menu"
 		tabindex="0"
-		class:countryGuessrSelectorAdShift={$gameplayAdVisible}
+		class:countryGuessrSelectorAdShift={!$adsDisabled}
 		transition:blur={{ duration: 150 }}
 	>
 		{#if $countryGuessrCountriesArray?.length}

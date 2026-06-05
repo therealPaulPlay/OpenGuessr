@@ -7,12 +7,16 @@
 	import { initMap } from "$lib/logic/miniMap";
 	import { get } from "svelte/store";
 	import { onMount } from "svelte";
+	import { MediaQuery } from "svelte/reactivity";
 	import { countryGuessr } from "$lib/stores/modeStore";
 
 	let mapElement = $state();
 	let mapResizeObserver;
 	let mapResizeTimeout;
 	let lastPointerType = $state("mouse");
+	let mapOpen = $derived($mapExpanded && (!$countryGuessr || $resultScreenEnabled));
+
+	const mobilePortrait = new MediaQuery("(orientation: portrait) and (max-width: 800px)");
 
 	function handleMapHover() {
 		if (lastPointerType === "touch") return;
@@ -53,9 +57,9 @@
 	onmouseenter={handleMapHover}
 	onmouseleave={handleMapUnhover}
 	bind:this={mapElement}
-	style:max-height={$mapExpanded ? "100%" : "0%"}
+	style:height={mapOpen ? (mobilePortrait.current ? "35dvh" : $mapHovered ? "50dvh" : "max(18dvh, 150px)") : "0"}
+	style:margin-top={mapOpen ? undefined : "calc(var(--box-margin) * -1)"}
 	class:map-full-opacity-result={Boolean($resultScreenEnabled)}
-	class:hidden={$countryGuessr && !$resultScreenEnabled}
 ></div>
 
 <style>
@@ -63,21 +67,20 @@
 		cursor: crosshair;
 		pointer-events: auto;
 		width: 100%;
-		height: 100%;
 		opacity: 60%;
 		z-index: 0; /* Ensure all map tiles stay in this stacking context on z-0 */
 		border-bottom-right-radius: 0;
 		border-bottom-left-radius: 0;
 		border-top-right-radius: var(--box-margin);
 		border-top-left-radius: var(--box-margin);
-		max-height: 100%;
 		background: #e8e4dc;
 		box-shadow: 0 2px 20px rgba(5, 6, 10, 0.15);
 		transition:
 			opacity 250ms ease,
 			border-radius 150ms ease,
+			margin-top 150ms ease,
 			top 150ms ease,
-			max-height 150ms ease;
+			height 150ms ease;
 		overflow: hidden;
 		outline: none;
 	}
@@ -93,26 +96,16 @@
 		}
 	}
 
-	.hidden {
-		opacity: 0 !important;
-		pointer-events: none !important;
-		max-height: 0 !important;
-	}
-
 	.map-full-opacity-result {
 		opacity: 1 !important;
 		border-radius: 0 !important;
 		top: -60px;
 		position: fixed !important;
-		visibility: visible !important;
-		max-height: calc(100% + 60px) !important;
-		height: calc(100% + 60px) !important;
-		pointer-events: auto !important;
+		height: calc(100dvh + 60px) !important;
 		transition: none !important;
 	}
 
 	:global(.leaflet-bottom, .leaflet-control-attribution) {
-		pointer-events: none;
 		display: none;
 	}
 
@@ -168,6 +161,7 @@
 
 	:global(.leaflet-control-layers-list) {
 		padding-inline: var(--panel-margin);
+		padding-bottom: 3px;
 	}
 
 	:global(.leaflet-control-layers-selector[type="radio"]) {
