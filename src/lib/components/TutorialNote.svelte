@@ -38,12 +38,12 @@
 			src="/img/tutorial/tutorial_welcome.png"
 			class="welcome-image"
 			in:fly={{ y: 15, delay: mapWasHoveredOnce ? 250 : 750, easing: backOut }}
-			out:fly={{ y: 15, duration: $mapHovered ? 150 : 250, easing: $mapHovered ? undefined : backIn }}
+			out:fly={{ y: 15, duration: $mapHovered ? 150 : undefined, easing: $mapHovered ? undefined : backIn }}
 		/>
 		<div
 			class="barMenu tutorial-note"
 			in:slide={{ delay: mapWasHoveredOnce ? 250 : 750, easing: backOut }}
-			out:slide={{ duration: $mapHovered ? 150 : 250, easing: $mapHovered ? undefined : backIn }}
+			out:slide={{ duration: $mapHovered ? 150 : undefined, easing: $mapHovered ? undefined : backIn }}
 		>
 			<div class="left-side of-left of-right">
 				<p>New?<span style:opacity={0.75} style:margin-left="var(--content-margin);">Try the tutorial.</span></p>
