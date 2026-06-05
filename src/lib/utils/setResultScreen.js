@@ -56,7 +56,7 @@ export function disableResultScreen() {
     resultScreenEnabled.set(false);
 
     // UI resets
-    if (window.innerHeight > window.innerWidth) mapExpanded.set(false); // On mobile, collapse map
+    if (window.matchMedia("(orientation: portrait) and (max-width: 800px)").matches) mapExpanded.set(false); // On mobile, collapse map
     showSlideup.set(false); // Hide slideup
     mapHovered.set(false);
     mapPinLat.set(0); // Reset placed map pin latitude
