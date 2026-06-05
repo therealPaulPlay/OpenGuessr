@@ -46,7 +46,7 @@
 			out:slide={{ duration: $mapHovered ? 150 : 250, easing: $mapHovered ? undefined : backIn }}
 		>
 			<div class="left-side of-left of-right">
-				<p>New?<span style:opacity={0.75} style:margin-left="var(--content-margin);">Play the tutorial.</span></p>
+				<p>New?<span style:opacity={0.75} style:margin-left="var(--content-margin);">Try the tutorial.</span></p>
 			</div>
 			<div class="right-side">
 				<button
@@ -117,5 +117,6 @@
 		width: 90px;
 		pointer-events: none;
 		z-index: 1;
+        user-select: none;
 	}
 </style>
