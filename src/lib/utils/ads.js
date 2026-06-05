@@ -15,7 +15,9 @@ export function initializeAds() {
     }
 
     getFuse().que.push(function () {
-        getFuse().pageInit();
+        getFuse().pageInit({
+            blockingFuseIds: ["Game_incontent_1"],
+        });
     });
 }
 
