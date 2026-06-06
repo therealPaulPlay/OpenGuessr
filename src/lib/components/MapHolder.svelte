@@ -61,7 +61,7 @@
 
 		.map-holder {
 			width: calc(100% - calc(var(--box-margin) * 2));
-			right: var(--box-margin) !important;
+			right: var(--box-margin);
 		}
 	}
 </style>

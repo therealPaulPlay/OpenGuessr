@@ -6,7 +6,7 @@ export function tooltip({ text, imageSrc, imageAspectRatio = "1 / 1", state, onC
         let visible = false;
         let cleanupAutoUpdate;
         let showTimeout = null;
-        
+
         const persistent = Boolean(state);
         const closedScale = imageSrc ? 0.85 : 0;
         const animationDuration = imageSrc ? 250 : 150;

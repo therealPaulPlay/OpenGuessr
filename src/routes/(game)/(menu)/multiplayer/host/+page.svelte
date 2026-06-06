@@ -47,15 +47,15 @@
 <div class="main-container">
 	<div class="multiplayerCreationArea">
 		{#if !$multiplayer && !isCreatingRoom}
-			<div class="roomCreationModule multiplayerHostSettings">
+			<div class="multiplayerHostSettings">
 				<p>Rounds</p>
 				<Ticker maximum={10} minimum={1} initialValue={3} bind:value={$roundAmount} />
 			</div>
-			<div class="roomCreationModule multiplayerHostSettings">
+			<div class="multiplayerHostSettings">
 				<p>Round length</p>
 				<Ticker maximum={300} step={10} minimum={10} note="sec" initialValue={60} bind:value={$roundLength} />
 			</div>
-			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
+			<div id="roomCreationModes" class="multiplayerHostSettings">
 				<p>Restriction</p>
 				<button
 					class="standardButton white toggleSwitch"
@@ -65,13 +65,13 @@
 					}}>{restrictionButtonText}</button
 				>
 			</div>
-			<div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
+			<div id="roomCreationTeams" class="multiplayerHostSettings">
 				<p>Teams</p>
 				<div class="ticker">
 					<Ticker maximum={5} minimumText="No" note="teams" initialValue={1} bind:value={$teamAmount} />
 				</div>
 			</div>
-			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
+			<div id="roomCreationModes" class="multiplayerHostSettings">
 				<p>Style</p>
 				<Tabs
 					tabs={STYLE_TABS}
@@ -82,7 +82,7 @@
 					}}
 				/>
 			</div>
-			<div id="roomCreationMap" class="roomCreationModule multiplayerHostSettings">
+			<div id="roomCreationMap" class="multiplayerHostSettings">
 				<p>Map</p>
 				<div class="selectedMapField">
 					<p id="multiplayerMapDisplay">
@@ -150,15 +150,8 @@
 		gap: var(--layout-margin);
 	}
 
-	.roomCreationModule {
-		padding-top: var(--box-margin);
-		padding-bottom: var(--box-margin);
-		box-shadow: var(--box-shadow);
-	}
-
 	.multiplayerHostSettings {
 		display: flex;
-		flex-wrap: wrap;
 		justify-content: space-around;
 		align-items: center;
 		gap: var(--box-margin);
@@ -166,7 +159,15 @@
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
 		padding-top: var(--box-margin);
+		padding-bottom: var(--box-margin);
+		box-shadow: var(--box-shadow);
 		width: calc(100% - var(--box-margin) * 2);
+	}
+
+	.multiplayerHostSettings p {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		text-wrap: nowrap;
 	}
 
 	.toggleSwitch {

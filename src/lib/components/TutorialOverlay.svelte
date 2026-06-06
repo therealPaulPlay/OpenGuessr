@@ -7,14 +7,10 @@
 	export function leaveTutorial() {
 		clearTimeout(finishTimeout);
 		tutorialStep.set(0);
+		tutorial.set(false);
 		localStorage.setItem("tutorialCompleted", true);
-
-		// If tutorial was true, regenerate with default map
-		if (get(tutorial)) {
-			tutorial.set(false);
-			// In case this gets triggered because we enter multiplayer or a comp, don't regenerate and only change the map
-			changeMap(get(defaultMap), get(singleplayer));
-		}
+		// In case this gets triggered because we enter multiplayer or a comp, don't regenerate and only change the map
+		if (localStorage.getItem("selectedMap") === get(tutorialMap)) changeMap(get(defaultMap), get(singleplayer));
 	}
 
 	let finishTimeout;
@@ -55,6 +51,7 @@
 	import { page } from "$app/state";
 	import { tutorialStep, tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { navigationMenu } from "$lib/stores/uiStore";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 
 	// If the user leaves singleplayer while the overlay is shown or the tutorial is active, leave tutorial
 	// Also needed for linkjoin, for invites (you can sign up via the result screen), and for users that visit pages such as /competitions directly
@@ -63,6 +60,7 @@
 	});
 
 	let howToImage = $state(0);
+	let contentContainer = $state();
 
 	const howToSlides = [
 		{
@@ -94,23 +92,46 @@
 			action: () => setTimeout(() => ($navigationMenu = true), 250),
 		},
 	];
+
+	// Since the overlay has a weak blur background like the navigation menu, it should be dismissable like the nav menu,
+	// but require a confirmation unless on the last slide (since leaving the tutorial is potentially unintended)
+	function dismissOverlay() {
+		if ($tutorial) {
+			return showConfirmPopup("Leave tutorial?", "Do you want to abort and leave the tutorial?", () => {
+				leaveTutorial();
+			});
+		} else {
+			$tutorialStep = 0;
+			menuIntroductionNote.visible = true;
+		}
+	}
 </script>
 
+<svelte:window
+	onkeydown={(e) => {
+		if (e.key == "Escape" && $tutorialStep > 0) dismissOverlay();
+	}}
+/>
+
 {#if $tutorialStep > 0}
+	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
 		class="tutorial-overlay"
+		role="menu"
+		tabindex="0"
 		transition:blur={{ duration: 250 }}
 		style:display={page.url.pathname !== "/" ? "none" : ""}
+		onclick={(e) => {
+			if (e.target === e.currentTarget || e.target === contentContainer) dismissOverlay();
+		}}
 	>
-		<div class="content">
+		<div class="content" bind:this={contentContainer}>
 			{#if $tutorialStep == 1}
 				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>How to play</h1>
 				{#key howToImage}
-					<div class="how-to-slide">
-						<div class="how-to-image-container" in:blur|global={{ duration: 500 }}>
-							<img class="how-to-image" src={howToSlides[howToImage].image} alt={howToSlides[howToImage].alt} />
-							<p class="how-to-subtitle">{howToSlides[howToImage].description}</p>
-						</div>
+					<div class="how-to-image-container" in:blur|global={{ duration: 500 }}>
+						<img class="how-to-image" src={howToSlides[howToImage].image} alt={howToSlides[howToImage].alt} />
+						<p class="how-to-subtitle">{howToSlides[howToImage].description}</p>
 					</div>
 				{/key}
 				<div class="action-container">
@@ -187,12 +208,12 @@
 		position: fixed;
 		inset: 0;
 		z-index: 14;
-		text-align: center;
 		align-content: center;
 		display: block;
 		padding: var(--layout-margin);
 		background-color: var(--dark-background);
 		backdrop-filter: blur(var(--weak-blur));
+		overflow-y: auto;
 	}
 
 	.action-container {
@@ -201,7 +222,6 @@
 		align-items: center;
 		gap: var(--layout-margin);
 		flex-direction: column;
-		width: 100%;
 	}
 
 	.action-button-panel {
@@ -250,8 +270,11 @@
 
 	.content {
 		display: flex;
-		justify-content: center;
-		flex-wrap: wrap;
+		align-items: center;
+		flex-direction: column;
+		margin-inline: auto;
+		width: fit-content;
+		max-width: 100%;
 		gap: calc(var(--layout-margin) + var(--content-margin));
 		padding-top: var(--layout-margin);
 		padding-bottom: var(--layout-margin);
@@ -270,31 +293,22 @@
 	}
 
 	.subtitle-container {
-		width: 100%;
 		margin-top: calc(-1 * var(--box-margin));
 	}
 
 	.title {
-		width: 100%;
 		text-align: center;
 		font-size: 75px;
 		text-shadow: 0 0 30px rgba(0, 0, 0, 0.25);
 		mask-size: 100% 100%;
 		mask-repeat: no-repeat;
 		padding-inline: var(--layout-margin);
-	}
-
-	.how-to-slide {
-		width: 100%;
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--layout-margin);
+		width: fit-content;
 	}
 
 	.how-to-image-container {
-		width: 100%;
-		max-width: 700px;
+		width: 700px;
+		max-width: 100%;
 		aspect-ratio: 16 / 9;
 		display: block;
 		position: relative;
