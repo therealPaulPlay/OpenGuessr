@@ -28,7 +28,7 @@
 	let mapAuthor = $derived(data.author);
 	let mapAuthorId = $derived(data.authorId);
 	let mapDescription = $derived(data.description);
-	let mapLocationAmount = $derived(data.map_data?.locations.length);
+	let mapLocationAmount = $derived(data.map_data?.locations?.length);
 	let mapLocationData = $derived(data.map_data);
 
 	let playerId = $state(0);
@@ -43,17 +43,31 @@
 	});
 
 	let iframeSource = $derived(
-		$streetViewURLPrefix +
-			locationsArrayForSvgMap?.[locationIndex]?.[0] +
-			"," +
-			locationsArrayForSvgMap?.[locationIndex]?.[1] +
-			"&key=" +
-			get(panoramaKey) +
-			"&fov=90",
+		locationsArrayForSvgMap?.[locationIndex]
+			? $streetViewURLPrefix +
+					locationsArrayForSvgMap?.[locationIndex]?.[0] +
+					"," +
+					locationsArrayForSvgMap?.[locationIndex]?.[1] +
+					"&key=" +
+					get(panoramaKey) +
+					"&fov=90"
+			: null,
 	);
 
 	onMount(() => {
 		playerId = localStorage.getItem("id");
+	});
+
+	onMount(async () => {
+		try {
+			const response = await fetch(data.map_data_url, { cache: "no-cache" });
+			if (!response.ok) throw new Error(response.status);
+
+			data = { ...data, map_data: await response.json() };
+		} catch (error) {
+			console.error("Error fetching map file:", error);
+			errorPopup("Map file failed to load", "An error occured trying to load the map file.", error.message);
+		}
 	});
 
 	// Like Functionality ------------------------------------------------------------------------------
@@ -245,17 +259,21 @@
 <div class="mainContainer">
 	<!-- Main View (Panorama Preview) -->
 	<div class="mapViewIframe">
-		<!-- svelte-ignore a11y_missing_attribute -->
-		<iframe class="mapIframe" referrerpolicy="no-referrer-when-downgrade" frameborder="0" src={iframeSource}></iframe>
+		{#if iframeSource}
+			<!-- svelte-ignore a11y_missing_attribute -->
+			<iframe class="mapIframe" referrerpolicy="no-referrer-when-downgrade" frameborder="0" src={iframeSource}></iframe>
+		{:else}
+			<p class="loadingText" style:opacity="0.5">Loading...</p>
+		{/if}
 	</div>
 	<!-- Location Map (shows which spots are on the map)-->
-	{#if locationsArrayForSvgMap?.length}
-		<div class="mapContainer">
-			{#if mapLocationAmount > 500}
-				<div class="locationsTrimNote">
-					<p>Limited location view for performance.</p>
-				</div>
-			{/if}
+	<div class="mapContainer">
+		{#if mapLocationAmount > 500}
+			<div class="locationsTrimNote">
+				<p>Limited location view for performance.</p>
+			</div>
+		{/if}
+		{#if locationsArrayForSvgMap?.length}
 			<SvgMap
 				locationList={locationsArrayForSvgMap}
 				framePaddingOffset={{ top: 40 }}
@@ -268,8 +286,8 @@
 					if (index >= 0) locationIndex = index;
 				}}
 			/>
-		</div>
-	{/if}
+		{/if}
+	</div>
 	<!-- Author name and Like -->
 	<div class="headerContainer">
 		<div class="nameContainer">
@@ -380,7 +398,7 @@
 			<div class="pinIconContainer">
 				<MapPin size={100} strokeWidth={0.75} />
 			</div>
-			<p class="locationAmountText">{mapLocationAmount.toLocaleString()} Locations</p>
+			<p class="locationAmountText">{mapLocationAmount?.toLocaleString() || "..."} Locations</p>
 		</div>
 		<div class="descriptionInfo infoElement">
 			<div class="descriptionScroll of-top of-bottom">
@@ -632,7 +650,9 @@
 		overflow: hidden;
 		margin-bottom: calc(var(--layout-margin) * -2);
 		position: relative;
-		background-color: rgb(27, 27, 37);
+		background-color: rgb(15, 15, 20);
+		text-align: center;
+		align-content: center;
 		z-index: 10;
 		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 	}
