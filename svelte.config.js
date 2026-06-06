@@ -1,13 +1,26 @@
-import adapter from '@sveltejs/adapter-static';
+import adapter from '@sveltejs/adapter-cloudflare';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	kit: {
-		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
-		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
-		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
+		// Prerendered routes are served as static assets, non-prerendered routes are SSR'd by a page function
 		adapter: adapter({
-			fallback: '200.html', // Fallback for routes that aren't pre-rendered
+			// Wildcard the static dirs to avoid enumeration (since there's a limit of 100 exclude rules)
+			routes: {
+				include: ['/*'],
+				exclude: [
+					'<build>',
+					'<prerendered>',
+					'/fonts/*',
+					'/img/*',
+					'/json/*',
+					'/music/*',
+					'/sounds/*',
+					'/favicon.ico',
+					'/sitemap.xml',
+					'/robots.txt'
+				]
+			}
 		})
 	}
 };
