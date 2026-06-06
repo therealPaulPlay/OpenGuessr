@@ -129,11 +129,9 @@
 			{#if $tutorialStep == 1}
 				<h1 class="title" in:fly|global={{ y: -20, duration: 1000 }}>How to play</h1>
 				{#key howToImage}
-					<div class="how-to-slide">
-						<div class="how-to-image-container" in:blur|global={{ duration: 500 }}>
-							<img class="how-to-image" src={howToSlides[howToImage].image} alt={howToSlides[howToImage].alt} />
-							<p class="how-to-subtitle">{howToSlides[howToImage].description}</p>
-						</div>
+					<div class="how-to-image-container" in:blur|global={{ duration: 500 }}>
+						<img class="how-to-image" src={howToSlides[howToImage].image} alt={howToSlides[howToImage].alt} />
+						<p class="how-to-subtitle">{howToSlides[howToImage].description}</p>
 					</div>
 				{/key}
 				<div class="action-container">
@@ -276,6 +274,7 @@
 		flex-direction: column;
 		margin-inline: auto;
 		width: fit-content;
+		max-width: 100%;
 		gap: calc(var(--layout-margin) + var(--content-margin));
 		padding-top: var(--layout-margin);
 		padding-bottom: var(--layout-margin);
@@ -307,15 +306,9 @@
 		width: fit-content;
 	}
 
-	.how-to-slide {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-		gap: var(--layout-margin);
-	}
-
 	.how-to-image-container {
-		max-width: 700px;
+		width: 700px;
+		max-width: 100%;
 		aspect-ratio: 16 / 9;
 		display: block;
 		position: relative;

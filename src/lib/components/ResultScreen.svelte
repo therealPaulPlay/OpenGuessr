@@ -245,8 +245,7 @@
 					state: nextRoundTutorialNote,
 					zIndex: 13,
 					maxWidth: 125,
-					showDelay: 3000,
-					mobile: false,
+					showDelay: 3000
 				})}
 				onclick={() => {
 					playSound("basic_button");
