@@ -273,8 +273,7 @@
 		align-items: center;
 		flex-direction: column;
 		margin-inline: auto;
-		width: fit-content;
-		max-width: 100%;
+		width: 100%;
 		gap: calc(var(--layout-margin) + var(--content-margin));
 		padding-top: var(--layout-margin);
 		padding-bottom: var(--layout-margin);
