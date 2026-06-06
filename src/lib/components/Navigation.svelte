@@ -5,7 +5,7 @@
 	import { bugspotPopup, navigationMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tooltip } from "$lib/utils/tooltip.svelte";
-	import { fade, fly, scale } from "svelte/transition";
+	import { blur, fade, fly, scale } from "svelte/transition";
 	import ExperienceLevelCircle from "./ExperienceLevelCircle.svelte";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -58,7 +58,7 @@
 		style:display={page.url.pathname !== "/" ? "none" : ""}
 		tabindex="0"
 		role="button"
-		transition:fade={{ duration: 100 }}
+		transition:blur={{ duration: 250 }}
 		onclick={(e) => {
 			if (e.target === e.currentTarget) $navigationMenu = false;
 		}}

@@ -556,8 +556,7 @@
 		margin-top: 30px;
 		margin-bottom: 40px;
 		transition: scale 250ms ease;
-		padding-bottom: var(--content-margin);
-		padding-top: var(--content-margin);
+		padding: var(--content-margin);
 		overflow: auto;
 	}
 
