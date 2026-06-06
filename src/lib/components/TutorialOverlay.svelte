@@ -44,7 +44,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { ArrowRight, Play } from "@lucide/svelte";
 	import { get } from "svelte/store";
-	import { blur, fly } from "svelte/transition";
+	import { blur, fade, fly } from "svelte/transition";
 	import Chip from "./ui/Chip.svelte";
 	import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore";
 	import { menuIntroductionNote } from "./TopBar.svelte";
@@ -119,7 +119,7 @@
 		class="tutorial-overlay"
 		role="menu"
 		tabindex="0"
-		transition:blur={{ duration: 250 }}
+		transition:fade={{ duration: 100 }}
 		style:display={page.url.pathname !== "/" ? "none" : ""}
 		onclick={(e) => {
 			if (e.target === e.currentTarget || e.target === contentContainer) dismissOverlay();

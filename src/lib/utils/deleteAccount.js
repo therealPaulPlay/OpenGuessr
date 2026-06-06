@@ -22,7 +22,8 @@ async function deleteUser(password) {
         const response = await fetch(`${get(apiUrl)}/accounts/delete`, {
             method: 'DELETE',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem("bearer")}`,
             },
             body: JSON.stringify({
                 id: localStorage.getItem("id"),
