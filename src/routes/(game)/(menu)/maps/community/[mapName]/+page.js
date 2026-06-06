@@ -1,3 +1,6 @@
+// Dynamic route, disable pre-rendering
+export const prerender = false;
+
 import { apiUrl } from '$lib/stores/context-specific/apiConfigStore.js';
 import { get } from 'svelte/store';
 import { error } from '@sveltejs/kit';
