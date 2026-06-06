@@ -109,9 +109,9 @@
 
 	.welcome-image {
 		position: absolute;
-		top: -60px;
-		right: 35%;
-		rotate: -5deg;
+		top: -61px;
+		right: max(115px, 32%);
+		rotate: -3deg;
 		transform: translateX(50%);
 		height: 90px;
 		width: 90px;
