@@ -272,7 +272,6 @@
 		display: flex;
 		align-items: center;
 		flex-direction: column;
-		margin-inline: auto;
 		width: 100%;
 		gap: calc(var(--layout-margin) + var(--content-margin));
 		padding-top: var(--layout-margin);
