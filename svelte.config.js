@@ -1,26 +1,14 @@
-import adapter from '@sveltejs/adapter-cloudflare';
+import adapter from '@sveltejs/adapter-static';
 
 /** @type {import('@sveltejs/kit').Config} */
 const config = {
 	kit: {
-		// Prerendered routes are served as static assets, non-prerendered routes are SSR'd by a page function
 		adapter: adapter({
-			// Wildcard the static dirs to avoid enumeration (since there's a limit of 100 exclude rules)
-			routes: {
-				include: ['/*'],
-				exclude: [
-					'<build>',
-					'<prerendered>',
-					'/fonts/*',
-					'/img/*',
-					'/json/*',
-					'/music/*',
-					'/sounds/*',
-					'/favicon.ico',
-					'/sitemap.xml',
-					'/robots.txt'
-				]
-			}
+			// Cloudflare in SPA mode (active when no 404.html is present) routes requests for files that don't exist to index.html
+			// https://developers.cloudflare.com/pages/configuration/serving-pages/#single-page-application-spa-rendering
+			// To satisfy adapter-static, we still need a fallback html (which isn't used), since dynamic routes exist
+			// These dynamic routes get served the pre-rendered index.html, then JS takes over and constructs the actual route (e.g. the community map page)
+			fallback: 'unused.html'
 		})
 	}
 };

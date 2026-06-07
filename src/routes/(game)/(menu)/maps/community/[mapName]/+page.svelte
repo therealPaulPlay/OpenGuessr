@@ -23,13 +23,11 @@
 
 	let { data } = $props();
 
+	let nameId = $derived(data.mapName.replaceAll("_", " ")); // Map name from URL used as identifier (lowercase)
+
+	let map = $state(null);
+	let mapLocationData = $derived(map?.map_data);
 	let locationIndex = $state(0);
-	let mapName = $derived(data.name);
-	let mapAuthor = $derived(data.author);
-	let mapAuthorId = $derived(data.authorId);
-	let mapDescription = $derived(data.description);
-	let mapLocationAmount = $derived(data.map_data?.locations?.length);
-	let mapLocationData = $derived(data.map_data);
 
 	let playerId = $state(0);
 	let returnAfterChange = $derived(page.url.searchParams.get("return-to-multiplayer"));
@@ -60,13 +58,20 @@
 
 	onMount(async () => {
 		try {
-			const response = await fetch(data.map_data_url, { cache: "no-cache" });
+			const response = await fetch(get(apiUrl) + `/maps/${encodeURIComponent(nameId)}`);
 			if (!response.ok) throw new Error(response.status);
 
-			data = { ...data, map_data: await response.json() };
+			const mapData = await response.json();
+			if (!mapData.map_data_url) throw new Error("Map data URL missing");
+
+			const contentResponse = await fetch(mapData.map_data_url, { cache: "no-cache" });
+			if (!contentResponse.ok) throw new Error(contentResponse.status);
+
+			mapData.map_data = await contentResponse.json();
+			map = mapData;
 		} catch (error) {
-			console.error("Error fetching map file:", error);
-			errorPopup("Map file failed to load", "An error occured trying to load the map file.", error.message);
+			console.error("Error fetching map:", error);
+			errorPopup("Map failed to load", "An error occured trying to load the map.", error.message);
 		}
 	});
 
@@ -75,7 +80,7 @@
 	let likesCount = $state("...");
 
 	onMount(() => {
-		fetchMapLikeStatus(mapName);
+		fetchMapLikeStatus(nameId);
 	});
 
 	async function likeOrDislikeMap(mapName) {
@@ -225,7 +230,7 @@
 			// Return the success or error message. No need to parse the response
 			if (response.ok) {
 				// Update local copy so subsequent adds use the latest locations
-				data = { ...data, map_data: { locations: finalLocations } };
+				map = { ...map, map_data: { locations: finalLocations } };
 				return `Map updated successfully.`;
 			} else {
 				let error = response.status;
@@ -253,7 +258,7 @@
 </script>
 
 <svelte:head>
-	<title>{mapName}</title>
+	<title>{map?.name}</title>
 </svelte:head>
 
 <div class="mainContainer">
@@ -268,7 +273,7 @@
 	</div>
 	<!-- Location Map (shows which spots are on the map)-->
 	<div class="mapContainer">
-		{#if mapLocationAmount > 500}
+		{#if mapLocationData?.locations?.length > 500}
 			<div class="locationsTrimNote">
 				<p>Limited location view for performance.</p>
 			</div>
@@ -277,7 +282,6 @@
 			<SvgMap
 				locationList={locationsArrayForSvgMap}
 				framePaddingOffset={{ top: 40 }}
-				class="mapBulbShadow"
 				onclick={(coordinates) => {
 					const mapLocations = $state.snapshot(locationsArrayForSvgMap);
 					const index = mapLocations?.findIndex(([lat, lon]) => {
@@ -291,16 +295,17 @@
 	<!-- Author name and Like -->
 	<div class="headerContainer">
 		<div class="nameContainer">
-			<h1 class="header mapTitle">{mapName}</h1>
+			<h1 class="header mapTitle">{map?.name || "..."}</h1>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<p
 				class="authorText"
+				style:pointer-events={map?.authorId == null ? "none" : undefined}
 				onclick={() => {
-					showProfile(mapAuthorId);
+					showProfile(map?.authorId);
 				}}
 			>
-				by {mapAuthor}
+				by {map?.author || "..."}
 			</p>
 		</div>
 		<div class="buttonBar barMenu of-left of-right">
@@ -310,7 +315,7 @@
 				class="standardButton white mapButton largeButton"
 				onclick={() => {
 					playSound("basic_button");
-					likeOrDislikeMap(mapName);
+					likeOrDislikeMap(nameId);
 				}}
 			>
 				{#if isLiked}
@@ -339,14 +344,14 @@
 			>
 				<Link strokeWidth={2.75} size={18} />
 			</button>
-			{#if mapAuthorId == playerId && playerId != null}
+			{#if map && map.authorId == playerId && playerId != null}
 				<button
 					id="manageDelete"
 					{@attach tooltip({ text: "Delete" })}
 					class="standardButton white mapButton largeButton"
 					onclick={() => {
 						playSound("basic_button");
-						deleteMapScreen(mapName);
+						deleteMapScreen(map?.name);
 					}}><Trash2 size={18} strokeWidth={2.75} /></button
 				>
 				<button
@@ -365,7 +370,7 @@
 					{@attach tooltip({ text: "Download" })}
 					class="standardButton white mapButton largeButton"
 					href={mapDownloadHref}
-					download={`${mapName}.json`}
+					download={`${map?.name}.json`}
 					onclick={() => playSound("basic_button")}><FileDown size={18} strokeWidth={2.5} /></a
 				>
 			{/if}
@@ -373,14 +378,15 @@
 				class="standardButton mapButton largeButton"
 				onclick={() => {
 					playSound("basic_button");
+					if (!map) return showNotification("Map not loaded yet, please try again.");
 
 					// Add to bookmarked community maps
 					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
-					if (!addedCommunityMaps.includes(mapName)) addedCommunityMaps.push(mapName);
+					if (!addedCommunityMaps.includes(map?.name)) addedCommunityMaps.push(map?.name);
 					localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
 
 					// Change to map
-					changeMap("community_" + mapName, true, returnAfterChange);
+					changeMap("community_" + map?.name, true, returnAfterChange);
 					if (!returnAfterChange) {
 						navigationMenu.set(false);
 						goto("/");
@@ -398,13 +404,13 @@
 			<div class="pinIconContainer">
 				<MapPin size={100} strokeWidth={0.75} />
 			</div>
-			<p class="locationAmountText">{mapLocationAmount?.toLocaleString() || "..."} Locations</p>
+			<p class="locationAmountText">{mapLocationData?.locations?.length?.toLocaleString() || "..."} Locations</p>
 		</div>
 		<div class="descriptionInfo infoElement">
 			<div class="descriptionScroll of-top of-bottom">
-				<h2 class="descHeader">About <i>{mapName}</i></h2>
+				<h2 class="descHeader">About <i>{map?.name || "..."}</i></h2>
 				<p>
-					{mapDescription}
+					{map?.description || "..."}
 				</p>
 			</div>
 		</div>
@@ -463,7 +469,7 @@
 				playSound("basic_button");
 				showStatus = true;
 				statusText = "Updating...";
-				statusText = "Status: " + (await updateMap(mapName));
+				statusText = "Status: " + (await updateMap(map?.name));
 			}}>Update</button
 		>
 	</div>
@@ -491,13 +497,10 @@
 		max-height: 25svh;
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
+		box-shadow: var(--bulb-shadow);
 		overflow: hidden;
 		margin-bottom: 50px;
 		position: relative;
-	}
-
-	:global(.mapBulbShadow) {
-		box-shadow: var(--bulb-shadow);
 	}
 
 	.locationsTrimNote {
@@ -650,7 +653,7 @@
 		overflow: hidden;
 		margin-bottom: calc(var(--layout-margin) * -2);
 		position: relative;
-		background-color: rgb(15, 15, 20);
+		background-color: rgb(10, 10, 15);
 		text-align: center;
 		align-content: center;
 		z-index: 10;

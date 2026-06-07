@@ -36,6 +36,7 @@
 	$effect(() => {
 		const currentPath = page.url.pathname;
 		if (currentPath === "/" || !currentPath) return; // Skip root
+		if (currentPath.startsWith("/maps/community/")) return; // Skip individual community maps
 		if (navigationHistory.length > 0 && navigationHistory[0]?.path === currentPath) return; // Skip if last one is identical
 
 		// Wait for document title to update

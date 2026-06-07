@@ -1,2 +1,2 @@
-// Dynamic route, disable pre-rendering
+// Dynamic route
 export const prerender = false;
