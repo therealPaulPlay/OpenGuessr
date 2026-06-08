@@ -11,29 +11,29 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",
-		"@sveltejs/adapter-static": "^3.0.10",
+		"@sveltejs/adapter-cloudflare": "^7.2.8",
 		"@sveltejs/kit": "^2.8.1",
 		"@sveltejs/vite-plugin-svelte": "^4.0.4",
 		"eslint": "^10.0.0",
 		"eslint-plugin-unused-imports": "^4.4.1",
+		"@eslint/js": "^10.0.1",
+		"eslint-plugin-svelte": "^3.16.0",
 		"svelte": "^5.2.9",
-		"svelte-confetti": "^2.3.2",
-		"svelte-flag-icons": "^2.0.1",
-		"vite": "^5.0.3"
+		"vite": "^5.0.3",
+		"globals": "^17.3.0"
 	},
 	"dependencies": {
-		"@eslint/js": "^10.0.1",
 		"@floating-ui/dom": "^1.7.1",
 		"@lucide/svelte": "^1.11.0",
 		"d3-geo": "^3.1.1",
-		"eslint-plugin-svelte": "^3.16.0",
 		"fast-profanity-filter": "^0.0.5",
-		"globals": "^17.3.0",
 		"headless-chat": "^2.0.1",
 		"howler": "^2.2.4",
 		"leaflet": "^1.9.4",
 		"overfade": "^0.0.11",
 		"playsocketjs": "^3.1.2",
-		"topojson-client": "^3.1.0"
+		"topojson-client": "^3.1.0",
+		"svelte-confetti": "^2.3.2",
+		"svelte-flag-icons": "^2.0.1"
 	}
 }
