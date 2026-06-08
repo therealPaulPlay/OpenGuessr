@@ -21,7 +21,7 @@
 
 <Popup verySlim={true} bind:open={$chatMobilePopup}>
 	<div class="chat-container">
-		<ChatTabSwitcher inPanel={false} bind:isTeamChat />
+		<ChatTabSwitcher inPanel={false} {isTeamChat} onChange={(value) => (isTeamChat = value)} />
 		<Chat inPanel={false} {isTeamChat} />
 	</div>
 </Popup>

@@ -8,4 +8,4 @@
 	);
 </script>
 
-<IframePopup src={link} bind:open={$reportPopup} />
+<IframePopup src={link} open={$reportPopup} onClose={() => ($reportPopup = false)} />
