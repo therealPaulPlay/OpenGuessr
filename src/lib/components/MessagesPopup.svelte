@@ -392,7 +392,7 @@
 									: replyTo.message}"
 							</p>
 							<button
-								class="standardButton white reply-close"
+								class="standardButton dark reply-close"
 								onclick={() => {
 									playSound("basic_button");
 									replyTo = null;
