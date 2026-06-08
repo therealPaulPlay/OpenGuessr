@@ -510,7 +510,7 @@
 		left: var(--box-margin);
 		max-width: calc(100% - 40px);
 		border-radius: var(--content-margin);
-		background-color: var(--dark-background);
+		background-color: var(--box-color-dark-soft);
 		backdrop-filter: blur(var(--normal-blur));
 		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
