@@ -1,6 +1,14 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
-	let { open = $bindable(false), src, wide = false } = $props();
+	let { open = $bindable(false), src, wide = false, onClose } = $props();
+
+	// Upwards reactivity via callback for ReportIframePopup.svelte to avoid a two-way bind Svelte issue #18404
+	let wasOpen = false;
+	
+	$effect(() => {
+		if (wasOpen && !open) onClose?.();
+		wasOpen = open;
+	});
 </script>
 
 <Popup z={971} frameless={true} bind:open verySlim={!wide}>

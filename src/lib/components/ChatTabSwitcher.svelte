@@ -2,12 +2,11 @@
 	import { teamAmount } from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import Tabs from "./ui/Tabs.svelte";
-	// eslint-disable-next-line no-useless-assignment
-	let { isTeamChat = $bindable(false), inPanel = true } = $props();
+	let { isTeamChat = false, inPanel = true, onChange } = $props();
 
 	// Revert if team amount changes to 1
 	$effect(() => {
-		if ($teamAmount <= 1) isTeamChat = false;
+		if ($teamAmount <= 1 && isTeamChat) onChange?.(false);
 	});
 </script>
 
@@ -17,7 +16,7 @@
 			tabs={["Global", "Team"]}
 			onchange={(selection, _) => {
 				playSound("basic_button");
-				isTeamChat = selection === "Team";
+				onChange?.(selection === "Team"); // True -> team chat, false -> global chat
 			}}
 		/>
 	</div>

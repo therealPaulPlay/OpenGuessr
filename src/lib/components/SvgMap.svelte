@@ -106,13 +106,22 @@
 
 	// Fit the projection so all provided coordinates are visible with padding around them.
 	function fitToContent() {
-		const coords = collectCoordinates();
-		if (coords.length === 0) return;
-
 		const padTop = FRAME_PADDING + (framePaddingOffset.top || 0);
 		const padRight = FRAME_PADDING + (framePaddingOffset.right || 0);
 		const padBottom = FRAME_PADDING + (framePaddingOffset.bottom || 0);
 		const padLeft = FRAME_PADDING + (framePaddingOffset.left || 0);
+
+		const coords = collectCoordinates();
+
+		// No content, center the whole world as a placeholder
+		if (coords.length === 0) {
+			zoom = 1;
+			centerLat = 35;
+			centerLon = 0;
+			translateX = (padLeft + (width - padRight)) / 2;
+			translateY = (padTop + (height - padBottom)) / 2;
+			return;
+		}
 
 		const lats = coords.map(([lat]) => lat);
 		const lons = coords.map(([, lon]) => lon);
@@ -124,7 +133,10 @@
 		translateX = (padLeft + (width - padRight)) / 2;
 		translateY = (padTop + (height - padBottom)) / 2;
 		const minDimension = Math.min(width, height);
-		projection.scale(minDimension / 2).center([centerLon, centerLat]).translate([translateX, translateY]);
+		projection
+			.scale(minDimension / 2)
+			.center([centerLon, centerLat])
+			.translate([translateX, translateY]);
 
 		const projected = coords.map(([lat, lon]) => projection([lon, lat]));
 		const xs = projected.map(([x]) => x);
@@ -300,7 +312,7 @@
 		};
 	});
 
-// Mounting, drawing and framing --------------------------------------------------------------------------------------------------------------------------
+	// Mounting, drawing and framing --------------------------------------------------------------------------------------------------------------------------
 	function frameMap() {
 		fitToContent();
 		updateProjection();
@@ -309,23 +321,28 @@
 
 	onMount(async () => {
 		const geoData = await fetchTopoJSON();
-		if (geoData && (locationList || markerList || lineList)) {
-			features = geoData.features;
-			frameMap();
-			lastFingerprint = JSON.stringify(collectCoordinates());
-			loaded = true;
-		}
+		if (!geoData) return;
+
+		features = geoData.features;
+
+		lastFingerprint = JSON.stringify(collectCoordinates());
+		frameMap();
+		loaded = true;
 	});
 
-	// Re-frame whenever the content (markers/lines/locations) changes after initial mount
+	// Re-frame whenever the content (markers/lines/locations) changes or inits
 	// Track a fingerprint string of the coordinates so we only re-frame when they actually change
 	let lastFingerprint = "";
+
 	$effect(() => {
 		const fp = JSON.stringify(collectCoordinates());
-		if (!loaded) return;
-		if (fp === lastFingerprint) return;
+
+		// Basemap not ready yet, or coordinates unchanged
+		if (!features.length || fp === lastFingerprint) return;
+
 		lastFingerprint = fp;
 		frameMap();
+		loaded = true;
 	});
 </script>
 
@@ -399,7 +416,12 @@
 							{#if marker.shape === "flag"}
 								<!-- Lucide flag icon, anchored at the pole base. Drawn in two passes (dark outline, then brand fill) so the halo is uniform on cloth and pole. -->
 								<g transform="translate(-3.2,-17.6) scale(0.8)" stroke-linecap="round" stroke-linejoin="round">
-									<path d={FLAG_CLOTH_PATH} fill="var(--dark-background)" stroke="var(--dark-background)" stroke-width="6" />
+									<path
+										d={FLAG_CLOTH_PATH}
+										fill="var(--dark-background)"
+										stroke="var(--dark-background)"
+										stroke-width="6"
+									/>
 									<line x1="4" x2="4" y1="22" y2="15" stroke="var(--dark-background)" stroke-width="6" />
 									<path d={FLAG_CLOTH_PATH} fill="var(--brand-color)" stroke="var(--brand-color)" stroke-width="2" />
 									<line x1="4" x2="4" y1="22" y2="15" stroke="var(--brand-color)" stroke-width="2" />
@@ -414,8 +436,8 @@
 									x="0"
 									y={marker.shape === "flag" ? -22 : -14}
 									text-anchor="middle"
-									fill="white"
-								>{marker.label.length > 12 ? marker.label.slice(0, 12) + "…" : marker.label}</text>
+									fill="white">{marker.label.length > 12 ? marker.label.slice(0, 12) + "…" : marker.label}</text
+								>
 							{/if}
 						</g>
 					{/each}
@@ -487,5 +509,4 @@
 		pointer-events: none;
 		user-select: none;
 	}
-
 </style>
