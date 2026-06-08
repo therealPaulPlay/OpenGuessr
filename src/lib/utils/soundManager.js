@@ -1,4 +1,9 @@
-import { Howl } from 'howler';
+import { browser } from "$app/environment";
+
+let Howl;
+
+// Howler references browser globals at module eval, which crashes SSR in some JS runtimes
+if (browser) import("howler").then((module) => (Howl = module.Howl));
 
 const sounds = {};
 let currentVariant = null;
@@ -18,6 +23,7 @@ export function setSoundsVolume(volume) {
 }
 
 export function playSound(fileName, tag) {
+    if (!Howl) return;
     try {
         const sound = new Howl({
             src: [`/sounds/${fileName}.ogg`],
@@ -60,6 +66,7 @@ export function setMusicVolume(volume) {
 }
 
 export function playMusic(variant, volumeFactor = 1) {
+    if (!Howl) return;
     try {
         currentVolumeFactor = volumeFactor;
 
