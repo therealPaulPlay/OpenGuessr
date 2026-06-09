@@ -51,6 +51,7 @@
 			<div class="right-side">
 				<button
 					class="standardButton dark close-button"
+					aria-label="Close"
 					onclick={() => {
 						playSound("basic_button");
 						show = false;
@@ -61,6 +62,7 @@
 				</button>
 				<button
 					class="standardButton white"
+					aria-label="Play tutorial"
 					style:padding-inline="var(--box-margin);"
 					onclick={() => {
 						playSound("basic_button");
@@ -76,7 +78,7 @@
 	.note-wrapper {
 		position: relative;
 		width: 100%;
-        z-index: -1;
+		z-index: -1;
 	}
 
 	.tutorial-note {
@@ -117,6 +119,6 @@
 		width: 90px;
 		pointer-events: none;
 		z-index: 1;
-        user-select: none;
+		user-select: none;
 	}
 </style>
