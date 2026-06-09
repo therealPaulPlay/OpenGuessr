@@ -63,7 +63,7 @@
 	.main-container {
 		display: flex;
 		align-items: center;
-		min-height: 80dvh;
+		height: calc(100dvh - 120px);
 		justify-content: center;
 	}
 
