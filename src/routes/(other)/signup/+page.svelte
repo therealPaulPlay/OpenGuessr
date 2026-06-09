@@ -322,7 +322,7 @@
 	}
 
 	$effect(() => {
-		if (captchaVisible) renderCaptcha("#captcha-container", window.onSignupTurnstileCompleted);
+		if (captchaVisible) renderCaptcha("#captcha-slot", window.onSignupTurnstileCompleted);
 	});
 
 	// Register turnstile callback
@@ -374,7 +374,7 @@
 		<div class="popup-container" transition:fade={{ duration: 150 }}>
 			<div class="container captcha-container" transition:scale>
 				<h2 class="captcha-header">Captcha</h2>
-				<div id="captcha-container">
+				<div id="captcha-slot">
 					<!-- Captcha will be loaded here -->
 				</div>
 			</div>
