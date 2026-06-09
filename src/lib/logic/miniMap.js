@@ -3,7 +3,7 @@ import { getTeamFromClientId } from "$lib/logic/multiplayerLogic";
 import { resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore.js";
-import { mapPinLat, mapPinLng, map, addedMarkers, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
+import { guessLat, guessLon, map, addedMarkers, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { get } from "svelte/store";
@@ -86,14 +86,20 @@ let delayedMapReset = false;
 let multiplayerMiniMarkers = []; // team markers
 
 // Reset the map and the confirm button
-export function resetMap(keepSize) {
+export function resetMap(keepSize = false, keepPlayerPinCoords = false) {
     if (!get(map)) return delayedMapReset = true;
 
-    // Clear markers
+    // Clear all markers
     get(addedMarkers)?.forEach(marker => {
         get(map).removeLayer(marker);
     });
     addedMarkers.set([]);
+
+    // Reset placed player pin location
+    if (!keepPlayerPinCoords) {
+        guessLat.set(0);
+        guessLon.set(0);
+    }
 
     // Reset the guess button
     confirmButtonActive.set(false);
@@ -125,9 +131,9 @@ function onMapClick(latLng) {
             get(map).removeLayer(marker);
         }
 
-        // Set Map Marker Position to user input
-        mapPinLat.set(latLng.lat);
-        mapPinLng.set(latLng.lng);
+        // Set map marker position to user input
+        guessLat.set(latLng.lat);
+        guessLon.set(latLng.lng);
 
         let yourIcon = new L.Icon({
             iconUrl: "/img/pins/player_pin" + get(selectedPinIndex) + ".png",
@@ -144,7 +150,7 @@ function onMapClick(latLng) {
             return [...markers, marker]
         });
 
-        if (get(multiplayer)) get(socket).sendRequest("addGuessMarker", { lat: get(mapPinLat), lon: get(mapPinLng) });
+        if (get(multiplayer)) get(socket).sendRequest("addGuessMarker", { lat: get(guessLat), lon: get(guessLon) });
     } catch (error) {
         console.error("Error in onMapClick function:", error)
     }

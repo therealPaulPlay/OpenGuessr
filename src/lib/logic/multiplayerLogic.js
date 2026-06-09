@@ -7,7 +7,7 @@ import { updateMinimapWithTeamMarkers } from "$lib/logic/miniMap.js";
 import { playSound } from "$lib/utils/soundManager.js";
 import { showConfirmPopup } from "$lib/utils/confirmPopup.js";
 import { continueText, resultScreenEnabled } from "$lib/stores/context-specific/resultScreenStore.js";
-import { mapPinLat, mapPinLng, mapInteractive } from "$lib/stores/context-specific/mapStore.js";
+import { mapInteractive } from "$lib/stores/context-specific/mapStore.js";
 import { multiplayer } from "$lib/stores/modeStore";
 import { navigationMenu, guestNamePickerPopup, linkJoinPopup } from "$lib/stores/uiStore";
 import { leaveFunction } from "$lib/stores/modeStore.js";
@@ -183,7 +183,7 @@ export async function createMultiplayerInstance() {
                     // Ensure the coords are set, in case user joins during result screen
                     currentLocationLatitude.set(storage?.location?.[0]);
                     currentLocationLongitude.set(storage?.location?.[1]);
-                    enableResultScreen(get(mapPinLat), get(mapPinLng));
+                    enableResultScreen();
 
                 } else disableResultScreen();
             }
