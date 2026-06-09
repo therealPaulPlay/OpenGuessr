@@ -136,7 +136,7 @@
 
 	@media (min-width: 800px) {
 		.content {
-			margin-inline: 130px;
+			padding-inline: 130px; /* Padding rather than margin to allow touch scrolling on it */
 		}
 	}
 </style>
