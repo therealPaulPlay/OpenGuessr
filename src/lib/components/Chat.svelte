@@ -32,7 +32,7 @@
 </script>
 
 <RemainingGuessesDisplay {inPanel} />
-<div class="multiplayerChatMessages of-top of-bottom" bind:this={chatMessageBoxElement}>
+<div class="multiplayer-chat-messages of-top of-bottom" bind:this={chatMessageBoxElement}>
 	<p>
 		{#if displayedChatArray.length}
 			{#each displayedChatArray as chat}
@@ -47,11 +47,11 @@
 		{/if}
 	</p>
 </div>
-<div class="chatButtonArea" class:chatButtonAreaInPopup={!inPanel}>
+<div class="chat-button-area" class:chat-button-area-in-popup={!inPanel}>
 	<input
 		maxlength="100"
 		type="text"
-		id="multiplayerMessageInput"
+		id="multiplayer-message-input"
 		placeholder="Your message..."
 		bind:value={inputValue}
 		onkeydown={(event) => {
@@ -64,8 +64,8 @@
 	/>
 	<button
 		{@attach tooltip({ text: "Send message" })}
-		id="multiplayerSendButton"
-		class="standardButton white"
+		id="multiplayer-send-button"
+		class="standard-button white"
 		onclick={() => {
 			playSound("basic_button");
 			sendChat(inputValue, isTeamChat ? getTeamFromClientId(get(socket)?.id) : null);
@@ -75,7 +75,7 @@
 		<SendHorizonal strokeWidth={2} size={22} style="margin-right: -2px; margin-top: 3px" />
 	</button>
 	<button
-		class="standardButton white"
+		class="standard-button white"
 		{@attach tooltip({ text: "Moderation" })}
 		onclick={() => {
 			playSound("basic_button");
@@ -87,14 +87,14 @@
 </div>
 
 <style>
-	.chatButtonArea {
+	.chat-button-area {
 		display: flex;
 		align-items: center;
 		gap: var(--panel-margin);
 		width: 100%;
 	}
 
-	.chatButtonAreaInPopup {
+	.chat-button-area-in-popup {
 		padding: var(--box-margin);
 		box-sizing: border-box;
 		border-radius: var(--box-margin);
@@ -103,7 +103,7 @@
 		gap: var(--box-margin);
 	}
 
-	.multiplayerChatMessages {
+	.multiplayer-chat-messages {
 		width: calc(100% - 6px);
 		line-height: 1.6;
 		display: flex;
@@ -114,16 +114,16 @@
 		position: relative;
 	}
 
-	.multiplayerChatMessages p {
+	.multiplayer-chat-messages p {
 		margin-top: auto;
 		max-width: 100%;
 	}
 
-	#multiplayerSendButton {
+	#multiplayer-send-button {
 		padding-inline: 12px;
 	}
 
-	#multiplayerMessageInput {
+	#multiplayer-message-input {
 		padding: var(--box-margin);
 		height: 20px;
 		flex-grow: 1;

@@ -15,22 +15,22 @@
 </script>
 
 {#if $showSlideup && !$crazyGames}
-	<div class="endscreenSlideupContainer barMenu" transition:slide>
-		<div class="textBox textBoxTop">
-			<h3 id="slideupTitle">{$slideupTitle}</h3>
+	<div class="endscreen-slideup-container bar-menu" transition:slide>
+		<div class="text-box text-box-top">
+			<h3 id="slideup-title">{$slideupTitle}</h3>
 		</div>
 		{#if $slideupButtonText == "Support"}
-			<div class="textBox supporterStatBox solidBox">
-				<p class="supporterStatText">${$monthlySupportAmount ?? "..."} supported this month</p>
-				<div class="supporterStatBar" style:width={Math.min(1, $monthlySupportAmount / 500) * 100 + "%"}></div>
+			<div class="text-box supporter-stat-box solid-box">
+				<p class="supporter-stat-text">${$monthlySupportAmount ?? "..."} supported this month</p>
+				<div class="supporter-stat-bar" style:width={Math.min(1, $monthlySupportAmount / 500) * 100 + "%"}></div>
 			</div>
 		{/if}
-		<div class="textBox solidBox">
-			<p id="slideupText" bind:textContent={$slideupText} contenteditable="false"></p>
+		<div class="text-box solid-box">
+			<p id="slideup-text" bind:textContent={$slideupText} contenteditable="false"></p>
 		</div>
-		<div class="buttonBox">
+		<div class="button-box">
 			<button
-				class="standardButton white"
+				class="standard-button white"
 				style:width={!$slideupCallback ? "100%" : ""}
 				onclick={() => {
 					playSound("basic_button");
@@ -39,7 +39,7 @@
 			>
 			{#if $slideupCallback}
 				<button
-					class="streakButton standardButton"
+					class="streak-button standard-button"
 					onclick={() => {
 						playSound("basic_button");
 						$slideupCallback?.();
@@ -58,7 +58,7 @@
 {/if}
 
 <style>
-	.endscreenSlideupContainer {
+	.endscreen-slideup-container {
 		z-index: 14;
 		padding: var(--panel-margin);
 		border-radius: var(--box-margin);
@@ -73,35 +73,35 @@
 		left: var(--box-margin);
 	}
 
-	.supporterStatText {
+	.supporter-stat-text {
 		opacity: 0.75;
 	}
 
-	.textBoxTop {
+	.text-box-top {
 		margin-bottom: var(--panel-margin);
 		padding: var(--content-margin) !important;
 		padding-inline: var(--content-margin) !important;
 	}
 
-	.textBox {
+	.text-box {
 		padding: var(--box-margin);
 		padding-inline: 12px;
 	}
 
-	.solidBox {
+	.solid-box {
 		border-radius: var(--content-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 	}
 
-	.supporterStatBox {
+	.supporter-stat-box {
 		margin-bottom: var(--panel-margin);
 		position: relative;
 		overflow: hidden;
 		text-align: center;
 	}
 
-	.supporterStatBar {
+	.supporter-stat-bar {
 		position: absolute;
 		left: 0;
 		top: 0;
@@ -111,7 +111,7 @@
 		transition: width 250ms ease;
 	}
 
-	.buttonBox {
+	.button-box {
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
@@ -119,26 +119,26 @@
 		gap: var(--panel-margin);
 	}
 
-	.buttonBox .standardButton {
+	.button-box .standard-button {
 		height: 42px;
 	}
 
-	.streakButton {
+	.streak-button {
 		background-color: #00ac00;
 	}
 
-	#slideupText {
+	#slideup-text {
 		width: 100%;
 		max-width: 300px;
 	}
 
-	#slideupTitle {
+	#slideup-title {
 		transition: color 350ms ease;
 		font-size: 25px;
 	}
 
 	@media (max-width: 500px) {
-		.endscreenSlideupContainer {
+		.endscreen-slideup-container {
 			width: calc(100% - 36px);
 		}
 	}

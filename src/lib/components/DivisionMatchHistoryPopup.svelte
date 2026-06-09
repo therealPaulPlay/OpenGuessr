@@ -105,45 +105,45 @@
 	<div class="popup-title">
 		<h1>Duel history</h1>
 	</div>
-	<div class="topPopupFlex">
-		<div class="filterBox">
+	<div class="top-popup-flex">
+		<div class="filter-box">
 			<p>Filter: user-</p>
-			<input placeholder="all" class="filterInput" bind:value={filterId} onchange={fetchEntries} />
+			<input placeholder="all" class="filter-input" bind:value={filterId} onchange={fetchEntries} />
 		</div>
 	</div>
-	<div class="historyBox">
-		<div class="historyBoxScroll of-top of-bottom">
+	<div class="history-box">
+		<div class="history-box-scroll of-top of-bottom">
 			{#if !matchResults}
-				<p class="playerSearchError">Loading...</p>
+				<p class="player-search-error">Loading...</p>
 			{:else if matchResults.duels && matchResults.duels.length > 0}
 				{#each matchResults.duels as entry}
-					<div class="matchHistoryItemContainer">
+					<div class="match-history-item-container">
 						<div
-							class="matchHistoryItem of-left of-right"
-							class:yourMatch={!currentFilterId &&
+							class="match-history-item of-left of-right"
+							class:your-match={!currentFilterId &&
 								(entry.player1?.id == localStorage.getItem("id") || entry.player2?.id == localStorage.getItem("id"))}
 						>
-							<div class="playerInfo">
+							<div class="player-info">
 								<!-- svelte-ignore a11y_click_events_have_key_events -->
-								<span class="playerName" role="button" tabindex="0" onclick={() => showProfile(entry.player1.id)}>
+								<span class="player-name" role="button" tabindex="0" onclick={() => showProfile(entry.player1.id)}>
 									{entry.player1?.name}
 								</span>
-								<span class="playerStatus">
+								<span class="player-status">
 									{entry.player1?.won ? "W" : entry.player2?.won ? "L" : "D"}
 								</span>
 							</div>
 							<span class="vs">vs.</span>
-							<div class="playerInfo">
+							<div class="player-info">
 								<!-- svelte-ignore a11y_click_events_have_key_events -->
-								<span class="playerName" role="button" tabindex="0" onclick={() => showProfile(entry.player2?.id)}>
+								<span class="player-name" role="button" tabindex="0" onclick={() => showProfile(entry.player2?.id)}>
 									{entry.player2?.name}
 								</span>
-								<span class="playerStatus">
+								<span class="player-status">
 									{entry.player2?.won ? "W" : entry.player1?.won ? "L" : "D"}
 								</span>
 							</div>
 						</div>
-						<div class="eloInfo">
+						<div class="elo-info">
 							<p style:padding-right="2px">
 								{#if entry.eloChange != null}
 									{#if entry.player1?.id == currentFilterId || entry.player2?.id == currentFilterId}
@@ -162,7 +162,7 @@
 								{/if}
 							</p>
 							<button
-								class="standardButton white infoButton"
+								class="standard-button white info-button"
 								aria-label="Match overview"
 								onclick={() => {
 									playSound("basic_button");
@@ -175,18 +175,18 @@
 					</div>
 				{/each}
 			{:else}
-				<p class="playerSearchError">No matches in the history.</p>
+				<p class="player-search-error">No matches in the history.</p>
 			{/if}
 		</div>
 	</div>
 
-	<div class="paginationControls">
-		<button class="standardButton white" onclick={prevPage} disabled={currentPage === 1}>
+	<div class="pagination-controls">
+		<button class="standard-button white" onclick={prevPage} disabled={currentPage === 1}>
 			<ArrowLeft size={20} strokeWidth={2} />
 		</button>
-		<span class="pageCounter">{currentPage}</span>
+		<span class="page-counter">{currentPage}</span>
 		<button
-			class="standardButton white"
+			class="standard-button white"
 			onclick={nextPage}
 			disabled={!(matchResults && matchResults.duels && matchResults.duels.length === limit)}
 		>
@@ -196,7 +196,7 @@
 </Popup>
 
 <style>
-	.playerSearchError {
+	.player-search-error {
 		opacity: 0.5;
 		font-size: 22px;
 		text-align: center;
@@ -207,13 +207,13 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.matchHistoryItemContainer {
+	.match-history-item-container {
 		display: flex;
 		gap: var(--box-margin);
 		width: 100%;
 	}
 
-	.eloInfo {
+	.elo-info {
 		border-radius: var(--content-margin);
 		box-shadow: var(--box-shadow);
 		padding: var(--content-margin);
@@ -225,17 +225,17 @@
 		box-sizing: border-box;
 	}
 
-	.eloInfo p {
+	.elo-info p {
 		align-self: center;
 	}
 
-	.filterInput {
+	.filter-input {
 		border-radius: var(--content-margin);
 		max-width: 65px;
 		padding-inline: var(--box-margin);
 	}
 
-	.filterBox {
+	.filter-box {
 		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
@@ -248,17 +248,17 @@
 		flex-grow: 1;
 	}
 
-	.filterBox p {
+	.filter-box p {
 		color: rgba(255, 255, 255, 0.5);
 	}
 
-	.topPopupFlex {
+	.top-popup-flex {
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--layout-margin);
 	}
 
-	.historyBox {
+	.history-box {
 		position: relative;
 		box-shadow: var(--box-shadow);
 		width: calc(100% - 20px);
@@ -268,7 +268,7 @@
 		padding: var(--box-margin);
 	}
 
-	.historyBoxScroll {
+	.history-box-scroll {
 		gap: var(--box-margin);
 		display: flex;
 		flex-direction: column;
@@ -279,7 +279,7 @@
 		width: 100%;
 	}
 
-	.pageCounter {
+	.page-counter {
 		padding: var(--content-margin);
 		box-shadow: var(--box-shadow);
 		user-select: none;
@@ -291,7 +291,7 @@
 		font-size: 22px;
 	}
 
-	.matchHistoryItem {
+	.match-history-item {
 		display: flex;
 		box-shadow: var(--box-shadow);
 		gap: var(--box-margin);
@@ -305,17 +305,17 @@
 		scrollbar-width: none;
 	}
 
-	.yourMatch {
+	.your-match {
 		background-color: rgba(255, 255, 255, 0.2);
 	}
 
-	.playerInfo {
+	.player-info {
 		display: flex;
 		align-items: center;
 		gap: var(--box-margin);
 	}
 
-	.playerName {
+	.player-name {
 		cursor: pointer;
 		transition: opacity 250ms ease;
 		max-width: 200px;
@@ -324,11 +324,11 @@
 		text-overflow: ellipsis;
 	}
 
-	.playerName:hover {
+	.player-name:hover {
 		opacity: 0.5;
 	}
 
-	.playerStatus {
+	.player-status {
 		opacity: 0.75;
 		overflow: hidden;
 		text-overflow: ellipsis;
@@ -343,7 +343,7 @@
 		background-color: var(--box-color);
 	}
 
-	.paginationControls {
+	.pagination-controls {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -351,11 +351,11 @@
 		margin-top: var(--layout-margin);
 	}
 
-	.paginationControls button {
+	.pagination-controls button {
 		padding: var(--content-margin) var(--box-margin);
 	}
 
-	.infoButton {
+	.info-button {
 		display: flex;
 		align-items: center;
 		justify-content: center;

@@ -10,7 +10,7 @@
 <div class="page-content">
 	<h1>{page.status} - {page.error.message}</h1>
 	<p>The page you requested does not exist or experienced an error.</p>
-	<a class="returnButton standardButton" href="/">
+	<a class="return-button standard-button" href="/">
 		<ArrowLeft style="min-width: 22px; margin-bottom: -3px;" strokeWidth={2.5} />
 		Return to OpenGuessr</a
 	>
@@ -48,7 +48,7 @@
 		color: white;
 	}
 
-	.returnButton {
+	.return-button {
 		font-size: 25px;
 		padding: var(--layout-margin) 20px;
 		border-radius: var(--box-margin);
@@ -66,7 +66,7 @@
 			font-size: 25px;
 		}
 
-		.returnButton {
+		.return-button {
 			font-size: 22px;
 		}
 	}

@@ -42,11 +42,11 @@
 	});
 </script>
 
-<div id="bottomBar" class="bottomBar">
-	<div class="bottomLeftMenu">
-		<div class="barMenu">
+<div id="bottom-bar" class="bottom-bar">
+	<div class="bottom-left-menu">
+		<div class="bar-menu">
 			<button
-				class="standardButton white"
+				class="standard-button white"
 				{@attach tooltip({
 					text: "Click to return to the spawn.",
 					state: returnTutorialNote,
@@ -61,12 +61,12 @@
 					$iframeElement.src = $panoramaSrc;
 				}}
 			>
-				<img id="resetButtonImg" src="/img/return_icon.png" alt="Return to start position" />
-				<span class="resetButtonText">Return</span>
+				<img id="reset-button-img" src="/img/return_icon.png" alt="Return to start position" />
+				<span class="reset-button-text">Return</span>
 			</button>
 			{#if $multiplayer}
 				<button
-					class="standardButton white mobileChatButton"
+					class="standard-button white mobile-chat-button"
 					{@attach tooltip({ text: "Chat" })}
 					onclick={() => {
 						playSound("basic_button");
@@ -83,13 +83,13 @@
 		</div>
 	</div>
 	{#if !$countryGuessr}
-		<div class="barMenu bottomRightMenu" transition:blur={{ duration: 150 }}>
+		<div class="bar-menu bottom-right-menu" transition:blur={{ duration: 150 }}>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div
-				class="standardButton confirmButton white"
-				id="confirmButton"
-				class:confirmActive={$confirmButtonActive}
+				class="standard-button confirm-button white"
+				id="confirm-button"
+				class:confirm-active={$confirmButtonActive}
 				style:opacity={$mapInteractive || !$mapExpanded ? "" : "0.5"}
 				onclick={() => {
 					playSound("basic_button");
@@ -111,14 +111,14 @@
 </div>
 
 {#if !$adsDisabled}
-	<div class="gameplayAdArea barMenu" transition:blur={{ duration: 150 }}>
-		<div class="gameplayAd" id="gameplayAd" data-fuse="Game_incontent_1"></div>
-		<p class="noAdvertsText">Ads keep OpenGuessr free.</p>
+	<div class="gameplay-ad-area bar-menu" transition:blur={{ duration: 150 }}>
+		<div class="gameplay-ad" id="gameplay-ad" data-fuse="Game_incontent_1"></div>
+		<p class="no-adverts-text">Ads keep OpenGuessr free.</p>
 	</div>
 {/if}
 
 <style>
-	.bottomBar {
+	.bottom-bar {
 		position: fixed;
 		bottom: var(--box-margin);
 		left: var(--box-margin);
@@ -136,7 +136,7 @@
 		pointer-events: none;
 	}
 
-	.noAdvertsText {
+	.no-adverts-text {
 		position: absolute;
 		text-align: center;
 		color: white;
@@ -152,13 +152,13 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.bottomLeftMenu {
+	.bottom-left-menu {
 		display: flex;
 		align-items: center;
 		gap: var(--box-margin);
 	}
 
-	.gameplayAdArea {
+	.gameplay-ad-area {
 		position: fixed;
 		left: 0;
 		right: 0;
@@ -169,94 +169,94 @@
 		text-align: center !important;
 	}
 
-	.gameplayAdArea,
-	.gameplayAd {
+	.gameplay-ad-area,
+	.gameplay-ad {
 		width: 728px;
 		height: 90px;
 	}
 
-	.gameplayAd {
+	.gameplay-ad {
 		overflow: hidden;
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {
-		.gameplayAdArea,
-		.gameplayAd {
+		.gameplay-ad-area,
+		.gameplay-ad {
 			width: 320px;
 			height: 50px;
 		}
 	}
 
 	@media (max-width: 1500px) {
-		.gameplayAdArea,
-		.gameplayAd {
+		.gameplay-ad-area,
+		.gameplay-ad {
 			width: 320px;
 			height: 50px;
 		}
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {
-		.gameplayAdArea,
-		.gameplayAd {
+		.gameplay-ad-area,
+		.gameplay-ad {
 			height: 50px;
 		}
 
-		.gameplayAdArea {
+		.gameplay-ad-area {
 			width: calc(100% - 20px);
 		}
 	}
 
-	.confirmButton {
+	.confirm-button {
 		min-width: fit-content;
 		width: 100%;
 		justify-content: center;
 	}
 
-	.confirmActive {
+	.confirm-active {
 		pointer-events: auto;
 		opacity: 1;
 		background-color: var(--brand-color);
 	}
 
-	:global(.innerConfirmButtonDisabled) {
+	:global(.inner-confirm-button-disabled) {
 		pointer-events: none !important;
 		opacity: 0.5;
 	}
 
-	#resetButtonImg {
+	#reset-button-img {
 		width: 21px;
 		height: 17px;
 	}
 
-	.resetButtonText {
+	.reset-button-text {
 		margin-left: var(--panel-margin);
 	}
 
-	.bottomRightMenu {
+	.bottom-right-menu {
 		width: max(calc(20% - (var(--box-margin) + 2px)), 200px);
 		margin-right: 60px;
 	}
 
-	.mobileChatButton {
+	.mobile-chat-button {
 		display: none;
 	}
 
 	/* Mobile adjustments */
 	@media (orientation: portrait) and (max-width: 800px) {
-		.gameplayAdArea {
+		.gameplay-ad-area {
 			bottom: calc(56px + var(--box-margin) * 2); /* Guess button is 56px high */
 		}
 
-		.mobileChatButton {
+		.mobile-chat-button {
 			display: block;
 		}
 
-		.bottomRightMenu {
+		.bottom-right-menu {
 			flex-grow: 1;
 			margin-right: 0;
 		}
 
-		.resetButtonText {
+		.reset-button-text {
 			display: none;
 		}
 	}

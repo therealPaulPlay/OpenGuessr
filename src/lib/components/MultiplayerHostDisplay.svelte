@@ -57,40 +57,40 @@
 </script>
 
 <!-- Room code-->
-<div class="multiplayerHostSettings noGap">
-	<p class="codeDisplayText">Join with code</p>
-	<h1 id="roomCodeDisplay">
+<div class="multiplayer-host-settings no-gap">
+	<p class="code-display-text">Join with code</p>
+	<h1 id="room-code-display">
 		{$roomCode?.slice(0, 3) || "..."}<span style="opacity: 50%; font-size: 40px;">-</span>{$roomCode?.slice(3) || "..."}
 	</h1>
 </div>
 
 <!-- Team and player display -->
-<div class="multiplayerHostSettings teamsDisplay">
+<div class="multiplayer-host-settings teams-display">
 	{#if $teamAmount === 1 || !$multiplayerTableArray?.length}
-		<p class="playerBoxElement">
+		<p class="player-box-element">
 			<span>No team:</span>
 			{#if $multiplayerTableArray?.length > 0}
 				{#each $multiplayerTableArray as player, i}
-					<span class="playerNameInline"
+					<span class="player-name-inline"
 						>{truncatePlayerName(player.username)}{#if i < $multiplayerTableArray.length - 1}<span>,&nbsp;</span>{/if}
 					</span>
 				{/each}
 			{:else}
-				<span class="teamEmpty">No players</span>
+				<span class="team-empty">No players</span>
 			{/if}
 		</p>
 	{:else}
 		{#each Object.values($multiplayerTableArray) as team}
 			{@const teamIndex = team.teamIndex}
-			<p class="playerBoxElement playerBoxTeams">
+			<p class="player-box-element player-box-teams">
 				<span>{`Team ${teamIndex + 1}:`}</span>
 				{#if team.players?.length > 0}
 					{#each team.players as player, i (player.clientId)}
-						<span class="playerNameInline">
+						<span class="player-name-inline">
 							{truncatePlayerName(player.username)}
 							<select
 								name="teams"
-								class="teamSelector standardButton white"
+								class="team-selector standard-button white"
 								onchange={(e) => updatePlayerTeam(player.clientId, e.target.value)}
 							>
 								<!-- Generate select options for every team -->
@@ -102,23 +102,23 @@
 						</span>
 					{/each}
 				{:else}
-					<span class="teamEmpty">No players</span>
+					<span class="team-empty">No players</span>
 				{/if}
 			</p>
 		{/each}
 	{/if}
-	<p id="smallJoinCounter">{$participantCount ?? "?"}</p>
+	<p id="small-join-counter">{$participantCount ?? "?"}</p>
 </div>
 
 <!-- Friend invite display -->
 {#if $loadedFriendsData && $loadedFriendsData.filter((value) => value.online)?.length >= 1}
-	<div id="friendsInviteDisplay" class="multiplayerHostSettings" transition:slide>
-		<div class="roomCreationFriendsBox of-top of-bottom">
+	<div id="friends-invite-display" class="multiplayer-host-settings" transition:slide>
+		<div class="room-creation-friends-box of-top of-bottom">
 			<!-- online players will be added here programmatically -->
 			{#each $loadedFriendsData.filter((value) => value.online) as entry}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
-					class="standardButton roomCreationFriendItem"
+					class="standard-button room-creation-friend-item"
 					transition:blur
 					role="menu"
 					tabindex="0"
@@ -126,9 +126,9 @@
 						showProfile(entry.id);
 					}}
 				>
-					<p class="friendsRoomEntryText">{entry.user_name}</p>
+					<p class="friends-room-entry-text">{entry.user_name}</p>
 					<button
-						class="standardButton white sendInviteButton"
+						class="standard-button white send-invite-button"
 						{@attach tooltip({ text: "Invite" })}
 						onclick={(e) => {
 							e.stopPropagation();
@@ -136,7 +136,7 @@
 							sendMatchInvite(entry.id);
 						}}
 					>
-						<img src="/img/send_icon.png" alt="send invite" class="sendIcon" />
+						<img src="/img/send_icon.png" alt="send invite" class="send-icon" />
 					</button>
 				</div>
 			{/each}
@@ -145,10 +145,10 @@
 {/if}
 
 <!-- Button area -->
-<div class="multiplayerHostSubmitArea barMenu">
+<div class="multiplayer-host-submit-area bar-menu">
 	<button
-		id="roomcodeLink"
-		class="largeButton standardButton white"
+		id="roomcode-link"
+		class="large-button standard-button white"
 		{@attach tooltip({ text: "Copy link" })}
 		disabled={!$roomCode}
 		onclick={() => {
@@ -175,7 +175,7 @@
 	</button>
 	{#if showOpenRoom}
 		<button
-			class="standardButton white largeButton"
+			class="standard-button white large-button"
 			{@attach tooltip({ text: "List room publicly" })}
 			disabled={!$roomCode || roomOpened || !$isAuthenticated}
 			onclick={async () => {
@@ -189,8 +189,8 @@
 		</button>
 	{/if}
 	<button
-		id="multiplayerHost"
-		class="standardButton largeButton"
+		id="multiplayer-host"
+		class="standard-button large-button"
 		disabled={startDisabledCondition}
 		onclick={() => {
 			playSound("basic_button");
@@ -200,7 +200,7 @@
 </div>
 
 <style>
-	.multiplayerHostSubmitArea {
+	.multiplayer-host-submit-area {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -209,7 +209,7 @@
 		border-radius: var(--layout-margin);
 	}
 
-	.multiplayerHostSettings {
+	.multiplayer-host-settings {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-around;
@@ -224,29 +224,29 @@
 		width: calc(100% - var(--box-margin) * 2);
 	}
 
-	#friendsInviteDisplay {
+	#friends-invite-display {
 		padding: var(--box-margin);
 	}
 
-	.codeDisplayText {
+	.code-display-text {
 		opacity: 0.5;
 		width: 100%;
 		text-align: center;
 	}
 
-	.sendIcon {
+	.send-icon {
 		vertical-align: -2px;
 		width: 20px;
 		height: 20px;
 	}
 
-	.sendInviteButton {
+	.send-invite-button {
 		padding: 0;
 		padding-inline: var(--content-margin);
 		height: 35px !important;
 	}
 
-	.roomCreationFriendItem {
+	.room-creation-friend-item {
 		background-color: rgba(255, 255, 255, 0.1);
 		border: none;
 		border-radius: var(--box-margin);
@@ -259,7 +259,7 @@
 		box-shadow: var(--box-shadow);
 	}
 
-	.teamsDisplay {
+	.teams-display {
 		position: relative;
 		min-height: 27px;
 		font-size: 22px;
@@ -267,25 +267,25 @@
 		text-overflow: ellipsis;
 	}
 
-	.playerBoxElement {
+	.player-box-element {
 		width: calc(100% - 85px);
 		text-align: center;
 	}
 
-	.playerBoxElement span {
+	.player-box-element span {
 		color: rgba(255, 255, 255, 0.5) !important;
 	}
 
-	.playerBoxElement.playerBoxTeams {
+	.player-box-element.player-box-teams {
 		margin-bottom: 2px;
 		line-height: 32px;
 	}
 
-	.playerNameInline {
+	.player-name-inline {
 		display: inline-block;
 	}
 
-	.teamSelector {
+	.team-selector {
 		padding: 0px 4px;
 		vertical-align: 2px;
 		min-height: var(--content-margin);
@@ -294,18 +294,18 @@
 		height: unset;
 	}
 
-	.teamEmpty {
+	.team-empty {
 		opacity: 0.75;
 	}
 
-	.friendsRoomEntryText {
+	.friends-room-entry-text {
 		padding-inline: var(--box-margin);
 		overflow: hidden;
 		text-overflow: ellipsis;
 		max-width: 150px;
 	}
 
-	.roomCreationFriendsBox {
+	.room-creation-friends-box {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
@@ -317,7 +317,7 @@
 		transition: max-height 250ms ease;
 	}
 
-	#smallJoinCounter {
+	#small-join-counter {
 		position: absolute;
 		box-shadow: var(--bulb-shadow);
 		top: var(--content-margin);
@@ -334,13 +334,13 @@
 		overflow: hidden;
 	}
 
-	#roomCodeDisplay {
+	#room-code-display {
 		font-size: 40px;
 		min-width: 75%;
 		text-align: center;
 	}
 
-	.noGap {
+	.no-gap {
 		gap: unset;
 	}
 </style>

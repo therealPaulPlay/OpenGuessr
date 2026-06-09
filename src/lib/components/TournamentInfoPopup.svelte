@@ -113,7 +113,7 @@
 		</div>
 	</div>
 	<TitleSeparator text="Matches" class="tournament-divider-margin" />
-	<div class="info-container warnInfo">
+	<div class="info-container warn-info">
 		<Info color="white" strokeWidth={2} class="info-icon-circular" />
 		<p>
 			Tournaments consist of multiple matches, with the top half of players advancing each round until a grand finale
@@ -127,7 +127,7 @@
 					<div class="match-entry" transition:slide={{ axis: "y" }}>
 						<p>Match {index + 1}</p>
 						<button
-							class="standardButton white"
+							class="standard-button white"
 							onclick={() => {
 								$tournamentMatchResultsIndex = index;
 								playSound("basic_button");
@@ -162,14 +162,14 @@
 	{/if}
 	{#if $selectedTournament?.status == "starting" || $selectedTournament?.status == "upcoming"}
 		<TitleSeparator text="Account requirements" class="tournament-divider-margin" />
-		<div class="info-container warnInfo">
+		<div class="info-container warn-info">
 			<Info color="white" strokeWidth={2} class="info-icon-circular" />
 			<p>You need to have at least 1100 Elo and an account older than 1 week.</p>
 		</div>
 	{/if}
 	{#if $selectedTournament?.status == "starting"}
 		<button
-			class="standardButton bottomButton largeButton"
+			class="standard-button bottom-button large-button"
 			onclick={async () => {
 				playSound("basic_button");
 				if (!$isAuthenticated) return signupPrompt();
@@ -184,7 +184,7 @@
 		</button>
 	{:else if $selectedTournament?.status == "upcoming"}
 		<button
-			class="standardButton bottomButton largeButton white {$selectedTournament?.saved ? 'disabled' : ''}"
+			class="standard-button bottom-button large-button white {$selectedTournament?.saved ? 'disabled' : ''}"
 			onclick={async () => {
 				playSound("basic_button");
 				if (!$isAuthenticated) return signupPrompt();

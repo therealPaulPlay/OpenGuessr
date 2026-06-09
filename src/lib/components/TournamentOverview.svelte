@@ -27,30 +27,30 @@
 		minute: "2-digit",
 	})}
 
-	<div class="tournamentBox">
-		<div class="tournamentNameBox">
-			<h3 class="tournamentNameTitle">
+	<div class="tournament-box">
+		<div class="tournament-name-box">
+			<h3 class="tournament-name-title">
 				{tournament.name}{#if tournament.status == "ongoing"}
-					<Chip text="Ongoing" red={true} italic={true} mutedOpacity={false} class="statusChip" />
+					<Chip text="Ongoing" red={true} italic={true} mutedOpacity={false} class="status-chip" />
 				{:else if tournament.status == "starting"}
-					<Chip text="Enter now" red={true} italic={true} mutedOpacity={false} class="statusChip" />
+					<Chip text="Enter now" red={true} italic={true} mutedOpacity={false} class="status-chip" />
 				{/if}
 			</h3>
 		</div>
-		<div class="tournamentField">
+		<div class="tournament-field">
 			<Clock style="margin-top: 1px; opacity: 0.75;" strokeWidth={1.75} />
 			<p>{readableDate}</p>
 		</div>
-		<div class="tournamentField">
+		<div class="tournament-field">
 			<CalendarCheck2 style="opacity: 0.75;" strokeWidth={1.75} />
 			<p>{tournament.saves?.toLocaleString()}</p>
 		</div>
-		<div class="tournamentField">
+		<div class="tournament-field">
 			<Medal style="margin-top: 1px; opacity: 0.75;" strokeWidth={1.5} />
 			<p>{tournament.prize}</p>
 		</div>
 		<button
-			class="tournamentFieldButton standardButton {tournament.status == 'starting' ? '' : 'white'}"
+			class="tournament-field-button standard-button {tournament.status == 'starting' ? '' : 'white'}"
 			{@attach tooltip({ text: "Details" })}
 			onclick={() => {
 				playSound("basic_button");
@@ -67,20 +67,20 @@
 	</div>
 {/snippet}
 
-<div class="tournamentsContainer" class:containerMinHeight={!$tournamentData?.length}>
+<div class="tournaments-container" class:container-min-height={!$tournamentData?.length}>
 	{#if $tournamentData?.length}
-		<div transition:blur class="innerTournamentsContainer">
+		<div transition:blur class="inner-tournaments-container">
 			{#each $tournamentData?.filter((i) => i.status !== "finished") as tournament (tournament.id)}
 				{@render tournamentItem(tournament)}
 			{/each}
 		</div>
 	{:else}
-		<p class="noTournamentsText">{noTournamentsText}</p>
+		<p class="no-tournaments-text">{noTournamentsText}</p>
 	{/if}
 </div>
 
 <Drawer title="Recently finished" bind:isOpen={showOlder}>
-	<div class="tournamentScrollContainer of-top of-bottom">
+	<div class="tournament-scroll-container of-top of-bottom">
 		{#each $tournamentData?.filter((i) => i.status === "finished") as tournament (tournament.id)}
 			{@render tournamentItem(tournament)}
 		{/each}
@@ -88,7 +88,7 @@
 </Drawer>
 
 <style>
-	.tournamentsContainer {
+	.tournaments-container {
 		position: relative;
 		width: calc(100% - 20px);
 		border-radius: var(--layout-margin);
@@ -98,7 +98,7 @@
 		padding: var(--box-margin);
 	}
 
-	.tournamentScrollContainer {
+	.tournament-scroll-container {
 		max-height: 185px;
 		overflow-y: auto;
 		gap: var(--box-margin);
@@ -111,23 +111,23 @@
 		width: 100%;
 	}
 
-	.innerTournamentsContainer {
+	.inner-tournaments-container {
 		display: flex;
 		flex-direction: column;
 		gap: var(--box-margin);
 		width: 100%;
 	}
 
-	.containerMinHeight {
+	.container-min-height {
 		min-height: 80px;
 	}
 
-	.tournamentNameBox {
+	.tournament-name-box {
 		mask-image: linear-gradient(to right, black 90%, transparent 100%);
 		flex-grow: 2;
 	}
 
-	.tournamentNameTitle {
+	.tournament-name-title {
 		margin-right: auto;
 		margin-left: var(--content-margin);
 		margin-left: var(--box-margin);
@@ -136,7 +136,7 @@
 		text-wrap: nowrap;
 	}
 
-	.tournamentBox {
+	.tournament-box {
 		padding: var(--box-margin);
 		display: flex;
 		justify-content: space-between;
@@ -150,11 +150,11 @@
 		width: 100%;
 	}
 
-	:global(.statusChip) {
+	:global(.status-chip) {
 		margin-left: var(--panel-margin);
 	}
 
-	.tournamentField {
+	.tournament-field {
 		border-radius: var(--content-margin);
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
@@ -168,18 +168,18 @@
 		box-sizing: border-box;
 	}
 
-	.tournamentField p {
+	.tournament-field p {
 		text-overflow: ellipsis;
 		overflow: hidden;
 		opacity: 0.75;
 	}
 
-	.tournamentFieldButton {
+	.tournament-field-button {
 		height: 43px;
 		margin-left: auto;
 	}
 
-	.noTournamentsText {
+	.no-tournaments-text {
 		opacity: 0.5;
 		text-align: center;
 		position: absolute;
@@ -189,7 +189,7 @@
 	}
 
 	@media (max-width: 1200px) {
-		.tournamentField {
+		.tournament-field {
 			flex-grow: 1;
 		}
 	}

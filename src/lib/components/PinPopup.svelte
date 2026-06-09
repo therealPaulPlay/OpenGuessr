@@ -9,10 +9,10 @@
 
 <Popup z={971} verySlim={true} bind:open={$pinPopup}>
 	<div class="popup-title">
-		<h1 id="pinPopupWindow">Pins</h1>
+		<h1>Pins</h1>
 	</div>
 	<TitleSeparator text="Progression" />
-	<div class="pinSelector">
+	<div class="pin-selector">
 		<PinHolder pinId="0" pinLockText="0 XP" unlocked={$profileData?.experience >= 0} />
 		<PinHolder pinId="1" pinLockText="5K XP" unlocked={$profileData?.experience >= 5000} />
 		<PinHolder pinId="2" pinLockText="30K XP" unlocked={$profileData?.experience >= 30000} />
@@ -27,19 +27,19 @@
 		<PinHolder pinId="11" pinLockText="Supporter" unlocked={$profileData?.supporterLevel >= 1} />
 	</div>
 	<TitleSeparator text="Purchased" />
-	<div class="pinSelector">
+	<div class="pin-selector">
 		{#if $purchasedPins?.length}
 			{#each $purchasedPins as pinId}
 				<PinHolder {pinId} unlocked={true} />
 			{/each}
 		{:else}
-			<p class="noPurchasedPins">No purchased pins.</p>
+			<p class="no-purchased-pins">No purchased pins.</p>
 		{/if}
 	</div>
 </Popup>
 
 <style>
-	.pinSelector {
+	.pin-selector {
 		max-width: 100%;
 		width: 100%;
 		background-color: var(--box-color-dark);
@@ -52,7 +52,7 @@
 		grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
 	}
 
-	.noPurchasedPins {
+	.no-purchased-pins {
 		opacity: 0.5;
 		margin-inline: auto;
 	}

@@ -41,7 +41,7 @@
 			out:fly={{ y: 15, duration: $mapHovered ? 150 : undefined, easing: $mapHovered ? undefined : backIn }}
 		/>
 		<div
-			class="barMenu tutorial-note"
+			class="bar-menu tutorial-note"
 			in:slide={{ delay: mapWasHoveredOnce ? 250 : 750, easing: backOut }}
 			out:slide={{ duration: $mapHovered ? 150 : undefined, easing: $mapHovered ? undefined : backIn }}
 		>
@@ -50,7 +50,7 @@
 			</div>
 			<div class="right-side">
 				<button
-					class="standardButton dark close-button"
+					class="standard-button dark close-button"
 					aria-label="Close"
 					onclick={() => {
 						playSound("basic_button");
@@ -61,7 +61,7 @@
 					<X size={22} strokeWidth={2.25} />
 				</button>
 				<button
-					class="standardButton white"
+					class="standard-button white"
 					aria-label="Play tutorial"
 					style:padding-inline="var(--box-margin);"
 					onclick={() => {

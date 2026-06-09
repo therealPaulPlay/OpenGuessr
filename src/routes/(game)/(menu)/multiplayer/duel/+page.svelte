@@ -8,7 +8,7 @@
 </svelte:head>
 
 <div class="main-container">
-	<div class="duelCenterBox">
+	<div class="duel-center-box">
 		<MultiplayerMatchmakingDisplay findFunction={findDuel} cancelFunction={safeCancel} supportsSkillbased={true} />
 	</div>
 </div>
@@ -21,7 +21,7 @@
 		min-height: 50dvh;
 	}
 
-	.duelCenterBox {
+	.duel-center-box {
 		margin-top: auto;
 		display: flex;
 		align-items: center;

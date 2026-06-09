@@ -6,14 +6,14 @@
 	import { playSound } from "$lib/utils/soundManager";
 </script>
 
-<div class="supporterArea">
-	<div class="supporterPitchText">
-		<p id="supporterPitch">{$supporterLevel >= 1 ? "Thank you." : "Purchase a supporter tier."}</p>
-		<span id="supporterTextSecondary">Contributions keep the game free.</span>
+<div class="supporter-area">
+	<div class="supporter-pitch-text">
+		<p id="supporter-pitch">{$supporterLevel >= 1 ? "Thank you." : "Purchase a supporter tier."}</p>
+		<span id="supporter-text-secondary">Contributions keep the game free.</span>
 	</div>
 	<button
-		id="viewSupporterBenefits"
-		class="standardButton"
+		id="view-supporter-benefits"
+		class="standard-button"
 		onclick={() => {
 			playSound("basic_button");
 			supporterPopupVisible.set(true);
@@ -22,7 +22,7 @@
 </div>
 
 <style>
-	#viewSupporterBenefits {
+	#view-supporter-benefits {
 		background-color: rgba(126, 210, 140, 0.65);
 		outline: 3px solid rgba(255, 255, 255, 0.5);
 		flex-grow: 1;
@@ -31,7 +31,7 @@
 		height: 35px;
 	}
 
-	.supporterArea {
+	.supporter-area {
 		border-radius: var(--box-margin);
 		background: var(--supporter-green);
 		color: white;
@@ -48,30 +48,30 @@
 		margin-bottom: var(--layout-margin);
 	}
 
-	.supporterArea:hover {
+	.supporter-area:hover {
 		filter: brightness(1.2);
 	}
 
-	.supporterArea p {
+	.supporter-area p {
 		padding-right: var(--content-margin);
 		display: inline;
 	}
 
-	.supporterArea span {
+	.supporter-area span {
 		display: inline;
 	}
 
-	.supporterPitchText {
+	.supporter-pitch-text {
 		flex-grow: 10;
 		padding-inline: var(--box-margin);
 	}
 
-	#supporterTextSecondary {
+	#supporter-text-secondary {
 		opacity: 0.75;
 	}
 
 	@media all and (max-width: 1000px) {
-		#supporterTextSecondary {
+		#supporter-text-secondary {
 			display: none !important;
 		}
 	}

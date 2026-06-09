@@ -330,11 +330,11 @@
 						});
 					}
 
-					document.querySelectorAll(".errorText").forEach((e) => {
+					document.querySelectorAll(".error-text").forEach((e) => {
 						e.textContent = "Error: " + errorMessages.join(" ");
 					});
 				} catch {
-					document.querySelectorAll(".errorText").forEach((e) => {
+					document.querySelectorAll(".error-text").forEach((e) => {
 						e.textContent = "Error did not include json.";
 					});
 				}
@@ -419,7 +419,7 @@
 
 {#snippet showMoreButton(callback)}
 	<button
-		class="loadMoreItem standardButton white fadeInItem"
+		class="load-more-item standard-button white fade-in-item"
 		onclick={() => {
 			callback?.();
 		}}
@@ -431,20 +431,20 @@
 
 <Popup slim={true} bind:open={leaderboardPopup}>
 	<div class="popup-title">
-		<h1 id="leaderboardHeader" class="textHeaderLeft">Ranking for <i>{leaderboardName}</i></h1>
+		<h1 id="leaderboard-header" class="text-header-left">Ranking for <i>{leaderboardName}</i></h1>
 	</div>
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-	<div class="rankingDisplay">
-		<div class="rankingDisplayScroll of-top of-bottom">
+	<div class="ranking-display">
+		<div class="ranking-display-scroll of-top of-bottom">
 			{#if yourEntry}
-				<div class="youBar">
-					<p class="youLabel">You</p>
-					<div class="rankItem yourItem">
+				<div class="you-bar">
+					<p class="you-label">You</p>
+					<div class="rank-item your-item">
 						<p>#{yourEntry.position}</p>
 						<p
-							id="yourUsername"
-							class="centerEntry"
+							id="your-username"
+							class="center-entry"
 							onclick={() => {
 								showProfile(localStorage.getItem("id"));
 							}}
@@ -460,10 +460,10 @@
 			{/if}
 			{#if leaderboardEntries?.length > 0}
 				{#each leaderboardEntries as entry}
-					<div class="rankItem" transition:blur class:rankYou={entry.id == localStorage.getItem("id")}>
+					<div class="rank-item" transition:blur class:rank-you={entry.id == localStorage.getItem("id")}>
 						<p>#{entry.position}</p>
 						<p
-							class="centerEntry"
+							class="center-entry"
 							onclick={() => {
 								showProfile(entry.id);
 							}}
@@ -477,24 +477,24 @@
 					</div>
 				{/each}
 			{:else}
-				<div class="emptyLeaderboardBox">
+				<div class="empty-leaderboard-box">
 					{#if leaderboardEntries}
-						<p class="errorText">No entries yet.</p>
+						<p class="error-text">No entries yet.</p>
 					{:else}
-						<p class="errorText">Loading...</p>
+						<p class="error-text">Loading...</p>
 					{/if}
 				</div>
 			{/if}
 		</div>
 	</div>
 	{#if showRatingBox}
-		<div id="ratingBox">
-			<p id="ratingText">{ratingText || "Default rating text."}</p>
+		<div id="rating-box">
+			<p id="rating-text">{ratingText || "Default rating text."}</p>
 			{#if ratingsButtonBox}
-				<div class="ratingButtonBox" id="ratingButtonBox">
+				<div class="rating-button-box" id="rating-button-box">
 					<button
-						class="standardButton white rateButton"
-						id="rateGood"
+						class="standard-button white rate-button"
+						id="rate-good"
 						onclick={() => {
 							playSound("basic_button");
 							submitRating(5);
@@ -503,8 +503,8 @@
 						<Smile size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
 					</button>
 					<button
-						class="standardButton white rateButton"
-						id="rateBad"
+						class="standard-button white rate-button"
+						id="rate-bad"
 						onclick={() => {
 							playSound("basic_button");
 							submitRating(-3);
@@ -513,8 +513,8 @@
 						<Frown size={20} strokeWidth={2.5} style="margin-bottom: -2px;" />
 					</button>
 					<button
-						class="standardButton white rateButton"
-						id="rateBroken"
+						class="standard-button white rate-button"
+						id="rate-broken"
 						onclick={() => {
 							playSound("basic_button");
 							submitRating(-10);
@@ -545,13 +545,13 @@
 	entered,
 	daily,
 )}
-	<div class="competitionItem fadeInItem" style:border-radius={daily && expired ? "8px" : ""}>
+	<div class="competition-item fade-in-item" style:border-radius={daily && expired ? "8px" : ""}>
 		<div>
-			<h2 class="competitionItemHeader">{name}</h2>
+			<h2 class="competition-item-header">{name}</h2>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<p
-				class="competitionAuthor"
+				class="competition-author"
 				onclick={() => {
 					const id = authorId ? authorId : 2; // Display as 2 (PaulPlay) if created by System (meaning, no ID is set)
 					showProfile(id);
@@ -560,72 +560,71 @@
 				by {author}
 			</p>
 		</div>
-		<div class="competitionPropertiesBox">
-			<div class="propertyItem">
+		<div class="competition-properties-box">
+			<div class="property-item">
 				<div class="label">
 					<p>Plays</p>
 				</div>
-				<p class="itemText">{playercount.toLocaleString()}</p>
+				<p class="item-text">{playercount.toLocaleString()}</p>
 			</div>
-			<div class="propertyItem">
+			<div class="property-item">
 				<div class="label">
 					<p>Restriction</p>
 				</div>
-				<p class="itemText">{$restrictionNames?.[restriction] || "Invalid"}</p>
+				<p class="item-text">{$restrictionNames?.[restriction] || "Invalid"}</p>
 			</div>
-			<div class="propertyItem">
+			<div class="property-item">
 				<div class="label">
 					<p>Duration</p>
 				</div>
-				<p class="itemText">
+				<p class="item-text">
 					{formatDuration(duration)}
 					{#if remainingDuration > 0}({formatDuration(remainingDuration)} left){/if}
 				</p>
 			</div>
-			<div class="propertyItem">
+			<div class="property-item">
 				<div class="label">
 					<p>Rounds</p>
 				</div>
-				<p class="itemText">{locationAmount}</p>
+				<p class="item-text">{locationAmount}</p>
 			</div>
-			<div class="propertyItem">
+			<div class="property-item">
 				<div class="label">
 					<p>Round length</p>
 				</div>
-				<p class="itemText">{roundLength}s</p>
+				<p class="item-text">{roundLength}s</p>
 			</div>
 		</div>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div
-			id="aboutItem${id}"
-			class="aboutSection competitionDescription"
+			class="about-section competition-description"
 			role="button"
 			tabindex="0"
 			onclick={() => {
 				showConfirmPopup("About", description);
 			}}
 		>
-			<div class="label" class:expiredCompetitionColor={expired} role="button" tabindex="0">
+			<div class="label" class:expired-competition-color={expired} role="button" tabindex="0">
 				<p>About</p>
 			</div>
-			<p class="itemText descText">
+			<p class="item-text desc-text">
 				{description}
 			</p>
 		</div>
-		<div class="competitionButtonBox">
+		<div class="competition-button-box">
 			<button
-				class="standardButton competitionButton white"
+				class="standard-button competition-button white"
 				onclick={() => {
 					playSound("basic_button");
 					openLeaderboard(id);
 				}}
 				>Results
-				<img class="leaderboardIcon" src="/img/leaderboards_icon.png" alt="Leaderboards for OpenGuessr" />
+				<img class="leaderboard-icon" src="/img/leaderboards_icon.png" alt="Leaderboards for OpenGuessr" />
 			</button>
 			{#if !expired}
 				<button
-					class="standardButton competitionButton white"
-					class:dailyPrimary={daily}
+					class="standard-button competition-button white"
+					class:daily-primary={daily}
 					disabled={entered || (authorId != null && authorId == localStorage.getItem("id"))}
 					onclick={() => {
 						playSound("basic_button");
@@ -653,11 +652,11 @@
 	</div>
 {/snippet}
 
-<div class="competitionElement">
-	<div class="headerContainer">
+<div class="competition-element">
+	<div class="header-container">
 		<h2 class="header">Official</h2>
 	</div>
-	<div id="dailyCompetitionArea" class="competitionArea">
+	<div id="daily-competition-area" class="competition-area">
 		<!-- daily competitions will be inserted here -->
 		{#if dailyCompetitionData?.length > 0}
 			{#each dailyCompetitionData as entry}
@@ -679,7 +678,7 @@
 						true,
 					)}
 				{:else}
-					<Drawer title="Yesterday's results" class="fadeInItem">
+					<Drawer title="Yesterday's results" class="fade-in-item">
 						{@render competitionItem(
 							entry.id,
 							entry.name,
@@ -700,17 +699,17 @@
 				{/if}
 			{/each}
 		{:else}
-			<p class="errorText">{dailyCompetitionError}</p>
+			<p class="error-text">{dailyCompetitionError}</p>
 		{/if}
 	</div>
 </div>
-<div class="competitionElement">
-	<div class="headerContainer">
+<div class="competition-element">
+	<div class="header-container">
 		<h2 class="header">Active</h2>
 	</div>
-	<div class="buttonToolbar">
+	<div class="button-toolbar">
 		<button
-			class="standardButton white"
+			class="standard-button white"
 			onclick={() => {
 				playSound("basic_button");
 				if ($isAuthenticated) {
@@ -722,7 +721,7 @@
 		>
 		<Tabs
 			tabs={["All", "Not entered"]}
-			class="hideEnteredCompsToggle"
+			class="hide-entered-comps-toggle"
 			disabled={!$isAuthenticated}
 			bind:selected={expiredTabsSelection}
 			onchange={(_, selectionIndex) => {
@@ -736,7 +735,7 @@
 		/>
 		<search>
 			<input
-				id="competitionSearch"
+				id="competition-search"
 				bind:value={searchQuery}
 				placeholder="Search"
 				onkeydown={(event) => {
@@ -751,8 +750,8 @@
 				}}
 			/>
 			<button
-				id="startSearch"
-				class="standardButton white"
+				id="start-search"
+				class="standard-button white"
 				onclick={() => {
 					playSound("basic_button");
 					startSearch();
@@ -762,7 +761,7 @@
 			</button>
 		</search>
 	</div>
-	<div id="competitionArea" class="competitionArea">
+	<div id="competition-area" class="competition-area">
 		<!-- active competitions will be inserted here -->
 		{#if activeCompetitionsData?.length > 0}
 			{#each activeCompetitionsData as entry}
@@ -784,7 +783,7 @@
 				)}
 			{/each}
 		{:else}
-			<p class="errorText">{activeCompetitionError}</p>
+			<p class="error-text">{activeCompetitionError}</p>
 		{/if}
 	</div>
 	{#if loadMoreActive}
@@ -794,11 +793,11 @@
 		})}
 	{/if}
 </div>
-<div class="competitionElement expiredBox">
-	<div class="headerContainer">
+<div class="competition-element expired-box">
+	<div class="header-container">
 		<h2 class="header">Recently ended</h2>
 	</div>
-	<div id="expiredCompetitionArea" class="competitionArea">
+	<div id="expired-competition-area" class="competition-area">
 		<!-- expired competitions will be inserted here -->
 		{#if expiredCompetitionData?.length > 0}
 			{#each expiredCompetitionData as entry}
@@ -820,7 +819,7 @@
 				)}
 			{/each}
 		{:else}
-			<p class="errorText">{expiredCompetitionsError}</p>
+			<p class="error-text">{expiredCompetitionsError}</p>
 		{/if}
 	</div>
 	{#if loadMoreExpired}
@@ -832,7 +831,7 @@
 </div>
 
 <style>
-	.buttonToolbar {
+	.button-toolbar {
 		display: flex;
 		justify-content: space-between;
 		box-shadow: var(--box-shadow);
@@ -847,7 +846,7 @@
 		background-color: var(--box-color);
 	}
 
-	.competitionElement {
+	.competition-element {
 		transition:
 			background-color 250ms ease,
 			filter 250ms ease;
@@ -857,7 +856,7 @@
 		margin-bottom: calc(2 * var(--layout-margin));
 	}
 
-	.competitionButtonBox {
+	.competition-button-box {
 		margin-top: auto !important;
 		padding-top: 60px;
 		display: flex;
@@ -866,19 +865,19 @@
 		gap: var(--box-margin);
 	}
 
-	.emptyLeaderboardBox {
+	.empty-leaderboard-box {
 		height: 300px;
 		width: 100%;
 		display: flex;
 		align-items: center;
 	}
 
-	#competitionArea,
-	#expiredCompetitionArea {
+	#competition-area,
+	#expired-competition-area {
 		min-height: 200px;
 	}
 
-	.competitionDescription {
+	.competition-description {
 		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
@@ -888,7 +887,7 @@
 		transition: filter 250ms ease;
 	}
 
-	.competitionItem {
+	.competition-item {
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
@@ -920,7 +919,7 @@
 		font-size: 20px;
 	}
 
-	.itemText {
+	.item-text {
 		margin: var(--content-margin);
 		margin-inline: var(--content-margin);
 		text-overflow: ellipsis;
@@ -929,14 +928,14 @@
 		min-width: 55px;
 	}
 
-	.competitionItemHeader {
+	.competition-item-header {
 		margin-bottom: 0;
 		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;
 	}
 
-	.competitionPropertiesBox {
+	.competition-properties-box {
 		width: 100%;
 		display: flex;
 		justify-content: space-between;
@@ -947,7 +946,7 @@
 		gap: var(--box-margin);
 	}
 
-	.propertyItem {
+	.property-item {
 		flex-grow: 1;
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
@@ -960,14 +959,14 @@
 		background-color: var(--box-color);
 	}
 
-	.descText {
+	.desc-text {
 		margin-top: var(--box-margin);
 		overflow: hidden;
 		max-height: 60px;
 		margin-inline: var(--box-margin);
 	}
 
-	.competitionAuthor {
+	.competition-author {
 		margin-bottom: 30px;
 		padding-left: 2px;
 		cursor: pointer;
@@ -980,28 +979,28 @@
 		opacity: 0.5;
 	}
 
-	.competitionAuthor:hover {
+	.competition-author:hover {
 		opacity: 0.25;
 	}
 
-	.leaderboardIcon {
+	.leaderboard-icon {
 		width: 22px;
 		height: 22px;
 		vertical-align: -2px;
 	}
 
-	.textHeaderLeft {
+	.text-header-left {
 		text-align: left;
 		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;
 	}
 
-	.expiredCompetitionColor {
+	.expired-competition-color {
 		background-color: var(--box-color);
 	}
 
-	.competitionArea {
+	.competition-area {
 		display: flex;
 		flex-direction: row;
 		flex-wrap: wrap;
@@ -1010,20 +1009,14 @@
 		justify-content: flex-start;
 	}
 
-	#contentSection {
-		transition: max-height 250ms ease-in-out;
-		max-height: 0px;
-		overflow: hidden;
-	}
-
-	.errorText {
+	.error-text {
 		width: 100%;
 		text-align: center;
 		opacity: 0.5;
 		margin-top: var(--layout-margin);
 	}
 
-	.rankingDisplay {
+	.ranking-display {
 		box-sizing: border-box;
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
@@ -1033,7 +1026,7 @@
 		position: relative;
 	}
 
-	.rankingDisplayScroll {
+	.ranking-display-scroll {
 		overflow-x: hidden;
 		overflow-y: auto;
 		gap: var(--box-margin);
@@ -1045,7 +1038,7 @@
 		flex-direction: column;
 	}
 
-	.rankItem {
+	.rank-item {
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--content-margin);
@@ -1059,65 +1052,22 @@
 		gap: var(--box-margin);
 	}
 
-	.rankItem p {
+	.rank-item p {
 		text-wrap: nowrap;
 	}
 
-	.yourItem {
+	.your-item {
 		box-shadow: var(--bulb-shadow);
 		background-color: rgba(255, 255, 255, 0.2);
 		overflow: hidden;
 	}
 
-	.rankYou {
+	.rank-you {
 		background-color: rgba(255, 255, 255, 0.2);
 		box-shadow: var(--bulb-shadow);
 	}
 
-	#toggleFaqBar {
-		cursor: pointer;
-	}
-
-	#inputArea {
-		padding: var(--box-margin);
-		display: flex;
-		justify-content: flex-start;
-		flex-direction: column;
-	}
-
-	#infoNoteIcon {
-		width: 35px;
-		height: 35px;
-		margin-bottom: 20px;
-		margin-top: 7px;
-		opacity: 0.5;
-		margin-left: -10px;
-	}
-
-	#createWindow {
-		max-width: 900px;
-	}
-
-	#uploadHeader {
-		text-align: left;
-		margin-top: var(--content-margin);
-		margin-bottom: 30px;
-	}
-
-	#uploadFirstText {
-		font-size: 25px;
-	}
-
-	#uploadCompetitionDescription {
-		max-width: 500px;
-	}
-
-	#visibilityInfo {
-		margin-top: 20px;
-		margin-bottom: 20px;
-	}
-
-	.loadMoreItem {
+	.load-more-item {
 		flex-direction: row;
 		min-height: 80px;
 		justify-content: center;
@@ -1129,7 +1079,7 @@
 		box-shadow: var(--box-shadow);
 	}
 
-	#competitionSearch {
+	#competition-search {
 		transition: background-color 250ms ease;
 		padding-inline: var(--box-margin);
 		min-width: 0;
@@ -1138,7 +1088,7 @@
 		text-overflow: ellipsis;
 	}
 
-	#startSearch {
+	#start-search {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -1151,11 +1101,6 @@
 		max-width: fit-content;
 	}
 
-	#searchIcon {
-		width: 20px;
-		height: 20px;
-	}
-
 	@keyframes fadeIn {
 		from {
 			opacity: 0;
@@ -1165,17 +1110,17 @@
 		}
 	}
 
-	.fadeInItem {
+	.fade-in-item {
 		animation: fadeIn 250ms ease-in-out;
 	}
 
-	.youBar {
+	.you-bar {
 		display: flex;
 		gap: var(--box-margin);
 		align-items: center;
 	}
 
-	.youLabel {
+	.you-label {
 		box-shadow: var(--bulb-shadow);
 		border-radius: var(--content-margin);
 		background-color: rgba(255, 255, 255, 0.2);
@@ -1183,15 +1128,11 @@
 		padding-inline: var(--box-margin);
 	}
 
-	.dailyPrimary {
+	.daily-primary {
 		background-color: var(--brand-color);
 	}
 
-	#contentSelection {
-		overflow: hidden;
-	}
-
-	.centerEntry {
+	.center-entry {
 		width: 50%;
 		text-align: center;
 		transition: opacity 250ms ease;
@@ -1200,21 +1141,21 @@
 		mask-image: linear-gradient(to right, transparent, black 0%, black 90%, transparent);
 	}
 
-	.centerEntry:hover {
+	.center-entry:hover {
 		opacity: 0.5;
 	}
 
-	.aboutSection {
+	.about-section {
 		cursor: pointer;
 	}
 
-	:global(.hideEnteredCompsToggle) {
+	:global(.hide-entered-comps-toggle) {
 		overflow: hidden;
 		text-overflow: ellipsis;
 		margin-right: auto;
 	}
 
-	#ratingBox {
+	#rating-box {
 		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
@@ -1228,16 +1169,16 @@
 		width: calc(100% - calc(var(--box-margin-buttons * 2)));
 	}
 
-	#ratingBox p {
+	#rating-box p {
 		padding-inline: var(--panel-margin);
 		opacity: 0.5;
 	}
 
-	.rateButton {
+	.rate-button {
 		padding-inline: var(--content-margin);
 	}
 
-	.ratingButtonBox {
+	.rating-button-box {
 		display: flex;
 		gap: var(--box-margin);
 		justify-content: center;
@@ -1245,7 +1186,7 @@
 	}
 
 	@media all and (max-width: 1000px) {
-		#competitionSearch {
+		#competition-search {
 			max-width: none;
 		}
 

@@ -135,9 +135,9 @@
 					</div>
 				{/key}
 				<div class="action-container">
-					<div class="action-button-panel barMenu" in:fly|global={{ y: 20, duration: 1000 }}>
+					<div class="action-button-panel bar-menu" in:fly|global={{ y: 20, duration: 1000 }}>
 						<button
-							class="standardButton largeButton"
+							class="standard-button large-button"
 							onclick={() => {
 								playSound("basic_button");
 								if (howToImage < howToSlides.length - 1) howToImage++;
@@ -157,7 +157,7 @@
 				<div class="subtitle-container">
 					<p class="subtitle" in:blur|global={{ duration: 500 }}>Pick your next adventure.</p>
 				</div>
-				<div class="path-container barMenu" in:fly|global={{ y: 20, duration: 1000 }}>
+				<div class="path-container bar-menu" in:fly|global={{ y: 20, duration: 1000 }}>
 					{#each finalPaths as option, idx}
 						<div class="path-box">
 							<div class="path-box-text-container of-left of-right">
@@ -165,7 +165,7 @@
 								{#if idx === 0}<Chip italic red mutedOpacity={false} text="Suggested" />{/if}
 							</div>
 							<button
-								class="standardButton"
+								class="standard-button"
 								class:white={idx !== 0}
 								style:z-index="1"
 								onclick={() => {
@@ -185,9 +185,9 @@
 					{/each}
 				</div>
 				<div class="action-container">
-					<div class="action-button-panel barMenu" in:fly|global={{ y: 20, duration: 1000 }}>
+					<div class="action-button-panel bar-menu" in:fly|global={{ y: 20, duration: 1000 }}>
 						<button
-							class="standardButton white largeButton close-button"
+							class="standard-button white large-button close-button"
 							onclick={() => {
 								playSound("basic_button");
 								$tutorialStep = 0;

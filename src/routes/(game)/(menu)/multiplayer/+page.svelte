@@ -73,12 +73,12 @@
 </svelte:head>
 
 <div class="main-container">
-	<div class="headerContainer">
+	<div class="header-container">
 		<h1 class="header">Multiplayer</h1>
 	</div>
 	{#if $warnReportEntryData}
-		<div class="infoContainer warnInfo" transition:slide>
-			<TriangleAlert color="white" strokeWidth={2.25} class="multiplayerInfoIcon" />
+		<div class="info-container warn-info" transition:slide>
+			<TriangleAlert color="white" strokeWidth={2.25} class="multiplayer-info-icon" />
 			<p>
 				You are currently on the warnlist and under close observation for "{get(warnReportEntryData)?.reason?.trim()}".
 				Please contact the moderators on Discord if you think this is a mistake. Warnings can quickly turn into bans if
@@ -88,52 +88,52 @@
 			</p>
 		</div>
 	{/if}
-	<div class="playBox">
-		<div class="groupPartyButtons">
-			<p class="selectButtonsHeader">Custom</p>
-			<div class="groupPartyContent">
+	<div class="play-box">
+		<div class="group-party-buttons">
+			<p class="select-buttons-header">Custom</p>
+			<div class="group-party-content">
 				<button
-					id="multiplayerSelectJoin"
-					class="standardButton multiplayerSelect white largeButton"
+					id="multiplayer-select-join"
+					class="standard-button multiplayer-select white large-button"
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/join");
 					}}
-					>Join <span class="groupIcons"><Unplug size={20} strokeWidth={2.25} style="margin-bottom: -2px;" /></span
+					>Join <span class="group-icons"><Unplug size={20} strokeWidth={2.25} style="margin-bottom: -2px;" /></span
 					></button
 				>
 				<button
-					id="multiplayerSelectHost"
-					class="standardButton multiplayerSelect white largeButton"
+					id="multiplayer-select-host"
+					class="standard-button multiplayer-select white large-button"
 					onclick={() => {
 						playSound("basic_button");
 						goto("/multiplayer/host");
 					}}
-					>Host <span class="groupIcons"><PlusCircle size={20} strokeWidth={2.25} style="margin-bottom: -2px;" /></span
+					>Host <span class="group-icons"><PlusCircle size={20} strokeWidth={2.25} style="margin-bottom: -2px;" /></span
 					></button
 				>
 			</div>
 		</div>
-		<div class="groupPartyButtons">
-			<div class="selectButtonsHeader">
+		<div class="group-party-buttons">
+			<div class="select-buttons-header">
 				<p>Matchmaking</p>
 			</div>
-			<div class="groupPartyContent">
+			<div class="group-party-content">
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
-					id="multiplayerSelectDuels"
+					id="multiplayer-select-duels"
 					role="button"
 					tabindex="0"
-					class="standardButton multiplayerSelect largeButton"
+					class="standard-button multiplayer-select large-button"
 					onclick={() => {
 						playSound("basic_button");
 						findDuel("division-duel");
 					}}
 				>
 					Duel
-					<span class="innerDuelButtonContainer">
+					<span class="inner-duel-button-container">
 						<button
-							class="standardButton dark innerDuelButton"
+							class="standard-button dark inner-duel-button"
 							{@attach tooltip({ text: "History" })}
 							style:flex-grow={0}
 							onclick={(e) => {
@@ -143,7 +143,7 @@
 							}}><History strokeWidth={2.15} size={20} style="margin-bottom: -1px;" /></button
 						>
 						<button
-							class="standardButton dark innerDuelButton"
+							class="standard-button dark inner-duel-button"
 							{@attach tooltip({ text: "Division-based or Everyone" })}
 							style:flex-grow={0}
 							onclick={(e) => {
@@ -161,7 +161,7 @@
 					</span>
 				</div>
 				<button
-					class="standardButton multiplayerSelect largeButton white"
+					class="standard-button multiplayer-select large-button white"
 					onclick={() => {
 						playSound("basic_button");
 						createTeamDuelRoom();
@@ -176,16 +176,16 @@
 	<Drawer title="Divisions" class="divisions-container">
 		<DuelDivisionDisplay />
 	</Drawer>
-	<div class="headerContainer headerMarginTop">
+	<div class="header-container header-margin-top">
 		<h2 class="header">Tournaments</h2>
 	</div>
 	<TournamentOverview />
-	<div class="headerContainer headerMarginTop">
+	<div class="header-container header-margin-top">
 		<h2 class="header">Friends</h2>
 		<!-- Inbox, friend request and messages buttons-->
-		<div class="friendButtonContainer barMenu">
+		<div class="friend-button-container bar-menu">
 			<button
-				class="standardButton white largeButton"
+				class="standard-button white large-button"
 				style:position="relative"
 				{@attach tooltip({ text: "Messages" })}
 				onclick={() => {
@@ -195,12 +195,12 @@
 				}}
 			>
 				{#if $hasNewMessageOrInvite}
-					<div class="newMessagesOrInvitesDot" transition:blur></div>
+					<div class="new-messages-or-invites-dot" transition:blur></div>
 				{/if}
 				<MessagesSquare strokeWidth={2.25} size={22} style="margin-bottom: -2px;" /></button
 			>
 			<button
-				class="standardButton white largeButton friendAddButton"
+				class="standard-button white large-button friend-add-button"
 				style:position="relative"
 				{@attach tooltip({ text: "Add friend" })}
 				onclick={() => {
@@ -217,8 +217,8 @@
 		</div>
 	</div>
 	{#if $loadedFriendsData?.length > 90}
-		<div class="infoContainer warnInfo" transition:slide>
-			<InfoIcon color="white" strokeWidth={2.25} class="multiplayerInfoIcon" />
+		<div class="info-container warn-info" transition:slide>
+			<InfoIcon color="white" strokeWidth={2.25} class="multiplayer-info-icon" />
 			<p>
 				You
 				{#if $loadedFriendsData?.length >= 100}have reached{:else}are close to{/if}
@@ -226,17 +226,17 @@
 			</p>
 		</div>
 	{/if}
-	<div class="friendBox">
+	<div class="friend-box">
 		<div
-			class="friendBoxScroll of-top of-bottom"
+			class="friend-box-scroll of-top of-bottom"
 			style:min-height={$loadedFriendsData && $isAuthenticated ? "50px" : "80px"}
 		>
 			{#if $loadedFriendsData && $isAuthenticated}
-				<div class="innerFriendBox" transition:blur={{ duration: 150 }}>
+				<div class="inner-friend-box" transition:blur={{ duration: 150 }}>
 					{#each $loadedFriendsData as entry (entry.id)}
 						<!-- svelte-ignore a11y_click_events_have_key_events -->
 						<div
-							class="friendItem largeButton"
+							class="friend-item large-button"
 							role="menu"
 							tabindex="0"
 							onclick={() => {
@@ -244,12 +244,12 @@
 							}}
 						>
 							{#if entry.online}
-								<div transition:slide={{ axis: "x" }} class="friendOnlineDot"></div>
+								<div transition:slide={{ axis: "x" }} class="friend-online-dot"></div>
 							{/if}
 							<p>{entry.user_name}</p>
 							<button
-								id="removeFriend"
-								class="standardButton friendItemButtons white friendButtonLeft"
+								id="remove-friend"
+								class="standard-button friend-item-buttons white friend-button-left"
 								onclick={(e) => {
 									e.stopPropagation();
 									playSound("basic_button");
@@ -264,14 +264,14 @@
 					{/each}
 				</div>
 			{:else}
-				<p class="noFriendsText">Friends show up here.</p>
+				<p class="no-friends-text">Friends show up here.</p>
 			{/if}
 		</div>
 	</div>
 </div>
 
 <style>
-	.infoContainer {
+	.info-container {
 		display: flex;
 		padding: var(--box-margin);
 		box-shadow: var(--box-shadow);
@@ -284,35 +284,35 @@
 		gap: var(--content-margin);
 	}
 
-	:global(.skillBasedToggle) {
+	:global(.skill-based-toggle) {
 		flex-grow: 0;
 		border-radius: var(--box-margin) !important;
 		height: 50px !important;
 	}
 
-	.warnInfo {
+	.warn-info {
 		flex-wrap: wrap;
 	}
 
-	.friendAddButton {
+	.friend-add-button {
 		display: inline-flex;
 		justify-content: center;
 		align-items: center;
 		gap: var(--panel-margin);
 	}
 
-	.friendButtonLeft {
+	.friend-button-left {
 		margin-left: auto;
 	}
 
-	:global(.multiplayerInfoIcon) {
+	:global(.multiplayer-info-icon) {
 		width: 25px;
 		height: 25px;
 		opacity: 0.5;
 		margin-inline: 3px;
 	}
 
-	.infoContainer p {
+	.info-container p {
 		opacity: 0.5;
 		flex-grow: 100;
 	}
@@ -323,7 +323,7 @@
 		align-items: center;
 	}
 
-	.playBox {
+	.play-box {
 		width: 100%;
 		display: flex;
 		justify-content: flex-start;
@@ -331,13 +331,13 @@
 		flex-wrap: wrap;
 	}
 
-	.friendButtonContainer {
+	.friend-button-container {
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 	}
 
-	.selectButtonsHeader {
+	.select-buttons-header {
 		width: calc(100% - 10px);
 		opacity: 0.5;
 		padding-inline: var(--content-margin);
@@ -348,11 +348,11 @@
 		overflow: hidden;
 	}
 
-	.headerMarginTop {
+	.header-margin-top {
 		margin-top: 50px;
 	}
 
-	.friendItem {
+	.friend-item {
 		display: flex;
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
@@ -373,37 +373,37 @@
 		height: unset;
 	}
 
-	.friendItem:hover {
+	.friend-item:hover {
 		filter: brightness(70%);
 	}
 
-	.friendItem:active {
+	.friend-item:active {
 		/* Shrink effect when pressed */
 		transform: scale(0.95);
 	}
 
 	@media (max-width: 800px) {
-		.friendItem {
+		.friend-item {
 			max-width: none;
 		}
 	}
 
-	.friendItem p {
+	.friend-item p {
 		padding-inline: var(--content-margin);
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
 
-	.friendItemButtons {
+	.friend-item-buttons {
 		padding-inline: var(--panel-margin);
 	}
 
-	.groupIcons {
+	.group-icons {
 		margin-inline: 3px;
 		vertical-align: -2px;
 	}
 
-	.groupPartyButtons {
+	.group-party-buttons {
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--box-margin);
@@ -418,14 +418,14 @@
 		max-width: calc(100% - 20px);
 	}
 
-	.groupPartyContent {
+	.group-party-content {
 		width: 100%;
 		display: flex;
 		margin-top: -2px;
 		gap: var(--box-margin);
 	}
 
-	.multiplayerSelect {
+	.multiplayer-select {
 		flex-grow: 1;
 		flex-basis: 0;
 		display: flex;
@@ -435,7 +435,7 @@
 		gap: var(--layout-margin);
 	}
 
-	.innerDuelButtonContainer {
+	.inner-duel-button-container {
 		position: absolute;
 		right: calc(var(--box-margin) / 2);
 		top: calc(var(--box-margin) / 2);
@@ -444,13 +444,13 @@
 		display: flex;
 	}
 
-	.innerDuelButton {
+	.inner-duel-button {
 		padding-inline: var(--panel-margin);
 		height: 34px;
 		border: none;
 	}
 
-	#multiplayerSelectDuels {
+	#multiplayer-select-duels {
 		background-color: var(--brand-color);
 		color: white;
 		position: relative;
@@ -458,7 +458,7 @@
 		min-width: 150px;
 	}
 
-	#multiplayerSelectDuels::before {
+	#multiplayer-select-duels::before {
 		animation: duelButtonGlint 4s 0.75s infinite;
 		background: white;
 		filter: blur(var(--elevated-blur));
@@ -492,7 +492,7 @@
 		}
 	}
 
-	.noFriendsText {
+	.no-friends-text {
 		opacity: 0.5;
 		text-align: center;
 		position: absolute;
@@ -501,7 +501,7 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.newMessagesOrInvitesDot {
+	.new-messages-or-invites-dot {
 		width: 7px;
 		height: 7px;
 		border-radius: 100%;
@@ -511,7 +511,7 @@
 		right: 16px;
 	}
 
-	.friendOnlineDot {
+	.friend-online-dot {
 		width: 7px;
 		height: 7px;
 		border-radius: 100%;
@@ -520,7 +520,7 @@
 		margin-left: var(--content-margin);
 	}
 
-	.friendBox {
+	.friend-box {
 		width: calc(100% - 20px);
 		transition: max-height 150ms ease;
 		background-color: var(--box-color);
@@ -532,14 +532,14 @@
 		scrollbar-width: none;
 	}
 
-	.friendBoxScroll {
+	.friend-box-scroll {
 		overflow-y: auto;
 		max-height: 215px;
 		width: 100%;
 		scrollbar-width: none;
 	}
 
-	.innerFriendBox {
+	.inner-friend-box {
 		display: flex;
 		align-items: center;
 		flex-wrap: wrap;

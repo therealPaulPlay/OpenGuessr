@@ -22,18 +22,18 @@
 	<div class="popup-title">
 		<h1>Rounds</h1>
 	</div>
-	<div class="roundLogContainer">
-		<div class="roundLogBox of-top of-bottom of-length-1.5">
+	<div class="round-log-container">
+		<div class="round-log-box of-top of-bottom of-length-1.5">
 			<!-- round log will be automatically generated here -->
 			{#if $roundLog?.length > 0}
 				{#each $roundLog as [mode, distance, coordinates], index}
-					<div class="roundLogItem" class:current={index === 0}>
+					<div class="round-log-item" class:current={index === 0}>
 						<div>
-							<p class="logItemMode">{mode}</p>
+							<p class="log-item-mode">{mode}</p>
 							<p>{formatDistance(distance)} away</p>
 						</div>
 						<button
-							class="standardButton white"
+							class="standard-button white"
 							onclick={() => {
 								playSound("basic_button");
 								openLocationOnMaps(coordinates[0], coordinates[1]);
@@ -45,19 +45,19 @@
 					{#if index === 0}
 						<TitleSeparator text="Previous" noMargin={true} />
 						{#if $roundLog?.length == 1}
-							<p class="centerLogText extraMarginBottom">No previous rounds.</p>
+							<p class="center-log-text extra-margin-bottom">No previous rounds.</p>
 						{/if}
 					{/if}
 				{/each}
 			{:else}
-				<p class="centerLogText">No saved rounds.</p>
+				<p class="center-log-text">No saved rounds.</p>
 			{/if}
 		</div>
 	</div>
 </Popup>
 
 <style>
-	.roundLogBox {
+	.round-log-box {
 		display: flex;
 		align-items: center;
 		justify-content: safe center;
@@ -69,12 +69,12 @@
 		scrollbar-width: none;
 	}
 
-	.logItemMode {
+	.log-item-mode {
 		font-size: 20px;
 		opacity: 50%;
 	}
 
-	.roundLogContainer {
+	.round-log-container {
 		height: fit-content;
 		padding: var(--box-margin);
 		border-radius: var(--box-margin);
@@ -82,7 +82,7 @@
 		box-shadow: var(--box-shadow);
 	}
 
-	.centerLogText {
+	.center-log-text {
 		text-align: center;
 		width: 100%;
 		opacity: 50%;
@@ -91,11 +91,11 @@
 		padding-bottom: var(--box-margin);
 	}
 
-	.extraMarginBottom {
+	.extra-margin-bottom {
 		padding-bottom: calc(var(--layout-margin) + var(--content-margin));
 	}
 
-	.roundLogItem {
+	.round-log-item {
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		display: flex;

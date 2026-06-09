@@ -37,10 +37,10 @@
 	let showHomeButton = $derived(historyStack.length > 0 && historyStack.at(-1) !== "/");
 </script>
 
-<nav class="menuNavBar">
-	<div class="navigationButtonContainer barMenu">
+<nav class="menu-nav-bar">
+	<div class="navigation-button-container bar-menu">
 		<button
-			class="standardButton white largeButton"
+			class="standard-button white large-button"
 			disabled={$matchmakingActive}
 			onclick={() => {
 				playSound("basic_button");
@@ -48,14 +48,14 @@
 				goBack();
 			}}
 		>
-			<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="backButtonArrowIcon" />
+			<img src="/img/arrow_icon.png" alt="Expand or close arrow" class="back-button-arrow-icon" />
 			Back</button
 		>
 	</div>
 	{#if showHomeButton}
-		<div class="navigationButtonContainer barMenu">
+		<div class="navigation-button-container bar-menu">
 			<button
-				class="standardButton white largeButton"
+				class="standard-button white large-button"
 				disabled={$matchmakingActive}
 				onclick={() => {
 					playSound("basic_button");
@@ -89,20 +89,20 @@
 		backdrop-filter: blur(var(--elevated-blur));
 	}
 
-	.navigationButtonContainer {
+	.navigation-button-container {
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		pointer-events: auto;
 	}
 
-	.backButtonArrowIcon {
+	.back-button-arrow-icon {
 		width: 25px;
 		height: 25px;
 		transform: rotate(90deg);
 		vertical-align: -5px;
 	}
 
-	.menuNavBar {
+	.menu-nav-bar {
 		position: fixed;
 		top: var(--layout-margin);
 		left: var(--layout-margin);

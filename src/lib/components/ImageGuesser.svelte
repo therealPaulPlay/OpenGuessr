@@ -54,28 +54,28 @@
 <svelte:window onresize={resetTransformAndZoom} />
 
 {#if $imageGuessr}
-	<div class="imageGuessrOverlay" onwheel={handleWheel}>
+	<div class="image-guessr-overlay" onwheel={handleWheel}>
 		<div
-			class="imageGuessrImage"
-			class:guessImageLoading={$imageGuessrLoading}
+			class="image-guessr-image"
+			class:guess-image-loading={$imageGuessrLoading}
 			style:background-image={$imageGuessrImageSrc ? `url(${$imageGuessrImageSrc})` : ""}
 			style:rotate={rotateStyle}
 			style:transform={`translate(${translateX}px, ${translateY}px) scale(${zoomLevel})`}
 			role="img"
 		></div>
-		<p class="imageGuessrAttribution">
+		<p class="image-guessr-attribution">
 			CC0 Images by <a href="https://commons.wikimedia.org/" target="_blank">Wikimedia</a>
 		</p>
 		<div
-			class="imageGuessrBackground"
-			class:guessImageLoading={$imageGuessrLoading}
+			class="image-guessr-background"
+			class:guess-image-loading={$imageGuessrLoading}
 			style:background-image={$imageGuessrImageSrc ? `url(${$imageGuessrImageSrc})` : ""}
 		></div>
 	</div>
 {/if}
 
 <style>
-	.imageGuessrOverlay {
+	.image-guessr-overlay {
 		width: 100%;
 		height: 100%;
 		position: fixed;
@@ -92,7 +92,7 @@
 		background-color: rgb(22, 22, 22);
 	}
 
-	.imageGuessrImage {
+	.image-guessr-image {
 		max-width: 40%;
 		max-height: 70%;
 		width: 100%;
@@ -112,7 +112,7 @@
 			drop-shadow(-10px 0px 0px rgb(255, 255, 255)) drop-shadow(0px -10px 0px rgb(255, 255, 255));
 	}
 
-	.imageGuessrAttribution {
+	.image-guessr-attribution {
 		color: white;
 		opacity: 0.5;
 		z-index: 2;
@@ -121,7 +121,7 @@
 		font-size: 20px;
 	}
 
-	.imageGuessrBackground {
+	.image-guessr-background {
 		position: fixed;
 		width: 100%;
 		height: 100%;
@@ -132,12 +132,12 @@
 		opacity: 1;
 	}
 
-	.guessImageLoading {
+	.guess-image-loading {
 		opacity: 0 !important;
 	}
 
 	@media all and (max-width: 1200px) {
-		.imageGuessrImage {
+		.image-guessr-image {
 			max-width: 80%;
 			max-height: 40%;
 		}

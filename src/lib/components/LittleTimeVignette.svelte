@@ -5,11 +5,11 @@
 </script>
 
 {#if $littleTimeVignetteVisible}
-	<div class="littleTimeVignette" transition:fade={{ duration: 500 }}></div>
+	<div class="little-time-vignette" transition:fade={{ duration: 500 }}></div>
 {/if}
 
 <style>
-	.littleTimeVignette {
+	.little-time-vignette {
 		position: fixed;
 		overflow: hidden;
 		z-index: 1;

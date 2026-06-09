@@ -73,15 +73,15 @@
 	<div class="popup-title">
 		<h1>Supporter</h1>
 	</div>
-	<div class="supporterBoxFlex">
-		<div class="tierBoxLarge">
-			<div class="tierBoxLargeTier"><p>Tier 2</p></div>
-			<div class="tierBoxDisplay">
-				<h2 class="tierBoxLargeHeader">
+	<div class="supporter-box-flex">
+		<div class="tier-box-large">
+			<div class="tier-box-large-tier"><p>Tier 2</p></div>
+			<div class="tier-box-display">
+				<h2 class="tier-box-large-header">
 					One-time purchase, <span style:opacity={0.75} style="font-size: inherit;"><br />enjoy forever.</span>
 				</h2>
-				<ul class="tierBenefits tierBenefitsLarge">
-					<div class="tierBenefitsScroll of-top of-bottom of-length-2">
+				<ul class="tier-benefits tier-benefits-large">
+					<div class="tier-benefits-scroll of-top of-bottom of-length-2">
 						<li><CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Ad-free experience</li>
 						<li><CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />15% XP boost</li>
 						<li><CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Supporter pin</li>
@@ -90,53 +90,53 @@
 					</div>
 				</ul>
 				<button
-					id="tierPrice2"
-					class="standardButton tierBuyButton tierBuyButtonDisplay"
+					id="tier-price-2"
+					class="standard-button tier-buy-button tier-buy-button-display"
 					onclick={() => startPurchase(2)}
-					class:tierBuyButtonUnlocked={$supporterLevel >= 2}
+					class:tier-buy-button-unlocked={$supporterLevel >= 2}
 					>{getTierPrice(2)}
 					{#if $supporterLevel >= 1 && $supporterLevel < 2}
-						<span class="discountBadge">Upgrade</span>
+						<span class="discount-badge">Upgrade</span>
 					{/if}
 				</button>
 			</div>
-			<img alt="supporter perks" class="supporterPerksImage" src="/img/supporter_graphic.png" />
+			<img alt="supporter perks" class="supporter-perks-image" src="/img/supporter_graphic.png" />
 		</div>
 		<TitleSeparator text="More tiers" noMargin={true} />
-		<div class="tierBox">
-			<div class="tierBoxLargeTier"><p>Tier 1</p></div>
-			<ul class="tierBenefits">
+		<div class="tier-box">
+			<div class="tier-box-large-tier"><p>Tier 1</p></div>
+			<ul class="tier-benefits">
 				<li style="opacity: 50%;">Same as tier 2, but</li>
 				<li><CircleMinus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Ad-supported</li>
 				<li><CircleArrowDown size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />10% XP boost</li>
 				<li><CircleArrowDown size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Tier 1 badge</li>
 			</ul>
 			<button
-				id="tierPrice1"
-				class="standardButton tierBuyButton white"
+				id="tier-price-1"
+				class="standard-button tier-buy-button white"
 				onclick={() => startPurchase(1)}
-				class:tierBuyButtonUnlocked={$supporterLevel >= 1}>{getTierPrice(1)}</button
+				class:tier-buy-button-unlocked={$supporterLevel >= 1}>{getTierPrice(1)}</button
 			>
 		</div>
-		<div class="tierBox">
-			<div class="tierBoxLargeTier"><p>Tier 3</p></div>
-			<ul class="tierBenefits">
+		<div class="tier-box">
+			<div class="tier-box-large-tier"><p>Tier 3</p></div>
+			<ul class="tier-benefits">
 				<li style="opacity: 50%;">Same as tier 2, plus</li>
 				<li><CircleArrowUp size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />25% XP boost</li>
 				<li><CircleArrowUp size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />Tier 3 badge</li>
 			</ul>
 			<button
-				id="tierPrice3"
-				class="standardButton tierBuyButton white"
+				id="tier-price-3"
+				class="standard-button tier-buy-button white"
 				onclick={() => startPurchase(3)}
-				class:tierBuyButtonUnlocked={$supporterLevel >= 3}
+				class:tier-buy-button-unlocked={$supporterLevel >= 3}
 				>{getTierPrice(3)}
 				{#if $supporterLevel >= 1 && $supporterLevel < 3}
-					<span class="discountBadge">Upgrade</span>
+					<span class="discount-badge">Upgrade</span>
 				{/if}</button
 			>
 		</div>
-		<p id="supporterInfoText">
+		<p id="supporter-info-text">
 			<a href="/legal" target="_blank">Terms and conditions</a>
 			apply.
 		</p>
@@ -144,14 +144,14 @@
 </Popup>
 
 <style>
-	.tierBenefits {
+	.tier-benefits {
 		padding-left: 0px;
 		font-size: 22px;
 		margin-bottom: var(--box-margin);
 		list-style-type: none;
 	}
 
-	.tierBenefitsLarge {
+	.tier-benefits-large {
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		padding: var(--layout-margin);
@@ -159,13 +159,13 @@
 		width: 245px;
 	}
 
-	.tierBenefitsScroll {
+	.tier-benefits-scroll {
 		max-height: 135px;
 		overflow-y: auto;
 		scrollbar-width: none;
 	}
 
-	.discountBadge {
+	.discount-badge {
 		font-size: 18px;
 		padding: 2px;
 		opacity: 0.9;
@@ -178,18 +178,18 @@
 		vertical-align: 2px;
 	}
 
-	.tierBenefits li {
+	.tier-benefits li {
 		margin-bottom: var(--box-margin);
 	}
 
-	.tierBuyButton {
+	.tier-buy-button {
 		width: 100%;
 		margin-top: auto;
 		position: relative;
 		overflow: hidden;
 	}
 
-	.tierBuyButtonDisplay::before {
+	.tier-buy-button-display::before {
 		animation: supporterGlintButton 5s 2s infinite;
 		background: white;
 		filter: blur(var(--elevated-blur));
@@ -205,24 +205,24 @@
 		pointer-events: none;
 	}
 
-	.tierBuyButtonDisplay {
+	.tier-buy-button-display {
 		max-width: 275px;
 		margin-top: 0;
 		background-color: var(--supporter-green);
 	}
 
-	:global(.baseTierPrice) {
+	:global(.base-tier-price) {
 		margin-right: var(--content-margin);
 		color: rgba(255, 255, 255, 0.5);
 		text-decoration: line-through;
 	}
 
-	:global(.tierBuyButtonUnlocked) {
+	:global(.tier-buy-button-unlocked) {
 		pointer-events: none;
 		opacity: 0.5;
 	}
 
-	.tierBox {
+	.tier-box {
 		background-color: var(--box-color);
 		border-radius: var(--box-margin);
 		box-shadow: var(--box-shadow);
@@ -238,7 +238,7 @@
 		min-width: 250px;
 	}
 
-	.tierBoxLarge {
+	.tier-box-large {
 		width: 100%;
 		background-color: var(--box-color);
 		border-radius: var(--box-margin);
@@ -250,7 +250,7 @@
 		margin-bottom: var(--box-margin);
 	}
 
-	.tierBoxLargeTier {
+	.tier-box-large-tier {
 		position: absolute;
 		right: 0;
 		top: 0;
@@ -264,27 +264,27 @@
 		background-color: var(--box-color);
 	}
 
-	.tierBoxLargeHeader {
+	.tier-box-large-header {
 		padding-bottom: var(--content-margin);
 		margin-bottom: auto;
 		line-height: 1.1;
 	}
 
-	.supporterPerksImage {
+	.supporter-perks-image {
 		width: 300px;
 		height: fit-content;
 		margin-top: 20px;
 		margin-right: 25px;
 	}
 
-	.tierBoxDisplay {
+	.tier-box-display {
 		flex-grow: 1;
 		display: flex;
 		gap: var(--layout-margin);
 		flex-direction: column;
 	}
 
-	.supporterBoxFlex {
+	.supporter-box-flex {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
@@ -292,7 +292,7 @@
 		padding-top: var(--content-margin);
 	}
 
-	#supporterInfoText {
+	#supporter-info-text {
 		opacity: 0.25;
 		text-align: center;
 		margin-inline: auto;
@@ -318,23 +318,23 @@
 	}
 
 	@media (max-width: 800px) {
-		.tierBoxLarge {
+		.tier-box-large {
 			flex-wrap: wrap;
 		}
 
-		.tierBuyButtonDisplay {
+		.tier-buy-button-display {
 			max-width: unset;
 		}
 
-		.tierBenefitsLarge {
+		.tier-benefits-large {
 			width: unset;
 		}
 
-		.supporterPerksImage {
+		.supporter-perks-image {
 			display: none;
 		}
 
-		.tierBoxLargeHeader {
+		.tier-box-large-header {
 			max-width: 80%;
 		}
 	}

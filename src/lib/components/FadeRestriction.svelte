@@ -3,11 +3,11 @@
 </script>
 
 {#if $fadePanorama}
-	<div class="fadeBackground"></div>
+	<div class="fade-background"></div>
 {/if}
 
 <style>
-	.fadeBackground {
+	.fade-background {
 		position: fixed;
 		overflow: hidden;
 		width: 100%;

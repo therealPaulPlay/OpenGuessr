@@ -12,27 +12,27 @@
 </script>
 
 <Popup z={971} frameless={true} bind:open verySlim={!wide}>
-	<div class="absoluteCenter">
-		<img src="/img/compass_spinner.png" alt="Loading" class="spinner" id="pageBrowserLoading" />
+	<div class="absolute-center">
+		<img src="/img/compass_spinner.png" alt="Loading" class="spinner" id="page-browser-loading" />
 	</div>
 	<!-- svelte-ignore a11y_missing_attribute -->
-	<iframe class="pageBrowserIframe" allowtransparency="true" frameborder="0" {src}></iframe>
+	<iframe class="page-browser-iframe" allowtransparency="true" frameborder="0" {src}></iframe>
 </Popup>
 
 <style>
-	#pageBrowserLoading {
+	#page-browser-loading {
 		margin: 0;
 		opacity: 0.25;
 	}
 
-	.absoluteCenter {
+	.absolute-center {
 		position: absolute;
 		top: 50%;
 		left: 50%;
 		transform: translate(-50%, -50%);
 	}
 
-	.pageBrowserIframe {
+	.page-browser-iframe {
 		width: 100%;
 		height: min(800px, calc(100dvh - 75px));
 		background: transparent;

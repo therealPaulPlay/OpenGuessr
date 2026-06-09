@@ -392,7 +392,7 @@
 									: replyTo.message}"
 							</p>
 							<button
-								class="standardButton dark reply-close"
+								class="standard-button dark reply-close"
 								onclick={() => {
 									playSound("basic_button");
 									replyTo = null;
@@ -427,7 +427,7 @@
 							}}
 						/>
 						<button
-							class="standardButton white"
+							class="standard-button white"
 							{@attach tooltip({ text: "Send message" })}
 							disabled={!inputValue.trim()}
 							onclick={() => {

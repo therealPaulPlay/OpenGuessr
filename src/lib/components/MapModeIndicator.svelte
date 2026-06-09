@@ -44,7 +44,7 @@
 		<MapAttribution />
 	</div>
 	<div
-		class="barMenu map-mode-indicator"
+		class="bar-menu map-mode-indicator"
 		class:fading={Boolean($mapModeIndicatorFading)}
 		transition:slide={{ axis: "y", duration: $resultScreenEnabled ? 0 : 150 }}
 	>
@@ -108,7 +108,7 @@
 		margin-bottom: -2px;
 	}
 
-	:global(.mapModeIndicator.fading) {
+	:global(.map-mode-indicator.fading) {
 		animation: divFade 1s infinite;
 	}
 
