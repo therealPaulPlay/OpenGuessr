@@ -176,14 +176,13 @@
 	{#if showOpenRoom}
 		<button
 			class="standardButton white largeButton"
-			{@attach tooltip({ text: "Make room public" })}
-			disabled={!$roomCode || roomOpened}
+			{@attach tooltip({ text: "List room publicly" })}
+			disabled={!$roomCode || roomOpened || !$isAuthenticated}
 			onclick={async () => {
 				playSound("basic_button");
-				if (!$isAuthenticated) return showNotification("Account required for public room creation."); // Don't show signup prompt since the room itself needs to be created signed-in
 				await submitRoomCode("open-room", false, localStorage.getItem("selectedMap") || $defaultMap);
 				roomOpened = true;
-				showNotification("Room set to public.");
+				showNotification("Room is now publicly listed.");
 			}}
 		>
 			<Eye strokeWidth={2.5} size={20} style="margin-bottom: -2px;" />

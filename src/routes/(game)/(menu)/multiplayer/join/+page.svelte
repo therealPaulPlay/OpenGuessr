@@ -98,10 +98,10 @@
 </div>
 
 {#if openRooms?.length > 0}
-	<p class="publicRoomTitle" transition:blur>Public rooms</p>
-	<div class="publicRoomBox of-top of-bottom of-length-2" transition:blur>
+	<p class="openRoomTitle" transition:blur>Public rooms</p>
+	<div class="openRoomBox of-top of-bottom of-length-2" transition:blur>
 		{#each openRooms as room}
-			<div class="publicRoomItem" transition:blur>
+			<div class="openRoomItem" transition:blur>
 				<div class="roomItemInfoContainer of-left of-right">
 					<Chip mutedOpacity={false}>
 						<img class="mapIcon" src="/img/maps_icon.png" alt="Maps" />
@@ -141,7 +141,7 @@
 		min-height: calc(50dvh - 120px + 151px);
 	}
 
-	.publicRoomTitle {
+	.openRoomTitle {
 		max-width: 390px;
 		margin-inline: auto;
 		width: calc(100% - 10px);
@@ -149,7 +149,7 @@
 		opacity: 0.5;
 	}
 
-	.publicRoomBox {
+	.openRoomBox {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-around;
@@ -165,7 +165,7 @@
 		scrollbar-width: none;
 	}
 
-	.publicRoomItem {
+	.openRoomItem {
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
 		border: none;
@@ -194,7 +194,7 @@
 		scrollbar-width: none;
 	}
 
-	.publicRoomItem:hover {
+	.openRoomItem:hover {
 		opacity: 1;
 	}
 
