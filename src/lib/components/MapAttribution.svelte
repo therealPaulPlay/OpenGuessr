@@ -1,5 +1,5 @@
-<div class="mapAttribution mapAttributionContainer">
-	<div class="mapAttributionDataBox">
+<div class="map-attribution map-attribution-container">
+	<div class="map-attribution-data-box">
 		<p>Map Data ©{new Date().getFullYear()} Google</p>
 		<p>
 			<a
@@ -9,7 +9,7 @@
 			>
 		</p>
 	</div>
-	<div class="mapAttributionLogo mapAttribution">
+	<div class="map-attribution-logo map-attribution">
 		<img
 			style="width: 60px"
 			alt="Google"
@@ -19,13 +19,13 @@
 </div>
 
 <style>
-	.mapAttribution {
+	.map-attribution {
 		position: absolute;
 		z-index: 1;
 		user-select: none;
 	}
 
-	.mapAttributionContainer {
+	.map-attribution-container {
 		bottom: 56px;
 		left: 0;
 		right: 0;
@@ -35,26 +35,26 @@
 		display: flex;
 	}
 
-	.mapAttributionLogo {
+	.map-attribution-logo {
 		bottom: -1px;
 		left: 7px;
 		opacity: 0.8;
 	}
 
-	.mapAttributionDataBox {
+	.map-attribution-data-box {
 		margin-left: auto;
 		gap: 1px;
 		display: flex;
 	}
 
-	.mapAttributionContainer p {
+	.map-attribution-container p {
 		background-color: rgba(255, 255, 255, 0.5);
 		padding: 1px;
 		padding-inline: 10px;
 	}
 
-	.mapAttributionContainer p,
-	.mapAttributionContainer a {
+	.map-attribution-container p,
+	.map-attribution-container a {
 		font-family: Roboto !important;
 		font-size: 10px;
 		color: black;

@@ -128,7 +128,7 @@
 </script>
 
 {#if showConfetti}
-	<div class="confettiBox">
+	<div class="confetti-box">
 		{#each { length: 4 }, index}
 			{@const xVal = 3 + Math.random() * 2}
 			{@const yVal = 3 + Math.random() * 2}
@@ -152,27 +152,27 @@
 	<ResultScreenSlideup />
 {/if}
 
-<div class="endBottomArea" style:display={$resultScreenEnabled ? "" : "none"}>
-	<div class="endBottomBar">
+<div class="end-bottom-area" style:display={$resultScreenEnabled ? "" : "none"}>
+	<div class="end-bottom-bar">
 		<!-- No transition since it would awkwardly trigger on the first result-open -->
 		{#if showResultAd}
-			<div class="resultAdArea barMenu">
-				<div class="resultAd" id="resultAd" data-fuse="Game_Result_incontent_1"></div>
-				<p class="noAdvertsText">Purchase a supporter tier to go ad-free.</p>
+			<div class="result-ad-area bar-menu">
+				<div class="result-ad" id="result-ad" data-fuse="Game_Result_incontent_1"></div>
+				<p class="no-adverts-text">Purchase a supporter tier to go ad-free.</p>
 			</div>
 		{/if}
-		<div id="resultBox" class="barMenu">
-			<div class="resultField" id="motivationText">
+		<div id="result-box" class="bar-menu">
+			<div class="result-field" id="motivation-text">
 				<p>{$motivationText}</p>
 			</div>
 			{#if showResultAd}
-				<div class="mobileResultAdArea resultField">
-					<div class="mobileResultAd" id="mobileResultAd" data-fuse="Game_Result_Mob_Only"></div>
-					<p class="noAdvertsText">Ad.</p>
+				<div class="mobile-result-ad-area result-field">
+					<div class="mobile-result-ad" id="mobile-result-ad" data-fuse="Game_Result_Mob_Only"></div>
+					<p class="no-adverts-text">Ad.</p>
 				</div>
 			{/if}
 			{#if $resultScreenEnabled}
-				<div class="resultField">
+				<div class="result-field">
 					<!-- Distance is usually number + unit, but Country Guessr just has Correct/Wrong -->
 					{#if $countryGuessr}
 						<MapPinned class="distance-icon" style="margin-right: var(--panel-margin)" size={22} strokeWidth={2.25} />
@@ -184,34 +184,34 @@
 							strokeWidth={2.25}
 						/>
 					{/if}
-					<p id="distanceText">{$distanceText}</p>
+					<p id="distance-text">{$distanceText}</p>
 				</div>
 				{#if $isAuthenticated}
-					<div id="experienceArea" class="resultField">
-						<div id="supporterBoost" bind:this={$supporterBoost}>
-							<p id="supporterBoostText" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
+					<div id="experience-area" class="result-field">
+						<div id="supporter-boost" bind:this={$supporterBoost}>
+							<p id="supporter-boost-text" bind:this={$supporterBoostText}>Supporter Boost (Default)</p>
 						</div>
-						<p id="endScreenLevelDisplay">Lvl. {level}</p>
-						<div id="experienceBarContainer">
+						<p id="end-screen-level-display">Lvl. {level}</p>
+						<div id="experience-bar-container">
 							<div
-								class="experienceBarResource"
-								class:experienceBarTransition={transitionExperienceBar}
-								class:experienceBarAnimation={$earnedExperience > 0}
+								class="experience-bar-resource"
+								class:experience-bar-transition={transitionExperienceBar}
+								class:experience-bar-animation={$earnedExperience > 0}
 								style:width={percentageWidth}
 							></div>
 						</div>
-						<p id="experienceNumberText">{$animatedExperience.toFixed(0)} XP</p>
+						<p id="experience-number-text">{$animatedExperience.toFixed(0)} XP</p>
 						{#if $streakText}
-							<div id="streakDisplay">
+							<div id="streak-display">
 								<Flame style="margin-right: var(--content-margin);" size={22} strokeWidth={2.25} />
-								<p id="endScreenStreakText">{$streakText}</p>
+								<p id="end-screen-streak-text">{$streakText}</p>
 							</div>
 						{/if}
 					</div>
 				{:else}
-					<div id="experienceBarNotSignedIn" class="resultField">
-						<p id="signupPromptText">
-							<button class="signupButton" onclick={signupPrompt}
+					<div id="experience-bar-not-signed-in" class="result-field">
+						<p id="signup-prompt-text">
+							<button class="signup-button" onclick={signupPrompt}
 								><CircleUser style="margin-bottom: -3px; margin-right: 3px;" strokeWidth={2.25} size={22} /> Sign up to see
 								& save your score!
 							</button>
@@ -222,21 +222,21 @@
 		</div>
 	</div>
 	{#if $resultScreenEnabled}
-		<div class="barMenu nextRoundArea">
+		<div class="bar-menu next-round-area">
 			<button
-				class="standardButton white"
+				class="standard-button white"
 				{@attach tooltip({ text: "View panorama" })}
 				onclick={() => {
 					playSound("basic_button");
 					$roundLogPopup = true;
 				}}
 			>
-				<img src="/img/streetview_icon.png" alt="Streetview symbol" class="socialIcon" id="streetviewIcon" />
+				<img src="/img/streetview_icon.png" alt="Streetview symbol" id="streetview-icon" />
 			</button>
 			<button
 				bind:this={nextRoundButtonElement}
-				id="nextRound"
-				class="standardButton white"
+				id="next-round"
+				class="standard-button white"
 				style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
 				style:opacity={$continueText.toLowerCase().includes("wait") ? "0.5" : ""}
 				{@attach tooltip({
@@ -245,15 +245,15 @@
 					state: nextRoundTutorialNote,
 					zIndex: 13,
 					maxWidth: 125,
-					showDelay: 3000
+					showDelay: 3000,
 				})}
 				onclick={() => {
 					playSound("basic_button");
 					nextRound();
 				}}
 			>
-				<p class="nextRoundText">{$continueText}</p>
-				<img src="/img/arrow_icon.png" alt="Arrow" class="directionArrowIcon" />
+				<p class="next-round-text">{$continueText}</p>
+				<img src="/img/arrow_icon.png" alt="Arrow" class="direction-arrow-icon" />
 			</button>
 		</div>
 	{/if}
@@ -266,7 +266,7 @@
 />
 
 <style>
-	.directionArrowIcon {
+	.direction-arrow-icon {
 		width: 20px;
 		height: 20px;
 		transform: rotate(270deg);
@@ -274,16 +274,18 @@
 		margin-right: -10px;
 	}
 
-	#streetviewIcon {
+	#streetview-icon {
 		vertical-align: -2px;
+		width: 20px;
+		height: auto;
 	}
 
-	#nextRound {
+	#next-round {
 		padding-inline: 35px;
 		flex-grow: 1;
 	}
 
-	#resultBox {
+	#result-box {
 		display: flex;
 		justify-content: center;
 		/* Stretch to ensure each result field fills the vertical space available */
@@ -296,16 +298,16 @@
 		margin-inline: var(--box-margin);
 	}
 
-	.signupButton {
+	.signup-button {
 		transition: opacity 250ms ease;
 		cursor: pointer;
 	}
 
-	.signupButton:hover {
+	.signup-button:hover {
 		opacity: 0.5;
 	}
 
-	.noAdvertsText {
+	.no-adverts-text {
 		position: absolute;
 		text-align: center;
 		color: white;
@@ -317,7 +319,7 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.resultField {
+	.result-field {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -333,7 +335,7 @@
 		overflow: hidden;
 	}
 
-	.endBottomBar {
+	.end-bottom-bar {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -346,7 +348,7 @@
 		right: 0;
 	}
 
-	.endBottomArea {
+	.end-bottom-area {
 		position: fixed;
 		height: fit-content;
 		display: flex;
@@ -360,7 +362,7 @@
 		pointer-events: none;
 	}
 
-	#motivationText {
+	#motivation-text {
 		flex-grow: 100;
 		min-width: 40%;
 		overflow: hidden;
@@ -368,19 +370,19 @@
 		text-wrap: nowrap;
 	}
 
-	.mobileResultAdArea {
+	.mobile-result-ad-area {
 		padding: var(--content-margin);
 		flex-grow: 1;
 	}
 
-	.mobileResultAd {
+	.mobile-result-ad {
 		overflow: hidden;
 		text-align: center;
 		width: 320px;
 		height: 50px;
 	}
 
-	.resultAdArea {
+	.result-ad-area {
 		width: 728px;
 		height: 90px;
 		display: none;
@@ -394,13 +396,13 @@
 		pointer-events: auto;
 	}
 
-	.resultAd {
+	.result-ad {
 		width: 728px;
 		height: 90px;
 		text-align: center;
 	}
 
-	#experienceArea {
+	#experience-area {
 		position: relative;
 		flex-grow: 100;
 		min-width: 300px;
@@ -420,7 +422,7 @@
 		}
 	}
 
-	#supporterBoost {
+	#supporter-boost {
 		position: absolute;
 		top: 0;
 		bottom: 0;
@@ -438,7 +440,7 @@
 		border-radius: 7px;
 	}
 
-	#supporterBoostText {
+	#supporter-boost-text {
 		opacity: 0;
 	}
 
@@ -464,11 +466,11 @@
 		}
 	}
 
-	:global(.supporterBoostTextMove) {
+	:global(.supporter-boost-text-move) {
 		animation: supporterBoostTextMove 2s ease-in-out;
 	}
 
-	#experienceBarContainer {
+	#experience-bar-container {
 		flex-grow: 10;
 		height: var(--layout-margin);
 		background-color: rgba(255, 255, 255, 0.15);
@@ -476,12 +478,12 @@
 		transition: none;
 	}
 
-	#experienceBarNotSignedIn {
+	#experience-bar-not-signed-in {
 		justify-content: space-between;
 		max-height: 30px;
 	}
 
-	#signupPromptText {
+	#signup-prompt-text {
 		margin-inline: auto;
 		text-wrap: nowrap;
 		overflow: hidden;
@@ -490,7 +492,7 @@
 		padding-inline: var(--box-margin);
 	}
 
-	.experienceBarResource {
+	.experience-bar-resource {
 		height: 100%;
 		border-radius: 7px;
 		background-color: #00cc00;
@@ -499,15 +501,15 @@
 		box-shadow: var(--bulb-shadow);
 	}
 
-	.experienceBarTransition {
+	.experience-bar-transition {
 		transition: width 1s ease;
 	}
 
-	.experienceBarAnimation {
+	.experience-bar-animation {
 		animation: XPFade 1s ease-in-out;
 	}
 
-	#experienceNumberText {
+	#experience-number-text {
 		font-size: 22px;
 		width: auto;
 		vertical-align: middle;
@@ -519,7 +521,7 @@
 		font-variant-numeric: tabular-nums;
 	}
 
-	#endScreenStreakText {
+	#end-screen-streak-text {
 		font-size: 20px;
 		vertical-align: middle;
 		text-align: center;
@@ -527,7 +529,7 @@
 		text-wrap: nowrap;
 	}
 
-	#streakDisplay {
+	#streak-display {
 		margin-right: auto;
 		margin-left: var(--panel-margin);
 		position: relative;
@@ -537,7 +539,7 @@
 		flex-grow: 1;
 	}
 
-	#endScreenLevelDisplay {
+	#end-screen-level-display {
 		font-size: 14px;
 		width: auto;
 		margin-left: auto;
@@ -555,7 +557,7 @@
 		text-overflow: ellipsis;
 	}
 
-	.nextRoundArea {
+	.next-round-area {
 		position: fixed;
 		bottom: var(--box-margin);
 		right: var(--box-margin);
@@ -566,7 +568,7 @@
 		margin-inline: auto;
 	}
 
-	.nextRoundText {
+	.next-round-text {
 		display: inline;
 	}
 
@@ -587,7 +589,7 @@
 		animation: distanceIconJelly 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
 	}
 
-	.confettiBox {
+	.confetti-box {
 		position: absolute;
 		inset: 0;
 		display: flex;
@@ -599,26 +601,26 @@
 	}
 
 	@media (min-width: 1900px) {
-		.resultAdArea {
+		.result-ad-area {
 			display: flex;
 		}
 
-		.mobileResultAdArea {
+		.mobile-result-ad-area {
 			display: none;
 		}
 
-		#resultBox {
+		#result-box {
 			width: 722px;
 		}
 	}
 
 	@media all and (max-width: 1350px) {
-		.nextRoundArea {
+		.next-round-area {
 			width: calc(100% - 36px);
 			left: var(--box-margin);
 		}
 
-		#resultBox {
+		#result-box {
 			margin-bottom: 66px;
 		}
 	}

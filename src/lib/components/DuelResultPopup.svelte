@@ -37,22 +37,22 @@
 	}}
 >
 	<div class="popup-title">
-		<h1 id="socialHeader">{$duelResultTitle}</h1>
+		<h1>{$duelResultTitle}</h1>
 	</div>
-	<div class="duelResultFlex">
-		<div class="resultBox">
+	<div class="duel-result-flex">
+		<div class="result-box">
 			<Flame
-				class="resultText"
+				class="result-text"
 				strokeWidth={2.75}
 				size={25}
 				style="margin-right: 2px; margin-bottom: -2px; opacity: {$duelWinStreak == 0 ? 0.5 : 1}"
 			/>
-			<h2 class="resultText" style:opacity={$duelWinStreak == 0 ? 0.5 : 1}>
+			<h2 class="result-text" style:opacity={$duelWinStreak == 0 ? 0.5 : 1}>
 				{$duelWinStreak}
 			</h2>
 		</div>
-		<div class="resultBox">
-			<h2 class="resultText">
+		<div class="result-box">
+			<h2 class="result-text">
 				{$eloChange >= 0 ? "+" : "-"}&hairsp;{Math.abs($animatedElo.toFixed(0))} Elo
 			</h2>
 		</div>
@@ -60,7 +60,7 @@
 	</div>
 
 	<DuelDivisionDisplay />
-	<div class="infoBox">
+	<div class="info-box">
 		<Info
 			strokeWidth={2.25}
 			size={22}
@@ -69,7 +69,7 @@
 		/>
 		<p>To report a player, open their profile and click on <i>Report</i>.</p>
 		<button
-			class="standardButton white growSearch"
+			class="standard-button white grow-search"
 			onclick={() => {
 				playSound("basic_button");
 				divisionMatchHistoryPopup.set(true);
@@ -79,7 +79,7 @@
 		>
 	</div>
 	<button
-		class="standardButton bottomButton largeButton"
+		class="standard-button bottom-button large-button"
 		onclick={() => {
 			playSound("basic_button");
 			$duelResultPopup = false;
@@ -91,7 +91,7 @@
 </Popup>
 
 <style>
-	.duelResultFlex {
+	.duel-result-flex {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -100,11 +100,11 @@
 		margin-bottom: var(--layout-margin);
 	}
 
-	.duelResultFlex div {
+	.duel-result-flex div {
 		min-width: 100px;
 	}
 
-	.resultBox {
+	.result-box {
 		flex-grow: 1;
 		flex-basis: 0%;
 		height: 38px;
@@ -118,11 +118,11 @@
 		box-shadow: var(--box-shadow);
 	}
 
-	.growSearch {
+	.grow-search {
 		flex-grow: 1;
 	}
 
-	.infoBox {
+	.info-box {
 		padding: var(--box-margin);
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
@@ -134,12 +134,12 @@
 		margin-top: var(--layout-margin);
 	}
 
-	.infoBox p {
+	.info-box p {
 		opacity: 0.5;
 		flex-grow: 100;
 	}
 
-	.resultText {
+	.result-text {
 		text-align: center;
 	}
 </style>

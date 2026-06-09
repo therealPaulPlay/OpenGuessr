@@ -96,7 +96,7 @@
 	<h1 class="popup-title">JSON format</h1>
 	<p>OpenGuessr uses a JSON format to load its locations. Here is an example of how that looks like.</p>
 	<br />
-	<div class="preBox">
+	<div class="pre-box">
 		<pre>
 &lbrace;
   "locations": [
@@ -111,19 +111,19 @@
 </Popup>
 
 <div class="main-container">
-	<div class="contentArea">
-		<div class="formLayout">
+	<div class="content-area">
+		<div class="form-layout">
 			<!-- Left column: Settings -->
-			<div class="formColumn">
-				<div class="formSection">
-					<h3 class="sectionTitle">Details</h3>
-					<div class="fieldGroup">
-						<p class="fieldLabel">Name</p>
+			<div class="form-column">
+				<div class="form-section">
+					<h3 class="section-title">Details</h3>
+					<div class="field-group">
+						<p class="field-label">Name</p>
 						<input bind:value={mapName} type="text" placeholder="My map" maxlength="25" />
 					</div>
-					<div class="fieldGroup">
-						<p class="fieldLabel">Category</p>
-						<select class="standardButton white largeButton categoryDropdown" bind:value={categoryValue}>
+					<div class="field-group">
+						<p class="field-label">Category</p>
+						<select class="standard-button white large-button category-dropdown" bind:value={categoryValue}>
 							<option value="none">Click to select</option>
 							<option value="Nature">Nature</option>
 							<option value="Architecture">Architecture</option>
@@ -134,14 +134,14 @@
 							<option value="Miscellaneous">Miscellaneous</option>
 						</select>
 					</div>
-					<div class="fieldGroup">
-						<p class="fieldLabel">Description</p>
+					<div class="field-group">
+						<p class="field-label">Description</p>
 						<input bind:value={mapDescription} type="text" placeholder="This map features..." maxlength="300" />
 					</div>
 				</div>
 
 				<Drawer title="Rules" inPage={true} hasBottomLayoutMargin={false}>
-					<div class="locationInstructions">
+					<div class="location-instructions">
 						<ul>
 							<li>You are limited to 3 maps per day</li>
 							<li>Maps must have 50 or more unique locations</li>
@@ -153,15 +153,15 @@
 					</div>
 				</Drawer>
 
-				<div class="formSection">
-					<h3 class="sectionTitle">Locations (JSON)</h3>
-					<div class="locationInstructions">
+				<div class="form-section">
+					<h3 class="section-title">Locations (JSON)</h3>
+					<div class="location-instructions">
 						<p>
 							You can generate a map using a tool like Map-Generator and then convert it to the
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 							<span
-								class="jsonLink"
+								class="json-link"
 								role="tooltip"
 								onclick={() => {
 									jsonPopup = true;
@@ -171,7 +171,7 @@
 						</p>
 					</div>
 					<button
-						class="standardButton white largeButton uploadButton"
+						class="standard-button white large-button upload-button"
 						onclick={() => {
 							playSound("basic_button");
 							filePicker.click();
@@ -192,11 +192,11 @@
 			</div>
 
 			<!-- Right column: Locations -->
-			<div class="formColumn locationsColumn">
-				<div class="formSection locationsSection">
-					<h3 class="sectionTitle sectionTitleMargin">Locations (Links)</h3>
-					<div class="locationInstructions">
-						<p class="instructionsTitle">Instructions</p>
+			<div class="form-column locations-column">
+				<div class="form-section locations-section">
+					<h3 class="section-title section-title-margin">Locations (Links)</h3>
+					<div class="location-instructions">
+						<p class="instructions-title">Instructions</p>
 						<ol>
 							<li>
 								Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer
@@ -205,8 +205,8 @@
 							<li>Copy the URL from the address bar into the textbox</li>
 						</ol>
 					</div>
-					<p class="fieldLabel">Street View URLs</p>
-					<div class="textAreaBox">
+					<p class="field-label">Street View URLs</p>
+					<div class="text-area-box">
 						<textarea
 							bind:value={uploadMapDataValue}
 							class="of-top of-bottom"
@@ -218,9 +218,9 @@
 			</div>
 		</div>
 
-		<div class="submitArea barMenu">
+		<div class="submit-area bar-menu">
 			<button
-				class="standardButton largeButton"
+				class="standard-button large-button"
 				onclick={() => {
 					playSound("basic_button");
 					showConfirmPopup(
@@ -242,7 +242,7 @@
 		min-height: calc(100dvh - 120px);
 	}
 
-	.contentArea {
+	.content-area {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -252,28 +252,28 @@
 		margin-bottom: auto;
 	}
 
-	.sectionTitle {
+	.section-title {
 		margin-left: var(--content-margin);
 	}
 
-	.sectionTitleMargin {
+	.section-title-margin {
 		margin-bottom: var(--content-margin);
 	}
 
-	.formLayout {
+	.form-layout {
 		display: grid;
 		grid-template-columns: 3fr 4fr;
 		gap: var(--layout-margin);
 		width: 100%;
 	}
 
-	.formColumn {
+	.form-column {
 		display: flex;
 		flex-direction: column;
 		gap: var(--layout-margin);
 	}
 
-	.formSection {
+	.form-section {
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
@@ -284,27 +284,27 @@
 		overflow: hidden;
 	}
 
-	.fieldGroup {
+	.field-group {
 		display: flex;
 		flex-direction: column;
 		gap: var(--content-margin);
 		min-width: 0;
 	}
 
-	.fieldLabel {
+	.field-label {
 		opacity: 0.75;
 		margin-top: var(--content-margin);
 		margin-left: var(--content-margin);
 		margin-bottom: 3px;
 	}
 
-	.fieldGroup input {
+	.field-group input {
 		padding: var(--box-margin);
 		padding-inline: var(--layout-margin);
 		border-radius: var(--box-margin);
 	}
 
-	.categoryDropdown {
+	.category-dropdown {
 		width: 100%;
 		justify-content: flex-start;
 	}
@@ -314,12 +314,12 @@
 		color: white;
 	}
 
-	.jsonLink {
+	.json-link {
 		text-decoration: underline;
 		cursor: pointer;
 	}
 
-	.uploadButton {
+	.upload-button {
 		display: flex;
 		align-items: center;
 		gap: var(--box-margin);
@@ -327,7 +327,7 @@
 		justify-content: center;
 	}
 
-	.uploadButton input {
+	.upload-button input {
 		display: none;
 	}
 
@@ -335,13 +335,13 @@
 		margin-top: var(--content-margin);
 	}
 
-	.locationsSection {
+	.locations-section {
 		flex-grow: 1;
 		display: flex;
 		flex-direction: column;
 	}
 
-	.locationInstructions {
+	.location-instructions {
 		background-color: var(--box-color-dark);
 		border-radius: var(--box-margin);
 		padding: var(--box-margin);
@@ -349,16 +349,16 @@
 		box-shadow: var(--box-shadow);
 	}
 
-	.locationInstructions p {
+	.location-instructions p {
 		opacity: 0.75;
 	}
 
-	.instructionsTitle {
+	.instructions-title {
 		margin-bottom: var(--box-margin);
 		opacity: 1 !important;
 	}
 
-	.locationInstructions li {
+	.location-instructions li {
 		opacity: 0.75;
 	}
 
@@ -368,7 +368,7 @@
 		width: 100%;
 	}
 
-	.textAreaBox {
+	.text-area-box {
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
@@ -377,19 +377,19 @@
 		flex-grow: 1;
 	}
 
-	.submitArea {
+	.submit-area {
 		margin-top: var(--layout-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--layout-margin);
 	}
 
-	.submitArea button {
+	.submit-area button {
 		padding-inline: 30px;
 	}
 
 	/* Popup styles */
-	.preBox {
+	.pre-box {
 		background-color: var(--box-color-dark);
 		border-radius: var(--box-margin);
 		padding: var(--box-margin);
@@ -403,11 +403,11 @@
 	}
 
 	@media (max-width: 1300px) {
-		.formLayout {
+		.form-layout {
 			grid-template-columns: 1fr;
 		}
 
-		.locationsColumn {
+		.locations-column {
 			order: 1;
 		}
 	}

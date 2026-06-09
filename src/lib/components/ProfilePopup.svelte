@@ -161,8 +161,8 @@
 		if ($profileId == localStorage.getItem("id")) saveProfileAboutIfChanges(textarea?.value?.trim());
 	}}
 >
-	<div class="profileNameArea">
-		<div class="profileViewName">
+	<div class="profile-name-area">
+		<div class="profile-view-name">
 			<h1>{$profileData?.username}</h1>
 			<!-- Profile Flag -->
 			{#if $profileData?.flag}
@@ -179,18 +179,18 @@
 					<Flag code={$profileData?.flag} />
 				</span>
 			{:else if $profileId == localStorage.getItem("id")}
-				<button class="flag-container addFlagButton" onclick={() => flagPickerPopup.set(true)}>
+				<button class="flag-container add-flag-button" onclick={() => flagPickerPopup.set(true)}>
 					<SquarePlus size={20} strokeWidth={2} />
 				</button>
 			{/if}
 		</div>
 	</div>
-	<div class="profileNameBox">
-		<div class="profileNameBoxContent of-left of-right">
+	<div class="profile-name-box">
+		<div class="profile-name-box-content of-left of-right">
 			{#if $profileId == localStorage.getItem("id") && !$profileData?.badge}
 				<button
-					id="badgeButton"
-					class="standardButton"
+					id="badge-button"
+					class="standard-button"
 					onclick={() => {
 						playSound("basic_button");
 						badgePopup.set(true);
@@ -200,7 +200,7 @@
 			{#if $profileData?.badge}
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				<div
-					id="badgeArea"
+					id="badge-area"
 					role="button"
 					tabindex="0"
 					style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
@@ -214,8 +214,8 @@
 			{/if}
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<div
-				class="profilePinArea standardButton white"
-				class:pinDisplayOnly={$profileId != localStorage.getItem("id")}
+				class="profile-pin-area standard-button white"
+				class:pin-display-only={$profileId != localStorage.getItem("id")}
 				role="button"
 				tabindex="0"
 				style:pointer-events={$profileId == localStorage.getItem("id") ? "auto" : "none"}
@@ -224,7 +224,7 @@
 					pinPopup.set(true);
 				}}
 			>
-				<img id="selectedProfilePin" alt="pin" src={`/img/pins/player_pin${$profileData?.pin ?? 0}.png`} />
+				<img id="selected-profile-pin" alt="pin" src={`/img/pins/player_pin${$profileData?.pin ?? 0}.png`} />
 				{#if $profileId == localStorage.getItem("id")}
 					<Pencil
 						style="opacity: 0.75; margin-right: var(--content-margin); margin-left: 2px;"
@@ -235,7 +235,7 @@
 			</div>
 			{#if $profileId == localStorage.getItem("id")}
 				<button
-					class="standardButton white"
+					class="standard-button white"
 					{@attach tooltip({ text: "Share link" })}
 					onclick={() => {
 						playSound("basic_button");
@@ -253,14 +253,14 @@
 				</button>
 			{/if}
 			{#if $profileData?.supporterLevel >= 1}
-				<div id="supporterTag">
-					<p id="supporterTagText">Tier {$profileData?.supporterLevel}</p>
-					<img id="supporterIcon" alt="supporter tag" src="/img/supporter_icon.png" />
+				<div id="supporter-tag">
+					<p id="supporter-tag-text">Tier {$profileData?.supporterLevel}</p>
+					<img id="supporter-icon" alt="supporter tag" src="/img/supporter_icon.png" />
 				</div>
 			{/if}
 			{#if $profileId != localStorage.getItem("id")}
 				<button
-					class="standardButton white"
+					class="standard-button white"
 					onclick={() => {
 						playSound("basic_button");
 						reportPopup.set(true);
@@ -271,7 +271,7 @@
 			{/if}
 			{#if $profileId != localStorage.getItem("id")}
 				<button
-					class="standardButton white"
+					class="standard-button white"
 					{@attach tooltip({ text: "Send message" })}
 					onclick={() => {
 						playSound("basic_button");
@@ -282,7 +282,7 @@
 					<MessageSquare style="margin-bottom: -1px;" size={20} strokeWidth={2.25} />
 				</button>
 				<button
-					class="standardButton white"
+					class="standard-button white"
 					disabled={$profileData?.areFriends}
 					{@attach tooltip({ text: "Send friend request" })}
 					onclick={(e) => {
@@ -306,9 +306,9 @@
 	{/if}
 
 	{#if $profileId == localStorage.getItem("id") || $profileData?.about}
-		<div class="aboutSection">
+		<div class="about-section">
 			<textarea
-				class="profileAbout of-top of-bottom"
+				class="profile-about of-top of-bottom"
 				readonly={$profileId != localStorage.getItem("id")}
 				style:background-color={$profileId != localStorage.getItem("id") ? "transparent !important" : ""}
 				maxlength="150"
@@ -361,11 +361,11 @@
 
 	{#if $profileId == localStorage.getItem("id")}
 		<TitleSeparator text="Management" />
-		<div class="managementBox">
-			<div class="managementBoxContent of-left of-right">
-				<div class="editNameSection">
+		<div class="management-box">
+			<div class="management-box-content of-left of-right">
+				<div class="edit-name-section">
 					<button
-						class="standardButton white"
+						class="standard-button white"
 						disabled={!$singleplayer}
 						onclick={() => {
 							playSound("basic_button");
@@ -385,7 +385,7 @@
 					</button>
 				</div>
 				<button
-					class="standardButton white"
+					class="standard-button white"
 					disabled={$crazyGames || !$singleplayer}
 					onclick={() => {
 						playSound("basic_button");
@@ -403,7 +403,7 @@
 					Account</button
 				>
 				<button
-					class="standardButton white"
+					class="standard-button white"
 					disabled={$crazyGames || !$singleplayer}
 					onclick={() => {
 						playSound("basic_button");
@@ -411,7 +411,7 @@
 						profilePopup.set(false);
 					}}
 				>
-					<img class="logoutImage" src="/img/signout.png" alt="Log out." />
+					<img class="logout-image" src="/img/signout.png" alt="Log out." />
 					Sign out
 				</button>
 			</div>
@@ -424,7 +424,7 @@
 </div>
 
 <style>
-	.profileNameArea {
+	.profile-name-area {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
@@ -437,12 +437,12 @@
 		gap: var(--box-margin);
 	}
 
-	#badgeArea {
+	#badge-area {
 		cursor: pointer;
 		transition: scale 250ms ease;
 	}
 
-	#badgeArea:hover {
+	#badge-area:hover {
 		scale: 0.98;
 	}
 
@@ -456,13 +456,13 @@
 		margin-bottom: auto;
 	}
 
-	.addFlagButton {
+	.add-flag-button {
 		transition: opacity 250ms ease;
 		opacity: 0.75;
 		width: 22px;
 	}
 
-	.addFlagButton:hover {
+	.add-flag-button:hover {
 		opacity: 1;
 	}
 
@@ -471,7 +471,7 @@
 		width: auto;
 	}
 
-	#badgeButton {
+	#badge-button {
 		background: linear-gradient(0.6turn, rgb(144, 147, 151), #646575);
 		color: white;
 		border: none;
@@ -482,7 +482,7 @@
 		box-sizing: border-box;
 	}
 
-	.profileViewName {
+	.profile-view-name {
 		overflow: hidden;
 		text-wrap: nowrap;
 		margin-left: var(--box-margin);
@@ -492,12 +492,12 @@
 		gap: var(--panel-margin);
 	}
 
-	.profileViewName h1 {
+	.profile-view-name h1 {
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
 
-	.profileNameBox {
+	.profile-name-box {
 		margin-bottom: var(--layout-margin);
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
@@ -505,7 +505,7 @@
 		max-width: fit-content;
 	}
 
-	.profileNameBoxContent {
+	.profile-name-box-content {
 		display: flex;
 		align-items: center;
 		padding: var(--box-margin);
@@ -514,13 +514,13 @@
 		scrollbar-width: none;
 	}
 
-	.logoutImage {
+	.logout-image {
 		width: 22px;
 		height: 22px;
 		vertical-align: -3px;
 	}
 
-	#supporterTag {
+	#supporter-tag {
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--content-margin);
@@ -533,7 +533,7 @@
 		text-wrap: nowrap;
 	}
 
-	.profilePinArea {
+	.profile-pin-area {
 		padding-inline: var(--panel-margin);
 		display: flex;
 		justify-content: center;
@@ -541,7 +541,7 @@
 		gap: var(--content-margin);
 	}
 
-	.pinDisplayOnly {
+	.pin-display-only {
 		border: none;
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
@@ -549,18 +549,18 @@
 		align-items: center;
 	}
 
-	#selectedProfilePin {
+	#selected-profile-pin {
 		width: 30px;
 		height: 30px;
 	}
 
-	#supporterIcon {
+	#supporter-icon {
 		width: 30px;
 		height: 30px;
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
 	}
 
-	.aboutSection {
+	.about-section {
 		width: 100%;
 		border-radius: var(--box-margin);
 		margin-bottom: var(--layout-margin);
@@ -572,7 +572,7 @@
 		overflow: hidden;
 	}
 
-	.profileAbout {
+	.profile-about {
 		resize: none;
 		width: 100%;
 		min-height: 85px;
@@ -665,13 +665,13 @@
 		text-overflow: ellipsis;
 	}
 
-	.managementBox {
+	.management-box {
 		border-radius: var(--box-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 	}
 
-	.managementBoxContent {
+	.management-box-content {
 		display: flex;
 		justify-content: flex-start;
 		overflow-y: auto;
@@ -681,7 +681,7 @@
 		scrollbar-width: none;
 	}
 
-	.editNameSection {
+	.edit-name-section {
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
@@ -689,7 +689,7 @@
 	}
 
 	@media all and (max-width: 800px) {
-		.aboutSection {
+		.about-section {
 			max-height: 85px;
 		}
 

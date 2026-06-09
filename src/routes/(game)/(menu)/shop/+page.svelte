@@ -133,58 +133,58 @@
 </svelte:head>
 
 <div class="main-container">
-	<div class="headerContainer">
+	<div class="header-container">
 		<h1 class="header">Shop</h1>
 	</div>
 	<!-- Split container with token offers and bundle -->
-	<div class="splitContainer">
-		<div class="leftSide" in:scale={{ start: 0.9, duration: 250 }}>
+	<div class="split-container">
+		<div class="left-side" in:scale={{ start: 0.9, duration: 250 }}>
 			{#if $specialOfferPins}
 				<div
-					class="specialOffer"
+					class="special-offer"
 					transition:blur
-					class:commonGradient={$specialOfferRarity == "common"}
-					class:rareGradient={$specialOfferRarity == "rare"}
-					class:epicGradient={$specialOfferRarity == "epic"}
-					class:legendaryGradient={$specialOfferRarity == "legendary"}
+					class:common-gradient={$specialOfferRarity == "common"}
+					class:rare-gradient={$specialOfferRarity == "rare"}
+					class:epic-gradient={$specialOfferRarity == "epic"}
+					class:legendary-gradient={$specialOfferRarity == "legendary"}
 				>
 					<div
-						class="specialOfferRarityDisplay"
-						class:commonColor={$specialOfferRarity == "common"}
-						class:rareColor={$specialOfferRarity == "rare"}
-						class:epicColor={$specialOfferRarity == "epic"}
-						class:legendaryColor={$specialOfferRarity == "legendary"}
+						class="special-offer-rarity-display"
+						class:common-color={$specialOfferRarity == "common"}
+						class:rare-color={$specialOfferRarity == "rare"}
+						class:epic-color={$specialOfferRarity == "epic"}
+						class:legendary-color={$specialOfferRarity == "legendary"}
 					>
 						<p>{$specialOfferRarity}</p>
 					</div>
-					<h1 class="specialOfferTitle">
+					<h1 class="special-offer-title">
 						{$specialOfferRarity?.[0]?.toUpperCase() + $specialOfferRarity.slice(1) || "Default"} bundle!
 					</h1>
-					<div class="specialOfferItems">
+					<div class="special-offer-items">
 						{#each $specialOfferPins as pinIndex}
 							<PinHolder pinId={pinIndex} shop={true} disabled={$purchasedPins?.includes(pinIndex)} />
 						{/each}
 					</div>
 					<button
-						class="standardButton white specialOfferButton largeButton"
+						class="standard-button white special-offer-button large-button"
 						disabled={$specialOfferPrice == 0}
 						onclick={() => {
 							playSound("basic_button");
 							handleShopPurchase("bundle", $specialOfferPrice, undefined, $specialOfferPins);
 						}}
 					>
-						<img class="tokenIconWhite" alt="token" src="/img/token_icon_white.png" />
-						<span class="specialOfferCrossedOut">{calculateRegularBundlePrice($specialOfferPins)}</span>
+						<img class="token-icon-white" alt="token" src="/img/token_icon_white.png" />
+						<span class="special-offer-crossed-out">{calculateRegularBundlePrice($specialOfferPins)}</span>
 						{$specialOfferPrice != 0 ? $specialOfferPrice : "Owned"}
 					</button>
 				</div>
 			{:else}
-				<p class="loadingText">{$specialOfferLoadingText}</p>
+				<p class="loading-text">{$specialOfferLoadingText}</p>
 			{/if}
 		</div>
-		<div class="rightSide" in:scale={{ start: 0.9, delay: 100, duration: 250 }}>
-			<div class="tokenDisplay">
-				<div class="shopInfoSection">
+		<div class="right-side" in:scale={{ start: 0.9, delay: 100, duration: 250 }}>
+			<div class="token-display">
+				<div class="shop-info-section">
 					<Clock
 						style="color: white; margin-right: 3px; min-width: fit-content; margin-bottom: -1px;"
 						strokeWidth={2.25}
@@ -192,22 +192,22 @@
 					/>
 					<p>Restock in {timeUntilUTCMidnight()}</p>
 				</div>
-				<div class="shopInfoSection">
+				<div class="shop-info-section">
 					<p>{Math.round($animatedTokens)?.toLocaleString()} Tokens</p>
-					<img class="tokenIcon" alt="token" src="/img/token_icon_white.png" />
+					<img class="token-icon" alt="token" src="/img/token_icon_white.png" />
 				</div>
 			</div>
-			<div class="tokenShop">
+			<div class="token-shop">
 				{#each Object.values(tokenOffers) as offer}
-					<div class="shopOffer">
-						<div class="shopOfferInfo">
+					<div class="shop-offer">
+						<div class="shop-offer-info">
 							<h2>{offer.amount?.toLocaleString()} Tokens</h2>
 						</div>
-						<div class="shopOfferGraphic">
-							<img alt="token graphic" src={offer.imageSrc} class="tokenGraphic" />
+						<div class="shop-offer-graphic">
+							<img alt="token graphic" src={offer.imageSrc} class="token-graphic" />
 						</div>
 						<button
-							class="standardButton shopOfferButton white"
+							class="standard-button shop-offer-button white"
 							disabled={offer.price == 0 && $freeDailyTokensClaimed}
 							onclick={() => {
 								playSound("basic_button");
@@ -219,7 +219,7 @@
 						>
 							{offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free"))}
 							{#if offer.savingsPercentage}
-								<span class="tokenSavings">-{offer.savingsPercentage}%</span>
+								<span class="token-savings">-{offer.savingsPercentage}%</span>
 							{/if}
 						</button>
 					</div>
@@ -228,29 +228,29 @@
 		</div>
 	</div>
 	<!-- All pins -->
-	<div class="headerContainer">
+	<div class="header-container">
 		<h1 class="header">All pins</h1>
 	</div>
 	<!-- YouTube pitch-->
 	{#if !$purchasedPins?.includes(500) && $accountDataLoaded}
-		<div class="freeSocialPinContainer" transition:slide={{ axis: "y" }}>
-			<p class="socialPinText">
-				Not subscribed yet? <span class="socialPinSpan">Follow our YouTube channel to claim a free pin!</span>
+		<div class="free-social-pin-container" transition:slide={{ axis: "y" }}>
+			<p class="social-pin-text">
+				Not subscribed yet? <span class="social-pin-span">Follow our YouTube channel to claim a free pin!</span>
 			</p>
 			<button
-				class="standardButton white socialPinButton"
+				class="standard-button white social-pin-button"
 				onclick={() => {
 					playSound("basic_button");
 					window.open("https://www.youtube.com/@OpenGuessrOfficial?sub_confirmation=true", "_blank").focus();
 					setTimeout(handleShopYouTubePin, 250);
 				}}
 			>
-				<img alt="YouTube pin" src="/img/pins/player_pin500.png" class="socialPinIcon" />
+				<img alt="YouTube pin" src="/img/pins/player_pin500.png" class="social-pin-icon" />
 				Subscribe
 			</button>
 		</div>
 	{/if}
-	<div class="allPinsContainer">
+	<div class="all-pins-container">
 		{#each Object.values(pinRarities) as rarity}
 			{#each rarity?.pinIndexes as index}
 				<PinHolder
@@ -273,7 +273,7 @@
 		margin-bottom: 75px;
 	}
 
-	.freeSocialPinContainer {
+	.free-social-pin-container {
 		width: 100%;
 		box-sizing: border-box;
 		box-shadow: var(--box-shadow);
@@ -288,24 +288,24 @@
 		flex-wrap: wrap;
 	}
 
-	.socialPinText {
+	.social-pin-text {
 		margin-left: var(--panel-margin);
 		text-align: center;
 		margin-right: auto;
 	}
 
-	.socialPinButton {
+	.social-pin-button {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 	}
 
-	.socialPinSpan {
+	.social-pin-span {
 		opacity: 0.5;
 		margin-left: var(--content-margin);
 	}
 
-	.socialPinIcon {
+	.social-pin-icon {
 		width: 50px;
 		height: 50px;
 		transform: rotate(-15deg);
@@ -324,7 +324,7 @@
 		}
 	}
 
-	.leftSide {
+	.left-side {
 		border-radius: var(--layout-margin);
 		box-shadow: var(--box-shadow);
 		flex-grow: 1;
@@ -339,18 +339,18 @@
 		flex-basis: calc(50% - 150px);
 	}
 
-	.loadingText {
+	.loading-text {
 		opacity: 0.5;
 		margin-inline: var(--box-margin);
 		text-align: center;
 	}
 
-	.tokenIconWhite {
+	.token-icon-white {
 		width: 25px;
 		height: 25px;
 	}
 
-	.rightSide {
+	.right-side {
 		border-radius: var(--layout-margin);
 		box-shadow: var(--box-shadow);
 		flex-grow: 1;
@@ -363,7 +363,7 @@
 		height: 500px;
 	}
 
-	.tokenDisplay {
+	.token-display {
 		width: 100%;
 		height: 50px;
 		display: flex;
@@ -374,7 +374,7 @@
 		box-sizing: border-box;
 	}
 
-	.shopInfoSection {
+	.shop-info-section {
 		display: flex;
 		align-items: center;
 		gap: var(--content-margin);
@@ -383,18 +383,18 @@
 		overflow: hidden;
 	}
 
-	.shopInfoSection p {
+	.shop-info-section p {
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
 
-	.tokenIcon {
+	.token-icon {
 		width: 25px;
 		height: 25px;
 		margin-top: 2px;
 	}
 
-	.tokenShop {
+	.token-shop {
 		width: 100%;
 		box-shadow: var(--bulb-shadow);
 		flex-grow: 1;
@@ -409,7 +409,7 @@
 		overflow: hidden;
 	}
 
-	.shopOffer {
+	.shop-offer {
 		border-radius: var(--content-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
@@ -426,24 +426,24 @@
 		height: calc(50% - var(--box-margin) / 2);
 	}
 
-	.shopOffer:hover .tokenGraphic {
+	.shop-offer:hover .token-graphic {
 		scale: 1.05;
 	}
 
-	.shopOfferInfo {
+	.shop-offer-info {
 		max-width: calc(100% - var(--box-margin) * 2);
 		position: absolute;
 		top: var(--layout-margin);
 		mask-image: linear-gradient(to bottom, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0.6) 100%);
 	}
 
-	.shopOfferInfo h2 {
+	.shop-offer-info h2 {
 		text-wrap: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
 
-	.shopOfferButton {
+	.shop-offer-button {
 		width: 100%;
 		display: flex;
 		justify-content: center;
@@ -451,7 +451,7 @@
 		gap: var(--content-margin);
 	}
 
-	.tokenGraphic {
+	.token-graphic {
 		height: 135px;
 		width: auto;
 		transition: scale 250ms ease;
@@ -459,12 +459,12 @@
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
 	}
 
-	.shopOfferGraphic {
+	.shop-offer-graphic {
 		flex-grow: 1;
 		display: flex;
 	}
 
-	.splitContainer {
+	.split-container {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -474,7 +474,7 @@
 		gap: var(--layout-margin);
 	}
 
-	.allPinsContainer {
+	.all-pins-container {
 		width: 100%;
 		height: fit-content;
 		box-shadow: var(--box-shadow);
@@ -487,7 +487,7 @@
 		box-sizing: border-box;
 	}
 
-	.specialOfferButton {
+	.special-offer-button {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -495,13 +495,13 @@
 		padding-inline: 20px;
 	}
 
-	.specialOfferCrossedOut {
+	.special-offer-crossed-out {
 		text-decoration: line-through;
 		opacity: 0.5;
 		margin-right: 3px;
 	}
 
-	.tokenSavings {
+	.token-savings {
 		background-color: rgba(255, 255, 255, 0.15);
 		color: white;
 		padding-inline: 3px;
@@ -509,7 +509,7 @@
 		border-radius: 3px;
 	}
 
-	.specialOffer {
+	.special-offer {
 		width: 100%;
 		height: 100%;
 		box-shadow: var(--box-shadow);
@@ -521,31 +521,31 @@
 		position: relative;
 	}
 
-	.specialOfferTitle {
+	.special-offer-title {
 		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
 	}
 
-	.specialOffer:hover .specialOfferItems {
+	.special-offer:hover .special-offer-items {
 		scale: 1.02;
 	}
 
-	.commonGradient {
+	.common-gradient {
 		background: linear-gradient(0.6turn, rgba(208, 136, 136, 0.2), var(--box-color));
 	}
 
-	.rareGradient {
+	.rare-gradient {
 		background: linear-gradient(0.6turn, rgba(255, 68, 243, 0.2), var(--box-color));
 	}
 
-	.epicGradient {
+	.epic-gradient {
 		background: linear-gradient(0.6turn, rgba(75, 234, 255, 0.2), var(--box-color));
 	}
 
-	.legendaryGradient {
+	.legendary-gradient {
 		background: linear-gradient(0.6turn, rgba(255, 214, 51, 0.2), var(--box-color));
 	}
 
-	.specialOfferItems {
+	.special-offer-items {
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
@@ -560,12 +560,12 @@
 		overflow: auto;
 	}
 
-	:global(.specialOfferItems .pinHolder) {
+	:global(.special-offer-items .pin-holder) {
 		border-radius: var(--box-margin);
 		pointer-events: none;
 	}
 
-	.specialOfferRarityDisplay {
+	.special-offer-rarity-display {
 		position: absolute;
 		box-shadow: var(--bulb-shadow);
 		border-top-right-radius: var(--content-margin);
@@ -576,24 +576,24 @@
 		user-select: none;
 	}
 
-	.specialOfferRarityDisplay p {
+	.special-offer-rarity-display p {
 		font-style: italic;
 		margin-top: -3px;
 	}
 
-	.commonColor {
+	.common-color {
 		background-color: var(--common-color);
 	}
 
-	.rareColor {
+	.rare-color {
 		background-color: var(--rare-color);
 	}
 
-	.epicColor {
+	.epic-color {
 		background-color: var(--epic-color);
 	}
 
-	.legendaryColor {
+	.legendary-color {
 		background-color: var(--legendary-color);
 	}
 </style>

@@ -73,19 +73,19 @@
 		},
 		supporterBadge1: {
 			title: "Kind Contributor",
-			stage: "Supporter2",
+			stage: "supporter-1",
 		},
 		supporterBadge2: {
 			title: "Generous Benefactor",
-			stage: "Supporter3",
+			stage: "supporter-2",
 		},
 		supporterBadge3: {
 			title: "Ultimate Patron",
-			stage: "Supporter4",
+			stage: "supporter-3",
 		},
 		miscBadge1: {
 			title: "Developer",
-			stage: "Developer",
+			stage: "developer",
 		},
 	};
 
@@ -103,9 +103,9 @@
 	{id}
 	role="button"
 	tabindex="0"
-	class="badge {'badgeStage' + badges[id]?.stage}"
-	class:badgeLocked={!unlocked && !display}
-	class:badgeSelected={$selectedBadge == id && !display}
+	class="badge {'badge-stage-' + badges[id]?.stage}"
+	class:badge-locked={!unlocked && !display}
+	class:badge-selected={$selectedBadge == id && !display}
 	style:pointer-events={interactive ? "auto" : "none"}
 	onclick={() => {
 		if (unlocked) {
@@ -120,11 +120,11 @@
 </div>
 
 <style>
-	.badgeLocked {
+	.badge-locked {
 		opacity: 0.35;
 	}
 
-	.badgeSelected {
+	.badge-selected {
 		filter: brightness(1.5);
 	}
 
@@ -152,39 +152,35 @@
 		transform: scale(0.97);
 	}
 
-	.badgeStage1 {
+	.badge-stage-1 {
 		background: linear-gradient(0.6turn, rgb(136, 113, 113), #6f5a5a);
 	}
 
-	.badgeStage2 {
+	.badge-stage-2 {
 		background: linear-gradient(0.6turn, #30929b, #507d82);
 	}
 
-	.badgeStage3 {
+	.badge-stage-3 {
 		background: linear-gradient(0.6turn, rgb(142, 70, 232), #7954a6);
 	}
 
-	.badgeStage4 {
+	.badge-stage-4 {
 		background: linear-gradient(0.6turn, #ddbb1f, #aa8928);
 	}
 
-	.badgeStageSupporter1 {
-		background: linear-gradient(0.6turn, #419d42, #4d684a);
-	}
-
-	.badgeStageSupporter2 {
+	.badge-stage-supporter-1 {
 		background: linear-gradient(0.6turn, #319532, #568851);
 	}
 
-	.badgeStageSupporter3 {
+	.badge-stage-supporter-2 {
 		background: linear-gradient(0.6turn, #19ae1b, #459337);
 	}
 
-	.badgeStageSupporter4 {
+	.badge-stage-supporter-3 {
 		background: linear-gradient(0.6turn, #37d738, #22a826);
 	}
 
-	.badgeStageDeveloper {
+	.badge-stage-developer {
 		background: linear-gradient(0.6turn, #e31f1f, #8e3030);
 	}
 </style>

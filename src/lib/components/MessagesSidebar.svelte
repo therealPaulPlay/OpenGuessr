@@ -82,7 +82,7 @@
 					</p>
 					<div class="invite-buttons">
 						<button
-							class="standardButton white"
+							class="standard-button white"
 							onclick={async () => {
 								playSound("basic_button");
 								try {
@@ -98,7 +98,7 @@
 							}}><Check size={20} strokeWidth={2.5} style="vertical-align: -2px;" /></button
 						>
 						<button
-							class="standardButton white"
+							class="standard-button white"
 							onclick={async () => {
 								playSound("basic_button");
 								try {
@@ -154,7 +154,7 @@
 						</div>
 					</div>
 					<button
-						class="standardButton dark leave-button"
+						class="standard-button dark leave-button"
 						{@attach tooltip({ text: "Leave" })}
 						onclick={(e) => {
 							e.stopPropagation();

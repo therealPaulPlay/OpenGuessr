@@ -11,7 +11,7 @@ OpenGuessr uses [Svelte](https://svelte.dev).
 ## Styling guidelines
 
 The `app.css` file contains a bunch of classes. Only if there is **no applicable predefined class**, create a new 
-one inside of a component or page. OpenGuessr uses a `CSS component library` approach for simple components, and only uses Svelte components for complex UI parts that require JS (in `/components/ui`).
+one inside of a component or page. Class names must be kebab-case. OpenGuessr uses a `CSS component library` approach for simple components, and only uses Svelte components for complex UI parts that require JS (in `/components/ui`).
 
 As part of OpenGuessr's design system, margin, padding and border radius should only use variables defined in `app.css`.
 > [!TIP]
@@ -62,11 +62,11 @@ Colors that are only used for one specific thing should not be placed in `app.cs
 
 ### Buttons
 
-Usually, buttons sit in layer 1. However, sometimes you want large, rounded buttons for controls that need to stand out. For that, combine the `standardButton` class with the `largeButton` class - the latter increases the border radius to the box-margin and also increases the other dimensions of the button. 
+Usually, buttons sit in layer 1. However, sometimes you want large, rounded buttons for controls that need to stand out. For that, combine the `standard-button` class with the `large-button` class - the latter increases the border radius to the box-margin and also increases the other dimensions of the button. 
 
-The `standardButton` is a red primary button by default. To make it secondary, add `white`. To make it even more subtle, add `dark` instead (use thoughtfully).
+The `standard-button` is a red primary button by default. To make it secondary, add `white`. To make it even more subtle, add `dark` instead (use thoughtfully).
 
-The button that commonly sits at the bottom of a popup can be replicated by adding `bottomButton`, `white` (unless a primary action) and `largeButton` to a `standardButton`. 
+The button that commonly sits at the bottom of a popup can be replicated by adding `bottom-button`, `white` (unless a primary action) and `large-button` to a `standard-button`. 
 
 Buttons should always be placed in a visual container and not just on a blank page or direclty in a popup (unless it's a large button, which aligns well with the Popup's corner radius).
 

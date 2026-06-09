@@ -11,7 +11,7 @@
 </script>
 
 {#if $teamAmount > 1}
-	<div class:barMenu={inPanel} class:in-menu={!inPanel} class:no-bottom-border-radius={inPanel}>
+	<div class:bar-menu={inPanel} class:in-menu={!inPanel} class:no-bottom-border-radius={inPanel}>
 		<Tabs
 			tabs={["Global", "Team"]}
 			onchange={(selection, _) => {

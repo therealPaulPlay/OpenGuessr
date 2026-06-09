@@ -201,12 +201,12 @@
 />
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
-<div class="leaderboardContainer">
+<div class="leaderboard-container">
 	<div class="podium-container">
-		<div class="optionBarContainer">
-			<div class="optionBarItem barMenu">
+		<div class="option-bar-container">
+			<div class="option-bar-item bar-menu">
 				<button
-					class="standardButton white largeButton"
+					class="standard-button white large-button"
 					onclick={() => {
 						playSound("basic_button");
 						showConfirmPopup(
@@ -218,10 +218,10 @@
 					<Info style="vertical-align: -3px" />
 				</button>
 			</div>
-			<div class="optionBarItem barMenu">
+			<div class="option-bar-item bar-menu">
 				<Tabs
 					tabs={["Elo", "XP"]}
-					class="leaderboardTabs"
+					class="leaderboard-tabs"
 					onchange={(selection) => {
 						filter = selection;
 						loadCorrectLeaderboard();
@@ -243,7 +243,7 @@
 					{mainSectionEntries?.[1]?.user_name || "Guest"}
 				</h3>
 				<div class="podium-pedestal silver">
-					<h3 class="podiumValue">{(mainSectionEntries?.[1]?.[valueKey]?.toLocaleString() || "...") + unitName}</h3>
+					<h3 class="podium-value">{(mainSectionEntries?.[1]?.[valueKey]?.toLocaleString() || "...") + unitName}</h3>
 					<h3 class="rank">#2</h3>
 				</div>
 			</div>
@@ -258,7 +258,7 @@
 					{mainSectionEntries?.[0]?.user_name || "Guest"}
 				</h3>
 				<div class="podium-pedestal gold">
-					<span class="podiumValue">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</span>
+					<span class="podium-value">{(mainSectionEntries?.[0]?.[valueKey]?.toLocaleString() || "...") + unitName}</span>
 					<h3 class="rank">#1</h3>
 				</div>
 			</div>
@@ -273,7 +273,7 @@
 					{mainSectionEntries?.[2]?.user_name || "Guest"}
 				</h3>
 				<div class="podium-pedestal bronze">
-					<span class="podiumValue">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</span>
+					<span class="podium-value">{(mainSectionEntries?.[2]?.[valueKey]?.toLocaleString() || "...") + unitName}</span>
 					<h3 class="rank">#3</h3>
 				</div>
 			</div>
@@ -282,8 +282,8 @@
 	{#if mainSectionEntries}
 		<div class="item-container" transition:fade={{ duration: 150 }}>
 			{#each mainSectionEntries.slice(3) as entry}
-				<div class="rankedItem" role="button" tabindex="0" class:yourItem={entry.id == userId && $isAuthenticated}>
-					<p class="maxlength rankedItemLeft">#{entry.position}</p>
+				<div class="ranked-item" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
+					<p class="maxlength ranked-item-left">#{entry.position}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<p
 						class="middle maxlength"
@@ -296,23 +296,23 @@
 							<SupporterTag />
 						{/if}
 					</p>
-					<p class="maxlength rankedItemRight">{entry?.[valueKey]?.toLocaleString() + unitName}</p>
+					<p class="maxlength ranked-item-right">{entry?.[valueKey]?.toLocaleString() + unitName}</p>
 				</div>
 			{/each}
 		</div>
 	{:else}
-		<p class="loadingText">{loadingText}</p>
+		<p class="loading-text">{loadingText}</p>
 	{/if}
 	{#if userSectionEntries}
-		<div id="threeDotsContainer" class="threeDotsContainer" transition:blur>
-			<div class="circleDot"></div>
-			<div class="circleDot"></div>
-			<div class="circleDot"></div>
+		<div id="three-dots-container" class="three-dots-container" transition:blur>
+			<div class="circle-dot"></div>
+			<div class="circle-dot"></div>
+			<div class="circle-dot"></div>
 		</div>
-		<div id="yourLeagueContainer" class="item-container" transition:blur>
+		<div id="your-league-container" class="item-container" transition:blur>
 			{#each userSectionEntries as entry}
-				<div class="rankedItem" role="button" tabindex="0" class:yourItem={entry.id == userId && $isAuthenticated}>
-					<p class="maxlength rankedItemLeft">#~{entry.position?.toLocaleString()}</p>
+				<div class="ranked-item" role="button" tabindex="0" class:your-item={entry.id == userId && $isAuthenticated}>
+					<p class="maxlength ranked-item-left">#~{entry.position?.toLocaleString()}</p>
 					<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 					<p
 						class="middle maxlength"
@@ -325,7 +325,7 @@
 							<SupporterTag />
 						{/if}
 					</p>
-					<p class="maxlength rankedItemRight">{entry?.[valueKey]?.toLocaleString() + unitName}</p>
+					<p class="maxlength ranked-item-right">{entry?.[valueKey]?.toLocaleString() + unitName}</p>
 				</div>
 			{/each}
 		</div>
@@ -333,7 +333,7 @@
 </div>
 
 <style>
-	.loadingText {
+	.loading-text {
 		color: white;
 		font-size: 22px;
 		opacity: 0.5;
@@ -342,7 +342,7 @@
 		margin-top: var(--box-margin);
 	}
 
-	.optionBarItem {
+	.option-bar-item {
 		width: fit-content;
 		max-width: 80%;
 		border-radius: var(--layout-margin);
@@ -350,17 +350,17 @@
 		background-color: var(--box-color);
 	}
 
-	:global(.leaderboardTabs) {
+	:global(.leaderboard-tabs) {
 		border-radius: var(--box-margin) !important;
 		min-height: 50px;
 	}
 
-	:global(.leaderboardTabs button) {
+	:global(.leaderboard-tabs button) {
 		opacity: 0.5;
 		width: 65px;
 	}
 
-	.rankedItem {
+	.ranked-item {
 		width: 100%;
 		height: 50px;
 		box-shadow: var(--box-shadow);
@@ -399,7 +399,7 @@
 		background-color: rgba(189, 87, 87, 0.5);
 	}
 
-	.yourItem {
+	.your-item {
 		box-shadow: var(--bulb-shadow);
 		background-color: rgba(255, 255, 255, 0.3);
 	}
@@ -410,15 +410,15 @@
 		flex-basis: 0;
 	}
 
-	.rankedItemLeft {
+	.ranked-item-left {
 		text-align: left;
 	}
 
-	.rankedItemRight {
+	.ranked-item-right {
 		text-align: right;
 	}
 
-	.leaderboardContainer {
+	.leaderboard-container {
 		border-radius: 20px;
 		display: flex;
 		flex-wrap: wrap;
@@ -446,7 +446,7 @@
 		overflow: hidden;
 	}
 
-	.optionBarContainer {
+	.option-bar-container {
 		display: flex;
 		justify-content: end;
 		align-items: center;
@@ -542,7 +542,7 @@
 		margin-bottom: var(--content-margin);
 	}
 
-	.podium-item .podiumValue {
+	.podium-item .podium-value {
 		font-size: 25px;
 		color: white;
 		margin: auto 0;
@@ -556,7 +556,7 @@
 		padding-inline: var(--content-margin);
 	}
 
-	#yourLeagueContainer {
+	#your-league-container {
 		margin-top: 25px;
 		min-height: 30px;
 	}
@@ -568,7 +568,7 @@
 		flex-direction: column;
 	}
 
-	.threeDotsContainer {
+	.three-dots-container {
 		overflow: hidden;
 		justify-content: center;
 		gap: var(--layout-margin);
@@ -577,7 +577,7 @@
 		display: flex;
 	}
 
-	.circleDot {
+	.circle-dot {
 		padding: 6px;
 		border-radius: 50%;
 		background-color: rgba(255, 255, 255, 0.1);
@@ -593,7 +593,7 @@
 			font-size: 20px;
 		}
 
-		.podium-item .podiumValue {
+		.podium-item .podium-value {
 			font-size: 20px;
 		}
 

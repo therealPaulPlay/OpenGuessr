@@ -5,13 +5,13 @@
 </script>
 
 {#if $loadingScreenVisible || $resultScreenEnabled}
-	<div class="loadingOverlay" transition:fade={{ duration: 150 }}>
+	<div class="loading-overlay" transition:fade={{ duration: 150 }}>
 		<img src="/img/compass_spinner.png" fetchpriority="high" alt="Loading" class="spinner" />
 	</div>
 {/if}
 
 <style>
-	.loadingOverlay {
+	.loading-overlay {
 		display: flex;
 		justify-content: center;
 		align-items: center;

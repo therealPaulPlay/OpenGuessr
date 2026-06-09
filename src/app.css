@@ -155,7 +155,7 @@ input:focus {
     background-color: rgba(255, 255, 255, 0.2);
 }
 
-.standardButton {
+.standard-button {
     cursor: pointer;
     width: fit-content;
     font-size: 22px;
@@ -175,11 +175,11 @@ input:focus {
     box-shadow: var(--button-shadow);
 }
 
-.standardButton:hover {
+.standard-button:hover {
     filter: brightness(70%);
 }
 
-.standardButton:active {
+.standard-button:active {
     transform: scale(0.95);
 }
 
@@ -194,7 +194,7 @@ input:focus {
     border: 3px solid transparent;
 }
 
-.standardButton:disabled {
+.standard-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
@@ -204,7 +204,7 @@ input:focus {
     color: white;
 }
 
-.headerContainer {
+.header-container {
     display: flex;
     justify-content: space-between;
     align-items: end;
@@ -266,13 +266,6 @@ input[type="checkbox"]:focus {
     margin-bottom: var(--layout-margin);
 }
 
-.socialIcon {
-    width: 20px;
-    height: auto;
-    padding: 0px;
-    margin: 0;
-}
-
 .slider {
     -webkit-appearance: none;
     appearance: none;
@@ -320,7 +313,7 @@ input[type="checkbox"]:focus {
     border-radius: 15px;
 }
 
-.barMenu {
+.bar-menu {
     background-color: var(--panel-color);
     backdrop-filter: blur(var(--normal-blur));
     box-shadow: 0 2px 20px rgba(5, 6, 10, 0.3), inset 0 0.05rem 1px hsla(0, 0%, 100%, 0.3), inset 0 -0.1rem 1px rgba(0, 0, 2, 0.3);
@@ -367,12 +360,12 @@ textarea:focus {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-.bottomButton {
+.bottom-button {
     float: right;
     margin-top: 30px;
 }
 
-.largeButton {
+.large-button {
     height: 50px;
     border-radius: var(--box-margin);
 }

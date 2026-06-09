@@ -32,7 +32,7 @@
 	</div>
 	<p class="popup-description">{$confirmDescription}</p>
 	{#if $confirmPasswordInput}
-		<div class="infoContainer">
+		<div class="info-container">
 			<Info
 				strokeWidth={2.25}
 				size={22}
@@ -43,21 +43,21 @@
 				For accounts created without a password, please set one <a href="/signup?reset=true" target="_blank">here</a>.
 			</p>
 		</div>
-		<input class="confirmPopupInput" type="password" placeholder="Password" bind:value={$confirmPasswordValue} />
+		<input class="confirm-popup-input" type="password" placeholder="Password" bind:value={$confirmPasswordValue} />
 	{/if}
 	{#if $confirmUsernameInput}
 		<input
 			type="text"
-			class="confirmPopupInput marginTop"
+			class="confirm-popup-input margin-top"
 			placeholder="New name"
 			maxlength="50"
 			bind:value={$confirmUsernameValue}
 		/>
 	{/if}
-	<div class="marginTop largerSpacing">
+	<div class="margin-top larger-spacing">
 		{#if $confirmExecuteFunction}
 			<button
-				class="standardButton bottomButton largeButton"
+				class="standard-button bottom-button large-button"
 				onclick={confirm}
 				disabled={($confirmUsernameInput && $confirmUsernameValue?.length < 1) ||
 					($confirmPasswordInput && $confirmPasswordValue?.length < 1)}>{$confirmConfirmText}</button
@@ -67,20 +67,20 @@
 </Popup>
 
 <style>
-	.confirmPopupInput {
+	.confirm-popup-input {
 		padding: var(--content-margin) var(--box-margin);
 		width: 40%;
 	}
 
-	.marginTop {
+	.margin-top {
 		margin-top: var(--layout-margin);
 	}
 
-	.largerSpacing {
+	.larger-spacing {
 		gap: var(--layout-margin);
 	}
 
-	.infoContainer {
+	.info-container {
 		display: flex;
 		padding: var(--box-margin);
 		padding-right: var(--layout-margin);
@@ -94,7 +94,7 @@
 		max-width: fit-content;
 	}
 
-	.infoContainer p {
+	.info-container p {
 		opacity: 0.5;
 		flex-grow: 100;
 	}

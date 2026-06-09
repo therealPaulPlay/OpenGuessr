@@ -45,7 +45,7 @@
 
 <div class="notification-holder" style:top={page.url.pathname === "/" ? "var(--box-margin)" : "var(--layout-margin)"}>
 	{#if $notificationVisible}
-		<div id="notification-bar" class="barMenu" transition:fly={{ y: -20, duration: 250 }}>
+		<div id="notification-bar" class="bar-menu" transition:fly={{ y: -20, duration: 250 }}>
 			<p id="notification-text">
 				{#each notificationTextArray, index}
 					{notificationTextArray[index]}
@@ -59,7 +59,7 @@
 				{#if $acceptFunction}
 					<button
 						id="notification-accept"
-						class="standardButton white"
+						class="standard-button white"
 						onclick={accept}
 						aria-label={$viewOnly ? "View" : "Accept"}
 					>
@@ -70,7 +70,7 @@
 						{/if}
 					</button>
 				{/if}
-				<button id="notification-dismiss" class="standardButton white" onclick={dismiss} aria-label="Dismiss">
+				<button id="notification-dismiss" class="standard-button white" onclick={dismiss} aria-label="Dismiss">
 					<X size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
 				</button>
 			</div>

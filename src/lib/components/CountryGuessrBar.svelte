@@ -16,34 +16,34 @@
 
 {#if $countryGuessr}
 	<div
-		class="countryGuessrSelector barMenu"
+		class="country-guessr-selector bar-menu"
 		role="menu"
 		tabindex="0"
-		class:countryGuessrSelectorAdShift={!$adsDisabled}
+		class:country-guessr-selector-ad-shift={!$adsDisabled}
 		transition:blur={{ duration: 150 }}
 	>
 		{#if $countryGuessrCountriesArray?.length}
 			{#each $countryGuessrCountriesArray as country, index}
 				<button
-					class="countryGuessrHolder standardButton white"
+					class="country-guessr-holder standard-button white"
 					onclick={() => {
 						selectCountry(index);
 					}}
 				>
-					<div class="countryGuessrFlag">
+					<div class="country-guessr-flag">
 						<Flag code={country.flag} size={35} showTooltip={false} />
 					</div>
-					<p class="countryGuessrTag">{country.name}</p>
+					<p class="country-guessr-tag">{country.name}</p>
 				</button>
 			{/each}
 		{:else}
-			<p class="loadingText">Loading...</p>
+			<p class="loading-text">Loading...</p>
 		{/if}
 	</div>
 {/if}
 
 <style>
-	.countryGuessrHolder {
+	.country-guessr-holder {
 		position: relative;
 		height: 85px;
 		width: 150px;
@@ -51,18 +51,18 @@
 		text-align: center;
 	}
 
-	.countryGuessrFlag {
+	.country-guessr-flag {
 		height: 38px;
 		width: 100%;
 		margin-top: 3px;
 		text-align: center;
 	}
 
-	.countryGuessrHolder:hover {
+	.country-guessr-holder:hover {
 		transform: scale(0.98);
 	}
 
-	.countryGuessrTag {
+	.country-guessr-tag {
 		margin-top: auto;
 		margin-bottom: var(--content-margin);
 		font-size: 22px;
@@ -72,7 +72,7 @@
 		overflow: hidden;
 	}
 
-	.countryGuessrSelector {
+	.country-guessr-selector {
 		position: fixed;
 		bottom: 115px;
 		left: 0;
@@ -87,38 +87,38 @@
 		transition: bottom 150ms ease;
 	}
 
-	.loadingText {
+	.loading-text {
 		opacity: 0.5;
 		padding: var(--content-margin);
 	}
 
 	@media all and (max-width: 1500px) {
-		.countryGuessrFlag {
+		.country-guessr-flag {
 			font-size: 25px;
 		}
 
-		.countryGuessrTag {
+		.country-guessr-tag {
 			font-size: 20px;
 		}
 
-		.countryGuessrHolder {
+		.country-guessr-holder {
 			height: 75px;
 			width: 100px;
 			border-radius: calc(var(--layout-margin) - var(--panel-margin));
 			flex-grow: 1;
 		}
 
-		.countryGuessrSelector {
+		.country-guessr-selector {
 			bottom: 76px;
 			max-width: calc(100% - 32px);
 		}
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {
-		.countryGuessrSelectorAdShift {
+		.country-guessr-selector-ad-shift {
 			bottom: 136px; /* Shift up to fit ad */
 		}
-		.countryGuessrSelector {
+		.country-guessr-selector {
 			width: calc(100% - 32px);
 			margin-inline: var(--box-margin);
 		}

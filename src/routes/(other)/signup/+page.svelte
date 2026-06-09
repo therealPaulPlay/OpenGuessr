@@ -322,7 +322,7 @@
 	}
 
 	$effect(() => {
-		if (captchaVisible) renderCaptcha("#captchaContainer", window.onSignupTurnstileCompleted);
+		if (captchaVisible) renderCaptcha("#captcha-container", window.onSignupTurnstileCompleted);
 	});
 
 	// Register turnstile callback
@@ -373,8 +373,8 @@
 	{#if captchaVisible}
 		<div class="popup-container" transition:fade={{ duration: 150 }}>
 			<div class="container captcha-container" transition:scale>
-				<h2 class="captchaHeader">Captcha</h2>
-				<div id="captchaContainer">
+				<h2 class="captcha-header">Captcha</h2>
+				<div id="captcha-container">
 					<!-- Captcha will be loaded here -->
 				</div>
 			</div>
@@ -416,7 +416,7 @@
 						</div>
 					{/if}
 					<button
-						class="standardButton action-button"
+						class="standard-button action-button"
 						onclick={() => {
 							playSound("basic_button");
 							triggerAction();
@@ -439,7 +439,7 @@
 			<div class="container" transition:slide={{ axis: "y", duration: 150 }}>
 				<div transition:blur={{ duration: 150 }} class="signup-options-container">
 					<button
-						class="standardButton white signup-button largeButton"
+						class="standard-button white signup-button large-button"
 						onclick={() => {
 							playSound("basic_button");
 							startGoogleLogin();
@@ -453,7 +453,7 @@
 						Continue with Google
 					</button>
 					<button
-						class="standardButton white signup-button largeButton"
+						class="standard-button white signup-button large-button"
 						onclick={() => {
 							playSound("basic_button");
 							formType = "signup";
@@ -498,7 +498,7 @@
 		overflow: hidden;
 	}
 
-	.captchaHeader {
+	.captcha-header {
 		margin-bottom: var(--layout-margin);
 	}
 

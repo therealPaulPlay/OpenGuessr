@@ -22,21 +22,21 @@
 >
 	<h1 class="popup-title">{$title}</h1>
 	<div>
-		<p class="slightBottomMargin">{$description}</p>
+		<p class="slight-bottom-margin">{$description}</p>
 		{#if $errorCode}
-			<p class="errorCode">{$errorCode}</p>
+			<p class="error-code">{$errorCode}</p>
 		{/if}
 	</div>
 	{#if !$hideDisableOption}
-		<div id="errorPopupDisable">
+		<div id="error-popup-disable">
 			<p>Never show again</p>
-			<input type="checkbox" id="hideErrors" bind:checked={$hideErrors} />
+			<input type="checkbox" id="hide-errors" bind:checked={$hideErrors} />
 		</div>
 	{/if}
 </Popup>
 
 <style>
-	.errorCode {
+	.error-code {
 		opacity: 70%;
 		background-color: rgba(255, 255, 255, 0.1);
 		padding: var(--box-margin);
@@ -49,7 +49,7 @@
 		box-shadow: var(--box-shadow);
 	}
 
-	#errorPopupDisable {
+	#error-popup-disable {
 		display: flex;
 		vertical-align: center;
 		margin-top: var(--layout-margin);
@@ -57,7 +57,7 @@
 		opacity: 60%;
 	}
 
-	.slightBottomMargin {
+	.slight-bottom-margin {
 		margin-bottom: var(--layout-margin);
 	}
 </style>

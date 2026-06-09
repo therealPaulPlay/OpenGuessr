@@ -17,14 +17,14 @@
 </script>
 
 {#if $timeReducedOverlay}
-	<div transition:blur={{ duration: 500 }} class="duelsTimeReduced" style:scale={playTransition ? "1.03" : "1"}>
+	<div transition:blur={{ duration: 500 }} class="duels-time-reduced" style:scale={playTransition ? "1.03" : "1"}>
 		<h1>A player has guessed</h1>
-		<p id="duelsOverlaySubtitle">Time reduced to max. 15s</p>
+		<p id="duels-overlay-subtitle">Time reduced to max. 15s</p>
 	</div>
 {/if}
 
 <style>
-	.duelsTimeReduced {
+	.duels-time-reduced {
 		position: fixed;
 		inset: 0 0 0 0;
 		z-index: 1;
@@ -39,7 +39,7 @@
 		user-select: none;
 	}
 
-	.duelsTimeReduced h1 {
+	.duels-time-reduced h1 {
 		font-size: 75px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: 20px;
@@ -48,7 +48,7 @@
 		margin-bottom: var(--box-margin);
 	}
 
-	.duelsTimeReduced p {
+	.duels-time-reduced p {
 		font-size: 35px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: 20px;
@@ -57,11 +57,11 @@
 	}
 
 	@media all and (max-width: 1200px) {
-		.duelsTimeReduced h1 {
+		.duels-time-reduced h1 {
 			font-size: 45px;
 		}
 
-		.duelsTimeReduced p {
+		.duels-time-reduced p {
 			font-size: 25px;
 		}
 	}

@@ -7,8 +7,8 @@
 </script>
 
 {#if $showFullscreenCelebration}
-	<div class="resultTakeover" transition:blur={{ duration: 250 }}>
-		<h1 class="animateTitle">
+	<div class="result-takeover" transition:blur={{ duration: 250 }}>
+		<h1 class="animate-title">
 			<span class="digit">{$fullscreenCelebrationNumber}</span>
 			<span class="k">K</span>
 		</h1>
@@ -16,7 +16,7 @@
 {/if}
 
 <style>
-	.resultTakeover {
+	.result-takeover {
 		position: fixed;
 		inset: 0;
 		z-index: 17;
@@ -26,19 +26,19 @@
 		align-items: center;
 	}
 
-	.animateTitle {
+	.animate-title {
 		color: white;
 		filter: drop-shadow(0 0 50px rgba(0, 0, 0, 0.5));
 		display: flex;
 		gap: var(--box-margin);
 	}
 
-	.animateTitle span {
+	.animate-title span {
 		font-size: 200px;
 	}
 
 	@media (max-width: 1200px) {
-		.animateTitle span {
+		.animate-title span {
 			font-size: 175px;
 		}
 	}

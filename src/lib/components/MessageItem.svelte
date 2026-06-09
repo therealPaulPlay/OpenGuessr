@@ -125,7 +125,7 @@
 						{#if !isOwn}
 							<button
 								bind:this={reactButtonElement}
-								class="standardButton white action-button"
+								class="standard-button white action-button"
 								{@attach tooltip({ text: "React" })}
 								onclick={() => {
 									playSound("basic_button");
@@ -137,7 +137,7 @@
 						{/if}
 						{#if isOwn}
 							<button
-								class="standardButton white action-button"
+								class="standard-button white action-button"
 								{@attach tooltip({ text: "Delete" })}
 								onclick={() => {
 									playSound("basic_button");
@@ -162,7 +162,7 @@
 							</button>
 						{/if}
 						<button
-							class="standardButton white action-button"
+							class="standard-button white action-button"
 							{@attach tooltip({ text: "Reply" })}
 							onclick={() => {
 								playSound("basic_button");

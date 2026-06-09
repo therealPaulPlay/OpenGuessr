@@ -9,13 +9,13 @@
 </script>
 
 {#if $timerCountdownOverlay}
-	<div transition:fade={{ duration: 150 }} id="timerCountdown" style:display={page.url.pathname !== "/" ? "none" : ""}>
+	<div transition:fade={{ duration: 150 }} id="timer-countdown" style:display={page.url.pathname !== "/" ? "none" : ""}>
 		<h1>{$timerCountdownOverlayTitle}</h1>
 	</div>
 {/if}
 
 <style>
-	#timerCountdown {
+	#timer-countdown {
 		position: fixed;
 		inset: 0;
 		z-index: 3;
@@ -29,14 +29,14 @@
 		user-select: none;
 	}
 
-	#timerCountdown h1 {
+	#timer-countdown h1 {
 		font-size: 75px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: var(--layout-margin);
 	}
 
 	@media all and (max-width: 1200px) {
-		#timerCountdown h1 {
+		#timer-countdown h1 {
 			font-size: 45px;
 		}
 	}
