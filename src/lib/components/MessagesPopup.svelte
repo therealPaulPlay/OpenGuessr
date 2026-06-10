@@ -452,7 +452,7 @@
 	.layout {
 		display: flex;
 		gap: var(--layout-margin);
-		height: min(600px, calc(100dvh - 250px));
+		height: min(650px, calc(100dvh - 250px));
 	}
 
 	.messages-pane {
