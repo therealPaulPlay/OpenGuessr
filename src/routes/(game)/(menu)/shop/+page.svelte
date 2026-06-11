@@ -15,7 +15,7 @@
 		specialOfferPrice,
 		specialOfferRarity,
 	} from "$lib/stores/context-specific/shopStore";
-	import { CirclePlus, Clock } from "@lucide/svelte";
+	import { CircleArrowUp, CirclePlus, Clock } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { blur, scale, slide } from "svelte/transition";
 	import {
@@ -106,20 +106,34 @@
 			tier: 1,
 			price: 3.99,
 			tagline: "The basics",
-			benefits: ["Supporter pin", "Highlighted name", "10% XP boost", "Tier 1 badge"],
+			benefits: [
+				{ text: "Supporter pin", isUpgrade: false },
+				{ text: "Highlighted name", isUpgrade: false },
+				{ text: "10% XP boost", isUpgrade: false },
+				{ text: "Tier 1 badge", isUpgrade: false },
+			],
 		},
 		{
 			tier: 2,
 			price: 6.99,
 			tagline: "The value pick",
-			benefits: ["Includes tier 1", "Ad-free", "15% XP boost", "Tier 2 badge"],
+			benefits: [
+				{ text: "Includes tier 1", isUpgrade: false },
+				{ text: "Ad-free", isUpgrade: false },
+				{ text: "15% XP boost", isUpgrade: true },
+				{ text: "Tier 2 badge", isUpgrade: true },
+			],
 			highlighted: true,
 		},
 		{
 			tier: 3,
 			price: 19.99,
 			tagline: "The full package",
-			benefits: ["Includes tier 2", "25% XP boost", "Tier 3 badge"],
+			benefits: [
+				{ text: "Includes tier 2", isUpgrade: false },
+				{ text: "25% XP boost", isUpgrade: true },
+				{ text: "Tier 3 badge", isUpgrade: true },
+			],
 		},
 	];
 
@@ -322,7 +336,14 @@
 				<ul class="tier-benefits">
 					<li style="opacity: 50%;">{tagline}</li>
 					{#each benefits as benefit}
-						<li><CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />{benefit}</li>
+						<li>
+							{#if !benefit.isUpgrade}
+								<CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />
+							{:else}
+								<CircleArrowUp size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />
+							{/if}
+							{benefit.text}
+						</li>
 					{/each}
 				</ul>
 				<button
