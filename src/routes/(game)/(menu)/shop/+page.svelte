@@ -319,14 +319,13 @@
 		{#each supporterTiers as { tier, tagline, benefits, highlighted }}
 			<div class="tier-box">
 				<div class="tier-number-badge"><p>Tier {tier}</p></div>
-				<ul class="tier-benefits-scroll of-top of-bottom">
+				<ul class="tier-benefits">
 					<li style="opacity: 50%;">{tagline}</li>
 					{#each benefits as benefit}
 						<li><CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />{benefit}</li>
 					{/each}
 				</ul>
 				<button
-					id="tier-price-{tier}"
 					class="standard-button tier-buy-button"
 					class:white={!highlighted}
 					class:tier-buy-button-highlighted={highlighted}
@@ -680,9 +679,7 @@
 		background-color: var(--legendary-color);
 	}
 
-	.tier-benefits-scroll {
-		overflow-y: auto;
-		scrollbar-width: none;
+	.tier-benefits {
 		list-style-type: none;
 		padding-left: var(--content-margin);
 		padding-right: var(--layout-margin);
@@ -750,7 +747,6 @@
 		right: 0;
 		top: 0;
 		padding-inline: var(--box-margin);
-		height: 35px;
 		text-align: center;
 		line-height: 35px;
 		border-bottom-left-radius: var(--box-margin);
