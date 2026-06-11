@@ -119,7 +119,7 @@
 			tier: 3,
 			price: 19.99,
 			tagline: "The full package",
-			benefits: ["Includes tier 1 & 2", "25% XP boost", "Tier 3 badge"],
+			benefits: ["Includes tier 2", "25% XP boost", "Tier 3 badge"],
 		},
 	];
 
