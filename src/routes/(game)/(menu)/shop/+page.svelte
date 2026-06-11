@@ -830,9 +830,13 @@
 		display: flex;
 		flex-wrap: wrap;
 		align-items: center;
-		gap: var(--layout-margin);
+		gap: var(--box-margin);
 		box-sizing: border-box;
 		width: 100%;
+		padding: var(--box-margin);
+		border-radius: var(--layout-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
 	}
 
 	@keyframes supporterGlintButton {
