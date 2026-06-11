@@ -253,8 +253,7 @@
 				</button>
 			{/if}
 			{#if $profileData?.supporterLevel >= 1}
-				<div id="supporter-tag">
-					<p id="supporter-tag-text">Tier {$profileData?.supporterLevel}</p>
+				<div id="supporter-tag" {@attach tooltip({ text: "Tier " + $profileData?.supporterLevel })}>
 					<img id="supporter-icon" alt="supporter tag" src="/img/supporter_icon.png" />
 				</div>
 			{/if}
@@ -528,9 +527,7 @@
 		justify-content: center;
 		align-items: center;
 		height: 40px;
-		gap: var(--content-margin);
-		padding-inline: var(--box-margin);
-		text-wrap: nowrap;
+		padding-inline: var(--panel-margin);
 	}
 
 	.profile-pin-area {

@@ -79,7 +79,7 @@
 	{/if}
 </div>
 
-<Drawer title="Recently finished" bind:isOpen={showOlder}>
+<Drawer title="Recently finished" bind:isOpen={showOlder} hasBottomLayoutMargin={false}>
 	<div class="tournament-scroll-container of-top of-bottom">
 		{#each $tournamentData?.filter((i) => i.status === "finished") as tournament (tournament.id)}
 			{@render tournamentItem(tournament)}

@@ -24,10 +24,11 @@ As part of OpenGuessr's design system, margin, padding and border radius should 
 | --box-margin | 10px | Boxes (containers) |
 | --layout-margin | 15px | Layout gaps, box border-radius |
 | --layout-margin + --box-margin | 25px | Popups, sheets |
+| --layout-spacer | 50px | To separate sections in pages |
 
 **Boxes** always use `--box-margin` for padding and gap. Their border-radius is `--layout-margin` when placed in a page, or `--box-margin` when nested inside a popup or another box.
 
-**Layouts** use `--layout-margin` as the gap between boxes (and padding, when applicable).
+**Layouts** use `--layout-margin` as the gap between boxes (and padding, when applicable). To separate larger sections in pages with a margin (or gap), use `--layout-spacer`.
 
 **Panels** use `--panel-margin` for padding and gap. The gap or margin between panels is usually `--box-margin`.
 

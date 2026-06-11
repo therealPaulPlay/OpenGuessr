@@ -149,7 +149,7 @@
 
 	#text {
 		margin-inline: auto;
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 		max-width: 1000px;
 	}
 

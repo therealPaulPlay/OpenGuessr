@@ -173,7 +173,7 @@
 			</div>
 		</div>
 	</div>
-	<Drawer title="Divisions" class="divisions-container">
+	<Drawer title="Divisions" class="divisions-container" hasBottomLayoutMargin={false}>
 		<DuelDivisionDisplay />
 	</Drawer>
 	<div class="header-container header-margin-top">
@@ -349,7 +349,7 @@
 	}
 
 	.header-margin-top {
-		margin-top: 50px;
+		margin-top: var(--layout-spacer);
 	}
 
 	.friend-item {
@@ -527,7 +527,7 @@
 		box-shadow: var(--box-shadow);
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 		position: relative;
 		scrollbar-width: none;
 	}

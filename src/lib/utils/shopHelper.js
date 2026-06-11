@@ -71,9 +71,15 @@ export async function handleShopYouTubePin() {
     }
 }
 
-export async function shopPurchaseTokenTier(tier) {
-    const productId = "token_tier_" + tier;
+export function purchaseTokenTier(tier) {
+    return handleStripePurchase("token_tier_" + tier);
+}
 
+export function purchaseSupporterTier(tier) {
+    return handleStripePurchase("supporter_tier_" + tier);
+}
+
+async function handleStripePurchase(productId) {
     try {
         const id = localStorage.getItem("id");
 
@@ -94,7 +100,7 @@ export async function shopPurchaseTokenTier(tier) {
 
     } catch (error) {
         console.error("Error occured during checkout:", error);
-        errorPopup("Checkout error", "An error occured trying to create a checkout session.", error, false, false);
+        errorPopup("Checkout error", "An error occured trying to create a checkout session.", error);
     }
 }
 
