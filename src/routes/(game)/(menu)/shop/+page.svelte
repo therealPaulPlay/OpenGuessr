@@ -1,6 +1,13 @@
 <script>
 	import PinHolder from "$lib/components/PinHolder.svelte";
-	import { accountDataLoaded, isAuthenticated, purchasedPins, tokens } from "$lib/stores/accountStore";
+	import {
+		accountDataLoaded,
+		isAuthenticated,
+		purchasedPins,
+		supportedAmount,
+		supporterLevel,
+		tokens,
+	} from "$lib/stores/accountStore";
 	import {
 		freeDailyTokensClaimed,
 		specialOfferLoadingText,
@@ -8,7 +15,7 @@
 		specialOfferPrice,
 		specialOfferRarity,
 	} from "$lib/stores/context-specific/shopStore";
-	import { Clock } from "@lucide/svelte";
+	import { CirclePlus, Clock } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { blur, scale, slide } from "svelte/transition";
 	import {
@@ -16,7 +23,8 @@
 		handleShopFreeTokens,
 		handleShopPurchase,
 		handleShopYouTubePin,
-		shopPurchaseTokenTier,
+		purchaseSupporterTier,
+		purchaseTokenTier,
 	} from "$lib/utils/shopHelper";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tweened } from "svelte/motion";
@@ -59,7 +67,7 @@
 		},
 	};
 
-	// Token offerings
+	// Token offers
 	const tokenOffers = {
 		free: {
 			imageSrc: "/img/token_stack_free.png",
@@ -91,6 +99,36 @@
 			tier: 3,
 		},
 	};
+
+	// Supporter tiers
+	const supporterTiers = [
+		{
+			tier: 1,
+			price: 3.99,
+			tagline: "The basics",
+			benefits: ["Supporter pin", "Highlighted name", "10% XP boost", "Tier 1 badge"],
+		},
+		{
+			tier: 2,
+			price: 6.99,
+			tagline: "The value pick",
+			benefits: ["Includes tier 1", "Ad-free", "15% XP boost", "Tier 2 badge"],
+			highlighted: true,
+		},
+		{
+			tier: 3,
+			price: 19.99,
+			tagline: "The full package",
+			benefits: ["Includes tier 2", "25% XP boost", "Tier 3 badge"],
+		},
+	];
+
+	function getSupporterTierPrice(tier) {
+		if ($supporterLevel >= tier) return "Unlocked";
+		const basePrice = supporterTiers[tier - 1].price;
+		if ($supporterLevel == 0) return "$ " + basePrice;
+		return "$ " + Math.round(Math.max(basePrice - $supportedAmount - 0.01, 0) * 100) / 100;
+	}
 
 	onMount(fetchSpecialOffer);
 
@@ -200,7 +238,7 @@
 			<div class="token-shop">
 				{#each Object.values(tokenOffers) as offer}
 					<div class="shop-offer">
-						<div class="shop-offer-info">
+						<div class="token-offer-title">
 							<h2>{offer.amount?.toLocaleString()} Tokens</h2>
 						</div>
 						<div class="shop-offer-graphic">
@@ -214,7 +252,7 @@
 								if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
 								if (!$isAuthenticated) return signupPrompt();
 								if (offer.price == 0) handleShopFreeTokens();
-								else shopPurchaseTokenTier(offer.tier);
+								else purchaseTokenTier(offer.tier);
 							}}
 						>
 							{offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free"))}
@@ -261,6 +299,49 @@
 					unlocked={$purchasedPins?.includes(index)}
 				/>
 			{/each}
+		{/each}
+	</div>
+	<!-- Supporter tiers -->
+	<div class="header-container">
+		<h1 class="header" id="supporter">Supporter</h1>
+	</div>
+	<div class="supporter-info-box">
+		<div class="supporter-info-content">
+			<h2>Limitless benefits</h2>
+			<p style:opacity="0.5">Purchase a supporter tier once and enjoy perks that never expire.</p>
+			<p style:opacity="0.35" style:margin-top="auto">
+				<a href="/legal" target="_blank">Terms and conditions</a> apply.
+			</p>
+		</div>
+		<img alt="supporter perks" class="supporter-perks-image" src="/img/supporter_graphic.png" />
+	</div>
+	<div class="supporter-tier-container">
+		{#each supporterTiers as { tier, tagline, benefits, highlighted }}
+			<div class="tier-box">
+				<div class="tier-number-badge"><p>Tier {tier}</p></div>
+				<ul class="tier-benefits">
+					<li style="opacity: 50%;">{tagline}</li>
+					{#each benefits as benefit}
+						<li><CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />{benefit}</li>
+					{/each}
+				</ul>
+				<button
+					class="standard-button tier-buy-button"
+					class:white={!highlighted}
+					class:tier-buy-button-highlighted={highlighted}
+					disabled={$supporterLevel >= tier}
+					onclick={() => {
+						playSound("basic_button");
+						if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
+						if (!$isAuthenticated) return signupPrompt();
+						purchaseSupporterTier(tier);
+					}}
+					>{getSupporterTierPrice(tier)}
+					{#if $supporterLevel >= 1 && $supporterLevel < tier}
+						<span class="discount-badge">Upgrade</span>
+					{/if}</button
+				>
+			</div>
 		{/each}
 	</div>
 </div>
@@ -430,14 +511,14 @@
 		scale: 1.05;
 	}
 
-	.shop-offer-info {
+	.token-offer-title {
 		max-width: calc(100% - var(--box-margin) * 2);
 		position: absolute;
 		top: var(--layout-margin);
 		mask-image: linear-gradient(to bottom, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0.6) 100%);
 	}
 
-	.shop-offer-info h2 {
+	.token-offer-title h2 {
 		text-wrap: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
@@ -470,7 +551,7 @@
 		align-items: center;
 		flex-wrap: wrap;
 		width: 100%;
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 		gap: var(--layout-margin);
 	}
 
@@ -485,6 +566,7 @@
 		background-color: var(--box-color);
 		gap: var(--box-margin);
 		box-sizing: border-box;
+		margin-bottom: var(--layout-spacer);
 	}
 
 	.special-offer-button {
@@ -595,5 +677,178 @@
 
 	.legendary-color {
 		background-color: var(--legendary-color);
+	}
+
+	.tier-benefits {
+		list-style-type: none;
+		padding-left: var(--content-margin);
+		padding-right: var(--layout-margin);
+	}
+
+	.discount-badge {
+		font-size: 18px;
+		padding: 2px;
+		opacity: 0.9;
+		padding-left: var(--content-margin);
+		padding-right: 9px;
+		font-style: italic;
+		border-radius: 3px;
+		margin-left: 2px;
+		background-color: rgba(0, 0, 0, 0.1);
+		vertical-align: 2px;
+	}
+
+	.tier-buy-button {
+		width: 100%;
+		margin-top: auto;
+		position: relative;
+		overflow: hidden;
+		flex-shrink: 0;
+	}
+
+	.tier-buy-button-highlighted::before {
+		animation: supporterGlintButton 5s 2s infinite;
+		background: white;
+		filter: blur(var(--elevated-blur));
+		content: "";
+		opacity: 0;
+		position: absolute;
+		width: 40px;
+		z-index: 1;
+		height: 200%;
+		top: -20px;
+		left: 0;
+		transform: rotate(30deg);
+		pointer-events: none;
+	}
+
+	.tier-buy-button-highlighted {
+		background-color: var(--supporter-green);
+	}
+
+	.tier-box {
+		background-color: var(--box-color);
+		border-radius: var(--box-margin);
+		box-shadow: var(--box-shadow);
+		display: flex;
+		flex-direction: column;
+		padding: var(--box-margin);
+		overflow: hidden;
+		gap: var(--box-margin);
+		flex-grow: 1;
+		position: relative;
+		height: 265px;
+		flex-basis: 0;
+		min-width: 250px;
+	}
+
+	.tier-number-badge {
+		position: absolute;
+		right: 0;
+		top: 0;
+		padding-inline: var(--box-margin);
+		text-align: center;
+		line-height: 35px;
+		border-bottom-left-radius: var(--box-margin);
+		border-top-right-radius: var(--box-margin);
+		box-shadow: var(--bulb-shadow);
+		background-color: var(--box-color);
+	}
+
+	.tier-number-badge p {
+		opacity: 0.75;
+		font-size: 20px;
+	}
+
+	.supporter-info-content {
+		padding: var(--content-margin);
+		margin-right: auto;
+		max-width: 275px;
+		display: flex;
+		flex-direction: column;
+		gap: var(--layout-margin);
+		height: 100%;
+		box-sizing: border-box;
+	}
+
+	.supporter-perks-image {
+		height: 145%;
+		width: 100%;
+		margin-right: calc((var(--layout-margin) + var(--box-margin)) * -1);
+		object-fit: contain;
+		max-width: 400px;
+		mask-image: linear-gradient(
+			transparent 0%,
+			transparent 10%,
+			black 30%,
+			black 60%,
+			transparent 90%,
+			transparent 100%
+		);
+		box-sizing: border-box;
+		padding: var(--content-margin);
+		user-select: none;
+	}
+
+	.supporter-info-box {
+		display: flex;
+		align-items: center;
+		gap: var(--box-margin);
+		box-sizing: border-box;
+		background: linear-gradient(to right, var(--box-color) 50%, var(--supporter-green-tint));
+		box-shadow: var(--box-shadow);
+		border-radius: var(--layout-margin);
+		padding: var(--box-margin);
+		width: 100%;
+		margin-bottom: var(--layout-margin);
+		height: 250px;
+		overflow: hidden;
+	}
+
+	.supporter-tier-container {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--layout-margin);
+		box-sizing: border-box;
+		width: 100%;
+	}
+
+	@keyframes supporterGlintButton {
+		0% {
+			opacity: 0.7;
+			margin-left: -50px;
+			visibility: visible;
+		}
+
+		20% {
+			opacity: 0.5;
+			margin-left: calc(100% + 50px);
+		}
+
+		100% {
+			opacity: 0.5;
+			margin-left: calc(100% + 50px);
+		}
+	}
+
+	@media (max-width: 1000px) {
+		.supporter-info-box {
+			flex-direction: column;
+			height: fit-content;
+			background: linear-gradient(to bottom, var(--box-color) 50%, var(--supporter-green-tint));
+		}
+
+		.supporter-perks-image {
+			margin-bottom: -120px;
+			margin-right: 0;
+			mask-image: linear-gradient(black, black 45%, transparent 73%);
+		}
+	}
+
+	@media (max-width: 800px) {
+		.supporter-perks-image {
+			margin-bottom: -80px;
+		}
 	}
 </style>

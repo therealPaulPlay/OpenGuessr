@@ -652,11 +652,11 @@
 	</div>
 {/snippet}
 
-<div class="competition-element">
+<div class="competition-container">
 	<div class="header-container">
 		<h2 class="header">Official</h2>
 	</div>
-	<div id="daily-competition-area" class="competition-area">
+	<div class="competition-area">
 		<!-- daily competitions will be inserted here -->
 		{#if dailyCompetitionData?.length > 0}
 			{#each dailyCompetitionData as entry}
@@ -678,7 +678,7 @@
 						true,
 					)}
 				{:else}
-					<Drawer title="Yesterday's results" class="fade-in-item">
+					<Drawer title="Yesterday's results" class="fade-in-item" hasBottomLayoutMargin={false}>
 						{@render competitionItem(
 							entry.id,
 							entry.name,
@@ -703,7 +703,7 @@
 		{/if}
 	</div>
 </div>
-<div class="competition-element">
+<div class="competition-container">
 	<div class="header-container">
 		<h2 class="header">Active</h2>
 	</div>
@@ -793,7 +793,7 @@
 		})}
 	{/if}
 </div>
-<div class="competition-element expired-box">
+<div class="competition-container expired-box">
 	<div class="header-container">
 		<h2 class="header">Recently ended</h2>
 	</div>
@@ -846,14 +846,14 @@
 		background-color: var(--box-color);
 	}
 
-	.competition-element {
+	.competition-container {
 		transition:
 			background-color 250ms ease,
 			filter 250ms ease;
 		width: 100%;
 		overflow: hidden;
 		height: auto;
-		margin-bottom: calc(2 * var(--layout-margin));
+		margin-bottom: var(--layout-spacer);
 	}
 
 	.competition-button-box {
@@ -875,6 +875,7 @@
 	#competition-area,
 	#expired-competition-area {
 		min-height: 200px;
+		margin-bottom: var(--layout-margin);
 	}
 
 	.competition-description {
@@ -1005,7 +1006,6 @@
 		flex-direction: row;
 		flex-wrap: wrap;
 		gap: var(--layout-margin);
-		margin-bottom: var(--layout-margin);
 		justify-content: flex-start;
 	}
 

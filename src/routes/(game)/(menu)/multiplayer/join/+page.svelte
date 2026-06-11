@@ -160,7 +160,7 @@
 		max-width: 400px;
 		width: 100%;
 		max-height: 275px;
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 		overflow-y: auto;
 		scrollbar-width: none;
 	}

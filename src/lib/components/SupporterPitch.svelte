@@ -1,8 +1,9 @@
 <!-- A green bar saying "Purchase a Supporter Tier" etc. -->
 
 <script>
+	import { goto } from "$app/navigation";
 	import { supporterLevel } from "$lib/stores/accountStore";
-	import { supporterPopupVisible } from "$lib/stores/context-specific/supporterPopupStore";
+	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
 </script>
 
@@ -16,7 +17,8 @@
 		class="standard-button"
 		onclick={() => {
 			playSound("basic_button");
-			supporterPopupVisible.set(true);
+			$profilePopup = false;
+			goto("/shop#supporter");
 		}}>View benefits</button
 	>
 </div>

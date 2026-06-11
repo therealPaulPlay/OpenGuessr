@@ -499,7 +499,7 @@
 		background-color: var(--box-color);
 		box-shadow: var(--bulb-shadow);
 		overflow: hidden;
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 		position: relative;
 	}
 
@@ -619,7 +619,7 @@
 		display: flex;
 		gap: var(--layout-margin);
 		margin-top: var(--box-margin);
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 	}
 
 	.name-container {

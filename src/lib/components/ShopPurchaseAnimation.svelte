@@ -4,7 +4,25 @@
 		shopAnimationImages,
 		shopPurchaseAnimationTitle,
 	} from "$lib/stores/context-specific/shopStore";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";
+
+	// Thank you window after purchase (shows when users return after successful checkout)
+	onMount(() => {
+		let urlParams = new URLSearchParams(window.location.search);
+
+		try {
+			const stripeSessionFinished = urlParams.get("payment-completed");
+			if (stripeSessionFinished) {
+				showConfirmPopup(
+					"Thank you!",
+					"Thank you for your purchase. People like you keep the game free and open for everyone.",
+				);
+				history.replaceState({}, document.title, window.location.pathname); // Reset query in the address bar
+			}
+		} catch {}
+	});
 </script>
 
 <!-- Purchase animation -->

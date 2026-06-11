@@ -465,13 +465,13 @@
 		<div class="header-container no-bottom-padding">
 			<h2 class="header">Featured</h2>
 		</div>
-		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style:height="335px"></div>
+		<div class="map-container playlight-widget-carousel" style:margin-bottom="0" style:height="350px"></div>
 	{/if}
 	<!-- Featured Maps -->
 	<div class="header-container large-header-margin">
 		<h2 class="header">Spotlight</h2>
 	</div>
-	<div class="map-container">
+	<div class="map-container" style:margin-bottom="var(--layout-spacer)">
 		{#if loadedSpotlightMaps.length}
 			{#each loadedSpotlightMaps as map}
 				{@render communityMapItem(map)}
@@ -482,7 +482,7 @@
 	</div>
 	<!-- All Community Maps -->
 	<div class="header-container">
-		<h2 class="header medium-header-margin">Community</h2>
+		<h2 class="header">Community</h2>
 	</div>
 	<div class="categories-search-area">
 		<div class="categories-bar">
@@ -575,10 +575,6 @@
 
 	.large-header-margin {
 		margin-top: calc(var(--layout-margin) + var(--box-margin));
-	}
-
-	.medium-header-margin {
-		margin-top: 20px;
 	}
 
 	@keyframes fadeIn {
@@ -691,10 +687,6 @@
 		max-height: 300px;
 	}
 
-	.smaller-bottom-margin {
-		margin-bottom: var(--box-margin);
-	}
-
 	.expand-button {
 		padding-inline: calc(var(--layout-margin) * 2);
 	}
@@ -752,7 +744,7 @@
 	}
 
 	#community-maps {
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 	}
 
 	.nothing-found {

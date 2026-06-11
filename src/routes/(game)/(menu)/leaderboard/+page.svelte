@@ -425,7 +425,7 @@
 		justify-content: center;
 		align-items: center;
 		width: 100%;
-		margin-bottom: 80px;
+		margin-bottom: var(--layout-spacer);
 		max-width: 850px;
 		margin-inline: auto;
 	}

@@ -29,12 +29,10 @@
     --legendary-color: rgba(214, 175, 0, 0.75);
 
     /* Margins or Gaps */
+    --layout-spacer: 50px;
     --layout-margin: 15px;
-    /* Used for elements inside boxes (containers with box-color, box-shadow etc.) */
     --box-margin: 10px;
-    /* Used inside floating UI panels (elements not inside of popups or pages, e.g. chat) */
     --panel-margin: 8px;
-    /* Used for controls etc., everything placed inside boxes */
     --content-margin: 5px;
 
     /* Box shadows */
