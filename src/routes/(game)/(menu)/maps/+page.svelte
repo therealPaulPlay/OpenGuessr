@@ -197,6 +197,7 @@
 	}
 
 	function handleCategoryButtonClick(index) {
+		playSound("item_select");
 		selectedCategoryIndex = index;
 		const category = categoriesArray[index]?.toLowerCase();
 		if (category == "all") loadCommunityMaps(0);
