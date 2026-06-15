@@ -119,7 +119,7 @@
 	<h2>More</h2>
 	<p>
 		Learn more about OpenGuessr on the
-		<a href="https://paulplay.studio/openguessr" target="_blank">Studio website</a>.
+		<a href="https://paulplay.studio/openguessr" target="_blank">studio website</a>.
 	</p>
 </div>
 
