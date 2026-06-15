@@ -15,7 +15,7 @@
 	<img alt="hero illustration with OpenGuessr mascot" src="/img/about_hero.jpg" class="hero-image" />
 	<h1>About</h1>
 	<p>
-		If you're looking to learn all about OpenGuessr, you've come to the right place! This page is for dedicated players
+		If you're looking to read up on OpenGuessr, you've come to the right place! This page is for players
 		curious about the project as well as journalists looking for a quick fact-sheet.
 	</p>
 	<br />
