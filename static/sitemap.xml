@@ -6,43 +6,30 @@
 
   <url>
     <loc>https://openguessr.com</loc>
-    <lastmod>2024-05-15T18:14:17+00:00</lastmod>
-    <priority>1.00</priority>
   </url>
   <url>
     <loc>https://openguessr.com/legal</loc>
-    <lastmod>2024-05-15T18:14:17+00:00</lastmod>
-    <priority>0.80</priority>
+  </url>
+  <url>
+    <loc>https://openguessr.com/about</loc>
   </url>
   <url>
     <loc>https://openguessr.com/leaderboard</loc>
-    <lastmod>2024-05-15T18:14:17+00:00</lastmod>
-    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://openguessr.com/signup</loc>
-    <lastmod>2024-05-15T18:14:17+00:00</lastmod>
-    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://openguessr.com/maps</loc>
-    <lastmod>2024-05-15T18:14:17+00:00</lastmod>
-    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://openguessr.com/competitions</loc>
-    <lastmod>2024-06-15T18:14:17+00:00</lastmod>
-    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://openguessr.com/multiplayer</loc>
-    <lastmod>2024-12-15T18:14:17+00:00</lastmod>
-    <priority>0.80</priority>
   </url>
   <url>
     <loc>https://openguessr.com/shop</loc>
-    <lastmod>2024-12-15T18:14:17+00:00</lastmod>
-    <priority>0.80</priority>
   </url>
 
 

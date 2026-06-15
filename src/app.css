@@ -329,7 +329,7 @@ input[type="checkbox"]:focus {
 }
 
 li {
-    margin-bottom: var(--layout-margin);
+    margin-bottom: var(--box-margin);
 }
 
 li:last-child {

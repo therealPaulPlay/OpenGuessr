@@ -81,7 +81,7 @@ Certain Lucide icons are thinner than the rest, for example, the `X`. For those,
 
 - Body text and headings should be written as plain sentences, without random capitalization (for example, “This is a nice location” rather than “This is a nice Location”).
 - Official map names, competition names, tournament names, and the names of other user-creatable game elements should capitalize each word (for example, “Urban Competition”). However, when users create their own content, they are free to choose their own capitalization and formatting.
-- Using a colon ":" for lists or labels is not recommended.
+- Using a colon ":" in or for UI labels is not recommended.
 
 ### Overfade
 
