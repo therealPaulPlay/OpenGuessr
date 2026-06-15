@@ -15,8 +15,8 @@
 	<img alt="hero illustration with OpenGuessr mascot" src="/img/about_hero.jpg" class="hero-image" />
 	<h1>About</h1>
 	<p>
-		If you're looking to read up on OpenGuessr, you've come to the right place! This page is for players
-		curious about the project as well as journalists looking for a quick fact-sheet.
+		If you're looking to read up on OpenGuessr, you've come to the right place! This page is for players curious about
+		the project as well as journalists looking for a quick fact-sheet.
 	</p>
 	<br />
 	<br />
@@ -37,7 +37,7 @@
 	<h2>OpenGuessr as a GeoGuessr alternative</h2>
 	<p>
 		OpenGuessr has a similar core gameplay loop to GeoGuessr and provides much of the same functionality, hence why it
-		is commonly referred to as an alternative. Both games feature multiplayer lobbies (no account required in
+		is commonly recommended as an alternative. Both games feature multiplayer lobbies (no account required in
 		OpenGuessr!), ranked duels, tens of thousands of maps, leaderboards, a daily competition, tournaments, social
 		features as well as sophisticated customization.
 	</p>
@@ -64,9 +64,9 @@
 	</p>
 	<br />
 	<p>
-		Additionally, there should be as little friction as possible for players, hence why, without clicking any buttons,
-		loading up the page immediately puts you in a round. No pop-ups or other annoyances, with an optional tutorial
-		integrated into the core interface.
+		Additionally, there should be as little friction as possible for players, hence why loading up the page immediately
+		puts you into the geography-guessing action. No pop-ups or other annoyances, with an optional tutorial integrated
+		into the core interface.
 	</p>
 	<br />
 	<p>
