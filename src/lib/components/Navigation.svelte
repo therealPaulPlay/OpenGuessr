@@ -251,7 +251,7 @@
 					class="list-button"
 					onclick={() => {
 						navigationListEnlarged = false;
-						window.open("https://paulplay.studio/openguessr", "_blank").focus();
+						goto("/about");
 					}}
 				>
 					About <PencilRuler size={20} strokeWidth={2.25} />

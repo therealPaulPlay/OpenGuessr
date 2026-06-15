@@ -758,7 +758,7 @@
 		gap: var(--box-margin);
 		flex-grow: 1;
 		position: relative;
-		height: 265px;
+		height: 250px;
 		flex-basis: 0;
 		min-width: 250px;
 	}
