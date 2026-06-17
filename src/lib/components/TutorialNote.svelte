@@ -9,10 +9,12 @@
 	import { backIn, backOut } from "svelte/easing";
 
 	let show = $state(false);
-	let mapWasHoveredOnce = $state(false);
+	let fastIn = $state(false);
+	let fastOut = $derived($mapHovered || $countryGuessr);
 
 	$effect(() => {
-		if ($mapHovered) mapWasHoveredOnce = true;
+		if ($mapHovered) fastIn = true;
+		if ($countryGuessr) fastIn = true;
 	});
 
 	// Check for tutorial state & show note if applicable
@@ -37,13 +39,20 @@
 			alt="welcome mascot"
 			src="/img/tutorial/tutorial_welcome.png"
 			class="welcome-image"
-			in:fly={{ y: 15, delay: mapWasHoveredOnce ? 250 : 750, easing: backOut }}
-			out:fly={{ y: 15, duration: $mapHovered ? 150 : undefined, easing: $mapHovered ? undefined : backIn }}
+			in:fly={{ y: 15, delay: fastIn ? 250 : 750, easing: backOut }}
+			out:fly={{
+				y: 15,
+				duration: fastOut ? 150 : undefined,
+				easing: fastOut ? undefined : backIn,
+			}}
 		/>
 		<div
 			class="bar-menu tutorial-note"
-			in:slide={{ delay: mapWasHoveredOnce ? 250 : 750, easing: backOut }}
-			out:slide={{ duration: $mapHovered ? 150 : undefined, easing: $mapHovered ? undefined : backIn }}
+			in:slide={{ delay: fastIn ? 250 : 750, easing: backOut }}
+			out:slide={{
+				duration: fastOut ? 150 : undefined,
+				easing: fastOut ? undefined : backIn,
+			}}
 		>
 			<div class="left-side of-left of-right">
 				<p>New?<span style:opacity={0.75} style:margin-left="var(--content-margin);">Try the tutorial.</span></p>
