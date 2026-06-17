@@ -2,7 +2,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { Play, X } from "@lucide/svelte";
 	import { leaveTutorial, startTutorial } from "./TutorialOverlay.svelte";
-	import { singleplayer } from "$lib/stores/modeStore";
+	import { countryGuessr, singleplayer } from "$lib/stores/modeStore";
 	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { fly, slide } from "svelte/transition";
 	import { mapHovered } from "$lib/stores/context-specific/mapStore";
@@ -31,7 +31,7 @@
 	});
 </script>
 
-{#if show && $singleplayer && !$mapHovered}
+{#if show && $singleplayer && !$mapHovered && !$countryGuessr}
 	<div class="note-wrapper">
 		<img
 			alt="welcome mascot"
