@@ -4,15 +4,16 @@ export const defaultMap = readable("World");
 
 export const tutorialMap = readable("Tutorial");
 
-export const basicMaps = readable([
+export const baseMaps = readable([
     "World",
     "Capital Cities",
     "Famous Places"
 ]);
 
-export const specialModes = readable([
+export const specialMaps = readable([
     "Country Guessr",
-    "Image Guessr"
+    "Image Guessr",
+    "Meta Guessr"
 ]);
 
 export const continentMaps = readable([

@@ -4,7 +4,25 @@
 		shopAnimationImages,
 		shopPurchaseAnimationTitle,
 	} from "$lib/stores/context-specific/shopStore";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { onMount } from "svelte";
 	import { blur } from "svelte/transition";
+
+	// Thank you window after purchase (shows when users return after successful checkout)
+	onMount(() => {
+		let urlParams = new URLSearchParams(window.location.search);
+
+		try {
+			const stripeSessionFinished = urlParams.get("payment-completed");
+			if (stripeSessionFinished) {
+				showConfirmPopup(
+					"Thank you!",
+					"Thank you for your purchase. People like you keep the game free and open for everyone.",
+				);
+				history.replaceState({}, document.title, window.location.pathname); // Reset query in the address bar
+			}
+		} catch {}
+	});
 </script>
 
 <!-- Purchase animation -->
@@ -17,11 +35,11 @@
 		onclick={() => ($shopPurchaseAnimation = false)}
 		role="alert"
 	>
-		<h1 class="purchaseAnimationTitle">{$shopPurchaseAnimationTitle || "Default"}</h1>
-		<div class="animationItemContainer" transition:blur={{ duration: 250 }}>
+		<h1 class="purchase-animation-title">{$shopPurchaseAnimationTitle || "Default"}</h1>
+		<div class="animation-item-container" transition:blur={{ duration: 250 }}>
 			{#each $shopAnimationImages as src}
-				<div class="animationItemBox">
-					<img alt="purchased item" {src} class="animationItemImage" />
+				<div class="animation-item-box">
+					<img alt="purchased item" {src} class="animation-item-image" />
 				</div>
 			{/each}
 		</div>
@@ -58,7 +76,7 @@
 		transform-origin: center;
 	}
 
-	.animationItemContainer {
+	.animation-item-container {
 		display: flex;
 		gap: var(--layout-margin);
 		justify-content: center;
@@ -67,7 +85,7 @@
 		margin-inline: var(--layout-margin);
 	}
 
-	.animationItemBox {
+	.animation-item-box {
 		backdrop-filter: blur(var(--normal-blur));
 		padding: var(--layout-margin);
 		background-color: var(--box-color);
@@ -82,12 +100,12 @@
 			background-color 250ms ease;
 	}
 
-	.animationItemBox:hover {
+	.animation-item-box:hover {
 		scale: 1.05;
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
-	.animationItemImage {
+	.animation-item-image {
 		width: 50px;
 		height: 50px;
 	}
@@ -101,7 +119,7 @@
 		}
 	}
 
-	.purchaseAnimationTitle {
+	.purchase-animation-title {
 		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
 		z-index: 1;
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));

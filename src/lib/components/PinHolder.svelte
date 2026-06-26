@@ -27,13 +27,13 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div
-	class="pinHolder"
+	class="pin-holder"
 	role="button"
 	tabindex={0}
 	bind:this={pinHolderElement}
 	style:scale={shop ? "1" : ""}
-	class:biggerSize={shop}
-	class:selectedPin={$selectedPinIndex == pinId && !shop}
+	class:bigger-size={shop}
+	class:selected-pin={$selectedPinIndex == pinId && !shop}
 	class:disabled
 	onpointerenter={(e) => {
 		if (e.pointerType !== "touch") isHovered = true;
@@ -52,33 +52,33 @@
 	}}
 >
 	{#if !unlocked && !shop}
-		<div id="pinLock0" class="pinLock">
-			<p class="pinLockText">{pinLockText}</p>
+		<div id="pin-lock-0" class="pin-lock">
+			<p class="pin-lock-text">{pinLockText}</p>
 		</div>
 	{/if}
 	{#if rarity && !isHovered}
 		<div
 			transition:slide={{ duration: 250 }}
-			class="rarityDisplay"
-			class:commonColor={rarity == "common"}
-			class:rareColor={rarity == "rare"}
-			class:epicColor={rarity == "epic"}
-			class:legendaryColor={rarity == "legendary"}
+			class="rarity-display"
+			class:common-color={rarity == "common"}
+			class:rare-color={rarity == "rare"}
+			class:epic-color={rarity == "epic"}
+			class:legendary-color={rarity == "legendary"}
 		>
 			<p>{rarity}</p>
 		</div>
 	{/if}
-	<div class="pinFlex">
+	<div class="pin-flex">
 		<img
-			class="pinSelectIcon"
-			class:smallSelectIcon={shop && isHovered}
+			class="pin-select-icon"
+			class:small-select-icon={shop && isHovered}
 			src={"/img/pins/player_pin" + pinId + ".png"}
 			alt="pin icon"
 		/>
 		{#if shop && isHovered}
-			<div class="shopButtonBox" transition:slide={{ axis: "y", duration: 250 }}>
+			<div class="shop-button-box" transition:slide={{ axis: "y", duration: 250 }}>
 				<button
-					class="standardButton white centerButton"
+					class="standard-button white center-button"
 					disabled={unlocked}
 					onclick={() => {
 						playSound("basic_button");
@@ -86,7 +86,7 @@
 					}}
 				>
 					{#if !unlocked}
-						<img class="tokenIcon" alt="token" src="/img/token_icon_white.png" />
+						<img class="token-icon" alt="token" src="/img/token_icon_white.png" />
 						{price}
 					{:else}
 						Owned <Check
@@ -102,7 +102,7 @@
 </div>
 
 <style>
-	.pinHolder {
+	.pin-holder {
 		position: relative;
 		box-sizing: border-box;
 		min-height: 80px;
@@ -122,16 +122,16 @@
 			filter 250ms ease;
 	}
 
-	.pinHolder:hover {
+	.pin-holder:hover {
 		scale: 0.97;
 	}
 
-	.biggerSize {
+	.bigger-size {
 		min-width: 120px;
 		min-height: 100px;
 	}
 
-	.rarityDisplay {
+	.rarity-display {
 		position: absolute;
 		border-top-right-radius: var(--content-margin);
 		border-bottom-left-radius: var(--content-margin);
@@ -142,7 +142,7 @@
 		box-shadow: var(--bulb-shadow);
 	}
 
-	.tokenIcon {
+	.token-icon {
 		width: 25px;
 		height: 25px;
 		margin-right: 3px;
@@ -150,29 +150,29 @@
 		margin-left: -2px;
 	}
 
-	.commonColor {
+	.common-color {
 		background-color: var(--common-color);
 	}
 
-	.rareColor {
+	.rare-color {
 		background-color: var(--rare-color);
 	}
 
-	.epicColor {
+	.epic-color {
 		background-color: var(--epic-color);
 	}
 
-	.legendaryColor {
+	.legendary-color {
 		background-color: var(--legendary-color);
 	}
 
-	.rarityDisplay p {
+	.rarity-display p {
 		font-size: 18px;
 		font-style: italic;
 		margin-top: -3px;
 	}
 
-	.shopButtonBox {
+	.shop-button-box {
 		position: absolute;
 		bottom: 0;
 		width: 100%;
@@ -186,21 +186,21 @@
 		opacity: 0.5;
 	}
 
-	.centerButton {
+	.center-button {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		width: 100%;
 	}
 
-	.pinFlex {
+	.pin-flex {
 		display: flex;
 		flex-wrap: wrap;
 		flex-direction: column;
 		align-items: center;
 	}
 
-	.pinLock {
+	.pin-lock {
 		border-radius: var(--content-margin);
 		background-color: rgba(4, 8, 15, 0.25);
 		width: 100%;
@@ -213,7 +213,7 @@
 		text-align: center;
 	}
 
-	.pinLockText {
+	.pin-lock-text {
 		font-size: 20px;
 		margin: 2px;
 		color: white;
@@ -223,7 +223,7 @@
 		text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.5);
 	}
 
-	.pinSelectIcon {
+	.pin-select-icon {
 		height: 40px;
 		width: 40px;
 		z-index: 1;
@@ -234,13 +234,13 @@
 			margin 250ms ease;
 	}
 
-	.smallSelectIcon {
+	.small-select-icon {
 		height: 30px;
 		width: 30px;
 		margin-bottom: 45px;
 	}
 
-	.selectedPin {
+	.selected-pin {
 		filter: brightness(1.2);
 		background-color: rgba(255, 255, 255, 0.25);
 	}

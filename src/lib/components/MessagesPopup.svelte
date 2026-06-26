@@ -392,7 +392,7 @@
 									: replyTo.message}"
 							</p>
 							<button
-								class="standardButton white reply-close"
+								class="standard-button dark reply-close"
 								onclick={() => {
 									playSound("basic_button");
 									replyTo = null;
@@ -427,7 +427,7 @@
 							}}
 						/>
 						<button
-							class="standardButton white"
+							class="standard-button white"
 							{@attach tooltip({ text: "Send message" })}
 							disabled={!inputValue.trim()}
 							onclick={() => {
@@ -452,7 +452,7 @@
 	.layout {
 		display: flex;
 		gap: var(--layout-margin);
-		height: min(600px, calc(100dvh - 250px));
+		height: min(650px, calc(100dvh - 250px));
 	}
 
 	.messages-pane {

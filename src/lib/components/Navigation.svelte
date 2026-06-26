@@ -1,6 +1,6 @@
 <script>
 	import { goto } from "$app/navigation";
-	import { isAuthenticated, supporterLevel, username } from "$lib/stores/accountStore";
+	import { isAuthenticated, username } from "$lib/stores/accountStore";
 	import { singleplayer } from "$lib/stores/modeStore";
 	import { bugspotPopup, navigationMenu, settingsPopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -64,9 +64,9 @@
 		}}
 	>
 		<div class="navigation-menu">
-			<div class="navigation-box barMenu" in:scale={{ delay: 0 }}>
+			<div class="navigation-box bar-menu" in:scale={{ delay: 0 }}>
 				<button
-					class="standardButton white navigation-button navigation-button-large largeButton"
+					class="standard-button white navigation-button navigation-button-large large-button"
 					disabled={!$singleplayer}
 					onclick={() => {
 						goto("/multiplayer");
@@ -76,7 +76,7 @@
 					<img class="navigation-icon" src="/img/multiplayer_icon.png" alt="multiplayer menu" />
 				</button>
 				<button
-					class="standardButton white navigation-button largeButton"
+					class="standard-button white navigation-button large-button"
 					disabled={!$singleplayer}
 					onclick={() => {
 						goto("/competitions");
@@ -87,7 +87,7 @@
 					<img class="navigation-icon" src="/img/competitions_icon.png" alt="Competitions" />
 				</button>
 				<button
-					class="standardButton white navigation-button largeButton"
+					class="standard-button white navigation-button large-button"
 					disabled={!$singleplayer}
 					onclick={() => {
 						playSound("basic_button");
@@ -97,9 +97,9 @@
 					Leaderboard <img class="navigation-icon" src="/img/leaderboards_icon.png" alt="Leaderboard for OpenGuessr" />
 				</button>
 			</div>
-			<div class="navigation-box barMenu" in:scale={{ delay: 50 }}>
+			<div class="navigation-box bar-menu" in:scale={{ delay: 50 }}>
 				<button
-					class="standardButton white navigation-button largeButton"
+					class="standard-button white navigation-button large-button"
 					disabled={!$singleplayer}
 					onclick={() => {
 						goto("/maps");
@@ -110,7 +110,7 @@
 					<img class="navigation-icon" src="/img/maps_icon.png" alt="Maps" />
 				</button>
 				<button
-					class="standardButton white navigation-button navigation-button-small largeButton"
+					class="standard-button white navigation-button navigation-button-small large-button"
 					disabled={!$singleplayer}
 					{@attach tooltip({ text: "Education" })}
 					onclick={() => {
@@ -122,13 +122,11 @@
 				</button>
 			</div>
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<div class="navigation-box barMenu" in:scale={{ delay: 100 }}>
+			<div class="navigation-box bar-menu" in:scale={{ delay: 100 }}>
 				<!-- svelte-ignore a11y_click_events_have_key_events -->
 				{#if $isAuthenticated}
 					<div
-						class="navigation-button standardButton white largeButton account-name-button"
-						class:notSignedIn={!$isAuthenticated}
-						class:profileInfoSupporter={$supporterLevel >= 1}
+						class="navigation-button standard-button white large-button account-name-button"
 						onclick={() => {
 							showProfile(localStorage.getItem("id"));
 							playSound("basic_button");
@@ -143,7 +141,7 @@
 					</div>
 				{:else}
 					<button
-						class="standardButton navigation-button largeButton"
+						class="standard-button navigation-button large-button"
 						onclick={() => {
 							playSound("basic_button");
 							signupPrompt();
@@ -151,7 +149,7 @@
 					>
 				{/if}
 				<button
-					class="standardButton white navigation-button navigation-button-small largeButton"
+					class="standard-button white navigation-button navigation-button-small large-button"
 					disabled={!$singleplayer}
 					{@attach tooltip({ text: "Shop" })}
 					onclick={() => {
@@ -162,15 +160,15 @@
 					<img class="navigation-icon" src="/img/shop_icon.png" alt="Shop" />
 				</button>
 				<button
-					class="standardButton white navigation-button navigation-button-small largeButton"
-					id="settingsButtonMobile"
+					class="standard-button white navigation-button navigation-button-small large-button"
+					id="settings-button-mobile"
 					{@attach tooltip({ text: "Settings" })}
 					onclick={() => {
 						playSound("basic_button");
 						settingsPopup.set(true);
 					}}
 				>
-					<img src="/img/settings_icon.png" alt="Settings" class="navigation-icon" id="settingsIcon" />
+					<img src="/img/settings_icon.png" alt="Settings" class="navigation-icon" id="settings-icon" />
 				</button>
 			</div>
 		</div>
@@ -184,7 +182,7 @@
 		{/if}
 		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div
-			class="navigation-list barMenu"
+			class="navigation-list bar-menu"
 			class:hovered={navigationListEnlarged}
 			onpointerenter={(e) => {
 				if (e.pointerType !== "touch") navigationListEnlarged = true;
@@ -228,7 +226,7 @@
 					}}
 				>
 					Discord
-					<img src="/img/discord.png" alt="Discord Logo" class="socialIcon bottomBarIcon" />
+					<img src="/img/discord.png" alt="Discord Logo" class="social-icon" />
 				</button>
 				<button
 					class="list-button"
@@ -238,7 +236,7 @@
 					}}
 				>
 					Reddit
-					<img src="/img/reddit.png" alt="Reddit Logo" class="socialIcon bottomBarIcon" />
+					<img src="/img/reddit.png" alt="Reddit Logo" class="social-icon" />
 				</button>
 				<button
 					class="list-button"
@@ -253,7 +251,7 @@
 					class="list-button"
 					onclick={() => {
 						navigationListEnlarged = false;
-						window.open("https://paulplay.studio/openguessr", "_blank").focus();
+						goto("/about");
 					}}
 				>
 					About <PencilRuler size={20} strokeWidth={2.25} />
@@ -273,6 +271,11 @@
 		display: block;
 		background-color: var(--dark-background);
 		backdrop-filter: blur(var(--weak-blur));
+	}
+
+	.social-icon {
+		width: 20px;
+		height: auto;
 	}
 
 	.navigation-menu {

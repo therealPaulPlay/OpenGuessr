@@ -3,7 +3,8 @@ import {
     timerCountdownOverlayTitle,
     singleplayerTimer,
 } from "$lib/stores/context-specific/timerCountdownOverlayStore";
-import { singleplayer, singleplayerTimeout, isSingleplayerNMPZ } from "$lib/stores/modeStore";
+import { singleplayer } from "$lib/stores/modeStore";
+import { singleplayerTimeout, singleplayerNMPZ } from "$lib/stores/context-specific/singleplayerOptionsStore";
 import { setRestriction } from "$lib/utils/setRestriction";
 import { get } from "svelte/store";
 import { startTimer } from "$lib/utils/timer";
@@ -60,12 +61,12 @@ export function resetApplySingleplayerOptions() {
 
         // Load & Set singleplayer restriction
         if (!hasRestoredSavedNMPZstate) {
-            isSingleplayerNMPZ.set(localStorage.getItem("singleplayerNMPZ")
+            singleplayerNMPZ.set(localStorage.getItem("singleplayerNMPZ")
                 ? Boolean(localStorage.getItem("singleplayerNMPZ"))
                 : false);
             hasRestoredSavedNMPZstate = true;
         }
-        (get(isSingleplayerNMPZ)) ? setRestriction("nmpz") : setRestriction();
+        (get(singleplayerNMPZ)) ? setRestriction("nmpz") : setRestriction();
     }
 }
 

@@ -1,7 +1,7 @@
-<div class="supporterSpan">Supporter</div>
+<div class="supporter-span">Supporter</div>
 
 <style>
-	.supporterSpan {
+	.supporter-span {
 		border-radius: var(--content-margin);
 		background: var(--supporter-green);
 		padding-inline: var(--content-margin);
@@ -13,7 +13,7 @@
 		display: inline-flex;
 	}
 
-	.supporterSpan::before {
+	.supporter-span::before {
 		animation: 4s supporterGlint 2s infinite;
 		background: white;
 		filter: blur(var(--normal-blur));

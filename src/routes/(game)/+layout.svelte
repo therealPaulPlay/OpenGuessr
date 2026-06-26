@@ -18,7 +18,6 @@
 	import MapHolder from "$lib/components/MapHolder.svelte";
 	import MobileMapToggles from "$lib/components/MobileMapToggles.svelte";
 	import Map from "$lib/components/Map.svelte";
-	import SupporterPopup from "$lib/components/SupporterPopup.svelte";
 	import ConfirmPopup from "$lib/components/ConfirmPopup.svelte";
 	import BottomBar from "$lib/components/BottomBar.svelte";
 	import PanoramaIframe from "$lib/components/PanoramaIframe.svelte";
@@ -120,7 +119,6 @@
 <BadgePopup />
 <PinPopup />
 <FlagPickerPopup />
-<SupporterPopup />
 <FriendBrowserPopup />
 <DivisionMatchHistoryPopup />
 <MatchOverviewPopup />

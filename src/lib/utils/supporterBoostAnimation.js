@@ -7,7 +7,7 @@ export async function supporterXpBoostAnimation(factor) {
     if (!get(supporterBoost) || !get(supporterBoostText)) return;
 
     get(supporterBoost).style.opacity = "0";
-    get(supporterBoostText).classList.remove("supporterBoostTextMove");
+    get(supporterBoostText).classList.remove("supporter-boost-text-move");
     clearTimeout(supporterBoostTimeout);
 
     await new Promise(resolve => {
@@ -20,14 +20,14 @@ export async function supporterXpBoostAnimation(factor) {
     factor = Math.round(factor * 100);
     factor += "%";
 
-    get(supporterBoostText).textContent = factor + " Experience Boost";
+    get(supporterBoostText).textContent = factor + " Supporter boost";
 
     get(supporterBoost).style.opacity = "1";
-    get(supporterBoostText).classList.add("supporterBoostTextMove");
+    get(supporterBoostText).classList.add("supporter-boost-text-move");
 
     supporterBoostTimeout = setTimeout(() => {
         if (!get(supporterBoost) || !get(supporterBoostText)) return;
         get(supporterBoost).style.opacity = "0";
-        get(supporterBoostText).classList.remove("supporterBoostTextMove");
+        get(supporterBoostText).classList.remove("supporter-boost-text-move");
     }, 2000);
 }

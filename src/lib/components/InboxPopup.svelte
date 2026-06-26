@@ -32,15 +32,15 @@
 
 <Popup z={960} slim={true} bind:open={$inboxPopup}>
 	<div class="popup-title">
-		<h1 id="inboxPopupHeader">Inbox</h1>
+		<h1>Inbox</h1>
 	</div>
-	<div class="containerBox">
-		<div class="containerBoxScroll of-top of-bottom">
+	<div class="container-box">
+		<div class="container-box-scroll of-top of-bottom">
 			{#if $friendRequestInboxContent}
 				{#each $friendRequestInboxContent as entry}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<div
-						class="inboxItem"
+						class="inbox-item"
 						role="menu"
 						tabindex="0"
 						onclick={() => {
@@ -48,9 +48,9 @@
 						}}
 					>
 						<p>{entry.user_name}</p>
-						<div class="inboxItemButtons">
+						<div class="inbox-item-buttons">
 							<button
-								class="standardButton white"
+								class="standard-button white"
 								onclick={(e) => {
 									e.stopPropagation();
 									playSound("basic_button");
@@ -60,7 +60,7 @@
 								<Check size={18} strokeWidth={3} style="margin-bottom: -1px;" />
 							</button>
 							<button
-								class="standardButton white"
+								class="standard-button white"
 								onclick={(e) => {
 									e.stopPropagation();
 									playSound("basic_button");
@@ -73,14 +73,14 @@
 					</div>
 				{/each}
 			{:else}
-				<p class="noResultsText">{errorText}</p>
+				<p class="no-results-text">{errorText}</p>
 			{/if}
 		</div>
 	</div>
 </Popup>
 
 <style>
-	.inboxItem {
+	.inbox-item {
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--content-margin);
@@ -96,11 +96,11 @@
 		cursor: pointer;
 	}
 
-	.inboxItem:hover {
+	.inbox-item:hover {
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
-	.noResultsText {
+	.no-results-text {
 		opacity: 0.5;
 		font-size: 22px;
 		text-align: center;
@@ -111,7 +111,7 @@
 		transform: translate(-50%, -50%);
 	}
 
-	.containerBox {
+	.container-box {
 		position: relative;
 		box-shadow: var(--box-shadow);
 		width: 100%;
@@ -122,7 +122,7 @@
 		padding: var(--box-margin);
 	}
 
-	.containerBoxScroll {
+	.container-box-scroll {
 		max-height: min(500px, calc(100dvh - 300px));
 		min-height: 20dvh;
 		scrollbar-width: none;
@@ -134,13 +134,13 @@
 		gap: var(--box-margin);
 	}
 
-	.inboxItem p {
+	.inbox-item p {
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
-	.inboxItemButtons {
+	.inbox-item-buttons {
 		display: flex;
 		width: fit-content;
 		gap: var(--box-margin);

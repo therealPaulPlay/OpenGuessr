@@ -23,13 +23,13 @@ export function initializeAds() {
 
 export function registerGameplayAd() {
     getFuse().que.push(function () {
-        getFuse().registerZone("gameplayAd");
+        getFuse().registerZone("gameplay-ad");
     });
 }
 
 export function registerResultAds() {
     getFuse().que.push(function () {
-        getFuse().registerZone("resultAd");
-        getFuse().registerZone("mobileResultAd");
+        getFuse().registerZone("result-ad");
+        getFuse().registerZone("mobile-result-ad");
     });
 }

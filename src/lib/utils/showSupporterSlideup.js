@@ -1,14 +1,33 @@
-import { monthlySupportAmount, showSlideup } from "$lib/stores/context-specific/resultScreenSlideupStore";
+import { monthlySupportAmount } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { get } from "svelte/store";
-import { supporterWindowIfAuthenticated } from "./showSupporterPopup";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { supporterLevel } from "$lib/stores/accountStore";
+import { isAuthenticated, supporterLevel } from "$lib/stores/accountStore";
 import { showResultScreenSlideup } from "./resultScreenSlideup";
+import { goto } from "$app/navigation";
+import { signupPrompt } from "./signupPrompt";
+import { showConfirmPopup } from "./confirmPopup";
 
 export function supporterSlideupProbability() {
-    if (!get(showSlideup) && Math.random() < 0.05 && get(supporterLevel) == 0) {
+    if (Math.random() < 0.05 && get(supporterLevel) == 0) {
         getMonthlySupportedAmount();
-        showResultScreenSlideup("Enjoy playing?", "Please consider supporting to unlock awesome benefits, including ad-free!", "Support", supporterWindowIfAuthenticated);
+        showResultScreenSlideup("Enjoy playing?", "Please consider supporting to unlock awesome benefits, including ad-free!", "Support", () => {
+            if (get(isAuthenticated)) {
+                goto("/shop#supporter");
+                return true;
+            } else {
+                showConfirmPopup(
+                    "Account required",
+                    "A one-time payment requires an account so you can enjoy supporter perks on all your devices.",
+                    () => {
+                        signupPrompt();
+                    },
+                    null,
+                    null,
+                    "Sign up",
+                );
+                return false;
+            }
+        });
     }
 }
 

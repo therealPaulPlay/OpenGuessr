@@ -8,10 +8,10 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { changeMap } from "$lib/utils/changeMap.js";
 	import {
-		specialModes,
+		specialMaps,
 		continentMaps,
 		countryMaps,
-		basicMaps,
+		baseMaps,
 		defaultMap,
 	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -197,6 +197,7 @@
 	}
 
 	function handleCategoryButtonClick(index) {
+		playSound("item_select");
 		selectedCategoryIndex = index;
 		const category = categoriesArray[index]?.toLowerCase();
 		if (category == "all") loadCommunityMaps(0);
@@ -269,7 +270,7 @@
 			<p class="map-author">by {map.author || "Error"}</p>
 		</div>
 		<button
-			class="add-button standardButton white"
+			class="add-button standard-button white"
 			{@attach tooltip({ text: "Save map" })}
 			onclick={(e) => {
 				e.stopPropagation();
@@ -289,11 +290,11 @@
 
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <div class="main-container">
-	<div class="headerContainer">
+	<div class="header-container">
 		<h2 class="header">Base</h2>
 	</div>
 	<div class="map-container">
-		{#each $basicMaps as map}
+		{#each $baseMaps as map}
 			<div
 				class="map-item map-item-hover map-item-slim"
 				style:padding-right={map === $defaultMap ? "var(--box-margin)" : ""}
@@ -326,11 +327,11 @@
 		{/each}
 	</div>
 	<!-- Special game modes and OpenGuessr sites -->
-	<div class="headerContainer">
+	<div class="header-container">
 		<h2 class="header">Special</h2>
 	</div>
 	<div class="map-container">
-		{#each $specialModes as map}
+		{#each $specialMaps as map}
 			<div
 				class="map-item map-item-hover map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
@@ -358,22 +359,9 @@
 			<p class="map-name">Geo Quizzes</p>
 			<Chip text="Education" italic={true} red={true} mutedOpacity={false} />
 		</div>
-		<div
-			class="map-item map-item-hover map-item-link"
-			style:padding-right="var(--box-margin)"
-			role="button"
-			tabindex="0"
-			onclick={() => {
-				playSound("button_juicy");
-				window.open("https://geometas.com", "_blank").focus();
-			}}
-		>
-			<p class="map-name">Meta Quizzes</p>
-			<Chip text="Geometas" italic={true} red={true} mutedOpacity={false} />
-		</div>
 	</div>
 	<!-- Expandable country section -->
-	<div class="headerContainer">
+	<div class="header-container">
 		<h2 class="header">Countries</h2>
 	</div>
 	<div class="map-container map-container-expand" class:map-container-expand-fadeout={!countrySectionExpanded}>
@@ -393,19 +381,24 @@
 			</div>
 		{/each}
 	</div>
-	<div class="barMenu showAllButtonContainer" style:margin-top={countrySectionExpanded ? "" : "-35px"}>
+	<div class="bar-menu show-all-button-container" style:margin-top={countrySectionExpanded ? "" : "-35px"}>
 		<button
-			class="standardButton white expandButton largeButton"
+			class="standard-button white expand-button large-button"
 			onclick={() => {
 				playSound("floating_button");
 				countrySectionExpanded = !countrySectionExpanded;
 			}}
 			>{countrySectionExpanded ? "Show less" : "Show all"}
-			<img class="arrowExpand" class:arrowExpandRotate={countrySectionExpanded} alt="arrow" src="/img/arrow_icon.png" />
+			<img
+				class="arrow-expand"
+				class:arrow-expand-rotate={countrySectionExpanded}
+				alt="arrow"
+				src="/img/arrow_icon.png"
+			/>
 		</button>
 	</div>
 	<!-- Continents -->
-	<div class="headerContainer">
+	<div class="header-container">
 		<h2 class="header">Continents</h2>
 	</div>
 	<div class="map-container">
@@ -426,7 +419,7 @@
 		{/each}
 	</div>
 	<!-- Saved Community Maps -->
-	<div class="headerContainer">
+	<div class="header-container">
 		<h2 class="header">Saved</h2>
 	</div>
 	<div class="map-container">
@@ -457,37 +450,37 @@
 				</div>
 			{/each}
 		{:else}
-			<p class="nothingFound noSavedMaps">No saved community maps.</p>
+			<p class="nothing-found no-saved-maps">No saved community maps.</p>
 		{/if}
 	</div>
 	<!-- Playlight section -->
 	{#if !$crazyGames}
-		<div class="headerContainer no-bottom-padding">
+		<div class="header-container no-bottom-padding">
 			<h2 class="header">Featured</h2>
 		</div>
-		<div class="map-container playlight-widget-carousel smaller-bottom-margin" style:height="335px"></div>
+		<div class="map-container playlight-widget-carousel" style:margin-bottom="0" style:height="350px"></div>
 	{/if}
 	<!-- Featured Maps -->
-	<div class="headerContainer largeHeaderMargin">
+	<div class="header-container large-header-margin">
 		<h2 class="header">Spotlight</h2>
 	</div>
-	<div class="map-container">
+	<div class="map-container" style:margin-bottom="var(--layout-spacer)">
 		{#if loadedSpotlightMaps.length}
 			{#each loadedSpotlightMaps as map}
 				{@render communityMapItem(map)}
 			{/each}
 		{:else}
-			<p class="nothingFound">Loading...</p>
+			<p class="nothing-found">Loading...</p>
 		{/if}
 	</div>
 	<!-- All Community Maps -->
-	<div class="headerContainer">
-		<h2 class="header mediumHeaderMargin">Community</h2>
+	<div class="header-container">
+		<h2 class="header">Community</h2>
 	</div>
-	<div class="categoriesSearchArea">
-		<div class="categoriesBar">
+	<div class="categories-search-area">
+		<div class="categories-bar">
 			<button
-				class="standardButton white"
+				class="standard-button white"
 				onclick={() => {
 					playSound("basic_button");
 					if ($isAuthenticated) {
@@ -497,11 +490,11 @@
 					}
 				}}><Plus size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-right: 2px;" /> Create</button
 			>
-			<div class="categoriesBar of-left of-right">
+			<div class="categories-bar of-left of-right">
 				{#each categoriesArray as category, index}
 					{#if index !== 1 || $isAuthenticated}
 						<button
-							class="categoryButton standardButton"
+							class="category-button standard-button"
 							class:selected={selectedCategoryIndex == index}
 							onclick={() => handleCategoryButtonClick(index)}
 						>
@@ -514,9 +507,9 @@
 				{/each}
 			</div>
 		</div>
-		<search class="searchContainer">
+		<search class="search-container">
 			<input
-				id="mapSearch"
+				id="map-search"
 				placeholder="Search"
 				bind:value={searchValue}
 				onkeydown={(e) => {
@@ -527,8 +520,8 @@
 				}}
 			/>
 			<button
-				id="startSearch"
-				class="standardButton white"
+				id="start-search"
+				class="standard-button white"
 				onclick={() => {
 					playSound("basic_button");
 					startSearch();
@@ -545,7 +538,7 @@
 		{/each}
 		{#if showLoadMore}
 			<button
-				class="map-item load-more standardButton white"
+				class="map-item load-more standard-button white"
 				onclick={() => {
 					playSound("basic_button");
 					loadCommunityMaps(currentFetchIndex + 50, currentCategory, currentQuery, currentByUserId, null);
@@ -556,10 +549,10 @@
 			</button>
 		{/if}
 		{#if errorMessageShown}
-			<p class="nothingFound minimumCommunityLoadingHeight">{errorMessageText}</p>
+			<p class="nothing-found minimum-community-loading-height">{errorMessageText}</p>
 		{/if}
 		{#if showNothingFound}
-			<p class="nothingFound">No map matches the filter.</p>
+			<p class="nothing-found">No map matches the filter.</p>
 		{/if}
 	</div>
 </div>
@@ -573,12 +566,8 @@
 		max-width: 100%;
 	}
 
-	.largeHeaderMargin {
+	.large-header-margin {
 		margin-top: calc(var(--layout-margin) + var(--box-margin));
-	}
-
-	.mediumHeaderMargin {
-		margin-top: 20px;
 	}
 
 	@keyframes fadeIn {
@@ -691,15 +680,11 @@
 		max-height: 300px;
 	}
 
-	.smaller-bottom-margin {
-		margin-bottom: var(--box-margin);
-	}
-
-	.expandButton {
+	.expand-button {
 		padding-inline: calc(var(--layout-margin) * 2);
 	}
 
-	.showAllButtonContainer {
+	.show-all-button-container {
 		margin-bottom: var(--box-margin);
 		margin-inline: auto;
 		transition: margin 150ms ease;
@@ -710,7 +695,7 @@
 		box-shadow: var(--box-shadow);
 	}
 
-	.arrowExpand {
+	.arrow-expand {
 		rotate: 0deg;
 		transition: rotate 250ms ease;
 		width: 22px;
@@ -718,7 +703,7 @@
 		vertical-align: -3px;
 	}
 
-	.arrowExpandRotate {
+	.arrow-expand-rotate {
 		rotate: 180deg;
 	}
 
@@ -752,26 +737,26 @@
 	}
 
 	#community-maps {
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 	}
 
-	.nothingFound {
+	.nothing-found {
 		margin-bottom: 20px;
 		opacity: 0.5;
 		width: 100%;
 		text-align: center;
 	}
 
-	.minimumCommunityLoadingHeight {
+	.minimum-community-loading-height {
 		margin-bottom: 1000px;
 	}
 
-	.noSavedMaps {
+	.no-saved-maps {
 		text-align: start;
 		margin-left: var(--box-margin);
 	}
 
-	#mapSearch {
+	#map-search {
 		transition: background-color 250ms ease;
 		flex-grow: 1;
 		padding: var(--content-margin);
@@ -780,19 +765,19 @@
 		text-overflow: ellipsis;
 	}
 
-	.searchContainer {
+	.search-container {
 		display: flex;
 		flex-grow: 1;
 	}
 
-	#startSearch {
+	#start-search {
 		max-width: 50px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 	}
 
-	.categoriesBar {
+	.categories-bar {
 		overflow: hidden;
 		overflow-x: scroll;
 		display: flex;
@@ -804,7 +789,7 @@
 		min-width: 0;
 	}
 
-	.categoryButton {
+	.category-button {
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--bulb-shadow);
 		border: none;
@@ -812,7 +797,7 @@
 		height: 39px;
 	}
 
-	.categoryButton:hover {
+	.category-button:hover {
 		filter: none;
 		background-color: rgba(255, 255, 255, 0.2);
 	}
@@ -821,7 +806,7 @@
 		background-color: rgba(255, 255, 255, 0.3);
 	}
 
-	.categoriesSearchArea {
+	.categories-search-area {
 		display: flex;
 		justify-content: space-between;
 		box-shadow: var(--box-shadow);
@@ -848,7 +833,7 @@
 	}
 
 	@media (max-width: 1000px) {
-		.categoriesSearchArea {
+		.categories-search-area {
 			flex-wrap: wrap;
 		}
 	}

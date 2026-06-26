@@ -41,9 +41,9 @@
 
 {#if $chatVisible}
 	<div class="chat-holder">
-		<ChatTabSwitcher bind:isTeamChat inPanel={true} />
+		<ChatTabSwitcher {isTeamChat} onChange={(value) => (isTeamChat = value)} inPanel={true} />
 		<!-- svelte-ignore a11y_interactive_supports_focus -->
-		<div class="multiplayer-chat barMenu" style:height="{chatHeight}px" style:min-height="{CHAT_DEFAULT_HEIGHT}px" style:max-height="{CHAT_MAX_HEIGHT}px">
+		<div class="multiplayer-chat bar-menu" style:height="{chatHeight}px" style:min-height="{CHAT_DEFAULT_HEIGHT}px" style:max-height="{CHAT_MAX_HEIGHT}px">
 			<!-- svelte-ignore a11y_role_has_required_aria_props -->
 			<div
 				class="resize-handle"

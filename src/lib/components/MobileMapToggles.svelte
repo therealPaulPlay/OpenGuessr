@@ -11,9 +11,9 @@
 
 <div class="toggle-container">
 	{#if !$resultScreenEnabled && !$countryGuessr && $mapExpanded}
-		<div class="barMenu floatingMapCloseMenu" transition:blur={{ duration: 250 }}>
+		<div class="bar-menu floating-map-close-menu" transition:blur={{ duration: 250 }}>
 			<button
-				class="standardButton white floatingButton"
+				class="standard-button white floating-button"
 				aria-label="Toggle minimap"
 				bind:this={toggleMapButton}
 				onclick={() => {
@@ -24,9 +24,9 @@
 				<ArrowDown strokeWidth={2.25} size={22} />
 			</button>
 		</div>
-		<div class="resize-handle barMenu">
+		<div class="resize-handle bar-menu">
 			<button
-				class="standardButton white centerButton"
+				class="standard-button white center-button"
 				aria-label="Resize minimap"
 				onclick={() => {
 					playSound("basic_button");
@@ -49,13 +49,13 @@
 		margin-bottom: var(--box-margin);
 	}
 
-	.centerButton {
+	.center-button {
 		display: flex;
 		justify-content: center;
 		align-items: center;
 	}
 
-	.floatingMapCloseMenu {
+	.floating-map-close-menu {
 		display: none;
 		pointer-events: auto;
 		margin-left: auto;
@@ -67,14 +67,14 @@
 		width: 100%;
 	}
 
-	.floatingButton {
+	.floating-button {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 	}
 
 	@media (orientation: portrait) and (max-width: 800px) {
-		.floatingMapCloseMenu {
+		.floating-map-close-menu {
 			display: block;
 		}
 		.resize-handle {

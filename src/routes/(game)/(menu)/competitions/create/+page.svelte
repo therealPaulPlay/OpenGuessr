@@ -169,17 +169,17 @@
 		goto("/competitions");
 	}}
 >
-	<h1 class="textHeaderLeft">Competition created!</h1>
+	<h1 class="text-header-left">Competition created!</h1>
 	<p>
 		Thank you for creating a competition! Share these links with others and save them if your competition is private.
 	</p>
 	<div class="spacer"></div>
 	<div>
-		<p class="linkTitle">Enter link</p>
-		<div class="linkBox linkBoxMargin">
+		<p class="link-title">Enter link</p>
+		<div class="link-box link-box-margin">
 			<p>{enterLink || "https://example.com"}</p>
 			<button
-				class="standardButton white"
+				class="standard-button white"
 				onclick={() => {
 					playSound("basic_button");
 					navigator.clipboard
@@ -189,11 +189,11 @@
 				}}><Copy size="18" strokeWidth={2.5} /></button
 			>
 		</div>
-		<p class="linkTitle">Leaderboard link</p>
-		<div class="linkBox">
+		<p class="link-title">Leaderboard link</p>
+		<div class="link-box">
 			<p>{leaderboardLink || "https://example.com"}</p>
 			<button
-				class="standardButton white"
+				class="standard-button white"
 				onclick={() => {
 					playSound("basic_button");
 					navigator.clipboard
@@ -207,18 +207,18 @@
 </Popup>
 
 <div class="main-container">
-	<div class="contentArea">
-		<div class="formLayout">
+	<div class="content-area">
+		<div class="form-layout">
 			<!-- Left column: Settings -->
-			<div class="formColumn">
-				<div class="formSection">
-					<h3 class="sectionTitle">Details</h3>
-					<div class="fieldGroup">
-						<p class="fieldLabel">Name</p>
+			<div class="form-column">
+				<div class="form-section">
+					<h3 class="section-title">Details</h3>
+					<div class="field-group">
+						<p class="field-label">Name</p>
 						<input bind:value={competitionName} type="text" placeholder="My competition" maxlength="30" />
 					</div>
-					<div class="fieldGroup">
-						<p class="fieldLabel">Description</p>
+					<div class="field-group">
+						<p class="field-label">Description</p>
 						<input
 							bind:value={competitionDescription}
 							type="text"
@@ -229,8 +229,8 @@
 				</div>
 
 				<Drawer title="Rules" inPage={true} hasBottomLayoutMargin={false}>
-					<div class="locationInstructions">
-						<ul class="rulesList">
+					<div class="location-instructions">
+						<ul class="rules-list">
 							<li>Keep all details in English</li>
 							<li>Pick a descriptive competition name</li>
 							<li>Competitions will be deleted 7 days after they have ended</li>
@@ -241,32 +241,32 @@
 					</div>
 				</Drawer>
 
-				<div class="formSection">
-					<h3 class="sectionTitle">Settings</h3>
+				<div class="form-section">
+					<h3 class="section-title">Settings</h3>
 
-					<div class="fieldGroup">
-						<p class="fieldLabel">Round length (seconds)</p>
+					<div class="field-group">
+						<p class="field-label">Round length (seconds)</p>
 						<input bind:value={roundLength} type="text" placeholder="60" maxlength="30" />
 					</div>
-					<div class="fieldGroup">
-						<p class="fieldLabel">Duration (d, h, min)</p>
+					<div class="field-group">
+						<p class="field-label">Duration (d, h, min)</p>
 						<input bind:value={competitionDuration} type="text" placeholder="2d 6h" maxlength="30" />
 					</div>
-					<div class="settingsGrid">
-						<div class="fieldGroup">
-							<p class="fieldLabel">Visibility</p>
+					<div class="settings-grid">
+						<div class="field-group">
+							<p class="field-label">Visibility</p>
 							<button
-								class="standardButton white largeButton toggleButton"
+								class="standard-button white large-button toggle-button"
 								onclick={() => {
 									playSound("basic_button");
 									competitionPrivate = !competitionPrivate;
 								}}>{competitionPrivate ? "Private" : "Public"}</button
 							>
 						</div>
-						<div class="fieldGroup">
-							<p class="fieldLabel">Restriction</p>
+						<div class="field-group">
+							<p class="field-label">Restriction</p>
 							<button
-								class="standardButton white largeButton toggleButton"
+								class="standard-button white large-button toggle-button"
 								onclick={() => {
 									playSound("basic_button");
 									togglecompetitionRestriction();
@@ -278,11 +278,11 @@
 			</div>
 
 			<!-- Right column: Locations -->
-			<div class="formColumn locationsColumn">
-				<div class="formSection locationsSection">
-					<h3 class="sectionTitle sectionTitleMargin">Locations</h3>
-					<div class="locationInstructions">
-						<p class="instructionsTitle">Instructions</p>
+			<div class="form-column locations-column">
+				<div class="form-section locations-section">
+					<h3 class="section-title section-title-margin">Locations</h3>
+					<div class="location-instructions">
+						<p class="instructions-title">Instructions</p>
 						<ol>
 							<li>
 								Visit <a href="https://www.google.com/maps/" target="_blank">Google Maps</a> on a desktop computer
@@ -291,8 +291,8 @@
 							<li>Copy the URL from the address bar into the textbox</li>
 						</ol>
 					</div>
-					<p class="fieldLabel">Street View URLs (fixed order, max. 20)</p>
-					<div class="textAreaBox">
+					<p class="field-label">Street View URLs (fixed order, max. 20)</p>
+					<div class="text-area-box">
 						<textarea
 							bind:value={locationData}
 							class="of-top of-bottom"
@@ -304,9 +304,9 @@
 			</div>
 		</div>
 
-		<div class="submitArea barMenu">
+		<div class="submit-area bar-menu">
 			<button
-				class="standardButton largeButton"
+				class="standard-button large-button"
 				onclick={() => {
 					playSound("basic_button");
 					showConfirmPopup("Submit?", "Competitions cannot be edited or deleted.", () => {
@@ -326,7 +326,7 @@
 		min-height: calc(100dvh - 120px);
 	}
 
-	.contentArea {
+	.content-area {
 		display: flex;
 		flex-direction: column;
 		align-items: center;
@@ -336,33 +336,33 @@
 		margin-bottom: auto;
 	}
 
-	.linkTitle {
+	.link-title {
 		margin-bottom: var(--content-margin);
 	}
 
-	.sectionTitle {
+	.section-title {
 		margin-left: var(--content-margin);
 	}
 
-	.sectionTitleMargin {
+	.section-title-margin {
 		margin-bottom: var(--content-margin);
 	}
 
-	.formLayout {
+	.form-layout {
 		display: grid;
 		grid-template-columns: 3fr 4fr;
 		gap: var(--layout-margin);
 		width: 100%;
 	}
 
-	.formColumn {
+	.form-column {
 		display: flex;
 		flex-direction: column;
 		gap: var(--layout-margin);
 		min-width: 0;
 	}
 
-	.formSection {
+	.form-section {
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
@@ -372,33 +372,33 @@
 		gap: var(--box-margin);
 	}
 
-	.fieldGroup {
+	.field-group {
 		display: flex;
 		flex-direction: column;
 		gap: var(--content-margin);
 		min-width: 0;
 	}
 
-	.fieldLabel {
+	.field-label {
 		opacity: 0.75;
 		margin-top: var(--content-margin);
 		margin-left: var(--content-margin);
 		margin-bottom: 3px;
 	}
 
-	.fieldGroup input {
+	.field-group input {
 		padding: var(--box-margin);
 		padding-inline: var(--layout-margin);
 		border-radius: var(--box-margin);
 	}
 
-	.settingsGrid {
+	.settings-grid {
 		display: grid;
 		grid-template-columns: 1fr 1fr;
 		gap: var(--box-margin);
 	}
 
-	.toggleButton {
+	.toggle-button {
 		width: 100%;
 	}
 
@@ -406,13 +406,13 @@
 		margin-top: var(--content-margin);
 	}
 
-	.locationsSection {
+	.locations-section {
 		flex-grow: 1;
 		display: flex;
 		flex-direction: column;
 	}
 
-	.locationInstructions {
+	.location-instructions {
 		background-color: var(--box-color-dark);
 		border-radius: var(--box-margin);
 		padding: var(--box-margin);
@@ -420,11 +420,11 @@
 		box-shadow: var(--box-shadow);
 	}
 
-	.instructionsTitle {
+	.instructions-title {
 		margin-bottom: var(--box-margin);
 	}
 
-	.locationInstructions li {
+	.location-instructions li {
 		opacity: 0.75;
 	}
 
@@ -434,7 +434,7 @@
 		width: 100%;
 	}
 
-	.textAreaBox {
+	.text-area-box {
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--box-margin);
@@ -443,19 +443,19 @@
 		flex-grow: 1;
 	}
 
-	.submitArea {
+	.submit-area {
 		margin-top: var(--layout-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--layout-margin);
 	}
 
-	.submitArea button {
+	.submit-area button {
 		padding-inline: 30px;
 	}
 
 	/* Popup styles */
-	.textHeaderLeft {
+	.text-header-left {
 		margin-bottom: var(--layout-margin);
 	}
 
@@ -464,7 +464,7 @@
 		width: 100%;
 	}
 
-	.linkBox {
+	.link-box {
 		display: flex;
 		align-items: center;
 		gap: var(--box-margin);
@@ -474,7 +474,7 @@
 		box-shadow: var(--box-shadow);
 	}
 
-	.linkBox p {
+	.link-box p {
 		flex-grow: 1;
 		text-overflow: ellipsis;
 		overflow: hidden;
@@ -482,20 +482,20 @@
 		margin-inline: var(--content-margin);
 	}
 
-	.linkBoxMargin {
+	.link-box-margin {
 		margin-bottom: var(--box-margin);
 	}
 
 	@media (max-width: 1300px) {
-		.formLayout {
+		.form-layout {
 			grid-template-columns: 1fr;
 		}
 
-		.settingsGrid {
+		.settings-grid {
 			grid-template-columns: 1fr;
 		}
 
-		.locationsColumn {
+		.locations-column {
 			order: 1;
 		}
 	}

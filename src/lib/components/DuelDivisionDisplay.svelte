@@ -26,29 +26,29 @@
 	const circlePositions = [0, 25, 50, 75, 100];
 </script>
 
-<div class="progressContainer">
-	<div class="progressBarWrapper">
-		<div class="progressBar">
-			<div class="progressBarFill" style="width: {fillPercentage}%"></div>
+<div class="progress-container">
+	<div class="progress-bar-wrapper">
+		<div class="progress-bar">
+			<div class="progress-bar-fill" style="width: {fillPercentage}%"></div>
 		</div>
 
 		{#each divisions as division, index}
-			<div class="divisionMarker" style="left: {circlePositions[index]}%">
-				<div class="divisionCircle" class:activeDivision={4 - index === currentDivision}>
-					<span class="divisionText">{division}</span>
+			<div class="division-marker" style="left: {circlePositions[index]}%">
+				<div class="division-circle" class:active-division={4 - index === currentDivision}>
+					<span class="division-text">{division}</span>
 				</div>
 			</div>
 		{/each}
 
-		<div class="eloIndicator" style="left: {fillPercentage}%">
-			<div class="eloLine"></div>
-			<div class="eloValue">{Math.round($elo)?.toLocaleString()} Elo</div>
+		<div class="elo-indicator" style="left: {fillPercentage}%">
+			<div class="elo-line"></div>
+			<div class="elo-value">{Math.round($elo)?.toLocaleString()} Elo</div>
 		</div>
 	</div>
 </div>
 
 <style>
-	.progressContainer {
+	.progress-container {
 		position: relative;
 		width: calc(100% - 50px);
 		height: 120px;
@@ -58,14 +58,14 @@
 		box-shadow: var(--box-shadow);
 	}
 
-	.progressBarWrapper {
+	.progress-bar-wrapper {
 		position: relative;
 		width: calc(100% - 60px);
 		margin: 0 30px;
 		height: 100%;
 	}
 
-	.progressBar {
+	.progress-bar {
 		position: absolute;
 		top: 50%;
 		transform: translateY(-50%);
@@ -76,7 +76,7 @@
 		overflow: hidden;
 	}
 
-	.progressBarFill {
+	.progress-bar-fill {
 		height: 100%;
 		background: var(--brand-color);
 		box-shadow: var(--bulb-shadow);
@@ -84,13 +84,13 @@
 		transition: width 300ms ease;
 	}
 
-	.divisionMarker {
+	.division-marker {
 		position: absolute;
 		top: 50%;
 		transform: translate(-50%, -50%);
 	}
 
-	.divisionCircle {
+	.division-circle {
 		width: 45px;
 		height: 45px;
 		border-radius: 50%;
@@ -104,14 +104,14 @@
 		box-shadow: var(--bulb-shadow);
 	}
 
-	.divisionText {
+	.division-text {
 		color: white;
 		z-index: 1;
 		font-size: 22px;
 		position: relative;
 	}
 
-	.eloIndicator {
+	.elo-indicator {
 		position: absolute;
 		top: 50%;
 		transform: translateX(-50%);
@@ -123,7 +123,7 @@
 		transition: left 300ms ease;
 	}
 
-	.eloLine {
+	.elo-line {
 		width: 2px;
 		height: 14px;
 		background: var(--brand-color);
@@ -131,7 +131,7 @@
 		border-radius: var(--content-margin);
 	}
 
-	.eloValue {
+	.elo-value {
 		color: var(--brand-color);
 		box-shadow: var(--box-shadow);
 		font-size: 18px;
@@ -144,12 +144,12 @@
 		padding-inline: 2px;
 	}
 
-	.activeDivision {
+	.active-division {
 		background-color: rgb(160, 162, 166);
 	}
 
 	@media (max-width: 800px) {
-		.divisionCircle {
+		.division-circle {
 			width: 40px;
 			height: 40px;
 		}

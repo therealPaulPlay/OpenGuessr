@@ -1,6 +1,13 @@
 <script>
 	import PinHolder from "$lib/components/PinHolder.svelte";
-	import { accountDataLoaded, isAuthenticated, purchasedPins, tokens } from "$lib/stores/accountStore";
+	import {
+		accountDataLoaded,
+		isAuthenticated,
+		purchasedPins,
+		supportedAmount,
+		supporterLevel,
+		tokens,
+	} from "$lib/stores/accountStore";
 	import {
 		freeDailyTokensClaimed,
 		specialOfferLoadingText,
@@ -8,7 +15,7 @@
 		specialOfferPrice,
 		specialOfferRarity,
 	} from "$lib/stores/context-specific/shopStore";
-	import { Clock } from "@lucide/svelte";
+	import { CircleArrowUp, CirclePlus, Clock } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { blur, scale, slide } from "svelte/transition";
 	import {
@@ -16,7 +23,8 @@
 		handleShopFreeTokens,
 		handleShopPurchase,
 		handleShopYouTubePin,
-		shopPurchaseTokenTier,
+		purchaseSupporterTier,
+		purchaseTokenTier,
 	} from "$lib/utils/shopHelper";
 	import { playSound } from "$lib/utils/soundManager";
 	import { tweened } from "svelte/motion";
@@ -59,7 +67,7 @@
 		},
 	};
 
-	// Token offerings
+	// Token offers
 	const tokenOffers = {
 		free: {
 			imageSrc: "/img/token_stack_free.png",
@@ -91,6 +99,50 @@
 			tier: 3,
 		},
 	};
+
+	// Supporter tiers
+	const supporterTiers = [
+		{
+			tier: 1,
+			price: 3.99,
+			tagline: "The basics",
+			benefits: [
+				{ text: "Supporter pin", isUpgrade: false },
+				{ text: "Highlighted name", isUpgrade: false },
+				{ text: "10% more XP", isUpgrade: false },
+				{ text: "Tier 1 badge", isUpgrade: false },
+			],
+		},
+		{
+			tier: 2,
+			price: 6.99,
+			tagline: "The value pick",
+			benefits: [
+				{ text: "Includes tier 1", isUpgrade: false },
+				{ text: "Ad-free", isUpgrade: false },
+				{ text: "15% more XP", isUpgrade: true },
+				{ text: "Tier 2 badge", isUpgrade: true },
+			],
+			highlighted: true,
+		},
+		{
+			tier: 3,
+			price: 19.99,
+			tagline: "The full package",
+			benefits: [
+				{ text: "Includes tier 2", isUpgrade: false },
+				{ text: "25% more XP", isUpgrade: true },
+				{ text: "Tier 3 badge", isUpgrade: true },
+			],
+		},
+	];
+
+	function getSupporterTierPrice(tier) {
+		if ($supporterLevel >= tier) return "Unlocked";
+		const basePrice = supporterTiers[tier - 1].price;
+		if ($supporterLevel == 0) return "$ " + basePrice;
+		return "$ " + Math.round(Math.max(basePrice - $supportedAmount - 0.01, 0) * 100) / 100;
+	}
 
 	onMount(fetchSpecialOffer);
 
@@ -133,58 +185,58 @@
 </svelte:head>
 
 <div class="main-container">
-	<div class="headerContainer">
+	<div class="header-container">
 		<h1 class="header">Shop</h1>
 	</div>
 	<!-- Split container with token offers and bundle -->
-	<div class="splitContainer">
-		<div class="leftSide" in:scale={{ start: 0.9, duration: 250 }}>
+	<div class="split-container">
+		<div class="left-side" in:scale={{ start: 0.9, duration: 250 }}>
 			{#if $specialOfferPins}
 				<div
-					class="specialOffer"
+					class="special-offer"
 					transition:blur
-					class:commonGradient={$specialOfferRarity == "common"}
-					class:rareGradient={$specialOfferRarity == "rare"}
-					class:epicGradient={$specialOfferRarity == "epic"}
-					class:legendaryGradient={$specialOfferRarity == "legendary"}
+					class:common-gradient={$specialOfferRarity == "common"}
+					class:rare-gradient={$specialOfferRarity == "rare"}
+					class:epic-gradient={$specialOfferRarity == "epic"}
+					class:legendary-gradient={$specialOfferRarity == "legendary"}
 				>
 					<div
-						class="specialOfferRarityDisplay"
-						class:commonColor={$specialOfferRarity == "common"}
-						class:rareColor={$specialOfferRarity == "rare"}
-						class:epicColor={$specialOfferRarity == "epic"}
-						class:legendaryColor={$specialOfferRarity == "legendary"}
+						class="special-offer-rarity-display"
+						class:common-color={$specialOfferRarity == "common"}
+						class:rare-color={$specialOfferRarity == "rare"}
+						class:epic-color={$specialOfferRarity == "epic"}
+						class:legendary-color={$specialOfferRarity == "legendary"}
 					>
 						<p>{$specialOfferRarity}</p>
 					</div>
-					<h1 class="specialOfferTitle">
+					<h1 class="special-offer-title">
 						{$specialOfferRarity?.[0]?.toUpperCase() + $specialOfferRarity.slice(1) || "Default"} bundle!
 					</h1>
-					<div class="specialOfferItems">
+					<div class="special-offer-items">
 						{#each $specialOfferPins as pinIndex}
 							<PinHolder pinId={pinIndex} shop={true} disabled={$purchasedPins?.includes(pinIndex)} />
 						{/each}
 					</div>
 					<button
-						class="standardButton white specialOfferButton largeButton"
+						class="standard-button white special-offer-button large-button"
 						disabled={$specialOfferPrice == 0}
 						onclick={() => {
 							playSound("basic_button");
 							handleShopPurchase("bundle", $specialOfferPrice, undefined, $specialOfferPins);
 						}}
 					>
-						<img class="tokenIconWhite" alt="token" src="/img/token_icon_white.png" />
-						<span class="specialOfferCrossedOut">{calculateRegularBundlePrice($specialOfferPins)}</span>
+						<img class="token-icon-white" alt="token" src="/img/token_icon_white.png" />
+						<span class="special-offer-crossed-out">{calculateRegularBundlePrice($specialOfferPins)}</span>
 						{$specialOfferPrice != 0 ? $specialOfferPrice : "Owned"}
 					</button>
 				</div>
 			{:else}
-				<p class="loadingText">{$specialOfferLoadingText}</p>
+				<p class="loading-text">{$specialOfferLoadingText}</p>
 			{/if}
 		</div>
-		<div class="rightSide" in:scale={{ start: 0.9, delay: 100, duration: 250 }}>
-			<div class="tokenDisplay">
-				<div class="shopInfoSection">
+		<div class="right-side" in:scale={{ start: 0.9, delay: 100, duration: 250 }}>
+			<div class="token-display">
+				<div class="shop-info-section">
 					<Clock
 						style="color: white; margin-right: 3px; min-width: fit-content; margin-bottom: -1px;"
 						strokeWidth={2.25}
@@ -192,34 +244,34 @@
 					/>
 					<p>Restock in {timeUntilUTCMidnight()}</p>
 				</div>
-				<div class="shopInfoSection">
+				<div class="shop-info-section">
 					<p>{Math.round($animatedTokens)?.toLocaleString()} Tokens</p>
-					<img class="tokenIcon" alt="token" src="/img/token_icon_white.png" />
+					<img class="token-icon" alt="token" src="/img/token_icon_white.png" />
 				</div>
 			</div>
-			<div class="tokenShop">
+			<div class="token-shop">
 				{#each Object.values(tokenOffers) as offer}
-					<div class="shopOffer">
-						<div class="shopOfferInfo">
+					<div class="shop-offer">
+						<div class="token-offer-title">
 							<h2>{offer.amount?.toLocaleString()} Tokens</h2>
 						</div>
-						<div class="shopOfferGraphic">
-							<img alt="token graphic" src={offer.imageSrc} class="tokenGraphic" />
+						<div class="shop-offer-graphic">
+							<img alt="token graphic" src={offer.imageSrc} class="token-graphic" />
 						</div>
 						<button
-							class="standardButton shopOfferButton white"
+							class="standard-button shop-offer-button white"
 							disabled={offer.price == 0 && $freeDailyTokensClaimed}
 							onclick={() => {
 								playSound("basic_button");
 								if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
 								if (!$isAuthenticated) return signupPrompt();
 								if (offer.price == 0) handleShopFreeTokens();
-								else shopPurchaseTokenTier(offer.tier);
+								else purchaseTokenTier(offer.tier);
 							}}
 						>
 							{offer.symbol + (offer.price || ($freeDailyTokensClaimed ? "Claimed" : "Free"))}
 							{#if offer.savingsPercentage}
-								<span class="tokenSavings">-{offer.savingsPercentage}%</span>
+								<span class="token-savings">-{offer.savingsPercentage}%</span>
 							{/if}
 						</button>
 					</div>
@@ -228,29 +280,29 @@
 		</div>
 	</div>
 	<!-- All pins -->
-	<div class="headerContainer">
+	<div class="header-container">
 		<h1 class="header">All pins</h1>
 	</div>
 	<!-- YouTube pitch-->
 	{#if !$purchasedPins?.includes(500) && $accountDataLoaded}
-		<div class="freeSocialPinContainer" transition:slide={{ axis: "y" }}>
-			<p class="socialPinText">
-				Not subscribed yet? <span class="socialPinSpan">Follow our YouTube channel to claim a free pin!</span>
+		<div class="free-social-pin-container" transition:slide={{ axis: "y" }}>
+			<p class="social-pin-text">
+				Not subscribed yet? <span class="social-pin-span">Follow our YouTube channel to claim a free pin!</span>
 			</p>
 			<button
-				class="standardButton white socialPinButton"
+				class="standard-button white social-pin-button"
 				onclick={() => {
 					playSound("basic_button");
 					window.open("https://www.youtube.com/@OpenGuessrOfficial?sub_confirmation=true", "_blank").focus();
 					setTimeout(handleShopYouTubePin, 250);
 				}}
 			>
-				<img alt="YouTube pin" src="/img/pins/player_pin500.png" class="socialPinIcon" />
+				<img alt="YouTube pin" src="/img/pins/player_pin500.png" class="social-pin-icon" />
 				Subscribe
 			</button>
 		</div>
 	{/if}
-	<div class="allPinsContainer">
+	<div class="all-pins-container">
 		{#each Object.values(pinRarities) as rarity}
 			{#each rarity?.pinIndexes as index}
 				<PinHolder
@@ -263,6 +315,56 @@
 			{/each}
 		{/each}
 	</div>
+	<!-- Supporter tiers -->
+	<div class="header-container">
+		<h1 class="header" id="supporter">Supporter</h1>
+	</div>
+	<div class="supporter-info-box">
+		<div class="supporter-info-content">
+			<h2>Limitless benefits</h2>
+			<p style:opacity="0.5">Purchase a supporter tier once and enjoy perks that never expire.</p>
+			<p style:opacity="0.35" style:margin-top="auto">
+				<a href="/legal" target="_blank">Terms and conditions</a> apply.
+			</p>
+		</div>
+		<img alt="supporter perks" class="supporter-perks-image" src="/img/supporter_graphic.png" />
+	</div>
+	<div class="supporter-tier-container">
+		{#each supporterTiers as { tier, tagline, benefits, highlighted }}
+			<div class="tier-box">
+				<div class="tier-number-badge"><p>Tier {tier}</p></div>
+				<ul class="tier-benefits">
+					<li style="opacity: 50%;">{tagline}</li>
+					{#each benefits as benefit}
+						<li>
+							{#if !benefit.isUpgrade}
+								<CirclePlus size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />
+							{:else}
+								<CircleArrowUp size={20} style="margin-right: var(--box-margin); margin-bottom: -2px;" />
+							{/if}
+							{benefit.text}
+						</li>
+					{/each}
+				</ul>
+				<button
+					class="standard-button tier-buy-button"
+					class:white={!highlighted}
+					class:tier-buy-button-highlighted={highlighted}
+					disabled={$supporterLevel >= tier}
+					onclick={() => {
+						playSound("basic_button");
+						if ($crazyGames) return errorPopup("Not supported", "Purchases on this platform are not supported.");
+						if (!$isAuthenticated) return signupPrompt();
+						purchaseSupporterTier(tier);
+					}}
+					>{getSupporterTierPrice(tier)}
+					{#if $supporterLevel >= 1 && $supporterLevel < tier}
+						<span class="discount-badge">Upgrade</span>
+					{/if}</button
+				>
+			</div>
+		{/each}
+	</div>
 </div>
 
 <style>
@@ -273,7 +375,7 @@
 		margin-bottom: 75px;
 	}
 
-	.freeSocialPinContainer {
+	.free-social-pin-container {
 		width: 100%;
 		box-sizing: border-box;
 		box-shadow: var(--box-shadow);
@@ -288,24 +390,24 @@
 		flex-wrap: wrap;
 	}
 
-	.socialPinText {
+	.social-pin-text {
 		margin-left: var(--panel-margin);
 		text-align: center;
 		margin-right: auto;
 	}
 
-	.socialPinButton {
+	.social-pin-button {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 	}
 
-	.socialPinSpan {
+	.social-pin-span {
 		opacity: 0.5;
 		margin-left: var(--content-margin);
 	}
 
-	.socialPinIcon {
+	.social-pin-icon {
 		width: 50px;
 		height: 50px;
 		transform: rotate(-15deg);
@@ -324,7 +426,7 @@
 		}
 	}
 
-	.leftSide {
+	.left-side {
 		border-radius: var(--layout-margin);
 		box-shadow: var(--box-shadow);
 		flex-grow: 1;
@@ -339,18 +441,18 @@
 		flex-basis: calc(50% - 150px);
 	}
 
-	.loadingText {
+	.loading-text {
 		opacity: 0.5;
 		margin-inline: var(--box-margin);
 		text-align: center;
 	}
 
-	.tokenIconWhite {
+	.token-icon-white {
 		width: 25px;
 		height: 25px;
 	}
 
-	.rightSide {
+	.right-side {
 		border-radius: var(--layout-margin);
 		box-shadow: var(--box-shadow);
 		flex-grow: 1;
@@ -363,7 +465,7 @@
 		height: 500px;
 	}
 
-	.tokenDisplay {
+	.token-display {
 		width: 100%;
 		height: 50px;
 		display: flex;
@@ -374,7 +476,7 @@
 		box-sizing: border-box;
 	}
 
-	.shopInfoSection {
+	.shop-info-section {
 		display: flex;
 		align-items: center;
 		gap: var(--content-margin);
@@ -383,18 +485,18 @@
 		overflow: hidden;
 	}
 
-	.shopInfoSection p {
+	.shop-info-section p {
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
 
-	.tokenIcon {
+	.token-icon {
 		width: 25px;
 		height: 25px;
 		margin-top: 2px;
 	}
 
-	.tokenShop {
+	.token-shop {
 		width: 100%;
 		box-shadow: var(--bulb-shadow);
 		flex-grow: 1;
@@ -409,7 +511,7 @@
 		overflow: hidden;
 	}
 
-	.shopOffer {
+	.shop-offer {
 		border-radius: var(--content-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
@@ -426,24 +528,24 @@
 		height: calc(50% - var(--box-margin) / 2);
 	}
 
-	.shopOffer:hover .tokenGraphic {
+	.shop-offer:hover .token-graphic {
 		scale: 1.05;
 	}
 
-	.shopOfferInfo {
+	.token-offer-title {
 		max-width: calc(100% - var(--box-margin) * 2);
 		position: absolute;
 		top: var(--layout-margin);
 		mask-image: linear-gradient(to bottom, rgb(255, 255, 255) 50%, rgba(255, 255, 255, 0.6) 100%);
 	}
 
-	.shopOfferInfo h2 {
+	.token-offer-title h2 {
 		text-wrap: nowrap;
 		text-overflow: ellipsis;
 		overflow: hidden;
 	}
 
-	.shopOfferButton {
+	.shop-offer-button {
 		width: 100%;
 		display: flex;
 		justify-content: center;
@@ -451,7 +553,7 @@
 		gap: var(--content-margin);
 	}
 
-	.tokenGraphic {
+	.token-graphic {
 		height: 135px;
 		width: auto;
 		transition: scale 250ms ease;
@@ -459,22 +561,22 @@
 		filter: drop-shadow(0 0 5px rgba(0, 0, 0, 0.25));
 	}
 
-	.shopOfferGraphic {
+	.shop-offer-graphic {
 		flex-grow: 1;
 		display: flex;
 	}
 
-	.splitContainer {
+	.split-container {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
 		flex-wrap: wrap;
 		width: 100%;
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 		gap: var(--layout-margin);
 	}
 
-	.allPinsContainer {
+	.all-pins-container {
 		width: 100%;
 		height: fit-content;
 		box-shadow: var(--box-shadow);
@@ -485,9 +587,10 @@
 		background-color: var(--box-color);
 		gap: var(--box-margin);
 		box-sizing: border-box;
+		margin-bottom: var(--layout-spacer);
 	}
 
-	.specialOfferButton {
+	.special-offer-button {
 		display: flex;
 		justify-content: center;
 		align-items: center;
@@ -495,13 +598,13 @@
 		padding-inline: 20px;
 	}
 
-	.specialOfferCrossedOut {
+	.special-offer-crossed-out {
 		text-decoration: line-through;
 		opacity: 0.5;
 		margin-right: 3px;
 	}
 
-	.tokenSavings {
+	.token-savings {
 		background-color: rgba(255, 255, 255, 0.15);
 		color: white;
 		padding-inline: 3px;
@@ -509,7 +612,7 @@
 		border-radius: 3px;
 	}
 
-	.specialOffer {
+	.special-offer {
 		width: 100%;
 		height: 100%;
 		box-shadow: var(--box-shadow);
@@ -521,31 +624,31 @@
 		position: relative;
 	}
 
-	.specialOfferTitle {
+	.special-offer-title {
 		mask-image: linear-gradient(to bottom, rgba(255, 255, 255, 1) 50%, rgba(255, 255, 255, 0.6) 100%);
 	}
 
-	.specialOffer:hover .specialOfferItems {
+	.special-offer:hover .special-offer-items {
 		scale: 1.02;
 	}
 
-	.commonGradient {
+	.common-gradient {
 		background: linear-gradient(0.6turn, rgba(208, 136, 136, 0.2), var(--box-color));
 	}
 
-	.rareGradient {
+	.rare-gradient {
 		background: linear-gradient(0.6turn, rgba(255, 68, 243, 0.2), var(--box-color));
 	}
 
-	.epicGradient {
+	.epic-gradient {
 		background: linear-gradient(0.6turn, rgba(75, 234, 255, 0.2), var(--box-color));
 	}
 
-	.legendaryGradient {
+	.legendary-gradient {
 		background: linear-gradient(0.6turn, rgba(255, 214, 51, 0.2), var(--box-color));
 	}
 
-	.specialOfferItems {
+	.special-offer-items {
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
@@ -556,17 +659,16 @@
 		margin-top: 30px;
 		margin-bottom: 40px;
 		transition: scale 250ms ease;
-		padding-bottom: var(--content-margin);
-		padding-top: var(--content-margin);
+		padding: var(--content-margin);
 		overflow: auto;
 	}
 
-	:global(.specialOfferItems .pinHolder) {
+	:global(.special-offer-items .pin-holder) {
 		border-radius: var(--box-margin);
 		pointer-events: none;
 	}
 
-	.specialOfferRarityDisplay {
+	.special-offer-rarity-display {
 		position: absolute;
 		box-shadow: var(--bulb-shadow);
 		border-top-right-radius: var(--content-margin);
@@ -577,24 +679,201 @@
 		user-select: none;
 	}
 
-	.specialOfferRarityDisplay p {
+	.special-offer-rarity-display p {
 		font-style: italic;
 		margin-top: -3px;
 	}
 
-	.commonColor {
+	.common-color {
 		background-color: var(--common-color);
 	}
 
-	.rareColor {
+	.rare-color {
 		background-color: var(--rare-color);
 	}
 
-	.epicColor {
+	.epic-color {
 		background-color: var(--epic-color);
 	}
 
-	.legendaryColor {
+	.legendary-color {
 		background-color: var(--legendary-color);
+	}
+
+	.tier-benefits {
+		list-style-type: none;
+		padding-left: var(--content-margin);
+		padding-right: var(--layout-margin);
+	}
+
+	.discount-badge {
+		font-size: 18px;
+		padding: 2px;
+		opacity: 0.9;
+		padding-left: var(--content-margin);
+		padding-right: 9px;
+		font-style: italic;
+		border-radius: 3px;
+		margin-left: 2px;
+		background-color: rgba(0, 0, 0, 0.1);
+		vertical-align: 2px;
+	}
+
+	.tier-buy-button {
+		width: 100%;
+		margin-top: auto;
+		position: relative;
+		overflow: hidden;
+		flex-shrink: 0;
+	}
+
+	.tier-buy-button-highlighted::before {
+		animation: supporterGlintButton 5s 2s infinite;
+		background: white;
+		filter: blur(var(--elevated-blur));
+		content: "";
+		opacity: 0;
+		position: absolute;
+		width: 40px;
+		z-index: 1;
+		height: 200%;
+		top: -20px;
+		left: 0;
+		transform: rotate(30deg);
+		pointer-events: none;
+	}
+
+	.tier-buy-button-highlighted {
+		background-color: var(--supporter-green);
+	}
+
+	.tier-box {
+		background-color: var(--box-color);
+		border-radius: var(--box-margin);
+		box-shadow: var(--box-shadow);
+		display: flex;
+		flex-direction: column;
+		padding: var(--box-margin);
+		overflow: hidden;
+		gap: var(--box-margin);
+		flex-grow: 1;
+		position: relative;
+		height: 250px;
+		flex-basis: 0;
+		min-width: 250px;
+	}
+
+	.tier-number-badge {
+		position: absolute;
+		right: 0;
+		top: 0;
+		padding-inline: var(--box-margin);
+		text-align: center;
+		line-height: 35px;
+		border-bottom-left-radius: var(--box-margin);
+		border-top-right-radius: var(--box-margin);
+		box-shadow: var(--bulb-shadow);
+		background-color: var(--box-color);
+	}
+
+	.tier-number-badge p {
+		opacity: 0.75;
+		font-size: 20px;
+	}
+
+	.supporter-info-content {
+		padding: var(--content-margin);
+		margin-right: auto;
+		max-width: 275px;
+		display: flex;
+		flex-direction: column;
+		gap: var(--layout-margin);
+		height: 100%;
+		box-sizing: border-box;
+	}
+
+	.supporter-perks-image {
+		height: 145%;
+		width: 100%;
+		margin-right: calc((var(--layout-margin) + var(--box-margin)) * -1);
+		object-fit: contain;
+		max-width: 400px;
+		mask-image: linear-gradient(
+			transparent 0%,
+			transparent 10%,
+			black 30%,
+			black 60%,
+			transparent 90%,
+			transparent 100%
+		);
+		box-sizing: border-box;
+		padding: var(--content-margin);
+		user-select: none;
+	}
+
+	.supporter-info-box {
+		display: flex;
+		align-items: center;
+		gap: var(--box-margin);
+		box-sizing: border-box;
+		background: linear-gradient(to right, var(--box-color) 50%, var(--supporter-green-tint));
+		box-shadow: var(--box-shadow);
+		border-radius: var(--layout-margin);
+		padding: var(--box-margin);
+		width: 100%;
+		margin-bottom: var(--layout-margin);
+		height: 250px;
+		overflow: hidden;
+	}
+
+	.supporter-tier-container {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		gap: var(--box-margin);
+		box-sizing: border-box;
+		width: 100%;
+		padding: var(--box-margin);
+		border-radius: var(--layout-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+	}
+
+	@keyframes supporterGlintButton {
+		0% {
+			opacity: 0.7;
+			margin-left: -50px;
+			visibility: visible;
+		}
+
+		20% {
+			opacity: 0.5;
+			margin-left: calc(100% + 50px);
+		}
+
+		100% {
+			opacity: 0.5;
+			margin-left: calc(100% + 50px);
+		}
+	}
+
+	@media (max-width: 1000px) {
+		.supporter-info-box {
+			flex-direction: column;
+			height: fit-content;
+			background: linear-gradient(to bottom, var(--box-color) 50%, var(--supporter-green-tint));
+		}
+
+		.supporter-perks-image {
+			margin-bottom: -120px;
+			margin-right: 0;
+			mask-image: linear-gradient(black, black 45%, transparent 73%);
+		}
+	}
+
+	@media (max-width: 800px) {
+		.supporter-perks-image {
+			margin-bottom: -80px;
+		}
 	}
 </style>

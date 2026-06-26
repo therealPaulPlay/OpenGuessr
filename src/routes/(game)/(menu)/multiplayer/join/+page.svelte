@@ -61,15 +61,15 @@
 </svelte:head>
 
 <div class="main-container">
-	<div class="inputCenterBox">
-		<div class="multiplayerJoinField">
-			<p class="multiplayerInputInfo">{$multiplayerStatus || ""}</p>
-			<div class="segmentedInputBox" onpaste={handlePaste}>
+	<div class="input-center-box">
+		<div class="multiplayer-join-field">
+			<p class="multiplayer-input-info">{$multiplayerStatus || ""}</p>
+			<div class="segmented-input-box" onpaste={handlePaste}>
 				{#each segments, i}
 					{@const placeholder = ["A", "B", "C", "1", "2", "3"]}
 					<input
 						type="text"
-						class="segmentInput"
+						class="segment-input"
 						placeholder={placeholder[i]}
 						bind:this={inputRefs[i]}
 						bind:value={segments[i]}
@@ -83,10 +83,10 @@
 				{/each}
 			</div>
 		</div>
-		<div class="barMenu joinButtonContainer">
+		<div class="bar-menu join-button-container">
 			<button
-				id="multiplayerJoin"
-				class="standardButton largeButton"
+				id="multiplayer-join"
+				class="standard-button large-button"
 				disabled={roomCodeInput.length !== 6}
 				onclick={() => {
 					playSound("start_button");
@@ -98,13 +98,13 @@
 </div>
 
 {#if openRooms?.length > 0}
-	<p class="publicRoomTitle" transition:blur>Public rooms</p>
-	<div class="publicRoomBox of-top of-bottom of-length-2" transition:blur>
+	<p class="open-room-title" transition:blur>Public rooms</p>
+	<div class="open-room-box of-top of-bottom of-length-2" transition:blur>
 		{#each openRooms as room}
-			<div class="publicRoomItem" transition:blur>
-				<div class="roomItemInfoContainer of-left of-right">
+			<div class="open-room-item" transition:blur>
+				<div class="room-item-info-container of-left of-right">
 					<Chip mutedOpacity={false}>
-						<img class="mapIcon" src="/img/maps_icon.png" alt="Maps" />
+						<img class="map-icon" src="/img/maps_icon.png" alt="Maps" />
 						{idToMapName(room?.map)}
 					</Chip>
 					<Chip mutedOpacity={false} onclick={() => showProfile(room?.user_id)}>
@@ -113,7 +113,7 @@
 					</Chip>
 				</div>
 				<button
-					class="standardButton white"
+					class="standard-button white"
 					{@attach tooltip({ text: "Join" })}
 					onclick={() => {
 						playSound("basic_button");
@@ -141,7 +141,7 @@
 		min-height: calc(50dvh - 120px + 151px);
 	}
 
-	.publicRoomTitle {
+	.open-room-title {
 		max-width: 390px;
 		margin-inline: auto;
 		width: calc(100% - 10px);
@@ -149,7 +149,7 @@
 		opacity: 0.5;
 	}
 
-	.publicRoomBox {
+	.open-room-box {
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: space-around;
@@ -160,12 +160,12 @@
 		max-width: 400px;
 		width: 100%;
 		max-height: 275px;
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 		overflow-y: auto;
 		scrollbar-width: none;
 	}
 
-	.publicRoomItem {
+	.open-room-item {
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--box-shadow);
 		border: none;
@@ -183,7 +183,7 @@
 		gap: var(--panel-margin);
 	}
 
-	.roomItemInfoContainer {
+	.room-item-info-container {
 		gap: var(--panel-margin);
 		display: flex;
 		align-items: center;
@@ -194,11 +194,11 @@
 		scrollbar-width: none;
 	}
 
-	.publicRoomItem:hover {
+	.open-room-item:hover {
 		opacity: 1;
 	}
 
-	.inputCenterBox {
+	.input-center-box {
 		display: flex;
 		align-items: center;
 		flex-direction: column;
@@ -206,14 +206,14 @@
 		max-width: 320px;
 	}
 
-	.segmentedInputBox {
+	.segmented-input-box {
 		display: flex;
 		align-items: center;
 		gap: var(--box-margin);
 		justify-content: center;
 	}
 
-	.segmentInput {
+	.segment-input {
 		width: 38px;
 		height: 50px;
 		border-radius: var(--box-margin);
@@ -221,7 +221,7 @@
 		text-transform: uppercase;
 	}
 
-	.segmentInput::placeholder {
+	.segment-input::placeholder {
 		opacity: 0.25 !important;
 	}
 
@@ -231,7 +231,7 @@
 		font-size: 22px;
 	}
 
-	.multiplayerJoinField {
+	.multiplayer-join-field {
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
@@ -241,18 +241,18 @@
 		width: 300px;
 	}
 
-	.joinButtonContainer {
+	.join-button-container {
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
 		margin-top: calc(var(--layout-margin) + var(--box-margin));
 		border-radius: var(--layout-margin);
 	}
 
-	#multiplayerJoin {
+	#multiplayer-join {
 		padding-inline: 50px;
 	}
 
-	.multiplayerInputInfo {
+	.multiplayer-input-info {
 		padding: 0;
 		overflow: hidden;
 		width: calc(100% - 10px);
@@ -260,7 +260,7 @@
 		opacity: 0.5;
 	}
 
-	.mapIcon {
+	.map-icon {
 		width: 20px;
 		height: 20px;
 		margin-right: 3px;

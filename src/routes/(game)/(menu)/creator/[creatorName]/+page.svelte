@@ -38,14 +38,14 @@
 
 <div class="main-container">
 	{#if mounted}
-		<div class="centerBox">
-			<h1 class="welcomeHeader" in:fly={{ y: -20, duration: 1000 }}>Applause for {creator}!</h1>
-			<div class="creditBox">
-				<p class="creditNote" in:blur={{ duration: 500 }}>Now, let's kick off your geography journey.</p>
+		<div class="center-box">
+			<h1 class="welcome-header" in:fly={{ y: -20, duration: 1000 }}>Applause for {creator}!</h1>
+			<div class="credit-box">
+				<p class="credit-note" in:blur={{ duration: 500 }}>Now, let's kick off your geography journey.</p>
 			</div>
-			<div class="barMenu buttonContainer" in:fly={{ y: 20, duration: 1000 }}>
+			<div class="bar-menu button-container" in:fly={{ y: 20, duration: 1000 }}>
 				<button
-					class="standardButton largeButton"
+					class="standard-button large-button"
 					onclick={() => {
 						playSound("basic_button");
 						goto("/");
@@ -63,11 +63,11 @@
 	.main-container {
 		display: flex;
 		align-items: center;
-		min-height: 80dvh;
+		height: calc(100dvh - 120px);
 		justify-content: center;
 	}
 
-	.creditNote {
+	.credit-note {
 		opacity: 0.75;
 		padding: 50px;
 		padding-top: 0px;
@@ -77,7 +77,7 @@
 		max-width: 400px;
 	}
 
-	.buttonContainer {
+	.button-container {
 		backdrop-filter: none;
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
@@ -85,7 +85,7 @@
 		margin-top: var(--box-margin);
 	}
 
-	.creditBox {
+	.credit-box {
 		width: 100%;
 		margin-top: calc(-1 * var(--box-margin));
 		display: flex;
@@ -93,14 +93,14 @@
 		align-items: center;
 	}
 
-	.centerBox {
+	.center-box {
 		display: flex;
 		justify-content: center;
 		flex-wrap: wrap;
 		gap: calc(var(--layout-margin) + var(--content-margin));
 	}
 
-	.welcomeHeader {
+	.welcome-header {
 		width: 100%;
 		text-align: center;
 		font-size: 75px;
@@ -110,11 +110,11 @@
 	}
 
 	@media (max-width: 800px) {
-		.welcomeHeader {
+		.welcome-header {
 			font-size: 55px;
 		}
 
-		.creditNote {
+		.credit-note {
 			max-width: 300px;
 		}
 	}

@@ -47,19 +47,19 @@
 
 <Popup z={971} verySlim={true} bind:open={$flagPickerPopup}>
 	<div class="popup-title">
-		<h1 id="pinPopupWindow">Flags</h1>
+		<h1>Flags</h1>
 	</div>
 	<div>
 		{#if continentFlags}
 			{#each Object.entries(continentFlags) as [continent, countries]}
 				<div class="continent-section" transition:fade|global={{ duration: 150 }}>
-					<p class="continentTitle">{continent}</p>
-					<div class="flagSelector">
+					<p class="continent-title">{continent}</p>
+					<div class="flag-selector">
 						{#each countries as countryCode}
 							<button
-								class="flagButton"
+								class="flag-button"
 								onclick={() => handleFlagClick(countryCode)}
-								class:flagSelected={$profileData?.["flag"] == countryCode}
+								class:flag-selected={$profileData?.["flag"] == countryCode}
 							>
 								<Flag code={countryCode} />
 							</button>
@@ -68,13 +68,13 @@
 				</div>
 			{/each}
 		{:else}
-			<p class="loadingText">{jsonLoadErrored ? "Failed to load." : "Loading..."}</p>
+			<p class="loading-text">{jsonLoadErrored ? "Failed to load." : "Loading..."}</p>
 		{/if}
 	</div>
 </Popup>
 
 <style>
-	.continentTitle {
+	.continent-title {
 		padding: 3px;
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
@@ -85,7 +85,7 @@
 		border-bottom-left-radius: 0;
 	}
 
-	.loadingText {
+	.loading-text {
 		text-align: center;
 		width: 100%;
 		opacity: 0.5;
@@ -97,14 +97,14 @@
 		margin-bottom: var(--layout-margin);
 	}
 
-	.flagSelected {
+	.flag-selected {
 		border-radius: var(--content-margin);
 		background-color: rgba(255, 255, 255, 0.2) !important;
 		box-shadow: var(--bulb-shadow);
 		filter: brightness(1.5);
 	}
 
-	.flagSelector {
+	.flag-selector {
 		display: flex;
 		justify-content: flex-start;
 		align-items: center;
@@ -121,7 +121,7 @@
 		flex-wrap: wrap;
 	}
 
-	.flagButton {
+	.flag-button {
 		background: none;
 		border: none;
 		cursor: pointer;
@@ -136,11 +136,11 @@
 		justify-content: center;
 	}
 
-	.flagButton:hover {
+	.flag-button:hover {
 		transform: scale(1.1);
 	}
 
-	:global(.flagButton svg) {
+	:global(.flag-button svg) {
 		width: 100%;
 		height: 100%;
 	}

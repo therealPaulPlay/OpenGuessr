@@ -8,7 +8,7 @@
 
 <Popup verySlim={true} bind:open={$linkJoinPopup} onclose={leaveMultiplayer}>
 	<div class="popup-title">
-		<h1 id="socialHeader">Room</h1>
+		<h1>Room</h1>
 	</div>
 	<p>{$multiplayerStatus || "Loading..."}</p>
 </Popup>

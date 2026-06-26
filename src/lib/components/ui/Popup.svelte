@@ -22,7 +22,7 @@
 {#if open}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="popupHolder"
+		class="popup-holder"
 		style:z-index={z}
 		transition:fade={{ duration: 100 }}
 		onclick={(e) => {
@@ -32,12 +32,12 @@
 		tabindex={0}
 	>
 		<div
-			class="uiWindow"
+			class="ui-window"
 			transition:scale={{ easing: backOut, duration: 250, start: 0.9 }}
-			class:frameLess={frameless}
+			class:frame-less={frameless}
 			style:max-width={verySlim ? "600px" : slim ? "750px" : "850px"}
 		>
-			<button class="closePopupButton standardButton white" aria-label="close" onclick={close}
+			<button class="close-popup-button standard-button white" aria-label="close" onclick={close}
 				><X strokeWidth={2.25} /></button
 			>
 			<div class="content of-top of-bottom" class:content-frameless={frameless}>
@@ -48,7 +48,7 @@
 {/if}
 
 <style>
-	.popupHolder {
+	.popup-holder {
 		position: fixed;
 		top: 0;
 		bottom: 0;
@@ -62,7 +62,7 @@
 		backdrop-filter: blur(var(--weak-blur));
 	}
 
-	.closePopupButton {
+	.close-popup-button {
 		border-radius: var(--box-margin);
 		background-color: var(--panel-color-soft);
 		position: absolute;
@@ -72,7 +72,7 @@
 		z-index: 10;
 	}
 
-	.frameLess {
+	.frame-less {
 		padding: var(--content-margin) !important;
 	}
 
@@ -90,7 +90,7 @@
 		margin-bottom: -4px;
 	}
 
-	.uiWindow {
+	.ui-window {
 		width: calc(100% - var(--layout-margin) * 2);
 		box-sizing: border-box;
 		padding: calc(var(--layout-margin) + 5px);

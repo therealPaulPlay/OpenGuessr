@@ -59,11 +59,11 @@
 		<h1>Pick a name</h1>
 	</div>
 	<p class="popup-description">Please choose a temporary name for multiplayer.</p>
-	<div class="fullWidth">
-		<input type="text" class="namePopupInput" placeholder="Guest name" maxlength="30" bind:value={$guestName} />
+	<div class="full-width">
+		<input type="text" class="name-popup-input" placeholder="Guest name" maxlength="30" bind:value={$guestName} />
 	</div>
 	<button
-		class="standardButton bottomButton largeButton"
+		class="standard-button bottom-button large-button"
 		disabled={$guestName?.length < 3}
 		onclick={async () => {
 			playSound("basic_button");
@@ -74,14 +74,14 @@
 </Popup>
 
 <style>
-	.namePopupInput {
+	.name-popup-input {
 		font-size: 22px;
 		padding: var(--content-margin) 15px;
 		width: 40%;
 		margin-top: var(--layout-margin);
 	}
 
-	.fullWidth {
+	.full-width {
 		width: 100%;
 	}
 </style>

@@ -8,29 +8,55 @@
 		showSlideup,
 		slideupButtonText,
 		monthlySupportAmount,
+		slideupImageUrl,
+		slideupNote,
 	} from "$lib/stores/context-specific/resultScreenSlideupStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Flame, HandHeart } from "@lucide/svelte";
+	import { Flame, HandHeart, TriangleAlert } from "@lucide/svelte";
 	import { slide } from "svelte/transition";
 </script>
 
 {#if $showSlideup && !$crazyGames}
-	<div class="endscreenSlideupContainer barMenu" transition:slide>
-		<div class="textBox textBoxTop">
-			<h3 id="slideupTitle">{$slideupTitle}</h3>
-		</div>
-		{#if $slideupButtonText == "Support"}
-			<div class="textBox supporterStatBox solidBox">
-				<p class="supporterStatText">${$monthlySupportAmount ?? "..."} supported this month</p>
-				<div class="supporterStatBar" style:width={Math.min(1, $monthlySupportAmount / 500) * 100 + "%"}></div>
+	<div class="endscreen-slideup-container bar-menu" in:slide|global out:slide>
+		<div class="scrollable-content of-top of-bottom" style:margin-bottom="var(--panel-margin)">
+			<div class="text-box text-box-top">
+				<h3 id="slideup-title">{$slideupTitle}</h3>
+				{#if $slideupTitle == "Meta"}
+					<span class="geometas-attribution"
+						>Powered by <a target="_blank" href="https://geometas.com">Geometas</a></span
+					>
+				{/if}
 			</div>
-		{/if}
-		<div class="textBox solidBox">
-			<p id="slideupText" bind:textContent={$slideupText} contenteditable="false"></p>
+			{#if $slideupButtonText == "Support"}
+				<div class="text-box supporter-stat-box solid-box">
+					<p class="supporter-stat-text">${$monthlySupportAmount ?? "..."} supported this month</p>
+					<div class="supporter-stat-bar" style:width={Math.min(1, $monthlySupportAmount / 500) * 100 + "%"}></div>
+				</div>
+			{/if}
+			{#if $slideupImageUrl}
+				<div class="solid-box" style:padding="var(--box-margin)">
+					<img alt="Meta" src={$slideupImageUrl} class="slideup-image" />
+				</div>
+			{/if}
+			<div class="text-box solid-box" style:margin-top="var(--panel-margin)">
+				<p bind:textContent={$slideupText} contenteditable="false" class="of-top of-bottom"></p>
+			</div>
+			{#if $slideupNote}
+				<div class="text-box solid-box" style:margin-top="var(--panel-margin)">
+					<p style:opacity="0.5" class="of-top of-bottom" style:max-height="100px">
+						<TriangleAlert
+							size={22}
+							strokeWidth={2.25}
+							style="margin-bottom: -2px; margin-right: var(--content-margin);"
+						/>
+						{$slideupNote}
+					</p>
+				</div>
+			{/if}
 		</div>
-		<div class="buttonBox">
+		<div class="button-box">
 			<button
-				class="standardButton white"
+				class="standard-button white"
 				style:width={!$slideupCallback ? "100%" : ""}
 				onclick={() => {
 					playSound("basic_button");
@@ -39,7 +65,7 @@
 			>
 			{#if $slideupCallback}
 				<button
-					class="streakButton standardButton"
+					class="streak-button standard-button"
 					onclick={() => {
 						playSound("basic_button");
 						$slideupCallback?.();
@@ -58,50 +84,72 @@
 {/if}
 
 <style>
-	.endscreenSlideupContainer {
+	.endscreen-slideup-container {
 		z-index: 14;
 		padding: var(--panel-margin);
 		border-radius: var(--box-margin);
 		max-height: 1000px;
 		transition: filter 250ms ease;
-		user-select: none;
-		overflow: hidden;
 		pointer-events: auto;
 		display: block;
 		position: fixed;
 		bottom: var(--box-margin);
 		left: var(--box-margin);
+		box-sizing: border-box;
 	}
 
-	.supporterStatText {
+	.supporter-stat-text {
 		opacity: 0.75;
 	}
 
-	.textBoxTop {
+	.scrollable-content {
+		width: 100%;
+		max-height: max(150px, calc(100dvh - 200px));
+		overflow-y: auto;
+		scrollbar-width: none;
+	}
+
+	.text-box-top {
 		margin-bottom: var(--panel-margin);
 		padding: var(--content-margin) !important;
 		padding-inline: var(--content-margin) !important;
 	}
 
-	.textBox {
+	.text-box {
 		padding: var(--box-margin);
-		padding-inline: 12px;
+		padding-inline: calc(var(--panel-margin) + var(--content-margin));
 	}
 
-	.solidBox {
+	.text-box p {
+		max-height: 125px;
+		overflow-y: auto;
+		scrollbar-width: none;
+	}
+
+	.solid-box {
 		border-radius: var(--content-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
+		box-sizing: border-box;
+		max-width: 300px;
 	}
 
-	.supporterStatBox {
+	.supporter-stat-box {
 		margin-bottom: var(--panel-margin);
 		position: relative;
 		overflow: hidden;
 		text-align: center;
 	}
 
-	.supporterStatBar {
+	.slideup-image {
+		display: block;
+		border-radius: 3px;
+		height: 200px;
+		max-width: 100%;
+		object-fit: cover;
+	}
+
+	.supporter-stat-bar {
 		position: absolute;
 		left: 0;
 		top: 0;
@@ -111,35 +159,37 @@
 		transition: width 250ms ease;
 	}
 
-	.buttonBox {
+	.button-box {
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
-		margin-top: var(--panel-margin);
 		gap: var(--panel-margin);
 	}
 
-	.buttonBox .standardButton {
+	.button-box .standard-button {
 		height: 42px;
 	}
 
-	.streakButton {
+	.streak-button {
 		background-color: #00ac00;
 	}
 
-	#slideupText {
-		width: 100%;
-		max-width: 300px;
+	.geometas-attribution {
+		opacity: 0.5;
 	}
 
-	#slideupTitle {
+	#slideup-title {
 		transition: color 350ms ease;
 		font-size: 25px;
 	}
 
 	@media (max-width: 500px) {
-		.endscreenSlideupContainer {
-			width: calc(100% - 36px);
+		.endscreen-slideup-container {
+			width: calc(100% - var(--box-margin) * 2);
+		}
+
+		.solid-box {
+			max-width: unset;
 		}
 	}
 </style>

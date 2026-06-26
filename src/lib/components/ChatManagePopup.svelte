@@ -28,7 +28,7 @@
 	<div class="general-actions">
 		<div class="general-actions-scroll of-left of-right">
 			<button
-				class="standardButton white"
+				class="standard-button white"
 				disabled={$chatMutedPlayers?.length === get(socket)?.storage?.players?.length - 1}
 				onclick={() => {
 					playSound("basic_button");
@@ -41,7 +41,7 @@
 				<MessageSquareOff class="chat-action-icon" size={20} strokeWidth={2.25} /> Mute all
 			</button>
 			<button
-				class="standardButton white"
+				class="standard-button white"
 				disabled={!$chatMutedPlayers?.length}
 				onclick={() => {
 					playSound("basic_button");
@@ -52,7 +52,7 @@
 			</button>
 			{#if get(socket)?.isHost && !get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom}
 				<button
-					class="standardButton white"
+					class="standard-button white"
 					onclick={() => {
 						playSound("basic_button");
 						const newRoomLockState = !get(socket)?.storage?.locked;
@@ -110,7 +110,7 @@
 							/>
 							{#if get(socket)?.isHost && !get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom}
 								<button
-									class="standardButton white"
+									class="standard-button white"
 									disabled={clientId === get(socket)?.id}
 									onclick={() => {
 										playSound("basic_button");

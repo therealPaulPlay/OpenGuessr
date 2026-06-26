@@ -13,14 +13,14 @@
 
 <Popup verySlim={true} bind:open={$discordPopup} onclose={closePopup}>
 	<div class="popup-title">
-		<h1 id="socialHeader">Join the community</h1>
+		<h1>Join the community</h1>
 	</div>
 	<p>
-		Join now and get <span class="experienceHighlight">7,500 XP</span>
+		Join now and get <span class="experience-highlight">7,500 XP</span>
 		in return!
 	</p>
 	<iframe
-		id="discordWidget"
+		id="discord-widget"
 		title="Discord Widget"
 		width="350"
 		height="500"
@@ -30,8 +30,8 @@
 		sandbox="allow-popups allow-popups-to-escape-sandbox allow-same-origin allow-scripts"
 	></iframe>
 	<button
-		id="socialPopupJoin"
-		class="standardButton bottomButton largeButton white"
+		id="social-popup-join"
+		class="standard-button bottom-button large-button white"
 		onclick={() => {
 			playSound("basic_button");
 			window.open($discordInviteUrl, "_blank").focus();
@@ -43,26 +43,28 @@
 		}}
 	>
 		Join
-		<img src="/img/discord.png" class="socialIcon discordIconJoin" alt="Discord Icon" />
+		<img src="/img/discord.png" class="discord-icon-join" alt="Discord Icon" />
 	</button>
 </Popup>
 
 <style>
-	#socialPopupJoin {
+	#social-popup-join {
 		background-color: #8e44f0;
 	}
 
-	.experienceHighlight {
+	.experience-highlight {
 		color: rgb(198, 255, 198);
 		text-shadow: 0 0 10px #00cc00;
 	}
 
-	.discordIconJoin {
+	.discord-icon-join {
+		width: 20px;
+		height: auto;
 		vertical-align: -2px;
 		margin-left: 3px;
 	}
 
-	#discordWidget {
+	#discord-widget {
 		margin-top: 30px;
 		height: 100%;
 		width: 100%;

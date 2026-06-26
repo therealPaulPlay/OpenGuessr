@@ -36,6 +36,7 @@
 	$effect(() => {
 		const currentPath = page.url.pathname;
 		if (currentPath === "/" || !currentPath) return; // Skip root
+		if (currentPath.startsWith("/maps/community/")) return; // Skip individual community maps
 		if (navigationHistory.length > 0 && navigationHistory[0]?.path === currentPath) return; // Skip if last one is identical
 
 		// Wait for document title to update
@@ -64,10 +65,10 @@
 </script>
 
 <!-- Menu -->
-<nav class="menu-button-area barMenu">
+<nav class="menu-button-area bar-menu">
 	{#if $leaveFunction}
 		<button
-			class="standardButton"
+			class="standard-button"
 			{@attach tooltip({ text: "Leave" })}
 			onclick={() => {
 				playSound("leave_round");
@@ -76,7 +77,7 @@
 		>
 	{/if}
 	<button
-		class="standardButton white menu-button"
+		class="standard-button white menu-button"
 		aria-label="Menu"
 		onpointerenter={displayHistoryTooltip}
 		onmouseleave={hideHistoryTooltip}
@@ -122,7 +123,7 @@
 		<div class="history-list">
 			{#each navigationHistory as entry}
 				<button
-					class="history-item standardButton white"
+					class="history-item standard-button white"
 					disabled={!$singleplayer || $tutorial}
 					onclick={() => goto(entry.path)}
 					><span class="history-item-title">{entry.title}</span>

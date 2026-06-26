@@ -31,9 +31,9 @@
 		<p>Skill-based matchmaking has longer waiting times.</p>
 	</div>
 {/if}
-<div class="try-button-container barMenu">
+<div class="try-button-container bar-menu">
 	<button
-		class="standardButton try-button largeButton"
+		class="standard-button try-button large-button"
 		disabled={($matchmakingActive && !$matchmakingHosting) || $cancellingMatchmaking}
 		onclick={async () => {
 			if (!$matchmakingActive) {

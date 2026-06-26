@@ -1,5 +1,5 @@
 import { multiplayer, competition, singleplayer } from "$lib/stores/modeStore";
-import { mapPinLat, mapPinLng } from "$lib/stores/context-specific/mapStore";
+import { guessLat, guessLon } from "$lib/stores/context-specific/mapStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { updateProfileIfNewBestStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, supporterLevel } from "$lib/stores/accountStore";
@@ -24,7 +24,7 @@ function calculateMultiplier(streakParam) {
 async function streakCalculation() {
     let streak = Number(localStorage.getItem("streak") || 0); // Load streak from localstorage
 
-    if (await getCountryFromCoords(get(mapPinLat), get(mapPinLng)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
+    if (await getCountryFromCoords(get(guessLat), get(guessLon)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
         streak++;
     } else {
         if (streak >= 2) showResultScreenSlideup("Streak lost", `You lost your streak of ${streak}.`);

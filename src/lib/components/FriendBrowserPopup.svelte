@@ -53,13 +53,13 @@
 
 <Popup z={960} slim={true} bind:open={$friendBrowserPopup}>
 	<div class="popup-title">
-		<h1 id="friendBrowserHeader">Add a friend</h1>
+		<h1 id="friend-browser-header">Add a friend</h1>
 	</div>
-	<search class="playerSearch">
+	<search class="player-search">
 		<input
 			maxlength="255"
 			type="text"
-			id="friendBrowserInput"
+			id="friend-browser-input"
 			bind:value={searchQuery}
 			placeholder="Search for a player"
 			onkeydown={(event) => {
@@ -74,8 +74,8 @@
 			}}
 		/>
 		<button
-			id="startFriendSearch"
-			class="standardButton white"
+			id="start-friend-search"
+			class="standard-button white"
 			onclick={() => {
 				playSound("basic_button");
 				startSearch();
@@ -84,24 +84,24 @@
 			<Search size={20} strokeWidth={2.25} style="margin-top: 3px;" />
 		</button>
 	</search>
-	<div class="containerBox">
-		<div class="containerBoxScroll of-top of-bottom">
+	<div class="container-box">
+		<div class="container-box-scroll of-top of-bottom">
 			{#if userSearchResults}
 				{#each userSearchResults as entry}
 					<!-- svelte-ignore a11y_click_events_have_key_events -->
 					<div
-						class="friendSearchItem"
+						class="friend-search-item"
 						onclick={() => {
 							showProfile(entry.id);
 						}}
 						role="menu"
 						tabindex="0"
 					>
-						<p class="entryName">{entry.user_name}</p>
+						<p class="entry-name">{entry.user_name}</p>
 						<button
-							id="sendFriendRequest"
-							class="sendFriendRequestBrowser standardButton white"
-							class:friendSearchYou={entry.id == yourId}
+							id="send-friend-request"
+							class="send-friend-request-browser standard-button white"
+							disabled={entry.id == yourId}
 							onclick={(e) => {
 								e.stopPropagation();
 								playSound("basic_button");
@@ -113,19 +113,19 @@
 					</div>
 				{/each}
 			{:else}
-				<p class="playerSearchError">No results.</p>
+				<p class="player-search-error">No results.</p>
 			{/if}
 		</div>
 	</div>
-	<div class="incomingBox">
+	<div class="incoming-box">
 		<p style:margin-right="var(--box-margin)" style:margin-left="var(--content-margin)" style:flex-grow="100">
 			Incoming requests
 			{#if $newFriendRequest}
-				<Chip red={true} italic={true} mutedOpacity={false} text="New" class="newChip" />
+				<Chip red={true} italic={true} mutedOpacity={false} text="New" class="new-chip" />
 			{/if}
 		</p>
 		<button
-			class="standardButton white"
+			class="standard-button white"
 			style:position="relative"
 			style:flex-grow="1"
 			onclick={() => {
@@ -140,7 +140,7 @@
 </Popup>
 
 <style>
-	.playerSearchError {
+	.player-search-error {
 		opacity: 0.5;
 		font-size: 22px;
 		text-align: center;
@@ -151,11 +151,11 @@
 		transform: translate(-50%, -50%);
 	}
 
-	:global(.newChip) {
+	:global(.new-chip) {
 		margin-left: var(--content-margin);
 	}
 
-	.incomingBox {
+	.incoming-box {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -167,7 +167,7 @@
 		flex-wrap: wrap;
 	}
 
-	.containerBox {
+	.container-box {
 		position: relative;
 		box-shadow: var(--box-shadow);
 		width: 100%;
@@ -178,7 +178,7 @@
 		margin-bottom: var(--layout-margin);
 	}
 
-	.containerBoxScroll {
+	.container-box-scroll {
 		max-height: min(500px, calc(100dvh - 350px));
 		min-height: 20dvh;
 		scrollbar-width: none;
@@ -190,7 +190,7 @@
 		gap: var(--box-margin);
 	}
 
-	.friendSearchItem {
+	.friend-search-item {
 		display: flex;
 		box-shadow: var(--box-shadow);
 		gap: var(--box-margin);
@@ -204,41 +204,36 @@
 		background-color: var(--box-color);
 	}
 
-	.friendSearchItem:hover {
+	.friend-search-item:hover {
 		cursor: pointer;
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
-	.entryName {
+	.entry-name {
 		max-width: 60%;
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
-	.friendSearchYou {
-		pointer-events: none;
-		opacity: 0.5;
-	}
-
-	#friendBrowserInput {
+	#friend-browser-input {
 		padding-inline: var(--layout-margin);
 		flex-grow: 1;
 		min-width: 0;
 	}
 
-	.playerSearch {
+	.player-search {
 		margin-bottom: var(--layout-margin);
 		gap: var(--layout-margin);
 		display: flex;
 		justify-content: end;
 	}
 
-	#startFriendSearch {
+	#start-friend-search {
 		width: fit-content;
 	}
 
-	.sendFriendRequestBrowser {
+	.send-friend-request-browser {
 		margin-right: -10px;
 	}
 </style>

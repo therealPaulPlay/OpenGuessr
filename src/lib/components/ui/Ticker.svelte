@@ -15,8 +15,8 @@
 
 <div class="ticker">
 	<button
-		id="roundMinus"
-		class="standardButton white"
+		id="round-minus"
+		class="standard-button white"
 		disabled={Number(value) === Number(minimum)}
 		onclick={() => {
 			playSound("change_value");
@@ -24,13 +24,13 @@
 			if (Number(value) < Number(minimum)) value = Number(minimum);
 		}}><Minus size={18} strokeWidth={2.5} /></button
 	>
-	<p class="tickerText">{value !== minimum ? value : minimumText ? minimumText : value}</p>
+	<p class="ticker-text">{value !== minimum ? value : minimumText ? minimumText : value}</p>
 	{#if note}
-		<p class="tickerNote">{note}</p>
+		<p class="ticker-note">{note}</p>
 	{/if}
 	<button
-		id="roundPlus"
-		class="standardButton white"
+		id="round-plus"
+		class="standard-button white"
 		disabled={Number(value) === Number(maximum)}
 		onclick={() => {
 			playSound("change_value");
@@ -41,7 +41,7 @@
 </div>
 
 <style>
-	.tickerText {
+	.ticker-text {
 		background-color: rgba(255, 255, 255, 0.1);
 		box-shadow: var(--bulb-shadow);
 		padding: var(--content-margin);
@@ -53,7 +53,7 @@
 		min-width: 30px;
 	}
 
-	.tickerNote {
+	.ticker-note {
 		font-size: 20px;
 	}
 
@@ -68,7 +68,6 @@
 		align-items: center;
 		margin-bottom: var(--box-margin);
 		margin-top: var(--box-margin);
-		flex-wrap: wrap;
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 </style>

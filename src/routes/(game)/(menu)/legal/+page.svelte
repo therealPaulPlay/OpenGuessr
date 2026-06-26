@@ -21,9 +21,8 @@
 	<title>Legal</title>
 </svelte:head>
 
-<div id="text">
+<div class="text-container">
 	<h1>Introduction</h1>
-	<br />
 	<p>
 		This page informs users about data collection, applicable terms, and how to contact the developer. By using this
 		website, you accept the agreements and policies outlined here. Some details are provided on separate linked pages.
@@ -39,9 +38,9 @@
 	<p>
 		EULA: For the End User License Agreement, see <a href="https://paulplay.studio/eula" target="_blank">this page</a>.
 	</p>
-	<br /><br />
-	<h1>Preferences</h1>
 	<br />
+	<br />
+	<h1>Preferences</h1>
 	<p>
 		Under CCPA ("California Consumer Privacy Act"), Californian residents have the right to declare their preferences on
 		the sale of data for advertising and marketing purposes. If you wish to change your preferences, click this button
@@ -49,15 +48,17 @@
 	</p>
 	<br />
 	<button class="consent-button" onclick={openConsentManager}>Preferences</button>
-	<br /><br />
+	<br />
+	<br />
+	<br />
 
 	<h1>Privacy Policy</h1>
-	<br />
 	<p>
 		This service is provided by PaulPlay at no cost and is intended for use as is. By using this Service, you agree to
 		the collection and use of information as described.
 	</p>
-	<br /><br />
+	<br />
+	<br />
 	<h2>What data we collect</h2>
 	<p>
 		Google Maps collects browser details and site data. Please review their <a
@@ -69,12 +70,14 @@
 	<p>
 		With your consent, we use Google Analytics and cookies to track how you interact with OpenGuessr. Google Analytics
 		collects:
-		<br />
-		- Pages you visit on OpenGuessr<br />
-		- Time spent on each page<br />
-		- How you arrived at the site<br />
-		- Actions taken on the site<br />
 	</p>
+	<br />
+	<ul>
+		<li>Pages you visit on OpenGuessr</li>
+		<li>Time spent on each page</li>
+		<li>How you arrived at the site</li>
+		<li>Actions taken on the site</li>
+	</ul>
 	<br />
 	<p>
 		If you register an account, we collect your username, IP address (to ensure multiplayer security and prevent
@@ -95,35 +98,40 @@
 			target="_blank">privacy and cookie policy</a
 		>.
 	</p>
-	<br /> <br />
+	<br />
+	<br />
 
 	<h2>How we use your data</h2>
 	<p>
 		Data collected through Google Analytics is transferred to and analyzed by Google. We also use collected data, such
 		as usernames, for multiplayer functionalities, which may be shared with other players.
 	</p>
-	<br /> <br />
+	<br />
+	<br />
 
 	<h2>Why we collect data</h2>
 	<p>
 		Data collection helps us improve OpenGuessr, enhance its performance, and resolve issues. Additionally, data enables
 		enriched multiplayer experiences.
 	</p>
-	<br /> <br />
+	<br />
+	<br />
 
 	<h2>How long we keep your data</h2>
 	<p>
 		Personal data is retained only as long as necessary for stated purposes or to comply with legal requirements. If you
 		delete your account via the profile menu, your data will be deleted within 30 days or less.
 	</p>
-	<br /> <br />
+	<br />
+	<br />
 
 	<h2>How we keep your data secure</h2>
 	<p>
 		We take extensive measures to secure your data, including encryption and secure storage practices. All third parties
 		processing data for OpenGuessr are required to uphold similar standards. Passwords are stored as hashes only.
 	</p>
-	<br /> <br />
+	<br />
+	<br />
 
 	<h2>Changes to this policy</h2>
 	<p>
@@ -132,7 +140,8 @@
 		<br /> <br />
 		Last updated: 21st of May, 2025
 	</p>
-	<br /> <br />
+	<br />
+	<br />
 	<h2>Contact</h2>
 	<p>
 		For questions, contact us via the contact form at the bottom of <a
@@ -143,14 +152,18 @@
 </div>
 
 <style>
+	h1 {
+		margin-bottom: var(--layout-margin);
+	}
+
 	h2 {
 		margin-bottom: var(--box-margin);
 	}
 
-	#text {
+	.text-container {
 		margin-inline: auto;
-		margin-bottom: 50px;
-		max-width: 1000px;
+		margin-bottom: var(--layout-spacer);
+		max-width: 900px;
 	}
 
 	.consent-button {

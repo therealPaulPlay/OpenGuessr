@@ -50,10 +50,6 @@
 		transition: none !important;
 	}
 
-	:global(.mapHolderToResult #floatingMapButton) {
-		display: none !important;
-	}
-
 	@media (orientation: portrait) and (max-width: 800px) {
 		.map-holder-ad-shift {
 			bottom: 136px; /* Shift up to fit ad */
@@ -61,7 +57,7 @@
 
 		.map-holder {
 			width: calc(100% - calc(var(--box-margin) * 2));
-			right: var(--box-margin) !important;
+			right: var(--box-margin);
 		}
 	}
 </style>

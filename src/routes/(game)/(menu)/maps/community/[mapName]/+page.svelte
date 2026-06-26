@@ -23,13 +23,11 @@
 
 	let { data } = $props();
 
+	let nameId = $derived(data.mapName.replaceAll("_", " ")); // Map name from URL used as identifier (lowercase)
+
+	let map = $state(null);
+	let mapLocationData = $derived(map?.map_data);
 	let locationIndex = $state(0);
-	let mapName = $derived(data.name);
-	let mapAuthor = $derived(data.author);
-	let mapAuthorId = $derived(data.authorId);
-	let mapDescription = $derived(data.description);
-	let mapLocationAmount = $derived(data.map_data?.locations.length);
-	let mapLocationData = $derived(data.map_data);
 
 	let playerId = $state(0);
 	let returnAfterChange = $derived(page.url.searchParams.get("return-to-multiplayer"));
@@ -43,17 +41,38 @@
 	});
 
 	let iframeSource = $derived(
-		$streetViewURLPrefix +
-			locationsArrayForSvgMap?.[locationIndex]?.[0] +
-			"," +
-			locationsArrayForSvgMap?.[locationIndex]?.[1] +
-			"&key=" +
-			get(panoramaKey) +
-			"&fov=90",
+		locationsArrayForSvgMap?.[locationIndex]
+			? $streetViewURLPrefix +
+					locationsArrayForSvgMap?.[locationIndex]?.[0] +
+					"," +
+					locationsArrayForSvgMap?.[locationIndex]?.[1] +
+					"&key=" +
+					get(panoramaKey) +
+					"&fov=90"
+			: null,
 	);
 
 	onMount(() => {
 		playerId = localStorage.getItem("id");
+	});
+
+	onMount(async () => {
+		try {
+			const response = await fetch(get(apiUrl) + `/maps/${encodeURIComponent(nameId)}`);
+			if (!response.ok) throw new Error(response.status);
+
+			const mapData = await response.json();
+			if (!mapData.map_data_url) throw new Error("Map data URL missing");
+
+			const contentResponse = await fetch(mapData.map_data_url, { cache: "no-cache" });
+			if (!contentResponse.ok) throw new Error(contentResponse.status);
+
+			mapData.map_data = await contentResponse.json();
+			map = mapData;
+		} catch (error) {
+			console.error("Error fetching map:", error);
+			errorPopup("Map failed to load", "An error occured trying to load the map.", error.message);
+		}
 	});
 
 	// Like Functionality ------------------------------------------------------------------------------
@@ -61,7 +80,7 @@
 	let likesCount = $state("...");
 
 	onMount(() => {
-		fetchMapLikeStatus(mapName);
+		fetchMapLikeStatus(nameId);
 	});
 
 	async function likeOrDislikeMap(mapName) {
@@ -211,7 +230,7 @@
 			// Return the success or error message. No need to parse the response
 			if (response.ok) {
 				// Update local copy so subsequent adds use the latest locations
-				data = { ...data, map_data: { locations: finalLocations } };
+				map = { ...map, map_data: { locations: finalLocations } };
 				return `Map updated successfully.`;
 			} else {
 				let error = response.status;
@@ -239,27 +258,30 @@
 </script>
 
 <svelte:head>
-	<title>{mapName}</title>
+	<title>{map?.name}</title>
 </svelte:head>
 
-<div class="mainContainer">
+<div class="main-container">
 	<!-- Main View (Panorama Preview) -->
-	<div class="mapViewIframe">
-		<!-- svelte-ignore a11y_missing_attribute -->
-		<iframe class="mapIframe" referrerpolicy="no-referrer-when-downgrade" frameborder="0" src={iframeSource}></iframe>
+	<div class="map-view-iframe">
+		{#if iframeSource}
+			<!-- svelte-ignore a11y_missing_attribute -->
+			<iframe class="map-iframe" referrerpolicy="no-referrer-when-downgrade" frameborder="0" src={iframeSource}></iframe>
+		{:else}
+			<p class="loading-text" style:opacity="0.5">Loading...</p>
+		{/if}
 	</div>
 	<!-- Location Map (shows which spots are on the map)-->
-	{#if locationsArrayForSvgMap?.length}
-		<div class="mapContainer">
-			{#if mapLocationAmount > 500}
-				<div class="locationsTrimNote">
-					<p>Limited location view for performance.</p>
-				</div>
-			{/if}
+	<div class="map-container">
+		{#if mapLocationData?.locations?.length > 500}
+			<div class="locations-trim-note">
+				<p>Limited location view for performance.</p>
+			</div>
+		{/if}
+		{#if locationsArrayForSvgMap?.length}
 			<SvgMap
 				locationList={locationsArrayForSvgMap}
 				framePaddingOffset={{ top: 40 }}
-				class="mapBulbShadow"
 				onclick={(coordinates) => {
 					const mapLocations = $state.snapshot(locationsArrayForSvgMap);
 					const index = mapLocations?.findIndex(([lat, lon]) => {
@@ -268,31 +290,32 @@
 					if (index >= 0) locationIndex = index;
 				}}
 			/>
-		</div>
-	{/if}
+		{/if}
+	</div>
 	<!-- Author name and Like -->
-	<div class="headerContainer">
-		<div class="nameContainer">
-			<h1 class="header mapTitle">{mapName}</h1>
+	<div class="header-container">
+		<div class="name-container">
+			<h1 class="header map-title">{map?.name || "..."}</h1>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 			<p
-				class="authorText"
+				class="author-text"
+				style:pointer-events={map?.authorId == null ? "none" : undefined}
 				onclick={() => {
-					showProfile(mapAuthorId);
+					showProfile(map?.authorId);
 				}}
 			>
-				by {mapAuthor}
+				by {map?.author || "..."}
 			</p>
 		</div>
-		<div class="buttonBar barMenu of-left of-right">
+		<div class="button-bar bar-menu of-left of-right">
 			<button
-				id="likeMap"
+				id="like-map"
 				{@attach tooltip({ text: "Like" })}
-				class="standardButton white mapButton largeButton"
+				class="standard-button white map-button large-button"
 				onclick={() => {
 					playSound("basic_button");
-					likeOrDislikeMap(mapName);
+					likeOrDislikeMap(nameId);
 				}}
 			>
 				{#if isLiked}
@@ -300,12 +323,12 @@
 				{:else}
 					<Heart strokeWidth={2.25} style="margin-top: 2px;" />
 				{/if}
-				<p id="likesText">{likesCount ?? "Error"}</p>
+				<p id="likes-text">{likesCount ?? "Error"}</p>
 			</button>
 			<button
-				id="mapLink"
+				id="map-link"
 				{@attach tooltip({ text: "Copy link" })}
-				class="standardButton white mapButton largeButton"
+				class="standard-button white map-button large-button"
 				onclick={() => {
 					playSound("basic_button");
 					navigator.clipboard
@@ -321,20 +344,20 @@
 			>
 				<Link strokeWidth={2.75} size={18} />
 			</button>
-			{#if mapAuthorId == playerId && playerId != null}
+			{#if map && map.authorId == playerId && playerId != null}
 				<button
-					id="manageDelete"
+					id="manage-delete"
 					{@attach tooltip({ text: "Delete" })}
-					class="standardButton white mapButton largeButton"
+					class="standard-button white map-button large-button"
 					onclick={() => {
 						playSound("basic_button");
-						deleteMapScreen(mapName);
+						deleteMapScreen(map?.name);
 					}}><Trash2 size={18} strokeWidth={2.75} /></button
 				>
 				<button
-					id="manageUpdate"
+					id="manage-update"
 					{@attach tooltip({ text: "Update" })}
-					class="standardButton white mapButton largeButton"
+					class="standard-button white map-button large-button"
 					onclick={() => {
 						playSound("basic_button");
 						fileName = "Pick file"; // Reset file name input
@@ -343,26 +366,27 @@
 					}}><Replace size={18} strokeWidth={2.75} /></button
 				>
 				<a
-					id="manageDownload"
+					id="manage-download"
 					{@attach tooltip({ text: "Download" })}
-					class="standardButton white mapButton largeButton"
+					class="standard-button white map-button large-button"
 					href={mapDownloadHref}
-					download={`${mapName}.json`}
+					download={`${map?.name}.json`}
 					onclick={() => playSound("basic_button")}><FileDown size={18} strokeWidth={2.5} /></a
 				>
 			{/if}
 			<button
-				class="standardButton mapButton largeButton"
+				class="standard-button map-button large-button"
 				onclick={() => {
 					playSound("basic_button");
+					if (!map) return showNotification("Map not loaded yet, please try again.");
 
 					// Add to bookmarked community maps
 					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
-					if (!addedCommunityMaps.includes(mapName)) addedCommunityMaps.push(mapName);
+					if (!addedCommunityMaps.includes(map?.name)) addedCommunityMaps.push(map?.name);
 					localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
 
 					// Change to map
-					changeMap("community_" + mapName, true, returnAfterChange);
+					changeMap("community_" + map?.name, true, returnAfterChange);
 					if (!returnAfterChange) {
 						navigationMenu.set(false);
 						goto("/");
@@ -376,17 +400,17 @@
 
 	<!-- Info boxes -->
 	<div class="information">
-		<div class="locationAmountInfo infoElement">
-			<div class="pinIconContainer">
+		<div class="location-amount-info info-element">
+			<div class="pin-icon-container">
 				<MapPin size={100} strokeWidth={0.75} />
 			</div>
-			<p class="locationAmountText">{mapLocationAmount.toLocaleString()} Locations</p>
+			<p class="location-amount-text">{mapLocationData?.locations?.length?.toLocaleString() || "..."} Locations</p>
 		</div>
-		<div class="descriptionInfo infoElement">
-			<div class="descriptionScroll of-top of-bottom">
-				<h2 class="descHeader">About <i>{mapName}</i></h2>
+		<div class="description-info info-element">
+			<div class="description-scroll of-top of-bottom">
+				<h2 class="desc-header">About <i>{map?.name || "..."}</i></h2>
 				<p>
-					{mapDescription}
+					{map?.description || "..."}
 				</p>
 			</div>
 		</div>
@@ -395,9 +419,9 @@
 
 <Popup bind:open={updatePopup} verySlim={true}>
 	<div class="popup-title">
-		<h1 id="mapUpdateHeader">Update locations</h1>
+		<h1 id="map-update-header">Update locations</h1>
 	</div>
-	<p class="marginBottom">Mode</p>
+	<p class="margin-bottom">Mode</p>
 	<Tabs
 		tabs={["Overwrite all", "Add"]}
 		onchange={(_, tabIndex) => {
@@ -405,8 +429,8 @@
 			addInsteadOfOverwrite = tabIndex != 0;
 		}}
 	/>
-	<p class="marginTop">Locations (Links)</p>
-	<div class="textareaContainer">
+	<p class="margin-top">Locations (Links)</p>
+	<div class="textarea-container">
 		<textarea
 			type="text"
 			class="of-top of-bottom"
@@ -415,9 +439,9 @@
 			placeholder="https://www.google.com/maps..."
 		></textarea>
 	</div>
-	<p class="marginBottom">Locations (JSON)</p>
+	<p class="margin-bottom">Locations (JSON)</p>
 	<button
-		class="standardButton white"
+		class="standard-button white"
 		onclick={() => {
 			playSound("basic_button");
 			filePicker.click(); // Simulate click on filePicker to make the file picker UI nicer (default picker is hidden)
@@ -425,34 +449,34 @@
 	>
 		<input
 			type="file"
-			id="jsonUpdate"
+			id="json-update"
 			accept="application/json"
 			bind:this={filePicker}
 			onchange={(e) => {
 				fileName = e.target.files.length > 0 ? e.target.files[0].name : "Pick file";
 			}}
 		/>
-		<p id="fileNameUpdate">{fileName}</p>
+		<p id="file-name-update">{fileName}</p>
 	</button>
 	{#if showStatus}
-		<p class="marginTop" id="updateMapStatus">{statusText}</p>
+		<p class="margin-top" id="update-map-status">{statusText}</p>
 	{/if}
-	<div class="buttonBoxGap">
+	<div class="button-box-gap">
 		<button
-			id="updateProceed"
-			class="standardButton bottomButton largeButton"
+			id="update-proceed"
+			class="standard-button bottom-button large-button"
 			onclick={async () => {
 				playSound("basic_button");
 				showStatus = true;
 				statusText = "Updating...";
-				statusText = "Status: " + (await updateMap(mapName));
+				statusText = "Status: " + (await updateMap(map?.name));
 			}}>Update</button
 		>
 	</div>
 </Popup>
 
 <style>
-	.mainContainer {
+	.main-container {
 		width: calc(100% - 20px);
 		display: flex;
 		flex-wrap: wrap;
@@ -461,35 +485,32 @@
 		padding-inline: var(--box-margin);
 	}
 
-	.mapTitle {
+	.map-title {
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
-	.mapContainer {
+	.map-container {
 		width: 100%;
 		height: 250px;
 		max-height: 25svh;
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
+		box-shadow: var(--bulb-shadow);
 		overflow: hidden;
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 		position: relative;
 	}
 
-	:global(.mapBulbShadow) {
-		box-shadow: var(--bulb-shadow);
-	}
-
-	.locationsTrimNote {
+	.locations-trim-note {
 		position: absolute;
 		box-shadow: var(--box-shadow);
 		bottom: var(--box-margin);
 		left: var(--box-margin);
 		max-width: calc(100% - 40px);
 		border-radius: var(--content-margin);
-		background-color: var(--dark-background);
+		background-color: var(--box-color-dark-soft);
 		backdrop-filter: blur(var(--normal-blur));
 		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
@@ -497,11 +518,11 @@
 		pointer-events: none;
 	}
 
-	.buttonBoxGap {
+	.button-box-gap {
 		gap: var(--layout-margin);
 	}
 
-	.locationsTrimNote p {
+	.locations-trim-note p {
 		opacity: 0.5;
 		font-size: 20px;
 		text-overflow: ellipsis;
@@ -509,7 +530,7 @@
 		text-wrap: nowrap;
 	}
 
-	.descriptionScroll {
+	.description-scroll {
 		width: 100%;
 		overflow-x: hidden;
 		overflow-y: auto;
@@ -519,20 +540,20 @@
 		scrollbar-width: none;
 	}
 
-	.descHeader {
+	.desc-header {
 		font-size: 25px;
 		margin-bottom: var(--box-margin);
 	}
 
-	.marginTop {
+	.margin-top {
 		margin-top: 20px;
 	}
 
-	.marginBottom {
+	.margin-bottom {
 		margin-bottom: var(--box-margin);
 	}
 
-	#updateMapStatus {
+	#update-map-status {
 		background-color: var(--box-color);
 		padding: var(--content-margin);
 		border-radius: var(--box-margin);
@@ -540,7 +561,7 @@
 		width: calc(100% - 30px);
 	}
 
-	.infoElement {
+	.info-element {
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
 		border-radius: var(--layout-margin);
@@ -552,11 +573,11 @@
 		color: white;
 	}
 
-	.pinIconContainer {
+	.pin-icon-container {
 		opacity: 0.5;
 	}
 
-	.locationAmountText {
+	.location-amount-text {
 		opacity: 0.5;
 	}
 
@@ -567,7 +588,7 @@
 		padding-inline: var(--layout-margin);
 	}
 
-	.textareaContainer {
+	.textarea-container {
 		border-radius: var(--box-margin);
 		width: 100%;
 		box-sizing: border-box;
@@ -578,18 +599,18 @@
 		overflow: hidden;
 	}
 
-	.locationAmountInfo {
+	.location-amount-info {
 		justify-content: center;
 		align-items: center;
 		flex-direction: column;
 		gap: var(--layout-margin);
 	}
 
-	.descriptionInfo {
+	.description-info {
 		flex-grow: 4;
 	}
 
-	#jsonUpdate {
+	#json-update {
 		display: none;
 	}
 
@@ -598,17 +619,17 @@
 		display: flex;
 		gap: var(--layout-margin);
 		margin-top: var(--box-margin);
-		margin-bottom: 50px;
+		margin-bottom: var(--layout-spacer);
 	}
 
-	.nameContainer {
+	.name-container {
 		display: flex;
 		max-width: 75%;
 		align-items: center;
 		flex-wrap: wrap;
 	}
 
-	.authorText {
+	.author-text {
 		text-align: left;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
@@ -620,11 +641,11 @@
 		transition: opacity 250ms ease;
 	}
 
-	.authorText:hover {
+	.author-text:hover {
 		opacity: 0.25;
 	}
 
-	.mapViewIframe {
+	.map-view-iframe {
 		width: 100%;
 		height: 400px;
 		max-height: 35svh;
@@ -632,17 +653,19 @@
 		overflow: hidden;
 		margin-bottom: calc(var(--layout-margin) * -2);
 		position: relative;
-		background-color: rgb(27, 27, 37);
+		background-color: rgb(10, 10, 15);
+		text-align: center;
+		align-content: center;
 		z-index: 10;
 		box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
 	}
 
-	.mapIframe {
+	.map-iframe {
 		width: 100%;
 		height: 100%;
 	}
 
-	#likeMap {
+	#like-map {
 		padding-inline: 12px;
 		display: flex;
 		gap: var(--box-margin);
@@ -651,7 +674,7 @@
 		padding-top: var(--content-margin);
 	}
 
-	.buttonBar {
+	.button-bar {
 		box-shadow: var(--box-shadow);
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
@@ -662,7 +685,7 @@
 		scrollbar-width: none;
 	}
 
-	.mapButton {
+	.map-button {
 		justify-content: center;
 		align-items: center;
 		display: flex;

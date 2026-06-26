@@ -8,7 +8,8 @@
 	import Tabs from "./ui/Tabs.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
-	import { isSingleplayerNMPZ, singleplayer, singleplayerTimeout } from "$lib/stores/modeStore";
+	import { singleplayer } from "$lib/stores/modeStore";
+	import { singleplayerNMPZ, singleplayerTimeout } from "$lib/stores/context-specific/singleplayerOptionsStore";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 
 	// Unit switch between kilometers and miles ------------------
@@ -16,7 +17,9 @@
 
 	onMount(() => {
 		const tempStorageDistanceUnit = localStorage.getItem("distanceUnit");
-		if (tempStorageDistanceUnit !== null) selectedUnit = tempStorageDistanceUnit == "kilometers" ? "Metric" : "Imperial";
+		if (tempStorageDistanceUnit !== null) {
+			selectedUnit = tempStorageDistanceUnit == "kilometers" ? "Metric" : "Imperial";
+		}
 	});
 
 	// SFX Volume -----------------------------
@@ -125,8 +128,8 @@
 	// Toggle NMPZ ------------------------------------------------------------------
 	function toggleSingleplayerNMPZ() {
 		playSound("basic_button");
-		$isSingleplayerNMPZ = !$isSingleplayerNMPZ;
-		localStorage.setItem("singleplayerNMPZ", $isSingleplayerNMPZ ? "true" : "");
+		$singleplayerNMPZ = !$singleplayerNMPZ;
+		localStorage.setItem("singleplayerNMPZ", $singleplayerNMPZ ? "true" : "");
 		checkGenerationTypeAndGenerate();
 	}
 </script>
@@ -137,15 +140,15 @@
 	<div class="popup-title">
 		<h1>Settings</h1>
 	</div>
-	<div class="settingsCanvas">
+	<div class="settings-canvas">
 		<TitleSeparator text="Singleplayer" noMargin={true} />
-		<div class="settingsBox settingsBoxFlex" class:box-disabled={!$singleplayer}>
-			<div class="timerTextBox">
+		<div class="settings-box settings-box-flex" class:box-disabled={!$singleplayer}>
+			<div class="timer-text-box">
 				<Timer />
-				<p id="timerSliderText" contenteditable="false">{timerSliderText}</p>
+				<p id="timer-slider-text" contenteditable="false">{timerSliderText}</p>
 			</div>
-			<div class="timerControlsWrapper">
-				<button class="arrowButton standardButton white" onclick={() => adjustTimer(false)}>
+			<div class="timer-controls-wrapper">
+				<button class="arrow-button standard-button white" onclick={() => adjustTimer(false)}>
 					<ChevronLeft size={20} strokeWidth={2.5} />
 				</button>
 
@@ -154,32 +157,32 @@
 					min="0"
 					max="121"
 					step="1"
-					class="slider timerSlider"
+					class="slider timer-slider"
 					onchange={changeTimeout}
 					bind:value={timerSliderValue}
 				/>
 
-				<button class="arrowButton standardButton white" onclick={() => adjustTimer(true)}>
+				<button class="arrow-button standard-button white" onclick={() => adjustTimer(true)}>
 					<ChevronRight size={20} strokeWidth={2.5} />
 				</button>
 			</div>
 		</div>
-		<div class="settingsBox settingsBoxFlex noFlexWrap" class:box-disabled={!$singleplayer}>
-			<p class="settingsBoxFlexTitle">No Move, Pan or Zoom</p>
-			<button class="standardButton white" onclick={toggleSingleplayerNMPZ}
-				>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
+		<div class="settings-box settings-box-flex no-flex-wrap" class:box-disabled={!$singleplayer}>
+			<p class="settings-box-flex-title">No Move, Pan or Zoom</p>
+			<button class="standard-button white" onclick={toggleSingleplayerNMPZ}
+				>{$singleplayerNMPZ ? "Enabled" : "Disabled"}</button
 			>
 		</div>
 		<TitleSeparator text="Audio" noMargin={true} />
-		<div class="settingsBox">
-			<p class="textMargin">SFX volume</p>
-			<div class="sliderBox">
+		<div class="settings-box">
+			<p class="text-margin">SFX volume</p>
+			<div class="slider-box">
 				<input
 					type="range"
 					min="0"
 					max="1"
 					step="0.01"
-					class="slider shortSlider"
+					class="slider short-slider"
 					bind:value={sfxVolumeSliderValue}
 					style:background={sfxSliderBg}
 					oninput={inputSFXVolumeSlider}
@@ -187,22 +190,22 @@
 				<p style:margin-right="auto">{sfxSliderBgPercentage}%</p>
 			</div>
 		</div>
-		<div class="settingsBox">
-			<p class="textMargin">Music volume</p>
-			<div class="sliderBox">
+		<div class="settings-box">
+			<p class="text-margin">Music volume</p>
+			<div class="slider-box">
 				<input
 					type="range"
 					min="0"
 					max="1"
 					step="0.01"
-					class="slider shortSlider"
+					class="slider short-slider"
 					bind:value={musicVolumeSliderValue}
 					style:background={musicSliderBg}
 					oninput={inputMusicVolumeSlider}
 				/>
 				<p style:margin-right="auto">{musicSliderBgPercentage}%</p>
 				<button
-					class="standardButton white creditsButton"
+					class="standard-button white credits-button"
 					onclick={() => {
 						playSound("basic_button");
 						showConfirmPopup("Credits", 'The music was composed by Lazy Bugatti. Check out his Spotify account "QGM"!');
@@ -213,11 +216,11 @@
 			</div>
 		</div>
 		<TitleSeparator text="General" noMargin={true} />
-		<div class="settingsBox settingsBoxFlex">
-			<p class="settingsBoxFlexTitle">Unit system</p>
+		<div class="settings-box settings-box-flex">
+			<p class="settings-box-flex-title">Unit system</p>
 			<Tabs
 				tabs={["Metric", "Imperial"]}
-				class="settingsNoButtonMargin"
+				class="settings-no-button-margin"
 				bind:selected={selectedUnit}
 				onchange={(tab) => {
 					playSound("basic_button");
@@ -226,13 +229,13 @@
 			/>
 		</div>
 		{#if !$preventFullscreen}
-			<div class="settingsBox settingsBoxFlex">
-				<p class="settingsBoxFlexTitle">View</p>
-				<button id="fullscreenButton" class="standardButton white" onclick={toggleFullscreen}>
-					<span class="fullscreenIcon">
+			<div class="settings-box settings-box-flex">
+				<p class="settings-box-flex-title">View</p>
+				<button id="fullscreen-button" class="standard-button white" onclick={toggleFullscreen}>
+					<span class="fullscreen-icon">
 						<Scan size="17" strokeWidth={3} style="margin-bottom: -1px;" />
 					</span>
-					<span id="fullscreenText">{fullscreenButtonText}</span>
+					<span id="fullscreen-text">{fullscreenButtonText}</span>
 				</button>
 			</div>
 		{/if}
@@ -240,7 +243,7 @@
 </Popup>
 
 <style>
-	.settingsBox {
+	.settings-box {
 		background-color: var(--box-color);
 		border-radius: var(--box-margin);
 		padding: var(--box-margin);
@@ -251,7 +254,7 @@
 		height: 77px;
 	}
 
-	.timerControlsWrapper {
+	.timer-controls-wrapper {
 		display: flex;
 		align-items: center;
 		gap: var(--box-margin);
@@ -265,14 +268,14 @@
 		pointer-events: none;
 	}
 
-	.arrowButton {
+	.arrow-button {
 		display: flex;
 		align-items: center;
 		justify-content: center;
 		padding: var(--content-margin);
 	}
 
-	.timerTextBox {
+	.timer-text-box {
 		display: flex;
 		justify-content: space-between;
 		box-shadow: var(--box-shadow);
@@ -287,7 +290,7 @@
 		text-align: center;
 	}
 
-	.settingsBoxFlex {
+	.settings-box-flex {
 		display: flex;
 		gap: var(--box-margin);
 		justify-content: space-between;
@@ -296,18 +299,18 @@
 		flex-wrap: wrap;
 	}
 
-	.timerSlider {
+	.timer-slider {
 		flex-grow: 1;
 	}
 
-	.settingsBoxFlexTitle {
+	.settings-box-flex-title {
 		margin-left: var(--content-margin);
 		text-wrap: nowrap;
 		overflow: hidden;
 		text-overflow: ellipsis;
 	}
 
-	.settingsCanvas {
+	.settings-canvas {
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--layout-margin);
@@ -316,16 +319,16 @@
 		align-items: center;
 	}
 
-	.textMargin {
+	.text-margin {
 		margin-inline: var(--content-margin);
 		margin-bottom: var(--box-margin);
 	}
 
-	.fullscreenIcon {
+	.fullscreen-icon {
 		margin-right: 3px;
 	}
 
-	.sliderBox {
+	.slider-box {
 		display: flex;
 		margin-top: 18px;
 		margin-left: var(--content-margin);
@@ -334,21 +337,21 @@
 		justify-content: space-between;
 	}
 
-	.sliderBox p {
+	.slider-box p {
 		min-width: 45px;
 		margin-left: var(--box-margin);
 		opacity: 0.75;
 	}
 
-	.shortSlider {
+	.short-slider {
 		width: 150px;
 	}
 
-	.noFlexWrap {
+	.no-flex-wrap {
 		flex-wrap: nowrap;
 	}
 
-	.creditsButton {
+	.credits-button {
 		padding: 3px;
 		padding-inline: 6px;
 		display: flex;

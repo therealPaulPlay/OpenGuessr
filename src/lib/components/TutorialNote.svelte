@@ -2,17 +2,19 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { Play, X } from "@lucide/svelte";
 	import { leaveTutorial, startTutorial } from "./TutorialOverlay.svelte";
-	import { singleplayer } from "$lib/stores/modeStore";
+	import { countryGuessr, singleplayer } from "$lib/stores/modeStore";
 	import { tutorial } from "$lib/stores/context-specific/tutorialStore";
 	import { fly, slide } from "svelte/transition";
 	import { mapHovered } from "$lib/stores/context-specific/mapStore";
 	import { backIn, backOut } from "svelte/easing";
 
 	let show = $state(false);
-	let mapWasHoveredOnce = $state(false);
+	let fastIn = $state(false);
+	let fastOut = $derived($mapHovered || $countryGuessr);
 
 	$effect(() => {
-		if ($mapHovered) mapWasHoveredOnce = true;
+		if ($mapHovered) fastIn = true;
+		if ($countryGuessr) fastIn = true;
 	});
 
 	// Check for tutorial state & show note if applicable
@@ -31,26 +33,34 @@
 	});
 </script>
 
-{#if show && $singleplayer && !$mapHovered}
+{#if show && $singleplayer && !$mapHovered && !$countryGuessr}
 	<div class="note-wrapper">
 		<img
 			alt="welcome mascot"
 			src="/img/tutorial/tutorial_welcome.png"
 			class="welcome-image"
-			in:fly={{ y: 15, delay: mapWasHoveredOnce ? 250 : 750, easing: backOut }}
-			out:fly={{ y: 15, duration: $mapHovered ? 150 : undefined, easing: $mapHovered ? undefined : backIn }}
+			in:fly={{ y: 15, delay: fastIn ? 250 : 750, easing: backOut }}
+			out:fly={{
+				y: 15,
+				duration: fastOut ? 150 : undefined,
+				easing: fastOut ? undefined : backIn,
+			}}
 		/>
 		<div
-			class="barMenu tutorial-note"
-			in:slide={{ delay: mapWasHoveredOnce ? 250 : 750, easing: backOut }}
-			out:slide={{ duration: $mapHovered ? 150 : undefined, easing: $mapHovered ? undefined : backIn }}
+			class="bar-menu tutorial-note"
+			in:slide={{ delay: fastIn ? 250 : 750, easing: backOut }}
+			out:slide={{
+				duration: fastOut ? 150 : undefined,
+				easing: fastOut ? undefined : backIn,
+			}}
 		>
 			<div class="left-side of-left of-right">
 				<p>New?<span style:opacity={0.75} style:margin-left="var(--content-margin);">Try the tutorial.</span></p>
 			</div>
 			<div class="right-side">
 				<button
-					class="standardButton dark close-button"
+					class="standard-button dark close-button"
+					aria-label="Close"
 					onclick={() => {
 						playSound("basic_button");
 						show = false;
@@ -60,7 +70,8 @@
 					<X size={22} strokeWidth={2.25} />
 				</button>
 				<button
-					class="standardButton white"
+					class="standard-button white"
+					aria-label="Play tutorial"
 					style:padding-inline="var(--box-margin);"
 					onclick={() => {
 						playSound("basic_button");
@@ -76,7 +87,7 @@
 	.note-wrapper {
 		position: relative;
 		width: 100%;
-        z-index: -1;
+		z-index: -1;
 	}
 
 	.tutorial-note {
@@ -109,14 +120,14 @@
 
 	.welcome-image {
 		position: absolute;
-		top: -60px;
-		right: 35%;
-		rotate: -5deg;
+		top: -61px;
+		right: max(115px, 32%);
+		rotate: -3deg;
 		transform: translateX(50%);
 		height: 90px;
 		width: 90px;
 		pointer-events: none;
 		z-index: 1;
-        user-select: none;
+		user-select: none;
 	}
 </style>

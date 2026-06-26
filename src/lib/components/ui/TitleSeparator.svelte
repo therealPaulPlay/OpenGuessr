@@ -2,7 +2,7 @@
 	let { text = "Default", noMargin = false, class: classes } = $props();
 </script>
 
-<div class="flexContainer {classes}" class:noMargin>
+<div class="flex-container {classes}" class:no-margin={noMargin}>
 	<p>{text}</p>
 	<div class="line"></div>
 </div>
@@ -17,7 +17,7 @@
 		margin-top: var(--content-margin);
 	}
 
-	.flexContainer {
+	.flex-container {
 		display: flex;
 		justify-content: space-between;
 		width: calc(100%);
@@ -27,11 +27,11 @@
 		box-sizing: border-box;
 	}
 
-	.noMargin {
+	.no-margin {
 		margin: 0;
 	}
 
-	.flexContainer p {
+	.flex-container p {
 		opacity: 0.5;
 		padding-right: var(--layout-margin);
 		font-style: italic;

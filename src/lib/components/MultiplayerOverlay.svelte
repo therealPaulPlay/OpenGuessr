@@ -20,12 +20,12 @@
 </script>
 
 {#if $multiplayerOverlay}
-	<div class="multiplayerOverlay" out:fade={{ duration: 150 }}>
-		<h1 class="multiplayerTitle" bind:this={$overlayTitleElement}>{$multiplayerOverlayTitle}</h1>
+	<div class="multiplayer-overlay" out:fade={{ duration: 150 }}>
+		<h1 class="multiplayer-title" bind:this={$overlayTitleElement}>{$multiplayerOverlayTitle}</h1>
 		{#if $overlayShowSubtitle}
-			<h2 class="multiplayerTitle">1.5x Multiplier</h2>
+			<h2 class="multiplayer-title">1.5x Multiplier</h2>
 		{/if}
-		<div class="multiplayerTable of-top of-bottom of-length-1.5">
+		<div class="multiplayer-table of-top of-bottom of-length-1.5">
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			{#if $multiplayerTableArray.length > 0}
 				{#if $teamAmount > 1}
@@ -34,22 +34,22 @@
 						{#each team.players as { clientId, username, elo, score, userId, badge, spectator }}
 							<div
 								transition:slide
-								class="multiplayerOverlayEntry"
-								class:halfTransparent={spectator}
-								class:yourMultiplayerOverlay={clientId && clientId == get(socket)?.id}
+								class="multiplayer-overlay-entry"
+								class:half-transparent={spectator}
+								class:your-multiplayer-overlay={clientId && clientId == get(socket)?.id}
 								style:background-image={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
 							>
-								<div class="multiplayerEntryPlayerInfo">
+								<div class="multiplayer-entry-player-info">
 									<div
-										class="multiplayerEntryPlayerName"
-										class:entryNotClickable={!userId}
+										class="multiplayer-entry-player-name"
+										class:entry-not-clickable={!userId}
 										role="cell"
 										tabindex="0"
 										onclick={() => {
 											if (userId) showProfile(userId);
 										}}
 									>
-										<span class="usernameSpan">{username}</span>
+										<span class="username-span">{username}</span>
 										{#if badge}
 											<Badge interactive={false} display={true} id={badge} />
 										{/if}
@@ -60,7 +60,7 @@
 											{@render spectatorDisplay()}
 										{/if}
 									</div>
-									<p class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</p>
+									<p class="multiplayer-entry-player-score">{score?.toLocaleString()} Pts.</p>
 								</div>
 							</div>
 						{/each}
@@ -70,21 +70,21 @@
 					{#each $multiplayerTableArray as { clientId, username, elo, score, userId, badge, spectator }}
 						<div
 							transition:slide
-							class="multiplayerOverlayEntry"
-							class:halfTransparent={spectator}
-							class:yourMultiplayerOverlay={clientId && clientId == get(socket)?.id}
+							class="multiplayer-overlay-entry"
+							class:half-transparent={spectator}
+							class:your-multiplayer-overlay={clientId && clientId == get(socket)?.id}
 						>
-							<div class="multiplayerEntryPlayerInfo">
+							<div class="multiplayer-entry-player-info">
 								<div
-									class="multiplayerEntryPlayerName"
-									class:entryNotClickable={!userId}
+									class="multiplayer-entry-player-name"
+									class:entry-not-clickable={!userId}
 									role="cell"
 									tabindex="0"
 									onclick={() => {
 										if (userId) showProfile(userId);
 									}}
 								>
-									<span class="usernameSpan">{username}</span>
+									<span class="username-span">{username}</span>
 									{#if badge}
 										<Badge interactive={false} display={true} id={badge} />
 									{/if}
@@ -95,7 +95,7 @@
 										{@render spectatorDisplay()}
 									{/if}
 								</div>
-								<p class="multiplayerEntryPlayerScore">{score?.toLocaleString()} Pts.</p>
+								<p class="multiplayer-entry-player-score">{score?.toLocaleString()} Pts.</p>
 							</div>
 						</div>
 					{/each}
@@ -103,11 +103,11 @@
 			{/if}
 		</div>
 		{#if $rematchButtonVisible || $leaveMatchButtonVisible}
-			<div class="buttonBox" transition:slide={{ axis: "y" }}>
+			<div class="button-box" transition:slide={{ axis: "y" }}>
 				{#if $rematchButtonVisible}
-					<div class="hostButtonContainer barMenu">
+					<div class="host-button-container bar-menu">
 						<button
-							class="standardButton white largeButton roundEndButton"
+							class="standard-button white large-button round-end-button"
 							onclick={() => {
 								playSound("basic_button");
 								get(socket)?.sendRequest("rematch");
@@ -116,9 +116,9 @@
 					</div>
 				{/if}
 				{#if $leaveMatchButtonVisible}
-					<div class="hostButtonContainer barMenu">
+					<div class="host-button-container bar-menu">
 						<button
-							class="standardButton largeButton roundEndButton"
+							class="standard-button large-button round-end-button"
 							onclick={() => {
 								playSound("basic_button");
 								leaveMultiplayer();
@@ -132,19 +132,19 @@
 {/if}
 
 {#snippet eloDisplay(elo = "Default")}
-	<div class="eloDisplay">
+	<div class="elo-display">
 		<p>{elo?.toLocaleString()} Elo</p>
 	</div>
 {/snippet}
 
 {#snippet spectatorDisplay()}
-	<div class="eloDisplay">
+	<div class="elo-display">
 		<p>Spectator</p>
 	</div>
 {/snippet}
 
 <style>
-	.multiplayerOverlay {
+	.multiplayer-overlay {
 		position: fixed;
 		inset: 0 0 0 0;
 		z-index: 4;
@@ -159,19 +159,19 @@
 		user-select: none;
 	}
 
-	.hostButtonContainer {
+	.host-button-container {
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
 		backdrop-filter: none !important;
 	}
 
-	.usernameSpan {
+	.username-span {
 		margin-right: 3px;
 		font-size: 25px;
 	}
 
-	.eloDisplay {
+	.elo-display {
 		padding: var(--panel-margin);
 		box-shadow: var(--bulb-shadow);
 		border-radius: var(--content-margin);
@@ -184,15 +184,15 @@
 		background-color: rgba(255, 255, 255, 0.15);
 	}
 
-	.eloDisplay p {
+	.elo-display p {
 		font-size: 20px !important;
 	}
 
-	.halfTransparent {
+	.half-transparent {
 		opacity: 0.5;
 	}
 
-	.buttonBox {
+	.button-box {
 		margin-top: calc(var(--layout-margin) + var(--box-margin));
 		gap: var(--layout-margin);
 		display: flex;
@@ -202,11 +202,11 @@
 		flex-wrap: wrap;
 	}
 
-	.roundEndButton {
+	.round-end-button {
 		min-width: 130px;
 	}
 
-	.multiplayerTitle {
+	.multiplayer-title {
 		overflow: hidden;
 		white-space: nowrap;
 		transition:
@@ -220,20 +220,20 @@
 		text-align: center;
 	}
 
-	.multiplayerOverlay h1 {
+	.multiplayer-overlay h1 {
 		font-size: 50px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: 20px;
 	}
 
-	.multiplayerOverlay h2 {
+	.multiplayer-overlay h2 {
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
 		margin-bottom: 20px;
 		margin-top: -20px;
 		opacity: 0.75;
 	}
 
-	.multiplayerTable {
+	.multiplayer-table {
 		display: flex;
 		justify-content: safe center;
 		align-items: safe flex-start;
@@ -248,18 +248,18 @@
 		gap: var(--layout-margin);
 	}
 
-	.multiplayerOverlayEntry {
+	.multiplayer-overlay-entry {
 		background-color: rgba(0, 0, 0, 0.1);
 		border-radius: var(--box-margin);
 		width: 100%;
 		box-shadow: var(--box-shadow);
 	}
 
-	.yourMultiplayerOverlay {
+	.your-multiplayer-overlay {
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
-	.multiplayerEntryPlayerInfo {
+	.multiplayer-entry-player-info {
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
@@ -271,7 +271,7 @@
 		height: 54px;
 	}
 
-	.multiplayerEntryPlayerName {
+	.multiplayer-entry-player-name {
 		flex: 1;
 		transition: opacity 250ms ease;
 		cursor: pointer;
@@ -285,22 +285,22 @@
 		overflow: hidden;
 	}
 
-	.multiplayerEntryPlayerName:hover {
+	.multiplayer-entry-player-name:hover {
 		opacity: 0.5 !important;
 	}
 
-	.entryNotClickable {
+	.entry-not-clickable {
 		pointer-events: none;
 	}
 
-	.multiplayerEntryPlayerScore {
+	.multiplayer-entry-player-score {
 		margin-left: var(--box-margin);
 		font-size: 25px;
 	}
 
 	/* Shift up table on mobile where the indicator bar spans across the device width */
 	@media (orientation: portrait) and (max-width: 800px) {
-		.multiplayerOverlay {
+		.multiplayer-overlay {
 			padding-bottom: 150px;
 		}
 	}

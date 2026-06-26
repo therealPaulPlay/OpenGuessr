@@ -45,33 +45,33 @@
 </svelte:head>
 
 <div class="main-container">
-	<div class="multiplayerCreationArea">
+	<div class="multiplayer-creation-area">
 		{#if !$multiplayer && !isCreatingRoom}
-			<div class="roomCreationModule multiplayerHostSettings">
+			<div class="multiplayer-host-settings">
 				<p>Rounds</p>
 				<Ticker maximum={10} minimum={1} initialValue={3} bind:value={$roundAmount} />
 			</div>
-			<div class="roomCreationModule multiplayerHostSettings">
+			<div class="multiplayer-host-settings">
 				<p>Round length</p>
 				<Ticker maximum={300} step={10} minimum={10} note="sec" initialValue={60} bind:value={$roundLength} />
 			</div>
-			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
+			<div id="room-creation-modes" class="multiplayer-host-settings">
 				<p>Restriction</p>
 				<button
-					class="standardButton white toggleSwitch"
+					class="standard-button white toggle-switch"
 					onclick={() => {
 						playSound("basic_button");
 						toggleMultiplayerRestriction();
 					}}>{restrictionButtonText}</button
 				>
 			</div>
-			<div id="roomCreationTeams" class="roomCreationModule multiplayerHostSettings">
+			<div id="room-creation-teams" class="multiplayer-host-settings">
 				<p>Teams</p>
 				<div class="ticker">
 					<Ticker maximum={5} minimumText="No" note="teams" initialValue={1} bind:value={$teamAmount} />
 				</div>
 			</div>
-			<div id="roomCreationModes" class="roomCreationModule multiplayerHostSettings">
+			<div id="room-creation-modes" class="multiplayer-host-settings">
 				<p>Style</p>
 				<Tabs
 					tabs={STYLE_TABS}
@@ -82,17 +82,17 @@
 					}}
 				/>
 			</div>
-			<div id="roomCreationMap" class="roomCreationModule multiplayerHostSettings">
+			<div id="room-creation-map" class="multiplayer-host-settings">
 				<p>Map</p>
-				<div class="selectedMapField">
-					<p id="multiplayerMapDisplay">
+				<div class="selected-map-field">
+					<p id="multiplayer-map-display">
 						{(() => {
 							if (browser) return idToMapName(localStorage.getItem("selectedMap") || $defaultMap);
 							else return "...";
 						})()}
 					</p>
 					<button
-						class="standardButton white"
+						class="standard-button white"
 						onclick={() => {
 							playSound("basic_button");
 							goto("/maps?return-to-multiplayer=true");
@@ -101,10 +101,10 @@
 				</div>
 			</div>
 			<!-- Create button -->
-			<div class="multiplayerHostSubmitArea barMenu">
+			<div class="multiplayer-host-submit-area bar-menu">
 				<button
-					id="multiplayerHost"
-					class="standardButton largeButton"
+					id="multiplayer-host"
+					class="standard-button large-button"
 					onclick={async () => {
 						isCreatingRoom = true;
 						playSound("basic_button");
@@ -141,7 +141,7 @@
 		min-height: calc(100dvh - 120px);
 	}
 
-	.multiplayerCreationArea {
+	.multiplayer-creation-area {
 		display: flex;
 		align-items: center;
 		flex-direction: column;
@@ -150,15 +150,8 @@
 		gap: var(--layout-margin);
 	}
 
-	.roomCreationModule {
-		padding-top: var(--box-margin);
-		padding-bottom: var(--box-margin);
-		box-shadow: var(--box-shadow);
-	}
-
-	.multiplayerHostSettings {
+	.multiplayer-host-settings {
 		display: flex;
-		flex-wrap: wrap;
 		justify-content: space-around;
 		align-items: center;
 		gap: var(--box-margin);
@@ -166,24 +159,32 @@
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
 		padding-top: var(--box-margin);
+		padding-bottom: var(--box-margin);
+		box-shadow: var(--box-shadow);
 		width: calc(100% - var(--box-margin) * 2);
 	}
 
-	.toggleSwitch {
+	.multiplayer-host-settings p {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		text-wrap: nowrap;
+	}
+
+	.toggle-switch {
 		min-width: 170px;
 	}
 
-	#multiplayerHost {
+	#multiplayer-host {
 		padding-inline: 20px;
 	}
 
-	.multiplayerHostSubmitArea {
+	.multiplayer-host-submit-area {
 		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
 	}
 
-	.selectedMapField {
+	.selected-map-field {
 		display: flex;
 		gap: var(--box-margin);
 		box-shadow: var(--box-shadow);
@@ -198,7 +199,7 @@
 		background-color: rgba(255, 255, 255, 0.1);
 	}
 
-	.selectedMapField p {
+	.selected-map-field p {
 		margin-inline: var(--box-margin);
 	}
 </style>
