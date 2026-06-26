@@ -12,7 +12,8 @@ export const basicMaps = readable([
 
 export const specialModes = readable([
     "Country Guessr",
-    "Image Guessr"
+    "Image Guessr",
+    "Meta Guessr"
 ]);
 
 export const continentMaps = readable([

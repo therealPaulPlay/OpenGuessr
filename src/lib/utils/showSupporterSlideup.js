@@ -1,4 +1,4 @@
-import { monthlySupportAmount, showSlideup } from "$lib/stores/context-specific/resultScreenSlideupStore";
+import { monthlySupportAmount } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 import { isAuthenticated, supporterLevel } from "$lib/stores/accountStore";
@@ -8,7 +8,7 @@ import { signupPrompt } from "./signupPrompt";
 import { showConfirmPopup } from "./confirmPopup";
 
 export function supporterSlideupProbability() {
-    if (!get(showSlideup) && Math.random() < 0.05 && get(supporterLevel) == 0) {
+    if (Math.random() < 0.05 && get(supporterLevel) == 0) {
         getMonthlySupportedAmount();
         showResultScreenSlideup("Enjoy playing?", "Please consider supporting to unlock awesome benefits, including ad-free!", "Support", () => {
             if (get(isAuthenticated)) {

@@ -359,19 +359,6 @@
 			<p class="map-name">Geo Quizzes</p>
 			<Chip text="Education" italic={true} red={true} mutedOpacity={false} />
 		</div>
-		<div
-			class="map-item map-item-hover map-item-link"
-			style:padding-right="var(--box-margin)"
-			role="button"
-			tabindex="0"
-			onclick={() => {
-				playSound("button_juicy");
-				window.open("https://geometas.com", "_blank").focus();
-			}}
-		>
-			<p class="map-name">Meta Quizzes</p>
-			<Chip text="Geometas" italic={true} red={true} mutedOpacity={false} />
-		</div>
 	</div>
 	<!-- Expandable country section -->
 	<div class="header-container">
@@ -402,7 +389,12 @@
 				countrySectionExpanded = !countrySectionExpanded;
 			}}
 			>{countrySectionExpanded ? "Show less" : "Show all"}
-			<img class="arrow-expand" class:arrow-expand-rotate={countrySectionExpanded} alt="arrow" src="/img/arrow_icon.png" />
+			<img
+				class="arrow-expand"
+				class:arrow-expand-rotate={countrySectionExpanded}
+				alt="arrow"
+				src="/img/arrow_icon.png"
+			/>
 		</button>
 	</div>
 	<!-- Continents -->

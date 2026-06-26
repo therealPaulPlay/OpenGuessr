@@ -26,7 +26,7 @@
 		<div class="round-log-box of-top of-bottom of-length-1.5">
 			<!-- round log will be automatically generated here -->
 			{#if $roundLog?.length > 0}
-				{#each $roundLog as [mode, distance, coordinates], index}
+				{#each $roundLog as [mode, distance, location], index}
 					<div class="round-log-item" class:current={index === 0}>
 						<div>
 							<p class="log-item-mode">{mode}</p>
@@ -36,7 +36,7 @@
 							class="standard-button white"
 							onclick={() => {
 								playSound("basic_button");
-								openLocationOnMaps(coordinates[0], coordinates[1]);
+								openLocationOnMaps(location[0], location[1], location[2]);
 							}}
 						>
 							View <ExternalLink size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: 2px;" />

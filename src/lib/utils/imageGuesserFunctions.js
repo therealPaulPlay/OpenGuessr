@@ -2,7 +2,7 @@ import { imageGuessrImageSrc, imageGuessrLoading } from "$lib/stores/context-spe
 
 let imageQueue = Promise.resolve(); // Queue handler
 
-export function loadImageFromUrl(url) {
+export function setImageGuessrImage(url) {
     imageQueue = imageQueue.then(async () => {
         return new Promise((resolve) => {
             const img = new Image();
