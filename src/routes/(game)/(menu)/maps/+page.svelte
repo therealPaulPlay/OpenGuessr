@@ -8,10 +8,10 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { changeMap } from "$lib/utils/changeMap.js";
 	import {
-		specialModes,
+		specialMaps,
 		continentMaps,
 		countryMaps,
-		basicMaps,
+		baseMaps,
 		defaultMap,
 	} from "$lib/stores/context-specific/officialMapsStore";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -294,7 +294,7 @@
 		<h2 class="header">Base</h2>
 	</div>
 	<div class="map-container">
-		{#each $basicMaps as map}
+		{#each $baseMaps as map}
 			<div
 				class="map-item map-item-hover map-item-slim"
 				style:padding-right={map === $defaultMap ? "var(--box-margin)" : ""}
@@ -331,7 +331,7 @@
 		<h2 class="header">Special</h2>
 	</div>
 	<div class="map-container">
-		{#each $specialModes as map}
+		{#each $specialMaps as map}
 			<div
 				class="map-item map-item-hover map-item-slim"
 				class:selected-map-item={checkIfSelected(map)}
