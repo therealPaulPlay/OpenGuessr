@@ -1,13 +1,14 @@
 // This generates a new location, but keep in mind that this is NOT the function to present the user with a new location! This does not check the selected map etc.
 import { getLocationCoordinates } from '$lib/logic/locationGeneration';
-import { countryGuessr, imageGuessr } from "$lib/stores/modeStore";
-import { currentLocationHeading, currentLocationLatitude, currentLocationLongitude } from '$lib/stores/locationStore';
+import { countryGuessr, imageGuessr, metaGuessr } from "$lib/stores/modeStore";
+import { currentLocationHeading, currentLocationLatitude, currentLocationLongitude, currentLocationPanoramaId } from '$lib/stores/locationStore';
 import { setCountryGuesserCountry } from '$lib/utils/countryGuessrFunctions';
-import { loadImageFromUrl } from '$lib/utils/imageGuesserFunctions';
+import { setImageGuessrImage } from '$lib/utils/imageGuesserFunctions';
 import { get } from 'svelte/store';
 import { resetMap } from '$lib/logic/miniMap';
 import { resultScreenEnabled } from '$lib/stores/context-specific/resultScreenStore';
 import { errorPopup } from './errorHandling';
+import { setMetaGuessrMeta } from './metaGuessrFunctions';
 
 // Load new location for a new panorama (called in categoryMenu.js afer loading the category) ---------------------------------------------------------------------------------------------------
 export async function generateNewLocation(type) {
@@ -24,11 +25,13 @@ export async function generateNewLocation(type) {
         // Set heading if available, otherwise reset
         currentLocationHeading.set(newLocationArray[2]?.heading ?? null);
 
-        // Set country
-        if (get(countryGuessr)) setCountryGuesserCountry(newLocationArray[2]?.country);
+        // Set panorama ID if available, otherwise reset
+        currentLocationPanoramaId.set(newLocationArray[2]?.panoramaId ?? null);
 
-        // Set image
-        if (get(imageGuessr)) loadImageFromUrl(newLocationArray[2]?.imageUrl);
+        // Special-mode specific
+        if (get(countryGuessr)) setCountryGuesserCountry(newLocationArray[2]?.country); // Set country
+        if (get(imageGuessr)) setImageGuessrImage(newLocationArray[2]?.imageUrl); // Set image
+        if (get(metaGuessr)) setMetaGuessrMeta(newLocationArray[2]?.meta); // Set meta
 
     } catch (error) {
         console.error("Failed to generate new location, the coordinates are not defined:", error);

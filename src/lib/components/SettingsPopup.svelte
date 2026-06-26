@@ -8,7 +8,8 @@
 	import Tabs from "./ui/Tabs.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
-	import { isSingleplayerNMPZ, singleplayer, singleplayerTimeout } from "$lib/stores/modeStore";
+	import { singleplayer } from "$lib/stores/modeStore";
+	import { singleplayerNMPZ, singleplayerTimeout } from "$lib/stores/context-specific/singleplayerOptionsStore";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
 
 	// Unit switch between kilometers and miles ------------------
@@ -16,7 +17,9 @@
 
 	onMount(() => {
 		const tempStorageDistanceUnit = localStorage.getItem("distanceUnit");
-		if (tempStorageDistanceUnit !== null) selectedUnit = tempStorageDistanceUnit == "kilometers" ? "Metric" : "Imperial";
+		if (tempStorageDistanceUnit !== null) {
+			selectedUnit = tempStorageDistanceUnit == "kilometers" ? "Metric" : "Imperial";
+		}
 	});
 
 	// SFX Volume -----------------------------
@@ -125,8 +128,8 @@
 	// Toggle NMPZ ------------------------------------------------------------------
 	function toggleSingleplayerNMPZ() {
 		playSound("basic_button");
-		$isSingleplayerNMPZ = !$isSingleplayerNMPZ;
-		localStorage.setItem("singleplayerNMPZ", $isSingleplayerNMPZ ? "true" : "");
+		$singleplayerNMPZ = !$singleplayerNMPZ;
+		localStorage.setItem("singleplayerNMPZ", $singleplayerNMPZ ? "true" : "");
 		checkGenerationTypeAndGenerate();
 	}
 </script>
@@ -167,7 +170,7 @@
 		<div class="settings-box settings-box-flex no-flex-wrap" class:box-disabled={!$singleplayer}>
 			<p class="settings-box-flex-title">No Move, Pan or Zoom</p>
 			<button class="standard-button white" onclick={toggleSingleplayerNMPZ}
-				>{$isSingleplayerNMPZ ? "Enabled" : "Disabled"}</button
+				>{$singleplayerNMPZ ? "Enabled" : "Disabled"}</button
 			>
 		</div>
 		<TitleSeparator text="Audio" noMargin={true} />

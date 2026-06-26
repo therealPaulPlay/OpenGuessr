@@ -8,25 +8,51 @@
 		showSlideup,
 		slideupButtonText,
 		monthlySupportAmount,
+		slideupImageUrl,
+		slideupNote,
 	} from "$lib/stores/context-specific/resultScreenSlideupStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Flame, HandHeart } from "@lucide/svelte";
+	import { Flame, HandHeart, TriangleAlert } from "@lucide/svelte";
 	import { slide } from "svelte/transition";
 </script>
 
 {#if $showSlideup && !$crazyGames}
-	<div class="endscreen-slideup-container bar-menu" transition:slide>
-		<div class="text-box text-box-top">
-			<h3 id="slideup-title">{$slideupTitle}</h3>
-		</div>
-		{#if $slideupButtonText == "Support"}
-			<div class="text-box supporter-stat-box solid-box">
-				<p class="supporter-stat-text">${$monthlySupportAmount ?? "..."} supported this month</p>
-				<div class="supporter-stat-bar" style:width={Math.min(1, $monthlySupportAmount / 500) * 100 + "%"}></div>
+	<div class="endscreen-slideup-container bar-menu" in:slide|global out:slide>
+		<div class="scrollable-content of-top of-bottom" style:margin-bottom="var(--panel-margin)">
+			<div class="text-box text-box-top">
+				<h3 id="slideup-title">{$slideupTitle}</h3>
+				{#if $slideupTitle == "Meta"}
+					<span class="geometas-attribution"
+						>Powered by <a target="_blank" href="https://geometas.com">Geometas</a></span
+					>
+				{/if}
 			</div>
-		{/if}
-		<div class="text-box solid-box">
-			<p id="slideup-text" bind:textContent={$slideupText} contenteditable="false"></p>
+			{#if $slideupButtonText == "Support"}
+				<div class="text-box supporter-stat-box solid-box">
+					<p class="supporter-stat-text">${$monthlySupportAmount ?? "..."} supported this month</p>
+					<div class="supporter-stat-bar" style:width={Math.min(1, $monthlySupportAmount / 500) * 100 + "%"}></div>
+				</div>
+			{/if}
+			{#if $slideupImageUrl}
+				<div class="solid-box" style:padding="var(--box-margin)">
+					<img alt="Meta" src={$slideupImageUrl} class="slideup-image" />
+				</div>
+			{/if}
+			<div class="text-box solid-box" style:margin-top="var(--panel-margin)">
+				<p bind:textContent={$slideupText} contenteditable="false" class="of-top of-bottom"></p>
+			</div>
+			{#if $slideupNote}
+				<div class="text-box solid-box" style:margin-top="var(--panel-margin)">
+					<p style:opacity="0.5" class="of-top of-bottom" style:max-height="100px">
+						<TriangleAlert
+							size={22}
+							strokeWidth={2.25}
+							style="margin-bottom: -2px; margin-right: var(--content-margin);"
+						/>
+						{$slideupNote}
+					</p>
+				</div>
+			{/if}
 		</div>
 		<div class="button-box">
 			<button
@@ -64,17 +90,23 @@
 		border-radius: var(--box-margin);
 		max-height: 1000px;
 		transition: filter 250ms ease;
-		user-select: none;
-		overflow: hidden;
 		pointer-events: auto;
 		display: block;
 		position: fixed;
 		bottom: var(--box-margin);
 		left: var(--box-margin);
+		box-sizing: border-box;
 	}
 
 	.supporter-stat-text {
 		opacity: 0.75;
+	}
+
+	.scrollable-content {
+		width: 100%;
+		max-height: max(150px, calc(100dvh - 200px));
+		overflow-y: auto;
+		scrollbar-width: none;
 	}
 
 	.text-box-top {
@@ -85,13 +117,21 @@
 
 	.text-box {
 		padding: var(--box-margin);
-		padding-inline: 12px;
+		padding-inline: calc(var(--panel-margin) + var(--content-margin));
+	}
+
+	.text-box p {
+		max-height: 125px;
+		overflow-y: auto;
+		scrollbar-width: none;
 	}
 
 	.solid-box {
 		border-radius: var(--content-margin);
 		background-color: var(--box-color);
 		box-shadow: var(--box-shadow);
+		box-sizing: border-box;
+		max-width: 300px;
 	}
 
 	.supporter-stat-box {
@@ -99,6 +139,14 @@
 		position: relative;
 		overflow: hidden;
 		text-align: center;
+	}
+
+	.slideup-image {
+		display: block;
+		border-radius: 3px;
+		height: 200px;
+		max-width: 100%;
+		object-fit: cover;
 	}
 
 	.supporter-stat-bar {
@@ -115,7 +163,6 @@
 		display: flex;
 		justify-content: flex-end;
 		align-items: center;
-		margin-top: var(--panel-margin);
 		gap: var(--panel-margin);
 	}
 
@@ -127,9 +174,8 @@
 		background-color: #00ac00;
 	}
 
-	#slideup-text {
-		width: 100%;
-		max-width: 300px;
+	.geometas-attribution {
+		opacity: 0.5;
 	}
 
 	#slideup-title {
@@ -139,7 +185,11 @@
 
 	@media (max-width: 500px) {
 		.endscreen-slideup-container {
-			width: calc(100% - 36px);
+			width: calc(100% - var(--box-margin) * 2);
+		}
+
+		.solid-box {
+			max-width: unset;
 		}
 	}
 </style>

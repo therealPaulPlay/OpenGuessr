@@ -1,6 +1,6 @@
 // Use this to present the player with a new location. This strongly depends on locationGeneration.js and generateLocation.js and feeds the generator with the right settings
 import { enableImageGuessr } from "$lib/utils/imageGuesserFunctions";
-import { multiplayer, competition, singleplayer, countryGuessr, imageGuessr } from "$lib/stores/modeStore";
+import { multiplayer, competition, singleplayer, countryGuessr, imageGuessr, metaGuessr } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
 import { multiplayerMap } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
@@ -39,16 +39,19 @@ function checkTutorialMap() {
 // Location Generation with correct Type ---------------------------------------------------------------------------------------------------------
 let queue = Promise.resolve(); // Qeue handler
 
-function disableMapSpecifics() {
+function setSpecialModes(map) {
   countryGuessr.set(false);
   imageGuessr.set(false);
-}
+  metaGuessr.set(false);
 
-function setMapSpecifics(map) {
-  if (map == "Country Guessr") countryGuessr.set(true);
-  if (map == "Image Guessr") {
-    imageGuessr.set(true);
-    enableImageGuessr(true);
+  // Special modes are not allowed in competitions
+  if (get(singleplayer) || get(multiplayer)) {
+    if (map == "Country Guessr") countryGuessr.set(true);
+    if (map == "Meta Guessr") metaGuessr.set(true);
+    if (map == "Image Guessr") {
+      imageGuessr.set(true);
+      enableImageGuessr(true);
+    }
   }
 }
 
@@ -62,20 +65,14 @@ export async function checkGenerationTypeAndGenerate() {
       loadingScreenVisible.set(true); // Show loading screen
       const map = get(multiplayer) ? get(multiplayerMap) : (localStorage.getItem("selectedMap") || get(defaultMap));
 
-      // Disable map-related modes (will be enabled later based on the map choice)
-      disableMapSpecifics();
+      // Set map-related modes
+      setSpecialModes(map);
 
       // Singleplayer
-      if (get(singleplayer)) {
-        setMapSpecifics(map);
-        await generateNewLocation("MAP");
-      }
+      if (get(singleplayer)) await generateNewLocation("MAP");
 
       // Multiplayer
-      if (get(multiplayer)) {
-        setMapSpecifics(map);
-        generateNewLocation("MULTIPLAYER");
-      }
+      if (get(multiplayer)) generateNewLocation("MULTIPLAYER");
 
       // Competition
       if (get(competition) && checkCompetitionRoundStatus()) await generateNewLocation("COMPETITION");

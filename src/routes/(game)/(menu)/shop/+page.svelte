@@ -109,7 +109,7 @@
 			benefits: [
 				{ text: "Supporter pin", isUpgrade: false },
 				{ text: "Highlighted name", isUpgrade: false },
-				{ text: "10% XP boost", isUpgrade: false },
+				{ text: "10% more XP", isUpgrade: false },
 				{ text: "Tier 1 badge", isUpgrade: false },
 			],
 		},
@@ -120,7 +120,7 @@
 			benefits: [
 				{ text: "Includes tier 1", isUpgrade: false },
 				{ text: "Ad-free", isUpgrade: false },
-				{ text: "15% XP boost", isUpgrade: true },
+				{ text: "15% more XP", isUpgrade: true },
 				{ text: "Tier 2 badge", isUpgrade: true },
 			],
 			highlighted: true,
@@ -131,7 +131,7 @@
 			tagline: "The full package",
 			benefits: [
 				{ text: "Includes tier 2", isUpgrade: false },
-				{ text: "25% XP boost", isUpgrade: true },
+				{ text: "25% more XP", isUpgrade: true },
 				{ text: "Tier 3 badge", isUpgrade: true },
 			],
 		},

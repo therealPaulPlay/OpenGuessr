@@ -10,7 +10,7 @@ import { earnedExperience } from "$lib/stores/context-specific/resultScreenStore
 import { get } from "svelte/store";
 import { showSlideup } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { supporterSlideupProbability } from "./showSupporterSlideup";
-import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
+import { currentLocationHeading, currentLocationLatitude, currentLocationLongitude, currentLocationPanoramaId } from "$lib/stores/locationStore";
 import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration";
 import { mapExpanded, mapHovered, guessLat, guessLon } from "$lib/stores/context-specific/mapStore";
 import { socialPopupProbability } from "./socialPopupProbability";
@@ -25,30 +25,27 @@ export async function enableResultScreen() {
     const distance = calculateDistances(get(guessLat), get(guessLon));
     lastDistance.set(distance);
     motivationText.set(motivationalResultMessage(distance));
-    distanceText.set(formatDistance(distance));
+    distanceText.set(get(countryGuessr) ? (checkIfGuessWasCorrect() ? "Correct!" : "Wrong!") : formatDistance(distance));
 
     // Reset the map (without changing its size or resetting the user guess) before loading the result map
     resetMap(true, true);
 
-    if (get(countryGuessr)) {
-        if (checkIfGuessWasCorrect()) distanceText.set("Correct!");
-        else distanceText.set("Wrong!");
-    }
-
     // Save round to log
-    saveRoundToLog(distance, [get(currentLocationLatitude), get(currentLocationLongitude)]);
+    saveRoundToLog(distance, [get(currentLocationLatitude), get(currentLocationLongitude), { heading: get(currentLocationHeading), panoramaId: get(currentLocationPanoramaId) }]);
 
     // Load result on the map
     loadResultMap(get(guessLat), get(guessLon), get(currentLocationLatitude), get(currentLocationLongitude));
     playSound("confirm");
 
+    // CTAs (singleplayer-only)
+    if (get(singleplayer)) {
+        setTimeout(socialPopupProbability, 1000);
+        if (!get(tutorial)) supporterSlideupProbability(); // Not shown in tutorial
+    }
+
     // Load XP
     await loadResultScreenXP(distance);
-    if (get(singleplayer) && !get(tutorial)) supporterSlideupProbability(); // Only show in singleplayer and not in tutorial
     checkDisplayFullscreenCelebration();
-
-    // Social Media CTA
-    if (get(singleplayer)) setTimeout(socialPopupProbability, 1000); // Too stressful in multiplayer
 }
 
 export function disableResultScreen() {

@@ -20,7 +20,7 @@ export async function supporterXpBoostAnimation(factor) {
     factor = Math.round(factor * 100);
     factor += "%";
 
-    get(supporterBoostText).textContent = factor + " Experience Boost";
+    get(supporterBoostText).textContent = factor + " Supporter boost";
 
     get(supporterBoost).style.opacity = "1";
     get(supporterBoostText).classList.add("supporter-boost-text-move");
