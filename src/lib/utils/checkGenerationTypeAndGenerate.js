@@ -4,7 +4,7 @@ import { multiplayer, competition, singleplayer, countryGuessr, imageGuessr, met
 import { generateNewLocation } from "$lib/utils/generateLocation";
 import { multiplayerMap } from "$lib/stores/context-specific/multiplayerStore";
 import { errorPopup } from "$lib/utils/errorHandling";
-import { countryMaps, continentMaps, defaultMap, tutorialMap } from "$lib/stores/context-specific/officialMapsStore";
+import { baseMaps, countryMaps, continentMaps, defaultMap, tutorialMap, specialMaps } from "$lib/stores/context-specific/officialMapsStore";
 import { changeMap } from "$lib/utils/changeMap";
 import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
@@ -21,7 +21,7 @@ function checkLinkMap() {
     let mapFromLink = urlParams.get("play-map").replaceAll("-", " ").replaceAll("_", " ");
 
     if (mapFromLink) {
-      if (get(countryMaps).includes(mapFromLink) || get(continentMaps).includes(mapFromLink)) changeMap(mapFromLink);
+      if ([...get(baseMaps), ...get(countryMaps), ...get(specialMaps), ...get(continentMaps)].includes(mapFromLink)) changeMap(mapFromLink);
       else errorPopup("Map not available", "Unfortunately, this map doesn't exist. Feel free to search for similar community maps.", "Map not found!");
     }
   } catch { }
