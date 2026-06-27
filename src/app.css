@@ -192,7 +192,8 @@ input:focus {
     border: 3px solid transparent;
 }
 
-.standard-button:disabled {
+.standard-button:disabled,
+select:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
