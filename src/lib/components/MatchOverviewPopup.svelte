@@ -1,6 +1,6 @@
 <script>
 	import { matchOverviewPopup } from "$lib/stores/uiStore";
-	import { matchData } from "$lib/stores/context-specific/matchOverviewStore";
+	import { matchData } from "$lib/stores/context-specific/divisionMatchHistoryStore";
 	import { panoramaKey, streetViewURLPrefix } from "$lib/stores/locationStore";
 	import { wrapBackLon } from "$lib/logic/miniMap";
 	import { playSound } from "$lib/utils/soundManager";

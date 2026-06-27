@@ -12,7 +12,7 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { saveProfileAboutIfChanges } from "$lib/utils/updateProfileData";
 	import { signOut } from "$lib/logic/accountLogic";
-	import { pinPopup, badgePopup, reportPopup } from "$lib/stores/uiStore";
+	import { pinPopup, badgePopup, reportPopup, divisionMatchHistoryPopup } from "$lib/stores/uiStore";
 	import { openDirectMessageWith } from "$lib/logic/headlessChatLogic";
 	import { flagPickerPopup } from "$lib/stores/uiStore";
 	import {
@@ -36,6 +36,7 @@
 		UserRoundPlus,
 		UserRoundCheck,
 		MessageSquare,
+		History,
 	} from "@lucide/svelte";
 	import Badge from "$lib/components/Badge.svelte";
 	import { crazyGames } from "$lib/stores/context-specific/platformSettingsStore";
@@ -52,6 +53,8 @@
 	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import Flag from "./Flag.svelte";
+	import { blur, slide } from "svelte/transition";
+	import { historyForUserId } from "$lib/stores/context-specific/divisionMatchHistoryStore";
 
 	let textarea = $state();
 	let selectedTabIndex = $state(0);
@@ -66,6 +69,11 @@
 	onMount(() => {
 		const profileFromURL = page.url.searchParams.get("profile-id");
 		if (profileFromURL != null) showProfile(profileFromURL);
+	});
+
+	// Reset statistics tab selection when closed
+	profilePopup.subscribe((value) => {
+		if (!value) selectedTabIndex = 0;
 	});
 
 	// Define stat categories with their icons and display data
@@ -327,7 +335,7 @@
 		</div>
 	{/if}
 
-	<!-- Stats Carousel Section -->
+	<!-- Stats section -->
 	<TitleSeparator text="Statistics" />
 	<div class="stat-switch">
 		<Tabs
@@ -338,25 +346,39 @@
 			onchange={() => playSound("basic_button")}
 		/>
 	</div>
-	<div class="stats-container">
-		<div class="stats-carousel" style="transform: translateX(calc(-{selectedTabIndex} * 100%));">
-			{#each statCategories as category, catIndex}
-				<div class="carousel-slide" class:active={selectedTabIndex === catIndex}>
-					{#each category.cards as card}
-						<div class="stat-card">
-							<div class="card-icon">
-								<card.icon size={24} strokeWidth={2} />
-							</div>
-							<div class="card-content">
-								<div>{card.title}</div>
-								<p>{card.getValue()}</p>
-							</div>
-						</div>
-					{/each}
+	{#if selectedTabIndex != null}
+		{@const category = statCategories[selectedTabIndex]}
+		<div class="stat-box">
+			{#each category.cards as card (card.title)}
+				<div class="stat-card" in:blur={{ duration: 250 }}>
+					<div class="card-icon">
+						<card.icon size={24} strokeWidth={2} />
+					</div>
+					<div class="card-content">
+						<div>{card.title}</div>
+						<p>{card.getValue()}</p>
+					</div>
 				</div>
 			{/each}
 		</div>
-	</div>
+		{#if selectedTabIndex == 1 && $profileId != localStorage.getItem("id")}
+			<div transition:slide={{ duration: 250 }} class="duel-history-box-container">
+				<div class="duel-history-box" transition:blur|global={{ duration: 250 }}>
+					<p style:padding-inline="var(--content-margin)" style:flex-grow="100">View player's duel history</p>
+					<button
+						class="standard-button white"
+						style:flex-grow="1"
+						onclick={() => {
+							playSound("basic_button");
+							$profilePopup = false;
+							$historyForUserId = $profileId;
+							$divisionMatchHistoryPopup = true;
+						}}>History <History size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: 2px;" /></button
+					>
+				</div>
+			</div>
+		{/if}
+	{/if}
 
 	{#if $profileId == localStorage.getItem("id")}
 		<TitleSeparator text="Management" />
@@ -443,6 +465,26 @@
 
 	#badge-area:hover {
 		scale: 0.98;
+	}
+
+	.duel-history-box {
+		border-radius: var(--box-margin);
+		box-shadow: var(--box-shadow);
+		box-sizing: border-box;
+		width: 100%;
+		background-color: var(--box-color);
+		padding: var(--box-margin);
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: var(--box-margin);
+		flex-wrap: wrap;
+	}
+
+	.duel-history-box-container {
+		width: 100%;
+		box-sizing: border-box;
+		margin-top: var(--layout-margin);
 	}
 
 	.flag-container {
@@ -593,19 +635,8 @@
 		flex-grow: 1;
 	}
 
-	.stats-carousel {
-		position: relative;
-		width: 100%;
-		display: flex;
-		transition: transform 250ms ease;
-	}
-
-	.stats-container {
-		border-radius: var(--box-margin);
+	.stat-box {
 		margin-top: var(--layout-margin);
-	}
-
-	.carousel-slide {
 		min-width: 100%;
 		box-sizing: border-box;
 		display: flex;

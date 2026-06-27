@@ -34,6 +34,7 @@
 	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import Chip from "$lib/components/ui/Chip.svelte";
 	import { hasNewMessageOrInvite, hcClient, initialHasNew } from "$lib/stores/context-specific/headlessChatStore";
+	import { historyForUserId } from "$lib/stores/context-specific/divisionMatchHistoryStore";
 
 	let friendsRefreshInterval;
 
@@ -139,6 +140,7 @@
 							onclick={(e) => {
 								e.stopPropagation();
 								playSound("basic_button");
+								$historyForUserId = localStorage.getItem("id");
 								divisionMatchHistoryPopup.set(true);
 							}}><History strokeWidth={2.15} size={20} style="margin-bottom: -1px;" /></button
 						>
