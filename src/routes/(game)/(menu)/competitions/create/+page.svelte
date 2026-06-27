@@ -160,7 +160,7 @@
 >
 	<h1 class="text-header-left">Competition created!</h1>
 	<p>
-		Thank you for creating a competition! Share these links with others and save them if your competition is private.
+		Thank you for creating a competition. Share these links with others and save them if your competition is private.
 	</p>
 	<div class="spacer"></div>
 	<div>
