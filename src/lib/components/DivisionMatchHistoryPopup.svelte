@@ -175,7 +175,7 @@
 					</div>
 				{/each}
 			{:else}
-				<p class="player-search-error">No matches in the history.</p>
+				<p class="player-search-error">No recent duels.</p>
 			{/if}
 		</div>
 	</div>

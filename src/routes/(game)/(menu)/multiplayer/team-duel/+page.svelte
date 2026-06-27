@@ -39,6 +39,7 @@
 				showOpenRoom={false}
 				startFunction={startFindTeamDuel}
 				startDisabledCondition={$participantCount > 2}
+				allowTeamControls={false}
 			/>
 		{:else}
 			<MultiplayerMatchmakingDisplay

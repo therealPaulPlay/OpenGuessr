@@ -691,9 +691,17 @@
 		display: flex;
 	}
 
-	@media (max-width: 800px) {
+	@media (max-width: 800px) and (orientation: portrait) {
 		.information {
 			flex-wrap: wrap;
+		}
+
+		.map-container {
+			max-height: 20svh;
+		}
+
+		.map-view-iframe {
+			max-height: 25svh;
 		}
 	}
 </style>

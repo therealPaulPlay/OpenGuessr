@@ -152,16 +152,16 @@
 
 	.multiplayer-host-settings {
 		display: flex;
-		justify-content: space-around;
+		justify-content: space-between;
 		align-items: center;
 		gap: var(--box-margin);
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
-		padding-top: var(--box-margin);
-		padding-bottom: var(--box-margin);
+		padding-left: var(--layout-margin);
 		box-shadow: var(--box-shadow);
-		width: calc(100% - var(--box-margin) * 2);
+		width: 100%;
+		box-sizing: border-box;
 	}
 
 	.multiplayer-host-settings p {
@@ -193,8 +193,6 @@
 		padding: var(--panel-margin);
 		width: fit-content;
 		align-items: center;
-		margin-bottom: var(--box-margin);
-		margin-top: var(--box-margin);
 		flex-wrap: wrap;
 		background-color: rgba(255, 255, 255, 0.1);
 	}

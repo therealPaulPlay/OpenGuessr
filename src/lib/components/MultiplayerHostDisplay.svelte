@@ -26,6 +26,7 @@
 		showOpenRoom = true,
 		startDisabledCondition,
 		startFunction = () => console.warn("No start function passed!"),
+		allowTeamControls = true,
 	} = $props();
 
 	let roomOpened = $state(false);
@@ -91,6 +92,7 @@
 							<select
 								name="teams"
 								class="team-selector standard-button white"
+								disabled={!allowTeamControls}
 								onchange={(e) => updatePlayerTeam(player.clientId, e.target.value)}
 							>
 								<!-- Generate select options for every team -->
