@@ -15,7 +15,7 @@
 	let matchEntries = $state([]);
 	let currentPage = $state(1);
 	let currentFilterId = $state();
-	let filterInput = $state(); // Only committed to the store onchange
+	let filterInput = $state();
 
 	const limit = 50; // must match the backend limit
 
