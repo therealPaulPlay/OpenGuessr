@@ -1,8 +1,9 @@
-import { panoramaFilter, nmpz, fadePanorama, selectedRestriction } from "$lib/stores/context-specific/restrictionStore";
+import { panoramaFilter, nmpz, fadePanorama, selectedRestriction, defaultRestriction } from "$lib/stores/context-specific/restrictionStore";
+import { get } from "svelte/store";
 
-export function setRestriction(restriction = "standard") {
+export function setRestriction(restriction = get(defaultRestriction)) {
     selectedRestriction.set(restriction);
-    
+
     // Disable all, then enable what is needed
     panoramaFilter.set();
     nmpz.set(false);
@@ -24,7 +25,7 @@ export function setRestriction(restriction = "standard") {
         case "fade":
             fadePanorama.set(true);
             break;
-        case "standard":
+        case "none":
         default:
             break; // no restriction
     }

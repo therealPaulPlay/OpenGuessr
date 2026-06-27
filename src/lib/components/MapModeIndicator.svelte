@@ -7,7 +7,7 @@
 	import { idToMapName } from "$lib/utils/idToMapName";
 	import { currentRound, multiplayerMap, roundAmount } from "$lib/stores/context-specific/multiplayerStore";
 	import { competitionData, competitionRound } from "$lib/stores/context-specific/competitionStore";
-	import { restrictionNames, selectedRestriction } from "$lib/stores/context-specific/restrictionStore";
+	import { defaultRestriction, restrictionNames, selectedRestriction } from "$lib/stores/context-specific/restrictionStore";
 	import { blur, fade, slide } from "svelte/transition";
 	import { mapExpanded } from "$lib/stores/context-specific/mapStore";
 	import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
@@ -60,7 +60,7 @@
 					<Route size={16} strokeWidth={2.5} style="margin-right: 3px;" />{currentRoundText} / {roundAmountText}
 				</Chip>
 			{/if}
-			{#if $selectedRestriction !== "standard"}
+			{#if $selectedRestriction !== $defaultRestriction}
 				<Chip class="info-tag">
 					<BookAlert size={16} strokeWidth={2.5} style="margin-right: 3px;" />{$restrictionNames[
 						$selectedRestriction
