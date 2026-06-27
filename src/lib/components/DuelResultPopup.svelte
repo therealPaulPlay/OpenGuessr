@@ -10,6 +10,7 @@
 	import { Info, History, Flame } from "@lucide/svelte";
 	import TokenRewardDisplay from "./TokenRewardDisplay.svelte";
 	import { findDuel } from "$lib/logic/matchmakingLogic";
+	import { historyForUserId } from "$lib/stores/context-specific/divisionMatchHistoryStore";
 
 	// Animate number starting from 0
 	const animatedElo = tweened(0, {
@@ -72,10 +73,11 @@
 			class="standard-button white grow-search"
 			onclick={() => {
 				playSound("basic_button");
+				$historyForUserId = localStorage.getItem("id");
 				divisionMatchHistoryPopup.set(true);
 			}}
 		>
-			History <History size={20} strokeWidth={2.25} style="margin-bottom: -3px; margin-left: 2px;" /></button
+			History <History size={20} strokeWidth={2.25} style="margin-bottom: -2px; margin-left: 2px;" /></button
 		>
 	</div>
 	<button

@@ -1,30 +1,34 @@
 <script>
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { divisionMatchHistoryPopup, matchOverviewPopup } from "$lib/stores/uiStore";
-	import { matchData } from "$lib/stores/context-specific/matchOverviewStore";
+	import { historyForUserId, matchData } from "$lib/stores/context-specific/divisionMatchHistoryStore";
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { showProfile } from "$lib/utils/showProfile";
 	import { ArrowLeft, ArrowRight, Info } from "@lucide/svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { playSound } from "$lib/utils/soundManager";
 	import Chip from "./ui/Chip.svelte";
+	import { get } from "svelte/store";
+	import { untrack } from "svelte";
 
-	// local state variables
-	let matchResults = $state([]);
+	// Local state variables
+	let matchEntries = $state([]);
 	let currentPage = $state(1);
-	const limit = 50; // must match the backend limit
-
-	let filterId = $state();
 	let currentFilterId = $state();
+	let filterInput = $state(); // Only committed to the store onchange
+
+	const limit = 50; // must match the backend limit
 
 	// Fetch duel entries for the current page.
 	async function fetchEntries() {
-		matchResults = undefined;
+		matchEntries = null;
 		try {
-			currentFilterId = filterId;
+			currentFilterId = get(historyForUserId); // Get instead of $ to avoid triggering update causing a reactivity loop
 
 			const response = await fetch(
-				$apiUrl + `/divisions/duel-history?page=${currentPage}` + (filterId ? `&id=${filterId}` : ""),
+				$apiUrl +
+					`/divisions/duel-history?page=${currentPage}` +
+					(get(historyForUserId) ? `&id=${get(historyForUserId)}` : ""),
 				{
 					method: "GET",
 					headers: {
@@ -37,10 +41,10 @@
 				const data = await response.json();
 				// Expecting data.duels to be an array.
 				if (data.duels && data.duels.length > 0) {
-					matchResults = data;
+					matchEntries = data;
 				} else {
 					// No entries on this page; we use an empty array.
-					matchResults = { duels: [] };
+					matchEntries = { duels: [] };
 				}
 			} else {
 				console.error("Error loading history: " + response.status);
@@ -60,11 +64,16 @@
 		}
 	}
 
-	divisionMatchHistoryPopup.subscribe((value) => {
-		if (value) {
-			filterId = localStorage.getItem("id") || null;
-			fetchEntries();
-		}
+	// Re-fetch whenever the expected user ID is changed (or set to the same val again) when the popup is open
+	$effect(() => {
+		$historyForUserId;
+		if ($divisionMatchHistoryPopup) {
+			untrack(() => {
+				filterInput = get(historyForUserId); // Sync filter input to store
+				currentPage = 1; // Reset cur page
+				fetchEntries();
+			});
+		} else matchEntries = null;
 	});
 
 	async function openMatchOverview(uuid) {
@@ -83,22 +92,6 @@
 			errorPopup("Error loading match", "An error occurred loading the match overview.", error.message);
 		}
 	}
-
-	// Handlers for pagination
-	function prevPage() {
-		if (currentPage > 1) {
-			currentPage -= 1;
-			fetchEntries();
-		}
-	}
-
-	function nextPage() {
-		// Only allow next page if we have "full" results (i.e. possibly more pages)
-		if (matchResults && matchResults.duels && matchResults.duels.length === limit) {
-			currentPage += 1;
-			fetchEntries();
-		}
-	}
 </script>
 
 <Popup z={960} slim={true} bind:open={$divisionMatchHistoryPopup}>
@@ -108,15 +101,20 @@
 	<div class="top-popup-flex">
 		<div class="filter-box">
 			<p>Filter: user-</p>
-			<input placeholder="all" class="filter-input" bind:value={filterId} onchange={fetchEntries} />
+			<input
+				placeholder="all"
+				class="filter-input"
+				bind:value={filterInput}
+				onchange={() => ($historyForUserId = filterInput === "" ? null : filterInput)}
+			/>
 		</div>
 	</div>
 	<div class="history-box">
 		<div class="history-box-scroll of-top of-bottom">
-			{#if !matchResults}
+			{#if !matchEntries}
 				<p class="player-search-error">Loading...</p>
-			{:else if matchResults.duels && matchResults.duels.length > 0}
-				{#each matchResults.duels as entry}
+			{:else if matchEntries.duels && matchEntries.duels.length > 0}
+				{#each matchEntries.duels as entry}
 					<div class="match-history-item-container">
 						<div
 							class="match-history-item of-left of-right"
@@ -181,14 +179,26 @@
 	</div>
 
 	<div class="pagination-controls">
-		<button class="standard-button white" onclick={prevPage} disabled={currentPage === 1}>
+		<button
+			class="standard-button white"
+			onclick={() => {
+				playSound("basic_button");
+				currentPage -= 1;
+				fetchEntries();
+			}}
+			disabled={currentPage === 1}
+		>
 			<ArrowLeft size={20} strokeWidth={2} />
 		</button>
 		<span class="page-counter">{currentPage}</span>
 		<button
 			class="standard-button white"
-			onclick={nextPage}
-			disabled={!(matchResults && matchResults.duels && matchResults.duels.length === limit)}
+			onclick={() => {
+				playSound("basic_button");
+				currentPage += 1;
+				fetchEntries();
+			}}
+			disabled={!(matchEntries && matchEntries.duels && matchEntries.duels.length === limit)}
 		>
 			<ArrowRight size={20} strokeWidth={2} />
 		</button>
