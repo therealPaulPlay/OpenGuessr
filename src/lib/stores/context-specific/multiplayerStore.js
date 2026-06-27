@@ -1,5 +1,5 @@
 import { get, writable } from "svelte/store";
-import { restrictionNames } from "./restrictionStore";
+import { defaultRestriction } from "./restrictionStore";
 
 // Client
 export const socket = writable();
@@ -8,7 +8,7 @@ export const socket = writable();
 export const roundAmount = writable(3);
 export const roundLength = writable(60);
 export const teamAmount = writable(1);
-export const multiplayerRestriction = writable(Object.keys(get(restrictionNames))?.[0]);
+export const multiplayerRestriction = writable(get(defaultRestriction));
 export const multiplayerStyle = writable("standard");
 
 // Matchmaking and Duels

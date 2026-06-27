@@ -192,8 +192,7 @@ input:focus {
     border: 3px solid transparent;
 }
 
-.standard-button:disabled,
-select:disabled {
+.standard-button:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
@@ -371,7 +370,6 @@ textarea:focus {
 
 select {
     appearance: none;
-    padding-inline: 12px;
 }
 
 search {

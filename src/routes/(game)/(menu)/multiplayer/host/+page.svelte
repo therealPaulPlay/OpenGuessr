@@ -24,16 +24,6 @@
 	import { showNotification } from "$lib/utils/notifications";
 	import { browser } from "$app/environment";
 
-	// Restriction toggle
-	let restrictions = Object.keys($restrictionNames);
-	let restrictionButtonText = $derived($restrictionNames[$multiplayerRestriction]);
-
-	function toggleMultiplayerRestriction() {
-		const currentRestrictionIndex =
-			(restrictions.findIndex((e) => e == $multiplayerRestriction) + 1) % restrictions.length;
-		multiplayerRestriction.set(restrictions[currentRestrictionIndex]);
-	}
-
 	// Creation state
 	let isCreatingRoom = $state(false);
 
@@ -57,13 +47,17 @@
 			</div>
 			<div id="room-creation-modes" class="multiplayer-host-settings">
 				<p>Restriction</p>
-				<button
-					class="standard-button white toggle-switch"
-					onclick={() => {
+				<select
+					class="standard-button white"
+					bind:value={$multiplayerRestriction}
+					onchange={() => {
 						playSound("basic_button");
-						toggleMultiplayerRestriction();
-					}}>{restrictionButtonText}</button
+					}}
 				>
+					{#each Object.entries($restrictionNames) as [key, value]}
+						<option value={key}>{value}</option>
+					{/each}
+				</select>
 			</div>
 			<div id="room-creation-teams" class="multiplayer-host-settings">
 				<p>Teams</p>
@@ -168,10 +162,6 @@
 		overflow: hidden;
 		text-overflow: ellipsis;
 		text-wrap: nowrap;
-	}
-
-	.toggle-switch {
-		min-width: 170px;
 	}
 
 	#multiplayer-host {

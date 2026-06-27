@@ -8,7 +8,7 @@
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import { goto } from "$app/navigation";
-	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
+	import { defaultRestriction, restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
 
 	let successPopup = $state(false);
@@ -20,7 +20,7 @@
 	let competitionDescription = $state();
 	let locationData = $state();
 	let competitionPrivate = $state(false);
-	let competitionRestriction = "standard";
+	let competitionRestriction = $state($defaultRestriction); // Not the display text, but the value
 
 	let competitionCreationId;
 
@@ -76,17 +76,6 @@
 			console.error("Error occured when extracting time seconds from inputs: " + error);
 			return null;
 		}
-	}
-
-	// Toggle Restrictions
-	let restrictions = Object.keys($restrictionNames);
-	let currentRestrictionIndex = 0;
-	let competitionRestrictionText = $state($restrictionNames[restrictions[0]]);
-
-	function togglecompetitionRestriction() {
-		currentRestrictionIndex = (currentRestrictionIndex + 1) % restrictions.length;
-		competitionRestriction = restrictions[currentRestrictionIndex];
-		competitionRestrictionText = $restrictionNames[restrictions[currentRestrictionIndex]];
 	}
 
 	async function submitCompetition(
@@ -265,13 +254,17 @@
 						</div>
 						<div class="field-group">
 							<p class="field-label">Restriction</p>
-							<button
+							<select
 								class="standard-button white large-button toggle-button"
-								onclick={() => {
+								bind:value={competitionRestriction}
+								onchange={() => {
 									playSound("basic_button");
-									togglecompetitionRestriction();
-								}}>{competitionRestrictionText}</button
+								}}
 							>
+								{#each Object.entries($restrictionNames) as [key, value]}
+									<option value={key}>{value}</option>
+								{/each}
+							</select>
 						</div>
 					</div>
 				</div>

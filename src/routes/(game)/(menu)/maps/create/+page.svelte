@@ -123,7 +123,13 @@
 					</div>
 					<div class="field-group">
 						<p class="field-label">Category</p>
-						<select class="standard-button white large-button category-dropdown" bind:value={categoryValue}>
+						<select
+							class="standard-button white large-button category-dropdown"
+							bind:value={categoryValue}
+							onchange={() => {
+								playSound("basic_button");
+							}}
+						>
 							<option value="none">Click to select</option>
 							<option value="Nature">Nature</option>
 							<option value="Architecture">Architecture</option>

@@ -93,7 +93,10 @@
 								name="teams"
 								class="team-selector standard-button white"
 								disabled={!allowTeamControls}
-								onchange={(e) => updatePlayerTeam(player.clientId, e.target.value)}
+								onchange={(e) => {
+									playSound("basic_button");
+									updatePlayerTeam(player.clientId, e.target.value);
+								}}
 							>
 								<!-- Generate select options for every team -->
 								{#each Object.values($multiplayerTableArray) as teamObject}
