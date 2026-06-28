@@ -10,7 +10,7 @@ import { showConfirmPopup } from "./confirmPopup";
 export function supporterSlideupProbability() {
     if (Math.random() < 0.05 && get(supporterLevel) == 0) {
         getMonthlySupportedAmount();
-        showResultScreenSlideup("Enjoy playing?", "Please consider supporting to unlock awesome benefits, including ad-free!", "Support", () => {
+        showResultScreenSlideup("Enjoy playing?", "Consider supporting to unlock awesome perks including ad-free!", "Support", () => {
             if (get(isAuthenticated)) {
                 goto("/shop#supporter");
                 return true;

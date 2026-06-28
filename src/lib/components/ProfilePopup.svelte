@@ -348,9 +348,9 @@
 	</div>
 	{#if selectedTabIndex != null}
 		{@const category = statCategories[selectedTabIndex]}
-		<div class="stat-box">
-			{#each category.cards as card (card.title)}
-				<div class="stat-card" in:blur={{ duration: 250 }}>
+		{#snippet statCards(cards, animate)}
+			{#each cards as card (card.title)}
+				<div class="stat-card" in:blur={{ duration: animate ? 250 : 0 }}>
 					<div class="card-icon">
 						<card.icon size={24} strokeWidth={2} />
 					</div>
@@ -360,6 +360,15 @@
 					</div>
 				</div>
 			{/each}
+		{/snippet}
+		<div class="stat-container">
+			<!-- Hidden sizer with the most cards, so the box height stays stable across tabs -->
+			<div class="stat-box stat-sizer">
+				{@render statCards(statCategories.reduce((a, b) => (b.cards.length > a.cards.length ? b : a)).cards, false)}
+			</div>
+			<div class="stat-box">
+				{@render statCards(category.cards, true)}
+			</div>
 		</div>
 		{#if selectedTabIndex == 1 && $profileId != localStorage.getItem("id")}
 			<div transition:slide={{ duration: 250 }} class="duel-history-box-container">
@@ -635,15 +644,25 @@
 		flex-grow: 1;
 	}
 
-	.stat-box {
+	.stat-container {
 		margin-top: var(--layout-margin);
 		min-width: 100%;
 		box-sizing: border-box;
+		display: grid;
+	}
+
+	.stat-box {
+		grid-area: 1 / 1;
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--layout-margin);
 		justify-content: center;
-		overflow: hidden;
+		align-content: stretch;
+	}
+
+	.stat-sizer {
+		visibility: hidden;
+		pointer-events: none;
 	}
 
 	.stat-card {
@@ -675,6 +694,7 @@
 	.card-content {
 		flex-grow: 1;
 		overflow: hidden;
+		padding-right: var(--content-margin);
 	}
 
 	.card-content div {
