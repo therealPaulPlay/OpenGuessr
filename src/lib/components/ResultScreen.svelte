@@ -203,10 +203,7 @@
 						</div>
 						<p id="experience-number-text">+ {$animatedExperience.toFixed(0)} XP</p>
 						{#if $streakCountText && $streakMultiplierText}
-							<div
-								id="streak-display"
-								style:opacity={[0, NaN].includes(parseInt($streakCountText)) ? "0.5" : undefined}
-							>
+							<div id="streak-display">
 								<Flame style="margin-right: 2px; flex-shrink: 0;" size={22} strokeWidth={2.25} />
 								<p id="end-screen-streak-text">
 									{$streakCountText} <span class="streak-multiplier-text">({$streakMultiplierText})</span>
@@ -544,7 +541,6 @@
 		display: flex;
 		align-items: center;
 		flex-direction: row;
-		transition: opacity 250ms ease;
 	}
 
 	#end-screen-level-display {

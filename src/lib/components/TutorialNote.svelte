@@ -20,16 +20,7 @@
 	// Check for tutorial state & show note if applicable
 	$effect(() => {
 		if ($tutorial) show = false;
-		else if (!localStorage.getItem("tutorialCompleted")) {
-			// Temporary backwards-compatability guard (old, now removed menu introduction seen -> count as tutorial played)
-			// TODO remove in 30 days
-			if (localStorage.getItem("menuIntroduction")) {
-				localStorage.setItem("tutorialCompleted", true);
-				return;
-			}
-
-			show = true;
-		}
+		else if (!localStorage.getItem("tutorialCompleted")) show = true;
 	});
 </script>
 
