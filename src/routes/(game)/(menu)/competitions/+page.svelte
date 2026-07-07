@@ -581,7 +581,7 @@
 					{formatDuration(duration)}
 					{#if remainingDuration > 0}
 						<span class="remaining-duration-text">
-							{formatDuration(remainingDuration)} left
+							({formatDuration(remainingDuration)} left)
 						</span>
 					{/if}
 				</p>
