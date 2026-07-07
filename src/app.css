@@ -181,6 +181,11 @@ input:focus {
     transform: scale(0.95);
 }
 
+/* Disable Safari's blue outline on <select> click */
+.standard-button:focus-visible {
+    outline: none;
+}
+
 .white {
     background-color: rgba(255, 255, 255, 0.175);
 }
