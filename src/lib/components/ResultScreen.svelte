@@ -550,11 +550,10 @@
 	#end-screen-level-display {
 		font-size: 14px;
 		width: auto;
-		margin-left: auto;
 		vertical-align: middle;
 		text-align: center;
 		padding-inline: var(--box-margin);
-		margin-left: var(--panel-margin);
+		margin-left: var(--content-margin);
 		color: white;
 		background-color: #00cc00;
 		box-shadow: var(--bulb-shadow);
