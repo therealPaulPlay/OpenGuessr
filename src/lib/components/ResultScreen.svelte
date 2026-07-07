@@ -554,7 +554,6 @@
 		vertical-align: middle;
 		text-align: center;
 		padding-inline: var(--box-margin);
-		margin-right: var(--content-margin);
 		margin-left: var(--panel-margin);
 		color: white;
 		background-color: #00cc00;
