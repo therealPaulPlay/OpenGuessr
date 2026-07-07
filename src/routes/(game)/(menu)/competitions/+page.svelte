@@ -565,47 +565,51 @@
 				<div class="label">
 					<p>Plays</p>
 				</div>
-				<p class="item-text">{playercount.toLocaleString()}</p>
+				<p class="item-text of-left of-right">{playercount.toLocaleString()}</p>
 			</div>
 			<div class="property-item">
 				<div class="label">
 					<p>Restriction</p>
 				</div>
-				<p class="item-text">{$restrictionNames?.[restriction] || "Invalid"}</p>
+				<p class="item-text of-left of-right">{$restrictionNames?.[restriction] || "Invalid"}</p>
 			</div>
 			<div class="property-item">
 				<div class="label">
 					<p>Duration</p>
 				</div>
-				<p class="item-text">
+				<p class="item-text of-left of-right">
 					{formatDuration(duration)}
-					{#if remainingDuration > 0}({formatDuration(remainingDuration)} left){/if}
+					{#if remainingDuration > 0}
+						<span class="remaining-duration-text">
+							({formatDuration(remainingDuration)} left)
+						</span>
+					{/if}
 				</p>
 			</div>
 			<div class="property-item">
 				<div class="label">
 					<p>Rounds</p>
 				</div>
-				<p class="item-text">{locationAmount}</p>
+				<p class="item-text of-left of-right">{locationAmount}</p>
 			</div>
 			<div class="property-item">
 				<div class="label">
 					<p>Round length</p>
 				</div>
-				<p class="item-text">{roundLength}s</p>
+				<p class="item-text of-left of-right">{roundLength}s</p>
 			</div>
 		</div>
 		<!-- svelte-ignore a11y_click_events_have_key_events -->
 		<div
-			class="about-section competition-description"
+			class="desc-section competition-description"
 			role="button"
 			tabindex="0"
 			onclick={() => {
 				showConfirmPopup("About", description);
 			}}
 		>
-			<div class="label" class:expired-competition-color={expired} role="button" tabindex="0">
-				<p>About</p>
+			<div class="label" role="button" tabindex="0">
+				<p>Description</p>
 			</div>
 			<p class="item-text desc-text">
 				{description}
@@ -908,7 +912,7 @@
 	.label {
 		padding: 3px;
 		box-shadow: var(--box-shadow);
-		padding-inline: var(--box-margin);
+		padding-inline: var(--panel-margin);
 		width: fit-content;
 		background-color: rgba(255, 255, 255, 0.1);
 		border-radius: var(--content-margin);
@@ -922,11 +926,18 @@
 
 	.item-text {
 		margin: var(--content-margin);
-		margin-inline: var(--content-margin);
-		text-overflow: ellipsis;
-		overflow: hidden;
+		margin-right: var(--panel-margin);
+		overflow-x: auto;
 		text-wrap: nowrap;
 		min-width: 55px;
+		scrollbar-width: none;
+	}
+
+	.remaining-duration-text {
+		opacity: 0.5;
+		display: inline-block;
+		vertical-align: bottom;
+		margin-left: 2px;
 	}
 
 	.competition-item-header {
@@ -961,10 +972,12 @@
 	}
 
 	.desc-text {
-		margin-top: var(--box-margin);
+		margin-top: var(--panel-margin);
 		overflow: hidden;
 		max-height: 60px;
-		margin-inline: var(--box-margin);
+		margin-inline: var(--panel-margin);
+		text-overflow: ellipsis;
+		overflow: hidden;
 	}
 
 	.competition-author {
@@ -995,10 +1008,6 @@
 		text-overflow: ellipsis;
 		overflow: hidden;
 		text-wrap: nowrap;
-	}
-
-	.expired-competition-color {
-		background-color: var(--box-color);
 	}
 
 	.competition-area {
@@ -1145,7 +1154,7 @@
 		opacity: 0.5;
 	}
 
-	.about-section {
+	.desc-section {
 		cursor: pointer;
 	}
 

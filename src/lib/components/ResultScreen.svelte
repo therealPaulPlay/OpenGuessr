@@ -6,10 +6,11 @@
 		motivationText,
 		continueText,
 		earnedExperience,
-		streakText,
+		streakCountText,
 		supporterBoost,
 		supporterBoostText,
 		lastDistance,
+		streakMultiplierText,
 	} from "$lib/stores/context-specific/resultScreenStore";
 	import { isAuthenticated, experience } from "$lib/stores/accountStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -200,11 +201,16 @@
 								style:width={percentageWidth}
 							></div>
 						</div>
-						<p id="experience-number-text">{$animatedExperience.toFixed(0)} XP</p>
-						{#if $streakText}
-							<div id="streak-display">
-								<Flame style="margin-right: var(--content-margin);" size={22} strokeWidth={2.25} />
-								<p id="end-screen-streak-text">{$streakText}</p>
+						<p id="experience-number-text">+ {$animatedExperience.toFixed(0)} XP</p>
+						{#if $streakCountText && $streakMultiplierText}
+							<div
+								id="streak-display"
+								style:opacity={[0, NaN].includes(parseInt($streakCountText)) ? "0.5" : undefined}
+							>
+								<Flame style="margin-right: 2px; flex-shrink: 0;" size={22} strokeWidth={2.25} />
+								<p id="end-screen-streak-text">
+									{$streakCountText} <span class="streak-multiplier-text">({$streakMultiplierText})</span>
+								</p>
 							</div>
 						{/if}
 					</div>
@@ -406,6 +412,7 @@
 		position: relative;
 		flex-grow: 100;
 		min-width: 300px;
+		gap: var(--box-margin);
 	}
 
 	@keyframes XPFade {
@@ -511,13 +518,9 @@
 
 	#experience-number-text {
 		font-size: 22px;
-		width: auto;
-		vertical-align: middle;
 		text-align: center;
 		text-wrap: nowrap;
-		flex-grow: 1;
 		min-width: 100px;
-		padding-inline: var(--panel-margin);
 		font-variant-numeric: tabular-nums;
 	}
 
@@ -529,14 +532,19 @@
 		text-wrap: nowrap;
 	}
 
+	.streak-multiplier-text {
+		opacity: 0.5;
+		text-wrap: nowrap;
+		margin-left: 2px;
+	}
+
 	#streak-display {
-		margin-right: auto;
-		margin-left: var(--panel-margin);
+		margin-right: var(--content-margin);
 		position: relative;
 		display: flex;
 		align-items: center;
 		flex-direction: row;
-		flex-grow: 1;
+		transition: opacity 250ms ease;
 	}
 
 	#end-screen-level-display {

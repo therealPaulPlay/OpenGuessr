@@ -3,7 +3,7 @@ import { guessLat, guessLon } from "$lib/stores/context-specific/mapStore";
 import { currentLocationLatitude, currentLocationLongitude } from "$lib/stores/locationStore";
 import { updateProfileIfNewBestStreak } from "$lib/utils/updateProfileData";
 import { isAuthenticated, supporterLevel } from "$lib/stores/accountStore";
-import { streakText, lastExpCalculationSignedOut, earnedExperience } from "$lib/stores/context-specific/resultScreenStore";
+import { streakCountText, lastExpCalculationSignedOut, earnedExperience, streakMultiplierText } from "$lib/stores/context-specific/resultScreenStore";
 import { multiplayerMap, socket } from "$lib/stores/context-specific/multiplayerStore";
 import { addResultToCompetitionScore } from "$lib/logic/competitionLogic";
 import { supporterXpBoostAnimation } from "$lib/utils/supporterBoostAnimation";
@@ -24,6 +24,10 @@ function calculateMultiplier(streakParam) {
 async function streakCalculation() {
     let streak = Number(localStorage.getItem("streak") || 0); // Load streak from localstorage
 
+    // Indicate loading in UI
+    streakCountText.set("-");
+    streakMultiplierText.set("...");
+
     if (await getCountryFromCoords(get(guessLat), get(guessLon)) == await getCountryFromCoords(get(currentLocationLatitude), get(currentLocationLongitude))) {
         streak++;
     } else {
@@ -33,8 +37,12 @@ async function streakCalculation() {
     }
 
     const streakMultiplier = calculateMultiplier(streak);
-    streakText.set(streak + " (" + streakMultiplier + "x)");
     localStorage.setItem("streak", streak);
+
+    // Set UI to values
+    streakCountText.set(String(streak));
+    streakMultiplierText.set(streakMultiplier + "x");
+
     return streakMultiplier;
 }
 
@@ -81,7 +89,8 @@ export async function loadResultScreenXP(distance) {
     // (Re-)sets
     let supporterMultiplier = 1;
     clearTimeout(animateSupporterBoostTimeout);
-    streakText.set(null);
+    streakCountText.set(null);
+    streakMultiplierText.set(null);
 
     // Post-signin saves -----------------------------------------------------
     if (!get(isAuthenticated) && get(singleplayer)) lastExpCalculationSignedOut.set(true);
@@ -90,6 +99,7 @@ export async function loadResultScreenXP(distance) {
     // Calculate experience and streak --------------------------------------
     let earnedXP;
     let earnedBasicXP; // Without supporter mutliplier, that will be applied later (this is just for visuals)
+
     const selectedMap = !get(multiplayer) ? localStorage.getItem("selectedMap") || get(defaultMap) : get(multiplayerMap);
 
     // XP calculation formulas -------------------------------------------------
