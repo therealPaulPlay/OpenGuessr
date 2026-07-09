@@ -531,7 +531,7 @@
 			<div class="filter-button-field">
 				<p style:margin-top="-2px">
 					<ArrowDownWideNarrow
-						strokeWidth={2}
+						strokeWidth={2.25}
 						size={20}
 						style="padding-left: var(--content-margin); margin-bottom: -3px;"
 					/>
