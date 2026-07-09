@@ -1,5 +1,5 @@
 <script>
-	import { Plus, XCircle, User, Search, Info } from "@lucide/svelte";
+	import { Plus, XCircle, User, Search, Info, ArrowDownWideNarrow } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { crazyGames, playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
@@ -24,11 +24,14 @@
 
 	const snapshotStore = getContext("snapshotStore");
 
-	// State
-	let currentFetchIndex = $state(0);
-	let currentCategory = $state();
-	let currentQuery = $state();
-	let currentByUserId = $state();
+	// Load state
+	let currentFetchIndex = $state(0); // Auto-set
+	let sortBy = $state("likes");
+	let filterCategory = $state(null);
+	let filterSearchQuery = $state("");
+	let filterUserId = $state(null);
+
+	// UI state
 	let showLoadMore = $state(false);
 	let showNothingFound = $state(false);
 	let errorMessageText = $state("Loading...");
@@ -36,7 +39,7 @@
 	let loadedCommunityMaps = $state([]);
 	let loadedSpotlightMaps = $state([]);
 	let addedCommunityMapsArray = $state([]);
-	let searchValue = $state("");
+	let searchInputValue = $state("");
 	let selectedCategoryIndex = $state(0);
 	let countrySectionExpanded = $state(false);
 
@@ -66,7 +69,7 @@
 		if (savedSnapshot && page.state?.restoreSnapshot) restoreSnapshot(savedSnapshot);
 		else {
 			loadCommunityMaps(0);
-			loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+			loadCommunityMaps(null, true);
 		}
 	});
 
@@ -92,7 +95,7 @@
 		if (data && snapshotStore) snapshotStore.set("/maps", data);
 	});
 
-	async function loadCommunityMaps(index, category, query, byUserId, fav) {
+	async function loadCommunityMaps(index, fav) {
 		try {
 			if (!fav) {
 				if (currentController) currentController.abort();
@@ -107,19 +110,19 @@
 			errorMessageText = "Loading...";
 			errorMessageShown = true;
 
-			[currentCategory, currentQuery, currentByUserId] = [category, query, byUserId];
-
-			if (index == 0 || index == null) loadedCommunityMaps = [];
+			// Reset current community maps on nullish index
+			if (!fav && !index) loadedCommunityMaps = [];
 
 			// Build URL parts
-			const hasFilters = category || query || byUserId;
+			const hasFilters = filterCategory || filterSearchQuery || filterUserId;
 			const indexAdd = index != null && !hasFilters ? `index/${index}` : hasFilters ? `/${index}` : "";
 			const parts = [
-				category && `category/${category}`,
-				query && `search/${query}`,
-				byUserId && `by-user/${byUserId}`,
-				indexAdd,
+				filterCategory && `category/${filterCategory}`,
+				filterSearchQuery && `search/${encodeURIComponent(filterSearchQuery)}`,
+				filterUserId != null && `by-user/${filterUserId}`,
 				fav && "favourites",
+				indexAdd,
+				sortBy && `?sort=${sortBy}`,
 			].filter(Boolean);
 
 			const response = await fetch($apiUrl + "/maps/" + parts.join(""), {
@@ -133,6 +136,7 @@
 				if (index != null) currentFetchIndex = index;
 				if (data.communityMaps.length == 50 && !fav) showLoadMore = true;
 
+				// Populate UI maps arrays
 				if (!fav) loadedCommunityMaps = [...loadedCommunityMaps, ...data.communityMaps.filter((map) => !map.favourite)];
 				if (fav) loadedSpotlightMaps = [...loadedSpotlightMaps, ...data.communityMaps];
 
@@ -190,19 +194,33 @@
 		}
 	}
 
+	function resetFilters() {
+		filterUserId = null;
+		filterCategory = null;
+		filterSearchQuery = "";
+	}
+
 	function startSearch() {
-		const query = searchValue?.toLowerCase() || undefined;
+		resetFilters();
+		filterSearchQuery = searchInputValue?.toLowerCase() || "";
 		selectedCategoryIndex = 0;
-		loadCommunityMaps(0, undefined, query);
+		loadCommunityMaps(0);
 	}
 
 	function handleCategoryButtonClick(index) {
 		playSound("item_select");
 		selectedCategoryIndex = index;
+		resetFilters();
 		const category = categoriesArray[index]?.toLowerCase();
+
 		if (category == "all") loadCommunityMaps(0);
-		else if (category == "by you") loadCommunityMaps(0, null, null, localStorage.getItem("id"));
-		else loadCommunityMaps(0, category);
+		else if (category == "by you") {
+			filterUserId = localStorage.getItem("id");
+			loadCommunityMaps(0);
+		} else {
+			filterCategory = category;
+			loadCommunityMaps(0);
+		}
 	}
 
 	// Snapshot functions for state restoration
@@ -210,12 +228,13 @@
 		return {
 			scrollY: window.scrollY,
 			currentFetchIndex,
-			loadMoreCategoryParam: currentCategory,
-			loadMoreQueryParam: currentQuery,
-			byUserParam: currentByUserId,
+			filterCategory,
+			filterSearchQuery,
+			filterUserId,
+			sortBy,
 			showLoadMore,
 			showNothingFound,
-			searchValue,
+			searchInputValue,
 			selectedCategoryIndex,
 			loadedCommunityMaps,
 			loadedSpotlightMaps,
@@ -225,19 +244,20 @@
 	function restoreSnapshot(data) {
 		if (!data.loadedSpotlightMaps?.length || !data.loadedCommunityMaps?.length) {
 			loadCommunityMaps(0);
-			loadCommunityMaps(undefined, undefined, undefined, undefined, true);
+			loadCommunityMaps(null, true);
 			return;
 		}
 		if (currentController) currentController.abort();
 		if (currentFavController) currentFavController.abort();
 		currentFetchIndex = data.currentFetchIndex;
-		currentCategory = data.loadMoreCategoryParam;
-		currentQuery = data.loadMoreQueryParam;
-		currentByUserId = data.byUserParam;
+		filterCategory = data.filterCategory;
+		filterSearchQuery = data.filterSearchQuery;
+		filterUserId = data.filterUserId;
+		sortBy = data.sortBy;
 		showLoadMore = data.showLoadMore;
 		showNothingFound = data.showNothingFound;
 		errorMessageShown = false;
-		searchValue = data.searchValue;
+		searchInputValue = data.searchInputValue;
 		selectedCategoryIndex = data.selectedCategoryIndex;
 		loadedCommunityMaps = data.loadedCommunityMaps;
 		loadedSpotlightMaps = data.loadedSpotlightMaps;
@@ -266,7 +286,7 @@
 		}}
 	>
 		<div class="map-info">
-			<p class="map-name">{map.name || "Name not loaded"}</p>
+			<p class="map-name">{map.name || "Unnamed (Error)"}</p>
 			<p class="map-author">by {map.author || "Error"}</p>
 		</div>
 		<button
@@ -508,10 +528,32 @@
 			</div>
 		</div>
 		<search class="search-container">
+			<div class="filter-button-field">
+				<p style:margin-top="-2px">
+					<ArrowDownWideNarrow
+						strokeWidth={2}
+						size={20}
+						style="padding-left: var(--content-margin); margin-bottom: -3px;"
+					/>
+				</p>
+				<select
+					class="standard-button filter-button white"
+					bind:value={sortBy}
+					onchange={() => {
+						playSound("basic_button");
+						loadCommunityMaps(0);
+					}}
+				>
+					<option value="likes">Likes</option>
+					<option value="newest">Newest</option>
+					<option value="oldest">Oldest</option>
+					<option value="a-z">A-Z</option>
+				</select>
+			</div>
 			<input
 				id="map-search"
 				placeholder="Search"
-				bind:value={searchValue}
+				bind:value={searchInputValue}
 				onkeydown={(e) => {
 					if (e.key === "Enter") e.preventDefault();
 				}}
@@ -541,7 +583,7 @@
 				class="map-item load-more standard-button white"
 				onclick={() => {
 					playSound("basic_button");
-					loadCommunityMaps(currentFetchIndex + 50, currentCategory, currentQuery, currentByUserId, null);
+					loadCommunityMaps(currentFetchIndex + 50);
 				}}
 			>
 				More
@@ -761,8 +803,9 @@
 		flex-grow: 1;
 		padding: var(--content-margin);
 		padding-inline: var(--box-margin);
-		width: 225px;
 		text-overflow: ellipsis;
+		width: 0;
+		min-width: min(200px, max(15dvw, 75px));
 	}
 
 	.search-container {
@@ -771,10 +814,29 @@
 	}
 
 	#start-search {
-		max-width: 50px;
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+
+	.filter-button-field {
+		background: var(--box-color);
+		box-shadow: var(--box-shadow);
+		padding: var(--content-margin);
+		border-radius: var(--content-margin);
+		display: flex;
+		gap: var(--panel-margin);
+		align-items: center;
+		text-wrap: nowrap;
+	}
+
+	.filter-button {
+		height: 30px;
+		padding-inline: var(--content-margin);
+		margin-left: 2px;
+		border-radius: 3px;
+		padding-top: 0;
+		line-height: 22px;
 	}
 
 	.categories-bar {
@@ -785,8 +847,6 @@
 		align-items: center;
 		gap: var(--box-margin);
 		scrollbar-width: none;
-		flex-shrink: 1;
-		min-width: 0;
 	}
 
 	.category-button {
@@ -798,8 +858,7 @@
 	}
 
 	.category-button:hover {
-		filter: none;
-		background-color: rgba(255, 255, 255, 0.2);
+		transform: scale(0.97);
 	}
 
 	.selected {
