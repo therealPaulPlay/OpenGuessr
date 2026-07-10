@@ -1,7 +1,7 @@
 // This generates a new location, but keep in mind that this is NOT the function to present the user with a new location! This does not check the selected map etc.
 import { getLocationCoordinates } from '$lib/logic/locationGeneration';
 import { countryGuessr, imageGuessr, metaGuessr } from "$lib/stores/modeStore";
-import { currentLocationHeading, currentLocationLatitude, currentLocationLongitude, currentLocationPanoramaId } from '$lib/stores/locationStore';
+import { currentLocationHeading, currentLocationLatitude, currentLocationLongitude, currentLocationPanoramaId, currentLocationPitch } from '$lib/stores/locationStore';
 import { setCountryGuesserCountry } from '$lib/utils/countryGuessrFunctions';
 import { setImageGuessrImage } from '$lib/utils/imageGuesserFunctions';
 import { get } from 'svelte/store';
@@ -22,10 +22,9 @@ export async function generateNewLocation(type) {
         currentLocationLatitude.set(Number(newLocationArray[0]));
         currentLocationLongitude.set(Number(newLocationArray[1]));
 
-        // Set heading if available, otherwise reset
+        // Optional location values, set if present, otherwise reset
         currentLocationHeading.set(newLocationArray[2]?.heading ?? null);
-
-        // Set panorama ID if available, otherwise reset
+        currentLocationPitch.set(newLocationArray[2]?.pitch ?? null);
         currentLocationPanoramaId.set(newLocationArray[2]?.panoramaId ?? null);
 
         // Special-mode specific
