@@ -1,10 +1,11 @@
-export function openLocationOnMaps(lat, long, { heading = null, panoramaId = null } = {}) {
+export function openLocationOnMaps(lat, long, { heading = null, pitch = null, panoramaId = null } = {}) {
     const url =
         "https://www.google.com/maps/@?api=1&map_action=pano&viewpoint=" +
         lat +
         "," +
         long +
-        (panoramaId ? "&pano=" + panoramaId : "") +
-        (heading ? "&heading=" + heading : "");
+        (heading != null ? "&heading=" + heading : "") +
+        (pitch != null ? "&pitch=" + pitch : "") +
+        (panoramaId ? "&pano=" + panoramaId : "");
     window.open(url, '_blank').focus();
 }

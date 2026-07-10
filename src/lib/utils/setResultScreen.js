@@ -10,7 +10,7 @@ import { earnedExperience } from "$lib/stores/context-specific/resultScreenStore
 import { get } from "svelte/store";
 import { showSlideup } from "$lib/stores/context-specific/resultScreenSlideupStore";
 import { supporterSlideupProbability } from "./showSupporterSlideup";
-import { currentLocationHeading, currentLocationLatitude, currentLocationLongitude, currentLocationPanoramaId } from "$lib/stores/locationStore";
+import { currentLocationHeading, currentLocationLatitude, currentLocationLongitude, currentLocationPanoramaId, currentLocationPitch } from "$lib/stores/locationStore";
 import { checkDisplayFullscreenCelebration } from "./resultFullscreenCelebration";
 import { mapExpanded, mapHovered, guessLat, guessLon } from "$lib/stores/context-specific/mapStore";
 import { socialPopupProbability } from "./socialPopupProbability";
@@ -31,7 +31,7 @@ export async function enableResultScreen() {
     resetMap(true, true);
 
     // Save round to log
-    saveRoundToLog(distance, [get(currentLocationLatitude), get(currentLocationLongitude), { heading: get(currentLocationHeading), panoramaId: get(currentLocationPanoramaId) }]);
+    saveRoundToLog(distance, [get(currentLocationLatitude), get(currentLocationLongitude), { heading: get(currentLocationHeading), pitch: get(currentLocationPitch), panoramaId: get(currentLocationPanoramaId) }]);
 
     // Load result on the map
     loadResultMap(get(guessLat), get(guessLon), get(currentLocationLatitude), get(currentLocationLongitude));
