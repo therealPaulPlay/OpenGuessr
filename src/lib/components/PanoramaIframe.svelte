@@ -2,15 +2,16 @@
 <script>
 	import { iframeElement, initialIframeLoad, panoramaSrc } from "$lib/stores/locationStore";
 	import { loadingScreenVisible } from "$lib/stores/uiStore";
-	import { resetApplySingleplayerOptions } from "$lib/utils/applySingleplayerOptions";
-	import { checkStartCompetitionRound } from "$lib/logic/competitionLogic";
+	import { checkStartSingleplayerTimer } from "$lib/utils/singleplayerTimer";
+	import { checkStartCompetitionTimer } from "$lib/logic/competitionLogic";
 	import { panoramaFilter, nmpz } from "$lib/stores/context-specific/restrictionStore";
 
 	const handleLoad = () => {
 		if ($initialIframeLoad) {
 			try {
-				resetApplySingleplayerOptions(); // Apply singleplayer options (NMPZ, timer etc.) if Singleplayer, otherwise disable all
-				checkStartCompetitionRound(); // Check if currently playing competition and start timer + new round if so
+				// Start non-multiplayer timers after iframe load (to ensure short timer values work fairly)
+				checkStartSingleplayerTimer();
+				checkStartCompetitionTimer();
 			} catch (error) {
 				console.error("Error in panorama load callback:", error);
 			}

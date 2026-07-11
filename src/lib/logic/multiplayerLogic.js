@@ -40,7 +40,6 @@ import { goto } from "$app/navigation";
 import PlaySocket from "playsocketjs";
 import { getServerTimestamp } from "$lib/utils/timeUtil";
 import { websocketUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { singleplayerTimer } from "$lib/stores/context-specific/timerCountdownOverlayStore";
 import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
 import { page } from "$app/state";
 
@@ -52,7 +51,6 @@ export function getTeamFromClientId(id) {
 // Game UI ----------------------------------------------------------------------------------------------------------------------------------
 function setMultiplayerUI(enable) {
     if (enable) {
-        get(singleplayerTimer)?.stopTimer();
         leaveFunction.set(() => {
             showConfirmPopup("Leave room?", "You are about to leave the multiplayer room. Are you sure?", leaveMultiplayer);
             playSound("leave_round");
@@ -94,7 +92,7 @@ export async function createMultiplayerInstance() {
             customData
         }));
 
-        let playerAddRequestSent = false;
+        let playerDataAdded = false;
         let gameHasStarted = false;
 
         // Register event listeners
@@ -122,7 +120,7 @@ export async function createMultiplayerInstance() {
         });
 
         get(socket).onEvent('moved', (newRoomId) => {
-            playerAddRequestSent = false; // Reset so addPlayer is sent for the new room
+            playerDataAdded = false; // Reset so addPlayer is sent for the new room
             gameHasStarted = false;
             roomCode.set(newRoomId); // Update roomCode to the new room
         });
@@ -146,8 +144,8 @@ export async function createMultiplayerInstance() {
             if (storage.gameStarted && get(matchmakingActive)) matchmakingActive.set(false);
 
             // If player is not already in the room, add player info
-            if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerAddRequestSent) {
-                playerAddRequestSent = true;
+            if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerDataAdded) {
+                playerDataAdded = true;
                 get(socket).sendRequest("addPlayer", { guestName: get(guestName) || null });
             }
 
@@ -341,7 +339,7 @@ export function leaveMultiplayer(destroy = true) {
         showMultiplayerOverlay(false); // Also makes map interactive
         updatePlayerArrays(); // Reset multiplayer array to avoid brief pop-in of previous players on subsequent room creations
         updateMinimapWithTeamMarkers([]); // Clean up multiplayer minimap markers
-        checkGenerationTypeAndGenerate(); // Generate new loc (also resets restriction)
+        checkGenerationTypeAndGenerate(); // Generate new location to match the singleplayer settings (selected map, timer etc.)
     }
 }
 

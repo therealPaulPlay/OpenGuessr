@@ -9,10 +9,10 @@
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { singleplayer } from "$lib/stores/modeStore";
-	import { singleplayerNMPZ, singleplayerTimeout } from "$lib/stores/context-specific/singleplayerOptionsStore";
 	import { checkGenerationTypeAndGenerate } from "$lib/utils/checkGenerationTypeAndGenerate";
+	import { setRestriction } from "$lib/utils/setRestriction";
 
-	// Unit switch between kilometers and miles ------------------
+	// Unit switch between kilometers and miles -------------------------------------------
 	let selectedUnit = $state("Metric");
 
 	onMount(() => {
@@ -22,7 +22,7 @@
 		}
 	});
 
-	// SFX Volume -----------------------------
+	// SFX Volume ----------------------------------------------------------------------------
 	let sfxVolumeSliderValue = $state(0.5);
 	let sfxSliderBgPercentage = $state(100);
 
@@ -42,7 +42,7 @@
 		`linear-gradient(to right, var(--brand-color) 0%, var(--brand-color) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) ${sfxSliderBgPercentage}%, rgba(255, 255, 255, 0.1) 100%)`,
 	);
 
-	// Music Volume ----------------------------------------------------
+	// Music Volume -------------------------------------------------------------------------
 	let musicVolumeSliderValue = $state(0.5);
 	let musicSliderBgPercentage = $state(100);
 
@@ -80,7 +80,7 @@
 		}
 	}
 
-	// Singleplayer timer ---------------------------------------------------------
+	// Singleplayer timer -----------------------------------------------------------------
 	let timerSliderValue = $state(0);
 
 	// Timer values dictionary
@@ -109,9 +109,15 @@
 		}
 	}
 
+	let singleplayerTimeout = $state(0);
+
+	onMount(() => {
+		singleplayerTimeout = Number(localStorage.getItem("singleplayerTimer")) || 0;
+	});
+
 	// Find the corresponding slider value for the current timeout value
 	$effect(() => {
-		const timerSetting = timerValues.find((t) => Math.abs(t.actual - ($singleplayerTimeout || 0)) < 0.01);
+		const timerSetting = timerValues.find((t) => Math.abs(t.actual - (singleplayerTimeout || 0)) < 0.01);
 		timerSliderValue = timerSetting?.slider ?? 0;
 	});
 
@@ -119,18 +125,24 @@
 
 	function changeTimeout() {
 		const timerSetting = timerValues.find((t) => t.slider === timerSliderValue);
-		$singleplayerTimeout = timerSetting ? timerSetting.actual : 0;
-		localStorage.setItem("singleplayerTimer", $singleplayerTimeout);
+		singleplayerTimeout = timerSetting ? timerSetting.actual : 0;
+		localStorage.setItem("singleplayerTimer", singleplayerTimeout);
 		clearTimeout(changeRegenerationTimeout);
 		changeRegenerationTimeout = setTimeout(checkGenerationTypeAndGenerate, 250);
 	}
 
 	// Toggle NMPZ ------------------------------------------------------------------
+	let singleplayerNMPZ = $state(false);
+
+	onMount(() => {
+		singleplayerNMPZ = Boolean(localStorage.getItem("singleplayerNMPZ"));
+	});
+
 	function toggleSingleplayerNMPZ() {
 		playSound("basic_button");
-		$singleplayerNMPZ = !$singleplayerNMPZ;
-		localStorage.setItem("singleplayerNMPZ", $singleplayerNMPZ ? "true" : "");
-		checkGenerationTypeAndGenerate();
+		singleplayerNMPZ = !singleplayerNMPZ;
+		localStorage.setItem("singleplayerNMPZ", singleplayerNMPZ ? "true" : "");
+		singleplayerNMPZ ? setRestriction("nmpz") : setRestriction();
 	}
 </script>
 
@@ -170,7 +182,7 @@
 		<div class="settings-box settings-box-flex no-flex-wrap" class:box-disabled={!$singleplayer}>
 			<p class="settings-box-flex-title">No Move, Pan or Zoom</p>
 			<button class="standard-button white" onclick={toggleSingleplayerNMPZ}
-				>{$singleplayerNMPZ ? "Enabled" : "Disabled"}</button
+				>{singleplayerNMPZ ? "Enabled" : "Disabled"}</button
 			>
 		</div>
 		<TitleSeparator text="Audio" noMargin={true} />
