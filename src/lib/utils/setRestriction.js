@@ -1,6 +1,14 @@
+import { browser } from "$app/environment";
 import { panoramaFilter, nmpz, fadePanorama, selectedRestriction, defaultRestriction } from "$lib/stores/context-specific/restrictionStore";
+import { singleplayer } from "$lib/stores/modeStore";
 import { get } from "svelte/store";
 
+// Apply singleplayer restriction by default and when singleplayer is re-entered
+singleplayer.subscribe((value) => {
+    if (value) (browser && localStorage.getItem("singleplayerNMPZ") ? setRestriction("nmpz") : setRestriction());
+});
+
+// Other modes call directly
 export function setRestriction(restriction = get(defaultRestriction)) {
     selectedRestriction.set(restriction);
 
@@ -27,6 +35,6 @@ export function setRestriction(restriction = get(defaultRestriction)) {
             break;
         case "none":
         default:
-            break; // no restriction
+            break; // No restriction
     }
 }

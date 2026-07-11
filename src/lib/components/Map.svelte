@@ -49,7 +49,10 @@
 	tabindex="0"
 	onkeyup={(event) => {
 		// Allow for pressing the space bar to guess
-		if (event.key === " ") if (get(confirmButtonActive) && isElementClickable(mapElement)) confirmButtonClicks();
+		if (event.key === " " && get(confirmButtonActive) && isElementClickable(mapElement)) {
+			event.stopPropagation();
+			confirmButtonClicks();
+		}
 	}}
 	onpointerover={(event) => {
 		lastPointerType = event.pointerType;
@@ -57,7 +60,7 @@
 	onmouseenter={handleMapHover}
 	onmouseleave={handleMapUnhover}
 	bind:this={mapElement}
-	style:height={mapOpen ? (mobilePortrait.current ? "35dvh" : $mapHovered ? "50dvh" : "max(18dvh, 150px)") : "0"}
+	style:height={mapOpen ? (mobilePortrait.current ? "35dvh" : $mapHovered ? "55dvh" : "max(18dvh, 150px)") : "0"}
 	style:margin-top={mapOpen ? undefined : "calc(var(--box-margin) * -1)"}
 	class:map-full-opacity-result={Boolean($resultScreenEnabled)}
 ></div>

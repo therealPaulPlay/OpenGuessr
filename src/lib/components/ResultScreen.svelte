@@ -34,7 +34,6 @@
 	import { countryGuessr } from "$lib/stores/modeStore";
 
 	// Animate experience and level ----------------------------------------------------------------
-
 	const animatedExperience = tweened(0, {
 		duration: 2000,
 		easing: cubicOut,
@@ -48,7 +47,7 @@
 	let level = $state(1);
 	let percentageWidth = $state("0%");
 	let showConfetti = $state(false);
-	let nextRoundButtonElement = $state();
+	let continueButtonEl = $state();
 
 	let transitionExperienceBar = $state(true);
 	let lastPercentageWidthNumber;
@@ -119,11 +118,14 @@
 	});
 
 	// Next round ---------------------------------------------------------------------------------
-
-	// Go to next round
 	function nextRound() {
-		if ($tutorial && isFirstTutorialRound) isFirstTutorialRound = false;
-		else if ($tutorial && !isFirstTutorialRound) finalizeTutorial();
+		// Tutorial state
+		if ($tutorial) {
+			if (isFirstTutorialRound) isFirstTutorialRound = false;
+			else finalizeTutorial();
+		}
+
+		// Go to next round
 		transitionToStart();
 	}
 </script>
@@ -152,6 +154,13 @@
 	<ResultFullscreenMessage />
 	<ResultScreenSlideup />
 {/if}
+
+<!-- Allow pressing space to continue -->
+<svelte:window
+	onkeyup={(event) => {
+		if (event.key === " " && isElementClickable(continueButtonEl) && $resultScreenEnabled) nextRound();
+	}}
+/>
 
 <div class="end-bottom-area" style:display={$resultScreenEnabled ? "" : "none"}>
 	<div class="end-bottom-bar">
@@ -237,7 +246,7 @@
 				<img src="/img/streetview_icon.png" alt="Streetview symbol" id="streetview-icon" />
 			</button>
 			<button
-				bind:this={nextRoundButtonElement}
+				bind:this={continueButtonEl}
 				id="next-round"
 				class="standard-button white"
 				style:pointer-events={$continueText.toLowerCase().includes("wait") ? "none" : ""}
@@ -261,12 +270,6 @@
 		</div>
 	{/if}
 </div>
-
-<svelte:window
-	onkeypress={(event) => {
-		if (event.key === " " && isElementClickable(nextRoundButtonElement) && $resultScreenEnabled) nextRound();
-	}}
-/>
 
 <style>
 	.direction-arrow-icon {

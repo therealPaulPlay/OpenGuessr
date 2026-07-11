@@ -10,5 +10,5 @@ export function transitionToStart() {
     checkGenerationTypeAndGenerate(); // Generate new location
     disableResultScreen();
   }
-  if (get(multiplayer)) get(socket)?.updateStorage("showResult", "set", false); // Disable result screen
+  if (get(multiplayer)) get(socket)?.updateStorage("showResult", "set", false); // Disable result screen in multiplayer
 }

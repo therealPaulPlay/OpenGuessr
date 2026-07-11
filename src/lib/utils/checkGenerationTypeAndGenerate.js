@@ -1,4 +1,3 @@
-// Use this to present the player with a new location. This strongly depends on locationGeneration.js and generateLocation.js and feeds the generator with the right settings
 import { enableImageGuessr } from "$lib/utils/imageGuesserFunctions";
 import { multiplayer, competition, singleplayer, countryGuessr, imageGuessr, metaGuessr } from "$lib/stores/modeStore";
 import { generateNewLocation } from "$lib/utils/generateLocation";
@@ -10,7 +9,7 @@ import { checkCompetitionRoundStatus } from "$lib/logic/competitionLogic";
 import { get } from "svelte/store";
 import { loadingScreenVisible } from "$lib/stores/uiStore";
 
-// Check for ?play-map= URLs that include a map ---------------------------------------------------------------------------
+// Check for ?play-map= URLs ---------------------------------------------------------------------------
 let checkedForMapLink = false;
 
 function checkLinkMap() {
@@ -32,7 +31,6 @@ let checkedForTutorialMap = false;
 
 function checkTutorialMap() {
   checkedForTutorialMap = true;
-  // This happens if a user reloads in the middle of the tutorial (we don't want to keep the map as Tutorial)
   if (localStorage.getItem("selectedMap") == get(tutorialMap)) changeMap(get(defaultMap));
 }
 

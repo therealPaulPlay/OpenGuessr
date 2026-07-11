@@ -29,6 +29,7 @@ export function loadCompetition() {
     disableResultScreen(); // In case result screen is enabled
     setRestriction(get(competitionData)?.restriction);
 
+    // Schedule SFX
     setTimeout(() => {
         playSound("match_start");
     }, 400);
@@ -37,7 +38,7 @@ export function loadCompetition() {
 }
 
 // Round Logic ---------------------------------------------------------------------------------------------------------
-export function checkStartCompetitionRound() {
+export function checkStartCompetitionTimer() {
     if (get(competition)) {
         competitionRound.set(get(competitionRound) + 1);
         competitionTimer = startTimer(get(competitionData)?.roundLength, confirmButtonClicks);
