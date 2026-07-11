@@ -49,7 +49,10 @@
 	tabindex="0"
 	onkeyup={(event) => {
 		// Allow for pressing the space bar to guess
-		if (event.key === " ") if (get(confirmButtonActive) && isElementClickable(mapElement)) confirmButtonClicks();
+		if (event.key === " " && get(confirmButtonActive) && isElementClickable(mapElement)) {
+			event.stopPropagation();
+			confirmButtonClicks();
+		}
 	}}
 	onpointerover={(event) => {
 		lastPointerType = event.pointerType;
