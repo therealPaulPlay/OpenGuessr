@@ -347,7 +347,7 @@
 		/>
 	</div>
 	{#if selectedTabIndex != null}
-		{@const category = statCategories[selectedTabIndex]}
+		{const category = $derived(statCategories[selectedTabIndex])}
 		{#snippet statCards(cards, animate)}
 			{#each cards as card (card.title)}
 				<div class="stat-card" in:blur={{ duration: animate ? 250 : 0 }}>

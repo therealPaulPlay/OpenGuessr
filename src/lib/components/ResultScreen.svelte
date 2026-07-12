@@ -133,10 +133,10 @@
 {#if showConfetti}
 	<div class="confetti-box">
 		{#each { length: 4 }, index}
-			{@const xVal = 3 + Math.random() * 2}
-			{@const yVal = 3 + Math.random() * 2}
-			{@const delay = 100 + Math.random() * 300}
-			{@const indexFactor = -8 + index * 4}
+			{const xVal = 3 + Math.random() * 2}
+			{const yVal = 3 + Math.random() * 2}
+			{const delay = 100 + Math.random() * 300}
+			{const indexFactor = -8 + index * 4}
 			<Confetti
 				noGravity
 				x={[-xVal + indexFactor, xVal + indexFactor]}

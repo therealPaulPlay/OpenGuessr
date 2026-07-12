@@ -82,7 +82,7 @@
 		</p>
 	{:else}
 		{#each Object.values($multiplayerTableArray) as team}
-			{@const teamIndex = team.teamIndex}
+			{const teamIndex = $derived(team.teamIndex)}
 			<p class="player-box-element player-box-teams">
 				<span>{`Team ${teamIndex + 1}:`}</span>
 				{#if team.players?.length > 0}
@@ -100,7 +100,7 @@
 							>
 								<!-- Generate select options for every team -->
 								{#each Object.values($multiplayerTableArray) as teamObject}
-									{@const index = teamObject.teamIndex}
+									{const index = $derived(teamObject.teamIndex)}
 									<option value={index} selected={player.teamIndex == index}>Team {index + 1}</option>
 								{/each}
 							</select>{#if i < team.players.length - 1}<span>,&nbsp;</span>{/if}

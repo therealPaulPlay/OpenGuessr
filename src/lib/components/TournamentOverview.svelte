@@ -20,12 +20,12 @@
 </script>
 
 {#snippet tournamentItem(tournament)}
-	{@const readableDate = new Date(tournament.date).toLocaleString("en-US", {
+	{const readableDate = $derived(new Date(tournament.date).toLocaleString("en-US", {
 		month: "short",
 		day: "numeric",
 		hour: "numeric",
 		minute: "2-digit",
-	})}
+	}))}
 
 	<div class="tournament-box">
 		<div class="tournament-name-box">
