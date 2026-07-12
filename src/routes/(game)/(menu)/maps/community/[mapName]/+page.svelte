@@ -10,7 +10,6 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
-	import { panoramaKey, streetViewURLPrefix } from "$lib/stores/locationStore";
 	import { onMount } from "svelte";
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
@@ -20,6 +19,7 @@
 	import { tooltip } from "$lib/utils/tooltip.svelte.js";
 	import { page } from "$app/state";
 	import { navigationMenu } from "$lib/stores/uiStore.js";
+	import { getMapsEmbedUrl } from "$lib/utils/streetViewUrl.js";
 
 	let { data } = $props();
 
@@ -42,13 +42,11 @@
 
 	let iframeSource = $derived(
 		locationsArrayForSvgMap?.[locationIndex]
-			? $streetViewURLPrefix +
-					locationsArrayForSvgMap?.[locationIndex]?.[0] +
-					"," +
-					locationsArrayForSvgMap?.[locationIndex]?.[1] +
-					"&key=" +
-					get(panoramaKey) +
-					"&fov=90"
+			? getMapsEmbedUrl(
+					locationsArrayForSvgMap?.[locationIndex]?.[0],
+					locationsArrayForSvgMap?.[locationIndex]?.[1],
+					locationsArrayForSvgMap?.[locationIndex]?.[2],
+				)
 			: null,
 	);
 
@@ -266,7 +264,8 @@
 	<div class="map-view-iframe">
 		{#if iframeSource}
 			<!-- svelte-ignore a11y_missing_attribute -->
-			<iframe class="map-iframe" referrerpolicy="no-referrer-when-downgrade" frameborder="0" src={iframeSource}></iframe>
+			<iframe class="map-iframe" referrerpolicy="no-referrer-when-downgrade" frameborder="0" src={iframeSource}
+			></iframe>
 		{:else}
 			<p class="loading-text" style:opacity="0.5">Loading...</p>
 		{/if}

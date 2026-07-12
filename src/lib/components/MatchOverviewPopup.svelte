@@ -1,13 +1,13 @@
 <script>
 	import { matchOverviewPopup } from "$lib/stores/uiStore";
 	import { matchData } from "$lib/stores/context-specific/divisionMatchHistoryStore";
-	import { panoramaKey, streetViewURLPrefix } from "$lib/stores/locationStore";
 	import { wrapBackLon } from "$lib/logic/miniMap";
 	import { playSound } from "$lib/utils/soundManager";
 	import { showProfile } from "$lib/utils/showProfile";
 	import Popup from "./ui/Popup.svelte";
 	import Tabs from "./ui/Tabs.svelte";
 	import SvgMap from "./SvgMap.svelte";
+	import { getMapsEmbedUrl } from "$lib/utils/streetViewUrl";
 
 	let selectedIndex = $state(0);
 	let viewMode = $state("Map");
@@ -17,30 +17,22 @@
 	let currentRound = $derived(rounds[selectedIndex]);
 
 	let panoramaSrc = $derived(
-		currentRound
-			? $streetViewURLPrefix +
-					currentRound.location.lat +
-					"," +
-					currentRound.location.lon +
-					"&key=" +
-					$panoramaKey +
-					"&fov=90"
-			: "",
+		currentRound?.location ? getMapsEmbedUrl(currentRound.location[0], currentRound.location[1], currentRound.location[2]) : null,
 	);
 
 	let markerList = $derived(
 		currentRound
 			? [
-					{ lat: currentRound.location.lat, lon: wrapBackLon(currentRound.location.lon), shape: "flag" },
+					...(currentRound.location ? [{ lat: currentRound.location[0], lon: wrapBackLon(currentRound.location[1]), shape: "flag" }] : []),
 					...currentRound.guesses.map((g) => ({ lat: g.lat, lon: wrapBackLon(g.lon), label: g.username })),
 				]
 			: [],
 	);
 	let lineList = $derived(
-		currentRound
+		currentRound?.location
 			? currentRound.guesses.map((g) => ({
 					from: { lat: g.lat, lon: wrapBackLon(g.lon) },
-					to: { lat: currentRound.location.lat, lon: wrapBackLon(currentRound.location.lon) },
+					to: { lat: currentRound.location[0], lon: wrapBackLon(currentRound.location[1]) },
 				}))
 			: [],
 	);
@@ -82,12 +74,9 @@
 					{#each currentRound.guesses as guess (guess.userId)}
 						<div class="score-row">
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
-							<span
-								class="score-name"
-								role="button"
-								tabindex="0"
-								onclick={() => showProfile(guess.userId)}
-							>{guess.username}</span>
+							<span class="score-name" role="button" tabindex="0" onclick={() => showProfile(guess.userId)}
+								>{guess.username}</span
+							>
 							<span class="score-points">{guess.totalPoints.toLocaleString()}</span>
 						</div>
 					{/each}

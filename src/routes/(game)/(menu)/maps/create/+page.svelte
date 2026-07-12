@@ -92,19 +92,23 @@
 	<title>Create map</title>
 </svelte:head>
 
-<Popup verySlim={true} bind:open={jsonPopup}>
+<Popup slim={true} bind:open={jsonPopup}>
 	<h1 class="popup-title">JSON format</h1>
-	<p>OpenGuessr uses a JSON format to load its locations. Here is an example of how that looks like.</p>
+	<p>OpenGuessr uses a JSON format to load its locations, an example of which can be seen in the snippet below.</p>
+	<br />
+	<p>
+		The third and optional entry in the coordinate array is an object with data about the location. Specifically, the
+		heading, pitch, and the panorama ID.
+	</p>
 	<br />
 	<div class="pre-box">
 		<pre>
 &lbrace;
   "locations": [
     [latitude, longitude],
-    [latitude, longitude],
-    [latitude, longitude],
+    [latitude, longitude, &lbrace;"heading": 110&rbrace;],
     ...
-    [latitude, longitude]
+    [latitude, longitude, &lbrace;"heading": 90, "pitch": 0, "panoramaId": "mSQcVfwDD..."&rbrace;]
   ]
 &rbrace;</pre>
 	</div>
