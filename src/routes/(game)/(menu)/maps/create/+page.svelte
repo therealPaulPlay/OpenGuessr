@@ -108,7 +108,7 @@
     [latitude, longitude],
     [latitude, longitude, &lbrace;"heading": 110&rbrace;],
     ...
-    [latitude, longitude, &lbrace;"heading": 90, "pitch": 0, "panoramaId": "mSQcVfwDD..."&rbrace;]
+    [latitude, longitude, &lbrace;"heading": 50, "pitch": 15, "panoramaId": "mSQcVfwDD..."&rbrace;]
   ]
 &rbrace;</pre>
 	</div>
