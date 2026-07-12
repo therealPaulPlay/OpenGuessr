@@ -3,7 +3,8 @@
 // Convert streetview links to json file
 export function extractCoordinates(text) {
     try {
-        const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)/g;
+        const regex = /@(-?\d+\.\d+),(-?\d+\.\d+)([^@\s]*)/g;
+        const headingRegex = /,(\d+(?:\.\d+)?)h(?=[,/]|$)/; // e.g. 2.85h in @44.42,20.88,3a,75y,2.85h,90t (omitted when the heading is 0), note that t doesn't map to pitch (t is 0-180, pitch is -90-90)
         const coordinates = [];
         const seenCoordinates = new Set();
         let match;
@@ -14,7 +15,8 @@ export function extractCoordinates(text) {
             const coordPair = `${lat},${lon}`;
 
             if (!seenCoordinates.has(coordPair)) {
-                coordinates.push([lat, lon]);
+                const headingMatch = match[3].match(headingRegex);
+                coordinates.push(headingMatch ? [lat, lon, { heading: parseFloat(headingMatch[1]) }] : [lat, lon]);
                 seenCoordinates.add(coordPair);
             }
         }

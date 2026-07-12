@@ -4,7 +4,7 @@
 	import { roundLog } from "$lib/stores/locationStore";
 	import { onMount } from "svelte";
 	import { formatDistance } from "$lib/utils/distanceFunctions";
-	import { openLocationOnMaps } from "$lib/utils/openLocationOnMaps";
+	import { openLocationOnMaps } from "$lib/utils/streetViewUrl";
 	import { playSound } from "$lib/utils/soundManager";
 	import TitleSeparator from "./ui/TitleSeparator.svelte";
 	import { ExternalLink } from "@lucide/svelte";
