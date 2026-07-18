@@ -85,18 +85,18 @@
 		duration,
 		roundLength,
 		description,
-		rawLocations,
+		locations,
 		isPrivate,
 	) {
 		try {
 			const requestBody = {
-				name: name,
+				name,
 				id: authorId,
-				restriction: restriction,
-				duration: duration,
-				roundLength: roundLength,
-				description: description,
-				rawLocations: rawLocations,
+				restriction,
+				duration,
+				roundLength,
+				description,
+				locations,
 				private: isPrivate,
 			};
 
