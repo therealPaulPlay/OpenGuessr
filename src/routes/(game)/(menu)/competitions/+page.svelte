@@ -357,12 +357,10 @@
 
 	function startSearch() {
 		expiredTabsSelection = "All";
-		let query = searchQuery.toLowerCase();
+		let query = searchQuery?.toLowerCase();
 		activeCompetitionsData = [];
 		if (hideEntered) hideEntered = false;
-
 		notExpiredIndex = 0; // reset index if starting new search
-		if (query == "") query = undefined; // so the undefined check works in the load function
 
 		getCompetitionsFromServer(false, query);
 	}
