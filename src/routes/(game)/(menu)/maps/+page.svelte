@@ -653,6 +653,7 @@
 		cursor: pointer;
 		transition:
 			opacity 250ms ease,
+			filter 250ms ease,
 			scale 250ms ease,
 			background-color 250ms ease;
 	}
@@ -666,8 +667,8 @@
 	}
 
 	.map-item-hover:hover {
-		background-color: rgba(255, 255, 255, 0.2);
-		scale: 1.01;
+		filter: brightness(70%);
+		scale: 0.99;
 	}
 
 	.map-item-slim {
