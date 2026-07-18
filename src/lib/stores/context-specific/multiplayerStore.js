@@ -56,3 +56,4 @@ export const mobileChatLastOpenedMsgCount = writable(0); // Chat msg maount as t
 export const chatVisible = writable(false);
 export const chatMutedPlayers = writable([]);
 export const remainingPlayers = writable([]);
+export const roomLocked = writable(false);

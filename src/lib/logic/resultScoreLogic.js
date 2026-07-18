@@ -15,6 +15,7 @@ import { get } from "svelte/store";
 import { getMapBounds } from "$lib/utils/getMapBounds";
 import { showResultScreenSlideup } from "$lib/utils/resultScreenSlideup";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
+import { errorPopup } from "$lib/utils/errorHandling";
 
 // Streak ----------------------------------------------------------------------------------------------------------------------------------------------------
 function calculateMultiplier(streakParam) {
@@ -111,7 +112,10 @@ export async function loadResultScreenXP(distance) {
         supporterMultiplier = calculatedXP.supporterMultiplier;
 
         // Add XP to score
-        if (get(multiplayer)) get(socket)?.sendRequest("addToScore", earnedXP);
+        if (get(multiplayer)) get(socket)?.sendRequest("addToScore", earnedXP).catch((error) => {
+            errorPopup("Failed to add to score", "An error occured trying to submit the score addition.", error.message);
+            console.error("Error adding to score:", error);
+        });
 
     } else if (get(competition)) {
         const calculatedXP = await calculateXPGain(distance, get(defaultMap));

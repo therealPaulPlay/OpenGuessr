@@ -8,6 +8,7 @@ import { getMapBounds } from "$lib/utils/getMapBounds.js";
 import { selectedPinIndex } from "$lib/stores/accountStore.js";
 import { get } from "svelte/store";
 import { multiplayer } from "$lib/stores/modeStore";
+import { errorPopup } from "$lib/utils/errorHandling";
 
 // Canonicalize a wrapped-world longitude back
 // For example, if lon is 185 degrees, lon/360 >= 0.5, so it wraps it back by 360, making that -175 in this case
@@ -150,7 +151,12 @@ function onMapClick(latLng) {
             return [...markers, marker]
         });
 
-        if (get(multiplayer)) get(socket).sendRequest("addGuessMarker", { lat: get(guessLat), lon: get(guessLon) });
+        if (get(multiplayer)) {
+            get(socket)?.sendRequest("addGuessMarker", { lat: get(guessLat), lon: get(guessLon) }).catch((error) => {
+                errorPopup("Failed to add map marker", "An error occured adding the guess marker for multiplayer.", error.message);
+                console.error("Error adding guess marker for multiplayer:", error);
+            });
+        }
     } catch (error) {
         console.error("Error in onMapClick function:", error)
     }

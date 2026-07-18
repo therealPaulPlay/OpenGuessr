@@ -6,6 +6,7 @@
 		chatMutedPlayers,
 		multiplayerSortedPlayersArray,
 		socket,
+		roomLocked,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { get } from "svelte/store";
 	import Tabs from "./ui/Tabs.svelte";
@@ -13,8 +14,9 @@
 	import { slide } from "svelte/transition";
 	import { multiplayer } from "$lib/stores/modeStore";
 	import { showProfile } from "$lib/utils/showProfile";
+	import { errorPopup } from "$lib/utils/errorHandling";
 
-	let roomLocked = $state(get(socket)?.storage?.locked);
+	let currentlySettingRoomLock = $state(false);
 
 	multiplayer.subscribe((value) => {
 		if (!value) $chatManagePopup = false;
@@ -53,14 +55,21 @@
 			{#if get(socket)?.isHost && !get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom}
 				<button
 					class="standard-button white"
-					onclick={() => {
+					disabled={currentlySettingRoomLock}
+					onclick={async () => {
 						playSound("basic_button");
+						currentlySettingRoomLock = true;
 						const newRoomLockState = !get(socket)?.storage?.locked;
-						roomLocked = newRoomLockState;
-						get(socket).sendRequest("setRoomLock", newRoomLockState);
+						try {
+							await get(socket)?.sendRequest("setRoomLock", newRoomLockState);
+						} catch (error) {
+							errorPopup("Failed to set lock", "An error occured setting the lock state for the room.", error.message);
+							console.error("Error setting room lock state:", error);
+						}
+						currentlySettingRoomLock = false;
 					}}
 				>
-					{#if !roomLocked}
+					{#if !$roomLocked}
 						<Lock class="chat-action-icon" size={20} strokeWidth={2.25} /> Lock room
 					{:else}
 						<LockOpen class="chat-action-icon" size={20} strokeWidth={2.25} /> Unlock room
@@ -109,12 +118,20 @@
 								}}
 							/>
 							{#if get(socket)?.isHost && !get(socket)?.storage?.matchmakingRoom && !get(socket)?.storage?.tournamentRoom}
+								{let currentlyKickingPlayer = $state(false)}
 								<button
 									class="standard-button white"
-									disabled={clientId === get(socket)?.id}
-									onclick={() => {
+									disabled={clientId === get(socket)?.id || currentlyKickingPlayer}
+									onclick={async () => {
 										playSound("basic_button");
-										get(socket).sendRequest("kickClient", clientId);
+										currentlyKickingPlayer = true;
+										try {
+											await get(socket)?.sendRequest("kickClient", clientId);
+										} catch (error) {
+											errorPopup("Failed to kick client", "An error occured trying to kick the client.", error.message);
+											console.error("Error kicking client:", error);
+										}
+										currentlyKickingPlayer = false;
 									}}
 								>
 									<UserRoundX class="chat-action-icon" size={20} strokeWidth={2.25} /> Kick
