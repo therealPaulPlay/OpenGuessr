@@ -66,7 +66,7 @@
 			<p class="multiplayer-input-info">{$multiplayerStatus || ""}</p>
 			<div class="segmented-input-box" onpaste={handlePaste}>
 				{#each segments, i}
-					{@const placeholder = ["A", "B", "C", "1", "2", "3"]}
+					{const placeholder = ["A", "B", "C", "1", "2", "3"]}
 					<input
 						type="text"
 						class="segment-input"

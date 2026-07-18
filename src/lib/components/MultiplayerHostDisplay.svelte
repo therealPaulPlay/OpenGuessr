@@ -21,6 +21,7 @@
 	import { get } from "svelte/store";
 	import { onMount } from "svelte";
 	import { blur, slide } from "svelte/transition";
+	import { errorPopup } from "$lib/utils/errorHandling";
 
 	let {
 		showOpenRoom = true,
@@ -37,8 +38,13 @@
 	}
 
 	// Move player to different team
-	function updatePlayerTeam(playerId, newTeamIndex) {
-		get(socket)?.sendRequest("updateTeam", { newTeamIndex: parseInt(newTeamIndex), playerClientId: playerId });
+	async function updatePlayerTeam(playerId, newTeamIndex) {
+		try {
+			await get(socket)?.sendRequest("updateTeam", { newTeamIndex: parseInt(newTeamIndex), playerClientId: playerId });
+		} catch (error) {
+			errorPopup("Failed to update player's team", "An error occured trying to update the player's team index.", error.message);
+			console.error("Error updating team:", error);
+		}
 	}
 
 	// Refresh friends periodically
@@ -82,7 +88,7 @@
 		</p>
 	{:else}
 		{#each Object.values($multiplayerTableArray) as team}
-			{@const teamIndex = team.teamIndex}
+			{const teamIndex = $derived(team.teamIndex)}
 			<p class="player-box-element player-box-teams">
 				<span>{`Team ${teamIndex + 1}:`}</span>
 				{#if team.players?.length > 0}
@@ -100,7 +106,7 @@
 							>
 								<!-- Generate select options for every team -->
 								{#each Object.values($multiplayerTableArray) as teamObject}
-									{@const index = teamObject.teamIndex}
+									{const index = $derived(teamObject.teamIndex)}
 									<option value={index} selected={player.teamIndex == index}>Team {index + 1}</option>
 								{/each}
 							</select>{#if i < team.players.length - 1}<span>,&nbsp;</span>{/if}

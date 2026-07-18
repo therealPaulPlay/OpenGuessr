@@ -33,6 +33,6 @@ export async function addUserXP(addExperience) {
         }
     } catch (error) {
         console.error('Error occurred updating user experience: ', error);
-        errorPopup("Experience update failed", "Failed to update the user's experience.", error);
+        errorPopup("Experience update failed", "Failed to update the user's experience.", error.message);
     }
 }

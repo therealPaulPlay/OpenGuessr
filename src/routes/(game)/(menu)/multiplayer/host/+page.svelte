@@ -23,9 +23,10 @@
 	import { multiplayer } from "$lib/stores/modeStore";
 	import { showNotification } from "$lib/utils/notifications";
 	import { browser } from "$app/environment";
+	import { errorPopup } from "$lib/utils/errorHandling";
 
-	// Creation state
 	let isCreatingRoom = $state(false);
+	let isCurrentlyStarting = $state(false);
 
 	const STYLE_TABS = ["Standard", "Duel"];
 </script>
@@ -118,9 +119,18 @@
 			</div>
 		{:else}
 			<MultiplayerHostDisplay
-				startDisabledCondition={$participantCount < get(teamAmount) || $participantCount <= 1}
+				startDisabledCondition={$participantCount < get(teamAmount) || $participantCount <= 1 || isCurrentlyStarting}
 				showOpenRoom={true}
-				startFunction={() => get(socket)?.sendRequest("startRoom")}
+				startFunction={async () => {
+					isCurrentlyStarting = true;
+					try {
+						await get(socket)?.sendRequest("startRoom");
+					} catch (error) {
+						errorPopup("Failed to start room", "An error occured trying to start the room.", error.message);
+						console.error("Error starting room:", error);
+					}
+					isCurrentlyStarting = false;
+				}}
 			/>
 		{/if}
 	</div>

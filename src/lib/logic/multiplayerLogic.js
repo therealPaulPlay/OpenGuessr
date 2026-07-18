@@ -30,6 +30,7 @@ import {
     mobileChatLastOpenedMsgCount,
     matchmakingHosting,
     cancellingMatchmaking,
+    roomLocked,
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
@@ -114,9 +115,16 @@ export async function createMultiplayerInstance() {
             participantCount.set(get(socket)?.participantCount);
         });
 
-        get(socket).onEvent('hostMigrated', () => {
-            // In a non-division room, start when the host (who is the only one with the start button) leaves
-            if (!get(socket)?.storage?.gameStarted && !get(socket)?.storage?.matchmakingRoom) get(socket)?.sendRequest("startRoom");
+        get(socket).onEvent('hostMigrated', async () => {
+            // In a non-division room, new host should start when the host (who is the only one with the start button) leaves
+            if (!get(socket)?.storage?.gameStarted && !get(socket)?.storage?.matchmakingRoom && get(socket)?.isHost) {
+                try {
+                    await get(socket)?.sendRequest("startRoom");
+                } catch (error) {
+                    errorPopup("Failed to start room", "An error occured trying to start the room upon host migration.", error.message);
+                    console.error("Error starting room upon host migration:", error);
+                }
+            }
         });
 
         get(socket).onEvent('moved', (newRoomId) => {
@@ -146,7 +154,10 @@ export async function createMultiplayerInstance() {
             // If player is not already in the room, add player info
             if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerDataAdded) {
                 playerDataAdded = true;
-                get(socket).sendRequest("addPlayer", { guestName: get(guestName) || null });
+                get(socket)?.sendRequest("addPlayer", { guestName: get(guestName) || null }).catch((error) => {
+                    errorPopup("Failed to add player", "An error occured trying to add this player's data.", error.message);
+                    console.error("Error adding player data in multiplayer:", error);
+                });
             }
 
             if (storage.players) updatePlayerArrays(); // Do this before showing the overlay
@@ -154,6 +165,8 @@ export async function createMultiplayerInstance() {
             if (storage.overlay != null && storage.overlay != get(multiplayerOverlay)) showMultiplayerOverlay(Boolean(storage.overlay));
 
             if (storage.chats) loadAndProfanityCheckChat(storage.chats || []);
+
+            if (storage.locked != null) roomLocked.set(storage.locked);
 
             if (get(teamAmount) > 1 && storage.guessLocationsArray && !get(resultScreenEnabled)) updateMinimapWithTeamMarkers(storage?.guessLocationsArray); // Adjust markers
 
@@ -327,6 +340,7 @@ export function leaveMultiplayer(destroy = true) {
     continueText.set("Continue");
     multiplayerRestriction.set(Object.keys(get(restrictionNames))?.[0]);
     chatMutedPlayers.set([]);
+    roomLocked.set(false);
     currentRound.set(0);
     multiplayerMap.set(null);
     mobileChatLastOpenedMsgCount.set(0);

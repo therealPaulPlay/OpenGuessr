@@ -17,6 +17,7 @@
 	import { playSound } from "$lib/utils/soundManager";
 	import { get } from "svelte/store";
 	import { fade, slide } from "svelte/transition";
+	import { errorPopup } from "$lib/utils/errorHandling";
 </script>
 
 {#if $multiplayerOverlay}
@@ -105,12 +106,21 @@
 		{#if $rematchButtonVisible || $leaveMatchButtonVisible}
 			<div class="button-box" transition:slide={{ axis: "y" }}>
 				{#if $rematchButtonVisible}
+					{let currentlyStartingRematch = $state(false)}
 					<div class="host-button-container bar-menu">
 						<button
+							disabled={currentlyStartingRematch}
 							class="standard-button white large-button round-end-button"
-							onclick={() => {
+							onclick={async () => {
 								playSound("basic_button");
-								get(socket)?.sendRequest("rematch");
+								currentlyStartingRematch = true;
+								try {
+									await get(socket)?.sendRequest("rematch");
+								} catch (error) {
+									errorPopup("Failed to rematch", "An error occured trying to rematch.", error.message);
+									console.error("Error processing rematch:", error);
+								}
+								currentlyStartingRematch = false;
 							}}>Play again</button
 						>
 					</div>
