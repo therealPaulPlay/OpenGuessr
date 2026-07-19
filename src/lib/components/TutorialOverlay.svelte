@@ -89,7 +89,7 @@
 		{
 			title: "Browse menu",
 			isPlay: false,
-			action: () => setTimeout(() => ($navigationMenu = true), 250),
+			action: () => setTimeout(() => ($navigationMenu = true), 150),
 		},
 	];
 
