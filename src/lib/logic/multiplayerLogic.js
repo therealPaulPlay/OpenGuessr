@@ -209,11 +209,14 @@ export async function createMultiplayerInstance() {
         });
 
         get(socket).onEvent('instanceDestroyed', (reason) => {
-            if (reason) {
-                // Kicked as reason is expected during matchmaking cancellation, as the server kicks the player
-                if (!(get(cancellingMatchmaking) && reason?.toLowerCase()?.includes?.("kicked"))) errorPopup("Disconnected from multiplayer", "You are no longer in multiplayer due to the reason below.", reason);
+            if (get(multiplayer)) {
+                if (reason) {
+                    // Kicked as reason is expected during matchmaking cancellation, as the server kicks the player
+                    const isCancelKick = get(cancellingMatchmaking) && reason?.toLowerCase()?.includes?.("kicked");
+                    if (!isCancelKick) errorPopup("Disconnected from multiplayer", "You are no longer in multiplayer due to the reason below.", reason);
+                }
+                leaveMultiplayer(false); // If not already left, leave (e.g. on error)
             }
-            if (get(multiplayer)) leaveMultiplayer(false); // If not already left, leave (e.g. on error)
         });
 
         // Initialize and open connection
