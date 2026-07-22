@@ -99,11 +99,6 @@ export async function createMultiplayerInstance() {
         // Register event listeners
         get(socket).onEvent('status', status => multiplayerStatus.set(status));
         get(socket).onEvent('status', status => console.log(status));
-        get(socket).onEvent('error', (error) => {
-            if (get(cancellingMatchmaking) && error?.toLowerCase()?.includes?.("kicked")) return; // Expected, cancelling makes the server kick the player
-            if (get(multiplayer)) errorPopup("Multiplayer error", "The multiplayer system reports an error.", error);
-            else multiplayerStatus.set("An error occured.");
-        });
 
         // Someone connected...
         get(socket).onEvent('clientJoined', (_id) => {
@@ -213,7 +208,11 @@ export async function createMultiplayerInstance() {
             }
         });
 
-        get(socket).onEvent('instanceDestroyed', () => {
+        get(socket).onEvent('instanceDestroyed', (reason) => {
+            if (reason) {
+                // Kicked as reason is expected during matchmaking cancellation, as the server kicks the player
+                if (!(get(cancellingMatchmaking) && reason?.toLowerCase()?.includes?.("kicked"))) errorPopup("Disconnected from multiplayer", "You are no longer in multiplayer due to the reason below.", reason);
+            }
             if (get(multiplayer)) leaveMultiplayer(false); // If not already left, leave (e.g. on error)
         });
 
