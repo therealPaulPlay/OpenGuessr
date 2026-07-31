@@ -467,7 +467,7 @@
 							unsaveCommunityMap(map);
 						}}
 					>
-						<X size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
+						<X size={20} strokeWidth={2.25} style="margin-bottom: 2px;" />
 					</button>
 				</div>
 			{/each}
@@ -760,8 +760,10 @@
 
 	.remove-button {
 		margin-left: var(--box-margin);
-		padding-inline: var(--panel-margin);
 		margin-right: -3px;
+		padding: 0;
+		padding-inline: var(--content-margin);
+		height: 26px;
 	}
 
 	#community-maps {
