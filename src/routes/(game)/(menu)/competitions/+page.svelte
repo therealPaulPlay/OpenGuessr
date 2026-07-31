@@ -543,7 +543,12 @@
 	entered,
 	daily,
 )}
-	<div class="competition-item fade-in-item" style:border-radius={daily && expired ? "8px" : ""}>
+	{const yesterdaysDaily = $derived(expired && daily)}
+	<div
+		class="competition-item fade-in-item"
+		style:border-radius={yesterdaysDaily ? "8px" : ""}
+		style:box-shadow={yesterdaysDaily ? "var(--box-shadow)" : ""}
+	>
 		<div>
 			<h2 class="competition-item-header">{name}</h2>
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -836,7 +841,7 @@
 	.button-toolbar {
 		display: flex;
 		justify-content: space-between;
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		flex-wrap: wrap;
 		box-sizing: border-box;
 		gap: var(--box-margin);
@@ -893,7 +898,7 @@
 	.competition-item {
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		transition:
 			background-color 250ms ease,
 			filter 250ms ease,
@@ -1083,7 +1088,7 @@
 		width: 100%;
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 	}
 
 	#competition-search {

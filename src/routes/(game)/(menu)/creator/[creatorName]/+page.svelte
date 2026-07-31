@@ -81,7 +81,6 @@
 		backdrop-filter: none;
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
-		box-shadow: var(--box-shadow);
 		margin-top: var(--box-margin);
 	}
 

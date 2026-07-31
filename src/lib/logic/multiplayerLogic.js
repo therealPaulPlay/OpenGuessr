@@ -382,8 +382,6 @@ function getTeamColorName(teamIndex) {
     return colorNames[(teamIndex) % colorNames.length];
 }
 
-let teams = [];
-
 function sortPlayersByScore(players = []) {
     return [...players].sort((a, b) => {
         if (a.spectator !== b.spectator) return a.spectator ? 1 : -1; // Move spectators to the bottom
@@ -394,11 +392,8 @@ function sortPlayersByScore(players = []) {
 function createTeamData(teamIndex) {
     const color = generateColorForTeam(teamIndex);
     const colorName = getTeamColorName(teamIndex);
-    return { color, colorName, teamIndex, players: [] };
-}
-
-function getTeamScore(team) {
-    return team.players.reduce((total, player) => total + player.score, 0);
+    const teamScore = get(socket)?.storage?.teamScores?.[teamIndex]?.score ?? 0;
+    return { color, colorName, teamIndex, score: teamScore, players: [] };
 }
 
 function updatePlayerArrays() {
@@ -412,10 +407,7 @@ function updatePlayerArrays() {
     }
 
     // Initialize all teams (including empty ones)
-    const groupedTeams = Array.from({ length: get(teamAmount) }, (_, i) => {
-        teams[i] = createTeamData(i);
-        return teams[i];
-    });
+    const groupedTeams = Array.from({ length: get(teamAmount) }, (_, i) => createTeamData(i));
 
     // Assign players to their teams
     players.forEach(player => {
@@ -425,7 +417,7 @@ function updatePlayerArrays() {
     // Sort players within each team and sort teams by total score
     const sortedTeams = groupedTeams
         .map(team => ({ ...team, players: sortPlayersByScore(team.players) }))
-        .sort((a, b) => getTeamScore(b) - getTeamScore(a));
+        .sort((a, b) => b.score - a.score);
 
     multiplayerTableArray.set(sortedTeams);
 }
@@ -454,11 +446,20 @@ function determineWinner(array) {
     const isTeams = get(teamAmount) > 1;
 
     if (isTeams) {
-        const winningTeamIndex = array[0]?.teamIndex;
-        let teamColorName = teams[winningTeamIndex]?.colorName;
-        multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
-        const yourTeam = (get(socket)?.storage?.players?.find((e) => e.clientId == get(socket)?.id))?.teamIndex;
-        yourTeam == winningTeamIndex ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
+        // Skip empty teams, they are hidden in the overlay and shouldn't win
+        const playedTeams = array.filter((team) => team.players?.length);
+        const winningTeamData = playedTeams[0];
+        const followUpTeamData = playedTeams[1] || null;
+
+        if (followUpTeamData && winningTeamData?.score == followUpTeamData?.score) {
+            multiplayerOverlayTitle.set("It's a draw!");
+
+        } else {
+            let teamColorName = winningTeamData?.colorName;
+            multiplayerOverlayTitle.set(`Team ${teamColorName} won!`);
+            const yourTeam = (get(socket)?.storage?.players?.find((e) => e.clientId == get(socket)?.id))?.teamIndex;
+            yourTeam == winningTeamData?.teamIndex ? setTimeout(() => { playSound("win_sound") }, 1000) : setTimeout(() => { playSound("lose_sound") }, 1000);
+        }
 
     } else {
         const winningPlayerData = array[0];

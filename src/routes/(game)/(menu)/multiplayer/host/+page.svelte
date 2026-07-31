@@ -163,7 +163,7 @@
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
 		padding-left: var(--layout-margin);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		width: 100%;
 		box-sizing: border-box;
 	}
@@ -179,7 +179,7 @@
 	}
 
 	.multiplayer-host-submit-area {
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
 	}

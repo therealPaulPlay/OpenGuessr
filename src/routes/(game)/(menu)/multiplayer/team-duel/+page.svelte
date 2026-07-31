@@ -43,7 +43,6 @@
 			/>
 		{:else}
 			<MultiplayerMatchmakingDisplay
-				showSkillbasedInfo={false}
 				findFunction={createTeamDuelRoom}
 				cancelFunction={safeCancel}
 			/>
@@ -76,7 +75,7 @@
 		border-radius: var(--layout-margin);
 		align-items: center;
 		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		gap: var(--content-margin);
 		box-sizing: border-box;
 		width: 100%;

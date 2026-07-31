@@ -539,7 +539,7 @@
 
 	.container {
 		background-color: rgba(255, 255, 255, 0.2);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		border-radius: var(--layout-margin);
 		padding: var(--layout-margin);
 		width: 280px;

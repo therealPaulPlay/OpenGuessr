@@ -150,7 +150,7 @@
 					</div>
 				</div>
 
-				<Drawer title="Rules" inPage={true} hasBottomLayoutMargin={false}>
+				<Drawer title="Rules" hasBottomLayoutMargin={false}>
 					<div class="location-instructions">
 						<ul>
 							<li>You are limited to 3 maps per day</li>
@@ -287,7 +287,7 @@
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		display: flex;
 		flex-direction: column;
 		gap: var(--box-margin);
@@ -390,7 +390,7 @@
 	.submit-area {
 		margin-top: var(--layout-margin);
 		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		border-radius: var(--layout-margin);
 	}
 

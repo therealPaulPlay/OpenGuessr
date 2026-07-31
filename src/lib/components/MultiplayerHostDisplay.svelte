@@ -215,7 +215,7 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
 	}
@@ -231,7 +231,7 @@
 		padding: var(--box-margin);
 		padding-top: var(--box-margin);
 		padding-bottom: var(--box-margin);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		width: calc(100% - var(--box-margin) * 2);
 	}
 

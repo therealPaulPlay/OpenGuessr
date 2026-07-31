@@ -378,7 +378,7 @@
 	.free-social-pin-container {
 		width: 100%;
 		box-sizing: border-box;
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		padding: var(--box-margin);
 		border-radius: var(--layout-margin);
 		display: flex;
@@ -428,7 +428,7 @@
 
 	.left-side {
 		border-radius: var(--layout-margin);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		flex-grow: 1;
 		max-width: 100%;
 		display: flex;
@@ -454,7 +454,7 @@
 
 	.right-side {
 		border-radius: var(--layout-margin);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		flex-grow: 1;
 		background-color: var(--box-color);
 		display: flex;
@@ -498,7 +498,7 @@
 
 	.token-shop {
 		width: 100%;
-		box-shadow: var(--bulb-shadow);
+		box-shadow: var(--box-shadow-top);
 		flex-grow: 1;
 		display: flex;
 		flex-wrap: wrap;
@@ -506,7 +506,7 @@
 		align-items: center;
 		box-sizing: border-box;
 		padding: var(--box-margin);
-		border-radius: var(--layout-margin);
+		border-radius: var(--box-margin);
 		gap: var(--box-margin);
 		overflow: hidden;
 	}
@@ -579,7 +579,7 @@
 	.all-pins-container {
 		width: 100%;
 		height: fit-content;
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		padding: var(--box-margin);
 		display: grid;
 		grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
@@ -749,7 +749,7 @@
 
 	.tier-box {
 		background-color: var(--box-color);
-		border-radius: var(--box-margin);
+		border-radius: var(--content-margin);
 		box-shadow: var(--box-shadow);
 		display: flex;
 		flex-direction: column;
@@ -769,9 +769,9 @@
 		top: 0;
 		padding-inline: var(--box-margin);
 		text-align: center;
-		line-height: 35px;
-		border-bottom-left-radius: var(--box-margin);
-		border-top-right-radius: var(--box-margin);
+		line-height: 34px;
+		border-bottom-left-radius: var(--content-margin);
+		border-top-right-radius: var(--content-margin);
 		box-shadow: var(--bulb-shadow);
 		background-color: var(--box-color);
 	}
@@ -817,7 +817,7 @@
 		gap: var(--box-margin);
 		box-sizing: border-box;
 		background: linear-gradient(to right, var(--box-color) 50%, var(--supporter-green-tint));
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
 		width: 100%;
@@ -836,7 +836,7 @@
 		padding: var(--box-margin);
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 	}
 
 	@keyframes supporterGlintButton {
