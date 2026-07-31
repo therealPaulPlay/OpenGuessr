@@ -20,12 +20,14 @@
 </script>
 
 {#snippet tournamentItem(tournament)}
-	{const readableDate = $derived(new Date(tournament.date).toLocaleString("en-US", {
-		month: "short",
-		day: "numeric",
-		hour: "numeric",
-		minute: "2-digit",
-	}))}
+	{const readableDate = $derived(
+		new Date(tournament.date).toLocaleString("en-US", {
+			month: "short",
+			day: "numeric",
+			hour: "numeric",
+			minute: "2-digit",
+		}),
+	)}
 
 	<div class="tournament-box">
 		<div class="tournament-name-box">
@@ -94,7 +96,7 @@
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
 		margin-bottom: var(--layout-margin);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		padding: var(--box-margin);
 	}
 

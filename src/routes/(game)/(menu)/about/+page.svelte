@@ -99,7 +99,7 @@
 				src={url}
 				title="Featured video"
 				frameborder="0"
-				style:border-radius="var(--box-margin)"
+				style:border-radius="var(--content-margin)"
 				allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
 				referrerpolicy="strict-origin-when-cross-origin"
 				allowfullscreen
@@ -156,7 +156,7 @@
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
 		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		overflow: hidden;
 	}
 

@@ -16,6 +16,7 @@
 <div
 	class="drawer-container {className}"
 	style:border-radius={inPage ? "var(--layout-margin)" : "var(--box-margin)"}
+	style:box-shadow={inPage ? "var(--panel-shadow)" : "var(--box-shadow)"}
 	style:margin-bottom={hasBottomLayoutMargin ? "var(--layout-margin)" : "0"}
 >
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
@@ -48,7 +49,6 @@
 	.drawer-container {
 		width: calc(100% - 20px);
 		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
 		padding: var(--box-margin);
 	}
 

@@ -307,93 +307,95 @@
 				by {map?.author || "..."}
 			</p>
 		</div>
-		<div class="button-bar bar-menu of-left of-right">
-			<button
-				id="like-map"
-				{@attach tooltip({ text: "Like" })}
-				class="standard-button white map-button large-button"
-				onclick={() => {
-					playSound("basic_button");
-					likeOrDislikeMap(nameId);
-				}}
-			>
-				{#if isLiked}
-					<HeartOff strokeWidth={2.25} style="margin-top: 2px;" />
-				{:else}
-					<Heart strokeWidth={2.25} style="margin-top: 2px;" />
+		<div class="button-bar bar-menu">
+			<div class="button-bar-inner of-left of-right">
+				<button
+					id="like-map"
+					{@attach tooltip({ text: "Like" })}
+					class="standard-button white map-button large-button"
+					onclick={() => {
+						playSound("basic_button");
+						likeOrDislikeMap(nameId);
+					}}
+				>
+					{#if isLiked}
+						<HeartOff strokeWidth={2.25} style="margin-top: 2px;" />
+					{:else}
+						<Heart strokeWidth={2.25} style="margin-top: 2px;" />
+					{/if}
+					<p id="likes-text">{likesCount ?? "Error"}</p>
+				</button>
+				<button
+					id="map-link"
+					{@attach tooltip({ text: "Copy link" })}
+					class="standard-button white map-button large-button"
+					onclick={() => {
+						playSound("basic_button");
+						navigator.clipboard
+							.writeText(window.location)
+							.then(function () {
+								showNotification("Copied!");
+							})
+							.catch(function (error) {
+								showNotification("Error: " + error);
+								console.error("Copy error: " + error);
+							});
+					}}
+				>
+					<Link strokeWidth={2.75} size={18} />
+				</button>
+				{#if map && map.authorId == playerId && playerId != null}
+					<button
+						id="manage-delete"
+						{@attach tooltip({ text: "Delete" })}
+						class="standard-button white map-button large-button"
+						onclick={() => {
+							playSound("basic_button");
+							deleteMapScreen(map?.name);
+						}}><Trash2 size={18} strokeWidth={2.75} /></button
+					>
+					<button
+						id="manage-update"
+						{@attach tooltip({ text: "Update" })}
+						class="standard-button white map-button large-button"
+						onclick={() => {
+							playSound("basic_button");
+							fileName = "Pick file"; // Reset file name input
+							updatePopup = true;
+							showStatus = false;
+						}}><Replace size={18} strokeWidth={2.75} /></button
+					>
+					<a
+						id="manage-download"
+						{@attach tooltip({ text: "Download" })}
+						class="standard-button white map-button large-button"
+						href={mapDownloadHref}
+						download={`${map?.name}.json`}
+						onclick={() => playSound("basic_button")}><FileDown size={18} strokeWidth={2.5} /></a
+					>
 				{/if}
-				<p id="likes-text">{likesCount ?? "Error"}</p>
-			</button>
-			<button
-				id="map-link"
-				{@attach tooltip({ text: "Copy link" })}
-				class="standard-button white map-button large-button"
-				onclick={() => {
-					playSound("basic_button");
-					navigator.clipboard
-						.writeText(window.location)
-						.then(function () {
-							showNotification("Copied!");
-						})
-						.catch(function (error) {
-							showNotification("Error: " + error);
-							console.error("Copy error: " + error);
-						});
-				}}
-			>
-				<Link strokeWidth={2.75} size={18} />
-			</button>
-			{#if map && map.authorId == playerId && playerId != null}
 				<button
-					id="manage-delete"
-					{@attach tooltip({ text: "Delete" })}
-					class="standard-button white map-button large-button"
+					class="standard-button map-button large-button"
 					onclick={() => {
 						playSound("basic_button");
-						deleteMapScreen(map?.name);
-					}}><Trash2 size={18} strokeWidth={2.75} /></button
-				>
-				<button
-					id="manage-update"
-					{@attach tooltip({ text: "Update" })}
-					class="standard-button white map-button large-button"
-					onclick={() => {
-						playSound("basic_button");
-						fileName = "Pick file"; // Reset file name input
-						updatePopup = true;
-						showStatus = false;
-					}}><Replace size={18} strokeWidth={2.75} /></button
-				>
-				<a
-					id="manage-download"
-					{@attach tooltip({ text: "Download" })}
-					class="standard-button white map-button large-button"
-					href={mapDownloadHref}
-					download={`${map?.name}.json`}
-					onclick={() => playSound("basic_button")}><FileDown size={18} strokeWidth={2.5} /></a
-				>
-			{/if}
-			<button
-				class="standard-button map-button large-button"
-				onclick={() => {
-					playSound("basic_button");
-					if (!map) return showNotification("Map not loaded yet, please try again.");
+						if (!map) return showNotification("Map not loaded yet, please try again.");
 
-					// Add to bookmarked community maps
-					let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
-					if (!addedCommunityMaps.includes(map?.name)) addedCommunityMaps.push(map?.name);
-					localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
+						// Add to bookmarked community maps
+						let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
+						if (!addedCommunityMaps.includes(map?.name)) addedCommunityMaps.push(map?.name);
+						localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
 
-					// Change to map
-					changeMap("community_" + map?.name, true, returnAfterChange);
-					if (!returnAfterChange) {
-						navigationMenu.set(false);
-						goto("/");
-					}
-				}}
-			>
-				<Play strokeWidth={2.5} />
-			</button>
+						// Change to map
+						changeMap("community_" + map?.name, true, returnAfterChange);
+						if (!returnAfterChange) {
+							navigationMenu.set(false);
+							goto("/");
+						}
+					}}
+				>
+					<Play strokeWidth={2.5} />
+				</button>
+			</div>
 		</div>
 	</div>
 
@@ -407,7 +409,7 @@
 		</div>
 		<div class="description-info info-element">
 			<div class="description-scroll of-top of-bottom">
-				<h2 class="desc-header">About <i>{map?.name || "..."}</i></h2>
+				<h3 class="desc-header">About</h3>
 				<p>
 					{map?.description || "..."}
 				</p>
@@ -435,8 +437,7 @@
 			class="of-top of-bottom"
 			rows="10"
 			bind:value={textareaValue}
-			placeholder="https://www.google.com/maps..."
-		></textarea>
+			placeholder="https://www.google.com/maps..."></textarea>
 	</div>
 	<p class="margin-bottom">Locations (JSON)</p>
 	<button
@@ -496,7 +497,7 @@
 		max-height: 25svh;
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
-		box-shadow: var(--bulb-shadow);
+		box-shadow: var(--panel-shadow);
 		overflow: hidden;
 		margin-bottom: var(--layout-spacer);
 		position: relative;
@@ -540,7 +541,6 @@
 	}
 
 	.desc-header {
-		font-size: 25px;
 		margin-bottom: var(--box-margin);
 	}
 
@@ -562,7 +562,7 @@
 
 	.info-element {
 		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		border-radius: var(--layout-margin);
 		display: flex;
 		padding: var(--box-margin);
@@ -674,14 +674,19 @@
 	}
 
 	.button-bar {
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
+		max-width: 100%;
+	}
+
+	.button-bar-inner {
 		justify-content: safe center;
 		align-items: safe center;
-		max-width: 100%;
 		overflow-x: auto;
 		scrollbar-width: none;
+		display: flex;
+		gap: var(--panel-margin);
 	}
 
 	.map-button {

@@ -2,16 +2,13 @@
 	import {
 		multiplayerStatus,
 		matchmakingActive,
-		skillBasedMatchmaking,
 		matchmakingHosting,
 		cancellingMatchmaking,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { Info, RefreshCcw } from "@lucide/svelte";
-	import { slide } from "svelte/transition";
+	import { RefreshCcw } from "@lucide/svelte";
 
 	let {
-		showSkillbasedInfo = true,
 		findFunction = () => console.warn("No find function set!"),
 		cancelFunction = () => console.warn("No cancel function set!"),
 	} = $props();
@@ -20,17 +17,6 @@
 <h2 class="multiplayer-matchmaking-status" class:loading={$multiplayerStatus && $matchmakingHosting}>
 	{$multiplayerStatus || "No match found."}
 </h2>
-{#if $skillBasedMatchmaking && showSkillbasedInfo}
-	<div class="info-container" transition:slide>
-		<Info
-			strokeWidth={2.25}
-			size={22}
-			color="white"
-			style="opacity: 50%; margin-right: var(--panel-margin); margin-left: 2px; margin-bottom: -2px; flex-shrink: 0;"
-		/>
-		<p>Skill-based matchmaking has longer waiting times.</p>
-	</div>
-{/if}
 <div class="try-button-container bar-menu">
 	<button
 		class="standard-button try-button large-button"
@@ -56,23 +42,6 @@
 </div>
 
 <style>
-	.info-container {
-		display: flex;
-		padding: var(--box-margin);
-		border-radius: var(--layout-margin);
-		align-items: center;
-		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
-		gap: var(--content-margin);
-		max-width: 300px;
-		margin-bottom: var(--box-margin);
-	}
-
-	.info-container p {
-		opacity: 0.5;
-		flex-grow: 100;
-	}
-
 	.multiplayer-matchmaking-status.loading {
 		animation: loading-text 1s infinite;
 	}
@@ -83,7 +52,7 @@
 	}
 
 	.try-button-container {
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
 	}

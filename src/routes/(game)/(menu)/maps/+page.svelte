@@ -1,5 +1,5 @@
 <script>
-	import { Plus, XCircle, User, Search, Info, ArrowDownWideNarrow } from "@lucide/svelte";
+	import { Plus, X, User, Search, Info, ArrowDownWideNarrow, Bookmark, BookmarkOff } from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { crazyGames, playlightSDK } from "$lib/stores/context-specific/platformSettingsStore";
@@ -21,6 +21,7 @@
 	import Chip from "$lib/components/ui/Chip.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { browser } from "$app/environment";
+	import { blur } from "svelte/transition";
 
 	const snapshotStore = getContext("snapshotStore");
 
@@ -276,7 +277,7 @@
 {#snippet communityMapItem(map)}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="map-item map-item-hover map-item-animate"
+		class="map-item map-item-hover map-item-community"
 		role="button"
 		tabindex="0"
 		onclick={() => {
@@ -290,7 +291,7 @@
 			<p class="map-author">by {map.author || "Error"}</p>
 		</div>
 		<button
-			class="add-button standard-button white"
+			class="add-button standard-button dark"
 			{@attach tooltip({ text: "Save map" })}
 			onclick={(e) => {
 				e.stopPropagation();
@@ -299,11 +300,11 @@
 				else saveCommunityMap(map.name);
 			}}
 		>
-			<img
-				src={addedCommunityMapsArray.includes(map.name) ? "/img/disselect_icon.png" : "/img/select_icon.png"}
-				alt="add / remove map"
-				class="selection-icon"
-			/>
+			{#if addedCommunityMapsArray.includes(map.name)}
+				<BookmarkOff size={20} strokeWidth={2.25} />
+			{:else}
+				<Bookmark size={20} strokeWidth={2.25} />
+			{/if}
 		</button>
 	</div>
 {/snippet}
@@ -447,6 +448,7 @@
 			{#each addedCommunityMapsArray as map}
 				<div
 					class="map-item map-item-hover map-item-slim map-item-bookmark"
+					in:blur|global={{ axis: "x", duration: 250 }}
 					class:selected-map-item={checkIfSelected(map, true)}
 					role="button"
 					tabindex="0"
@@ -458,14 +460,14 @@
 						<p class="map-name">{map}</p>
 					</div>
 					<button
-						class="remove-button"
+						class="standard-button dark remove-button"
 						onclick={(e) => {
 							e.stopPropagation();
 							playSound("basic_button");
 							unsaveCommunityMap(map);
 						}}
 					>
-						<XCircle size={21} />
+						<X size={20} strokeWidth={2.25} style="margin-bottom: -2px;" />
 					</button>
 				</div>
 			{/each}
@@ -637,7 +639,7 @@
 	.map-item {
 		display: flex;
 		justify-content: space-between;
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		text-decoration: none;
 		align-items: center;
 		background-color: rgba(255, 255, 255, 0.1);
@@ -658,7 +660,7 @@
 			background-color 250ms ease;
 	}
 
-	.map-item-animate {
+	.map-item-community {
 		animation: fadeIn 250ms ease-in-out;
 	}
 
@@ -735,7 +737,6 @@
 		z-index: 10;
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
 	}
 
 	.arrow-expand {
@@ -752,31 +753,15 @@
 
 	.add-button {
 		border-radius: var(--content-margin);
-		padding: var(--content-margin) 8px;
+		padding-inline: var(--panel-margin);
 		display: flex;
 		align-items: center;
 	}
 
 	.remove-button {
-		border: none;
-		cursor: pointer;
-		user-select: none;
 		margin-left: var(--box-margin);
+		padding-inline: var(--panel-margin);
 		margin-right: -3px;
-		font-size: 25px;
-		line-height: 0.9;
-		opacity: 0.75;
-		color: white;
-		transition: opacity 250ms ease;
-	}
-
-	.remove-button:hover {
-		opacity: 0.5;
-	}
-
-	.selection-icon {
-		width: 22px;
-		height: 22px;
 	}
 
 	#community-maps {
@@ -869,7 +854,7 @@
 	.categories-search-area {
 		display: flex;
 		justify-content: space-between;
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--bulb-shadow);
 		width: calc(100% - var(--box-margin) * 2);
 		min-width: 280px;
 		gap: var(--box-margin);
@@ -885,6 +870,7 @@
 		min-height: 70.5px;
 		justify-content: center;
 		border: none;
+		border-radius: var(--layout-margin);
 		transition:
 			filter 250ms ease,
 			box-shadow 250ms ease,

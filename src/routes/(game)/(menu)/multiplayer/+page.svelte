@@ -251,7 +251,7 @@
 							<p>{entry.user_name}</p>
 							<button
 								id="remove-friend"
-								class="standard-button friend-item-buttons white friend-button-left"
+								class="standard-button friend-item-buttons dark friend-button-left"
 								onclick={(e) => {
 									e.stopPropagation();
 									playSound("basic_button");
@@ -260,7 +260,7 @@
 									});
 								}}
 							>
-								<X size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
+								<X size={20} strokeWidth={2.25} style="vertical-align: -1px;" />
 							</button>
 						</div>
 					{/each}
@@ -276,7 +276,7 @@
 	.info-container {
 		display: flex;
 		padding: var(--box-margin);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		width: 100%;
 		box-sizing: border-box;
 		border-radius: var(--layout-margin);
@@ -336,7 +336,6 @@
 	.friend-button-container {
 		border-radius: var(--layout-margin);
 		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
 	}
 
 	.select-buttons-header {
@@ -415,7 +414,7 @@
 		flex-basis: 0;
 		background-color: var(--box-color);
 		padding: var(--box-margin);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		border-radius: var(--layout-margin);
 		max-width: calc(100% - 20px);
 	}
@@ -518,7 +517,6 @@
 		height: 7px;
 		border-radius: 100%;
 		background-color: #00cc00;
-		margin-top: 3px;
 		margin-left: var(--content-margin);
 	}
 
@@ -526,7 +524,7 @@
 		width: calc(100% - 20px);
 		transition: max-height 150ms ease;
 		background-color: var(--box-color);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		border-radius: var(--layout-margin);
 		padding: var(--box-margin);
 		margin-bottom: var(--layout-spacer);

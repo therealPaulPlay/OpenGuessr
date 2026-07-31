@@ -346,7 +346,7 @@
 		width: fit-content;
 		max-width: 80%;
 		border-radius: var(--layout-margin);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		background-color: var(--box-color);
 	}
 
@@ -363,7 +363,7 @@
 	.ranked-item {
 		width: 100%;
 		height: 50px;
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		background-color: rgba(255, 255, 255, 0.1);
 		box-sizing: border-box;
 		border-radius: var(--layout-margin);
@@ -496,7 +496,7 @@
 		box-sizing: border-box;
 		flex-direction: column;
 		align-items: center;
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		overflow: hidden;
 		transition:
 			filter 250ms ease,

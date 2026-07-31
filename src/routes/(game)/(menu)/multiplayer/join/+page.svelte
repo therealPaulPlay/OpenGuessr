@@ -167,7 +167,7 @@
 
 	.open-room-item {
 		background-color: rgba(255, 255, 255, 0.1);
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		border: none;
 		border-radius: var(--box-margin);
 		display: flex;
@@ -219,6 +219,7 @@
 		border-radius: var(--box-margin);
 		text-align: center;
 		text-transform: uppercase;
+		box-shadow: var(--panel-shadow);
 	}
 
 	.segment-input::placeholder {
@@ -242,7 +243,7 @@
 	}
 
 	.join-button-container {
-		box-shadow: var(--box-shadow);
+		box-shadow: var(--panel-shadow);
 		background-color: var(--box-color);
 		margin-top: calc(var(--layout-margin) + var(--box-margin));
 		border-radius: var(--layout-margin);

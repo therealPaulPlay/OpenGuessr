@@ -18,6 +18,8 @@
 	import { get } from "svelte/store";
 	import { fade, slide } from "svelte/transition";
 	import { errorPopup } from "$lib/utils/errorHandling";
+	import { Info } from "@lucide/svelte";
+	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 </script>
 
 {#if $multiplayerOverlay}
@@ -32,39 +34,64 @@
 				{#if $teamAmount > 1}
 					<!-- Teams version -->
 					{#each $multiplayerTableArray as team}
-						{#each team.players as { clientId, username, elo, score, userId, badge, spectator }}
+						{#if team.players?.length}
 							<div
-								transition:slide
-								class="multiplayer-overlay-entry"
-								class:half-transparent={spectator}
-								class:your-multiplayer-overlay={clientId && clientId == get(socket)?.id}
+								class="team-box"
 								style:background-image={"linear-gradient(90deg, transparent 60%, " + team.color + ")"}
+								transition:slide
 							>
-								<div class="multiplayer-entry-player-info">
-									<div
-										class="multiplayer-entry-player-name"
-										class:entry-not-clickable={!userId}
-										role="cell"
-										tabindex="0"
-										onclick={() => {
-											if (userId) showProfile(userId);
-										}}
-									>
-										<span class="username-span">{username}</span>
-										{#if badge}
-											<Badge interactive={false} display={true} id={badge} />
-										{/if}
-										{#if userId}
-											{@render eloDisplay(elo)}
-										{/if}
-										{#if spectator}
-											{@render spectatorDisplay()}
-										{/if}
-									</div>
-									<p class="multiplayer-entry-player-score">{score?.toLocaleString()} Pts.</p>
+								<div class="team-header">
+									<p>Team {team.colorName}</p>
+									<p class="team-score-box">
+										<span
+											role="button"
+											tabindex="0"
+											class="standard-button dark team-score-info"
+											onclick={() => {
+												playSound("basic_button");
+												showConfirmPopup(
+													"Team points",
+													"Each round, only your team's closest guess counts. Those points add up to the team's score.",
+												);
+											}}><Info size={20} /></span
+										>{(team.score ?? 0).toLocaleString()} Pts.
+									</p>
 								</div>
+								{#each team.players as { clientId, username, elo, score, userId, badge, spectator }}
+									<div
+										transition:slide
+										class="multiplayer-overlay-entry inner"
+										style:box-shadow="var(--box-shadow)"
+										class:half-transparent={spectator}
+										class:your-multiplayer-overlay={clientId && clientId == get(socket)?.id}
+									>
+										<div class="multiplayer-entry-player-info">
+											<div
+												class="multiplayer-entry-player-name"
+												class:entry-not-clickable={!userId}
+												role="cell"
+												tabindex="0"
+												onclick={() => {
+													if (userId) showProfile(userId);
+												}}
+											>
+												<span class="username-span">{username}</span>
+												{#if badge}
+													<Badge interactive={false} display={true} id={badge} />
+												{/if}
+												{#if userId}
+													{@render eloDisplay(elo)}
+												{/if}
+												{#if spectator}
+													{@render spectatorDisplay()}
+												{/if}
+											</div>
+											<p class="multiplayer-entry-player-score" style:opacity="0.5">{score?.toLocaleString()} Pts.</p>
+										</div>
+									</div>
+								{/each}
 							</div>
-						{/each}
+						{/if}
 					{/each}
 				{:else}
 					<!-- No teams version -->
@@ -72,6 +99,7 @@
 						<div
 							transition:slide
 							class="multiplayer-overlay-entry"
+							style:box-shadow="var(--panel-shadow)"
 							class:half-transparent={spectator}
 							class:your-multiplayer-overlay={clientId && clientId == get(socket)?.id}
 						>
@@ -169,8 +197,41 @@
 		user-select: none;
 	}
 
+	.team-box {
+		border-radius: var(--layout-margin);
+		padding: var(--box-margin);
+		background-color: var(--box-color);
+		gap: var(--box-margin);
+		display: flex;
+		flex-direction: column;
+		width: 100%;
+		box-shadow: var(--panel-shadow);
+		box-sizing: border-box;
+	}
+
+	.team-score-info {
+		height: 30px;
+		display: inline-block;
+		padding: 0;
+		padding-inline: 3px;
+		margin-right: var(--box-margin);
+	}
+
+	.team-header {
+		display: flex;
+		justify-content: space-between;
+		gap: var(--box-margin);
+		overflow-x: auto;
+		scrollbar-width: none;
+		padding-inline: var(--content-margin);
+	}
+
+	.team-score-box {
+		display: inline-flex;
+		align-items: stretch;
+	}
+
 	.host-button-container {
-		box-shadow: var(--box-shadow);
 		background-color: var(--box-color);
 		border-radius: var(--layout-margin);
 		backdrop-filter: none !important;
@@ -203,7 +264,6 @@
 	}
 
 	.button-box {
-		margin-top: calc(var(--layout-margin) + var(--box-margin));
 		gap: var(--layout-margin);
 		display: flex;
 		justify-content: center;
@@ -233,13 +293,10 @@
 	.multiplayer-overlay h1 {
 		font-size: 50px;
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
-		margin-bottom: 20px;
 	}
 
 	.multiplayer-overlay h2 {
 		text-shadow: 2px 2px 15px rgba(0, 0, 0, 0.25);
-		margin-bottom: 20px;
-		margin-top: -20px;
 		opacity: 0.75;
 	}
 
@@ -256,17 +313,21 @@
 		overflow-y: auto;
 		flex-direction: column;
 		gap: var(--layout-margin);
+		padding: calc(var(--layout-margin) + var(--box-margin));
 	}
 
 	.multiplayer-overlay-entry {
-		background-color: rgba(0, 0, 0, 0.1);
+		background-color: var(--box-color-dark-soft);
 		border-radius: var(--box-margin);
 		width: 100%;
-		box-shadow: var(--box-shadow);
 	}
 
 	.your-multiplayer-overlay {
 		background-color: rgba(255, 255, 255, 0.1);
+	}
+
+	.your-multiplayer-overlay.inner {
+		background-color: rgba(255, 255, 255, 0.15);
 	}
 
 	.multiplayer-entry-player-info {
