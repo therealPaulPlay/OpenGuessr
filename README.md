@@ -61,6 +61,10 @@ Please refer to the color section in `app.css`, but the most important ones are:
 
 Colors that are only used for one specific thing should not be placed in `app.css` – only commonly used ones. Trying to stick to colors from the `app.css` is however recommended for consistency.
 
+### Box shadows
+
+Every visual container that sits in no parent visual container (e.g. not inside a Popup, not inside an element with the `bar-menu` class...) needs the `--panel-shadow` box shadow (which the `bar-menu` class includes). Elements inside a visual container should typically use `--box-shadow` (if they are a box), sometimes `--bulb-shadow` (for example, a highlighted badge) or `--button-shadow` depending on what the are.
+
 ### Buttons
 
 Usually, buttons sit in layer 1. However, sometimes you want large, rounded buttons for controls that need to stand out. For that, combine the `standard-button` class with the `large-button` class - the latter increases the border radius to the box-margin and also increases the other dimensions of the button. 
