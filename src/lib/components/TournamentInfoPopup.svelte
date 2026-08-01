@@ -127,14 +127,14 @@
 					<div class="match-entry" transition:slide={{ axis: "y" }}>
 						<p>Match {index + 1}</p>
 						<button
-							class="standard-button white"
+							class="standard-button dark"
 							onclick={() => {
 								$tournamentMatchResultsIndex = index;
 								playSound("basic_button");
 								$tournamentMatchResultsPopup = true;
 							}}
 						>
-							View results
+							<Info size={22} strokeWidth={2} style="margin-bottom: -2.5px;" />
 						</button>
 					</div>
 				{/each}
