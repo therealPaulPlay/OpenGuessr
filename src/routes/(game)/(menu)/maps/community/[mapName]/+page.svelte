@@ -6,11 +6,22 @@
 	import { signupPrompt } from "$lib/utils/signupPrompt";
 	import { showNotification } from "$lib/utils/notifications";
 	import { changeMap } from "$lib/utils/changeMap.js";
-	import { Link, MapPin, Heart, HeartOff, Trash2, Replace, Play, FileDown } from "@lucide/svelte";
+	import {
+		Link,
+		MapPin,
+		Heart,
+		HeartOff,
+		Trash2,
+		Replace,
+		Play,
+		FileDown,
+		Bookmark,
+		BookmarkOff,
+	} from "@lucide/svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import Popup from "$lib/components/ui/Popup.svelte";
 	import { extractCoordinates, getJsonStringFromFile } from "$lib/utils/extractMapCoords";
-	import { onMount } from "svelte";
+	import { onMount, untrack } from "svelte";
 	import { goto } from "$app/navigation";
 	import { get } from "svelte/store";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore.js";
@@ -71,6 +82,17 @@
 			console.error("Error fetching map:", error);
 			errorPopup("Map failed to load", "An error occured trying to load the map.", error.message);
 		}
+	});
+
+	// Bookmark map ---------------------------------------
+	let isBookmarked = $state(false);
+
+	$effect(() => {
+		if(!map?.name) return;
+		untrack(() => {
+			const addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
+			isBookmarked = addedCommunityMaps.includes(map?.name);
+		});
 	});
 
 	// Like Functionality ------------------------------------------------------------------------------
@@ -319,11 +341,35 @@
 					}}
 				>
 					{#if isLiked}
-						<HeartOff strokeWidth={2.25} style="margin-top: 2px;" />
+						<HeartOff strokeWidth={2.25} style="margin-top: 1px;" />
 					{:else}
-						<Heart strokeWidth={2.25} style="margin-top: 2px;" />
+						<Heart strokeWidth={2.25} style="margin-top: 1px;" />
 					{/if}
 					<p id="likes-text">{likesCount ?? "Error"}</p>
+				</button>
+				<button
+					{@attach tooltip({ text: "Save" })}
+					class="standard-button white map-button large-button"
+					onclick={() => {
+						playSound("basic_button");
+
+						// Add to or remove from bookmarks
+						let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
+						if (!addedCommunityMaps.includes(map?.name)) {
+							addedCommunityMaps.push(map?.name);
+							isBookmarked = true;
+						} else {
+							addedCommunityMaps = addedCommunityMaps.filter((mapName) => mapName !== map?.name);
+							isBookmarked = false;
+						}
+						localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
+					}}
+				>
+					{#if isBookmarked}
+						<BookmarkOff strokeWidth={2.25} style="margin-top: 1px;" />
+					{:else}
+						<Bookmark strokeWidth={2.25} style="margin-top: 1px;" />
+					{/if}
 				</button>
 				<button
 					id="map-link"
@@ -342,7 +388,7 @@
 							});
 					}}
 				>
-					<Link strokeWidth={2.75} size={18} />
+					<Link strokeWidth={2.5} size={20} style="margin-top: 1px;" />
 				</button>
 				{#if map && map.authorId == playerId && playerId != null}
 					<button
@@ -379,11 +425,6 @@
 					onclick={() => {
 						playSound("basic_button");
 						if (!map) return showNotification("Map not loaded yet, please try again.");
-
-						// Add to bookmarked community maps
-						let addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
-						if (!addedCommunityMaps.includes(map?.name)) addedCommunityMaps.push(map?.name);
-						localStorage.setItem("addedCommunityMaps", JSON.stringify(addedCommunityMaps));
 
 						// Change to map
 						changeMap("community_" + map?.name, true, returnAfterChange);

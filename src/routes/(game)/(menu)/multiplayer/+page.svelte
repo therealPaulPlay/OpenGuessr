@@ -449,6 +449,7 @@
 		padding-inline: var(--panel-margin);
 		height: 34px;
 		border: none;
+		background-color: var(--box-color-dark-soft);
 	}
 
 	#multiplayer-select-duels {

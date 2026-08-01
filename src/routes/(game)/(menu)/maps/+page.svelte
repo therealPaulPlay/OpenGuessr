@@ -21,7 +21,6 @@
 	import Chip from "$lib/components/ui/Chip.svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { browser } from "$app/environment";
-	import { blur } from "svelte/transition";
 
 	const snapshotStore = getContext("snapshotStore");
 
@@ -277,7 +276,7 @@
 {#snippet communityMapItem(map)}
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<div
-		class="map-item map-item-hover map-item-community"
+		class="map-item map-item-hover map-item-animate"
 		role="button"
 		tabindex="0"
 		onclick={() => {
@@ -292,7 +291,7 @@
 		</div>
 		<button
 			class="add-button standard-button dark"
-			{@attach tooltip({ text: "Save map" })}
+			{@attach tooltip({ text: "Save" })}
 			onclick={(e) => {
 				e.stopPropagation();
 				playSound("basic_button");
@@ -447,8 +446,7 @@
 		{#if addedCommunityMapsArray.length > 0}
 			{#each addedCommunityMapsArray as map}
 				<div
-					class="map-item map-item-hover map-item-slim map-item-bookmark"
-					in:blur|global={{ axis: "x", duration: 250 }}
+					class="map-item map-item-hover map-item-slim map-item-bookmark map-item-animate"
 					class:selected-map-item={checkIfSelected(map, true)}
 					role="button"
 					tabindex="0"
@@ -660,7 +658,7 @@
 			background-color 250ms ease;
 	}
 
-	.map-item-community {
+	.map-item-animate {
 		animation: fadeIn 250ms ease-in-out;
 	}
 
@@ -676,6 +674,10 @@
 	.map-item-slim {
 		min-width: 150px;
 		flex-basis: 15%;
+	}
+
+	.map-item-bookmark {
+		padding-right: var(--box-margin);
 	}
 
 	.selected-map-item {
@@ -760,7 +762,6 @@
 
 	.remove-button {
 		margin-left: var(--box-margin);
-		margin-right: -3px;
 		padding: 0;
 		padding-inline: var(--content-margin);
 		height: 26px;

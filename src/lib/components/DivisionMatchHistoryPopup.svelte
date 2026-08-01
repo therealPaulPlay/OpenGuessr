@@ -160,7 +160,7 @@
 								{/if}
 							</p>
 							<button
-								class="standard-button white info-button"
+								class="standard-button dark info-button"
 								aria-label="Match overview"
 								onclick={() => {
 									playSound("basic_button");

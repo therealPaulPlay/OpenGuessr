@@ -66,12 +66,12 @@
 						{#if $viewOnly}
 							<SquareArrowOutUpRight size={20} strokeWidth={2.25} style="vertical-align: -1px;" />
 						{:else}
-							<Check size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
+							<Check size={20} strokeWidth={2.25} style="vertical-align: -1px;" />
 						{/if}
 					</button>
 				{/if}
 				<button id="notification-dismiss" class="standard-button white" onclick={dismiss} aria-label="Dismiss">
-					<X size={20} strokeWidth={2.5} style="vertical-align: -1px;" />
+					<X size={20} strokeWidth={2.25} style="vertical-align: -1px;" />
 				</button>
 			</div>
 		</div>
