@@ -182,7 +182,7 @@
 				});
 		}}
 	>
-		<Link strokeWidth={2.75} size={18} />
+		<Link strokeWidth={2.25} size={20} style="margin-bottom: -2px;" />
 	</button>
 	{#if showOpenRoom}
 		<button
@@ -196,7 +196,7 @@
 				showNotification("Room is now publicly listed.");
 			}}
 		>
-			<Eye strokeWidth={2.5} size={20} style="margin-bottom: -2px;" />
+			<Eye strokeWidth={2.25} size={20} style="margin-bottom: -2px;" />
 		</button>
 	{/if}
 	<button
