@@ -215,14 +215,13 @@
 		padding: 0;
 		padding-inline: 3px;
 		margin-right: var(--box-margin);
+		background-color: var(--box-color);
 	}
 
 	.team-header {
 		display: flex;
 		justify-content: space-between;
 		gap: var(--box-margin);
-		overflow-x: auto;
-		scrollbar-width: none;
 		padding-inline: var(--content-margin);
 	}
 

@@ -97,7 +97,7 @@
 							{truncatePlayerName(player.username)}
 							<select
 								name="teams"
-								class="team-selector standard-button white"
+								class="team-selector standard-button dark"
 								disabled={!allowTeamControls}
 								onchange={(e) => {
 									playSound("basic_button");
