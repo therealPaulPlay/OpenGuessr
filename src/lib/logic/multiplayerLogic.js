@@ -31,6 +31,7 @@ import {
     matchmakingHosting,
     cancellingMatchmaking,
     roomLocked,
+    clientToken,
 } from "$lib/stores/context-specific/multiplayerStore";
 import { confirmButtonActive } from "$lib/stores/context-specific/confirmButtonStore";
 import { loadAndProfanityCheckChat } from "$lib/utils/chatFunctions.js";
@@ -86,7 +87,17 @@ export async function createMultiplayerInstance() {
 
     // Create the new instance
     try {
-        let customData = get(isAuthenticated) ? { bearer: localStorage.getItem("bearer") } : undefined;
+        const generateRandomSecret = () => {
+            const characters = Array.from("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789");
+            const randomNumbers = crypto.getRandomValues(new Uint8Array(16));
+            const randomNumbersNormalArray = Array.from(randomNumbers);
+            return randomNumbersNormalArray.map((number) => characters[number % characters.length]).join("");
+        }
+
+        // Authed users additionally set the bearer, all clients set the clientToken
+        const customData = { clientToken: generateRandomSecret() };
+        if (get(isAuthenticated)) customData.bearer = localStorage.getItem("bearer");
+        clientToken.set(customData.clientToken);
 
         socket.set(new PlaySocket(null, {
             endpoint: get(websocketUrl),
