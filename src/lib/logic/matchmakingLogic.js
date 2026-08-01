@@ -1,5 +1,5 @@
 // Multiplayer room matchmaking APIs, for Duels
-import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, skillBasedMatchmaking } from "$lib/stores/context-specific/multiplayerStore";
+import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, skillBasedMatchmaking, socket, clientToken } from "$lib/stores/context-specific/multiplayerStore";
 import { createMultiplayerRoom, joinMultiplayerRoom, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
@@ -23,20 +23,28 @@ export async function safeCancel() {
     const code = get(roomCode);
     if (!code) return console.warn("safeCancel called without a room code!");
 
+    const headers = {
+        "Content-Type": "application/json",
+    }
+    if (localStorage.getItem("bearer")) headers.Authorization = "Bearer " + localStorage.getItem("bearer");
+
+    const body = {
+        clientId: get(socket)?.id,
+        clientToken: get(clientToken),
+    };
+    if (localStorage.getItem("id") != null) body.id = localStorage.getItem("id");
+
     try {
         const response = await fetch(get(apiUrl) + "/matchmaking/delete-room/" + code, {
             method: 'DELETE',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem("bearer"),
-            },
-            body: JSON.stringify({ id: localStorage.getItem("id") }),
+            headers,
+            body: JSON.stringify(body),
         });
         if (!response.ok) throw new Error(response.status);
         const data = await response.json();
 
         if (!data.removed) {
-            multiplayerStatus.set("Room not in matchmaking, cannot cancel."); // Game has started in between player pressing "cancel" & req resolving
+            multiplayerStatus.set("Room no longer in matchmaking, cannot cancel."); // Game has started in between player pressing "cancel" & req resolving
             return;
         }
 
@@ -55,8 +63,8 @@ let roomIndex = 0;
 // This initiates the find duel system
 export async function findDuel() {
     if (!get(isAuthenticated)) return signupPrompt();
-     // There's a brief delay between goto("/") call and the page navigation, in which the user can click "Try again" even though a duel has been found, 
-     // which causes the multiplayer instance to recreate & the player to lose the game
+    // There's a brief delay between goto("/") call and the page navigation, in which the user can click "Try again" even though a duel has been found, 
+    // which causes the multiplayer instance to recreate & the player to lose the game
     if (get(multiplayer)) return errorPopup("Already in multiplayer", "Finding a duel is only possible outside of multiplayer.");
     goto("/multiplayer/duel"); // Visit duel load page
     roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
@@ -82,7 +90,6 @@ let findTeamDuelInterval = null;
 let findTeamDuelActive = false;
 
 export function createTeamDuelRoom() {
-    if (!get(isAuthenticated)) return signupPrompt();
     goto("/multiplayer/team-duel");
     return createMatchmakingRoom("team-duel", false, matchmakingRoomConfigs["team-duel"]);
 }
@@ -151,7 +158,7 @@ async function attemptDuelJoin(index, skillBased) {
 
     try {
         // Get Roomcode from server
-        const response = await fetch(get(apiUrl) + "/matchmaking/get-room/" + index, {
+        const response = await fetch(get(apiUrl) + "/matchmaking/get-division-duel-room/" + index, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -190,10 +197,9 @@ async function attemptTeamDuelFind() {
         const response = await fetch(get(apiUrl) + "/matchmaking/find-team-duel", {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': 'Bearer ' + localStorage.getItem("bearer")
+                'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ id: localStorage.getItem("id") })
+            body: JSON.stringify({ code: get(roomCode), clientToken: get(clientToken) })
         });
 
         if (!response.ok) throw new Error(response.status);
@@ -226,18 +232,22 @@ export async function submitRoomCode(type, skillBased = false, map = get(default
             return false;
         }
         const requestBody = {
-            id: localStorage.getItem("id"),
+            clientId: get(socket)?.id,
+            clientToken: get(clientToken),
             type,
             skillBased,
             map
         }
+        if (localStorage.getItem("id") != null) requestBody.id = localStorage.getItem("id");
+
+        const headers = {
+            "Content-Type": "application/json",
+        }
+        if (localStorage.getItem("bearer")) headers.Authorization = "Bearer " + localStorage.getItem("bearer");
 
         const response = await fetch(get(apiUrl) + "/matchmaking/submit-room/" + get(roomCode), {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ` + localStorage.getItem("bearer")
-            },
+            headers,
             body: JSON.stringify(requestBody)
         });
 

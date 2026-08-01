@@ -4,6 +4,9 @@ import { defaultRestriction } from "./restrictionStore";
 // Client
 export const socket = writable();
 
+// Token to verify socket ownership
+export const clientToken = writable();
+
 // Settings
 export const roundAmount = writable(3);
 export const roundLength = writable(60);
