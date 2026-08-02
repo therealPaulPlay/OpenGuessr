@@ -20,6 +20,7 @@
 	import { errorPopup } from "$lib/utils/errorHandling";
 	import { Info } from "@lucide/svelte";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
+	import { multiplayer } from "$lib/stores/modeStore";
 </script>
 
 {#if $multiplayerOverlay}
@@ -145,7 +146,9 @@
 								try {
 									await get(socket)?.sendRequest("rematch");
 								} catch (error) {
-									errorPopup("Failed to rematch", "An error occured trying to rematch.", error.message);
+									if (get(multiplayer)) {
+										errorPopup("Failed to rematch", "An error occured trying to rematch.", error.message);
+									}
 									console.error("Error processing rematch:", error);
 								}
 								currentlyStartingRematch = false;

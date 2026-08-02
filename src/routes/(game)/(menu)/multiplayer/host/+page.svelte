@@ -126,7 +126,7 @@
 					try {
 						await get(socket)?.sendRequest("startRoom");
 					} catch (error) {
-						errorPopup("Failed to start room", "An error occured trying to start the room.", error.message);
+						if (get(multiplayer)) errorPopup("Failed to start room", "Error occured starting the room.", error.message);
 						console.error("Error starting room:", error);
 					}
 					isCurrentlyStarting = false;

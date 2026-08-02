@@ -17,12 +17,16 @@ export const multiplayerStyle = writable("standard");
 // Matchmaking and Duels
 export const matchmakingActive = writable(false);
 export const skillBasedMatchmaking = writable(false);
-export const matchmakingHosting = writable(false);
+export const matchmakingHosting = writable(false); // The room for matchmaking is now being created (set to true right before createRoom is called)
+export const matchmakingSubmitted = writable(false); // The room is submitted to the matchmaking queue (set to true after awaited submission)
 export const cancellingMatchmaking = writable(false);
 
-// If matchmaking is disabled, also disable hosting
+// If matchmaking is disabled, also reset adjacent state
 matchmakingActive.subscribe((value) => {
-    if (!value) matchmakingHosting.set(false);
+    if (!value) {
+        matchmakingHosting.set(false);
+        matchmakingSubmitted.set(false);
+    }
 });
 
 // Guest-exclusive

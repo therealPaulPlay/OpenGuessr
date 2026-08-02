@@ -113,7 +113,7 @@ export async function loadResultScreenXP(distance) {
 
         // Add XP to score
         if (get(multiplayer)) get(socket)?.sendRequest("addToScore", earnedXP).catch((error) => {
-            errorPopup("Failed to add to score", "An error occured trying to submit the score addition.", error.message);
+            if (get(multiplayer)) errorPopup("Failed to add to score", "An error occured trying to submit the score addition.", error.message);
             console.error("Error adding to score:", error);
         });
 

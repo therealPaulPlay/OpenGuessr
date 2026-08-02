@@ -429,7 +429,7 @@
 
 <Popup slim={true} bind:open={leaderboardPopup}>
 	<div class="popup-title">
-		<h1 id="leaderboard-header" class="text-header-left">Ranking for <i>{leaderboardName}</i></h1>
+		<h1 id="leaderboard-header" class="text-header-left">Results for <i>{leaderboardName}</i></h1>
 	</div>
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->

@@ -29,6 +29,7 @@ import {
     multiplayerMap,
     mobileChatLastOpenedMsgCount,
     matchmakingHosting,
+    matchmakingSubmitted,
     cancellingMatchmaking,
     roomLocked,
     clientToken,
@@ -127,7 +128,7 @@ export async function createMultiplayerInstance() {
                 try {
                     await get(socket)?.sendRequest("startRoom");
                 } catch (error) {
-                    errorPopup("Failed to start room", "An error occured trying to start the room upon host migration.", error.message);
+                    if (get(multiplayer)) errorPopup("Failed to start room", "An error occured trying to start the room upon host migration.", error.message);
                     console.error("Error starting room upon host migration:", error);
                 }
             }
@@ -161,7 +162,7 @@ export async function createMultiplayerInstance() {
             if (get(socket)?.storage?.players?.findIndex((player) => player.clientId == get(socket)?.id) == -1 && !playerDataAdded) {
                 playerDataAdded = true;
                 get(socket)?.sendRequest("addPlayer", { guestName: get(guestName) || null }).catch((error) => {
-                    errorPopup("Failed to add player", "An error occured trying to add this player's data.", error.message);
+                    if (get(multiplayer)) errorPopup("Failed to add player", "An error occured trying to add this player's data.", error.message);
                     console.error("Error adding player data in multiplayer:", error);
                 });
             }
@@ -270,7 +271,7 @@ async function showTimeReducedOverlay() {
     } catch (error) { console.warn("Error showing time reduce overlay:", error) }
 }
 
-export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, divisionRoom = false) {
+export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false) {
     try {
         disableResultScreen(); // Edge case
         await createMultiplayerInstance();
@@ -283,7 +284,6 @@ export async function createMultiplayerRoom(sizeLimit, matchmakingRoom = false, 
             restriction: get(multiplayerRestriction),
             map: get(multiplayerMap),
             matchmakingRoom,
-            divisionRoom,
         }, sizeLimit);
         multiplayer.set(true); // Set multiplayer after successful creation
         roomCode.set(code);
@@ -331,6 +331,7 @@ export function leaveMultiplayer(destroy = true) {
     multiplayer.set(false);
     matchmakingActive.set(false);
     matchmakingHosting.set(false); // Needed when matchmakingActive was never set to true, but hosting was
+    matchmakingSubmitted.set(false);
 
     if (destroy) {
         get(socket)?.destroy(); // Destroy peer

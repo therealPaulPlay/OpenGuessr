@@ -3,6 +3,7 @@
 		multiplayerStatus,
 		matchmakingActive,
 		matchmakingHosting,
+		matchmakingSubmitted,
 		cancellingMatchmaking,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { playSound } from "$lib/utils/soundManager";
@@ -20,7 +21,7 @@
 <div class="try-button-container bar-menu">
 	<button
 		class="standard-button try-button large-button"
-		disabled={($matchmakingActive && !$matchmakingHosting) || $cancellingMatchmaking}
+		disabled={($matchmakingActive && !$matchmakingSubmitted) || $cancellingMatchmaking}
 		onclick={async () => {
 			if (!$matchmakingActive) {
 				playSound("basic_button");
