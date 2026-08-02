@@ -9,7 +9,7 @@
 	import { isAuthenticated } from "$lib/stores/accountStore";
 	import { showConfirmPopup } from "$lib/utils/confirmPopup";
 	import { goto } from "$app/navigation";
-	import { Frown, Plus, Search, Smile, TriangleAlert } from "@lucide/svelte";
+	import { Frown, Link, Plus, Search, Smile, TriangleAlert } from "@lucide/svelte";
 	import { onMount } from "svelte";
 	import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
 	import Tabs from "$lib/components/ui/Tabs.svelte";
@@ -17,6 +17,9 @@
 	import SupporterTag from "$lib/components/SupporterTag.svelte";
 	import Drawer from "$lib/components/ui/Drawer.svelte";
 	import { restrictionNames } from "$lib/stores/context-specific/restrictionStore";
+	import TitleSeparator from "$lib/components/ui/TitleSeparator.svelte";
+	import { showNotification } from "$lib/utils/notifications";
+	import { page } from "$app/state";
 
 	const competitionsEndpoint = $apiUrl + "/competitions";
 
@@ -125,7 +128,7 @@
 		leaderboardCompetitionId = id; // Used for e.g. the ratings requests
 		leaderboardPopup = true;
 		leaderboardEntries = undefined;
-		yourEntry = undefined;
+		friendsEntries = undefined;
 		leaderboardName = "...";
 
 		// Load data from endpoint using id here
@@ -136,7 +139,7 @@
 	}
 
 	let leaderboardEntries = $state([]);
-	let yourEntry = $state();
+	let friendsEntries = $state([]);
 	let leaderboardName = $state("Default");
 
 	async function loadLeaderboardFromServer(id) {
@@ -151,7 +154,7 @@
 			if (response.ok) {
 				const data = await response.json();
 				leaderboardEntries = data.leaderboard;
-				yourEntry = data?.userRank;
+				friendsEntries = data?.friendsLeaderboard || [];
 				leaderboardName = data.name;
 			} else {
 				let responseData = null;
@@ -188,44 +191,29 @@
 	}
 
 	// Query Links - Enter and Load leaderboard --------------------------------------------------------------------------------------------------------
-	onMount(() => {
-		let urlParams = new URLSearchParams(window.location.search);
+	$effect(() => {
+		const leaderboardIdFromLink = page.url.searchParams.get("leaderboard");
+		const leaderboardIdFromLinkAfterSubmit = page.url.searchParams.get("leaderboard-submit");
+		const competitionIdFromLink = page.url.searchParams.get("enter");
 
-		let leaderboardIdFromLink;
-		let leaderboardIdFromLinkAfterSubmit;
+		if (!leaderboardIdFromLink && !leaderboardIdFromLinkAfterSubmit && !competitionIdFromLink) return;
 
 		// Load leaderboard via link
-		try {
-			leaderboardIdFromLink = urlParams.get("leaderboard");
-			if (leaderboardIdFromLink) {
-				openLeaderboard(leaderboardIdFromLink);
-				history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
-			}
-
-			leaderboardIdFromLinkAfterSubmit = urlParams.get("leaderboard-submit");
-			if (leaderboardIdFromLinkAfterSubmit) {
-				openLeaderboard(leaderboardIdFromLinkAfterSubmit, true);
-				history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
-			}
-		} catch {}
+		if (leaderboardIdFromLink) openLeaderboard(leaderboardIdFromLink);
+		if (leaderboardIdFromLinkAfterSubmit) openLeaderboard(leaderboardIdFromLinkAfterSubmit, true);
 
 		// Enter competition via link
-		let competitionIdFromLink;
+		if (competitionIdFromLink) {
+			showConfirmPopup(
+				"Enter competition?",
+				"This will start the competition from your link immediately. You can only enter a competition once.",
+				() => {
+					enterCompetition(competitionIdFromLink);
+				},
+			);
+		}
 
-		try {
-			competitionIdFromLink = urlParams.get("enter");
-
-			if (competitionIdFromLink) {
-				showConfirmPopup(
-					"Enter competition?",
-					"This will start the competition from your link immediately. You can only enter a competition once.",
-					() => {
-						enterCompetition(competitionIdFromLink);
-					},
-				);
-				history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
-			}
-		} catch {}
+		history.replaceState({}, document.title, window.location.pathname); // reset query in the address bar
 	});
 
 	// Load competitions ----------------------------------------------------------------------------------------------------------------------------
@@ -372,7 +360,7 @@
 	function displayRatingBox() {
 		showRatingBox = true;
 		ratingsButtonBox = true;
-		ratingText = "Consider rating this competition.";
+		ratingText = "How did you like this competition?";
 	}
 
 	async function submitRating(factor) {
@@ -431,31 +419,61 @@
 	<div class="popup-title">
 		<h1 id="leaderboard-header" class="text-header-left">Results for <i>{leaderboardName}</i></h1>
 	</div>
+	<TitleSeparator text="You & friends" />
 	<!-- svelte-ignore a11y_click_events_have_key_events -->
 	<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+	{#if !$isAuthenticated}
+		<div class="friends-not-played-container">
+			<p class="friends-not-played" style:text-align="center">Sign up to compete with friends!</p>
+		</div>
+	{:else}
+		{const friendsPlayed = $derived(friendsEntries?.some((entry) => entry.id != localStorage.getItem("id")))}
+		{#if friendsEntries?.length > 0}
+			<div class="ranking-display" style:margin-bottom="var(--box-margin)">
+				<div class="ranking-display-scroll of-top of-bottom">
+					{#each friendsEntries as entry}
+						<div class="rank-item" transition:blur class:rank-you={entry.id == localStorage.getItem("id")}>
+							<p>#{entry.position}</p>
+							<p
+								class="center-entry"
+								onclick={() => {
+									showProfile(entry.id);
+								}}
+							>
+								{entry.userName}
+								{#if entry.supporter_level > 0}
+									<SupporterTag />
+								{/if}
+							</p>
+							<p>{entry.score.toLocaleString()} Pts.</p>
+						</div>
+					{/each}
+				</div>
+			</div>
+		{/if}
+		<div class="friends-not-played-container">
+			<p class="friends-not-played">
+				{!friendsEntries
+					? "Loading..."
+					: friendsPlayed
+						? "Invite more friends to play this competition."
+						: "None of your friends played yet, consider inviting them."}
+			</p>
+			<button
+				class="standard-button white"
+				onclick={() => {
+					playSound("basic_button");
+					navigator.clipboard
+						.writeText(window.location.origin + "/competitions?enter=" + leaderboardCompetitionId)
+						.then(() => showNotification("Copied!"))
+						.catch((error) => showNotification("Error: " + error));
+				}}>Copy link<Link size={20} strokeWidth={2.25} style="margin-bottom: -3px; margin-left: 7px;" /></button
+			>
+		</div>
+	{/if}
+	<TitleSeparator text="All" />
 	<div class="ranking-display">
 		<div class="ranking-display-scroll of-top of-bottom">
-			{#if yourEntry}
-				<div class="you-bar">
-					<p class="you-label">You</p>
-					<div class="rank-item your-item">
-						<p>#{yourEntry.position}</p>
-						<p
-							id="your-username"
-							class="center-entry"
-							onclick={() => {
-								showProfile(localStorage.getItem("id"));
-							}}
-						>
-							{yourEntry.userName}
-							{#if yourEntry.supporter_level > 0}
-								<SupporterTag />
-							{/if}
-						</p>
-						<p>{yourEntry.score.toLocaleString()} Pts.</p>
-					</div>
-				</div>
-			{/if}
 			{#if leaderboardEntries?.length > 0}
 				{#each leaderboardEntries as entry}
 					<div class="rank-item" transition:blur class:rank-you={entry.id == localStorage.getItem("id")}>
@@ -1045,7 +1063,7 @@
 		display: flex;
 		scrollbar-width: none;
 		width: 100%;
-		max-height: min(600px, calc(100dvh - 300px));
+		max-height: 400px;
 		justify-content: safe center;
 		flex-direction: column;
 	}
@@ -1066,12 +1084,6 @@
 
 	.rank-item p {
 		text-wrap: nowrap;
-	}
-
-	.your-item {
-		box-shadow: var(--bulb-shadow);
-		background-color: rgba(255, 255, 255, 0.2);
-		overflow: hidden;
 	}
 
 	.rank-you {
@@ -1124,20 +1136,6 @@
 
 	.fade-in-item {
 		animation: fadeIn 250ms ease-in-out;
-	}
-
-	.you-bar {
-		display: flex;
-		gap: var(--box-margin);
-		align-items: center;
-	}
-
-	.you-label {
-		box-shadow: var(--bulb-shadow);
-		border-radius: var(--content-margin);
-		background-color: rgba(255, 255, 255, 0.2);
-		padding: var(--content-margin);
-		padding-inline: var(--box-margin);
 	}
 
 	.daily-primary {
@@ -1205,5 +1203,28 @@
 		search {
 			max-width: none;
 		}
+	}
+
+	.friends-not-played {
+		opacity: 0.5;
+		padding-inline: var(--content-margin);
+		flex-grow: 100;
+	}
+
+	.friends-not-played-container {
+		display: flex;
+		justify-items: center;
+		align-items: center;
+		gap: var(--box-margin);
+		border-radius: var(--box-margin);
+		background-color: var(--box-color);
+		box-shadow: var(--box-shadow);
+		padding: var(--box-margin);
+		flex-wrap: wrap;
+	}
+
+	.friends-not-played-container button {
+		margin-left: auto;
+		flex-grow: 1;
 	}
 </style>

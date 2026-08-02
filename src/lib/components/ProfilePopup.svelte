@@ -43,7 +43,6 @@
 	import { profileData, profileId, unsavedAboutChanges } from "$lib/stores/context-specific/profileStore";
 	import { profilePopup } from "$lib/stores/uiStore";
 	import { playSound } from "$lib/utils/soundManager";
-	import { onMount } from "svelte";
 	import { page } from "$app/state";
 	import { showProfile } from "$lib/utils/showProfile";
 	import Tabs from "./ui/Tabs.svelte";
@@ -66,9 +65,12 @@
 		if ($profileData?.about) filteredAbout = censor($profileData?.about);
 	});
 
-	onMount(() => {
+	$effect(() => {
 		const profileFromURL = page.url.searchParams.get("profile-id");
-		if (profileFromURL != null) showProfile(profileFromURL);
+		if (profileFromURL == null) return;
+
+		showProfile(profileFromURL);
+		history.replaceState({}, document.title, window.location.pathname);
 	});
 
 	// Reset statistics tab selection when closed
@@ -330,8 +332,7 @@
 				}}
 				onkeypress={(e) => {
 					if (e.key == "Enter") e.preventDefault();
-				}}
-			></textarea>
+				}}></textarea>
 		</div>
 	{/if}
 

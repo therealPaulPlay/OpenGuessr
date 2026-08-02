@@ -10,8 +10,11 @@
 	import { tooltip } from "$lib/utils/tooltip.svelte";
 	import { playSound } from "$lib/utils/soundManager";
 	import { messagesPopup } from "$lib/stores/uiStore";
+	import { page } from "$app/state";
+	import { goto } from "$app/navigation";
 
 	const REACTION_EMOJIS = ["👍", "❤️", "😂", "😢"];
+	const URL_PATTERN = /(https?:\/\/[^\s]+|(?:[a-z0-9-]+\.)+[a-z]{2,}(?::\d+)?(?:\/[^\s]*)?)/gi;
 
 	let { message, referencedMessage = null, onreply, isTyping = false, isContinuation = false } = $props();
 
@@ -65,6 +68,23 @@
 	});
 
 	let timestamp = $derived(new Date(message.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }));
+
+	// Only links pointing to this site itself become clickable, everything else stays plain text
+	function internalPath(token) {
+		try {
+			const url = new URL("https://" + token.replace(/^https?:\/\//i, ""));
+			if (url.hostname.replace(/^www\./i, "") !== page.url.hostname.replace(/^www\./i, "")) return null;
+			return url.pathname + url.search;
+		} catch {
+			return null;
+		}
+	}
+
+	let segments = $derived(
+		(message.message ?? "")
+			.split(URL_PATTERN)
+			.map((text, index) => ({ text, path: index % 2 ? internalPath(text) : null })),
+	);
 </script>
 
 <div class="message-row" class:own={isOwn}>
@@ -113,7 +133,25 @@
 					{/if}
 
 					<p style:white-space="pre-wrap" style:opacity={message.deleted ? "0.5" : ""}>
-						{message.deleted ? "Deleted message" : message.message}
+						{#if message.deleted}
+							Deleted message
+						{:else}
+							{#each segments as segment}
+								{#if segment.path}
+									<a
+										class="message-link"
+										href={segment.path}
+										onclick={(event) => {
+											event.preventDefault();
+											$messagesPopup = false;
+											goto(segment.path);
+										}}>{segment.text}</a
+									>
+								{:else}
+									{segment.text}
+								{/if}
+							{/each}
+						{/if}
 					</p>
 				{/if}
 			</div>
@@ -302,6 +340,10 @@
 
 	.bubble p {
 		font-size: 20px;
+	}
+
+	.message-link {
+		font-size: inherit;
 	}
 
 	.bubble.own-bubble {
