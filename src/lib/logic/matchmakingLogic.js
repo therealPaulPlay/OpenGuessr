@@ -1,9 +1,9 @@
 // Multiplayer room matchmaking APIs, for Duels
-import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, skillBasedMatchmaking, socket, clientToken } from "$lib/stores/context-specific/multiplayerStore";
-import { createMultiplayerRoom, joinMultiplayerRoom, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
+import { matchmakingActive, multiplayerStatus, roomCode, matchmakingHosting, matchmakingSubmitted, multiplayerStyle, roundAmount, roundLength, teamAmount, multiplayerMap, skillBasedMatchmaking, socket, clientToken } from "$lib/stores/context-specific/multiplayerStore";
+import { createMultiplayerRoom, leaveMultiplayer } from "$lib/logic/multiplayerLogic";
 import { get } from "svelte/store";
 import { apiUrl } from "$lib/stores/context-specific/apiConfigStore";
-import { elo, isAuthenticated } from "$lib/stores/accountStore";
+import { isAuthenticated } from "$lib/stores/accountStore";
 import { defaultMap } from "$lib/stores/context-specific/officialMapsStore";
 import { goto } from "$app/navigation";
 import { signupPrompt } from "$lib/utils/signupPrompt";
@@ -13,42 +13,31 @@ import { multiplayer } from "$lib/stores/modeStore";
 // Logic -----------------------
 
 const matchmakingRoomConfigs = {
-    "division-duel": { teamAmount: 1, roundAmount: 5, divisionRoom: true, sizeLimit: 2 },
-    "team-duel": { teamAmount: 2, roundAmount: 5, divisionRoom: false, sizeLimit: 4 },
+    "division-duel": { teamAmount: 1, roundAmount: 5, sizeLimit: 2 },
+    "team-duel": { teamAmount: 2, roundAmount: 5, sizeLimit: 4 },
 }
 
 // Safe cancel: remove from matchmaking queue - if removed, the server destroys the room
 // which triggers instanceDestroyed -> leaveMultiplayer -> matchmakingActive = false; If not removed, the game was already matched
 export async function safeCancel() {
     const code = get(roomCode);
-    if (!code) return console.warn("safeCancel called without a room code!");
-
-    const headers = {
-        "Content-Type": "application/json",
-    }
-    if (localStorage.getItem("bearer")) headers.Authorization = "Bearer " + localStorage.getItem("bearer");
-
-    const body = {
-        clientId: get(socket)?.id,
-        clientToken: get(clientToken),
-    };
-    if (localStorage.getItem("id") != null) body.id = localStorage.getItem("id");
+    if (!code) return errorPopup("Failed to cancel", "The room hasn't been created yet.");
 
     try {
         const response = await fetch(get(apiUrl) + "/matchmaking/delete-room/" + code, {
             method: 'DELETE',
-            headers,
-            body: JSON.stringify(body),
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ clientId: get(socket)?.id, clientToken: get(clientToken) }),
         });
         if (!response.ok) throw new Error(response.status);
         const data = await response.json();
 
         if (!data.removed) {
-            multiplayerStatus.set("Room no longer in matchmaking, cannot cancel."); // Game has started in between player pressing "cancel" & req resolving
+            multiplayerStatus.set("Room not in matchmaking, cannot cancel."); // Either the game was matched in between pressing "cancel" & the req resolving, or the code hasn't been submitted yet
             return;
         }
-
-        if (findTeamDuelActive) clearFindTeamDuelInterval(); // Stop polling
     } catch (error) {
         console.warn("Failed to remove room from matchmaking queue:", error);
         multiplayerStatus.set("Failed to cancel: " + (error?.message || error));
@@ -58,36 +47,21 @@ export async function safeCancel() {
 
 // Division duel -----------------------
 
-let roomIndex = 0;
-
 // This initiates the find duel system
 export async function findDuel() {
     if (!get(isAuthenticated)) return signupPrompt();
-    // There's a brief delay between goto("/") call and the page navigation, in which the user can click "Try again" even though a duel has been found, 
+    // There's a brief delay between goto("/") call and the page navigation, in which the user can click "Try again" even though a duel has been found,
     // which causes the multiplayer instance to recreate & the player to lose the game
     if (get(multiplayer)) return errorPopup("Already in multiplayer", "Finding a duel is only possible outside of multiplayer.");
     goto("/multiplayer/duel"); // Visit duel load page
-    roomIndex = 0; // Reset roomIndex every time you (re)try to find a duel (if joining fails, this will be set to the next value)
     matchmakingActive.set(true);
-    attemptDuelJoin(roomIndex, get(skillBasedMatchmaking));
-}
 
-// This occurs when the multiplayer system's connect/join returns an error
-function findNextDuel() {
-    if (!get(matchmakingActive)) return; // Exit the loop if matchmaking was disabled
-    if (roomIndex < 10) {
-        roomIndex++;
-        attemptDuelJoin(roomIndex, get(skillBasedMatchmaking));
-    } else {
-        matchmakingActive.set(false);
-        multiplayerStatus.set("Couldn't connect to any room.");
-    }
+    // Create & submit a room, which the server then pairs up with another queued room
+    const created = await createMatchmakingRoom("division-duel", get(skillBasedMatchmaking), matchmakingRoomConfigs["division-duel"]);
+    if (created && await submitRoomCodeForMatchmaking("division-duel", get(skillBasedMatchmaking))) attemptFind("division-duel");
 }
 
 // Team duel (2v2) -----------------------
-
-let findTeamDuelInterval = null;
-let findTeamDuelActive = false;
 
 export function createTeamDuelRoom() {
     goto("/multiplayer/team-duel");
@@ -95,29 +69,18 @@ export function createTeamDuelRoom() {
 }
 
 export async function startFindTeamDuel() {
-    if (findTeamDuelActive) return;
-    findTeamDuelActive = true;
+    if (get(matchmakingActive)) return;
     matchmakingActive.set(true);
 
-    // Submit room code and start find team interval if successful,
-    // otherwise reset active variable
-    const success = await submitRoomCodeForMatchmaking("team-duel", false);
-    if (success) attemptTeamDuelFind();
-    else findTeamDuelActive = false;
+    // Submit room code and look for a match if successful
+    if (await submitRoomCodeForMatchmaking("team-duel", false)) attemptFind("team-duel");
 }
 
-export function clearFindTeamDuelInterval() {
-    findTeamDuelActive = false;
-    if (findTeamDuelInterval) {
-        clearInterval(findTeamDuelInterval);
-        findTeamDuelInterval = null;
-    }
-}
 // Shared -----------------------
 
 function createMatchmakingRoom(type, skillBased, roomOptions) {
     if (skillBased === undefined) return console.warn("Skill-based argument not defined!");
-    if (!roomOptions || !roomOptions.roundAmount || roomOptions.teamAmount == null || roomOptions.divisionRoom == null) return console.error("Provided room options are lacking:", JSON.stringify(roomOptions));
+    if (!roomOptions || !roomOptions.roundAmount || roomOptions.teamAmount == null) return console.error("Provided room options are lacking:", JSON.stringify(roomOptions));
 
     // Set standard matchmaking room options
     multiplayerStyle.set("duel");
@@ -132,7 +95,7 @@ function createMatchmakingRoom(type, skillBased, roomOptions) {
     matchmakingHosting.set(true);
 
     // Create room and submit code for matchmaking (and return promise)
-    return createMultiplayerRoom(roomOptions.sizeLimit, true, roomOptions.divisionRoom);
+    return createMultiplayerRoom(roomOptions.sizeLimit, true);
 }
 
 async function submitRoomCodeForMatchmaking(type, skillBased) {
@@ -144,6 +107,7 @@ async function submitRoomCodeForMatchmaking(type, skillBased) {
         leaveMultiplayer();
         return false;
     } else {
+        matchmakingSubmitted.set(true);
         multiplayerStatus.set("Waiting for players...");
         return true;
     }
@@ -151,50 +115,10 @@ async function submitRoomCodeForMatchmaking(type, skillBased) {
 
 // API --------------------------
 
-// This function attempts to get a room code from the server and to join the room
-async function attemptDuelJoin(index, skillBased) {
-    index == 0 ? multiplayerStatus.set("Requesting roomcode...") : multiplayerStatus.set("Requesting new roomcode...");
-    let receivedRoomCode;
-
+// The server forms the match by moving all involved players into one of the queued rooms
+async function attemptFind(type) {
     try {
-        // Get Roomcode from server
-        const response = await fetch(get(apiUrl) + "/matchmaking/get-division-duel-room/" + index, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                Authorization: "Bearer " + localStorage.getItem("bearer"),
-            },
-            body: JSON.stringify({
-                id: localStorage.getItem("id"),
-                type: "division-duel",
-                elo: get(elo),
-                skillBased
-            }),
-        });
-
-        if (response.ok) receivedRoomCode = await response.json().then(data => data.code);
-        if (!response.ok) throw new Error(response.status);
-
-        // Attempt to join if there is a code, otherwise create room
-        if (receivedRoomCode) {
-            const success = await joinMultiplayerRoom(receivedRoomCode);
-            if (!success) findNextDuel(); // Code exists but failed to join -> check next code
-        } else {
-            // Status will be set in this function
-            const success = await createMatchmakingRoom("division-duel", skillBased, matchmakingRoomConfigs["division-duel"]);
-            if (success) await submitRoomCodeForMatchmaking("division-duel", skillBased);
-        }
-
-    } catch (error) {
-        console.error('Error fetching room code: ', error);
-        multiplayerStatus.set("Couldn't fetch code: " + (error?.message || error));
-        matchmakingActive.set(false);
-    }
-}
-
-async function attemptTeamDuelFind() {
-    try {
-        const response = await fetch(get(apiUrl) + "/matchmaking/find-team-duel", {
+        const response = await fetch(get(apiUrl) + "/matchmaking/find-" + type, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -204,20 +128,16 @@ async function attemptTeamDuelFind() {
 
         if (!response.ok) throw new Error(response.status);
 
-        const data = await response.json();
-        if (data.matched) clearFindTeamDuelInterval();
-        else if (!findTeamDuelInterval && findTeamDuelActive) findTeamDuelInterval = setInterval(attemptTeamDuelFind, 5000); // Start polling (if still active / matchmaking wasn't cancelled)
-
     } catch (error) {
-        if (!findTeamDuelActive) return; // Request arrived after match/cancel, ignore (match can start without a client ever calling this endpoint since submitting & waiting for sb else to call it also works)
+        // Ignore if the room left the queue in the meantime (somebody else matched it, or matchmaking was cancelled)
+        if (!get(matchmakingActive)) return;
 
-        // Cancel interval and leave since the room code is still in the server's matchmaking queue (this also sets matchmakingActive to false)
-        clearFindTeamDuelInterval();
+        // Leave, since the room code is still in the server's matchmaking queue (this also sets matchmakingActive to false)
         leaveMultiplayer();
 
         // Display error
-        console.error("Error finding team duel:", error);
-        errorPopup("Failed to find a team duel", "The request returned an error.", error.message);
+        console.error("Error finding match:", error);
+        errorPopup("Failed to find a match", "The request returned an error.", error.message);
     }
 }
 

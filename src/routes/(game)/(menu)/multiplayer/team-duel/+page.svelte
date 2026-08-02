@@ -1,11 +1,9 @@
 <script>
-	import { onDestroy } from "svelte";
 	import MultiplayerHostDisplay from "$lib/components/MultiplayerHostDisplay.svelte";
 	import MultiplayerMatchmakingDisplay from "$lib/components/MultiplayerMatchmakingDisplay.svelte";
 	import {
 		createTeamDuelRoom,
 		startFindTeamDuel,
-		clearFindTeamDuelInterval,
 		safeCancel,
 	} from "$lib/logic/matchmakingLogic";
 	import {
@@ -14,10 +12,6 @@
 		participantCount,
 	} from "$lib/stores/context-specific/multiplayerStore";
 	import { Info } from "@lucide/svelte";
-
-	onDestroy(() => {
-		clearFindTeamDuelInterval();
-	});
 </script>
 
 <svelte:head>

@@ -22,6 +22,7 @@
 	import { onMount } from "svelte";
 	import { blur, slide } from "svelte/transition";
 	import { errorPopup } from "$lib/utils/errorHandling";
+	import { multiplayer } from "$lib/stores/modeStore";
 
 	let {
 		showOpenRoom = true,
@@ -42,7 +43,13 @@
 		try {
 			await get(socket)?.sendRequest("updateTeam", { newTeamIndex: parseInt(newTeamIndex), playerClientId: playerId });
 		} catch (error) {
-			errorPopup("Failed to update player's team", "An error occured trying to update the player's team index.", error.message);
+			if (get(multiplayer)) {
+				errorPopup(
+					"Failed to update player's team",
+					"An error occured trying to update the player's team index.",
+					error.message,
+				);
+			}
 			console.error("Error updating team:", error);
 		}
 	}

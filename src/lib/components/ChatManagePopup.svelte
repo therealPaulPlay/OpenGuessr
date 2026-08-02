@@ -63,7 +63,9 @@
 						try {
 							await get(socket)?.sendRequest("setRoomLock", newRoomLockState);
 						} catch (error) {
-							errorPopup("Failed to set lock", "An error occured setting the lock state for the room.", error.message);
+							if (get(multiplayer)) {
+								errorPopup("Failed to set lock", "An error occured locking/unlocking the room.", error.message);
+							}
 							console.error("Error setting room lock state:", error);
 						}
 						currentlySettingRoomLock = false;
@@ -128,7 +130,13 @@
 										try {
 											await get(socket)?.sendRequest("kickClient", clientId);
 										} catch (error) {
-											errorPopup("Failed to kick client", "An error occured trying to kick the client.", error.message);
+											if (get(multiplayer)) {
+												errorPopup(
+													"Failed to kick client",
+													"An error occured trying to kick the client.",
+													error.message,
+												);
+											}
 											console.error("Error kicking client:", error);
 										}
 										currentlyKickingPlayer = false;
