@@ -34,6 +34,5 @@
 	.flex-container p {
 		opacity: 0.5;
 		padding-right: var(--layout-margin);
-		font-style: italic;
 	}
 </style>

@@ -88,7 +88,7 @@
 	let isBookmarked = $state(false);
 
 	$effect(() => {
-		if(!map?.name) return;
+		if (!map?.name) return;
 		untrack(() => {
 			const addedCommunityMaps = JSON.parse(localStorage.getItem("addedCommunityMaps")) || [];
 			isBookmarked = addedCommunityMaps.includes(map?.name);
@@ -105,6 +105,12 @@
 
 	async function likeOrDislikeMap(mapName) {
 		if (get(isAuthenticated)) {
+			const previousLiked = isLiked;
+			const previousCount = likesCount;
+
+			isLiked = !isLiked;
+			likesCount = Math.max(0, likesCount + (isLiked ? 1 : -1));
+
 			try {
 				const response = await fetch($apiUrl + `/maps/like/${mapName}`, {
 					method: "POST",
@@ -115,15 +121,14 @@
 					body: JSON.stringify({ id: localStorage.getItem("id") }),
 				});
 
-				const data = await response.json();
-
-				if (response.ok) {
-					await fetchMapLikeStatus(mapName); // fetch new information
-				} else {
-					console.error("Error liking or disliking map:", data.error);
+				if (!response.ok) {
+					const data = await response.json().catch(() => {});
+					throw new Error(data?.error || response.status);
 				}
 			} catch (error) {
-				console.error("Network error during like or dislike of map:", error);
+				isLiked = previousLiked;
+				likesCount = previousCount;
+				console.error("Error liking or disliking map:", error);
 			}
 		} else {
 			signupPrompt();
@@ -335,6 +340,7 @@
 					id="like-map"
 					{@attach tooltip({ text: "Like" })}
 					class="standard-button white map-button large-button"
+					disabled={typeof likesCount !== "number"}
 					onclick={() => {
 						playSound("basic_button");
 						likeOrDislikeMap(nameId);
